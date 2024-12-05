@@ -1,0 +1,105 @@
+#include "fern.hpp"
+
+#include "file.hpp"
+#include "parse_root.hpp"
+#include "parse_tree.hpp"
+
+#include <cxxopts.hpp>
+
+using namespace silva;
+
+expected_t<void>
+silva_main(const int argc, char* argv[])
+{
+  cxxopts::Options options("silva_tokenizer");
+  options.add_options()("f,filename", "Input filename", cxxopts::value<std::string>());
+  options.add_options()(
+      "p,process", "Processing", cxxopts::value<std::string>()->default_value(""));
+  options.add_options()("r,root-based", "Use the root/seed based parser");
+  const auto args = options.parse(argc, argv);
+
+  const auto arg_filename = args["filename"].as<std::string>();
+  const auto arg_process  = args["process"].as<std::string>();
+  const bool arg_root     = args["root-based"].as<bool>();
+
+  const std::string source_text = silva::read_file(arg_filename);
+  const source_code_t source_code{.filename = arg_filename, .text = source_text};
+
+  const tokenization_t tokenization = tokenize(&source_code);
+
+  parse_tree_t pt;
+  if (arg_root) {
+    pt = SILVA_TRY(fern_parse_root()->apply(&tokenization));
+  }
+  else {
+    pt = SILVA_TRY(fern_parse(&tokenization));
+  }
+
+  if (arg_process.empty()) {
+    ;
+  }
+  else if (arg_process.starts_with("fern_t/")) {
+    const auto rest   = arg_process.substr(7);
+    const fern_t fern = fern_create(&pt);
+    if (rest == "string") {
+      fmt::print("{}\n", fern.to_str_fern());
+    }
+    else if (rest == "graphviz") {
+      fmt::print("{}\n", fern.to_str_graphviz());
+    }
+    else if (rest == "graphviz_show") {
+      graphviz_show_sync(fern.to_str_graphviz());
+    }
+    else {
+      SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);
+    }
+  }
+  else if (arg_process.starts_with("direct/")) {
+    const auto rest = arg_process.substr(7);
+    if (rest == "string") {
+      fmt::print("{}\n", fern_to_string(&pt));
+    }
+    else if (rest == "graphviz") {
+      fmt::print("{}\n", fern_to_graphviz(&pt));
+    }
+    else if (rest == "graphviz_show") {
+      graphviz_show_sync(fern_to_graphviz(&pt));
+    }
+    else {
+      SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);
+    }
+  }
+  else if (arg_process.starts_with("parse_tree/")) {
+    const auto rest = arg_process.substr(11);
+    if (rest == "string") {
+      fmt::print("{}\n", parse_tree_to_string(pt));
+    }
+    else if (rest == "graphviz") {
+      fmt::print("{}\n", parse_tree_to_graphviz(pt));
+    }
+    else if (rest == "graphviz_show") {
+      graphviz_show_sync(parse_tree_to_graphviz(pt));
+    }
+    else {
+      SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);
+    }
+  }
+  else {
+    SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);
+  }
+
+  return {};
+}
+
+int
+main(const int argc, char* argv[])
+{
+  const auto result = silva_main(argc, argv);
+  if (!result) {
+    fmt::print(stderr, "ERROR:\n{}\n", result.error().message);
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
