@@ -10,9 +10,9 @@ add_subdirectory(thirdparty/cxxopts)
 # find_package(Boost REQUIRED)
 find_package(Fmt REQUIRED)
 
-file(GLOB SILVA_LIB_FILES "*.hpp" "*.cpp")
-file(GLOB SILVA_TEST_FILES "*.tpp")
-file(GLOB SILVA_MAIN_FILES "*.mpp")
+file(GLOB SILVA_LIB_FILES "src/*.hpp" "src/*.cpp")
+file(GLOB SILVA_TEST_FILES "src/*.tpp")
+file(GLOB SILVA_MAIN_FILES "src/*.mpp")
 
 foreach(file ${SILVA_TEST_FILES} ${SILVA_MAIN_FILES})
   set_source_files_properties("${file}" PROPERTIES LANGUAGE CXX)
