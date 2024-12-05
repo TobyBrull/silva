@@ -1,0 +1,14 @@
+[
+  [
+    title: "Principles of the Silva Language"
+    "Statically-typed, C++-like, interpreted language, with powerful code generation capabilities"
+  ]
+  [
+    title: "Principles of the Silva Language"
+    "Every valid *.fern file is also a valid *.stem file"
+    "Items in a Fern are separated by whitespace where possible.
+     An optional semi-colon (;) can be used to be explicit."
+    "Labels must be unique."
+    "Stem code is meant to resemble SSA-form where possible."
+  ]
+]

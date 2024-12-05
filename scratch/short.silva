@@ -1,0 +1,15 @@
+
+[
+  grammar: 'grammar [
+    Goal <- Rule+
+    Rule <- identifier "<-" Expression
+    Expression <- Sequence ( "/" Sequence )*
+    Sequence <- Prefix*
+    Prefix <- ("&" / "!")? Suffix # Some comment
+    Suffix <- Primary ("?" / "*" / "+")?
+    Primary <- identifier !"<-"
+             / "(" Expression ")"
+             / string
+             / "."
+  ]
+]

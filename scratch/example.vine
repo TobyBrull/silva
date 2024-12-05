@@ -1,0 +1,55 @@
+[
+  in_ssa_form: vine [ x: i32 ; y: i32 ] -> [ i32 ; i1 ] [
+    entry_node [
+      i32 sum = add [ x y ]
+      i32 sum = add [ arg.0 arg.1 ]
+      i32 prod = prod [ x y ]
+      i1 less_than = cmp_lt [ sum prod ]
+      jump less_than [ B_1: [ sum prod ] , B_2: prod ]
+    ]
+    B_1: node [ a: i32 ; b: i32 ] [
+      i1 rv = cmp_lt [ a b ]
+      jump 0 [ return: [ a c ] ]
+    ]
+    B_2: node i32 [
+      i32 res = add [ arg 100 ]
+      jump 0 [ return: [ res 1 ] ]
+    ]
+  ]
+
+  not_in_ssa_form: vine [ i32, i32, i32 ] -> i32 [
+    entry_node [
+      # Only the entry_node may contain mutable variables.
+      mutable i32 sum = 0 ;
+      sum = sum + arg.0 ;
+      sum = sum + arg.1 ;
+      sum = sum + arg.2 ;
+      jump 0 [ B_0: [ sum arg.0 ] ;
+    ]
+    B_0: node [ i32 ] [
+      # swap
+      [ c d ] = [ b a ] ;
+      jump 0 [ return: sum ] ;
+    ]
+  ]
+
+  maybe_allow_phi_function_after_all: vine i32 -> i32 [
+    entry_node [
+      i1 lt = cmp_lt [ arg 0 ]
+      i32 x,0 = arg
+      jump lt [ B_1: none
+    ]
+    B_1: i32 [
+      x,1 = x,0
+      jump 0 [ B_3: none ]
+    ]
+    B_2: i32 [
+      x,2 = neg x,0
+      jump 0 [ B_3: none ]
+    ]
+    B_3: [
+      x,3 = phi [ B_1: x,1 ; B_2: x,2 ]
+      jump 0 [ return: x,3 ]
+    ]
+  ]
+]

@@ -1,0 +1,84 @@
+[
+  peg_grammar: grammar_peg [
+    Grammar <- Rule+
+    Rule <- identifier "<-" Expression
+    Expression <- Sequence ( "/" Sequence )*
+    Sequence <- Atom*
+    Atom <- ("&" / "!")? Primary ("?" / "*" / "+")?
+    Primary <- identifier !"<-"
+             / "(" Expression ")"
+             / string
+             / "."
+  ]
+
+  peg_grammar_2: seme [
+    Grammar <- Rule+
+    Rule <- identifier "<-" Expression
+    Expression <- Sequence ( "/" Sequence )*
+    Sequence <- Atom*
+    Prefix,0 <- "&"
+    Prefix,1 <- "!"
+    Suffix,0 <- "?"
+    Suffix,1 <- "*"
+    Suffix,2 <- "+"
+    Atom,0 <- Primary
+    Atom,1 <- Prefix Primary
+    Atom,2 <- Primary Suffix
+    Atom,3 <- Prefix Primary Suffix
+    Primary,0 <- identifier !"<-"
+    Primary,1 <- "(" Expression ")"
+    Primary,2 <- string
+    Primary,3 <- "."
+  ]
+
+  # terminals: "...", identifier, string, number
+  seme: seme [
+    Grammar = Rule*
+    Rule = identifier ( "," number )? "=" Expr
+    Expr = Atom*
+    Prefix,0 = "&"
+    Prefix,1 = "!"
+    Suffix,0 = "?"
+    Suffix,1 = "*"
+    Atom,0 = Primary
+    Atom,1 = Prefix Primary
+    Atom,2 = Primary Suffix
+    Atom,3 = Prefix Primary Suffix
+    Primary,0 = identifier !"="
+    Primary,1 = string
+    Primary,2 = "(" Expr ")"
+  ]
+
+  fern_peg: grammar_peg [
+    Fern <- "[" ( LabeledItem ";"? )* "]"
+    LabeledItem <- ( Label ":" )? Item
+    Label <- string
+           / identifier
+    Item <- Fern
+               / "none"
+               / "true" / "false"
+               / string
+               / number
+  ]
+
+  seme: seme [
+    Grammar = Rule*
+    Rule = identifier ( "," number )? "=" Expr
+    Expr = Atom*
+    Atom = Primary operator?
+    Primary,0 = "(" Expr ")"
+    Primary,1 = identifier "="!
+    Primary,2 = string
+    Primary,3 = "<>"
+  ]
+
+  fern: seme [
+    Fern = "[" ( LabeledItem ";"? )* "]"
+    LabeledItem = ( Label ":" )? Item
+    Label,0 = string
+    Label,1 = identifier
+    Item,0 = Fern
+    Item,1 = <>
+    Item,1 = [ "none", "true", "false", string, number ]
+  ]
+]
