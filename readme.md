@@ -2,12 +2,12 @@
 
 Silva is Latin for "forest".
 
-Silva is meant to be language-oriented programming language or, equivalently, a ecosystem of related
-programming languages.
+Silva is imagined to be language-oriented programming language or, equivalently, an ecosystem or
+library of related programming languages.
 
-The Seed language describes the grammar of other languages in a way that can be automatically turned
-into a parser for those languages. A parser generated from a Seed program is represented by the type
-"parse_root_t". A "parse_root_t" can be used to turn a stream of tokens into a "parse_tree_t".
+The Seed language describes the grammar of another language. A program in the Seed language can be
+automatically turned into a parser. A parser generated from a Seed program is represented by the
+type `silva::parse_root_t`.
 
-The Fern language is similar to JSON. It is described by the following Seed program in the string
-`silva::fern_seed` (file fern.hpp).
+The Fern language is akin to JSON. It is described by the following Seed program
+`silva::fern_seed_source_code` (in file fern.hpp).
