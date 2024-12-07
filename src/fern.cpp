@@ -205,7 +205,7 @@ namespace silva {
               while (curr_path.back() != '/') {
                 curr_path.pop_back();
               }
-              last_label_str = std::nullopt;
+              last_label_str = none;
             }
           }
           else if (node.rule_index == std::to_underlying(fern_rule_t::LABEL)) {
