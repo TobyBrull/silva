@@ -281,6 +281,13 @@ namespace silva {
 
   string_t tokenization_t::to_string() const
   {
-    return "TO IMPLEMENT";
+    string_t retval;
+    for (token_index_t index = 0; index < tokens.size(); ++index) {
+      const token_id_t id        = tokens[index];
+      const auto& td             = token_datas[id];
+      const source_location_t sl = compute_source_location(index);
+      retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", index, sl.line, sl.column, td.str);
+    }
+    return retval;
   }
 }

@@ -16,6 +16,7 @@
   "root"
   "hemp"
   "node"
+  "soil"
   "wood"
   "mule"
   "coal"
@@ -23,6 +24,7 @@
   "silo"
 
   "sprite"
+  "glade"
 
   "frog"
   "toad"
