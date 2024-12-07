@@ -2,8 +2,6 @@
 
 #include "seed.hpp"
 
-#include <unordered_map>
-
 namespace silva {
 
   // Driver for a program in the Seed language.

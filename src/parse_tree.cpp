@@ -2,7 +2,6 @@
 
 #include "parse_root.hpp"
 
-#include "expected.hpp"
 #include <utility>
 
 namespace silva {

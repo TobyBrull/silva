@@ -1,6 +1,6 @@
 #include "tokenization.hpp"
 
-#include "assert.hpp"
+#include "canopy/assert.hpp"
 
 #include <rfl/enums.hpp>
 

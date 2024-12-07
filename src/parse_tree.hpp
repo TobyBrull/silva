@@ -1,8 +1,9 @@
 #pragma once
 
-#include "assert.hpp"
-#include "expected.hpp"
-#include "misc.hpp"
+#include "canopy/assert.hpp"
+#include "canopy/expected.hpp"
+#include "canopy/types.hpp"
+
 #include "tokenization.hpp"
 
 #include <span>

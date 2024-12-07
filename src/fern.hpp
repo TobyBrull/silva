@@ -1,12 +1,6 @@
 #pragma once
 
 #include "parse_tree.hpp"
-#include "tokenization.hpp"
-
-#include <memory>
-#include <optional>
-#include <unordered_map>
-#include <variant>
 
 namespace silva {
   constexpr source_code_t fern_seed_source_code{

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "misc.hpp"
+#include "canopy/types.hpp"
 
 namespace silva {
   struct source_code_t {

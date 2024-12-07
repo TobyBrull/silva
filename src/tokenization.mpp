@@ -1,6 +1,6 @@
 #include "tokenization.hpp"
 
-#include "file.hpp"
+#include "canopy/filesystem.hpp"
 
 #include <cxxopts.hpp>
 #include <fmt/format.h>
