@@ -8,7 +8,6 @@
 
 namespace silva {
   item_t::item_t() : value(std::nullopt) {}
-  fern_t::fern_t() {}
 
   void fern_t::push_back(labeled_item_t&& li)
   {
@@ -297,24 +296,24 @@ namespace silva {
           }
           else {
             if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_0)) {
-              retval.item = item_t{fern_create(pt, node_index + 1)};
+              retval.item.value = std::make_unique<fern_t>(fern_create(pt, node_index + 1));
             }
             else if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_1)) {
               const auto* token_data = pt->tokenization->token_data(node.token_index);
               if (token_data->str == "none") {
-                retval.item = item_t{std::nullopt};
+                retval.item.value = std::nullopt;
               }
               else if (token_data->str == "true") {
-                retval.item = item_t{true};
+                retval.item.value = true;
               }
               else if (token_data->str == "false") {
-                retval.item = item_t{false};
+                retval.item.value = false;
               }
               else if (token_data->category == token_category_t::STRING) {
-                retval.item = item_t{token_data->as_string()};
+                retval.item.value = token_data->as_string();
               }
               else if (token_data->category == token_category_t::NUMBER) {
-                retval.item = item_t{token_data->as_double()};
+                retval.item.value = token_data->as_double();
               }
             }
           }
