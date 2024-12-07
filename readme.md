@@ -2,12 +2,8 @@
 
 Silva means "forest" in Latin.
 
-Silva aspires to be a language-oriented programming language, or alternatively, an ecosystem or
-library comprising a suite of interconnected programming languages.
-
-The Seed language describes the grammar of another language. A program in the Seed language can be
-automatically turned into a parser. A parser generated from a Seed program is represented by the
-type `silva::parse_root_t`.
+Silva aspires to be a language-oriented programming language, or alternatively, an ecosystem of
+interconnected programming languages, or alternatively, a C++ library to deriving DSLs.
 
 The Seed language is as a formal specification for the syntax of another language. A parser can
 automatically be generated from a Seed program; such a parser is represented by the type
