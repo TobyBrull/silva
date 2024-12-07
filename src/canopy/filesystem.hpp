@@ -6,7 +6,7 @@ namespace silva {
   string_t read_file(const filesystem_path_t& filename);
   bool write_file(const filesystem_path_t& filename, string_view_t content);
 
-  optional_t<string_t> run_shell_command_sync(const std::string& command) noexcept;
+  optional_t<string_t> run_shell_command_sync(const string_t& command) noexcept;
 
   class temp_dir_t {
     filesystem_path_t dir_path;

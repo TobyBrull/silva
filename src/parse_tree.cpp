@@ -2,6 +2,8 @@
 
 #include "parse_root.hpp"
 
+#include "canopy/convert.hpp"
+
 #include <utility>
 
 namespace silva {

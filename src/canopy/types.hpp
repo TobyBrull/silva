@@ -35,42 +35,16 @@ namespace silva {
 
   using filesystem_path_t = std::filesystem::path;
 
-  template<typename T>
-  struct field_t {
-    index_t offset = 0;
-    index_t size   = 0;
-
-    span_t<T> to_span(T* data) const;
-    span_t<const T> to_span(const T* data) const;
-  };
-
   struct sprite_t {
+    sprite_t() = default;
+
     sprite_t(sprite_t&&)            = default;
     sprite_t& operator=(sprite_t&&) = default;
+
+    // Sprites are encouraged to implement an explicity "copy" function (they don't have to), but
+    // implicit copy is disabled.
 
     sprite_t(const sprite_t&)            = delete;
     sprite_t& operator=(const sprite_t&) = delete;
   };
-
-  void string_append_escaped(std::string& output_buffer, string_view_t unescaped_string);
-  void string_append_unescaped(std::string& output_buffer, string_view_t escaped_string);
-
-  std::string string_escaped(string_view_t unescaped_string);
-  std::string string_unescaped(string_view_t escaped_string);
-}
-
-// IMPLEMENTATION
-
-namespace silva {
-  template<typename T>
-  span_t<T> field_t<T>::to_span(T* data) const
-  {
-    return span_t<T>(data + offset, size);
-  }
-
-  template<typename T>
-  span_t<const T> field_t<T>::to_span(const T* data) const
-  {
-    return span_t<const T>(data + offset, size);
-  }
 }

@@ -8,7 +8,7 @@
 #include <sstream>
 
 namespace silva {
-  std::string read_file(const filesystem_path_t& filename)
+  string_t read_file(const filesystem_path_t& filename)
   {
     std::ifstream file(filename);
     SILVA_ASSERT(file.is_open());
@@ -25,10 +25,10 @@ namespace silva {
     return file.good();
   }
 
-  std::optional<std::string> run_shell_command_sync(const std::string& command) noexcept
+  std::optional<string_t> run_shell_command_sync(const string_t& command) noexcept
   {
     std::array<char, 128> buffer;
-    std::string output;
+    string_t output;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
     if (!pipe) {
       return std::nullopt;
@@ -52,7 +52,7 @@ namespace silva {
 
   temp_dir_t::temp_dir_t(const filesystem_path_t& dir_path_pattern)
   {
-    std::string dpp    = dir_path_pattern;
+    string_t dpp       = dir_path_pattern;
     const char* result = mkdtemp(dpp.data());
     SILVA_ASSERT(result);
     dir_path = result;

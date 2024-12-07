@@ -1,6 +1,7 @@
 #include "tokenization.hpp"
 
 #include "canopy/assert.hpp"
+#include "canopy/convert.hpp"
 
 #include <rfl/enums.hpp>
 
