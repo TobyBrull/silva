@@ -53,28 +53,29 @@ namespace silva {
 
     struct line_data_t {
       // The index of the first token in that line. If a line does not contain any tokens, this is
-      // the index of the next token. If a token (can only be a string) spans multiple lines, this
-      // is the index of just that token.
+      // the index of any token in a following line. What if a token spans multiple lines (could
+      // only happend for strings)?
       token_index_t token_index = 0;
       // Offset of the start of this line within "text" of "source_code".
       index_t source_code_offset = 0;
 
       friend auto operator<=>(const line_data_t&, const line_data_t&) = default;
     };
-    // If "source_code" contains (n) lines, then this vector contains (n + 1) entries. The last
-    // entry in this vector is the size/length of "tokens".
+    // Contains one entry for each line in "source_code".
     vector_t<line_data_t> lines;
 
     const token_data_t* token_data(token_index_t) const;
 
     optional_t<token_id_t> lookup_token(string_view_t) const;
 
-    source_location_t compute_source_location(token_index_t) const;
+    const line_data_t* binary_search_line(token_index_t) const;
+
+    source_location_t retokenize_source_location(token_index_t) const;
 
     string_t to_string() const;
 
     void append_token(const tokenization_t::token_data_t*);
-    void append_new_line(index_t source_code_offset);
+    void start_new_line(index_t source_code_offset);
   };
 
   tokenization_t tokenize(const source_code_t*);

@@ -55,10 +55,28 @@ namespace silva {
     }
   }
 
-  source_location_t tokenization_t::compute_source_location(const token_index_t token_index) const
+  const tokenization_t::line_data_t*
+  tokenization_t::binary_search_line(const token_index_t token_index) const
   {
-    source_location_t retval{.source_code = source_code};
-    return retval;
+    auto it =
+        std::ranges::lower_bound(lines, token_index, std::less<>{}, [](const line_data_t& line) {
+          return line.token_index;
+        });
+    if (it != lines.end() && it->token_index != token_index) {
+      SILVA_ASSERT(it != lines.begin());
+      --it;
+    }
+    while (true) {
+      SILVA_ASSERT(it != lines.end());
+      const auto next_it = std::next(it);
+      if (next_it != lines.end() && next_it->token_index == token_index) {
+        it = next_it;
+      }
+      else {
+        break;
+      }
+    }
+    return &(*it);
   }
 
   void tokenization_t::append_token(const tokenization_t::token_data_t* td)
@@ -75,11 +93,11 @@ namespace silva {
     }
   }
 
-  void tokenization_t::append_new_line(const index_t source_code_offset)
+  void tokenization_t::start_new_line(const index_t source_code_offset)
   {
     lines.push_back(tokenization_t::line_data_t{
         .token_index        = static_cast<index_t>(tokens.size()),
-        .source_code_offset = static_cast<index_t>(source_code->text.size()),
+        .source_code_offset = source_code_offset,
     });
   }
 
@@ -264,6 +282,7 @@ namespace silva {
   tokenization_t tokenize(const source_code_t* source_code)
   {
     tokenization_t retval{.source_code = source_code};
+    retval.start_new_line(0);
     index_t text_index = 0;
     string_view_t text = source_code->text;
     while (text_index < text.size()) {
@@ -273,9 +292,42 @@ namespace silva {
         retval.append_token(&td);
       }
       else if (td.str == "\n") {
-        retval.append_new_line(text_index);
+        retval.start_new_line(text_index);
       }
     }
+    return retval;
+  }
+
+  source_location_t
+  tokenization_t::retokenize_source_location(const token_index_t token_index) const
+  {
+    const auto* line_data = binary_search_line(token_index);
+
+    const std::string_view rest    = source_code->text.substr(line_data->source_code_offset);
+    const index_t line_token_index = token_index - line_data->token_index;
+
+    index_t seen_tokens = 0;
+    index_t column      = 0;
+    while (column < rest.size()) {
+      const tokenization_t::token_data_t td = impl::tokenize_one(rest.substr(column));
+      if (td.category == token_category_t::INVALID) {
+        column += td.str.size();
+      }
+      else {
+        SILVA_ASSERT(td.str != "\n");
+        seen_tokens += 1;
+        if (seen_tokens > line_token_index) {
+          break;
+        }
+        else {
+          column += td.str.size();
+        }
+      }
+    }
+
+    source_location_t retval{.source_code = source_code};
+    retval.line   = line_data - lines.data();
+    retval.column = column;
     return retval;
   }
 
@@ -285,8 +337,8 @@ namespace silva {
     for (token_index_t index = 0; index < tokens.size(); ++index) {
       const token_id_t id        = tokens[index];
       const auto& td             = token_datas[id];
-      const source_location_t sl = compute_source_location(index);
-      retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", index, sl.line, sl.column, td.str);
+      const source_location_t sl = retokenize_source_location(index);
+      retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", index, sl.line + 1, sl.column + 1, td.str);
     }
     return retval;
   }
