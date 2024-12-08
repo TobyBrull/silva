@@ -232,7 +232,8 @@ namespace silva {
 
   const parse_root_t* seed_parse_root()
   {
-    static const tokenization_t seed_self_tokens = tokenize(&seed_seed_source_code);
+    static const tokenization_t seed_self_tokens =
+        tokenize(hybrid_ptr_const(&seed_seed_source_code));
 
     static const parse_root_t retval = [&] {
       auto seed_seed_pt = seed_parse(&seed_self_tokens);

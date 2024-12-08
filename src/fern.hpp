@@ -3,7 +3,7 @@
 #include "parse_tree.hpp"
 
 namespace silva {
-  constexpr source_code_t fern_seed_source_code{
+  const source_code_t fern_seed_source_code{
       .filename = "fern.seed",
       .text     = R"'(
         - Fern = "[" LabeledItem* "]"

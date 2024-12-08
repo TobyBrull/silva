@@ -8,6 +8,14 @@
 #include <cctype>
 
 namespace silva {
+  source_code_t source_code_t::copy() const
+  {
+    return source_code_t{
+        .filename = filename,
+        .text     = text,
+    };
+  }
+
   string_view_t to_string(const token_category_t cat)
   {
     static vector_t<string_t> vals = [] {
@@ -280,9 +288,9 @@ namespace silva {
     }
   }
 
-  tokenization_t tokenize(const source_code_t* source_code)
+  tokenization_t tokenize(hybrid_ptr_t<source_code_t> source_code)
   {
-    tokenization_t retval{.source_code = source_code};
+    tokenization_t retval{.source_code = std::move(source_code)};
     retval.start_new_line(0);
     index_t text_index = 0;
     string_view_t text = source_code->text;
@@ -304,7 +312,8 @@ namespace silva {
   {
     const auto* line_data = binary_search_line(token_index);
 
-    const std::string_view rest    = source_code->text.substr(line_data->source_code_offset);
+    const string_view_t rest =
+        string_view_t{source_code->text}.substr(line_data->source_code_offset);
     const index_t line_token_index = token_index - line_data->token_index;
 
     index_t seen_tokens = 0;
@@ -326,7 +335,7 @@ namespace silva {
       }
     }
 
-    source_location_t retval{.source_code = source_code};
+    source_location_t retval{.source_code = source_code.get()};
     retval.line   = line_data - lines.data();
     retval.column = column;
     return retval;

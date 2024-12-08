@@ -25,7 +25,7 @@ TEST_CASE("parse_tree", "[parse_tree_t]")
       .filename = "some.fern",
       .text     = R"([ 1.1; 2.2; some_label: 3.3; [ 1.0; 3.0; ]; ])",
   };
-  const tokenization_t tokens = tokenize(&source_code);
+  const tokenization_t tokens = tokenize(hybrid_ptr_const(&source_code));
 
   parse_tree_t pt;
   using n_t = parse_tree_t::node_t;

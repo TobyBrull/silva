@@ -10,7 +10,7 @@ using namespace silva;
 
 TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
 {
-  const tokenization_t seed_tokenization = tokenize(&seed_seed_source_code);
+  const tokenization_t seed_tokenization = tokenize(hybrid_ptr_const(&seed_seed_source_code));
 
   const parse_tree_t seed_pt_1 = SILVA_TRY_REQUIRE(seed_parse(&seed_tokenization));
   const parse_tree_t seed_pt_2 = SILVA_TRY_REQUIRE(seed_parse_root()->apply(&seed_tokenization));
@@ -30,7 +30,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
         - Item,1 = string
       )'",
   };
-  const tokenization_t sf_seed_tokens = tokenize(&sf_seed_source_code);
+  const tokenization_t sf_seed_tokens = tokenize(hybrid_ptr_const(&sf_seed_source_code));
 
   const auto sf_seed_pt_1 = SILVA_TRY_REQUIRE(seed_parse(&sf_seed_tokens));
   const auto sf_seed_pt_2 = SILVA_TRY_REQUIRE(seed_parse_root()->apply(&sf_seed_tokens));
@@ -117,7 +117,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
         [ "abc" ; [ "def" "ghi" ] "jkl" ;]
       )'",
   };
-  const tokenization_t sf_tokens = tokenize(&sf_code);
+  const tokenization_t sf_tokens = tokenize(hybrid_ptr_const(&sf_code));
 
   auto sfpt = SILVA_TRY_REQUIRE(sfpr.apply(&sf_tokens));
 

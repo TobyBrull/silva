@@ -8,7 +8,8 @@
 namespace silva {
   const parse_root_t* fern_parse_root()
   {
-    static const tokenization_t fern_seed_tokenization = tokenize(&fern_seed_source_code);
+    static const tokenization_t fern_seed_tokenization =
+        tokenize(hybrid_ptr_const(&fern_seed_source_code));
 
     static const parse_root_t retval = [&] {
       auto fern_seed_pt = seed_parse(&fern_seed_tokenization);

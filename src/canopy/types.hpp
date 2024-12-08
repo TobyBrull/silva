@@ -38,6 +38,16 @@ namespace silva {
 
   using filesystem_path_t = std::filesystem::path;
 
+  struct menhir_t {
+    menhir_t() = default;
+
+    menhir_t(menhir_t&&)            = delete;
+    menhir_t& operator=(menhir_t&&) = delete;
+
+    menhir_t(const menhir_t&)            = delete;
+    menhir_t& operator=(const menhir_t&) = delete;
+  };
+
   struct sprite_t {
     sprite_t() = default;
 

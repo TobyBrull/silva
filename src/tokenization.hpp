@@ -1,11 +1,14 @@
 #pragma once
 
+#include "canopy/hybrid_ptr.hpp"
 #include "canopy/types.hpp"
 
 namespace silva {
-  struct source_code_t {
+  struct source_code_t : public menhir_t {
     string_t filename;
-    string_view_t text;
+    string_t text;
+
+    source_code_t copy() const;
   };
 
   struct source_location_t {
@@ -31,8 +34,8 @@ namespace silva {
   // A reference to a position in the "tokens" vector of the "tokenization_t" struct.
   using token_index_t = index_t;
 
-  struct tokenization_t {
-    const source_code_t* source_code = nullptr;
+  struct tokenization_t : public sprite_t {
+    hybrid_ptr_t<source_code_t> source_code;
 
     struct token_data_t {
       string_view_t str;
@@ -78,7 +81,7 @@ namespace silva {
     void start_new_line(index_t source_code_offset);
   };
 
-  tokenization_t tokenize(const source_code_t*);
+  tokenization_t tokenize(hybrid_ptr_t<source_code_t>);
 }
 
 // IMPLEMENTATION

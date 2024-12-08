@@ -33,7 +33,7 @@ namespace silva {
   //    2 Straightforward translation into an efficient parser
   //    3 Reasonably expressive
 
-  constexpr source_code_t seed_seed_source_code{
+  const source_code_t seed_seed_source_code{
       .filename = "seed.seed",
       .text     = R"'(
         - Seed = ("-" Rule)*

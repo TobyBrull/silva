@@ -24,7 +24,7 @@ TEST_CASE("fern", "[fern]")
 ])",
   };
 
-  const tokenization_t tokenization = tokenize(&fern_source_code);
+  const tokenization_t tokenization = tokenize(hybrid_ptr_const(&fern_source_code));
 
   const parse_tree_t pt_1 = SILVA_TRY_REQUIRE(fern_parse(&tokenization));
   const parse_tree_t pt_2 = SILVA_TRY_REQUIRE(fern_parse_root()->apply(&tokenization));

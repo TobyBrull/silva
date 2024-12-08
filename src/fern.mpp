@@ -25,7 +25,7 @@ silva_main(const int argc, char* argv[])
   const std::string source_text = silva::read_file(arg_filename);
   const source_code_t source_code{.filename = arg_filename, .text = source_text};
 
-  const tokenization_t tokenization = tokenize(&source_code);
+  const tokenization_t tokenization = tokenize(hybrid_ptr_const(&source_code));
 
   parse_tree_t pt;
   if (arg_root) {

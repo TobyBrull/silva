@@ -13,7 +13,7 @@ TEST_CASE("tokenization", "[tokenization_t]")
         .filename = "unit-test",
         .text     = "Hello   123 .<>.",
     };
-    const tokenization_t tokenization = tokenize(&source_code);
+    const tokenization_t tokenization = tokenize(hybrid_ptr_const(&source_code));
     CHECK(
         tokenization.token_datas ==
         std::vector<td_t>({
@@ -29,7 +29,7 @@ TEST_CASE("tokenization", "[tokenization_t]")
         .text     = R"(Silva "Hel\"lo"  .(). # .().
   1 + 3)",
     };
-    const tokenization_t tokenization = tokenize(&source_code);
+    const tokenization_t tokenization = tokenize(hybrid_ptr_const(&source_code));
     CHECK(
         tokenization.token_datas ==
         std::vector<td_t>({

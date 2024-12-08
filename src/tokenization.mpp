@@ -21,7 +21,7 @@ main(int argc, char* argv[])
       .text     = source_text,
   };
 
-  const silva::tokenization_t tokenization = silva::tokenize(&source_code);
+  const silva::tokenization_t tokenization = silva::tokenize(hybrid_ptr_const(&source_code));
 
   std::cout << tokenization.to_string() << '\n';
 
