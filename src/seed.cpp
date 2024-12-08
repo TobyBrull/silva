@@ -25,8 +25,8 @@ namespace silva {
       optional_t<token_id_t> tt_number      = lookup_token("number");
       optional_t<token_id_t> tt_any         = lookup_token("any");
 
-      seed_nursery_t(const_ptr_t<tokenization_t> tt)
-        : parse_tree_nursery_t(std::move(tt), seed_parse_root_primordial())
+      seed_nursery_t(const_ptr_t<tokenization_t> tokenization)
+        : parse_tree_nursery_t(std::move(tokenization), seed_parse_root_primordial())
       {
       }
 
