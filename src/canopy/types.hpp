@@ -16,13 +16,16 @@ namespace silva {
 
   using string_view_t = std::string_view;
 
+  template<typename T, typename Deleter = std::default_delete<T>>
+  using unique_ptr_t = std::unique_ptr<T, Deleter>;
+
   template<typename T>
   using optional_t = std::optional<T>;
 
   constexpr std::nullopt_t none = std::nullopt;
 
-  template<typename T>
-  using variant_t = std::variant<T>;
+  template<typename... Ts>
+  using variant_t = std::variant<Ts...>;
 
   template<typename T>
   using span_t = std::span<T>;
