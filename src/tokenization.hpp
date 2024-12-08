@@ -1,6 +1,6 @@
 #pragma once
 
-#include "canopy/hybrid_ptr.hpp"
+#include "canopy/const_ptr.hpp"
 #include "canopy/source_code.hpp"
 #include "canopy/types.hpp"
 
