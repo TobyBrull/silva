@@ -4,8 +4,11 @@ Silva means "forest" in Latin.
 
 Silva aspires to be an [esoteric](https://en.wikipedia.org/wiki/Esoteric_programming_language),
 [language-oriented](https://en.wikipedia.org/wiki/Language-oriented_programming) programming
-language, or alternatively, an ecosystem of interconnected programming languages, or alternatively,
-a C++ library for deriving DSLs.
+language; alternatively, it may become an ecosystem of interconnected programming languages or,
+alternatively, a C++ library for deriving DSLs.
+
+
+## Concepts
 
 The Seed language is as a formal specification for the syntax of another language. A parser can
 automatically be generated from a Seed program; such a parser is represented by the type
