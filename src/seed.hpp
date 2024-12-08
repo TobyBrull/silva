@@ -13,25 +13,9 @@
 
 namespace silva {
 
-  struct parse_root_t;
-
   // The Seed language describes a way to turn a stream of tokens into a parse_tree_t. The
   // actual mechanism/algorithm to turn a stream of tokens into a parse_tree_t is
   // encapsulated/represented by the class "parse_root_t".
-  //
-  // Example of some Seed source-code:
-  //
-  //    - SimpleFern = "[" ( LabeledItem ";"? )* "]"
-  //    - LabeledItem = ( Label ":" )? Item
-  //    - Label = string
-  //    - Item,0 = SimpleFern
-  //    - Item,1 = string
-  //
-  // Design goals for Seed in order of priority:
-  //
-  //    1 Simple (mainly for bootstrapping?)
-  //    2 Straightforward translation into an efficient parser
-  //    3 Reasonably expressive
 
   const source_code_t seed_seed_source_code("seed.seed", R"'(
     - Seed = ("-" Rule)*
@@ -62,6 +46,8 @@ namespace silva {
     NONTERMINAL,
     TERMINAL,
   };
+
+  struct parse_root_t;
 
   // parse_root_t of the parse_trees returned by "seed_parse". Only has the "rules" vector populated
   // with entries equivalent to "seed_self_representation" and the entries in "seed_rule_t".
