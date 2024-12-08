@@ -25,8 +25,8 @@ namespace silva {
       optional_t<token_id_t> tt_number      = lookup_token("number");
       optional_t<token_id_t> tt_any         = lookup_token("any");
 
-      seed_nursery_t(const tokenization_t* tokenization_)
-        : parse_tree_nursery_t(tokenization_, seed_parse_root_primordial())
+      seed_nursery_t(const_ptr_t<tokenization_t> tt)
+        : parse_tree_nursery_t(std::move(tt), seed_parse_root_primordial())
       {
       }
 
@@ -223,26 +223,21 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> seed_parse(const tokenization_t* tokenization)
+  expected_t<parse_tree_t> seed_parse(const_ptr_t<tokenization_t> tokenization)
   {
-    impl::seed_nursery_t seed_nursery(tokenization);
+    impl::seed_nursery_t seed_nursery(std::move(tokenization));
     SILVA_TRY(seed_nursery.seed());
     return {std::move(seed_nursery.retval)};
   }
 
   const parse_root_t* seed_parse_root()
   {
-    static const tokenization_t seed_self_tokens =
-        tokenize(hybrid_ptr_const(&seed_seed_source_code));
-
     static const parse_root_t retval = [&] {
-      auto seed_seed_pt = seed_parse(&seed_self_tokens);
-      SILVA_ASSERT(seed_seed_pt);
-      auto retval = parse_root_t::create(std::move(seed_seed_pt).value());
-      SILVA_ASSERT(retval);
-      return std::move(retval).value();
+      auto tokenization = SILVA_TRY_ASSERT(tokenize(const_ptr_unowned(&seed_seed_source_code)));
+      auto fern_seed_pt = SILVA_TRY_ASSERT(seed_parse(to_unique_ptr(std::move(tokenization))));
+      auto retval = SILVA_TRY_ASSERT(parse_root_t::create(to_unique_ptr(std::move(fern_seed_pt))));
+      return std::move(retval);
     }();
-
     return &retval;
   }
 

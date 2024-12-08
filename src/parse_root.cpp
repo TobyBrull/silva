@@ -31,13 +31,13 @@ namespace silva {
     return {};
   }
 
-  expected_t<parse_root_t> parse_root_t::create(parse_tree_t seed_parse_tree)
+  expected_t<parse_root_t> parse_root_t::create(const_ptr_t<parse_tree_t> seed_parse_tree)
   {
     parse_root_t retval;
     retval.seed_parse_tree = std::move(seed_parse_tree);
     const auto& spt{retval.seed_parse_tree};
-    const auto* spr{retval.seed_parse_tree.root};
-    const auto& nodes{spt.nodes};
+    const auto* spr{retval.seed_parse_tree->root};
+    const auto& nodes{spt->nodes};
 
     SILVA_EXPECT_FMT(
         spr == seed_parse_root_primordial() || spr == seed_parse_root(), "Not a seed parse_tree");
@@ -47,14 +47,14 @@ namespace silva {
         nodes.front().rule_index == std::to_underlying(seed_rule_t::SEED),
         "Seed parse_tree should start with SEED node");
 
-    const auto result = spt.visit_children(
+    const auto result = spt->visit_children(
         [&](const index_t node_index_rule, const index_t child_index) -> expected_t<bool> {
           SILVA_EXPECT_FMT(
               nodes[node_index_rule].rule_index == std::to_underlying(seed_rule_t::RULE), "");
           std::string_view name;
           index_t precedence      = 0;
           index_t node_index_expr = 0;
-          const auto inner_result = spt.visit_children(
+          const auto inner_result = spt->visit_children(
               [&](const index_t node_index_rule_child, const index_t ii) -> expected_t<bool> {
                 if (ii == 0) {
                   SILVA_EXPECT_FMT(
@@ -62,7 +62,7 @@ namespace silva {
                           std::to_underlying(seed_rule_t::NONTERMINAL),
                       "First child of RULE must be RULE_NAME ");
                   name =
-                      spt.tokenization->token_data(nodes[node_index_rule_child].token_index)->str;
+                      spt->tokenization->token_data(nodes[node_index_rule_child].token_index)->str;
                 }
                 else if (ii == 1 && nodes[node_index_rule].num_children == 3) {
                   SILVA_EXPECT_FMT(
@@ -70,7 +70,7 @@ namespace silva {
                           std::to_underlying(seed_rule_t::RULE_PRECEDENCE),
                       "Middle child of RULE must be RULE_PRECEDENCE");
                   precedence =
-                      spt.tokenization->token_data(nodes[node_index_rule_child].token_index)
+                      spt->tokenization->token_data(nodes[node_index_rule_child].token_index)
                           ->as_double();
                 }
                 else {
@@ -98,17 +98,17 @@ namespace silva {
     struct parse_root_nursery_t : public parse_tree_nursery_t {
       const parse_root_t* root = nullptr;
 
-      parse_root_nursery_t(const tokenization_t* tokenization_, const parse_root_t* parse_root)
-        : parse_tree_nursery_t(tokenization_, parse_root), root(parse_root)
+      parse_root_nursery_t(const_ptr_t<tokenization_t> tokenization, const parse_root_t* parse_root)
+        : parse_tree_nursery_t(std::move(tokenization), parse_root), root(parse_root)
       {
       }
 
       expected_t<parse_tree_sub_t> apply_terminal(const index_t terminal_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        const auto& terminal_node = root->seed_parse_tree.nodes[terminal_node_index];
+        const auto& terminal_node = root->seed_parse_tree->nodes[terminal_node_index];
         const auto* sp_token_data =
-            root->seed_parse_tree.tokenization->token_data(terminal_node.token_index);
+            root->seed_parse_tree->tokenization->token_data(terminal_node.token_index);
         if (sp_token_data->category == token_category_t::STRING) {
           SILVA_EXPECT_FMT(
               token_data()->str == sp_token_data->as_string(), "Expected '{}'", sp_token_data->str);
@@ -141,22 +141,22 @@ namespace silva {
 
         SILVA_EXPECT(token_index < retval.tokenization->tokens.size());
         const auto* token_data   = retval.tokenization->token_data(token_index);
-        const auto& primary_node = root->seed_parse_tree.nodes[primary_node_index];
+        const auto& primary_node = root->seed_parse_tree->nodes[primary_node_index];
         if (primary_node.rule_index == std::to_underlying(seed_rule_t::PRIMARY_0)) {
           gg.sub += SILVA_TRY(apply_expr_1(primary_node_index));
         }
         else if (primary_node.rule_index == std::to_underlying(seed_rule_t::PRIMARY_1)) {
           const std::array<index_t, 1> terminal_child =
-              SILVA_TRY(root->seed_parse_tree.get_num_children<1>(primary_node_index));
+              SILVA_TRY(root->seed_parse_tree->get_num_children<1>(primary_node_index));
           gg.sub += SILVA_TRY(apply_terminal(terminal_child[0]));
         }
         else if (primary_node.rule_index == std::to_underlying(seed_rule_t::PRIMARY_2)) {
           const std::array<index_t, 1> nonterminal_child =
-              SILVA_TRY(root->seed_parse_tree.get_num_children<1>(primary_node_index));
+              SILVA_TRY(root->seed_parse_tree->get_num_children<1>(primary_node_index));
           const parse_tree_t::node_t& nonterminal_node =
-              root->seed_parse_tree.nodes[nonterminal_child[0]];
+              root->seed_parse_tree->nodes[nonterminal_child[0]];
           const auto* seed_token =
-              root->seed_parse_tree.tokenization->token_data(nonterminal_node.token_index);
+              root->seed_parse_tree->tokenization->token_data(nonterminal_node.token_index);
           SILVA_ASSERT(!seed_token->str.empty() && std::isupper(seed_token->str.front()));
           gg.sub += SILVA_TRY(apply_rule(seed_token->str));
         }
@@ -170,9 +170,9 @@ namespace silva {
       {
         parse_tree_guard_t gg{&retval, &token_index};
         bool found_match  = false;
-        const auto result = root->seed_parse_tree.visit_children(
+        const auto result = root->seed_parse_tree->visit_children(
             [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
-              const parse_tree_t::node_t& node = root->seed_parse_tree.nodes[node_index];
+              const parse_tree_t::node_t& node = root->seed_parse_tree->nodes[node_index];
               SILVA_ASSERT(node.rule_index == std::to_underlying(seed_rule_t::TERMINAL));
               auto result = apply_terminal(node_index);
               if (result) {
@@ -189,9 +189,9 @@ namespace silva {
       expected_t<parse_tree_sub_t> apply_expr_1(const index_t expr_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        const auto result = root->seed_parse_tree.visit_children(
+        const auto result = root->seed_parse_tree->visit_children(
             [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
-              const auto& atom_node = root->seed_parse_tree.nodes[node_index];
+              const auto& atom_node = root->seed_parse_tree->nodes[node_index];
               SILVA_EXPECT_FMT(
                   atom_node.rule_index == std::to_underlying(seed_rule_t::ATOM),
                   "expected atom in seed parse-tree");
@@ -199,12 +199,12 @@ namespace silva {
               index_t primary_node_index = -1;
               if (atom_node.num_children == 2) {
                 std::array<index_t, 2> children =
-                    SILVA_TRY(root->seed_parse_tree.get_num_children<2>(node_index));
+                    SILVA_TRY(root->seed_parse_tree->get_num_children<2>(node_index));
                 primary_node_index      = children[0];
-                const auto& suffix_node = root->seed_parse_tree.nodes[children[1]];
+                const auto& suffix_node = root->seed_parse_tree->nodes[children[1]];
                 SILVA_EXPECT(suffix_node.rule_index == std::to_underlying(seed_rule_t::SUFFIX));
                 const std::string_view suffix_op =
-                    root->seed_parse_tree.tokenization->token_data(suffix_node.token_index)->str;
+                    root->seed_parse_tree->tokenization->token_data(suffix_node.token_index)->str;
                 SILVA_EXPECT(suffix_op.size() == 1);
                 suffix_char = suffix_op.front();
               }
@@ -212,7 +212,7 @@ namespace silva {
                 SILVA_EXPECT_FMT(
                     atom_node.num_children == 1, "Atom had unexpected number of children");
                 std::array<index_t, 1> child =
-                    SILVA_TRY(root->seed_parse_tree.get_num_children<1>(node_index));
+                    SILVA_TRY(root->seed_parse_tree->get_num_children<1>(node_index));
                 primary_node_index = child[0];
               }
 
@@ -276,7 +276,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> apply_expr(const index_t expr_node_index)
       {
-        const parse_tree_t::node_t& expr_node = root->seed_parse_tree.nodes[expr_node_index];
+        const parse_tree_t::node_t& expr_node = root->seed_parse_tree->nodes[expr_node_index];
         if (expr_node.rule_index == std::to_underlying(seed_rule_t::EXPR_0)) {
           return apply_expr_0(expr_node_index);
         }
@@ -316,18 +316,18 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> parse_root_t::apply(const tokenization_t* tokenization) const
+  expected_t<parse_tree_t> parse_root_t::apply(const_ptr_t<tokenization_t> tokenization) const
   {
-    impl::parse_root_nursery_t parse_root_nursery(tokenization, this);
+    impl::parse_root_nursery_t parse_root_nursery(std::move(tokenization), this);
     const parse_tree_sub_t sub = SILVA_TRY(parse_root_nursery.apply_rule(goal_rule_name));
     SILVA_ASSERT(sub.num_children == 1);
     SILVA_ASSERT(sub.num_children_total == parse_root_nursery.retval.nodes.size());
     return {std::move(parse_root_nursery.retval)};
   }
 
-  expected_t<parse_root_t> parse_root_t::create(const tokenization_t* tokenization)
+  expected_t<parse_root_t> parse_root_t::create(const_ptr_t<tokenization_t> tokenization)
   {
-    auto pt = SILVA_TRY(seed_parse_root()->apply(tokenization));
-    return parse_root_t::create(std::move(pt));
+    auto pt = SILVA_TRY(seed_parse_root()->apply(std::move(tokenization)));
+    return parse_root_t::create(to_unique_ptr(std::move(pt)));
   }
 }

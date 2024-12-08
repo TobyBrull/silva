@@ -28,8 +28,8 @@ namespace silva {
   bool is_on_entry(parse_tree_event_t);
   bool is_on_exit(parse_tree_event_t);
 
-  struct parse_tree_t {
-    const tokenization_t* tokenization = nullptr;
+  struct parse_tree_t : public sprite_t {
+    const_ptr_t<tokenization_t> tokenization;
 
     const parse_root_t* root = nullptr;
 

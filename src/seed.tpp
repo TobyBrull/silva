@@ -10,12 +10,15 @@ using namespace silva;
 
 TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
 {
-  const tokenization_t seed_tokenization = tokenize(hybrid_ptr_const(&seed_seed_source_code));
+  const tokenization_t seed_tokenization =
+      SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&seed_seed_source_code)));
 
-  const parse_tree_t seed_pt_1 = SILVA_TRY_REQUIRE(seed_parse(&seed_tokenization));
-  const parse_tree_t seed_pt_2 = SILVA_TRY_REQUIRE(seed_parse_root()->apply(&seed_tokenization));
+  const parse_tree_t seed_pt_1 =
+      SILVA_TRY_REQUIRE(seed_parse(const_ptr_unowned(&seed_tokenization)));
+  const parse_tree_t seed_pt_2 =
+      SILVA_TRY_REQUIRE(seed_parse_root()->apply(const_ptr_unowned(&seed_tokenization)));
   CHECK(seed_pt_1.nodes == seed_pt_2.nodes);
-  CHECK(seed_pt_1.nodes == seed_parse_root()->seed_parse_tree.nodes);
+  CHECK(seed_pt_1.nodes == seed_parse_root()->seed_parse_tree->nodes);
 }
 
 TEST_CASE("seed", "[seed][parse_root_t]")
@@ -27,10 +30,12 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     - Item,0 = SimpleFern
     - Item,1 = string
   )'");
-  const tokenization_t sf_seed_tokens = tokenize(hybrid_ptr_const(&sf_seed_source_code));
+  const tokenization_t sf_seed_tokens =
+      SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&sf_seed_source_code)));
 
-  const auto sf_seed_pt_1 = SILVA_TRY_REQUIRE(seed_parse(&sf_seed_tokens));
-  const auto sf_seed_pt_2 = SILVA_TRY_REQUIRE(seed_parse_root()->apply(&sf_seed_tokens));
+  const auto sf_seed_pt_1 = SILVA_TRY_REQUIRE(seed_parse(const_ptr_unowned(&sf_seed_tokens)));
+  const auto sf_seed_pt_2 =
+      SILVA_TRY_REQUIRE(seed_parse_root()->apply(const_ptr_unowned(&sf_seed_tokens)));
   CHECK(sf_seed_pt_1.nodes == sf_seed_pt_2.nodes);
 
   const std::string_view expected = R"(
@@ -94,7 +99,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(parse_tree_to_string(sf_seed_pt_1) == expected.substr(1));
   CHECK(parse_tree_to_string(sf_seed_pt_2) == expected.substr(1));
 
-  auto maybe_sf_parse_root = parse_root_t::create(sf_seed_pt_1);
+  auto maybe_sf_parse_root = parse_root_t::create(const_ptr_unowned(&sf_seed_pt_1));
   REQUIRE(maybe_sf_parse_root);
   auto sfpr = std::move(maybe_sf_parse_root).value();
   REQUIRE(sfpr.rules.size() == 5);
@@ -109,9 +114,9 @@ TEST_CASE("seed", "[seed][parse_root_t]")
       R"([["Item",3],["Label",2],["LabeledItem",1],["SimpleFern",0]])");
 
   const source_code_t sf_code("test.simple-fern", R"'( [ "abc" ; [ "def" "ghi" ] "jkl" ;])'");
-  const tokenization_t sf_tokens = tokenize(hybrid_ptr_const(&sf_code));
+  const tokenization_t sf_tokens = SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&sf_code)));
 
-  auto sfpt = SILVA_TRY_REQUIRE(sfpr.apply(&sf_tokens));
+  auto sfpt = SILVA_TRY_REQUIRE(sfpr.apply(const_ptr_unowned(&sf_tokens)));
 
   const std::string_view expected_parse_tree = R"(
 [.]SimpleFern,0                                   [

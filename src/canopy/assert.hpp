@@ -18,7 +18,13 @@ namespace silva {
       silva::detail::maybe_fmt_assert_handler(__FILE__, __LINE__, __func__, "assertion failed"); \
     }                                                                                            \
   } while (false)
-
+#define SILVA_TRY_ASSERT(x)                              \
+  ({                                                     \
+    auto result = (x);                                   \
+    static_assert(is_expected<decltype(result)>::value); \
+    SILVA_ASSERT(result);                                \
+    std::move(result).value();                           \
+  })
 }
 
 // IMPLEMENTATION

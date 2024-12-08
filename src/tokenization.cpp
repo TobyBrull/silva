@@ -280,7 +280,7 @@ namespace silva {
     }
   }
 
-  tokenization_t tokenize(hybrid_ptr_t<source_code_t> source_code)
+  expected_t<tokenization_t> tokenize(const_ptr_t<source_code_t> source_code)
   {
     tokenization_t retval{.source_code = std::move(source_code)};
     retval.start_new_line(0);
@@ -296,7 +296,7 @@ namespace silva {
         retval.start_new_line(text_index);
       }
     }
-    return retval;
+    return {std::move(retval)};
   }
 
   source_location_t

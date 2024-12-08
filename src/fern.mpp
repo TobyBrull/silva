@@ -23,14 +23,15 @@ silva_main(const int argc, char* argv[])
   const auto arg_process  = args["process"].as<std::string>();
   const bool arg_root     = args["root-based"].as<bool>();
 
-  const tokenization_t tokenization = tokenize(SILVA_TRY(source_code_t::load(arg_filename)));
+  const tokenization_t tokenization =
+      SILVA_TRY(tokenize(SILVA_TRY(source_code_t::load(arg_filename))));
 
   parse_tree_t pt;
   if (arg_root) {
-    pt = SILVA_TRY(fern_parse_root()->apply(&tokenization));
+    pt = SILVA_TRY(fern_parse_root()->apply(const_ptr_unowned(&tokenization)));
   }
   else {
-    pt = SILVA_TRY(fern_parse(&tokenization));
+    pt = SILVA_TRY(fern_parse(const_ptr_unowned(&tokenization)));
   }
 
   if (arg_process.empty()) {

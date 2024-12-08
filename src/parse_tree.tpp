@@ -22,7 +22,7 @@ struct result_t {
 TEST_CASE("parse_tree", "[parse_tree_t]")
 {
   const source_code_t source_code("some.fern", R"([ 1.1; 2.2; some_label: 3.3; [ 1.0; 3.0; ]; ])");
-  const tokenization_t tokens = tokenize(hybrid_ptr_const(&source_code));
+  const tokenization_t tokens = SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&source_code)));
 
   parse_tree_t pt;
   using n_t = parse_tree_t::node_t;

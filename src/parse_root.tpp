@@ -14,8 +14,10 @@ TEST_CASE("exclamation mark", "[parse_root_t][seed]")
     - Primary = identifier "="!
   )'");
 
-  const tokenization_t frog_seed_tokenization = tokenize(hybrid_ptr_const(&frog_seed_source_code));
-  const parse_root_t pr = SILVA_TRY_REQUIRE(parse_root_t::create(&frog_seed_tokenization));
+  const tokenization_t frog_seed_tokenization =
+      SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&frog_seed_source_code)));
+  const parse_root_t pr =
+      SILVA_TRY_REQUIRE(parse_root_t::create(const_ptr_unowned(&frog_seed_tokenization)));
 
   const source_code_t frog_source_code("some.frog", R"'(
     SimpleFern = a b c
@@ -24,8 +26,9 @@ TEST_CASE("exclamation mark", "[parse_root_t][seed]")
     Item = g h i
   )'");
 
-  const tokenization_t frog_tokens = tokenize(hybrid_ptr_const(&frog_source_code));
-  const parse_tree_t frog_pt       = SILVA_TRY_REQUIRE(pr.apply(&frog_tokens));
+  const tokenization_t frog_tokenization =
+      SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&frog_source_code)));
+  const parse_tree_t frog_pt = SILVA_TRY_REQUIRE(pr.apply(const_ptr_unowned(&frog_tokenization)));
 
   const std::string_view expected = R"(
 [.]Seed,0                                         SimpleFern

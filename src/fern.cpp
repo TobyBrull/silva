@@ -8,17 +8,12 @@
 namespace silva {
   const parse_root_t* fern_parse_root()
   {
-    static const tokenization_t fern_seed_tokenization =
-        tokenize(hybrid_ptr_const(&fern_seed_source_code));
-
     static const parse_root_t retval = [&] {
-      auto fern_seed_pt = seed_parse(&fern_seed_tokenization);
-      SILVA_ASSERT(fern_seed_pt);
-      auto retval = parse_root_t::create(std::move(fern_seed_pt).value());
-      SILVA_ASSERT(retval);
-      return std::move(retval).value();
+      auto tokenization = SILVA_TRY_ASSERT(tokenize(const_ptr_unowned(&fern_seed_source_code)));
+      auto fern_seed_pt = SILVA_TRY_ASSERT(seed_parse(to_unique_ptr(std::move(tokenization))));
+      auto retval = SILVA_TRY_ASSERT(parse_root_t::create(to_unique_ptr(std::move(fern_seed_pt))));
+      return std::move(retval);
     }();
-
     return &retval;
   }
 
@@ -32,8 +27,8 @@ namespace silva {
       optional_t<token_id_t> tt_true       = lookup_token("true");
       optional_t<token_id_t> tt_false      = lookup_token("false");
 
-      fern_nursery_t(const tokenization_t* tokenization_)
-        : parse_tree_nursery_t(tokenization_, fern_parse_root())
+      fern_nursery_t(const_ptr_t<tokenization_t> tokenization)
+        : parse_tree_nursery_t(std::move(tokenization), fern_parse_root())
       {
       }
 
@@ -118,9 +113,9 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> fern_parse(const tokenization_t* tokenization)
+  expected_t<parse_tree_t> fern_parse(const_ptr_t<tokenization_t> tokenization)
   {
-    impl::fern_nursery_t fern_nursery(tokenization);
+    impl::fern_nursery_t fern_nursery(std::move(tokenization));
     const parse_tree_sub_t sub = SILVA_TRY(fern_nursery.fern());
     SILVA_ASSERT(sub.num_children == 1);
     SILVA_ASSERT(sub.num_children_total == fern_nursery.retval.nodes.size());

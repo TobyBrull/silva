@@ -14,9 +14,9 @@ namespace silva {
   //    std::vector<token_t> frog_code;
   //    const parse_tree_t frog_tree = frog_root.apply(frog_code);
   //
-  struct parse_root_t {
+  struct parse_root_t : public sprite_t {
     // Parse tree of the Seed program for this driver.
-    parse_tree_t seed_parse_tree;
+    const_ptr_t<parse_tree_t> seed_parse_tree;
 
     struct rule_t {
       // Name of nonterminal that the rule defines.
@@ -36,16 +36,16 @@ namespace silva {
     expected_t<void> add_rule(std::string_view name, index_t precendece, index_t expr_node_index);
 
     // Main parse_root_t constructor.
-    static expected_t<parse_root_t> create(parse_tree_t);
+    static expected_t<parse_root_t> create(const_ptr_t<parse_tree_t>);
 
     // Convenience function for essentially
     //    parse_root_t::from_seed_parse_tree(seed_parse_root().apply(tokens))
     // or equivalently
     //    parse_root_t::from_seed_parse_tree(seed_parse(tokens))
-    static expected_t<parse_root_t> create(const tokenization_t*);
+    static expected_t<parse_root_t> create(const_ptr_t<tokenization_t>);
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.
-    expected_t<parse_tree_t> apply(const tokenization_t*) const;
+    expected_t<parse_tree_t> apply(const_ptr_t<tokenization_t>) const;
   };
 }

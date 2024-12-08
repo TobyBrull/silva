@@ -71,11 +71,10 @@ namespace silva {
 
   // parse_tree_nursery_t
 
-  parse_tree_nursery_t::parse_tree_nursery_t(
-      const tokenization_t* tokenization, const parse_root_t* parse_root)
+  parse_tree_nursery_t::parse_tree_nursery_t(const_ptr_t<tokenization_t> tt, const parse_root_t* pr)
   {
-    retval.tokenization = tokenization;
-    retval.root         = parse_root;
+    retval.tokenization = std::move(tt);
+    retval.root         = pr;
   }
 
   optional_t<token_id_t> parse_tree_nursery_t::lookup_token(const string_view_t str)

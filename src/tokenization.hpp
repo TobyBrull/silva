@@ -22,7 +22,7 @@ namespace silva {
   using token_index_t = index_t;
 
   struct tokenization_t : public sprite_t {
-    hybrid_ptr_t<source_code_t> source_code;
+    const_ptr_t<source_code_t> source_code;
 
     struct token_data_t {
       string_view_t str;
@@ -68,7 +68,7 @@ namespace silva {
     void start_new_line(index_t source_code_offset);
   };
 
-  tokenization_t tokenize(hybrid_ptr_t<source_code_t>);
+  expected_t<tokenization_t> tokenize(const_ptr_t<source_code_t>);
 }
 
 // IMPLEMENTATION
