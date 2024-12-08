@@ -1,6 +1,7 @@
 #include "fern.hpp"
 
 #include "canopy/filesystem.hpp"
+#include "canopy/main.hpp"
 
 #include "parse_root.hpp"
 
@@ -22,10 +23,7 @@ silva_main(const int argc, char* argv[])
   const auto arg_process  = args["process"].as<std::string>();
   const bool arg_root     = args["root-based"].as<bool>();
 
-  const std::string source_text = silva::read_file(arg_filename);
-  const source_code_t source_code{.filename = arg_filename, .text = source_text};
-
-  const tokenization_t tokenization = tokenize(hybrid_ptr_const(&source_code));
+  const tokenization_t tokenization = tokenize(SILVA_TRY(source_code_t::load(arg_filename)));
 
   parse_tree_t pt;
   if (arg_root) {
@@ -91,15 +89,4 @@ silva_main(const int argc, char* argv[])
   return {};
 }
 
-int
-main(const int argc, char* argv[])
-{
-  const auto result = silva_main(argc, argv);
-  if (!result) {
-    fmt::print(stderr, "ERROR:\n{}\n", result.error().message);
-    return 1;
-  }
-  else {
-    return 0;
-  }
-}
+SILVA_MAIN(silva_main);

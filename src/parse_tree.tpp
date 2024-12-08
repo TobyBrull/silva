@@ -21,10 +21,7 @@ struct result_t {
 
 TEST_CASE("parse_tree", "[parse_tree_t]")
 {
-  const source_code_t source_code{
-      .filename = "some.fern",
-      .text     = R"([ 1.1; 2.2; some_label: 3.3; [ 1.0; 3.0; ]; ])",
-  };
+  const source_code_t source_code("some.fern", R"([ 1.1; 2.2; some_label: 3.3; [ 1.0; 3.0; ]; ])");
   const tokenization_t tokens = tokenize(hybrid_ptr_const(&source_code));
 
   parse_tree_t pt;

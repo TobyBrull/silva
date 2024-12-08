@@ -1,23 +1,10 @@
 #pragma once
 
 #include "canopy/hybrid_ptr.hpp"
+#include "canopy/source_code.hpp"
 #include "canopy/types.hpp"
 
 namespace silva {
-  struct source_code_t : public menhir_t {
-    string_t filename;
-    string_t text;
-
-    source_code_t copy() const;
-  };
-
-  struct source_location_t {
-    const source_code_t* source_code = nullptr;
-
-    index_t line   = 0;
-    index_t column = 0;
-  };
-
   enum class token_category_t {
     INVALID = 0,
     IDENTIFIER,

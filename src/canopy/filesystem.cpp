@@ -8,21 +8,23 @@
 #include <sstream>
 
 namespace silva {
-  string_t read_file(const filesystem_path_t& filename)
+  expected_t<string_t> read_file(const filesystem_path_t& filename)
   {
     std::ifstream file(filename);
-    SILVA_ASSERT(file.is_open());
+    SILVA_EXPECT_FMT(file.is_open(), "Could not open file '{}' for reading", filename.string());
     std::stringstream buffer;
     buffer << file.rdbuf();
-    return buffer.str();
+    SILVA_EXPECT_FMT(file.good(), "Error reading from file '{}'", filename.string());
+    return std::move(buffer).str();
   }
 
-  bool write_file(const filesystem_path_t& filename, const string_view_t content)
+  expected_t<void> write_file(const filesystem_path_t& filename, const string_view_t content)
   {
     std::ofstream file(filename);
-    SILVA_ASSERT(file.is_open());
+    SILVA_EXPECT_FMT(file.is_open(), "Could not open file '{}' for writing", filename.string());
     file << content;
-    return file.good();
+    SILVA_EXPECT_FMT(file.good(), "Error writing to file '{}'", filename.string());
+    return {};
   }
 
   std::optional<string_t> run_shell_command_sync(const string_t& command) noexcept

@@ -46,6 +46,8 @@ namespace silva {
 
     menhir_t(const menhir_t&)            = delete;
     menhir_t& operator=(const menhir_t&) = delete;
+
+    // All members of a menhir_t should be "const".
   };
 
   struct sprite_t {

@@ -1,13 +1,14 @@
 #include "tokenization.hpp"
 
-#include "canopy/filesystem.hpp"
+#include "canopy/main.hpp"
 
 #include <cxxopts.hpp>
 #include <fmt/format.h>
-#include <rfl/json/write.hpp>
 
-int
-main(int argc, char* argv[])
+using namespace silva;
+
+expected_t<void>
+silva_main(const int argc, char* argv[])
 {
   cxxopts::Options options("silva_tokenizer");
   options.add_options()("f,filename", "Input filename", cxxopts::value<std::string>());
@@ -15,15 +16,11 @@ main(int argc, char* argv[])
 
   const std::string arg_filename = args["filename"].as<std::string>();
 
-  const std::string source_text = silva::read_file(arg_filename);
-  const silva::source_code_t source_code{
-      .filename = arg_filename,
-      .text     = source_text,
-  };
+  const tokenization_t tokenization = tokenize(SILVA_TRY(source_code_t::load(arg_filename)));
 
-  const silva::tokenization_t tokenization = silva::tokenize(hybrid_ptr_const(&source_code));
+  fmt::print("{}\n", tokenization.to_string());
 
-  std::cout << tokenization.to_string() << '\n';
-
-  return 0;
+  return {};
 }
+
+SILVA_MAIN(silva_main);

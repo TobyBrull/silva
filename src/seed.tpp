@@ -20,16 +20,13 @@ TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
 
 TEST_CASE("seed", "[seed][parse_root_t]")
 {
-  const source_code_t sf_seed_source_code{
-      .filename = "simple-fern.seed",
-      .text     = R"'(
-        - SimpleFern = "[" ( LabeledItem ";"? )* "]"
-        - LabeledItem = ( Label ":" )? Item
-        - Label = string
-        - Item,0 = SimpleFern
-        - Item,1 = string
-      )'",
-  };
+  const source_code_t sf_seed_source_code("simple-fern.seed", R"'(
+    - SimpleFern = "[" ( LabeledItem ";"? )* "]"
+    - LabeledItem = ( Label ":" )? Item
+    - Label = string
+    - Item,0 = SimpleFern
+    - Item,1 = string
+  )'");
   const tokenization_t sf_seed_tokens = tokenize(hybrid_ptr_const(&sf_seed_source_code));
 
   const auto sf_seed_pt_1 = SILVA_TRY_REQUIRE(seed_parse(&sf_seed_tokens));
@@ -111,12 +108,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
       write(sfpr.rule_name_offsets) ==
       R"([["Item",3],["Label",2],["LabeledItem",1],["SimpleFern",0]])");
 
-  const source_code_t sf_code{
-      .filename = "test.simple-fern",
-      .text     = R"'(
-        [ "abc" ; [ "def" "ghi" ] "jkl" ;]
-      )'",
-  };
+  const source_code_t sf_code("test.simple-fern", R"'( [ "abc" ; [ "def" "ghi" ] "jkl" ;])'");
   const tokenization_t sf_tokens = tokenize(hybrid_ptr_const(&sf_code));
 
   auto sfpt = SILVA_TRY_REQUIRE(sfpr.apply(&sf_tokens));

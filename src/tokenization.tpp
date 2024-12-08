@@ -9,10 +9,7 @@ TEST_CASE("tokenization", "[tokenization_t]")
   using td_t = tokenization_t::token_data_t;
   using ld_t = tokenization_t::line_data_t;
   {
-    const source_code_t source_code{
-        .filename = "unit-test",
-        .text     = "Hello   123 .<>.",
-    };
+    const source_code_t source_code("unit-test", "Hello   123 .<>.");
     const tokenization_t tokenization = tokenize(hybrid_ptr_const(&source_code));
     CHECK(
         tokenization.token_datas ==
@@ -24,11 +21,8 @@ TEST_CASE("tokenization", "[tokenization_t]")
   }
 
   {
-    const source_code_t source_code{
-        .filename = "unit-test",
-        .text     = R"(Silva "Hel\"lo"  .(). # .().
-  1 + 3)",
-    };
+    const source_code_t source_code("unit-test", R"(Silva "Hel\"lo"  .(). # .().
+  1 + 3)");
     const tokenization_t tokenization = tokenize(hybrid_ptr_const(&source_code));
     CHECK(
         tokenization.token_datas ==

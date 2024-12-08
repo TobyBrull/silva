@@ -3,16 +3,13 @@
 #include "parse_tree.hpp"
 
 namespace silva {
-  const source_code_t fern_seed_source_code{
-      .filename = "fern.seed",
-      .text     = R"'(
-        - Fern = "[" LabeledItem* "]"
-        - LabeledItem = ( Label ":" )? Item ";"?
-        - Label = { string identifier }
-        - Item,0 = Fern
-        - Item,1 = { "none" "true" "false" string number }
-      )'",
-  };
+  const source_code_t fern_seed_source_code("fern.seed", R"'(
+    - Fern = "[" LabeledItem* "]"
+    - LabeledItem = ( Label ":" )? Item ";"?
+    - Label = { string identifier }
+    - Item,0 = Fern
+    - Item,1 = { "none" "true" "false" string number }
+  )'");
 
   enum class fern_rule_t {
     FERN,

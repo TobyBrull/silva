@@ -33,23 +33,20 @@ namespace silva {
   //    2 Straightforward translation into an efficient parser
   //    3 Reasonably expressive
 
-  const source_code_t seed_seed_source_code{
-      .filename = "seed.seed",
-      .text     = R"'(
-        - Seed = ("-" Rule)*
-        - Rule = Nonterminal ( "," RulePrecedence )? "=" Expr
-        - RulePrecedence = number
-        - Expr,0 = "{" Terminal+ "}"
-        - Expr,1 = Atom*
-        - Atom = Primary Suffix?
-        - Suffix = { "?" "*" "+" "!" "&" }
-        - Primary,0 = "(" Atom+ ")"
-        - Primary,1 = Terminal
-        - Primary,2 = Nonterminal
-        - Nonterminal = identifier
-        - Terminal = { string "identifier" "operator" "string" "number" "any" }
-      )'",
-  };
+  const source_code_t seed_seed_source_code("seed.seed", R"'(
+    - Seed = ("-" Rule)*
+    - Rule = Nonterminal ( "," RulePrecedence )? "=" Expr
+    - RulePrecedence = number
+    - Expr,0 = "{" Terminal+ "}"
+    - Expr,1 = Atom*
+    - Atom = Primary Suffix?
+    - Suffix = { "?" "*" "+" "!" "&" }
+    - Primary,0 = "(" Atom+ ")"
+    - Primary,1 = Terminal
+    - Primary,2 = Nonterminal
+    - Nonterminal = identifier
+    - Terminal = { string "identifier" "operator" "string" "number" "any" }
+  )'");
 
   enum class seed_rule_t {
     SEED,

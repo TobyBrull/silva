@@ -6,29 +6,23 @@ using namespace silva;
 
 TEST_CASE("exclamation mark", "[parse_root_t][seed]")
 {
-  const source_code_t frog_seed_source_code{
-      .filename = "frog.seed",
-      .text     = R"'(
-        - Seed = Rule*
-        - Rule = RuleName "=" Expr
-        - RuleName = identifier
-        - Expr = Primary+
-        - Primary = identifier "="!
-      )'",
-  };
+  const source_code_t frog_seed_source_code("frog.seed", R"'(
+    - Seed = Rule*
+    - Rule = RuleName "=" Expr
+    - RuleName = identifier
+    - Expr = Primary+
+    - Primary = identifier "="!
+  )'");
 
   const tokenization_t frog_seed_tokenization = tokenize(hybrid_ptr_const(&frog_seed_source_code));
   const parse_root_t pr = SILVA_TRY_REQUIRE(parse_root_t::create(&frog_seed_tokenization));
 
-  const source_code_t frog_source_code{
-      .filename = "some.frog",
-      .text     = R"'(
-        SimpleFern = a b c
-        LabeledItem = d e
-        Label = f
-        Item = g h i
-      )'",
-  };
+  const source_code_t frog_source_code("some.frog", R"'(
+    SimpleFern = a b c
+    LabeledItem = d e
+    Label = f
+    Item = g h i
+  )'");
 
   const tokenization_t frog_tokens = tokenize(hybrid_ptr_const(&frog_source_code));
   const parse_tree_t frog_pt       = SILVA_TRY_REQUIRE(pr.apply(&frog_tokens));

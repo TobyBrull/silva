@@ -7,6 +7,9 @@ namespace silva {
   struct hybrid_ptr_t : public sprite_t {
     variant_t<const T*, unique_ptr_t<T>> data;
 
+    hybrid_ptr_t() = default;
+    hybrid_ptr_t(unique_ptr_t<T> ptr) { data.template emplace<1>(std::move(ptr)); }
+
     const T& operator*() const { return *get(); }
     const T* operator->() const { return get(); }
 
@@ -28,14 +31,6 @@ namespace silva {
   {
     hybrid_ptr_t<T> retval;
     retval.data.template emplace<0>(ptr);
-    return retval;
-  }
-
-  template<typename T>
-  hybrid_ptr_t<T> hybrid_ptr_unique(unique_ptr_t<T> ptr)
-  {
-    hybrid_ptr_t<T> retval;
-    retval.data.template emplace<1>(std::move(ptr));
     return retval;
   }
 }

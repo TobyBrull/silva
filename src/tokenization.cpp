@@ -8,14 +8,6 @@
 #include <cctype>
 
 namespace silva {
-  source_code_t source_code_t::copy() const
-  {
-    return source_code_t{
-        .filename = filename,
-        .text     = text,
-    };
-  }
-
   string_view_t to_string(const token_category_t cat)
   {
     static vector_t<string_t> vals = [] {
