@@ -14,8 +14,11 @@ The Seed language is as a formal specification for the syntax of another languag
 automatically be generated from a Seed program; such a parser is represented by the type
 `silva::parse_root_t` ([parse_root.hpp](src/parse_root.hpp)).
 
-The Fern language is akin to JSON. It is described by the Seed program
+The Fern language is akin to JSON; its syntax is described by the Seed program
 `silva::fern_seed_source_code` ([fern.hpp](src/fern.hpp)).
+
+The syntax of the Seed language is described in its own terms by the Seed program
+`silva::seed_seed_source_code` ([seed.hpp](src/seed.hpp)).
 
 
 ## Building and Running
