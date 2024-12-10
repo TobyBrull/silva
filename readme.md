@@ -25,6 +25,7 @@ The syntax of the Seed language is described in its own terms by the Seed progra
 A recent C++ compiler is required. Clang 19 works for me.
 
 ```bash
+rm -rf build/
 cmake -S. -Bbuild/ -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=On -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 ninja -Cbuild/
 ./build/src/silva_test

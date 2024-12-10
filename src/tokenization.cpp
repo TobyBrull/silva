@@ -285,7 +285,7 @@ namespace silva {
     tokenization_t retval{.source_code = std::move(source_code)};
     retval.start_new_line(0);
     index_t text_index = 0;
-    string_view_t text = source_code->text;
+    string_view_t text = retval.source_code->text;
     while (text_index < text.size()) {
       const tokenization_t::token_data_t td = impl::tokenize_one(text.substr(text_index));
       text_index += td.str.size();
