@@ -9,17 +9,17 @@ using namespace silva;
 TEST_CASE("fern", "[fern]")
 {
   const source_code_t fern_source_code("simple.fern", R"([
-    none;
-    true;
-    "test" : "Hello";
-    42;
-    [];
-    [
-      1;
-      "two" : 2;
-      3;
-    ];
-  ])");
+  none;
+  true;
+  "test" : "Hello";
+  42;
+  [];
+  [
+    1;
+    "two" : 2;
+    3;
+  ];
+])");
 
   const tokenization_t tokenization =
       SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&fern_source_code)));

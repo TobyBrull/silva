@@ -27,7 +27,7 @@ A recent C++ compiler is required. Clang 19 works for me.
 ```bash
 cmake -S. -Bbuild/ -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=On -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 ninja -Cbuild/
-./build/silva_test
-./build/silva_tokenization -f scratchpad/simple.fern
-./build/silva_fern -f scratchpad/simple.fern -r -p direct/string
+./build/src/silva_test
+./build/src/silva_tokenization -f scratchpad/simple.fern
+./build/src/silva_fern -f scratchpad/simple.fern -r -p direct/string
 ```
