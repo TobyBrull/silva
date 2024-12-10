@@ -89,8 +89,8 @@ namespace silva {
 namespace silva {
   template<typename Visitor>
     requires std::invocable<Visitor, std::span<const parse_tree_visit_t>, parse_tree_event_t>
-  expected_t<void>
-  parse_tree_t::visit_subtree(Visitor visitor, const index_t start_node_index) const
+  expected_t<void> parse_tree_t::visit_subtree(Visitor visitor,
+                                               const index_t start_node_index) const
   {
     std::vector<parse_tree_visit_t> stack;
     const auto clean_stack_till = [&](const index_t new_node_index) -> expected_t<index_t> {

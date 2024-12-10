@@ -109,9 +109,8 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(write(sfpr.rules[2]) == R"({"name":"Label","precedence":0,"expr_node_index":37})");
   CHECK(write(sfpr.rules[3]) == R"({"name":"Item","precedence":0,"expr_node_index":44})");
   CHECK(write(sfpr.rules[4]) == R"({"name":"Item","precedence":1,"expr_node_index":51})");
-  CHECK(
-      write(sfpr.rule_name_offsets) ==
-      R"([["Item",3],["Label",2],["LabeledItem",1],["SimpleFern",0]])");
+  CHECK(write(sfpr.rule_name_offsets) ==
+        R"([["Item",3],["Label",2],["LabeledItem",1],["SimpleFern",0]])");
 
   const source_code_t sf_code("test.simple-fern", R"'( [ "abc" ; [ "def" "ghi" ] "jkl" ;])'");
   const tokenization_t sf_tokens = SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&sf_code)));

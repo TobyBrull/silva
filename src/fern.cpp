@@ -38,10 +38,9 @@ namespace silva {
 
         SILVA_EXPECT(num_tokens_left() >= 2 && token_id(1) == tt_colon);
 
-        SILVA_EXPECT_FMT(
-            token_data()->category == token_category_t::STRING ||
-                token_data()->category == token_category_t::IDENTIFIER,
-            "Expected identifier or string for label");
+        SILVA_EXPECT_FMT(token_data()->category == token_category_t::STRING ||
+                             token_data()->category == token_category_t::IDENTIFIER,
+                         "Expected identifier or string for label");
         gg_rule.set_rule_index(std::to_underlying(fern_rule_t::LABEL));
         token_index += 2;
 
@@ -57,11 +56,11 @@ namespace silva {
           gg_rule.set_rule_index(std::to_underlying(fern_rule_t::ITEM_0));
         }
         else {
-          SILVA_EXPECT_FMT(
-              token_id() == tt_none || token_id() == tt_true || token_id() == tt_false ||
-                  token_data()->category == token_category_t::STRING ||
-                  token_data()->category == token_category_t::NUMBER,
-              "");
+          SILVA_EXPECT_FMT(token_id() == tt_none || token_id() == tt_true ||
+                               token_id() == tt_false ||
+                               token_data()->category == token_category_t::STRING ||
+                               token_data()->category == token_category_t::NUMBER,
+                           "");
           gg_rule.set_rule_index(std::to_underlying(fern_rule_t::ITEM_1));
           token_index += 1;
         }
@@ -94,18 +93,16 @@ namespace silva {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(std::to_underlying(fern_rule_t::FERN));
 
-        SILVA_EXPECT_FMT(
-            num_tokens_left() >= 1 && token_id() == tt_brkt_open,
-            "Expected fern, but didn't find '['");
+        SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_id() == tt_brkt_open,
+                         "Expected fern, but didn't find '['");
         token_index += 1;
 
         while (num_tokens_left() >= 1 && token_id() != tt_brkt_close) {
           gg_rule.sub += SILVA_TRY(labeled_item());
         }
 
-        SILVA_EXPECT_FMT(
-            num_tokens_left() >= 1 && token_id() == tt_brkt_close,
-            "Expected fern not ending with '['");
+        SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_id() == tt_brkt_close,
+                         "Expected fern not ending with '['");
         token_index += 1;
 
         return gg_rule.release();
@@ -119,8 +116,8 @@ namespace silva {
     const parse_tree_sub_t sub = SILVA_TRY(fern_nursery.fern());
     SILVA_ASSERT(sub.num_children == 1);
     SILVA_ASSERT(sub.num_children_total == fern_nursery.retval.nodes.size());
-    SILVA_EXPECT_FMT(
-        fern_nursery.token_index == tokenization->tokens.size(), "Tokens left after parsing fern.");
+    SILVA_EXPECT_FMT(fern_nursery.token_index == tokenization->tokens.size(),
+                     "Tokens left after parsing fern.");
     return {std::move(fern_nursery.retval)};
   }
 
@@ -208,19 +205,19 @@ namespace silva {
           }
           else if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_1)) {
             if (last_label_str.has_value()) {
-              retval += fmt::format(
-                  "  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
-                  curr_path,
-                  curr_path,
-                  string_escaped(last_label_str.value()),
-                  string_escaped(pt->tokenization->token_data(node.token_index)->str));
+              retval +=
+                  fmt::format("  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
+                              curr_path,
+                              curr_path,
+                              string_escaped(last_label_str.value()),
+                              string_escaped(pt->tokenization->token_data(node.token_index)->str));
             }
             else {
-              retval += fmt::format(
-                  "  \"{}\" [label=\"{}\\n{}\"]\n",
-                  curr_path,
-                  curr_path,
-                  string_escaped(pt->tokenization->token_data(node.token_index)->str));
+              retval +=
+                  fmt::format("  \"{}\" [label=\"{}\\n{}\"]\n",
+                              curr_path,
+                              curr_path,
+                              string_escaped(pt->tokenization->token_data(node.token_index)->str));
             }
           }
           return {};
@@ -293,15 +290,15 @@ namespace silva {
     return retval;
   }
 
-  void fern_t_to_str_graphviz_impl_fern(
-      std::string& retval, const fern_t& fern, const std::string_view prefix);
+  void fern_t_to_str_graphviz_impl_fern(std::string& retval,
+                                        const fern_t& fern,
+                                        const std::string_view prefix);
 
-  void fern_t_to_str_graphviz_impl_item(
-      std::string& retval,
-      const std::optional<std::string>& label,
-      const item_t& item,
-      const std::string_view parent_name,
-      const std::string_view item_name)
+  void fern_t_to_str_graphviz_impl_item(std::string& retval,
+                                        const std::optional<std::string>& label,
+                                        const item_t& item,
+                                        const std::string_view parent_name,
+                                        const std::string_view item_name)
   {
     retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_name, item_name);
     std::string label_str = label.has_value() ? fmt::format("\\n[\\\"{}\\\"]", label.value()) : "";
@@ -318,12 +315,11 @@ namespace silva {
       }
       void operator()(const bool value) const
       {
-        retval += fmt::format(
-            "  \"{}\" [label=\"{}\\n{}{}\"]\n",
-            item_name,
-            item_name,
-            label_str,
-            value ? "true" : "false");
+        retval += fmt::format("  \"{}\" [label=\"{}\\n{}{}\"]\n",
+                              item_name,
+                              item_name,
+                              label_str,
+                              value ? "true" : "false");
       }
       void operator()(const double value) const
       {
@@ -332,8 +328,11 @@ namespace silva {
       }
       void operator()(const std::string& value) const
       {
-        retval += fmt::format(
-            "  \"{}\" [label=\"{}{}\\n\\\"{}\\\"\"]\n", item_name, item_name, label_str, value);
+        retval += fmt::format("  \"{}\" [label=\"{}{}\\n\\\"{}\\\"\"]\n",
+                              item_name,
+                              item_name,
+                              label_str,
+                              value);
       }
       void operator()(const std::unique_ptr<fern_t>& value) const
       {
@@ -350,8 +349,9 @@ namespace silva {
         item.value);
   }
 
-  void fern_t_to_str_graphviz_impl_fern(
-      std::string& retval, const fern_t& fern, const std::string_view prefix)
+  void fern_t_to_str_graphviz_impl_fern(std::string& retval,
+                                        const fern_t& fern,
+                                        const std::string_view prefix)
   {
     const index_t n = fern.items.size();
     std::vector<std::optional<std::string>> labels(n);
@@ -359,8 +359,11 @@ namespace silva {
       labels[v] = k;
     }
     for (index_t i = 0; i < n; ++i) {
-      fern_t_to_str_graphviz_impl_item(
-          retval, labels[i], fern.items[i], prefix, fmt::format("{}{}/", prefix, i));
+      fern_t_to_str_graphviz_impl_item(retval,
+                                       labels[i],
+                                       fern.items[i],
+                                       prefix,
+                                       fmt::format("{}{}/", prefix, i));
     }
   }
 

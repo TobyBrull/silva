@@ -31,37 +31,34 @@ namespace silva {
     };
 
     std::string retval;
-    const auto result = pt.visit_subtree(
-        [&](const std::span<const parse_tree_visit_t> stack,
-            const parse_tree_event_t event) -> expected_t<void> {
-          if (!is_on_entry(event)) {
-            return {};
-          }
-          SILVA_ASSERT(!stack.empty());
-          const parse_tree_t::node_t& node = pt.nodes[stack.back().node_index];
-          curr_line.clear();
-          if (stack.size() == 1) {
-            curr_line = fmt::format(
-                "[.]{},{}",
-                pt.root->rules[node.rule_index].name,
-                pt.root->rules[node.rule_index].precedence);
-          }
-          else {
-            curr_line.clear();
-            curr_line_space_to(2 * (stack.size() - 1));
-            curr_line += fmt::format(
-                "[{}]{},{}",
-                stack.back().child_index,
-                pt.root->rules[node.rule_index].name,
-                pt.root->rules[node.rule_index].precedence);
-          }
-          curr_line_space_to(token_offset);
-          curr_line += pt.tokenization->token_data(node.token_index)->str;
+    const auto result = pt.visit_subtree([&](const std::span<const parse_tree_visit_t> stack,
+                                             const parse_tree_event_t event) -> expected_t<void> {
+      if (!is_on_entry(event)) {
+        return {};
+      }
+      SILVA_ASSERT(!stack.empty());
+      const parse_tree_t::node_t& node = pt.nodes[stack.back().node_index];
+      curr_line.clear();
+      if (stack.size() == 1) {
+        curr_line = fmt::format("[.]{},{}",
+                                pt.root->rules[node.rule_index].name,
+                                pt.root->rules[node.rule_index].precedence);
+      }
+      else {
+        curr_line.clear();
+        curr_line_space_to(2 * (stack.size() - 1));
+        curr_line += fmt::format("[{}]{},{}",
+                                 stack.back().child_index,
+                                 pt.root->rules[node.rule_index].name,
+                                 pt.root->rules[node.rule_index].precedence);
+      }
+      curr_line_space_to(token_offset);
+      curr_line += pt.tokenization->token_data(node.token_index)->str;
 
-          retval += curr_line;
-          retval += '\n';
-          return {};
-        });
+      retval += curr_line;
+      retval += '\n';
+      return {};
+    });
     SILVA_ASSERT(result);
     return retval;
   }
@@ -70,33 +67,31 @@ namespace silva {
   {
     std::string retval;
     retval += "digraph parse_tree {\n";
-    const auto result = pt.visit_subtree(
-        [&](const std::span<const parse_tree_visit_t> stack,
-            const parse_tree_event_t event) -> expected_t<void> {
-          if (!is_on_entry(event)) {
-            return {};
-          }
-          SILVA_ASSERT(!stack.empty());
-          const parse_tree_t::node_t& node = pt.nodes[stack.back().node_index];
+    const auto result = pt.visit_subtree([&](const std::span<const parse_tree_visit_t> stack,
+                                             const parse_tree_event_t event) -> expected_t<void> {
+      if (!is_on_entry(event)) {
+        return {};
+      }
+      SILVA_ASSERT(!stack.empty());
+      const parse_tree_t::node_t& node = pt.nodes[stack.back().node_index];
 
-          std::string node_name = "/";
-          if (stack.size() >= 2) {
-            std::string parent_node_name = "/";
-            for (index_t i = 1; i < stack.size() - 1; ++i) {
-              parent_node_name += fmt::format("{}/", stack[i].child_index);
-            }
-            node_name = fmt::format("{}{}/", parent_node_name, stack.back().child_index);
-            retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
-          }
-          retval += fmt::format(
-              "  \"{}\" [label=\"[{}]{},{}\\n{}\"]\n",
-              node_name,
-              stack.back().child_index,
-              pt.root->rules[node.rule_index].name,
-              pt.root->rules[node.rule_index].precedence,
-              string_escaped(pt.tokenization->token_data(node.token_index)->str));
-          return {};
-        });
+      std::string node_name = "/";
+      if (stack.size() >= 2) {
+        std::string parent_node_name = "/";
+        for (index_t i = 1; i < stack.size() - 1; ++i) {
+          parent_node_name += fmt::format("{}/", stack[i].child_index);
+        }
+        node_name = fmt::format("{}{}/", parent_node_name, stack.back().child_index);
+        retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
+      }
+      retval += fmt::format("  \"{}\" [label=\"[{}]{},{}\\n{}\"]\n",
+                            node_name,
+                            stack.back().child_index,
+                            pt.root->rules[node.rule_index].name,
+                            pt.root->rules[node.rule_index].precedence,
+                            string_escaped(pt.tokenization->token_data(node.token_index)->str));
+      return {};
+    });
     SILVA_ASSERT(result);
     retval += "}";
     return retval;

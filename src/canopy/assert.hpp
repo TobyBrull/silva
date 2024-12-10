@@ -5,12 +5,14 @@
 
 namespace silva {
 
-#define SILVA_ASSERT_FMT(condition, msg, ...)                                        \
-  do {                                                                               \
-    if (!(condition)) {                                                              \
-      silva::detail::maybe_fmt_assert_handler(                                       \
-          __FILE__, __LINE__, __func__, FMT_STRING(msg) __VA_OPT__(, ) __VA_ARGS__); \
-    }                                                                                \
+#define SILVA_ASSERT_FMT(condition, msg, ...)                                              \
+  do {                                                                                     \
+    if (!(condition)) {                                                                    \
+      silva::detail::maybe_fmt_assert_handler(__FILE__,                                    \
+                                              __LINE__,                                    \
+                                              __func__,                                    \
+                                              FMT_STRING(msg) __VA_OPT__(, ) __VA_ARGS__); \
+    }                                                                                      \
   } while (false)
 #define SILVA_ASSERT(condition)                                                                  \
   do {                                                                                           \
@@ -31,12 +33,11 @@ namespace silva {
 
 namespace silva::detail {
   template<typename... FS, typename... Args>
-  void fmt_handler(
-      char const* file,
-      long const line,
-      char const* func,
-      fmt::format_string<FS...> format,
-      Args const&... args)
+  void fmt_handler(char const* file,
+                   long const line,
+                   char const* func,
+                   fmt::format_string<FS...> format,
+                   Args const&... args)
   {
     fmt::print(stderr, FMT_STRING("silva: internal error in {} at {}:{} : "), func, file, line);
     fmt::print(stderr, format, args...);
@@ -44,12 +45,11 @@ namespace silva::detail {
   }
 
   template<typename... FS, typename... Args>
-  [[noreturn]] void maybe_fmt_assert_handler(
-      char const* file,
-      long const line,
-      char const* func,
-      fmt::format_string<FS...> format,
-      Args const&... args)
+  [[noreturn]] void maybe_fmt_assert_handler(char const* file,
+                                             long const line,
+                                             char const* func,
+                                             fmt::format_string<FS...> format,
+                                             Args const&... args)
   {
     fmt_handler(file, line, func, format, args...);
     std::abort();

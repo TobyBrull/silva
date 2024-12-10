@@ -47,50 +47,48 @@ TEST_CASE("parse_tree", "[parse_tree_t]")
       n_t{.rule_index = 3, .token_index = 12, .num_children = 0, .children_end = 15});
 
   std::vector<result_t> result;
-  REQUIRE(pt.visit_subtree(
-      [&](const std::span<const parse_tree_visit_t> stack,
-          const event_t event) -> expected_t<void> {
-        result.push_back(result_t{
-            .stack_size = stack.size(),
-            .node_index = stack.back().node_index,
-            .event      = event,
-        });
-        return {};
-      }));
-  CHECK(
-      result ==
-      std::vector<result_t>{{
-          result_t{.stack_size = 1, .node_index = 0, .event = event_t::ON_ENTRY},
+  REQUIRE(pt.visit_subtree([&](const std::span<const parse_tree_visit_t> stack,
+                               const event_t event) -> expected_t<void> {
+    result.push_back(result_t{
+        .stack_size = stack.size(),
+        .node_index = stack.back().node_index,
+        .event      = event,
+    });
+    return {};
+  }));
+  CHECK(result ==
+        std::vector<result_t>{{
+            result_t{.stack_size = 1, .node_index = 0, .event = event_t::ON_ENTRY},
 
-          result_t{.stack_size = 2, .node_index = 1, .event = event_t::ON_ENTRY},
-          result_t{.stack_size = 3, .node_index = 2, .event = event_t::ON_LEAF},
-          result_t{.stack_size = 2, .node_index = 1, .event = event_t::ON_EXIT},
+            result_t{.stack_size = 2, .node_index = 1, .event = event_t::ON_ENTRY},
+            result_t{.stack_size = 3, .node_index = 2, .event = event_t::ON_LEAF},
+            result_t{.stack_size = 2, .node_index = 1, .event = event_t::ON_EXIT},
 
-          result_t{.stack_size = 2, .node_index = 3, .event = event_t::ON_ENTRY},
-          result_t{.stack_size = 3, .node_index = 4, .event = event_t::ON_LEAF},
-          result_t{.stack_size = 2, .node_index = 3, .event = event_t::ON_EXIT},
+            result_t{.stack_size = 2, .node_index = 3, .event = event_t::ON_ENTRY},
+            result_t{.stack_size = 3, .node_index = 4, .event = event_t::ON_LEAF},
+            result_t{.stack_size = 2, .node_index = 3, .event = event_t::ON_EXIT},
 
-          result_t{.stack_size = 2, .node_index = 5, .event = event_t::ON_ENTRY},
-          result_t{.stack_size = 3, .node_index = 6, .event = event_t::ON_LEAF},
-          result_t{.stack_size = 3, .node_index = 7, .event = event_t::ON_LEAF},
-          result_t{.stack_size = 2, .node_index = 5, .event = event_t::ON_EXIT},
+            result_t{.stack_size = 2, .node_index = 5, .event = event_t::ON_ENTRY},
+            result_t{.stack_size = 3, .node_index = 6, .event = event_t::ON_LEAF},
+            result_t{.stack_size = 3, .node_index = 7, .event = event_t::ON_LEAF},
+            result_t{.stack_size = 2, .node_index = 5, .event = event_t::ON_EXIT},
 
-          result_t{.stack_size = 2, .node_index = 8, .event = event_t::ON_ENTRY},
-          result_t{.stack_size = 3, .node_index = 9, .event = event_t::ON_ENTRY},
-          result_t{.stack_size = 4, .node_index = 10, .event = event_t::ON_ENTRY},
+            result_t{.stack_size = 2, .node_index = 8, .event = event_t::ON_ENTRY},
+            result_t{.stack_size = 3, .node_index = 9, .event = event_t::ON_ENTRY},
+            result_t{.stack_size = 4, .node_index = 10, .event = event_t::ON_ENTRY},
 
-          result_t{.stack_size = 5, .node_index = 11, .event = event_t::ON_ENTRY},
-          result_t{.stack_size = 6, .node_index = 12, .event = event_t::ON_LEAF},
-          result_t{.stack_size = 5, .node_index = 11, .event = event_t::ON_EXIT},
+            result_t{.stack_size = 5, .node_index = 11, .event = event_t::ON_ENTRY},
+            result_t{.stack_size = 6, .node_index = 12, .event = event_t::ON_LEAF},
+            result_t{.stack_size = 5, .node_index = 11, .event = event_t::ON_EXIT},
 
-          result_t{.stack_size = 5, .node_index = 13, .event = event_t::ON_ENTRY},
-          result_t{.stack_size = 6, .node_index = 14, .event = event_t::ON_LEAF},
-          result_t{.stack_size = 5, .node_index = 13, .event = event_t::ON_EXIT},
+            result_t{.stack_size = 5, .node_index = 13, .event = event_t::ON_ENTRY},
+            result_t{.stack_size = 6, .node_index = 14, .event = event_t::ON_LEAF},
+            result_t{.stack_size = 5, .node_index = 13, .event = event_t::ON_EXIT},
 
-          result_t{.stack_size = 4, .node_index = 10, .event = event_t::ON_EXIT},
-          result_t{.stack_size = 3, .node_index = 9, .event = event_t::ON_EXIT},
-          result_t{.stack_size = 2, .node_index = 8, .event = event_t::ON_EXIT},
+            result_t{.stack_size = 4, .node_index = 10, .event = event_t::ON_EXIT},
+            result_t{.stack_size = 3, .node_index = 9, .event = event_t::ON_EXIT},
+            result_t{.stack_size = 2, .node_index = 8, .event = event_t::ON_EXIT},
 
-          result_t{.stack_size = 1, .node_index = 0, .event = event_t::ON_EXIT},
-      }});
+            result_t{.stack_size = 1, .node_index = 0, .event = event_t::ON_EXIT},
+        }});
 }

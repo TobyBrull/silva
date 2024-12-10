@@ -192,8 +192,9 @@ namespace silva {
         };
       }
       else if (std::isalpha(c) || is_one_of(c, identifier_chars)) {
-        const index_t len = find_token_length(
-            text, [](const char x) { return std::isalnum(x) || is_one_of(x, identifier_chars); });
+        const index_t len = find_token_length(text, [](const char x) {
+          return std::isalnum(x) || is_one_of(x, identifier_chars);
+        });
         return tokenization_t::token_data_t{
             .str      = text.substr(0, len),
             .category = token_category_t::IDENTIFIER,
@@ -236,8 +237,9 @@ namespace silva {
         };
       }
       else if (std::isdigit(c)) {
-        const index_t len = find_token_length(
-            text, [](const char x) { return std::isdigit(x) || is_one_of(x, number_chars); });
+        const index_t len = find_token_length(text, [](const char x) {
+          return std::isdigit(x) || is_one_of(x, number_chars);
+        });
         return {
             .str      = text.substr(0, len),
             .category = token_category_t::NUMBER,

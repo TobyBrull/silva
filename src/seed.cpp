@@ -51,9 +51,9 @@ namespace silva {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(std::to_underlying(seed_rule_t::NONTERMINAL));
 
-        SILVA_EXPECT_FMT(
-            num_tokens_left() >= 1 && token_data()->category == token_category_t::IDENTIFIER,
-            "Expected identifier");
+        SILVA_EXPECT_FMT(num_tokens_left() >= 1 &&
+                             token_data()->category == token_category_t::IDENTIFIER,
+                         "Expected identifier");
         token_index += 1;
 
         return gg_rule.release();
@@ -64,9 +64,9 @@ namespace silva {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(std::to_underlying(seed_rule_t::RULE_PRECEDENCE));
 
-        SILVA_EXPECT_FMT(
-            num_tokens_left() >= 1 && token_data()->category == token_category_t::NUMBER,
-            "Expected number");
+        SILVA_EXPECT_FMT(num_tokens_left() >= 1 &&
+                             token_data()->category == token_category_t::NUMBER,
+                         "Expected number");
         token_index += 1;
 
         return gg_rule.release();
@@ -120,10 +120,9 @@ namespace silva {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
 
         SILVA_EXPECT_FMT(num_tokens_left() >= 1, "Expected operator");
-        SILVA_EXPECT_FMT(
-            token_id() == tt_qmark || token_id() == tt_star || token_id() == tt_plus ||
-                token_id() == tt_emark || token_id() == tt_amper,
-            "Expected one of \"?\" \"*\" \"+\" \"!\" \"&\"");
+        SILVA_EXPECT_FMT(token_id() == tt_qmark || token_id() == tt_star || token_id() == tt_plus ||
+                             token_id() == tt_emark || token_id() == tt_amper,
+                         "Expected one of \"?\" \"*\" \"+\" \"!\" \"&\"");
         gg_rule.set_rule_index(std::to_underlying(seed_rule_t::SUFFIX));
         token_index += 1;
 
