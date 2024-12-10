@@ -35,7 +35,7 @@ TEST_CASE("fern", "[fern]")
   CHECK(fern.to_str_fern() == fern_source_code.text);
   CHECK(fern.to_str_graphviz() == fern_to_graphviz(&pt_1));
 
-  const std::string_view expected_parse_tree_str = R"(
+  const string_view_t expected_parse_tree_str = R"(
 [.]Fern,0                                         [
   [0]LabeledItem,0                                none
     [0]Item,1                                     none
@@ -62,7 +62,7 @@ TEST_CASE("fern", "[fern]")
 )";
   CHECK(parse_tree_to_string(pt_1) == expected_parse_tree_str.substr(1));
 
-  const std::string_view expected_parse_tree_str_graphviz = R"(
+  const string_view_t expected_parse_tree_str_graphviz = R"(
 digraph parse_tree {
   "/" [label="[0]Fern,0\n["]
   "/" -> "/0/"

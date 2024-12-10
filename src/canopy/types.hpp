@@ -22,6 +22,7 @@ namespace silva {
   template<typename T>
   using optional_t = std::optional<T>;
 
+  using nullopt_t               = std::nullopt_t;
   constexpr std::nullopt_t none = std::nullopt;
 
   template<typename... Ts>
@@ -32,6 +33,9 @@ namespace silva {
 
   template<typename T>
   using vector_t = std::vector<T>;
+
+  template<typename T, index_t N>
+  using array_t = std::array<T, N>;
 
   template<typename K, typename V>
   using hashmap_t = std::unordered_map<K, V>;

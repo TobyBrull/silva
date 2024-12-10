@@ -123,11 +123,11 @@ namespace silva {
 
   // Fern parse_tree output functions /////////////////////////////////////////////////////////////
 
-  std::string
+  string_t
   fern_to_string(const parse_tree_t* pt, const index_t start_node, const bool with_semicolon)
   {
     SILVA_ASSERT(pt->nodes[start_node].rule_index == std::to_underlying(fern_rule_t::FERN));
-    std::string retval;
+    string_t retval;
     int depth{0};
     const auto retval_newline = [&retval, &depth]() {
       retval += '\n';
@@ -136,7 +136,7 @@ namespace silva {
       }
     };
     const auto result = pt->visit_subtree(
-        [&](const std::span<const parse_tree_t::visit_state_t> stack,
+        [&](const span_t<const parse_tree_t::visit_state_t> stack,
             const parse_tree_event_t event) -> expected_t<bool> {
           SILVA_ASSERT(!stack.empty());
           const parse_tree_t::node_t& node = pt->nodes[stack.back().node_index];
@@ -175,20 +175,20 @@ namespace silva {
     return retval;
   }
 
-  std::string fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
+  string_t fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
     SILVA_ASSERT(pt->nodes[start_node].rule_index == std::to_underlying(fern_rule_t::FERN));
-    std::string retval    = "digraph Fern {\n";
-    std::string curr_path = "/";
-    std::optional<std::string_view> last_label_str;
+    string_t retval    = "digraph Fern {\n";
+    string_t curr_path = "/";
+    optional_t<string_view_t> last_label_str;
     const auto result = pt->visit_subtree(
-        [&](const std::span<const parse_tree_t::visit_state_t> stack,
+        [&](const span_t<const parse_tree_t::visit_state_t> stack,
             const parse_tree_event_t event) -> expected_t<bool> {
           SILVA_ASSERT(!stack.empty());
           const parse_tree_t::node_t& node = pt->nodes[stack.back().node_index];
           if (node.rule_index == std::to_underlying(fern_rule_t::LABELED_ITEM)) {
             if (is_on_entry(event)) {
-              std::string prev_path = curr_path;
+              string_t prev_path = curr_path;
               curr_path += fmt::format("{}/", stack.back().child_index);
               retval += fmt::format("  \"{}\" -> \"{}\"\n", prev_path, curr_path);
             }
@@ -230,7 +230,7 @@ namespace silva {
 
   // Object-oriented interface /////////////////////////////////////////////////////////////////////
 
-  item_t::item_t() : value(std::nullopt) {}
+  item_t::item_t() : value(none) {}
 
   void fern_t::push_back(labeled_item_t&& li)
   {
@@ -244,21 +244,18 @@ namespace silva {
   struct to_str_visitor {
     int indent = 0;
 
-    std::string operator()(std::nullopt_t) { return "none"; }
-    std::string operator()(const bool arg) { return arg ? "true" : "false"; }
-    std::string operator()(const std::string& arg) { return "\"" + arg + "\""; }
-    std::string operator()(const double arg) { return fmt::format("{}", arg); }
-    std::string operator()(const std::unique_ptr<fern_t>& arg)
-    {
-      return arg->to_str_fern(indent + 2);
-    }
+    string_t operator()(nullopt_t) { return "none"; }
+    string_t operator()(const bool arg) { return arg ? "true" : "false"; }
+    string_t operator()(const string_t& arg) { return "\"" + arg + "\""; }
+    string_t operator()(const double arg) { return fmt::format("{}", arg); }
+    string_t operator()(const unique_ptr_t<fern_t>& arg) { return arg->to_str_fern(indent + 2); }
   };
 
-  std::string fern_t::to_str_fern(const int indent) const
+  string_t fern_t::to_str_fern(const int indent) const
   {
-    std::string retval;
-    std::string ind(indent + 2, ' ');
-    std::string_view ind_v = ind;
+    string_t retval;
+    string_t ind(indent + 2, ' ');
+    string_view_t ind_v = ind;
 
     const index_t n = items.size();
 
@@ -266,7 +263,7 @@ namespace silva {
       return "[]";
     }
     else {
-      std::vector<std::optional<std::string_view>> used_labels;
+      vector_t<optional_t<string_view_t>> used_labels;
       used_labels.resize(n);
       for (const auto& [k, v]: labels) {
         used_labels[v] = k;
@@ -290,25 +287,25 @@ namespace silva {
     return retval;
   }
 
-  void fern_t_to_str_graphviz_impl_fern(std::string& retval,
+  void fern_t_to_str_graphviz_impl_fern(string_t& retval,
                                         const fern_t& fern,
-                                        const std::string_view prefix);
+                                        const string_view_t prefix);
 
-  void fern_t_to_str_graphviz_impl_item(std::string& retval,
-                                        const std::optional<std::string>& label,
+  void fern_t_to_str_graphviz_impl_item(string_t& retval,
+                                        const optional_t<string_t>& label,
                                         const item_t& item,
-                                        const std::string_view parent_name,
-                                        const std::string_view item_name)
+                                        const string_view_t parent_name,
+                                        const string_view_t item_name)
   {
     retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_name, item_name);
-    std::string label_str = label.has_value() ? fmt::format("\\n[\\\"{}\\\"]", label.value()) : "";
+    string_t label_str = label.has_value() ? fmt::format("\\n[\\\"{}\\\"]", label.value()) : "";
     struct visitor {
-      std::string& retval;
-      const std::string_view label_str;
+      string_t& retval;
+      const string_view_t label_str;
       const item_t& item;
-      std::string_view item_name;
+      string_view_t item_name;
 
-      void operator()(std::nullopt_t) const
+      void operator()(nullopt_t) const
       {
         retval +=
             fmt::format("  \"{}\" [label=\"{}{}\\nnone\"]\n", item_name, item_name, label_str);
@@ -326,7 +323,7 @@ namespace silva {
         retval +=
             fmt::format("  \"{}\" [label=\"{}{}\\n{}\"]\n", item_name, item_name, label_str, value);
       }
-      void operator()(const std::string& value) const
+      void operator()(const string_t& value) const
       {
         retval += fmt::format("  \"{}\" [label=\"{}{}\\n\\\"{}\\\"\"]\n",
                               item_name,
@@ -334,7 +331,7 @@ namespace silva {
                               label_str,
                               value);
       }
-      void operator()(const std::unique_ptr<fern_t>& value) const
+      void operator()(const unique_ptr_t<fern_t>& value) const
       {
         fern_t_to_str_graphviz_impl_fern(retval, *value, item_name);
       }
@@ -349,12 +346,11 @@ namespace silva {
         item.value);
   }
 
-  void fern_t_to_str_graphviz_impl_fern(std::string& retval,
-                                        const fern_t& fern,
-                                        const std::string_view prefix)
+  void
+  fern_t_to_str_graphviz_impl_fern(string_t& retval, const fern_t& fern, const string_view_t prefix)
   {
     const index_t n = fern.items.size();
-    std::vector<std::optional<std::string>> labels(n);
+    vector_t<optional_t<string_t>> labels(n);
     for (const auto& [k, v]: fern.labels) {
       labels[v] = k;
     }
@@ -367,9 +363,9 @@ namespace silva {
     }
   }
 
-  std::string fern_t::to_str_graphviz() const
+  string_t fern_t::to_str_graphviz() const
   {
-    std::string retval;
+    string_t retval;
     retval += "digraph Fern {\n";
     fern_t_to_str_graphviz_impl_fern(retval, *this, "/");
     retval += "}";
@@ -395,7 +391,7 @@ namespace silva {
             else if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_1)) {
               const auto* token_data = pt->tokenization->token_data(node.token_index);
               if (token_data->str == "none") {
-                retval.item.value = std::nullopt;
+                retval.item.value = none;
               }
               else if (token_data->str == "true") {
                 retval.item.value = true;

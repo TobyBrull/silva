@@ -36,7 +36,7 @@ namespace silva {
 
       friend auto operator<=>(const node_t&, const node_t&) = default;
     };
-    std::vector<node_t> nodes;
+    vector_t<node_t> nodes;
 
     bool is_consistent() const;
 
@@ -59,7 +59,7 @@ namespace silva {
     // returned bool is interpreted as whether the visitation should continue; "false" stops the
     // visitation and makes this function return without an error.
     template<typename Visitor>
-      requires std::invocable<Visitor, std::span<const visit_state_t>, parse_tree_event_t>
+      requires std::invocable<Visitor, span_t<const visit_state_t>, parse_tree_event_t>
     expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
 
     // Calls Visitor once for each child of "parent_node_index". The arguments are (1) the
@@ -74,11 +74,11 @@ namespace silva {
     // Get the indexes of the children of "parent_node_index" but only if the number of children
     // matches "N".
     template<index_t N>
-    expected_t<std::array<index_t, N>> get_children(index_t parent_node_index) const;
+    expected_t<array_t<index_t, N>> get_children(index_t parent_node_index) const;
   };
 
-  std::string parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
-  std::string parse_tree_to_graphviz(const parse_tree_t&);
+  string_t parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
+  string_t parse_tree_to_graphviz(const parse_tree_t&);
 
   // template<typename T>
   // struct bison_visitor {
@@ -87,13 +87,13 @@ namespace silva {
   //   // Terminal-index ->
   //   // TerminalCalllback
   //   using TerminalCallback = std::function<void(T&)>;
-  //   std::vector<TerminalCallback> terminal_callbacks;
+  //   vector_t<TerminalCallback> terminal_callbacks;
   //
   //   // ProductionHandle ->
   //   // RHS index ->
   //   // ProductionCallback
-  //   using ProductionCallback = std::function<void(T&, std::span<const T>)>;
-  //   std::vector<std::vector<ProductionCallback>> production_callbacks;
+  //   using ProductionCallback = std::function<void(T&, span_t<const T>)>;
+  //   vector_t<vector_t<ProductionCallback>> production_callbacks;
   //
   //   bison_visitor(const ContextFreeGrammar*);
   //
@@ -108,12 +108,11 @@ namespace silva {
 
 namespace silva {
   template<typename Visitor>
-    requires std::
-        invocable<Visitor, std::span<const parse_tree_t::visit_state_t>, parse_tree_event_t>
-      expected_t<void> parse_tree_t::visit_subtree(Visitor visitor,
-                                                   const index_t start_node_index) const
+    requires std::invocable<Visitor, span_t<const parse_tree_t::visit_state_t>, parse_tree_event_t>
+  expected_t<void> parse_tree_t::visit_subtree(Visitor visitor,
+                                               const index_t start_node_index) const
   {
-    std::vector<visit_state_t> stack;
+    vector_t<visit_state_t> stack;
     const auto clean_stack_till =
         [&](const index_t new_node_index) -> expected_t<optional_t<index_t>> {
       index_t next_child_index = 0;
@@ -122,8 +121,8 @@ namespace silva {
         const bool is_leaf = (nodes[bi].children_end == bi + 1);
         next_child_index   = stack.back().child_index + 1;
         if (!is_leaf) {
-          const bool cont = SILVA_TRY(
-              visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_EXIT));
+          const bool cont =
+              SILVA_TRY(visitor(span_t<const visit_state_t>{stack}, parse_tree_event_t::ON_EXIT));
           if (!cont) {
             return {none};
           }
@@ -143,14 +142,14 @@ namespace silva {
       const bool is_leaf = (nodes[node_index].children_end == node_index + 1);
       if (is_leaf) {
         const bool cont =
-            SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_LEAF));
+            SILVA_TRY(visitor(span_t<const visit_state_t>{stack}, parse_tree_event_t::ON_LEAF));
         if (!cont) {
           return {};
         }
       }
       else {
         const bool cont =
-            SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_ENTRY));
+            SILVA_TRY(visitor(span_t<const visit_state_t>{stack}, parse_tree_event_t::ON_ENTRY));
         if (!cont) {
           return {};
         }
@@ -182,12 +181,11 @@ namespace silva {
   }
 
   template<index_t N>
-  expected_t<std::array<index_t, N>>
-  parse_tree_t::get_children(const index_t parent_node_index) const
+  expected_t<array_t<index_t, N>> parse_tree_t::get_children(const index_t parent_node_index) const
   {
     const node_t& node = nodes[parent_node_index];
     SILVA_EXPECT(node.num_children == N);
-    std::array<index_t, N> retval;
+    array_t<index_t, N> retval;
     SILVA_TRY(visit_children(
         [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
           retval[child_num] = child_node_index;

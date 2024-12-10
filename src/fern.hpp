@@ -25,33 +25,32 @@ namespace silva {
 
   // Fern parse_tree output functions
 
-  std::string
-  fern_to_string(const parse_tree_t*, index_t start_node = 0, bool with_semicolon = true);
+  string_t fern_to_string(const parse_tree_t*, index_t start_node = 0, bool with_semicolon = true);
 
-  std::string fern_to_graphviz(const parse_tree_t*, index_t start_node = 0);
+  string_t fern_to_graphviz(const parse_tree_t*, index_t start_node = 0);
 
   // Object-oriented interface
 
   struct fern_t;
   struct item_t {
-    std::variant<std::nullopt_t, bool, std::string, double, std::unique_ptr<fern_t>> value;
+    variant_t<nullopt_t, bool, string_t, double, unique_ptr_t<fern_t>> value;
 
     item_t();
   };
 
   struct labeled_item_t {
-    std::optional<std::string> label;
+    optional_t<string_t> label;
     item_t item;
   };
 
   struct fern_t {
-    std::vector<item_t> items;
-    std::unordered_map<std::string, index_t> labels;
+    vector_t<item_t> items;
+    hashmap_t<string_t, index_t> labels;
 
     void push_back(labeled_item_t&&);
 
-    std::string to_str_fern(int indent = 0) const;
-    std::string to_str_graphviz() const;
+    string_t to_str_fern(int indent = 0) const;
+    string_t to_str_graphviz() const;
   };
 
   fern_t fern_create(const parse_tree_t*, index_t start_node = 0);
