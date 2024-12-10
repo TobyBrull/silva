@@ -137,7 +137,7 @@ namespace silva {
     };
     const auto result = pt->visit_subtree(
         [&](const std::span<const parse_tree_t::visit_state_t> stack,
-            const parse_tree_event_t event) -> expected_t<void> {
+            const parse_tree_event_t event) -> expected_t<bool> {
           SILVA_ASSERT(!stack.empty());
           const parse_tree_t::node_t& node = pt->nodes[stack.back().node_index];
           if (node.rule_index == std::to_underlying(fern_rule_t::FERN)) {
@@ -168,7 +168,7 @@ namespace silva {
           else if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_1)) {
             retval += pt->tokenization->token_data(node.token_index)->str;
           }
-          return {};
+          return true;
         },
         start_node);
     SILVA_ASSERT(result);
@@ -183,7 +183,7 @@ namespace silva {
     std::optional<std::string_view> last_label_str;
     const auto result = pt->visit_subtree(
         [&](const std::span<const parse_tree_t::visit_state_t> stack,
-            const parse_tree_event_t event) -> expected_t<void> {
+            const parse_tree_event_t event) -> expected_t<bool> {
           SILVA_ASSERT(!stack.empty());
           const parse_tree_t::node_t& node = pt->nodes[stack.back().node_index];
           if (node.rule_index == std::to_underlying(fern_rule_t::LABELED_ITEM)) {
@@ -220,7 +220,7 @@ namespace silva {
                               string_escaped(pt->tokenization->token_data(node.token_index)->str));
             }
           }
-          return {};
+          return true;
         },
         start_node);
     SILVA_ASSERT(result);

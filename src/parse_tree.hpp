@@ -53,6 +53,11 @@ namespace silva {
     // before the first child invocations and ON_EXIT happens immediately after the last child
     // invokation. The "span" always contains a range that describes the path from the root node to
     // the current node.
+    //
+    // The Visitor is expected to have return type "expected_t<bool>". Any error returned from
+    // Visitor stops the traversal and returns the same error from this function. Otherwise, the
+    // returned bool is interpreted as whether the visitation should continue; "false" stops the
+    // visitation and makes this function return without an error.
     template<typename Visitor>
       requires std::invocable<Visitor, std::span<const visit_state_t>, parse_tree_event_t>
     expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
@@ -60,12 +65,16 @@ namespace silva {
     // Calls Visitor once for each child of "parent_node_index". The arguments are (1) the
     // node-index of the child node, "child_node_index", and (2) the "child_index", meaning that
     // "child_node_index" is child number "child_index" of "parent_node_index".
+    //
+    // Regarding the return type of Visitor, see comment from "visit_subtree" applies.
     template<typename Visitor>
       requires std::invocable<Visitor, index_t, index_t>
     expected_t<void> visit_children(Visitor, index_t parent_node_index) const;
 
+    // Get the indexes of the children of "parent_node_index" but only if the number of children
+    // matches "N".
     template<index_t N>
-    expected_t<std::array<index_t, N>> get_children(index_t node_index) const;
+    expected_t<std::array<index_t, N>> get_children(index_t parent_node_index) const;
   };
 
   std::string parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
@@ -105,35 +114,53 @@ namespace silva {
                                                    const index_t start_node_index) const
   {
     std::vector<visit_state_t> stack;
-    const auto clean_stack_till = [&](const index_t new_node_index) -> expected_t<index_t> {
+    const auto clean_stack_till =
+        [&](const index_t new_node_index) -> expected_t<optional_t<index_t>> {
       index_t next_child_index = 0;
       while (!stack.empty() && nodes[stack.back().node_index].children_end <= new_node_index) {
         const index_t bi   = stack.back().node_index;
         const bool is_leaf = (nodes[bi].children_end == bi + 1);
         next_child_index   = stack.back().child_index + 1;
         if (!is_leaf) {
-          SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_EXIT));
+          const bool cont = SILVA_TRY(
+              visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_EXIT));
+          if (!cont) {
+            return {none};
+          }
         }
         stack.pop_back();
       }
-      return next_child_index;
+      return {next_child_index};
     };
 
     const index_t end_node_index = nodes[start_node_index].children_end;
     for (index_t node_index = start_node_index; node_index < end_node_index; ++node_index) {
-      const index_t new_child_index = SILVA_TRY(clean_stack_till(node_index));
-      stack.push_back({.node_index = node_index, .child_index = new_child_index});
+      const optional_t<index_t> maybe_new_child_index = SILVA_TRY(clean_stack_till(node_index));
+      if (!maybe_new_child_index) {
+        return {};
+      }
+      stack.push_back({.node_index = node_index, .child_index = maybe_new_child_index.value()});
       const bool is_leaf = (nodes[node_index].children_end == node_index + 1);
       if (is_leaf) {
-        SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_LEAF));
+        const bool cont =
+            SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_LEAF));
+        if (!cont) {
+          return {};
+        }
       }
       else {
-        SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_ENTRY));
+        const bool cont =
+            SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_ENTRY));
+        if (!cont) {
+          return {};
+        }
       }
     }
-    const index_t new_child_index = SILVA_TRY(clean_stack_till(end_node_index));
-    SILVA_ASSERT(new_child_index == 1);
-    SILVA_ASSERT(stack.empty());
+    const optional_t<index_t> maybe_new_child_index = SILVA_TRY(clean_stack_till(end_node_index));
+    if (maybe_new_child_index) {
+      SILVA_ASSERT(maybe_new_child_index.value() == 1);
+      SILVA_ASSERT(stack.empty());
+    }
     return {};
   }
 
@@ -155,9 +182,10 @@ namespace silva {
   }
 
   template<index_t N>
-  expected_t<std::array<index_t, N>> parse_tree_t::get_children(index_t node_index) const
+  expected_t<std::array<index_t, N>>
+  parse_tree_t::get_children(const index_t parent_node_index) const
   {
-    const node_t& node = nodes[node_index];
+    const node_t& node = nodes[parent_node_index];
     SILVA_EXPECT(node.num_children == N);
     std::array<index_t, N> retval;
     SILVA_TRY(visit_children(
@@ -165,7 +193,7 @@ namespace silva {
           retval[child_num] = child_node_index;
           return true;
         },
-        node_index));
+        parent_node_index));
     return {std::move(retval)};
   }
 }

@@ -48,13 +48,13 @@ TEST_CASE("parse_tree", "[parse_tree_t]")
 
   std::vector<result_t> result;
   REQUIRE(pt.visit_subtree([&](const std::span<const parse_tree_t::visit_state_t> stack,
-                               const event_t event) -> expected_t<void> {
+                               const event_t event) -> expected_t<bool> {
     result.push_back(result_t{
         .stack_size = stack.size(),
         .node_index = stack.back().node_index,
         .event      = event,
     });
-    return {};
+    return true;
   }));
   CHECK(result ==
         std::vector<result_t>{{

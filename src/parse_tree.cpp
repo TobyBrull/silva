@@ -33,9 +33,9 @@ namespace silva {
     std::string retval;
     const auto result =
         pt.visit_subtree([&](const std::span<const parse_tree_t::visit_state_t> stack,
-                             const parse_tree_event_t event) -> expected_t<void> {
+                             const parse_tree_event_t event) -> expected_t<bool> {
           if (!is_on_entry(event)) {
-            return {};
+            return true;
           }
           SILVA_ASSERT(!stack.empty());
           const parse_tree_t::node_t& node = pt.nodes[stack.back().node_index];
@@ -58,7 +58,7 @@ namespace silva {
 
           retval += curr_line;
           retval += '\n';
-          return {};
+          return true;
         });
     SILVA_ASSERT(result);
     return retval;
@@ -70,9 +70,9 @@ namespace silva {
     retval += "digraph parse_tree {\n";
     const auto result =
         pt.visit_subtree([&](const std::span<const parse_tree_t::visit_state_t> stack,
-                             const parse_tree_event_t event) -> expected_t<void> {
+                             const parse_tree_event_t event) -> expected_t<bool> {
           if (!is_on_entry(event)) {
-            return {};
+            return true;
           }
           SILVA_ASSERT(!stack.empty());
           const parse_tree_t::node_t& node = pt.nodes[stack.back().node_index];
@@ -92,7 +92,7 @@ namespace silva {
                                 pt.root->rules[node.rule_index].name,
                                 pt.root->rules[node.rule_index].precedence,
                                 string_escaped(pt.tokenization->token_data(node.token_index)->str));
-          return {};
+          return true;
         });
     SILVA_ASSERT(result);
     retval += "}";
