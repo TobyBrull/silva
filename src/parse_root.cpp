@@ -37,7 +37,7 @@ namespace silva {
     parse_root_t retval;
     retval.seed_parse_tree = std::move(seed_parse_tree);
     const auto& spt{retval.seed_parse_tree};
-    const auto* spr{retval.seed_parse_tree->root};
+    const parse_root_t* spr = retval.seed_parse_tree->root.get();
     const auto& nodes{spt->nodes};
 
     SILVA_EXPECT_FMT(spr == seed_parse_root_primordial() || spr == seed_parse_root(),
@@ -94,19 +94,18 @@ namespace silva {
 
   namespace impl {
     struct parse_root_nursery_t : public parse_tree_nursery_t {
-      const parse_root_t* root = nullptr;
-
-      parse_root_nursery_t(const_ptr_t<tokenization_t> tokenization, const parse_root_t* parse_root)
-        : parse_tree_nursery_t(std::move(tokenization), parse_root), root(parse_root)
+      parse_root_nursery_t(const_ptr_t<tokenization_t> tokenization,
+                           const_ptr_t<parse_root_t> parse_root)
+        : parse_tree_nursery_t(std::move(tokenization), std::move(parse_root))
       {
       }
 
       expected_t<parse_tree_sub_t> apply_terminal(const index_t terminal_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        const auto& terminal_node = root->seed_parse_tree->nodes[terminal_node_index];
+        const auto& terminal_node = retval.root->seed_parse_tree->nodes[terminal_node_index];
         const auto* sp_token_data =
-            root->seed_parse_tree->tokenization->token_data(terminal_node.token_index);
+            retval.root->seed_parse_tree->tokenization->token_data(terminal_node.token_index);
         if (sp_token_data->category == token_category_t::STRING) {
           SILVA_EXPECT_FMT(token_data()->str == sp_token_data->as_string(),
                            "Expected '{}'",
@@ -140,22 +139,22 @@ namespace silva {
 
         SILVA_EXPECT(token_index < retval.tokenization->tokens.size());
         const auto* token_data   = retval.tokenization->token_data(token_index);
-        const auto& primary_node = root->seed_parse_tree->nodes[primary_node_index];
+        const auto& primary_node = retval.root->seed_parse_tree->nodes[primary_node_index];
         if (primary_node.rule_index == std::to_underlying(seed_rule_t::PRIMARY_0)) {
           gg.sub += SILVA_TRY(apply_expr_1(primary_node_index));
         }
         else if (primary_node.rule_index == std::to_underlying(seed_rule_t::PRIMARY_1)) {
           const std::array<index_t, 1> terminal_child =
-              SILVA_TRY(root->seed_parse_tree->get_children<1>(primary_node_index));
+              SILVA_TRY(retval.root->seed_parse_tree->get_children<1>(primary_node_index));
           gg.sub += SILVA_TRY(apply_terminal(terminal_child[0]));
         }
         else if (primary_node.rule_index == std::to_underlying(seed_rule_t::PRIMARY_2)) {
           const std::array<index_t, 1> nonterminal_child =
-              SILVA_TRY(root->seed_parse_tree->get_children<1>(primary_node_index));
+              SILVA_TRY(retval.root->seed_parse_tree->get_children<1>(primary_node_index));
           const parse_tree_t::node_t& nonterminal_node =
-              root->seed_parse_tree->nodes[nonterminal_child[0]];
+              retval.root->seed_parse_tree->nodes[nonterminal_child[0]];
           const auto* seed_token =
-              root->seed_parse_tree->tokenization->token_data(nonterminal_node.token_index);
+              retval.root->seed_parse_tree->tokenization->token_data(nonterminal_node.token_index);
           SILVA_ASSERT(!seed_token->str.empty() && std::isupper(seed_token->str.front()));
           gg.sub += SILVA_TRY(apply_rule(seed_token->str));
         }
@@ -169,9 +168,9 @@ namespace silva {
       {
         parse_tree_guard_t gg{&retval, &token_index};
         bool found_match  = false;
-        const auto result = root->seed_parse_tree->visit_children(
+        const auto result = retval.root->seed_parse_tree->visit_children(
             [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
-              const parse_tree_t::node_t& node = root->seed_parse_tree->nodes[node_index];
+              const parse_tree_t::node_t& node = retval.root->seed_parse_tree->nodes[node_index];
               SILVA_ASSERT(node.rule_index == std::to_underlying(seed_rule_t::TERMINAL));
               auto result = apply_terminal(node_index);
               if (result) {
@@ -188,21 +187,22 @@ namespace silva {
       expected_t<parse_tree_sub_t> apply_expr_1(const index_t expr_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        const auto result = root->seed_parse_tree->visit_children(
+        const auto result = retval.root->seed_parse_tree->visit_children(
             [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
-              const auto& atom_node = root->seed_parse_tree->nodes[node_index];
+              const auto& atom_node = retval.root->seed_parse_tree->nodes[node_index];
               SILVA_EXPECT_FMT(atom_node.rule_index == std::to_underlying(seed_rule_t::ATOM),
                                "expected atom in seed parse-tree");
               std::optional<char> suffix_char;
               index_t primary_node_index = -1;
               if (atom_node.num_children == 2) {
                 std::array<index_t, 2> children =
-                    SILVA_TRY(root->seed_parse_tree->get_children<2>(node_index));
+                    SILVA_TRY(retval.root->seed_parse_tree->get_children<2>(node_index));
                 primary_node_index      = children[0];
-                const auto& suffix_node = root->seed_parse_tree->nodes[children[1]];
+                const auto& suffix_node = retval.root->seed_parse_tree->nodes[children[1]];
                 SILVA_EXPECT(suffix_node.rule_index == std::to_underlying(seed_rule_t::SUFFIX));
                 const std::string_view suffix_op =
-                    root->seed_parse_tree->tokenization->token_data(suffix_node.token_index)->str;
+                    retval.root->seed_parse_tree->tokenization->token_data(suffix_node.token_index)
+                        ->str;
                 SILVA_EXPECT(suffix_op.size() == 1);
                 suffix_char = suffix_op.front();
               }
@@ -210,7 +210,7 @@ namespace silva {
                 SILVA_EXPECT_FMT(atom_node.num_children == 1,
                                  "Atom had unexpected number of children");
                 std::array<index_t, 1> child =
-                    SILVA_TRY(root->seed_parse_tree->get_children<1>(node_index));
+                    SILVA_TRY(retval.root->seed_parse_tree->get_children<1>(node_index));
                 primary_node_index = child[0];
               }
 
@@ -272,7 +272,8 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> apply_expr(const index_t expr_node_index)
       {
-        const parse_tree_t::node_t& expr_node = root->seed_parse_tree->nodes[expr_node_index];
+        const parse_tree_t::node_t& expr_node =
+            retval.root->seed_parse_tree->nodes[expr_node_index];
         if (expr_node.rule_index == std::to_underlying(seed_rule_t::EXPR_0)) {
           return apply_expr_0(expr_node_index);
         }
@@ -288,13 +289,15 @@ namespace silva {
       {
         const index_t orig_token_index = token_index;
 
-        const auto it = root->rule_name_offsets.find(rule_name);
-        SILVA_EXPECT_FMT(it != root->rule_name_offsets.end(), "Unknown rule '{}'", rule_name);
+        const auto it = retval.root->rule_name_offsets.find(rule_name);
+        SILVA_EXPECT_FMT(it != retval.root->rule_name_offsets.end(),
+                         "Unknown rule '{}'",
+                         rule_name);
         index_t rule_offset = it->second;
 
-        const parse_root_t::rule_t& base_rule = root->rules[rule_offset];
-        while (rule_offset < root->rules.size()) {
-          const parse_root_t::rule_t& rule = root->rules[rule_offset];
+        const parse_root_t::rule_t& base_rule = retval.root->rules[rule_offset];
+        while (rule_offset < retval.root->rules.size()) {
+          const parse_root_t::rule_t& rule = retval.root->rules[rule_offset];
           if (rule.name != base_rule.name) {
             break;
           }
@@ -314,7 +317,7 @@ namespace silva {
 
   expected_t<parse_tree_t> parse_root_t::apply(const_ptr_t<tokenization_t> tokenization) const
   {
-    impl::parse_root_nursery_t parse_root_nursery(std::move(tokenization), this);
+    impl::parse_root_nursery_t parse_root_nursery(std::move(tokenization), const_ptr_unowned(this));
     const parse_tree_sub_t sub = SILVA_TRY(parse_root_nursery.apply_rule(goal_rule_name));
     SILVA_ASSERT(sub.num_children == 1);
     SILVA_ASSERT(sub.num_children_total == parse_root_nursery.retval.nodes.size());
