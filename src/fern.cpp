@@ -136,7 +136,7 @@ namespace silva {
       }
     };
     const auto result = pt->visit_subtree(
-        [&](const std::span<const parse_tree_visit_t> stack,
+        [&](const std::span<const parse_tree_t::visit_state_t> stack,
             const parse_tree_event_t event) -> expected_t<void> {
           SILVA_ASSERT(!stack.empty());
           const parse_tree_t::node_t& node = pt->nodes[stack.back().node_index];
@@ -182,7 +182,7 @@ namespace silva {
     std::string curr_path = "/";
     std::optional<std::string_view> last_label_str;
     const auto result = pt->visit_subtree(
-        [&](const std::span<const parse_tree_visit_t> stack,
+        [&](const std::span<const parse_tree_t::visit_state_t> stack,
             const parse_tree_event_t event) -> expected_t<void> {
           SILVA_ASSERT(!stack.empty());
           const parse_tree_t::node_t& node = pt->nodes[stack.back().node_index];

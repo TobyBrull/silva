@@ -146,12 +146,12 @@ namespace silva {
         }
         else if (primary_node.rule_index == std::to_underlying(seed_rule_t::PRIMARY_1)) {
           const std::array<index_t, 1> terminal_child =
-              SILVA_TRY(root->seed_parse_tree->get_num_children<1>(primary_node_index));
+              SILVA_TRY(root->seed_parse_tree->get_children<1>(primary_node_index));
           gg.sub += SILVA_TRY(apply_terminal(terminal_child[0]));
         }
         else if (primary_node.rule_index == std::to_underlying(seed_rule_t::PRIMARY_2)) {
           const std::array<index_t, 1> nonterminal_child =
-              SILVA_TRY(root->seed_parse_tree->get_num_children<1>(primary_node_index));
+              SILVA_TRY(root->seed_parse_tree->get_children<1>(primary_node_index));
           const parse_tree_t::node_t& nonterminal_node =
               root->seed_parse_tree->nodes[nonterminal_child[0]];
           const auto* seed_token =
@@ -197,7 +197,7 @@ namespace silva {
               index_t primary_node_index = -1;
               if (atom_node.num_children == 2) {
                 std::array<index_t, 2> children =
-                    SILVA_TRY(root->seed_parse_tree->get_num_children<2>(node_index));
+                    SILVA_TRY(root->seed_parse_tree->get_children<2>(node_index));
                 primary_node_index      = children[0];
                 const auto& suffix_node = root->seed_parse_tree->nodes[children[1]];
                 SILVA_EXPECT(suffix_node.rule_index == std::to_underlying(seed_rule_t::SUFFIX));
@@ -210,7 +210,7 @@ namespace silva {
                 SILVA_EXPECT_FMT(atom_node.num_children == 1,
                                  "Atom had unexpected number of children");
                 std::array<index_t, 1> child =
-                    SILVA_TRY(root->seed_parse_tree->get_num_children<1>(node_index));
+                    SILVA_TRY(root->seed_parse_tree->get_children<1>(node_index));
                 primary_node_index = child[0];
               }
 

@@ -47,7 +47,7 @@ TEST_CASE("parse_tree", "[parse_tree_t]")
       n_t{.rule_index = 3, .token_index = 12, .num_children = 0, .children_end = 15});
 
   std::vector<result_t> result;
-  REQUIRE(pt.visit_subtree([&](const std::span<const parse_tree_visit_t> stack,
+  REQUIRE(pt.visit_subtree([&](const std::span<const parse_tree_t::visit_state_t> stack,
                                const event_t event) -> expected_t<void> {
     result.push_back(result_t{
         .stack_size = stack.size(),

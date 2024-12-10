@@ -14,11 +14,6 @@
 namespace silva {
   struct parse_root_t;
 
-  struct parse_tree_visit_t {
-    index_t node_index  = 0;
-    index_t child_index = 0;
-  };
-
   enum class parse_tree_event_t {
     INVALID  = 0,
     ON_ENTRY = 0b01,
@@ -45,8 +40,18 @@ namespace silva {
 
     bool is_consistent() const;
 
+    struct visit_state_t {
+      index_t node_index  = 0;
+      index_t child_index = 0;
+    };
+
+    // Invokes the Visitor once (ON_LEAF for leaves) or twice (ON_ENTRY and ON_EXIT for non-leaves)
+    // for each node. The visitation order is such that ON_ENTRY for a node happens immediately
+    // before the first child invocations and ON_EXIT happens immediately after the last child
+    // invokation. The "span" always contains a range that describes the path from the root node to
+    // the current node.
     template<typename Visitor>
-      requires std::invocable<Visitor, std::span<const parse_tree_visit_t>, parse_tree_event_t>
+      requires std::invocable<Visitor, std::span<const visit_state_t>, parse_tree_event_t>
     expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
 
     template<typename Visitor>
@@ -54,7 +59,7 @@ namespace silva {
     expected_t<void> visit_children(Visitor, index_t node_index) const;
 
     template<index_t N>
-    expected_t<std::array<index_t, N>> get_num_children(index_t node_index) const;
+    expected_t<std::array<index_t, N>> get_children(index_t node_index) const;
   };
 
   std::string parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
@@ -88,11 +93,12 @@ namespace silva {
 
 namespace silva {
   template<typename Visitor>
-    requires std::invocable<Visitor, std::span<const parse_tree_visit_t>, parse_tree_event_t>
-  expected_t<void> parse_tree_t::visit_subtree(Visitor visitor,
-                                               const index_t start_node_index) const
+    requires std::
+        invocable<Visitor, std::span<const parse_tree_t::visit_state_t>, parse_tree_event_t>
+      expected_t<void> parse_tree_t::visit_subtree(Visitor visitor,
+                                                   const index_t start_node_index) const
   {
-    std::vector<parse_tree_visit_t> stack;
+    std::vector<visit_state_t> stack;
     const auto clean_stack_till = [&](const index_t new_node_index) -> expected_t<index_t> {
       index_t next_child_index = 0;
       while (!stack.empty() && nodes[stack.back().node_index].children_end <= new_node_index) {
@@ -100,8 +106,7 @@ namespace silva {
         const bool is_leaf = (nodes[bi].children_end == bi + 1);
         next_child_index   = stack.back().child_index + 1;
         if (!is_leaf) {
-          SILVA_TRY(
-              visitor(std::span<const parse_tree_visit_t>{stack}, parse_tree_event_t::ON_EXIT));
+          SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_EXIT));
         }
         stack.pop_back();
       }
@@ -114,11 +119,10 @@ namespace silva {
       stack.push_back({.node_index = node_index, .child_index = new_child_index});
       const bool is_leaf = (nodes[node_index].children_end == node_index + 1);
       if (is_leaf) {
-        SILVA_TRY(visitor(std::span<const parse_tree_visit_t>{stack}, parse_tree_event_t::ON_LEAF));
+        SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_LEAF));
       }
       else {
-        SILVA_TRY(
-            visitor(std::span<const parse_tree_visit_t>{stack}, parse_tree_event_t::ON_ENTRY));
+        SILVA_TRY(visitor(std::span<const visit_state_t>{stack}, parse_tree_event_t::ON_ENTRY));
       }
     }
     const index_t new_child_index = SILVA_TRY(clean_stack_till(end_node_index));
@@ -144,7 +148,7 @@ namespace silva {
   }
 
   template<index_t N>
-  expected_t<std::array<index_t, N>> parse_tree_t::get_num_children(index_t node_index) const
+  expected_t<std::array<index_t, N>> parse_tree_t::get_children(index_t node_index) const
   {
     const node_t& node = nodes[node_index];
     SILVA_EXPECT(node.num_children == N);
