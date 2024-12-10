@@ -47,8 +47,8 @@ namespace silva {
 
   optional_t<token_id_t> tokenization_t::lookup_token(const string_view_t token_str) const
   {
-    const auto it = token_lookup.find(token_str);
-    if (it != token_lookup.end()) {
+    const auto it = token_data_lookup.find(token_str);
+    if (it != token_data_lookup.end()) {
       return it->second;
     }
     else {
@@ -78,28 +78,6 @@ namespace silva {
       }
     }
     return &(*it);
-  }
-
-  void tokenization_t::append_token(const tokenization_t::token_data_t* td)
-  {
-    optional_t<token_id_t> x = lookup_token(td->str);
-    if (x.has_value()) {
-      tokens.push_back(x.value());
-    }
-    else {
-      const index_t new_token_id = token_datas.size();
-      token_datas.push_back(*td);
-      tokens.push_back(new_token_id);
-      token_lookup.emplace(td->str, new_token_id);
-    }
-  }
-
-  void tokenization_t::start_new_line(const index_t source_code_offset)
-  {
-    lines.push_back(tokenization_t::line_data_t{
-        .token_index        = static_cast<index_t>(tokens.size()),
-        .source_code_offset = source_code_offset,
-    });
   }
 
   namespace impl {
@@ -278,22 +256,45 @@ namespace silva {
         };
       }
     }
+
+    void append_token(tokenization_t* tokenization, const tokenization_t::token_data_t* td)
+    {
+      optional_t<token_id_t> x = tokenization->lookup_token(td->str);
+      if (x.has_value()) {
+        tokenization->tokens.push_back(x.value());
+      }
+      else {
+        const index_t new_token_id = tokenization->token_datas.size();
+        tokenization->token_datas.push_back(*td);
+        tokenization->tokens.push_back(new_token_id);
+        tokenization->token_data_lookup.emplace(td->str, new_token_id);
+      }
+    }
+
+    void start_new_line(tokenization_t* tokenization, const index_t source_code_offset)
+    {
+      tokenization->lines.push_back(tokenization_t::line_data_t{
+          .token_index        = static_cast<index_t>(tokenization->tokens.size()),
+          .source_code_offset = source_code_offset,
+      });
+    }
+
   }
 
   expected_t<tokenization_t> tokenize(const_ptr_t<source_code_t> source_code)
   {
     tokenization_t retval{.source_code = std::move(source_code)};
-    retval.start_new_line(0);
+    impl::start_new_line(&retval, 0);
     index_t text_index = 0;
     string_view_t text = retval.source_code->text;
     while (text_index < text.size()) {
       const tokenization_t::token_data_t td = impl::tokenize_one(text.substr(text_index));
       text_index += td.str.size();
       if (td.category != token_category_t::INVALID) {
-        retval.append_token(&td);
+        impl::append_token(&retval, &td);
       }
       else if (td.str == "\n") {
-        retval.start_new_line(text_index);
+        impl::start_new_line(&retval, text_index);
       }
     }
     return {std::move(retval)};

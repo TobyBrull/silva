@@ -36,7 +36,7 @@ namespace silva {
     vector_t<token_data_t> token_datas;
 
     // Maps a token-string to the index of the element in "token_datas" holding that token's data.
-    hashmap_t<string_view_t, token_id_t> token_lookup;
+    hashmap_t<string_view_t, token_id_t> token_data_lookup;
 
     // List of tokens that make up this tokenization.
     vector_t<token_id_t> tokens;
@@ -63,9 +63,6 @@ namespace silva {
     source_location_t retokenize_source_location(token_index_t) const;
 
     string_t to_string() const;
-
-    void append_token(const tokenization_t::token_data_t*);
-    void start_new_line(index_t source_code_offset);
   };
 
   expected_t<tokenization_t> tokenize(const_ptr_t<source_code_t>);
