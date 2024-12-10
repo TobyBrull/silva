@@ -382,15 +382,15 @@ namespace silva {
     SILVA_ASSERT(labeled_item.rule_index == std::to_underlying(fern_rule_t::LABELED_ITEM));
     labeled_item_t retval;
     const auto result = pt->visit_children(
-        [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
-          const parse_tree_t::node_t& node = pt->nodes[node_index];
+        [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
+          const parse_tree_t::node_t& node = pt->nodes[child_node_index];
           if (labeled_item.num_children == 2 && child_index == 0) {
             SILVA_ASSERT(node.rule_index == std::to_underlying(fern_rule_t::LABEL));
             retval.label = pt->tokenization->token_data(node.token_index)->as_string();
           }
           else {
             if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_0)) {
-              retval.item.value = std::make_unique<fern_t>(fern_create(pt, node_index + 1));
+              retval.item.value = std::make_unique<fern_t>(fern_create(pt, child_node_index + 1));
             }
             else if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_1)) {
               const auto* token_data = pt->tokenization->token_data(node.token_index);
@@ -423,8 +423,8 @@ namespace silva {
     SILVA_ASSERT(pt->nodes[start_node].rule_index == std::to_underlying(fern_rule_t::FERN));
     fern_t retval;
     const auto result = pt->visit_children(
-        [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
-          labeled_item_t li  = parse_tree_to_item(pt, node_index);
+        [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
+          labeled_item_t li  = parse_tree_to_item(pt, child_node_index);
           const size_t index = retval.items.size();
           retval.items.push_back(std::move(li.item));
           if (li.label.has_value()) {

@@ -48,8 +48,8 @@ namespace silva {
                      "Seed parse_tree should start with SEED node");
 
     const auto result = spt->visit_children(
-        [&](const index_t node_index_rule, const index_t child_index) -> expected_t<bool> {
-          SILVA_EXPECT_FMT(nodes[node_index_rule].rule_index ==
+        [&](const index_t rule_node_index, index_t) -> expected_t<bool> {
+          SILVA_EXPECT_FMT(nodes[rule_node_index].rule_index ==
                                std::to_underlying(seed_rule_t::RULE),
                            "");
           std::string_view name;
@@ -64,7 +64,7 @@ namespace silva {
                   name =
                       spt->tokenization->token_data(nodes[node_index_rule_child].token_index)->str;
                 }
-                else if (ii == 1 && nodes[node_index_rule].num_children == 3) {
+                else if (ii == 1 && nodes[rule_node_index].num_children == 3) {
                   SILVA_EXPECT_FMT(nodes[node_index_rule_child].rule_index ==
                                        std::to_underlying(seed_rule_t::RULE_PRECEDENCE),
                                    "Middle child of RULE must be RULE_PRECEDENCE");
@@ -81,7 +81,7 @@ namespace silva {
                 }
                 return true;
               },
-              node_index_rule);
+              rule_node_index);
           SILVA_ASSERT(inner_result);
           SILVA_TRY(retval.add_rule(name, precedence, node_index_expr));
           return true;

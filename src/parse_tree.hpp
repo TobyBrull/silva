@@ -41,7 +41,10 @@ namespace silva {
     bool is_consistent() const;
 
     struct visit_state_t {
-      index_t node_index  = 0;
+      index_t node_index = 0;
+
+      // This node ("node_index") is child number "child_index" of its parent. Zero for the root
+      // node.
       index_t child_index = 0;
     };
 
@@ -54,9 +57,12 @@ namespace silva {
       requires std::invocable<Visitor, std::span<const visit_state_t>, parse_tree_event_t>
     expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
 
+    // Calls Visitor once for each child of "parent_node_index". The arguments are (1) the
+    // node-index of the child node, "child_node_index", and (2) the "child_index", meaning that
+    // "child_node_index" is child number "child_index" of "parent_node_index".
     template<typename Visitor>
       requires std::invocable<Visitor, index_t, index_t>
-    expected_t<void> visit_children(Visitor, index_t node_index) const;
+    expected_t<void> visit_children(Visitor, index_t parent_node_index) const;
 
     template<index_t N>
     expected_t<std::array<index_t, N>> get_children(index_t node_index) const;
@@ -133,16 +139,17 @@ namespace silva {
 
   template<typename Visitor>
     requires std::invocable<Visitor, index_t, index_t>
-  expected_t<void> parse_tree_t::visit_children(Visitor visitor, const index_t node_index) const
+  expected_t<void> parse_tree_t::visit_children(Visitor visitor,
+                                                const index_t parent_node_index) const
   {
-    const node_t& node = nodes[node_index];
-    index_t curr       = node_index + 1;
+    const node_t& node       = nodes[parent_node_index];
+    index_t child_node_index = parent_node_index + 1;
     for (index_t child_index = 0; child_index < node.num_children; ++child_index) {
-      const bool cont = SILVA_TRY(visitor(curr, child_index));
+      const bool cont = SILVA_TRY(visitor(child_node_index, child_index));
       if (!cont) {
         break;
       }
-      curr = nodes[curr].children_end;
+      child_node_index = nodes[child_node_index].children_end;
     }
     return {};
   }
@@ -154,8 +161,8 @@ namespace silva {
     SILVA_EXPECT(node.num_children == N);
     std::array<index_t, N> retval;
     SILVA_TRY(visit_children(
-        [&](const index_t node_index, const index_t child_num) -> expected_t<bool> {
-          retval[child_num] = node_index;
+        [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
+          retval[child_num] = child_node_index;
           return true;
         },
         node_index));
