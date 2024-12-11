@@ -362,6 +362,10 @@ namespace silva {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
 
+      optional_t<token_id_t> tt_none  = parse_tree->tokenization->lookup_token("none");
+      optional_t<token_id_t> tt_true  = parse_tree->tokenization->lookup_token("true");
+      optional_t<token_id_t> tt_false = parse_tree->tokenization->lookup_token("false");
+
       labeled_item_t item(const index_t start_node)
       {
         const parse_tree_t::node_t& labeled_item = parse_tree->nodes[start_node];
@@ -380,14 +384,15 @@ namespace silva {
                       std::make_unique<fern_t>(fern_create(parse_tree, child_node_index + 1));
                 }
                 else if (node.rule_index == to_int(ITEM_1)) {
+                  const token_id_t token_id = parse_tree->tokenization->tokens[node.token_index];
                   const auto* token_data = parse_tree->tokenization->token_data(node.token_index);
-                  if (token_data->str == "none") {
+                  if (token_id == tt_none) {
                     retval.item.value = none;
                   }
-                  else if (token_data->str == "true") {
+                  else if (token_id == tt_true) {
                     retval.item.value = true;
                   }
-                  else if (token_data->str == "false") {
+                  else if (token_id == tt_false) {
                     retval.item.value = false;
                   }
                   else if (token_data->category == STRING) {
@@ -395,6 +400,9 @@ namespace silva {
                   }
                   else if (token_data->category == NUMBER) {
                     retval.item.value = token_data->as_double();
+                  }
+                  else {
+                    SILVA_ASSERT_FMT(false, "Unknown item '{}'", token_data->str);
                   }
                 }
               }
