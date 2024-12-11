@@ -39,10 +39,8 @@ namespace silva {
     static expected_t<parse_root_t> create(const_ptr_t<parse_tree_t>);
 
     // Convenience function for essentially
-    //    parse_root_t::from_seed_parse_tree(seed_parse_root().apply(tokens))
-    // or equivalently
-    //    parse_root_t::from_seed_parse_tree(seed_parse(tokens))
-    static expected_t<parse_root_t> create(const_ptr_t<tokenization_t>);
+    //    parse_root_t::create(seed_parse(tokenize(source_code)))
+    static expected_t<parse_root_t> create(const_ptr_t<source_code_t>);
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.

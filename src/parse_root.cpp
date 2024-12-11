@@ -324,9 +324,11 @@ namespace silva {
     return {std::move(parse_root_nursery.retval)};
   }
 
-  expected_t<parse_root_t> parse_root_t::create(const_ptr_t<tokenization_t> tokenization)
+  expected_t<parse_root_t> parse_root_t::create(const_ptr_t<source_code_t> source_code)
   {
-    auto pt = SILVA_TRY(seed_parse_root()->apply(std::move(tokenization)));
-    return parse_root_t::create(to_unique_ptr(std::move(pt)));
+    auto tokenization = SILVA_TRY(tokenize(std::move(source_code)));
+    auto fern_seed_pt = SILVA_TRY(seed_parse(to_unique_ptr(std::move(tokenization))));
+    auto retval       = SILVA_TRY(create(to_unique_ptr(std::move(fern_seed_pt))));
+    return retval;
   }
 }

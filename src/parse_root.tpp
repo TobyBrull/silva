@@ -14,10 +14,8 @@ TEST_CASE("exclamation mark", "[parse_root_t][seed]")
     - Primary = identifier "="!
   )'");
 
-  const tokenization_t frog_seed_tokenization =
-      SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&frog_seed_source_code)));
   const parse_root_t pr =
-      SILVA_TRY_REQUIRE(parse_root_t::create(const_ptr_unowned(&frog_seed_tokenization)));
+      SILVA_TRY_REQUIRE(parse_root_t::create(const_ptr_unowned(&frog_seed_source_code)));
 
   const source_code_t frog_source_code("some.frog", R"'(
     SimpleFern = a b c

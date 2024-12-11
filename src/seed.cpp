@@ -232,12 +232,8 @@ namespace silva {
 
   const parse_root_t* seed_parse_root()
   {
-    static const parse_root_t retval = [&] {
-      auto tokenization = SILVA_TRY_ASSERT(tokenize(const_ptr_unowned(&seed_seed_source_code)));
-      auto fern_seed_pt = SILVA_TRY_ASSERT(seed_parse(to_unique_ptr(std::move(tokenization))));
-      auto retval = SILVA_TRY_ASSERT(parse_root_t::create(to_unique_ptr(std::move(fern_seed_pt))));
-      return std::move(retval);
-    }();
+    static const parse_root_t retval =
+        SILVA_TRY_ASSERT(parse_root_t::create(const_ptr_unowned(&seed_seed_source_code)));
     return &retval;
   }
 
