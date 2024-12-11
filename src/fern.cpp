@@ -17,7 +17,7 @@ namespace silva {
   }
 
   namespace impl {
-    struct fern_nursery_t : public parse_tree_nursery_t {
+    struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
       optional_t<token_id_t> tt_brkt_open  = lookup_token("[");
       optional_t<token_id_t> tt_brkt_close = lookup_token("]");
       optional_t<token_id_t> tt_semi_colon = lookup_token(";");
@@ -26,7 +26,7 @@ namespace silva {
       optional_t<token_id_t> tt_true       = lookup_token("true");
       optional_t<token_id_t> tt_false      = lookup_token("false");
 
-      fern_nursery_t(const_ptr_t<tokenization_t> tokenization)
+      fern_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization), const_ptr_unowned(fern_parse_root()))
       {
       }
@@ -96,12 +96,12 @@ namespace silva {
   expected_t<parse_tree_t> fern_parse(const_ptr_t<tokenization_t> tokenization)
   {
     const index_t n = tokenization->tokens.size();
-    impl::fern_nursery_t fern_nursery(std::move(tokenization));
-    const parse_tree_sub_t sub = SILVA_TRY(fern_nursery.fern());
+    impl::fern_parse_tree_nursery_t nursery(std::move(tokenization));
+    const parse_tree_sub_t sub = SILVA_TRY(nursery.fern());
     SILVA_ASSERT(sub.num_children == 1);
-    SILVA_ASSERT(sub.num_children_total == fern_nursery.retval.nodes.size());
-    SILVA_EXPECT_FMT(fern_nursery.token_index == n, "Tokens left after parsing fern.");
-    return {std::move(fern_nursery.retval)};
+    SILVA_ASSERT(sub.num_children_total == nursery.retval.nodes.size());
+    SILVA_EXPECT_FMT(nursery.token_index == n, "Tokens left after parsing fern.");
+    return {std::move(nursery.retval)};
   }
 
   // Fern parse_tree output functions /////////////////////////////////////////////////////////////
@@ -359,61 +359,72 @@ namespace silva {
   }
 
   namespace impl {
-    labeled_item_t fern_create__item(const parse_tree_t* pt, const index_t start_node)
-    {
-      const parse_tree_t::node_t& labeled_item = pt->nodes[start_node];
-      SILVA_ASSERT(labeled_item.rule_index == to_int(LABELED_ITEM));
-      labeled_item_t retval;
-      const auto result = pt->visit_children(
-          [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
-            const parse_tree_t::node_t& node = pt->nodes[child_node_index];
-            if (labeled_item.num_children == 2 && child_index == 0) {
-              SILVA_ASSERT(node.rule_index == to_int(LABEL));
-              retval.label = pt->tokenization->token_data(node.token_index)->as_string();
-            }
-            else {
-              if (node.rule_index == to_int(ITEM_0)) {
-                retval.item.value = std::make_unique<fern_t>(fern_create(pt, child_node_index + 1));
+    struct fern_nursery_t {
+      const parse_tree_t* parse_tree = nullptr;
+
+      labeled_item_t item(const index_t start_node)
+      {
+        const parse_tree_t::node_t& labeled_item = parse_tree->nodes[start_node];
+        SILVA_ASSERT(labeled_item.rule_index == to_int(LABELED_ITEM));
+        labeled_item_t retval;
+        const auto result = parse_tree->visit_children(
+            [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
+              const parse_tree_t::node_t& node = parse_tree->nodes[child_node_index];
+              if (labeled_item.num_children == 2 && child_index == 0) {
+                SILVA_ASSERT(node.rule_index == to_int(LABEL));
+                retval.label = parse_tree->tokenization->token_data(node.token_index)->as_string();
               }
-              else if (node.rule_index == to_int(ITEM_1)) {
-                const auto* token_data = pt->tokenization->token_data(node.token_index);
-                if (token_data->str == "none") {
-                  retval.item.value = none;
+              else {
+                if (node.rule_index == to_int(ITEM_0)) {
+                  retval.item.value =
+                      std::make_unique<fern_t>(fern_create(parse_tree, child_node_index + 1));
                 }
-                else if (token_data->str == "true") {
-                  retval.item.value = true;
-                }
-                else if (token_data->str == "false") {
-                  retval.item.value = false;
-                }
-                else if (token_data->category == STRING) {
-                  retval.item.value = token_data->as_string();
-                }
-                else if (token_data->category == NUMBER) {
-                  retval.item.value = token_data->as_double();
+                else if (node.rule_index == to_int(ITEM_1)) {
+                  const auto* token_data = parse_tree->tokenization->token_data(node.token_index);
+                  if (token_data->str == "none") {
+                    retval.item.value = none;
+                  }
+                  else if (token_data->str == "true") {
+                    retval.item.value = true;
+                  }
+                  else if (token_data->str == "false") {
+                    retval.item.value = false;
+                  }
+                  else if (token_data->category == STRING) {
+                    retval.item.value = token_data->as_string();
+                  }
+                  else if (token_data->category == NUMBER) {
+                    retval.item.value = token_data->as_double();
+                  }
                 }
               }
-            }
-            return true;
-          },
-          start_node);
-      SILVA_ASSERT(result);
-      return retval;
-    }
+              return true;
+            },
+            start_node);
+        SILVA_ASSERT(result);
+        return retval;
+      }
+
+      fern_t fern(const index_t start_node)
+      {
+        SILVA_ASSERT(parse_tree->nodes[start_node].rule_index == to_int(FERN));
+        fern_t retval;
+        const auto result = parse_tree->visit_children(
+            [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
+              labeled_item_t li = item(child_node_index);
+              retval.push_back(std::move(li));
+              return true;
+            },
+            start_node);
+        SILVA_ASSERT(result);
+        return retval;
+      }
+    };
   }
 
-  fern_t fern_create(const parse_tree_t* pt, const index_t start_node)
+  fern_t fern_create(const parse_tree_t* parse_tree, const index_t start_node)
   {
-    SILVA_ASSERT(pt->nodes[start_node].rule_index == to_int(FERN));
-    fern_t retval;
-    const auto result = pt->visit_children(
-        [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
-          labeled_item_t li = impl::fern_create__item(pt, child_node_index);
-          retval.push_back(std::move(li));
-          return true;
-        },
-        start_node);
-    SILVA_ASSERT(result);
-    return retval;
+    impl::fern_nursery_t fern_nursery{.parse_tree = parse_tree};
+    return fern_nursery.fern(start_node);
   }
 }

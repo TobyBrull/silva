@@ -6,7 +6,7 @@
 namespace silva {
 
   namespace impl {
-    struct seed_nursery_t : public parse_tree_nursery_t {
+    struct seed_parse_tree_nursery_t : public parse_tree_nursery_t {
       optional_t<token_id_t> tt_dash        = lookup_token("-");
       optional_t<token_id_t> tt_comma       = lookup_token(",");
       optional_t<token_id_t> tt_paren_open  = lookup_token("(");
@@ -25,7 +25,7 @@ namespace silva {
       optional_t<token_id_t> tt_number      = lookup_token("number");
       optional_t<token_id_t> tt_any         = lookup_token("any");
 
-      seed_nursery_t(const_ptr_t<tokenization_t> tokenization)
+      seed_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization),
                                const_ptr_unowned(seed_parse_root_primordial()))
       {
@@ -225,9 +225,9 @@ namespace silva {
 
   expected_t<parse_tree_t> seed_parse(const_ptr_t<tokenization_t> tokenization)
   {
-    impl::seed_nursery_t seed_nursery(std::move(tokenization));
-    SILVA_TRY(seed_nursery.seed());
-    return {std::move(seed_nursery.retval)};
+    impl::seed_parse_tree_nursery_t nursery(std::move(tokenization));
+    SILVA_TRY(nursery.seed());
+    return {std::move(nursery.retval)};
   }
 
   const parse_root_t* seed_parse_root()
