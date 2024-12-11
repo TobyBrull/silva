@@ -1,5 +1,7 @@
 #pragma once
 
+#include "types.hpp"
+
 #include <fmt/base.h>
 #include <fmt/format.h>
 
@@ -7,7 +9,7 @@
 
 namespace silva {
   struct parse_error_t {
-    std::string message;
+    string_t message;
 
     parse_error_t(std::string message) : message(std::move(message)) {}
   };

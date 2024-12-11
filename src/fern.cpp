@@ -31,15 +31,12 @@ namespace silva {
       expected_t<parse_tree_sub_t> label()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-
         SILVA_EXPECT(num_tokens_left() >= 2 && token_id(1) == tt_colon);
-
         SILVA_EXPECT_FMT(token_data()->category == token_category_t::STRING ||
                              token_data()->category == token_category_t::IDENTIFIER,
                          "Expected identifier or string for label");
         gg_rule.set_rule_index(to_int(fern_rule_t::LABEL));
         token_index += 2;
-
         return gg_rule.release();
       }
 
@@ -108,12 +105,12 @@ namespace silva {
 
   expected_t<parse_tree_t> fern_parse(const_ptr_t<tokenization_t> tokenization)
   {
+    const index_t n = tokenization->tokens.size();
     impl::fern_nursery_t fern_nursery(std::move(tokenization));
     const parse_tree_sub_t sub = SILVA_TRY(fern_nursery.fern());
     SILVA_ASSERT(sub.num_children == 1);
     SILVA_ASSERT(sub.num_children_total == fern_nursery.retval.nodes.size());
-    SILVA_EXPECT_FMT(fern_nursery.token_index == tokenization->tokens.size(),
-                     "Tokens left after parsing fern.");
+    SILVA_EXPECT_FMT(fern_nursery.token_index == n, "Tokens left after parsing fern.");
     return {std::move(fern_nursery.retval)};
   }
 
