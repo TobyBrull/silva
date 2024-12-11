@@ -39,7 +39,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(sf_seed_pt_1.nodes == sf_seed_pt_2.nodes);
 
   const std::string_view expected = R"(
-[.]Seed,0                                         -
+[0]Seed,0                                         -
   [0]Rule,0                                       SimpleFern
     [0]Nonterminal,0                              SimpleFern
     [1]Expr,1                                     "["
@@ -118,7 +118,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   auto sfpt = SILVA_TRY_REQUIRE(sfpr.apply(const_ptr_unowned(&sf_tokens)));
 
   const std::string_view expected_parse_tree = R"(
-[.]SimpleFern,0                                   [
+[0]SimpleFern,0                                   [
   [0]LabeledItem,0                                "abc"
     [0]Item,1                                     "abc"
   [1]LabeledItem,0                                [

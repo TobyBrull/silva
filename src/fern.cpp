@@ -37,7 +37,7 @@ namespace silva {
         SILVA_EXPECT_FMT(token_data()->category == token_category_t::STRING ||
                              token_data()->category == token_category_t::IDENTIFIER,
                          "Expected identifier or string for label");
-        gg_rule.set_rule_index(std::to_underlying(fern_rule_t::LABEL));
+        gg_rule.set_rule_index(to_int(fern_rule_t::LABEL));
         token_index += 2;
 
         return gg_rule.release();
@@ -49,7 +49,7 @@ namespace silva {
 
         if (auto result = fern(); result) {
           gg_rule.sub += result.value();
-          gg_rule.set_rule_index(std::to_underlying(fern_rule_t::ITEM_0));
+          gg_rule.set_rule_index(to_int(fern_rule_t::ITEM_0));
         }
         else {
           SILVA_EXPECT_FMT(token_id() == tt_none || token_id() == tt_true ||
@@ -57,7 +57,7 @@ namespace silva {
                                token_data()->category == token_category_t::STRING ||
                                token_data()->category == token_category_t::NUMBER,
                            "");
-          gg_rule.set_rule_index(std::to_underlying(fern_rule_t::ITEM_1));
+          gg_rule.set_rule_index(to_int(fern_rule_t::ITEM_1));
           token_index += 1;
         }
 
@@ -67,7 +67,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> labeled_item()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(std::to_underlying(fern_rule_t::LABELED_ITEM));
+        gg_rule.set_rule_index(to_int(fern_rule_t::LABELED_ITEM));
 
         SILVA_EXPECT_FMT(num_tokens_left() >= 1, "No tokens left when trying to parse an item.");
 
@@ -87,7 +87,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> fern()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(std::to_underlying(fern_rule_t::FERN));
+        gg_rule.set_rule_index(to_int(fern_rule_t::FERN));
 
         SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_id() == tt_brkt_open,
                          "Expected fern, but didn't find '['");
@@ -122,7 +122,8 @@ namespace silva {
   string_t
   fern_to_string(const parse_tree_t* pt, const index_t start_node, const bool with_semicolon)
   {
-    SILVA_ASSERT(pt->nodes[start_node].rule_index == std::to_underlying(fern_rule_t::FERN));
+    SILVA_ASSERT(pt->root.get() == fern_parse_root());
+    SILVA_ASSERT(pt->nodes[start_node].rule_index == to_int(fern_rule_t::FERN));
     string_t retval;
     int depth{0};
     const auto retval_newline = [&retval, &depth]() {
@@ -136,7 +137,7 @@ namespace silva {
             const parse_tree_event_t event) -> expected_t<bool> {
           SILVA_ASSERT(!path.empty());
           const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
-          if (node.rule_index == std::to_underlying(fern_rule_t::FERN)) {
+          if (node.rule_index == to_int(fern_rule_t::FERN)) {
             if (is_on_entry(event)) {
               retval += '[';
               depth += 1;
@@ -149,7 +150,7 @@ namespace silva {
               retval += ']';
             }
           }
-          else if (node.rule_index == std::to_underlying(fern_rule_t::LABELED_ITEM)) {
+          else if (node.rule_index == to_int(fern_rule_t::LABELED_ITEM)) {
             if (is_on_entry(event)) {
               retval_newline();
             }
@@ -157,11 +158,11 @@ namespace silva {
               retval += ';';
             }
           }
-          else if (node.rule_index == std::to_underlying(fern_rule_t::LABEL)) {
+          else if (node.rule_index == to_int(fern_rule_t::LABEL)) {
             retval += pt->tokenization->token_data(node.token_index)->str;
             retval += " : ";
           }
-          else if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_1)) {
+          else if (node.rule_index == to_int(fern_rule_t::ITEM_1)) {
             retval += pt->tokenization->token_data(node.token_index)->str;
           }
           return true;
@@ -173,7 +174,8 @@ namespace silva {
 
   string_t fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
-    SILVA_ASSERT(pt->nodes[start_node].rule_index == std::to_underlying(fern_rule_t::FERN));
+    SILVA_ASSERT(pt->root.get() == fern_parse_root());
+    SILVA_ASSERT(pt->nodes[start_node].rule_index == to_int(fern_rule_t::FERN));
     string_t retval    = "digraph Fern {\n";
     string_t curr_path = "/";
     optional_t<string_view_t> last_label_str;
@@ -182,7 +184,7 @@ namespace silva {
             const parse_tree_event_t event) -> expected_t<bool> {
           SILVA_ASSERT(!path.empty());
           const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
-          if (node.rule_index == std::to_underlying(fern_rule_t::LABELED_ITEM)) {
+          if (node.rule_index == to_int(fern_rule_t::LABELED_ITEM)) {
             if (is_on_entry(event)) {
               string_t prev_path = curr_path;
               curr_path += fmt::format("{}/", path.back().child_index);
@@ -196,10 +198,10 @@ namespace silva {
               last_label_str = none;
             }
           }
-          else if (node.rule_index == std::to_underlying(fern_rule_t::LABEL)) {
+          else if (node.rule_index == to_int(fern_rule_t::LABEL)) {
             last_label_str = pt->tokenization->token_data(node.token_index)->str;
           }
-          else if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_1)) {
+          else if (node.rule_index == to_int(fern_rule_t::ITEM_1)) {
             if (last_label_str.has_value()) {
               retval +=
                   fmt::format("  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
@@ -371,20 +373,20 @@ namespace silva {
   labeled_item_t parse_tree_to_item(const parse_tree_t* pt, const index_t start_node)
   {
     const parse_tree_t::node_t& labeled_item = pt->nodes[start_node];
-    SILVA_ASSERT(labeled_item.rule_index == std::to_underlying(fern_rule_t::LABELED_ITEM));
+    SILVA_ASSERT(labeled_item.rule_index == to_int(fern_rule_t::LABELED_ITEM));
     labeled_item_t retval;
     const auto result = pt->visit_children(
         [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
           const parse_tree_t::node_t& node = pt->nodes[child_node_index];
           if (labeled_item.num_children == 2 && child_index == 0) {
-            SILVA_ASSERT(node.rule_index == std::to_underlying(fern_rule_t::LABEL));
+            SILVA_ASSERT(node.rule_index == to_int(fern_rule_t::LABEL));
             retval.label = pt->tokenization->token_data(node.token_index)->as_string();
           }
           else {
-            if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_0)) {
+            if (node.rule_index == to_int(fern_rule_t::ITEM_0)) {
               retval.item.value = std::make_unique<fern_t>(fern_create(pt, child_node_index + 1));
             }
-            else if (node.rule_index == std::to_underlying(fern_rule_t::ITEM_1)) {
+            else if (node.rule_index == to_int(fern_rule_t::ITEM_1)) {
               const auto* token_data = pt->tokenization->token_data(node.token_index);
               if (token_data->str == "none") {
                 retval.item.value = none;
@@ -412,7 +414,7 @@ namespace silva {
 
   fern_t fern_create(const parse_tree_t* pt, const index_t start_node)
   {
-    SILVA_ASSERT(pt->nodes[start_node].rule_index == std::to_underlying(fern_rule_t::FERN));
+    SILVA_ASSERT(pt->nodes[start_node].rule_index == to_int(fern_rule_t::FERN));
     fern_t retval;
     const auto result = pt->visit_children(
         [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {

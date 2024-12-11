@@ -34,7 +34,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> terminal()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(std::to_underlying(seed_rule_t::TERMINAL));
+        gg_rule.set_rule_index(to_int(seed_rule_t::TERMINAL));
 
         SILVA_EXPECT_FMT(num_tokens_left() >= 1, "Expected string");
         SILVA_EXPECT_FMT(
@@ -50,7 +50,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> nonterminal()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(std::to_underlying(seed_rule_t::NONTERMINAL));
+        gg_rule.set_rule_index(to_int(seed_rule_t::NONTERMINAL));
 
         SILVA_EXPECT_FMT(num_tokens_left() >= 1 &&
                              token_data()->category == token_category_t::IDENTIFIER,
@@ -63,7 +63,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> rule_precedence()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(std::to_underlying(seed_rule_t::RULE_PRECEDENCE));
+        gg_rule.set_rule_index(to_int(seed_rule_t::RULE_PRECEDENCE));
 
         SILVA_EXPECT_FMT(num_tokens_left() >= 1 &&
                              token_data()->category == token_category_t::NUMBER,
@@ -81,7 +81,7 @@ namespace silva {
 
         if (token_id() == tt_paren_open) {
           token_index += 1;
-          gg_rule.set_rule_index(std::to_underlying(seed_rule_t::PRIMARY_0));
+          gg_rule.set_rule_index(to_int(seed_rule_t::PRIMARY_0));
 
           index_t num_atoms = 0;
           while (num_tokens_left() >= 1) {
@@ -102,11 +102,11 @@ namespace silva {
         else {
           if (auto result_1 = terminal(); result_1) {
             gg_rule.sub += result_1.value();
-            gg_rule.set_rule_index(std::to_underlying(seed_rule_t::PRIMARY_1));
+            gg_rule.set_rule_index(to_int(seed_rule_t::PRIMARY_1));
           }
           else if (auto result_2 = nonterminal(); result_2) {
             gg_rule.sub += result_2.value();
-            gg_rule.set_rule_index(std::to_underlying(seed_rule_t::PRIMARY_2));
+            gg_rule.set_rule_index(to_int(seed_rule_t::PRIMARY_2));
           }
           else {
             SILVA_UNEXPECTED_FMT("Could not parse primary expression");
@@ -124,7 +124,7 @@ namespace silva {
         SILVA_EXPECT_FMT(token_id() == tt_qmark || token_id() == tt_star || token_id() == tt_plus ||
                              token_id() == tt_emark || token_id() == tt_amper,
                          "Expected one of \"?\" \"*\" \"+\" \"!\" \"&\"");
-        gg_rule.set_rule_index(std::to_underlying(seed_rule_t::SUFFIX));
+        gg_rule.set_rule_index(to_int(seed_rule_t::SUFFIX));
         token_index += 1;
 
         return gg_rule.release();
@@ -133,7 +133,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> atom()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(std::to_underlying(seed_rule_t::ATOM));
+        gg_rule.set_rule_index(to_int(seed_rule_t::ATOM));
 
         gg_rule.sub += SILVA_TRY(primary());
 
@@ -152,7 +152,7 @@ namespace silva {
 
         if (num_tokens_left() >= 1 && token_id() == tt_brack_open) {
           token_index += 1;
-          gg_rule.set_rule_index(std::to_underlying(seed_rule_t::EXPR_0));
+          gg_rule.set_rule_index(to_int(seed_rule_t::EXPR_0));
 
           index_t terminal_count = 0;
           while (num_tokens_left() >= 1 && token_id() != tt_brack_close) {
@@ -171,7 +171,7 @@ namespace silva {
           token_index += 1;
         }
         else {
-          gg_rule.set_rule_index(std::to_underlying(seed_rule_t::EXPR_1));
+          gg_rule.set_rule_index(to_int(seed_rule_t::EXPR_1));
 
           while (num_tokens_left() >= 1) {
             auto x = atom();
@@ -190,7 +190,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> rule()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(std::to_underlying(seed_rule_t::RULE));
+        gg_rule.set_rule_index(to_int(seed_rule_t::RULE));
 
         gg_rule.sub += SILVA_TRY(nonterminal());
 
@@ -210,7 +210,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> seed()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(std::to_underlying(seed_rule_t::SEED));
+        gg_rule.set_rule_index(to_int(seed_rule_t::SEED));
 
         while (num_tokens_left() >= 1) {
           SILVA_EXPECT_FMT(token_id() == tt_dash, "Expected '-'");

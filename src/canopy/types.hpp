@@ -73,4 +73,11 @@ namespace silva {
   {
     return std::make_unique<T>(std::move(x));
   }
+
+  template<class Enum>
+    requires std::is_enum_v<Enum>
+  constexpr std::underlying_type_t<Enum> to_int(const Enum e) noexcept
+  {
+    return static_cast<std::underlying_type_t<Enum>>(e);
+  }
 }

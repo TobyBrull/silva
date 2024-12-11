@@ -15,14 +15,14 @@ namespace silva {
       const auto cats = rfl::get_enumerators<token_category_t>();
       cats.apply([&](const auto& field) {
         const token_category_t x = field.value();
-        if (std::to_underlying(x) >= retval.size()) {
-          retval.resize(std::to_underlying(x) + 1);
+        if (to_int(x) >= retval.size()) {
+          retval.resize(to_int(x) + 1);
         }
-        retval[std::to_underlying(x)] = field.name();
+        retval[to_int(x)] = field.name();
       });
       return retval;
     }();
-    return string_view_t{vals.at(std::to_underlying(cat))};
+    return string_view_t{vals.at(to_int(cat))};
   }
 
   string_t tokenization_t::token_data_t::as_string() const

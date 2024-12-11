@@ -9,15 +9,13 @@
 namespace silva {
   bool is_on_entry(const parse_tree_event_t event)
   {
-    const auto retval =
-        (std::to_underlying(event) & std::to_underlying(parse_tree_event_t::ON_ENTRY));
+    const auto retval = (to_int(event) & to_int(parse_tree_event_t::ON_ENTRY));
     return retval != 0;
   }
 
   bool is_on_exit(const parse_tree_event_t event)
   {
-    const auto retval =
-        (std::to_underlying(event) & std::to_underlying(parse_tree_event_t::ON_EXIT));
+    const auto retval = (to_int(event) & to_int(parse_tree_event_t::ON_EXIT));
     return retval != 0;
   }
 
@@ -39,22 +37,13 @@ namespace silva {
       SILVA_ASSERT(!path.empty());
       const parse_tree_t::node_t& node = pt.nodes[path.back().node_index];
       curr_line.clear();
-      if (path.size() == 1) {
-        curr_line = fmt::format("[.]{},{}",
-                                pt.root->rules[node.rule_index].name,
-                                pt.root->rules[node.rule_index].precedence);
-      }
-      else {
-        curr_line.clear();
-        curr_line_space_to(2 * (path.size() - 1));
-        curr_line += fmt::format("[{}]{},{}",
-                                 path.back().child_index,
-                                 pt.root->rules[node.rule_index].name,
-                                 pt.root->rules[node.rule_index].precedence);
-      }
+      curr_line_space_to(2 * (path.size() - 1));
+      curr_line += fmt::format("[{}]{},{}",
+                               path.back().child_index,
+                               pt.root->rules[node.rule_index].name,
+                               pt.root->rules[node.rule_index].precedence);
       curr_line_space_to(token_offset);
       curr_line += pt.tokenization->token_data(node.token_index)->str;
-
       retval += curr_line;
       retval += '\n';
       return true;

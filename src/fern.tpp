@@ -36,7 +36,7 @@ TEST_CASE("fern", "[fern]")
   CHECK(fern.to_str_graphviz() == fern_to_graphviz(&pt_1));
 
   const string_view_t expected_parse_tree_str = R"(
-[.]Fern,0                                         [
+[0]Fern,0                                         [
   [0]LabeledItem,0                                none
     [0]Item,1                                     none
   [1]LabeledItem,0                                true

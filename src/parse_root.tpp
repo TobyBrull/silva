@@ -29,7 +29,7 @@ TEST_CASE("exclamation mark", "[parse_root_t][seed]")
   const parse_tree_t frog_pt = SILVA_TRY_REQUIRE(pr.apply(const_ptr_unowned(&frog_tokenization)));
 
   const std::string_view expected = R"(
-[.]Seed,0                                         SimpleFern
+[0]Seed,0                                         SimpleFern
   [0]Rule,0                                       SimpleFern
     [0]RuleName,0                                 SimpleFern
     [1]Expr,0                                     a
