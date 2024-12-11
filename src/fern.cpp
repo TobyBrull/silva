@@ -45,7 +45,6 @@ namespace silva {
       expected_t<parse_tree_sub_t> item()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-
         if (auto result = fern(); result) {
           gg_rule.sub += result.value();
           gg_rule.set_rule_index(to_int(ITEM_0));
@@ -58,7 +57,6 @@ namespace silva {
           gg_rule.set_rule_index(to_int(ITEM_1));
           token_index += 1;
         }
-
         return gg_rule.release();
       }
 
@@ -66,19 +64,14 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(LABELED_ITEM));
-
         SILVA_EXPECT_FMT(num_tokens_left() >= 1, "No tokens left when trying to parse an item.");
-
         if (num_tokens_left() >= 2 && token_id(1) == tt_colon) {
           gg_rule.sub += SILVA_TRY(label());
         }
-
         gg_rule.sub += SILVA_TRY(item());
-
         if (num_tokens_left() >= 1 && token_id() == tt_semi_colon) {
           token_index += 1;
         }
-
         return gg_rule.release();
       }
 
@@ -86,19 +79,15 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(FERN));
-
         SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_id() == tt_brkt_open,
                          "Expected fern, but didn't find '['");
         token_index += 1;
-
         while (num_tokens_left() >= 1 && token_id() != tt_brkt_close) {
           gg_rule.sub += SILVA_TRY(labeled_item());
         }
-
         SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_id() == tt_brkt_close,
-                         "Expected fern not ending with '['");
+                         "Expected end of fern, but didn't find '['");
         token_index += 1;
-
         return gg_rule.release();
       }
     };
@@ -242,19 +231,17 @@ namespace silva {
 
     string_t operator()(nullopt_t) { return "none"; }
     string_t operator()(const bool arg) { return arg ? "true" : "false"; }
-    string_t operator()(const string_t& arg) { return "\"" + arg + "\""; }
+    string_t operator()(const string_t& arg) { return fmt::format("\"{}\"", arg); }
     string_t operator()(const double arg) { return fmt::format("{}", arg); }
-    string_t operator()(const unique_ptr_t<fern_t>& arg) { return arg->to_str_fern(indent + 2); }
+    string_t operator()(const unique_ptr_t<fern_t>& arg) { return arg->to_string(indent + 2); }
   };
 
-  string_t fern_t::to_str_fern(const int indent) const
+  string_t fern_t::to_string(const int indent) const
   {
+    const index_t n = items.size();
     string_t retval;
     string_t ind(indent + 2, ' ');
     string_view_t ind_v = ind;
-
-    const index_t n = items.size();
-
     if (items.empty()) {
       return "[]";
     }
@@ -283,131 +270,136 @@ namespace silva {
     return retval;
   }
 
-  void fern_t_to_str_graphviz_impl_fern(string_t& retval,
-                                        const fern_t& fern,
-                                        const string_view_t prefix);
+  namespace impl {
+    void
+    fern_t__to_graphviz__fern(string_t& retval, const fern_t& fern, const string_view_t prefix);
 
-  void fern_t_to_str_graphviz_impl_item(string_t& retval,
-                                        const optional_t<string_t>& label,
-                                        const item_t& item,
-                                        const string_view_t parent_name,
-                                        const string_view_t item_name)
-  {
-    retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_name, item_name);
-    string_t label_str = label.has_value() ? fmt::format("\\n[\\\"{}\\\"]", label.value()) : "";
-    struct visitor {
-      string_t& retval;
-      const string_view_t label_str;
-      const item_t& item;
-      string_view_t item_name;
+    void fern_t__to_graphviz__item(string_t& retval,
+                                   const optional_t<string_t>& label,
+                                   const item_t& item,
+                                   const string_view_t parent_name,
+                                   const string_view_t item_name)
+    {
+      retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_name, item_name);
+      string_t label_str = label.has_value() ? fmt::format("\\n[\\\"{}\\\"]", label.value()) : "";
+      struct visitor {
+        string_t& retval;
+        const string_view_t label_str;
+        const item_t& item;
+        string_view_t item_name;
 
-      void operator()(nullopt_t) const
-      {
-        retval +=
-            fmt::format("  \"{}\" [label=\"{}{}\\nnone\"]\n", item_name, item_name, label_str);
+        void operator()(nullopt_t) const
+        {
+          retval +=
+              fmt::format("  \"{}\" [label=\"{}{}\\nnone\"]\n", item_name, item_name, label_str);
+        }
+        void operator()(const bool value) const
+        {
+          retval += fmt::format("  \"{}\" [label=\"{}\\n{}{}\"]\n",
+                                item_name,
+                                item_name,
+                                label_str,
+                                value ? "true" : "false");
+        }
+        void operator()(const double value) const
+        {
+          retval += fmt::format("  \"{}\" [label=\"{}{}\\n{}\"]\n",
+                                item_name,
+                                item_name,
+                                label_str,
+                                value);
+        }
+        void operator()(const string_t& value) const
+        {
+          retval += fmt::format("  \"{}\" [label=\"{}{}\\n\\\"{}\\\"\"]\n",
+                                item_name,
+                                item_name,
+                                label_str,
+                                value);
+        }
+        void operator()(const unique_ptr_t<fern_t>& value) const
+        {
+          fern_t__to_graphviz__fern(retval, *value, item_name);
+        }
+      };
+      std::visit(
+          visitor{
+              .retval    = retval,
+              .label_str = label_str,
+              .item      = item,
+              .item_name = item_name,
+          },
+          item.value);
+    }
+
+    void fern_t__to_graphviz__fern(string_t& retval, const fern_t& fern, const string_view_t prefix)
+    {
+      const index_t n = fern.items.size();
+      vector_t<optional_t<string_t>> labels(n);
+      for (const auto& [k, v]: fern.labels) {
+        labels[v] = k;
       }
-      void operator()(const bool value) const
-      {
-        retval += fmt::format("  \"{}\" [label=\"{}\\n{}{}\"]\n",
-                              item_name,
-                              item_name,
-                              label_str,
-                              value ? "true" : "false");
+      for (index_t i = 0; i < n; ++i) {
+        fern_t__to_graphviz__item(retval,
+                                  labels[i],
+                                  fern.items[i],
+                                  prefix,
+                                  fmt::format("{}{}/", prefix, i));
       }
-      void operator()(const double value) const
-      {
-        retval +=
-            fmt::format("  \"{}\" [label=\"{}{}\\n{}\"]\n", item_name, item_name, label_str, value);
-      }
-      void operator()(const string_t& value) const
-      {
-        retval += fmt::format("  \"{}\" [label=\"{}{}\\n\\\"{}\\\"\"]\n",
-                              item_name,
-                              item_name,
-                              label_str,
-                              value);
-      }
-      void operator()(const unique_ptr_t<fern_t>& value) const
-      {
-        fern_t_to_str_graphviz_impl_fern(retval, *value, item_name);
-      }
-    };
-    std::visit(
-        visitor{
-            .retval    = retval,
-            .label_str = label_str,
-            .item      = item,
-            .item_name = item_name,
-        },
-        item.value);
+    }
   }
 
-  void
-  fern_t_to_str_graphviz_impl_fern(string_t& retval, const fern_t& fern, const string_view_t prefix)
-  {
-    const index_t n = fern.items.size();
-    vector_t<optional_t<string_t>> labels(n);
-    for (const auto& [k, v]: fern.labels) {
-      labels[v] = k;
-    }
-    for (index_t i = 0; i < n; ++i) {
-      fern_t_to_str_graphviz_impl_item(retval,
-                                       labels[i],
-                                       fern.items[i],
-                                       prefix,
-                                       fmt::format("{}{}/", prefix, i));
-    }
-  }
-
-  string_t fern_t::to_str_graphviz() const
+  string_t fern_t::to_graphviz() const
   {
     string_t retval;
     retval += "digraph Fern {\n";
-    fern_t_to_str_graphviz_impl_fern(retval, *this, "/");
+    impl::fern_t__to_graphviz__fern(retval, *this, "/");
     retval += "}";
     return retval;
   }
 
-  labeled_item_t parse_tree_to_item(const parse_tree_t* pt, const index_t start_node)
-  {
-    const parse_tree_t::node_t& labeled_item = pt->nodes[start_node];
-    SILVA_ASSERT(labeled_item.rule_index == to_int(LABELED_ITEM));
-    labeled_item_t retval;
-    const auto result = pt->visit_children(
-        [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
-          const parse_tree_t::node_t& node = pt->nodes[child_node_index];
-          if (labeled_item.num_children == 2 && child_index == 0) {
-            SILVA_ASSERT(node.rule_index == to_int(LABEL));
-            retval.label = pt->tokenization->token_data(node.token_index)->as_string();
-          }
-          else {
-            if (node.rule_index == to_int(ITEM_0)) {
-              retval.item.value = std::make_unique<fern_t>(fern_create(pt, child_node_index + 1));
+  namespace impl {
+    labeled_item_t fern_create__item(const parse_tree_t* pt, const index_t start_node)
+    {
+      const parse_tree_t::node_t& labeled_item = pt->nodes[start_node];
+      SILVA_ASSERT(labeled_item.rule_index == to_int(LABELED_ITEM));
+      labeled_item_t retval;
+      const auto result = pt->visit_children(
+          [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
+            const parse_tree_t::node_t& node = pt->nodes[child_node_index];
+            if (labeled_item.num_children == 2 && child_index == 0) {
+              SILVA_ASSERT(node.rule_index == to_int(LABEL));
+              retval.label = pt->tokenization->token_data(node.token_index)->as_string();
             }
-            else if (node.rule_index == to_int(ITEM_1)) {
-              const auto* token_data = pt->tokenization->token_data(node.token_index);
-              if (token_data->str == "none") {
-                retval.item.value = none;
+            else {
+              if (node.rule_index == to_int(ITEM_0)) {
+                retval.item.value = std::make_unique<fern_t>(fern_create(pt, child_node_index + 1));
               }
-              else if (token_data->str == "true") {
-                retval.item.value = true;
-              }
-              else if (token_data->str == "false") {
-                retval.item.value = false;
-              }
-              else if (token_data->category == STRING) {
-                retval.item.value = token_data->as_string();
-              }
-              else if (token_data->category == NUMBER) {
-                retval.item.value = token_data->as_double();
+              else if (node.rule_index == to_int(ITEM_1)) {
+                const auto* token_data = pt->tokenization->token_data(node.token_index);
+                if (token_data->str == "none") {
+                  retval.item.value = none;
+                }
+                else if (token_data->str == "true") {
+                  retval.item.value = true;
+                }
+                else if (token_data->str == "false") {
+                  retval.item.value = false;
+                }
+                else if (token_data->category == STRING) {
+                  retval.item.value = token_data->as_string();
+                }
+                else if (token_data->category == NUMBER) {
+                  retval.item.value = token_data->as_double();
+                }
               }
             }
-          }
-          return true;
-        },
-        start_node);
-    SILVA_ASSERT(result);
-    return retval;
+            return true;
+          },
+          start_node);
+      SILVA_ASSERT(result);
+      return retval;
+    }
   }
 
   fern_t fern_create(const parse_tree_t* pt, const index_t start_node)
@@ -416,12 +408,8 @@ namespace silva {
     fern_t retval;
     const auto result = pt->visit_children(
         [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
-          labeled_item_t li  = parse_tree_to_item(pt, child_node_index);
-          const size_t index = retval.items.size();
-          retval.items.push_back(std::move(li.item));
-          if (li.label.has_value()) {
-            retval.labels.emplace(std::move(li.label.value()), index);
-          }
+          labeled_item_t li = impl::fern_create__item(pt, child_node_index);
+          retval.push_back(std::move(li));
           return true;
         },
         start_node);

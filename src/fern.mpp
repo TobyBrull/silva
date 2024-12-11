@@ -40,13 +40,13 @@ silva_main(const int argc, char* argv[])
     const auto rest   = arg_process.substr(7);
     const fern_t fern = fern_create(&pt);
     if (rest == "string") {
-      fmt::print("{}\n", fern.to_str_fern());
+      fmt::print("{}\n", fern.to_string());
     }
     else if (rest == "graphviz") {
-      fmt::print("{}\n", fern.to_str_graphviz());
+      fmt::print("{}\n", fern.to_graphviz());
     }
     else if (rest == "graphviz_show") {
-      graphviz_show_sync(fern.to_str_graphviz());
+      graphviz_show_sync(fern.to_graphviz());
     }
     else {
       SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);

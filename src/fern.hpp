@@ -51,8 +51,8 @@ namespace silva {
 
     void push_back(labeled_item_t&&);
 
-    string_t to_str_fern(int indent = 0) const;
-    string_t to_str_graphviz() const;
+    string_t to_string(int indent = 0) const;
+    string_t to_graphviz() const;
   };
 
   fern_t fern_create(const parse_tree_t*, index_t start_node = 0);

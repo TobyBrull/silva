@@ -31,8 +31,8 @@ TEST_CASE("fern", "[fern]")
   const fern_t fern = fern_create(&pt_1);
 
   CHECK(fern_to_string(&pt_1) == fern_source_code.text);
-  CHECK(fern.to_str_fern() == fern_source_code.text);
-  CHECK(fern.to_str_graphviz() == fern_to_graphviz(&pt_1));
+  CHECK(fern.to_string() == fern_source_code.text);
+  CHECK(fern.to_graphviz() == fern_to_graphviz(&pt_1));
 
   const string_view_t expected_parse_tree_str = R"(
 [0]Fern,0                                         [
