@@ -40,14 +40,6 @@ namespace silva {
 
     bool is_consistent() const;
 
-    struct visit_state_t {
-      index_t node_index = 0;
-
-      // This node ("node_index") is child number "child_index" of its parent. Zero for the root
-      // node.
-      index_t child_index = 0;
-    };
-
     // Invokes the Visitor once (ON_LEAF for leaves) or twice (ON_ENTRY and ON_EXIT for non-leaves)
     // for each node. The visitation order is such that ON_ENTRY for a node happens immediately
     // before the first child invocations and ON_EXIT happens immediately after the last child
@@ -58,6 +50,13 @@ namespace silva {
     // Visitor stops the traversal and returns the same error from this function. Otherwise, the
     // returned bool is interpreted as whether the visitation should continue; "false" stops the
     // visitation and makes this function return without an error.
+    struct visit_state_t {
+      index_t node_index = 0;
+
+      // This node ("node_index") is child number "child_index" of its parent. Zero for the root
+      // node.
+      index_t child_index = 0;
+    };
     template<typename Visitor>
       requires std::invocable<Visitor, span_t<const visit_state_t>, parse_tree_event_t>
     expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
