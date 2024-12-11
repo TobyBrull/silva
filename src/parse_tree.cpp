@@ -31,24 +31,24 @@ namespace silva {
     };
 
     string_t retval;
-    const auto result = pt.visit_subtree([&](const span_t<const parse_tree_t::visit_state_t> stack,
+    const auto result = pt.visit_subtree([&](const span_t<const parse_tree_t::visit_state_t> path,
                                              const parse_tree_event_t event) -> expected_t<bool> {
       if (!is_on_entry(event)) {
         return true;
       }
-      SILVA_ASSERT(!stack.empty());
-      const parse_tree_t::node_t& node = pt.nodes[stack.back().node_index];
+      SILVA_ASSERT(!path.empty());
+      const parse_tree_t::node_t& node = pt.nodes[path.back().node_index];
       curr_line.clear();
-      if (stack.size() == 1) {
+      if (path.size() == 1) {
         curr_line = fmt::format("[.]{},{}",
                                 pt.root->rules[node.rule_index].name,
                                 pt.root->rules[node.rule_index].precedence);
       }
       else {
         curr_line.clear();
-        curr_line_space_to(2 * (stack.size() - 1));
+        curr_line_space_to(2 * (path.size() - 1));
         curr_line += fmt::format("[{}]{},{}",
-                                 stack.back().child_index,
+                                 path.back().child_index,
                                  pt.root->rules[node.rule_index].name,
                                  pt.root->rules[node.rule_index].precedence);
       }
@@ -67,26 +67,26 @@ namespace silva {
   {
     string_t retval;
     retval += "digraph parse_tree {\n";
-    const auto result = pt.visit_subtree([&](const span_t<const parse_tree_t::visit_state_t> stack,
+    const auto result = pt.visit_subtree([&](const span_t<const parse_tree_t::visit_state_t> path,
                                              const parse_tree_event_t event) -> expected_t<bool> {
       if (!is_on_entry(event)) {
         return true;
       }
-      SILVA_ASSERT(!stack.empty());
-      const parse_tree_t::node_t& node = pt.nodes[stack.back().node_index];
+      SILVA_ASSERT(!path.empty());
+      const parse_tree_t::node_t& node = pt.nodes[path.back().node_index];
 
       string_t node_name = "/";
-      if (stack.size() >= 2) {
+      if (path.size() >= 2) {
         string_t parent_node_name = "/";
-        for (index_t i = 1; i < stack.size() - 1; ++i) {
-          parent_node_name += fmt::format("{}/", stack[i].child_index);
+        for (index_t i = 1; i < path.size() - 1; ++i) {
+          parent_node_name += fmt::format("{}/", path[i].child_index);
         }
-        node_name = fmt::format("{}{}/", parent_node_name, stack.back().child_index);
+        node_name = fmt::format("{}{}/", parent_node_name, path.back().child_index);
         retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
       }
       retval += fmt::format("  \"{}\" [label=\"[{}]{},{}\\n{}\"]\n",
                             node_name,
-                            stack.back().child_index,
+                            path.back().child_index,
                             pt.root->rules[node.rule_index].name,
                             pt.root->rules[node.rule_index].precedence,
                             string_escaped(pt.tokenization->token_data(node.token_index)->str));

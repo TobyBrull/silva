@@ -47,11 +47,11 @@ TEST_CASE("parse_tree", "[parse_tree_t]")
       n_t{.rule_index = 3, .token_index = 12, .num_children = 0, .children_end = 15});
 
   vector_t<result_t> result;
-  REQUIRE(pt.visit_subtree([&](const span_t<const parse_tree_t::visit_state_t> stack,
+  REQUIRE(pt.visit_subtree([&](const span_t<const parse_tree_t::visit_state_t> path,
                                const event_t event) -> expected_t<bool> {
     result.push_back(result_t{
-        .stack_size = stack.size(),
-        .node_index = stack.back().node_index,
+        .stack_size = path.size(),
+        .node_index = path.back().node_index,
         .event      = event,
     });
     return true;

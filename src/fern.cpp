@@ -132,10 +132,10 @@ namespace silva {
       }
     };
     const auto result = pt->visit_subtree(
-        [&](const span_t<const parse_tree_t::visit_state_t> stack,
+        [&](const span_t<const parse_tree_t::visit_state_t> path,
             const parse_tree_event_t event) -> expected_t<bool> {
-          SILVA_ASSERT(!stack.empty());
-          const parse_tree_t::node_t& node = pt->nodes[stack.back().node_index];
+          SILVA_ASSERT(!path.empty());
+          const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
           if (node.rule_index == std::to_underlying(fern_rule_t::FERN)) {
             if (is_on_entry(event)) {
               retval += '[';
@@ -178,14 +178,14 @@ namespace silva {
     string_t curr_path = "/";
     optional_t<string_view_t> last_label_str;
     const auto result = pt->visit_subtree(
-        [&](const span_t<const parse_tree_t::visit_state_t> stack,
+        [&](const span_t<const parse_tree_t::visit_state_t> path,
             const parse_tree_event_t event) -> expected_t<bool> {
-          SILVA_ASSERT(!stack.empty());
-          const parse_tree_t::node_t& node = pt->nodes[stack.back().node_index];
+          SILVA_ASSERT(!path.empty());
+          const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
           if (node.rule_index == std::to_underlying(fern_rule_t::LABELED_ITEM)) {
             if (is_on_entry(event)) {
               string_t prev_path = curr_path;
-              curr_path += fmt::format("{}/", stack.back().child_index);
+              curr_path += fmt::format("{}/", path.back().child_index);
               retval += fmt::format("  \"{}\" -> \"{}\"\n", prev_path, curr_path);
             }
             if (is_on_exit(event)) {
