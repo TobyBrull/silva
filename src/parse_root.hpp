@@ -5,15 +5,6 @@
 namespace silva {
 
   // Driver for a program in the Seed language.
-  //
-  // Intended usage:
-  //
-  //    std::vector<token_t> seed_code_for_frog_lang;
-  //    const parse_root_t frog_root = parse_root_from_seed_tokens(seed_code_for_frog_lang);
-  //
-  //    std::vector<token_t> frog_code;
-  //    const parse_tree_t frog_tree = frog_root.apply(frog_code);
-  //
   struct parse_root_t : public sprite_t {
     // Parse tree of the Seed program for this driver.
     const_ptr_t<parse_tree_t> seed_parse_tree;
@@ -33,7 +24,8 @@ namespace silva {
 
     std::string_view goal_rule_name;
 
-    expected_t<void> add_rule(std::string_view name, index_t precendece, index_t expr_node_index);
+    expected_t<void>
+    add_rule(std::string_view rule_name, index_t precendece, index_t expr_node_index);
 
     // Main parse_root_t constructor.
     static expected_t<parse_root_t> create(const_ptr_t<parse_tree_t>);
