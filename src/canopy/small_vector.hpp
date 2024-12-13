@@ -30,6 +30,8 @@ namespace silva {
 
     T& operator[](index_t);
     const T& operator[](index_t) const;
+
+    auto& back(this auto&);
   };
 }
 
@@ -120,5 +122,11 @@ namespace silva {
   const T& small_vector_t<T, N>::operator[](const index_t index) const
   {
     return *reinterpret_cast<const T*>(storage + index * sizeof(T));
+  }
+  template<typename T, index_t N>
+  auto& small_vector_t<T, N>::back(this auto& self)
+  {
+    SILVA_ASSERT(self.size > 0);
+    return self[self.size - 1];
   }
 }

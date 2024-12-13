@@ -52,35 +52,23 @@ namespace silva {
     const auto result = s_pt->visit_children(
         [&](const index_t rule_node_index, index_t) -> expected_t<bool> {
           SILVA_EXPECT_FMT(s_nodes[rule_node_index].rule_index == to_int(RULE), "");
-          std::string_view name;
+          const small_vector_t<index_t, 3> children =
+              SILVA_TRY(s_pt->get_children_up_to<3>(rule_node_index));
+          SILVA_EXPECT_FMT(s_nodes[children[0]].rule_index == to_int(NONTERMINAL),
+                           "First child of RULE must be RULE_NAME ");
+          const string_view_t name =
+              s_pt->tokenization->token_data(s_nodes[children[0]].token_index)->str;
           index_t rule_precedence = 0;
-          index_t expr_node_index = 0;
-          const auto inner_result = s_pt->visit_children(
-              [&](const index_t node_index_rule_child, const index_t ii) -> expected_t<bool> {
-                if (ii == 0) {
-                  SILVA_EXPECT_FMT(s_nodes[node_index_rule_child].rule_index == to_int(NONTERMINAL),
-                                   "First child of RULE must be RULE_NAME ");
-                  name = s_pt->tokenization->token_data(s_nodes[node_index_rule_child].token_index)
-                             ->str;
-                }
-                else if (ii == 1 && s_nodes[rule_node_index].num_children == 3) {
-                  SILVA_EXPECT_FMT(s_nodes[node_index_rule_child].rule_index ==
-                                       to_int(RULE_PRECEDENCE),
-                                   "Middle child of RULE must be RULE_PRECEDENCE");
-                  rule_precedence =
-                      s_pt->tokenization->token_data(s_nodes[node_index_rule_child].token_index)
-                          ->as_double();
-                }
-                else {
-                  const index_t ri = s_nodes[node_index_rule_child].rule_index;
-                  SILVA_EXPECT_FMT(to_int(EXPR_0) <= ri && ri <= to_int(EXPR_1),
-                                   "Last child of RULE must be EXPR");
-                  expr_node_index = node_index_rule_child;
-                }
-                return true;
-              },
-              rule_node_index);
-          SILVA_ASSERT(inner_result);
+          if (children.size == 3) {
+            SILVA_EXPECT_FMT(s_nodes[children[1]].rule_index == to_int(RULE_PRECEDENCE),
+                             "Middle child of RULE must be RULE_PRECEDENCE");
+            rule_precedence =
+                s_pt->tokenization->token_data(s_nodes[children[1]].token_index)->as_double();
+          }
+          const index_t ri = s_nodes[children.back()].rule_index;
+          SILVA_EXPECT_FMT(to_int(EXPR_0) <= ri && ri <= to_int(EXPR_1),
+                           "Last child of RULE must be EXPR");
+          index_t expr_node_index = children.back();
           SILVA_TRY(retval.add_rule(name, rule_precedence, expr_node_index));
           return true;
         },
