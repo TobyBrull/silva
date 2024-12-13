@@ -141,12 +141,12 @@ namespace silva {
           gg.sub += SILVA_TRY(apply_expr_1(primary_node_index));
         }
         else if (primary_node.rule_index == to_int(PRIMARY_1)) {
-          const std::array<index_t, 1> terminal_child =
+          const array_t<index_t, 1> terminal_child =
               SILVA_TRY(retval.root->seed_parse_tree->get_children<1>(primary_node_index));
           gg.sub += SILVA_TRY(apply_terminal(terminal_child[0]));
         }
         else if (primary_node.rule_index == to_int(PRIMARY_2)) {
-          const std::array<index_t, 1> nonterminal_child =
+          const array_t<index_t, 1> nonterminal_child =
               SILVA_TRY(retval.root->seed_parse_tree->get_children<1>(primary_node_index));
           const parse_tree_t::node_t& nonterminal_node =
               retval.root->seed_parse_tree->nodes[nonterminal_child[0]];
@@ -191,9 +191,9 @@ namespace silva {
                                "expected atom in seed parse-tree");
               std::optional<char> suffix_char;
               index_t primary_node_index = -1;
-              if (atom_node.num_children == 2) {
-                std::array<index_t, 2> children =
-                    SILVA_TRY(retval.root->seed_parse_tree->get_children<2>(node_index));
+              const small_vector_t<index_t, 2> children =
+                  SILVA_TRY(retval.root->seed_parse_tree->get_children_up_to<2>(node_index));
+              if (children.size == 2) {
                 primary_node_index      = children[0];
                 const auto& suffix_node = retval.root->seed_parse_tree->nodes[children[1]];
                 SILVA_EXPECT(suffix_node.rule_index == to_int(SUFFIX));
@@ -204,11 +204,8 @@ namespace silva {
                 suffix_char = suffix_op.front();
               }
               else {
-                SILVA_EXPECT_FMT(atom_node.num_children == 1,
-                                 "Atom had unexpected number of children");
-                std::array<index_t, 1> child =
-                    SILVA_TRY(retval.root->seed_parse_tree->get_children<1>(node_index));
-                primary_node_index = child[0];
+                SILVA_EXPECT_FMT(children.size == 1, "Atom had unexpected number of children");
+                primary_node_index = children[0];
               }
 
               if (!suffix_char) {

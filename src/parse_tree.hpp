@@ -2,14 +2,12 @@
 
 #include "canopy/assert.hpp"
 #include "canopy/expected.hpp"
+#include "canopy/small_vector.hpp"
 #include "canopy/types.hpp"
 
 #include "tokenization.hpp"
 
-#include <span>
-#include <string>
 #include <utility>
-#include <vector>
 
 namespace silva {
   struct parse_root_t;
@@ -74,6 +72,11 @@ namespace silva {
     // matches "N".
     template<index_t N>
     expected_t<array_t<index_t, N>> get_children(index_t parent_node_index) const;
+
+    // Get the indexes of the children of "parent_node_index" but only if the number of children
+    // matches "N".
+    template<index_t N>
+    expected_t<small_vector_t<index_t, N>> get_children_up_to(index_t parent_node_index) const;
   };
 
   string_t parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
@@ -188,6 +191,22 @@ namespace silva {
     SILVA_TRY(visit_children(
         [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
           retval[child_num] = child_node_index;
+          return true;
+        },
+        parent_node_index));
+    return {std::move(retval)};
+  }
+
+  template<index_t N>
+  expected_t<small_vector_t<index_t, N>>
+  parse_tree_t::get_children_up_to(const index_t parent_node_index) const
+  {
+    const node_t& node = nodes[parent_node_index];
+    SILVA_EXPECT(node.num_children <= N);
+    small_vector_t<index_t, N> retval;
+    SILVA_TRY(visit_children(
+        [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
+          retval.emplace_back(child_node_index);
           return true;
         },
         parent_node_index));
