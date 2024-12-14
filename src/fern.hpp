@@ -35,7 +35,7 @@ namespace silva {
 
   struct fern_t;
   struct item_t {
-    variant_t<nullopt_t, bool, string_t, double, unique_ptr_t<fern_t>> value;
+    variant_t<none_t, bool, string_t, double, unique_ptr_t<fern_t>> value;
 
     item_t();
   };

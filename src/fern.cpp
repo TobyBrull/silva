@@ -229,7 +229,7 @@ namespace silva {
   struct to_str_visitor {
     int indent = 0;
 
-    string_t operator()(nullopt_t) { return "none"; }
+    string_t operator()(none_t) { return "none"; }
     string_t operator()(const bool arg) { return arg ? "true" : "false"; }
     string_t operator()(const string_t& arg) { return fmt::format("\"{}\"", arg); }
     string_t operator()(const double arg) { return fmt::format("{}", arg); }
@@ -288,7 +288,7 @@ namespace silva {
         const item_t& item;
         string_view_t item_name;
 
-        void operator()(nullopt_t) const
+        void operator()(none_t) const
         {
           retval +=
               fmt::format("  \"{}\" [label=\"{}{}\\nnone\"]\n", item_name, item_name, label_str);

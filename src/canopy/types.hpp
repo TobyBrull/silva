@@ -22,8 +22,8 @@ namespace silva {
   template<typename T>
   using optional_t = std::optional<T>;
 
-  using nullopt_t               = std::nullopt_t;
-  constexpr std::nullopt_t none = std::nullopt;
+  using none_t          = std::nullopt_t;
+  constexpr none_t none = std::nullopt;
 
   template<typename... Ts>
   using variant_t = std::variant<Ts...>;
