@@ -81,6 +81,12 @@ namespace silva {
     struct parse_root_nursery_t : public parse_tree_nursery_t {
       const parse_tree_t* seed_pt = nullptr;
 
+      optional_t<token_id_t> seed_tt_id  = seed_pt->tokenization->lookup_token("identifier");
+      optional_t<token_id_t> seed_tt_op  = seed_pt->tokenization->lookup_token("operator");
+      optional_t<token_id_t> seed_tt_str = seed_pt->tokenization->lookup_token("string");
+      optional_t<token_id_t> seed_tt_num = seed_pt->tokenization->lookup_token("number");
+      optional_t<token_id_t> seed_tt_any = seed_pt->tokenization->lookup_token("any");
+
       parse_root_nursery_t(const_ptr_t<tokenization_t> tokenization,
                            const_ptr_t<parse_root_t> parse_root)
         : parse_tree_nursery_t(std::move(tokenization), std::move(parse_root))
@@ -91,27 +97,28 @@ namespace silva {
       expected_t<parse_tree_sub_t> apply_terminal(const index_t terminal_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        const auto& terminal_node = seed_pt->nodes[terminal_node_index];
+        const auto& terminal_node      = seed_pt->nodes[terminal_node_index];
+        const token_id_t seed_token_id = seed_pt->tokenization->tokens[terminal_node.token_index];
         const auto* sp_token_data = seed_pt->tokenization->token_data(terminal_node.token_index);
-        if (sp_token_data->category == STRING) {
+        if (seed_token_id == seed_tt_id) {
+          SILVA_EXPECT(token_data()->category == IDENTIFIER);
+        }
+        else if (seed_token_id == seed_tt_op) {
+          SILVA_EXPECT(token_data()->category == OPERATOR);
+        }
+        else if (seed_token_id == seed_tt_str) {
+          SILVA_EXPECT(token_data()->category == STRING);
+        }
+        else if (seed_token_id == seed_tt_num) {
+          SILVA_EXPECT(token_data()->category == NUMBER);
+        }
+        else if (seed_token_id == seed_tt_any) {
+          ;
+        }
+        else if (sp_token_data->category == STRING) {
           SILVA_EXPECT_FMT(token_data()->str == sp_token_data->as_string(),
                            "Expected '{}'",
                            sp_token_data->str);
-        }
-        else if (sp_token_data->str == "identifier") {
-          SILVA_EXPECT(token_data()->category == IDENTIFIER);
-        }
-        else if (sp_token_data->str == "operator") {
-          SILVA_EXPECT(token_data()->category == OPERATOR);
-        }
-        else if (sp_token_data->str == "string") {
-          SILVA_EXPECT(token_data()->category == STRING);
-        }
-        else if (sp_token_data->str == "number") {
-          SILVA_EXPECT(token_data()->category == NUMBER);
-        }
-        else if (sp_token_data->str == "any") {
-          ;
         }
         else {
           SILVA_ASSERT(false);
