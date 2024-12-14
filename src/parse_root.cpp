@@ -9,7 +9,7 @@ namespace silva {
   using enum token_category_t;
   using enum seed_rule_t;
 
-  expected_t<void> parse_root_t::add_rule(const std::string_view rule_name,
+  expected_t<void> parse_root_t::add_rule(const string_view_t rule_name,
                                           const index_t precedence,
                                           const index_t expr_node_index)
   {
@@ -77,9 +77,18 @@ namespace silva {
     return retval;
   }
 
+  expected_t<parse_root_t> parse_root_t::create(const_ptr_t<source_code_t> source_code)
+  {
+    auto tokenization = SILVA_TRY(tokenize(std::move(source_code)));
+    auto fern_seed_pt = SILVA_TRY(seed_parse(to_unique_ptr(std::move(tokenization))));
+    auto retval       = SILVA_TRY(create(to_unique_ptr(std::move(fern_seed_pt))));
+    return retval;
+  }
+
   namespace impl {
     struct parse_root_nursery_t : public parse_tree_nursery_t {
-      const parse_tree_t* seed_pt = nullptr;
+      const parse_tree_t* seed_pt          = nullptr;
+      parse_root_t::workspace_t* workspace = nullptr;
 
       optional_t<token_id_t> seed_tt_id  = seed_pt->tokenization->lookup_token("identifier");
       optional_t<token_id_t> seed_tt_op  = seed_pt->tokenization->lookup_token("operator");
@@ -88,10 +97,24 @@ namespace silva {
       optional_t<token_id_t> seed_tt_any = seed_pt->tokenization->lookup_token("any");
 
       parse_root_nursery_t(const_ptr_t<tokenization_t> tokenization,
-                           const_ptr_t<parse_root_t> parse_root)
+                           const_ptr_t<parse_root_t> parse_root,
+                           parse_root_t::workspace_t* workspace)
         : parse_tree_nursery_t(std::move(tokenization), std::move(parse_root))
         , seed_pt(retval.root->seed_parse_tree.get())
+        , workspace(workspace)
       {
+        const index_t n = seed_pt->tokenization->token_datas.size();
+        workspace->seed_token_id_to_target_token_id.resize(n);
+        for (index_t i = 0; i < n; ++i) {
+          const auto* sp_token_data = &(seed_pt->tokenization->token_datas[i]);
+          if (sp_token_data->category == STRING) {
+            const string_t seed_terminal_string            = sp_token_data->as_string();
+            workspace->seed_token_id_to_target_token_id[i] = lookup_token(seed_terminal_string);
+          }
+          else {
+            workspace->seed_token_id_to_target_token_id[i] = none;
+          }
+        }
       }
 
       expected_t<parse_tree_sub_t> apply_terminal(const index_t terminal_node_index)
@@ -99,7 +122,6 @@ namespace silva {
         parse_tree_guard_t gg{&retval, &token_index};
         const auto& terminal_node      = seed_pt->nodes[terminal_node_index];
         const token_id_t seed_token_id = seed_pt->tokenization->tokens[terminal_node.token_index];
-        const auto* sp_token_data = seed_pt->tokenization->token_data(terminal_node.token_index);
         if (seed_token_id == seed_tt_id) {
           SILVA_EXPECT(token_data()->category == IDENTIFIER);
         }
@@ -115,13 +137,12 @@ namespace silva {
         else if (seed_token_id == seed_tt_any) {
           ;
         }
-        else if (sp_token_data->category == STRING) {
-          SILVA_EXPECT_FMT(token_data()->str == sp_token_data->as_string(),
+        else {
+          const auto* sp_token_data = seed_pt->tokenization->token_data(terminal_node.token_index);
+          SILVA_ASSERT(sp_token_data->category == STRING);
+          SILVA_EXPECT_FMT(token_id() == workspace->seed_token_id_to_target_token_id[seed_token_id],
                            "Expected '{}'",
                            sp_token_data->str);
-        }
-        else {
-          SILVA_ASSERT(false);
         }
         token_index += 1;
         return gg.release();
@@ -184,7 +205,7 @@ namespace silva {
               const auto& atom_node = seed_pt->nodes[node_index];
               SILVA_EXPECT_FMT(atom_node.rule_index == to_int(ATOM),
                                "expected atom in seed parse-tree");
-              std::optional<char> suffix_char;
+              optional_t<char> suffix_char;
               index_t primary_node_index = -1;
               const small_vector_t<index_t, 2> children =
                   SILVA_TRY(seed_pt->get_children_up_to<2>(node_index));
@@ -192,7 +213,7 @@ namespace silva {
                 primary_node_index      = children[0];
                 const auto& suffix_node = seed_pt->nodes[children[1]];
                 SILVA_EXPECT(suffix_node.rule_index == to_int(SUFFIX));
-                const std::string_view suffix_op =
+                const string_view_t suffix_op =
                     seed_pt->tokenization->token_data(suffix_node.token_index)->str;
                 SILVA_EXPECT(suffix_op.size() == 1);
                 suffix_char = suffix_op.front();
@@ -272,7 +293,7 @@ namespace silva {
         }
       }
 
-      expected_t<parse_tree_sub_t> apply_rule(const std::string_view rule_name)
+      expected_t<parse_tree_sub_t> apply_rule(const string_view_t rule_name)
       {
         const index_t orig_token_index = token_index;
 
@@ -302,20 +323,20 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> parse_root_t::apply(const_ptr_t<tokenization_t> tokenization) const
+  expected_t<parse_tree_t> parse_root_t::apply(const_ptr_t<tokenization_t> tokenization,
+                                               parse_root_t::workspace_t* workspace) const
   {
-    impl::parse_root_nursery_t parse_root_nursery(std::move(tokenization), const_ptr_unowned(this));
+    optional_t<parse_root_t::workspace_t> local_workspace;
+    if (workspace == nullptr) {
+      local_workspace.emplace();
+      workspace = &(*local_workspace);
+    }
+    impl::parse_root_nursery_t parse_root_nursery(std::move(tokenization),
+                                                  const_ptr_unowned(this),
+                                                  workspace);
     const parse_tree_sub_t sub = SILVA_TRY(parse_root_nursery.apply_rule(goal_rule_name));
     SILVA_ASSERT(sub.num_children == 1);
     SILVA_ASSERT(sub.num_children_total == parse_root_nursery.retval.nodes.size());
     return {std::move(parse_root_nursery.retval)};
-  }
-
-  expected_t<parse_root_t> parse_root_t::create(const_ptr_t<source_code_t> source_code)
-  {
-    auto tokenization = SILVA_TRY(tokenize(std::move(source_code)));
-    auto fern_seed_pt = SILVA_TRY(seed_parse(to_unique_ptr(std::move(tokenization))));
-    auto retval       = SILVA_TRY(create(to_unique_ptr(std::move(fern_seed_pt))));
-    return retval;
   }
 }
