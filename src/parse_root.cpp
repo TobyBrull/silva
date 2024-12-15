@@ -98,8 +98,9 @@ namespace silva {
   {
     SILVA_ASSERT(sp_token_data->category == STRING);
     if (std::holds_alternative<uncached_t>(target_token_id)) {
-      const string_t seed_terminal_string = sp_token_data->as_string();
-      const optional_t<index_t> result    = target_tokenization->lookup_token(seed_terminal_string);
+      const string_or_view_t seed_terminal = sp_token_data->as_string_or_view();
+      const optional_t<index_t> result =
+          target_tokenization->lookup_token(seed_terminal.get_view());
       if (result) {
         target_token_id = result.value();
       }

@@ -24,6 +24,25 @@ namespace silva {
     }
   }
 
+  bool string_escape_is_trivial(const string_view_t unescaped_string)
+  {
+    for (const char c: unescaped_string) {
+      switch (c) {
+        case '\n':
+          return false;
+        case '\r':
+          return false;
+        case '\\':
+          return false;
+        case '\"':
+          return false;
+        default:
+          break;
+      }
+    }
+    return true;
+  }
+
   void string_append_unescaped(string_t& obuf, const string_view_t escaped_string)
   {
     for (size_t i = 0; i < escaped_string.size(); ++i) {
@@ -54,6 +73,27 @@ namespace silva {
         obuf += escaped_string[i];
       }
     }
+  }
+
+  bool string_unescape_is_trivial(const string_view_t escaped_string)
+  {
+    for (size_t i = 0; i < escaped_string.size(); ++i) {
+      if (escaped_string[i] == '\\' && i + 1 < escaped_string.size()) {
+        switch (escaped_string[i + 1]) {
+          case 'n':
+            return false;
+          case 'r':
+            return false;
+          case '\\':
+            return false;
+          case '\"':
+            return false;
+          default:
+            break;
+        }
+      }
+    }
+    return true;
   }
 
   string_t string_escaped(string_view_t unescaped_string)

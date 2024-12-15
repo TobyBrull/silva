@@ -42,11 +42,17 @@ namespace silva {
   string_or_view_t tokenization_t::token_data_t::as_string_or_view() const
   {
     if (category == token_category_t::IDENTIFIER) {
-      return str;
+      return string_or_view_t(str);
     }
     else if (category == token_category_t::STRING) {
       SILVA_ASSERT(str.size() >= 2 && str.front() == '"' && str.back() == '"');
-      return string_unescaped(str.substr(1, str.size() - 2));
+      const string_view_t sub_str = str.substr(1, str.size() - 2);
+      if (string_unescape_is_trivial(sub_str)) {
+        return string_or_view_t(sub_str);
+      }
+      else {
+        return string_or_view_t(string_unescaped(sub_str));
+      }
     }
     else {
       SILVA_ASSERT(false);
