@@ -28,8 +28,10 @@ namespace silva {
     - Primary,0 = "(" Atom+ ")"
     - Primary,1 = Terminal
     - Primary,2 = Nonterminal
-    - Nonterminal = identifier
-    - Terminal = { string "identifier" "operator" "string" "number" "any" }
+    - Nonterminal = identifier_regex("^[A-Z]")
+    - Terminal,0 = "identifier_regex" "(" Regex ")"
+    - Terminal,1 = { string "identifier" "operator" "string" "number" "any" }
+    - Regex = string
   )'");
 
   enum class seed_rule_t {
@@ -44,7 +46,9 @@ namespace silva {
     PRIMARY_1,
     PRIMARY_2,
     NONTERMINAL,
-    TERMINAL,
+    TERMINAL_0,
+    TERMINAL_1,
+    REGEX,
   };
 
   struct parse_root_t;

@@ -4,10 +4,10 @@
 
 using namespace silva;
 
-TEST_CASE("exclamation mark", "[parse_root_t][seed]")
+TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
 {
   const source_code_t frog_seed_source_code("frog.seed", R"'(
-    - Seed = Rule*
+    - Frog = Rule*
     - Rule = RuleName "=" Expr
     - RuleName = identifier
     - Expr = Primary+
@@ -16,6 +16,52 @@ TEST_CASE("exclamation mark", "[parse_root_t][seed]")
 
   const parse_root_t pr =
       SILVA_TRY_REQUIRE(parse_root_t::create(const_ptr_unowned(&frog_seed_source_code)));
+  const string_view_t expected_seed_pt = R"(
+[0]Seed,0                                         -
+  [0]Rule,0                                       Frog
+    [0]Nonterminal,0                              Frog
+    [1]Expr,1                                     Rule
+      [0]Atom,0                                   Rule
+        [0]Primary,2                              Rule
+          [0]Nonterminal,0                        Rule
+        [1]Suffix,0                               *
+  [1]Rule,0                                       Rule
+    [0]Nonterminal,0                              Rule
+    [1]Expr,1                                     RuleName
+      [0]Atom,0                                   RuleName
+        [0]Primary,2                              RuleName
+          [0]Nonterminal,0                        RuleName
+      [1]Atom,0                                   "="
+        [0]Primary,1                              "="
+          [0]Terminal,1                           "="
+      [2]Atom,0                                   Expr
+        [0]Primary,2                              Expr
+          [0]Nonterminal,0                        Expr
+  [2]Rule,0                                       RuleName
+    [0]Nonterminal,0                              RuleName
+    [1]Expr,1                                     identifier
+      [0]Atom,0                                   identifier
+        [0]Primary,1                              identifier
+          [0]Terminal,1                           identifier
+  [3]Rule,0                                       Expr
+    [0]Nonterminal,0                              Expr
+    [1]Expr,1                                     Primary
+      [0]Atom,0                                   Primary
+        [0]Primary,2                              Primary
+          [0]Nonterminal,0                        Primary
+        [1]Suffix,0                               +
+  [4]Rule,0                                       Primary
+    [0]Nonterminal,0                              Primary
+    [1]Expr,1                                     identifier
+      [0]Atom,0                                   identifier
+        [0]Primary,1                              identifier
+          [0]Terminal,1                           identifier
+      [1]Atom,0                                   "="
+        [0]Primary,1                              "="
+          [0]Terminal,1                           "="
+        [1]Suffix,0                               !
+)";
+  CHECK(parse_tree_to_string(*pr.seed_parse_tree) == expected_seed_pt.substr(1));
 
   const source_code_t frog_source_code("some.frog", R"'(
     SimpleFern = a b c
@@ -29,7 +75,7 @@ TEST_CASE("exclamation mark", "[parse_root_t][seed]")
   const parse_tree_t frog_pt = SILVA_TRY_REQUIRE(pr.apply(const_ptr_unowned(&frog_tokenization)));
 
   const string_view_t expected = R"(
-[0]Seed,0                                         SimpleFern
+[0]Frog,0                                         SimpleFern
   [0]Rule,0                                       SimpleFern
     [0]RuleName,0                                 SimpleFern
     [1]Expr,0                                     a

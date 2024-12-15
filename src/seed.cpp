@@ -22,6 +22,7 @@ namespace silva {
       optional_t<token_id_t> tt_emark       = lookup_token("!");
       optional_t<token_id_t> tt_amper       = lookup_token("&");
       optional_t<token_id_t> tt_identifier  = lookup_token("identifier");
+      optional_t<token_id_t> tt_id_regex    = lookup_token("identifier_regex");
       optional_t<token_id_t> tt_operator    = lookup_token("operator");
       optional_t<token_id_t> tt_string      = lookup_token("string");
       optional_t<token_id_t> tt_number      = lookup_token("number");
@@ -33,17 +34,35 @@ namespace silva {
       {
       }
 
+      expected_t<parse_tree_sub_t> regex()
+      {
+        parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+        gg_rule.set_rule_index(to_int(REGEX));
+        SILVA_EXPECT(token_data()->category == STRING);
+        token_index += 1;
+        return gg_rule.release();
+      }
+
       expected_t<parse_tree_sub_t> terminal()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(to_int(TERMINAL));
-        SILVA_EXPECT_FMT(num_tokens_left() >= 1, "Expected string");
-        SILVA_EXPECT_FMT(
-            token_data()->category == STRING || token_id() == tt_identifier ||
-                token_id() == tt_operator || token_id() == tt_string || token_id() == tt_number ||
-                token_id() == tt_any,
-            "Expected string or one of \"identifier\" \"operator\" \"string\" \"number\" \"any\"");
-        token_index += 1;
+        if (num_tokens_left() >= 4 && token_id(0) == tt_id_regex && token_id(1) == tt_paren_open) {
+          gg_rule.set_rule_index(to_int(TERMINAL_0));
+          token_index += 2;
+          gg_rule.sub += SILVA_TRY(regex());
+          SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_paren_close);
+          token_index += 1;
+        }
+        else {
+          gg_rule.set_rule_index(to_int(TERMINAL_1));
+          SILVA_EXPECT_FMT(num_tokens_left() >= 1, "Expected string");
+          SILVA_EXPECT_FMT(token_data()->category == STRING || token_id() == tt_identifier ||
+                               token_id() == tt_operator || token_id() == tt_string ||
+                               token_id() == tt_number || token_id() == tt_any,
+                           "Expected string or one of \"identifier\" \"operator\" \"string\" "
+                           "\"number\" \"any\"");
+          token_index += 1;
+        }
         return gg_rule.release();
       }
 
@@ -51,8 +70,9 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(NONTERMINAL));
-        SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_data()->category == IDENTIFIER,
-                         "Expected identifier");
+        SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_data()->category == IDENTIFIER &&
+                             !token_data()->str.empty() && std::isupper(token_data()->str.front()),
+                         "Expected nonterminal");
         token_index += 1;
         return gg_rule.release();
       }
@@ -223,6 +243,8 @@ namespace silva {
                 parse_root_t::rule_t{.name = "Primary", .precedence = 2},
                 parse_root_t::rule_t{.name = "Nonterminal", .precedence = 0},
                 parse_root_t::rule_t{.name = "Terminal", .precedence = 0},
+                parse_root_t::rule_t{.name = "Terminal", .precedence = 1},
+                parse_root_t::rule_t{.name = "Regex", .precedence = 0},
             },
     };
     return &retval;

@@ -45,7 +45,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     [1]Expr,1                                     "["
       [0]Atom,0                                   "["
         [0]Primary,1                              "["
-          [0]Terminal,0                           "["
+          [0]Terminal,1                           "["
       [1]Atom,0                                   (
         [0]Primary,0                              (
           [0]Atom,0                               LabeledItem
@@ -53,12 +53,12 @@ TEST_CASE("seed", "[seed][parse_root_t]")
               [0]Nonterminal,0                    LabeledItem
           [1]Atom,0                               ";"
             [0]Primary,1                          ";"
-              [0]Terminal,0                       ";"
+              [0]Terminal,1                       ";"
             [1]Suffix,0                           ?
         [1]Suffix,0                               *
       [2]Atom,0                                   "]"
         [0]Primary,1                              "]"
-          [0]Terminal,0                           "]"
+          [0]Terminal,1                           "]"
   [1]Rule,0                                       LabeledItem
     [0]Nonterminal,0                              LabeledItem
     [1]Expr,1                                     (
@@ -69,7 +69,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
               [0]Nonterminal,0                    Label
           [1]Atom,0                               ":"
             [0]Primary,1                          ":"
-              [0]Terminal,0                       ":"
+              [0]Terminal,1                       ":"
         [1]Suffix,0                               ?
       [1]Atom,0                                   Item
         [0]Primary,2                              Item
@@ -79,7 +79,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     [1]Expr,1                                     string
       [0]Atom,0                                   string
         [0]Primary,1                              string
-          [0]Terminal,0                           string
+          [0]Terminal,1                           string
   [3]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           0
@@ -93,7 +93,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     [2]Expr,1                                     string
       [0]Atom,0                                   string
         [0]Primary,1                              string
-          [0]Terminal,0                           string
+          [0]Terminal,1                           string
 )";
 
   CHECK(parse_tree_to_string(sf_seed_pt_1) == expected.substr(1));

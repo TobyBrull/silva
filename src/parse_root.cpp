@@ -74,6 +74,13 @@ namespace silva {
         },
         0);
     SILVA_EXPECT(result);
+    for (index_t node_index = 0; node_index < s_pt->nodes.size(); ++node_index) {
+      const auto& node = s_pt->nodes[node_index];
+      if (node.rule_index == to_int(REGEX)) {
+        string_t regex_str         = s_pt->tokenization->token_data(node.token_index)->as_string();
+        retval.regexes[node_index] = std::regex(std::move(regex_str));
+      }
+    }
     return retval;
   }
 
@@ -83,6 +90,30 @@ namespace silva {
     auto fern_seed_pt = SILVA_TRY(seed_parse(to_unique_ptr(std::move(tokenization))));
     auto retval       = SILVA_TRY(create(to_unique_ptr(std::move(fern_seed_pt))));
     return retval;
+  }
+
+  optional_t<index_t> parse_root_t::workspace_t::per_seed_token_id_t::get_target_token_id(
+      const tokenization_t::token_data_t* sp_token_data,
+      const tokenization_t* target_tokenization)
+  {
+    SILVA_ASSERT(sp_token_data->category == STRING);
+    if (std::holds_alternative<uncached_t>(target_token_id)) {
+      const string_t seed_terminal_string = sp_token_data->as_string();
+      const optional_t<index_t> result    = target_tokenization->lookup_token(seed_terminal_string);
+      if (result) {
+        target_token_id = result.value();
+      }
+      else {
+        target_token_id = none;
+      }
+    }
+    if (std::holds_alternative<none_t>(target_token_id)) {
+      return none;
+    }
+    else {
+      SILVA_ASSERT(std::holds_alternative<index_t>(target_token_id));
+      return std::get<index_t>(target_token_id);
+    }
   }
 
   namespace impl {
@@ -104,45 +135,53 @@ namespace silva {
         , workspace(workspace)
       {
         const index_t n = seed_pt->tokenization->token_datas.size();
-        workspace->seed_token_id_to_target_token_id.resize(n);
-        for (index_t i = 0; i < n; ++i) {
-          const auto* sp_token_data = &(seed_pt->tokenization->token_datas[i]);
-          if (sp_token_data->category == STRING) {
-            const string_t seed_terminal_string            = sp_token_data->as_string();
-            workspace->seed_token_id_to_target_token_id[i] = lookup_token(seed_terminal_string);
-          }
-          else {
-            workspace->seed_token_id_to_target_token_id[i] = none;
-          }
-        }
+        workspace->seed_token_id_data.assign(n, {});
       }
 
       expected_t<parse_tree_sub_t> apply_terminal(const index_t seed_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        const auto& seed_node          = seed_pt->nodes[seed_node_index];
-        const token_id_t seed_token_id = seed_pt->tokenization->tokens[seed_node.token_index];
-        if (seed_token_id == seed_tt_id) {
+        const auto& seed_node = seed_pt->nodes[seed_node_index];
+        if (seed_node.rule_index == to_int(TERMINAL_0)) {
           SILVA_EXPECT(token_data()->category == IDENTIFIER);
-        }
-        else if (seed_token_id == seed_tt_op) {
-          SILVA_EXPECT(token_data()->category == OPERATOR);
-        }
-        else if (seed_token_id == seed_tt_str) {
-          SILVA_EXPECT(token_data()->category == STRING);
-        }
-        else if (seed_token_id == seed_tt_num) {
-          SILVA_EXPECT(token_data()->category == NUMBER);
-        }
-        else if (seed_token_id == seed_tt_any) {
-          ;
+          SILVA_EXPECT(seed_node.num_children == 1);
+          const array_t<index_t, 1> seed_node_index_regex =
+              SILVA_TRY(seed_pt->get_children<1>(seed_node_index));
+          const auto it = retval.root->regexes.find(seed_node_index_regex[0]);
+          SILVA_ASSERT(it != retval.root->regexes.end());
+          const std::regex& re          = it->second;
+          const string_view_t token_str = token_data()->str;
+          const bool is_match           = std::regex_search(token_str.begin(), token_str.end(), re);
+          SILVA_EXPECT(is_match);
         }
         else {
-          const auto* sp_token_data = seed_pt->tokenization->token_data(seed_node.token_index);
-          SILVA_EXPECT(sp_token_data->category == STRING);
-          SILVA_EXPECT_FMT(token_id() == workspace->seed_token_id_to_target_token_id[seed_token_id],
-                           "Expected '{}'",
-                           sp_token_data->str);
+          SILVA_EXPECT(seed_node.rule_index == to_int(TERMINAL_1));
+          const token_id_t seed_token_id = seed_pt->tokenization->tokens[seed_node.token_index];
+          if (seed_token_id == seed_tt_id) {
+            SILVA_EXPECT(token_data()->category == IDENTIFIER);
+          }
+          else if (seed_token_id == seed_tt_op) {
+            SILVA_EXPECT(token_data()->category == OPERATOR);
+          }
+          else if (seed_token_id == seed_tt_str) {
+            SILVA_EXPECT(token_data()->category == STRING);
+          }
+          else if (seed_token_id == seed_tt_num) {
+            SILVA_EXPECT(token_data()->category == NUMBER);
+          }
+          else if (seed_token_id == seed_tt_any) {
+            ;
+          }
+          else {
+            const auto* sp_token_data = seed_pt->tokenization->token_data(seed_node.token_index);
+            SILVA_EXPECT(sp_token_data->category == STRING);
+            auto& seed_token_id_work = workspace->seed_token_id_data[seed_token_id];
+            const auto expected_target_token_id =
+                seed_token_id_work.get_target_token_id(sp_token_data, retval.tokenization.get());
+            SILVA_EXPECT_FMT(token_id() == expected_target_token_id,
+                             "Expected '{}'",
+                             sp_token_data->str);
+          }
         }
         token_index += 1;
         return gg.release();
@@ -183,8 +222,7 @@ namespace silva {
         const auto result = seed_pt->visit_children(
             [&](const index_t node_index, const index_t) -> expected_t<bool> {
               const auto& node = seed_pt->nodes[node_index];
-              SILVA_EXPECT(node.rule_index == to_int(TERMINAL));
-              auto result = apply_terminal(node_index);
+              auto result      = apply_terminal(node_index);
               if (result) {
                 found_match = true;
                 gg.sub += result.value();
