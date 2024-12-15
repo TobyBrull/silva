@@ -39,6 +39,20 @@ namespace silva {
     }
   }
 
+  string_or_view_t tokenization_t::token_data_t::as_string_or_view() const
+  {
+    if (category == token_category_t::IDENTIFIER) {
+      return str;
+    }
+    else if (category == token_category_t::STRING) {
+      SILVA_ASSERT(str.size() >= 2 && str.front() == '"' && str.back() == '"');
+      return string_unescaped(str.substr(1, str.size() - 2));
+    }
+    else {
+      SILVA_ASSERT(false);
+    }
+  }
+
   double tokenization_t::token_data_t::as_double() const
   {
     SILVA_ASSERT(category == token_category_t::NUMBER);

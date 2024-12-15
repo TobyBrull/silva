@@ -2,6 +2,7 @@
 
 #include "canopy/const_ptr.hpp"
 #include "canopy/source_code.hpp"
+#include "canopy/string_or_view.hpp"
 #include "canopy/types.hpp"
 
 namespace silva {
@@ -29,6 +30,7 @@ namespace silva {
       token_category_t category = token_category_t::INVALID;
 
       string_t as_string() const;
+      string_or_view_t as_string_or_view() const;
       double as_double() const;
 
       friend auto operator<=>(const token_data_t&, const token_data_t&) = default;
