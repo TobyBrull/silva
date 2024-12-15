@@ -49,7 +49,7 @@ namespace silva {
         if (num_tokens_left() >= 4 && token_id(0) == tt_id_regex && token_id(1) == tt_paren_open) {
           gg_rule.set_rule_index(to_int(TERMINAL_0));
           token_index += 2;
-          gg_rule.sub += SILVA_TRY(regex());
+          gg_rule.sub += SILVA_EXPECT_TRY(regex());
           SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_paren_close);
           token_index += 1;
         }
@@ -139,7 +139,7 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(ATOM));
-        gg_rule.sub += SILVA_TRY(primary());
+        gg_rule.sub += SILVA_EXPECT_TRY(primary());
         if (num_tokens_left() >= 1) {
           if (auto x = suffix(); x) {
             gg_rule.sub += x.value();
@@ -186,14 +186,14 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(RULE));
-        gg_rule.sub += SILVA_TRY(nonterminal());
+        gg_rule.sub += SILVA_EXPECT_TRY(nonterminal());
         if (num_tokens_left() >= 1 && token_id() == tt_comma) {
           token_index += 1;
-          gg_rule.sub += SILVA_TRY(rule_precedence());
+          gg_rule.sub += SILVA_EXPECT_TRY(rule_precedence());
         }
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_equal, "Expected ',' or '='");
         token_index += 1;
-        gg_rule.sub += SILVA_TRY(expr());
+        gg_rule.sub += SILVA_EXPECT_TRY(expr());
         return gg_rule.release();
       }
 
@@ -204,7 +204,7 @@ namespace silva {
         while (num_tokens_left() >= 1) {
           SILVA_EXPECT(token_id() == tt_dash, "Expected '-'");
           token_index += 1;
-          gg_rule.sub += SILVA_TRY(rule());
+          gg_rule.sub += SILVA_EXPECT_TRY(rule());
         }
         return gg_rule.release();
       }
@@ -214,14 +214,14 @@ namespace silva {
   expected_t<parse_tree_t> seed_parse(const_ptr_t<tokenization_t> tokenization)
   {
     impl::seed_parse_tree_nursery_t nursery(std::move(tokenization));
-    SILVA_TRY(nursery.seed());
+    SILVA_EXPECT_TRY(nursery.seed());
     return {std::move(nursery.retval)};
   }
 
   const parse_root_t* seed_parse_root()
   {
     static const parse_root_t retval =
-        SILVA_TRY_ASSERT(parse_root_t::create(const_ptr_unowned(&seed_seed_source_code)));
+        SILVA_ASSERT_EXPECTED(parse_root_t::create(const_ptr_unowned(&seed_seed_source_code)));
     return &retval;
   }
 

@@ -123,8 +123,8 @@ namespace silva {
         const bool is_leaf = (nodes[bi].children_end == bi + 1);
         next_child_index   = path.back().child_index + 1;
         if (!is_leaf) {
-          const bool cont =
-              SILVA_TRY(visitor(span_t<const visit_state_t>{path}, parse_tree_event_t::ON_EXIT));
+          const bool cont = SILVA_EXPECT_TRY(
+              visitor(span_t<const visit_state_t>{path}, parse_tree_event_t::ON_EXIT));
           if (!cont) {
             return {none};
           }
@@ -136,28 +136,30 @@ namespace silva {
 
     const index_t end_node_index = nodes[start_node_index].children_end;
     for (index_t node_index = start_node_index; node_index < end_node_index; ++node_index) {
-      const optional_t<index_t> maybe_new_child_index = SILVA_TRY(clean_stack_till(node_index));
+      const optional_t<index_t> maybe_new_child_index =
+          SILVA_EXPECT_TRY(clean_stack_till(node_index));
       if (!maybe_new_child_index) {
         return {};
       }
       path.push_back({.node_index = node_index, .child_index = maybe_new_child_index.value()});
       const bool is_leaf = (nodes[node_index].children_end == node_index + 1);
       if (is_leaf) {
-        const bool cont =
-            SILVA_TRY(visitor(span_t<const visit_state_t>{path}, parse_tree_event_t::ON_LEAF));
+        const bool cont = SILVA_EXPECT_TRY(
+            visitor(span_t<const visit_state_t>{path}, parse_tree_event_t::ON_LEAF));
         if (!cont) {
           return {};
         }
       }
       else {
-        const bool cont =
-            SILVA_TRY(visitor(span_t<const visit_state_t>{path}, parse_tree_event_t::ON_ENTRY));
+        const bool cont = SILVA_EXPECT_TRY(
+            visitor(span_t<const visit_state_t>{path}, parse_tree_event_t::ON_ENTRY));
         if (!cont) {
           return {};
         }
       }
     }
-    const optional_t<index_t> maybe_new_child_index = SILVA_TRY(clean_stack_till(end_node_index));
+    const optional_t<index_t> maybe_new_child_index =
+        SILVA_EXPECT_TRY(clean_stack_till(end_node_index));
     if (maybe_new_child_index) {
       SILVA_ASSERT(maybe_new_child_index.value() == 1);
       SILVA_ASSERT(path.empty());
@@ -173,7 +175,7 @@ namespace silva {
     const node_t& node       = nodes[parent_node_index];
     index_t child_node_index = parent_node_index + 1;
     for (index_t child_index = 0; child_index < node.num_children; ++child_index) {
-      const bool cont = SILVA_TRY(visitor(child_node_index, child_index));
+      const bool cont = SILVA_EXPECT_TRY(visitor(child_node_index, child_index));
       if (!cont) {
         break;
       }
@@ -188,7 +190,7 @@ namespace silva {
     const node_t& node = nodes[parent_node_index];
     SILVA_EXPECT(node.num_children == N);
     array_t<index_t, N> retval;
-    SILVA_TRY(visit_children(
+    SILVA_EXPECT_TRY(visit_children(
         [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
           retval[child_num] = child_node_index;
           return true;
@@ -204,7 +206,7 @@ namespace silva {
     const node_t& node = nodes[parent_node_index];
     SILVA_EXPECT(node.num_children <= N);
     small_vector_t<index_t, N> retval;
-    SILVA_TRY(visit_children(
+    SILVA_EXPECT_TRY(visit_children(
         [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
           retval.emplace_back(child_node_index);
           return true;

@@ -10,7 +10,7 @@ namespace silva {
 
   expected_t<unique_ptr_t<source_code_t>> source_code_t::load(filesystem_path_t fsp)
   {
-    string_t text = SILVA_TRY(read_file(fsp));
+    string_t text = SILVA_EXPECT_TRY(read_file(fsp));
     return std::make_unique<source_code_t>(std::move(fsp).filename(), std::move(text));
   }
 

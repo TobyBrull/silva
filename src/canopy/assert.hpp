@@ -13,10 +13,10 @@ namespace silva {
     }                                                                                       \
   } while (false)
 
-#define SILVA_TRY_ASSERT(x)                                         \
+#define SILVA_ASSERT_EXPECTED(x)                                    \
   ({                                                                \
     auto result = (x);                                              \
-    static_assert(is_expected<decltype(result)>::value);            \
+    static_assert(is_expected_t<decltype(result)>::value);          \
     SILVA_ASSERT(result, "Unexpected: {}", result.error().message); \
     std::move(result).value();                                      \
   })

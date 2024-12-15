@@ -22,10 +22,10 @@ TEST_CASE("fern", "[fern]")
 ])");
 
   const const_ptr_t<tokenization_t> tokenization =
-      to_unique_ptr(SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&fern_source_code))));
+      to_unique_ptr(SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&fern_source_code))));
 
-  const parse_tree_t pt_1 = SILVA_TRY_REQUIRE(fern_parse(tokenization));
-  const parse_tree_t pt_2 = SILVA_TRY_REQUIRE(fern_parse_root()->apply(tokenization));
+  const parse_tree_t pt_1 = SILVA_EXPECT_REQUIRE(fern_parse(tokenization));
+  const parse_tree_t pt_2 = SILVA_EXPECT_REQUIRE(fern_parse_root()->apply(tokenization));
   CHECK(pt_1.nodes == pt_2.nodes);
 
   const fern_t fern = fern_create(&pt_1);

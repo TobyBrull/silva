@@ -15,7 +15,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   )'");
 
   const parse_root_t pr =
-      SILVA_TRY_REQUIRE(parse_root_t::create(const_ptr_unowned(&frog_seed_source_code)));
+      SILVA_EXPECT_REQUIRE(parse_root_t::create(const_ptr_unowned(&frog_seed_source_code)));
   const string_view_t expected_seed_pt = R"(
 [0]Seed,0                                         -
   [0]Rule,0                                       Frog
@@ -71,8 +71,9 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   )'");
 
   const tokenization_t frog_tokenization =
-      SILVA_TRY_REQUIRE(tokenize(const_ptr_unowned(&frog_source_code)));
-  const parse_tree_t frog_pt = SILVA_TRY_REQUIRE(pr.apply(const_ptr_unowned(&frog_tokenization)));
+      SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&frog_source_code)));
+  const parse_tree_t frog_pt =
+      SILVA_EXPECT_REQUIRE(pr.apply(const_ptr_unowned(&frog_tokenization)));
 
   const string_view_t expected = R"(
 [0]Frog,0                                         SimpleFern

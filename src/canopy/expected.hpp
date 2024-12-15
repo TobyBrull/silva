@@ -16,10 +16,10 @@ namespace silva {
   using expected_t = std::expected<T, parse_error_t>;
 
   template<typename T>
-  struct is_expected : std::false_type {};
+  struct is_expected_t : std::false_type {};
 
   template<typename T>
-  struct is_expected<std::expected<T, parse_error_t>> : std::true_type {};
+  struct is_expected_t<std::expected<T, parse_error_t>> : std::true_type {};
 
 #define SILVA_EXPECT(x, ...)                                              \
   do {                                                                    \
@@ -28,24 +28,24 @@ namespace silva {
     }                                                                     \
   } while (false)
 
-#define SILVA_TRY(x)                                            \
-  ({                                                            \
-    auto result = (x);                                          \
-    static_assert(silva::is_expected<decltype(result)>::value); \
-    if (!result) {                                              \
-      return std::unexpected(std::move(result).error());        \
-    }                                                           \
-    std::move(result).value();                                  \
+#define SILVA_EXPECT_TRY(x)                                       \
+  ({                                                              \
+    auto result = (x);                                            \
+    static_assert(silva::is_expected_t<decltype(result)>::value); \
+    if (!result) {                                                \
+      return std::unexpected(std::move(result).error());          \
+    }                                                             \
+    std::move(result).value();                                    \
   })
 
 // For Catch2
-#define SILVA_TRY_REQUIRE(x)                                    \
-  ({                                                            \
-    auto result = (x);                                          \
-    static_assert(silva::is_expected<decltype(result)>::value); \
-    INFO((!result ? result.error().message : ""));              \
-    REQUIRE(result);                                            \
-    std::move(result).value();                                  \
+#define SILVA_EXPECT_REQUIRE(x)                                   \
+  ({                                                              \
+    auto result = (x);                                            \
+    static_assert(silva::is_expected_t<decltype(result)>::value); \
+    INFO((!result ? result.error().message : ""));                \
+    REQUIRE(result);                                              \
+    std::move(result).value();                                    \
   })
 }
 
