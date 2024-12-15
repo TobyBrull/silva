@@ -9,24 +9,24 @@ namespace silva {
 
   namespace impl {
     struct seed_parse_tree_nursery_t : public parse_tree_nursery_t {
-      optional_t<token_id_t> tt_dash        = lookup_token("-");
-      optional_t<token_id_t> tt_comma       = lookup_token(",");
-      optional_t<token_id_t> tt_paren_open  = lookup_token("(");
-      optional_t<token_id_t> tt_paren_close = lookup_token(")");
-      optional_t<token_id_t> tt_brack_open  = lookup_token("{");
-      optional_t<token_id_t> tt_brack_close = lookup_token("}");
-      optional_t<token_id_t> tt_equal       = lookup_token("=");
-      optional_t<token_id_t> tt_qmark       = lookup_token("?");
-      optional_t<token_id_t> tt_star        = lookup_token("*");
-      optional_t<token_id_t> tt_plus        = lookup_token("+");
-      optional_t<token_id_t> tt_emark       = lookup_token("!");
-      optional_t<token_id_t> tt_amper       = lookup_token("&");
-      optional_t<token_id_t> tt_identifier  = lookup_token("identifier");
-      optional_t<token_id_t> tt_id_regex    = lookup_token("identifier_regex");
-      optional_t<token_id_t> tt_operator    = lookup_token("operator");
-      optional_t<token_id_t> tt_string      = lookup_token("string");
-      optional_t<token_id_t> tt_number      = lookup_token("number");
-      optional_t<token_id_t> tt_any         = lookup_token("any");
+      optional_t<token_id_t> tt_dash        = retval.tokenization->lookup_token("-");
+      optional_t<token_id_t> tt_comma       = retval.tokenization->lookup_token(",");
+      optional_t<token_id_t> tt_paren_open  = retval.tokenization->lookup_token("(");
+      optional_t<token_id_t> tt_paren_close = retval.tokenization->lookup_token(")");
+      optional_t<token_id_t> tt_brack_open  = retval.tokenization->lookup_token("{");
+      optional_t<token_id_t> tt_brack_close = retval.tokenization->lookup_token("}");
+      optional_t<token_id_t> tt_equal       = retval.tokenization->lookup_token("=");
+      optional_t<token_id_t> tt_qmark       = retval.tokenization->lookup_token("?");
+      optional_t<token_id_t> tt_star        = retval.tokenization->lookup_token("*");
+      optional_t<token_id_t> tt_plus        = retval.tokenization->lookup_token("+");
+      optional_t<token_id_t> tt_emark       = retval.tokenization->lookup_token("!");
+      optional_t<token_id_t> tt_amper       = retval.tokenization->lookup_token("&");
+      optional_t<token_id_t> tt_identifier  = retval.tokenization->lookup_token("identifier");
+      optional_t<token_id_t> tt_id_regex    = retval.tokenization->lookup_token("identifier_regex");
+      optional_t<token_id_t> tt_operator    = retval.tokenization->lookup_token("operator");
+      optional_t<token_id_t> tt_string      = retval.tokenization->lookup_token("string");
+      optional_t<token_id_t> tt_number      = retval.tokenization->lookup_token("number");
+      optional_t<token_id_t> tt_any         = retval.tokenization->lookup_token("any");
 
       seed_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization),

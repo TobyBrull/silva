@@ -78,11 +78,6 @@ namespace silva {
     retval.root         = std::move(parse_root);
   }
 
-  optional_t<token_id_t> parse_tree_nursery_t::lookup_token(const string_view_t str)
-  {
-    return retval.tokenization->lookup_token(str);
-  }
-
   const index_t parse_tree_nursery_t::num_tokens_left() const
   {
     return retval.tokenization->tokens.size() - token_index;

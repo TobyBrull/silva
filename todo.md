@@ -1,7 +1,5 @@
 # TODO
 
-* remove parse_tree_nursery_t::lookup_token
-
 * code review
 
 * Error handling:

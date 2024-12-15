@@ -18,13 +18,13 @@ namespace silva {
 
   namespace impl {
     struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
-      optional_t<token_id_t> tt_brkt_open  = lookup_token("[");
-      optional_t<token_id_t> tt_brkt_close = lookup_token("]");
-      optional_t<token_id_t> tt_semi_colon = lookup_token(";");
-      optional_t<token_id_t> tt_colon      = lookup_token(":");
-      optional_t<token_id_t> tt_none       = lookup_token("none");
-      optional_t<token_id_t> tt_true       = lookup_token("true");
-      optional_t<token_id_t> tt_false      = lookup_token("false");
+      optional_t<token_id_t> tt_brkt_open  = retval.tokenization->lookup_token("[");
+      optional_t<token_id_t> tt_brkt_close = retval.tokenization->lookup_token("]");
+      optional_t<token_id_t> tt_semi_colon = retval.tokenization->lookup_token(";");
+      optional_t<token_id_t> tt_colon      = retval.tokenization->lookup_token(":");
+      optional_t<token_id_t> tt_none       = retval.tokenization->lookup_token("none");
+      optional_t<token_id_t> tt_true       = retval.tokenization->lookup_token("true");
+      optional_t<token_id_t> tt_false      = retval.tokenization->lookup_token("false");
 
       fern_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization), const_ptr_unowned(fern_parse_root()))

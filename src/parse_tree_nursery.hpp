@@ -52,8 +52,6 @@ namespace silva {
 
     parse_tree_nursery_t(const_ptr_t<tokenization_t>, const_ptr_t<parse_root_t>);
 
-    optional_t<token_id_t> lookup_token(string_view_t str);
-
     const index_t num_tokens_left() const;
 
     const token_id_t token_id(index_t token_index_offset = 0) const;
