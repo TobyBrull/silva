@@ -49,7 +49,7 @@ silva_main(const int argc, char* argv[])
       graphviz_show_sync(fern.to_graphviz());
     }
     else {
-      SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);
+      SILVA_EXPECT(false, "Unknown -p/--process parameter '{}'", arg_process);
     }
   }
   else if (arg_process.starts_with("direct/")) {
@@ -64,7 +64,7 @@ silva_main(const int argc, char* argv[])
       graphviz_show_sync(fern_to_graphviz(&pt));
     }
     else {
-      SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);
+      SILVA_EXPECT(false, "Unknown -p/--process parameter '{}'", arg_process);
     }
   }
   else if (arg_process.starts_with("parse_tree/")) {
@@ -79,11 +79,11 @@ silva_main(const int argc, char* argv[])
       graphviz_show_sync(parse_tree_to_graphviz(pt));
     }
     else {
-      SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);
+      SILVA_EXPECT(false, "Unknown -p/--process parameter '{}'", arg_process);
     }
   }
   else {
-    SILVA_EXPECT_FMT(false, "Unknown -p/--process parameter '{}'", arg_process);
+    SILVA_EXPECT(false, "Unknown -p/--process parameter '{}'", arg_process);
   }
 
   return {};

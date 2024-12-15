@@ -56,11 +56,11 @@ namespace silva {
         else {
           gg_rule.set_rule_index(to_int(TERMINAL_1));
           SILVA_EXPECT_FMT(num_tokens_left() >= 1, "Expected string");
-          SILVA_EXPECT_FMT(token_data()->category == STRING || token_id() == tt_identifier ||
-                               token_id() == tt_operator || token_id() == tt_string ||
-                               token_id() == tt_number || token_id() == tt_any,
-                           "Expected string or one of \"identifier\" \"operator\" \"string\" "
-                           "\"number\" \"any\"");
+          SILVA_EXPECT(token_data()->category == STRING || token_id() == tt_identifier ||
+                           token_id() == tt_operator || token_id() == tt_string ||
+                           token_id() == tt_number || token_id() == tt_any,
+                       "Expected string or one of \"identifier\" \"operator\" \"string\" "
+                       "\"number\" \"any\"");
           token_index += 1;
         }
         return gg_rule.release();
@@ -70,9 +70,9 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(NONTERMINAL));
-        SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_data()->category == IDENTIFIER &&
-                             !token_data()->str.empty() && std::isupper(token_data()->str.front()),
-                         "Expected nonterminal");
+        SILVA_EXPECT(num_tokens_left() >= 1 && token_data()->category == IDENTIFIER &&
+                         !token_data()->str.empty() && std::isupper(token_data()->str.front()),
+                     "Expected nonterminal");
         token_index += 1;
         return gg_rule.release();
       }
@@ -81,8 +81,7 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(seed_rule_t::RULE_PRECEDENCE));
-        SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_data()->category == NUMBER,
-                         "Expected number");
+        SILVA_EXPECT(num_tokens_left() >= 1 && token_data()->category == NUMBER, "Expected number");
         token_index += 1;
         return gg_rule.release();
       }
@@ -90,7 +89,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> primary()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT_FMT(num_tokens_left() >= 1, "Expected primary expression");
+        SILVA_EXPECT(num_tokens_left() >= 1, "Expected primary expression");
         if (token_id() == tt_paren_open) {
           token_index += 1;
           gg_rule.set_rule_index(to_int(PRIMARY_0));
@@ -104,8 +103,8 @@ namespace silva {
               break;
             }
           }
-          SILVA_EXPECT_FMT(num_atoms >= 1, "Expected at least one atom");
-          SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_id() == tt_paren_close, "Expected ')'");
+          SILVA_EXPECT(num_atoms >= 1, "Expected at least one atom");
+          SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_paren_close, "Expected ')'");
           token_index += 1;
         }
         else {
@@ -118,7 +117,7 @@ namespace silva {
             gg_rule.set_rule_index(to_int(PRIMARY_2));
           }
           else {
-            SILVA_UNEXPECTED_FMT("Could not parse primary expression");
+            SILVA_EXPECT(false, "Could not parse primary expression");
           }
         }
         return gg_rule.release();
@@ -127,10 +126,10 @@ namespace silva {
       expected_t<parse_tree_sub_t> suffix()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT_FMT(num_tokens_left() >= 1, "Expected operator");
-        SILVA_EXPECT_FMT(token_id() == tt_qmark || token_id() == tt_star || token_id() == tt_plus ||
-                             token_id() == tt_emark || token_id() == tt_amper,
-                         "Expected one of \"?\" \"*\" \"+\" \"!\" \"&\"");
+        SILVA_EXPECT(num_tokens_left() >= 1, "Expected operator");
+        SILVA_EXPECT(token_id() == tt_qmark || token_id() == tt_star || token_id() == tt_plus ||
+                         token_id() == tt_emark || token_id() == tt_amper,
+                     "Expected one of \"?\" \"*\" \"+\" \"!\" \"&\"");
         gg_rule.set_rule_index(to_int(SUFFIX));
         token_index += 1;
         return gg_rule.release();
@@ -165,8 +164,8 @@ namespace silva {
               break;
             }
           }
-          SILVA_EXPECT_FMT(terminal_count >= 1, "Could not parse any terminals");
-          SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_id() == tt_brack_close, "Expected '}}'");
+          SILVA_EXPECT(terminal_count >= 1, "Could not parse any terminals");
+          SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brack_close, "Expected '}}'");
           token_index += 1;
         }
         else {
@@ -192,7 +191,7 @@ namespace silva {
           token_index += 1;
           gg_rule.sub += SILVA_TRY(rule_precedence());
         }
-        SILVA_EXPECT_FMT(num_tokens_left() >= 1 && token_id() == tt_equal, "Expected ',' or '='");
+        SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_equal, "Expected ',' or '='");
         token_index += 1;
         gg_rule.sub += SILVA_TRY(expr());
         return gg_rule.release();
@@ -203,7 +202,7 @@ namespace silva {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(SEED));
         while (num_tokens_left() >= 1) {
-          SILVA_EXPECT_FMT(token_id() == tt_dash, "Expected '-'");
+          SILVA_EXPECT(token_id() == tt_dash, "Expected '-'");
           token_index += 1;
           gg_rule.sub += SILVA_TRY(rule());
         }

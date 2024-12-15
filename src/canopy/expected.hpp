@@ -2,10 +2,8 @@
 
 #include "types.hpp"
 
-#include <fmt/base.h>
-#include <fmt/format.h>
-
 #include <expected>
+#include <format>
 
 namespace silva {
   struct parse_error_t {
@@ -23,39 +21,45 @@ namespace silva {
   template<typename T>
   struct is_expected<std::expected<T, parse_error_t>> : std::true_type {};
 
-#define SILVA_EXPECT(x)                                              \
-  do {                                                               \
-    if (!(x)) {                                                      \
-      return std::unexpected(parse_error_t{"unexpected condition"}); \
-    }                                                                \
+#define SILVA_EXPECT(x, ...)                                              \
+  do {                                                                    \
+    if (!(x)) {                                                           \
+      return std::unexpected(silva::impl::make_parse_error(__VA_ARGS__)); \
+    }                                                                     \
   } while (false)
 
-#define SILVA_EXPECT_FMT(x, msg, ...)                                                     \
-  do {                                                                                    \
-    if (!(x)) {                                                                           \
-      return std::unexpected(parse_error_t{fmt::format(msg __VA_OPT__(, ) __VA_ARGS__)}); \
-    }                                                                                     \
-  } while (false)
-
-#define SILVA_UNEXPECTED()        SILVA_EXPECT(false);
-#define SILVA_UNEXPECTED_FMT(...) SILVA_EXPECT_FMT(false, __VA_ARGS__);
-
-#define SILVA_TRY(x)                                     \
-  ({                                                     \
-    auto result = (x);                                   \
-    static_assert(is_expected<decltype(result)>::value); \
-    if (!result) {                                       \
-      return std::unexpected(std::move(result).error()); \
-    }                                                    \
-    std::move(result).value();                           \
+#define SILVA_TRY(x)                                            \
+  ({                                                            \
+    auto result = (x);                                          \
+    static_assert(silva::is_expected<decltype(result)>::value); \
+    if (!result) {                                              \
+      return std::unexpected(std::move(result).error());        \
+    }                                                           \
+    std::move(result).value();                                  \
   })
 
-#define SILVA_TRY_REQUIRE(x)                             \
-  ({                                                     \
-    auto result = (x);                                   \
-    static_assert(is_expected<decltype(result)>::value); \
-    INFO((!result ? result.error().message : ""));       \
-    REQUIRE(result);                                     \
-    std::move(result).value();                           \
+// For Catch2
+#define SILVA_TRY_REQUIRE(x)                                    \
+  ({                                                            \
+    auto result = (x);                                          \
+    static_assert(silva::is_expected<decltype(result)>::value); \
+    INFO((!result ? result.error().message : ""));              \
+    REQUIRE(result);                                            \
+    std::move(result).value();                                  \
   })
+}
+
+// IMPLEMENTATION
+
+namespace silva::impl {
+  inline parse_error_t make_parse_error()
+  {
+    return parse_error_t{"unexpected condition"};
+  }
+
+  template<typename... Args>
+  parse_error_t make_parse_error(std::format_string<Args...> fmt_str, Args&&... args)
+  {
+    return parse_error_t{std::format(fmt_str, std::forward<Args>(args)...)};
+  }
 }

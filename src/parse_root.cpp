@@ -17,7 +17,7 @@ namespace silva {
       goal_rule_name = rule_name;
     }
     if (precedence > 0) {
-      SILVA_EXPECT_FMT(
+      SILVA_EXPECT(
           !rules.empty() && rules.back().name == rule_name &&
               rules.back().precedence + 1 == precedence,
           "Rule with positive precedence did not follow rule with the same name and preceeding "
@@ -31,7 +31,7 @@ namespace silva {
     });
     if (precedence == 0) {
       const auto [it, inserted] = rule_name_offsets.emplace(rule_name, offset);
-      SILVA_EXPECT_FMT(
+      SILVA_EXPECT(
           inserted,
           "Repeated rule name that was not consecutive with linearly increasing precedence");
     }
@@ -45,29 +45,29 @@ namespace silva {
     const parse_tree_t* s_pt  = retval.seed_parse_tree.get();
     const parse_root_t* s_ptr = retval.seed_parse_tree->root.get();
     const auto& s_nodes       = s_pt->nodes;
-    SILVA_EXPECT_FMT(s_ptr == seed_parse_root_primordial() || s_ptr == seed_parse_root(),
-                     "Not a seed parse_tree");
-    SILVA_EXPECT_FMT(!s_nodes.empty() && s_nodes.front().rule_index == to_int(SEED),
-                     "Seed parse_tree should start with SEED node");
+    SILVA_EXPECT(s_ptr == seed_parse_root_primordial() || s_ptr == seed_parse_root(),
+                 "Not a seed parse_tree");
+    SILVA_EXPECT(!s_nodes.empty() && s_nodes.front().rule_index == to_int(SEED),
+                 "Seed parse_tree should start with SEED node");
     const auto result = s_pt->visit_children(
         [&](const index_t rule_node_index, index_t) -> expected_t<bool> {
-          SILVA_EXPECT_FMT(s_nodes[rule_node_index].rule_index == to_int(RULE), "");
+          SILVA_EXPECT(s_nodes[rule_node_index].rule_index == to_int(RULE), "");
           const small_vector_t<index_t, 3> children =
               SILVA_TRY(s_pt->get_children_up_to<3>(rule_node_index));
-          SILVA_EXPECT_FMT(s_nodes[children[0]].rule_index == to_int(NONTERMINAL),
-                           "First child of RULE must be RULE_NAME ");
+          SILVA_EXPECT(s_nodes[children[0]].rule_index == to_int(NONTERMINAL),
+                       "First child of RULE must be RULE_NAME ");
           const string_view_t name =
               s_pt->tokenization->token_data(s_nodes[children[0]].token_index)->str;
           index_t rule_precedence = 0;
           if (children.size == 3) {
-            SILVA_EXPECT_FMT(s_nodes[children[1]].rule_index == to_int(RULE_PRECEDENCE),
-                             "Middle child of RULE must be RULE_PRECEDENCE");
+            SILVA_EXPECT(s_nodes[children[1]].rule_index == to_int(RULE_PRECEDENCE),
+                         "Middle child of RULE must be RULE_PRECEDENCE");
             rule_precedence =
                 s_pt->tokenization->token_data(s_nodes[children[1]].token_index)->as_double();
           }
           const index_t ri = s_nodes[children.back()].rule_index;
-          SILVA_EXPECT_FMT(to_int(EXPR_0) <= ri && ri <= to_int(EXPR_1),
-                           "Last child of RULE must be EXPR");
+          SILVA_EXPECT(to_int(EXPR_0) <= ri && ri <= to_int(EXPR_1),
+                       "Last child of RULE must be EXPR");
           index_t expr_node_index = children.back();
           SILVA_TRY(retval.add_rule(name, rule_precedence, expr_node_index));
           return true;
@@ -179,9 +179,9 @@ namespace silva {
             auto& seed_token_id_work = workspace->seed_token_id_data[seed_token_id];
             const auto expected_target_token_id =
                 seed_token_id_work.get_target_token_id(sp_token_data, retval.tokenization.get());
-            SILVA_EXPECT_FMT(token_id() == expected_target_token_id,
-                             "Expected '{}'",
-                             sp_token_data->str);
+            SILVA_EXPECT(token_id() == expected_target_token_id,
+                         "Expected '{}'",
+                         sp_token_data->str);
           }
         }
         token_index += 1;
@@ -211,7 +211,7 @@ namespace silva {
           gg.sub += SILVA_TRY(apply_rule(seed_token->str));
         }
         else {
-          SILVA_UNEXPECTED();
+          SILVA_EXPECT(false);
         }
         return gg.release();
       }
@@ -232,7 +232,7 @@ namespace silva {
               return true;
             },
             seed_node_index);
-        SILVA_EXPECT_FMT(found_match, "could not find match");
+        SILVA_EXPECT(found_match, "could not find match");
         return gg.release();
       }
 
@@ -258,8 +258,8 @@ namespace silva {
         const auto result = seed_pt->visit_children(
             [&](const index_t seed_node_index_atom, const index_t) -> expected_t<bool> {
               const auto& seed_node_atom = seed_pt->nodes[seed_node_index_atom];
-              SILVA_EXPECT_FMT(seed_node_atom.rule_index == to_int(ATOM),
-                               "expected atom in seed parse-tree");
+              SILVA_EXPECT(seed_node_atom.rule_index == to_int(ATOM),
+                           "expected atom in seed parse-tree");
               optional_t<char> suffix_char;
               const small_vector_t<index_t, 2> children =
                   SILVA_TRY(seed_pt->get_children_up_to<2>(seed_node_index_atom));
@@ -272,7 +272,7 @@ namespace silva {
                 suffix_char = suffix_op.front();
               }
               else {
-                SILVA_EXPECT_FMT(children.size == 1, "Atom had unexpected number of children");
+                SILVA_EXPECT(children.size == 1, "Atom had unexpected number of children");
               }
               const index_t seed_node_index_primary = children[0];
 
@@ -294,24 +294,24 @@ namespace silva {
                     repeat_count += 1;
                   }
                 }
-                SILVA_EXPECT_FMT(min_repeat <= repeat_count,
-                                 "min-repeat (={}) not reached, only found {}",
-                                 min_repeat,
-                                 repeat_count);
+                SILVA_EXPECT(min_repeat <= repeat_count,
+                             "min-repeat (={}) not reached, only found {}",
+                             min_repeat,
+                             repeat_count);
                 gg.sub += sub_sub;
               }
               else if (suffix_char.value() == '!') {
                 parse_tree_guard_t inner_ptg{&retval, &token_index};
                 const auto result = apply_primary(seed_node_index_primary);
-                SILVA_EXPECT_FMT(!result, "Managed to parse negative primary expression");
+                SILVA_EXPECT(!result, "Managed to parse negative primary expression");
               }
               else if (suffix_char.value() == '&') {
                 parse_tree_guard_t inner_ptg{&retval, &token_index};
                 const auto result = apply_primary(seed_node_index_primary);
-                SILVA_EXPECT_FMT(result, "Did not manage to parse positive primary expression");
+                SILVA_EXPECT(result, "Did not manage to parse positive primary expression");
               }
               else {
-                SILVA_UNEXPECTED();
+                SILVA_EXPECT(false);
               }
               return true;
             },
@@ -330,7 +330,7 @@ namespace silva {
           return apply_expr_1(seed_node_index);
         }
         else {
-          SILVA_UNEXPECTED_FMT("Unable to apply expr");
+          SILVA_EXPECT(false, "Unable to apply expr");
         }
       }
 
@@ -338,9 +338,7 @@ namespace silva {
       {
         const index_t orig_token_index = token_index;
         const auto it{retval.root->rule_name_offsets.find(rule_name)};
-        SILVA_EXPECT_FMT(it != retval.root->rule_name_offsets.end(),
-                         "Unknown rule '{}'",
-                         rule_name);
+        SILVA_EXPECT(it != retval.root->rule_name_offsets.end(), "Unknown rule '{}'", rule_name);
         const index_t base_rule_offset = it->second;
         index_t rule_offset            = it->second;
         while (rule_offset < retval.root->rules.size()) {
@@ -357,7 +355,7 @@ namespace silva {
           }
           rule_offset += 1;
         }
-        SILVA_UNEXPECTED_FMT("unable to parse rule '{}' at token {}", rule_name, orig_token_index);
+        SILVA_EXPECT(false, "unable to parse rule '{}' at token {}", rule_name, orig_token_index);
       }
     };
   }
