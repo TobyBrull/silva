@@ -173,8 +173,8 @@ namespace silva {
           if (node.rule_index == to_int(LABELED_ITEM)) {
             if (is_on_entry(event)) {
               string_t prev_path = curr_path;
-              curr_path += fmt::format("{}/", path.back().child_index);
-              retval += fmt::format("  \"{}\" -> \"{}\"\n", prev_path, curr_path);
+              curr_path += std::format("{}/", path.back().child_index);
+              retval += std::format("  \"{}\" -> \"{}\"\n", prev_path, curr_path);
             }
             if (is_on_exit(event)) {
               curr_path.pop_back();
@@ -190,7 +190,7 @@ namespace silva {
           else if (node.rule_index == to_int(ITEM_1)) {
             if (last_label_str.has_value()) {
               retval +=
-                  fmt::format("  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
+                  std::format("  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
                               curr_path,
                               curr_path,
                               string_escaped(last_label_str.value()),
@@ -198,7 +198,7 @@ namespace silva {
             }
             else {
               retval +=
-                  fmt::format("  \"{}\" [label=\"{}\\n{}\"]\n",
+                  std::format("  \"{}\" [label=\"{}\\n{}\"]\n",
                               curr_path,
                               curr_path,
                               string_escaped(pt->tokenization->token_data(node.token_index)->str));
@@ -230,8 +230,8 @@ namespace silva {
 
     string_t operator()(none_t) { return "none"; }
     string_t operator()(const bool arg) { return arg ? "true" : "false"; }
-    string_t operator()(const string_t& arg) { return fmt::format("\"{}\"", arg); }
-    string_t operator()(const double arg) { return fmt::format("{}", arg); }
+    string_t operator()(const string_t& arg) { return std::format("\"{}\"", arg); }
+    string_t operator()(const double arg) { return std::format("{}", arg); }
     string_t operator()(const unique_ptr_t<fern_t>& arg) { return arg->to_string(indent + 2); }
   };
 
@@ -279,8 +279,8 @@ namespace silva {
                                    const string_view_t parent_name,
                                    const string_view_t item_name)
     {
-      retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_name, item_name);
-      string_t label_str = label.has_value() ? fmt::format("\\n[\\\"{}\\\"]", label.value()) : "";
+      retval += std::format("  \"{}\" -> \"{}\"\n", parent_name, item_name);
+      string_t label_str = label.has_value() ? std::format("\\n[\\\"{}\\\"]", label.value()) : "";
       struct visitor {
         string_t& retval;
         const string_view_t label_str;
@@ -290,11 +290,11 @@ namespace silva {
         void operator()(none_t) const
         {
           retval +=
-              fmt::format("  \"{}\" [label=\"{}{}\\nnone\"]\n", item_name, item_name, label_str);
+              std::format("  \"{}\" [label=\"{}{}\\nnone\"]\n", item_name, item_name, label_str);
         }
         void operator()(const bool value) const
         {
-          retval += fmt::format("  \"{}\" [label=\"{}\\n{}{}\"]\n",
+          retval += std::format("  \"{}\" [label=\"{}\\n{}{}\"]\n",
                                 item_name,
                                 item_name,
                                 label_str,
@@ -302,7 +302,7 @@ namespace silva {
         }
         void operator()(const double value) const
         {
-          retval += fmt::format("  \"{}\" [label=\"{}{}\\n{}\"]\n",
+          retval += std::format("  \"{}\" [label=\"{}{}\\n{}\"]\n",
                                 item_name,
                                 item_name,
                                 label_str,
@@ -310,7 +310,7 @@ namespace silva {
         }
         void operator()(const string_t& value) const
         {
-          retval += fmt::format("  \"{}\" [label=\"{}{}\\n\\\"{}\\\"\"]\n",
+          retval += std::format("  \"{}\" [label=\"{}{}\\n\\\"{}\\\"\"]\n",
                                 item_name,
                                 item_name,
                                 label_str,
@@ -343,7 +343,7 @@ namespace silva {
                                   labels[i],
                                   fern.items[i],
                                   prefix,
-                                  fmt::format("{}{}/", prefix, i));
+                                  std::format("{}{}/", prefix, i));
       }
     }
   }
@@ -401,7 +401,7 @@ namespace silva {
                     retval.item.value = token_data->as_double();
                   }
                   else {
-                    SILVA_ASSERT_FMT(false, "Unknown item '{}'", token_data->str);
+                    SILVA_ASSERT(false, "Unknown item '{}'", token_data->str);
                   }
                 }
               }

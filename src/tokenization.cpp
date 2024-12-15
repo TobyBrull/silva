@@ -363,7 +363,7 @@ namespace silva {
       const token_id_t id        = tokens[index];
       const auto& td             = token_datas[id];
       const source_location_t sl = retokenize_source_location(index);
-      retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", index, sl.line + 1, sl.column + 1, td.str);
+      retval += std::format("[{:3}] {:3}:{:<3} {}\n", index, sl.line + 1, sl.column + 1, td.str);
     }
     return retval;
   }

@@ -6,6 +6,7 @@
 #include "parse_root.hpp"
 
 #include <cxxopts.hpp>
+#include <fmt/base.h>
 
 using namespace silva;
 

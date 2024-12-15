@@ -71,7 +71,7 @@ namespace silva {
     const filesystem_path_t path_dot = td.get_dir_path() / "silva.dot";
     const filesystem_path_t path_png = td.get_dir_path() / "silva.png";
     SILVA_ASSERT(write_file(path_dot, dotfile));
-    run_shell_command_sync(fmt::format("dot -Tpng {} -o {}", path_dot.string(), path_png.string()));
-    run_shell_command_sync(fmt::format("eog {}", path_png.string()));
+    run_shell_command_sync(std::format("dot -Tpng {} -o {}", path_dot.string(), path_png.string()));
+    run_shell_command_sync(std::format("eog {}", path_png.string()));
   }
 }

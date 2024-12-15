@@ -55,7 +55,7 @@ namespace silva {
         }
         else {
           gg_rule.set_rule_index(to_int(TERMINAL_1));
-          SILVA_EXPECT_FMT(num_tokens_left() >= 1, "Expected string");
+          SILVA_EXPECT(num_tokens_left() >= 1, "Expected string");
           SILVA_EXPECT(token_data()->category == STRING || token_id() == tt_identifier ||
                            token_id() == tt_operator || token_id() == tt_string ||
                            token_id() == tt_number || token_id() == tt_any,
