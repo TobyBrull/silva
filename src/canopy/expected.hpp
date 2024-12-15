@@ -1,25 +1,19 @@
 #pragma once
 
-#include "types.hpp"
+#include "error.hpp"
 
 #include <expected>
 #include <format>
 
 namespace silva {
-  struct parse_error_t {
-    string_t message;
-
-    parse_error_t(std::string message) : message(std::move(message)) {}
-  };
-
   template<typename T>
-  using expected_t = std::expected<T, parse_error_t>;
+  using expected_t = std::expected<T, error_t>;
 
   template<typename T>
   struct is_expected_t : std::false_type {};
 
   template<typename T>
-  struct is_expected_t<std::expected<T, parse_error_t>> : std::true_type {};
+  struct is_expected_t<std::expected<T, error_t>> : std::true_type {};
 
 #define SILVA_EXPECT(x, ...)                                              \
   do {                                                                    \
@@ -43,7 +37,7 @@ namespace silva {
   ({                                                              \
     auto result = (x);                                            \
     static_assert(silva::is_expected_t<decltype(result)>::value); \
-    INFO((!result ? result.error().message : ""));                \
+    INFO((!result ? result.error().message.get_view() : ""));     \
     REQUIRE(result);                                              \
     std::move(result).value();                                    \
   })
@@ -52,14 +46,20 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva::impl {
-  inline parse_error_t make_parse_error()
+  inline error_t make_parse_error()
   {
-    return parse_error_t{"unexpected condition"};
+    return error_t{string_or_view_t{string_view_t{"unexpected condition"}}};
+  }
+
+  inline error_t make_parse_error(string_view_t string_view)
+  {
+    return error_t{string_or_view_t{string_view}};
   }
 
   template<typename... Args>
-  parse_error_t make_parse_error(std::format_string<Args...> fmt_str, Args&&... args)
+    requires(sizeof...(Args) > 0)
+  error_t make_parse_error(std::format_string<Args...> fmt_str, Args&&... args)
   {
-    return parse_error_t{std::format(fmt_str, std::forward<Args>(args)...)};
+    return error_t{string_or_view_t{std::format(fmt_str, std::forward<Args>(args)...)}};
   }
 }
