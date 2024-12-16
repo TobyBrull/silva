@@ -11,7 +11,7 @@ namespace silva {
     void operator+=(const parse_tree_sub_t& other);
   };
 
-  struct parse_tree_guard_t {
+  struct parse_tree_guard_t : public menhir_t {
     parse_tree_t* pt         = nullptr;
     index_t* token_index     = nullptr;
     index_t orig_node_size   = 0;
