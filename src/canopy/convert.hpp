@@ -12,4 +12,7 @@ namespace silva {
 
   string_t string_escaped(string_view_t unescaped_string);
   string_t string_unescaped(string_view_t escaped_string);
+
+  string_or_view_t string_or_view_escaped(string_view_t unescaped_string);
+  string_or_view_t string_or_view_unescaped(string_view_t escaped_string);
 }

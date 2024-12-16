@@ -47,12 +47,7 @@ namespace silva {
     else if (category == token_category_t::STRING) {
       SILVA_ASSERT(str.size() >= 2 && str.front() == '"' && str.back() == '"');
       const string_view_t sub_str = str.substr(1, str.size() - 2);
-      if (string_unescape_is_trivial(sub_str)) {
-        return string_or_view_t(sub_str);
-      }
-      else {
-        return string_or_view_t(string_unescaped(sub_str));
-      }
+      return string_or_view_unescaped(sub_str);
     }
     else {
       SILVA_ASSERT(false);

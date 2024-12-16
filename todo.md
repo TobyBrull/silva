@@ -1,5 +1,11 @@
 # TODO
 
+* context:
+    * logging
+    * error_t
+    * testing
+    * use env_context instead of cxxopts
+
 * code review
 
 * Error handling:

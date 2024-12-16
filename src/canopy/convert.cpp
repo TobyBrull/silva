@@ -109,4 +109,24 @@ namespace silva {
     string_append_unescaped(retval, escaped_string);
     return retval;
   }
+
+  string_or_view_t string_or_view_escaped(const string_view_t unescaped_string)
+  {
+    if (string_escape_is_trivial(unescaped_string)) {
+      return string_or_view_t(unescaped_string);
+    }
+    else {
+      return string_or_view_t(string_escaped(unescaped_string));
+    }
+  }
+
+  string_or_view_t string_or_view_unescaped(const string_view_t escaped_string)
+  {
+    if (string_unescape_is_trivial(escaped_string)) {
+      return string_or_view_t(escaped_string);
+    }
+    else {
+      return string_or_view_t(string_unescaped(escaped_string));
+    }
+  }
 }

@@ -5,10 +5,10 @@
 namespace silva {
   template<typename T>
   class context_t : public menhir_t {
-    context_t<T>* previous = nullptr;
+    T* previous = nullptr;
 
-    static context_t<T>* current;
-    static context_t* init_current();
+    static T* current;
+    static T* init_current();
     T* get_pointer();
 
    protected:
@@ -16,6 +16,12 @@ namespace silva {
     ~context_t();
 
    public:
+    T* get_previous()
+      requires(T::context_mutable_get);
+
+    const T* get_previous() const
+      requires(!T::context_mutable_get);
+
     static T* get()
       requires(T::context_mutable_get);
 
@@ -28,10 +34,10 @@ namespace silva {
 
 namespace silva {
   template<typename T>
-  context_t<T>* context_t<T>::current = context_t<T>::init_current();
+  T* context_t<T>::current = context_t<T>::init_current();
 
   template<typename T>
-  context_t<T>* context_t<T>::init_current()
+  T* context_t<T>::init_current()
   {
     static_assert(requires {
       std::derived_from<T, context_t<T>>;
@@ -57,13 +63,27 @@ namespace silva {
   template<typename T>
   context_t<T>::context_t() : previous(current)
   {
-    current = this;
+    current = get_pointer();
   }
 
   template<typename T>
   context_t<T>::~context_t()
   {
     current = previous;
+  }
+
+  template<typename T>
+  T* context_t<T>::get_previous()
+    requires(T::context_mutable_get)
+  {
+    return previous;
+  }
+
+  template<typename T>
+  const T* context_t<T>::get_previous() const
+    requires(!T::context_mutable_get)
+  {
+    return previous;
   }
 
   template<typename T>

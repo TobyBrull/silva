@@ -23,5 +23,4 @@ silva_main(const int argc, char* argv[])
 
   return {};
 }
-
 SILVA_MAIN(silva_main);

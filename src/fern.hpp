@@ -34,22 +34,22 @@ namespace silva {
   // Object-oriented interface
 
   struct fern_t;
-  struct item_t {
+  struct fern_item_t {
     variant_t<none_t, bool, string_t, double, unique_ptr_t<fern_t>> value;
 
-    item_t();
+    fern_item_t();
   };
 
-  struct labeled_item_t {
+  struct fern_labeled_item_t {
     optional_t<string_t> label;
-    item_t item;
+    fern_item_t item;
   };
 
   struct fern_t {
-    vector_t<item_t> items;
+    vector_t<fern_item_t> items;
     hashmap_t<string_t, index_t> labels;
 
-    void push_back(labeled_item_t&&);
+    void push_back(fern_labeled_item_t&&);
 
     string_t to_string(int indent = 0) const;
     string_t to_graphviz() const;

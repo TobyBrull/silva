@@ -214,9 +214,9 @@ namespace silva {
 
   // Object-oriented interface /////////////////////////////////////////////////////////////////////
 
-  item_t::item_t() : value(none) {}
+  fern_item_t::fern_item_t() : value(none) {}
 
-  void fern_t::push_back(labeled_item_t&& li)
+  void fern_t::push_back(fern_labeled_item_t&& li)
   {
     const index_t index = items.size();
     items.push_back(std::move(li.item));
@@ -275,7 +275,7 @@ namespace silva {
 
     void fern_t__to_graphviz__item(string_t& retval,
                                    const optional_t<string_t>& label,
-                                   const item_t& item,
+                                   const fern_item_t& item,
                                    const string_view_t parent_name,
                                    const string_view_t item_name)
     {
@@ -284,7 +284,7 @@ namespace silva {
       struct visitor {
         string_t& retval;
         const string_view_t label_str;
-        const item_t& item;
+        const fern_item_t& item;
         string_view_t item_name;
 
         void operator()(none_t) const
@@ -365,11 +365,11 @@ namespace silva {
       optional_t<token_id_t> tt_true  = parse_tree->tokenization->lookup_token("true");
       optional_t<token_id_t> tt_false = parse_tree->tokenization->lookup_token("false");
 
-      labeled_item_t item(const index_t start_node)
+      fern_labeled_item_t item(const index_t start_node)
       {
         const parse_tree_t::node_t& labeled_item = parse_tree->nodes[start_node];
         SILVA_ASSERT(labeled_item.rule_index == to_int(LABELED_ITEM));
-        labeled_item_t retval;
+        fern_labeled_item_t retval;
         const auto result = parse_tree->visit_children(
             [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
               const parse_tree_t::node_t& node = parse_tree->nodes[child_node_index];
@@ -418,7 +418,7 @@ namespace silva {
         fern_t retval;
         const auto result = parse_tree->visit_children(
             [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
-              labeled_item_t li = item(child_node_index);
+              fern_labeled_item_t li = item(child_node_index);
               retval.push_back(std::move(li));
               return true;
             },

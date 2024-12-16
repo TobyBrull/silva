@@ -1,0 +1,26 @@
+#include "env_context.hpp"
+
+#include "main.hpp"
+
+#include <fmt/base.h>
+
+using namespace silva;
+
+/*
+VAR1="abc" VAR2="def" ./build/src/silva_env_context VAR1="123" VAR3="xyz"
+*/
+expected_t<void>
+silva_main(const int argc, char* argv[])
+{
+  for (const string_view_t name: {"VAR1", "VAR2", "VAR3", "VAR4"}) {
+    const optional_t<string_view_t> value = env_context_get(name);
+    if (value.has_value()) {
+      fmt::print("{}={}\n", name, value.value());
+    }
+    else {
+      fmt::print("{} not available\n", name);
+    }
+  }
+  return {};
+}
+SILVA_MAIN(silva_main);
