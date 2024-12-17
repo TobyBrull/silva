@@ -21,7 +21,6 @@ foreach(main_file ${SILVA_MAIN_FILES})
   add_executable("silva_${basename}" ${main_file})
   target_link_libraries("silva_${basename}"
     silva
-    cxxopts
   )
 endforeach()
 

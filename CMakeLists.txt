@@ -4,7 +4,6 @@ project(silva LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 23)
 
 add_subdirectory(thirdparty/reflect-cpp)
-add_subdirectory(thirdparty/cxxopts)
 
 # find_package(Threads REQUIRED)
 # find_package(Boost REQUIRED)

@@ -2,7 +2,6 @@
 
 #include "canopy/main.hpp"
 
-#include <cxxopts.hpp>
 #include <fmt/format.h>
 
 using namespace silva;

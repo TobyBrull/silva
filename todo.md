@@ -4,14 +4,11 @@
     * logging
     * error_t
     * testing
-    * use env_context instead of cxxopts
     * handle parse-error of 'root-based' flag in fern.mpp
 
-* code review
-
 * Error handling:
-    * use the context concept
     * allow partial parse (return number of tokens consumed)
+    * add error_level_t
     * check Seed program when constructing parse_root_t
 
 * code review
