@@ -67,9 +67,9 @@ namespace silva {
         gg_rule.set_rule_index(to_int(LABELED_ITEM));
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No tokens left when trying to parse an item.");
         if (num_tokens_left() >= 2 && token_id(1) == tt_colon) {
-          gg_rule.sub += SILVA_EXPECT_TRY(label());
+          gg_rule.sub += SILVA_EXPECT_FWD(label());
         }
-        gg_rule.sub += SILVA_EXPECT_TRY(item());
+        gg_rule.sub += SILVA_EXPECT_FWD(item());
         if (num_tokens_left() >= 1 && token_id() == tt_semi_colon) {
           token_index += 1;
         }
@@ -85,7 +85,7 @@ namespace silva {
                      "Expected fern, but didn't find '['");
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id() != tt_brkt_close) {
-          gg_rule.sub += SILVA_EXPECT_TRY(labeled_item());
+          gg_rule.sub += SILVA_EXPECT_FWD(labeled_item());
         }
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_close,
                      MINOR,
@@ -100,7 +100,7 @@ namespace silva {
   {
     const index_t n = tokenization->tokens.size();
     impl::fern_parse_tree_nursery_t nursery(std::move(tokenization));
-    const parse_tree_sub_t sub = SILVA_EXPECT_TRY(nursery.fern());
+    const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.fern());
     SILVA_ASSERT(sub.num_children == 1);
     SILVA_ASSERT(sub.num_children_total == nursery.retval.nodes.size());
     SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");

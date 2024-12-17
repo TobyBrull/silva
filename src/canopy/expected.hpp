@@ -35,7 +35,7 @@ namespace silva {
     }                                                                     \
   } while (false)
 
-#define SILVA_EXPECT_TRY(x)                                               \
+#define SILVA_EXPECT_FWD(x)                                               \
   ({                                                                      \
     auto __silva_result = (x);                                            \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \

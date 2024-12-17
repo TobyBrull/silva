@@ -31,7 +31,7 @@ namespace silva {
   template<typename T>
   expected_t<T> env_context_get_as(const string_view_t name)
   {
-    const string_view_t value = SILVA_EXPECT_TRY(env_context_get(name));
-    return SILVA_EXPECT_TRY(convert_to<T>(value));
+    const string_view_t value = SILVA_EXPECT_FWD(env_context_get(name));
+    return SILVA_EXPECT_FWD(convert_to<T>(value));
   }
 }

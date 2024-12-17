@@ -13,19 +13,19 @@ using namespace silva;
 expected_t<void>
 silva_main()
 {
-  const auto arg_filename = SILVA_EXPECT_TRY(env_context_get("filename"));
-  const auto arg_process  = SILVA_EXPECT_TRY(env_context_get("process"));
+  const auto arg_filename = SILVA_EXPECT_FWD(env_context_get("filename"));
+  const auto arg_process  = SILVA_EXPECT_FWD(env_context_get("process"));
   const bool arg_root     = env_context_get_as<bool>("root-based").value_or(false);
 
   const tokenization_t tokenization =
-      SILVA_EXPECT_TRY(tokenize(SILVA_EXPECT_TRY(source_code_t::load(arg_filename))));
+      SILVA_EXPECT_FWD(tokenize(SILVA_EXPECT_FWD(source_code_t::load(arg_filename))));
 
   parse_tree_t pt;
   if (arg_root) {
-    pt = SILVA_EXPECT_TRY(fern_parse_root()->apply(const_ptr_unowned(&tokenization)));
+    pt = SILVA_EXPECT_FWD(fern_parse_root()->apply(const_ptr_unowned(&tokenization)));
   }
   else {
-    pt = SILVA_EXPECT_TRY(fern_parse(const_ptr_unowned(&tokenization)));
+    pt = SILVA_EXPECT_FWD(fern_parse(const_ptr_unowned(&tokenization)));
   }
 
   if (arg_process.empty()) {

@@ -9,10 +9,10 @@ using namespace silva;
 expected_t<void>
 silva_main()
 {
-  const auto arg_filename = SILVA_EXPECT_TRY(env_context_get("filename"));
+  const auto arg_filename = SILVA_EXPECT_FWD(env_context_get("filename"));
 
-  unique_ptr_t<source_code_t> source_code = SILVA_EXPECT_TRY(source_code_t::load(arg_filename));
-  const tokenization_t tokenization       = SILVA_EXPECT_TRY(tokenize(std::move(source_code)));
+  unique_ptr_t<source_code_t> source_code = SILVA_EXPECT_FWD(source_code_t::load(arg_filename));
+  const tokenization_t tokenization       = SILVA_EXPECT_FWD(tokenize(std::move(source_code)));
 
   fmt::print("{}\n", tokenization.to_string());
 
