@@ -188,7 +188,7 @@ namespace silva {
   expected_t<array_t<index_t, N>> parse_tree_t::get_children(const index_t parent_node_index) const
   {
     const node_t& node = nodes[parent_node_index];
-    SILVA_EXPECT(node.num_children == N);
+    SILVA_EXPECT(node.num_children == N, MAJOR);
     array_t<index_t, N> retval;
     SILVA_EXPECT_TRY(visit_children(
         [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
@@ -204,7 +204,7 @@ namespace silva {
   parse_tree_t::get_children_up_to(const index_t parent_node_index) const
   {
     const node_t& node = nodes[parent_node_index];
-    SILVA_EXPECT(node.num_children <= N);
+    SILVA_EXPECT(node.num_children <= N, MAJOR);
     small_vector_t<index_t, N> retval;
     SILVA_EXPECT_TRY(visit_children(
         [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {

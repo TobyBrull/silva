@@ -34,8 +34,9 @@ namespace silva {
       expected_t<parse_tree_sub_t> label()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT(num_tokens_left() >= 2 && token_id(1) == tt_colon);
+        SILVA_EXPECT(num_tokens_left() >= 2 && token_id(1) == tt_colon, MINOR);
         SILVA_EXPECT(token_data()->category == STRING || token_data()->category == IDENTIFIER,
+                     MINOR,
                      "Expected identifier or string for label");
         gg_rule.set_rule_index(to_int(LABEL));
         token_index += 2;
@@ -52,6 +53,7 @@ namespace silva {
         else {
           SILVA_EXPECT(token_id() == tt_none || token_id() == tt_true || token_id() == tt_false ||
                            token_data()->category == STRING || token_data()->category == NUMBER,
+                       MINOR,
                        "");
           gg_rule.set_rule_index(to_int(ITEM_1));
           token_index += 1;
@@ -63,7 +65,7 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(LABELED_ITEM));
-        SILVA_EXPECT(num_tokens_left() >= 1, "No tokens left when trying to parse an item.");
+        SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No tokens left when trying to parse an item.");
         if (num_tokens_left() >= 2 && token_id(1) == tt_colon) {
           gg_rule.sub += SILVA_EXPECT_TRY(label());
         }
@@ -79,12 +81,14 @@ namespace silva {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(FERN));
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_open,
+                     MINOR,
                      "Expected fern, but didn't find '['");
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id() != tt_brkt_close) {
           gg_rule.sub += SILVA_EXPECT_TRY(labeled_item());
         }
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_close,
+                     MINOR,
                      "Expected end of fern, but didn't find '['");
         token_index += 1;
         return gg_rule.release();
@@ -99,7 +103,7 @@ namespace silva {
     const parse_tree_sub_t sub = SILVA_EXPECT_TRY(nursery.fern());
     SILVA_ASSERT(sub.num_children == 1);
     SILVA_ASSERT(sub.num_children_total == nursery.retval.nodes.size());
-    SILVA_EXPECT(nursery.token_index == n, "Tokens left after parsing fern.");
+    SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
     return {std::move(nursery.retval)};
   }
 

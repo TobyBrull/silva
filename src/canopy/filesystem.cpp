@@ -11,19 +11,19 @@ namespace silva {
   expected_t<string_t> read_file(const filesystem_path_t& filename)
   {
     std::ifstream file(filename);
-    SILVA_EXPECT(file.is_open(), "Could not open file '{}' for reading", filename.string());
+    SILVA_EXPECT(file.is_open(), MINOR, "Could not open file '{}' for reading", filename.string());
     std::stringstream buffer;
     buffer << file.rdbuf();
-    SILVA_EXPECT(file.good(), "Error reading from file '{}'", filename.string());
+    SILVA_EXPECT(file.good(), MINOR, "Error reading from file '{}'", filename.string());
     return std::move(buffer).str();
   }
 
   expected_t<void> write_file(const filesystem_path_t& filename, const string_view_t content)
   {
     std::ofstream file(filename);
-    SILVA_EXPECT(file.is_open(), "Could not open file '{}' for writing", filename.string());
+    SILVA_EXPECT(file.is_open(), MINOR, "Could not open file '{}' for writing", filename.string());
     file << content;
-    SILVA_EXPECT(file.good(), "Error writing to file '{}'", filename.string());
+    SILVA_EXPECT(file.good(), MINOR, "Error writing to file '{}'", filename.string());
     return {};
   }
 

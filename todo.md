@@ -1,5 +1,9 @@
 # TODO
 
+* error-handling
+    * replace SILVA_ASSERT with error_level_t::FATAL
+    * replace SILVA_EXPECT_TRY with SILVA_EXPECT_FWD
+
 * context:
     * logging
     * error_t

@@ -51,7 +51,7 @@ namespace silva {
   expected_t<string_view_t> env_context_get(const string_view_t name)
   {
     optional_t<string_view_t> retval = env_context_get_if(name);
-    SILVA_EXPECT(retval.has_value(), "Could not find '{}' in env_context", name);
+    SILVA_EXPECT(retval.has_value(), MINOR, "Could not find '{}' in env_context", name);
     return retval.value();
   }
 }

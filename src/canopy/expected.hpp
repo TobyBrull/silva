@@ -15,51 +15,75 @@ namespace silva {
   template<typename T>
   struct is_expected_t<std::expected<T, error_t>> : std::true_type {};
 
-#define SILVA_EXPECT(x, ...)                                              \
+#define SILVA_EXPECT(x, lvl, ...)                                                            \
+  do {                                                                                       \
+    using enum error_level_t;                                                                \
+    static_assert(error_level_is_primary(lvl));                                              \
+    if (!(x)) {                                                                              \
+      return std::unexpected(silva::impl::make_parse_error(lvl __VA_OPT__(, ) __VA_ARGS__)); \
+    }                                                                                        \
+  } while (false)
+
+#define SILVA_EXPECT_FWD_IF(x, lvl)                                       \
   do {                                                                    \
-    if (!(x)) {                                                           \
-      return std::unexpected(silva::impl::make_parse_error(__VA_ARGS__)); \
+    auto __silva_result = (x);                                            \
+    using enum error_level_t;                                             \
+    static_assert(error_level_is_primary(lvl));                           \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    if (!__silva_result && (__silva_result.error().level >= lvl)) {       \
+      return std::unexpected(std::move(__silva_result).error());          \
     }                                                                     \
   } while (false)
 
-#define SILVA_EXPECT_TRY(x)                                       \
-  ({                                                              \
-    auto result = (x);                                            \
-    static_assert(silva::is_expected_t<decltype(result)>::value); \
-    if (!result) {                                                \
-      return std::unexpected(std::move(result).error());          \
-    }                                                             \
-    std::move(result).value();                                    \
+#define SILVA_EXPECT_TRY(x)                                               \
+  ({                                                                      \
+    auto __silva_result = (x);                                            \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    if (!__silva_result) {                                                \
+      return std::unexpected(std::move(__silva_result).error());          \
+    }                                                                     \
+    std::move(__silva_result).value();                                    \
   })
 
 // For Catch2
-#define SILVA_EXPECT_REQUIRE(x)                                   \
-  ({                                                              \
-    auto result = (x);                                            \
-    static_assert(silva::is_expected_t<decltype(result)>::value); \
-    INFO((!result ? result.error().message.get_view() : ""));     \
-    REQUIRE(result);                                              \
-    std::move(result).value();                                    \
+#define SILVA_EXPECT_REQUIRE(x)                                               \
+  ({                                                                          \
+    auto __silva_result = (x);                                                \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);     \
+    INFO((!__silva_result ? __silva_result.error().message.get_view() : "")); \
+    REQUIRE(__silva_result);                                                  \
+    std::move(__silva_result).value();                                        \
   })
 }
 
 // IMPLEMENTATION
 
 namespace silva::impl {
-  inline error_t make_parse_error()
+  inline error_t make_parse_error(const error_level_t error_level)
   {
-    return error_t{string_or_view_t{string_view_t{"unexpected condition"}}};
+    return error_t{
+        .level   = error_level,
+        .message = string_or_view_t{string_view_t{"unexpected condition"}},
+    };
   }
 
-  inline error_t make_parse_error(string_view_t string_view)
+  inline error_t make_parse_error(const error_level_t error_level, string_view_t string_view)
   {
-    return error_t{string_or_view_t{string_view}};
+    return error_t{
+        .level   = error_level,
+        .message = string_or_view_t{string_view},
+    };
   }
 
   template<typename... Args>
     requires(sizeof...(Args) > 0)
-  error_t make_parse_error(std::format_string<Args...> fmt_str, Args&&... args)
+  error_t make_parse_error(const error_level_t error_level,
+                           std::format_string<Args...> fmt_str,
+                           Args&&... args)
   {
-    return error_t{string_or_view_t{std::format(fmt_str, std::forward<Args>(args)...)}};
+    return error_t{
+        .level   = error_level,
+        .message = string_or_view_t{std::format(fmt_str, std::forward<Args>(args)...)},
+    };
   }
 }

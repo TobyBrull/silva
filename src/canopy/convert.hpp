@@ -35,7 +35,7 @@ namespace silva {
         return false;
       }
       else {
-        SILVA_EXPECT(false, "Could not convert '{}' to bool", value);
+        SILVA_EXPECT(false, MAJOR, "Could not convert '{}' to bool", value);
       }
     }
     else if constexpr (std::same_as<index_t, T>) {
@@ -43,12 +43,12 @@ namespace silva {
         return std::stoll(string_t{value});
       }
       catch (...) {
-        SILVA_EXPECT(false, "Could not convert '{}' to index_t", value);
+        SILVA_EXPECT(false, MAJOR, "Could not convert '{}' to index_t", value);
       }
     }
     else {
       static_assert(false, "Unsupported type in silva::convert_to");
     }
-    SILVA_EXPECT(false, "unreachable");
+    SILVA_EXPECT(false, MAJOR, "unreachable");
   }
 }
