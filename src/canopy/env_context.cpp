@@ -1,7 +1,6 @@
 #include "env_context.hpp"
 
 #include "assert.hpp"
-#include "convert.hpp"
 
 extern char** environ;
 
@@ -34,7 +33,7 @@ namespace silva {
     }
   }
 
-  optional_t<string_view_t> env_context_get(const string_view_t name)
+  optional_t<string_view_t> env_context_get_if(const string_view_t name)
   {
     const env_context_t* curr = env_context_t::get();
     while (curr != nullptr) {
@@ -47,5 +46,12 @@ namespace silva {
       }
     }
     return none;
+  }
+
+  expected_t<string_view_t> env_context_get(const string_view_t name)
+  {
+    optional_t<string_view_t> retval = env_context_get_if(name);
+    SILVA_EXPECT(retval.has_value(), "Could not find '{}' in env_context", name);
+    return retval.value();
   }
 }

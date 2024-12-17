@@ -1,5 +1,6 @@
 #pragma once
 
+#include "expected.hpp"
 #include "string_or_view.hpp"
 #include "types.hpp"
 
@@ -15,4 +16,39 @@ namespace silva {
 
   string_or_view_t string_or_view_escaped(string_view_t unescaped_string);
   string_or_view_t string_or_view_unescaped(string_view_t escaped_string);
+
+  template<typename T>
+  expected_t<T> convert_to(string_view_t);
+}
+
+// IMPLEMENTATION
+
+namespace silva {
+  template<typename T>
+  expected_t<T> convert_to(string_view_t value)
+  {
+    if constexpr (std::same_as<bool, T>) {
+      if (value == "true") {
+        return true;
+      }
+      else if (value == "false") {
+        return false;
+      }
+      else {
+        SILVA_EXPECT(false, "Could not convert '{}' to bool", value);
+      }
+    }
+    else if constexpr (std::same_as<index_t, T>) {
+      try {
+        return std::stoll(string_t{value});
+      }
+      catch (...) {
+        SILVA_EXPECT(false, "Could not convert '{}' to index_t", value);
+      }
+    }
+    else {
+      static_assert(false, "Unsupported type in silva::convert_to");
+    }
+    SILVA_EXPECT(false, "unreachable");
+  }
 }

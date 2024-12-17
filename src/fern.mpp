@@ -1,3 +1,4 @@
+#include "canopy/env_context.hpp"
 #include "fern.hpp"
 
 #include "canopy/filesystem.hpp"
@@ -11,17 +12,11 @@
 using namespace silva;
 
 expected_t<void>
-silva_main(const int argc, char* argv[])
+silva_main()
 {
-  cxxopts::Options options("silva_tokenizer");
-  options.add_options()("f,filename", "Input filename", cxxopts::value<string_t>());
-  options.add_options()("p,process", "Processing", cxxopts::value<string_t>()->default_value(""));
-  options.add_options()("r,root-based", "Use the root/seed based parser");
-  const auto args = options.parse(argc, argv);
-
-  const auto arg_filename = args["filename"].as<string_t>();
-  const auto arg_process  = args["process"].as<string_t>();
-  const bool arg_root     = args["root-based"].as<bool>();
+  const auto arg_filename = SILVA_EXPECT_TRY(env_context_get("filename"));
+  const auto arg_process  = SILVA_EXPECT_TRY(env_context_get("process"));
+  const bool arg_root     = env_context_get_as<bool>("root-based").value_or(false);
 
   const tokenization_t tokenization =
       SILVA_EXPECT_TRY(tokenize(SILVA_EXPECT_TRY(source_code_t::load(arg_filename))));

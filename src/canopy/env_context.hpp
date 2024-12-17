@@ -1,6 +1,8 @@
 #pragma once
 
 #include "context.hpp"
+#include "convert.hpp"
+#include "expected.hpp"
 #include "string_or_view.hpp"
 
 namespace silva {
@@ -16,5 +18,20 @@ namespace silva {
   void env_context_fill_environ(env_context_t*);
   void env_context_fill_cmdline(env_context_t*, int argc, char* argv[]);
 
-  optional_t<string_view_t> env_context_get(string_view_t name);
+  optional_t<string_view_t> env_context_get_if(string_view_t name);
+  expected_t<string_view_t> env_context_get(string_view_t name);
+
+  template<typename T>
+  expected_t<T> env_context_get_as(string_view_t name);
+}
+
+// IMPLEMENTATION
+
+namespace silva {
+  template<typename T>
+  expected_t<T> env_context_get_as(const string_view_t name)
+  {
+    const string_view_t value = SILVA_EXPECT_TRY(env_context_get(name));
+    return SILVA_EXPECT_TRY(convert_to<T>(value));
+  }
 }

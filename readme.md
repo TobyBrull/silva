@@ -29,6 +29,6 @@ rm -rf build/
 cmake -S. -Bbuild/ -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=On -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 ninja -Cbuild/
 ./build/src/silva_test
-./build/src/silva_tokenization -f scratchpad/simple.fern
-./build/src/silva_fern -f scratchpad/simple.fern -r -p direct/string
+./build/src/silva_tokenization filename=scratchpad/simple.fern
+./build/src/silva_fern filename=scratchpad/simple.fern process=direct/string root-based=true
 ```
