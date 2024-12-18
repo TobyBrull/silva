@@ -33,7 +33,7 @@ silva_main()
   }
   else if (arg_process.starts_with("fern_t/")) {
     const auto rest   = arg_process.substr(7);
-    const fern_t fern = fern_create(&pt);
+    const fern_t fern = SILVA_EXPECT_FWD(fern_create(&pt));
     if (rest == "string") {
       fmt::print("{}\n", fern.to_string());
     }
@@ -50,13 +50,13 @@ silva_main()
   else if (arg_process.starts_with("direct/")) {
     const auto rest = arg_process.substr(7);
     if (rest == "string") {
-      fmt::print("{}\n", fern_to_string(&pt));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_string(&pt)));
     }
     else if (rest == "graphviz") {
-      fmt::print("{}\n", fern_to_graphviz(&pt));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_graphviz(&pt)));
     }
     else if (rest == "graphviz_show") {
-      graphviz_show_sync(fern_to_graphviz(&pt));
+      graphviz_show_sync(SILVA_EXPECT_FWD(fern_to_graphviz(&pt)));
     }
     else {
       SILVA_EXPECT(false, MAJOR, "Unknown -p/--process parameter '{}'", arg_process);

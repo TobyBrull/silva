@@ -393,8 +393,8 @@ namespace silva {
                                                   const_ptr_unowned(this),
                                                   workspace);
     const parse_tree_sub_t sub = SILVA_EXPECT_FWD(parse_root_nursery.apply_rule(goal_rule_name));
-    SILVA_ASSERT(sub.num_children == 1);
-    SILVA_ASSERT(sub.num_children_total == parse_root_nursery.retval.nodes.size());
+    SILVA_EXPECT(sub.num_children == 1, ASSERT);
+    SILVA_EXPECT(sub.num_children_total == parse_root_nursery.retval.nodes.size(), ASSERT);
     return {std::move(parse_root_nursery.retval)};
   }
 }

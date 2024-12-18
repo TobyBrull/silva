@@ -1,7 +1,7 @@
 # TODO
 
 * error-handling
-    * replace SILVA_ASSERT with error_level_t::FATAL
+    * replace all std::sto... with "expected_t convert_to_double(...)"
 
 * context:
     * logging

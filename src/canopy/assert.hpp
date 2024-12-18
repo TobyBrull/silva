@@ -6,6 +6,11 @@
 
 namespace silva {
 
+  // ASSERTs maybe be disabled (e.g., in optimized builds). Therefore, they can only express
+  // assumptions that will otherwise cause undefined behaviour. In functions that have an
+  // "expected_t" return value, and where performance is never an issue, prefer to use
+  // "SILVA_EXPECT(..., ASSERT)" to express the same thing.
+
 #define SILVA_ASSERT(condition, ...)                                                        \
   do {                                                                                      \
     if (!(condition)) {                                                                     \

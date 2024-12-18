@@ -7,8 +7,10 @@ namespace silva {
   enum class error_level_t : uint8_t {
     ALL = 0,
 
-    MINOR = 1,
-    MAJOR = 2,
+    MINOR  = 1,
+    MAJOR  = 2,
+    FATAL  = 3,
+    ASSERT = 4,
 
     NONE = 0xff
   };
@@ -38,6 +40,8 @@ namespace silva {
 
       case error_level_t::MINOR:
       case error_level_t::MAJOR:
+      case error_level_t::FATAL:
+      case error_level_t::ASSERT:
         return true;
     }
   }

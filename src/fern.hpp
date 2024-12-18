@@ -25,11 +25,12 @@ namespace silva {
 
   // Fern parse_tree output functions
 
-  string_t fern_to_string(const parse_tree_t* fern_parse_tree,
-                          index_t start_node  = 0,
-                          bool with_semicolon = true);
+  expected_t<string_t> fern_to_string(const parse_tree_t* fern_parse_tree,
+                                      index_t start_node  = 0,
+                                      bool with_semicolon = true);
 
-  string_t fern_to_graphviz(const parse_tree_t* fern_parse_tree, index_t start_node = 0);
+  expected_t<string_t> fern_to_graphviz(const parse_tree_t* fern_parse_tree,
+                                        index_t start_node = 0);
 
   // Object-oriented interface
 
@@ -55,5 +56,5 @@ namespace silva {
     string_t to_graphviz() const;
   };
 
-  fern_t fern_create(const parse_tree_t*, index_t start_node = 0);
+  expected_t<fern_t> fern_create(const parse_tree_t*, index_t start_node = 0);
 }

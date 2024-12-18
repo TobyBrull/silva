@@ -1,6 +1,5 @@
 #pragma once
 
-#include "canopy/assert.hpp"
 #include "canopy/expected.hpp"
 #include "canopy/small_vector.hpp"
 #include "canopy/types.hpp"
@@ -161,8 +160,8 @@ namespace silva {
     const optional_t<index_t> maybe_new_child_index =
         SILVA_EXPECT_FWD(clean_stack_till(end_node_index));
     if (maybe_new_child_index) {
-      SILVA_ASSERT(maybe_new_child_index.value() == 1);
-      SILVA_ASSERT(path.empty());
+      SILVA_EXPECT(maybe_new_child_index.value() == 1, ASSERT);
+      SILVA_EXPECT(path.empty(), ASSERT);
     }
     return {};
   }
