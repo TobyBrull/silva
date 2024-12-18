@@ -7,9 +7,12 @@
 namespace silva {
 
   // ASSERTs maybe be disabled (e.g., in optimized builds). Therefore, they can only express
-  // assumptions that will otherwise cause undefined behaviour. In functions that have an
-  // "expected_t" return value, and where performance is never an issue, prefer to use
-  // "SILVA_EXPECT(..., ASSERT)" to express the same thing.
+  // assumptions that will otherwise cause undefined behaviour. Prefer the use of
+  // "SILVA_EXPECT(..., ASSERT)" if both of the following are true:
+  //    * The containing function has an "expected_t" return-value anyway, or making the
+  //      return-value "expected_t" would not be too awkward.
+  //    * The runtime overhead incurred by the check and/or "expected_t" return-value is not a
+  //      concern.
 
 #define SILVA_ASSERT(condition, ...)                                                        \
   do {                                                                                      \

@@ -4,6 +4,8 @@
 #include "string_or_view.hpp"
 #include "types.hpp"
 
+#include <utility>
+
 namespace silva {
   void string_append_escaped(string_t& output_buffer, string_view_t unescaped_string);
   void string_append_unescaped(string_t& output_buffer, string_view_t escaped_string);
@@ -35,7 +37,7 @@ namespace silva {
         return false;
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "Could not convert '{}' to bool", value);
+        SILVA_EXPECT(false, MINOR, "Could not convert string '{}' to bool", value);
       }
     }
     else if constexpr (std::same_as<index_t, T>) {
@@ -43,12 +45,20 @@ namespace silva {
         return std::stoll(string_t{value});
       }
       catch (...) {
-        SILVA_EXPECT(false, MAJOR, "Could not convert '{}' to index_t", value);
+        SILVA_EXPECT(false, MINOR, "Could not convert string '{}' to index_t", value);
+      }
+    }
+    else if constexpr (std::same_as<double, T>) {
+      try {
+        return std::stod(string_t{value});
+      }
+      catch (...) {
+        SILVA_EXPECT(false, MINOR, "Could not convert string '{}' to double", value);
       }
     }
     else {
       static_assert(false, "Unsupported type in silva::convert_to");
     }
-    SILVA_EXPECT(false, MAJOR, "unreachable");
+    std::unreachable();
   }
 }

@@ -402,7 +402,7 @@ namespace silva {
                     retval.item.value = token_data->as_string();
                   }
                   else if (token_data->category == NUMBER) {
-                    retval.item.value = token_data->as_double();
+                    retval.item.value = SILVA_EXPECT_FWD(token_data->as_double());
                   }
                   else {
                     SILVA_EXPECT(false, MINOR, "Unknown item '{}'", token_data->str);

@@ -31,7 +31,7 @@ namespace silva {
 
       string_t as_string() const;
       string_or_view_t as_string_or_view() const;
-      double as_double() const;
+      expected_t<double> as_double() const;
 
       friend auto operator<=>(const token_data_t&, const token_data_t&) = default;
     };

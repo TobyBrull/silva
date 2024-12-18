@@ -54,10 +54,10 @@ namespace silva {
     }
   }
 
-  double tokenization_t::token_data_t::as_double() const
+  expected_t<double> tokenization_t::token_data_t::as_double() const
   {
-    SILVA_ASSERT(category == token_category_t::NUMBER);
-    return std::stod(string_t{str});
+    SILVA_EXPECT(category == token_category_t::NUMBER, ASSERT);
+    return convert_to<double>(str);
   }
 
   optional_t<token_id_t> tokenization_t::lookup_token(const string_view_t token_str) const

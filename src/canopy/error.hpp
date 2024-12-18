@@ -4,13 +4,20 @@
 #include "string_or_view.hpp"
 
 namespace silva {
+
+  // For each function that has an "expected_t" return-value, one should always use MINOR errors for
+  // the least significant type of error that the function may generate. This should be done even if
+  // this type of error is (currently) a higher-level-error in all other contexts. Then map the
+  // error-level explicitly, e.g., using one of the SILVA_EXPECT_..._MAP macros.
+
   enum class error_level_t : uint8_t {
     ALL = 0,
 
-    MINOR  = 1,
-    MAJOR  = 2,
-    FATAL  = 3,
-    ASSERT = 4,
+    MINOR = 1,
+    MAJOR = 2,
+    FATAL = 3,
+
+    ASSERT = 0xfe,
 
     NONE = 0xff
   };

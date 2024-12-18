@@ -48,32 +48,33 @@ namespace silva {
     const parse_root_t* s_ptr = retval.seed_parse_tree->root.get();
     const auto& s_nodes       = s_pt->nodes;
     SILVA_EXPECT(s_ptr == seed_parse_root_primordial() || s_ptr == seed_parse_root(),
-                 MAJOR,
+                 ASSERT,
                  "Not a seed parse_tree");
     SILVA_EXPECT(!s_nodes.empty() && s_nodes.front().rule_index == to_int(SEED),
-                 MAJOR,
+                 MINOR,
                  "Seed parse_tree should start with SEED node");
     auto result = s_pt->visit_children(
         [&](const index_t rule_node_index, index_t) -> expected_t<bool> {
-          SILVA_EXPECT(s_nodes[rule_node_index].rule_index == to_int(RULE), MAJOR, "");
+          SILVA_EXPECT(s_nodes[rule_node_index].rule_index == to_int(RULE), MINOR, "");
           const small_vector_t<index_t, 3> children =
               SILVA_EXPECT_FWD(s_pt->get_children_up_to<3>(rule_node_index));
           SILVA_EXPECT(s_nodes[children[0]].rule_index == to_int(NONTERMINAL),
-                       MAJOR,
+                       MINOR,
                        "First child of RULE must be RULE_NAME ");
           const string_view_t name =
               s_pt->tokenization->token_data(s_nodes[children[0]].token_index)->str;
           index_t rule_precedence = 0;
           if (children.size == 3) {
             SILVA_EXPECT(s_nodes[children[1]].rule_index == to_int(RULE_PRECEDENCE),
-                         MAJOR,
+                         MINOR,
                          "Middle child of RULE must be RULE_PRECEDENCE");
-            rule_precedence =
-                s_pt->tokenization->token_data(s_nodes[children[1]].token_index)->as_double();
+            const auto* token_data =
+                s_pt->tokenization->token_data(s_nodes[children[1]].token_index);
+            rule_precedence = SILVA_EXPECT_FWD(token_data->as_double());
           }
           const index_t ri = s_nodes[children.back()].rule_index;
           SILVA_EXPECT(to_int(EXPR_0) <= ri && ri <= to_int(EXPR_1),
-                       MAJOR,
+                       MINOR,
                        "Last child of RULE must be EXPR");
           index_t expr_node_index = children.back();
           SILVA_EXPECT_FWD(retval.add_rule(name, rule_precedence, expr_node_index));

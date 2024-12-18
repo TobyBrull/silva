@@ -1,7 +1,7 @@
 # TODO
 
 * error-handling
-    * replace all std::sto... with "expected_t convert_to_double(...)"
+    * macros that map error_level_t's
 
 * context:
     * logging
