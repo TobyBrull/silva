@@ -1,12 +1,9 @@
-#include "canopy/env_context.hpp"
 #include "fern.hpp"
 
 #include "canopy/filesystem.hpp"
 #include "canopy/main.hpp"
 
 #include "parse_root.hpp"
-
-#include <fmt/base.h>
 
 using namespace silva;
 
@@ -15,7 +12,8 @@ silva_main()
 {
   const auto arg_filename = SILVA_EXPECT_FWD(env_context_get("filename"));
   const auto arg_process  = SILVA_EXPECT_FWD(env_context_get("process"));
-  const bool arg_root     = env_context_get_as<bool>("root-based").value_or(false);
+  const bool arg_root =
+      SILVA_EXPECT_FWD_IF(env_context_get_as<bool>("root-based"), MAJOR).value_or(false);
 
   const tokenization_t tokenization =
       SILVA_EXPECT_FWD(tokenize(SILVA_EXPECT_FWD(source_code_t::load(arg_filename))));

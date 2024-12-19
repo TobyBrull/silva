@@ -18,9 +18,13 @@ namespace silva {
   void env_context_fill_environ(env_context_t*);
   void env_context_fill_cmdline(env_context_t*, int argc, char* argv[]);
 
-  optional_t<string_view_t> env_context_get_if(string_view_t name);
+  // Errors:
+  //  - MINOR: Value doesn't exist.
   expected_t<string_view_t> env_context_get(string_view_t name);
 
+  // Errors:
+  //  - MINOR: Value doesn't exist.
+  //  - MAJOR: From-string conversion failed.
   template<typename T>
   expected_t<T> env_context_get_as(string_view_t name);
 }
@@ -32,6 +36,6 @@ namespace silva {
   expected_t<T> env_context_get_as(const string_view_t name)
   {
     const string_view_t value = SILVA_EXPECT_FWD(env_context_get(name));
-    return SILVA_EXPECT_FWD(convert_to<T>(value));
+    return SILVA_EXPECT_FWD_WITH_AT_LEAST(convert_to<T>(value), MAJOR);
   }
 }

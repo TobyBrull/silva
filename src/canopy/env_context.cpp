@@ -33,7 +33,7 @@ namespace silva {
     }
   }
 
-  optional_t<string_view_t> env_context_get_if(const string_view_t name)
+  expected_t<string_view_t> env_context_get(const string_view_t name)
   {
     const env_context_t* curr = env_context_t::get();
     while (curr != nullptr) {
@@ -45,13 +45,6 @@ namespace silva {
         curr = curr->get_previous();
       }
     }
-    return none;
-  }
-
-  expected_t<string_view_t> env_context_get(const string_view_t name)
-  {
-    optional_t<string_view_t> retval = env_context_get_if(name);
-    SILVA_EXPECT(retval.has_value(), MINOR, "Could not find '{}' in env_context", name);
-    return retval.value();
+    SILVA_EXPECT(false, MINOR, "Could not find '{}' in env_context", name);
   }
 }

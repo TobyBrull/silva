@@ -13,7 +13,7 @@ expected_t<void>
 silva_main()
 {
   for (const string_view_t name: {"VAR1", "VAR2", "VAR3", "VAR4"}) {
-    const optional_t<string_view_t> value = env_context_get_if(name);
+    const auto value = env_context_get(name);
     if (value.has_value()) {
       fmt::print("{}={}\n", name, value.value());
     }

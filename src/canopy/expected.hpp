@@ -25,17 +25,6 @@ namespace silva {
     }                                                                                        \
   } while (false)
 
-#define SILVA_EXPECT_FWD_IF(x, lvl)                                       \
-  do {                                                                    \
-    auto __silva_result = (x);                                            \
-    using enum error_level_t;                                             \
-    static_assert(error_level_is_primary(lvl));                           \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
-    if (!__silva_result && (__silva_result.error().level >= lvl)) {       \
-      return std::unexpected(std::move(__silva_result).error());          \
-    }                                                                     \
-  } while (false)
-
 #define SILVA_EXPECT_FWD(x)                                               \
   ({                                                                      \
     auto __silva_result = (x);                                            \
@@ -44,6 +33,31 @@ namespace silva {
       return std::unexpected(std::move(__silva_result).error());          \
     }                                                                     \
     std::move(__silva_result).value();                                    \
+  })
+
+#define SILVA_EXPECT_FWD_WITH_AT_LEAST(x, new_lvl)                        \
+  ({                                                                      \
+    auto __silva_result = (x);                                            \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    if (!__silva_result) {                                                \
+      using enum error_level_t;                                           \
+      auto& __level = __silva_result.error().level;                       \
+      __level       = std::max(new_lvl, __level);                         \
+      return std::unexpected(std::move(__silva_result).error());          \
+    }                                                                     \
+    std::move(__silva_result).value();                                    \
+  })
+
+#define SILVA_EXPECT_FWD_IF(x, lvl)                                       \
+  ({                                                                      \
+    auto __silva_result = (x);                                            \
+    using enum error_level_t;                                             \
+    static_assert(error_level_is_primary(lvl));                           \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    if (!__silva_result && (__silva_result.error().level >= lvl)) {       \
+      return std::unexpected(std::move(__silva_result).error());          \
+    }                                                                     \
+    std::move(__silva_result);                                            \
   })
 
 // For Catch2
