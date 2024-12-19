@@ -24,6 +24,11 @@ namespace silva {
       return lhs.get_view() <=> rhs.get_view();
     }
   };
+
+  inline string_or_view_t operator"" _sov(const char* str, size_t)
+  {
+    return string_or_view_t{string_view_t{str}};
+  }
 }
 
 // IMPLEMENTATION
