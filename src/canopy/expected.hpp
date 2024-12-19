@@ -3,7 +3,8 @@
 #include "error.hpp"
 
 #include <expected>
-#include <format>
+#include <fmt/base.h>
+#include <fmt/format.h>
 
 namespace silva {
   template<typename T>
@@ -78,12 +79,12 @@ namespace silva::impl {
   template<typename... Args>
     requires(sizeof...(Args) > 0)
   error_t make_parse_error(const error_level_t error_level,
-                           std::format_string<Args...> fmt_str,
+                           fmt::format_string<Args...> fmt_str,
                            Args&&... args)
   {
     return error_t{
         .level   = error_level,
-        .message = string_or_view_t{std::format(fmt_str, std::forward<Args>(args)...)},
+        .message = string_or_view_t{fmt::format(fmt_str, std::forward<Args>(args)...)},
     };
   }
 }

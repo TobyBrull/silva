@@ -2,7 +2,7 @@
 
 #include "types.hpp"
 
-#include <format>
+#include <fmt/format.h>
 
 namespace silva {
 
@@ -43,9 +43,9 @@ namespace silva::impl {
   [[noreturn]] void assert_handler(char const* file,
                                    long const line,
                                    char const* func,
-                                   std::format_string<Args...> fmt_str,
+                                   fmt::format_string<Args...> fmt_str,
                                    Args&&... args)
   {
-    assert_handler_core(file, line, func, std::format(fmt_str, std::forward<Args>(args)...));
+    assert_handler_core(file, line, func, fmt::format(fmt_str, std::forward<Args>(args)...));
   }
 }

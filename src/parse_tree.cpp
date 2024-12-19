@@ -36,7 +36,7 @@ namespace silva {
       const parse_tree_t::node_t& node = pt.nodes[path.back().node_index];
       curr_line.clear();
       curr_line_space_to(2 * (path.size() - 1));
-      curr_line += std::format("[{}]{},{}",
+      curr_line += fmt::format("[{}]{},{}",
                                path.back().child_index,
                                pt.root->rules[node.rule_index].name,
                                pt.root->rules[node.rule_index].precedence);
@@ -66,12 +66,12 @@ namespace silva {
       if (path.size() >= 2) {
         string_t parent_node_name = "/";
         for (index_t i = 1; i < path.size() - 1; ++i) {
-          parent_node_name += std::format("{}/", path[i].child_index);
+          parent_node_name += fmt::format("{}/", path[i].child_index);
         }
-        node_name = std::format("{}{}/", parent_node_name, path.back().child_index);
-        retval += std::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
+        node_name = fmt::format("{}{}/", parent_node_name, path.back().child_index);
+        retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
       }
-      retval += std::format("  \"{}\" [label=\"[{}]{},{}\\n{}\"]\n",
+      retval += fmt::format("  \"{}\" [label=\"[{}]{},{}\\n{}\"]\n",
                             node_name,
                             path.back().child_index,
                             pt.root->rules[node.rule_index].name,
