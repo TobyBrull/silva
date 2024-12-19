@@ -36,6 +36,6 @@ namespace silva {
   expected_t<T> env_context_get_as(const string_view_t name)
   {
     const string_view_t value = SILVA_EXPECT_FWD(env_context_get(name));
-    return SILVA_EXPECT_FWD_WITH_AT_LEAST(convert_to<T>(value), MAJOR);
+    return SILVA_EXPECT_FWD(convert_to<T>(value), MAJOR);
   }
 }

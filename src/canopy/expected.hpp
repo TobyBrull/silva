@@ -25,24 +25,14 @@ namespace silva {
     }                                                                                        \
   } while (false)
 
-#define SILVA_EXPECT_FWD(x)                                               \
-  ({                                                                      \
-    auto __silva_result = (x);                                            \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
-    if (!__silva_result) {                                                \
-      return std::unexpected(std::move(__silva_result).error());          \
-    }                                                                     \
-    std::move(__silva_result).value();                                    \
-  })
-
-#define SILVA_EXPECT_FWD_WITH_AT_LEAST(x, new_lvl)                        \
+#define SILVA_EXPECT_FWD(x, ...)                                          \
   ({                                                                      \
     auto __silva_result = (x);                                            \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
     if (!__silva_result) {                                                \
       using enum error_level_t;                                           \
       auto& __level = __silva_result.error().level;                       \
-      __level       = std::max(new_lvl, __level);                         \
+      silva::impl::set_new_level(__level __VA_OPT__(, ) __VA_ARGS__);     \
       return std::unexpected(std::move(__silva_result).error());          \
     }                                                                     \
     std::move(__silva_result).value();                                    \
@@ -100,5 +90,17 @@ namespace silva::impl {
         .level   = error_level,
         .message = string_or_view_t{fmt::format(fmt_str, std::forward<Args>(args)...)},
     };
+  }
+
+  template<typename... Args>
+  void set_new_level(error_level_t& retval, Args... args)
+  {
+    static_assert(sizeof...(Args) <= 1,
+                  "SILVA_EXPECT_FWD requires at most one additional parameter");
+    if constexpr (sizeof...(Args) == 1) {
+      static_assert((std::same_as<Args, error_level_t> && ...),
+                    "Second parameter to SILVA_EXPECT_FWD must be error_level_t");
+      retval = std::max(retval, args...);
+    }
   }
 }

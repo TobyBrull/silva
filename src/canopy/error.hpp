@@ -11,14 +11,12 @@ namespace silva {
   // error-level explicitly, e.g., using one of the SILVA_EXPECT_..._MAP macros.
 
   enum class error_level_t : uint8_t {
-    ALL = 0,
+    MINOR  = 1,
+    MAJOR  = 2,
+    FATAL  = 3,
+    ASSERT = 4,
 
-    MINOR = 1,
-    MAJOR = 2,
-    FATAL = 3,
-
-    ASSERT = 0xfe,
-
+    ALL  = 0,
     NONE = 0xff
   };
   constexpr bool error_level_is_primary(error_level_t);
