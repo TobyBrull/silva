@@ -45,12 +45,12 @@ namespace silva {
     : parse_tree_guard_t(pt, token_index)
   {
     node_index = pt->nodes.size();
-    pt->nodes.push_back(parse_tree_t::node_t{.data = {.token_index = *token_index}});
+    pt->nodes.push_back(parse_tree_t::node_t{.token_index = *token_index});
   }
 
   void parse_tree_guard_for_rule_t::set_rule_index(const index_t rule_index)
   {
-    pt->nodes[node_index].data.rule_index = rule_index;
+    pt->nodes[node_index].rule_index = rule_index;
   }
 
   parse_tree_sub_t parse_tree_guard_for_rule_t::release()

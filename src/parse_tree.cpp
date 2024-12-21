@@ -26,10 +26,10 @@ namespace silva {
           curr_line_space_to(2 * (path.size() - 1));
           curr_line += fmt::format("[{}]{},{}",
                                    path.back().child_index,
-                                   pt.root->rules[node.data.rule_index].name,
-                                   pt.root->rules[node.data.rule_index].precedence);
+                                   pt.root->rules[node.rule_index].name,
+                                   pt.root->rules[node.rule_index].precedence);
           curr_line_space_to(token_offset);
-          curr_line += pt.tokenization->token_data(node.data.token_index)->str;
+          curr_line += pt.tokenization->token_data(node.token_index)->str;
           retval += curr_line;
           retval += '\n';
           return true;
@@ -59,13 +59,12 @@ namespace silva {
             node_name = fmt::format("{}{}/", parent_node_name, path.back().child_index);
             retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
           }
-          retval +=
-              fmt::format("  \"{}\" [label=\"[{}]{},{}\\n{}\"]\n",
-                          node_name,
-                          path.back().child_index,
-                          pt.root->rules[node.data.rule_index].name,
-                          pt.root->rules[node.data.rule_index].precedence,
-                          string_escaped(pt.tokenization->token_data(node.data.token_index)->str));
+          retval += fmt::format("  \"{}\" [label=\"[{}]{},{}\\n{}\"]\n",
+                                node_name,
+                                path.back().child_index,
+                                pt.root->rules[node.rule_index].name,
+                                pt.root->rules[node.rule_index].precedence,
+                                string_escaped(pt.tokenization->token_data(node.token_index)->str));
           return true;
         });
     SILVA_ASSERT(result);
