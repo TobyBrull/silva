@@ -96,7 +96,7 @@ namespace silva {
       index_t next_child_index = 0;
       while (!path.empty() && nodes[path.back().node_index].children_end <= new_node_index) {
         const index_t bi   = path.back().node_index;
-        const bool is_leaf = (nodes[bi].children_end == bi + 1);
+        const bool is_leaf = (nodes[bi].num_children == 0);
         next_child_index   = path.back().child_index + 1;
         if (!is_leaf) {
           const bool cont =
@@ -118,7 +118,7 @@ namespace silva {
         return {};
       }
       path.push_back({.node_index = node_index, .child_index = maybe_new_child_index.value()});
-      const bool is_leaf = (nodes[node_index].children_end == node_index + 1);
+      const bool is_leaf = (nodes[node_index].num_children == 0);
       if (is_leaf) {
         const bool cont =
             SILVA_EXPECT_FWD(visitor(span_t<const tree_branch_t>{path}, tree_event_t::ON_LEAF));
@@ -134,12 +134,14 @@ namespace silva {
         }
       }
     }
+
     const optional_t<index_t> maybe_new_child_index =
         SILVA_EXPECT_FWD(clean_stack_till(end_node_index));
-    if (maybe_new_child_index) {
-      SILVA_EXPECT(maybe_new_child_index.value() == 1, ASSERT);
-      SILVA_EXPECT(path.empty(), ASSERT);
+    if (!maybe_new_child_index) {
+      return {};
     }
+    SILVA_EXPECT(maybe_new_child_index.value() == 1, ASSERT);
+    SILVA_EXPECT(path.empty(), ASSERT);
     return {};
   }
 
