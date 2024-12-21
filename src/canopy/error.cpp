@@ -7,6 +7,11 @@
 
 namespace silva {
 
+  error_context_t::~error_context_t()
+  {
+    SILVA_ASSERT(nodes.empty());
+  }
+
   error_t::~error_t()
   {
     clear();
@@ -31,6 +36,15 @@ namespace silva {
       const auto& node       = context->nodes[node_index];
       const index_t new_size = node.children_begin;
       context->nodes.resize(new_size);
+      context    = nullptr;
+      node_index = 0;
+      level      = error_level_t::NONE;
+    }
+  }
+
+  void error_t::release()
+  {
+    if (context != nullptr) {
       context    = nullptr;
       node_index = 0;
       level      = error_level_t::NONE;

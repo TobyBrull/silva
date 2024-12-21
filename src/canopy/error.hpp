@@ -25,6 +25,8 @@ namespace silva {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
 
+    ~error_context_t();
+
     struct node_t {
       index_t num_children   = 0;
       index_t children_begin = 0;
@@ -46,6 +48,8 @@ namespace silva {
     string_view_t message() const;
 
     void clear();
+
+    void release();
 
     error_t(error_t&& other);
     error_t& operator=(error_t&& other);
@@ -100,6 +104,7 @@ namespace silva {
         SILVA_ASSERT(child_error.node_index + 1 == children_begin);
         children_begin = context->nodes[child_error.node_index].children_begin;
         num_children += 1;
+        child_error.release();
       }
 
       error_t finish() &&
@@ -122,7 +127,7 @@ namespace silva {
   {
     impl::error_nursery_t nursery(error_level, std::move(message));
     if constexpr (sizeof...(Errors) > 0) {
-      (nursery.add_child_error(std::move(child_errors), std::ignore) = ...);
+      ((nursery.add_child_error(std::move(child_errors)), std::ignore) = ...);
     }
     return std::move(nursery).finish();
   }
