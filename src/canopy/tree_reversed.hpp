@@ -37,11 +37,10 @@ namespace silva {
   {
     vector_t<tree_branch_t> path;
     const auto clean_stack_till =
-        [&](const index_t new_node_index) -> expected_t<optional_t<index_t>> {
+        [&](const index_t prev_node_index) -> expected_t<optional_t<index_t>> {
       index_t next_child_index = 0;
-      while (!path.empty() && new_node_index <= nodes[path.back().node_index].children_begin) {
-        const index_t bi   = path.back().node_index;
-        const bool is_leaf = (nodes[bi].num_children == 0);
+      while (!path.empty() && prev_node_index <= nodes[path.back().node_index].children_begin) {
+        const bool is_leaf = (nodes[path.back().node_index].num_children == 0);
         next_child_index   = path.back().child_index + 1;
         if (!is_leaf) {
           const bool cont =

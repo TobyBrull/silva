@@ -95,8 +95,7 @@ namespace silva {
         [&](const index_t new_node_index) -> expected_t<optional_t<index_t>> {
       index_t next_child_index = 0;
       while (!path.empty() && nodes[path.back().node_index].children_end <= new_node_index) {
-        const index_t bi   = path.back().node_index;
-        const bool is_leaf = (nodes[bi].num_children == 0);
+        const bool is_leaf = (nodes[path.back().node_index].num_children == 0);
         next_child_index   = path.back().child_index + 1;
         if (!is_leaf) {
           const bool cont =
