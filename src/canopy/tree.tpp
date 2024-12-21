@@ -21,8 +21,8 @@ struct result_t {
 
 TEST_CASE("tree", "[tree_t]")
 {
-  tree_t<> tree;
-  using node_t = tree_t<>::node_t;
+  tree_t<std::monostate> tree;
+  using node_t = tree_t<std::monostate>::node_t;
   tree.nodes.push_back(node_t{.num_children = 4, .children_end = 15}); // [0]
   tree.nodes.push_back(node_t{.num_children = 1, .children_end = 3});  // [1]
   tree.nodes.push_back(node_t{.num_children = 0, .children_end = 3});  // [2]

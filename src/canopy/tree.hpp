@@ -22,12 +22,12 @@ namespace silva {
     index_t child_index = 0;
   };
 
-  template<typename T = std::monostate>
+  template<typename T>
   struct tree_t {
     struct node_t {
       index_t num_children = 0;
       index_t children_end = 0;
-      [[no_unique_address]] T data{};
+      T data{};
 
       friend auto operator<=>(const node_t&, const node_t&) = default;
     };
