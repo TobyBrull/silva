@@ -22,7 +22,7 @@ namespace silva {
   // A reference to a position in the "tokens" vector of the "tokenization_t" struct.
   using token_index_t = index_t;
 
-  struct tokenization_t : public sprite_t {
+  struct tokenization_t {
     const_ptr_t<source_code_t> source_code;
 
     struct token_data_t {

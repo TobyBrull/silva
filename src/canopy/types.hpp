@@ -68,7 +68,6 @@ namespace silva {
   };
 
   template<typename T>
-    requires std::derived_from<T, sprite_t>
   unique_ptr_t<T> to_unique_ptr(T x)
   {
     return std::make_unique<T>(std::move(x));

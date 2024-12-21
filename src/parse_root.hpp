@@ -7,7 +7,7 @@
 namespace silva {
 
   // Driver for a program in the Seed language.
-  struct parse_root_t : public sprite_t {
+  struct parse_root_t {
     // Parse tree of the Seed program for this driver.
     const_ptr_t<parse_tree_t> seed_parse_tree;
 

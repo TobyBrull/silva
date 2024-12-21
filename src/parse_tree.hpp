@@ -14,9 +14,7 @@ namespace silva {
     friend auto operator<=>(const parse_tree_node_t&, const parse_tree_node_t&) = default;
   };
 
-  struct parse_tree_t
-    : public tree_t<parse_tree_node_t>
-    , public sprite_t {
+  struct parse_tree_t : public tree_t<parse_tree_node_t> {
     const_ptr_t<tokenization_t> tokenization;
     const_ptr_t<parse_root_t> root;
   };

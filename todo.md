@@ -1,7 +1,7 @@
 # TODO
 
 * error-handling
-    * check Seed program when constructing parse_root_t
+    * check Seed program when constructing parse_root_t?
 
 * context:
     * logging
@@ -15,6 +15,5 @@
         * unify the two into a single tree type?
 
 * code review
-    * should parse_tree_t really be a sprite_t
 
 * add tracy in?
