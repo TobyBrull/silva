@@ -36,7 +36,7 @@ TEST_CASE("env_context", "[env_context_t]")
       {
         const auto result = env_context_get_as<bool>("VAR1");
         REQUIRE(result);
-        CHECK(result.value() == true);
+        CHECK(*result == true);
       }
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "assert.hpp"
 #include "context.hpp"
 #include "string_or_view.hpp"
 
@@ -24,15 +25,42 @@ namespace silva {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
 
-    vector_t<string_or_view_t> data;
+    struct node_t {
+      index_t num_children   = 0;
+      index_t children_begin = 0;
+      string_or_view_t message;
+    };
+
+    vector_t<node_t> nodes;
   };
 
-  struct error_t {
-    error_level_t level = error_level_t::NONE;
-    string_or_view_t message;
-    error_context_t* error_context = error_context_t::get();
+  struct error_t : public sprite_t {
+    error_context_t* context = nullptr;
+    index_t node_index       = 0;
+    error_level_t level      = error_level_t::NONE;
+
+    ~error_t();
+    error_t() = default;
+    error_t(error_context_t*, index_t, error_level_t);
+
+    string_view_t message() const;
+
+    void clear();
+
+    error_t(error_t&& other);
+    error_t& operator=(error_t&& other);
+
+    void swap(error_t& other);
   };
+
+  template<typename... Errors>
+    requires(std::same_as<Errors, error_t> && ...)
+  error_t make_error(error_level_t, string_or_view_t, Errors... child_errors);
+
+  error_t make_error(error_level_t, string_or_view_t, span_t<error_t> child_errors);
 }
+
+// IMPLEMENTATION
 
 namespace silva {
   constexpr bool error_level_is_primary(const error_level_t error_level)
@@ -47,5 +75,55 @@ namespace silva {
       case error_level_t::ASSERT:
         return true;
     }
+  }
+
+  namespace impl {
+    struct error_nursery_t {
+      error_context_t* context  = nullptr;
+      index_t node_index        = 0;
+      index_t num_children      = 0;
+      index_t children_begin    = 0;
+      error_level_t error_level = error_level_t::NONE;
+      string_or_view_t message;
+
+      error_nursery_t(const error_level_t error_level, string_or_view_t message)
+        : context(error_context_t::get())
+        , node_index(context->nodes.size())
+        , children_begin(context->nodes.size())
+        , error_level(error_level)
+        , message(std::move(message))
+      {
+      }
+
+      void add_child_error(error_t child_error)
+      {
+        SILVA_ASSERT(child_error.node_index + 1 == children_begin);
+        children_begin = context->nodes[child_error.node_index].children_begin;
+        num_children += 1;
+      }
+
+      error_t finish() &&
+      {
+        SILVA_ASSERT(context->nodes.size() == node_index);
+        context->nodes.push_back(error_context_t::node_t{
+            .num_children   = num_children,
+            .children_begin = children_begin,
+            .message        = std::move(message),
+        });
+        return error_t(context, node_index, error_level);
+      }
+    };
+  }
+
+  template<typename... Errors>
+    requires(std::same_as<Errors, error_t> && ...)
+  error_t
+  make_error(const error_level_t error_level, string_or_view_t message, Errors... child_errors)
+  {
+    impl::error_nursery_t nursery(error_level, std::move(message));
+    if constexpr (sizeof...(Errors) > 0) {
+      (nursery.add_child_error(std::move(child_errors), std::ignore) = ...);
+    }
+    return std::move(nursery).finish();
   }
 }

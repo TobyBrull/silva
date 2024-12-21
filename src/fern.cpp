@@ -47,7 +47,7 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         if (auto result = fern(); result) {
-          gg_rule.sub += result.value();
+          gg_rule.sub += *result;
           gg_rule.set_rule_index(to_int(ITEM_0));
         }
         else {
@@ -169,7 +169,7 @@ namespace silva {
     string_t retval    = "digraph Fern {\n";
     string_t curr_path = "/";
     optional_t<string_view_t> last_label_str;
-    const auto result = pt->visit_subtree(
+    auto result = pt->visit_subtree(
         [&](const span_t<const parse_tree_t::visit_state_t> path,
             const parse_tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
@@ -420,7 +420,7 @@ namespace silva {
       {
         SILVA_EXPECT(parse_tree->nodes[start_node].rule_index == to_int(FERN), MINOR);
         fern_t retval;
-        const auto result = parse_tree->visit_children(
+        auto result = parse_tree->visit_children(
             [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
               fern_labeled_item_t li = SILVA_EXPECT_FWD(labeled_item(child_node_index));
               retval.push_back(std::move(li));

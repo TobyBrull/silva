@@ -234,7 +234,7 @@ namespace silva {
               const auto& node = seed_pt->nodes[node_index];
               if (auto result = apply_terminal(node_index); result) {
                 found_match = true;
-                gg.sub += result.value();
+                gg.sub += *result;
                 return false;
               }
               else {
@@ -298,7 +298,7 @@ namespace silva {
                 index_t repeat_count = 0;
                 while (repeat_count < max_repeat) {
                   if (auto result = apply_primary(seed_node_index_primary); result) {
-                    sub_sub += result.value();
+                    sub_sub += *result;
                     repeat_count += 1;
                   }
                   else {
@@ -365,7 +365,7 @@ namespace silva {
           parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
           gg_rule.set_rule_index(rule_offset);
           if (auto result = apply_expr(rule.expr_node_index); result) {
-            gg_rule.sub += result.value();
+            gg_rule.sub += *result;
             return gg_rule.release();
           }
           else {

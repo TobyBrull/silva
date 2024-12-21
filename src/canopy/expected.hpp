@@ -90,13 +90,13 @@ namespace silva {
 // Usage:
 //  - SILVA_EXPECT_REQUIRE(foo(x))
 //
-#define SILVA_EXPECT_REQUIRE(expression)                                      \
-  ({                                                                          \
-    auto __silva_result = (expression);                                       \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);     \
-    INFO((!__silva_result ? __silva_result.error().message.get_view() : "")); \
-    REQUIRE(__silva_result);                                                  \
-    std::move(__silva_result).value();                                        \
+#define SILVA_EXPECT_REQUIRE(expression)                                  \
+  ({                                                                      \
+    auto __silva_result = (expression);                                   \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    INFO((!__silva_result ? __silva_result.error().message() : ""));      \
+    REQUIRE(__silva_result);                                              \
+    std::move(__silva_result).value();                                    \
   })
 }
 
@@ -105,18 +105,12 @@ namespace silva {
 namespace silva::impl {
   inline error_t silva_expect(const error_level_t error_level)
   {
-    return error_t{
-        .level   = error_level,
-        .message = string_or_view_t{string_view_t{"unexpected condition"}},
-    };
+    return make_error(error_level, string_or_view_t{string_view_t{"unexpected condition"}});
   }
 
   inline error_t silva_expect(const error_level_t error_level, string_view_t string_view)
   {
-    return error_t{
-        .level   = error_level,
-        .message = string_or_view_t{string_view},
-    };
+    return make_error(error_level, string_or_view_t{string_view});
   }
 
   template<typename... Args>
@@ -124,10 +118,8 @@ namespace silva::impl {
   error_t
   silva_expect(const error_level_t error_level, fmt::format_string<Args...> fmt_str, Args&&... args)
   {
-    return error_t{
-        .level   = error_level,
-        .message = string_or_view_t{fmt::format(fmt_str, std::forward<Args>(args)...)},
-    };
+    return make_error(error_level,
+                      string_or_view_t{fmt::format(fmt_str, std::forward<Args>(args)...)});
   }
 
   template<typename... Args>
