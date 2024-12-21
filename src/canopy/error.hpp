@@ -26,7 +26,7 @@ namespace silva {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
 
-    error_tree_t<string_or_view_t> tree;
+    error_tree_t tree;
 
     ~error_context_t();
 
@@ -109,7 +109,7 @@ namespace silva {
       error_t finish() &&
       {
         SILVA_ASSERT(context->tree.nodes.size() == node_index);
-        context->tree.nodes.push_back(error_tree_t<string_or_view_t>::node_t{
+        context->tree.nodes.push_back(error_tree_t::node_t{
             .num_children   = num_children,
             .children_begin = children_begin,
             .message        = std::move(message),

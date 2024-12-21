@@ -20,3 +20,19 @@ namespace silva {
     index_t child_index = 0;
   };
 }
+
+// IMPLEMENTATION
+
+namespace silva {
+  constexpr bool is_on_entry(const tree_event_t event)
+  {
+    const auto retval = (to_int(event) & to_int(tree_event_t::ON_ENTRY));
+    return retval != 0;
+  }
+
+  constexpr bool is_on_exit(const tree_event_t event)
+  {
+    const auto retval = (to_int(event) & to_int(tree_event_t::ON_EXIT));
+    return retval != 0;
+  }
+}

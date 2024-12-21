@@ -1,16 +1,16 @@
 #pragma once
 
 #include "assert.hpp"
+#include "string_or_view.hpp"
 #include "tree_base.hpp"
 
 namespace silva {
-  // This is
-  template<typename T>
   struct error_tree_t {
     struct node_t {
       index_t num_children   = 0;
       index_t children_begin = 0;
-      T message{};
+
+      string_or_view_t message;
     };
     vector_t<node_t> nodes;
 
@@ -23,10 +23,9 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
-  template<typename T>
   template<typename Visitor>
     requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
-  void error_tree_t<T>::visit_subtree(Visitor visitor, const index_t start_node_index) const
+  void error_tree_t::visit_subtree(Visitor visitor, const index_t start_node_index) const
   {
     vector_t<tree_branch_t> path;
     const auto clean_stack_till = [&](const index_t prev_node_index) -> optional_t<index_t> {

@@ -21,8 +21,8 @@ struct result_t {
 
 TEST_CASE("error-tree", "[error_tree_t]")
 {
-  error_tree_t<std::monostate> tree;
-  using node_t = error_tree_t<std::monostate>::node_t;
+  error_tree_t tree;
+  using node_t = error_tree_t::node_t;
   tree.nodes.push_back(node_t{.num_children = 0, .children_begin = 0});  // [0]
   tree.nodes.push_back(node_t{.num_children = 1, .children_begin = 0});  // [1]
   tree.nodes.push_back(node_t{.num_children = 0, .children_begin = 2});  // [2]
