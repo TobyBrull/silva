@@ -5,18 +5,6 @@
 #include "canopy/convert.hpp"
 
 namespace silva {
-  bool is_on_entry(const parse_tree_event_t event)
-  {
-    const auto retval = (to_int(event) & to_int(parse_tree_event_t::ON_ENTRY));
-    return retval != 0;
-  }
-
-  bool is_on_exit(const parse_tree_event_t event)
-  {
-    const auto retval = (to_int(event) & to_int(parse_tree_event_t::ON_EXIT));
-    return retval != 0;
-  }
-
   string_t parse_tree_to_string(const parse_tree_t& pt, const index_t token_offset)
   {
     string_t curr_line;
@@ -28,7 +16,7 @@ namespace silva {
 
     string_t retval;
     const auto result = pt.visit_subtree([&](const span_t<const parse_tree_t::visit_state_t> path,
-                                             const parse_tree_event_t event) -> expected_t<bool> {
+                                             const tree_event_t event) -> expected_t<bool> {
       if (!is_on_entry(event)) {
         return true;
       }
@@ -55,7 +43,7 @@ namespace silva {
     string_t retval;
     retval += "digraph parse_tree {\n";
     const auto result = pt.visit_subtree([&](const span_t<const parse_tree_t::visit_state_t> path,
-                                             const parse_tree_event_t event) -> expected_t<bool> {
+                                             const tree_event_t event) -> expected_t<bool> {
       if (!is_on_entry(event)) {
         return true;
       }

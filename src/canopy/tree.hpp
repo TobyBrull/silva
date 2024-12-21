@@ -1,30 +1,27 @@
 #pragma once
 
-#include "canopy/expected.hpp"
-#include "canopy/small_vector.hpp"
-#include "canopy/tree.hpp"
-
-#include "tokenization.hpp"
-
-#include <utility>
+#include "expected.hpp"
+#include "small_vector.hpp"
+#include "types.hpp"
 
 namespace silva {
-  struct parse_root_t;
+  enum class tree_event_t {
+    INVALID  = 0,
+    ON_ENTRY = 0b01,
+    ON_EXIT  = 0b10,
+    ON_LEAF  = 0b11,
+  };
+  constexpr bool is_on_entry(tree_event_t);
+  constexpr bool is_on_exit(tree_event_t);
 
-  struct parse_tree_t : public sprite_t {
-    const_ptr_t<tokenization_t> tokenization;
-
-    const_ptr_t<parse_root_t> root;
-
+  struct tree_t {
     struct node_t {
-      index_t rule_index   = 0;
-      index_t token_index  = 0;
       index_t num_children = 0;
       index_t children_end = 0;
-
-      friend auto operator<=>(const node_t&, const node_t&) = default;
     };
     vector_t<node_t> nodes;
+
+    bool is_consistent() const;
 
     // Invokes the Visitor once (ON_LEAF for leaves) or twice (ON_ENTRY and ON_EXIT for non-leaves)
     // for each node. The visitation order is such that ON_ENTRY for a node happens immediately
@@ -66,41 +63,26 @@ namespace silva {
     template<index_t N>
     expected_t<small_vector_t<index_t, N>> get_children_up_to(index_t parent_node_index) const;
   };
-
-  string_t parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
-  string_t parse_tree_to_graphviz(const parse_tree_t&);
-
-  // template<typename T>
-  // struct bison_visitor {
-  //   const ContextFreeGrammar* cfg = nullptr;
-  //
-  //   // Terminal-index ->
-  //   // TerminalCalllback
-  //   using TerminalCallback = std::function<void(T&)>;
-  //   vector_t<TerminalCallback> terminal_callbacks;
-  //
-  //   // ProductionHandle ->
-  //   // RHS index ->
-  //   // ProductionCallback
-  //   using ProductionCallback = std::function<void(T&, span_t<const T>)>;
-  //   vector_t<vector_t<ProductionCallback>> production_callbacks;
-  //
-  //   bison_visitor(const ContextFreeGrammar*);
-  //
-  //   void set_terminal_callback(SymbolHandle, TerminalCallback);
-  //   void set_production_callback(ProductionHandle, index_t rhs_index, ProductionCallback);
-  //
-  //   T visit_subtree(const ParseTree&) const;
-  // };
 }
 
 // IMPLEMENTATION
 
 namespace silva {
+  constexpr bool is_on_entry(const tree_event_t event)
+  {
+    const auto retval = (to_int(event) & to_int(tree_event_t::ON_ENTRY));
+    return retval != 0;
+  }
+
+  constexpr bool is_on_exit(const tree_event_t event)
+  {
+    const auto retval = (to_int(event) & to_int(tree_event_t::ON_EXIT));
+    return retval != 0;
+  }
+
   template<typename Visitor>
-    requires std::invocable<Visitor, span_t<const parse_tree_t::visit_state_t>, tree_event_t>
-  expected_t<void> parse_tree_t::visit_subtree(Visitor visitor,
-                                               const index_t start_node_index) const
+    requires std::invocable<Visitor, span_t<const tree_t::visit_state_t>, tree_event_t>
+  expected_t<void> tree_t::visit_subtree(Visitor visitor, const index_t start_node_index) const
   {
     vector_t<visit_state_t> path;
     const auto clean_stack_till =
@@ -157,8 +139,7 @@ namespace silva {
 
   template<typename Visitor>
     requires std::invocable<Visitor, index_t, index_t>
-  expected_t<void> parse_tree_t::visit_children(Visitor visitor,
-                                                const index_t parent_node_index) const
+  expected_t<void> tree_t::visit_children(Visitor visitor, const index_t parent_node_index) const
   {
     const node_t& node       = nodes[parent_node_index];
     index_t child_node_index = parent_node_index + 1;
@@ -173,7 +154,7 @@ namespace silva {
   }
 
   template<index_t N>
-  expected_t<array_t<index_t, N>> parse_tree_t::get_children(const index_t parent_node_index) const
+  expected_t<array_t<index_t, N>> tree_t::get_children(const index_t parent_node_index) const
   {
     const node_t& node = nodes[parent_node_index];
     SILVA_EXPECT(node.num_children == N, MAJOR);
@@ -189,7 +170,7 @@ namespace silva {
 
   template<index_t N>
   expected_t<small_vector_t<index_t, N>>
-  parse_tree_t::get_children_up_to(const index_t parent_node_index) const
+  tree_t::get_children_up_to(const index_t parent_node_index) const
   {
     const node_t& node = nodes[parent_node_index];
     SILVA_EXPECT(node.num_children <= N, MAJOR);

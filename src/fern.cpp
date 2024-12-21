@@ -124,7 +124,7 @@ namespace silva {
     };
     auto result = pt->visit_subtree(
         [&](const span_t<const parse_tree_t::visit_state_t> path,
-            const parse_tree_event_t event) -> expected_t<bool> {
+            const tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
           const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
           if (node.rule_index == to_int(FERN)) {
@@ -171,7 +171,7 @@ namespace silva {
     optional_t<string_view_t> last_label_str;
     auto result = pt->visit_subtree(
         [&](const span_t<const parse_tree_t::visit_state_t> path,
-            const parse_tree_event_t event) -> expected_t<bool> {
+            const tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
           const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
           if (node.rule_index == to_int(LABELED_ITEM)) {

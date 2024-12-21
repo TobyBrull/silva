@@ -6,7 +6,7 @@
 
 using namespace silva;
 
-using event_t = parse_tree_event_t;
+using event_t = tree_event_t;
 struct result_t {
   size_t stack_size  = 0;
   index_t node_index = 0;
