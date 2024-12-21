@@ -242,7 +242,7 @@ namespace silva {
   const parse_root_t* seed_parse_root()
   {
     static const parse_root_t retval =
-        SILVA_ASSERT_EXPECTED(parse_root_t::create(const_ptr_unowned(&seed_seed_source_code)));
+        SILVA_EXPECT_ASSERT(parse_root_t::create(const_ptr_unowned(&seed_seed_source_code)));
     return &retval;
   }
 

@@ -2,6 +2,7 @@
 
 #include "assert.hpp"
 #include "context.hpp"
+#include "error_tree.hpp"
 #include "string_or_view.hpp"
 
 namespace silva {
@@ -21,20 +22,11 @@ namespace silva {
   };
   constexpr bool error_level_is_primary(error_level_t);
 
-  struct error_tree_t {
-    struct node_t {
-      index_t num_children   = 0;
-      index_t children_begin = 0;
-      string_or_view_t message;
-    };
-    vector_t<node_t> nodes;
-  };
-
   struct error_context_t : public context_t<error_context_t> {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
 
-    error_tree_t tree;
+    error_tree_t<string_or_view_t> tree;
 
     ~error_context_t();
 
@@ -117,7 +109,7 @@ namespace silva {
       error_t finish() &&
       {
         SILVA_ASSERT(context->tree.nodes.size() == node_index);
-        context->tree.nodes.push_back(error_tree_t::node_t{
+        context->tree.nodes.push_back(error_tree_t<string_or_view_t>::node_t{
             .num_children   = num_children,
             .children_begin = children_begin,
             .message        = std::move(message),

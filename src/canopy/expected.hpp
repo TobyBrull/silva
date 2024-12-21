@@ -81,6 +81,14 @@ namespace silva {
     std::move(__silva_result);                                              \
   })
 
+#define SILVA_EXPECT_ASSERT(x)                                        \
+  ({                                                                  \
+    auto result = (x);                                                \
+    static_assert(is_expected_t<decltype(result)>::value);            \
+    SILVA_ASSERT(result, "Unexpected: {}", result.error().message()); \
+    std::move(result).value();                                        \
+  })
+
 // Semantics:
 // For Catch2. The provided "expression" must evaluate to a type of the form "expected_t<Result>".
 // If the result of "expression" contains an error, a Catch2 "REQUIRE" error is generated (which

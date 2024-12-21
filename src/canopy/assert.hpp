@@ -20,14 +20,6 @@ namespace silva {
       silva::impl::assert_handler(__FILE__, __LINE__, __func__ __VA_OPT__(, ) __VA_ARGS__); \
     }                                                                                       \
   } while (false)
-
-#define SILVA_ASSERT_EXPECTED(x)                                      \
-  ({                                                                  \
-    auto result = (x);                                                \
-    static_assert(is_expected_t<decltype(result)>::value);            \
-    SILVA_ASSERT(result, "Unexpected: {}", result.error().message()); \
-    std::move(result).value();                                        \
-  })
 }
 
 namespace silva::impl {
