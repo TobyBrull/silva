@@ -21,19 +21,24 @@ namespace silva {
   };
   constexpr bool error_level_is_primary(error_level_t);
 
-  struct error_context_t : public context_t<error_context_t> {
-    constexpr static bool context_use_default = true;
-    constexpr static bool context_mutable_get = true;
-
-    ~error_context_t();
-
+  struct error_tree_t {
     struct node_t {
       index_t num_children   = 0;
       index_t children_begin = 0;
       string_or_view_t message;
     };
-
     vector_t<node_t> nodes;
+  };
+
+  struct error_context_t : public context_t<error_context_t> {
+    constexpr static bool context_use_default = true;
+    constexpr static bool context_mutable_get = true;
+
+    error_tree_t tree;
+
+    ~error_context_t();
+
+    string_t to_string(index_t node_index) const;
   };
 
   struct error_t : public sprite_t {
@@ -45,16 +50,18 @@ namespace silva {
     error_t() = default;
     error_t(error_context_t*, index_t, error_level_t);
 
-    string_view_t message() const;
+    error_t(error_t&& other);
+    error_t& operator=(error_t&& other);
+
+    void swap(error_t& other);
 
     void clear();
 
     void release();
 
-    error_t(error_t&& other);
-    error_t& operator=(error_t&& other);
+    string_view_t message() const;
 
-    void swap(error_t& other);
+    string_t to_string() const;
   };
 
   template<typename... Errors>
@@ -92,8 +99,8 @@ namespace silva {
 
       error_nursery_t(const error_level_t error_level, string_or_view_t message)
         : context(error_context_t::get())
-        , node_index(context->nodes.size())
-        , children_begin(context->nodes.size())
+        , node_index(context->tree.nodes.size())
+        , children_begin(context->tree.nodes.size())
         , error_level(error_level)
         , message(std::move(message))
       {
@@ -102,15 +109,15 @@ namespace silva {
       void add_child_error(error_t child_error)
       {
         SILVA_ASSERT(child_error.node_index + 1 == children_begin);
-        children_begin = context->nodes[child_error.node_index].children_begin;
+        children_begin = context->tree.nodes[child_error.node_index].children_begin;
         num_children += 1;
         child_error.release();
       }
 
       error_t finish() &&
       {
-        SILVA_ASSERT(context->nodes.size() == node_index);
-        context->nodes.push_back(error_context_t::node_t{
+        SILVA_ASSERT(context->tree.nodes.size() == node_index);
+        context->tree.nodes.push_back(error_tree_t::node_t{
             .num_children   = num_children,
             .children_begin = children_begin,
             .message        = std::move(message),

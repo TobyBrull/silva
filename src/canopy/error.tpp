@@ -31,5 +31,15 @@ TEST_CASE("error", "[error_t]")
     final_error = make_error(MINOR, "scope final"_sov, span_t{errors});
   }
 
-  CHECK(error_context.nodes.size() == 7);
+  CHECK(error_context.tree.nodes.size() == 7);
+  const string_view_t expected = R"(
+scope final
+  scope a 4
+  combined
+    scope b 2
+    scope b 1
+  scope a 2
+  scope a 1
+)";
+  CHECK(final_error.to_string() == expected.substr(1));
 }

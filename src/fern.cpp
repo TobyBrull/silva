@@ -243,8 +243,6 @@ namespace silva {
   {
     const index_t n = items.size();
     string_t retval;
-    string_t ind(indent + 2, ' ');
-    string_view_t ind_v = ind;
     if (items.empty()) {
       return "[]";
     }
@@ -256,19 +254,14 @@ namespace silva {
       }
       retval += '[';
       for (index_t i = 0; i < n; ++i) {
-        retval += '\n';
-        retval += ind;
+        retval += fmt::format("\n{:{}}", "", indent + 2);
         if (used_labels[i].has_value()) {
-          retval += '"';
-          retval += used_labels[i].value();
-          retval += "\" : ";
+          retval += fmt::format("\"{}\" : ", used_labels[i].value());
         }
         retval += std::visit(to_str_visitor{indent}, items[i].value);
         retval += ";";
       }
-      retval += '\n';
-      retval += ind_v.substr(0, indent);
-      retval += "]";
+      retval += fmt::format("\n{:{}}]", "", indent);
     }
     return retval;
   }
