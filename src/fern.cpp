@@ -113,7 +113,7 @@ namespace silva {
   fern_to_string(const parse_tree_t* pt, const index_t start_node, const bool with_semicolon)
   {
     SILVA_EXPECT(pt->root.get() == fern_parse_root(), ASSERT);
-    SILVA_EXPECT(pt->nodes[start_node].rule_index == to_int(FERN), ASSERT);
+    SILVA_EXPECT(pt->nodes[start_node].data.rule_index == to_int(FERN), ASSERT);
     string_t retval;
     int depth{0};
     const auto retval_newline = [&retval, &depth]() {
@@ -123,11 +123,10 @@ namespace silva {
       }
     };
     auto result = pt->visit_subtree(
-        [&](const span_t<const parse_tree_t::visit_state_t> path,
-            const tree_event_t event) -> expected_t<bool> {
+        [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
           const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
-          if (node.rule_index == to_int(FERN)) {
+          if (node.data.rule_index == to_int(FERN)) {
             if (is_on_entry(event)) {
               retval += '[';
               depth += 1;
@@ -140,7 +139,7 @@ namespace silva {
               retval += ']';
             }
           }
-          else if (node.rule_index == to_int(LABELED_ITEM)) {
+          else if (node.data.rule_index == to_int(LABELED_ITEM)) {
             if (is_on_entry(event)) {
               retval_newline();
             }
@@ -148,12 +147,12 @@ namespace silva {
               retval += ';';
             }
           }
-          else if (node.rule_index == to_int(LABEL)) {
-            retval += pt->tokenization->token_data(node.token_index)->str;
+          else if (node.data.rule_index == to_int(LABEL)) {
+            retval += pt->tokenization->token_data(node.data.token_index)->str;
             retval += " : ";
           }
-          else if (node.rule_index == to_int(ITEM_1)) {
-            retval += pt->tokenization->token_data(node.token_index)->str;
+          else if (node.data.rule_index == to_int(ITEM_1)) {
+            retval += pt->tokenization->token_data(node.data.token_index)->str;
           }
           return true;
         },
@@ -165,16 +164,15 @@ namespace silva {
   expected_t<string_t> fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
     SILVA_EXPECT(pt->root.get() == fern_parse_root(), ASSERT);
-    SILVA_EXPECT(pt->nodes[start_node].rule_index == to_int(FERN), ASSERT);
+    SILVA_EXPECT(pt->nodes[start_node].data.rule_index == to_int(FERN), ASSERT);
     string_t retval    = "digraph Fern {\n";
     string_t curr_path = "/";
     optional_t<string_view_t> last_label_str;
     auto result = pt->visit_subtree(
-        [&](const span_t<const parse_tree_t::visit_state_t> path,
-            const tree_event_t event) -> expected_t<bool> {
+        [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
           const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
-          if (node.rule_index == to_int(LABELED_ITEM)) {
+          if (node.data.rule_index == to_int(LABELED_ITEM)) {
             if (is_on_entry(event)) {
               string_t prev_path = curr_path;
               curr_path += fmt::format("{}/", path.back().child_index);
@@ -188,24 +186,24 @@ namespace silva {
               last_label_str = none;
             }
           }
-          else if (node.rule_index == to_int(LABEL)) {
-            last_label_str = pt->tokenization->token_data(node.token_index)->str;
+          else if (node.data.rule_index == to_int(LABEL)) {
+            last_label_str = pt->tokenization->token_data(node.data.token_index)->str;
           }
-          else if (node.rule_index == to_int(ITEM_1)) {
+          else if (node.data.rule_index == to_int(ITEM_1)) {
             if (last_label_str.has_value()) {
-              retval +=
-                  fmt::format("  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
-                              curr_path,
-                              curr_path,
-                              string_escaped(last_label_str.value()),
-                              string_escaped(pt->tokenization->token_data(node.token_index)->str));
+              retval += fmt::format(
+                  "  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
+                  curr_path,
+                  curr_path,
+                  string_escaped(last_label_str.value()),
+                  string_escaped(pt->tokenization->token_data(node.data.token_index)->str));
             }
             else {
-              retval +=
-                  fmt::format("  \"{}\" [label=\"{}\\n{}\"]\n",
-                              curr_path,
-                              curr_path,
-                              string_escaped(pt->tokenization->token_data(node.token_index)->str));
+              retval += fmt::format(
+                  "  \"{}\" [label=\"{}\\n{}\"]\n",
+                  curr_path,
+                  curr_path,
+                  string_escaped(pt->tokenization->token_data(node.data.token_index)->str));
             }
           }
           return true;
@@ -365,23 +363,26 @@ namespace silva {
       expected_t<fern_labeled_item_t> labeled_item(const index_t start_node)
       {
         const parse_tree_t::node_t& labeled_item = parse_tree->nodes[start_node];
-        SILVA_EXPECT(labeled_item.rule_index == to_int(LABELED_ITEM), MINOR);
+        SILVA_EXPECT(labeled_item.data.rule_index == to_int(LABELED_ITEM), MINOR);
         fern_labeled_item_t retval;
         auto result = parse_tree->visit_children(
             [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
               const parse_tree_t::node_t& node = parse_tree->nodes[child_node_index];
               if (labeled_item.num_children == 2 && child_index == 0) {
-                SILVA_EXPECT(node.rule_index == to_int(LABEL), MINOR);
-                retval.label = parse_tree->tokenization->token_data(node.token_index)->as_string();
+                SILVA_EXPECT(node.data.rule_index == to_int(LABEL), MINOR);
+                retval.label =
+                    parse_tree->tokenization->token_data(node.data.token_index)->as_string();
               }
               else {
-                if (node.rule_index == to_int(ITEM_0)) {
+                if (node.data.rule_index == to_int(ITEM_0)) {
                   fern_t sub_fern   = SILVA_EXPECT_FWD(fern(child_node_index + 1));
                   retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
                 }
-                else if (node.rule_index == to_int(ITEM_1)) {
-                  const token_id_t token_id = parse_tree->tokenization->tokens[node.token_index];
-                  const auto* token_data = parse_tree->tokenization->token_data(node.token_index);
+                else if (node.data.rule_index == to_int(ITEM_1)) {
+                  const token_id_t token_id =
+                      parse_tree->tokenization->tokens[node.data.token_index];
+                  const auto* token_data =
+                      parse_tree->tokenization->token_data(node.data.token_index);
                   if (token_id == tt_none) {
                     retval.item.value = none;
                   }
@@ -411,7 +412,7 @@ namespace silva {
 
       expected_t<fern_t> fern(const index_t start_node)
       {
-        SILVA_EXPECT(parse_tree->nodes[start_node].rule_index == to_int(FERN), MINOR);
+        SILVA_EXPECT(parse_tree->nodes[start_node].data.rule_index == to_int(FERN), MINOR);
         fern_t retval;
         auto result = parse_tree->visit_children(
             [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
