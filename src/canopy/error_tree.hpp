@@ -1,7 +1,7 @@
 #pragma once
 
 #include "assert.hpp"
-#include "string_or_view.hpp"
+#include "memento.hpp"
 #include "tree_base.hpp"
 
 namespace silva {
@@ -10,7 +10,8 @@ namespace silva {
       index_t num_children   = 0;
       index_t children_begin = 0;
 
-      string_or_view_t message;
+      memento_buffer_offset_t memento_buffer_offset = 0;
+      memento_buffer_offset_t memento_buffer_begin  = 0;
     };
     vector_t<node_t> nodes;
 

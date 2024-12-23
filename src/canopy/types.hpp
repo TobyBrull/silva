@@ -11,6 +11,7 @@
 
 namespace silva {
   using index_t = uint32_t;
+  using byte_t  = std::byte;
 
   using string_t = std::string;
 

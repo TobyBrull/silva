@@ -13,7 +13,7 @@
     const silva::expected_t<void> result = silva_main_func_name();     \
     if (!result) {                                                     \
       const silva::error_t& error = result.error();                    \
-      fmt::print(stderr, "ERROR:\n{}\n", error.message());             \
+      fmt::print(stderr, "ERROR:\n{}\n", error.message().get_view());  \
       return static_cast<int>(error.level);                            \
     }                                                                  \
     else {                                                             \

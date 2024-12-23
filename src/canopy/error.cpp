@@ -10,6 +10,7 @@ namespace silva {
   error_context_t::~error_context_t()
   {
     SILVA_ASSERT(tree.nodes.empty());
+    SILVA_ASSERT(memento_buffer.buffer.empty());
   }
 
   namespace impl {
@@ -18,10 +19,12 @@ namespace silva {
                                  const index_t node_index,
                                  const index_t indent)
     {
-      retval += fmt::format("{:{}}{}\n",
-                            "",
-                            indent,
-                            error_context->tree.nodes[node_index].message.get_view());
+      const memento_buffer_offset_t mbo =
+          error_context->tree.nodes[node_index].memento_buffer_offset;
+      const string_or_view_t message =
+          error_context->memento_buffer.at_offset(mbo).to_string_or_view();
+      retval += fmt::format("{:{}}{}\n", "", indent, message.get_view());
+
       auto& error_tree           = error_context->tree;
       const index_t num_children = error_tree.nodes[node_index].num_children;
       index_t curr_node_index    = node_index;
@@ -81,6 +84,7 @@ namespace silva {
       SILVA_ASSERT(context->tree.nodes.size() == node_index + 1);
       const auto& node       = context->tree.nodes[node_index];
       const index_t new_size = node.children_begin;
+      context->memento_buffer.resize_offset(node.memento_buffer_begin);
       context->tree.nodes.resize(new_size);
       context    = nullptr;
       node_index = 0;
@@ -97,9 +101,10 @@ namespace silva {
     }
   }
 
-  string_view_t error_t::message() const
+  string_or_view_t error_t::message() const
   {
-    return context->tree.nodes[node_index].message.get_view();
+    const memento_buffer_offset_t mbo = context->tree.nodes[node_index].memento_buffer_offset;
+    return context->memento_buffer.at_offset(mbo).to_string_or_view();
   }
 
   string_t error_t::to_string() const

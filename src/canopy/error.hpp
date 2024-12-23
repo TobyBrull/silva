@@ -3,6 +3,7 @@
 #include "context.hpp"
 #include "error_level.hpp"
 #include "error_tree.hpp"
+#include "memento.hpp"
 #include "string_or_view.hpp"
 
 namespace silva {
@@ -12,6 +13,7 @@ namespace silva {
     constexpr static bool context_mutable_get = true;
 
     error_tree_t tree;
+    memento_buffer_t memento_buffer;
 
     ~error_context_t();
 
@@ -36,7 +38,7 @@ namespace silva {
 
     void release();
 
-    string_view_t message() const;
+    string_or_view_t message() const;
 
     string_t to_string() const;
   };
@@ -53,11 +55,12 @@ namespace silva {
 namespace silva {
   namespace impl {
     struct error_nursery_t {
-      error_context_t* context  = nullptr;
-      index_t node_index        = 0;
-      index_t num_children      = 0;
-      index_t children_begin    = 0;
-      error_level_t error_level = error_level_t::NONE;
+      error_context_t* context     = nullptr;
+      index_t node_index           = 0;
+      index_t num_children         = 0;
+      index_t children_begin       = 0;
+      index_t memento_buffer_begin = std::numeric_limits<index_t>::max();
+      error_level_t error_level    = error_level_t::NONE;
       string_or_view_t message;
 
       error_nursery_t(const error_level_t error_level, string_or_view_t message)
@@ -72,18 +75,22 @@ namespace silva {
       void add_child_error(error_t child_error)
       {
         SILVA_ASSERT(child_error.node_index + 1 == children_begin);
-        children_begin = context->tree.nodes[child_error.node_index].children_begin;
+        const auto& child_node = context->tree.nodes[child_error.node_index];
+        children_begin         = child_node.children_begin;
         num_children += 1;
+        memento_buffer_begin = std::min(memento_buffer_begin, child_node.memento_buffer_begin);
         child_error.release();
       }
 
       error_t finish() &&
       {
         SILVA_ASSERT(context->tree.nodes.size() == node_index);
+        const index_t mbo = context->memento_buffer.append_memento(std::move(message));
         context->tree.nodes.push_back(error_tree_t::node_t{
-            .num_children   = num_children,
-            .children_begin = children_begin,
-            .message        = std::move(message),
+            .num_children          = num_children,
+            .children_begin        = children_begin,
+            .memento_buffer_offset = mbo,
+            .memento_buffer_begin  = std::min(mbo, memento_buffer_begin),
         });
         return error_t(context, node_index, error_level);
       }
