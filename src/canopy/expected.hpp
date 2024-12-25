@@ -113,21 +113,14 @@ namespace silva {
 namespace silva::impl {
   inline error_t silva_expect(const error_level_t error_level)
   {
-    return make_error(error_level, string_or_view_t{string_view_t{"unexpected condition"}});
-  }
-
-  inline error_t silva_expect(const error_level_t error_level, string_view_t string_view)
-  {
-    return make_error(error_level, string_or_view_t{string_view});
+    return make_error(error_level, {}, "unexpected condition");
   }
 
   template<typename... Args>
-    requires(sizeof...(Args) > 0)
-  error_t
-  silva_expect(const error_level_t error_level, fmt::format_string<Args...> fmt_str, Args&&... args)
+    requires(sizeof...(Args) >= 1)
+  error_t silva_expect(const error_level_t error_level, Args&&... args)
   {
-    return make_error(error_level,
-                      string_or_view_t{fmt::format(fmt_str, std::forward<Args>(args)...)});
+    return make_error(error_level, {}, std::forward<Args>(args)...);
   }
 
   template<typename... Args>

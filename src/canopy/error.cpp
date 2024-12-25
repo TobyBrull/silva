@@ -111,16 +111,4 @@ namespace silva {
   {
     return context->to_string(node_index);
   }
-
-  error_t make_error(const error_level_t error_level,
-                     string_or_view_t message,
-                     span_t<error_t> child_errors)
-  {
-    impl::error_nursery_t nursery(error_level, std::move(message));
-    for (auto it = child_errors.rbegin(); it != child_errors.rend(); ++it) {
-      error_t& error = *it;
-      nursery.add_child_error(std::move(error));
-    }
-    return std::move(nursery).finish();
-  }
 }

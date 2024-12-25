@@ -11,24 +11,25 @@ TEST_CASE("error", "[error_t]")
 
   silva::error_t final_error;
   {
-    auto a_1 = make_error(MINOR, "scope a 1"_sov);
-    auto a_2 = make_error(MINOR, "scope a 2"_sov);
+    auto a_1 = make_error(MINOR, {}, "scope a 1");
+    auto a_2 = make_error(MINOR, {}, "scope a 2");
 
     silva::error_t a_3;
     {
-      auto b_1 = make_error(MINOR, "scope b 1"_sov);
-      auto b_2 = make_error(MINOR, "scope b 2"_sov);
-      a_3      = make_error(MAJOR, "combined"_sov, std::move(b_1), std::move(b_2));
+      auto b_1 = make_error(MINOR, {}, "scope b 1");
+      auto b_2 = make_error(MINOR, {}, "scope b 2");
+      std::array<silva::error_t, 2> arr{std::move(b_1), std::move(b_2)};
+      a_3 = make_error(MAJOR, arr, "combined");
     }
 
-    auto a_4 = make_error(MINOR, "scope a 4"_sov);
+    auto a_4 = make_error(MINOR, {}, "scope a 4");
 
     vector_t<silva::error_t> errors;
     errors.push_back(std::move(a_1));
     errors.push_back(std::move(a_2));
     errors.push_back(std::move(a_3));
     errors.push_back(std::move(a_4));
-    final_error = make_error(MINOR, "scope final"_sov, span_t{errors});
+    final_error = make_error(MINOR, errors, "scope final"_sov);
   }
 
   CHECK(error_context.tree.nodes.size() == 7);

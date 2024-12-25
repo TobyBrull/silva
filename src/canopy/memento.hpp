@@ -129,6 +129,9 @@ namespace silva {
       if constexpr (std::same_as<T, string_view_t>) {
         return push_memento_item_string_view(buffer, x);
       }
+      else if constexpr (std::same_as<std::decay_t<T>, char*>) {
+        return push_memento_item_string_view(buffer, string_view_t{x});
+      }
       else if constexpr (std::same_as<T, string_t>) {
         return push_memento_item_string(buffer, x);
       }

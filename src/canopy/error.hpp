@@ -43,11 +43,8 @@ namespace silva {
     string_t to_string() const;
   };
 
-  template<typename... Errors>
-    requires(std::same_as<Errors, error_t> && ...)
-  error_t make_error(error_level_t, string_or_view_t, Errors... child_errors);
-
-  error_t make_error(error_level_t, string_or_view_t, span_t<error_t> child_errors);
+  template<typename... MementoArgs>
+  error_t make_error(error_level_t, span_t<error_t> child_errors, MementoArgs&&...);
 }
 
 // IMPLEMENTATION
@@ -61,14 +58,12 @@ namespace silva {
       index_t children_begin       = 0;
       index_t memento_buffer_begin = std::numeric_limits<index_t>::max();
       error_level_t error_level    = error_level_t::NONE;
-      string_or_view_t message;
 
-      error_nursery_t(const error_level_t error_level, string_or_view_t message)
+      error_nursery_t(const error_level_t error_level)
         : context(error_context_t::get())
         , node_index(context->tree.nodes.size())
         , children_begin(context->tree.nodes.size())
         , error_level(error_level)
-        , message(std::move(message))
       {
       }
 
@@ -82,10 +77,12 @@ namespace silva {
         child_error.release();
       }
 
-      error_t finish() &&
+      template<typename... MementoArgs>
+      error_t finish(MementoArgs&&... memento_args) &&
       {
         SILVA_ASSERT(context->tree.nodes.size() == node_index);
-        const index_t mbo = context->memento_buffer.append_memento(std::move(message));
+        const index_t mbo =
+            context->memento_buffer.append_memento(std::forward<MementoArgs>(memento_args)...);
         context->tree.nodes.push_back(error_tree_t::node_t{
             .num_children          = num_children,
             .children_begin        = children_begin,
@@ -97,15 +94,16 @@ namespace silva {
     };
   }
 
-  template<typename... Errors>
-    requires(std::same_as<Errors, error_t> && ...)
-  error_t
-  make_error(const error_level_t error_level, string_or_view_t message, Errors... child_errors)
+  template<typename... MementoArgs>
+  error_t make_error(const error_level_t error_level,
+                     span_t<error_t> child_errors,
+                     MementoArgs&&... memento_args)
   {
-    impl::error_nursery_t nursery(error_level, std::move(message));
-    if constexpr (sizeof...(Errors) > 0) {
-      ((nursery.add_child_error(std::move(child_errors)), std::ignore) = ...);
+    impl::error_nursery_t nursery(error_level);
+    for (auto it = child_errors.rbegin(); it != child_errors.rend(); ++it) {
+      error_t& error = *it;
+      nursery.add_child_error(std::move(error));
     }
-    return std::move(nursery).finish();
+    return std::move(nursery).finish(std::forward<MementoArgs>(memento_args)...);
   }
 }
