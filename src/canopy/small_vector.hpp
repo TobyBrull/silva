@@ -25,6 +25,9 @@ namespace silva {
     small_vector_t(const small_vector_t&);
     small_vector_t& operator=(const small_vector_t&);
 
+    auto* data(this auto& self);
+    operator span_t<T>();
+
     template<typename... Args>
     void emplace_back(Args&&...);
 
@@ -102,6 +105,18 @@ namespace silva {
       }
     }
     return *this;
+  }
+
+  template<typename T, index_t N>
+  auto* small_vector_t<T, N>::data(this auto& self)
+  {
+    return &self[0];
+  }
+
+  template<typename T, index_t N>
+  small_vector_t<T, N>::operator span_t<T>()
+  {
+    return span_t<T>{data(), size};
   }
 
   template<typename T, index_t N>
