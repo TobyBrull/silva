@@ -2,6 +2,7 @@
 
 * error-handling
     * check Seed program when constructing parse_root_t?
+    * use specialisation-points to allow CUSTOM_TYPES
 
 * context:
     * logging
