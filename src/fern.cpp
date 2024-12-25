@@ -1,5 +1,7 @@
 #include "fern.hpp"
 
+#include "canopy/error.hpp"
+#include "canopy/small_vector.hpp"
 #include "parse_root.hpp"
 #include "parse_tree_nursery.hpp"
 
@@ -8,6 +10,7 @@
 namespace silva {
   using enum token_category_t;
   using enum fern_rule_t;
+  using enum error_level_t;
 
   const parse_root_t* fern_parse_root()
   {
@@ -34,10 +37,11 @@ namespace silva {
       expected_t<parse_tree_sub_t> label()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT(num_tokens_left() >= 2 && token_id(1) == tt_colon, MINOR);
-        SILVA_EXPECT(token_data()->category == STRING || token_data()->category == IDENTIFIER,
+        SILVA_EXPECT(num_tokens_left() >= 2 && token_id(1) == tt_colon &&
+                         (token_data()->category == STRING || token_data()->category == IDENTIFIER),
                      MINOR,
-                     "Expected identifier or string for label");
+                     "CNP Label at {}: expected identifier or string followed by ':'",
+                     token_index);
         gg_rule.set_rule_index(to_int(LABEL));
         token_index += 2;
         return gg_rule.release();
@@ -46,30 +50,47 @@ namespace silva {
       expected_t<parse_tree_sub_t> item()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+        small_vector_t<error_t, 2> child_errors;
         if (auto result = fern(); result) {
           gg_rule.sub += *result;
           gg_rule.set_rule_index(to_int(ITEM_0));
+          return gg_rule.release();
         }
         else {
-          SILVA_EXPECT(token_id() == tt_none || token_id() == tt_true || token_id() == tt_false ||
-                           token_data()->category == STRING || token_data()->category == NUMBER,
-                       MINOR,
-                       "");
+          child_errors.emplace_back(std::move(result).error());
+        }
+        const bool is_item1 = token_id() == tt_none || token_id() == tt_true ||
+            token_id() == tt_false || token_data()->category == STRING ||
+            token_data()->category == NUMBER;
+        if (is_item1) {
           gg_rule.set_rule_index(to_int(ITEM_1));
           token_index += 1;
+          return gg_rule.release();
         }
-        return gg_rule.release();
+        else {
+          child_errors.emplace_back(
+              make_error(MINOR,
+                         {},
+                         "Expeced 'none', 'true', 'false', string, or number at {}",
+                         token_index));
+        }
+        return std::unexpected(
+            make_error(MINOR, child_errors, "CNP Item at {}", gg_rule.orig_token_index));
       }
 
       expected_t<parse_tree_sub_t> labeled_item()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(LABELED_ITEM));
-        SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No tokens left when trying to parse an item.");
+        SILVA_EXPECT(num_tokens_left() >= 1,
+                     MINOR,
+                     "CNP LabeledItem at {}: no tokens left",
+                     token_index);
         if (num_tokens_left() >= 2 && token_id(1) == tt_colon) {
-          gg_rule.sub += SILVA_EXPECT_FWD(label());
+          gg_rule.sub +=
+              SILVA_EXPECT_FWD(label(), "CNP LabeledItem at {}", gg_rule.orig_token_index);
         }
-        gg_rule.sub += SILVA_EXPECT_FWD(item());
+        gg_rule.sub += SILVA_EXPECT_FWD(item(), "CNP LabeledItem at {}", gg_rule.orig_token_index);
         if (num_tokens_left() >= 1 && token_id() == tt_semi_colon) {
           token_index += 1;
         }
@@ -82,14 +103,18 @@ namespace silva {
         gg_rule.set_rule_index(to_int(FERN));
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_open,
                      MINOR,
-                     "Expected fern, but didn't find '['");
+                     "CNP Fern at {}: didn't find '['",
+                     gg_rule.orig_token_index);
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id() != tt_brkt_close) {
-          gg_rule.sub += SILVA_EXPECT_FWD(labeled_item());
+          gg_rule.sub +=
+              SILVA_EXPECT_FWD(labeled_item(), "CNP Fern at {}", gg_rule.orig_token_index);
         }
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_close,
                      MINOR,
-                     "Expected end of fern, but didn't find '['");
+                     "CNP Fern at {}: didn't find '[' at {}",
+                     gg_rule.orig_token_index,
+                     token_index);
         token_index += 1;
         return gg_rule.release();
       }
