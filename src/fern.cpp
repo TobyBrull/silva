@@ -52,7 +52,7 @@ namespace silva {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         small_vector_t<error_t, 2> child_errors;
         if (auto result = fern(); result) {
-          gg_rule.sub += *result;
+          gg_rule.sub += *std::move(result);
           gg_rule.set_rule_index(to_int(ITEM_0));
           return gg_rule.release();
         }

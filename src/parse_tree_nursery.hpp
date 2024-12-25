@@ -8,7 +8,7 @@ namespace silva {
     index_t num_children       = 0;
     index_t num_children_total = 0;
 
-    void operator+=(const parse_tree_sub_t& other);
+    void operator+=(parse_tree_sub_t&& other);
   };
 
   struct parse_tree_guard_t : public menhir_t {

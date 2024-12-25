@@ -101,7 +101,7 @@ namespace silva {
           while (num_tokens_left() >= 1) {
             if (auto result = atom(); result) {
               num_atoms += 1;
-              gg_rule.sub += *result;
+              gg_rule.sub += *std::move(result);
             }
             else {
               SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);
@@ -116,13 +116,13 @@ namespace silva {
         }
         else {
           if (auto result_1 = terminal(); result_1) {
-            gg_rule.sub += *result_1;
+            gg_rule.sub += *std::move(result_1);
             gg_rule.set_rule_index(to_int(PRIMARY_1));
           }
           else {
             SILVA_EXPECT_FWD_IF(std::move(result_1), MAJOR);
             if (auto result_2 = nonterminal(); result_2) {
-              gg_rule.sub += *result_2;
+              gg_rule.sub += *std::move(result_2);
               gg_rule.set_rule_index(to_int(PRIMARY_2));
             }
             else {
@@ -154,7 +154,7 @@ namespace silva {
         gg_rule.sub += SILVA_EXPECT_FWD(primary());
         if (num_tokens_left() >= 1) {
           if (auto result = suffix(); result) {
-            gg_rule.sub += *result;
+            gg_rule.sub += *std::move(result);
           }
           else {
             SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);
@@ -172,7 +172,7 @@ namespace silva {
           index_t terminal_count = 0;
           while (num_tokens_left() >= 1 && token_id() != tt_brack_close) {
             if (auto result = terminal(); result) {
-              gg_rule.sub += *result;
+              gg_rule.sub += *std::move(result);
               terminal_count += 1;
             }
             else {
@@ -190,7 +190,7 @@ namespace silva {
           gg_rule.set_rule_index(to_int(EXPR_1));
           while (num_tokens_left() >= 1) {
             if (auto result = atom(); result) {
-              gg_rule.sub += *result;
+              gg_rule.sub += *std::move(result);
             }
             else {
               SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);

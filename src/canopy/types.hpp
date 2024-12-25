@@ -29,11 +29,25 @@ namespace silva {
   template<typename... Ts>
   using variant_t = std::variant<Ts...>;
 
+  template<typename... Ts>
+  using tuple_t = std::tuple<Ts...>;
+
   template<typename T>
   using span_t = std::span<T>;
 
   template<typename T>
-  using vector_t = std::vector<T>;
+  struct vector_t : public std::vector<T> {
+    using std::vector<T>::vector;
+    vector_t()                           = default;
+    vector_t(const vector_t&)            = default;
+    vector_t& operator=(const vector_t&) = default;
+    vector_t(vector_t&&)                 = default;
+    vector_t& operator=(vector_t&&)      = default;
+    ~vector_t();
+  };
+
+  template<typename T>
+  span_t<T> optional_to_span(optional_t<T>& x);
 
   template<typename T, index_t N>
   using array_t = std::array<T, N>;
@@ -79,5 +93,28 @@ namespace silva {
   constexpr std::underlying_type_t<Enum> to_int(const Enum e) noexcept
   {
     return static_cast<std::underlying_type_t<Enum>>(e);
+  }
+}
+
+// IMPLEMENTATION
+
+namespace silva {
+  template<typename T>
+  vector_t<T>::~vector_t()
+  {
+    while (!this->empty()) {
+      this->resize(this->size() - 1);
+    }
+  }
+
+  template<typename T>
+  span_t<T> optional_to_span(optional_t<T>& x)
+  {
+    if (x.has_value()) {
+      return span_t<T>{&x.value(), 1};
+    }
+    else {
+      return {};
+    }
   }
 }

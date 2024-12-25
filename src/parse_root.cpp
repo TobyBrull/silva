@@ -8,6 +8,7 @@
 namespace silva {
   using enum token_category_t;
   using enum seed_rule_t;
+  using enum error_level_t;
 
   expected_t<void> parse_root_t::add_rule(const string_view_t rule_name,
                                           const index_t precedence,
@@ -189,8 +190,9 @@ namespace silva {
                 seed_token_id_work.get_target_token_id(sp_token_data, retval.tokenization.get());
             SILVA_EXPECT(token_id() == expected_target_token_id,
                          MINOR,
-                         "Expected '{}'",
-                         sp_token_data->str);
+                         "Expected '{}' at {}",
+                         sp_token_data->str,
+                         token_index);
           }
         }
         token_index += 1;
@@ -234,7 +236,7 @@ namespace silva {
               const auto& node = seed_pt->nodes[node_index];
               if (auto result = apply_terminal(node_index); result) {
                 found_match = true;
-                gg.sub += *result;
+                gg.sub += *std::move(result);
                 return false;
               }
               else {
@@ -298,7 +300,7 @@ namespace silva {
                 index_t repeat_count = 0;
                 while (repeat_count < max_repeat) {
                   if (auto result = apply_primary(seed_node_index_primary); result) {
-                    sub_sub += *result;
+                    sub_sub += *std::move(result);
                     repeat_count += 1;
                   }
                   else {
@@ -311,7 +313,7 @@ namespace silva {
                              "min-repeat (={}) not reached, only found {}",
                              min_repeat,
                              repeat_count);
-                gg.sub += sub_sub;
+                gg.sub += std::move(sub_sub);
               }
               else if (suffix_char.value() == '!') {
                 parse_tree_guard_t inner_ptg{&retval, &token_index};
@@ -357,6 +359,7 @@ namespace silva {
                      rule_name);
         const index_t base_rule_offset = it->second;
         index_t rule_offset            = it->second;
+        vector_t<error_t> child_errors;
         while (rule_offset < retval.root->rules.size()) {
           const auto& rule = retval.root->rules[rule_offset];
           if (rule.precedence != rule_offset - base_rule_offset) {
@@ -365,19 +368,17 @@ namespace silva {
           parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
           gg_rule.set_rule_index(rule_offset);
           if (auto result = apply_expr(rule.expr_node_index); result) {
-            gg_rule.sub += *result;
+            gg_rule.sub += *std::move(result);
             return gg_rule.release();
           }
           else {
-            SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);
+            const error_level_t el = result.error().level;
+            child_errors.emplace_back(SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
           }
           rule_offset += 1;
         }
-        SILVA_EXPECT(false,
-                     MINOR,
-                     "unable to parse rule '{}' at token {}",
-                     rule_name,
-                     orig_token_index);
+        return std::unexpected(
+            make_error(MINOR, child_errors, "CNP {} at {}", rule_name, orig_token_index));
       }
     };
   }

@@ -4,7 +4,7 @@ namespace silva {
 
   // parse_tree_sub_t
 
-  void parse_tree_sub_t::operator+=(const parse_tree_sub_t& other)
+  void parse_tree_sub_t::operator+=(parse_tree_sub_t&& other)
   {
     num_children += other.num_children;
     num_children_total += other.num_children_total;
@@ -23,7 +23,7 @@ namespace silva {
   parse_tree_sub_t parse_tree_guard_t::release()
   {
     pt = nullptr;
-    return sub;
+    return std::move(sub);
   }
 
   bool parse_tree_guard_t::is_released() const
@@ -57,7 +57,7 @@ namespace silva {
   {
     pt->nodes[node_index].num_children = sub.num_children;
     pt->nodes[node_index].children_end = node_index + sub.num_children_total + 1;
-    const parse_tree_sub_t retval{
+    parse_tree_sub_t retval{
         .num_children       = 1,
         .num_children_total = sub.num_children_total + 1,
     };
