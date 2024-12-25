@@ -43,20 +43,22 @@ namespace silva {
 // expression represented by this macro evaluates to the contained value of type "Result".
 //
 // Usage:
-//  - SILVA_EXPECT_FWD(foo(x))          // Forward any error unchanged.
-//  - SILVA_EXPECT_FWD(foo(x), MAJOR)   // Forward any error but raise the level to MAJOR if it's
-//                                      // lower than MAJOR
+//  - SILVA_EXPECT_FWD(foo(x));
+//  - SILVA_EXPECT_FWD(foo(x), "foo failed for x={}", x);
+//    // Forward any error but raise the level to MAJOR if it's lower than MAJOR
+//  - SILVA_EXPECT_FWD(foo(x), MAJOR)
+//  - SILVA_EXPECT_FWD(foo(x), MAJOR, "foo failed for x={}", x);
 //
-#define SILVA_EXPECT_FWD(expression, ...)                                               \
-  ({                                                                                    \
-    auto __silva_result = (expression);                                                 \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);               \
-    if (!__silva_result) {                                                              \
-      using enum error_level_t;                                                         \
-      silva::impl::silva_expect_fwd(__silva_result.error() __VA_OPT__(, ) __VA_ARGS__); \
-      return std::unexpected(std::move(__silva_result).error());                        \
-    }                                                                                   \
-    std::move(__silva_result).value();                                                  \
+#define SILVA_EXPECT_FWD(expression, ...)                                 \
+  ({                                                                      \
+    auto __silva_result = (expression);                                   \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    if (!__silva_result) {                                                \
+      using enum error_level_t;                                           \
+      return std::unexpected(silva::impl::silva_expect_fwd(               \
+          std::move(__silva_result).error() __VA_OPT__(, ) __VA_ARGS__)); \
+    }                                                                     \
+    std::move(__silva_result).value();                                    \
   })
 
 // Semantics:
@@ -124,14 +126,22 @@ namespace silva::impl {
   }
 
   template<typename... Args>
-  void silva_expect_fwd(error_t& error, Args... args)
+  error_t silva_expect_fwd(error_t error, const error_level_t error_level, Args&&... args)
   {
-    static_assert(sizeof...(Args) <= 1,
-                  "SILVA_EXPECT_FWD requires at most one additional parameter");
-    if constexpr (sizeof...(Args) == 1) {
-      static_assert((std::same_as<Args, error_level_t> && ...),
-                    "Second parameter to SILVA_EXPECT_FWD must be error_level_t");
-      error.level = std::max(error.level, args...);
+    const error_level_t new_error_level = std::max(error.level, error_level);
+    if constexpr (sizeof...(Args) >= 1) {
+      std::array<error_t, 1> error_array{std::move(error)};
+      error = make_error(new_error_level, error_array, std::forward<Args>(args)...);
     }
+    else {
+      error.level = new_error_level;
+    }
+    return std::move(error);
+  }
+
+  template<typename... Args>
+  error_t silva_expect_fwd(error_t error, Args&&... args)
+  {
+    return silva_expect_fwd(std::move(error), error_level_t::NONE, std::forward<Args>(args)...);
   }
 }

@@ -37,7 +37,7 @@ namespace silva {
     inline string_or_view_t pop_memento_integer(const byte_t* ptr, const index_t size)
     {
       SILVA_ASSERT(size == 16);
-      return string_or_view_t{std::to_string(ptr_bit_cast<uint64_t>(ptr + 8))};
+      return string_or_view_t{std::to_string(ptr_bit_cast<int64_t>(ptr + 8))};
     }
 
     inline string_or_view_t pop_memento_double(const byte_t* ptr, const index_t size)

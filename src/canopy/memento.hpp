@@ -98,11 +98,11 @@ namespace silva {
       return 4 + 4 + x.size();
     }
 
-    inline index_t push_memento_item_integer(string_t& buffer, const uint64_t x)
+    inline index_t push_memento_item_integer(string_t& buffer, const int64_t x)
     {
       impl::push_bitwise<uint32_t>(buffer, 4 + 4 + 8);
       impl::push_bitwise<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::INTEGER_64));
-      impl::push_bitwise<uint64_t>(buffer, x);
+      impl::push_bitwise<int64_t>(buffer, x);
       return 4 + 4 + 8;
     }
 
