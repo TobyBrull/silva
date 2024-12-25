@@ -2,27 +2,15 @@
 
 #include "canopy/assert.hpp"
 #include "canopy/convert.hpp"
-
-#include <rfl/enums.hpp>
+#include "canopy/enum.hpp"
 
 #include <cctype>
 
 namespace silva {
-  string_view_t to_string(const token_category_t cat)
+  string_view_t to_string(const token_category_t x)
   {
-    static vector_t<string_t> vals = [] {
-      vector_t<string_t> retval;
-      const auto cats = rfl::get_enumerators<token_category_t>();
-      cats.apply([&](const auto& field) {
-        const token_category_t x = field.value();
-        if (to_int(x) >= retval.size()) {
-          retval.resize(to_int(x) + 1);
-        }
-        retval[to_int(x)] = field.name();
-      });
-      return retval;
-    }();
-    return string_view_t{vals.at(to_int(cat))};
+    static const auto vals = enum_hashmap_to_string<token_category_t>();
+    return string_view_t{vals.at(x)};
   }
 
   string_t tokenization_t::token_data_t::as_string() const
