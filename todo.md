@@ -2,7 +2,8 @@
 
 * error-handling
     * check Seed program when constructing parse_root_t?
-    * use specialisation-points to allow CUSTOM_TYPES
+    * use customisation-points to allow CUSTOM_TYPES
+    * make error_level_t a property of memento_t?
 
 * context:
     * logging
