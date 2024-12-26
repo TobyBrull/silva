@@ -3,6 +3,8 @@
 * error-handling
     * check Seed program when constructing parse_root_t?
     * use customisation-points to allow CUSTOM_TYPES
+        * token-index
+        * source-location
     * make error_level_t a property of memento_t?
 
 * context:

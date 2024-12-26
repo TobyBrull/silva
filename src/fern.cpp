@@ -40,7 +40,7 @@ namespace silva {
         SILVA_EXPECT(num_tokens_left() >= 2 && token_id(1) == tt_colon &&
                          (token_data()->category == STRING || token_data()->category == IDENTIFIER),
                      MINOR,
-                     "ExP Label at {}: expected identifier or string followed by ':'",
+                     "Expected Label at {}: expected identifier or string followed by ':'",
                      token_index);
         gg_rule.set_rule_index(to_int(LABEL));
         token_index += 2;
@@ -68,13 +68,14 @@ namespace silva {
           return gg_rule.release();
         }
         else {
-          child_errors.emplace_back(make_error(MINOR,
-                                               {},
-                                               "E 'none', 'true', 'false', string, or number at {}",
-                                               token_index));
+          child_errors.emplace_back(
+              make_error(MINOR,
+                         {},
+                         "Expected 'none', 'true', 'false', string, or number at {}",
+                         token_index));
         }
         return std::unexpected(
-            make_error(MINOR, child_errors, "ExP Item at {}", gg_rule.orig_token_index));
+            make_error(MINOR, child_errors, "Expected Item at {}", gg_rule.orig_token_index));
       }
 
       expected_t<parse_tree_sub_t> labeled_item()
@@ -83,13 +84,14 @@ namespace silva {
         gg_rule.set_rule_index(to_int(LABELED_ITEM));
         SILVA_EXPECT(num_tokens_left() >= 1,
                      MINOR,
-                     "ExP LabeledItem at {}: no tokens left",
+                     "Expected LabeledItem at {}: no tokens left",
                      token_index);
         if (num_tokens_left() >= 2 && token_id(1) == tt_colon) {
           gg_rule.sub +=
-              SILVA_EXPECT_FWD(label(), "ExP LabeledItem at {}", gg_rule.orig_token_index);
+              SILVA_EXPECT_FWD(label(), "Expected LabeledItem at {}", gg_rule.orig_token_index);
         }
-        gg_rule.sub += SILVA_EXPECT_FWD(item(), "ExP LabeledItem at {}", gg_rule.orig_token_index);
+        gg_rule.sub +=
+            SILVA_EXPECT_FWD(item(), "Expected LabeledItem at {}", gg_rule.orig_token_index);
         if (num_tokens_left() >= 1 && token_id() == tt_semi_colon) {
           token_index += 1;
         }
@@ -102,16 +104,16 @@ namespace silva {
         gg_rule.set_rule_index(to_int(FERN));
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_open,
                      MINOR,
-                     "ExP Fern at {}: didn't find '['",
+                     "Expected Fern at {}: didn't find '['",
                      gg_rule.orig_token_index);
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id() != tt_brkt_close) {
           gg_rule.sub +=
-              SILVA_EXPECT_FWD(labeled_item(), "ExP Fern at {}", gg_rule.orig_token_index);
+              SILVA_EXPECT_FWD(labeled_item(), "Expected Fern at {}", gg_rule.orig_token_index);
         }
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_close,
                      MINOR,
-                     "ExP Fern at {}: didn't find '[' at {}",
+                     "Expected Fern at {}: didn't find '[' at {}",
                      gg_rule.orig_token_index,
                      token_index);
         token_index += 1;
