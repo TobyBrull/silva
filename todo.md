@@ -7,6 +7,9 @@
         * source-location
     * make error_level_t a property of memento_t?
 
+* delegate_t
+    * replace memento_item_reader_t callback
+
 * context:
     * logging
     * testing

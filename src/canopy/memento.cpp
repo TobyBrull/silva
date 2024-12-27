@@ -1,50 +1,18 @@
 #include "memento.hpp"
 
+#include <utility>
+
 namespace silva {
   memento_item_type_t memento_item_t::type() const
   {
-    const uint32_t type = impl::ptr_bit_cast<uint32_t>(ptr + 4);
+    const uint32_t type = ptr_bit_cast<uint32_t>(ptr + 4);
     return static_cast<memento_item_type_t>(type);
   }
 
   index_t memento_item_t::size() const
   {
-    const uint32_t type = impl::ptr_bit_cast<uint32_t>(ptr);
+    const uint32_t type = ptr_bit_cast<uint32_t>(ptr);
     return static_cast<index_t>(type);
-  }
-
-  namespace impl {
-    inline string_or_view_t pop_memento_string_view(const byte_t* ptr, const index_t size)
-    {
-      SILVA_ASSERT(size == 24);
-      const char* msg_ptr = ptr_bit_cast<const char*>(ptr + 8);
-      const auto msg_size = ptr_bit_cast<uint64_t>(ptr + 16);
-      return string_or_view_t{string_view_t(msg_ptr, msg_size)};
-    }
-
-    inline string_or_view_t pop_memento_string(const byte_t* ptr, const index_t size)
-    {
-      return string_or_view_t{string_view_t(reinterpret_cast<const char*>(ptr + 8), size - 8)};
-    }
-
-    inline string_or_view_t pop_memento_boolean(const byte_t* ptr, const index_t size)
-    {
-      SILVA_ASSERT(size == 12);
-      const auto val = ptr_bit_cast<uint32_t>(ptr + 8);
-      return string_or_view_t{val == 0 ? string_view_t{"false"} : string_view_t{"true"}};
-    }
-
-    inline string_or_view_t pop_memento_integer(const byte_t* ptr, const index_t size)
-    {
-      SILVA_ASSERT(size == 16);
-      return string_or_view_t{std::to_string(ptr_bit_cast<int64_t>(ptr + 8))};
-    }
-
-    inline string_or_view_t pop_memento_double(const byte_t* ptr, const index_t size)
-    {
-      SILVA_ASSERT(size == 16);
-      return string_or_view_t{std::to_string(ptr_bit_cast<double>(ptr + 8))};
-    }
   }
 
   string_or_view_t memento_item_t::to_string_or_view() const
@@ -52,29 +20,55 @@ namespace silva {
     const index_t ss             = size();
     const memento_item_type_t tt = type();
     using enum memento_item_type_t;
-    if (tt == STRING_VIEW) {
-      return impl::pop_memento_string_view(ptr, ss);
+    return memento_item_reader_t::apply(tt, ptr, ss);
+  }
+
+  static hashmap_t<std::underlying_type_t<memento_item_type_t>, memento_item_reader_t::callback_t>
+      memento_item_reader_map = [] {
+        hashmap_t<std::underlying_type_t<memento_item_type_t>, memento_item_reader_t::callback_t>
+            retval;
+        using enum memento_item_type_t;
+        retval[std::to_underlying(STRING_VIEW)] = [](const byte_t* ptr,
+                                                     const index_t size) -> string_or_view_t {
+          SILVA_ASSERT(size == 24);
+          const char* msg_ptr = ptr_bit_cast<const char*>(ptr + 8);
+          const auto msg_size = ptr_bit_cast<uint64_t>(ptr + 16);
+          return string_or_view_t{string_view_t(msg_ptr, msg_size)};
+        };
+        retval[std::to_underlying(STRING)] = [](const byte_t* ptr,
+                                                const index_t size) -> string_or_view_t {
+          return string_or_view_t{string_view_t(reinterpret_cast<const char*>(ptr + 8), size - 8)};
+        };
+        retval[std::to_underlying(BOOLEAN)] = [](const byte_t* ptr, const index_t size) {
+          SILVA_ASSERT(size == 12);
+          const auto val = ptr_bit_cast<uint32_t>(ptr + 8);
+          return string_or_view_t{val == 0 ? string_view_t{"false"} : string_view_t{"true"}};
+        };
+        retval[std::to_underlying(INTEGER_64)] = [](const byte_t* ptr, const index_t size) {
+          SILVA_ASSERT(size == 16);
+          return string_or_view_t{std::to_string(ptr_bit_cast<int64_t>(ptr + 8))};
+        };
+        retval[std::to_underlying(FLOAT_64)] = [](const byte_t* ptr, const index_t size) {
+          SILVA_ASSERT(size == 16);
+          return string_or_view_t{std::to_string(ptr_bit_cast<double>(ptr + 8))};
+        };
+        return retval;
+      }();
+
+  string_or_view_t memento_item_reader_t::apply(const memento_item_type_t memento_item_type,
+                                                const byte_t* ptr,
+                                                const index_t size)
+  {
+    const auto it = memento_item_reader_map.find(std::to_underlying(memento_item_type));
+    if (it != memento_item_reader_map.end()) {
+      return it->second(ptr, size);
     }
-    else if (tt == STRING) {
-      return impl::pop_memento_string(ptr, ss);
-    }
-    else if (tt == BOOLEAN) {
-      return impl::pop_memento_boolean(ptr, ss);
-    }
-    else if (tt == INTEGER_64) {
-      return impl::pop_memento_integer(ptr, ss);
-    }
-    else if (tt == FLOAT_64) {
-      return impl::pop_memento_double(ptr, ss);
-    }
-    else {
-      SILVA_ASSERT(false, "Unkown memento-type {}", static_cast<index_t>(tt));
-    }
+    SILVA_ASSERT(false, "Unkown memento-type {}", std::to_underlying(memento_item_type));
   }
 
   index_t memento_t::num_items() const
   {
-    const uint32_t retval = impl::ptr_bit_cast<uint32_t>(ptr + 4);
+    const uint32_t retval = ptr_bit_cast<uint32_t>(ptr + 4);
     return retval;
   }
 
@@ -92,8 +86,8 @@ namespace silva {
 
   string_or_view_t memento_t::to_string_or_view() const
   {
-    const uint32_t total_size = impl::ptr_bit_cast<uint32_t>(ptr);
-    const uint32_t num_items  = impl::ptr_bit_cast<uint32_t>(ptr + 4);
+    const uint32_t total_size = ptr_bit_cast<uint32_t>(ptr);
+    const uint32_t num_items  = ptr_bit_cast<uint32_t>(ptr + 4);
     if (num_items == 1) {
       memento_item_t item{.ptr = ptr + 8};
       return item.to_string_or_view();
