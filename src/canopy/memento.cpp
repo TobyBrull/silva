@@ -1,7 +1,5 @@
 #include "memento.hpp"
 
-#include <utility>
-
 namespace silva {
   memento_item_type_t memento_item_t::type() const
   {

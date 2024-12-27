@@ -5,9 +5,10 @@
 #include "string_or_view.hpp"
 
 #include <functional>
+#include <utility>
 
 namespace silva {
-  enum class memento_item_type_t {
+  enum class memento_item_type_t : uint32_t {
     INVALID = 0,
     STRING_VIEW, // Two 8 byte pointers.
     STRING,      // Arbitrary size array of chars.
@@ -17,6 +18,7 @@ namespace silva {
 
     CUSTOM_BEGIN = 0x1000,
   };
+  constexpr memento_item_type_t memento_item_type_custom(index_t custom_begin_offset);
 
   struct memento_item_t {
     const byte_t* ptr = nullptr;
@@ -63,29 +65,34 @@ namespace silva {
 
     void resize_offset(memento_buffer_offset_t);
 
-    template<typename... Ts>
-    memento_buffer_offset_t append_memento(const Ts&...);
+    template<typename... Args>
+    memento_buffer_offset_t append_memento(const Args&...);
   };
 }
 
 // IMPLEMENTATION
 
 namespace silva {
+  constexpr memento_item_type_t memento_item_type_custom(const index_t custom_begin_offset)
+  {
+    using enum memento_item_type_t;
+    const uint32_t custom_begin = std::to_underlying(CUSTOM_BEGIN);
+    return static_cast<memento_item_type_t>(custom_begin + custom_begin_offset);
+  }
+
   template<>
   struct memento_item_writer_t<string_view_t> {
-    static index_t write(string_t& buffer, const string_view_t& x)
+    static memento_item_type_t write(string_t& buffer, const string_view_t& x)
     {
-      bit_append<uint32_t>(buffer, 24);
-      bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::STRING_VIEW));
       bit_append<const void*>(buffer, x.data());
       bit_append<uint64_t>(buffer, x.size());
-      return 24;
+      return memento_item_type_t::STRING_VIEW;
     }
   };
 
   template<>
   struct memento_item_writer_t<const char*> {
-    static index_t write(string_t& buffer, const char* x)
+    static memento_item_type_t write(string_t& buffer, const char* x)
     {
       return memento_item_writer_t<string_view_t>::write(buffer, string_view_t{x});
     }
@@ -93,22 +100,18 @@ namespace silva {
 
   template<>
   struct memento_item_writer_t<string_t> {
-    using enum memento_item_type_t;
-    constexpr inline static memento_item_type_t memento_item_type = STRING;
-    static index_t write(string_t& buffer, const string_t& x)
+    static memento_item_type_t write(string_t& buffer, const string_t& x)
     {
-      bit_append<uint32_t>(buffer, 4 + 4 + x.size());
-      bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::STRING));
       const index_t old_size = buffer.size();
       buffer.resize(old_size + x.size());
       memcpy(buffer.data() + old_size, x.data(), x.size());
-      return 4 + 4 + x.size();
+      return memento_item_type_t::STRING;
     }
   };
 
   template<>
   struct memento_item_writer_t<string_or_view_t> {
-    static index_t write(string_t& buffer, const string_or_view_t& x)
+    static memento_item_type_t write(string_t& buffer, const string_or_view_t& x)
     {
       if (std::holds_alternative<string_view_t>(x.data)) {
         return memento_item_writer_t<string_view_t>::write(buffer, std::get<string_view_t>(x.data));
@@ -122,54 +125,59 @@ namespace silva {
 
   template<>
   struct memento_item_writer_t<bool> {
-    using enum memento_item_type_t;
-    constexpr inline static memento_item_type_t memento_item_type = BOOLEAN;
-    static index_t write(string_t& buffer, const bool x)
+    static memento_item_type_t write(string_t& buffer, const bool x)
     {
-      bit_append<uint32_t>(buffer, 4 + 4 + 4);
-      bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::BOOLEAN));
-      bit_append<double>(buffer, x);
-      return 4 + 4 + 4;
+      bit_append<uint32_t>(buffer, x);
+      return memento_item_type_t::BOOLEAN;
     }
   };
 
   template<typename Integer>
     requires std::integral<Integer>
   struct memento_item_writer_t<Integer> {
-    using enum memento_item_type_t;
-    constexpr inline static memento_item_type_t memento_item_type = INTEGER_64;
-    static index_t write(string_t& buffer, const int64_t x)
+    static memento_item_type_t write(string_t& buffer, const int64_t x)
     {
-      bit_append<uint32_t>(buffer, 4 + 4 + 8);
-      bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::INTEGER_64));
       bit_append<int64_t>(buffer, x);
-      return 4 + 4 + 8;
+      return memento_item_type_t::INTEGER_64;
     }
   };
 
   template<typename Float>
     requires std::floating_point<Float>
   struct memento_item_writer_t<Float> {
-    using enum memento_item_type_t;
-    constexpr inline static memento_item_type_t memento_item_type = FLOAT_64;
-    static index_t write(string_t& buffer, const double x)
+    static memento_item_type_t write(string_t& buffer, const double x)
     {
-      bit_append<uint32_t>(buffer, 4 + 4 + 8);
-      bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::FLOAT_64));
       bit_append<double>(buffer, x);
-      return 4 + 4 + 8;
+      return memento_item_type_t::FLOAT_64;
     }
   };
 
-  template<typename... Ts>
-  memento_buffer_offset_t memento_buffer_t::append_memento(const Ts&... args)
+  namespace impl {
+    template<typename T>
+    index_t memento_item_write(string_t& buffer, const T& x)
+    {
+      const index_t old_size = buffer.size();
+      bit_append<uint32_t>(buffer, 0); // placeholder for size
+      bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::INVALID));
+      const memento_item_type_t mit =
+          memento_item_writer_t<std::decay_t<decltype(x)>>::write(buffer, x);
+      const index_t new_size     = buffer.size();
+      const index_t total_length = new_size - old_size;
+      bit_write_at<uint32_t>(buffer.data() + old_size, total_length);
+      bit_write_at<uint32_t>(buffer.data() + old_size + 4, static_cast<uint32_t>(mit));
+      return total_length;
+    }
+  }
+
+  template<typename... Args>
+  memento_buffer_offset_t memento_buffer_t::append_memento(const Args&... args)
   {
     const index_t retval = buffer.size();
     bit_append<uint32_t>(buffer, 0); // placeholder for total_size
-    bit_append<uint32_t>(buffer, sizeof...(Ts));
+    bit_append<uint32_t>(buffer, sizeof...(Args));
     index_t total_size = 4 + 4;
 
-    ((total_size += memento_item_writer_t<std::decay_t<decltype(args)>>::write(buffer, args)), ...);
+    ((total_size += impl::memento_item_write<Args>(buffer, args)), ...);
 
     bit_write_at<uint32_t>(buffer.data() + retval, total_size);
 

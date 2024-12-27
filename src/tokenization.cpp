@@ -283,7 +283,6 @@ namespace silva {
           .source_code_offset = source_code_offset,
       });
     }
-
   }
 
   expected_t<tokenization_t> tokenize(const_ptr_t<source_code_t> source_code)
@@ -349,5 +348,10 @@ namespace silva {
       retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", index, sl.line + 1, sl.column + 1, td.str);
     }
     return retval;
+  }
+
+  source_location_t token_position_t::retokenize_source_location() const
+  {
+    return tokenization->retokenize_source_location(index);
   }
 }

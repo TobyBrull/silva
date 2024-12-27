@@ -68,6 +68,13 @@ namespace silva {
   };
 
   expected_t<tokenization_t> tokenize(const_ptr_t<source_code_t>);
+
+  struct token_position_t {
+    token_index_t index                = 0;
+    const tokenization_t* tokenization = nullptr;
+
+    source_location_t retokenize_source_location() const;
+  };
 }
 
 // IMPLEMENTATION
@@ -78,4 +85,14 @@ namespace silva {
   {
     return &token_datas[tokens[token_index]];
   }
+
+  template<>
+  struct memento_item_writer_t<token_position_t> {
+    constexpr inline static memento_item_type_t memento_item_type = memento_item_type_custom(1);
+    static memento_item_type_t write(string_t& buffer, const token_position_t& x)
+    {
+      bit_append<token_position_t>(buffer, x);
+      return memento_item_type;
+    }
+  };
 }
