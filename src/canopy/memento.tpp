@@ -33,3 +33,5 @@ TEST_CASE("memento variadic", "[memento_t]")
   CHECK(mb.at_offset(i1).to_string_or_view().get_view() == "Hello 42 World 3.141590");
   CHECK(mb.at_offset(i2).to_string_or_view().get_view() == "Hello World War false");
 }
+
+TEST_CASE("memento customization", "[memento_t]") {}

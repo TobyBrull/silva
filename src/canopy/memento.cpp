@@ -5,13 +5,13 @@
 namespace silva {
   memento_item_type_t memento_item_t::type() const
   {
-    const uint32_t type = ptr_bit_cast<uint32_t>(ptr + 4);
+    const uint32_t type = bit_cast_ptr<uint32_t>(ptr + 4);
     return static_cast<memento_item_type_t>(type);
   }
 
   index_t memento_item_t::size() const
   {
-    const uint32_t type = ptr_bit_cast<uint32_t>(ptr);
+    const uint32_t type = bit_cast_ptr<uint32_t>(ptr);
     return static_cast<index_t>(type);
   }
 
@@ -31,8 +31,8 @@ namespace silva {
         retval[std::to_underlying(STRING_VIEW)] = [](const byte_t* ptr,
                                                      const index_t size) -> string_or_view_t {
           SILVA_ASSERT(size == 24);
-          const char* msg_ptr = ptr_bit_cast<const char*>(ptr + 8);
-          const auto msg_size = ptr_bit_cast<uint64_t>(ptr + 16);
+          const char* msg_ptr = bit_cast_ptr<const char*>(ptr + 8);
+          const auto msg_size = bit_cast_ptr<uint64_t>(ptr + 16);
           return string_or_view_t{string_view_t(msg_ptr, msg_size)};
         };
         retval[std::to_underlying(STRING)] = [](const byte_t* ptr,
@@ -41,16 +41,16 @@ namespace silva {
         };
         retval[std::to_underlying(BOOLEAN)] = [](const byte_t* ptr, const index_t size) {
           SILVA_ASSERT(size == 12);
-          const auto val = ptr_bit_cast<uint32_t>(ptr + 8);
+          const auto val = bit_cast_ptr<uint32_t>(ptr + 8);
           return string_or_view_t{val == 0 ? string_view_t{"false"} : string_view_t{"true"}};
         };
         retval[std::to_underlying(INTEGER_64)] = [](const byte_t* ptr, const index_t size) {
           SILVA_ASSERT(size == 16);
-          return string_or_view_t{std::to_string(ptr_bit_cast<int64_t>(ptr + 8))};
+          return string_or_view_t{std::to_string(bit_cast_ptr<int64_t>(ptr + 8))};
         };
         retval[std::to_underlying(FLOAT_64)] = [](const byte_t* ptr, const index_t size) {
           SILVA_ASSERT(size == 16);
-          return string_or_view_t{std::to_string(ptr_bit_cast<double>(ptr + 8))};
+          return string_or_view_t{std::to_string(bit_cast_ptr<double>(ptr + 8))};
         };
         return retval;
       }();
@@ -68,7 +68,7 @@ namespace silva {
 
   index_t memento_t::num_items() const
   {
-    const uint32_t retval = ptr_bit_cast<uint32_t>(ptr + 4);
+    const uint32_t retval = bit_cast_ptr<uint32_t>(ptr + 4);
     return retval;
   }
 
@@ -86,8 +86,8 @@ namespace silva {
 
   string_or_view_t memento_t::to_string_or_view() const
   {
-    const uint32_t total_size = ptr_bit_cast<uint32_t>(ptr);
-    const uint32_t num_items  = ptr_bit_cast<uint32_t>(ptr + 4);
+    const uint32_t total_size = bit_cast_ptr<uint32_t>(ptr);
+    const uint32_t num_items  = bit_cast_ptr<uint32_t>(ptr + 4);
     if (num_items == 1) {
       memento_item_t item{.ptr = ptr + 8};
       return item.to_string_or_view();
