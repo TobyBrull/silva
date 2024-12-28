@@ -34,13 +34,13 @@ TEST_CASE("error", "[error_t]")
 
   CHECK(error_context.tree.nodes.size() == 7);
   const string_view_t expected = R"(
-scope final
-  scope a 4
-  combined
-    scope b 2
-    scope b 1
-  scope a 2
   scope a 1
+  scope a 2
+    scope b 1
+    scope b 2
+  combined
+  scope a 4
+scope final
 )";
   CHECK(final_error.to_string() == expected.substr(1));
 }

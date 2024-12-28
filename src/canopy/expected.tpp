@@ -29,8 +29,8 @@ TEST_CASE("expected", "[expected_t]")
     const expected_t<int> result = func_2(-4);
     REQUIRE(!result.has_value());
     constexpr string_view_t expected = R"(
-failed calling func_1(-4)
   x=-4 must be positive
+failed calling func_1(-4)
 )";
     CHECK(result.error().to_string() == expected.substr(1));
   }

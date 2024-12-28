@@ -1,8 +1,8 @@
 # TODO
 
 * error-handling
-    * rethink approach:
-        * maybe make memento simpler and express format strings via parse_error_tree_t?
+    * more powerful memento registry
+        * suppress repeat token_positions
     * never use vector_t when constructing multi-error (parse_root.cpp)
 
 * various:

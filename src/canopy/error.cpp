@@ -19,20 +19,17 @@ namespace silva {
                                  const index_t node_index,
                                  const index_t indent)
     {
+      error_context->tree.visit_children_reversed(
+          [&](const index_t child_node_index, const index_t child_index) {
+            error_context_to_string(error_context, retval, child_node_index, indent + 2);
+          },
+          node_index);
+
       const memento_buffer_offset_t mbo =
           error_context->tree.nodes[node_index].memento_buffer_offset;
       const string_or_view_t message =
           error_context->memento_buffer.at_offset(mbo).to_string_or_view();
       retval += fmt::format("{:{}}{}\n", "", indent, message.get_view());
-
-      auto& error_tree           = error_context->tree;
-      const index_t num_children = error_tree.nodes[node_index].num_children;
-      index_t curr_node_index    = node_index;
-      for (index_t i = 0; i < num_children; ++i) {
-        curr_node_index -= 1;
-        error_context_to_string(error_context, retval, curr_node_index, indent + 2);
-        curr_node_index = error_tree.nodes[curr_node_index].children_begin;
-      }
     }
   }
 
