@@ -15,7 +15,7 @@ namespace silva {
     static expected_t<unique_ptr_t<source_code_t>> load(filesystem_path_t);
   };
 
-  struct source_location_t {
+  struct source_code_location_t {
     const source_code_t* source_code = nullptr;
 
     index_t line   = 0;

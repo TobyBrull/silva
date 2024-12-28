@@ -29,7 +29,7 @@ namespace silva {
     token_index_t index                = 0;
     const tokenization_t* tokenization = nullptr;
 
-    source_location_t retokenize_source_location() const;
+    source_code_location_t compute_source_code_location() const;
   };
 
   struct tokenization_t {
@@ -74,7 +74,7 @@ namespace silva {
 
     const line_data_t* binary_search_line(token_index_t) const;
 
-    source_location_t retokenize_source_location(token_index_t) const;
+    source_code_location_t compute_source_code_location(token_index_t) const;
 
     string_t to_string() const;
   };
@@ -111,10 +111,10 @@ namespace silva {
         memento_item_type,
         [](const byte_t* ptr, const index_t size) -> string_or_view_t {
           SILVA_ASSERT(size == sizeof(token_position_t));
-          const source_location_t sl =
-              bit_cast_ptr<token_position_t>(ptr).retokenize_source_location();
+          const source_code_location_t scl =
+              bit_cast_ptr<token_position_t>(ptr).compute_source_code_location();
           return string_or_view_t{
-              fmt::format("{}:{}:{}", sl.source_code->filename, sl.line, sl.column)};
+              fmt::format("{}:{}:{}", scl.source_code->filename, scl.line, scl.column)};
         });
   };
 }

@@ -304,8 +304,8 @@ namespace silva {
     return {std::move(retval)};
   }
 
-  source_location_t
-  tokenization_t::retokenize_source_location(const token_index_t token_index) const
+  source_code_location_t
+  tokenization_t::compute_source_code_location(const token_index_t token_index) const
   {
     const auto* line_data = binary_search_line(token_index);
 
@@ -332,7 +332,7 @@ namespace silva {
       }
     }
 
-    source_location_t retval{.source_code = source_code.get()};
+    source_code_location_t retval{.source_code = source_code.get()};
     retval.line   = line_data - lines.data();
     retval.column = column;
     return retval;
@@ -342,16 +342,16 @@ namespace silva {
   {
     string_t retval;
     for (token_index_t index = 0; index < tokens.size(); ++index) {
-      const token_id_t id        = tokens[index];
-      const auto& td             = token_datas[id];
-      const source_location_t sl = retokenize_source_location(index);
-      retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", index, sl.line + 1, sl.column + 1, td.str);
+      const token_id_t id              = tokens[index];
+      const auto& td                   = token_datas[id];
+      const source_code_location_t scl = compute_source_code_location(index);
+      retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", index, scl.line + 1, scl.column + 1, td.str);
     }
     return retval;
   }
 
-  source_location_t token_position_t::retokenize_source_location() const
+  source_code_location_t token_position_t::compute_source_code_location() const
   {
-    return tokenization->retokenize_source_location(index);
+    return tokenization->compute_source_code_location(index);
   }
 }
