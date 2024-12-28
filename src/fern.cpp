@@ -37,11 +37,12 @@ namespace silva {
       expected_t<parse_tree_sub_t> label()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT(num_tokens_left() >= 2 && token_id(1) == tt_colon &&
-                         (token_data()->category == STRING || token_data()->category == IDENTIFIER),
-                     MINOR,
-                     "Expected Label at {}: expected identifier or string followed by ':'",
-                     token_index);
+        SILVA_EXPECT(
+            num_tokens_left() >= 2 && token_id_by(1) == tt_colon &&
+                (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
+            MINOR,
+            "Expected Label at {}: expected identifier or string followed by ':'",
+            token_index);
         gg_rule.set_rule_index(to_int(LABEL));
         token_index += 2;
         return gg_rule.release();
@@ -59,9 +60,9 @@ namespace silva {
         else {
           child_errors.emplace_back(std::move(result).error());
         }
-        const bool is_item1 = token_id() == tt_none || token_id() == tt_true ||
-            token_id() == tt_false || token_data()->category == STRING ||
-            token_data()->category == NUMBER;
+        const bool is_item1 = token_id_by() == tt_none || token_id_by() == tt_true ||
+            token_id_by() == tt_false || token_data_by()->category == STRING ||
+            token_data_by()->category == NUMBER;
         if (is_item1) {
           gg_rule.set_rule_index(to_int(ITEM_1));
           token_index += 1;
@@ -86,13 +87,13 @@ namespace silva {
                      MINOR,
                      "Expected LabeledItem at {}: no tokens left",
                      token_index);
-        if (num_tokens_left() >= 2 && token_id(1) == tt_colon) {
+        if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
           gg_rule.sub +=
               SILVA_EXPECT_FWD(label(), "Expected LabeledItem at {}", gg_rule.orig_token_index);
         }
         gg_rule.sub +=
             SILVA_EXPECT_FWD(item(), "Expected LabeledItem at {}", gg_rule.orig_token_index);
-        if (num_tokens_left() >= 1 && token_id() == tt_semi_colon) {
+        if (num_tokens_left() >= 1 && token_id_by() == tt_semi_colon) {
           token_index += 1;
         }
         return gg_rule.release();
@@ -102,16 +103,16 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(FERN));
-        SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_open,
+        SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_brkt_open,
                      MINOR,
                      "Expected Fern at {}: didn't find '['",
                      gg_rule.orig_token_index);
         token_index += 1;
-        while (num_tokens_left() >= 1 && token_id() != tt_brkt_close) {
+        while (num_tokens_left() >= 1 && token_id_by() != tt_brkt_close) {
           gg_rule.sub +=
               SILVA_EXPECT_FWD(labeled_item(), "Expected Fern at {}", gg_rule.orig_token_index);
         }
-        SILVA_EXPECT(num_tokens_left() >= 1 && token_id() == tt_brkt_close,
+        SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
                      MINOR,
                      "Expected Fern at {}: didn't find '[' at {}",
                      gg_rule.orig_token_index,
