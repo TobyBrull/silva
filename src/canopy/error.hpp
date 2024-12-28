@@ -46,6 +46,21 @@ namespace silva {
     void materialize();
   };
 
+  struct error_nursery_t {
+    error_context_t* context     = nullptr;
+    index_t node_index           = 0;
+    index_t num_children         = 0;
+    index_t children_begin       = 0;
+    index_t memento_buffer_begin = std::numeric_limits<index_t>::max();
+
+    error_nursery_t();
+
+    void add_child_error(error_t child_error);
+
+    template<typename... MementoArgs>
+    error_t finish(error_level_t, MementoArgs&&... memento_args) &&;
+  };
+
   template<typename... MementoArgs>
   error_t make_error(error_level_t, span_t<error_t> child_errors, MementoArgs&&...);
 }
@@ -53,60 +68,31 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
-  namespace impl {
-    struct error_nursery_t {
-      error_context_t* context     = nullptr;
-      index_t node_index           = 0;
-      index_t num_children         = 0;
-      index_t children_begin       = 0;
-      index_t memento_buffer_begin = std::numeric_limits<index_t>::max();
-      error_level_t error_level    = error_level_t::NONE;
-
-      error_nursery_t(const error_level_t error_level)
-        : context(error_context_t::get())
-        , node_index(context->tree.nodes.size())
-        , children_begin(context->tree.nodes.size())
-        , error_level(error_level)
-      {
-      }
-
-      void add_child_error(error_t child_error)
-      {
-        SILVA_ASSERT(child_error.node_index + 1 == children_begin);
-        const auto& child_node = context->tree.nodes[child_error.node_index];
-        children_begin         = child_node.children_begin;
-        num_children += 1;
-        memento_buffer_begin = std::min(memento_buffer_begin, child_node.memento_buffer_begin);
-        child_error.release();
-      }
-
-      template<typename... MementoArgs>
-      error_t finish(MementoArgs&&... memento_args) &&
-      {
-        SILVA_ASSERT(context->tree.nodes.size() == node_index);
-        const index_t mbo =
-            context->memento_buffer.append_memento(std::forward<MementoArgs>(memento_args)...);
-        context->tree.nodes.push_back(error_tree_t::node_t{
-            .num_children          = num_children,
-            .children_begin        = children_begin,
-            .memento_buffer_offset = mbo,
-            .memento_buffer_begin  = std::min(mbo, memento_buffer_begin),
-        });
-        return error_t(context, node_index, error_level);
-      }
-    };
-  }
-
   template<typename... MementoArgs>
   error_t make_error(const error_level_t error_level,
                      span_t<error_t> child_errors,
                      MementoArgs&&... memento_args)
   {
-    impl::error_nursery_t nursery(error_level);
+    error_nursery_t nursery;
     for (auto it = child_errors.rbegin(); it != child_errors.rend(); ++it) {
       error_t& error = *it;
       nursery.add_child_error(std::move(error));
     }
-    return std::move(nursery).finish(std::forward<MementoArgs>(memento_args)...);
+    return std::move(nursery).finish(error_level, std::forward<MementoArgs>(memento_args)...);
+  }
+
+  template<typename... MementoArgs>
+  error_t error_nursery_t::finish(const error_level_t error_level, MementoArgs&&... memento_args) &&
+  {
+    SILVA_ASSERT(context->tree.nodes.size() == node_index);
+    const index_t mbo =
+        context->memento_buffer.append_memento(std::forward<MementoArgs>(memento_args)...);
+    context->tree.nodes.push_back(error_tree_t::node_t{
+        .num_children          = num_children,
+        .children_begin        = children_begin,
+        .memento_buffer_offset = mbo,
+        .memento_buffer_begin  = std::min(mbo, memento_buffer_begin),
+    });
+    return error_t(context, node_index, error_level);
   }
 }

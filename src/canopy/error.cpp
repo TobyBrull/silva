@@ -129,4 +129,21 @@ namespace silva {
     }
     memento_buffer = std::move(new_memento_buffer);
   }
+
+  error_nursery_t::error_nursery_t()
+    : context(error_context_t::get())
+    , node_index(context->tree.nodes.size())
+    , children_begin(context->tree.nodes.size())
+  {
+  }
+
+  void error_nursery_t::add_child_error(error_t child_error)
+  {
+    SILVA_ASSERT(child_error.node_index + 1 == children_begin);
+    const auto& child_node = context->tree.nodes[child_error.node_index];
+    children_begin         = child_node.children_begin;
+    num_children += 1;
+    memento_buffer_begin = std::min(memento_buffer_begin, child_node.memento_buffer_begin);
+    child_error.release();
+  }
 }

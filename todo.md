@@ -3,7 +3,6 @@
 * error-handling
     * more powerful memento registry
         * suppress repeat token_positions
-    * never use vector_t when constructing multi-error (parse_root.cpp)
 
 * various:
     * output_buffer_t / string_output_buffer_t
