@@ -62,8 +62,6 @@ namespace silva {
 
     string_or_view_t to_string_or_view() const;
 
-    memento_buffer_offset_t materialize_into(memento_buffer_t&) const;
-
     template<typename Visitor>
       requires std::invocable<Visitor, index_t, const memento_item_t&>
     void for_each_item(Visitor) const;
@@ -75,6 +73,8 @@ namespace silva {
     memento_t at_offset(memento_buffer_offset_t) const;
 
     void resize_offset(memento_buffer_offset_t);
+
+    memento_buffer_offset_t append_memento_materialized(const memento_t&);
 
     template<typename... Args>
     memento_buffer_offset_t append_memento(const Args&...);

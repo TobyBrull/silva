@@ -134,23 +134,22 @@ namespace silva {
     }
   }
 
-  memento_buffer_offset_t memento_t::materialize_into(memento_buffer_t& target) const
+  memento_buffer_offset_t memento_buffer_t::append_memento_materialized(const memento_t& memento)
   {
-    const index_t retval = target.buffer.size();
-    bit_append<uint32_t>(target.buffer, 0); // placeholder for total_size
-    bit_append<uint32_t>(target.buffer, num_items());
-    for_each_item([&](const index_t offset, const memento_item_t& item) {
-      const index_t old_size = target.buffer.size();
-      bit_append<uint32_t>(target.buffer, 0); // placeholder for size
-      bit_append<uint32_t>(target.buffer, static_cast<uint32_t>(memento_item_type_t::INVALID));
+    const index_t retval = buffer.size();
+    bit_append<uint32_t>(buffer, 0); // placeholder for total_size
+    bit_append<uint32_t>(buffer, memento.num_items());
+    memento.for_each_item([&](const index_t offset, const memento_item_t& item) {
+      const index_t old_size = buffer.size();
+      bit_append<uint32_t>(buffer, 0); // placeholder for size
+      bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::INVALID));
       const memento_item_type_t mit =
-          memento_item_writer_t<string_t>::write(target.buffer,
-                                                 item.to_string_or_view().get_view());
+          memento_item_writer_t<string_t>::write(buffer, item.to_string_or_view().get_view());
       SILVA_ASSERT(mit == memento_item_type_t::STRING);
-      bit_write_at<uint32_t>(target.buffer.data() + old_size, target.buffer.size() - old_size);
-      bit_write_at<uint32_t>(target.buffer.data() + old_size + 4, static_cast<uint32_t>(mit));
+      bit_write_at<uint32_t>(buffer.data() + old_size, buffer.size() - old_size);
+      bit_write_at<uint32_t>(buffer.data() + old_size + 4, static_cast<uint32_t>(mit));
     });
-    bit_write_at<uint32_t>(target.buffer.data() + retval, target.buffer.size() - retval);
+    bit_write_at<uint32_t>(buffer.data() + retval, buffer.size() - retval);
     return retval;
   }
 
