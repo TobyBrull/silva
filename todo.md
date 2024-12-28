@@ -2,8 +2,6 @@
 
 * error-handling
     * check Seed program when constructing parse_root_t?
-    * use customisation-points to allow CUSTOM_TYPES
-        * source-location
 
 * delegate_t
     * replace memento_item_reader_t callback
