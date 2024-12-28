@@ -10,6 +10,8 @@ using namespace silva;
 expected_t<void>
 silva_main()
 {
+  expected_traits_t expected_traits{.materialize_fwd = true};
+
   const auto arg_filename = SILVA_EXPECT_FWD(env_context_get("filename"));
   const auto arg_process  = SILVA_EXPECT_FWD(env_context_get("process"));
   const bool arg_root =

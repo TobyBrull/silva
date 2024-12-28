@@ -11,7 +11,7 @@ namespace silva {
   expected_t<unique_ptr_t<source_code_t>> source_code_t::load(filesystem_path_t fsp)
   {
     string_t text = SILVA_EXPECT_FWD(read_file(fsp));
-    return std::make_unique<source_code_t>(std::move(fsp).filename(), std::move(text));
+    return std::make_unique<source_code_t>(std::move(fsp), std::move(text));
   }
 
   unique_ptr_t<source_code_t> source_code_t::copy() const

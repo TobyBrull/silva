@@ -111,4 +111,26 @@ namespace silva {
   {
     return context->to_string(node_index);
   }
+
+  void error_t::materialize()
+  {
+    error_tree_t& tree               = context->tree;
+    memento_buffer_t& memento_buffer = context->memento_buffer;
+    memento_buffer_t new_memento_buffer;
+    hashmap_t<memento_buffer_offset_t, memento_buffer_offset_t> offset_mapping;
+    memento_buffer.for_each_memento(
+        [&](const memento_buffer_offset_t offset, const memento_t& memento) {
+          offset_mapping[offset] = memento.materialize_into(new_memento_buffer);
+        });
+    const auto& map_offset = [&offset_mapping](memento_buffer_offset_t& offset) {
+      const auto it = offset_mapping.find(offset);
+      SILVA_ASSERT(it != offset_mapping.end());
+      offset = it->second;
+    };
+    for (auto& node: tree.nodes) {
+      map_offset(node.memento_buffer_begin);
+      map_offset(node.memento_buffer_offset);
+    }
+    memento_buffer = std::move(new_memento_buffer);
+  }
 }

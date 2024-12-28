@@ -21,8 +21,7 @@ namespace silva {
   {
     const index_t ss             = size();
     const memento_item_type_t tt = type();
-    using enum memento_item_type_t;
-    return memento_item_reader_t::apply(tt, ptr + 8, ss - 8);
+    return memento_item_reader_t::apply(tt, ptr, ss);
   }
 
   using memento_item_reader_map_t =
@@ -78,9 +77,15 @@ namespace silva {
   {
     const auto it = memento_item_reader_map().find(std::to_underlying(memento_item_type));
     if (it != memento_item_reader_map().end()) {
-      return it->second(ptr, size);
+      return it->second(ptr + 8, size - 8);
     }
     SILVA_ASSERT(false, "Unkown memento-type {}", std::to_underlying(memento_item_type));
+  }
+
+  index_t memento_t::size() const
+  {
+    const uint32_t retval = bit_cast_ptr<uint32_t>(ptr);
+    return retval;
   }
 
   index_t memento_t::num_items() const
@@ -99,6 +104,11 @@ namespace silva {
       }
       return fmt::vformat(format, fmt::basic_format_args<ctx>(fmt_args.data(), fmt_args.size()));
     }
+  }
+
+  memento_item_t memento_t::at_offset(const index_t offset) const
+  {
+    return memento_item_t{.ptr = ptr + offset};
   }
 
   string_or_view_t memento_t::to_string_or_view() const
@@ -122,6 +132,26 @@ namespace silva {
       args.erase(args.begin());
       return string_or_view_t{impl::format_vector(format, args)};
     }
+  }
+
+  memento_buffer_offset_t memento_t::materialize_into(memento_buffer_t& target) const
+  {
+    const index_t retval = target.buffer.size();
+    bit_append<uint32_t>(target.buffer, 0); // placeholder for total_size
+    bit_append<uint32_t>(target.buffer, num_items());
+    for_each_item([&](const index_t offset, const memento_item_t& item) {
+      const index_t old_size = target.buffer.size();
+      bit_append<uint32_t>(target.buffer, 0); // placeholder for size
+      bit_append<uint32_t>(target.buffer, static_cast<uint32_t>(memento_item_type_t::INVALID));
+      const memento_item_type_t mit =
+          memento_item_writer_t<string_t>::write(target.buffer,
+                                                 item.to_string_or_view().get_view());
+      SILVA_ASSERT(mit == memento_item_type_t::STRING);
+      bit_write_at<uint32_t>(target.buffer.data() + old_size, target.buffer.size() - old_size);
+      bit_write_at<uint32_t>(target.buffer.data() + old_size + 4, static_cast<uint32_t>(mit));
+    });
+    bit_write_at<uint32_t>(target.buffer.data() + retval, target.buffer.size() - retval);
+    return retval;
   }
 
   memento_t memento_buffer_t::at_offset(const memento_buffer_offset_t offset) const

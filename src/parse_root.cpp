@@ -267,10 +267,11 @@ namespace silva {
             seed_node_index);
         SILVA_EXPECT_FWD(std::move(result));
         if (!found_match) {
-          return std::unexpected(make_error(MINOR,
-                                            child_errors,
-                                            "Expected to parse '{{...}}' at {}",
-                                            gg.orig_token_index));
+          return std::unexpected(
+              make_error(MINOR,
+                         child_errors,
+                         "Expected to parse '{{...}}' at {}",
+                         gg.pt->tokenization->token_position(gg.orig_token_index)));
         }
         return gg.release();
       }

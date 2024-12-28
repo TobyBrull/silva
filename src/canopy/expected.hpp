@@ -16,6 +16,11 @@ namespace silva {
   template<typename T>
   struct is_expected_t<std::expected<T, error_t>> : std::true_type {};
 
+  struct expected_traits_t {
+    bool materialize_fwd = false;
+  };
+  inline expected_traits_t expected_traits;
+
 // Semantics:
 // Must only be used inside functions whose return value is "expected_t<...>". If the "condition"
 // evaluates to false, causes a return from the function with an error whose message is specified by
@@ -54,6 +59,9 @@ namespace silva {
     auto __silva_result = (expression);                                   \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
     if (!__silva_result) {                                                \
+      if (expected_traits.materialize_fwd) {                              \
+        __silva_result.error().materialize();                             \
+      }                                                                   \
       using enum error_level_t;                                           \
       return std::unexpected(silva::impl::silva_expect_fwd(               \
           std::move(__silva_result).error() __VA_OPT__(, ) __VA_ARGS__)); \
@@ -78,6 +86,9 @@ namespace silva {
     static_assert(error_level_is_primary(error_level));                     \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value);   \
     if (!__silva_result && (__silva_result.error().level >= error_level)) { \
+      if (expected_traits.materialize_fwd) {                                \
+        __silva_result.error().materialize();                               \
+      }                                                                     \
       return std::unexpected(std::move(__silva_result).error());            \
     }                                                                       \
     std::move(__silva_result);                                              \

@@ -41,6 +41,9 @@ namespace silva {
     string_or_view_t message() const;
 
     string_t to_string() const;
+
+    // Rewrite the error to resolve all pointers/references.
+    void materialize();
   };
 
   template<typename... MementoArgs>
