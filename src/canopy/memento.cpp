@@ -18,47 +18,59 @@ namespace silva {
     const index_t ss             = size();
     const memento_item_type_t tt = type();
     using enum memento_item_type_t;
-    return memento_item_reader_t::apply(tt, ptr, ss);
+    return memento_item_reader_t::apply(tt, ptr + 8, ss - 8);
   }
 
-  static hashmap_t<std::underlying_type_t<memento_item_type_t>, memento_item_reader_t::callback_t>
-      memento_item_reader_map = [] {
-        hashmap_t<std::underlying_type_t<memento_item_type_t>, memento_item_reader_t::callback_t>
-            retval;
-        using enum memento_item_type_t;
-        retval[std::to_underlying(STRING_VIEW)] = [](const byte_t* ptr,
-                                                     const index_t size) -> string_or_view_t {
-          SILVA_ASSERT(size == 24);
-          const char* msg_ptr = bit_cast_ptr<const char*>(ptr + 8);
-          const auto msg_size = bit_cast_ptr<uint64_t>(ptr + 16);
-          return string_or_view_t{string_view_t(msg_ptr, msg_size)};
-        };
-        retval[std::to_underlying(STRING)] = [](const byte_t* ptr,
-                                                const index_t size) -> string_or_view_t {
-          return string_or_view_t{string_view_t(reinterpret_cast<const char*>(ptr + 8), size - 8)};
-        };
-        retval[std::to_underlying(BOOLEAN)] = [](const byte_t* ptr, const index_t size) {
-          SILVA_ASSERT(size == 12);
-          const auto val = bit_cast_ptr<uint32_t>(ptr + 8);
-          return string_or_view_t{val == 0 ? string_view_t{"false"} : string_view_t{"true"}};
-        };
-        retval[std::to_underlying(INTEGER_64)] = [](const byte_t* ptr, const index_t size) {
-          SILVA_ASSERT(size == 16);
-          return string_or_view_t{std::to_string(bit_cast_ptr<int64_t>(ptr + 8))};
-        };
-        retval[std::to_underlying(FLOAT_64)] = [](const byte_t* ptr, const index_t size) {
-          SILVA_ASSERT(size == 16);
-          return string_or_view_t{std::to_string(bit_cast_ptr<double>(ptr + 8))};
-        };
-        return retval;
-      }();
+  using memento_item_reader_map_t =
+      hashmap_t<std::underlying_type_t<memento_item_type_t>, memento_item_reader_t::callback_t>;
+  memento_item_reader_map_t& memento_item_reader_map()
+  {
+    static memento_item_reader_map_t memento_item_reader_map = [] {
+      hashmap_t<std::underlying_type_t<memento_item_type_t>, memento_item_reader_t::callback_t>
+          retval;
+      using enum memento_item_type_t;
+      retval[std::to_underlying(STRING_VIEW)] = [](const byte_t* ptr,
+                                                   const index_t size) -> string_or_view_t {
+        SILVA_ASSERT(size == 16);
+        const char* msg_ptr = bit_cast_ptr<const char*>(ptr);
+        const auto msg_size = bit_cast_ptr<uint64_t>(ptr + 8);
+        return string_or_view_t{string_view_t(msg_ptr, msg_size)};
+      };
+      retval[std::to_underlying(STRING)] = [](const byte_t* ptr,
+                                              const index_t size) -> string_or_view_t {
+        return string_or_view_t{string_view_t(reinterpret_cast<const char*>(ptr), size)};
+      };
+      retval[std::to_underlying(BOOLEAN)] = [](const byte_t* ptr, const index_t size) {
+        SILVA_ASSERT(size == 4);
+        const auto val = bit_cast_ptr<uint32_t>(ptr);
+        return string_or_view_t{val == 0 ? string_view_t{"false"} : string_view_t{"true"}};
+      };
+      retval[std::to_underlying(INTEGER_64)] = [](const byte_t* ptr, const index_t size) {
+        SILVA_ASSERT(size == 8);
+        return string_or_view_t{std::to_string(bit_cast_ptr<int64_t>(ptr))};
+      };
+      retval[std::to_underlying(FLOAT_64)] = [](const byte_t* ptr, const index_t size) {
+        SILVA_ASSERT(size == 8);
+        return string_or_view_t{std::to_string(bit_cast_ptr<double>(ptr))};
+      };
+      return retval;
+    }();
+    return memento_item_reader_map;
+  }
+
+  bool memento_item_reader_t::register_reader(const memento_item_type_t mit, callback_t cb)
+  {
+    const auto [it, inserted] = memento_item_reader_map().emplace(std::to_underlying(mit), cb);
+    SILVA_ASSERT(inserted, "memento_item_type_t '{}' is re-used", std::to_underlying(mit));
+    return inserted;
+  }
 
   string_or_view_t memento_item_reader_t::apply(const memento_item_type_t memento_item_type,
                                                 const byte_t* ptr,
                                                 const index_t size)
   {
-    const auto it = memento_item_reader_map.find(std::to_underlying(memento_item_type));
-    if (it != memento_item_reader_map.end()) {
+    const auto it = memento_item_reader_map().find(std::to_underlying(memento_item_type));
+    if (it != memento_item_reader_map().end()) {
       return it->second(ptr, size);
     }
     SILVA_ASSERT(false, "Unkown memento-type {}", std::to_underlying(memento_item_type));

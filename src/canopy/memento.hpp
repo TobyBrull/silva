@@ -38,7 +38,7 @@ namespace silva {
 
   struct memento_item_reader_t {
     using callback_t = std::function<string_or_view_t(const byte_t*, index_t)>;
-    static void register_reader(memento_item_type_t, callback_t);
+    static bool register_reader(memento_item_type_t, callback_t);
     static string_or_view_t apply(memento_item_type_t, const byte_t*, index_t size);
   };
 

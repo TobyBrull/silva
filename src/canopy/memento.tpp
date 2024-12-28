@@ -1,5 +1,7 @@
 #include "memento.hpp"
 
+#include "misc.hpp"
+
 #include <catch2/catch_all.hpp>
 
 using namespace silva;
@@ -34,4 +36,31 @@ TEST_CASE("memento variadic", "[memento_t]")
   CHECK(mb.at_offset(i2).to_string_or_view().get_view() == "Hello World War false");
 }
 
-TEST_CASE("memento customization", "[memento_t]") {}
+struct Widget {
+  int x = 0;
+};
+
+template<>
+struct silva::memento_item_writer_t<Widget> {
+  constexpr inline static memento_item_type_t memento_item_type =
+      memento_item_type_custom(1'000'000);
+  static memento_item_type_t write(string_t& buffer, const Widget& x)
+  {
+    bit_append<Widget>(buffer, x);
+    return memento_item_type;
+  }
+  static inline SILVA_USED bool reg = memento_item_reader_t::register_reader(
+      memento_item_type,
+      [](const byte_t* ptr, const index_t size) -> string_or_view_t {
+        SILVA_ASSERT(size == sizeof(Widget));
+        const Widget ww = bit_cast_ptr<Widget>(ptr);
+        return string_or_view_t{fmt::format("Widget({})", ww.x)};
+      });
+};
+
+TEST_CASE("memento customization", "[memento_t]")
+{
+  memento_buffer_t mb;
+  const auto i1 = mb.append_memento("Hello {}", Widget{.x = 42});
+  CHECK(mb.at_offset(i1).to_string_or_view().get_view() == "Hello Widget(42)");
+}

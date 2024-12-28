@@ -1,6 +1,7 @@
 #pragma once
 
 #include "canopy/const_ptr.hpp"
+#include "canopy/misc.hpp"
 #include "canopy/source_code.hpp"
 #include "canopy/string_or_view.hpp"
 #include "canopy/types.hpp"
@@ -21,6 +22,15 @@ namespace silva {
 
   // A reference to a position in the "tokens" vector of the "tokenization_t" struct.
   using token_index_t = index_t;
+
+  struct tokenization_t;
+
+  struct token_position_t {
+    token_index_t index                = 0;
+    const tokenization_t* tokenization = nullptr;
+
+    source_location_t retokenize_source_location() const;
+  };
 
   struct tokenization_t {
     const_ptr_t<source_code_t> source_code;
@@ -58,6 +68,8 @@ namespace silva {
 
     const token_data_t* token_data(token_index_t) const;
 
+    token_position_t token_position(token_index_t) const;
+
     optional_t<token_id_t> lookup_token(string_view_t) const;
 
     const line_data_t* binary_search_line(token_index_t) const;
@@ -68,13 +80,6 @@ namespace silva {
   };
 
   expected_t<tokenization_t> tokenize(const_ptr_t<source_code_t>);
-
-  struct token_position_t {
-    token_index_t index                = 0;
-    const tokenization_t* tokenization = nullptr;
-
-    source_location_t retokenize_source_location() const;
-  };
 }
 
 // IMPLEMENTATION
@@ -86,6 +91,14 @@ namespace silva {
     return &token_datas[tokens[token_index]];
   }
 
+  inline token_position_t tokenization_t::token_position(const token_index_t index) const
+  {
+    return token_position_t{
+        .index        = index,
+        .tokenization = this,
+    };
+  }
+
   template<>
   struct memento_item_writer_t<token_position_t> {
     constexpr inline static memento_item_type_t memento_item_type = memento_item_type_custom(1);
@@ -94,5 +107,14 @@ namespace silva {
       bit_append<token_position_t>(buffer, x);
       return memento_item_type;
     }
+    static inline SILVA_USED bool reg = memento_item_reader_t::register_reader(
+        memento_item_type,
+        [](const byte_t* ptr, const index_t size) -> string_or_view_t {
+          SILVA_ASSERT(size == sizeof(token_position_t));
+          const source_location_t sl =
+              bit_cast_ptr<token_position_t>(ptr).retokenize_source_location();
+          return string_or_view_t{
+              fmt::format("{}:{}:{}", sl.source_code->filename, sl.line, sl.column)};
+        });
   };
 }

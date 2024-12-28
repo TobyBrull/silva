@@ -13,6 +13,8 @@
 * context:
     * logging
     * testing
+    * memory
+    * rng
 
 * various:
     * output_buffer_t / string_output_buffer_t
