@@ -130,20 +130,46 @@ namespace silva {
     memento_buffer = std::move(new_memento_buffer);
   }
 
-  error_nursery_t::error_nursery_t()
-    : context(error_context_t::get())
-    , node_index(context->tree.nodes.size())
-    , children_begin(context->tree.nodes.size())
+  error_nursery_t::error_nursery_t() : context(error_context_t::get()) {}
+
+  error_nursery_t::~error_nursery_t()
   {
+    if (num_children > 0) {
+      error_t temp_error = std::move(*this).finish(error_level_t::NONE);
+      // temp_error.~error_t();
+    }
   }
 
   void error_nursery_t::add_child_error(error_t child_error)
   {
-    SILVA_ASSERT(child_error.node_index + 1 == children_begin);
     const auto& child_node = context->tree.nodes[child_error.node_index];
-    children_begin         = child_node.children_begin;
+    if (num_children == 0) {
+      last_node_index      = child_error.node_index;
+      children_begin       = child_node.children_begin;
+      memento_buffer_begin = child_node.memento_buffer_begin;
+    }
+    else {
+      SILVA_ASSERT(last_node_index && *last_node_index + 1 == child_node.children_begin);
+      last_node_index = child_error.node_index;
+    }
     num_children += 1;
-    memento_buffer_begin = std::min(memento_buffer_begin, child_node.memento_buffer_begin);
     child_error.release();
+  }
+
+  void error_nursery_t::release()
+  {
+    context      = nullptr;
+    num_children = 0;
+    last_node_index.reset();
+    children_begin.reset();
+    memento_buffer_begin.reset();
+  }
+
+  error_t error_nursery_t::finish_single_child_as_is(const error_level_t error_level) &&
+  {
+    SILVA_ASSERT(num_children == 1 && last_node_index.has_value());
+    error_t retval(context, last_node_index.value(), error_level);
+    release();
+    return retval;
   }
 }

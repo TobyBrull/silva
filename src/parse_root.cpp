@@ -250,7 +250,7 @@ namespace silva {
       {
         parse_tree_guard_t gg{&retval, &token_index};
         bool found_match = false;
-        vector_t<error_t> child_errors;
+        error_nursery_t error_nursery;
         auto result = seed_pt->visit_children(
             [&](const index_t node_index, const index_t) -> expected_t<bool> {
               const auto& node = seed_pt->nodes[node_index];
@@ -260,17 +260,18 @@ namespace silva {
                 return false;
               }
               else {
-                child_errors.push_back(SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
+                error_nursery.add_child_error(
+                    SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
               }
               return true;
             },
             seed_node_index);
         SILVA_EXPECT_FWD(std::move(result));
         if (!found_match) {
-          return std::unexpected(make_error(MINOR,
-                                            child_errors,
-                                            "Expected to parse '{{...}}' at {}",
-                                            token_position_at(gg.orig_token_index)));
+          return std::unexpected(std::move(error_nursery)
+                                     .finish(MINOR,
+                                             "Expected to parse '{{...}}' at {}",
+                                             token_position_at(gg.orig_token_index)));
         }
         return gg.release();
       }
@@ -295,7 +296,7 @@ namespace silva {
                                                 const index_t seed_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        vector_t<error_t> child_errors;
+        error_nursery_t error_nursery;
         auto result = seed_pt->visit_children(
             [&](const index_t seed_node_index_atom, const index_t) -> expected_t<bool> {
               const auto& seed_node_atom = seed_pt->nodes[seed_node_index_atom];
@@ -332,7 +333,8 @@ namespace silva {
                     repeat_count += 1;
                   }
                   else {
-                    child_errors.push_back(SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
+                    error_nursery.add_child_error(
+                        SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
                     break;
                   }
                 }
@@ -361,12 +363,12 @@ namespace silva {
             seed_node_index);
         if (!result) {
           const error_level_t el = result.error().level;
-          child_errors.push_back(std::move(result).error());
-          return std::unexpected(make_error(el,
-                                            child_errors,
-                                            "Expected {} at {}",
-                                            expr_name,
-                                            token_position_at(gg.orig_token_index)));
+          error_nursery.add_child_error(std::move(result).error());
+          return std::unexpected(std::move(error_nursery)
+                                     .finish(el,
+                                             "Expected {} at {}",
+                                             expr_name,
+                                             token_position_at(gg.orig_token_index)));
         }
         return gg.release();
       }
@@ -395,7 +397,7 @@ namespace silva {
                      rule_name);
         const index_t base_rule_offset = it->second;
         index_t rule_offset            = it->second;
-        vector_t<error_t> child_errors;
+        error_nursery_t error_nursery;
         while (rule_offset < retval.root->rules.size()) {
           const parse_root_t::rule_t& rule = retval.root->rules[rule_offset];
           if (rule.precedence != rule_offset - base_rule_offset) {
@@ -409,20 +411,15 @@ namespace silva {
           }
           else {
             const error_level_t el = result.error().level;
-            child_errors.emplace_back(SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
+            error_nursery.add_child_error(SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
           }
           rule_offset += 1;
         }
-        if (child_errors.size() == 1) {
-          return std::unexpected(std::move(child_errors.front()));
-        }
-        else {
-          return std::unexpected(make_error(MINOR,
-                                            child_errors,
-                                            "Expected {} at {}",
-                                            rule_name,
-                                            token_position_at(orig_token_index)));
-        }
+        return std::unexpected(std::move(error_nursery)
+                                   .finish_short(MINOR,
+                                                 "Expected {} at {}",
+                                                 rule_name,
+                                                 token_position_at(orig_token_index)));
       }
     };
   }

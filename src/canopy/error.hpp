@@ -47,18 +47,26 @@ namespace silva {
   };
 
   struct error_nursery_t {
-    error_context_t* context     = nullptr;
-    index_t node_index           = 0;
-    index_t num_children         = 0;
-    index_t children_begin       = 0;
-    index_t memento_buffer_begin = std::numeric_limits<index_t>::max();
+    error_context_t* context = nullptr;
+    index_t num_children     = 0;
+    optional_t<index_t> last_node_index;
+    optional_t<index_t> children_begin;
+    optional_t<index_t> memento_buffer_begin;
 
     error_nursery_t();
+    ~error_nursery_t();
+
+    void release();
 
     void add_child_error(error_t child_error);
 
     template<typename... MementoArgs>
     error_t finish(error_level_t, MementoArgs&&... memento_args) &&;
+
+    error_t finish_single_child_as_is(error_level_t) &&;
+
+    template<typename... MementoArgs>
+    error_t finish_short(error_level_t, MementoArgs&&... memento_args) &&;
   };
 
   template<typename... MementoArgs>
@@ -74,8 +82,7 @@ namespace silva {
                      MementoArgs&&... memento_args)
   {
     error_nursery_t nursery;
-    for (auto it = child_errors.rbegin(); it != child_errors.rend(); ++it) {
-      error_t& error = *it;
+    for (error_t& error: child_errors) {
       nursery.add_child_error(std::move(error));
     }
     return std::move(nursery).finish(error_level, std::forward<MementoArgs>(memento_args)...);
@@ -84,15 +91,30 @@ namespace silva {
   template<typename... MementoArgs>
   error_t error_nursery_t::finish(const error_level_t error_level, MementoArgs&&... memento_args) &&
   {
-    SILVA_ASSERT(context->tree.nodes.size() == node_index);
+    const index_t new_node_index = context->tree.nodes.size();
+    SILVA_ASSERT(!last_node_index || *last_node_index + 1 == new_node_index);
     const index_t mbo =
         context->memento_buffer.append_memento(std::forward<MementoArgs>(memento_args)...);
     context->tree.nodes.push_back(error_tree_t::node_t{
         .num_children          = num_children,
-        .children_begin        = children_begin,
+        .children_begin        = children_begin.value_or(new_node_index),
         .memento_buffer_offset = mbo,
-        .memento_buffer_begin  = std::min(mbo, memento_buffer_begin),
+        .memento_buffer_begin  = memento_buffer_begin.value_or(mbo),
     });
-    return error_t(context, node_index, error_level);
+    error_t retval(context, new_node_index, error_level);
+    release();
+    return retval;
+  }
+
+  template<typename... MementoArgs>
+  error_t error_nursery_t::finish_short(const error_level_t error_level,
+                                        MementoArgs&&... memento_args) &&
+  {
+    if (num_children == 1) {
+      return std::move(*this).finish_single_child_as_is(error_level);
+    }
+    else {
+      return std::move(*this).finish(error_level, std::forward<MementoArgs>(memento_args)...);
+    }
   }
 }

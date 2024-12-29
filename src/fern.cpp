@@ -51,14 +51,14 @@ namespace silva {
       expected_t<parse_tree_sub_t> item()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        small_vector_t<error_t, 2> child_errors;
+        error_nursery_t error_nursery;
         if (auto result = fern(); result) {
           gg_rule.sub += *std::move(result);
           gg_rule.set_rule_index(to_int(ITEM_0));
           return gg_rule.release();
         }
         else {
-          child_errors.emplace_back(std::move(result).error());
+          error_nursery.add_child_error(std::move(result).error());
         }
         const bool is_item1 = token_id_by() == tt_none || token_id_by() == tt_true ||
             token_id_by() == tt_false || token_data_by()->category == STRING ||
@@ -69,14 +69,14 @@ namespace silva {
           return gg_rule.release();
         }
         else {
-          child_errors.emplace_back(
+          error_nursery.add_child_error(
               make_error(MINOR,
                          {},
                          "Expected 'none', 'true', 'false', string, or number at {}",
                          token_index));
         }
-        return std::unexpected(
-            make_error(MINOR, child_errors, "Expected Item at {}", gg_rule.orig_token_index));
+        return std::unexpected(std::move(error_nursery)
+                                   .finish(MINOR, "Expected Item at {}", gg_rule.orig_token_index));
       }
 
       expected_t<parse_tree_sub_t> labeled_item()
