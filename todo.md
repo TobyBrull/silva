@@ -1,8 +1,7 @@
 # TODO
 
 * error-handling
-    * more powerful memento registry
-        * suppress repeat token_positions
+    * make root-based error look more like the error from the manual Fern parser
 
 * various:
     * output_buffer_t / string_output_buffer_t

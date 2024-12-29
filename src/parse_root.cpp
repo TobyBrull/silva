@@ -162,7 +162,7 @@ namespace silva {
           SILVA_EXPECT(it != retval.root->regexes.end(), MAJOR);
           SILVA_EXPECT(token_data_by()->category == IDENTIFIER,
                        MINOR,
-                       "Expected identifier at {}",
+                       "{} Expected identifier",
                        token_position_at(gg.orig_token_index));
           const std::regex& re          = it->second;
           const string_view_t token_str = token_data_by()->str;
@@ -177,25 +177,25 @@ namespace silva {
           if (seed_token_id == seed_tt_id) {
             SILVA_EXPECT(token_data_by()->category == IDENTIFIER,
                          MINOR,
-                         "Expected identifier at {}",
+                         "{} Expected identifier",
                          token_position_by());
           }
           else if (seed_token_id == seed_tt_op) {
             SILVA_EXPECT(token_data_by()->category == OPERATOR,
                          MINOR,
-                         "Expected operator at {}",
+                         "{} Expected operator",
                          token_position_by());
           }
           else if (seed_token_id == seed_tt_str) {
             SILVA_EXPECT(token_data_by()->category == STRING,
                          MINOR,
-                         "Expected string at {}",
+                         "{} Expected string",
                          token_position_by());
           }
           else if (seed_token_id == seed_tt_num) {
             SILVA_EXPECT(token_data_by()->category == NUMBER,
                          MINOR,
-                         "Expected number at {}",
+                         "{} Expected number",
                          token_position_by());
           }
           else if (seed_token_id == seed_tt_any) {
@@ -209,9 +209,9 @@ namespace silva {
                 seed_token_id_work.get_target_token_id(sp_token_data, retval.tokenization.get());
             SILVA_EXPECT(token_id_by() == expected_target_token_id,
                          MINOR,
-                         "Expected {} at {}",
-                         sp_token_data->str,
-                         token_position_by());
+                         "{} Expected {}",
+                         token_position_by(),
+                         sp_token_data->str);
           }
         }
         token_index += 1;
@@ -270,7 +270,7 @@ namespace silva {
         if (!found_match) {
           return std::unexpected(std::move(error_nursery)
                                      .finish(MINOR,
-                                             "Expected to parse '{{...}}' at {}",
+                                             "{} Expected to parse '{{...}}'",
                                              token_position_at(gg.orig_token_index)));
         }
         return gg.release();
@@ -364,11 +364,9 @@ namespace silva {
         if (!result) {
           const error_level_t el = result.error().level;
           error_nursery.add_child_error(std::move(result).error());
-          return std::unexpected(std::move(error_nursery)
-                                     .finish(el,
-                                             "Expected {} at {}",
-                                             expr_name,
-                                             token_position_at(gg.orig_token_index)));
+          return std::unexpected(
+              std::move(error_nursery)
+                  .finish(el, "{} Expected {}", token_position_at(gg.orig_token_index), expr_name));
         }
         return gg.release();
       }
@@ -417,9 +415,9 @@ namespace silva {
         }
         return std::unexpected(std::move(error_nursery)
                                    .finish_short(MINOR,
-                                                 "Expected {} at {}",
-                                                 rule_name,
-                                                 token_position_at(orig_token_index)));
+                                                 "{} Expected {}",
+                                                 token_position_at(orig_token_index),
+                                                 rule_name));
       }
     };
   }

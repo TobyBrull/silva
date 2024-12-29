@@ -113,8 +113,10 @@ namespace silva {
           SILVA_ASSERT(size == sizeof(token_position_t));
           const source_code_location_t scl =
               bit_cast_ptr<token_position_t>(ptr).compute_source_code_location();
+          const string_t filename =
+              std::filesystem::path(scl.source_code->filename).filename().string();
           return string_or_view_t{
-              fmt::format("{}:{}:{}", scl.source_code->filename, scl.line + 1, scl.column + 1)};
+              fmt::format("[{}:{}:{}]", filename, scl.line + 1, scl.column + 1)};
         });
   };
 }
