@@ -1,3 +1,9 @@
+add_subdirectory(thirdparty/reflect-cpp)
+
+# find_package(Threads REQUIRED)
+# find_package(Boost REQUIRED)
+find_package(Fmt REQUIRED)
+
 file(GLOB_RECURSE SILVA_LIB_FILES "*.hpp" "*.cpp")
 file(GLOB_RECURSE SILVA_TEST_FILES "*.tpp")
 file(GLOB_RECURSE SILVA_MAIN_FILES "*.mpp")
