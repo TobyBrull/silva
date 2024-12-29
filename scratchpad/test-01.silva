@@ -1,0 +1,20 @@
+import "std.silva"
+
+# 1. conditionals
+# 2. pointers
+# 3. loops
+
+# ./build/cpp/silva scratchpad/test-01.silva 123
+# ./build/cpp/silva scratchpad/test-01.silva 123 --other=32
+
+main: [ i32
+        other: i32 = 42
+      ] -> i32
+{
+  retval = std.foo [ arg.0 arg.1 ]
+}
+
+test: {
+  assert std.foo [ 10 100 ] == 110
+  assert std.foo [ 20 300 ] == 320
+}

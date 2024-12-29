@@ -1,0 +1,20 @@
+namespace std
+
+sin: f64 -> f64 ;
+
+foo: [ a:i32 b:i32 ] -> i32 ;
+
+foo1: ;
+foo2: [] ;
+foo3: -> [] ;
+foo4: [] -> [] ;
+
+implementation
+
+foo: [ a:i32 b:i32 ] -> i32 {
+  if a < 0 {
+    retval = a * b
+  } else {
+    retval = a + b
+  }
+}
