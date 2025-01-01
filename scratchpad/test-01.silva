@@ -1,5 +1,14 @@
-import "std.silva"
+import
+"std.silva"
+interface
 
+func main: [ i32 other: i32 ] -> i32
+
+func test: []
+
+implementation
+
+# 0. variables
 # 1. conditionals
 # 2. pointers
 # 3. loops
@@ -7,12 +16,13 @@ import "std.silva"
 # ./build/cpp/silva scratchpad/test-01.silva 123
 # ./build/cpp/silva scratchpad/test-01.silva 123 --other=32
 
-func main: [ i32 other: i32 ] -> i32
+func main: -*-
 {
   retval = std.foo [ arg.0 arg.1 ] ;
 }
 
-func test: [] {
- assert std.foo [ 10 100 ] == 110 ;
- assert std.foo [ 20 300 ] == 320 ;
+func test: -*-
+{
+  assert std.foo [ 10 100 ] == 110 ;
+  assert std.foo [ 20 300 ] == 320 ;
 }

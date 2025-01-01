@@ -1,3 +1,6 @@
+import
+interface
+
 namespace std
 
 func sin: f64 -> f64
@@ -15,14 +18,16 @@ func bar: [] -> []
 
 implementation
 
-func little_gauss: i32 -> i32 {
+func little_gauss: -*-
+{
   retval = 0
   for (i32 i = 0; i < arg; i += 1) {
     retval += i
   }
 }
 
-func foo: i32_pair -> i32 {
+func foo: -*-
+{
   if a < 0 {
     retval = first * second
   } else {

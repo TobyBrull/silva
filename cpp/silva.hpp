@@ -4,23 +4,38 @@
 
 namespace silva {
   const source_code_t silva_seed_source_code("silva.seed", R"'(
-    - File = Command*
-    - Command,0 = "import" string
-    - Command,1 = "namespace" NestedNamespace
-    - Command,2 = "implementation"
-    - Command,3 = "type" Label ":" Type
-    - Command,4 = "func" Label ":" Func
+    - Silva = "import" Imports "interface" Interface "implementation" Implementation
 
-    - NestedNamespace = Namespace ( "." Namespace )*
-    - Namespace = identifier
+    - Imports = ImportFilename*
+    - ImportFilename = string
 
+    - Interface = InterfaceCmd*
+    - InterfaceCmd,0 = "namespace" NestedNamespace
+    - InterfaceCmd,1 = TypeDefn
+    - InterfaceCmd,2 = FuncDecl
+
+    - Implementation = ImplementationCmd*
+    - ImplementationCmd,0 = "namespace" NestedNamespace
+    - ImplementationCmd,1 = TypeDefn
+    - ImplementationCmd,2 = FuncDefn
+
+    - FuncDecl = "func" Label ":" FuncProto
+    - FuncDefn,0 = "func" Label ":" FuncProto FuncBody
+    - FuncDefn,1 = "func" Label ":" "-*-" FuncBody
+
+    - TypeDefn = "type" Label ":" Type
     - Type,0 = "mutable"? identifier "*"
     - Type,1 = identifier
     - Type,2 = "[" Member* "]"
     - Member = ( Label ":" )? Type
+
+    - NestedNamespace = Namespace ( "." Namespace )*
+    - Namespace = identifier
     - Label = identifier
 
-    - Func = Type ("->" Type)? FuncBody
+    - FuncProto = Type? RetvalType?
+    - RetvalType = "->" Type
+
     - FuncBody = "{" (Statement ";")* "}"
 
     - Statement = (";"! "}"! any)+
