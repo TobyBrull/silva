@@ -4,7 +4,7 @@
 
 namespace silva {
   const source_code_t fern_seed_source_code("fern.seed", R"'(
-    - Fern = "[" LabeledItem* "]"
+    - Fern = "[" major_error LabeledItem* "]"
     - LabeledItem = ( Label ":" )? Item ";"?
     - Label = { string identifier }
     - Item,0 = Fern

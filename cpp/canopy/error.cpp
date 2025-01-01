@@ -158,7 +158,6 @@ namespace silva {
 
   void error_nursery_t::release()
   {
-    context      = nullptr;
     num_children = 0;
     last_node_index.reset();
     children_begin.reset();
