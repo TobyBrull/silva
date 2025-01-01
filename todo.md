@@ -23,8 +23,13 @@
 
 * Soil and Toil
     * Extend Seed:
-        * support for parse-root to commit to certain rules
+        * maybe add a construct that *commits* (major_error) to one of multiple choices
+          based on the next keyword
+        * maybe add a construct that implemenets operator precedence parsing for a set
+          of operators
         * packrat
-            * this might also enable recursion detection
-            * recursion detection could be part of the parsing (ignore recursive branches)
+            * this might also enable recursion detection (and prevention)
+            * recursion prevention could be a functional part of the parsing
+              (by ignoring recursive branches certain grammars become viable that
+              otherwise wouldn't be viable)
     * error handling should allow to have multiple independent errors at the same time?
