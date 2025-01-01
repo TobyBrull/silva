@@ -94,12 +94,12 @@ namespace silva {
     std::move(__silva_result);                                              \
   })
 
-#define SILVA_EXPECT_ASSERT(x)                                                   \
-  ({                                                                             \
-    auto result = (x);                                                           \
-    static_assert(is_expected_t<decltype(result)>::value);                       \
-    SILVA_ASSERT(result, "Unexpected: {}", result.error().message().get_view()); \
-    std::move(result).value();                                                   \
+#define SILVA_EXPECT_ASSERT(x)                                          \
+  ({                                                                    \
+    auto result = (x);                                                  \
+    static_assert(is_expected_t<decltype(result)>::value);              \
+    SILVA_ASSERT(result, "Unexpected: {}", result.error().to_string()); \
+    std::move(result).value();                                          \
   })
 
 // Semantics:
