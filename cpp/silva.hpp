@@ -10,18 +10,18 @@ namespace silva {
     - ImportFilename = string
 
     - Interface = InterfaceCmd*
-    - InterfaceCmd,0 = "namespace" NestedNamespace
-    - InterfaceCmd,1 = TypeDefn
-    - InterfaceCmd,2 = FuncDecl
+    - InterfaceCmd,0 = "namespace" major_error NestedNamespace
+    - InterfaceCmd,1 = "type" major_error TypeDefn
+    - InterfaceCmd,2 = "func" major_error FuncDecl
 
     - Implementation = ImplementationCmd*
-    - ImplementationCmd,0 = "namespace" NestedNamespace
-    - ImplementationCmd,1 = TypeDefn
-    - ImplementationCmd,2 = FuncDefn
+    - ImplementationCmd,0 = "namespace" major_error NestedNamespace
+    - ImplementationCmd,1 = "type" major_error TypeDefn
+    - ImplementationCmd,2 = "func" major_error FuncDefn
 
-    - FuncDecl = "func" Label ":" FuncProto
-    - FuncDefn,0 = "func" Label ":" FuncProto FuncBody
-    - FuncDefn,1 = "func" Label ":" "-*-" FuncBody
+    - FuncDecl = Label ":" FuncProto
+    - FuncDefn,0 = Label ":" "-*-" FuncBody
+    - FuncDefn,1 = Label ":" FuncProto FuncBody
     - Label = identifier
 
     - TypeDefn = "type" TypeLabel ":" Type

@@ -21,6 +21,7 @@ namespace silva {
       optional_t<token_id_t> tt_plus        = retval.tokenization->lookup_token("+");
       optional_t<token_id_t> tt_emark       = retval.tokenization->lookup_token("!");
       optional_t<token_id_t> tt_amper       = retval.tokenization->lookup_token("&");
+      optional_t<token_id_t> tt_major_error = retval.tokenization->lookup_token("major_error");
       optional_t<token_id_t> tt_identifier  = retval.tokenization->lookup_token("identifier");
       optional_t<token_id_t> tt_id_regex    = retval.tokenization->lookup_token("identifier_regex");
       optional_t<token_id_t> tt_operator    = retval.tokenization->lookup_token("operator");
@@ -153,14 +154,21 @@ namespace silva {
       expected_t<parse_tree_sub_t> atom()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(to_int(ATOM));
-        gg_rule.sub += SILVA_EXPECT_FWD(primary());
-        if (num_tokens_left() >= 1) {
-          if (auto result = suffix(); result) {
-            gg_rule.sub += *std::move(result);
-          }
-          else {
-            SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);
+        SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "Expected token for Atom");
+        if (token_id_by() == tt_major_error) {
+          gg_rule.set_rule_index(to_int(ATOM_0));
+          token_index += 1;
+        }
+        else {
+          gg_rule.set_rule_index(to_int(ATOM_1));
+          gg_rule.sub += SILVA_EXPECT_FWD(primary());
+          if (num_tokens_left() >= 1) {
+            if (auto result = suffix(); result) {
+              gg_rule.sub += *std::move(result);
+            }
+            else {
+              SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);
+            }
           }
         }
         return gg_rule.release();
@@ -260,6 +268,7 @@ namespace silva {
                 parse_root_t::rule_t{.name = "Expr", .precedence = 0},
                 parse_root_t::rule_t{.name = "Expr", .precedence = 1},
                 parse_root_t::rule_t{.name = "Atom", .precedence = 0},
+                parse_root_t::rule_t{.name = "Atom", .precedence = 1},
                 parse_root_t::rule_t{.name = "Suffix", .precedence = 0},
                 parse_root_t::rule_t{.name = "Primary", .precedence = 0},
                 parse_root_t::rule_t{.name = "Primary", .precedence = 1},

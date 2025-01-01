@@ -21,42 +21,42 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   [0]Rule,0                                       Frog
     [0]Nonterminal,0                              Frog
     [1]Expr,1                                     Rule
-      [0]Atom,0                                   Rule
+      [0]Atom,1                                   Rule
         [0]Primary,2                              Rule
           [0]Nonterminal,0                        Rule
         [1]Suffix,0                               *
   [1]Rule,0                                       Rule
     [0]Nonterminal,0                              Rule
     [1]Expr,1                                     RuleName
-      [0]Atom,0                                   RuleName
+      [0]Atom,1                                   RuleName
         [0]Primary,2                              RuleName
           [0]Nonterminal,0                        RuleName
-      [1]Atom,0                                   "="
+      [1]Atom,1                                   "="
         [0]Primary,1                              "="
           [0]Terminal,1                           "="
-      [2]Atom,0                                   Expr
+      [2]Atom,1                                   Expr
         [0]Primary,2                              Expr
           [0]Nonterminal,0                        Expr
   [2]Rule,0                                       RuleName
     [0]Nonterminal,0                              RuleName
     [1]Expr,1                                     identifier
-      [0]Atom,0                                   identifier
+      [0]Atom,1                                   identifier
         [0]Primary,1                              identifier
           [0]Terminal,1                           identifier
   [3]Rule,0                                       Expr
     [0]Nonterminal,0                              Expr
     [1]Expr,1                                     Primary
-      [0]Atom,0                                   Primary
+      [0]Atom,1                                   Primary
         [0]Primary,2                              Primary
           [0]Nonterminal,0                        Primary
         [1]Suffix,0                               +
   [4]Rule,0                                       Primary
     [0]Nonterminal,0                              Primary
     [1]Expr,1                                     identifier
-      [0]Atom,0                                   identifier
+      [0]Atom,1                                   identifier
         [0]Primary,1                              identifier
           [0]Terminal,1                           identifier
-      [1]Atom,0                                   "="
+      [1]Atom,1                                   "="
         [0]Primary,1                              "="
           [0]Terminal,1                           "="
         [1]Suffix,0                               !

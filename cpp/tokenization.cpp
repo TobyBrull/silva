@@ -94,13 +94,6 @@ namespace silva {
         ')',
         '{',
         '}',
-        // unary operators
-        '^',
-        '~',
-        '@',
-        '!',
-        '?',
-        ';',
     };
     constexpr char operator_chars[] = {
         // punctuation
@@ -121,6 +114,13 @@ namespace silva {
         // logical
         '&',
         '|',
+        // other
+        '^',
+        '~',
+        '@',
+        '!',
+        '?',
+        ';',
     };
     constexpr char number_chars[] = {'.', '`', 'e'};
 

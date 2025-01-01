@@ -43,55 +43,55 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   [0]Rule,0                                       SimpleFern
     [0]Nonterminal,0                              SimpleFern
     [1]Expr,1                                     "["
-      [0]Atom,0                                   "["
+      [0]Atom,1                                   "["
         [0]Primary,1                              "["
           [0]Terminal,1                           "["
-      [1]Atom,0                                   (
+      [1]Atom,1                                   (
         [0]Primary,0                              (
-          [0]Atom,0                               LabeledItem
+          [0]Atom,1                               LabeledItem
             [0]Primary,2                          LabeledItem
               [0]Nonterminal,0                    LabeledItem
-          [1]Atom,0                               ";"
+          [1]Atom,1                               ";"
             [0]Primary,1                          ";"
               [0]Terminal,1                       ";"
             [1]Suffix,0                           ?
         [1]Suffix,0                               *
-      [2]Atom,0                                   "]"
+      [2]Atom,1                                   "]"
         [0]Primary,1                              "]"
           [0]Terminal,1                           "]"
   [1]Rule,0                                       LabeledItem
     [0]Nonterminal,0                              LabeledItem
     [1]Expr,1                                     (
-      [0]Atom,0                                   (
+      [0]Atom,1                                   (
         [0]Primary,0                              (
-          [0]Atom,0                               Label
+          [0]Atom,1                               Label
             [0]Primary,2                          Label
               [0]Nonterminal,0                    Label
-          [1]Atom,0                               ":"
+          [1]Atom,1                               ":"
             [0]Primary,1                          ":"
               [0]Terminal,1                       ":"
         [1]Suffix,0                               ?
-      [1]Atom,0                                   Item
+      [1]Atom,1                                   Item
         [0]Primary,2                              Item
           [0]Nonterminal,0                        Item
   [2]Rule,0                                       Label
     [0]Nonterminal,0                              Label
     [1]Expr,1                                     string
-      [0]Atom,0                                   string
+      [0]Atom,1                                   string
         [0]Primary,1                              string
           [0]Terminal,1                           string
   [3]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           0
     [2]Expr,1                                     SimpleFern
-      [0]Atom,0                                   SimpleFern
+      [0]Atom,1                                   SimpleFern
         [0]Primary,2                              SimpleFern
           [0]Nonterminal,0                        SimpleFern
   [4]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           1
     [2]Expr,1                                     string
-      [0]Atom,0                                   string
+      [0]Atom,1                                   string
         [0]Primary,1                              string
           [0]Terminal,1                           string
 )";

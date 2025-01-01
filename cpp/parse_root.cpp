@@ -300,10 +300,15 @@ namespace silva {
       {
         parse_tree_guard_t gg{&retval, &token_index};
         error_nursery_t error_nursery;
-        auto result = seed_pt->visit_children(
+        error_level_t min_error_level = NONE;
+        auto result                   = seed_pt->visit_children(
             [&](const index_t seed_node_index_atom, const index_t) -> expected_t<bool> {
               const auto& seed_node_atom = seed_pt->nodes[seed_node_index_atom];
-              SILVA_EXPECT(seed_node_atom.rule_index == to_int(ATOM),
+              if (seed_node_atom.rule_index == to_int(ATOM_0)) {
+                min_error_level = MAJOR;
+                return true;
+              }
+              SILVA_EXPECT(seed_node_atom.rule_index == to_int(ATOM_1),
                            MAJOR,
                            "expected atom in seed parse-tree");
               optional_t<char> suffix_char;
@@ -365,7 +370,7 @@ namespace silva {
             },
             seed_node_index);
         if (!result) {
-          const error_level_t el = result.error().level;
+          const error_level_t el = std::max(result.error().level, min_error_level);
           error_nursery.add_child_error(std::move(result).error());
           return std::unexpected(std::move(error_nursery)
                                      .finish(el,

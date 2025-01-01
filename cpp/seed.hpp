@@ -22,8 +22,9 @@ namespace silva {
     - Rule = Nonterminal ( "," RulePrecedence )? "=" Expr
     - RulePrecedence = number
     - Expr,0 = "{" Terminal+ "}"
-    - Expr,1 = Atom*
-    - Atom = Primary Suffix?
+    - Expr,1 = Atom+
+    - Atom,0 = "major_error"
+    - Atom,1 = Primary Suffix?
     - Suffix = { "?" "*" "+" "!" "&" }
     - Primary,0 = "(" Atom+ ")"
     - Primary,1 = Terminal
@@ -40,7 +41,8 @@ namespace silva {
     RULE_PRECEDENCE,
     EXPR_0,
     EXPR_1,
-    ATOM,
+    ATOM_0,
+    ATOM_1,
     SUFFIX,
     PRIMARY_0,
     PRIMARY_1,
