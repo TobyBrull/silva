@@ -2,6 +2,9 @@ import
 "std.silva"
 interface
 
+# ./build/cpp/silva_silva scratchpad/test-01.silva 123
+# ./build/cpp/silva_silva scratchpad/test-01.silva 123 --other=32
+
 func main: [ i32 other: i32 ] -> i32
 
 func test: []
@@ -13,16 +16,17 @@ implementation
 # 2. pointers
 # 3. loops
 
-# ./build/cpp/silva scratchpad/test-01.silva 123
-# ./build/cpp/silva scratchpad/test-01.silva 123 --other=32
-
 func main: -*-
 {
-  retval = std.foo [ arg.0 arg.1 ] ;
+  retval = [ arg.0 arg.1 ] ;
+  getval = [ 10 100 ] ;
 }
 
 func test: -*-
 {
-  assert std.foo [ 10 100 ] == 110 ;
-  assert std.foo [ 20 300 ] == 320 ;
+  @ std.foo [ 10 100 ] ;
+  @ assert ( @ std.foo [ 10 100 ] == 110 ) ;
+  @ assert ( @ std.foo [ 20 300 ] == 320 ) ;
 }
+
+end

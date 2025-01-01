@@ -4,7 +4,7 @@
 
 namespace silva {
   const source_code_t silva_seed_source_code("silva.seed", R"'(
-    - Silva = "import" Imports "interface" Interface "implementation" Implementation
+    - Silva = "import" Imports "interface" Interface "implementation" Implementation "end"
 
     - Imports = ImportFilename*
     - ImportFilename = string
@@ -48,8 +48,9 @@ namespace silva {
     - PrimaryExpr,1 = "[" Expr* "]"
     - PrimaryExpr,2 = Name
     - PrimaryExpr,3 = Literal
+    - PrimaryExpr,4 = "@" Expr Expr
 
-    - Expr,0 = PrimaryExpr ( ExprOps PrimaryExpr )+
+    - Expr,0 = PrimaryExpr ( ExprOps PrimaryExpr )*
     - ExprOpsInv = { ";" "(" ")" "[" "]" "=" }
     - ExprOps = ( ExprOpsInv! operator )
 

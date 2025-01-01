@@ -22,3 +22,9 @@
 * code review
 
 * Soil and Toil
+    * Extend Seed:
+        * support for parse-root to commit to certain rules
+        * packrat
+            * this might also enable recursion detection
+            * recursion detection could be part of the parsing (ignore recursive branches)
+    * error handling should allow to have multiple independent errors at the same time?
