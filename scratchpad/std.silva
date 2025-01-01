@@ -1,20 +1,31 @@
 namespace std
 
-sin: f64 -> f64 ;
+func sin: f64 -> f64
 
-foo: [ a:i32 b:i32 ] -> i32 ;
+func little_gauss: i32 -> i32
 
-foo1: ;
-foo2: [] ;
-foo3: -> [] ;
-foo4: [] -> [] ;
+type i32_pair: [
+  first: i32*
+  second: i32
+]
+
+func foo: i32_pair -> i32
+
+func bar: [] -> []
 
 implementation
 
-foo: [ a:i32 b:i32 ] -> i32 {
+func little_gauss: i32 -> i32 {
+  retval = 0
+  for (i32 i = 0; i < arg; i += 1) {
+    retval += i
+  }
+}
+
+func foo: i32_pair -> i32 {
   if a < 0 {
-    retval = a * b
+    retval = first * second
   } else {
-    retval = a + b
+    retval = first + second
   }
 }

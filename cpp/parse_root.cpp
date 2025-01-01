@@ -364,9 +364,11 @@ namespace silva {
         if (!result) {
           const error_level_t el = result.error().level;
           error_nursery.add_child_error(std::move(result).error());
-          return std::unexpected(
-              std::move(error_nursery)
-                  .finish(el, "{} Expected {}", token_position_at(gg.orig_token_index), expr_name));
+          return std::unexpected(std::move(error_nursery)
+                                     .finish(el,
+                                             "{} Expected {} expr",
+                                             token_position_at(gg.orig_token_index),
+                                             expr_name));
         }
         return gg.release();
       }
@@ -396,6 +398,7 @@ namespace silva {
         const index_t base_rule_offset = it->second;
         index_t rule_offset            = it->second;
         error_nursery_t error_nursery;
+        error_level_t retval_error_level = MINOR;
         while (rule_offset < retval.root->rules.size()) {
           const parse_root_t::rule_t& rule = retval.root->rules[rule_offset];
           if (rule.precedence != rule_offset - base_rule_offset) {
@@ -409,13 +412,17 @@ namespace silva {
           }
           else {
             const error_level_t el = result.error().level;
-            error_nursery.add_child_error(SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
+            error_nursery.add_child_error(std::move(result).error());
+            if (el >= MAJOR) {
+              retval_error_level = MAJOR;
+              break;
+            }
           }
           rule_offset += 1;
         }
         return std::unexpected(std::move(error_nursery)
-                                   .finish_short(MINOR,
-                                                 "{} Expected {}",
+                                   .finish_short(retval_error_level,
+                                                 "{} Expected {} rule",
                                                  token_position_at(orig_token_index),
                                                  rule_name));
       }

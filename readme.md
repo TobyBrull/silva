@@ -32,4 +32,5 @@ ninja -Cbuild/
 ./build/cpp/silva_tokenization filename=silva/fern/simple.fern
 ./build/cpp/silva_fern filename=silva/fern/simple.fern process=direct/string root-based=false
 ./build/cpp/silva_fern filename=silva/fern/simple-broken.fern process=direct/string root-based=true
+./build/cpp/silva_silva scratchpad/test-01.silva
 ```
