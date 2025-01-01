@@ -20,8 +20,11 @@ namespace silva {
     - Member = ( Label ":" )? Type
     - Label = identifier
 
-    - Func = Type? ("->" Type)? FuncBody?
-    - FuncBody = "{" Statement* "}"
+    - Func = Type ("->" Type)? FuncBody
+    - FuncBody = "{" (Statement ";")* "}"
+
+    - Statement = (";"! "}"! any)+
+
   )'");
 
   const parse_root_t* silva_parse_root();

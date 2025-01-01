@@ -9,10 +9,10 @@ import "std.silva"
 
 func main: [ i32 other: i32 ] -> i32
 {
-  retval = std.foo [ arg.0 arg.1 ]
+  retval = std.foo [ arg.0 arg.1 ] ;
 }
 
-func test: {
- assert std.foo [ 10 100 ] == 110
- assert std.foo [ 20 300 ] == 320
+func test: [] {
+ assert std.foo [ 10 100 ] == 110 ;
+ assert std.foo [ 20 300 ] == 320 ;
 }
