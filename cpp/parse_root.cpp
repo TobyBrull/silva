@@ -1,5 +1,6 @@
 #include "parse_root.hpp"
 
+#include "canopy/scope_exit.hpp"
 #include "parse_tree_nursery.hpp"
 #include "tokenization.hpp"
 
@@ -130,6 +131,8 @@ namespace silva {
     struct parse_root_nursery_t : public parse_tree_nursery_t {
       const parse_tree_t* seed_pt          = nullptr;
       parse_root_t::workspace_t* workspace = nullptr;
+
+      int rule_depth = 0;
 
       optional_t<token_id_t> seed_tt_id  = seed_pt->tokenization->lookup_token("identifier");
       optional_t<token_id_t> seed_tt_op  = seed_pt->tokenization->lookup_token("operator");
@@ -389,6 +392,11 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> apply_rule(const string_view_t rule_name)
       {
+        rule_depth += 1;
+        scope_exit_t scope_exit([this] { rule_depth -= 1; });
+        SILVA_EXPECT(rule_depth <= 20,
+                     FATAL,
+                     "Stack is getting to deep. Do you have an infinite loop in your grammar?");
         const index_t orig_token_index = token_index;
         const auto it{retval.root->rule_name_offsets.find(rule_name)};
         SILVA_EXPECT(it != retval.root->rule_name_offsets.end(),

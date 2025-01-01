@@ -22,24 +22,39 @@ namespace silva {
     - FuncDecl = "func" Label ":" FuncProto
     - FuncDefn,0 = "func" Label ":" FuncProto FuncBody
     - FuncDefn,1 = "func" Label ":" "-*-" FuncBody
+    - Label = identifier
 
-    - TypeDefn = "type" Label ":" Type
+    - TypeDefn = "type" TypeLabel ":" Type
     - Type,0 = "mutable"? identifier "*"
     - Type,1 = identifier
     - Type,2 = "[" Member* "]"
     - Member = ( Label ":" )? Type
+    - TypeLabel = identifier_regex("_t$")
 
     - NestedNamespace = Namespace ( "." Namespace )*
     - Namespace = identifier
-    - Label = identifier
 
     - FuncProto = Type? RetvalType?
     - RetvalType = "->" Type
 
-    - FuncBody = "{" (Statement ";")* "}"
+    - FuncBody = "{" Statement* "}"
 
-    - Statement = (";"! "}"! any)+
+    - Statement,0 = Expr ";"
+    - Statement,1 = Assignment ";"
 
+    - Assignment = Name "=" Expr
+
+    - PrimaryExpr,0 = "(" Expr ")"
+    - PrimaryExpr,1 = "[" Expr* "]"
+    - PrimaryExpr,2 = Name
+    - PrimaryExpr,3 = Literal
+
+    - Expr,0 = PrimaryExpr ( ExprOps PrimaryExpr )+
+    - ExprOpsInv = { ";" "(" ")" "[" "]" "=" }
+    - ExprOps = ( ExprOpsInv! operator )
+
+    - Name = identifier
+    - Literal = { string number }
   )'");
 
   const parse_root_t* silva_parse_root();
