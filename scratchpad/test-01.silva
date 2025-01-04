@@ -19,6 +19,7 @@ implementation
 func main: -*-
 {
   retval = [ arg.0 arg.1 ] ;
+  retval = 2 ;
   getval = [ 10 100 ] ;
 }
 

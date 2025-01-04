@@ -37,22 +37,28 @@ namespace silva {
     - FuncProto = Type? RetvalType?
     - RetvalType = "->" Type
 
-    - FuncBody = "{" Statement* "}"
+    - FuncBody = "{" Stmt* "}"
 
-    - Statement,0 = Expr ";"
-    - Statement,1 = Assignment ";"
+    - Stmt,0 = ExprStmt
+    - Stmt,1 = CompStmt
+    - Stmt,2 = CondStmt
+    - Stmt,3 = LoopStmt
 
-    - Assignment = Name "=" Expr
+    - ExprStmt = Expr ";"
+    - CompStmt = "{" Stmt* "}"
+    - CondStmt = "if" "(" Cond ")" "{" Stmt* "}" ( "else" "{" Stmt* "}" )?
+    - LoopStmt = "loop" "{" Stmt* "}"
 
     - PrimaryExpr,0 = "(" Expr ")"
     - PrimaryExpr,1 = "[" Expr* "]"
     - PrimaryExpr,2 = Name
     - PrimaryExpr,3 = Literal
-    - PrimaryExpr,4 = "@" Expr Expr
+    - PrimaryExpr,4 = ExprOp
 
-    - Expr,0 = PrimaryExpr ( ExprOps PrimaryExpr )*
-    - ExprOpsInv = { ";" "(" ")" "[" "]" "=" }
-    - ExprOps = ( ExprOpsInv! operator )
+    - ExprOpInv = { ";" "(" ")" "[" "]" "{" "}" }
+    - ExprOp = ( ExprOpInv! operator )
+
+    - Expr = PrimaryExpr+
 
     - Name = identifier
     - Literal = { string number }

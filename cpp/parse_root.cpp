@@ -224,7 +224,10 @@ namespace silva {
       expected_t<parse_tree_sub_t> apply_primary(const index_t seed_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        SILVA_EXPECT(token_index < retval.tokenization->tokens.size(), MINOR);
+        SILVA_EXPECT(token_index < retval.tokenization->tokens.size(),
+                     MINOR,
+                     "{} Reached end of token-stream ",
+                     token_position_by());
         const auto* token_data = retval.tokenization->token_data(token_index);
         const auto& seed_node  = seed_pt->nodes[seed_node_index];
         if (seed_node.rule_index == to_int(PRIMARY_0)) {
@@ -355,12 +358,14 @@ namespace silva {
               }
               else if (suffix_char.value() == '!') {
                 parse_tree_guard_t inner_ptg{&retval, &token_index};
-                const auto result = apply_primary(seed_node_index_primary);
+                const auto result =
+                    SILVA_EXPECT_FWD_IF(apply_primary(seed_node_index_primary), MAJOR);
                 SILVA_EXPECT(!result, MINOR, "Managed to parse negative primary expression");
               }
               else if (suffix_char.value() == '&') {
                 parse_tree_guard_t inner_ptg{&retval, &token_index};
-                const auto result = apply_primary(seed_node_index_primary);
+                const auto result =
+                    SILVA_EXPECT_FWD_IF(apply_primary(seed_node_index_primary), MAJOR);
                 SILVA_EXPECT(result, MINOR, "Did not manage to parse positive primary expression");
               }
               else {
@@ -399,7 +404,7 @@ namespace silva {
       {
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
-        SILVA_EXPECT(rule_depth <= 20,
+        SILVA_EXPECT(rule_depth <= 50,
                      FATAL,
                      "Stack is getting to deep. Do you have an infinite loop in your grammar?");
         const index_t orig_token_index = token_index;
