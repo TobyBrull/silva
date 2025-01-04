@@ -3,31 +3,31 @@ interface
 
 namespace std
 
-func sin: f64 -> f64
+toil sin_t: f64_s -> f64_s proto
 
-func little_gauss: i32 -> i32
+toil little_gauss_t: i32_s -> i32_s proto
 
-type i32_pair_t: [
-  first: i32*
-  second: i32
+soil i32_pair_s: [
+  first: *i32_s
+  second: i32_s
 ]
 
-func foo: i32_pair -> i32
+toil foo_t: i32_pair_s -> i32_s proto
 
-func bar: [] -> []
+toil bar_t: [] -> [] proto
 
 implementation
 
-func little_gauss: -*-
+toil little_gauss_t: -*-
 {
   retval = 0 ;
-  i32 i = 0;
+  i32_s i = 0;
   loop {
     i += 1;
   }
 }
 
-func foo: -*-
+toil foo_t: -*-
 {
   if ( a < 0 ) {
     retval = first * second ;

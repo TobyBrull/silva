@@ -9,40 +9,40 @@ namespace silva {
     - Imports = ImportFilename*
     - ImportFilename = string
 
-    - Interface = InterfaceCmd*
-    - InterfaceCmd,0 = "namespace" major_error NestedNamespace
-    - InterfaceCmd,1 = "type" major_error TypeDefn
-    - InterfaceCmd,2 = "func" major_error FuncDecl
+    - Interface = Command*
+    - Implementation = Command*
 
-    - Implementation = ImplementationCmd*
-    - ImplementationCmd,0 = "namespace" major_error NestedNamespace
-    - ImplementationCmd,1 = "type" major_error TypeDefn
-    - ImplementationCmd,2 = "func" major_error FuncDefn
-
-    - FuncDecl = Label ":" FuncProto
-    - FuncDefn,0 = Label ":" "-*-" FuncBody
-    - FuncDefn,1 = Label ":" FuncProto FuncBody
-    - Label = identifier
-
-    - TypeDefn = TypeLabel ":" Type
-    - Type,0 = "mutable"? identifier "*"
-    - Type,1 = identifier
-    - Type,2 = "[" Member* "]"
-    - Member = ( Label ":" )? Type
-    - TypeLabel = identifier_regex("_t$")
+    - Command,0 = "namespace" major_error NestedNamespace
+    - Command,1 = SoilDefn
+    - Command,2 = ToilDefn
 
     - NestedNamespace = Namespace ( "." Namespace )*
     - Namespace = identifier
 
-    - FuncProto = Type? RetvalType?
-    - RetvalType = "->" Type
+    - SoilDefn = "soil" major_error SoilLabel ":" SoilBody
+    - ToilDefn = "toil" major_error ToilLabel ":" ToilHeader ToilBody
 
-    - FuncBody = "{" Stmt* "}"
+    - SoilLabel = identifier_regex("_s$")
+    - ToilLabel = identifier_regex("_t$")
 
-    - Soil = "[" Expr* "]"
-    - Toil = "{" Stmt* "}"
+    - ToilHeader,0 = "-*-"
+    - ToilHeader,1 = Type ("->" Type)?
 
-    - Stmt,0 = Expr ";"
+    - ToilBody,0 = "proto"
+    - ToilBody,1 = Toil
+
+    - SoilBody = "[" (Member ","?)* "]"
+    - Member = (MemberLabel ":")? Type
+    - MemberLabel = identifier
+
+    - Type,0 = SoilLabel
+    - Type,1 = "*" SoilLabel
+    - Type,2 = SoilBody
+
+    - Soil = "[" (Expr ","?)* "]"     # could also be called SoilValue
+    - Toil = "{" (Stmt ";"?)* "}"     # could also be called ToilValue
+
+    - Stmt,0 = Expr
     - Stmt,1 = Toil
     - Stmt,2 = "if" major_error "(" Expr ")" Toil ( "else" Toil )?
     - Stmt,3 = "loop" major_error Toil

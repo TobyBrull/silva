@@ -1,13 +1,14 @@
 import
 "std.silva"
+
 interface
 
 # ./build/cpp/silva_silva scratchpad/test-01.silva 123
 # ./build/cpp/silva_silva scratchpad/test-01.silva 123 --other=32
 
-func main: [ i32 other: i32 ] -> i32
+toil main_t: [ i32_s, other: i32_s ] -> i32_s proto
 
-func test: []
+toil test_t: [] proto
 
 implementation
 
@@ -16,18 +17,18 @@ implementation
 # 2. pointers
 # 3. loops
 
-func main: -*-
+toil main_t: -*-
 {
-  retval = [ arg.0 arg.1 ] ;
+  retval = [ arg.0 , arg.1 ] ;
   retval = 2 ;
-  getval = [ 10 100 ] ;
+  getval = [ 10, 100 ] ;
 }
 
-func test: -*-
+toil test_t: -*-
 {
-  std.foo [ 10 100 ] ;
-  assert ( std.foo [ 10 100 ] == 110 ) ;
-  assert ( std.foo [ 20 300 ] == 320 ) ;
+  std.foo [ 10, 100 ] ;
+  assert ( std.foo [ 10, 100 ] == 110 ) ;
+  assert ( std.foo [ 20, 300 ] == 320 ) ;
 }
 
 end
