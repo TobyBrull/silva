@@ -87,8 +87,11 @@ namespace silva {
     for (index_t node_index = 0; node_index < s_pt->nodes.size(); ++node_index) {
       const auto& node = s_pt->nodes[node_index];
       if (node.rule_index == to_int(REGEX)) {
-        string_t regex_str         = s_pt->tokenization->token_data(node.token_index)->as_string();
-        retval.regexes[node_index] = std::regex(std::move(regex_str));
+        const token_id_t regex_token_id = s_pt->tokenization->tokens[node.token_index];
+        if (auto& regex = retval.regexes[regex_token_id]; !regex.has_value()) {
+          const auto& regex_td = s_pt->tokenization->token_data(node.token_index);
+          regex                = std::regex(regex_td->as_string());
+        }
       }
     }
     return retval;
@@ -155,22 +158,35 @@ namespace silva {
       {
         parse_tree_guard_t gg{&retval, &token_index};
         const auto& seed_node = seed_pt->nodes[seed_node_index];
+        SILVA_EXPECT(token_index < retval.tokenization->tokens.size(),
+                     MINOR,
+                     "{} Reached end of token-stream when looking for {}",
+                     token_position_by(),
+                     seed_pt->tokenization->token_data(seed_node.token_index)->str);
         if (seed_node.rule_index == to_int(TERMINAL_0)) {
           SILVA_EXPECT(seed_node.num_children == 1,
                        MAJOR,
                        "Expected Seed node TERIMNAL_0 to have exactly one child");
           const array_t<index_t, 1> seed_node_index_regex =
               SILVA_EXPECT_FWD(seed_pt->get_children<1>(seed_node_index));
-          const auto it = retval.root->regexes.find(seed_node_index_regex[0]);
-          SILVA_EXPECT(it != retval.root->regexes.end(), MAJOR);
+          const auto& seed_regex_node = seed_pt->nodes[seed_node_index_regex[0]];
+          const token_id_t regex_token_id =
+              seed_pt->tokenization->tokens[seed_regex_node.token_index];
+          const auto it = retval.root->regexes.find(regex_token_id);
+          SILVA_EXPECT(it != retval.root->regexes.end() || !it->second.has_value(), FATAL);
           SILVA_EXPECT(token_data_by()->category == IDENTIFIER,
                        MINOR,
                        "{} Expected identifier",
                        token_position_at(gg.orig_token_index));
-          const std::regex& re          = it->second;
+          const std::regex& re          = it->second.value();
           const string_view_t token_str = token_data_by()->str;
           const bool is_match           = std::regex_search(token_str.begin(), token_str.end(), re);
-          SILVA_EXPECT(is_match, MINOR);
+          SILVA_EXPECT(is_match,
+                       MINOR,
+                       "{} Token \"{}\" does not match regex {}",
+                       token_position_by(),
+                       token_str,
+                       seed_pt->tokenization->token_datas[regex_token_id].str);
         }
         else {
           SILVA_EXPECT(seed_node.rule_index == to_int(TERMINAL_1),
@@ -224,12 +240,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> apply_primary(const index_t seed_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
-        SILVA_EXPECT(token_index < retval.tokenization->tokens.size(),
-                     MINOR,
-                     "{} Reached end of token-stream ",
-                     token_position_by());
-        const auto* token_data = retval.tokenization->token_data(token_index);
-        const auto& seed_node  = seed_pt->nodes[seed_node_index];
+        const auto& seed_node = seed_pt->nodes[seed_node_index];
         if (seed_node.rule_index == to_int(PRIMARY_0)) {
           gg.sub += SILVA_EXPECT_FWD(apply_expr_1("subexpression", seed_node_index));
         }

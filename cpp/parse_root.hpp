@@ -27,7 +27,7 @@ namespace silva {
     string_view_t goal_rule_name;
 
     // Maps the token-id's that correspond to regexes to the compiled version of that regex.
-    hashmap_t<token_id_t, std::regex> regexes;
+    hashmap_t<token_id_t, optional_t<std::regex>> regexes;
 
     expected_t<void> add_rule(string_view_t rule_name, index_t precendece, index_t expr_node_index);
 

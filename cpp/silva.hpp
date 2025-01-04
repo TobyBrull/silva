@@ -4,7 +4,7 @@
 
 namespace silva {
   const source_code_t silva_seed_source_code("silva.seed", R"'(
-    - Silva = "import" Imports "interface" Interface "implementation" Implementation "end"
+    - Silva = "import" major_error Imports "interface" Interface "implementation" Implementation "end"
 
     - Imports = ImportFilename*
     - ImportFilename = string
@@ -24,7 +24,7 @@ namespace silva {
     - FuncDefn,1 = Label ":" FuncProto FuncBody
     - Label = identifier
 
-    - TypeDefn = "type" TypeLabel ":" Type
+    - TypeDefn = TypeLabel ":" Type
     - Type,0 = "mutable"? identifier "*"
     - Type,1 = identifier
     - Type,2 = "[" Member* "]"
@@ -46,8 +46,8 @@ namespace silva {
 
     - ExprStmt = Expr ";"
     - CompStmt = "{" Stmt* "}"
-    - CondStmt = "if" "(" Cond ")" "{" Stmt* "}" ( "else" "{" Stmt* "}" )?
-    - LoopStmt = "loop" "{" Stmt* "}"
+    - CondStmt = "if" major_error "(" Expr ")" "{" Stmt* "}" ( "else" "{" Stmt* "}" )?
+    - LoopStmt = "loop" major_error "{" Stmt* "}"
 
     - PrimaryExpr,0 = "(" Expr ")"
     - PrimaryExpr,1 = "[" Expr* "]"

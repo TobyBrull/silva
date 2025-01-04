@@ -7,7 +7,7 @@ func sin: f64 -> f64
 
 func little_gauss: i32 -> i32
 
-type i32_pair: [
+type i32_pair_t: [
   first: i32*
   second: i32
 ]
@@ -32,9 +32,11 @@ func little_gauss: -*-
 
 func foo: -*-
 {
-  if a < 0 {
-    retval = first * second
+  if ( a < 0 ) {
+    retval = first * second ;
   } else {
-    retval = first + second
+    retval = first + second ;
   }
 }
+
+end

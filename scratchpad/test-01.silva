@@ -25,9 +25,9 @@ func main: -*-
 
 func test: -*-
 {
-  @ std.foo [ 10 100 ] ;
-  @ assert ( @ std.foo [ 10 100 ] == 110 ) ;
-  @ assert ( @ std.foo [ 20 300 ] == 320 ) ;
+  std.foo [ 10 100 ] ;
+  assert ( std.foo [ 10 100 ] == 110 ) ;
+  assert ( std.foo [ 20 300 ] == 320 ) ;
 }
 
 end
