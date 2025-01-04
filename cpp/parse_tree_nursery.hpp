@@ -45,6 +45,9 @@ namespace silva {
     ~parse_tree_guard_for_rule_t();
   };
 
+#define SILVA_EXPECT_PARSE(cond, fmt_str, ...) \
+  SILVA_EXPECT(cond, MINOR, "{} " fmt_str, token_position_by() __VA_OPT__(, ) __VA_ARGS__);
+
   struct parse_tree_nursery_t {
     parse_tree_t retval;
 

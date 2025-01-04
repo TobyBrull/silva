@@ -39,7 +39,7 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(REGEX));
-        SILVA_EXPECT(token_data_by()->category == STRING, MINOR);
+        SILVA_EXPECT_PARSE(token_data_by()->category == STRING, "Expected string");
         token_index += 1;
         return gg_rule.release();
       }
@@ -52,18 +52,19 @@ namespace silva {
           gg_rule.set_rule_index(to_int(TERMINAL_0));
           token_index += 2;
           gg_rule.sub += SILVA_EXPECT_FWD(regex());
-          SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_paren_close, MINOR);
+          SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_paren_close,
+                             "Expected ')'");
           token_index += 1;
         }
         else {
           gg_rule.set_rule_index(to_int(TERMINAL_1));
-          SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "Expected string");
-          SILVA_EXPECT(token_data_by()->category == STRING || token_id_by() == tt_identifier ||
-                           token_id_by() == tt_operator || token_id_by() == tt_string ||
-                           token_id_by() == tt_number || token_id_by() == tt_any,
-                       MINOR,
-                       "Expected string or one of \"identifier\" \"operator\" \"string\" "
-                       "\"number\" \"any\"");
+          SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens when looking for Terminal,1");
+          SILVA_EXPECT_PARSE(token_data_by()->category == STRING ||
+                                 token_id_by() == tt_identifier || token_id_by() == tt_operator ||
+                                 token_id_by() == tt_string || token_id_by() == tt_number ||
+                                 token_id_by() == tt_any,
+                             "Expected string or one of \"identifier\" \"operator\" \"string\" "
+                             "\"number\" \"any\"");
           token_index += 1;
         }
         return gg_rule.release();
@@ -73,11 +74,10 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(NONTERMINAL));
-        SILVA_EXPECT(num_tokens_left() >= 1 && token_data_by()->category == IDENTIFIER &&
-                         !token_data_by()->str.empty() &&
-                         std::isupper(token_data_by()->str.front()),
-                     MINOR,
-                     "Expected nonterminal");
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_data_by()->category == IDENTIFIER &&
+                               !token_data_by()->str.empty() &&
+                               std::isupper(token_data_by()->str.front()),
+                           "Expected nonterminal");
         token_index += 1;
         return gg_rule.release();
       }
@@ -86,9 +86,8 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(seed_rule_t::RULE_PRECEDENCE));
-        SILVA_EXPECT(num_tokens_left() >= 1 && token_data_by()->category == NUMBER,
-                     MINOR,
-                     "Expected number");
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_data_by()->category == NUMBER,
+                           "Expected number");
         token_index += 1;
         return gg_rule.release();
       }
@@ -96,7 +95,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> primary()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "Expected primary expression");
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "Expected primary expression");
         if (token_id_by() == tt_paren_open) {
           token_index += 1;
           gg_rule.set_rule_index(to_int(PRIMARY_0));
@@ -111,10 +110,9 @@ namespace silva {
               break;
             }
           }
-          SILVA_EXPECT(num_atoms >= 1, MINOR, "Expected at least one atom");
-          SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_paren_close,
-                       MINOR,
-                       "Expected ')'");
+          SILVA_EXPECT_PARSE(num_atoms >= 1, "Expected at least one atom");
+          SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_paren_close,
+                             "Expected ')'");
           token_index += 1;
         }
         else {
@@ -130,7 +128,7 @@ namespace silva {
             }
             else {
               SILVA_EXPECT_FWD_IF(std::move(result_2), MAJOR);
-              SILVA_EXPECT(false, MINOR, "Could not parse primary expression");
+              SILVA_EXPECT_PARSE(false, "Could not parse primary expression");
             }
           }
         }
@@ -140,12 +138,11 @@ namespace silva {
       expected_t<parse_tree_sub_t> suffix()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "Expected operator");
-        SILVA_EXPECT(token_id_by() == tt_qmark || token_id_by() == tt_star ||
-                         token_id_by() == tt_plus || token_id_by() == tt_emark ||
-                         token_id_by() == tt_amper,
-                     MINOR,
-                     "Expected one of \"?\" \"*\" \"+\" \"!\" \"&\"");
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No tokens left when operator expected");
+        SILVA_EXPECT_PARSE(token_id_by() == tt_qmark || token_id_by() == tt_star ||
+                               token_id_by() == tt_plus || token_id_by() == tt_emark ||
+                               token_id_by() == tt_amper,
+                           "Expected one of \"?\" \"*\" \"+\" \"!\" \"&\"");
         gg_rule.set_rule_index(to_int(SUFFIX));
         token_index += 1;
         return gg_rule.release();
@@ -154,7 +151,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> atom()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "Expected token for Atom");
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No tokens left when looking for Atom");
         if (token_id_by() == tt_major_error) {
           gg_rule.set_rule_index(to_int(ATOM_0));
           token_index += 1;
@@ -191,10 +188,9 @@ namespace silva {
               break;
             }
           }
-          SILVA_EXPECT(terminal_count >= 1, MINOR, "Could not parse any terminals");
-          SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
-                       MINOR,
-                       "Expected '}}'");
+          SILVA_EXPECT_PARSE(terminal_count >= 1, "Could not parse any terminals");
+          SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
+                             "Expected '}}'");
           token_index += 1;
         }
         else {
@@ -221,10 +217,8 @@ namespace silva {
           token_index += 1;
           gg_rule.sub += SILVA_EXPECT_FWD(rule_precedence());
         }
-        SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_equal,
-                     MINOR,
-                     "{} Expected ',' or '='",
-                     token_position_by());
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_equal,
+                           "Expected ',' or '='");
         token_index += 1;
         gg_rule.sub += SILVA_EXPECT_FWD(expr());
         return gg_rule.release();
@@ -235,7 +229,7 @@ namespace silva {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(SEED));
         while (num_tokens_left() >= 1) {
-          SILVA_EXPECT(token_id_by() == tt_dash, MINOR, "Expected '-'");
+          SILVA_EXPECT_PARSE(token_id_by() == tt_dash, "Expected '-'");
           token_index += 1;
           gg_rule.sub += SILVA_EXPECT_FWD(rule());
         }

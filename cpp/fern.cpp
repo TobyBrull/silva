@@ -37,12 +37,10 @@ namespace silva {
       expected_t<parse_tree_sub_t> label()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        SILVA_EXPECT(
+        SILVA_EXPECT_PARSE(
             num_tokens_left() >= 2 && token_id_by(1) == tt_colon &&
                 (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
-            MINOR,
-            "{} Expected Label: expected identifier or string followed by ':'",
-            token_position_by());
+            "Expected Label: expected identifier or string followed by ':'");
         gg_rule.set_rule_index(to_int(LABEL));
         token_index += 2;
         return gg_rule.release();
@@ -84,10 +82,7 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(LABELED_ITEM));
-        SILVA_EXPECT(num_tokens_left() >= 1,
-                     MINOR,
-                     "{} Expected LabeledItem: no tokens left",
-                     token_index);
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "Expected LabeledItem: no tokens left");
         if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
           gg_rule.sub += SILVA_EXPECT_FWD(label(),
                                           "{} Expected LabeledItem",
@@ -106,21 +101,16 @@ namespace silva {
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(FERN));
-        SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_brkt_open,
-                     MINOR,
-                     "{} Expected Fern: didn't find '['",
-                     token_position_at(gg_rule.orig_token_index));
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_open,
+                           "Expected Fern: didn't find '['");
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() != tt_brkt_close) {
           gg_rule.sub += SILVA_EXPECT_FWD(labeled_item(),
                                           "{} Expected Fern",
                                           token_position_at(gg_rule.orig_token_index));
         }
-        SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
-                     MINOR,
-                     "{} Expected Fern: didn't find '[' at {}",
-                     token_position_at(gg_rule.orig_token_index),
-                     token_index);
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
+                           "Expected ']' for Fern");
         token_index += 1;
         return gg_rule.release();
       }

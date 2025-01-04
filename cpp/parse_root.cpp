@@ -158,11 +158,9 @@ namespace silva {
       {
         parse_tree_guard_t gg{&retval, &token_index};
         const auto& seed_node = seed_pt->nodes[seed_node_index];
-        SILVA_EXPECT(token_index < retval.tokenization->tokens.size(),
-                     MINOR,
-                     "{} Reached end of token-stream when looking for {}",
-                     token_position_by(),
-                     seed_pt->tokenization->token_data(seed_node.token_index)->str);
+        SILVA_EXPECT_PARSE(token_index < retval.tokenization->tokens.size(),
+                           "Reached end of token-stream when looking for {}",
+                           seed_pt->tokenization->token_data(seed_node.token_index)->str);
         if (seed_node.rule_index == to_int(TERMINAL_0)) {
           SILVA_EXPECT(seed_node.num_children == 1,
                        MAJOR,
@@ -174,19 +172,14 @@ namespace silva {
               seed_pt->tokenization->tokens[seed_regex_node.token_index];
           const auto it = retval.root->regexes.find(regex_token_id);
           SILVA_EXPECT(it != retval.root->regexes.end() || !it->second.has_value(), FATAL);
-          SILVA_EXPECT(token_data_by()->category == IDENTIFIER,
-                       MINOR,
-                       "{} Expected identifier",
-                       token_position_at(gg.orig_token_index));
+          SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
           const std::regex& re          = it->second.value();
           const string_view_t token_str = token_data_by()->str;
           const bool is_match           = std::regex_search(token_str.begin(), token_str.end(), re);
-          SILVA_EXPECT(is_match,
-                       MINOR,
-                       "{} Token \"{}\" does not match regex {}",
-                       token_position_by(),
-                       token_str,
-                       seed_pt->tokenization->token_datas[regex_token_id].str);
+          SILVA_EXPECT_PARSE(is_match,
+                             "Token \"{}\" does not match regex {}",
+                             token_str,
+                             seed_pt->tokenization->token_datas[regex_token_id].str);
         }
         else {
           SILVA_EXPECT(seed_node.rule_index == to_int(TERMINAL_1),
@@ -194,28 +187,16 @@ namespace silva {
                        "Expected Seed node TERMINAL_1");
           const token_id_t seed_token_id = seed_pt->tokenization->tokens[seed_node.token_index];
           if (seed_token_id == seed_tt_id) {
-            SILVA_EXPECT(token_data_by()->category == IDENTIFIER,
-                         MINOR,
-                         "{} Expected identifier",
-                         token_position_by());
+            SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
           }
           else if (seed_token_id == seed_tt_op) {
-            SILVA_EXPECT(token_data_by()->category == OPERATOR,
-                         MINOR,
-                         "{} Expected operator",
-                         token_position_by());
+            SILVA_EXPECT_PARSE(token_data_by()->category == OPERATOR, "Expected operator");
           }
           else if (seed_token_id == seed_tt_str) {
-            SILVA_EXPECT(token_data_by()->category == STRING,
-                         MINOR,
-                         "{} Expected string",
-                         token_position_by());
+            SILVA_EXPECT_PARSE(token_data_by()->category == STRING, "Expected string");
           }
           else if (seed_token_id == seed_tt_num) {
-            SILVA_EXPECT(token_data_by()->category == NUMBER,
-                         MINOR,
-                         "{} Expected number",
-                         token_position_by());
+            SILVA_EXPECT_PARSE(token_data_by()->category == NUMBER, "Expected number");
           }
           else if (seed_token_id == seed_tt_any) {
             ;
@@ -226,11 +207,9 @@ namespace silva {
             auto& seed_token_id_work = workspace->seed_token_id_data[seed_token_id];
             const auto expected_target_token_id =
                 seed_token_id_work.get_target_token_id(sp_token_data, retval.tokenization.get());
-            SILVA_EXPECT(token_id_by() == expected_target_token_id,
-                         MINOR,
-                         "{} Expected {}",
-                         token_position_by(),
-                         sp_token_data->str);
+            SILVA_EXPECT_PARSE(token_id_by() == expected_target_token_id,
+                               "Expected {}",
+                               sp_token_data->str);
           }
         }
         token_index += 1;
@@ -360,11 +339,10 @@ namespace silva {
                     break;
                   }
                 }
-                SILVA_EXPECT(min_repeat <= repeat_count,
-                             MINOR,
-                             "min-repeat (={}) not reached, only found {}",
-                             min_repeat,
-                             repeat_count);
+                SILVA_EXPECT_PARSE(min_repeat <= repeat_count,
+                                   "min-repeat (={}) not reached, only found {}",
+                                   min_repeat,
+                                   repeat_count);
                 gg.sub += std::move(sub_sub);
               }
               else if (suffix_char.value() == '!') {
