@@ -223,7 +223,8 @@ namespace silva {
         }
         SILVA_EXPECT(num_tokens_left() >= 1 && token_id_by() == tt_equal,
                      MINOR,
-                     "Expected ',' or '='");
+                     "{} Expected ',' or '='",
+                     token_position_by());
         token_index += 1;
         gg_rule.sub += SILVA_EXPECT_FWD(expr());
         return gg_rule.release();
@@ -245,6 +246,7 @@ namespace silva {
 
   expected_t<parse_tree_t> seed_parse(const_ptr_t<tokenization_t> tokenization)
   {
+    expected_traits_t expected_traits{.materialize_fwd = true};
     impl::seed_parse_tree_nursery_t nursery(std::move(tokenization));
     SILVA_EXPECT_FWD(nursery.seed());
     return {std::move(nursery.retval)};

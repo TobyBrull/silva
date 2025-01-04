@@ -129,6 +129,7 @@ namespace silva {
 
   expected_t<parse_tree_t> fern_parse(const_ptr_t<tokenization_t> tokenization)
   {
+    expected_traits_t expected_traits{.materialize_fwd = true};
     const index_t n = tokenization->tokens.size();
     impl::fern_parse_tree_nursery_t nursery(std::move(tokenization));
     const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.fern());

@@ -39,21 +39,18 @@ namespace silva {
 
     - FuncBody = "{" Stmt* "}"
 
-    - Stmt,0 = ExprStmt
-    - Stmt,1 = CompStmt
-    - Stmt,2 = CondStmt
-    - Stmt,3 = LoopStmt
+    - Soil = "[" Expr* "]"
+    - Toil = "{" Stmt* "}"
 
-    - ExprStmt = Expr ";"
-    - CompStmt = "{" Stmt* "}"
-    - CondStmt = "if" major_error "(" Expr ")" "{" Stmt* "}" ( "else" "{" Stmt* "}" )?
-    - LoopStmt = "loop" major_error "{" Stmt* "}"
+    - Stmt,0 = Expr ";"
+    - Stmt,1 = Toil
+    - Stmt,2 = "if" major_error "(" Expr ")" Toil ( "else" Toil )?
+    - Stmt,3 = "loop" major_error Toil
 
     - PrimaryExpr,0 = "(" Expr ")"
-    - PrimaryExpr,1 = "[" Expr* "]"
-    - PrimaryExpr,2 = Name
-    - PrimaryExpr,3 = Literal
-    - PrimaryExpr,4 = ExprOp
+    - PrimaryExpr,1 = Soil
+    - PrimaryExpr,2 = { identifier string number }
+    - PrimaryExpr,3 = ExprOp
 
     - ExprOpInv = { ";" "(" ")" "[" "]" "{" "}" }
     - ExprOp = ( ExprOpInv! operator )

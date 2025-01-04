@@ -461,6 +461,7 @@ namespace silva {
   expected_t<parse_tree_t> parse_root_t::apply(const_ptr_t<tokenization_t> tokenization,
                                                parse_root_t::workspace_t* workspace) const
   {
+    expected_traits_t expected_traits{.materialize_fwd = true};
     optional_t<parse_root_t::workspace_t> local_workspace;
     if (workspace == nullptr) {
       local_workspace.emplace();
