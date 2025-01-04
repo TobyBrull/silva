@@ -25,9 +25,6 @@ func little_gauss: -*-
   loop {
     i += 1;
   }
-#  for (i32 i = 0; i < arg; i += 1) {
-#    retval += i
-#  }
 }
 
 func foo: -*-
@@ -37,6 +34,7 @@ func foo: -*-
   } else {
     retval = first + second ;
   }
+  var retval = 42 ;
 }
 
 end
