@@ -19,19 +19,20 @@ namespace silva {
 
   const source_code_t seed_seed_source_code("seed.seed", R"'(
     - Seed = ("-" Rule)*
-    - Rule = Nonterminal ( "," RulePrecedence )? "=" Expr
+    - Rule = Nonterminal ( "," RulePrecedence )? Derivation
     - RulePrecedence = number
-    - Expr,0 = "{" Terminal+ "}"
-    - Expr,1 = Atom+
+    - Derivation,0 = "=" major_error Atom+
+    - Derivation,1 = "=~" major_error Terminal+
+    - Derivation,2 = "=>" major_error Nonterminal
     - Atom,0 = "major_error"
     - Atom,1 = Primary Suffix?
-    - Suffix = { "?" "*" "+" "!" "&" }
+    - Suffix =~ "?" "*" "+" "!" "&"
     - Primary,0 = "(" Atom+ ")"
     - Primary,1 = Terminal
     - Primary,2 = Nonterminal
     - Nonterminal = identifier_regex("^[A-Z]")
     - Terminal,0 = "identifier_regex" "(" Regex ")"
-    - Terminal,1 = { string "identifier" "operator" "string" "number" "any" }
+    - Terminal,1 =~ string "identifier" "operator" "string" "number" "any"
     - Regex = string
   )'");
 
@@ -39,8 +40,9 @@ namespace silva {
     SEED,
     RULE,
     RULE_PRECEDENCE,
-    EXPR_0,
-    EXPR_1,
+    DERIVATION_0,
+    DERIVATION_1,
+    DERIVATION_2,
     ATOM_0,
     ATOM_1,
     SUFFIX,

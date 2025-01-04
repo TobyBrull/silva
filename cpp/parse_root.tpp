@@ -20,14 +20,14 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
 [0]Seed,0                                         -
   [0]Rule,0                                       Frog
     [0]Nonterminal,0                              Frog
-    [1]Expr,1                                     Rule
+    [1]Derivation,0                               =
       [0]Atom,1                                   Rule
         [0]Primary,2                              Rule
           [0]Nonterminal,0                        Rule
         [1]Suffix,0                               *
   [1]Rule,0                                       Rule
     [0]Nonterminal,0                              Rule
-    [1]Expr,1                                     RuleName
+    [1]Derivation,0                               =
       [0]Atom,1                                   RuleName
         [0]Primary,2                              RuleName
           [0]Nonterminal,0                        RuleName
@@ -39,20 +39,20 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
           [0]Nonterminal,0                        Expr
   [2]Rule,0                                       RuleName
     [0]Nonterminal,0                              RuleName
-    [1]Expr,1                                     identifier
+    [1]Derivation,0                               =
       [0]Atom,1                                   identifier
         [0]Primary,1                              identifier
           [0]Terminal,1                           identifier
   [3]Rule,0                                       Expr
     [0]Nonterminal,0                              Expr
-    [1]Expr,1                                     Primary
+    [1]Derivation,0                               =
       [0]Atom,1                                   Primary
         [0]Primary,2                              Primary
           [0]Nonterminal,0                        Primary
         [1]Suffix,0                               +
   [4]Rule,0                                       Primary
     [0]Nonterminal,0                              Primary
-    [1]Expr,1                                     identifier
+    [1]Derivation,0                               =
       [0]Atom,1                                   identifier
         [0]Primary,1                              identifier
           [0]Terminal,1                           identifier

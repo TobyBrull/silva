@@ -42,7 +42,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
 [0]Seed,0                                         -
   [0]Rule,0                                       SimpleFern
     [0]Nonterminal,0                              SimpleFern
-    [1]Expr,1                                     "["
+    [1]Derivation,0                               =
       [0]Atom,1                                   "["
         [0]Primary,1                              "["
           [0]Terminal,1                           "["
@@ -61,7 +61,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
           [0]Terminal,1                           "]"
   [1]Rule,0                                       LabeledItem
     [0]Nonterminal,0                              LabeledItem
-    [1]Expr,1                                     (
+    [1]Derivation,0                               =
       [0]Atom,1                                   (
         [0]Primary,0                              (
           [0]Atom,1                               Label
@@ -76,21 +76,21 @@ TEST_CASE("seed", "[seed][parse_root_t]")
           [0]Nonterminal,0                        Item
   [2]Rule,0                                       Label
     [0]Nonterminal,0                              Label
-    [1]Expr,1                                     string
+    [1]Derivation,0                               =
       [0]Atom,1                                   string
         [0]Primary,1                              string
           [0]Terminal,1                           string
   [3]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           0
-    [2]Expr,1                                     SimpleFern
+    [2]Derivation,0                               =
       [0]Atom,1                                   SimpleFern
         [0]Primary,2                              SimpleFern
           [0]Nonterminal,0                        SimpleFern
   [4]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           1
-    [2]Expr,1                                     string
+    [2]Derivation,0                               =
       [0]Atom,1                                   string
         [0]Primary,1                              string
           [0]Terminal,1                           string

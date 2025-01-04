@@ -13,9 +13,9 @@ namespace silva {
       optional_t<token_id_t> tt_comma       = retval.tokenization->lookup_token(",");
       optional_t<token_id_t> tt_paren_open  = retval.tokenization->lookup_token("(");
       optional_t<token_id_t> tt_paren_close = retval.tokenization->lookup_token(")");
-      optional_t<token_id_t> tt_brack_open  = retval.tokenization->lookup_token("{");
-      optional_t<token_id_t> tt_brack_close = retval.tokenization->lookup_token("}");
-      optional_t<token_id_t> tt_equal       = retval.tokenization->lookup_token("=");
+      optional_t<token_id_t> tt_eq          = retval.tokenization->lookup_token("=");
+      optional_t<token_id_t> tt_eq_choice   = retval.tokenization->lookup_token("=~");
+      optional_t<token_id_t> tt_eq_alias    = retval.tokenization->lookup_token("=>");
       optional_t<token_id_t> tt_qmark       = retval.tokenization->lookup_token("?");
       optional_t<token_id_t> tt_star        = retval.tokenization->lookup_token("*");
       optional_t<token_id_t> tt_plus        = retval.tokenization->lookup_token("+");
@@ -171,14 +171,31 @@ namespace silva {
         return gg_rule.release();
       }
 
-      expected_t<parse_tree_sub_t> expr()
+      expected_t<parse_tree_sub_t> derivation()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        if (num_tokens_left() >= 1 && token_id_by() == tt_brack_open) {
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No tokens left when parsing Derivation");
+        if (token_id_by() == tt_eq) {
           token_index += 1;
-          gg_rule.set_rule_index(to_int(EXPR_0));
+          gg_rule.set_rule_index(to_int(DERIVATION_0));
+          index_t atom_count = 0;
+          while (num_tokens_left() >= 1) {
+            if (auto result = atom(); result) {
+              gg_rule.sub += *std::move(result);
+              atom_count += 1;
+            }
+            else {
+              SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);
+              break;
+            }
+          }
+          SILVA_EXPECT_PARSE(atom_count >= 1, "Could not parse at least one Atom");
+        }
+        else if (token_id_by() == tt_eq_choice) {
+          token_index += 1;
+          gg_rule.set_rule_index(to_int(DERIVATION_1));
           index_t terminal_count = 0;
-          while (num_tokens_left() >= 1 && token_id_by() != tt_brack_close) {
+          while (num_tokens_left() >= 1) {
             if (auto result = terminal(); result) {
               gg_rule.sub += *std::move(result);
               terminal_count += 1;
@@ -188,22 +205,12 @@ namespace silva {
               break;
             }
           }
-          SILVA_EXPECT_PARSE(terminal_count >= 1, "Could not parse any terminals");
-          SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
-                             "Expected '}}'");
-          token_index += 1;
+          SILVA_EXPECT_PARSE(terminal_count >= 1, "Could not parse at least one Terminal");
         }
-        else {
-          gg_rule.set_rule_index(to_int(EXPR_1));
-          while (num_tokens_left() >= 1) {
-            if (auto result = atom(); result) {
-              gg_rule.sub += *std::move(result);
-            }
-            else {
-              SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);
-              break;
-            }
-          }
+        else if (token_id_by() == tt_eq_alias) {
+          token_index += 1;
+          gg_rule.set_rule_index(to_int(DERIVATION_2));
+          SILVA_EXPECT_FWD(nonterminal());
         }
         return gg_rule.release();
       }
@@ -217,10 +224,7 @@ namespace silva {
           token_index += 1;
           gg_rule.sub += SILVA_EXPECT_FWD(rule_precedence());
         }
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_equal,
-                           "Expected ',' or '='");
-        token_index += 1;
-        gg_rule.sub += SILVA_EXPECT_FWD(expr());
+        gg_rule.sub += SILVA_EXPECT_FWD(derivation());
         return gg_rule.release();
       }
 
@@ -261,8 +265,9 @@ namespace silva {
                 parse_root_t::rule_t{.name = "Seed", .precedence = 0},
                 parse_root_t::rule_t{.name = "Rule", .precedence = 0},
                 parse_root_t::rule_t{.name = "RulePrecedence", .precedence = 0},
-                parse_root_t::rule_t{.name = "Expr", .precedence = 0},
-                parse_root_t::rule_t{.name = "Expr", .precedence = 1},
+                parse_root_t::rule_t{.name = "Derivation", .precedence = 0},
+                parse_root_t::rule_t{.name = "Derivation", .precedence = 1},
+                parse_root_t::rule_t{.name = "Derivation", .precedence = 2},
                 parse_root_t::rule_t{.name = "Atom", .precedence = 0},
                 parse_root_t::rule_t{.name = "Atom", .precedence = 1},
                 parse_root_t::rule_t{.name = "Suffix", .precedence = 0},

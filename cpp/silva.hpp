@@ -54,10 +54,10 @@ namespace silva {
 
     - PrimaryExpr,0 = "(" Expr ")"
     - PrimaryExpr,1 = Soil
-    - PrimaryExpr,2 = { identifier string number }
+    - PrimaryExpr,2 =~ identifier string number
     - PrimaryExpr,3 = ( ExprOpInv! operator )
 
-    - ExprOpInv = { ";" "(" ")" "[" "]" "{" "}" }
+    - ExprOpInv =~ ";" "(" ")" "[" "]" "{" "}"
 
     - Expr = PrimaryExpr+
   )'");

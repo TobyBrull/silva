@@ -6,9 +6,9 @@ namespace silva {
   const source_code_t fern_seed_source_code("fern.seed", R"'(
     - Fern = "[" major_error LabeledItem* "]"
     - LabeledItem = ( Label ":" )? Item ";"?
-    - Label = { string identifier }
+    - Label =~ string identifier
     - Item,0 = Fern
-    - Item,1 = { "none" "true" "false" string number }
+    - Item,1 =~ "none" "true" "false" string number
   )'");
 
   enum class fern_rule_t {

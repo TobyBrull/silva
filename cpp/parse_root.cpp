@@ -75,7 +75,7 @@ namespace silva {
             rule_precedence = SILVA_EXPECT_FWD(token_data->as_double());
           }
           const index_t ri = s_nodes[children.back()].rule_index;
-          SILVA_EXPECT(to_int(EXPR_0) <= ri && ri <= to_int(EXPR_1),
+          SILVA_EXPECT(to_int(DERIVATION_0) <= ri && ri <= to_int(DERIVATION_2),
                        MINOR,
                        "Last child of RULE must be EXPR");
           index_t expr_node_index = children.back();
@@ -221,7 +221,7 @@ namespace silva {
         parse_tree_guard_t gg{&retval, &token_index};
         const auto& seed_node = seed_pt->nodes[seed_node_index];
         if (seed_node.rule_index == to_int(PRIMARY_0)) {
-          gg.sub += SILVA_EXPECT_FWD(apply_expr_1("subexpression", seed_node_index));
+          gg.sub += SILVA_EXPECT_FWD(apply_derivation_0("subexpression", seed_node_index));
         }
         else if (seed_node.rule_index == to_int(PRIMARY_1)) {
           const array_t<index_t, 1> terminal_child =
@@ -242,7 +242,7 @@ namespace silva {
         return gg.release();
       }
 
-      expected_t<parse_tree_sub_t> apply_expr_0(const index_t seed_node_index)
+      expected_t<parse_tree_sub_t> apply_derivation_1(const index_t seed_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
         bool found_match = false;
@@ -288,8 +288,8 @@ namespace silva {
         return {min_repeat, max_repeat};
       }
 
-      expected_t<parse_tree_sub_t> apply_expr_1(string_view_t expr_name,
-                                                const index_t seed_node_index)
+      expected_t<parse_tree_sub_t> apply_derivation_0(string_view_t expr_name,
+                                                      const index_t seed_node_index)
       {
         parse_tree_guard_t gg{&retval, &token_index};
         error_nursery_t error_nursery;
@@ -378,14 +378,17 @@ namespace silva {
       expected_t<parse_tree_sub_t> apply_expr(const parse_root_t::rule_t& rule)
       {
         const parse_tree_t::node_t& seed_node_expr = seed_pt->nodes[rule.expr_node_index];
-        if (seed_node_expr.rule_index == to_int(EXPR_0)) {
-          return apply_expr_0(rule.expr_node_index);
+        if (seed_node_expr.rule_index == to_int(DERIVATION_0)) {
+          return apply_derivation_0(rule.name, rule.expr_node_index);
         }
-        else if (seed_node_expr.rule_index == to_int(EXPR_1)) {
-          return apply_expr_1(rule.name, rule.expr_node_index);
+        else if (seed_node_expr.rule_index == to_int(DERIVATION_1)) {
+          return apply_derivation_1(rule.expr_node_index);
+        }
+        else if (seed_node_expr.rule_index == to_int(DERIVATION_2)) {
+          return apply_derivation_0(rule.name, rule.expr_node_index);
         }
         else {
-          SILVA_EXPECT(false, MAJOR, "Expected Seed node EXPR_0 or EXPR_1");
+          SILVA_EXPECT(false, MAJOR, "Expected Seed node DERIVATION_0, _1, or _2");
         }
       }
 
