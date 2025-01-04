@@ -28,7 +28,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     - LabeledItem = ( Label ":" )? Item
     - Label = string
     - Item,0 = SimpleFern
-    - Item,1 = string
+    - Item,1 =~ string number
   )'");
   const tokenization_t sf_seed_tokens =
       SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&sf_seed_source_code)));
@@ -90,10 +90,9 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   [4]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           1
-    [2]Derivation,0                               =
-      [0]Atom,1                                   string
-        [0]Primary,1                              string
-          [0]Terminal,1                           string
+    [2]Derivation,1                               =~
+      [0]Terminal,1                               string
+      [1]Terminal,1                               number
 )";
 
   CHECK(parse_tree_to_string(sf_seed_pt_1) == expected.substr(1));
@@ -112,7 +111,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(write(sfpr.rule_name_offsets) ==
         R"([["Item",3],["Label",2],["LabeledItem",1],["SimpleFern",0]])");
 
-  const source_code_t sf_code("test.simple-fern", R"'( [ "abc" ; [ "def" "ghi" ] "jkl" ;])'");
+  const source_code_t sf_code("test.simple-fern", R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'");
   const tokenization_t sf_tokens = SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&sf_code)));
 
   auto sfpt = SILVA_EXPECT_REQUIRE(sfpr.apply(const_ptr_unowned(&sf_tokens)));
@@ -126,8 +125,8 @@ TEST_CASE("seed", "[seed][parse_root_t]")
       [0]SimpleFern,0                             [
         [0]LabeledItem,0                          "def"
           [0]Item,1                               "def"
-        [1]LabeledItem,0                          "ghi"
-          [0]Item,1                               "ghi"
+        [1]LabeledItem,0                          123
+          [0]Item,1                               123
   [2]LabeledItem,0                                "jkl"
     [0]Item,1                                     "jkl"
 )";
