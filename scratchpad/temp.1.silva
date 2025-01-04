@@ -1,0 +1,9 @@
+import
+
+interface
+
+toil foo_t: [] proto
+
+implementation
+
+end

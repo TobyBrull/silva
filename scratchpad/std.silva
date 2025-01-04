@@ -20,10 +20,14 @@ implementation
 
 toil little_gauss_t: -*-
 {
-  retval = 0 ;
+  retval = 0;
   i32_s i = 0;
   loop {
     i += 1;
+    retval += i;
+    if ( i >= arg ) {
+      break;
+    }
   }
 }
 
@@ -31,10 +35,18 @@ toil foo_t: -*-
 {
   if ( a < 0 ) {
     retval = first * second ;
-  } else {
+  } else if ( b > 0) {
     retval = first + second ;
+  } else {
+    retval = first - second;
+  }
+  if ( a > b ) {
+    retval = first or second;
   }
   var retval = 42 ;
+  {
+    var retval = 42 ;
+  }
 }
 
 end

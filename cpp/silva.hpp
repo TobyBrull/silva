@@ -42,10 +42,15 @@ namespace silva {
     - Soil = "[" (Expr ","?)* "]"     # could also be called SoilValue
     - Toil = "{" (Stmt ";"?)* "}"     # could also be called ToilValue
 
-    - Stmt,0 = Expr
-    - Stmt,1 = Toil
-    - Stmt,2 = "if" major_error "(" Expr ")" Toil ( "else" Toil )?
-    - Stmt,3 = "loop" major_error Toil
+    - Stmt,0 = Toil
+    - Stmt,1 = StmtLoop
+    - Stmt,2 = StmtIf
+    - Stmt,3 = Expr
+
+    - StmtLoop = "loop" major_error Toil
+    - StmtIf = "if" major_error "(" Expr ")" Toil ( "else" ElseBranch )?
+    - ElseBranch,0 = Toil
+    - ElseBranch,1 = StmtIf
 
     - PrimaryExpr,0 = "(" Expr ")"
     - PrimaryExpr,1 = Soil
