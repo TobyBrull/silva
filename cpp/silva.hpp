@@ -35,25 +35,25 @@ namespace silva {
     - Member = (MemberLabel ":")? Type
     - MemberLabel = identifier
 
-    - Type,0 = SoilLabel
+    - Type,0 => SoilLabel,0
     - Type,1 = "*" SoilLabel
-    - Type,2 = SoilBody
+    - Type,2 => SoilBody,0
 
     - Soil = "[" (Expr ","?)* "]"     # could also be called SoilValue
     - Toil = "{" (Stmt ";"?)* "}"     # could also be called ToilValue
 
-    - Stmt,0 = Toil
-    - Stmt,1 = StmtLoop
-    - Stmt,2 = StmtIf
-    - Stmt,3 = Expr
+    - Stmt,0 => Toil,0
+    - Stmt,1 => StmtLoop,0
+    - Stmt,2 => StmtIf,0
+    - Stmt,3 => Expr,0
 
     - StmtLoop = "loop" major_error Toil
     - StmtIf = "if" major_error "(" Expr ")" Toil ( "else" ElseBranch )?
-    - ElseBranch,0 = Toil
-    - ElseBranch,1 = StmtIf
+    - ElseBranch,0 => Toil,0
+    - ElseBranch,1 => StmtIf,0
 
     - PrimaryExpr,0 = "(" Expr ")"
-    - PrimaryExpr,1 = Soil
+    - PrimaryExpr,1 => Soil,0
     - PrimaryExpr,2 =~ identifier string number
     - PrimaryExpr,3 = ( ExprOpInv! operator )
 
