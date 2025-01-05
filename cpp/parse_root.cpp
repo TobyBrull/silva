@@ -32,8 +32,8 @@ namespace silva {
       const index_t offset = retval.rules.size();
       retval.rules.push_back(parse_root_t::rule_t{
           .token_id        = rule_token_id,
-          .name            = rule_name,
           .precedence      = precedence,
+          .name            = rule_name,
           .expr_node_index = expr_node_index,
       });
       if (precedence == 0) {
@@ -102,22 +102,20 @@ namespace silva {
           const small_vector_t<index_t, 3> rule_children =
               SILVA_EXPECT_FWD(s_pt->get_children_up_to<3>(rule_node_index));
           if (s_nodes[rule_children.back()].rule_index == to_int(DERIVATION_2)) {
-            const small_vector_t<index_t, 2> alias_children =
-                SILVA_EXPECT_FWD(s_pt->get_children_up_to<2>(rule_children.back()));
+            const array_t<index_t, 2> alias_children =
+                SILVA_EXPECT_FWD(s_pt->get_children<2>(rule_children.back()));
             SILVA_EXPECT(s_nodes[alias_children[0]].rule_index == to_int(NONTERMINAL),
                          MINOR,
                          "First child of DERIVATION_2 must be NONTERMINAL");
+            SILVA_EXPECT(s_nodes[alias_children[1]].rule_index == to_int(RULE_PRECEDENCE),
+                         MINOR,
+                         "Second child of DERIVATION_2 must be RULE_PRECEDENCE");
             const token_id_t tgt_rule_token_id =
                 s_pt->tokenization->tokens[s_nodes[alias_children[0]].token_index];
-            index_t tgt_rule_precedence = 0;
-            if (alias_children.size == 2) {
-              SILVA_EXPECT(s_nodes[alias_children[1]].rule_index == to_int(RULE_PRECEDENCE),
-                           MINOR,
-                           "Second child of DERIVATION_2 must be RULE_PRECEDENCE");
-              const auto* token_data =
-                  s_pt->tokenization->token_data(s_nodes[alias_children[1]].token_index);
-              tgt_rule_precedence = SILVA_EXPECT_FWD(token_data->as_double());
-            }
+            const auto* tgt_rule_precedence_token_data =
+                s_pt->tokenization->token_data(s_nodes[alias_children[1]].token_index);
+            const index_t tgt_rule_precedence =
+                SILVA_EXPECT_FWD(tgt_rule_precedence_token_data->as_double());
 
             const token_id_t base_rule_token_id =
                 s_pt->tokenization->tokens[s_nodes[rule_children[0]].token_index];
@@ -142,9 +140,8 @@ namespace silva {
         0);
     SILVA_EXPECT_FWD(std::move(result_2));
 
-    for (index_t i = 0; i < retval.rules.size(); ++i) {
-      if (retval.rules[i].aliased_rule_offset.has_value()) {
-        const auto& rule  = retval.rules[i];
+    for (const auto& rule: retval.rules) {
+      if (rule.aliased_rule_offset.has_value()) {
         const index_t aro = rule.aliased_rule_offset.value();
         SILVA_EXPECT(aro < retval.rules.size(), MINOR, "Invalid rule-offset {}", aro);
         const auto& alias_rule = retval.rules[aro];

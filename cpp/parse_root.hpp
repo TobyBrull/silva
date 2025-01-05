@@ -14,10 +14,10 @@ namespace silva {
     struct rule_t {
       // Token-id of nonterminal that the rule defines.
       token_id_t token_id;
-      // Name of the rule.
-      string_view_t name;
       // Lower value means higher precedence.
       index_t precedence = 0;
+      // Name of the rule (can be inferred from the "token_id", but kept for convenience).
+      string_view_t name;
       // Node in the "seed_parse_tree" that contains the expression for this rule.
       index_t expr_node_index = 0;
       // If this rule is an alias, contains the offset of the aliased rule.

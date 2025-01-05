@@ -212,9 +212,9 @@ namespace silva {
           token_index += 1;
           gg_rule.set_rule_index(to_int(DERIVATION_2));
           gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
-          if (auto result = rule_precedence(); result) {
-            gg_rule.sub += *std::move(result);
-          }
+          SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_comma, "Expected ','");
+          token_index += 1;
+          gg_rule.sub += SILVA_EXPECT_FWD(rule_precedence());
         }
         return gg_rule.release();
       }

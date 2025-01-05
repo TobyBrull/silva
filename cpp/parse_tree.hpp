@@ -20,7 +20,7 @@ namespace silva {
 
       friend auto operator<=>(const node_t&, const node_t&) = default;
     };
-    std::vector<node_t> nodes;
+    vector_t<node_t> nodes;
 
     bool is_consistent() const;
 

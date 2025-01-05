@@ -27,7 +27,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     - SimpleFern = "[" ( LabeledItem ";"? )* "]"
     - LabeledItem = ( Label ":" )? Item
     - Label = string
-    - Item,0 => SimpleFern
+    - Item,0 => SimpleFern,0
     - Item,1 =~ string number
   )'");
   const tokenization_t sf_seed_tokens =
@@ -85,6 +85,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     [1]RulePrecedence,0                           0
     [2]Derivation,2                               =>
       [0]Nonterminal,0                            SimpleFern
+      [1]RulePrecedence,0                         0
   [4]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           1
@@ -104,17 +105,21 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   REQUIRE(sfpr.rules.size() == 5);
   using rfl::json::write;
   CHECK(write(sfpr.rules[0]) ==
-        R"({"token_id":1,"name":"SimpleFern","precedence":0,"expr_node_index":3})");
+        R"({"token_id":1,"precedence":0,"name":"SimpleFern","expr_node_index":3})");
   CHECK(write(sfpr.rules[1]) ==
-        R"({"token_id":5,"name":"LabeledItem","precedence":0,"expr_node_index":22})");
+        R"({"token_id":5,"precedence":0,"name":"LabeledItem","expr_node_index":22})");
   CHECK(write(sfpr.rules[2]) ==
-        R"({"token_id":11,"name":"Label","precedence":0,"expr_node_index":37})");
+        R"({"token_id":11,"precedence":0,"name":"Label","expr_node_index":37})");
   CHECK(
       write(sfpr.rules[3]) ==
-      R"({"token_id":13,"name":"Item","precedence":0,"expr_node_index":44,"aliased_rule_offset":0})");
+      R"({"token_id":13,"precedence":0,"name":"Item","expr_node_index":44,"aliased_rule_offset":0})");
   CHECK(write(sfpr.rules[4]) ==
-        R"({"token_id":13,"name":"Item","precedence":1,"expr_node_index":49})");
-  CHECK(write(sfpr.rule_indexes) == R"({"13":3,"11":2,"5":1,"1":0})");
+        R"({"token_id":13,"precedence":1,"name":"Item","expr_node_index":50})");
+  REQUIRE(sfpr.rule_indexes.size() == 4);
+  REQUIRE(sfpr.rule_indexes.at(1) == 0);
+  REQUIRE(sfpr.rule_indexes.at(5) == 1);
+  REQUIRE(sfpr.rule_indexes.at(11) == 2);
+  REQUIRE(sfpr.rule_indexes.at(13) == 3);
 
   const source_code_t sf_code("test.simple-fern", R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'");
   const tokenization_t sf_tokens = SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&sf_code)));

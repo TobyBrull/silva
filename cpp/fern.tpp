@@ -59,7 +59,9 @@ TEST_CASE("fern", "[fern]")
         [2]LabeledItem,0                          3
           [0]Item,1                               3
 )";
-  CHECK(parse_tree_to_string(pt_1) == expected_parse_tree_str.substr(1));
+
+  const string_t result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(pt_1));
+  CHECK(result_str == expected_parse_tree_str.substr(1));
 
   const string_view_t expected_parse_tree_str_graphviz = R"(
 digraph parse_tree {
@@ -109,5 +111,6 @@ digraph parse_tree {
   "/5/0/0/2/" -> "/5/0/0/2/0/"
   "/5/0/0/2/0/" [label="[0]Item,1\n3"]
 })";
-  CHECK(parse_tree_to_graphviz(pt_1) == expected_parse_tree_str_graphviz.substr(1));
+  const string_t result_graphviz = SILVA_EXPECT_REQUIRE(parse_tree_to_graphviz(pt_1));
+  CHECK(result_graphviz == expected_parse_tree_str_graphviz.substr(1));
 }

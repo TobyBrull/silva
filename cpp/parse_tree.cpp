@@ -42,12 +42,12 @@ namespace silva {
   {
     string_t retval;
     retval += "digraph parse_tree {\n";
-    const auto result = pt.visit_subtree(
+    auto result = pt.visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           if (!is_on_entry(event)) {
             return true;
           }
-          SILVA_ASSERT(!path.empty());
+          SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
           const parse_tree_t::node_t& node = pt.nodes[path.back().node_index];
 
           string_t node_name = "/";
@@ -67,7 +67,7 @@ namespace silva {
                                 string_escaped(pt.tokenization->token_data(node.token_index)->str));
           return true;
         });
-    SILVA_ASSERT(result);
+    SILVA_EXPECT_FWD(std::move(result));
     retval += "}";
     return retval;
   }
