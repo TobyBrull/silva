@@ -1,0 +1,6 @@
+- Precedence = ( Expr ";" )*
+- Expr = Add
+- Add = Mult ("+" Add)*
+- Mult = Primary ("*" Mult)*
+- Primary,0 = "(" Expr ")"
+- Primary,1 = number

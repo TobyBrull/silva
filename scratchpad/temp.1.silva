@@ -6,4 +6,8 @@ toil foo_t: [] proto
 
 implementation
 
+toil foo_t: [] {
+  [ 1 ,100] | bar_t | result
+}
+
 end

@@ -57,7 +57,7 @@ namespace silva {
     - PrimaryExpr,2 =~ identifier string number
     - PrimaryExpr,3 = ( ExprOpInv! operator )
 
-    - ExprOpInv =~ ";" "(" ")" "[" "]" "{" "}"
+    - ExprOpInv =~ ";" "(" ")" "[" "]" "{" "}" "," "|"
 
     - Expr = PrimaryExpr+
   )'");
