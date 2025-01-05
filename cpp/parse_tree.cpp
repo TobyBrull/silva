@@ -5,7 +5,7 @@
 #include "canopy/convert.hpp"
 
 namespace silva {
-  string_t parse_tree_to_string(const parse_tree_t& pt, const index_t token_offset)
+  expected_t<string_t> parse_tree_to_string(const parse_tree_t& pt, const index_t token_offset)
   {
     string_t curr_line;
     const auto curr_line_space_to = [&curr_line](const index_t n) {
@@ -15,12 +15,12 @@ namespace silva {
     };
 
     string_t retval;
-    const auto result = pt.visit_subtree(
+    auto result = pt.visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           if (!is_on_entry(event)) {
             return true;
           }
-          SILVA_ASSERT(!path.empty());
+          SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
           const parse_tree_t::node_t& node = pt.nodes[path.back().node_index];
           curr_line.clear();
           curr_line_space_to(2 * (path.size() - 1));
@@ -34,11 +34,11 @@ namespace silva {
           retval += '\n';
           return true;
         });
-    SILVA_ASSERT(result);
+    SILVA_EXPECT_FWD(std::move(result));
     return retval;
   }
 
-  string_t parse_tree_to_graphviz(const parse_tree_t& pt)
+  expected_t<string_t> parse_tree_to_graphviz(const parse_tree_t& pt)
   {
     string_t retval;
     retval += "digraph parse_tree {\n";

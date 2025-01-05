@@ -66,7 +66,8 @@ namespace silva {
         std::ranges::lower_bound(lines, token_index, std::less<>{}, [](const line_data_t& line) {
           return line.token_index;
         });
-    if (it != lines.end() && it->token_index != token_index) {
+    SILVA_ASSERT(!lines.empty());
+    if (it == lines.end() || it->token_index != token_index) {
       SILVA_ASSERT(it != lines.begin());
       --it;
     }

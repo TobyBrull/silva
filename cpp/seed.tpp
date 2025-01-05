@@ -27,7 +27,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     - SimpleFern = "[" ( LabeledItem ";"? )* "]"
     - LabeledItem = ( Label ":" )? Item
     - Label = string
-    - Item,0 = SimpleFern
+    - Item,0 => SimpleFern
     - Item,1 =~ string number
   )'");
   const tokenization_t sf_seed_tokens =
@@ -83,10 +83,8 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   [3]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           0
-    [2]Derivation,0                               =
-      [0]Atom,1                                   SimpleFern
-        [0]Primary,2                              SimpleFern
-          [0]Nonterminal,0                        SimpleFern
+    [2]Derivation,2                               =>
+      [0]Nonterminal,0                            SimpleFern
   [4]Rule,0                                       Item
     [0]Nonterminal,0                              Item
     [1]RulePrecedence,0                           1
@@ -95,21 +93,28 @@ TEST_CASE("seed", "[seed][parse_root_t]")
       [1]Terminal,1                               number
 )";
 
-  CHECK(parse_tree_to_string(sf_seed_pt_1) == expected.substr(1));
-  CHECK(parse_tree_to_string(sf_seed_pt_2) == expected.substr(1));
+  const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(parse_tree_to_string(sf_seed_pt_1));
+  const string_t pt_str_2 = SILVA_EXPECT_REQUIRE(parse_tree_to_string(sf_seed_pt_2));
+  CHECK(pt_str_1 == expected.substr(1));
+  CHECK(pt_str_2 == expected.substr(1));
 
   auto maybe_sf_parse_root = parse_root_t::create(const_ptr_unowned(&sf_seed_pt_1));
   REQUIRE(maybe_sf_parse_root);
   auto sfpr = std::move(maybe_sf_parse_root).value();
   REQUIRE(sfpr.rules.size() == 5);
   using rfl::json::write;
-  CHECK(write(sfpr.rules[0]) == R"({"name":"SimpleFern","precedence":0,"expr_node_index":3})");
-  CHECK(write(sfpr.rules[1]) == R"({"name":"LabeledItem","precedence":0,"expr_node_index":22})");
-  CHECK(write(sfpr.rules[2]) == R"({"name":"Label","precedence":0,"expr_node_index":37})");
-  CHECK(write(sfpr.rules[3]) == R"({"name":"Item","precedence":0,"expr_node_index":44})");
-  CHECK(write(sfpr.rules[4]) == R"({"name":"Item","precedence":1,"expr_node_index":51})");
-  CHECK(write(sfpr.rule_name_offsets) ==
-        R"([["Item",3],["Label",2],["LabeledItem",1],["SimpleFern",0]])");
+  CHECK(write(sfpr.rules[0]) ==
+        R"({"token_id":1,"name":"SimpleFern","precedence":0,"expr_node_index":3})");
+  CHECK(write(sfpr.rules[1]) ==
+        R"({"token_id":5,"name":"LabeledItem","precedence":0,"expr_node_index":22})");
+  CHECK(write(sfpr.rules[2]) ==
+        R"({"token_id":11,"name":"Label","precedence":0,"expr_node_index":37})");
+  CHECK(
+      write(sfpr.rules[3]) ==
+      R"({"token_id":13,"name":"Item","precedence":0,"expr_node_index":44,"aliased_rule_offset":0})");
+  CHECK(write(sfpr.rules[4]) ==
+        R"({"token_id":13,"name":"Item","precedence":1,"expr_node_index":49})");
+  CHECK(write(sfpr.rule_indexes) == R"({"13":3,"11":2,"5":1,"1":0})");
 
   const source_code_t sf_code("test.simple-fern", R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'");
   const tokenization_t sf_tokens = SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&sf_code)));
@@ -121,14 +126,14 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   [0]LabeledItem,0                                "abc"
     [0]Item,1                                     "abc"
   [1]LabeledItem,0                                [
-    [0]Item,0                                     [
-      [0]SimpleFern,0                             [
-        [0]LabeledItem,0                          "def"
-          [0]Item,1                               "def"
-        [1]LabeledItem,0                          123
-          [0]Item,1                               123
+    [0]SimpleFern,0                               [
+      [0]LabeledItem,0                            "def"
+        [0]Item,1                                 "def"
+      [1]LabeledItem,0                            123
+        [0]Item,1                                 123
   [2]LabeledItem,0                                "jkl"
     [0]Item,1                                     "jkl"
 )";
-  CHECK(parse_tree_to_string(sfpt) == expected_parse_tree.substr(1));
+  const string_t result{SILVA_EXPECT_REQUIRE(parse_tree_to_string(sfpt))};
+  CHECK(result == expected_parse_tree.substr(1));
 }

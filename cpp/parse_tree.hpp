@@ -20,7 +20,7 @@ namespace silva {
 
       friend auto operator<=>(const node_t&, const node_t&) = default;
     };
-    vector_t<node_t> nodes;
+    std::vector<node_t> nodes;
 
     bool is_consistent() const;
 
@@ -58,8 +58,8 @@ namespace silva {
     expected_t<small_vector_t<index_t, N>> get_children_up_to(index_t parent_node_index) const;
   };
 
-  string_t parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
-  string_t parse_tree_to_graphviz(const parse_tree_t&);
+  expected_t<string_t> parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
+  expected_t<string_t> parse_tree_to_graphviz(const parse_tree_t&);
 
   // template<typename T>
   // struct bison_visitor {
@@ -142,8 +142,11 @@ namespace silva {
     if (!maybe_new_child_index) {
       return {};
     }
-    SILVA_EXPECT(maybe_new_child_index.value() == 1, ASSERT);
-    SILVA_EXPECT(path.empty(), ASSERT);
+    SILVA_EXPECT(maybe_new_child_index.value() == 1,
+                 ASSERT,
+                 "Invalid tree at ",
+                 SILVA_CPP_LOCATION);
+    SILVA_EXPECT(path.empty(), ASSERT, "Path not empty at " SILVA_CPP_LOCATION);
     return {};
   }
 

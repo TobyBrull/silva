@@ -13,8 +13,8 @@ namespace silva {
     - Implementation = Command*
 
     - Command,0 = "namespace" major_error NestedNamespace
-    - Command,1 = SoilDefn
-    - Command,2 = ToilDefn
+    - Command,1 => SoilDefn
+    - Command,2 => ToilDefn
 
     - NestedNamespace = Namespace ( "." Namespace )*
     - Namespace = identifier

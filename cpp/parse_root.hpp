@@ -12,24 +12,26 @@ namespace silva {
     const_ptr_t<parse_tree_t> seed_parse_tree;
 
     struct rule_t {
-      // Name of nonterminal that the rule defines.
+      // Token-id of nonterminal that the rule defines.
+      token_id_t token_id;
+      // Name of the rule.
       string_view_t name;
       // Lower value means higher precedence.
       index_t precedence = 0;
       // Node in the "seed_parse_tree" that contains the expression for this rule.
       index_t expr_node_index = 0;
+      // If this rule is an alias, contains the offset of the aliased rule.
+      optional_t<index_t> aliased_rule_offset;
     };
     vector_t<rule_t> rules;
 
-    // Maps a rule name to the first rule with that name (index == 0).
-    hashmap_t<string_view_t, index_t> rule_name_offsets;
+    // Maps a token-id corresponding to a rule-name to the first rule with that name (index == 0).
+    hashmap_t<token_id_t, index_t> rule_indexes;
 
-    string_view_t goal_rule_name;
+    token_id_t goal_rule_token_id = 0;
 
     // Maps the token-id's that correspond to regexes to the compiled version of that regex.
     hashmap_t<token_id_t, optional_t<std::regex>> regexes;
-
-    expected_t<void> add_rule(string_view_t rule_name, index_t precendece, index_t expr_node_index);
 
     // Main parse_root_t constructor.
     static expected_t<parse_root_t> create(const_ptr_t<parse_tree_t>);

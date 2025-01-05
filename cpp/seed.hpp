@@ -23,7 +23,7 @@ namespace silva {
     - RulePrecedence = number
     - Derivation,0 = "=" major_error Atom+
     - Derivation,1 = "=~" major_error Terminal+
-    - Derivation,2 = "=>" major_error Nonterminal
+    - Derivation,2 = "=>" major_error Nonterminal ( "," RulePrecedence )?
     - Atom,0 = "major_error"
     - Atom,1 = Primary Suffix?
     - Suffix =~ "?" "*" "+" "!" "&"

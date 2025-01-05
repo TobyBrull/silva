@@ -2,6 +2,7 @@
 
 #include "parse_root.hpp"
 #include "parse_tree_nursery.hpp"
+#include "tokenization.hpp"
 
 namespace silva {
   using enum token_category_t;
@@ -179,7 +180,7 @@ namespace silva {
           token_index += 1;
           gg_rule.set_rule_index(to_int(DERIVATION_0));
           index_t atom_count = 0;
-          while (num_tokens_left() >= 1) {
+          while (true) {
             if (auto result = atom(); result) {
               gg_rule.sub += *std::move(result);
               atom_count += 1;
@@ -195,7 +196,7 @@ namespace silva {
           token_index += 1;
           gg_rule.set_rule_index(to_int(DERIVATION_1));
           index_t terminal_count = 0;
-          while (num_tokens_left() >= 1) {
+          while (true) {
             if (auto result = terminal(); result) {
               gg_rule.sub += *std::move(result);
               terminal_count += 1;
@@ -210,7 +211,10 @@ namespace silva {
         else if (token_id_by() == tt_eq_alias) {
           token_index += 1;
           gg_rule.set_rule_index(to_int(DERIVATION_2));
-          SILVA_EXPECT_FWD(nonterminal());
+          gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
+          if (auto result = rule_precedence(); result) {
+            gg_rule.sub += *std::move(result);
+          }
         }
         return gg_rule.release();
       }
@@ -259,27 +263,39 @@ namespace silva {
 
   const parse_root_t* seed_parse_root_primordial()
   {
-    static const parse_root_t retval{
+    static const tokenization_t tokenization =
+        SILVA_EXPECT_ASSERT(tokenize(const_ptr_unowned(&seed_seed_source_code)));
+    static const parse_tree_t parse_tree{.tokenization = const_ptr_unowned(&tokenization)};
+    const auto make_rule = [&](const string_view_t nonterminal,
+                               const index_t precedence) -> parse_root_t::rule_t {
+      parse_root_t::rule_t retval;
+      retval.token_id   = tokenization.lookup_token(nonterminal).value();
+      retval.name       = nonterminal;
+      retval.precedence = precedence;
+      return retval;
+    };
+    static const parse_root_t parse_root{
+        .seed_parse_tree = const_ptr_unowned(&parse_tree),
         .rules =
             {
-                parse_root_t::rule_t{.name = "Seed", .precedence = 0},
-                parse_root_t::rule_t{.name = "Rule", .precedence = 0},
-                parse_root_t::rule_t{.name = "RulePrecedence", .precedence = 0},
-                parse_root_t::rule_t{.name = "Derivation", .precedence = 0},
-                parse_root_t::rule_t{.name = "Derivation", .precedence = 1},
-                parse_root_t::rule_t{.name = "Derivation", .precedence = 2},
-                parse_root_t::rule_t{.name = "Atom", .precedence = 0},
-                parse_root_t::rule_t{.name = "Atom", .precedence = 1},
-                parse_root_t::rule_t{.name = "Suffix", .precedence = 0},
-                parse_root_t::rule_t{.name = "Primary", .precedence = 0},
-                parse_root_t::rule_t{.name = "Primary", .precedence = 1},
-                parse_root_t::rule_t{.name = "Primary", .precedence = 2},
-                parse_root_t::rule_t{.name = "Nonterminal", .precedence = 0},
-                parse_root_t::rule_t{.name = "Terminal", .precedence = 0},
-                parse_root_t::rule_t{.name = "Terminal", .precedence = 1},
-                parse_root_t::rule_t{.name = "Regex", .precedence = 0},
+                make_rule("Seed", 0),
+                make_rule("Rule", 0),
+                make_rule("RulePrecedence", 0),
+                make_rule("Derivation", 0),
+                make_rule("Derivation", 1),
+                make_rule("Derivation", 2),
+                make_rule("Atom", 0),
+                make_rule("Atom", 1),
+                make_rule("Suffix", 0),
+                make_rule("Primary", 0),
+                make_rule("Primary", 1),
+                make_rule("Primary", 2),
+                make_rule("Nonterminal", 0),
+                make_rule("Terminal", 0),
+                make_rule("Terminal", 1),
+                make_rule("Regex", 0),
             },
     };
-    return &retval;
+    return &parse_root;
   }
 }

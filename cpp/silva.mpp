@@ -14,7 +14,7 @@ silva_main(span_t<string_view_t> cmdline_args)
   const tokenization_t tokenization =
       SILVA_EXPECT_FWD(tokenize(SILVA_EXPECT_FWD(source_code_t::load(filename))));
   parse_tree_t pt = SILVA_EXPECT_FWD(silva_parse_root()->apply(const_ptr_unowned(&tokenization)));
-  fmt::print("{}\n", parse_tree_to_string(pt));
+  fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(pt)));
   return {};
 }
 SILVA_MAIN_1(silva_main);
