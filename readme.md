@@ -1,7 +1,5 @@
 # Silva
 
-Silva means "forest" in Latin.
-
 Silva aspires to be an [esoteric](https://en.wikipedia.org/wiki/Esoteric_programming_language),
 [language-oriented](https://en.wikipedia.org/wiki/Language-oriented_programming) programming
 language.
