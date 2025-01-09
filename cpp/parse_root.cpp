@@ -82,9 +82,9 @@ namespace silva {
             rule_precedence = SILVA_EXPECT_FWD(token_data->as_double());
           }
           const index_t ri = s_nodes[children.back()].rule_index;
-          SILVA_EXPECT(to_int(DERIVATION_0) <= ri && ri <= to_int(DERIVATION_2),
+          SILVA_EXPECT(to_int(DERIVATION_0) <= ri && ri <= to_int(DERIVATION_3),
                        MINOR,
-                       "Last child of RULE must be DERIVATION_{0,1,2}");
+                       "Last child of RULE must be DERIVATION_{0,1,2,3}");
           index_t expr_node_index = children.back();
           SILVA_EXPECT_FWD(impl::create_add_rule(retval,
                                                  rule_token_id,
@@ -445,6 +445,11 @@ namespace silva {
         return gg.release();
       }
 
+      expected_t<parse_tree_sub_t> apply_derivation_3(const index_t seed_node_index)
+      {
+        SILVA_EXPECT(false, FATAL, "Operator '=%' not yet implemented");
+      }
+
       expected_t<parse_tree_sub_t> apply_expr(const parse_root_t::rule_t& rule)
       {
         const parse_tree_t::node_t& seed_node_expr = seed_pt->nodes[rule.expr_node_index];
@@ -454,8 +459,11 @@ namespace silva {
         else if (seed_node_expr.rule_index == to_int(DERIVATION_1)) {
           return apply_derivation_1(rule.expr_node_index);
         }
+        else if (seed_node_expr.rule_index == to_int(DERIVATION_3)) {
+          return apply_derivation_3(rule.expr_node_index);
+        }
         else {
-          SILVA_EXPECT(false, MAJOR, "Expected Seed node DERIVATION_0 or DERIVATION_1");
+          SILVA_EXPECT(false, MAJOR, "Expected Seed node with DERIVATION_{0,1,3}");
         }
       }
 

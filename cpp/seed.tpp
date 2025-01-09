@@ -99,9 +99,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(pt_str_1 == expected.substr(1));
   CHECK(pt_str_2 == expected.substr(1));
 
-  auto maybe_sf_parse_root = parse_root_t::create(const_ptr_unowned(&sf_seed_pt_1));
-  REQUIRE(maybe_sf_parse_root);
-  auto sfpr = std::move(maybe_sf_parse_root).value();
+  const auto sfpr = SILVA_EXPECT_REQUIRE(parse_root_t::create(const_ptr_unowned(&sf_seed_pt_1)));
   REQUIRE(sfpr.rules.size() == 5);
   using rfl::json::write;
   CHECK(write(sfpr.rules[0]) ==

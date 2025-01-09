@@ -1,6 +1,23 @@
-- Precedence = ( Expr ";" )*
-- Expr = Add
-- Add = Mult ("+" Add)*
-- Mult = Primary ("*" Mult)*
-- Primary,0 = "(" Expr ")"
-- Primary,1 = number
+- Precedence = ( Expr ";" )* "end"
+
+- Expr,0 = "A" A_Expr
+- Expr,1 = "B" B_Expr
+
+- A_Expr = A_Add
+- A_Add = A_Mult ("+" A_Add)*
+- A_Mult = A_Primary ("*" A_Mult)*
+- A_Primary,0 = "(" A_Expr ")"
+- A_Primary,1 = number
+
+- B_Expr =% B_Primary [
+    ["." "|"]
+    [unary_"-" unary_"not" unary_"*"]
+    ["*" "/"]
+    ["+" "-"]
+    ["=="]
+    ["and"]
+    ["or"]
+    ["=:"]
+  ]
+- B_Primary,0 = "(" B_Expr ")"
+- B_Primary,1 =~ number string

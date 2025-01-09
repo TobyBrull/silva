@@ -1,5 +1,8 @@
 # TODO
 
+* Seed:
+    * Also support rules of the form `PrimaryExpr = "(" Expr ")"` for alias-rules.
+
 * error-handling
     * make root-based error look more like the error from the manual Fern parser
 
@@ -18,6 +21,9 @@
 * Seed
     * seed.mpp
     * check Seed program when constructing parse_root_t?
+
+* tokenization
+    * make "'" the default char to start strings.
 
 * code review
 
