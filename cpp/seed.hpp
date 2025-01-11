@@ -35,10 +35,10 @@ namespace silva {
     - Terminal,0 = "identifier_regex" "(" Regex ")"
     - Terminal,1 =~ string "identifier" "operator" "string" "number" "any"
     - Regex = string
-    - OpPrecedenceList = "[" OpPrecedenceLevel+ "]"
-    - OpPrecedenceLevel = "[" OpSpec+ "]"
-    - OpSpec,0 = "unary_" Op
-    - OpSpec,1 = Op
+    - OpList = "[" OpPrecedenceLevel+ "]"
+    - OpLevel = OpAssoc OpType Op+
+    - OpAssoc =~ "->" "<-"
+    - OpType =~ "prefix" "postfix" "binary" "n_ary"
     - Op = string
   )'");
 
@@ -60,10 +60,10 @@ namespace silva {
     TERMINAL_0,
     TERMINAL_1,
     REGEX,
-    OP_PRECEDENCE_LIST,
-    OP_PRECEDENCE_LEVEL,
-    OP_SPEC_0,
-    OP_SPEC_1,
+    OP_LIST,
+    OP_LEVEL,
+    OP_ASSOC,
+    OP_TYPE,
     OP,
   };
 

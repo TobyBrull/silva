@@ -32,7 +32,12 @@ namespace silva {
       optional_t<token_id_t> tt_string      = retval.tokenization->lookup_token("string");
       optional_t<token_id_t> tt_number      = retval.tokenization->lookup_token("number");
       optional_t<token_id_t> tt_any         = retval.tokenization->lookup_token("any");
-      optional_t<token_id_t> tt_unary       = retval.tokenization->lookup_token("unary_");
+      optional_t<token_id_t> tt_ltr         = retval.tokenization->lookup_token("->");
+      optional_t<token_id_t> tt_rtl         = retval.tokenization->lookup_token("<-");
+      optional_t<token_id_t> tt_prefix      = retval.tokenization->lookup_token("prefix");
+      optional_t<token_id_t> tt_postfix     = retval.tokenization->lookup_token("postfix");
+      optional_t<token_id_t> tt_binary      = retval.tokenization->lookup_token("binary");
+      optional_t<token_id_t> tt_n_ary       = retval.tokenization->lookup_token("n_ary");
 
       seed_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization),
@@ -50,31 +55,39 @@ namespace silva {
         return gg_rule.release();
       }
 
-      expected_t<parse_tree_sub_t> op_spec()
+      expected_t<parse_tree_sub_t> op_assoc()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        if (num_tokens_left() >= 1 && token_id_by() == tt_unary) {
-          gg_rule.set_rule_index(to_int(OP_SPEC_0));
-          token_index += 1;
-        }
-        else {
-          gg_rule.set_rule_index(to_int(OP_SPEC_1));
-        }
-        gg_rule.sub += SILVA_EXPECT_FWD(op());
+        gg_rule.set_rule_index(to_int(OP_ASSOC));
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
+                               (token_id_by() == tt_ltr || token_id_by() == tt_rtl),
+                           "Expected \"->\" \"<-\"");
+        token_index += 1;
         return gg_rule.release();
       }
 
-      expected_t<parse_tree_sub_t> op_precedence_level()
+      expected_t<parse_tree_sub_t> op_type()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(to_int(OP_PRECEDENCE_LEVEL));
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
-                           "Expected '['");
+        gg_rule.set_rule_index(to_int(OP_TYPE));
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
+                               (token_id_by() == tt_prefix || token_id_by() == tt_postfix ||
+                                token_id_by() == tt_binary || token_id_by() == tt_n_ary),
+                           "Expected \"prefix\" \"postfix\" \"binary\" \"n_ary\"");
         token_index += 1;
-        index_t num_specs = 0;
+        return gg_rule.release();
+      }
+
+      expected_t<parse_tree_sub_t> op_level()
+      {
+        parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+        gg_rule.set_rule_index(to_int(OP_LEVEL));
+        gg_rule.sub += SILVA_EXPECT_FWD(op_assoc());
+        gg_rule.sub += SILVA_EXPECT_FWD(op_type());
+        index_t num_ops = 0;
         while (true) {
-          if (auto result = op_spec(); result) {
-            num_specs += 1;
+          if (auto result = op(); result) {
+            num_ops += 1;
             gg_rule.sub += *std::move(result);
           }
           else {
@@ -82,34 +95,39 @@ namespace silva {
             break;
           }
         }
-        SILVA_EXPECT_PARSE(num_specs >= 1, "No OpSpecs found");
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
-                           "Expected ']'");
-        token_index += 1;
+        SILVA_EXPECT_PARSE(num_ops >= 1, "No Ops found");
         return gg_rule.release();
       }
 
-      expected_t<parse_tree_sub_t> op_precedence_list()
+      expected_t<parse_tree_sub_t> op_list()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
-        gg_rule.set_rule_index(to_int(OP_PRECEDENCE_LIST));
+        gg_rule.set_rule_index(to_int(OP_LIST));
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
                            "Expected '['");
         token_index += 1;
+        error_nursery_t error_nursery;
         index_t num_levels = 0;
         while (true) {
-          if (auto result = op_precedence_level(); result) {
+          if (auto result = op_level(); result) {
             num_levels += 1;
             gg_rule.sub += *std::move(result);
           }
           else {
-            SILVA_EXPECT_FWD_IF(std::move(result), MAJOR);
+            error_nursery.add_child_error(SILVA_EXPECT_FWD_IF(std::move(result), MAJOR).error());
             break;
           }
         }
-        SILVA_EXPECT_PARSE(num_levels >= 1, "No OpPrecedenceLevel found");
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
-                           "Expected ']'");
+        if (num_levels == 0) {
+          return std::unexpected(
+              std::move(error_nursery)
+                  .finish(error_level_t::MINOR, "{} No OpLevel found", token_position_by()));
+        }
+        if (num_tokens_left() == 0 || token_id_by() != tt_brack_close) {
+          return std::unexpected(
+              std::move(error_nursery)
+                  .finish(error_level_t::MINOR, "{} Expected ']'", token_position_by()));
+        }
         token_index += 1;
         return gg_rule.release();
       }
@@ -298,7 +316,7 @@ namespace silva {
           token_index += 1;
           gg_rule.set_rule_index(to_int(DERIVATION_3));
           gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
-          gg_rule.sub += SILVA_EXPECT_FWD(op_precedence_list());
+          gg_rule.sub += SILVA_EXPECT_FWD(op_list());
         }
         return gg_rule.release();
       }
@@ -362,6 +380,7 @@ namespace silva {
         .seed_parse_tree = const_ptr_unowned(&parse_tree),
         .rules =
             {
+                // clang-format off
                 make_rule("Seed", 0),
                 make_rule("Rule", 0),
                 make_rule("RulePrecedence", 0),
@@ -379,11 +398,12 @@ namespace silva {
                 make_rule("Terminal", 0),
                 make_rule("Terminal", 1),
                 make_rule("Regex", 0),
-                make_rule("OpPrecedenceList", 0),
-                make_rule("OpPrecedenceLevel", 0),
-                make_rule("OpSpec", 0),
-                make_rule("OpSpec", 1),
+                make_rule("OpList", 0),
+                make_rule("OpLevel", 0),
+                make_rule("OpAssoc", 0),
+                make_rule("OpType", 0),
                 make_rule("Op", 0),
+                // clang-format on
             },
     };
     return &parse_root;
