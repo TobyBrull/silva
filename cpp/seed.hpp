@@ -36,9 +36,8 @@ namespace silva {
     - Terminal,1 =~ string "identifier" "operator" "string" "number" "any"
     - Regex = string
     - OpList = "[" OpPrecedenceLevel+ "]"
-    - OpLevel = OpAssoc OpType Op+
-    - OpAssoc =~ "->" "<-"
-    - OpType =~ "prefix" "postfix" "binary" "n_ary"
+    - OpLevel = OpType Op+
+    - OpType =~ "prefix" "postfix" "ltr" "rtl"
     - Op = string
   )'");
 
@@ -62,7 +61,6 @@ namespace silva {
     REGEX,
     OP_LIST,
     OP_LEVEL,
-    OP_ASSOC,
     OP_TYPE,
     OP,
   };
