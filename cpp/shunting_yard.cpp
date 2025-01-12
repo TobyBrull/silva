@@ -76,6 +76,7 @@ namespace silva {
     const shunting_yard_t::mapped_levels_t& mlvl = it->second;
 
     using enum shunting_yard_run_state_t;
+    using enum shunting_yard_t::level_type_t;
     if (state == PRE_EXPR) {
       if (mlvl.prefix.has_value()) {
         items.push_back(op_t{
@@ -96,7 +97,10 @@ namespace silva {
             .token_id  = token_id,
             .is_prefix = false,
         });
-        state = PRE_EXPR;
+        const auto level_type = shunting_yard->levels[mlvl.postfix_or_binary.value()].type;
+        if (level_type == BINARY_LEFT_TO_RIGHT || level_type == BINARY_RIGHT_TO_LEFT) {
+          state = PRE_EXPR;
+        }
       }
       else {
         SILVA_EXPECT(false,
@@ -155,7 +159,7 @@ namespace silva {
                        "Prefix without following expression");
           const Expression& expr = std::get<Expression>(items[ip1]);
           auto new_expr          = callback(span_t<const Expression>(&expr, 1),
-                                   std::get<op_t>(items[ip1]).token_id,
+                                   std::get<op_t>(items[i]).token_id,
                                    level_idx);
           items.erase(items.begin() + i);
           items[i] = std::move(new_expr);
