@@ -34,8 +34,8 @@ namespace silva {
       optional_t<token_id_t> tt_any         = retval.tokenization->lookup_token("any");
       optional_t<token_id_t> tt_prefix      = retval.tokenization->lookup_token("prefix");
       optional_t<token_id_t> tt_postfix     = retval.tokenization->lookup_token("postfix");
-      optional_t<token_id_t> tt_binary      = retval.tokenization->lookup_token("ltr");
-      optional_t<token_id_t> tt_n_ary       = retval.tokenization->lookup_token("rtl");
+      optional_t<token_id_t> tt_binary_ltr  = retval.tokenization->lookup_token("binary_ltr");
+      optional_t<token_id_t> tt_binary_rtl  = retval.tokenization->lookup_token("binary_rtl");
 
       seed_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization),
@@ -59,8 +59,8 @@ namespace silva {
         gg_rule.set_rule_index(to_int(OP_TYPE));
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
                                (token_id_by() == tt_prefix || token_id_by() == tt_postfix ||
-                                token_id_by() == tt_binary || token_id_by() == tt_n_ary),
-                           "Expected \"prefix\" \"postfix\" \"ltr\" \"rtl\"");
+                                token_id_by() == tt_binary_ltr || token_id_by() == tt_binary_rtl),
+                           "Expected \"prefix\" \"postfix\" \"binary_ltr\" \"binary_rtl\"");
         token_index += 1;
         return gg_rule.release();
       }

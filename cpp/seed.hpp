@@ -37,7 +37,7 @@ namespace silva {
     - Regex = string
     - OpList = "[" OpPrecedenceLevel+ "]"
     - OpLevel = OpType Op+
-    - OpType =~ "prefix" "postfix" "ltr" "rtl"
+    - OpType =~ "prefix" "postfix" "binary_ltr" "binary_rtl"
     - Op = string
   )'");
 

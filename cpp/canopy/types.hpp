@@ -6,6 +6,7 @@
 #include <span>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -54,6 +55,9 @@ namespace silva {
 
   template<typename K, typename V>
   using hashmap_t = std::unordered_map<K, V>;
+
+  template<typename T>
+  using hashset_t = std::unordered_set<T>;
 
   using filesystem_path_t = std::filesystem::path;
 
