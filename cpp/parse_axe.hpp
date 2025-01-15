@@ -3,8 +3,16 @@
 #include "canopy/types.hpp"
 #include "tokenization.hpp"
 
+// * https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing
+
+//
+//
+// If an operator would be allowed to be used as prefix, postfix, and axe, this can be
+// confusing. For example, assume '+' would be such an operator and consider the expression
+// "a + + b + + c". If the prefix-'+' would have highest precedence
+
 namespace silva {
-  struct shunting_yard_t {
+  struct parse_axe_t {
     using level_index_t = index_t;
 
     enum class level_type_t {
@@ -38,9 +46,9 @@ namespace silva {
     string_t repr;
     friend auto operator<=>(const Expression&, const Expression&) = default;
   };
-  struct shunting_yard_run_t {
-    const shunting_yard_t* shunting_yard = nullptr;
-    std::function<Expression(span_t<const Expression>, token_id_t, shunting_yard_t::level_index_t)>
+  struct parse_axe_run_t {
+    const parse_axe_t* parse_axe = nullptr;
+    std::function<Expression(span_t<const Expression>, token_id_t, parse_axe_t::level_index_t)>
         callback;
 
     expected_t<void> push_back(Expression);
@@ -61,13 +69,13 @@ namespace silva {
     //      - postfix-op -> unchanged
     //      - binary-op -> PreExpr
     //      - finish -> done
-    enum class shunting_yard_run_state_t {
+    enum class parse_axe_run_state_t {
       PRE_EXPR,
       POST_EXPR,
     };
-    shunting_yard_run_state_t state = shunting_yard_run_state_t ::PRE_EXPR;
+    parse_axe_run_state_t state = parse_axe_run_state_t ::PRE_EXPR;
 
     expected_t<Expression> finish();
-    expected_t<bool> apply_next(shunting_yard_t::level_index_t);
+    expected_t<bool> apply_next(parse_axe_t::level_index_t);
   };
 }

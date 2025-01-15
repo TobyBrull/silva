@@ -1,16 +1,16 @@
-#include "shunting_yard.hpp"
 #include "canopy/expected.hpp"
+#include "parse_axe.hpp"
 #include <variant>
 
 namespace silva {
 
-  bool shunting_yard_t::has_operator(const token_id_t token_id) const
+  bool parse_axe_t::has_operator(const token_id_t token_id) const
   {
     return mapped_levels.contains(token_id);
   }
 
-  optional_t<shunting_yard_t::level_index_t>&
-  shunting_yard_t::slot_for(const token_id_t token_id, const level_type_t level_type)
+  optional_t<parse_axe_t::level_index_t>& parse_axe_t::slot_for(const token_id_t token_id,
+                                                                const level_type_t level_type)
   {
     const auto it = mapped_levels.find(token_id);
     SILVA_ASSERT(it != mapped_levels.end());
@@ -30,7 +30,7 @@ namespace silva {
     }
   }
 
-  shunting_yard_t::level_index_t shunting_yard_t::add_level(const level_type_t type)
+  parse_axe_t::level_index_t parse_axe_t::add_level(const level_type_t type)
   {
     const level_index_t retval = levels.size();
     levels.emplace_back();
@@ -38,7 +38,7 @@ namespace silva {
     return retval;
   }
 
-  void shunting_yard_t::add_operator(const level_index_t level_idx, const token_id_t token_id)
+  void parse_axe_t::add_operator(const level_index_t level_idx, const token_id_t token_id)
   {
     SILVA_ASSERT(level_idx < levels.size());
     level_t& lvl = levels[level_idx];
@@ -49,9 +49,9 @@ namespace silva {
     lvl.token_ids.push_back(token_id);
   }
 
-  expected_t<void> shunting_yard_run_t::push_back(Expression expr)
+  expected_t<void> parse_axe_run_t::push_back(Expression expr)
   {
-    using enum shunting_yard_run_state_t;
+    using enum parse_axe_run_state_t;
     if (state == PRE_EXPR) {
       items.push_back(std::move(expr));
       state = POST_EXPR;
@@ -67,16 +67,16 @@ namespace silva {
     return {};
   }
 
-  expected_t<void> shunting_yard_run_t::push_back(const token_id_t token_id)
+  expected_t<void> parse_axe_run_t::push_back(const token_id_t token_id)
   {
-    const auto* sy = shunting_yard;
+    const auto* sy = parse_axe;
 
-    const auto it = shunting_yard->mapped_levels.find(token_id);
-    SILVA_EXPECT(it != shunting_yard->mapped_levels.end(), MAJOR, "Unknown operator {}", token_id);
-    const shunting_yard_t::mapped_levels_t& mlvl = it->second;
+    const auto it = parse_axe->mapped_levels.find(token_id);
+    SILVA_EXPECT(it != parse_axe->mapped_levels.end(), MAJOR, "Unknown operator {}", token_id);
+    const parse_axe_t::mapped_levels_t& mlvl = it->second;
 
-    using enum shunting_yard_run_state_t;
-    using enum shunting_yard_t::level_type_t;
+    using enum parse_axe_run_state_t;
+    using enum parse_axe_t::level_type_t;
     if (state == PRE_EXPR) {
       if (mlvl.prefix.has_value()) {
         items.push_back(op_t{
@@ -97,7 +97,7 @@ namespace silva {
             .token_id  = token_id,
             .is_prefix = false,
         });
-        const auto level_type = shunting_yard->levels[mlvl.postfix_or_binary.value()].type;
+        const auto level_type = parse_axe->levels[mlvl.postfix_or_binary.value()].type;
         if (level_type == BINARY_LEFT_TO_RIGHT || level_type == BINARY_RIGHT_TO_LEFT) {
           state = PRE_EXPR;
         }
@@ -115,9 +115,9 @@ namespace silva {
     return {};
   }
 
-  expected_t<Expression> shunting_yard_run_t::finish()
+  expected_t<Expression> parse_axe_run_t::finish()
   {
-    for (shunting_yard_t::level_index_t level_idx = 0; level_idx < shunting_yard->levels.size();
+    for (parse_axe_t::level_index_t level_idx = 0; level_idx < parse_axe->levels.size();
          ++level_idx) {
       while (true) {
         const bool did_some = SILVA_EXPECT_FWD(apply_next(level_idx));
@@ -138,9 +138,9 @@ namespace silva {
     }
   }
 
-  expected_t<bool> shunting_yard_run_t::apply_next(const shunting_yard_t::level_index_t level_idx)
+  expected_t<bool> parse_axe_run_t::apply_next(const parse_axe_t::level_index_t level_idx)
   {
-    const auto& lvl            = shunting_yard->levels[level_idx];
+    const auto& lvl            = parse_axe->levels[level_idx];
     const auto is_match_prefix = [&lvl](const item_t& item) {
       const op_t* op = std::get_if<op_t>(&item);
       return op && op->is_prefix && impl::contains(lvl.token_ids, op->token_id);
@@ -149,7 +149,7 @@ namespace silva {
       const op_t* op = std::get_if<op_t>(&item);
       return op && op->is_prefix == false && impl::contains(lvl.token_ids, op->token_id);
     };
-    using enum shunting_yard_t::level_type_t;
+    using enum parse_axe_t::level_type_t;
     if (lvl.type == PREFIX) {
       for (index_t ip1 = items.size(); ip1 > 0; --ip1) {
         const index_t i = ip1 - 1;
