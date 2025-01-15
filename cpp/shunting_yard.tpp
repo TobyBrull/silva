@@ -92,3 +92,15 @@ TEST_CASE("shunting-yard", "[shunting_yard_t]")
                      "((~a)+b+(c!))");
   shunting_yard_test(&sy, {"a"_E, op_add, "b"_E, op_quest}, "((a+b)?)");
 }
+
+// TODO:
+// a[0]
+// a[0, 1]
+// b(a,b,c)
+// x? 1: 0
+// if x then 1 else 0
+// a + b c + d
+// a * (b + c) * d
+//
+// parx
+// expar
