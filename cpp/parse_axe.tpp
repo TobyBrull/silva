@@ -89,20 +89,3 @@ TEST_CASE("shunting-yard", "[parse_axe_t]")
   parse_axe_test(&sy, {op_tilda, "a"_E, op_add, "b"_E, op_add, "c"_E, op_fact}, "((~a)+b+(c!))");
   parse_axe_test(&sy, {"a"_E, op_add, "b"_E, op_quest}, "((a+b)?)");
 }
-
-// TODO:
-// a[0]
-// a[0, 1]
-// b(a,b,c)
-// x? 1: 0
-// if x then 1 else 0
-// 1 if x else 0
-// a + b c + d
-// a * (b + c) * d
-//
-// (a + b + c)
-// ((a + b) + c)
-//
-// parx
-// expar
-// axer

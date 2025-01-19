@@ -5,11 +5,71 @@
 
 // * https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing
 
+// The Parse Axe algorithm is meant to parse arithmetic expressions. An arithmetic expression is
+// defined to be a string of Items with each Item being either an Operator (Op) or an Atom; also,
+// the string is assumed to contain at least one Atom.
 //
+// For example, if singular, upper-case characters A-Z represent Atoms and all other tokens (like
+// '+', '-', ..., 'if', 'then', 'else') represent operators, the following would be examples of
+// arithmetic expressions.
 //
-// If an operator would be allowed to be used as prefix, postfix, and axe, this can be
+//    A + B * C + D
+//    + - A * B ! +
+//    A . B . C
+//    A B C
+//    A + B C + D
+//    A ? B : C ? D : E
+//    A = B ? C : D = E
+//    if A then B else C
+//    A if B else C
+//    A , B , C
+//    A + B = C ( D , E )
+//    ) ( A ) (
+//    ( ( ( A ) ) )
+//    - + A
+//    A + + - B
+//    - - A * B
+//    - - A . B
+//    A [ B ]
+//    A [ B , C ]
+//    A [ B ] [ C ]
+//    A * ( B + C ) * D
+//    - A !
+//    A . B !
+//    ( A + B + C )
+//    ( ( A + B ) + C)
+//
+// The Parse Axe algorithm assumes that the distinction into what is an Atom and what is an Op has
+// already been made somewhere else. For example, the source-code corresponding to an Atom could
+// contain the '+' character or parenthesised expression in the source-code could be handled as
+// Atoms.
+//
+// The Parse Axe algorithm can be configured by specifying an ordered list of precedence levels,
+// with each precedence level having type either PREFIX, POSTFIX, BINARY_LTR, or BINARY_RTL. This is
+// called the Config.
+//
+// Given a Config, the intent of the Parse Axe algorithm is to create a ParseTree from a string of
+// Items, if possible. This is conceptually done by working through the list of precedence levels
+// (from high to low) and joining (i.e., creating sub-expressions) at each step. If the Config uses
+// parenthes in the usual way, and depending on the rest of the Config, some of the expressions
+// could be parsed as follows.
+//
+//  ( A + ( B * C ) + D )
+//  ( + ( - A ) ) * ( ( B ! ) + )
+//
+// If an Op would be allowed to be used as PREFIX, POSTFIX, and BINARY (_LTR or _RTL), this could be
 // confusing. For example, assume '+' would be such an operator and consider the expression
-// "a + + b + + c". If the prefix-'+' would have highest precedence
+//
+//    A + + B + + C
+//
+// If the PREFIX-'+' or POSTFIX-'+' would have highest precedence, this would surely be equivalent
+// to the following, respectively.
+//
+//    ( A + ( + B ) ) + ( + C )
+//    ( ( A + ) + ( B + ) ) + C
+//
+// However, it is not clear what would happen if BINARY-'+' would have highest precedence, so this
+// is not allowed.
 
 namespace silva {
   struct parse_axe_t {
