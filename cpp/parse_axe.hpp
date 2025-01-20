@@ -18,10 +18,6 @@
 //    A . B . C
 //    A B C
 //    A + B C + D
-//    A ? B : C ? D : E
-//    A = B ? C : D = E
-//    if A then B else C
-//    A if B else C
 //    A , B , C
 //    A + B = C ( D , E )
 //    ) ( A ) (
@@ -38,6 +34,11 @@
 //    A . B !
 //    ( A + B + C )
 //    ( ( A + B ) + C)
+//
+//    A ? B : C ? D : E
+//    A = B ? C : D = E
+//    X + if A then B else C + Y
+//    X + A if B else C + Y
 //
 // The Parse Axe algorithm assumes that the distinction into what is an Atom and what is an Op has
 // already been made somewhere else. For example, the source-code corresponding to an Atom could
@@ -70,6 +71,22 @@
 //
 // However, it is not clear what would happen if BINARY-'+' would have highest precedence, so this
 // is not allowed.
+//
+// The guiding principle is that higher precdence Ops are joined with their corresponding Atom(s)
+// first to create a new Atom. So w.l.o.g. we only have to explain how to treat the highest
+// precedence level.
+//
+// Case 1: The highest precedence level has type PREFIX.
+// Treatment: Whenever there is an Op from this level to the immediate left of an Atom, join it with
+// that Atom, creating a new Atom.
+//
+// Case 2: POSTFIX.
+// Treatment: Same approach.
+//
+// Case 3: BINARY (_LTR or _RTL)
+// Treatment: Go through the string (from left-to-right or right-to-left) and whenever an Op from
+// that level is encountered
+//
 
 namespace silva {
   struct parse_axe_t {
