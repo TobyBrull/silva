@@ -1,7 +1,7 @@
 # parse_axe_py
 
-This code originated from the code at https://github.com/kubao/minipratt-py as of 2025/01/19.
-It has been modified substantially from this starting point.
+The code in this folder originated from the code at https://github.com/kubao/minipratt-py as of
+2025/01/19. It has been modified substantially from this starting point.
 
 # minipratt
 
