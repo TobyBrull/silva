@@ -3,6 +3,12 @@
 The code in this folder originated from the code at https://github.com/kubao/minipratt-py as of
 2025/01/19. It has been modified substantially from this starting point.
 
+```bash
+python 01-shunting_yard.py
+python 02-pratt.py
+python 03-precedence-climbing.py
+```
+
 # minipratt
 
 An explanation of Pratt algorithm in Python, with minimal abstractions. Ported from [Rust](https://github.com/matklad/minipratt).
