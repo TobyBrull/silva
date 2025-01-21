@@ -12,7 +12,7 @@ class Frame:
     token: str | None
 
 
-def expr_impl(tt: misc.Tokenization):
+def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
     stack: list[Frame] = [Frame(0, None, None)]
 
     def stack_pop():
@@ -22,7 +22,7 @@ def expr_impl(tt: misc.Tokenization):
     for token_t in tt.tokens:
         token = token_t.value if token_t.value else None
         while True:
-            (l_bp, r_bp) = binding_power(token_t, stack[-1].lhs is None)
+            (l_bp, r_bp) = binding_power(paxe, token_t, stack[-1].lhs is None)
             if stack[-1].min_bp <= l_bp:
                 break
             else:
@@ -42,33 +42,21 @@ def expr_impl(tt: misc.Tokenization):
     return stack[0].lhs
 
 
-def binding_power(token: misc.Token, prefix: bool) -> tuple[int, int]:
+def binding_power(paxe: parse_axe.ParseAxe, token: misc.Token, prefix: bool) -> tuple[int, int]:
     if token.type == misc.TokenType.ATOM:
-        return 99, 100
+        return parse_axe.BINDING_POWER_INF_LEFT, parse_axe.BINDING_POWER_INF_RIGHT
     else:
         match token.value:
             case '(':
-                return 99, 0
+                return parse_axe.BINDING_POWER_INF_LEFT, 0
             case ')':
-                return 0, 100
-            case '=':
-                return 2, 1
-            case '+' | '-' if prefix:
-                return 99, 9
-            case '+' | '-':
-                return 5, 6
-            case '*' | '/':
-                return 7, 8
-            case '!':
-                return 11, 100
-            case '.':
-                return 14, 13
+                return 0, parse_axe.BINDING_POWER_INF_RIGHT
             case _:
-                assert False, f'Unexpected {token}'
+                return paxe.binding_power(token.value, prefix)
 
 
 def shunting_yard(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
-    return expr_impl(tt)
+    return expr_impl(paxe, tt)
 
 
 if __name__ == '__main__':
