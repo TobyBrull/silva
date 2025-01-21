@@ -1,6 +1,6 @@
 import misc
 import parse_axe
-import expr_tests
+import testset
 
 
 def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, curr_prec: int) -> str:
@@ -27,4 +27,9 @@ def precedence_climbing(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
 
 
 if __name__ == "__main__":
-    expr_tests.all3(precedence_climbing)
+    ts = testset.Testset(precedence_climbing)
+    ts.infix_only()
+    # ts.allfix()
+    # ts.parentheses()
+    # ts.subscript()
+    # ts.ternary()

@@ -1,5 +1,5 @@
 import misc
-import expr_tests
+import testset
 import parse_axe
 
 
@@ -103,4 +103,9 @@ def pratt(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
 
 
 if __name__ == "__main__":
-    expr_tests.all2(pratt)
+    ts = testset.Testset(pratt)
+    ts.infix_only()
+    ts.allfix()
+    ts.parentheses()
+    ts.subscript()
+    ts.ternary()

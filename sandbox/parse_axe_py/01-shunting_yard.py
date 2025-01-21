@@ -1,7 +1,7 @@
 import dataclasses
 
 import misc
-import expr_tests
+import testset
 import parse_axe
 
 
@@ -60,4 +60,9 @@ def shunting_yard(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
 
 
 if __name__ == '__main__':
-    expr_tests.all(shunting_yard)
+    ts = testset.Testset(shunting_yard)
+    ts.infix_only()
+    ts.allfix()
+    ts.parentheses()
+    # ts.subscript()
+    # ts.ternary()
