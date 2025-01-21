@@ -20,7 +20,7 @@ def expr_impl(pa: parse_axe.ParseAxe, tt: misc.Tokenization, curr_prec: int) -> 
         if op_prec < curr_prec:
             break
         tt.token_idx += 1
-        used_prec = op_prec + (1 if op_assoc == parse_axe.PrecLevelType.INFIX_LTR else 0)
+        used_prec = op_prec + (1 if op_assoc == parse_axe.Assoc.LEFT_TO_RIGHT else 0)
         rhs = expr_impl(pa, tt, used_prec)
         result = misc.cons_str(op, result, rhs)
 
