@@ -2,10 +2,7 @@ import dataclasses
 
 import misc
 import expr_tests
-
-
-def shunting_yard(tt: misc.Tokenization):
-    return expr_bp(tt)
+import parse_axe
 
 
 @dataclasses.dataclass(slots=True)
@@ -15,7 +12,7 @@ class Frame:
     token: str | None
 
 
-def expr_bp(tt: misc.Tokenization):
+def expr_impl(tt: misc.Tokenization):
     stack: list[Frame] = [Frame(0, None, None)]
 
     def stack_pop():
@@ -68,6 +65,10 @@ def binding_power(token: misc.Token, prefix: bool) -> tuple[int, int]:
                 return 14, 13
             case _:
                 assert False, f'Unexpected {token}'
+
+
+def shunting_yard(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
+    return expr_impl(tt)
 
 
 if __name__ == '__main__':

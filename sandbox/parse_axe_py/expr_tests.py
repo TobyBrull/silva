@@ -1,11 +1,22 @@
 import misc
+import parse_axe
 
+def default_parse_axe():
+    retval = parse_axe.ParseAxe()
+    retval.add_prec_level(parse_axe.PrecLevelType.INFIX_RTL, ['='])
+    retval.add_prec_level(parse_axe.PrecLevelType.INFIX_LTR, ['+', '-'])
+    retval.add_prec_level(parse_axe.PrecLevelType.INFIX_LTR, ['*', '/'])
+    retval.add_prec_level(parse_axe.PrecLevelType.PREFIX, ['+', '-'])
+    retval.add_prec_level(parse_axe.PrecLevelType.POSTFIX, ['!'])
+    retval.add_prec_level(parse_axe.PrecLevelType.INFIX_RTL, ['.'])
+    return retval
 
 class TestRunner:
     def __init__(self, parser):
         self.parser = parser
         self.test_count = 0
         self.fail_count = 0
+        self.paxe = default_parse_axe()
 
     def __enter__(self):
         return self
@@ -16,7 +27,7 @@ class TestRunner:
     def run_test(self, source_code: str, expected: str):
         self.test_count += 1
         tokenization = misc.lexer(source_code)
-        result = self.parser(tokenization)
+        result = self.parser(self.paxe, tokenization)
         if result != expected:
             self.fail_count += 1
             print(f"ERROR {source_code=} {result=} {expected=}")

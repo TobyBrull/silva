@@ -89,14 +89,3 @@ class ParseAxe:
     def binding_power(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
         e = self.op_map[op]
         return e.binding_power(prefer_prefix)
-
-
-def default_parse_axe():
-    retval = ParseAxe()
-    retval.add_prec_level(PrecLevelType.INFIX_RTL, ['='])
-    retval.add_prec_level(PrecLevelType.INFIX_LTR, ['+', '-'])
-    retval.add_prec_level(PrecLevelType.INFIX_LTR, ['*', '/'])
-    retval.add_prec_level(PrecLevelType.PREFIX, ['+', '-'])
-    retval.add_prec_level(PrecLevelType.POSTFIX, ['!'])
-    retval.add_prec_level(PrecLevelType.INFIX_RTL, ['.'])
-    return retval

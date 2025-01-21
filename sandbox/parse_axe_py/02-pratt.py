@@ -1,20 +1,21 @@
 import misc
 import expr_tests
+import parse_axe
 
 
-def pratt(tt: misc.Tokenization, min_bp: int = 0):
+def expr_impl(tt: misc.Tokenization, min_bp: int):
     x = tt.curr()
     tt.token_idx += 1
     match x:
         case misc.Token(misc.TokenType.ATOM, it):
             lhs = it
         case misc.Token(misc.TokenType.OP, '('):
-            lhs = pratt(tt, 0)
+            lhs = expr_impl(tt, 0)
             assert tt.curr().value == ')'
             tt.token_idx += 1
         case misc.Token(misc.TokenType.OP, op):
             _, r_bp = prefix_binding_power(op)
-            rhs = pratt(tt, r_bp)
+            rhs = expr_impl(tt, r_bp)
             lhs = misc.cons_str(op, rhs)
         case t:
             raise RuntimeError(f"bad token: {t}")
@@ -36,7 +37,7 @@ def pratt(tt: misc.Tokenization, min_bp: int = 0):
             tt.token_idx += 1
 
             if op == '[':
-                rhs = pratt(tt, 0)
+                rhs = expr_impl(tt, 0)
                 lhs = misc.cons_str(op, lhs, rhs)
                 assert tt.curr().value == ']'
                 tt.token_idx += 1
@@ -50,13 +51,13 @@ def pratt(tt: misc.Tokenization, min_bp: int = 0):
             tt.token_idx += 1
 
             if op == '?':
-                mhs = pratt(tt, 0)
+                mhs = expr_impl(tt, 0)
                 assert tt.curr().value == ':'
                 tt.token_idx += 1
-                rhs = pratt(tt, r_bp)
+                rhs = expr_impl(tt, r_bp)
                 lhs = misc.cons_str(op, lhs, mhs, rhs)
             else:
-                rhs = pratt(tt, r_bp)
+                rhs = expr_impl(tt, r_bp)
                 lhs = misc.cons_str(op, lhs, rhs)
 
         else:
@@ -95,6 +96,10 @@ def infix_binding_power(op: str) -> tuple[int, int] | None:
         '.': (14, 13),
     }.get(op, None)
     return bp
+
+
+def pratt(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
+    return expr_impl(tt, 0)
 
 
 if __name__ == "__main__":
