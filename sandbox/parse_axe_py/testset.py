@@ -31,13 +31,16 @@ class Testset:
         print(f"\nTesting {parser.__name__}")
         self.parser = parser
 
+        RTL = parse_axe.Assoc.RIGHT_TO_LEFT
+        LTR = parse_axe.Assoc.LEFT_TO_RIGHT
+
         self.paxe_def = parse_axe.ParseAxe()
-        self.paxe_def.add_prec_level(parse_axe.PrecLevelType.INFIX_RTL, ['='])
-        self.paxe_def.add_prec_level(parse_axe.PrecLevelType.INFIX_LTR, ['+', '-'])
-        self.paxe_def.add_prec_level(parse_axe.PrecLevelType.INFIX_LTR, ['*', '/'])
-        self.paxe_def.add_prec_level(parse_axe.PrecLevelType.PREFIX, ['+', '-'])
-        self.paxe_def.add_prec_level(parse_axe.PrecLevelType.POSTFIX, ['!'])
-        self.paxe_def.add_prec_level(parse_axe.PrecLevelType.INFIX_RTL, ['.'])
+        self.paxe_def.add_level_infix(RTL, ['='])
+        self.paxe_def.add_level_infix(LTR, ['+', '-'])
+        self.paxe_def.add_level_infix(LTR, ['*', '/'])
+        self.paxe_def.add_level_prefix(['+', '-'])
+        self.paxe_def.add_level_postfix(['!'])
+        self.paxe_def.add_level_infix(RTL, ['.'])
 
     def infix_only(self):
         with TestRunner(self.parser, self.paxe_def, "infix_only") as tr:
