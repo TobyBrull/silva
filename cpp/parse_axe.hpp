@@ -20,7 +20,6 @@
 //    A + B C + D
 //    A , B , C
 //    A + B = C ( D , E )
-//    ) ( A ) (
 //    ( ( ( A ) ) )
 //    - + A
 //    A + + - B
@@ -33,12 +32,14 @@
 //    - A !
 //    A . B !
 //    ( A + B + C )
-//    ( ( A + B ) + C)
+//    ( ( A + B ) + C )
+//    A and B or C
 //
 //    A ? B : C ? D : E
+//    A ? B ? C : D : E
 //    A = B ? C : D = E
 //    X + if A then B else C + Y
-//    X + A if B else C + Y
+//    X + A falls B sonst C + Y
 //
 // The Parse Axe algorithm assumes that the distinction into what is an Atom and what is an Op has
 // already been made somewhere else. For example, the source-code corresponding to an Atom could

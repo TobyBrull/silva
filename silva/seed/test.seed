@@ -10,15 +10,19 @@
 - A_Primary,1 = number
 
 - B_Expr =% B_Primary [
-    binary_ltr  "." "|"
-    prefix      "-" "not" "*"
-    binary_ltr  "*" "/"
-    binary_ltr  "+" "-"
-    binary_ltr  "=="
-    binary_ltr  "and"
-    binary_ltr  "or"
-    binary_rtl  "=:"
-    postfix     "!"
+    infix_ltr     "." "|"
+    prefix        "-" "not" "*"
+    infix_ltr     "*" "/"
+    infix_ltr     "+" "-"
+    infix_ltr     "=="
+    postfix_expr  FuncArgs
+    infix_ltr     "and"
+    infix_ltr     "or"
+    infix_rtl     "=:"
+    postfix       "!"
+    ternary       [ "?" ":" ] [ "falls" "sonst" ]
   ]
 - B_Primary,0 = "(" B_Expr ")"
 - B_Primary,1 =~ number string
+
+- FuncArgs = "(" B_Expr ( "," B_Expr )* ")"
