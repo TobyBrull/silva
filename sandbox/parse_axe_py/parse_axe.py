@@ -30,7 +30,8 @@ class LevelPostfixExpr:
 
 @dataclasses.dataclass
 class LevelTernary:
-    op_pairs: list[tuple[str, str]]
+    first_op: str
+    second_op: str
 
 
 type Level = LevelPrefix | LevelInfix | LevelPostfix | LevelPostfixExpr | LevelTernary
@@ -147,10 +148,9 @@ class ParseAxe:
     def add_level_postfix_expr(self, expr_str):
         self._add_prec_level(LevelPostfixExpr(expr_str))
 
-    def add_level_ternary(self, op_pairs):
-        index = self._add_prec_level(LevelTernary(op_pairs=op_pairs))
-        for op_pair in op_pairs:
-            self._add_op(op_pair[0], index, OpType.TERNARY)
+    def add_level_ternary(self, first_op, second_op):
+        index = self._add_prec_level(LevelTernary(first_op=first_op, second_op=second_op))
+        self._add_op(first_op, index, OpType.TERNARY)
 
     # To be used by parsers
 
@@ -199,13 +199,7 @@ class ParseAxe:
             return None
         level = self.prec_levels[idx].level
         assert type(level) == LevelTernary
-        second_op = None
-        for op_pair in level.op_pairs:
-            if op_pair[0] == op:
-                second_op = op_pair[1]
-                break
-        assert second_op is not None
-        return (_to_bp(idx, lo=True), second_op)
+        return (_to_bp(idx, lo=True), level.second_op)
 
     def binding_power(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
         e = self.op_map[op]

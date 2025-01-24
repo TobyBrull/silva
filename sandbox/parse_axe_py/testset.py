@@ -37,7 +37,7 @@ class Testset:
 
         self.paxe_def = parse_axe.ParseAxe()
         self.paxe_def.add_level_infix(RTL, ['='])
-        self.paxe_def.add_level_ternary([('?', ':')])
+        self.paxe_def.add_level_ternary('?', ':')
         self.paxe_def.add_level_infix(LTR, ['+', '-'])
         self.paxe_def.add_level_infix(LTR, ['*', '/'])
         self.paxe_def.add_level_prefix(['+', '-'])
