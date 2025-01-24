@@ -1,4 +1,3 @@
-* use ParseAxe in pratt parser
 * tests
     * add tests for all possible examples
     * make default ParseAxe cover all types of Level

@@ -1,4 +1,5 @@
 import misc
+import pprint
 import parse_axe
 
 
@@ -36,11 +37,16 @@ class Testset:
 
         self.paxe_def = parse_axe.ParseAxe()
         self.paxe_def.add_level_infix(RTL, ['='])
+        self.paxe_def.add_level_ternary([('?', ':')])
         self.paxe_def.add_level_infix(LTR, ['+', '-'])
         self.paxe_def.add_level_infix(LTR, ['*', '/'])
         self.paxe_def.add_level_prefix(['+', '-'])
         self.paxe_def.add_level_postfix(['!'])
+        self.paxe_def.add_level_postfix_expr('Subscript')
         self.paxe_def.add_level_infix(RTL, ['.'])
+
+        # pprint.pprint(self.paxe_def.op_map)
+        # pprint.pprint(self.paxe_def.prec_levels)
 
     def infix_only(self):
         with TestRunner(self.parser, self.paxe_def, "infix_only") as tr:
@@ -74,5 +80,9 @@ class Testset:
 
     def ternary(self):
         with TestRunner(self.parser, self.paxe_def, "ternary") as tr:
-            tr.run_test("a ? b : c ? d:  e", '(? a b (? c d e))')
-            tr.run_test("a = 0 ? b : c = d", '(= a (= (? 0 b c) d))')
+            tr.run_test("a ? b : c ? d : e", '(? a b (? c d e))')
+            tr.run_test("a ? b ? c : d : e", '(? a (? b c d) e)')
+            tr.run_test("a = b ? c : d = e", '(= a (= (? b c d) e))')
+            tr.run_test("a = b ? c = d : e = f", '(= a (= (? b (= c d) e) f))')
+            tr.run_test("a + b ? c : d + e", '(? (+ a b) c (+ d e))')
+            tr.run_test("a + b ? c + d : e + f", '(? (+ a b) (+ c d) (+ e f))')

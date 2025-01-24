@@ -30,7 +30,7 @@ class LevelPostfixExpr:
 
 @dataclasses.dataclass
 class LevelTernary:
-    ops: list[tuple[str, str]]
+    op_pairs: list[tuple[str, str]]
 
 
 type Level = LevelPrefix | LevelInfix | LevelPostfix | LevelPostfixExpr | LevelTernary
@@ -65,8 +65,8 @@ class OpMapEntry:
     infix_index: int | None = None
     ternary_index: int | None = None
 
-    def register(self, index: int, omet: OpType):
-        match omet:
+    def register(self, index: int, op_type: OpType):
+        match op_type:
             case OpType.PREFIX:
                 assert self.prefix_index is None
                 self.prefix_index = index
@@ -125,9 +125,9 @@ class ParseAxe:
         self.prec_levels.append(PrecLevel(index=index, level=level))
         return index
 
-    def _add_op(self, op: str, index: int, omet: OpType):
+    def _add_op(self, op: str, index: int, op_type: OpType):
         ome = self.op_map.setdefault(op, OpMapEntry())
-        ome.register(index, omet)
+        ome.register(index, op_type)
 
     def add_level_prefix(self, ops):
         index = self._add_prec_level(LevelPrefix(ops=ops))
@@ -147,12 +147,15 @@ class ParseAxe:
     def add_level_postfix_expr(self, expr_str):
         self._add_prec_level(LevelPostfixExpr(expr_str))
 
-    def add_level_ternary(self, ops):
-        index = self._add_prec_level(LevelTernary(ops=ops))
-        for op in ops:
-            self._add_op(op, index, OpType.TERNARY)
+    def add_level_ternary(self, op_pairs):
+        index = self._add_prec_level(LevelTernary(op_pairs=op_pairs))
+        for op_pair in op_pairs:
+            self._add_op(op_pair[0], index, OpType.TERNARY)
 
     # To be used by parsers
+
+    def __getitem__(self, op: str) -> OpMapEntry:
+        return self.op_map[op]
 
     def infix_prec(self, op: str) -> tuple[int, Assoc]:
         e = self.op_map[op]
@@ -160,6 +163,49 @@ class ParseAxe:
         prec_level = self.prec_levels[e.infix_index]
         assert type(prec_level.level) == LevelInfix
         return (e.infix_index, prec_level.level.assoc)
+
+    def pratt_prefix(self, op: str) -> int | None:
+        if op not in self.op_map:
+            return None
+        idx = self.op_map[op].prefix_index
+        if idx is None:
+            return None
+        return _to_bp(idx, lo=True)
+
+    def pratt_postfix(self, op: str) -> int | None:
+        if op not in self.op_map:
+            return None
+        idx = self.op_map[op].postfix_index
+        if idx is None:
+            return None
+        return _to_bp(idx, lo=True)
+
+    def pratt_infix(self, op: str) -> tuple[int, int] | None:
+        if op not in self.op_map:
+            return None
+        ome = self.op_map[op]
+        if ome.infix_index is None:
+            return None
+        level = self.prec_levels[ome.infix_index].level
+        assert type(level) == LevelInfix, f'{type(level)=} {op=}'
+        ltr = (level.assoc == Assoc.LEFT_TO_RIGHT)
+        return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
+
+    def pratt_ternary(self, op: str) -> tuple[int, str] | None:
+        if op not in self.op_map:
+            return None
+        idx = self.op_map[op].ternary_index
+        if idx is None:
+            return None
+        level = self.prec_levels[idx].level
+        assert type(level) == LevelTernary
+        second_op = None
+        for op_pair in level.op_pairs:
+            if op_pair[0] == op:
+                second_op = op_pair[1]
+                break
+        assert second_op is not None
+        return (_to_bp(idx, lo=True), second_op)
 
     def binding_power(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
         e = self.op_map[op]

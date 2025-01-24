@@ -3,19 +3,20 @@ import testset
 import parse_axe
 
 
-def expr_impl(tt: misc.Tokenization, min_bp: int):
+def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int):
     x = tt.curr()
     tt.token_idx += 1
     match x:
         case misc.Token(misc.TokenType.ATOM, it):
             lhs = it
         case misc.Token(misc.TokenType.OP, '('):
-            lhs = expr_impl(tt, 0)
+            lhs = expr_impl(paxe, tt, 0)
             assert tt.curr().value == ')'
             tt.token_idx += 1
         case misc.Token(misc.TokenType.OP, op):
-            _, r_bp = prefix_binding_power(op)
-            rhs = expr_impl(tt, r_bp)
+            prec = paxe.pratt_prefix(op)
+            assert prec is not None
+            rhs = expr_impl(paxe, tt, prec)
             lhs = misc.cons_str(op, rhs)
         case t:
             raise RuntimeError(f"bad token: {t}")
@@ -23,42 +24,47 @@ def expr_impl(tt: misc.Tokenization, min_bp: int):
     while True:
         if tt.is_done():
             break
+
         match tt.curr():
             case misc.Token(misc.TokenType.OP, op):
                 pass
             case t:
                 raise RuntimeError(f"bad token: {t}")
 
-        if pbp := postfix_binding_power(op):
-            l_bp, _ = pbp
-            if l_bp < min_bp:
+        if (prec := paxe.pratt_postfix(op)) is not None:
+            if prec < min_prec:
                 break
             tt.curr()
             tt.token_idx += 1
 
             if op == '[':
-                rhs = expr_impl(tt, 0)
+                rhs = expr_impl(paxe, tt, 0)
                 lhs = misc.cons_str(op, lhs, rhs)
                 assert tt.curr().value == ']'
                 tt.token_idx += 1
             else:
                 lhs = misc.cons_str(op, lhs)
 
-        elif ibp := infix_binding_power(op):
-            l_bp, r_bp = ibp
-            if l_bp < min_bp:
+        elif (res := paxe.pratt_infix(op)) is not None:
+            (left_prec, right_prec) = res
+            if left_prec < min_prec:
                 break
             tt.token_idx += 1
 
-            if op == '?':
-                mhs = expr_impl(tt, 0)
-                assert tt.curr().value == ':'
-                tt.token_idx += 1
-                rhs = expr_impl(tt, r_bp)
-                lhs = misc.cons_str(op, lhs, mhs, rhs)
-            else:
-                rhs = expr_impl(tt, r_bp)
-                lhs = misc.cons_str(op, lhs, rhs)
+            rhs = expr_impl(paxe, tt, right_prec)
+            lhs = misc.cons_str(op, lhs, rhs)
+
+        elif (res := paxe.pratt_ternary(op)) is not None:
+            (prec, second_op) = res
+            if prec < min_prec:
+                break
+            tt.token_idx += 1
+
+            mhs = expr_impl(paxe, tt, 0)
+            assert tt.curr().value == second_op
+            tt.token_idx += 1
+            rhs = expr_impl(paxe, tt, prec)
+            lhs = misc.cons_str(op, lhs, mhs, rhs)
 
         else:
             break
@@ -66,40 +72,8 @@ def expr_impl(tt: misc.Tokenization, min_bp: int):
     return lhs
 
 
-def prefix_binding_power(op: str) -> tuple[None, int]:
-    bp = {
-        '+': (None, 9),
-        '-': (None, 9),
-    }.get(op, None)
-    if bp is not None:
-        return bp
-    else:
-        raise RuntimeError(f"bad op: {op}")
-
-
-def postfix_binding_power(op: str) -> tuple[int, None] | None:
-    bp = {
-        '!': (11, None),
-        '[': (11, None),
-    }.get(op, None)
-    return bp
-
-
-def infix_binding_power(op: str) -> tuple[int, int] | None:
-    bp = {
-        '=': (2, 1),
-        '?': (4, 3),
-        '+': (5, 6),
-        '-': (5, 6),
-        '*': (7, 8),
-        '/': (7, 8),
-        '.': (14, 13),
-    }.get(op, None)
-    return bp
-
-
 def pratt(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
-    return expr_impl(tt, 0)
+    return expr_impl(paxe, tt, 0)
 
 
 if __name__ == "__main__":
