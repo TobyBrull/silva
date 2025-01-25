@@ -1,6 +1,7 @@
-* tests
-    * add tests for all possible examples
-    * make default ParseAxe cover all types of Level
-* add simple PEG parser (for PostfixExpr)
+* add O(n**2) reference parser
+* make tests exhaustive
+* support:
+    * Concat
+    * simple PEG parser (for PostfixExpr)
+    * custom parentheses
 
-* make all implementations 1-3 pass all tests
