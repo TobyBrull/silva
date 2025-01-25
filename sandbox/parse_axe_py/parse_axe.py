@@ -42,12 +42,6 @@ class LevelTernary:
 type Level = LevelPrefix | LevelInfix | LevelPostfix | LevelPostfixExpr | LevelTernary
 
 
-@dataclasses.dataclass
-class PrecLevel:
-    index: int
-    level: Level
-
-
 BINDING_POWER_INF_LEFT = 999_999
 BINDING_POWER_INF_RIGHT = 1_000_000
 
@@ -103,15 +97,13 @@ class _OpMapEntry:
             set_bits == 2 and self.prefix_index is not None and self.infix_index is not None
         )
 
-    def _shuting_yard_prec(
-        self, prefer_prefix: bool, prec_levels: list[PrecLevel]
-    ) -> tuple[int, int]:
+    def _shuting_yard_prec(self, prefer_prefix: bool, levels: list[Level]) -> tuple[int, int]:
         if self.postfix_index is not None:
             return (_to_bp(self.postfix_index, lo=True), BINDING_POWER_INF_RIGHT)
         elif self.prefix_index is not None and prefer_prefix:
             return (BINDING_POWER_INF_LEFT, _to_bp(self.prefix_index, lo=False))
         elif self.infix_index is not None:
-            level = prec_levels[self.infix_index].level
+            level = levels[self.infix_index]
             assert type(level) == LevelInfix, f'Found level {type(level)=}'
             if level.assoc == Assoc.LEFT_TO_RIGHT:
                 return (_to_bp(self.infix_index, lo=True), _to_bp(self.infix_index, lo=False))
@@ -122,14 +114,15 @@ class _OpMapEntry:
         else:
             assert False
 
+
 class ParseAxe:
     def __init__(self):
-        self.prec_levels: list[PrecLevel] = []
+        self.levels: list[Level] = []
         self.op_map: dict[str | Concat, _OpMapEntry] = {}
 
-    def _add_prec_level(self, level: Level):
-        index = len(self.prec_levels)
-        self.prec_levels.append(PrecLevel(index=index, level=level))
+    def _add_level(self, level: Level):
+        index = len(self.levels)
+        self.levels.append(level)
         return index
 
     def _add_op(self, op: str | Concat, index: int, op_type: OpType):
@@ -138,7 +131,7 @@ class ParseAxe:
 
     def shuting_yard_prec(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
         e = self.op_map[op]
-        return e._shuting_yard_prec(prefer_prefix, self.prec_levels)
+        return e._shuting_yard_prec(prefer_prefix, self.levels)
 
     def pratt_prefix(self, op: str) -> int | None:
         if op not in self.op_map:
@@ -162,7 +155,7 @@ class ParseAxe:
         ome = self.op_map[op]
         if ome.infix_index is None:
             return None
-        level = self.prec_levels[ome.infix_index].level
+        level = self.levels[ome.infix_index]
         assert type(level) == LevelInfix, f'{type(level)=} {op=}'
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
         return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
@@ -173,21 +166,21 @@ class ParseAxe:
         idx = self.op_map[op].ternary_index
         if idx is None:
             return None
-        level = self.prec_levels[idx].level
+        level = self.levels[idx]
         assert type(level) == LevelTernary
         return (_to_bp(idx, lo=True), level.second_op)
 
-    def precedence_climbing_prec(self, op: str) -> tuple[int, Assoc]:
+    def precedence_climbing_infix(self, op: str) -> tuple[int, Assoc]:
         e = self.op_map[op]
         assert e.infix_index
-        prec_level = self.prec_levels[e.infix_index]
-        assert type(prec_level.level) == LevelInfix
-        return (e.infix_index, prec_level.level.assoc)
+        level = self.levels[e.infix_index]
+        assert type(level) == LevelInfix
+        return (e.infix_index, level.assoc)
 
 
 class ParseAxeNursery:
     def __init__(self):
-        self.levels : list[Level] = []
+        self.levels: list[Level] = []
 
     def prefix(self, ops: list[str]):
         self.levels.append(LevelPrefix(ops=ops))
@@ -208,21 +201,21 @@ class ParseAxeNursery:
         retval = ParseAxe()
         for level in reversed(self.levels):
             if type(level) == LevelPrefix:
-                index = retval._add_prec_level(level)
+                index = retval._add_level(level)
                 for op in level.ops:
                     retval._add_op(op, index, OpType.PREFIX)
             elif type(level) == LevelInfix:
-                index = retval._add_prec_level(level)
+                index = retval._add_level(level)
                 for op in level.ops:
                     retval._add_op(op, index, OpType.INFIX)
             elif type(level) == LevelPostfix:
-                index = retval._add_prec_level(level)
+                index = retval._add_level(level)
                 for op in level.ops:
                     retval._add_op(op, index, OpType.POSTFIX)
             elif type(level) == LevelPostfixExpr:
-                retval._add_prec_level(level)
+                retval._add_level(level)
             elif type(level) == LevelTernary:
-                index = retval._add_prec_level(level)
+                index = retval._add_level(level)
                 retval._add_op(level.first_op, index, OpType.TERNARY)
 
         return retval
