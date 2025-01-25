@@ -98,12 +98,18 @@ class LevelPostfixExpr:
 
 
 @dataclasses.dataclass
+class LevelPostfixBracketed:
+    left_bracket: str
+    right_bracket: str
+
+
+@dataclasses.dataclass
 class LevelTernary:
     first_op: str
     second_op: str
 
 
-type Level = LevelPrefix | LevelInfix | LevelPostfix | LevelPostfixExpr | LevelTernary
+type Level = LevelPrefix | LevelInfix | LevelPostfix | LevelPostfixBracketed | LevelPostfixExpr | LevelTernary
 
 
 BINDING_POWER_INF_LEFT = 999_999
@@ -257,6 +263,9 @@ class ParseAxeNursery:
     def postfix(self, ops: list[str]):
         self.levels.append(LevelPostfix(ops=set(ops)))
 
+    def postfix_bracketed(self, left_bracket: str, right_bracket: str):
+        self.levels.append(LevelPostfixBracketed(left_bracket, right_bracket))
+
     def postfix_expr(self, expr_str: str, production: Production):
         self.levels.append(LevelPostfixExpr(expr_str, production))
 
@@ -278,6 +287,8 @@ class ParseAxeNursery:
                 index = retval._add_level(level)
                 for op in level.ops:
                     retval._add_op(op, index, OpType.POSTFIX)
+            elif type(level) == LevelPostfixExpr:
+                retval._add_level(level)
             elif type(level) == LevelPostfixExpr:
                 retval._add_level(level)
             elif type(level) == LevelTernary:

@@ -66,7 +66,7 @@ class Testset:
 
         pan = parse_axe.ParseAxeNursery()
         pan.infix(RTL, ['.'])
-        pan.postfix_expr('Subscript', parse_axe.Production("'[' Atom Oper ']'"))
+        pan.postfix_bracketed('[', ']')
         pan.postfix(['$'])
         pan.postfix(['!'])
         pan.prefix(['~'])
@@ -89,6 +89,10 @@ class Testset:
         pan.prefix(['p2'])
         pan.prefix(['p1'])
         self.paxe_hilo = pan.finish()
+
+        pan = parse_axe.ParseAxeNursery()
+        pan.postfix_expr('Subscript', parse_axe.Production("'[' Atom Oper ']'"))
+        self.paxe_expr = pan.finish()
 
         # pprint.pprint(self.paxe_def.op_map)
         # pprint.pprint(self.paxe_def.prec_levels)
