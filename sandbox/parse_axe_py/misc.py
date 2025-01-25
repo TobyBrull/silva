@@ -1,4 +1,3 @@
-import re
 import dataclasses
 from enum import Enum
 from typing import NamedTuple
@@ -22,9 +21,6 @@ class Token(NamedTuple):
     value: str
 
 
-_atom_first = set([ch for ch in '_abcdefghijklmno0123456789'])
-
-
 @dataclasses.dataclass
 class Tokenization:
     tokens: list[Token]
@@ -35,6 +31,9 @@ class Tokenization:
 
     def curr(self):
         return self.tokens[self.token_idx]
+
+
+_atom_first = set([ch for ch in '_abcdefghijklmno0123456789'])
 
 
 def lexer(input_: str) -> Tokenization:

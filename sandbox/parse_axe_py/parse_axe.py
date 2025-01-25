@@ -98,7 +98,9 @@ class OpMapEntry:
             set_bits == 2 and self.prefix_index is not None and self.infix_index is not None
         )
 
-    def _shuting_yard_prec(self, prefer_prefix: bool, prec_levels: list[PrecLevel]) -> tuple[int, int]:
+    def _shuting_yard_prec(
+        self, prefer_prefix: bool, prec_levels: list[PrecLevel]
+    ) -> tuple[int, int]:
         if self.postfix_index is not None:
             return (_to_bp(self.postfix_index, lo=True), BINDING_POWER_INF_RIGHT)
         elif self.prefix_index is not None and prefer_prefix:
@@ -184,7 +186,7 @@ class ParseAxe:
             return None
         level = self.prec_levels[ome.infix_index].level
         assert type(level) == LevelInfix, f'{type(level)=} {op=}'
-        ltr = (level.assoc == Assoc.LEFT_TO_RIGHT)
+        ltr = level.assoc == Assoc.LEFT_TO_RIGHT
         return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
 
     def pratt_ternary(self, op: str) -> tuple[int, str] | None:
