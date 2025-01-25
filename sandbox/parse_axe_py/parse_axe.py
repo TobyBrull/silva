@@ -66,7 +66,7 @@ class OpMapEntry:
     infix_index: int | None = None
     ternary_index: int | None = None
 
-    def register(self, index: int, op_type: OpType):
+    def _register(self, index: int, op_type: OpType):
         match op_type:
             case OpType.PREFIX:
                 assert self.prefix_index is None
@@ -98,7 +98,7 @@ class OpMapEntry:
             set_bits == 2 and self.prefix_index is not None and self.infix_index is not None
         )
 
-    def binding_power(self, prefer_prefix: bool, prec_levels: list[PrecLevel]) -> tuple[int, int]:
+    def _shuting_yard_prec(self, prefer_prefix: bool, prec_levels: list[PrecLevel]) -> tuple[int, int]:
         if self.postfix_index is not None:
             return (_to_bp(self.postfix_index, lo=True), BINDING_POWER_INF_RIGHT)
         elif self.prefix_index is not None and prefer_prefix:
@@ -128,7 +128,9 @@ class ParseAxe:
 
     def _add_op(self, op: str, index: int, op_type: OpType):
         ome = self.op_map.setdefault(op, OpMapEntry())
-        ome.register(index, op_type)
+        ome._register(index, op_type)
+
+    # To be used by code that uses a corresponding parser.
 
     def add_level_prefix(self, ops):
         index = self._add_prec_level(LevelPrefix(ops=ops))
@@ -152,17 +154,11 @@ class ParseAxe:
         index = self._add_prec_level(LevelTernary(first_op=first_op, second_op=second_op))
         self._add_op(first_op, index, OpType.TERNARY)
 
-    # To be used by parsers
+    # To be used by parsers.
 
-    def __getitem__(self, op: str) -> OpMapEntry:
-        return self.op_map[op]
-
-    def infix_prec(self, op: str) -> tuple[int, Assoc]:
+    def shuting_yard_prec(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
         e = self.op_map[op]
-        assert e.infix_index
-        prec_level = self.prec_levels[e.infix_index]
-        assert type(prec_level.level) == LevelInfix
-        return (e.infix_index, prec_level.level.assoc)
+        return e._shuting_yard_prec(prefer_prefix, self.prec_levels)
 
     def pratt_prefix(self, op: str) -> int | None:
         if op not in self.op_map:
@@ -201,6 +197,9 @@ class ParseAxe:
         assert type(level) == LevelTernary
         return (_to_bp(idx, lo=True), level.second_op)
 
-    def binding_power(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
+    def precedence_climbing_prec(self, op: str) -> tuple[int, Assoc]:
         e = self.op_map[op]
-        return e.binding_power(prefer_prefix, self.prec_levels)
+        assert e.infix_index
+        prec_level = self.prec_levels[e.infix_index]
+        assert type(prec_level.level) == LevelInfix
+        return (e.infix_index, prec_level.level.assoc)

@@ -11,7 +11,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, curr_prec: int) -
     while not tt.is_done():
         assert tt.curr().type == misc.TokenType.OP
         op = tt.curr().value
-        (op_prec, op_assoc) = paxe.infix_prec(op)
+        (op_prec, op_assoc) = paxe.precedence_climbing_prec(op)
         if op_prec < curr_prec:
             break
         tt.token_idx += 1

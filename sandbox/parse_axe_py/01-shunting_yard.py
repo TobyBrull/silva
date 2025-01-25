@@ -52,7 +52,7 @@ def binding_power(paxe: parse_axe.ParseAxe, token: misc.Token, prefix: bool) -> 
             case ')':
                 return 0, parse_axe.BINDING_POWER_INF_RIGHT
             case _:
-                return paxe.binding_power(token.value, prefix)
+                return paxe.shuting_yard_prec(token.value, prefix)
 
 
 def shunting_yard(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
