@@ -29,14 +29,14 @@ class _TestsetRunner:
     def _run_test(self, source_code: str, expected: str | None):
         self.index += 1
         self.testset.test_count += 1
-        tokenization = misc.make_tokenization(source_code)
-        result = self.testset.parser(self.paxe, tokenization)
+        tokens = misc.make_tokenization(source_code)
+        result = self.testset.parser(self.paxe, tokens)
         if result != expected:
             self.testset.fails.append(f'{self.name},{self.index}')
             print(
                 f"\n\n" + _red(f"ERROR") + f" ========= {self.testset.parser_name} "
                 f"========= {self.name}[{self.index}]\n{source_code=}\n"
-                f"{pprint.pformat(tokenization)}\n{result=}\n{expected=}\n"
+                f"{pprint.pformat(tokens)}\n{result=}\n{expected=}\n"
             )
 
 

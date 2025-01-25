@@ -4,7 +4,10 @@ import testset
 import parse_axe
 
 
-def reference(paxe: parse_axe.ParseAxe, tt: misc.Tokenization) -> str | None:
+def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str | None:
+    for level in reversed(paxe.levels):
+        if type(level) == parse_axe.LevelPrefix:
+            pass
     return None
 
 

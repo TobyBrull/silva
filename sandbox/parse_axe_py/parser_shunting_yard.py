@@ -56,7 +56,8 @@ def binding_power(paxe: parse_axe.ParseAxe, token: misc.Token, prefix: bool) -> 
                 return paxe.shuting_yard_prec(token.value, prefix)
 
 
-def shunting_yard(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
+def shunting_yard(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]):
+    tt = misc.Tokenization(tokens)
     return expr_impl(paxe, tt)
 
 

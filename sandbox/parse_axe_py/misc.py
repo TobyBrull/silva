@@ -21,6 +21,18 @@ class Token(NamedTuple):
     value: str
 
 
+_atom_first = set([ch for ch in '_abcdefghijklmno0123456789'])
+
+
+def make_tokenization(input_: str) -> list[Token]:
+    retval = []
+    for token_str in input_.split(' '):
+        assert token_str, f'repeated spaces not allowed in {input_=}'
+        is_atom = token_str[0] in _atom_first
+        retval.append(Token(type=TokenType.ATOM if is_atom else TokenType.OPER, value=token_str))
+    return retval
+
+
 @dataclasses.dataclass
 class Tokenization:
     tokens: list[Token]
@@ -31,16 +43,3 @@ class Tokenization:
 
     def curr(self):
         return self.tokens[self.token_idx]
-
-
-_atom_first = set([ch for ch in '_abcdefghijklmno0123456789'])
-
-
-def make_tokenization(input_: str) -> Tokenization:
-    tokens = []
-    for token_str in input_.split(' '):
-        assert token_str, f'repeated spaces not allowed in {input_=}'
-        is_atom = token_str[0] in _atom_first
-        tokens.append(Token(type=TokenType.ATOM if is_atom else TokenType.OPER, value=token_str))
-    retval = Tokenization(tokens)
-    return retval
