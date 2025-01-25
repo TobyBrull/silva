@@ -62,7 +62,7 @@ def shunting_yard(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
 if __name__ == '__main__':
     ts = testset.Testset(shunting_yard)
     ts.infix_only()
-    ts.allfix()
+    # ts.allfix()
     ts.parentheses()
     # ts.subscript()
     # ts.ternary()

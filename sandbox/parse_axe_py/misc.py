@@ -22,12 +22,7 @@ class Token(NamedTuple):
     value: str
 
 
-_regexes = [
-    ('ATOM', r'[0-9A-Za-z]'),
-    ('OP', r'[-+=?*/.![\]:()]'),
-]
-_scanner = re.compile("|".join(f"(?P<{name}>{value})" for (name, value) in _regexes))
-_types = tuple(TokenType)
+_atom_first = set([ch for ch in '_abcdefghijklmno0123456789'])
 
 
 @dataclasses.dataclass
@@ -44,10 +39,9 @@ class Tokenization:
 
 def lexer(input_: str) -> Tokenization:
     tokens = []
-    for match in _scanner.finditer(input_):
-        i = match.lastindex
-        assert i
-        text = match[i]
-        tokens.append(Token(_types[i - 1], text))
+    for token_str in input_.split(' '):
+        assert token_str, f'invalid {input_=}'
+        is_atom = token_str[0] in _atom_first
+        tokens.append(Token(type=TokenType.ATOM if is_atom else TokenType.OP, value=token_str))
     retval = Tokenization(tokens)
     return retval
