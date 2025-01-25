@@ -6,6 +6,8 @@ The code in this folder originated from the code at https://github.com/kubao/min
 ```bash
 ./run_all.py
 
+python parse_axe.py
+python parser_reference.py
 python parser_shunting_yard.py
 python parser_pratt.py
 python parser_precedence_climbing.py

@@ -1,6 +1,69 @@
 import dataclasses
 import enum
 
+import misc
+
+
+class ProductionSymbol(enum.Enum):
+    ATOM = 1
+    OPER = 2
+    PLUS = 3
+
+
+def _map_symbol(x: str) -> str | ProductionSymbol:
+    if x == "Atom":
+        return ProductionSymbol.ATOM
+    elif x == "Oper":
+        return ProductionSymbol.OPER
+    elif x == "+":
+        return ProductionSymbol.PLUS
+    else:
+        assert len(x) >= 3 and x[0] == "'" and x[-1] == "'"
+        return x[1:-1]
+
+
+class Production:
+    def __init__(self, prod_str: str):
+        parts = prod_str.split(' ')
+        self.symbols = [_map_symbol(x) for x in parts]
+
+    def matches(self, tokens: list[misc.Token]) -> bool:
+        symbol_idx = 0
+        token_idx = 0
+        while symbol_idx < len(self.symbols):
+            if token_idx >= len(tokens):
+                return False
+            symbol = self.symbols[symbol_idx]
+            assert symbol != ProductionSymbol.PLUS
+            if (
+                symbol_idx + 1 < len(self.symbols)
+                and self.symbols[symbol_idx + 1] == ProductionSymbol.PLUS
+            ):
+                has_plus = True
+                symbol_idx += 2
+            else:
+                has_plus = False
+                symbol_idx += 1
+            max_count = 100 if has_plus else 1
+            count = 0
+            while count < max_count and token_idx < len(tokens):
+                token = tokens[token_idx]
+                match symbol:
+                    case ProductionSymbol.ATOM:
+                        if not (token.type == misc.TokenType.ATOM):
+                            break
+                    case ProductionSymbol.OPER:
+                        if not (token.type == misc.TokenType.OPER):
+                            break
+                    case _ as lit:
+                        if not (token.value == lit):
+                            break
+                token_idx += 1
+                count -= 1
+            if count == 0:
+                return False
+        return True
+
 
 class Assoc(enum.Enum):
     LEFT_TO_RIGHT = 0
@@ -31,6 +94,7 @@ class LevelPostfix:
 @dataclasses.dataclass
 class LevelPostfixExpr:
     nonterminal: str
+    production: Production
 
 
 @dataclasses.dataclass
@@ -193,8 +257,8 @@ class ParseAxeNursery:
     def postfix(self, ops: list[str]):
         self.levels.append(LevelPostfix(ops=set(ops)))
 
-    def postfix_expr(self, expr_str: str):
-        self.levels.append(LevelPostfixExpr(expr_str))
+    def postfix_expr(self, expr_str: str, production: Production):
+        self.levels.append(LevelPostfixExpr(expr_str, production))
 
     def ternary(self, first_op: str, second_op: str):
         self.levels.append(LevelTernary(first_op=first_op, second_op=second_op))
@@ -222,3 +286,22 @@ class ParseAxeNursery:
                 retval._add_op(level.second_op, index, OpType.TERNARY)
 
         return retval
+
+
+def _run():
+    p1 = Production("'[' Atom + ']'")
+    assert p1.matches(misc.tokenize("[ ]")) == False
+    assert p1.matches(misc.tokenize("[ a ]"))
+    assert p1.matches(misc.tokenize("[ a b ]"))
+    assert p1.matches(misc.tokenize("[ a b c ]"))
+    assert p1.matches(misc.tokenize("[ a + c ]")) == False
+
+    p2 = Production("'[' Atom Oper Atom ']'")
+    assert p2.matches(misc.tokenize("[ ]")) == False
+    assert p2.matches(misc.tokenize("[ a ]")) == False
+    assert p2.matches(misc.tokenize("[ a + ]")) == False
+    assert p2.matches(misc.tokenize("[ a + b ]"))
+
+
+if __name__ == '__main__':
+    _run()

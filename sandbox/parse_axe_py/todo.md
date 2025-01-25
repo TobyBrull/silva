@@ -1,7 +1,7 @@
+* simple PEG parser (for PostfixExpr)
 * make tests exhaustive
 * support:
     * Concat
-    * simple PEG parser (for PostfixExpr)
     * custom parentheses
     * parentheses can be:
         * Primary:              "a + (b+c)"         -> "<+ a '(b+c)'>"

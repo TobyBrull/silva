@@ -24,7 +24,7 @@ class Token(NamedTuple):
 _atom_first = set([ch for ch in '_abcdefghijklmno0123456789'])
 
 
-def make_tokenization(input_: str) -> list[Token]:
+def tokenize(input_: str) -> list[Token]:
     retval = []
     for token_str in input_.split(' '):
         assert token_str, f'repeated spaces not allowed in {input_=}'

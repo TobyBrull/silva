@@ -30,7 +30,7 @@ class _TestsetRunner:
     def _run_test(self, source_code: str, expected: str | None):
         self.index += 1
         self.testset.test_count += 1
-        tokens = misc.make_tokenization(source_code)
+        tokens = misc.tokenize(source_code)
         try:
             result = self.testset.parser(self.paxe, tokens)
             err_msg = ''
@@ -66,7 +66,7 @@ class Testset:
 
         pan = parse_axe.ParseAxeNursery()
         pan.infix(RTL, ['.'])
-        pan.postfix_expr('Subscript')
+        pan.postfix_expr('Subscript', parse_axe.Production("'[' Atom Oper ']'"))
         pan.postfix(['$'])
         pan.postfix(['!'])
         pan.prefix(['~'])
