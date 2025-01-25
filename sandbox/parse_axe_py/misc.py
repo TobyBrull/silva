@@ -8,7 +8,7 @@ def cons_str(*args):
     if len(ll) == 1:
         return ll[0]
     else:
-        return "(" + (" ".join(str(t) for t in ll)) + ")"
+        return "{" + (" ".join(str(t) for t in ll)) + "}"
 
 
 class TokenType(enum.Enum):
