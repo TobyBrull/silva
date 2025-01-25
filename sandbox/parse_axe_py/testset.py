@@ -20,11 +20,11 @@ class TestRunner:
 
     def run_test(self, source_code: str, expected: str | None):
         self.test_count += 1
-        tokenization = misc.lexer(source_code)
+        tokenization = misc.make_tokenization(source_code)
         result = self.parser(self.paxe, tokenization)
         if result != expected:
             self.fail_count += 1
-            print(f"ERROR {source_code=} {result=} {expected=}")
+            print(f"ERROR {source_code=} {tokenization=} {result=} {expected=}")
 
 
 class Testset:

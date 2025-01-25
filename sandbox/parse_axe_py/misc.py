@@ -36,10 +36,10 @@ class Tokenization:
 _atom_first = set([ch for ch in '_abcdefghijklmno0123456789'])
 
 
-def lexer(input_: str) -> Tokenization:
+def make_tokenization(input_: str) -> Tokenization:
     tokens = []
     for token_str in input_.split(' '):
-        assert token_str, f'invalid {input_=}'
+        assert token_str, f'repeated spaces not allowed in {input_=}'
         is_atom = token_str[0] in _atom_first
         tokens.append(Token(type=TokenType.ATOM if is_atom else TokenType.OP, value=token_str))
     retval = Tokenization(tokens)

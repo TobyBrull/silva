@@ -65,7 +65,7 @@ class OpType(Enum):
 
 
 @dataclasses.dataclass
-class OpMapEntry:
+class _OpMapEntry:
     prefix_index: int | None = None
     postfix_index: int | None = None
     infix_index: int | None = None
@@ -125,7 +125,7 @@ class OpMapEntry:
 class ParseAxe:
     def __init__(self):
         self.prec_levels: list[PrecLevel] = []
-        self.op_map: dict[str | Concat, OpMapEntry] = {}
+        self.op_map: dict[str | Concat, _OpMapEntry] = {}
 
     def _add_prec_level(self, level: Level):
         index = len(self.prec_levels)
@@ -133,10 +133,8 @@ class ParseAxe:
         return index
 
     def _add_op(self, op: str | Concat, index: int, op_type: OpType):
-        ome = self.op_map.setdefault(op, OpMapEntry())
+        ome = self.op_map.setdefault(op, _OpMapEntry())
         ome._register(index, op_type)
-
-    # To be used by parsers.
 
     def shuting_yard_prec(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
         e = self.op_map[op]
