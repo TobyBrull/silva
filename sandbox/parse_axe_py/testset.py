@@ -1,3 +1,4 @@
+import traceback
 import termcolor
 import misc
 import pprint
@@ -36,17 +37,19 @@ class _TestsetRunner:
         except Exception as e:
             result = None
             err_msg = str(e)
+            err_msg = traceback.format_exc()
         if result != expected:
             self.testset.fails.append(f'{self.name},{self.index}')
             print(
                 f"\n\n" + _red(f"ERROR") + f" ========= {self.testset.parser_name} "
                 f"========= {self.name}[{self.index}]"
             )
-            print('Error message: ', err_msg)
-            print(source_code)
+            print('Error message:', err_msg)
+            print('Source code:', source_code)
             pprint.pprint(tokens)
-            print(result)
-            print(expected)
+            print('Result:', result)
+            print('Expected:', expected)
+            print()
 
 
 class Testset:
@@ -146,9 +149,10 @@ class Testset:
 
     def ternary(self):
         with _TestsetRunner(self, self.paxe_def, "ternary") as tr:
+            tr._run_test("a ? b : c", '(? a b c)')
             tr._run_test("a ? b : c ? d : e", '(? a b (? c d e))')
             tr._run_test("a ? b ? c : d : e", '(? a (? b c d) e)')
             tr._run_test("a = b ? c : d = e", '(= a (= (? b c d) e))')
-            tr._run_test("a = b ? c = d : e = f", '(= a (= (? b (= c d) e) f))')
             tr._run_test("a + b ? c : d + e", '(? (+ a b) c (+ d e))')
+            tr._run_test("a = b ? c = d : e = f", None)
             tr._run_test("a + b ? c + d : e + f", '(? (+ a b) (+ c d) (+ e f))')

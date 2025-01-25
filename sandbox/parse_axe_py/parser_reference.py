@@ -89,6 +89,71 @@ def _reduce(assoc: parse_axe.Assoc, window: int, ref_tokens: list[RefToken], f) 
     return ref_tokens
 
 
+def _reduce_ternary_impl(
+    ref_tokens: list[RefToken],
+    first_op: str,
+    second_op: str,
+    index: int,
+) -> tuple[str, int, int]:
+    assert 1 <= index and index + 3 < len(ref_tokens)
+    assert ref_tokens[index - 1].type == RefTokenType.PRIMARY
+    assert ref_tokens[index].value == first_op
+    assert ref_tokens[index + 1].type == RefTokenType.PRIMARY
+    assert ref_tokens[index + 2].value in (first_op, second_op)
+    assert ref_tokens[index + 3].type == RefTokenType.PRIMARY
+    if ref_tokens[index + 2].value == first_op:
+        sub_result, sub_begin, sub_end = _reduce_ternary_impl(
+            ref_tokens, first_op, second_op, index + 2
+        )
+        assert sub_begin == index + 1
+        assert sub_end + 1 < len(ref_tokens)
+        assert ref_tokens[sub_end].value == second_op
+        assert ref_tokens[sub_end + 1].type == RefTokenType.PRIMARY
+        return (
+            misc.cons_str(
+                first_op, ref_tokens[index - 1].value, sub_result, ref_tokens[sub_end + 1].value
+            ),
+            index - 1,
+            sub_end + 2,
+        )
+    elif ref_tokens[index + 2].value == second_op:
+        if index + 4 < len(ref_tokens) and ref_tokens[index + 4].value == first_op:
+            sub_result, sub_begin, sub_end = _reduce_ternary_impl(
+                ref_tokens, first_op, second_op, index + 4
+            )
+        else:
+            sub_result, sub_begin, sub_end = (ref_tokens[index + 3].value, index + 3, index + 4)
+        return (
+            misc.cons_str(
+                first_op, ref_tokens[index - 1].value, ref_tokens[index + 1].value, sub_result
+            ),
+            index - 1,
+            sub_end,
+        )
+    else:
+        raise Exception(f'Unexpected {ref_tokens[index+2]=}')
+
+
+def _reduce_ternary(ref_tokens: list[RefToken], level: parse_axe.LevelTernary) -> list[RefToken]:
+    first_op, second_op = level.first_op, level.second_op
+    while True:
+        changed = False
+        for i in range(len(ref_tokens)):
+            if ref_tokens[i].type == RefTokenType.TERNARY_OPEN and ref_tokens[i].value == first_op:
+                primary_str, begin, end = _reduce_ternary_impl(ref_tokens, first_op, second_op, i)
+                ref_tokens = (
+                    ref_tokens[:begin]
+                    + [RefToken(type=RefTokenType.PRIMARY, value=primary_str)]
+                    + ref_tokens[end:]
+                )
+                changed = True
+                break
+        if not changed:
+            break
+
+    return ref_tokens
+
+
 def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
     ref_tokens = _to_ref_tokens(paxe, tokens)
     for level in reversed(paxe.levels):
@@ -121,7 +186,7 @@ def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
                 return None
 
             ref_tokens = _reduce(level.assoc, 3, ref_tokens, _f)
-        if type(level) == parse_axe.LevelPostfix:
+        elif type(level) == parse_axe.LevelPostfix:
             ops = level.ops
 
             def _f(wnd: list[RefToken]):
@@ -135,10 +200,15 @@ def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
                 return None
 
             ref_tokens = _reduce(parse_axe.Assoc.LEFT_TO_RIGHT, 2, ref_tokens, _f)
-        else:
+        elif type(level) == parse_axe.LevelPostfixExpr:
             pass
-            # raise Exception(f'Unknown {level=}')
-    assert len(ref_tokens) == 1 and ref_tokens[0].type == RefTokenType.PRIMARY
+        elif type(level) == parse_axe.LevelTernary:
+            ref_tokens = _reduce_ternary(ref_tokens, level)
+        else:
+            raise Exception(f'Unknown {level=}')
+    assert len(ref_tokens) == 1 and ref_tokens[0].type == RefTokenType.PRIMARY, pprint.pformat(
+        ref_tokens
+    )
     return ref_tokens[0].value
 
 
@@ -149,7 +219,7 @@ def _run():
         ts.allfix()
         # ts.parentheses()
         # ts.subscript()
-        # ts.ternary()
+        ts.ternary()
 
 
 if __name__ == '__main__':
