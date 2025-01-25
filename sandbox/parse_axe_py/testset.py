@@ -18,6 +18,7 @@ class _TestsetRunner:
         self.index = 0
         self.paxe = paxe
         self.name = name
+        self.testset.run_tests.append(name)
 
     def __enter__(self):
         return self
@@ -46,6 +47,7 @@ class Testset:
 
         self.test_count = 0
         self.fails: list[str] = []
+        self.run_tests = []
 
         RTL = parse_axe.Assoc.RIGHT_TO_LEFT
         LTR = parse_axe.Assoc.LEFT_TO_RIGHT
@@ -84,8 +86,9 @@ class Testset:
 
     def __exit__(self, exc_type, exc_value, traceback):
         if not self.fails:
-            print(_green(f'{self.parser_name}: all {self.test_count} tests passed!'))
-        pass
+            appendix = ','.join(self.run_tests)
+            passed_str = _green(f'all {self.test_count} tests passed!')
+            print(f'{self.parser_name:20}: {passed_str:31} [{appendix}]')
 
     def infix_only(self):
         with _TestsetRunner(self, self.paxe_def, "infix_only") as tr:

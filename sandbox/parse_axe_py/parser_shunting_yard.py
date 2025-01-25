@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import dataclasses
 
 import misc
@@ -59,10 +60,14 @@ def shunting_yard(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
     return expr_impl(paxe, tt)
 
 
-if __name__ == '__main__':
+def _run():
     with testset.Testset(shunting_yard) as ts:
         ts.infix_only()
         # ts.allfix()
         ts.parentheses()
         # ts.subscript()
         # ts.ternary()
+
+
+if __name__ == '__main__':
+    _run()

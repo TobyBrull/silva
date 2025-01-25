@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import misc
 import parse_axe
 import testset
@@ -26,10 +27,14 @@ def precedence_climbing(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
     return expr_impl(paxe, tt, 0)
 
 
-if __name__ == "__main__":
+def _run():
     with testset.Testset(precedence_climbing) as ts:
         ts.infix_only()
         # ts.allfix()
         # ts.parentheses()
         # ts.subscript()
         # ts.ternary()
+
+
+if __name__ == '__main__':
+    _run()
