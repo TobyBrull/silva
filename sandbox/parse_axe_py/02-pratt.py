@@ -9,11 +9,11 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
     match x:
         case misc.Token(misc.TokenType.ATOM, it):
             lhs = it
-        case misc.Token(misc.TokenType.OP, '('):
+        case misc.Token(misc.TokenType.OPER, '('):
             lhs = expr_impl(paxe, tt, 0)
             assert tt.curr().value == ')'
             tt.token_idx += 1
-        case misc.Token(misc.TokenType.OP, op):
+        case misc.Token(misc.TokenType.OPER, op):
             prec = paxe.pratt_prefix(op)
             assert prec is not None
             assert prec >= min_prec, f'precedence order mismatch'
@@ -28,7 +28,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
             break
 
         match tt.curr():
-            case misc.Token(misc.TokenType.OP, op):
+            case misc.Token(misc.TokenType.OPER, op):
                 pass
             case t:
                 raise RuntimeError(f"bad token: {t}")
@@ -89,9 +89,9 @@ def pratt(paxe: parse_axe.ParseAxe, tt: misc.Tokenization) -> str | None:
 
 
 if __name__ == "__main__":
-    ts = testset.Testset(pratt)
-    ts.infix_only()
-    ts.allfix()
-    ts.parentheses()
-    # ts.subscript()
-    ts.ternary()
+    with testset.Testset(pratt) as ts:
+        ts.infix_only()
+        ts.allfix()
+        ts.parentheses()
+        # ts.subscript()
+        ts.ternary()

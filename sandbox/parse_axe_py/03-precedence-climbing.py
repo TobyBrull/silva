@@ -9,7 +9,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, curr_prec: int) -
     tt.token_idx += 1
 
     while not tt.is_done():
-        assert tt.curr().type == misc.TokenType.OP
+        assert tt.curr().type == misc.TokenType.OPER
         op = tt.curr().value
         (op_prec, op_assoc) = paxe.precedence_climbing_prec(op)
         if op_prec < curr_prec:
@@ -27,9 +27,9 @@ def precedence_climbing(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
 
 
 if __name__ == "__main__":
-    ts = testset.Testset(precedence_climbing)
-    ts.infix_only()
-    # ts.allfix()
-    # ts.parentheses()
-    # ts.subscript()
-    # ts.ternary()
+    with testset.Testset(precedence_climbing) as ts:
+        ts.infix_only()
+        # ts.allfix()
+        # ts.parentheses()
+        # ts.subscript()
+        # ts.ternary()

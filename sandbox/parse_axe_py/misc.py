@@ -13,7 +13,7 @@ def cons_str(*args):
 
 class TokenType(Enum):
     ATOM = 0
-    OP = 1
+    OPER = 1
 
 
 class Token(NamedTuple):
@@ -41,6 +41,6 @@ def make_tokenization(input_: str) -> Tokenization:
     for token_str in input_.split(' '):
         assert token_str, f'repeated spaces not allowed in {input_=}'
         is_atom = token_str[0] in _atom_first
-        tokens.append(Token(type=TokenType.ATOM if is_atom else TokenType.OP, value=token_str))
+        tokens.append(Token(type=TokenType.ATOM if is_atom else TokenType.OPER, value=token_str))
     retval = Tokenization(tokens)
     return retval
