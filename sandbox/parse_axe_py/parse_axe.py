@@ -8,6 +8,11 @@ class Assoc(Enum):
 
 
 @dataclasses.dataclass
+class Concat:
+    pass
+
+
+@dataclasses.dataclass
 class LevelPrefix:
     ops: list[str]
 
@@ -15,7 +20,7 @@ class LevelPrefix:
 @dataclasses.dataclass
 class LevelInfix:
     assoc: Assoc
-    ops: list[str]
+    ops: list[str | Concat]
 
 
 @dataclasses.dataclass
@@ -117,44 +122,19 @@ class OpMapEntry:
         else:
             assert False
 
-
 class ParseAxe:
     def __init__(self):
         self.prec_levels: list[PrecLevel] = []
-        self.op_map: dict[str, OpMapEntry] = {}
+        self.op_map: dict[str | Concat, OpMapEntry] = {}
 
     def _add_prec_level(self, level: Level):
         index = len(self.prec_levels)
         self.prec_levels.append(PrecLevel(index=index, level=level))
         return index
 
-    def _add_op(self, op: str, index: int, op_type: OpType):
+    def _add_op(self, op: str | Concat, index: int, op_type: OpType):
         ome = self.op_map.setdefault(op, OpMapEntry())
         ome._register(index, op_type)
-
-    # To be used by code that uses a corresponding parser.
-
-    def add_level_prefix(self, ops):
-        index = self._add_prec_level(LevelPrefix(ops=ops))
-        for op in ops:
-            self._add_op(op, index, OpType.PREFIX)
-
-    def add_level_infix(self, assoc: Assoc, ops):
-        index = self._add_prec_level(LevelInfix(assoc=assoc, ops=ops))
-        for op in ops:
-            self._add_op(op, index, OpType.INFIX)
-
-    def add_level_postfix(self, ops):
-        index = self._add_prec_level(LevelPostfix(ops=ops))
-        for op in ops:
-            self._add_op(op, index, OpType.POSTFIX)
-
-    def add_level_postfix_expr(self, expr_str):
-        self._add_prec_level(LevelPostfixExpr(expr_str))
-
-    def add_level_ternary(self, first_op, second_op):
-        index = self._add_prec_level(LevelTernary(first_op=first_op, second_op=second_op))
-        self._add_op(first_op, index, OpType.TERNARY)
 
     # To be used by parsers.
 
@@ -205,3 +185,46 @@ class ParseAxe:
         prec_level = self.prec_levels[e.infix_index]
         assert type(prec_level.level) == LevelInfix
         return (e.infix_index, prec_level.level.assoc)
+
+
+class ParseAxeNursery:
+    def __init__(self):
+        self.levels : list[Level] = []
+
+    def prefix(self, ops: list[str]):
+        self.levels.append(LevelPrefix(ops=ops))
+
+    def infix(self, assoc: Assoc, ops: list[str | Concat]):
+        self.levels.append(LevelInfix(assoc=assoc, ops=ops))
+
+    def postfix(self, ops: list[str]):
+        self.levels.append(LevelPostfix(ops=ops))
+
+    def postfix_expr(self, expr_str: str):
+        self.levels.append(LevelPostfixExpr(expr_str))
+
+    def ternary(self, first_op: str, second_op: str):
+        self.levels.append(LevelTernary(first_op=first_op, second_op=second_op))
+
+    def finish(self) -> ParseAxe:
+        retval = ParseAxe()
+        for level in reversed(self.levels):
+            if type(level) == LevelPrefix:
+                index = retval._add_prec_level(level)
+                for op in level.ops:
+                    retval._add_op(op, index, OpType.PREFIX)
+            elif type(level) == LevelInfix:
+                index = retval._add_prec_level(level)
+                for op in level.ops:
+                    retval._add_op(op, index, OpType.INFIX)
+            elif type(level) == LevelPostfix:
+                index = retval._add_prec_level(level)
+                for op in level.ops:
+                    retval._add_op(op, index, OpType.POSTFIX)
+            elif type(level) == LevelPostfixExpr:
+                retval._add_prec_level(level)
+            elif type(level) == LevelTernary:
+                index = retval._add_prec_level(level)
+                retval._add_op(level.first_op, index, OpType.TERNARY)
+
+        return retval
