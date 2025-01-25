@@ -23,7 +23,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, curr_prec: int) -
     return result
 
 
-def precedence_climbing(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]):
+def precedence_climbing(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
     tt = misc.Tokenization(tokens)
     return expr_impl(paxe, tt, 0)
 

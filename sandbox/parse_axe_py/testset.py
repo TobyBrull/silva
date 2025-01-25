@@ -30,14 +30,23 @@ class _TestsetRunner:
         self.index += 1
         self.testset.test_count += 1
         tokens = misc.make_tokenization(source_code)
-        result = self.testset.parser(self.paxe, tokens)
+        try:
+            result = self.testset.parser(self.paxe, tokens)
+            err_msg = ''
+        except Exception as e:
+            result = None
+            err_msg = str(e)
         if result != expected:
             self.testset.fails.append(f'{self.name},{self.index}')
             print(
                 f"\n\n" + _red(f"ERROR") + f" ========= {self.testset.parser_name} "
-                f"========= {self.name}[{self.index}]\n{source_code=}\n"
-                f"{pprint.pformat(tokens)}\n{result=}\n{expected=}\n"
+                f"========= {self.name}[{self.index}]"
             )
+            print('Error message: ', err_msg)
+            print(source_code)
+            pprint.pprint(tokens)
+            print(result)
+            print(expected)
 
 
 class Testset:

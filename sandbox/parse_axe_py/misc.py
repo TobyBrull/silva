@@ -1,5 +1,5 @@
 import dataclasses
-from enum import Enum
+import enum
 from typing import NamedTuple
 
 
@@ -11,7 +11,7 @@ def cons_str(*args):
         return "(" + (" ".join(str(t) for t in ll)) + ")"
 
 
-class TokenType(Enum):
+class TokenType(enum.Enum):
     ATOM = 0
     OPER = 1
 

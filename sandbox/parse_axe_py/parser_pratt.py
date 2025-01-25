@@ -82,12 +82,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
     return lhs
 
 
-def pratt(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str | None:
+def pratt(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
     tt = misc.Tokenization(tokens)
-    try:
-        return expr_impl(paxe, tt, 0)
-    except:
-        return None
+    return expr_impl(paxe, tt, 0)
 
 
 def _run():

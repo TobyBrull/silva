@@ -13,7 +13,7 @@ class Frame:
     token: str | None
 
 
-def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
+def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization) -> str:
     stack: list[Frame] = [Frame(0, None, None)]
 
     def stack_pop():
@@ -40,6 +40,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization):
 
     while len(stack) > 1:
         stack_pop()
+    assert stack[0].lhs
     return stack[0].lhs
 
 
@@ -56,7 +57,7 @@ def binding_power(paxe: parse_axe.ParseAxe, token: misc.Token, prefix: bool) -> 
                 return paxe.shuting_yard_prec(token.value, prefix)
 
 
-def shunting_yard(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]):
+def shunting_yard(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
     tt = misc.Tokenization(tokens)
     return expr_impl(paxe, tt)
 

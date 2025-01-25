@@ -1,8 +1,8 @@
 import dataclasses
-from enum import Enum
+import enum
 
 
-class Assoc(Enum):
+class Assoc(enum.Enum):
     LEFT_TO_RIGHT = 0
     RIGHT_TO_LEFT = 1
 
@@ -14,18 +14,18 @@ class Concat:
 
 @dataclasses.dataclass
 class LevelPrefix:
-    ops: list[str]
+    ops: set[str]
 
 
 @dataclasses.dataclass
 class LevelInfix:
     assoc: Assoc
-    ops: list[str | Concat]
+    ops: set[str | Concat]
 
 
 @dataclasses.dataclass
 class LevelPostfix:
-    ops: list[str]
+    ops: set[str]
 
 
 @dataclasses.dataclass
@@ -50,7 +50,7 @@ def _to_bp(index: int, lo: bool) -> int:
     return 10 * (1 + index) + (0 if lo else 1)
 
 
-class OpType(Enum):
+class OpType(enum.Enum):
     NONE = 0
     PREFIX = 1
     POSTFIX = 2
@@ -59,7 +59,7 @@ class OpType(Enum):
 
 
 @dataclasses.dataclass
-class _OpMapEntry:
+class OpMapEntry:
     prefix_index: int | None = None
     postfix_index: int | None = None
     infix_index: int | None = None
@@ -118,7 +118,7 @@ class _OpMapEntry:
 class ParseAxe:
     def __init__(self):
         self.levels: list[Level] = []
-        self.op_map: dict[str | Concat, _OpMapEntry] = {}
+        self.op_map: dict[str | Concat, OpMapEntry] = {}
 
     def _add_level(self, level: Level):
         index = len(self.levels)
@@ -126,7 +126,7 @@ class ParseAxe:
         return index
 
     def _add_op(self, op: str | Concat, index: int, op_type: OpType):
-        ome = self.op_map.setdefault(op, _OpMapEntry())
+        ome = self.op_map.setdefault(op, OpMapEntry())
         ome._register(index, op_type)
 
     def shuting_yard_prec(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
@@ -168,6 +168,8 @@ class ParseAxe:
             return None
         level = self.levels[idx]
         assert type(level) == LevelTernary
+        if level.second_op == op:
+            return None
         return (_to_bp(idx, lo=True), level.second_op)
 
     def precedence_climbing_infix(self, op: str) -> tuple[int, Assoc]:
@@ -183,13 +185,13 @@ class ParseAxeNursery:
         self.levels: list[Level] = []
 
     def prefix(self, ops: list[str]):
-        self.levels.append(LevelPrefix(ops=ops))
+        self.levels.append(LevelPrefix(ops=set(ops)))
 
     def infix(self, assoc: Assoc, ops: list[str | Concat]):
-        self.levels.append(LevelInfix(assoc=assoc, ops=ops))
+        self.levels.append(LevelInfix(assoc=assoc, ops=set(ops)))
 
     def postfix(self, ops: list[str]):
-        self.levels.append(LevelPostfix(ops=ops))
+        self.levels.append(LevelPostfix(ops=set(ops)))
 
     def postfix_expr(self, expr_str: str):
         self.levels.append(LevelPostfixExpr(expr_str))
@@ -217,5 +219,6 @@ class ParseAxeNursery:
             elif type(level) == LevelTernary:
                 index = retval._add_level(level)
                 retval._add_op(level.first_op, index, OpType.TERNARY)
+                retval._add_op(level.second_op, index, OpType.TERNARY)
 
         return retval
