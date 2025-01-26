@@ -29,7 +29,7 @@ class _TestTracker:
         self.curr_test_index = 0
 
         self.test_count = 0
-        self.fails: list[str] = []
+        self.failed = False
         self.full_test_names_attempted = set()
 
     def set_parse_axe(self, paxe: parse_axe.ParseAxe, paxe_name: str):
@@ -49,8 +49,9 @@ class _TestTracker:
         if ftn in self.full_test_names_excluded:
             return
 
-        self.curr_test_index += 1
-        self.test_count += 1
+        if self.failed:
+            return
+
         tokens = misc.tokenize(source_code)
         try:
             result = self.parser(self.curr_paxe, tokens)
@@ -60,7 +61,7 @@ class _TestTracker:
             err_msg = str(e)
             err_msg = traceback.format_exc()
         if result != expected:
-            self.fails.append(f'{self.curr_test_name},{self.curr_test_index}')
+            self.failed = True
             print(
                 f"\n\n"
                 + _red(f"ERROR")
@@ -74,9 +75,11 @@ class _TestTracker:
             print('Result:  ', result)
             print('Expected:', expected)
             print()
+        self.curr_test_index += 1
+        self.test_count += 1
 
     def print_exit_message(self):
-        if not self.fails:
+        if not self.failed:
             full_test_names_excluded = self.full_test_names_excluded.intersection(
                 self.full_test_names_attempted
             )
@@ -132,6 +135,11 @@ def basic(tt: _TestTracker):
     tt("- - f . g", '{ - { - { . f g } } }')
     tt("- 9 !", '{ - { ! 9 } }')
     tt("f . g !", '{ ! { . f g } }')
+    tt("+ f . + g", None)
+    tt("+ f . + g . + h", None)
+    tt("+ f + g", '{ + { + f } g }')
+    tt("+ f . g", '{ + { . f g } }')
+    tt("+ f + + g", '{ + { + f } { + g } }')
     tt("f ! . g !", None)
     tt("f ! . g ! . h !", None)
     tt("f + g !", '{ + f { ! g } }')

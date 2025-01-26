@@ -220,6 +220,19 @@ class ParseAxe:
     def _add_op(self, op: str | Concat, index: int, op_type: OpType):
         self.op_map.setdefault(op, OpMapEntry())._register(index, op_type)
 
+    def is_right_bracket(self, op_name: str) -> bool:
+        if op_name == self.transparent_brackets[1]:
+            return True
+        if op_name not in self.op_map:
+            return False
+        idx = self.op_map[op_name].ternary_index
+        if idx is None:
+            return False
+        for op in self.levels[idx].ops:
+            if type(op) == Ternary and op.second_name == op_name:
+                return True
+        return False
+
     def shuting_yard_prec(self, op_name: str, prefer_prefix: bool) -> tuple[int, int]:
         e = self.op_map[op_name]
         return e._shuting_yard_prec(prefer_prefix, self.levels)

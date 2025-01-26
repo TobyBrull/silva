@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import dataclasses
+import pprint
 
 import misc
 import testset
@@ -7,67 +8,160 @@ import parse_axe
 
 
 @dataclasses.dataclass(slots=True)
-class Frame:
-    min_bp: int
-    lhs: str | None
-    token: str | None
+class OperStackEntry:
+    name: str
+    prec: int
+    arity: int
+    first_atom_idx: int
+    token_indexes: list[int]
 
 
-def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization) -> str:
-    stack: list[Frame] = [Frame(0, None, None)]
+@dataclasses.dataclass(slots=True)
+class AtomStackEntry:
+    name: str
+    token_begin: int
+    token_end: int
 
-    def stack_pop():
-        popped = stack.pop()
-        stack[-1].lhs = misc.cons_str(popped.token, stack[-1].lhs, popped.lhs)
 
-    for token_t in tt.tokens:
-        token = token_t.value if token_t.value else None
-        while True:
-            (l_bp, r_bp) = binding_power(paxe, token_t, stack[-1].lhs is None)
-            if stack[-1].min_bp <= l_bp:
-                break
+def _consistent_range(tokens: list[int], token_ranges: list[tuple[int, int]]) -> tuple[int, int]:
+    all_token_ranges = []
+    for token in tokens:
+        all_token_ranges.append((token, token + 1))
+    for token_range in token_ranges:
+        all_token_ranges.append(token_range)
+    all_token_ranges = sorted(all_token_ranges)
+    for i in range(len(all_token_ranges) - 1):
+        assert all_token_ranges[i][1] == all_token_ranges[i + 1][0]
+    return all_token_ranges[0][0], all_token_ranges[-1][1]
+
+
+def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomStackEntry:
+    oper_stack: list[OperStackEntry] = []
+    atom_stack: list[AtomStackEntry] = []
+
+    def stack_pop(prec: int):
+        nonlocal atom_stack
+        # print(f'push to {prec=}')
+        # pprint.pprint(atom_stack)
+        while (len(oper_stack) >= 1) and oper_stack[-1].prec > prec:
+            arity = oper_stack[-1].arity
+            first_atom_idx = oper_stack[-1].first_atom_idx
+            assert (
+                len(atom_stack) == first_atom_idx + arity
+            ), f'{len(atom_stack)=} == {first_atom_idx=} + {arity=}'
+            new_atom_name = misc.cons_str(
+                oper_stack[-1].name, *[x.name for x in atom_stack[-arity:]]
+            )
+            token_begin, token_end = _consistent_range(
+                oper_stack[-1].token_indexes,
+                [(x.token_begin, x.token_end) for x in atom_stack[-arity:]],
+            )
+            new_atom = AtomStackEntry(
+                name=new_atom_name, token_begin=token_begin, token_end=token_end
+            )
+            atom_stack = atom_stack[:-arity]
+            atom_stack.append(new_atom)
+            oper_stack.pop()
+
+    prefix_mode = True
+    index = begin
+    while index < len(tokens):
+        token_index = index
+        token = tokens[index]
+        is_atomar = (token.type == misc.TokenType.ATOM) or (
+            prefix_mode
+            and token.type == misc.TokenType.OPER
+            and token.value == paxe.transparent_brackets[0]
+        )
+        if is_atomar:
+            if token.type == misc.TokenType.ATOM:
+                atom = AtomStackEntry(name=token.value, token_begin=index, token_end=index + 1)
             else:
-                assert len(stack) > 1
-                stack_pop()
+                assert (
+                    prefix_mode
+                    and token.type == misc.TokenType.OPER
+                    and token.value == paxe.transparent_brackets[0]
+                )
+                atom = expr_impl(paxe, tokens, index + 1)
+                assert (
+                    atom.token_end < len(tokens)
+                    and tokens[atom.token_end].value == paxe.transparent_brackets[1]
+                )
+                index = atom.token_end
+                atom.token_begin -= 1
+                atom.token_end += 1
+            atom_stack.append(atom)
+            prefix_mode = False
+        else:
+            assert token.type == misc.TokenType.OPER
+            oper_name = token.value
+            if prefix_mode:
+                prec = paxe.pratt_prefix(oper_name)
+                assert prec
+                stack_pop(prec)
+                oper = OperStackEntry(
+                    name=oper_name,
+                    prec=prec,
+                    arity=1,
+                    first_atom_idx=len(atom_stack),
+                    token_indexes=[token_index],
+                )
+            else:
+                if paxe.is_right_bracket(oper_name):
+                    break
+                elif res := paxe.pratt_postfix(oper_name):
+                    (prec, right_bracket) = res
+                    stack_pop(prec)
+                    if right_bracket is None:
+                        arity = 1
+                    else:
+                        sub_atom = expr_impl(paxe, tokens, index + 1)
+                        atom_stack.append(sub_atom)
+                        assert sub_atom.token_end
+                        index = sub_atom.token_end
+                        arity = 2
+                    oper = OperStackEntry(
+                        name=oper_name,
+                        prec=prec,
+                        arity=arity,
+                        first_atom_idx=len(atom_stack) - 1,
+                        token_indexes=[token_index],
+                    )
+                elif res := paxe.pratt_infix(oper_name):
+                    (left_prec, right_prec) = res
+                    stack_pop(left_prec)
+                    oper = OperStackEntry(
+                        name=oper_name,
+                        prec=right_prec,
+                        arity=2,
+                        first_atom_idx=len(atom_stack) - 1,
+                        token_indexes=[token_index],
+                    )
+                    prefix_mode = True
+                else:
+                    raise Exception(f'Unknown {oper_name=}')
+            oper_stack.append(oper)
+        index += 1
 
-        if token == ')':
-            assert stack[-1].token == '('
-            popped = stack.pop()
-            stack[-1].lhs = popped.lhs
-            continue
-
-        stack.append(Frame(min_bp=r_bp, lhs=None, token=token))
-
-    while len(stack) > 1:
-        stack_pop()
-    assert stack[0].lhs
-    return stack[0].lhs
-
-
-def binding_power(paxe: parse_axe.ParseAxe, token: misc.Token, prefix: bool) -> tuple[int, int]:
-    if token.type == misc.TokenType.ATOM:
-        return parse_axe.BINDING_POWER_INF_LEFT, parse_axe.BINDING_POWER_INF_RIGHT
-    elif (token.type == misc.TokenType.OPER) and (token.value == paxe.transparent_brackets[0]):
-        return parse_axe.BINDING_POWER_INF_LEFT, 0
-    elif (token.type == misc.TokenType.OPER) and (token.value == paxe.transparent_brackets[1]):
-        return 0, parse_axe.BINDING_POWER_INF_RIGHT
-    else:
-        return paxe.shuting_yard_prec(token.value, prefix)
+    stack_pop(0)
+    assert len(oper_stack) == 0, f'oper_stack not empty: {pprint.pformat(oper_stack)}'
+    assert len(atom_stack) == 1, f'atom_stack not unit: {pprint.pformat(atom_stack)}'
+    return atom_stack[0]
 
 
 def shunting_yard(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
-    tt = misc.Tokenization(tokens)
-    return expr_impl(paxe, tt)
+    retval = expr_impl(paxe, tokens, 0)
+    assert retval.token_begin == 0
+    assert retval.token_end == len(tokens)
+    return retval.name
 
 
 def _run():
     testset.execute(
         shunting_yard,
         excluded=[
-            'base/allfix',
             'base/subscript',
             'base/ternary',
-            'pq/allfix',
         ],
     )
 
