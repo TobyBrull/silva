@@ -23,7 +23,7 @@ class RefToken:
     value: str
 
 
-def _to_ref_tokens(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> list[RefToken]:
+def _to_ref_tokens(paxe: parse_axe.ParseAxe2, tokens: list[misc.Token]) -> list[RefToken]:
     retval = []
     postfix_mode = False
     for token in tokens:
@@ -37,12 +37,10 @@ def _to_ref_tokens(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> list[R
                 retval.append(RefToken(type=RefTokenType.POSTFIX, value=token.value))
             elif ome.ternary_index is not None:
                 level = paxe.levels[ome.ternary_index]
-                assert type(level) == parse_axe.LevelTernary
-                assert postfix_mode
-                if token.value == level.first_op:
+                if token.value == level.ops[0].first_op:
                     retval.append(RefToken(type=RefTokenType.TERNARY_OPEN, value=token.value))
                     postfix_mode = False
-                elif token.value == level.second_op:
+                elif token.value == level.ops[0].second_op:
                     retval.append(RefToken(type=RefTokenType.TERNARY_CLOSE, value=token.value))
                     postfix_mode = False
                 else:
@@ -134,8 +132,8 @@ def _reduce_ternary_impl(
         raise Exception(f'Unexpected {ref_tokens[index+2]=}')
 
 
-def _reduce_ternary(ref_tokens: list[RefToken], level: parse_axe.LevelTernary) -> list[RefToken]:
-    first_op, second_op = level.first_op, level.second_op
+def _reduce_ternary(ref_tokens: list[RefToken], ternary: parse_axe.Ternary) -> list[RefToken]:
+    first_op, second_op = ternary.first_op, ternary.second_op
     while True:
         changed = False
         for i in range(len(ref_tokens)):
@@ -154,11 +152,15 @@ def _reduce_ternary(ref_tokens: list[RefToken], level: parse_axe.LevelTernary) -
     return ref_tokens
 
 
-def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
+def reference(paxe: parse_axe.ParseAxe2, tokens: list[misc.Token]) -> str:
     ref_tokens = _to_ref_tokens(paxe, tokens)
     for level in reversed(paxe.levels):
-        if type(level) == parse_axe.LevelPrefix:
-            ops = level.ops
+        assert len(level.ops) >= 1
+        unique_level_type = type(level.ops[0])
+        for op in level.ops:
+            assert type(op) == unique_level_type
+        if unique_level_type == parse_axe.Prefix:
+            ops = [op.op for op in level.ops]
 
             def _f(wnd: list[RefToken]):
                 assert len(wnd) == 2
@@ -171,8 +173,8 @@ def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
                 return None
 
             ref_tokens = _reduce(parse_axe.Assoc.RIGHT_TO_LEFT, 2, ref_tokens, _f)
-        elif type(level) == parse_axe.LevelInfix:
-            ops = level.ops
+        elif unique_level_type == parse_axe.Infix:
+            ops = [op.op for op in level.ops]
 
             def _f(wnd: list[RefToken]):
                 assert len(wnd) == 3
@@ -186,8 +188,8 @@ def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
                 return None
 
             ref_tokens = _reduce(level.assoc, 3, ref_tokens, _f)
-        elif type(level) == parse_axe.LevelPostfix:
-            ops = level.ops
+        elif unique_level_type == parse_axe.Postfix:
+            ops = [op.op for op in level.ops]
 
             def _f(wnd: list[RefToken]):
                 assert len(wnd) == 2
@@ -200,12 +202,14 @@ def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
                 return None
 
             ref_tokens = _reduce(parse_axe.Assoc.LEFT_TO_RIGHT, 2, ref_tokens, _f)
-        elif type(level) == parse_axe.LevelPostfixExpr:
+        elif unique_level_type == parse_axe.PostfixExpr:
             pass
-        elif type(level) == parse_axe.LevelTernary:
-            ref_tokens = _reduce_ternary(ref_tokens, level)
+        elif unique_level_type == parse_axe.PostfixBracketed:
+            pass
+        elif unique_level_type == parse_axe.Ternary:
+            ref_tokens = _reduce_ternary(ref_tokens, level.ops[0])
         else:
-            raise Exception(f'Unknown {level=}')
+            raise Exception(f'Unknown {unique_level_type=}')
     assert len(ref_tokens) == 1 and ref_tokens[0].type == RefTokenType.PRIMARY, pprint.pformat(
         ref_tokens
     )

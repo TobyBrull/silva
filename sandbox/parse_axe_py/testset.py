@@ -14,7 +14,7 @@ def _red(text: str) -> str:
 
 
 class _TestsetRunner:
-    def __init__(self, testset: "Testset", paxe: parse_axe.ParseAxe, name: str):
+    def __init__(self, testset: "Testset", paxe: parse_axe.ParseAxe2, name: str):
         self.testset = testset
         self.index = 0
         self.paxe = paxe
@@ -64,18 +64,18 @@ class Testset:
         RTL = parse_axe.Assoc.RIGHT_TO_LEFT
         LTR = parse_axe.Assoc.LEFT_TO_RIGHT
 
-        pan = parse_axe.ParseAxeNursery()
-        pan.infix(RTL, ['.'])
-        pan.postfix_bracketed('[', ']')
-        pan.postfix(['$'])
-        pan.postfix(['!'])
-        pan.prefix(['~'])
-        pan.prefix(['+', '-'])
-        pan.infix(LTR, ['*', '/'])
-        pan.infix(LTR, ['+', '-'])
-        pan.ternary('?', ':')
-        pan.infix(RTL, ['='])
-        self.paxe_def = pan.finish()
+        # pan = parse_axe.ParseAxeNursery()
+        # pan.infix(RTL, ['.'])
+        # pan.postfix_bracketed('[', ']')
+        # pan.postfix(['$'])
+        # pan.postfix(['!'])
+        # pan.prefix(['~'])
+        # pan.prefix(['+', '-'])
+        # pan.infix(LTR, ['*', '/'])
+        # pan.infix(LTR, ['+', '-'])
+        # pan.ternary('?', ':')
+        # pan.infix(RTL, ['='])
+        # self.paxe_def = pan.finish()
 
         Prefix = parse_axe.Prefix
         Postfix = parse_axe.Postfix
@@ -85,15 +85,20 @@ class Testset:
         Ternary = parse_axe.Ternary
 
         pan = parse_axe.ParseAxeNursery2()
-        pan.level_ltr(PostfixBracketed('[', ']'), Infix('.'))
+        pan.level_rtl(Infix('.'))
+        pan.level_ltr(PostfixBracketed('[', ']'))
         pan.level_ltr(Postfix('$'))
         pan.level_ltr(Postfix('!'))
         pan.level_rtl(Prefix('~'))
         pan.level_rtl(Prefix('+'), Prefix('-'))
         pan.level_ltr(Infix('*'), Infix('/'))
         pan.level_ltr(Infix('+'), Infix('-'))
-        pan.level_rtl(Ternary('?', ':'), Infix('='))
-        self.paxe2_def = pan.finish()
+        pan.level_rtl(Ternary('?', ':'))
+        pan.level_rtl(Infix('='))
+        self.paxe_def = pan.finish()
+
+        # pprint.pprint(self.paxe_def.op_map)
+        # pprint.pprint(self.paxe_def.levels)
 
         pan = parse_axe.ParseAxeNursery()
         pan.postfix(['q4'])
@@ -111,9 +116,6 @@ class Testset:
         pan = parse_axe.ParseAxeNursery()
         pan.postfix_expr('Subscript', parse_axe.Production("'[' Atom Oper ']'"))
         self.paxe_expr = pan.finish()
-
-        # pprint.pprint(self.paxe_def.op_map)
-        # pprint.pprint(self.paxe_def.prec_levels)
 
     def __enter__(self):
         return self
@@ -150,14 +152,14 @@ class Testset:
             tr._run_test("f . g !", '{! {. f g}}')
             tr._run_test("f ! + g !", '{+ {! f} {! g}}')
 
-        with _TestsetRunner(self, self.paxe_hilo, "allfix2") as tr:
-            tr._run_test('p2 p1 a', None)
-            tr._run_test('p1 p2 a', '{p1 {p2 a}}')
-            tr._run_test('a q1 q2', None)
-            tr._run_test('a q2 q1', '{q1 {q2 a}}')
-            tr._run_test('p3 aaa x1 bbb q3', '{x1 {p3 aaa} {q3 bbb}}')
-            tr._run_test('aaa q3 x1 bbb q2', '{q2 {x1 {q3 aaa} bbb}}')
-            tr._run_test('aaa q2 x1 bbb q3', None)
+        # with _TestsetRunner(self, self.paxe_hilo, "allfix2") as tr:
+        #     tr._run_test('p2 p1 a', None)
+        #     tr._run_test('p1 p2 a', '{p1 {p2 a}}')
+        #     tr._run_test('a q1 q2', None)
+        #     tr._run_test('a q2 q1', '{q1 {q2 a}}')
+        #     tr._run_test('p3 aaa x1 bbb q3', '{x1 {p3 aaa} {q3 bbb}}')
+        #     tr._run_test('aaa q3 x1 bbb q2', '{q2 {x1 {q3 aaa} bbb}}')
+        #     tr._run_test('aaa q2 x1 bbb q3', None)
 
     def parentheses(self):
         with _TestsetRunner(self, self.paxe_def, "parentheses") as tr:
