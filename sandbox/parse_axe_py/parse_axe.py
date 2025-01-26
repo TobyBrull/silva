@@ -232,46 +232,50 @@ class ParseAxe:
         else:
             return self.transparent_brackets[1]
 
-    def shuting_yard_prec(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
-        e = self.op_map[op]
+    def shuting_yard_prec(self, op_name: str, prefer_prefix: bool) -> tuple[int, int]:
+        e = self.op_map[op_name]
         return e._shuting_yard_prec(prefer_prefix, self.levels)
 
-    def pratt_prefix(self, op: str) -> int | None:
-        if op not in self.op_map:
+    def pratt_prefix(self, op_name: str) -> int | None:
+        if op_name not in self.op_map:
             return None
-        idx = self.op_map[op].prefix_index
+        idx = self.op_map[op_name].prefix_index
         if idx is None:
             return None
         return _to_bp(idx, lo=True)
 
-    def pratt_postfix(self, op: str) -> int | None:
-        if op not in self.op_map:
+    def pratt_postfix(self, op_name: str) -> tuple[int, str | None] | None:
+        if op_name not in self.op_map:
             return None
-        idx = self.op_map[op].postfix_index
+        idx = self.op_map[op_name].postfix_index
         if idx is None:
             return None
-        return _to_bp(idx, lo=True)
+        for op in self.levels[idx].ops:
+            if type(op) == Postfix and op.name == op_name:
+                return (_to_bp(idx, lo=True), None)
+            elif type(op) == PostfixBracketed and op.left_bracket == op_name:
+                return (_to_bp(idx, lo=True), op.right_bracket)
+        return None
 
-    def pratt_infix(self, op: str) -> tuple[int, int] | None:
-        if op not in self.op_map:
+    def pratt_infix(self, op_name: str) -> tuple[int, int] | None:
+        if op_name not in self.op_map:
             return None
-        ome = self.op_map[op]
+        ome = self.op_map[op_name]
         if ome.infix_index is None:
             return None
         level = self.levels[ome.infix_index]
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
         return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
 
-    def pratt_ternary(self, op: str) -> tuple[int, str] | None:
-        if op not in self.op_map:
+    def pratt_ternary(self, op_name: str) -> tuple[int, str] | None:
+        if op_name not in self.op_map:
             return None
-        idx = self.op_map[op].ternary_index
+        idx = self.op_map[op_name].ternary_index
         if idx is None:
             return None
-        level = self.levels[idx]
-        for oo in level.ops:
-            if type(oo) == Ternary and oo.first_name == op:
-                return (_to_bp(idx, lo=True), oo.second_name)
+        for op in self.levels[idx].ops:
+            if type(op) == Ternary and op.first_name == op_name:
+                return (_to_bp(idx, lo=True), op.second_name)
         return None
 
     def precedence_climbing_infix(self, op: str) -> tuple[int, Assoc]:

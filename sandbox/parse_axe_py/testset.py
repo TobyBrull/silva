@@ -153,7 +153,7 @@ class Testset:
 
     def subscript(self):
         with _TestsetRunner(self, self.paxe_def, "subscript") as tr:
-            tr._run_test("x [ 0 ] [ 1 ]", '(Subscript (Subscript x 0) 1)')
+            tr._run_test("a [ 0 ] [ 1 ]", '{[ {[ a 0} 1}')
 
     def ternary(self):
         with _TestsetRunner(self, self.paxe_def, "ternary") as tr:

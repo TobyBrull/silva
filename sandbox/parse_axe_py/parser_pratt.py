@@ -15,7 +15,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
         tt.token_idx += 1
     elif x.type == misc.TokenType.OPER:
         prec = paxe.pratt_prefix(x.value)
-        assert prec is not None
+        assert prec is not None, f'{x=}'
         assert prec >= min_prec, f'precedence order mismatch'
         rhs = expr_impl(paxe, tt, prec)
         lhs = misc.cons_str(x.value, rhs)
@@ -33,7 +33,8 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
             case t:
                 raise RuntimeError(f"bad token: {t}")
 
-        if (prec := paxe.pratt_postfix(op)) is not None:
+        if (res := paxe.pratt_postfix(op)) is not None:
+            (prec, closing_bracket_name) = res
             assert prec <= postfix_prec, f'precedence order mismatch'
             postfix_prec = prec
             if prec < min_prec:
@@ -41,10 +42,10 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
             tt.curr()
             tt.token_idx += 1
 
-            if op == '[':
+            if closing_bracket_name is not None:
                 rhs = expr_impl(paxe, tt, 0)
                 lhs = misc.cons_str(op, lhs, rhs)
-                assert tt.curr().value == ']'
+                assert tt.curr().value == closing_bracket_name
                 tt.token_idx += 1
             else:
                 lhs = misc.cons_str(op, lhs)
@@ -91,7 +92,7 @@ def _run():
         ts.infix_only()
         ts.allfix()
         ts.parentheses()
-        # ts.subscript()
+        ts.subscript()
         ts.ternary()
 
 
