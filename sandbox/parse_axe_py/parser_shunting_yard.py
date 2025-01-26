@@ -12,8 +12,9 @@ class OperStackEntry:
     name: str
     prec: int
     arity: int
-    first_atom_idx: int
     token_indexes: list[int]
+    min_token_index: int | None = None
+    max_token_index: int | None = None
 
 
 @dataclasses.dataclass(slots=True)
@@ -44,22 +45,18 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         # print(f'push to {prec=}')
         # pprint.pprint(atom_stack)
         while (len(oper_stack) >= 1) and oper_stack[-1].prec > prec:
-            arity = oper_stack[-1].arity
-            first_atom_idx = oper_stack[-1].first_atom_idx
-            assert (
-                len(atom_stack) == first_atom_idx + arity
-            ), f'{len(atom_stack)=} == {first_atom_idx=} + {arity=}'
-            new_atom_name = misc.cons_str(
-                oper_stack[-1].name, *[x.name for x in atom_stack[-arity:]]
-            )
+            ose = oper_stack[-1]
+            new_atom_name = misc.cons_str(ose.name, *[x.name for x in atom_stack[-ose.arity :]])
             token_begin, token_end = _consistent_range(
-                oper_stack[-1].token_indexes,
-                [(x.token_begin, x.token_end) for x in atom_stack[-arity:]],
+                ose.token_indexes,
+                [(x.token_begin, x.token_end) for x in atom_stack[-ose.arity :]],
             )
+            assert (ose.min_token_index is None) or (ose.min_token_index <= token_begin)
+            assert (ose.max_token_index is None) or (token_end <= ose.max_token_index)
             new_atom = AtomStackEntry(
                 name=new_atom_name, token_begin=token_begin, token_end=token_end
             )
-            atom_stack = atom_stack[:-arity]
+            atom_stack = atom_stack[: -ose.arity]
             atom_stack.append(new_atom)
             oper_stack.pop()
 
@@ -103,8 +100,8 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     name=oper_name,
                     prec=prec,
                     arity=1,
-                    first_atom_idx=len(atom_stack),
                     token_indexes=[token_index],
+                    min_token_index=token_index,
                 )
             else:
                 if paxe.is_right_bracket(oper_name):
@@ -112,20 +109,28 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 elif res := paxe.pratt_postfix(oper_name):
                     (prec, right_bracket) = res
                     stack_pop(prec)
+                    token_indexes = []
                     if right_bracket is None:
                         arity = 1
+                        token_indexes.append(token_index)
+                        max_token_index = token_index + 1
                     else:
                         sub_atom = expr_impl(paxe, tokens, index + 1)
-                        atom_stack.append(sub_atom)
-                        assert sub_atom.token_end
+                        assert sub_atom.token_end < len(tokens)
+                        assert tokens[sub_atom.token_end].value == right_bracket
                         index = sub_atom.token_end
+                        sub_atom.token_begin -= 1
+                        sub_atom.token_end += 1
+                        max_token_index = sub_atom.token_end
+                        atom_stack.append(sub_atom)
                         arity = 2
+                        prec += 1 # PostfixBracketed is always left-to-right
                     oper = OperStackEntry(
                         name=oper_name,
                         prec=prec,
                         arity=arity,
-                        first_atom_idx=len(atom_stack) - 1,
-                        token_indexes=[token_index],
+                        token_indexes=token_indexes,
+                        max_token_index=max_token_index,
                     )
                 elif res := paxe.pratt_infix(oper_name):
                     (left_prec, right_prec) = res
@@ -134,7 +139,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                         name=oper_name,
                         prec=right_prec,
                         arity=2,
-                        first_atom_idx=len(atom_stack) - 1,
                         token_indexes=[token_index],
                     )
                     prefix_mode = True
@@ -160,7 +164,6 @@ def _run():
     testset.execute(
         shunting_yard,
         excluded=[
-            'base/subscript',
             'base/ternary',
         ],
     )

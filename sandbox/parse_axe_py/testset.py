@@ -112,8 +112,8 @@ def basic(tt: _TestTracker):
     pan.level_rtl(Infix('='))
     paxe = pan.finish()
 
-    # pprint.pprint(self.paxe_def.op_map)
-    # pprint.pprint(self.paxe_def.levels)
+    # pprint.pprint(paxe.op_map)
+    # pprint.pprint(paxe.levels)
 
     tt.set_parse_axe(paxe, "base")
 

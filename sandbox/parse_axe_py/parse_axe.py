@@ -225,12 +225,14 @@ class ParseAxe:
             return True
         if op_name not in self.op_map:
             return False
-        idx = self.op_map[op_name].ternary_index
-        if idx is None:
-            return False
-        for op in self.levels[idx].ops:
-            if type(op) == Ternary and op.second_name == op_name:
-                return True
+        if (idx := self.op_map[op_name].ternary_index) is not None:
+            for op in self.levels[idx].ops:
+                if type(op) == Ternary and op.second_name == op_name:
+                    return True
+        if (idx := self.op_map[op_name].postfix_index) is not None:
+            for op in self.levels[idx].ops:
+                if type(op) == PostfixBracketed and op.right_bracket == op_name:
+                    return True
         return False
 
     def shuting_yard_prec(self, op_name: str, prefer_prefix: bool) -> tuple[int, int]:
