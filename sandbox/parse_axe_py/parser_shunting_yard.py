@@ -124,7 +124,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                         max_token_index = sub_atom.token_end
                         atom_stack.append(sub_atom)
                         arity = 2
-                        prec += 1 # PostfixBracketed is always left-to-right
+                        prec += 1  # PostfixBracketed is always left-to-right
                     oper = OperStackEntry(
                         name=oper_name,
                         prec=prec,
@@ -142,6 +142,21 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                         token_indexes=[token_index],
                     )
                     prefix_mode = True
+                elif res := paxe.pratt_ternary(oper_name):
+                    (prec, second_op) = res
+                    stack_pop(prec)
+                    sub_atom_mid = expr_impl(paxe, tokens, index + 1)
+                    assert sub_atom_mid.token_end < len(tokens)
+                    assert tokens[sub_atom_mid.token_end].value == second_op
+                    index = sub_atom_mid.token_end
+                    second_token_index = sub_atom_mid.token_end
+                    atom_stack.append(sub_atom_mid)
+                    oper = OperStackEntry(
+                        name=oper_name,
+                        prec=prec,
+                        arity=3,
+                        token_indexes=[token_index, second_token_index],
+                    )
                 else:
                     raise Exception(f'Unknown {oper_name=}')
             oper_stack.append(oper)
@@ -161,12 +176,7 @@ def shunting_yard(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
 
 
 def _run():
-    testset.execute(
-        shunting_yard,
-        excluded=[
-            'base/ternary',
-        ],
-    )
+    testset.execute(shunting_yard)
 
 
 if __name__ == '__main__':

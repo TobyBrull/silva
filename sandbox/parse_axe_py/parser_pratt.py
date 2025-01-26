@@ -68,7 +68,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
                     break
                 tt.token_idx += 1
 
-                mhs = expr_impl(paxe, tt, prec)
+                mhs = expr_impl(paxe, tt, 0)
                 assert tt.curr().value == second_op
                 tt.token_idx += 1
                 rhs = expr_impl(paxe, tt, prec)

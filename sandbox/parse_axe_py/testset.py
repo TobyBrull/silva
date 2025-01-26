@@ -164,7 +164,7 @@ def basic(tt: _TestTracker):
     tt("a ? b ? c : d : e", '{ ? a { ? b c d } e }')
     tt("a = b ? c : d = e", '{ = a { = { ? b c d } e } }')
     tt("a + b ? c : d + e", '{ ? { + a b } c { + d e } }')
-    tt("a = b ? c = d : e = f", None)
+    tt("a = b ? c = d : e = f", '{ = a { = { ? b { = c d } e } f } }')
     tt("a + b ? c + d : e + f", '{ ? { + a b } { + c d } { + e f } }')
 
 
