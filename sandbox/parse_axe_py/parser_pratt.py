@@ -23,17 +23,11 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
         raise RuntimeError(f"bad token: {x}")
 
     postfix_prec = parse_axe.BINDING_POWER_INF_RIGHT
-    while True:
-        if tt.is_done():
-            break
+    while not tt.is_done():
+        assert tt.curr().type == misc.TokenType.OPER
+        op_name = tt.curr().value
 
-        match tt.curr():
-            case misc.Token(misc.TokenType.OPER, op):
-                pass
-            case t:
-                raise RuntimeError(f"bad token: {t}")
-
-        if (res := paxe.pratt_postfix(op)) is not None:
+        if (res := paxe.pratt_postfix(op_name)) is not None:
             (prec, closing_bracket_name) = res
             assert prec <= postfix_prec, f'precedence order mismatch'
             postfix_prec = prec
@@ -44,14 +38,14 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
 
             if closing_bracket_name is not None:
                 rhs = expr_impl(paxe, tt, 0)
-                lhs = misc.cons_str(op, lhs, rhs)
+                lhs = misc.cons_str(op_name, lhs, rhs)
                 assert tt.curr().value == closing_bracket_name
                 tt.token_idx += 1
             else:
-                lhs = misc.cons_str(op, lhs)
+                lhs = misc.cons_str(op_name, lhs)
 
         else:
-            if (res := paxe.pratt_infix(op)) is not None:
+            if (res := paxe.pratt_infix(op_name)) is not None:
                 (left_prec, right_prec) = res
                 assert right_prec <= postfix_prec, f'precedence order mismatch'
                 if left_prec < min_prec:
@@ -59,9 +53,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
                 tt.token_idx += 1
 
                 rhs = expr_impl(paxe, tt, right_prec)
-                lhs = misc.cons_str(op, lhs, rhs)
+                lhs = misc.cons_str(op_name, lhs, rhs)
 
-            elif (res := paxe.pratt_ternary(op)) is not None:
+            elif (res := paxe.pratt_ternary(op_name)) is not None:
                 (prec, second_op) = res
                 assert prec <= postfix_prec, f'precedence order mismatch'
                 if prec < min_prec:
@@ -72,7 +66,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
                 assert tt.curr().value == second_op
                 tt.token_idx += 1
                 rhs = expr_impl(paxe, tt, prec)
-                lhs = misc.cons_str(op, lhs, mhs, rhs)
+                lhs = misc.cons_str(op_name, lhs, mhs, rhs)
 
             else:
                 break
