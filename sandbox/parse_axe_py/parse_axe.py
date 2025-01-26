@@ -56,7 +56,7 @@ class Production:
                         if not (token.type == misc.TokenType.OPER):
                             break
                     case _ as lit:
-                        if not (token.value == lit):
+                        if not (token.name == lit):
                             break
                 token_idx += 1
                 count -= 1

@@ -68,7 +68,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
     prefix_mode = True
     index = begin
     while index < len(tokens):
-        tt, tn = tokens[index].type, tokens[index].value
+        tt, tn = tokens[index].type, tokens[index].name
         if tt == ATOM:
             atom_stack.append(AtomStackEntry(name=tn, token_begin=index, token_end=index + 1))
             prefix_mode = False
@@ -79,7 +79,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             atom = expr_impl(paxe, tokens, index + 1)
             assert (
                 atom.token_end < len(tokens)
-                and tokens[atom.token_end].value == paxe.transparent_brackets[1]
+                and tokens[atom.token_end].name == paxe.transparent_brackets[1]
             )
             index = atom.token_end
             atom.token_begin -= 1
@@ -117,7 +117,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             stack_pop(prec)
             sub_atom = expr_impl(paxe, tokens, index + 1)
             assert sub_atom.token_end < len(tokens)
-            assert tokens[sub_atom.token_end].value == right_bracket
+            assert tokens[sub_atom.token_end].name == right_bracket
             index = sub_atom.token_end
             sub_atom.token_begin -= 1
             sub_atom.token_end += 1
@@ -150,7 +150,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             stack_pop(prec)
             sub_atom_mid = expr_impl(paxe, tokens, index + 1)
             assert sub_atom_mid.token_end < len(tokens)
-            assert tokens[sub_atom_mid.token_end].value == second_op
+            assert tokens[sub_atom_mid.token_end].name == second_op
             first_token_index = index
             second_token_index = sub_atom_mid.token_end
             index = sub_atom_mid.token_end

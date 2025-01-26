@@ -9,12 +9,12 @@ def expr_impl(
 ) -> tuple[str, int]:
     assert index < len(tokens)
     assert tokens[index].type == misc.TokenType.ATOM
-    result = tokens[index].value
+    result = tokens[index].name
     index += 1
 
     while index < len(tokens):
         assert tokens[index].type == misc.TokenType.OPER
-        op_name = tokens[index].value
+        op_name = tokens[index].name
         res = paxe.prec_infix(op_name)
         assert res is not None
         (op_prec, used_prec) = res

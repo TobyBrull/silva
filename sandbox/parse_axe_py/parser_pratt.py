@@ -11,25 +11,25 @@ def expr_impl(
     token = tokens[index]
     index += 1
     if token.type == misc.TokenType.ATOM:
-        lhs = token.value
-    elif (token.type == misc.TokenType.OPER) and (token.value == paxe.transparent_brackets[0]):
+        lhs = token.name
+    elif (token.type == misc.TokenType.OPER) and (token.name == paxe.transparent_brackets[0]):
         lhs, index = expr_impl(paxe, tokens, index, 0)
         assert index < len(tokens)
-        assert tokens[index].value == paxe.transparent_brackets[1]
+        assert tokens[index].name == paxe.transparent_brackets[1]
         index += 1
     elif token.type == misc.TokenType.OPER:
-        prec = paxe.prec_prefix(token.value)
+        prec = paxe.prec_prefix(token.name)
         assert prec is not None, f'{token=}'
         assert prec >= min_prec, f'precedence order mismatch'
         rhs, index = expr_impl(paxe, tokens, index, prec)
-        lhs = misc.cons_str(token.value, rhs)
+        lhs = misc.cons_str(token.name, rhs)
     else:
         raise RuntimeError(f"bad token: {token}")
 
     postfix_prec = parse_axe.BINDING_POWER_INF_RIGHT
     while index < len(tokens):
         assert tokens[index].type == misc.TokenType.OPER
-        op_name = tokens[index].value
+        op_name = tokens[index].name
 
         if (prec := paxe.prec_postfix(op_name)) is not None:
             assert prec <= postfix_prec, f'precedence order mismatch'
@@ -50,7 +50,7 @@ def expr_impl(
             rhs, index = expr_impl(paxe, tokens, index, 0)
             lhs = misc.cons_str(op_name, lhs, rhs)
             assert index < len(tokens)
-            assert tokens[index].value == closing_bracket_name
+            assert tokens[index].name == closing_bracket_name
             index += 1
 
         else:
@@ -73,7 +73,7 @@ def expr_impl(
 
                 mhs, index = expr_impl(paxe, tokens, index, 0)
                 assert index < len(tokens)
-                assert tokens[index].value == second_op
+                assert tokens[index].name == second_op
                 index += 1
                 rhs, index = expr_impl(paxe, tokens, index, prec)
                 lhs = misc.cons_str(op_name, lhs, mhs, rhs)
