@@ -31,7 +31,15 @@ def expr_impl(
         assert tokens[index].type == misc.TokenType.OPER
         op_name = tokens[index].value
 
-        if (res := paxe.prec_postfix(op_name)) is not None:
+        if (prec := paxe.prec_postfix(op_name)) is not None:
+            assert prec <= postfix_prec, f'precedence order mismatch'
+            postfix_prec = prec
+            if prec < min_prec:
+                break
+            index += 1
+            lhs = misc.cons_str(op_name, lhs)
+
+        elif (res := paxe.prec_postfix_bracketed(op_name)) is not None:
             (prec, closing_bracket_name) = res
             assert prec <= postfix_prec, f'precedence order mismatch'
             postfix_prec = prec
@@ -39,14 +47,11 @@ def expr_impl(
                 break
             index += 1
 
-            if closing_bracket_name is not None:
-                rhs, index = expr_impl(paxe, tokens, index, 0)
-                lhs = misc.cons_str(op_name, lhs, rhs)
-                assert index < len(tokens)
-                assert tokens[index].value == closing_bracket_name
-                index += 1
-            else:
-                lhs = misc.cons_str(op_name, lhs)
+            rhs, index = expr_impl(paxe, tokens, index, 0)
+            lhs = misc.cons_str(op_name, lhs, rhs)
+            assert index < len(tokens)
+            assert tokens[index].value == closing_bracket_name
+            index += 1
 
         else:
             if (res := paxe.prec_infix(op_name)) is not None:

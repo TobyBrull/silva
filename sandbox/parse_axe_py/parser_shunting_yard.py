@@ -100,31 +100,35 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             )
         elif not prefix_mode and tt == OPER and paxe.is_right_bracket(tn):
             break
-        elif not prefix_mode and tt == OPER and (res := paxe.prec_postfix(tn)):
-            (prec, right_bracket) = res
+        elif not prefix_mode and tt == OPER and (prec := paxe.prec_postfix(tn)):
             stack_pop(prec)
-            token_indexes = []
-            if right_bracket is None:
-                arity = 1
-                token_indexes.append(token_index)
-                max_token_index = token_index + 1
-            else:
-                sub_atom = expr_impl(paxe, tokens, index + 1)
-                assert sub_atom.token_end < len(tokens)
-                assert tokens[sub_atom.token_end].value == right_bracket
-                index = sub_atom.token_end
-                sub_atom.token_begin -= 1
-                sub_atom.token_end += 1
-                max_token_index = sub_atom.token_end
-                atom_stack.append(sub_atom)
-                arity = 2
-                prec += 1  # PostfixBracketed is always left-to-right
             oper_stack.append(
                 OperStackEntry(
                     name=tn,
                     prec=prec,
-                    arity=arity,
-                    token_indexes=token_indexes,
+                    arity=1,
+                    token_indexes=[token_index],
+                    max_token_index=token_index + 1,
+                )
+            )
+        elif not prefix_mode and tt == OPER and (res := paxe.prec_postfix_bracketed(tn)):
+            (prec, right_bracket) = res
+            stack_pop(prec)
+            sub_atom = expr_impl(paxe, tokens, index + 1)
+            assert sub_atom.token_end < len(tokens)
+            assert tokens[sub_atom.token_end].value == right_bracket
+            index = sub_atom.token_end
+            sub_atom.token_begin -= 1
+            sub_atom.token_end += 1
+            max_token_index = sub_atom.token_end
+            atom_stack.append(sub_atom)
+            prec += 1  # PostfixBracketed is always left-to-right
+            oper_stack.append(
+                OperStackEntry(
+                    name=tn,
+                    prec=prec,
+                    arity=2,
+                    token_indexes=[],
                     max_token_index=max_token_index,
                 )
             )
