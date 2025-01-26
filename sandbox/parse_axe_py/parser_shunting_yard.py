@@ -68,13 +68,14 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
     prefix_mode = True
     index = begin
     while index < len(tokens):
-        token_index = index
         tt, tn = tokens[index].type, tokens[index].value
         if tt == ATOM:
-            atom = AtomStackEntry(name=tn, token_begin=index, token_end=index + 1)
-            atom_stack.append(atom)
+            atom_stack.append(AtomStackEntry(name=tn, token_begin=index, token_end=index + 1))
             prefix_mode = False
-        elif prefix_mode and tt == OPER and tn == paxe.transparent_brackets[0]:
+            index += 1
+            continue
+        assert tt == OPER
+        if prefix_mode and tn == paxe.transparent_brackets[0]:
             atom = expr_impl(paxe, tokens, index + 1)
             assert (
                 atom.token_end < len(tokens)
@@ -85,7 +86,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             atom.token_end += 1
             atom_stack.append(atom)
             prefix_mode = False
-        elif prefix_mode and tt == OPER:
+        elif prefix_mode:
             prec = paxe.prec_prefix(tn)
             assert prec
             stack_pop(prec)
@@ -94,24 +95,24 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     name=tn,
                     prec=prec,
                     arity=1,
-                    token_indexes=[token_index],
-                    min_token_index=token_index,
+                    token_indexes=[index],
+                    min_token_index=index,
                 )
             )
-        elif not prefix_mode and tt == OPER and paxe.is_right_bracket(tn):
+        elif not prefix_mode and paxe.is_right_bracket(tn):
             break
-        elif not prefix_mode and tt == OPER and (prec := paxe.prec_postfix(tn)):
+        elif not prefix_mode and (prec := paxe.prec_postfix(tn)):
             stack_pop(prec)
             oper_stack.append(
                 OperStackEntry(
                     name=tn,
                     prec=prec,
                     arity=1,
-                    token_indexes=[token_index],
-                    max_token_index=token_index + 1,
+                    token_indexes=[index],
+                    max_token_index=index + 1,
                 )
             )
-        elif not prefix_mode and tt == OPER and (res := paxe.prec_postfix_bracketed(tn)):
+        elif not prefix_mode and (res := paxe.prec_postfix_bracketed(tn)):
             (prec, right_bracket) = res
             stack_pop(prec)
             sub_atom = expr_impl(paxe, tokens, index + 1)
@@ -132,7 +133,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     max_token_index=max_token_index,
                 )
             )
-        elif not prefix_mode and tt == OPER and (res := paxe.prec_infix(tn)):
+        elif not prefix_mode and (res := paxe.prec_infix(tn)):
             (left_prec, right_prec) = res
             stack_pop(left_prec)
             oper_stack.append(
@@ -140,25 +141,26 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     name=tn,
                     prec=right_prec,
                     arity=2,
-                    token_indexes=[token_index],
+                    token_indexes=[index],
                 )
             )
             prefix_mode = True
-        elif not prefix_mode and tt == OPER and (res := paxe.prec_ternary(tn)):
+        elif not prefix_mode and (res := paxe.prec_ternary(tn)):
             (prec, second_op) = res
             stack_pop(prec)
             sub_atom_mid = expr_impl(paxe, tokens, index + 1)
             assert sub_atom_mid.token_end < len(tokens)
             assert tokens[sub_atom_mid.token_end].value == second_op
-            index = sub_atom_mid.token_end
+            first_token_index = index
             second_token_index = sub_atom_mid.token_end
+            index = sub_atom_mid.token_end
             atom_stack.append(sub_atom_mid)
             oper_stack.append(
                 OperStackEntry(
                     name=tn,
                     prec=prec,
                     arity=3,
-                    token_indexes=[token_index, second_token_index],
+                    token_indexes=[first_token_index, second_token_index],
                 )
             )
         else:
