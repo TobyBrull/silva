@@ -68,7 +68,7 @@ class Testset:
         Infix = parse_axe.Infix
         Ternary = parse_axe.Ternary
 
-        pan = parse_axe.ParseAxeNursery2()
+        pan = parse_axe.ParseAxeNursery()
         pan.level_rtl(Infix('.'))
         pan.level_ltr(PostfixBracketed('[', ']'))
         pan.level_ltr(Postfix('$'))
@@ -84,7 +84,7 @@ class Testset:
         # pprint.pprint(self.paxe_def.op_map)
         # pprint.pprint(self.paxe_def.levels)
 
-        pan = parse_axe.ParseAxeNursery2()
+        pan = parse_axe.ParseAxeNursery()
         pan.level_ltr(Postfix('q4'))
         pan.level_ltr(Postfix('q3'))
         pan.level_rtl(Prefix('p4'))
@@ -97,7 +97,7 @@ class Testset:
         pan.level_rtl(Prefix('p1'))
         self.paxe_hilo = pan.finish()
 
-        pan = parse_axe.ParseAxeNursery2()
+        pan = parse_axe.ParseAxeNursery()
         pan.level_ltr(PostfixExpr('Subscript', parse_axe.Production("'[' Atom Oper ']'")))
         self.paxe_expr = pan.finish()
 

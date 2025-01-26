@@ -7,21 +7,20 @@ import parse_axe
 def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) -> str:
     x = tt.curr()
     tt.token_idx += 1
-    match x:
-        case misc.Token(misc.TokenType.ATOM, it):
-            lhs = it
-        case misc.Token(misc.TokenType.OPER, '('):
-            lhs = expr_impl(paxe, tt, 0)
-            assert tt.curr().value == ')'
-            tt.token_idx += 1
-        case misc.Token(misc.TokenType.OPER, op):
-            prec = paxe.pratt_prefix(op)
-            assert prec is not None
-            assert prec >= min_prec, f'precedence order mismatch'
-            rhs = expr_impl(paxe, tt, prec)
-            lhs = misc.cons_str(op, rhs)
-        case t:
-            raise RuntimeError(f"bad token: {t}")
+    if x.type == misc.TokenType.ATOM:
+        lhs = x.value
+    elif (x.type == misc.TokenType.OPER) and (x.value == paxe.transparent_left_bracket()):
+        lhs = expr_impl(paxe, tt, 0)
+        assert tt.curr().value == paxe.transparent_right_bracket()
+        tt.token_idx += 1
+    elif x.type == misc.TokenType.OPER:
+        prec = paxe.pratt_prefix(x.value)
+        assert prec is not None
+        assert prec >= min_prec, f'precedence order mismatch'
+        rhs = expr_impl(paxe, tt, prec)
+        lhs = misc.cons_str(x.value, rhs)
+    else:
+        raise RuntimeError(f"bad token: {x}")
 
     postfix_prec = parse_axe.BINDING_POWER_INF_RIGHT
     while True:

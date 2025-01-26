@@ -37,10 +37,10 @@ def _to_ref_tokens(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> list[R
                 retval.append(RefToken(type=RefTokenType.POSTFIX, value=token.value))
             elif ome.ternary_index is not None:
                 level = paxe.levels[ome.ternary_index]
-                if token.value == level.ops[0].first_op:
+                if token.value == level.ops[0].first_name:
                     retval.append(RefToken(type=RefTokenType.TERNARY_OPEN, value=token.value))
                     postfix_mode = False
-                elif token.value == level.ops[0].second_op:
+                elif token.value == level.ops[0].second_name:
                     retval.append(RefToken(type=RefTokenType.TERNARY_CLOSE, value=token.value))
                     postfix_mode = False
                 else:
@@ -133,7 +133,7 @@ def _reduce_ternary_impl(
 
 
 def _reduce_ternary(ref_tokens: list[RefToken], ternary: parse_axe.Ternary) -> list[RefToken]:
-    first_op, second_op = ternary.first_op, ternary.second_op
+    first_op, second_op = ternary.first_name, ternary.second_name
     while True:
         changed = False
         for i in range(len(ref_tokens)):
@@ -160,7 +160,7 @@ def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
         for op in level.ops:
             assert type(op) == unique_level_type
         if unique_level_type == parse_axe.Prefix:
-            ops = [op.op for op in level.ops]
+            ops = [op.name for op in level.ops]
 
             def _f(wnd: list[RefToken]):
                 assert len(wnd) == 2
@@ -174,7 +174,7 @@ def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
 
             ref_tokens = _reduce(parse_axe.Assoc.RIGHT_TO_LEFT, 2, ref_tokens, _f)
         elif unique_level_type == parse_axe.Infix:
-            ops = [op.op for op in level.ops]
+            ops = [op.name for op in level.ops]
 
             def _f(wnd: list[RefToken]):
                 assert len(wnd) == 3
@@ -189,7 +189,7 @@ def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
 
             ref_tokens = _reduce(level.assoc, 3, ref_tokens, _f)
         elif unique_level_type == parse_axe.Postfix:
-            ops = [op.op for op in level.ops]
+            ops = [op.name for op in level.ops]
 
             def _f(wnd: list[RefToken]):
                 assert len(wnd) == 2
