@@ -299,6 +299,125 @@ class ParseAxeNursery:
         return retval
 
 
+@dataclasses.dataclass
+class Prefix:
+    op: str
+
+
+@dataclasses.dataclass
+class Infix:
+    op: str | Concat
+
+
+@dataclasses.dataclass
+class Postfix:
+    op: str
+
+
+@dataclasses.dataclass
+class PostfixExpr:
+    nonterminal: str
+    production: Production
+
+
+@dataclasses.dataclass
+class PostfixBracketed:
+    left_bracket: str
+    right_bracket: str
+
+
+@dataclasses.dataclass
+class Ternary:
+    first_op: str
+    second_op: str
+
+
+LtrOp = Infix | Ternary | Postfix | PostfixExpr | PostfixBracketed
+RtlOp = Infix | Ternary | Prefix
+
+
+class ParseAxe2:
+    def __init__(self):
+        self.levels: list[Level] = []
+        self.op_map: dict[str | Concat, OpMapEntry] = {}
+
+    def _add_level(self, level: Level):
+        index = len(self.levels)
+        self.levels.append(level)
+        return index
+
+    def _add_op(self, op: str | Concat, index: int, op_type: OpType):
+        ome = self.op_map.setdefault(op, OpMapEntry())
+        ome._register(index, op_type)
+
+    def shuting_yard_prec(self, op: str, prefer_prefix: bool) -> tuple[int, int]:
+        e = self.op_map[op]
+        return e._shuting_yard_prec(prefer_prefix, self.levels)
+
+    def pratt_prefix(self, op: str) -> int | None:
+        if op not in self.op_map:
+            return None
+        idx = self.op_map[op].prefix_index
+        if idx is None:
+            return None
+        return _to_bp(idx, lo=True)
+
+    def pratt_postfix(self, op: str) -> int | None:
+        if op not in self.op_map:
+            return None
+        idx = self.op_map[op].postfix_index
+        if idx is None:
+            return None
+        return _to_bp(idx, lo=True)
+
+    def pratt_infix(self, op: str) -> tuple[int, int] | None:
+        if op not in self.op_map:
+            return None
+        ome = self.op_map[op]
+        if ome.infix_index is None:
+            return None
+        level = self.levels[ome.infix_index]
+        assert type(level) == LevelInfix, f'{type(level)=} {op=}'
+        ltr = level.assoc == Assoc.LEFT_TO_RIGHT
+        return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
+
+    def pratt_ternary(self, op: str) -> tuple[int, str] | None:
+        if op not in self.op_map:
+            return None
+        idx = self.op_map[op].ternary_index
+        if idx is None:
+            return None
+        level = self.levels[idx]
+        assert type(level) == LevelTernary
+        if level.second_op == op:
+            return None
+        return (_to_bp(idx, lo=True), level.second_op)
+
+    def precedence_climbing_infix(self, op: str) -> tuple[int, Assoc]:
+        e = self.op_map[op]
+        assert e.infix_index
+        level = self.levels[e.infix_index]
+        assert type(level) == LevelInfix
+        return (e.infix_index, level.assoc)
+
+
+class ParseAxeNursery2:
+    def __init__(self):
+        self.levels: list[tuple[Assoc, list[LtrOp | RtlOp]]] = []
+
+    def level_ltr(self, *ops: LtrOp):
+        self.levels.append((Assoc.LEFT_TO_RIGHT, [x for x in ops if x]))
+
+    def level_rtl(self, *ops: RtlOp):
+        self.levels.append((Assoc.RIGHT_TO_LEFT, [x for x in ops if x]))
+
+    def finish(self) -> ParseAxe2:
+        retval = ParseAxe2()
+        for level in reversed(self.levels):
+            pass
+        return retval
+
+
 def _run():
     p1 = Production("'[' Atom + ']'")
     assert p1.matches(misc.tokenize("[ ]")) == False

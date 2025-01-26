@@ -77,6 +77,24 @@ class Testset:
         pan.infix(RTL, ['='])
         self.paxe_def = pan.finish()
 
+        Prefix = parse_axe.Prefix
+        Postfix = parse_axe.Postfix
+        PostfixExpr = parse_axe.PostfixExpr
+        PostfixBracketed = parse_axe.PostfixBracketed
+        Infix = parse_axe.Infix
+        Ternary = parse_axe.Ternary
+
+        pan = parse_axe.ParseAxeNursery2()
+        pan.level_ltr(PostfixBracketed('[', ']'), Infix('.'))
+        pan.level_ltr(Postfix('$'))
+        pan.level_ltr(Postfix('!'))
+        pan.level_rtl(Prefix('~'))
+        pan.level_rtl(Prefix('+'), Prefix('-'))
+        pan.level_ltr(Infix('*'), Infix('/'))
+        pan.level_ltr(Infix('+'), Infix('-'))
+        pan.level_rtl(Ternary('?', ':'), Infix('='))
+        self.paxe2_def = pan.finish()
+
         pan = parse_axe.ParseAxeNursery()
         pan.postfix(['q4'])
         pan.postfix(['q3'])
