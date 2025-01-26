@@ -61,22 +61,6 @@ class Testset:
         self.fails: list[str] = []
         self.run_tests = []
 
-        RTL = parse_axe.Assoc.RIGHT_TO_LEFT
-        LTR = parse_axe.Assoc.LEFT_TO_RIGHT
-
-        # pan = parse_axe.ParseAxeNursery()
-        # pan.infix(RTL, ['.'])
-        # pan.postfix_bracketed('[', ']')
-        # pan.postfix(['$'])
-        # pan.postfix(['!'])
-        # pan.prefix(['~'])
-        # pan.prefix(['+', '-'])
-        # pan.infix(LTR, ['*', '/'])
-        # pan.infix(LTR, ['+', '-'])
-        # pan.ternary('?', ':')
-        # pan.infix(RTL, ['='])
-        # self.paxe_def = pan.finish()
-
         Prefix = parse_axe.Prefix
         Postfix = parse_axe.Postfix
         PostfixExpr = parse_axe.PostfixExpr
@@ -100,21 +84,21 @@ class Testset:
         # pprint.pprint(self.paxe_def.op_map)
         # pprint.pprint(self.paxe_def.levels)
 
-        pan = parse_axe.ParseAxeNursery()
-        pan.postfix(['q4'])
-        pan.postfix(['q3'])
-        pan.prefix(['p4'])
-        pan.prefix(['p3'])
-        pan.infix(RTL, ['x2'])
-        pan.infix(LTR, ['x1'])
-        pan.postfix(['q2'])
-        pan.postfix(['q1'])
-        pan.prefix(['p2'])
-        pan.prefix(['p1'])
+        pan = parse_axe.ParseAxeNursery2()
+        pan.level_ltr(Postfix('q4'))
+        pan.level_ltr(Postfix('q3'))
+        pan.level_rtl(Prefix('p4'))
+        pan.level_rtl(Prefix('p3'))
+        pan.level_rtl(Infix('x2'))
+        pan.level_ltr(Infix('x1'))
+        pan.level_ltr(Postfix('q2'))
+        pan.level_ltr(Postfix('q1'))
+        pan.level_rtl(Prefix('p2'))
+        pan.level_rtl(Prefix('p1'))
         self.paxe_hilo = pan.finish()
 
-        pan = parse_axe.ParseAxeNursery()
-        pan.postfix_expr('Subscript', parse_axe.Production("'[' Atom Oper ']'"))
+        pan = parse_axe.ParseAxeNursery2()
+        pan.level_ltr(PostfixExpr('Subscript', parse_axe.Production("'[' Atom Oper ']'")))
         self.paxe_expr = pan.finish()
 
     def __enter__(self):
@@ -152,14 +136,14 @@ class Testset:
             tr._run_test("f . g !", '{! {. f g}}')
             tr._run_test("f ! + g !", '{+ {! f} {! g}}')
 
-        # with _TestsetRunner(self, self.paxe_hilo, "allfix2") as tr:
-        #     tr._run_test('p2 p1 a', None)
-        #     tr._run_test('p1 p2 a', '{p1 {p2 a}}')
-        #     tr._run_test('a q1 q2', None)
-        #     tr._run_test('a q2 q1', '{q1 {q2 a}}')
-        #     tr._run_test('p3 aaa x1 bbb q3', '{x1 {p3 aaa} {q3 bbb}}')
-        #     tr._run_test('aaa q3 x1 bbb q2', '{q2 {x1 {q3 aaa} bbb}}')
-        #     tr._run_test('aaa q2 x1 bbb q3', None)
+        with _TestsetRunner(self, self.paxe_hilo, "allfix2") as tr:
+            tr._run_test('p2 p1 a', None)
+            tr._run_test('p1 p2 a', '{p1 {p2 a}}')
+            tr._run_test('a q1 q2', None)
+            tr._run_test('a q2 q1', '{q1 {q2 a}}')
+            tr._run_test('p3 aaa x1 bbb q3', '{x1 {p3 aaa} {q3 bbb}}')
+            tr._run_test('aaa q3 x1 bbb q2', '{q2 {x1 {q3 aaa} bbb}}')
+            tr._run_test('aaa q2 x1 bbb q3', None)
 
     def parentheses(self):
         with _TestsetRunner(self, self.paxe_def, "parentheses") as tr:
