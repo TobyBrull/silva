@@ -8,30 +8,30 @@ def expr_impl(
     paxe: parse_axe.ParseAxe, tokens: list[misc.Token], index: int, min_prec: int
 ) -> tuple[str, int]:
     assert index < len(tokens)
-    x = tokens[index]
+    token = tokens[index]
     index += 1
-    if x.type == misc.TokenType.ATOM:
-        lhs = x.value
-    elif (x.type == misc.TokenType.OPER) and (x.value == paxe.transparent_brackets[0]):
+    if token.type == misc.TokenType.ATOM:
+        lhs = token.value
+    elif (token.type == misc.TokenType.OPER) and (token.value == paxe.transparent_brackets[0]):
         lhs, index = expr_impl(paxe, tokens, index, 0)
         assert index < len(tokens)
         assert tokens[index].value == paxe.transparent_brackets[1]
         index += 1
-    elif x.type == misc.TokenType.OPER:
-        prec = paxe.pratt_prefix(x.value)
-        assert prec is not None, f'{x=}'
+    elif token.type == misc.TokenType.OPER:
+        prec = paxe.prec_prefix(token.value)
+        assert prec is not None, f'{token=}'
         assert prec >= min_prec, f'precedence order mismatch'
         rhs, index = expr_impl(paxe, tokens, index, prec)
-        lhs = misc.cons_str(x.value, rhs)
+        lhs = misc.cons_str(token.value, rhs)
     else:
-        raise RuntimeError(f"bad token: {x}")
+        raise RuntimeError(f"bad token: {token}")
 
     postfix_prec = parse_axe.BINDING_POWER_INF_RIGHT
     while index < len(tokens):
         assert tokens[index].type == misc.TokenType.OPER
         op_name = tokens[index].value
 
-        if (res := paxe.pratt_postfix(op_name)) is not None:
+        if (res := paxe.prec_postfix(op_name)) is not None:
             (prec, closing_bracket_name) = res
             assert prec <= postfix_prec, f'precedence order mismatch'
             postfix_prec = prec
@@ -49,7 +49,7 @@ def expr_impl(
                 lhs = misc.cons_str(op_name, lhs)
 
         else:
-            if (res := paxe.pratt_infix(op_name)) is not None:
+            if (res := paxe.prec_infix(op_name)) is not None:
                 (left_prec, right_prec) = res
                 assert right_prec <= postfix_prec, f'precedence order mismatch'
                 if left_prec < min_prec:
@@ -59,7 +59,7 @@ def expr_impl(
                 rhs, index = expr_impl(paxe, tokens, index, right_prec)
                 lhs = misc.cons_str(op_name, lhs, rhs)
 
-            elif (res := paxe.pratt_ternary(op_name)) is not None:
+            elif (res := paxe.prec_ternary(op_name)) is not None:
                 (prec, second_op) = res
                 assert prec <= postfix_prec, f'precedence order mismatch'
                 if prec < min_prec:

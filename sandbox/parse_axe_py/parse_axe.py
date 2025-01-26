@@ -235,7 +235,7 @@ class ParseAxe:
                     return True
         return False
 
-    def pratt_prefix(self, op_name: str) -> int | None:
+    def prec_prefix(self, op_name: str) -> int | None:
         if op_name not in self.op_map:
             return None
         idx = self.op_map[op_name].prefix_index
@@ -243,7 +243,7 @@ class ParseAxe:
             return None
         return _to_bp(idx, lo=True)
 
-    def pratt_postfix(self, op_name: str) -> tuple[int, str | None] | None:
+    def prec_postfix(self, op_name: str) -> tuple[int, str | None] | None:
         if op_name not in self.op_map:
             return None
         idx = self.op_map[op_name].postfix_index
@@ -256,7 +256,7 @@ class ParseAxe:
                 return (_to_bp(idx, lo=True), op.right_bracket)
         return None
 
-    def pratt_infix(self, op_name: str) -> tuple[int, int] | None:
+    def prec_infix(self, op_name: str) -> tuple[int, int] | None:
         if op_name not in self.op_map:
             return None
         ome = self.op_map[op_name]
@@ -266,7 +266,7 @@ class ParseAxe:
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
         return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
 
-    def pratt_ternary(self, op_name: str) -> tuple[int, str] | None:
+    def prec_ternary(self, op_name: str) -> tuple[int, str] | None:
         if op_name not in self.op_map:
             return None
         idx = self.op_map[op_name].ternary_index
@@ -276,12 +276,6 @@ class ParseAxe:
             if type(op) == Ternary and op.first_name == op_name:
                 return (_to_bp(idx, lo=True), op.second_name)
         return None
-
-    def precedence_climbing_infix(self, op: str) -> tuple[int, Assoc]:
-        e = self.op_map[op]
-        assert e.infix_index
-        level = self.levels[e.infix_index]
-        return (e.infix_index, level.assoc)
 
 
 class ParseAxeNursery:

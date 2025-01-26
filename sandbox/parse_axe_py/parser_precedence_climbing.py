@@ -15,11 +15,12 @@ def expr_impl(
     while index < len(tokens):
         assert tokens[index].type == misc.TokenType.OPER
         op_name = tokens[index].value
-        (op_prec, op_assoc) = paxe.precedence_climbing_infix(op_name)
+        res = paxe.prec_infix(op_name)
+        assert res is not None
+        (op_prec, used_prec) = res
         if op_prec < curr_prec:
             break
         index += 1
-        used_prec = op_prec + (1 if op_assoc == parse_axe.Assoc.LEFT_TO_RIGHT else 0)
         rhs, index = expr_impl(paxe, tokens, index, used_prec)
         result = misc.cons_str(op_name, result, rhs)
 
