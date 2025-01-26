@@ -47,7 +47,7 @@ class _TestsetRunner:
             print('Error message:', err_msg)
             print('Source code:', source_code)
             pprint.pprint(tokens)
-            print('Result:', result)
+            print('Result:  ', result)
             print('Expected:', expected)
             print()
 
@@ -95,7 +95,7 @@ class Testset:
         pan.level_ltr(Postfix('q1'))
         pan.level_rtl(Prefix('p2'))
         pan.level_rtl(Prefix('p1'))
-        self.paxe_hilo = pan.finish()
+        self.paxe_pq = pan.finish()
 
         pan = parse_axe.ParseAxeNursery()
         pan.level_ltr(PostfixExpr('Subscript', parse_axe.Production("'[' Atom Oper ']'")))
@@ -113,54 +113,60 @@ class Testset:
     def infix_only(self):
         with _TestsetRunner(self, self.paxe_def, "infix_only") as tr:
             tr._run_test("1", '1')
-            tr._run_test("1 + 2 * 3", '{+ 1 {* 2 3}}')
-            tr._run_test("1 + 2 * 3 + 4", '{+ {+ 1 {* 2 3}} 4}')
-            tr._run_test("a + b * c * d + e", '{+ {+ a {* {* b c} d}} e}')
-            tr._run_test("f . g . h", '{. f {. g h}}')
-            tr._run_test("a + b - c + d", '{+ {- {+ a b} c} d}')
-            tr._run_test("1 + 2 + f . g . h * 3 * 4", '{+ {+ 1 2} {* {* {. f {. g h}} 3} 4}}')
+            tr._run_test("1 + 2 * 3", '{ + 1 { * 2 3 } }')
+            tr._run_test("1 + 2 * 3 + 4", '{ + { + 1 { * 2 3 } } 4 }')
+            tr._run_test("a + b * c * d + e", '{ + { + a { * { * b c } d } } e }')
+            tr._run_test("f . g . h", '{ . f { . g h } }')
+            tr._run_test("a + b - c + d", '{ + { - { + a b } c } d }')
+            tr._run_test(
+                "1 + 2 + f . g . h * 3 * 4", '{ + { + 1 2 } { * { * { . f { . g h } } 3 } 4 } }'
+            )
 
     def allfix(self):
         with _TestsetRunner(self, self.paxe_def, "allfix") as tr:
-            tr._run_test("2 ! + 3", '{+ {! 2} 3}')
-            tr._run_test('+ 1', '{+ 1}')
-            tr._run_test('- + 1', '{- {+ 1}}')
-            tr._run_test('1 + + - 1', '{+ 1 {+ {- 1}}}')
-            tr._run_test("- - 1 * 2", '{* {- {- 1}} 2}')
-            tr._run_test("- - f . g", '{- {- {. f g}}}')
-            tr._run_test("- 9 !", '{- {! 9}}')
-            tr._run_test("f . g !", '{! {. f g}}')
+            tr._run_test("2 ! + 3", '{ + { ! 2 } 3 }')
+            tr._run_test('+ 1', '{ + 1 }')
+            tr._run_test('- + 1', '{ - { + 1 } }')
+            tr._run_test('1 + + - 1', '{ + 1 { + { - 1 } } }')
+            tr._run_test("- - 1 * 2", '{ * { - { - 1 } } 2 }')
+            tr._run_test("- - f . g", '{ - { - { . f g } } }')
+            tr._run_test("- 9 !", '{ - { ! 9 } }')
+            tr._run_test("f . g !", '{ ! { . f g } }')
             tr._run_test("f ! . g !", None)
             tr._run_test("f ! . g ! . h !", None)
-            tr._run_test("f + g !", '{+ f {! g}}')
-            tr._run_test("f . g !", '{! {. f g}}')
-            tr._run_test("f ! + g !", '{+ {! f} {! g}}')
+            tr._run_test("f + g !", '{ + f { ! g } }')
+            tr._run_test("f . g !", '{ ! { . f g } }')
+            tr._run_test("f ! + g !", '{ + { ! f } { ! g } }')
 
-        with _TestsetRunner(self, self.paxe_hilo, "allfix2") as tr:
+        with _TestsetRunner(self, self.paxe_pq, "allfix_pq") as tr:
             tr._run_test('p2 p1 a', None)
-            tr._run_test('p1 p2 a', '{p1 {p2 a}}')
+            tr._run_test('p1 p2 a', '{ p1 { p2 a } }')
             tr._run_test('a q1 q2', None)
-            tr._run_test('a q2 q1', '{q1 {q2 a}}')
-            tr._run_test('p3 aaa x1 bbb q3', '{x1 {p3 aaa} {q3 bbb}}')
-            tr._run_test('aaa q3 x1 bbb q2', '{q2 {x1 {q3 aaa} bbb}}')
+            tr._run_test('a q2 q1', '{ q1 { q2 a } }')
+            tr._run_test('p3 aaa x1 bbb q3', '{ x1 { p3 aaa } { q3 bbb } }')
+            tr._run_test('aaa q3 x1 bbb q2', '{ q2 { x1 { q3 aaa } bbb } }')
             tr._run_test('aaa q2 x1 bbb q3', None)
 
     def parentheses(self):
         with _TestsetRunner(self, self.paxe_def, "parentheses") as tr:
             tr._run_test("( ( ( 0 ) ) )", '0')
-            tr._run_test("( 1 + 2 ) * 3", '{* {+ 1 2} 3}')
-            tr._run_test("1 + ( 2 * 3 )", '{+ 1 {* 2 3}}')
+            tr._run_test("( 1 + 2 ) * 3", '{ * { + 1 2 } 3 }')
+            tr._run_test("1 + ( 2 * 3 )", '{ + 1 { * 2 3 } }')
 
     def subscript(self):
         with _TestsetRunner(self, self.paxe_def, "subscript") as tr:
-            tr._run_test("a [ 0 ] [ 1 ]", '{[ {[ a 0} 1}')
+            tr._run_test("a [ 0 ]", '{ [ a 0 }')
+            tr._run_test("a [ 0 ] [ 1 ]", '{ [ { [ a 0 } 1 }')
+            tr._run_test("a [ 0 ] [ b [ 0 + 1 ] ]", '{ [ { [ a 0 } { [ b { + 0 1 } } }')
+            tr._run_test("a [ 0 ] . b [ 0 ]", None)
+            tr._run_test("a [ 0 ] + b [ 0 ]", '{ + { [ a 0 } { [ b 0 } }')
 
     def ternary(self):
         with _TestsetRunner(self, self.paxe_def, "ternary") as tr:
-            tr._run_test("a ? b : c", '{? a b c}')
-            tr._run_test("a ? b : c ? d : e", '{? a b {? c d e}}')
-            tr._run_test("a ? b ? c : d : e", '{? a {? b c d} e}')
-            tr._run_test("a = b ? c : d = e", '{= a {= {? b c d} e}}')
-            tr._run_test("a + b ? c : d + e", '{? {+ a b} c {+ d e}}')
+            tr._run_test("a ? b : c", '{ ? a b c }')
+            tr._run_test("a ? b : c ? d : e", '{ ? a b { ? c d e } }')
+            tr._run_test("a ? b ? c : d : e", '{ ? a { ? b c d } e }')
+            tr._run_test("a = b ? c : d = e", '{ = a { = { ? b c d } e } }')
+            tr._run_test("a + b ? c : d + e", '{ ? { + a b } c { + d e } }')
             tr._run_test("a = b ? c = d : e = f", None)
-            tr._run_test("a + b ? c + d : e + f", '{? {+ a b} {+ c d} {+ e f}}')
+            tr._run_test("a + b ? c + d : e + f", '{ ? { + a b } { + c d } { + e f } }')
