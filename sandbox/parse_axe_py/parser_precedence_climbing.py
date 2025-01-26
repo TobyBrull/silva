@@ -4,28 +4,32 @@ import parse_axe
 import testset
 
 
-def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, curr_prec: int) -> str:
-    assert tt.curr().type == misc.TokenType.ATOM
-    result = tt.curr().value
-    tt.token_idx += 1
+def expr_impl(
+    paxe: parse_axe.ParseAxe, tokens: list[misc.Token], index: int, curr_prec: int
+) -> tuple[str, int]:
+    assert index < len(tokens)
+    assert tokens[index].type == misc.TokenType.ATOM
+    result = tokens[index].value
+    index += 1
 
-    while not tt.is_done():
-        assert tt.curr().type == misc.TokenType.OPER
-        op = tt.curr().value
-        (op_prec, op_assoc) = paxe.precedence_climbing_infix(op)
+    while index < len(tokens):
+        assert tokens[index].type == misc.TokenType.OPER
+        op_name = tokens[index].value
+        (op_prec, op_assoc) = paxe.precedence_climbing_infix(op_name)
         if op_prec < curr_prec:
             break
-        tt.token_idx += 1
+        index += 1
         used_prec = op_prec + (1 if op_assoc == parse_axe.Assoc.LEFT_TO_RIGHT else 0)
-        rhs = expr_impl(paxe, tt, used_prec)
-        result = misc.cons_str(op, result, rhs)
+        rhs, index = expr_impl(paxe, tokens, index, used_prec)
+        result = misc.cons_str(op_name, result, rhs)
 
-    return result
+    return result, index
 
 
 def precedence_climbing(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
-    tt = misc.Tokenization(tokens)
-    return expr_impl(paxe, tt, 0)
+    retval, index = expr_impl(paxe, tokens, 0, 0)
+    assert index == len(tokens)
+    return retval
 
 
 def _run():

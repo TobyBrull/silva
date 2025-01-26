@@ -31,15 +31,3 @@ def tokenize(input_: str) -> list[Token]:
         is_atom = token_str[0] in _atom_first
         retval.append(Token(type=TokenType.ATOM if is_atom else TokenType.OPER, value=token_str))
     return retval
-
-
-@dataclasses.dataclass
-class Tokenization:
-    tokens: list[Token]
-    token_idx: int = 0
-
-    def is_done(self):
-        return self.token_idx >= len(self.tokens)
-
-    def curr(self):
-        return self.tokens[self.token_idx]

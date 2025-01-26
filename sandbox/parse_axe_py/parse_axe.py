@@ -235,10 +235,6 @@ class ParseAxe:
                     return True
         return False
 
-    def shuting_yard_prec(self, op_name: str, prefer_prefix: bool) -> tuple[int, int]:
-        e = self.op_map[op_name]
-        return e._shuting_yard_prec(prefer_prefix, self.levels)
-
     def pratt_prefix(self, op_name: str) -> int | None:
         if op_name not in self.op_map:
             return None
