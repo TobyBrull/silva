@@ -112,14 +112,13 @@ class Ternary:
     second_name: str
 
 
-OpLtr = Infix | Ternary | Postfix | PostfixExpr | PostfixBracketed
-OpRtl = Infix | Ternary | Prefix
+RegularOp = Infix | Ternary | Postfix | PostfixExpr | PostfixBracketed
 
 
 @dataclasses.dataclass
 class Level:
     assoc: Assoc
-    ops: list[OpLtr | OpRtl]
+    ops: list[RegularOp | Prefix]
 
 
 def _to_bp(index: int, lo: bool) -> int:
@@ -190,10 +189,35 @@ class OpMapEntry:
             assert False
 
 
+@dataclasses.dataclass
+class ParseAxeKind:
+    regular_prec: int | None = None
+    prefix_prec: int | None = None
+
+    def _register(self, index: int, op: RegularOp | Prefix):
+        pass
+
+def _get_op_type(op: RegularOp | Prefix) -> OpType:
+    if type(op) == Prefix:
+        return OpType.PREFIX
+    elif type(op) == Infix:
+        return  OpType.INFIX
+    elif type(op) == Postfix:
+        return OpType.POSTFIX
+    elif type(op) == PostfixExpr:
+        return OpType.POSTFIX
+    elif type(op) == PostfixBracketed:
+        return OpType.POSTFIX
+    elif type(op) == Ternary:
+        return OpType.TERNARY
+    else:
+        raise Exception(f'Unknown {type(op)=}')
+
 class ParseAxe:
     def __init__(self, transparent_brackets: tuple[str, str]):
         self.levels: list[Level] = []
         self.op_map: dict[str | Concat, OpMapEntry] = {}
+        self.kind_map: dict[str | Concat, ParseAxeKind] = {}
         self.transparent_brackets: tuple[str, str] = transparent_brackets
 
     def _add_level(self, level: Level):
@@ -201,24 +225,32 @@ class ParseAxe:
         self.levels.append(level)
         for op in level.ops:
             if type(op) == Prefix:
-                self._add_op(op.name, index, OpType.PREFIX)
+                self._add_op(op.name, index, op)
             elif type(op) == Infix:
-                self._add_op(op.name, index, OpType.INFIX)
+                self._add_op(op.name, index, op)
             elif type(op) == Postfix:
-                self._add_op(op.name, index, OpType.POSTFIX)
+                self._add_op(op.name, index, op)
             elif type(op) == PostfixExpr:
                 pass
             elif type(op) == PostfixBracketed:
-                self._add_op(op.left_bracket, index, OpType.POSTFIX)
-                self._add_op(op.right_bracket, index, OpType.POSTFIX)
+                self._add_op(op.left_bracket, index, op)
+                self._add_op(op.right_bracket, index, op)
             elif type(op) == Ternary:
-                self._add_op(op.first_name, index, OpType.TERNARY)
-                self._add_op(op.second_name, index, OpType.TERNARY)
+                self._add_op(op.first_name, index, op)
+                self._add_op(op.second_name, index, op)
             else:
                 raise Exception(f'Unknown {type(op)=}')
 
-    def _add_op(self, op: str | Concat, index: int, op_type: OpType):
-        self.op_map.setdefault(op, OpMapEntry())._register(index, op_type)
+    def _add_op(self, op_name: str | Concat, index: int, op: RegularOp | Prefix):
+        op_type = _get_op_type(op)
+        self.op_map.setdefault(op_name, OpMapEntry())._register(index, op_type)
+        self.kind_map.setdefault(op_name, ParseAxeKind())._register(index, op)
+
+    def __getitem__(self, op_name: str) -> ParseAxeKind:
+        if op_name not in self.op_map:
+            return ParseAxeKind()
+        else:
+            return self.kind_map[op_name]
 
     def is_right_bracket(self, op_name: str) -> bool:
         if op_name == self.transparent_brackets[1]:
@@ -292,10 +324,10 @@ class ParseAxeNursery:
         self.levels: list[Level] = []
         self.transparent_brackets = transparent_brackets
 
-    def level_ltr(self, *ops: OpLtr):
+    def level_ltr(self, *ops: RegularOp):
         self.levels.append(Level(Assoc.LEFT_TO_RIGHT, [x for x in ops if x]))
 
-    def level_rtl(self, *ops: OpRtl):
+    def level_rtl(self, *ops: Infix | Ternary | Prefix):
         self.levels.append(Level(Assoc.RIGHT_TO_LEFT, [x for x in ops if x]))
 
     def finish(self) -> ParseAxe:
