@@ -117,7 +117,7 @@ RtlOp = Infix | Ternary | Prefix
 
 
 @dataclasses.dataclass
-class Level2:
+class Level:
     assoc: Assoc
     ops: list[LtrOp | RtlOp]
 
@@ -173,7 +173,7 @@ class OpMapEntry:
             set_bits == 2 and self.prefix_index is not None and self.infix_index is not None
         )
 
-    def _shuting_yard_prec(self, prefer_prefix: bool, levels: list[Level2]) -> tuple[int, int]:
+    def _shuting_yard_prec(self, prefer_prefix: bool, levels: list[Level]) -> tuple[int, int]:
         if self.postfix_index is not None:
             return (_to_bp(self.postfix_index, lo=True), BINDING_POWER_INF_RIGHT)
         elif self.prefix_index is not None and prefer_prefix:
@@ -190,13 +190,13 @@ class OpMapEntry:
             assert False
 
 
-class ParseAxe2:
+class ParseAxe:
     def __init__(self):
-        self.levels: list[Level2] = []
+        self.levels: list[Level] = []
         self.op_map: dict[str | Concat, OpMapEntry] = {}
         self.transparent_brackets: tuple[str, str] | None = None
 
-    def _add_level(self, level: Level2):
+    def _add_level(self, level: Level):
         index = len(self.levels)
         self.levels.append(level)
         for op in level.ops:
@@ -271,17 +271,17 @@ class ParseAxe2:
 
 class ParseAxeNursery2:
     def __init__(self, transparent_brackets: tuple[str, str] | None = ("(", ")")):
-        self.levels: list[Level2] = []
+        self.levels: list[Level] = []
         self.transparent_brackets = transparent_brackets
 
     def level_ltr(self, *ops: LtrOp):
-        self.levels.append(Level2(Assoc.LEFT_TO_RIGHT, [x for x in ops if x]))
+        self.levels.append(Level(Assoc.LEFT_TO_RIGHT, [x for x in ops if x]))
 
     def level_rtl(self, *ops: RtlOp):
-        self.levels.append(Level2(Assoc.RIGHT_TO_LEFT, [x for x in ops if x]))
+        self.levels.append(Level(Assoc.RIGHT_TO_LEFT, [x for x in ops if x]))
 
-    def finish(self) -> ParseAxe2:
-        retval = ParseAxe2()
+    def finish(self) -> ParseAxe:
+        retval = ParseAxe()
         retval.transparent_brackets = self.transparent_brackets
         for level in reversed(self.levels):
             retval._add_level(level)

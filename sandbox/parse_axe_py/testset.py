@@ -14,7 +14,7 @@ def _red(text: str) -> str:
 
 
 class _TestsetRunner:
-    def __init__(self, testset: "Testset", paxe: parse_axe.ParseAxe2, name: str):
+    def __init__(self, testset: "Testset", paxe: parse_axe.ParseAxe, name: str):
         self.testset = testset
         self.index = 0
         self.paxe = paxe

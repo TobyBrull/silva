@@ -4,7 +4,7 @@ import testset
 import parse_axe
 
 
-def expr_impl(paxe: parse_axe.ParseAxe2, tt: misc.Tokenization, min_prec: int) -> str:
+def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) -> str:
     x = tt.curr()
     tt.token_idx += 1
     match x:
@@ -82,7 +82,7 @@ def expr_impl(paxe: parse_axe.ParseAxe2, tt: misc.Tokenization, min_prec: int) -
     return lhs
 
 
-def pratt(paxe: parse_axe.ParseAxe2, tokens: list[misc.Token]) -> str:
+def pratt(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
     tt = misc.Tokenization(tokens)
     return expr_impl(paxe, tt, 0)
 

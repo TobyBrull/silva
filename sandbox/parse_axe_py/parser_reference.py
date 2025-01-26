@@ -23,7 +23,7 @@ class RefToken:
     value: str
 
 
-def _to_ref_tokens(paxe: parse_axe.ParseAxe2, tokens: list[misc.Token]) -> list[RefToken]:
+def _to_ref_tokens(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> list[RefToken]:
     retval = []
     postfix_mode = False
     for token in tokens:
@@ -152,7 +152,7 @@ def _reduce_ternary(ref_tokens: list[RefToken], ternary: parse_axe.Ternary) -> l
     return ref_tokens
 
 
-def reference(paxe: parse_axe.ParseAxe2, tokens: list[misc.Token]) -> str:
+def reference(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
     ref_tokens = _to_ref_tokens(paxe, tokens)
     for level in reversed(paxe.levels):
         assert len(level.ops) >= 1

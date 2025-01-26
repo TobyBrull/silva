@@ -4,7 +4,7 @@ import parse_axe
 import testset
 
 
-def expr_impl(paxe: parse_axe.ParseAxe2, tt: misc.Tokenization, curr_prec: int) -> str:
+def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, curr_prec: int) -> str:
     assert tt.curr().type == misc.TokenType.ATOM
     result = tt.curr().value
     tt.token_idx += 1
@@ -23,7 +23,7 @@ def expr_impl(paxe: parse_axe.ParseAxe2, tt: misc.Tokenization, curr_prec: int) 
     return result
 
 
-def precedence_climbing(paxe: parse_axe.ParseAxe2, tokens: list[misc.Token]) -> str:
+def precedence_climbing(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
     tt = misc.Tokenization(tokens)
     return expr_impl(paxe, tt, 0)
 
