@@ -88,12 +88,7 @@ def pratt(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
 
 
 def _run():
-    with testset.Testset(pratt) as ts:
-        ts.infix_only()
-        ts.allfix()
-        ts.parentheses()
-        ts.subscript()
-        ts.ternary()
+    testset.execute(pratt)
 
 
 if __name__ == '__main__':

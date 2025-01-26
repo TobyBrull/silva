@@ -29,12 +29,16 @@ def precedence_climbing(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> s
 
 
 def _run():
-    with testset.Testset(precedence_climbing) as ts:
-        ts.infix_only()
-        # ts.allfix()
-        # ts.parentheses()
-        # ts.subscript()
-        # ts.ternary()
+    testset.execute(
+        precedence_climbing,
+        excluded=[
+            'base/allfix',
+            'base/parentheses',
+            'base/subscript',
+            'base/ternary',
+            'pq/allfix',
+        ],
+    )
 
 
 if __name__ == '__main__':
