@@ -47,9 +47,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization) -> str:
 def binding_power(paxe: parse_axe.ParseAxe, token: misc.Token, prefix: bool) -> tuple[int, int]:
     if token.type == misc.TokenType.ATOM:
         return parse_axe.BINDING_POWER_INF_LEFT, parse_axe.BINDING_POWER_INF_RIGHT
-    elif (token.type == misc.TokenType.OPER) and (token.value == paxe.transparent_left_bracket()):
+    elif (token.type == misc.TokenType.OPER) and (token.value == paxe.transparent_brackets[0]):
         return parse_axe.BINDING_POWER_INF_LEFT, 0
-    elif (token.type == misc.TokenType.OPER) and (token.value == paxe.transparent_right_bracket()):
+    elif (token.type == misc.TokenType.OPER) and (token.value == paxe.transparent_brackets[1]):
         return 0, parse_axe.BINDING_POWER_INF_RIGHT
     else:
         return paxe.shuting_yard_prec(token.value, prefix)

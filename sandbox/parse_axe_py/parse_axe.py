@@ -191,10 +191,10 @@ class OpMapEntry:
 
 
 class ParseAxe:
-    def __init__(self):
+    def __init__(self, transparent_brackets: tuple[str, str]):
         self.levels: list[Level] = []
         self.op_map: dict[str | Concat, OpMapEntry] = {}
-        self.transparent_brackets: tuple[str, str] | None = None
+        self.transparent_brackets: tuple[str, str] = transparent_brackets
 
     def _add_level(self, level: Level):
         index = len(self.levels)
@@ -219,18 +219,6 @@ class ParseAxe:
 
     def _add_op(self, op: str | Concat, index: int, op_type: OpType):
         self.op_map.setdefault(op, OpMapEntry())._register(index, op_type)
-
-    def transparent_left_bracket(self) -> str | None:
-        if self.transparent_brackets is None:
-            return None
-        else:
-            return self.transparent_brackets[0]
-
-    def transparent_right_bracket(self) -> str | None:
-        if self.transparent_brackets is None:
-            return None
-        else:
-            return self.transparent_brackets[1]
 
     def shuting_yard_prec(self, op_name: str, prefer_prefix: bool) -> tuple[int, int]:
         e = self.op_map[op_name]
@@ -286,7 +274,7 @@ class ParseAxe:
 
 
 class ParseAxeNursery:
-    def __init__(self, transparent_brackets: tuple[str, str] | None = ("(", ")")):
+    def __init__(self, transparent_brackets: tuple[str, str] = ("(", ")")):
         self.levels: list[Level] = []
         self.transparent_brackets = transparent_brackets
 
@@ -297,8 +285,7 @@ class ParseAxeNursery:
         self.levels.append(Level(Assoc.RIGHT_TO_LEFT, [x for x in ops if x]))
 
     def finish(self) -> ParseAxe:
-        retval = ParseAxe()
-        retval.transparent_brackets = self.transparent_brackets
+        retval = ParseAxe(self.transparent_brackets)
         for level in reversed(self.levels):
             retval._add_level(level)
         return retval

@@ -9,9 +9,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tt: misc.Tokenization, min_prec: int) ->
     tt.token_idx += 1
     if x.type == misc.TokenType.ATOM:
         lhs = x.value
-    elif (x.type == misc.TokenType.OPER) and (x.value == paxe.transparent_left_bracket()):
+    elif (x.type == misc.TokenType.OPER) and (x.value == paxe.transparent_brackets[0]):
         lhs = expr_impl(paxe, tt, 0)
-        assert tt.curr().value == paxe.transparent_right_bracket()
+        assert tt.curr().value == paxe.transparent_brackets[1]
         tt.token_idx += 1
     elif x.type == misc.TokenType.OPER:
         prec = paxe.pratt_prefix(x.value)

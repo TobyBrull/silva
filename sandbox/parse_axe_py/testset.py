@@ -62,8 +62,11 @@ class _TestTracker:
         if result != expected:
             self.fails.append(f'{self.curr_test_name},{self.curr_test_index}')
             print(
-                f"\n\n" + _red(f"ERROR") + f" ========= {self.parser_name} "
-                f"========= {self.curr_test_name}[{self.curr_test_index}]"
+                f"\n\n"
+                + _red(f"ERROR")
+                + f" ========= "
+                + f"{self.parser_name} {self.curr_full_test_name()} [{self.curr_test_index}]"
+                + f" ========== "
             )
             print('Error message:', err_msg)
             print('Source code:', source_code)
