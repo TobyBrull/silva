@@ -4,6 +4,7 @@
     * Concat
 * support:
     * Concat
+    * "a < b < c"
     * parentheses can be:
         * Primary:              "a + ( b + c )"     -> "{ + a '(b+c)' }"
                                 "a ( b + c )"       -> "{ Concat a '(b+c)' }"
