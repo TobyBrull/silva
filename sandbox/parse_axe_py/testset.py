@@ -92,7 +92,6 @@ class _TestTracker:
 
 Prefix = parse_axe.Prefix
 Postfix = parse_axe.Postfix
-PostfixExpr = parse_axe.PostfixExpr
 PostfixBracketed = parse_axe.PostfixBracketed
 Infix = parse_axe.Infix
 Ternary = parse_axe.Ternary
@@ -196,7 +195,6 @@ def pq_notation(tt: _TestTracker):
 
 def expr_based(result_tracker: _TestTracker):
     pan = parse_axe.ParseAxeNursery()
-    pan.level_ltr(PostfixExpr('Subscript', parse_axe.Production("'[' Atom Oper ']'")))
     paxe = pan.finish()
 
 

@@ -95,12 +95,6 @@ class Postfix:
 
 
 @dataclasses.dataclass
-class PostfixExpr:
-    nonterminal: str
-    production: Production
-
-
-@dataclasses.dataclass
 class PostfixBracketed:
     left_bracket: str
     right_bracket: str
@@ -112,7 +106,7 @@ class Ternary:
     second_name: str
 
 
-RegularOp = Infix | Ternary | Postfix | PostfixExpr | PostfixBracketed
+RegularOp = Infix | Ternary | Postfix | PostfixBracketed
 
 
 @dataclasses.dataclass
@@ -172,22 +166,6 @@ class OpMapEntry:
             set_bits == 2 and self.prefix_index is not None and self.infix_index is not None
         )
 
-    def _shuting_yard_prec(self, prefer_prefix: bool, levels: list[Level]) -> tuple[int, int]:
-        if self.postfix_index is not None:
-            return (_to_bp(self.postfix_index, lo=True), BINDING_POWER_INF_RIGHT)
-        elif self.prefix_index is not None and prefer_prefix:
-            return (BINDING_POWER_INF_LEFT, _to_bp(self.prefix_index, lo=False))
-        elif self.infix_index is not None:
-            level = levels[self.infix_index]
-            if level.assoc == Assoc.LEFT_TO_RIGHT:
-                return (_to_bp(self.infix_index, lo=True), _to_bp(self.infix_index, lo=False))
-            else:
-                return (_to_bp(self.infix_index, lo=False), _to_bp(self.infix_index, lo=True))
-        elif self.ternary_index is not None:
-            return (-1, -1)  # TODO
-        else:
-            assert False
-
 
 @dataclasses.dataclass
 class ParseAxeKind:
@@ -197,14 +175,13 @@ class ParseAxeKind:
     def _register(self, index: int, op: RegularOp | Prefix):
         pass
 
+
 def _get_op_type(op: RegularOp | Prefix) -> OpType:
     if type(op) == Prefix:
         return OpType.PREFIX
     elif type(op) == Infix:
-        return  OpType.INFIX
+        return OpType.INFIX
     elif type(op) == Postfix:
-        return OpType.POSTFIX
-    elif type(op) == PostfixExpr:
         return OpType.POSTFIX
     elif type(op) == PostfixBracketed:
         return OpType.POSTFIX
@@ -212,6 +189,7 @@ def _get_op_type(op: RegularOp | Prefix) -> OpType:
         return OpType.TERNARY
     else:
         raise Exception(f'Unknown {type(op)=}')
+
 
 class ParseAxe:
     def __init__(self, transparent_brackets: tuple[str, str]):
@@ -230,8 +208,6 @@ class ParseAxe:
                 self._add_op(op.name, index, op)
             elif type(op) == Postfix:
                 self._add_op(op.name, index, op)
-            elif type(op) == PostfixExpr:
-                pass
             elif type(op) == PostfixBracketed:
                 self._add_op(op.left_bracket, index, op)
                 self._add_op(op.right_bracket, index, op)

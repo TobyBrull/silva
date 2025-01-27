@@ -1,5 +1,4 @@
 * make tests exhaustive
-    * PostfixExpr
     * custom parentheses
     * Concat
 * support:
