@@ -159,7 +159,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             index += 1
             continue
 
-        if tt == ATOM and not prefix_mode and (res := paxe.prec_concat()):
+        if tt == ATOM and not prefix_mode and (res := paxe.prec_infix(None)):
             (left_prec, right_prec) = res
             stack_pop(left_prec)
             atom_stack.append(AtomStackEntry(name=tn, token_begin=index, token_end=index + 1))
@@ -174,7 +174,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             index += 1
             continue
 
-        if tt == OPER and not prefix_mode and paxe.prec_prefix(tn) and (res := paxe.prec_concat()):
+        if tt == OPER and not prefix_mode and paxe.prec_prefix(tn) and (res := paxe.prec_infix(None)):
             (left_prec, right_prec) = res
             stack_pop(left_prec)
             oper_stack.append(

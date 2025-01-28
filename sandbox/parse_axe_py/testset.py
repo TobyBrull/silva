@@ -90,7 +90,6 @@ class _TestTracker:
             print(f'{self.parser_name:20}: {passed_str:31} {appendix}')
 
 
-Concat = parse_axe.Concat
 Prefix = parse_axe.Prefix
 Postfix = parse_axe.Postfix
 PostfixBracketed = parse_axe.PostfixBracketed
@@ -204,7 +203,7 @@ def concat(tt: _TestTracker):
     pan.level_ltr(Postfix('!'))
     pan.level_rtl(Prefix('~'))
     pan.level_ltr(Infix('+'))
-    pan.level_ltr(Concat(), Infix('*'))
+    pan.level_ltr(Infix(None), Infix('*'))
     pan.level_ltr(Postfix('?'))
     pan.level_rtl(Prefix('-'))
     pan.level_rtl(Infix('='))
@@ -214,6 +213,7 @@ def concat(tt: _TestTracker):
 
     tt.set_current_test_name("easy")
     tt('a b', "{ Concat a b }")
+    tt('a b c', "{ Concat { Concat a b } c }")
     tt('a b * c d', "{ Concat { * { Concat a b } c } d }")
     tt('a b . c d', "{ Concat { Concat a { . b c } } d }")
     tt('a b = c d', "{ = { Concat a b } { Concat c d } }")
@@ -225,6 +225,23 @@ def concat(tt: _TestTracker):
     tt('a - b', None)
     tt('a ! b', "{ Concat { ! a } b }")
     tt('a ? b', None)
+
+    pan = parse_axe.ParseAxeNursery()
+    pan.level_rtl(Infix('.'))
+    pan.level_ltr(Postfix('!'))
+    pan.level_rtl(Prefix('~'))
+    pan.level_ltr(Infix('+'))
+    pan.level_rtl(Infix(None), Infix('*'))
+    pan.level_ltr(Postfix('?'))
+    pan.level_rtl(Prefix('-'))
+    pan.level_rtl(Infix('='))
+    paxe_rtl = pan.finish()
+
+    tt.set_parse_axe(paxe_rtl, "concat_rtl")
+
+    tt.set_current_test_name("easy")
+    tt('a b', "{ Concat a b }")
+    tt('a b c', "{ Concat a { Concat b c } }")
 
 def execute(parser, excluded: list[str] = []):
     tt = _TestTracker(parser, excluded)

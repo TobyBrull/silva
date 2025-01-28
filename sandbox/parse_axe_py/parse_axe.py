@@ -75,19 +75,13 @@ BINDING_POWER_INF_RIGHT = 1_000_000
 
 
 @dataclasses.dataclass
-class Concat:
-    def __hash__(self):
-        return 0
-
-
-@dataclasses.dataclass
 class Prefix:
     name: str
 
 
 @dataclasses.dataclass
 class Infix:
-    name: str | Concat
+    name: str | None
 
 
 @dataclasses.dataclass
@@ -107,7 +101,7 @@ class Ternary:
     second_name: str
 
 
-RegularOp = Infix | Ternary | Postfix | PostfixBracketed | Concat
+RegularOp = Infix | Ternary | Postfix | PostfixBracketed
 
 
 @dataclasses.dataclass
@@ -182,7 +176,7 @@ def _get_op_type(op: RegularOp | Prefix) -> OpType:
         return OpType.PREFIX
     elif type(op) == Infix:
         return OpType.INFIX
-    elif type(op) == Postfix or type(op) == PostfixBracketed or type(op) == Concat:
+    elif type(op) == Postfix or type(op) == PostfixBracketed:
         return OpType.POSTFIX
     elif type(op) == Ternary:
         return OpType.TERNARY
@@ -193,17 +187,15 @@ def _get_op_type(op: RegularOp | Prefix) -> OpType:
 class ParseAxe:
     def __init__(self, transparent_brackets: tuple[str, str]):
         self.levels: list[Level] = []
-        self.op_map: dict[str | Concat, OpMapEntry] = {}
-        self.kind_map: dict[str | Concat, ParseAxeKind] = {}
+        self.op_map: dict[str | None, OpMapEntry] = {}
+        self.kind_map: dict[str | None, ParseAxeKind] = {}
         self.transparent_brackets: tuple[str, str] = transparent_brackets
 
     def _add_level(self, level: Level):
         index = len(self.levels)
         self.levels.append(level)
         for op in level.ops:
-            if type(op) == Concat:
-                self._add_op(Concat(), index, op)
-            elif type(op) == Prefix:
+            if type(op) == Prefix:
                 self._add_op(op.name, index, op)
             elif type(op) == Infix:
                 self._add_op(op.name, index, op)
@@ -218,7 +210,7 @@ class ParseAxe:
             else:
                 raise Exception(f'Unknown {type(op)=}')
 
-    def _add_op(self, op_name: str | Concat, index: int, op: RegularOp | Prefix):
+    def _add_op(self, op_name: str | None, index: int, op: RegularOp | Prefix):
         op_type = _get_op_type(op)
         self.op_map.setdefault(op_name, OpMapEntry())._register(index, op_type)
         self.kind_map.setdefault(op_name, ParseAxeKind())._register(index, op)
@@ -274,7 +266,9 @@ class ParseAxe:
                 return (_to_bp(idx, lo=True), op.right_bracket)
         return None
 
-    def prec_infix(self, op_name: str) -> tuple[int, int] | None:
+    def prec_infix(self, op_name: str | None) -> tuple[int, int] | None:
+        if op_name is None:
+            return self._prec_concat()
         if op_name not in self.op_map:
             return None
         ome = self.op_map[op_name]
@@ -284,10 +278,10 @@ class ParseAxe:
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
         return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
 
-    def prec_concat(self) -> tuple[int, int] | None:
-        if Concat() not in self.op_map:
+    def _prec_concat(self) -> tuple[int, int] | None:
+        if None not in self.op_map:
             return None
-        idx = self.op_map[Concat()].postfix_index
+        idx = self.op_map[None].infix_index
         assert idx is not None
         level = self.levels[idx]
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
