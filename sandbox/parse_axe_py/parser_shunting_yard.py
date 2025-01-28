@@ -69,13 +69,13 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
     index = begin
     while index < len(tokens):
         tt, tn = tokens[index].type, tokens[index].name
-        if tt == ATOM:
+        if tt == ATOM and prefix_mode:
             atom_stack.append(AtomStackEntry(name=tn, token_begin=index, token_end=index + 1))
             prefix_mode = False
             index += 1
             continue
-        assert tt == OPER
-        if prefix_mode and tn == paxe.transparent_brackets[0]:
+
+        if tt == OPER and prefix_mode and tn == paxe.transparent_brackets[0]:
             atom = expr_impl(paxe, tokens, index + 1)
             assert (
                 atom.token_end < len(tokens)
@@ -86,9 +86,10 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             atom.token_end += 1
             atom_stack.append(atom)
             prefix_mode = False
-        elif prefix_mode:
-            prec = paxe.prec_prefix(tn)
-            assert prec
+            index += 1
+            continue
+
+        if tt == OPER and prefix_mode and (prec := paxe.prec_prefix(tn)):
             stack_pop(prec)
             oper_stack.append(
                 OperStackEntry(
@@ -99,9 +100,13 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     min_token_index=index,
                 )
             )
-        elif not prefix_mode and paxe.is_right_bracket(tn):
+            index += 1
+            continue
+
+        if tt == OPER and not prefix_mode and paxe.is_right_bracket(tn):
             break
-        elif not prefix_mode and (prec := paxe.prec_postfix(tn)):
+
+        if tt == OPER and not prefix_mode and (prec := paxe.prec_postfix(tn)):
             stack_pop(prec)
             oper_stack.append(
                 OperStackEntry(
@@ -112,7 +117,10 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     max_token_index=index + 1,
                 )
             )
-        elif not prefix_mode and (res := paxe.prec_postfix_bracketed(tn)):
+            index += 1
+            continue
+
+        if tt == OPER and not prefix_mode and (res := paxe.prec_postfix_bracketed(tn)):
             (prec, right_bracket) = res
             stack_pop(prec)
             sub_atom = expr_impl(paxe, tokens, index + 1)
@@ -133,7 +141,10 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     max_token_index=max_token_index,
                 )
             )
-        elif not prefix_mode and (res := paxe.prec_infix(tn)):
+            index += 1
+            continue
+
+        if tt == OPER and not prefix_mode and (res := paxe.prec_infix(tn)):
             (left_prec, right_prec) = res
             stack_pop(left_prec)
             oper_stack.append(
@@ -145,7 +156,39 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 )
             )
             prefix_mode = True
-        elif not prefix_mode and (res := paxe.prec_ternary(tn)):
+            index += 1
+            continue
+
+        if tt == ATOM and not prefix_mode and (res := paxe.prec_concat()):
+            (left_prec, right_prec) = res
+            stack_pop(left_prec)
+            atom_stack.append(AtomStackEntry(name=tn, token_begin=index, token_end=index + 1))
+            oper_stack.append(
+                OperStackEntry(
+                    name='Concat',
+                    prec=right_prec,
+                    arity=2,
+                    token_indexes=[],
+                )
+            )
+            index += 1
+            continue
+
+        if tt == OPER and not prefix_mode and paxe.prec_prefix(tn) and (res := paxe.prec_concat()):
+            (left_prec, right_prec) = res
+            stack_pop(left_prec)
+            oper_stack.append(
+                OperStackEntry(
+                    name='Concat',
+                    prec=right_prec,
+                    arity=2,
+                    token_indexes=[],
+                )
+            )
+            prefix_mode = True
+            continue
+
+        if tt == OPER and not prefix_mode and (res := paxe.prec_ternary(tn)):
             (prec, second_op) = res
             stack_pop(prec)
             sub_atom_mid = expr_impl(paxe, tokens, index + 1)
@@ -163,9 +206,11 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     token_indexes=[first_token_index, second_token_index],
                 )
             )
-        else:
-            raise Exception(f'Unknown {tt=} {tn=}')
-        index += 1
+            prefix_mode = True
+            index += 1
+            continue
+
+        raise Exception(f'Unknown {tt=} {tn=}')
 
     stack_pop(0)
     assert len(oper_stack) == 0, f'oper_stack not empty: {pprint.pformat(oper_stack)}'

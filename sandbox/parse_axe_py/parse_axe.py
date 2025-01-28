@@ -70,13 +70,14 @@ class Assoc(enum.Enum):
     RIGHT_TO_LEFT = 1
 
 
-@dataclasses.dataclass
-class Concat:
-    pass
-
-
 BINDING_POWER_INF_LEFT = 999_999
 BINDING_POWER_INF_RIGHT = 1_000_000
+
+
+@dataclasses.dataclass
+class Concat:
+    def __hash__(self):
+        return 0
 
 
 @dataclasses.dataclass
@@ -106,7 +107,7 @@ class Ternary:
     second_name: str
 
 
-RegularOp = Infix | Ternary | Postfix | PostfixBracketed
+RegularOp = Infix | Ternary | Postfix | PostfixBracketed | Concat
 
 
 @dataclasses.dataclass
@@ -181,9 +182,7 @@ def _get_op_type(op: RegularOp | Prefix) -> OpType:
         return OpType.PREFIX
     elif type(op) == Infix:
         return OpType.INFIX
-    elif type(op) == Postfix:
-        return OpType.POSTFIX
-    elif type(op) == PostfixBracketed:
+    elif type(op) == Postfix or type(op) == PostfixBracketed or type(op) == Concat:
         return OpType.POSTFIX
     elif type(op) == Ternary:
         return OpType.TERNARY
@@ -202,7 +201,9 @@ class ParseAxe:
         index = len(self.levels)
         self.levels.append(level)
         for op in level.ops:
-            if type(op) == Prefix:
+            if type(op) == Concat:
+                self._add_op(Concat(), index, op)
+            elif type(op) == Prefix:
                 self._add_op(op.name, index, op)
             elif type(op) == Infix:
                 self._add_op(op.name, index, op)
@@ -282,6 +283,15 @@ class ParseAxe:
         level = self.levels[ome.infix_index]
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
         return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
+
+    def prec_concat(self) -> tuple[int, int] | None:
+        if Concat() not in self.op_map:
+            return None
+        idx = self.op_map[Concat()].postfix_index
+        assert idx is not None
+        level = self.levels[idx]
+        ltr = level.assoc == Assoc.LEFT_TO_RIGHT
+        return (_to_bp(idx, lo=ltr), _to_bp(idx, lo=not ltr))
 
     def prec_ternary(self, op_name: str) -> tuple[int, str] | None:
         if op_name not in self.op_map:
