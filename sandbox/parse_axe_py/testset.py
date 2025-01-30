@@ -197,6 +197,7 @@ def expr_based(result_tracker: _TestTracker):
     pan = parse_axe.ParseAxeNursery()
     paxe = pan.finish()
 
+
 def concat(tt: _TestTracker):
     pan = parse_axe.ParseAxeNursery()
     pan.level_rtl(Infix('.'))
@@ -243,10 +244,64 @@ def concat(tt: _TestTracker):
     tt('a b', "{ Concat a b }")
     tt('a b c', "{ Concat a { Concat b c } }")
 
+
+def cpp(tt: _TestTracker):
+    pan = parse_axe.ParseAxeNursery()
+    pan.level_ltr(Infix('::'))
+    pan.level_ltr(
+        Postfix('++'),
+        Postfix('--'),
+        PostfixBracketed('(', ')'),
+        PostfixBracketed('[', ']'),
+        Infix('.'),
+        Infix('->'),
+    )
+    pan.level_rtl(
+        Prefix('++'),
+        Prefix('--'),
+        # PrefixBracketed('(', ')'), # C-style type cast
+        Prefix('+'),
+        Prefix('-'),
+        Prefix('!'),
+        Prefix('~'),
+        Prefix('*'),
+        Prefix('&'),
+        Prefix('sizeof'),
+        Prefix('new'),
+    )
+    pan.level_ltr(Infix('.*'), Infix('->*'))
+    pan.level_ltr(Infix('*'), Infix('/'), Infix('%'))
+    pan.level_ltr(Infix('+'), Infix('-'))
+    pan.level_ltr(Infix('<<'), Infix('>>'))
+    pan.level_ltr(Infix('<=>'))
+    pan.level_ltr(Infix('<'), Infix('<='), Infix('>'), Infix('>='))
+    pan.level_ltr(Infix('=='), Infix('!='))
+    pan.level_ltr(Infix('&'))
+    pan.level_ltr(Infix('^'))
+    pan.level_ltr(Infix('|'))
+    pan.level_ltr(Infix('&&'))
+    pan.level_ltr(Infix('||'))
+    pan.level_rtl(Ternary('?', ':'), Prefix('throw'), Infix('='), Infix('+='), Infix('-='))
+    pan.level_ltr(Infix(','))
+    paxe_cpp = pan.finish()
+
+    tt.set_parse_axe(paxe_cpp, "C++")
+
+    tt.set_current_test_name("basic")
+    tt('++ a', "{ ++ a }")
+    tt('a --', "{ -- a }")
+    tt('++ a --', "{ ++ { -- a } }")
+    tt('-- a ++', "{ -- { ++ a } }")
+    tt('a ( b , c )', "{ ( a { , b c } }")
+    tt('a ( ( b , c ) )', "{ ( a { , b c } }")
+    tt('sizeof a', "{ sizeof a }")
+    tt('sizeof ( a )', "{ sizeof a }")
+
 def execute(parser, excluded: list[str] = []):
     tt = _TestTracker(parser, excluded)
     basic(tt)
     pq_notation(tt)
     expr_based(tt)
     concat(tt)
+    cpp(tt)
     tt.print_exit_message()

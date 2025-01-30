@@ -124,42 +124,16 @@ class OpType(enum.Enum):
 
 @dataclasses.dataclass
 class OpMapEntry:
+    regular_index: int | None = None
     prefix_index: int | None = None
-    postfix_index: int | None = None
-    infix_index: int | None = None
-    ternary_index: int | None = None
 
     def _register(self, index: int, op_type: OpType):
-        match op_type:
-            case OpType.PREFIX:
-                assert self.prefix_index is None
-                self.prefix_index = index
-            case OpType.INFIX:
-                assert self.infix_index is None
-                self.infix_index = index
-            case OpType.POSTFIX:
-                assert self.postfix_index is None
-                self.postfix_index = index
-            case OpType.TERNARY:
-                assert self.ternary_index is None
-                self.ternary_index = index
-
-        # An operator may only be registered to a single type of operator, except that an operator is
-        # allowed to be a prefix and an infix at the same time (e.g., infix and prefix '-').
-        set_bits = sum(
-            (
-                idx is not None
-                for idx in (
-                    self.prefix_index,
-                    self.postfix_index,
-                    self.infix_index,
-                    self.ternary_index,
-                )
-            )
-        )
-        assert set_bits <= 1 or (
-            set_bits == 2 and self.prefix_index is not None and self.infix_index is not None
-        )
+        if op_type == OpType.PREFIX:
+            assert self.prefix_index is None
+            self.prefix_index = index
+        else:
+            assert self.regular_index is None
+            self.regular_index = index
 
 
 @dataclasses.dataclass
@@ -226,13 +200,11 @@ class ParseAxe:
             return True
         if op_name not in self.op_map:
             return False
-        if (idx := self.op_map[op_name].ternary_index) is not None:
+        if (idx := self.op_map[op_name].regular_index) is not None:
             for op in self.levels[idx].ops:
-                if type(op) == Ternary and op.second_name == op_name:
-                    return True
-        if (idx := self.op_map[op_name].postfix_index) is not None:
-            for op in self.levels[idx].ops:
-                if type(op) == PostfixBracketed and op.right_bracket == op_name:
+                if (type(op) == Ternary and op.second_name == op_name) or (
+                    type(op) == PostfixBracketed and op.right_bracket == op_name
+                ):
                     return True
         return False
 
@@ -247,7 +219,7 @@ class ParseAxe:
     def prec_postfix(self, op_name: str) -> int | None:
         if op_name not in self.op_map:
             return None
-        idx = self.op_map[op_name].postfix_index
+        idx = self.op_map[op_name].regular_index
         if idx is None:
             return None
         for op in self.levels[idx].ops:
@@ -258,7 +230,7 @@ class ParseAxe:
     def prec_postfix_bracketed(self, op_name: str) -> tuple[int, str] | None:
         if op_name not in self.op_map:
             return None
-        idx = self.op_map[op_name].postfix_index
+        idx = self.op_map[op_name].regular_index
         if idx is None:
             return None
         for op in self.levels[idx].ops:
@@ -272,16 +244,19 @@ class ParseAxe:
         if op_name not in self.op_map:
             return None
         ome = self.op_map[op_name]
-        if ome.infix_index is None:
+        if ome.regular_index is None:
             return None
-        level = self.levels[ome.infix_index]
+        level = self.levels[ome.regular_index]
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
-        return (_to_bp(ome.infix_index, lo=ltr), _to_bp(ome.infix_index, lo=not ltr))
+        for op in self.levels[ome.regular_index].ops:
+            if type(op) == Infix:
+                return (_to_bp(ome.regular_index, lo=ltr), _to_bp(ome.regular_index, lo=not ltr))
+        return None
 
     def _prec_concat(self) -> tuple[int, int] | None:
         if None not in self.op_map:
             return None
-        idx = self.op_map[None].infix_index
+        idx = self.op_map[None].regular_index
         assert idx is not None
         level = self.levels[idx]
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
@@ -290,7 +265,7 @@ class ParseAxe:
     def prec_ternary(self, op_name: str) -> tuple[int, str] | None:
         if op_name not in self.op_map:
             return None
-        idx = self.op_map[op_name].ternary_index
+        idx = self.op_map[op_name].regular_index
         if idx is None:
             return None
         for op in self.levels[idx].ops:
