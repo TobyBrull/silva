@@ -118,6 +118,29 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             index += 1
             continue
 
+        if tt == OPER and prefix_mode and (res := paxe.prec_prefix_bracketed(tn)):
+            (prec, right_bracket) = res
+            stack_pop(prec)
+            sub_atom = expr_impl( paxe, tokens, index + 1)
+            assert sub_atom.token_end < len(tokens)
+            assert tokens[sub_atom.token_end].name == right_bracket
+            index = sub_atom.token_end
+            sub_atom.token_begin -= 1
+            sub_atom.token_end += 1
+            min_token_index = sub_atom.token_begin
+            atom_stack.append(sub_atom)
+            oper_stack.append(
+                OperStackEntry(
+                    name=tn,
+                    prec=prec,
+                    arity=2,
+                    token_indexes=[],
+                    min_token_index=min_token_index,
+                )
+            )
+            index += 1
+            continue
+
         if tt == OPER and not prefix_mode and paxe.is_right_bracket(tn):
             break
 

@@ -118,7 +118,21 @@ class ParseAxe:
         idx = self.op_map[op_name].prefix_index
         if idx is None:
             return None
-        return _to_bp(idx, lo=True)
+        for op in self.levels[idx].ops:
+            if type(op) == Prefix and op.name == op_name:
+                return _to_bp(idx, lo=True)
+        return None
+
+    def prec_prefix_bracketed(self, op_name: str) -> tuple[int, str] | None:
+        if op_name not in self.op_map:
+            return None
+        idx = self.op_map[op_name].prefix_index
+        if idx is None:
+            return None
+        for op in self.levels[idx].ops:
+            if type(op) == PrefixBracketed and op.left_bracket == op_name:
+                return (_to_bp(idx, lo=True), op.right_bracket)
+        return None
 
     def prec_postfix(self, op_name: str) -> int | None:
         if op_name not in self.op_map:
