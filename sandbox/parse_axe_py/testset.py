@@ -260,7 +260,7 @@ def cpp(tt: _TestTracker):
     pan.level_rtl(
         Prefix('++'),
         Prefix('--'),
-        PrefixBracketed('(.', '.)'), # C-style type cast
+        PrefixBracketed('<', '>'), # C-style type cast
         Prefix('+'),
         Prefix('-'),
         Prefix('!'),
@@ -303,7 +303,7 @@ def cpp(tt: _TestTracker):
     tt('a ( b + c )', "{ ( a { + b c } }")
     tt('( int ) a', None)
     tt('int a', None)
-    tt('(. int .) a', "{ (. int a }")
+    tt('< int > a', "{ < int a }")
 
 def execute(parser, excluded: list[str] = []):
     tt = _TestTracker(parser, excluded)
