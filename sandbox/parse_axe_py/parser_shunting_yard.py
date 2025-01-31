@@ -75,6 +75,21 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             index += 1
             continue
 
+        if tt == ATOM and not prefix_mode and (res := paxe.prec_infix(None)):
+            (left_prec, right_prec) = res
+            stack_pop(left_prec)
+            atom_stack.append(AtomStackEntry(name=tn, token_begin=index, token_end=index + 1))
+            oper_stack.append(
+                OperStackEntry(
+                    name='Concat',
+                    prec=right_prec,
+                    arity=2,
+                    token_indexes=[],
+                )
+            )
+            index += 1
+            continue
+
         if tt == OPER and prefix_mode and tn == paxe.transparent_brackets[0]:
             atom = expr_impl(paxe, tokens, index + 1)
             assert (
@@ -156,21 +171,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 )
             )
             prefix_mode = True
-            index += 1
-            continue
-
-        if tt == ATOM and not prefix_mode and (res := paxe.prec_infix(None)):
-            (left_prec, right_prec) = res
-            stack_pop(left_prec)
-            atom_stack.append(AtomStackEntry(name=tn, token_begin=index, token_end=index + 1))
-            oper_stack.append(
-                OperStackEntry(
-                    name='Concat',
-                    prec=right_prec,
-                    arity=2,
-                    token_indexes=[],
-                )
-            )
             index += 1
             continue
 

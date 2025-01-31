@@ -293,9 +293,12 @@ def cpp(tt: _TestTracker):
     tt('++ a --', "{ ++ { -- a } }")
     tt('-- a ++', "{ -- { ++ a } }")
     tt('a ( b , c )', "{ ( a { , b c } }")
+    tt('a ( b , c , d )', "{ ( a { , { , b c } d } }")
     tt('a ( ( b , c ) )', "{ ( a { , b c } }")
     tt('sizeof a', "{ sizeof a }")
     tt('sizeof ( a )', "{ sizeof a }")
+    tt('a + ( b + c )', "{ + a { + b c } }")
+    tt('a ( b + c )', "{ ( a { + b c } }")
 
 def execute(parser, excluded: list[str] = []):
     tt = _TestTracker(parser, excluded)
