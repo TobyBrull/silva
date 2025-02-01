@@ -83,13 +83,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 (prec, assoc) = res
                 left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
                 stack_pop(left_prec)
-                atom_stack.append(
-                    AtomStackEntry(
-                        name=token.name,
-                        token_begin=index,
-                        token_end=index + 1,
-                    )
-                )
                 oper_stack.append(
                     OperStackEntry(
                         name='Concat',
@@ -98,7 +91,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                         token_indexes=[],
                     )
                 )
-                index += 1
+                prefix_mode = True
                 continue
 
         elif tokens[index].type == misc.TokenType.OPER:
