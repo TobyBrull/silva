@@ -1,4 +1,5 @@
 import traceback
+import pytest
 import termcolor
 import misc
 import pprint
@@ -194,7 +195,7 @@ def pq_notation(tt: _TestTracker):
     tt('aaa q2 x1 bbb q3', None)
 
 
-def expr_ternary(tt: _TestTracker):
+def ternary(tt: _TestTracker):
     pan = parse_axe.ParseAxeNursery()
     pan.level_ltr(Ternary('?', ':'))
     paxe = pan.finish()
@@ -206,6 +207,65 @@ def expr_ternary(tt: _TestTracker):
     tt('a ? b : c ? d : e', '{ ? { ? a b c } d e }')
     tt('a ? b ? c : d : e', '{ ? a { ? b c d } e }')
 
+def parentheses(tt: _TestTracker):
+    pan = parse_axe.ParseAxeNursery(('(..', '..)'))
+    pan.level_ltr(Ternary('(', ')'))
+    pan.level_ltr(PostfixBracketed('(', ')'))
+    with pytest.raises(Exception):
+        pan.finish()
+
+    pan = parse_axe.ParseAxeNursery()
+    pan.level_rtl(PrefixBracketed('(', ')'))
+    with pytest.raises(Exception):
+        pan.finish()
+
+    pan = parse_axe.ParseAxeNursery(("(..", "..)"))
+    pan.level_rtl(PrefixBracketed('(', ')'))
+    paxe = pan.finish()
+
+    tt.set_parse_axe(paxe, "parens")
+
+    tt.set_current_test_name("easy")
+    tt('( b ) a', '{ ( b a }')
+    tt('a (.. b ..)', None)
+    tt('( (.. b ..) ) (.. a ..)', '{ ( b a }')
+
+    pan = parse_axe.ParseAxeNursery(("(..", "..)"))
+    pan.level_rtl(PrefixBracketed('(', ')'))
+    pan.level_ltr(Infix(None))
+    paxe_concat = pan.finish()
+
+    tt.set_parse_axe(paxe_concat, "parens-concat")
+
+    tt.set_current_test_name("easy")
+    tt('( b ) a', '{ ( b a }')
+    tt('a ( b ) c', '{ Concat a { ( b c } }')
+    tt('( b ) a c', '{ Concat { ( b a } c }')
+    tt('f a ( b ) c', '{ Concat { Concat f a } { ( b c } }')
+    tt('f ( b ) a c', '{ Concat { Concat f { ( b a } } c }')
+    tt('a b', '{ Concat a b }')
+    tt('a (.. b ..)', '{ Concat a b }')
+    tt('( (.. b ..) ) (.. a ..) (.. c ..)', '{ Concat { ( b a } c }')
+
+    pan = parse_axe.ParseAxeNursery(("(..", "..)"))
+    pan.level_ltr(Infix(None))
+    pan.level_rtl(PrefixBracketed('(', ')'))
+    paxe_concat_2 = pan.finish()
+
+    tt.set_parse_axe(paxe_concat_2, "parens-concat-2")
+
+    tt.set_current_test_name("easy")
+    tt('( b ) a', '{ ( b a }')
+    tt('a ( b ) c', None)
+    tt('a (.. ( b ) c ..)', '{ Concat a { ( b c } }')
+    tt('( b ) a c', '{ ( b { Concat a c } }')
+    tt('f a ( b ) c', None)
+    tt('f ( b ) a c', None)
+    tt('f a (.. ( b ) c ..)', '{ Concat { Concat f a } { ( b c } }')
+    tt('f (.. ( b ) a ..) c', '{ Concat { Concat f { ( b a } } c }')
+    tt('a b', '{ Concat a b }')
+    tt('a (.. b ..)', '{ Concat a b }')
+    tt('( (.. b ..) ) (.. a ..) (.. c ..)', '{ ( b { Concat a c } }')
 
 def concat(tt: _TestTracker):
     pan = parse_axe.ParseAxeNursery()
@@ -320,7 +380,8 @@ def execute(parser, excluded: list[str] = []):
     tt = _TestTracker(parser, excluded)
     basic(tt)
     pq_notation(tt)
-    expr_ternary(tt)
+    ternary(tt)
+    parentheses(tt)
     concat(tt)
     cpp(tt)
     tt.print_exit_message()
