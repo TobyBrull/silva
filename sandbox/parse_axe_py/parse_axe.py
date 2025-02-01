@@ -82,7 +82,8 @@ class LookupResult:
 class ParseAxe:
     def __init__(self, transparent_brackets: tuple[str, str]):
         self.levels: list[Level] = []
-        self.op_map: dict[str | None, OpMapEntry] = {}
+        self.concat: tuple[int, Assoc] | None = None
+        self.op_map: dict[str, OpMapEntry] = {}
         self.transparent_brackets: tuple[str, str] = transparent_brackets
         self.right_brackets: set[str] = set()
         self.right_brackets.add(transparent_brackets[1])
@@ -99,7 +100,11 @@ class ParseAxe:
                 self._add_op(op.right_bracket, index, op)
                 self.right_brackets.add(op.right_bracket)
             elif type(op) == Infix:
-                self._add_op(op.name, index, op)
+                if op.name is None:
+                    assert self.concat is None
+                    self.concat = (level_index, level.assoc)
+                else:
+                    self._add_op(op.name, index, op)
             elif type(op) == Ternary:
                 self._add_op(op.first_name, index, op)
                 self._add_op(op.second_name, index, op)
@@ -113,7 +118,7 @@ class ParseAxe:
             else:
                 raise Exception(f'Unknown {type(op)=}')
 
-    def _add_op(self, op_name: str | None, index: tuple[int, int], op: Op):
+    def _add_op(self, op_name: str, index: tuple[int, int], op: Op):
         ome = self.op_map.setdefault(op_name, OpMapEntry())
         ome._register(index, op)
 
@@ -137,6 +142,20 @@ class ParseAxe:
                     self.levels[idx[0]].assoc,
                 )
         return retval
+
+    def lookup_concat(self) -> tuple[int, Assoc] | None:
+        if self.concat is None:
+            return None
+        else:
+            return (10 * (self.concat[0] + 1), self.concat[1])
+
+    def left_and_right_prec(self, prec: int, assoc: Assoc) -> tuple[int, int]:
+        (left_prec, right_prec) = (
+            (prec, prec + 1)
+            if (assoc == Assoc.LEFT_TO_RIGHT)
+            else (prec + 1, prec)
+        )
+        return left_prec, right_prec
 
     def prec_prefix(self, op_name: str) -> int | None:
         if op_name not in self.op_map:

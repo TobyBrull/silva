@@ -79,8 +79,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 index += 1
                 continue
 
-            if not prefix_mode and (res := paxe.prec_infix(None)):
-                (left_prec, right_prec) = res
+            if not prefix_mode and (res := paxe.lookup_concat()) is not None:
+                (prec, assoc) = res
+                left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
                 stack_pop(left_prec)
                 atom_stack.append(
                     AtomStackEntry(
@@ -104,8 +105,13 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
             flr = paxe.lookup(token.name)
 
-            if not prefix_mode and paxe.prec_prefix(token.name) and (res := paxe.prec_infix(None)):
-                (left_prec, right_prec) = res
+            if (
+                not prefix_mode
+                and paxe.prec_prefix(token.name)
+                and (res := paxe.lookup_concat()) is not None
+            ):
+                (prec, assoc) = res
+                left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
                 stack_pop(left_prec)
                 oper_stack.append(
                     OperStackEntry(
@@ -217,11 +223,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     continue
 
                 if type(op) == parse_axe.Infix:
-                    (left_prec, right_prec) = (
-                        (prec, prec + 1)
-                        if (assoc == parse_axe.Assoc.LEFT_TO_RIGHT)
-                        else (prec + 1, prec)
-                    )
+                    left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
                     stack_pop(left_prec)
                     oper_stack.append(
                         OperStackEntry(
