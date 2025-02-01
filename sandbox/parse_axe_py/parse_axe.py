@@ -161,41 +161,6 @@ class ParseAxe:
         )
         return left_prec, right_prec
 
-    def prec_prefix(self, op_name: str) -> int | None:
-        if op_name not in self.op_map:
-            return None
-        idx = self.op_map[op_name].prefix_index
-        if idx is None:
-            return None
-        op = self.levels[idx[0]].ops[idx[1]]
-        if type(op) == Prefix and op.name == op_name:
-            return _to_bp(idx[0], lo=True)
-        return None
-
-    def prec_infix(self, op_name: str | None) -> tuple[int, int] | None:
-        if op_name is None:
-            return self._prec_concat()
-        if op_name not in self.op_map:
-            return None
-        idx = self.op_map[op_name].regular_index
-        if idx is None:
-            return None
-        level = self.levels[idx[0]]
-        op = self.levels[idx[0]].ops[idx[1]]
-        ltr = level.assoc == Assoc.LEFT_TO_RIGHT
-        if type(op) == Infix:
-            return (_to_bp(idx[0], lo=ltr), _to_bp(idx[0], lo=not ltr))
-        return None
-
-    def _prec_concat(self) -> tuple[int, int] | None:
-        if None not in self.op_map:
-            return None
-        idx = self.op_map[None].regular_index
-        assert idx is not None
-        level = self.levels[idx[0]]
-        ltr = level.assoc == Assoc.LEFT_TO_RIGHT
-        return (_to_bp(idx[0], lo=ltr), _to_bp(idx[0], lo=not ltr))
-
 
 class ParseAxeNursery:
     def __init__(self, transparent_brackets: tuple[str, str] = ("(", ")")):
