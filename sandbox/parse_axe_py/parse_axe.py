@@ -50,7 +50,7 @@ Op = PrefixOp | InfixOp | PostfixOp
 @dataclasses.dataclass
 class Level:
     assoc: Assoc
-    ops: list[PrefixOp | InfixOp | PostfixOp]
+    ops: list[Op]
 
 
 def _to_bp(index: int, lo: bool) -> int:
@@ -107,17 +107,28 @@ class ParseAxe:
             else:
                 raise Exception(f'Unknown {type(op)=}')
 
-    def _add_op(
-        self, op_name: str | None, index: tuple[int, int], op: PrefixOp | InfixOp | PostfixOp
-    ):
+    def _add_op(self, op_name: str | None, index: tuple[int, int], op: Op):
         ome = self.op_map.setdefault(op_name, OpMapEntry())
         ome._register(index, op)
 
     def is_right_bracket(self, op_name: str) -> bool:
         return op_name in self.right_brackets
 
-    def lookup_prefix(self, op_name: str) -> Op | None:
-        pass
+    def lookup_prefix(self, op_name: str) -> tuple[Op, int, Assoc] | None:
+        if op_name not in self.op_map:
+            return None
+        idx = self.op_map[op_name].prefix_index
+        if idx is None:
+            return None
+        return (self.levels[idx[0]].ops[idx[1]], idx[0], self.levels[idx[0]].assoc)
+
+    def lookup_regular(self, op_name: str) -> tuple[Op, int, Assoc] | None:
+        if op_name not in self.op_map:
+            return None
+        idx = self.op_map[op_name].regular_index
+        if idx is None:
+            return None
+        return (self.levels[idx[0]].ops[idx[1]], idx[0], self.levels[idx[0]].assoc)
 
     def prec_prefix(self, op_name: str) -> int | None:
         if op_name not in self.op_map:

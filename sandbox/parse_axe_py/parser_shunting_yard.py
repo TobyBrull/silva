@@ -69,6 +69,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
     index = begin
     while index < len(tokens):
         tt, tn = tokens[index].type, tokens[index].name
+
         if tt == ATOM and prefix_mode:
             atom_stack.append(AtomStackEntry(name=tn, token_begin=index, token_end=index + 1))
             prefix_mode = False
@@ -90,6 +91,20 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             index += 1
             continue
 
+        if tt == OPER and not prefix_mode and paxe.prec_prefix(tn) and (res := paxe.prec_infix(None)):
+            (left_prec, right_prec) = res
+            stack_pop(left_prec)
+            oper_stack.append(
+                OperStackEntry(
+                    name='Concat',
+                    prec=right_prec,
+                    arity=2,
+                    token_indexes=[],
+                )
+            )
+            prefix_mode = True
+            continue
+
         if tt == OPER and prefix_mode and tn == paxe.transparent_brackets[0]:
             atom = expr_impl(paxe, tokens, index + 1)
             assert (
@@ -103,6 +118,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             prefix_mode = False
             index += 1
             continue
+
+        if tt == OPER and not prefix_mode and paxe.is_right_bracket(tn):
+            break
 
         if tt == OPER and prefix_mode and (prec := paxe.prec_prefix(tn)):
             stack_pop(prec)
@@ -140,9 +158,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             )
             index += 1
             continue
-
-        if tt == OPER and not prefix_mode and paxe.is_right_bracket(tn):
-            break
 
         if tt == OPER and not prefix_mode and (prec := paxe.prec_postfix(tn)):
             stack_pop(prec)
@@ -195,20 +210,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             )
             prefix_mode = True
             index += 1
-            continue
-
-        if tt == OPER and not prefix_mode and paxe.prec_prefix(tn) and (res := paxe.prec_infix(None)):
-            (left_prec, right_prec) = res
-            stack_pop(left_prec)
-            oper_stack.append(
-                OperStackEntry(
-                    name='Concat',
-                    prec=right_prec,
-                    arity=2,
-                    token_indexes=[],
-                )
-            )
-            prefix_mode = True
             continue
 
         if tt == OPER and not prefix_mode and (res := paxe.prec_ternary(tn)):
