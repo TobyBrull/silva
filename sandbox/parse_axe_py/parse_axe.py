@@ -73,6 +73,12 @@ class OpMapEntry:
             raise Exception(f'Unknown {type(op)=}')
 
 
+@dataclasses.dataclass
+class LookupResult:
+    prefix_res: tuple[Op, int, Assoc] | None
+    regular_res: tuple[Op, int, Assoc] | None
+
+
 class ParseAxe:
     def __init__(self, transparent_brackets: tuple[str, str]):
         self.levels: list[Level] = []
@@ -114,21 +120,23 @@ class ParseAxe:
     def is_right_bracket(self, op_name: str) -> bool:
         return op_name in self.right_brackets
 
-    def lookup_prefix(self, op_name: str) -> tuple[Op, int, Assoc] | None:
-        if op_name not in self.op_map:
-            return None
-        idx = self.op_map[op_name].prefix_index
-        if idx is None:
-            return None
-        return (self.levels[idx[0]].ops[idx[1]], 10 * (idx[0] + 1), self.levels[idx[0]].assoc)
-
-    def lookup_regular(self, op_name: str) -> tuple[Op, int, Assoc] | None:
-        if op_name not in self.op_map:
-            return None
-        idx = self.op_map[op_name].regular_index
-        if idx is None:
-            return None
-        return (self.levels[idx[0]].ops[idx[1]], 10 * (idx[0] + 1), self.levels[idx[0]].assoc)
+    def lookup(self, op_name: str) -> LookupResult:
+        retval = LookupResult(None, None)
+        if op_name in self.op_map:
+            ome = self.op_map[op_name]
+            if (idx := ome.prefix_index) is not None:
+                retval.prefix_res = (
+                    self.levels[idx[0]].ops[idx[1]],
+                    10 * (idx[0] + 1),
+                    self.levels[idx[0]].assoc,
+                )
+            if (idx := ome.regular_index) is not None:
+                retval.regular_res = (
+                    self.levels[idx[0]].ops[idx[1]],
+                    10 * (idx[0] + 1),
+                    self.levels[idx[0]].assoc,
+                )
+        return retval
 
     def prec_prefix(self, op_name: str) -> int | None:
         if op_name not in self.op_map:

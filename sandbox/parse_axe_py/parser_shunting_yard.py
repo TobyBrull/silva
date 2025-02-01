@@ -91,6 +91,10 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             index += 1
             continue
 
+        assert tt == OPER
+
+        flr = paxe.lookup(tn)
+
         if (
             tt == OPER
             and not prefix_mode
@@ -127,12 +131,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         if tt == OPER and not prefix_mode and paxe.is_right_bracket(tn):
             break
 
-        assert tt == OPER
-
         if prefix_mode:
-            res = paxe.lookup_prefix(tn)
-            assert res is not None
-            (op, prec, assoc) = res
+            assert flr.prefix_res is not None
+            (op, prec, assoc) = flr.prefix_res
 
             if type(op) == parse_axe.Prefix:
                 stack_pop(prec)
@@ -171,9 +172,8 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 continue
 
         else:
-            res = paxe.lookup_regular(tn)
-            assert res is not None
-            (op, prec, assoc) = res
+            assert flr.regular_res is not None
+            (op, prec, assoc) = flr.regular_res
 
             if type(op) == parse_axe.Postfix:
                 stack_pop(prec)
