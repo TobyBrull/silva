@@ -120,7 +120,7 @@ class ParseAxe:
         idx = self.op_map[op_name].prefix_index
         if idx is None:
             return None
-        return (self.levels[idx[0]].ops[idx[1]], idx[0], self.levels[idx[0]].assoc)
+        return (self.levels[idx[0]].ops[idx[1]], 10 * (idx[0] + 1), self.levels[idx[0]].assoc)
 
     def lookup_regular(self, op_name: str) -> tuple[Op, int, Assoc] | None:
         if op_name not in self.op_map:
@@ -128,7 +128,7 @@ class ParseAxe:
         idx = self.op_map[op_name].regular_index
         if idx is None:
             return None
-        return (self.levels[idx[0]].ops[idx[1]], idx[0], self.levels[idx[0]].assoc)
+        return (self.levels[idx[0]].ops[idx[1]], 10 * (idx[0] + 1), self.levels[idx[0]].assoc)
 
     def prec_prefix(self, op_name: str) -> int | None:
         if op_name not in self.op_map:
@@ -139,39 +139,6 @@ class ParseAxe:
         op = self.levels[idx[0]].ops[idx[1]]
         if type(op) == Prefix and op.name == op_name:
             return _to_bp(idx[0], lo=True)
-        return None
-
-    def prec_prefix_bracketed(self, op_name: str) -> tuple[int, str] | None:
-        if op_name not in self.op_map:
-            return None
-        idx = self.op_map[op_name].prefix_index
-        if idx is None:
-            return None
-        op = self.levels[idx[0]].ops[idx[1]]
-        if type(op) == PrefixBracketed and op.left_bracket == op_name:
-            return (_to_bp(idx[0], lo=True), op.right_bracket)
-        return None
-
-    def prec_postfix(self, op_name: str) -> int | None:
-        if op_name not in self.op_map:
-            return None
-        idx = self.op_map[op_name].regular_index
-        if idx is None:
-            return None
-        op = self.levels[idx[0]].ops[idx[1]]
-        if type(op) == Postfix and op.name == op_name:
-            return _to_bp(idx[0], lo=True)
-        return None
-
-    def prec_postfix_bracketed(self, op_name: str) -> tuple[int, str] | None:
-        if op_name not in self.op_map:
-            return None
-        idx = self.op_map[op_name].regular_index
-        if idx is None:
-            return None
-        op = self.levels[idx[0]].ops[idx[1]]
-        if type(op) == PostfixBracketed and op.left_bracket == op_name:
-            return (_to_bp(idx[0], lo=True), op.right_bracket)
         return None
 
     def prec_infix(self, op_name: str | None) -> tuple[int, int] | None:
@@ -197,17 +164,6 @@ class ParseAxe:
         level = self.levels[idx[0]]
         ltr = level.assoc == Assoc.LEFT_TO_RIGHT
         return (_to_bp(idx[0], lo=ltr), _to_bp(idx[0], lo=not ltr))
-
-    def prec_ternary(self, op_name: str) -> tuple[int, str] | None:
-        if op_name not in self.op_map:
-            return None
-        idx = self.op_map[op_name].regular_index
-        if idx is None:
-            return None
-        op = self.levels[idx[0]].ops[idx[1]]
-        if type(op) == Ternary and op.first_name == op_name:
-            return (_to_bp(idx[0], lo=True), op.second_name)
-        return None
 
 
 class ParseAxeNursery:
