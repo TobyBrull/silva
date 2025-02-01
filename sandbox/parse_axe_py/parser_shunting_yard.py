@@ -126,12 +126,12 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     hallucinate_concat()
                     continue
 
-                if token.name == paxe.transparent_brackets[0]:
+                if flr.transparent_brackets():
                     hallucinate_concat()
                     continue
 
-            if prefix_mode and token.name == paxe.transparent_brackets[0]:
-                atom = handle_bracketed(*paxe.transparent_brackets)
+            if prefix_mode and (res := flr.transparent_brackets()) is not None:
+                atom = handle_bracketed(res[0], res[1])
                 atom_stack.append(atom)
                 prefix_mode = False
                 continue

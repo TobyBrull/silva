@@ -59,101 +59,77 @@ class Level:
     ops: list[Op]
 
 
-def _to_bp(index: int, lo: bool) -> int:
-    return 10 * (1 + index) + (0 if lo else 1)
-
-
 @dataclasses.dataclass
-class OpMapEntry:
-    prefix_index: tuple[int, int] | None = None
-    regular_index: tuple[int, int] | None = None
+class LookupResult:
+    prefix_res: tuple[Op, int, Assoc] | None = None
+    regular_res: tuple[Op, int, Assoc] | None = None
 
-    def _register(self, index: tuple[int, int], op: Op):
+    def _register(self, op: Op, prec: int, assoc: Assoc):
         if isinstance(op, PrefixOp):
-            assert self.prefix_index is None
-            self.prefix_index = index
+            assert self.prefix_res is None
+            self.prefix_res = (op, prec, assoc)
         elif isinstance(op, InfixOp | PostfixOp):
-            assert self.regular_index is None
-            self.regular_index = index
+            assert self.regular_res is None
+            self.regular_res = (op, prec, assoc)
         else:
             raise Exception(f'Unknown {type(op)=}')
 
-
-@dataclasses.dataclass
-class LookupResult:
-    prefix_res: tuple[Op, int, Assoc] | None
-    regular_res: tuple[Op, int, Assoc] | None
+    def transparent_brackets(self) -> tuple[str, str] | None:
+        if self.prefix_res is None:
+            return None
+        if type(self.prefix_res[0]) != TransparentBrackets:
+            return None
+        return self.prefix_res[0].left_bracket, self.prefix_res[0].right_bracket
 
 
 class ParseAxe:
-    def __init__(self, transparent_brackets: tuple[str, str]):
-        self.levels: list[Level] = []
-        self.concat: tuple[int, Assoc] | None = None
-        self.op_map: dict[str, OpMapEntry] = {}
-        self.transparent_brackets: tuple[str, str] = transparent_brackets
-        self.right_brackets: set[str] = set()
-        self.right_brackets.add(transparent_brackets[1])
+    def __init__(self):
+        self._lookup_results: dict[str, LookupResult] = {}
+        self._right_brackets: set[str] = set()
+        self._concat: tuple[int, Assoc] | None = None
 
-    def _add_level(self, level: Level):
-        level_index = len(self.levels)
-        self.levels.append(level)
-        for item_index, op in enumerate(level.ops):
-            index = (level_index, item_index)
-            if type(op) == Prefix:
-                self._add_op(op.name, index, op)
-            elif type(op) == PrefixBracketed:
-                self._add_op(op.left_bracket, index, op)
-                self._add_op(op.right_bracket, index, op)
-                self.right_brackets.add(op.right_bracket)
-            elif type(op) == Infix:
-                if op.name is None:
-                    assert self.concat is None
-                    self.concat = (level_index, level.assoc)
-                else:
-                    self._add_op(op.name, index, op)
-            elif type(op) == Ternary:
-                self._add_op(op.first_name, index, op)
-                self._add_op(op.second_name, index, op)
-                self.right_brackets.add(op.second_name)
-            elif type(op) == Postfix:
-                self._add_op(op.name, index, op)
-            elif type(op) == PostfixBracketed:
-                self._add_op(op.left_bracket, index, op)
-                self._add_op(op.right_bracket, index, op)
-                self.right_brackets.add(op.right_bracket)
+    def _add_op(self, op: Op, prec: int, assoc: Assoc):
+        if type(op) == Prefix:
+            self._add_op_name(op, op.name, prec, assoc)
+        elif type(op) == PrefixBracketed:
+            self._add_op_name(op, op.left_bracket, prec, assoc)
+            self._add_op_name(op, op.right_bracket, prec, assoc)
+            self._right_brackets.add(op.right_bracket)
+        elif type(op) == TransparentBrackets:
+            self._add_op_name(op, op.left_bracket, prec, assoc)
+            self._add_op_name(op, op.right_bracket, prec, assoc)
+            self._right_brackets.add(op.right_bracket)
+        elif type(op) == Infix:
+            if op.name is None:
+                assert self._concat is None
+                self._concat = (prec, assoc)
             else:
-                raise Exception(f'Unknown {type(op)=}')
+                self._add_op_name(op, op.name, prec, assoc)
+        elif type(op) == Ternary:
+            self._add_op_name(op, op.first_name, prec, assoc)
+            self._add_op_name(op, op.second_name, prec, assoc)
+            self._right_brackets.add(op.second_name)
+        elif type(op) == Postfix:
+            self._add_op_name(op, op.name, prec, assoc)
+        elif type(op) == PostfixBracketed:
+            self._add_op_name(op, op.left_bracket, prec, assoc)
+            self._add_op_name(op, op.right_bracket, prec, assoc)
+            self._right_brackets.add(op.right_bracket)
+        else:
+            raise Exception(f'Unknown {type(op)=}')
 
-    def _add_op(self, op_name: str, index: tuple[int, int], op: Op):
-        ome = self.op_map.setdefault(op_name, OpMapEntry())
-        ome._register(index, op)
+    def _add_op_name(self, op: Op, op_name: str, prec: int, assoc: Assoc):
+        lr = self._lookup_results.setdefault(op_name, LookupResult())
+        lr._register(op, prec, assoc)
 
     def is_right_bracket(self, op_name: str) -> bool:
-        return op_name in self.right_brackets
+        return op_name in self._right_brackets
 
     def lookup(self, op_name: str) -> LookupResult:
-        retval = LookupResult(None, None)
-        if op_name in self.op_map:
-            ome = self.op_map[op_name]
-            if (idx := ome.prefix_index) is not None:
-                retval.prefix_res = (
-                    self.levels[idx[0]].ops[idx[1]],
-                    10 * (idx[0] + 1),
-                    self.levels[idx[0]].assoc,
-                )
-            if (idx := ome.regular_index) is not None:
-                retval.regular_res = (
-                    self.levels[idx[0]].ops[idx[1]],
-                    10 * (idx[0] + 1),
-                    self.levels[idx[0]].assoc,
-                )
-        return retval
+        return self._lookup_results[op_name]
 
     def lookup_concat(self) -> tuple[int, Assoc] | None:
-        if self.concat is None:
-            return None
-        else:
-            return (10 * (self.concat[0] + 1), self.concat[1])
+        return self._concat
 
     def left_and_right_prec(self, prec: int, assoc: Assoc) -> tuple[int, int]:
         (left_prec, right_prec) = (
@@ -174,7 +150,13 @@ class ParseAxeNursery:
         self.levels.append(Level(Assoc.RIGHT_TO_LEFT, [x for x in ops if x]))
 
     def finish(self) -> ParseAxe:
-        retval = ParseAxe(self.transparent_brackets)
-        for level in reversed(self.levels):
-            retval._add_level(level)
+        retval = ParseAxe()
+        tb = TransparentBrackets(
+            left_bracket=self.transparent_brackets[0],
+            right_bracket=self.transparent_brackets[1],
+        )
+        retval._add_op(tb, -1, Assoc.LEFT_TO_RIGHT)
+        for prec_m1, level in enumerate(reversed(self.levels)):
+            for op in level.ops:
+                retval._add_op(op, 10 * (prec_m1 + 1), level.assoc)
         return retval
