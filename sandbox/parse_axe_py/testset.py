@@ -194,9 +194,17 @@ def pq_notation(tt: _TestTracker):
     tt('aaa q2 x1 bbb q3', None)
 
 
-def expr_based(result_tracker: _TestTracker):
+def expr_ternary(tt: _TestTracker):
     pan = parse_axe.ParseAxeNursery()
+    pan.level_ltr(Ternary('?', ':'))
     paxe = pan.finish()
+
+    tt.set_parse_axe(paxe, "ternary")
+
+    tt.set_current_test_name("easy")
+    tt('a ? b : c', '{ ? a b c }')
+    tt('a ? b : c ? d : e', '{ ? { ? a b c } d e }')
+    tt('a ? b ? c : d : e', '{ ? a { ? b c d } e }')
 
 
 def concat(tt: _TestTracker):
@@ -262,7 +270,7 @@ def cpp(tt: _TestTracker):
     pan.level_rtl(
         Prefix('++'),
         Prefix('--'),
-        PrefixBracketed('<', '>'), # C-style type cast
+        PrefixBracketed('<', '>'),  # C-style type cast
         Prefix('+'),
         Prefix('-'),
         Prefix('!'),
@@ -307,11 +315,12 @@ def cpp(tt: _TestTracker):
     tt('int a', None)
     tt('< int > a', "{ < int a }")
 
+
 def execute(parser, excluded: list[str] = []):
     tt = _TestTracker(parser, excluded)
     basic(tt)
     pq_notation(tt)
-    expr_based(tt)
+    expr_ternary(tt)
     concat(tt)
     cpp(tt)
     tt.print_exit_message()

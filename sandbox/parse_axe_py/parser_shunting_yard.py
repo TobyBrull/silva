@@ -39,9 +39,11 @@ def _consistent_range(tokens: list[int], token_ranges: list[tuple[int, int]]) ->
 def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomStackEntry:
     oper_stack: list[OperStackEntry] = []
     atom_stack: list[AtomStackEntry] = []
+    prefix_mode = True
+    index = begin
 
     def stack_pop(prec: int):
-        nonlocal atom_stack
+        nonlocal oper_stack, atom_stack
         while (len(oper_stack) >= 1) and oper_stack[-1].prec > prec:
             ose = oper_stack[-1]
             oper_stack.pop()
@@ -61,8 +63,35 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 )
             )
 
-    prefix_mode = True
-    index = begin
+    def hallucinate_concat():
+        nonlocal prefix_mode, index
+        res = paxe.lookup_concat()
+        assert res is not None
+        (prec, assoc) = res
+        left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
+        stack_pop(left_prec)
+        oper_stack.append(
+            OperStackEntry(
+                name='Concat',
+                prec=right_prec,
+                arity=2,
+                token_indexes=[],
+            )
+        )
+        prefix_mode = True
+
+    def handle_bracketed(left_bracket, right_bracket):
+        nonlocal prefix_mode, index
+        assert index < len(tokens)
+        assert tokens[index].name == left_bracket
+        retval = expr_impl(paxe, tokens, index + 1)
+        assert retval.token_end < len(tokens)
+        assert tokens[retval.token_end].name == right_bracket
+        index = retval.token_end + 1
+        retval.token_begin -= 1
+        retval.token_end += 1
+        return retval
+
     while index < len(tokens):
         token = tokens[index]
         if token.type == misc.TokenType.ATOM:
@@ -79,19 +108,8 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 index += 1
                 continue
 
-            if not prefix_mode and (res := paxe.lookup_concat()) is not None:
-                (prec, assoc) = res
-                left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
-                stack_pop(left_prec)
-                oper_stack.append(
-                    OperStackEntry(
-                        name='Concat',
-                        prec=right_prec,
-                        arity=2,
-                        token_indexes=[],
-                    )
-                )
-                prefix_mode = True
+            if not prefix_mode and paxe.lookup_concat() is not None:
+                hallucinate_concat()
                 continue
 
         elif tokens[index].type == misc.TokenType.OPER:
@@ -101,34 +119,15 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             if (
                 not prefix_mode
                 and paxe.prec_prefix(token.name)
-                and (res := paxe.lookup_concat()) is not None
+                and paxe.lookup_concat() is not None
             ):
-                (prec, assoc) = res
-                left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
-                stack_pop(left_prec)
-                oper_stack.append(
-                    OperStackEntry(
-                        name='Concat',
-                        prec=right_prec,
-                        arity=2,
-                        token_indexes=[],
-                    )
-                )
-                prefix_mode = True
+                hallucinate_concat()
                 continue
 
             if prefix_mode and token.name == paxe.transparent_brackets[0]:
-                atom = expr_impl(paxe, tokens, index + 1)
-                assert (
-                    atom.token_end < len(tokens)
-                    and tokens[atom.token_end].name == paxe.transparent_brackets[1]
-                )
-                index = atom.token_end
-                atom.token_begin -= 1
-                atom.token_end += 1
+                atom = handle_bracketed(*paxe.transparent_brackets)
                 atom_stack.append(atom)
                 prefix_mode = False
-                index += 1
                 continue
 
             if not prefix_mode and paxe.is_right_bracket(token.name):
@@ -137,9 +136,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             if prefix_mode:
                 assert flr.prefix_res is not None
                 (op, prec, assoc) = flr.prefix_res
+                stack_pop(prec)
 
                 if type(op) == parse_axe.Prefix:
-                    stack_pop(prec)
                     oper_stack.append(
                         OperStackEntry(
                             name=token.name,
@@ -153,37 +152,30 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     continue
 
                 if type(op) == parse_axe.PrefixBracketed:
-                    stack_pop(prec)
-                    sub_atom = expr_impl(paxe, tokens, index + 1)
-                    assert sub_atom.token_end < len(tokens)
-                    assert tokens[sub_atom.token_end].name == op.right_bracket
-                    index = sub_atom.token_end
-                    sub_atom.token_begin -= 1
-                    sub_atom.token_end += 1
-                    min_token_index = sub_atom.token_begin
-                    atom_stack.append(sub_atom)
+                    atom = handle_bracketed(op.left_bracket, op.right_bracket)
+                    atom_stack.append(atom)
                     oper_stack.append(
                         OperStackEntry(
                             name=token.name,
                             prec=prec,
                             arity=2,
                             token_indexes=[],
-                            min_token_index=min_token_index,
+                            min_token_index=atom.token_begin,
                         )
                     )
-                    index += 1
                     continue
 
             else:
                 assert flr.regular_res is not None
                 (op, prec, assoc) = flr.regular_res
+                left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
+                stack_pop(left_prec)
 
                 if type(op) == parse_axe.Postfix:
-                    stack_pop(prec)
                     oper_stack.append(
                         OperStackEntry(
                             name=token.name,
-                            prec=prec,
+                            prec=right_prec,
                             arity=1,
                             token_indexes=[index],
                             max_token_index=index + 1,
@@ -193,31 +185,20 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     continue
 
                 if type(op) == parse_axe.PostfixBracketed:
-                    stack_pop(prec)
-                    sub_atom = expr_impl(paxe, tokens, index + 1)
-                    assert sub_atom.token_end < len(tokens)
-                    assert tokens[sub_atom.token_end].name == op.right_bracket
-                    index = sub_atom.token_end
-                    sub_atom.token_begin -= 1
-                    sub_atom.token_end += 1
-                    max_token_index = sub_atom.token_end
-                    atom_stack.append(sub_atom)
-                    prec += 1  # PostfixBracketed is always left-to-right
+                    atom = handle_bracketed(op.left_bracket, op.right_bracket)
+                    atom_stack.append(atom)
                     oper_stack.append(
                         OperStackEntry(
                             name=token.name,
-                            prec=prec,
+                            prec=right_prec,
                             arity=2,
                             token_indexes=[],
-                            max_token_index=max_token_index,
+                            max_token_index=atom.token_end,
                         )
                     )
-                    index += 1
                     continue
 
                 if type(op) == parse_axe.Infix:
-                    left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
-                    stack_pop(left_prec)
                     oper_stack.append(
                         OperStackEntry(
                             name=token.name,
@@ -231,24 +212,17 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     continue
 
                 if type(op) == parse_axe.Ternary:
-                    stack_pop(prec)
-                    sub_atom_mid = expr_impl(paxe, tokens, index + 1)
-                    assert sub_atom_mid.token_end < len(tokens)
-                    assert tokens[sub_atom_mid.token_end].name == op.second_name
-                    first_token_index = index
-                    second_token_index = sub_atom_mid.token_end
-                    index = sub_atom_mid.token_end
-                    atom_stack.append(sub_atom_mid)
+                    atom_mid = handle_bracketed(op.first_name, op.second_name)
+                    atom_stack.append(atom_mid)
                     oper_stack.append(
                         OperStackEntry(
                             name=token.name,
-                            prec=prec,
+                            prec=right_prec,
                             arity=3,
-                            token_indexes=[first_token_index, second_token_index],
+                            token_indexes=[],
                         )
                     )
                     prefix_mode = True
-                    index += 1
                     continue
 
         raise Exception(f'Unknown {tokens[index]=}')
