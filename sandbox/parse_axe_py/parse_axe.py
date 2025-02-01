@@ -19,6 +19,12 @@ class PrefixBracketed:
 
 
 @dataclasses.dataclass
+class TransparentBrackets:
+    left_bracket: str
+    right_bracket: str
+
+
+@dataclasses.dataclass
 class Infix:
     name: str | None
 
@@ -40,7 +46,7 @@ class PostfixBracketed:
     right_bracket: str
 
 
-PrefixOp = Prefix | PrefixBracketed
+PrefixOp = Prefix | PrefixBracketed | TransparentBrackets
 InfixOp = Infix | Ternary
 PostfixOp = Postfix | PostfixBracketed
 
@@ -151,9 +157,7 @@ class ParseAxe:
 
     def left_and_right_prec(self, prec: int, assoc: Assoc) -> tuple[int, int]:
         (left_prec, right_prec) = (
-            (prec, prec + 1)
-            if (assoc == Assoc.LEFT_TO_RIGHT)
-            else (prec + 1, prec)
+            (prec, prec + 1) if (assoc == Assoc.LEFT_TO_RIGHT) else (prec + 1, prec)
         )
         return left_prec, right_prec
 

@@ -232,7 +232,7 @@ def concat(tt: _TestTracker):
     pan.level_rtl(Infix('.'))
     pan.level_ltr(Postfix('!'))
     pan.level_rtl(Prefix('~'))
-    pan.level_ltr(Infix('+'))
+    pan.level_ltr(Infix('+'), Infix('-'))
     pan.level_rtl(Infix(None), Infix('*'))
     pan.level_ltr(Postfix('?'))
     pan.level_rtl(Prefix('-'))
@@ -243,6 +243,8 @@ def concat(tt: _TestTracker):
 
     tt.set_current_test_name("easy")
     tt('a b', "{ Concat a b }")
+    tt('a - b', "{ - a b }")
+    tt('a ( - b )', "{ Concat { - b } }")
     tt('a b c', "{ Concat a { Concat b c } }")
 
 
