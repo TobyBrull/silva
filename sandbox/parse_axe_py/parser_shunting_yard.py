@@ -92,6 +92,8 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         retval.token_end += 1
         return retval
 
+    has_concat = paxe.lookup_concat() is not None
+
     while index < len(tokens):
         token = tokens[index]
         if token.type == misc.TokenType.ATOM:
@@ -108,30 +110,31 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 index += 1
                 continue
 
-            if not prefix_mode and paxe.lookup_concat() is not None:
+            if not prefix_mode and has_concat:
                 hallucinate_concat()
                 continue
 
         elif tokens[index].type == misc.TokenType.OPER:
 
+            if paxe.is_right_bracket(token.name):
+                break
+
             flr = paxe.lookup(token.name)
 
-            if (
-                not prefix_mode
-                and paxe.prec_prefix(token.name)
-                and paxe.lookup_concat() is not None
-            ):
-                hallucinate_concat()
-                continue
+            if not prefix_mode and has_concat:
+                if flr.prefix_res is not None and flr.regular_res is None:
+                    hallucinate_concat()
+                    continue
+
+                if token.name == paxe.transparent_brackets[0]:
+                    hallucinate_concat()
+                    continue
 
             if prefix_mode and token.name == paxe.transparent_brackets[0]:
                 atom = handle_bracketed(*paxe.transparent_brackets)
                 atom_stack.append(atom)
                 prefix_mode = False
                 continue
-
-            if not prefix_mode and paxe.is_right_bracket(token.name):
-                break
 
             if prefix_mode:
                 assert flr.prefix_res is not None

@@ -252,7 +252,7 @@ def concat(tt: _TestTracker):
     tt.set_current_test_name("easy")
     tt('a b', "{ Concat a b }")
     tt('a - b', "{ - a b }")
-    tt('a ( - b )', "{ Concat { - b } }")
+    tt('a ( - b )', "{ Concat a { - b } }")
     tt('a b c', "{ Concat a { Concat b c } }")
 
 
