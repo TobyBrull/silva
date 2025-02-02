@@ -3,8 +3,9 @@ import enum
 
 
 class Assoc(enum.Enum):
-    LEFT_TO_RIGHT = 0
-    RIGHT_TO_LEFT = 1
+    LEFT_TO_RIGHT = 1
+    RIGHT_TO_LEFT = 2
+    FLAT = 3
 
 
 @dataclasses.dataclass
@@ -96,15 +97,26 @@ class LevelInfo:
     name: str
     prec: int
     assoc: Assoc
-    merge: bool
 
     def left_prec(self) -> int:
-        retval = self.prec if (self.assoc == Assoc.LEFT_TO_RIGHT) else self.prec + 1
-        return retval
+        if self.assoc == Assoc.LEFT_TO_RIGHT:
+            return self.prec
+        elif self.assoc == Assoc.RIGHT_TO_LEFT:
+            return self.prec + 1
+        elif self.assoc == Assoc.FLAT:
+            return self.prec
+        else:
+            raise Exception(f'Unknown {self.assoc=}')
 
     def right_prec(self) -> int:
-        retval = self.prec + 1 if (self.assoc == Assoc.LEFT_TO_RIGHT) else self.prec
-        return retval
+        if self.assoc == Assoc.LEFT_TO_RIGHT:
+            return self.prec + 1
+        elif self.assoc == Assoc.RIGHT_TO_LEFT:
+            return self.prec
+        elif self.assoc == Assoc.FLAT:
+            return self.prec + 1
+        else:
+            raise Exception(f'Unknown {self.assoc=}')
 
 
 @dataclasses.dataclass
@@ -201,18 +213,26 @@ class ParseAxeNursery:
         self.levels: list[_Level] = []
         self.transparent_brackets = transparent_brackets
 
-    def level_ltr(self, level_name: str, *ops: InfixOp | PostfixOp, merge: bool = False):
+    def level_ltr(self, level_name: str, *ops: InfixOp | PostfixOp):
         self.levels.append(
             _Level(
-                LevelInfo(level_name, -1, Assoc.LEFT_TO_RIGHT, merge),
+                LevelInfo(level_name, -1, Assoc.LEFT_TO_RIGHT),
                 [x for x in ops if x],
             )
         )
 
-    def level_rtl(self, level_name: str, *ops: PrefixOp | InfixOp, merge: bool = False):
+    def level_rtl(self, level_name: str, *ops: PrefixOp | InfixOp):
         self.levels.append(
             _Level(
-                LevelInfo(level_name, -1, Assoc.RIGHT_TO_LEFT, merge),
+                LevelInfo(level_name, -1, Assoc.RIGHT_TO_LEFT),
+                [x for x in ops if x],
+            )
+        )
+
+    def level_flat(self, level_name: str, *ops: InfixOp):
+        self.levels.append(
+            _Level(
+                LevelInfo(level_name, -1, Assoc.FLAT),
                 [x for x in ops if x],
             )
         )
@@ -223,7 +243,7 @@ class ParseAxeNursery:
             left_bracket=self.transparent_brackets[0],
             right_bracket=self.transparent_brackets[1],
         )
-        retval._add_op(tb, LevelInfo('trn', 1_000_000_000, Assoc.LEFT_TO_RIGHT, False))
+        retval._add_op(tb, LevelInfo('trn', 1_000_000_000, Assoc.LEFT_TO_RIGHT))
         for prec_m1, level in enumerate(reversed(self.levels)):
             level.info.prec = 10 * (prec_m1 + 1)
             for op in level.ops:

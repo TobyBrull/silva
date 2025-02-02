@@ -109,7 +109,7 @@ def basic(tt: _TestTracker):
     pan.level_rtl('til', Prefix('~'))
     pan.level_rtl('prf', Prefix('+'), Prefix('-'))
     pan.level_ltr('mul', Infix('*'), Infix('/'))
-    pan.level_ltr('add', Infix('+'), Infix('-'), merge=True)
+    pan.level_flat('add', Infix('+'), Infix('-'))
     pan.level_rtl('ter', Ternary('?', ':'))
     pan.level_rtl('eqa', Infix('='))
     paxe = pan.finish()
