@@ -199,11 +199,11 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
     return atom_stack[0]
 
 
-def shunting_yard(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> str:
+def shunting_yard(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> Node:
     retval = expr_impl(paxe, tokens, 0)
     assert retval.token_begin == 0
     assert retval.token_end == len(tokens)
-    return retval.node.render()
+    return retval.node
 
 
 def _run():

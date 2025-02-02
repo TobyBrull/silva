@@ -56,13 +56,14 @@ class _TestTracker:
 
         tokens = misc.tokenize(source_code)
         try:
-            result = self.parser(self.curr_paxe, tokens)
+            result_node = self.parser(self.curr_paxe, tokens)
+            result_str = result_node.render()
             err_msg = ''
         except Exception as e:
-            result = None
+            result_str = None
             err_msg = str(e)
             err_msg = traceback.format_exc()
-        if result != expected:
+        if result_str != expected:
             self.failed = True
             print(
                 f"\n\n"
@@ -74,7 +75,7 @@ class _TestTracker:
             print('Error message:', err_msg)
             print('Source code:', source_code)
             pprint.pprint(tokens)
-            print('Result:  ', result)
+            print('Result:  ', result_str)
             print('Expected:', expected)
             print()
         self.curr_test_index += 1
