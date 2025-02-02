@@ -59,7 +59,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
     mode = ATOM_MODE
     index = begin
 
-    def should_apply(stack_level: parse_axe.LevelInfo, new_level: parse_axe.LevelInfo) -> bool:
+    def should_squash(stack_level: parse_axe.LevelInfo, new_level: parse_axe.LevelInfo) -> bool:
         if stack_level.prec > new_level.prec:
             return True
         elif stack_level.prec < new_level.prec:
@@ -71,9 +71,8 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
     def stack_pop(level_info: parse_axe.LevelInfo | None):
         nonlocal oper_stack, atom_stack
-
         while (len(oper_stack) >= 1) and (
-            level_info is None or should_apply(oper_stack[-1].level_info, level_info)
+            level_info is None or should_squash(oper_stack[-1].level_info, level_info)
         ):
             ose = oper_stack[-1]
             oper_stack.pop()
@@ -124,9 +123,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 continue
 
         elif tokens[index].type == misc.TokenType.OPER:
-
             lr = paxe.lookup(token.name)
-
             if lr.is_right_bracket:
                 break
 
