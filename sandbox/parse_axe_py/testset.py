@@ -123,13 +123,13 @@ def basic(tt: _TestTracker):
     tt.set_current_test_name("infix")
     tt("1", '1')
     tt("1 + 2", 'add{ 1 + 2 }')
-    # tt("1 + 2 + 3 - 4 + 5", 'add{ 1 + 2 + 3 - 4 + 5 }')
+    tt("1 + 2 + 3 - 4 + 5", 'add{ 1 + 2 + 3 - 4 + 5 }')
     tt("1 + 2 * 3", 'add{ 1 + mul{ 2 * 3 } }')
-    # tt("1 + 2 * 3 + 4", 'add{ 1 + mul{ 2 * 3 } + 4 }')
-    # tt("a + b * c * d + e", 'add{ a + mul{ mul{ b * c } * d } + e }')
+    tt("1 + 2 * 3 + 4", 'add{ 1 + mul{ 2 * 3 } + 4 }')
+    tt("a + b * c * d + e", 'add{ a + mul{ mul{ b * c } * d } + e }')
     tt("f . g . h", 'cal{ f . cal{ g . h } }')
-    # tt("a + b - c + d", 'add{ a + b - c + d }')
-    # tt("1 + 2 + f . g . h * 3 * 4", 'add{ 1 + 2 + mul{ mul{ cal{ f . cal{ g . h } } * 3 } * 4 } }')
+    tt("a + b - c + d", 'add{ a + b - c + d }')
+    tt("1 + 2 + f . g . h * 3 * 4", 'add{ 1 + 2 + mul{ mul{ cal{ f . cal{ g . h } } * 3 } * 4 } }')
 
     tt.set_current_test_name("allfix")
     tt("2 ! + 3", 'add{ exc{ 2 ! } + 3 }')
@@ -325,7 +325,8 @@ def concat(tt: _TestTracker):
 def cpp(tt: _TestTracker):
     pan = parse_axe.ParseAxeNursery()
     pan.level_ltr('nam', Infix('::'))
-    pan.level_ltr('pst',
+    pan.level_ltr(
+        'pst',
         Postfix('++'),
         Postfix('--'),
         PostfixBracketed('(', ')'),
@@ -333,7 +334,8 @@ def cpp(tt: _TestTracker):
         Infix('.'),
         Infix('->'),
     )
-    pan.level_rtl('prf',
+    pan.level_rtl(
+        'prf',
         Prefix('++'),
         Prefix('--'),
         PrefixBracketed('<.', '.>'),  # C-style type cast

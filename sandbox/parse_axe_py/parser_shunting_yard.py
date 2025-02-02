@@ -23,6 +23,7 @@ class OperItem:
 @dataclasses.dataclass(slots=True)
 class AtomItem:
     node: Node
+    flat_flag: bool
     token_begin: int
     token_end: int
 
@@ -72,7 +73,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             assoc = stack_level.assoc
             return not (assoc == parse_axe.Assoc.RIGHT_TO_LEFT)
 
-    def stack_pop(level_info: parse_axe.LevelInfo | None):
+    def stack_pop(level_info: parse_axe.LevelInfo):
         nonlocal oper_stack, atom_stack
         while (len(oper_stack) >= 1) and (
             level_info is None or should_squash(oper_stack[-1].level_info, level_info)
@@ -85,10 +86,24 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             )
             assert (oi.min_token_index is None) or (oi.min_token_index <= token_begin)
             assert (oi.max_token_index is None) or (token_end <= oi.max_token_index)
-            new_node = oi.op.to_node(*[x.node for x in atom_stack[-oi.op.arity :]])
+            if oi.level_info.assoc == parse_axe.Assoc.FLAT and atom_stack[-oi.op.arity].flat_flag:
+                assert type(oi.op) == parse_axe.Infix
+                assert oi.op.arity == 2
+                base_node = atom_stack[-2].node
+                add_node = atom_stack[-1].node
+                if len(base_node.children) >= 2:
+                    base_node.children.append(Node(oi.op.name))
+                    base_node.children.append(add_node)
+                    new_node = base_node
+                else:
+                    new_node = Node(children=[base_node, Node(oi.op.name), add_node])
+                flat_flag = True
+            else:
+                new_node = oi.op.to_node(*[x.node for x in atom_stack[-oi.op.arity :]])
+                flat_flag = False
             new_node.name = oi.level_info.name
             atom_stack = atom_stack[: -oi.op.arity]
-            atom_stack.append(AtomItem(new_node, token_begin, token_end))
+            atom_stack.append(AtomItem(new_node, flat_flag, token_begin, token_end))
 
     def hallucinate_concat():
         nonlocal mode, index
@@ -115,7 +130,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         if token.type == misc.TokenType.ATOM:
 
             if mode == ATOM_MODE:
-                atom_stack.append(AtomItem(Node(token.name), index, index + 1))
+                atom_stack.append(AtomItem(Node(token.name), True, index, index + 1))
                 mode = INFIX_MODE
                 index += 1
                 continue
@@ -193,7 +208,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
         raise Exception(f'Unknown {tokens[index]=}')
 
-    stack_pop(None)
+    stack_pop(parse_axe.LevelInfo('END', -1, parse_axe.Assoc.NONE))
     assert len(oper_stack) == 0, f'oper_stack not empty: {pprint.pformat(oper_stack)}'
     assert len(atom_stack) == 1, f'atom_stack not unit: {pprint.pformat(atom_stack)}'
     return atom_stack[0]

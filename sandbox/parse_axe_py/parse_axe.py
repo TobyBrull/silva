@@ -5,6 +5,7 @@ import parse_tree
 
 
 class Assoc(enum.Enum):
+    NONE = 0
     LEFT_TO_RIGHT = 1
     RIGHT_TO_LEFT = 2
     FLAT = 3
@@ -225,7 +226,7 @@ class ParseAxeNursery:
             left_bracket=self.transparent_brackets[0],
             right_bracket=self.transparent_brackets[1],
         )
-        retval._add_op(tb, LevelInfo('trn', 1_000_000_000, Assoc.LEFT_TO_RIGHT))
+        retval._add_op(tb, LevelInfo('trn', 1_000_000_000, Assoc.NONE))
         for prec_m1, level in enumerate(reversed(self.levels)):
             level.info.prec = prec_m1 + 1
             for op in level.ops:
