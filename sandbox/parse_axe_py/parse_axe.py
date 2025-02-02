@@ -11,6 +11,8 @@ class Assoc(enum.Enum):
 class Prefix:
     name: str
 
+    arity: int = 1
+
     def render(self, arg: str) -> str:
         return f'{{ {self.name} {arg} }}'
 
@@ -19,6 +21,8 @@ class Prefix:
 class PrefixBracketed:
     left_bracket: str
     right_bracket: str
+
+    arity: int = 2
 
     def render(self, arg1: str, arg2: str) -> str:
         return f'{{ {self.left_bracket} {arg1} {self.right_bracket} {arg2} }}'
@@ -29,6 +33,8 @@ class TransparentBrackets:
     left_bracket: str
     right_bracket: str
 
+    arity: int = 0
+
     def render(self, *args) -> str:
         raise Exception(f'Unexpected')
 
@@ -36,6 +42,8 @@ class TransparentBrackets:
 @dataclasses.dataclass
 class Infix:
     name: str | None
+
+    arity: int = 2
 
     def render(self, arg1: str, arg2: str) -> str:
         if self.name is None:
@@ -49,6 +57,8 @@ class Ternary:
     first_name: str
     second_name: str
 
+    arity: int = 3
+
     def render(self, arg1: str, arg2: str, arg3: str) -> str:
         return f'{{ {arg1} {self.first_name} {arg2} {self.second_name} {arg3} }}'
 
@@ -56,6 +66,8 @@ class Ternary:
 @dataclasses.dataclass
 class Postfix:
     name: str
+
+    arity: int = 1
 
     def render(self, arg: str) -> str:
         return f'{{ {arg} {self.name} }}'
@@ -65,6 +77,8 @@ class Postfix:
 class PostfixBracketed:
     left_bracket: str
     right_bracket: str
+
+    arity: int = 2
 
     def render(self, arg1: str, arg2: str) -> str:
         return f'{{ {arg1} {self.left_bracket} {arg2} {self.right_bracket} }}'
@@ -162,8 +176,11 @@ class ParseAxe:
     def lookup(self, op_name: str) -> LookupResult:
         return self._lookup_results[op_name]
 
-    def lookup_concat(self) -> LevelInfo | None:
+    def get_concat_info(self) -> LevelInfo | None:
         return self._concat
+
+    def has_concat(self) -> bool:
+        return self._concat is not None
 
 
 @dataclasses.dataclass

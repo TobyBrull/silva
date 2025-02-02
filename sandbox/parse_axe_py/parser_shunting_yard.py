@@ -8,17 +8,16 @@ import parse_axe
 
 
 @dataclasses.dataclass(slots=True)
-class OperStackEntry:
+class OperItem:
     op: parse_axe.Op
     level_info: parse_axe.LevelInfo
-    arity: int
     token_indexes: list[int]
     min_token_index: int | None = None
     max_token_index: int | None = None
 
 
 @dataclasses.dataclass(slots=True)
-class AtomStackEntry:
+class AtomItem:
     name: str
     token_begin: int
     token_end: int
@@ -36,9 +35,9 @@ def _consistent_range(tokens: list[int], token_ranges: list[tuple[int, int]]) ->
     return all_token_ranges[0][0], all_token_ranges[-1][1]
 
 
-def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomStackEntry:
-    oper_stack: list[OperStackEntry] = []
-    atom_stack: list[AtomStackEntry] = []
+def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomItem:
+    oper_stack: list[OperItem] = []
+    atom_stack: list[AtomItem] = []
     prefix_mode = True
     index = begin
 
@@ -48,36 +47,23 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             ose = oper_stack[-1]
             oper_stack.pop()
             new_atom_name = ose.level_info.name + ose.op.render(
-                *[x.name for x in atom_stack[-ose.arity :]]
+                *[x.name for x in atom_stack[-ose.op.arity :]]
             )
             token_begin, token_end = _consistent_range(
                 ose.token_indexes,
-                [(x.token_begin, x.token_end) for x in atom_stack[-ose.arity :]],
+                [(x.token_begin, x.token_end) for x in atom_stack[-ose.op.arity :]],
             )
-            atom_stack = atom_stack[: -ose.arity]
+            atom_stack = atom_stack[: -ose.op.arity]
             assert (ose.min_token_index is None) or (ose.min_token_index <= token_begin)
             assert (ose.max_token_index is None) or (token_end <= ose.max_token_index)
-            atom_stack.append(
-                AtomStackEntry(
-                    name=new_atom_name,
-                    token_begin=token_begin,
-                    token_end=token_end,
-                )
-            )
+            atom_stack.append(AtomItem(new_atom_name, token_begin, token_end))
 
     def hallucinate_concat():
         nonlocal prefix_mode, index
-        level_info = paxe.lookup_concat()
+        level_info = paxe.get_concat_info()
         assert level_info is not None
         stack_pop(level_info.left_prec())
-        oper_stack.append(
-            OperStackEntry(
-                op=parse_axe.Infix(None),
-                level_info=level_info,
-                arity=2,
-                token_indexes=[],
-            )
-        )
+        oper_stack.append(OperItem(parse_axe.Infix(None), level_info, []))
         prefix_mode = True
 
     def handle_bracketed(left_bracket, right_bracket):
@@ -92,25 +78,17 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         retval.token_end += 1
         return retval
 
-    has_concat = paxe.lookup_concat() is not None
-
     while index < len(tokens):
         token = tokens[index]
         if token.type == misc.TokenType.ATOM:
 
             if prefix_mode:
-                atom_stack.append(
-                    AtomStackEntry(
-                        name=token.name,
-                        token_begin=index,
-                        token_end=index + 1,
-                    )
-                )
+                atom_stack.append(AtomItem(token.name, index, index + 1))
                 prefix_mode = False
                 index += 1
                 continue
 
-            if not prefix_mode and has_concat:
+            if not prefix_mode and paxe.has_concat():
                 hallucinate_concat()
                 continue
 
@@ -121,7 +99,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
             flr = paxe.lookup(token.name)
 
-            if not prefix_mode and has_concat:
+            if not prefix_mode and paxe.has_concat():
                 if flr.prefix_res is not None and flr.regular_res is None:
                     hallucinate_concat()
                     continue
@@ -142,15 +120,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 stack_pop(level_info.prec)
 
                 if type(op) == parse_axe.Prefix:
-                    oper_stack.append(
-                        OperStackEntry(
-                            op=op,
-                            level_info=level_info,
-                            arity=1,
-                            token_indexes=[index],
-                            min_token_index=index,
-                        )
-                    )
+                    oper_stack.append(OperItem(op, level_info, [index], min_token_index=index))
                     index += 1
                     continue
 
@@ -158,13 +128,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     atom = handle_bracketed(op.left_bracket, op.right_bracket)
                     atom_stack.append(atom)
                     oper_stack.append(
-                        OperStackEntry(
-                            op=op,
-                            level_info=level_info,
-                            arity=2,
-                            token_indexes=[],
-                            min_token_index=atom.token_begin,
-                        )
+                        OperItem(op, level_info, [], min_token_index=atom.token_begin)
                     )
                     continue
 
@@ -174,41 +138,18 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 stack_pop(level_info.left_prec())
 
                 if type(op) == parse_axe.Postfix:
-                    oper_stack.append(
-                        OperStackEntry(
-                            op=op,
-                            level_info=level_info,
-                            arity=1,
-                            token_indexes=[index],
-                            max_token_index=index + 1,
-                        )
-                    )
+                    oper_stack.append(OperItem(op, level_info, [index], max_token_index=index + 1))
                     index += 1
                     continue
 
                 if type(op) == parse_axe.PostfixBracketed:
                     atom = handle_bracketed(op.left_bracket, op.right_bracket)
                     atom_stack.append(atom)
-                    oper_stack.append(
-                        OperStackEntry(
-                            op=op,
-                            level_info=level_info,
-                            arity=2,
-                            token_indexes=[],
-                            max_token_index=atom.token_end,
-                        )
-                    )
+                    oper_stack.append(OperItem(op, level_info, [], max_token_index=atom.token_end))
                     continue
 
                 if type(op) == parse_axe.Infix:
-                    oper_stack.append(
-                        OperStackEntry(
-                            op=op,
-                            level_info=level_info,
-                            arity=2,
-                            token_indexes=[index],
-                        )
-                    )
+                    oper_stack.append(OperItem(op, level_info, [index]))
                     prefix_mode = True
                     index += 1
                     continue
@@ -216,14 +157,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 if type(op) == parse_axe.Ternary:
                     atom_mid = handle_bracketed(op.first_name, op.second_name)
                     atom_stack.append(atom_mid)
-                    oper_stack.append(
-                        OperStackEntry(
-                            op=op,
-                            level_info=level_info,
-                            arity=3,
-                            token_indexes=[],
-                        )
-                    )
+                    oper_stack.append(OperItem(op, level_info, []))
                     prefix_mode = True
                     continue
 
