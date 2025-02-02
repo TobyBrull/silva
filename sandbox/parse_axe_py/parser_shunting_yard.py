@@ -9,8 +9,9 @@ import parse_axe
 
 @dataclasses.dataclass(slots=True)
 class OperStackEntry:
-    name: str
-    prec: int
+    op: parse_axe.Op
+    right_prec: int
+    level_info: parse_axe.LevelInfo
     arity: int
     token_indexes: list[int]
     min_token_index: int | None = None
@@ -44,10 +45,12 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
     def stack_pop(prec: int):
         nonlocal oper_stack, atom_stack
-        while (len(oper_stack) >= 1) and oper_stack[-1].prec > prec:
+        while (len(oper_stack) >= 1) and oper_stack[-1].right_prec > prec:
             ose = oper_stack[-1]
             oper_stack.pop()
-            new_atom_name = misc.cons_str(ose.name, *[x.name for x in atom_stack[-ose.arity :]])
+            new_atom_name = ose.level_info.name + ose.op.render(
+                *[x.name for x in atom_stack[-ose.arity :]]
+            )
             token_begin, token_end = _consistent_range(
                 ose.token_indexes,
                 [(x.token_begin, x.token_end) for x in atom_stack[-ose.arity :]],
@@ -65,15 +68,15 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
     def hallucinate_concat():
         nonlocal prefix_mode, index
-        res = paxe.lookup_concat()
-        assert res is not None
-        (prec, assoc) = res
-        left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
+        level_info = paxe.lookup_concat()
+        assert level_info is not None
+        left_prec, right_prec = level_info.left_and_right_prec()
         stack_pop(left_prec)
         oper_stack.append(
             OperStackEntry(
-                name='Concat',
-                prec=right_prec,
+                op=parse_axe.Infix(None),
+                right_prec=right_prec,
+                level_info=level_info,
                 arity=2,
                 token_indexes=[],
             )
@@ -138,14 +141,15 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
             if prefix_mode:
                 assert flr.prefix_res is not None
-                (op, prec, assoc) = flr.prefix_res
-                stack_pop(prec)
+                (op, level_info) = flr.prefix_res
+                stack_pop(level_info.prec)
 
                 if type(op) == parse_axe.Prefix:
                     oper_stack.append(
                         OperStackEntry(
-                            name=token.name,
-                            prec=prec,
+                            op=op,
+                            right_prec=level_info.prec,
+                            level_info=level_info,
                             arity=1,
                             token_indexes=[index],
                             min_token_index=index,
@@ -159,8 +163,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     atom_stack.append(atom)
                     oper_stack.append(
                         OperStackEntry(
-                            name=token.name,
-                            prec=prec,
+                            op=op,
+                            right_prec=level_info.prec,
+                            level_info=level_info,
                             arity=2,
                             token_indexes=[],
                             min_token_index=atom.token_begin,
@@ -170,15 +175,16 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
             else:
                 assert flr.regular_res is not None
-                (op, prec, assoc) = flr.regular_res
-                left_prec, right_prec = paxe.left_and_right_prec(prec, assoc)
+                (op, level_info) = flr.regular_res
+                left_prec, right_prec = level_info.left_and_right_prec()
                 stack_pop(left_prec)
 
                 if type(op) == parse_axe.Postfix:
                     oper_stack.append(
                         OperStackEntry(
-                            name=token.name,
-                            prec=right_prec,
+                            op=op,
+                            right_prec=right_prec,
+                            level_info=level_info,
                             arity=1,
                             token_indexes=[index],
                             max_token_index=index + 1,
@@ -192,8 +198,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     atom_stack.append(atom)
                     oper_stack.append(
                         OperStackEntry(
-                            name=token.name,
-                            prec=right_prec,
+                            op=op,
+                            right_prec=right_prec,
+                            level_info=level_info,
                             arity=2,
                             token_indexes=[],
                             max_token_index=atom.token_end,
@@ -204,8 +211,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 if type(op) == parse_axe.Infix:
                     oper_stack.append(
                         OperStackEntry(
-                            name=token.name,
-                            prec=right_prec,
+                            op=op,
+                            right_prec=right_prec,
+                            level_info=level_info,
                             arity=2,
                             token_indexes=[index],
                         )
@@ -219,8 +227,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     atom_stack.append(atom_mid)
                     oper_stack.append(
                         OperStackEntry(
-                            name=token.name,
-                            prec=right_prec,
+                            op=op,
+                            right_prec=right_prec,
+                            level_info=level_info,
                             arity=3,
                             token_indexes=[],
                         )

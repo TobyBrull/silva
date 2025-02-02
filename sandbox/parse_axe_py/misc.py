@@ -3,14 +3,6 @@ import enum
 from typing import NamedTuple
 
 
-def cons_str(*args):
-    ll = [x for x in args if x]
-    if len(ll) == 1:
-        return ll[0]
-    else:
-        return "{ " + (" ".join(str(t) for t in ll)) + " }"
-
-
 class TokenType(enum.Enum):
     ATOM = 0
     OPER = 1
