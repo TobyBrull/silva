@@ -94,29 +94,29 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
         elif tokens[index].type == misc.TokenType.OPER:
 
-            if paxe.is_right_bracket(token.name):
+            lr = paxe.lookup(token.name)
+
+            if lr.is_right_bracket:
                 break
 
-            flr = paxe.lookup(token.name)
-
             if not prefix_mode and paxe.has_concat():
-                if flr.prefix_res is not None and flr.regular_res is None:
+                if lr.prefix_res is not None and lr.regular_res is None:
                     hallucinate_concat()
                     continue
 
-                if flr.transparent_brackets():
+                if lr.transparent_brackets():
                     hallucinate_concat()
                     continue
 
-            if prefix_mode and (res := flr.transparent_brackets()) is not None:
+            if prefix_mode and (res := lr.transparent_brackets()) is not None:
                 atom = handle_bracketed(res[0], res[1])
                 atom_stack.append(atom)
                 prefix_mode = False
                 continue
 
             if prefix_mode:
-                assert flr.prefix_res is not None
-                (op, level_info) = flr.prefix_res
+                assert lr.prefix_res is not None
+                (op, level_info) = lr.prefix_res
                 stack_pop(level_info.prec)
 
                 if type(op) == parse_axe.Prefix:
@@ -133,8 +133,8 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     continue
 
             else:
-                assert flr.regular_res is not None
-                (op, level_info) = flr.regular_res
+                assert lr.regular_res is not None
+                (op, level_info) = lr.regular_res
                 stack_pop(level_info.left_prec())
 
                 if type(op) == parse_axe.Postfix:

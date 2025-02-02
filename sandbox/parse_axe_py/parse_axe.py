@@ -111,16 +111,24 @@ class LevelInfo:
 class LookupResult:
     prefix_res: tuple[Op, LevelInfo] | None = None
     regular_res: tuple[Op, LevelInfo] | None = None
+    is_right_bracket: bool = False
 
     def _register(self, op: Op, level_info: LevelInfo):
         if isinstance(op, PrefixOp):
             assert self.prefix_res is None
+            assert self.is_right_bracket == False
             self.prefix_res = (op, level_info)
         elif isinstance(op, InfixOp | PostfixOp):
             assert self.regular_res is None
+            assert self.is_right_bracket == False
             self.regular_res = (op, level_info)
         else:
             raise Exception(f'Unknown {type(op)=}')
+
+    def _register_right_bracket(self):
+        assert self.prefix_res is None, f'{str(self.prefix_res)}'
+        assert self.regular_res is None, f'{str(self.regular_res)}'
+        self.is_right_bracket = True
 
     def transparent_brackets(self) -> tuple[str, str] | None:
         if self.prefix_res is None:
@@ -133,7 +141,6 @@ class LookupResult:
 class ParseAxe:
     def __init__(self):
         self._lookup_results: dict[str, LookupResult] = {}
-        self._right_brackets: set[str] = set()
         self._concat: LevelInfo | None = None
 
     def _add_op(self, op: Op, level_info: LevelInfo):
@@ -141,12 +148,10 @@ class ParseAxe:
             self._add_op_name(op, op.name, level_info)
         elif type(op) == PrefixBracketed:
             self._add_op_name(op, op.left_bracket, level_info)
-            self._add_op_name(op, op.right_bracket, level_info)
-            self._right_brackets.add(op.right_bracket)
+            self._add_op_right_bracket(op.right_bracket)
         elif type(op) == TransparentBrackets:
             self._add_op_name(op, op.left_bracket, level_info)
-            self._add_op_name(op, op.right_bracket, level_info)
-            self._right_brackets.add(op.right_bracket)
+            self._add_op_right_bracket(op.right_bracket)
         elif type(op) == Infix:
             if op.name is None:
                 assert self._concat is None
@@ -155,14 +160,12 @@ class ParseAxe:
                 self._add_op_name(op, op.name, level_info)
         elif type(op) == Ternary:
             self._add_op_name(op, op.first_name, level_info)
-            self._add_op_name(op, op.second_name, level_info)
-            self._right_brackets.add(op.second_name)
+            self._add_op_right_bracket(op.second_name)
         elif type(op) == Postfix:
             self._add_op_name(op, op.name, level_info)
         elif type(op) == PostfixBracketed:
             self._add_op_name(op, op.left_bracket, level_info)
-            self._add_op_name(op, op.right_bracket, level_info)
-            self._right_brackets.add(op.right_bracket)
+            self._add_op_right_bracket(op.right_bracket)
         else:
             raise Exception(f'Unknown {type(op)=}')
 
@@ -170,8 +173,12 @@ class ParseAxe:
         lr = self._lookup_results.setdefault(op_name, LookupResult())
         lr._register(op, level_info)
 
-    def is_right_bracket(self, op_name: str) -> bool:
-        return op_name in self._right_brackets
+    def _add_op_right_bracket(self, op_name: str):
+        lr = self._lookup_results.setdefault(op_name, LookupResult())
+        try:
+            lr._register_right_bracket()
+        except Exception as e:
+            raise Exception(f'{op_name=}') from e
 
     def lookup(self, op_name: str) -> LookupResult:
         return self._lookup_results[op_name]
