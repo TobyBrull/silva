@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import dataclasses
 import pprint
+import enum
 
 import misc
 import testset
@@ -35,10 +36,27 @@ def _consistent_range(tokens: list[int], token_ranges: list[tuple[int, int]]) ->
     return all_token_ranges[0][0], all_token_ranges[-1][1]
 
 
+class ShuntingYardMode(enum.Enum):
+
+    # In the mode where an atom is naturally expected.
+    # In this mode, a prefix operator may also appear next.
+    ATOM = 1
+
+    # In the mode where an infix operator is naturally expected.
+    # In this mode, a postfix operator may also appear next.
+    # Also, if concatenation is allowed, an atom or prefix may appear next, in which case a CONCAT
+    # operator is hallucinated.
+    INFIX = 2
+
+
+ATOM_MODE = ShuntingYardMode.ATOM
+INFIX_MODE = ShuntingYardMode.INFIX
+
+
 def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomItem:
     oper_stack: list[OperItem] = []
     atom_stack: list[AtomItem] = []
-    prefix_mode = True
+    mode = ATOM_MODE
     index = begin
 
     def stack_pop(prec: int):
@@ -59,15 +77,15 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             atom_stack.append(AtomItem(new_atom_name, token_begin, token_end))
 
     def hallucinate_concat():
-        nonlocal prefix_mode, index
+        nonlocal mode, index
         level_info = paxe.get_concat_info()
         assert level_info is not None
         stack_pop(level_info.left_prec())
         oper_stack.append(OperItem(parse_axe.Infix(None), level_info, []))
-        prefix_mode = True
+        mode = ATOM_MODE
 
     def handle_bracketed(left_bracket, right_bracket):
-        nonlocal prefix_mode, index
+        nonlocal index
         assert index < len(tokens)
         assert tokens[index].name == left_bracket
         retval = expr_impl(paxe, tokens, index + 1)
@@ -82,13 +100,13 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         token = tokens[index]
         if token.type == misc.TokenType.ATOM:
 
-            if prefix_mode:
+            if mode == ATOM_MODE:
                 atom_stack.append(AtomItem(token.name, index, index + 1))
-                prefix_mode = False
+                mode = INFIX_MODE
                 index += 1
                 continue
 
-            if not prefix_mode and paxe.has_concat():
+            if mode == INFIX_MODE and paxe.has_concat():
                 hallucinate_concat()
                 continue
 
@@ -99,7 +117,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             if lr.is_right_bracket:
                 break
 
-            if not prefix_mode and paxe.has_concat():
+            if mode == INFIX_MODE and paxe.has_concat():
                 if lr.prefix_res is not None and lr.regular_res is None:
                     hallucinate_concat()
                     continue
@@ -108,13 +126,13 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     hallucinate_concat()
                     continue
 
-            if prefix_mode and (res := lr.transparent_brackets()) is not None:
+            if mode == ATOM_MODE and (res := lr.transparent_brackets()) is not None:
                 atom = handle_bracketed(res[0], res[1])
                 atom_stack.append(atom)
-                prefix_mode = False
+                mode = INFIX_MODE
                 continue
 
-            if prefix_mode:
+            if mode == ATOM_MODE:
                 assert lr.prefix_res is not None
                 (op, level_info) = lr.prefix_res
                 stack_pop(level_info.prec)
@@ -150,7 +168,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
                 if type(op) == parse_axe.Infix:
                     oper_stack.append(OperItem(op, level_info, [index]))
-                    prefix_mode = True
+                    mode = ATOM_MODE
                     index += 1
                     continue
 
@@ -158,7 +176,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     atom_mid = handle_bracketed(op.first_name, op.second_name)
                     atom_stack.append(atom_mid)
                     oper_stack.append(OperItem(op, level_info, []))
-                    prefix_mode = True
+                    mode = ATOM_MODE
                     continue
 
         raise Exception(f'Unknown {tokens[index]=}')
