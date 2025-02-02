@@ -98,26 +98,6 @@ class LevelInfo:
     prec: int
     assoc: Assoc
 
-    def left_prec(self) -> int:
-        if self.assoc == Assoc.LEFT_TO_RIGHT:
-            return self.prec
-        elif self.assoc == Assoc.RIGHT_TO_LEFT:
-            return self.prec + 1
-        elif self.assoc == Assoc.FLAT:
-            return self.prec
-        else:
-            raise Exception(f'Unknown {self.assoc=}')
-
-    def right_prec(self) -> int:
-        if self.assoc == Assoc.LEFT_TO_RIGHT:
-            return self.prec + 1
-        elif self.assoc == Assoc.RIGHT_TO_LEFT:
-            return self.prec
-        elif self.assoc == Assoc.FLAT:
-            return self.prec + 1
-        else:
-            raise Exception(f'Unknown {self.assoc=}')
-
 
 @dataclasses.dataclass
 class LookupResult:
@@ -245,7 +225,7 @@ class ParseAxeNursery:
         )
         retval._add_op(tb, LevelInfo('trn', 1_000_000_000, Assoc.LEFT_TO_RIGHT))
         for prec_m1, level in enumerate(reversed(self.levels)):
-            level.info.prec = 10 * (prec_m1 + 1)
+            level.info.prec = prec_m1 + 1
             for op in level.ops:
                 retval._add_op(op, level.info)
         return retval

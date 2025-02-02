@@ -59,9 +59,22 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
     mode = ATOM_MODE
     index = begin
 
-    def stack_pop(prec: int):
+    def should_apply(stack_level: parse_axe.LevelInfo, new_level: parse_axe.LevelInfo) -> bool:
+        if stack_level.prec > new_level.prec:
+            return True
+        elif stack_level.prec < new_level.prec:
+            return False
+        else:
+            assert stack_level.assoc == new_level.assoc
+            assoc = stack_level.assoc
+            return not (assoc == parse_axe.Assoc.RIGHT_TO_LEFT)
+
+    def stack_pop(level_info: parse_axe.LevelInfo | None):
         nonlocal oper_stack, atom_stack
-        while (len(oper_stack) >= 1) and oper_stack[-1].level_info.right_prec() > prec:
+
+        while (len(oper_stack) >= 1) and (
+            level_info is None or should_apply(oper_stack[-1].level_info, level_info)
+        ):
             ose = oper_stack[-1]
             oper_stack.pop()
             new_atom_name = ose.level_info.name + ose.op.render(
@@ -80,7 +93,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         nonlocal mode, index
         level_info = paxe.get_concat_info()
         assert level_info is not None
-        stack_pop(level_info.left_prec())
+        stack_pop(level_info)
         oper_stack.append(OperItem(parse_axe.Infix(None), level_info, []))
         mode = ATOM_MODE
 
@@ -135,7 +148,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             if mode == ATOM_MODE:
                 assert lr.prefix_res is not None
                 (op, level_info) = lr.prefix_res
-                stack_pop(level_info.prec)
+                stack_pop(level_info)
 
                 if type(op) == parse_axe.Prefix:
                     oper_stack.append(OperItem(op, level_info, [index], min_token_index=index))
@@ -153,7 +166,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             else:
                 assert lr.regular_res is not None
                 (op, level_info) = lr.regular_res
-                stack_pop(level_info.left_prec())
+                stack_pop(level_info)
 
                 if type(op) == parse_axe.Postfix:
                     oper_stack.append(OperItem(op, level_info, [index], max_token_index=index + 1))
@@ -181,7 +194,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
         raise Exception(f'Unknown {tokens[index]=}')
 
-    stack_pop(0)
+    stack_pop(None)
     assert len(oper_stack) == 0, f'oper_stack not empty: {pprint.pformat(oper_stack)}'
     assert len(atom_stack) == 1, f'atom_stack not unit: {pprint.pformat(atom_stack)}'
     return atom_stack[0]
