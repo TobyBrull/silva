@@ -84,13 +84,13 @@ class LevelInfo:
     assoc: Assoc
     merge: bool
 
-    def left_and_right_prec(self) -> tuple[int, int]:
-        (left_prec, right_prec) = (
-            (self.prec, self.prec + 1)
-            if (self.assoc == Assoc.LEFT_TO_RIGHT)
-            else (self.prec + 1, self.prec)
-        )
-        return left_prec, right_prec
+    def left_prec(self) -> int:
+        retval = self.prec if (self.assoc == Assoc.LEFT_TO_RIGHT) else self.prec + 1
+        return retval
+
+    def right_prec(self) -> int:
+        retval = self.prec + 1 if (self.assoc == Assoc.LEFT_TO_RIGHT) else self.prec
+        return retval
 
 
 @dataclasses.dataclass

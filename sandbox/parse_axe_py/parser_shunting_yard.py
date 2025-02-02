@@ -10,7 +10,6 @@ import parse_axe
 @dataclasses.dataclass(slots=True)
 class OperStackEntry:
     op: parse_axe.Op
-    right_prec: int
     level_info: parse_axe.LevelInfo
     arity: int
     token_indexes: list[int]
@@ -45,7 +44,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
     def stack_pop(prec: int):
         nonlocal oper_stack, atom_stack
-        while (len(oper_stack) >= 1) and oper_stack[-1].right_prec > prec:
+        while (len(oper_stack) >= 1) and oper_stack[-1].level_info.right_prec() > prec:
             ose = oper_stack[-1]
             oper_stack.pop()
             new_atom_name = ose.level_info.name + ose.op.render(
@@ -70,12 +69,10 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         nonlocal prefix_mode, index
         level_info = paxe.lookup_concat()
         assert level_info is not None
-        left_prec, right_prec = level_info.left_and_right_prec()
-        stack_pop(left_prec)
+        stack_pop(level_info.left_prec())
         oper_stack.append(
             OperStackEntry(
                 op=parse_axe.Infix(None),
-                right_prec=right_prec,
                 level_info=level_info,
                 arity=2,
                 token_indexes=[],
@@ -148,7 +145,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     oper_stack.append(
                         OperStackEntry(
                             op=op,
-                            right_prec=level_info.prec,
                             level_info=level_info,
                             arity=1,
                             token_indexes=[index],
@@ -164,7 +160,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     oper_stack.append(
                         OperStackEntry(
                             op=op,
-                            right_prec=level_info.prec,
                             level_info=level_info,
                             arity=2,
                             token_indexes=[],
@@ -176,14 +171,12 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             else:
                 assert flr.regular_res is not None
                 (op, level_info) = flr.regular_res
-                left_prec, right_prec = level_info.left_and_right_prec()
-                stack_pop(left_prec)
+                stack_pop(level_info.left_prec())
 
                 if type(op) == parse_axe.Postfix:
                     oper_stack.append(
                         OperStackEntry(
                             op=op,
-                            right_prec=right_prec,
                             level_info=level_info,
                             arity=1,
                             token_indexes=[index],
@@ -199,7 +192,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     oper_stack.append(
                         OperStackEntry(
                             op=op,
-                            right_prec=right_prec,
                             level_info=level_info,
                             arity=2,
                             token_indexes=[],
@@ -212,7 +204,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     oper_stack.append(
                         OperStackEntry(
                             op=op,
-                            right_prec=right_prec,
                             level_info=level_info,
                             arity=2,
                             token_indexes=[index],
@@ -228,7 +219,6 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                     oper_stack.append(
                         OperStackEntry(
                             op=op,
-                            right_prec=right_prec,
                             level_info=level_info,
                             arity=3,
                             token_indexes=[],
