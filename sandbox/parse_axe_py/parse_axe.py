@@ -1,11 +1,16 @@
 import dataclasses
 import enum
 
+import parse_tree
+
 
 class Assoc(enum.Enum):
     LEFT_TO_RIGHT = 1
     RIGHT_TO_LEFT = 2
     FLAT = 3
+
+
+Node = parse_tree.Node
 
 
 @dataclasses.dataclass
@@ -14,8 +19,8 @@ class Prefix:
 
     arity: int = 1
 
-    def render(self, arg: str) -> str:
-        return f'{{ {self.name} {arg} }}'
+    def to_node(self, arg: Node) -> Node:
+        return Node(children=[Node(self.name), arg])
 
 
 @dataclasses.dataclass
@@ -25,8 +30,8 @@ class PrefixBracketed:
 
     arity: int = 2
 
-    def render(self, arg1: str, arg2: str) -> str:
-        return f'{{ {self.left_bracket} {arg1} {self.right_bracket} {arg2} }}'
+    def to_node(self, arg1: Node, arg2: Node) -> Node:
+        return Node(children=[Node(self.left_bracket), arg1, Node(self.right_bracket), arg2])
 
 
 @dataclasses.dataclass
@@ -36,7 +41,7 @@ class TransparentBrackets:
 
     arity: int = 0
 
-    def render(self, *args) -> str:
+    def to_node(self, *args) -> Node:
         raise Exception(f'Unexpected')
 
 
@@ -46,11 +51,8 @@ class Infix:
 
     arity: int = 2
 
-    def render(self, arg1: str, arg2: str) -> str:
-        if self.name is None:
-            return f'{{ {arg1} CONCAT {arg2} }}'
-        else:
-            return f'{{ {arg1} {self.name} {arg2} }}'
+    def to_node(self, arg1: Node, arg2: Node) -> Node:
+        return Node(children=[arg1, Node(self.name), arg2])
 
 
 @dataclasses.dataclass
@@ -60,8 +62,8 @@ class Ternary:
 
     arity: int = 3
 
-    def render(self, arg1: str, arg2: str, arg3: str) -> str:
-        return f'{{ {arg1} {self.first_name} {arg2} {self.second_name} {arg3} }}'
+    def to_node(self, arg1: Node, arg2: Node, arg3: Node) -> Node:
+        return Node(children=[arg1, Node(self.first_name), arg2, Node(self.second_name), arg3])
 
 
 @dataclasses.dataclass
@@ -70,8 +72,8 @@ class Postfix:
 
     arity: int = 1
 
-    def render(self, arg: str) -> str:
-        return f'{{ {arg} {self.name} }}'
+    def to_node(self, arg: Node) -> Node:
+        return Node(children=[arg, Node(self.name)])
 
 
 @dataclasses.dataclass
@@ -81,8 +83,8 @@ class PostfixBracketed:
 
     arity: int = 2
 
-    def render(self, arg1: str, arg2: str) -> str:
-        return f'{{ {arg1} {self.left_bracket} {arg2} {self.right_bracket} }}'
+    def to_node(self, arg1: Node, arg2: Node) -> Node:
+        return Node(children=[arg1, Node(self.left_bracket), arg2, Node(self.right_bracket)])
 
 
 PrefixOp = Prefix | PrefixBracketed | TransparentBrackets
