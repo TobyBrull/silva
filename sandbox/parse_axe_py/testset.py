@@ -124,6 +124,7 @@ def basic(tt: _TestTracker):
     tt("1", '1')
     tt("1 + 2", 'add{ 1 + 2 }')
     tt("1 + 2 + 3 - 4 + 5", 'add{ 1 + 2 + 3 - 4 + 5 }')
+    tt("1 + 2 * a ! + 3 - 4 + 5", 'add{ 1 + mul{ 2 * exc{ a ! } } + 3 - 4 + 5 }')
     tt("1 + 2 * 3", 'add{ 1 + mul{ 2 * 3 } }')
     tt("1 + 2 * 3 + 4", 'add{ 1 + mul{ 2 * 3 } + 4 }')
     tt("a + b * c * d + e", 'add{ a + mul{ mul{ b * c } * d } + e }')
@@ -171,6 +172,19 @@ def basic(tt: _TestTracker):
     tt("a + b ? c : d + e", 'ter{ add{ a + b } ? c : add{ d + e } }')
     tt("a = b ? c = d : e = f", 'eqa{ a = eqa{ ter{ b ? eqa{ c = d } : e } = f } }')
     tt("a + b ? c + d : e + f", 'ter{ add{ a + b } ? add{ c + d } : add{ e + f } }')
+
+    pan = parse_axe.ParseAxeNursery()
+    pan.level_flat('cal', Infix('.'))
+    pan.level_ltr('exc', Postfix('!'))
+    paxe = pan.finish()
+
+    tt.set_parse_axe(paxe, "low-postfix")
+
+    tt.set_current_test_name("flat")
+    tt("a . b . c . d", 'cal{ a . b . c . d }')
+    tt("a ! . b . c . d", None)
+    tt("a . b ! . c . d", None)
+    tt("a . b . c . d !", 'exc{ cal{ a . b . c . d } ! }')
 
 
 def pq_notation(tt: _TestTracker):
