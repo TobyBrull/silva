@@ -91,12 +91,13 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 assert oi.op.arity == 2
                 base_node = atom_stack[-2].node
                 add_node = atom_stack[-1].node
-                if len(base_node.children) >= 2:
+                if len(base_node.children) == 0:
+                    new_node = Node(children=[base_node, Node(oi.op.name), add_node])
+                else:
+                    assert len(base_node.children) >= 3 and len(base_node.children) % 2 == 1
                     base_node.children.append(Node(oi.op.name))
                     base_node.children.append(add_node)
                     new_node = base_node
-                else:
-                    new_node = Node(children=[base_node, Node(oi.op.name), add_node])
                 flat_flag = True
             else:
                 new_node = oi.op.to_node(*[x.node for x in atom_stack[-oi.op.arity :]])
