@@ -11,7 +11,7 @@ import parse_tree
 Node = parse_tree.Node
 
 
-@dataclasses.dataclass(slots=True)
+@dataclasses.dataclass
 class OperItem:
     op: parse_axe.Op
     level_info: parse_axe.LevelInfo
@@ -20,7 +20,7 @@ class OperItem:
     max_token_index: int | None = None
 
 
-@dataclasses.dataclass(slots=True)
+@dataclasses.dataclass
 class AtomItem:
     node: Node
     flat_flag: bool
