@@ -9,20 +9,28 @@
 - A_Primary,0 = "(" A_Expr ")"
 - A_Primary,1 = number
 
-- B_Expr =% B_Primary [
-    infix_ltr     "." "|"
-    prefix        "-" "not" "*"
-    infix_ltr     "*" "/"
-    infix_ltr     "+" "-"
-    infix_ltr     "=="
-    postfix_expr  FuncArgs
-    infix_ltr     "and"
-    infix_ltr     "or"
-    infix_rtl     "=:"
-    postfix       "!"
-    ternary       [ "?" ":" ] [ "falls" "sonst" ]
+- B_Expr =% B_Primary brackets "(" ")" [
+    - Namespace   = ltr   infix "::"
+    - Postfix     = ltr   postfix "++" "--" 
+                          postfix_bracketed "(" ")" "[" "]"
+                          infix "." "->"
+    - Prefix      = rtl   prefix "++" "--" "+" "-" "!" "~" "*" "&" "sizeof" "new"
+                          prefix_bracketed "<." ".>"
+    - Member      = ltr   infix ".*" "->*"
+    - Multiply    = ltr   infix "*" "/" "%"
+    - Addition    = ltr   infix "+" "-"
+    - Bitshift    = ltr   infix "<<" ">>"
+    - Spaceship   = ltr   infix "<=>"
+    - Comparison  = flat  infix "<" "<=" ">" ">="
+    - Equality    = ltr   infix "==" "!="
+    - BitAnd      = ltr   infix "&"
+    - BitXor      = ltr   infix "^"
+    - BitOr       = ltr   infix "|"
+    - LogicalAnd  = ltr   infix "&&"
+    - LogicalOr   = ltr   infix "||"
+    - Assignment  = rtl   infix "=" "+=" "-="
+                          prefix "throw"
+                          ternary "?" ":"
+    - Comma       = ltr   infix ","
   ]
-- B_Primary,0 = "(" B_Expr ")"
-- B_Primary,1 =~ number string
-
-- FuncArgs = "(" B_Expr ( "," B_Expr )* ")"
+- B_Primary =~ number string identifier
