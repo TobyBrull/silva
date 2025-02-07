@@ -40,21 +40,8 @@ def _consistent_range(tokens: list[int], token_ranges: list[tuple[int, int]]) ->
     return all_token_ranges[0][0], all_token_ranges[-1][1]
 
 
-class ShuntingYardMode(enum.Enum):
-
-    # In the mode where an atom is naturally expected.
-    # In this mode, a prefix operator may also appear next.
-    ATOM = 1
-
-    # In the mode where an infix operator is naturally expected.
-    # In this mode, a postfix operator may also appear next.
-    # Also, if concatenation is allowed, an atom or prefix may appear next, in which case a CONCAT
-    # operator is hallucinated.
-    INFIX = 2
-
-
-ATOM_MODE = ShuntingYardMode.ATOM
-INFIX_MODE = ShuntingYardMode.INFIX
+ATOM_MODE = parse_axe.ParseMode.ATOM
+INFIX_MODE = parse_axe.ParseMode.INFIX
 
 
 def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomItem:
@@ -63,21 +50,9 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
     mode = ATOM_MODE
     index = begin
 
-    def should_squash(stack_level: parse_axe.LevelInfo, new_level: parse_axe.LevelInfo) -> bool:
-        if stack_level.prec > new_level.prec:
-            return True
-        elif stack_level.prec < new_level.prec:
-            return False
-        else:
-            assert stack_level.assoc == new_level.assoc
-            assoc = stack_level.assoc
-            return not (assoc == parse_axe.Assoc.RIGHT_TO_LEFT)
-
     def stack_pop(level_info: parse_axe.LevelInfo):
         nonlocal oper_stack, atom_stack
-        while (len(oper_stack) >= 1) and (
-            level_info is None or should_squash(oper_stack[-1].level_info, level_info)
-        ):
+        while (len(oper_stack) >= 1) and not (oper_stack[-1].level_info < level_info):
             oi = oper_stack[-1]
             oper_stack.pop()
             token_begin, token_end = _consistent_range(

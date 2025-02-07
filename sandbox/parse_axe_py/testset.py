@@ -123,12 +123,15 @@ def basic(tt: _TestTracker):
     tt.set_current_test_name("infix")
     tt("1", '1')
     tt("1 + 2", 'add{ 1 + 2 }')
+    tt("1 + 2 * 3", 'add{ 1 + mul{ 2 * 3 } }')
+    tt("f . g . h", 'cal{ f . cal{ g . h } }')
+
+    tt.set_current_test_name("infix-flat")
+    tt("1 + 2 * 3 + 4", 'add{ 1 + mul{ 2 * 3 } + 4 }')
     tt("1 + 2 + 3 - 4 + 5", 'add{ 1 + 2 + 3 - 4 + 5 }')
     tt("1 + 2 * a ! + 3 - 4 + 5", 'add{ 1 + mul{ 2 * exc{ a ! } } + 3 - 4 + 5 }')
-    tt("1 + 2 * 3", 'add{ 1 + mul{ 2 * 3 } }')
     tt("1 + 2 * 3 + 4", 'add{ 1 + mul{ 2 * 3 } + 4 }')
     tt("a + b * c * d + e", 'add{ a + mul{ mul{ b * c } * d } + e }')
-    tt("f . g . h", 'cal{ f . cal{ g . h } }')
     tt("a + b - c + d", 'add{ a + b - c + d }')
     tt("1 + 2 + f . g . h * 3 * 4", 'add{ 1 + 2 + mul{ mul{ cal{ f . cal{ g . h } } * 3 } * 4 } }')
 

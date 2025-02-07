@@ -101,6 +101,16 @@ class LevelInfo:
     prec: int
     assoc: Assoc
 
+    def __lt__(self, other):
+        if self.prec < other.prec:
+            return True
+        elif self.prec > other.prec:
+            return False
+        else:
+            assert self.assoc == other.assoc
+            assoc = self.assoc
+            return (assoc == Assoc.RIGHT_TO_LEFT)
+
 
 @dataclasses.dataclass
 class LookupResult:
@@ -232,3 +242,16 @@ class ParseAxeNursery:
             for op in level.ops:
                 retval._add_op(op, level.info)
         return retval
+
+
+class ParseMode(enum.Enum):
+
+    # In the mode where an atom is naturally expected.
+    # In this mode, a prefix operator may also appear next.
+    ATOM = 1
+
+    # In the mode where an infix operator is naturally expected.
+    # In this mode, a postfix operator may also appear next.
+    # Also, if concatenation is allowed, an atom or prefix may appear next, in which case a CONCAT
+    # operator is hallucinated.
+    INFIX = 2
