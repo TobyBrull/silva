@@ -25,6 +25,11 @@
 * tokenization
     * make "'" the default char to start strings.
 
+* Introduce namespaces in Seed
+    * Seed
+    * Seed.Rule
+    * Silva.Expr.FuncCall
+
 * code review
 
 * Soil and Toil

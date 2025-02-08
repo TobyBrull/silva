@@ -24,7 +24,7 @@ namespace silva {
     - Derivation,0 = "=" major_error Atom+
     - Derivation,1 = "=~" major_error Terminal+
     - Derivation,2 = "=>" major_error Nonterminal "," RulePrecedence
-    - Derivation,3 = "=%" major_error Nonterminal OpPrecedenceList
+    - Derivation,3 = "=%" major_error Nonterminal AxeNest? AxeList
     - Atom,0 = "major_error"
     - Atom,1 = Primary Suffix?
     - Suffix =~ "?" "*" "+" "!" "&"
@@ -35,10 +35,12 @@ namespace silva {
     - Terminal,0 = "identifier_regex" "(" Regex ")"
     - Terminal,1 =~ string "identifier" "operator" "string" "number" "any"
     - Regex = string
-    - OpList = "[" OpPrecedenceLevel+ "]"
-    - OpLevel = OpType Op+
-    - OpType =~ "prefix" "postfix" "binary_ltr" "binary_rtl"
-    - Op = string
+    - AxeNest = "nest" string string
+    - AxeList = "[" ("-" AxeLevel)* "]"
+    - AxeLevel = Nonterminal "=" AxeAssoc AxeOps*
+    - AxeOpType =~ "prefix" "prefix_nest" "infix" "ternary" "postfix" "postfix_nest"
+    - AxeAssoc =~ "ltr" "rtl" "flat"
+    - AxeOps = AxeOpType string*
   )'");
 
   enum class seed_rule_t {
@@ -59,10 +61,12 @@ namespace silva {
     TERMINAL_0,
     TERMINAL_1,
     REGEX,
-    OP_LIST,
-    OP_LEVEL,
-    OP_TYPE,
-    OP,
+    AXE_NEST,
+    AXE_LIST,
+    AXE_LEVEL,
+    AXE_OP_TYPE,
+    AXE_ASSOC,
+    AXE_OPS,
   };
 
   struct parse_root_t;

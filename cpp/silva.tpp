@@ -40,5 +40,6 @@ TEST_CASE("operator precedence", "")
         [0]Mult,0                                 1
           [0]Primary,1                            1
 )";
-  CHECK(parse_tree_to_string(pt) == expected_parse_tree.substr(1));
+  const string_t result{SILVA_EXPECT_REQUIRE(parse_tree_to_string(pt))};
+  CHECK(result == expected_parse_tree.substr(1));
 }
