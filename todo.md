@@ -25,6 +25,8 @@
 * tokenization
     * make "'" the default char to start strings.
 
+* remove ';' from Fern
+
 * Introduce namespaces in Seed
     * Seed
     * Seed.Rule
