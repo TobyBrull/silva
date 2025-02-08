@@ -42,7 +42,7 @@ namespace silva {
         return it->second.get_view();
       }
       else {
-        curr = curr->get_previous();
+        curr = curr->get_parent();
       }
     }
     SILVA_EXPECT(false, MINOR, "Could not find '{}' in env_context", name);

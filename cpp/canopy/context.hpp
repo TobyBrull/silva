@@ -16,17 +16,14 @@ namespace silva {
     ~context_t();
 
    public:
-    T* get_previous()
-      requires(T::context_mutable_get);
-
-    const T* get_previous() const
-      requires(!T::context_mutable_get);
+    // In multithreaded applications, each thread should have it's own context, but they may all
+    // share a common parent. Thus, only const access is allowed here to
+    const T* get_parent() const;
 
     static T* get()
       requires(T::context_mutable_get);
 
-    static const T* get()
-      requires(!T::context_mutable_get);
+    static const T* get();
   };
 }
 
@@ -73,15 +70,7 @@ namespace silva {
   }
 
   template<typename T>
-  T* context_t<T>::get_previous()
-    requires(T::context_mutable_get)
-  {
-    return previous;
-  }
-
-  template<typename T>
-  const T* context_t<T>::get_previous() const
-    requires(!T::context_mutable_get)
+  const T* context_t<T>::get_parent() const
   {
     return previous;
   }
@@ -100,7 +89,6 @@ namespace silva {
 
   template<typename T>
   const T* context_t<T>::get()
-    requires(!T::context_mutable_get)
   {
     if constexpr (T::context_use_default) {
       return current->get_pointer();
