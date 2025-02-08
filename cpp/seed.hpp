@@ -40,7 +40,8 @@ namespace silva {
     - AxeLevel = Nonterminal "=" AxeAssoc AxeOps*
     - AxeOpType =~ "prefix" "prefix_nest" "infix" "ternary" "postfix" "postfix_nest"
     - AxeAssoc =~ "ltr" "rtl" "flat"
-    - AxeOps = AxeOpType string*
+    - AxeOps = AxeOpType AxeOp*
+    - AxeOp =~ string "none"
   )'");
 
   enum class seed_rule_t {
@@ -67,6 +68,7 @@ namespace silva {
     AXE_OP_TYPE,
     AXE_ASSOC,
     AXE_OPS,
+    AXE_OP,
   };
 
   struct parse_root_t;

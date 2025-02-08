@@ -42,6 +42,7 @@ namespace silva {
       optional_t<token_id_t> tt_ternary     = retval.tokenization->lookup_token("ternary");
       optional_t<token_id_t> tt_prefix      = retval.tokenization->lookup_token("prefix");
       optional_t<token_id_t> tt_prefix_n    = retval.tokenization->lookup_token("prefix_nest");
+      optional_t<token_id_t> tt_none        = retval.tokenization->lookup_token("none");
 
       seed_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization),
@@ -63,13 +64,24 @@ namespace silva {
         return gg_rule.release();
       }
 
+      expected_t<parse_tree_sub_t> axe_op()
+      {
+        parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+        gg_rule.set_rule_index(to_int(AXE_OP));
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
+                               (token_id_by() == tt_none || token_data_by()->category == STRING),
+                           "Expected one of \"ltr\" \"rtl\" \"flat\"");
+        token_index += 1;
+        return gg_rule.release();
+      }
+
       expected_t<parse_tree_sub_t> axe_ops()
       {
         parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
         gg_rule.set_rule_index(to_int(AXE_OPS));
         gg_rule.sub += SILVA_EXPECT_FWD(axe_op_type());
-        while (num_tokens_left() >= 1 && token_data_by()->category == STRING) {
-          token_index += 1;
+        while (auto result = axe_op()) {
+          gg_rule.sub += *std::move(result);
         }
         return gg_rule.release();
       }
@@ -404,6 +416,7 @@ namespace silva {
                 make_rule("AxeOpType", 0),
                 make_rule("AxeAssoc", 0),
                 make_rule("AxeOps", 0),
+                make_rule("AxeOp", 0),
                 // clang-format on
             },
     };
