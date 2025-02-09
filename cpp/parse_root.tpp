@@ -14,7 +14,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
     - Primary = identifier "="!
   )'";
   const tokenization_t* frog_seed_tokens =
-      SILVA_EXPECT_REQUIRE(token_context_make("frog.seed", string_view_t{frog_seed}));
+      SILVA_EXPECT_REQUIRE(token_context_make("frog.seed", string_t{frog_seed}));
   const parse_root_t pr = SILVA_EXPECT_REQUIRE(parse_root_t::create(frog_seed_tokens));
   const string_view_t expected_seed_pt = R"(
 [0]Seed,0                                         -
@@ -70,7 +70,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
     Item = g h i
   )'";
   const tokenization_t* frog_tokens =
-      SILVA_EXPECT_REQUIRE(token_context_make("some.frog", string_view_t{frog_source_code}));
+      SILVA_EXPECT_REQUIRE(token_context_make("some.frog", string_t{frog_source_code}));
   const parse_tree_t frog_pt = SILVA_EXPECT_REQUIRE(pr.apply(frog_tokens));
 
   const string_view_t expected = R"(

@@ -22,15 +22,15 @@ TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
 
 TEST_CASE("seed", "[seed][parse_root_t]")
 {
-  const string_t sf_seed_source_code   = R"'(
+  const string_t sf_seed_source_code = R"'(
     - SimpleFern = "[" ( LabeledItem ";"? )* "]"
     - LabeledItem = ( Label ":" )? Item
     - Label = string
     - Item,0 => SimpleFern,0
     - Item,1 =~ string number
   )'";
-  const tokenization_t* sf_seed_tokens = SILVA_EXPECT_REQUIRE(
-      token_context_make("simple-fern.seed", string_or_view_t{sf_seed_source_code}));
+  const tokenization_t* sf_seed_tokens =
+      SILVA_EXPECT_REQUIRE(token_context_make("simple-fern.seed", string_t{sf_seed_source_code}));
 
   const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sf_seed_tokens));
   const auto sf_seed_pt_2 = SILVA_EXPECT_REQUIRE(seed_parse_root()->apply(sf_seed_tokens));

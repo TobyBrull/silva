@@ -25,8 +25,16 @@ The syntax of the Silva language is described by the Seed program
 A recent C++ compiler is required. Clang 19 works for me.
 
 ```bash
+conda create --name silva-clang
+conda install --name silva-clang --channel conda-forge cmake catch2=3 fmt boost
+conda install --name silva-clang --channel conda-forge llvm=19 lldb=19 llvm-tools=19
+conda install --name silva-clang --channel conda-forge clang=19 clangxx=19 clang-tools=19
+conda install --name silva-clang --channel conda-forge compiler-rt=19 compiler-rt_linux-64=19
+```
+
+```bash
 rm -rf build/
-cmake -S. -Bbuild/ -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=On -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+cmake -S. -Bbuild/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 ninja -Cbuild/
 ./build/cpp/silva_test
 ./build/cpp/silva_tokenization filename=silva/fern/simple.fern
