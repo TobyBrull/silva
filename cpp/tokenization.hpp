@@ -30,10 +30,26 @@ namespace silva {
     friend auto operator<=>(const token_info_t&, const token_info_t&) = default;
   };
 
-  struct token_context_t;
+  struct tokenization_t;
+
+  struct token_context_t : public context_t<token_context_t> {
+    constexpr static bool context_use_default = true;
+    constexpr static bool context_mutable_get = true;
+
+    vector_t<token_info_t> token_infos;
+    hashmap_t<string_t, token_info_index_t> token_lookup;
+    vector_t<unique_ptr_t<const tokenization_t>> tokenizations;
+
+    token_context_t() = default;
+  };
+  using token_context_ptr_t = context_ptr_t<token_context_t>;
+
+  token_info_index_t token_context_get_index(string_view_t);
+  token_info_index_t token_context_get_index(const token_info_t&);
+  const token_info_t* token_context_get_info(token_info_index_t);
 
   struct tokenization_t {
-    token_context_t* context = nullptr;
+    token_context_ptr_t context;
 
     filesystem_path_t filepath;
     string_t text;
@@ -65,21 +81,6 @@ namespace silva {
     const tokenization_t* tokenization{nullptr};
     index_t token_index = 0;
   };
-
-  struct token_context_t : public context_t<token_context_t> {
-    constexpr static bool context_use_default = true;
-    constexpr static bool context_mutable_get = true;
-
-    vector_t<token_info_t> token_infos;
-    hashmap_t<string_t, token_info_index_t> token_lookup;
-    vector_t<unique_ptr_t<const tokenization_t>> tokenizations;
-
-    token_context_t() = default;
-  };
-
-  token_info_index_t token_context_get_index(string_view_t);
-  token_info_index_t token_context_get_index(const token_info_t&);
-  const token_info_t* token_context_get_info(token_info_index_t);
 
   expected_t<const tokenization_t*> token_context_load(filesystem_path_t);
   expected_t<const tokenization_t*> token_context_make(filesystem_path_t filepath, string_t text);

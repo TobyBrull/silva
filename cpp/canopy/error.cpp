@@ -45,7 +45,7 @@ namespace silva {
     clear();
   }
 
-  error_t::error_t(error_context_t* context,
+  error_t::error_t(error_context_ptr_t context,
                    const index_t node_index,
                    const error_level_t error_level)
     : context(context), node_index(node_index), level(error_level)
@@ -53,7 +53,7 @@ namespace silva {
   }
 
   error_t::error_t(error_t&& other)
-    : context(std::exchange(other.context, nullptr))
+    : context(std::move(other.context))
     , node_index(std::exchange(other.node_index, 0))
     , level(std::exchange(other.level, error_level_t::NONE))
   {
@@ -77,13 +77,13 @@ namespace silva {
 
   void error_t::clear()
   {
-    if (context != nullptr) {
+    if (!context.is_nullptr()) {
       SILVA_ASSERT(context->tree.nodes.size() == node_index + 1);
       const auto& node       = context->tree.nodes[node_index];
       const index_t new_size = node.children_begin;
       context->memento_buffer.resize_offset(node.memento_buffer_begin);
       context->tree.nodes.resize(new_size);
-      context    = nullptr;
+      context.clear();
       node_index = 0;
       level      = error_level_t::NONE;
     }
@@ -91,8 +91,8 @@ namespace silva {
 
   void error_t::release()
   {
-    if (context != nullptr) {
-      context    = nullptr;
+    if (!context.is_nullptr()) {
+      context.clear();
       node_index = 0;
       level      = error_level_t::NONE;
     }

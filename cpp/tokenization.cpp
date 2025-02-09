@@ -216,8 +216,8 @@ namespace silva {
 
   token_info_index_t token_context_get_index(const string_view_t token_str)
   {
-    token_context_t* tc = token_context_t::get();
-    const auto it       = tc->token_lookup.find(string_t{token_str});
+    auto tc       = token_context_t::get();
+    const auto it = tc->token_lookup.find(string_t{token_str});
     if (it != tc->token_lookup.end()) {
       return it->second;
     }
@@ -233,8 +233,8 @@ namespace silva {
 
   token_info_index_t token_context_get_index(const token_info_t& token_info)
   {
-    token_context_t* tc = token_context_t::get();
-    const auto it       = tc->token_lookup.find(token_info.str);
+    auto tc       = token_context_t::get();
+    const auto it = tc->token_lookup.find(token_info.str);
     if (it != tc->token_lookup.end()) {
       return it->second;
     }
@@ -260,11 +260,11 @@ namespace silva {
   expected_t<const tokenization_t*> token_context_make(filesystem_path_t filepath,
                                                        string_t text_arg)
   {
-    token_context_t* context = token_context_t::get();
-    auto tt                  = std::make_unique<tokenization_t>();
-    tt->filepath             = std::move(filepath);
-    tt->text                 = std::move(text_arg);
-    tt->context              = context;
+    auto context = token_context_t::get();
+    auto tt      = std::make_unique<tokenization_t>();
+    tt->filepath = std::move(filepath);
+    tt->text     = std::move(text_arg);
+    tt->context  = context;
     impl::start_new_line(tt.get(), 0);
     index_t text_index       = 0;
     const string_view_t text = tt->text;

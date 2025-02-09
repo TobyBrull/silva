@@ -35,8 +35,8 @@ namespace silva {
 
   expected_t<string_view_t> env_context_get(const string_view_t name)
   {
-    const env_context_t* curr = env_context_t::get();
-    while (curr != nullptr) {
+    auto curr = env_context_t::get();
+    while (!curr.is_nullptr()) {
       const auto it = curr->variables.find(string_or_view_t{name});
       if (it != curr->variables.end()) {
         return it->second.get_view();

@@ -19,15 +19,16 @@ namespace silva {
 
     string_t to_string(index_t node_index) const;
   };
+  using error_context_ptr_t = context_ptr_t<error_context_t>;
 
   struct error_t : public sprite_t {
-    error_context_t* context = nullptr;
-    index_t node_index       = 0;
-    error_level_t level      = error_level_t::NONE;
+    error_context_ptr_t context;
+    index_t node_index  = 0;
+    error_level_t level = error_level_t::NONE;
 
     ~error_t();
     error_t() = default;
-    error_t(error_context_t*, index_t, error_level_t);
+    error_t(error_context_ptr_t, index_t, error_level_t);
 
     error_t(error_t&& other);
     error_t& operator=(error_t&& other);
@@ -47,8 +48,8 @@ namespace silva {
   };
 
   struct error_nursery_t {
-    error_context_t* context = nullptr;
-    index_t num_children     = 0;
+    error_context_ptr_t context;
+    index_t num_children = 0;
     optional_t<index_t> last_node_index;
     optional_t<index_t> children_begin;
     optional_t<index_t> memento_buffer_begin;
