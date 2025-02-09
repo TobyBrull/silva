@@ -50,7 +50,7 @@ namespace silva {
 
   const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
   {
-    return &context->_token_infos[tokens[token_index]];
+    return &context->token_infos[tokens[token_index]];
   }
 
   const tokenization_t::line_data_t*
@@ -275,21 +275,21 @@ namespace silva {
   token_info_index_t token_context_get_index(const token_info_t& token_info)
   {
     token_context_t* tc = token_context_t::get();
-    const auto it       = tc->_token_lookup.find(token_info.str);
-    if (it != tc->_token_lookup.end()) {
+    const auto it       = tc->token_lookup.find(token_info.str);
+    if (it != tc->token_lookup.end()) {
       return it->second;
     }
     else {
-      const token_info_index_t new_token_id = tc->_token_infos.size();
-      tc->_token_infos.push_back(token_info);
-      tc->_token_lookup.emplace(token_info.str, new_token_id);
+      const token_info_index_t new_token_id = tc->token_infos.size();
+      tc->token_infos.push_back(token_info);
+      tc->token_lookup.emplace(token_info.str, new_token_id);
       return new_token_id;
     }
   }
 
   const token_info_t* token_context_get_info(const token_info_index_t tii)
   {
-    return &token_context_t::get()->_token_infos[tii];
+    return &token_context_t::get()->token_infos[tii];
   }
 
   expected_t<const tokenization_t*> token_context_load(filesystem_path_t filepath)
@@ -321,7 +321,7 @@ namespace silva {
       }
     }
     const tokenization_t* retval = tt.get();
-    context->_tokenizations.push_back(std::move(tt));
+    context->tokenizations.push_back(std::move(tt));
     return retval;
   }
 

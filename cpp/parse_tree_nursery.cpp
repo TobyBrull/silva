@@ -89,7 +89,7 @@ namespace silva {
   const token_info_t* parse_tree_nursery_t::token_data_by(const index_t token_index_offset) const
   {
     const token_info_index_t token_id_ = token_id_by(token_index_offset);
-    return &(retval.tokenization->context->_token_infos[token_id_]);
+    return &(retval.tokenization->context->token_infos[token_id_]);
   }
 
   token_position_t parse_tree_nursery_t::token_position_by(const index_t token_index_offset) const

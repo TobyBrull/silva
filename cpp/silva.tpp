@@ -7,7 +7,7 @@
 
 using namespace silva;
 
-TEST_CASE("operator precedence", "")
+TEST_CASE("operator-precedence", "")
 {
   const string_t op_prec_source_code = R"'(
     - Expr = Add

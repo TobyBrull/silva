@@ -3,6 +3,9 @@
 * Seed:
     * Also support rules of the form `PrimaryExpr = "(" Expr ")"` for alias-rules.
 
+* Fern:
+    * remove semi-colons
+
 * error-handling
     * make root-based error look more like the error from the manual Fern parser
 

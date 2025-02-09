@@ -16,7 +16,7 @@ TEST_CASE("tokenization", "[tokenization_t]")
     CHECK(*tokenization->token_info_get(0) == info_t{"Hello", IDENTIFIER});
     CHECK(*tokenization->token_info_get(1) == info_t{"123", NUMBER});
     CHECK(*tokenization->token_info_get(2) == info_t{".<>.", OPERATOR});
-    REQUIRE(token_context_t::get()->_token_infos.size() == 3);
+    REQUIRE(token_context_t::get()->token_infos.size() == 3);
   }
 
   {
@@ -33,6 +33,6 @@ TEST_CASE("tokenization", "[tokenization_t]")
     CHECK(*tokenization->token_info_get(6) == info_t{"1", NUMBER});
     CHECK(*tokenization->token_info_get(7) == info_t{"+", OPERATOR});
     CHECK(*tokenization->token_info_get(8) == info_t{"3", NUMBER});
-    REQUIRE(token_context_t::get()->_token_infos.size() == 11);
+    REQUIRE(token_context_t::get()->token_infos.size() == 11);
   }
 }

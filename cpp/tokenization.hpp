@@ -72,9 +72,9 @@ namespace silva {
     constexpr static bool context_mutable_get = true;
 
     // index_t _token_info_start_index = 0;
-    vector_t<token_info_t> _token_infos;
-    hashmap_t<string_view_t, token_info_index_t> _token_lookup;
-    vector_t<unique_ptr_t<const tokenization_t>> _tokenizations;
+    vector_t<token_info_t> token_infos;
+    hashmap_t<string_view_t, token_info_index_t> token_lookup;
+    vector_t<unique_ptr_t<const tokenization_t>> tokenizations;
 
     token_context_t() = default;
   };
