@@ -17,7 +17,7 @@ TEST_CASE("operator-precedence", "")
     - Primary,1 = number
   )'";
   const tokenization_t* op_prec_tokens =
-      SILVA_EXPECT_REQUIRE(token_context_make("prec.seed", string_or_view_t{op_prec_source_code}));
+      SILVA_EXPECT_REQUIRE(token_context_make("prec.seed", string_t{op_prec_source_code}));
   static const parse_root_t prec = SILVA_EXPECT_REQUIRE(parse_root_t::create(op_prec_tokens));
 
   const string_t expr_source_code = R"(
@@ -25,7 +25,7 @@ TEST_CASE("operator-precedence", "")
   )";
 
   const tokenization_t* expr_tokenization =
-      SILVA_EXPECT_REQUIRE(token_context_make("expr.prec", string_view_t{expr_source_code}));
+      SILVA_EXPECT_REQUIRE(token_context_make("expr.prec", string_t{expr_source_code}));
   const auto pt = SILVA_EXPECT_REQUIRE(prec.apply(expr_tokenization));
 
   const std::string_view expected_parse_tree = R"(

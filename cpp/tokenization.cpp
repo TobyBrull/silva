@@ -13,14 +13,14 @@ namespace silva {
     return string_view_t{vals.at(x)};
   }
 
-  expected_t<string_view_t> token_info_t::as_plain_contained_str() const
+  expected_t<string_view_t> token_info_t::string_as_plain_contained() const
   {
     SILVA_EXPECT(category == STRING, MINOR);
     SILVA_EXPECT(str.size() >= 2, MINOR);
     return string_view_t{str}.substr(1, str.size() - 2);
   }
 
-  expected_t<double> token_info_t::as_double() const
+  expected_t<double> token_info_t::number_as_double() const
   {
     SILVA_EXPECT(category == NUMBER, MINOR);
     return convert_to<double>(str);
@@ -254,11 +254,11 @@ namespace silva {
   expected_t<const tokenization_t*> token_context_load(filesystem_path_t filepath)
   {
     string_t text = SILVA_EXPECT_FWD(read_file(filepath));
-    return token_context_make(filepath, string_or_view_t{std::move(text)});
+    return token_context_make(filepath, std::move(text));
   }
 
   expected_t<const tokenization_t*> token_context_make(filesystem_path_t filepath,
-                                                       string_or_view_t text_arg)
+                                                       string_t text_arg)
   {
     token_context_t* context = token_context_t::get();
     auto tt                  = std::make_unique<tokenization_t>();
@@ -267,7 +267,7 @@ namespace silva {
     tt->context              = context;
     impl::start_new_line(tt.get(), 0);
     index_t text_index       = 0;
-    const string_view_t text = tt->text.get_view();
+    const string_view_t text = tt->text;
     while (text_index < text.size()) {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(text.substr(text_index));
       text_index += tokenized_str.size();
@@ -288,7 +288,7 @@ namespace silva {
   tuple_t<index_t, index_t> tokenization_t::compute_line_and_column(const index_t token_index) const
   {
     const auto* line_data          = binary_search_line(token_index);
-    const string_view_t rest       = text.get_view().substr(line_data->source_code_offset);
+    const string_view_t rest       = string_view_t{text}.substr(line_data->source_code_offset);
     const index_t line_token_index = token_index - line_data->token_index;
     index_t seen_tokens            = 0;
     index_t column                 = 0;

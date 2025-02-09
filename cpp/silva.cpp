@@ -7,7 +7,7 @@ namespace silva {
     const tokenization_t* silva_seed_tokenization()
     {
       static const tokenization_t* silva_seed_tokenization =
-          SILVA_EXPECT_ASSERT(token_context_make("silva.seed", string_or_view_t{silva_seed}));
+          SILVA_EXPECT_ASSERT(token_context_make("silva.seed", string_t{silva_seed}));
       return silva_seed_tokenization;
     }
   }

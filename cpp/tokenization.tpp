@@ -11,7 +11,7 @@ TEST_CASE("tokenization", "[tokenization_t]")
   using info_t = token_info_t;
   {
     const auto* tokenization =
-        SILVA_EXPECT_REQUIRE(token_context_make("unit.test", "Hello   123 .<>."_sov));
+        SILVA_EXPECT_REQUIRE(token_context_make("unit.test", "Hello   123 .<>."));
     REQUIRE(tokenization->tokens.size() == 3);
     CHECK(*tokenization->token_info_get(0) == info_t{"Hello", IDENTIFIER});
     CHECK(*tokenization->token_info_get(1) == info_t{"123", NUMBER});
@@ -22,7 +22,7 @@ TEST_CASE("tokenization", "[tokenization_t]")
   {
     const auto* tokenization =
         SILVA_EXPECT_REQUIRE(token_context_make("unit.test", R"(Silva "Hel\"lo"  .(). # .().
-  1 + 3)"_sov));
+  1 + 3)"));
     REQUIRE(tokenization->tokens.size() == 9);
     CHECK(*tokenization->token_info_get(0) == info_t{"Silva", IDENTIFIER});
     CHECK(*tokenization->token_info_get(1) == info_t{"\"Hel\\\"lo\"", STRING});

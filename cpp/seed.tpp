@@ -11,7 +11,7 @@ using namespace silva;
 TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
 {
   const tokenization_t* seed_seed_tokenization =
-      SILVA_EXPECT_REQUIRE(token_context_make("seed.seed", string_or_view_t{seed_seed}));
+      SILVA_EXPECT_REQUIRE(token_context_make("seed.seed", string_t{seed_seed}));
 
   const parse_tree_t seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_seed_tokenization));
   const parse_tree_t seed_pt_2 =
@@ -128,7 +128,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
 
   const string_t sf_code = R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'";
   const tokenization_t* sf_tokens =
-      SILVA_EXPECT_REQUIRE(token_context_make("test.simple-fern", string_view_t{sf_code}));
+      SILVA_EXPECT_REQUIRE(token_context_make("test.simple-fern", string_t{sf_code}));
 
   auto sfpt = SILVA_EXPECT_REQUIRE(sfpr.apply(sf_tokens));
 

@@ -16,7 +16,7 @@ namespace silva {
     const tokenization_t* fern_seed_tokenization()
     {
       static const tokenization_t* fern_seed_tokenization =
-          SILVA_EXPECT_ASSERT(token_context_make("fern.seed", string_or_view_t{fern_seed}));
+          SILVA_EXPECT_ASSERT(token_context_make("fern.seed", string_t{fern_seed}));
       return fern_seed_tokenization;
     }
   }
@@ -403,7 +403,7 @@ namespace silva {
                 SILVA_EXPECT(node.rule_index == to_int(LABEL), MINOR);
                 retval.label = string_t{
                     SILVA_EXPECT_FWD(parse_tree->tokenization->token_info_get(node.token_index)
-                                         ->as_plain_contained_str(),
+                                         ->string_as_plain_contained(),
                                      MAJOR)};
               }
               else {
@@ -427,10 +427,10 @@ namespace silva {
                   }
                   else if (token_data->category == STRING) {
                     retval.item.value =
-                        string_t{SILVA_EXPECT_FWD(token_data->as_plain_contained_str(), MAJOR)};
+                        string_t{SILVA_EXPECT_FWD(token_data->string_as_plain_contained(), MAJOR)};
                   }
                   else if (token_data->category == NUMBER) {
-                    retval.item.value = SILVA_EXPECT_FWD(token_data->as_double(), MAJOR);
+                    retval.item.value = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
                   }
                   else {
                     SILVA_EXPECT(false, MINOR, "Unknown item '{}'", token_data->str);

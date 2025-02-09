@@ -24,8 +24,8 @@ namespace silva {
     string_t str;
     token_category_t category = token_category_t::INVALID;
 
-    expected_t<string_view_t> as_plain_contained_str() const;
-    expected_t<double> as_double() const;
+    expected_t<string_view_t> string_as_plain_contained() const;
+    expected_t<double> number_as_double() const;
 
     friend auto operator<=>(const token_info_t&, const token_info_t&) = default;
   };
@@ -36,7 +36,7 @@ namespace silva {
     token_context_t* context = nullptr;
 
     filesystem_path_t filepath;
-    string_or_view_t text;
+    string_t text;
     vector_t<token_info_index_t> tokens;
 
     struct line_data_t {
@@ -82,8 +82,7 @@ namespace silva {
   const token_info_t* token_context_get_info(token_info_index_t);
 
   expected_t<const tokenization_t*> token_context_load(filesystem_path_t);
-  expected_t<const tokenization_t*> token_context_make(filesystem_path_t filepath,
-                                                       string_or_view_t text);
+  expected_t<const tokenization_t*> token_context_make(filesystem_path_t filepath, string_t text);
 }
 
 // IMPLEMENTATION

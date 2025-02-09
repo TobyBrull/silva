@@ -371,7 +371,7 @@ namespace silva {
     const tokenization_t* seed_seed_tokenization()
     {
       static const tokenization_t* seed_seed_tokenization =
-          SILVA_EXPECT_ASSERT(token_context_make("seed.seed", string_or_view_t{seed_seed}));
+          SILVA_EXPECT_ASSERT(token_context_make("seed.seed", string_t{seed_seed}));
       return seed_seed_tokenization;
     }
   }
