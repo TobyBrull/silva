@@ -161,7 +161,8 @@ namespace silva {
         const token_info_index_t regex_token_id = s_pt->tokenization->tokens[node.token_index];
         if (auto& regex = retval.regexes[regex_token_id]; !regex.has_value()) {
           const auto& regex_td = s_pt->tokenization->token_info_get(node.token_index);
-          regex                = std::regex(regex_td->as_string());
+          const string_t regex_str{SILVA_EXPECT_FWD(regex_td->as_plain_contained_str(), MAJOR)};
+          regex = std::regex(regex_str);
         }
       }
     }
@@ -245,8 +246,8 @@ namespace silva {
             const auto* sp_token_data =
                 seed_pt->tokenization->token_info_get(seed_node.token_index);
             SILVA_EXPECT(sp_token_data->category == STRING, MAJOR);
-            const token_info_index_t expected_target_token_id =
-                token_context_get_index(sp_token_data->as_string_or_view().get_view());
+            const token_info_index_t expected_target_token_id = token_context_get_index(
+                SILVA_EXPECT_FWD(sp_token_data->as_plain_contained_str(), MAJOR));
             SILVA_EXPECT_PARSE(token_id_by() == expected_target_token_id,
                                "Expected {}",
                                sp_token_data->str);

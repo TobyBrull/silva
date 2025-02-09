@@ -21,11 +21,10 @@ namespace silva {
   using token_info_index_t = index_t;
 
   struct token_info_t {
-    string_view_t str;
+    string_t str;
     token_category_t category = token_category_t::INVALID;
 
-    string_t as_string() const;
-    string_or_view_t as_string_or_view() const;
+    expected_t<string_view_t> as_plain_contained_str() const;
     expected_t<double> as_double() const;
 
     friend auto operator<=>(const token_info_t&, const token_info_t&) = default;
@@ -71,9 +70,8 @@ namespace silva {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
 
-    // index_t _token_info_start_index = 0;
     vector_t<token_info_t> token_infos;
-    hashmap_t<string_view_t, token_info_index_t> token_lookup;
+    hashmap_t<string_t, token_info_index_t> token_lookup;
     vector_t<unique_ptr_t<const tokenization_t>> tokenizations;
 
     token_context_t() = default;

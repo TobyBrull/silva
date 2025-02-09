@@ -13,38 +13,16 @@ namespace silva {
     return string_view_t{vals.at(x)};
   }
 
-  string_t token_info_t::as_string() const
+  expected_t<string_view_t> token_info_t::as_plain_contained_str() const
   {
-    if (category == IDENTIFIER) {
-      return string_t{str};
-    }
-    else if (category == STRING) {
-      SILVA_ASSERT(str.size() >= 2 && str.front() == '"' && str.back() == '"');
-      return string_unescaped(str.substr(1, str.size() - 2));
-    }
-    else {
-      SILVA_ASSERT(false);
-    }
-  }
-
-  string_or_view_t token_info_t::as_string_or_view() const
-  {
-    if (category == token_category_t::IDENTIFIER) {
-      return string_or_view_t(str);
-    }
-    else if (category == token_category_t::STRING) {
-      SILVA_ASSERT(str.size() >= 2 && str.front() == '"' && str.back() == '"');
-      const string_view_t sub_str = str.substr(1, str.size() - 2);
-      return string_or_view_unescaped(sub_str);
-    }
-    else {
-      SILVA_ASSERT(false);
-    }
+    SILVA_EXPECT(category == STRING, MINOR);
+    SILVA_EXPECT(str.size() >= 2, MINOR);
+    return string_view_t{str}.substr(1, str.size() - 2);
   }
 
   expected_t<double> token_info_t::as_double() const
   {
-    SILVA_EXPECT(category == token_category_t::NUMBER, ASSERT);
+    SILVA_EXPECT(category == NUMBER, MINOR);
     return convert_to<double>(str);
   }
 
@@ -178,82 +156,52 @@ namespace silva {
       return index;
     }
 
-    token_info_t tokenize_one(const string_view_t text)
+    tuple_t<string_view_t, token_category_t> tokenize_one(const string_view_t text)
     {
       SILVA_ASSERT(!text.empty());
       const char c = text.front();
       if (is_one_of(c, whitespace_chars)) {
         const index_t len = find_whitespace_length(text);
-        return token_info_t{
-            .str      = text.substr(0, len),
-            .category = token_category_t::INVALID,
-        };
+        return {text.substr(0, len), INVALID};
       }
       else if (std::isalpha(c) || is_one_of(c, identifier_chars)) {
         const index_t len = find_token_length(text, [](const char x) {
           return std::isalnum(x) || is_one_of(x, identifier_chars);
         });
-        return token_info_t{
-            .str      = text.substr(0, len),
-            .category = token_category_t::IDENTIFIER,
-        };
+        return {text.substr(0, len), IDENTIFIER};
       }
       else if (is_one_of(c, oplet_chars)) {
-        return token_info_t{
-            .str      = text.substr(0, 1),
-            .category = token_category_t::OPERATOR,
-        };
+        return {text.substr(0, 1), OPERATOR};
       }
       else if (is_one_of(c, operator_chars)) {
         const index_t len =
             find_token_length(text, [](const char x) { return is_one_of(x, operator_chars); });
-        return token_info_t{
-            .str      = text.substr(0, len),
-            .category = token_category_t::OPERATOR,
-        };
+        return {text.substr(0, len), OPERATOR};
       }
       else if (c == '"') {
         const std::optional<index_t> maybe_length = find_string_length(text);
         if (maybe_length.has_value()) {
-          return token_info_t{
-              .str      = text.substr(0, maybe_length.value()),
-              .category = token_category_t::STRING,
-          };
+          return {text.substr(0, maybe_length.value()), STRING};
         }
         else {
-          return token_info_t{
-              .str      = text,
-              .category = token_category_t::INVALID,
-          };
+          return {text, INVALID};
         }
       }
       else if (c == '#') {
         const index_t len = find_comment_length(text);
-        return {
-            .str      = text.substr(0, len),
-            .category = token_category_t::INVALID,
-        };
+        return {text.substr(0, len), INVALID};
       }
       else if (std::isdigit(c)) {
         const index_t len = find_token_length(text, [](const char x) {
           return std::isdigit(x) || is_one_of(x, number_chars);
         });
-        return {
-            .str      = text.substr(0, len),
-            .category = token_category_t::NUMBER,
-        };
+        return {text.substr(0, len), NUMBER};
       }
       else if (c == '\n') {
-        return {
-            .str      = text.substr(0, 1),
-            .category = token_category_t::INVALID,
-        };
+        return {text.substr(0, 1), INVALID};
       }
       else {
-        return {
-            .str      = text.substr(0, 1),
-            .category = token_category_t::INVALID,
-        };
+        return {text.substr(0, 1), INVALID};
       }
     }
 
@@ -268,8 +216,19 @@ namespace silva {
 
   token_info_index_t token_context_get_index(const string_view_t token_str)
   {
-    const auto token_info = impl::tokenize_one(token_str);
-    return token_context_get_index(token_info);
+    token_context_t* tc = token_context_t::get();
+    const auto it       = tc->token_lookup.find(string_t{token_str});
+    if (it != tc->token_lookup.end()) {
+      return it->second;
+    }
+    else {
+      const auto [tokenized_str, token_cat] = impl::tokenize_one(token_str);
+      SILVA_ASSERT(tokenized_str == token_str);
+      const token_info_index_t new_token_id = tc->token_infos.size();
+      tc->token_infos.push_back(token_info_t{string_t{tokenized_str}, token_cat});
+      tc->token_lookup.emplace(tokenized_str, new_token_id);
+      return new_token_id;
+    }
   }
 
   token_info_index_t token_context_get_index(const token_info_t& token_info)
@@ -310,13 +269,14 @@ namespace silva {
     index_t text_index       = 0;
     const string_view_t text = tt->text.get_view();
     while (text_index < text.size()) {
-      const token_info_t token_info = impl::tokenize_one(text.substr(text_index));
-      text_index += token_info.str.size();
-      if (token_info.category != INVALID) {
-        const token_info_index_t tii = token_context_get_index(token_info);
+      const auto [tokenized_str, token_cat] = impl::tokenize_one(text.substr(text_index));
+      text_index += tokenized_str.size();
+      if (token_cat != INVALID) {
+        const token_info_index_t tii = token_context_get_index(
+            token_info_t{.str = string_t{tokenized_str}, .category = token_cat});
         tt->tokens.push_back(tii);
       }
-      else if (token_info.str == "\n") {
+      else if (tokenized_str == "\n") {
         impl::start_new_line(tt.get(), text_index);
       }
     }
@@ -333,18 +293,18 @@ namespace silva {
     index_t seen_tokens            = 0;
     index_t column                 = 0;
     while (column < rest.size()) {
-      const token_info_t info = impl::tokenize_one(rest.substr(column));
-      if (info.category == token_category_t::INVALID) {
-        column += info.str.size();
+      const auto [tokenized_str, token_cat] = impl::tokenize_one(rest.substr(column));
+      if (token_cat == INVALID) {
+        column += tokenized_str.size();
       }
       else {
-        SILVA_ASSERT(info.str != "\n");
+        SILVA_ASSERT(tokenized_str != "\n");
         seen_tokens += 1;
         if (seen_tokens > line_token_index) {
           break;
         }
         else {
-          column += info.str.size();
+          column += tokenized_str.size();
         }
       }
     }

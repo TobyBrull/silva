@@ -401,8 +401,10 @@ namespace silva {
               const parse_tree_t::node_t& node = parse_tree->nodes[child_node_index];
               if (labeled_item.num_children == 2 && child_index == 0) {
                 SILVA_EXPECT(node.rule_index == to_int(LABEL), MINOR);
-                retval.label =
-                    parse_tree->tokenization->token_info_get(node.token_index)->as_string();
+                retval.label = string_t{
+                    SILVA_EXPECT_FWD(parse_tree->tokenization->token_info_get(node.token_index)
+                                         ->as_plain_contained_str(),
+                                     MAJOR)};
               }
               else {
                 if (node.rule_index == to_int(ITEM_0)) {
@@ -424,10 +426,11 @@ namespace silva {
                     retval.item.value = false;
                   }
                   else if (token_data->category == STRING) {
-                    retval.item.value = token_data->as_string();
+                    retval.item.value =
+                        string_t{SILVA_EXPECT_FWD(token_data->as_plain_contained_str(), MAJOR)};
                   }
                   else if (token_data->category == NUMBER) {
-                    retval.item.value = SILVA_EXPECT_FWD(token_data->as_double());
+                    retval.item.value = SILVA_EXPECT_FWD(token_data->as_double(), MAJOR);
                   }
                   else {
                     SILVA_EXPECT(false, MINOR, "Unknown item '{}'", token_data->str);
