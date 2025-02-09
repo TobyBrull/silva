@@ -23,8 +23,8 @@ TEST_CASE("fern", "[fern]")
   const tokenization_t* tokenization =
       SILVA_EXPECT_REQUIRE(token_context_make("simple.fern", string_t{fern_source_code}));
   const parse_tree_t pt_1 = SILVA_EXPECT_REQUIRE(fern_parse(tokenization));
-  // const parse_tree_t pt_2 = SILVA_EXPECT_REQUIRE(fern_parse_root()->apply(tokenization));
-  // CHECK(pt_1.nodes == pt_2.nodes);
+  const parse_tree_t pt_2 = SILVA_EXPECT_REQUIRE(fern_parse_root()->apply(tokenization));
+  CHECK(pt_1.nodes == pt_2.nodes);
   const fern_t fern = SILVA_EXPECT_REQUIRE(fern_create(&pt_1));
   CHECK(fern_to_string(&pt_1) == fern_source_code);
   CHECK(fern.to_string() == fern_source_code);

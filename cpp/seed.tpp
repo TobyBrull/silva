@@ -100,22 +100,31 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   const auto sfpr = SILVA_EXPECT_REQUIRE(parse_root_t::create(const_ptr_unowned(&sf_seed_pt_1)));
   REQUIRE(sfpr.rules.size() == 5);
   using rfl::json::write;
-  CHECK(write(sfpr.rules[0]) ==
-        R"({"token_id":1,"precedence":0,"name":"SimpleFern","expr_node_index":3})");
-  CHECK(write(sfpr.rules[1]) ==
-        R"({"token_id":5,"precedence":0,"name":"LabeledItem","expr_node_index":22})");
-  CHECK(write(sfpr.rules[2]) ==
-        R"({"token_id":11,"precedence":0,"name":"Label","expr_node_index":37})");
-  CHECK(
-      write(sfpr.rules[3]) ==
-      R"({"token_id":13,"precedence":0,"name":"Item","expr_node_index":44,"aliased_rule_offset":0})");
-  CHECK(write(sfpr.rules[4]) ==
-        R"({"token_id":13,"precedence":1,"name":"Item","expr_node_index":50})");
+  CHECK(sfpr.rules[0].precedence == 0);
+  CHECK(sfpr.rules[0].name == "SimpleFern");
+  CHECK(sfpr.rules[0].expr_node_index == 3);
+  CHECK(sfpr.rules[0].aliased_rule_offset.has_value() == false);
+  CHECK(sfpr.rules[1].precedence == 0);
+  CHECK(sfpr.rules[1].name == "LabeledItem");
+  CHECK(sfpr.rules[1].expr_node_index == 22);
+  CHECK(sfpr.rules[1].aliased_rule_offset.has_value() == false);
+  CHECK(sfpr.rules[2].precedence == 0);
+  CHECK(sfpr.rules[2].name == "Label");
+  CHECK(sfpr.rules[2].expr_node_index == 37);
+  CHECK(sfpr.rules[2].aliased_rule_offset.has_value() == false);
+  CHECK(sfpr.rules[3].precedence == 0);
+  CHECK(sfpr.rules[3].name == "Item");
+  CHECK(sfpr.rules[3].expr_node_index == 44);
+  CHECK(sfpr.rules[3].aliased_rule_offset == 0);
+  CHECK(sfpr.rules[4].precedence == 1);
+  CHECK(sfpr.rules[4].name == "Item");
+  CHECK(sfpr.rules[4].expr_node_index == 50);
+  CHECK(sfpr.rules[4].aliased_rule_offset.has_value() == false);
   REQUIRE(sfpr.rule_indexes.size() == 4);
-  REQUIRE(sfpr.rule_indexes.at(1) == 0);
-  REQUIRE(sfpr.rule_indexes.at(5) == 1);
-  REQUIRE(sfpr.rule_indexes.at(11) == 2);
-  REQUIRE(sfpr.rule_indexes.at(13) == 3);
+  REQUIRE(sfpr.rule_indexes.at(token_context_get_index("SimpleFern")) == 0);
+  REQUIRE(sfpr.rule_indexes.at(token_context_get_index("LabeledItem")) == 1);
+  REQUIRE(sfpr.rule_indexes.at(token_context_get_index("Label")) == 2);
+  REQUIRE(sfpr.rule_indexes.at(token_context_get_index("Item")) == 3);
 
   const string_t sf_code = R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'";
   const tokenization_t* sf_tokens =
