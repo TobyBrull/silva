@@ -15,15 +15,13 @@ silva_main()
   const bool arg_root =
       SILVA_EXPECT_FWD_IF(env_context_get_as<bool>("root-based"), MAJOR).value_or(false);
 
-  const tokenization_t tokenization =
-      SILVA_EXPECT_FWD(tokenize(SILVA_EXPECT_FWD(source_code_t::load(arg_filename))));
-
+  const tokenization_t* tokenization = SILVA_EXPECT_FWD(token_context_load(arg_filename));
   parse_tree_t pt;
   if (arg_root) {
-    pt = SILVA_EXPECT_FWD(fern_parse_root()->apply(const_ptr_unowned(&tokenization)));
+    pt = SILVA_EXPECT_FWD(fern_parse_root()->apply(tokenization));
   }
   else {
-    pt = SILVA_EXPECT_FWD(fern_parse(const_ptr_unowned(&tokenization)));
+    pt = SILVA_EXPECT_FWD(fern_parse(tokenization));
   }
 
   if (arg_process.empty()) {

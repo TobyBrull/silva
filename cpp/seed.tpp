@@ -10,32 +10,30 @@ using namespace silva;
 
 TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
 {
-  const tokenization_t seed_tokenization =
-      SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&seed_seed_source_code)));
+  const tokenization_t* seed_seed_tokenization =
+      SILVA_EXPECT_REQUIRE(token_context_make("seed.seed", string_or_view_t{seed_seed}));
 
-  const parse_tree_t seed_pt_1 =
-      SILVA_EXPECT_REQUIRE(seed_parse(const_ptr_unowned(&seed_tokenization)));
+  const parse_tree_t seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_seed_tokenization));
   const parse_tree_t seed_pt_2 =
-      SILVA_EXPECT_REQUIRE(seed_parse_root()->apply(const_ptr_unowned(&seed_tokenization)));
+      SILVA_EXPECT_REQUIRE(seed_parse_root()->apply(seed_seed_tokenization));
   CHECK(seed_pt_1.nodes == seed_pt_2.nodes);
   CHECK(seed_pt_1.nodes == seed_parse_root()->seed_parse_tree->nodes);
 }
 
 TEST_CASE("seed", "[seed][parse_root_t]")
 {
-  const source_code_t sf_seed_source_code("simple-fern.seed", R"'(
+  const string_t sf_seed_source_code   = R"'(
     - SimpleFern = "[" ( LabeledItem ";"? )* "]"
     - LabeledItem = ( Label ":" )? Item
     - Label = string
     - Item,0 => SimpleFern,0
     - Item,1 =~ string number
-  )'");
-  const tokenization_t sf_seed_tokens =
-      SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&sf_seed_source_code)));
+  )'";
+  const tokenization_t* sf_seed_tokens = SILVA_EXPECT_REQUIRE(
+      token_context_make("simple-fern.seed", string_or_view_t{sf_seed_source_code}));
 
-  const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(const_ptr_unowned(&sf_seed_tokens)));
-  const auto sf_seed_pt_2 =
-      SILVA_EXPECT_REQUIRE(seed_parse_root()->apply(const_ptr_unowned(&sf_seed_tokens)));
+  const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sf_seed_tokens));
+  const auto sf_seed_pt_2 = SILVA_EXPECT_REQUIRE(seed_parse_root()->apply(sf_seed_tokens));
   CHECK(sf_seed_pt_1.nodes == sf_seed_pt_2.nodes);
 
   const std::string_view expected = R"(
@@ -119,10 +117,11 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   REQUIRE(sfpr.rule_indexes.at(11) == 2);
   REQUIRE(sfpr.rule_indexes.at(13) == 3);
 
-  const source_code_t sf_code("test.simple-fern", R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'");
-  const tokenization_t sf_tokens = SILVA_EXPECT_REQUIRE(tokenize(const_ptr_unowned(&sf_code)));
+  const string_t sf_code = R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'";
+  const tokenization_t* sf_tokens =
+      SILVA_EXPECT_REQUIRE(token_context_make("test.simple-fern", string_view_t{sf_code}));
 
-  auto sfpt = SILVA_EXPECT_REQUIRE(sfpr.apply(const_ptr_unowned(&sf_tokens)));
+  auto sfpt = SILVA_EXPECT_REQUIRE(sfpr.apply(sf_tokens));
 
   const std::string_view expected_parse_tree = R"(
 [0]SimpleFern,0                                   [

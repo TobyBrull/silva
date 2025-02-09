@@ -5,14 +5,14 @@
 using namespace silva;
 
 namespace {
-  constexpr array_t<char, 7> ops = {'~', '!', '+', '-', '*', '/', '?'};
-  constexpr token_id_t op_tilda  = 0;
-  constexpr token_id_t op_fact   = 1;
-  constexpr token_id_t op_add    = 2;
-  constexpr token_id_t op_sub    = 3;
-  constexpr token_id_t op_mul    = 4;
-  constexpr token_id_t op_div    = 5;
-  constexpr token_id_t op_quest  = 6;
+  constexpr array_t<char, 7> ops        = {'~', '!', '+', '-', '*', '/', '?'};
+  constexpr token_info_index_t op_tilda = 0;
+  constexpr token_info_index_t op_fact  = 1;
+  constexpr token_info_index_t op_add   = 2;
+  constexpr token_info_index_t op_sub   = 3;
+  constexpr token_info_index_t op_mul   = 4;
+  constexpr token_info_index_t op_div   = 5;
+  constexpr token_info_index_t op_quest = 6;
 }
 
 Expression
@@ -23,13 +23,13 @@ operator"" _E(const char* str, std::size_t)
 
 void
 parse_axe_test(parse_axe_t* sy,
-               vector_t<variant_t<Expression, token_id_t>> items,
+               vector_t<variant_t<Expression, token_info_index_t>> items,
                const string_view_t expected)
 {
   INFO(expected);
   parse_axe_run_t run{.parse_axe = sy,
                       .callback  = [&](const span_t<const Expression> exprs,
-                                      const token_id_t token_id,
+                                      const token_info_index_t token_id,
                                       const parse_axe_t::level_index_t level_index) -> Expression {
                         const parse_axe_t::level_type_t type = sy->levels[level_index].type;
                         using enum parse_axe_t::level_type_t;
