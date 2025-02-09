@@ -22,7 +22,7 @@ namespace silva {
 
     struct level_t {
       level_type_t type = level_type_t::NONE;
-      vector_t<token_id_t> token_ids;
+      vector_t<token_info_index_t> token_ids;
     };
     vector_t<level_t> levels;
 
@@ -30,13 +30,13 @@ namespace silva {
       optional_t<level_index_t> postfix_or_binary;
       optional_t<level_index_t> prefix;
     };
-    hashmap_t<token_id_t, mapped_levels_t> mapped_levels;
+    hashmap_t<token_info_index_t, mapped_levels_t> mapped_levels;
 
-    bool has_operator(token_id_t) const;
-    optional_t<level_index_t>& slot_for(token_id_t, level_type_t);
+    bool has_operator(token_info_index_t) const;
+    optional_t<level_index_t>& slot_for(token_info_index_t, level_type_t);
 
     level_index_t add_level(level_type_t);
-    void add_operator(level_index_t, token_id_t);
+    void add_operator(level_index_t, token_info_index_t);
   };
 
   struct Expression {
@@ -45,14 +45,15 @@ namespace silva {
   };
   struct parse_axe_run_t {
     const parse_axe_t* parse_axe = nullptr;
-    std::function<Expression(span_t<const Expression>, token_id_t, parse_axe_t::level_index_t)>
+    std::function<
+        Expression(span_t<const Expression>, token_info_index_t, parse_axe_t::level_index_t)>
         callback;
 
     expected_t<void> push_back(Expression);
-    expected_t<void> push_back(token_id_t);
+    expected_t<void> push_back(token_info_index_t);
     struct op_t {
-      token_id_t token_id = 0;
-      bool is_prefix      = false;
+      token_info_index_t token_id = 0;
+      bool is_prefix              = false;
 
       friend auto operator<=>(const op_t&, const op_t&) = default;
     };

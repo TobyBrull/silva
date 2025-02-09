@@ -3,13 +3,13 @@
 #include "parse_tree.hpp"
 
 namespace silva {
-  const source_code_t fern_seed_source_code("fern.seed", R"'(
+  const string_view_t fern_seed = R"'(
     - Fern = "[" major_error LabeledItem* "]"
     - LabeledItem = ( Label ":" )? Item ";"?
     - Label =~ string identifier
     - Item,0 = Fern
     - Item,1 =~ "none" "true" "false" string number
-  )'");
+  )'";
 
   enum class fern_rule_t {
     FERN,
@@ -21,7 +21,7 @@ namespace silva {
 
   const parse_root_t* fern_parse_root();
 
-  expected_t<parse_tree_t> fern_parse(const_ptr_t<tokenization_t>);
+  expected_t<parse_tree_t> fern_parse(const tokenization_t*);
 
   // Fern parse_tree output functions
 

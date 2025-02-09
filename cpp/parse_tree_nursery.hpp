@@ -51,15 +51,15 @@ namespace silva {
   struct parse_tree_nursery_t {
     parse_tree_t retval;
 
-    token_index_t token_index = 0;
+    index_t token_index = 0;
 
-    parse_tree_nursery_t(const_ptr_t<tokenization_t>, const_ptr_t<parse_root_t>);
+    parse_tree_nursery_t(const tokenization_t*, const_ptr_t<parse_root_t>);
 
     const index_t num_tokens_left() const;
 
-    const token_id_t token_id_by(index_t token_index_offset = 0) const;
+    const token_info_index_t token_id_by(index_t token_index_offset = 0) const;
 
-    const tokenization_t::token_data_t* token_data_by(index_t token_index_offset = 0) const;
+    const token_info_t* token_data_by(index_t token_index_offset = 0) const;
 
     token_position_t token_position_by(index_t token_index_offset = 0) const;
     token_position_t token_position_at(index_t token_index) const;

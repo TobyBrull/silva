@@ -10,43 +10,42 @@ namespace silva {
 
   namespace impl {
     struct seed_parse_tree_nursery_t : public parse_tree_nursery_t {
-      optional_t<token_id_t> tt_dash        = retval.tokenization->lookup_token("-");
-      optional_t<token_id_t> tt_comma       = retval.tokenization->lookup_token(",");
-      optional_t<token_id_t> tt_paren_open  = retval.tokenization->lookup_token("(");
-      optional_t<token_id_t> tt_paren_close = retval.tokenization->lookup_token(")");
-      optional_t<token_id_t> tt_eq          = retval.tokenization->lookup_token("=");
-      optional_t<token_id_t> tt_eq_choice   = retval.tokenization->lookup_token("=~");
-      optional_t<token_id_t> tt_eq_alias    = retval.tokenization->lookup_token("=>");
-      optional_t<token_id_t> tt_eq_axe      = retval.tokenization->lookup_token("=%");
-      optional_t<token_id_t> tt_brack_open  = retval.tokenization->lookup_token("[");
-      optional_t<token_id_t> tt_brack_close = retval.tokenization->lookup_token("]");
-      optional_t<token_id_t> tt_qmark       = retval.tokenization->lookup_token("?");
-      optional_t<token_id_t> tt_star        = retval.tokenization->lookup_token("*");
-      optional_t<token_id_t> tt_plus        = retval.tokenization->lookup_token("+");
-      optional_t<token_id_t> tt_emark       = retval.tokenization->lookup_token("!");
-      optional_t<token_id_t> tt_amper       = retval.tokenization->lookup_token("&");
-      optional_t<token_id_t> tt_major_error = retval.tokenization->lookup_token("major_error");
-      optional_t<token_id_t> tt_identifier  = retval.tokenization->lookup_token("identifier");
-      optional_t<token_id_t> tt_id_regex    = retval.tokenization->lookup_token("identifier_regex");
-      optional_t<token_id_t> tt_operator    = retval.tokenization->lookup_token("operator");
-      optional_t<token_id_t> tt_string      = retval.tokenization->lookup_token("string");
-      optional_t<token_id_t> tt_number      = retval.tokenization->lookup_token("number");
-      optional_t<token_id_t> tt_any         = retval.tokenization->lookup_token("any");
-      optional_t<token_id_t> tt_nest        = retval.tokenization->lookup_token("nest");
-      optional_t<token_id_t> tt_ltr         = retval.tokenization->lookup_token("ltr");
-      optional_t<token_id_t> tt_rtl         = retval.tokenization->lookup_token("rtl");
-      optional_t<token_id_t> tt_flat        = retval.tokenization->lookup_token("flat");
-      optional_t<token_id_t> tt_postfix     = retval.tokenization->lookup_token("postfix");
-      optional_t<token_id_t> tt_postfix_n   = retval.tokenization->lookup_token("postfix_nest");
-      optional_t<token_id_t> tt_infix       = retval.tokenization->lookup_token("infix");
-      optional_t<token_id_t> tt_ternary     = retval.tokenization->lookup_token("ternary");
-      optional_t<token_id_t> tt_prefix      = retval.tokenization->lookup_token("prefix");
-      optional_t<token_id_t> tt_prefix_n    = retval.tokenization->lookup_token("prefix_nest");
-      optional_t<token_id_t> tt_none        = retval.tokenization->lookup_token("none");
+      token_info_index_t tt_dash        = token_context_get_index("-");
+      token_info_index_t tt_comma       = token_context_get_index(",");
+      token_info_index_t tt_paren_open  = token_context_get_index("(");
+      token_info_index_t tt_paren_close = token_context_get_index(")");
+      token_info_index_t tt_eq          = token_context_get_index("=");
+      token_info_index_t tt_eq_choice   = token_context_get_index("=~");
+      token_info_index_t tt_eq_alias    = token_context_get_index("=>");
+      token_info_index_t tt_eq_axe      = token_context_get_index("=%");
+      token_info_index_t tt_brack_open  = token_context_get_index("[");
+      token_info_index_t tt_brack_close = token_context_get_index("]");
+      token_info_index_t tt_qmark       = token_context_get_index("?");
+      token_info_index_t tt_star        = token_context_get_index("*");
+      token_info_index_t tt_plus        = token_context_get_index("+");
+      token_info_index_t tt_emark       = token_context_get_index("!");
+      token_info_index_t tt_amper       = token_context_get_index("&");
+      token_info_index_t tt_major_error = token_context_get_index("major_error");
+      token_info_index_t tt_identifier  = token_context_get_index("identifier");
+      token_info_index_t tt_id_regex    = token_context_get_index("identifier_regex");
+      token_info_index_t tt_operator    = token_context_get_index("operator");
+      token_info_index_t tt_string      = token_context_get_index("string");
+      token_info_index_t tt_number      = token_context_get_index("number");
+      token_info_index_t tt_any         = token_context_get_index("any");
+      token_info_index_t tt_nest        = token_context_get_index("nest");
+      token_info_index_t tt_ltr         = token_context_get_index("ltr");
+      token_info_index_t tt_rtl         = token_context_get_index("rtl");
+      token_info_index_t tt_flat        = token_context_get_index("flat");
+      token_info_index_t tt_postfix     = token_context_get_index("postfix");
+      token_info_index_t tt_postfix_n   = token_context_get_index("postfix_nest");
+      token_info_index_t tt_infix       = token_context_get_index("infix");
+      token_info_index_t tt_ternary     = token_context_get_index("ternary");
+      token_info_index_t tt_prefix      = token_context_get_index("prefix");
+      token_info_index_t tt_prefix_n    = token_context_get_index("prefix_nest");
+      token_info_index_t tt_none        = token_context_get_index("none");
 
-      seed_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
-        : parse_tree_nursery_t(std::move(tokenization),
-                               const_ptr_unowned(seed_parse_root_primordial()))
+      seed_parse_tree_nursery_t(const tokenization_t* tokenization)
+        : parse_tree_nursery_t(tokenization, const_ptr_unowned(seed_parse_root_primordial()))
       {
       }
 
@@ -360,7 +359,7 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> seed_parse(const_ptr_t<tokenization_t> tokenization)
+  expected_t<parse_tree_t> seed_parse(const tokenization_t* tokenization)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
     impl::seed_parse_tree_nursery_t nursery(std::move(tokenization));
@@ -368,22 +367,29 @@ namespace silva {
     return {std::move(nursery.retval)};
   }
 
+  namespace impl {
+    const tokenization_t* seed_seed_tokenization()
+    {
+      static const tokenization_t* seed_seed_tokenization =
+          SILVA_EXPECT_ASSERT(token_context_make("seed.seed", string_or_view_t{seed_seed}));
+      return seed_seed_tokenization;
+    }
+  }
+
   const parse_root_t* seed_parse_root()
   {
     static const parse_root_t retval =
-        SILVA_EXPECT_ASSERT(parse_root_t::create(const_ptr_unowned(&seed_seed_source_code)));
+        SILVA_EXPECT_ASSERT(parse_root_t::create(impl::seed_seed_tokenization()));
     return &retval;
   }
 
   const parse_root_t* seed_parse_root_primordial()
   {
-    static const tokenization_t tokenization =
-        SILVA_EXPECT_ASSERT(tokenize(const_ptr_unowned(&seed_seed_source_code)));
-    static const parse_tree_t parse_tree{.tokenization = const_ptr_unowned(&tokenization)};
+    static const parse_tree_t parse_tree{.tokenization = impl::seed_seed_tokenization()};
     const auto make_rule = [&](const string_view_t nonterminal,
                                const index_t precedence) -> parse_root_t::rule_t {
       parse_root_t::rule_t retval;
-      retval.token_id   = tokenization.lookup_token(nonterminal).value();
+      retval.token_id   = token_context_get_index(nonterminal);
       retval.name       = nonterminal;
       retval.precedence = precedence;
       return retval;

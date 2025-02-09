@@ -12,25 +12,34 @@ namespace silva {
   using enum fern_rule_t;
   using enum error_level_t;
 
+  namespace impl {
+    const tokenization_t* fern_seed_tokenization()
+    {
+      static const tokenization_t* fern_seed_tokenization =
+          SILVA_EXPECT_ASSERT(token_context_make("fern.seed", string_or_view_t{fern_seed}));
+      return fern_seed_tokenization;
+    }
+  }
+
   const parse_root_t* fern_parse_root()
   {
     static const parse_root_t retval =
-        SILVA_EXPECT_ASSERT(parse_root_t::create(const_ptr_unowned(&fern_seed_source_code)));
+        SILVA_EXPECT_ASSERT(parse_root_t::create(impl::fern_seed_tokenization()));
     return &retval;
   }
 
   namespace impl {
     struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
-      optional_t<token_id_t> tt_brkt_open  = retval.tokenization->lookup_token("[");
-      optional_t<token_id_t> tt_brkt_close = retval.tokenization->lookup_token("]");
-      optional_t<token_id_t> tt_semi_colon = retval.tokenization->lookup_token(";");
-      optional_t<token_id_t> tt_colon      = retval.tokenization->lookup_token(":");
-      optional_t<token_id_t> tt_none       = retval.tokenization->lookup_token("none");
-      optional_t<token_id_t> tt_true       = retval.tokenization->lookup_token("true");
-      optional_t<token_id_t> tt_false      = retval.tokenization->lookup_token("false");
+      token_info_index_t tt_brkt_open  = token_context_get_index("[");
+      token_info_index_t tt_brkt_close = token_context_get_index("]");
+      token_info_index_t tt_semi_colon = token_context_get_index(";");
+      token_info_index_t tt_colon      = token_context_get_index(":");
+      token_info_index_t tt_none       = token_context_get_index("none");
+      token_info_index_t tt_true       = token_context_get_index("true");
+      token_info_index_t tt_false      = token_context_get_index("false");
 
-      fern_parse_tree_nursery_t(const_ptr_t<tokenization_t> tokenization)
-        : parse_tree_nursery_t(std::move(tokenization), const_ptr_unowned(fern_parse_root()))
+      fern_parse_tree_nursery_t(const tokenization_t* tokenization)
+        : parse_tree_nursery_t(tokenization, const_ptr_unowned(fern_parse_root()))
       {
       }
 
@@ -117,11 +126,11 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> fern_parse(const_ptr_t<tokenization_t> tokenization)
+  expected_t<parse_tree_t> fern_parse(const tokenization_t* tokenization)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
     const index_t n = tokenization->tokens.size();
-    impl::fern_parse_tree_nursery_t nursery(std::move(tokenization));
+    impl::fern_parse_tree_nursery_t nursery(tokenization);
     const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.fern());
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.num_children_total == nursery.retval.nodes.size(), ASSERT);
@@ -170,11 +179,11 @@ namespace silva {
             }
           }
           else if (node.rule_index == to_int(LABEL)) {
-            retval += pt->tokenization->token_data(node.token_index)->str;
+            retval += pt->tokenization->token_info_get(node.token_index)->str;
             retval += " : ";
           }
           else if (node.rule_index == to_int(ITEM_1)) {
-            retval += pt->tokenization->token_data(node.token_index)->str;
+            retval += pt->tokenization->token_info_get(node.token_index)->str;
           }
           return true;
         },
@@ -209,23 +218,23 @@ namespace silva {
             }
           }
           else if (node.rule_index == to_int(LABEL)) {
-            last_label_str = pt->tokenization->token_data(node.token_index)->str;
+            last_label_str = pt->tokenization->token_info_get(node.token_index)->str;
           }
           else if (node.rule_index == to_int(ITEM_1)) {
             if (last_label_str.has_value()) {
-              retval +=
-                  fmt::format("  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
-                              curr_path,
-                              curr_path,
-                              string_escaped(last_label_str.value()),
-                              string_escaped(pt->tokenization->token_data(node.token_index)->str));
+              retval += fmt::format(
+                  "  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
+                  curr_path,
+                  curr_path,
+                  string_escaped(last_label_str.value()),
+                  string_escaped(pt->tokenization->token_info_get(node.token_index)->str));
             }
             else {
-              retval +=
-                  fmt::format("  \"{}\" [label=\"{}\\n{}\"]\n",
-                              curr_path,
-                              curr_path,
-                              string_escaped(pt->tokenization->token_data(node.token_index)->str));
+              retval += fmt::format(
+                  "  \"{}\" [label=\"{}\\n{}\"]\n",
+                  curr_path,
+                  curr_path,
+                  string_escaped(pt->tokenization->token_info_get(node.token_index)->str));
             }
           }
           return true;
@@ -378,9 +387,9 @@ namespace silva {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
 
-      optional_t<token_id_t> tt_none  = parse_tree->tokenization->lookup_token("none");
-      optional_t<token_id_t> tt_true  = parse_tree->tokenization->lookup_token("true");
-      optional_t<token_id_t> tt_false = parse_tree->tokenization->lookup_token("false");
+      token_info_index_t tt_none  = token_context_get_index("none");
+      token_info_index_t tt_true  = token_context_get_index("true");
+      token_info_index_t tt_false = token_context_get_index("false");
 
       expected_t<fern_labeled_item_t> labeled_item(const index_t start_node)
       {
@@ -392,7 +401,8 @@ namespace silva {
               const parse_tree_t::node_t& node = parse_tree->nodes[child_node_index];
               if (labeled_item.num_children == 2 && child_index == 0) {
                 SILVA_EXPECT(node.rule_index == to_int(LABEL), MINOR);
-                retval.label = parse_tree->tokenization->token_data(node.token_index)->as_string();
+                retval.label =
+                    parse_tree->tokenization->token_info_get(node.token_index)->as_string();
               }
               else {
                 if (node.rule_index == to_int(ITEM_0)) {
@@ -400,8 +410,10 @@ namespace silva {
                   retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
                 }
                 else if (node.rule_index == to_int(ITEM_1)) {
-                  const token_id_t token_id = parse_tree->tokenization->tokens[node.token_index];
-                  const auto* token_data = parse_tree->tokenization->token_data(node.token_index);
+                  const token_info_index_t token_id =
+                      parse_tree->tokenization->tokens[node.token_index];
+                  const auto* token_data =
+                      parse_tree->tokenization->token_info_get(node.token_index);
                   if (token_id == tt_none) {
                     retval.item.value = none;
                   }

@@ -3,7 +3,7 @@
 #include "parse_tree.hpp"
 
 namespace silva {
-  const source_code_t silva_seed_source_code("silva.seed", R"'(
+  const string_view_t silva_seed = R"'(
     - Silva = "import" major_error Imports "interface" Interface "implementation" Implementation "end"
 
     - Imports = ImportFilename*
@@ -60,7 +60,7 @@ namespace silva {
     - ExprOpInv =~ ";" "(" ")" "[" "]" "{" "}" "," "|"
 
     - Expr = PrimaryExpr+
-  )'");
+  )'";
 
   const parse_root_t* silva_parse_root();
 }

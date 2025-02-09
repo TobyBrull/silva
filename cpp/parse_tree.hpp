@@ -1,5 +1,6 @@
 #pragma once
 
+#include "canopy/const_ptr.hpp"
 #include "canopy/small_vector.hpp"
 
 #include "tokenization.hpp"
@@ -8,7 +9,7 @@ namespace silva {
   struct parse_root_t;
 
   struct parse_tree_t {
-    const_ptr_t<tokenization_t> tokenization;
+    const tokenization_t* tokenization = nullptr;
     const_ptr_t<parse_root_t> root;
 
     struct node_t {

@@ -4,8 +4,8 @@
 #include "types.hpp"
 
 namespace silva {
-  expected_t<string_t> read_file(const filesystem_path_t& filename);
-  expected_t<void> write_file(const filesystem_path_t& filename, string_view_t content);
+  expected_t<string_t> read_file(const filesystem_path_t&);
+  expected_t<void> write_file(const filesystem_path_t&, string_view_t content);
 
   optional_t<string_t> run_shell_command_sync(const string_t& command) noexcept;
 
