@@ -481,7 +481,7 @@ namespace silva {
                                    .finish_short(retval_error_level,
                                                  "{} Expected {} rule",
                                                  token_position_at(orig_token_index),
-                                                 retval.root->rules[rule_offset].name));
+                                                 retval.root->rules[base_rule_offset].name));
       }
     };
   }
