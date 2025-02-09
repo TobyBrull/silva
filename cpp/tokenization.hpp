@@ -38,7 +38,6 @@ namespace silva {
 
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_info_index_t> token_lookup;
-    vector_t<unique_ptr_t<const tokenization_t>> tokenizations;
 
     token_context_t() = default;
   };
@@ -48,7 +47,7 @@ namespace silva {
   token_info_index_t token_context_get_index(const token_info_t&);
   const token_info_t* token_context_get_info(token_info_index_t);
 
-  struct tokenization_t {
+  struct tokenization_t : public sprite_t {
     token_context_ptr_t context;
 
     filesystem_path_t filepath;
@@ -82,8 +81,8 @@ namespace silva {
     index_t token_index = 0;
   };
 
-  expected_t<const tokenization_t*> token_context_load(filesystem_path_t);
-  expected_t<const tokenization_t*> token_context_make(filesystem_path_t filepath, string_t text);
+  expected_t<tokenization_t> token_context_load(filesystem_path_t);
+  expected_t<tokenization_t> token_context_make(filesystem_path_t filepath, string_t text);
 }
 
 // IMPLEMENTATION

@@ -15,9 +15,9 @@ namespace silva {
   namespace impl {
     const tokenization_t* fern_seed_tokenization()
     {
-      static const tokenization_t* fern_seed_tokenization =
+      static const tokenization_t fern_seed_tokenization =
           SILVA_EXPECT_ASSERT(token_context_make("fern.seed", string_t{fern_seed}));
-      return fern_seed_tokenization;
+      return &fern_seed_tokenization;
     }
   }
 
