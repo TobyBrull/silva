@@ -42,15 +42,6 @@ namespace silva {
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.
-    struct workspace_t {
-      struct per_seed_token_id_t {
-        struct uncached_t {};
-        variant_t<uncached_t, none_t, index_t> target_token_id = uncached_t{};
-        optional_t<index_t> get_target_token_id(const token_info_t* sp_token_data,
-                                                const tokenization_t* target_tokenization);
-      };
-      vector_t<per_seed_token_id_t> seed_token_id_data;
-    };
-    expected_t<parse_tree_t> apply(const tokenization_t*, workspace_t* = nullptr) const;
+    expected_t<parse_tree_t> apply(const tokenization_t*) const;
   };
 }

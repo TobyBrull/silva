@@ -48,6 +48,11 @@ namespace silva {
     return convert_to<double>(str);
   }
 
+  const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
+  {
+    return &context->_token_infos[tokens[token_index]];
+  }
+
   const tokenization_t::line_data_t*
   tokenization_t::binary_search_line(const index_t token_index) const
   {
@@ -296,9 +301,11 @@ namespace silva {
   expected_t<const tokenization_t*> token_context_make(filesystem_path_t filepath,
                                                        string_or_view_t text_arg)
   {
-    auto tt      = std::make_unique<tokenization_t>();
-    tt->filepath = std::move(filepath);
-    tt->text     = std::move(text_arg);
+    token_context_t* context = token_context_t::get();
+    auto tt                  = std::make_unique<tokenization_t>();
+    tt->filepath             = std::move(filepath);
+    tt->text                 = std::move(text_arg);
+    tt->context              = context;
     impl::start_new_line(tt.get(), 0);
     index_t text_index       = 0;
     const string_view_t text = tt->text.get_view();
@@ -314,7 +321,7 @@ namespace silva {
       }
     }
     const tokenization_t* retval = tt.get();
-    token_context_t::get()->_tokenizations.push_back(std::move(tt));
+    context->_tokenizations.push_back(std::move(tt));
     return retval;
   }
 

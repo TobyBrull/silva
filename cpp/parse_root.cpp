@@ -71,7 +71,7 @@ namespace silva {
                        "First child of RULE must be NONTERMINAL ");
           const token_info_index_t rule_token_id =
               s_pt->tokenization->tokens[s_nodes[children[0]].token_index];
-          const string_view_t rule_name = s_pt->tokenization->token_info_get(rule_token_id)->str;
+          const string_view_t rule_name = token_context_get_info(rule_token_id)->str;
           index_t rule_precedence       = 0;
           if (children.size == 3) {
             SILVA_EXPECT(s_nodes[children[1]].rule_index == to_int(RULE_PRECEDENCE),
@@ -148,9 +148,9 @@ namespace silva {
         SILVA_EXPECT(!alias_rule.aliased_rule_offset.has_value(),
                      MINOR,
                      "Rule (={},{}) cannot be alias to another alias-rule (={},{})",
-                     retval.seed_parse_tree->tokenization->token_info_get(rule.token_id)->str,
+                     token_context_get_info(rule.token_id)->str,
                      rule.precedence,
-                     retval.seed_parse_tree->tokenization->token_info_get(alias_rule.token_id)->str,
+                     token_context_get_info(alias_rule.token_id)->str,
                      alias_rule.precedence);
       }
     }
@@ -175,34 +175,9 @@ namespace silva {
     return retval;
   }
 
-  optional_t<index_t> parse_root_t::workspace_t::per_seed_token_id_t::get_target_token_id(
-      const token_info_t* sp_token_data,
-      const tokenization_t* target_tokenization)
-  {
-    SILVA_ASSERT(sp_token_data->category == STRING);
-    if (std::holds_alternative<uncached_t>(target_token_id)) {
-      const string_or_view_t seed_terminal = sp_token_data->as_string_or_view();
-      token_info_index_t result            = token_context_get_index(seed_terminal.get_view());
-      if (result) {
-        target_token_id = result;
-      }
-      else {
-        target_token_id = none;
-      }
-    }
-    if (std::holds_alternative<none_t>(target_token_id)) {
-      return none;
-    }
-    else {
-      SILVA_ASSERT(std::holds_alternative<index_t>(target_token_id));
-      return std::get<index_t>(target_token_id);
-    }
-  }
-
   namespace impl {
     struct parse_root_nursery_t : public parse_tree_nursery_t {
-      const parse_tree_t* seed_pt          = nullptr;
-      parse_root_t::workspace_t* workspace = nullptr;
+      const parse_tree_t* seed_pt = nullptr;
 
       int rule_depth = 0;
 
@@ -212,15 +187,10 @@ namespace silva {
       token_info_index_t seed_tt_num = token_context_get_index("number");
       token_info_index_t seed_tt_any = token_context_get_index("any");
 
-      parse_root_nursery_t(const tokenization_t* tokenization,
-                           const_ptr_t<parse_root_t> parse_root,
-                           parse_root_t::workspace_t* workspace)
+      parse_root_nursery_t(const tokenization_t* tokenization, const_ptr_t<parse_root_t> parse_root)
         : parse_tree_nursery_t(tokenization, std::move(parse_root))
         , seed_pt(retval.root->seed_parse_tree.get())
-        , workspace(workspace)
       {
-        const index_t n = seed_pt->tokenization->context->_token_infos.size();
-        workspace->seed_token_id_data.assign(n, {});
       }
 
       expected_t<parse_tree_sub_t> apply_terminal(const index_t seed_node_index)
@@ -248,7 +218,7 @@ namespace silva {
           SILVA_EXPECT_PARSE(is_match,
                              "Token \"{}\" does not match regex {}",
                              token_str,
-                             seed_pt->tokenization->token_info_get(regex_token_id)->str);
+                             token_context_get_info(regex_token_id)->str);
         }
         else {
           SILVA_EXPECT(seed_node.rule_index == to_int(TERMINAL_1),
@@ -275,9 +245,8 @@ namespace silva {
             const auto* sp_token_data =
                 seed_pt->tokenization->token_info_get(seed_node.token_index);
             SILVA_EXPECT(sp_token_data->category == STRING, MAJOR);
-            auto& seed_token_id_work = workspace->seed_token_id_data[seed_token_id];
-            const auto expected_target_token_id =
-                seed_token_id_work.get_target_token_id(sp_token_data, retval.tokenization);
+            const token_info_index_t expected_target_token_id =
+                token_context_get_index(sp_token_data->as_string_or_view().get_view());
             SILVA_EXPECT_PARSE(token_id_by() == expected_target_token_id,
                                "Expected {}",
                                sp_token_data->str);
@@ -517,16 +486,10 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> parse_root_t::apply(const tokenization_t* tokenization,
-                                               parse_root_t::workspace_t* workspace) const
+  expected_t<parse_tree_t> parse_root_t::apply(const tokenization_t* tokenization) const
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
-    optional_t<parse_root_t::workspace_t> local_workspace;
-    if (workspace == nullptr) {
-      local_workspace.emplace();
-      workspace = &(*local_workspace);
-    }
-    impl::parse_root_nursery_t parse_root_nursery(tokenization, const_ptr_unowned(this), workspace);
+    impl::parse_root_nursery_t parse_root_nursery(tokenization, const_ptr_unowned(this));
     const parse_tree_sub_t sub =
         SILVA_EXPECT_FWD(parse_root_nursery.apply_rule(goal_rule_token_id));
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
