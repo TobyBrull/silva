@@ -67,6 +67,8 @@ namespace silva {
     // Contains one entry for each line in "text".
     vector_t<line_data_t> lines;
 
+    tokenization_t copy() const;
+
     const token_info_t* token_info_get(index_t token_index) const;
 
     const line_data_t* binary_search_line(index_t token_index) const;

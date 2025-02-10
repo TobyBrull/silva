@@ -36,12 +36,12 @@ conda install --name silva-clang --channel conda-forge compiler-rt=19 compiler-r
 rm -rf build/
 cmake -S. -Bbuild/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 ninja -Cbuild/
-./build/cpp/silva_test
-./build/cpp/silva_tokenization filename=silva/fern/simple.fern
-./build/cpp/silva_fern filename=silva/fern/simple.fern process=direct/string root-based=false
-./build/cpp/silva_fern filename=silva/fern/broken.fern process=direct/string root-based=true
-./build/cpp/silva_seed silva/seed/test.seed
-./build/cpp/silva_seed silva/seed/test.seed silva/seed/test.code
-./build/cpp/silva_silva scratchpad/test-01.silva
-./build/cpp/silva_silva scratchpad/std.silva
+ninja -Cbuild/ && ./build/cpp/silva_test
+ninja -Cbuild/ && ./build/cpp/silva_tokenization filename=silva/fern/simple.fern
+ninja -Cbuild/ && ./build/cpp/silva_fern filename=silva/fern/simple.fern process=direct/string root-based=false
+ninja -Cbuild/ && ./build/cpp/silva_fern filename=silva/fern/broken.fern process=direct/string root-based=true
+ninja -Cbuild/ && ./build/cpp/silva_seed silva/seed/test.seed
+ninja -Cbuild/ && ./build/cpp/silva_seed silva/seed/test.seed silva/seed/test.code
+ninja -Cbuild/ && ./build/cpp/silva_silva scratchpad/test-01.silva
+ninja -Cbuild/ && ./build/cpp/silva_silva scratchpad/std.silva
 ```

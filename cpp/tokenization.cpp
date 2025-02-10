@@ -26,6 +26,17 @@ namespace silva {
     return convert_to<double>(str);
   }
 
+  tokenization_t tokenization_t::copy() const
+  {
+    return tokenization_t{
+        .context  = context,
+        .filepath = filepath,
+        .text     = text,
+        .tokens   = tokens,
+        .lines    = lines,
+    };
+  }
+
   const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
   {
     return &context->token_infos[tokens[token_index]];
