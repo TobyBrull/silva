@@ -35,11 +35,11 @@ namespace silva {
       const index_t token_index_end   = node.token_index + 1;
       // const index_t token_index_end = (node.children_end < pt.nodes.size())
       //     ? pt.nodes[node.children_end].token_index
-      //     : pt.tokenization->tokens.size();
+      //     : pt.tokenization.tokens.size();
       const index_t used_token_index_end =
           std::min(token_index_begin + max_shown_tokens, token_index_end);
       for (index_t token_idx = token_index_begin; token_idx < used_token_index_end; ++token_idx) {
-        curr_line += pt.tokenization->token_info_get(token_idx)->str;
+        curr_line += pt.tokenization.token_info_get(token_idx)->str;
         if (token_idx + 1 < used_token_index_end) {
           curr_line += " ";
         }
@@ -81,7 +81,7 @@ namespace silva {
                             path.back().child_index,
                             pt.root->rules[node.rule_index].name,
                             pt.root->rules[node.rule_index].precedence,
-                            string_escaped(pt.tokenization->token_info_get(node.token_index)->str));
+                            string_escaped(pt.tokenization.token_info_get(node.token_index)->str));
       return true;
     });
     SILVA_EXPECT_FWD(std::move(result));

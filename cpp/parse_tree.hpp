@@ -8,8 +8,8 @@
 namespace silva {
   struct parse_root_t;
 
-  struct parse_tree_t {
-    const tokenization_t* tokenization = nullptr;
+  struct parse_tree_t : public sprite_t {
+    tokenization_t tokenization;
     const_ptr_t<parse_root_t> root;
 
     struct node_t {

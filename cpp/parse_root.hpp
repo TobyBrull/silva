@@ -17,7 +17,7 @@ namespace silva {
       // Lower value means higher precedence.
       index_t precedence = 0;
       // Name of the rule (can be inferred from the "token_id", but kept for convenience).
-      string_view_t name;
+      string_t name;
       // Node in the "seed_parse_tree" that contains the expression for this rule.
       index_t expr_node_index = 0;
       // If this rule is an alias, contains the offset of the aliased rule.
@@ -38,10 +38,10 @@ namespace silva {
 
     // Convenience function for essentially
     //    parse_root_t::create(seed_parse(tokenization))
-    static expected_t<parse_root_t> create(const tokenization_t*);
+    static expected_t<parse_root_t> create(tokenization_t);
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.
-    expected_t<parse_tree_t> apply(const tokenization_t*) const;
+    expected_t<parse_tree_t> apply(tokenization_t) const;
   };
 }
