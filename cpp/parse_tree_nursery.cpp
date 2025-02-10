@@ -69,40 +69,40 @@ namespace silva {
 
   // parse_tree_nursery_t
 
-  parse_tree_nursery_t::parse_tree_nursery_t(const tokenization_t* tokenization,
+  parse_tree_nursery_t::parse_tree_nursery_t(tokenization_t tokenization,
                                              const_ptr_t<parse_root_t> parse_root)
   {
-    retval.tokenization = tokenization;
+    retval.tokenization = std::move(tokenization);
     retval.root         = std::move(parse_root);
   }
 
   const index_t parse_tree_nursery_t::num_tokens_left() const
   {
-    return retval.tokenization->tokens.size() - token_index;
+    return retval.tokenization.tokens.size() - token_index;
   }
 
   const token_info_index_t parse_tree_nursery_t::token_id_by(const index_t token_index_offset) const
   {
-    return retval.tokenization->tokens[token_index + token_index_offset];
+    return retval.tokenization.tokens[token_index + token_index_offset];
   }
 
   const token_info_t* parse_tree_nursery_t::token_data_by(const index_t token_index_offset) const
   {
     const token_info_index_t token_id_ = token_id_by(token_index_offset);
-    return &(retval.tokenization->context->token_infos[token_id_]);
+    return &(retval.tokenization.context->token_infos[token_id_]);
   }
 
   token_position_t parse_tree_nursery_t::token_position_by(const index_t token_index_offset) const
   {
     return token_position_t{
-        .tokenization = retval.tokenization,
+        .tokenization = &retval.tokenization,
         .token_index  = token_index + token_index_offset,
     };
   }
   token_position_t parse_tree_nursery_t::token_position_at(const index_t arg_token_index) const
   {
     return token_position_t{
-        .tokenization = retval.tokenization,
+        .tokenization = &retval.tokenization,
         .token_index  = arg_token_index,
     };
   }

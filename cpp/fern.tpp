@@ -8,7 +8,7 @@ using namespace silva;
 
 TEST_CASE("fern", "[fern]")
 {
-  const string_t fern_source_code = R"([
+  const string_t fern_text          = R"([
   none;
   true;
   "test" : "Hello";
@@ -20,14 +20,13 @@ TEST_CASE("fern", "[fern]")
     3;
   ];
 ])";
-  const tokenization_t tokenization =
-      SILVA_EXPECT_REQUIRE(token_context_make("simple.fern", string_t{fern_source_code}));
-  const parse_tree_t pt_1 = SILVA_EXPECT_REQUIRE(fern_parse(&tokenization));
-  const parse_tree_t pt_2 = SILVA_EXPECT_REQUIRE(fern_parse_root()->apply(&tokenization));
+  const tokenization_t tokenization = SILVA_EXPECT_REQUIRE(token_context_make("", fern_text));
+  const parse_tree_t pt_1           = SILVA_EXPECT_REQUIRE(fern_parse(tokenization.copy()));
+  const parse_tree_t pt_2 = SILVA_EXPECT_REQUIRE(fern_parse_root()->apply(tokenization.copy()));
   CHECK(pt_1.nodes == pt_2.nodes);
   const fern_t fern = SILVA_EXPECT_REQUIRE(fern_create(&pt_1));
-  CHECK(fern_to_string(&pt_1) == fern_source_code);
-  CHECK(fern.to_string() == fern_source_code);
+  CHECK(fern_to_string(&pt_1) == fern_text);
+  CHECK(fern.to_string() == fern_text);
   CHECK(fern.to_graphviz() == fern_to_graphviz(&pt_1));
 
   const string_view_t expected_parse_tree_str = R"(

@@ -77,7 +77,7 @@ namespace silva {
   // with entries equivalent to "seed_self_representation" and the entries in "seed_rule_t".
   const parse_root_t* seed_parse_root_primordial();
 
-  expected_t<parse_tree_t> seed_parse(const tokenization_t*);
+  expected_t<parse_tree_t> seed_parse(tokenization_t);
 
   // parse_root_t for the Seed language itself.
   //
