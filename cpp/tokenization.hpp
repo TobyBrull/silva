@@ -41,7 +41,7 @@ namespace silva {
 
     token_context_t() = default;
   };
-  using token_context_ptr_t = menhir_ptr_t<token_context_t>;
+  using token_context_ptr_t = ptr_t<token_context_t>;
 
   token_info_index_t token_context_get_index(string_view_t);
   token_info_index_t token_context_get_index(const token_info_t&);

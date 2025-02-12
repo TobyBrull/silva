@@ -1,6 +1,6 @@
 #pragma once
 
-#include "menhir.hpp"
+#include "sprite.hpp"
 
 namespace silva {
   template<typename T>
@@ -16,12 +16,12 @@ namespace silva {
     ~context_t();
 
    public:
-    menhir_ptr_t<const T> get_parent() const;
+    ptr_t<const T> get_parent() const;
 
-    static menhir_ptr_t<T> get()
+    static ptr_t<T> get()
       requires(T::context_mutable_get);
 
-    static menhir_ptr_t<const T> get()
+    static ptr_t<const T> get()
       requires(!T::context_mutable_get);
   };
 }
@@ -69,7 +69,7 @@ namespace silva {
   }
 
   template<typename T>
-  menhir_ptr_t<const T> context_t<T>::get_parent() const
+  ptr_t<const T> context_t<T>::get_parent() const
   {
     if (parent) {
       return parent->ptr();
@@ -80,7 +80,7 @@ namespace silva {
   }
 
   template<typename T>
-  menhir_ptr_t<T> context_t<T>::get()
+  ptr_t<T> context_t<T>::get()
     requires(T::context_mutable_get)
   {
     if constexpr (T::context_use_default) {
@@ -92,7 +92,7 @@ namespace silva {
   }
 
   template<typename T>
-  menhir_ptr_t<const T> context_t<T>::get()
+  ptr_t<const T> context_t<T>::get()
     requires(!T::context_mutable_get)
   {
     if constexpr (T::context_use_default) {

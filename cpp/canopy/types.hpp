@@ -61,19 +61,6 @@ namespace silva {
 
   using filesystem_path_t = std::filesystem::path;
 
-  struct sprite_t {
-    sprite_t() = default;
-
-    sprite_t(sprite_t&&)            = default;
-    sprite_t& operator=(sprite_t&&) = default;
-
-    // Sprites are encouraged to implement an explicity "copy" function (they don't have to), but
-    // implicit copy is disabled.
-
-    sprite_t(const sprite_t&)            = delete;
-    sprite_t& operator=(const sprite_t&) = delete;
-  };
-
   template<typename T>
   unique_ptr_t<T> to_unique_ptr(T x)
   {
