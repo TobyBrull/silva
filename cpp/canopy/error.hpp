@@ -19,7 +19,7 @@ namespace silva {
 
     string_t to_string(index_t node_index) const;
   };
-  using error_context_ptr_t = context_ptr_t<error_context_t>;
+  using error_context_ptr_t = menhir_ptr_t<error_context_t>;
 
   struct error_t : public sprite_t {
     error_context_ptr_t context;
