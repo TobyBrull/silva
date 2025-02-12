@@ -10,9 +10,9 @@ expected_t<void>
 silva_main(span_t<string_view_t> cmdline_args)
 {
   SILVA_EXPECT(cmdline_args.size() >= 2, MINOR, "First command-line arg must be a Silva filename");
-  const auto filename         = cmdline_args[1];
-  tokenization_t tokenization = SILVA_EXPECT_FWD(token_context_load(filename));
-  parse_tree_t pt = SILVA_EXPECT_FWD(silva_parse_root()->apply(std::move(tokenization)));
+  const auto filename               = cmdline_args[1];
+  const tokenization_t tokenization = SILVA_EXPECT_FWD(token_context_load(filename));
+  const parse_tree_t pt = SILVA_EXPECT_FWD(silva_parse_root()->apply(tokenization.ptr()));
   fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(pt)));
   return {};
 }

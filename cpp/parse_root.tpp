@@ -1,4 +1,5 @@
 #include "parse_root.hpp"
+#include "seed.hpp"
 
 #include <catch2/catch_all.hpp>
 
@@ -6,15 +7,16 @@ using namespace silva;
 
 TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
 {
-  const string_t frog_seed        = R"'(
+  const string_t frog_seed             = R"'(
     - Frog = Rule*
     - Rule = RuleName "=" Expr
     - RuleName = identifier
     - Expr = Primary+
     - Primary = identifier "="!
   )'";
-  tokenization_t frog_seed_tokens = SILVA_EXPECT_REQUIRE(token_context_make("", frog_seed));
-  const parse_root_t pr = SILVA_EXPECT_REQUIRE(parse_root_t::create(std::move(frog_seed_tokens)));
+  const tokenization_t fs_tokens       = SILVA_EXPECT_REQUIRE(token_context_make("", frog_seed));
+  const parse_tree_t fs_pt             = SILVA_EXPECT_REQUIRE(seed_parse(fs_tokens.ptr()));
+  const parse_root_t pr                = SILVA_EXPECT_REQUIRE(parse_root_t::create(fs_pt.ptr()));
   const string_view_t expected_seed_pt = R"(
 [0]Seed,0                                         -
   [0]Rule,0                                       Frog
@@ -62,16 +64,15 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
 )";
   CHECK(parse_tree_to_string(*pr.seed_parse_tree) == expected_seed_pt.substr(1));
 
-  const string_t frog_source_code = R"'(
+  const string_t frog_source_code  = R"'(
     SimpleFern = a b c
     LabeledItem = d e
     Label = f
     Item = g h i
   )'";
-  tokenization_t frog_tokens      = SILVA_EXPECT_REQUIRE(token_context_make("", frog_source_code));
-  const parse_tree_t frog_pt      = SILVA_EXPECT_REQUIRE(pr.apply(std::move(frog_tokens)));
-
-  const string_view_t expected = R"(
+  const tokenization_t frog_tokens = SILVA_EXPECT_REQUIRE(token_context_make("", frog_source_code));
+  const parse_tree_t frog_pt       = SILVA_EXPECT_REQUIRE(pr.apply(frog_tokens.ptr()));
+  const string_view_t expected     = R"(
 [0]Frog,0                                         SimpleFern
   [0]Rule,0                                       SimpleFern
     [0]RuleName,0                                 SimpleFern

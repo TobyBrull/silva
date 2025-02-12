@@ -72,7 +72,9 @@ namespace silva {
 
     void clear();
 
+    T* get() const;
     T* operator->() const;
+    T& operator*() const;
   };
 
   class menhir_t : public sprite_t {
@@ -175,8 +177,20 @@ namespace silva {
   }
 
   template<typename T>
+  T* ptr_t<T>::get() const
+  {
+    return ptr;
+  }
+
+  template<typename T>
   T* ptr_t<T>::operator->() const
   {
     return ptr;
+  }
+
+  template<typename T>
+  T& ptr_t<T>::operator*() const
+  {
+    return *ptr;
   }
 }

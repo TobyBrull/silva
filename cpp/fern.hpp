@@ -21,7 +21,7 @@ namespace silva {
 
   const parse_root_t* fern_parse_root();
 
-  expected_t<parse_tree_t> fern_parse(tokenization_t);
+  expected_t<parse_tree_t> fern_parse(ptr_t<const tokenization_t>);
 
   // Fern parse_tree output functions
 

@@ -44,7 +44,7 @@ namespace silva {
       token_info_index_t tt_prefix_n    = token_context_get_index("prefix_nest");
       token_info_index_t tt_none        = token_context_get_index("none");
 
-      seed_parse_tree_nursery_t(tokenization_t tokenization)
+      seed_parse_tree_nursery_t(ptr_t<const tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization),
                                const_ptr_unowned(seed_parse_root_primordial()))
       {
@@ -360,7 +360,7 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> seed_parse(tokenization_t tokenization)
+  expected_t<parse_tree_t> seed_parse(ptr_t<const tokenization_t> tokenization)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
     impl::seed_parse_tree_nursery_t nursery(std::move(tokenization));
@@ -370,8 +370,10 @@ namespace silva {
 
   const parse_root_t* seed_parse_root()
   {
-    static const parse_root_t retval = SILVA_EXPECT_ASSERT(parse_root_t::create(
-        SILVA_EXPECT_ASSERT(token_context_make("seed.seed", string_t{seed_seed}))));
+    static const tokenization_t retval_tt =
+        SILVA_EXPECT_ASSERT(token_context_make("seed.seed", string_t{seed_seed}));
+    static const parse_tree_t retval_pt = SILVA_EXPECT_ASSERT(seed_parse(retval_tt.ptr()));
+    static const parse_root_t retval = SILVA_EXPECT_ASSERT(parse_root_t::create(retval_pt.ptr()));
     return &retval;
   }
 
@@ -387,7 +389,7 @@ namespace silva {
       return retval;
     };
     static const parse_root_t parse_root{
-        .seed_parse_tree = const_ptr_unowned(&parse_tree),
+        .seed_parse_tree = parse_tree.ptr(),
         .rules =
             {
                 // clang-format off

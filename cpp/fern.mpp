@@ -18,10 +18,10 @@ silva_main()
   tokenization_t tokenization = SILVA_EXPECT_FWD(token_context_load(arg_filename));
   parse_tree_t pt;
   if (arg_root) {
-    pt = SILVA_EXPECT_FWD(fern_parse_root()->apply(std::move(tokenization)));
+    pt = SILVA_EXPECT_FWD(fern_parse_root()->apply(tokenization.ptr()));
   }
   else {
-    pt = SILVA_EXPECT_FWD(fern_parse(std::move(tokenization)));
+    pt = SILVA_EXPECT_FWD(fern_parse(tokenization.ptr()));
   }
 
   if (arg_process.empty()) {

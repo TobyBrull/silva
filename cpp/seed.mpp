@@ -13,15 +13,15 @@ silva_main(span_t<string_view_t> cmdline_args)
   SILVA_EXPECT(2 <= m && m <= 3, MINOR, "Usage: ... <seed-file> [<target-file>]");
   const auto seed_filename         = cmdline_args[1];
   tokenization_t seed_tokenization = SILVA_EXPECT_FWD(token_context_load(seed_filename));
-  const parse_tree_t seed_pt       = SILVA_EXPECT_FWD(seed_parse(std::move(seed_tokenization)));
+  const parse_tree_t seed_pt       = SILVA_EXPECT_FWD(seed_parse(seed_tokenization.ptr()));
   if (m == 2) {
     fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(seed_pt)));
   }
   else if (m == 3) {
-    const auto tgt_filename = cmdline_args[2];
-    const parse_root_t pr   = SILVA_EXPECT_FWD(parse_root_t::create(const_ptr_unowned(&seed_pt)));
+    const auto tgt_filename         = cmdline_args[2];
+    const parse_root_t pr           = SILVA_EXPECT_FWD(parse_root_t::create(seed_pt.ptr()));
     tokenization_t tgt_tokenization = SILVA_EXPECT_FWD(token_context_load(tgt_filename));
-    const parse_tree_t tgt_pt       = SILVA_EXPECT_FWD(pr.apply(std::move(tgt_tokenization)));
+    const parse_tree_t tgt_pt       = SILVA_EXPECT_FWD(pr.apply(tgt_tokenization.ptr()));
     fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(tgt_pt)));
   }
   return {};
