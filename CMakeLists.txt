@@ -8,4 +8,5 @@ add_link_options(-fsanitize=address,undefined)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS On CACHE BOOL "Always write compile_commands.json" FORCE)
 
+add_subdirectory(thirdparty/reflect-cpp)
 add_subdirectory(cpp)

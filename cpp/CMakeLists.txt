@@ -1,5 +1,3 @@
-add_subdirectory(thirdparty/reflect-cpp)
-
 # find_package(Threads REQUIRED)
 # find_package(Boost REQUIRED)
 find_package(Fmt REQUIRED)
