@@ -153,6 +153,6 @@ namespace silva::impl {
   template<typename... Args>
   error_t silva_expect_fwd(error_t error, Args&&... args)
   {
-    return silva_expect_fwd(std::move(error), error_level_t::NONE, std::forward<Args>(args)...);
+    return silva_expect_fwd(std::move(error), error_level_t::NO_ERROR, std::forward<Args>(args)...);
   }
 }

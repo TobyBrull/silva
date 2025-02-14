@@ -118,10 +118,10 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(sfpr->rules[4].expr_node_index == 50);
   CHECK(sfpr->rules[4].aliased_rule_offset.has_value() == false);
   REQUIRE(sfpr->rule_indexes.size() == 4);
-  REQUIRE(sfpr->rule_indexes.at(token_context_get_index("SimpleFern")) == 0);
-  REQUIRE(sfpr->rule_indexes.at(token_context_get_index("LabeledItem")) == 1);
-  REQUIRE(sfpr->rule_indexes.at(token_context_get_index("Label")) == 2);
-  REQUIRE(sfpr->rule_indexes.at(token_context_get_index("Item")) == 3);
+  REQUIRE(sfpr->rule_indexes.at(token_context_get_token_id("SimpleFern")) == 0);
+  REQUIRE(sfpr->rule_indexes.at(token_context_get_token_id("LabeledItem")) == 1);
+  REQUIRE(sfpr->rule_indexes.at(token_context_get_token_id("Label")) == 2);
+  REQUIRE(sfpr->rule_indexes.at(token_context_get_token_id("Item")) == 3);
 
   const string_t sf_code = R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'";
   const auto sf_tt       = share(SILVA_EXPECT_REQUIRE(token_context_make("", sf_code)));

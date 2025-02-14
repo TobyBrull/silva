@@ -26,6 +26,13 @@ namespace silva {
     return convert_to<double>(str);
   }
 
+  token_context_t::token_context_t()
+  {
+    token_infos.emplace_back();
+    token_lookup[""] = token_id_none;
+    full_names_infos.emplace_back();
+  }
+
   tokenization_t tokenization_t::copy() const
   {
     return tokenization_t{
@@ -173,7 +180,7 @@ namespace silva {
       const char c = text.front();
       if (is_one_of(c, whitespace_chars)) {
         const index_t len = find_whitespace_length(text);
-        return {text.substr(0, len), INVALID};
+        return {text.substr(0, len), NONE};
       }
       else if (std::isalpha(c) || is_one_of(c, identifier_chars)) {
         const index_t len = find_token_length(text, [](const char x) {
@@ -195,12 +202,12 @@ namespace silva {
           return {text.substr(0, maybe_length.value()), STRING};
         }
         else {
-          return {text, INVALID};
+          return {text, NONE};
         }
       }
       else if (c == '#') {
         const index_t len = find_comment_length(text);
-        return {text.substr(0, len), INVALID};
+        return {text.substr(0, len), NONE};
       }
       else if (std::isdigit(c)) {
         const index_t len = find_token_length(text, [](const char x) {
@@ -209,10 +216,10 @@ namespace silva {
         return {text.substr(0, len), NUMBER};
       }
       else if (c == '\n') {
-        return {text.substr(0, 1), INVALID};
+        return {text.substr(0, 1), NONE};
       }
       else {
-        return {text.substr(0, 1), INVALID};
+        return {text.substr(0, 1), NONE};
       }
     }
 
@@ -225,7 +232,7 @@ namespace silva {
     }
   }
 
-  token_id_t token_context_get_index(const string_view_t token_str)
+  token_id_t token_context_get_token_id(const string_view_t token_str)
   {
     auto tc       = token_context_t::get();
     const auto it = tc->token_lookup.find(string_t{token_str});
@@ -242,7 +249,7 @@ namespace silva {
     }
   }
 
-  token_id_t token_context_get_index(const token_info_t& token_info)
+  token_id_t token_context_get_token_id(const token_info_t& token_info)
   {
     auto tc       = token_context_t::get();
     const auto it = tc->token_lookup.find(token_info.str);
@@ -257,7 +264,7 @@ namespace silva {
     }
   }
 
-  const token_info_t* token_context_get_info(const token_id_t tii)
+  const token_info_t* token_context_get_token_info(const token_id_t tii)
   {
     return &token_context_t::get()->token_infos[tii];
   }
@@ -282,8 +289,8 @@ namespace silva {
     while (text_index < text.size()) {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(text.substr(text_index));
       text_index += tokenized_str.size();
-      if (token_cat != INVALID) {
-        const token_id_t tii = token_context_get_index(
+      if (token_cat != NONE) {
+        const token_id_t tii = token_context_get_token_id(
             token_info_t{.str = string_t{tokenized_str}, .category = token_cat});
         retval->tokens.push_back(tii);
       }
@@ -303,7 +310,7 @@ namespace silva {
     index_t column                 = 0;
     while (column < rest.size()) {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(rest.substr(column));
-      if (token_cat == INVALID) {
+      if (token_cat == NONE) {
         column += tokenized_str.size();
       }
       else {
@@ -326,7 +333,7 @@ namespace silva {
     string_t retval;
     for (index_t token_index = 0; token_index < tokens.size(); ++token_index) {
       const token_id_t tii      = tokens[token_index];
-      const token_info_t* info  = token_context_get_info(tii);
+      const token_info_t* info  = token_context_get_token_info(tii);
       const auto [line, column] = compute_line_and_column(token_index);
       retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }

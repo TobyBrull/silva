@@ -8,7 +8,7 @@
 namespace silva {
 
   enum class token_category_t {
-    INVALID = 0,
+    NONE = 0,
     IDENTIFIER,
     OPERATOR,
     STRING,
@@ -18,7 +18,7 @@ namespace silva {
 
   struct token_info_t {
     string_t str;
-    token_category_t category = token_category_t::INVALID;
+    token_category_t category = token_category_t::NONE;
 
     expected_t<string_view_t> string_as_plain_contained() const;
     expected_t<double> number_as_double() const;
@@ -33,6 +33,9 @@ namespace silva {
   // Index in "qual_names
   using full_name_id_t = index_t;
 
+  constexpr inline token_id_t token_id_none         = 0;
+  constexpr inline full_name_id_t full_name_id_none = 0;
+
   struct token_context_t : public context_t<token_context_t> {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
@@ -41,18 +44,18 @@ namespace silva {
     hashmap_t<string_t, token_id_t> token_lookup;
 
     struct full_name_info_t {
-      full_name_id_t parent_name = 0;
-      token_id_t base_name       = 0;
+      full_name_id_t parent_name = full_name_id_none;
+      token_id_t base_name       = token_id_none;
     };
     vector_t<full_name_info_t> full_names_infos;
 
-    token_context_t() = default;
+    token_context_t();
   };
   using token_context_ptr_t = ptr_t<token_context_t>;
 
-  token_id_t token_context_get_index(string_view_t);
-  token_id_t token_context_get_index(const token_info_t&);
-  const token_info_t* token_context_get_info(token_id_t);
+  token_id_t token_context_get_token_id(string_view_t);
+  token_id_t token_context_get_token_id(const token_info_t&);
+  const token_info_t* token_context_get_token_info(token_id_t);
 
   struct tokenization_t : public sprite_t {
     token_context_ptr_t context;

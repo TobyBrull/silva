@@ -24,7 +24,7 @@ namespace silva {
   struct error_t : public sprite_t {
     error_context_ptr_t context;
     index_t node_index  = 0;
-    error_level_t level = error_level_t::NONE;
+    error_level_t level = error_level_t::NO_ERROR;
 
     ~error_t();
     error_t() = default;

@@ -10,12 +10,11 @@ namespace silva {
   // should then be mapped as required, e.g., via "SILVA_EXPECT_FWD(..., MAJOR)".
 
   enum class error_level_t : uint8_t {
-    NONE = 0,
-
-    MINOR  = 1,
-    MAJOR  = 2,
-    FATAL  = 3,
-    ASSERT = 4,
+    NO_ERROR = 0,
+    MINOR    = 1,
+    MAJOR    = 2,
+    FATAL    = 3,
+    ASSERT   = 4,
   };
   constexpr bool error_level_is_primary(error_level_t);
   string_view_t to_string(error_level_t);
@@ -27,7 +26,7 @@ namespace silva {
   constexpr bool error_level_is_primary(const error_level_t error_level)
   {
     switch (error_level) {
-      case error_level_t::NONE:
+      case error_level_t::NO_ERROR:
         return false;
 
       case error_level_t::MINOR:
