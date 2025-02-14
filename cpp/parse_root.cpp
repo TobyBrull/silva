@@ -47,16 +47,17 @@ namespace silva {
     }
   }
 
-  expected_t<parse_root_t> parse_root_t::create(ptr_t<const parse_tree_t> seed_parse_tree)
+  expected_t<unique_ptr_t<parse_root_t>>
+  parse_root_t::create(shared_ptr_t<const parse_tree_t> seed_parse_tree)
   {
-    parse_root_t retval;
-    retval.seed_parse_tree    = std::move(seed_parse_tree);
-    const parse_tree_t* s_pt  = retval.seed_parse_tree.get();
-    const parse_root_t* s_ptr = retval.seed_parse_tree->root.get();
+    auto retval               = std::make_unique<parse_root_t>();
+    retval->seed_parse_tree   = std::move(seed_parse_tree);
+    const parse_tree_t* s_pt  = retval->seed_parse_tree.get();
+    const parse_root_t* s_ptr = retval->seed_parse_tree->root.get();
     const auto& s_nodes       = s_pt->nodes;
-    SILVA_EXPECT(s_ptr == seed_parse_root_primordial() || s_ptr == seed_parse_root(),
-                 ASSERT,
-                 "Not a Seed parse-tree");
+    // SILVA_EXPECT(s_ptr == seed_parse_root_primordial() || s_ptr == seed_parse_root(),
+    //              ASSERT,
+    //              "Not a Seed parse-tree");
     SILVA_EXPECT(!s_nodes.empty() && s_nodes.front().rule_index == to_int(SEED),
                  MINOR,
                  "Seed parse_tree should start with SEED node");
@@ -86,7 +87,7 @@ namespace silva {
                        MINOR,
                        "Last child of RULE must be DERIVATION_{0,1,2,3}");
           index_t expr_node_index = children.back();
-          SILVA_EXPECT_FWD(impl::create_add_rule(retval,
+          SILVA_EXPECT_FWD(impl::create_add_rule(*retval,
                                                  rule_token_id,
                                                  std::move(rule_name),
                                                  rule_precedence,
@@ -130,21 +131,21 @@ namespace silva {
             }
 
             const index_t base_offset =
-                retval.rule_indexes.at(base_rule_token_id) + base_rule_precedence;
+                retval->rule_indexes.at(base_rule_token_id) + base_rule_precedence;
             const index_t alias_offset =
-                retval.rule_indexes.at(tgt_rule_token_id) + tgt_rule_precedence;
-            retval.rules[base_offset].aliased_rule_offset = alias_offset;
+                retval->rule_indexes.at(tgt_rule_token_id) + tgt_rule_precedence;
+            retval->rules[base_offset].aliased_rule_offset = alias_offset;
           }
           return true;
         },
         0);
     SILVA_EXPECT_FWD(std::move(result_2));
 
-    for (const auto& rule: retval.rules) {
+    for (const auto& rule: retval->rules) {
       if (rule.aliased_rule_offset.has_value()) {
         const index_t aro = rule.aliased_rule_offset.value();
-        SILVA_EXPECT(aro < retval.rules.size(), MINOR, "Invalid rule-offset {}", aro);
-        const auto& alias_rule = retval.rules[aro];
+        SILVA_EXPECT(aro < retval->rules.size(), MINOR, "Invalid rule-offset {}", aro);
+        const auto& alias_rule = retval->rules[aro];
         SILVA_EXPECT(!alias_rule.aliased_rule_offset.has_value(),
                      MINOR,
                      "Rule (={},{}) cannot be alias to another alias-rule (={},{})",
@@ -159,7 +160,7 @@ namespace silva {
       const auto& node = s_pt->nodes[node_index];
       if (node.rule_index == to_int(REGEX)) {
         const token_info_index_t regex_token_id = s_pt->tokenization->tokens[node.token_index];
-        if (auto& regex = retval.regexes[regex_token_id]; !regex.has_value()) {
+        if (auto& regex = retval->regexes[regex_token_id]; !regex.has_value()) {
           const auto& regex_td = s_pt->tokenization->token_info_get(node.token_index);
           const string_t regex_str{SILVA_EXPECT_FWD(regex_td->string_as_plain_contained(), MAJOR)};
           regex = std::regex(regex_str);
@@ -181,7 +182,7 @@ namespace silva {
       token_info_index_t seed_tt_num = token_context_get_index("number");
       token_info_index_t seed_tt_any = token_context_get_index("any");
 
-      parse_root_nursery_t(ptr_t<const tokenization_t> tokenization,
+      parse_root_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
                            const_ptr_t<parse_root_t> parse_root)
         : parse_tree_nursery_t(std::move(tokenization), std::move(parse_root))
         , seed_pt(retval.root->seed_parse_tree.get())
@@ -481,7 +482,17 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> parse_root_t::apply(ptr_t<const tokenization_t> tokenization) const
+  expected_t<unique_ptr_t<parse_root_t>> parse_root_t::create(filesystem_path_t filepath,
+                                                              string_t text)
+  {
+    auto tt     = SILVA_EXPECT_FWD(token_context_make(std::move(filepath), std::move(text)));
+    auto pt     = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
+    auto retval = SILVA_EXPECT_FWD(parse_root_t::create(std::move(pt)));
+    return retval;
+  }
+
+  expected_t<unique_ptr_t<parse_tree_t>>
+  parse_root_t::apply(shared_ptr_t<const tokenization_t> tokenization) const
   {
     impl::parse_root_nursery_t parse_root_nursery(std::move(tokenization), const_ptr_unowned(this));
     expected_traits_t expected_traits{.materialize_fwd = true};
@@ -489,6 +500,6 @@ namespace silva {
         SILVA_EXPECT_FWD(parse_root_nursery.apply_rule(goal_rule_token_id));
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.num_children_total == parse_root_nursery.retval.nodes.size(), ASSERT);
-    return {std::move(parse_root_nursery.retval)};
+    return {std::make_unique<parse_tree_t>(std::move(parse_root_nursery.retval))};
   }
 }

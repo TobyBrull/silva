@@ -7,16 +7,16 @@ using namespace silva;
 
 TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
 {
-  const string_t frog_seed             = R"'(
+  const string_t frog_seed = R"'(
     - Frog = Rule*
     - Rule = RuleName "=" Expr
     - RuleName = identifier
     - Expr = Primary+
     - Primary = identifier "="!
   )'";
-  const tokenization_t fs_tokens       = SILVA_EXPECT_REQUIRE(token_context_make("", frog_seed));
-  const parse_tree_t fs_pt             = SILVA_EXPECT_REQUIRE(seed_parse(fs_tokens.ptr()));
-  const parse_root_t pr                = SILVA_EXPECT_REQUIRE(parse_root_t::create(fs_pt.ptr()));
+  auto fs_tt               = share(SILVA_EXPECT_REQUIRE(token_context_make("", frog_seed)));
+  auto fs_pt               = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
+  auto fs_pr               = share(SILVA_EXPECT_REQUIRE(parse_root_t::create(fs_pt)));
   const string_view_t expected_seed_pt = R"(
 [0]Seed,0                                         -
   [0]Rule,0                                       Frog
@@ -62,17 +62,17 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
           [0]Terminal,1                           "="
         [1]Suffix,0                               !
 )";
-  CHECK(parse_tree_to_string(*pr.seed_parse_tree) == expected_seed_pt.substr(1));
+  CHECK(parse_tree_to_string(*fs_pr->seed_parse_tree) == expected_seed_pt.substr(1));
 
-  const string_t frog_source_code  = R"'(
+  const string_t frog_source_code = R"'(
     SimpleFern = a b c
     LabeledItem = d e
     Label = f
     Item = g h i
   )'";
-  const tokenization_t frog_tokens = SILVA_EXPECT_REQUIRE(token_context_make("", frog_source_code));
-  const parse_tree_t frog_pt       = SILVA_EXPECT_REQUIRE(pr.apply(frog_tokens.ptr()));
-  const string_view_t expected     = R"(
+  auto frog_tt = share(SILVA_EXPECT_REQUIRE(token_context_make("", frog_source_code)));
+  auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt)));
+  const string_view_t expected = R"(
 [0]Frog,0                                         SimpleFern
   [0]Rule,0                                       SimpleFern
     [0]RuleName,0                                 SimpleFern
@@ -96,5 +96,5 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
       [1]Primary,0                                h
       [2]Primary,0                                i
 )";
-  CHECK(parse_tree_to_string(frog_pt) == expected.substr(1));
+  CHECK(parse_tree_to_string(*frog_pt) == expected.substr(1));
 }

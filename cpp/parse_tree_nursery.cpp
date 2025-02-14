@@ -69,7 +69,7 @@ namespace silva {
 
   // parse_tree_nursery_t
 
-  parse_tree_nursery_t::parse_tree_nursery_t(ptr_t<const tokenization_t> tokenization,
+  parse_tree_nursery_t::parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
                                              const_ptr_t<parse_root_t> parse_root)
   {
     retval.tokenization = std::move(tokenization);

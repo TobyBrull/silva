@@ -9,7 +9,7 @@ namespace silva {
   // Driver for a program in the Seed language.
   struct parse_root_t {
     // Parse tree of the Seed program for this driver.
-    ptr_t<const parse_tree_t> seed_parse_tree;
+    shared_ptr_t<const parse_tree_t> seed_parse_tree;
 
     struct rule_t {
       // Token-id of nonterminal that the rule defines.
@@ -34,10 +34,14 @@ namespace silva {
     hashmap_t<token_info_index_t, optional_t<std::regex>> regexes;
 
     // Main parse_root_t constructor.
-    static expected_t<parse_root_t> create(ptr_t<const parse_tree_t>);
+    static expected_t<unique_ptr_t<parse_root_t>> create(shared_ptr_t<const parse_tree_t>);
+
+    // Convenience function for essentially
+    //    tokenize | seed_parse | parse_root_t::create
+    static expected_t<unique_ptr_t<parse_root_t>> create(filesystem_path_t filepath, string_t text);
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.
-    expected_t<parse_tree_t> apply(ptr_t<const tokenization_t>) const;
+    expected_t<unique_ptr_t<parse_tree_t>> apply(shared_ptr_t<const tokenization_t>) const;
   };
 }

@@ -5,13 +5,13 @@
 namespace silva {
   template<typename T>
   struct const_ptr_t {
-    variant_t<const T*, std::shared_ptr<const T>> data;
+    variant_t<const T*, shared_ptr_t<const T>> data;
 
     const_ptr_t() = default;
     const_ptr_t(unique_ptr_t<T> ptr) { data.template emplace<1>(std::move(ptr)); }
     const_ptr_t(unique_ptr_t<const T> ptr) { data.template emplace<1>(std::move(ptr)); }
-    const_ptr_t(std::shared_ptr<T> ptr) { data.template emplace<1>(std::move(ptr)); }
-    const_ptr_t(std::shared_ptr<const T> ptr) { data.template emplace<1>(std::move(ptr)); }
+    const_ptr_t(shared_ptr_t<T> ptr) { data.template emplace<1>(std::move(ptr)); }
+    const_ptr_t(shared_ptr_t<const T> ptr) { data.template emplace<1>(std::move(ptr)); }
 
     const T& operator*() const { return *get(); }
     const T* operator->() const { return get(); }
@@ -24,7 +24,7 @@ namespace silva {
         return std::get<const T*>(data);
       }
       else {
-        return std::get<std::shared_ptr<const T>>(data).get();
+        return std::get<shared_ptr_t<const T>>(data).get();
       }
     }
   };

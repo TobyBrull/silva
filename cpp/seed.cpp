@@ -44,9 +44,8 @@ namespace silva {
       token_info_index_t tt_prefix_n    = token_context_get_index("prefix_nest");
       token_info_index_t tt_none        = token_context_get_index("none");
 
-      seed_parse_tree_nursery_t(ptr_t<const tokenization_t> tokenization)
-        : parse_tree_nursery_t(std::move(tokenization),
-                               const_ptr_unowned(seed_parse_root_primordial()))
+      seed_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
+        : parse_tree_nursery_t(std::move(tokenization), seed_parse_root_primordial())
       {
       }
 
@@ -360,24 +359,20 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> seed_parse(ptr_t<const tokenization_t> tokenization)
+  expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t> tokenization)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
     impl::seed_parse_tree_nursery_t nursery(std::move(tokenization));
     SILVA_EXPECT_FWD(nursery.seed());
-    return {std::move(nursery.retval)};
+    return {std::make_unique<parse_tree_t>(std::move(nursery.retval))};
   }
 
-  const parse_root_t* seed_parse_root()
+  unique_ptr_t<parse_root_t> seed_parse_root()
   {
-    static const tokenization_t retval_tt =
-        SILVA_EXPECT_ASSERT(token_context_make("seed.seed", string_t{seed_seed}));
-    static const parse_tree_t retval_pt = SILVA_EXPECT_ASSERT(seed_parse(retval_tt.ptr()));
-    static const parse_root_t retval = SILVA_EXPECT_ASSERT(parse_root_t::create(retval_pt.ptr()));
-    return &retval;
+    return SILVA_EXPECT_ASSERT(parse_root_t::create("seed.seed", string_t{seed_seed}));
   }
 
-  const parse_root_t* seed_parse_root_primordial()
+  unique_ptr_t<parse_root_t> seed_parse_root_primordial()
   {
     static const parse_tree_t parse_tree;
     const auto make_rule = [&](const string_view_t nonterminal,
@@ -388,11 +383,10 @@ namespace silva {
       retval.precedence = precedence;
       return retval;
     };
-    static const parse_root_t parse_root{
-        .seed_parse_tree = parse_tree.ptr(),
-        .rules =
-            {
-                // clang-format off
+    auto retval             = std::make_unique<parse_root_t>();
+    retval->seed_parse_tree = std::make_unique<parse_tree_t>();
+    retval->rules           = {
+        // clang-format off
                 make_rule("Seed", 0),
                 make_rule("Rule", 0),
                 make_rule("RulePrecedence", 0),
@@ -417,9 +411,8 @@ namespace silva {
                 make_rule("AxeAssoc", 0),
                 make_rule("AxeOps", 0),
                 make_rule("AxeOp", 0),
-                // clang-format on
-            },
+        // clang-format on
     };
-    return &parse_root;
+    return retval;
   }
 }

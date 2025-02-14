@@ -15,13 +15,14 @@ silva_main()
   const bool arg_root =
       SILVA_EXPECT_FWD_IF(env_context_get_as<bool>("root-based"), MAJOR).value_or(false);
 
-  tokenization_t tokenization = SILVA_EXPECT_FWD(token_context_load(arg_filename));
-  parse_tree_t pt;
+  auto tt = SILVA_EXPECT_FWD(token_context_load(arg_filename));
+  unique_ptr_t<parse_tree_t> pt;
+  auto fpr = fern_parse_root();
   if (arg_root) {
-    pt = SILVA_EXPECT_FWD(fern_parse_root()->apply(tokenization.ptr()));
+    pt = SILVA_EXPECT_FWD(fpr->apply(std::move(tt)));
   }
   else {
-    pt = SILVA_EXPECT_FWD(fern_parse(tokenization.ptr()));
+    pt = SILVA_EXPECT_FWD(fern_parse(std::move(tt)));
   }
 
   if (arg_process.empty()) {
@@ -29,7 +30,7 @@ silva_main()
   }
   else if (arg_process.starts_with("fern_t/")) {
     const auto rest   = arg_process.substr(7);
-    const fern_t fern = SILVA_EXPECT_FWD(fern_create(&pt));
+    const fern_t fern = SILVA_EXPECT_FWD(fern_create(pt.get()));
     if (rest == "string") {
       fmt::print("{}\n", fern.to_string());
     }
@@ -46,13 +47,13 @@ silva_main()
   else if (arg_process.starts_with("direct/")) {
     const auto rest = arg_process.substr(7);
     if (rest == "string") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_string(&pt)));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_string(pt.get())));
     }
     else if (rest == "graphviz") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_graphviz(&pt)));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_graphviz(pt.get())));
     }
     else if (rest == "graphviz_show") {
-      graphviz_show_sync(SILVA_EXPECT_FWD(fern_to_graphviz(&pt)));
+      graphviz_show_sync(SILVA_EXPECT_FWD(fern_to_graphviz(pt.get())));
     }
     else {
       SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
@@ -61,13 +62,13 @@ silva_main()
   else if (arg_process.starts_with("parse_tree/")) {
     const auto rest = arg_process.substr(11);
     if (rest == "string") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(pt)));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(*pt)));
     }
     else if (rest == "graphviz") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_graphviz(pt)));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_graphviz(*pt)));
     }
     else if (rest == "graphviz_show") {
-      graphviz_show_sync(SILVA_EXPECT_FWD(parse_tree_to_graphviz(pt)));
+      graphviz_show_sync(SILVA_EXPECT_FWD(parse_tree_to_graphviz(*pt)));
     }
     else {
       SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);

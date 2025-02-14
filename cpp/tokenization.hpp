@@ -83,8 +83,9 @@ namespace silva {
     index_t token_index = 0;
   };
 
-  expected_t<tokenization_t> token_context_load(filesystem_path_t);
-  expected_t<tokenization_t> token_context_make(filesystem_path_t filepath, string_t text);
+  expected_t<unique_ptr_t<tokenization_t>> token_context_load(filesystem_path_t);
+  expected_t<unique_ptr_t<tokenization_t>> token_context_make(filesystem_path_t filepath,
+                                                              string_t text);
 }
 
 // IMPLEMENTATION

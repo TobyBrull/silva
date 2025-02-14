@@ -262,32 +262,33 @@ namespace silva {
     return &token_context_t::get()->token_infos[tii];
   }
 
-  expected_t<tokenization_t> token_context_load(filesystem_path_t filepath)
+  expected_t<unique_ptr_t<tokenization_t>> token_context_load(filesystem_path_t filepath)
   {
     string_t text = SILVA_EXPECT_FWD(read_file(filepath));
-    return token_context_make(filepath, std::move(text));
+    return token_context_make(std::move(filepath), std::move(text));
   }
 
-  expected_t<tokenization_t> token_context_make(filesystem_path_t filepath, string_t text_arg)
+  expected_t<unique_ptr_t<tokenization_t>> token_context_make(filesystem_path_t filepath,
+                                                              string_t text_arg)
   {
-    auto context = token_context_t::get();
-    tokenization_t retval;
-    retval.filepath = std::move(filepath);
-    retval.text     = std::move(text_arg);
-    retval.context  = context;
-    impl::start_new_line(&retval, 0);
+    auto context     = token_context_t::get();
+    auto retval      = std::make_unique<tokenization_t>();
+    retval->filepath = std::move(filepath);
+    retval->text     = std::move(text_arg);
+    retval->context  = context;
+    impl::start_new_line(retval.get(), 0);
     index_t text_index       = 0;
-    const string_view_t text = retval.text;
+    const string_view_t text = retval->text;
     while (text_index < text.size()) {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(text.substr(text_index));
       text_index += tokenized_str.size();
       if (token_cat != INVALID) {
         const token_info_index_t tii = token_context_get_index(
             token_info_t{.str = string_t{tokenized_str}, .category = token_cat});
-        retval.tokens.push_back(tii);
+        retval->tokens.push_back(tii);
       }
       else if (tokenized_str == "\n") {
-        impl::start_new_line(&retval, text_index);
+        impl::start_new_line(retval.get(), text_index);
       }
     }
     return retval;

@@ -22,6 +22,15 @@ namespace silva {
   using unique_ptr_t = std::unique_ptr<T, Deleter>;
 
   template<typename T>
+  using shared_ptr_t = std::shared_ptr<T>;
+
+  template<typename T>
+  shared_ptr_t<T> share(unique_ptr_t<T> ptr)
+  {
+    return shared_ptr_t<T>(ptr.release());
+  }
+
+  template<typename T>
   using optional_t = std::optional<T>;
 
   using none_t          = std::nullopt_t;

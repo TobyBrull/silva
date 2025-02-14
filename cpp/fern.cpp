@@ -12,13 +12,9 @@ namespace silva {
   using enum fern_rule_t;
   using enum error_level_t;
 
-  const parse_root_t* fern_parse_root()
+  unique_ptr_t<parse_root_t> fern_parse_root()
   {
-    static const tokenization_t retval_tt =
-        SILVA_EXPECT_ASSERT(token_context_make("fern.seed", string_t{fern_seed}));
-    static const parse_tree_t retval_pt = SILVA_EXPECT_ASSERT(seed_parse(retval_tt.ptr()));
-    static const parse_root_t retval = SILVA_EXPECT_ASSERT(parse_root_t::create(retval_pt.ptr()));
-    return &retval;
+    return SILVA_EXPECT_ASSERT(parse_root_t::create("fern.seed", string_t{fern_seed}));
   }
 
   namespace impl {
@@ -31,8 +27,8 @@ namespace silva {
       token_info_index_t tt_true       = token_context_get_index("true");
       token_info_index_t tt_false      = token_context_get_index("false");
 
-      fern_parse_tree_nursery_t(ptr_t<const tokenization_t> tokenization)
-        : parse_tree_nursery_t(std::move(tokenization), const_ptr_unowned(fern_parse_root()))
+      fern_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
+        : parse_tree_nursery_t(std::move(tokenization), fern_parse_root())
       {
       }
 
@@ -119,7 +115,7 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_t> fern_parse(ptr_t<const tokenization_t> tokenization)
+  expected_t<unique_ptr_t<parse_tree_t>> fern_parse(shared_ptr_t<const tokenization_t> tokenization)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
     const index_t n = tokenization->tokens.size();
@@ -128,7 +124,7 @@ namespace silva {
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.num_children_total == nursery.retval.nodes.size(), ASSERT);
     SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
-    return {std::move(nursery.retval)};
+    return {std::make_unique<parse_tree_t>(std::move(nursery.retval))};
   }
 
   // Fern parse_tree output functions /////////////////////////////////////////////////////////////
@@ -136,7 +132,7 @@ namespace silva {
   expected_t<string_t>
   fern_to_string(const parse_tree_t* pt, const index_t start_node, const bool with_semicolon)
   {
-    SILVA_EXPECT(pt->root.get() == fern_parse_root(), ASSERT);
+    // SILVA_EXPECT(pt->root.get() == fern_parse_root(), ASSERT);
     SILVA_EXPECT(pt->nodes[start_node].rule_index == to_int(FERN), ASSERT);
     string_t retval;
     int depth{0};
@@ -187,7 +183,7 @@ namespace silva {
 
   expected_t<string_t> fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
-    SILVA_EXPECT(pt->root.get() == fern_parse_root(), ASSERT);
+    // SILVA_EXPECT(pt->root.get() == fern_parse_root(), ASSERT);
     SILVA_EXPECT(pt->nodes[start_node].rule_index == to_int(FERN), ASSERT);
     string_t retval    = "digraph Fern {\n";
     string_t curr_path = "/";

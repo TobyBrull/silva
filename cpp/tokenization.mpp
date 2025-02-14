@@ -11,7 +11,7 @@ silva_main()
 {
   const auto arg_filename = SILVA_EXPECT_FWD(env_context_get("filename"));
   const auto tokenization = SILVA_EXPECT_FWD(token_context_load(arg_filename));
-  fmt::print("{}\n", tokenization.to_string());
+  fmt::print("{}\n", tokenization->to_string());
   return {};
 }
 SILVA_MAIN(silva_main);
