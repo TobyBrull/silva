@@ -19,13 +19,13 @@ namespace silva {
 
   namespace impl {
     struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
-      token_info_index_t tt_brkt_open  = token_context_get_index("[");
-      token_info_index_t tt_brkt_close = token_context_get_index("]");
-      token_info_index_t tt_semi_colon = token_context_get_index(";");
-      token_info_index_t tt_colon      = token_context_get_index(":");
-      token_info_index_t tt_none       = token_context_get_index("none");
-      token_info_index_t tt_true       = token_context_get_index("true");
-      token_info_index_t tt_false      = token_context_get_index("false");
+      token_id_t tt_brkt_open  = token_context_get_index("[");
+      token_id_t tt_brkt_close = token_context_get_index("]");
+      token_id_t tt_semi_colon = token_context_get_index(";");
+      token_id_t tt_colon      = token_context_get_index(":");
+      token_id_t tt_none       = token_context_get_index("none");
+      token_id_t tt_true       = token_context_get_index("true");
+      token_id_t tt_false      = token_context_get_index("false");
 
       fern_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization), fern_parse_root())
@@ -376,9 +376,9 @@ namespace silva {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
 
-      token_info_index_t tt_none  = token_context_get_index("none");
-      token_info_index_t tt_true  = token_context_get_index("true");
-      token_info_index_t tt_false = token_context_get_index("false");
+      token_id_t tt_none  = token_context_get_index("none");
+      token_id_t tt_true  = token_context_get_index("true");
+      token_id_t tt_false = token_context_get_index("false");
 
       expected_t<fern_labeled_item_t> labeled_item(const index_t start_node)
       {
@@ -401,8 +401,7 @@ namespace silva {
                   retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
                 }
                 else if (node.rule_index == to_int(ITEM_1)) {
-                  const token_info_index_t token_id =
-                      parse_tree->tokenization->tokens[node.token_index];
+                  const token_id_t token_id = parse_tree->tokenization->tokens[node.token_index];
                   const auto* token_data =
                       parse_tree->tokenization->token_info_get(node.token_index);
                   if (token_id == tt_none) {

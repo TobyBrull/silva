@@ -13,7 +13,7 @@ namespace silva {
 
     struct rule_t {
       // Token-id of nonterminal that the rule defines.
-      token_info_index_t token_id;
+      token_id_t token_id;
       // Lower value means higher precedence.
       index_t precedence = 0;
       // Name of the rule (can be inferred from the "token_id", but kept for convenience).
@@ -26,12 +26,12 @@ namespace silva {
     vector_t<rule_t> rules;
 
     // Maps a token-id corresponding to a rule-name to the first rule with that name (index == 0).
-    hashmap_t<token_info_index_t, index_t> rule_indexes;
+    hashmap_t<token_id_t, index_t> rule_indexes;
 
-    token_info_index_t goal_rule_token_id = 0;
+    token_id_t goal_rule_token_id = 0;
 
     // Maps the token-id's that correspond to regexes to the compiled version of that regex.
-    hashmap_t<token_info_index_t, optional_t<std::regex>> regexes;
+    hashmap_t<token_id_t, optional_t<std::regex>> regexes;
 
     // Main parse_root_t constructor.
     static expected_t<unique_ptr_t<parse_root_t>> create(shared_ptr_t<const parse_tree_t>);

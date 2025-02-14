@@ -225,7 +225,7 @@ namespace silva {
     }
   }
 
-  token_info_index_t token_context_get_index(const string_view_t token_str)
+  token_id_t token_context_get_index(const string_view_t token_str)
   {
     auto tc       = token_context_t::get();
     const auto it = tc->token_lookup.find(string_t{token_str});
@@ -235,14 +235,14 @@ namespace silva {
     else {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(token_str);
       SILVA_ASSERT(tokenized_str == token_str);
-      const token_info_index_t new_token_id = tc->token_infos.size();
+      const token_id_t new_token_id = tc->token_infos.size();
       tc->token_infos.push_back(token_info_t{string_t{tokenized_str}, token_cat});
       tc->token_lookup.emplace(tokenized_str, new_token_id);
       return new_token_id;
     }
   }
 
-  token_info_index_t token_context_get_index(const token_info_t& token_info)
+  token_id_t token_context_get_index(const token_info_t& token_info)
   {
     auto tc       = token_context_t::get();
     const auto it = tc->token_lookup.find(token_info.str);
@@ -250,14 +250,14 @@ namespace silva {
       return it->second;
     }
     else {
-      const token_info_index_t new_token_id = tc->token_infos.size();
+      const token_id_t new_token_id = tc->token_infos.size();
       tc->token_infos.push_back(token_info);
       tc->token_lookup.emplace(token_info.str, new_token_id);
       return new_token_id;
     }
   }
 
-  const token_info_t* token_context_get_info(const token_info_index_t tii)
+  const token_info_t* token_context_get_info(const token_id_t tii)
   {
     return &token_context_t::get()->token_infos[tii];
   }
@@ -283,7 +283,7 @@ namespace silva {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(text.substr(text_index));
       text_index += tokenized_str.size();
       if (token_cat != INVALID) {
-        const token_info_index_t tii = token_context_get_index(
+        const token_id_t tii = token_context_get_index(
             token_info_t{.str = string_t{tokenized_str}, .category = token_cat});
         retval->tokens.push_back(tii);
       }
@@ -325,9 +325,9 @@ namespace silva {
   {
     string_t retval;
     for (index_t token_index = 0; token_index < tokens.size(); ++token_index) {
-      const token_info_index_t tii = tokens[token_index];
-      const token_info_t* info     = token_context_get_info(tii);
-      const auto [line, column]    = compute_line_and_column(token_index);
+      const token_id_t tii      = tokens[token_index];
+      const token_info_t* info  = token_context_get_info(tii);
+      const auto [line, column] = compute_line_and_column(token_index);
       retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }
     return retval;

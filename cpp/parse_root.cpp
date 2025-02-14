@@ -13,7 +13,7 @@ namespace silva {
 
   namespace impl {
     expected_t<void> create_add_rule(parse_root_t& retval,
-                                     const token_info_index_t rule_token_id,
+                                     const token_id_t rule_token_id,
                                      string_t rule_name,
                                      const index_t precedence,
                                      const index_t expr_node_index)
@@ -70,7 +70,7 @@ namespace silva {
           SILVA_EXPECT(s_nodes[children[0]].rule_index == to_int(NONTERMINAL),
                        MINOR,
                        "First child of RULE must be NONTERMINAL ");
-          const token_info_index_t rule_token_id =
+          const token_id_t rule_token_id =
               s_pt->tokenization->tokens[s_nodes[children[0]].token_index];
           string_t rule_name      = token_context_get_info(rule_token_id)->str;
           index_t rule_precedence = 0;
@@ -111,14 +111,14 @@ namespace silva {
             SILVA_EXPECT(s_nodes[alias_children[1]].rule_index == to_int(RULE_PRECEDENCE),
                          MINOR,
                          "Second child of DERIVATION_2 must be RULE_PRECEDENCE");
-            const token_info_index_t tgt_rule_token_id =
+            const token_id_t tgt_rule_token_id =
                 s_pt->tokenization->tokens[s_nodes[alias_children[0]].token_index];
             const auto* tgt_rule_precedence_token_data =
                 s_pt->tokenization->token_info_get(s_nodes[alias_children[1]].token_index);
             const index_t tgt_rule_precedence =
                 SILVA_EXPECT_FWD(tgt_rule_precedence_token_data->number_as_double(), MAJOR);
 
-            const token_info_index_t base_rule_token_id =
+            const token_id_t base_rule_token_id =
                 s_pt->tokenization->tokens[s_nodes[rule_children[0]].token_index];
             index_t base_rule_precedence = 0;
             if (rule_children.size == 3) {
@@ -159,7 +159,7 @@ namespace silva {
     for (index_t node_index = 0; node_index < s_pt->nodes.size(); ++node_index) {
       const auto& node = s_pt->nodes[node_index];
       if (node.rule_index == to_int(REGEX)) {
-        const token_info_index_t regex_token_id = s_pt->tokenization->tokens[node.token_index];
+        const token_id_t regex_token_id = s_pt->tokenization->tokens[node.token_index];
         if (auto& regex = retval->regexes[regex_token_id]; !regex.has_value()) {
           const auto& regex_td = s_pt->tokenization->token_info_get(node.token_index);
           const string_t regex_str{SILVA_EXPECT_FWD(regex_td->string_as_plain_contained(), MAJOR)};
@@ -176,11 +176,11 @@ namespace silva {
 
       int rule_depth = 0;
 
-      token_info_index_t seed_tt_id  = token_context_get_index("identifier");
-      token_info_index_t seed_tt_op  = token_context_get_index("operator");
-      token_info_index_t seed_tt_str = token_context_get_index("string");
-      token_info_index_t seed_tt_num = token_context_get_index("number");
-      token_info_index_t seed_tt_any = token_context_get_index("any");
+      token_id_t seed_tt_id  = token_context_get_index("identifier");
+      token_id_t seed_tt_op  = token_context_get_index("operator");
+      token_id_t seed_tt_str = token_context_get_index("string");
+      token_id_t seed_tt_num = token_context_get_index("number");
+      token_id_t seed_tt_any = token_context_get_index("any");
 
       parse_root_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
                            const_ptr_t<parse_root_t> parse_root)
@@ -203,7 +203,7 @@ namespace silva {
           const array_t<index_t, 1> seed_node_index_regex =
               SILVA_EXPECT_FWD(seed_pt->get_children<1>(seed_node_index));
           const auto& seed_regex_node = seed_pt->nodes[seed_node_index_regex[0]];
-          const token_info_index_t regex_token_id =
+          const token_id_t regex_token_id =
               seed_pt->tokenization->tokens[seed_regex_node.token_index];
           const auto it = retval.root->regexes.find(regex_token_id);
           SILVA_EXPECT(it != retval.root->regexes.end() || !it->second.has_value(), FATAL);
@@ -220,8 +220,7 @@ namespace silva {
           SILVA_EXPECT(seed_node.rule_index == to_int(TERMINAL_1),
                        MAJOR,
                        "Expected Seed node TERMINAL_1");
-          const token_info_index_t seed_token_id =
-              seed_pt->tokenization->tokens[seed_node.token_index];
+          const token_id_t seed_token_id = seed_pt->tokenization->tokens[seed_node.token_index];
           if (seed_token_id == seed_tt_id) {
             SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
           }
@@ -241,7 +240,7 @@ namespace silva {
             const auto* sp_token_data =
                 seed_pt->tokenization->token_info_get(seed_node.token_index);
             SILVA_EXPECT(sp_token_data->category == STRING, MAJOR);
-            const token_info_index_t expected_target_token_id = token_context_get_index(
+            const token_id_t expected_target_token_id = token_context_get_index(
                 SILVA_EXPECT_FWD(sp_token_data->string_as_plain_contained(), MAJOR));
             SILVA_EXPECT_PARSE(token_id_by() == expected_target_token_id,
                                "Expected {}",
@@ -432,7 +431,7 @@ namespace silva {
         }
       }
 
-      expected_t<parse_tree_sub_t> apply_rule(const token_info_index_t rule_token_id)
+      expected_t<parse_tree_sub_t> apply_rule(const token_id_t rule_token_id)
       {
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });

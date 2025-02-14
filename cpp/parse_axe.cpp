@@ -4,12 +4,12 @@
 
 namespace silva {
 
-  bool parse_axe_t::has_operator(const token_info_index_t token_id) const
+  bool parse_axe_t::has_operator(const token_id_t token_id) const
   {
     return mapped_levels.contains(token_id);
   }
 
-  optional_t<parse_axe_t::level_index_t>& parse_axe_t::slot_for(const token_info_index_t token_id,
+  optional_t<parse_axe_t::level_index_t>& parse_axe_t::slot_for(const token_id_t token_id,
                                                                 const level_type_t level_type)
   {
     const auto it = mapped_levels.find(token_id);
@@ -38,7 +38,7 @@ namespace silva {
     return retval;
   }
 
-  void parse_axe_t::add_operator(const level_index_t level_idx, const token_info_index_t token_id)
+  void parse_axe_t::add_operator(const level_index_t level_idx, const token_id_t token_id)
   {
     SILVA_ASSERT(level_idx < levels.size());
     level_t& lvl = levels[level_idx];
@@ -67,7 +67,7 @@ namespace silva {
     return {};
   }
 
-  expected_t<void> parse_axe_run_t::push_back(const token_info_index_t token_id)
+  expected_t<void> parse_axe_run_t::push_back(const token_id_t token_id)
   {
     const auto* sy = parse_axe;
 

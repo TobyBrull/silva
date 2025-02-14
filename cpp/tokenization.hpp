@@ -16,10 +16,6 @@ namespace silva {
   };
   string_view_t to_string(token_category_t);
 
-  // An index in the "token_infos" vector of "token_context_t". Equality of two tokens is then
-  // equivalent to the equality of their token_info_index_t.
-  using token_info_index_t = index_t;
-
   struct token_info_t {
     string_t str;
     token_category_t category = token_category_t::INVALID;
@@ -30,29 +26,40 @@ namespace silva {
     friend auto operator<=>(const token_info_t&, const token_info_t&) = default;
   };
 
-  struct tokenization_t;
+  // An index in the "token_infos" vector of "token_context_t". Equality of two tokens is then
+  // equivalent to the equality of their token_info_index_t.
+  using token_id_t = index_t;
+
+  // Index in "qual_names
+  using full_name_id_t = index_t;
 
   struct token_context_t : public context_t<token_context_t> {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
 
     vector_t<token_info_t> token_infos;
-    hashmap_t<string_t, token_info_index_t> token_lookup;
+    hashmap_t<string_t, token_id_t> token_lookup;
+
+    struct full_name_info_t {
+      full_name_id_t parent_name = 0;
+      token_id_t base_name       = 0;
+    };
+    vector_t<full_name_info_t> full_names_infos;
 
     token_context_t() = default;
   };
   using token_context_ptr_t = ptr_t<token_context_t>;
 
-  token_info_index_t token_context_get_index(string_view_t);
-  token_info_index_t token_context_get_index(const token_info_t&);
-  const token_info_t* token_context_get_info(token_info_index_t);
+  token_id_t token_context_get_index(string_view_t);
+  token_id_t token_context_get_index(const token_info_t&);
+  const token_info_t* token_context_get_info(token_id_t);
 
   struct tokenization_t : public sprite_t {
     token_context_ptr_t context;
 
     filesystem_path_t filepath;
     string_t text;
-    vector_t<token_info_index_t> tokens;
+    vector_t<token_id_t> tokens;
 
     struct line_data_t {
       // The index in "tokens" of the first token in that line. If a line does not contain any

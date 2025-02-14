@@ -57,7 +57,7 @@ namespace silva {
 
     const index_t num_tokens_left() const;
 
-    const token_info_index_t token_id_by(index_t token_index_offset = 0) const;
+    const token_id_t token_id_by(index_t token_index_offset = 0) const;
 
     const token_info_t* token_data_by(index_t token_index_offset = 0) const;
 

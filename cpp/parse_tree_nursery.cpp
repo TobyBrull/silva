@@ -81,14 +81,14 @@ namespace silva {
     return retval.tokenization->tokens.size() - token_index;
   }
 
-  const token_info_index_t parse_tree_nursery_t::token_id_by(const index_t token_index_offset) const
+  const token_id_t parse_tree_nursery_t::token_id_by(const index_t token_index_offset) const
   {
     return retval.tokenization->tokens[token_index + token_index_offset];
   }
 
   const token_info_t* parse_tree_nursery_t::token_data_by(const index_t token_index_offset) const
   {
-    const token_info_index_t token_id_ = token_id_by(token_index_offset);
+    const token_id_t token_id_ = token_id_by(token_index_offset);
     return &(retval.tokenization->context->token_infos[token_id_]);
   }
 
