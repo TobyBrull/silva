@@ -1,7 +1,5 @@
 # TODO
 
-* remove const_ptr_t
-
 * Seed:
     * Also support rules of the form `PrimaryExpr = "(" Expr ")"` for alias-rules.
 
