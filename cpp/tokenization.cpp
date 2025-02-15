@@ -35,7 +35,9 @@ namespace silva {
   {
     token_infos.emplace_back();
     token_lookup[""] = token_id_none;
-    full_names_infos.emplace_back();
+    const full_name_info_t fni{0, 0};
+    full_name_infos.emplace_back(fni);
+    full_name_lookup.emplace(fni, 0);
   }
 
   tokenization_t tokenization_t::copy() const
@@ -343,5 +345,44 @@ namespace silva {
       retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }
     return retval;
+  }
+
+  const full_name_info_t* token_context_full_name_info(const full_name_id_t full_name_id)
+  {
+    return &(token_context_t::get()->full_name_infos[full_name_id]);
+  }
+
+  full_name_id_t token_context_get_full_name_id(const full_name_id_t parent_name,
+                                                const token_id_t base_name)
+  {
+    auto& info_vec   = token_context_t::get()->full_name_infos;
+    auto& lookup_map = token_context_t::get()->full_name_lookup;
+    const full_name_info_t fni{parent_name, base_name};
+    const auto [it, inserted] = lookup_map.emplace(fni, info_vec.size());
+    if (inserted) {
+      info_vec.push_back(fni);
+    }
+    return it->second;
+  }
+
+  full_name_id_t token_context_get_full_name_id(const span_t<const token_id_t> token_ids)
+  {
+    full_name_id_t retval = full_name_id_none;
+    for (const token_id_t token_id: token_ids) {
+      retval = token_context_get_full_name_id(retval, token_id);
+    }
+    return retval;
+  }
+
+  string_t token_context_full_name_to_string(const full_name_id_t full_name_id,
+                                             const string_view_t separator)
+  {
+    if (full_name_id == full_name_id_none) {
+      return {};
+    }
+    const full_name_info_t* fni = token_context_full_name_info(full_name_id);
+    const token_info_t* ti      = token_context_get_token_info(fni->base_name);
+    return token_context_full_name_to_string(fni->parent_name, separator) + string_t{separator} +
+        ti->str;
   }
 }

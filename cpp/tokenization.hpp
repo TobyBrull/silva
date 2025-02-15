@@ -41,6 +41,7 @@ namespace silva {
     full_name_id_t parent_name = full_name_id_none;
     token_id_t base_name       = token_id_none;
 
+    friend auto operator<=>(const full_name_info_t&, const full_name_info_t&) = default;
     friend hash_value_t hash_impl(const full_name_info_t& x);
   };
 
@@ -51,7 +52,7 @@ namespace silva {
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
 
-    vector_t<full_name_info_t> full_names_infos;
+    vector_t<full_name_info_t> full_name_infos;
     hashmap_t<full_name_info_t, full_name_id_t> full_name_lookup;
 
     token_context_t();
@@ -63,7 +64,7 @@ namespace silva {
 
   const full_name_info_t* token_context_full_name_info(full_name_id_t);
   full_name_id_t token_context_get_full_name_id(full_name_id_t parent_name, token_id_t base_name);
-  full_name_id_t token_context_get_full_name_id(span_t<token_id_t>);
+  full_name_id_t token_context_get_full_name_id(span_t<const token_id_t>);
   string_t token_context_full_name_to_string(full_name_id_t, string_view_t separator);
 
   struct tokenization_t : public sprite_t {

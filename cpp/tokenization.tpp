@@ -35,4 +35,29 @@ TEST_CASE("tokenization", "[tokenization_t]")
     CHECK(*result->token_info_get(8) == info_t{"3", NUMBER});
     REQUIRE(token_context_t::get()->token_infos.size() == 12);
   }
+
+  {
+    const token_id_t ti_silva = token_context_get_token_id("silva");
+    const token_id_t ti_expr  = token_context_get_token_id("expr");
+    const token_id_t ti_func  = token_context_get_token_id("func");
+    const token_id_t ti_stmt  = token_context_get_token_id("stmt");
+    const token_id_t ti_comm  = token_context_get_token_id("comm");
+
+    using vv_t = vector_t<full_name_id_t>;
+
+    const full_name_id_t name1 = token_context_get_full_name_id(vv_t{ti_silva, ti_expr, ti_stmt});
+    CHECK(token_context_t::get()->full_name_infos.size() == 4);
+    CHECK(token_context_t::get()->full_name_lookup.size() == 4);
+    CHECK(token_context_full_name_to_string(name1, "::") == "::silva::expr::stmt");
+
+    const full_name_id_t name2 = token_context_get_full_name_id(vv_t{ti_silva, ti_expr, ti_expr});
+    CHECK(token_context_t::get()->full_name_infos.size() == 5);
+    CHECK(token_context_t::get()->full_name_lookup.size() == 5);
+    CHECK(token_context_full_name_to_string(name2, ".") == ".silva.expr.expr");
+
+    const full_name_id_t name3 = token_context_get_full_name_id(vv_t{ti_silva, ti_expr});
+    CHECK(token_context_t::get()->full_name_infos.size() == 5);
+    CHECK(token_context_t::get()->full_name_lookup.size() == 5);
+    CHECK(token_context_full_name_to_string(name3, "/") == "/silva/expr");
+  }
 }
