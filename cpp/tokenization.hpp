@@ -2,6 +2,7 @@
 
 #include "canopy/context.hpp"
 #include "canopy/expected.hpp"
+#include "canopy/hash.hpp"
 #include "canopy/preprocessor.hpp"
 #include "canopy/string_or_view.hpp"
 
@@ -40,7 +41,7 @@ namespace silva {
     full_name_id_t parent_name = full_name_id_none;
     token_id_t base_name       = token_id_none;
 
-    string_t to_string(string_view_t separator) const;
+    friend hash_value_t hash_impl(const full_name_info_t& x);
   };
 
   struct token_context_t : public context_t<token_context_t> {
@@ -51,7 +52,7 @@ namespace silva {
     hashmap_t<string_t, token_id_t> token_lookup;
 
     vector_t<full_name_info_t> full_names_infos;
-    // hashmap_t<full_name_info_t, full_name_id_t> full_name_lookup;
+    hashmap_t<full_name_info_t, full_name_id_t> full_name_lookup;
 
     token_context_t();
   };
@@ -63,6 +64,7 @@ namespace silva {
   const full_name_info_t* token_context_full_name_info(full_name_id_t);
   full_name_id_t token_context_get_full_name_id(full_name_id_t parent_name, token_id_t base_name);
   full_name_id_t token_context_get_full_name_id(span_t<token_id_t>);
+  string_t token_context_full_name_to_string(full_name_id_t, string_view_t separator);
 
   struct tokenization_t : public sprite_t {
     token_context_ptr_t context;

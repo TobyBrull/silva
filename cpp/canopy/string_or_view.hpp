@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.hpp"
+#include "hash.hpp"
 
 namespace silva {
   struct string_or_view_t {
@@ -23,6 +23,8 @@ namespace silva {
     {
       return lhs.get_view() <=> rhs.get_view();
     }
+
+    friend hash_value_t hash_impl(const string_or_view_t& x) { return hash(x.get_view()); }
   };
 
   inline string_or_view_t operator"" _sov(const char* str, size_t)

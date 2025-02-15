@@ -26,6 +26,11 @@ namespace silva {
     return convert_to<double>(str);
   }
 
+  hash_value_t hash_impl(const full_name_info_t& x)
+  {
+    return hash(tuple_t<full_name_id_t, token_id_t>{x.parent_name, x.base_name});
+  }
+
   token_context_t::token_context_t()
   {
     token_infos.emplace_back();

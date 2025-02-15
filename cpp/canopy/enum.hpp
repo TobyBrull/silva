@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.hpp"
+#include "hash.hpp"
 
 #include <rfl/enums.hpp>
 
