@@ -1,10 +1,20 @@
 # TODO
 
+* rely more on token spans:
+    * add token_begin/token_end (instead of token_index) to parse_tree_t::node_t
+    * enable printing of multiple tokens in parse_tree printing
+
+* Implement ParseAxe
+
 * Seed:
     * Also support rules of the form `PrimaryExpr = "(" Expr ")"` for alias-rules.
 
+* Fern:
+    * Have [] for arrays and {} for dicts (basically make it JSON without commas)?
+
 * error-handling
     * make root-based error look more like the error from the manual Fern parser
+    * remove "major_error" from Seed
 
 * various:
     * output_buffer_t / string_output_buffer_t
@@ -12,6 +22,9 @@
 
 * delegate_t
     * replace memento_item_reader_t callback
+
+* tokenization
+    * make "'" the default char to start strings.
 
 * context:
     * logging
@@ -21,20 +34,10 @@
 * Seed
     * seed.mpp
     * check Seed program when constructing parse_root_t?
-
-* tokenization
-    * make "'" the default char to start strings.
-
-* remove ';' from Fern
-
-* Introduce namespaces in Seed
-    * Seed
-    * Seed.Rule
-    * Silva.Expr.FuncCall
-
-* rely more on token spans:
-    * add token_begin/token_end (instead of token_index) to parse_tree_t::node_t
-    * enable printing of multiple tokens in parse_tree printing
+    * Introduce namespaces in Seed
+        * Seed
+        * Seed.Rule
+        * Silva.Expr.FuncCall
 
 * code review
 
