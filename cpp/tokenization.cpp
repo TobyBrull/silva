@@ -249,7 +249,7 @@ namespace silva {
     }
   }
 
-  token_id_t token_context_get_token_id(const token_info_t& token_info)
+  token_id_t token_context_get_token_id_from_info(const token_info_t& token_info)
   {
     auto tc       = token_context_t::get();
     const auto it = tc->token_lookup.find(token_info.str);
@@ -290,7 +290,7 @@ namespace silva {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(text.substr(text_index));
       text_index += tokenized_str.size();
       if (token_cat != NONE) {
-        const token_id_t tii = token_context_get_token_id(
+        const token_id_t tii = token_context_get_token_id_from_info(
             token_info_t{.str = string_t{tokenized_str}, .category = token_cat});
         retval->tokens.push_back(tii);
       }
