@@ -50,6 +50,7 @@ namespace silva {
   expected_t<unique_ptr_t<parse_root_t>>
   parse_root_t::create(shared_ptr_t<const parse_tree_t> seed_parse_tree)
   {
+    token_context_ptr_t tcp   = seed_parse_tree->tokenization->context;
     auto retval               = std::make_unique<parse_root_t>();
     retval->seed_parse_tree   = std::move(seed_parse_tree);
     const parse_tree_t* s_pt  = retval->seed_parse_tree.get();
@@ -72,7 +73,7 @@ namespace silva {
                        "First child of RULE must be NONTERMINAL ");
           const token_id_t rule_token_id =
               s_pt->tokenization->tokens[s_nodes[children[0]].token_index];
-          string_t rule_name      = token_context_t::get()->token_infos[rule_token_id].str;
+          string_t rule_name      = tcp->token_infos[rule_token_id].str;
           index_t rule_precedence = 0;
           if (children.size == 3) {
             SILVA_EXPECT(s_nodes[children[1]].rule_index == to_int(RULE_PRECEDENCE),
@@ -149,9 +150,9 @@ namespace silva {
         SILVA_EXPECT(!alias_rule.aliased_rule_offset.has_value(),
                      MINOR,
                      "Rule (={},{}) cannot be alias to another alias-rule (={},{})",
-                     token_context_t::get()->token_infos[rule.token_id].str,
+                     tcp->token_infos[rule.token_id].str,
                      rule.precedence,
-                     token_context_t::get()->token_infos[alias_rule.token_id].str,
+                     tcp->token_infos[alias_rule.token_id].str,
                      alias_rule.precedence);
       }
     }
@@ -176,11 +177,11 @@ namespace silva {
 
       int rule_depth = 0;
 
-      token_id_t seed_tt_id  = token_context_t::get()->token_id("identifier");
-      token_id_t seed_tt_op  = token_context_t::get()->token_id("operator");
-      token_id_t seed_tt_str = token_context_t::get()->token_id("string");
-      token_id_t seed_tt_num = token_context_t::get()->token_id("number");
-      token_id_t seed_tt_any = token_context_t::get()->token_id("any");
+      token_id_t seed_tt_id  = tcp->token_id("identifier");
+      token_id_t seed_tt_op  = tcp->token_id("operator");
+      token_id_t seed_tt_str = tcp->token_id("string");
+      token_id_t seed_tt_num = tcp->token_id("number");
+      token_id_t seed_tt_any = tcp->token_id("any");
 
       parse_root_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
                            const_ptr_t<parse_root_t> parse_root)
@@ -214,7 +215,7 @@ namespace silva {
           SILVA_EXPECT_PARSE(is_match,
                              "Token \"{}\" does not match regex {}",
                              token_str,
-                             token_context_t::get()->token_infos[regex_token_id].str);
+                             tcp->token_infos[regex_token_id].str);
         }
         else {
           SILVA_EXPECT(seed_node.rule_index == to_int(TERMINAL_1),
@@ -240,8 +241,8 @@ namespace silva {
             const auto* sp_token_data =
                 seed_pt->tokenization->token_info_get(seed_node.token_index);
             SILVA_EXPECT(sp_token_data->category == STRING, MAJOR);
-            const token_id_t expected_target_token_id = token_context_t::get()->token_id(
-                SILVA_EXPECT_FWD(sp_token_data->string_as_plain_contained(), MAJOR));
+            const token_id_t expected_target_token_id =
+                tcp->token_id(SILVA_EXPECT_FWD(sp_token_data->string_as_plain_contained(), MAJOR));
             SILVA_EXPECT_PARSE(token_id_by() == expected_target_token_id,
                                "Expected {}",
                                sp_token_data->str);
@@ -481,11 +482,10 @@ namespace silva {
     };
   }
 
-  expected_t<unique_ptr_t<parse_root_t>> parse_root_t::create(filesystem_path_t filepath,
-                                                              string_t text)
+  expected_t<unique_ptr_t<parse_root_t>>
+  parse_root_t::create(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text)
   {
-    auto tt =
-        SILVA_EXPECT_FWD(tokenize(token_context_t::get(), std::move(filepath), std::move(text)));
+    auto tt     = SILVA_EXPECT_FWD(tokenize(tcp, std::move(filepath), std::move(text)));
     auto pt     = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
     auto retval = SILVA_EXPECT_FWD(parse_root_t::create(std::move(pt)));
     return retval;

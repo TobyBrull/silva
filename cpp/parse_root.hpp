@@ -38,7 +38,8 @@ namespace silva {
 
     // Convenience function for essentially
     //    tokenize | seed_parse | parse_root_t::create
-    static expected_t<unique_ptr_t<parse_root_t>> create(filesystem_path_t filepath, string_t text);
+    static expected_t<unique_ptr_t<parse_root_t>>
+    create(token_context_ptr_t, filesystem_path_t filepath, string_t text);
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.

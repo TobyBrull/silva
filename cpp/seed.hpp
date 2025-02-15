@@ -75,7 +75,7 @@ namespace silva {
 
   // parse_root_t of the parse_trees returned by "seed_parse". Only has the "rules" vector populated
   // with entries equivalent to "seed_self_representation" and the entries in "seed_rule_t".
-  unique_ptr_t<parse_root_t> seed_parse_root_primordial();
+  unique_ptr_t<parse_root_t> seed_parse_root_primordial(token_context_ptr_t);
 
   expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t>);
 
@@ -84,5 +84,5 @@ namespace silva {
   // Silva invariant:
   //    seed_parse_root()->apply(tokens) == seed_parse(tokens)
   //
-  unique_ptr_t<parse_root_t> seed_parse_root();
+  unique_ptr_t<parse_root_t> seed_parse_root(token_context_ptr_t);
 }

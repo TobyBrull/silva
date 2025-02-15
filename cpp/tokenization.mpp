@@ -9,8 +9,9 @@ using namespace silva;
 expected_t<void>
 silva_main()
 {
+  token_context_t tc;
   const auto arg_filename = SILVA_EXPECT_FWD(env_context_get("filename"));
-  const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(token_context_t::get(), arg_filename));
+  const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), arg_filename));
   fmt::print("{}\n", tokenization->to_string());
   return {};
 }

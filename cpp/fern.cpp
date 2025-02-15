@@ -1,7 +1,6 @@
 #include "fern.hpp"
 
 #include "canopy/error.hpp"
-#include "canopy/small_vector.hpp"
 #include "parse_root.hpp"
 #include "parse_tree_nursery.hpp"
 
@@ -12,23 +11,23 @@ namespace silva {
   using enum fern_rule_t;
   using enum error_level_t;
 
-  unique_ptr_t<parse_root_t> fern_parse_root()
+  unique_ptr_t<parse_root_t> fern_parse_root(token_context_ptr_t tcp)
   {
-    return SILVA_EXPECT_ASSERT(parse_root_t::create("fern.seed", string_t{fern_seed}));
+    return SILVA_EXPECT_ASSERT(parse_root_t::create(tcp, "fern.seed", string_t{fern_seed}));
   }
 
   namespace impl {
     struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
-      token_id_t tt_brkt_open  = token_context_t::get()->token_id("[");
-      token_id_t tt_brkt_close = token_context_t::get()->token_id("]");
-      token_id_t tt_semi_colon = token_context_t::get()->token_id(";");
-      token_id_t tt_colon      = token_context_t::get()->token_id(":");
-      token_id_t tt_none       = token_context_t::get()->token_id("none");
-      token_id_t tt_true       = token_context_t::get()->token_id("true");
-      token_id_t tt_false      = token_context_t::get()->token_id("false");
+      token_id_t tt_brkt_open  = tcp->token_id("[");
+      token_id_t tt_brkt_close = tcp->token_id("]");
+      token_id_t tt_semi_colon = tcp->token_id(";");
+      token_id_t tt_colon      = tcp->token_id(":");
+      token_id_t tt_none       = tcp->token_id("none");
+      token_id_t tt_true       = tcp->token_id("true");
+      token_id_t tt_false      = tcp->token_id("false");
 
       fern_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
-        : parse_tree_nursery_t(std::move(tokenization), fern_parse_root())
+        : parse_tree_nursery_t(tokenization, fern_parse_root(tokenization->context))
       {
       }
 
@@ -375,10 +374,11 @@ namespace silva {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
+      token_context_ptr_t tc         = parse_tree->tokenization->context;
 
-      token_id_t tt_none  = token_context_t::get()->token_id("none");
-      token_id_t tt_true  = token_context_t::get()->token_id("true");
-      token_id_t tt_false = token_context_t::get()->token_id("false");
+      token_id_t tt_none  = tc->token_id("none");
+      token_id_t tt_true  = tc->token_id("true");
+      token_id_t tt_false = tc->token_id("false");
 
       expected_t<fern_labeled_item_t> labeled_item(const index_t start_node)
       {

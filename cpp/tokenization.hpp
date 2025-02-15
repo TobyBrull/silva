@@ -45,7 +45,7 @@ namespace silva {
     friend hash_value_t hash_impl(const full_name_info_t& x);
   };
 
-  struct token_context_t : public context_t<token_context_t> {
+  struct token_context_t : public menhir_t {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
 

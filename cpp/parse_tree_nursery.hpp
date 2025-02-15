@@ -49,6 +49,7 @@ namespace silva {
   SILVA_EXPECT(cond, MINOR, "{} " fmt_str, token_position_by() __VA_OPT__(, ) __VA_ARGS__);
 
   struct parse_tree_nursery_t {
+    token_context_ptr_t tcp;
     parse_tree_t retval;
 
     index_t token_index = 0;
