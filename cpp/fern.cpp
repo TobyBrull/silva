@@ -19,7 +19,6 @@ namespace silva {
     struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
       token_id_t tt_brkt_open  = tcp->token_id("[");
       token_id_t tt_brkt_close = tcp->token_id("]");
-      token_id_t tt_semi_colon = tcp->token_id(";");
       token_id_t tt_colon      = tcp->token_id(":");
       token_id_t tt_none       = tcp->token_id("none");
       token_id_t tt_true       = tcp->token_id("true");
@@ -93,9 +92,6 @@ namespace silva {
         gg_rule.sub += SILVA_EXPECT_FWD(item(),
                                         "{} Expected LabeledItem",
                                         token_position_at(gg_rule.orig_token_index));
-        if (num_tokens_left() >= 1 && token_id_by() == tt_semi_colon) {
-          token_index += 1;
-        }
         return gg_rule.release();
       }
 
@@ -133,8 +129,7 @@ namespace silva {
 
   // Fern parse_tree output functions /////////////////////////////////////////////////////////////
 
-  expected_t<string_t>
-  fern_to_string(const parse_tree_t* pt, const index_t start_node, const bool with_semicolon)
+  expected_t<string_t> fern_to_string(const parse_tree_t* pt, const index_t start_node)
   {
     token_context_ptr_t tcp           = pt->tokenization->context;
     const full_name_id_t fni_fern     = tcp->full_name_id_of("Fern", "0");
@@ -171,9 +166,6 @@ namespace silva {
           else if (node.rule_name == fni_lbl_item) {
             if (is_on_entry(event)) {
               retval_newline();
-            }
-            if (is_on_exit(event) && with_semicolon) {
-              retval += ';';
             }
           }
           else if (node.rule_name == fni_label) {
@@ -291,7 +283,6 @@ namespace silva {
           retval += fmt::format("\"{}\" : ", used_labels[i].value());
         }
         retval += std::visit(to_str_visitor{indent}, items[i].value);
-        retval += ";";
       }
       retval += fmt::format("\n{:{}}]", "", indent);
     }

@@ -11,16 +11,16 @@ TEST_CASE("fern", "[fern]")
   token_context_t tc;
   const auto fpr           = fern_parse_root(tc.ptr());
   const string_t fern_text = R"([
-  none;
-  true;
-  "test" : "Hello";
-  42;
-  [];
+  none
+  true
+  "test" : "Hello"
+  42
+  []
   [
-    1;
-    "two" : 2;
-    3;
-  ];
+    1
+    "two" : 2
+    3
+  ]
 ])";
   const auto tt            = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", fern_text)));
   const auto pt_1          = share(SILVA_EXPECT_REQUIRE(fern_parse(tt)));

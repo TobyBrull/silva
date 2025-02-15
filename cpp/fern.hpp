@@ -5,7 +5,7 @@
 namespace silva {
   const string_view_t fern_seed = R"'(
     - Fern = "[" major_error LabeledItem* "]"
-    - LabeledItem = ( Label ":" )? Item ";"?
+    - LabeledItem = ( Label ":" )? Item
     - Label =~ string identifier
     - Item,0 = Fern
     - Item,1 =~ "none" "true" "false" string number
@@ -17,9 +17,7 @@ namespace silva {
 
   // Fern parse_tree output functions
 
-  expected_t<string_t> fern_to_string(const parse_tree_t* fern_parse_tree,
-                                      index_t start_node  = 0,
-                                      bool with_semicolon = true);
+  expected_t<string_t> fern_to_string(const parse_tree_t* fern_parse_tree, index_t start_node = 0);
 
   expected_t<string_t> fern_to_graphviz(const parse_tree_t* fern_parse_tree,
                                         index_t start_node = 0);
