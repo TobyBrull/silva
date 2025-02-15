@@ -11,14 +11,6 @@ namespace silva {
     - Item,1 =~ "none" "true" "false" string number
   )'";
 
-  enum class fern_rule_t {
-    FERN,
-    LABELED_ITEM,
-    LABEL,
-    ITEM_0,
-    ITEM_1,
-  };
-
   unique_ptr_t<parse_root_t> fern_parse_root(token_context_ptr_t);
 
   expected_t<unique_ptr_t<parse_tree_t>> fern_parse(shared_ptr_t<const tokenization_t>);

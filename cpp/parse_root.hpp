@@ -16,8 +16,8 @@ namespace silva {
       token_id_t token_id;
       // Lower value means higher precedence.
       index_t precedence = 0;
-      // Name of the rule (can be inferred from the "token_id", but kept for convenience).
-      string_t name;
+      // Combination of token_id and precedence atm.
+      full_name_id_t rule_name = full_name_id_none;
       // Node in the "seed_parse_tree" that contains the expression for this rule.
       index_t expr_node_index = 0;
       // If this rule is an alias, contains the offset of the aliased rule.

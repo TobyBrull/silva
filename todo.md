@@ -1,6 +1,5 @@
 # TODO
 
-* Fix seed_parse_root(), fern_parse_root(), silva_parse_root()
 * remove const_ptr_t
 
 * Seed:
@@ -39,7 +38,7 @@
     * Silva.Expr.FuncCall
 
 * rely more on token spans:
-    * add token_begin/token_end (instead of token_index) to parse_tree_t::node_t ?
+    * add token_begin/token_end (instead of token_index) to parse_tree_t::node_t
     * enable printing of multiple tokens in parse_tree printing
 
 * code review

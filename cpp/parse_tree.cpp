@@ -1,7 +1,5 @@
 #include "parse_tree.hpp"
 
-#include "parse_root.hpp"
-
 #include "canopy/convert.hpp"
 
 namespace silva {
@@ -15,7 +13,7 @@ namespace silva {
         curr_line.push_back(' ');
       }
     };
-
+    token_context_ptr_t tcp = pt.tokenization->context;
     string_t retval;
     auto result = pt.visit_subtree([&](const span_t<const tree_branch_t> path,
                                        const tree_event_t event) -> expected_t<bool> {
@@ -26,10 +24,9 @@ namespace silva {
       const parse_tree_t::node_t& node = pt.nodes[path.back().node_index];
       curr_line.clear();
       curr_line_space_to(2 * (path.size() - 1));
-      curr_line += fmt::format("[{}]{},{}",
+      curr_line += fmt::format("[{}]{}",
                                path.back().child_index,
-                               pt.root->rules[node.rule_index].name,
-                               pt.root->rules[node.rule_index].precedence);
+                               tcp->full_name_to_string(node.rule_name, "."));
       curr_line_space_to(token_offset);
       const index_t token_index_begin = node.token_index;
       const index_t token_index_end   = node.token_index + 1;
@@ -57,6 +54,7 @@ namespace silva {
 
   expected_t<string_t> parse_tree_to_graphviz(const parse_tree_t& pt)
   {
+    token_context_ptr_t tcp = pt.tokenization->context;
     string_t retval;
     retval += "digraph parse_tree {\n";
     auto result = pt.visit_subtree([&](const span_t<const tree_branch_t> path,
@@ -76,11 +74,10 @@ namespace silva {
         node_name = fmt::format("{}{}/", parent_node_name, path.back().child_index);
         retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
       }
-      retval += fmt::format("  \"{}\" [label=\"[{}]{},{}\\n{}\"]\n",
+      retval += fmt::format("  \"{}\" [label=\"[{}]{}\\n{}\"]\n",
                             node_name,
                             path.back().child_index,
-                            pt.root->rules[node.rule_index].name,
-                            pt.root->rules[node.rule_index].precedence,
+                            tcp->full_name_to_string(node.rule_name, "."),
                             string_escaped(pt.tokenization->token_info_get(node.token_index)->str));
       return true;
     });

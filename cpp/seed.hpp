@@ -13,8 +13,8 @@
 
 namespace silva {
 
-  // The Seed language describes a way to turn a stream of tokens into a parse_tree_t. The
-  // actual mechanism/algorithm to turn a stream of tokens into a parse_tree_t is
+  // A program in the Seed language describes a way to turn a stream of tokens into a parse_tree_t.
+  // The actual mechanism/algorithm to turn a stream of tokens into a parse_tree_t is
   // encapsulated/represented by the class "parse_root_t".
 
   const string_view_t seed_seed = R"'(
@@ -44,38 +44,7 @@ namespace silva {
     - AxeOp =~ string "none"
   )'";
 
-  enum class seed_rule_t {
-    SEED,
-    RULE,
-    RULE_PRECEDENCE,
-    DERIVATION_0,
-    DERIVATION_1,
-    DERIVATION_2,
-    DERIVATION_3,
-    ATOM_0,
-    ATOM_1,
-    SUFFIX,
-    PRIMARY_0,
-    PRIMARY_1,
-    PRIMARY_2,
-    NONTERMINAL,
-    TERMINAL_0,
-    TERMINAL_1,
-    REGEX,
-    AXE_NEST,
-    AXE_LIST,
-    AXE_LEVEL,
-    AXE_OP_TYPE,
-    AXE_ASSOC,
-    AXE_OPS,
-    AXE_OP,
-  };
-
   struct parse_root_t;
-
-  // parse_root_t of the parse_trees returned by "seed_parse". Only has the "rules" vector populated
-  // with entries equivalent to "seed_self_representation" and the entries in "seed_rule_t".
-  unique_ptr_t<parse_root_t> seed_parse_root_primordial(token_context_ptr_t);
 
   expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t>);
 

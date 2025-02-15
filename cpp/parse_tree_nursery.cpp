@@ -48,9 +48,9 @@ namespace silva {
     pt->nodes.push_back(parse_tree_t::node_t{.token_index = *token_index});
   }
 
-  void parse_tree_guard_for_rule_t::set_rule_index(const index_t rule_index)
+  void parse_tree_guard_for_rule_t::set_rule_name(const full_name_id_t rule_name)
   {
-    pt->nodes[node_index].rule_index = rule_index;
+    pt->nodes[node_index].rule_name = rule_name;
   }
 
   parse_tree_sub_t parse_tree_guard_for_rule_t::release()
@@ -69,12 +69,10 @@ namespace silva {
 
   // parse_tree_nursery_t
 
-  parse_tree_nursery_t::parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
-                                             const_ptr_t<parse_root_t> parse_root)
+  parse_tree_nursery_t::parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
   {
     tcp                 = tokenization->context;
     retval.tokenization = std::move(tokenization);
-    retval.root         = std::move(parse_root);
   }
 
   const index_t parse_tree_nursery_t::num_tokens_left() const

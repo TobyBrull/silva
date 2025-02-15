@@ -1,6 +1,5 @@
 #pragma once
 
-#include "canopy/context.hpp"
 #include "canopy/expected.hpp"
 #include "canopy/hash.hpp"
 #include "canopy/preprocessor.hpp"
@@ -62,6 +61,9 @@ namespace silva {
     full_name_id_t full_name_id(full_name_id_t parent_name, token_id_t base_name);
     full_name_id_t full_name_id(span_t<const token_id_t>);
     string_t full_name_to_string(full_name_id_t, string_view_t separator);
+
+    template<typename... Ts>
+    full_name_id_t full_name_id_of(Ts&&... xs);
   };
   using token_context_ptr_t = ptr_t<token_context_t>;
 
@@ -109,6 +111,14 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+  template<typename... Ts>
+  full_name_id_t token_context_t::full_name_id_of(Ts&&... xs)
+  {
+    vector_t<token_id_t> vec;
+    ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
+    return full_name_id(vec);
+  }
+
   template<>
   struct memento_item_writer_t<token_position_t> {
     constexpr inline static memento_item_type_t memento_item_type = memento_item_type_custom(1);

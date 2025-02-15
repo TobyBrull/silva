@@ -1,6 +1,5 @@
 #pragma once
 
-#include "canopy/const_ptr.hpp"
 #include "canopy/small_vector.hpp"
 
 #include "tokenization.hpp"
@@ -10,13 +9,13 @@ namespace silva {
 
   struct parse_tree_t : public sprite_t {
     shared_ptr_t<const tokenization_t> tokenization;
-    const_ptr_t<parse_root_t> root;
 
     struct node_t {
+      full_name_id_t rule_name = 0;
+
       index_t num_children = 0;
       index_t children_end = 0;
 
-      index_t rule_index  = 0;
       index_t token_index = 0;
 
       friend auto operator<=>(const node_t&, const node_t&) = default;

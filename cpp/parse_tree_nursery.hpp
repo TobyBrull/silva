@@ -38,7 +38,7 @@ namespace silva {
 
     [[nodiscard]] parse_tree_guard_for_rule_t(parse_tree_t* pt, index_t* token_index);
 
-    void set_rule_index(index_t rule_index);
+    void set_rule_name(full_name_id_t);
 
     parse_tree_sub_t release();
 
@@ -54,7 +54,7 @@ namespace silva {
 
     index_t token_index = 0;
 
-    parse_tree_nursery_t(shared_ptr_t<const tokenization_t>, const_ptr_t<parse_root_t>);
+    parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
     const index_t num_tokens_left() const;
 
