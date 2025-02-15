@@ -81,14 +81,14 @@ namespace silva {
                        MINOR,
                        "First child of RULE must be NONTERMINAL ");
           const token_id_t rule_token_id =
-              s_pt->tokenization->tokens[s_nodes[children[0]].token_index];
+              s_pt->tokenization->tokens[s_nodes[children[0]].token_begin];
           index_t rule_precedence = 0;
           if (children.size == 3) {
             SILVA_EXPECT(s_nodes[children[1]].rule_name == fni_rule_prec,
                          MINOR,
                          "Middle child of RULE must be RULE_PRECEDENCE");
             const auto* token_data =
-                s_pt->tokenization->token_info_get(s_nodes[children[1]].token_index);
+                s_pt->tokenization->token_info_get(s_nodes[children[1]].token_begin);
             rule_precedence = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
           }
           const index_t ri = s_nodes[children.back()].rule_name;
@@ -122,21 +122,21 @@ namespace silva {
                          MINOR,
                          "Second child of DERIVATION_2 must be RULE_PRECEDENCE");
             const token_id_t tgt_rule_token_id =
-                s_pt->tokenization->tokens[s_nodes[alias_children[0]].token_index];
+                s_pt->tokenization->tokens[s_nodes[alias_children[0]].token_begin];
             const auto* tgt_rule_precedence_token_data =
-                s_pt->tokenization->token_info_get(s_nodes[alias_children[1]].token_index);
+                s_pt->tokenization->token_info_get(s_nodes[alias_children[1]].token_begin);
             const index_t tgt_rule_precedence =
                 SILVA_EXPECT_FWD(tgt_rule_precedence_token_data->number_as_double(), MAJOR);
 
             const token_id_t base_rule_token_id =
-                s_pt->tokenization->tokens[s_nodes[rule_children[0]].token_index];
+                s_pt->tokenization->tokens[s_nodes[rule_children[0]].token_begin];
             index_t base_rule_precedence = 0;
             if (rule_children.size == 3) {
               SILVA_EXPECT(s_nodes[rule_children[1]].rule_name == fni_rule_prec,
                            MINOR,
                            "Middle child of RULE must be RULE_PRECEDENCE");
               const auto* token_data =
-                  s_pt->tokenization->token_info_get(s_nodes[rule_children[1]].token_index);
+                  s_pt->tokenization->token_info_get(s_nodes[rule_children[1]].token_begin);
               base_rule_precedence = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
             }
 
@@ -169,9 +169,9 @@ namespace silva {
     for (index_t node_index = 0; node_index < s_pt->nodes.size(); ++node_index) {
       const auto& node = s_pt->nodes[node_index];
       if (node.rule_name == fni_regex) {
-        const token_id_t regex_token_id = s_pt->tokenization->tokens[node.token_index];
+        const token_id_t regex_token_id = s_pt->tokenization->tokens[node.token_begin];
         if (auto& regex = retval->regexes[regex_token_id]; !regex.has_value()) {
-          const auto& regex_td = s_pt->tokenization->token_info_get(node.token_index);
+          const auto& regex_td = s_pt->tokenization->token_info_get(node.token_begin);
           const string_t regex_str{SILVA_EXPECT_FWD(regex_td->string_as_plain_contained(), MAJOR)};
           regex = std::regex(regex_str);
         }
@@ -225,7 +225,7 @@ namespace silva {
         const auto& seed_node = seed_pt->nodes[seed_node_index];
         SILVA_EXPECT_PARSE(token_index < retval.tokenization->tokens.size(),
                            "Reached end of token-stream when looking for {}",
-                           seed_pt->tokenization->token_info_get(seed_node.token_index)->str);
+                           seed_pt->tokenization->token_info_get(seed_node.token_begin)->str);
         if (seed_node.rule_name == fni_term_0) {
           SILVA_EXPECT(seed_node.num_children == 1,
                        MAJOR,
@@ -234,7 +234,7 @@ namespace silva {
               SILVA_EXPECT_FWD(seed_pt->get_children<1>(seed_node_index));
           const auto& seed_regex_node = seed_pt->nodes[seed_node_index_regex[0]];
           const token_id_t regex_token_id =
-              seed_pt->tokenization->tokens[seed_regex_node.token_index];
+              seed_pt->tokenization->tokens[seed_regex_node.token_begin];
           const auto it = root->regexes.find(regex_token_id);
           SILVA_EXPECT(it != root->regexes.end() || !it->second.has_value(), FATAL);
           SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
@@ -248,7 +248,7 @@ namespace silva {
         }
         else {
           SILVA_EXPECT(seed_node.rule_name == fni_term_1, MAJOR, "Expected Seed node TERMINAL_1");
-          const token_id_t seed_token_id = seed_pt->tokenization->tokens[seed_node.token_index];
+          const token_id_t seed_token_id = seed_pt->tokenization->tokens[seed_node.token_begin];
           if (seed_token_id == seed_tt_id) {
             SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
           }
@@ -266,7 +266,7 @@ namespace silva {
           }
           else {
             const auto* sp_token_data =
-                seed_pt->tokenization->token_info_get(seed_node.token_index);
+                seed_pt->tokenization->token_info_get(seed_node.token_begin);
             SILVA_EXPECT(sp_token_data->category == STRING, MAJOR);
             const token_id_t expected_target_token_id =
                 tcp->token_id(SILVA_EXPECT_FWD(sp_token_data->string_as_plain_contained(), MAJOR));
@@ -296,7 +296,7 @@ namespace silva {
               SILVA_EXPECT_FWD(seed_pt->get_children<1>(seed_node_index));
           const auto& nonterminal_node = seed_pt->nodes[nonterminal_child[0]];
           gg.sub += SILVA_EXPECT_FWD(
-              apply_rule(seed_pt->tokenization->tokens[nonterminal_node.token_index]));
+              apply_rule(seed_pt->tokenization->tokens[nonterminal_node.token_begin]));
         }
         else {
           SILVA_EXPECT(false, MAJOR);
@@ -373,7 +373,7 @@ namespace silva {
                 const auto& seed_node_suffix = seed_pt->nodes[children[1]];
                 SILVA_EXPECT(seed_node_suffix.rule_name == fni_suffix, MAJOR);
                 const string_view_t suffix_op =
-                    seed_pt->tokenization->token_info_get(seed_node_suffix.token_index)->str;
+                    seed_pt->tokenization->token_info_get(seed_node_suffix.token_begin)->str;
                 SILVA_EXPECT(suffix_op.size() == 1, MAJOR);
                 suffix_char = suffix_op.front();
               }

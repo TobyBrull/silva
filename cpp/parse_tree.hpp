@@ -16,7 +16,8 @@ namespace silva {
       index_t num_children = 0;
       index_t children_end = 0;
 
-      index_t token_index = 0;
+      index_t token_begin = 0;
+      index_t token_end   = 0;
 
       friend auto operator<=>(const node_t&, const node_t&) = default;
     };
