@@ -239,26 +239,25 @@ namespace silva {
     }
   }
 
-  token_id_t token_context_get_token_id(const string_view_t token_str)
+  token_id_t token_context_t::token_id(const string_view_t token_str)
   {
-    auto tc       = token_context_t::get();
-    const auto it = tc->token_lookup.find(string_t{token_str});
-    if (it != tc->token_lookup.end()) {
+    const auto it = token_lookup.find(string_t{token_str});
+    if (it != token_lookup.end()) {
       return it->second;
     }
     else {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(token_str);
       SILVA_ASSERT(tokenized_str == token_str);
-      const token_id_t new_token_id = tc->token_infos.size();
-      tc->token_infos.push_back(token_info_t{string_t{tokenized_str}, token_cat});
-      tc->token_lookup.emplace(tokenized_str, new_token_id);
+      const token_id_t new_token_id = token_infos.size();
+      token_infos.push_back(token_info_t{string_t{tokenized_str}, token_cat});
+      token_lookup.emplace(tokenized_str, new_token_id);
       return new_token_id;
     }
   }
 
-  token_id_t token_context_get_token_id_from_info(const token_info_t& token_info)
+  token_id_t token_context_get_token_id_from_info(token_context_t* tc,
+                                                  const token_info_t& token_info)
   {
-    auto tc       = token_context_t::get();
     const auto it = tc->token_lookup.find(token_info.str);
     if (it != tc->token_lookup.end()) {
       return it->second;
@@ -271,25 +270,20 @@ namespace silva {
     }
   }
 
-  const token_info_t* token_context_get_token_info(const token_id_t tii)
-  {
-    return &token_context_t::get()->token_infos[tii];
-  }
-
-  expected_t<unique_ptr_t<tokenization_t>> token_context_load(filesystem_path_t filepath)
+  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t tcp,
+                                                         filesystem_path_t filepath)
   {
     string_t text = SILVA_EXPECT_FWD(read_file(filepath));
-    return token_context_make(std::move(filepath), std::move(text));
+    return tokenize(std::move(tcp), std::move(filepath), std::move(text));
   }
 
-  expected_t<unique_ptr_t<tokenization_t>> token_context_make(filesystem_path_t filepath,
-                                                              string_t text_arg)
+  expected_t<unique_ptr_t<tokenization_t>>
+  tokenize(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text_arg)
   {
-    auto context     = token_context_t::get();
     auto retval      = std::make_unique<tokenization_t>();
     retval->filepath = std::move(filepath);
     retval->text     = std::move(text_arg);
-    retval->context  = context;
+    retval->context  = tcp;
     impl::start_new_line(retval.get(), 0);
     index_t text_index       = 0;
     const string_view_t text = retval->text;
@@ -298,6 +292,7 @@ namespace silva {
       text_index += tokenized_str.size();
       if (token_cat != NONE) {
         const token_id_t tii = token_context_get_token_id_from_info(
+            tcp.get(),
             token_info_t{.str = string_t{tokenized_str}, .category = token_cat});
         retval->tokens.push_back(tii);
       }
@@ -340,49 +335,41 @@ namespace silva {
     string_t retval;
     for (index_t token_index = 0; token_index < tokens.size(); ++token_index) {
       const token_id_t tii      = tokens[token_index];
-      const token_info_t* info  = token_context_get_token_info(tii);
+      const token_info_t* info  = &context->token_infos[tii];
       const auto [line, column] = compute_line_and_column(token_index);
       retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }
     return retval;
   }
 
-  const full_name_info_t* token_context_full_name_info(const full_name_id_t full_name_id)
+  full_name_id_t token_context_t::full_name_id(const full_name_id_t parent_name,
+                                               const token_id_t base_name)
   {
-    return &(token_context_t::get()->full_name_infos[full_name_id]);
-  }
-
-  full_name_id_t token_context_get_full_name_id(const full_name_id_t parent_name,
-                                                const token_id_t base_name)
-  {
-    auto& info_vec   = token_context_t::get()->full_name_infos;
-    auto& lookup_map = token_context_t::get()->full_name_lookup;
     const full_name_info_t fni{parent_name, base_name};
-    const auto [it, inserted] = lookup_map.emplace(fni, info_vec.size());
+    const auto [it, inserted] = full_name_lookup.emplace(fni, full_name_infos.size());
     if (inserted) {
-      info_vec.push_back(fni);
+      full_name_infos.push_back(fni);
     }
     return it->second;
   }
 
-  full_name_id_t token_context_get_full_name_id(const span_t<const token_id_t> token_ids)
+  full_name_id_t token_context_t::full_name_id(const span_t<const token_id_t> token_ids)
   {
     full_name_id_t retval = full_name_id_none;
     for (const token_id_t token_id: token_ids) {
-      retval = token_context_get_full_name_id(retval, token_id);
+      retval = full_name_id(retval, token_id);
     }
     return retval;
   }
 
-  string_t token_context_full_name_to_string(const full_name_id_t full_name_id,
-                                             const string_view_t separator)
+  string_t token_context_t::full_name_to_string(const full_name_id_t full_name_id,
+                                                const string_view_t separator)
   {
     if (full_name_id == full_name_id_none) {
       return {};
     }
-    const full_name_info_t* fni = token_context_full_name_info(full_name_id);
-    const token_info_t* ti      = token_context_get_token_info(fni->base_name);
-    return token_context_full_name_to_string(fni->parent_name, separator) + string_t{separator} +
-        ti->str;
+    const full_name_info_t* fni = &full_name_infos[full_name_id];
+    const token_info_t* ti      = &token_infos[fni->base_name];
+    return full_name_to_string(fni->parent_name, separator) + string_t{separator} + ti->str;
   }
 }

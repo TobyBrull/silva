@@ -11,14 +11,14 @@ silva_main(span_t<string_view_t> cmdline_args)
 {
   const index_t m = cmdline_args.size();
   SILVA_EXPECT(2 <= m && m <= 3, MINOR, "Usage: ... <seed-file> [<target-file>]");
-  auto seed_tt = SILVA_EXPECT_FWD(token_context_load(cmdline_args[1]));
+  auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(token_context_t::get(), cmdline_args[1]));
   auto seed_pt = SILVA_EXPECT_FWD(seed_parse(std::move(seed_tt)));
   if (m == 2) {
     fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(*seed_pt)));
   }
   else if (m == 3) {
     auto pr     = SILVA_EXPECT_FWD(parse_root_t::create(std::move(seed_pt)));
-    auto tgt_tt = SILVA_EXPECT_FWD(token_context_load(cmdline_args[2]));
+    auto tgt_tt = SILVA_EXPECT_FWD(tokenize_load(token_context_t::get(), cmdline_args[2]));
     auto tgt_pt = SILVA_EXPECT_FWD(pr->apply(std::move(tgt_tt)));
     fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(*tgt_pt)));
   }

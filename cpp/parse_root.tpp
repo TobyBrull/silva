@@ -14,9 +14,9 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
     - Expr = Primary+
     - Primary = identifier "="!
   )'";
-  auto fs_tt               = share(SILVA_EXPECT_REQUIRE(token_context_make("", frog_seed)));
-  auto fs_pt               = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
-  auto fs_pr               = share(SILVA_EXPECT_REQUIRE(parse_root_t::create(fs_pt)));
+  auto fs_tt = share(SILVA_EXPECT_REQUIRE(tokenize(token_context_t::get(), "", frog_seed)));
+  auto fs_pt = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
+  auto fs_pr = share(SILVA_EXPECT_REQUIRE(parse_root_t::create(fs_pt)));
   const string_view_t expected_seed_pt = R"(
 [0]Seed,0                                         -
   [0]Rule,0                                       Frog
@@ -70,8 +70,9 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
     Label = f
     Item = g h i
   )'";
-  auto frog_tt = share(SILVA_EXPECT_REQUIRE(token_context_make("", frog_source_code)));
-  auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt)));
+  auto frog_tt =
+      share(SILVA_EXPECT_REQUIRE(tokenize(token_context_t::get(), "", frog_source_code)));
+  auto frog_pt                 = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt)));
   const string_view_t expected = R"(
 [0]Frog,0                                         SimpleFern
   [0]Rule,0                                       SimpleFern

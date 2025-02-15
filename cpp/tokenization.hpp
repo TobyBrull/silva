@@ -56,16 +56,14 @@ namespace silva {
     hashmap_t<full_name_info_t, full_name_id_t> full_name_lookup;
 
     token_context_t();
+
+    token_id_t token_id(string_view_t);
+
+    full_name_id_t full_name_id(full_name_id_t parent_name, token_id_t base_name);
+    full_name_id_t full_name_id(span_t<const token_id_t>);
+    string_t full_name_to_string(full_name_id_t, string_view_t separator);
   };
   using token_context_ptr_t = ptr_t<token_context_t>;
-
-  const token_info_t* token_context_get_token_info(token_id_t);
-  token_id_t token_context_get_token_id(string_view_t);
-
-  const full_name_info_t* token_context_full_name_info(full_name_id_t);
-  full_name_id_t token_context_get_full_name_id(full_name_id_t parent_name, token_id_t base_name);
-  full_name_id_t token_context_get_full_name_id(span_t<const token_id_t>);
-  string_t token_context_full_name_to_string(full_name_id_t, string_view_t separator);
 
   struct tokenization_t : public sprite_t {
     token_context_ptr_t context;
@@ -103,9 +101,9 @@ namespace silva {
     index_t token_index = 0;
   };
 
-  expected_t<unique_ptr_t<tokenization_t>> token_context_load(filesystem_path_t);
-  expected_t<unique_ptr_t<tokenization_t>> token_context_make(filesystem_path_t filepath,
-                                                              string_t text);
+  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t, filesystem_path_t);
+  expected_t<unique_ptr_t<tokenization_t>>
+  tokenize(token_context_ptr_t, filesystem_path_t filepath, string_t text);
 }
 
 // IMPLEMENTATION

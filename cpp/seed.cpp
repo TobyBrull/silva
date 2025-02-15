@@ -10,39 +10,39 @@ namespace silva {
 
   namespace impl {
     struct seed_parse_tree_nursery_t : public parse_tree_nursery_t {
-      token_id_t tt_dash        = token_context_get_token_id("-");
-      token_id_t tt_comma       = token_context_get_token_id(",");
-      token_id_t tt_paren_open  = token_context_get_token_id("(");
-      token_id_t tt_paren_close = token_context_get_token_id(")");
-      token_id_t tt_eq          = token_context_get_token_id("=");
-      token_id_t tt_eq_choice   = token_context_get_token_id("=~");
-      token_id_t tt_eq_alias    = token_context_get_token_id("=>");
-      token_id_t tt_eq_axe      = token_context_get_token_id("=%");
-      token_id_t tt_brack_open  = token_context_get_token_id("[");
-      token_id_t tt_brack_close = token_context_get_token_id("]");
-      token_id_t tt_qmark       = token_context_get_token_id("?");
-      token_id_t tt_star        = token_context_get_token_id("*");
-      token_id_t tt_plus        = token_context_get_token_id("+");
-      token_id_t tt_emark       = token_context_get_token_id("!");
-      token_id_t tt_amper       = token_context_get_token_id("&");
-      token_id_t tt_major_error = token_context_get_token_id("major_error");
-      token_id_t tt_identifier  = token_context_get_token_id("identifier");
-      token_id_t tt_id_regex    = token_context_get_token_id("identifier_regex");
-      token_id_t tt_operator    = token_context_get_token_id("operator");
-      token_id_t tt_string      = token_context_get_token_id("string");
-      token_id_t tt_number      = token_context_get_token_id("number");
-      token_id_t tt_any         = token_context_get_token_id("any");
-      token_id_t tt_nest        = token_context_get_token_id("nest");
-      token_id_t tt_ltr         = token_context_get_token_id("ltr");
-      token_id_t tt_rtl         = token_context_get_token_id("rtl");
-      token_id_t tt_flat        = token_context_get_token_id("flat");
-      token_id_t tt_postfix     = token_context_get_token_id("postfix");
-      token_id_t tt_postfix_n   = token_context_get_token_id("postfix_nest");
-      token_id_t tt_infix       = token_context_get_token_id("infix");
-      token_id_t tt_ternary     = token_context_get_token_id("ternary");
-      token_id_t tt_prefix      = token_context_get_token_id("prefix");
-      token_id_t tt_prefix_n    = token_context_get_token_id("prefix_nest");
-      token_id_t tt_none        = token_context_get_token_id("none");
+      token_id_t tt_dash        = token_context_t::get()->token_id("-");
+      token_id_t tt_comma       = token_context_t::get()->token_id(",");
+      token_id_t tt_paren_open  = token_context_t::get()->token_id("(");
+      token_id_t tt_paren_close = token_context_t::get()->token_id(")");
+      token_id_t tt_eq          = token_context_t::get()->token_id("=");
+      token_id_t tt_eq_choice   = token_context_t::get()->token_id("=~");
+      token_id_t tt_eq_alias    = token_context_t::get()->token_id("=>");
+      token_id_t tt_eq_axe      = token_context_t::get()->token_id("=%");
+      token_id_t tt_brack_open  = token_context_t::get()->token_id("[");
+      token_id_t tt_brack_close = token_context_t::get()->token_id("]");
+      token_id_t tt_qmark       = token_context_t::get()->token_id("?");
+      token_id_t tt_star        = token_context_t::get()->token_id("*");
+      token_id_t tt_plus        = token_context_t::get()->token_id("+");
+      token_id_t tt_emark       = token_context_t::get()->token_id("!");
+      token_id_t tt_amper       = token_context_t::get()->token_id("&");
+      token_id_t tt_major_error = token_context_t::get()->token_id("major_error");
+      token_id_t tt_identifier  = token_context_t::get()->token_id("identifier");
+      token_id_t tt_id_regex    = token_context_t::get()->token_id("identifier_regex");
+      token_id_t tt_operator    = token_context_t::get()->token_id("operator");
+      token_id_t tt_string      = token_context_t::get()->token_id("string");
+      token_id_t tt_number      = token_context_t::get()->token_id("number");
+      token_id_t tt_any         = token_context_t::get()->token_id("any");
+      token_id_t tt_nest        = token_context_t::get()->token_id("nest");
+      token_id_t tt_ltr         = token_context_t::get()->token_id("ltr");
+      token_id_t tt_rtl         = token_context_t::get()->token_id("rtl");
+      token_id_t tt_flat        = token_context_t::get()->token_id("flat");
+      token_id_t tt_postfix     = token_context_t::get()->token_id("postfix");
+      token_id_t tt_postfix_n   = token_context_t::get()->token_id("postfix_nest");
+      token_id_t tt_infix       = token_context_t::get()->token_id("infix");
+      token_id_t tt_ternary     = token_context_t::get()->token_id("ternary");
+      token_id_t tt_prefix      = token_context_t::get()->token_id("prefix");
+      token_id_t tt_prefix_n    = token_context_t::get()->token_id("prefix_nest");
+      token_id_t tt_none        = token_context_t::get()->token_id("none");
 
       seed_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
         : parse_tree_nursery_t(std::move(tokenization), seed_parse_root_primordial())
@@ -378,7 +378,7 @@ namespace silva {
     const auto make_rule = [&](const string_view_t nonterminal,
                                const index_t precedence) -> parse_root_t::rule_t {
       parse_root_t::rule_t retval;
-      retval.token_id   = token_context_get_token_id(nonterminal);
+      retval.token_id   = token_context_t::get()->token_id(nonterminal);
       retval.name       = nonterminal;
       retval.precedence = precedence;
       return retval;

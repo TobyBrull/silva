@@ -10,8 +10,9 @@ using namespace silva;
 
 TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
 {
-  const auto spr       = seed_parse_root();
-  const auto seed_tt   = share(SILVA_EXPECT_REQUIRE(token_context_make("", string_t{seed_seed})));
+  const auto spr = seed_parse_root();
+  const auto seed_tt =
+      share(SILVA_EXPECT_REQUIRE(tokenize(token_context_t::get(), "", string_t{seed_seed})));
   const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
   const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt));
   CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
@@ -20,15 +21,16 @@ TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
 
 TEST_CASE("seed", "[seed][parse_root_t]")
 {
-  const auto spr          = seed_parse_root();
-  const string_t sf_text  = R"'(
+  const auto spr         = seed_parse_root();
+  const string_t sf_text = R"'(
     - SimpleFern = "[" ( LabeledItem ";"? )* "]"
     - LabeledItem = ( Label ":" )? Item
     - Label = string
     - Item,0 => SimpleFern,0
     - Item,1 =~ string number
   )'";
-  const auto sf_seed_tt   = share(SILVA_EXPECT_REQUIRE(token_context_make("", sf_text)));
+  const auto sf_seed_tt =
+      share(SILVA_EXPECT_REQUIRE(tokenize(token_context_t::get(), "", sf_text)));
   const auto sf_seed_pt_1 = share(SILVA_EXPECT_REQUIRE(seed_parse(sf_seed_tt)));
   const auto sf_seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(sf_seed_tt));
   CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
@@ -118,14 +120,14 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(sfpr->rules[4].expr_node_index == 50);
   CHECK(sfpr->rules[4].aliased_rule_offset.has_value() == false);
   REQUIRE(sfpr->rule_indexes.size() == 4);
-  REQUIRE(sfpr->rule_indexes.at(token_context_get_token_id("SimpleFern")) == 0);
-  REQUIRE(sfpr->rule_indexes.at(token_context_get_token_id("LabeledItem")) == 1);
-  REQUIRE(sfpr->rule_indexes.at(token_context_get_token_id("Label")) == 2);
-  REQUIRE(sfpr->rule_indexes.at(token_context_get_token_id("Item")) == 3);
+  REQUIRE(sfpr->rule_indexes.at(token_context_t::get()->token_id("SimpleFern")) == 0);
+  REQUIRE(sfpr->rule_indexes.at(token_context_t::get()->token_id("LabeledItem")) == 1);
+  REQUIRE(sfpr->rule_indexes.at(token_context_t::get()->token_id("Label")) == 2);
+  REQUIRE(sfpr->rule_indexes.at(token_context_t::get()->token_id("Item")) == 3);
 
   const string_t sf_code = R"'( [ "abc" ; [ "def" 123 ] "jkl" ;])'";
-  const auto sf_tt       = share(SILVA_EXPECT_REQUIRE(token_context_make("", sf_code)));
-  const auto sfpt        = SILVA_EXPECT_REQUIRE(sfpr->apply(sf_tt));
+  const auto sf_tt = share(SILVA_EXPECT_REQUIRE(tokenize(token_context_t::get(), "", sf_code)));
+  const auto sfpt  = SILVA_EXPECT_REQUIRE(sfpr->apply(sf_tt));
 
   const std::string_view expected_parse_tree = R"(
 [0]SimpleFern,0                                   [

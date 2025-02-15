@@ -15,7 +15,7 @@ silva_main()
   const bool arg_root =
       SILVA_EXPECT_FWD_IF(env_context_get_as<bool>("root-based"), MAJOR).value_or(false);
 
-  auto tt = SILVA_EXPECT_FWD(token_context_load(arg_filename));
+  auto tt = SILVA_EXPECT_FWD(tokenize_load(token_context_t::get(), arg_filename));
   unique_ptr_t<parse_tree_t> pt;
   auto fpr = fern_parse_root();
   if (arg_root) {
