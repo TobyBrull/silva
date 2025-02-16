@@ -31,7 +31,7 @@ namespace silva {
       token_id_t tt_string      = tcp->token_id("string");
       token_id_t tt_number      = tcp->token_id("number");
       token_id_t tt_any         = tcp->token_id("any");
-      token_id_t tt_nest        = tcp->token_id("nest");
+      token_id_t tt_nest        = tcp->token_id("primary_nest");
       token_id_t tt_ltr         = tcp->token_id("ltr");
       token_id_t tt_rtl         = tcp->token_id("rtl");
       token_id_t tt_flat        = tcp->token_id("flat");
@@ -142,7 +142,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(num_tokens_left() >= 3 && token_id_by() == tt_nest &&
                                token_data_by(1)->category == STRING &&
                                token_data_by(2)->category == STRING,
-                           "Expected [\"nest\" string string] sequence");
+                           "Expected [\"primary_nest\" string string] sequence");
         token_index += 3;
         return gg_rule.release();
       }

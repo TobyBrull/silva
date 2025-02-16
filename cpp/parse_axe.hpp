@@ -8,71 +8,108 @@
 // An mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard
 // algorithm.
 
-namespace silva {
+namespace silva::parse_axe {
+  enum class assoc_t {
+    INVALID,
+    LEFT_TO_RIGHT,
+    RIGHT_TO_LEFT,
+    FLAT,
+  };
+
+  struct prefix_t {
+    constexpr static inline index_t arity = 1;
+    token_id_t token_id{0};
+  };
+
+  struct prefix_nest_t {
+    constexpr static inline index_t arity = 2;
+    token_id_t left_bracket{0};
+    token_id_t right_bracket{0};
+  };
+
+  struct primary_nest_t {
+    constexpr static inline index_t arity = -1;
+    token_id_t left_bracket{0};
+    token_id_t right_bracket{0};
+  };
+
+  struct infix_t {
+    constexpr static inline index_t arity = 2;
+    token_id_t token_id{0};
+  };
+
+  struct ternary_t {
+    constexpr static inline index_t arity = 3;
+    token_id_t first{0};
+    token_id_t second{0};
+  };
+
+  struct postfix_t {
+    constexpr static inline index_t arity = 1;
+    token_id_t token_id{0};
+  };
+
+  struct postfix_nest_t {
+    constexpr static inline index_t arity = 2;
+    token_id_t left_bracket{0};
+    token_id_t right_bracket{0};
+  };
+
+  using oper_prefix_t  = variant_t<prefix_t, prefix_nest_t, primary_nest_t>;
+  using oper_infix_t   = variant_t<infix_t, ternary_t>;
+  using oper_postfix_t = variant_t<postfix_t, postfix_nest_t>;
+
+  using oper_regular_t = variant_t<infix_t, ternary_t, postfix_t, postfix_nest_t>;
+  //                   = oper_infix_t + oper_postfix_t
+
+  using oper_any_t = variant_t<prefix_t,
+                               prefix_nest_t,
+                               primary_nest_t,
+                               infix_t,
+                               ternary_t,
+                               postfix_t,
+                               postfix_nest_t>;
+  //               = oper_regular_t + oper_prefix_t
+
+  using level_index_t = index_t;
+
+  struct precedence_t {
+    level_index_t level_index = 0;
+    assoc_t assoc             = assoc_t::INVALID;
+
+    friend bool operator<(const precedence_t& lhs, const precedence_t& rhs);
+  };
+
+  template<typename Oper>
+  struct result_oper_t {
+    Oper oper;
+    full_name_id_t level_name = 0;
+    precedence_t precedence;
+  };
+
+  struct result_t {
+    optional_t<result_oper_t<oper_prefix_t>> prefix;
+    optional_t<result_oper_t<oper_regular_t>> regular;
+    bool is_right_bracket = false;
+  };
+
   struct parse_axe_t {
-    using level_index_t = index_t;
+    token_context_ptr_t tcp;
+    hashmap_t<token_id_t, result_t> results;
+    optional_t<precedence_t> concat;
+  };
 
-    enum class level_type_t {
-      NONE,
-      BINARY_LEFT_TO_RIGHT,
-      BINARY_RIGHT_TO_LEFT,
-      PREFIX,
-      POSTFIX,
-    };
-
+  struct parse_axe_nursery_t {
+    token_context_ptr_t tcp;
+    optional_t<pair_t<token_id_t, token_id_t>> nest;
     struct level_t {
-      level_type_t type = level_type_t::NONE;
-      vector_t<token_id_t> token_ids;
+      full_name_id_t name = 0;
+      assoc_t assoc       = assoc_t::INVALID;
     };
     vector_t<level_t> levels;
 
-    struct mapped_levels_t {
-      optional_t<level_index_t> postfix_or_binary;
-      optional_t<level_index_t> prefix;
-    };
-    hashmap_t<token_id_t, mapped_levels_t> mapped_levels;
-
-    bool has_operator(token_id_t) const;
-    optional_t<level_index_t>& slot_for(token_id_t, level_type_t);
-
-    level_index_t add_level(level_type_t);
-    void add_operator(level_index_t, token_id_t);
-  };
-
-  struct Expression {
-    string_t repr;
-    friend auto operator<=>(const Expression&, const Expression&) = default;
-  };
-  struct parse_axe_run_t {
-    const parse_axe_t* parse_axe = nullptr;
-    std::function<Expression(span_t<const Expression>, token_id_t, parse_axe_t::level_index_t)>
-        callback;
-
-    expected_t<void> push_back(Expression);
-    expected_t<void> push_back(token_id_t);
-    struct op_t {
-      token_id_t token_id = 0;
-      bool is_prefix      = false;
-
-      friend auto operator<=>(const op_t&, const op_t&) = default;
-    };
-    using item_t = variant_t<Expression, op_t>;
-    vector_t<item_t> items;
-    // State transitions: (transitions to error if event not listed)
-    //  - PreExpr:
-    //      - prefix-op -> unchanged
-    //      - expr -> PostExpr
-    //  - PostExpr:
-    //      - postfix-op -> unchanged
-    //      - binary-op -> PreExpr
-    //      - finish -> done
-    enum class parse_axe_run_state_t {
-      PRE_EXPR,
-      POST_EXPR,
-    };
-    parse_axe_run_state_t state = parse_axe_run_state_t ::PRE_EXPR;
-
-    expected_t<Expression> finish();
-    expected_t<bool> apply_next(parse_axe_t::level_index_t);
+    expected_t<void> start_level(full_name_id_t, assoc_t);
+    expected_t<void> add_oper(oper_any_t);
+    parse_axe_t finish() &&;
   };
 }

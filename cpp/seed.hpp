@@ -35,7 +35,7 @@ namespace silva {
     - Terminal,0 = "identifier_regex" "(" Regex ")"
     - Terminal,1 =~ string "identifier" "operator" "string" "number" "any"
     - Regex = string
-    - AxeNest = "nest" string string
+    - AxeNest = "primary_nest" string string
     - AxeList = "[" ("-" AxeLevel)* "]"
     - AxeLevel = Nonterminal "=" AxeAssoc AxeOps*
     - AxeOpType =~ "prefix" "prefix_nest" "infix" "ternary" "postfix" "postfix_nest"
