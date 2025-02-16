@@ -28,12 +28,12 @@ TEST_CASE("operator-precedence", "")
   const auto expr_pt = SILVA_EXPECT_REQUIRE(prec->apply(expr_tt));
 
   const std::string_view expected_parse_tree = R"(
-[0].Expr.0                                        5
-  [0].Add.0                                       5
+[0].Expr.0                                        5 + 4 ...
+  [0].Add.0                                       5 + 4 ...
     [0].Mult.0                                    5
       [0].Primary.1                               5
-    [1].Add.0                                     4
-      [0].Mult.0                                  4
+    [1].Add.0                                     4 * 2 ...
+      [0].Mult.0                                  4 * 2
         [0].Primary.1                             4
         [1].Mult.0                                2
           [0].Primary.1                           2

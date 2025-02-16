@@ -43,7 +43,7 @@ namespace silva {
                 (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
             "Expected Label: expected identifier or string followed by ':'");
         gg_rule.set_rule_name(fni_label);
-        token_index += 2;
+        token_index += 1;
         return gg_rule.release();
       }
 
@@ -88,6 +88,7 @@ namespace silva {
           gg_rule.sub += SILVA_EXPECT_FWD(label(),
                                           "{} Expected LabeledItem",
                                           token_position_at(gg_rule.orig_token_index));
+          token_index += 1;
         }
         gg_rule.sub += SILVA_EXPECT_FWD(item(),
                                         "{} Expected LabeledItem",

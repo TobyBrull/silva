@@ -7,7 +7,8 @@ namespace silva {
   struct parse_tree_sub_t {
     index_t num_children       = 0;
     index_t num_children_total = 0;
-
+    index_t token_begin        = std::numeric_limits<index_t>::max();
+    index_t token_end          = std::numeric_limits<index_t>::min();
     void operator+=(parse_tree_sub_t&& other);
   };
 

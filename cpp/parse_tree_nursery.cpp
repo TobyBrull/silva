@@ -8,6 +8,8 @@ namespace silva {
   {
     num_children += other.num_children;
     num_children_total += other.num_children_total;
+    token_begin = std::min(token_begin, other.token_begin);
+    token_end   = std::max(token_end, other.token_end);
   }
 
   // parse_tree_guard_t
@@ -17,6 +19,10 @@ namespace silva {
     , token_index(token_index)
     , orig_node_size(pt->nodes.size())
     , orig_token_index(*token_index)
+    , sub{
+          .token_begin = *token_index,
+          .token_end   = *token_index + 1,
+      }
   {
   }
 
@@ -58,11 +64,16 @@ namespace silva {
 
   parse_tree_sub_t parse_tree_guard_for_rule_t::release()
   {
+    sub.token_end                      = *token_index;
     pt->nodes[node_index].num_children = sub.num_children;
     pt->nodes[node_index].children_end = node_index + sub.num_children_total + 1;
+    pt->nodes[node_index].token_begin  = sub.token_begin;
+    pt->nodes[node_index].token_end    = sub.token_end;
     parse_tree_sub_t retval{
         .num_children       = 1,
         .num_children_total = sub.num_children_total + 1,
+        .token_begin        = sub.token_begin,
+        .token_end          = sub.token_end,
     };
     parse_tree_guard_t::release();
     return retval;

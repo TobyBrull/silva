@@ -1,9 +1,5 @@
 # TODO
 
-* rely more on token spans:
-    * add token_begin/token_end (instead of token_index) to parse_tree_t::node_t
-    * enable printing of multiple tokens in parse_tree printing
-
 * Implement ParseAxe
 
 * Seed:
