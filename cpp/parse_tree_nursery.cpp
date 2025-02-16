@@ -28,7 +28,8 @@ namespace silva {
 
   parse_tree_sub_t parse_tree_guard_t::release()
   {
-    pt = nullptr;
+    pt            = nullptr;
+    sub.token_end = *token_index;
     return std::move(sub);
   }
 
