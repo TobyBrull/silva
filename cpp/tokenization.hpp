@@ -1,7 +1,6 @@
 #pragma once
 
 #include "canopy/expected.hpp"
-#include "canopy/hash.hpp"
 #include "canopy/preprocessor.hpp"
 #include "canopy/string_or_view.hpp"
 

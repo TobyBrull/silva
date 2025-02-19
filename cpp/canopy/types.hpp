@@ -5,9 +5,6 @@
 #include <optional>
 #include <span>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <variant>
 #include <vector>
 
 namespace silva {
@@ -35,9 +32,6 @@ namespace silva {
 
   using none_t          = std::nullopt_t;
   constexpr none_t none = std::nullopt;
-
-  template<typename... Ts>
-  using variant_t = std::variant<Ts...>;
 
   template<typename T, typename U>
   using pair_t = std::pair<T, U>;

@@ -1,6 +1,10 @@
 #pragma once
 
 #include "types.hpp"
+#include "variant.hpp"
+
+#include <unordered_map>
+#include <unordered_set>
 
 namespace silva {
   using hash_value_t = std::size_t;
