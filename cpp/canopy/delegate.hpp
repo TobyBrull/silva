@@ -17,15 +17,18 @@ namespace silva {
     template<R (*)(Args...)>
     static delegate_t make();
 
-    template<typename Data, R (*)(Data*, Args...)>
+    template<auto FuncPtr, typename Data>
+      requires std::same_as<decltype(FuncPtr), R (*)(Data*, Args...)>
     static delegate_t make(Data*);
 
     // Constructors from member function pointer.
 
-    template<typename T, R (T::*)(Args...)>
+    template<auto MemberFuncPtr, typename T>
+      requires std::same_as<decltype(MemberFuncPtr), R (T::*)(Args...)>
     static delegate_t make(T*);
 
-    template<typename T, R (T::*)(Args...) const>
+    template<auto MemberFuncPtr, typename T>
+      requires std::same_as<decltype(MemberFuncPtr), R (T::*)(Args...) const>
     static delegate_t make(const T*);
 
     bool has_value() const;
@@ -64,7 +67,8 @@ namespace silva {
   }
 
   template<typename R, typename... Args>
-  template<typename Data, R (*FuncPtr)(Data*, Args...)>
+  template<auto FuncPtr, typename Data>
+    requires std::same_as<decltype(FuncPtr), R (*)(Data*, Args...)>
   delegate_t<R(Args...)> delegate_t<R(Args...)>::make(Data* data_ptr)
   {
     return {
@@ -76,7 +80,8 @@ namespace silva {
   }
 
   template<typename R, typename... Args>
-  template<typename T, R (T::*MemberFuncPtr)(Args...)>
+  template<auto MemberFuncPtr, typename T>
+    requires std::same_as<decltype(MemberFuncPtr), R (T::*)(Args...)>
   delegate_t<R(Args...)> delegate_t<R(Args...)>::make(T* ptr)
   {
     return {
@@ -88,7 +93,8 @@ namespace silva {
   }
 
   template<typename R, typename... Args>
-  template<typename T, R (T::*MemberFuncPtr)(Args...) const>
+  template<auto MemberFuncPtr, typename T>
+    requires std::same_as<decltype(MemberFuncPtr), R (T::*)(Args...) const>
   delegate_t<R(Args...)> delegate_t<R(Args...)>::make(const T* ptr)
   {
     return {

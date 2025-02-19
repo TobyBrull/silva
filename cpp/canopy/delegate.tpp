@@ -41,15 +41,15 @@ TEST_CASE("delegate")
   CHECK(dg(42, 3.5) == "free_func(42, 3.5)");
 
   const std::string s{"foo"};
-  dg = dg_t::make<const std::string, &test::free_func_data>(&s);
+  dg = dg_t::make<&test::free_func_data>(&s);
   CHECK(dg(42, 3.5) == "free_func_data(foo, 42, 3.5)");
 
   test::widget_t widget{.member = "hi"};
 
-  dg = dg_t::make<test::widget_t, &test::widget_t::member_func_const>(&widget);
+  dg = dg_t::make<&test::widget_t::member_func_const>(&widget);
   CHECK(dg(42, 3.5) == "widget_t::member_func_const(hi, 42, 3.5)");
 
-  dg = dg_t::make<test::widget_t, &test::widget_t::member_func>(&widget);
+  dg = dg_t::make<&test::widget_t::member_func>(&widget);
   CHECK(dg(42, 3.5) == "widget_t::member_func(hi(called), 42, 3.5)");
   CHECK(dg(42, 3.5) == "widget_t::member_func(hi(called)(called), 42, 3.5)");
 }
