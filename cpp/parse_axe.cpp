@@ -159,4 +159,11 @@ namespace silva::parse_axe {
     }
     return retval;
   }
+
+  expected_t<parse_tree_sub_t>
+  parse_axe_t::apply(parse_tree_nursery_t& nursery,
+                     delegate_t<expected_t<parse_tree_sub_t>()> primary)
+  {
+    return {};
+  }
 }

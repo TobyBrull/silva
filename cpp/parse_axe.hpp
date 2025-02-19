@@ -1,6 +1,8 @@
 #pragma once
 
+#include "canopy/delegate.hpp"
 #include "canopy/types.hpp"
+#include "parse_tree_nursery.hpp"
 #include "tokenization.hpp"
 
 // * https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing
@@ -109,6 +111,9 @@ namespace silva::parse_axe {
     token_context_ptr_t tcp;
     hashmap_t<token_id_t, result_t> results;
     optional_t<precedence_t> concat;
+
+    expected_t<parse_tree_sub_t> apply(parse_tree_nursery_t&,
+                                       delegate_t<expected_t<parse_tree_sub_t>()> primary);
   };
 
   struct parse_axe_level_desc_t {
