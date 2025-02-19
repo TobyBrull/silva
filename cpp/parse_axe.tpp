@@ -66,12 +66,82 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
   CHECK(!pa.concat.has_value());
   CHECK(pa.results.size() == 15);
   CHECK(pa.results.at(tc.token_id("=")) ==
-        result_t{.prefix = none,
-                 .regular =
-                     result_oper_t<oper_regular_t>{
-                         .oper       = infix_t{tc.token_id("=")},
-                         .level_name = tc.full_name_id_of("test", "eqa"),
-                         .precedence = precedence_t{.level_index = 1, .assoc = RIGHT_TO_LEFT},
-                     },
-                 .is_right_bracket = false});
+        result_t{
+            .prefix = none,
+            .regular =
+                result_oper_t<oper_regular_t>{
+                    .oper       = infix_t{tc.token_id("=")},
+                    .level_name = tc.full_name_id_of("test", "eqa"),
+                    .precedence = precedence_t{.level_index = 1, .assoc = RIGHT_TO_LEFT},
+                },
+            .is_right_bracket = false,
+        });
+  CHECK(pa.results.at(tc.token_id("?")) ==
+        result_t{
+            .prefix = none,
+            .regular =
+                result_oper_t<oper_regular_t>{
+                    .oper       = ternary_t{tc.token_id("?"), tc.token_id(":")},
+                    .level_name = tc.full_name_id_of("test", "ter"),
+                    .precedence = precedence_t{.level_index = 2, .assoc = RIGHT_TO_LEFT},
+                },
+            .is_right_bracket = false,
+        });
+  CHECK(pa.results.at(tc.token_id(":")) ==
+        result_t{
+            .prefix           = none,
+            .regular          = none,
+            .is_right_bracket = true,
+        });
+  CHECK(pa.results.at(tc.token_id("+")) ==
+        result_t{
+            .prefix =
+                result_oper_t<oper_prefix_t>{
+                    .oper       = prefix_t{tc.token_id("+")},
+                    .level_name = tc.full_name_id_of("test", "prf"),
+                    .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
+                },
+            .regular =
+                result_oper_t<oper_regular_t>{
+                    .oper       = infix_t{tc.token_id("+")},
+                    .level_name = tc.full_name_id_of("test", "add"),
+                    .precedence = precedence_t{.level_index = 3, .assoc = FLAT},
+                },
+            .is_right_bracket = false,
+        });
+  CHECK(pa.results.at(tc.token_id("-")) ==
+        result_t{
+            .prefix =
+                result_oper_t<oper_prefix_t>{
+                    .oper       = prefix_t{tc.token_id("-")},
+                    .level_name = tc.full_name_id_of("test", "prf"),
+                    .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
+                },
+            .regular =
+                result_oper_t<oper_regular_t>{
+                    .oper       = infix_t{tc.token_id("-")},
+                    .level_name = tc.full_name_id_of("test", "add"),
+                    .precedence = precedence_t{.level_index = 3, .assoc = FLAT},
+                },
+            .is_right_bracket = false,
+        });
+  CHECK(pa.results.at(tc.token_id("(")) ==
+        result_t{
+            .prefix =
+                result_oper_t<oper_prefix_t>{
+                    .oper       = primary_nest_t{tc.token_id("("), tc.token_id(")")},
+                    .level_name = full_name_id_none,
+                    .precedence =
+                        precedence_t{.level_index = std::numeric_limits<level_index_t>::max(),
+                                     .assoc       = INVALID},
+                },
+            .regular          = none,
+            .is_right_bracket = false,
+        });
+  CHECK(pa.results.at(tc.token_id(")")) ==
+        result_t{
+            .prefix           = none,
+            .regular          = none,
+            .is_right_bracket = true,
+        });
 }
