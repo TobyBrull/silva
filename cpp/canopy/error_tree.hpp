@@ -2,7 +2,7 @@
 
 #include "assert.hpp"
 #include "memento.hpp"
-#include "tree_base.hpp"
+#include "tree.hpp"
 
 namespace silva {
   struct error_tree_t {
