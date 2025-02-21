@@ -113,7 +113,7 @@ namespace silva::parse_axe {
     optional_t<precedence_t> concat;
 
     expected_t<parse_tree_sub_t> apply(parse_tree_nursery_t&,
-                                       delegate_t<expected_t<parse_tree_sub_t>()> primary);
+                                       delegate_t<expected_t<parse_tree_sub_t>()> primary) const;
   };
 
   struct parse_axe_level_desc_t {

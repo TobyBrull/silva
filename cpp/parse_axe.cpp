@@ -160,10 +160,28 @@ namespace silva::parse_axe {
     return retval;
   }
 
+  struct oper_item_t {
+    oper_any_t oper;
+    full_name_id_t level_name = 0;
+    precedence_t precedence;
+    optional_t<index_t> covered_token_index;
+    optional_t<index_t> min_token_index;
+    optional_t<index_t> max_token_index;
+  };
+
+  struct atom_item_t {
+    index_t node_index  = 0;
+    bool flat_flag      = false;
+    index_t token_begin = 0;
+    index_t token_end   = 0;
+  };
+
   expected_t<parse_tree_sub_t>
   parse_axe_t::apply(parse_tree_nursery_t& nursery,
-                     delegate_t<expected_t<parse_tree_sub_t>()> primary)
+                     delegate_t<expected_t<parse_tree_sub_t>()> primary) const
   {
+    vector_t<oper_item_t> oper_stack;
+    vector_t<atom_item_t> atom_stack;
     return {};
   }
 }

@@ -24,6 +24,8 @@
 * tokenization
     * make "'" the default char to start strings.
 
+* put error materialisation into token_context_t?
+
 * context:
     * logging
     * testing
