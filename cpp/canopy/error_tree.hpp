@@ -2,9 +2,25 @@
 
 #include "assert.hpp"
 #include "memento.hpp"
-#include "tree.hpp"
 
 namespace silva {
+  enum class tree_event_t {
+    INVALID  = 0,
+    ON_ENTRY = 0b01,
+    ON_EXIT  = 0b10,
+    ON_LEAF  = 0b11,
+  };
+  constexpr bool is_on_entry(tree_event_t);
+  constexpr bool is_on_exit(tree_event_t);
+
+  struct tree_branch_t {
+    index_t node_index = 0;
+
+    // This node ("node_index") is child number "child_index" of its parent. Zero for the root
+    // node.
+    index_t child_index = 0;
+  };
+
   struct error_tree_t {
     struct node_t {
       index_t num_children   = 0;
@@ -32,6 +48,18 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+  constexpr bool is_on_entry(const tree_event_t event)
+  {
+    const auto retval = (to_int(event) & to_int(tree_event_t::ON_ENTRY));
+    return retval != 0;
+  }
+
+  constexpr bool is_on_exit(const tree_event_t event)
+  {
+    const auto retval = (to_int(event) & to_int(tree_event_t::ON_EXIT));
+    return retval != 0;
+  }
+
   template<typename Visitor>
     requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
   void error_tree_t::visit_subtree(Visitor visitor, const index_t start_node_index) const
