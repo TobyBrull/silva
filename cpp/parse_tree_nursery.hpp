@@ -12,24 +12,30 @@ namespace silva {
     void operator+=(parse_tree_sub_t&& other);
   };
 
-  struct parse_tree_guard_t : public menhir_t {
+  struct parse_tree_guard_t {
     parse_tree_t* pt         = nullptr;
     index_t* token_index     = nullptr;
     index_t orig_node_size   = 0;
     index_t orig_token_index = 0;
-
     parse_tree_sub_t sub;
+
+    parse_tree_guard_t() = default;
 
     [[nodiscard]] parse_tree_guard_t(parse_tree_t* pt, index_t* token_index);
 
-    parse_tree_guard_t(parse_tree_guard_t&&)                 = delete;
+    parse_tree_guard_t(parse_tree_guard_t&&);
+    parse_tree_guard_t& operator=(parse_tree_guard_t&&);
+
     parse_tree_guard_t(const parse_tree_guard_t&)            = delete;
-    parse_tree_guard_t& operator=(parse_tree_guard_t&&)      = delete;
     parse_tree_guard_t& operator=(const parse_tree_guard_t&) = delete;
+
+    void swap(parse_tree_guard_t&);
 
     parse_tree_sub_t release();
 
-    bool is_released() const;
+    bool is_empty() const;
+
+    void reset();
 
     ~parse_tree_guard_t();
   };

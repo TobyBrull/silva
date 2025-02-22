@@ -169,19 +169,42 @@ namespace silva::parse_axe {
     optional_t<index_t> max_token_index;
   };
 
+  struct oper_content_t {
+    oper_any_t oper;
+    full_name_id_t level_name = 0;
+  };
+
   struct atom_data_t {
-    index_t node_index  = 0;
+    variant_t<parse_tree_sub_t, oper_content_t> content;
     bool flat_flag      = false;
     index_t token_begin = 0;
     index_t token_end   = 0;
   };
 
+  enum class parse_axe_mode_t {
+    ATOM_MODE,
+    INFIX_MODE,
+  };
+  using enum parse_axe_mode_t;
+
   expected_t<parse_tree_sub_t>
   parse_axe_t::apply(parse_tree_nursery_t& nursery,
                      delegate_t<expected_t<parse_tree_sub_t>()> primary) const
   {
+    parse_tree_guard_t gg{&nursery.retval, &nursery.token_index};
     vector_t<oper_item_t> oper_stack;
     tree_t<atom_data_t> atom_stack;
+
+    parse_axe_mode_t mode = ATOM_MODE;
+    while (nursery.num_tokens_left() >= 1) {
+      const auto it = results.find(nursery.token_id_by());
+      if (it == results.end()) {
+      }
+      else {
+      }
+    }
+
+    gg.reset();
     return {};
   }
 }

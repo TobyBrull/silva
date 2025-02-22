@@ -26,24 +26,65 @@ namespace silva {
   {
   }
 
-  parse_tree_sub_t parse_tree_guard_t::release()
+  parse_tree_guard_t::parse_tree_guard_t(parse_tree_guard_t&& other)
+    : pt(std::exchange(other.pt, nullptr))
+    , token_index(std::exchange(other.token_index, nullptr))
+    , orig_node_size(std::exchange(other.orig_node_size, 0))
+    , orig_token_index(std::exchange(other.orig_token_index, 0))
+    , sub(std::exchange(other.sub, parse_tree_sub_t{}))
   {
-    pt            = nullptr;
-    sub.token_end = *token_index;
-    return std::move(sub);
   }
 
-  bool parse_tree_guard_t::is_released() const
+  parse_tree_guard_t& parse_tree_guard_t::operator=(parse_tree_guard_t&& other)
+  {
+    if (this != &other) {
+      pt               = std::exchange(other.pt, nullptr);
+      token_index      = std::exchange(other.token_index, nullptr);
+      orig_node_size   = std::exchange(other.orig_node_size, 0);
+      orig_token_index = std::exchange(other.orig_token_index, 0);
+      sub              = std::exchange(other.sub, parse_tree_sub_t{});
+    }
+    return *this;
+  }
+
+  void parse_tree_guard_t::swap(parse_tree_guard_t& other)
+  {
+    std::swap(pt, other.pt);
+    std::swap(token_index, other.token_index);
+    std::swap(orig_node_size, other.orig_node_size);
+    std::swap(orig_token_index, other.orig_token_index);
+    std::swap(sub, other.sub);
+  }
+
+  parse_tree_sub_t parse_tree_guard_t::release()
+  {
+    sub.token_end = *token_index;
+    auto retval   = sub;
+    (*this)       = parse_tree_guard_t{};
+    return retval;
+  }
+
+  bool parse_tree_guard_t::is_empty() const
   {
     return !pt;
   }
 
-  parse_tree_guard_t::~parse_tree_guard_t()
+  void parse_tree_guard_t::reset()
   {
-    if (!is_released()) {
+    if (!is_empty()) {
       pt->nodes.resize(orig_node_size);
       *token_index = orig_token_index;
     }
+    pt               = nullptr;
+    token_index      = nullptr;
+    orig_node_size   = 0;
+    orig_token_index = 0;
+    sub              = parse_tree_sub_t{};
+  }
+
+  parse_tree_guard_t::~parse_tree_guard_t()
+  {
+    reset();
   }
 
   // parse_tree_guard_for_rule_t
