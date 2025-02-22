@@ -169,7 +169,7 @@ namespace silva::parse_axe {
     optional_t<index_t> max_token_index;
   };
 
-  struct atom_item_t {
+  struct atom_data_t {
     index_t node_index  = 0;
     bool flat_flag      = false;
     index_t token_begin = 0;
@@ -181,7 +181,7 @@ namespace silva::parse_axe {
                      delegate_t<expected_t<parse_tree_sub_t>()> primary) const
   {
     vector_t<oper_item_t> oper_stack;
-    vector_t<atom_item_t> atom_stack;
+    tree_t<atom_data_t> atom_stack;
     return {};
   }
 }
