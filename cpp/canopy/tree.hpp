@@ -42,6 +42,10 @@ namespace silva {
       requires std::invocable<Visitor, index_t, index_t>
     expected_t<void> visit_children(Visitor, index_t parent_node_index) const;
 
+    template<typename Visitor>
+      requires std::invocable<Visitor, index_t, index_t>
+    void visit_children_reversed(Visitor, index_t parent_node_index) const;
+
     // Get the indexes of the children of "parent_node_index" but only if the number of children
     // matches "N".
     template<index_t N>
@@ -58,6 +62,37 @@ namespace silva {
 
   template<typename NodeData, typename NodeDataFunc>
   expected_t<string_t> tree_to_graphviz(const tree_t<NodeData>&, NodeDataFunc);
+
+  template<typename NodeData>
+  struct tree_inv_t {
+    struct node_t : public NodeData {
+      index_t num_children   = 0;
+      index_t children_begin = 0;
+
+      friend auto operator<=>(const node_t&, const node_t&) = default;
+    };
+    vector_t<node_t> nodes;
+
+    bool is_consistent() const;
+
+    template<typename Visitor>
+      requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
+    expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
+
+    template<typename Visitor>
+      requires std::invocable<Visitor, index_t, index_t>
+    expected_t<void> visit_children(Visitor, index_t parent_node_index) const;
+
+    template<typename Visitor>
+      requires std::invocable<Visitor, index_t, index_t>
+    void visit_children_reversed(Visitor, index_t parent_node_index) const;
+
+    template<index_t N>
+    expected_t<array_t<index_t, N>> get_children(index_t parent_node_index) const;
+
+    template<index_t N>
+    expected_t<small_vector_t<index_t, N>> get_children_up_to(index_t parent_node_index) const;
+  };
 }
 
 // IMPLEMENTATION
