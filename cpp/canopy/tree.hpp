@@ -177,4 +177,59 @@ namespace silva {
         parent_node_index));
     return {std::move(retval)};
   }
+
+  template<typename NodeData, typename NodeDataFunc>
+  expected_t<string_t> tree_to_string(const tree_t<NodeData>& tree, NodeDataFunc node_data_func)
+  {
+    string_t curr_line;
+    string_t retval;
+    auto result = tree.visit_subtree(
+        [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
+          if (!is_on_entry(event)) {
+            return true;
+          }
+          SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
+          const typename tree_t<NodeData>::node_t& node = tree.nodes[path.back().node_index];
+          curr_line.assign(2 * (path.size() - 1), ' ');
+          curr_line += fmt::format("[{}]", path.back().child_index);
+          node_data_func(curr_line, node);
+          retval += curr_line;
+          retval += '\n';
+          return true;
+        });
+    SILVA_EXPECT_FWD(std::move(result));
+    return retval;
+  }
+
+  template<typename NodeData, typename NodeDataFunc>
+  expected_t<string_t> tree_to_graphviz(const tree_t<NodeData>& tree, NodeDataFunc node_data_func)
+  {
+    string_t retval;
+    retval += "digraph parse_tree {\n";
+    auto result = tree.visit_subtree(
+        [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
+          if (!is_on_entry(event)) {
+            return true;
+          }
+          SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
+          const typename tree_t<NodeData>::node_t& node = tree.nodes[path.back().node_index];
+          string_t node_name{"/"};
+          if (path.size() >= 2) {
+            string_t parent_node_name = "/";
+            for (index_t i = 1; i < path.size() - 1; ++i) {
+              parent_node_name += fmt::format("{}/", path[i].child_index);
+            }
+            node_name = fmt::format("{}{}/", parent_node_name, path.back().child_index);
+            retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
+          }
+          retval += fmt::format("  \"{}\" [label=\"[{}]{}\"]\n",
+                                node_name,
+                                path.back().child_index,
+                                node_data_func(node));
+          return true;
+        });
+    SILVA_EXPECT_FWD(std::move(result));
+    retval += "}";
+    return retval;
+  }
 }
