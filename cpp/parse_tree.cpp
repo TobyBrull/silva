@@ -4,6 +4,14 @@
 #include "canopy/tree.hpp"
 
 namespace silva {
+
+  parse_tree_t parse_tree_t::subtree(const index_t node_index) const
+  {
+    parse_tree_t retval{tree_t<parse_tree_node_data_t>::subtree(node_index)};
+    retval.tokenization = tokenization;
+    return retval;
+  }
+
   constexpr index_t max_shown_tokens = 3;
 
   expected_t<string_t> parse_tree_to_string(const parse_tree_t& pt, const index_t token_offset)

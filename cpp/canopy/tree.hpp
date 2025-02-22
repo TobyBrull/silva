@@ -55,6 +55,10 @@ namespace silva {
     // matches "N".
     template<index_t N>
     expected_t<small_vector_t<index_t, N>> get_children_up_to(index_t parent_node_index) const;
+
+    tree_t subtree(index_t node_index) const;
+
+    void push_back(const tree_t& other, index_t other_node_index);
   };
 
   template<typename NodeData, typename NodeDataFunc>
@@ -211,6 +215,19 @@ namespace silva {
         },
         parent_node_index));
     return {std::move(retval)};
+  }
+
+  template<typename NodeData>
+  tree_t<NodeData> tree_t<NodeData>::subtree(const index_t node_index) const
+  {
+    const node_t& node = nodes[node_index];
+    const index_t len  = node.children_end - node_index;
+    tree_t<NodeData> retval;
+    retval.nodes.assign(nodes.begin() + node_index, nodes.begin() + node.children_end);
+    for (node_t& rv_node: retval.nodes) {
+      rv_node.children_end -= node_index;
+    }
+    return retval;
   }
 
   template<typename NodeData, typename NodeDataFunc>

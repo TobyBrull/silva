@@ -18,23 +18,23 @@ namespace silva::test {
     {
     }
 
-    expected_t<parse_tree_sub_t> primary()
+    expected_t<parse_tree_sub_t> atom()
     {
       auto gg_rule = guard_for_rule();
-      SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for primary expression");
+      SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
       SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
                        token_data_by()->category == token_category_t::IDENTIFIER,
                    MINOR,
-                   "Primary expression must be number of identifier");
+                   "atom expression must be number of identifier");
       token_index += 1;
       return gg_rule.release();
     }
 
     expected_t<parse_tree_sub_t> expression()
     {
-      auto dg = delegate_t<expected_t<parse_tree_sub_t>()>::make<
-          &parse_axe_parse_tree_nursery_t::primary>(this);
-      return parse_axe.apply(*this, tcp->full_name_id_of("primary"), dg);
+      using dg_t = delegate_t<expected_t<parse_tree_sub_t>()>;
+      auto dg    = dg_t::make<&parse_axe_parse_tree_nursery_t::atom>(this);
+      return parse_axe.apply(*this, tcp->full_name_id_of("atom"), dg);
     }
   };
 
@@ -124,12 +124,12 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
   const auto pa =
       SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(),
                                             tc.full_name_id_of("parseaxe"),
-                                            primary_nest_t{tc.token_id("("), tc.token_id(")")},
+                                            atom_nest_t{tc.token_id("("), tc.token_id(")")},
                                             level_descs));
   CHECK(!pa.concat.has_value());
   CHECK(pa.results.size() == 15);
   CHECK(pa.results.at(tc.token_id("=")) ==
-        result_t{
+        parse_axe_result_t{
             .prefix = none,
             .regular =
                 result_oper_t<oper_regular_t>{
@@ -140,7 +140,7 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
             .is_right_bracket = false,
         });
   CHECK(pa.results.at(tc.token_id("?")) ==
-        result_t{
+        parse_axe_result_t{
             .prefix = none,
             .regular =
                 result_oper_t<oper_regular_t>{
@@ -151,13 +151,13 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
             .is_right_bracket = false,
         });
   CHECK(pa.results.at(tc.token_id(":")) ==
-        result_t{
+        parse_axe_result_t{
             .prefix           = none,
             .regular          = none,
             .is_right_bracket = true,
         });
   CHECK(pa.results.at(tc.token_id("+")) ==
-        result_t{
+        parse_axe_result_t{
             .prefix =
                 result_oper_t<oper_prefix_t>{
                     .oper       = prefix_t{tc.token_id("+")},
@@ -173,7 +173,7 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
             .is_right_bracket = false,
         });
   CHECK(pa.results.at(tc.token_id("-")) ==
-        result_t{
+        parse_axe_result_t{
             .prefix =
                 result_oper_t<oper_prefix_t>{
                     .oper       = prefix_t{tc.token_id("-")},
@@ -189,10 +189,10 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
             .is_right_bracket = false,
         });
   CHECK(pa.results.at(tc.token_id("(")) ==
-        result_t{
+        parse_axe_result_t{
             .prefix =
                 result_oper_t<oper_prefix_t>{
-                    .oper       = primary_nest_t{tc.token_id("("), tc.token_id(")")},
+                    .oper       = atom_nest_t{tc.token_id("("), tc.token_id(")")},
                     .level_name = full_name_id_none,
                     .precedence =
                         precedence_t{.level_index = std::numeric_limits<level_index_t>::max(),
@@ -202,7 +202,7 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
             .is_right_bracket = false,
         });
   CHECK(pa.results.at(tc.token_id(")")) ==
-        result_t{
+        parse_axe_result_t{
             .prefix           = none,
             .regular          = none,
             .is_right_bracket = true,

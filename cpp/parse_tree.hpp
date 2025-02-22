@@ -17,6 +17,8 @@ namespace silva {
 
   struct parse_tree_t : public tree_t<parse_tree_node_data_t> {
     shared_ptr_t<const tokenization_t> tokenization;
+
+    parse_tree_t subtree(index_t node_index) const;
   };
 
   expected_t<string_t> parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);

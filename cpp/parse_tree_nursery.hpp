@@ -9,7 +9,7 @@ namespace silva {
     index_t num_children_total = 0;
     index_t token_begin        = std::numeric_limits<index_t>::max();
     index_t token_end          = std::numeric_limits<index_t>::min();
-    void operator+=(parse_tree_sub_t&& other);
+    void operator+=(const parse_tree_sub_t& other);
   };
 
   struct parse_tree_guard_t {
@@ -48,6 +48,8 @@ namespace silva {
     void set_rule_name(full_name_id_t);
 
     parse_tree_sub_t release();
+
+    void implant(const parse_tree_t& other_pt, index_t other_node_index);
 
     ~parse_tree_guard_for_rule_t();
   };

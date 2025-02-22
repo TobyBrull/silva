@@ -4,7 +4,7 @@ namespace silva {
 
   // parse_tree_sub_t
 
-  void parse_tree_sub_t::operator+=(parse_tree_sub_t&& other)
+  void parse_tree_sub_t::operator+=(const parse_tree_sub_t& other)
   {
     num_children += other.num_children;
     num_children_total += other.num_children_total;
@@ -119,6 +119,25 @@ namespace silva {
     };
     parse_tree_guard_t::release();
     return retval;
+  }
+
+  void parse_tree_guard_for_rule_t::implant(const parse_tree_t& other_pt,
+                                            const index_t other_node_index)
+  {
+    const auto& other_node = other_pt.nodes[other_node_index];
+    const index_t len      = other_node.children_end - other_node_index;
+    const index_t diff     = node_index - other_node_index;
+    pt->nodes[node_index]  = other_node;
+    pt->nodes.insert(pt->nodes.end(),
+                     other_pt.nodes.begin() + other_node_index + 1,
+                     other_pt.nodes.begin() + other_node.children_end);
+    for (index_t ni = other_node_index; ni < other_node.children_end; ++ni) {
+      pt->nodes[ni].children_end += diff;
+    }
+    sub.num_children += other_node.num_children;
+    sub.num_children_total += len - 1;
+    sub.token_begin = std::min(sub.token_begin, other_node.token_begin);
+    sub.token_end   = std::max(sub.token_end, other_node.token_end);
   }
 
   parse_tree_guard_for_rule_t::~parse_tree_guard_for_rule_t() = default;
