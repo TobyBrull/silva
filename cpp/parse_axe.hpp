@@ -109,10 +109,12 @@ namespace silva::parse_axe {
 
   struct parse_axe_t {
     token_context_ptr_t tcp;
+    full_name_id_t name = 0;
     hashmap_t<token_id_t, result_t> results;
     optional_t<precedence_t> concat;
 
     expected_t<parse_tree_sub_t> apply(parse_tree_nursery_t&,
+                                       full_name_id_t primary_name_id,
                                        delegate_t<expected_t<parse_tree_sub_t>()> primary) const;
   };
 
@@ -122,6 +124,7 @@ namespace silva::parse_axe {
     vector_t<oper_any_t> opers;
   };
   expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t,
+                                           full_name_id_t parse_axe_name,
                                            optional_t<primary_nest_t>,
                                            const vector_t<parse_axe_level_desc_t>&);
 }

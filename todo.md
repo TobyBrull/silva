@@ -9,6 +9,9 @@
     * Use tree_inv_t in error_tree_t?
     * Add tree_nursery_t and tree_inv_nursery_t
 
+* memento:
+    * all dumping plain token_ids and full_name_ids, without any positional information
+
 * Seed:
     * Also support rules of the form `PrimaryExpr = "(" Expr ")"` for alias-rules.
 

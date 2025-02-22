@@ -34,7 +34,7 @@ namespace silva::test {
     {
       auto dg = delegate_t<expected_t<parse_tree_sub_t>()>::make<
           &parse_axe_parse_tree_nursery_t::primary>(this);
-      return parse_axe.apply(*this, dg);
+      return parse_axe.apply(*this, tcp->full_name_id_of("primary"), dg);
     }
   };
 
@@ -121,8 +121,11 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
       .assoc = RIGHT_TO_LEFT,
       .opers = {infix_t{tc.token_id("=")}},
   });
-  const auto pa = SILVA_EXPECT_REQUIRE(
-      parse_axe_create(tc.ptr(), primary_nest_t{tc.token_id("("), tc.token_id(")")}, level_descs));
+  const auto pa =
+      SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(),
+                                            tc.full_name_id_of("parseaxe"),
+                                            primary_nest_t{tc.token_id("("), tc.token_id(")")},
+                                            level_descs));
   CHECK(!pa.concat.has_value());
   CHECK(pa.results.size() == 15);
   CHECK(pa.results.at(tc.token_id("=")) ==

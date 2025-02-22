@@ -17,6 +17,7 @@ namespace silva::parse_axe {
   };
 
   expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t tcp,
+                                           const full_name_id_t parse_axe_name,
                                            optional_t<primary_nest_t> maybe_primary_nest,
                                            const vector_t<parse_axe_level_desc_t>& level_descs)
   {
@@ -49,7 +50,10 @@ namespace silva::parse_axe {
       }
     }
 
-    parse_axe_t retval{.tcp = tcp};
+    parse_axe_t retval{
+        .tcp  = tcp,
+        .name = parse_axe_name,
+    };
 
     const auto register_op = [&retval](const token_id_t token_id,
                                        const oper_any_t oper,
@@ -169,16 +173,17 @@ namespace silva::parse_axe {
     optional_t<index_t> max_token_index;
   };
 
-  struct oper_content_t {
-    oper_any_t oper;
-    full_name_id_t level_name = 0;
+  struct primary_parse_result_t {
+    index_t node_index_begin = 0;
+    parse_tree_sub_t sub;
   };
 
   struct atom_data_t {
-    variant_t<parse_tree_sub_t, oper_content_t> content;
+    full_name_id_t name = 0;
     bool flat_flag      = false;
     index_t token_begin = 0;
     index_t token_end   = 0;
+    optional_t<primary_parse_result_t> primary_parse_result;
   };
 
   enum class parse_axe_mode_t {
@@ -189,20 +194,35 @@ namespace silva::parse_axe {
 
   expected_t<parse_tree_sub_t>
   parse_axe_t::apply(parse_tree_nursery_t& nursery,
+                     const full_name_id_t primary_name_id,
                      delegate_t<expected_t<parse_tree_sub_t>()> primary) const
   {
     auto gg = nursery.guard();
     vector_t<oper_item_t> oper_stack;
-    tree_t<atom_data_t> atom_stack;
+    tree_inv_t<atom_data_t> atom_stack;
 
     parse_axe_mode_t mode = ATOM_MODE;
     while (nursery.num_tokens_left() >= 1) {
       const auto it = results.find(nursery.token_id_by());
       if (it == results.end()) {
+        const index_t node_index_begin = nursery.retval.nodes.size();
+        auto primary_result            = primary();
+        if (!primary_result) {
+          break;
+        }
       }
       else {
       }
     }
+
+    const bool is_valid_expr = [&]() -> bool {
+      if (atom_stack.nodes.empty()) {
+        return true;
+      }
+      const auto& root_node = atom_stack.nodes.back();
+      return gg.orig_token_index == root_node.token_begin && *gg.token_index == root_node.token_end;
+    }();
+    SILVA_EXPECT(is_valid_expr, MINOR, "parse-axe {} could not parse expression", name);
 
     gg.reset();
     return {};
