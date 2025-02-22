@@ -37,7 +37,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> label()
       {
-        parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+        auto gg_rule = guard_for_rule();
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 2 && token_id_by(1) == tt_colon &&
                 (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
@@ -49,7 +49,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> item()
       {
-        parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+        auto gg_rule = guard_for_rule();
         error_nursery_t error_nursery;
         if (auto result = fern(); result) {
           gg_rule.sub += *std::move(result);
@@ -81,7 +81,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> labeled_item()
       {
-        parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+        auto gg_rule = guard_for_rule();
         gg_rule.set_rule_name(fni_lbl_item);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "Expected LabeledItem: no tokens left");
         if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
@@ -98,7 +98,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> fern()
       {
-        parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+        auto gg_rule = guard_for_rule();
         gg_rule.set_rule_name(fni_fern);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_open,
                            "Expected Fern: didn't find '['");

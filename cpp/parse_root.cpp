@@ -221,7 +221,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> apply_terminal(const index_t seed_node_index)
       {
-        parse_tree_guard_t gg{&retval, &token_index};
+        auto gg               = guard();
         const auto& seed_node = seed_pt->nodes[seed_node_index];
         SILVA_EXPECT_PARSE(token_index < retval.tokenization->tokens.size(),
                            "Reached end of token-stream when looking for {}",
@@ -281,7 +281,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> apply_primary(const index_t seed_node_index)
       {
-        parse_tree_guard_t gg{&retval, &token_index};
+        auto gg               = guard();
         const auto& seed_node = seed_pt->nodes[seed_node_index];
         if (seed_node.rule_name == fni_prim_0) {
           gg.sub += SILVA_EXPECT_FWD(apply_derivation_0("subexpression", seed_node_index));
@@ -306,7 +306,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> apply_derivation_1(const index_t seed_node_index)
       {
-        parse_tree_guard_t gg{&retval, &token_index};
+        auto gg          = guard();
         bool found_match = false;
         error_nursery_t error_nursery;
         auto result = seed_pt->visit_children(
@@ -353,7 +353,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> apply_derivation_0(string_view_t expr_name,
                                                       const index_t seed_node_index)
       {
-        parse_tree_guard_t gg{&retval, &token_index};
+        auto gg = guard();
         error_nursery_t error_nursery;
         error_level_t min_error_level = NO_ERROR;
         auto result                   = seed_pt->visit_children(
@@ -408,13 +408,13 @@ namespace silva {
                 gg.sub += std::move(sub_sub);
               }
               else if (suffix_char.value() == '!') {
-                parse_tree_guard_t inner_ptg{&retval, &token_index};
+                auto inner_ptg = guard();
                 const auto result =
                     SILVA_EXPECT_FWD_IF(apply_primary(seed_node_index_primary), MAJOR);
                 SILVA_EXPECT(!result, MINOR, "Managed to parse negative primary expression");
               }
               else if (suffix_char.value() == '&') {
-                parse_tree_guard_t inner_ptg{&retval, &token_index};
+                auto inner_ptg = guard();
                 const auto result =
                     SILVA_EXPECT_FWD_IF(apply_primary(seed_node_index_primary), MAJOR);
                 SILVA_EXPECT(result, MINOR, "Did not manage to parse positive primary expression");
@@ -482,7 +482,7 @@ namespace silva {
           if (rule.precedence != rule_offset - base_rule_offset) {
             break;
           }
-          parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+          auto gg_rule      = guard_for_rule();
           const index_t aro = root->rules[rule_offset].aliased_rule_offset.value_or(rule_offset);
           const auto& aliased_rule = root->rules[aro];
           gg_rule.set_rule_name(aliased_rule.rule_name);

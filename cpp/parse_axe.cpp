@@ -191,7 +191,7 @@ namespace silva::parse_axe {
   parse_axe_t::apply(parse_tree_nursery_t& nursery,
                      delegate_t<expected_t<parse_tree_sub_t>()> primary) const
   {
-    parse_tree_guard_t gg{&nursery.retval, &nursery.token_index};
+    auto gg = nursery.guard();
     vector_t<oper_item_t> oper_stack;
     tree_t<atom_data_t> atom_stack;
 

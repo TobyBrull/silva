@@ -20,7 +20,7 @@ namespace silva::test {
 
     expected_t<parse_tree_sub_t> primary()
     {
-      parse_tree_guard_for_rule_t gg_rule{&retval, &token_index};
+      auto gg_rule = guard_for_rule();
       SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for primary expression");
       SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
                        token_data_by()->category == token_category_t::IDENTIFIER,

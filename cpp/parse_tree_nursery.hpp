@@ -58,10 +58,15 @@ namespace silva {
   struct parse_tree_nursery_t {
     token_context_ptr_t tcp;
     parse_tree_t retval;
-
     index_t token_index = 0;
 
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
+
+    [[nodiscard]] parse_tree_guard_t guard() { return parse_tree_guard_t{&retval, &token_index}; }
+    [[nodiscard]] parse_tree_guard_for_rule_t guard_for_rule()
+    {
+      return parse_tree_guard_for_rule_t{&retval, &token_index};
+    }
 
     const index_t num_tokens_left() const;
 
