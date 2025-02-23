@@ -19,10 +19,7 @@ namespace silva {
     , token_index(token_index)
     , orig_node_size(pt->nodes.size())
     , orig_token_index(*token_index)
-    , sub{
-          .token_begin = *token_index,
-          .token_end   = *token_index + 1,
-      }
+    , sub{}
   {
   }
 
@@ -89,14 +86,23 @@ namespace silva {
 
   // parse_tree_guard_for_rule_t
 
-  parse_tree_guard_for_rule_t::parse_tree_guard_for_rule_t(parse_tree_t* pt, index_t* token_index)
-    : parse_tree_guard_t(pt, token_index)
+  parse_tree_guard_for_rule_t::parse_tree_guard_for_rule_t(parse_tree_t* pt,
+                                                           index_t* token_index,
+                                                           const bool include_token_index)
+    : parse_tree_guard_t(pt, token_index), include_token_index(include_token_index)
   {
     node_index = pt->nodes.size();
-    pt->nodes.push_back(parse_tree_t::node_t{{
-        .token_begin = *token_index,
-        .token_end   = *token_index + 1,
-    }});
+    if (include_token_index) {
+      sub.token_begin = *token_index;
+      sub.token_end   = *token_index + 1;
+      pt->nodes.push_back(parse_tree_t::node_t{{
+          .token_begin = *token_index,
+          .token_end   = *token_index + 1,
+      }});
+    }
+    else {
+      pt->nodes.push_back(parse_tree_t::node_t{{}});
+    }
   }
 
   void parse_tree_guard_for_rule_t::set_rule_name(const full_name_id_t rule_name)
@@ -104,13 +110,20 @@ namespace silva {
     pt->nodes[node_index].rule_name = rule_name;
   }
 
-  parse_tree_sub_t parse_tree_guard_for_rule_t::release()
+  void parse_tree_guard_for_rule_t::sync()
   {
-    sub.token_end                      = *token_index;
+    if (include_token_index) {
+      sub.token_end = *token_index;
+    }
     pt->nodes[node_index].num_children = sub.num_children;
     pt->nodes[node_index].children_end = node_index + sub.num_children_total + 1;
     pt->nodes[node_index].token_begin  = sub.token_begin;
     pt->nodes[node_index].token_end    = sub.token_end;
+  }
+
+  parse_tree_sub_t parse_tree_guard_for_rule_t::release()
+  {
+    sync();
     parse_tree_sub_t retval{
         .num_children       = 1,
         .num_children_total = sub.num_children_total + 1,
@@ -131,8 +144,8 @@ namespace silva {
     pt->nodes.insert(pt->nodes.end(),
                      other_pt.nodes.begin() + other_node_index + 1,
                      other_pt.nodes.begin() + other_node.children_end);
-    for (index_t ni = other_node_index; ni < other_node.children_end; ++ni) {
-      pt->nodes[ni].children_end += diff;
+    for (index_t offset = 0; offset < len; ++offset) {
+      pt->nodes[node_index + offset].children_end += diff;
     }
     sub.num_children += other_node.num_children;
     sub.num_children_total += len - 1;

@@ -21,6 +21,7 @@ namespace silva::test {
     expected_t<parse_tree_sub_t> atom()
     {
       auto gg_rule = guard_for_rule();
+      gg_rule.set_rule_name(tcp->full_name_id_of("test", "atom"));
       SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
       SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
                        token_data_by()->category == token_category_t::IDENTIFIER,
@@ -62,8 +63,8 @@ namespace silva::test {
     auto maybe_result_pt = run_parse_axe(pa, share(std::move(tt)));
     REQUIRE(maybe_result_pt.has_value());
     auto result_pt        = std::move(maybe_result_pt).value();
-    const auto result_str = parse_tree_to_string(*result_pt);
-    CHECK(result_str == expected_str);
+    const auto result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*result_pt));
+    CHECK(result_str == expected_str.substr(1));
   }
 }
 
@@ -208,12 +209,12 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
             .is_right_bracket = true,
         });
 
-  //   test::test_parse_axe(tc.ptr(), pa, "1", R"(
-  // [0].primary                               1
-  // )");
-  //   test::test_parse_axe(tc.ptr(), pa, "1+2", R"(
-  // [0].expr.add                              1 + 2
-  //   [0].primary                             1
-  //   [1].primary                             2
-  // )");
+  test::test_parse_axe(tc.ptr(), pa, "1", R"(
+[0].test.atom                                     1
+)");
+  test::test_parse_axe(tc.ptr(), pa, "1 + 2", R"(
+[0].expr.add                                      1 + 2
+  [0].test.atom                                   1
+  [1].test.atom                                   2
+)");
 }

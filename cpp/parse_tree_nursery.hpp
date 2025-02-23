@@ -41,11 +41,16 @@ namespace silva {
   };
 
   struct parse_tree_guard_for_rule_t : public parse_tree_guard_t {
-    index_t node_index = 0;
+    index_t node_index       = 0;
+    bool include_token_index = true;
 
-    [[nodiscard]] parse_tree_guard_for_rule_t(parse_tree_t* pt, index_t* token_index);
+    [[nodiscard]] parse_tree_guard_for_rule_t(parse_tree_t* pt,
+                                              index_t* token_index,
+                                              bool include_token_index = true);
 
     void set_rule_name(full_name_id_t);
+
+    void sync();
 
     parse_tree_sub_t release();
 
@@ -65,9 +70,9 @@ namespace silva {
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
     [[nodiscard]] parse_tree_guard_t guard() { return parse_tree_guard_t{&retval, &token_index}; }
-    [[nodiscard]] parse_tree_guard_for_rule_t guard_for_rule()
+    [[nodiscard]] parse_tree_guard_for_rule_t guard_for_rule(bool include_token_index = true)
     {
-      return parse_tree_guard_for_rule_t{&retval, &token_index};
+      return parse_tree_guard_for_rule_t{&retval, &token_index, include_token_index};
     }
 
     const index_t num_tokens_left() const;

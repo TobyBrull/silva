@@ -171,14 +171,38 @@ namespace silva {
   expected_t<void> tree_t<NodeData>::visit_children(Visitor visitor,
                                                     const index_t parent_node_index) const
   {
-    const node_t& node       = nodes[parent_node_index];
-    index_t child_node_index = parent_node_index + 1;
-    for (index_t child_index = 0; child_index < node.num_children; ++child_index) {
+    const node_t& parent_node = nodes[parent_node_index];
+    index_t child_node_index  = parent_node_index + 1;
+    for (index_t child_index = 0; child_index < parent_node.num_children; ++child_index) {
       const bool cont = SILVA_EXPECT_FWD(visitor(child_node_index, child_index));
       if (!cont) {
         break;
       }
       child_node_index = nodes[child_node_index].children_end;
+    }
+    return {};
+  }
+
+  template<typename NodeData>
+  template<typename Visitor>
+    requires std::invocable<Visitor, index_t, index_t>
+  expected_t<void> tree_inv_t<NodeData>::visit_children(Visitor visitor,
+                                                        const index_t parent_node_index) const
+  {
+    const node_t& parent_node = nodes[parent_node_index];
+    index_t curr_node_index   = parent_node_index;
+    const index_t n           = parent_node.num_children;
+    vector_t<index_t> child_node_indexes(n, 0);
+    for (index_t child_count = 1; child_count <= n; ++child_count) {
+      curr_node_index -= 1;
+      child_node_indexes[n - child_count] = curr_node_index;
+      curr_node_index                     = nodes[curr_node_index].children_begin;
+    }
+    for (index_t child_index = 0; child_index < n; ++child_index) {
+      const bool cont = SILVA_EXPECT_FWD(visitor(child_node_indexes[child_index], child_index));
+      if (!cont) {
+        break;
+      }
     }
     return {};
   }

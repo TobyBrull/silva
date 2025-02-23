@@ -9,6 +9,9 @@
     * Use tree_inv_t in error_tree_t?
     * Add tree_nursery_t and tree_inv_nursery_t
 
+    * Use num_children_total (and num_children_direct?) instead of children_begin/end
+      For easier grafting.
+
 * memento:
     * all dumping plain token_ids and full_name_ids, without any positional information
 

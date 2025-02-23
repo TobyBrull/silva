@@ -264,7 +264,7 @@ namespace silva::parse_axe {
         SILVA_EXPECT_FWD(try_cti_after());
       }
       SILVA_EXPECT(!covered_token_index.has_value(), MINOR);
-      return {};
+      return retval;
     }
 
     expected_t<void> stack_pop(precedence_t prec)
@@ -315,8 +315,8 @@ namespace silva::parse_axe {
                     const parse_tree_t& leave_atoms_tree,
                     const vector_t<index_t>& leave_atoms_tree_child_node_indexes)
     {
-      const atom_tree_node_t& node        = atom_tree.nodes[atom_tree_node_index];
-      parse_tree_guard_for_rule_t gg_rule = nursery.guard_for_rule();
+      const atom_tree_node_t& node = atom_tree.nodes[atom_tree_node_index];
+      auto gg_rule                 = nursery.guard_for_rule(false);
       gg_rule.set_rule_name(node.name);
       if (node.atom_child_index.has_value()) {
         const index_t aci            = node.atom_child_index.value();
@@ -324,7 +324,7 @@ namespace silva::parse_axe {
         gg_rule.implant(leave_atoms_tree, lat_node_index);
       }
       else {
-        SILVA_EXPECT_FWD(leave_atoms_tree.visit_children(
+        SILVA_EXPECT_FWD(atom_tree.visit_children(
             [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
               gg_rule.sub += SILVA_EXPECT_FWD(generate_output(node_index,
                                                               leave_atoms_tree,
@@ -348,9 +348,11 @@ namespace silva::parse_axe {
             if (!try_parse_atom(gg_rule)) {
               break;
             }
+            continue;
           }
-          else if (mode == INFIX_MODE) {
+          else {
             hallucinate_concat();
+            continue;
           }
         }
         else {
@@ -358,23 +360,24 @@ namespace silva::parse_axe {
           if (pa_result.is_right_bracket) {
             break;
           }
-          else if (mode == INFIX_MODE && parse_axe.concat.has_value()) {
+          if (mode == INFIX_MODE && parse_axe.concat.has_value()) {
             if (pa_result.prefix.has_value() && !pa_result.regular.has_value()) {
               hallucinate_concat();
+              continue;
             }
-            else {
-              SILVA_EXPECT(pa_result.prefix.has_value() &&
-                               variant_holds_t<atom_nest_t>{}(pa_result.prefix.value().oper),
-                           MINOR);
+            if (pa_result.prefix.has_value() &&
+                variant_holds_t<atom_nest_t>{}(pa_result.prefix.value().oper)) {
               hallucinate_concat();
+              continue;
             }
           }
-          else if (mode == ATOM_MODE) {
+          if (mode == ATOM_MODE) {
             SILVA_EXPECT(pa_result.prefix.has_value(), MINOR);
             const auto& res = pa_result.prefix.value();
             SILVA_EXPECT_FWD(stack_pop(res.precedence));
             if (const auto* x = std::get_if<atom_nest_t>(&res.oper)) {
               SILVA_EXPECT_FWD(handle_nest(x->left_bracket, x->right_bracket));
+              continue;
             }
             else if (const auto* x = std::get_if<prefix_t>(&res.oper)) {
               oper_stack.push_back(oper_item_t{
@@ -386,9 +389,11 @@ namespace silva::parse_axe {
                   .min_token_index     = nursery.token_index,
               });
               nursery.token_index += 1;
+              continue;
             }
             else if (const auto* x = std::get_if<prefix_nest_t>(&res.oper)) {
               SILVA_EXPECT_FWD(handle_nest(x->left_bracket, x->right_bracket));
+              continue;
             }
           }
           else {
@@ -405,9 +410,11 @@ namespace silva::parse_axe {
                   .max_token_index     = nursery.token_index,
               });
               nursery.token_index += 1;
+              continue;
             }
             else if (const auto* x = std::get_if<postfix_nest_t>(&res.oper)) {
               SILVA_EXPECT_FWD(handle_nest(x->left_bracket, x->right_bracket));
+              continue;
             }
             else if (const auto* x = std::get_if<infix_t>(&res.oper)) {
               oper_stack.push_back(oper_item_t{
@@ -418,12 +425,16 @@ namespace silva::parse_axe {
                   .covered_token_index = nursery.token_index,
               });
               nursery.token_index += 1;
+              mode = ATOM_MODE;
+              continue;
             }
             else if (const auto* x = std::get_if<ternary_t>(&res.oper)) {
               SILVA_EXPECT_FWD(handle_nest(x->first, x->second));
+              continue;
             }
           }
         }
+        SILVA_EXPECT(false, ASSERT);
       }
       SILVA_EXPECT_FWD(stack_pop(precedence_min));
 
@@ -436,7 +447,9 @@ namespace silva::parse_axe {
       SILVA_EXPECT(gg_rule.orig_token_index == expr_token_begin, MINOR);
       SILVA_EXPECT(*gg_rule.token_index == expr_token_end, MINOR);
 
-      parse_tree_t leave_atoms_tree = nursery.retval.subtree(gg_rule.node_index);
+      gg_rule.sync();
+      parse_tree_t leave_atoms_tree   = nursery.retval.subtree(gg_rule.orig_node_size);
+      const index_t final_token_index = nursery.token_index;
       gg_rule.reset();
       const index_t num_children = leave_atoms_tree.nodes.front().num_children;
       vector_t<index_t> leave_atoms_tree_child_node_indexes(num_children);
@@ -453,7 +466,8 @@ namespace silva::parse_axe {
                                            leave_atoms_tree_child_node_indexes));
       SILVA_EXPECT(result.token_begin == expr_token_begin, ASSERT);
       SILVA_EXPECT(result.token_end == expr_token_end, ASSERT);
-      return {};
+      nursery.token_index = final_token_index;
+      return result;
     }
   };
 
