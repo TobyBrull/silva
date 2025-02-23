@@ -16,6 +16,7 @@ namespace silva::parse_axe {
     LEFT_TO_RIGHT,
     RIGHT_TO_LEFT,
     FLAT,
+    NEST,
   };
 
   struct prefix_t {
@@ -129,6 +130,5 @@ namespace silva::parse_axe {
   };
   expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t,
                                            full_name_id_t parse_axe_name,
-                                           optional_t<atom_nest_t>,
                                            const vector_t<parse_axe_level_desc_t>&);
 }

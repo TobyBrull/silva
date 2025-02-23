@@ -20,34 +20,45 @@ namespace silva::parse_axe {
 
   expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t tcp,
                                            const full_name_id_t parse_axe_name,
-                                           optional_t<atom_nest_t> maybe_atom_nest,
                                            const vector_t<parse_axe_level_desc_t>& level_descs)
   {
     using enum assoc_t;
     using enum error_level_t;
+    bool may_be_nest = true;
     for (const parse_axe_level_desc_t& level_desc: level_descs) {
       for (const auto& oper: level_desc.opers) {
-        if (level_desc.assoc == LEFT_TO_RIGHT) {
-          SILVA_EXPECT((variant_holds_t<postfix_t, postfix_nest_t, infix_t, ternary_t>{}(oper)),
+        if (level_desc.assoc == NEST) {
+          SILVA_EXPECT(may_be_nest,
                        MINOR,
-                       "LEFT_TO_RIGHT level only allows operators "
-                       "of type postfix_t, postfix_nest_t, "
-                       "infix_t, and ternary_t");
-        }
-        else if (level_desc.assoc == RIGHT_TO_LEFT) {
-          SILVA_EXPECT((variant_holds_t<prefix_t, prefix_nest_t, infix_t, ternary_t>{}(oper)),
+                       "The NEST levels must all occur before all other levels");
+          SILVA_EXPECT(variant_holds_t<atom_nest_t>{}(oper),
                        MINOR,
-                       "RIGHT_TO_LEFT level only allows operators "
-                       "of type prefix_t, prefix_nest_t, "
-                       "infix_t, and ternary_t");
-        }
-        else if (level_desc.assoc == FLAT) {
-          SILVA_EXPECT(variant_holds_t<infix_t>{}(oper),
-                       MINOR,
-                       "FLAT level only allows operators of type infix_t");
+                       "NEST level only allows operators of type atom_nest_t");
         }
         else {
-          SILVA_EXPECT(false, ASSERT, "Unknown level {}", std::to_underlying(level_desc.assoc));
+          may_be_nest = false;
+          if (level_desc.assoc == LEFT_TO_RIGHT) {
+            SILVA_EXPECT((variant_holds_t<postfix_t, postfix_nest_t, infix_t, ternary_t>{}(oper)),
+                         MINOR,
+                         "LEFT_TO_RIGHT level only allows operators "
+                         "of type postfix_t, postfix_nest_t, "
+                         "infix_t, and ternary_t");
+          }
+          else if (level_desc.assoc == RIGHT_TO_LEFT) {
+            SILVA_EXPECT((variant_holds_t<prefix_t, prefix_nest_t, infix_t, ternary_t>{}(oper)),
+                         MINOR,
+                         "RIGHT_TO_LEFT level only allows operators "
+                         "of type prefix_t, prefix_nest_t, "
+                         "infix_t, and ternary_t");
+          }
+          else if (level_desc.assoc == FLAT) {
+            SILVA_EXPECT(variant_holds_t<infix_t>{}(oper),
+                         MINOR,
+                         "FLAT level only allows operators of type infix_t");
+          }
+          else {
+            SILVA_EXPECT(false, ASSERT, "Unknown level {}", std::to_underlying(level_desc.assoc));
+          }
         }
       }
     }
@@ -117,12 +128,6 @@ namespace silva::parse_axe {
       return {};
     };
 
-    if (maybe_atom_nest.has_value()) {
-      const auto& atom_nest = maybe_atom_nest.value();
-      SILVA_EXPECT_FWD(
-          register_op(atom_nest.left_bracket, atom_nest, full_name_id_none, precedence_max));
-      SILVA_EXPECT_FWD(register_right_op(atom_nest.right_bracket));
-    }
     for (index_t i = 0; i < level_descs.size(); ++i) {
       const auto& level_desc          = level_descs[i];
       const level_index_t level_index = level_descs.size() - i;
@@ -202,7 +207,6 @@ namespace silva::parse_axe {
     };
 
     tree_inv_t<atom_data_t> atom_tree;
-    mode_t mode            = ATOM_MODE;
     using atom_tree_node_t = tree_inv_t<atom_data_t>::node_t;
 
     // functions
@@ -227,7 +231,6 @@ namespace silva::parse_axe {
           /* num_children = */ 0,
           /* children_begin = */ index_t(atom_tree.nodes.size()),
       });
-      mode = INFIX_MODE;
       return atom_tree_node_index;
     }
 
@@ -311,42 +314,38 @@ namespace silva::parse_axe {
 
     void hallucinate_concat() { SILVA_ASSERT(false); }
 
-    expected_t<void> handle_nest(const token_id_t left_token, const token_id_t right_token)
+    expected_t<index_t> handle_nest(parse_tree_guard_for_rule_t& gg_rule,
+                                    const full_name_id_t nest_name,
+                                    const token_id_t left_token,
+                                    const token_id_t right_token)
     {
-      SILVA_EXPECT(false, ASSERT);
-    }
-
-    expected_t<parse_tree_sub_t>
-    generate_output(const index_t atom_tree_node_index,
-                    const parse_tree_t& leave_atoms_tree,
-                    const vector_t<index_t>& leave_atoms_tree_child_node_indexes)
-    {
-      const atom_tree_node_t& node = atom_tree.nodes[atom_tree_node_index];
-      auto gg_rule                 = nursery.guard_for_rule(false);
-      gg_rule.set_rule_name(node.name);
-      if (node.atom_child_index.has_value()) {
-        const index_t aci            = node.atom_child_index.value();
-        const index_t lat_node_index = leave_atoms_tree_child_node_indexes[aci];
-        gg_rule.implant(leave_atoms_tree, lat_node_index);
-      }
-      else {
-        SILVA_EXPECT_FWD(atom_tree.visit_children(
-            [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
-              gg_rule.sub += SILVA_EXPECT_FWD(generate_output(node_index,
-                                                              leave_atoms_tree,
-                                                              leave_atoms_tree_child_node_indexes));
-              return true;
-            },
-            atom_tree_node_index));
-      }
-      gg_rule.sub.token_begin = node.token_range.first;
-      gg_rule.sub.token_end   = node.token_range.second;
-      return gg_rule.release();
+      const index_t token_begin = nursery.token_index;
+      SILVA_EXPECT(nursery.num_tokens_left() >= 1, ASSERT);
+      SILVA_EXPECT(nursery.token_id_by() == left_token, ASSERT);
+      nursery.token_index += 1;
+      SILVA_EXPECT_FWD(go_parse(gg_rule));
+      SILVA_EXPECT(nursery.num_tokens_left() >= 1, ASSERT);
+      SILVA_EXPECT(nursery.token_id_by() == right_token, ASSERT);
+      nursery.token_index += 1;
+      SILVA_EXPECT(atom_tree.nodes.size() >= 1, ASSERT);
+      const index_t token_end = nursery.token_index;
+      atom_tree.nodes.push_back(atom_tree_node_t{
+          {
+              .name             = nest_name,
+              .flat_flag        = true,
+              .token_range      = {token_begin, token_end},
+              .atom_child_index = none,
+          },
+          /* num_children = */ 1,
+          /* children_begin = */ atom_tree.nodes.back().children_begin,
+      });
+      return atom_tree.nodes.size() - 1;
     }
 
     expected_t<void> go_parse(parse_tree_guard_for_rule_t& gg_rule)
     {
       stack_pair_t stack_pair{.atom_tree = &atom_tree};
+      mode_t mode = ATOM_MODE;
       while (nursery.num_tokens_left() >= 1) {
         const auto it = parse_axe.results.find(nursery.token_id_by());
         if (it == parse_axe.results.end()) {
@@ -356,6 +355,7 @@ namespace silva::parse_axe {
             if (!maybe_atom_tree_node_index.has_value()) {
               break;
             }
+            mode = INFIX_MODE;
             stack_pair.atom_stack.push_back(atom_item_t{maybe_atom_tree_node_index.value()});
             continue;
           }
@@ -385,7 +385,10 @@ namespace silva::parse_axe {
             const auto& res = pa_result.prefix.value();
             SILVA_EXPECT_FWD(stack_pair.stack_pop(res.precedence));
             if (const auto* x = std::get_if<atom_nest_t>(&res.oper)) {
-              SILVA_EXPECT_FWD(handle_nest(x->left_bracket, x->right_bracket));
+              const index_t atom_tree_node_index = SILVA_EXPECT_FWD(
+                  handle_nest(gg_rule, res.level_name, x->left_bracket, x->right_bracket));
+              stack_pair.atom_stack.push_back(atom_item_t{atom_tree_node_index});
+              mode = INFIX_MODE;
               continue;
             }
             else if (const auto* x = std::get_if<prefix_t>(&res.oper)) {
@@ -401,7 +404,8 @@ namespace silva::parse_axe {
               continue;
             }
             else if (const auto* x = std::get_if<prefix_nest_t>(&res.oper)) {
-              SILVA_EXPECT_FWD(handle_nest(x->left_bracket, x->right_bracket));
+              SILVA_EXPECT_FWD(
+                  handle_nest(gg_rule, res.level_name, x->left_bracket, x->right_bracket));
               continue;
             }
           }
@@ -422,7 +426,8 @@ namespace silva::parse_axe {
               continue;
             }
             else if (const auto* x = std::get_if<postfix_nest_t>(&res.oper)) {
-              SILVA_EXPECT_FWD(handle_nest(x->left_bracket, x->right_bracket));
+              SILVA_EXPECT_FWD(
+                  handle_nest(gg_rule, res.level_name, x->left_bracket, x->right_bracket));
               continue;
             }
             else if (const auto* x = std::get_if<infix_t>(&res.oper)) {
@@ -438,7 +443,7 @@ namespace silva::parse_axe {
               continue;
             }
             else if (const auto* x = std::get_if<ternary_t>(&res.oper)) {
-              SILVA_EXPECT_FWD(handle_nest(x->first, x->second));
+              SILVA_EXPECT_FWD(handle_nest(gg_rule, res.level_name, x->first, x->second));
               continue;
             }
           }
@@ -451,6 +456,34 @@ namespace silva::parse_axe {
       SILVA_EXPECT(stack_pair.atom_stack.front().atom_tree_node_index + 1 == atom_tree.nodes.size(),
                    MINOR);
       return {};
+    }
+
+    expected_t<parse_tree_sub_t>
+    generate_output(const index_t atom_tree_node_index,
+                    const parse_tree_t& leave_atoms_tree,
+                    const vector_t<index_t>& leave_atoms_tree_child_node_indexes)
+    {
+      const atom_tree_node_t& node = atom_tree.nodes[atom_tree_node_index];
+      auto gg_rule                 = nursery.guard_for_rule(false);
+      gg_rule.set_rule_name(node.name);
+      if (node.atom_child_index.has_value()) {
+        const index_t aci            = node.atom_child_index.value();
+        const index_t lat_node_index = leave_atoms_tree_child_node_indexes[aci];
+        gg_rule.implant(leave_atoms_tree, lat_node_index);
+      }
+      else {
+        SILVA_EXPECT_FWD(atom_tree.visit_children(
+            [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
+              gg_rule.sub += SILVA_EXPECT_FWD(generate_output(node_index,
+                                                              leave_atoms_tree,
+                                                              leave_atoms_tree_child_node_indexes));
+              return true;
+            },
+            atom_tree_node_index));
+      }
+      gg_rule.sub.token_begin = node.token_range.first;
+      gg_rule.sub.token_end   = node.token_range.second;
+      return gg_rule.release();
     }
 
     expected_t<parse_tree_sub_t> go()

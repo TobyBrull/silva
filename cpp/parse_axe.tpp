@@ -77,6 +77,11 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
   token_context_t tc;
   vector_t<parse_axe_level_desc_t> level_descs;
   level_descs.push_back(parse_axe_level_desc_t{
+      .name  = tc.full_name_id_of("expr", "nst"),
+      .assoc = NEST,
+      .opers = {atom_nest_t{tc.token_id("("), tc.token_id(")")}},
+  });
+  level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.full_name_id_of("expr", "dot"),
       .assoc = RIGHT_TO_LEFT,
       .opers = {infix_t{tc.token_id(".")}},
@@ -127,10 +132,7 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
       .opers = {infix_t{tc.token_id("=")}},
   });
   const auto pa =
-      SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(),
-                                            tc.full_name_id_of("parseaxe"),
-                                            atom_nest_t{tc.token_id("("), tc.token_id(")")},
-                                            level_descs));
+      SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), tc.full_name_id_of("parseaxe"), level_descs));
   CHECK(!pa.concat.has_value());
   CHECK(pa.results.size() == 15);
   CHECK(pa.results.at(tc.token_id("=")) ==
@@ -198,10 +200,8 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
             .prefix =
                 result_oper_t<oper_prefix_t>{
                     .oper       = atom_nest_t{tc.token_id("("), tc.token_id(")")},
-                    .level_name = full_name_id_none,
-                    .precedence =
-                        precedence_t{.level_index = std::numeric_limits<level_index_t>::max(),
-                                     .assoc       = INVALID},
+                    .level_name = tc.full_name_id_of("expr", "nst"),
+                    .precedence = precedence_t{.level_index = 11, .assoc = NEST},
                 },
             .regular          = none,
             .is_right_bracket = false,
@@ -263,13 +263,6 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
     [0].expr.prf                                  + 1
       [0].test.atom                               1
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a + - + 1", R"(
-[0].expr.add                                      a + - ...
-  [0].test.atom                                   a
-  [1].expr.prf                                    - + 1
-    [0].expr.prf                                  + 1
-      [0].test.atom                               1
-)");
   test::test_parse_axe(tc.ptr(), pa, "- - 1 * 2", R"(
 [0].expr.mul                                      - - 1 ...
   [0].expr.prf                                    - - 1
@@ -283,19 +276,6 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
     [0].expr.dot                                  1 . 2
       [0].test.atom                               1
       [1].test.atom                               2
-)");
-  test::test_parse_axe(tc.ptr(), pa, "- - 1 . 2", R"(
-[0].expr.prf                                      - - 1 ...
-  [0].expr.prf                                    - 1 . ...
-    [0].expr.dot                                  1 . 2
-      [0].test.atom                               1
-      [1].test.atom                               2
-)");
-  test::test_parse_axe(tc.ptr(), pa, "1 . 2 !", R"(
-[0].expr.exc                                      1 . 2 ...
-  [0].expr.dot                                    1 . 2
-    [0].test.atom                                 1
-    [1].test.atom                                 2
 )");
   test::test_parse_axe(tc.ptr(), pa, "1 . 2 !", R"(
 [0].expr.exc                                      1 . 2 ...
@@ -323,4 +303,19 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
     [0].test.atom                                 2
 )");
   test::test_parse_axe(tc.ptr(), pa, "~ + 2", none);
+  test::test_parse_axe(tc.ptr(), pa, "( ( 0 ) )", R"(
+[0].expr.nst                                      ( ( 0 ...
+  [0].expr.nst                                    ( 0 )
+    [0].test.atom                                 0
+)");
+  test::test_parse_axe(tc.ptr(), pa, "1 * ( 2 + 3 ) * 4", R"(
+[0].expr.mul                                      1 * ( ...
+  [0].expr.mul                                    1 * ( ...
+    [0].test.atom                                 1
+    [1].expr.nst                                  ( 2 + ...
+      [0].expr.add                                2 + 3
+        [0].test.atom                             2
+        [1].test.atom                             3
+  [1].test.atom                                   4
+)");
 }

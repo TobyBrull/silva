@@ -9,7 +9,8 @@
 - A_Primary,0 = "(" A_Expr ")"
 - A_Primary,1 = number
 
-- B_Expr =% B_Atom primary_nest "(" ")" [
+- B_Expr =% B_Atom [
+    - Parens      = nest  "(" ")"
     - Namespace   = ltr   infix "::"
     - Postfix     = ltr   postfix "++" "--" 
                           postfix_nest "(" ")" "[" "]"
@@ -21,7 +22,7 @@
     - Addition    = ltr   infix "+" "-"
     - Bitshift    = ltr   infix "<<" ">>"
     - Spaceship   = ltr   infix "<=>"
-    - Comparison  = flat  infix "<" "<=" ">" ">="
+    - Comparison  = flat  "<" "<=" ">" ">="
     - Equality    = ltr   infix "==" "!="
     - BitAnd      = ltr   infix "&"
     - BitXor      = ltr   infix "^"
