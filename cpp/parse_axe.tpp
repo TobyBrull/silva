@@ -55,16 +55,20 @@ namespace silva::test {
   void test_parse_axe(token_context_ptr_t tcp,
                       const parse_axe_t& pa,
                       const string_view_t text,
-                      const string_view_t expected_str)
+                      const optional_t<string_view_t> expected_str)
   {
+    INFO(text);
     auto maybe_tt = tokenize(tcp, "", string_t{text});
     REQUIRE(maybe_tt.has_value());
     auto tt              = std::move(maybe_tt).value();
     auto maybe_result_pt = run_parse_axe(pa, share(std::move(tt)));
-    REQUIRE(maybe_result_pt.has_value());
+    REQUIRE(maybe_result_pt.has_value() == expected_str.has_value());
+    if (!expected_str.has_value()) {
+      return;
+    }
     auto result_pt        = std::move(maybe_result_pt).value();
     const auto result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*result_pt));
-    CHECK(result_str == expected_str.substr(1));
+    CHECK(result_str == expected_str.value().substr(1));
   }
 }
 
@@ -280,4 +284,43 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
       [0].test.atom                               1
       [1].test.atom                               2
 )");
+  test::test_parse_axe(tc.ptr(), pa, "- - 1 . 2", R"(
+[0].expr.prf                                      - - 1 ...
+  [0].expr.prf                                    - 1 . ...
+    [0].expr.dot                                  1 . 2
+      [0].test.atom                               1
+      [1].test.atom                               2
+)");
+  test::test_parse_axe(tc.ptr(), pa, "1 . 2 !", R"(
+[0].expr.exc                                      1 . 2 ...
+  [0].expr.dot                                    1 . 2
+    [0].test.atom                                 1
+    [1].test.atom                                 2
+)");
+  test::test_parse_axe(tc.ptr(), pa, "1 . 2 !", R"(
+[0].expr.exc                                      1 . 2 ...
+  [0].expr.dot                                    1 . 2
+    [0].test.atom                                 1
+    [1].test.atom                                 2
+)");
+  test::test_parse_axe(tc.ptr(), pa, "1 + 2 !", R"(
+[0].expr.add                                      1 + 2 ...
+  [0].test.atom                                   1
+  [1].expr.exc                                    2 !
+    [0].test.atom                                 2
+)");
+  test::test_parse_axe(tc.ptr(), pa, "2 ! . 3", none);
+  test::test_parse_axe(tc.ptr(), pa, "2 . - 3", none);
+  test::test_parse_axe(tc.ptr(), pa, "2 $ !", R"(
+[0].expr.exc                                      2 $ !
+  [0].expr.dol                                    2 $
+    [0].test.atom                                 2
+)");
+  test::test_parse_axe(tc.ptr(), pa, "2 ! $", none);
+  test::test_parse_axe(tc.ptr(), pa, "+ ~ 2", R"(
+[0].expr.prf                                      + ~ 2
+  [0].expr.til                                    ~ 2
+    [0].test.atom                                 2
+)");
+  test::test_parse_axe(tc.ptr(), pa, "~ + 2", none);
 }

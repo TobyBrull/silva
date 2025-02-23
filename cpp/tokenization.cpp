@@ -119,6 +119,7 @@ namespace silva {
         '!',
         '?',
         ';',
+        '$',
     };
     constexpr char number_chars[] = {'.', '`', 'e'};
 
