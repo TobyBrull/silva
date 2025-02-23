@@ -333,6 +333,8 @@ namespace silva::parse_axe {
             },
             atom_tree_node_index));
       }
+      gg_rule.sub.token_begin = node.token_range.first;
+      gg_rule.sub.token_end   = node.token_range.second;
       return gg_rule.release();
     }
 
@@ -407,7 +409,7 @@ namespace silva::parse_axe {
                   .level_name          = res.level_name,
                   .precedence          = res.precedence,
                   .covered_token_index = nursery.token_index,
-                  .max_token_index     = nursery.token_index,
+                  .max_token_index     = nursery.token_index + 1,
               });
               nursery.token_index += 1;
               continue;
