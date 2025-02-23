@@ -338,10 +338,8 @@ namespace silva::parse_axe {
       return gg_rule.release();
     }
 
-    expected_t<parse_tree_sub_t> go()
+    expected_t<void> go_parse(parse_tree_guard_for_rule_t& gg_rule)
     {
-      auto gg_rule = nursery.guard_for_rule();
-
       while (nursery.num_tokens_left() >= 1) {
         const auto it = parse_axe.results.find(nursery.token_id_by());
         if (it == parse_axe.results.end()) {
@@ -439,6 +437,14 @@ namespace silva::parse_axe {
         SILVA_EXPECT(false, ASSERT);
       }
       SILVA_EXPECT_FWD(stack_pop(precedence_min));
+      return {};
+    }
+
+    expected_t<parse_tree_sub_t> go()
+    {
+      auto gg_rule = nursery.guard_for_rule();
+
+      SILVA_EXPECT_FWD(go_parse(gg_rule));
 
       SILVA_EXPECT(oper_stack.empty(), MINOR);
       SILVA_EXPECT(atom_stack.size() == 1, MINOR);
