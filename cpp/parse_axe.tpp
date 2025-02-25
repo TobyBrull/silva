@@ -9,11 +9,47 @@ using namespace silva::parse_axe;
 using enum assoc_t;
 
 namespace silva::test {
-  struct parse_axe_parse_tree_nursery_t : public parse_tree_nursery_t {
+  template<typename ParseAxeNursery>
+  expected_t<unique_ptr_t<parse_tree_t>>
+  run_parse_axe(const parse_axe_t& parse_axe, shared_ptr_t<const tokenization_t> tokenization)
+  {
+    expected_traits_t expected_traits{.materialize_fwd = true};
+    const index_t n = tokenization->tokens.size();
+    ParseAxeNursery nursery(parse_axe, std::move(tokenization));
+    const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.expression());
+    SILVA_EXPECT(sub.num_children == 1, ASSERT);
+    SILVA_EXPECT(sub.num_children_total == nursery.retval.nodes.size(), ASSERT);
+    SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
+    return {std::make_unique<parse_tree_t>(std::move(nursery.retval))};
+  }
+
+  template<typename ParseAxeNursery>
+  void test_parse_axe(token_context_ptr_t tcp,
+                      const parse_axe_t& pa,
+                      const string_view_t text,
+                      const optional_t<string_view_t> expected_str)
+  {
+    INFO(text);
+    auto maybe_tt = tokenize(tcp, "", string_t{text});
+    REQUIRE(maybe_tt.has_value());
+    auto tt              = std::move(maybe_tt).value();
+    auto maybe_result_pt = run_parse_axe<ParseAxeNursery>(pa, share(std::move(tt)));
+    REQUIRE(maybe_result_pt.has_value() == expected_str.has_value());
+    if (!expected_str.has_value()) {
+      return;
+    }
+    auto result_pt        = std::move(maybe_result_pt).value();
+    const auto result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*result_pt));
+    CHECK(result_str == expected_str.value().substr(1));
+  }
+}
+
+TEST_CASE("parse-axe-basic", "[parse_axe_t]")
+{
+  struct test_nursery_t : public parse_tree_nursery_t {
     const parse_axe_t& parse_axe;
 
-    parse_axe_parse_tree_nursery_t(const parse_axe_t& parse_axe,
-                                   shared_ptr_t<const tokenization_t> tokenization)
+    test_nursery_t(const parse_axe_t& parse_axe, shared_ptr_t<const tokenization_t> tokenization)
       : parse_tree_nursery_t(tokenization), parse_axe(parse_axe)
     {
     }
@@ -34,46 +70,11 @@ namespace silva::test {
     expected_t<parse_tree_sub_t> expression()
     {
       using dg_t = delegate_t<expected_t<parse_tree_sub_t>()>;
-      auto dg    = dg_t::make<&parse_axe_parse_tree_nursery_t::atom>(this);
+      auto dg    = dg_t::make<&test_nursery_t::atom>(this);
       return parse_axe.apply(*this, tcp->full_name_id_of("atom"), dg);
     }
   };
 
-  expected_t<unique_ptr_t<parse_tree_t>>
-  run_parse_axe(const parse_axe_t& parse_axe, shared_ptr_t<const tokenization_t> tokenization)
-  {
-    expected_traits_t expected_traits{.materialize_fwd = true};
-    const index_t n = tokenization->tokens.size();
-    parse_axe_parse_tree_nursery_t nursery(parse_axe, std::move(tokenization));
-    const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.expression());
-    SILVA_EXPECT(sub.num_children == 1, ASSERT);
-    SILVA_EXPECT(sub.num_children_total == nursery.retval.nodes.size(), ASSERT);
-    SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
-    return {std::make_unique<parse_tree_t>(std::move(nursery.retval))};
-  }
-
-  void test_parse_axe(token_context_ptr_t tcp,
-                      const parse_axe_t& pa,
-                      const string_view_t text,
-                      const optional_t<string_view_t> expected_str)
-  {
-    INFO(text);
-    auto maybe_tt = tokenize(tcp, "", string_t{text});
-    REQUIRE(maybe_tt.has_value());
-    auto tt              = std::move(maybe_tt).value();
-    auto maybe_result_pt = run_parse_axe(pa, share(std::move(tt)));
-    REQUIRE(maybe_result_pt.has_value() == expected_str.has_value());
-    if (!expected_str.has_value()) {
-      return;
-    }
-    auto result_pt        = std::move(maybe_result_pt).value();
-    const auto result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*result_pt));
-    CHECK(result_str == expected_str.value().substr(1));
-  }
-}
-
-TEST_CASE("parse-axe-basic", "[parse_axe_t]")
-{
   token_context_t tc;
   vector_t<parse_axe_level_desc_t> level_descs;
   level_descs.push_back(parse_axe_level_desc_t{
@@ -213,15 +214,15 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
             .is_right_bracket = true,
         });
 
-  test::test_parse_axe(tc.ptr(), pa, "1", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "1", R"(
 [0].test.atom                                     1
 )");
-  test::test_parse_axe(tc.ptr(), pa, "1 + 2", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "1 + 2", R"(
 [0].expr.add                                      1 + 2
   [0].test.atom                                   1
   [1].test.atom                                   2
 )");
-  test::test_parse_axe(tc.ptr(), pa, "1 + 2 * 3 + 4", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "1 + 2 * 3 + 4", R"(
 [0].expr.add                                      1 + 2 ...
   [0].expr.add                                    1 + 2 ...
     [0].test.atom                                 1
@@ -230,7 +231,10 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
       [1].test.atom                               3
   [1].test.atom                                   4
 )");
-  test::test_parse_axe(tc.ptr(), pa, "1 + 2 + f . g . h * 3 * 4", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(),
+                                       pa,
+                                       "1 + 2 + f . g . h * 3 * 4",
+                                       R"(
 [0].expr.add                                      1 + 2 ...
   [0].expr.add                                    1 + 2
     [0].test.atom                                 1
@@ -245,70 +249,70 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
       [1].test.atom                               3
     [1].test.atom                                 4
 )");
-  test::test_parse_axe(tc.ptr(), pa, "2 ! + 3", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "2 ! + 3", R"(
 [0].expr.add                                      2 ! + ...
   [0].expr.exc                                    2 !
     [0].test.atom                                 2
   [1].test.atom                                   3
 )");
-  test::test_parse_axe(tc.ptr(), pa, " - + 1", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, " - + 1", R"(
 [0].expr.prf                                      - + 1
   [0].expr.prf                                    + 1
     [0].test.atom                                 1
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a + - + 1", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a + - + 1", R"(
 [0].expr.add                                      a + - ...
   [0].test.atom                                   a
   [1].expr.prf                                    - + 1
     [0].expr.prf                                  + 1
       [0].test.atom                               1
 )");
-  test::test_parse_axe(tc.ptr(), pa, "- - 1 * 2", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "- - 1 * 2", R"(
 [0].expr.mul                                      - - 1 ...
   [0].expr.prf                                    - - 1
     [0].expr.prf                                  - 1
       [0].test.atom                               1
   [1].test.atom                                   2
 )");
-  test::test_parse_axe(tc.ptr(), pa, "- - 1 . 2", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "- - 1 . 2", R"(
 [0].expr.prf                                      - - 1 ...
   [0].expr.prf                                    - 1 . ...
     [0].expr.dot                                  1 . 2
       [0].test.atom                               1
       [1].test.atom                               2
 )");
-  test::test_parse_axe(tc.ptr(), pa, "1 . 2 !", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "1 . 2 !", R"(
 [0].expr.exc                                      1 . 2 ...
   [0].expr.dot                                    1 . 2
     [0].test.atom                                 1
     [1].test.atom                                 2
 )");
-  test::test_parse_axe(tc.ptr(), pa, "1 + 2 !", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "1 + 2 !", R"(
 [0].expr.add                                      1 + 2 ...
   [0].test.atom                                   1
   [1].expr.exc                                    2 !
     [0].test.atom                                 2
 )");
-  test::test_parse_axe(tc.ptr(), pa, "2 ! . 3", none);
-  test::test_parse_axe(tc.ptr(), pa, "2 . - 3", none);
-  test::test_parse_axe(tc.ptr(), pa, "2 $ !", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "2 ! . 3", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "2 . - 3", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "2 $ !", R"(
 [0].expr.exc                                      2 $ !
   [0].expr.dol                                    2 $
     [0].test.atom                                 2
 )");
-  test::test_parse_axe(tc.ptr(), pa, "2 ! $", none);
-  test::test_parse_axe(tc.ptr(), pa, "+ ~ 2", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "2 ! $", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "+ ~ 2", R"(
 [0].expr.prf                                      + ~ 2
   [0].expr.til                                    ~ 2
     [0].test.atom                                 2
 )");
-  test::test_parse_axe(tc.ptr(), pa, "~ + 2", none);
-  test::test_parse_axe(tc.ptr(), pa, "( ( 0 ) )", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "~ + 2", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "( ( 0 ) )", R"(
 [0].expr.nst                                      ( ( 0 ...
   [0].expr.nst                                    ( 0 )
     [0].test.atom                                 0
 )");
-  test::test_parse_axe(tc.ptr(), pa, "1 * ( 2 + 3 ) * 4", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "1 * ( 2 + 3 ) * 4", R"(
 [0].expr.mul                                      1 * ( ...
   [0].expr.mul                                    1 * ( ...
     [0].test.atom                                 1
@@ -318,7 +322,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
         [1].test.atom                             3
   [1].test.atom                                   4
 )");
-  test::test_parse_axe(tc.ptr(), pa, "1 * ( 2 + 3 ) * 4", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "1 * ( 2 + 3 ) * 4", R"(
 [0].expr.mul                                      1 * ( ...
   [0].expr.mul                                    1 * ( ...
     [0].test.atom                                 1
@@ -328,20 +332,20 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
         [1].test.atom                             3
   [1].test.atom                                   4
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a [ 0 ]", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a [ 0 ]", R"(
 [0].expr.sub                                      a [ 0 ...
   [0].test.atom                                   a
   [1].test.atom                                   0
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a [ 0 ] [ 1 ]", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a [ 0 ] [ 1 ]", R"(
 [0].expr.sub                                      a [ 0 ...
   [0].expr.sub                                    a [ 0 ...
     [0].test.atom                                 a
     [1].test.atom                                 0
   [1].test.atom                                   1
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a [ 0 ] . b [ 1 ]", none);
-  test::test_parse_axe(tc.ptr(), pa, "a [ 0 ] + b [ 1 ]", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a [ 0 ] . b [ 1 ]", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a [ 0 ] + b [ 1 ]", R"(
 [0].expr.add                                      a [ 0 ...
   [0].expr.sub                                    a [ 0 ...
     [0].test.atom                                 a
@@ -350,13 +354,13 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
     [0].test.atom                                 b
     [1].test.atom                                 1
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a ? b : c", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a ? b : c", R"(
 [0].expr.ter                                      a ? b ...
   [0].test.atom                                   a
   [1].test.atom                                   b
   [2].test.atom                                   c
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a ? b : c ? d : e", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a ? b : c ? d : e", R"(
 [0].expr.ter                                      a ? b ...
   [0].test.atom                                   a
   [1].test.atom                                   b
@@ -365,7 +369,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
     [1].test.atom                                 d
     [2].test.atom                                 e
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a ? b ? c : d : e", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a ? b ? c : d : e", R"(
 [0].expr.ter                                      a ? b ...
   [0].test.atom                                   a
   [1].expr.ter                                    b ? c ...
@@ -374,7 +378,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
     [2].test.atom                                 d
   [2].test.atom                                   e
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a = b ? c = d : e = f", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a = b ? c = d : e = f", R"(
 [0].expr.eqa                                      a = b ...
   [0].test.atom                                   a
   [1].expr.eqa                                    b ? c ...
@@ -386,7 +390,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
       [2].test.atom                               e
     [1].test.atom                                 f
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a + b ? c + d : e + f", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a + b ? c + d : e + f", R"(
 [0].expr.ter                                      a + b ...
   [0].expr.add                                    a + b
     [0].test.atom                                 a
@@ -400,8 +404,37 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
 )");
 }
 
-TEST_CASE("parse-axe-concat", "[parse_axe_t]")
+TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
 {
+  struct test_nursery_t : public parse_tree_nursery_t {
+    const parse_axe_t& parse_axe;
+
+    test_nursery_t(const parse_axe_t& parse_axe, shared_ptr_t<const tokenization_t> tokenization)
+      : parse_tree_nursery_t(tokenization), parse_axe(parse_axe)
+    {
+    }
+
+    expected_t<parse_tree_sub_t> atom()
+    {
+      auto gg_rule = guard_for_rule();
+      gg_rule.set_rule_name(tcp->full_name_id_of("test", "atom"));
+      SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
+      SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
+                       token_data_by()->category == token_category_t::IDENTIFIER,
+                   MINOR,
+                   "atom expression must be number of identifier");
+      token_index += 1;
+      return gg_rule.release();
+    }
+
+    expected_t<parse_tree_sub_t> expression()
+    {
+      using dg_t = delegate_t<expected_t<parse_tree_sub_t>()>;
+      auto dg    = dg_t::make<&test_nursery_t::atom>(this);
+      return parse_axe.apply(*this, tcp->full_name_id_of("atom"), dg);
+    }
+  };
+
   token_context_t tc;
   vector_t<parse_axe_level_desc_t> level_descs;
   level_descs.push_back(parse_axe_level_desc_t{
@@ -429,27 +462,27 @@ TEST_CASE("parse-axe-concat", "[parse_axe_t]")
   CHECK(pa.has_concat);
   CHECK(pa.results.size() == 7);
 
-  test::test_parse_axe(tc.ptr(), pa, "x y z", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "x y z", R"(
 [0].expr.cat                                      x y z
   [0].expr.cat                                    x y
     [0].test.atom                                 x
     [1].test.atom                                 y
   [1].test.atom                                   z
 )");
-  test::test_parse_axe(tc.ptr(), pa, "{ b } a", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "{ b } a", R"(
 [0].expr.prf_lo                                   { b } ...
   [0].test.atom                                   b
   [1].test.atom                                   a
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a { b } c", none);
-  test::test_parse_axe(tc.ptr(), pa, "a ( b ) c", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a { b } c", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a ( b ) c", R"(
 [0].expr.cat                                      a ( b ...
   [0].test.atom                                   a
   [1].expr.prf_hi                                 ( b ) ...
     [0].test.atom                                 b
     [1].test.atom                                 c
 )");
-  test::test_parse_axe(tc.ptr(), pa, "a << { b } c >>", R"(
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a << { b } c >>", R"(
 [0].expr.cat                                      a << { ...
   [0].test.atom                                   a
   [1].expr.nst                                    << { b ...
@@ -457,5 +490,5 @@ TEST_CASE("parse-axe-concat", "[parse_axe_t]")
       [0].test.atom                               b
       [1].test.atom                               c
 )");
-  test::test_parse_axe(tc.ptr(), pa, "<< a { b } >> c", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "<< a { b } >> c", none);
 }
