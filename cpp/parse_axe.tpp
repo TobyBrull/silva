@@ -72,7 +72,7 @@ namespace silva::test {
   }
 }
 
-TEST_CASE("parse-axe", "[parse_axe_t]")
+TEST_CASE("parse-axe-basic", "[parse_axe_t]")
 {
   token_context_t tc;
   vector_t<parse_axe_level_desc_t> level_descs;
@@ -133,7 +133,7 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
   });
   const auto pa =
       SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), tc.full_name_id_of("parseaxe"), level_descs));
-  CHECK(!pa.concat.has_value());
+  CHECK(!pa.has_concat);
   CHECK(pa.results.size() == 15);
   CHECK(pa.results.at(tc.token_id("=")) ==
         parse_axe_result_t{
@@ -398,4 +398,64 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
     [0].test.atom                                 e
     [1].test.atom                                 f
 )");
+}
+
+TEST_CASE("parse-axe-concat", "[parse_axe_t]")
+{
+  token_context_t tc;
+  vector_t<parse_axe_level_desc_t> level_descs;
+  level_descs.push_back(parse_axe_level_desc_t{
+      .name  = tc.full_name_id_of("expr", "nst"),
+      .assoc = NEST,
+      .opers = {atom_nest_t{tc.token_id("<<"), tc.token_id(">>")}},
+  });
+  level_descs.push_back(parse_axe_level_desc_t{
+      .name  = tc.full_name_id_of("expr", "prf_hi"),
+      .assoc = RIGHT_TO_LEFT,
+      .opers = {prefix_nest_t{tc.token_id("("), tc.token_id(")")}},
+  });
+  level_descs.push_back(parse_axe_level_desc_t{
+      .name  = tc.full_name_id_of("expr", "cat"),
+      .assoc = LEFT_TO_RIGHT,
+      .opers = {infix_t{token_id_none}},
+  });
+  level_descs.push_back(parse_axe_level_desc_t{
+      .name  = tc.full_name_id_of("expr", "prf_lo"),
+      .assoc = RIGHT_TO_LEFT,
+      .opers = {prefix_nest_t{tc.token_id("{"), tc.token_id("}")}},
+  });
+  const auto pa =
+      SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), tc.full_name_id_of("parseaxe"), level_descs));
+  CHECK(pa.has_concat);
+  CHECK(pa.results.size() == 7);
+
+  test::test_parse_axe(tc.ptr(), pa, "x y z", R"(
+[0].expr.cat                                      x y z
+  [0].expr.cat                                    x y
+    [0].test.atom                                 x
+    [1].test.atom                                 y
+  [1].test.atom                                   z
+)");
+  test::test_parse_axe(tc.ptr(), pa, "{ b } a", R"(
+[0].expr.prf_lo                                   { b } ...
+  [0].test.atom                                   b
+  [1].test.atom                                   a
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a { b } c", none);
+  test::test_parse_axe(tc.ptr(), pa, "a ( b ) c", R"(
+[0].expr.cat                                      a ( b ...
+  [0].test.atom                                   a
+  [1].expr.prf_hi                                 ( b ) ...
+    [0].test.atom                                 b
+    [1].test.atom                                 c
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a << { b } c >>", R"(
+[0].expr.cat                                      a << { ...
+  [0].test.atom                                   a
+  [1].expr.nst                                    << { b ...
+    [0].expr.prf_lo                               { b } ...
+      [0].test.atom                               b
+      [1].test.atom                               c
+)");
+  test::test_parse_axe(tc.ptr(), pa, "<< a { b } >> c", none);
 }

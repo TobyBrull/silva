@@ -166,6 +166,11 @@ namespace silva::parse_axe {
         }
       }
     }
+
+    if (const auto it = retval.results.find(token_id_none); it != retval.results.end()) {
+      retval.has_concat = true;
+    }
+
     return retval;
   }
 
@@ -312,8 +317,6 @@ namespace silva::parse_axe {
       }
     };
 
-    void hallucinate_concat() { SILVA_ASSERT(false); }
-
     expected_t<pair_t<index_t, index_t>> handle_nest(parse_tree_guard_for_rule_t& gg_rule,
                                                      const token_id_t left_token,
                                                      const token_id_t right_token)
@@ -335,6 +338,23 @@ namespace silva::parse_axe {
     {
       stack_pair_t stack_pair{.atom_tree = &atom_tree};
       mode_t mode = ATOM_MODE;
+
+      const auto hallucinate_concat = [&]() -> expected_t<void> {
+        const auto it = parse_axe.results.find(token_id_none);
+        SILVA_EXPECT(it != parse_axe.results.end(), ASSERT);
+        SILVA_EXPECT(it->second.regular.has_value(), ASSERT);
+        const auto& reg = it->second.regular.value();
+        SILVA_EXPECT_FWD(stack_pair.stack_pop(reg.precedence));
+        stack_pair.oper_stack.push_back(oper_item_t{
+            .oper       = infix_t{token_id_none},
+            .arity      = infix_t::arity,
+            .level_name = reg.level_name,
+            .precedence = reg.precedence,
+        });
+        mode = ATOM_MODE;
+        return {};
+      };
+
       while (nursery.num_tokens_left() >= 1) {
         const auto it = parse_axe.results.find(nursery.token_id_by());
         if (it == parse_axe.results.end()) {
@@ -348,8 +368,8 @@ namespace silva::parse_axe {
             stack_pair.atom_stack.push_back(atom_item_t{maybe_atom_tree_node_index.value()});
             continue;
           }
-          else {
-            hallucinate_concat();
+          if (mode == INFIX_MODE && parse_axe.has_concat) {
+            SILVA_EXPECT_FWD(hallucinate_concat());
             continue;
           }
         }
@@ -358,14 +378,14 @@ namespace silva::parse_axe {
           if (pa_result.is_right_bracket) {
             break;
           }
-          if (mode == INFIX_MODE && parse_axe.concat.has_value()) {
+          if (mode == INFIX_MODE && parse_axe.has_concat) {
             if (pa_result.prefix.has_value() && !pa_result.regular.has_value()) {
-              hallucinate_concat();
+              SILVA_EXPECT_FWD(hallucinate_concat());
               continue;
             }
             if (pa_result.prefix.has_value() &&
                 variant_holds_t<atom_nest_t>{}(pa_result.prefix.value().oper)) {
-              hallucinate_concat();
+              SILVA_EXPECT_FWD(hallucinate_concat());
               continue;
             }
           }
@@ -406,6 +426,15 @@ namespace silva::parse_axe {
             else if (const auto* x = std::get_if<prefix_nest_t>(&res.oper)) {
               const auto [token_begin, token_end] =
                   SILVA_EXPECT_FWD(handle_nest(gg_rule, x->left_bracket, x->right_bracket));
+              stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.nodes.size() - 1)});
+              stack_pair.oper_stack.push_back(oper_item_t{
+                  .oper                  = *x,
+                  .arity                 = prefix_nest_t::arity,
+                  .level_name            = res.level_name,
+                  .precedence            = res.precedence,
+                  .covered_token_indexes = {token_begin, token_end - 1},
+                  .min_token_index       = token_begin,
+              });
               continue;
             }
           }

@@ -116,7 +116,7 @@ namespace silva::parse_axe {
     token_context_ptr_t tcp;
     full_name_id_t name = 0;
     hashmap_t<token_id_t, parse_axe_result_t> results;
-    optional_t<precedence_t> concat;
+    bool has_concat = false;
 
     expected_t<parse_tree_sub_t> apply(parse_tree_nursery_t&,
                                        full_name_id_t atom_name_id,
