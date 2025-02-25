@@ -350,4 +350,52 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
     [0].test.atom                                 b
     [1].test.atom                                 1
 )");
+  test::test_parse_axe(tc.ptr(), pa, "a ? b : c", R"(
+[0].expr.ter                                      a ? b ...
+  [0].test.atom                                   a
+  [1].test.atom                                   b
+  [2].test.atom                                   c
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a ? b : c ? d : e", R"(
+[0].expr.ter                                      a ? b ...
+  [0].test.atom                                   a
+  [1].test.atom                                   b
+  [2].expr.ter                                    c ? d ...
+    [0].test.atom                                 c
+    [1].test.atom                                 d
+    [2].test.atom                                 e
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a ? b ? c : d : e", R"(
+[0].expr.ter                                      a ? b ...
+  [0].test.atom                                   a
+  [1].expr.ter                                    b ? c ...
+    [0].test.atom                                 b
+    [1].test.atom                                 c
+    [2].test.atom                                 d
+  [2].test.atom                                   e
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a = b ? c = d : e = f", R"(
+[0].expr.eqa                                      a = b ...
+  [0].test.atom                                   a
+  [1].expr.eqa                                    b ? c ...
+    [0].expr.ter                                  b ? c ...
+      [0].test.atom                               b
+      [1].expr.eqa                                c = d
+        [0].test.atom                             c
+        [1].test.atom                             d
+      [2].test.atom                               e
+    [1].test.atom                                 f
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a + b ? c + d : e + f", R"(
+[0].expr.ter                                      a + b ...
+  [0].expr.add                                    a + b
+    [0].test.atom                                 a
+    [1].test.atom                                 b
+  [1].expr.add                                    c + d
+    [0].test.atom                                 c
+    [1].test.atom                                 d
+  [2].expr.add                                    e + f
+    [0].test.atom                                 e
+    [1].test.atom                                 f
+)");
 }

@@ -455,6 +455,15 @@ namespace silva::parse_axe {
             else if (const auto* x = std::get_if<ternary_t>(&res.oper)) {
               const auto [token_begin, token_end] =
                   SILVA_EXPECT_FWD(handle_nest(gg_rule, x->first, x->second));
+              stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.nodes.size() - 1)});
+              stack_pair.oper_stack.push_back(oper_item_t{
+                  .oper                  = *x,
+                  .arity                 = ternary_t::arity,
+                  .level_name            = res.level_name,
+                  .precedence            = res.precedence,
+                  .covered_token_indexes = {token_begin, token_end - 1},
+              });
+              mode = ATOM_MODE;
               continue;
             }
           }
