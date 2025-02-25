@@ -18,7 +18,7 @@ namespace silva {
 
     small_vector_t() = default;
 
-    small_vector_t(index_t init_size, const T& init_value = T{});
+    small_vector_t(std::initializer_list<index_t>);
 
     small_vector_t(small_vector_t&&);
     small_vector_t& operator=(small_vector_t&&);
@@ -50,10 +50,11 @@ namespace silva {
   }
 
   template<typename T, index_t N>
-  small_vector_t<T, N>::small_vector_t(index_t init_size, const T& init_value) : size(init_size)
+  small_vector_t<T, N>::small_vector_t(std::initializer_list<index_t> il)
   {
-    for (index_t i = 0; i < size; ++i) {
-      std::construct_at<T>(&(*this)[i], init_value);
+    SILVA_ASSERT(il.size() <= N);
+    for (const auto& x: il) {
+      emplace_back(x);
     }
   }
 

@@ -318,4 +318,36 @@ TEST_CASE("parse-axe", "[parse_axe_t]")
         [1].test.atom                             3
   [1].test.atom                                   4
 )");
+  test::test_parse_axe(tc.ptr(), pa, "1 * ( 2 + 3 ) * 4", R"(
+[0].expr.mul                                      1 * ( ...
+  [0].expr.mul                                    1 * ( ...
+    [0].test.atom                                 1
+    [1].expr.nst                                  ( 2 + ...
+      [0].expr.add                                2 + 3
+        [0].test.atom                             2
+        [1].test.atom                             3
+  [1].test.atom                                   4
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a [ 0 ]", R"(
+[0].expr.sub                                      a [ 0 ...
+  [0].test.atom                                   a
+  [1].test.atom                                   0
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a [ 0 ] [ 1 ]", R"(
+[0].expr.sub                                      a [ 0 ...
+  [0].expr.sub                                    a [ 0 ...
+    [0].test.atom                                 a
+    [1].test.atom                                 0
+  [1].test.atom                                   1
+)");
+  test::test_parse_axe(tc.ptr(), pa, "a [ 0 ] . b [ 1 ]", none);
+  test::test_parse_axe(tc.ptr(), pa, "a [ 0 ] + b [ 1 ]", R"(
+[0].expr.add                                      a [ 0 ...
+  [0].expr.sub                                    a [ 0 ...
+    [0].test.atom                                 a
+    [1].test.atom                                 0
+  [1].expr.sub                                    b [ 1 ...
+    [0].test.atom                                 b
+    [1].test.atom                                 1
+)");
 }
