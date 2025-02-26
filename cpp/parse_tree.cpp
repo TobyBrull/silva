@@ -18,7 +18,7 @@ namespace silva {
   {
     token_context_ptr_t tcp = pt.tokenization->context;
     return tree_to_string(pt, [&](string_t& curr_line, auto& node) {
-      curr_line += tcp->full_name_to_string(node.rule_name, ".");
+      curr_line += tcp->full_name_to_string(node.rule_name);
       while (curr_line.size() < token_offset) {
         curr_line.push_back(' ');
       }
@@ -41,7 +41,7 @@ namespace silva {
     token_context_ptr_t tcp = pt.tokenization->context;
     return tree_to_graphviz(pt, [&](auto& node) {
       return fmt::format("{}\\n{}",
-                         tcp->full_name_to_string(node.rule_name, "."),
+                         tcp->full_name_to_string(node.rule_name),
                          string_escaped(pt.tokenization->token_info_get(node.token_begin)->str));
     });
   }

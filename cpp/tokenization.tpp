@@ -48,6 +48,7 @@ TEST_CASE("tokenization", "[tokenization_t]")
     const full_name_id_t name1 = tc.full_name_id(vv_t{ti_silva, ti_expr, ti_stmt});
     CHECK(tc.full_name_infos.size() == 4);
     CHECK(tc.full_name_lookup.size() == 4);
+    CHECK(tc.full_name_to_string(name1) == "`silva`expr`stmt");
     CHECK(tc.full_name_to_string(name1, "::") == "::silva::expr::stmt");
 
     const full_name_id_t name2 = tc.full_name_id(vv_t{ti_silva, ti_expr, ti_expr});

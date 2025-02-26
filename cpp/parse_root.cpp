@@ -446,8 +446,7 @@ namespace silva {
       {
         const parse_tree_t::node_t& seed_node_expr = seed_pt->nodes[rule.expr_node_index];
         if (seed_node_expr.rule_name == fni_deriv_0) {
-          return apply_derivation_0(tcp->full_name_to_string(rule.rule_name, "."),
-                                    rule.expr_node_index);
+          return apply_derivation_0(tcp->full_name_to_string(rule.rule_name), rule.expr_node_index);
         }
         else if (seed_node_expr.rule_name == fni_deriv_1) {
           return apply_derivation_1(rule.expr_node_index);
@@ -502,11 +501,10 @@ namespace silva {
         }
         return std::unexpected(
             std::move(error_nursery)
-                .finish_short(
-                    retval_error_level,
-                    "{} Expected {} rule",
-                    token_position_at(orig_token_index),
-                    tcp->full_name_to_string(root->rules[base_rule_offset].rule_name, ".")));
+                .finish_short(retval_error_level,
+                              "{} Expected {} rule",
+                              token_position_at(orig_token_index),
+                              tcp->full_name_to_string(root->rules[base_rule_offset].rule_name)));
       }
     };
   }

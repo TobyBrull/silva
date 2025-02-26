@@ -36,59 +36,59 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
   const std::string_view expected = R"(
-[0].Seed.0                                        - SimpleFern = ...
-  [0].Rule.0                                      SimpleFern = "[" ...
-    [0].Nonterminal.0                             SimpleFern
-    [1].Derivation.0                              = "[" ( ...
-      [0].Atom.1                                  "["
-        [0].Primary.1                             "["
-          [0].Terminal.1                          "["
-      [1].Atom.1                                  ( LabeledItem ";" ...
-        [0].Primary.0                             ( LabeledItem ";" ...
-          [0].Atom.1                              LabeledItem
-            [0].Primary.2                         LabeledItem
-              [0].Nonterminal.0                   LabeledItem
-          [1].Atom.1                              ";" ?
-            [0].Primary.1                         ";"
-              [0].Terminal.1                      ";"
-            [1].Suffix.0                          ?
-        [1].Suffix.0                              *
-      [2].Atom.1                                  "]"
-        [0].Primary.1                             "]"
-          [0].Terminal.1                          "]"
-  [1].Rule.0                                      LabeledItem = ( ...
-    [0].Nonterminal.0                             LabeledItem
-    [1].Derivation.0                              = ( Label ...
-      [0].Atom.1                                  ( Label ":" ...
-        [0].Primary.0                             ( Label ":" ...
-          [0].Atom.1                              Label
-            [0].Primary.2                         Label
-              [0].Nonterminal.0                   Label
-          [1].Atom.1                              ":"
-            [0].Primary.1                         ":"
-              [0].Terminal.1                      ":"
-        [1].Suffix.0                              ?
-      [1].Atom.1                                  Item
-        [0].Primary.2                             Item
-          [0].Nonterminal.0                       Item
-  [2].Rule.0                                      Label = string
-    [0].Nonterminal.0                             Label
-    [1].Derivation.0                              = string
-      [0].Atom.1                                  string
-        [0].Primary.1                             string
-          [0].Terminal.1                          string
-  [3].Rule.0                                      Item , 0 ...
-    [0].Nonterminal.0                             Item
-    [1].RulePrecedence.0                          0
-    [2].Derivation.2                              => SimpleFern , ...
-      [0].Nonterminal.0                           SimpleFern
-      [1].RulePrecedence.0                        0
-  [4].Rule.0                                      Item , 1 ...
-    [0].Nonterminal.0                             Item
-    [1].RulePrecedence.0                          1
-    [2].Derivation.1                              =~ string number
-      [0].Terminal.1                              string
-      [1].Terminal.1                              number
+[0]`Seed`0                                        - SimpleFern = ...
+  [0]`Rule`0                                      SimpleFern = "[" ...
+    [0]`Nonterminal`0                             SimpleFern
+    [1]`Derivation`0                              = "[" ( ...
+      [0]`Atom`1                                  "["
+        [0]`Primary`1                             "["
+          [0]`Terminal`1                          "["
+      [1]`Atom`1                                  ( LabeledItem ";" ...
+        [0]`Primary`0                             ( LabeledItem ";" ...
+          [0]`Atom`1                              LabeledItem
+            [0]`Primary`2                         LabeledItem
+              [0]`Nonterminal`0                   LabeledItem
+          [1]`Atom`1                              ";" ?
+            [0]`Primary`1                         ";"
+              [0]`Terminal`1                      ";"
+            [1]`Suffix`0                          ?
+        [1]`Suffix`0                              *
+      [2]`Atom`1                                  "]"
+        [0]`Primary`1                             "]"
+          [0]`Terminal`1                          "]"
+  [1]`Rule`0                                      LabeledItem = ( ...
+    [0]`Nonterminal`0                             LabeledItem
+    [1]`Derivation`0                              = ( Label ...
+      [0]`Atom`1                                  ( Label ":" ...
+        [0]`Primary`0                             ( Label ":" ...
+          [0]`Atom`1                              Label
+            [0]`Primary`2                         Label
+              [0]`Nonterminal`0                   Label
+          [1]`Atom`1                              ":"
+            [0]`Primary`1                         ":"
+              [0]`Terminal`1                      ":"
+        [1]`Suffix`0                              ?
+      [1]`Atom`1                                  Item
+        [0]`Primary`2                             Item
+          [0]`Nonterminal`0                       Item
+  [2]`Rule`0                                      Label = string
+    [0]`Nonterminal`0                             Label
+    [1]`Derivation`0                              = string
+      [0]`Atom`1                                  string
+        [0]`Primary`1                             string
+          [0]`Terminal`1                          string
+  [3]`Rule`0                                      Item , 0 ...
+    [0]`Nonterminal`0                             Item
+    [1]`RulePrecedence`0                          0
+    [2]`Derivation`2                              => SimpleFern , ...
+      [0]`Nonterminal`0                           SimpleFern
+      [1]`RulePrecedence`0                        0
+  [4]`Rule`0                                      Item , 1 ...
+    [0]`Nonterminal`0                             Item
+    [1]`RulePrecedence`0                          1
+    [2]`Derivation`1                              =~ string number
+      [0]`Terminal`1                              string
+      [1]`Terminal`1                              number
 )";
 
   const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*sf_seed_pt_1));
@@ -130,17 +130,17 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   const auto sfpt        = SILVA_EXPECT_REQUIRE(sfpr->apply(sf_tt));
 
   const std::string_view expected_parse_tree = R"(
-[0].SimpleFern.0                                  [ "abc" ; ...
-  [0].LabeledItem.0                               "abc"
-    [0].Item.1                                    "abc"
-  [1].LabeledItem.0                               [ "def" 123 ...
-    [0].SimpleFern.0                              [ "def" 123 ...
-      [0].LabeledItem.0                           "def"
-        [0].Item.1                                "def"
-      [1].LabeledItem.0                           123
-        [0].Item.1                                123
-  [2].LabeledItem.0                               "jkl"
-    [0].Item.1                                    "jkl"
+[0]`SimpleFern`0                                  [ "abc" ; ...
+  [0]`LabeledItem`0                               "abc"
+    [0]`Item`1                                    "abc"
+  [1]`LabeledItem`0                               [ "def" 123 ...
+    [0]`SimpleFern`0                              [ "def" 123 ...
+      [0]`LabeledItem`0                           "def"
+        [0]`Item`1                                "def"
+      [1]`LabeledItem`0                           123
+        [0]`Item`1                                123
+  [2]`LabeledItem`0                               "jkl"
+    [0]`Item`1                                    "jkl"
 )";
   const string_t result{SILVA_EXPECT_REQUIRE(parse_tree_to_string(*sfpt))};
   CHECK(result == expected_parse_tree.substr(1));
