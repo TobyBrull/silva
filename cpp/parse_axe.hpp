@@ -98,7 +98,7 @@ namespace silva::parse_axe {
   template<typename Oper>
   struct result_oper_t {
     Oper oper;
-    full_name_id_t level_name = 0;
+    full_name_id_t name = 0;
     precedence_t precedence;
 
     friend auto operator<=>(const result_oper_t<Oper>&, const result_oper_t<Oper>&) = default;

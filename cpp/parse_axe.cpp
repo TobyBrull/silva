@@ -85,7 +85,7 @@ namespace silva::parse_axe {
                      token_id);
         result.prefix = result_oper_t<oper_prefix_t>{
             .oper       = variant_get<oper_prefix_t>(oper),
-            .level_name = level_name,
+            .name       = retval.tcp->full_name_id(level_name, token_id),
             .precedence = precedence,
         };
       }
@@ -100,7 +100,7 @@ namespace silva::parse_axe {
                      token_id);
         result.regular = result_oper_t<oper_regular_t>{
             .oper       = variant_get<oper_regular_t>(oper),
-            .level_name = level_name,
+            .name       = retval.tcp->full_name_id(level_name, token_id),
             .precedence = precedence,
         };
       }
@@ -348,7 +348,7 @@ namespace silva::parse_axe {
         stack_pair.oper_stack.push_back(oper_item_t{
             .oper       = infix_t{token_id_none},
             .arity      = infix_t::arity,
-            .level_name = reg.level_name,
+            .level_name = reg.name,
             .precedence = reg.precedence,
         });
         mode = ATOM_MODE;
@@ -399,7 +399,7 @@ namespace silva::parse_axe {
                   SILVA_EXPECT_FWD(handle_nest(gg_rule, x->left_bracket, x->right_bracket));
               atom_tree.nodes.push_back(atom_tree_node_t{
                   {
-                      .name             = res.level_name,
+                      .name             = res.name,
                       .flat_flag        = true,
                       .token_range      = {token_begin, token_end},
                       .atom_child_index = none,
@@ -415,7 +415,7 @@ namespace silva::parse_axe {
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = prefix_t::arity,
-                  .level_name            = res.level_name,
+                  .level_name            = res.name,
                   .precedence            = res.precedence,
                   .covered_token_indexes = {nursery.token_index},
                   .min_token_index       = nursery.token_index,
@@ -430,7 +430,7 @@ namespace silva::parse_axe {
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = prefix_nest_t::arity,
-                  .level_name            = res.level_name,
+                  .level_name            = res.name,
                   .precedence            = res.precedence,
                   .covered_token_indexes = {token_begin, token_end - 1},
                   .min_token_index       = token_begin,
@@ -447,7 +447,7 @@ namespace silva::parse_axe {
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = postfix_t::arity,
-                  .level_name            = res.level_name,
+                  .level_name            = res.name,
                   .precedence            = res.precedence,
                   .covered_token_indexes = {nursery.token_index},
                   .max_token_index       = nursery.token_index + 1,
@@ -462,7 +462,7 @@ namespace silva::parse_axe {
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = postfix_nest_t::arity,
-                  .level_name            = res.level_name,
+                  .level_name            = res.name,
                   .precedence            = res.precedence,
                   .covered_token_indexes = {token_begin, token_end - 1},
                   .max_token_index       = nursery.token_index,
@@ -473,7 +473,7 @@ namespace silva::parse_axe {
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = infix_t::arity,
-                  .level_name            = res.level_name,
+                  .level_name            = res.name,
                   .precedence            = res.precedence,
                   .covered_token_indexes = {nursery.token_index},
               });
@@ -488,7 +488,7 @@ namespace silva::parse_axe {
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = ternary_t::arity,
-                  .level_name            = res.level_name,
+                  .level_name            = res.name,
                   .precedence            = res.precedence,
                   .covered_token_indexes = {token_begin, token_end - 1},
               });
