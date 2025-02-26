@@ -31,10 +31,11 @@ namespace silva {
       token_id_t tt_string      = tcp->token_id("string");
       token_id_t tt_number      = tcp->token_id("number");
       token_id_t tt_any         = tcp->token_id("any");
-      token_id_t tt_nest        = tcp->token_id("primary_nest");
+      token_id_t tt_nest        = tcp->token_id("nest");
       token_id_t tt_ltr         = tcp->token_id("ltr");
       token_id_t tt_rtl         = tcp->token_id("rtl");
       token_id_t tt_flat        = tcp->token_id("flat");
+      token_id_t tt_atom_nest   = tcp->token_id("atom_nest");
       token_id_t tt_postfix     = tcp->token_id("postfix");
       token_id_t tt_postfix_n   = tcp->token_id("postfix_nest");
       token_id_t tt_infix       = tcp->token_id("infix");
@@ -60,31 +61,16 @@ namespace silva {
       full_name_id_t fni_atom_0      = tcp->full_name_id_of("Atom", "0");
       full_name_id_t fni_atom_1      = tcp->full_name_id_of("Atom", "1");
       full_name_id_t fni_suffix      = tcp->full_name_id_of("Suffix", "0");
-      full_name_id_t fni_axe_nest    = tcp->full_name_id_of("AxeNest", "0");
-      full_name_id_t fni_axe_list    = tcp->full_name_id_of("AxeList", "0");
+      full_name_id_t fni_axe_scope   = tcp->full_name_id_of("AxeScope", "0");
       full_name_id_t fni_axe_level   = tcp->full_name_id_of("AxeLevel", "0");
-      full_name_id_t fni_axe_op_type = tcp->full_name_id_of("AxeOpType", "0");
       full_name_id_t fni_axe_assoc   = tcp->full_name_id_of("AxeAssoc", "0");
       full_name_id_t fni_axe_ops     = tcp->full_name_id_of("AxeOps", "0");
+      full_name_id_t fni_axe_op_type = tcp->full_name_id_of("AxeOpType", "0");
       full_name_id_t fni_axe_op      = tcp->full_name_id_of("AxeOp", "0");
 
       seed_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
         : parse_tree_nursery_t(tokenization)
       {
-      }
-
-      expected_t<parse_tree_sub_t> axe_op_type()
-      {
-        auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_axe_op_type);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
-                               (token_id_by() == tt_prefix || token_id_by() == tt_prefix_n ||
-                                token_id_by() == tt_infix || token_id_by() == tt_ternary ||
-                                token_id_by() == tt_postfix || token_id_by() == tt_postfix_n),
-                           "Expected one of \"prefix\" \"prefix_nest\" \"infix\" \"ternary\" "
-                           "\"postfix\" \"postfix_nest\"");
-        token_index += 1;
-        return gg_rule.release();
       }
 
       expected_t<parse_tree_sub_t> axe_op()
@@ -93,7 +79,23 @@ namespace silva {
         gg_rule.set_rule_name(fni_axe_op);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
                                (token_id_by() == tt_none || token_data_by()->category == STRING),
-                           "Expected one of \"ltr\" \"rtl\" \"flat\"");
+                           "Expected \"none\" or string");
+        token_index += 1;
+        return gg_rule.release();
+      }
+
+      expected_t<parse_tree_sub_t> axe_op_type()
+      {
+        auto gg_rule = guard_for_rule();
+        gg_rule.set_rule_name(fni_axe_op_type);
+        SILVA_EXPECT_PARSE(
+            num_tokens_left() >= 1 &&
+                (token_id_by() == tt_atom_nest || token_id_by() == tt_prefix ||
+                 token_id_by() == tt_prefix_n || token_id_by() == tt_infix ||
+                 token_id_by() == tt_ternary || token_id_by() == tt_postfix ||
+                 token_id_by() == tt_postfix_n),
+            "Expected one of \"atom_nest\" \"prefix\" \"prefix_nest\" \"infix\" \"ternary\" "
+            "\"postfix\" \"postfix_nest\"");
         token_index += 1;
         return gg_rule.release();
       }
@@ -113,10 +115,10 @@ namespace silva {
       {
         auto gg_rule = guard_for_rule();
         gg_rule.set_rule_name(fni_axe_assoc);
-        SILVA_EXPECT_PARSE(
-            num_tokens_left() >= 1 &&
-                (token_id_by() == tt_ltr || token_id_by() == tt_rtl || token_id_by() == tt_flat),
-            "Expected one of \"ltr\" \"rtl\" \"flat\"");
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
+                               (token_id_by() == tt_nest || token_id_by() == tt_ltr ||
+                                token_id_by() == tt_rtl || token_id_by() == tt_flat),
+                           "Expected one of \"nest\" \"ltr\" \"rtl\" \"flat\"");
         token_index += 1;
         return gg_rule.release();
       }
@@ -135,22 +137,10 @@ namespace silva {
         return gg_rule.release();
       }
 
-      expected_t<parse_tree_sub_t> axe_nest()
+      expected_t<parse_tree_sub_t> axe_scope()
       {
         auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_axe_nest);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 3 && token_id_by() == tt_nest &&
-                               token_data_by(1)->category == STRING &&
-                               token_data_by(2)->category == STRING,
-                           "Expected [\"primary_nest\" string string] sequence");
-        token_index += 3;
-        return gg_rule.release();
-      }
-
-      expected_t<parse_tree_sub_t> axe_list()
-      {
-        auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_axe_list);
+        gg_rule.set_rule_name(fni_axe_scope);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
                            "Expected '['");
         token_index += 1;
@@ -348,10 +338,7 @@ namespace silva {
           token_index += 1;
           gg_rule.set_rule_name(fni_deriv_3);
           gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
-          if (auto result = axe_nest(); result) {
-            gg_rule.sub += *std::move(result);
-          }
-          gg_rule.sub += SILVA_EXPECT_FWD(axe_list());
+          gg_rule.sub += SILVA_EXPECT_FWD(axe_scope());
         }
         return gg_rule.release();
       }

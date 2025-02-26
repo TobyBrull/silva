@@ -10,9 +10,9 @@
 - A_Primary,1 = number
 
 - B_Expr =% B_Atom [
-    - Parens      = nest  "(" ")"
+    - Parens      = nest  atom_nest "(" ")"
     - Namespace   = ltr   infix "::"
-    - Postfix     = ltr   postfix "++" "--" 
+    - Postfix     = ltr   postfix "++" "--"
                           postfix_nest "(" ")" "[" "]"
                           infix "." "->"
     - Prefix      = rtl   prefix "++" "--" "+" "-" "!" "~" "*" "&" "sizeof" "new"
@@ -22,7 +22,7 @@
     - Addition    = ltr   infix "+" "-"
     - Bitshift    = ltr   infix "<<" ">>"
     - Spaceship   = ltr   infix "<=>"
-    - Comparison  = flat  "<" "<=" ">" ">="
+    - Comparison  = flat  infix "<" "<=" ">" ">="
     - Equality    = ltr   infix "==" "!="
     - BitAnd      = ltr   infix "&"
     - BitXor      = ltr   infix "^"

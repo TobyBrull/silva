@@ -2,8 +2,6 @@
 
 * Document variant.hpp
 
-* Implement ParseAxe
-
 * Trees:
     * Make tree.hpp not depend on expected_t (or rather: not depend on error_tree_t)?
     * Use tree_inv_t in error_tree_t?
@@ -49,6 +47,22 @@
         * Seed
         * Seed.Rule
         * Silva.Expr.FuncCall
+
+```silva.seed
+- ParseAxe = [
+  - Goal = "parse_axe" Nonterminal "[" LevelNest* Level* "]"
+  - LevelNest = [
+    - Goal  = "-" Nonterminal "=" "nest" List*
+    - List  = "atom_nest" operator*
+  ]
+  - Level = [
+    - Goal = "-" Nonterminal "=" Assoc List*
+    - Assoc = "nest" | "ltr" | "rtl" | "flat
+    - List = ( "prefix" | ... | "postfix_nest" ) operator*
+  ]
+]
+```
+
 
 * code review
 
