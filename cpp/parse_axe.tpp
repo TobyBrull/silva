@@ -61,8 +61,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
       SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
       SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
                        token_data_by()->category == token_category_t::IDENTIFIER,
-                   MINOR,
-                   "atom expression must be number of identifier");
+                   MINOR);
       token_index += 1;
       return gg_rule.release();
     }
@@ -419,11 +418,16 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
       auto gg_rule = guard_for_rule();
       gg_rule.set_rule_name(tcp->full_name_id_of("test", "atom"));
       SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
-      SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
-                       token_data_by()->category == token_category_t::IDENTIFIER,
-                   MINOR,
-                   "atom expression must be number of identifier");
-      token_index += 1;
+      if (token_data_by()->category == token_category_t::NUMBER) {
+        SILVA_EXPECT(num_tokens_left() >= 2 &&
+                         token_data_by(1)->category == token_category_t::OPERATOR,
+                     MINOR);
+        token_index += 2;
+      }
+      else {
+        SILVA_EXPECT(token_data_by()->category == token_category_t::IDENTIFIER, MINOR);
+        token_index += 1;
+      }
       return gg_rule.release();
     }
 
@@ -491,4 +495,12 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
       [1].test.atom                               c
 )");
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "<< a { b } >> c", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "x 1 x z", none);
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "x 1 { z", R"(
+[0].expr.cat                                      x 1 { ...
+  [0].expr.cat                                    x 1 {
+    [0].test.atom                                 x
+    [1].test.atom                                 1 {
+  [1].test.atom                                   z
+)");
 }
