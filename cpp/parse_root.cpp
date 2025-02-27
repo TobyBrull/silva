@@ -1,6 +1,7 @@
 #include "parse_root.hpp"
 
 #include "canopy/scope_exit.hpp"
+#include "parse_axe.hpp"
 #include "parse_tree_nursery.hpp"
 #include "tokenization.hpp"
 
@@ -48,6 +49,20 @@ namespace silva {
       }
       return {};
     }
+
+    expected_t<parse_axe::parse_axe_t> create_parse_axe(token_context_ptr_t tcp,
+                                                        const parse_tree_t* seed_pt,
+                                                        const index_t axe_scope_node_index)
+    {
+      full_name_id_t fni_axe_scope   = tcp->full_name_id_of("AxeScope", "0");
+      full_name_id_t fni_axe_level   = tcp->full_name_id_of("AxeLevel", "0");
+      full_name_id_t fni_axe_assoc   = tcp->full_name_id_of("AxeAssoc", "0");
+      full_name_id_t fni_axe_ops     = tcp->full_name_id_of("AxeOps", "0");
+      full_name_id_t fni_axe_op_type = tcp->full_name_id_of("AxeOpType", "0");
+      full_name_id_t fni_axe_op      = tcp->full_name_id_of("AxeOp", "0");
+      SILVA_EXPECT(seed_pt->nodes[axe_scope_node_index].rule_name == fni_axe_scope, ASSERT);
+      return parse_axe::parse_axe_create(tcp, {});
+    }
   }
 
   expected_t<unique_ptr_t<parse_root_t>>
@@ -63,6 +78,7 @@ namespace silva {
     full_name_id_t fni_deriv_3   = tcp->full_name_id_of("Derivation", "3");
     full_name_id_t fni_regex     = tcp->full_name_id_of("Regex", "0");
     full_name_id_t fni_nonterm   = tcp->full_name_id_of("Nonterminal", "0");
+    full_name_id_t fni_axe_scope = tcp->full_name_id_of("AxeScope", "0");
 
     auto retval              = std::make_unique<parse_root_t>();
     retval->seed_parse_tree  = std::move(seed_parse_tree);
@@ -115,10 +131,10 @@ namespace silva {
             SILVA_EXPECT_FWD(s_pt->get_children<2>(rule.expr_node_index));
         SILVA_EXPECT(s_nodes[alias_children[0]].rule_name == fni_nonterm,
                      MINOR,
-                     "First child of DERIVATION_2 must be NONTERMINAL");
+                     "First child of Derivation,2 must be Nonterminal");
         SILVA_EXPECT(s_nodes[alias_children[1]].rule_name == fni_rule_prec,
                      MINOR,
-                     "Second child of DERIVATION_2 must be RULE_PRECEDENCE");
+                     "Second child of Derivation,2 must be RulePrecedence");
         const token_id_t tgt_rule_token_id =
             s_pt->tokenization->tokens[s_nodes[alias_children[0]].token_begin];
         const auto* tgt_rule_precedence_token_data =
@@ -129,6 +145,22 @@ namespace silva {
         const index_t alias_offset =
             retval->rule_indexes.at(tgt_rule_token_id) + tgt_rule_precedence;
         retval->rules[base_offset].aliased_rule_offset = alias_offset;
+      }
+    }
+
+    // Pre-compile hashmap_t of "parse_axes".
+    for (const auto& rule: retval->rules) {
+      if (s_nodes[rule.expr_node_index].rule_name == fni_deriv_3) {
+        const array_t<index_t, 2> alias_children =
+            SILVA_EXPECT_FWD(s_pt->get_children<2>(rule.expr_node_index));
+        SILVA_EXPECT(s_nodes[alias_children[0]].rule_name == fni_nonterm,
+                     MINOR,
+                     "First child of Derivation,3 must be Nonterminal");
+        SILVA_EXPECT(s_nodes[alias_children[1]].rule_name == fni_axe_scope,
+                     MINOR,
+                     "Second child of Derivation,3 must be AxeScope");
+        retval->parse_axes[rule.rule_name] =
+            SILVA_EXPECT_FWD(impl::create_parse_axe(tcp, s_pt, rule.expr_node_index));
       }
     }
 
@@ -160,8 +192,6 @@ namespace silva {
         }
       }
     }
-
-    // Pre-compile hashmap_t of "parse_axes".
 
     return retval;
   }

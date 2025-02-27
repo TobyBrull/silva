@@ -19,7 +19,6 @@ namespace silva::parse_axe {
   };
 
   expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t tcp,
-                                           const full_name_id_t parse_axe_name,
                                            const vector_t<parse_axe_level_desc_t>& level_descs)
   {
     using enum assoc_t;
@@ -64,8 +63,7 @@ namespace silva::parse_axe {
     }
 
     parse_axe_t retval{
-        .tcp  = tcp,
-        .name = parse_axe_name,
+        .tcp = tcp,
     };
 
     const auto register_op = [&retval](const token_id_t token_id,

@@ -131,8 +131,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
       .assoc = RIGHT_TO_LEFT,
       .opers = {infix_t{tc.token_id("=")}},
   });
-  const auto pa =
-      SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), tc.full_name_id_of("parseaxe"), level_descs));
+  const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
   CHECK(!pa.has_concat);
   CHECK(pa.results.size() == 15);
   CHECK(pa.results.at(tc.token_id("=")) ==
@@ -466,8 +465,7 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
       .assoc = RIGHT_TO_LEFT,
       .opers = {prefix_nest_t{tc.token_id("{"), tc.token_id("}")}},
   });
-  const auto pa =
-      SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), tc.full_name_id_of("parseaxe"), level_descs));
+  const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
   CHECK(pa.has_concat);
   CHECK(pa.results.size() == 7);
 
