@@ -1,5 +1,6 @@
 #pragma once
 
+#include "parse_axe.hpp"
 #include "seed.hpp"
 
 #include <regex>
@@ -13,7 +14,7 @@ namespace silva {
 
     struct rule_t {
       // Token-id of nonterminal that the rule defines.
-      token_id_t token_id;
+      token_id_t token_id = token_id_none;
       // Lower value means higher precedence.
       index_t precedence = 0;
       // Combination of token_id and precedence atm.
@@ -32,6 +33,9 @@ namespace silva {
 
     // Maps the token-id's that correspond to regexes to the compiled version of that regex.
     hashmap_t<token_id_t, optional_t<std::regex>> regexes;
+
+    // Maps the rule-name of a parse-axe to the corresponding parse-axe.
+    hashmap_t<full_name_id_t, parse_axe::parse_axe_t> parse_axes;
 
     // Main parse_root_t constructor.
     static expected_t<unique_ptr_t<parse_root_t>> create(shared_ptr_t<const parse_tree_t>);

@@ -72,6 +72,7 @@ namespace silva {
                  MINOR,
                  "Seed parse_tree should start with SEED node");
 
+    // Create entry in "rules" vector_t (and "rule_indexes" hashmap_t) for each rule.
     auto result = s_pt->visit_children(
         [&](const index_t rule_node_index, index_t) -> expected_t<bool> {
           SILVA_EXPECT(s_nodes[rule_node_index].rule_name == fni_rule, MINOR, "");
@@ -107,6 +108,7 @@ namespace silva {
         0);
     SILVA_EXPECT_FWD(std::move(result));
 
+    // Handle alias rules.
     auto result_2 = s_pt->visit_children(
         [&](const index_t rule_node_index, index_t) -> expected_t<bool> {
           SILVA_EXPECT(s_nodes[rule_node_index].rule_name == fni_rule, MINOR, "");
@@ -151,6 +153,7 @@ namespace silva {
         0);
     SILVA_EXPECT_FWD(std::move(result_2));
 
+    // Sanity check on alias rules.
     for (const auto& rule: retval->rules) {
       if (rule.aliased_rule_offset.has_value()) {
         const index_t aro = rule.aliased_rule_offset.value();
@@ -166,6 +169,7 @@ namespace silva {
       }
     }
 
+    // Pre-compile hashmap_t of "regexes".
     for (index_t node_index = 0; node_index < s_pt->nodes.size(); ++node_index) {
       const auto& node = s_pt->nodes[node_index];
       if (node.rule_name == fni_regex) {
@@ -177,6 +181,9 @@ namespace silva {
         }
       }
     }
+
+    // Pre-compile hashmap_t of "parse_axes".
+
     return retval;
   }
 
@@ -193,23 +200,29 @@ namespace silva {
       token_id_t seed_tt_num = tcp->token_id("number");
       token_id_t seed_tt_any = tcp->token_id("any");
 
-      full_name_id_t fni_seed      = tcp->full_name_id_of("Seed", "0");
-      full_name_id_t fni_rule      = tcp->full_name_id_of("Rule", "0");
-      full_name_id_t fni_rule_prec = tcp->full_name_id_of("RulePrecedence", "0");
-      full_name_id_t fni_deriv_0   = tcp->full_name_id_of("Derivation", "0");
-      full_name_id_t fni_deriv_1   = tcp->full_name_id_of("Derivation", "1");
-      full_name_id_t fni_deriv_2   = tcp->full_name_id_of("Derivation", "2");
-      full_name_id_t fni_deriv_3   = tcp->full_name_id_of("Derivation", "3");
-      full_name_id_t fni_regex     = tcp->full_name_id_of("Regex", "0");
-      full_name_id_t fni_nonterm   = tcp->full_name_id_of("Nonterminal", "0");
-      full_name_id_t fni_term_0    = tcp->full_name_id_of("Terminal", "0");
-      full_name_id_t fni_term_1    = tcp->full_name_id_of("Terminal", "1");
-      full_name_id_t fni_prim_0    = tcp->full_name_id_of("Primary", "0");
-      full_name_id_t fni_prim_1    = tcp->full_name_id_of("Primary", "1");
-      full_name_id_t fni_prim_2    = tcp->full_name_id_of("Primary", "2");
-      full_name_id_t fni_atom_0    = tcp->full_name_id_of("Atom", "0");
-      full_name_id_t fni_atom_1    = tcp->full_name_id_of("Atom", "1");
-      full_name_id_t fni_suffix    = tcp->full_name_id_of("Suffix", "0");
+      full_name_id_t fni_seed        = tcp->full_name_id_of("Seed", "0");
+      full_name_id_t fni_rule        = tcp->full_name_id_of("Rule", "0");
+      full_name_id_t fni_rule_prec   = tcp->full_name_id_of("RulePrecedence", "0");
+      full_name_id_t fni_deriv_0     = tcp->full_name_id_of("Derivation", "0");
+      full_name_id_t fni_deriv_1     = tcp->full_name_id_of("Derivation", "1");
+      full_name_id_t fni_deriv_2     = tcp->full_name_id_of("Derivation", "2");
+      full_name_id_t fni_deriv_3     = tcp->full_name_id_of("Derivation", "3");
+      full_name_id_t fni_regex       = tcp->full_name_id_of("Regex", "0");
+      full_name_id_t fni_nonterm     = tcp->full_name_id_of("Nonterminal", "0");
+      full_name_id_t fni_term_0      = tcp->full_name_id_of("Terminal", "0");
+      full_name_id_t fni_term_1      = tcp->full_name_id_of("Terminal", "1");
+      full_name_id_t fni_prim_0      = tcp->full_name_id_of("Primary", "0");
+      full_name_id_t fni_prim_1      = tcp->full_name_id_of("Primary", "1");
+      full_name_id_t fni_prim_2      = tcp->full_name_id_of("Primary", "2");
+      full_name_id_t fni_atom_0      = tcp->full_name_id_of("Atom", "0");
+      full_name_id_t fni_atom_1      = tcp->full_name_id_of("Atom", "1");
+      full_name_id_t fni_suffix      = tcp->full_name_id_of("Suffix", "0");
+      full_name_id_t fni_axe_scope   = tcp->full_name_id_of("AxeScope", "0");
+      full_name_id_t fni_axe_level   = tcp->full_name_id_of("AxeLevel", "0");
+      full_name_id_t fni_axe_assoc   = tcp->full_name_id_of("AxeAssoc", "0");
+      full_name_id_t fni_axe_ops     = tcp->full_name_id_of("AxeOps", "0");
+      full_name_id_t fni_axe_op_type = tcp->full_name_id_of("AxeOpType", "0");
+      full_name_id_t fni_axe_op      = tcp->full_name_id_of("AxeOp", "0");
 
       parse_root_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
                            const parse_root_t* root)
