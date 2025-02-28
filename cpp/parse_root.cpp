@@ -50,9 +50,11 @@ namespace silva {
       return {};
     }
 
-    expected_t<parse_axe::parse_axe_t> create_parse_axe(token_context_ptr_t tcp,
-                                                        const parse_tree_t* seed_pt,
-                                                        const index_t axe_scope_node_index)
+    expected_t<parse_root_t::parse_axe_data_t> create_parse_axe(token_context_ptr_t tcp,
+                                                                const full_name_id_t base_name,
+                                                                const token_id_t atom_rule,
+                                                                const parse_tree_t* seed_pt,
+                                                                const index_t axe_scope_node_index)
     {
       full_name_id_t fni_axe_scope   = tcp->full_name_id_of("AxeScope", "0");
       full_name_id_t fni_axe_level   = tcp->full_name_id_of("AxeLevel", "0");
@@ -61,7 +63,19 @@ namespace silva {
       full_name_id_t fni_axe_op_type = tcp->full_name_id_of("AxeOpType", "0");
       full_name_id_t fni_axe_op      = tcp->full_name_id_of("AxeOp", "0");
       SILVA_EXPECT(seed_pt->nodes[axe_scope_node_index].rule_name == fni_axe_scope, ASSERT);
-      return parse_axe::parse_axe_create(tcp, {});
+      vector_t<parse_axe::parse_axe_level_desc_t> level_descs;
+      level_descs.reserve(seed_pt->nodes[axe_scope_node_index].num_children);
+      auto result = seed_pt->visit_children(
+          [&](const index_t axe_level_node_index, index_t) -> expected_t<bool> {
+            SILVA_EXPECT(seed_pt->nodes[axe_level_node_index].rule_name == fni_axe_level, MINOR);
+            const auto& curr_level = level_descs.emplace_back();
+            // TODO...
+            return true;
+          },
+          axe_scope_node_index);
+      SILVA_EXPECT_FWD(std::move(result));
+      auto pa = SILVA_EXPECT_FWD(parse_axe::parse_axe_create(tcp, std::move(level_descs)));
+      return {{.atom_rule = atom_rule, .parse_axe = std::move(pa)}};
     }
   }
 
@@ -159,8 +173,12 @@ namespace silva {
         SILVA_EXPECT(s_nodes[alias_children[1]].rule_name == fni_axe_scope,
                      MINOR,
                      "Second child of Derivation,3 must be AxeScope");
-        retval->parse_axes[rule.rule_name] =
-            SILVA_EXPECT_FWD(impl::create_parse_axe(tcp, s_pt, rule.expr_node_index));
+        retval->parse_axes[rule.rule_name] = SILVA_EXPECT_FWD(impl::create_parse_axe(
+            tcp,
+            rule.rule_name,
+            s_pt->tokenization->tokens[s_nodes[alias_children[0]].token_begin],
+            s_pt,
+            alias_children[1]));
       }
     }
 

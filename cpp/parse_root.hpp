@@ -35,7 +35,11 @@ namespace silva {
     hashmap_t<token_id_t, optional_t<std::regex>> regexes;
 
     // Maps the rule-name of a parse-axe to the corresponding parse-axe.
-    hashmap_t<full_name_id_t, parse_axe::parse_axe_t> parse_axes;
+    struct parse_axe_data_t {
+      token_id_t atom_rule = token_id_none;
+      parse_axe::parse_axe_t parse_axe;
+    };
+    hashmap_t<full_name_id_t, parse_axe_data_t> parse_axes;
 
     // Main parse_root_t constructor.
     static expected_t<unique_ptr_t<parse_root_t>> create(shared_ptr_t<const parse_tree_t>);
