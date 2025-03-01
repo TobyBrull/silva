@@ -1,8 +1,36 @@
 # TODO
 
 * Parse-axe:
-    * Make FLAT levels work
     * Detect end of expression better
+
+* memento:
+    * add dumping plain token_ids and full_name_ids, without any positional information
+        * make token_id_t and full_name_id_t proper types
+
+```silva.seed
+- ParseAxe = [
+  - Goal = "parse_axe" Nonterminal "[" LevelNest* Level* "]"
+  - LevelNest = [
+    - Goal  = "-" Nonterminal "=" "nest" List*
+    - List  = "atom_nest" operator*
+  ]
+  - Level = [
+    - Goal = "-" Nonterminal "=" Assoc List*
+    - Assoc = "nest" | "ltr" | "rtl" | "flat
+    - List = ( "prefix" | ... | "postfix_nest" ) operator*
+  ]
+]
+```
+* Seed
+    * Introduce namespaces in Seed
+        * Seed
+        * Seed.Rule
+        * Silva.Expr.FuncCall
+    * Support EOF literal (or token_id_none?)
+
+
+* Seed
+    * check Seed program when constructing parse_root_t?
 
 * Document variant.hpp
 
@@ -14,14 +42,6 @@
 
     * Use num_children_total (and num_children_direct?) instead of children_begin/end
       For easier grafting.
-
-* memento:
-    * add dumping plain token_ids and full_name_ids, without any positional information
-        * make token_id_t and full_name_id_t proper types
-
-* Seed:
-    * Also support rules of the form `PrimaryExpr = "(" Expr ")"` for alias-rules.
-    * Support EOF literal (for token_id_none?)
 
 * Fern:
     * Have [] for arrays and {} for dicts (basically make it JSON without commas)?
@@ -48,30 +68,6 @@
     * logging
     * testing
     * memory
-
-* Seed
-    * seed.mpp
-    * check Seed program when constructing parse_root_t?
-    * Introduce namespaces in Seed
-        * Seed
-        * Seed.Rule
-        * Silva.Expr.FuncCall
-
-```silva.seed
-- ParseAxe = [
-  - Goal = "parse_axe" Nonterminal "[" LevelNest* Level* "]"
-  - LevelNest = [
-    - Goal  = "-" Nonterminal "=" "nest" List*
-    - List  = "atom_nest" operator*
-  ]
-  - Level = [
-    - Goal = "-" Nonterminal "=" Assoc List*
-    - Assoc = "nest" | "ltr" | "rtl" | "flat
-    - List = ( "prefix" | ... | "postfix_nest" ) operator*
-  ]
-]
-```
-
 
 * code review
 

@@ -13,7 +13,7 @@
     - Addition    = ltr   infix "+" "-"
     - Bitshift    = ltr   infix "<<" ">>"
     - Spaceship   = ltr   infix "<=>"
-    - Comparison  = flat  infix "<" "<=" ">" ">="
+    - Comparison  = ltr   infix "<" "<=" ">" ">="
     - Equality    = ltr   infix "==" "!="
     - BitAnd      = ltr   infix "&"
     - BitXor      = ltr   infix "^"

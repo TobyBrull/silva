@@ -13,10 +13,9 @@
 namespace silva::parse_axe {
   enum class assoc_t {
     INVALID,
+    NEST,
     LEFT_TO_RIGHT,
     RIGHT_TO_LEFT,
-    FLAT,
-    NEST,
   };
 
   struct prefix_t {

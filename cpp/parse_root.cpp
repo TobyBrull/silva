@@ -182,7 +182,6 @@ namespace silva {
       const token_id_t ti_nest = tcp->token_id("nest");
       const token_id_t ti_ltr  = tcp->token_id("ltr");
       const token_id_t ti_rtl  = tcp->token_id("rtl");
-      const token_id_t ti_flat = tcp->token_id("flat");
 
       const full_name_id_t fni_nonterm   = tcp->full_name_id_of("Nonterminal", "0");
       const full_name_id_t fni_axe_assoc = tcp->full_name_id_of("AxeAssoc", "0");
@@ -208,9 +207,6 @@ namespace silva {
               }
               else if (assoc == ti_rtl) {
                 level.assoc = RIGHT_TO_LEFT;
-              }
-              else if (assoc == ti_flat) {
-                level.assoc = FLAT;
               }
               else {
                 SILVA_EXPECT(false, MAJOR);

@@ -50,11 +50,6 @@ namespace silva::parse_axe {
                          "of type prefix_t, prefix_nest_t, "
                          "infix_t, and ternary_t");
           }
-          else if (level_desc.assoc == FLAT) {
-            SILVA_EXPECT(variant_holds_t<infix_t>{}(oper),
-                         MINOR,
-                         "FLAT level only allows operators of type infix_t");
-          }
           else {
             SILVA_EXPECT(false, ASSERT, "Unknown level {}", std::to_underlying(level_desc.assoc));
           }
@@ -200,7 +195,6 @@ namespace silva::parse_axe {
 
     struct atom_data_t {
       full_name_id_t name = 0;
-      bool flat_flag      = false;
       pair_t<index_t, index_t> token_range;
       optional_t<index_t> atom_child_index;
     };
@@ -223,7 +217,6 @@ namespace silva::parse_axe {
       atom_tree.nodes.push_back(atom_tree_node_t{
           {
               .name             = atom_name_id,
-              .flat_flag        = true,
               .token_range      = {atom_result.token_begin, atom_result.token_end},
               .atom_child_index = atom_child_index,
           },
@@ -285,21 +278,12 @@ namespace silva::parse_axe {
           SILVA_EXPECT(oi.arity <= atom_stack.size(), MINOR);
           const atom_tree_node_t& base_node =
               atom_tree->nodes[atom_stack[atom_stack.size() - oi.arity].atom_tree_node_index];
-          bool flat_flag = false;
-          if (prec.assoc == assoc_t::FLAT && base_node.flat_flag) {
-            SILVA_EXPECT(false, ASSERT);
-            flat_flag = true;
-          }
-          else {
-            ;
-          }
           atom_stack.resize(atom_stack.size() - oi.arity);
           atom_stack.push_back(
               atom_item_t{.atom_tree_node_index = index_t(atom_tree->nodes.size())});
           atom_tree->nodes.push_back(atom_tree_node_t{
               {
                   .name             = oi.level_name,
-                  .flat_flag        = flat_flag,
                   .token_range      = {token_begin, token_end},
                   .atom_child_index = none,
               },
@@ -395,7 +379,6 @@ namespace silva::parse_axe {
               atom_tree.nodes.push_back(atom_tree_node_t{
                   {
                       .name             = res.name,
-                      .flat_flag        = true,
                       .token_range      = {token_begin, token_end},
                       .atom_child_index = none,
                   },

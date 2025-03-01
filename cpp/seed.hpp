@@ -37,7 +37,7 @@ namespace silva {
     - Regex = string
     - AxeScope = "[" ("-" AxeLevel)* "]"
     - AxeLevel = Nonterminal "=" AxeAssoc AxeOps*
-    - AxeAssoc =~ "nest" "ltr" "rtl" "flat"
+    - AxeAssoc =~ "nest" "ltr" "rtl"
     - AxeOps = AxeOpType AxeOp*
     - AxeOpType =~ "atom_nest" "prefix" "prefix_nest" "infix" "ternary" "postfix" "postfix_nest"
     - AxeOp =~ string "none"

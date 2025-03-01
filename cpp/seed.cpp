@@ -34,7 +34,6 @@ namespace silva {
       token_id_t tt_nest        = tcp->token_id("nest");
       token_id_t tt_ltr         = tcp->token_id("ltr");
       token_id_t tt_rtl         = tcp->token_id("rtl");
-      token_id_t tt_flat        = tcp->token_id("flat");
       token_id_t tt_atom_nest   = tcp->token_id("atom_nest");
       token_id_t tt_postfix     = tcp->token_id("postfix");
       token_id_t tt_postfix_n   = tcp->token_id("postfix_nest");
@@ -115,10 +114,10 @@ namespace silva {
       {
         auto gg_rule = guard_for_rule();
         gg_rule.set_rule_name(fni_axe_assoc);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
-                               (token_id_by() == tt_nest || token_id_by() == tt_ltr ||
-                                token_id_by() == tt_rtl || token_id_by() == tt_flat),
-                           "Expected one of [ \"nest\" \"ltr\" \"rtl\" \"flat\" ]");
+        SILVA_EXPECT_PARSE(
+            num_tokens_left() >= 1 &&
+                (token_id_by() == tt_nest || token_id_by() == tt_ltr || token_id_by() == tt_rtl),
+            "Expected one of [ \"nest\" \"ltr\" \"rtl\" ]");
         token_index += 1;
         return gg_rule.release();
       }
