@@ -652,20 +652,13 @@ namespace silva {
         SILVA_EXPECT(it != root->parse_axes.end(), MAJOR);
         auto gg{guard()};
         const parse_root_t::parse_axe_data_t& parse_axe_data = it->second;
-        using dg_t = delegate_t<expected_t<parse_tree_sub_t>()>;
-        struct callback_t {
-          token_id_t atom_rule       = token_id_none;
-          parse_root_nursery_t* self = nullptr;
-          expected_t<parse_tree_sub_t> operator()() const { return self->apply_rule(atom_rule); }
-        };
-        callback_t callback{
-            .atom_rule = parse_axe_data.atom_rule,
-            .self      = this,
+        const delegate_t<expected_t<parse_tree_sub_t>()>::pack_t pack{
+            [&]() { return apply_rule(parse_axe_data.atom_rule); },
         };
         gg.sub += SILVA_EXPECT_FWD(parse_axe_data.parse_axe.apply(
             *this,
             tcp->full_name_id(full_name_id_none, parse_axe_data.atom_rule),
-            dg_t::make<&callback_t::operator()>(&callback)));
+            pack.delegate));
         return gg.release();
       }
 

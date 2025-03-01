@@ -1,5 +1,6 @@
 #pragma once
 
+#include "sprite.hpp"
 #include <utility>
 
 namespace silva {
@@ -12,7 +13,7 @@ namespace silva {
     raw_func_ptr_t raw_func_ptr = nullptr;
     void* data_ptr              = nullptr;
 
-    // Constructor from free function pointer.
+    // Constructor from compile-time free function pointer.
 
     template<R (*)(Args...)>
     static delegate_t make();
@@ -21,7 +22,7 @@ namespace silva {
       requires std::same_as<decltype(FuncPtr), R (*)(Data*, Args...)>
     static delegate_t make(Data*);
 
-    // Constructors from member function pointer.
+    // Constructors from compile-time member function pointer.
 
     template<auto MemberFuncPtr, typename T>
       requires std::same_as<decltype(MemberFuncPtr), R (T::*)(Args...)>
@@ -36,6 +37,16 @@ namespace silva {
     void clear();
 
     R operator()(Args...) const;
+
+    // Needed in less trivial cases and when the function pointer is only known at run-time.
+    template<typename Callback>
+    struct pack_t : public menhir_t {
+      Callback callback;
+      delegate_t<R(Args...)> delegate;
+
+      pack_t(Callback);
+      R operator()(Args...) const;
+    };
   };
 }
 
@@ -109,5 +120,19 @@ namespace silva {
   R delegate_t<R(Args...)>::operator()(Args... args) const
   {
     return raw_func_ptr(data_ptr, std::move(args)...);
+  }
+
+  template<typename R, typename... Args>
+  template<typename Callback>
+  delegate_t<R(Args...)>::pack_t<Callback>::pack_t(Callback callback)
+    : callback(std::move(callback)), delegate(delegate_t::make<&pack_t::operator()>(this))
+  {
+  }
+
+  template<typename R, typename... Args>
+  template<typename Callback>
+  R delegate_t<R(Args...)>::pack_t<Callback>::operator()(Args... args) const
+  {
+    return callback(std::move(args)...);
   }
 }
