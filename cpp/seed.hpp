@@ -24,7 +24,7 @@ namespace silva {
     - Derivation,0 = "=" major_error Atom+
     - Derivation,1 = "=~" major_error Terminal+
     - Derivation,2 = "=>" major_error Nonterminal "," RulePrecedence
-    - Derivation,3 = "=%" major_error Nonterminal AxeScope
+    - Derivation,3 = "=%" major_error AxeSpec
     - Atom,0 = "major_error"
     - Atom,1 = Primary Suffix?
     - Suffix =~ "?" "*" "+" "!" "&"
@@ -35,7 +35,7 @@ namespace silva {
     - Terminal,0 = "identifier_regex" "(" Regex ")"
     - Terminal,1 =~ string "identifier" "operator" "string" "number" "any"
     - Regex = string
-    - AxeScope = "[" ("-" AxeLevel)* "]"
+    - AxeSpec = Nonterminal "[" ("-" AxeLevel)* "]"
     - AxeLevel = Nonterminal "=" AxeAssoc AxeOps*
     - AxeAssoc =~ "nest" "ltr" "rtl"
     - AxeOps = AxeOpType AxeOp*

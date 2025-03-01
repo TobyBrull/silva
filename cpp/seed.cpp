@@ -60,7 +60,7 @@ namespace silva {
       full_name_id_t fni_atom_0      = tcp->full_name_id_of("Atom", "0");
       full_name_id_t fni_atom_1      = tcp->full_name_id_of("Atom", "1");
       full_name_id_t fni_suffix      = tcp->full_name_id_of("Suffix", "0");
-      full_name_id_t fni_axe_scope   = tcp->full_name_id_of("AxeScope", "0");
+      full_name_id_t fni_axe_spec    = tcp->full_name_id_of("AxeSpec", "0");
       full_name_id_t fni_axe_level   = tcp->full_name_id_of("AxeLevel", "0");
       full_name_id_t fni_axe_assoc   = tcp->full_name_id_of("AxeAssoc", "0");
       full_name_id_t fni_axe_ops     = tcp->full_name_id_of("AxeOps", "0");
@@ -136,10 +136,11 @@ namespace silva {
         return gg_rule.release();
       }
 
-      expected_t<parse_tree_sub_t> axe_scope()
+      expected_t<parse_tree_sub_t> axe_spec()
       {
         auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_axe_scope);
+        gg_rule.set_rule_name(fni_axe_spec);
+        gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
                            "Expected '['");
         token_index += 1;
@@ -336,8 +337,7 @@ namespace silva {
         else if (token_id_by() == tt_eq_axe) {
           token_index += 1;
           gg_rule.set_rule_name(fni_deriv_3);
-          gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
-          gg_rule.sub += SILVA_EXPECT_FWD(axe_scope());
+          gg_rule.sub += SILVA_EXPECT_FWD(axe_spec());
         }
         return gg_rule.release();
       }

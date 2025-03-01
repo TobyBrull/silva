@@ -225,27 +225,36 @@ namespace silva {
 
     expected_t<parse_root_t::parse_axe_data_t> create_parse_axe(token_context_ptr_t tcp,
                                                                 const full_name_id_t base_name,
-                                                                const token_id_t atom_rule,
                                                                 const parse_tree_t* seed_pt,
-                                                                const index_t axe_scope_node_index)
+                                                                const index_t axe_spec_node_index)
     {
-      full_name_id_t fni_axe_scope = tcp->full_name_id_of("AxeScope", "0");
+      full_name_id_t fni_axe_spec  = tcp->full_name_id_of("AxeSpec", "0");
+      full_name_id_t fni_nonterm   = tcp->full_name_id_of("Nonterminal", "0");
       full_name_id_t fni_axe_level = tcp->full_name_id_of("AxeLevel", "0");
-      SILVA_EXPECT(seed_pt->nodes[axe_scope_node_index].rule_name == fni_axe_scope, ASSERT);
+      SILVA_EXPECT(seed_pt->nodes[axe_spec_node_index].rule_name == fni_axe_spec, MAJOR);
       vector_t<parse_axe::parse_axe_level_desc_t> level_descs;
-      level_descs.reserve(seed_pt->nodes[axe_scope_node_index].num_children);
-      auto result = seed_pt->visit_children(
-          [&](const index_t axe_level_node_index, index_t) -> expected_t<bool> {
-            SILVA_EXPECT(seed_pt->nodes[axe_level_node_index].rule_name == fni_axe_level, MINOR);
-            auto& curr_level = level_descs.emplace_back();
-            SILVA_EXPECT_FWD(create_parse_axe__axe_level(tcp,
-                                                         curr_level,
-                                                         base_name,
-                                                         seed_pt,
-                                                         axe_level_node_index));
+      SILVA_EXPECT(seed_pt->nodes[axe_spec_node_index].num_children >= 1, MAJOR);
+      level_descs.reserve(seed_pt->nodes[axe_spec_node_index].num_children - 1);
+      token_id_t atom_rule = token_id_none;
+      auto result          = seed_pt->visit_children(
+          [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
+            if (child_index == 0) {
+              SILVA_EXPECT(seed_pt->nodes[child_node_index].rule_name == fni_nonterm, MAJOR);
+              const index_t nt_token_idx = seed_pt->nodes[child_node_index].token_begin;
+              atom_rule                  = seed_pt->tokenization->tokens[nt_token_idx];
+            }
+            else {
+              SILVA_EXPECT(seed_pt->nodes[child_node_index].rule_name == fni_axe_level, MAJOR);
+              auto& curr_level = level_descs.emplace_back();
+              SILVA_EXPECT_FWD(create_parse_axe__axe_level(tcp,
+                                                           curr_level,
+                                                           base_name,
+                                                           seed_pt,
+                                                           child_node_index));
+            }
             return true;
           },
-          axe_scope_node_index);
+          axe_spec_node_index);
       SILVA_EXPECT_FWD(std::move(result));
       auto pa = SILVA_EXPECT_FWD(parse_axe::parse_axe_create(tcp, std::move(level_descs)));
       return {{.atom_rule = atom_rule, .parse_axe = std::move(pa)}};
@@ -265,7 +274,7 @@ namespace silva {
     full_name_id_t fni_deriv_3   = tcp->full_name_id_of("Derivation", "3");
     full_name_id_t fni_regex     = tcp->full_name_id_of("Regex", "0");
     full_name_id_t fni_nonterm   = tcp->full_name_id_of("Nonterminal", "0");
-    full_name_id_t fni_axe_scope = tcp->full_name_id_of("AxeScope", "0");
+    full_name_id_t fni_axe_spec  = tcp->full_name_id_of("AxeSpec", "0");
 
     auto retval              = std::make_unique<parse_root_t>();
     retval->seed_parse_tree  = std::move(seed_parse_tree);
@@ -338,20 +347,13 @@ namespace silva {
     // Pre-compile hashmap_t of "parse_axes".
     for (const auto& rule: retval->rules) {
       if (s_nodes[rule.expr_node_index].rule_name == fni_deriv_3) {
-        const array_t<index_t, 2> alias_children =
-            SILVA_EXPECT_FWD(s_pt->get_children<2>(rule.expr_node_index));
-        SILVA_EXPECT(s_nodes[alias_children[0]].rule_name == fni_nonterm,
+        const array_t<index_t, 1> deriv_3_child =
+            SILVA_EXPECT_FWD(s_pt->get_children<1>(rule.expr_node_index));
+        SILVA_EXPECT(s_nodes[deriv_3_child[0]].rule_name == fni_axe_spec,
                      MINOR,
-                     "First child of Derivation,3 must be Nonterminal");
-        SILVA_EXPECT(s_nodes[alias_children[1]].rule_name == fni_axe_scope,
-                     MINOR,
-                     "Second child of Derivation,3 must be AxeScope");
-        retval->parse_axes[rule.rule_name] = SILVA_EXPECT_FWD(impl::create_parse_axe(
-            tcp,
-            rule.rule_name,
-            s_pt->tokenization->tokens[s_nodes[alias_children[0]].token_begin],
-            s_pt,
-            alias_children[1]));
+                     "Child of Derivation,3 must be AxeSpec");
+        retval->parse_axes[rule.rule_name] =
+            SILVA_EXPECT_FWD(impl::create_parse_axe(tcp, rule.rule_name, s_pt, deriv_3_child[0]));
       }
     }
 
@@ -400,29 +402,23 @@ namespace silva {
       token_id_t seed_tt_num = tcp->token_id("number");
       token_id_t seed_tt_any = tcp->token_id("any");
 
-      full_name_id_t fni_seed        = tcp->full_name_id_of("Seed", "0");
-      full_name_id_t fni_rule        = tcp->full_name_id_of("Rule", "0");
-      full_name_id_t fni_rule_prec   = tcp->full_name_id_of("RulePrecedence", "0");
-      full_name_id_t fni_deriv_0     = tcp->full_name_id_of("Derivation", "0");
-      full_name_id_t fni_deriv_1     = tcp->full_name_id_of("Derivation", "1");
-      full_name_id_t fni_deriv_2     = tcp->full_name_id_of("Derivation", "2");
-      full_name_id_t fni_deriv_3     = tcp->full_name_id_of("Derivation", "3");
-      full_name_id_t fni_regex       = tcp->full_name_id_of("Regex", "0");
-      full_name_id_t fni_nonterm     = tcp->full_name_id_of("Nonterminal", "0");
-      full_name_id_t fni_term_0      = tcp->full_name_id_of("Terminal", "0");
-      full_name_id_t fni_term_1      = tcp->full_name_id_of("Terminal", "1");
-      full_name_id_t fni_prim_0      = tcp->full_name_id_of("Primary", "0");
-      full_name_id_t fni_prim_1      = tcp->full_name_id_of("Primary", "1");
-      full_name_id_t fni_prim_2      = tcp->full_name_id_of("Primary", "2");
-      full_name_id_t fni_atom_0      = tcp->full_name_id_of("Atom", "0");
-      full_name_id_t fni_atom_1      = tcp->full_name_id_of("Atom", "1");
-      full_name_id_t fni_suffix      = tcp->full_name_id_of("Suffix", "0");
-      full_name_id_t fni_axe_scope   = tcp->full_name_id_of("AxeScope", "0");
-      full_name_id_t fni_axe_level   = tcp->full_name_id_of("AxeLevel", "0");
-      full_name_id_t fni_axe_assoc   = tcp->full_name_id_of("AxeAssoc", "0");
-      full_name_id_t fni_axe_ops     = tcp->full_name_id_of("AxeOps", "0");
-      full_name_id_t fni_axe_op_type = tcp->full_name_id_of("AxeOpType", "0");
-      full_name_id_t fni_axe_op      = tcp->full_name_id_of("AxeOp", "0");
+      full_name_id_t fni_seed      = tcp->full_name_id_of("Seed", "0");
+      full_name_id_t fni_rule      = tcp->full_name_id_of("Rule", "0");
+      full_name_id_t fni_rule_prec = tcp->full_name_id_of("RulePrecedence", "0");
+      full_name_id_t fni_deriv_0   = tcp->full_name_id_of("Derivation", "0");
+      full_name_id_t fni_deriv_1   = tcp->full_name_id_of("Derivation", "1");
+      full_name_id_t fni_deriv_2   = tcp->full_name_id_of("Derivation", "2");
+      full_name_id_t fni_deriv_3   = tcp->full_name_id_of("Derivation", "3");
+      full_name_id_t fni_regex     = tcp->full_name_id_of("Regex", "0");
+      full_name_id_t fni_nonterm   = tcp->full_name_id_of("Nonterminal", "0");
+      full_name_id_t fni_term_0    = tcp->full_name_id_of("Terminal", "0");
+      full_name_id_t fni_term_1    = tcp->full_name_id_of("Terminal", "1");
+      full_name_id_t fni_prim_0    = tcp->full_name_id_of("Primary", "0");
+      full_name_id_t fni_prim_1    = tcp->full_name_id_of("Primary", "1");
+      full_name_id_t fni_prim_2    = tcp->full_name_id_of("Primary", "2");
+      full_name_id_t fni_atom_0    = tcp->full_name_id_of("Atom", "0");
+      full_name_id_t fni_atom_1    = tcp->full_name_id_of("Atom", "1");
+      full_name_id_t fni_suffix    = tcp->full_name_id_of("Suffix", "0");
 
       parse_root_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
                            const parse_root_t* root)
