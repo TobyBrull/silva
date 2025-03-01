@@ -56,6 +56,7 @@ namespace silva {
     token_context_t();
 
     token_id_t token_id(string_view_t);
+    expected_t<token_id_t> token_id_unquoted(token_id_t);
 
     full_name_id_t full_name_id(full_name_id_t parent_name, token_id_t base_name);
     full_name_id_t full_name_id(span_t<const token_id_t>);

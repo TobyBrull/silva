@@ -1,5 +1,9 @@
 # TODO
 
+* Parse-axe:
+    * Make FLAT levels work
+    * Detect end of expression better
+
 * Document variant.hpp
 
 * Trees:
@@ -12,10 +16,12 @@
       For easier grafting.
 
 * memento:
-    * all dumping plain token_ids and full_name_ids, without any positional information
+    * add dumping plain token_ids and full_name_ids, without any positional information
+        * make token_id_t and full_name_id_t proper types
 
 * Seed:
     * Also support rules of the form `PrimaryExpr = "(" Expr ")"` for alias-rules.
+    * Support EOF literal (for token_id_none?)
 
 * Fern:
     * Have [] for arrays and {} for dicts (basically make it JSON without commas)?
@@ -30,6 +36,8 @@
 
 * delegate_t
     * replace memento_item_reader_t callback
+    * Allow non-compile-time callbacks via additional level of indirection; use in
+        parse_root_t::derivation_3 (parse-axe)
 
 * tokenization
     * make "'" the default char to start strings.

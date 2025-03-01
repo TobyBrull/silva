@@ -108,7 +108,7 @@ namespace silva::parse_axe {
       return {};
     };
 
-    const auto register_right_op = [&retval](const token_id_t token_id) -> expected_t<void> {
+    const auto register_right_op = [&](const token_id_t token_id) -> expected_t<void> {
       auto& result = retval.results[token_id];
       SILVA_EXPECT(!result.prefix.has_value(),
                    MINOR,
@@ -117,10 +117,6 @@ namespace silva::parse_axe {
       SILVA_EXPECT(!result.regular.has_value(),
                    MINOR,
                    "Trying to use token {} as right-bracket and regular",
-                   token_id);
-      SILVA_EXPECT(!result.is_right_bracket,
-                   MINOR,
-                   "Trying to use token {} as right-bracket twice",
                    token_id);
       result.is_right_bracket = true;
       return {};
@@ -370,6 +366,7 @@ namespace silva::parse_axe {
             SILVA_EXPECT_FWD(hallucinate_concat());
             continue;
           }
+          break;
         }
         else {
           const parse_axe_result_t& pa_result = it->second;

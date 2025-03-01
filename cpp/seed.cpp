@@ -94,8 +94,8 @@ namespace silva {
                  token_id_by() == tt_prefix_n || token_id_by() == tt_infix ||
                  token_id_by() == tt_ternary || token_id_by() == tt_postfix ||
                  token_id_by() == tt_postfix_n),
-            "Expected one of \"atom_nest\" \"prefix\" \"prefix_nest\" \"infix\" \"ternary\" "
-            "\"postfix\" \"postfix_nest\"");
+            "Expected one of [ \"atom_nest\" \"prefix\" \"prefix_nest\" \"infix\" \"ternary\" "
+            "\"postfix\" \"postfix_nest\" ]");
         token_index += 1;
         return gg_rule.release();
       }
@@ -118,7 +118,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
                                (token_id_by() == tt_nest || token_id_by() == tt_ltr ||
                                 token_id_by() == tt_rtl || token_id_by() == tt_flat),
-                           "Expected one of \"nest\" \"ltr\" \"rtl\" \"flat\"");
+                           "Expected one of [ \"nest\" \"ltr\" \"rtl\" \"flat\" ]");
         token_index += 1;
         return gg_rule.release();
       }
@@ -182,8 +182,8 @@ namespace silva {
                                  token_id_by() == tt_identifier || token_id_by() == tt_operator ||
                                  token_id_by() == tt_string || token_id_by() == tt_number ||
                                  token_id_by() == tt_any,
-                             "Expected string or one of \"identifier\" \"operator\" \"string\" "
-                             "\"number\" \"any\"");
+                             "Expected string or one of [ \"identifier\" \"operator\" \"string\" "
+                             "\"number\" \"any\" ]");
           token_index += 1;
         }
         return gg_rule.release();
@@ -261,7 +261,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(token_id_by() == tt_qmark || token_id_by() == tt_star ||
                                token_id_by() == tt_plus || token_id_by() == tt_emark ||
                                token_id_by() == tt_amper,
-                           "Expected one of \"?\" \"*\" \"+\" \"!\" \"&\"");
+                           "Expected one of [ \"?\" \"*\" \"+\" \"!\" \"&\" ]");
         gg_rule.set_rule_name(fni_suffix);
         token_index += 1;
         return gg_rule.release();

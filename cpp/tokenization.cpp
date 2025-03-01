@@ -256,6 +256,12 @@ namespace silva {
     }
   }
 
+  expected_t<token_id_t> token_context_t::token_id_unquoted(const token_id_t ti)
+  {
+    const string_t str{SILVA_EXPECT_FWD(token_infos[ti].string_as_plain_contained(), MINOR)};
+    return token_id(str);
+  }
+
   token_id_t token_context_get_token_id_from_info(token_context_t* tc,
                                                   const token_info_t& token_info)
   {

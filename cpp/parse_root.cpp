@@ -1,5 +1,6 @@
 #include "parse_root.hpp"
 
+#include "canopy/expected.hpp"
 #include "canopy/scope_exit.hpp"
 #include "parse_axe.hpp"
 #include "parse_tree_nursery.hpp"
@@ -50,26 +51,202 @@ namespace silva {
       return {};
     }
 
+    expected_t<void> create_parse_axe__axe_ops(token_context_ptr_t tcp,
+                                               parse_axe::parse_axe_level_desc_t& level,
+                                               const parse_tree_t* seed_pt,
+                                               const index_t axe_ops_node_index)
+    {
+      const token_id_t ti_atom_nest    = tcp->token_id("atom_nest");
+      const token_id_t ti_prefix       = tcp->token_id("prefix");
+      const token_id_t ti_prefix_nest  = tcp->token_id("prefix_nest");
+      const token_id_t ti_infix        = tcp->token_id("infix");
+      const token_id_t ti_ternary      = tcp->token_id("ternary");
+      const token_id_t ti_postfix      = tcp->token_id("postfix");
+      const token_id_t ti_postfix_nest = tcp->token_id("postfix_nest");
+      const token_id_t ti_none         = tcp->token_id("none");
+
+      const full_name_id_t fni_axe_op_type = tcp->full_name_id_of("AxeOpType", "0");
+      const full_name_id_t fni_axe_op      = tcp->full_name_id_of("AxeOp", "0");
+      token_id_t axe_op_type               = token_id_none;
+      vector_t<token_id_t> axe_op_vec;
+      auto result = seed_pt->visit_children(
+          [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
+            if (child_index == 0) {
+              SILVA_EXPECT(seed_pt->nodes[child_node_index].rule_name == fni_axe_op_type, MAJOR);
+              const index_t axe_op_type_index = seed_pt->nodes[child_node_index].token_begin;
+              axe_op_type                     = seed_pt->tokenization->tokens[axe_op_type_index];
+              SILVA_EXPECT(axe_op_type == ti_atom_nest || axe_op_type == ti_prefix ||
+                               axe_op_type == ti_prefix_nest || axe_op_type == ti_infix ||
+                               axe_op_type == ti_ternary || axe_op_type == ti_postfix ||
+                               axe_op_type == ti_postfix_nest,
+                           MAJOR);
+            }
+            else {
+              SILVA_EXPECT(seed_pt->nodes[child_node_index].rule_name == fni_axe_op, MAJOR);
+              const index_t axe_op_index = seed_pt->nodes[child_node_index].token_begin;
+              const token_id_t axe_op    = seed_pt->tokenization->tokens[axe_op_index];
+              const token_info_t* info   = &tcp->token_infos[axe_op];
+              SILVA_EXPECT(info->category == token_category_t::STRING || axe_op == ti_none, MAJOR);
+              if (axe_op_type != ti_infix) {
+                SILVA_EXPECT(axe_op != ti_none,
+                             MINOR,
+                             "The \"none\" token may only be used with \"infix\" operations.");
+              }
+              axe_op_vec.push_back(axe_op);
+            }
+            return true;
+          },
+          axe_ops_node_index);
+      SILVA_EXPECT_FWD(std::move(result));
+
+      if (axe_op_type == ti_atom_nest || axe_op_type == ti_prefix_nest ||
+          axe_op_type == ti_ternary || axe_op_type == ti_postfix_nest) {
+        SILVA_EXPECT(axe_op_vec.size() % 2 == 0,
+                     MINOR,
+                     "For [ \"atom_nest\" \"prefix_nest\" \"ternary\" \"postfix_nest\" ] "
+                     "operations an even number of operators is expected");
+      }
+
+      index_t i = 0;
+      while (i < axe_op_vec.size()) {
+        if (axe_op_type == ti_atom_nest) {
+          SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
+          level.opers.push_back(parse_axe::atom_nest_t{
+              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i + 1])),
+          });
+          i += 2;
+        }
+        else if (axe_op_type == ti_prefix) {
+          level.opers.push_back(parse_axe::prefix_t{
+              .token_id = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+          });
+          i += 1;
+        }
+        else if (axe_op_type == ti_prefix_nest) {
+          SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
+          level.opers.push_back(parse_axe::prefix_nest_t{
+              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i + 1])),
+          });
+          i += 2;
+        }
+        else if (axe_op_type == ti_infix) {
+          if (axe_op_vec[i] == ti_none) {
+            level.opers.push_back(parse_axe::infix_t{
+                .token_id = token_id_none,
+            });
+          }
+          else {
+            level.opers.push_back(parse_axe::infix_t{
+                .token_id = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+            });
+          }
+          i += 1;
+        }
+        else if (axe_op_type == ti_ternary) {
+          SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
+          level.opers.push_back(parse_axe::ternary_t{
+              .first  = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+              .second = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i + 1])),
+          });
+          i += 2;
+        }
+        else if (axe_op_type == ti_postfix) {
+          level.opers.push_back(parse_axe::postfix_t{
+              .token_id = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+          });
+          i += 1;
+        }
+        else if (axe_op_type == ti_postfix_nest) {
+          SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
+          level.opers.push_back(parse_axe::postfix_nest_t{
+              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i + 1])),
+          });
+          i += 2;
+        }
+        else {
+          SILVA_EXPECT(false, ASSERT);
+        }
+      }
+      return {};
+    }
+
+    expected_t<void> create_parse_axe__axe_level(token_context_ptr_t tcp,
+                                                 parse_axe::parse_axe_level_desc_t& level,
+                                                 const full_name_id_t base_name,
+                                                 const parse_tree_t* seed_pt,
+                                                 const index_t axe_level_node_index)
+    {
+      const token_id_t ti_nest = tcp->token_id("nest");
+      const token_id_t ti_ltr  = tcp->token_id("ltr");
+      const token_id_t ti_rtl  = tcp->token_id("rtl");
+      const token_id_t ti_flat = tcp->token_id("flat");
+
+      const full_name_id_t fni_nonterm   = tcp->full_name_id_of("Nonterminal", "0");
+      const full_name_id_t fni_axe_assoc = tcp->full_name_id_of("AxeAssoc", "0");
+      const full_name_id_t fni_axe_ops   = tcp->full_name_id_of("AxeOps", "0");
+      auto result                        = seed_pt->visit_children(
+          [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
+            if (child_index == 0) {
+              SILVA_EXPECT(seed_pt->nodes[child_node_index].rule_name == fni_nonterm, MAJOR);
+              const index_t nonterminal_index = seed_pt->nodes[child_node_index].token_begin;
+              const token_id_t nonterminal    = seed_pt->tokenization->tokens[nonterminal_index];
+              level.name                      = tcp->full_name_id(base_name, nonterminal);
+            }
+            else if (child_index == 1) {
+              SILVA_EXPECT(seed_pt->nodes[child_node_index].rule_name == fni_axe_assoc, MAJOR);
+              const index_t assoc_index = seed_pt->nodes[child_node_index].token_begin;
+              const token_id_t assoc    = seed_pt->tokenization->tokens[assoc_index];
+              using enum parse_axe::assoc_t;
+              if (assoc == ti_nest) {
+                level.assoc = NEST;
+              }
+              else if (assoc == ti_ltr) {
+                level.assoc = LEFT_TO_RIGHT;
+              }
+              else if (assoc == ti_rtl) {
+                level.assoc = RIGHT_TO_LEFT;
+              }
+              else if (assoc == ti_flat) {
+                level.assoc = FLAT;
+              }
+              else {
+                SILVA_EXPECT(false, MAJOR);
+              }
+            }
+            else {
+              SILVA_EXPECT(seed_pt->nodes[child_node_index].rule_name == fni_axe_ops, MAJOR);
+              SILVA_EXPECT_FWD(create_parse_axe__axe_ops(tcp, level, seed_pt, child_node_index));
+            }
+            return true;
+          },
+          axe_level_node_index);
+      SILVA_EXPECT_FWD(std::move(result));
+      return {};
+    }
+
     expected_t<parse_root_t::parse_axe_data_t> create_parse_axe(token_context_ptr_t tcp,
                                                                 const full_name_id_t base_name,
                                                                 const token_id_t atom_rule,
                                                                 const parse_tree_t* seed_pt,
                                                                 const index_t axe_scope_node_index)
     {
-      full_name_id_t fni_axe_scope   = tcp->full_name_id_of("AxeScope", "0");
-      full_name_id_t fni_axe_level   = tcp->full_name_id_of("AxeLevel", "0");
-      full_name_id_t fni_axe_assoc   = tcp->full_name_id_of("AxeAssoc", "0");
-      full_name_id_t fni_axe_ops     = tcp->full_name_id_of("AxeOps", "0");
-      full_name_id_t fni_axe_op_type = tcp->full_name_id_of("AxeOpType", "0");
-      full_name_id_t fni_axe_op      = tcp->full_name_id_of("AxeOp", "0");
+      full_name_id_t fni_axe_scope = tcp->full_name_id_of("AxeScope", "0");
+      full_name_id_t fni_axe_level = tcp->full_name_id_of("AxeLevel", "0");
       SILVA_EXPECT(seed_pt->nodes[axe_scope_node_index].rule_name == fni_axe_scope, ASSERT);
       vector_t<parse_axe::parse_axe_level_desc_t> level_descs;
       level_descs.reserve(seed_pt->nodes[axe_scope_node_index].num_children);
       auto result = seed_pt->visit_children(
           [&](const index_t axe_level_node_index, index_t) -> expected_t<bool> {
             SILVA_EXPECT(seed_pt->nodes[axe_level_node_index].rule_name == fni_axe_level, MINOR);
-            const auto& curr_level = level_descs.emplace_back();
-            // TODO...
+            auto& curr_level = level_descs.emplace_back();
+            SILVA_EXPECT_FWD(create_parse_axe__axe_level(tcp,
+                                                         curr_level,
+                                                         base_name,
+                                                         seed_pt,
+                                                         axe_level_node_index));
             return true;
           },
           axe_scope_node_index);
@@ -477,9 +654,27 @@ namespace silva {
         return gg.release();
       }
 
-      expected_t<parse_tree_sub_t> apply_derivation_3(const index_t seed_node_index)
+      expected_t<parse_tree_sub_t> apply_derivation_3(const parse_root_t::rule_t& rule)
       {
-        SILVA_EXPECT(false, FATAL, "Operator '=%' not yet implemented");
+        const auto it = root->parse_axes.find(rule.rule_name);
+        SILVA_EXPECT(it != root->parse_axes.end(), MAJOR);
+        auto gg{guard()};
+        const parse_root_t::parse_axe_data_t& parse_axe_data = it->second;
+        using dg_t = delegate_t<expected_t<parse_tree_sub_t>()>;
+        struct callback_t {
+          token_id_t atom_rule       = token_id_none;
+          parse_root_nursery_t* self = nullptr;
+          expected_t<parse_tree_sub_t> operator()() const { return self->apply_rule(atom_rule); }
+        };
+        callback_t callback{
+            .atom_rule = parse_axe_data.atom_rule,
+            .self      = this,
+        };
+        gg.sub += SILVA_EXPECT_FWD(parse_axe_data.parse_axe.apply(
+            *this,
+            tcp->full_name_id(full_name_id_none, parse_axe_data.atom_rule),
+            dg_t::make<&callback_t::operator()>(&callback)));
+        return gg.release();
       }
 
       expected_t<parse_tree_sub_t> apply_expr(const parse_root_t::rule_t& rule)
@@ -492,7 +687,7 @@ namespace silva {
           return apply_derivation_1(rule.expr_node_index);
         }
         else if (seed_node_expr.rule_name == fni_deriv_3) {
-          return apply_derivation_3(rule.expr_node_index);
+          return apply_derivation_3(rule);
         }
         else {
           SILVA_EXPECT(false, MAJOR, "Expected Seed node with DERIVATION_{0,1,3}");
