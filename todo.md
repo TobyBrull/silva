@@ -1,9 +1,5 @@
 # TODO
 
-* memento:
-    * add dumping plain token_ids and full_name_ids, without any positional information
-        * make token_id_t and full_name_id_t proper types
-
 ```silva.seed
 - ParseAxe = [
   - Goal = "parse_axe" Nonterminal "[" LevelNest* Level* "]"
@@ -25,6 +21,13 @@
         * Silva.Expr.FuncCall
     * Support EOF literal (or token_id_none?)
 
+* memento:
+    * add dumping plain token_ids and full_name_ids, without any positional information
+        * make token_id_t and full_name_id_t proper types
+    * make memento based on proper move-ctor & dtor semantics, rather than memcpy
+        * make token_position_t contain a token_context_ptr_t instead of a raw ptr
+        * simplify creation of memoizable types (should just require a move-ctor, dtor, and a
+        "materialize" member function).
 
 * Seed
     * check Seed program when constructing parse_root_t?
