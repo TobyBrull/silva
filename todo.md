@@ -1,8 +1,5 @@
 # TODO
 
-* Parse-axe:
-    * Detect end of expression better
-
 * memento:
     * add dumping plain token_ids and full_name_ids, without any positional information
         * make token_id_t and full_name_id_t proper types

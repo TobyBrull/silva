@@ -204,7 +204,7 @@ namespace silva::parse_axe {
 
     // functions
 
-    optional_t<index_t> try_parse_atom(parse_tree_guard_for_rule_t& gg_rule)
+    optional_t<atom_data_t> try_parse_atom(parse_tree_guard_for_rule_t& gg_rule)
     {
       auto maybe_atom_result = atom();
       if (!maybe_atom_result) {
@@ -213,17 +213,11 @@ namespace silva::parse_axe {
       auto atom_result               = std::move(maybe_atom_result).value();
       const index_t atom_child_index = gg_rule.sub.num_children;
       gg_rule.sub += atom_result;
-      const index_t atom_tree_node_index = atom_tree.nodes.size();
-      atom_tree.nodes.push_back(atom_tree_node_t{
-          {
-              .name             = atom_name_id,
-              .token_range      = {atom_result.token_begin, atom_result.token_end},
-              .atom_child_index = atom_child_index,
-          },
-          /* num_children = */ 0,
-          /* children_begin = */ index_t(atom_tree.nodes.size()),
-      });
-      return atom_tree_node_index;
+      return {{
+          .name             = atom_name_id,
+          .token_range      = {atom_result.token_begin, atom_result.token_end},
+          .atom_child_index = atom_child_index,
+      }};
     }
 
     struct stack_pair_t {
@@ -336,21 +330,26 @@ namespace silva::parse_axe {
       while (nursery.num_tokens_left() >= 1) {
         const auto it = parse_axe.results.find(nursery.token_id_by());
         if (it == parse_axe.results.end()) {
-          // Current token is not one of the known operators
-          if (mode == ATOM_MODE) {
-            const auto maybe_atom_tree_node_index = try_parse_atom(gg_rule);
-            if (!maybe_atom_tree_node_index.has_value()) {
-              break;
-            }
-            mode = INFIX_MODE;
-            stack_pair.atom_stack.push_back(atom_item_t{maybe_atom_tree_node_index.value()});
-            continue;
+          // Current token is not one of the known operators, so it has to be an atom or the end of
+          // the expression
+          const optional_t<atom_data_t> atom_data = try_parse_atom(gg_rule);
+          if (!atom_data.has_value()) {
+            break;
           }
           if (mode == INFIX_MODE && parse_axe.has_concat) {
             SILVA_EXPECT_FWD(hallucinate_concat());
+          }
+          if (mode == ATOM_MODE) {
+            const index_t atom_tree_node_index = atom_tree.nodes.size();
+            atom_tree.nodes.push_back(atom_tree_node_t{
+                atom_data.value(),
+                /* num_children = */ 0,
+                /* children_begin = */ atom_tree_node_index,
+            });
+            stack_pair.atom_stack.push_back(atom_item_t{atom_tree_node_index});
+            mode = INFIX_MODE;
             continue;
           }
-          break;
         }
         else {
           const parse_axe_result_t& pa_result = it->second;
