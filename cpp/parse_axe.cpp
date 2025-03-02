@@ -12,6 +12,9 @@ namespace silva::parse_axe {
       return false;
     }
     else {
+      if (lhs.flatten_id != token_id_none && lhs.flatten_id == rhs.flatten_id) {
+        return true;
+      }
       // Each level has a unique associativity.
       SILVA_ASSERT(lhs.assoc == rhs.assoc);
       return lhs.assoc == assoc_t::RIGHT_TO_LEFT;
@@ -137,7 +140,11 @@ namespace silva::parse_axe {
           SILVA_EXPECT_FWD(register_right_op(x->right_bracket));
         }
         else if (const auto* x = std::get_if<infix_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->token_id, *x, level_desc.name, precedence));
+          precedence_t used_prec = precedence;
+          if (x->flatten) {
+            used_prec.flatten_id = x->token_id;
+          }
+          SILVA_EXPECT_FWD(register_op(x->token_id, *x, level_desc.name, used_prec));
         }
         else if (const auto* x = std::get_if<ternary_t>(&oper); x) {
           SILVA_EXPECT_FWD(register_op(x->first, *x, level_desc.name, precedence));
@@ -322,8 +329,15 @@ namespace silva::parse_axe {
       expected_t<void> stack_pop(precedence_t prec)
       {
         while (!oper_stack.empty() && !(oper_stack.back().precedence < prec)) {
-          const index_t oper_stack_end   = oper_stack.size();
-          const index_t oper_stack_begin = oper_stack_end - 1;
+          const index_t oper_stack_end = oper_stack.size();
+          index_t oper_stack_begin     = oper_stack_end - 1;
+          if (const auto* infix_op = std::get_if<infix_t>(&oper_stack[oper_stack_end - 1].oper);
+              infix_op != nullptr && infix_op->flatten) {
+            while (oper_stack_begin > 0 &&
+                   oper_stack[oper_stack_begin - 1].oper == oper_stack[oper_stack_end - 1].oper) {
+              oper_stack_begin -= 1;
+            }
+          }
           const span_t<const oper_item_t> ois{&oper_stack[oper_stack_begin],
                                               &oper_stack[oper_stack_end]};
           const consistent_range_t cr = SILVA_EXPECT_FWD(consistent_range(ois));

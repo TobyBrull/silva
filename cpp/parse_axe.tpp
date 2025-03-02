@@ -465,9 +465,24 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
       .assoc = RIGHT_TO_LEFT,
       .opers = {prefix_nest_t{tc.token_id("{"), tc.token_id("}")}},
   });
+  level_descs.push_back(parse_axe_level_desc_t{
+      .name  = tc.full_name_id_of("expr", "mul"),
+      .assoc = LEFT_TO_RIGHT,
+      .opers = {infix_t{tc.token_id("*")}},
+  });
+  level_descs.push_back(parse_axe_level_desc_t{
+      .name  = tc.full_name_id_of("expr", "add"),
+      .assoc = LEFT_TO_RIGHT,
+      .opers = {infix_t{.token_id = tc.token_id("+"), .flatten = true}, infix_t{tc.token_id("-")}},
+  });
+  level_descs.push_back(parse_axe_level_desc_t{
+      .name  = tc.full_name_id_of("expr", "assign"),
+      .assoc = RIGHT_TO_LEFT,
+      .opers = {infix_t{.token_id = tc.token_id("="), .flatten = true}, infix_t{tc.token_id("%")}},
+  });
   const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
   CHECK(pa.has_concat);
-  CHECK(pa.results.size() == 7);
+  CHECK(pa.results.size() == 12);
 
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "x y z", R"(
 [0]`expr`cat`                                     x y z
@@ -505,5 +520,76 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
     [0]`test`atom                                 x
     [1]`test`atom                                 1 {
   [1]`test`atom                                   z
+)");
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a + b + c", R"(
+[0]`expr`add`+                                    a + b ...
+  [0]`test`atom                                   a
+  [1]`test`atom                                   b
+  [2]`test`atom                                   c
+)");
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a + b + c * d + e + f", R"(
+[0]`expr`add`+                                    a + b ...
+  [0]`test`atom                                   a
+  [1]`test`atom                                   b
+  [2]`expr`mul`*                                  c * d
+    [0]`test`atom                                 c
+    [1]`test`atom                                 d
+  [3]`test`atom                                   e
+  [4]`test`atom                                   f
+)");
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a + b + c - d - e + f + g", R"(
+[0]`expr`add`+                                    a + b ...
+  [0]`expr`add`-                                  a + b ...
+    [0]`expr`add`-                                a + b ...
+      [0]`expr`add`+                              a + b ...
+        [0]`test`atom                             a
+        [1]`test`atom                             b
+        [2]`test`atom                             c
+      [1]`test`atom                               d
+    [1]`test`atom                                 e
+  [1]`test`atom                                   f
+  [2]`test`atom                                   g
+)");
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a - b + c + d - e", R"(
+[0]`expr`add`-                                    a - b ...
+  [0]`expr`add`+                                  a - b ...
+    [0]`expr`add`-                                a - b
+      [0]`test`atom                               a
+      [1]`test`atom                               b
+    [1]`test`atom                                 c
+    [2]`test`atom                                 d
+  [1]`test`atom                                   e
+)");
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a + b + c - d + e + f", R"(
+[0]`expr`add`+                                    a + b ...
+  [0]`expr`add`-                                  a + b ...
+    [0]`expr`add`+                                a + b ...
+      [0]`test`atom                               a
+      [1]`test`atom                               b
+      [2]`test`atom                               c
+    [1]`test`atom                                 d
+  [1]`test`atom                                   e
+  [2]`test`atom                                   f
+)");
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a % b = c = d % e", R"(
+[0]`expr`assign`%                                 a % b ...
+  [0]`test`atom                                   a
+  [1]`expr`assign`=                               b = c ...
+    [0]`test`atom                                 b
+    [1]`test`atom                                 c
+    [2]`expr`assign`%                             d % e
+      [0]`test`atom                               d
+      [1]`test`atom                               e
+)");
+  test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a = b = c % d = e = f", R"(
+[0]`expr`assign`=                                 a = b ...
+  [0]`test`atom                                   a
+  [1]`test`atom                                   b
+  [2]`expr`assign`%                               c % d ...
+    [0]`test`atom                                 c
+    [1]`expr`assign`=                             d = e ...
+      [0]`test`atom                               d
+      [1]`test`atom                               e
+      [2]`test`atom                               f
 )");
 }

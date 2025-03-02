@@ -44,6 +44,7 @@ namespace silva::parse_axe {
   struct infix_t {
     constexpr static inline index_t arity = 2;
     token_id_t token_id{0};
+    bool flatten = false;
 
     friend auto operator<=>(const infix_t&, const infix_t&) = default;
   };
@@ -82,6 +83,7 @@ namespace silva::parse_axe {
   struct precedence_t {
     level_index_t level_index = 0;
     assoc_t assoc             = assoc_t::INVALID;
+    token_id_t flatten_id     = token_id_none;
 
     friend auto operator<=>(const precedence_t&, const precedence_t&) = default;
   };
