@@ -21,6 +21,27 @@
         * Silva.Expr.FuncCall
     * Support EOF literal (or token_id_none?)
 
+* ParseAxe
+    * Maybe think again about flat levels, but only allow exactly the same
+    infix operator multiple times in a row.
+```
+1 + 2 + 3 - 4 - 5 + 6 + 7
+
+infix "-" infix_flat "+"
+
+[0] + 
+  [0] -
+    [0] -
+      [0] +
+        [0] 1
+        [1] 2
+        [2] 3
+      [1] 4
+    [1] 5
+  [1] 6
+  [2] 7
+```
+
 * memento:
     * add dumping plain token_ids and full_name_ids, without any positional information
         * make token_id_t and full_name_id_t proper types
