@@ -226,24 +226,38 @@ namespace silva::parse_axe {
       vector_t<oper_item_t> oper_stack;
       vector_t<atom_item_t> atom_stack;
 
-      expected_t<pair_t<index_t, index_t>> consistent_range(oper_item_t oi)
+      struct consistent_range_t {
+        index_t num_atoms               = 0;
+        full_name_id_t joint_level_name = full_name_id_none;
+        index_t token_begin             = 0;
+        index_t token_end               = 0;
+      };
+      expected_t<consistent_range_t> consistent_range(span_t<const oper_item_t> ois) const
       {
+        SILVA_EXPECT(ois.size() == 1, ASSERT, "TO IMPLEMENT");
+        const auto& oi = ois.front();
+
         SILVA_EXPECT(oi.arity <= atom_stack.size(), MINOR);
         const index_t stack_index_begin = atom_stack.size() - oi.arity;
-        pair_t<index_t, index_t> retval =
-            atom_tree->nodes[atom_stack[stack_index_begin].atom_tree_node_index].token_range;
-        index_t cti_pos = 0;
+        const auto& atn = atom_tree->nodes[atom_stack[stack_index_begin].atom_tree_node_index];
+        consistent_range_t retval{
+            .num_atoms        = oi.arity,
+            .joint_level_name = oi.level_name,
+        };
+        retval.token_begin = atn.token_range.first;
+        retval.token_end   = atn.token_range.second;
+        index_t cti_pos    = 0;
         if (cti_pos < oi.covered_token_indexes.size &&
-            oi.covered_token_indexes[cti_pos] < retval.first) {
-          SILVA_EXPECT(oi.covered_token_indexes[cti_pos] + 1 == retval.first, MINOR);
-          retval.first -= 1;
+            oi.covered_token_indexes[cti_pos] < retval.token_begin) {
+          SILVA_EXPECT(oi.covered_token_indexes[cti_pos] + 1 == retval.token_begin, MINOR);
+          retval.token_begin -= 1;
           cti_pos += 1;
         }
         const auto try_cti_after = [&]() -> expected_t<void> {
           if (cti_pos < oi.covered_token_indexes.size) {
-            SILVA_EXPECT(retval.second <= oi.covered_token_indexes[cti_pos], MINOR);
-            if (retval.second == oi.covered_token_indexes[cti_pos]) {
-              retval.second += 1;
+            SILVA_EXPECT(retval.token_end <= oi.covered_token_indexes[cti_pos], MINOR);
+            if (retval.token_end == oi.covered_token_indexes[cti_pos]) {
+              retval.token_end += 1;
               cti_pos += 1;
             }
           }
@@ -253,35 +267,42 @@ namespace silva::parse_axe {
         for (index_t stack_index = stack_index_begin + 1; stack_index < atom_stack.size();
              ++stack_index) {
           const auto& atom_data = atom_tree->nodes[atom_stack[stack_index].atom_tree_node_index];
-          SILVA_EXPECT(retval.second == atom_data.token_range.first, MINOR);
-          retval.second = atom_data.token_range.second;
+          SILVA_EXPECT(retval.token_end == atom_data.token_range.first, MINOR);
+          retval.token_end = atom_data.token_range.second;
           SILVA_EXPECT_FWD(try_cti_after());
         }
         SILVA_EXPECT(cti_pos == oi.covered_token_indexes.size, MINOR);
+
+        SILVA_EXPECT(!oi.min_token_index.has_value() || oi.min_token_index <= retval.token_begin,
+                     MINOR);
+        SILVA_EXPECT(!oi.max_token_index.has_value() || retval.token_end <= oi.max_token_index,
+                     MINOR);
+
         return retval;
       }
 
       expected_t<void> stack_pop(precedence_t prec)
       {
         while (!oper_stack.empty() && !(oper_stack.back().precedence < prec)) {
-          const auto oi = oper_stack.back();
-          oper_stack.pop_back();
-          const auto [token_begin, token_end] = SILVA_EXPECT_FWD(consistent_range(oi));
-          SILVA_EXPECT(!oi.min_token_index.has_value() || oi.min_token_index <= token_begin, MINOR);
-          SILVA_EXPECT(!oi.max_token_index.has_value() || token_end <= oi.max_token_index, MINOR);
-          SILVA_EXPECT(oi.arity <= atom_stack.size(), MINOR);
+          const index_t oper_stack_end   = oper_stack.size();
+          const index_t oper_stack_begin = oper_stack_end - 1;
+          const span_t<const oper_item_t> ois{&oper_stack[oper_stack_begin],
+                                              &oper_stack[oper_stack_end]};
+          const consistent_range_t cr = SILVA_EXPECT_FWD(consistent_range(ois));
+          oper_stack.resize(oper_stack.size() - ois.size());
+          SILVA_EXPECT(cr.num_atoms <= atom_stack.size(), MINOR);
           const atom_tree_node_t& base_node =
-              atom_tree->nodes[atom_stack[atom_stack.size() - oi.arity].atom_tree_node_index];
-          atom_stack.resize(atom_stack.size() - oi.arity);
+              atom_tree->nodes[atom_stack[atom_stack.size() - cr.num_atoms].atom_tree_node_index];
+          atom_stack.resize(atom_stack.size() - cr.num_atoms);
           atom_stack.push_back(
               atom_item_t{.atom_tree_node_index = index_t(atom_tree->nodes.size())});
           atom_tree->nodes.push_back(atom_tree_node_t{
               {
-                  .name             = oi.level_name,
-                  .token_range      = {token_begin, token_end},
+                  .name             = cr.joint_level_name,
+                  .token_range      = {cr.token_begin, cr.token_end},
                   .atom_child_index = none,
               },
-              /* num_children = */ oi.arity,
+              /* num_children = */ cr.num_atoms,
               /* children_begin = */ base_node.children_begin,
           });
         }
