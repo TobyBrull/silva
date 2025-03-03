@@ -12,7 +12,7 @@ namespace silva::parse_axe {
       return false;
     }
     else {
-      if (lhs.flatten_id != token_id_none && lhs.flatten_id == rhs.flatten_id) {
+      if (lhs.flatten_id.has_value() && lhs.flatten_id == rhs.flatten_id) {
         return true;
       }
       // Each level has a unique associativity.
@@ -391,7 +391,7 @@ namespace silva::parse_axe {
         const auto& reg = it->second.regular.value();
         SILVA_EXPECT_FWD(stack_pair.stack_pop(reg.precedence));
         stack_pair.oper_stack.push_back(oper_item_t{
-            .oper       = infix_t{token_id_none},
+            .oper       = std::get<infix_t>(reg.oper),
             .arity      = infix_t::arity,
             .level_name = reg.name,
             .precedence = reg.precedence,

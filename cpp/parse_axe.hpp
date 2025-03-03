@@ -83,7 +83,7 @@ namespace silva::parse_axe {
   struct precedence_t {
     level_index_t level_index = 0;
     assoc_t assoc             = assoc_t::INVALID;
-    token_id_t flatten_id     = token_id_none;
+    optional_t<token_id_t> flatten_id;
 
     friend auto operator<=>(const precedence_t&, const precedence_t&) = default;
   };
