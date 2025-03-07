@@ -32,29 +32,29 @@ TEST_CASE("fern", "[fern]")
   CHECK(fern.to_graphviz() == fern_to_graphviz(pt_1.get()));
 
   const string_view_t expected_parse_tree_str = R"(
-[0]`Fern`0                                        [ none true ...
-  [0]`LabeledItem`0                               none
-    [0]`Item`1                                    none
-  [1]`LabeledItem`0                               true
-    [0]`Item`1                                    true
-  [2]`LabeledItem`0                               "test" : "Hello"
-    [0]`Label`0                                   "test"
-    [1]`Item`1                                    "Hello"
-  [3]`LabeledItem`0                               42
-    [0]`Item`1                                    42
-  [4]`LabeledItem`0                               [ ]
-    [0]`Item`0                                    [ ]
-      [0]`Fern`0                                  [ ]
-  [5]`LabeledItem`0                               [ 1 "two" ...
-    [0]`Item`0                                    [ 1 "two" ...
-      [0]`Fern`0                                  [ 1 "two" ...
-        [0]`LabeledItem`0                         1
-          [0]`Item`1                              1
-        [1]`LabeledItem`0                         "two" : 2
-          [0]`Label`0                             "two"
-          [1]`Item`1                              2
-        [2]`LabeledItem`0                         3
-          [0]`Item`1                              3
+[0]`Fern                                          [ none true ...
+  [0]`LabeledItem                                 none
+    [0]`Item                                      none
+  [1]`LabeledItem                                 true
+    [0]`Item                                      true
+  [2]`LabeledItem                                 "test" : "Hello"
+    [0]`Label                                     "test"
+    [1]`Item                                      "Hello"
+  [3]`LabeledItem                                 42
+    [0]`Item                                      42
+  [4]`LabeledItem                                 [ ]
+    [0]`Item                                      [ ]
+      [0]`Fern                                    [ ]
+  [5]`LabeledItem                                 [ 1 "two" ...
+    [0]`Item                                      [ 1 "two" ...
+      [0]`Fern                                    [ 1 "two" ...
+        [0]`LabeledItem                           1
+          [0]`Item                                1
+        [1]`LabeledItem                           "two" : 2
+          [0]`Label                               "two"
+          [1]`Item                                2
+        [2]`LabeledItem                           3
+          [0]`Item                                3
 )";
 
   const string_t result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*pt_1));

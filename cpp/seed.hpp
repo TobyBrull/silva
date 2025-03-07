@@ -18,29 +18,30 @@ namespace silva {
   // encapsulated/represented by the class "parse_root_t".
 
   const string_view_t seed_seed = R"'(
-    - Seed = ("-" Rule)*
-    - Rule = Nonterminal ( "," RulePrecedence )? Derivation
-    - RulePrecedence = number
-    - Derivation,0 = "=" major_error Atom+
-    - Derivation,1 = "=~" major_error Terminal+
-    - Derivation,2 = "=>" major_error Nonterminal "," RulePrecedence
-    - Derivation,3 = "=%" major_error AxeSpec
-    - Atom,0 = "major_error"
-    - Atom,1 = Primary Suffix?
-    - Suffix =~ "?" "*" "+" "!" "&"
-    - Primary,0 = "(" Atom+ ")"
-    - Primary,1 = Terminal
-    - Primary,2 = Nonterminal
-    - Nonterminal = identifier_regex("^[A-Z]")
-    - Terminal,0 = "identifier_regex" "(" Regex ")"
-    - Terminal,1 =~ string "identifier" "operator" "string" "number" "any"
-    - Regex = string
-    - AxeSpec = Nonterminal "[" ("-" AxeLevel)* "]"
+    - Seed = ( "-" Rule ) *
+    - Rule = Nonterminal ( "=" Expr | "=/" Axe | "=>" Alias )
+    - Expr =/ Atom [
+      - Parens    = nest  atom_nest "(" ")"
+      - Postfix   = ltr   postfix "?" "*" "+" "!" "&"
+      - Concat    = ltr   infix_flat none
+      - Alt       = ltr   infix_flat "|"
+    ]
+    - Atom => [ Nonterminal Terminal ]
+    - Alias = "[" Nonterminal + "]"
+
+    - Axe = Nonterminal "[" ( "-" AxeLevel ) * "]"
     - AxeLevel = Nonterminal "=" AxeAssoc AxeOps*
-    - AxeAssoc =~ "nest" "ltr" "rtl"
-    - AxeOps = AxeOpType AxeOp*
-    - AxeOpType =~ "atom_nest" "prefix" "prefix_nest" "infix" "ternary" "postfix" "postfix_nest"
-    - AxeOp =~ string "none"
+    - AxeAssoc = "nest" | "ltr" | "rtl"
+    - AxeOps = AxeOpType AxeOp *
+    - AxeOpType = "atom_nest" | "prefix" | "prefix_nest"
+                | "infix" | "infix_flat" | "ternary"
+                | "postfix" | "postfix_nest"
+    - AxeOp = string | "none"
+
+    - Nonterminal = identifier_regex ( "^[A-Z]" )
+    - Terminal = string
+               | "identifier" | "operator" | "string" | "number"
+               | "any" | "identifier_regex" "(" string ")"
   )'";
 
   struct parse_root_t;

@@ -1,6 +1,6 @@
 - Statements = ( Expr ";" )* "end"
 
-- Expr =% Atom [
+- Expr =/ Atom [
     - Parens      = nest  atom_nest "(" ")"
     - Namespace   = ltr   infix "::"
     - Postfix     = ltr   postfix "++" "--"
@@ -25,4 +25,4 @@
                           ternary "?" ":"
     - Comma       = ltr   infix ","
   ]
-- Atom =~ number string identifier
+- Atom = number | string | identifier

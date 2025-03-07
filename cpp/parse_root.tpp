@@ -9,59 +9,40 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
 {
   token_context_t tc;
   const string_t frog_seed = R"'(
-    - Frog = Rule*
+    - Frog = Rule *
     - Rule = RuleName "=" Expr
     - RuleName = identifier
-    - Expr = Primary+
-    - Primary = identifier "="!
+    - Expr = Primary +
+    - Primary = identifier "=" !
   )'";
   auto fs_tt               = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_seed)));
   auto fs_pt               = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
   auto fs_pr               = share(SILVA_EXPECT_REQUIRE(parse_root_t::create(fs_pt)));
   const string_view_t expected_seed_pt = R"(
-[0]`Seed`0                                        - Frog = ...
-  [0]`Rule`0                                      Frog = Rule ...
-    [0]`Nonterminal`0                             Frog
-    [1]`Derivation`0                              = Rule *
-      [0]`Atom`1                                  Rule *
-        [0]`Primary`2                             Rule
-          [0]`Nonterminal`0                       Rule
-        [1]`Suffix`0                              *
-  [1]`Rule`0                                      Rule = RuleName ...
-    [0]`Nonterminal`0                             Rule
-    [1]`Derivation`0                              = RuleName "=" ...
-      [0]`Atom`1                                  RuleName
-        [0]`Primary`2                             RuleName
-          [0]`Nonterminal`0                       RuleName
-      [1]`Atom`1                                  "="
-        [0]`Primary`1                             "="
-          [0]`Terminal`1                          "="
-      [2]`Atom`1                                  Expr
-        [0]`Primary`2                             Expr
-          [0]`Nonterminal`0                       Expr
-  [2]`Rule`0                                      RuleName = identifier
-    [0]`Nonterminal`0                             RuleName
-    [1]`Derivation`0                              = identifier
-      [0]`Atom`1                                  identifier
-        [0]`Primary`1                             identifier
-          [0]`Terminal`1                          identifier
-  [3]`Rule`0                                      Expr = Primary ...
-    [0]`Nonterminal`0                             Expr
-    [1]`Derivation`0                              = Primary +
-      [0]`Atom`1                                  Primary +
-        [0]`Primary`2                             Primary
-          [0]`Nonterminal`0                       Primary
-        [1]`Suffix`0                              +
-  [4]`Rule`0                                      Primary = identifier ...
-    [0]`Nonterminal`0                             Primary
-    [1]`Derivation`0                              = identifier "=" ...
-      [0]`Atom`1                                  identifier
-        [0]`Primary`1                             identifier
-          [0]`Terminal`1                          identifier
-      [1]`Atom`1                                  "=" !
-        [0]`Primary`1                             "="
-          [0]`Terminal`1                          "="
-        [1]`Suffix`0                              !
+[0]`Seed                                          - Frog = ...
+  [0]`Rule                                        Frog = Rule ...
+    [0]`Nonterminal                               Frog
+    [1]`Expr`Postfix`*                            Rule *
+      [0]`Nonterminal                             Rule
+  [1]`Rule                                        Rule = RuleName ...
+    [0]`Nonterminal                               Rule
+    [1]`Expr`Concat`                              RuleName "=" Expr
+      [0]`Nonterminal                             RuleName
+      [1]`Terminal                                "="
+      [2]`Nonterminal                             Expr
+  [2]`Rule                                        RuleName = identifier
+    [0]`Nonterminal                               RuleName
+    [1]`Terminal                                  identifier
+  [3]`Rule                                        Expr = Primary ...
+    [0]`Nonterminal                               Expr
+    [1]`Expr`Postfix`+                            Primary +
+      [0]`Nonterminal                             Primary
+  [4]`Rule                                        Primary = identifier ...
+    [0]`Nonterminal                               Primary
+    [1]`Expr`Concat`                              identifier "=" !
+      [0]`Terminal                                identifier
+      [1]`Expr`Postfix`!                          "=" !
+        [0]`Terminal                              "="
 )";
   const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(parse_tree_to_string(*fs_pr->seed_parse_tree))};
   CHECK(seed_pt_str == expected_seed_pt.substr(1));
@@ -75,28 +56,28 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   auto frog_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_source_code)));
   auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt)));
   const string_view_t expected = R"(
-[0]`Frog`0                                        SimpleFern = a ...
-  [0]`Rule`0                                      SimpleFern = a ...
-    [0]`RuleName`0                                SimpleFern
-    [1]`Expr`0                                    a b c
-      [0]`Primary`0                               a
-      [1]`Primary`0                               b
-      [2]`Primary`0                               c
-  [1]`Rule`0                                      LabeledItem = d ...
-    [0]`RuleName`0                                LabeledItem
-    [1]`Expr`0                                    d e
-      [0]`Primary`0                               d
-      [1]`Primary`0                               e
-  [2]`Rule`0                                      Label = f
-    [0]`RuleName`0                                Label
-    [1]`Expr`0                                    f
-      [0]`Primary`0                               f
-  [3]`Rule`0                                      Item = g ...
-    [0]`RuleName`0                                Item
-    [1]`Expr`0                                    g h i
-      [0]`Primary`0                               g
-      [1]`Primary`0                               h
-      [2]`Primary`0                               i
+[0]`Frog                                          SimpleFern = a ...
+  [0]`Rule                                        SimpleFern = a ...
+    [0]`RuleName                                  SimpleFern
+    [1]`Expr                                      a b c
+      [0]`Primary                                 a
+      [1]`Primary                                 b
+      [2]`Primary                                 c
+  [1]`Rule                                        LabeledItem = d ...
+    [0]`RuleName                                  LabeledItem
+    [1]`Expr                                      d e
+      [0]`Primary                                 d
+      [1]`Primary                                 e
+  [2]`Rule                                        Label = f
+    [0]`RuleName                                  Label
+    [1]`Expr                                      f
+      [0]`Primary                                 f
+  [3]`Rule                                        Item = g ...
+    [0]`RuleName                                  Item
+    [1]`Expr                                      g h i
+      [0]`Primary                                 g
+      [1]`Primary                                 h
+      [2]`Primary                                 i
 )";
   const string_t frog_pt_str{SILVA_EXPECT_REQUIRE(parse_tree_to_string(*frog_pt))};
   CHECK(frog_pt_str == expected.substr(1));

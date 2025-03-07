@@ -117,7 +117,7 @@ namespace silva {
   template<typename T, index_t N>
   small_vector_t<T, N>::operator span_t<T>()
   {
-    return span_t<T>{data(), size};
+    return span_t<T>{data(), (size_t)size};
   }
 
   template<typename T, index_t N>

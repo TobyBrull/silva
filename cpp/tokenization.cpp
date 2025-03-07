@@ -369,6 +369,20 @@ namespace silva {
     return retval;
   }
 
+  bool token_context_t::full_name_id_is_parent(const full_name_id_t parent_name,
+                                               token_id_t child_name)
+  {
+    while (true) {
+      if (child_name == parent_name) {
+        return true;
+      }
+      if (child_name == full_name_id_none) {
+        return false;
+      }
+      child_name = full_name_infos[child_name].parent_name;
+    }
+  }
+
   string_t token_context_t::full_name_to_string(const full_name_id_t full_name_id,
                                                 const string_view_t separator)
   {
