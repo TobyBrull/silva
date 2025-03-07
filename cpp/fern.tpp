@@ -26,10 +26,12 @@ TEST_CASE("fern", "[fern]")
   const auto pt_1          = share(SILVA_EXPECT_REQUIRE(fern_parse(tt)));
   const auto pt_2          = SILVA_EXPECT_REQUIRE(fpr->apply(tt));
   CHECK(pt_1->nodes == pt_2->nodes);
-  const fern_t fern = SILVA_EXPECT_REQUIRE(fern_create(pt_1.get()));
-  CHECK(fern_to_string(pt_1.get()) == fern_text);
+  const fern_t fern       = SILVA_EXPECT_REQUIRE(fern_create(pt_1.get()));
+  const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(fern_to_string(pt_1.get()));
+  CHECK(pt_str_1 == fern_text);
   CHECK(fern.to_string() == fern_text);
-  CHECK(fern.to_graphviz() == fern_to_graphviz(pt_1.get()));
+  const string_t gv_str_1 = SILVA_EXPECT_REQUIRE(fern_to_graphviz(pt_1.get()));
+  CHECK(fern.to_graphviz() == gv_str_1);
 
   const string_view_t expected_parse_tree_str = R"(
 [0]`Fern                                          [ none true ...
@@ -62,51 +64,51 @@ TEST_CASE("fern", "[fern]")
 
   const string_view_t expected_parse_tree_str_graphviz = R"(
 digraph parse_tree {
-  "/" [label="[0]`Fern`0\n["]
+  "/" [label="[0]`Fern\n["]
   "/" -> "/0/"
-  "/0/" [label="[0]`LabeledItem`0\nnone"]
+  "/0/" [label="[0]`LabeledItem\nnone"]
   "/0/" -> "/0/0/"
-  "/0/0/" [label="[0]`Item`1\nnone"]
+  "/0/0/" [label="[0]`Item\nnone"]
   "/" -> "/1/"
-  "/1/" [label="[1]`LabeledItem`0\ntrue"]
+  "/1/" [label="[1]`LabeledItem\ntrue"]
   "/1/" -> "/1/0/"
-  "/1/0/" [label="[0]`Item`1\ntrue"]
+  "/1/0/" [label="[0]`Item\ntrue"]
   "/" -> "/2/"
-  "/2/" [label="[2]`LabeledItem`0\n\"test\""]
+  "/2/" [label="[2]`LabeledItem\n\"test\""]
   "/2/" -> "/2/0/"
-  "/2/0/" [label="[0]`Label`0\n\"test\""]
+  "/2/0/" [label="[0]`Label\n\"test\""]
   "/2/" -> "/2/1/"
-  "/2/1/" [label="[1]`Item`1\n\"Hello\""]
+  "/2/1/" [label="[1]`Item\n\"Hello\""]
   "/" -> "/3/"
-  "/3/" [label="[3]`LabeledItem`0\n42"]
+  "/3/" [label="[3]`LabeledItem\n42"]
   "/3/" -> "/3/0/"
-  "/3/0/" [label="[0]`Item`1\n42"]
+  "/3/0/" [label="[0]`Item\n42"]
   "/" -> "/4/"
-  "/4/" [label="[4]`LabeledItem`0\n["]
+  "/4/" [label="[4]`LabeledItem\n["]
   "/4/" -> "/4/0/"
-  "/4/0/" [label="[0]`Item`0\n["]
+  "/4/0/" [label="[0]`Item\n["]
   "/4/0/" -> "/4/0/0/"
-  "/4/0/0/" [label="[0]`Fern`0\n["]
+  "/4/0/0/" [label="[0]`Fern\n["]
   "/" -> "/5/"
-  "/5/" [label="[5]`LabeledItem`0\n["]
+  "/5/" [label="[5]`LabeledItem\n["]
   "/5/" -> "/5/0/"
-  "/5/0/" [label="[0]`Item`0\n["]
+  "/5/0/" [label="[0]`Item\n["]
   "/5/0/" -> "/5/0/0/"
-  "/5/0/0/" [label="[0]`Fern`0\n["]
+  "/5/0/0/" [label="[0]`Fern\n["]
   "/5/0/0/" -> "/5/0/0/0/"
-  "/5/0/0/0/" [label="[0]`LabeledItem`0\n1"]
+  "/5/0/0/0/" [label="[0]`LabeledItem\n1"]
   "/5/0/0/0/" -> "/5/0/0/0/0/"
-  "/5/0/0/0/0/" [label="[0]`Item`1\n1"]
+  "/5/0/0/0/0/" [label="[0]`Item\n1"]
   "/5/0/0/" -> "/5/0/0/1/"
-  "/5/0/0/1/" [label="[1]`LabeledItem`0\n\"two\""]
+  "/5/0/0/1/" [label="[1]`LabeledItem\n\"two\""]
   "/5/0/0/1/" -> "/5/0/0/1/0/"
-  "/5/0/0/1/0/" [label="[0]`Label`0\n\"two\""]
+  "/5/0/0/1/0/" [label="[0]`Label\n\"two\""]
   "/5/0/0/1/" -> "/5/0/0/1/1/"
-  "/5/0/0/1/1/" [label="[1]`Item`1\n2"]
+  "/5/0/0/1/1/" [label="[1]`Item\n2"]
   "/5/0/0/" -> "/5/0/0/2/"
-  "/5/0/0/2/" [label="[2]`LabeledItem`0\n3"]
+  "/5/0/0/2/" [label="[2]`LabeledItem\n3"]
   "/5/0/0/2/" -> "/5/0/0/2/0/"
-  "/5/0/0/2/0/" [label="[0]`Item`1\n3"]
+  "/5/0/0/2/0/" [label="[0]`Item\n3"]
 })";
   const string_t result_graphviz = SILVA_EXPECT_REQUIRE(parse_tree_to_graphviz(*pt_1));
   CHECK(result_graphviz == expected_parse_tree_str_graphviz.substr(1));

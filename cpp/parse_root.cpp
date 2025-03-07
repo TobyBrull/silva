@@ -84,10 +84,7 @@ namespace silva {
           .expr_node_index = children[1],
       });
       const auto [it, inserted] = retval->rule_indexes.emplace(rule_name, offset);
-      SILVA_EXPECT(
-          inserted,
-          MAJOR,
-          "Repeated rule name that was not consecutive with linearly increasing precedence");
+      SILVA_EXPECT(inserted, MAJOR, "Repeated rule name '{}'", tcp->full_name_to_string(rule_name));
       return {};
     }
 
