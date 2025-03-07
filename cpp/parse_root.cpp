@@ -9,7 +9,6 @@
 #include "tokenization.hpp"
 
 #include <utility>
-#include <variant>
 
 namespace silva {
   using enum token_category_t;
@@ -461,20 +460,21 @@ namespace silva {
           const auto [min_repeat, max_repeat] = get_min_max_repeat(op_ti);
           parse_tree_sub_t sub_sub;
           index_t repeat_count = 0;
-          expected_t<parse_tree_sub_t> last_result;
+          optional_t<error_t> last_error;
           while (repeat_count < max_repeat) {
-            if (last_result = handle_rule_expr__any(children[0]); last_result) {
-              sub_sub += *std::move(last_result);
+            if (auto result = handle_rule_expr__any(children[0]); result.has_value()) {
+              sub_sub += std::move(result).value();
               repeat_count += 1;
             }
             else {
+              last_error = std::move(result).error();
               break;
             }
           }
           if (repeat_count < min_repeat) {
             small_vector_t<error_t, 1> maybe_child_error;
-            if (!last_result.has_value()) {
-              maybe_child_error.emplace_back(std::move(last_result).error());
+            if (last_error.has_value()) {
+              maybe_child_error.emplace_back(std::move(last_error).value());
             }
             return std::unexpected(make_error(MINOR,
                                               maybe_child_error,
@@ -533,7 +533,7 @@ namespace silva {
             s_expr_node_index);
         SILVA_EXPECT_FWD(std::move(result));
         if (retval.has_value()) {
-          return retval.value();
+          return std::move(retval).value();
         }
         return std::unexpected(std::move(error_nursery)
                                    .finish(MINOR,
@@ -566,7 +566,9 @@ namespace silva {
                                 s_tokens[s_nodes[s_expr_node_index].token_begin]);
           return handle_rule(t_rule_name);
         }
-        return {};
+        else {
+          SILVA_EXPECT(false, MAJOR);
+        }
       }
 
       expected_t<parse_tree_sub_t> handle_rule_expr(const parse_root_t::rule_t& rule)
@@ -617,7 +619,7 @@ namespace silva {
             rule.expr_node_index);
         SILVA_EXPECT_FWD(std::move(result));
         if (retval.has_value()) {
-          return retval.value();
+          return std::move(retval).value();
         }
         return std::unexpected(std::move(error_nursery)
                                    .finish(MINOR,
@@ -644,10 +646,13 @@ namespace silva {
           return SILVA_EXPECT_FWD(handle_rule_alias(rule));
         }
         else if (s_expr_name == fni_axe) {
-          return SILVA_EXPECT_FWD(handle_rule_axe(rule));
+          return SILVA_EXPECT_FWD(handle_rule_axe(rule), "Expected Axe");
         }
         else {
-          return SILVA_EXPECT_FWD(handle_rule_expr(rule));
+          return SILVA_EXPECT_FWD(handle_rule_expr(rule),
+                                  "{} Expected {}",
+                                  token_position_at(orig_token_index),
+                                  tcp->full_name_to_string(rule.name));
         }
       }
     };

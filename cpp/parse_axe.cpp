@@ -219,10 +219,11 @@ namespace silva::parse_axe {
       }
       auto atom_result               = std::move(maybe_atom_result).value();
       const index_t atom_child_index = gg_rule.sub.num_children;
-      gg_rule.sub += atom_result;
+      const pair_t<index_t, index_t> token_range{atom_result.token_begin, atom_result.token_end};
+      gg_rule.sub += std::move(atom_result);
       return {{
           .name             = atom_name_id,
-          .token_range      = {atom_result.token_begin, atom_result.token_end},
+          .token_range      = token_range,
           .atom_child_index = atom_child_index,
       }};
     }
@@ -610,14 +611,14 @@ namespace silva::parse_axe {
           0));
 
       SILVA_EXPECT(atom_tree.nodes.size() >= 1, ASSERT);
-      const parse_tree_sub_t result =
+      parse_tree_sub_t result =
           SILVA_EXPECT_FWD(generate_output(atom_tree.nodes.size() - 1,
                                            leave_atoms_tree,
                                            leave_atoms_tree_child_node_indexes));
       SILVA_EXPECT(result.token_begin == expr_token_begin, ASSERT);
       SILVA_EXPECT(result.token_end == expr_token_end, ASSERT);
       nursery.token_index = final_token_index;
-      return result;
+      return {std::move(result)};
     }
   };
 
