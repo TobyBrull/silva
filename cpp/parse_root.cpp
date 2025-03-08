@@ -339,8 +339,8 @@ namespace silva {
       const vector_t<token_id_t>& s_tokens          = s_tokenization.tokens;
       const vector_t<parse_tree_t::node_t>& s_nodes = s_pt.nodes;
 
-      const tokenization_t& p_tokenization = *retval.tokenization;
-      const vector_t<token_id_t>& p_tokens = p_tokenization.tokens;
+      const tokenization_t& t_tokenization = *retval.tokenization;
+      const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
 
       int rule_depth = 0;
 
@@ -381,19 +381,19 @@ namespace silva {
 
       expected_t<void> check()
       {
-        SILVA_EXPECT(s_tokenization.context.get() == p_tokenization.context.get(),
+        SILVA_EXPECT(s_tokenization.context.get() == t_tokenization.context.get(),
                      MAJOR,
                      "Seed and target parse-trees/tokenizations must be in same token_context_t");
         return {};
       }
 
-      expected_t<parse_tree_sub_t> handle_terminal(const index_t s_node_index)
+      expected_t<parse_tree_sub_t> s_terminal(const index_t s_node_index)
       {
         auto gg            = guard();
         const auto& s_node = s_nodes[s_node_index];
         SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
-        SILVA_EXPECT(s_node.rule_name == fni_term, ASSERT);
-        SILVA_EXPECT_PARSE(token_index < p_tokens.size(),
+        SILVA_EXPECT(s_node.rule_name == fni_term, MAJOR);
+        SILVA_EXPECT_PARSE(token_index < t_tokens.size(),
                            "Reached end of token-stream when looking for {}",
                            s_tokenization.token_info_get(s_node.token_begin)->str);
         const token_id_t s_front_ti = s_tokens[s_node.token_begin];
@@ -401,8 +401,7 @@ namespace silva {
           SILVA_EXPECT(s_node.token_end - s_node.token_begin == 4, MAJOR);
           const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
           const auto it                   = root->regexes.find(regex_token_id);
-          SILVA_EXPECT(it != root->regexes.end() && it->second.has_value(), FATAL);
-          SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
+          SILVA_EXPECT(it != root->regexes.end() && it->second.has_value(), MAJOR);
           const std::regex& re          = it->second.value();
           const string_view_t token_str = token_data_by()->str;
           const bool is_match           = std::regex_search(token_str.begin(), token_str.end(), re);
@@ -430,10 +429,10 @@ namespace silva {
           else {
             const auto* s_token_data = s_tokenization.token_info_get(s_node.token_begin);
             SILVA_EXPECT(s_token_data->category == STRING, MAJOR);
-            const string_t p_expected{
-                SILVA_EXPECT_FWD(s_token_data->string_as_plain_contained(), MAJOR)};
-            const token_id_t p_expected_ti = tcp->token_id(p_expected);
-            SILVA_EXPECT_PARSE(token_id_by() == p_expected_ti, "Expected {}", p_expected);
+            const string_t t_expected{
+                SILVA_EXPECT_FWD(s_token_data->string_as_plain_contained(), MINOR)};
+            const token_id_t t_expected_ti = tcp->token_id(t_expected);
+            SILVA_EXPECT_PARSE(token_id_by() == t_expected_ti, "Expected {}", t_expected);
           }
         }
         token_index += 1;
@@ -456,7 +455,7 @@ namespace silva {
         return {min_repeat, max_repeat};
       }
 
-      expected_t<parse_tree_sub_t> handle_rule_expr__postfix(const index_t s_expr_node_index)
+      expected_t<parse_tree_sub_t> s_expr_postfix(const index_t s_expr_node_index)
       {
         auto gg             = guard();
         const auto children = SILVA_EXPECT_FWD(s_pt.get_children<1>(s_expr_node_index));
@@ -468,7 +467,7 @@ namespace silva {
           index_t repeat_count = 0;
           optional_t<error_t> last_error;
           while (repeat_count < max_repeat) {
-            if (auto result = handle_rule_expr__any(children[0]); result.has_value()) {
+            if (auto result = s_expr(children[0]); result.has_value()) {
               sub_sub += std::move(result).value();
               repeat_count += 1;
             }
@@ -492,13 +491,13 @@ namespace silva {
         }
         else if (op_ti == ti_excl) {
           auto inner_ptg    = guard();
-          const auto result = SILVA_EXPECT_FWD_IF(handle_rule_expr__any(children[0]), MAJOR);
-          SILVA_EXPECT(!result, MINOR, "Managed to parse negative primary expression");
+          const auto result = SILVA_EXPECT_FWD_IF(s_expr(children[0]), MAJOR);
+          SILVA_EXPECT(!result, MINOR, "Managed to parse '!' expression");
         }
         else if (op_ti == ti_ampr) {
-          auto inner_ptg    = guard();
-          const auto result = SILVA_EXPECT_FWD_IF(handle_rule_expr__any(children[0]), MAJOR);
-          SILVA_EXPECT(result, MINOR, "Did not manage to parse positive primary expression");
+          auto inner_ptg = guard();
+          auto result    = SILVA_EXPECT_FWD_IF(s_expr(children[0]), MAJOR);
+          SILVA_EXPECT_FWD(std::move(result), "Did not manage to parse '&' expression");
         }
         else {
           SILVA_EXPECT(false, MAJOR);
@@ -506,12 +505,12 @@ namespace silva {
         return gg.release();
       }
 
-      expected_t<parse_tree_sub_t> handle_rule_expr__concat(const index_t s_expr_node_index)
+      expected_t<parse_tree_sub_t> s_expr_concat(const index_t s_expr_node_index)
       {
         auto gg     = guard();
         auto result = s_pt.visit_children(
             [&](const index_t sub_s_node_index, const index_t) -> expected_t<bool> {
-              gg.sub += SILVA_EXPECT_FWD(handle_rule_expr__any(sub_s_node_index));
+              gg.sub += SILVA_EXPECT_FWD(s_expr(sub_s_node_index));
               return true;
             },
             s_expr_node_index);
@@ -519,14 +518,14 @@ namespace silva {
         return gg.release();
       }
 
-      expected_t<parse_tree_sub_t> handle_rule_expr__alt(const index_t s_expr_node_index)
+      expected_t<parse_tree_sub_t> s_expr_alt(const index_t s_expr_node_index)
       {
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
         optional_t<parse_tree_sub_t> retval;
         auto result = s_pt.visit_children(
             [&](const index_t sub_s_node_index, const index_t) -> expected_t<bool> {
-              auto result = handle_rule_expr__any(sub_s_node_index);
+              auto result = s_expr(sub_s_node_index);
               if (result.has_value()) {
                 retval = std::move(result).value();
                 return false;
@@ -547,24 +546,24 @@ namespace silva {
                                            token_position_at(orig_token_index)));
       }
 
-      expected_t<parse_tree_sub_t> handle_rule_expr__any(const index_t s_expr_node_index)
+      expected_t<parse_tree_sub_t> s_expr(const index_t s_expr_node_index)
       {
         const full_name_id_t s_rule_name = s_nodes[s_expr_node_index].rule_name;
         if (tcp->full_name_id_is_parent(fni_expr_parens, s_rule_name)) {
           const auto children = SILVA_EXPECT_FWD(s_pt.get_children<1>(s_expr_node_index));
-          return handle_rule_expr__any(children[0]);
+          return s_expr(children[0]);
         }
         else if (tcp->full_name_id_is_parent(fni_expr_postfix, s_rule_name)) {
-          return handle_rule_expr__postfix(s_expr_node_index);
+          return s_expr_postfix(s_expr_node_index);
         }
         else if (tcp->full_name_id_is_parent(fni_expr_concat, s_rule_name)) {
-          return handle_rule_expr__concat(s_expr_node_index);
+          return s_expr_concat(s_expr_node_index);
         }
         else if (tcp->full_name_id_is_parent(fni_expr_alt, s_rule_name)) {
-          return handle_rule_expr__alt(s_expr_node_index);
+          return s_expr_alt(s_expr_node_index);
         }
         else if (s_rule_name == fni_term) {
-          return handle_terminal(s_expr_node_index);
+          return s_terminal(s_expr_node_index);
         }
         else if (s_rule_name == fni_nonterm) {
           const full_name_id_t t_rule_name =
@@ -575,14 +574,6 @@ namespace silva {
         else {
           SILVA_EXPECT(false, MAJOR);
         }
-      }
-
-      expected_t<parse_tree_sub_t> handle_rule_expr(const parse_root_t::rule_t& rule)
-      {
-        auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(rule.name);
-        gg_rule.sub += SILVA_EXPECT_FWD(handle_rule_expr__any(rule.expr_node_index));
-        return gg_rule.release();
       }
 
       expected_t<parse_tree_sub_t> handle_rule_axe(const parse_root_t::rule_t& rule)
@@ -609,10 +600,10 @@ namespace silva {
               SILVA_EXPECT(s_nodes[alias_node_index].rule_name == fni_nonterm,
                            MAJOR,
                            "Expected Nonterminal");
-              const full_name_id_t p_rule_name =
+              const full_name_id_t t_rule_name =
                   tcp->full_name_id(full_name_id_none,
                                     s_tokens[s_nodes[alias_node_index].token_begin]);
-              auto result = handle_rule(p_rule_name);
+              auto result = handle_rule(t_rule_name);
               if (result.has_value()) {
                 retval = std::move(result).value();
                 return false;
@@ -633,7 +624,7 @@ namespace silva {
                                            token_position_at(orig_token_index)));
       }
 
-      expected_t<parse_tree_sub_t> handle_rule(const full_name_id_t s_rule_name)
+      expected_t<parse_tree_sub_t> handle_rule(const full_name_id_t t_rule_name)
       {
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
@@ -641,11 +632,11 @@ namespace silva {
                      FATAL,
                      "Stack is getting too deep. Infinite recursion in grammar?");
         const index_t orig_token_index = token_index;
-        const auto it{root->rule_indexes.find(s_rule_name)};
+        const auto it{root->rule_indexes.find(t_rule_name)};
         SILVA_EXPECT(it != root->rule_indexes.end(),
                      MAJOR,
-                     "Unknown rule '{}'",
-                     tcp->full_name_to_string(s_rule_name));
+                     "Unknown rule: {}",
+                     tcp->full_name_to_string(t_rule_name));
         const auto& rule                 = root->rules[it->second];
         const full_name_id_t s_expr_name = s_nodes[rule.expr_node_index].rule_name;
         if (s_expr_name == fni_alias) {
@@ -655,10 +646,13 @@ namespace silva {
           return SILVA_EXPECT_FWD(handle_rule_axe(rule), "Expected Axe");
         }
         else {
-          return SILVA_EXPECT_FWD(handle_rule_expr(rule),
-                                  "{} Expected {}",
-                                  token_position_at(orig_token_index),
-                                  tcp->full_name_to_string(rule.name));
+          auto gg_rule = guard_for_rule();
+          gg_rule.set_rule_name(rule.name);
+          gg_rule.sub += SILVA_EXPECT_FWD(s_expr(rule.expr_node_index),
+                                          "{} Expected {}",
+                                          token_position_at(orig_token_index),
+                                          tcp->full_name_to_string(rule.name));
+          return gg_rule.release();
         }
       }
     };

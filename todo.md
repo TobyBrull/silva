@@ -82,6 +82,7 @@ infix "-" infix_flat "+"
 
 * tokenization
     * make "'" the default char to start strings.
+    * "string_as_plain_contained" on token_id_t level, in token_context_t
 
 * put error materialisation into token_context_t?
 
