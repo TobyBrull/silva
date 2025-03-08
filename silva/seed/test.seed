@@ -2,7 +2,7 @@
 
 - Expr =/ Atom [
     - Parens      = nest  atom_nest '(' ')'
-    - Namespace   = ltr   infix '::'
+    - Namespace   = rtl   infix '::' prefix '::'
     - Postfix     = ltr   postfix '++' '--'
                           postfix_nest '(' ')' '[' ']'
                           infix '.' '->'
