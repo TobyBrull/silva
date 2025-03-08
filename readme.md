@@ -40,5 +40,5 @@ ninja -Cbuild/ && ./build/cpp/silva_fern filename=silva/fern/broken.fern process
 ninja -Cbuild/ && ./build/cpp/silva_seed silva/seed/test.seed
 ninja -Cbuild/ && ./build/cpp/silva_seed silva/seed/test.seed silva/seed/test.code
 ninja -Cbuild/ && ./build/cpp/silva_seed scratchpad/silva.seed scratchpad/test-01.silva
-ninja -Cbuild/ && ./build/cpp/silva_sedd scratchpad/silva.seed scratchpad/std.silva
+ninja -Cbuild/ && ./build/cpp/silva_seed scratchpad/silva.seed scratchpad/std.silva
 ```
