@@ -20,12 +20,12 @@ TEST_CASE("tokenization", "[tokenization_t]")
 
   {
     const auto result = SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "unit.test", R"(
-        Silva "Hel\"lo"  .(). # .().
+        Silva 'Hel\'lo'  .(). # .().
         1 + 3
     )"));
     REQUIRE(result->tokens.size() == 9);
     CHECK(*result->token_info_get(0) == info_t{"Silva", IDENTIFIER});
-    CHECK(*result->token_info_get(1) == info_t{"\"Hel\\\"lo\"", STRING});
+    CHECK(*result->token_info_get(1) == info_t{"'Hel\\'lo'", STRING});
     CHECK(*result->token_info_get(2) == info_t{".", OPERATOR});
     CHECK(*result->token_info_get(3) == info_t{"(", OPERATOR});
     CHECK(*result->token_info_get(4) == info_t{")", OPERATOR});

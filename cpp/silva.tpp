@@ -12,9 +12,9 @@ TEST_CASE("operator-precedence", "")
   token_context_t tc;
   const string_t op_prec_source_code = R"'(
     - Expr = Add
-    - Add = Mult ( "+" Add ) *
-    - Mult = Primary ( "*" Mult ) *
-    - Primary = "(" Expr ")" | number
+    - Add = Mult ( '+' Add ) *
+    - Mult = Primary ( '*' Mult ) *
+    - Primary = '(' Expr ')' | number
   )'";
   const auto op_prec_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", op_prec_source_code)));
   const auto op_prec_pt = share(SILVA_EXPECT_REQUIRE(seed_parse(op_prec_tt)));

@@ -1,28 +1,28 @@
-- Statements = ( Expr ";" )* end_of_file
+- Statements = ( Expr ';' )* end_of_file
 
 - Expr =/ Atom [
-    - Parens      = nest  atom_nest "(" ")"
-    - Namespace   = ltr   infix "::"
-    - Postfix     = ltr   postfix "++" "--"
-                          postfix_nest "(" ")" "[" "]"
-                          infix "." "->"
-    - Prefix      = rtl   prefix "++" "--" "+" "-" "!" "~" "*" "&" "sizeof" "new"
-                          prefix_nest "<." ".>"
-    - Member      = ltr   infix ".*" "->*"
-    - Multiply    = ltr   infix "*" "/" "%"
-    - Addition    = ltr   infix "+" "-"
-    - Bitshift    = ltr   infix "<<" ">>"
-    - Spaceship   = ltr   infix "<=>"
-    - Comparison  = ltr   infix "<" "<=" ">" ">="
-    - Equality    = ltr   infix "==" "!="
-    - BitAnd      = ltr   infix "&"
-    - BitXor      = ltr   infix "^"
-    - BitOr       = ltr   infix "|"
-    - LogicalAnd  = ltr   infix "&&"
-    - LogicalOr   = ltr   infix "||"
-    - Assignment  = rtl   infix "=" "+=" "-="
-                          prefix "throw"
-                          ternary "?" ":"
-    - Comma       = ltr   infix ","
+    - Parens      = nest  atom_nest '(' ')'
+    - Namespace   = ltr   infix '::'
+    - Postfix     = ltr   postfix '++' '--'
+                          postfix_nest '(' ')' '[' ']'
+                          infix '.' '->'
+    - Prefix      = rtl   prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' 'new'
+                          prefix_nest '<.' '.>'
+    - Member      = ltr   infix '.*' '->*'
+    - Multiply    = ltr   infix '*' '/' '%'
+    - Addition    = ltr   infix '+' '-'
+    - Bitshift    = ltr   infix '<<' '>>'
+    - Spaceship   = ltr   infix '<=>'
+    - Comparison  = ltr   infix '<' '<=' '>' '>='
+    - Equality    = ltr   infix '==' '!='
+    - BitAnd      = ltr   infix '&'
+    - BitXor      = ltr   infix '^'
+    - BitOr       = ltr   infix '|'
+    - LogicalAnd  = ltr   infix '&&'
+    - LogicalOr   = ltr   infix '||'
+    - Assignment  = rtl   infix '=' '+=' '-='
+                          prefix 'throw'
+                          ternary '?' ':'
+    - Comma       = ltr   infix ','
   ]
 - Atom = number | string | identifier

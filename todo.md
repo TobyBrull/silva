@@ -54,15 +54,11 @@
     * Use num_children_total (and num_children_direct?) instead of children_begin/end
       For easier grafting.
 
-* Fern:
-    * Have [] for arrays and {} for dicts (basically make it JSON without commas)?
-
 * various:
     * output_buffer_t / string_output_buffer_t
     * allow partial parse (return number of tokens consumed)
 
 * tokenization
-    * make "'" the default char to start strings.
     * "string_as_plain_contained" on token_id_t level, in token_context_t
 
 * context:

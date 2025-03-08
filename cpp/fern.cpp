@@ -259,7 +259,7 @@ namespace silva {
 
     string_t operator()(none_t) { return "none"; }
     string_t operator()(const bool arg) { return arg ? "true" : "false"; }
-    string_t operator()(const string_t& arg) { return fmt::format("\"{}\"", arg); }
+    string_t operator()(const string_t& arg) { return fmt::format("'{}'", arg); }
     string_t operator()(const double arg) { return fmt::format("{}", arg); }
     string_t operator()(const unique_ptr_t<fern_t>& arg) { return arg->to_string(indent + 2); }
   };
@@ -281,7 +281,7 @@ namespace silva {
       for (index_t i = 0; i < n; ++i) {
         retval += fmt::format("\n{:{}}", "", indent + 2);
         if (used_labels[i].has_value()) {
-          retval += fmt::format("\"{}\" : ", used_labels[i].value());
+          retval += fmt::format("'{}' : ", used_labels[i].value());
         }
         retval += std::visit(to_str_visitor{indent}, items[i].value);
       }
@@ -301,7 +301,7 @@ namespace silva {
                                    const string_view_t item_name)
     {
       retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_name, item_name);
-      string_t label_str = label.has_value() ? fmt::format("\\n[\\\"{}\\\"]", label.value()) : "";
+      string_t label_str = label.has_value() ? fmt::format("\\n['{}']", label.value()) : "";
       struct visitor {
         string_t& retval;
         const string_view_t label_str;
@@ -331,7 +331,7 @@ namespace silva {
         }
         void operator()(const string_t& value) const
         {
-          retval += fmt::format("  \"{}\" [label=\"{}{}\\n\\\"{}\\\"\"]\n",
+          retval += fmt::format("  \"{}\" [label=\"{}{}\\n'{}'\"]\n",
                                 item_name,
                                 item_name,
                                 label_str,

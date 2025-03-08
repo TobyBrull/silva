@@ -10,10 +10,10 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   token_context_t tc;
   const string_t frog_seed = R"'(
     - Frog = Rule *
-    - Rule = RuleName "=" Expr
+    - Rule = RuleName '=' Expr
     - RuleName = identifier
     - Expr = Primary +
-    - Primary = identifier "=" !
+    - Primary = identifier '=' !
   )'";
   auto fs_tt               = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_seed)));
   auto fs_pt               = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
@@ -26,9 +26,9 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
       [0].Nonterminal                             Rule
   [1].Rule                                        Rule = RuleName ...
     [0].Nonterminal                               Rule
-    [1].Expr.Concat.                              RuleName "=" Expr
+    [1].Expr.Concat.                              RuleName '=' Expr
       [0].Nonterminal                             RuleName
-      [1].Terminal                                "="
+      [1].Terminal                                '='
       [2].Nonterminal                             Expr
   [2].Rule                                        RuleName = identifier
     [0].Nonterminal                               RuleName
@@ -39,10 +39,10 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
       [0].Nonterminal                             Primary
   [4].Rule                                        Primary = identifier ...
     [0].Nonterminal                               Primary
-    [1].Expr.Concat.                              identifier "=" !
+    [1].Expr.Concat.                              identifier '=' !
       [0].Terminal                                identifier
-      [1].Expr.Postfix.!                          "=" !
-        [0].Terminal                              "="
+      [1].Expr.Postfix.!                          '=' !
+        [0].Terminal                              '='
 )";
   const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(parse_tree_to_string(*fs_pr->seed_parse_tree))};
   CHECK(seed_pt_str == expected_seed_pt.substr(1));

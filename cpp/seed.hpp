@@ -18,31 +18,31 @@ namespace silva {
   // encapsulated/represented by the class "parse_root_t".
 
   const string_view_t seed_seed = R"'(
-    - Seed = ( "-" Rule ) *
-    - Rule = Nonterminal ( "=" Expr | "=/" Axe | "=>" Alias )
+    - Seed = ( '-' Rule ) *
+    - Rule = Nonterminal ( '=' Expr | '=/' Axe | '=>' Alias )
     - Expr =/ Atom [
-      - Parens    = nest  atom_nest "(" ")"
-      - Postfix   = ltr   postfix "?" "*" "+" "!" "&"
+      - Parens    = nest  atom_nest '(' ')'
+      - Postfix   = ltr   postfix '?' '*' '+' '!' '&'
       - Concat    = ltr   infix_flat none
-      - Alt       = ltr   infix_flat "|"
+      - Alt       = ltr   infix_flat '|'
     ]
     - Atom => [ Nonterminal Terminal ]
-    - Alias = "[" Nonterminal + "]"
+    - Alias = '[' Nonterminal + ']'
 
-    - Axe = Nonterminal "[" ( "-" AxeLevel ) * "]"
-    - AxeLevel = Nonterminal "=" AxeAssoc AxeOps*
-    - AxeAssoc = "nest" | "ltr" | "rtl"
+    - Axe = Nonterminal '[' ( '-' AxeLevel ) * ']'
+    - AxeLevel = Nonterminal '=' AxeAssoc AxeOps*
+    - AxeAssoc = 'nest' | 'ltr' | 'rtl'
     - AxeOps = AxeOpType AxeOp *
-    - AxeOpType = "atom_nest" | "prefix" | "prefix_nest"
-                | "infix" | "infix_flat" | "ternary"
-                | "postfix" | "postfix_nest"
-    - AxeOp = string | "none"
+    - AxeOpType = 'atom_nest' | 'prefix' | 'prefix_nest'
+                | 'infix' | 'infix_flat' | 'ternary'
+                | 'postfix' | 'postfix_nest'
+    - AxeOp = string | 'none'
 
-    - Nonterminal = identifier_regex ( "^[A-Z]" )
+    - Nonterminal = identifier_regex ( '^[A-Z]' )
     - Terminal = string
-               | "identifier" | "operator" | "string" | "number" | "any"
-               | "identifier_regex" "(" string ")"
-               | "end_of_file"
+               | 'identifier' | 'operator' | 'string' | 'number' | 'any'
+               | 'identifier_regex' '(' string ')'
+               | 'end_of_file'
   )'";
 
   struct parse_root_t;

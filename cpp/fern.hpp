@@ -4,10 +4,10 @@
 
 namespace silva {
   const string_view_t fern_seed = R"'(
-    - Fern = "[" LabeledItem* "]"
-    - LabeledItem = ( Label ":" )? (Fern | Value)
+    - Fern = '[' LabeledItem* ']'
+    - LabeledItem = ( Label ':' )? (Fern | Value)
     - Label = string | identifier
-    - Value = "none" | "true" | "false" | string | number
+    - Value = 'none' | 'true' | 'false' | string | number
   )'";
   unique_ptr_t<parse_root_t> fern_parse_root(token_context_ptr_t);
   expected_t<unique_ptr_t<parse_tree_t>> fern_parse(shared_ptr_t<const tokenization_t>);

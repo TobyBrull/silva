@@ -95,7 +95,6 @@ namespace silva {
     };
     constexpr char operator_chars[] = {
         // punctuation
-        '\'',
         ',',
         '.',
         ':',
@@ -160,13 +159,13 @@ namespace silva {
       SILVA_ASSERT(rest.size() >= 1);
       index_t index = 1;
       while (index < rest.size()) {
-        if (rest[index] == '"' && rest[index - 1] != '\\') {
+        if (rest[index] == '\'' && rest[index - 1] != '\\') {
           index += 1;
           break;
         }
         index += 1;
       }
-      if (index < rest.size() && rest[index - 1] == '"') {
+      if (index < rest.size() && rest[index - 1] == '\'') {
         return index;
       }
       else {
@@ -205,7 +204,7 @@ namespace silva {
             find_token_length(text, [](const char x) { return is_one_of(x, operator_chars); });
         return {text.substr(0, len), OPERATOR};
       }
-      else if (c == '"') {
+      else if (c == '\'') {
         const std::optional<index_t> maybe_length = find_string_length(text);
         if (maybe_length.has_value()) {
           return {text.substr(0, maybe_length.value()), STRING};
