@@ -1,0 +1,41 @@
+- Silva = "import" Imports "interface" Interface "implementation" Implementation "end"
+- Imports = string*
+- Interface = Command*
+- Implementation = Command*
+
+- Command = "namespace" NestedNamespace | TypeDefn | FuncDefn
+
+- NestedNamespace = Namespace ( "." Namespace )*
+- Namespace = identifier
+
+- TypeName = identifier_regex("_t$") | StructBody
+- FuncName = identifier_regex("_f$")
+
+- Type =/ TypeName [
+  - Ptr       = rtl prefix "*" "&"
+]
+
+- TypeDefn = "type" TypeName ":" Type
+- FuncDefn = "func" FuncName ":" FuncHeader ( "proto" | FuncBody )
+- FuncHeader = "-*-" | Type ("->" Type)?
+- StructBody = "[" ((MemberName ":")? Type ",")* "]"
+- StructValue = "[" (Expr ",")* "]"
+- FuncBody = "{" (Stmt ";")* "}"
+- MemberName = identifier
+
+- Stmt => [ Func StmtLoop StmtIf Expr Keyword ]
+- StmtLoop = "loop" FuncBody
+- StmtIf = "if" "(" Expr ")" FuncBody ( "else" ( StmtIf | FuncBody ) )?
+- Keyword = "break" "continue"
+
+- Expr =/ Atom [
+  - Parens    = nest atom_nest "(" ")"
+  - Member    = ltr infix "."
+  - Call      = ltr infix "|"
+  - Mul       = ltr infix "*" "//"
+  - Add       = ltr infix "+" "-"
+  - Comp      = ltr infix "==" "<=" "<" ">" ">="
+  - Logic     = ltr infix "and" "or"
+  - Assign    = rtl infix "=" "+=" "-="
+]
+- Atom = identifier | string | number | StructValue

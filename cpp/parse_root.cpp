@@ -425,9 +425,10 @@ namespace silva {
           else {
             const auto* s_token_data = s_tokenization.token_info_get(s_node.token_begin);
             SILVA_EXPECT(s_token_data->category == STRING, MAJOR);
-            const token_id_t p_expected_ti =
-                tcp->token_id(SILVA_EXPECT_FWD(s_token_data->string_as_plain_contained(), MAJOR));
-            SILVA_EXPECT_PARSE(token_id_by() == p_expected_ti, "Expected {}", s_token_data->str);
+            const string_t p_expected{
+                SILVA_EXPECT_FWD(s_token_data->string_as_plain_contained(), MAJOR)};
+            const token_id_t p_expected_ti = tcp->token_id(p_expected);
+            SILVA_EXPECT_PARSE(token_id_by() == p_expected_ti, "Expected {}", p_expected);
           }
         }
         token_index += 1;

@@ -1,37 +1,38 @@
 import
+
 interface
 
 namespace std
 
-toil sin_t: f64_s -> f64_s proto
+func sin_f: f64_t -> f64_t proto
 
-toil little_gauss_t: i32_s -> i32_s proto
+func little_gauss_f: i32_t -> i32_t proto
 
-soil i32_pair_s: [
-  first: *i32_s
-  second: i32_s
+type i32_pair_t: [
+  first: *i32_t ,
+  second: i32_t ,
 ]
 
-toil foo_t: i32_pair_s -> i32_s proto
+func foo_f: i32_pair_t -> i32_t proto
 
-toil bar_t: [] -> [] proto
+func bar_f: [] -> [] proto
 
 implementation
 
-toil little_gauss_t: -*-
+func little_gauss_f: -*-
 {
   retval = 0;
-  i32_s i = 0;
+  i = 0;
   loop {
     i += 1;
     retval += i;
     if ( i >= arg ) {
       break;
-    }
-  }
+    };
+  };
 }
 
-toil foo_t: -*-
+func foo_f: -*-
 {
   if ( a < 0 ) {
     retval = first * second ;
@@ -39,14 +40,11 @@ toil foo_t: -*-
     retval = first + second ;
   } else {
     retval = first - second;
-  }
+  };
   if ( a > b ) {
     retval = first or second;
-  }
-  var retval = 42 ;
-  {
-    var retval = 42 ;
-  }
+  };
+  retval = 42 ;
 }
 
 end

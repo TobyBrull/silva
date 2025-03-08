@@ -17,9 +17,6 @@ The Fern language is akin to JSON; its syntax is described by the Seed program
 The syntax of the Seed language is described in its own terms by the Seed program
 `silva::seed_seed_source_code` ([seed.hpp](cpp/seed.hpp)).
 
-The syntax of the Silva language is described by the Seed program
-`silva::silva_seed_source_code` ([silva.hpp](cpp/silva.hpp)).
-
 ## Building and Running
 
 A recent C++ compiler is required. Clang 19 works for me.
@@ -42,6 +39,6 @@ ninja -Cbuild/ && ./build/cpp/silva_fern filename=silva/fern/simple.fern process
 ninja -Cbuild/ && ./build/cpp/silva_fern filename=silva/fern/broken.fern process=direct/string root-based=true
 ninja -Cbuild/ && ./build/cpp/silva_seed silva/seed/test.seed
 ninja -Cbuild/ && ./build/cpp/silva_seed silva/seed/test.seed silva/seed/test.code
-ninja -Cbuild/ && ./build/cpp/silva_silva scratchpad/test-01.silva
-ninja -Cbuild/ && ./build/cpp/silva_silva scratchpad/std.silva
+ninja -Cbuild/ && ./build/cpp/silva_seed scratchpad/silva.seed scratchpad/test-01.silva
+ninja -Cbuild/ && ./build/cpp/silva_sedd scratchpad/silva.seed scratchpad/std.silva
 ```
