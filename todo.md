@@ -15,7 +15,6 @@
 ]
 ```
 * Seed
-    * Support EOF literal (or token_id_none?)
     * Introduce namespaces in Seed
         * Seed
         * Seed.Rule

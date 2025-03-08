@@ -22,5 +22,3 @@ func test_f: -*-
   ( [ 10, 100, ] | std.foo == 110 ) | assert ;
   ( [ 20, 300, ] | std.foo == 320 ) | assert ;
 }
-
-end

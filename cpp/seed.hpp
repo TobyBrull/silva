@@ -40,8 +40,9 @@ namespace silva {
 
     - Nonterminal = identifier_regex ( "^[A-Z]" )
     - Terminal = string
-               | "identifier" | "operator" | "string" | "number"
-               | "any" | "identifier_regex" "(" string ")"
+               | "identifier" | "operator" | "string" | "number" | "any"
+               | "identifier_regex" "(" string ")"
+               | "end_of_file"
   )'";
 
   struct parse_root_t;

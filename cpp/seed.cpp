@@ -60,6 +60,7 @@ namespace silva {
       token_id_t tt_string      = tcp->token_id("string");
       token_id_t tt_number      = tcp->token_id("number");
       token_id_t tt_any         = tcp->token_id("any");
+      token_id_t tt_eof         = tcp->token_id("end_of_file");
       token_id_t tt_nest        = tcp->token_id("nest");
       token_id_t tt_ltr         = tcp->token_id("ltr");
       token_id_t tt_rtl         = tcp->token_id("rtl");
@@ -109,7 +110,7 @@ namespace silva {
           SILVA_EXPECT_PARSE(token_data_by()->category == STRING ||
                                  token_id_by() == tt_identifier || token_id_by() == tt_operator ||
                                  token_id_by() == tt_string || token_id_by() == tt_number ||
-                                 token_id_by() == tt_any,
+                                 token_id_by() == tt_any || token_id_by() == tt_eof,
                              "Expected Terminal");
           token_index += 1;
         }

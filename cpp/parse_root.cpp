@@ -349,6 +349,7 @@ namespace silva {
       const token_id_t ti_string   = tcp->token_id("string");
       const token_id_t ti_number   = tcp->token_id("number");
       const token_id_t ti_any      = tcp->token_id("any");
+      const token_id_t ti_eof      = tcp->token_id("end_of_file");
       const token_id_t ti_id_regex = tcp->token_id("identifier_regex");
       const token_id_t ti_ques     = tcp->token_id("?");
       const token_id_t ti_star     = tcp->token_id("*");
@@ -393,10 +394,14 @@ namespace silva {
         const auto& s_node = s_nodes[s_node_index];
         SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
         SILVA_EXPECT(s_node.rule_name == fni_term, MAJOR);
-        SILVA_EXPECT_PARSE(token_index < t_tokens.size(),
+        const token_id_t s_front_ti = s_tokens[s_node.token_begin];
+        if (s_front_ti == ti_eof) {
+          SILVA_EXPECT_PARSE(num_tokens_left() == 0, "Expected end of file");
+          return gg.release();
+        }
+        SILVA_EXPECT_PARSE(num_tokens_left() > 0,
                            "Reached end of token-stream when looking for {}",
                            s_tokenization.token_info_get(s_node.token_begin)->str);
-        const token_id_t s_front_ti = s_tokens[s_node.token_begin];
         if (s_front_ti == ti_id_regex) {
           SILVA_EXPECT(s_node.token_end - s_node.token_begin == 4, MAJOR);
           const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
