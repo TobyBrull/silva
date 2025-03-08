@@ -22,6 +22,8 @@
     * translate Seed program into IR:
         * check Seed program during translation
         * resolve Nonterminal names to their respective full_name_id_t
+        * allow to add multiple code snippets to this IR
+    * rename parse_saw_t?
     * packrat?
         * this might also enable recursion detection (and prevention)
         * recursion prevention could be a functional part of the parsing

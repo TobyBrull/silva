@@ -28,11 +28,24 @@ namespace silva {
       full_name_id_t fni_fern     = tcp->full_name_id_of("Fern");
       full_name_id_t fni_lbl_item = tcp->full_name_id_of("LabeledItem");
       full_name_id_t fni_label    = tcp->full_name_id_of("Label");
-      full_name_id_t fni_item     = tcp->full_name_id_of("Item");
+      full_name_id_t fni_value    = tcp->full_name_id_of("Value");
 
       fern_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
         : parse_tree_nursery_t(tokenization)
       {
+      }
+
+      expected_t<parse_tree_sub_t> value()
+      {
+        auto gg_rule = guard_for_rule();
+        gg_rule.set_rule_name(fni_value);
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
+                               (token_id_by() == tt_none || token_id_by() == tt_true ||
+                                token_id_by() == tt_false || token_data_by()->category == STRING ||
+                                token_data_by()->category == NUMBER),
+                           "Expected Value");
+        token_index += 1;
+        return gg_rule.release();
       }
 
       expected_t<parse_tree_sub_t> label()
@@ -47,15 +60,20 @@ namespace silva {
         return gg_rule.release();
       }
 
-      expected_t<parse_tree_sub_t> item()
+      expected_t<parse_tree_sub_t> labeled_item()
       {
         auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_item);
-        SILVA_EXPECT(num_tokens_left() >= 1,
-                     MINOR,
-                     "{} Expected Item",
-                     token_position_at(gg_rule.orig_token_index));
+        gg_rule.set_rule_name(fni_lbl_item);
+
+        if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
+          gg_rule.sub += SILVA_EXPECT_FWD(label(),
+                                          "{} Expected LabeledItem",
+                                          token_position_at(gg_rule.orig_token_index));
+          token_index += 1;
+        }
+
         error_nursery_t error_nursery;
+
         if (auto result = fern(); result) {
           gg_rule.sub += *std::move(result);
           return gg_rule.release();
@@ -63,38 +81,19 @@ namespace silva {
         else {
           error_nursery.add_child_error(std::move(result).error());
         }
-        if (token_id_by() == tt_none || token_id_by() == tt_true || token_id_by() == tt_false ||
-            token_data_by()->category == STRING || token_data_by()->category == NUMBER) {
-          token_index += 1;
+
+        if (auto result = value(); result) {
+          gg_rule.sub += *std::move(result);
           return gg_rule.release();
         }
         else {
-          error_nursery.add_child_error(
-              make_error(MINOR,
-                         {},
-                         "{} Expected 'none', 'true', 'false', string, or number",
-                         token_position_by()));
+          error_nursery.add_child_error(std::move(result).error());
         }
-        return std::unexpected(
-            std::move(error_nursery)
-                .finish(MINOR, "{} Expected Item", token_position_at(gg_rule.orig_token_index)));
-      }
 
-      expected_t<parse_tree_sub_t> labeled_item()
-      {
-        auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_lbl_item);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "Expected LabeledItem: no tokens left");
-        if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
-          gg_rule.sub += SILVA_EXPECT_FWD(label(),
-                                          "{} Expected LabeledItem",
-                                          token_position_at(gg_rule.orig_token_index));
-          token_index += 1;
-        }
-        gg_rule.sub += SILVA_EXPECT_FWD(item(),
-                                        "{} Expected LabeledItem",
-                                        token_position_at(gg_rule.orig_token_index));
-        return gg_rule.release();
+        return std::unexpected(std::move(error_nursery)
+                                   .finish(MINOR,
+                                           "{} Expected Fern or Value",
+                                           token_position_at(gg_rule.orig_token_index)));
       }
 
       expected_t<parse_tree_sub_t> fern()
@@ -137,7 +136,7 @@ namespace silva {
     const full_name_id_t fni_fern     = tcp->full_name_id_of("Fern");
     const full_name_id_t fni_lbl_item = tcp->full_name_id_of("LabeledItem");
     const full_name_id_t fni_label    = tcp->full_name_id_of("Label");
-    const full_name_id_t fni_item     = tcp->full_name_id_of("Item");
+    const full_name_id_t fni_value    = tcp->full_name_id_of("Value");
 
     SILVA_EXPECT(pt->nodes[start_node].rule_name == fni_fern, ASSERT);
     string_t retval;
@@ -174,7 +173,7 @@ namespace silva {
             retval += pt->tokenization->token_info_get(node.token_begin)->str;
             retval += " : ";
           }
-          else if (node.rule_name == fni_item && node.num_children == 0) {
+          else if (node.rule_name == fni_value) {
             retval += pt->tokenization->token_info_get(node.token_begin)->str;
           }
           return true;
@@ -190,7 +189,7 @@ namespace silva {
     const full_name_id_t fni_fern     = tcp->full_name_id_of("Fern");
     const full_name_id_t fni_lbl_item = tcp->full_name_id_of("LabeledItem");
     const full_name_id_t fni_label    = tcp->full_name_id_of("Label");
-    const full_name_id_t fni_item     = tcp->full_name_id_of("Item");
+    const full_name_id_t fni_value    = tcp->full_name_id_of("Value");
 
     SILVA_EXPECT(pt->nodes[start_node].rule_name == fni_fern, ASSERT);
     string_t retval    = "digraph Fern {\n";
@@ -217,7 +216,7 @@ namespace silva {
           else if (node.rule_name == fni_label) {
             last_label_str = pt->tokenization->token_info_get(node.token_begin)->str;
           }
-          else if (node.rule_name == fni_item && node.num_children == 0) {
+          else if (node.rule_name == fni_value) {
             if (last_label_str.has_value()) {
               retval += fmt::format(
                   "  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
@@ -391,7 +390,7 @@ namespace silva {
       full_name_id_t fni_fern     = tcp->full_name_id_of("Fern");
       full_name_id_t fni_lbl_item = tcp->full_name_id_of("LabeledItem");
       full_name_id_t fni_label    = tcp->full_name_id_of("Label");
-      full_name_id_t fni_item     = tcp->full_name_id_of("Item");
+      full_name_id_t fni_value    = tcp->full_name_id_of("Value");
 
       expected_t<fern_labeled_item_t> labeled_item(const index_t start_node)
       {
@@ -408,39 +407,32 @@ namespace silva {
                                          ->string_as_plain_contained(),
                                      MAJOR)};
               }
-              else {
-                if (node.rule_name == fni_item) {
-                  SILVA_EXPECT(node.num_children <= 1,
-                               MINOR,
-                               "Item node must have zero or one children");
-                  if (node.num_children == 1) {
-                    fern_t sub_fern   = SILVA_EXPECT_FWD(fern(child_node_index + 1));
-                    retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
-                  }
-                  else {
-                    const token_id_t token_id = parse_tree->tokenization->tokens[node.token_begin];
-                    const auto* token_data =
-                        parse_tree->tokenization->token_info_get(node.token_begin);
-                    if (token_id == tt_none) {
-                      retval.item.value = none;
-                    }
-                    else if (token_id == tt_true) {
-                      retval.item.value = true;
-                    }
-                    else if (token_id == tt_false) {
-                      retval.item.value = false;
-                    }
-                    else if (token_data->category == STRING) {
-                      retval.item.value = string_t{
-                          SILVA_EXPECT_FWD(token_data->string_as_plain_contained(), MAJOR)};
-                    }
-                    else if (token_data->category == NUMBER) {
-                      retval.item.value = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
-                    }
-                    else {
-                      SILVA_EXPECT(false, MINOR, "Unknown item '{}'", token_data->str);
-                    }
-                  }
+              else if (node.rule_name == fni_fern) {
+                fern_t sub_fern   = SILVA_EXPECT_FWD(fern(child_node_index));
+                retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
+              }
+              else if (node.rule_name == fni_value) {
+                SILVA_EXPECT(node.num_children == 0, MINOR, "Value node must have zero children");
+                const token_id_t token_id = parse_tree->tokenization->tokens[node.token_begin];
+                const auto* token_data = parse_tree->tokenization->token_info_get(node.token_begin);
+                if (token_id == tt_none) {
+                  retval.item.value = none;
+                }
+                else if (token_id == tt_true) {
+                  retval.item.value = true;
+                }
+                else if (token_id == tt_false) {
+                  retval.item.value = false;
+                }
+                else if (token_data->category == STRING) {
+                  retval.item.value =
+                      string_t{SILVA_EXPECT_FWD(token_data->string_as_plain_contained(), MAJOR)};
+                }
+                else if (token_data->category == NUMBER) {
+                  retval.item.value = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
+                }
+                else {
+                  SILVA_EXPECT(false, MINOR, "Unknown item '{}'", token_data->str);
                 }
               }
               return true;
