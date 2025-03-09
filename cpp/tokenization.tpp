@@ -45,20 +45,31 @@ TEST_CASE("tokenization", "[tokenization_t]")
 
     using vv_t = vector_t<full_name_id_t>;
 
-    const full_name_id_t name1 = tc.full_name_id(vv_t{ti_silva, ti_expr, ti_stmt});
+    const full_name_id_t name1 =
+        tc.full_name_id_span(full_name_id_none, vv_t{ti_silva, ti_expr, ti_stmt});
     CHECK(tc.full_name_infos.size() == 4);
     CHECK(tc.full_name_lookup.size() == 4);
     CHECK(tc.full_name_to_string(name1) == "~silva~expr~stmt");
     CHECK(tc.full_name_to_string(name1, "::") == "::silva::expr::stmt");
 
-    const full_name_id_t name2 = tc.full_name_id(vv_t{ti_silva, ti_expr, ti_expr});
+    const full_name_id_t name2 =
+        tc.full_name_id_span(full_name_id_none, vv_t{ti_silva, ti_expr, ti_expr});
     CHECK(tc.full_name_infos.size() == 5);
     CHECK(tc.full_name_lookup.size() == 5);
     CHECK(tc.full_name_to_string(name2, ".") == ".silva.expr.expr");
 
-    const full_name_id_t name3 = tc.full_name_id(vv_t{ti_silva, ti_expr});
+    const full_name_id_t name3 = tc.full_name_id_span(full_name_id_none, vv_t{ti_silva, ti_expr});
     CHECK(tc.full_name_infos.size() == 5);
     CHECK(tc.full_name_lookup.size() == 5);
     CHECK(tc.full_name_to_string(name3, "/") == "/silva/expr");
+
+    const full_name_id_t fni_abcd = tc.full_name_id_of("A", "B", "C", "D");
+    const full_name_id_t fni_abe  = tc.full_name_id_of("A", "B", "E");
+    const full_name_id_t fni_ab   = tc.full_name_id_of("A", "B");
+    CHECK(tc.full_name_id_lca(fni_abcd, fni_abe) == fni_ab);
+    CHECK(tc.full_name_to_string_relative(fni_abcd, fni_abe) == "^^~^^~E");
+    CHECK(tc.full_name_to_string_relative(fni_abe, fni_abcd) == "^^~C~D");
+    CHECK(tc.full_name_to_string_relative(fni_ab, fni_abcd) == "C~D");
+    CHECK(tc.full_name_to_string_relative(fni_abcd, fni_ab) == "^^~^^");
   }
 }

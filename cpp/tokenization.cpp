@@ -361,9 +361,10 @@ namespace silva {
     return it->second;
   }
 
-  full_name_id_t token_context_t::full_name_id(const span_t<const token_id_t> token_ids)
+  full_name_id_t token_context_t::full_name_id_span(const full_name_id_t parent_name,
+                                                    const span_t<const token_id_t> token_ids)
   {
-    full_name_id_t retval = full_name_id_none;
+    full_name_id_t retval = parent_name;
     for (const token_id_t token_id: token_ids) {
       retval = full_name_id(retval, token_id);
     }
@@ -371,7 +372,7 @@ namespace silva {
   }
 
   bool token_context_t::full_name_id_is_parent(const full_name_id_t parent_name,
-                                               token_id_t child_name)
+                                               token_id_t child_name) const
   {
     while (true) {
       if (child_name == parent_name) {
@@ -385,7 +386,7 @@ namespace silva {
   }
 
   string_t token_context_t::full_name_to_string(const full_name_id_t full_name_id,
-                                                const string_view_t separator)
+                                                const string_view_t separator) const
   {
     if (full_name_id == full_name_id_none) {
       return {};
@@ -393,5 +394,72 @@ namespace silva {
     const full_name_info_t* fni = &full_name_infos[full_name_id];
     const token_info_t* ti      = &token_infos[fni->base_name];
     return full_name_to_string(fni->parent_name, separator) + string_t{separator} + ti->str;
+  }
+
+  full_name_id_t token_context_t::full_name_id_lca(const full_name_id_t lhs,
+                                                   const full_name_id_t rhs) const
+  {
+    // TODO: O(1) time, O(n) memory ?
+    const auto fni_path = [this](full_name_id_t x) {
+      vector_t<full_name_id_t> retval;
+      while (true) {
+        retval.push_back(x);
+        if (x == full_name_id_none) {
+          break;
+        }
+        x = full_name_infos[x].parent_name;
+      }
+      std::ranges::reverse(retval);
+      return retval;
+    };
+    const auto lhs_path = fni_path(lhs);
+    const auto rhs_path = fni_path(rhs);
+    const index_t n     = std::min(lhs_path.size(), rhs_path.size());
+    index_t common      = 0;
+    while (common + 1 < n && lhs_path[common + 1] == rhs_path[common + 1]) {
+      common += 1;
+    }
+    SILVA_ASSERT(lhs_path[common] == rhs_path[common]);
+    return lhs_path[common];
+  }
+
+  string_t token_context_t::full_name_to_string_relative(const full_name_id_t from,
+                                                         const full_name_id_t to,
+                                                         const string_view_t separator,
+                                                         const string_view_t up) const
+  {
+    const full_name_id_t lca = full_name_id_lca(from, to);
+
+    string_t first_part;
+    {
+      full_name_id_t curr = from;
+      while (curr != lca) {
+        if (!first_part.empty()) {
+          first_part += separator;
+        }
+        first_part += up;
+        curr = full_name_infos[curr].parent_name;
+      }
+    }
+
+    string_t second_part;
+    {
+      full_name_id_t curr = to;
+      while (curr != lca) {
+        if (!second_part.empty()) {
+          second_part = string_t{separator} + second_part;
+        }
+        const full_name_info_t* fni = &full_name_infos[curr];
+        const token_info_t* ti      = &token_infos[fni->base_name];
+        second_part                 = ti->str + second_part;
+        curr                        = full_name_infos[curr].parent_name;
+      }
+    }
+    if (!first_part.empty() && !second_part.empty()) {
+      return first_part + string_t{separator} + second_part;
+    }
+    else {
+      return first_part + second_part;
+    }
   }
 }
