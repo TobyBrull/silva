@@ -49,7 +49,7 @@ TEST_CASE("tokenization", "[tokenization_t]")
         tc.full_name_id_span(full_name_id_none, vv_t{ti_silva, ti_expr, ti_stmt});
     CHECK(tc.full_name_infos.size() == 4);
     CHECK(tc.full_name_lookup.size() == 4);
-    CHECK(tc.full_name_to_string(name1) == "~silva~expr~stmt");
+    CHECK(tc.full_name_to_string(name1) == "/silva/expr/stmt");
     CHECK(tc.full_name_to_string(name1, "::") == "::silva::expr::stmt");
 
     const full_name_id_t name2 =
@@ -67,9 +67,9 @@ TEST_CASE("tokenization", "[tokenization_t]")
     const full_name_id_t fni_abe  = tc.full_name_id_of("A", "B", "E");
     const full_name_id_t fni_ab   = tc.full_name_id_of("A", "B");
     CHECK(tc.full_name_id_lca(fni_abcd, fni_abe) == fni_ab);
-    CHECK(tc.full_name_to_string_relative(fni_abcd, fni_abe) == "^^~^^~E");
-    CHECK(tc.full_name_to_string_relative(fni_abe, fni_abcd) == "^^~C~D");
-    CHECK(tc.full_name_to_string_relative(fni_ab, fni_abcd) == "C~D");
-    CHECK(tc.full_name_to_string_relative(fni_abcd, fni_ab) == "^^~^^");
+    CHECK(tc.full_name_to_string_relative(fni_abcd, fni_abe) == "../../E");
+    CHECK(tc.full_name_to_string_relative(fni_abe, fni_abcd) == "../C/D");
+    CHECK(tc.full_name_to_string_relative(fni_ab, fni_abcd) == "C/D");
+    CHECK(tc.full_name_to_string_relative(fni_abcd, fni_ab) == "../..");
   }
 }

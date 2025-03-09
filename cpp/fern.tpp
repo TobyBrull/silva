@@ -34,27 +34,27 @@ TEST_CASE("fern", "[fern]")
   CHECK(fern.to_graphviz() == gv_str_1);
 
   const string_view_t expected_parse_tree_str = R"(
-[0]~Fern                                          [ none ... ] ]
-  [0]~LabeledItem                                 none
-    [0]~Value                                     none
-  [1]~LabeledItem                                 true
-    [0]~Value                                     true
-  [2]~LabeledItem                                 'test' : 'Hello'
-    [0]~Label                                     'test'
-    [1]~Value                                     'Hello'
-  [3]~LabeledItem                                 42
-    [0]~Value                                     42
-  [4]~LabeledItem                                 [ ]
-    [0]~Fern                                      [ ]
-  [5]~LabeledItem                                 [ 1 ... 3 ]
-    [0]~Fern                                      [ 1 ... 3 ]
-      [0]~LabeledItem                             1
-        [0]~Value                                 1
-      [1]~LabeledItem                             'two' : 2
-        [0]~Label                                 'two'
-        [1]~Value                                 2
-      [2]~LabeledItem                             3
-        [0]~Value                                 3
+[0]/Fern                                          [ none ... ] ]
+  [0]/LabeledItem                                 none
+    [0]/Value                                     none
+  [1]/LabeledItem                                 true
+    [0]/Value                                     true
+  [2]/LabeledItem                                 'test' : 'Hello'
+    [0]/Label                                     'test'
+    [1]/Value                                     'Hello'
+  [3]/LabeledItem                                 42
+    [0]/Value                                     42
+  [4]/LabeledItem                                 [ ]
+    [0]/Fern                                      [ ]
+  [5]/LabeledItem                                 [ 1 ... 3 ]
+    [0]/Fern                                      [ 1 ... 3 ]
+      [0]/LabeledItem                             1
+        [0]/Value                                 1
+      [1]/LabeledItem                             'two' : 2
+        [0]/Label                                 'two'
+        [1]/Value                                 2
+      [2]/LabeledItem                             3
+        [0]/Value                                 3
 )";
 
   const string_t result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*pt_1));
@@ -62,47 +62,47 @@ TEST_CASE("fern", "[fern]")
 
   const string_view_t expected_parse_tree_str_graphviz = R"(
 digraph parse_tree {
-  "/" [label="[0]~Fern\n["]
+  "/" [label="[0]/Fern\n["]
   "/" -> "/0/"
-  "/0/" [label="[0]~LabeledItem\nnone"]
+  "/0/" [label="[0]/LabeledItem\nnone"]
   "/0/" -> "/0/0/"
-  "/0/0/" [label="[0]~Value\nnone"]
+  "/0/0/" [label="[0]/Value\nnone"]
   "/" -> "/1/"
-  "/1/" [label="[1]~LabeledItem\ntrue"]
+  "/1/" [label="[1]/LabeledItem\ntrue"]
   "/1/" -> "/1/0/"
-  "/1/0/" [label="[0]~Value\ntrue"]
+  "/1/0/" [label="[0]/Value\ntrue"]
   "/" -> "/2/"
-  "/2/" [label="[2]~LabeledItem\n'test'"]
+  "/2/" [label="[2]/LabeledItem\n'test'"]
   "/2/" -> "/2/0/"
-  "/2/0/" [label="[0]~Label\n'test'"]
+  "/2/0/" [label="[0]/Label\n'test'"]
   "/2/" -> "/2/1/"
-  "/2/1/" [label="[1]~Value\n'Hello'"]
+  "/2/1/" [label="[1]/Value\n'Hello'"]
   "/" -> "/3/"
-  "/3/" [label="[3]~LabeledItem\n42"]
+  "/3/" [label="[3]/LabeledItem\n42"]
   "/3/" -> "/3/0/"
-  "/3/0/" [label="[0]~Value\n42"]
+  "/3/0/" [label="[0]/Value\n42"]
   "/" -> "/4/"
-  "/4/" [label="[4]~LabeledItem\n["]
+  "/4/" [label="[4]/LabeledItem\n["]
   "/4/" -> "/4/0/"
-  "/4/0/" [label="[0]~Fern\n["]
+  "/4/0/" [label="[0]/Fern\n["]
   "/" -> "/5/"
-  "/5/" [label="[5]~LabeledItem\n["]
+  "/5/" [label="[5]/LabeledItem\n["]
   "/5/" -> "/5/0/"
-  "/5/0/" [label="[0]~Fern\n["]
+  "/5/0/" [label="[0]/Fern\n["]
   "/5/0/" -> "/5/0/0/"
-  "/5/0/0/" [label="[0]~LabeledItem\n1"]
+  "/5/0/0/" [label="[0]/LabeledItem\n1"]
   "/5/0/0/" -> "/5/0/0/0/"
-  "/5/0/0/0/" [label="[0]~Value\n1"]
+  "/5/0/0/0/" [label="[0]/Value\n1"]
   "/5/0/" -> "/5/0/1/"
-  "/5/0/1/" [label="[1]~LabeledItem\n'two'"]
+  "/5/0/1/" [label="[1]/LabeledItem\n'two'"]
   "/5/0/1/" -> "/5/0/1/0/"
-  "/5/0/1/0/" [label="[0]~Label\n'two'"]
+  "/5/0/1/0/" [label="[0]/Label\n'two'"]
   "/5/0/1/" -> "/5/0/1/1/"
-  "/5/0/1/1/" [label="[1]~Value\n2"]
+  "/5/0/1/1/" [label="[1]/Value\n2"]
   "/5/0/" -> "/5/0/2/"
-  "/5/0/2/" [label="[2]~LabeledItem\n3"]
+  "/5/0/2/" [label="[2]/LabeledItem\n3"]
   "/5/0/2/" -> "/5/0/2/0/"
-  "/5/0/2/0/" [label="[0]~Value\n3"]
+  "/5/0/2/0/" [label="[0]/Value\n3"]
 })";
   const string_t result_graphviz = SILVA_EXPECT_REQUIRE(parse_tree_to_graphviz(*pt_1));
   CHECK(result_graphviz == expected_parse_tree_str_graphviz.substr(1));

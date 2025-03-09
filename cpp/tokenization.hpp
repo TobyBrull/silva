@@ -61,13 +61,13 @@ namespace silva {
     full_name_id_t full_name_id(full_name_id_t parent_name, token_id_t base_name);
     full_name_id_t full_name_id_span(full_name_id_t parent_name, span_t<const token_id_t>);
     bool full_name_id_is_parent(full_name_id_t parent_name, full_name_id_t child_name) const;
-    string_t full_name_to_string(full_name_id_t, string_view_t separator = "~") const;
+    string_t full_name_to_string(full_name_id_t, string_view_t separator = "/") const;
 
     full_name_id_t full_name_id_lca(full_name_id_t, full_name_id_t) const;
     string_t full_name_to_string_relative(full_name_id_t from,
                                           full_name_id_t to,
-                                          string_view_t separator = "~",
-                                          string_view_t up        = "^^") const;
+                                          string_view_t separator = "/",
+                                          string_view_t up        = "..") const;
 
     template<typename... Ts>
     full_name_id_t full_name_id_of(Ts&&... xs);
