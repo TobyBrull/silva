@@ -12,26 +12,33 @@ namespace silva {
     return retval;
   }
 
-  constexpr index_t max_shown_tokens = 3;
+  constexpr index_t max_num_tokens = 5;
 
   expected_t<string_t> parse_tree_to_string(const parse_tree_t& pt, const index_t token_offset)
   {
     token_context_ptr_t tcp = pt.tokenization->context;
-    return tree_to_string(pt, [&](string_t& curr_line, auto& node) {
+    return tree_to_string(pt, [&](string_t& curr_line, auto& path) {
+      const auto& node = pt.nodes[path.back().node_index];
       curr_line += tcp->full_name_to_string(node.rule_name);
       while (curr_line.size() < token_offset) {
         curr_line.push_back(' ');
       }
-      const index_t used_token_index_end =
-          std::min(node.token_begin + max_shown_tokens, node.token_end);
-      for (index_t token_idx = node.token_begin; token_idx < used_token_index_end; ++token_idx) {
-        curr_line += pt.tokenization->token_info_get(token_idx)->str;
-        if (token_idx + 1 < used_token_index_end) {
-          curr_line += " ";
+      const auto print_tokens = [&curr_line, &pt](const index_t begin, const index_t end) {
+        for (index_t token_idx = begin; token_idx < end; ++token_idx) {
+          curr_line += pt.tokenization->token_info_get(token_idx)->str;
+          if (token_idx + 1 < end) {
+            curr_line += " ";
+          }
         }
+      };
+      const index_t num_tokens = node.token_end - node.token_begin;
+      if (num_tokens <= max_num_tokens) {
+        print_tokens(node.token_begin, node.token_end);
       }
-      if (used_token_index_end < node.token_end) {
-        curr_line += " ...";
+      else {
+        print_tokens(node.token_begin, node.token_begin + max_num_tokens / 2);
+        curr_line += " ... ";
+        print_tokens(node.token_end - max_num_tokens / 2, node.token_end);
       }
     });
   }

@@ -265,10 +265,9 @@ namespace silva {
             return true;
           }
           SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
-          const typename tree_t<NodeData>::node_t& node = tree.nodes[path.back().node_index];
           curr_line.assign(2 * (path.size() - 1), ' ');
           curr_line += fmt::format("[{}]", path.back().child_index);
-          node_data_func(curr_line, node);
+          node_data_func(curr_line, path);
           retval += curr_line;
           retval += '\n';
           return true;

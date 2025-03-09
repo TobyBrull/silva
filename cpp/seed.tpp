@@ -35,23 +35,23 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
   const std::string_view expected = R"(
-[0]~Seed                                          - SimpleFern = ...
-  [0]~Rule                                        SimpleFern = '[' ...
+[0]~Seed                                          - SimpleFern ... | number
+  [0]~Rule                                        SimpleFern = ... * ']'
     [0]~Nonterminal                               SimpleFern
-    [1]~Expr~Concat~                              '[' ( LabeledItem ...
+    [1]~Expr~Concat~                              '[' ( ... * ']'
       [0]~Terminal                                '['
-      [1]~Expr~Postfix~*                          ( LabeledItem ';' ...
-        [0]~Expr~Parens~(                         ( LabeledItem ';' ...
+      [1]~Expr~Postfix~*                          ( LabeledItem ... ) *
+        [0]~Expr~Parens~(                         ( LabeledItem ';' ? )
           [0]~Expr~Concat~                        LabeledItem ';' ?
             [0]~Nonterminal                       LabeledItem
             [1]~Expr~Postfix~?                    ';' ?
               [0]~Terminal                        ';'
       [2]~Terminal                                ']'
-  [1]~Rule                                        LabeledItem = ( ...
+  [1]~Rule                                        LabeledItem = ... ? Item
     [0]~Nonterminal                               LabeledItem
-    [1]~Expr~Concat~                              ( Label ':' ...
-      [0]~Expr~Postfix~?                          ( Label ':' ...
-        [0]~Expr~Parens~(                         ( Label ':' ...
+    [1]~Expr~Concat~                              ( Label ... ? Item
+      [0]~Expr~Postfix~?                          ( Label ':' ) ?
+        [0]~Expr~Parens~(                         ( Label ':' )
           [0]~Expr~Concat~                        Label ':'
             [0]~Nonterminal                       Label
             [1]~Terminal                          ':'
@@ -59,9 +59,9 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   [2]~Rule                                        Label = string
     [0]~Nonterminal                               Label
     [1]~Terminal                                  string
-  [3]~Rule                                        Item = SimpleFern ...
+  [3]~Rule                                        Item = ... | number
     [0]~Nonterminal                               Item
-    [1]~Expr~Alt~|                                SimpleFern | string ...
+    [1]~Expr~Alt~|                                SimpleFern | string | number
       [0]~Nonterminal                             SimpleFern
       [1]~Terminal                                string
       [2]~Terminal                                number
@@ -94,12 +94,12 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   const auto sfpt        = SILVA_EXPECT_REQUIRE(sfpr->apply(sf_tt));
 
   const std::string_view expected_parse_tree = R"(
-[0]~SimpleFern                                    [ 'abc' ; ...
+[0]~SimpleFern                                    [ 'abc' ... ; ]
   [0]~LabeledItem                                 'abc'
     [0]~Item                                      'abc'
-  [1]~LabeledItem                                 [ 'def' 123 ...
-    [0]~Item                                      [ 'def' 123 ...
-      [0]~SimpleFern                              [ 'def' 123 ...
+  [1]~LabeledItem                                 [ 'def' 123 ]
+    [0]~Item                                      [ 'def' 123 ]
+      [0]~SimpleFern                              [ 'def' 123 ]
         [0]~LabeledItem                           'def'
           [0]~Item                                'def'
         [1]~LabeledItem                           123

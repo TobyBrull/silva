@@ -34,7 +34,7 @@ TEST_CASE("fern", "[fern]")
   CHECK(fern.to_graphviz() == gv_str_1);
 
   const string_view_t expected_parse_tree_str = R"(
-[0]~Fern                                          [ none true ...
+[0]~Fern                                          [ none ... ] ]
   [0]~LabeledItem                                 none
     [0]~Value                                     none
   [1]~LabeledItem                                 true
@@ -46,8 +46,8 @@ TEST_CASE("fern", "[fern]")
     [0]~Value                                     42
   [4]~LabeledItem                                 [ ]
     [0]~Fern                                      [ ]
-  [5]~LabeledItem                                 [ 1 'two' ...
-    [0]~Fern                                      [ 1 'two' ...
+  [5]~LabeledItem                                 [ 1 ... 3 ]
+    [0]~Fern                                      [ 1 ... 3 ]
       [0]~LabeledItem                             1
         [0]~Value                                 1
       [1]~LabeledItem                             'two' : 2

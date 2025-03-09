@@ -19,12 +19,12 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   auto fs_pt               = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
   auto fs_pr               = share(SILVA_EXPECT_REQUIRE(parse_root_t::create(fs_pt)));
   const string_view_t expected_seed_pt = R"(
-[0]~Seed                                          - Frog = ...
-  [0]~Rule                                        Frog = Rule ...
+[0]~Seed                                          - Frog ... '=' !
+  [0]~Rule                                        Frog = Rule *
     [0]~Nonterminal                               Frog
     [1]~Expr~Postfix~*                            Rule *
       [0]~Nonterminal                             Rule
-  [1]~Rule                                        Rule = RuleName ...
+  [1]~Rule                                        Rule = RuleName '=' Expr
     [0]~Nonterminal                               Rule
     [1]~Expr~Concat~                              RuleName '=' Expr
       [0]~Nonterminal                             RuleName
@@ -33,11 +33,11 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   [2]~Rule                                        RuleName = identifier
     [0]~Nonterminal                               RuleName
     [1]~Terminal                                  identifier
-  [3]~Rule                                        Expr = Primary ...
+  [3]~Rule                                        Expr = Primary +
     [0]~Nonterminal                               Expr
     [1]~Expr~Postfix~+                            Primary +
       [0]~Nonterminal                             Primary
-  [4]~Rule                                        Primary = identifier ...
+  [4]~Rule                                        Primary = identifier '=' !
     [0]~Nonterminal                               Primary
     [1]~Expr~Concat~                              identifier '=' !
       [0]~Terminal                                identifier
@@ -56,14 +56,14 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   auto frog_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_source_code)));
   auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt)));
   const string_view_t expected = R"(
-[0]~Frog                                          SimpleFern = a ...
-  [0]~Rule                                        SimpleFern = a ...
+[0]~Frog                                          SimpleFern = ... h i
+  [0]~Rule                                        SimpleFern = a b c
     [0]~RuleName                                  SimpleFern
     [1]~Expr                                      a b c
       [0]~Primary                                 a
       [1]~Primary                                 b
       [2]~Primary                                 c
-  [1]~Rule                                        LabeledItem = d ...
+  [1]~Rule                                        LabeledItem = d e
     [0]~RuleName                                  LabeledItem
     [1]~Expr                                      d e
       [0]~Primary                                 d
@@ -72,7 +72,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
     [0]~RuleName                                  Label
     [1]~Expr                                      f
       [0]~Primary                                 f
-  [3]~Rule                                        Item = g ...
+  [3]~Rule                                        Item = g h i
     [0]~RuleName                                  Item
     [1]~Expr                                      g h i
       [0]~Primary                                 g
