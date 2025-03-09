@@ -92,6 +92,8 @@ namespace silva {
         ')',
         '{',
         '}',
+        // other
+        '~',
     };
     constexpr char operator_chars[] = {
         // punctuation
@@ -113,7 +115,6 @@ namespace silva {
         '|',
         // other
         '^',
-        '~',
         '@',
         '!',
         '?',

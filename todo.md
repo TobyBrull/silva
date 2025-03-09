@@ -1,19 +1,5 @@
 # TODO
 
-```silva.seed
-- ParseAxe = [
-  - Goal = "parse_axe" Nonterminal "[" LevelNest* Level* "]"
-  - LevelNest = [
-    - Goal  = "-" Nonterminal "=" "nest" List*
-    - List  = "atom_nest" operator*
-  ]
-  - Level = [
-    - Goal = "-" Nonterminal "=" Assoc List*
-    - Assoc = "nest" | "ltr" | "rtl" | "flat
-    - List = ( "prefix" | ... | "postfix_nest" ) operator*
-  ]
-]
-```
 * Seed
     * Introduce namespaces in Seed
         * Seed
@@ -21,8 +7,11 @@
         * Silva.Expr.FuncCall
     * translate Seed program into IR:
         * check Seed program during translation
+        * check that all Nonterminals can be resolved
         * resolve Nonterminal names to their respective full_name_id_t
         * allow to add multiple code snippets to this IR
+    * Instead of current "Alias" use an Expr substitution rule?
+        * _Definition =: '=' Expr | '=/' Axe | '=>' Alias
     * rename parse_saw_t?
     * packrat?
         * this might also enable recursion detection (and prevention)
