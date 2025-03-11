@@ -385,17 +385,6 @@ namespace silva {
     }
   }
 
-  string_t token_context_t::full_name_to_string(const full_name_id_t full_name_id,
-                                                const string_view_t separator) const
-  {
-    if (full_name_id == full_name_id_none) {
-      return {};
-    }
-    const full_name_info_t* fni = &full_name_infos[full_name_id];
-    const token_info_t* ti      = &token_infos[fni->base_name];
-    return full_name_to_string(fni->parent_name, separator) + string_t{separator} + ti->str;
-  }
-
   full_name_id_t token_context_t::full_name_id_lca(const full_name_id_t lhs,
                                                    const full_name_id_t rhs) const
   {
@@ -423,40 +412,50 @@ namespace silva {
     return lhs_path[common];
   }
 
-  string_t token_context_t::full_name_to_string_relative(const full_name_id_t from,
-                                                         const full_name_id_t to,
-                                                         const string_view_t separator,
-                                                         const string_view_t up) const
+  string_t full_name_id_style_t::absolute(const full_name_id_t target_fni) const
   {
-    const full_name_id_t lca = full_name_id_lca(from, to);
+    if (target_fni == full_name_id_none) {
+      return tcp->token_infos[root].str;
+    }
+    const full_name_info_t& fni = tcp->full_name_infos[target_fni];
+    return absolute(fni.parent_name) + tcp->token_infos[separator].str +
+        tcp->token_infos[fni.base_name].str;
+  }
+
+  string_t full_name_id_style_t::relative(const full_name_id_t current_fni,
+                                          const full_name_id_t target_fni) const
+  {
+    const full_name_id_t lca = tcp->full_name_id_lca(current_fni, target_fni);
 
     string_t first_part;
     {
-      full_name_id_t curr = from;
+      full_name_id_t curr = current_fni;
       while (curr != lca) {
         if (!first_part.empty()) {
-          first_part += separator;
+          first_part += tcp->token_infos[separator].str;
         }
-        first_part += up;
-        curr = full_name_infos[curr].parent_name;
+        first_part += tcp->token_infos[parent].str;
+        curr = tcp->full_name_infos[curr].parent_name;
       }
     }
 
     string_t second_part;
     {
-      full_name_id_t curr = to;
+      full_name_id_t curr = target_fni;
       while (curr != lca) {
         if (!second_part.empty()) {
-          second_part = string_t{separator} + second_part;
+          second_part = tcp->token_infos[separator].str + second_part;
         }
-        const full_name_info_t* fni = &full_name_infos[curr];
-        const token_info_t* ti      = &token_infos[fni->base_name];
-        second_part                 = ti->str + second_part;
-        curr                        = full_name_infos[curr].parent_name;
+        const full_name_info_t* fni = &tcp->full_name_infos[curr];
+        second_part                 = tcp->token_infos[fni->base_name].str + second_part;
+        curr                        = tcp->full_name_infos[curr].parent_name;
       }
     }
     if (!first_part.empty() && !second_part.empty()) {
-      return first_part + string_t{separator} + second_part;
+      return first_part + tcp->token_infos[separator].str + second_part;
+    }
+    else if (first_part.empty() && second_part.empty()) {
+      return tcp->token_infos[current].str;
     }
     else {
       return first_part + second_part;

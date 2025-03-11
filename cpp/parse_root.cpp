@@ -17,6 +17,7 @@ namespace silva {
   struct parse_root_create_nursery_t {
     shared_ptr_t<const parse_tree_t> seed_parse_tree;
     token_context_ptr_t tcp = seed_parse_tree->tokenization->context;
+    full_name_id_style_t fnis{.tcp = tcp};
 
     std::unique_ptr<parse_root_t> retval = std::make_unique<parse_root_t>();
 
@@ -84,7 +85,7 @@ namespace silva {
           .expr_node_index = children[1],
       });
       const auto [it, inserted] = retval->rule_indexes.emplace(rule_name, offset);
-      SILVA_EXPECT(inserted, MINOR, "Repeated rule name '{}'", tcp->full_name_to_string(rule_name));
+      SILVA_EXPECT(inserted, MINOR, "Repeated rule name '{}'", fnis.absolute(rule_name));
       return {};
     }
 
@@ -334,6 +335,7 @@ namespace silva {
       const parse_root_t* root = nullptr;
       const parse_tree_t& s_pt = *root->seed_parse_tree;
       token_context_ptr_t tcp  = s_pt.tokenization->context;
+      full_name_id_style_t fnis{.tcp = tcp};
 
       const tokenization_t& s_tokenization          = *s_pt.tokenization;
       const vector_t<token_id_t>& s_tokens          = s_tokenization.tokens;
@@ -641,7 +643,7 @@ namespace silva {
         SILVA_EXPECT(it != root->rule_indexes.end(),
                      MAJOR,
                      "Unknown rule: {}",
-                     tcp->full_name_to_string(t_rule_name));
+                     fnis.absolute(t_rule_name));
         const auto& rule                 = root->rules[it->second];
         const full_name_id_t s_expr_name = s_nodes[rule.expr_node_index].rule_name;
         if (s_expr_name == fni_alias) {
@@ -656,7 +658,7 @@ namespace silva {
           gg_rule.sub += SILVA_EXPECT_FWD(s_expr(rule.expr_node_index),
                                           "{} Expected {}",
                                           token_position_at(orig_token_index),
-                                          tcp->full_name_to_string(rule.name));
+                                          fnis.absolute(rule.name));
           return gg_rule.release();
         }
       }

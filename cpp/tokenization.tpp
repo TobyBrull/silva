@@ -37,39 +37,34 @@ TEST_CASE("tokenization", "[tokenization_t]")
   }
 
   {
-    const token_id_t ti_silva = tc.token_id("silva");
-    const token_id_t ti_expr  = tc.token_id("expr");
-    const token_id_t ti_func  = tc.token_id("func");
-    const token_id_t ti_stmt  = tc.token_id("stmt");
-    const token_id_t ti_comm  = tc.token_id("comm");
-
     using vv_t = vector_t<full_name_id_t>;
 
-    const full_name_id_t name1 =
-        tc.full_name_id_span(full_name_id_none, vv_t{ti_silva, ti_expr, ti_stmt});
-    CHECK(tc.full_name_infos.size() == 4);
-    CHECK(tc.full_name_lookup.size() == 4);
-    CHECK(tc.full_name_to_string(name1) == "/silva/expr/stmt");
-    CHECK(tc.full_name_to_string(name1, "::") == "::silva::expr::stmt");
+    const full_name_id_t name1 = tc.full_name_id_of("std", "expr", "stmt");
+    const full_name_id_t name2 = tc.full_name_id_of("std", "expr");
+    const full_name_id_t name3 = tc.full_name_id_of("std", "ranges", "vector");
+    CHECK(tc.full_name_infos.size() == 6);
+    CHECK(tc.full_name_lookup.size() == 6);
 
-    const full_name_id_t name2 =
-        tc.full_name_id_span(full_name_id_none, vv_t{ti_silva, ti_expr, ti_expr});
-    CHECK(tc.full_name_infos.size() == 5);
-    CHECK(tc.full_name_lookup.size() == 5);
-    CHECK(tc.full_name_to_string(name2, ".") == ".silva.expr.expr");
-
-    const full_name_id_t name3 = tc.full_name_id_span(full_name_id_none, vv_t{ti_silva, ti_expr});
-    CHECK(tc.full_name_infos.size() == 5);
-    CHECK(tc.full_name_lookup.size() == 5);
-    CHECK(tc.full_name_to_string(name3, "/") == "/silva/expr");
-
-    const full_name_id_t fni_abcd = tc.full_name_id_of("A", "B", "C", "D");
-    const full_name_id_t fni_abe  = tc.full_name_id_of("A", "B", "E");
-    const full_name_id_t fni_ab   = tc.full_name_id_of("A", "B");
-    CHECK(tc.full_name_id_lca(fni_abcd, fni_abe) == fni_ab);
-    CHECK(tc.full_name_to_string_relative(fni_abcd, fni_abe) == "../../E");
-    CHECK(tc.full_name_to_string_relative(fni_abe, fni_abcd) == "../C/D");
-    CHECK(tc.full_name_to_string_relative(fni_ab, fni_abcd) == "C/D");
-    CHECK(tc.full_name_to_string_relative(fni_abcd, fni_ab) == "../..");
+    {
+      const full_name_id_style_t ts{
+          .tcp       = tc.ptr(),
+          .root      = tc.token_id("cpp"),
+          .current   = tc.token_id("this"),
+          .parent    = tc.token_id("super"),
+          .separator = tc.token_id("::"),
+      };
+      CHECK(ts.absolute(name1) == "cpp::std::expr::stmt");
+      CHECK(ts.absolute(name2) == "cpp::std::expr");
+      CHECK(ts.absolute(name3) == "cpp::std::ranges::vector");
+      CHECK(ts.relative(name1, name1) == "this");
+      CHECK(ts.relative(name2, name1) == "stmt");
+      CHECK(ts.relative(name3, name1) == "super::super::expr::stmt");
+      CHECK(ts.relative(name1, name2) == "super");
+      CHECK(ts.relative(name2, name2) == "this");
+      CHECK(ts.relative(name3, name2) == "super::super::expr");
+      CHECK(ts.relative(name1, name3) == "super::super::ranges::vector");
+      CHECK(ts.relative(name2, name3) == "super::ranges::vector");
+      CHECK(ts.relative(name3, name3) == "this");
+    }
   }
 }
