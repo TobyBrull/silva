@@ -23,7 +23,15 @@ namespace silva {
 
   full_name_id_style_t parse_tree_full_name_style(token_context_ptr_t);
 
-  expected_t<string_t> parse_tree_to_string(const parse_tree_t&, index_t token_offset = 50);
+  enum class parse_tree_printing_t {
+    ABSOLUTE,
+    RELATIVE,
+  };
+  expected_t<string_t>
+  parse_tree_to_string(const parse_tree_t&,
+                       index_t token_offset  = 50,
+                       parse_tree_printing_t = parse_tree_printing_t::ABSOLUTE);
+
   expected_t<string_t> parse_tree_to_graphviz(const parse_tree_t&);
 
   // template<typename T>

@@ -25,16 +25,30 @@ namespace silva {
 
   constexpr index_t max_num_tokens = 5;
 
-  expected_t<string_t> parse_tree_to_string(const parse_tree_t& pt, const index_t token_offset)
+  expected_t<string_t> parse_tree_to_string(const parse_tree_t& pt,
+                                            const index_t token_offset,
+                                            const parse_tree_printing_t printing)
   {
     token_context_ptr_t tcp = pt.tokenization->context;
     const auto style        = parse_tree_full_name_style(tcp);
     return tree_to_string(pt, [&](string_t& curr_line, auto& path) {
       const auto& node = pt.nodes[path.back().node_index];
-      curr_line += style.absolute(node.rule_name);
-      while (curr_line.size() < token_offset) {
-        curr_line.push_back(' ');
+      using enum parse_tree_printing_t;
+      if (printing == ABSOLUTE) {
+        curr_line += style.absolute(node.rule_name);
       }
+      else {
+        if (path.size() >= 2) {
+          full_name_id_t from = pt.nodes[path[path.size() - 2].node_index].rule_name;
+          curr_line += style.relative(from, node.rule_name);
+        }
+        else {
+          curr_line += style.absolute(node.rule_name);
+        }
+      }
+      do {
+        curr_line.push_back(' ');
+      } while (curr_line.size() < token_offset);
       const auto print_tokens = [&curr_line, &pt](const index_t begin, const index_t end) {
         for (index_t token_idx = begin; token_idx < end; ++token_idx) {
           curr_line += pt.tokenization->token_info_get(token_idx)->str;
