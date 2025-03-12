@@ -26,7 +26,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
       [0]Silva.Nonterminal                        Rule
   [1]Silva.Rule                                   Rule = RuleName '=' Expr
     [0]Silva.Nonterminal                          Rule
-    [1]Silva.Expr.Concat.                         RuleName '=' Expr
+    [1]Silva.Expr.Concat.concat                   RuleName '=' Expr
       [0]Silva.Nonterminal                        RuleName
       [1]Silva.Terminal                           '='
       [2]Silva.Nonterminal                        Expr
@@ -39,7 +39,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
       [0]Silva.Nonterminal                        Primary
   [4]Silva.Rule                                   Primary = identifier '=' !
     [0]Silva.Nonterminal                          Primary
-    [1]Silva.Expr.Concat.                         identifier '=' !
+    [1]Silva.Expr.Concat.concat                   identifier '=' !
       [0]Silva.Terminal                           identifier
       [1]Silva.Expr.Postfix.!                     '=' !
         [0]Silva.Terminal                         '='

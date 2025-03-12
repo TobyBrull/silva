@@ -132,7 +132,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
       .opers = {infix_t{tc.token_id("=")}},
   });
   const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
-  CHECK(!pa.has_concat);
+  CHECK(!pa.concat_result.has_value());
   CHECK(pa.results.size() == 15);
   CHECK(pa.results.at(tc.token_id("=")) ==
         parse_axe_result_t{
@@ -458,7 +458,7 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.full_name_id_of("expr", "cat"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {infix_t{token_id_none}},
+      .opers = {infix_t{.token_id = tc.token_id("cc"), .concat = true}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.full_name_id_of("expr", "prf_lo"),
@@ -481,12 +481,12 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
       .opers = {infix_t{.token_id = tc.token_id("="), .flatten = true}, infix_t{tc.token_id("%")}},
   });
   const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
-  CHECK(pa.has_concat);
-  CHECK(pa.results.size() == 12);
+  CHECK(pa.concat_result.has_value());
+  CHECK(pa.results.size() == 11);
 
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "x y z", R"(
-[0]Silva.expr.cat.                                x y z
-  [0]Silva.expr.cat.                              x y
+[0]Silva.expr.cat.cc                              x y z
+  [0]Silva.expr.cat.cc                            x y
     [0]Silva.test.atom                            x
     [1]Silva.test.atom                            y
   [1]Silva.test.atom                              z
@@ -498,14 +498,14 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
 )");
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a { b } c", none);
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a ( b ) c", R"(
-[0]Silva.expr.cat.                                a ( b ) c
+[0]Silva.expr.cat.cc                              a ( b ) c
   [0]Silva.test.atom                              a
   [1]Silva.expr.prf_hi.(                          ( b ) c
     [0]Silva.test.atom                            b
     [1]Silva.test.atom                            c
 )");
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "a << { b } c >>", R"(
-[0]Silva.expr.cat.                                a << ... c >>
+[0]Silva.expr.cat.cc                              a << ... c >>
   [0]Silva.test.atom                              a
   [1]Silva.expr.nst.<<                            << { ... c >>
     [0]Silva.expr.prf_lo.{                        { b } c
@@ -515,8 +515,8 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "<< a { b } >> c", none);
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "x 1 x z", none);
   test::test_parse_axe<test_nursery_t>(tc.ptr(), pa, "x 1 { z", R"(
-[0]Silva.expr.cat.                                x 1 { z
-  [0]Silva.expr.cat.                              x 1 {
+[0]Silva.expr.cat.cc                              x 1 { z
+  [0]Silva.expr.cat.cc                            x 1 {
     [0]Silva.test.atom                            x
     [1]Silva.test.atom                            1 {
   [1]Silva.test.atom                              z

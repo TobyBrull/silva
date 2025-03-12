@@ -144,7 +144,19 @@ namespace silva::parse_axe {
           if (x->flatten) {
             used_prec.flatten_id = x->token_id;
           }
-          SILVA_EXPECT_FWD(register_op(x->token_id, *x, level_desc.name, used_prec));
+          if (x->concat) {
+            SILVA_EXPECT(!retval.concat_result.has_value(),
+                         MINOR,
+                         "Trying to use 'concat' level twice");
+            retval.concat_result.emplace(result_oper_t<oper_regular_t>{
+                .oper       = *x,
+                .name       = retval.tcp->full_name_id(level_desc.name, x->token_id),
+                .precedence = used_prec,
+            });
+          }
+          else {
+            SILVA_EXPECT_FWD(register_op(x->token_id, *x, level_desc.name, used_prec));
+          }
         }
         else if (const auto* x = std::get_if<ternary_t>(&oper); x) {
           SILVA_EXPECT_FWD(register_op(x->first, *x, level_desc.name, precedence));
@@ -161,10 +173,6 @@ namespace silva::parse_axe {
           SILVA_EXPECT(false, MAJOR, "Unexpected variant: {}", oper.index());
         }
       }
-    }
-
-    if (const auto it = retval.results.find(token_id_none); it != retval.results.end()) {
-      retval.has_concat = true;
     }
 
     return retval;
@@ -386,10 +394,8 @@ namespace silva::parse_axe {
       mode_t mode = ATOM_MODE;
 
       const auto hallucinate_concat = [&]() -> expected_t<void> {
-        const auto it = parse_axe.results.find(token_id_none);
-        SILVA_EXPECT(it != parse_axe.results.end(), ASSERT);
-        SILVA_EXPECT(it->second.regular.has_value(), ASSERT);
-        const auto& reg = it->second.regular.value();
+        SILVA_EXPECT(parse_axe.concat_result.has_value(), ASSERT);
+        const auto& reg = parse_axe.concat_result.value();
         SILVA_EXPECT_FWD(stack_pair.stack_pop(reg.precedence));
         stack_pair.oper_stack.push_back(oper_item_t{
             .oper       = std::get<infix_t>(reg.oper),
@@ -410,7 +416,7 @@ namespace silva::parse_axe {
           if (!atom_data.has_value()) {
             break;
           }
-          if (mode == INFIX_MODE && parse_axe.has_concat) {
+          if (mode == INFIX_MODE && parse_axe.concat_result.has_value()) {
             SILVA_EXPECT_FWD(hallucinate_concat());
           }
           if (mode == ATOM_MODE) {
@@ -430,7 +436,7 @@ namespace silva::parse_axe {
           if (pa_result.is_right_bracket) {
             break;
           }
-          if (mode == INFIX_MODE && parse_axe.has_concat) {
+          if (mode == INFIX_MODE && parse_axe.concat_result.has_value()) {
             if (pa_result.prefix.has_value() && !pa_result.regular.has_value()) {
               SILVA_EXPECT_FWD(hallucinate_concat());
               continue;

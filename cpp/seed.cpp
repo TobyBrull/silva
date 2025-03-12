@@ -33,7 +33,11 @@ namespace silva {
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->full_name_id_of("Expr", "Concat"),
         .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{.token_id = token_id_none, .flatten = true}},
+        .opers = {infix_t{
+            .token_id = tcp->token_id("concat"),
+            .concat   = true,
+            .flatten  = true,
+        }},
     });
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->full_name_id_of("Expr", "Alt"),
@@ -50,12 +54,10 @@ namespace silva {
       token_id_t tt_equal       = tcp->token_id("=");
       token_id_t tt_axe         = tcp->token_id("=/");
       token_id_t tt_alias       = tcp->token_id("=>");
-      token_id_t tt_paren_open  = tcp->token_id("(");
-      token_id_t tt_paren_close = tcp->token_id(")");
       token_id_t tt_brack_open  = tcp->token_id("[");
       token_id_t tt_brack_close = tcp->token_id("]");
+      token_id_t tt_regex       = tcp->token_id("/");
       token_id_t tt_identifier  = tcp->token_id("identifier");
-      token_id_t tt_id_regex    = tcp->token_id("identifier_regex");
       token_id_t tt_operator    = tcp->token_id("operator");
       token_id_t tt_string      = tcp->token_id("string");
       token_id_t tt_number      = tcp->token_id("number");
@@ -72,7 +74,7 @@ namespace silva {
       token_id_t tt_ternary     = tcp->token_id("ternary");
       token_id_t tt_prefix      = tcp->token_id("prefix");
       token_id_t tt_prefix_n    = tcp->token_id("prefix_nest");
-      token_id_t tt_none        = tcp->token_id("none");
+      token_id_t tt_concat      = tcp->token_id("concat");
 
       full_name_id_t fni_seed        = tcp->full_name_id_of("Seed");
       full_name_id_t fni_rule        = tcp->full_name_id_of("Rule");
@@ -100,10 +102,10 @@ namespace silva {
       {
         auto gg_rule = guard_for_rule();
         gg_rule.set_rule_name(fni_term);
-        if (num_tokens_left() >= 4 && token_id_by(0) == tt_id_regex &&
-            token_id_by(1) == tt_paren_open && token_data_by(2)->category == STRING &&
-            token_id_by(3) == tt_paren_close) {
-          token_index += 4;
+        if (num_tokens_left() >= 3 &&
+            (token_id_by(0) == tt_identifier || token_id_by(0) == tt_operator) &&
+            token_id_by(1) == tt_regex && token_data_by(2)->category == STRING) {
+          token_index += 3;
         }
         else {
           SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens when looking for Terminal");
@@ -134,8 +136,8 @@ namespace silva {
         auto gg_rule = guard_for_rule();
         gg_rule.set_rule_name(fni_axe_op);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
-                               (token_id_by() == tt_none || token_data_by()->category == STRING),
-                           "Expected 'none' or string");
+                               (token_id_by() == tt_concat || token_data_by()->category == STRING),
+                           "Expected 'concat' or string");
         token_index += 1;
         return gg_rule.release();
       }
@@ -174,7 +176,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 1 &&
                 (token_id_by() == tt_nest || token_id_by() == tt_ltr || token_id_by() == tt_rtl),
-            "Expected one of [ \"nest\" \"ltr\" \"rtl\" ]");
+            "Expected one of [ 'nest' 'ltr' 'rtl' ]");
         token_index += 1;
         return gg_rule.release();
       }

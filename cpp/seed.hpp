@@ -23,7 +23,7 @@ namespace silva {
     - Expr =/ Atom [
       - Parens    = nest  atom_nest '(' ')'
       - Postfix   = ltr   postfix '?' '*' '+' '!' '&'
-      - Concat    = ltr   infix_flat none
+      - Concat    = ltr   infix_flat concat
       - Alt       = ltr   infix_flat '|'
     ]
     - Atom => [ Nonterminal Terminal ]
@@ -36,13 +36,14 @@ namespace silva {
     - AxeOpType = 'atom_nest' | 'prefix' | 'prefix_nest'
                 | 'infix' | 'infix_flat' | 'ternary'
                 | 'postfix' | 'postfix_nest'
-    - AxeOp = string | 'none'
+    - AxeOp = string | 'concat'
 
-    - Nonterminal = identifier_regex ( '^[A-Z]' )
+    - Nonterminal = identifier / '^[A-Z]'
     - Terminal = string
-               | 'identifier' | 'operator' | 'string' | 'number' | 'any'
-               | 'identifier_regex' '(' string ')'
-               | 'end_of_file'
+               | 'identifier' ( '/' string ) ?
+               | 'operator' ( '/' string ) ?
+               | 'string' | 'number'
+               | 'any' | 'end_of_file'
   )'";
 
   struct parse_root_t;

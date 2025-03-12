@@ -38,21 +38,21 @@ TEST_CASE("seed", "[seed][parse_root_t]")
 [0]Silva.Seed                                     - SimpleFern ... | number
   [0]Silva.Rule                                   SimpleFern = ... * ']'
     [0]Silva.Nonterminal                          SimpleFern
-    [1]Silva.Expr.Concat.                         '[' ( ... * ']'
+    [1]Silva.Expr.Concat.concat                   '[' ( ... * ']'
       [0]Silva.Terminal                           '['
       [1]Silva.Expr.Postfix.*                     ( LabeledItem ... ) *
         [0]Silva.Expr.Parens.(                    ( LabeledItem ';' ? )
-          [0]Silva.Expr.Concat.                   LabeledItem ';' ?
+          [0]Silva.Expr.Concat.concat             LabeledItem ';' ?
             [0]Silva.Nonterminal                  LabeledItem
             [1]Silva.Expr.Postfix.?               ';' ?
               [0]Silva.Terminal                   ';'
       [2]Silva.Terminal                           ']'
   [1]Silva.Rule                                   LabeledItem = ... ? Item
     [0]Silva.Nonterminal                          LabeledItem
-    [1]Silva.Expr.Concat.                         ( Label ... ? Item
+    [1]Silva.Expr.Concat.concat                   ( Label ... ? Item
       [0]Silva.Expr.Postfix.?                     ( Label ':' ) ?
         [0]Silva.Expr.Parens.(                    ( Label ':' )
-          [0]Silva.Expr.Concat.                   Label ':'
+          [0]Silva.Expr.Concat.concat             Label ':'
             [0]Silva.Nonterminal                  Label
             [1]Silva.Terminal                     ':'
       [1]Silva.Nonterminal                        Item

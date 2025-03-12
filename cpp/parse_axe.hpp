@@ -44,6 +44,7 @@ namespace silva::parse_axe {
   struct infix_t {
     constexpr static inline index_t arity = 2;
     token_id_t token_id{0};
+    bool concat  = false;
     bool flatten = false;
 
     friend auto operator<=>(const infix_t&, const infix_t&) = default;
@@ -116,7 +117,7 @@ namespace silva::parse_axe {
   struct parse_axe_t {
     token_context_ptr_t tcp;
     hashmap_t<token_id_t, parse_axe_result_t> results;
-    bool has_concat = false;
+    optional_t<result_oper_t<oper_regular_t>> concat_result;
 
     expected_t<parse_tree_sub_t> apply(parse_tree_nursery_t&,
                                        full_name_id_t atom_name_id,

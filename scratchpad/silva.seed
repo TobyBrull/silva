@@ -8,8 +8,8 @@
 - NestedNamespace = Namespace ( '.' Namespace )*
 - Namespace = identifier
 
-- TypeName = identifier_regex('_t$') | StructBody
-- FuncName = identifier_regex('_f$')
+- TypeName = identifier / '_t$' | StructBody
+- FuncName = identifier / '_f$'
 
 - Type =/ TypeName [
   - Ptr       = rtl prefix '*' '&'

@@ -34,11 +34,10 @@ namespace silva {
     const token_id_t ti_ternary      = tcp->token_id("ternary");
     const token_id_t ti_postfix      = tcp->token_id("postfix");
     const token_id_t ti_postfix_nest = tcp->token_id("postfix_nest");
-    const token_id_t ti_none         = tcp->token_id("none");
+    const token_id_t ti_concat       = tcp->token_id("concat");
     const token_id_t ti_nest         = tcp->token_id("nest");
     const token_id_t ti_ltr          = tcp->token_id("ltr");
     const token_id_t ti_rtl          = tcp->token_id("rtl");
-    const token_id_t ti_id_regex     = tcp->token_id("identifier_regex");
 
     const full_name_id_t fni_seed        = tcp->full_name_id_of("Seed");
     const full_name_id_t fni_rule        = tcp->full_name_id_of("Rule");
@@ -110,14 +109,14 @@ namespace silva {
               SILVA_EXPECT(s_nodes[child_node_index].rule_name == fni_axe_op, MINOR);
               const token_id_t axe_op  = s_tokens[s_nodes[child_node_index].token_begin];
               const token_info_t* info = &tcp->token_infos[axe_op];
-              SILVA_EXPECT(info->category == token_category_t::STRING || axe_op == ti_none,
+              SILVA_EXPECT(info->category == token_category_t::STRING || axe_op == ti_concat,
                            MINOR,
-                           "Expected string or 'none'");
+                           "Expected 'concat' or string");
               if (axe_op_type != ti_infix && axe_op_type != ti_infix_flat) {
                 SILVA_EXPECT(
-                    axe_op != ti_none,
+                    axe_op != ti_concat,
                     MINOR,
-                    "The 'none' token may only be used with 'infix' or 'infix_flat' operations.");
+                    "The 'concat' token may only be used with 'infix' or 'infix_flat' operations.");
               }
               axe_op_vec.push_back(axe_op);
             }
@@ -160,9 +159,10 @@ namespace silva {
         }
         else if (axe_op_type == ti_infix || axe_op_type == ti_infix_flat) {
           const bool flatten = (axe_op_type == ti_infix_flat);
-          if (axe_op_vec[i] == ti_none) {
+          if (axe_op_vec[i] == ti_concat) {
             level.opers.push_back(parse_axe::infix_t{
-                .token_id = token_id_none,
+                .token_id = ti_concat,
+                .concat   = true,
                 .flatten  = flatten,
             });
           }
@@ -298,11 +298,11 @@ namespace silva {
 
       // Pre-compile hashmap_t of "regexes".
       for (index_t node_index = 0; node_index < s_nodes.size(); ++node_index) {
-        const auto& node = s_nodes[node_index];
-        if (node.rule_name == fni_term && s_tokens[node.token_begin] == ti_id_regex) {
-          const token_id_t regex_token_id = s_tokens[node.token_begin + 2];
+        const auto& s_node = s_nodes[node_index];
+        if (s_node.rule_name == fni_term && s_node.num_tokens() == 3) {
+          const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
           if (auto& regex = retval->regexes[regex_token_id]; !regex.has_value()) {
-            const auto& regex_td = s_tokenization.token_info_get(node.token_begin + 2);
+            const auto& regex_td = s_tokenization.token_info_get(s_node.token_begin + 2);
             const string_t regex_str{
                 SILVA_EXPECT_FWD(regex_td->string_as_plain_contained(), MAJOR)};
             regex = std::regex(regex_str);
@@ -346,18 +346,18 @@ namespace silva {
 
       int rule_depth = 0;
 
-      const token_id_t ti_id       = tcp->token_id("identifier");
-      const token_id_t ti_op       = tcp->token_id("operator");
-      const token_id_t ti_string   = tcp->token_id("string");
-      const token_id_t ti_number   = tcp->token_id("number");
-      const token_id_t ti_any      = tcp->token_id("any");
-      const token_id_t ti_eof      = tcp->token_id("end_of_file");
-      const token_id_t ti_id_regex = tcp->token_id("identifier_regex");
-      const token_id_t ti_ques     = tcp->token_id("?");
-      const token_id_t ti_star     = tcp->token_id("*");
-      const token_id_t ti_plus     = tcp->token_id("+");
-      const token_id_t ti_excl     = tcp->token_id("!");
-      const token_id_t ti_ampr     = tcp->token_id("&");
+      const token_id_t ti_id     = tcp->token_id("identifier");
+      const token_id_t ti_op     = tcp->token_id("operator");
+      const token_id_t ti_string = tcp->token_id("string");
+      const token_id_t ti_number = tcp->token_id("number");
+      const token_id_t ti_any    = tcp->token_id("any");
+      const token_id_t ti_eof    = tcp->token_id("end_of_file");
+      const token_id_t ti_ques   = tcp->token_id("?");
+      const token_id_t ti_star   = tcp->token_id("*");
+      const token_id_t ti_plus   = tcp->token_id("+");
+      const token_id_t ti_excl   = tcp->token_id("!");
+      const token_id_t ti_ampr   = tcp->token_id("&");
+      const token_id_t ti_regex  = tcp->token_id("/");
 
       const full_name_id_t fni_seed         = tcp->full_name_id_of("Seed");
       const full_name_id_t fni_rule         = tcp->full_name_id_of("Rule");
@@ -404,8 +404,16 @@ namespace silva {
         SILVA_EXPECT_PARSE(num_tokens_left() > 0,
                            "Reached end of token-stream when looking for {}",
                            s_tokenization.token_info_get(s_node.token_begin)->str);
-        if (s_front_ti == ti_id_regex) {
-          SILVA_EXPECT(s_node.token_end - s_node.token_begin == 4, MAJOR);
+        if (s_node.num_tokens() == 3) {
+          if (s_front_ti == ti_id) {
+            SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
+          }
+          else if (s_front_ti == ti_op) {
+            SILVA_EXPECT_PARSE(token_data_by()->category == OPERATOR, "Expected operator");
+          }
+          else {
+            SILVA_EXPECT(false, MAJOR, "Only 'identifier' and 'operator' may have regexes");
+          }
           const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
           const auto it                   = root->regexes.find(regex_token_id);
           SILVA_EXPECT(it != root->regexes.end() && it->second.has_value(), MAJOR);
@@ -418,6 +426,9 @@ namespace silva {
                              tcp->token_infos[regex_token_id].str);
         }
         else {
+          SILVA_EXPECT(s_node.num_tokens() == 1,
+                       MAJOR,
+                       "Terminal nodes must have one or three tokens");
           if (s_front_ti == ti_id) {
             SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
           }
