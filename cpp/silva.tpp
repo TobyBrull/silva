@@ -24,7 +24,7 @@ TEST_CASE("operator-precedence", "")
     5 + 4 * 2 + 1
   )";
   const auto expr_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", expr_source_code)));
-  const auto expr_pt = SILVA_EXPECT_REQUIRE(prec->apply(expr_tt));
+  const auto expr_pt = SILVA_EXPECT_REQUIRE(prec->apply(expr_tt, tc.full_name_id_of("Expr")));
 
   const std::string_view expected_parse_tree = R"(
 [0]Silva.Expr                                     5 + ... + 1

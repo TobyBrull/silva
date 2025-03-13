@@ -44,7 +44,8 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
       [1]Silva.Expr.Postfix.!                     '=' !
         [0]Silva.Terminal                         '='
 )";
-  const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(parse_tree_to_string(*fs_pr->seed_parse_tree))};
+  const string_t seed_pt_str{
+      SILVA_EXPECT_REQUIRE(parse_tree_to_string(*fs_pr->seed_parse_trees.front()))};
   CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
   const string_t frog_source_code = R"'(
@@ -54,7 +55,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
     Item = g h i
   )'";
   auto frog_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_source_code)));
-  auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt)));
+  auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt, tc.full_name_id_of("Frog"))));
   const string_view_t expected = R"(
 [0]Silva.Frog                                     SimpleFern = ... h i
   [0]Silva.Rule                                   SimpleFern = a b c
