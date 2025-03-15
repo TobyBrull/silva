@@ -20,7 +20,7 @@ silva_main(span_t<string_view_t> cmdline_args)
   else if (m == 3) {
     auto pr     = SILVA_EXPECT_FWD(parse_root_t::create(std::move(seed_pt)));
     auto tgt_tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[2]));
-    auto tgt_pt = SILVA_EXPECT_FWD(pr->apply(std::move(tgt_tt)));
+    auto tgt_pt = SILVA_EXPECT_FWD(pr->apply(std::move(tgt_tt), tc.full_name_id_of("Test")));
     fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(*tgt_pt)));
   }
   return {};

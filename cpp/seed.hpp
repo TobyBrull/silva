@@ -18,35 +18,45 @@ namespace silva {
   // encapsulated/represented by the class "parse_root_t".
 
   const string_view_t seed_seed = R"'(
-    - Seed = ( '-' Rule ) *
-    - Rule = Nonterminal ( '=' Expr | '=/' Axe | '=>' Alias )
-    - Expr =/ Atom [
-      - Parens    = nest  atom_nest '(' ')'
-      - Postfix   = ltr   postfix '?' '*' '+' '!' '&'
-      - Concat    = ltr   infix_flat concat
-      - Alt       = ltr   infix_flat '|'
+    - Seed [
+      - X = ( '-' Rule ) *
+      - Rule = Nonterminal.Base ( '=' Expr
+                                | '=/' Axe
+                                | '=>' Alias
+                                | '[' Silva.Seed ']' )
+      - Expr =/ Atom [
+        - Parens    = nest  atom_nest '(' ')'
+        - Postfix   = ltr   postfix '?' '*' '+' '!' '&'
+        - Concat    = ltr   infix_flat concat
+        - Alt       = ltr   infix_flat '|'
+      ]
+      - Atom => [ Nonterminal Terminal ]
+      - Alias = '[' Nonterminal + ']'
+      - Axe [
+        - X = Up.Nonterminal '[' ( '-' Level ) * ']'
+        - Level = Up.Nonterminal.Base '=' Assoc Ops*
+        - Assoc = 'nest' | 'ltr' | 'rtl'
+        - Ops = OpType Op*
+        - OpType = 'atom_nest' | 'prefix' | 'prefix_nest'
+                 | 'infix' | 'infix_flat' | 'ternary'
+                 | 'postfix' | 'postfix_nest'
+        - Op = string | 'concat'
+      ]
+      - Nonterminal [
+        - X = Base ( '.' Base ) *
+        - Base = 'Silva' | 'X' | 'Up' | identifier / '^[A-Z]'
+      ]
+      - Terminal = string
+                 | 'identifier' ( '/' string ) ?
+                 | 'operator' ( '/' string ) ?
+                 | 'string' | 'number'
+                 | 'any' | 'end_of_file'
     ]
-    - Atom => [ Nonterminal Terminal ]
-    - Alias = '[' Nonterminal + ']'
-
-    - Axe = Nonterminal '[' ( '-' AxeLevel ) * ']'
-    - AxeLevel = Nonterminal '=' AxeAssoc AxeOps*
-    - AxeAssoc = 'nest' | 'ltr' | 'rtl'
-    - AxeOps = AxeOpType AxeOp *
-    - AxeOpType = 'atom_nest' | 'prefix' | 'prefix_nest'
-                | 'infix' | 'infix_flat' | 'ternary'
-                | 'postfix' | 'postfix_nest'
-    - AxeOp = string | 'concat'
-
-    - Nonterminal = identifier / '^[A-Z]'
-    - Terminal = string
-               | 'identifier' ( '/' string ) ?
-               | 'operator' ( '/' string ) ?
-               | 'string' | 'number'
-               | 'any' | 'end_of_file'
   )'";
 
   struct parse_root_t;
+
+  full_name_id_style_t seed_full_name_style(token_context_ptr_t);
 
   expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t>);
 

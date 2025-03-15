@@ -1,4 +1,4 @@
-- Silva = 'import' Imports 'interface' Interface 'implementation' Implementation end_of_file
+- Test = 'import' Imports 'interface' Interface 'implementation' Implementation end_of_file
 - Imports = string*
 - Interface = Command*
 - Implementation = Command*

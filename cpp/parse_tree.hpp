@@ -23,8 +23,6 @@ namespace silva {
     parse_tree_t subtree(index_t node_index) const;
   };
 
-  full_name_id_style_t parse_tree_full_name_style(token_context_ptr_t);
-
   enum class parse_tree_printing_t {
     ABSOLUTE,
     RELATIVE,

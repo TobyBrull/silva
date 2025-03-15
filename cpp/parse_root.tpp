@@ -20,31 +20,36 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   auto fs_pr               = share(SILVA_EXPECT_REQUIRE(parse_root_t::create(fs_pt)));
   const string_view_t expected_seed_pt = R"(
 [0]Silva.Seed                                     - Frog ... '=' !
-  [0]Silva.Rule                                   Frog = Rule *
-    [0]Silva.Nonterminal                          Frog
-    [1]Silva.Expr.Postfix.*                       Rule *
-      [0]Silva.Nonterminal                        Rule
-  [1]Silva.Rule                                   Rule = RuleName '=' Expr
-    [0]Silva.Nonterminal                          Rule
-    [1]Silva.Expr.Concat.concat                   RuleName '=' Expr
-      [0]Silva.Nonterminal                        RuleName
-      [1]Silva.Terminal                           '='
-      [2]Silva.Nonterminal                        Expr
-  [2]Silva.Rule                                   RuleName = identifier
-    [0]Silva.Nonterminal                          RuleName
-    [1]Silva.Terminal                             identifier
-  [3]Silva.Rule                                   Expr = Primary +
-    [0]Silva.Nonterminal                          Expr
-    [1]Silva.Expr.Postfix.+                       Primary +
-      [0]Silva.Nonterminal                        Primary
-  [4]Silva.Rule                                   Primary = identifier '=' !
-    [0]Silva.Nonterminal                          Primary
-    [1]Silva.Expr.Concat.concat                   identifier '=' !
-      [0]Silva.Terminal                           identifier
-      [1]Silva.Expr.Postfix.!                     '=' !
-        [0]Silva.Terminal                         '='
+  [0]Silva.Seed.Rule                              Frog = Rule *
+    [0]Silva.Seed.Nonterminal.Base                Frog
+    [1]Silva.Seed.Expr.Postfix.*                  Rule *
+      [0]Silva.Seed.Nonterminal                   Rule
+        [0]Silva.Seed.Nonterminal.Base            Rule
+  [1]Silva.Seed.Rule                              Rule = RuleName '=' Expr
+    [0]Silva.Seed.Nonterminal.Base                Rule
+    [1]Silva.Seed.Expr.Concat.concat              RuleName '=' Expr
+      [0]Silva.Seed.Nonterminal                   RuleName
+        [0]Silva.Seed.Nonterminal.Base            RuleName
+      [1]Silva.Seed.Terminal                      '='
+      [2]Silva.Seed.Nonterminal                   Expr
+        [0]Silva.Seed.Nonterminal.Base            Expr
+  [2]Silva.Seed.Rule                              RuleName = identifier
+    [0]Silva.Seed.Nonterminal.Base                RuleName
+    [1]Silva.Seed.Terminal                        identifier
+  [3]Silva.Seed.Rule                              Expr = Primary +
+    [0]Silva.Seed.Nonterminal.Base                Expr
+    [1]Silva.Seed.Expr.Postfix.+                  Primary +
+      [0]Silva.Seed.Nonterminal                   Primary
+        [0]Silva.Seed.Nonterminal.Base            Primary
+  [4]Silva.Seed.Rule                              Primary = identifier '=' !
+    [0]Silva.Seed.Nonterminal.Base                Primary
+    [1]Silva.Seed.Expr.Concat.concat              identifier '=' !
+      [0]Silva.Seed.Terminal                      identifier
+      [1]Silva.Seed.Expr.Postfix.!                '=' !
+        [0]Silva.Seed.Terminal                    '='
 )";
-  const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(parse_tree_to_string(*fs_pr->seed_parse_tree))};
+  const string_t seed_pt_str{
+      SILVA_EXPECT_REQUIRE(parse_tree_to_string(*fs_pr->seed_parse_trees.front()))};
   CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
   const string_t frog_source_code = R"'(
@@ -54,7 +59,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
     Item = g h i
   )'";
   auto frog_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_source_code)));
-  auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt)));
+  auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt, tc.full_name_id_of("Frog"))));
   const string_view_t expected = R"(
 [0]Silva.Frog                                     SimpleFern = ... h i
   [0]Silva.Rule                                   SimpleFern = a b c
