@@ -1,23 +1,13 @@
 # TODO
 
 * Seed
-    * Introduce namespaces in Seed
-        * Seed
-        * Seed.Rule
-        * Silva.Expr.FuncCall
-    * translate Seed program into IR:
-        * check Seed program during translation
-        * check that all Nonterminals can be resolved
-        * resolve Nonterminal names to their respective full_name_id_t
-        * allow to add multiple code snippets to this IR
     * Instead of current "Alias" use an Expr substitution rule?
         * _Definition =: '=' Expr | '=/' Axe | '=>' Alias
-    * rename parse_saw_t?
-    * packrat?
-        * this might also enable recursion detection (and prevention)
-        * recursion prevention could be a functional part of the parsing
-          (by ignoring recursive branches certain grammars become viable that
-          otherwise wouldn't be viable)
+
+* Allow multiple code snippets
+    * token_context_t -> naming_context_t
+        * could include the set of tokenizations, so that parse_root
+    * rename parse_root_t -> parse_saw_t, parse_array_t?
 
 * memento/error-handling:
     * Seed:
@@ -55,3 +45,17 @@
     * logging
     * testing
     * memory
+
+## Long Term
+
+* Seed
+    * translate Seed program into IR:
+        * check Seed program during translation
+        * check that all Nonterminals can be resolved
+        * resolve Nonterminal names to their respective full_name_id_t
+        * resolve string Terminals to their corresponding operator
+    * packrat?
+        * this might also enable recursion detection (and prevention)
+        * recursion prevention could be a functional part of the parsing
+          (by ignoring recursive branches certain grammars become viable that
+          otherwise wouldn't be viable)
