@@ -1,4 +1,4 @@
-- Statements = ( Expr ';' )* end_of_file
+- Test = ( Expr ';' )* end_of_file
 
 - Expr =/ Atom [
     - Parens      = nest  atom_nest '(' ')'
