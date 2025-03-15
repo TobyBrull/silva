@@ -1,9 +1,5 @@
 # TODO
 
-* Seed
-    * Instead of current "Alias" use an Expr substitution rule?
-        * _Definition =: '=' Expr | '=/' Axe | '=>' Alias
-
 * Allow multiple code snippets
     * token_context_t -> naming_context_t
         * could include the set of tokenizations, so that parse_root

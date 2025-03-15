@@ -94,9 +94,9 @@ namespace silva {
 
       full_name_id_t fni_seed        = tcp->full_name_id_of("Seed");
       full_name_id_t fni_rule        = tcp->full_name_id_of(fni_seed, "Rule");
+      full_name_id_t fni_expr_or_a   = tcp->full_name_id_of(fni_seed, "ExprOrAlias");
       full_name_id_t fni_expr        = tcp->full_name_id_of(fni_seed, "Expr");
       full_name_id_t fni_atom        = tcp->full_name_id_of(fni_seed, "Atom");
-      full_name_id_t fni_alias       = tcp->full_name_id_of(fni_seed, "Alias");
       full_name_id_t fni_axe         = tcp->full_name_id_of(fni_seed, "Axe");
       full_name_id_t fni_axe_level   = tcp->full_name_id_of(fni_axe, "Level");
       full_name_id_t fni_axe_assoc   = tcp->full_name_id_of(fni_axe, "Assoc");
@@ -242,22 +242,6 @@ namespace silva {
         return gg_rule.release();
       }
 
-      expected_t<parse_tree_sub_t> alias()
-      {
-        auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_alias);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
-                           "Expected '['");
-        token_index += 1;
-        while (num_tokens_left() >= 1 && token_id_by() != tt_brack_close) {
-          gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
-        }
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
-                           "Expected ']'");
-        token_index += 1;
-        return gg_rule.release();
-      }
-
       expected_t<parse_tree_sub_t> atom()
       {
         auto gg                        = guard();
@@ -287,11 +271,23 @@ namespace silva {
       expected_t<parse_tree_sub_t> expr()
       {
         auto gg = guard();
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No tokens left when parsing Derivation");
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No tokens left when parsing Expr");
         using atom_delegate_t    = delegate_t<expected_t<parse_tree_sub_t>()>;
         const auto atom_delegate = atom_delegate_t::make<&seed_parse_tree_nursery_t::atom>(this);
         gg.sub += SILVA_EXPECT_FWD(seed_parse_axe.apply(*this, fni_atom, atom_delegate));
         return gg.release();
+      }
+
+      expected_t<parse_tree_sub_t> expr_or_alias()
+      {
+        auto gg_rule = guard_for_rule();
+        gg_rule.set_rule_name(fni_expr_or_a);
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens left when parsing ExprOrAlias");
+        const token_id_t op_ti = token_id_by();
+        SILVA_EXPECT_PARSE(op_ti == tt_equal || op_ti == tt_alias, "Expected one of [ '=' '=>' ]");
+        token_index += 1;
+        gg_rule.sub += SILVA_EXPECT_FWD(expr());
+        return gg_rule.release();
       }
 
       expected_t<parse_tree_sub_t> rule()
@@ -300,22 +296,20 @@ namespace silva {
         gg_rule.set_rule_name(fni_rule);
         const index_t orig_token_index = token_index;
         gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens left when parsing Rule");
         const token_id_t op_ti = token_id_by();
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
-                               (op_ti == tt_equal || op_ti == tt_axe || op_ti == tt_alias ||
-                                op_ti == tt_brack_open),
-                           "Expected one of [ '=' '=/' '=>' '[' ]");
-        token_index += 1;
-        if (op_ti == tt_equal) {
-          gg_rule.sub += SILVA_EXPECT_FWD(expr());
+        SILVA_EXPECT_PARSE(op_ti == tt_equal || op_ti == tt_alias || op_ti == tt_axe ||
+                               op_ti == tt_brack_open,
+                           "Expected one of [ '=' '=>' '=/' '[' ]");
+        if (op_ti == tt_equal || op_ti == tt_alias) {
+          gg_rule.sub += SILVA_EXPECT_FWD(expr_or_alias());
         }
         else if (op_ti == tt_axe) {
+          token_index += 1;
           gg_rule.sub += SILVA_EXPECT_FWD(axe());
         }
-        else if (op_ti == tt_alias) {
-          gg_rule.sub += SILVA_EXPECT_FWD(alias());
-        }
         else if (op_ti == tt_brack_open) {
+          token_index += 1;
           gg_rule.sub += SILVA_EXPECT_FWD(seed());
           SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
                              "Expected ']'");

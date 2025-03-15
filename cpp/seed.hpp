@@ -20,18 +20,17 @@ namespace silva {
   const string_view_t seed_seed = R"'(
     - Seed [
       - X = ( '-' Rule ) *
-      - Rule = Nonterminal.Base ( '=' Expr
+      - Rule = Nonterminal.Base ( ExprOrAlias
                                 | '=/' Axe
-                                | '=>' Alias
                                 | '[' Silva.Seed ']' )
+      - ExprOrAlias = ( '=' | '=>' ) Expr
       - Expr =/ Atom [
         - Parens    = nest  atom_nest '(' ')'
         - Postfix   = ltr   postfix '?' '*' '+' '!' '&'
         - Concat    = ltr   infix_flat concat
         - Alt       = ltr   infix_flat '|'
       ]
-      - Atom => [ Nonterminal Terminal ]
-      - Alias = '[' Nonterminal + ']'
+      - Atom => Nonterminal | Terminal
       - Axe [
         - X = Up.Nonterminal '[' ( '-' Level ) * ']'
         - Level = Up.Nonterminal.Base '=' Assoc Ops*

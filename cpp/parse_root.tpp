@@ -11,7 +11,7 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   const string_t frog_seed = R"'(
     - Frog = Rule *
     - Rule = RuleName '=' Expr
-    - RuleName = identifier
+    - RuleName => identifier
     - Expr = Primary +
     - Primary = identifier '=' !
   )'";
@@ -22,31 +22,36 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
 [0]Silva.Seed                                     - Frog ... '=' !
   [0]Silva.Seed.Rule                              Frog = Rule *
     [0]Silva.Seed.Nonterminal.Base                Frog
-    [1]Silva.Seed.Expr.Postfix.*                  Rule *
-      [0]Silva.Seed.Nonterminal                   Rule
-        [0]Silva.Seed.Nonterminal.Base            Rule
+    [1]Silva.Seed.ExprOrAlias                     = Rule *
+      [0]Silva.Seed.Expr.Postfix.*                Rule *
+        [0]Silva.Seed.Nonterminal                 Rule
+          [0]Silva.Seed.Nonterminal.Base          Rule
   [1]Silva.Seed.Rule                              Rule = RuleName '=' Expr
     [0]Silva.Seed.Nonterminal.Base                Rule
-    [1]Silva.Seed.Expr.Concat.concat              RuleName '=' Expr
-      [0]Silva.Seed.Nonterminal                   RuleName
-        [0]Silva.Seed.Nonterminal.Base            RuleName
-      [1]Silva.Seed.Terminal                      '='
-      [2]Silva.Seed.Nonterminal                   Expr
-        [0]Silva.Seed.Nonterminal.Base            Expr
-  [2]Silva.Seed.Rule                              RuleName = identifier
+    [1]Silva.Seed.ExprOrAlias                     = RuleName '=' Expr
+      [0]Silva.Seed.Expr.Concat.concat            RuleName '=' Expr
+        [0]Silva.Seed.Nonterminal                 RuleName
+          [0]Silva.Seed.Nonterminal.Base          RuleName
+        [1]Silva.Seed.Terminal                    '='
+        [2]Silva.Seed.Nonterminal                 Expr
+          [0]Silva.Seed.Nonterminal.Base          Expr
+  [2]Silva.Seed.Rule                              RuleName => identifier
     [0]Silva.Seed.Nonterminal.Base                RuleName
-    [1]Silva.Seed.Terminal                        identifier
+    [1]Silva.Seed.ExprOrAlias                     => identifier
+      [0]Silva.Seed.Terminal                      identifier
   [3]Silva.Seed.Rule                              Expr = Primary +
     [0]Silva.Seed.Nonterminal.Base                Expr
-    [1]Silva.Seed.Expr.Postfix.+                  Primary +
-      [0]Silva.Seed.Nonterminal                   Primary
-        [0]Silva.Seed.Nonterminal.Base            Primary
+    [1]Silva.Seed.ExprOrAlias                     = Primary +
+      [0]Silva.Seed.Expr.Postfix.+                Primary +
+        [0]Silva.Seed.Nonterminal                 Primary
+          [0]Silva.Seed.Nonterminal.Base          Primary
   [4]Silva.Seed.Rule                              Primary = identifier '=' !
     [0]Silva.Seed.Nonterminal.Base                Primary
-    [1]Silva.Seed.Expr.Concat.concat              identifier '=' !
-      [0]Silva.Seed.Terminal                      identifier
-      [1]Silva.Seed.Expr.Postfix.!                '=' !
-        [0]Silva.Seed.Terminal                    '='
+    [1]Silva.Seed.ExprOrAlias                     = identifier '=' !
+      [0]Silva.Seed.Expr.Concat.concat            identifier '=' !
+        [0]Silva.Seed.Terminal                    identifier
+        [1]Silva.Seed.Expr.Postfix.!              '=' !
+          [0]Silva.Seed.Terminal                  '='
 )";
   const string_t seed_pt_str{
       SILVA_EXPECT_REQUIRE(parse_tree_to_string(*fs_pr->seed_parse_trees.front()))};
@@ -63,23 +68,19 @@ TEST_CASE("exclamation-mark", "[parse_root_t][seed]")
   const string_view_t expected = R"(
 [0]Silva.Frog                                     SimpleFern = ... h i
   [0]Silva.Rule                                   SimpleFern = a b c
-    [0]Silva.RuleName                             SimpleFern
-    [1]Silva.Expr                                 a b c
+    [0]Silva.Expr                                 a b c
       [0]Silva.Primary                            a
       [1]Silva.Primary                            b
       [2]Silva.Primary                            c
   [1]Silva.Rule                                   LabeledItem = d e
-    [0]Silva.RuleName                             LabeledItem
-    [1]Silva.Expr                                 d e
+    [0]Silva.Expr                                 d e
       [0]Silva.Primary                            d
       [1]Silva.Primary                            e
   [2]Silva.Rule                                   Label = f
-    [0]Silva.RuleName                             Label
-    [1]Silva.Expr                                 f
+    [0]Silva.Expr                                 f
       [0]Silva.Primary                            f
   [3]Silva.Rule                                   Item = g h i
-    [0]Silva.RuleName                             Item
-    [1]Silva.Expr                                 g h i
+    [0]Silva.Expr                                 g h i
       [0]Silva.Primary                            g
       [1]Silva.Primary                            h
       [2]Silva.Primary                            i

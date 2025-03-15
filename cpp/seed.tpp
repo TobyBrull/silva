@@ -45,37 +45,41 @@ TEST_CASE("seed", "[seed][parse_root_t]")
     [1]Silva.Seed                                 - X ... | number
       [0]Silva.Seed.Rule                          X = ... * ']'
         [0]Silva.Seed.Nonterminal.Base            X
-        [1]Silva.Seed.Expr.Concat.concat          '[' ( ... * ']'
-          [0]Silva.Seed.Terminal                  '['
-          [1]Silva.Seed.Expr.Postfix.*            ( LabeledItem ... ) *
-            [0]Silva.Seed.Expr.Parens.(           ( LabeledItem ';' ? )
-              [0]Silva.Seed.Expr.Concat.concat    LabeledItem ';' ?
-                [0]Silva.Seed.Nonterminal         LabeledItem
-                  [0]Silva.Seed.Nonterminal.Base  LabeledItem
-                [1]Silva.Seed.Expr.Postfix.?      ';' ?
-                  [0]Silva.Seed.Terminal          ';'
-          [2]Silva.Seed.Terminal                  ']'
+        [1]Silva.Seed.ExprOrAlias                 = '[' ... * ']'
+          [0]Silva.Seed.Expr.Concat.concat        '[' ( ... * ']'
+            [0]Silva.Seed.Terminal                '['
+            [1]Silva.Seed.Expr.Postfix.*          ( LabeledItem ... ) *
+              [0]Silva.Seed.Expr.Parens.(         ( LabeledItem ';' ? )
+                [0]Silva.Seed.Expr.Concat.concat  LabeledItem ';' ?
+                  [0]Silva.Seed.Nonterminal       LabeledItem
+                    [0]Silva.Seed.Nonterminal.Base LabeledItem
+                  [1]Silva.Seed.Expr.Postfix.?    ';' ?
+                    [0]Silva.Seed.Terminal        ';'
+            [2]Silva.Seed.Terminal                ']'
       [1]Silva.Seed.Rule                          LabeledItem = ... ? Item
         [0]Silva.Seed.Nonterminal.Base            LabeledItem
-        [1]Silva.Seed.Expr.Concat.concat          ( Label ... ? Item
-          [0]Silva.Seed.Expr.Postfix.?            ( Label ':' ) ?
-            [0]Silva.Seed.Expr.Parens.(           ( Label ':' )
-              [0]Silva.Seed.Expr.Concat.concat    Label ':'
-                [0]Silva.Seed.Nonterminal         Label
-                  [0]Silva.Seed.Nonterminal.Base  Label
-                [1]Silva.Seed.Terminal            ':'
-          [1]Silva.Seed.Nonterminal               Item
-            [0]Silva.Seed.Nonterminal.Base        Item
+        [1]Silva.Seed.ExprOrAlias                 = ( ... ? Item
+          [0]Silva.Seed.Expr.Concat.concat        ( Label ... ? Item
+            [0]Silva.Seed.Expr.Postfix.?          ( Label ':' ) ?
+              [0]Silva.Seed.Expr.Parens.(         ( Label ':' )
+                [0]Silva.Seed.Expr.Concat.concat  Label ':'
+                  [0]Silva.Seed.Nonterminal       Label
+                    [0]Silva.Seed.Nonterminal.Base Label
+                  [1]Silva.Seed.Terminal          ':'
+            [1]Silva.Seed.Nonterminal             Item
+              [0]Silva.Seed.Nonterminal.Base      Item
       [2]Silva.Seed.Rule                          Label = string
         [0]Silva.Seed.Nonterminal.Base            Label
-        [1]Silva.Seed.Terminal                    string
+        [1]Silva.Seed.ExprOrAlias                 = string
+          [0]Silva.Seed.Terminal                  string
       [3]Silva.Seed.Rule                          Item = ... | number
         [0]Silva.Seed.Nonterminal.Base            Item
-        [1]Silva.Seed.Expr.Alt.|                  X | string | number
-          [0]Silva.Seed.Nonterminal               X
-            [0]Silva.Seed.Nonterminal.Base        X
-          [1]Silva.Seed.Terminal                  string
-          [2]Silva.Seed.Terminal                  number
+        [1]Silva.Seed.ExprOrAlias                 = X ... | number
+          [0]Silva.Seed.Expr.Alt.|                X | string | number
+            [0]Silva.Seed.Nonterminal             X
+              [0]Silva.Seed.Nonterminal.Base      X
+            [1]Silva.Seed.Terminal                string
+            [2]Silva.Seed.Terminal                number
 )";
 
   const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*sf_seed_pt_1));
@@ -92,14 +96,14 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   const full_name_id_t fni_l  = tc.full_name_id_of(fni_sf, "Label");
   const full_name_id_t fni_i  = tc.full_name_id_of(fni_sf, "Item");
   CHECK(sfpr->rule_exprs.at(fni_sf) == tni_t{.node_index = 6});
-  CHECK(sfpr->rule_exprs.at(fni_li) == tni_t{.node_index = 18});
-  CHECK(sfpr->rule_exprs.at(fni_l) == tni_t{.node_index = 29});
-  CHECK(sfpr->rule_exprs.at(fni_i) == tni_t{.node_index = 32});
+  CHECK(sfpr->rule_exprs.at(fni_li) == tni_t{.node_index = 19});
+  CHECK(sfpr->rule_exprs.at(fni_l) == tni_t{.node_index = 31});
+  CHECK(sfpr->rule_exprs.at(fni_i) == tni_t{.node_index = 35});
   REQUIRE(sfpr->nonterminal_rules.size() == 4);
-  REQUIRE(sfpr->nonterminal_rules.at(tni_t{.node_index = 11}) == fni_li);
-  REQUIRE(sfpr->nonterminal_rules.at(tni_t{.node_index = 22}) == fni_l);
-  REQUIRE(sfpr->nonterminal_rules.at(tni_t{.node_index = 25}) == fni_i);
-  REQUIRE(sfpr->nonterminal_rules.at(tni_t{.node_index = 33}) == fni_sf);
+  CHECK(sfpr->nonterminal_rules.at(tni_t{.node_index = 12}) == fni_li);
+  CHECK(sfpr->nonterminal_rules.at(tni_t{.node_index = 24}) == fni_l);
+  CHECK(sfpr->nonterminal_rules.at(tni_t{.node_index = 27}) == fni_i);
+  CHECK(sfpr->nonterminal_rules.at(tni_t{.node_index = 37}) == fni_sf);
 
   const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
   const auto sf_tt       = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", sf_code)));

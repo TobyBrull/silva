@@ -58,9 +58,9 @@ namespace silva {
 
     const full_name_id_t fni_seed        = tcp->full_name_id_of("Seed");
     const full_name_id_t fni_rule        = tcp->full_name_id_of(fni_seed, "Rule");
+    const full_name_id_t fni_expr_or_a   = tcp->full_name_id_of(fni_seed, "ExprOrAlias");
     const full_name_id_t fni_expr        = tcp->full_name_id_of(fni_seed, "Expr");
     const full_name_id_t fni_atom        = tcp->full_name_id_of(fni_seed, "Atom");
-    const full_name_id_t fni_alias       = tcp->full_name_id_of(fni_seed, "Alias");
     const full_name_id_t fni_axe         = tcp->full_name_id_of(fni_seed, "Axe");
     const full_name_id_t fni_axe_level   = tcp->full_name_id_of(fni_axe, "Level");
     const full_name_id_t fni_axe_assoc   = tcp->full_name_id_of(fni_axe, "Assoc");
@@ -323,12 +323,9 @@ namespace silva {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, children[1]));
       }
       else {
-        const bool is_expr = tcp->full_name_id_is_parent(fni_expr, expr_rule_name) ||
-            expr_rule_name == fni_nt || expr_rule_name == fni_term;
-        SILVA_EXPECT(
-            expr_rule_name == fni_axe || expr_rule_name == fni_alias || is_expr,
-            MINOR,
-            "Second child of Rule must be one of [ Expr... Axe Alias Nonterminal Terminal ]");
+        SILVA_EXPECT(expr_rule_name == fni_axe || expr_rule_name == fni_expr_or_a,
+                     MINOR,
+                     "Second child of Rule must be one of [ Axe Seed ExprOrAlias ]");
         const auto [it, inserted] = retval->rule_exprs.emplace(curr_rule_name,
                                                                tree_node_index_t{
                                                                    .tree_index = 0,
@@ -414,8 +411,10 @@ namespace silva {
   expected_t<unique_ptr_t<parse_root_t>>
   parse_root_t::create(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text)
   {
-    auto tt     = SILVA_EXPECT_FWD(tokenize(tcp, std::move(filepath), std::move(text)));
-    auto pt     = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
+    auto tt = SILVA_EXPECT_FWD(tokenize(tcp, std::move(filepath), std::move(text)));
+    auto pt = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
+    // const auto x = SILVA_EXPECT_FWD(parse_tree_to_string(*pt));
+    // fmt::print("{}\n", x);
     auto retval = SILVA_EXPECT_FWD(parse_root_t::create(std::move(pt)));
     return retval;
   }
@@ -455,6 +454,8 @@ namespace silva {
       const token_id_t ti_excl   = tcp->token_id("!");
       const token_id_t ti_ampr   = tcp->token_id("&");
       const token_id_t ti_regex  = tcp->token_id("/");
+      const token_id_t ti_equal  = tcp->token_id("=");
+      const token_id_t ti_alias  = tcp->token_id("=>");
 
       const full_name_id_t fni_seed         = tcp->full_name_id_of("Seed");
       const full_name_id_t fni_rule         = tcp->full_name_id_of(fni_seed, "Rule");
@@ -464,7 +465,6 @@ namespace silva {
       const full_name_id_t fni_expr_concat  = tcp->full_name_id_of(fni_expr, "Concat");
       const full_name_id_t fni_expr_alt     = tcp->full_name_id_of(fni_expr, "Alt");
       const full_name_id_t fni_atom         = tcp->full_name_id_of(fni_seed, "Atom");
-      const full_name_id_t fni_alias        = tcp->full_name_id_of(fni_seed, "Alias");
       const full_name_id_t fni_axe          = tcp->full_name_id_of(fni_seed, "Axe");
       const full_name_id_t fni_axe_level    = tcp->full_name_id_of(fni_axe, "Level");
       const full_name_id_t fni_axe_assoc    = tcp->full_name_id_of(fni_axe, "Assoc");
@@ -709,42 +709,6 @@ namespace silva {
         return gg.release();
       }
 
-      expected_t<parse_tree_sub_t> handle_rule_alias(const tree_node_index_t tni)
-      {
-        const index_t orig_token_index = token_index;
-        error_nursery_t error_nursery;
-        optional_t<parse_tree_sub_t> retval;
-        auto result = spts[tni.tree_index]->visit_children(
-            [&](const index_t alias_node_index, const index_t) -> expected_t<bool> {
-              SILVA_EXPECT(s_nodes[alias_node_index].rule_name == fni_nt,
-                           MAJOR,
-                           "Expected Nonterminal");
-              const auto it = root->nonterminal_rules.find(tni.with_node_index(alias_node_index));
-              SILVA_EXPECT(it != root->nonterminal_rules.end(),
-                           MAJOR,
-                           "Couldn't lookup nonterminal");
-              const full_name_id_t t_rule_name = it->second;
-              auto result                      = handle_rule(t_rule_name);
-              if (result.has_value()) {
-                retval = std::move(result).value();
-                return false;
-              }
-              else {
-                error_nursery.add_child_error(std::move(result).error());
-              }
-              return true;
-            },
-            tni.node_index);
-        SILVA_EXPECT_FWD(std::move(result));
-        if (retval.has_value()) {
-          return std::move(retval).value();
-        }
-        return std::unexpected(std::move(error_nursery)
-                                   .finish(MINOR,
-                                           "{} Expected to parse alias '{{...}}'",
-                                           token_position_at(orig_token_index)));
-      }
-
       expected_t<parse_tree_sub_t> handle_rule(const full_name_id_t t_rule_name)
       {
         rule_depth += 1;
@@ -758,22 +722,36 @@ namespace silva {
                      MAJOR,
                      "Unknown rule: {}",
                      fnis.absolute(t_rule_name));
-        const tree_node_index_t tni      = it->second;
-        const full_name_id_t s_expr_name = get_s_node(tni).rule_name;
-        if (s_expr_name == fni_alias) {
-          return SILVA_EXPECT_FWD(handle_rule_alias(tni));
-        }
-        else if (s_expr_name == fni_axe) {
+        const tree_node_index_t tni        = it->second;
+        const parse_tree_t::node_t& s_node = get_s_node(tni);
+        const full_name_id_t s_expr_name   = s_node.rule_name;
+        if (s_expr_name == fni_axe) {
           return SILVA_EXPECT_FWD(handle_rule_axe(t_rule_name), "Expected Axe");
         }
         else {
-          auto gg_rule = guard_for_rule();
-          gg_rule.set_rule_name(t_rule_name);
-          gg_rule.sub += SILVA_EXPECT_FWD(s_expr(tni),
-                                          "{} Expected {}",
-                                          token_position_at(orig_token_index),
-                                          fnis.absolute(t_rule_name));
-          return gg_rule.release();
+          const token_id_t rule_token = s_tokenization.tokens[s_node.token_begin];
+          SILVA_EXPECT(rule_token == ti_equal || rule_token == ti_alias,
+                       MAJOR,
+                       "Expected one of [ '=' '=>' ]");
+          const array_t<index_t, 1> children =
+              SILVA_EXPECT_FWD(s_pt.get_children<1>(tni.node_index));
+          if (rule_token == ti_equal) {
+            auto gg_rule = guard_for_rule();
+            gg_rule.set_rule_name(t_rule_name);
+            gg_rule.sub += SILVA_EXPECT_FWD(s_expr(tni.with_node_index(children[0])),
+                                            "{} Expected {}",
+                                            token_position_at(orig_token_index),
+                                            fnis.absolute(t_rule_name));
+            return gg_rule.release();
+          }
+          else {
+            auto gg = guard();
+            gg.sub += SILVA_EXPECT_FWD(s_expr(tni.with_node_index(children[0])),
+                                       "{} Expected {}",
+                                       token_position_at(orig_token_index),
+                                       fnis.absolute(t_rule_name));
+            return gg.release();
+          }
         }
       }
     };
