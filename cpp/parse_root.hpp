@@ -18,6 +18,8 @@ namespace silva {
       // Node-index in the parse_tree_t referenced by "tree_index".
       index_t node_index = 0;
 
+      tree_node_index_t with_node_index(index_t) const;
+
       friend auto operator<=>(const tree_node_index_t&, const tree_node_index_t&) = default;
       friend hash_value_t hash_impl(const tree_node_index_t& x);
     };

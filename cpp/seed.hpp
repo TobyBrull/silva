@@ -33,8 +33,8 @@ namespace silva {
       - Atom => [ Nonterminal Terminal ]
       - Alias = '[' Nonterminal + ']'
       - Axe [
-        - X = Nonterminal '[' ( '-' Level ) * ']'
-        - Level = Nonterminal.Base '=' Assoc Ops*
+        - X = Up.Nonterminal '[' ( '-' Level ) * ']'
+        - Level = Up.Nonterminal.Base '=' Assoc Ops*
         - Assoc = 'nest' | 'ltr' | 'rtl'
         - Ops = OpType Op*
         - OpType = 'atom_nest' | 'prefix' | 'prefix_nest'
@@ -55,6 +55,8 @@ namespace silva {
   )'";
 
   struct parse_root_t;
+
+  full_name_id_style_t seed_full_name_style(token_context_ptr_t);
 
   expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t>);
 

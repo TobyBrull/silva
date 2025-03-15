@@ -1,5 +1,7 @@
 #include "parse_tree.hpp"
 
+#include "seed.hpp"
+
 #include "canopy/convert.hpp"
 #include "canopy/tree.hpp"
 
@@ -12,17 +14,6 @@ namespace silva {
     return retval;
   }
 
-  full_name_id_style_t parse_tree_full_name_style(token_context_ptr_t tcp)
-  {
-    return full_name_id_style_t{
-        .tcp       = tcp,
-        .root      = tcp->token_id("Silva"),
-        .current   = tcp->token_id("X"),
-        .parent    = tcp->token_id("Up"),
-        .separator = tcp->token_id("."),
-    };
-  }
-
   constexpr index_t max_num_tokens = 5;
 
   expected_t<string_t> parse_tree_to_string(const parse_tree_t& pt,
@@ -30,7 +21,7 @@ namespace silva {
                                             const parse_tree_printing_t printing)
   {
     token_context_ptr_t tcp = pt.tokenization->context;
-    const auto style        = parse_tree_full_name_style(tcp);
+    const auto style        = seed_full_name_style(tcp);
     return tree_to_string(pt, [&](string_t& curr_line, auto& path) {
       const auto& node = pt.nodes[path.back().node_index];
       using enum parse_tree_printing_t;
@@ -72,7 +63,7 @@ namespace silva {
   expected_t<string_t> parse_tree_to_graphviz(const parse_tree_t& pt)
   {
     token_context_ptr_t tcp = pt.tokenization->context;
-    const auto style        = parse_tree_full_name_style(tcp);
+    const auto style        = seed_full_name_style(tcp);
     return tree_to_graphviz(pt, [&](auto& node) {
       return fmt::format("{}\\n{}",
                          style.absolute(node.rule_name),

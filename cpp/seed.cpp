@@ -8,6 +8,17 @@
 namespace silva {
   using enum token_category_t;
 
+  full_name_id_style_t seed_full_name_style(token_context_ptr_t tcp)
+  {
+    return full_name_id_style_t{
+        .tcp       = tcp,
+        .root      = tcp->token_id("Silva"),
+        .current   = tcp->token_id("X"),
+        .parent    = tcp->token_id("Up"),
+        .separator = tcp->token_id("."),
+    };
+  }
+
   parse_axe::parse_axe_t create_parse_axe_expr(token_context_ptr_t tcp)
   {
     using namespace parse_axe;
@@ -144,7 +155,7 @@ namespace silva {
         gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         while (num_tokens_left() >= 2 && token_id_by() == tt_dot) {
           token_index += 1;
-          SILVA_EXPECT_FWD(nonterminal_base());
+          gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         }
         return gg_rule.release();
       }
