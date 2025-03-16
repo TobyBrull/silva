@@ -1,11 +1,10 @@
 #include "fern.hpp"
 
+#include "canopy/convert.hpp"
 #include "canopy/error.hpp"
 #include "canopy/expected.hpp"
-#include "parse_tree_nursery.hpp"
-#include "seed_engine.hpp"
-
-#include "canopy/convert.hpp"
+#include "syntax/parse_tree_nursery.hpp"
+#include "syntax/seed_engine.hpp"
 
 namespace silva {
   using enum token_category_t;

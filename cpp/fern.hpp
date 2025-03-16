@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parse_tree.hpp"
+#include "syntax/parse_tree.hpp"
 
 namespace silva {
   const string_view_t fern_seed = R"'(

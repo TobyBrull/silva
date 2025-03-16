@@ -13,6 +13,7 @@ endforeach()
 # Library
 
 add_library(silva ${SILVA_LIB_FILES})
+target_include_directories(silva PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(silva PUBLIC
   fmt::fmt
   reflect-cpp

@@ -1,7 +1,7 @@
 #include "silva.hpp"
 
-#include "parse_tree.hpp"
-#include "seed_engine.hpp"
+#include "syntax/parse_tree.hpp"
+#include "syntax/seed_engine.hpp"
 
 #include <catch2/catch_all.hpp>
 

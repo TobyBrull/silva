@@ -2,8 +2,7 @@
 
 #include "canopy/filesystem.hpp"
 #include "canopy/main.hpp"
-
-#include "seed_engine.hpp"
+#include "syntax/seed_engine.hpp"
 
 using namespace silva;
 

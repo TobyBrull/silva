@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parse_tree.hpp"
+#include "syntax/parse_tree.hpp"
 
 namespace silva {
 }
