@@ -5,7 +5,7 @@
 #include "tokenization.hpp"
 
 namespace silva {
-  struct parse_root_t;
+  struct seed_engine_t;
 
   struct parse_tree_node_data_t {
     full_name_id_t rule_name = 0;

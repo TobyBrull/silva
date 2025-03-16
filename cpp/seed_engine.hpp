@@ -8,7 +8,7 @@
 namespace silva {
 
   // Driver for a program in the Seed language.
-  struct parse_root_t {
+  struct seed_engine_t {
     // Parse trees containing the used Seed programs.
     vector_t<shared_ptr_t<const parse_tree_t>> seed_parse_trees;
 
@@ -41,12 +41,12 @@ namespace silva {
     };
     hashmap_t<full_name_id_t, parse_axe_data_t> parse_axes;
 
-    // Main parse_root_t constructor.
-    static expected_t<unique_ptr_t<parse_root_t>> create(shared_ptr_t<const parse_tree_t>);
+    // Main constructor.
+    static expected_t<unique_ptr_t<seed_engine_t>> create(shared_ptr_t<const parse_tree_t>);
 
     // Convenience function for essentially
-    //    tokenize | seed_parse | parse_root_t::create
-    static expected_t<unique_ptr_t<parse_root_t>>
+    //    tokenize | seed_parse | seed_engine_t::create
+    static expected_t<unique_ptr_t<seed_engine_t>>
     create(token_context_ptr_t, filesystem_path_t filepath, string_t text);
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the

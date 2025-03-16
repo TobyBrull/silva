@@ -9,8 +9,11 @@ namespace silva {
     - Label = string | identifier
     - Value = 'none' | 'true' | 'false' | string | number
   )'";
-  unique_ptr_t<parse_root_t> fern_parse_root(token_context_ptr_t);
+
+  // Invariant:
+  //    fern_seed_engine()->apply(tokens) == fern_parse(tokens)
   expected_t<unique_ptr_t<parse_tree_t>> fern_parse(shared_ptr_t<const tokenization_t>);
+  unique_ptr_t<seed_engine_t> fern_seed_engine(token_context_ptr_t);
 
   // Fern parse_tree output functions
   expected_t<string_t> fern_to_string(const parse_tree_t*, index_t start_node = 0);

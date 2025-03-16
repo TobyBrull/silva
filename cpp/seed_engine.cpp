@@ -1,4 +1,4 @@
-#include "parse_root.hpp"
+#include "seed_engine.hpp"
 
 #include "canopy/expected.hpp"
 #include "canopy/scope_exit.hpp"
@@ -14,7 +14,7 @@ namespace silva {
   using enum token_category_t;
   using enum error_level_t;
 
-  using tree_node_index_t = parse_root_t::tree_node_index_t;
+  using tree_node_index_t = seed_engine_t::tree_node_index_t;
 
   tree_node_index_t tree_node_index_t::with_node_index(const index_t node_index) const
   {
@@ -29,12 +29,12 @@ namespace silva {
     return hash(tuple_t<index_t, index_t>{x.tree_index, x.node_index});
   }
 
-  struct parse_root_create_nursery_t {
+  struct seed_engine_create_nursery_t {
     shared_ptr_t<const parse_tree_t> seed_parse_tree;
     token_context_ptr_t tcp   = seed_parse_tree->tokenization->context;
     full_name_id_style_t fnis = seed_full_name_style(tcp);
 
-    std::unique_ptr<parse_root_t> retval = std::make_unique<parse_root_t>();
+    std::unique_ptr<seed_engine_t> retval = std::make_unique<seed_engine_t>();
 
     const parse_tree_t& s_pt                      = *seed_parse_tree;
     const tokenization_t& s_tokenization          = *s_pt.tokenization;
@@ -71,7 +71,7 @@ namespace silva {
     const full_name_id_t fni_nt_base     = tcp->full_name_id_of(fni_nt, "Base");
     const full_name_id_t fni_term        = tcp->full_name_id_of(fni_seed, "Terminal");
 
-    parse_root_create_nursery_t(shared_ptr_t<const parse_tree_t> seed_parse_tree)
+    seed_engine_create_nursery_t(shared_ptr_t<const parse_tree_t> seed_parse_tree)
       : seed_parse_tree(seed_parse_tree)
     {
       retval->seed_parse_trees.push_back(std::move(seed_parse_tree));
@@ -230,9 +230,9 @@ namespace silva {
       return {};
     }
 
-    expected_t<parse_root_t::parse_axe_data_t> create_parse_axe(const full_name_id_t scope_name,
-                                                                const full_name_id_t rule_name,
-                                                                const tree_node_index_t tni)
+    expected_t<seed_engine_t::parse_axe_data_t> create_parse_axe(const full_name_id_t scope_name,
+                                                                 const full_name_id_t rule_name,
+                                                                 const tree_node_index_t tni)
     {
       const auto& s_node = spts[tni.tree_index]->nodes[tni.node_index];
       SILVA_EXPECT(s_node.rule_name == fni_axe, MINOR);
@@ -400,28 +400,28 @@ namespace silva {
     }
   };
 
-  expected_t<unique_ptr_t<parse_root_t>>
-  parse_root_t::create(shared_ptr_t<const parse_tree_t> seed_parse_tree)
+  expected_t<unique_ptr_t<seed_engine_t>>
+  seed_engine_t::create(shared_ptr_t<const parse_tree_t> seed_parse_tree)
   {
-    parse_root_create_nursery_t nursery(std::move(seed_parse_tree));
+    seed_engine_create_nursery_t nursery(std::move(seed_parse_tree));
     SILVA_EXPECT_FWD(nursery.handle_all());
     return std::move(nursery).retval;
   }
 
-  expected_t<unique_ptr_t<parse_root_t>>
-  parse_root_t::create(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text)
+  expected_t<unique_ptr_t<seed_engine_t>>
+  seed_engine_t::create(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text)
   {
     auto tt = SILVA_EXPECT_FWD(tokenize(tcp, std::move(filepath), std::move(text)));
     auto pt = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
     // const auto x = SILVA_EXPECT_FWD(parse_tree_to_string(*pt));
     // fmt::print("{}\n", x);
-    auto retval = SILVA_EXPECT_FWD(parse_root_t::create(std::move(pt)));
+    auto retval = SILVA_EXPECT_FWD(seed_engine_t::create(std::move(pt)));
     return retval;
   }
 
   namespace impl {
-    struct parse_root_nursery_t : public parse_tree_nursery_t {
-      const parse_root_t* root  = nullptr;
+    struct seed_engine_nursery_t : public parse_tree_nursery_t {
+      const seed_engine_t* root = nullptr;
       const parse_tree_t& s_pt  = *root->seed_parse_trees.front();
       token_context_ptr_t tcp   = s_pt.tokenization->context;
       full_name_id_style_t fnis = seed_full_name_style(tcp);
@@ -435,7 +435,7 @@ namespace silva {
 
       const vector_t<shared_ptr_t<const parse_tree_t>>& spts = root->seed_parse_trees;
 
-      const parse_tree_t::node_t& get_s_node(const parse_root_t::tree_node_index_t& tni)
+      const parse_tree_t::node_t& get_s_node(const seed_engine_t::tree_node_index_t& tni)
       {
         return spts[tni.tree_index]->nodes[tni.node_index];
       }
@@ -475,8 +475,8 @@ namespace silva {
       const full_name_id_t fni_nt_base      = tcp->full_name_id_of(fni_nt, "Base");
       const full_name_id_t fni_term         = tcp->full_name_id_of(fni_seed, "Terminal");
 
-      parse_root_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
-                           const parse_root_t* root)
+      seed_engine_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
+                            const seed_engine_t* root)
         : parse_tree_nursery_t(tokenization), root(root)
       {
       }
@@ -700,7 +700,7 @@ namespace silva {
         const auto it = root->parse_axes.find(t_rule_name);
         SILVA_EXPECT(it != root->parse_axes.end(), MAJOR);
         auto gg{guard()};
-        const parse_root_t::parse_axe_data_t& parse_axe_data = it->second;
+        const seed_engine_t::parse_axe_data_t& parse_axe_data = it->second;
         const delegate_t<expected_t<parse_tree_sub_t>()>::pack_t pack{
             [&]() { return handle_rule(parse_axe_data.atom_rule_name); },
         };
@@ -758,10 +758,10 @@ namespace silva {
   }
 
   expected_t<unique_ptr_t<parse_tree_t>>
-  parse_root_t::apply(shared_ptr_t<const tokenization_t> tokenization,
-                      const full_name_id_t goal_rule_name) const
+  seed_engine_t::apply(shared_ptr_t<const tokenization_t> tokenization,
+                       const full_name_id_t goal_rule_name) const
   {
-    impl::parse_root_nursery_t nursery(std::move(tokenization), this);
+    impl::seed_engine_nursery_t nursery(std::move(tokenization), this);
     SILVA_EXPECT_FWD(nursery.check());
     expected_traits_t expected_traits{.materialize_fwd = true};
     const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));

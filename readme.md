@@ -7,15 +7,18 @@ language.
 
 ## Concepts
 
-The Seed language is as a formal specification for the syntax of another language. A parser can
-automatically be generated from a Seed program; such a parser is represented by the type
-`silva::parse_root_t` ([parse_root.hpp](cpp/parse_root.hpp)).
+The Seed language is as a formal specification for the syntax of another language.
 
-The Fern language is akin to JSON; its syntax is described by the Seed program
-`silva::fern_seed_source_code` ([fern.hpp](cpp/fern.hpp)).
+The Fern language is akin to JSON. Its syntax is described by the Seed program
+`silva::fern_seed` ([fern.hpp](cpp/fern.hpp)).
 
-The syntax of the Seed language is described in its own terms by the Seed program
-`silva::seed_seed_source_code` ([seed.hpp](cpp/seed.hpp)).
+The syntax of the Seed language itself is described by the Seed program
+`silva::seed_seed` ([seed.hpp](cpp/seed.hpp)).
+
+A parser can automatically be derived from a Seed program.
+This is implemented in the class
+`silva::seed_engine_t` ([seed_engine.hpp](cpp/seed_engine.hpp)).
+
 
 ## Building and Running
 

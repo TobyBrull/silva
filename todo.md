@@ -2,8 +2,7 @@
 
 * Allow multiple code snippets
     * token_context_t -> naming_context_t
-        * could include the set of tokenizations, so that parse_root
-    * rename parse_root_t -> parse_saw_t, parse_array_t?
+        * could include the set of tokenizations
 
 * memento/error-handling:
     * Seed:

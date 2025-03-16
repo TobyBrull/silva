@@ -14,8 +14,7 @@
 namespace silva {
 
   // A program in the Seed language describes a way to turn a stream of tokens into a parse_tree_t.
-  // The actual mechanism/algorithm to turn a stream of tokens into a parse_tree_t is
-  // encapsulated/represented by the class "parse_root_t".
+  // The actual algorithm to do this is implemented in "seed_engine_t".
 
   const string_view_t seed_seed = R"'(
     - Seed [
@@ -53,16 +52,12 @@ namespace silva {
     ]
   )'";
 
-  struct parse_root_t;
+  struct seed_engine_t;
 
   full_name_id_style_t seed_full_name_style(token_context_ptr_t);
 
+  // Invariant:
+  //    seed_seed_engine()->apply(tokens) == seed_parse(tokens)
   expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t>);
-
-  // parse_root_t for the Seed language itself.
-  //
-  // Silva invariant:
-  //    seed_parse_root()->apply(tokens) == seed_parse(tokens)
-  //
-  unique_ptr_t<parse_root_t> seed_parse_root(token_context_ptr_t);
+  unique_ptr_t<seed_engine_t> seed_seed_engine(token_context_ptr_t);
 }

@@ -1,7 +1,7 @@
 #include "silva.hpp"
 
-#include "parse_root.hpp"
 #include "parse_tree.hpp"
+#include "seed_engine.hpp"
 
 #include <catch2/catch_all.hpp>
 
@@ -18,7 +18,7 @@ TEST_CASE("operator-precedence", "")
   )'";
   const auto op_prec_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", op_prec_source_code)));
   const auto op_prec_pt = share(SILVA_EXPECT_REQUIRE(seed_parse(op_prec_tt)));
-  const auto prec       = SILVA_EXPECT_REQUIRE(parse_root_t::create(op_prec_pt));
+  const auto prec       = SILVA_EXPECT_REQUIRE(seed_engine_t::create(op_prec_pt));
 
   const string_t expr_source_code = R"(
     5 + 4 * 2 + 1

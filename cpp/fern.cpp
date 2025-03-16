@@ -2,8 +2,8 @@
 
 #include "canopy/error.hpp"
 #include "canopy/expected.hpp"
-#include "parse_root.hpp"
 #include "parse_tree_nursery.hpp"
+#include "seed_engine.hpp"
 
 #include "canopy/convert.hpp"
 
@@ -11,9 +11,9 @@ namespace silva {
   using enum token_category_t;
   using enum error_level_t;
 
-  unique_ptr_t<parse_root_t> fern_parse_root(token_context_ptr_t tcp)
+  unique_ptr_t<seed_engine_t> fern_seed_engine(token_context_ptr_t tcp)
   {
-    return SILVA_EXPECT_ASSERT(parse_root_t::create(tcp, "fern.seed", string_t{fern_seed}));
+    return SILVA_EXPECT_ASSERT(seed_engine_t::create(tcp, "fern.seed", string_t{fern_seed}));
   }
 
   namespace impl {

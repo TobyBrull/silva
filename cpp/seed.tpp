@@ -1,6 +1,6 @@
 #include "seed.hpp"
 
-#include "parse_root.hpp"
+#include "seed_engine.hpp"
 
 #include "rfl/json/write.hpp"
 
@@ -8,10 +8,10 @@
 
 using namespace silva;
 
-TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
+TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
 {
   token_context_t tc;
-  const auto spr       = seed_parse_root(tc.ptr());
+  const auto spr       = seed_seed_engine(tc.ptr());
   const auto seed_tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", string_t{seed_seed})));
   const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
   const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, tc.full_name_id_of("Seed")));
@@ -20,7 +20,7 @@ TEST_CASE("seed-parse-root", "[seed][parse_root_t]")
   CHECK(seed_pt_1->nodes == spr->seed_parse_trees.front()->nodes);
 }
 
-TEST_CASE("seed", "[seed][parse_root_t]")
+TEST_CASE("seed", "[seed][seed_engine_t]")
 {
   token_context_t tc;
   const string_t sf_text  = R"'(
@@ -33,7 +33,7 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   )'";
   const auto sf_seed_tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", sf_text)));
   const auto sf_seed_pt_1 = share(SILVA_EXPECT_REQUIRE(seed_parse(sf_seed_tt)));
-  const auto spr          = seed_parse_root(tc.ptr());
+  const auto spr          = seed_seed_engine(tc.ptr());
   const auto sf_seed_pt_2 =
       SILVA_EXPECT_REQUIRE(spr->apply(sf_seed_tt, tc.full_name_id_of("Seed")));
   CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
@@ -87,10 +87,10 @@ TEST_CASE("seed", "[seed][parse_root_t]")
   CHECK(pt_str_1 == expected.substr(1));
   CHECK(pt_str_2 == expected.substr(1));
 
-  const auto sfpr = SILVA_EXPECT_REQUIRE(parse_root_t::create(sf_seed_pt_1));
+  const auto sfpr = SILVA_EXPECT_REQUIRE(seed_engine_t::create(sf_seed_pt_1));
   REQUIRE(sfpr->rule_exprs.size() == 4);
   using rfl::json::write;
-  using tni_t                 = parse_root_t::tree_node_index_t;
+  using tni_t                 = seed_engine_t::tree_node_index_t;
   const full_name_id_t fni_sf = tc.full_name_id_of("SimpleFern");
   const full_name_id_t fni_li = tc.full_name_id_of(fni_sf, "LabeledItem");
   const full_name_id_t fni_l  = tc.full_name_id_of(fni_sf, "Label");

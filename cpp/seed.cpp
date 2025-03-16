@@ -1,8 +1,8 @@
 #include "seed.hpp"
 
 #include "canopy/expected.hpp"
-#include "parse_root.hpp"
 #include "parse_tree_nursery.hpp"
+#include "seed_engine.hpp"
 #include "tokenization.hpp"
 
 namespace silva {
@@ -339,8 +339,8 @@ namespace silva {
     return {std::make_unique<parse_tree_t>(std::move(nursery.retval))};
   }
 
-  unique_ptr_t<parse_root_t> seed_parse_root(token_context_ptr_t tcp)
+  unique_ptr_t<seed_engine_t> seed_seed_engine(token_context_ptr_t tcp)
   {
-    return SILVA_EXPECT_ASSERT(parse_root_t::create(tcp, "seed.seed", string_t{seed_seed}));
+    return SILVA_EXPECT_ASSERT(seed_engine_t::create(tcp, "seed.seed", string_t{seed_seed}));
   }
 }
