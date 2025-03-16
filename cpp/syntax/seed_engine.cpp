@@ -31,8 +31,8 @@ namespace silva {
 
   struct seed_engine_create_nursery_t {
     shared_ptr_t<const parse_tree_t> seed_parse_tree;
-    token_context_ptr_t tcp   = seed_parse_tree->tokenization->context;
-    full_name_id_style_t fnis = seed_full_name_style(tcp);
+    token_context_ptr_t tcp = seed_parse_tree->tokenization->context;
+    name_id_style_t fnis    = seed_name_style(tcp);
 
     std::unique_ptr<seed_engine_t> retval = std::make_unique<seed_engine_t>();
 
@@ -56,20 +56,20 @@ namespace silva {
     const token_id_t ti_ltr          = tcp->token_id("ltr");
     const token_id_t ti_rtl          = tcp->token_id("rtl");
 
-    const full_name_id_t fni_seed        = tcp->full_name_id_of("Seed");
-    const full_name_id_t fni_rule        = tcp->full_name_id_of(fni_seed, "Rule");
-    const full_name_id_t fni_expr_or_a   = tcp->full_name_id_of(fni_seed, "ExprOrAlias");
-    const full_name_id_t fni_expr        = tcp->full_name_id_of(fni_seed, "Expr");
-    const full_name_id_t fni_atom        = tcp->full_name_id_of(fni_seed, "Atom");
-    const full_name_id_t fni_axe         = tcp->full_name_id_of(fni_seed, "Axe");
-    const full_name_id_t fni_axe_level   = tcp->full_name_id_of(fni_axe, "Level");
-    const full_name_id_t fni_axe_assoc   = tcp->full_name_id_of(fni_axe, "Assoc");
-    const full_name_id_t fni_axe_ops     = tcp->full_name_id_of(fni_axe, "Ops");
-    const full_name_id_t fni_axe_op_type = tcp->full_name_id_of(fni_axe, "OpType");
-    const full_name_id_t fni_axe_op      = tcp->full_name_id_of(fni_axe, "Op");
-    const full_name_id_t fni_nt          = tcp->full_name_id_of(fni_seed, "Nonterminal");
-    const full_name_id_t fni_nt_base     = tcp->full_name_id_of(fni_nt, "Base");
-    const full_name_id_t fni_term        = tcp->full_name_id_of(fni_seed, "Terminal");
+    const name_id_t fni_seed        = tcp->name_id_of("Seed");
+    const name_id_t fni_rule        = tcp->name_id_of(fni_seed, "Rule");
+    const name_id_t fni_expr_or_a   = tcp->name_id_of(fni_seed, "ExprOrAlias");
+    const name_id_t fni_expr        = tcp->name_id_of(fni_seed, "Expr");
+    const name_id_t fni_atom        = tcp->name_id_of(fni_seed, "Atom");
+    const name_id_t fni_axe         = tcp->name_id_of(fni_seed, "Axe");
+    const name_id_t fni_axe_level   = tcp->name_id_of(fni_axe, "Level");
+    const name_id_t fni_axe_assoc   = tcp->name_id_of(fni_axe, "Assoc");
+    const name_id_t fni_axe_ops     = tcp->name_id_of(fni_axe, "Ops");
+    const name_id_t fni_axe_op_type = tcp->name_id_of(fni_axe, "OpType");
+    const name_id_t fni_axe_op      = tcp->name_id_of(fni_axe, "Op");
+    const name_id_t fni_nt          = tcp->name_id_of(fni_seed, "Nonterminal");
+    const name_id_t fni_nt_base     = tcp->name_id_of(fni_nt, "Base");
+    const name_id_t fni_term        = tcp->name_id_of(fni_seed, "Terminal");
 
     seed_engine_create_nursery_t(shared_ptr_t<const parse_tree_t> seed_parse_tree)
       : seed_parse_tree(seed_parse_tree)
@@ -193,14 +193,14 @@ namespace silva {
     }
 
     expected_t<void> axe_level(parse_axe::parse_axe_level_desc_t& level,
-                               const full_name_id_t scope_name,
+                               const name_id_t scope_name,
                                const index_t axe_level_node_index)
     {
       auto result = s_pt.visit_children(
           [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
             if (child_index == 0) {
               SILVA_EXPECT(s_nodes[child_node_index].rule_name == fni_nt_base, MINOR);
-              level.name = SILVA_EXPECT_FWD(derive_full_name_base(scope_name, child_node_index));
+              level.name = SILVA_EXPECT_FWD(derive_name_base(scope_name, child_node_index));
             }
             else if (child_index == 1) {
               SILVA_EXPECT(s_nodes[child_node_index].rule_name == fni_axe_assoc, MINOR);
@@ -230,8 +230,8 @@ namespace silva {
       return {};
     }
 
-    expected_t<seed_engine_t::parse_axe_data_t> create_parse_axe(const full_name_id_t scope_name,
-                                                                 const full_name_id_t rule_name,
+    expected_t<seed_engine_t::parse_axe_data_t> create_parse_axe(const name_id_t scope_name,
+                                                                 const name_id_t rule_name,
                                                                  const tree_node_index_t tni)
     {
       const auto& s_node = spts[tni.tree_index]->nodes[tni.node_index];
@@ -239,12 +239,12 @@ namespace silva {
       vector_t<parse_axe::parse_axe_level_desc_t> level_descs;
       SILVA_EXPECT(s_node.num_children >= 1, MINOR);
       level_descs.reserve(s_node.num_children - 1);
-      full_name_id_t atom_rule_name = full_name_id_none;
-      auto result                   = spts[tni.tree_index]->visit_children(
+      name_id_t atom_rule_name = name_id_root;
+      auto result              = spts[tni.tree_index]->visit_children(
           [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
             if (child_index == 0) {
               SILVA_EXPECT(s_nodes[child_node_index].rule_name == fni_nt, MINOR);
-              atom_rule_name = SILVA_EXPECT_FWD(derive_full_name(scope_name, child_node_index));
+              atom_rule_name = SILVA_EXPECT_FWD(derive_name(scope_name, child_node_index));
             }
             else {
               SILVA_EXPECT(s_nodes[child_node_index].rule_name == fni_axe_level, MINOR);
@@ -255,7 +255,7 @@ namespace silva {
           },
           tni.node_index);
       SILVA_EXPECT_FWD(std::move(result));
-      SILVA_EXPECT(atom_rule_name != full_name_id_none, MAJOR);
+      SILVA_EXPECT(atom_rule_name != name_id_root, MAJOR);
       auto pa = SILVA_EXPECT_FWD(parse_axe::parse_axe_create(tcp, std::move(level_descs)));
       return {{
           .atom_rule_name = atom_rule_name,
@@ -263,26 +263,25 @@ namespace silva {
       }};
     }
 
-    expected_t<full_name_id_t> derive_full_name_base(const full_name_id_t scope_name,
-                                                     const index_t nt_base_node_index)
+    expected_t<name_id_t> derive_name_base(const name_id_t scope_name,
+                                           const index_t nt_base_node_index)
     {
-      full_name_id_t retval = scope_name;
-      const auto& s_node    = s_nodes[nt_base_node_index];
+      name_id_t retval   = scope_name;
+      const auto& s_node = s_nodes[nt_base_node_index];
       SILVA_EXPECT(s_node.rule_name == fni_nt_base, MINOR, "Expected Nonterminal.Base");
       const token_id_t base = s_tokenization.tokens[s_node.token_begin];
       if (base == fnis.current) {
         return scope_name;
       }
       else {
-        return tcp->full_name_id(scope_name, base);
+        return tcp->name_id(scope_name, base);
       }
       return retval;
     }
 
-    expected_t<full_name_id_t> derive_full_name(const full_name_id_t scope_name,
-                                                const index_t nt_node_index)
+    expected_t<name_id_t> derive_name(const name_id_t scope_name, const index_t nt_node_index)
     {
-      full_name_id_t retval = scope_name;
+      name_id_t retval = scope_name;
       SILVA_EXPECT(s_nodes[nt_node_index].rule_name == fni_nt, MINOR, "Expected Nonterminal");
       auto result = s_pt.visit_children(
           [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
@@ -291,16 +290,16 @@ namespace silva {
             const token_id_t base = s_tokenization.tokens[s_node.token_begin];
             if (base == fnis.root) {
               SILVA_EXPECT(child_index == 0, MINOR, "Root node may only appear as first element");
-              retval = full_name_id_none;
+              retval = name_id_root;
             }
             else if (base == fnis.current) {
               ;
             }
             else if (base == fnis.parent) {
-              retval = tcp->full_name_infos[retval].parent_name;
+              retval = tcp->name_infos[retval].parent_name;
             }
             else {
-              retval = tcp->full_name_id(retval, base);
+              retval = tcp->name_id(retval, base);
             }
             return true;
           },
@@ -309,16 +308,15 @@ namespace silva {
       return retval;
     }
 
-    expected_t<void> handle_rule(const full_name_id_t scope_name, const index_t rule_node_index)
+    expected_t<void> handle_rule(const name_id_t scope_name, const index_t rule_node_index)
     {
       SILVA_EXPECT(s_nodes[rule_node_index].rule_name == fni_rule, MINOR, "Expected Rule");
       const array_t<index_t, 2> children = SILVA_EXPECT_FWD(s_pt.get_children<2>(rule_node_index));
       SILVA_EXPECT(s_nodes[children[0]].rule_name == fni_nt_base,
                    MINOR,
                    "First child of Rule must be Nonterminal.Base");
-      const full_name_id_t curr_rule_name =
-          SILVA_EXPECT_FWD(derive_full_name_base(scope_name, children[0]));
-      const index_t expr_rule_name = s_nodes[children[1]].rule_name;
+      const name_id_t curr_rule_name = SILVA_EXPECT_FWD(derive_name_base(scope_name, children[0]));
+      const index_t expr_rule_name   = s_nodes[children[1]].rule_name;
       if (expr_rule_name == fni_seed) {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, children[1]));
       }
@@ -346,8 +344,7 @@ namespace silva {
           for (index_t node_index = children[1]; node_index < s_nodes[children[1]].children_end;
                ++node_index) {
             if (s_nodes[node_index].rule_name == fni_nt) {
-              const full_name_id_t nt_name =
-                  SILVA_EXPECT_FWD(derive_full_name(scope_name, node_index));
+              const name_id_t nt_name   = SILVA_EXPECT_FWD(derive_name(scope_name, node_index));
               const auto [it, inserted] = retval->nonterminal_rules.emplace(
                   tree_node_index_t{
                       .tree_index = 0,
@@ -362,7 +359,7 @@ namespace silva {
       return {};
     }
 
-    expected_t<void> handle_seed(const full_name_id_t scope_name, const index_t s_node_index)
+    expected_t<void> handle_seed(const name_id_t scope_name, const index_t s_node_index)
     {
       SILVA_EXPECT(!s_nodes.empty() && s_nodes.front().rule_name == fni_seed,
                    MINOR,
@@ -380,7 +377,7 @@ namespace silva {
 
     expected_t<void> handle_all()
     {
-      SILVA_EXPECT_FWD(handle_seed(full_name_id_none, 0));
+      SILVA_EXPECT_FWD(handle_seed(name_id_root, 0));
 
       // Pre-compile hashmap_t of "regexes".
       for (index_t node_index = 0; node_index < s_nodes.size(); ++node_index) {
@@ -424,7 +421,7 @@ namespace silva {
       const seed_engine_t* root = nullptr;
       const parse_tree_t& s_pt  = *root->seed_parse_trees.front();
       token_context_ptr_t tcp   = s_pt.tokenization->context;
-      full_name_id_style_t fnis = seed_full_name_style(tcp);
+      name_id_style_t fnis      = seed_name_style(tcp);
 
       const tokenization_t& s_tokenization          = *s_pt.tokenization;
       const vector_t<token_id_t>& s_tokens          = s_tokenization.tokens;
@@ -457,23 +454,23 @@ namespace silva {
       const token_id_t ti_equal  = tcp->token_id("=");
       const token_id_t ti_alias  = tcp->token_id("=>");
 
-      const full_name_id_t fni_seed         = tcp->full_name_id_of("Seed");
-      const full_name_id_t fni_rule         = tcp->full_name_id_of(fni_seed, "Rule");
-      const full_name_id_t fni_expr         = tcp->full_name_id_of(fni_seed, "Expr");
-      const full_name_id_t fni_expr_parens  = tcp->full_name_id_of(fni_expr, "Parens");
-      const full_name_id_t fni_expr_postfix = tcp->full_name_id_of(fni_expr, "Postfix");
-      const full_name_id_t fni_expr_concat  = tcp->full_name_id_of(fni_expr, "Concat");
-      const full_name_id_t fni_expr_alt     = tcp->full_name_id_of(fni_expr, "Alt");
-      const full_name_id_t fni_atom         = tcp->full_name_id_of(fni_seed, "Atom");
-      const full_name_id_t fni_axe          = tcp->full_name_id_of(fni_seed, "Axe");
-      const full_name_id_t fni_axe_level    = tcp->full_name_id_of(fni_axe, "Level");
-      const full_name_id_t fni_axe_assoc    = tcp->full_name_id_of(fni_axe, "Assoc");
-      const full_name_id_t fni_axe_ops      = tcp->full_name_id_of(fni_axe, "Ops");
-      const full_name_id_t fni_axe_op_type  = tcp->full_name_id_of(fni_axe, "OpType");
-      const full_name_id_t fni_axe_op       = tcp->full_name_id_of(fni_axe, "Op");
-      const full_name_id_t fni_nt           = tcp->full_name_id_of(fni_seed, "Nonterminal");
-      const full_name_id_t fni_nt_base      = tcp->full_name_id_of(fni_nt, "Base");
-      const full_name_id_t fni_term         = tcp->full_name_id_of(fni_seed, "Terminal");
+      const name_id_t fni_seed         = tcp->name_id_of("Seed");
+      const name_id_t fni_rule         = tcp->name_id_of(fni_seed, "Rule");
+      const name_id_t fni_expr         = tcp->name_id_of(fni_seed, "Expr");
+      const name_id_t fni_expr_parens  = tcp->name_id_of(fni_expr, "Parens");
+      const name_id_t fni_expr_postfix = tcp->name_id_of(fni_expr, "Postfix");
+      const name_id_t fni_expr_concat  = tcp->name_id_of(fni_expr, "Concat");
+      const name_id_t fni_expr_alt     = tcp->name_id_of(fni_expr, "Alt");
+      const name_id_t fni_atom         = tcp->name_id_of(fni_seed, "Atom");
+      const name_id_t fni_axe          = tcp->name_id_of(fni_seed, "Axe");
+      const name_id_t fni_axe_level    = tcp->name_id_of(fni_axe, "Level");
+      const name_id_t fni_axe_assoc    = tcp->name_id_of(fni_axe, "Assoc");
+      const name_id_t fni_axe_ops      = tcp->name_id_of(fni_axe, "Ops");
+      const name_id_t fni_axe_op_type  = tcp->name_id_of(fni_axe, "OpType");
+      const name_id_t fni_axe_op       = tcp->name_id_of(fni_axe, "Op");
+      const name_id_t fni_nt           = tcp->name_id_of(fni_seed, "Nonterminal");
+      const name_id_t fni_nt_base      = tcp->name_id_of(fni_nt, "Base");
+      const name_id_t fni_term         = tcp->name_id_of(fni_seed, "Terminal");
 
       seed_engine_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
                             const seed_engine_t* root)
@@ -577,7 +574,7 @@ namespace silva {
         auto gg = guard();
         const auto children =
             SILVA_EXPECT_FWD(spts[tni.tree_index]->get_children<1>(tni.node_index));
-        const token_id_t op_ti = tcp->full_name_infos[get_s_node(tni).rule_name].base_name;
+        const token_id_t op_ti = tcp->name_infos[get_s_node(tni).rule_name].base_name;
         if (op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus) {
           const auto [min_repeat, max_repeat] = get_min_max_repeat(op_ti);
           parse_tree_sub_t sub_sub;
@@ -666,19 +663,19 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> s_expr(const tree_node_index_t tni)
       {
-        const auto& s_pt                 = *spts[tni.tree_index];
-        const full_name_id_t s_rule_name = s_pt.nodes[tni.node_index].rule_name;
-        if (tcp->full_name_id_is_parent(fni_expr_parens, s_rule_name)) {
+        const auto& s_pt            = *spts[tni.tree_index];
+        const name_id_t s_rule_name = s_pt.nodes[tni.node_index].rule_name;
+        if (tcp->name_id_is_parent(fni_expr_parens, s_rule_name)) {
           const auto children = SILVA_EXPECT_FWD(s_pt.get_children<1>(tni.node_index));
           return s_expr(tni.with_node_index(children[0]));
         }
-        else if (tcp->full_name_id_is_parent(fni_expr_postfix, s_rule_name)) {
+        else if (tcp->name_id_is_parent(fni_expr_postfix, s_rule_name)) {
           return s_expr_postfix(tni);
         }
-        else if (tcp->full_name_id_is_parent(fni_expr_concat, s_rule_name)) {
+        else if (tcp->name_id_is_parent(fni_expr_concat, s_rule_name)) {
           return s_expr_concat(tni);
         }
-        else if (tcp->full_name_id_is_parent(fni_expr_alt, s_rule_name)) {
+        else if (tcp->name_id_is_parent(fni_expr_alt, s_rule_name)) {
           return s_expr_alt(tni);
         }
         else if (s_rule_name == fni_term) {
@@ -687,7 +684,7 @@ namespace silva {
         else if (s_rule_name == fni_nt) {
           const auto it = root->nonterminal_rules.find(tni);
           SILVA_EXPECT(it != root->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
-          const full_name_id_t t_rule_name = it->second;
+          const name_id_t t_rule_name = it->second;
           return handle_rule(t_rule_name);
         }
         else {
@@ -695,7 +692,7 @@ namespace silva {
         }
       }
 
-      expected_t<parse_tree_sub_t> handle_rule_axe(const full_name_id_t t_rule_name)
+      expected_t<parse_tree_sub_t> handle_rule_axe(const name_id_t t_rule_name)
       {
         const auto it = root->parse_axes.find(t_rule_name);
         SILVA_EXPECT(it != root->parse_axes.end(), MAJOR);
@@ -709,7 +706,7 @@ namespace silva {
         return gg.release();
       }
 
-      expected_t<parse_tree_sub_t> handle_rule(const full_name_id_t t_rule_name)
+      expected_t<parse_tree_sub_t> handle_rule(const name_id_t t_rule_name)
       {
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
@@ -724,7 +721,7 @@ namespace silva {
                      fnis.absolute(t_rule_name));
         const tree_node_index_t tni        = it->second;
         const parse_tree_t::node_t& s_node = get_s_node(tni);
-        const full_name_id_t s_expr_name   = s_node.rule_name;
+        const name_id_t s_expr_name        = s_node.rule_name;
         if (s_expr_name == fni_axe) {
           return SILVA_EXPECT_FWD(handle_rule_axe(t_rule_name), "Expected Axe");
         }
@@ -759,7 +756,7 @@ namespace silva {
 
   expected_t<unique_ptr_t<parse_tree_t>>
   seed_engine_t::apply(shared_ptr_t<const tokenization_t> tokenization,
-                       const full_name_id_t goal_rule_name) const
+                       const name_id_t goal_rule_name) const
   {
     impl::seed_engine_nursery_t nursery(std::move(tokenization), this);
     SILVA_EXPECT_FWD(nursery.check());

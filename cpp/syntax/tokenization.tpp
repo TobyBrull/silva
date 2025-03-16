@@ -37,16 +37,16 @@ TEST_CASE("tokenization", "[tokenization_t]")
   }
 
   {
-    using vv_t = vector_t<full_name_id_t>;
+    using vv_t = vector_t<name_id_t>;
 
-    const full_name_id_t name1 = tc.full_name_id_of("std", "expr", "stmt");
-    const full_name_id_t name2 = tc.full_name_id_of("std", "expr");
-    const full_name_id_t name3 = tc.full_name_id_of("std", "ranges", "vector");
-    CHECK(tc.full_name_infos.size() == 6);
-    CHECK(tc.full_name_lookup.size() == 6);
+    const name_id_t name1 = tc.name_id_of("std", "expr", "stmt");
+    const name_id_t name2 = tc.name_id_of("std", "expr");
+    const name_id_t name3 = tc.name_id_of("std", "ranges", "vector");
+    CHECK(tc.name_infos.size() == 6);
+    CHECK(tc.name_lookup.size() == 6);
 
     {
-      const full_name_id_style_t ts{
+      const name_id_style_t ts{
           .tcp       = tc.ptr(),
           .root      = tc.token_id("cpp"),
           .current   = tc.token_id("this"),

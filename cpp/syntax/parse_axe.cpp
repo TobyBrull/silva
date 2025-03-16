@@ -66,7 +66,7 @@ namespace silva::parse_axe {
 
     const auto register_op = [&retval](const token_id_t token_id,
                                        const oper_any_t oper,
-                                       const full_name_id_t level_name,
+                                       const name_id_t level_name,
                                        const precedence_t precedence) -> expected_t<void> {
       auto& result = retval.results[token_id];
 
@@ -81,7 +81,7 @@ namespace silva::parse_axe {
                      token_id);
         result.prefix = result_oper_t<oper_prefix_t>{
             .oper       = variant_get<oper_prefix_t>(oper),
-            .name       = retval.tcp->full_name_id(level_name, token_id),
+            .name       = retval.tcp->name_id(level_name, token_id),
             .precedence = precedence,
         };
       }
@@ -96,7 +96,7 @@ namespace silva::parse_axe {
                      token_id);
         result.regular = result_oper_t<oper_regular_t>{
             .oper       = variant_get<oper_regular_t>(oper),
-            .name       = retval.tcp->full_name_id(level_name, token_id),
+            .name       = retval.tcp->name_id(level_name, token_id),
             .precedence = precedence,
         };
       }
@@ -150,7 +150,7 @@ namespace silva::parse_axe {
                          "Trying to use 'concat' level twice");
             retval.concat_result.emplace(result_oper_t<oper_regular_t>{
                 .oper       = *x,
-                .name       = retval.tcp->full_name_id(level_desc.name, x->token_id),
+                .name       = retval.tcp->name_id(level_desc.name, x->token_id),
                 .precedence = used_prec,
             });
           }
@@ -183,7 +183,7 @@ namespace silva::parse_axe {
 
     const parse_axe_t& parse_axe;
     parse_tree_nursery_t& nursery;
-    const full_name_id_t atom_name_id;
+    const name_id_t atom_name_id;
     delegate_t<expected_t<parse_tree_sub_t>()> atom;
 
     // internal state associated with a run
@@ -196,8 +196,8 @@ namespace silva::parse_axe {
 
     struct oper_item_t {
       oper_any_t oper;
-      index_t arity             = 0;
-      full_name_id_t level_name = 0;
+      index_t arity        = 0;
+      name_id_t level_name = 0;
       precedence_t precedence;
       small_vector_t<index_t, 2> covered_token_indexes;
       optional_t<index_t> min_token_index;
@@ -209,7 +209,7 @@ namespace silva::parse_axe {
     };
 
     struct atom_data_t {
-      full_name_id_t name = 0;
+      name_id_t name = 0;
       pair_t<index_t, index_t> token_range;
       optional_t<index_t> atom_child_index;
     };
@@ -243,10 +243,10 @@ namespace silva::parse_axe {
       vector_t<atom_item_t> atom_stack;
 
       struct consistent_range_t {
-        index_t num_atoms               = 0;
-        full_name_id_t joint_level_name = full_name_id_none;
-        index_t token_begin             = 0;
-        index_t token_end               = 0;
+        index_t num_atoms          = 0;
+        name_id_t joint_level_name = name_id_root;
+        index_t token_begin        = 0;
+        index_t token_end          = 0;
       };
       expected_t<consistent_range_t> consistent_range(span_t<const oper_item_t> ois) const
       {
@@ -630,7 +630,7 @@ namespace silva::parse_axe {
 
   expected_t<parse_tree_sub_t>
   parse_axe_t::apply(parse_tree_nursery_t& nursery,
-                     const full_name_id_t atom_name_id,
+                     const name_id_t atom_name_id,
                      delegate_t<expected_t<parse_tree_sub_t>()> atom) const
   {
     parse_axe_run_t run{

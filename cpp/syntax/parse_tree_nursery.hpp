@@ -48,7 +48,7 @@ namespace silva {
                                               index_t* token_index,
                                               bool include_token_index = true);
 
-    void set_rule_name(full_name_id_t);
+    void set_rule_name(name_id_t);
 
     void sync();
 

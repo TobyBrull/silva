@@ -24,10 +24,10 @@ namespace silva {
       token_id_t tt_true       = tcp->token_id("true");
       token_id_t tt_false      = tcp->token_id("false");
 
-      full_name_id_t fni_fern     = tcp->full_name_id_of("Fern");
-      full_name_id_t fni_lbl_item = tcp->full_name_id_of("LabeledItem");
-      full_name_id_t fni_label    = tcp->full_name_id_of("Label");
-      full_name_id_t fni_value    = tcp->full_name_id_of("Value");
+      name_id_t fni_fern     = tcp->name_id_of("Fern");
+      name_id_t fni_lbl_item = tcp->name_id_of("LabeledItem");
+      name_id_t fni_label    = tcp->name_id_of("Label");
+      name_id_t fni_value    = tcp->name_id_of("Value");
 
       fern_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
         : parse_tree_nursery_t(tokenization)
@@ -131,11 +131,11 @@ namespace silva {
 
   expected_t<string_t> fern_to_string(const parse_tree_t* pt, const index_t start_node)
   {
-    token_context_ptr_t tcp           = pt->tokenization->context;
-    const full_name_id_t fni_fern     = tcp->full_name_id_of("Fern");
-    const full_name_id_t fni_lbl_item = tcp->full_name_id_of("LabeledItem");
-    const full_name_id_t fni_label    = tcp->full_name_id_of("Label");
-    const full_name_id_t fni_value    = tcp->full_name_id_of("Value");
+    token_context_ptr_t tcp      = pt->tokenization->context;
+    const name_id_t fni_fern     = tcp->name_id_of("Fern");
+    const name_id_t fni_lbl_item = tcp->name_id_of("LabeledItem");
+    const name_id_t fni_label    = tcp->name_id_of("Label");
+    const name_id_t fni_value    = tcp->name_id_of("Value");
 
     SILVA_EXPECT(pt->nodes[start_node].rule_name == fni_fern, ASSERT);
     string_t retval;
@@ -184,11 +184,11 @@ namespace silva {
 
   expected_t<string_t> fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
-    token_context_ptr_t tcp           = pt->tokenization->context;
-    const full_name_id_t fni_fern     = tcp->full_name_id_of("Fern");
-    const full_name_id_t fni_lbl_item = tcp->full_name_id_of("LabeledItem");
-    const full_name_id_t fni_label    = tcp->full_name_id_of("Label");
-    const full_name_id_t fni_value    = tcp->full_name_id_of("Value");
+    token_context_ptr_t tcp      = pt->tokenization->context;
+    const name_id_t fni_fern     = tcp->name_id_of("Fern");
+    const name_id_t fni_lbl_item = tcp->name_id_of("LabeledItem");
+    const name_id_t fni_label    = tcp->name_id_of("Label");
+    const name_id_t fni_value    = tcp->name_id_of("Value");
 
     SILVA_EXPECT(pt->nodes[start_node].rule_name == fni_fern, ASSERT);
     string_t retval    = "digraph Fern {\n";
@@ -386,10 +386,10 @@ namespace silva {
       token_id_t tt_true  = tcp->token_id("true");
       token_id_t tt_false = tcp->token_id("false");
 
-      full_name_id_t fni_fern     = tcp->full_name_id_of("Fern");
-      full_name_id_t fni_lbl_item = tcp->full_name_id_of("LabeledItem");
-      full_name_id_t fni_label    = tcp->full_name_id_of("Label");
-      full_name_id_t fni_value    = tcp->full_name_id_of("Value");
+      name_id_t fni_fern     = tcp->name_id_of("Fern");
+      name_id_t fni_lbl_item = tcp->name_id_of("LabeledItem");
+      name_id_t fni_label    = tcp->name_id_of("Label");
+      name_id_t fni_value    = tcp->name_id_of("Value");
 
       expected_t<fern_labeled_item_t> labeled_item(const index_t start_node)
       {

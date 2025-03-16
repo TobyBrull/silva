@@ -13,39 +13,39 @@ namespace silva {
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
 
-    vector_t<full_name_info_t> full_name_infos;
-    hashmap_t<full_name_info_t, full_name_id_t> full_name_lookup;
+    vector_t<name_info_t> name_infos;
+    hashmap_t<name_info_t, name_id_t> name_lookup;
 
     token_context_t();
 
     token_id_t token_id(string_view_t);
     expected_t<token_id_t> token_id_unquoted(token_id_t);
 
-    full_name_id_t full_name_id(full_name_id_t parent_name, token_id_t base_name);
-    full_name_id_t full_name_id_span(full_name_id_t parent_name, span_t<const token_id_t>);
-    bool full_name_id_is_parent(full_name_id_t parent_name, full_name_id_t child_name) const;
+    name_id_t name_id(name_id_t parent_name, token_id_t base_name);
+    name_id_t name_id_span(name_id_t parent_name, span_t<const token_id_t>);
+    bool name_id_is_parent(name_id_t parent_name, name_id_t child_name) const;
 
-    full_name_id_t full_name_id_lca(full_name_id_t, full_name_id_t) const;
+    name_id_t name_id_lca(name_id_t, name_id_t) const;
 
     template<typename... Ts>
-    full_name_id_t full_name_id_of(Ts&&... xs);
+    name_id_t name_id_of(Ts&&... xs);
     template<typename... Ts>
-    full_name_id_t full_name_id_of(full_name_id_t parent_name, Ts&&... xs);
+    name_id_t name_id_of(name_id_t parent_name, Ts&&... xs);
   };
   using token_context_ptr_t = ptr_t<token_context_t>;
 
-  struct full_name_id_style_t {
+  struct name_id_style_t {
     token_context_ptr_t tcp;
     token_id_t root      = tcp->token_id("silva");
     token_id_t current   = tcp->token_id("x");
     token_id_t parent    = tcp->token_id("up");
     token_id_t separator = tcp->token_id(".");
 
-    full_name_id_t from_token_span(full_name_id_t current, span_t<const token_id_t>) const;
+    name_id_t from_token_span(name_id_t current, span_t<const token_id_t>) const;
 
-    string_t absolute(full_name_id_t) const;
-    string_t relative(full_name_id_t current, full_name_id_t) const;
-    string_t readable(full_name_id_t current, full_name_id_t) const;
+    string_t absolute(name_id_t) const;
+    string_t relative(name_id_t current, name_id_t) const;
+    string_t readable(name_id_t current, name_id_t) const;
   };
 
   struct tokenization_t : public sprite_t {
@@ -93,19 +93,19 @@ namespace silva {
 
 namespace silva {
   template<typename... Ts>
-  full_name_id_t token_context_t::full_name_id_of(Ts&&... xs)
+  name_id_t token_context_t::name_id_of(Ts&&... xs)
   {
     vector_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
-    return full_name_id_span(full_name_id_none, vec);
+    return name_id_span(name_id_root, vec);
   }
 
   template<typename... Ts>
-  full_name_id_t token_context_t::full_name_id_of(full_name_id_t parent_name, Ts&&... xs)
+  name_id_t token_context_t::name_id_of(name_id_t parent_name, Ts&&... xs)
   {
     vector_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
-    return full_name_id_span(parent_name, vec);
+    return name_id_span(parent_name, vec);
   }
 
   template<>

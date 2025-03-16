@@ -26,18 +26,18 @@ namespace silva {
     return convert_to<double>(str);
   }
 
-  hash_value_t hash_impl(const full_name_info_t& x)
+  hash_value_t hash_impl(const name_info_t& x)
   {
-    return hash(tuple_t<full_name_id_t, token_id_t>{x.parent_name, x.base_name});
+    return hash(tuple_t<name_id_t, token_id_t>{x.parent_name, x.base_name});
   }
 
   token_context_t::token_context_t()
   {
     token_infos.emplace_back();
     token_lookup[""] = token_id_none;
-    const full_name_info_t fni{0, 0};
-    full_name_infos.emplace_back(fni);
-    full_name_lookup.emplace(fni, 0);
+    const name_info_t fni{0, 0};
+    name_infos.emplace_back(fni);
+    name_lookup.emplace(fni, 0);
   }
 
   tokenization_t tokenization_t::copy() const
@@ -350,53 +350,50 @@ namespace silva {
     return retval;
   }
 
-  full_name_id_t token_context_t::full_name_id(const full_name_id_t parent_name,
-                                               const token_id_t base_name)
+  name_id_t token_context_t::name_id(const name_id_t parent_name, const token_id_t base_name)
   {
-    const full_name_info_t fni{parent_name, base_name};
-    const auto [it, inserted] = full_name_lookup.emplace(fni, full_name_infos.size());
+    const name_info_t fni{parent_name, base_name};
+    const auto [it, inserted] = name_lookup.emplace(fni, name_infos.size());
     if (inserted) {
-      full_name_infos.push_back(fni);
+      name_infos.push_back(fni);
     }
     return it->second;
   }
 
-  full_name_id_t token_context_t::full_name_id_span(const full_name_id_t parent_name,
-                                                    const span_t<const token_id_t> token_ids)
+  name_id_t token_context_t::name_id_span(const name_id_t parent_name,
+                                          const span_t<const token_id_t> token_ids)
   {
-    full_name_id_t retval = parent_name;
+    name_id_t retval = parent_name;
     for (const token_id_t token_id: token_ids) {
-      retval = full_name_id(retval, token_id);
+      retval = name_id(retval, token_id);
     }
     return retval;
   }
 
-  bool token_context_t::full_name_id_is_parent(const full_name_id_t parent_name,
-                                               token_id_t child_name) const
+  bool token_context_t::name_id_is_parent(const name_id_t parent_name, token_id_t child_name) const
   {
     while (true) {
       if (child_name == parent_name) {
         return true;
       }
-      if (child_name == full_name_id_none) {
+      if (child_name == name_id_root) {
         return false;
       }
-      child_name = full_name_infos[child_name].parent_name;
+      child_name = name_infos[child_name].parent_name;
     }
   }
 
-  full_name_id_t token_context_t::full_name_id_lca(const full_name_id_t lhs,
-                                                   const full_name_id_t rhs) const
+  name_id_t token_context_t::name_id_lca(const name_id_t lhs, const name_id_t rhs) const
   {
     // TODO: O(1) time, O(n) memory ?
-    const auto fni_path = [this](full_name_id_t x) {
-      vector_t<full_name_id_t> retval;
+    const auto fni_path = [this](name_id_t x) {
+      vector_t<name_id_t> retval;
       while (true) {
         retval.push_back(x);
-        if (x == full_name_id_none) {
+        if (x == name_id_root) {
           break;
         }
-        x = full_name_infos[x].parent_name;
+        x = name_infos[x].parent_name;
       }
       std::ranges::reverse(retval);
       return retval;
@@ -412,43 +409,42 @@ namespace silva {
     return lhs_path[common];
   }
 
-  string_t full_name_id_style_t::absolute(const full_name_id_t target_fni) const
+  string_t name_id_style_t::absolute(const name_id_t target_fni) const
   {
-    if (target_fni == full_name_id_none) {
+    if (target_fni == name_id_root) {
       return tcp->token_infos[root].str;
     }
-    const full_name_info_t& fni = tcp->full_name_infos[target_fni];
+    const name_info_t& fni = tcp->name_infos[target_fni];
     return absolute(fni.parent_name) + tcp->token_infos[separator].str +
         tcp->token_infos[fni.base_name].str;
   }
 
-  string_t full_name_id_style_t::relative(const full_name_id_t current_fni,
-                                          const full_name_id_t target_fni) const
+  string_t name_id_style_t::relative(const name_id_t current_fni, const name_id_t target_fni) const
   {
-    const full_name_id_t lca = tcp->full_name_id_lca(current_fni, target_fni);
+    const name_id_t lca = tcp->name_id_lca(current_fni, target_fni);
 
     string_t first_part;
     {
-      full_name_id_t curr = current_fni;
+      name_id_t curr = current_fni;
       while (curr != lca) {
         if (!first_part.empty()) {
           first_part += tcp->token_infos[separator].str;
         }
         first_part += tcp->token_infos[parent].str;
-        curr = tcp->full_name_infos[curr].parent_name;
+        curr = tcp->name_infos[curr].parent_name;
       }
     }
 
     string_t second_part;
     {
-      full_name_id_t curr = target_fni;
+      name_id_t curr = target_fni;
       while (curr != lca) {
         if (!second_part.empty()) {
           second_part = tcp->token_infos[separator].str + second_part;
         }
-        const full_name_info_t* fni = &tcp->full_name_infos[curr];
-        second_part                 = tcp->token_infos[fni->base_name].str + second_part;
-        curr                        = tcp->full_name_infos[curr].parent_name;
+        const name_info_t* fni = &tcp->name_infos[curr];
+        second_part            = tcp->token_infos[fni->base_name].str + second_part;
+        curr                   = tcp->name_infos[curr].parent_name;
       }
     }
     if (!first_part.empty() && !second_part.empty()) {

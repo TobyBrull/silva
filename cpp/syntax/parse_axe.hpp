@@ -100,7 +100,7 @@ namespace silva::parse_axe {
   template<typename Oper>
   struct result_oper_t {
     Oper oper;
-    full_name_id_t name = 0;
+    name_id_t name = 0;
     precedence_t precedence;
 
     friend auto operator<=>(const result_oper_t<Oper>&, const result_oper_t<Oper>&) = default;
@@ -120,13 +120,13 @@ namespace silva::parse_axe {
     optional_t<result_oper_t<oper_regular_t>> concat_result;
 
     expected_t<parse_tree_sub_t> apply(parse_tree_nursery_t&,
-                                       full_name_id_t atom_name_id,
+                                       name_id_t atom_name_id,
                                        delegate_t<expected_t<parse_tree_sub_t>()> atom) const;
   };
 
   struct parse_axe_level_desc_t {
-    full_name_id_t name = 0;
-    assoc_t assoc       = assoc_t::INVALID;
+    name_id_t name = 0;
+    assoc_t assoc  = assoc_t::INVALID;
     vector_t<oper_any_t> opers;
   };
   expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t,

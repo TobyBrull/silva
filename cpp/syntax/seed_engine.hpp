@@ -25,21 +25,21 @@ namespace silva {
     };
 
     // For each rule name, gives the node-index of the expression describing that rule.
-    hashmap_t<full_name_id_t, tree_node_index_t> rule_exprs;
+    hashmap_t<name_id_t, tree_node_index_t> rule_exprs;
 
     // For each node-index that is a "Silva.Seed.Nonterminal", gives the full name of the rule that
     // this nonterminal references.
-    hashmap_t<tree_node_index_t, full_name_id_t> nonterminal_rules;
+    hashmap_t<tree_node_index_t, name_id_t> nonterminal_rules;
 
     // Maps the token-id's that correspond to regexes to the compiled version of that regex.
     hashmap_t<token_id_t, optional_t<std::regex>> regexes;
 
     // Maps the rule-name of a parse-axe to the corresponding parse-axe.
     struct parse_axe_data_t {
-      full_name_id_t atom_rule_name = full_name_id_none;
+      name_id_t atom_rule_name = name_id_root;
       parse_axe::parse_axe_t parse_axe;
     };
-    hashmap_t<full_name_id_t, parse_axe_data_t> parse_axes;
+    hashmap_t<name_id_t, parse_axe_data_t> parse_axes;
 
     // Main constructor.
     static expected_t<unique_ptr_t<seed_engine_t>> create(shared_ptr_t<const parse_tree_t>);
@@ -52,6 +52,6 @@ namespace silva {
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.
     expected_t<unique_ptr_t<parse_tree_t>> apply(shared_ptr_t<const tokenization_t>,
-                                                 full_name_id_t goal_rule_name) const;
+                                                 name_id_t goal_rule_name) const;
   };
 }

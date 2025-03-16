@@ -8,9 +8,9 @@
 namespace silva {
   using enum token_category_t;
 
-  full_name_id_style_t seed_full_name_style(token_context_ptr_t tcp)
+  name_id_style_t seed_name_style(token_context_ptr_t tcp)
   {
-    return full_name_id_style_t{
+    return name_id_style_t{
         .tcp       = tcp,
         .root      = tcp->token_id("Silva"),
         .current   = tcp->token_id("X"),
@@ -23,15 +23,15 @@ namespace silva {
   {
     using namespace parse_axe;
     using enum assoc_t;
-    full_name_id_t fni_expr = tcp->full_name_id_of("Seed", "Expr");
+    name_id_t fni_expr = tcp->name_id_of("Seed", "Expr");
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->full_name_id_of(fni_expr, "Parens"),
+        .name  = tcp->name_id_of(fni_expr, "Parens"),
         .assoc = NEST,
         .opers = {atom_nest_t{tcp->token_id("("), tcp->token_id(")")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->full_name_id_of(fni_expr, "Postfix"),
+        .name  = tcp->name_id_of(fni_expr, "Postfix"),
         .assoc = LEFT_TO_RIGHT,
         .opers =
             {
@@ -43,7 +43,7 @@ namespace silva {
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->full_name_id_of(fni_expr, "Concat"),
+        .name  = tcp->name_id_of(fni_expr, "Concat"),
         .assoc = LEFT_TO_RIGHT,
         .opers = {infix_t{
             .token_id = tcp->token_id("concat"),
@@ -52,7 +52,7 @@ namespace silva {
         }},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->full_name_id_of(fni_expr, "Alt"),
+        .name  = tcp->name_id_of(fni_expr, "Alt"),
         .assoc = LEFT_TO_RIGHT,
         .opers = {infix_t{.token_id = tcp->token_id("|"), .flatten = true}},
     });
@@ -92,20 +92,20 @@ namespace silva {
       token_id_t tt_prefix_n    = tcp->token_id("prefix_nest");
       token_id_t tt_concat      = tcp->token_id("concat");
 
-      full_name_id_t fni_seed        = tcp->full_name_id_of("Seed");
-      full_name_id_t fni_rule        = tcp->full_name_id_of(fni_seed, "Rule");
-      full_name_id_t fni_expr_or_a   = tcp->full_name_id_of(fni_seed, "ExprOrAlias");
-      full_name_id_t fni_expr        = tcp->full_name_id_of(fni_seed, "Expr");
-      full_name_id_t fni_atom        = tcp->full_name_id_of(fni_seed, "Atom");
-      full_name_id_t fni_axe         = tcp->full_name_id_of(fni_seed, "Axe");
-      full_name_id_t fni_axe_level   = tcp->full_name_id_of(fni_axe, "Level");
-      full_name_id_t fni_axe_assoc   = tcp->full_name_id_of(fni_axe, "Assoc");
-      full_name_id_t fni_axe_ops     = tcp->full_name_id_of(fni_axe, "Ops");
-      full_name_id_t fni_axe_op_type = tcp->full_name_id_of(fni_axe, "OpType");
-      full_name_id_t fni_axe_op      = tcp->full_name_id_of(fni_axe, "Op");
-      full_name_id_t fni_nt          = tcp->full_name_id_of(fni_seed, "Nonterminal");
-      full_name_id_t fni_nt_base     = tcp->full_name_id_of(fni_nt, "Base");
-      full_name_id_t fni_term        = tcp->full_name_id_of(fni_seed, "Terminal");
+      name_id_t fni_seed        = tcp->name_id_of("Seed");
+      name_id_t fni_rule        = tcp->name_id_of(fni_seed, "Rule");
+      name_id_t fni_expr_or_a   = tcp->name_id_of(fni_seed, "ExprOrAlias");
+      name_id_t fni_expr        = tcp->name_id_of(fni_seed, "Expr");
+      name_id_t fni_atom        = tcp->name_id_of(fni_seed, "Atom");
+      name_id_t fni_axe         = tcp->name_id_of(fni_seed, "Axe");
+      name_id_t fni_axe_level   = tcp->name_id_of(fni_axe, "Level");
+      name_id_t fni_axe_assoc   = tcp->name_id_of(fni_axe, "Assoc");
+      name_id_t fni_axe_ops     = tcp->name_id_of(fni_axe, "Ops");
+      name_id_t fni_axe_op_type = tcp->name_id_of(fni_axe, "OpType");
+      name_id_t fni_axe_op      = tcp->name_id_of(fni_axe, "Op");
+      name_id_t fni_nt          = tcp->name_id_of(fni_seed, "Nonterminal");
+      name_id_t fni_nt_base     = tcp->name_id_of(fni_nt, "Base");
+      name_id_t fni_term        = tcp->name_id_of(fni_seed, "Terminal");
 
       parse_axe::parse_axe_t seed_parse_axe;
 

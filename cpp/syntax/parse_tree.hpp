@@ -8,9 +8,9 @@ namespace silva {
   struct seed_engine_t;
 
   struct parse_tree_node_data_t {
-    full_name_id_t rule_name = 0;
-    index_t token_begin      = std::numeric_limits<index_t>::max();
-    index_t token_end        = std::numeric_limits<index_t>::min();
+    name_id_t rule_name = 0;
+    index_t token_begin = std::numeric_limits<index_t>::max();
+    index_t token_end   = std::numeric_limits<index_t>::min();
 
     index_t num_tokens() const { return token_end - token_begin; }
 

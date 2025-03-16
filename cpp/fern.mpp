@@ -19,7 +19,7 @@ silva_main()
   unique_ptr_t<parse_tree_t> pt;
   auto fpr = fern_seed_engine(tc.ptr());
   if (arg_root) {
-    pt = SILVA_EXPECT_FWD(fpr->apply(std::move(tt), tc.full_name_id_of("Fern")));
+    pt = SILVA_EXPECT_FWD(fpr->apply(std::move(tt), tc.name_id_of("Fern")));
   }
   else {
     pt = SILVA_EXPECT_FWD(fern_parse(std::move(tt)));

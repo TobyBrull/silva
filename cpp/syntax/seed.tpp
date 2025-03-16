@@ -14,7 +14,7 @@ TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
   const auto spr       = seed_seed_engine(tc.ptr());
   const auto seed_tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", string_t{seed_seed})));
   const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
-  const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, tc.full_name_id_of("Seed")));
+  const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, tc.name_id_of("Seed")));
   CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
   REQUIRE(spr->seed_parse_trees.size() == 1);
   CHECK(seed_pt_1->nodes == spr->seed_parse_trees.front()->nodes);
@@ -34,8 +34,7 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
   const auto sf_seed_tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", sf_text)));
   const auto sf_seed_pt_1 = share(SILVA_EXPECT_REQUIRE(seed_parse(sf_seed_tt)));
   const auto spr          = seed_seed_engine(tc.ptr());
-  const auto sf_seed_pt_2 =
-      SILVA_EXPECT_REQUIRE(spr->apply(sf_seed_tt, tc.full_name_id_of("Seed")));
+  const auto sf_seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(sf_seed_tt, tc.name_id_of("Seed")));
   CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
   const std::string_view expected = R"(
@@ -90,11 +89,11 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
   const auto sfpr = SILVA_EXPECT_REQUIRE(seed_engine_t::create(sf_seed_pt_1));
   REQUIRE(sfpr->rule_exprs.size() == 4);
   using rfl::json::write;
-  using tni_t                 = seed_engine_t::tree_node_index_t;
-  const full_name_id_t fni_sf = tc.full_name_id_of("SimpleFern");
-  const full_name_id_t fni_li = tc.full_name_id_of(fni_sf, "LabeledItem");
-  const full_name_id_t fni_l  = tc.full_name_id_of(fni_sf, "Label");
-  const full_name_id_t fni_i  = tc.full_name_id_of(fni_sf, "Item");
+  using tni_t            = seed_engine_t::tree_node_index_t;
+  const name_id_t fni_sf = tc.name_id_of("SimpleFern");
+  const name_id_t fni_li = tc.name_id_of(fni_sf, "LabeledItem");
+  const name_id_t fni_l  = tc.name_id_of(fni_sf, "Label");
+  const name_id_t fni_i  = tc.name_id_of(fni_sf, "Item");
   CHECK(sfpr->rule_exprs.at(fni_sf) == tni_t{.node_index = 6});
   CHECK(sfpr->rule_exprs.at(fni_li) == tni_t{.node_index = 19});
   CHECK(sfpr->rule_exprs.at(fni_l) == tni_t{.node_index = 31});

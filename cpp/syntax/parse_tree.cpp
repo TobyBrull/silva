@@ -21,7 +21,7 @@ namespace silva {
                                             const parse_tree_printing_t printing)
   {
     token_context_ptr_t tcp = pt.tokenization->context;
-    const auto style        = seed_full_name_style(tcp);
+    const auto style        = seed_name_style(tcp);
     return tree_to_string(pt, [&](string_t& curr_line, auto& path) {
       const auto& node = pt.nodes[path.back().node_index];
       using enum parse_tree_printing_t;
@@ -30,7 +30,7 @@ namespace silva {
       }
       else {
         if (path.size() >= 2) {
-          full_name_id_t from = pt.nodes[path[path.size() - 2].node_index].rule_name;
+          name_id_t from = pt.nodes[path[path.size() - 2].node_index].rule_name;
           curr_line += style.relative(from, node.rule_name);
         }
         else {
@@ -63,7 +63,7 @@ namespace silva {
   expected_t<string_t> parse_tree_to_graphviz(const parse_tree_t& pt)
   {
     token_context_ptr_t tcp = pt.tokenization->context;
-    const auto style        = seed_full_name_style(tcp);
+    const auto style        = seed_name_style(tcp);
     return tree_to_graphviz(pt, [&](auto& node) {
       return fmt::format("{}\\n{}",
                          style.absolute(node.rule_name),

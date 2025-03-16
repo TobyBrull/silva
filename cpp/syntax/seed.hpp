@@ -53,7 +53,7 @@ namespace silva {
 
   struct seed_engine_t;
 
-  full_name_id_style_t seed_full_name_style(token_context_ptr_t);
+  name_id_style_t seed_name_style(token_context_ptr_t);
 
   // Invariant (pseudo-code):
   //    seed_seed_engine()->apply(tokenization, "Seed") == seed_parse(tokenization)

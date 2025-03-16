@@ -105,7 +105,7 @@ namespace silva {
     }
   }
 
-  void parse_tree_guard_for_rule_t::set_rule_name(const full_name_id_t rule_name)
+  void parse_tree_guard_for_rule_t::set_rule_name(const name_id_t rule_name)
   {
     pt->nodes[node_index].rule_name = rule_name;
   }
