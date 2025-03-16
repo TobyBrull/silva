@@ -12,6 +12,8 @@ namespace silva {
   };
   string_view_t to_string(token_category_t);
 
+  class syntax_context_t;
+
   // An index in the "token_infos" vector of "token_context_t". Equality of two tokens is then
   // equivalent to the equality of their token_info_index_t.
   using token_id_t = index_t;
@@ -40,11 +42,23 @@ namespace silva {
     friend hash_value_t hash_impl(const name_info_t& x);
   };
 
-  struct syntax_context_t : public menhir_t {
+  struct tokenization_t;
+  struct parse_tree_t;
+
+  using tokenization_id_t = index_t;
+  using tree_id_t         = index_t;
+
+  class syntax_context_t : public menhir_t {
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
 
     vector_t<name_info_t> name_infos;
     hashmap_t<name_info_t, name_id_t> name_lookup;
+
+    vector_t<unique_ptr_t<const tokenization_t>> tokenizations;
+    vector_t<unique_ptr_t<const parse_tree_t>> trees;
+
+   public:
+    syntax_context_t();
   };
 }

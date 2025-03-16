@@ -14,14 +14,16 @@ namespace silva {
     void combine(hash_value_t);
   };
 
+  hash_value_t hash_impl(const string_t&);
+  hash_value_t hash_impl(const string_view_t&);
+
   template<typename T>
-    requires std::is_integral_v<T> || std::is_enum_v<T>
+    requires std::is_fundamental_v<T> || std::is_enum_v<T>
   hash_value_t hash_impl(T x);
 
   template<typename T>
-    requires std::is_same_v<T, string_t> || std::is_same_v<T, string_view_t> ||
-      (std::is_array_v<T> && std::is_same_v<std::remove_extent_t<T>, char>)
-  hash_value_t hash_impl(const T& x);
+    requires std::is_pointer_v<T>
+  hash_value_t hash_impl(T x);
 
   template<typename T, typename U>
   hash_value_t hash_impl(const pair_t<T, U>&);
@@ -60,19 +62,33 @@ namespace silva {
     return hash_impl(x);
   }
 
-  template<typename T>
-    requires std::is_integral_v<T> || std::is_enum_v<T>
-  hash_value_t hash_impl(T x)
+  inline hash_value_t hash_impl(const string_t& x)
   {
-    return static_cast<hash_value_t>(x);
+    return std::hash<string_view_t>{}(x);
+  }
+
+  inline hash_value_t hash_impl(const string_view_t& x)
+  {
+    return std::hash<string_view_t>{}(x);
   }
 
   template<typename T>
-    requires std::is_same_v<T, string_t> || std::is_same_v<T, string_view_t> ||
-      (std::is_array_v<T> && std::is_same_v<std::remove_extent_t<T>, char>)
-  hash_value_t hash_impl(const T& x)
+    requires std::is_fundamental_v<T> || std::is_enum_v<T>
+  hash_value_t hash_impl(T x)
   {
-    return std::hash<string_view_t>{}(x);
+    return std::hash<T>{}(x);
+  }
+
+  template<typename T>
+    requires std::is_pointer_v<T>
+  hash_value_t hash_impl(T x)
+  {
+    if constexpr (std::same_as<std::remove_cv_t<std::remove_pointer_t<T>>, char>) {
+      return std::hash<string_view_t>{}(string_view_t{x});
+    }
+    else {
+      return hash_value_t(x);
+    }
   }
 
   template<typename T, typename U>
@@ -88,7 +104,7 @@ namespace silva {
   hash_value_t hash_impl_indexed(const Tuple& x, std::index_sequence<Is...>)
   {
     hash_combiner_t hc;
-    (hc.combine(std::get<Is>(x)), ...);
+    (hc.combine(hash(std::get<Is>(x))), ...);
     return hc.value;
   }
 

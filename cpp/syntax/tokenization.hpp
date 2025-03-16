@@ -7,9 +7,6 @@
 namespace silva {
 
   struct token_context_t : public menhir_t {
-    constexpr static bool context_use_default = true;
-    constexpr static bool context_mutable_get = true;
-
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
 

@@ -14,19 +14,22 @@ namespace silva {
   using enum token_category_t;
   using enum error_level_t;
 
-  using tree_node_index_t = seed_engine_t::tree_node_index_t;
-
   tree_node_index_t tree_node_index_t::with_node_index(const index_t node_index) const
   {
     return {
-        .tree_index = tree_index,
+        .parse_tree = parse_tree,
         .node_index = node_index,
     };
   }
 
+  const parse_tree_t::node_t& tree_node_index_t::node() const
+  {
+    return parse_tree->nodes[node_index];
+  }
+
   hash_value_t hash_impl(const tree_node_index_t& x)
   {
-    return hash(tuple_t<index_t, index_t>{x.tree_index, x.node_index});
+    return hash(tuple_t<const parse_tree_t*, index_t>{x.parse_tree, x.node_index});
   }
 
   struct seed_engine_create_nursery_t {
@@ -234,13 +237,13 @@ namespace silva {
                                                                  const name_id_t rule_name,
                                                                  const tree_node_index_t tni)
     {
-      const auto& s_node = spts[tni.tree_index]->nodes[tni.node_index];
+      const auto& s_node = tni.parse_tree->nodes[tni.node_index];
       SILVA_EXPECT(s_node.rule_name == fni_axe, MINOR);
       vector_t<parse_axe::parse_axe_level_desc_t> level_descs;
       SILVA_EXPECT(s_node.num_children >= 1, MINOR);
       level_descs.reserve(s_node.num_children - 1);
       name_id_t atom_rule_name = name_id_root;
-      auto result              = spts[tni.tree_index]->visit_children(
+      auto result              = tni.parse_tree->visit_children(
           [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
             if (child_index == 0) {
               SILVA_EXPECT(s_nodes[child_node_index].rule_name == fni_nt, MINOR);
@@ -326,7 +329,7 @@ namespace silva {
                      "Second child of Rule must be one of [ Axe Seed ExprOrAlias ]");
         const auto [it, inserted] = retval->rule_exprs.emplace(curr_rule_name,
                                                                tree_node_index_t{
-                                                                   .tree_index = 0,
+                                                                   .parse_tree = spts.front().get(),
                                                                    .node_index = children[1],
                                                                });
         SILVA_EXPECT(inserted, MINOR, "Repeated rule name '{}'", fnis.absolute(curr_rule_name));
@@ -336,7 +339,7 @@ namespace silva {
               SILVA_EXPECT_FWD(create_parse_axe(scope_name,
                                                 curr_rule_name,
                                                 tree_node_index_t{
-                                                    .tree_index = 0,
+                                                    .parse_tree = spts.front().get(),
                                                     .node_index = children[1],
                                                 }));
         }
@@ -347,7 +350,7 @@ namespace silva {
               const name_id_t nt_name   = SILVA_EXPECT_FWD(derive_name(scope_name, node_index));
               const auto [it, inserted] = retval->nonterminal_rules.emplace(
                   tree_node_index_t{
-                      .tree_index = 0,
+                      .parse_tree = spts.front().get(),
                       .node_index = node_index,
                   },
                   nt_name);
@@ -432,11 +435,6 @@ namespace silva {
 
       const vector_t<shared_ptr_t<const parse_tree_t>>& spts = root->seed_parse_trees;
 
-      const parse_tree_t::node_t& get_s_node(const seed_engine_t::tree_node_index_t& tni)
-      {
-        return spts[tni.tree_index]->nodes[tni.node_index];
-      }
-
       int rule_depth = 0;
 
       const token_id_t ti_id     = tcp->token_id("identifier");
@@ -489,7 +487,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> s_terminal(const tree_node_index_t tni)
       {
         auto gg            = guard();
-        const auto& s_node = get_s_node(tni);
+        const auto& s_node = tni.node();
         SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
         SILVA_EXPECT(s_node.rule_name == fni_term, MAJOR);
         const token_id_t s_front_ti = s_tokens[s_node.token_begin];
@@ -571,10 +569,9 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> s_expr_postfix(const tree_node_index_t tni)
       {
-        auto gg = guard();
-        const auto children =
-            SILVA_EXPECT_FWD(spts[tni.tree_index]->get_children<1>(tni.node_index));
-        const token_id_t op_ti = tcp->name_infos[get_s_node(tni).rule_name].base_name;
+        auto gg                = guard();
+        const auto children    = SILVA_EXPECT_FWD(tni.parse_tree->get_children<1>(tni.node_index));
+        const token_id_t op_ti = tcp->name_infos[tni.node().rule_name].base_name;
         if (op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus) {
           const auto [min_repeat, max_repeat] = get_min_max_repeat(op_ti);
           parse_tree_sub_t sub_sub;
@@ -622,7 +619,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> s_expr_concat(const tree_node_index_t tni)
       {
         auto gg          = guard();
-        const auto& s_pt = *spts[tni.tree_index];
+        const auto& s_pt = *tni.parse_tree;
         auto result      = s_pt.visit_children(
             [&](const index_t sub_s_node_index, const index_t) -> expected_t<bool> {
               gg.sub += SILVA_EXPECT_FWD(s_expr(tni.with_node_index(sub_s_node_index)));
@@ -638,7 +635,7 @@ namespace silva {
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
         optional_t<parse_tree_sub_t> retval;
-        auto result = spts[tni.tree_index]->visit_children(
+        auto result = tni.parse_tree->visit_children(
             [&](const index_t sub_s_node_index, const index_t) -> expected_t<bool> {
               auto result = s_expr(tni.with_node_index(sub_s_node_index));
               if (result.has_value()) {
@@ -663,7 +660,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> s_expr(const tree_node_index_t tni)
       {
-        const auto& s_pt            = *spts[tni.tree_index];
+        const auto& s_pt            = *tni.parse_tree;
         const name_id_t s_rule_name = s_pt.nodes[tni.node_index].rule_name;
         if (tcp->name_id_is_parent(fni_expr_parens, s_rule_name)) {
           const auto children = SILVA_EXPECT_FWD(s_pt.get_children<1>(tni.node_index));
@@ -720,7 +717,7 @@ namespace silva {
                      "Unknown rule: {}",
                      fnis.absolute(t_rule_name));
         const tree_node_index_t tni        = it->second;
-        const parse_tree_t::node_t& s_node = get_s_node(tni);
+        const parse_tree_t::node_t& s_node = tni.node();
         const name_id_t s_expr_name        = s_node.rule_name;
         if (s_expr_name == fni_axe) {
           return SILVA_EXPECT_FWD(handle_rule_axe(t_rule_name), "Expected Axe");

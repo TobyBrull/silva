@@ -7,22 +7,24 @@
 
 namespace silva {
 
+  struct tree_node_index_t {
+    // Index in the "seed_parse_trees" vector_t.
+    const parse_tree_t* parse_tree = nullptr;
+    // Node-index in the parse_tree_t referenced by "tree_index".
+    index_t node_index = 0;
+
+    tree_node_index_t with_node_index(index_t) const;
+
+    const parse_tree_t::node_t& node() const;
+
+    friend auto operator<=>(const tree_node_index_t&, const tree_node_index_t&) = default;
+    friend hash_value_t hash_impl(const tree_node_index_t& x);
+  };
+
   // Driver for a program in the Seed language.
   struct seed_engine_t {
     // Parse trees containing the used Seed programs.
     vector_t<shared_ptr_t<const parse_tree_t>> seed_parse_trees;
-
-    struct tree_node_index_t {
-      // Index in the "seed_parse_trees" vector_t.
-      index_t tree_index = 0;
-      // Node-index in the parse_tree_t referenced by "tree_index".
-      index_t node_index = 0;
-
-      tree_node_index_t with_node_index(index_t) const;
-
-      friend auto operator<=>(const tree_node_index_t&, const tree_node_index_t&) = default;
-      friend hash_value_t hash_impl(const tree_node_index_t& x);
-    };
 
     // For each rule name, gives the node-index of the expression describing that rule.
     hashmap_t<name_id_t, tree_node_index_t> rule_exprs;
