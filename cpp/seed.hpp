@@ -13,15 +13,14 @@
 
 namespace silva {
 
-  // A program in the Seed language describes a way to turn a stream of tokens into a parse_tree_t.
-  // The actual algorithm to do this is implemented in "seed_engine_t".
+  // A program in the Seed language describes a way to turn a tokenization
+  // into a parse_tree_t. The actual algorithm to do this is implemented
+  // in "seed_engine_t".
 
   const string_view_t seed_seed = R"'(
     - Seed [
       - X = ( '-' Rule ) *
-      - Rule = Nonterminal.Base ( ExprOrAlias
-                                | '=/' Axe
-                                | '[' Silva.Seed ']' )
+      - Rule = Nonterminal.Base ( ExprOrAlias | Axe | '[' X ']' )
       - ExprOrAlias = ( '=' | '=>' ) Expr
       - Expr =/ Atom [
         - Parens    = nest  atom_nest '(' ')'
@@ -31,7 +30,7 @@ namespace silva {
       ]
       - Atom => Nonterminal | Terminal
       - Axe [
-        - X = Up.Nonterminal '[' ( '-' Level ) * ']'
+        - X = '=/' Up.Nonterminal '[' ( '-' Level ) * ']'
         - Level = Up.Nonterminal.Base '=' Assoc Ops*
         - Assoc = 'nest' | 'ltr' | 'rtl'
         - Ops = OpType Op*
@@ -56,8 +55,8 @@ namespace silva {
 
   full_name_id_style_t seed_full_name_style(token_context_ptr_t);
 
-  // Invariant:
-  //    seed_seed_engine()->apply(tokens) == seed_parse(tokens)
+  // Invariant (pseudo-code):
+  //    seed_seed_engine()->apply(tokenization, "Seed") == seed_parse(tokenization)
   expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t>);
   unique_ptr_t<seed_engine_t> seed_seed_engine(token_context_ptr_t);
 }

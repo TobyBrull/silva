@@ -11,7 +11,7 @@ namespace silva {
   )'";
 
   // Invariant:
-  //    fern_seed_engine()->apply(tokens) == fern_parse(tokens)
+  //    fern_seed_engine()->apply(tokenization, "Fern") == fern_parse(tokenization)
   expected_t<unique_ptr_t<parse_tree_t>> fern_parse(shared_ptr_t<const tokenization_t>);
   unique_ptr_t<seed_engine_t> fern_seed_engine(token_context_ptr_t);
 

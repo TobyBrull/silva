@@ -228,6 +228,8 @@ namespace silva {
       {
         auto gg_rule = guard_for_rule();
         gg_rule.set_rule_name(fni_axe);
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_axe, "Expected '['");
+        token_index += 1;
         gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
                            "Expected '['");
@@ -305,7 +307,6 @@ namespace silva {
           gg_rule.sub += SILVA_EXPECT_FWD(expr_or_alias());
         }
         else if (op_ti == tt_axe) {
-          token_index += 1;
           gg_rule.sub += SILVA_EXPECT_FWD(axe());
         }
         else if (op_ti == tt_brack_open) {
