@@ -6,9 +6,6 @@
     * Add tree_nursery_t and tree_inv_nursery_t
     * Add tree_view_t and tree_inv_view_t
 
-    * Use num_children_total (and num_children_direct?) instead of children_begin/end
-      For easier grafting.
-
 * Allow multiple code snippets
     * token_context_t -> naming_context_t
         * could include the set of tokenizations

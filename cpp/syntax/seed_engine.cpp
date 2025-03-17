@@ -344,8 +344,8 @@ namespace silva {
                                                 }));
         }
         else {
-          for (index_t node_index = children[1]; node_index < s_nodes[children[1]].children_end;
-               ++node_index) {
+          const index_t node_index_end = children[1] + s_nodes[children[1]].subtree_size;
+          for (index_t node_index = children[1]; node_index < node_index_end; ++node_index) {
             if (s_nodes[node_index].rule_name == fni_nt) {
               const name_id_t nt_name   = SILVA_EXPECT_FWD(derive_name(scope_name, node_index));
               const auto [it, inserted] = retval->nonterminal_rules.emplace(

@@ -10,8 +10,11 @@ namespace silva {
   template<typename NodeData>
   struct tree_t {
     struct node_t : public NodeData {
+      // Number of direct children of this node.
       index_t num_children = 0;
-      index_t children_end = 0;
+
+      // Size of the subtree rooted in this node, including this node.
+      index_t subtree_size = 0;
 
       friend auto operator<=>(const node_t&, const node_t&) = default;
     };
@@ -112,7 +115,9 @@ namespace silva {
     const auto clean_stack_till =
         [&](const index_t new_node_index) -> expected_t<optional_t<index_t>> {
       index_t next_child_index = 0;
-      while (!path.empty() && nodes[path.back().node_index].children_end <= new_node_index) {
+      while (!path.empty() &&
+             path.back().node_index + nodes[path.back().node_index].subtree_size <=
+                 new_node_index) {
         const bool is_leaf = (nodes[path.back().node_index].num_children == 0);
         next_child_index   = path.back().child_index + 1;
         if (!is_leaf) {
@@ -127,7 +132,7 @@ namespace silva {
       return {next_child_index};
     };
 
-    const index_t end_node_index = nodes[start_node_index].children_end;
+    const index_t end_node_index = start_node_index + nodes[start_node_index].subtree_size;
     for (index_t node_index = start_node_index; node_index < end_node_index; ++node_index) {
       const optional_t<index_t> maybe_new_child_index =
           SILVA_EXPECT_FWD(clean_stack_till(node_index));
@@ -178,7 +183,7 @@ namespace silva {
       if (!cont) {
         break;
       }
-      child_node_index = nodes[child_node_index].children_end;
+      child_node_index += nodes[child_node_index].subtree_size;
     }
     return {};
   }
@@ -245,12 +250,8 @@ namespace silva {
   tree_t<NodeData> tree_t<NodeData>::subtree(const index_t node_index) const
   {
     const node_t& node = nodes[node_index];
-    const index_t len  = node.children_end - node_index;
     tree_t<NodeData> retval;
-    retval.nodes.assign(nodes.begin() + node_index, nodes.begin() + node.children_end);
-    for (node_t& rv_node: retval.nodes) {
-      rv_node.children_end -= node_index;
-    }
+    retval.nodes.assign(nodes.begin() + node_index, nodes.begin() + node_index + node.subtree_size);
     return retval;
   }
 

@@ -23,21 +23,21 @@ TEST_CASE("parse_tree", "[parse_tree_t]")
 {
   parse_tree_t tree;
   using node_t = parse_tree_t::node_t;
-  tree.nodes.push_back(node_t{.num_children = 4, .children_end = 15}); // [0]
-  tree.nodes.push_back(node_t{.num_children = 1, .children_end = 3});  // [1]
-  tree.nodes.push_back(node_t{.num_children = 0, .children_end = 3});  // [2]
-  tree.nodes.push_back(node_t{.num_children = 1, .children_end = 5});  // [3]
-  tree.nodes.push_back(node_t{.num_children = 0, .children_end = 5});  // [4]
-  tree.nodes.push_back(node_t{.num_children = 2, .children_end = 8});  // [5]
-  tree.nodes.push_back(node_t{.num_children = 0, .children_end = 7});  // [6]
-  tree.nodes.push_back(node_t{.num_children = 0, .children_end = 8});  // [7]
-  tree.nodes.push_back(node_t{.num_children = 1, .children_end = 15}); // [8]
-  tree.nodes.push_back(node_t{.num_children = 1, .children_end = 15}); // [9]
-  tree.nodes.push_back(node_t{.num_children = 2, .children_end = 15}); // [10]
-  tree.nodes.push_back(node_t{.num_children = 1, .children_end = 13}); // [11]
-  tree.nodes.push_back(node_t{.num_children = 0, .children_end = 13}); // [12]
-  tree.nodes.push_back(node_t{.num_children = 1, .children_end = 15}); // [13]
-  tree.nodes.push_back(node_t{.num_children = 0, .children_end = 15}); // [14]
+  tree.nodes.push_back(node_t{.num_children = 4, .subtree_size = 15}); // [0]
+  tree.nodes.push_back(node_t{.num_children = 1, .subtree_size = 2});  // [1]
+  tree.nodes.push_back(node_t{.num_children = 0, .subtree_size = 1});  // [2]
+  tree.nodes.push_back(node_t{.num_children = 1, .subtree_size = 2});  // [3]
+  tree.nodes.push_back(node_t{.num_children = 0, .subtree_size = 1});  // [4]
+  tree.nodes.push_back(node_t{.num_children = 2, .subtree_size = 3});  // [5]
+  tree.nodes.push_back(node_t{.num_children = 0, .subtree_size = 1});  // [6]
+  tree.nodes.push_back(node_t{.num_children = 0, .subtree_size = 1});  // [7]
+  tree.nodes.push_back(node_t{.num_children = 1, .subtree_size = 7});  // [8]
+  tree.nodes.push_back(node_t{.num_children = 1, .subtree_size = 6});  // [9]
+  tree.nodes.push_back(node_t{.num_children = 2, .subtree_size = 5});  // [10]
+  tree.nodes.push_back(node_t{.num_children = 1, .subtree_size = 2});  // [11]
+  tree.nodes.push_back(node_t{.num_children = 0, .subtree_size = 1});  // [12]
+  tree.nodes.push_back(node_t{.num_children = 1, .subtree_size = 2});  // [13]
+  tree.nodes.push_back(node_t{.num_children = 0, .subtree_size = 1});  // [14]
 
   vector_t<result_t> result;
   REQUIRE(tree.visit_subtree(

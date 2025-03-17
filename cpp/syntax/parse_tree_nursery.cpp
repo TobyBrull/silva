@@ -116,7 +116,7 @@ namespace silva {
       sub.token_end = *token_index;
     }
     pt->nodes[node_index].num_children = sub.num_children;
-    pt->nodes[node_index].children_end = node_index + sub.num_children_total + 1;
+    pt->nodes[node_index].subtree_size = sub.num_children_total + 1;
     pt->nodes[node_index].token_begin  = sub.token_begin;
     pt->nodes[node_index].token_end    = sub.token_end;
   }
@@ -138,15 +138,12 @@ namespace silva {
                                             const index_t other_node_index)
   {
     const auto& other_node = other_pt.nodes[other_node_index];
-    const index_t len      = other_node.children_end - other_node_index;
+    const index_t len      = other_node.subtree_size;
     const index_t diff     = node_index - other_node_index;
     pt->nodes[node_index]  = other_node;
     pt->nodes.insert(pt->nodes.end(),
                      other_pt.nodes.begin() + other_node_index + 1,
-                     other_pt.nodes.begin() + other_node.children_end);
-    for (index_t offset = 0; offset < len; ++offset) {
-      pt->nodes[node_index + offset].children_end += diff;
-    }
+                     other_pt.nodes.begin() + other_node_index + len);
     sub.num_children += other_node.num_children;
     sub.num_children_total += len - 1;
     sub.token_begin = std::min(sub.token_begin, other_node.token_begin);
