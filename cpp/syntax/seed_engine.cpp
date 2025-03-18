@@ -22,7 +22,7 @@ namespace silva {
     };
   }
 
-  const parse_tree_t::node_t& tree_node_index_t::node() const
+  const tree_node_t<parse_tree_node_data_t>& tree_node_index_t::node() const
   {
     return parse_tree->nodes[node_index];
   }
@@ -39,10 +39,10 @@ namespace silva {
 
     std::unique_ptr<seed_engine_t> retval = std::make_unique<seed_engine_t>();
 
-    const parse_tree_t& s_pt                      = *seed_parse_tree;
-    const tokenization_t& s_tokenization          = *s_pt.tokenization;
-    const vector_t<token_id_t>& s_tokens          = s_tokenization.tokens;
-    const vector_t<parse_tree_t::node_t>& s_nodes = s_pt.nodes;
+    const parse_tree_t& s_pt                                     = *seed_parse_tree;
+    const tokenization_t& s_tokenization                         = *s_pt.tokenization;
+    const vector_t<token_id_t>& s_tokens                         = s_tokenization.tokens;
+    const vector_t<tree_node_t<parse_tree_node_data_t>>& s_nodes = s_pt.nodes;
 
     const vector_t<shared_ptr_t<const parse_tree_t>>& spts = retval->seed_parse_trees;
 
@@ -426,9 +426,9 @@ namespace silva {
       token_context_ptr_t tcp   = s_pt.tokenization->context;
       name_id_style_t fnis      = seed_name_style(tcp);
 
-      const tokenization_t& s_tokenization          = *s_pt.tokenization;
-      const vector_t<token_id_t>& s_tokens          = s_tokenization.tokens;
-      const vector_t<parse_tree_t::node_t>& s_nodes = s_pt.nodes;
+      const tokenization_t& s_tokenization                         = *s_pt.tokenization;
+      const vector_t<token_id_t>& s_tokens                         = s_tokenization.tokens;
+      const vector_t<tree_node_t<parse_tree_node_data_t>>& s_nodes = s_pt.nodes;
 
       const tokenization_t& t_tokenization = *retval.tokenization;
       const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
@@ -716,9 +716,9 @@ namespace silva {
                      MAJOR,
                      "Unknown rule: {}",
                      fnis.absolute(t_rule_name));
-        const tree_node_index_t tni        = it->second;
-        const parse_tree_t::node_t& s_node = tni.node();
-        const name_id_t s_expr_name        = s_node.rule_name;
+        const tree_node_index_t tni = it->second;
+        const auto& s_node          = tni.node();
+        const name_id_t s_expr_name = s_node.rule_name;
         if (s_expr_name == fni_axe) {
           return SILVA_EXPECT_FWD(handle_rule_axe(t_rule_name), "Expected Axe");
         }

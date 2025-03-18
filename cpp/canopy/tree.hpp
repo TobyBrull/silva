@@ -8,17 +8,19 @@
 namespace silva {
 
   template<typename NodeData>
+  struct tree_node_t : public NodeData {
+    // Number of direct children of this node.
+    index_t num_children = 0;
+
+    // Size of the subtree rooted in this node, including this node.
+    index_t subtree_size = 0;
+
+    friend auto operator<=>(const tree_node_t&, const tree_node_t&) = default;
+  };
+
+  template<typename NodeData>
   struct tree_t {
-    struct node_t : public NodeData {
-      // Number of direct children of this node.
-      index_t num_children = 0;
-
-      // Size of the subtree rooted in this node, including this node.
-      index_t subtree_size = 0;
-
-      friend auto operator<=>(const node_t&, const node_t&) = default;
-    };
-    vector_t<node_t> nodes;
+    vector_t<tree_node_t<NodeData>> nodes;
 
     bool is_consistent() const;
 
@@ -176,8 +178,8 @@ namespace silva {
   expected_t<void> tree_t<NodeData>::visit_children(Visitor visitor,
                                                     const index_t parent_node_index) const
   {
-    const node_t& parent_node = nodes[parent_node_index];
-    index_t child_node_index  = parent_node_index + 1;
+    const auto& parent_node  = nodes[parent_node_index];
+    index_t child_node_index = parent_node_index + 1;
     for (index_t child_index = 0; child_index < parent_node.num_children; ++child_index) {
       const bool cont = SILVA_EXPECT_FWD(visitor(child_node_index, child_index));
       if (!cont) {
@@ -217,7 +219,7 @@ namespace silva {
   expected_t<array_t<index_t, N>>
   tree_t<NodeData>::get_children(const index_t parent_node_index) const
   {
-    const node_t& node = nodes[parent_node_index];
+    const auto& node = nodes[parent_node_index];
     SILVA_EXPECT(node.num_children == N, MAJOR);
     array_t<index_t, N> retval;
     SILVA_EXPECT_FWD(visit_children(
@@ -234,7 +236,7 @@ namespace silva {
   expected_t<small_vector_t<index_t, N>>
   tree_t<NodeData>::get_children_up_to(const index_t parent_node_index) const
   {
-    const node_t& node = nodes[parent_node_index];
+    const auto& node = nodes[parent_node_index];
     SILVA_EXPECT(node.num_children <= N, MAJOR);
     small_vector_t<index_t, N> retval;
     SILVA_EXPECT_FWD(visit_children(
@@ -249,7 +251,7 @@ namespace silva {
   template<typename NodeData>
   tree_t<NodeData> tree_t<NodeData>::subtree(const index_t node_index) const
   {
-    const node_t& node = nodes[node_index];
+    const auto& node = nodes[node_index];
     tree_t<NodeData> retval;
     retval.nodes.assign(nodes.begin() + node_index, nodes.begin() + node_index + node.subtree_size);
     return retval;
@@ -288,7 +290,7 @@ namespace silva {
             return true;
           }
           SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
-          const typename tree_t<NodeData>::node_t& node = tree.nodes[path.back().node_index];
+          const auto& node = tree.nodes[path.back().node_index];
           string_t node_name{"/"};
           if (path.size() >= 2) {
             string_t parent_node_name = "/";

@@ -22,7 +22,7 @@ struct result_t {
 TEST_CASE("parse_tree", "[parse_tree_t]")
 {
   parse_tree_t tree;
-  using node_t = parse_tree_t::node_t;
+  using node_t = tree_node_t<parse_tree_node_data_t>;
   tree.nodes.push_back(node_t{.num_children = 4, .subtree_size = 15}); // [0]
   tree.nodes.push_back(node_t{.num_children = 1, .subtree_size = 2});  // [1]
   tree.nodes.push_back(node_t{.num_children = 0, .subtree_size = 1});  // [2]

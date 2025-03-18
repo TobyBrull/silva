@@ -149,7 +149,7 @@ namespace silva {
     auto result = pt->visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
-          const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
+          const auto& node = pt->nodes[path.back().node_index];
           if (node.rule_name == fni_fern) {
             if (is_on_entry(event)) {
               retval += '[';
@@ -197,7 +197,7 @@ namespace silva {
     auto result = pt->visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
-          const parse_tree_t::node_t& node = pt->nodes[path.back().node_index];
+          const auto& node = pt->nodes[path.back().node_index];
           if (node.rule_name == fni_lbl_item) {
             if (is_on_entry(event)) {
               string_t prev_path = curr_path;
@@ -393,12 +393,12 @@ namespace silva {
 
       expected_t<fern_labeled_item_t> labeled_item(const index_t start_node)
       {
-        const parse_tree_t::node_t& labeled_item = parse_tree->nodes[start_node];
+        const auto& labeled_item = parse_tree->nodes[start_node];
         SILVA_EXPECT(labeled_item.rule_name == fni_lbl_item, MINOR);
         fern_labeled_item_t retval;
         auto result = parse_tree->visit_children(
             [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
-              const parse_tree_t::node_t& node = parse_tree->nodes[child_node_index];
+              const auto& node = parse_tree->nodes[child_node_index];
               if (labeled_item.num_children == 2 && child_index == 0) {
                 SILVA_EXPECT(node.rule_name == fni_label, MINOR);
                 retval.label = string_t{
