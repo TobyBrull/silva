@@ -7,17 +7,17 @@
 namespace silva {
   struct seed_engine_t;
 
-  struct parse_tree_node_data_t {
+  struct parse_tree_node_t : public tree_node_t {
     name_id_t rule_name = 0;
     index_t token_begin = std::numeric_limits<index_t>::max();
     index_t token_end   = std::numeric_limits<index_t>::min();
 
     index_t num_tokens() const { return token_end - token_begin; }
 
-    friend auto operator<=>(const parse_tree_node_data_t&, const parse_tree_node_data_t&) = default;
+    friend auto operator<=>(const parse_tree_node_t&, const parse_tree_node_t&) = default;
   };
 
-  struct parse_tree_t : public tree_t<parse_tree_node_data_t> {
+  struct parse_tree_t : public tree_t<parse_tree_node_t> {
     shared_ptr_t<const tokenization_t> tokenization;
 
     parse_tree_t subtree(index_t node_index) const;

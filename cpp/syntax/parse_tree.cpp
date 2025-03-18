@@ -9,7 +9,7 @@ namespace silva {
 
   parse_tree_t parse_tree_t::subtree(const index_t node_index) const
   {
-    parse_tree_t retval{tree_t<parse_tree_node_data_t>::subtree(node_index)};
+    parse_tree_t retval{tree_t<parse_tree_node_t>::subtree(node_index)};
     retval.tokenization = tokenization;
     return retval;
   }

@@ -15,7 +15,7 @@ namespace silva {
 
     tree_node_index_t with_node_index(index_t) const;
 
-    const tree_node_t<parse_tree_node_data_t>& node() const;
+    const parse_tree_node_t& node() const;
 
     friend auto operator<=>(const tree_node_index_t&, const tree_node_index_t&) = default;
     friend hash_value_t hash_impl(const tree_node_index_t& x);

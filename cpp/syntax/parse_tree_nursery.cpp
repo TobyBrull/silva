@@ -95,7 +95,7 @@ namespace silva {
     if (include_token_index) {
       sub.token_begin = *token_index;
       sub.token_end   = *token_index + 1;
-      pt->nodes.emplace_back(parse_tree_node_data_t{
+      pt->nodes.emplace_back(parse_tree_node_t{
           .token_begin = *token_index,
           .token_end   = *token_index + 1,
       });

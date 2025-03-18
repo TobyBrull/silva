@@ -7,8 +7,7 @@
 
 namespace silva {
 
-  template<typename NodeData>
-  struct tree_node_t : public NodeData {
+  struct tree_node_t {
     // Number of direct children of this node.
     index_t num_children = 0;
 
@@ -19,8 +18,12 @@ namespace silva {
   };
 
   template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  using tree_span_t = span_t<NodeData>;
+
+  template<typename NodeData>
   struct tree_t {
-    vector_t<tree_node_t<NodeData>> nodes;
+    vector_t<NodeData> nodes;
 
     bool is_consistent() const;
 
