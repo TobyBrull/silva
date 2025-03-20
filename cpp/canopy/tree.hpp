@@ -20,28 +20,25 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  struct tree_span_t : public span_t<NodeData> {
+  struct tree_span_t {
+    NodeData* root = nullptr;
+
     struct children_iter_t : public iterator_facade_t {
       NodeData* current_child = nullptr;
 
-      tree_span_t dereference() const
-      {
-        return tree_span_t{span_t<NodeData>{current_child, size_t(current_child->subtree_size)}};
-      }
-      void increment() { current_child += current_child->subtree_size; }
+      tree_span_t dereference() const;
+      void increment();
       friend auto operator<=>(const children_iter_t& lhs, const children_iter_t& rhs) = default;
     };
-    auto children_range() const
-    {
-      const children_iter_t begin{.current_child = this->data() + 1};
-      const children_iter_t end{.current_child = this->data() + this->front().subtree_size};
-      return std::ranges::subrange(begin, end);
-    }
+    auto children_range(this auto&&);
   };
 
   template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   struct tree_t {
     vector_t<NodeData> nodes;
+
+    auto span(this auto&&);
 
     bool is_consistent() const;
 
@@ -128,7 +125,39 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+
   template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  tree_span_t<NodeData> tree_span_t<NodeData>::children_iter_t::dereference() const
+  {
+    return tree_span_t{current_child};
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  void tree_span_t<NodeData>::children_iter_t::increment()
+  {
+    current_child += current_child->subtree_size;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  auto tree_span_t<NodeData>::children_range(this auto&& self)
+  {
+    const children_iter_t begin{.current_child = self.root + 1};
+    const children_iter_t end{.current_child = self.root + self.root->subtree_size};
+    return std::ranges::subrange(begin, end);
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  auto tree_t<NodeData>::span(this auto&& self)
+  {
+    return tree_span_t{.root = &self.nodes.front()};
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   template<typename Visitor>
     requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
   expected_t<void> tree_t<NodeData>::visit_subtree(Visitor visitor,
@@ -194,6 +223,7 @@ namespace silva {
   }
 
   template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   template<typename Visitor>
     requires std::invocable<Visitor, index_t, index_t>
   expected_t<void> tree_t<NodeData>::visit_children(Visitor visitor,
@@ -236,6 +266,7 @@ namespace silva {
   }
 
   template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   template<index_t N>
   expected_t<array_t<index_t, N>>
   tree_t<NodeData>::get_children(const index_t parent_node_index) const
@@ -253,6 +284,7 @@ namespace silva {
   }
 
   template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   template<index_t N>
   expected_t<small_vector_t<index_t, N>>
   tree_t<NodeData>::get_children_up_to(const index_t parent_node_index) const
@@ -270,6 +302,7 @@ namespace silva {
   }
 
   template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   tree_t<NodeData> tree_t<NodeData>::subtree(const index_t node_index) const
   {
     const auto& node = nodes[node_index];
