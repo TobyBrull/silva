@@ -88,5 +88,11 @@ namespace silva {
     }
 
     friend auto operator<=>(const iterator_facade_t&, const iterator_facade_t&) = default;
+    friend bool operator==(const iterator_facade_t&, const iterator_facade_t&)  = default;
+
+    template<typename Left, typename Right>
+    friend auto operator<=>(const Left&, const Right&) = delete;
+    template<typename Left, typename Right>
+    friend bool operator==(const Left&, const Right&) = delete;
   };
 }

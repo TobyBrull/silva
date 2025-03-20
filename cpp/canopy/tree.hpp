@@ -1,5 +1,6 @@
 #pragma once
 
+#include "canopy/iterator_facade.hpp"
 #include "expected.hpp"
 #include "preprocessor.hpp"
 #include "small_vector.hpp"
@@ -19,7 +20,24 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  using tree_span_t = span_t<NodeData>;
+  struct tree_span_t : public span_t<NodeData> {
+    struct children_iter_t : public iterator_facade_t {
+      NodeData* current_child = nullptr;
+
+      tree_span_t dereference() const
+      {
+        return tree_span_t{span_t<NodeData>{current_child, size_t(current_child->subtree_size)}};
+      }
+      void increment() { current_child += current_child->subtree_size; }
+      friend auto operator<=>(const children_iter_t& lhs, const children_iter_t& rhs) = default;
+    };
+    auto children_range() const
+    {
+      const children_iter_t begin{.current_child = this->data() + 1};
+      const children_iter_t end{.current_child = this->data() + this->front().subtree_size};
+      return std::ranges::subrange(begin, end);
+    }
+  };
 
   template<typename NodeData>
   struct tree_t {
