@@ -146,7 +146,7 @@ namespace silva {
         retval += ' ';
       }
     };
-    auto result = pt->visit_subtree(
+    auto result = pt->span().visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
           const auto& node = pt->nodes[path.back().node_index];
@@ -194,7 +194,7 @@ namespace silva {
     string_t retval    = "digraph Fern {\n";
     string_t curr_path = "/";
     optional_t<string_view_t> last_label_str;
-    auto result = pt->visit_subtree(
+    auto result = pt->span().visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           SILVA_EXPECT(!path.empty(), ASSERT);
           const auto& node = pt->nodes[path.back().node_index];

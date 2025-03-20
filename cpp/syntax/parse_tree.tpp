@@ -40,7 +40,7 @@ TEST_CASE("parse_tree", "[parse_tree_t]")
   tree.nodes.push_back(node_t{{.num_children = 0, .subtree_size = 1}});  // [14]
 
   vector_t<result_t> result;
-  REQUIRE(tree.visit_subtree(
+  REQUIRE(tree.span().visit_subtree(
       [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
         result.push_back(result_t{
             .stack_size = path.size(),

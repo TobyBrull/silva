@@ -30,26 +30,6 @@ namespace silva {
 
     auto children_range(this auto&&);
 
-    friend auto operator<=>(const tree_span_t&, const tree_span_t&) = default;
-  };
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  struct tree_span_child_iter_t : public iterator_facade_t {
-    tree_span_t<NodeData> tree_span;
-    index_t pos = 1;
-    tree_span_t<NodeData> dereference() const;
-    void increment();
-    friend auto operator<=>(const tree_span_child_iter_t&, const tree_span_child_iter_t&) = default;
-  };
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  struct tree_t {
-    vector_t<NodeData> nodes;
-
-    auto span(this auto&&);
-
     bool is_consistent() const;
 
     // Invokes the Visitor once (ON_LEAF for leaves) or twice (ON_ENTRY and ON_EXIT for non-leaves)
@@ -66,6 +46,27 @@ namespace silva {
       requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
     expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
 
+    friend auto operator<=>(const tree_span_t&, const tree_span_t&) = default;
+  };
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  struct tree_span_child_iter_t : public iterator_facade_t {
+    tree_span_t<NodeData> tree_span;
+    index_t pos = 1;
+
+    tree_span_t<NodeData> dereference() const;
+    void increment();
+    friend auto operator<=>(const tree_span_child_iter_t&, const tree_span_child_iter_t&) = default;
+  };
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  struct tree_t {
+    vector_t<NodeData> nodes;
+
+    auto span(this auto&&);
+
     // Calls Visitor once for each child of "parent_node_index". The arguments are (1) the
     // node-index of the child node, "child_node_index", and (2) the "child_index", meaning that
     // "child_node_index" is child number "child_index" of "parent_node_index".
@@ -74,10 +75,6 @@ namespace silva {
     template<typename Visitor>
       requires std::invocable<Visitor, index_t, index_t>
     expected_t<void> visit_children(Visitor, index_t parent_node_index) const;
-
-    template<typename Visitor>
-      requires std::invocable<Visitor, index_t, index_t>
-    void visit_children_reversed(Visitor, index_t parent_node_index) const;
 
     // Get the indexes of the children of "parent_node_index" but only if the number of children
     // matches "N".
@@ -110,19 +107,9 @@ namespace silva {
     };
     vector_t<node_t> nodes;
 
-    bool is_consistent() const;
-
-    template<typename Visitor>
-      requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
-    expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
-
     template<typename Visitor>
       requires std::invocable<Visitor, index_t, index_t>
     expected_t<void> visit_children(Visitor, index_t parent_node_index) const;
-
-    template<typename Visitor>
-      requires std::invocable<Visitor, index_t, index_t>
-    void visit_children_reversed(Visitor, index_t parent_node_index) const;
 
     template<index_t N>
     expected_t<array_t<index_t, N>> get_children(index_t parent_node_index) const;
@@ -181,24 +168,30 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   auto tree_t<NodeData>::span(this auto&& self)
   {
-    return tree_span_t<NodeData>{.root = &self.nodes.front(), .stride = 1};
+    auto* root = &self.nodes.front();
+    if constexpr (std::is_const_v<std::remove_pointer_t<decltype(root)>>) {
+      return tree_span_t<const NodeData>{.root = root, .stride = 1};
+    }
+    else {
+      return tree_span_t<NodeData>{.root = root, .stride = 1};
+    }
   }
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   template<typename Visitor>
     requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
-  expected_t<void> tree_t<NodeData>::visit_subtree(Visitor visitor,
-                                                   const index_t start_node_index) const
+  expected_t<void> tree_span_t<NodeData>::visit_subtree(Visitor visitor,
+                                                        const index_t start_node_index) const
   {
     vector_t<tree_branch_t> path;
     const auto clean_stack_till =
         [&](const index_t new_node_index) -> expected_t<optional_t<index_t>> {
       index_t next_child_index = 0;
       while (!path.empty() &&
-             path.back().node_index + nodes[path.back().node_index].subtree_size <=
+             path.back().node_index + (*this)[path.back().node_index].subtree_size <=
                  new_node_index) {
-        const bool is_leaf = (nodes[path.back().node_index].num_children == 0);
+        const bool is_leaf = ((*this)[path.back().node_index].num_children == 0);
         next_child_index   = path.back().child_index + 1;
         if (!is_leaf) {
           const bool cont =
@@ -212,7 +205,7 @@ namespace silva {
       return {next_child_index};
     };
 
-    const index_t end_node_index = start_node_index + nodes[start_node_index].subtree_size;
+    const index_t end_node_index = start_node_index + (*this)[start_node_index].subtree_size;
     for (index_t node_index = start_node_index; node_index < end_node_index; ++node_index) {
       const optional_t<index_t> maybe_new_child_index =
           SILVA_EXPECT_FWD(clean_stack_till(node_index));
@@ -220,7 +213,7 @@ namespace silva {
         return {};
       }
       path.push_back({.node_index = node_index, .child_index = maybe_new_child_index.value()});
-      const bool is_leaf = (nodes[node_index].num_children == 0);
+      const bool is_leaf = ((*this)[node_index].num_children == 0);
       if (is_leaf) {
         const bool cont =
             SILVA_EXPECT_FWD(visitor(span_t<const tree_branch_t>{path}, tree_event_t::ON_LEAF));
@@ -344,7 +337,7 @@ namespace silva {
   {
     string_t curr_line;
     string_t retval;
-    auto result = tree.visit_subtree(
+    auto result = tree.span().visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           if (!is_on_entry(event)) {
             return true;
@@ -366,7 +359,7 @@ namespace silva {
   {
     string_t retval;
     retval += "digraph parse_tree {\n";
-    auto result = tree.visit_subtree(
+    auto result = tree.span().visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           if (!is_on_entry(event)) {
             return true;
