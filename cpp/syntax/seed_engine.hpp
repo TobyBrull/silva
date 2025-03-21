@@ -7,31 +7,17 @@
 
 namespace silva {
 
-  struct tree_node_index_t {
-    // Index in the "seed_parse_trees" vector_t.
-    const parse_tree_t* parse_tree = nullptr;
-    // Node-index in the parse_tree_t referenced by "tree_index".
-    index_t node_index = 0;
-
-    tree_node_index_t with_node_index(index_t) const;
-
-    const parse_tree_node_t& node() const;
-
-    friend auto operator<=>(const tree_node_index_t&, const tree_node_index_t&) = default;
-    friend hash_value_t hash_impl(const tree_node_index_t& x);
-  };
-
   // Driver for a program in the Seed language.
   struct seed_engine_t {
     // Parse trees containing the used Seed programs.
     vector_t<shared_ptr_t<const parse_tree_t>> seed_parse_trees;
 
     // For each rule name, gives the node-index of the expression describing that rule.
-    hashmap_t<name_id_t, tree_node_index_t> rule_exprs;
+    hashmap_t<name_id_t, parse_tree_span_t> rule_exprs;
 
     // For each node-index that is a "Silva.Seed.Nonterminal", gives the full name of the rule that
     // this nonterminal references.
-    hashmap_t<tree_node_index_t, name_id_t> nonterminal_rules;
+    hashmap_t<parse_tree_span_t, name_id_t> nonterminal_rules;
 
     // Maps the token-id's that correspond to regexes to the compiled version of that regex.
     hashmap_t<token_id_t, optional_t<std::regex>> regexes;

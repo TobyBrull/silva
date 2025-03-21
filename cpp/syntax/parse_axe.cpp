@@ -609,12 +609,9 @@ namespace silva::parse_axe {
       gg_rule.reset();
       const index_t num_children = leave_atoms_tree.nodes.front().num_children;
       vector_t<index_t> leave_atoms_tree_child_node_indexes(num_children);
-      SILVA_EXPECT_FWD(leave_atoms_tree.visit_children(
-          [&](const index_t node_index, const index_t child_index) -> expected_t<bool> {
-            leave_atoms_tree_child_node_indexes[child_index] = node_index;
-            return true;
-          },
-          0));
+      for (const auto [node_index, child_index]: leave_atoms_tree.span().children_range()) {
+        leave_atoms_tree_child_node_indexes[child_index] = node_index;
+      }
 
       SILVA_EXPECT(atom_tree.nodes.size() >= 1, ASSERT);
       parse_tree_sub_t result =
