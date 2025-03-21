@@ -53,9 +53,10 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   struct tree_span_child_iter_t : public iterator_facade_t {
     tree_span_t<NodeData> tree_span;
-    index_t pos = 1;
+    index_t pos         = 1;
+    index_t child_index = 0;
 
-    tree_span_t<NodeData> dereference() const;
+    pair_t<index_t, index_t> dereference() const;
     void increment();
     friend auto operator<=>(const tree_span_child_iter_t&, const tree_span_child_iter_t&) = default;
   };
@@ -125,17 +126,17 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  tree_span_t<NodeData>
-  tree_span_child_iter_t<NodeData>::tree_span_child_iter_t::dereference() const
+  pair_t<index_t, index_t> tree_span_child_iter_t<NodeData>::dereference() const
   {
-    return tree_span.sub_tree_span_at(pos);
+    return {pos, child_index};
   }
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  void tree_span_child_iter_t<NodeData>::tree_span_child_iter_t::increment()
+  void tree_span_child_iter_t<NodeData>::increment()
   {
     pos += tree_span[pos].subtree_size;
+    child_index += 1;
   }
 
   template<typename NodeData>
@@ -158,8 +159,16 @@ namespace silva {
   auto tree_span_t<NodeData>::children_range(this auto&& self)
   {
     static_assert(std::input_or_output_iterator<tree_span_child_iter_t<NodeData>>);
-    tree_span_child_iter_t<NodeData> begin{.tree_span = self, .pos = 1};
-    tree_span_child_iter_t<NodeData> end{.tree_span = self, .pos = self.root->subtree_size};
+    tree_span_child_iter_t<NodeData> begin{
+        .tree_span   = self,
+        .pos         = 1,
+        .child_index = 0,
+    };
+    tree_span_child_iter_t<NodeData> end{
+        .tree_span   = self,
+        .pos         = self.root->subtree_size,
+        .child_index = self.root->num_children,
+    };
     return std::ranges::subrange<tree_span_child_iter_t<NodeData>,
                                  tree_span_child_iter_t<NodeData>>(begin, end);
   }

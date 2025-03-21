@@ -29,8 +29,8 @@ TEST_CASE("tree")
 
     {
       vector_t<string_t> results;
-      for (const auto& child: tree_span.children_range()) {
-        results.push_back(child.root->name);
+      for (const auto& [node_idx, child_idx]: tree_span.children_range()) {
+        results.push_back(tree_span[node_idx].name);
       }
       CHECK(results == vector_t<string_t>{"B", "C", "D"});
     }
@@ -42,8 +42,8 @@ TEST_CASE("tree")
 
     {
       vector_t<string_t> results;
-      for (const auto& child: tree_span_2.children_range()) {
-        results.push_back(child.root->name);
+      for (const auto& [node_idx, child_idx]: tree_span_2.children_range()) {
+        results.push_back(tree_span_2[node_idx].name);
       }
       CHECK(results == vector_t<string_t>{"B", "C", "D"});
     }
