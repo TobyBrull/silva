@@ -12,20 +12,18 @@ static_assert(std::input_or_output_iterator<tree_span_child_iter_t<test_tree_nod
 
 TEST_CASE("tree")
 {
-  vector_t<test_tree_node_t> test_tree_nodes;
-  test_tree_nodes.push_back({{3, 8}, "A"});
-  test_tree_nodes.push_back({{2, 4}, "B"});
-  test_tree_nodes.push_back({{0, 1}, "E"});
-  test_tree_nodes.push_back({{1, 2}, "F"});
-  test_tree_nodes.push_back({{0, 1}, "G"});
-  test_tree_nodes.push_back({{0, 1}, "C"});
-  test_tree_nodes.push_back({{1, 2}, "D"});
-  test_tree_nodes.push_back({{0, 1}, "H"});
+  vector_t<test_tree_node_t> test_tree;
+  test_tree.push_back({{3, 8}, "A"});
+  test_tree.push_back({{2, 4}, "B"});
+  test_tree.push_back({{0, 1}, "E"});
+  test_tree.push_back({{1, 2}, "F"});
+  test_tree.push_back({{0, 1}, "G"});
+  test_tree.push_back({{0, 1}, "C"});
+  test_tree.push_back({{1, 2}, "D"});
+  test_tree.push_back({{0, 1}, "H"});
 
   {
-    tree_t<test_tree_node_t> test_tree{.nodes = test_tree_nodes};
-
-    const tree_span_t<test_tree_node_t> tree_span = test_tree.span();
+    const tree_span_t<test_tree_node_t> tree_span{test_tree};
 
     {
       vector_t<string_t> results;
@@ -36,9 +34,9 @@ TEST_CASE("tree")
     }
   }
 
-  std::ranges::reverse(test_tree_nodes);
+  std::ranges::reverse(test_tree);
   {
-    tree_span_t<test_tree_node_t> tree_span_2{.root = &test_tree_nodes.back(), .stride = -1};
+    tree_span_t<test_tree_node_t> tree_span_2{&test_tree.back(), -1};
 
     {
       vector_t<string_t> results;

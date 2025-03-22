@@ -17,16 +17,23 @@ namespace silva {
     friend auto operator<=>(const parse_tree_node_t&, const parse_tree_node_t&) = default;
   };
 
-  struct parse_tree_t : public tree_t<parse_tree_node_t> {
+  struct parse_tree_t {
+    vector_t<parse_tree_node_t> nodes;
     shared_ptr_t<const tokenization_t> tokenization;
 
     auto span(this auto&&);
-
-    parse_tree_t subtree(index_t node_index) const;
   };
 
-  struct parse_tree_span_t : tree_span_t<const parse_tree_node_t> {
+  struct parse_tree_span_t : public tree_span_t<const parse_tree_node_t> {
     shared_ptr_t<const tokenization_t> tokenization;
+
+    parse_tree_span_t() = default;
+    parse_tree_span_t(const parse_tree_node_t* root,
+                      index_t stride,
+                      shared_ptr_t<const tokenization_t>);
+    parse_tree_span_t(const parse_tree_t&);
+
+    parse_tree_t copy() const;
 
     parse_tree_span_t sub_tree_span_at(index_t) const;
 
@@ -69,23 +76,6 @@ namespace silva {
 namespace silva {
   inline auto parse_tree_t::span(this auto&& self)
   {
-    return parse_tree_span_t{
-        {
-            .root   = &(self.nodes[0]),
-            .stride = 1,
-        },
-        /* .tokenization = */ self.tokenization,
-    };
-  }
-
-  inline parse_tree_span_t parse_tree_span_t::sub_tree_span_at(const index_t pos) const
-  {
-    return parse_tree_span_t{
-        {
-            .root   = &((*this)[pos]),
-            .stride = stride,
-        },
-        /* .tokenization = */ tokenization,
-    };
+    return parse_tree_span_t{self};
   }
 }

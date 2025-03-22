@@ -620,7 +620,8 @@ namespace silva::parse_axe {
       SILVA_EXPECT(*gg_rule.token_index == expr_token_end, MINOR);
 
       gg_rule.sync();
-      parse_tree_t leave_atoms_tree   = nursery.retval.subtree(gg_rule.orig_node_size);
+      parse_tree_t leave_atoms_tree =
+          nursery.retval.span().sub_tree_span_at(gg_rule.orig_node_size).copy();
       const index_t final_token_index = nursery.token_index;
       gg_rule.reset();
       const index_t num_children = leave_atoms_tree.nodes.front().num_children;
@@ -630,7 +631,7 @@ namespace silva::parse_axe {
       }
 
       SILVA_EXPECT(atom_tree.size() >= 1, ASSERT);
-      atom_tree_span_t ats{.root = &atom_tree.back(), .stride = -1};
+      atom_tree_span_t ats{&atom_tree.back(), -1};
       parse_tree_sub_t result = SILVA_EXPECT_FWD(
           generate_output(ats, leave_atoms_tree, leave_atoms_tree_child_node_indexes));
       SILVA_EXPECT(result.token_begin == expr_token_begin, ASSERT);

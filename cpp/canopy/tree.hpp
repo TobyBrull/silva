@@ -24,6 +24,10 @@ namespace silva {
     NodeData* root = nullptr;
     index_t stride = 0;
 
+    tree_span_t() = default;
+    tree_span_t(NodeData* root, index_t stride);
+    tree_span_t(span_t<NodeData>);
+
     index_t size() const;
 
     auto& operator[](this auto&&, index_t);
@@ -86,13 +90,7 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  struct tree_t {
-    vector_t<NodeData> nodes;
-
-    auto span(this auto&&);
-
-    tree_t subtree(index_t node_index) const;
-  };
+  using tree_t = vector_t<NodeData>;
 }
 
 // IMPLEMENTATION
@@ -116,6 +114,18 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
+  tree_span_t<NodeData>::tree_span_t(NodeData* root, index_t stride) : root{root}, stride{stride}
+  {
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  tree_span_t<NodeData>::tree_span_t(span_t<NodeData> vec) : root{vec.data()}, stride{1}
+  {
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   index_t tree_span_t<NodeData>::size() const
   {
     return root->subtree_size;
@@ -132,8 +142,7 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   tree_span_t<NodeData> tree_span_t<NodeData>::sub_tree_span_at(const index_t pos) const
   {
-    NodeData& node = (*this)[pos];
-    return {.root = &node, .stride = stride};
+    return {&((*this)[pos]), stride};
   }
 
   template<typename NodeData>
@@ -153,19 +162,6 @@ namespace silva {
     };
     return std::ranges::subrange<tree_span_child_iter_t<NodeData>,
                                  tree_span_child_iter_t<NodeData>>(begin, end);
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  auto tree_t<NodeData>::span(this auto&& self)
-  {
-    auto* root = &self.nodes.front();
-    if constexpr (std::is_const_v<std::remove_pointer_t<decltype(root)>>) {
-      return tree_span_t<const NodeData>{.root = root, .stride = 1};
-    }
-    else {
-      return tree_span_t<NodeData>{.root = root, .stride = 1};
-    }
   }
 
   template<typename NodeData>
@@ -279,16 +275,6 @@ namespace silva {
   hash_value_t hash_impl(const tree_span_t<NodeData>& x)
   {
     return hash(tuple_t<NodeData*, index_t>{x.root, x.stride});
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_t<NodeData> tree_t<NodeData>::subtree(const index_t node_index) const
-  {
-    const auto& node = nodes[node_index];
-    tree_t<NodeData> retval;
-    retval.nodes.assign(nodes.begin() + node_index, nodes.begin() + node_index + node.subtree_size);
-    return retval;
   }
 
   template<typename NodeData>

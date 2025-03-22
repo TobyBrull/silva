@@ -6,14 +6,6 @@
 #include "canopy/tree.hpp"
 
 namespace silva {
-
-  parse_tree_t parse_tree_t::subtree(const index_t node_index) const
-  {
-    parse_tree_t retval{tree_t<parse_tree_node_t>::subtree(node_index)};
-    retval.tokenization = tokenization;
-    return retval;
-  }
-
   constexpr index_t max_num_tokens = 5;
 
   expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset,
@@ -68,5 +60,35 @@ namespace silva {
                          style.absolute(node.rule_name),
                          string_escaped(tokenization->token_info_get(node.token_begin)->str));
     });
+  }
+
+  parse_tree_span_t::parse_tree_span_t(const parse_tree_t& other)
+    : tree_span_t(other.nodes), tokenization(other.tokenization)
+  {
+  }
+
+  parse_tree_span_t::parse_tree_span_t(const parse_tree_node_t* root,
+                                       index_t stride,
+                                       shared_ptr_t<const tokenization_t> tokenization)
+    : tree_span_t(root, stride), tokenization(std::move(tokenization))
+  {
+  }
+
+  parse_tree_span_t parse_tree_span_t::sub_tree_span_at(const index_t pos) const
+  {
+    return parse_tree_span_t{&((*this)[pos]), stride, tokenization};
+  }
+
+  parse_tree_t parse_tree_span_t::copy() const
+  {
+    vector_t<parse_tree_node_t> nodes;
+    nodes.reserve(size());
+    for (index_t i = 0; i < size(); ++i) {
+      nodes.push_back((*this)[i]);
+    }
+    return parse_tree_t{
+        .nodes        = std::move(nodes),
+        .tokenization = tokenization,
+    };
   }
 }
