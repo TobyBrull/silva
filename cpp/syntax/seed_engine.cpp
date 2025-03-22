@@ -284,7 +284,8 @@ namespace silva {
     expected_t<void> handle_rule(const name_id_t scope_name, const parse_tree_span_t pts_rule)
     {
       SILVA_EXPECT(pts_rule[0].rule_name == fni_rule, MINOR, "Expected Rule");
-      const array_t<index_t, 2> children = SILVA_EXPECT_FWD(pts_rule.get_children<2>());
+      SILVA_EXPECT(pts_rule[0].num_children == 2, MINOR, "Rule expected to have two children");
+      const auto children = pts_rule.get_children<2>();
       SILVA_EXPECT(pts_rule[children[0]].rule_name == fni_nt_base,
                    MINOR,
                    "First child of Rule must be Nonterminal.Base");
@@ -524,8 +525,9 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> s_expr_postfix(const parse_tree_span_t pts)
       {
-        auto gg                = guard();
-        const auto children    = SILVA_EXPECT_FWD(pts.get_children<1>());
+        auto gg = guard();
+        SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
+        const auto children    = pts.get_children<1>();
         const token_id_t op_ti = tcp->name_infos[pts[0].rule_name].base_name;
         if (op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus) {
           const auto [min_repeat, max_repeat] = get_min_max_repeat(op_ti);
@@ -608,7 +610,8 @@ namespace silva {
       {
         const name_id_t s_rule_name = pts[0].rule_name;
         if (tcp->name_id_is_parent(fni_expr_parens, s_rule_name)) {
-          const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
+          SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
+          const auto children = pts.get_children<1>();
           return s_expr(pts.sub_tree_span_at(children[0]));
         }
         else if (tcp->name_id_is_parent(fni_expr_postfix, s_rule_name)) {
@@ -672,7 +675,8 @@ namespace silva {
           SILVA_EXPECT(rule_token == ti_equal || rule_token == ti_alias,
                        MAJOR,
                        "Expected one of [ '=' '=>' ]");
-          const array_t<index_t, 1> children = SILVA_EXPECT_FWD(pts.get_children<1>());
+          SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
+          const auto children = pts.get_children<1>();
           if (rule_token == ti_equal) {
             auto gg_rule = guard_for_rule();
             gg_rule.set_rule_name(t_rule_name);

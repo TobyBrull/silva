@@ -4,7 +4,6 @@
     * Make tree.hpp not depend on expected_t (or rather: not depend on error_tree_t)?
     * Use tree_inv_t in error_tree_t?
     * Add tree_nursery_t and tree_inv_nursery_t
-    * Add tree_view_t and tree_inv_view_t
 
 * Allow multiple code snippets
     * token_context_t -> naming_context_t
