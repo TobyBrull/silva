@@ -399,8 +399,8 @@ namespace silva {
         const auto& labeled_item = pts[0];
         SILVA_EXPECT(labeled_item.rule_name == fni_lbl_item, MINOR);
         fern_labeled_item_t retval;
-        for (const auto [child_node_index, child_index]: parse_tree->span().children_range()) {
-          const auto& node = parse_tree->nodes[child_node_index];
+        for (const auto [child_node_index, child_index]: pts.children_range()) {
+          const auto& node = pts[child_node_index];
           if (labeled_item.num_children == 2 && child_index == 0) {
             SILVA_EXPECT(node.rule_name == fni_label, MINOR);
             retval.label =
@@ -444,7 +444,7 @@ namespace silva {
       {
         SILVA_EXPECT(pts[0].rule_name == fni_fern, MINOR);
         fern_t retval;
-        for (const auto [child_node_index, child_index]: parse_tree->span().children_range()) {
+        for (const auto [child_node_index, child_index]: pts.children_range()) {
           fern_labeled_item_t li =
               SILVA_EXPECT_FWD(labeled_item(pts.sub_tree_span_at(child_node_index)));
           retval.push_back(std::move(li));

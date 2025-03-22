@@ -21,8 +21,7 @@ namespace silva {
 
     std::unique_ptr<seed_engine_t> retval = std::make_unique<seed_engine_t>();
 
-    const parse_tree_t& s_pt             = *seed_parse_tree;
-    const tokenization_t& s_tokenization = *s_pt.tokenization;
+    const tokenization_t& s_tokenization = *seed_parse_tree->tokenization;
     const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
     const vector_t<shared_ptr_t<const parse_tree_t>>& spts = retval->seed_parse_trees;
@@ -314,7 +313,7 @@ namespace silva {
               const name_id_t nt_name =
                   SILVA_EXPECT_FWD(derive_name(scope_name, pts_expr.sub_tree_span_at(i)));
               const auto [it, inserted] =
-                  retval->nonterminal_rules.emplace(pts_rule.sub_tree_span_at(i), nt_name);
+                  retval->nonterminal_rules.emplace(pts_expr.sub_tree_span_at(i), nt_name);
               SILVA_EXPECT(inserted, MAJOR);
             }
           }
@@ -329,7 +328,7 @@ namespace silva {
                    MINOR,
                    "Seed parse_tree should start with Seed node");
 
-      for (const auto [rule_node_index, child_index]: s_pt.span().children_range()) {
+      for (const auto [rule_node_index, child_index]: pts_seed.children_range()) {
         SILVA_EXPECT_FWD(handle_rule(scope_name, pts_seed.sub_tree_span_at(rule_node_index)));
       }
       return {};
@@ -337,7 +336,7 @@ namespace silva {
 
     expected_t<void> handle_all()
     {
-      const parse_tree_span_t pts = s_pt.span();
+      const parse_tree_span_t pts = seed_parse_tree->span();
       SILVA_EXPECT_FWD(handle_seed(name_id_root, pts));
 
       // Pre-compile hashmap_t of "regexes".
@@ -380,11 +379,10 @@ namespace silva {
   namespace impl {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* root = nullptr;
-      const parse_tree_t& s_pt  = *root->seed_parse_trees.front();
-      token_context_ptr_t tcp   = s_pt.tokenization->context;
+      token_context_ptr_t tcp   = root->seed_parse_trees.front()->tokenization->context;
       name_id_style_t fnis      = seed_name_style(tcp);
 
-      const tokenization_t& s_tokenization = *s_pt.tokenization;
+      const tokenization_t& s_tokenization = *root->seed_parse_trees.front()->tokenization;
       const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
       const tokenization_t& t_tokenization = *retval.tokenization;
