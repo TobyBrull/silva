@@ -24,6 +24,8 @@ namespace silva {
     NodeData* root = nullptr;
     index_t stride = 0;
 
+    index_t size() const;
+
     auto& operator[](this auto&&, index_t);
 
     tree_span_t sub_tree_span_at(index_t) const;
@@ -44,9 +46,20 @@ namespace silva {
     // visitation and makes this function return without an error.
     template<typename Visitor>
       requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
-    expected_t<void> visit_subtree(Visitor, index_t start_node_index = 0) const;
+    expected_t<void> visit_subtree(Visitor) const;
+
+    // Get the indexes of the children of "parent_node_index" but only if the number of children
+    // matches "N".
+    template<index_t N>
+    expected_t<array_t<index_t, N>> get_children() const;
+
+    // Get the indexes of the children of "parent_node_index" but only if the number of children
+    // matches "N".
+    template<index_t N>
+    expected_t<small_vector_t<index_t, N>> get_children_up_to() const;
 
     friend auto operator<=>(const tree_span_t&, const tree_span_t&) = default;
+    // friend hash_value_t hash_impl(const tree_span_t& x);
   };
 
   template<typename NodeData>
@@ -67,25 +80,6 @@ namespace silva {
     vector_t<NodeData> nodes;
 
     auto span(this auto&&);
-
-    // Calls Visitor once for each child of "parent_node_index". The arguments are (1) the
-    // node-index of the child node, "child_node_index", and (2) the "child_index", meaning that
-    // "child_node_index" is child number "child_index" of "parent_node_index".
-    //
-    // Regarding the return type of Visitor, see comment from "visit_subtree" applies.
-    template<typename Visitor>
-      requires std::invocable<Visitor, index_t, index_t>
-    expected_t<void> visit_children(Visitor, index_t parent_node_index) const;
-
-    // Get the indexes of the children of "parent_node_index" but only if the number of children
-    // matches "N".
-    template<index_t N>
-    expected_t<array_t<index_t, N>> get_children(index_t parent_node_index) const;
-
-    // Get the indexes of the children of "parent_node_index" but only if the number of children
-    // matches "N".
-    template<index_t N>
-    expected_t<small_vector_t<index_t, N>> get_children_up_to(index_t parent_node_index) const;
 
     tree_t subtree(index_t node_index) const;
 
@@ -141,6 +135,13 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
+  index_t tree_span_t<NodeData>::size() const
+  {
+    return root->subtree_size;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   auto& tree_span_t<NodeData>::operator[](this auto&& self, const index_t i)
   {
     return *(self.root + self.stride * i);
@@ -190,8 +191,7 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   template<typename Visitor>
     requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
-  expected_t<void> tree_span_t<NodeData>::visit_subtree(Visitor visitor,
-                                                        const index_t start_node_index) const
+  expected_t<void> tree_span_t<NodeData>::visit_subtree(Visitor visitor) const
   {
     vector_t<tree_branch_t> path;
     const auto clean_stack_till =
@@ -214,8 +214,8 @@ namespace silva {
       return {next_child_index};
     };
 
-    const index_t end_node_index = start_node_index + (*this)[start_node_index].subtree_size;
-    for (index_t node_index = start_node_index; node_index < end_node_index; ++node_index) {
+    const index_t end_node_index = (*this)[0].subtree_size;
+    for (index_t node_index = 0; node_index < end_node_index; ++node_index) {
       const optional_t<index_t> maybe_new_child_index =
           SILVA_EXPECT_FWD(clean_stack_till(node_index));
       if (!maybe_new_child_index) {
@@ -253,25 +253,6 @@ namespace silva {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  template<typename Visitor>
-    requires std::invocable<Visitor, index_t, index_t>
-  expected_t<void> tree_t<NodeData>::visit_children(Visitor visitor,
-                                                    const index_t parent_node_index) const
-  {
-    const auto& parent_node  = nodes[parent_node_index];
-    index_t child_node_index = parent_node_index + 1;
-    for (index_t child_index = 0; child_index < parent_node.num_children; ++child_index) {
-      const bool cont = SILVA_EXPECT_FWD(visitor(child_node_index, child_index));
-      if (!cont) {
-        break;
-      }
-      child_node_index += nodes[child_node_index].subtree_size;
-    }
-    return {};
-  }
-
-  template<typename NodeData>
   template<typename Visitor>
     requires std::invocable<Visitor, index_t, index_t>
   expected_t<void> tree_inv_t<NodeData>::visit_children(Visitor visitor,
@@ -298,37 +279,36 @@ namespace silva {
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   template<index_t N>
-  expected_t<array_t<index_t, N>>
-  tree_t<NodeData>::get_children(const index_t parent_node_index) const
+  expected_t<array_t<index_t, N>> tree_span_t<NodeData>::get_children() const
   {
-    const auto& node = nodes[parent_node_index];
+    const auto& node = (*this)[0];
     SILVA_EXPECT(node.num_children == N, MAJOR);
     array_t<index_t, N> retval;
-    SILVA_EXPECT_FWD(visit_children(
-        [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
-          retval[child_num] = child_node_index;
-          return true;
-        },
-        parent_node_index));
-    return {std::move(retval)};
+    for (const auto [child_node_index, child_index]: children_range()) {
+      retval[child_index] = child_node_index;
+    }
+    return retval;
   }
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   template<index_t N>
-  expected_t<small_vector_t<index_t, N>>
-  tree_t<NodeData>::get_children_up_to(const index_t parent_node_index) const
+  expected_t<small_vector_t<index_t, N>> tree_span_t<NodeData>::get_children_up_to() const
   {
-    const auto& node = nodes[parent_node_index];
+    const auto& node = (*this)[0];
     SILVA_EXPECT(node.num_children <= N, MAJOR);
     small_vector_t<index_t, N> retval;
-    SILVA_EXPECT_FWD(visit_children(
-        [&](const index_t child_node_index, const index_t child_num) -> expected_t<bool> {
-          retval.emplace_back(child_node_index);
-          return true;
-        },
-        parent_node_index));
-    return {std::move(retval)};
+    for (const auto [child_node_index, child_index]: children_range()) {
+      retval.emplace_back(child_node_index);
+    }
+    return retval;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  hash_value_t hash_impl(const tree_span_t<NodeData>& x)
+  {
+    return hash(tuple_t<NodeData*, index_t>{x.root, x.stride});
   }
 
   template<typename NodeData>

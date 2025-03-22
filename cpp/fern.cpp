@@ -146,38 +146,39 @@ namespace silva {
         retval += ' ';
       }
     };
-    auto result = pt->span().visit_subtree(
-        [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
-          SILVA_EXPECT(!path.empty(), ASSERT);
-          const auto& node = pt->nodes[path.back().node_index];
-          if (node.rule_name == fni_fern) {
-            if (is_on_entry(event)) {
-              retval += '[';
-              depth += 1;
-            }
-            if (is_on_exit(event)) {
-              depth -= 1;
-              if (0 < node.num_children) {
-                retval_newline();
-              }
-              retval += ']';
-            }
-          }
-          else if (node.rule_name == fni_lbl_item) {
-            if (is_on_entry(event)) {
-              retval_newline();
-            }
-          }
-          else if (node.rule_name == fni_label) {
-            retval += pt->tokenization->token_info_get(node.token_begin)->str;
-            retval += " : ";
-          }
-          else if (node.rule_name == fni_value) {
-            retval += pt->tokenization->token_info_get(node.token_begin)->str;
-          }
-          return true;
-        },
-        start_node);
+    auto result = pt->span()
+                      .sub_tree_span_at(start_node)
+                      .visit_subtree([&](const span_t<const tree_branch_t> path,
+                                         const tree_event_t event) -> expected_t<bool> {
+                        SILVA_EXPECT(!path.empty(), ASSERT);
+                        const auto& node = pt->nodes[path.back().node_index];
+                        if (node.rule_name == fni_fern) {
+                          if (is_on_entry(event)) {
+                            retval += '[';
+                            depth += 1;
+                          }
+                          if (is_on_exit(event)) {
+                            depth -= 1;
+                            if (0 < node.num_children) {
+                              retval_newline();
+                            }
+                            retval += ']';
+                          }
+                        }
+                        else if (node.rule_name == fni_lbl_item) {
+                          if (is_on_entry(event)) {
+                            retval_newline();
+                          }
+                        }
+                        else if (node.rule_name == fni_label) {
+                          retval += pt->tokenization->token_info_get(node.token_begin)->str;
+                          retval += " : ";
+                        }
+                        else if (node.rule_name == fni_value) {
+                          retval += pt->tokenization->token_info_get(node.token_begin)->str;
+                        }
+                        return true;
+                      });
     SILVA_EXPECT_FWD(std::move(result));
     return retval;
   }
@@ -194,47 +195,49 @@ namespace silva {
     string_t retval    = "digraph Fern {\n";
     string_t curr_path = "/";
     optional_t<string_view_t> last_label_str;
-    auto result = pt->span().visit_subtree(
-        [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
-          SILVA_EXPECT(!path.empty(), ASSERT);
-          const auto& node = pt->nodes[path.back().node_index];
-          if (node.rule_name == fni_lbl_item) {
-            if (is_on_entry(event)) {
-              string_t prev_path = curr_path;
-              curr_path += fmt::format("{}/", path.back().child_index);
-              retval += fmt::format("  \"{}\" -> \"{}\"\n", prev_path, curr_path);
-            }
-            if (is_on_exit(event)) {
-              curr_path.pop_back();
-              while (curr_path.back() != '/') {
-                curr_path.pop_back();
+    auto result =
+        pt->span()
+            .sub_tree_span_at(start_node)
+            .visit_subtree([&](const span_t<const tree_branch_t> path,
+                               const tree_event_t event) -> expected_t<bool> {
+              SILVA_EXPECT(!path.empty(), ASSERT);
+              const auto& node = pt->nodes[path.back().node_index];
+              if (node.rule_name == fni_lbl_item) {
+                if (is_on_entry(event)) {
+                  string_t prev_path = curr_path;
+                  curr_path += fmt::format("{}/", path.back().child_index);
+                  retval += fmt::format("  \"{}\" -> \"{}\"\n", prev_path, curr_path);
+                }
+                if (is_on_exit(event)) {
+                  curr_path.pop_back();
+                  while (curr_path.back() != '/') {
+                    curr_path.pop_back();
+                  }
+                  last_label_str = none;
+                }
               }
-              last_label_str = none;
-            }
-          }
-          else if (node.rule_name == fni_label) {
-            last_label_str = pt->tokenization->token_info_get(node.token_begin)->str;
-          }
-          else if (node.rule_name == fni_value) {
-            if (last_label_str.has_value()) {
-              retval += fmt::format(
-                  "  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
-                  curr_path,
-                  curr_path,
-                  string_escaped(last_label_str.value()),
-                  string_escaped(pt->tokenization->token_info_get(node.token_begin)->str));
-            }
-            else {
-              retval += fmt::format(
-                  "  \"{}\" [label=\"{}\\n{}\"]\n",
-                  curr_path,
-                  curr_path,
-                  string_escaped(pt->tokenization->token_info_get(node.token_begin)->str));
-            }
-          }
-          return true;
-        },
-        start_node);
+              else if (node.rule_name == fni_label) {
+                last_label_str = pt->tokenization->token_info_get(node.token_begin)->str;
+              }
+              else if (node.rule_name == fni_value) {
+                if (last_label_str.has_value()) {
+                  retval += fmt::format(
+                      "  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
+                      curr_path,
+                      curr_path,
+                      string_escaped(last_label_str.value()),
+                      string_escaped(pt->tokenization->token_info_get(node.token_begin)->str));
+                }
+                else {
+                  retval += fmt::format(
+                      "  \"{}\" [label=\"{}\\n{}\"]\n",
+                      curr_path,
+                      curr_path,
+                      string_escaped(pt->tokenization->token_info_get(node.token_begin)->str));
+                }
+              }
+              return true;
+            });
     SILVA_EXPECT_FWD(std::move(result));
     retval += "}";
     return retval;
@@ -391,68 +394,61 @@ namespace silva {
       name_id_t fni_label    = tcp->name_id_of("Label");
       name_id_t fni_value    = tcp->name_id_of("Value");
 
-      expected_t<fern_labeled_item_t> labeled_item(const index_t start_node)
+      expected_t<fern_labeled_item_t> labeled_item(const parse_tree_span_t pts)
       {
-        const auto& labeled_item = parse_tree->nodes[start_node];
+        const auto& labeled_item = pts[0];
         SILVA_EXPECT(labeled_item.rule_name == fni_lbl_item, MINOR);
         fern_labeled_item_t retval;
-        auto result = parse_tree->visit_children(
-            [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
-              const auto& node = parse_tree->nodes[child_node_index];
-              if (labeled_item.num_children == 2 && child_index == 0) {
-                SILVA_EXPECT(node.rule_name == fni_label, MINOR);
-                retval.label = string_t{
-                    SILVA_EXPECT_FWD(parse_tree->tokenization->token_info_get(node.token_begin)
-                                         ->string_as_plain_contained(),
-                                     MAJOR)};
-              }
-              else if (node.rule_name == fni_fern) {
-                fern_t sub_fern   = SILVA_EXPECT_FWD(fern(child_node_index));
-                retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
-              }
-              else if (node.rule_name == fni_value) {
-                SILVA_EXPECT(node.num_children == 0, MINOR, "Value node must have zero children");
-                const token_id_t token_id = parse_tree->tokenization->tokens[node.token_begin];
-                const auto* token_data = parse_tree->tokenization->token_info_get(node.token_begin);
-                if (token_id == tt_none) {
-                  retval.item.value = none;
-                }
-                else if (token_id == tt_true) {
-                  retval.item.value = true;
-                }
-                else if (token_id == tt_false) {
-                  retval.item.value = false;
-                }
-                else if (token_data->category == STRING) {
-                  retval.item.value =
-                      string_t{SILVA_EXPECT_FWD(token_data->string_as_plain_contained(), MAJOR)};
-                }
-                else if (token_data->category == NUMBER) {
-                  retval.item.value = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
-                }
-                else {
-                  SILVA_EXPECT(false, MINOR, "Unknown item '{}'", token_data->str);
-                }
-              }
-              return true;
-            },
-            start_node);
-        SILVA_EXPECT_FWD(std::move(result));
+        for (const auto [child_node_index, child_index]: pts.children_range()) {
+          const auto& node = pts[child_node_index];
+          if (labeled_item.num_children == 2 && child_index == 0) {
+            SILVA_EXPECT(node.rule_name == fni_label, MINOR);
+            retval.label =
+                string_t{SILVA_EXPECT_FWD(parse_tree->tokenization->token_info_get(node.token_begin)
+                                              ->string_as_plain_contained(),
+                                          MAJOR)};
+          }
+          else if (node.rule_name == fni_fern) {
+            fern_t sub_fern   = SILVA_EXPECT_FWD(fern(pts.sub_tree_span_at(child_node_index)));
+            retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
+          }
+          else if (node.rule_name == fni_value) {
+            SILVA_EXPECT(node.num_children == 0, MINOR, "Value node must have zero children");
+            const token_id_t token_id = parse_tree->tokenization->tokens[node.token_begin];
+            const auto* token_data    = parse_tree->tokenization->token_info_get(node.token_begin);
+            if (token_id == tt_none) {
+              retval.item.value = none;
+            }
+            else if (token_id == tt_true) {
+              retval.item.value = true;
+            }
+            else if (token_id == tt_false) {
+              retval.item.value = false;
+            }
+            else if (token_data->category == STRING) {
+              retval.item.value =
+                  string_t{SILVA_EXPECT_FWD(token_data->string_as_plain_contained(), MAJOR)};
+            }
+            else if (token_data->category == NUMBER) {
+              retval.item.value = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
+            }
+            else {
+              SILVA_EXPECT(false, MINOR, "Unknown item '{}'", token_data->str);
+            }
+          }
+        }
         return retval;
       }
 
-      expected_t<fern_t> fern(const index_t start_node)
+      expected_t<fern_t> fern(const parse_tree_span_t pts)
       {
-        SILVA_EXPECT(parse_tree->nodes[start_node].rule_name == fni_fern, MINOR);
+        SILVA_EXPECT(pts[0].rule_name == fni_fern, MINOR);
         fern_t retval;
-        auto result = parse_tree->visit_children(
-            [&](const index_t child_node_index, const index_t child_index) -> expected_t<bool> {
-              fern_labeled_item_t li = SILVA_EXPECT_FWD(labeled_item(child_node_index));
-              retval.push_back(std::move(li));
-              return true;
-            },
-            start_node);
-        SILVA_EXPECT_FWD(std::move(result));
+        for (const auto [child_node_index, child_index]: pts.children_range()) {
+          fern_labeled_item_t li =
+              SILVA_EXPECT_FWD(labeled_item(pts.sub_tree_span_at(child_node_index)));
+          retval.push_back(std::move(li));
+        }
         return retval;
       }
     };
@@ -461,6 +457,6 @@ namespace silva {
   expected_t<fern_t> fern_create(const parse_tree_t* parse_tree, const index_t start_node)
   {
     impl::fern_nursery_t fern_nursery{.parse_tree = parse_tree};
-    return fern_nursery.fern(start_node);
+    return fern_nursery.fern(parse_tree->span());
   }
 }

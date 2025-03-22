@@ -23,6 +23,8 @@ namespace silva {
     parse_tree_t subtree(index_t node_index) const;
   };
 
+  using parse_tree_span_t = tree_span_t<const parse_tree_node_t>;
+
   enum class parse_tree_printing_t {
     ABSOLUTE,
     RELATIVE,
