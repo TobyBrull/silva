@@ -25,6 +25,9 @@ namespace silva {
     small_vector_t(const small_vector_t&);
     small_vector_t& operator=(const small_vector_t&);
 
+    auto* begin(this auto&& self) { return &(std::forward<decltype(self)>(self)[0]); }
+    auto* end(this auto&& self) { return &(std::forward<decltype(self)>(self)[self.size]); }
+
     auto* data(this auto& self);
     operator span_t<T>();
 

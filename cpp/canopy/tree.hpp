@@ -50,6 +50,10 @@ namespace silva {
 
     // Get the indexes of the children of "parent_node_index" but only if the number of children
     // matches "N".
+    vector_t<index_t> get_children_dyn() const;
+
+    // Get the indexes of the children of "parent_node_index" but only if the number of children
+    // matches "N".
     template<index_t N>
     expected_t<array_t<index_t, N>> get_children() const;
 
@@ -91,27 +95,6 @@ namespace silva {
 
   template<typename NodeData, typename NodeDataFunc>
   expected_t<string_t> tree_to_graphviz(const tree_t<NodeData>&, NodeDataFunc);
-
-  template<typename NodeData>
-  struct tree_inv_t {
-    struct node_t : public NodeData {
-      index_t num_children   = 0;
-      index_t children_begin = 0;
-
-      friend auto operator<=>(const node_t&, const node_t&) = default;
-    };
-    vector_t<node_t> nodes;
-
-    template<typename Visitor>
-      requires std::invocable<Visitor, index_t, index_t>
-    expected_t<void> visit_children(Visitor, index_t parent_node_index) const;
-
-    template<index_t N>
-    expected_t<array_t<index_t, N>> get_children(index_t parent_node_index) const;
-
-    template<index_t N>
-    expected_t<small_vector_t<index_t, N>> get_children_up_to(index_t parent_node_index) const;
-  };
 }
 
 // IMPLEMENTATION
@@ -253,27 +236,16 @@ namespace silva {
   }
 
   template<typename NodeData>
-  template<typename Visitor>
-    requires std::invocable<Visitor, index_t, index_t>
-  expected_t<void> tree_inv_t<NodeData>::visit_children(Visitor visitor,
-                                                        const index_t parent_node_index) const
+    requires std::derived_from<NodeData, tree_node_t>
+  vector_t<index_t> tree_span_t<NodeData>::get_children_dyn() const
   {
-    const node_t& parent_node = nodes[parent_node_index];
-    index_t curr_node_index   = parent_node_index;
-    const index_t n           = parent_node.num_children;
-    vector_t<index_t> child_node_indexes(n, 0);
-    for (index_t child_count = 1; child_count <= n; ++child_count) {
-      curr_node_index -= 1;
-      child_node_indexes[n - child_count] = curr_node_index;
-      curr_node_index                     = nodes[curr_node_index].children_begin;
+    const auto& node = (*this)[0];
+    vector_t<index_t> retval;
+    retval.reserve(node.num_children);
+    for (const auto [child_node_index, child_index]: children_range()) {
+      retval.emplace_back(child_node_index);
     }
-    for (index_t child_index = 0; child_index < n; ++child_index) {
-      const bool cont = SILVA_EXPECT_FWD(visitor(child_node_indexes[child_index], child_index));
-      if (!cont) {
-        break;
-      }
-    }
-    return {};
+    return retval;
   }
 
   template<typename NodeData>
