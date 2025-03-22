@@ -577,7 +577,6 @@ namespace silva {
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
           gg.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(sub_s_node_index)));
         }
-
         return gg.release();
       }
 
