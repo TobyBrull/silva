@@ -16,21 +16,20 @@ namespace silva {
 
   constexpr index_t max_num_tokens = 5;
 
-  expected_t<string_t> parse_tree_to_string(const parse_tree_t& pt,
-                                            const index_t token_offset,
-                                            const parse_tree_printing_t printing)
+  expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset,
+                                                    const parse_tree_printing_t printing)
   {
-    token_context_ptr_t tcp = pt.tokenization->context;
+    token_context_ptr_t tcp = tokenization->context;
     const auto style        = seed_name_style(tcp);
-    return tree_to_string(pt, [&](string_t& curr_line, auto& path) {
-      const auto& node = pt.nodes[path.back().node_index];
+    return tree_span_t::to_string([&](string_t& curr_line, auto& path) {
+      const auto& node = (*this)[path.back().node_index];
       using enum parse_tree_printing_t;
       if (printing == ABSOLUTE) {
         curr_line += style.absolute(node.rule_name);
       }
       else {
         if (path.size() >= 2) {
-          name_id_t from = pt.nodes[path[path.size() - 2].node_index].rule_name;
+          name_id_t from = (*this)[path[path.size() - 2].node_index].rule_name;
           curr_line += style.relative(from, node.rule_name);
         }
         else {
@@ -40,9 +39,9 @@ namespace silva {
       do {
         curr_line.push_back(' ');
       } while (curr_line.size() < token_offset);
-      const auto print_tokens = [&curr_line, &pt](const index_t begin, const index_t end) {
+      const auto print_tokens = [&curr_line, this](const index_t begin, const index_t end) {
         for (index_t token_idx = begin; token_idx < end; ++token_idx) {
-          curr_line += pt.tokenization->token_info_get(token_idx)->str;
+          curr_line += tokenization->token_info_get(token_idx)->str;
           if (token_idx + 1 < end) {
             curr_line += " ";
           }
@@ -60,14 +59,14 @@ namespace silva {
     });
   }
 
-  expected_t<string_t> parse_tree_to_graphviz(const parse_tree_t& pt)
+  expected_t<string_t> parse_tree_span_t::to_graphviz()
   {
-    token_context_ptr_t tcp = pt.tokenization->context;
+    token_context_ptr_t tcp = tokenization->context;
     const auto style        = seed_name_style(tcp);
-    return tree_to_graphviz(pt, [&](auto& node) {
+    return tree_span_t::to_graphviz([&](auto& node) {
       return fmt::format("{}\\n{}",
                          style.absolute(node.rule_name),
-                         string_escaped(pt.tokenization->token_info_get(node.token_begin)->str));
+                         string_escaped(tokenization->token_info_get(node.token_begin)->str));
     });
   }
 }

@@ -39,7 +39,7 @@ namespace silva::test {
       return;
     }
     auto result_pt        = std::move(maybe_result_pt).value();
-    const auto result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*result_pt));
+    const auto result_str = SILVA_EXPECT_REQUIRE(result_pt->span().to_string());
     CHECK(result_str == expected_str.value().substr(1));
   }
 }

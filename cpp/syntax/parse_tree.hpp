@@ -20,21 +20,25 @@ namespace silva {
   struct parse_tree_t : public tree_t<parse_tree_node_t> {
     shared_ptr_t<const tokenization_t> tokenization;
 
+    auto span(this auto&&);
+
     parse_tree_t subtree(index_t node_index) const;
   };
 
-  using parse_tree_span_t = tree_span_t<const parse_tree_node_t>;
+  struct parse_tree_span_t : tree_span_t<const parse_tree_node_t> {
+    shared_ptr_t<const tokenization_t> tokenization;
 
-  enum class parse_tree_printing_t {
-    ABSOLUTE,
-    RELATIVE,
+    parse_tree_span_t sub_tree_span_at(index_t) const;
+
+    enum class parse_tree_printing_t {
+      ABSOLUTE,
+      RELATIVE,
+    };
+    expected_t<string_t> to_string(index_t token_offset  = 50,
+                                   parse_tree_printing_t = parse_tree_printing_t::ABSOLUTE);
+
+    expected_t<string_t> to_graphviz();
   };
-  expected_t<string_t>
-  parse_tree_to_string(const parse_tree_t&,
-                       index_t token_offset  = 50,
-                       parse_tree_printing_t = parse_tree_printing_t::ABSOLUTE);
-
-  expected_t<string_t> parse_tree_to_graphviz(const parse_tree_t&);
 
   // template<typename T>
   // struct bison_visitor {
@@ -63,4 +67,25 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+  inline auto parse_tree_t::span(this auto&& self)
+  {
+    return parse_tree_span_t{
+        {
+            .root   = &(self.nodes[0]),
+            .stride = 1,
+        },
+        /* .tokenization = */ self.tokenization,
+    };
+  }
+
+  inline parse_tree_span_t parse_tree_span_t::sub_tree_span_at(const index_t pos) const
+  {
+    return parse_tree_span_t{
+        {
+            .root   = &((*this)[pos]),
+            .stride = stride,
+        },
+        /* .tokenization = */ tokenization,
+    };
+  }
 }

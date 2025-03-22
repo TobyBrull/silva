@@ -64,6 +64,12 @@ namespace silva {
 
     friend auto operator<=>(const tree_span_t&, const tree_span_t&) = default;
     // friend hash_value_t hash_impl(const tree_span_t& x);
+
+    template<typename NodeDataFunc>
+    expected_t<string_t> to_string(NodeDataFunc);
+
+    template<typename NodeDataFunc>
+    expected_t<string_t> to_graphviz(NodeDataFunc);
   };
 
   template<typename NodeData>
@@ -89,12 +95,6 @@ namespace silva {
 
     void push_back(const tree_t& other, index_t other_node_index);
   };
-
-  template<typename NodeData, typename NodeDataFunc>
-  expected_t<string_t> tree_to_string(const tree_t<NodeData>&, NodeDataFunc);
-
-  template<typename NodeData, typename NodeDataFunc>
-  expected_t<string_t> tree_to_graphviz(const tree_t<NodeData>&, NodeDataFunc);
 }
 
 // IMPLEMENTATION
@@ -293,12 +293,14 @@ namespace silva {
     return retval;
   }
 
-  template<typename NodeData, typename NodeDataFunc>
-  expected_t<string_t> tree_to_string(const tree_t<NodeData>& tree, NodeDataFunc node_data_func)
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  template<typename NodeDataFunc>
+  expected_t<string_t> tree_span_t<NodeData>::to_string(NodeDataFunc node_data_func)
   {
     string_t curr_line;
     string_t retval;
-    auto result = tree.span().visit_subtree(
+    auto result = visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           if (!is_on_entry(event)) {
             return true;
@@ -315,18 +317,20 @@ namespace silva {
     return retval;
   }
 
-  template<typename NodeData, typename NodeDataFunc>
-  expected_t<string_t> tree_to_graphviz(const tree_t<NodeData>& tree, NodeDataFunc node_data_func)
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  template<typename NodeDataFunc>
+  expected_t<string_t> tree_span_t<NodeData>::to_graphviz(NodeDataFunc node_data_func)
   {
     string_t retval;
     retval += "digraph parse_tree {\n";
-    auto result = tree.span().visit_subtree(
+    auto result = visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           if (!is_on_entry(event)) {
             return true;
           }
           SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
-          const auto& node = tree.nodes[path.back().node_index];
+          const auto& node = (*this)[path.back().node_index];
           string_t node_name{"/"};
           if (path.size() >= 2) {
             string_t parent_node_name = "/";

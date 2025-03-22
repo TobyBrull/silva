@@ -53,7 +53,7 @@ TEST_CASE("exclamation-mark", "[seed_engine_t][seed]")
           [0]Silva.Seed.Terminal                  '='
 )";
   const string_t seed_pt_str{
-      SILVA_EXPECT_REQUIRE(parse_tree_to_string(*fs_pr->seed_parse_trees.front()))};
+      SILVA_EXPECT_REQUIRE(fs_pr->seed_parse_trees.front()->span().to_string())};
   CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
   const string_t frog_source_code = R"'(
@@ -84,6 +84,6 @@ TEST_CASE("exclamation-mark", "[seed_engine_t][seed]")
       [1]Silva.Primary                            h
       [2]Silva.Primary                            i
 )";
-  const string_t frog_pt_str{SILVA_EXPECT_REQUIRE(parse_tree_to_string(*frog_pt))};
+  const string_t frog_pt_str{SILVA_EXPECT_REQUIRE(frog_pt->span().to_string())};
   CHECK(frog_pt_str == expected.substr(1));
 }

@@ -62,13 +62,13 @@ silva_main()
   else if (arg_process.starts_with("parse_tree/")) {
     const auto rest = arg_process.substr(11);
     if (rest == "string") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(*pt)));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_string()));
     }
     else if (rest == "graphviz") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_graphviz(*pt)));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_graphviz()));
     }
     else if (rest == "graphviz_show") {
-      graphviz_show_sync(SILVA_EXPECT_FWD(parse_tree_to_graphviz(*pt)));
+      graphviz_show_sync(SILVA_EXPECT_FWD(pt->span().to_graphviz()));
     }
     else {
       SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);

@@ -81,8 +81,8 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
             [2]Silva.Seed.Terminal                number
 )";
 
-  const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*sf_seed_pt_1));
-  const string_t pt_str_2 = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*sf_seed_pt_2));
+  const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(sf_seed_pt_1->span().to_string());
+  const string_t pt_str_2 = SILVA_EXPECT_REQUIRE(sf_seed_pt_2->span().to_string());
   CHECK(pt_str_1 == expected.substr(1));
   CHECK(pt_str_2 == expected.substr(1));
 
@@ -122,6 +122,6 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
   [2]Silva.SimpleFern.LabeledItem                 'jkl'
     [0]Silva.SimpleFern.Item                      'jkl'
 )";
-  const string_t result{SILVA_EXPECT_REQUIRE(parse_tree_to_string(*sfpt))};
+  const string_t result{SILVA_EXPECT_REQUIRE(sfpt->span().to_string())};
   CHECK(result == expected_parse_tree.substr(1));
 }

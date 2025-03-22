@@ -58,7 +58,7 @@ TEST_CASE("fern", "[fern]")
         [0]Silva.Value                            3
 )";
 
-  const string_t result_str = SILVA_EXPECT_REQUIRE(parse_tree_to_string(*pt_1));
+  const string_t result_str = SILVA_EXPECT_REQUIRE(pt_1->span().to_string());
   CHECK(result_str == expected_parse_tree_str.substr(1));
 
   const string_view_t expected_parse_tree_str_graphviz = R"(
@@ -105,6 +105,6 @@ digraph parse_tree {
   "/5/0/2/" -> "/5/0/2/0/"
   "/5/0/2/0/" [label="[0]Silva.Value\n3"]
 })";
-  const string_t result_graphviz = SILVA_EXPECT_REQUIRE(parse_tree_to_graphviz(*pt_1));
+  const string_t result_graphviz = SILVA_EXPECT_REQUIRE(pt_1->span().to_graphviz());
   CHECK(result_graphviz == expected_parse_tree_str_graphviz.substr(1));
 }
