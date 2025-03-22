@@ -46,29 +46,6 @@ namespace silva {
 
     expected_t<string_t> to_graphviz();
   };
-
-  // template<typename T>
-  // struct bison_visitor {
-  //   const ContextFreeGrammar* cfg = nullptr;
-  //
-  //   // Terminal-index ->
-  //   // TerminalCalllback
-  //   using TerminalCallback = std::function<void(T&)>;
-  //   vector_t<TerminalCallback> terminal_callbacks;
-  //
-  //   // ProductionHandle ->
-  //   // RHS index ->
-  //   // ProductionCallback
-  //   using ProductionCallback = std::function<void(T&, span_t<const T>)>;
-  //   vector_t<vector_t<ProductionCallback>> production_callbacks;
-  //
-  //   bison_visitor(const ContextFreeGrammar*);
-  //
-  //   void set_terminal_callback(SymbolHandle, TerminalCallback);
-  //   void set_production_callback(ProductionHandle, index_t rhs_index, ProductionCallback);
-  //
-  //   T visit_subtree(const ParseTree&) const;
-  // };
 }
 
 // IMPLEMENTATION
