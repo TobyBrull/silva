@@ -92,8 +92,6 @@ namespace silva {
     auto span(this auto&&);
 
     tree_t subtree(index_t node_index) const;
-
-    void push_back(const tree_t& other, index_t other_node_index);
   };
 }
 
