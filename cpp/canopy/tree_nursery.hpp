@@ -83,11 +83,7 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   tree_nursery_t<NodeData>::stake_t::~stake_t()
   {
-    if (nursery != nullptr) {
-      const index_t node_index = nursery->create_node_stack[create_node_stack_index];
-      nursery->tree.resize(node_index);
-      nursery->create_node_stack.resize(create_node_stack_index);
-    }
+    clear();
   }
 
   template<typename NodeData>
@@ -119,8 +115,13 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   void tree_nursery_t<NodeData>::stake_t::clear()
   {
-    nursery                 = nullptr;
-    create_node_stack_index = 0;
+    if (nursery != nullptr) {
+      const index_t node_index = nursery->create_node_stack[create_node_stack_index];
+      nursery->tree.resize(node_index);
+      nursery->create_node_stack.resize(create_node_stack_index);
+      nursery                 = nullptr;
+      create_node_stack_index = 0;
+    }
   }
 
   template<typename NodeData>
