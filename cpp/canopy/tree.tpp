@@ -22,22 +22,22 @@ TEST_CASE("tree")
   test_tree.push_back({{1, 2}, "D"});
   test_tree.push_back({{0, 1}, "H"});
 
-  tree_span_t<test_tree_node_t> ts;
+  tree_span_t<test_tree_node_t> tspan;
   SECTION("normal")
   {
-    ts = tree_span_t<test_tree_node_t>{test_tree};
+    tspan = tree_span_t<test_tree_node_t>{test_tree};
   }
   SECTION("reverse")
   {
     std::ranges::reverse(test_tree);
-    ts = tree_span_t<test_tree_node_t>{&test_tree.back(), -1};
+    tspan = tree_span_t<test_tree_node_t>{&test_tree.back(), -1};
   }
 
   {
-    const string_t result = SILVA_EXPECT_REQUIRE(ts.to_string([&](string_t& curr_line, auto& path) {
-      curr_line.push_back(' ');
-      curr_line += ts[path.back().node_index].name;
-    }));
+    const string_t result_str =
+        SILVA_EXPECT_REQUIRE(tspan.to_string([&](string_t& curr_line, auto& path) {
+          curr_line += fmt::format(" {}", tspan[path.back().node_index].name);
+        }));
     const string_view_t expected = R"(
 [0] A
   [0] B
@@ -48,22 +48,22 @@ TEST_CASE("tree")
   [2] D
     [0] H
 )";
-    CHECK(result == expected.substr(1));
+    CHECK(result_str == expected.substr(1));
   }
 
-  CHECK(ts.get_children_dyn() == vector_t<index_t>{1, 5, 6});
-  CHECK(ts.size() == 8);
-  CHECK(ts.sub_tree_span_at(1).get_children_dyn() == vector_t<index_t>{1, 2});
-  CHECK(ts.sub_tree_span_at(1).size() == 4);
-  CHECK(ts.sub_tree_span_at(2).get_children_dyn() == vector_t<index_t>{});
-  CHECK(ts.sub_tree_span_at(2).size() == 1);
-  CHECK(ts.sub_tree_span_at(3).get_children_dyn() == vector_t<index_t>{1});
-  CHECK(ts.sub_tree_span_at(3).size() == 2);
+  CHECK(tspan.get_children_dyn() == vector_t<index_t>{1, 5, 6});
+  CHECK(tspan.size() == 8);
+  CHECK(tspan.sub_tree_span_at(1).get_children_dyn() == vector_t<index_t>{1, 2});
+  CHECK(tspan.sub_tree_span_at(1).size() == 4);
+  CHECK(tspan.sub_tree_span_at(2).get_children_dyn() == vector_t<index_t>{});
+  CHECK(tspan.sub_tree_span_at(2).size() == 1);
+  CHECK(tspan.sub_tree_span_at(3).get_children_dyn() == vector_t<index_t>{1});
+  CHECK(tspan.sub_tree_span_at(3).size() == 2);
 
   {
     vector_t<string_t> results;
-    for (const auto& [node_idx, child_idx]: ts.children_range()) {
-      results.push_back(ts[node_idx].name);
+    for (const auto& [node_idx, child_idx]: tspan.children_range()) {
+      results.push_back(tspan[node_idx].name);
     }
     CHECK(results == vector_t<string_t>{"B", "C", "D"});
   }
