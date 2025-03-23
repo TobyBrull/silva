@@ -8,14 +8,11 @@ namespace silva {
   struct tree_nursery_t {
     vector_t<NodeData> tree;
 
-    struct create_stack_entry_t {
-      index_t node_index = 0;
-    };
-    vector_t<create_stack_entry_t> create_stack;
+    vector_t<index_t> create_node_stack;
 
     struct stake_t {
-      tree_nursery_t* nursery    = nullptr;
-      index_t create_stack_index = 0;
+      tree_nursery_t* nursery         = nullptr;
+      index_t create_node_stack_index = 0;
 
       stake_t() = default;
       stake_t(tree_nursery_t*, index_t);
@@ -66,7 +63,7 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   tree_nursery_t<NodeData>::stake_t::stake_t(stake_t&& other)
     : nursery(std::exchange(other.nursery, nullptr))
-    , create_stack_index(std::exchange(other.create_stack_index, 0))
+    , create_node_stack_index(std::exchange(other.create_node_stack_index, 0))
   {
   }
 
@@ -76,8 +73,8 @@ namespace silva {
   {
     if (this != &other) {
       clear();
-      nursery            = std::exchange(other.nursery, nullptr);
-      create_stack_index = std::exchange(other.create_stack_index, 0);
+      nursery                 = std::exchange(other.nursery, nullptr);
+      create_node_stack_index = std::exchange(other.create_node_stack_index, 0);
     }
     return *this;
   }
@@ -87,9 +84,9 @@ namespace silva {
   tree_nursery_t<NodeData>::stake_t::~stake_t()
   {
     if (nursery != nullptr) {
-      const auto& cse = nursery->create_stack[create_stack_index];
-      nursery->tree.resize(cse.node_index);
-      nursery->create_stack.resize(create_stack_index);
+      const index_t node_index = nursery->create_node_stack[create_node_stack_index];
+      nursery->tree.resize(node_index);
+      nursery->create_node_stack.resize(create_node_stack_index);
     }
   }
 
@@ -97,8 +94,8 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   NodeData& tree_nursery_t<NodeData>::stake_t::node() const
   {
-    const auto& cse  = nursery->create_stack[create_stack_index];
-    NodeData& retval = nursery->tree[cse.node_index];
+    const index_t node_index = nursery->create_node_stack[create_node_stack_index];
+    NodeData& retval         = nursery->tree[node_index];
     return retval;
   }
 
@@ -107,14 +104,14 @@ namespace silva {
   void tree_nursery_t<NodeData>::stake_t::commit()
   {
     SILVA_ASSERT(nursery != nullptr);
-    SILVA_ASSERT(create_stack_index > 0);
-    const auto& prev_cse = nursery->create_stack[create_stack_index - 1];
-    const auto& curr_cse = nursery->create_stack[create_stack_index];
-    NodeData& prev_node  = nursery->tree[prev_cse.node_index];
-    NodeData& curr_node  = nursery->tree[prev_cse.node_index];
+    SILVA_ASSERT(create_node_stack_index > 0);
+    const index_t prev_node_index = nursery->create_node_stack[create_node_stack_index - 1];
+    const index_t curr_node_index = nursery->create_node_stack[create_node_stack_index];
+    NodeData& prev_node           = nursery->tree[prev_node_index];
+    NodeData& curr_node           = nursery->tree[curr_node_index];
     prev_node.num_children += 1;
     prev_node.subtree_size += curr_node.subtree_size;
-    nursery->create_stack.resize(create_stack_index);
+    nursery->create_node_stack.resize(create_node_stack_index);
     nursery = nullptr;
   }
 
@@ -122,15 +119,15 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   void tree_nursery_t<NodeData>::stake_t::clear()
   {
-    nursery            = nullptr;
-    create_stack_index = 0;
+    nursery                 = nullptr;
+    create_node_stack_index = 0;
   }
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   tree_nursery_t<NodeData>::stake_t::stake_t(tree_nursery_t* nursery,
-                                             const index_t create_stack_index)
-    : nursery(nursery), create_stack_index(create_stack_index)
+                                             const index_t create_node_stack_index)
+    : nursery(nursery), create_node_stack_index(create_node_stack_index)
   {
   }
 
@@ -138,8 +135,8 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   tree_nursery_t<NodeData>::stake_t tree_nursery_t<NodeData>::create_node()
   {
-    tree_nursery_t<NodeData>::stake_t retval(this, create_stack.size());
-    create_stack.push_back(create_stack_entry_t{.node_index = index_t(tree.size())});
+    tree_nursery_t<NodeData>::stake_t retval(this, create_node_stack.size());
+    create_node_stack.push_back(tree.size());
     tree.emplace_back();
     return retval;
   }
