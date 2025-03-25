@@ -48,8 +48,6 @@ namespace silva {
 
     void set_rule_name(name_id_t);
 
-    void sync();
-
     parse_tree_sub_t release();
 
     ~parse_tree_guard_for_rule_t();

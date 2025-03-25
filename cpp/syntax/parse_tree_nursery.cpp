@@ -103,18 +103,13 @@ namespace silva {
     pt->nodes[node_index].rule_name = rule_name;
   }
 
-  void parse_tree_guard_for_rule_t::sync()
+  parse_tree_sub_t parse_tree_guard_for_rule_t::release()
   {
     sub.token_end                      = *token_index;
     pt->nodes[node_index].num_children = sub.num_children;
     pt->nodes[node_index].subtree_size = sub.num_children_total + 1;
     pt->nodes[node_index].token_begin  = sub.token_begin;
     pt->nodes[node_index].token_end    = sub.token_end;
-  }
-
-  parse_tree_sub_t parse_tree_guard_for_rule_t::release()
-  {
-    sync();
     parse_tree_sub_t retval{
         .num_children       = 1,
         .num_children_total = sub.num_children_total + 1,
