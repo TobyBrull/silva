@@ -86,23 +86,16 @@ namespace silva {
 
   // parse_tree_guard_for_rule_t
 
-  parse_tree_guard_for_rule_t::parse_tree_guard_for_rule_t(parse_tree_t* pt,
-                                                           index_t* token_index,
-                                                           const bool include_token_index)
-    : parse_tree_guard_t(pt, token_index), include_token_index(include_token_index)
+  parse_tree_guard_for_rule_t::parse_tree_guard_for_rule_t(parse_tree_t* pt, index_t* token_index)
+    : parse_tree_guard_t(pt, token_index)
   {
-    node_index = pt->nodes.size();
-    if (include_token_index) {
-      sub.token_begin = *token_index;
-      sub.token_end   = *token_index + 1;
-      pt->nodes.emplace_back(parse_tree_node_t{
-          .token_begin = *token_index,
-          .token_end   = *token_index + 1,
-      });
-    }
-    else {
-      pt->nodes.emplace_back();
-    }
+    node_index      = pt->nodes.size();
+    sub.token_begin = *token_index;
+    sub.token_end   = *token_index + 1;
+    pt->nodes.emplace_back(parse_tree_node_t{
+        .token_begin = *token_index,
+        .token_end   = *token_index + 1,
+    });
   }
 
   void parse_tree_guard_for_rule_t::set_rule_name(const name_id_t rule_name)
@@ -112,9 +105,7 @@ namespace silva {
 
   void parse_tree_guard_for_rule_t::sync()
   {
-    if (include_token_index) {
-      sub.token_end = *token_index;
-    }
+    sub.token_end                      = *token_index;
     pt->nodes[node_index].num_children = sub.num_children;
     pt->nodes[node_index].subtree_size = sub.num_children_total + 1;
     pt->nodes[node_index].token_begin  = sub.token_begin;
@@ -132,22 +123,6 @@ namespace silva {
     };
     parse_tree_guard_t::release();
     return retval;
-  }
-
-  void parse_tree_guard_for_rule_t::implant(const parse_tree_t& other_pt,
-                                            const index_t other_node_index)
-  {
-    const auto& other_node = other_pt.nodes[other_node_index];
-    const index_t len      = other_node.subtree_size;
-    const index_t diff     = node_index - other_node_index;
-    pt->nodes[node_index]  = other_node;
-    pt->nodes.insert(pt->nodes.end(),
-                     other_pt.nodes.begin() + other_node_index + 1,
-                     other_pt.nodes.begin() + other_node_index + len);
-    sub.num_children += other_node.num_children;
-    sub.num_children_total += len - 1;
-    sub.token_begin = std::min(sub.token_begin, other_node.token_begin);
-    sub.token_end   = std::max(sub.token_end, other_node.token_end);
   }
 
   parse_tree_guard_for_rule_t::~parse_tree_guard_for_rule_t() = default;

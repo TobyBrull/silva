@@ -224,17 +224,20 @@ namespace silva::parse_axe {
 
     // functions
 
-    optional_t<atom_data_t> try_parse_atom(parse_tree_guard_for_rule_t& gg_rule)
+    expected_t<optional_t<atom_data_t>> try_parse_atom(parse_tree_guard_for_rule_t& gg_rule)
     {
       auto maybe_atom_result = atom();
       if (!maybe_atom_result) {
         return none;
       }
-      auto atom_result               = std::move(maybe_atom_result).value();
+      auto atom_result = std::move(maybe_atom_result).value();
+      SILVA_EXPECT(atom_result.num_children == 1,
+                   ASSERT,
+                   "The atom function given to parse_axe_t must always parse a single child");
       const index_t atom_child_index = gg_rule.sub.num_children;
       const pair_t<index_t, index_t> token_range{atom_result.token_begin, atom_result.token_end};
       gg_rule.sub += std::move(atom_result);
-      return {{
+      return {atom_data_t{
           .name             = atom_name_id,
           .token_range      = token_range,
           .atom_child_index = atom_child_index,
@@ -426,7 +429,7 @@ namespace silva::parse_axe {
         if (it == parse_axe.results.end()) {
           // Current token is not one of the known operators, so it has to be an atom or the end of
           // the expression
-          const optional_t<atom_data_t> atom_data = try_parse_atom(gg_rule);
+          const optional_t<atom_data_t> atom_data = SILVA_EXPECT_FWD(try_parse_atom(gg_rule));
           if (!atom_data.has_value()) {
             break;
           }
@@ -582,33 +585,38 @@ namespace silva::parse_axe {
       return {};
     }
 
-    expected_t<parse_tree_sub_t>
-    generate_output(const atom_tree_span_t ats,
-                    const parse_tree_t& leave_atoms_tree,
-                    const vector_t<index_t>& leave_atoms_tree_child_node_indexes)
+    index_t generate_output(const atom_tree_span_t ats,
+                            const parse_tree_t& leave_atoms_tree,
+                            const vector_t<index_t>& leave_atoms_tree_child_node_indexes)
     {
-      const atom_tree_node_t& node = ats[0];
-      auto gg_rule                 = nursery.guard_for_rule(false);
-      gg_rule.set_rule_name(node.name);
+      auto& rv_nodes       = nursery.retval.nodes;
+      const index_t retval = rv_nodes.size();
+      const auto& node     = ats[0];
       if (node.atom_child_index.has_value()) {
         const index_t aci            = node.atom_child_index.value();
         const index_t lat_node_index = leave_atoms_tree_child_node_indexes[aci];
-        gg_rule.implant(leave_atoms_tree, lat_node_index);
+        const auto to_implant        = leave_atoms_tree.span().sub_tree_span_at(lat_node_index);
+        rv_nodes.insert(rv_nodes.end(), to_implant.root, to_implant.root + to_implant.size());
       }
       else {
-        const vector_t<index_t> child_node_indexes = ats.get_children_dyn();
+        rv_nodes.emplace_back();
+        rv_nodes[retval].rule_name    = node.name;
+        rv_nodes[retval].num_children = ats.root->num_children;
+        rv_nodes[retval].subtree_size = 1;
+        const auto child_node_indexes = ats.get_children_dyn();
         for (const index_t node_index: std::ranges::reverse_view(child_node_indexes)) {
-          gg_rule.sub += SILVA_EXPECT_FWD(generate_output(ats.sub_tree_span_at(node_index),
-                                                          leave_atoms_tree,
-                                                          leave_atoms_tree_child_node_indexes));
+          const index_t sub_node_index = generate_output(ats.sub_tree_span_at(node_index),
+                                                         leave_atoms_tree,
+                                                         leave_atoms_tree_child_node_indexes);
+          rv_nodes[retval].subtree_size += rv_nodes[sub_node_index].subtree_size;
         }
+        rv_nodes[retval].token_begin = node.token_range.first;
+        rv_nodes[retval].token_end   = node.token_range.second;
       }
-      gg_rule.sub.token_begin = node.token_range.first;
-      gg_rule.sub.token_end   = node.token_range.second;
-      return gg_rule.release();
+      return retval;
     }
 
-    expected_t<parse_tree_sub_t> go()
+    expected_t<index_t> go()
     {
       auto gg_rule = nursery.guard_for_rule();
       SILVA_EXPECT_FWD(go_parse(gg_rule));
@@ -632,12 +640,10 @@ namespace silva::parse_axe {
 
       SILVA_EXPECT(atom_tree.size() >= 1, ASSERT);
       atom_tree_span_t ats{&atom_tree.back(), -1};
-      parse_tree_sub_t result = SILVA_EXPECT_FWD(
-          generate_output(ats, leave_atoms_tree, leave_atoms_tree_child_node_indexes));
-      SILVA_EXPECT(result.token_begin == expr_token_begin, ASSERT);
-      SILVA_EXPECT(result.token_end == expr_token_end, ASSERT);
+      const index_t retval =
+          generate_output(ats, leave_atoms_tree, leave_atoms_tree_child_node_indexes);
       nursery.token_index = final_token_index;
-      return {std::move(result)};
+      return {retval};
     }
   };
 
@@ -652,6 +658,13 @@ namespace silva::parse_axe {
         .atom_name_id = atom_name_id,
         .atom         = atom,
     };
-    return run.go();
+    const index_t created_node = SILVA_EXPECT_FWD(run.go());
+    auto& rv_nodes             = nursery.retval.nodes;
+    parse_tree_sub_t retval;
+    retval.num_children       = 1;
+    retval.num_children_total = rv_nodes[created_node].subtree_size;
+    retval.token_begin        = rv_nodes[created_node].token_begin;
+    retval.token_end          = rv_nodes[created_node].token_end;
+    return retval;
   }
 }
