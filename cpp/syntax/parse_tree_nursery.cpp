@@ -44,15 +44,6 @@ namespace silva {
     return *this;
   }
 
-  void parse_tree_guard_t::swap(parse_tree_guard_t& other)
-  {
-    std::swap(pt, other.pt);
-    std::swap(token_index, other.token_index);
-    std::swap(orig_node_size, other.orig_node_size);
-    std::swap(orig_token_index, other.orig_token_index);
-    std::swap(sub, other.sub);
-  }
-
   parse_tree_sub_t parse_tree_guard_t::release()
   {
     sub.token_end = *token_index;
@@ -61,14 +52,9 @@ namespace silva {
     return retval;
   }
 
-  bool parse_tree_guard_t::is_empty() const
-  {
-    return !pt;
-  }
-
   void parse_tree_guard_t::reset()
   {
-    if (!is_empty()) {
+    if (pt != nullptr) {
       pt->nodes.resize(orig_node_size);
       *token_index = orig_token_index;
     }

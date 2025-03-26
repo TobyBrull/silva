@@ -29,11 +29,7 @@ namespace silva {
     parse_tree_guard_t(const parse_tree_guard_t&)            = delete;
     parse_tree_guard_t& operator=(const parse_tree_guard_t&) = delete;
 
-    void swap(parse_tree_guard_t&);
-
     parse_tree_sub_t release();
-
-    bool is_empty() const;
 
     void reset();
 
