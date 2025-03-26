@@ -47,8 +47,25 @@ namespace silva {
   parse_tree_sub_t parse_tree_guard_t::release()
   {
     sub.token_end = *token_index;
-    auto retval   = std::move(sub);
-    (*this)       = parse_tree_guard_t{};
+    parse_tree_sub_t retval;
+    if (has_node) {
+      sub.token_end                          = *token_index;
+      pt->nodes[orig_node_size].num_children = sub.num_children;
+      pt->nodes[orig_node_size].subtree_size = sub.num_children_total + 1;
+      pt->nodes[orig_node_size].token_begin  = sub.token_begin;
+      pt->nodes[orig_node_size].token_end    = sub.token_end;
+
+      retval = parse_tree_sub_t{
+          .num_children       = 1,
+          .num_children_total = sub.num_children_total + 1,
+          .token_begin        = sub.token_begin,
+          .token_end          = sub.token_end,
+      };
+    }
+    else {
+      retval = std::move(sub);
+    }
+    (*this) = parse_tree_guard_t{};
     return retval;
   }
 
@@ -65,48 +82,22 @@ namespace silva {
     sub              = parse_tree_sub_t{};
   }
 
-  parse_tree_guard_t::~parse_tree_guard_t()
+  void parse_tree_guard_t::set_rule_name(const name_id_t rule_name)
   {
-    reset();
-  }
-
-  // parse_tree_guard_for_rule_t
-
-  parse_tree_guard_for_rule_t::parse_tree_guard_for_rule_t(parse_tree_t* pt, index_t* token_index)
-    : parse_tree_guard_t(pt, token_index)
-  {
-    node_index      = pt->nodes.size();
+    has_node        = true;
     sub.token_begin = *token_index;
     sub.token_end   = *token_index + 1;
     pt->nodes.emplace_back(parse_tree_node_t{
+        .rule_name   = rule_name,
         .token_begin = *token_index,
         .token_end   = *token_index + 1,
     });
   }
 
-  void parse_tree_guard_for_rule_t::set_rule_name(const name_id_t rule_name)
+  parse_tree_guard_t::~parse_tree_guard_t()
   {
-    pt->nodes[node_index].rule_name = rule_name;
+    reset();
   }
-
-  parse_tree_sub_t parse_tree_guard_for_rule_t::release()
-  {
-    sub.token_end                      = *token_index;
-    pt->nodes[node_index].num_children = sub.num_children;
-    pt->nodes[node_index].subtree_size = sub.num_children_total + 1;
-    pt->nodes[node_index].token_begin  = sub.token_begin;
-    pt->nodes[node_index].token_end    = sub.token_end;
-    parse_tree_sub_t retval{
-        .num_children       = 1,
-        .num_children_total = sub.num_children_total + 1,
-        .token_begin        = sub.token_begin,
-        .token_end          = sub.token_end,
-    };
-    parse_tree_guard_t::release();
-    return retval;
-  }
-
-  parse_tree_guard_for_rule_t::~parse_tree_guard_for_rule_t() = default;
 
   // parse_tree_nursery_t
 

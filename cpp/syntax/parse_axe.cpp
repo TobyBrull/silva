@@ -224,7 +224,7 @@ namespace silva::parse_axe {
 
     // functions
 
-    expected_t<optional_t<atom_data_t>> try_parse_atom(parse_tree_guard_for_rule_t& gg_rule)
+    expected_t<optional_t<atom_data_t>> try_parse_atom(parse_tree_guard_t& gg_rule)
     {
       auto maybe_atom_result = atom();
       if (!maybe_atom_result) {
@@ -388,7 +388,7 @@ namespace silva::parse_axe {
       }
     };
 
-    expected_t<pair_t<index_t, index_t>> handle_nest(parse_tree_guard_for_rule_t& gg_rule,
+    expected_t<pair_t<index_t, index_t>> handle_nest(parse_tree_guard_t& gg_rule,
                                                      const token_id_t left_token,
                                                      const token_id_t right_token)
     {
@@ -405,7 +405,7 @@ namespace silva::parse_axe {
       return {{token_begin, token_end}};
     }
 
-    expected_t<void> go_parse(parse_tree_guard_for_rule_t& gg_rule)
+    expected_t<void> go_parse(parse_tree_guard_t& gg_rule)
     {
       stack_pair_t stack_pair{.atom_tree = &atom_tree};
       mode_t mode = ATOM_MODE;
@@ -620,6 +620,7 @@ namespace silva::parse_axe {
     {
       auto gg      = nursery.guard();
       auto gg_rule = nursery.guard_for_rule();
+      gg_rule.set_rule_name(name_id_root);
       SILVA_EXPECT_FWD(go_parse(gg_rule));
 
       const auto& root_node          = atom_tree.back();
