@@ -25,7 +25,7 @@ namespace silva {
 
     [[nodiscard]] parse_tree_guard_t(parse_tree_t* pt, index_t* token_index);
 
-    void set_rule_name(name_id_t);
+    void create_node(name_id_t);
 
     parse_tree_guard_t(parse_tree_guard_t&&);
     parse_tree_guard_t& operator=(parse_tree_guard_t&&);

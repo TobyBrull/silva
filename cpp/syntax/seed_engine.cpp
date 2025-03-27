@@ -675,7 +675,7 @@ namespace silva {
           const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
           if (rule_token == ti_equal) {
             auto gg_rule = guard_for_rule();
-            gg_rule.set_rule_name(t_rule_name);
+            gg_rule.create_node(t_rule_name);
             gg_rule.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
                                             "{} Expected {}",
                                             token_position_at(orig_token_index),

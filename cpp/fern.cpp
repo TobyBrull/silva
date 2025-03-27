@@ -37,7 +37,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> value()
       {
         auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_value);
+        gg_rule.create_node(fni_value);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
                                (token_id_by() == tt_none || token_id_by() == tt_true ||
                                 token_id_by() == tt_false || token_data_by()->category == STRING ||
@@ -50,7 +50,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> label()
       {
         auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_label);
+        gg_rule.create_node(fni_label);
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 1 &&
                 (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
@@ -62,7 +62,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> labeled_item()
       {
         auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_lbl_item);
+        gg_rule.create_node(fni_lbl_item);
 
         if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
           gg_rule.sub += SILVA_EXPECT_FWD(label(),
@@ -98,7 +98,7 @@ namespace silva {
       expected_t<parse_tree_sub_t> fern()
       {
         auto gg_rule = guard_for_rule();
-        gg_rule.set_rule_name(fni_fern);
+        gg_rule.create_node(fni_fern);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_open,
                            "Expected Fern: didn't find '['");
         token_index += 1;

@@ -620,7 +620,7 @@ namespace silva::parse_axe {
     {
       auto gg      = nursery.guard();
       auto gg_rule = nursery.guard_for_rule();
-      gg_rule.set_rule_name(name_id_root);
+      gg_rule.create_node(name_id_root);
       SILVA_EXPECT_FWD(go_parse(gg_rule));
 
       const auto& root_node          = atom_tree.back();

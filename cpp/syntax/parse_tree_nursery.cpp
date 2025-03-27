@@ -82,8 +82,9 @@ namespace silva {
     sub              = parse_tree_sub_t{};
   }
 
-  void parse_tree_guard_t::set_rule_name(const name_id_t rule_name)
+  void parse_tree_guard_t::create_node(const name_id_t rule_name)
   {
+    SILVA_ASSERT(!has_node);
     has_node        = true;
     sub.token_begin = *token_index;
     sub.token_end   = *token_index + 1;
