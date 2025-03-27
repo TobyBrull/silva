@@ -663,10 +663,10 @@ namespace silva::parse_axe {
     const index_t created_node = SILVA_EXPECT_FWD(run.go());
     auto& rv_nodes             = nursery.retval.nodes;
     parse_tree_sub_t retval;
-    retval.num_children       = 1;
-    retval.num_children_total = rv_nodes[created_node].subtree_size;
-    retval.token_begin        = rv_nodes[created_node].token_begin;
-    retval.token_end          = rv_nodes[created_node].token_end;
+    retval.num_children = 1;
+    retval.subtree_size = rv_nodes[created_node].subtree_size;
+    retval.token_begin  = rv_nodes[created_node].token_begin;
+    retval.token_end    = rv_nodes[created_node].token_end;
     return retval;
   }
 }

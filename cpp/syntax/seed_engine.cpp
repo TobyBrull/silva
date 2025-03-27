@@ -704,7 +704,7 @@ namespace silva {
     expected_traits_t expected_traits{.materialize_fwd = true};
     const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
-    SILVA_EXPECT(sub.num_children_total == nursery.retval.nodes.size(), ASSERT);
+    SILVA_EXPECT(sub.subtree_size == nursery.retval.nodes.size(), ASSERT);
     return {std::make_unique<parse_tree_t>(std::move(nursery.retval))};
   }
 }

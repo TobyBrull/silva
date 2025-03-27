@@ -5,11 +5,12 @@
 namespace silva {
 
   struct parse_tree_sub_t {
-    index_t num_children       = 0;
-    index_t num_children_total = 0;
-    index_t token_begin        = std::numeric_limits<index_t>::max();
-    index_t token_end          = std::numeric_limits<index_t>::min();
+    index_t num_children = 0;
+    index_t subtree_size = 0;
+    index_t token_begin  = std::numeric_limits<index_t>::max();
+    index_t token_end    = std::numeric_limits<index_t>::min();
     void operator+=(parse_tree_sub_t&& other);
+    friend auto operator<=>(const parse_tree_sub_t&, const parse_tree_sub_t&) = default;
   };
 
   struct parse_tree_guard_t {
