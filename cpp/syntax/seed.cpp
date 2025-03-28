@@ -117,7 +117,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> terminal()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_term);
         if (num_tokens_left() >= 3 &&
             (token_id_by(0) == tt_identifier || token_id_by(0) == tt_operator) &&
@@ -138,7 +138,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> nonterminal_base()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_nt_base);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_data_by()->category == IDENTIFIER &&
                                !token_data_by()->str.empty() &&
@@ -150,7 +150,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> nonterminal()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_nt);
         gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         while (num_tokens_left() >= 2 && token_id_by() == tt_dot) {
@@ -162,7 +162,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> axe_op()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_axe_op);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
                                (token_id_by() == tt_concat || token_data_by()->category == STRING),
@@ -173,7 +173,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> axe_op_type()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_axe_op_type);
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 1 &&
@@ -189,7 +189,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> axe_ops()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_axe_ops);
         gg_rule.sub += SILVA_EXPECT_FWD(axe_op_type());
         while (auto result = axe_op()) {
@@ -200,7 +200,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> axe_assoc()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_axe_assoc);
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 1 &&
@@ -212,7 +212,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> axe_level()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_axe_level);
         gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_equal, "Expected '='");
@@ -226,7 +226,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> axe()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_axe);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_axe, "Expected '['");
         token_index += 1;
@@ -282,7 +282,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> expr_or_alias()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_expr_or_a);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens left when parsing ExprOrAlias");
         const token_id_t op_ti = token_id_by();
@@ -294,7 +294,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> rule()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_rule);
         const index_t orig_token_index = token_index;
         gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
@@ -321,7 +321,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> seed()
       {
-        auto gg_rule = guard_for_rule();
+        auto gg_rule = guard();
         gg_rule.create_node(fni_seed);
         while (num_tokens_left() >= 1 && token_id_by() == tt_dash) {
           token_index += 1;

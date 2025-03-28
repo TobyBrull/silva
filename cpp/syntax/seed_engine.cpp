@@ -674,7 +674,7 @@ namespace silva {
                        "Expected one of [ '=' '=>' ]");
           const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
           if (rule_token == ti_equal) {
-            auto gg_rule = guard_for_rule();
+            auto gg_rule = guard();
             gg_rule.create_node(t_rule_name);
             gg_rule.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
                                             "{} Expected {}",

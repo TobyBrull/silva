@@ -619,7 +619,7 @@ namespace silva::parse_axe {
     expected_t<index_t> go()
     {
       auto gg      = nursery.guard();
-      auto gg_rule = nursery.guard_for_rule();
+      auto gg_rule = nursery.guard();
       gg_rule.create_node(name_id_root);
       SILVA_EXPECT_FWD(go_parse(gg_rule));
 
