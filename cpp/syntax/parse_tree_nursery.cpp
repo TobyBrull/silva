@@ -54,7 +54,7 @@ namespace silva {
     pt->nodes.emplace_back(parse_tree_node_t{.rule_name = rule_name});
   }
 
-  parse_tree_sub_t parse_tree_guard_t::release()
+  parse_tree_sub_t parse_tree_guard_t::commit()
   {
     sub.token_end = *token_index;
     parse_tree_sub_t retval;
@@ -79,7 +79,7 @@ namespace silva {
     return retval;
   }
 
-  void parse_tree_guard_t::reset()
+  void parse_tree_guard_t::clear()
   {
     if (pt != nullptr) {
       pt->nodes.resize(orig_node_size);
@@ -94,7 +94,7 @@ namespace silva {
 
   parse_tree_guard_t::~parse_tree_guard_t()
   {
-    reset();
+    clear();
   }
 
   // parse_tree_nursery_t

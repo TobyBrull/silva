@@ -31,10 +31,8 @@ namespace silva {
 
     void create_node(name_id_t);
 
-    parse_tree_sub_t release();
-
-    void reset();
-
+    parse_tree_sub_t commit();
+    void clear();
     ~parse_tree_guard_t();
   };
 

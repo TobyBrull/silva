@@ -133,7 +133,7 @@ namespace silva {
                              "Expected Terminal");
           token_index += 1;
         }
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> nonterminal_base()
@@ -145,7 +145,7 @@ namespace silva {
                                std::isupper(token_data_by()->str.front()),
                            "Expected Nonterminal.Base");
         token_index += 1;
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> nonterminal()
@@ -157,7 +157,7 @@ namespace silva {
           token_index += 1;
           gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         }
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_op()
@@ -168,7 +168,7 @@ namespace silva {
                                (token_id_by() == tt_concat || token_data_by()->category == STRING),
                            "Expected 'concat' or string");
         token_index += 1;
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_op_type()
@@ -184,7 +184,7 @@ namespace silva {
             "Expected one of [ 'atom_nest' 'prefix' 'prefix_nest' 'infix' 'infix_flat' 'ternary' "
             "'postfix' 'postfix_nest' ]");
         token_index += 1;
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_ops()
@@ -195,7 +195,7 @@ namespace silva {
         while (auto result = axe_op()) {
           gg_rule.sub += *std::move(result);
         }
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_assoc()
@@ -207,7 +207,7 @@ namespace silva {
                 (token_id_by() == tt_nest || token_id_by() == tt_ltr || token_id_by() == tt_rtl),
             "Expected one of [ 'nest' 'ltr' 'rtl' ]");
         token_index += 1;
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_level()
@@ -221,7 +221,7 @@ namespace silva {
         while (auto result = axe_ops()) {
           gg_rule.sub += *std::move(result);
         }
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe()
@@ -241,7 +241,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
                            "Expected ']'");
         token_index += 1;
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> atom()
@@ -253,14 +253,14 @@ namespace silva {
         auto result_1 = nonterminal();
         if (result_1) {
           gg.sub += std::move(result_1).value();
-          return gg.release();
+          return gg.commit();
         }
         error_nursery.add_child_error(std::move(result_1).error());
 
         auto result_2 = terminal();
         if (result_2) {
           gg.sub += std::move(result_2).value();
-          return gg.release();
+          return gg.commit();
         }
         error_nursery.add_child_error(std::move(result_2).error());
 
@@ -277,7 +277,7 @@ namespace silva {
         using atom_delegate_t    = delegate_t<expected_t<parse_tree_sub_t>()>;
         const auto atom_delegate = atom_delegate_t::make<&seed_parse_tree_nursery_t::atom>(this);
         gg.sub += SILVA_EXPECT_FWD(seed_parse_axe.apply(*this, fni_atom, atom_delegate));
-        return gg.release();
+        return gg.commit();
       }
 
       expected_t<parse_tree_sub_t> expr_or_alias()
@@ -289,7 +289,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(op_ti == tt_equal || op_ti == tt_alias, "Expected one of [ '=' '=>' ]");
         token_index += 1;
         gg_rule.sub += SILVA_EXPECT_FWD(expr());
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> rule()
@@ -316,7 +316,7 @@ namespace silva {
                              "Expected ']'");
           token_index += 1;
         }
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> seed()
@@ -327,7 +327,7 @@ namespace silva {
           token_index += 1;
           gg_rule.sub += SILVA_EXPECT_FWD(rule());
         }
-        return gg_rule.release();
+        return gg_rule.commit();
       }
     };
   }

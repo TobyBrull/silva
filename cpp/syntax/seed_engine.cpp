@@ -448,7 +448,7 @@ namespace silva {
         const token_id_t s_front_ti = s_tokens[s_node.token_begin];
         if (s_front_ti == ti_eof) {
           SILVA_EXPECT_PARSE(num_tokens_left() == 0, "Expected end of file");
-          return gg.release();
+          return gg.commit();
         }
         SILVA_EXPECT_PARSE(num_tokens_left() > 0,
                            "Reached end of token-stream when looking for {}",
@@ -503,7 +503,7 @@ namespace silva {
           }
         }
         token_index += 1;
-        return gg.release();
+        return gg.commit();
       }
 
       std::pair<index_t, index_t> get_min_max_repeat(const token_id_t op_ti)
@@ -568,7 +568,7 @@ namespace silva {
         else {
           SILVA_EXPECT(false, MAJOR);
         }
-        return gg.release();
+        return gg.commit();
       }
 
       expected_t<parse_tree_sub_t> s_expr_concat(const parse_tree_span_t pts)
@@ -577,7 +577,7 @@ namespace silva {
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
           gg.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(sub_s_node_index)));
         }
-        return gg.release();
+        return gg.commit();
       }
 
       expected_t<parse_tree_sub_t> s_expr_alt(const parse_tree_span_t pts)
@@ -645,7 +645,7 @@ namespace silva {
         };
         gg.sub += SILVA_EXPECT_FWD(
             parse_axe_data.parse_axe.apply(*this, parse_axe_data.atom_rule_name, pack.delegate));
-        return gg.release();
+        return gg.commit();
       }
 
       expected_t<parse_tree_sub_t> handle_rule(const name_id_t t_rule_name)
@@ -680,7 +680,7 @@ namespace silva {
                                             "{} Expected {}",
                                             token_position_at(orig_token_index),
                                             fnis.absolute(t_rule_name));
-            return gg_rule.release();
+            return gg_rule.commit();
           }
           else {
             auto gg = guard();
@@ -688,7 +688,7 @@ namespace silva {
                                        "{} Expected {}",
                                        token_position_at(orig_token_index),
                                        fnis.absolute(t_rule_name));
-            return gg.release();
+            return gg.commit();
           }
         }
       }

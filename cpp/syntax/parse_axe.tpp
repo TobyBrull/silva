@@ -63,7 +63,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
                        token_data_by()->category == token_category_t::IDENTIFIER,
                    MINOR);
       token_index += 1;
-      return gg_rule.release();
+      return gg_rule.commit();
     }
 
     expected_t<parse_tree_sub_t> expression()
@@ -432,7 +432,7 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
         SILVA_EXPECT(token_data_by()->category == token_category_t::IDENTIFIER, MINOR);
         token_index += 1;
       }
-      return gg_rule.release();
+      return gg_rule.commit();
     }
 
     expected_t<parse_tree_sub_t> expression()

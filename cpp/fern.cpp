@@ -44,7 +44,7 @@ namespace silva {
                                 token_data_by()->category == NUMBER),
                            "Expected Value");
         token_index += 1;
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> label()
@@ -56,7 +56,7 @@ namespace silva {
                 (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
             "Expected Label");
         token_index += 1;
-        return gg_rule.release();
+        return gg_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> labeled_item()
@@ -75,7 +75,7 @@ namespace silva {
 
         if (auto result = fern(); result) {
           gg_rule.sub += *std::move(result);
-          return gg_rule.release();
+          return gg_rule.commit();
         }
         else {
           error_nursery.add_child_error(std::move(result).error());
@@ -83,7 +83,7 @@ namespace silva {
 
         if (auto result = value(); result) {
           gg_rule.sub += *std::move(result);
-          return gg_rule.release();
+          return gg_rule.commit();
         }
         else {
           error_nursery.add_child_error(std::move(result).error());
@@ -110,7 +110,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
                            "Expected ']' for Fern");
         token_index += 1;
-        return gg_rule.release();
+        return gg_rule.commit();
       }
     };
   }

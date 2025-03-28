@@ -629,11 +629,11 @@ namespace silva::parse_axe {
       SILVA_EXPECT(gg_rule.orig_token_index == expr_token_begin, MINOR);
       SILVA_EXPECT(*gg_rule.token_index == expr_token_end, MINOR);
 
-      gg_rule.release();
+      gg_rule.commit();
       parse_tree_t leave_atoms_tree =
           nursery.retval.span().sub_tree_span_at(gg.orig_node_size).copy();
       const index_t final_token_index = nursery.token_index;
-      gg.reset();
+      gg.clear();
       const index_t num_children = leave_atoms_tree.nodes.front().num_children;
       vector_t<index_t> leave_atoms_tree_child_node_indexes(num_children);
       for (const auto [node_index, child_index]: leave_atoms_tree.span().children_range()) {
