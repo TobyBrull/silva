@@ -2,9 +2,7 @@
 
 namespace silva {
 
-  // parse_tree_sub_t
-
-  void parse_tree_sub_t::operator+=(parse_tree_sub_t&& other)
+  void parse_tree_nursery_t::proto_node_t::operator+=(proto_node_t&& other)
   {
     num_children += other.num_children;
     subtree_size += other.subtree_size;
@@ -22,7 +20,7 @@ namespace silva {
   parse_tree_nursery_t::stake_t::stake_t(stake_t&& other)
     : nursery(std::exchange(other.nursery, nullptr))
     , orig_state(std::exchange(other.orig_state, state_t{}))
-    , sub(std::exchange(other.sub, parse_tree_sub_t{}))
+    , sub(std::exchange(other.sub, proto_node_t{}))
   {
   }
 
@@ -31,7 +29,7 @@ namespace silva {
     if (this != &other) {
       nursery    = std::exchange(other.nursery, nullptr);
       orig_state = std::exchange(other.orig_state, state_t{});
-      sub        = std::exchange(other.sub, parse_tree_sub_t{});
+      sub        = std::exchange(other.sub, proto_node_t{});
     }
     return *this;
   }
@@ -46,10 +44,10 @@ namespace silva {
     nursery->tree.emplace_back(parse_tree_node_t{.rule_name = rule_name});
   }
 
-  parse_tree_sub_t parse_tree_nursery_t::stake_t::commit()
+  parse_tree_nursery_t::proto_node_t parse_tree_nursery_t::stake_t::commit()
   {
     sub.token_end = nursery->token_index;
-    parse_tree_sub_t retval;
+    proto_node_t retval;
     if (has_node) {
       sub.token_end = nursery->token_index;
       const index_t node_index{orig_state.tree_size};
@@ -58,7 +56,7 @@ namespace silva {
       nursery->tree[node_index].token_begin  = sub.token_begin;
       nursery->tree[node_index].token_end    = sub.token_end;
 
-      retval = parse_tree_sub_t{
+      retval = proto_node_t{
           .num_children = 1,
           .subtree_size = sub.subtree_size,
           .token_begin  = sub.token_begin,
@@ -79,7 +77,7 @@ namespace silva {
     }
     nursery    = nullptr;
     orig_state = state_t{};
-    sub        = parse_tree_sub_t{};
+    sub        = proto_node_t{};
   }
 
   parse_tree_nursery_t::stake_t::~stake_t()

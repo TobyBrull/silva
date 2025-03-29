@@ -439,7 +439,7 @@ namespace silva {
         return {};
       }
 
-      expected_t<parse_tree_sub_t> s_terminal(const parse_tree_span_t pts)
+      expected_t<proto_node_t> s_terminal(const parse_tree_span_t pts)
       {
         auto ss            = stake();
         const auto& s_node = pts[0];
@@ -522,14 +522,14 @@ namespace silva {
         return {min_repeat, max_repeat};
       }
 
-      expected_t<parse_tree_sub_t> s_expr_postfix(const parse_tree_span_t pts)
+      expected_t<proto_node_t> s_expr_postfix(const parse_tree_span_t pts)
       {
         auto ss                = stake();
         const auto children    = SILVA_EXPECT_FWD(pts.get_children<1>());
         const token_id_t op_ti = tcp->name_infos[pts[0].rule_name].base_name;
         if (op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus) {
           const auto [min_repeat, max_repeat] = get_min_max_repeat(op_ti);
-          parse_tree_sub_t sub_sub;
+          proto_node_t sub_sub;
           index_t repeat_count = 0;
           optional_t<error_t> last_error;
           while (repeat_count < max_repeat) {
@@ -571,7 +571,7 @@ namespace silva {
         return ss.commit();
       }
 
-      expected_t<parse_tree_sub_t> s_expr_concat(const parse_tree_span_t pts)
+      expected_t<proto_node_t> s_expr_concat(const parse_tree_span_t pts)
       {
         auto ss = stake();
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
@@ -580,11 +580,11 @@ namespace silva {
         return ss.commit();
       }
 
-      expected_t<parse_tree_sub_t> s_expr_alt(const parse_tree_span_t pts)
+      expected_t<proto_node_t> s_expr_alt(const parse_tree_span_t pts)
       {
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
-        optional_t<parse_tree_sub_t> retval;
+        optional_t<proto_node_t> retval;
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
           auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index));
           if (result.has_value()) {
@@ -604,7 +604,7 @@ namespace silva {
                                            token_position_at(orig_token_index)));
       }
 
-      expected_t<parse_tree_sub_t> s_expr(const parse_tree_span_t pts)
+      expected_t<proto_node_t> s_expr(const parse_tree_span_t pts)
       {
         const name_id_t s_rule_name = pts[0].rule_name;
         if (tcp->name_id_is_parent(fni_expr_parens, s_rule_name)) {
@@ -634,13 +634,13 @@ namespace silva {
         }
       }
 
-      expected_t<parse_tree_sub_t> handle_rule_axe(const name_id_t t_rule_name)
+      expected_t<proto_node_t> handle_rule_axe(const name_id_t t_rule_name)
       {
         const auto it = root->parse_axes.find(t_rule_name);
         SILVA_EXPECT(it != root->parse_axes.end(), MAJOR);
         auto ss{stake()};
         const seed_engine_t::parse_axe_data_t& parse_axe_data = it->second;
-        const delegate_t<expected_t<parse_tree_sub_t>()>::pack_t pack{
+        const delegate_t<expected_t<proto_node_t>()>::pack_t pack{
             [&]() { return handle_rule(parse_axe_data.atom_rule_name); },
         };
         ss.sub += SILVA_EXPECT_FWD(
@@ -648,7 +648,7 @@ namespace silva {
         return ss.commit();
       }
 
-      expected_t<parse_tree_sub_t> handle_rule(const name_id_t t_rule_name)
+      expected_t<proto_node_t> handle_rule(const name_id_t t_rule_name)
       {
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
@@ -702,7 +702,8 @@ namespace silva {
     impl::seed_engine_nursery_t nursery(std::move(tokenization), this);
     SILVA_EXPECT_FWD(nursery.check());
     expected_traits_t expected_traits{.materialize_fwd = true};
-    const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
+    const parse_tree_nursery_t::proto_node_t sub =
+        SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.subtree_size == nursery.tree.size(), ASSERT);
     return {std::make_unique<parse_tree_t>(std::move(nursery).commit_root())};

@@ -4,14 +4,6 @@
 
 namespace silva {
 
-  struct parse_tree_sub_t {
-    index_t num_children = 0;
-    index_t subtree_size = 0;
-    index_t token_begin  = std::numeric_limits<index_t>::max();
-    index_t token_end    = std::numeric_limits<index_t>::min();
-    void operator+=(parse_tree_sub_t&& other);
-  };
-
 #define SILVA_EXPECT_PARSE(cond, fmt_str, ...) \
   SILVA_EXPECT(cond, MINOR, "{} " fmt_str, token_position_by() __VA_OPT__(, ) __VA_ARGS__);
 
@@ -30,10 +22,18 @@ namespace silva {
     state_t state() const { return state_t{index_t(tree.size()), token_index}; }
     void set_state(const state_t&);
 
+    struct proto_node_t {
+      index_t num_children = 0;
+      index_t subtree_size = 0;
+      index_t token_begin  = std::numeric_limits<index_t>::max();
+      index_t token_end    = std::numeric_limits<index_t>::min();
+      void operator+=(proto_node_t&& other);
+    };
+
     struct stake_t {
       parse_tree_nursery_t* nursery = nullptr;
       state_t orig_state;
-      parse_tree_sub_t sub;
+      proto_node_t sub;
 
       bool has_node = false;
 
@@ -47,7 +47,7 @@ namespace silva {
 
       void create_node(name_id_t);
 
-      parse_tree_sub_t commit();
+      proto_node_t commit();
       void clear();
       ~stake_t();
     };

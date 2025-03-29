@@ -34,7 +34,7 @@ namespace silva {
       {
       }
 
-      expected_t<parse_tree_sub_t> value()
+      expected_t<proto_node_t> value()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_value);
@@ -47,7 +47,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<parse_tree_sub_t> label()
+      expected_t<proto_node_t> label()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_label);
@@ -59,7 +59,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<parse_tree_sub_t> labeled_item()
+      expected_t<proto_node_t> labeled_item()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_lbl_item);
@@ -95,7 +95,7 @@ namespace silva {
                                            token_position_at(ss_rule.orig_state.token_index)));
       }
 
-      expected_t<parse_tree_sub_t> fern()
+      expected_t<proto_node_t> fern()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_fern);
@@ -120,7 +120,7 @@ namespace silva {
     expected_traits_t expected_traits{.materialize_fwd = true};
     const index_t n = tokenization->tokens.size();
     impl::fern_parse_tree_nursery_t nursery(std::move(tokenization));
-    const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.fern());
+    const parse_tree_nursery_t::proto_node_t sub = SILVA_EXPECT_FWD(nursery.fern());
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.subtree_size == nursery.tree.size(), ASSERT);
     SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
