@@ -12,31 +12,6 @@ namespace silva {
     void operator+=(parse_tree_sub_t&& other);
   };
 
-  struct parse_tree_nursery_t;
-
-  struct parse_tree_stake_t {
-    parse_tree_nursery_t* nursery = nullptr;
-    index_t orig_node_size        = 0;
-    index_t orig_token_index      = 0;
-    parse_tree_sub_t sub;
-
-    bool has_node = false;
-
-    parse_tree_stake_t() = default;
-    parse_tree_stake_t(parse_tree_nursery_t*);
-
-    parse_tree_stake_t(parse_tree_stake_t&&);
-    parse_tree_stake_t& operator=(parse_tree_stake_t&&);
-    parse_tree_stake_t(const parse_tree_stake_t&)            = delete;
-    parse_tree_stake_t& operator=(const parse_tree_stake_t&) = delete;
-
-    void create_node(name_id_t);
-
-    parse_tree_sub_t commit();
-    void clear();
-    ~parse_tree_stake_t();
-  };
-
 #define SILVA_EXPECT_PARSE(cond, fmt_str, ...) \
   SILVA_EXPECT(cond, MINOR, "{} " fmt_str, token_position_by() __VA_OPT__(, ) __VA_ARGS__);
 
@@ -48,7 +23,30 @@ namespace silva {
 
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
-    [[nodiscard]] parse_tree_stake_t stake() { return parse_tree_stake_t{this}; }
+    struct stake_t {
+      parse_tree_nursery_t* nursery = nullptr;
+      index_t orig_node_size        = 0;
+      index_t orig_token_index      = 0;
+      parse_tree_sub_t sub;
+
+      bool has_node = false;
+
+      stake_t() = default;
+      stake_t(parse_tree_nursery_t*);
+
+      stake_t(stake_t&&);
+      stake_t& operator=(stake_t&&);
+      stake_t(const stake_t&)            = delete;
+      stake_t& operator=(const stake_t&) = delete;
+
+      void create_node(name_id_t);
+
+      parse_tree_sub_t commit();
+      void clear();
+      ~stake_t();
+    };
+
+    [[nodiscard]] stake_t stake() { return stake_t{this}; }
 
     parse_tree_t commit_root() &&;
 

@@ -14,7 +14,7 @@ namespace silva {
 
   // parse_tree_guard_t
 
-  parse_tree_stake_t::parse_tree_stake_t(parse_tree_nursery_t* nursery)
+  parse_tree_nursery_t::stake_t::stake_t(parse_tree_nursery_t* nursery)
     : nursery(nursery)
     , orig_node_size(nursery->tree.size())
     , orig_token_index(nursery->token_index)
@@ -22,7 +22,7 @@ namespace silva {
   {
   }
 
-  parse_tree_stake_t::parse_tree_stake_t(parse_tree_stake_t&& other)
+  parse_tree_nursery_t::stake_t::stake_t(stake_t&& other)
     : nursery(std::exchange(other.nursery, nullptr))
     , orig_node_size(std::exchange(other.orig_node_size, 0))
     , orig_token_index(std::exchange(other.orig_token_index, 0))
@@ -30,7 +30,7 @@ namespace silva {
   {
   }
 
-  parse_tree_stake_t& parse_tree_stake_t::operator=(parse_tree_stake_t&& other)
+  parse_tree_nursery_t::stake_t& parse_tree_nursery_t::stake_t::operator=(stake_t&& other)
   {
     if (this != &other) {
       nursery          = std::exchange(other.nursery, nullptr);
@@ -41,7 +41,7 @@ namespace silva {
     return *this;
   }
 
-  void parse_tree_stake_t::create_node(const name_id_t rule_name)
+  void parse_tree_nursery_t::stake_t::create_node(const name_id_t rule_name)
   {
     SILVA_ASSERT(!has_node);
     has_node         = true;
@@ -51,7 +51,7 @@ namespace silva {
     nursery->tree.emplace_back(parse_tree_node_t{.rule_name = rule_name});
   }
 
-  parse_tree_sub_t parse_tree_stake_t::commit()
+  parse_tree_sub_t parse_tree_nursery_t::stake_t::commit()
   {
     sub.token_end = nursery->token_index;
     parse_tree_sub_t retval;
@@ -72,11 +72,11 @@ namespace silva {
     else {
       retval = std::move(sub);
     }
-    (*this) = parse_tree_stake_t{};
+    (*this) = stake_t{};
     return retval;
   }
 
-  void parse_tree_stake_t::clear()
+  void parse_tree_nursery_t::stake_t::clear()
   {
     if (nursery != nullptr) {
       nursery->tree.resize(orig_node_size);
@@ -88,7 +88,7 @@ namespace silva {
     sub              = parse_tree_sub_t{};
   }
 
-  parse_tree_stake_t::~parse_tree_stake_t()
+  parse_tree_nursery_t::stake_t::~stake_t()
   {
     clear();
   }
