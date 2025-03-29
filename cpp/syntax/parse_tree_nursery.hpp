@@ -23,10 +23,16 @@ namespace silva {
 
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
+    struct state_t {
+      index_t tree_size   = 0;
+      index_t token_index = 0;
+    };
+    state_t state() const { return state_t{index_t(tree.size()), token_index}; }
+    void set_state(const state_t&);
+
     struct stake_t {
       parse_tree_nursery_t* nursery = nullptr;
-      index_t orig_node_size        = 0;
-      index_t orig_token_index      = 0;
+      state_t orig_state;
       parse_tree_sub_t sub;
 
       bool has_node = false;
@@ -45,7 +51,6 @@ namespace silva {
       void clear();
       ~stake_t();
     };
-
     [[nodiscard]] stake_t stake() { return stake_t{this}; }
 
     parse_tree_t commit_root() &&;

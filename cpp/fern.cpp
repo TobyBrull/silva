@@ -67,7 +67,7 @@ namespace silva {
         if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
           ss_rule.sub += SILVA_EXPECT_FWD(label(),
                                           "{} Expected LabeledItem",
-                                          token_position_at(ss_rule.orig_token_index));
+                                          token_position_at(ss_rule.orig_state.token_index));
           token_index += 1;
         }
 
@@ -92,7 +92,7 @@ namespace silva {
         return std::unexpected(std::move(error_nursery)
                                    .finish(MINOR,
                                            "{} Expected Fern or Value",
-                                           token_position_at(ss_rule.orig_token_index)));
+                                           token_position_at(ss_rule.orig_state.token_index)));
       }
 
       expected_t<parse_tree_sub_t> fern()
@@ -105,7 +105,7 @@ namespace silva {
         while (num_tokens_left() >= 1 && token_id_by() != tt_brkt_close) {
           ss_rule.sub += SILVA_EXPECT_FWD(labeled_item(),
                                           "{} Expected Fern",
-                                          token_position_at(ss_rule.orig_token_index));
+                                          token_position_at(ss_rule.orig_state.token_index));
         }
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
                            "Expected ']' for Fern");

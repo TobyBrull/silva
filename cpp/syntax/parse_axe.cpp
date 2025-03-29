@@ -626,13 +626,13 @@ namespace silva::parse_axe {
       const auto& root_node          = atom_tree.back();
       const index_t expr_token_begin = root_node.token_range.first;
       const index_t expr_token_end   = root_node.token_range.second;
-      SILVA_EXPECT(ss_rule.orig_token_index == expr_token_begin, MINOR);
+      SILVA_EXPECT(ss_rule.orig_state.token_index == expr_token_begin, MINOR);
       SILVA_EXPECT(nursery.token_index == expr_token_end, MINOR);
 
       ss_rule.commit();
       parse_tree_span_t leave_atoms_tree_span{nursery.tree.data(), 1, nursery.tokenization};
       parse_tree_t leave_atoms_tree =
-          leave_atoms_tree_span.sub_tree_span_at(ss.orig_node_size).copy();
+          leave_atoms_tree_span.sub_tree_span_at(ss.orig_state.tree_size).copy();
       const index_t final_token_index = nursery.token_index;
       ss.clear();
       const index_t num_children = leave_atoms_tree.nodes.front().num_children;
