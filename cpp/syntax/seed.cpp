@@ -117,8 +117,8 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> terminal()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_term);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_term);
         if (num_tokens_left() >= 3 &&
             (token_id_by(0) == tt_identifier || token_id_by(0) == tt_operator) &&
             token_id_by(1) == tt_regex && token_data_by(2)->category == STRING) {
@@ -133,48 +133,48 @@ namespace silva {
                              "Expected Terminal");
           token_index += 1;
         }
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> nonterminal_base()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_nt_base);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_nt_base);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_data_by()->category == IDENTIFIER &&
                                !token_data_by()->str.empty() &&
                                std::isupper(token_data_by()->str.front()),
                            "Expected Nonterminal.Base");
         token_index += 1;
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> nonterminal()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_nt);
-        gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_nt);
+        ss_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         while (num_tokens_left() >= 2 && token_id_by() == tt_dot) {
           token_index += 1;
-          gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
+          ss_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         }
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_op()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_axe_op);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_axe_op);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
                                (token_id_by() == tt_concat || token_data_by()->category == STRING),
                            "Expected 'concat' or string");
         token_index += 1;
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_op_type()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_axe_op_type);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_axe_op_type);
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 1 &&
                 (token_id_by() == tt_atom_nest || token_id_by() == tt_prefix ||
@@ -184,83 +184,83 @@ namespace silva {
             "Expected one of [ 'atom_nest' 'prefix' 'prefix_nest' 'infix' 'infix_flat' 'ternary' "
             "'postfix' 'postfix_nest' ]");
         token_index += 1;
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_ops()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_axe_ops);
-        gg_rule.sub += SILVA_EXPECT_FWD(axe_op_type());
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_axe_ops);
+        ss_rule.sub += SILVA_EXPECT_FWD(axe_op_type());
         while (auto result = axe_op()) {
-          gg_rule.sub += *std::move(result);
+          ss_rule.sub += *std::move(result);
         }
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_assoc()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_axe_assoc);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_axe_assoc);
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 1 &&
                 (token_id_by() == tt_nest || token_id_by() == tt_ltr || token_id_by() == tt_rtl),
             "Expected one of [ 'nest' 'ltr' 'rtl' ]");
         token_index += 1;
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe_level()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_axe_level);
-        gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_axe_level);
+        ss_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_equal, "Expected '='");
         token_index += 1;
-        gg_rule.sub += SILVA_EXPECT_FWD(axe_assoc());
+        ss_rule.sub += SILVA_EXPECT_FWD(axe_assoc());
         while (auto result = axe_ops()) {
-          gg_rule.sub += *std::move(result);
+          ss_rule.sub += *std::move(result);
         }
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> axe()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_axe);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_axe);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_axe, "Expected '['");
         token_index += 1;
-        gg_rule.sub += SILVA_EXPECT_FWD(nonterminal());
+        ss_rule.sub += SILVA_EXPECT_FWD(nonterminal());
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
                            "Expected '['");
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() == tt_dash) {
           token_index += 1;
-          gg_rule.sub += SILVA_EXPECT_FWD(axe_level());
+          ss_rule.sub += SILVA_EXPECT_FWD(axe_level());
         }
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
                            "Expected ']'");
         token_index += 1;
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> atom()
       {
-        auto gg                        = guard();
+        auto ss                        = stake();
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
 
         auto result_1 = nonterminal();
         if (result_1) {
-          gg.sub += std::move(result_1).value();
-          return gg.commit();
+          ss.sub += std::move(result_1).value();
+          return ss.commit();
         }
         error_nursery.add_child_error(std::move(result_1).error());
 
         auto result_2 = terminal();
         if (result_2) {
-          gg.sub += std::move(result_2).value();
-          return gg.commit();
+          ss.sub += std::move(result_2).value();
+          return ss.commit();
         }
         error_nursery.add_child_error(std::move(result_2).error());
 
@@ -272,62 +272,62 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> expr()
       {
-        auto gg = guard();
+        auto ss = stake();
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No tokens left when parsing Expr");
         using atom_delegate_t    = delegate_t<expected_t<parse_tree_sub_t>()>;
         const auto atom_delegate = atom_delegate_t::make<&seed_parse_tree_nursery_t::atom>(this);
-        gg.sub += SILVA_EXPECT_FWD(seed_parse_axe.apply(*this, fni_atom, atom_delegate));
-        return gg.commit();
+        ss.sub += SILVA_EXPECT_FWD(seed_parse_axe.apply(*this, fni_atom, atom_delegate));
+        return ss.commit();
       }
 
       expected_t<parse_tree_sub_t> expr_or_alias()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_expr_or_a);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_expr_or_a);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens left when parsing ExprOrAlias");
         const token_id_t op_ti = token_id_by();
         SILVA_EXPECT_PARSE(op_ti == tt_equal || op_ti == tt_alias, "Expected one of [ '=' '=>' ]");
         token_index += 1;
-        gg_rule.sub += SILVA_EXPECT_FWD(expr());
-        return gg_rule.commit();
+        ss_rule.sub += SILVA_EXPECT_FWD(expr());
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> rule()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_rule);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_rule);
         const index_t orig_token_index = token_index;
-        gg_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
+        ss_rule.sub += SILVA_EXPECT_FWD(nonterminal_base());
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens left when parsing Rule");
         const token_id_t op_ti = token_id_by();
         SILVA_EXPECT_PARSE(op_ti == tt_equal || op_ti == tt_alias || op_ti == tt_axe ||
                                op_ti == tt_brack_open,
                            "Expected one of [ '=' '=>' '=/' '[' ]");
         if (op_ti == tt_equal || op_ti == tt_alias) {
-          gg_rule.sub += SILVA_EXPECT_FWD(expr_or_alias());
+          ss_rule.sub += SILVA_EXPECT_FWD(expr_or_alias());
         }
         else if (op_ti == tt_axe) {
-          gg_rule.sub += SILVA_EXPECT_FWD(axe());
+          ss_rule.sub += SILVA_EXPECT_FWD(axe());
         }
         else if (op_ti == tt_brack_open) {
           token_index += 1;
-          gg_rule.sub += SILVA_EXPECT_FWD(seed());
+          ss_rule.sub += SILVA_EXPECT_FWD(seed());
           SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
                              "Expected ']'");
           token_index += 1;
         }
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> seed()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_seed);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_seed);
         while (num_tokens_left() >= 1 && token_id_by() == tt_dash) {
           token_index += 1;
-          gg_rule.sub += SILVA_EXPECT_FWD(rule());
+          ss_rule.sub += SILVA_EXPECT_FWD(rule());
         }
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
     };
   }

@@ -56,14 +56,14 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
 
     expected_t<parse_tree_sub_t> atom()
     {
-      auto gg_rule = guard();
-      gg_rule.create_node(tcp->name_id_of("test", "atom"));
+      auto ss_rule = stake();
+      ss_rule.create_node(tcp->name_id_of("test", "atom"));
       SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
       SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
                        token_data_by()->category == token_category_t::IDENTIFIER,
                    MINOR);
       token_index += 1;
-      return gg_rule.commit();
+      return ss_rule.commit();
     }
 
     expected_t<parse_tree_sub_t> expression()
@@ -419,8 +419,8 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
 
     expected_t<parse_tree_sub_t> atom()
     {
-      auto gg_rule = guard();
-      gg_rule.create_node(tcp->name_id_of("test", "atom"));
+      auto ss_rule = stake();
+      ss_rule.create_node(tcp->name_id_of("test", "atom"));
       SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
       if (token_data_by()->category == token_category_t::NUMBER) {
         SILVA_EXPECT(num_tokens_left() >= 2 &&
@@ -432,7 +432,7 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
         SILVA_EXPECT(token_data_by()->category == token_category_t::IDENTIFIER, MINOR);
         token_index += 1;
       }
-      return gg_rule.commit();
+      return ss_rule.commit();
     }
 
     expected_t<parse_tree_sub_t> expression()

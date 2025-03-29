@@ -13,39 +13,39 @@ TEST_CASE("tree_nursery")
   tree_nursery_t<test_tree_node_t> nursery;
   nursery.root.node().name = "A";
   {
-    auto B{nursery.create_node()};
+    auto B{nursery.stake()};
     B.node().name = "B";
     {
-      auto E{nursery.create_node()};
+      auto E{nursery.stake()};
       E.node().name = "E";
       E.commit();
     }
     {
-      auto F{nursery.create_node()};
+      auto F{nursery.stake()};
       F.node().name = "F";
       {
-        auto G{nursery.create_node()};
+        auto G{nursery.stake()};
         G.node().name = "G";
         G.commit();
       }
       F.commit();
     }
     {
-      auto Z{nursery.create_node()};
+      auto Z{nursery.stake()};
       Z.node().name = "Z";
     }
     B.commit();
   }
   {
-    auto C{nursery.create_node()};
+    auto C{nursery.stake()};
     C.node().name = "C";
     C.commit();
   }
   {
-    auto D{nursery.create_node()};
+    auto D{nursery.stake()};
     D.node().name = "D";
     {
-      auto H{nursery.create_node()};
+      auto H{nursery.stake()};
       H.node().name = "H";
       H.commit();
     }

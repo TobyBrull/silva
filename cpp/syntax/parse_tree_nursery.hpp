@@ -12,7 +12,7 @@ namespace silva {
     void operator+=(parse_tree_sub_t&& other);
   };
 
-  struct parse_tree_guard_t {
+  struct parse_tree_stake_t {
     parse_tree_t* pt         = nullptr;
     index_t* token_index     = nullptr;
     index_t orig_node_size   = 0;
@@ -21,19 +21,19 @@ namespace silva {
 
     bool has_node = false;
 
-    parse_tree_guard_t() = default;
-    parse_tree_guard_t(parse_tree_t* pt, index_t* token_index);
+    parse_tree_stake_t() = default;
+    parse_tree_stake_t(parse_tree_t* pt, index_t* token_index);
 
-    parse_tree_guard_t(parse_tree_guard_t&&);
-    parse_tree_guard_t& operator=(parse_tree_guard_t&&);
-    parse_tree_guard_t(const parse_tree_guard_t&)            = delete;
-    parse_tree_guard_t& operator=(const parse_tree_guard_t&) = delete;
+    parse_tree_stake_t(parse_tree_stake_t&&);
+    parse_tree_stake_t& operator=(parse_tree_stake_t&&);
+    parse_tree_stake_t(const parse_tree_stake_t&)            = delete;
+    parse_tree_stake_t& operator=(const parse_tree_stake_t&) = delete;
 
     void create_node(name_id_t);
 
     parse_tree_sub_t commit();
     void clear();
-    ~parse_tree_guard_t();
+    ~parse_tree_stake_t();
   };
 
 #define SILVA_EXPECT_PARSE(cond, fmt_str, ...) \
@@ -46,7 +46,7 @@ namespace silva {
 
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
-    [[nodiscard]] parse_tree_guard_t guard() { return parse_tree_guard_t{&retval, &token_index}; }
+    [[nodiscard]] parse_tree_stake_t stake() { return parse_tree_stake_t{&retval, &token_index}; }
 
     const index_t num_tokens_left() const;
     const token_id_t token_id_by(index_t token_index_offset = 0) const;

@@ -441,14 +441,14 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> s_terminal(const parse_tree_span_t pts)
       {
-        auto gg            = guard();
+        auto ss            = stake();
         const auto& s_node = pts[0];
         SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
         SILVA_EXPECT(s_node.rule_name == fni_term, MAJOR);
         const token_id_t s_front_ti = s_tokens[s_node.token_begin];
         if (s_front_ti == ti_eof) {
           SILVA_EXPECT_PARSE(num_tokens_left() == 0, "Expected end of file");
-          return gg.commit();
+          return ss.commit();
         }
         SILVA_EXPECT_PARSE(num_tokens_left() > 0,
                            "Reached end of token-stream when looking for {}",
@@ -503,7 +503,7 @@ namespace silva {
           }
         }
         token_index += 1;
-        return gg.commit();
+        return ss.commit();
       }
 
       std::pair<index_t, index_t> get_min_max_repeat(const token_id_t op_ti)
@@ -524,7 +524,7 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> s_expr_postfix(const parse_tree_span_t pts)
       {
-        auto gg                = guard();
+        auto ss                = stake();
         const auto children    = SILVA_EXPECT_FWD(pts.get_children<1>());
         const token_id_t op_ti = tcp->name_infos[pts[0].rule_name].base_name;
         if (op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus) {
@@ -553,31 +553,31 @@ namespace silva {
                                               min_repeat,
                                               repeat_count));
           }
-          gg.sub += std::move(sub_sub);
+          ss.sub += std::move(sub_sub);
         }
         else if (op_ti == ti_excl) {
-          auto inner_ptg    = guard();
+          auto inner_ptg    = stake();
           const auto result = SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0])), MAJOR);
           SILVA_EXPECT(!result, MINOR, "Managed to parse '!' expression");
         }
         else if (op_ti == ti_ampr) {
-          auto inner_ptg = guard();
+          auto inner_ptg = stake();
           auto result    = SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0])), MAJOR);
           SILVA_EXPECT_FWD(std::move(result), "Did not manage to parse '&' expression");
         }
         else {
           SILVA_EXPECT(false, MAJOR);
         }
-        return gg.commit();
+        return ss.commit();
       }
 
       expected_t<parse_tree_sub_t> s_expr_concat(const parse_tree_span_t pts)
       {
-        auto gg = guard();
+        auto ss = stake();
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-          gg.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(sub_s_node_index)));
+          ss.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(sub_s_node_index)));
         }
-        return gg.commit();
+        return ss.commit();
       }
 
       expected_t<parse_tree_sub_t> s_expr_alt(const parse_tree_span_t pts)
@@ -638,14 +638,14 @@ namespace silva {
       {
         const auto it = root->parse_axes.find(t_rule_name);
         SILVA_EXPECT(it != root->parse_axes.end(), MAJOR);
-        auto gg{guard()};
+        auto ss{stake()};
         const seed_engine_t::parse_axe_data_t& parse_axe_data = it->second;
         const delegate_t<expected_t<parse_tree_sub_t>()>::pack_t pack{
             [&]() { return handle_rule(parse_axe_data.atom_rule_name); },
         };
-        gg.sub += SILVA_EXPECT_FWD(
+        ss.sub += SILVA_EXPECT_FWD(
             parse_axe_data.parse_axe.apply(*this, parse_axe_data.atom_rule_name, pack.delegate));
-        return gg.commit();
+        return ss.commit();
       }
 
       expected_t<parse_tree_sub_t> handle_rule(const name_id_t t_rule_name)
@@ -674,21 +674,21 @@ namespace silva {
                        "Expected one of [ '=' '=>' ]");
           const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
           if (rule_token == ti_equal) {
-            auto gg_rule = guard();
-            gg_rule.create_node(t_rule_name);
-            gg_rule.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
+            auto ss_rule = stake();
+            ss_rule.create_node(t_rule_name);
+            ss_rule.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
                                             "{} Expected {}",
                                             token_position_at(orig_token_index),
                                             fnis.absolute(t_rule_name));
-            return gg_rule.commit();
+            return ss_rule.commit();
           }
           else {
-            auto gg = guard();
-            gg.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
+            auto ss = stake();
+            ss.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
                                        "{} Expected {}",
                                        token_position_at(orig_token_index),
                                        fnis.absolute(t_rule_name));
-            return gg.commit();
+            return ss.commit();
           }
         }
       }

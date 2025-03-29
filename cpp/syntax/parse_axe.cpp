@@ -224,7 +224,7 @@ namespace silva::parse_axe {
 
     // functions
 
-    expected_t<optional_t<atom_data_t>> try_parse_atom(parse_tree_guard_t& gg_rule)
+    expected_t<optional_t<atom_data_t>> try_parse_atom(parse_tree_stake_t& ss_rule)
     {
       auto maybe_atom_result = atom();
       if (!maybe_atom_result) {
@@ -234,9 +234,9 @@ namespace silva::parse_axe {
       SILVA_EXPECT(atom_result.num_children == 1,
                    ASSERT,
                    "The atom function given to parse_axe_t must always parse a single child");
-      const index_t atom_child_index = gg_rule.sub.num_children;
+      const index_t atom_child_index = ss_rule.sub.num_children;
       const pair_t<index_t, index_t> token_range{atom_result.token_begin, atom_result.token_end};
-      gg_rule.sub += std::move(atom_result);
+      ss_rule.sub += std::move(atom_result);
       return {atom_data_t{
           .name             = atom_name_id,
           .token_range      = token_range,
@@ -388,7 +388,7 @@ namespace silva::parse_axe {
       }
     };
 
-    expected_t<pair_t<index_t, index_t>> handle_nest(parse_tree_guard_t& gg_rule,
+    expected_t<pair_t<index_t, index_t>> handle_nest(parse_tree_stake_t& ss_rule,
                                                      const token_id_t left_token,
                                                      const token_id_t right_token)
     {
@@ -396,7 +396,7 @@ namespace silva::parse_axe {
       SILVA_EXPECT(nursery.num_tokens_left() >= 1, ASSERT);
       SILVA_EXPECT(nursery.token_id_by() == left_token, ASSERT);
       nursery.token_index += 1;
-      SILVA_EXPECT_FWD(go_parse(gg_rule));
+      SILVA_EXPECT_FWD(go_parse(ss_rule));
       SILVA_EXPECT(nursery.num_tokens_left() >= 1, ASSERT);
       SILVA_EXPECT(nursery.token_id_by() == right_token, ASSERT);
       nursery.token_index += 1;
@@ -405,7 +405,7 @@ namespace silva::parse_axe {
       return {{token_begin, token_end}};
     }
 
-    expected_t<void> go_parse(parse_tree_guard_t& gg_rule)
+    expected_t<void> go_parse(parse_tree_stake_t& ss_rule)
     {
       stack_pair_t stack_pair{.atom_tree = &atom_tree};
       mode_t mode = ATOM_MODE;
@@ -429,7 +429,7 @@ namespace silva::parse_axe {
         if (it == parse_axe.results.end()) {
           // Current token is not one of the known operators, so it has to be an atom or the end of
           // the expression
-          const optional_t<atom_data_t> atom_data = SILVA_EXPECT_FWD(try_parse_atom(gg_rule));
+          const optional_t<atom_data_t> atom_data = SILVA_EXPECT_FWD(try_parse_atom(ss_rule));
           if (!atom_data.has_value()) {
             break;
           }
@@ -473,7 +473,7 @@ namespace silva::parse_axe {
 
             if (const auto* x = std::get_if<atom_nest_t>(&res.oper)) {
               const auto [token_begin, token_end] =
-                  SILVA_EXPECT_FWD(handle_nest(gg_rule, x->left_bracket, x->right_bracket));
+                  SILVA_EXPECT_FWD(handle_nest(ss_rule, x->left_bracket, x->right_bracket));
               atom_tree.push_back(atom_tree_node_t{
                   {
                       .num_children = 1,
@@ -503,7 +503,7 @@ namespace silva::parse_axe {
             }
             else if (const auto* x = std::get_if<prefix_nest_t>(&res.oper)) {
               const auto [token_begin, token_end] =
-                  SILVA_EXPECT_FWD(handle_nest(gg_rule, x->left_bracket, x->right_bracket));
+                  SILVA_EXPECT_FWD(handle_nest(ss_rule, x->left_bracket, x->right_bracket));
               stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
@@ -535,7 +535,7 @@ namespace silva::parse_axe {
             }
             else if (const auto* x = std::get_if<postfix_nest_t>(&res.oper)) {
               const auto [token_begin, token_end] =
-                  SILVA_EXPECT_FWD(handle_nest(gg_rule, x->left_bracket, x->right_bracket));
+                  SILVA_EXPECT_FWD(handle_nest(ss_rule, x->left_bracket, x->right_bracket));
               stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
@@ -561,7 +561,7 @@ namespace silva::parse_axe {
             }
             else if (const auto* x = std::get_if<ternary_t>(&res.oper)) {
               const auto [token_begin, token_end] =
-                  SILVA_EXPECT_FWD(handle_nest(gg_rule, x->first, x->second));
+                  SILVA_EXPECT_FWD(handle_nest(ss_rule, x->first, x->second));
               stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
               stack_pair.oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
@@ -618,22 +618,22 @@ namespace silva::parse_axe {
 
     expected_t<index_t> go()
     {
-      auto gg      = nursery.guard();
-      auto gg_rule = nursery.guard();
-      gg_rule.create_node(name_id_root);
-      SILVA_EXPECT_FWD(go_parse(gg_rule));
+      auto ss      = nursery.stake();
+      auto ss_rule = nursery.stake();
+      ss_rule.create_node(name_id_root);
+      SILVA_EXPECT_FWD(go_parse(ss_rule));
 
       const auto& root_node          = atom_tree.back();
       const index_t expr_token_begin = root_node.token_range.first;
       const index_t expr_token_end   = root_node.token_range.second;
-      SILVA_EXPECT(gg_rule.orig_token_index == expr_token_begin, MINOR);
-      SILVA_EXPECT(*gg_rule.token_index == expr_token_end, MINOR);
+      SILVA_EXPECT(ss_rule.orig_token_index == expr_token_begin, MINOR);
+      SILVA_EXPECT(*ss_rule.token_index == expr_token_end, MINOR);
 
-      gg_rule.commit();
+      ss_rule.commit();
       parse_tree_t leave_atoms_tree =
-          nursery.retval.span().sub_tree_span_at(gg.orig_node_size).copy();
+          nursery.retval.span().sub_tree_span_at(ss.orig_node_size).copy();
       const index_t final_token_index = nursery.token_index;
-      gg.clear();
+      ss.clear();
       const index_t num_children = leave_atoms_tree.nodes.front().num_children;
       vector_t<index_t> leave_atoms_tree_child_node_indexes(num_children);
       for (const auto [node_index, child_index]: leave_atoms_tree.span().children_range()) {

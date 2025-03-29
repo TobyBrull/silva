@@ -14,7 +14,7 @@ namespace silva {
 
   // parse_tree_guard_t
 
-  parse_tree_guard_t::parse_tree_guard_t(parse_tree_t* pt, index_t* token_index)
+  parse_tree_stake_t::parse_tree_stake_t(parse_tree_t* pt, index_t* token_index)
     : pt(pt)
     , token_index(token_index)
     , orig_node_size(pt->nodes.size())
@@ -23,7 +23,7 @@ namespace silva {
   {
   }
 
-  parse_tree_guard_t::parse_tree_guard_t(parse_tree_guard_t&& other)
+  parse_tree_stake_t::parse_tree_stake_t(parse_tree_stake_t&& other)
     : pt(std::exchange(other.pt, nullptr))
     , token_index(std::exchange(other.token_index, nullptr))
     , orig_node_size(std::exchange(other.orig_node_size, 0))
@@ -32,7 +32,7 @@ namespace silva {
   {
   }
 
-  parse_tree_guard_t& parse_tree_guard_t::operator=(parse_tree_guard_t&& other)
+  parse_tree_stake_t& parse_tree_stake_t::operator=(parse_tree_stake_t&& other)
   {
     if (this != &other) {
       pt               = std::exchange(other.pt, nullptr);
@@ -44,7 +44,7 @@ namespace silva {
     return *this;
   }
 
-  void parse_tree_guard_t::create_node(const name_id_t rule_name)
+  void parse_tree_stake_t::create_node(const name_id_t rule_name)
   {
     SILVA_ASSERT(!has_node);
     has_node         = true;
@@ -54,7 +54,7 @@ namespace silva {
     pt->nodes.emplace_back(parse_tree_node_t{.rule_name = rule_name});
   }
 
-  parse_tree_sub_t parse_tree_guard_t::commit()
+  parse_tree_sub_t parse_tree_stake_t::commit()
   {
     sub.token_end = *token_index;
     parse_tree_sub_t retval;
@@ -75,11 +75,11 @@ namespace silva {
     else {
       retval = std::move(sub);
     }
-    (*this) = parse_tree_guard_t{};
+    (*this) = parse_tree_stake_t{};
     return retval;
   }
 
-  void parse_tree_guard_t::clear()
+  void parse_tree_stake_t::clear()
   {
     if (pt != nullptr) {
       pt->nodes.resize(orig_node_size);
@@ -92,7 +92,7 @@ namespace silva {
     sub              = parse_tree_sub_t{};
   }
 
-  parse_tree_guard_t::~parse_tree_guard_t()
+  parse_tree_stake_t::~parse_tree_stake_t()
   {
     clear();
   }

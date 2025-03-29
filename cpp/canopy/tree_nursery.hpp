@@ -19,20 +19,18 @@ namespace silva {
 
       stake_t(stake_t&&);
       stake_t& operator=(stake_t&&);
-
       stake_t(const stake_t&)            = delete;
       stake_t& operator=(const stake_t&) = delete;
-
-      ~stake_t();
 
       NodeData& node() const;
 
       void commit();
       void clear();
+      ~stake_t();
     };
     stake_t root;
 
-    stake_t create_node();
+    stake_t stake();
 
     vector_t<NodeData> commit_root() &&;
 
@@ -134,7 +132,7 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::stake_t tree_nursery_t<NodeData>::create_node()
+  tree_nursery_t<NodeData>::stake_t tree_nursery_t<NodeData>::stake()
   {
     tree_nursery_t<NodeData>::stake_t retval(this, create_node_stack.size());
     create_node_stack.push_back(tree.size());
@@ -152,7 +150,7 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::tree_nursery_t() : root(create_node())
+  tree_nursery_t<NodeData>::tree_nursery_t() : root(stake())
   {
   }
 }

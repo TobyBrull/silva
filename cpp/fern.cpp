@@ -36,54 +36,54 @@ namespace silva {
 
       expected_t<parse_tree_sub_t> value()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_value);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_value);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
                                (token_id_by() == tt_none || token_id_by() == tt_true ||
                                 token_id_by() == tt_false || token_data_by()->category == STRING ||
                                 token_data_by()->category == NUMBER),
                            "Expected Value");
         token_index += 1;
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> label()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_label);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_label);
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 1 &&
                 (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
             "Expected Label");
         token_index += 1;
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_sub_t> labeled_item()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_lbl_item);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_lbl_item);
 
         if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
-          gg_rule.sub += SILVA_EXPECT_FWD(label(),
+          ss_rule.sub += SILVA_EXPECT_FWD(label(),
                                           "{} Expected LabeledItem",
-                                          token_position_at(gg_rule.orig_token_index));
+                                          token_position_at(ss_rule.orig_token_index));
           token_index += 1;
         }
 
         error_nursery_t error_nursery;
 
         if (auto result = fern(); result) {
-          gg_rule.sub += *std::move(result);
-          return gg_rule.commit();
+          ss_rule.sub += *std::move(result);
+          return ss_rule.commit();
         }
         else {
           error_nursery.add_child_error(std::move(result).error());
         }
 
         if (auto result = value(); result) {
-          gg_rule.sub += *std::move(result);
-          return gg_rule.commit();
+          ss_rule.sub += *std::move(result);
+          return ss_rule.commit();
         }
         else {
           error_nursery.add_child_error(std::move(result).error());
@@ -92,25 +92,25 @@ namespace silva {
         return std::unexpected(std::move(error_nursery)
                                    .finish(MINOR,
                                            "{} Expected Fern or Value",
-                                           token_position_at(gg_rule.orig_token_index)));
+                                           token_position_at(ss_rule.orig_token_index)));
       }
 
       expected_t<parse_tree_sub_t> fern()
       {
-        auto gg_rule = guard();
-        gg_rule.create_node(fni_fern);
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_fern);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_open,
                            "Expected Fern: didn't find '['");
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() != tt_brkt_close) {
-          gg_rule.sub += SILVA_EXPECT_FWD(labeled_item(),
+          ss_rule.sub += SILVA_EXPECT_FWD(labeled_item(),
                                           "{} Expected Fern",
-                                          token_position_at(gg_rule.orig_token_index));
+                                          token_position_at(ss_rule.orig_token_index));
         }
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
                            "Expected ']' for Fern");
         token_index += 1;
-        return gg_rule.commit();
+        return ss_rule.commit();
       }
     };
   }
