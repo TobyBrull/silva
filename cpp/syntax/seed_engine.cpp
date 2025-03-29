@@ -529,12 +529,11 @@ namespace silva {
         const token_id_t op_ti = tcp->name_infos[pts[0].rule_name].base_name;
         if (op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus) {
           const auto [min_repeat, max_repeat] = get_min_max_repeat(op_ti);
-          proto_node_t sub_sub;
-          index_t repeat_count = 0;
+          index_t repeat_count                = 0;
           optional_t<error_t> last_error;
           while (repeat_count < max_repeat) {
             if (auto result = s_expr(pts.sub_tree_span_at(children[0])); result.has_value()) {
-              sub_sub += std::move(result).value();
+              ss.add_proto_node(*result);
               repeat_count += 1;
             }
             else {
@@ -553,7 +552,6 @@ namespace silva {
                                               min_repeat,
                                               repeat_count));
           }
-          ss.sub += std::move(sub_sub);
         }
         else if (op_ti == ti_excl) {
           auto inner_ptg    = stake();
@@ -575,7 +573,7 @@ namespace silva {
       {
         auto ss = stake();
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-          ss.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(sub_s_node_index)));
+          ss.add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(sub_s_node_index))));
         }
         return ss.commit();
       }
@@ -643,8 +641,8 @@ namespace silva {
         const delegate_t<expected_t<proto_node_t>()>::pack_t pack{
             [&]() { return handle_rule(parse_axe_data.atom_rule_name); },
         };
-        ss.sub += SILVA_EXPECT_FWD(
-            parse_axe_data.parse_axe.apply(*this, parse_axe_data.atom_rule_name, pack.delegate));
+        ss.add_proto_node(SILVA_EXPECT_FWD(
+            parse_axe_data.parse_axe.apply(*this, parse_axe_data.atom_rule_name, pack.delegate)));
         return ss.commit();
       }
 
@@ -676,18 +674,18 @@ namespace silva {
           if (rule_token == ti_equal) {
             auto ss_rule = stake();
             ss_rule.create_node(t_rule_name);
-            ss_rule.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
-                                            "{} Expected {}",
-                                            token_position_at(orig_token_index),
-                                            fnis.absolute(t_rule_name));
+            ss_rule.add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
+                                                    "{} Expected {}",
+                                                    token_position_at(orig_token_index),
+                                                    fnis.absolute(t_rule_name)));
             return ss_rule.commit();
           }
           else {
             auto ss = stake();
-            ss.sub += SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
-                                       "{} Expected {}",
-                                       token_position_at(orig_token_index),
-                                       fnis.absolute(t_rule_name));
+            ss.add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
+                                               "{} Expected {}",
+                                               token_position_at(orig_token_index),
+                                               fnis.absolute(t_rule_name)));
             return ss.commit();
           }
         }

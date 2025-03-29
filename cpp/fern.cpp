@@ -65,16 +65,17 @@ namespace silva {
         ss_rule.create_node(fni_lbl_item);
 
         if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
-          ss_rule.sub += SILVA_EXPECT_FWD(label(),
-                                          "{} Expected LabeledItem",
-                                          token_position_at(ss_rule.orig_state.token_index));
+          ss_rule.add_proto_node(
+              SILVA_EXPECT_FWD(label(),
+                               "{} Expected LabeledItem",
+                               token_position_at(ss_rule.orig_state.token_index)));
           token_index += 1;
         }
 
         error_nursery_t error_nursery;
 
         if (auto result = fern(); result) {
-          ss_rule.sub += *std::move(result);
+          ss_rule.add_proto_node(*result);
           return ss_rule.commit();
         }
         else {
@@ -82,7 +83,7 @@ namespace silva {
         }
 
         if (auto result = value(); result) {
-          ss_rule.sub += *std::move(result);
+          ss_rule.add_proto_node(*result);
           return ss_rule.commit();
         }
         else {
@@ -103,9 +104,10 @@ namespace silva {
                            "Expected Fern: didn't find '['");
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() != tt_brkt_close) {
-          ss_rule.sub += SILVA_EXPECT_FWD(labeled_item(),
-                                          "{} Expected Fern",
-                                          token_position_at(ss_rule.orig_state.token_index));
+          ss_rule.add_proto_node(
+              SILVA_EXPECT_FWD(labeled_item(),
+                               "{} Expected Fern",
+                               token_position_at(ss_rule.orig_state.token_index)));
         }
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
                            "Expected ']' for Fern");

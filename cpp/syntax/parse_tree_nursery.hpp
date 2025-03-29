@@ -27,15 +27,14 @@ namespace silva {
       index_t subtree_size = 0;
       index_t token_begin  = std::numeric_limits<index_t>::max();
       index_t token_end    = std::numeric_limits<index_t>::min();
-      void operator+=(proto_node_t&& other);
     };
 
     struct stake_t {
       parse_tree_nursery_t* nursery = nullptr;
       state_t orig_state;
-      proto_node_t sub;
+      proto_node_t proto_node;
 
-      bool has_node = false;
+      bool owns_node = false;
 
       stake_t() = default;
       stake_t(parse_tree_nursery_t*);
@@ -46,6 +45,8 @@ namespace silva {
       stake_t& operator=(const stake_t&) = delete;
 
       void create_node(name_id_t);
+
+      void add_proto_node(const proto_node_t&);
 
       proto_node_t commit();
       void clear();

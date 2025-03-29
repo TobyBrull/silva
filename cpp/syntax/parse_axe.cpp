@@ -234,9 +234,9 @@ namespace silva::parse_axe {
       SILVA_EXPECT(atom_result.num_children == 1,
                    ASSERT,
                    "The atom function given to parse_axe_t must always parse a single child");
-      const index_t atom_child_index = ss_rule.sub.num_children;
+      const index_t atom_child_index = ss_rule.proto_node.num_children;
       const pair_t<index_t, index_t> token_range{atom_result.token_begin, atom_result.token_end};
-      ss_rule.sub += std::move(atom_result);
+      ss_rule.add_proto_node(atom_result);
       return {atom_data_t{
           .name             = atom_name_id,
           .token_range      = token_range,
