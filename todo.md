@@ -7,6 +7,9 @@
     * token_context_t -> naming_context_t
         * could include the set of tokenizations
 
+* Add "keywords": if a token is used as 'then' in Seed, make sure it's not parsed as an identifier
+    anymore
+
 * memento/error-handling:
     * Seed:
         * make root-based error look more like the error from the manual Fern parser

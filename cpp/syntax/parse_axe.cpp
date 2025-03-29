@@ -427,6 +427,9 @@ namespace silva::parse_axe {
       while (nursery.num_tokens_left() >= 1) {
         const auto it = parse_axe.results.find(nursery.token_id_by());
         if (it == parse_axe.results.end()) {
+          if (mode == INFIX_MODE && !parse_axe.concat_result.has_value()) {
+            break;
+          }
           // Current token is not one of the known operators, so it has to be an atom or the end of
           // the expression
           const optional_t<atom_data_t> atom_data = SILVA_EXPECT_FWD(try_parse_atom(ss_rule));
