@@ -12,17 +12,18 @@ namespace silva {
     void operator+=(parse_tree_sub_t&& other);
   };
 
+  struct parse_tree_nursery_t;
+
   struct parse_tree_stake_t {
-    parse_tree_t* pt         = nullptr;
-    index_t* token_index     = nullptr;
-    index_t orig_node_size   = 0;
-    index_t orig_token_index = 0;
+    parse_tree_nursery_t* nursery = nullptr;
+    index_t orig_node_size        = 0;
+    index_t orig_token_index      = 0;
     parse_tree_sub_t sub;
 
     bool has_node = false;
 
     parse_tree_stake_t() = default;
-    parse_tree_stake_t(parse_tree_t* pt, index_t* token_index);
+    parse_tree_stake_t(parse_tree_nursery_t*);
 
     parse_tree_stake_t(parse_tree_stake_t&&);
     parse_tree_stake_t& operator=(parse_tree_stake_t&&);
@@ -46,7 +47,7 @@ namespace silva {
 
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
-    [[nodiscard]] parse_tree_stake_t stake() { return parse_tree_stake_t{&retval, &token_index}; }
+    [[nodiscard]] parse_tree_stake_t stake() { return parse_tree_stake_t{this}; }
 
     const index_t num_tokens_left() const;
     const token_id_t token_id_by(index_t token_index_offset = 0) const;

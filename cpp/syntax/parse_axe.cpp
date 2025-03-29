@@ -627,7 +627,7 @@ namespace silva::parse_axe {
       const index_t expr_token_begin = root_node.token_range.first;
       const index_t expr_token_end   = root_node.token_range.second;
       SILVA_EXPECT(ss_rule.orig_token_index == expr_token_begin, MINOR);
-      SILVA_EXPECT(*ss_rule.token_index == expr_token_end, MINOR);
+      SILVA_EXPECT(nursery.token_index == expr_token_end, MINOR);
 
       ss_rule.commit();
       parse_tree_t leave_atoms_tree =
