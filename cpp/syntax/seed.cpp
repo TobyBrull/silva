@@ -337,7 +337,7 @@ namespace silva {
     expected_traits_t expected_traits{.materialize_fwd = true};
     impl::seed_parse_tree_nursery_t nursery(std::move(tokenization));
     SILVA_EXPECT_FWD(nursery.seed());
-    return {std::make_unique<parse_tree_t>(std::move(nursery.retval))};
+    return {std::make_unique<parse_tree_t>(std::move(nursery).commit_root())};
   }
 
   unique_ptr_t<seed_engine_t> seed_seed_engine(token_context_ptr_t tcp)

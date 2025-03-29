@@ -41,13 +41,16 @@ namespace silva {
   SILVA_EXPECT(cond, MINOR, "{} " fmt_str, token_position_by() __VA_OPT__(, ) __VA_ARGS__);
 
   struct parse_tree_nursery_t {
+    shared_ptr_t<const tokenization_t> tokenization;
     token_context_ptr_t tcp;
-    parse_tree_t retval;
+    vector_t<parse_tree_node_t> tree;
     index_t token_index = 0;
 
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
     [[nodiscard]] parse_tree_stake_t stake() { return parse_tree_stake_t{this}; }
+
+    parse_tree_t commit_root() &&;
 
     const index_t num_tokens_left() const;
     const token_id_t token_id_by(index_t token_index_offset = 0) const;

@@ -589,7 +589,7 @@ namespace silva::parse_axe {
                             const parse_tree_t& leave_atoms_tree,
                             const vector_t<index_t>& leave_atoms_tree_child_node_indexes)
     {
-      auto& rv_nodes       = nursery.retval.nodes;
+      auto& rv_nodes       = nursery.tree;
       const index_t retval = rv_nodes.size();
       const auto& node     = ats[0];
       if (node.atom_child_index.has_value()) {
@@ -630,8 +630,9 @@ namespace silva::parse_axe {
       SILVA_EXPECT(nursery.token_index == expr_token_end, MINOR);
 
       ss_rule.commit();
+      parse_tree_span_t leave_atoms_tree_span{nursery.tree.data(), 1, nursery.tokenization};
       parse_tree_t leave_atoms_tree =
-          nursery.retval.span().sub_tree_span_at(ss.orig_node_size).copy();
+          leave_atoms_tree_span.sub_tree_span_at(ss.orig_node_size).copy();
       const index_t final_token_index = nursery.token_index;
       ss.clear();
       const index_t num_children = leave_atoms_tree.nodes.front().num_children;
@@ -661,7 +662,7 @@ namespace silva::parse_axe {
         .atom         = atom,
     };
     const index_t created_node = SILVA_EXPECT_FWD(run.go());
-    auto& rv_nodes             = nursery.retval.nodes;
+    auto& rv_nodes             = nursery.tree;
     parse_tree_sub_t retval;
     retval.num_children = 1;
     retval.subtree_size = rv_nodes[created_node].subtree_size;

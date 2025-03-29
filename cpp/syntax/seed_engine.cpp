@@ -385,7 +385,7 @@ namespace silva {
       const tokenization_t& s_tokenization = *root->seed_parse_trees.front()->tokenization;
       const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
-      const tokenization_t& t_tokenization = *retval.tokenization;
+      const tokenization_t& t_tokenization = *tokenization;
       const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
 
       const vector_t<shared_ptr_t<const parse_tree_t>>& spts = root->seed_parse_trees;
@@ -704,7 +704,7 @@ namespace silva {
     expected_traits_t expected_traits{.materialize_fwd = true};
     const parse_tree_sub_t sub = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
-    SILVA_EXPECT(sub.subtree_size == nursery.retval.nodes.size(), ASSERT);
-    return {std::make_unique<parse_tree_t>(std::move(nursery.retval))};
+    SILVA_EXPECT(sub.subtree_size == nursery.tree.size(), ASSERT);
+    return {std::make_unique<parse_tree_t>(std::move(nursery).commit_root())};
   }
 }
