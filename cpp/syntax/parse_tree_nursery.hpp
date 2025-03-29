@@ -22,17 +22,10 @@ namespace silva {
     state_t state() const { return state_t{index_t(tree.size()), token_index}; }
     void set_state(const state_t&);
 
-    struct proto_node_t {
-      index_t num_children = 0;
-      index_t subtree_size = 0;
-      index_t token_begin  = std::numeric_limits<index_t>::max();
-      index_t token_end    = std::numeric_limits<index_t>::min();
-    };
-
     struct stake_t {
       parse_tree_nursery_t* nursery = nullptr;
       state_t orig_state;
-      proto_node_t proto_node;
+      parse_tree_node_t proto_node;
 
       bool owns_node = false;
 
@@ -46,9 +39,9 @@ namespace silva {
 
       void create_node(name_id_t);
 
-      void add_proto_node(const proto_node_t&);
+      void add_proto_node(const parse_tree_node_t&);
 
-      proto_node_t commit();
+      parse_tree_node_t commit();
       void clear();
       ~stake_t();
     };

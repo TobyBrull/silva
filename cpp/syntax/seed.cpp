@@ -115,7 +115,7 @@ namespace silva {
       {
       }
 
-      expected_t<proto_node_t> terminal()
+      expected_t<parse_tree_node_t> terminal()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_term);
@@ -136,7 +136,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> nonterminal_base()
+      expected_t<parse_tree_node_t> nonterminal_base()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_nt_base);
@@ -148,7 +148,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> nonterminal()
+      expected_t<parse_tree_node_t> nonterminal()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_nt);
@@ -160,7 +160,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> axe_op()
+      expected_t<parse_tree_node_t> axe_op()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_op);
@@ -171,7 +171,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> axe_op_type()
+      expected_t<parse_tree_node_t> axe_op_type()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_op_type);
@@ -187,7 +187,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> axe_ops()
+      expected_t<parse_tree_node_t> axe_ops()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_ops);
@@ -198,7 +198,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> axe_assoc()
+      expected_t<parse_tree_node_t> axe_assoc()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_assoc);
@@ -210,7 +210,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> axe_level()
+      expected_t<parse_tree_node_t> axe_level()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_level);
@@ -224,7 +224,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> axe()
+      expected_t<parse_tree_node_t> axe()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe);
@@ -244,7 +244,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> atom()
+      expected_t<parse_tree_node_t> atom()
       {
         auto ss                        = stake();
         const index_t orig_token_index = token_index;
@@ -270,17 +270,17 @@ namespace silva {
                                                  token_position_at(orig_token_index)));
       }
 
-      expected_t<proto_node_t> expr()
+      expected_t<parse_tree_node_t> expr()
       {
         auto ss = stake();
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No tokens left when parsing Expr");
-        using atom_delegate_t    = delegate_t<expected_t<proto_node_t>()>;
+        using atom_delegate_t    = delegate_t<expected_t<parse_tree_node_t>()>;
         const auto atom_delegate = atom_delegate_t::make<&seed_parse_tree_nursery_t::atom>(this);
         ss.add_proto_node(SILVA_EXPECT_FWD(seed_parse_axe.apply(*this, fni_atom, atom_delegate)));
         return ss.commit();
       }
 
-      expected_t<proto_node_t> expr_or_alias()
+      expected_t<parse_tree_node_t> expr_or_alias()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_expr_or_a);
@@ -292,7 +292,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> rule()
+      expected_t<parse_tree_node_t> rule()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_rule);
@@ -319,7 +319,7 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<proto_node_t> seed()
+      expected_t<parse_tree_node_t> seed()
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_seed);

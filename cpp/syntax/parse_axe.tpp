@@ -16,7 +16,7 @@ namespace silva::test {
     expected_traits_t expected_traits{.materialize_fwd = true};
     const index_t n = tokenization->tokens.size();
     ParseAxeNursery nursery(parse_axe, std::move(tokenization));
-    const parse_tree_nursery_t::proto_node_t sub = SILVA_EXPECT_FWD(nursery.expression());
+    const parse_tree_node_t sub = SILVA_EXPECT_FWD(nursery.expression());
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.subtree_size == nursery.tree.size(), ASSERT);
     SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
@@ -54,7 +54,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
     {
     }
 
-    expected_t<proto_node_t> atom()
+    expected_t<parse_tree_node_t> atom()
     {
       auto ss_rule = stake();
       ss_rule.create_node(tcp->name_id_of("test", "atom"));
@@ -66,9 +66,9 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
       return ss_rule.commit();
     }
 
-    expected_t<proto_node_t> expression()
+    expected_t<parse_tree_node_t> expression()
     {
-      using dg_t = delegate_t<expected_t<proto_node_t>()>;
+      using dg_t = delegate_t<expected_t<parse_tree_node_t>()>;
       auto dg    = dg_t::make<&test_nursery_t::atom>(this);
       return parse_axe.apply(*this, tcp->name_id_of("atom"), dg);
     }
@@ -417,7 +417,7 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
     {
     }
 
-    expected_t<proto_node_t> atom()
+    expected_t<parse_tree_node_t> atom()
     {
       auto ss_rule = stake();
       ss_rule.create_node(tcp->name_id_of("test", "atom"));
@@ -435,9 +435,9 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
       return ss_rule.commit();
     }
 
-    expected_t<proto_node_t> expression()
+    expected_t<parse_tree_node_t> expression()
     {
-      using dg_t = delegate_t<expected_t<proto_node_t>()>;
+      using dg_t = delegate_t<expected_t<parse_tree_node_t>()>;
       auto dg    = dg_t::make<&test_nursery_t::atom>(this);
       return parse_axe.apply(*this, tcp->name_id_of("atom"), dg);
     }

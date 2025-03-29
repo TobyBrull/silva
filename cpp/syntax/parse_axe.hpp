@@ -119,10 +119,9 @@ namespace silva::parse_axe {
     hashmap_t<token_id_t, parse_axe_result_t> results;
     optional_t<result_oper_t<oper_regular_t>> concat_result;
 
-    expected_t<parse_tree_nursery_t::proto_node_t>
-    apply(parse_tree_nursery_t&,
-          name_id_t atom_name_id,
-          delegate_t<expected_t<parse_tree_nursery_t::proto_node_t>()> atom) const;
+    expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&,
+                                        name_id_t atom_name_id,
+                                        delegate_t<expected_t<parse_tree_node_t>()> atom) const;
   };
 
   struct parse_axe_level_desc_t {

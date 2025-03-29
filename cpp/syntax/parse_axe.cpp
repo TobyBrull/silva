@@ -185,7 +185,7 @@ namespace silva::parse_axe {
     const parse_axe_t& parse_axe;
     parse_tree_nursery_t& nursery;
     const name_id_t atom_name_id;
-    delegate_t<expected_t<parse_tree_nursery_t::proto_node_t>()> atom;
+    delegate_t<expected_t<parse_tree_node_t>()> atom;
 
     // internal state associated with a run
 
@@ -653,10 +653,10 @@ namespace silva::parse_axe {
     }
   };
 
-  expected_t<parse_tree_nursery_t::proto_node_t>
+  expected_t<parse_tree_node_t>
   parse_axe_t::apply(parse_tree_nursery_t& nursery,
                      const name_id_t atom_name_id,
-                     delegate_t<expected_t<parse_tree_nursery_t::proto_node_t>()> atom) const
+                     delegate_t<expected_t<parse_tree_node_t>()> atom) const
   {
     parse_axe_run_t run{
         .parse_axe    = *this,
@@ -666,7 +666,7 @@ namespace silva::parse_axe {
     };
     const index_t created_node = SILVA_EXPECT_FWD(run.go());
     auto& rv_nodes             = nursery.tree;
-    parse_tree_nursery_t::proto_node_t retval;
+    parse_tree_node_t retval;
     retval.num_children = 1;
     retval.subtree_size = rv_nodes[created_node].subtree_size;
     retval.token_begin  = rv_nodes[created_node].token_begin;
