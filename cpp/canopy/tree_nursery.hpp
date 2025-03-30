@@ -16,8 +16,8 @@ namespace silva {
 
       index_t tree_size = 0;
     };
-    state_t state() const { return state_t{this}; }
-    void set_state(const state_t&);
+    auto state(this const auto&);
+    void set_state(this auto&, const auto&);
 
     struct stake_t {
       tree_nursery_t* nursery = nullptr;
@@ -79,9 +79,26 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  void tree_nursery_t<NodeData>::set_state(const state_t& s)
+  auto tree_nursery_t<NodeData>::state(this const auto& self)
   {
-    tree.resize(s.tree_size);
+    using Derived = std::remove_cvref_t<decltype(self)>;
+    using State   = typename Derived::state_t;
+    static_assert(std::derived_from<State, state_t>);
+    return State{&self};
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  void tree_nursery_t<NodeData>::set_state(this auto& self, const auto& state)
+  {
+    self.tree.resize(state.tree_size);
+    using Derived = std::remove_cvref_t<decltype(self)>;
+    using State   = typename Derived::state_t;
+    static_assert(std::derived_from<State, state_t>);
+    static_assert(std::same_as<State, std::remove_cvref_t<decltype(state)>>);
+    if constexpr (requires(Derived d) { d.set_state_derived(state); }) {
+      self.set_state_derived(state);
+    }
   }
 
   // stake_t

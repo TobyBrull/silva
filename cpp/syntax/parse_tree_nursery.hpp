@@ -1,5 +1,7 @@
 #pragma once
 
+#include "canopy/tree_nursery.hpp"
+
 #include "parse_tree.hpp"
 
 namespace silva {
@@ -7,23 +9,20 @@ namespace silva {
 #define SILVA_EXPECT_PARSE(cond, fmt_str, ...) \
   SILVA_EXPECT(cond, MINOR, "{} " fmt_str, token_position_by() __VA_OPT__(, ) __VA_ARGS__);
 
-  struct parse_tree_nursery_t {
+  struct parse_tree_nursery_t : public tree_nursery_t<parse_tree_node_t> {
     shared_ptr_t<const tokenization_t> tokenization;
     token_context_ptr_t tcp;
-    vector_t<parse_tree_node_t> tree;
     index_t token_index = 0;
 
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
-    struct state_t {
+    struct state_t : public tree_nursery_t::state_t {
       state_t() = default;
       state_t(const parse_tree_nursery_t*);
 
-      index_t tree_size   = 0;
       index_t token_index = 0;
     };
-    state_t state() const { return state_t{this}; }
-    void set_state(const state_t&);
+    void set_state_derived(const state_t&);
 
     struct stake_t {
       parse_tree_nursery_t* nursery = nullptr;
