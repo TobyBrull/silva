@@ -8,9 +8,12 @@ struct test_tree_node_t : public tree_node_t {
   string_t name;
 };
 
+struct test_tree_nursery_t
+  : public tree_nursery_t<test_tree_node_t, tree_nursery_state_t, test_tree_nursery_t> {};
+
 TEST_CASE("tree_nursery")
 {
-  tree_nursery_t<test_tree_node_t> nursery;
+  test_tree_nursery_t nursery;
   auto A{nursery.stake()};
   A.create_node();
   A.proto_node.name = "A";

@@ -3,30 +3,30 @@
 #include "tree.hpp"
 
 namespace silva {
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
+  struct tree_nursery_state_t {
+    index_t tree_size = 0;
+  };
+
+  template<typename NodeType, typename StateType, typename Derived>
   struct tree_nursery_t {
-    vector_t<NodeData> tree;
+    static_assert(std::derived_from<NodeType, tree_node_t>);
+    static_assert(std::derived_from<StateType, tree_nursery_state_t>);
 
-    tree_nursery_t() = default;
+    vector_t<NodeType> tree;
 
-    struct state_t {
-      state_t() = default;
-      state_t(const tree_nursery_t*);
+    tree_nursery_t();
 
-      index_t tree_size = 0;
-    };
-    auto state(this const auto&);
-    void set_state(this auto&, const auto&);
+    StateType get_state(this const auto&);
+    void set_state(this auto&, const StateType&);
 
     struct stake_t {
-      tree_nursery_t* nursery = nullptr;
-      state_t orig_state;
-      NodeData proto_node;
+      Derived* nursery = nullptr;
+      StateType orig_state;
+      NodeType proto_node;
 
       bool owns_node = false;
 
-      stake_t(tree_nursery_t*);
+      stake_t(Derived*);
 
       // Move operations and default ctor could be implemented.
       stake_t(stake_t&&)            = delete;
@@ -35,17 +35,24 @@ namespace silva {
       stake_t(const stake_t&)            = delete;
       stake_t& operator=(const stake_t&) = delete;
 
-      void create_node();
+      template<typename... Args>
+      void create_node(Args&&...);
 
-      void add_proto_node(const NodeData&);
+      void add_proto_node(const NodeType&);
 
-      NodeData commit();
+      NodeType commit();
       void clear();
       ~stake_t();
     };
-    [[nodiscard]] stake_t stake() { return stake_t{this}; }
+    [[nodiscard]] stake_t stake(this auto& self) { return stake_t{&self}; }
 
-    vector_t<NodeData> finish() &&;
+    template<typename... Args>
+    void stake_create_node(this const auto&, stake_t&, Args&&...);
+    void stake_add_proto_node(this const auto&, stake_t&, const NodeType&);
+    void stake_commit_pre(this const auto&, stake_t&);
+    void stake_commit_owning_to_proto(this const auto&, stake_t&);
+
+    vector_t<NodeType> finish() &&;
 
     tree_nursery_t(tree_nursery_t&&)                 = delete;
     tree_nursery_t& operator=(tree_nursery_t&&)      = delete;
@@ -68,52 +75,50 @@ namespace silva {
 
 namespace silva {
 
+  template<typename NodeType, typename StateType, typename Derived>
+  tree_nursery_t<NodeType, StateType, Derived>::tree_nursery_t()
+  {
+    static_assert(std::derived_from<Derived, tree_nursery_t>);
+  }
+
   // state_t
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::state_t::state_t(const tree_nursery_t* nursery)
-    : tree_size(nursery->tree.size())
+  template<typename NodeType, typename StateType, typename Derived>
+  StateType tree_nursery_t<NodeType, StateType, Derived>::get_state(this const auto& self)
   {
+    tree_nursery_state_t tns{.tree_size = index_t(self.tree.size())};
+    StateType retval{tns};
+
+    if constexpr (requires(Derived d) { d.on_get_state(retval); }) {
+      self.on_get_state(retval);
+    }
+
+    return retval;
   }
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  auto tree_nursery_t<NodeData>::state(this const auto& self)
-  {
-    using Derived = std::remove_cvref_t<decltype(self)>;
-    using State   = typename Derived::state_t;
-    static_assert(std::derived_from<State, state_t>);
-    return State{&self};
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  void tree_nursery_t<NodeData>::set_state(this auto& self, const auto& state)
+  template<typename NodeType, typename StateType, typename Derived>
+  void tree_nursery_t<NodeType, StateType, Derived>::set_state(this auto& self,
+                                                               const StateType& state)
   {
     self.tree.resize(state.tree_size);
-    using Derived = std::remove_cvref_t<decltype(self)>;
-    using State   = typename Derived::state_t;
-    static_assert(std::derived_from<State, state_t>);
-    static_assert(std::same_as<State, std::remove_cvref_t<decltype(state)>>);
-    if constexpr (requires(Derived d) { d.set_state_derived(state); }) {
-      self.set_state_derived(state);
+
+    if constexpr (requires(Derived d) { d.on_set_state(state); }) {
+      self.on_set_state(state);
     }
   }
 
   // stake_t
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::stake_t::stake_t(tree_nursery_t* nursery)
-    : nursery(nursery), orig_state(nursery->state())
+  template<typename NodeType, typename StateType, typename Derived>
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t::stake_t(Derived* nursery)
+    : nursery(nursery), orig_state(nursery->get_state())
   {
     proto_node.subtree_size = 0;
   }
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  void tree_nursery_t<NodeData>::stake_t::create_node()
+  template<typename NodeType, typename StateType, typename Derived>
+  template<typename... Args>
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_t::create_node(Args&&... args)
   {
     SILVA_ASSERT(!owns_node);
     SILVA_ASSERT(proto_node.subtree_size == 0);
@@ -121,32 +126,35 @@ namespace silva {
     owns_node               = true;
     proto_node.subtree_size = 1;
     nursery->tree.emplace_back();
+
+    nursery->stake_create_node(*this, std::forward<Args>(args)...);
   }
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  void tree_nursery_t<NodeData>::stake_t::add_proto_node(const NodeData& other)
+  template<typename NodeType, typename StateType, typename Derived>
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_t::add_proto_node(const NodeType& other)
   {
     proto_node.num_children += other.num_children;
     proto_node.subtree_size += other.subtree_size;
+
+    nursery->stake_add_proto_node(*this, other);
   }
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  NodeData tree_nursery_t<NodeData>::stake_t::commit()
+  template<typename NodeType, typename StateType, typename Derived>
+  NodeType tree_nursery_t<NodeType, StateType, Derived>::stake_t::commit()
   {
     SILVA_ASSERT(nursery != nullptr);
+    nursery->stake_commit_pre(*this);
     if (owns_node) {
       nursery->tree[orig_state.tree_size] = proto_node;
       proto_node.num_children             = 1;
+      nursery->stake_commit_owning_to_proto(*this);
     }
     nursery = nullptr;
     return proto_node;
   }
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  void tree_nursery_t<NodeData>::stake_t::clear()
+  template<typename NodeType, typename StateType, typename Derived>
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_t::clear()
   {
     if (nursery != nullptr) {
       nursery->set_state(orig_state);
@@ -154,18 +162,58 @@ namespace silva {
     nursery = nullptr;
   }
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::stake_t::~stake_t()
+  template<typename NodeType, typename StateType, typename Derived>
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t::~stake_t()
   {
     clear();
   }
 
   // tree_nursery_t
 
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  vector_t<NodeData> tree_nursery_t<NodeData>::finish() &&
+  template<typename NodeType, typename StateType, typename Derived>
+  template<typename... Args>
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_create_node(this const auto& self,
+                                                                       stake_t& stake,
+                                                                       Args&&... args)
+  {
+    if constexpr (requires(Derived d) {
+                    d.on_stake_create_node(stake.proto_node, std::forward<Args>(args)...);
+                  }) {
+      self.on_stake_create_node(stake.proto_node, std::forward<Args>(args)...);
+    }
+  }
+
+  template<typename NodeType, typename StateType, typename Derived>
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_add_proto_node(this const auto& self,
+                                                                          stake_t& stake,
+                                                                          const NodeType& other)
+  {
+    if constexpr (requires(Derived d) { d.on_stake_add_proto_node(stake.proto_node, other); }) {
+      self.on_stake_add_proto_node(stake.proto_node, other);
+    }
+  }
+
+  template<typename NodeType, typename StateType, typename Derived>
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_commit_pre(this const auto& self,
+                                                                      stake_t& stake)
+  {
+    if constexpr (requires(Derived d) { d.on_stake_commit_pre(stake.proto_node); }) {
+      self.on_stake_commit_pre(stake.proto_node);
+    }
+  }
+
+  template<typename NodeType, typename StateType, typename Derived>
+  void
+  tree_nursery_t<NodeType, StateType, Derived>::stake_commit_owning_to_proto(this const auto& self,
+                                                                             stake_t& stake)
+  {
+    if constexpr (requires(Derived d) { d.on_stake_commit_owning_to_proto(stake); }) {
+      self.on_stake_commit_owning_to_proto(stake);
+    }
+  }
+
+  template<typename NodeType, typename StateType, typename Derived>
+  vector_t<NodeType> tree_nursery_t<NodeType, StateType, Derived>::finish() &&
   {
     return std::move(tree);
   }

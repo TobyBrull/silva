@@ -2,71 +2,39 @@
 
 namespace silva {
 
-  // state_t
-
-  parse_tree_nursery_t::state_t::state_t(const parse_tree_nursery_t* nursery)
-    : tree_nursery_t::state_t(nursery), token_index(nursery->token_index)
+  void parse_tree_nursery_t::on_get_state(parse_tree_nursery_state_t& s) const
   {
+    s.token_index = token_index;
   }
 
-  void parse_tree_nursery_t::set_state_derived(const state_t& s)
+  void parse_tree_nursery_t::on_set_state(const parse_tree_nursery_state_t& s)
   {
     token_index = s.token_index;
   }
 
-  // stake_t
-
-  parse_tree_nursery_t::stake_t::stake_t(parse_tree_nursery_t* nursery)
-    : nursery(nursery), orig_state(nursery->state()), proto_node{}
+  void parse_tree_nursery_t::on_stake_create_node(parse_tree_node_t& proto_node,
+                                                  const name_id_t rule_name) const
   {
-    proto_node.subtree_size = 0;
+    proto_node.rule_name   = rule_name;
+    proto_node.token_begin = token_index;
+    proto_node.token_end   = token_index + 1;
   }
 
-  void parse_tree_nursery_t::stake_t::create_node(const name_id_t rule_name)
+  void parse_tree_nursery_t::on_stake_add_proto_node(parse_tree_node_t& proto_node,
+                                                     const parse_tree_node_t& other) const
   {
-    SILVA_ASSERT(!owns_node);
-    SILVA_ASSERT(proto_node.subtree_size == 0);
-    SILVA_ASSERT(nursery->tree.size() == orig_state.tree_size);
-    owns_node               = true;
-    proto_node.subtree_size = 1;
-    proto_node.rule_name    = rule_name;
-    proto_node.token_begin  = nursery->token_index;
-    proto_node.token_end    = nursery->token_index + 1;
-    nursery->tree.emplace_back();
-  }
-
-  void parse_tree_nursery_t::stake_t::add_proto_node(const parse_tree_node_t& other)
-  {
-    proto_node.num_children += other.num_children;
-    proto_node.subtree_size += other.subtree_size;
     proto_node.token_begin = std::min(proto_node.token_begin, other.token_begin);
     proto_node.token_end   = std::max(proto_node.token_end, other.token_end);
   }
 
-  parse_tree_node_t parse_tree_nursery_t::stake_t::commit()
+  void parse_tree_nursery_t::on_stake_commit_pre(parse_tree_node_t& proto_node) const
   {
-    SILVA_ASSERT(nursery != nullptr);
-    proto_node.token_end = nursery->token_index;
-    if (owns_node) {
-      nursery->tree[orig_state.tree_size] = proto_node;
-      proto_node.num_children             = 1;
-      proto_node.rule_name                = name_id_root;
-    }
-    nursery = nullptr;
-    return proto_node;
+    proto_node.token_end = token_index;
   }
 
-  void parse_tree_nursery_t::stake_t::clear()
+  void parse_tree_nursery_t::on_stake_commit_owning_to_proto(parse_tree_node_t& proto_node) const
   {
-    if (nursery != nullptr) {
-      nursery->set_state(orig_state);
-    }
-    nursery = nullptr;
-  }
-
-  parse_tree_nursery_t::stake_t::~stake_t()
-  {
-    clear();
+    proto_node.rule_name = name_id_root;
   }
 
   // parse_tree_nursery_t
