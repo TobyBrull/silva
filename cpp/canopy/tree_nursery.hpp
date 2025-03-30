@@ -35,7 +35,6 @@ namespace silva {
       stake_t& operator=(const stake_t&) = delete;
 
       void create_node();
-      NodeData& node() const;
 
       void add_proto_node(const NodeData&);
 
@@ -119,15 +118,6 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  NodeData& tree_nursery_t<NodeData>::stake_t::node() const
-  {
-    SILVA_ASSERT(owns_node);
-    NodeData& retval = nursery->tree[orig_state.tree_size];
-    return retval;
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   void tree_nursery_t<NodeData>::stake_t::add_proto_node(const NodeData& other)
   {
     SILVA_ASSERT(owns_node);
@@ -140,20 +130,12 @@ namespace silva {
   NodeData tree_nursery_t<NodeData>::stake_t::commit()
   {
     SILVA_ASSERT(nursery != nullptr);
-    NodeData retval;
     if (owns_node) {
-      const index_t node_index{orig_state.tree_size};
-      nursery->tree[node_index].num_children = proto_node.num_children;
-      nursery->tree[node_index].subtree_size = proto_node.subtree_size;
-
-      retval.num_children = 1;
-      retval.subtree_size = proto_node.subtree_size;
-    }
-    else {
-      retval = std::move(proto_node);
+      nursery->tree[orig_state.tree_size] = proto_node;
+      proto_node.num_children             = 1;
     }
     nursery = nullptr;
-    return retval;
+    return proto_node;
   }
 
   template<typename NodeData>
@@ -163,6 +145,7 @@ namespace silva {
     if (nursery != nullptr) {
       nursery->set_state(orig_state);
     }
+    nursery = nullptr;
   }
 
   template<typename NodeData>
