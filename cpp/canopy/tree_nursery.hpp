@@ -120,6 +120,8 @@ namespace silva {
   void tree_nursery_t<NodeData>::stake_t::create_node()
   {
     SILVA_ASSERT(!owns_node);
+    SILVA_ASSERT(proto_node.subtree_size == 0);
+    SILVA_ASSERT(nursery->tree.size() == orig_state.tree_size);
     owns_node               = true;
     proto_node.subtree_size = 1;
     nursery->tree.emplace_back();
@@ -129,7 +131,6 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   void tree_nursery_t<NodeData>::stake_t::add_proto_node(const NodeData& other)
   {
-    SILVA_ASSERT(owns_node);
     proto_node.num_children += other.num_children;
     proto_node.subtree_size += other.subtree_size;
   }

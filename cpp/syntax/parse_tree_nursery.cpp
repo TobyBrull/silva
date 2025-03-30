@@ -64,6 +64,7 @@ namespace silva {
 
   parse_tree_node_t parse_tree_nursery_t::stake_t::commit()
   {
+    SILVA_ASSERT(nursery != nullptr);
     proto_node.token_end = nursery->token_index;
     if (owns_node) {
       nursery->tree[orig_state.tree_size] = proto_node;
