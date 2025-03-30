@@ -4,7 +4,7 @@
 
 using namespace silva;
 
-TEST_CASE("exclamation-mark", "[seed_engine_t][seed]")
+TEST_CASE("not-and-and", "[seed_engine_t][seed]")
 {
   token_context_t tc;
   const string_t frog_seed = R"'(
@@ -12,13 +12,13 @@ TEST_CASE("exclamation-mark", "[seed_engine_t][seed]")
     - Rule = RuleName '=' Expr
     - RuleName => identifier
     - Expr = Primary +
-    - Primary = identifier '=' !
+    - Primary = identifier not '='
   )'";
   auto fs_tt               = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_seed)));
   auto fs_pt               = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
   auto fs_pr               = share(SILVA_EXPECT_REQUIRE(seed_engine_t::create(fs_pt)));
   const string_view_t expected_seed_pt = R"(
-[0]Silva.Seed                                     - Frog ... '=' !
+[0]Silva.Seed                                     - Frog ... not '='
   [0]Silva.Seed.Rule                              Frog = Rule *
     [0]Silva.Seed.Nonterminal.Base                Frog
     [1]Silva.Seed.ExprOrAlias                     = Rule *
@@ -44,12 +44,12 @@ TEST_CASE("exclamation-mark", "[seed_engine_t][seed]")
       [0]Silva.Seed.Expr.Postfix.+                Primary +
         [0]Silva.Seed.Nonterminal                 Primary
           [0]Silva.Seed.Nonterminal.Base          Primary
-  [4]Silva.Seed.Rule                              Primary = identifier '=' !
+  [4]Silva.Seed.Rule                              Primary = identifier not '='
     [0]Silva.Seed.Nonterminal.Base                Primary
-    [1]Silva.Seed.ExprOrAlias                     = identifier '=' !
-      [0]Silva.Seed.Expr.Concat.concat            identifier '=' !
+    [1]Silva.Seed.ExprOrAlias                     = identifier not '='
+      [0]Silva.Seed.Expr.Concat.concat            identifier not '='
         [0]Silva.Seed.Terminal                    identifier
-        [1]Silva.Seed.Expr.Postfix.!              '=' !
+        [1]Silva.Seed.Expr.Prefix.not             not '='
           [0]Silva.Seed.Terminal                  '='
 )";
   const string_t seed_pt_str{

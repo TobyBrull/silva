@@ -74,7 +74,7 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
       [3]Silva.Seed.Rule                          Item = ... | number
         [0]Silva.Seed.Nonterminal.Base            Item
         [1]Silva.Seed.ExprOrAlias                 = X ... | number
-          [0]Silva.Seed.Expr.Alt.|                X | string | number
+          [0]Silva.Seed.Expr.Or.|                 X | string | number
             [0]Silva.Seed.Nonterminal             X
               [0]Silva.Seed.Nonterminal.Base      X
             [1]Silva.Seed.Terminal                string

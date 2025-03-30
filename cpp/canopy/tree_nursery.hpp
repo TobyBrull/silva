@@ -28,9 +28,8 @@ namespace silva {
 
       stake_t(Derived*);
 
-      // Move operations and default ctor could be implemented.
-      stake_t(stake_t&&)            = delete;
-      stake_t& operator=(stake_t&&) = delete;
+      stake_t(stake_t&&);
+      stake_t& operator=(stake_t&&);
 
       stake_t(const stake_t&)            = delete;
       stake_t& operator=(const stake_t&) = delete;
@@ -108,6 +107,27 @@ namespace silva {
     : nursery(nursery), orig_state(nursery->get_state())
   {
     proto_node.subtree_size = 0;
+  }
+
+  template<typename NodeType, typename StateType, typename Derived>
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t::stake_t(stake_t&& other)
+    : nursery(std::exchange(other.nursery, nullptr))
+    , orig_state(std::move(other.orig_state))
+    , proto_node(std::move(other.proto_node))
+  {
+  }
+
+  template<typename NodeType, typename StateType, typename Derived>
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t&
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t::operator=(stake_t&& other)
+  {
+    if (this != &other) {
+      clear();
+      nursery    = std::exchange(other.nursery, nullptr);
+      orig_state = std::move(other.orig_state);
+      proto_node = std::move(other.proto_node);
+    }
+    return *this;
   }
 
   template<typename NodeType, typename StateType, typename Derived>

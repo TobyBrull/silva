@@ -31,6 +31,14 @@ namespace silva {
         .opers = {atom_nest_t{tcp->token_id("("), tcp->token_id(")")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
+        .name  = tcp->name_id_of(fni_expr, "Prefix"),
+        .assoc = RIGHT_TO_LEFT,
+        .opers =
+            {
+                prefix_t{tcp->token_id("not")},
+            },
+    });
+    level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->name_id_of(fni_expr, "Postfix"),
         .assoc = LEFT_TO_RIGHT,
         .opers =
@@ -38,8 +46,6 @@ namespace silva {
                 postfix_t{tcp->token_id("?")},
                 postfix_t{tcp->token_id("*")},
                 postfix_t{tcp->token_id("+")},
-                postfix_t{tcp->token_id("!")},
-                postfix_t{tcp->token_id("&")},
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
@@ -52,7 +58,12 @@ namespace silva {
         }},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->name_id_of(fni_expr, "Alt"),
+        .name  = tcp->name_id_of(fni_expr, "And"),
+        .assoc = LEFT_TO_RIGHT,
+        .opers = {infix_t{.token_id = tcp->token_id("&"), .flatten = true}},
+    });
+    level_descs.push_back(parse_axe_level_desc_t{
+        .name  = tcp->name_id_of(fni_expr, "Or"),
         .assoc = LEFT_TO_RIGHT,
         .opers = {infix_t{.token_id = tcp->token_id("|"), .flatten = true}},
     });

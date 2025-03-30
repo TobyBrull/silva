@@ -24,9 +24,11 @@ namespace silva {
       - ExprOrAlias = ( '=' | '=>' ) Expr
       - Expr =/ Atom [
         - Parens    = nest  atom_nest '(' ')'
-        - Postfix   = ltr   postfix '?' '*' '+' '!' '&'
+        - Prefix    = rtl   prefix 'not'
+        - Postfix   = ltr   postfix '?' '*' '+'
         - Concat    = ltr   infix_flat concat
-        - Alt       = ltr   infix_flat '|'
+        - And       = ltr   infix_flat '&'
+        - Or        = ltr   infix_flat '|'
       ]
       - Atom => Nonterminal | Terminal
       - Axe [

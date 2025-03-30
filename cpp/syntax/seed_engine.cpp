@@ -401,7 +401,7 @@ namespace silva {
       const token_id_t ti_ques   = tcp->token_id("?");
       const token_id_t ti_star   = tcp->token_id("*");
       const token_id_t ti_plus   = tcp->token_id("+");
-      const token_id_t ti_excl   = tcp->token_id("!");
+      const token_id_t ti_not    = tcp->token_id("not");
       const token_id_t ti_ampr   = tcp->token_id("&");
       const token_id_t ti_regex  = tcp->token_id("/");
       const token_id_t ti_equal  = tcp->token_id("=");
@@ -411,9 +411,11 @@ namespace silva {
       const name_id_t fni_rule         = tcp->name_id_of(fni_seed, "Rule");
       const name_id_t fni_expr         = tcp->name_id_of(fni_seed, "Expr");
       const name_id_t fni_expr_parens  = tcp->name_id_of(fni_expr, "Parens");
+      const name_id_t fni_expr_prefix  = tcp->name_id_of(fni_expr, "Prefix");
       const name_id_t fni_expr_postfix = tcp->name_id_of(fni_expr, "Postfix");
       const name_id_t fni_expr_concat  = tcp->name_id_of(fni_expr, "Concat");
-      const name_id_t fni_expr_alt     = tcp->name_id_of(fni_expr, "Alt");
+      const name_id_t fni_expr_or      = tcp->name_id_of(fni_expr, "Or");
+      const name_id_t fni_expr_and     = tcp->name_id_of(fni_expr, "And");
       const name_id_t fni_atom         = tcp->name_id_of(fni_seed, "Atom");
       const name_id_t fni_axe          = tcp->name_id_of(fni_seed, "Axe");
       const name_id_t fni_axe_level    = tcp->name_id_of(fni_axe, "Level");
@@ -506,6 +508,18 @@ namespace silva {
         return ss.commit();
       }
 
+      expected_t<parse_tree_node_t> s_expr_prefix(const parse_tree_span_t pts)
+      {
+        {
+          auto ss             = stake();
+          const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
+          auto result = SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0])), MAJOR);
+          SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
+        }
+        auto ss = stake();
+        return ss.commit();
+      }
+
       std::pair<index_t, index_t> get_min_max_repeat(const token_id_t op_ti)
       {
         index_t min_repeat = 0;
@@ -553,16 +567,6 @@ namespace silva {
                                               repeat_count));
           }
         }
-        else if (op_ti == ti_excl) {
-          auto inner_ptg    = stake();
-          const auto result = SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0])), MAJOR);
-          SILVA_EXPECT(!result, MINOR, "Managed to parse '!' expression");
-        }
-        else if (op_ti == ti_ampr) {
-          auto inner_ptg = stake();
-          auto result    = SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0])), MAJOR);
-          SILVA_EXPECT_FWD(std::move(result), "Did not manage to parse '&' expression");
-        }
         else {
           SILVA_EXPECT(false, MAJOR);
         }
@@ -578,7 +582,18 @@ namespace silva {
         return ss.commit();
       }
 
-      expected_t<parse_tree_node_t> s_expr_alt(const parse_tree_span_t pts)
+      expected_t<parse_tree_node_t> s_expr_and(const parse_tree_span_t pts)
+      {
+        optional_t<stake_t> ss;
+        for (const auto [child_node_index, child_index]: pts.children_range()) {
+          ss.emplace(stake());
+          ss->add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(child_node_index))));
+        }
+        SILVA_EXPECT(ss.has_value(), MAJOR);
+        return ss->commit();
+      }
+
+      expected_t<parse_tree_node_t> s_expr_or(const parse_tree_span_t pts)
       {
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
@@ -609,14 +624,20 @@ namespace silva {
           const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
           return s_expr(pts.sub_tree_span_at(children[0]));
         }
+        else if (tcp->name_id_is_parent(fni_expr_prefix, s_rule_name)) {
+          return s_expr_prefix(pts);
+        }
         else if (tcp->name_id_is_parent(fni_expr_postfix, s_rule_name)) {
           return s_expr_postfix(pts);
         }
         else if (tcp->name_id_is_parent(fni_expr_concat, s_rule_name)) {
           return s_expr_concat(pts);
         }
-        else if (tcp->name_id_is_parent(fni_expr_alt, s_rule_name)) {
-          return s_expr_alt(pts);
+        else if (tcp->name_id_is_parent(fni_expr_and, s_rule_name)) {
+          return s_expr_and(pts);
+        }
+        else if (tcp->name_id_is_parent(fni_expr_or, s_rule_name)) {
+          return s_expr_or(pts);
         }
         else if (s_rule_name == fni_term) {
           return s_terminal(pts);
