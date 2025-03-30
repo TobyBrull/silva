@@ -392,20 +392,20 @@ namespace silva {
 
       int rule_depth = 0;
 
-      const token_id_t ti_id     = tcp->token_id("identifier");
-      const token_id_t ti_op     = tcp->token_id("operator");
-      const token_id_t ti_string = tcp->token_id("string");
-      const token_id_t ti_number = tcp->token_id("number");
-      const token_id_t ti_any    = tcp->token_id("any");
-      const token_id_t ti_eof    = tcp->token_id("end_of_file");
-      const token_id_t ti_ques   = tcp->token_id("?");
-      const token_id_t ti_star   = tcp->token_id("*");
-      const token_id_t ti_plus   = tcp->token_id("+");
-      const token_id_t ti_not    = tcp->token_id("not");
-      const token_id_t ti_ampr   = tcp->token_id("&");
-      const token_id_t ti_regex  = tcp->token_id("/");
-      const token_id_t ti_equal  = tcp->token_id("=");
-      const token_id_t ti_alias  = tcp->token_id("=>");
+      const token_id_t ti_id       = tcp->token_id("identifier");
+      const token_id_t ti_op       = tcp->token_id("operator");
+      const token_id_t ti_string   = tcp->token_id("string");
+      const token_id_t ti_number   = tcp->token_id("number");
+      const token_id_t ti_any      = tcp->token_id("any");
+      const token_id_t ti_eof      = tcp->token_id("end_of_file");
+      const token_id_t ti_ques     = tcp->token_id("?");
+      const token_id_t ti_star     = tcp->token_id("*");
+      const token_id_t ti_plus     = tcp->token_id("+");
+      const token_id_t ti_not      = tcp->token_id("not");
+      const token_id_t ti_but_then = tcp->token_id("but_then");
+      const token_id_t ti_regex    = tcp->token_id("/");
+      const token_id_t ti_equal    = tcp->token_id("=");
+      const token_id_t ti_alias    = tcp->token_id("=>");
 
       const name_id_t fni_seed         = tcp->name_id_of("Seed");
       const name_id_t fni_rule         = tcp->name_id_of(fni_seed, "Rule");

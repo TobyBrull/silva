@@ -60,7 +60,7 @@ namespace silva {
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->name_id_of(fni_expr, "And"),
         .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{.token_id = tcp->token_id("&"), .flatten = true}},
+        .opers = {infix_t{.token_id = tcp->token_id("but_then"), .flatten = true}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->name_id_of(fni_expr, "Or"),

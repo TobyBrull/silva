@@ -10,7 +10,8 @@ TEST_CASE("not-and-and", "[seed_engine_t][seed]")
   const string_t frog_seed = R"'(
     - Frog = Rule *
     - Rule = RuleName '=' Expr
-    - RuleName => identifier
+    - RuleName => LowerCase but_then identifier
+    - LowerCase = identifier / '^[A-Z]'
     - Expr = Primary +
     - Primary = identifier not '='
   )'";
@@ -34,17 +35,24 @@ TEST_CASE("not-and-and", "[seed_engine_t][seed]")
         [1]Silva.Seed.Terminal                    '='
         [2]Silva.Seed.Nonterminal                 Expr
           [0]Silva.Seed.Nonterminal.Base          Expr
-  [2]Silva.Seed.Rule                              RuleName => identifier
+  [2]Silva.Seed.Rule                              RuleName => LowerCase but_then identifier
     [0]Silva.Seed.Nonterminal.Base                RuleName
-    [1]Silva.Seed.ExprOrAlias                     => identifier
-      [0]Silva.Seed.Terminal                      identifier
-  [3]Silva.Seed.Rule                              Expr = Primary +
+    [1]Silva.Seed.ExprOrAlias                     => LowerCase but_then identifier
+      [0]Silva.Seed.Expr.And.but_then             LowerCase but_then identifier
+        [0]Silva.Seed.Nonterminal                 LowerCase
+          [0]Silva.Seed.Nonterminal.Base          LowerCase
+        [1]Silva.Seed.Terminal                    identifier
+  [3]Silva.Seed.Rule                              LowerCase = identifier / '^[A-Z]'
+    [0]Silva.Seed.Nonterminal.Base                LowerCase
+    [1]Silva.Seed.ExprOrAlias                     = identifier / '^[A-Z]'
+      [0]Silva.Seed.Terminal                      identifier / '^[A-Z]'
+  [4]Silva.Seed.Rule                              Expr = Primary +
     [0]Silva.Seed.Nonterminal.Base                Expr
     [1]Silva.Seed.ExprOrAlias                     = Primary +
       [0]Silva.Seed.Expr.Postfix.+                Primary +
         [0]Silva.Seed.Nonterminal                 Primary
           [0]Silva.Seed.Nonterminal.Base          Primary
-  [4]Silva.Seed.Rule                              Primary = identifier not '='
+  [5]Silva.Seed.Rule                              Primary = identifier not '='
     [0]Silva.Seed.Nonterminal.Base                Primary
     [1]Silva.Seed.ExprOrAlias                     = identifier not '='
       [0]Silva.Seed.Expr.Concat.concat            identifier not '='
