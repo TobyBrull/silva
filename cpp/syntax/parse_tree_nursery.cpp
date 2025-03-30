@@ -37,40 +37,27 @@ namespace silva {
   void parse_tree_nursery_t::stake_t::create_node(const name_id_t rule_name)
   {
     SILVA_ASSERT(!owns_node);
+    SILVA_ASSERT(proto_node.subtree_size == 0);
+    SILVA_ASSERT(nursery->tree.size() == orig_state.tree_size);
     owns_node               = true;
     proto_node.subtree_size = 1;
+    proto_node.rule_name    = rule_name;
     proto_node.token_begin  = nursery->token_index;
     proto_node.token_end    = nursery->token_index + 1;
-    nursery->tree.emplace_back(parse_tree_node_t{.rule_name = rule_name});
+    nursery->tree.emplace_back();
   }
 
   parse_tree_node_t parse_tree_nursery_t::stake_t::commit()
   {
     proto_node.token_end = nursery->token_index;
-    parse_tree_node_t retval;
     if (owns_node) {
-      proto_node.token_end = nursery->token_index;
       const index_t node_index{orig_state.tree_size};
-      nursery->tree[node_index].num_children = proto_node.num_children;
-      nursery->tree[node_index].subtree_size = proto_node.subtree_size;
-      nursery->tree[node_index].token_begin  = proto_node.token_begin;
-      nursery->tree[node_index].token_end    = proto_node.token_end;
-
-      retval = parse_tree_node_t{
-          {
-              .num_children = 1,
-              .subtree_size = proto_node.subtree_size,
-          },
-          /* .rule_name    = */ name_id_root,
-          /* .token_begin  = */ proto_node.token_begin,
-          /* .token_end    = */ proto_node.token_end,
-      };
-    }
-    else {
-      retval = std::move(proto_node);
+      nursery->tree[node_index] = proto_node;
+      proto_node.num_children   = 1;
+      proto_node.rule_name      = name_id_root;
     }
     nursery = nullptr;
-    return retval;
+    return proto_node;
   }
 
   void parse_tree_nursery_t::stake_t::clear()
@@ -85,8 +72,6 @@ namespace silva {
   {
     clear();
   }
-
-  // parse_tree_nursery_t
 
   parse_tree_nursery_t::parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
     : tokenization(tokenization), tcp(tokenization->context)
@@ -111,6 +96,8 @@ namespace silva {
         .tokenization = std::move(tokenization),
     };
   }
+
+  // Token helper functions.
 
   const index_t parse_tree_nursery_t::num_tokens_left() const
   {
