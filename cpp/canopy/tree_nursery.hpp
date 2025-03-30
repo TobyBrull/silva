@@ -66,13 +66,8 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::stake_t::stake_t(tree_nursery_t* nursery)
-    : nursery(nursery), orig_state(nursery->state())
-  {
-    proto_node.subtree_size = 0;
-  }
+
+  // state_t
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
@@ -86,6 +81,16 @@ namespace silva {
   void tree_nursery_t<NodeData>::set_state(const state_t& s)
   {
     tree.resize(s.tree_size);
+  }
+
+  // stake_t
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  tree_nursery_t<NodeData>::stake_t::stake_t(tree_nursery_t* nursery)
+    : nursery(nursery), orig_state(nursery->state())
+  {
+    proto_node.subtree_size = 0;
   }
 
   template<typename NodeData>
@@ -154,6 +159,8 @@ namespace silva {
   {
     clear();
   }
+
+  // tree_nursery_t
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>

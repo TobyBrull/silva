@@ -2,6 +2,21 @@
 
 namespace silva {
 
+  // state_t
+
+  parse_tree_nursery_t::state_t::state_t(const parse_tree_nursery_t* nursery)
+    : tree_size(nursery->tree.size()), token_index(nursery->token_index)
+  {
+  }
+
+  void parse_tree_nursery_t::set_state(const state_t& s)
+  {
+    tree.resize(s.tree_size);
+    token_index = s.token_index;
+  }
+
+  // stake_t
+
   parse_tree_nursery_t::stake_t::stake_t(parse_tree_nursery_t* nursery)
     : nursery(nursery), orig_state(nursery->state()), proto_node{}
   {
@@ -72,16 +87,7 @@ namespace silva {
     clear();
   }
 
-  parse_tree_nursery_t::state_t::state_t(const parse_tree_nursery_t* nursery)
-    : tree_size(nursery->tree.size()), token_index(nursery->token_index)
-  {
-  }
-
-  void parse_tree_nursery_t::set_state(const state_t& s)
-  {
-    tree.resize(s.tree_size);
-    token_index = s.token_index;
-  }
+  // parse_tree_nursery_t
 
   parse_tree_t parse_tree_nursery_t::finish() &&
   {
@@ -91,12 +97,12 @@ namespace silva {
     };
   }
 
-  // Functions that clearly only belong to parse_tree_nursery_t.
-
   parse_tree_nursery_t::parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
     : tokenization(tokenization), tcp(tokenization->context)
   {
   }
+
+  // Token helper functions.
 
   const index_t parse_tree_nursery_t::num_tokens_left() const
   {
