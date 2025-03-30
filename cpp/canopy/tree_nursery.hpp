@@ -8,37 +8,44 @@ namespace silva {
   struct tree_nursery_t {
     vector_t<NodeData> tree;
 
-    vector_t<index_t> create_node_stack;
+    tree_nursery_t() = default;
+
+    struct state_t {
+      index_t tree_size = 0;
+    };
+    state_t state() const { return state_t{index_t(tree.size())}; }
+    void set_state(const state_t&);
 
     struct stake_t {
-      tree_nursery_t* nursery         = nullptr;
-      index_t create_node_stack_index = 0;
+      tree_nursery_t* nursery = nullptr;
+      state_t orig_state;
+      NodeData proto_node;
+
+      bool owns_node = false;
 
       stake_t() = default;
-      stake_t(tree_nursery_t*, index_t);
+      stake_t(tree_nursery_t*);
 
       stake_t(stake_t&&);
       stake_t& operator=(stake_t&&);
       stake_t(const stake_t&)            = delete;
       stake_t& operator=(const stake_t&) = delete;
 
+      void create_node();
       NodeData& node() const;
 
-      void commit();
+      void add_proto_node(const NodeData&);
+
+      NodeData commit();
       void clear();
       ~stake_t();
     };
-    stake_t root;
+    [[nodiscard]] stake_t stake() { return stake_t{this}; }
 
-    stake_t stake();
+    vector_t<NodeData> finish() &&;
 
-    vector_t<NodeData> commit_root() &&;
-
-    tree_nursery_t();
-
-    tree_nursery_t(tree_nursery_t&&)            = delete;
-    tree_nursery_t& operator=(tree_nursery_t&&) = delete;
-
+    tree_nursery_t(tree_nursery_t&&)                 = delete;
+    tree_nursery_t& operator=(tree_nursery_t&&)      = delete;
     tree_nursery_t(const tree_nursery_t&)            = delete;
     tree_nursery_t& operator=(const tree_nursery_t&) = delete;
   };
@@ -59,9 +66,23 @@ namespace silva {
 namespace silva {
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
+  tree_nursery_t<NodeData>::stake_t::stake_t(tree_nursery_t* nursery)
+    : nursery(nursery), orig_state(nursery->state())
+  {
+    proto_node.subtree_size = 0;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  void tree_nursery_t<NodeData>::set_state(const state_t& s)
+  {
+    tree.resize(s.tree_size);
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
   tree_nursery_t<NodeData>::stake_t::stake_t(stake_t&& other)
     : nursery(std::exchange(other.nursery, nullptr))
-    , create_node_stack_index(std::exchange(other.create_node_stack_index, 0))
   {
   }
 
@@ -71,10 +92,67 @@ namespace silva {
   {
     if (this != &other) {
       clear();
-      nursery                 = std::exchange(other.nursery, nullptr);
-      create_node_stack_index = std::exchange(other.create_node_stack_index, 0);
+      nursery = std::exchange(other.nursery, nullptr);
     }
     return *this;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  void tree_nursery_t<NodeData>::stake_t::create_node()
+  {
+    SILVA_ASSERT(!owns_node);
+    owns_node               = true;
+    proto_node.subtree_size = 1;
+    nursery->tree.emplace_back();
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  NodeData& tree_nursery_t<NodeData>::stake_t::node() const
+  {
+    SILVA_ASSERT(owns_node);
+    NodeData& retval = nursery->tree[orig_state.tree_size];
+    return retval;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  void tree_nursery_t<NodeData>::stake_t::add_proto_node(const NodeData& other)
+  {
+    SILVA_ASSERT(owns_node);
+    proto_node.num_children += other.num_children;
+    proto_node.subtree_size += other.subtree_size;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  NodeData tree_nursery_t<NodeData>::stake_t::commit()
+  {
+    SILVA_ASSERT(nursery != nullptr);
+    NodeData retval;
+    if (owns_node) {
+      const index_t node_index{orig_state.tree_size};
+      nursery->tree[node_index].num_children = proto_node.num_children;
+      nursery->tree[node_index].subtree_size = proto_node.subtree_size;
+
+      retval.num_children = 1;
+      retval.subtree_size = proto_node.subtree_size;
+    }
+    else {
+      retval = std::move(proto_node);
+    }
+    nursery = nullptr;
+    return retval;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  void tree_nursery_t<NodeData>::stake_t::clear()
+  {
+    if (nursery != nullptr) {
+      nursery->set_state(orig_state);
+    }
   }
 
   template<typename NodeData>
@@ -86,71 +164,8 @@ namespace silva {
 
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
-  NodeData& tree_nursery_t<NodeData>::stake_t::node() const
+  vector_t<NodeData> tree_nursery_t<NodeData>::finish() &&
   {
-    const index_t node_index = nursery->create_node_stack[create_node_stack_index];
-    NodeData& retval         = nursery->tree[node_index];
-    return retval;
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  void tree_nursery_t<NodeData>::stake_t::commit()
-  {
-    SILVA_ASSERT(nursery != nullptr);
-    SILVA_ASSERT(create_node_stack_index > 0);
-    const index_t prev_node_index = nursery->create_node_stack[create_node_stack_index - 1];
-    const index_t curr_node_index = nursery->create_node_stack[create_node_stack_index];
-    NodeData& prev_node           = nursery->tree[prev_node_index];
-    NodeData& curr_node           = nursery->tree[curr_node_index];
-    prev_node.num_children += 1;
-    prev_node.subtree_size += curr_node.subtree_size;
-    nursery->create_node_stack.resize(create_node_stack_index);
-    nursery = nullptr;
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  void tree_nursery_t<NodeData>::stake_t::clear()
-  {
-    if (nursery != nullptr) {
-      const index_t node_index = nursery->create_node_stack[create_node_stack_index];
-      nursery->tree.resize(node_index);
-      nursery->create_node_stack.resize(create_node_stack_index);
-      nursery                 = nullptr;
-      create_node_stack_index = 0;
-    }
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::stake_t::stake_t(tree_nursery_t* nursery,
-                                             const index_t create_node_stack_index)
-    : nursery(nursery), create_node_stack_index(create_node_stack_index)
-  {
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::stake_t tree_nursery_t<NodeData>::stake()
-  {
-    tree_nursery_t<NodeData>::stake_t retval(this, create_node_stack.size());
-    create_node_stack.push_back(tree.size());
-    tree.emplace_back();
-    return retval;
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  vector_t<NodeData> tree_nursery_t<NodeData>::commit_root() &&
-  {
-    root.nursery = nullptr;
     return std::move(tree);
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::tree_nursery_t() : root(stake())
-  {
   }
 }

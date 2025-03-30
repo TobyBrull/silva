@@ -11,47 +11,60 @@ struct test_tree_node_t : public tree_node_t {
 TEST_CASE("tree_nursery")
 {
   tree_nursery_t<test_tree_node_t> nursery;
-  nursery.root.node().name = "A";
+  auto A{nursery.stake()};
+  A.create_node();
+  A.node().name = "A";
   {
     auto B{nursery.stake()};
+    B.create_node();
     B.node().name = "B";
     {
       auto E{nursery.stake()};
+      E.create_node();
       E.node().name = "E";
-      E.commit();
+      B.add_proto_node(E.commit());
     }
     {
       auto F{nursery.stake()};
+      F.create_node();
       F.node().name = "F";
       {
         auto G{nursery.stake()};
+        G.create_node();
         G.node().name = "G";
-        G.commit();
+        F.add_proto_node(G.commit());
       }
-      F.commit();
+      B.add_proto_node(F.commit());
     }
     {
       auto Z{nursery.stake()};
+      Z.create_node();
       Z.node().name = "Z";
     }
-    B.commit();
+    A.add_proto_node(B.commit());
   }
   {
     auto C{nursery.stake()};
+    C.create_node();
     C.node().name = "C";
-    C.commit();
+    A.add_proto_node(C.commit());
   }
   {
     auto D{nursery.stake()};
+    D.create_node();
     D.node().name = "D";
     {
       auto H{nursery.stake()};
+      H.create_node();
       H.node().name = "H";
-      H.commit();
+      D.add_proto_node(H.commit());
     }
-    D.commit();
+    A.add_proto_node(D.commit());
   }
-  auto result = std::move(nursery).commit_root();
+  const test_tree_node_t root_node = A.commit();
+  CHECK(root_node.num_children == 1);
+  CHECK(root_node.subtree_size == 8);
+  auto result = std::move(nursery).finish();
   {
     auto tspan = tree_span_t<test_tree_node_t>{result};
     const string_t result_str =
