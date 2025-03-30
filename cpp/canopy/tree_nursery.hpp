@@ -97,6 +97,8 @@ namespace silva {
     requires std::derived_from<NodeData, tree_node_t>
   tree_nursery_t<NodeData>::stake_t::stake_t(stake_t&& other)
     : nursery(std::exchange(other.nursery, nullptr))
+    , orig_state(other.orig_state)
+    , proto_node(other.proto_node)
   {
   }
 
@@ -106,7 +108,9 @@ namespace silva {
   {
     if (this != &other) {
       clear();
-      nursery = std::exchange(other.nursery, nullptr);
+      nursery    = std::exchange(other.nursery, nullptr);
+      orig_state = other.orig_state;
+      proto_node = other.proto_node;
     }
     return *this;
   }
