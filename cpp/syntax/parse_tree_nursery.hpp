@@ -32,11 +32,10 @@ namespace silva {
 
       bool owns_node = false;
 
-      stake_t() = default;
       stake_t(parse_tree_nursery_t*);
 
-      stake_t(stake_t&&);
-      stake_t& operator=(stake_t&&);
+      stake_t(stake_t&&)                 = delete;
+      stake_t& operator=(stake_t&&)      = delete;
       stake_t(const stake_t&)            = delete;
       stake_t& operator=(const stake_t&) = delete;
 

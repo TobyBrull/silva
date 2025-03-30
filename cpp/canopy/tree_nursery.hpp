@@ -26,11 +26,12 @@ namespace silva {
 
       bool owns_node = false;
 
-      stake_t() = default;
       stake_t(tree_nursery_t*);
 
-      stake_t(stake_t&&);
-      stake_t& operator=(stake_t&&);
+      // Move operations and default ctor could be implemented.
+      stake_t(stake_t&&)            = delete;
+      stake_t& operator=(stake_t&&) = delete;
+
       stake_t(const stake_t&)            = delete;
       stake_t& operator=(const stake_t&) = delete;
 
@@ -91,28 +92,6 @@ namespace silva {
     : nursery(nursery), orig_state(nursery->state())
   {
     proto_node.subtree_size = 0;
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::stake_t::stake_t(stake_t&& other)
-    : nursery(std::exchange(other.nursery, nullptr))
-    , orig_state(other.orig_state)
-    , proto_node(other.proto_node)
-  {
-  }
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  tree_nursery_t<NodeData>::stake_t& tree_nursery_t<NodeData>::stake_t::operator=(stake_t&& other)
-  {
-    if (this != &other) {
-      clear();
-      nursery    = std::exchange(other.nursery, nullptr);
-      orig_state = other.orig_state;
-      proto_node = other.proto_node;
-    }
-    return *this;
   }
 
   template<typename NodeData>

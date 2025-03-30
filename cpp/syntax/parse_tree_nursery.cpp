@@ -23,24 +23,6 @@ namespace silva {
     proto_node.subtree_size = 0;
   }
 
-  parse_tree_nursery_t::stake_t::stake_t(stake_t&& other)
-    : nursery(std::exchange(other.nursery, nullptr))
-    , orig_state(other.orig_state)
-    , proto_node(other.proto_node)
-  {
-  }
-
-  parse_tree_nursery_t::stake_t& parse_tree_nursery_t::stake_t::operator=(stake_t&& other)
-  {
-    if (this != &other) {
-      clear();
-      nursery    = std::exchange(other.nursery, nullptr);
-      orig_state = other.orig_state;
-      proto_node = other.proto_node;
-    }
-    return *this;
-  }
-
   void parse_tree_nursery_t::stake_t::create_node(const name_id_t rule_name)
   {
     SILVA_ASSERT(!owns_node);
