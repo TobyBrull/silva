@@ -26,6 +26,7 @@ namespace silva {
   parse_tree_nursery_t::stake_t& parse_tree_nursery_t::stake_t::operator=(stake_t&& other)
   {
     if (this != &other) {
+      clear();
       nursery    = std::exchange(other.nursery, nullptr);
       orig_state = std::exchange(other.orig_state, state_t{});
       proto_node = std::exchange(other.proto_node, parse_tree_node_t{});
@@ -98,7 +99,7 @@ namespace silva {
     token_index = s.token_index;
   }
 
-  parse_tree_t parse_tree_nursery_t::commit_root() &&
+  parse_tree_t parse_tree_nursery_t::finish() &&
   {
     return parse_tree_t{
         .nodes        = std::move(tree),

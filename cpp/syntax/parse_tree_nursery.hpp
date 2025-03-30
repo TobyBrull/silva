@@ -47,7 +47,7 @@ namespace silva {
     };
     [[nodiscard]] stake_t stake() { return stake_t{this}; }
 
-    parse_tree_t commit_root() &&;
+    parse_tree_t finish() &&;
 
     const index_t num_tokens_left() const;
     const token_id_t token_id_by(index_t token_index_offset = 0) const;

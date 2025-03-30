@@ -20,7 +20,7 @@ namespace silva::test {
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.subtree_size == nursery.tree.size(), ASSERT);
     SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
-    return {std::make_unique<parse_tree_t>(std::move(nursery).commit_root())};
+    return {std::make_unique<parse_tree_t>(std::move(nursery).finish())};
   }
 
   template<typename ParseAxeNursery>

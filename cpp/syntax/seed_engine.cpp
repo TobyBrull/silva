@@ -703,6 +703,6 @@ namespace silva {
     const parse_tree_node_t ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
     SILVA_EXPECT(ptn.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.subtree_size == nursery.tree.size(), ASSERT);
-    return {std::make_unique<parse_tree_t>(std::move(nursery).commit_root())};
+    return {std::make_unique<parse_tree_t>(std::move(nursery).finish())};
   }
 }
