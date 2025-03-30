@@ -93,6 +93,11 @@ namespace silva {
   {
   }
 
+  parse_tree_nursery_t::state_t::state_t(const parse_tree_nursery_t* nursery)
+    : tree_size(nursery->tree.size()), token_index(nursery->token_index)
+  {
+  }
+
   void parse_tree_nursery_t::set_state(const state_t& s)
   {
     tree.resize(s.tree_size);

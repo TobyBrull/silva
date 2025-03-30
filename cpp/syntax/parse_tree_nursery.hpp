@@ -16,10 +16,13 @@ namespace silva {
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
 
     struct state_t {
+      state_t() = default;
+      state_t(const parse_tree_nursery_t*);
+
       index_t tree_size   = 0;
       index_t token_index = 0;
     };
-    state_t state() const { return state_t{index_t(tree.size()), token_index}; }
+    state_t state() const { return state_t{this}; }
     void set_state(const state_t&);
 
     struct stake_t {

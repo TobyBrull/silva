@@ -11,9 +11,12 @@ namespace silva {
     tree_nursery_t() = default;
 
     struct state_t {
+      state_t() = default;
+      state_t(const tree_nursery_t*);
+
       index_t tree_size = 0;
     };
-    state_t state() const { return state_t{index_t(tree.size())}; }
+    state_t state() const { return state_t{this}; }
     void set_state(const state_t&);
 
     struct stake_t {
@@ -70,6 +73,13 @@ namespace silva {
     : nursery(nursery), orig_state(nursery->state())
   {
     proto_node.subtree_size = 0;
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  tree_nursery_t<NodeData>::state_t::state_t(const tree_nursery_t* nursery)
+    : tree_size(nursery->tree.size())
+  {
   }
 
   template<typename NodeData>
