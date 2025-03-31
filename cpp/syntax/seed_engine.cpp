@@ -323,7 +323,7 @@ namespace silva {
             const token_info_t& token_info = tcp->token_infos[token_id];
             if (token_info.category == token_category_t::STRING) {
               const auto keyword = SILVA_EXPECT_FWD(tcp->token_id_unquoted(token_id));
-              SILVA_EXPECT_FWD(recognize_keyword(curr_rule_name, keyword));
+              SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
             }
           }
         }

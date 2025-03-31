@@ -19,11 +19,7 @@ TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
   REQUIRE(spr->seed_parse_trees.size() == 1);
   CHECK(seed_pt_1->nodes == spr->seed_parse_trees.front()->nodes);
 
-  CHECK(spr->keywords[tc.name_id_of("Seed", "Rule")] ==
-        hashset_t<token_id_t>({
-            tc.token_id("["),
-            tc.token_id("]"),
-        }));
+  CHECK(spr->keywords[tc.name_id_of("Seed", "Rule")] == hashset_t<token_id_t>({}));
   CHECK(spr->keywords[tc.name_id_of("Seed", "Axe")] ==
         hashset_t<token_id_t>({
             tc.token_id("=/"),
