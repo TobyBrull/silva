@@ -52,16 +52,6 @@ namespace silva {
     tree_nursery_t(const tree_nursery_t&)            = delete;
     tree_nursery_t& operator=(const tree_nursery_t&) = delete;
   };
-
-  template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
-  struct tree_nursery_inverted_t {
-    struct extended_node_data_t : public NodeData {
-      index_t last_child   = 0;
-      index_t prev_sibling = 0;
-    };
-    vector_t<extended_node_data_t> tree;
-  };
 }
 
 // IMPLEMENTATION
