@@ -281,6 +281,18 @@ namespace silva {
       return retval;
     }
 
+    expected_t<void> recognize_keyword(name_id_t rule_name, const token_id_t keyword)
+    {
+      while (true) {
+        retval->keywords[rule_name].insert(keyword);
+        if (rule_name == name_id_root) {
+          break;
+        }
+        rule_name = tcp->name_infos[rule_name].parent_name;
+      }
+      return {};
+    }
+
     expected_t<void> handle_rule(const name_id_t scope_name, const parse_tree_span_t pts_rule)
     {
       SILVA_EXPECT(pts_rule[0].rule_name == fni_rule, MINOR, "Expected Rule");
@@ -302,12 +314,25 @@ namespace silva {
             retval->rule_exprs.emplace(curr_rule_name, pts_rule.sub_tree_span_at(children[1]));
         SILVA_EXPECT(inserted, MINOR, "Repeated rule name '{}'", fnis.absolute(curr_rule_name));
 
+        const auto pts_expr = pts_rule.sub_tree_span_at(children[1]);
+
+        for (index_t i = 0; i < pts_expr.size(); ++i) {
+          if (pts_expr[i].rule_name == fni_term) {
+            const index_t token_idx        = pts_expr[i].token_begin;
+            const token_id_t token_id      = pts_expr.tokenization->tokens[token_idx];
+            const token_info_t& token_info = tcp->token_infos[token_id];
+            if (token_info.category == token_category_t::STRING) {
+              const auto keyword = SILVA_EXPECT_FWD(tcp->token_id_unquoted(token_id));
+              SILVA_EXPECT_FWD(recognize_keyword(curr_rule_name, keyword));
+            }
+          }
+        }
+
         if (expr_rule_name == fni_axe) {
-          retval->parse_axes[curr_rule_name] = SILVA_EXPECT_FWD(
-              create_parse_axe(scope_name, curr_rule_name, pts_rule.sub_tree_span_at(children[1])));
+          retval->parse_axes[curr_rule_name] =
+              SILVA_EXPECT_FWD(create_parse_axe(scope_name, curr_rule_name, pts_expr));
         }
         else {
-          const auto pts_expr = pts_rule.sub_tree_span_at(children[1]);
           for (index_t i = 0; i < pts_expr.size(); ++i) {
             if (pts_expr[i].rule_name == fni_nt) {
               const name_id_t nt_name =

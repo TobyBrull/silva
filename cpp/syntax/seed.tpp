@@ -18,6 +18,32 @@ TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
   CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
   REQUIRE(spr->seed_parse_trees.size() == 1);
   CHECK(seed_pt_1->nodes == spr->seed_parse_trees.front()->nodes);
+
+  CHECK(spr->keywords[tc.name_id_of("Seed", "Rule")] ==
+        hashset_t<token_id_t>({
+            tc.token_id("["),
+            tc.token_id("]"),
+        }));
+  CHECK(spr->keywords[tc.name_id_of("Seed", "Axe")] ==
+        hashset_t<token_id_t>({
+            tc.token_id("=/"),
+            tc.token_id("["),
+            tc.token_id("]"),
+            tc.token_id("-"),
+            tc.token_id("="),
+            tc.token_id("nest"),
+            tc.token_id("ltr"),
+            tc.token_id("rtl"),
+            tc.token_id("atom_nest"),
+            tc.token_id("prefix"),
+            tc.token_id("prefix_nest"),
+            tc.token_id("infix"),
+            tc.token_id("infix_flat"),
+            tc.token_id("ternary"),
+            tc.token_id("postfix"),
+            tc.token_id("postfix_nest"),
+            tc.token_id("concat"),
+        }));
 }
 
 TEST_CASE("seed", "[seed][seed_engine_t]")
