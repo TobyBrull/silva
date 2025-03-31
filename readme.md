@@ -13,11 +13,11 @@ The Fern language is akin to JSON. Its syntax is described by the Seed program
 `silva::fern_seed` ([fern.hpp](cpp/fern.hpp)).
 
 The syntax of the Seed language itself is described by the Seed program
-`silva::seed_seed` ([seed.hpp](cpp/seed.hpp)).
+`silva::seed_seed` ([seed.hpp](cpp/syntax/seed.hpp)).
 
 A parser can automatically be derived from a Seed program.
 This is implemented in the class
-`silva::seed_engine_t` ([seed_engine.hpp](cpp/seed_engine.hpp)).
+`silva::seed_engine_t` ([seed_engine.hpp](cpp/syntax/seed_engine.hpp)).
 
 
 ## Building and Running
