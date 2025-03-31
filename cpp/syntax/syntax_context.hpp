@@ -25,8 +25,8 @@ namespace silva {
   constexpr inline name_id_t name_id_root   = 0;
 
   struct token_info_t {
-    string_t str;
     token_category_t category = token_category_t::NONE;
+    string_t str;
 
     expected_t<string_view_t> string_as_plain_contained() const;
     expected_t<double> number_as_double() const;

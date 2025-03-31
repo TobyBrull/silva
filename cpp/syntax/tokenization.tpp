@@ -12,9 +12,9 @@ TEST_CASE("tokenization", "[tokenization_t]")
   {
     const auto result = SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "unit.test", "Hello   123 .<>."));
     REQUIRE(result->tokens.size() == 3);
-    CHECK(*result->token_info_get(0) == info_t{"Hello", IDENTIFIER});
-    CHECK(*result->token_info_get(1) == info_t{"123", NUMBER});
-    CHECK(*result->token_info_get(2) == info_t{".<>.", OPERATOR});
+    CHECK(*result->token_info_get(0) == info_t{IDENTIFIER, "Hello"});
+    CHECK(*result->token_info_get(1) == info_t{NUMBER, "123"});
+    CHECK(*result->token_info_get(2) == info_t{OPERATOR, ".<>."});
     REQUIRE(tc.token_infos.size() == 4);
   }
 
@@ -24,15 +24,15 @@ TEST_CASE("tokenization", "[tokenization_t]")
         1 + 3
     )"));
     REQUIRE(result->tokens.size() == 9);
-    CHECK(*result->token_info_get(0) == info_t{"Silva", IDENTIFIER});
-    CHECK(*result->token_info_get(1) == info_t{"'Hel\\'lo'", STRING});
-    CHECK(*result->token_info_get(2) == info_t{".", OPERATOR});
-    CHECK(*result->token_info_get(3) == info_t{"(", OPERATOR});
-    CHECK(*result->token_info_get(4) == info_t{")", OPERATOR});
-    CHECK(*result->token_info_get(5) == info_t{".", OPERATOR});
-    CHECK(*result->token_info_get(6) == info_t{"1", NUMBER});
-    CHECK(*result->token_info_get(7) == info_t{"+", OPERATOR});
-    CHECK(*result->token_info_get(8) == info_t{"3", NUMBER});
+    CHECK(*result->token_info_get(0) == info_t{IDENTIFIER, "Silva"});
+    CHECK(*result->token_info_get(1) == info_t{STRING, "'Hel\\'lo'"});
+    CHECK(*result->token_info_get(2) == info_t{OPERATOR, "."});
+    CHECK(*result->token_info_get(3) == info_t{OPERATOR, "("});
+    CHECK(*result->token_info_get(4) == info_t{OPERATOR, ")"});
+    CHECK(*result->token_info_get(5) == info_t{OPERATOR, "."});
+    CHECK(*result->token_info_get(6) == info_t{NUMBER, "1"});
+    CHECK(*result->token_info_get(7) == info_t{OPERATOR, "+"});
+    CHECK(*result->token_info_get(8) == info_t{NUMBER, "3"});
     REQUIRE(tc.token_infos.size() == 12);
   }
 

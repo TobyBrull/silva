@@ -251,7 +251,7 @@ namespace silva {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(token_str);
       SILVA_ASSERT(tokenized_str == token_str);
       const token_id_t new_token_id = token_infos.size();
-      token_infos.push_back(token_info_t{string_t{tokenized_str}, token_cat});
+      token_infos.push_back(token_info_t{token_cat, string_t{tokenized_str}});
       token_lookup.emplace(tokenized_str, new_token_id);
       return new_token_id;
     }
@@ -299,9 +299,12 @@ namespace silva {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(text.substr(text_index));
       text_index += tokenized_str.size();
       if (token_cat != NONE) {
-        const token_id_t tii = token_context_get_token_id_from_info(
-            tcp.get(),
-            token_info_t{.str = string_t{tokenized_str}, .category = token_cat});
+        const token_id_t tii =
+            token_context_get_token_id_from_info(tcp.get(),
+                                                 token_info_t{
+                                                     .category = token_cat,
+                                                     .str      = string_t{tokenized_str},
+                                                 });
         retval->tokens.push_back(tii);
       }
       else if (tokenized_str == "\n") {
