@@ -48,6 +48,7 @@ namespace silva {
       - Terminal = string
                  | 'identifier' ( '/' string ) ?
                  | 'operator' ( '/' string ) ?
+                 | 'keywords_of' Nonterminal
                  | 'string' | 'number'
                  | 'any' | 'end_of_file'
     ]

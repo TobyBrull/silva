@@ -417,20 +417,21 @@ namespace silva {
 
       int rule_depth = 0;
 
-      const token_id_t ti_id       = tcp->token_id("identifier");
-      const token_id_t ti_op       = tcp->token_id("operator");
-      const token_id_t ti_string   = tcp->token_id("string");
-      const token_id_t ti_number   = tcp->token_id("number");
-      const token_id_t ti_any      = tcp->token_id("any");
-      const token_id_t ti_eof      = tcp->token_id("end_of_file");
-      const token_id_t ti_ques     = tcp->token_id("?");
-      const token_id_t ti_star     = tcp->token_id("*");
-      const token_id_t ti_plus     = tcp->token_id("+");
-      const token_id_t ti_not      = tcp->token_id("not");
-      const token_id_t ti_but_then = tcp->token_id("but_then");
-      const token_id_t ti_regex    = tcp->token_id("/");
-      const token_id_t ti_equal    = tcp->token_id("=");
-      const token_id_t ti_alias    = tcp->token_id("=>");
+      const token_id_t ti_id          = tcp->token_id("identifier");
+      const token_id_t ti_op          = tcp->token_id("operator");
+      const token_id_t ti_string      = tcp->token_id("string");
+      const token_id_t ti_number      = tcp->token_id("number");
+      const token_id_t ti_any         = tcp->token_id("any");
+      const token_id_t ti_eof         = tcp->token_id("end_of_file");
+      const token_id_t ti_keywords_of = tcp->token_id("keywords_of");
+      const token_id_t ti_ques        = tcp->token_id("?");
+      const token_id_t ti_star        = tcp->token_id("*");
+      const token_id_t ti_plus        = tcp->token_id("+");
+      const token_id_t ti_not         = tcp->token_id("not");
+      const token_id_t ti_but_then    = tcp->token_id("but_then");
+      const token_id_t ti_regex       = tcp->token_id("/");
+      const token_id_t ti_equal       = tcp->token_id("=");
+      const token_id_t ti_alias       = tcp->token_id("=>");
 
       const name_id_t fni_seed         = tcp->name_id_of("Seed");
       const name_id_t fni_rule         = tcp->name_id_of(fni_seed, "Rule");
@@ -470,7 +471,6 @@ namespace silva {
       {
         auto ss            = stake();
         const auto& s_node = pts[0];
-        SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
         SILVA_EXPECT(s_node.rule_name == fni_term, MAJOR);
         const token_id_t s_front_ti = s_tokens[s_node.token_begin];
         if (s_front_ti == ti_eof) {
@@ -480,7 +480,8 @@ namespace silva {
         SILVA_EXPECT_PARSE(num_tokens_left() > 0,
                            "Reached end of token-stream when looking for {}",
                            s_tokenization.token_info_get(s_node.token_begin)->str);
-        if (s_node.num_tokens() == 3) {
+        if ((s_front_ti == ti_id || s_front_ti == ti_op) && s_node.num_tokens() == 3) {
+          SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
           if (s_front_ti == ti_id) {
             SILVA_EXPECT_PARSE(token_data_by()->category == IDENTIFIER, "Expected identifier");
           }
@@ -501,7 +502,22 @@ namespace silva {
                              token_str,
                              tcp->token_infos[regex_token_id].str);
         }
+        else if (s_front_ti == ti_keywords_of) {
+          const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
+          const auto pts_nt   = pts.sub_tree_span_at(children[0]);
+          const auto it       = root->nonterminal_rules.find(pts_nt);
+          SILVA_EXPECT(it != root->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
+          const name_id_t keyword_scope = it->second;
+          const auto it2                = root->keywords.find(keyword_scope);
+          SILVA_EXPECT(it2 != root->keywords.end(), MAJOR, "Couldn't lookup keyword scope");
+          const hashset_t<token_id_t>& keywords = it2->second;
+          SILVA_EXPECT(keywords.contains(token_id_by()),
+                       MINOR,
+                       "Not a keyword in {}",
+                       fnis.absolute(keyword_scope));
+        }
         else {
+          SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
           SILVA_EXPECT(s_node.num_tokens() == 1,
                        MAJOR,
                        "Terminal nodes must have one or three tokens");

@@ -102,6 +102,7 @@ namespace silva {
       token_id_t tt_prefix      = tcp->token_id("prefix");
       token_id_t tt_prefix_n    = tcp->token_id("prefix_nest");
       token_id_t tt_concat      = tcp->token_id("concat");
+      token_id_t tt_keywords_of = tcp->token_id("keywords_of");
 
       name_id_t fni_seed        = tcp->name_id_of("Seed");
       name_id_t fni_rule        = tcp->name_id_of(fni_seed, "Rule");
@@ -134,6 +135,10 @@ namespace silva {
             (token_id_by(0) == tt_identifier || token_id_by(0) == tt_operator) &&
             token_id_by(1) == tt_regex && token_data_by(2)->category == STRING) {
           token_index += 3;
+        }
+        else if (num_tokens_left() >= 2 && token_id_by(0) == tt_keywords_of) {
+          token_index += 1;
+          ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal()));
         }
         else {
           SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens when looking for Terminal");

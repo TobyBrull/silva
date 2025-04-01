@@ -4,8 +4,8 @@
     * token_context_t -> naming_context_t
         * could include the set of tokenizations
 
-* Add "keywords": if a token is used as 'then' in Seed, make sure it's not parsed as an identifier
-    anymore
+* tokenization
+    * "string_as_plain_contained" on token_id_t level, in token_context_t
 
 * memento/error-handling:
     * Seed:
@@ -24,9 +24,6 @@
     * output_buffer_t / string_output_buffer_t
     * allow partial parse (return number of tokens consumed)
     * Can't use token_id_none for concat exprs anymore
-
-* tokenization
-    * "string_as_plain_contained" on token_id_t level, in token_context_t
 
 * context:
     * logging
