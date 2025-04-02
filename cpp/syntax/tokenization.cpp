@@ -235,7 +235,7 @@ namespace silva {
 
   expected_t<token_id_t> token_context_t::token_id_in_string(const token_id_t ti)
   {
-    const string_t str{SILVA_EXPECT_FWD(token_infos[ti].string_as_plain_contained(), MINOR)};
+    const string_t str{SILVA_EXPECT_FWD(token_infos[ti].string_as_plain_contained())};
     return token_id(str);
   }
 

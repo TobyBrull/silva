@@ -323,6 +323,7 @@ namespace silva {
             const token_info_t& token_info = tcp->token_infos[token_id];
             if (token_info.category == token_category_t::STRING) {
               const auto keyword = SILVA_EXPECT_FWD(tcp->token_id_in_string(token_id));
+              retval->string_to_keyword[token_id] = keyword;
               SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
             }
           }
@@ -537,12 +538,11 @@ namespace silva {
             ;
           }
           else {
-            const auto* s_token_data = s_tokenization.token_info_get(s_node.token_begin);
-            SILVA_EXPECT(s_token_data->category == STRING, MAJOR);
-            const string_t t_expected{
-                SILVA_EXPECT_FWD(s_token_data->string_as_plain_contained(), MINOR)};
-            const token_id_t t_expected_ti = SILVA_EXPECT_FWD(tcp->token_id(t_expected));
-            SILVA_EXPECT_PARSE(token_id_by() == t_expected_ti, "Expected {}", t_expected);
+            const index_t s_token_id = s_tokenization.tokens[s_node.token_begin];
+            const auto it            = root->string_to_keyword.find(s_token_id);
+            SILVA_EXPECT(it != root->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
+            const token_id_t t_expected_ti = it->second;
+            SILVA_EXPECT_PARSE(token_id_by() == t_expected_ti, "Expected {}", t_expected_ti);
           }
         }
         token_index += 1;

@@ -4,9 +4,6 @@
     * token_context_t -> naming_context_t
         * could include the set of tokenizations
 
-* tokenization
-    * "string_as_plain_contained" on token_id_t level, in token_context_t
-
 * memento/error-handling:
     * Seed:
         * make root-based error look more like the error from the manual Fern parser
