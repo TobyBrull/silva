@@ -284,7 +284,7 @@ namespace silva {
     expected_t<void> recognize_keyword(name_id_t rule_name, const token_id_t keyword)
     {
       while (true) {
-        retval->keywords[rule_name].insert(keyword);
+        retval->keyword_scopes[rule_name].insert(keyword);
         if (rule_name == name_id_root) {
           break;
         }
@@ -508,8 +508,8 @@ namespace silva {
           const auto it       = root->nonterminal_rules.find(pts_nt);
           SILVA_EXPECT(it != root->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
           const name_id_t keyword_scope = it->second;
-          const auto it2                = root->keywords.find(keyword_scope);
-          SILVA_EXPECT(it2 != root->keywords.end(), MAJOR, "Couldn't lookup keyword scope");
+          const auto it2                = root->keyword_scopes.find(keyword_scope);
+          SILVA_EXPECT(it2 != root->keyword_scopes.end(), MAJOR, "Couldn't lookup keyword scope");
           const hashset_t<token_id_t>& keywords = it2->second;
           SILVA_EXPECT(keywords.contains(token_id_by()),
                        MINOR,

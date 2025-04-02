@@ -30,7 +30,11 @@ namespace silva {
     hashmap_t<name_id_t, parse_axe_data_t> parse_axes;
 
     // Maps the scope/rule-name to the set of keywords associated with it.
-    hashmap_t<name_id_t, hashset_t<token_id_t>> keywords;
+    hashmap_t<name_id_t, hashset_t<token_id_t>> keyword_scopes;
+
+    // Maps a token of the form ['keyword'] (i.e., of category: string) to a token of the form
+    // [keyword] (i.e., of category: identifier or operator).
+    hashmap_t<token_id_t, token_id_t> string_to_keyword;
 
     // Main constructor.
     static expected_t<unique_ptr_t<seed_engine_t>> create(shared_ptr_t<const parse_tree_t>);
