@@ -26,18 +26,18 @@ namespace silva {
 
     const vector_t<shared_ptr_t<const parse_tree_t>>& spts = retval->seed_parse_trees;
 
-    const token_id_t ti_atom_nest    = tcp->token_id("atom_nest");
-    const token_id_t ti_prefix       = tcp->token_id("prefix");
-    const token_id_t ti_prefix_nest  = tcp->token_id("prefix_nest");
-    const token_id_t ti_infix        = tcp->token_id("infix");
-    const token_id_t ti_infix_flat   = tcp->token_id("infix_flat");
-    const token_id_t ti_ternary      = tcp->token_id("ternary");
-    const token_id_t ti_postfix      = tcp->token_id("postfix");
-    const token_id_t ti_postfix_nest = tcp->token_id("postfix_nest");
-    const token_id_t ti_concat       = tcp->token_id("concat");
-    const token_id_t ti_nest         = tcp->token_id("nest");
-    const token_id_t ti_ltr          = tcp->token_id("ltr");
-    const token_id_t ti_rtl          = tcp->token_id("rtl");
+    const token_id_t ti_atom_nest    = *tcp->token_id("atom_nest");
+    const token_id_t ti_prefix       = *tcp->token_id("prefix");
+    const token_id_t ti_prefix_nest  = *tcp->token_id("prefix_nest");
+    const token_id_t ti_infix        = *tcp->token_id("infix");
+    const token_id_t ti_infix_flat   = *tcp->token_id("infix_flat");
+    const token_id_t ti_ternary      = *tcp->token_id("ternary");
+    const token_id_t ti_postfix      = *tcp->token_id("postfix");
+    const token_id_t ti_postfix_nest = *tcp->token_id("postfix_nest");
+    const token_id_t ti_concat       = *tcp->token_id("concat");
+    const token_id_t ti_nest         = *tcp->token_id("nest");
+    const token_id_t ti_ltr          = *tcp->token_id("ltr");
+    const token_id_t ti_rtl          = *tcp->token_id("rtl");
 
     const name_id_t fni_seed        = tcp->name_id_of("Seed");
     const name_id_t fni_rule        = tcp->name_id_of(fni_seed, "Rule");
@@ -106,22 +106,22 @@ namespace silva {
         if (axe_op_type == ti_atom_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
           level.opers.push_back(parse_axe::atom_nest_t{
-              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
-              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i + 1])),
+              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
         else if (axe_op_type == ti_prefix) {
           level.opers.push_back(parse_axe::prefix_t{
-              .token_id = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+              .token_id = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
           });
           i += 1;
         }
         else if (axe_op_type == ti_prefix_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
           level.opers.push_back(parse_axe::prefix_nest_t{
-              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
-              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i + 1])),
+              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
@@ -136,7 +136,7 @@ namespace silva {
           }
           else {
             level.opers.push_back(parse_axe::infix_t{
-                .token_id = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+                .token_id = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
                 .flatten  = flatten,
             });
           }
@@ -145,22 +145,22 @@ namespace silva {
         else if (axe_op_type == ti_ternary) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
           level.opers.push_back(parse_axe::ternary_t{
-              .first  = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
-              .second = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i + 1])),
+              .first  = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
+              .second = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
         else if (axe_op_type == ti_postfix) {
           level.opers.push_back(parse_axe::postfix_t{
-              .token_id = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
+              .token_id = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
           });
           i += 1;
         }
         else if (axe_op_type == ti_postfix_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
           level.opers.push_back(parse_axe::postfix_nest_t{
-              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i])),
-              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_unquoted(axe_op_vec[i + 1])),
+              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
@@ -322,7 +322,7 @@ namespace silva {
             const token_id_t token_id      = pts_expr.tokenization->tokens[token_idx];
             const token_info_t& token_info = tcp->token_infos[token_id];
             if (token_info.category == token_category_t::STRING) {
-              const auto keyword = SILVA_EXPECT_FWD(tcp->token_id_unquoted(token_id));
+              const auto keyword = SILVA_EXPECT_FWD(tcp->token_id_in_string(token_id));
               SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
             }
           }
@@ -417,21 +417,21 @@ namespace silva {
 
       int rule_depth = 0;
 
-      const token_id_t ti_id          = tcp->token_id("identifier");
-      const token_id_t ti_op          = tcp->token_id("operator");
-      const token_id_t ti_string      = tcp->token_id("string");
-      const token_id_t ti_number      = tcp->token_id("number");
-      const token_id_t ti_any         = tcp->token_id("any");
-      const token_id_t ti_eof         = tcp->token_id("end_of_file");
-      const token_id_t ti_keywords_of = tcp->token_id("keywords_of");
-      const token_id_t ti_ques        = tcp->token_id("?");
-      const token_id_t ti_star        = tcp->token_id("*");
-      const token_id_t ti_plus        = tcp->token_id("+");
-      const token_id_t ti_not         = tcp->token_id("not");
-      const token_id_t ti_but_then    = tcp->token_id("but_then");
-      const token_id_t ti_regex       = tcp->token_id("/");
-      const token_id_t ti_equal       = tcp->token_id("=");
-      const token_id_t ti_alias       = tcp->token_id("=>");
+      const token_id_t ti_id          = *tcp->token_id("identifier");
+      const token_id_t ti_op          = *tcp->token_id("operator");
+      const token_id_t ti_string      = *tcp->token_id("string");
+      const token_id_t ti_number      = *tcp->token_id("number");
+      const token_id_t ti_any         = *tcp->token_id("any");
+      const token_id_t ti_eof         = *tcp->token_id("end_of_file");
+      const token_id_t ti_keywords_of = *tcp->token_id("keywords_of");
+      const token_id_t ti_ques        = *tcp->token_id("?");
+      const token_id_t ti_star        = *tcp->token_id("*");
+      const token_id_t ti_plus        = *tcp->token_id("+");
+      const token_id_t ti_not         = *tcp->token_id("not");
+      const token_id_t ti_but_then    = *tcp->token_id("but_then");
+      const token_id_t ti_regex       = *tcp->token_id("/");
+      const token_id_t ti_equal       = *tcp->token_id("=");
+      const token_id_t ti_alias       = *tcp->token_id("=>");
 
       const name_id_t fni_seed         = tcp->name_id_of("Seed");
       const name_id_t fni_rule         = tcp->name_id_of(fni_seed, "Rule");
@@ -541,7 +541,7 @@ namespace silva {
             SILVA_EXPECT(s_token_data->category == STRING, MAJOR);
             const string_t t_expected{
                 SILVA_EXPECT_FWD(s_token_data->string_as_plain_contained(), MINOR)};
-            const token_id_t t_expected_ti = tcp->token_id(t_expected);
+            const token_id_t t_expected_ti = SILVA_EXPECT_FWD(tcp->token_id(t_expected));
             SILVA_EXPECT_PARSE(token_id_by() == t_expected_ti, "Expected {}", t_expected);
           }
         }

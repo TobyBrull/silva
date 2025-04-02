@@ -17,12 +17,12 @@ namespace silva {
 
   namespace impl {
     struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
-      token_id_t tt_brkt_open  = tcp->token_id("[");
-      token_id_t tt_brkt_close = tcp->token_id("]");
-      token_id_t tt_colon      = tcp->token_id(":");
-      token_id_t tt_none       = tcp->token_id("none");
-      token_id_t tt_true       = tcp->token_id("true");
-      token_id_t tt_false      = tcp->token_id("false");
+      token_id_t tt_brkt_open  = *tcp->token_id("[");
+      token_id_t tt_brkt_close = *tcp->token_id("]");
+      token_id_t tt_colon      = *tcp->token_id(":");
+      token_id_t tt_none       = *tcp->token_id("none");
+      token_id_t tt_true       = *tcp->token_id("true");
+      token_id_t tt_false      = *tcp->token_id("false");
 
       name_id_t fni_fern     = tcp->name_id_of("Fern");
       name_id_t fni_lbl_item = tcp->name_id_of("LabeledItem");
@@ -387,9 +387,9 @@ namespace silva {
       const parse_tree_t* parse_tree = nullptr;
       token_context_ptr_t tcp        = parse_tree->tokenization->context;
 
-      token_id_t tt_none  = tcp->token_id("none");
-      token_id_t tt_true  = tcp->token_id("true");
-      token_id_t tt_false = tcp->token_id("false");
+      token_id_t tt_none  = *tcp->token_id("none");
+      token_id_t tt_true  = *tcp->token_id("true");
+      token_id_t tt_false = *tcp->token_id("false");
 
       name_id_t fni_fern     = tcp->name_id_of("Fern");
       name_id_t fni_lbl_item = tcp->name_id_of("LabeledItem");

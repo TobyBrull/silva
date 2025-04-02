@@ -79,133 +79,133 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "nst"),
       .assoc = NEST,
-      .opers = {atom_nest_t{tc.token_id("("), tc.token_id(")")}},
+      .opers = {atom_nest_t{*tc.token_id("("), *tc.token_id(")")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "dot"),
       .assoc = RIGHT_TO_LEFT,
-      .opers = {infix_t{tc.token_id(".")}},
+      .opers = {infix_t{*tc.token_id(".")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "sub"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {postfix_nest_t{tc.token_id("["), tc.token_id("]")}},
+      .opers = {postfix_nest_t{*tc.token_id("["), *tc.token_id("]")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "dol"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {postfix_t{tc.token_id("$")}},
+      .opers = {postfix_t{*tc.token_id("$")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "exc"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {postfix_t{tc.token_id("!")}},
+      .opers = {postfix_t{*tc.token_id("!")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "til"),
       .assoc = RIGHT_TO_LEFT,
-      .opers = {prefix_t{tc.token_id("~")}},
+      .opers = {prefix_t{*tc.token_id("~")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "prf"),
       .assoc = RIGHT_TO_LEFT,
-      .opers = {prefix_t{tc.token_id("+")}, prefix_t{tc.token_id("-")}},
+      .opers = {prefix_t{*tc.token_id("+")}, prefix_t{*tc.token_id("-")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "mul"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {infix_t{tc.token_id("*")}, infix_t{tc.token_id("/")}},
+      .opers = {infix_t{*tc.token_id("*")}, infix_t{*tc.token_id("/")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "add"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {infix_t{tc.token_id("+")}, infix_t{tc.token_id("-")}},
+      .opers = {infix_t{*tc.token_id("+")}, infix_t{*tc.token_id("-")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "ter"),
       .assoc = RIGHT_TO_LEFT,
-      .opers = {ternary_t{tc.token_id("?"), tc.token_id(":")}},
+      .opers = {ternary_t{*tc.token_id("?"), *tc.token_id(":")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "eqa"),
       .assoc = RIGHT_TO_LEFT,
-      .opers = {infix_t{tc.token_id("=")}},
+      .opers = {infix_t{*tc.token_id("=")}},
   });
   const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
   CHECK(!pa.concat_result.has_value());
   CHECK(pa.results.size() == 15);
-  CHECK(pa.results.at(tc.token_id("=")) ==
+  CHECK(pa.results.at(*tc.token_id("=")) ==
         parse_axe_result_t{
             .prefix = none,
             .regular =
                 result_oper_t<oper_regular_t>{
-                    .oper       = infix_t{tc.token_id("=")},
+                    .oper       = infix_t{*tc.token_id("=")},
                     .name       = tc.name_id_of("expr", "eqa", "="),
                     .precedence = precedence_t{.level_index = 1, .assoc = RIGHT_TO_LEFT},
                 },
             .is_right_bracket = false,
         });
-  CHECK(pa.results.at(tc.token_id("?")) ==
+  CHECK(pa.results.at(*tc.token_id("?")) ==
         parse_axe_result_t{
             .prefix = none,
             .regular =
                 result_oper_t<oper_regular_t>{
-                    .oper       = ternary_t{tc.token_id("?"), tc.token_id(":")},
+                    .oper       = ternary_t{*tc.token_id("?"), *tc.token_id(":")},
                     .name       = tc.name_id_of("expr", "ter", "?"),
                     .precedence = precedence_t{.level_index = 2, .assoc = RIGHT_TO_LEFT},
                 },
             .is_right_bracket = false,
         });
-  CHECK(pa.results.at(tc.token_id(":")) ==
+  CHECK(pa.results.at(*tc.token_id(":")) ==
         parse_axe_result_t{
             .prefix           = none,
             .regular          = none,
             .is_right_bracket = true,
         });
-  CHECK(pa.results.at(tc.token_id("+")) ==
+  CHECK(pa.results.at(*tc.token_id("+")) ==
         parse_axe_result_t{
             .prefix =
                 result_oper_t<oper_prefix_t>{
-                    .oper       = prefix_t{tc.token_id("+")},
+                    .oper       = prefix_t{*tc.token_id("+")},
                     .name       = tc.name_id_of("expr", "prf", "+"),
                     .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
                 },
             .regular =
                 result_oper_t<oper_regular_t>{
-                    .oper       = infix_t{tc.token_id("+")},
+                    .oper       = infix_t{*tc.token_id("+")},
                     .name       = tc.name_id_of("expr", "add", "+"),
                     .precedence = precedence_t{.level_index = 3, .assoc = LEFT_TO_RIGHT},
                 },
             .is_right_bracket = false,
         });
-  CHECK(pa.results.at(tc.token_id("-")) ==
+  CHECK(pa.results.at(*tc.token_id("-")) ==
         parse_axe_result_t{
             .prefix =
                 result_oper_t<oper_prefix_t>{
-                    .oper       = prefix_t{tc.token_id("-")},
+                    .oper       = prefix_t{*tc.token_id("-")},
                     .name       = tc.name_id_of("expr", "prf", "-"),
                     .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
                 },
             .regular =
                 result_oper_t<oper_regular_t>{
-                    .oper       = infix_t{tc.token_id("-")},
+                    .oper       = infix_t{*tc.token_id("-")},
                     .name       = tc.name_id_of("expr", "add", "-"),
                     .precedence = precedence_t{.level_index = 3, .assoc = LEFT_TO_RIGHT},
                 },
             .is_right_bracket = false,
         });
-  CHECK(pa.results.at(tc.token_id("(")) ==
+  CHECK(pa.results.at(*tc.token_id("(")) ==
         parse_axe_result_t{
             .prefix =
                 result_oper_t<oper_prefix_t>{
-                    .oper       = atom_nest_t{tc.token_id("("), tc.token_id(")")},
+                    .oper       = atom_nest_t{*tc.token_id("("), *tc.token_id(")")},
                     .name       = tc.name_id_of("expr", "nst", "("),
                     .precedence = precedence_t{.level_index = 11, .assoc = NEST},
                 },
             .regular          = none,
             .is_right_bracket = false,
         });
-  CHECK(pa.results.at(tc.token_id(")")) ==
+  CHECK(pa.results.at(*tc.token_id(")")) ==
         parse_axe_result_t{
             .prefix           = none,
             .regular          = none,
@@ -448,37 +448,39 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "nst"),
       .assoc = NEST,
-      .opers = {atom_nest_t{tc.token_id("<<"), tc.token_id(">>")}},
+      .opers = {atom_nest_t{*tc.token_id("<<"), *tc.token_id(">>")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "prf_hi"),
       .assoc = RIGHT_TO_LEFT,
-      .opers = {prefix_nest_t{tc.token_id("("), tc.token_id(")")}},
+      .opers = {prefix_nest_t{*tc.token_id("("), *tc.token_id(")")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "cat"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {infix_t{.token_id = tc.token_id("cc"), .concat = true}},
+      .opers = {infix_t{.token_id = *tc.token_id("cc"), .concat = true}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "prf_lo"),
       .assoc = RIGHT_TO_LEFT,
-      .opers = {prefix_nest_t{tc.token_id("{"), tc.token_id("}")}},
+      .opers = {prefix_nest_t{*tc.token_id("{"), *tc.token_id("}")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "mul"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {infix_t{tc.token_id("*")}},
+      .opers = {infix_t{*tc.token_id("*")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "add"),
       .assoc = LEFT_TO_RIGHT,
-      .opers = {infix_t{.token_id = tc.token_id("+"), .flatten = true}, infix_t{tc.token_id("-")}},
+      .opers = {infix_t{.token_id = *tc.token_id("+"), .flatten = true},
+                infix_t{*tc.token_id("-")}},
   });
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "assign"),
       .assoc = RIGHT_TO_LEFT,
-      .opers = {infix_t{.token_id = tc.token_id("="), .flatten = true}, infix_t{tc.token_id("%")}},
+      .opers = {infix_t{.token_id = *tc.token_id("="), .flatten = true},
+                infix_t{*tc.token_id("%")}},
   });
   const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
   CHECK(pa.concat_result.has_value());

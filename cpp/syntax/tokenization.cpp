@@ -217,7 +217,7 @@ namespace silva {
     }
   }
 
-  token_id_t token_context_t::token_id(const string_view_t token_str)
+  expected_t<token_id_t> token_context_t::token_id(const string_view_t token_str)
   {
     const auto it = token_lookup.find(string_t{token_str});
     if (it != token_lookup.end()) {
@@ -225,7 +225,7 @@ namespace silva {
     }
     else {
       const auto [tokenized_str, token_cat] = impl::tokenize_one(token_str);
-      SILVA_ASSERT(tokenized_str == token_str);
+      SILVA_EXPECT(tokenized_str.size() == token_str.size(), MINOR);
       const token_id_t new_token_id = token_infos.size();
       token_infos.push_back(token_info_t{token_cat, string_t{tokenized_str}});
       token_lookup.emplace(tokenized_str, new_token_id);
@@ -233,7 +233,7 @@ namespace silva {
     }
   }
 
-  expected_t<token_id_t> token_context_t::token_id_unquoted(const token_id_t ti)
+  expected_t<token_id_t> token_context_t::token_id_in_string(const token_id_t ti)
   {
     const string_t str{SILVA_EXPECT_FWD(token_infos[ti].string_as_plain_contained(), MINOR)};
     return token_id(str);

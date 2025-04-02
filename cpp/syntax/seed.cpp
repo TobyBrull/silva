@@ -12,10 +12,10 @@ namespace silva {
   {
     return name_id_style_t{
         .tcp       = tcp,
-        .root      = tcp->token_id("Silva"),
-        .current   = tcp->token_id("X"),
-        .parent    = tcp->token_id("Up"),
-        .separator = tcp->token_id("."),
+        .root      = *tcp->token_id("Silva"),
+        .current   = *tcp->token_id("X"),
+        .parent    = *tcp->token_id("Up"),
+        .separator = *tcp->token_id("."),
     };
   }
 
@@ -28,14 +28,14 @@ namespace silva {
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->name_id_of(fni_expr, "Parens"),
         .assoc = NEST,
-        .opers = {atom_nest_t{tcp->token_id("("), tcp->token_id(")")}},
+        .opers = {atom_nest_t{*tcp->token_id("("), *tcp->token_id(")")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->name_id_of(fni_expr, "Prefix"),
         .assoc = RIGHT_TO_LEFT,
         .opers =
             {
-                prefix_t{tcp->token_id("not")},
+                prefix_t{*tcp->token_id("not")},
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
@@ -43,16 +43,16 @@ namespace silva {
         .assoc = LEFT_TO_RIGHT,
         .opers =
             {
-                postfix_t{tcp->token_id("?")},
-                postfix_t{tcp->token_id("*")},
-                postfix_t{tcp->token_id("+")},
+                postfix_t{*tcp->token_id("?")},
+                postfix_t{*tcp->token_id("*")},
+                postfix_t{*tcp->token_id("+")},
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->name_id_of(fni_expr, "Concat"),
         .assoc = LEFT_TO_RIGHT,
         .opers = {infix_t{
-            .token_id = tcp->token_id("concat"),
+            .token_id = *tcp->token_id("concat"),
             .concat   = true,
             .flatten  = true,
         }},
@@ -60,12 +60,12 @@ namespace silva {
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->name_id_of(fni_expr, "And"),
         .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{.token_id = tcp->token_id("but_then"), .flatten = true}},
+        .opers = {infix_t{.token_id = *tcp->token_id("but_then"), .flatten = true}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
         .name  = tcp->name_id_of(fni_expr, "Or"),
         .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{.token_id = tcp->token_id("|"), .flatten = true}},
+        .opers = {infix_t{.token_id = *tcp->token_id("|"), .flatten = true}},
     });
     auto retval = SILVA_EXPECT_ASSERT(parse_axe_create(tcp, level_descs));
     return retval;
@@ -73,36 +73,36 @@ namespace silva {
 
   namespace impl {
     struct seed_parse_tree_nursery_t : public parse_tree_nursery_t {
-      token_id_t tt_dot         = tcp->token_id(".");
-      token_id_t tt_dash        = tcp->token_id("-");
-      token_id_t tt_equal       = tcp->token_id("=");
-      token_id_t tt_axe         = tcp->token_id("=/");
-      token_id_t tt_alias       = tcp->token_id("=>");
-      token_id_t tt_brack_open  = tcp->token_id("[");
-      token_id_t tt_brack_close = tcp->token_id("]");
-      token_id_t tt_identifier  = tcp->token_id("identifier");
-      token_id_t tt_regex       = tcp->token_id("/");
-      token_id_t tt_up          = tcp->token_id("Up");
-      token_id_t tt_silva       = tcp->token_id("Silva");
-      token_id_t tt_here        = tcp->token_id("X");
-      token_id_t tt_operator    = tcp->token_id("operator");
-      token_id_t tt_string      = tcp->token_id("string");
-      token_id_t tt_number      = tcp->token_id("number");
-      token_id_t tt_any         = tcp->token_id("any");
-      token_id_t tt_eof         = tcp->token_id("end_of_file");
-      token_id_t tt_nest        = tcp->token_id("nest");
-      token_id_t tt_ltr         = tcp->token_id("ltr");
-      token_id_t tt_rtl         = tcp->token_id("rtl");
-      token_id_t tt_atom_nest   = tcp->token_id("atom_nest");
-      token_id_t tt_postfix     = tcp->token_id("postfix");
-      token_id_t tt_postfix_n   = tcp->token_id("postfix_nest");
-      token_id_t tt_infix       = tcp->token_id("infix");
-      token_id_t tt_infix_flat  = tcp->token_id("infix_flat");
-      token_id_t tt_ternary     = tcp->token_id("ternary");
-      token_id_t tt_prefix      = tcp->token_id("prefix");
-      token_id_t tt_prefix_n    = tcp->token_id("prefix_nest");
-      token_id_t tt_concat      = tcp->token_id("concat");
-      token_id_t tt_keywords_of = tcp->token_id("keywords_of");
+      token_id_t tt_dot         = *tcp->token_id(".");
+      token_id_t tt_dash        = *tcp->token_id("-");
+      token_id_t tt_equal       = *tcp->token_id("=");
+      token_id_t tt_axe         = *tcp->token_id("=/");
+      token_id_t tt_alias       = *tcp->token_id("=>");
+      token_id_t tt_brack_open  = *tcp->token_id("[");
+      token_id_t tt_brack_close = *tcp->token_id("]");
+      token_id_t tt_identifier  = *tcp->token_id("identifier");
+      token_id_t tt_regex       = *tcp->token_id("/");
+      token_id_t tt_up          = *tcp->token_id("Up");
+      token_id_t tt_silva       = *tcp->token_id("Silva");
+      token_id_t tt_here        = *tcp->token_id("X");
+      token_id_t tt_operator    = *tcp->token_id("operator");
+      token_id_t tt_string      = *tcp->token_id("string");
+      token_id_t tt_number      = *tcp->token_id("number");
+      token_id_t tt_any         = *tcp->token_id("any");
+      token_id_t tt_eof         = *tcp->token_id("end_of_file");
+      token_id_t tt_nest        = *tcp->token_id("nest");
+      token_id_t tt_ltr         = *tcp->token_id("ltr");
+      token_id_t tt_rtl         = *tcp->token_id("rtl");
+      token_id_t tt_atom_nest   = *tcp->token_id("atom_nest");
+      token_id_t tt_postfix     = *tcp->token_id("postfix");
+      token_id_t tt_postfix_n   = *tcp->token_id("postfix_nest");
+      token_id_t tt_infix       = *tcp->token_id("infix");
+      token_id_t tt_infix_flat  = *tcp->token_id("infix_flat");
+      token_id_t tt_ternary     = *tcp->token_id("ternary");
+      token_id_t tt_prefix      = *tcp->token_id("prefix");
+      token_id_t tt_prefix_n    = *tcp->token_id("prefix_nest");
+      token_id_t tt_concat      = *tcp->token_id("concat");
+      token_id_t tt_keywords_of = *tcp->token_id("keywords_of");
 
       name_id_t fni_seed        = tcp->name_id_of("Seed");
       name_id_t fni_rule        = tcp->name_id_of(fni_seed, "Rule");

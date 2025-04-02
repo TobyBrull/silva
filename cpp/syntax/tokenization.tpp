@@ -48,10 +48,10 @@ TEST_CASE("tokenization", "[tokenization_t]")
     {
       const name_id_style_t ts{
           .tcp       = tc.ptr(),
-          .root      = tc.token_id("cpp"),
-          .current   = tc.token_id("this"),
-          .parent    = tc.token_id("super"),
-          .separator = tc.token_id("::"),
+          .root      = *tc.token_id("cpp"),
+          .current   = *tc.token_id("this"),
+          .parent    = *tc.token_id("super"),
+          .separator = *tc.token_id("::"),
       };
       CHECK(ts.absolute(name1) == "cpp::std::expr::stmt");
       CHECK(ts.absolute(name2) == "cpp::std::expr");
