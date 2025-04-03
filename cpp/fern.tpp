@@ -9,7 +9,7 @@ using namespace silva;
 
 TEST_CASE("fern", "[fern]")
 {
-  token_context_t tc;
+  syntax_context_t tc;
   const string_t fern_text = R"([
   none
   true

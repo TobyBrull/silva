@@ -56,10 +56,10 @@ namespace silva {
 
   struct seed_engine_t;
 
-  name_id_style_t seed_name_style(token_context_ptr_t);
+  name_id_style_t seed_name_style(syntax_context_ptr_t);
 
   // Invariant (pseudo-code):
   //    seed_seed_engine()->apply(tokenization, "Seed") == seed_parse(tokenization)
   expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t>);
-  unique_ptr_t<seed_engine_t> seed_seed_engine(token_context_ptr_t);
+  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_context_ptr_t);
 }

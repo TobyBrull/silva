@@ -9,7 +9,7 @@ using namespace silva;
 expected_t<void>
 silva_main(span_t<string_view_t> cmdline_args)
 {
-  token_context_t tc;
+  syntax_context_t tc;
   SILVA_EXPECT(cmdline_args.size() >= 2, MINOR, "First command-line arg must be a Silva filename");
   auto tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
   // auto spr = silva_seed_engine(tc.ptr());

@@ -16,8 +16,8 @@ namespace silva {
 
   struct seed_engine_create_nursery_t {
     shared_ptr_t<const parse_tree_t> seed_parse_tree;
-    token_context_ptr_t tcp = seed_parse_tree->tokenization->context;
-    name_id_style_t fnis    = seed_name_style(tcp);
+    syntax_context_ptr_t tcp = seed_parse_tree->tokenization->context;
+    name_id_style_t fnis     = seed_name_style(tcp);
 
     std::unique_ptr<seed_engine_t> retval = std::make_unique<seed_engine_t>();
 
@@ -392,7 +392,7 @@ namespace silva {
   }
 
   expected_t<unique_ptr_t<seed_engine_t>>
-  seed_engine_t::create(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text)
+  seed_engine_t::create(syntax_context_ptr_t tcp, filesystem_path_t filepath, string_t text)
   {
     auto tt = SILVA_EXPECT_FWD(tokenize(tcp, std::move(filepath), std::move(text)));
     auto pt = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
@@ -405,7 +405,7 @@ namespace silva {
   namespace impl {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* root = nullptr;
-      token_context_ptr_t tcp   = root->seed_parse_trees.front()->tokenization->context;
+      syntax_context_ptr_t tcp  = root->seed_parse_trees.front()->tokenization->context;
       name_id_style_t fnis      = seed_name_style(tcp);
 
       const tokenization_t& s_tokenization = *root->seed_parse_trees.front()->tokenization;

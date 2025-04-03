@@ -6,14 +6,14 @@
 
 namespace silva {
 
-  struct token_context_t : public menhir_t {
+  struct syntax_context_t : public menhir_t {
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
 
     vector_t<name_info_t> name_infos;
     hashmap_t<name_info_t, name_id_t> name_lookup;
 
-    token_context_t();
+    syntax_context_t();
 
     expected_t<token_id_t> token_id(string_view_t);
     expected_t<token_id_t> token_id_in_string(token_id_t);
@@ -29,10 +29,10 @@ namespace silva {
     template<typename... Ts>
     name_id_t name_id_of(name_id_t parent_name, Ts&&... xs);
   };
-  using token_context_ptr_t = ptr_t<token_context_t>;
+  using syntax_context_ptr_t = ptr_t<syntax_context_t>;
 
   struct name_id_style_t {
-    token_context_ptr_t tcp;
+    syntax_context_ptr_t tcp;
     token_id_t root      = *tcp->token_id("silva");
     token_id_t current   = *tcp->token_id("x");
     token_id_t parent    = *tcp->token_id("up");
@@ -46,7 +46,7 @@ namespace silva {
   };
 
   struct tokenization_t : public sprite_t {
-    token_context_ptr_t context;
+    syntax_context_ptr_t context;
 
     filesystem_path_t filepath;
     string_t text;
@@ -81,16 +81,16 @@ namespace silva {
     index_t token_index = 0;
   };
 
-  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t, filesystem_path_t);
+  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(syntax_context_ptr_t, filesystem_path_t);
   expected_t<unique_ptr_t<tokenization_t>>
-  tokenize(token_context_ptr_t, filesystem_path_t filepath, string_t text);
+  tokenize(syntax_context_ptr_t, filesystem_path_t filepath, string_t text);
 }
 
 // IMPLEMENTATION
 
 namespace silva {
   template<typename... Ts>
-  name_id_t token_context_t::name_id_of(Ts&&... xs)
+  name_id_t syntax_context_t::name_id_of(Ts&&... xs)
   {
     vector_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
@@ -98,7 +98,7 @@ namespace silva {
   }
 
   template<typename... Ts>
-  name_id_t token_context_t::name_id_of(name_id_t parent_name, Ts&&... xs)
+  name_id_t syntax_context_t::name_id_of(name_id_t parent_name, Ts&&... xs)
   {
     vector_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);

@@ -16,7 +16,7 @@ namespace silva {
   struct parse_tree_nursery_t
     : public tree_nursery_t<parse_tree_node_t, parse_tree_nursery_state_t, parse_tree_nursery_t> {
     shared_ptr_t<const tokenization_t> tokenization;
-    token_context_ptr_t tcp;
+    syntax_context_ptr_t tcp;
     index_t token_index = 0;
 
     parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);

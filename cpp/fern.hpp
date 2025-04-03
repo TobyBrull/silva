@@ -13,7 +13,7 @@ namespace silva {
   // Invariant:
   //    fern_seed_engine()->apply(tokenization, "Fern") == fern_parse(tokenization)
   expected_t<unique_ptr_t<parse_tree_t>> fern_parse(shared_ptr_t<const tokenization_t>);
-  unique_ptr_t<seed_engine_t> fern_seed_engine(token_context_ptr_t);
+  unique_ptr_t<seed_engine_t> fern_seed_engine(syntax_context_ptr_t);
 
   // Fern parse_tree output functions
   expected_t<string_t> fern_to_string(const parse_tree_t*, index_t start_node = 0);
