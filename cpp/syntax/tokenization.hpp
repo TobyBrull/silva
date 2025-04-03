@@ -5,46 +5,6 @@
 #include "syntax/syntax_context.hpp"
 
 namespace silva {
-
-  struct syntax_context_t : public menhir_t {
-    vector_t<token_info_t> token_infos;
-    hashmap_t<string_t, token_id_t> token_lookup;
-
-    vector_t<name_info_t> name_infos;
-    hashmap_t<name_info_t, name_id_t> name_lookup;
-
-    syntax_context_t();
-
-    expected_t<token_id_t> token_id(string_view_t);
-    expected_t<token_id_t> token_id_in_string(token_id_t);
-
-    name_id_t name_id(name_id_t parent_name, token_id_t base_name);
-    name_id_t name_id_span(name_id_t parent_name, span_t<const token_id_t>);
-    bool name_id_is_parent(name_id_t parent_name, name_id_t child_name) const;
-
-    name_id_t name_id_lca(name_id_t, name_id_t) const;
-
-    template<typename... Ts>
-    name_id_t name_id_of(Ts&&... xs);
-    template<typename... Ts>
-    name_id_t name_id_of(name_id_t parent_name, Ts&&... xs);
-  };
-  using syntax_context_ptr_t = ptr_t<syntax_context_t>;
-
-  struct name_id_style_t {
-    syntax_context_ptr_t tcp;
-    token_id_t root      = *tcp->token_id("silva");
-    token_id_t current   = *tcp->token_id("x");
-    token_id_t parent    = *tcp->token_id("up");
-    token_id_t separator = *tcp->token_id(".");
-
-    name_id_t from_token_span(name_id_t current, span_t<const token_id_t>) const;
-
-    string_t absolute(name_id_t) const;
-    string_t relative(name_id_t current, name_id_t) const;
-    string_t readable(name_id_t current, name_id_t) const;
-  };
-
   struct tokenization_t : public sprite_t {
     syntax_context_ptr_t context;
 
@@ -89,22 +49,6 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
-  template<typename... Ts>
-  name_id_t syntax_context_t::name_id_of(Ts&&... xs)
-  {
-    vector_t<token_id_t> vec;
-    ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
-    return name_id_span(name_id_root, vec);
-  }
-
-  template<typename... Ts>
-  name_id_t syntax_context_t::name_id_of(name_id_t parent_name, Ts&&... xs)
-  {
-    vector_t<token_id_t> vec;
-    ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
-    return name_id_span(parent_name, vec);
-  }
-
   template<>
   struct memento_item_writer_t<token_position_t> {
     constexpr inline static memento_item_type_t memento_item_type = memento_item_type_custom(1);
