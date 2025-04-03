@@ -24,7 +24,7 @@ namespace silva::test {
   }
 
   template<typename ParseAxeNursery>
-  void test_parse_axe(syntax_context_ptr_t tcp,
+  void test_parse_axe(token_context_ptr_t tcp,
                       const parse_axe_t& pa,
                       const string_view_t text,
                       const optional_t<string_view_t> expected_str)

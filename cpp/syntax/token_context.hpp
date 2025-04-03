@@ -71,10 +71,10 @@ namespace silva {
     template<typename... Ts>
     name_id_t name_id_of(name_id_t parent_name, Ts&&... xs);
   };
-  using syntax_context_ptr_t = ptr_t<token_context_t>;
+  using token_context_ptr_t = ptr_t<token_context_t>;
 
   struct name_id_style_t {
-    syntax_context_ptr_t tcp;
+    token_context_ptr_t tcp;
     token_id_t root      = *tcp->token_id("silva");
     token_id_t current   = *tcp->token_id("x");
     token_id_t parent    = *tcp->token_id("up");

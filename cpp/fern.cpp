@@ -10,7 +10,7 @@ namespace silva {
   using enum token_category_t;
   using enum error_level_t;
 
-  unique_ptr_t<seed_engine_t> fern_seed_engine(syntax_context_ptr_t tcp)
+  unique_ptr_t<seed_engine_t> fern_seed_engine(token_context_ptr_t tcp)
   {
     return SILVA_EXPECT_ASSERT(seed_engine_t::create(tcp, "fern.seed", string_t{fern_seed}));
   }
@@ -133,7 +133,7 @@ namespace silva {
 
   expected_t<string_t> fern_to_string(const parse_tree_t* pt, const index_t start_node)
   {
-    syntax_context_ptr_t tcp     = pt->tokenization->context;
+    token_context_ptr_t tcp      = pt->tokenization->context;
     const name_id_t fni_fern     = tcp->name_id_of("Fern");
     const name_id_t fni_lbl_item = tcp->name_id_of("LabeledItem");
     const name_id_t fni_label    = tcp->name_id_of("Label");
@@ -187,7 +187,7 @@ namespace silva {
 
   expected_t<string_t> fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
-    syntax_context_ptr_t tcp     = pt->tokenization->context;
+    token_context_ptr_t tcp      = pt->tokenization->context;
     const name_id_t fni_fern     = tcp->name_id_of("Fern");
     const name_id_t fni_lbl_item = tcp->name_id_of("LabeledItem");
     const name_id_t fni_label    = tcp->name_id_of("Label");
@@ -385,7 +385,7 @@ namespace silva {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
-      syntax_context_ptr_t tcp       = parse_tree->tokenization->context;
+      token_context_ptr_t tcp        = parse_tree->tokenization->context;
 
       token_id_t tt_none  = *tcp->token_id("none");
       token_id_t tt_true  = *tcp->token_id("true");

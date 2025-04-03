@@ -73,7 +73,7 @@ namespace silva {
     }
   }
 
-  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(syntax_context_ptr_t tcp,
+  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t tcp,
                                                          filesystem_path_t filepath)
   {
     string_t text = SILVA_EXPECT_FWD(read_file(filepath));
@@ -81,7 +81,7 @@ namespace silva {
   }
 
   expected_t<unique_ptr_t<tokenization_t>>
-  tokenize(syntax_context_ptr_t tcp, filesystem_path_t filepath, string_t text_arg)
+  tokenize(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text_arg)
   {
     auto retval      = std::make_unique<tokenization_t>();
     retval->filepath = std::move(filepath);

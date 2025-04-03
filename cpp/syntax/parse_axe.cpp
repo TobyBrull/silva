@@ -22,7 +22,7 @@ namespace silva::parse_axe {
     }
   };
 
-  expected_t<parse_axe_t> parse_axe_create(syntax_context_ptr_t tcp,
+  expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t tcp,
                                            const vector_t<parse_axe_level_desc_t>& level_descs)
   {
     using enum assoc_t;

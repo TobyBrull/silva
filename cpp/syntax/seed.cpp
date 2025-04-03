@@ -8,7 +8,7 @@
 namespace silva {
   using enum token_category_t;
 
-  name_id_style_t seed_name_style(syntax_context_ptr_t tcp)
+  name_id_style_t seed_name_style(token_context_ptr_t tcp)
   {
     return name_id_style_t{
         .tcp       = tcp,
@@ -19,7 +19,7 @@ namespace silva {
     };
   }
 
-  parse_axe::parse_axe_t create_parse_axe_expr(syntax_context_ptr_t tcp)
+  parse_axe::parse_axe_t create_parse_axe_expr(token_context_ptr_t tcp)
   {
     using namespace parse_axe;
     using enum assoc_t;
@@ -356,7 +356,7 @@ namespace silva {
     return {std::make_unique<parse_tree_t>(std::move(nursery).finish())};
   }
 
-  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_context_ptr_t tcp)
+  unique_ptr_t<seed_engine_t> seed_seed_engine(token_context_ptr_t tcp)
   {
     return SILVA_EXPECT_ASSERT(seed_engine_t::create(tcp, "seed.seed", string_t{seed_seed}));
   }

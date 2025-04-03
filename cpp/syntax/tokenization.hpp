@@ -7,7 +7,7 @@
 
 namespace silva {
   struct tokenization_t : public sprite_t {
-    syntax_context_ptr_t context;
+    token_context_ptr_t context;
 
     filesystem_path_t filepath;
     string_t text;
@@ -42,9 +42,9 @@ namespace silva {
     index_t token_index = 0;
   };
 
-  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(syntax_context_ptr_t, filesystem_path_t);
+  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t, filesystem_path_t);
   expected_t<unique_ptr_t<tokenization_t>>
-  tokenize(syntax_context_ptr_t, filesystem_path_t filepath, string_t text);
+  tokenize(token_context_ptr_t, filesystem_path_t filepath, string_t text);
 }
 
 // IMPLEMENTATION
