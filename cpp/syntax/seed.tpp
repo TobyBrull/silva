@@ -10,7 +10,7 @@ using namespace silva;
 
 TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
 {
-  syntax_context_t tc;
+  token_context_t tc;
   const auto spr       = seed_seed_engine(tc.ptr());
   const auto seed_tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", string_t{seed_seed})));
   const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
@@ -44,7 +44,7 @@ TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
 
 TEST_CASE("seed", "[seed][seed_engine_t]")
 {
-  syntax_context_t tc;
+  token_context_t tc;
   const string_t sf_text  = R"'(
     - SimpleFern [
       - X = '[' ( LabeledItem ';' ? ) * ']'

@@ -58,7 +58,7 @@ namespace silva {
     }
   }
 
-  token_id_t token_context_get_token_id_from_info(syntax_context_t* tc,
+  token_id_t token_context_get_token_id_from_info(token_context_t* tc,
                                                   const token_info_t& token_info)
   {
     const auto it = tc->token_lookup.find(token_info.str);

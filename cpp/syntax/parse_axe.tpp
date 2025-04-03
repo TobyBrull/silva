@@ -74,7 +74,7 @@ TEST_CASE("parse-axe-basic", "[parse_axe_t]")
     }
   };
 
-  syntax_context_t tc;
+  token_context_t tc;
   vector_t<parse_axe_level_desc_t> level_descs;
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "nst"),
@@ -443,7 +443,7 @@ TEST_CASE("parse-axe-advanced", "[parse_axe_t]")
     }
   };
 
-  syntax_context_t tc;
+  token_context_t tc;
   vector_t<parse_axe_level_desc_t> level_descs;
   level_descs.push_back(parse_axe_level_desc_t{
       .name  = tc.name_id_of("expr", "nst"),

@@ -48,14 +48,14 @@ namespace silva {
   using tokenization_id_t = index_t;
   using tree_id_t         = index_t;
 
-  struct syntax_context_t : public menhir_t {
+  struct token_context_t : public menhir_t {
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
 
     vector_t<name_info_t> name_infos;
     hashmap_t<name_info_t, name_id_t> name_lookup;
 
-    syntax_context_t();
+    token_context_t();
 
     expected_t<token_id_t> token_id(string_view_t);
     expected_t<token_id_t> token_id_in_string(token_id_t);
@@ -71,7 +71,7 @@ namespace silva {
     template<typename... Ts>
     name_id_t name_id_of(name_id_t parent_name, Ts&&... xs);
   };
-  using syntax_context_ptr_t = ptr_t<syntax_context_t>;
+  using syntax_context_ptr_t = ptr_t<token_context_t>;
 
   struct name_id_style_t {
     syntax_context_ptr_t tcp;
@@ -92,7 +92,7 @@ namespace silva {
 
 namespace silva {
   template<typename... Ts>
-  name_id_t syntax_context_t::name_id_of(Ts&&... xs)
+  name_id_t token_context_t::name_id_of(Ts&&... xs)
   {
     vector_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
@@ -100,7 +100,7 @@ namespace silva {
   }
 
   template<typename... Ts>
-  name_id_t syntax_context_t::name_id_of(name_id_t parent_name, Ts&&... xs)
+  name_id_t token_context_t::name_id_of(name_id_t parent_name, Ts&&... xs)
   {
     vector_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);

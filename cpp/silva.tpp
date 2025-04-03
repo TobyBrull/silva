@@ -9,7 +9,7 @@ using namespace silva;
 
 TEST_CASE("operator-precedence", "")
 {
-  syntax_context_t tc;
+  token_context_t tc;
   const string_t op_prec_source_code = R"'(
     - Expr = Add
     - Add = Mult ( '+' Add ) *
@@ -46,7 +46,7 @@ TEST_CASE("operator-precedence", "")
 
 TEST_CASE("parse-axe-recursion", "")
 {
-  syntax_context_t tc;
+  token_context_t tc;
   const string_t op_prec_source_code = R"'(
     - Expr =/ Atom [
       - Parens  = nest  atom_nest '(' ')'

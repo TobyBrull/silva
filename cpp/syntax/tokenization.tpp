@@ -6,7 +6,7 @@ using namespace silva;
 
 TEST_CASE("tokenization", "[tokenization_t]")
 {
-  syntax_context_t tc;
+  token_context_t tc;
   using enum token_category_t;
   using info_t = token_info_t;
   {

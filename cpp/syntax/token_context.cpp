@@ -1,4 +1,4 @@
-#include "syntax_context.hpp"
+#include "token_context.hpp"
 
 #include "canopy/convert.hpp"
 #include "canopy/enum.hpp"
@@ -188,7 +188,7 @@ namespace silva {
     return hash(tuple_t<name_id_t, token_id_t>{x.parent_name, x.base_name});
   }
 
-  syntax_context_t::syntax_context_t()
+  token_context_t::token_context_t()
   {
     token_infos.emplace_back();
     token_lookup[""] = token_id_none;
@@ -197,7 +197,7 @@ namespace silva {
     name_lookup.emplace(fni, 0);
   }
 
-  expected_t<token_id_t> syntax_context_t::token_id(const string_view_t token_str)
+  expected_t<token_id_t> token_context_t::token_id(const string_view_t token_str)
   {
     const auto it = token_lookup.find(string_t{token_str});
     if (it != token_lookup.end()) {
@@ -213,13 +213,13 @@ namespace silva {
     }
   }
 
-  expected_t<token_id_t> syntax_context_t::token_id_in_string(const token_id_t ti)
+  expected_t<token_id_t> token_context_t::token_id_in_string(const token_id_t ti)
   {
     const string_t str{SILVA_EXPECT_FWD(token_infos[ti].string_as_plain_contained())};
     return token_id(str);
   }
 
-  name_id_t syntax_context_t::name_id(const name_id_t parent_name, const token_id_t base_name)
+  name_id_t token_context_t::name_id(const name_id_t parent_name, const token_id_t base_name)
   {
     const name_info_t fni{parent_name, base_name};
     const auto [it, inserted] = name_lookup.emplace(fni, name_infos.size());
@@ -229,8 +229,8 @@ namespace silva {
     return it->second;
   }
 
-  name_id_t syntax_context_t::name_id_span(const name_id_t parent_name,
-                                           const span_t<const token_id_t> token_ids)
+  name_id_t token_context_t::name_id_span(const name_id_t parent_name,
+                                          const span_t<const token_id_t> token_ids)
   {
     name_id_t retval = parent_name;
     for (const token_id_t token_id: token_ids) {
@@ -239,7 +239,7 @@ namespace silva {
     return retval;
   }
 
-  bool syntax_context_t::name_id_is_parent(const name_id_t parent_name, token_id_t child_name) const
+  bool token_context_t::name_id_is_parent(const name_id_t parent_name, token_id_t child_name) const
   {
     while (true) {
       if (child_name == parent_name) {
@@ -252,7 +252,7 @@ namespace silva {
     }
   }
 
-  name_id_t syntax_context_t::name_id_lca(const name_id_t lhs, const name_id_t rhs) const
+  name_id_t token_context_t::name_id_lca(const name_id_t lhs, const name_id_t rhs) const
   {
     // TODO: O(1) time, O(n) memory ?
     const auto fni_path = [this](name_id_t x) {

@@ -6,7 +6,7 @@ using namespace silva;
 
 TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
 {
-  syntax_context_t tc;
+  token_context_t tc;
   const string_t frog_seed = R"'(
     - Frog [
       - X = Rule *
