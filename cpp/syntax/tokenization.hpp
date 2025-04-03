@@ -2,7 +2,8 @@
 
 #include "canopy/preprocessor.hpp"
 #include "canopy/string_or_view.hpp"
-#include "syntax/token_context.hpp"
+
+#include "token_context.hpp"
 
 namespace silva {
   struct tokenization_t : public sprite_t {
