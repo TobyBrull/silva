@@ -67,4 +67,44 @@ TEST_CASE("tokenization", "[tokenization_t]")
       CHECK(ts.relative(name3, name3) == "this");
     }
   }
+
+  {
+    const string_t source_code   = R"([
+  none
+  true
+  test: 'Hello'
+  42.000000
+  []
+
+
+  [
+    1.000000
+    'two' : 2.000000
+    3.000000
+  ]
+]
+)";
+    const string_view_t expected = R"(
+[  0]   1:1   [
+[  1]   2:3   none
+[  2]   3:3   true
+[  3]   4:3   test
+[  4]   4:7   :
+[  5]   4:9   'Hello'
+[  6]   5:3   42.000000
+[  7]   6:3   [
+[  8]   6:4   ]
+[  9]   9:3   [
+[ 10]  10:5   1.000000
+[ 11]  11:5   'two'
+[ 12]  11:11  :
+[ 13]  11:13  2.000000
+[ 14]  12:5   3.000000
+[ 15]  13:3   ]
+[ 16]  14:1   ]
+)";
+    const auto tokenization = SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "test.fern", source_code));
+    const auto result_str   = tokenization->to_string();
+    CHECK(result_str == expected.substr(1));
+  }
 }
