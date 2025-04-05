@@ -4,10 +4,12 @@
 
 namespace silva {
   const string_view_t fern_seed = R"'(
-    - Fern = '[' LabeledItem* ']'
-    - LabeledItem = ( Label ':' )? (Fern | Value)
-    - Label = string | identifier
-    - Value = 'none' | 'true' | 'false' | string | number
+    - Fern [
+      - X = '[' LabeledItem * ']'
+      - LabeledItem = ( Label ':' ) ? ( X | Value )
+      - Label = string | identifier
+      - Value = 'none' | 'true' | 'false' | string | number
+    ]
   )'";
 
   // Invariant:
