@@ -8,13 +8,13 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
 {
   token_context_t tc;
   const string_t frog_seed = R"'(
-    - Frog [
+    - Frog = [
       - X = Rule *
       - Rule = RuleName Expr
       - RuleName => keywords_of X.Keyword
       - Expr = Primary +
       - Primary = not keywords_of Keyword but_then identifier
-      - Keyword [
+      - Keyword = [
         - X = 'keyword1' | 'keyword2' | 'keyword3'
       ]
     ]
@@ -24,7 +24,7 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
   auto fs_pr               = share(SILVA_EXPECT_REQUIRE(seed_engine_t::create(fs_pt)));
   const string_view_t expected_seed_pt = R"(
 [0]Silva.Seed                                     - Frog ... ] ]
-  [0]Silva.Seed.Rule                              Frog [ ... ] ]
+  [0]Silva.Seed.Rule                              Frog = ... ] ]
     [0]Silva.Seed.Nonterminal.Base                Frog
     [1]Silva.Seed                                 - X ... 'keyword3' ]
       [0]Silva.Seed.Rule                          X = Rule *
@@ -63,7 +63,7 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
                 [0]Silva.Seed.Nonterminal         Keyword
                   [0]Silva.Seed.Nonterminal.Base  Keyword
             [1]Silva.Seed.Terminal                identifier
-      [5]Silva.Seed.Rule                          Keyword [ ... 'keyword3' ]
+      [5]Silva.Seed.Rule                          Keyword = ... 'keyword3' ]
         [0]Silva.Seed.Nonterminal.Base            Keyword
         [1]Silva.Seed                             - X ... | 'keyword3'
           [0]Silva.Seed.Rule                      X = ... | 'keyword3'

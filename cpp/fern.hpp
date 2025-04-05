@@ -4,7 +4,7 @@
 
 namespace silva {
   const string_view_t fern_seed = R"'(
-    - Fern [
+    - Fern = [
       - X = '[' LabeledItem * ']'
       - LabeledItem = ( Label ':' ) ? ( X | Value )
       - Label = string | identifier

@@ -318,19 +318,19 @@ namespace silva {
         const token_id_t op_ti = token_id_by();
         SILVA_EXPECT_PARSE(op_ti == tt_equal || op_ti == tt_alias || op_ti == tt_axe ||
                                op_ti == tt_brack_open,
-                           "Expected one of [ '=' '=>' '=/' '[' ]");
-        if (op_ti == tt_equal || op_ti == tt_alias) {
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(expr_or_alias()));
-        }
-        else if (op_ti == tt_axe) {
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(axe()));
-        }
-        else if (op_ti == tt_brack_open) {
-          token_index += 1;
+                           "Expected one of [ '=' '=>' '=/' ]");
+        if (op_ti == tt_equal && num_tokens_left() >= 2 && token_id_by(1) == tt_brack_open) {
+          token_index += 2;
           ss_rule.add_proto_node(SILVA_EXPECT_FWD(seed()));
           SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
                              "Expected ']'");
           token_index += 1;
+        }
+        else if (op_ti == tt_equal || op_ti == tt_alias) {
+          ss_rule.add_proto_node(SILVA_EXPECT_FWD(expr_or_alias()));
+        }
+        else if (op_ti == tt_axe) {
+          ss_rule.add_proto_node(SILVA_EXPECT_FWD(axe()));
         }
         return ss_rule.commit();
       }

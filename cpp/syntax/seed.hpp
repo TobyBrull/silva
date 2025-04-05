@@ -18,9 +18,9 @@ namespace silva {
   // in "seed_engine_t".
 
   const string_view_t seed_seed = R"'(
-    - Seed [
+    - Seed = [
       - X = ( '-' Rule ) *
-      - Rule = Nonterminal.Base ( ExprOrAlias | Axe | '[' X ']' )
+      - Rule = Nonterminal.Base ( '=' '[' X ']' | ExprOrAlias | Axe )
       - ExprOrAlias = ( '=' | '=>' ) Expr
       - Expr =/ Atom [
         - Parens    = nest  atom_nest '(' ')'
@@ -31,7 +31,7 @@ namespace silva {
         - Or        = ltr   infix_flat '|'
       ]
       - Atom => Nonterminal | Terminal
-      - Axe [
+      - Axe = [
         - X = '=/' Up.Nonterminal '[' ( '-' Level ) * ']'
         - Level = Up.Nonterminal.Base '=' Assoc Ops*
         - Assoc = 'nest' | 'ltr' | 'rtl'
@@ -41,7 +41,7 @@ namespace silva {
                  | 'postfix' | 'postfix_nest'
         - Op = string | 'concat'
       ]
-      - Nonterminal [
+      - Nonterminal = [
         - X = Base ( '.' Base ) *
         - Base = 'Silva' | 'X' | 'Up' | identifier / '^[A-Z]'
       ]

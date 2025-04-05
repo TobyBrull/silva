@@ -46,7 +46,7 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
 {
   token_context_t tc;
   const string_t sf_text  = R"'(
-    - SimpleFern [
+    - SimpleFern = [
       - X = '[' ( LabeledItem ';' ? ) * ']'
       - LabeledItem = ( Label ':' )? Item
       - Label = string
@@ -61,7 +61,7 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
 
   const std::string_view expected = R"(
 [0]Silva.Seed                                     - SimpleFern ... number ]
-  [0]Silva.Seed.Rule                              SimpleFern [ ... number ]
+  [0]Silva.Seed.Rule                              SimpleFern = ... number ]
     [0]Silva.Seed.Nonterminal.Base                SimpleFern
     [1]Silva.Seed                                 - X ... | number
       [0]Silva.Seed.Rule                          X = ... * ']'
