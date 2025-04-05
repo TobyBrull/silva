@@ -44,8 +44,7 @@ TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
 
 TEST_CASE("seed", "[seed][seed_engine_t]")
 {
-  token_context_t tc;
-  const string_t sf_text  = R"'(
+  const string_t sf_text = R"'(
     - SimpleFern = [
       - X = '[' ( LabeledItem ';' ? ) * ']'
       - LabeledItem = ( Label ':' )? Item
@@ -53,6 +52,7 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
       - Item = X | string | number
     ]
   )'";
+  token_context_t tc;
   const auto sf_seed_tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", sf_text)));
   const auto sf_seed_pt_1 = share(SILVA_EXPECT_REQUIRE(seed_parse(sf_seed_tt)));
   const auto spr          = seed_seed_engine(tc.ptr());

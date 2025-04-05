@@ -6,7 +6,6 @@ using namespace silva;
 
 TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
 {
-  token_context_t tc;
   const string_view_t frog_seed = R"'(
     - Frog = [
       - X = Rule *
@@ -19,10 +18,9 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
       ]
     ]
   )'";
-  auto fs_tt                    = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_seed)));
-  auto fs_pt                    = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
+  token_context_t tc;
   seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_REQUIRE(se.add_complete(fs_pt));
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
   const string_view_t expected_seed_pt = R"(
 [0]Silva.Seed                                     - Frog ... ] ]
   [0]Silva.Seed.Rule                              Frog = ... ] ]

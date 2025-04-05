@@ -9,17 +9,15 @@ using namespace silva;
 
 TEST_CASE("operator-precedence", "")
 {
-  token_context_t tc;
   const string_view_t se_code = R"'(
     - Expr = Add
     - Add = Mult ( '+' Add ) *
     - Mult = Primary ( '*' Mult ) *
     - Primary = '(' Expr ')' | number
   )'";
-  const auto se_tt            = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", se_code)));
-  const auto se_pt            = share(SILVA_EXPECT_REQUIRE(seed_parse(se_tt)));
+  token_context_t tc;
   seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_REQUIRE(se.add_complete(se_pt));
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", se_code));
 
   const string_view_t expr_source_code = R"( 5 + 4 * 2 + 1 )";
   const auto expr_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", expr_source_code)));
@@ -45,7 +43,6 @@ TEST_CASE("operator-precedence", "")
 
 TEST_CASE("parse-axe-recursion", "")
 {
-  token_context_t tc;
   const string_view_t se_code = R"'(
     - Expr =/ Atom [
       - Parens  = nest  atom_nest '(' ')'
@@ -55,10 +52,9 @@ TEST_CASE("parse-axe-recursion", "")
     ]
     - Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
   )'";
-  const auto se_tt            = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", se_code)));
-  const auto se_pt            = share(SILVA_EXPECT_REQUIRE(seed_parse(se_tt)));
+  token_context_t tc;
   seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_REQUIRE(se.add_complete(se_pt));
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", se_code));
 
   const string_view_t expr_source_code = R"(
     ( 5 + if a < 3 then b + 10 else c * 20 ) + 100
