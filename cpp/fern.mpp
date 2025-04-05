@@ -12,15 +12,15 @@ silva_main(span_t<string_view_t> cmdline_args)
   const index_t m = cmdline_args.size();
   SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
 
-  const auto arg_process = env_context_get("process").value_or("direct/string");
-  const bool arg_root    = env_context_get_as<bool>("root-based").value_or(false);
+  const auto arg_process  = env_context_get("process").value_or("direct/string");
+  const bool arg_seed_eng = env_context_get_as<bool>("seed-engine").value_or(false);
 
   token_context_t tc;
   auto tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
   unique_ptr_t<parse_tree_t> pt;
-  auto fpr = fern_seed_engine(tc.ptr());
-  if (arg_root) {
-    pt = SILVA_EXPECT_FWD(fpr->apply(std::move(tt), tc.name_id_of("Fern")));
+  if (arg_seed_eng) {
+    const auto fse{fern_seed_engine(tc.ptr())};
+    pt = SILVA_EXPECT_FWD(fse->apply(std::move(tt), tc.name_id_of("Fern")));
   }
   else {
     pt = SILVA_EXPECT_FWD(fern_parse(std::move(tt)));

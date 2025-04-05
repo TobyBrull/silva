@@ -39,7 +39,7 @@ ninja -C build/
 ninja -C build/ && ./build/cpp/silva_test
 ninja -C build/ && ./build/cpp/silva_tokenization silva/fern/simple.fern
 ninja -C build/ && ./build/cpp/silva_fern silva/fern/simple.fern
-ninja -C build/ && ./build/cpp/silva_fern silva/fern/broken.fern process=parse_tree/graphviz_show root-based=true
+ninja -C build/ && ./build/cpp/silva_fern silva/fern/broken.fern process=parse_tree/graphviz_show seed-engine=true
 ninja -C build/ && ./build/cpp/silva_seed silva/seed/test.seed
 ninja -C build/ && ./build/cpp/silva_seed silva/seed/test.seed silva/seed/test.code
 ninja -C build/ && ./build/cpp/silva_seed scratchpad/silva.seed scratchpad/test-01.silva
