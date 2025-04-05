@@ -108,27 +108,28 @@ TEST_CASE("seed", "[seed][seed_engine_t]")
   CHECK(pt_str_1 == expected.substr(1));
   CHECK(pt_str_2 == expected.substr(1));
 
-  const auto sfpr = SILVA_EXPECT_REQUIRE(seed_engine_t::create(sf_seed_pt_1));
-  REQUIRE(sfpr->rule_exprs.size() == 4);
+  seed_engine_t se(tc.ptr());
+  SILVA_EXPECT_REQUIRE(se.add_complete(sf_seed_pt_1));
+  REQUIRE(se.rule_exprs.size() == 4);
   using rfl::json::write;
   const name_id_t fni_sf      = tc.name_id_of("SimpleFern");
   const name_id_t fni_li      = tc.name_id_of(fni_sf, "LabeledItem");
   const name_id_t fni_l       = tc.name_id_of(fni_sf, "Label");
   const name_id_t fni_i       = tc.name_id_of(fni_sf, "Item");
-  const parse_tree_span_t pts = sfpr->seed_parse_trees.front()->span();
-  CHECK(sfpr->rule_exprs.at(fni_sf) == pts.sub_tree_span_at(6));
-  CHECK(sfpr->rule_exprs.at(fni_li) == pts.sub_tree_span_at(19));
-  CHECK(sfpr->rule_exprs.at(fni_l) == pts.sub_tree_span_at(31));
-  CHECK(sfpr->rule_exprs.at(fni_i) == pts.sub_tree_span_at(35));
-  REQUIRE(sfpr->nonterminal_rules.size() == 4);
-  CHECK(sfpr->nonterminal_rules.at(pts.sub_tree_span_at(12)) == fni_li);
-  CHECK(sfpr->nonterminal_rules.at(pts.sub_tree_span_at(24)) == fni_l);
-  CHECK(sfpr->nonterminal_rules.at(pts.sub_tree_span_at(27)) == fni_i);
-  CHECK(sfpr->nonterminal_rules.at(pts.sub_tree_span_at(37)) == fni_sf);
+  const parse_tree_span_t pts = se.seed_parse_trees.front()->span();
+  CHECK(se.rule_exprs.at(fni_sf) == pts.sub_tree_span_at(6));
+  CHECK(se.rule_exprs.at(fni_li) == pts.sub_tree_span_at(19));
+  CHECK(se.rule_exprs.at(fni_l) == pts.sub_tree_span_at(31));
+  CHECK(se.rule_exprs.at(fni_i) == pts.sub_tree_span_at(35));
+  REQUIRE(se.nonterminal_rules.size() == 4);
+  CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(12)) == fni_li);
+  CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(24)) == fni_l);
+  CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(27)) == fni_i);
+  CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(37)) == fni_sf);
 
   const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
   const auto sf_tt       = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", sf_code)));
-  const auto sfpt        = SILVA_EXPECT_REQUIRE(sfpr->apply(sf_tt, fni_sf));
+  const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sf_tt, fni_sf));
 
   const std::string_view expected_parse_tree = R"(
 [0]Silva.SimpleFern                               [ 'abc' ... ; ]

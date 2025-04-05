@@ -75,6 +75,8 @@ namespace silva {
     T* get() const;
     T* operator->() const;
     T& operator*() const;
+
+    friend bool operator==(const ptr_t&, const ptr_t&) = default;
   };
 
   class menhir_t : public sprite_t {

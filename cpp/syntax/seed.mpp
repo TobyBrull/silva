@@ -19,9 +19,10 @@ silva_main(span_t<string_view_t> cmdline_args)
     fmt::print("{}\n", SILVA_EXPECT_FWD(seed_pt->span().to_string()));
   }
   else if (m == 3) {
-    auto pr     = SILVA_EXPECT_FWD(seed_engine_t::create(std::move(seed_pt)));
+    seed_engine_t se(tc.ptr());
+    SILVA_EXPECT_FWD(se.add_complete(std::move(seed_pt)));
     auto tgt_tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[2]));
-    auto tgt_pt = SILVA_EXPECT_FWD(pr->apply(std::move(tgt_tt), tc.name_id_of("Test")));
+    auto tgt_pt = SILVA_EXPECT_FWD(se.apply(std::move(tgt_tt), tc.name_id_of("Test")));
     fmt::print("{}\n", SILVA_EXPECT_FWD(tgt_pt->span().to_string()));
   }
   return {};

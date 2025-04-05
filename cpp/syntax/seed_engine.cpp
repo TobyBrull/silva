@@ -15,16 +15,12 @@ namespace silva {
   using enum error_level_t;
 
   struct seed_engine_create_nursery_t {
-    shared_ptr_t<const parse_tree_t> seed_parse_tree;
-    token_context_ptr_t tcp = seed_parse_tree->tokenization->context;
+    seed_engine_t* se       = nullptr;
+    token_context_ptr_t tcp = se->tcp;
     name_id_style_t fnis    = seed_name_style(tcp);
 
-    std::unique_ptr<seed_engine_t> retval = std::make_unique<seed_engine_t>();
-
-    const tokenization_t& s_tokenization = *seed_parse_tree->tokenization;
+    const tokenization_t& s_tokenization;
     const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
-
-    const vector_t<shared_ptr_t<const parse_tree_t>>& spts = retval->seed_parse_trees;
 
     const token_id_t ti_atom_nest    = *tcp->token_id("atom_nest");
     const token_id_t ti_prefix       = *tcp->token_id("prefix");
@@ -54,10 +50,9 @@ namespace silva {
     const name_id_t fni_nt_base     = tcp->name_id_of(fni_nt, "Base");
     const name_id_t fni_term        = tcp->name_id_of(fni_seed, "Terminal");
 
-    seed_engine_create_nursery_t(shared_ptr_t<const parse_tree_t> seed_parse_tree)
-      : seed_parse_tree(seed_parse_tree)
+    seed_engine_create_nursery_t(seed_engine_t* se, const tokenization_t& s_tokenization)
+      : se(se), s_tokenization(s_tokenization)
     {
-      retval->seed_parse_trees.push_back(std::move(seed_parse_tree));
     }
 
     expected_t<void> axe_ops(parse_axe::parse_axe_level_desc_t& level,
@@ -284,7 +279,7 @@ namespace silva {
     expected_t<void> recognize_keyword(name_id_t rule_name, const token_id_t keyword)
     {
       while (true) {
-        retval->keyword_scopes[rule_name].insert(keyword);
+        se->keyword_scopes[rule_name].insert(keyword);
         if (rule_name == name_id_root) {
           break;
         }
@@ -311,7 +306,7 @@ namespace silva {
                      MINOR,
                      "Second child of Rule must be one of [ Axe Seed ExprOrAlias ]");
         const auto [it, inserted] =
-            retval->rule_exprs.emplace(curr_rule_name, pts_rule.sub_tree_span_at(children[1]));
+            se->rule_exprs.emplace(curr_rule_name, pts_rule.sub_tree_span_at(children[1]));
         SILVA_EXPECT(inserted, MINOR, "Repeated rule name '{}'", fnis.absolute(curr_rule_name));
 
         const auto pts_expr = pts_rule.sub_tree_span_at(children[1]);
@@ -322,15 +317,15 @@ namespace silva {
             const token_id_t token_id      = pts_expr.tokenization->tokens[token_idx];
             const token_info_t& token_info = tcp->token_infos[token_id];
             if (token_info.category == token_category_t::STRING) {
-              const auto keyword = SILVA_EXPECT_FWD(tcp->token_id_in_string(token_id));
-              retval->string_to_keyword[token_id] = keyword;
+              const auto keyword              = SILVA_EXPECT_FWD(tcp->token_id_in_string(token_id));
+              se->string_to_keyword[token_id] = keyword;
               SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
             }
           }
         }
 
         if (expr_rule_name == fni_axe) {
-          retval->parse_axes[curr_rule_name] =
+          se->parse_axes[curr_rule_name] =
               SILVA_EXPECT_FWD(create_parse_axe(scope_name, curr_rule_name, pts_expr));
         }
         else {
@@ -339,7 +334,7 @@ namespace silva {
               const name_id_t nt_name =
                   SILVA_EXPECT_FWD(derive_name(scope_name, pts_expr.sub_tree_span_at(i)));
               const auto [it, inserted] =
-                  retval->nonterminal_rules.emplace(pts_expr.sub_tree_span_at(i), nt_name);
+                  se->nonterminal_rules.emplace(pts_expr.sub_tree_span_at(i), nt_name);
               SILVA_EXPECT(inserted, MAJOR);
             }
           }
@@ -360,9 +355,8 @@ namespace silva {
       return {};
     }
 
-    expected_t<void> handle_all()
+    expected_t<void> handle_all(const parse_tree_span_t pts)
     {
-      const parse_tree_span_t pts = seed_parse_tree->span();
       SILVA_EXPECT_FWD(handle_seed(name_id_root, pts));
 
       // Pre-compile hashmap_t of "regexes".
@@ -370,7 +364,7 @@ namespace silva {
         const auto& s_node = pts[node_index];
         if (s_node.rule_name == fni_term && s_node.num_tokens() == 3) {
           const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
-          if (auto& regex = retval->regexes[regex_token_id]; !regex.has_value()) {
+          if (auto& regex = se->regexes[regex_token_id]; !regex.has_value()) {
             const auto& regex_td = s_tokenization.token_info_get(s_node.token_begin + 2);
             const string_t regex_str{
                 SILVA_EXPECT_FWD(regex_td->string_as_plain_contained(), MAJOR)};
@@ -383,12 +377,28 @@ namespace silva {
     }
   };
 
-  expected_t<unique_ptr_t<seed_engine_t>>
-  seed_engine_t::create(shared_ptr_t<const parse_tree_t> seed_parse_tree)
+  seed_engine_t::seed_engine_t(token_context_ptr_t tcp) : tcp(tcp) {}
+
+  expected_t<void> seed_engine_t::add(parse_tree_span_t stps)
   {
-    seed_engine_create_nursery_t nursery(std::move(seed_parse_tree));
-    SILVA_EXPECT_FWD(nursery.handle_all());
-    return std::move(nursery).retval;
+    seed_engine_create_nursery_t nursery(this, *stps.tokenization);
+    SILVA_EXPECT_FWD(nursery.handle_all(stps));
+    return {};
+  }
+
+  expected_t<void> seed_engine_t::add_parse_tree(shared_ptr_t<const parse_tree_t> seed_parse_tree)
+  {
+    SILVA_EXPECT(seed_parse_tree->tokenization->context == tcp, MINOR);
+    seed_parse_trees.push_back(std::move(seed_parse_tree));
+    return {};
+  }
+
+  expected_t<void> seed_engine_t::add_complete(shared_ptr_t<const parse_tree_t> seed_parse_tree)
+  {
+    const auto spts = seed_parse_tree->span();
+    SILVA_EXPECT_FWD(add_parse_tree(seed_parse_tree), MINOR);
+    SILVA_EXPECT_FWD(add(spts));
+    return {};
   }
 
   expected_t<unique_ptr_t<seed_engine_t>>
@@ -398,7 +408,8 @@ namespace silva {
     auto pt = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
     // const auto x = SILVA_EXPECT_FWD(parse_tree_to_string(*pt));
     // fmt::print("{}\n", x);
-    auto retval = SILVA_EXPECT_FWD(seed_engine_t::create(std::move(pt)));
+    unique_ptr_t<seed_engine_t> retval = std::make_unique<seed_engine_t>(tcp);
+    SILVA_EXPECT_FWD(retval->add_complete(std::move(pt)));
     return retval;
   }
 

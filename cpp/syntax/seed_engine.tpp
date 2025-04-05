@@ -21,7 +21,8 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
   )'";
   auto fs_tt               = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_seed)));
   auto fs_pt               = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
-  auto fs_pr               = share(SILVA_EXPECT_REQUIRE(seed_engine_t::create(fs_pt)));
+  seed_engine_t se(tc.ptr());
+  SILVA_EXPECT_REQUIRE(se.add_complete(fs_pt));
   const string_view_t expected_seed_pt = R"(
 [0]Silva.Seed                                     - Frog ... ] ]
   [0]Silva.Seed.Rule                              Frog = ... ] ]
@@ -74,8 +75,7 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
                 [1]Silva.Seed.Terminal            'keyword2'
                 [2]Silva.Seed.Terminal            'keyword3'
 )";
-  const string_t seed_pt_str{
-      SILVA_EXPECT_REQUIRE(fs_pr->seed_parse_trees.front()->span().to_string())};
+  const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(se.seed_parse_trees.front()->span().to_string())};
   CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
   const string_t frog_source_code = R"'(
@@ -85,7 +85,7 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
     keyword3 g h i
   )'";
   auto frog_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_source_code)));
-  auto frog_pt = share(SILVA_EXPECT_REQUIRE(fs_pr->apply(frog_tt, tc.name_id_of("Frog"))));
+  auto frog_pt = share(SILVA_EXPECT_REQUIRE(se.apply(frog_tt, tc.name_id_of("Frog"))));
   const string_view_t expected = R"(
 [0]Silva.Frog                                     keyword1 a ... h i
   [0]Silva.Frog.Rule                              keyword1 a b c
