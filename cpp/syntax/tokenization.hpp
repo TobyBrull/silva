@@ -10,14 +10,13 @@ namespace silva {
     token_context_ptr_t context;
 
     filesystem_path_t filepath;
-    string_t text;
-    vector_t<token_id_t> tokens;
 
     struct location_t {
       index_t line_num = 0;
       index_t column   = 0;
     };
     vector_t<location_t> token_locations;
+    vector_t<token_id_t> tokens;
 
     tokenization_t copy() const;
 
@@ -34,7 +33,7 @@ namespace silva {
 
   expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t, filesystem_path_t);
   expected_t<unique_ptr_t<tokenization_t>>
-  tokenize(token_context_ptr_t, filesystem_path_t filepath, string_t text);
+  tokenize(token_context_ptr_t, filesystem_path_t filepath, string_view_t text);
 }
 
 // IMPLEMENTATION

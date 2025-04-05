@@ -2,8 +2,6 @@
 
 #include "canopy/filesystem.hpp"
 
-#include <algorithm>
-
 namespace silva {
   using enum token_category_t;
 
@@ -12,9 +10,8 @@ namespace silva {
     return tokenization_t{
         .context         = context,
         .filepath        = filepath,
-        .text            = text,
-        .tokens          = tokens,
         .token_locations = token_locations,
+        .tokens          = tokens,
     };
   }
 
@@ -46,15 +43,13 @@ namespace silva {
   }
 
   expected_t<unique_ptr_t<tokenization_t>>
-  tokenize(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text_arg)
+  tokenize(token_context_ptr_t tcp, filesystem_path_t filepath, string_view_t text)
   {
     auto retval        = std::make_unique<tokenization_t>();
     retval->filepath   = std::move(filepath);
-    retval->text       = std::move(text_arg);
     retval->context    = tcp;
     index_t text_index = 0;
     tokenization_t::location_t loc;
-    const string_view_t text = retval->text;
     while (text_index < text.size()) {
       const auto [tokenized_str, token_cat] = tokenize_one(text.substr(text_index));
       text_index += tokenized_str.size();
