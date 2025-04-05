@@ -109,3 +109,19 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
   const string_t frog_pt_str{SILVA_EXPECT_REQUIRE(frog_pt->span().to_string())};
   CHECK(frog_pt_str == expected.substr(1));
 }
+
+TEST_CASE("multiple-snippets", "[seed_engine_t]")
+{
+  token_context_t tc;
+  const string_t snip1 = R"'(
+    - Foo = [
+      X = 'a' 'b' 'c' Silva.Bar ?
+    ]
+  )'";
+  const string_t snip2 = R"'(
+    - Bar = [
+      X = 'x' 'y' 'z' Silva.Foo ?
+    ]
+  )'";
+  seed_engine_t se(tc.ptr());
+}

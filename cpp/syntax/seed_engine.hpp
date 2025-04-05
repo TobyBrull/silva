@@ -46,11 +46,7 @@ namespace silva {
     expected_t<void> add_parse_tree(shared_ptr_t<const parse_tree_t>);
 
     expected_t<void> add_complete(shared_ptr_t<const parse_tree_t>);
-
-    // Convenience function for essentially
-    //    tokenize | seed_parse | add_complete
-    static expected_t<unique_ptr_t<seed_engine_t>>
-    create(token_context_ptr_t, filesystem_path_t filepath, string_t text);
+    expected_t<void> add_complete_file(filesystem_path_t filepath, string_view_t text);
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.

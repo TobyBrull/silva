@@ -12,7 +12,9 @@ namespace silva {
 
   unique_ptr_t<seed_engine_t> fern_seed_engine(token_context_ptr_t tcp)
   {
-    return SILVA_EXPECT_ASSERT(seed_engine_t::create(tcp, "fern.seed", string_t{fern_seed}));
+    auto retval = std::make_unique<seed_engine_t>(tcp);
+    SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern_seed));
+    return retval;
   }
 
   namespace impl {

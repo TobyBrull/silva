@@ -401,16 +401,14 @@ namespace silva {
     return {};
   }
 
-  expected_t<unique_ptr_t<seed_engine_t>>
-  seed_engine_t::create(token_context_ptr_t tcp, filesystem_path_t filepath, string_t text)
+  expected_t<void> seed_engine_t::add_complete_file(filesystem_path_t filepath, string_view_t text)
   {
     auto tt = SILVA_EXPECT_FWD(tokenize(tcp, std::move(filepath), std::move(text)));
     auto pt = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
     // const auto x = SILVA_EXPECT_FWD(parse_tree_to_string(*pt));
     // fmt::print("{}\n", x);
-    unique_ptr_t<seed_engine_t> retval = std::make_unique<seed_engine_t>(tcp);
-    SILVA_EXPECT_FWD(retval->add_complete(std::move(pt)));
-    return retval;
+    SILVA_EXPECT_FWD(add_complete(std::move(pt)));
+    return {};
   }
 
   namespace impl {
