@@ -413,17 +413,17 @@ namespace silva {
 
   namespace impl {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
-      const seed_engine_t* root = nullptr;
-      token_context_ptr_t tcp   = root->seed_parse_trees.front()->tokenization->context;
-      name_id_style_t fnis      = seed_name_style(tcp);
+      const seed_engine_t* se = nullptr;
+      token_context_ptr_t tcp = se->seed_parse_trees.front()->tokenization->context;
+      name_id_style_t fnis    = seed_name_style(tcp);
 
-      const tokenization_t& s_tokenization = *root->seed_parse_trees.front()->tokenization;
+      const tokenization_t& s_tokenization = *se->seed_parse_trees.front()->tokenization;
       const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
       const tokenization_t& t_tokenization = *tokenization;
       const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
 
-      const vector_t<shared_ptr_t<const parse_tree_t>>& spts = root->seed_parse_trees;
+      const vector_t<shared_ptr_t<const parse_tree_t>>& spts = se->seed_parse_trees;
 
       int rule_depth = 0;
 
@@ -465,7 +465,7 @@ namespace silva {
 
       seed_engine_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
                             const seed_engine_t* root)
-        : parse_tree_nursery_t(tokenization), root(root)
+        : parse_tree_nursery_t(tokenization), se(root)
       {
       }
 
@@ -502,8 +502,8 @@ namespace silva {
             SILVA_EXPECT(false, MAJOR, "Only 'identifier' and 'operator' may have regexes");
           }
           const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
-          const auto it                   = root->regexes.find(regex_token_id);
-          SILVA_EXPECT(it != root->regexes.end() && it->second.has_value(), MAJOR);
+          const auto it                   = se->regexes.find(regex_token_id);
+          SILVA_EXPECT(it != se->regexes.end() && it->second.has_value(), MAJOR);
           const std::regex& re          = it->second.value();
           const string_view_t token_str = token_data_by()->str;
           const bool is_match           = std::regex_search(token_str.begin(), token_str.end(), re);
@@ -515,11 +515,11 @@ namespace silva {
         else if (s_front_ti == ti_keywords_of) {
           const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
           const auto pts_nt   = pts.sub_tree_span_at(children[0]);
-          const auto it       = root->nonterminal_rules.find(pts_nt);
-          SILVA_EXPECT(it != root->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
+          const auto it       = se->nonterminal_rules.find(pts_nt);
+          SILVA_EXPECT(it != se->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
           const name_id_t keyword_scope = it->second;
-          const auto it2                = root->keyword_scopes.find(keyword_scope);
-          SILVA_EXPECT(it2 != root->keyword_scopes.end(), MAJOR, "Couldn't lookup keyword scope");
+          const auto it2                = se->keyword_scopes.find(keyword_scope);
+          SILVA_EXPECT(it2 != se->keyword_scopes.end(), MAJOR, "Couldn't lookup keyword scope");
           const hashset_t<token_id_t>& keywords = it2->second;
           SILVA_EXPECT(keywords.contains(token_id_by()),
                        MINOR,
@@ -548,8 +548,8 @@ namespace silva {
           }
           else {
             const index_t s_token_id = s_tokenization.tokens[s_node.token_begin];
-            const auto it            = root->string_to_keyword.find(s_token_id);
-            SILVA_EXPECT(it != root->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
+            const auto it            = se->string_to_keyword.find(s_token_id);
+            SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
             const token_id_t t_expected_ti = it->second;
             SILVA_EXPECT_PARSE(token_id_by() == t_expected_ti, "Expected {}", t_expected_ti);
           }
@@ -693,8 +693,8 @@ namespace silva {
           return s_terminal(pts);
         }
         else if (s_rule_name == fni_nt) {
-          const auto it = root->nonterminal_rules.find(pts);
-          SILVA_EXPECT(it != root->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
+          const auto it = se->nonterminal_rules.find(pts);
+          SILVA_EXPECT(it != se->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
           const name_id_t t_rule_name = it->second;
           return handle_rule(t_rule_name);
         }
@@ -705,8 +705,8 @@ namespace silva {
 
       expected_t<parse_tree_node_t> handle_rule_axe(const name_id_t t_rule_name)
       {
-        const auto it = root->parse_axes.find(t_rule_name);
-        SILVA_EXPECT(it != root->parse_axes.end(), MAJOR);
+        const auto it = se->parse_axes.find(t_rule_name);
+        SILVA_EXPECT(it != se->parse_axes.end(), MAJOR);
         auto ss{stake()};
         const seed_engine_t::parse_axe_data_t& parse_axe_data = it->second;
         const delegate_t<expected_t<parse_tree_node_t>()>::pack_t pack{
@@ -725,8 +725,8 @@ namespace silva {
                      FATAL,
                      "Stack is getting too deep. Infinite recursion in grammar?");
         const index_t orig_token_index = token_index;
-        const auto it{root->rule_exprs.find(t_rule_name)};
-        SILVA_EXPECT(it != root->rule_exprs.end(),
+        const auto it{se->rule_exprs.find(t_rule_name)};
+        SILVA_EXPECT(it != se->rule_exprs.end(),
                      MAJOR,
                      "Unknown rule: {}",
                      fnis.absolute(t_rule_name));

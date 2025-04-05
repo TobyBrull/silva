@@ -9,7 +9,7 @@ using namespace silva;
 
 TEST_CASE("operator-precedence", "")
 {
-  const string_view_t se_code = R"'(
+  const string_view_t expr_seed_text = R"'(
     - Expr = Add
     - Add = Mult ( '+' Add ) *
     - Mult = Primary ( '*' Mult ) *
@@ -17,11 +17,11 @@ TEST_CASE("operator-precedence", "")
   )'";
   token_context_t tc;
   seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", se_code));
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 
-  const string_view_t expr_source_code = R"( 5 + 4 * 2 + 1 )";
-  const auto expr_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", expr_source_code)));
-  const auto expr_pt = SILVA_EXPECT_REQUIRE(se.apply(expr_tt, tc.name_id_of("Expr")));
+  const string_view_t expr_text = R"( 5 + 4 * 2 + 1 )";
+  const auto expr_tt            = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", expr_text)));
+  const auto expr_pt            = SILVA_EXPECT_REQUIRE(se.apply(expr_tt, tc.name_id_of("Expr")));
 
   const std::string_view expected_parse_tree = R"(
 [0]Silva.Expr                                     5 + ... + 1
@@ -43,7 +43,7 @@ TEST_CASE("operator-precedence", "")
 
 TEST_CASE("parse-axe-recursion", "")
 {
-  const string_view_t se_code = R"'(
+  const string_view_t expr_seed_text = R"'(
     - Expr =/ Atom [
       - Parens  = nest  atom_nest '(' ')'
       - Mult    = ltr   infix '*'
@@ -54,13 +54,13 @@ TEST_CASE("parse-axe-recursion", "")
   )'";
   token_context_t tc;
   seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", se_code));
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 
-  const string_view_t expr_source_code = R"(
+  const string_view_t expr_text = R"(
     ( 5 + if a < 3 then b + 10 else c * 20 ) + 100
   )";
-  const auto expr_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", expr_source_code)));
-  const auto expr_pt = SILVA_EXPECT_REQUIRE(se.apply(expr_tt, tc.name_id_of("Expr")));
+  const auto expr_tt            = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", expr_text)));
+  const auto expr_pt            = SILVA_EXPECT_REQUIRE(se.apply(expr_tt, tc.name_id_of("Expr")));
 
   const std::string_view expected_parse_tree = R"(
 [0]Silva.Expr.Add.+                               ( 5 ... + 100
