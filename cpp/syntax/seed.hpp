@@ -33,9 +33,9 @@ namespace silva {
       - Atom => Nonterminal | Terminal
       - Axe = [
         - X = '=/' Up.Nonterminal '[' ( '-' Level ) * ']'
-        - Level = Up.Nonterminal.Base '=' Assoc Ops*
+        - Level = Up.Nonterminal.Base '=' Assoc Ops *
         - Assoc = 'nest' | 'ltr' | 'rtl'
-        - Ops = OpType Op*
+        - Ops = OpType Op *
         - OpType = 'atom_nest' | 'prefix' | 'prefix_nest'
                  | 'infix' | 'infix_flat' | 'ternary'
                  | 'postfix' | 'postfix_nest'

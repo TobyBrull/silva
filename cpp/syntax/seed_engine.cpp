@@ -547,7 +547,9 @@ namespace silva {
             const auto it            = se->string_to_keyword.find(s_token_id);
             SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
             const token_id_t t_expected_ti = it->second;
-            SILVA_EXPECT_PARSE(token_id_by() == t_expected_ti, "Expected {}", t_expected_ti);
+            SILVA_EXPECT_PARSE(token_id_by() == t_expected_ti,
+                               "Expected terminal '{}'",
+                               tcp->token_infos[t_expected_ti].str);
           }
         }
         token_index += 1;
@@ -742,7 +744,7 @@ namespace silva {
             auto ss_rule = stake();
             ss_rule.create_node(t_rule_name);
             ss_rule.add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
-                                                    "{} Expected {}",
+                                                    "{} Expected rule {}",
                                                     token_position_at(orig_token_index),
                                                     fnis.absolute(t_rule_name)));
             return ss_rule.commit();
@@ -750,7 +752,7 @@ namespace silva {
           else {
             auto ss = stake();
             ss.add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
-                                               "{} Expected {}",
+                                               "{} Expected alias {}",
                                                token_position_at(orig_token_index),
                                                fnis.absolute(t_rule_name)));
             return ss.commit();
