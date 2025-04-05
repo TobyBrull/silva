@@ -34,14 +34,14 @@ conda install --name silva-clang --channel conda-forge compiler-rt=19 compiler-r
 
 ```bash
 rm -rf build/
-cmake -S. -Bbuild/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
-ninja -Cbuild/
-ninja -Cbuild/ && ./build/cpp/silva_test
-ninja -Cbuild/ && ./build/cpp/silva_tokenization filename=silva/fern/simple.fern
-ninja -Cbuild/ && ./build/cpp/silva_fern filename=silva/fern/simple.fern process=direct/string root-based=false
-ninja -Cbuild/ && ./build/cpp/silva_fern filename=silva/fern/broken.fern process=direct/string root-based=true
-ninja -Cbuild/ && ./build/cpp/silva_seed silva/seed/test.seed
-ninja -Cbuild/ && ./build/cpp/silva_seed silva/seed/test.seed silva/seed/test.code
-ninja -Cbuild/ && ./build/cpp/silva_seed scratchpad/silva.seed scratchpad/test-01.silva
-ninja -Cbuild/ && ./build/cpp/silva_seed scratchpad/silva.seed scratchpad/std.silva
+cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+ninja -C build/
+ninja -C build/ && ./build/cpp/silva_test
+ninja -C build/ && ./build/cpp/silva_tokenization silva/fern/simple.fern
+ninja -C build/ && ./build/cpp/silva_fern silva/fern/simple.fern
+ninja -C build/ && ./build/cpp/silva_fern silva/fern/broken.fern process=parse_tree/graphviz_show root-based=true
+ninja -C build/ && ./build/cpp/silva_seed silva/seed/test.seed
+ninja -C build/ && ./build/cpp/silva_seed silva/seed/test.seed silva/seed/test.code
+ninja -C build/ && ./build/cpp/silva_seed scratchpad/silva.seed scratchpad/test-01.silva
+ninja -C build/ && ./build/cpp/silva_seed scratchpad/silva.seed scratchpad/std.silva
 ```

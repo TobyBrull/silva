@@ -7,15 +7,16 @@
 using namespace silva;
 
 expected_t<void>
-silva_main()
+silva_main(span_t<string_view_t> cmdline_args)
 {
-  const auto arg_filename = SILVA_EXPECT_FWD(env_context_get("filename"));
-  const auto arg_process  = SILVA_EXPECT_FWD(env_context_get("process"));
-  const bool arg_root =
-      SILVA_EXPECT_FWD_IF(env_context_get_as<bool>("root-based"), MAJOR).value_or(false);
+  const index_t m = cmdline_args.size();
+  SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
+
+  const auto arg_process = env_context_get("process").value_or("direct/string");
+  const bool arg_root    = env_context_get_as<bool>("root-based").value_or(false);
 
   token_context_t tc;
-  auto tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), arg_filename));
+  auto tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
   unique_ptr_t<parse_tree_t> pt;
   auto fpr = fern_seed_engine(tc.ptr());
   if (arg_root) {
@@ -80,4 +81,4 @@ silva_main()
 
   return {};
 }
-SILVA_MAIN(silva_main);
+SILVA_MAIN_1(silva_main);
