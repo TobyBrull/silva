@@ -10,7 +10,7 @@ using namespace silva;
 TEST_CASE("fern", "[fern]")
 {
   token_context_t tc;
-  const string_t fern_text = R"([
+  const string_view_t fern_text = R"([
   none
   true
   'test' : 'Hello'
@@ -22,10 +22,10 @@ TEST_CASE("fern", "[fern]")
     3
   ]
 ])";
-  const auto tt            = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", fern_text)));
-  const auto pt_1          = share(SILVA_EXPECT_REQUIRE(fern_parse(tt)));
-  const auto fpr           = fern_seed_engine(tc.ptr());
-  const auto pt_2          = SILVA_EXPECT_REQUIRE(fpr->apply(tt, tc.name_id_of("Fern")));
+  const auto tt                 = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", fern_text)));
+  const auto pt_1               = share(SILVA_EXPECT_REQUIRE(fern_parse(tt)));
+  const auto fpr                = fern_seed_engine(tc.ptr());
+  const auto pt_2               = SILVA_EXPECT_REQUIRE(fpr->apply(tt, tc.name_id_of("Fern")));
   CHECK(pt_1->nodes == pt_2->nodes);
   const fern_t fern       = SILVA_EXPECT_REQUIRE(fern_create(pt_1.get()));
   const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(fern_to_string(pt_1.get()));

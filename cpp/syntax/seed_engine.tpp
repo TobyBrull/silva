@@ -7,7 +7,7 @@ using namespace silva;
 TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
 {
   token_context_t tc;
-  const string_t frog_seed = R"'(
+  const string_view_t frog_seed = R"'(
     - Frog = [
       - X = Rule *
       - Rule = RuleName Expr
@@ -19,8 +19,8 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
       ]
     ]
   )'";
-  auto fs_tt               = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_seed)));
-  auto fs_pt               = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
+  auto fs_tt                    = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_seed)));
+  auto fs_pt                    = share(SILVA_EXPECT_REQUIRE(seed_parse(fs_tt)));
   seed_engine_t se(tc.ptr());
   SILVA_EXPECT_REQUIRE(se.add_complete(fs_pt));
   const string_view_t expected_seed_pt = R"(
@@ -78,7 +78,7 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
   const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(se.seed_parse_trees.front()->span().to_string())};
   CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
-  const string_t frog_source_code = R"'(
+  const string_view_t frog_source_code = R"'(
     keyword1 a b c
     keyword2 d e
     keyword1 f
@@ -112,16 +112,18 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
 
 TEST_CASE("multiple-snippets", "[seed_engine_t]")
 {
-  token_context_t tc;
-  const string_t snip1 = R"'(
+  const string_view_t snip1 = R"'(
     - Foo = [
-      X = 'a' 'b' 'c' Silva.Bar ?
+      - X = 'a' 'b' 'c' Silva.Bar ?
     ]
   )'";
-  const string_t snip2 = R"'(
+  const string_view_t snip2 = R"'(
     - Bar = [
-      X = 'x' 'y' 'z' Silva.Foo ?
+      - X = 'x' 'y' 'z' Silva.Foo ?
     ]
   )'";
+  token_context_t tc;
   seed_engine_t se(tc.ptr());
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("snip1.seed", snip1));
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("snip2.seed", snip2));
 }
