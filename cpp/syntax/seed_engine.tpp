@@ -108,20 +108,34 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
   CHECK(frog_pt_str == expected.substr(1));
 }
 
-TEST_CASE("multiple-snippets", "[seed_engine_t]")
+TEST_CASE("multiple-texts", "[seed_engine_t]")
 {
-  const string_view_t snip1 = R"'(
+  const string_view_t text1_seed = R"'(
     - Foo = [
       - X = 'a' 'b' 'c' Silva.Bar ?
     ]
   )'";
-  const string_view_t snip2 = R"'(
+  const string_view_t text2_seed = R"'(
     - Bar = [
+      - Blub = 'u' 'v' 'w'
       - X = 'x' 'y' 'z' Silva.Foo ?
     ]
   )'";
   token_context_t tc;
   seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_REQUIRE(se.add_complete_file("snip1.seed", snip1));
-  SILVA_EXPECT_REQUIRE(se.add_complete_file("snip2.seed", snip2));
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
+  SILVA_EXPECT_REQUIRE(se.add_complete_file("text2.seed", text2_seed));
+
+  const string_view_t code     = R"'(
+    a b c x y z a b c
+  )'";
+  auto tt                      = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", code)));
+  auto pt                      = share(SILVA_EXPECT_REQUIRE(se.apply(tt, tc.name_id_of("Foo"))));
+  const string_view_t expected = R"(
+[0]Silva.Foo                                      a b ... b c
+  [0]Silva.Bar                                    x y ... b c
+    [0]Silva.Foo                                  a b c
+)";
+  const string_t result_str{SILVA_EXPECT_REQUIRE(pt->span().to_string())};
+  CHECK(result_str == expected.substr(1));
 }

@@ -405,8 +405,7 @@ namespace silva {
   {
     auto tt = SILVA_EXPECT_FWD(tokenize(tcp, std::move(filepath), std::move(text)));
     auto pt = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
-    // const auto x = SILVA_EXPECT_FWD(parse_tree_to_string(*pt));
-    // fmt::print("{}\n", x);
+    // fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_string()));
     SILVA_EXPECT_FWD(add_complete(std::move(pt)));
     return {};
   }
@@ -414,11 +413,8 @@ namespace silva {
   namespace impl {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* se = nullptr;
-      token_context_ptr_t tcp = se->seed_parse_trees.front()->tokenization->context;
+      token_context_ptr_t tcp = se->tcp;
       name_id_style_t fnis    = seed_name_style(tcp);
-
-      const tokenization_t& s_tokenization = *se->seed_parse_trees.front()->tokenization;
-      const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
       const tokenization_t& t_tokenization = *tokenization;
       const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
@@ -471,7 +467,7 @@ namespace silva {
 
       expected_t<void> check()
       {
-        SILVA_EXPECT(s_tokenization.context.get() == t_tokenization.context.get(),
+        SILVA_EXPECT(tcp == t_tokenization.context,
                      MAJOR,
                      "Seed and target parse-trees/tokenizations must be in same token_context_t");
         return {};
@@ -482,14 +478,14 @@ namespace silva {
         auto ss            = stake();
         const auto& s_node = pts[0];
         SILVA_EXPECT(s_node.rule_name == fni_term, MAJOR);
-        const token_id_t s_front_ti = s_tokens[s_node.token_begin];
+        const token_id_t s_front_ti = pts.tokenization->tokens[s_node.token_begin];
         if (s_front_ti == ti_eof) {
           SILVA_EXPECT_PARSE(num_tokens_left() == 0, "Expected end of file");
           return ss.commit();
         }
         SILVA_EXPECT_PARSE(num_tokens_left() > 0,
                            "Reached end of token-stream when looking for {}",
-                           s_tokenization.token_info_get(s_node.token_begin)->str);
+                           pts.tokenization->token_info_get(s_node.token_begin)->str);
         if ((s_front_ti == ti_id || s_front_ti == ti_op) && s_node.num_tokens() == 3) {
           SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
           if (s_front_ti == ti_id) {
@@ -501,7 +497,7 @@ namespace silva {
           else {
             SILVA_EXPECT(false, MAJOR, "Only 'identifier' and 'operator' may have regexes");
           }
-          const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
+          const token_id_t regex_token_id = pts.tokenization->tokens[s_node.token_begin + 2];
           const auto it                   = se->regexes.find(regex_token_id);
           SILVA_EXPECT(it != se->regexes.end() && it->second.has_value(), MAJOR);
           const std::regex& re          = it->second.value();
@@ -547,7 +543,7 @@ namespace silva {
             ;
           }
           else {
-            const index_t s_token_id = s_tokenization.tokens[s_node.token_begin];
+            const index_t s_token_id = pts.tokenization->tokens[s_node.token_begin];
             const auto it            = se->string_to_keyword.find(s_token_id);
             SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
             const token_id_t t_expected_ti = it->second;
@@ -737,7 +733,7 @@ namespace silva {
           return SILVA_EXPECT_FWD(handle_rule_axe(t_rule_name), "Expected Axe");
         }
         else {
-          const token_id_t rule_token = s_tokenization.tokens[s_node.token_begin];
+          const token_id_t rule_token = pts.tokenization->tokens[s_node.token_begin];
           SILVA_EXPECT(rule_token == ti_equal || rule_token == ti_alias,
                        MAJOR,
                        "Expected one of [ '=' '=>' ]");
