@@ -87,8 +87,8 @@ namespace silva {
       nodes.push_back((*this)[i]);
     }
     return parse_tree_t{
-        .nodes        = std::move(nodes),
         .tokenization = tokenization,
+        .nodes        = std::move(nodes),
     };
   }
 }

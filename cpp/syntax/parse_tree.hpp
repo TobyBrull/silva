@@ -18,8 +18,8 @@ namespace silva {
   };
 
   struct parse_tree_t {
-    vector_t<parse_tree_node_t> nodes;
     shared_ptr_t<const tokenization_t> tokenization;
+    vector_t<parse_tree_node_t> nodes;
 
     auto span(this auto&&);
   };

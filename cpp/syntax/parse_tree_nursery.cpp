@@ -42,8 +42,8 @@ namespace silva {
   parse_tree_t parse_tree_nursery_t::finish() &&
   {
     return parse_tree_t{
-        .nodes        = std::move(tree),
         .tokenization = std::move(tokenization),
+        .nodes        = std::move(tree),
     };
   }
 
