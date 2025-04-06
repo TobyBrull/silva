@@ -13,7 +13,7 @@
 
 namespace silva {
 
-  // A program in the Seed language describes a way to turn a tokenization
+  // A program in the Seed language describes a way to turn a tokenization_t
   // into a parse_tree_t. The actual algorithm to do this is implemented
   // in "seed_engine_t".
 

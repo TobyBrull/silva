@@ -568,10 +568,16 @@ namespace silva {
         return ss.commit();
       }
 
-      std::pair<index_t, index_t> get_min_max_repeat(const token_id_t op_ti)
+      struct node_and_error_t {
+        parse_tree_node_t node;
+        optional_t<error_t> maybe_last_error;
+      };
+
+      expected_t<pair_t<index_t, index_t>> get_min_max_repeat(const token_id_t op_ti)
       {
         index_t min_repeat = 0;
         index_t max_repeat = std::numeric_limits<index_t>::max();
+        SILVA_EXPECT(op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus, MAJOR);
         if (op_ti == ti_ques) {
           max_repeat = 1;
         }
@@ -581,42 +587,37 @@ namespace silva {
         else if (op_ti == ti_plus) {
           min_repeat = 1;
         }
-        return {min_repeat, max_repeat};
+        return {pair_t{min_repeat, max_repeat}};
       }
 
       expected_t<parse_tree_node_t> s_expr_postfix(const parse_tree_span_t pts)
       {
-        auto ss                = stake();
-        const auto children    = SILVA_EXPECT_FWD(pts.get_children<1>());
-        const token_id_t op_ti = tcp->name_infos[pts[0].rule_name].base_name;
-        if (op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus) {
-          const auto [min_repeat, max_repeat] = get_min_max_repeat(op_ti);
-          index_t repeat_count                = 0;
-          optional_t<error_t> last_error;
-          while (repeat_count < max_repeat) {
-            if (auto result = s_expr(pts.sub_tree_span_at(children[0])); result.has_value()) {
-              ss.add_proto_node(*result);
-              repeat_count += 1;
-            }
-            else {
-              last_error = std::move(result).error();
-              break;
-            }
+        auto ss                             = stake();
+        const auto children                 = SILVA_EXPECT_FWD(pts.get_children<1>());
+        const token_id_t op_ti              = tcp->name_infos[pts[0].rule_name].base_name;
+        const auto [min_repeat, max_repeat] = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
+        index_t repeat_count                = 0;
+        optional_t<error_t> last_error;
+        while (repeat_count < max_repeat) {
+          if (auto result = s_expr(pts.sub_tree_span_at(children[0])); result.has_value()) {
+            ss.add_proto_node(*result);
+            repeat_count += 1;
           }
-          if (repeat_count < min_repeat) {
-            small_vector_t<error_t, 1> maybe_child_error;
-            if (last_error.has_value()) {
-              maybe_child_error.emplace_back(std::move(last_error).value());
-            }
-            return std::unexpected(make_error(MINOR,
-                                              maybe_child_error,
-                                              "min-repeat (={}) not reached, only found {}",
-                                              min_repeat,
-                                              repeat_count));
+          else {
+            last_error = std::move(result).error();
+            break;
           }
         }
-        else {
-          SILVA_EXPECT(false, MAJOR);
+        if (repeat_count < min_repeat) {
+          small_vector_t<error_t, 1> maybe_child_error;
+          if (last_error.has_value()) {
+            maybe_child_error.emplace_back(std::move(last_error).value());
+          }
+          return std::unexpected(make_error(MINOR,
+                                            maybe_child_error,
+                                            "min-repeat (={}) not reached, only found {}",
+                                            min_repeat,
+                                            repeat_count));
         }
         return ss.commit();
       }
