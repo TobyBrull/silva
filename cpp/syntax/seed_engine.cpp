@@ -473,7 +473,24 @@ namespace silva {
         return {};
       }
 
-      expected_t<parse_tree_node_t> s_terminal(const parse_tree_span_t pts)
+      struct node_and_error_t {
+        parse_tree_node_t node;
+        error_t last_error;
+
+        node_and_error_t(parse_tree_node_t node) : node(node) {}
+        node_and_error_t(parse_tree_node_t node, error_t last_error)
+          : node(node), last_error(std::move(last_error))
+        {
+        }
+
+        parse_tree_node_t as_node() &&
+        {
+          last_error.clear();
+          return std::move(node);
+        }
+      };
+
+      expected_t<node_and_error_t> s_terminal(const parse_tree_span_t pts)
       {
         auto ss            = stake();
         const auto& s_node = pts[0];
@@ -556,7 +573,7 @@ namespace silva {
         return ss.commit();
       }
 
-      expected_t<parse_tree_node_t> s_expr_prefix(const parse_tree_span_t pts)
+      expected_t<node_and_error_t> s_expr_prefix(const parse_tree_span_t pts)
       {
         {
           auto ss             = stake();
@@ -567,23 +584,6 @@ namespace silva {
         auto ss = stake();
         return ss.commit();
       }
-
-      struct node_and_error_t {
-        parse_tree_node_t node;
-        error_t last_error;
-
-        node_and_error_t(parse_tree_node_t node) : node(node) {}
-        node_and_error_t(parse_tree_node_t node, error_t last_error)
-          : node(node), last_error(std::move(last_error))
-        {
-        }
-
-        parse_tree_node_t as_node() &&
-        {
-          last_error.clear();
-          return std::move(node);
-        }
-      };
 
       expected_t<pair_t<index_t, index_t>> get_min_max_repeat(const token_id_t op_ti)
       {
@@ -634,7 +634,7 @@ namespace silva {
         return node_and_error_t{ss.commit(), std::move(last_error)};
       }
 
-      expected_t<parse_tree_node_t> s_expr_concat(const parse_tree_span_t pts)
+      expected_t<node_and_error_t> s_expr_concat(const parse_tree_span_t pts)
       {
         const index_t orig_token_index = token_index;
         auto ss                        = stake();
@@ -658,7 +658,7 @@ namespace silva {
         return ss.commit();
       }
 
-      expected_t<parse_tree_node_t> s_expr_and(const parse_tree_span_t pts)
+      expected_t<node_and_error_t> s_expr_and(const parse_tree_span_t pts)
       {
         optional_t<stake_t> ss;
         for (const auto [child_node_index, child_index]: pts.children_range()) {
@@ -670,7 +670,7 @@ namespace silva {
         return ss->commit();
       }
 
-      expected_t<parse_tree_node_t> s_expr_or(const parse_tree_span_t pts)
+      expected_t<node_and_error_t> s_expr_or(const parse_tree_span_t pts)
       {
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
@@ -730,21 +730,25 @@ namespace silva {
         }
       }
 
-      expected_t<parse_tree_node_t> handle_rule_axe(const name_id_t t_rule_name)
+      expected_t<node_and_error_t> handle_rule_axe(const name_id_t t_rule_name)
       {
         const auto it = se->parse_axes.find(t_rule_name);
         SILVA_EXPECT(it != se->parse_axes.end(), MAJOR);
         auto ss{stake()};
         const seed_engine_t::parse_axe_data_t& parse_axe_data = it->second;
         const delegate_t<expected_t<parse_tree_node_t>()>::pack_t pack{
-            [&]() { return handle_rule(parse_axe_data.atom_rule_name); },
+            [&]() -> expected_t<parse_tree_node_t> {
+              node_and_error_t result =
+                  SILVA_EXPECT_FWD(handle_rule(parse_axe_data.atom_rule_name));
+              return std::move(result.node);
+            },
         };
         ss.add_proto_node(SILVA_EXPECT_FWD(
             parse_axe_data.parse_axe.apply(*this, parse_axe_data.atom_rule_name, pack.delegate)));
         return ss.commit();
       }
 
-      expected_t<parse_tree_node_t> handle_rule(const name_id_t t_rule_name)
+      expected_t<node_and_error_t> handle_rule(const name_id_t t_rule_name)
       {
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
@@ -776,8 +780,8 @@ namespace silva {
                                               "{} Expected {}",
                                               token_position_at(orig_token_index),
                                               fnis.absolute(t_rule_name));
-            ss_rule.add_proto_node(std::move(result).as_node());
-            return ss_rule.commit();
+            ss_rule.add_proto_node(std::move(result.node));
+            return node_and_error_t{ss_rule.commit(), std::move(result.last_error)};
           }
           else {
             auto ss     = stake();
@@ -785,8 +789,8 @@ namespace silva {
                                               "{} Expected {}",
                                               token_position_at(orig_token_index),
                                               fnis.absolute(t_rule_name));
-            ss.add_proto_node(std::move(result).as_node());
-            return ss.commit();
+            ss.add_proto_node(std::move(result.node));
+            return node_and_error_t{ss.commit(), std::move(result.last_error)};
           }
         }
       }
@@ -800,9 +804,9 @@ namespace silva {
     impl::seed_engine_nursery_t nursery(std::move(tokenization), this);
     SILVA_EXPECT_FWD(nursery.check());
     expected_traits_t expected_traits{.materialize_fwd = true};
-    const parse_tree_node_t ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
-    SILVA_EXPECT(ptn.num_children == 1, ASSERT);
-    SILVA_EXPECT(ptn.subtree_size == nursery.tree.size(), ASSERT);
+    const auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
+    SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
+    SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
     return {std::make_unique<parse_tree_t>(std::move(nursery).finish())};
   }
 }
