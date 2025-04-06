@@ -89,6 +89,11 @@ namespace silva {
     }
   }
 
+  bool error_t::is_empty() const
+  {
+    return context.is_nullptr();
+  }
+
   void error_t::release()
   {
     if (!context.is_nullptr()) {

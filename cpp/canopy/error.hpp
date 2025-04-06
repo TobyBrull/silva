@@ -37,6 +37,8 @@ namespace silva {
 
     void clear();
 
+    bool is_empty() const;
+
     void release();
 
     string_or_view_t message() const;

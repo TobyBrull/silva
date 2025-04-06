@@ -570,7 +570,19 @@ namespace silva {
 
       struct node_and_error_t {
         parse_tree_node_t node;
-        optional_t<error_t> maybe_last_error;
+        error_t last_error;
+
+        node_and_error_t(parse_tree_node_t node) : node(node) {}
+        node_and_error_t(parse_tree_node_t node, error_t last_error)
+          : node(node), last_error(std::move(last_error))
+        {
+        }
+
+        parse_tree_node_t as_node() &&
+        {
+          last_error.clear();
+          return std::move(node);
+        }
       };
 
       expected_t<pair_t<index_t, index_t>> get_min_max_repeat(const token_id_t op_ti)
@@ -590,17 +602,17 @@ namespace silva {
         return {pair_t{min_repeat, max_repeat}};
       }
 
-      expected_t<parse_tree_node_t> s_expr_postfix(const parse_tree_span_t pts)
+      expected_t<node_and_error_t> s_expr_postfix(const parse_tree_span_t pts)
       {
         auto ss                             = stake();
         const auto children                 = SILVA_EXPECT_FWD(pts.get_children<1>());
         const token_id_t op_ti              = tcp->name_infos[pts[0].rule_name].base_name;
         const auto [min_repeat, max_repeat] = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
         index_t repeat_count                = 0;
-        optional_t<error_t> last_error;
+        error_t last_error;
         while (repeat_count < max_repeat) {
           if (auto result = s_expr(pts.sub_tree_span_at(children[0])); result.has_value()) {
-            ss.add_proto_node(*result);
+            ss.add_proto_node(std::move(*result).as_node());
             repeat_count += 1;
           }
           else {
@@ -610,8 +622,8 @@ namespace silva {
         }
         if (repeat_count < min_repeat) {
           small_vector_t<error_t, 1> maybe_child_error;
-          if (last_error.has_value()) {
-            maybe_child_error.emplace_back(std::move(last_error).value());
+          if (!last_error.is_empty()) {
+            maybe_child_error.emplace_back(std::move(last_error));
           }
           return std::unexpected(make_error(MINOR,
                                             maybe_child_error,
@@ -619,14 +631,29 @@ namespace silva {
                                             min_repeat,
                                             repeat_count));
         }
-        return ss.commit();
+        return node_and_error_t{ss.commit(), std::move(last_error)};
       }
 
       expected_t<parse_tree_node_t> s_expr_concat(const parse_tree_span_t pts)
       {
-        auto ss = stake();
+        const index_t orig_token_index = token_index;
+        auto ss                        = stake();
+        error_nursery_t error_nursery;
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-          ss.add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(sub_s_node_index))));
+          auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index));
+          if (result.has_value()) {
+            if (!result->last_error.is_empty()) {
+              error_nursery.add_child_error(std::move(result->last_error));
+            }
+            ss.add_proto_node(std::move(result->node));
+          }
+          else {
+            error_nursery.add_child_error(std::move(result).error());
+            return std::unexpected(std::move(error_nursery)
+                                       .finish(MINOR,
+                                               "{} Expected to parse sequence",
+                                               token_position_at(orig_token_index)));
+          }
         }
         return ss.commit();
       }
@@ -636,7 +663,8 @@ namespace silva {
         optional_t<stake_t> ss;
         for (const auto [child_node_index, child_index]: pts.children_range()) {
           ss.emplace(stake());
-          ss->add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(child_node_index))));
+          auto result = SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(child_node_index)));
+          ss->add_proto_node(std::move(result).as_node());
         }
         SILVA_EXPECT(ss.has_value(), MAJOR);
         return ss->commit();
@@ -650,7 +678,7 @@ namespace silva {
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
           auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index));
           if (result.has_value()) {
-            retval = std::move(result).value();
+            retval = std::move(*result).as_node();
             break;
           }
           else {
@@ -666,7 +694,7 @@ namespace silva {
                                            token_position_at(orig_token_index)));
       }
 
-      expected_t<parse_tree_node_t> s_expr(const parse_tree_span_t pts)
+      expected_t<node_and_error_t> s_expr(const parse_tree_span_t pts)
       {
         const name_id_t s_rule_name = pts[0].rule_name;
         if (tcp->name_id_is_parent(fni_expr_parens, s_rule_name)) {
@@ -744,18 +772,20 @@ namespace silva {
           if (rule_token == ti_equal) {
             auto ss_rule = stake();
             ss_rule.create_node(t_rule_name);
-            ss_rule.add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
-                                                    "{} Expected rule {}",
-                                                    token_position_at(orig_token_index),
-                                                    fnis.absolute(t_rule_name)));
+            auto result = SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
+                                           "{} Expected rule {}",
+                                           token_position_at(orig_token_index),
+                                           fnis.absolute(t_rule_name));
+            ss_rule.add_proto_node(std::move(result).as_node());
             return ss_rule.commit();
           }
           else {
-            auto ss = stake();
-            ss.add_proto_node(SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
-                                               "{} Expected alias {}",
-                                               token_position_at(orig_token_index),
-                                               fnis.absolute(t_rule_name)));
+            auto ss     = stake();
+            auto result = SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
+                                           "{} Expected alias {}",
+                                           token_position_at(orig_token_index),
+                                           fnis.absolute(t_rule_name));
+            ss.add_proto_node(std::move(result).as_node());
             return ss.commit();
           }
         }

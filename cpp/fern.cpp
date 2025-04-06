@@ -94,7 +94,7 @@ namespace silva {
 
         return std::unexpected(std::move(error_nursery)
                                    .finish(MINOR,
-                                           "{} Expected Fern or Value",
+                                           "{} Expected LabeledItem",
                                            token_position_at(ss_rule.orig_state.token_index)));
       }
 
