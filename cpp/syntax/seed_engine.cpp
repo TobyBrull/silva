@@ -772,19 +772,19 @@ namespace silva {
           if (rule_token == ti_equal) {
             auto ss_rule = stake();
             ss_rule.create_node(t_rule_name);
-            auto result = SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
-                                           "{} Expected rule {}",
-                                           token_position_at(orig_token_index),
-                                           fnis.absolute(t_rule_name));
+            auto result = SILVA_EXPECT_FWD_AS(s_expr(pts.sub_tree_span_at(children[0])),
+                                              "{} Expected {}",
+                                              token_position_at(orig_token_index),
+                                              fnis.absolute(t_rule_name));
             ss_rule.add_proto_node(std::move(result).as_node());
             return ss_rule.commit();
           }
           else {
             auto ss     = stake();
-            auto result = SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(children[0])),
-                                           "{} Expected alias {}",
-                                           token_position_at(orig_token_index),
-                                           fnis.absolute(t_rule_name));
+            auto result = SILVA_EXPECT_FWD_AS(s_expr(pts.sub_tree_span_at(children[0])),
+                                              "{} Expected {}",
+                                              token_position_at(orig_token_index),
+                                              fnis.absolute(t_rule_name));
             ss.add_proto_node(std::move(result).as_node());
             return ss.commit();
           }

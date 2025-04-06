@@ -43,6 +43,9 @@ namespace silva {
 
     string_or_view_t message() const;
 
+    template<typename... MementoArgs>
+    void replace_message(MementoArgs&&...);
+
     string_t to_string() const;
 
     // Rewrite the error to resolve all pointers/references.
@@ -64,12 +67,12 @@ namespace silva {
     void add_child_error(error_t child_error);
 
     template<typename... MementoArgs>
-    error_t finish(error_level_t, MementoArgs&&... memento_args) &&;
+    error_t finish(error_level_t, MementoArgs&&...) &&;
 
     error_t finish_single_child_as_is(error_level_t) &&;
 
     template<typename... MementoArgs>
-    error_t finish_short(error_level_t, MementoArgs&&... memento_args) &&;
+    error_t finish_short(error_level_t, MementoArgs&&...) &&;
   };
 
   template<typename... MementoArgs>
@@ -79,6 +82,16 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+
+  template<typename... MementoArgs>
+  void error_t::replace_message(MementoArgs&&... memento_args)
+  {
+    SILVA_ASSERT(!context.is_nullptr() && node_index + 1 == context->tree.nodes.size());
+    error_tree_t::node_t& node = context->tree.nodes[node_index];
+    context->memento_buffer.resize_offset(node.memento_buffer_offset);
+    context->memento_buffer.append_memento(std::forward<MementoArgs>(memento_args)...);
+  }
+
   template<typename... MementoArgs>
   error_t make_error(const error_level_t error_level,
                      span_t<error_t> child_errors,

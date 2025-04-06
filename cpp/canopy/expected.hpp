@@ -70,6 +70,26 @@ namespace silva {
   })
 
 // Semantics:
+// Like SILVA_EXPECT_FWD, but replaces the forwarded error message with the one given to this macro.
+//
+// Usage: Like SILVA_EXPECT_FWD()
+#define SILVA_EXPECT_FWD_AS(expression, ...)                              \
+  ({                                                                      \
+    auto __silva_result = (expression);                                   \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    if (!__silva_result) {                                                \
+      auto error = std::move(__silva_result).error();                     \
+      using enum error_level_t;                                           \
+      silva::impl::silva_expect_fwd_as(error __VA_OPT__(, ) __VA_ARGS__); \
+      if (expected_traits.materialize_fwd) {                              \
+        error.materialize();                                              \
+      }                                                                   \
+      return std::unexpected(std::move(error));                           \
+    }                                                                     \
+    std::move(__silva_result).value();                                    \
+  })
+
+// Semantics:
 // Must only be used inside functions whose return value is "expected_t<...>". Also the provided
 // "expression" must evaluate to a type of the form "expected_t<Result>". If the result of
 // "expression" contains an error with level greater or equal to the provided "error_level", this
@@ -154,5 +174,20 @@ namespace silva::impl {
   error_t silva_expect_fwd(error_t error, Args&&... args)
   {
     return silva_expect_fwd(std::move(error), error_level_t::NO_ERROR, std::forward<Args>(args)...);
+  }
+
+  template<typename... Args>
+  void silva_expect_fwd_as(error_t& error, const error_level_t error_level, Args&&... args)
+  {
+    if (error_level != error_level_t::NO_ERROR) {
+      error.level = error_level;
+    }
+    error.replace_message(std::forward<Args>(args)...);
+  }
+
+  template<typename... Args>
+  void silva_expect_fwd_as(error_t& error, Args&&... args)
+  {
+    silva_expect_fwd_as(error, error_level_t::NO_ERROR, std::forward<Args>(args)...);
   }
 }
