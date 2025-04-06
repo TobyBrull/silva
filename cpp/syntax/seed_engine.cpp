@@ -651,8 +651,9 @@ namespace silva {
             error_nursery.add_child_error(std::move(result).error());
             return std::unexpected(std::move(error_nursery)
                                        .finish(MINOR,
-                                               "{} Expected to parse sequence",
-                                               token_position_at(orig_token_index)));
+                                               "{} Expected to parse sequence ( {} )",
+                                               token_position_at(orig_token_index),
+                                               pts.token_range()));
           }
         }
         return ss.commit();
@@ -690,8 +691,9 @@ namespace silva {
         }
         return std::unexpected(std::move(error_nursery)
                                    .finish(MINOR,
-                                           "{} Expected to parse alternation '{{...}}'",
-                                           token_position_at(orig_token_index)));
+                                           "{} Expected to parse alternation ( {} )",
+                                           token_position_at(orig_token_index),
+                                           pts.token_range()));
       }
 
       expected_t<node_and_error_t> s_expr(const parse_tree_span_t pts)

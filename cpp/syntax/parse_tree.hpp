@@ -37,6 +37,8 @@ namespace silva {
 
     parse_tree_span_t sub_tree_span_at(index_t) const;
 
+    token_range_t token_range() const;
+
     enum class parse_tree_printing_t {
       ABSOLUTE,
       RELATIVE,
