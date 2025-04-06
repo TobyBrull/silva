@@ -1,11 +1,11 @@
 - Test = 'import' Imports 'interface' Interface 'implementation' Implementation end_of_file
-- Imports = string*
-- Interface = Command*
-- Implementation = Command*
+- Imports = string *
+- Interface = Command *
+- Implementation = Command *
 
 - Command = 'namespace' NestedNamespace | TypeDefn | FuncDefn
 
-- NestedNamespace = Namespace ( '.' Namespace )*
+- NestedNamespace = Namespace ( '.' Namespace ) *
 - Namespace = identifier
 
 - TypeName = identifier / '_t$' | StructBody
@@ -17,15 +17,15 @@
 
 - TypeDefn = 'type' TypeName ':' Type
 - FuncDefn = 'func' FuncName ':' FuncHeader ( 'proto' | FuncBody )
-- FuncHeader = '-*-' | Type ('->' Type)?
-- StructBody = '[' ((MemberName ':')? Type ',')* ']'
-- StructValue = '[' (Expr ',')* ']'
-- FuncBody = '{' (Stmt ';')* '}'
+- FuncHeader = '-*-' | Type ( '->' Type ) ?
+- StructBody = '[' ( ( MemberName ':' ) ? Type ',') * ']'
+- StructValue = '[' ( Expr ',' ) * ']'
+- FuncBody = '{' ( Stmt ';' ) * '}'
 - MemberName = identifier
 
 - Stmt => Func | StmtLoop | StmtIf | Expr | Keyword
 - StmtLoop = 'loop' FuncBody
-- StmtIf = 'if' '(' Expr ')' FuncBody ( 'else' ( StmtIf | FuncBody ) )?
+- StmtIf = 'if' '(' Expr ')' FuncBody ( 'else' ( StmtIf | FuncBody ) ) ?
 - Keyword = 'break' 'continue'
 
 - Expr =/ Atom [
