@@ -97,7 +97,7 @@ namespace silva {
 namespace silva {
   inline sprite_t::~sprite_t()
   {
-    SILVA_ASSERT(ptr_count == 0);
+    SILVA_ASSERT(ptr_count == 0, "ptr_count should be zero, was {}", ptr_count.load());
   }
 
   inline sprite_t::sprite_t(sprite_t&&)
