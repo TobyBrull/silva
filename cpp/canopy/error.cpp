@@ -120,7 +120,7 @@ namespace silva {
     memento_buffer_t new_memento_buffer;
     hashmap_t<memento_buffer_offset_t, memento_buffer_offset_t> offset_mapping;
     memento_buffer.for_each_memento(
-        [&](const memento_buffer_offset_t offset, const memento_t& memento) {
+        [&](const memento_buffer_offset_t offset, const memento_ptr_t& memento) {
           offset_mapping[offset] = new_memento_buffer.append_memento_materialized(memento);
         });
     const auto& map_offset = [&offset_mapping](memento_buffer_offset_t& offset) {

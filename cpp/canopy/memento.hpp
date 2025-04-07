@@ -20,17 +20,61 @@ namespace silva {
   };
   memento_item_type_t memento_item_type_custom();
 
-  using memento_buffer_offset_t = index_t;
+  // A "memento-item" is a type-erased value with the property that it can be converted to a string.
+  // A "memento" is a list of memento-items. A "memento-buffer" is a list of mementos.
+  //
+  // A memento-item can only contain of value of the types specified by "memento_item_type_t". This
+  // can either be a native type (cf. definition of "memento_item_type_t") or a user-defined type
+  // (cf. "memento_item_type_custom()"). See the "Widget" class in the "memento.tpp" file for an
+  // example of how to enable custom class for mementoization.
 
-  struct memento_buffer_t;
-
-  struct memento_item_t {
+  struct memento_item_ptr_t {
     const byte_t* ptr = nullptr;
 
     index_t size() const;
     memento_item_type_t type() const;
 
     string_or_view_t to_string_or_view() const;
+  };
+
+  //  - 4 bytes: total size (including this field)
+  //  - 4 bytes: number of items
+  //  - memento_items (the first one is always expected to be a format-string):
+  //    - 4 bytes: total size of item (including this field)
+  //    - 4 bytes: memento_item_type_t
+  //    - payload
+  struct memento_ptr_t {
+    const byte_t* ptr = nullptr;
+
+    index_t size() const;
+    index_t num_items() const;
+
+    memento_item_ptr_t at_offset(index_t) const;
+
+    string_or_view_t to_string_or_view() const;
+
+    template<typename Visitor>
+      requires std::invocable<Visitor, index_t, const memento_item_ptr_t&>
+    void for_each_item(Visitor) const;
+  };
+
+  using memento_buffer_offset_t = index_t;
+
+  struct memento_buffer_t {
+    string_t buffer;
+
+    memento_ptr_t at_offset(memento_buffer_offset_t) const;
+
+    void resize_offset(memento_buffer_offset_t);
+
+    memento_buffer_offset_t append_memento_materialized(const memento_ptr_t&);
+
+    template<typename... Args>
+    memento_buffer_offset_t append_memento(const Args&...);
+
+    template<typename Visitor>
+      requires std::invocable<Visitor, memento_buffer_offset_t, const memento_ptr_t&>
+    void for_each_memento(Visitor) const;
   };
 
   template<typename T>
@@ -44,44 +88,6 @@ namespace silva {
     using callback_t = std::function<string_or_view_t(const byte_t*, index_t)>;
     static bool register_reader(memento_item_type_t, callback_t);
     static string_or_view_t apply(memento_item_type_t, const byte_t*, index_t size);
-  };
-
-  //  - 4 bytes: total size (including this field)
-  //  - 4 bytes: number of items
-  //  - memento_items (the first one is always expected to be a format-string):
-  //    - 4 bytes: total size of item (including this field)
-  //    - 4 bytes: memento_item_type_t
-  //    - payload
-  struct memento_t {
-    const byte_t* ptr = nullptr;
-
-    index_t size() const;
-    index_t num_items() const;
-
-    memento_item_t at_offset(index_t) const;
-
-    string_or_view_t to_string_or_view() const;
-
-    template<typename Visitor>
-      requires std::invocable<Visitor, index_t, const memento_item_t&>
-    void for_each_item(Visitor) const;
-  };
-
-  struct memento_buffer_t {
-    string_t buffer;
-
-    memento_t at_offset(memento_buffer_offset_t) const;
-
-    void resize_offset(memento_buffer_offset_t);
-
-    memento_buffer_offset_t append_memento_materialized(const memento_t&);
-
-    template<typename... Args>
-    memento_buffer_offset_t append_memento(const Args&...);
-
-    template<typename Visitor>
-      requires std::invocable<Visitor, memento_buffer_offset_t, const memento_t&>
-    void for_each_memento(Visitor) const;
   };
 }
 
@@ -198,25 +204,25 @@ namespace silva {
   }
 
   template<typename Visitor>
-    requires std::invocable<Visitor, memento_buffer_offset_t, const memento_item_t&>
-  void memento_t::for_each_item(Visitor visitor) const
+    requires std::invocable<Visitor, memento_buffer_offset_t, const memento_item_ptr_t&>
+  void memento_ptr_t::for_each_item(Visitor visitor) const
   {
     const index_t ss = size();
     index_t offset   = 8;
     while (offset < ss) {
-      memento_item_t memento_item = at_offset(offset);
+      memento_item_ptr_t memento_item = at_offset(offset);
       visitor(offset, memento_item);
       offset += memento_item.size();
     }
   }
 
   template<typename Visitor>
-    requires std::invocable<Visitor, memento_buffer_offset_t, const memento_t&>
+    requires std::invocable<Visitor, memento_buffer_offset_t, const memento_ptr_t&>
   void memento_buffer_t::for_each_memento(Visitor visitor) const
   {
     memento_buffer_offset_t offset = 0;
     while (offset < buffer.size()) {
-      memento_t memento = at_offset(offset);
+      memento_ptr_t memento = at_offset(offset);
       visitor(offset, memento);
       offset += memento.size();
     }

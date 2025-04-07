@@ -5,19 +5,19 @@
 namespace silva {
   using enum memento_item_type_t;
 
-  memento_item_type_t memento_item_t::type() const
+  memento_item_type_t memento_item_ptr_t::type() const
   {
     const uint32_t type = bit_cast_ptr<uint32_t>(ptr + 4);
     return static_cast<memento_item_type_t>(type);
   }
 
-  index_t memento_item_t::size() const
+  index_t memento_item_ptr_t::size() const
   {
     const uint32_t type = bit_cast_ptr<uint32_t>(ptr);
     return static_cast<index_t>(type);
   }
 
-  string_or_view_t memento_item_t::to_string_or_view() const
+  string_or_view_t memento_item_ptr_t::to_string_or_view() const
   {
     const index_t ss             = size();
     const memento_item_type_t tt = type();
@@ -82,13 +82,13 @@ namespace silva {
     SILVA_ASSERT(false, "Unkown memento-type {}", std::to_underlying(memento_item_type));
   }
 
-  index_t memento_t::size() const
+  index_t memento_ptr_t::size() const
   {
     const uint32_t retval = bit_cast_ptr<uint32_t>(ptr);
     return retval;
   }
 
-  index_t memento_t::num_items() const
+  index_t memento_ptr_t::num_items() const
   {
     const uint32_t retval = bit_cast_ptr<uint32_t>(ptr + 4);
     return retval;
@@ -106,17 +106,17 @@ namespace silva {
     }
   }
 
-  memento_item_t memento_t::at_offset(const index_t offset) const
+  memento_item_ptr_t memento_ptr_t::at_offset(const index_t offset) const
   {
-    return memento_item_t{.ptr = ptr + offset};
+    return memento_item_ptr_t{.ptr = ptr + offset};
   }
 
-  string_or_view_t memento_t::to_string_or_view() const
+  string_or_view_t memento_ptr_t::to_string_or_view() const
   {
     const uint32_t total_size = bit_cast_ptr<uint32_t>(ptr);
     const uint32_t num_items  = bit_cast_ptr<uint32_t>(ptr + 4);
     if (num_items == 1) {
-      memento_item_t item{.ptr = ptr + 8};
+      memento_item_ptr_t item{.ptr = ptr + 8};
       return item.to_string_or_view();
     }
     else {
@@ -124,7 +124,7 @@ namespace silva {
       index_t offset = 8;
       vector_t<string_t> args;
       while (offset < total_size) {
-        memento_item_t item{.ptr = ptr + offset};
+        memento_item_ptr_t item{.ptr = ptr + offset};
         args.push_back(string_t{item.to_string_or_view().get_view()});
         offset += item.size();
       }
@@ -134,12 +134,13 @@ namespace silva {
     }
   }
 
-  memento_buffer_offset_t memento_buffer_t::append_memento_materialized(const memento_t& memento)
+  memento_buffer_offset_t
+  memento_buffer_t::append_memento_materialized(const memento_ptr_t& memento)
   {
     const index_t retval = buffer.size();
     bit_append<uint32_t>(buffer, 0); // placeholder for total_size
     bit_append<uint32_t>(buffer, memento.num_items());
-    memento.for_each_item([&](const index_t offset, const memento_item_t& item) {
+    memento.for_each_item([&](const index_t offset, const memento_item_ptr_t& item) {
       const index_t old_size = buffer.size();
       bit_append<uint32_t>(buffer, 0); // placeholder for size
       bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::INVALID));
@@ -153,9 +154,9 @@ namespace silva {
     return retval;
   }
 
-  memento_t memento_buffer_t::at_offset(const memento_buffer_offset_t offset) const
+  memento_ptr_t memento_buffer_t::at_offset(const memento_buffer_offset_t offset) const
   {
-    return memento_t{.ptr = reinterpret_cast<const byte_t*>(buffer.data() + offset)};
+    return memento_ptr_t{.ptr = reinterpret_cast<const byte_t*>(buffer.data() + offset)};
   }
 
   void memento_buffer_t::resize_offset(const memento_buffer_offset_t new_size)
