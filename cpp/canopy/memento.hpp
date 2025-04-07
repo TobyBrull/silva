@@ -18,7 +18,7 @@ namespace silva {
 
     CUSTOM_BEGIN = 0x1000,
   };
-  constexpr memento_item_type_t memento_item_type_custom(index_t custom_begin_offset);
+  memento_item_type_t memento_item_type_custom();
 
   using memento_buffer_offset_t = index_t;
 
@@ -88,11 +88,12 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
-  constexpr memento_item_type_t memento_item_type_custom(const index_t custom_begin_offset)
+  inline memento_item_type_t memento_item_type_custom()
   {
     using enum memento_item_type_t;
-    const uint32_t custom_begin = std::to_underlying(CUSTOM_BEGIN);
-    return static_cast<memento_item_type_t>(custom_begin + custom_begin_offset);
+    static uint32_t next_custom = std::to_underlying(CUSTOM_BEGIN);
+    next_custom += 1;
+    return static_cast<memento_item_type_t>(next_custom);
   }
 
   template<>

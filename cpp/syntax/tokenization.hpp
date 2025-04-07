@@ -51,7 +51,7 @@ namespace silva {
 namespace silva {
   template<>
   struct memento_item_writer_t<token_position_t> {
-    constexpr inline static memento_item_type_t memento_item_type = memento_item_type_custom(1);
+    inline static memento_item_type_t memento_item_type = memento_item_type_custom();
     static memento_item_type_t write(string_t& buffer, const token_position_t& x)
     {
       bit_append<token_position_t>(buffer, x);
@@ -68,7 +68,7 @@ namespace silva {
 
   template<>
   struct memento_item_writer_t<token_range_t> {
-    constexpr inline static memento_item_type_t memento_item_type = memento_item_type_custom(2);
+    inline static memento_item_type_t memento_item_type = memento_item_type_custom();
     static memento_item_type_t write(string_t& buffer, const token_range_t& x)
     {
       bit_append<token_range_t>(buffer, x);

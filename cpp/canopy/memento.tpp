@@ -42,8 +42,7 @@ struct Widget {
 
 template<>
 struct silva::memento_item_writer_t<Widget> {
-  constexpr inline static memento_item_type_t memento_item_type =
-      memento_item_type_custom(1'000'000);
+  inline static memento_item_type_t memento_item_type = memento_item_type_custom();
   static memento_item_type_t write(string_t& buffer, const Widget& x)
   {
     bit_append<Widget>(buffer, x);
