@@ -26,8 +26,8 @@ namespace silva {
       index_t num_children   = 0;
       index_t children_begin = 0;
 
-      memento_buffer_offset_t memento_buffer_offset = 0;
-      memento_buffer_offset_t memento_buffer_begin  = 0;
+      memento_buffer_index_t memento_buffer_offset;
+      memento_buffer_index_t memento_buffer_begin;
     };
     vector_t<node_t> nodes;
 

@@ -57,7 +57,7 @@ namespace silva {
     index_t num_children = 0;
     optional_t<index_t> last_node_index;
     optional_t<index_t> children_begin;
-    optional_t<index_t> memento_buffer_begin;
+    optional_t<memento_buffer_index_t> memento_buffer_begin;
 
     error_nursery_t();
     ~error_nursery_t();
@@ -88,8 +88,8 @@ namespace silva {
   {
     SILVA_ASSERT(!context.is_nullptr() && node_index + 1 == context->tree.nodes.size());
     error_tree_t::node_t& node = context->tree.nodes[node_index];
-    context->memento_buffer.resize_offset(node.memento_buffer_offset);
-    context->memento_buffer.append_memento(std::forward<MementoArgs>(memento_args)...);
+    context->memento_buffer.resize(node.memento_buffer_offset);
+    context->memento_buffer.push_back(std::forward<MementoArgs>(memento_args)...);
   }
 
   template<typename... MementoArgs>
@@ -109,8 +109,7 @@ namespace silva {
   {
     const index_t new_node_index = context->tree.nodes.size();
     SILVA_ASSERT(!last_node_index || *last_node_index + 1 == new_node_index);
-    const index_t mbo =
-        context->memento_buffer.append_memento(std::forward<MementoArgs>(memento_args)...);
+    const auto mbo = context->memento_buffer.push_back(std::forward<MementoArgs>(memento_args)...);
     context->tree.nodes.push_back(error_tree_t::node_t{
         .num_children          = num_children,
         .children_begin        = children_begin.value_or(new_node_index),

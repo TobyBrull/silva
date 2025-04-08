@@ -134,8 +134,14 @@ namespace silva {
     }
   }
 
-  memento_buffer_offset_t
-  memento_buffer_t::append_memento_materialized(const memento_ptr_t& memento)
+  memento_buffer_index_t::memento_buffer_index_t(const index_t index) : index(index) {}
+
+  hash_value_t hash_impl(const memento_buffer_index_t& x)
+  {
+    return hash(x.index);
+  }
+
+  memento_buffer_index_t memento_buffer_t::push_back_materialized(const memento_ptr_t& memento)
   {
     const index_t retval = buffer.size();
     bit_append<uint32_t>(buffer, 0); // placeholder for total_size
@@ -151,16 +157,16 @@ namespace silva {
       bit_write_at<uint32_t>(buffer.data() + old_size + 4, static_cast<uint32_t>(mit));
     });
     bit_write_at<uint32_t>(buffer.data() + retval, buffer.size() - retval);
-    return retval;
+    return memento_buffer_index_t{retval};
   }
 
-  memento_ptr_t memento_buffer_t::at_offset(const memento_buffer_offset_t offset) const
+  memento_ptr_t memento_buffer_t::at(const memento_buffer_index_t offset) const
   {
-    return memento_ptr_t{.ptr = reinterpret_cast<const byte_t*>(buffer.data() + offset)};
+    return memento_ptr_t{.ptr = reinterpret_cast<const byte_t*>(buffer.data() + offset.index)};
   }
 
-  void memento_buffer_t::resize_offset(const memento_buffer_offset_t new_size)
+  void memento_buffer_t::resize(const memento_buffer_index_t new_size)
   {
-    buffer.resize(new_size);
+    buffer.resize(new_size.index);
   }
 }

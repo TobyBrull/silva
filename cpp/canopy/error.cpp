@@ -25,10 +25,9 @@ namespace silva {
           },
           node_index);
 
-      const memento_buffer_offset_t mbo =
+      const memento_buffer_index_t mbo =
           error_context->tree.nodes[node_index].memento_buffer_offset;
-      const string_or_view_t message =
-          error_context->memento_buffer.at_offset(mbo).to_string_or_view();
+      const string_or_view_t message = error_context->memento_buffer.at(mbo).to_string_or_view();
       retval += fmt::format("{:{}}{}\n", "", indent, message.get_view());
     }
   }
@@ -81,7 +80,7 @@ namespace silva {
       SILVA_ASSERT(context->tree.nodes.size() == node_index + 1);
       const auto& node       = context->tree.nodes[node_index];
       const index_t new_size = node.children_begin;
-      context->memento_buffer.resize_offset(node.memento_buffer_begin);
+      context->memento_buffer.resize(node.memento_buffer_begin);
       context->tree.nodes.resize(new_size);
       context.clear();
       node_index = 0;
@@ -105,8 +104,8 @@ namespace silva {
 
   string_or_view_t error_t::message() const
   {
-    const memento_buffer_offset_t mbo = context->tree.nodes[node_index].memento_buffer_offset;
-    return context->memento_buffer.at_offset(mbo).to_string_or_view();
+    const memento_buffer_index_t mbo = context->tree.nodes[node_index].memento_buffer_offset;
+    return context->memento_buffer.at(mbo).to_string_or_view();
   }
 
   string_t error_t::to_string() const
@@ -118,12 +117,12 @@ namespace silva {
   {
     memento_buffer_t& memento_buffer = context->memento_buffer;
     memento_buffer_t new_memento_buffer;
-    hashmap_t<memento_buffer_offset_t, memento_buffer_offset_t> offset_mapping;
+    hashmap_t<memento_buffer_index_t, memento_buffer_index_t> offset_mapping;
     memento_buffer.for_each_memento(
-        [&](const memento_buffer_offset_t offset, const memento_ptr_t& memento) {
-          offset_mapping[offset] = new_memento_buffer.append_memento_materialized(memento);
+        [&](const memento_buffer_index_t offset, const memento_ptr_t& memento) {
+          offset_mapping[offset] = new_memento_buffer.push_back_materialized(memento);
         });
-    const auto& map_offset = [&offset_mapping](memento_buffer_offset_t& offset) {
+    const auto& map_offset = [&offset_mapping](memento_buffer_index_t& offset) {
       const auto it = offset_mapping.find(offset);
       SILVA_ASSERT(it != offset_mapping.end());
       offset = it->second;
