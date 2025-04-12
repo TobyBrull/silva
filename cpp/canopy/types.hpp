@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <functional>
 #include <optional>
 #include <span>
 #include <string>
@@ -60,6 +61,9 @@ namespace silva {
   using array_t = std::array<T, N>;
 
   using filesystem_path_t = std::filesystem::path;
+
+  template<typename T>
+  using function_t = std::function<T>;
 
   template<typename T>
   unique_ptr_t<T> to_unique_ptr(T x)

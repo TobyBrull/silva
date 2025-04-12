@@ -194,10 +194,10 @@ namespace silva {
       const index_t old_size = buffer.size();
       bit_append<uint32_t>(buffer, 0); // placeholder for size
       bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::INVALID));
-      const memento_item_type_t mit =
-          memento_item_writer_t<std::decay_t<decltype(x)>>::write(buffer, x);
-      const index_t new_size     = buffer.size();
-      const index_t total_length = new_size - old_size;
+      using TT                      = std::decay_t<decltype(x)>;
+      const memento_item_type_t mit = memento_item_writer_t<TT>::write(buffer, x);
+      const index_t new_size        = buffer.size();
+      const index_t total_length    = new_size - old_size;
       bit_write_at<uint32_t>(buffer.data() + old_size, total_length);
       bit_write_at<uint32_t>(buffer.data() + old_size + 4, static_cast<uint32_t>(mit));
       return total_length;

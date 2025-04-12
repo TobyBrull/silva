@@ -1,8 +1,9 @@
 #pragma once
 
-#include "types.hpp"
+#include "customization_point.hpp"
 #include "variant.hpp"
 
+#include <typeindex>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -34,9 +35,12 @@ namespace silva {
   template<typename... Ts>
   hash_value_t hash_impl(const variant_t<Ts...>&);
 
-  struct hash_t {
+  template<typename... Ts>
+  hash_value_t hash_impl(const std::type_index&);
+
+  struct hash_t : public customization_point_t<hash_value_t(const void*)> {
     template<typename T>
-    constexpr auto operator()(const T& x) const;
+    constexpr hash_value_t operator()(const T& x) const;
   };
   inline constexpr hash_t hash;
 
@@ -56,7 +60,7 @@ namespace silva {
   }
 
   template<typename T>
-  constexpr auto hash_t::operator()(const T& x) const
+  constexpr hash_value_t hash_t::operator()(const T& x) const
   {
     using silva::hash_impl;
     return hash_impl(x);
@@ -120,5 +124,11 @@ namespace silva {
     hash_combiner_t hc{.value = x.index()};
     hc.combine(std::visit([](const auto& xx) { return hash(xx); }, x));
     return hc.value;
+  }
+
+  template<typename... Ts>
+  hash_value_t hash_impl(const std::type_index& x)
+  {
+    return x.hash_code();
   }
 }

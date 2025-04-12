@@ -2,6 +2,8 @@
 
 #include "types.hpp"
 
+#include <cstring>
+
 namespace silva {
   template<typename T>
   void bit_append(string_t& buffer, T x);
