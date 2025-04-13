@@ -32,8 +32,11 @@ namespace silva::test {
             2.5,
         },
     });
+    CHECK(av.size() == 3);
     CHECK(av.apply(i1, to_string).get_view() == "Hello");
     CHECK(av.apply(i4, to_string).get_view() == "[42 1.5]");
     CHECK(av.apply(i5, to_string).get_view() == "[123 2.5]");
+    const auto i6 = av.push_back("World");
+    CHECK(av.apply(i6, to_string).get_view() == "World");
   }
 }

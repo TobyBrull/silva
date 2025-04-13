@@ -72,6 +72,8 @@ namespace silva {
 
     template<typename T>
     any_vector_index_t push_back(T&&);
+    template<index_t N>
+    any_vector_index_t push_back(const char (&x)[N]);
 
     template<typename T, typename... Args>
     any_vector_index_t emplace_back(Args&&...);
@@ -226,6 +228,12 @@ namespace silva {
   any_vector_index_t any_vector_t<Fs...>::push_back(T&& x)
   {
     return emplace_back<std::remove_cvref_t<T>>(std::forward<T>(x));
+  }
+  template<typename... Fs>
+  template<index_t N>
+  any_vector_index_t any_vector_t<Fs...>::push_back(const char (&x)[N])
+  {
+    return emplace_back<string_view_t>(string_view_t{x});
   }
 
   template<typename... Fs>
