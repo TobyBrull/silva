@@ -10,6 +10,18 @@
 namespace silva {
   using hash_value_t = std::size_t;
 
+  struct hash_t : public customization_point_t<hash_value_t(const void*)> {
+    template<typename T>
+    constexpr hash_value_t operator()(const T& x) const;
+  };
+  inline constexpr hash_t hash;
+
+  template<typename K, typename V>
+  using hashmap_t = std::unordered_map<K, V, hash_t>;
+
+  template<typename T>
+  using hashset_t = std::unordered_set<T, hash_t>;
+
   struct hash_combiner_t {
     hash_value_t value = 0;
     void combine(hash_value_t);
@@ -37,33 +49,21 @@ namespace silva {
 
   template<typename... Ts>
   hash_value_t hash_impl(const std::type_index&);
-
-  struct hash_t : public customization_point_t<hash_value_t(const void*)> {
-    template<typename T>
-    constexpr hash_value_t operator()(const T& x) const;
-  };
-  inline constexpr hash_t hash;
-
-  template<typename K, typename V>
-  using hashmap_t = std::unordered_map<K, V, hash_t>;
-
-  template<typename T>
-  using hashset_t = std::unordered_set<T, hash_t>;
 }
 
 // IMPLEMENTATION
 
 namespace silva {
-  inline void hash_combiner_t::combine(const hash_value_t x)
-  {
-    value ^= x + 0x9e3779b9 + (value << 6) + (value >> 2);
-  }
-
   template<typename T>
   constexpr hash_value_t hash_t::operator()(const T& x) const
   {
     using silva::hash_impl;
     return hash_impl(x);
+  }
+
+  inline void hash_combiner_t::combine(const hash_value_t x)
+  {
+    value ^= x + 0x9e3779b9 + (value << 6) + (value >> 2);
   }
 
   inline hash_value_t hash_impl(const string_t& x)
