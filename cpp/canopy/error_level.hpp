@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.hpp"
+#include <cstdint>
 
 namespace silva {
 
@@ -17,7 +17,6 @@ namespace silva {
     ASSERT   = 4,
   };
   constexpr bool error_level_is_primary(error_level_t);
-  string_view_t to_string(error_level_t);
 }
 
 // IMPLEMENTATION

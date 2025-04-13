@@ -1,16 +1,9 @@
 #include "token_context.hpp"
 
 #include "canopy/convert.hpp"
-#include "canopy/enum.hpp"
 
 namespace silva {
   using enum token_category_t;
-
-  string_view_t to_string(const token_category_t x)
-  {
-    static const auto vals = enum_hashmap_to_string<token_category_t>();
-    return string_view_t{vals.at(x)};
-  }
 
   namespace impl {
     constexpr char whitespace_chars[] = {' '};

@@ -2,6 +2,7 @@
 
 #include "canopy/preprocessor.hpp"
 #include "canopy/string_or_view.hpp"
+#include "canopy/to_string.hpp"
 
 #include "token_context.hpp"
 
@@ -22,7 +23,7 @@ namespace silva {
 
     const token_info_t* token_info_get(index_t token_index) const;
 
-    string_t to_string() const;
+    friend string_or_view_t to_string_impl(const tokenization_t&);
   };
   using tokenization_ptr_t = ptr_t<tokenization_t>;
 
@@ -30,7 +31,7 @@ namespace silva {
     const tokenization_t* tokenization{nullptr};
     index_t token_index = 0;
 
-    string_t to_string() const;
+    friend string_or_view_t to_string_impl(const token_position_t&);
   };
 
   struct token_range_t {
@@ -38,7 +39,7 @@ namespace silva {
     index_t token_begin = 0;
     index_t token_end   = 0;
 
-    string_t to_string(index_t max_num_tokens = 5) const;
+    friend string_or_view_t to_string_impl(const token_range_t&);
   };
 
   expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t, filesystem_path_t);
@@ -62,7 +63,7 @@ namespace silva {
         [](const byte_t* ptr, const index_t size) -> string_or_view_t {
           SILVA_ASSERT(size == sizeof(token_position_t));
           const token_position_t tp = bit_cast_ptr<token_position_t>(ptr);
-          return tp.to_string();
+          return to_string(tp);
         });
   };
 
@@ -79,7 +80,7 @@ namespace silva {
         [](const byte_t* ptr, const index_t size) -> string_or_view_t {
           SILVA_ASSERT(size == sizeof(token_range_t));
           const token_range_t tr = bit_cast_ptr<token_range_t>(ptr);
-          return tr.to_string();
+          return to_string(tr);
         });
   };
 }

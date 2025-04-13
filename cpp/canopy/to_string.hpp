@@ -1,6 +1,7 @@
 #pragma once
 
 #include "customization_point.hpp"
+#include "enum.hpp"
 #include "string_or_view.hpp"
 
 #include <fmt/format.h>
@@ -28,6 +29,10 @@ namespace silva {
 
   template<typename... Ts>
   string_or_view_t to_string_impl(const variant_t<Ts...>&);
+
+  template<typename Enum>
+    requires std::is_enum_v<Enum>
+  string_or_view_t to_string_impl(const Enum& x);
 }
 
 // IMPLEMENTATION
@@ -73,5 +78,13 @@ namespace silva {
   string_or_view_t to_string_impl(const variant_t<Ts...>& x)
   {
     return std::visit([](const auto& value) -> string_or_view_t { return to_string(value); }, x);
+  }
+
+  template<typename Enum>
+    requires std::is_enum_v<Enum>
+  string_or_view_t to_string_impl(const Enum& x)
+  {
+    static const auto vals = enum_hashmap_to_string<Enum>();
+    return string_view_t{vals.at(x)};
   }
 }

@@ -103,7 +103,7 @@ namespace silva::test {
 [ 16]  14:1   ]
 )";
       const auto tokenization = SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "test.fern", source_code));
-      const auto result_str   = tokenization->to_string();
+      const auto result_str   = to_string(*tokenization);
       CHECK(result_str == expected.substr(1));
     }
   }

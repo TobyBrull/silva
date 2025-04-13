@@ -31,7 +31,7 @@ namespace silva {
       do {
         curr_line.push_back(' ');
       } while (curr_line.size() < token_offset);
-      curr_line += pts.token_range().to_string();
+      curr_line += silva::to_string(pts.token_range()).get_view();
     });
   }
 

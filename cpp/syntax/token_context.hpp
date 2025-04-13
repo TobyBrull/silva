@@ -10,7 +10,6 @@ namespace silva {
     STRING,
     NUMBER,
   };
-  string_view_t to_string(token_category_t);
 
   tuple_t<string_view_t, token_category_t> tokenize_one(const string_view_t text);
 

@@ -29,7 +29,7 @@ namespace silva::test {
   x=-4 must be positive
 failed calling func_1(-4)
 )";
-      CHECK(result.error().to_string() == expected.substr(1));
+      CHECK(to_string(result.error()) == expected.substr(1));
     }
   }
 }

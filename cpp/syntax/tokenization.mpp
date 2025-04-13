@@ -14,7 +14,7 @@ silva_main(span_t<string_view_t> cmdline_args)
 
   token_context_t tc;
   const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
-  fmt::print("{}\n", tokenization->to_string());
+  fmt::print("{}\n", to_string(*tokenization));
   return {};
 }
 SILVA_MAIN_1(silva_main);

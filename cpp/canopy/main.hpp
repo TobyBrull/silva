@@ -11,15 +11,15 @@
     silva::env_context_t env_context_cmdline;              \
     silva::env_context_fill_cmdline(&env_context_cmdline, argc, argv);
 
-#define SILVA_MAIN_IMPL_POST                                                            \
-  if (!result) {                                                                        \
-    const silva::error_t& error = result.error();                                       \
-    fmt::print(stderr, "ERROR ({}):\n{}\n", to_string(error.level), error.to_string()); \
-    return static_cast<int>(error.level);                                               \
-  }                                                                                     \
-  else {                                                                                \
-    return 0;                                                                           \
-  }                                                                                     \
+#define SILVA_MAIN_IMPL_POST                                                           \
+  if (!result) {                                                                       \
+    const silva::error_t& error = result.error();                                      \
+    fmt::print(stderr, "ERROR ({}):\n{}\n", to_string(error.level), to_string(error)); \
+    return static_cast<int>(error.level);                                              \
+  }                                                                                    \
+  else {                                                                               \
+    return 0;                                                                          \
+  }                                                                                    \
   }
 
 #define SILVA_MAIN(silva_main_func_name)                         \

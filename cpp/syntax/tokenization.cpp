@@ -35,33 +35,34 @@ namespace silva {
     }
   }
 
-  string_t token_position_t::to_string() const
+  string_or_view_t to_string_impl(const token_position_t& self)
   {
     string_t retval;
-    const auto [line, column] = tokenization->token_locations[token_index];
-    const string_t filename   = tokenization->filepath.filename().string();
+    const auto [line, column] = self.tokenization->token_locations[self.token_index];
+    const string_t filename   = self.tokenization->filepath.filename().string();
     return fmt::format("[{}:{}:{}]", filename, line + 1, column + 1);
   }
 
-  string_t token_range_t::to_string(const index_t max_num_tokens) const
+  string_or_view_t to_string_impl(const token_range_t& self)
   {
+    constexpr index_t max_num_tokens = 5;
     string_t retval;
-    const auto print_tokens = [&retval, this](const index_t begin, const index_t end) {
+    const auto print_tokens = [&retval, &self](const index_t begin, const index_t end) {
       for (index_t token_idx = begin; token_idx < end; ++token_idx) {
-        retval += tokenization->token_info_get(token_idx)->str;
+        retval += self.tokenization->token_info_get(token_idx)->str;
         if (token_idx + 1 < end) {
           retval += " ";
         }
       }
     };
-    const index_t num_tokens = token_end - token_begin;
+    const index_t num_tokens = self.token_end - self.token_begin;
     if (num_tokens <= max_num_tokens) {
-      print_tokens(token_begin, token_end);
+      print_tokens(self.token_begin, self.token_end);
     }
     else {
-      print_tokens(token_begin, token_begin + max_num_tokens / 2);
+      print_tokens(self.token_begin, self.token_begin + max_num_tokens / 2);
       retval += " ... ";
-      print_tokens(token_end - max_num_tokens / 2, token_end);
+      print_tokens(self.token_end - max_num_tokens / 2, self.token_end);
     }
     return retval;
   }
@@ -103,13 +104,13 @@ namespace silva {
     return retval;
   }
 
-  string_t tokenization_t::to_string() const
+  string_or_view_t to_string_impl(const tokenization_t& self)
   {
     string_t retval;
-    for (index_t token_index = 0; token_index < tokens.size(); ++token_index) {
-      const token_id_t tii      = tokens[token_index];
-      const token_info_t* info  = &context->token_infos[tii];
-      const auto [line, column] = token_locations[token_index];
+    for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
+      const token_id_t tii      = self.tokens[token_index];
+      const token_info_t* info  = &self.context->token_infos[tii];
+      const auto [line, column] = self.token_locations[token_index];
       retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }
     return retval;

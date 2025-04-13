@@ -4,7 +4,7 @@
 #include "error_level.hpp"
 #include "error_tree.hpp"
 #include "memento.hpp"
-#include "string_or_view.hpp"
+#include "to_string.hpp"
 
 namespace silva {
 
@@ -16,8 +16,6 @@ namespace silva {
     memento_buffer_t memento_buffer;
 
     ~error_context_t();
-
-    string_t to_string(index_t node_index) const;
   };
   using error_context_ptr_t = ptr_t<error_context_t>;
 
@@ -46,7 +44,7 @@ namespace silva {
     template<typename... MementoArgs>
     void replace_message(MementoArgs&&...);
 
-    string_t to_string() const;
+    friend string_or_view_t to_string_impl(const error_t&);
 
     // Rewrite the error to resolve all pointers/references.
     void materialize();

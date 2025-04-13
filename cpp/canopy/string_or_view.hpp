@@ -2,6 +2,8 @@
 
 #include "hash.hpp"
 
+#include <fmt/format.h>
+
 namespace silva {
   struct string_or_view_t {
     variant_t<string_view_t, string_t> data;
@@ -44,3 +46,12 @@ namespace std {
     }
   };
 }
+
+template<>
+struct fmt::formatter<silva::string_or_view_t> : fmt::formatter<silva::string_view_t> {
+  template<typename FormatContext>
+  auto format(const silva::string_or_view_t& s, FormatContext& ctx) const
+  {
+    return fmt::formatter<std::string_view>::format(s.get_view(), ctx);
+  }
+};

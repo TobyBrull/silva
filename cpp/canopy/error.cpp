@@ -32,13 +32,6 @@ namespace silva {
     }
   }
 
-  string_t error_context_t::to_string(index_t node_index) const
-  {
-    string_t retval;
-    impl::error_context_to_string(this, retval, node_index, 0);
-    return retval;
-  }
-
   error_t::~error_t()
   {
     clear();
@@ -108,9 +101,11 @@ namespace silva {
     return context->memento_buffer.at(mbo).to_string_or_view();
   }
 
-  string_t error_t::to_string() const
+  string_or_view_t to_string_impl(const error_t& self)
   {
-    return context->to_string(node_index);
+    string_t retval;
+    impl::error_context_to_string(self.context.get(), retval, self.node_index, 0);
+    return retval;
   }
 
   void error_t::materialize()
