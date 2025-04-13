@@ -131,13 +131,13 @@ namespace silva {
 // Usage:
 //  - SILVA_EXPECT_REQUIRE(foo(x))
 //
-#define SILVA_EXPECT_REQUIRE(expression)                                         \
-  ({                                                                             \
-    auto __silva_result = (expression);                                          \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);        \
-    INFO((!__silva_result ? to_string(__silva_result.error()).get_view() : "")); \
-    REQUIRE(__silva_result);                                                     \
-    std::move(__silva_result).value();                                           \
+#define SILVA_EXPECT_REQUIRE(expression)                                               \
+  ({                                                                                   \
+    auto __silva_result = (expression);                                                \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);              \
+    INFO((!__silva_result ? to_string(__silva_result.error()).as_string_view() : "")); \
+    REQUIRE(__silva_result);                                                           \
+    std::move(__silva_result).value();                                                 \
   })
 }
 

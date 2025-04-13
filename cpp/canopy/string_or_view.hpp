@@ -12,21 +12,13 @@ namespace silva {
     string_or_view_t(string_view_t x) : data(x) {}
     string_or_view_t(string_t&& x) : data(std::move(x)) {}
 
-    string_view_t get_view() const
-    {
-      return std::visit([](const auto& dd) -> string_view_t { return dd; }, data);
-    }
+    string_view_t as_string_view() const;
+    string_t as_string(this auto&& self);
 
-    friend bool operator==(const string_or_view_t& lhs, const string_or_view_t& rhs)
-    {
-      return lhs.get_view() == rhs.get_view();
-    }
-    friend auto operator<=>(const string_or_view_t& lhs, const string_or_view_t& rhs)
-    {
-      return lhs.get_view() <=> rhs.get_view();
-    }
+    friend bool operator==(const string_or_view_t& lhs, const string_or_view_t& rhs);
+    friend auto operator<=>(const string_or_view_t& lhs, const string_or_view_t& rhs);
 
-    friend hash_value_t hash_impl(const string_or_view_t& x) { return hash(x.get_view()); }
+    friend hash_value_t hash_impl(const string_or_view_t& x) { return hash(x.as_string_view()); }
   };
 
   inline string_or_view_t operator"" _sov(const char* str, size_t)
@@ -37,12 +29,34 @@ namespace silva {
 
 // IMPLEMENTATION
 
+namespace silva {
+  inline string_view_t string_or_view_t::as_string_view() const
+  {
+    return std::visit([](const auto& dd) -> string_view_t { return dd; }, data);
+  }
+  inline string_t string_or_view_t::as_string(this auto&& self)
+  {
+    return std::visit(
+        [](auto&& dd) -> string_t { return string_t{std::forward<decltype(dd)>(dd)}; },
+        std::forward<decltype(self)>(self).data);
+  }
+
+  inline bool operator==(const string_or_view_t& lhs, const string_or_view_t& rhs)
+  {
+    return lhs.as_string_view() == rhs.as_string_view();
+  }
+  inline auto operator<=>(const string_or_view_t& lhs, const string_or_view_t& rhs)
+  {
+    return lhs.as_string_view() <=> rhs.as_string_view();
+  }
+}
+
 namespace std {
   template<>
   struct hash<silva::string_or_view_t> {
     std::size_t operator()(const silva::string_or_view_t& x) const
     {
-      return std::hash<std::string_view>{}(x.get_view());
+      return std::hash<std::string_view>{}(x.as_string_view());
     }
   };
 }
@@ -52,6 +66,6 @@ struct fmt::formatter<silva::string_or_view_t> : fmt::formatter<silva::string_vi
   template<typename FormatContext>
   auto format(const silva::string_or_view_t& s, FormatContext& ctx) const
   {
-    return fmt::formatter<std::string_view>::format(s.get_view(), ctx);
+    return fmt::formatter<std::string_view>::format(s.as_string_view(), ctx);
   }
 };

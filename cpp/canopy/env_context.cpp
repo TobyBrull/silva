@@ -39,7 +39,7 @@ namespace silva {
     while (!curr.is_nullptr()) {
       const auto it = curr->variables.find(string_or_view_t{name});
       if (it != curr->variables.end()) {
-        return it->second.get_view();
+        return it->second.as_string_view();
       }
       else {
         curr = curr->get_parent();

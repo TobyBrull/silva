@@ -1,5 +1,6 @@
 #include "memento.hpp"
 
+#include "format.hpp"
 #include "preprocessor.hpp"
 
 namespace silva {
@@ -94,18 +95,6 @@ namespace silva {
     return retval;
   }
 
-  namespace impl {
-    string_t format_vector(const string_view_t format, const vector_t<string_t>& args)
-    {
-      using ctx = fmt::format_context;
-      std::vector<fmt::basic_format_arg<ctx>> fmt_args;
-      for (auto const& a: args) {
-        fmt_args.push_back(fmt::detail::make_arg<ctx>(a));
-      }
-      return fmt::vformat(format, fmt::basic_format_args<ctx>(fmt_args.data(), fmt_args.size()));
-    }
-  }
-
   memento_item_ptr_t memento_ptr_t::at_offset(const index_t offset) const
   {
     return memento_item_ptr_t{.ptr = ptr + offset};
@@ -125,12 +114,14 @@ namespace silva {
       vector_t<string_t> args;
       while (offset < total_size) {
         memento_item_ptr_t item{.ptr = ptr + offset};
-        args.push_back(string_t{item.to_string_or_view().get_view()});
+        args.push_back(item.to_string_or_view().as_string());
         offset += item.size();
       }
-      string_t format = args.front();
-      args.erase(args.begin());
-      return string_or_view_t{impl::format_vector(format, args)};
+      vector_t<string_view_t> args_view;
+      for (const auto& arg: args) {
+        args_view.emplace_back(arg);
+      }
+      return string_or_view_t{format_vector(args_view)};
     }
   }
 
@@ -151,7 +142,7 @@ namespace silva {
       bit_append<uint32_t>(buffer, 0); // placeholder for size
       bit_append<uint32_t>(buffer, static_cast<uint32_t>(memento_item_type_t::INVALID));
       const memento_item_type_t mit =
-          memento_item_writer_t<string_t>::write(buffer, item.to_string_or_view().get_view());
+          memento_item_writer_t<string_t>::write(buffer, item.to_string_or_view().as_string_view());
       SILVA_ASSERT(mit == memento_item_type_t::STRING);
       bit_write_at<uint32_t>(buffer.data() + old_size, buffer.size() - old_size);
       bit_write_at<uint32_t>(buffer.data() + old_size + 4, static_cast<uint32_t>(mit));

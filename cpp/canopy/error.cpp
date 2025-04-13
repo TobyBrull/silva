@@ -28,7 +28,7 @@ namespace silva {
       const memento_buffer_index_t mbo =
           error_context->tree.nodes[node_index].memento_buffer_offset;
       const string_or_view_t message = error_context->memento_buffer.at(mbo).to_string_or_view();
-      retval += fmt::format("{:{}}{}\n", "", indent, message.get_view());
+      retval += fmt::format("{:{}}{}\n", "", indent, message.as_string_view());
     }
   }
 
