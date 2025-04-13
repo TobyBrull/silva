@@ -11,7 +11,7 @@ namespace silva {
 
   struct dtor_t : public customization_point_t<void(void*)> {
     template<typename T>
-    constexpr void operator()(T& tgt) const;
+    constexpr void operator()(T&) const;
   };
   inline constexpr dtor_t dtor;
 }
