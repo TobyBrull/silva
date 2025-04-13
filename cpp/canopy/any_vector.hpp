@@ -60,6 +60,7 @@ namespace silva {
 
     ~any_vector_t();
 
+    bool is_empty() const;
     index_t size() const;
     index_t byte_size() const;
     index_t byte_capacity() const;
@@ -69,6 +70,8 @@ namespace silva {
     void resize_down_to(any_vector_index_t);
 
     void reserve_bytes(index_t);
+
+    any_vector_index_t next_index() const;
 
     template<typename T>
     any_vector_index_t push_back(T&&);
@@ -158,6 +161,12 @@ namespace silva {
   }
 
   template<typename... Fs>
+  bool any_vector_t<Fs...>::is_empty() const
+  {
+    return _size == 0;
+  }
+
+  template<typename... Fs>
   index_t any_vector_t<Fs...>::size() const
   {
     return _size;
@@ -221,6 +230,12 @@ namespace silva {
       _byte_capacity = new_byte_capacity;
       _size          = old_size;
     }
+  }
+
+  template<typename... Fs>
+  any_vector_index_t any_vector_t<Fs...>::next_index() const
+  {
+    return any_vector_index_t{_byte_size};
   }
 
   template<typename... Fs>

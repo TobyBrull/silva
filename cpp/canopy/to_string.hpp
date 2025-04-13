@@ -16,6 +16,7 @@ namespace silva {
 
   string_or_view_t to_string_impl(const string_t&);
   string_or_view_t to_string_impl(const string_view_t&);
+  string_or_view_t to_string_impl(const string_or_view_t&);
 
   template<typename T>
     requires std::is_arithmetic_v<T>
@@ -49,8 +50,11 @@ namespace silva {
   {
     return string_t{x};
   }
-
   inline string_or_view_t to_string_impl(const string_view_t& x)
+  {
+    return x;
+  }
+  inline string_or_view_t to_string_impl(const string_or_view_t& x)
   {
     return x;
   }
