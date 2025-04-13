@@ -2,6 +2,6 @@
 
 #include <catch2/catch_all.hpp>
 
-using namespace silva;
-
-TEST_CASE("types") {}
+namespace silva::test {
+  TEST_CASE("types") {}
+}

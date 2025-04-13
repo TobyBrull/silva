@@ -2,11 +2,10 @@
 
 #include <catch2/catch_all.hpp>
 
-using namespace silva;
-
-TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
-{
-  const string_view_t frog_seed = R"'(
+namespace silva::test {
+  TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
+  {
+    const string_view_t frog_seed = R"'(
     - Frog = [
       - X = Rule *
       - Rule = RuleName Expr
@@ -18,10 +17,10 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
       ]
     ]
   )'";
-  token_context_t tc;
-  seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
-  const string_view_t expected_seed_pt = R"(
+    token_context_t tc;
+    seed_engine_t se(tc.ptr());
+    SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
+    const string_view_t expected_seed_pt = R"(
 [0]Silva.Seed                                     - Frog ... ] ]
   [0]Silva.Seed.Rule                              Frog = ... ] ]
     [0]Silva.Seed.Nonterminal.Base                Frog
@@ -73,18 +72,19 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
                 [1]Silva.Seed.Terminal            'keyword2'
                 [2]Silva.Seed.Terminal            'keyword3'
 )";
-  const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(se.seed_parse_trees.front()->span().to_string())};
-  CHECK(seed_pt_str == expected_seed_pt.substr(1));
+    const string_t seed_pt_str{
+        SILVA_EXPECT_REQUIRE(se.seed_parse_trees.front()->span().to_string())};
+    CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
-  const string_view_t frog_source_code = R"'(
+    const string_view_t frog_source_code = R"'(
     keyword1 a b c
     keyword2 d e
     keyword1 f
     keyword3 g h i
   )'";
-  auto frog_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_source_code)));
-  auto frog_pt = share(SILVA_EXPECT_REQUIRE(se.apply(frog_tt, tc.name_id_of("Frog"))));
-  const string_view_t expected = R"(
+    auto frog_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_source_code)));
+    auto frog_pt = share(SILVA_EXPECT_REQUIRE(se.apply(frog_tt, tc.name_id_of("Frog"))));
+    const string_view_t expected = R"(
 [0]Silva.Frog                                     keyword1 a ... h i
   [0]Silva.Frog.Rule                              keyword1 a b c
     [0]Silva.Frog.Expr                            a b c
@@ -104,38 +104,39 @@ TEST_CASE("not;but_then;keywords", "[seed_engine_t][seed]")
       [1]Silva.Frog.Primary                       h
       [2]Silva.Frog.Primary                       i
 )";
-  const string_t frog_pt_str{SILVA_EXPECT_REQUIRE(frog_pt->span().to_string())};
-  CHECK(frog_pt_str == expected.substr(1));
-}
+    const string_t frog_pt_str{SILVA_EXPECT_REQUIRE(frog_pt->span().to_string())};
+    CHECK(frog_pt_str == expected.substr(1));
+  }
 
-TEST_CASE("multiple-texts", "[seed_engine_t]")
-{
-  const string_view_t text1_seed = R"'(
+  TEST_CASE("multiple-texts", "[seed_engine_t]")
+  {
+    const string_view_t text1_seed = R"'(
     - Foo = [
       - X = 'a' 'b' 'c' Silva.Bar ?
     ]
   )'";
-  const string_view_t text2_seed = R"'(
+    const string_view_t text2_seed = R"'(
     - Bar = [
       - Blub = 'u' 'v' 'w'
       - X = 'x' 'y' 'z' Silva.Foo ?
     ]
   )'";
-  token_context_t tc;
-  seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
-  SILVA_EXPECT_REQUIRE(se.add_complete_file("text2.seed", text2_seed));
+    token_context_t tc;
+    seed_engine_t se(tc.ptr());
+    SILVA_EXPECT_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
+    SILVA_EXPECT_REQUIRE(se.add_complete_file("text2.seed", text2_seed));
 
-  const string_view_t code     = R"'(
+    const string_view_t code     = R"'(
     a b c x y z a b c
   )'";
-  auto tt                      = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", code)));
-  auto pt                      = share(SILVA_EXPECT_REQUIRE(se.apply(tt, tc.name_id_of("Foo"))));
-  const string_view_t expected = R"(
+    auto tt                      = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", code)));
+    auto pt                      = share(SILVA_EXPECT_REQUIRE(se.apply(tt, tc.name_id_of("Foo"))));
+    const string_view_t expected = R"(
 [0]Silva.Foo                                      a b ... b c
   [0]Silva.Bar                                    x y ... b c
     [0]Silva.Foo                                  a b c
 )";
-  const string_t result_str{SILVA_EXPECT_REQUIRE(pt->span().to_string())};
-  CHECK(result_str == expected.substr(1));
+    const string_t result_str{SILVA_EXPECT_REQUIRE(pt->span().to_string())};
+    CHECK(result_str == expected.substr(1));
+  }
 }

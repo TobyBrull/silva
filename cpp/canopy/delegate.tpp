@@ -4,9 +4,7 @@
 
 #include <fmt/format.h>
 
-using namespace silva;
-
-namespace test {
+namespace silva::test {
   std::string free_func(const int i, const float f)
   {
     return fmt::format("free_func({}, {})", i, f);
@@ -31,25 +29,25 @@ namespace test {
       return fmt::format("widget_t::member_func_const({}, {}, {})", member, i, f);
     }
   };
-}
 
-TEST_CASE("delegate")
-{
-  using dg_t = delegate_t<std::string(int, float)>;
-  dg_t dg;
-  dg = dg_t::make<&test::free_func>();
-  CHECK(dg(42, 3.5) == "free_func(42, 3.5)");
+  TEST_CASE("delegate")
+  {
+    using dg_t = delegate_t<std::string(int, float)>;
+    dg_t dg;
+    dg = dg_t::make<&test::free_func>();
+    CHECK(dg(42, 3.5) == "free_func(42, 3.5)");
 
-  const std::string s{"foo"};
-  dg = dg_t::make<&test::free_func_data>(&s);
-  CHECK(dg(42, 3.5) == "free_func_data(foo, 42, 3.5)");
+    const std::string s{"foo"};
+    dg = dg_t::make<&test::free_func_data>(&s);
+    CHECK(dg(42, 3.5) == "free_func_data(foo, 42, 3.5)");
 
-  test::widget_t widget{.member = "hi"};
+    test::widget_t widget{.member = "hi"};
 
-  dg = dg_t::make<&test::widget_t::member_func_const>(&widget);
-  CHECK(dg(42, 3.5) == "widget_t::member_func_const(hi, 42, 3.5)");
+    dg = dg_t::make<&test::widget_t::member_func_const>(&widget);
+    CHECK(dg(42, 3.5) == "widget_t::member_func_const(hi, 42, 3.5)");
 
-  dg = dg_t::make<&test::widget_t::member_func>(&widget);
-  CHECK(dg(42, 3.5) == "widget_t::member_func(hi(called), 42, 3.5)");
-  CHECK(dg(42, 3.5) == "widget_t::member_func(hi(called)(called), 42, 3.5)");
+    dg = dg_t::make<&test::widget_t::member_func>(&widget);
+    CHECK(dg(42, 3.5) == "widget_t::member_func(hi(called), 42, 3.5)");
+    CHECK(dg(42, 3.5) == "widget_t::member_func(hi(called)(called), 42, 3.5)");
+  }
 }

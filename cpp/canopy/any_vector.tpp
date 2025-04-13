@@ -6,7 +6,7 @@
 
 #include <fmt/format.h>
 
-namespace silva {
+namespace silva::test {
   TEST_CASE("any_vector", "[any_vector_t]")
   {
     any_vector_t<hash_t, to_string_t, move_ctor_t, dtor_t> av(64);
