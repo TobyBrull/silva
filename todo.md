@@ -5,11 +5,6 @@
         * make seed-engine-based error look more like the error from the manual Fern parser
     * add dumping plain token_ids and name_ids, without any positional information
         * make token_id_t and name_id_t proper types
-    * make memento based on proper move-ctor & dtor semantics, rather than memcpy
-        * make token_position_t contain a token_context_ptr_t instead of a raw ptr
-        * simplify creation of memoizable types (should just require a move-ctor, dtor, and a
-        "materialize" member function).
-    * replace memento_item_reader_t callback with delegate_?
     * put error materialisation into token_context_t?
 
 * various:

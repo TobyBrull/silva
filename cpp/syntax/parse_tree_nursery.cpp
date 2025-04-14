@@ -73,15 +73,15 @@ namespace silva {
   token_position_t parse_tree_nursery_t::token_position_by(const index_t token_index_offset) const
   {
     return token_position_t{
-        .tokenization = tokenization.get(),
-        .token_index  = token_index + token_index_offset,
+        .tp          = tokenization->ptr(),
+        .token_index = token_index + token_index_offset,
     };
   }
   token_position_t parse_tree_nursery_t::token_position_at(const index_t arg_token_index) const
   {
     return token_position_t{
-        .tokenization = tokenization.get(),
-        .token_index  = arg_token_index,
+        .tp          = tokenization->ptr(),
+        .token_index = arg_token_index,
     };
   }
 }

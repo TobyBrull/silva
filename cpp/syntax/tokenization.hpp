@@ -25,17 +25,17 @@ namespace silva {
 
     friend string_or_view_t to_string_impl(const tokenization_t&);
   };
-  using tokenization_ptr_t = ptr_t<tokenization_t>;
+  using tokenization_ptr_t = ptr_t<const tokenization_t>;
 
   struct token_position_t {
-    const tokenization_t* tokenization{nullptr};
+    tokenization_ptr_t tp;
     index_t token_index = 0;
 
     friend string_or_view_t to_string_impl(const token_position_t&);
   };
 
   struct token_range_t {
-    const tokenization_t* tokenization{nullptr};
+    tokenization_ptr_t tp;
     index_t token_begin = 0;
     index_t token_end   = 0;
 

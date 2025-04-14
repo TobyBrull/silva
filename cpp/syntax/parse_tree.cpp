@@ -66,9 +66,9 @@ namespace silva {
   token_range_t parse_tree_span_t::token_range() const
   {
     return token_range_t{
-        .tokenization = tokenization->ptr().get(),
-        .token_begin  = (*this)[0].token_begin,
-        .token_end    = (*this)[0].token_end,
+        .tp          = tokenization->ptr(),
+        .token_begin = (*this)[0].token_begin,
+        .token_end   = (*this)[0].token_end,
     };
   }
 

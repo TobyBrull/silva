@@ -38,8 +38,8 @@ namespace silva {
   string_or_view_t to_string_impl(const token_position_t& self)
   {
     string_t retval;
-    const auto [line, column] = self.tokenization->token_locations[self.token_index];
-    const string_t filename   = self.tokenization->filepath.filename().string();
+    const auto [line, column] = self.tp->token_locations[self.token_index];
+    const string_t filename   = self.tp->filepath.filename().string();
     return fmt::format("[{}:{}:{}]", filename, line + 1, column + 1);
   }
 
@@ -49,7 +49,7 @@ namespace silva {
     string_t retval;
     const auto print_tokens = [&retval, &self](const index_t begin, const index_t end) {
       for (index_t token_idx = begin; token_idx < end; ++token_idx) {
-        retval += self.tokenization->token_info_get(token_idx)->str;
+        retval += self.tp->token_info_get(token_idx)->str;
         if (token_idx + 1 < end) {
           retval += " ";
         }
