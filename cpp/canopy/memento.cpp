@@ -117,11 +117,7 @@ namespace silva {
         args.push_back(item.to_string_or_view().as_string());
         offset += item.size();
       }
-      vector_t<string_view_t> args_view;
-      for (const auto& arg: args) {
-        args_view.emplace_back(arg);
-      }
-      return string_or_view_t{format_vector(args_view)};
+      return string_or_view_t{format_vector(args)};
     }
   }
 

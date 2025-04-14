@@ -16,4 +16,13 @@ namespace silva {
     return fmt::vformat(args.front(),
                         fmt::basic_format_args<ctx>(fmt_args.data(), fmt_args.size()));
   }
+
+  string_t format_vector(const span_t<string_t> args)
+  {
+    vector_t<string_view_t> args_view;
+    for (const auto& arg: args) {
+      args_view.emplace_back(arg);
+    }
+    return string_t{format_vector(args_view)};
+  }
 }
