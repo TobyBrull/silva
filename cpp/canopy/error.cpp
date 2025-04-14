@@ -1,6 +1,7 @@
 #include "error.hpp"
 
 #include "assert.hpp"
+#include "format.hpp"
 
 #include <algorithm>
 #include <utility>
@@ -10,7 +11,7 @@ namespace silva {
   error_context_t::~error_context_t()
   {
     SILVA_ASSERT(tree.nodes.empty());
-    SILVA_ASSERT(memento_buffer.buffer.empty());
+    SILVA_ASSERT(any_vector.is_empty());
   }
 
   namespace impl {
@@ -25,10 +26,15 @@ namespace silva {
           },
           node_index);
 
-      const memento_buffer_index_t mbo =
-          error_context->tree.nodes[node_index].memento_buffer_offset;
-      const string_or_view_t message = error_context->memento_buffer.at(mbo).to_string_or_view();
-      retval += fmt::format("{:{}}{}\n", "", indent, message.as_string_view());
+      const auto& node = error_context->tree.nodes[node_index];
+      auto it          = error_context->any_vector.index_iter_at(node.memento_buffer_offset);
+      const auto end   = error_context->any_vector.index_iter_at(node.memento_buffer_offset_end);
+      vector_t<string_t> args;
+      for (; it != end; ++it) {
+        args.push_back(error_context->any_vector.apply(*it, to_string).as_string());
+      }
+      const string_t message = format_vector(args);
+      retval += fmt::format("{:{}}{}\n", "", indent, message);
     }
   }
 
@@ -73,7 +79,7 @@ namespace silva {
       SILVA_ASSERT(context->tree.nodes.size() == node_index + 1);
       const auto& node       = context->tree.nodes[node_index];
       const index_t new_size = node.children_begin;
-      context->memento_buffer.resize(node.memento_buffer_begin);
+      context->any_vector.resize_down_to(node.memento_buffer_begin);
       context->tree.nodes.resize(new_size);
       context.clear();
       node_index = 0;
@@ -95,12 +101,6 @@ namespace silva {
     }
   }
 
-  string_or_view_t error_t::message() const
-  {
-    const memento_buffer_index_t mbo = context->tree.nodes[node_index].memento_buffer_offset;
-    return context->memento_buffer.at(mbo).to_string_or_view();
-  }
-
   string_or_view_t to_string_impl(const error_t& self)
   {
     string_t retval;
@@ -110,23 +110,27 @@ namespace silva {
 
   void error_t::materialize()
   {
-    memento_buffer_t& memento_buffer = context->memento_buffer;
-    memento_buffer_t new_memento_buffer;
-    hashmap_t<memento_buffer_index_t, memento_buffer_index_t> offset_mapping;
-    memento_buffer.for_each_memento(
-        [&](const memento_buffer_index_t offset, const memento_ptr_t& memento) {
-          offset_mapping[offset] = new_memento_buffer.push_back_materialized(memento);
-        });
-    const auto& map_offset = [&offset_mapping](memento_buffer_index_t& offset) {
+    auto& any_vector = context->any_vector;
+    any_vector_t<to_string_t, move_ctor_t, dtor_t> new_any_vector;
+    hashmap_t<any_vector_index_t, any_vector_index_t> offset_mapping;
+    {
+      for (const auto avi: any_vector.index_range()) {
+        const string_or_view_t x = any_vector.apply(avi, to_string);
+        offset_mapping[avi]      = new_any_vector.push_back(x);
+      }
+      offset_mapping[any_vector.next_index()] = new_any_vector.next_index();
+    }
+    const auto& map_offset = [&offset_mapping](any_vector_index_t& offset) {
       const auto it = offset_mapping.find(offset);
       SILVA_ASSERT(it != offset_mapping.end());
       offset = it->second;
     };
     for (auto& node: context->tree.nodes) {
-      map_offset(node.memento_buffer_begin);
       map_offset(node.memento_buffer_offset);
+      map_offset(node.memento_buffer_offset_end);
+      map_offset(node.memento_buffer_begin);
     }
-    memento_buffer = std::move(new_memento_buffer);
+    any_vector = std::move(new_any_vector);
   }
 
   error_nursery_t::error_nursery_t() : context(error_context_t::get()) {}

@@ -50,37 +50,4 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
-  template<>
-  struct memento_item_writer_t<token_position_t> {
-    inline static memento_item_type_t memento_item_type = memento_item_type_custom();
-    static memento_item_type_t write(string_t& buffer, const token_position_t& x)
-    {
-      bit_append<token_position_t>(buffer, x);
-      return memento_item_type;
-    }
-    static inline SILVA_USED bool reg = memento_item_reader_t::register_reader(
-        memento_item_type,
-        [](const byte_t* ptr, const index_t size) -> string_or_view_t {
-          SILVA_ASSERT(size == sizeof(token_position_t));
-          const token_position_t tp = bit_cast_ptr<token_position_t>(ptr);
-          return to_string(tp);
-        });
-  };
-
-  template<>
-  struct memento_item_writer_t<token_range_t> {
-    inline static memento_item_type_t memento_item_type = memento_item_type_custom();
-    static memento_item_type_t write(string_t& buffer, const token_range_t& x)
-    {
-      bit_append<token_range_t>(buffer, x);
-      return memento_item_type;
-    }
-    static inline SILVA_USED bool reg = memento_item_reader_t::register_reader(
-        memento_item_type,
-        [](const byte_t* ptr, const index_t size) -> string_or_view_t {
-          SILVA_ASSERT(size == sizeof(token_range_t));
-          const token_range_t tr = bit_cast_ptr<token_range_t>(ptr);
-          return to_string(tr);
-        });
-  };
 }

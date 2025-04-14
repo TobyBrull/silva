@@ -1,7 +1,7 @@
 #pragma once
 
+#include "any_vector.hpp"
 #include "assert.hpp"
-#include "memento.hpp"
 
 namespace silva {
   enum class tree_event_t {
@@ -26,8 +26,9 @@ namespace silva {
       index_t num_children   = 0;
       index_t children_begin = 0;
 
-      memento_buffer_index_t memento_buffer_offset;
-      memento_buffer_index_t memento_buffer_begin;
+      any_vector_index_t memento_buffer_offset;
+      any_vector_index_t memento_buffer_offset_end;
+      any_vector_index_t memento_buffer_begin;
     };
     vector_t<node_t> nodes;
 

@@ -1,9 +1,9 @@
 #pragma once
 
+#include "any_vector.hpp"
 #include "context.hpp"
 #include "error_level.hpp"
 #include "error_tree.hpp"
-#include "memento.hpp"
 #include "to_string.hpp"
 
 namespace silva {
@@ -13,7 +13,7 @@ namespace silva {
     constexpr static bool context_mutable_get = true;
 
     error_tree_t tree;
-    memento_buffer_t memento_buffer;
+    any_vector_t<to_string_t, move_ctor_t, dtor_t> any_vector;
 
     ~error_context_t();
   };
@@ -39,8 +39,6 @@ namespace silva {
 
     void release();
 
-    string_or_view_t message() const;
-
     template<typename... MementoArgs>
     void replace_message(MementoArgs&&...);
 
@@ -55,7 +53,7 @@ namespace silva {
     index_t num_children = 0;
     optional_t<index_t> last_node_index;
     optional_t<index_t> children_begin;
-    optional_t<memento_buffer_index_t> memento_buffer_begin;
+    optional_t<any_vector_index_t> memento_buffer_begin;
 
     error_nursery_t();
     ~error_nursery_t();
@@ -86,8 +84,9 @@ namespace silva {
   {
     SILVA_ASSERT(!context.is_nullptr() && node_index + 1 == context->tree.nodes.size());
     error_tree_t::node_t& node = context->tree.nodes[node_index];
-    context->memento_buffer.resize(node.memento_buffer_offset);
-    context->memento_buffer.push_back(std::forward<MementoArgs>(memento_args)...);
+    context->any_vector.resize_down_to(node.memento_buffer_offset);
+    (context->any_vector.push_back(std::forward<MementoArgs>(memento_args)), ...);
+    node.memento_buffer_offset_end = context->any_vector.next_index();
   }
 
   template<typename... MementoArgs>
@@ -107,12 +106,14 @@ namespace silva {
   {
     const index_t new_node_index = context->tree.nodes.size();
     SILVA_ASSERT(!last_node_index || *last_node_index + 1 == new_node_index);
-    const auto mbo = context->memento_buffer.push_back(std::forward<MementoArgs>(memento_args)...);
+    const auto mbo = context->any_vector.next_index();
+    (context->any_vector.push_back(std::forward<MementoArgs>(memento_args)), ...);
     context->tree.nodes.push_back(error_tree_t::node_t{
-        .num_children          = num_children,
-        .children_begin        = children_begin.value_or(new_node_index),
-        .memento_buffer_offset = mbo,
-        .memento_buffer_begin  = memento_buffer_begin.value_or(mbo),
+        .num_children              = num_children,
+        .children_begin            = children_begin.value_or(new_node_index),
+        .memento_buffer_offset     = mbo,
+        .memento_buffer_offset_end = context->any_vector.next_index(),
+        .memento_buffer_begin      = memento_buffer_begin.value_or(mbo),
     });
     error_t retval(context, new_node_index, error_level);
     release();
