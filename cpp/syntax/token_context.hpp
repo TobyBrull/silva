@@ -41,12 +41,6 @@ namespace silva {
     friend hash_value_t hash_impl(const name_info_t& x);
   };
 
-  struct tokenization_t;
-  struct parse_tree_t;
-
-  using tokenization_id_t = index_t;
-  using tree_id_t         = index_t;
-
   struct token_context_t : public menhir_t {
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
