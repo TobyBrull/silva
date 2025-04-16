@@ -8,17 +8,6 @@
 namespace silva {
   using enum token_category_t;
 
-  name_id_style_t seed_name_style(token_context_ptr_t tcp)
-  {
-    return name_id_style_t{
-        .tcp       = tcp,
-        .root      = *tcp->token_id("Silva"),
-        .current   = *tcp->token_id("X"),
-        .parent    = *tcp->token_id("Up"),
-        .separator = *tcp->token_id("."),
-    };
-  }
-
   parse_axe::parse_axe_t create_parse_axe_expr(token_context_ptr_t tcp)
   {
     using namespace parse_axe;
@@ -82,9 +71,9 @@ namespace silva {
       token_id_t tt_brack_close = *tcp->token_id("]");
       token_id_t tt_identifier  = *tcp->token_id("identifier");
       token_id_t tt_regex       = *tcp->token_id("/");
-      token_id_t tt_up          = *tcp->token_id("Up");
-      token_id_t tt_silva       = *tcp->token_id("Silva");
-      token_id_t tt_here        = *tcp->token_id("X");
+      token_id_t tt_up          = *tcp->token_id("p");
+      token_id_t tt_silva       = *tcp->token_id("_");
+      token_id_t tt_here        = *tcp->token_id("x");
       token_id_t tt_operator    = *tcp->token_id("operator");
       token_id_t tt_string      = *tcp->token_id("string");
       token_id_t tt_number      = *tcp->token_id("number");
@@ -156,10 +145,12 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_nt_base);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_data_by()->category == IDENTIFIER &&
-                               !token_data_by()->str.empty() &&
-                               std::isupper(token_data_by()->str.front()),
-                           "Expected Nonterminal.Base");
+        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "Expected Nonterminal.Base");
+        const bool is_cap_id = token_data_by()->category == IDENTIFIER &&
+            !token_data_by()->str.empty() && std::isupper(token_data_by()->str.front());
+        const bool is_name_id =
+            token_id_by() == tt_up || token_id_by() == tt_here || token_id_by() == tt_silva;
+        SILVA_EXPECT_PARSE(is_cap_id || is_name_id, "Expected Nonterminal.Base");
         token_index += 1;
         return ss_rule.commit();
       }

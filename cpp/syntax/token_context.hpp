@@ -74,9 +74,9 @@ namespace silva {
 
   struct name_id_style_t {
     token_context_ptr_t tcp;
-    token_id_t root      = *tcp->token_id("silva");
+    token_id_t root      = *tcp->token_id("_");
     token_id_t current   = *tcp->token_id("x");
-    token_id_t parent    = *tcp->token_id("up");
+    token_id_t parent    = *tcp->token_id("p");
     token_id_t separator = *tcp->token_id(".");
 
     name_id_t from_token_span(name_id_t current, span_t<const token_id_t>) const;

@@ -12,7 +12,7 @@ namespace silva {
                                                     const parse_tree_printing_t printing)
   {
     token_context_ptr_t tcp = tokenization->context;
-    const auto style        = seed_name_style(tcp);
+    const name_id_style_t style{tcp};
     return tree_span_t::to_string([&](string_t& curr_line, auto& path) {
       const auto pts = this->sub_tree_span_at(path.back().node_index);
       using enum parse_tree_printing_t;
@@ -38,7 +38,7 @@ namespace silva {
   expected_t<string_t> parse_tree_span_t::to_graphviz()
   {
     token_context_ptr_t tcp = tokenization->context;
-    const auto style        = seed_name_style(tcp);
+    const name_id_style_t style(tcp);
     return tree_span_t::to_graphviz([&](auto& node) {
       return fmt::format("{}\\n{}",
                          style.absolute(node.rule_name),

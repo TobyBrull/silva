@@ -45,10 +45,10 @@ namespace silva::test {
   {
     const string_t sf_text = R"'(
     - SimpleFern = [
-      - X = '[' ( LabeledItem ';' ? ) * ']'
+      - x = '[' ( LabeledItem ';' ? ) * ']'
       - LabeledItem = ( Label ':' )? Item
       - Label = string
-      - Item = X | string | number
+      - Item = x | string | number
     ]
   )'";
     token_context_t tc;
@@ -59,47 +59,47 @@ namespace silva::test {
     CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
     const std::string_view expected = R"(
-[0]Silva.Seed                                     - SimpleFern ... number ]
-  [0]Silva.Seed.Rule                              SimpleFern = ... number ]
-    [0]Silva.Seed.Nonterminal.Base                SimpleFern
-    [1]Silva.Seed                                 - X ... | number
-      [0]Silva.Seed.Rule                          X = ... * ']'
-        [0]Silva.Seed.Nonterminal.Base            X
-        [1]Silva.Seed.ExprOrAlias                 = '[' ... * ']'
-          [0]Silva.Seed.Expr.Concat.concat        '[' ( ... * ']'
-            [0]Silva.Seed.Terminal                '['
-            [1]Silva.Seed.Expr.Postfix.*          ( LabeledItem ... ) *
-              [0]Silva.Seed.Expr.Parens.(         ( LabeledItem ';' ? )
-                [0]Silva.Seed.Expr.Concat.concat  LabeledItem ';' ?
-                  [0]Silva.Seed.Nonterminal       LabeledItem
-                    [0]Silva.Seed.Nonterminal.Base LabeledItem
-                  [1]Silva.Seed.Expr.Postfix.?    ';' ?
-                    [0]Silva.Seed.Terminal        ';'
-            [2]Silva.Seed.Terminal                ']'
-      [1]Silva.Seed.Rule                          LabeledItem = ... ? Item
-        [0]Silva.Seed.Nonterminal.Base            LabeledItem
-        [1]Silva.Seed.ExprOrAlias                 = ( ... ? Item
-          [0]Silva.Seed.Expr.Concat.concat        ( Label ... ? Item
-            [0]Silva.Seed.Expr.Postfix.?          ( Label ':' ) ?
-              [0]Silva.Seed.Expr.Parens.(         ( Label ':' )
-                [0]Silva.Seed.Expr.Concat.concat  Label ':'
-                  [0]Silva.Seed.Nonterminal       Label
-                    [0]Silva.Seed.Nonterminal.Base Label
-                  [1]Silva.Seed.Terminal          ':'
-            [1]Silva.Seed.Nonterminal             Item
-              [0]Silva.Seed.Nonterminal.Base      Item
-      [2]Silva.Seed.Rule                          Label = string
-        [0]Silva.Seed.Nonterminal.Base            Label
-        [1]Silva.Seed.ExprOrAlias                 = string
-          [0]Silva.Seed.Terminal                  string
-      [3]Silva.Seed.Rule                          Item = ... | number
-        [0]Silva.Seed.Nonterminal.Base            Item
-        [1]Silva.Seed.ExprOrAlias                 = X ... | number
-          [0]Silva.Seed.Expr.Or.|                 X | string | number
-            [0]Silva.Seed.Nonterminal             X
-              [0]Silva.Seed.Nonterminal.Base      X
-            [1]Silva.Seed.Terminal                string
-            [2]Silva.Seed.Terminal                number
+[0]_.Seed                                         - SimpleFern ... number ]
+  [0]_.Seed.Rule                                  SimpleFern = ... number ]
+    [0]_.Seed.Nonterminal.Base                    SimpleFern
+    [1]_.Seed                                     - x ... | number
+      [0]_.Seed.Rule                              x = ... * ']'
+        [0]_.Seed.Nonterminal.Base                x
+        [1]_.Seed.ExprOrAlias                     = '[' ... * ']'
+          [0]_.Seed.Expr.Concat.concat            '[' ( ... * ']'
+            [0]_.Seed.Terminal                    '['
+            [1]_.Seed.Expr.Postfix.*              ( LabeledItem ... ) *
+              [0]_.Seed.Expr.Parens.(             ( LabeledItem ';' ? )
+                [0]_.Seed.Expr.Concat.concat      LabeledItem ';' ?
+                  [0]_.Seed.Nonterminal           LabeledItem
+                    [0]_.Seed.Nonterminal.Base    LabeledItem
+                  [1]_.Seed.Expr.Postfix.?        ';' ?
+                    [0]_.Seed.Terminal            ';'
+            [2]_.Seed.Terminal                    ']'
+      [1]_.Seed.Rule                              LabeledItem = ... ? Item
+        [0]_.Seed.Nonterminal.Base                LabeledItem
+        [1]_.Seed.ExprOrAlias                     = ( ... ? Item
+          [0]_.Seed.Expr.Concat.concat            ( Label ... ? Item
+            [0]_.Seed.Expr.Postfix.?              ( Label ':' ) ?
+              [0]_.Seed.Expr.Parens.(             ( Label ':' )
+                [0]_.Seed.Expr.Concat.concat      Label ':'
+                  [0]_.Seed.Nonterminal           Label
+                    [0]_.Seed.Nonterminal.Base    Label
+                  [1]_.Seed.Terminal              ':'
+            [1]_.Seed.Nonterminal                 Item
+              [0]_.Seed.Nonterminal.Base          Item
+      [2]_.Seed.Rule                              Label = string
+        [0]_.Seed.Nonterminal.Base                Label
+        [1]_.Seed.ExprOrAlias                     = string
+          [0]_.Seed.Terminal                      string
+      [3]_.Seed.Rule                              Item = ... | number
+        [0]_.Seed.Nonterminal.Base                Item
+        [1]_.Seed.ExprOrAlias                     = x ... | number
+          [0]_.Seed.Expr.Or.|                     x | string | number
+            [0]_.Seed.Nonterminal                 x
+              [0]_.Seed.Nonterminal.Base          x
+            [1]_.Seed.Terminal                    string
+            [2]_.Seed.Terminal                    number
 )";
 
     const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(sf_seed_pt_1->span().to_string());
@@ -131,18 +131,18 @@ namespace silva::test {
     const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sf_tt, fni_sf));
 
     const std::string_view expected_parse_tree = R"(
-[0]Silva.SimpleFern                               [ 'abc' ... ; ]
-  [0]Silva.SimpleFern.LabeledItem                 'abc'
-    [0]Silva.SimpleFern.Item                      'abc'
-  [1]Silva.SimpleFern.LabeledItem                 [ 'def' 123 ]
-    [0]Silva.SimpleFern.Item                      [ 'def' 123 ]
-      [0]Silva.SimpleFern                         [ 'def' 123 ]
-        [0]Silva.SimpleFern.LabeledItem           'def'
-          [0]Silva.SimpleFern.Item                'def'
-        [1]Silva.SimpleFern.LabeledItem           123
-          [0]Silva.SimpleFern.Item                123
-  [2]Silva.SimpleFern.LabeledItem                 'jkl'
-    [0]Silva.SimpleFern.Item                      'jkl'
+[0]_.SimpleFern                                   [ 'abc' ... ; ]
+  [0]_.SimpleFern.LabeledItem                     'abc'
+    [0]_.SimpleFern.Item                          'abc'
+  [1]_.SimpleFern.LabeledItem                     [ 'def' 123 ]
+    [0]_.SimpleFern.Item                          [ 'def' 123 ]
+      [0]_.SimpleFern                             [ 'def' 123 ]
+        [0]_.SimpleFern.LabeledItem               'def'
+          [0]_.SimpleFern.Item                    'def'
+        [1]_.SimpleFern.LabeledItem               123
+          [0]_.SimpleFern.Item                    123
+  [2]_.SimpleFern.LabeledItem                     'jkl'
+    [0]_.SimpleFern.Item                          'jkl'
 )";
     const string_t result{SILVA_EXPECT_REQUIRE(sfpt->span().to_string())};
     CHECK(result == expected_parse_tree.substr(1));

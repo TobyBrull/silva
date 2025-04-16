@@ -19,8 +19,8 @@ namespace silva {
 
   const string_view_t seed_seed = R"'(
     - Seed = [
-      - X = ( '-' Rule ) *
-      - Rule = Nonterminal.Base ( '=' '[' X ']' | ExprOrAlias | Axe )
+      - x = ( '-' Rule ) *
+      - Rule = Nonterminal.Base ( '=' '[' x ']' | ExprOrAlias | Axe )
       - ExprOrAlias = ( '=' | '=>' ) Expr
       - Expr =/ Atom [
         - Parens    = nest  atom_nest '(' ')'
@@ -32,8 +32,8 @@ namespace silva {
       ]
       - Atom => Nonterminal | Terminal
       - Axe = [
-        - X = '=/' Up.Nonterminal '[' ( '-' Level ) * ']'
-        - Level = Up.Nonterminal.Base '=' Assoc Ops *
+        - x = '=/' p.Nonterminal '[' ( '-' Level ) * ']'
+        - Level = p.Nonterminal.Base '=' Assoc Ops *
         - Assoc = 'nest' | 'ltr' | 'rtl'
         - Ops = OpType Op *
         - OpType = 'atom_nest' | 'prefix' | 'prefix_nest'
@@ -42,8 +42,8 @@ namespace silva {
         - Op = string | 'concat'
       ]
       - Nonterminal = [
-        - X = Base ( '.' Base ) *
-        - Base = 'Silva' | 'X' | 'Up' | identifier / '^[A-Z]'
+        - x = Base ( '.' Base ) *
+        - Base = '_' | 'x' | 'p' | identifier / '^[A-Z]'
       ]
       - Terminal = string
                  | 'identifier' ( '/' string ) ?
@@ -55,8 +55,6 @@ namespace silva {
   )'";
 
   struct seed_engine_t;
-
-  name_id_style_t seed_name_style(token_context_ptr_t);
 
   // Invariant (pseudo-code):
   //    seed_seed_engine()->apply(tokenization, "Seed") == seed_parse(tokenization)

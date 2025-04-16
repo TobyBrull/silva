@@ -17,7 +17,7 @@ namespace silva {
   struct seed_engine_create_nursery_t {
     seed_engine_t* se       = nullptr;
     token_context_ptr_t tcp = se->tcp;
-    name_id_style_t fnis    = seed_name_style(tcp);
+    name_id_style_t fnis{tcp};
 
     const tokenization_t& s_tokenization;
     const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
@@ -414,7 +414,7 @@ namespace silva {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* se = nullptr;
       token_context_ptr_t tcp = se->tcp;
-      name_id_style_t fnis    = seed_name_style(tcp);
+      name_id_style_t fnis{tcp};
 
       const tokenization_t& t_tokenization = *tokenization;
       const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;

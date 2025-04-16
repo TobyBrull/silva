@@ -23,18 +23,18 @@ namespace silva::test {
     const auto expr_pt            = SILVA_EXPECT_REQUIRE(se.apply(expr_tt, tc.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
-[0]Silva.Expr                                     5 + ... + 1
-  [0]Silva.Add                                    5 + ... + 1
-    [0]Silva.Mult                                 5
-      [0]Silva.Primary                            5
-    [1]Silva.Add                                  4 * 2 + 1
-      [0]Silva.Mult                               4 * 2
-        [0]Silva.Primary                          4
-        [1]Silva.Mult                             2
-          [0]Silva.Primary                        2
-      [1]Silva.Add                                1
-        [0]Silva.Mult                             1
-          [0]Silva.Primary                        1
+[0]_.Expr                                         5 + ... + 1
+  [0]_.Add                                        5 + ... + 1
+    [0]_.Mult                                     5
+      [0]_.Primary                                5
+    [1]_.Add                                      4 * 2 + 1
+      [0]_.Mult                                   4 * 2
+        [0]_.Primary                              4
+        [1]_.Mult                                 2
+          [0]_.Primary                            2
+      [1]_.Add                                    1
+        [0]_.Mult                                 1
+          [0]_.Primary                            1
 )";
     const string_t result{SILVA_EXPECT_REQUIRE(expr_pt->span().to_string())};
     CHECK(result == expected_parse_tree.substr(1));
@@ -62,21 +62,21 @@ namespace silva::test {
     const auto expr_pt            = SILVA_EXPECT_REQUIRE(se.apply(expr_tt, tc.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
-[0]Silva.Expr.Add.+                               ( 5 ... + 100
-  [0]Silva.Expr.Parens.(                          ( 5 ... 20 )
-    [0]Silva.Expr.Add.+                           5 + ... * 20
-      [0]Silva.Atom                               5
-      [1]Silva.Atom                               if a ... * 20
-        [0]Silva.Expr.Comp.<                      a < 3
-          [0]Silva.Atom                           a
-          [1]Silva.Atom                           3
-        [1]Silva.Expr.Add.+                       b + 10
-          [0]Silva.Atom                           b
-          [1]Silva.Atom                           10
-        [2]Silva.Expr.Mult.*                      c * 20
-          [0]Silva.Atom                           c
-          [1]Silva.Atom                           20
-  [1]Silva.Atom                                   100
+[0]_.Expr.Add.+                                   ( 5 ... + 100
+  [0]_.Expr.Parens.(                              ( 5 ... 20 )
+    [0]_.Expr.Add.+                               5 + ... * 20
+      [0]_.Atom                                   5
+      [1]_.Atom                                   if a ... * 20
+        [0]_.Expr.Comp.<                          a < 3
+          [0]_.Atom                               a
+          [1]_.Atom                               3
+        [1]_.Expr.Add.+                           b + 10
+          [0]_.Atom                               b
+          [1]_.Atom                               10
+        [2]_.Expr.Mult.*                          c * 20
+          [0]_.Atom                               c
+          [1]_.Atom                               20
+  [1]_.Atom                                       100
 )";
     const string_t result{SILVA_EXPECT_REQUIRE(expr_pt->span().to_string())};
     CHECK(result == expected_parse_tree.substr(1));
