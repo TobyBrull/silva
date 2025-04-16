@@ -9,8 +9,10 @@ namespace silva {
     variant_t<string_view_t, string_t> data;
 
     string_or_view_t() : data(string_view_t{}) {}
-    string_or_view_t(string_view_t x) : data(x) {}
-    string_or_view_t(string_t&& x) : data(std::move(x)) {}
+    explicit string_or_view_t(string_view_t x) : data(x) {}
+    explicit string_or_view_t(string_t&& x) : data(std::move(x)) {}
+    explicit string_or_view_t(const string_t& x) = delete;
+    explicit string_or_view_t(string_t& x)       = delete;
 
     string_view_t as_string_view() const;
     string_t as_string(this auto&& self);

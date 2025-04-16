@@ -48,11 +48,11 @@ namespace silva {
 
   inline string_or_view_t to_string_impl(const string_t& x)
   {
-    return string_t{x};
+    return string_or_view_t{string_t{x}};
   }
   inline string_or_view_t to_string_impl(const string_view_t& x)
   {
-    return x;
+    return string_or_view_t{x};
   }
   inline string_or_view_t to_string_impl(const string_or_view_t& x)
   {
@@ -63,19 +63,19 @@ namespace silva {
     requires std::is_arithmetic_v<T>
   string_or_view_t to_string_impl(const T& x)
   {
-    return std::to_string(x);
+    return string_or_view_t{std::to_string(x)};
   }
 
   template<typename T, typename U>
   string_or_view_t to_string_impl(const pair_t<T, U>& x)
   {
-    return fmt::format("[{} {}]", x.first, x.second);
+    return string_or_view_t{fmt::format("[{} {}]", x.first, x.second)};
   }
 
   template<typename... Ts>
   string_or_view_t to_string_impl(const tuple_t<Ts...>& x)
   {
-    return fmt::format("[{}]", fmt::join(x, " "));
+    return string_or_view_t{fmt::format("[{}]", fmt::join(x, " "))};
   }
 
   template<typename... Ts>
@@ -89,6 +89,6 @@ namespace silva {
   string_or_view_t to_string_impl(const Enum& x)
   {
     static const auto vals = enum_hashmap_to_string<Enum>();
-    return string_view_t{vals.at(x)};
+    return string_or_view_t{string_view_t{vals.at(x)}};
   }
 }

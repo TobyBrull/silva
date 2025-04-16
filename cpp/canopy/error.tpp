@@ -42,6 +42,7 @@ namespace silva::test {
   scope a 4
 scope final
 )";
-    CHECK(to_string(final_error) == expected.substr(1));
+    const auto result            = to_string(final_error);
+    CHECK(result.as_string_view() == expected.substr(1));
   }
 }

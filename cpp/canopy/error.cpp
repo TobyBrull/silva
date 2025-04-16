@@ -105,7 +105,7 @@ namespace silva {
   {
     string_t retval;
     impl::error_context_to_string(self.context.get(), retval, self.node_index, 0);
-    return retval;
+    return string_or_view_t{std::move(retval)};
   }
 
   void error_t::materialize()

@@ -40,7 +40,7 @@ namespace silva {
     string_t retval;
     const auto [line, column] = self.tp->token_locations[self.token_index];
     const string_t filename   = self.tp->filepath.filename().string();
-    return fmt::format("[{}:{}:{}]", filename, line + 1, column + 1);
+    return string_or_view_t{fmt::format("[{}:{}:{}]", filename, line + 1, column + 1)};
   }
 
   string_or_view_t to_string_impl(const token_range_t& self)
@@ -64,7 +64,7 @@ namespace silva {
       retval += " ... ";
       print_tokens(self.token_end - max_num_tokens / 2, self.token_end);
     }
-    return retval;
+    return string_or_view_t{std::move(retval)};
   }
 
   expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t tcp,
@@ -113,6 +113,6 @@ namespace silva {
       const auto [line, column] = self.token_locations[token_index];
       retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }
-    return retval;
+    return string_or_view_t{std::move(retval)};
   }
 }

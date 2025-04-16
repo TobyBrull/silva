@@ -1,8 +1,6 @@
 #pragma once
 
-#include "canopy/preprocessor.hpp"
 #include "canopy/string_or_view.hpp"
-#include "canopy/to_string.hpp"
 
 #include "token_context.hpp"
 
