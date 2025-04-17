@@ -14,7 +14,7 @@ namespace silva::test {
       CHECK(*result->token_info_get(0) == info_t{IDENTIFIER, "Hello"});
       CHECK(*result->token_info_get(1) == info_t{NUMBER, "123"});
       CHECK(*result->token_info_get(2) == info_t{OPERATOR, ".<>."});
-      REQUIRE(tc.token_infos.size() == 4);
+      REQUIRE(tc.token_infos.size() == 8);
     }
 
     {
@@ -32,7 +32,7 @@ namespace silva::test {
       CHECK(*result->token_info_get(6) == info_t{NUMBER, "1"});
       CHECK(*result->token_info_get(7) == info_t{OPERATOR, "+"});
       CHECK(*result->token_info_get(8) == info_t{NUMBER, "3"});
-      REQUIRE(tc.token_infos.size() == 12);
+      REQUIRE(tc.token_infos.size() == 15);
     }
 
     {

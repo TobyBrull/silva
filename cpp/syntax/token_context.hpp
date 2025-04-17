@@ -41,6 +41,10 @@ namespace silva {
     friend hash_value_t hash_impl(const name_info_t& x);
   };
 
+  struct name_id_style_t;
+  struct token_id_wrap_t;
+  struct name_id_wrap_t;
+
   struct token_context_t : public menhir_t {
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
@@ -48,7 +52,11 @@ namespace silva {
     vector_t<name_info_t> name_infos;
     hashmap_t<name_info_t, name_id_t> name_lookup;
 
+    struct impl_t;
+    unique_ptr_t<impl_t> impl;
+
     token_context_t();
+    ~token_context_t();
 
     expected_t<token_id_t> token_id(string_view_t);
     expected_t<token_id_t> token_id_in_string(token_id_t);
@@ -63,6 +71,11 @@ namespace silva {
     name_id_t name_id_of(Ts&&... xs);
     template<typename... Ts>
     name_id_t name_id_of(name_id_t parent_name, Ts&&... xs);
+
+    const name_id_style_t& default_name_id_style() const;
+
+    token_id_wrap_t token_id_wrap(token_id_t);
+    name_id_wrap_t name_id_wrap(name_id_t);
   };
   using token_context_ptr_t = ptr_t<token_context_t>;
 
@@ -78,6 +91,20 @@ namespace silva {
     string_t absolute(name_id_t) const;
     string_t relative(name_id_t current, name_id_t) const;
     string_t readable(name_id_t current, name_id_t) const;
+  };
+
+  struct token_id_wrap_t {
+    token_context_ptr_t tcp;
+    token_id_t token_id = token_id_none;
+
+    friend string_or_view_t to_string_impl(const token_id_wrap_t&);
+  };
+
+  struct name_id_wrap_t {
+    token_context_ptr_t tcp;
+    name_id_t name_id = name_id_root;
+
+    friend string_or_view_t to_string_impl(const name_id_wrap_t&);
   };
 }
 

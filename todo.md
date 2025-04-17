@@ -3,8 +3,6 @@
 * memento/error-handling:
     * Seed:
         * make seed-engine-based error look more like the error from the manual Fern parser
-    * add dumping plain token_ids and name_ids, without any positional information
-        * make token_id_t and name_id_t proper types
     * put error materialisation into token_context_t?
 
 * various:

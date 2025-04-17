@@ -181,6 +181,13 @@ namespace silva {
     return hash(tuple_t<name_id_t, token_id_t>{x.parent_name, x.base_name});
   }
 
+  struct token_context_t::impl_t {
+    token_context_ptr_t tcp;
+    name_id_style_t default_nis{tcp};
+
+    impl_t(token_context_ptr_t tcp) : tcp(tcp) {}
+  };
+
   token_context_t::token_context_t()
   {
     token_infos.emplace_back();
@@ -188,7 +195,10 @@ namespace silva {
     const name_info_t fni{0, 0};
     name_infos.emplace_back(fni);
     name_lookup.emplace(fni, 0);
+    impl = std::make_unique<impl_t>(ptr());
   }
+
+  token_context_t::~token_context_t() = default;
 
   expected_t<token_id_t> token_context_t::token_id(const string_view_t token_str)
   {
@@ -271,6 +281,26 @@ namespace silva {
     return lhs_path[common];
   }
 
+  const name_id_style_t& token_context_t::default_name_id_style() const
+  {
+    return impl->default_nis;
+  }
+
+  token_id_wrap_t token_context_t::token_id_wrap(const token_id_t token_id)
+  {
+    return token_id_wrap_t{
+        .tcp      = ptr(),
+        .token_id = token_id,
+    };
+  }
+  name_id_wrap_t token_context_t::name_id_wrap(const name_id_t name_id)
+  {
+    return name_id_wrap_t{
+        .tcp     = ptr(),
+        .name_id = name_id,
+    };
+  }
+
   string_t name_id_style_t::absolute(const name_id_t target_fni) const
   {
     if (target_fni == name_id_root) {
@@ -318,5 +348,15 @@ namespace silva {
     else {
       return first_part + second_part;
     }
+  }
+
+  string_or_view_t to_string_impl(const token_id_wrap_t& x)
+  {
+    return string_or_view_t{string_t{x.tcp->token_infos[x.token_id].str}};
+  }
+
+  string_or_view_t to_string_impl(const name_id_wrap_t& x)
+  {
+    return string_or_view_t{x.tcp->default_name_id_style().absolute(x.name_id)};
   }
 }
