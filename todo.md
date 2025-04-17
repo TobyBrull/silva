@@ -1,8 +1,6 @@
 # TODO
 
 * memento/error-handling:
-    * Seed:
-        * make seed-engine-based error look more like the error from the manual Fern parser
     * put error materialisation into token_context_t?
 
 * various:
@@ -15,9 +13,18 @@
     * testing
     * memory
 
+* review all error messages
+
 ## Long Term
 
 * Seed
+    * add Seed functions/templates?
+        * e.g.> - func name_id(root_term, curr_term, parent_term, separator_term, token_nt) = [
+                    - x = Base ( separator_terminal Base ) *
+                    - Base = root_term | curr_term | parent_term | token_nt
+                  ]
+        * e.g.> - SeedNonterminal = name_id('_', 'x', 'p', '.')
+    * add Seed Axe derivation (sub-Axe, super-Axe) mechanism?
     * translate Seed program into IR:
         * check Seed program during translation
         * check that all Nonterminals can be resolved
@@ -28,3 +35,6 @@
         * recursion prevention could be a functional part of the parsing
           (by ignoring recursive branches certain grammars become viable that
           otherwise wouldn't be viable)
+    * make seed-engine-based error look more like the error from the manual Fern parser
+        * For Seed expressions of the form ( 'a' | 'b' | 'c' ) make sure that the error
+          is just one level ("could not parse ( 'a' | 'b' | 'c' )").
