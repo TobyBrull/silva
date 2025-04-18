@@ -352,7 +352,7 @@ namespace silva {
 
   string_or_view_t to_string_impl(const token_id_wrap_t& x)
   {
-    return string_or_view_t{string_t{x.tcp->token_infos[x.token_id].str}};
+    return string_or_view_t{fmt::format("token[ {} ]", x.tcp->token_infos[x.token_id].str)};
   }
 
   string_or_view_t to_string_impl(const name_id_wrap_t& x)

@@ -22,9 +22,12 @@
         * recursion prevention could be a functional part of the parsing
           (by ignoring recursive branches certain grammars become viable that
           otherwise wouldn't be viable)
-    * make seed-engine-based error look more like the error from the manual Fern parser
+    * make seed-engine-based error look more like the error from the manual Fern parser; by creating
+      bespoke error messages for certain edge cases.
         * For Seed expressions of the form ( 'a' | 'b' | 'c' ) make sure that the error
           is just one level ("could not parse ( 'a' | 'b' | 'c' )").
+        * For Seed expressions of the form ( not keywords_of _.Fern ), give the error
+          "not one of the keywords of _.Fern".
 
 * Library
     * output_buffer_t / string_output_buffer_t

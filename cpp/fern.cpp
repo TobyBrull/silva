@@ -44,7 +44,9 @@ namespace silva {
                                (token_id_by() == tt_none || token_id_by() == tt_true ||
                                 token_id_by() == tt_false || token_data_by()->category == STRING ||
                                 token_data_by()->category == NUMBER),
-                           "Expected Value");
+                           "{}: unexpected {}",
+                           tcp->name_id_wrap(fni_value),
+                           tcp->token_id_wrap(token_id_by()));
         token_index += 1;
         return ss_rule.commit();
       }
@@ -56,7 +58,9 @@ namespace silva {
         SILVA_EXPECT_PARSE(
             num_tokens_left() >= 1 &&
                 (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
-            "Expected Label");
+            "{}: expected string or identifier, found {}",
+            tcp->name_id_wrap(fni_label),
+            tcp->token_id_wrap(token_id_by()));
         token_index += 1;
         return ss_rule.commit();
       }
@@ -67,10 +71,10 @@ namespace silva {
         ss_rule.create_node(fni_lbl_item);
 
         if (num_tokens_left() >= 2 && token_id_by(1) == tt_colon) {
-          ss_rule.add_proto_node(
-              SILVA_EXPECT_FWD(label(),
-                               "{} Expected LabeledItem",
-                               token_position_at(ss_rule.orig_state.token_index)));
+          ss_rule.add_proto_node(SILVA_EXPECT_FWD(label(),
+                                                  "{} {}",
+                                                  token_position_at(ss_rule.orig_state.token_index),
+                                                  tcp->name_id_wrap(fni_lbl_item)));
           token_index += 1;
         }
 
@@ -94,8 +98,9 @@ namespace silva {
 
         return std::unexpected(std::move(error_nursery)
                                    .finish(MINOR,
-                                           "{} Expected LabeledItem",
-                                           token_position_at(ss_rule.orig_state.token_index)));
+                                           "{} {}",
+                                           token_position_at(ss_rule.orig_state.token_index),
+                                           tcp->name_id_wrap(fni_lbl_item)));
       }
 
       expected_t<parse_tree_node_t> fern()
@@ -103,16 +108,20 @@ namespace silva {
         auto ss_rule = stake();
         ss_rule.create_node(fni_fern);
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_open,
-                           "Expected Fern: didn't find '['");
+                           "{}: expected {}",
+                           tcp->name_id_wrap(fni_fern),
+                           tcp->token_id_wrap(tt_brkt_open));
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() != tt_brkt_close) {
-          ss_rule.add_proto_node(
-              SILVA_EXPECT_FWD(labeled_item(),
-                               "{} Expected Fern",
-                               token_position_at(ss_rule.orig_state.token_index)));
+          ss_rule.add_proto_node(SILVA_EXPECT_FWD(labeled_item(),
+                                                  "{} {}",
+                                                  token_position_at(ss_rule.orig_state.token_index),
+                                                  tcp->name_id_wrap(fni_fern)));
         }
         SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
-                           "Expected ']' for Fern");
+                           "{}: expected {}",
+                           tcp->name_id_wrap(fni_fern),
+                           tcp->token_id_wrap(tt_brkt_close));
         token_index += 1;
         return ss_rule.commit();
       }
