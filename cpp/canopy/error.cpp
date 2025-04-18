@@ -115,8 +115,8 @@ namespace silva {
     hashmap_t<any_vector_index_t, any_vector_index_t> offset_mapping;
     {
       for (const auto avi: any_vector.index_range()) {
-        const string_or_view_t x = any_vector.apply(avi, to_string);
-        offset_mapping[avi]      = new_any_vector.push_back(x);
+        string_or_view_t x  = any_vector.apply(avi, to_string);
+        offset_mapping[avi] = new_any_vector.push_back(std::move(x).as_string());
       }
       offset_mapping[any_vector.next_index()] = new_any_vector.next_index();
     }
