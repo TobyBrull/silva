@@ -6,8 +6,14 @@
 
 namespace silva {
 
-#define SILVA_EXPECT_PARSE(cond, fmt_str, ...) \
-  SILVA_EXPECT(cond, MINOR, "{} " fmt_str, token_position_by() __VA_OPT__(, ) __VA_ARGS__);
+#define SILVA_EXPECT_PARSE(name, cond, fmt_str, ...) \
+  SILVA_EXPECT(cond,                                 \
+               MINOR,                                \
+               "[{}] {}: " fmt_str,                  \
+               token_position_by(),                  \
+               tcp->name_id_wrap(name) __VA_OPT__(, ) __VA_ARGS__);
+#define SILVA_EXPECT_PARSE_FWD(name, expr) \
+  SILVA_EXPECT_FWD(expr, "[{}] {}", token_position_by(), tcp->name_id_wrap(name))
 
   struct parse_tree_nursery_state_t : public tree_nursery_state_t {
     index_t token_index = 0;

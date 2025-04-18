@@ -130,8 +130,11 @@ namespace silva {
           ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal()));
         }
         else {
-          SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens when looking for Terminal");
-          SILVA_EXPECT_PARSE(token_data_by()->category == STRING ||
+          SILVA_EXPECT_PARSE(fni_term,
+                             num_tokens_left() >= 1,
+                             "No more tokens when looking for Terminal");
+          SILVA_EXPECT_PARSE(fni_term,
+                             token_data_by()->category == STRING ||
                                  token_id_by() == tt_identifier || token_id_by() == tt_operator ||
                                  token_id_by() == tt_string || token_id_by() == tt_number ||
                                  token_id_by() == tt_any || token_id_by() == tt_eof,
@@ -145,12 +148,12 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_nt_base);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "Expected Nonterminal.Base");
+        SILVA_EXPECT_PARSE(fni_nt_base, num_tokens_left() >= 1, "Expected Nonterminal.Base");
         const bool is_cap_id = token_data_by()->category == IDENTIFIER &&
             !token_data_by()->str.empty() && std::isupper(token_data_by()->str.front());
         const bool is_name_id =
             token_id_by() == tt_up || token_id_by() == tt_here || token_id_by() == tt_silva;
-        SILVA_EXPECT_PARSE(is_cap_id || is_name_id, "Expected Nonterminal.Base");
+        SILVA_EXPECT_PARSE(fni_nt_base, is_cap_id || is_name_id, "Expected Nonterminal.Base");
         token_index += 1;
         return ss_rule.commit();
       }
@@ -171,7 +174,8 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_op);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 &&
+        SILVA_EXPECT_PARSE(fni_axe_op,
+                           num_tokens_left() >= 1 &&
                                (token_id_by() == tt_concat || token_data_by()->category == STRING),
                            "Expected 'concat' or string");
         token_index += 1;
@@ -183,6 +187,7 @@ namespace silva {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_op_type);
         SILVA_EXPECT_PARSE(
+            fni_axe_op_type,
             num_tokens_left() >= 1 &&
                 (token_id_by() == tt_atom_nest || token_id_by() == tt_prefix ||
                  token_id_by() == tt_prefix_n || token_id_by() == tt_infix ||
@@ -210,6 +215,7 @@ namespace silva {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_assoc);
         SILVA_EXPECT_PARSE(
+            fni_axe_assoc,
             num_tokens_left() >= 1 &&
                 (token_id_by() == tt_nest || token_id_by() == tt_ltr || token_id_by() == tt_rtl),
             "Expected one of [ 'nest' 'ltr' 'rtl' ]");
@@ -222,7 +228,9 @@ namespace silva {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_level);
         ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal_base()));
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_equal, "Expected '='");
+        SILVA_EXPECT_PARSE(fni_axe_level,
+                           num_tokens_left() >= 1 && token_id_by() == tt_equal,
+                           "Expected '='");
         token_index += 1;
         ss_rule.add_proto_node(SILVA_EXPECT_FWD(axe_assoc()));
         while (auto result = axe_ops()) {
@@ -235,17 +243,21 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_axe, "Expected '['");
+        SILVA_EXPECT_PARSE(fni_axe,
+                           num_tokens_left() >= 1 && token_id_by() == tt_axe,
+                           "Expected '['");
         token_index += 1;
         ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal()));
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
+        SILVA_EXPECT_PARSE(fni_axe,
+                           num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
                            "Expected '['");
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() == tt_dash) {
           token_index += 1;
           ss_rule.add_proto_node(SILVA_EXPECT_FWD(axe_level()));
         }
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
+        SILVA_EXPECT_PARSE(fni_axe,
+                           num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
                            "Expected ']'");
         token_index += 1;
         return ss_rule.commit();
@@ -280,7 +292,7 @@ namespace silva {
       expected_t<parse_tree_node_t> expr()
       {
         auto ss = stake();
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No tokens left when parsing Expr");
+        SILVA_EXPECT_PARSE(fni_expr, num_tokens_left() >= 1, "No tokens left when parsing Expr");
         using atom_delegate_t    = delegate_t<expected_t<parse_tree_node_t>()>;
         const auto atom_delegate = atom_delegate_t::make<&seed_parse_tree_nursery_t::atom>(this);
         ss.add_proto_node(SILVA_EXPECT_FWD(seed_parse_axe.apply(*this, fni_atom, atom_delegate)));
@@ -291,9 +303,13 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_expr_or_a);
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens left when parsing ExprOrAlias");
+        SILVA_EXPECT_PARSE(fni_expr_or_a,
+                           num_tokens_left() >= 1,
+                           "No more tokens left when parsing ExprOrAlias");
         const token_id_t op_ti = token_id_by();
-        SILVA_EXPECT_PARSE(op_ti == tt_equal || op_ti == tt_alias, "Expected one of [ '=' '=>' ]");
+        SILVA_EXPECT_PARSE(fni_expr_or_a,
+                           op_ti == tt_equal || op_ti == tt_alias,
+                           "Expected one of [ '=' '=>' ]");
         token_index += 1;
         ss_rule.add_proto_node(SILVA_EXPECT_FWD(expr()));
         return ss_rule.commit();
@@ -305,15 +321,19 @@ namespace silva {
         ss_rule.create_node(fni_rule);
         const index_t orig_token_index = token_index;
         ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal_base()));
-        SILVA_EXPECT_PARSE(num_tokens_left() >= 1, "No more tokens left when parsing Rule");
+        SILVA_EXPECT_PARSE(fni_rule,
+                           num_tokens_left() >= 1,
+                           "No more tokens left when parsing Rule");
         const token_id_t op_ti = token_id_by();
-        SILVA_EXPECT_PARSE(op_ti == tt_equal || op_ti == tt_alias || op_ti == tt_axe ||
+        SILVA_EXPECT_PARSE(fni_rule,
+                           op_ti == tt_equal || op_ti == tt_alias || op_ti == tt_axe ||
                                op_ti == tt_brack_open,
                            "Expected one of [ '=' '=>' '=/' ]");
         if (op_ti == tt_equal && num_tokens_left() >= 2 && token_id_by(1) == tt_brack_open) {
           token_index += 2;
           ss_rule.add_proto_node(SILVA_EXPECT_FWD(seed()));
-          SILVA_EXPECT_PARSE(num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
+          SILVA_EXPECT_PARSE(fni_rule,
+                             num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
                              "Expected ']'");
           token_index += 1;
         }

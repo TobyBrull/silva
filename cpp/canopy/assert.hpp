@@ -24,16 +24,16 @@ namespace silva {
 
 namespace silva::impl {
   [[noreturn]] void
-  assert_handler_core(char const* file, long const line, char const* func, string_view_t);
+  assert_handler_core(char const* file, const long line, char const* func, string_view_t);
 
-  [[noreturn]] inline void assert_handler(char const* file, long const line, char const* func)
+  [[noreturn]] inline void assert_handler(char const* file, const long line, char const* func)
   {
     assert_handler_core(file, line, func, "assertion failed");
   }
 
   template<typename... Args>
   [[noreturn]] void assert_handler(char const* file,
-                                   long const line,
+                                   const long line,
                                    char const* func,
                                    fmt::format_string<Args...> fmt_str,
                                    Args&&... args)

@@ -40,7 +40,7 @@ namespace silva {
     string_t retval;
     const auto [line, column] = self.tp->token_locations[self.token_index];
     const string_t filename   = self.tp->filepath.filename().string();
-    return string_or_view_t{fmt::format("[{}:{}:{}]", filename, line + 1, column + 1)};
+    return string_or_view_t{fmt::format("{}:{}:{}", filename, line + 1, column + 1)};
   }
 
   string_or_view_t to_string_impl(const token_range_t& self)

@@ -31,13 +31,14 @@ namespace silva {
 //  - SILVA_EXPECT(0 < x, MINOR, "x too small");
 //  - SILVA_EXPECT(0 < x, MINOR, "x (={}) must be positive", x);
 //
-#define SILVA_EXPECT(condition, error_level, ...)                                                \
-  do {                                                                                           \
-    using enum error_level_t;                                                                    \
-    static_assert(error_level_is_primary(error_level));                                          \
-    if (!(condition)) {                                                                          \
-      return std::unexpected(silva::impl::silva_expect(error_level __VA_OPT__(, ) __VA_ARGS__)); \
-    }                                                                                            \
+#define SILVA_EXPECT(condition, error_level, ...)                                                 \
+  do {                                                                                            \
+    using enum error_level_t;                                                                     \
+    static_assert(error_level_is_primary(error_level));                                           \
+    if (!(condition)) {                                                                           \
+      return std::unexpected(                                                                     \
+          silva::impl::silva_expect(__FILE__, __LINE__, error_level __VA_OPT__(, ) __VA_ARGS__)); \
+    }                                                                                             \
   } while (false)
 
 // Semantics:
@@ -144,14 +145,19 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva::impl {
-  inline error_t silva_expect(const error_level_t error_level)
+  inline error_t silva_expect(char const* file, const long line, const error_level_t error_level)
   {
-    return make_error(error_level, {}, "unexpected condition");
+    return make_error(error_level,
+                      {},
+                      "unexpected condition in [{}:{}]",
+                      string_view_t{file},
+                      line);
   }
 
   template<typename... Args>
     requires(sizeof...(Args) >= 1)
-  error_t silva_expect(const error_level_t error_level, Args&&... args)
+  error_t
+  silva_expect(char const* file, const long line, const error_level_t error_level, Args&&... args)
   {
     return make_error(error_level, {}, std::forward<Args>(args)...);
   }
