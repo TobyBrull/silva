@@ -1,17 +1,11 @@
 # TODO
 
-* memento/error-handling:
-    * put error materialisation into token_context_t?
-
-* various:
+* std
     * output_buffer_t / string_output_buffer_t
-    * allow partial parse (return number of tokens consumed)
-    * Can't use token_id_none for concat exprs anymore
-
-* context:
-    * logging
-    * testing
-    * memory
+    * context:
+        * logging
+        * testing
+        * memory
 
 * review all error messages
 

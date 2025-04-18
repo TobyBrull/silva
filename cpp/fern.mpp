@@ -16,7 +16,7 @@ silva_main(span_t<string_view_t> cmdline_args)
   const bool arg_seed_eng = env_context_get_as<bool>("seed-engine").value_or(false);
 
   token_context_t tc;
-  auto tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
+  unique_ptr_t<tokenization_t> tt  = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
   unique_ptr_t<parse_tree_t> pt;
   if (arg_seed_eng) {
     const auto fse{fern_seed_engine(tc.ptr())};
