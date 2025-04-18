@@ -1,12 +1,5 @@
 # TODO
 
-* std
-    * output_buffer_t / string_output_buffer_t
-    * context:
-        * logging
-        * testing
-        * memory
-
 * review all error messages
 
 ## Long Term
@@ -32,3 +25,14 @@
     * make seed-engine-based error look more like the error from the manual Fern parser
         * For Seed expressions of the form ( 'a' | 'b' | 'c' ) make sure that the error
           is just one level ("could not parse ( 'a' | 'b' | 'c' )").
+
+* Library
+    * output_buffer_t / string_output_buffer_t
+    * context:
+        * logging
+        * testing
+        * memory
+    * implement using memory_context
+        * vector_t
+        * hashmap_t
+        * using string_t = vector_t<char>
