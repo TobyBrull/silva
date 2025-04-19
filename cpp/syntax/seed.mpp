@@ -4,27 +4,26 @@
 #include "canopy/main.hpp"
 #include "seed_engine.hpp"
 
-using namespace silva;
+namespace silva {
+  expected_t<void> seed_main(const span_t<string_view_t> cmdline_args)
+  {
+    const index_t m = cmdline_args.size();
+    SILVA_EXPECT(2 <= m && m <= 3, MINOR, "Usage: ... <seed-file> [<target-file>]");
 
-expected_t<void>
-silva_main(span_t<string_view_t> cmdline_args)
-{
-  const index_t m = cmdline_args.size();
-  SILVA_EXPECT(2 <= m && m <= 3, MINOR, "Usage: ... <seed-file> [<target-file>]");
-
-  token_context_t tc;
-  auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
-  auto seed_pt = share(SILVA_EXPECT_FWD(seed_parse(std::move(seed_tt))));
-  seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_FWD(se.add_complete(seed_pt));
-  if (m == 2) {
-    fmt::print("{}\n", SILVA_EXPECT_FWD(seed_pt->span().to_string()));
+    token_context_t tc;
+    auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
+    auto seed_pt = share(SILVA_EXPECT_FWD(seed_parse(std::move(seed_tt))));
+    seed_engine_t se(tc.ptr());
+    SILVA_EXPECT_FWD(se.add_complete(seed_pt));
+    if (m == 2) {
+      fmt::print("{}\n", SILVA_EXPECT_FWD(seed_pt->span().to_string()));
+    }
+    else if (m == 3) {
+      auto tgt_tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[2]));
+      auto tgt_pt = SILVA_EXPECT_FWD(se.apply(std::move(tgt_tt), tc.name_id_of("Test")));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(tgt_pt->span().to_string()));
+    }
+    return {};
   }
-  else if (m == 3) {
-    auto tgt_tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[2]));
-    auto tgt_pt = SILVA_EXPECT_FWD(se.apply(std::move(tgt_tt), tc.name_id_of("Test")));
-    fmt::print("{}\n", SILVA_EXPECT_FWD(tgt_pt->span().to_string()));
-  }
-  return {};
 }
-SILVA_MAIN_1(silva_main);
+SILVA_MAIN(silva::seed_main);

@@ -1,84 +1,84 @@
 #include "fern.hpp"
 
+#include "canopy/env_context.hpp"
 #include "canopy/filesystem.hpp"
 #include "canopy/main.hpp"
 #include "syntax/seed_engine.hpp"
 
-using namespace silva;
+namespace silva {
+  expected_t<void> fern_main(const span_t<string_view_t> cmdline_args)
+  {
+    const index_t m = cmdline_args.size();
+    SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
 
-expected_t<void>
-silva_main(span_t<string_view_t> cmdline_args)
-{
-  const index_t m = cmdline_args.size();
-  SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
+    const auto arg_process  = env_context_get("process").value_or("direct/string");
+    const bool arg_seed_eng = env_context_get_as<bool>("seed-engine").value_or(false);
 
-  const auto arg_process  = env_context_get("process").value_or("direct/string");
-  const bool arg_seed_eng = env_context_get_as<bool>("seed-engine").value_or(false);
-
-  token_context_t tc;
-  unique_ptr_t<tokenization_t> tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
-  unique_ptr_t<parse_tree_t> pt;
-  if (arg_seed_eng) {
-    const auto fse{fern_seed_engine(tc.ptr())};
-    pt = SILVA_EXPECT_FWD(fse->apply(std::move(tt), tc.name_id_of("Fern")));
-  }
-  else {
-    pt = SILVA_EXPECT_FWD(fern_parse(std::move(tt)));
-  }
-
-  if (arg_process.empty()) {
-    ;
-  }
-  else if (arg_process.starts_with("fern_t/")) {
-    const auto rest   = arg_process.substr(7);
-    const fern_t fern = SILVA_EXPECT_FWD(fern_create(pt.get()));
-    if (rest == "string") {
-      fmt::print("{}\n", fern.to_string());
+    token_context_t tc;
+    unique_ptr_t<tokenization_t> tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
+    unique_ptr_t<parse_tree_t> pt;
+    if (arg_seed_eng) {
+      const auto fse{fern_seed_engine(tc.ptr())};
+      pt = SILVA_EXPECT_FWD(fse->apply(std::move(tt), tc.name_id_of("Fern")));
     }
-    else if (rest == "graphviz") {
-      fmt::print("{}\n", fern.to_graphviz());
+    else {
+      pt = SILVA_EXPECT_FWD(fern_parse(std::move(tt)));
     }
-    else if (rest == "graphviz_show") {
-      graphviz_show_sync(fern.to_graphviz());
+
+    if (arg_process.empty()) {
+      ;
+    }
+    else if (arg_process.starts_with("fern_t/")) {
+      const auto rest   = arg_process.substr(7);
+      const fern_t fern = SILVA_EXPECT_FWD(fern_create(pt.get()));
+      if (rest == "string") {
+        fmt::print("{}\n", fern.to_string());
+      }
+      else if (rest == "graphviz") {
+        fmt::print("{}\n", fern.to_graphviz());
+      }
+      else if (rest == "graphviz_show") {
+        graphviz_show_sync(fern.to_graphviz());
+      }
+      else {
+        SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
+      }
+    }
+    else if (arg_process.starts_with("direct/")) {
+      const auto rest = arg_process.substr(7);
+      if (rest == "string") {
+        fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_string(pt.get())));
+      }
+      else if (rest == "graphviz") {
+        fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_graphviz(pt.get())));
+      }
+      else if (rest == "graphviz_show") {
+        graphviz_show_sync(SILVA_EXPECT_FWD(fern_to_graphviz(pt.get())));
+      }
+      else {
+        SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
+      }
+    }
+    else if (arg_process.starts_with("parse_tree/")) {
+      const auto rest = arg_process.substr(11);
+      if (rest == "string") {
+        fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_string()));
+      }
+      else if (rest == "graphviz") {
+        fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_graphviz()));
+      }
+      else if (rest == "graphviz_show") {
+        graphviz_show_sync(SILVA_EXPECT_FWD(pt->span().to_graphviz()));
+      }
+      else {
+        SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
+      }
     }
     else {
       SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
     }
-  }
-  else if (arg_process.starts_with("direct/")) {
-    const auto rest = arg_process.substr(7);
-    if (rest == "string") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_string(pt.get())));
-    }
-    else if (rest == "graphviz") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_graphviz(pt.get())));
-    }
-    else if (rest == "graphviz_show") {
-      graphviz_show_sync(SILVA_EXPECT_FWD(fern_to_graphviz(pt.get())));
-    }
-    else {
-      SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
-    }
-  }
-  else if (arg_process.starts_with("parse_tree/")) {
-    const auto rest = arg_process.substr(11);
-    if (rest == "string") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_string()));
-    }
-    else if (rest == "graphviz") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_graphviz()));
-    }
-    else if (rest == "graphviz_show") {
-      graphviz_show_sync(SILVA_EXPECT_FWD(pt->span().to_graphviz()));
-    }
-    else {
-      SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
-    }
-  }
-  else {
-    SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
-  }
 
-  return {};
+    return {};
+  }
 }
-SILVA_MAIN_1(silva_main);
+SILVA_MAIN(silva::fern_main);
