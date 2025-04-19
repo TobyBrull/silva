@@ -38,7 +38,7 @@ namespace silva {
   string_or_view_t to_string_impl(const token_position_t& self)
   {
     if (self.tp.is_nullptr()) {
-      return string_or_view_t{string_view_t{"unknown token-position"}};
+      return string_or_view_t{string_view_t{"unknown token_position"}};
     }
     string_t retval;
     const auto [line, column] = self.tp->token_locations[self.token_index];

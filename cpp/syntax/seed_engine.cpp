@@ -198,6 +198,7 @@ namespace silva {
           SILVA_EXPECT_FWD(axe_ops(level, pts_axe_level.sub_tree_span_at(child_node_index)));
         }
       }
+      level.pts = pts_axe_level;
       return {};
     }
 
@@ -389,6 +390,7 @@ namespace silva {
 
   expected_t<void> seed_engine_t::add(parse_tree_span_t stps)
   {
+    expected_traits_t expected_traits{.materialize_fwd = true};
     seed_engine_create_nursery_t nursery(this, *stps.tokenization);
     SILVA_EXPECT_FWD(nursery.handle_all(stps));
     return {};

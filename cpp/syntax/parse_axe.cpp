@@ -34,10 +34,12 @@ namespace silva::parse_axe {
         if (level_desc.assoc == NEST) {
           SILVA_EXPECT(may_be_nest,
                        MINOR,
-                       "The NEST levels must all occur before all other levels");
+                       "the 'nest' level {} must occur before all non-'nest' levels",
+                       level_desc.pts);
           SILVA_EXPECT(variant_holds_t<atom_nest_t>{}(oper),
                        MINOR,
-                       "NEST level only allows operators of type atom_nest_t");
+                       "the 'nest' level {} only allows operators of type 'atom_nest'",
+                       level_desc.pts);
         }
         else {
           may_be_nest = false;

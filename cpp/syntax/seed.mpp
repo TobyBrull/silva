@@ -14,9 +14,9 @@ silva_main(span_t<string_view_t> cmdline_args)
 
   token_context_t tc;
   auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
-  auto seed_pt = SILVA_EXPECT_FWD(seed_parse(std::move(seed_tt)));
+  auto seed_pt = share(SILVA_EXPECT_FWD(seed_parse(std::move(seed_tt))));
   seed_engine_t se(tc.ptr());
-  SILVA_EXPECT_FWD(se.add_complete(std::move(seed_pt)));
+  SILVA_EXPECT_FWD(se.add_complete(seed_pt));
   if (m == 2) {
     fmt::print("{}\n", SILVA_EXPECT_FWD(seed_pt->span().to_string()));
   }

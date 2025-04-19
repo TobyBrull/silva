@@ -129,6 +129,7 @@ namespace silva::parse_axe {
     token_id_t base_name = 0;
     assoc_t assoc        = assoc_t::INVALID;
     vector_t<oper_any_t> opers;
+    parse_tree_span_t pts;
   };
   expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t,
                                            name_id_t parse_axe_name,
