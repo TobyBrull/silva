@@ -1,4 +1,4 @@
-#include "env_context.hpp"
+#include "var_context.hpp"
 
 #include "assert.hpp"
 
@@ -19,23 +19,23 @@ namespace silva {
     }
   }
 
-  void env_context_fill_environ(env_context_t* env_context)
+  void var_context_fill_environ(var_context_t* var_context)
   {
     for (char** p_entry = environ; *p_entry != nullptr; ++p_entry) {
-      impl::try_parse_variable(env_context->variables, *p_entry);
+      impl::try_parse_variable(var_context->variables, *p_entry);
     }
   }
 
-  void env_context_fill_cmdline(env_context_t* env_context, const int argc, char* argv[])
+  void var_context_fill_cmdline(var_context_t* var_context, const int argc, char* argv[])
   {
     for (int i = 1; i < argc; ++i) {
-      impl::try_parse_variable(env_context->variables, argv[i]);
+      impl::try_parse_variable(var_context->variables, argv[i]);
     }
   }
 
-  expected_t<string_view_t> env_context_get(const string_view_t name)
+  expected_t<string_view_t> var_context_get(const string_view_t name)
   {
-    auto curr = env_context_t::get();
+    auto curr = var_context_t::get();
     while (!curr.is_nullptr()) {
       const auto it = curr->variables.find(string_or_view_t{name});
       if (it != curr->variables.end()) {
@@ -45,6 +45,6 @@ namespace silva {
         curr = curr->get_parent();
       }
     }
-    SILVA_EXPECT(false, MINOR, "Could not find '{}' in env_context", name);
+    SILVA_EXPECT(false, MINOR, "Could not find '{}' in var_context", name);
   }
 }

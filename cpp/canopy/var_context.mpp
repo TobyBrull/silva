@@ -1,4 +1,4 @@
-#include "env_context.hpp"
+#include "var_context.hpp"
 
 #include "main.hpp"
 
@@ -6,12 +6,12 @@
 
 namespace silva {
   /*
-  VAR1="abc" VAR2="def" ./build/src/silva_env_context VAR1="123" VAR3="xyz"
+  VAR1="abc" VAR2="def" ./build/src/silva_var_context VAR1="123" VAR3="xyz"
   */
-  expected_t<void> env_context_main(span_t<string_view_t>)
+  expected_t<void> var_context_main(span_t<string_view_t>)
   {
     for (const string_view_t name: {"VAR1", "VAR2", "VAR3", "VAR4"}) {
-      const auto value = env_context_get(name);
+      const auto value = var_context_get(name);
       if (value.has_value()) {
         fmt::print("{}={}\n", name, *value);
       }
@@ -22,4 +22,4 @@ namespace silva {
     return {};
   }
 }
-SILVA_MAIN(silva::env_context_main);
+SILVA_MAIN(silva::var_context_main);
