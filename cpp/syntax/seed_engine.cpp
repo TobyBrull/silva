@@ -173,8 +173,8 @@ namespace silva {
       for (const auto [child_node_index, child_index]: pts_axe_level.children_range()) {
         if (child_index == 0) {
           SILVA_EXPECT(pts_axe_level[child_node_index].rule_name == fni_nt_base, MINOR);
-          level.name = SILVA_EXPECT_FWD(
-              derive_name_base(scope_name, pts_axe_level.sub_tree_span_at(child_node_index)));
+          level.base_name = SILVA_EXPECT_FWD(
+              derive_base_name(scope_name, pts_axe_level.sub_tree_span_at(child_node_index)));
         }
         else if (child_index == 1) {
           SILVA_EXPECT(pts_axe_level[child_node_index].rule_name == fni_axe_assoc, MINOR);
@@ -225,27 +225,35 @@ namespace silva {
         }
       }
       SILVA_EXPECT(atom_rule_name != name_id_root, MAJOR);
-      auto pa = SILVA_EXPECT_FWD(parse_axe::parse_axe_create(tcp, std::move(level_descs)));
+      auto pa =
+          SILVA_EXPECT_FWD(parse_axe::parse_axe_create(tcp, rule_name, std::move(level_descs)));
       return {{
           .atom_rule_name = atom_rule_name,
           .parse_axe      = std::move(pa),
       }};
     }
 
-    expected_t<name_id_t> derive_name_base(const name_id_t scope_name,
-                                           const parse_tree_span_t pts_nonterminal_base)
+    expected_t<token_id_t> derive_base_name(const name_id_t scope_name,
+                                            const parse_tree_span_t pts_nonterminal_base)
     {
-      name_id_t retval   = scope_name;
       const auto& s_node = pts_nonterminal_base[0];
       SILVA_EXPECT(s_node.rule_name == fni_nt_base && s_node.num_children == 0,
                    MINOR,
                    "expected Nonterminal.Base");
-      const token_id_t base = s_tokenization.tokens[s_node.token_begin];
-      if (base == nis.current) {
+      const token_id_t retval = s_tokenization.tokens[s_node.token_begin];
+      return retval;
+    }
+
+    expected_t<name_id_t> derive_relative_name(const name_id_t scope_name,
+                                               const parse_tree_span_t pts_nonterminal_base)
+    {
+      name_id_t retval     = scope_name;
+      const auto base_name = SILVA_EXPECT_FWD(derive_base_name(scope_name, pts_nonterminal_base));
+      if (base_name == nis.current) {
         return scope_name;
       }
       else {
-        return tcp->name_id(scope_name, base);
+        return tcp->name_id(scope_name, base_name);
       }
       return retval;
     }
@@ -295,8 +303,8 @@ namespace silva {
       SILVA_EXPECT(pts_rule[children[0]].rule_name == fni_nt_base,
                    MINOR,
                    "First child of Rule must be Nonterminal.Base");
-      const name_id_t curr_rule_name =
-          SILVA_EXPECT_FWD(derive_name_base(scope_name, pts_rule.sub_tree_span_at(children[0])));
+      const name_id_t curr_rule_name = SILVA_EXPECT_FWD(
+          derive_relative_name(scope_name, pts_rule.sub_tree_span_at(children[0])));
       const index_t expr_rule_name = pts_rule[children[1]].rule_name;
       if (expr_rule_name == fni_seed) {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, pts_rule.sub_tree_span_at(children[1])));

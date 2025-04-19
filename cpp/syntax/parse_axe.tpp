@@ -76,61 +76,62 @@ namespace silva::test {
     token_context_t tc;
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "nst"),
-        .assoc = NEST,
-        .opers = {atom_nest_t{*tc.token_id("("), *tc.token_id(")")}},
+        .base_name = *tc.token_id("nst"),
+        .assoc     = NEST,
+        .opers     = {atom_nest_t{*tc.token_id("("), *tc.token_id(")")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "dot"),
-        .assoc = RIGHT_TO_LEFT,
-        .opers = {infix_t{*tc.token_id(".")}},
+        .base_name = *tc.token_id("dot"),
+        .assoc     = RIGHT_TO_LEFT,
+        .opers     = {infix_t{*tc.token_id(".")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "sub"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {postfix_nest_t{*tc.token_id("["), *tc.token_id("]")}},
+        .base_name = *tc.token_id("sub"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {postfix_nest_t{*tc.token_id("["), *tc.token_id("]")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "dol"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {postfix_t{*tc.token_id("$")}},
+        .base_name = *tc.token_id("dol"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {postfix_t{*tc.token_id("$")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "exc"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {postfix_t{*tc.token_id("!")}},
+        .base_name = *tc.token_id("exc"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {postfix_t{*tc.token_id("!")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "til"),
-        .assoc = RIGHT_TO_LEFT,
-        .opers = {prefix_t{*tc.token_id("~")}},
+        .base_name = *tc.token_id("til"),
+        .assoc     = RIGHT_TO_LEFT,
+        .opers     = {prefix_t{*tc.token_id("~")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "prf"),
-        .assoc = RIGHT_TO_LEFT,
-        .opers = {prefix_t{*tc.token_id("+")}, prefix_t{*tc.token_id("-")}},
+        .base_name = *tc.token_id("prf"),
+        .assoc     = RIGHT_TO_LEFT,
+        .opers     = {prefix_t{*tc.token_id("+")}, prefix_t{*tc.token_id("-")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "mul"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{*tc.token_id("*")}, infix_t{*tc.token_id("/")}},
+        .base_name = *tc.token_id("mul"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {infix_t{*tc.token_id("*")}, infix_t{*tc.token_id("/")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "add"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{*tc.token_id("+")}, infix_t{*tc.token_id("-")}},
+        .base_name = *tc.token_id("add"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {infix_t{*tc.token_id("+")}, infix_t{*tc.token_id("-")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "ter"),
-        .assoc = RIGHT_TO_LEFT,
-        .opers = {ternary_t{*tc.token_id("?"), *tc.token_id(":")}},
+        .base_name = *tc.token_id("ter"),
+        .assoc     = RIGHT_TO_LEFT,
+        .opers     = {ternary_t{*tc.token_id("?"), *tc.token_id(":")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "eqa"),
-        .assoc = RIGHT_TO_LEFT,
-        .opers = {infix_t{*tc.token_id("=")}},
+        .base_name = *tc.token_id("eqa"),
+        .assoc     = RIGHT_TO_LEFT,
+        .opers     = {infix_t{*tc.token_id("=")}},
     });
-    const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
+    const auto pa =
+        SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), tc.name_id_of("expr"), level_descs));
     CHECK(!pa.concat_result.has_value());
     CHECK(pa.results.size() == 15);
     CHECK(pa.results.at(*tc.token_id("=")) ==
@@ -445,43 +446,44 @@ namespace silva::test {
     token_context_t tc;
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "nst"),
-        .assoc = NEST,
-        .opers = {atom_nest_t{*tc.token_id("<<"), *tc.token_id(">>")}},
+        .base_name = *tc.token_id("nst"),
+        .assoc     = NEST,
+        .opers     = {atom_nest_t{*tc.token_id("<<"), *tc.token_id(">>")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "prf_hi"),
-        .assoc = RIGHT_TO_LEFT,
-        .opers = {prefix_nest_t{*tc.token_id("("), *tc.token_id(")")}},
+        .base_name = *tc.token_id("prf_hi"),
+        .assoc     = RIGHT_TO_LEFT,
+        .opers     = {prefix_nest_t{*tc.token_id("("), *tc.token_id(")")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "cat"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{.token_id = *tc.token_id("cc"), .concat = true}},
+        .base_name = *tc.token_id("cat"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {infix_t{.token_id = *tc.token_id("cc"), .concat = true}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "prf_lo"),
-        .assoc = RIGHT_TO_LEFT,
-        .opers = {prefix_nest_t{*tc.token_id("{"), *tc.token_id("}")}},
+        .base_name = *tc.token_id("prf_lo"),
+        .assoc     = RIGHT_TO_LEFT,
+        .opers     = {prefix_nest_t{*tc.token_id("{"), *tc.token_id("}")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "mul"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{*tc.token_id("*")}},
+        .base_name = *tc.token_id("mul"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {infix_t{*tc.token_id("*")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "add"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{.token_id = *tc.token_id("+"), .flatten = true},
-                  infix_t{*tc.token_id("-")}},
+        .base_name = *tc.token_id("add"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {infix_t{.token_id = *tc.token_id("+"), .flatten = true},
+                      infix_t{*tc.token_id("-")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tc.name_id_of("expr", "assign"),
-        .assoc = RIGHT_TO_LEFT,
-        .opers = {infix_t{.token_id = *tc.token_id("="), .flatten = true},
-                  infix_t{*tc.token_id("%")}},
+        .base_name = *tc.token_id("assign"),
+        .assoc     = RIGHT_TO_LEFT,
+        .opers     = {infix_t{.token_id = *tc.token_id("="), .flatten = true},
+                      infix_t{*tc.token_id("%")}},
     });
-    const auto pa = SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), level_descs));
+    const auto pa =
+        SILVA_EXPECT_REQUIRE(parse_axe_create(tc.ptr(), tc.name_id_of("expr"), level_descs));
     CHECK(pa.concat_result.has_value());
     CHECK(pa.results.size() == 11);
 

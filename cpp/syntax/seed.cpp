@@ -12,24 +12,23 @@ namespace silva {
   {
     using namespace parse_axe;
     using enum assoc_t;
-    name_id_t fni_expr = tcp->name_id_of("Seed", "Expr");
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->name_id_of(fni_expr, "Parens"),
-        .assoc = NEST,
-        .opers = {atom_nest_t{*tcp->token_id("("), *tcp->token_id(")")}},
+        .base_name = *tcp->token_id("Parens"),
+        .assoc     = NEST,
+        .opers     = {atom_nest_t{*tcp->token_id("("), *tcp->token_id(")")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->name_id_of(fni_expr, "Prefix"),
-        .assoc = RIGHT_TO_LEFT,
+        .base_name = *tcp->token_id("Prefix"),
+        .assoc     = RIGHT_TO_LEFT,
         .opers =
             {
                 prefix_t{*tcp->token_id("not")},
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->name_id_of(fni_expr, "Postfix"),
-        .assoc = LEFT_TO_RIGHT,
+        .base_name = *tcp->token_id("Postfix"),
+        .assoc     = LEFT_TO_RIGHT,
         .opers =
             {
                 postfix_t{*tcp->token_id("?")},
@@ -38,25 +37,26 @@ namespace silva {
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->name_id_of(fni_expr, "Concat"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{
-            .token_id = *tcp->token_id("concat"),
-            .concat   = true,
-            .flatten  = true,
+        .base_name = *tcp->token_id("Concat"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {infix_t{
+                .token_id = *tcp->token_id("concat"),
+                .concat   = true,
+                .flatten  = true,
         }},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->name_id_of(fni_expr, "And"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{.token_id = *tcp->token_id("but_then"), .flatten = true}},
+        .base_name = *tcp->token_id("And"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {infix_t{.token_id = *tcp->token_id("but_then"), .flatten = true}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .name  = tcp->name_id_of(fni_expr, "Or"),
-        .assoc = LEFT_TO_RIGHT,
-        .opers = {infix_t{.token_id = *tcp->token_id("|"), .flatten = true}},
+        .base_name = *tcp->token_id("Or"),
+        .assoc     = LEFT_TO_RIGHT,
+        .opers     = {infix_t{.token_id = *tcp->token_id("|"), .flatten = true}},
     });
-    auto retval = SILVA_EXPECT_ASSERT(parse_axe_create(tcp, level_descs));
+    const name_id_t fni_expr = tcp->name_id_of("Seed", "Expr");
+    auto retval              = SILVA_EXPECT_ASSERT(parse_axe_create(tcp, fni_expr, level_descs));
     return retval;
   }
 
@@ -127,7 +127,7 @@ namespace silva {
         }
         else if (num_tokens_left() >= 2 && token_id_by(0) == tt_keywords_of) {
           token_index += 1;
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal()));
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_term, nonterminal()));
         }
         else {
           SILVA_EXPECT_PARSE(fni_term,
@@ -162,10 +162,10 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_nt);
-        ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal_base()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_nt, nonterminal_base()));
         while (num_tokens_left() >= 2 && token_id_by() == tt_dot) {
           token_index += 1;
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal_base()));
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_nt, nonterminal_base()));
         }
         return ss_rule.commit();
       }
@@ -203,7 +203,7 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_ops);
-        ss_rule.add_proto_node(SILVA_EXPECT_FWD(axe_op_type()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe_ops, axe_op_type()));
         while (auto result = axe_op()) {
           ss_rule.add_proto_node(*result);
         }
@@ -227,12 +227,12 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe_level);
-        ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal_base()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe_level, nonterminal_base()));
         SILVA_EXPECT_PARSE(fni_axe_level,
                            num_tokens_left() >= 1 && token_id_by() == tt_equal,
                            "Expected '='");
         token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_FWD(axe_assoc()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe_level, axe_assoc()));
         while (auto result = axe_ops()) {
           ss_rule.add_proto_node(*result);
         }
@@ -247,14 +247,14 @@ namespace silva {
                            num_tokens_left() >= 1 && token_id_by() == tt_axe,
                            "Expected '['");
         token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe, nonterminal()));
         SILVA_EXPECT_PARSE(fni_axe,
                            num_tokens_left() >= 1 && token_id_by() == tt_brack_open,
                            "Expected '['");
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() == tt_dash) {
           token_index += 1;
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(axe_level()));
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe, axe_level()));
         }
         SILVA_EXPECT_PARSE(fni_axe,
                            num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
@@ -285,8 +285,9 @@ namespace silva {
 
         return std::unexpected(std::move(error_nursery)
                                    .finish_short(error_level_t::MINOR,
-                                                 "{} Expected Atom",
-                                                 token_position_at(orig_token_index)));
+                                                 "[{}] {}",
+                                                 token_position_at(orig_token_index),
+                                                 tcp->name_id_wrap(fni_atom)));
       }
 
       expected_t<parse_tree_node_t> expr()
@@ -295,7 +296,8 @@ namespace silva {
         SILVA_EXPECT_PARSE(fni_expr, num_tokens_left() >= 1, "No tokens left when parsing Expr");
         using atom_delegate_t    = delegate_t<expected_t<parse_tree_node_t>()>;
         const auto atom_delegate = atom_delegate_t::make<&seed_parse_tree_nursery_t::atom>(this);
-        ss.add_proto_node(SILVA_EXPECT_FWD(seed_parse_axe.apply(*this, fni_atom, atom_delegate)));
+        ss.add_proto_node(
+            SILVA_EXPECT_PARSE_FWD(fni_expr, seed_parse_axe.apply(*this, fni_atom, atom_delegate)));
         return ss.commit();
       }
 
@@ -311,7 +313,7 @@ namespace silva {
                            op_ti == tt_equal || op_ti == tt_alias,
                            "Expected one of [ '=' '=>' ]");
         token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_FWD(expr()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_expr_or_a, expr()));
         return ss_rule.commit();
       }
 
@@ -320,7 +322,7 @@ namespace silva {
         auto ss_rule = stake();
         ss_rule.create_node(fni_rule);
         const index_t orig_token_index = token_index;
-        ss_rule.add_proto_node(SILVA_EXPECT_FWD(nonterminal_base()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, nonterminal_base()));
         SILVA_EXPECT_PARSE(fni_rule,
                            num_tokens_left() >= 1,
                            "No more tokens left when parsing Rule");
@@ -331,17 +333,17 @@ namespace silva {
                            "Expected one of [ '=' '=>' '=/' ]");
         if (op_ti == tt_equal && num_tokens_left() >= 2 && token_id_by(1) == tt_brack_open) {
           token_index += 2;
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(seed()));
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, seed()));
           SILVA_EXPECT_PARSE(fni_rule,
                              num_tokens_left() >= 1 && token_id_by() == tt_brack_close,
                              "Expected ']'");
           token_index += 1;
         }
         else if (op_ti == tt_equal || op_ti == tt_alias) {
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(expr_or_alias()));
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, expr_or_alias()));
         }
         else if (op_ti == tt_axe) {
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(axe()));
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, axe()));
         }
         return ss_rule.commit();
       }
@@ -352,7 +354,7 @@ namespace silva {
         ss_rule.create_node(fni_seed);
         while (num_tokens_left() >= 1 && token_id_by() == tt_dash) {
           token_index += 1;
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(rule()));
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_seed, rule()));
         }
         return ss_rule.commit();
       }

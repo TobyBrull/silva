@@ -23,6 +23,7 @@ namespace silva::parse_axe {
   };
 
   expected_t<parse_axe_t> parse_axe_create(token_context_ptr_t tcp,
+                                           const name_id_t parse_axe_name,
                                            const vector_t<parse_axe_level_desc_t>& level_descs)
   {
     using enum assoc_t;
@@ -62,7 +63,8 @@ namespace silva::parse_axe {
     }
 
     parse_axe_t retval{
-        .tcp = tcp,
+        .tcp  = tcp,
+        .name = parse_axe_name,
     };
 
     const auto register_op = [&retval](const token_id_t token_id,
@@ -129,15 +131,16 @@ namespace silva::parse_axe {
           .assoc       = level_desc.assoc,
       };
       for (const auto& oper: level_desc.opers) {
+        const name_id_t full_name = tcp->name_id(parse_axe_name, level_desc.base_name);
         if (const auto* x = std::get_if<prefix_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->token_id, *x, level_desc.name, precedence));
+          SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, precedence));
         }
         else if (const auto* x = std::get_if<prefix_nest_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, level_desc.name, precedence));
+          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence));
           SILVA_EXPECT_FWD(register_right_op(x->right_bracket));
         }
         else if (const auto* x = std::get_if<atom_nest_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, level_desc.name, precedence));
+          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence));
           SILVA_EXPECT_FWD(register_right_op(x->right_bracket));
         }
         else if (const auto* x = std::get_if<infix_t>(&oper); x) {
@@ -151,23 +154,23 @@ namespace silva::parse_axe {
                          "Trying to use 'concat' level twice");
             retval.concat_result.emplace(result_oper_t<oper_regular_t>{
                 .oper       = *x,
-                .name       = retval.tcp->name_id(level_desc.name, x->token_id),
+                .name       = retval.tcp->name_id(full_name, x->token_id),
                 .precedence = used_prec,
             });
           }
           else {
-            SILVA_EXPECT_FWD(register_op(x->token_id, *x, level_desc.name, used_prec));
+            SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, used_prec));
           }
         }
         else if (const auto* x = std::get_if<ternary_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->first, *x, level_desc.name, precedence));
+          SILVA_EXPECT_FWD(register_op(x->first, *x, full_name, precedence));
           SILVA_EXPECT_FWD(register_right_op(x->second));
         }
         else if (const auto* x = std::get_if<postfix_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->token_id, *x, level_desc.name, precedence));
+          SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, precedence));
         }
         else if (const auto* x = std::get_if<postfix_nest_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, level_desc.name, precedence));
+          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence));
           SILVA_EXPECT_FWD(register_right_op(x->right_bracket));
         }
         else {
@@ -184,8 +187,14 @@ namespace silva::parse_axe {
 
     const parse_axe_t& parse_axe;
     parse_tree_nursery_t& nursery;
+    token_context_ptr_t tcp = nursery.tcp;
     const name_id_t atom_name_id;
     delegate_t<expected_t<parse_tree_node_t>()> atom;
+
+    token_position_t token_position_by(index_t token_index_offset = 0) const
+    {
+      return nursery.token_position_by(token_index_offset);
+    }
 
     // internal state associated with a run
 
@@ -582,6 +591,7 @@ namespace silva::parse_axe {
       }
       SILVA_EXPECT_FWD(stack_pair.stack_pop(precedence_min));
       SILVA_EXPECT(stack_pair.oper_stack.empty(), MINOR);
+      SILVA_EXPECT_PARSE(parse_axe.name, stack_pair.atom_stack.size() > 0, "empty expression");
       SILVA_EXPECT(stack_pair.atom_stack.size() == 1, MINOR);
       SILVA_EXPECT(stack_pair.atom_stack.front().atom_tree_node_index + 1 == atom_tree.size(),
                    MINOR);
