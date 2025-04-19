@@ -4,8 +4,8 @@
 
 // Recommended reading:
 //
-//  * The quite readable original paper by Bryan Ford "Parsing Expression Grammars: A
-//    Recognition-Based Syntactic Foundation"
+//  * The quite readable paper by Bryan Ford "Parsing Expression Grammars: A Recognition-Based
+//    Syntactic Foundation"
 //    https://bford.info/pub/lang/peg.pdf
 //
 //  * Guido van Rossum's "PEG Parsing Series"
