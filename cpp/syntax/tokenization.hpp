@@ -2,11 +2,11 @@
 
 #include "canopy/string_or_view.hpp"
 
-#include "token_context.hpp"
+#include "token_catalog.hpp"
 
 namespace silva {
   struct tokenization_t : public menhir_t {
-    token_context_ptr_t context;
+    token_catalog_ptr_t context;
 
     filesystem_path_t filepath;
 
@@ -40,9 +40,9 @@ namespace silva {
     friend string_or_view_t to_string_impl(const token_range_t&);
   };
 
-  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t, filesystem_path_t);
+  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_catalog_ptr_t, filesystem_path_t);
   expected_t<unique_ptr_t<tokenization_t>>
-  tokenize(token_context_ptr_t, filesystem_path_t filepath, string_view_t text);
+  tokenize(token_catalog_ptr_t, filesystem_path_t filepath, string_view_t text);
 }
 
 // IMPLEMENTATION

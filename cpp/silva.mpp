@@ -7,7 +7,7 @@
 namespace silva {
   expected_t<void> silva_main(const span_t<string_view_t> cmdline_args)
   {
-    token_context_t tc;
+    token_catalog_t tc;
     SILVA_EXPECT(cmdline_args.size() >= 2,
                  MINOR,
                  "First command-line arg must be a Silva filename");

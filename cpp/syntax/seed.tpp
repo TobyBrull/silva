@@ -9,7 +9,7 @@
 namespace silva::test {
   TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
   {
-    token_context_t tc;
+    token_catalog_t tc;
     const auto spr       = seed_seed_engine(tc.ptr());
     const auto seed_tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", string_t{seed_seed})));
     const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
@@ -51,7 +51,7 @@ namespace silva::test {
       - Item = x | string | number
     ]
   )'";
-    token_context_t tc;
+    token_catalog_t tc;
     const auto sf_seed_tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", sf_text)));
     const auto sf_seed_pt_1 = share(SILVA_EXPECT_REQUIRE(seed_parse(sf_seed_tt)));
     const auto spr          = seed_seed_engine(tc.ptr());

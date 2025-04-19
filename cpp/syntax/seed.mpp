@@ -10,7 +10,7 @@ namespace silva {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(2 <= m && m <= 3, MINOR, "Usage: ... <seed-file> [<target-file>]");
 
-    token_context_t tc;
+    token_catalog_t tc;
     auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
     auto seed_pt = share(SILVA_EXPECT_FWD(seed_parse(std::move(seed_tt))));
     seed_engine_t se(tc.ptr());

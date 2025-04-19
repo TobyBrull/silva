@@ -20,7 +20,7 @@ namespace silva::test {
     3
   ]
 ])";
-    token_context_t tc;
+    token_catalog_t tc;
     const auto tt   = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", fern_text)));
     const auto pt_1 = share(SILVA_EXPECT_REQUIRE(fern_parse(tt)));
     const auto fpr  = fern_seed_engine(tc.ptr());

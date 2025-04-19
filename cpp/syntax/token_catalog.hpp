@@ -13,7 +13,7 @@ namespace silva {
 
   tuple_t<string_view_t, token_category_t> tokenize_one(const string_view_t text);
 
-  // An index in the "token_infos" vector of "token_context_t". Equality of two tokens is then
+  // An index in the "token_infos" vector of "token_catalog_t". Equality of two tokens is then
   // equivalent to the equality of their token_info_index_t.
   using token_id_t = index_t;
 
@@ -45,7 +45,7 @@ namespace silva {
   struct token_id_wrap_t;
   struct name_id_wrap_t;
 
-  struct token_context_t : public menhir_t {
+  struct token_catalog_t : public menhir_t {
     vector_t<token_info_t> token_infos;
     hashmap_t<string_t, token_id_t> token_lookup;
 
@@ -55,8 +55,8 @@ namespace silva {
     struct impl_t;
     unique_ptr_t<impl_t> impl;
 
-    token_context_t();
-    ~token_context_t();
+    token_catalog_t();
+    ~token_catalog_t();
 
     expected_t<token_id_t> token_id(string_view_t);
     expected_t<token_id_t> token_id_in_string(token_id_t);
@@ -77,10 +77,10 @@ namespace silva {
     token_id_wrap_t token_id_wrap(token_id_t);
     name_id_wrap_t name_id_wrap(name_id_t);
   };
-  using token_context_ptr_t = ptr_t<token_context_t>;
+  using token_catalog_ptr_t = ptr_t<token_catalog_t>;
 
   struct name_id_style_t {
-    token_context_ptr_t tcp;
+    token_catalog_ptr_t tcp;
     token_id_t root      = *tcp->token_id("_");
     token_id_t current   = *tcp->token_id("x");
     token_id_t parent    = *tcp->token_id("p");
@@ -94,14 +94,14 @@ namespace silva {
   };
 
   struct token_id_wrap_t {
-    token_context_ptr_t tcp;
+    token_catalog_ptr_t tcp;
     token_id_t token_id = token_id_none;
 
     friend string_or_view_t to_string_impl(const token_id_wrap_t&);
   };
 
   struct name_id_wrap_t {
-    token_context_ptr_t tcp;
+    token_catalog_ptr_t tcp;
     name_id_t name_id = name_id_root;
 
     friend string_or_view_t to_string_impl(const name_id_wrap_t&);
@@ -112,7 +112,7 @@ namespace silva {
 
 namespace silva {
   template<typename... Ts>
-  name_id_t token_context_t::name_id_of(Ts&&... xs)
+  name_id_t token_catalog_t::name_id_of(Ts&&... xs)
   {
     vector_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
@@ -120,7 +120,7 @@ namespace silva {
   }
 
   template<typename... Ts>
-  name_id_t token_context_t::name_id_of(name_id_t parent_name, Ts&&... xs)
+  name_id_t token_catalog_t::name_id_of(name_id_t parent_name, Ts&&... xs)
   {
     vector_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);

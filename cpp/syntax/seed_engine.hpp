@@ -9,7 +9,7 @@ namespace silva {
 
   // Driver for a program in the Seed language.
   struct seed_engine_t {
-    token_context_ptr_t tcp;
+    token_catalog_ptr_t tcp;
 
     // Parse trees containing the used Seed programs.
     vector_t<shared_ptr_t<const parse_tree_t>> seed_parse_trees;
@@ -38,7 +38,7 @@ namespace silva {
     // [keyword] (i.e., of category: identifier or operator).
     hashmap_t<token_id_t, token_id_t> string_to_keyword;
 
-    seed_engine_t(token_context_ptr_t);
+    seed_engine_t(token_catalog_ptr_t);
 
     // The given parse_tree_span_t should be part of one of the "seed_parse_trees".
     expected_t<void> add(parse_tree_span_t);

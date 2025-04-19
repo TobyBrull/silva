@@ -24,7 +24,7 @@ namespace silva::test {
   }
 
   template<typename ParseAxeNursery>
-  void test_parse_axe(token_context_ptr_t tcp,
+  void test_parse_axe(token_catalog_ptr_t tcp,
                       const parse_axe_t& pa,
                       const string_view_t text,
                       const optional_t<string_view_t> expected_str)
@@ -73,7 +73,7 @@ namespace silva::test {
       }
     };
 
-    token_context_t tc;
+    token_catalog_t tc;
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
         .base_name = *tc.token_id("nst"),
@@ -443,7 +443,7 @@ namespace silva::test {
       }
     };
 
-    token_context_t tc;
+    token_catalog_t tc;
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
         .base_name = *tc.token_id("nst"),

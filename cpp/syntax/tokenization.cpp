@@ -20,7 +20,7 @@ namespace silva {
     return &context->token_infos[tokens[token_index]];
   }
 
-  token_id_t token_context_get_token_id_from_info(token_context_t* tc,
+  token_id_t token_catalog_get_token_id_from_info(token_catalog_t* tc,
                                                   const token_info_t& token_info)
   {
     const auto it = tc->token_lookup.find(token_info.str);
@@ -70,7 +70,7 @@ namespace silva {
     return string_or_view_t{std::move(retval)};
   }
 
-  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_context_ptr_t tcp,
+  expected_t<unique_ptr_t<tokenization_t>> tokenize_load(token_catalog_ptr_t tcp,
                                                          filesystem_path_t filepath)
   {
     string_t text = SILVA_EXPECT_FWD(read_file(filepath));
@@ -78,7 +78,7 @@ namespace silva {
   }
 
   expected_t<unique_ptr_t<tokenization_t>>
-  tokenize(token_context_ptr_t tcp, filesystem_path_t filepath, string_view_t text)
+  tokenize(token_catalog_ptr_t tcp, filesystem_path_t filepath, string_view_t text)
   {
     auto retval        = std::make_unique<tokenization_t>();
     retval->filepath   = std::move(filepath);
@@ -95,7 +95,7 @@ namespace silva {
             .category = token_cat,
             .str      = string_t{tokenized_str},
         };
-        const token_id_t tii = token_context_get_token_id_from_info(tcp.get(), std::move(ti));
+        const token_id_t tii = token_catalog_get_token_id_from_info(tcp.get(), std::move(ti));
         retval->tokens.push_back(tii);
         retval->token_locations.push_back(old_loc);
       }

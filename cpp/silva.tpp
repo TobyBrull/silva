@@ -14,7 +14,7 @@ namespace silva::test {
     - Mult = Primary ( '*' Mult ) *
     - Primary = '(' Expr ')' | number
   )'";
-    token_context_t tc;
+    token_catalog_t tc;
     seed_engine_t se(tc.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 
@@ -51,7 +51,7 @@ namespace silva::test {
     ]
     - Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
   )'";
-    token_context_t tc;
+    token_catalog_t tc;
     seed_engine_t se(tc.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 

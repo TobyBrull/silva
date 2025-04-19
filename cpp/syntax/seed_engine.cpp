@@ -16,7 +16,7 @@ namespace silva {
 
   struct seed_engine_create_nursery_t {
     seed_engine_t* se          = nullptr;
-    token_context_ptr_t tcp    = se->tcp;
+    token_catalog_ptr_t tcp    = se->tcp;
     const name_id_style_t& nis = tcp->default_name_id_style();
 
     const tokenization_t& s_tokenization;
@@ -386,7 +386,7 @@ namespace silva {
     }
   };
 
-  seed_engine_t::seed_engine_t(token_context_ptr_t tcp) : tcp(tcp) {}
+  seed_engine_t::seed_engine_t(token_catalog_ptr_t tcp) : tcp(tcp) {}
 
   expected_t<void> seed_engine_t::add(parse_tree_span_t stps)
   {
@@ -423,7 +423,7 @@ namespace silva {
   namespace impl {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* se    = nullptr;
-      token_context_ptr_t tcp    = se->tcp;
+      token_catalog_ptr_t tcp    = se->tcp;
       const name_id_style_t& nis = tcp->default_name_id_style();
 
       const tokenization_t& t_tokenization = *tokenization;
@@ -479,7 +479,7 @@ namespace silva {
       {
         SILVA_EXPECT(tcp == t_tokenization.context,
                      MAJOR,
-                     "Seed and target parse-trees/tokenizations must be in same token_context_t");
+                     "Seed and target parse-trees/tokenizations must be in same token_catalog_t");
         return {};
       }
 

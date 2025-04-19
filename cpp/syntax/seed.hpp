@@ -59,5 +59,5 @@ namespace silva {
   // Invariant (pseudo-code):
   //    seed_seed_engine()->apply(tokenization, "Seed") == seed_parse(tokenization)
   expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t>);
-  unique_ptr_t<seed_engine_t> seed_seed_engine(token_context_ptr_t);
+  unique_ptr_t<seed_engine_t> seed_seed_engine(token_catalog_ptr_t);
 }

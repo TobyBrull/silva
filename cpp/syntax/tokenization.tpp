@@ -5,7 +5,7 @@
 namespace silva::test {
   TEST_CASE("tokenization", "[tokenization_t]")
   {
-    token_context_t tc;
+    token_catalog_t tc;
     using enum token_category_t;
     using info_t = token_info_t;
     {

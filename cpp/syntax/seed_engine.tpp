@@ -17,7 +17,7 @@ namespace silva::test {
       ]
     ]
   )'";
-    token_context_t tc;
+    token_catalog_t tc;
     seed_engine_t se(tc.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
     const string_view_t expected_seed_pt = R"(
@@ -121,7 +121,7 @@ namespace silva::test {
       - x = 'x' 'y' 'z' _.Foo ?
     ]
   )'";
-    token_context_t tc;
+    token_catalog_t tc;
     seed_engine_t se(tc.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
     SILVA_EXPECT_REQUIRE(se.add_complete_file("text2.seed", text2_seed));

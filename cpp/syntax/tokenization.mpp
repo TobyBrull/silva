@@ -10,7 +10,7 @@ namespace silva {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(2 == m, MINOR, "Usage: ... <file>");
 
-    token_context_t tc;
+    token_catalog_t tc;
     const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
     fmt::print("{}\n", to_string(*tokenization));
     return {};

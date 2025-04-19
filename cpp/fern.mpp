@@ -14,7 +14,7 @@ namespace silva {
     const auto arg_process  = var_context_get("process").value_or("direct/string");
     const bool arg_seed_eng = var_context_get_as<bool>("seed-engine").value_or(false);
 
-    token_context_t tc;
+    token_catalog_t tc;
     unique_ptr_t<tokenization_t> tt = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
     unique_ptr_t<parse_tree_t> pt;
     if (arg_seed_eng) {
