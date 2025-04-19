@@ -479,7 +479,10 @@ namespace silva::parse_axe {
             }
           }
           if (mode == ATOM_MODE) {
-            SILVA_EXPECT(pa_result.prefix.has_value(), MINOR);
+            SILVA_EXPECT_PARSE(parse_axe.name,
+                               pa_result.prefix.has_value(),
+                               "found non-prefix operator {} when expecting next atom",
+                               tcp->token_id_wrap(nursery.token_id_by()));
             const auto& res = pa_result.prefix.value();
             SILVA_EXPECT_FWD(stack_pair.stack_pop(res.precedence));
 
