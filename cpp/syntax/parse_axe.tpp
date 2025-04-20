@@ -1,6 +1,6 @@
 #include "parse_axe.hpp"
 
-#include "syntax_catalog.hpp"
+#include "syntax_ward.hpp"
 #include "tokenization.hpp"
 
 #include <catch2/catch_all.hpp>
@@ -13,7 +13,7 @@ using enum assoc_t;
 namespace silva::test {
   template<typename ParseAxeNursery>
   expected_t<parse_tree_ptr_t>
-  run_parse_axe(syntax_catalog_t& sc, const parse_axe_t& parse_axe, tokenization_ptr_t tp)
+  run_parse_axe(syntax_ward_t& sc, const parse_axe_t& parse_axe, tokenization_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
     ParseAxeNursery nursery(parse_axe, std::move(tp));
@@ -25,7 +25,7 @@ namespace silva::test {
   }
 
   template<typename ParseAxeNursery>
-  void test_parse_axe(syntax_catalog_ptr_t scp,
+  void test_parse_axe(syntax_ward_ptr_t scp,
                       const parse_axe_t& pa,
                       const string_view_t text,
                       const optional_t<string_view_t> expected_str)
@@ -74,7 +74,7 @@ namespace silva::test {
       }
     };
 
-    syntax_catalog_t sc;
+    syntax_ward_t sc;
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
         .base_name = *sc.token_id("nst"),
@@ -444,7 +444,7 @@ namespace silva::test {
       }
     };
 
-    syntax_catalog_t sc;
+    syntax_ward_t sc;
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
         .base_name = *sc.token_id("nst"),

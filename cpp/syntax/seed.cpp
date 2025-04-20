@@ -3,13 +3,13 @@
 #include "canopy/expected.hpp"
 #include "parse_tree_nursery.hpp"
 #include "seed_engine.hpp"
-#include "syntax_catalog.hpp"
+#include "syntax_ward.hpp"
 #include "tokenization.hpp"
 
 namespace silva {
   using enum token_category_t;
 
-  parse_axe::parse_axe_t create_parse_axe_expr(syntax_catalog_ptr_t scp)
+  parse_axe::parse_axe_t create_parse_axe_expr(syntax_ward_ptr_t scp)
   {
     using namespace parse_axe;
     using enum assoc_t;
@@ -111,7 +111,7 @@ namespace silva {
 
       parse_axe::parse_axe_t seed_parse_axe;
 
-      seed_parse_tree_nursery_t(syntax_catalog_t& sc, tokenization_ptr_t tp)
+      seed_parse_tree_nursery_t(syntax_ward_t& sc, tokenization_ptr_t tp)
         : parse_tree_nursery_t(sc, tp), seed_parse_axe(create_parse_axe_expr(sc.ptr()))
       {
       }
@@ -361,14 +361,14 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> seed_parse(syntax_catalog_t& sc, tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> seed_parse(syntax_ward_t& sc, tokenization_ptr_t tp)
   {
     impl::seed_parse_tree_nursery_t nursery(sc, std::move(tp));
     SILVA_EXPECT_FWD(nursery.seed());
     return sc.add(std::move(nursery).finish());
   }
 
-  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_catalog_t& sc)
+  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_ward_t& sc)
   {
     auto retval = std::make_unique<seed_engine_t>(sc.ptr());
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));

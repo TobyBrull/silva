@@ -1,13 +1,13 @@
 #include "tokenization.hpp"
 
-#include "syntax_catalog.hpp"
+#include "syntax_ward.hpp"
 
 #include <catch2/catch_all.hpp>
 
 namespace silva::test {
   TEST_CASE("tokenization", "[tokenization_t]")
   {
-    syntax_catalog_t sc;
+    syntax_ward_t sc;
     using enum token_category_t;
     using info_t = token_info_t;
     {
@@ -48,7 +48,7 @@ namespace silva::test {
 
       {
         const name_id_style_t ts{
-            .tcp       = sc.token_catalog().ptr(),
+            .tcp       = sc.token_ward().ptr(),
             .root      = *sc.token_id("cpp"),
             .current   = *sc.token_id("this"),
             .parent    = *sc.token_id("super"),

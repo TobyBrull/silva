@@ -22,7 +22,7 @@ namespace silva::parse_axe {
     }
   };
 
-  expected_t<parse_axe_t> parse_axe_create(syntax_catalog_ptr_t scp,
+  expected_t<parse_axe_t> parse_axe_create(syntax_ward_ptr_t scp,
                                            const name_id_t parse_axe_name,
                                            const vector_t<parse_axe_level_desc_t>& level_descs)
   {
@@ -189,7 +189,7 @@ namespace silva::parse_axe {
 
     const parse_axe_t& parse_axe;
     parse_tree_nursery_t& nursery;
-    token_catalog_ptr_t tcp = nursery.tcp;
+    token_ward_ptr_t tcp = nursery.tcp;
     const name_id_t atom_name_id;
     delegate_t<expected_t<parse_tree_node_t>()> atom;
 

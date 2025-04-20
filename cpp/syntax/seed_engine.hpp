@@ -2,7 +2,7 @@
 
 #include "parse_axe.hpp"
 #include "seed.hpp"
-#include "syntax_catalog.hpp"
+#include "syntax_ward.hpp"
 
 #include <regex>
 
@@ -10,7 +10,7 @@ namespace silva {
 
   // Driver for a program in the Seed language.
   struct seed_engine_t {
-    syntax_catalog_ptr_t scp;
+    syntax_ward_ptr_t scp;
 
     // For each rule name, gives the node-index of the expression describing that rule.
     hashmap_t<name_id_t, parse_tree_span_t> rule_exprs;
@@ -36,7 +36,7 @@ namespace silva {
     // [keyword] (i.e., of category: identifier or operator).
     hashmap_t<token_id_t, token_id_t> string_to_keyword;
 
-    seed_engine_t(syntax_catalog_ptr_t);
+    seed_engine_t(syntax_ward_ptr_t);
 
     // The given parse_tree_span_t should be part of one of the "seed_parse_trees".
     expected_t<void> add(parse_tree_span_t);
@@ -46,6 +46,6 @@ namespace silva {
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.
     expected_t<parse_tree_ptr_t>
-    apply(syntax_catalog_t&, tokenization_ptr_t, name_id_t goal_rule_name) const;
+    apply(syntax_ward_t&, tokenization_ptr_t, name_id_t goal_rule_name) const;
   };
 }

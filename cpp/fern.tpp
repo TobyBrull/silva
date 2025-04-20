@@ -20,7 +20,7 @@ namespace silva::test {
     3
   ]
 ])";
-    syntax_catalog_t sc;
+    syntax_ward_t sc;
     const auto tt   = SILVA_EXPECT_REQUIRE(tokenize(sc, "", fern_text));
     const auto pt_1 = SILVA_EXPECT_REQUIRE(fern_parse(sc, tt));
     const auto fpr  = fern_seed_engine(sc);

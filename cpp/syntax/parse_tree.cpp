@@ -19,7 +19,7 @@ namespace silva {
   expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset,
                                                     const parse_tree_printing_t printing)
   {
-    token_catalog_ptr_t tcp    = tp->context;
+    token_ward_ptr_t tcp    = tp->context;
     const name_id_style_t& nis = tcp->default_name_id_style();
     return tree_span_t::to_string([&](string_t& curr_line, auto& path) {
       const auto pts = this->sub_tree_span_at(path.back().node_index);
@@ -45,7 +45,7 @@ namespace silva {
 
   expected_t<string_t> parse_tree_span_t::to_graphviz()
   {
-    token_catalog_ptr_t tcp    = tp->context;
+    token_ward_ptr_t tcp    = tp->context;
     const name_id_style_t& nis = tcp->default_name_id_style();
     return tree_span_t::to_graphviz([&](auto& node) {
       return fmt::format("{}\\n{}",

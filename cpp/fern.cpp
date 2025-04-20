@@ -5,13 +5,13 @@
 #include "canopy/expected.hpp"
 #include "syntax/parse_tree_nursery.hpp"
 #include "syntax/seed_engine.hpp"
-#include "syntax/syntax_catalog.hpp"
+#include "syntax/syntax_ward.hpp"
 
 namespace silva {
   using enum token_category_t;
   using enum error_level_t;
 
-  unique_ptr_t<seed_engine_t> fern_seed_engine(syntax_catalog_t& sc)
+  unique_ptr_t<seed_engine_t> fern_seed_engine(syntax_ward_t& sc)
   {
     auto retval = std::make_unique<seed_engine_t>(sc.ptr());
     SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern_seed));
@@ -32,7 +32,7 @@ namespace silva {
       name_id_t fni_label    = tcp->name_id_of(fni_fern, "Label");
       name_id_t fni_value    = tcp->name_id_of(fni_fern, "Value");
 
-      fern_parse_tree_nursery_t(syntax_catalog_t& sc, tokenization_ptr_t tp)
+      fern_parse_tree_nursery_t(syntax_ward_t& sc, tokenization_ptr_t tp)
         : parse_tree_nursery_t(sc, tp)
       {
       }
@@ -123,7 +123,7 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> fern_parse(syntax_catalog_t& sc, tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> fern_parse(syntax_ward_t& sc, tokenization_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
     impl::fern_parse_tree_nursery_t nursery(sc, tp);
@@ -138,7 +138,7 @@ namespace silva {
 
   expected_t<string_t> fern_to_string(const parse_tree_t* pt, const index_t start_node)
   {
-    token_catalog_ptr_t tcp      = pt->tp->context;
+    token_ward_ptr_t tcp      = pt->tp->context;
     const name_id_t fni_fern     = tcp->name_id_of("Fern");
     const name_id_t fni_lbl_item = tcp->name_id_of(fni_fern, "LabeledItem");
     const name_id_t fni_label    = tcp->name_id_of(fni_fern, "Label");
@@ -192,7 +192,7 @@ namespace silva {
 
   expected_t<string_t> fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
-    token_catalog_ptr_t tcp      = pt->tp->context;
+    token_ward_ptr_t tcp      = pt->tp->context;
     const name_id_t fni_fern     = tcp->name_id_of("Fern");
     const name_id_t fni_lbl_item = tcp->name_id_of(fni_fern, "LabeledItem");
     const name_id_t fni_label    = tcp->name_id_of(fni_fern, "Label");
@@ -390,7 +390,7 @@ namespace silva {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
-      token_catalog_ptr_t tcp        = parse_tree->tp->context;
+      token_ward_ptr_t tcp        = parse_tree->tp->context;
 
       token_id_t tt_none  = *tcp->token_id("none");
       token_id_t tt_true  = *tcp->token_id("true");

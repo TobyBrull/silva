@@ -4,7 +4,7 @@
 #include "canopy/main.hpp"
 #include "canopy/var_context.hpp"
 #include "syntax/seed_engine.hpp"
-#include "syntax/syntax_catalog.hpp"
+#include "syntax/syntax_ward.hpp"
 
 namespace silva {
   expected_t<void> fern_main(const span_t<string_view_t> cmdline_args)
@@ -16,7 +16,7 @@ namespace silva {
     const bool arg_seed_eng = var_context_get_as<bool>("seed-engine").value_or(false);
 
     expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_catalog_t sc;
+    syntax_ward_t sc;
     tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sc, cmdline_args[1]));
     parse_tree_ptr_t ptp;
     if (arg_seed_eng) {

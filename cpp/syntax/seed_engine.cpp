@@ -16,8 +16,8 @@ namespace silva {
 
   struct seed_engine_create_nursery_t {
     seed_engine_t* se          = nullptr;
-    syntax_catalog_ptr_t scp   = se->scp;
-    token_catalog_ptr_t tcp    = se->scp->token_catalog().ptr();
+    syntax_ward_ptr_t scp   = se->scp;
+    token_ward_ptr_t tcp    = se->scp->token_ward().ptr();
     const name_id_style_t& nis = tcp->default_name_id_style();
 
     const tokenization_t& s_tokenization;
@@ -387,7 +387,7 @@ namespace silva {
     }
   };
 
-  seed_engine_t::seed_engine_t(syntax_catalog_ptr_t scp) : scp(scp) {}
+  seed_engine_t::seed_engine_t(syntax_ward_ptr_t scp) : scp(scp) {}
 
   expected_t<void> seed_engine_t::add(parse_tree_span_t stps)
   {
@@ -409,8 +409,8 @@ namespace silva {
   namespace impl {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* se    = nullptr;
-      syntax_catalog_ptr_t scp   = se->scp;
-      token_catalog_ptr_t tcp    = se->scp->token_catalog().ptr();
+      syntax_ward_ptr_t scp   = se->scp;
+      token_ward_ptr_t tcp    = se->scp->token_ward().ptr();
       const name_id_style_t& nis = tcp->default_name_id_style();
 
       const tokenization_t& t_tokenization = *tp;
@@ -454,7 +454,7 @@ namespace silva {
       const name_id_t fni_nt_base      = tcp->name_id_of(fni_nt, "Base");
       const name_id_t fni_term         = tcp->name_id_of(fni_seed, "Terminal");
 
-      seed_engine_nursery_t(syntax_catalog_t& sc, tokenization_ptr_t tp, const seed_engine_t* root)
+      seed_engine_nursery_t(syntax_ward_t& sc, tokenization_ptr_t tp, const seed_engine_t* root)
         : parse_tree_nursery_t(sc, tp), se(root)
       {
       }
@@ -463,7 +463,7 @@ namespace silva {
       {
         SILVA_EXPECT(tcp == t_tokenization.context,
                      MAJOR,
-                     "Seed and target parse-trees/tokenizations must be in same token_catalog_t");
+                     "Seed and target parse-trees/tokenizations must be in same token_ward_t");
         return {};
       }
 
@@ -824,7 +824,7 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> seed_engine_t::apply(syntax_catalog_t& sc,
+  expected_t<parse_tree_ptr_t> seed_engine_t::apply(syntax_ward_t& sc,
                                                     tokenization_ptr_t tokenization,
                                                     const name_id_t goal_rule_name) const
   {

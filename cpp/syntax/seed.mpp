@@ -3,7 +3,7 @@
 #include "canopy/expected.hpp"
 #include "canopy/main.hpp"
 #include "seed_engine.hpp"
-#include "syntax_catalog.hpp"
+#include "syntax_ward.hpp"
 
 namespace silva {
   expected_t<void> seed_main(const span_t<string_view_t> cmdline_args)
@@ -12,7 +12,7 @@ namespace silva {
     SILVA_EXPECT(2 <= m && m <= 3, MINOR, "Usage: ... <seed-file> [<target-file>]");
 
     expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_catalog_t sc;
+    syntax_ward_t sc;
     auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(sc, cmdline_args[1]));
     auto seed_pt = SILVA_EXPECT_FWD(seed_parse(sc, std::move(seed_tt)));
     seed_engine_t se(sc.ptr());

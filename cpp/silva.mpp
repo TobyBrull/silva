@@ -3,13 +3,13 @@
 #include "canopy/expected.hpp"
 #include "canopy/main.hpp"
 #include "syntax/seed_engine.hpp"
-#include "syntax/syntax_catalog.hpp"
+#include "syntax/syntax_ward.hpp"
 
 namespace silva {
   expected_t<void> silva_main(const span_t<string_view_t> cmdline_args)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_catalog_t sc;
+    syntax_ward_t sc;
     SILVA_EXPECT(cmdline_args.size() >= 2,
                  MINOR,
                  "First command-line arg must be a Silva filename");
