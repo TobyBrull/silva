@@ -16,40 +16,40 @@ namespace silva {
 
   struct seed_engine_create_nursery_t {
     seed_engine_t* se          = nullptr;
-    syntax_ward_ptr_t scp   = se->scp;
-    token_ward_ptr_t tcp    = se->scp->token_ward().ptr();
-    const name_id_style_t& nis = tcp->default_name_id_style();
+    syntax_ward_ptr_t swp      = se->swp;
+    token_ward_ptr_t twp       = se->swp->token_ward().ptr();
+    const name_id_style_t& nis = twp->default_name_id_style();
 
     const tokenization_t& s_tokenization;
     const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
-    const token_id_t ti_atom_nest    = *tcp->token_id("atom_nest");
-    const token_id_t ti_prefix       = *tcp->token_id("prefix");
-    const token_id_t ti_prefix_nest  = *tcp->token_id("prefix_nest");
-    const token_id_t ti_infix        = *tcp->token_id("infix");
-    const token_id_t ti_infix_flat   = *tcp->token_id("infix_flat");
-    const token_id_t ti_ternary      = *tcp->token_id("ternary");
-    const token_id_t ti_postfix      = *tcp->token_id("postfix");
-    const token_id_t ti_postfix_nest = *tcp->token_id("postfix_nest");
-    const token_id_t ti_concat       = *tcp->token_id("concat");
-    const token_id_t ti_nest         = *tcp->token_id("nest");
-    const token_id_t ti_ltr          = *tcp->token_id("ltr");
-    const token_id_t ti_rtl          = *tcp->token_id("rtl");
+    const token_id_t ti_atom_nest    = *twp->token_id("atom_nest");
+    const token_id_t ti_prefix       = *twp->token_id("prefix");
+    const token_id_t ti_prefix_nest  = *twp->token_id("prefix_nest");
+    const token_id_t ti_infix        = *twp->token_id("infix");
+    const token_id_t ti_infix_flat   = *twp->token_id("infix_flat");
+    const token_id_t ti_ternary      = *twp->token_id("ternary");
+    const token_id_t ti_postfix      = *twp->token_id("postfix");
+    const token_id_t ti_postfix_nest = *twp->token_id("postfix_nest");
+    const token_id_t ti_concat       = *twp->token_id("concat");
+    const token_id_t ti_nest         = *twp->token_id("nest");
+    const token_id_t ti_ltr          = *twp->token_id("ltr");
+    const token_id_t ti_rtl          = *twp->token_id("rtl");
 
-    const name_id_t fni_seed        = tcp->name_id_of("Seed");
-    const name_id_t fni_rule        = tcp->name_id_of(fni_seed, "Rule");
-    const name_id_t fni_expr_or_a   = tcp->name_id_of(fni_seed, "ExprOrAlias");
-    const name_id_t fni_expr        = tcp->name_id_of(fni_seed, "Expr");
-    const name_id_t fni_atom        = tcp->name_id_of(fni_seed, "Atom");
-    const name_id_t fni_axe         = tcp->name_id_of(fni_seed, "Axe");
-    const name_id_t fni_axe_level   = tcp->name_id_of(fni_axe, "Level");
-    const name_id_t fni_axe_assoc   = tcp->name_id_of(fni_axe, "Assoc");
-    const name_id_t fni_axe_ops     = tcp->name_id_of(fni_axe, "Ops");
-    const name_id_t fni_axe_op_type = tcp->name_id_of(fni_axe, "OpType");
-    const name_id_t fni_axe_op      = tcp->name_id_of(fni_axe, "Op");
-    const name_id_t fni_nt          = tcp->name_id_of(fni_seed, "Nonterminal");
-    const name_id_t fni_nt_base     = tcp->name_id_of(fni_nt, "Base");
-    const name_id_t fni_term        = tcp->name_id_of(fni_seed, "Terminal");
+    const name_id_t fni_seed        = twp->name_id_of("Seed");
+    const name_id_t fni_rule        = twp->name_id_of(fni_seed, "Rule");
+    const name_id_t fni_expr_or_a   = twp->name_id_of(fni_seed, "ExprOrAlias");
+    const name_id_t fni_expr        = twp->name_id_of(fni_seed, "Expr");
+    const name_id_t fni_atom        = twp->name_id_of(fni_seed, "Atom");
+    const name_id_t fni_axe         = twp->name_id_of(fni_seed, "Axe");
+    const name_id_t fni_axe_level   = twp->name_id_of(fni_axe, "Level");
+    const name_id_t fni_axe_assoc   = twp->name_id_of(fni_axe, "Assoc");
+    const name_id_t fni_axe_ops     = twp->name_id_of(fni_axe, "Ops");
+    const name_id_t fni_axe_op_type = twp->name_id_of(fni_axe, "OpType");
+    const name_id_t fni_axe_op      = twp->name_id_of(fni_axe, "Op");
+    const name_id_t fni_nt          = twp->name_id_of(fni_seed, "Nonterminal");
+    const name_id_t fni_nt_base     = twp->name_id_of(fni_nt, "Base");
+    const name_id_t fni_term        = twp->name_id_of(fni_seed, "Terminal");
 
     seed_engine_create_nursery_t(seed_engine_t* se, const tokenization_t& s_tokenization)
       : se(se), s_tokenization(s_tokenization)
@@ -75,7 +75,7 @@ namespace silva {
         else {
           SILVA_EXPECT(pts_axe_ops[child_node_index].rule_name == fni_axe_op, MINOR);
           const token_id_t axe_op  = s_tokens[pts_axe_ops[child_node_index].token_begin];
-          const token_info_t* info = &tcp->token_infos[axe_op];
+          const token_info_t* info = &twp->token_infos[axe_op];
           SILVA_EXPECT(info->category == token_category_t::STRING || axe_op == ti_concat,
                        MINOR,
                        "expected 'concat' or string");
@@ -102,22 +102,22 @@ namespace silva {
         if (axe_op_type == ti_atom_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
           level.opers.push_back(parse_axe::atom_nest_t{
-              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
-              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i + 1])),
+              .left_bracket  = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
         else if (axe_op_type == ti_prefix) {
           level.opers.push_back(parse_axe::prefix_t{
-              .token_id = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
+              .token_id = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i])),
           });
           i += 1;
         }
         else if (axe_op_type == ti_prefix_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
           level.opers.push_back(parse_axe::prefix_nest_t{
-              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
-              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i + 1])),
+              .left_bracket  = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
@@ -132,7 +132,7 @@ namespace silva {
           }
           else {
             level.opers.push_back(parse_axe::infix_t{
-                .token_id = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
+                .token_id = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i])),
                 .flatten  = flatten,
             });
           }
@@ -141,22 +141,22 @@ namespace silva {
         else if (axe_op_type == ti_ternary) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
           level.opers.push_back(parse_axe::ternary_t{
-              .first  = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
-              .second = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i + 1])),
+              .first  = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i])),
+              .second = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
         else if (axe_op_type == ti_postfix) {
           level.opers.push_back(parse_axe::postfix_t{
-              .token_id = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
+              .token_id = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i])),
           });
           i += 1;
         }
         else if (axe_op_type == ti_postfix_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
           level.opers.push_back(parse_axe::postfix_nest_t{
-              .left_bracket  = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i])),
-              .right_bracket = SILVA_EXPECT_FWD(tcp->token_id_in_string(axe_op_vec[i + 1])),
+              .left_bracket  = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i])),
+              .right_bracket = SILVA_EXPECT_FWD(twp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
@@ -228,7 +228,7 @@ namespace silva {
       }
       SILVA_EXPECT(atom_rule_name != name_id_root, MAJOR);
       auto pa =
-          SILVA_EXPECT_FWD(parse_axe::parse_axe_create(scp, rule_name, std::move(level_descs)));
+          SILVA_EXPECT_FWD(parse_axe::parse_axe_create(swp, rule_name, std::move(level_descs)));
       return {{
           .atom_rule_name = atom_rule_name,
           .parse_axe      = std::move(pa),
@@ -255,7 +255,7 @@ namespace silva {
         return scope_name;
       }
       else {
-        return tcp->name_id(scope_name, base_name);
+        return twp->name_id(scope_name, base_name);
       }
       return retval;
     }
@@ -277,10 +277,10 @@ namespace silva {
           ;
         }
         else if (base == nis.parent) {
-          retval = tcp->name_infos[retval].parent_name;
+          retval = twp->name_infos[retval].parent_name;
         }
         else {
-          retval = tcp->name_id(retval, base);
+          retval = twp->name_id(retval, base);
         }
       }
       return retval;
@@ -293,7 +293,7 @@ namespace silva {
         if (rule_name == name_id_root) {
           break;
         }
-        rule_name = tcp->name_infos[rule_name].parent_name;
+        rule_name = twp->name_infos[rule_name].parent_name;
       }
       return {};
     }
@@ -325,9 +325,9 @@ namespace silva {
           if (pts_expr[i].rule_name == fni_term) {
             const index_t token_idx        = pts_expr[i].token_begin;
             const token_id_t token_id      = pts_expr.tp->tokens[token_idx];
-            const token_info_t& token_info = tcp->token_infos[token_id];
+            const token_info_t& token_info = twp->token_infos[token_id];
             if (token_info.category == token_category_t::STRING) {
-              const auto keyword              = SILVA_EXPECT_FWD(tcp->token_id_in_string(token_id));
+              const auto keyword              = SILVA_EXPECT_FWD(twp->token_id_in_string(token_id));
               se->string_to_keyword[token_id] = keyword;
               SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
             }
@@ -387,7 +387,7 @@ namespace silva {
     }
   };
 
-  seed_engine_t::seed_engine_t(syntax_ward_ptr_t scp) : scp(scp) {}
+  seed_engine_t::seed_engine_t(syntax_ward_ptr_t swp) : swp(swp) {}
 
   expected_t<void> seed_engine_t::add(parse_tree_span_t stps)
   {
@@ -399,8 +399,8 @@ namespace silva {
   expected_t<parse_tree_ptr_t> seed_engine_t::add_complete_file(filesystem_path_t filepath,
                                                                 string_view_t text)
   {
-    auto tt  = SILVA_EXPECT_FWD(tokenize(*scp, std::move(filepath), std::move(text)));
-    auto ptp = SILVA_EXPECT_FWD(seed_parse(*scp, std::move(tt)));
+    auto tt  = SILVA_EXPECT_FWD(tokenize(*swp, std::move(filepath), std::move(text)));
+    auto ptp = SILVA_EXPECT_FWD(seed_parse(*swp, std::move(tt)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_string()));
     SILVA_EXPECT_FWD(add(ptp->span()));
     return ptp;
@@ -409,59 +409,59 @@ namespace silva {
   namespace impl {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* se    = nullptr;
-      syntax_ward_ptr_t scp   = se->scp;
-      token_ward_ptr_t tcp    = se->scp->token_ward().ptr();
-      const name_id_style_t& nis = tcp->default_name_id_style();
+      syntax_ward_ptr_t swp      = se->swp;
+      token_ward_ptr_t twp       = se->swp->token_ward().ptr();
+      const name_id_style_t& nis = twp->default_name_id_style();
 
       const tokenization_t& t_tokenization = *tp;
       const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
 
       int rule_depth = 0;
 
-      const token_id_t ti_id          = *tcp->token_id("identifier");
-      const token_id_t ti_op          = *tcp->token_id("operator");
-      const token_id_t ti_string      = *tcp->token_id("string");
-      const token_id_t ti_number      = *tcp->token_id("number");
-      const token_id_t ti_any         = *tcp->token_id("any");
-      const token_id_t ti_eof         = *tcp->token_id("end_of_file");
-      const token_id_t ti_keywords_of = *tcp->token_id("keywords_of");
-      const token_id_t ti_ques        = *tcp->token_id("?");
-      const token_id_t ti_star        = *tcp->token_id("*");
-      const token_id_t ti_plus        = *tcp->token_id("+");
-      const token_id_t ti_not         = *tcp->token_id("not");
-      const token_id_t ti_but_then    = *tcp->token_id("but_then");
-      const token_id_t ti_regex       = *tcp->token_id("/");
-      const token_id_t ti_equal       = *tcp->token_id("=");
-      const token_id_t ti_alias       = *tcp->token_id("=>");
+      const token_id_t ti_id          = *twp->token_id("identifier");
+      const token_id_t ti_op          = *twp->token_id("operator");
+      const token_id_t ti_string      = *twp->token_id("string");
+      const token_id_t ti_number      = *twp->token_id("number");
+      const token_id_t ti_any         = *twp->token_id("any");
+      const token_id_t ti_eof         = *twp->token_id("end_of_file");
+      const token_id_t ti_keywords_of = *twp->token_id("keywords_of");
+      const token_id_t ti_ques        = *twp->token_id("?");
+      const token_id_t ti_star        = *twp->token_id("*");
+      const token_id_t ti_plus        = *twp->token_id("+");
+      const token_id_t ti_not         = *twp->token_id("not");
+      const token_id_t ti_but_then    = *twp->token_id("but_then");
+      const token_id_t ti_regex       = *twp->token_id("/");
+      const token_id_t ti_equal       = *twp->token_id("=");
+      const token_id_t ti_alias       = *twp->token_id("=>");
 
-      const name_id_t fni_seed         = tcp->name_id_of("Seed");
-      const name_id_t fni_rule         = tcp->name_id_of(fni_seed, "Rule");
-      const name_id_t fni_expr         = tcp->name_id_of(fni_seed, "Expr");
-      const name_id_t fni_expr_parens  = tcp->name_id_of(fni_expr, "Parens");
-      const name_id_t fni_expr_prefix  = tcp->name_id_of(fni_expr, "Prefix");
-      const name_id_t fni_expr_postfix = tcp->name_id_of(fni_expr, "Postfix");
-      const name_id_t fni_expr_concat  = tcp->name_id_of(fni_expr, "Concat");
-      const name_id_t fni_expr_or      = tcp->name_id_of(fni_expr, "Or");
-      const name_id_t fni_expr_and     = tcp->name_id_of(fni_expr, "And");
-      const name_id_t fni_atom         = tcp->name_id_of(fni_seed, "Atom");
-      const name_id_t fni_axe          = tcp->name_id_of(fni_seed, "Axe");
-      const name_id_t fni_axe_level    = tcp->name_id_of(fni_axe, "Level");
-      const name_id_t fni_axe_assoc    = tcp->name_id_of(fni_axe, "Assoc");
-      const name_id_t fni_axe_ops      = tcp->name_id_of(fni_axe, "Ops");
-      const name_id_t fni_axe_op_type  = tcp->name_id_of(fni_axe, "OpType");
-      const name_id_t fni_axe_op       = tcp->name_id_of(fni_axe, "Op");
-      const name_id_t fni_nt           = tcp->name_id_of(fni_seed, "Nonterminal");
-      const name_id_t fni_nt_base      = tcp->name_id_of(fni_nt, "Base");
-      const name_id_t fni_term         = tcp->name_id_of(fni_seed, "Terminal");
+      const name_id_t fni_seed         = twp->name_id_of("Seed");
+      const name_id_t fni_rule         = twp->name_id_of(fni_seed, "Rule");
+      const name_id_t fni_expr         = twp->name_id_of(fni_seed, "Expr");
+      const name_id_t fni_expr_parens  = twp->name_id_of(fni_expr, "Parens");
+      const name_id_t fni_expr_prefix  = twp->name_id_of(fni_expr, "Prefix");
+      const name_id_t fni_expr_postfix = twp->name_id_of(fni_expr, "Postfix");
+      const name_id_t fni_expr_concat  = twp->name_id_of(fni_expr, "Concat");
+      const name_id_t fni_expr_or      = twp->name_id_of(fni_expr, "Or");
+      const name_id_t fni_expr_and     = twp->name_id_of(fni_expr, "And");
+      const name_id_t fni_atom         = twp->name_id_of(fni_seed, "Atom");
+      const name_id_t fni_axe          = twp->name_id_of(fni_seed, "Axe");
+      const name_id_t fni_axe_level    = twp->name_id_of(fni_axe, "Level");
+      const name_id_t fni_axe_assoc    = twp->name_id_of(fni_axe, "Assoc");
+      const name_id_t fni_axe_ops      = twp->name_id_of(fni_axe, "Ops");
+      const name_id_t fni_axe_op_type  = twp->name_id_of(fni_axe, "OpType");
+      const name_id_t fni_axe_op       = twp->name_id_of(fni_axe, "Op");
+      const name_id_t fni_nt           = twp->name_id_of(fni_seed, "Nonterminal");
+      const name_id_t fni_nt_base      = twp->name_id_of(fni_nt, "Base");
+      const name_id_t fni_term         = twp->name_id_of(fni_seed, "Terminal");
 
-      seed_engine_nursery_t(syntax_ward_t& sc, tokenization_ptr_t tp, const seed_engine_t* root)
-        : parse_tree_nursery_t(sc, tp), se(root)
+      seed_engine_nursery_t(syntax_ward_t& sw, tokenization_ptr_t tp, const seed_engine_t* root)
+        : parse_tree_nursery_t(sw, tp), se(root)
       {
       }
 
       expected_t<void> check()
       {
-        SILVA_EXPECT(tcp == t_tokenization.context,
+        SILVA_EXPECT(twp == t_tokenization.context,
                      MAJOR,
                      "Seed and target parse-trees/tokenizations must be in same token_ward_t");
         return {};
@@ -495,7 +495,7 @@ namespace silva {
           SILVA_EXPECT_PARSE(t_rule_name,
                              num_tokens_left() == 0,
                              "expected {}",
-                             tcp->token_id_wrap(ti_eof));
+                             twp->token_id_wrap(ti_eof));
           return ss.commit();
         }
         SILVA_EXPECT_PARSE(t_rule_name,
@@ -528,8 +528,8 @@ namespace silva {
           SILVA_EXPECT_PARSE(t_rule_name,
                              is_match,
                              "{} does not match regex {}",
-                             tcp->token_id_wrap(token_id_by()),
-                             tcp->token_infos[regex_token_id].str);
+                             twp->token_id_wrap(token_id_by()),
+                             twp->token_infos[regex_token_id].str);
         }
         else if (s_front_ti == ti_keywords_of) {
           const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
@@ -541,14 +541,14 @@ namespace silva {
           SILVA_EXPECT(it2 != se->keyword_scopes.end(),
                        MAJOR,
                        "keywords_of {}: no such nonterminal",
-                       tcp->name_id_wrap(keyword_scope));
+                       twp->name_id_wrap(keyword_scope));
           const hashset_t<token_id_t>& keywords = it2->second;
           SILVA_EXPECT(keywords.contains(token_id_by()),
                        MINOR,
                        "{} '{}' not in keywords_of {}",
                        token_position_by(),
-                       tcp->token_id_wrap(token_id_by()),
-                       tcp->name_id_wrap(keyword_scope));
+                       twp->token_id_wrap(token_id_by()),
+                       twp->name_id_wrap(keyword_scope));
         }
         else {
           SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
@@ -582,7 +582,7 @@ namespace silva {
             SILVA_EXPECT_PARSE(t_rule_name,
                                token_id_by() == t_expected_ti,
                                "expected {}",
-                               tcp->token_id_wrap(t_expected_ti));
+                               twp->token_id_wrap(t_expected_ti));
           }
         }
         token_index += 1;
@@ -625,7 +625,7 @@ namespace silva {
       {
         auto ss                             = stake();
         const auto children                 = SILVA_EXPECT_FWD(pts.get_children<1>());
-        const token_id_t op_ti              = tcp->name_infos[pts[0].rule_name].base_name;
+        const token_id_t op_ti              = twp->name_infos[pts[0].rule_name].base_name;
         const auto [min_repeat, max_repeat] = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
         index_t repeat_count                = 0;
         error_t last_error;
@@ -674,7 +674,7 @@ namespace silva {
                                        .finish(MINOR,
                                                "[{}] {}: expected sequence[ {} ]",
                                                token_position_at(orig_token_index),
-                                               tcp->name_id_wrap(t_rule_name),
+                                               twp->name_id_wrap(t_rule_name),
                                                pts.token_range()));
           }
         }
@@ -718,30 +718,30 @@ namespace silva {
                                    .finish(MINOR,
                                            "[{}] {}: expected alternation[ {} ]",
                                            token_position_at(orig_token_index),
-                                           tcp->name_id_wrap(t_rule_name),
+                                           twp->name_id_wrap(t_rule_name),
                                            pts.token_range()));
       }
 
       expected_t<node_and_error_t> s_expr(const parse_tree_span_t pts, const name_id_t t_rule_name)
       {
         const name_id_t s_rule_name = pts[0].rule_name;
-        if (tcp->name_id_is_parent(fni_expr_parens, s_rule_name)) {
+        if (twp->name_id_is_parent(fni_expr_parens, s_rule_name)) {
           const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
           return s_expr(pts.sub_tree_span_at(children[0]), t_rule_name);
         }
-        else if (tcp->name_id_is_parent(fni_expr_prefix, s_rule_name)) {
+        else if (twp->name_id_is_parent(fni_expr_prefix, s_rule_name)) {
           return s_expr_prefix(pts, t_rule_name);
         }
-        else if (tcp->name_id_is_parent(fni_expr_postfix, s_rule_name)) {
+        else if (twp->name_id_is_parent(fni_expr_postfix, s_rule_name)) {
           return s_expr_postfix(pts, t_rule_name);
         }
-        else if (tcp->name_id_is_parent(fni_expr_concat, s_rule_name)) {
+        else if (twp->name_id_is_parent(fni_expr_concat, s_rule_name)) {
           return s_expr_concat(pts, t_rule_name);
         }
-        else if (tcp->name_id_is_parent(fni_expr_and, s_rule_name)) {
+        else if (twp->name_id_is_parent(fni_expr_and, s_rule_name)) {
           return s_expr_and(pts, t_rule_name);
         }
-        else if (tcp->name_id_is_parent(fni_expr_or, s_rule_name)) {
+        else if (twp->name_id_is_parent(fni_expr_or, s_rule_name)) {
           return s_expr_or(pts, t_rule_name);
         }
         else if (s_rule_name == fni_term) {
@@ -824,15 +824,15 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> seed_engine_t::apply(syntax_ward_t& sc,
+  expected_t<parse_tree_ptr_t> seed_engine_t::apply(syntax_ward_t& sw,
                                                     tokenization_ptr_t tokenization,
                                                     const name_id_t goal_rule_name) const
   {
-    impl::seed_engine_nursery_t nursery(sc, std::move(tokenization), this);
+    impl::seed_engine_nursery_t nursery(sw, std::move(tokenization), this);
     SILVA_EXPECT_FWD(nursery.check());
     const auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
     SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
-    return sc.add(std::move(nursery).finish());
+    return sw.add(std::move(nursery).finish());
   }
 }

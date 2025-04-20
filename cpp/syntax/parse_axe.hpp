@@ -115,7 +115,7 @@ namespace silva::parse_axe {
   };
 
   struct parse_axe_t {
-    syntax_ward_ptr_t scp;
+    syntax_ward_ptr_t swp;
     name_id_t name = name_id_root;
     hashmap_t<token_id_t, parse_axe_result_t> results;
     optional_t<result_oper_t<oper_regular_t>> concat_result;

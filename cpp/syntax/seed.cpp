@@ -9,110 +9,110 @@
 namespace silva {
   using enum token_category_t;
 
-  parse_axe::parse_axe_t create_parse_axe_expr(syntax_ward_ptr_t scp)
+  parse_axe::parse_axe_t create_parse_axe_expr(syntax_ward_ptr_t swp)
   {
     using namespace parse_axe;
     using enum assoc_t;
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *scp->token_id("Parens"),
+        .base_name = *swp->token_id("Parens"),
         .assoc     = NEST,
-        .opers     = {atom_nest_t{*scp->token_id("("), *scp->token_id(")")}},
+        .opers     = {atom_nest_t{*swp->token_id("("), *swp->token_id(")")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *scp->token_id("Prefix"),
+        .base_name = *swp->token_id("Prefix"),
         .assoc     = RIGHT_TO_LEFT,
         .opers =
             {
-                prefix_t{*scp->token_id("not")},
+                prefix_t{*swp->token_id("not")},
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *scp->token_id("Postfix"),
+        .base_name = *swp->token_id("Postfix"),
         .assoc     = LEFT_TO_RIGHT,
         .opers =
             {
-                postfix_t{*scp->token_id("?")},
-                postfix_t{*scp->token_id("*")},
-                postfix_t{*scp->token_id("+")},
+                postfix_t{*swp->token_id("?")},
+                postfix_t{*swp->token_id("*")},
+                postfix_t{*swp->token_id("+")},
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *scp->token_id("Concat"),
+        .base_name = *swp->token_id("Concat"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{
-                .token_id = *scp->token_id("concat"),
+                .token_id = *swp->token_id("concat"),
                 .concat   = true,
                 .flatten  = true,
         }},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *scp->token_id("And"),
+        .base_name = *swp->token_id("And"),
         .assoc     = LEFT_TO_RIGHT,
-        .opers     = {infix_t{.token_id = *scp->token_id("but_then"), .flatten = true}},
+        .opers     = {infix_t{.token_id = *swp->token_id("but_then"), .flatten = true}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *scp->token_id("Or"),
+        .base_name = *swp->token_id("Or"),
         .assoc     = LEFT_TO_RIGHT,
-        .opers     = {infix_t{.token_id = *scp->token_id("|"), .flatten = true}},
+        .opers     = {infix_t{.token_id = *swp->token_id("|"), .flatten = true}},
     });
-    const name_id_t fni_expr = scp->name_id_of("Seed", "Expr");
-    auto retval              = SILVA_EXPECT_ASSERT(parse_axe_create(scp, fni_expr, level_descs));
+    const name_id_t fni_expr = swp->name_id_of("Seed", "Expr");
+    auto retval              = SILVA_EXPECT_ASSERT(parse_axe_create(swp, fni_expr, level_descs));
     return retval;
   }
 
   namespace impl {
     struct seed_parse_tree_nursery_t : public parse_tree_nursery_t {
-      token_id_t tt_dot         = *tcp->token_id(".");
-      token_id_t tt_dash        = *tcp->token_id("-");
-      token_id_t tt_equal       = *tcp->token_id("=");
-      token_id_t tt_axe         = *tcp->token_id("=/");
-      token_id_t tt_alias       = *tcp->token_id("=>");
-      token_id_t tt_brack_open  = *tcp->token_id("[");
-      token_id_t tt_brack_close = *tcp->token_id("]");
-      token_id_t tt_identifier  = *tcp->token_id("identifier");
-      token_id_t tt_regex       = *tcp->token_id("/");
-      token_id_t tt_up          = *tcp->token_id("p");
-      token_id_t tt_silva       = *tcp->token_id("_");
-      token_id_t tt_here        = *tcp->token_id("x");
-      token_id_t tt_operator    = *tcp->token_id("operator");
-      token_id_t tt_string      = *tcp->token_id("string");
-      token_id_t tt_number      = *tcp->token_id("number");
-      token_id_t tt_any         = *tcp->token_id("any");
-      token_id_t tt_eof         = *tcp->token_id("end_of_file");
-      token_id_t tt_nest        = *tcp->token_id("nest");
-      token_id_t tt_ltr         = *tcp->token_id("ltr");
-      token_id_t tt_rtl         = *tcp->token_id("rtl");
-      token_id_t tt_atom_nest   = *tcp->token_id("atom_nest");
-      token_id_t tt_postfix     = *tcp->token_id("postfix");
-      token_id_t tt_postfix_n   = *tcp->token_id("postfix_nest");
-      token_id_t tt_infix       = *tcp->token_id("infix");
-      token_id_t tt_infix_flat  = *tcp->token_id("infix_flat");
-      token_id_t tt_ternary     = *tcp->token_id("ternary");
-      token_id_t tt_prefix      = *tcp->token_id("prefix");
-      token_id_t tt_prefix_n    = *tcp->token_id("prefix_nest");
-      token_id_t tt_concat      = *tcp->token_id("concat");
-      token_id_t tt_keywords_of = *tcp->token_id("keywords_of");
+      token_id_t tt_dot         = *twp->token_id(".");
+      token_id_t tt_dash        = *twp->token_id("-");
+      token_id_t tt_equal       = *twp->token_id("=");
+      token_id_t tt_axe         = *twp->token_id("=/");
+      token_id_t tt_alias       = *twp->token_id("=>");
+      token_id_t tt_brack_open  = *twp->token_id("[");
+      token_id_t tt_brack_close = *twp->token_id("]");
+      token_id_t tt_identifier  = *twp->token_id("identifier");
+      token_id_t tt_regex       = *twp->token_id("/");
+      token_id_t tt_up          = *twp->token_id("p");
+      token_id_t tt_silva       = *twp->token_id("_");
+      token_id_t tt_here        = *twp->token_id("x");
+      token_id_t tt_operator    = *twp->token_id("operator");
+      token_id_t tt_string      = *twp->token_id("string");
+      token_id_t tt_number      = *twp->token_id("number");
+      token_id_t tt_any         = *twp->token_id("any");
+      token_id_t tt_eof         = *twp->token_id("end_of_file");
+      token_id_t tt_nest        = *twp->token_id("nest");
+      token_id_t tt_ltr         = *twp->token_id("ltr");
+      token_id_t tt_rtl         = *twp->token_id("rtl");
+      token_id_t tt_atom_nest   = *twp->token_id("atom_nest");
+      token_id_t tt_postfix     = *twp->token_id("postfix");
+      token_id_t tt_postfix_n   = *twp->token_id("postfix_nest");
+      token_id_t tt_infix       = *twp->token_id("infix");
+      token_id_t tt_infix_flat  = *twp->token_id("infix_flat");
+      token_id_t tt_ternary     = *twp->token_id("ternary");
+      token_id_t tt_prefix      = *twp->token_id("prefix");
+      token_id_t tt_prefix_n    = *twp->token_id("prefix_nest");
+      token_id_t tt_concat      = *twp->token_id("concat");
+      token_id_t tt_keywords_of = *twp->token_id("keywords_of");
 
-      name_id_t fni_seed        = tcp->name_id_of("Seed");
-      name_id_t fni_rule        = tcp->name_id_of(fni_seed, "Rule");
-      name_id_t fni_expr_or_a   = tcp->name_id_of(fni_seed, "ExprOrAlias");
-      name_id_t fni_expr        = tcp->name_id_of(fni_seed, "Expr");
-      name_id_t fni_atom        = tcp->name_id_of(fni_seed, "Atom");
-      name_id_t fni_axe         = tcp->name_id_of(fni_seed, "Axe");
-      name_id_t fni_axe_level   = tcp->name_id_of(fni_axe, "Level");
-      name_id_t fni_axe_assoc   = tcp->name_id_of(fni_axe, "Assoc");
-      name_id_t fni_axe_ops     = tcp->name_id_of(fni_axe, "Ops");
-      name_id_t fni_axe_op_type = tcp->name_id_of(fni_axe, "OpType");
-      name_id_t fni_axe_op      = tcp->name_id_of(fni_axe, "Op");
-      name_id_t fni_nt          = tcp->name_id_of(fni_seed, "Nonterminal");
-      name_id_t fni_nt_base     = tcp->name_id_of(fni_nt, "Base");
-      name_id_t fni_term        = tcp->name_id_of(fni_seed, "Terminal");
+      name_id_t fni_seed        = twp->name_id_of("Seed");
+      name_id_t fni_rule        = twp->name_id_of(fni_seed, "Rule");
+      name_id_t fni_expr_or_a   = twp->name_id_of(fni_seed, "ExprOrAlias");
+      name_id_t fni_expr        = twp->name_id_of(fni_seed, "Expr");
+      name_id_t fni_atom        = twp->name_id_of(fni_seed, "Atom");
+      name_id_t fni_axe         = twp->name_id_of(fni_seed, "Axe");
+      name_id_t fni_axe_level   = twp->name_id_of(fni_axe, "Level");
+      name_id_t fni_axe_assoc   = twp->name_id_of(fni_axe, "Assoc");
+      name_id_t fni_axe_ops     = twp->name_id_of(fni_axe, "Ops");
+      name_id_t fni_axe_op_type = twp->name_id_of(fni_axe, "OpType");
+      name_id_t fni_axe_op      = twp->name_id_of(fni_axe, "Op");
+      name_id_t fni_nt          = twp->name_id_of(fni_seed, "Nonterminal");
+      name_id_t fni_nt_base     = twp->name_id_of(fni_nt, "Base");
+      name_id_t fni_term        = twp->name_id_of(fni_seed, "Terminal");
 
       parse_axe::parse_axe_t seed_parse_axe;
 
-      seed_parse_tree_nursery_t(syntax_ward_t& sc, tokenization_ptr_t tp)
-        : parse_tree_nursery_t(sc, tp), seed_parse_axe(create_parse_axe_expr(sc.ptr()))
+      seed_parse_tree_nursery_t(syntax_ward_t& sw, tokenization_ptr_t tp)
+        : parse_tree_nursery_t(sw, tp), seed_parse_axe(create_parse_axe_expr(sw.ptr()))
       {
       }
 
@@ -287,7 +287,7 @@ namespace silva {
                                    .finish_short(error_level_t::MINOR,
                                                  "[{}] {}",
                                                  token_position_at(orig_token_index),
-                                                 tcp->name_id_wrap(fni_atom)));
+                                                 twp->name_id_wrap(fni_atom)));
       }
 
       expected_t<parse_tree_node_t> expr()
@@ -361,16 +361,16 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> seed_parse(syntax_ward_t& sc, tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> seed_parse(syntax_ward_t& sw, tokenization_ptr_t tp)
   {
-    impl::seed_parse_tree_nursery_t nursery(sc, std::move(tp));
+    impl::seed_parse_tree_nursery_t nursery(sw, std::move(tp));
     SILVA_EXPECT_FWD(nursery.seed());
-    return sc.add(std::move(nursery).finish());
+    return sw.add(std::move(nursery).finish());
   }
 
-  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_ward_t& sc)
+  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_ward_t& sw)
   {
-    auto retval = std::make_unique<seed_engine_t>(sc.ptr());
+    auto retval = std::make_unique<seed_engine_t>(sw.ptr());
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));
     return retval;
   }

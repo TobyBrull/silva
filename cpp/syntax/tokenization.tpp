@@ -7,20 +7,20 @@
 namespace silva::test {
   TEST_CASE("tokenization", "[tokenization_t]")
   {
-    syntax_ward_t sc;
+    syntax_ward_t sw;
     using enum token_category_t;
     using info_t = token_info_t;
     {
-      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sc, "unit.test", "Hello   123 .<>."));
+      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sw, "unit.test", "Hello   123 .<>."));
       REQUIRE(result->tokens.size() == 3);
       CHECK(*result->token_info_get(0) == info_t{IDENTIFIER, "Hello"});
       CHECK(*result->token_info_get(1) == info_t{NUMBER, "123"});
       CHECK(*result->token_info_get(2) == info_t{OPERATOR, ".<>."});
-      REQUIRE(sc.token_infos.size() == 8);
+      REQUIRE(sw.token_infos.size() == 8);
     }
 
     {
-      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sc, "unit.test", R"(
+      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sw, "unit.test", R"(
         Silva 'Hel\'lo'  .(). # .().
         1 + 3
     )"));
@@ -34,25 +34,25 @@ namespace silva::test {
       CHECK(*result->token_info_get(6) == info_t{NUMBER, "1"});
       CHECK(*result->token_info_get(7) == info_t{OPERATOR, "+"});
       CHECK(*result->token_info_get(8) == info_t{NUMBER, "3"});
-      REQUIRE(sc.token_infos.size() == 15);
+      REQUIRE(sw.token_infos.size() == 15);
     }
 
     {
       using vv_t = vector_t<name_id_t>;
 
-      const name_id_t name1 = sc.name_id_of("std", "expr", "stmt");
-      const name_id_t name2 = sc.name_id_of("std", "expr");
-      const name_id_t name3 = sc.name_id_of("std", "ranges", "vector");
-      CHECK(sc.name_infos.size() == 6);
-      CHECK(sc.name_lookup.size() == 6);
+      const name_id_t name1 = sw.name_id_of("std", "expr", "stmt");
+      const name_id_t name2 = sw.name_id_of("std", "expr");
+      const name_id_t name3 = sw.name_id_of("std", "ranges", "vector");
+      CHECK(sw.name_infos.size() == 6);
+      CHECK(sw.name_lookup.size() == 6);
 
       {
         const name_id_style_t ts{
-            .tcp       = sc.token_ward().ptr(),
-            .root      = *sc.token_id("cpp"),
-            .current   = *sc.token_id("this"),
-            .parent    = *sc.token_id("super"),
-            .separator = *sc.token_id("::"),
+            .twp       = sw.token_ward().ptr(),
+            .root      = *sw.token_id("cpp"),
+            .current   = *sw.token_id("this"),
+            .parent    = *sw.token_id("super"),
+            .separator = *sw.token_id("::"),
         };
         CHECK(ts.absolute(name1) == "cpp::std::expr::stmt");
         CHECK(ts.absolute(name2) == "cpp::std::expr");
@@ -104,7 +104,7 @@ namespace silva::test {
 [ 15]  13:3   ]
 [ 16]  14:1   ]
 )";
-      const auto tokenization      = SILVA_EXPECT_REQUIRE(tokenize(sc, "test.fern", source_code));
+      const auto tokenization      = SILVA_EXPECT_REQUIRE(tokenize(sw, "test.fern", source_code));
       const auto result_str        = to_string(*tokenization);
       CHECK(result_str.as_string_view() == expected.substr(1));
     }

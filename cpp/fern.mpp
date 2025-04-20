@@ -16,15 +16,15 @@ namespace silva {
     const bool arg_seed_eng = var_context_get_as<bool>("seed-engine").value_or(false);
 
     expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_ward_t sc;
-    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sc, cmdline_args[1]));
+    syntax_ward_t sw;
+    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sw, cmdline_args[1]));
     parse_tree_ptr_t ptp;
     if (arg_seed_eng) {
-      const auto fse{fern_seed_engine(sc)};
-      ptp = SILVA_EXPECT_FWD(fse->apply(sc, tp, sc.name_id_of("Fern")));
+      const auto fse{fern_seed_engine(sw)};
+      ptp = SILVA_EXPECT_FWD(fse->apply(sw, tp, sw.name_id_of("Fern")));
     }
     else {
-      ptp = SILVA_EXPECT_FWD(fern_parse(sc, tp));
+      ptp = SILVA_EXPECT_FWD(fern_parse(sw, tp));
     }
 
     if (arg_process.empty()) {

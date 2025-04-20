@@ -182,10 +182,10 @@ namespace silva {
   }
 
   struct token_ward_t::impl_t {
-    token_ward_ptr_t tcp;
-    name_id_style_t default_nis{tcp};
+    token_ward_ptr_t twp;
+    name_id_style_t default_nis{twp};
 
-    impl_t(token_ward_ptr_t tcp) : tcp(tcp) {}
+    impl_t(token_ward_ptr_t twp) : twp(twp) {}
   };
 
   token_ward_t::token_ward_t()
@@ -233,7 +233,7 @@ namespace silva {
   }
 
   name_id_t token_ward_t::name_id_span(const name_id_t parent_name,
-                                          const span_t<const token_id_t> token_ids)
+                                       const span_t<const token_id_t> token_ids)
   {
     name_id_t retval = parent_name;
     for (const token_id_t token_id: token_ids) {
@@ -289,14 +289,14 @@ namespace silva {
   token_id_wrap_t token_ward_t::token_id_wrap(const token_id_t token_id)
   {
     return token_id_wrap_t{
-        .tcp      = ptr(),
+        .twp      = ptr(),
         .token_id = token_id,
     };
   }
   name_id_wrap_t token_ward_t::name_id_wrap(const name_id_t name_id)
   {
     return name_id_wrap_t{
-        .tcp     = ptr(),
+        .twp     = ptr(),
         .name_id = name_id,
     };
   }
@@ -304,26 +304,26 @@ namespace silva {
   string_t name_id_style_t::absolute(const name_id_t target_fni) const
   {
     if (target_fni == name_id_root) {
-      return tcp->token_infos[root].str;
+      return twp->token_infos[root].str;
     }
-    const name_info_t& fni = tcp->name_infos[target_fni];
-    return absolute(fni.parent_name) + tcp->token_infos[separator].str +
-        tcp->token_infos[fni.base_name].str;
+    const name_info_t& fni = twp->name_infos[target_fni];
+    return absolute(fni.parent_name) + twp->token_infos[separator].str +
+        twp->token_infos[fni.base_name].str;
   }
 
   string_t name_id_style_t::relative(const name_id_t current_fni, const name_id_t target_fni) const
   {
-    const name_id_t lca = tcp->name_id_lca(current_fni, target_fni);
+    const name_id_t lca = twp->name_id_lca(current_fni, target_fni);
 
     string_t first_part;
     {
       name_id_t curr = current_fni;
       while (curr != lca) {
         if (!first_part.empty()) {
-          first_part += tcp->token_infos[separator].str;
+          first_part += twp->token_infos[separator].str;
         }
-        first_part += tcp->token_infos[parent].str;
-        curr = tcp->name_infos[curr].parent_name;
+        first_part += twp->token_infos[parent].str;
+        curr = twp->name_infos[curr].parent_name;
       }
     }
 
@@ -332,18 +332,18 @@ namespace silva {
       name_id_t curr = target_fni;
       while (curr != lca) {
         if (!second_part.empty()) {
-          second_part = tcp->token_infos[separator].str + second_part;
+          second_part = twp->token_infos[separator].str + second_part;
         }
-        const name_info_t* fni = &tcp->name_infos[curr];
-        second_part            = tcp->token_infos[fni->base_name].str + second_part;
-        curr                   = tcp->name_infos[curr].parent_name;
+        const name_info_t* fni = &twp->name_infos[curr];
+        second_part            = twp->token_infos[fni->base_name].str + second_part;
+        curr                   = twp->name_infos[curr].parent_name;
       }
     }
     if (!first_part.empty() && !second_part.empty()) {
-      return first_part + tcp->token_infos[separator].str + second_part;
+      return first_part + twp->token_infos[separator].str + second_part;
     }
     else if (first_part.empty() && second_part.empty()) {
-      return tcp->token_infos[current].str;
+      return twp->token_infos[current].str;
     }
     else {
       return first_part + second_part;
@@ -352,11 +352,11 @@ namespace silva {
 
   string_or_view_t to_string_impl(const token_id_wrap_t& x)
   {
-    return string_or_view_t{fmt::format("token[ {} ]", x.tcp->token_infos[x.token_id].str)};
+    return string_or_view_t{fmt::format("token[ {} ]", x.twp->token_infos[x.token_id].str)};
   }
 
   string_or_view_t to_string_impl(const name_id_wrap_t& x)
   {
-    return string_or_view_t{x.tcp->default_name_id_style().absolute(x.name_id)};
+    return string_or_view_t{x.twp->default_name_id_style().absolute(x.name_id)};
   }
 }

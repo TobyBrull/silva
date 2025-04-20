@@ -12,8 +12,8 @@ namespace silva {
     SILVA_EXPECT(2 == m, MINOR, "Usage: ... <file>");
 
     expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_ward_t sc;
-    const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sc, cmdline_args[1]));
+    syntax_ward_t sw;
+    const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sw, cmdline_args[1]));
     fmt::print("{}\n", to_string(*tokenization));
     return {};
   }

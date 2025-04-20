@@ -22,17 +22,16 @@ namespace silva {
     return &context->token_infos[tokens[token_index]];
   }
 
-  token_id_t token_ward_get_token_id_from_info(token_ward_t* tc,
-                                                  const token_info_t& token_info)
+  token_id_t token_ward_get_token_id_from_info(token_ward_t* tw, const token_info_t& token_info)
   {
-    const auto it = tc->token_lookup.find(token_info.str);
-    if (it != tc->token_lookup.end()) {
+    const auto it = tw->token_lookup.find(token_info.str);
+    if (it != tw->token_lookup.end()) {
       return it->second;
     }
     else {
-      const token_id_t new_token_id = tc->token_infos.size();
-      tc->token_infos.push_back(token_info);
-      tc->token_lookup.emplace(token_info.str, new_token_id);
+      const token_id_t new_token_id = tw->token_infos.size();
+      tw->token_infos.push_back(token_info);
+      tw->token_lookup.emplace(token_info.str, new_token_id);
       return new_token_id;
     }
   }
@@ -72,19 +71,19 @@ namespace silva {
     return string_or_view_t{std::move(retval)};
   }
 
-  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_t& sc, filesystem_path_t filepath)
+  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_t& sw, filesystem_path_t filepath)
   {
     string_t text         = SILVA_EXPECT_FWD(read_file(filepath));
-    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize(sc, std::move(filepath), std::move(text)));
+    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize(sw, std::move(filepath), std::move(text)));
     return tp;
   }
 
   expected_t<tokenization_ptr_t>
-  tokenize(syntax_ward_t& sc, filesystem_path_t filepath, string_view_t text)
+  tokenize(syntax_ward_t& sw, filesystem_path_t filepath, string_view_t text)
   {
     auto retval        = std::make_unique<tokenization_t>();
     retval->filepath   = std::move(filepath);
-    retval->context    = sc.token_ward().ptr();
+    retval->context    = sw.token_ward().ptr();
     index_t text_index = 0;
     tokenization_t::location_t loc;
     while (text_index < text.size()) {
@@ -97,7 +96,7 @@ namespace silva {
             .category = token_cat,
             .str      = string_t{tokenized_str},
         };
-        const token_id_t tii = token_ward_get_token_id_from_info(&sc, std::move(ti));
+        const token_id_t tii = token_ward_get_token_id_from_info(&sw, std::move(ti));
         retval->tokens.push_back(tii);
         retval->token_locations.push_back(old_loc);
       }
@@ -106,7 +105,7 @@ namespace silva {
         loc.column = 0;
       }
     }
-    return sc.add(std::move(retval));
+    return sw.add(std::move(retval));
   }
 
   string_or_view_t to_string_impl(const tokenization_t& self)

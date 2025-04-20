@@ -49,8 +49,8 @@ namespace silva {
     });
   }
 
-  parse_tree_nursery_t::parse_tree_nursery_t(syntax_ward_t& sc, tokenization_ptr_t tp)
-    : sc(sc), tp(tp), tcp(sc.token_ward().ptr())
+  parse_tree_nursery_t::parse_tree_nursery_t(syntax_ward_t& sw, tokenization_ptr_t tp)
+    : sw(sw), tp(tp), twp(sw.token_ward().ptr())
   {
   }
 

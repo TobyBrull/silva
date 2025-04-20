@@ -9,35 +9,35 @@
 namespace silva::test {
   TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
   {
-    syntax_ward_t sc;
-    const auto spr       = seed_seed_engine(sc);
-    const auto seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sc, "", string_t{seed_seed}));
-    const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sc, seed_tt));
-    const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(sc, seed_tt, sc.name_id_of("Seed")));
+    syntax_ward_t sw;
+    const auto spr       = seed_seed_engine(sw);
+    const auto seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw, "", string_t{seed_seed}));
+    const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sw, seed_tt));
+    const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(sw, seed_tt, sw.name_id_of("Seed")));
     CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
-    REQUIRE(sc.parse_trees.size() == 3);
-    CHECK(seed_pt_1->nodes == sc.parse_trees.front()->nodes);
+    REQUIRE(sw.parse_trees.size() == 3);
+    CHECK(seed_pt_1->nodes == sw.parse_trees.front()->nodes);
 
-    CHECK(spr->keyword_scopes[sc.name_id_of("Seed", "Rule")] == hashset_t<token_id_t>({}));
-    CHECK(spr->keyword_scopes[sc.name_id_of("Seed", "Axe")] ==
+    CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Rule")] == hashset_t<token_id_t>({}));
+    CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Axe")] ==
           hashset_t<token_id_t>({
-              *sc.token_id("=/"),
-              *sc.token_id("["),
-              *sc.token_id("]"),
-              *sc.token_id("-"),
-              *sc.token_id("="),
-              *sc.token_id("nest"),
-              *sc.token_id("ltr"),
-              *sc.token_id("rtl"),
-              *sc.token_id("atom_nest"),
-              *sc.token_id("prefix"),
-              *sc.token_id("prefix_nest"),
-              *sc.token_id("infix"),
-              *sc.token_id("infix_flat"),
-              *sc.token_id("ternary"),
-              *sc.token_id("postfix"),
-              *sc.token_id("postfix_nest"),
-              *sc.token_id("concat"),
+              *sw.token_id("=/"),
+              *sw.token_id("["),
+              *sw.token_id("]"),
+              *sw.token_id("-"),
+              *sw.token_id("="),
+              *sw.token_id("nest"),
+              *sw.token_id("ltr"),
+              *sw.token_id("rtl"),
+              *sw.token_id("atom_nest"),
+              *sw.token_id("prefix"),
+              *sw.token_id("prefix_nest"),
+              *sw.token_id("infix"),
+              *sw.token_id("infix_flat"),
+              *sw.token_id("ternary"),
+              *sw.token_id("postfix"),
+              *sw.token_id("postfix_nest"),
+              *sw.token_id("concat"),
           }));
   }
 
@@ -51,12 +51,12 @@ namespace silva::test {
       - Item = x | string | number
     ]
   )'";
-    syntax_ward_t sc;
-    const auto sf_seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sc, "", sf_text));
-    const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sc, sf_seed_tt));
-    const auto spr          = seed_seed_engine(sc);
+    syntax_ward_t sw;
+    const auto sf_seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw, "", sf_text));
+    const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sw, sf_seed_tt));
+    const auto spr          = seed_seed_engine(sw);
     const auto sf_seed_pt_2 =
-        SILVA_EXPECT_REQUIRE(spr->apply(sc, sf_seed_tt, sc.name_id_of("Seed")));
+        SILVA_EXPECT_REQUIRE(spr->apply(sw, sf_seed_tt, sw.name_id_of("Seed")));
     CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
     const std::string_view expected = R"(
@@ -108,15 +108,15 @@ namespace silva::test {
     CHECK(pt_str_1 == expected.substr(1));
     CHECK(pt_str_2 == expected.substr(1));
 
-    seed_engine_t se(sc.ptr());
+    seed_engine_t se(sw.ptr());
     SILVA_EXPECT_REQUIRE(se.add(sf_seed_pt_1->span()));
     REQUIRE(se.rule_exprs.size() == 4);
     using rfl::json::write;
-    const name_id_t fni_sf      = sc.name_id_of("SimpleFern");
-    const name_id_t fni_li      = sc.name_id_of(fni_sf, "LabeledItem");
-    const name_id_t fni_l       = sc.name_id_of(fni_sf, "Label");
-    const name_id_t fni_i       = sc.name_id_of(fni_sf, "Item");
-    const parse_tree_span_t pts = sc.parse_trees.front()->span();
+    const name_id_t fni_sf      = sw.name_id_of("SimpleFern");
+    const name_id_t fni_li      = sw.name_id_of(fni_sf, "LabeledItem");
+    const name_id_t fni_l       = sw.name_id_of(fni_sf, "Label");
+    const name_id_t fni_i       = sw.name_id_of(fni_sf, "Item");
+    const parse_tree_span_t pts = sw.parse_trees.front()->span();
     CHECK(se.rule_exprs.at(fni_sf) == pts.sub_tree_span_at(6));
     CHECK(se.rule_exprs.at(fni_li) == pts.sub_tree_span_at(19));
     CHECK(se.rule_exprs.at(fni_l) == pts.sub_tree_span_at(31));
@@ -128,8 +128,8 @@ namespace silva::test {
     CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(37)) == fni_sf);
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
-    const auto sf_tt       = SILVA_EXPECT_REQUIRE(tokenize(sc, "", sf_code));
-    const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sc, sf_tt, fni_sf));
+    const auto sf_tt       = SILVA_EXPECT_REQUIRE(tokenize(sw, "", sf_code));
+    const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sw, sf_tt, fni_sf));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.SimpleFern                                   [ 'abc' ... ; ]

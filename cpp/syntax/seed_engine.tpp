@@ -17,8 +17,8 @@ namespace silva::test {
       ]
     ]
   )'";
-    syntax_ward_t sc;
-    seed_engine_t se(sc.ptr());
+    syntax_ward_t sw;
+    seed_engine_t se(sw.ptr());
     auto ptp = SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
     const string_view_t expected_seed_pt = R"(
 [0]_.Seed                                         - Frog ... ] ]
@@ -81,8 +81,8 @@ namespace silva::test {
     keyword1 f
     keyword3 g h i
   )'";
-    auto frog_tt                         = SILVA_EXPECT_REQUIRE(tokenize(sc, "", frog_source_code));
-    auto frog_pt = SILVA_EXPECT_REQUIRE(se.apply(sc, frog_tt, sc.name_id_of("Frog")));
+    auto frog_tt                         = SILVA_EXPECT_REQUIRE(tokenize(sw, "", frog_source_code));
+    auto frog_pt = SILVA_EXPECT_REQUIRE(se.apply(sw, frog_tt, sw.name_id_of("Frog")));
     const string_view_t expected = R"(
 [0]_.Frog                                         keyword1 a ... h i
   [0]_.Frog.Rule                                  keyword1 a b c
@@ -120,16 +120,16 @@ namespace silva::test {
       - x = 'x' 'y' 'z' _.Foo ?
     ]
   )'";
-    syntax_ward_t sc;
-    seed_engine_t se(sc.ptr());
+    syntax_ward_t sw;
+    seed_engine_t se(sw.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
     SILVA_EXPECT_REQUIRE(se.add_complete_file("text2.seed", text2_seed));
 
     const string_view_t code     = R"'(
     a b c x y z a b c
   )'";
-    auto tt                      = SILVA_EXPECT_REQUIRE(tokenize(sc, "", code));
-    auto pt                      = SILVA_EXPECT_REQUIRE(se.apply(sc, tt, sc.name_id_of("Foo")));
+    auto tt                      = SILVA_EXPECT_REQUIRE(tokenize(sw, "", code));
+    auto pt                      = SILVA_EXPECT_REQUIRE(se.apply(sw, tt, sw.name_id_of("Foo")));
     const string_view_t expected = R"(
 [0]_.Foo                                          a b ... b c
   [0]_.Bar                                        x y ... b c

@@ -10,7 +10,7 @@ namespace silva {
 
   // Driver for a program in the Seed language.
   struct seed_engine_t {
-    syntax_ward_ptr_t scp;
+    syntax_ward_ptr_t swp;
 
     // For each rule name, gives the node-index of the expression describing that rule.
     hashmap_t<name_id_t, parse_tree_span_t> rule_exprs;

@@ -22,7 +22,7 @@ namespace silva::parse_axe {
     }
   };
 
-  expected_t<parse_axe_t> parse_axe_create(syntax_ward_ptr_t scp,
+  expected_t<parse_axe_t> parse_axe_create(syntax_ward_ptr_t swp,
                                            const name_id_t parse_axe_name,
                                            const vector_t<parse_axe_level_desc_t>& level_descs)
   {
@@ -65,7 +65,7 @@ namespace silva::parse_axe {
     }
 
     parse_axe_t retval{
-        .scp  = scp,
+        .swp  = swp,
         .name = parse_axe_name,
     };
 
@@ -86,7 +86,7 @@ namespace silva::parse_axe {
                      token_id);
         result.prefix = result_oper_t<oper_prefix_t>{
             .oper       = variant_get<oper_prefix_t>(oper),
-            .name       = retval.scp->name_id(level_name, token_id),
+            .name       = retval.swp->name_id(level_name, token_id),
             .precedence = precedence,
         };
       }
@@ -101,7 +101,7 @@ namespace silva::parse_axe {
                      token_id);
         result.regular = result_oper_t<oper_regular_t>{
             .oper       = variant_get<oper_regular_t>(oper),
-            .name       = retval.scp->name_id(level_name, token_id),
+            .name       = retval.swp->name_id(level_name, token_id),
             .precedence = precedence,
         };
       }
@@ -133,7 +133,7 @@ namespace silva::parse_axe {
           .assoc       = level_desc.assoc,
       };
       for (const auto& oper: level_desc.opers) {
-        const name_id_t full_name = scp->name_id(parse_axe_name, level_desc.base_name);
+        const name_id_t full_name = swp->name_id(parse_axe_name, level_desc.base_name);
         if (const auto* x = std::get_if<prefix_t>(&oper); x) {
           SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, precedence));
         }
@@ -156,7 +156,7 @@ namespace silva::parse_axe {
                          "Trying to use 'concat' level twice");
             retval.concat_result.emplace(result_oper_t<oper_regular_t>{
                 .oper       = *x,
-                .name       = retval.scp->name_id(full_name, x->token_id),
+                .name       = retval.swp->name_id(full_name, x->token_id),
                 .precedence = used_prec,
             });
           }
@@ -189,7 +189,7 @@ namespace silva::parse_axe {
 
     const parse_axe_t& parse_axe;
     parse_tree_nursery_t& nursery;
-    token_ward_ptr_t tcp = nursery.tcp;
+    token_ward_ptr_t twp = nursery.twp;
     const name_id_t atom_name_id;
     delegate_t<expected_t<parse_tree_node_t>()> atom;
 
@@ -484,7 +484,7 @@ namespace silva::parse_axe {
             SILVA_EXPECT_PARSE(parse_axe.name,
                                pa_result.prefix.has_value(),
                                "found non-prefix operator {} when expecting next atom",
-                               tcp->token_id_wrap(nursery.token_id_by()));
+                               twp->token_id_wrap(nursery.token_id_by()));
             const auto& res = pa_result.prefix.value();
             SILVA_EXPECT_FWD(stack_pair.stack_pop(res.precedence));
 

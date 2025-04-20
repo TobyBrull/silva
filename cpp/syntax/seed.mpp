@@ -12,17 +12,17 @@ namespace silva {
     SILVA_EXPECT(2 <= m && m <= 3, MINOR, "Usage: ... <seed-file> [<target-file>]");
 
     expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_ward_t sc;
-    auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(sc, cmdline_args[1]));
-    auto seed_pt = SILVA_EXPECT_FWD(seed_parse(sc, std::move(seed_tt)));
-    seed_engine_t se(sc.ptr());
+    syntax_ward_t sw;
+    auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(sw, cmdline_args[1]));
+    auto seed_pt = SILVA_EXPECT_FWD(seed_parse(sw, std::move(seed_tt)));
+    seed_engine_t se(sw.ptr());
     SILVA_EXPECT_FWD(se.add(seed_pt->span()));
     if (m == 2) {
       fmt::print("{}\n", SILVA_EXPECT_FWD(seed_pt->span().to_string()));
     }
     else if (m == 3) {
-      auto tgt_tt = SILVA_EXPECT_FWD(tokenize_load(sc, cmdline_args[2]));
-      auto tgt_pt = SILVA_EXPECT_FWD(se.apply(sc, std::move(tgt_tt), sc.name_id_of("Test")));
+      auto tgt_tt = SILVA_EXPECT_FWD(tokenize_load(sw, cmdline_args[2]));
+      auto tgt_pt = SILVA_EXPECT_FWD(se.apply(sw, std::move(tgt_tt), sw.name_id_of("Test")));
       fmt::print("{}\n", SILVA_EXPECT_FWD(tgt_pt->span().to_string()));
     }
     return {};

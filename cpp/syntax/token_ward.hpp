@@ -80,11 +80,11 @@ namespace silva {
   using token_ward_ptr_t = ptr_t<token_ward_t>;
 
   struct name_id_style_t {
-    token_ward_ptr_t tcp;
-    token_id_t root      = *tcp->token_id("_");
-    token_id_t current   = *tcp->token_id("x");
-    token_id_t parent    = *tcp->token_id("p");
-    token_id_t separator = *tcp->token_id(".");
+    token_ward_ptr_t twp;
+    token_id_t root      = *twp->token_id("_");
+    token_id_t current   = *twp->token_id("x");
+    token_id_t parent    = *twp->token_id("p");
+    token_id_t separator = *twp->token_id(".");
 
     name_id_t from_token_span(name_id_t current, span_t<const token_id_t>) const;
 
@@ -94,14 +94,14 @@ namespace silva {
   };
 
   struct token_id_wrap_t {
-    token_ward_ptr_t tcp;
+    token_ward_ptr_t twp;
     token_id_t token_id = token_id_none;
 
     friend string_or_view_t to_string_impl(const token_id_wrap_t&);
   };
 
   struct name_id_wrap_t {
-    token_ward_ptr_t tcp;
+    token_ward_ptr_t twp;
     name_id_t name_id = name_id_root;
 
     friend string_or_view_t to_string_impl(const name_id_wrap_t&);
