@@ -10,10 +10,10 @@ namespace silva::test {
   TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
   {
     syntax_ward_t sw;
-    const auto spr       = seed_seed_engine(sw);
+    const auto spr       = seed_seed_engine(sw.ptr());
     const auto seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_seed}));
-    const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sw, seed_tt));
-    const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(sw, seed_tt, sw.name_id_of("Seed")));
+    const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
+    const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, sw.name_id_of("Seed")));
     CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
     REQUIRE(sw.parse_trees.size() == 3);
     CHECK(seed_pt_1->nodes == sw.parse_trees.front()->nodes);
@@ -53,10 +53,9 @@ namespace silva::test {
   )'";
     syntax_ward_t sw;
     const auto sf_seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", sf_text));
-    const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sw, sf_seed_tt));
-    const auto spr          = seed_seed_engine(sw);
-    const auto sf_seed_pt_2 =
-        SILVA_EXPECT_REQUIRE(spr->apply(sw, sf_seed_tt, sw.name_id_of("Seed")));
+    const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(sf_seed_tt));
+    const auto spr          = seed_seed_engine(sw.ptr());
+    const auto sf_seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(sf_seed_tt, sw.name_id_of("Seed")));
     CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
     const std::string_view expected = R"(
@@ -129,7 +128,7 @@ namespace silva::test {
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
     const auto sf_tt       = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", sf_code));
-    const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sw, sf_tt, fni_sf));
+    const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sf_tt, fni_sf));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.SimpleFern                                   [ 'abc' ... ; ]

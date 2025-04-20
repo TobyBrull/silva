@@ -361,16 +361,16 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> seed_parse(syntax_ward_t& sw, tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> seed_parse(tokenization_ptr_t tp)
   {
-    impl::seed_parse_tree_nursery_t nursery(std::move(tp));
+    impl::seed_parse_tree_nursery_t nursery(tp);
     SILVA_EXPECT_FWD(nursery.seed());
-    return sw.add(std::move(nursery).finish());
+    return tp->swp->add(std::move(nursery).finish());
   }
 
-  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_ward_t& sw)
+  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_ward_ptr_t swp)
   {
-    auto retval = std::make_unique<seed_engine_t>(sw.ptr());
+    auto retval = std::make_unique<seed_engine_t>(std::move(swp));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));
     return retval;
   }

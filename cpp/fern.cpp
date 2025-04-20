@@ -11,9 +11,9 @@ namespace silva {
   using enum token_category_t;
   using enum error_level_t;
 
-  unique_ptr_t<seed_engine_t> fern_seed_engine(syntax_ward_t& sw)
+  unique_ptr_t<seed_engine_t> fern_seed_engine(syntax_ward_ptr_t swp)
   {
-    auto retval = std::make_unique<seed_engine_t>(sw.ptr());
+    auto retval = std::make_unique<seed_engine_t>(std::move(swp));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern_seed));
     return retval;
   }
@@ -120,7 +120,7 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> fern_parse(syntax_ward_t& sw, tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> fern_parse(tokenization_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
     impl::fern_parse_tree_nursery_t nursery(tp);
@@ -128,7 +128,7 @@ namespace silva {
     SILVA_EXPECT(ptn.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.subtree_size == nursery.tree.size(), ASSERT);
     SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
-    return sw.add(std::move(nursery).finish());
+    return tp->swp->add(std::move(nursery).finish());
   }
 
   // Fern parse_tree output functions /////////////////////////////////////////////////////////////

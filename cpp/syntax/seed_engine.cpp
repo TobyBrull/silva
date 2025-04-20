@@ -400,8 +400,8 @@ namespace silva {
                                                                 string_view_t text)
   {
     auto tt  = SILVA_EXPECT_FWD(tokenize(swp, std::move(filepath), std::move(text)));
-    auto ptp = SILVA_EXPECT_FWD(seed_parse(*swp, std::move(tt)));
-    // fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_string()));
+    auto ptp = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
+    // fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
     SILVA_EXPECT_FWD(add(ptp->span()));
     return ptp;
   }
@@ -823,15 +823,14 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> seed_engine_t::apply(syntax_ward_t& sw,
-                                                    tokenization_ptr_t tokenization,
+  expected_t<parse_tree_ptr_t> seed_engine_t::apply(tokenization_ptr_t tp,
                                                     const name_id_t goal_rule_name) const
   {
-    impl::seed_engine_nursery_t nursery(std::move(tokenization), this);
+    impl::seed_engine_nursery_t nursery(tp, this);
     SILVA_EXPECT_FWD(nursery.check());
     const auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
     SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
-    return sw.add(std::move(nursery).finish());
+    return tp->swp->add(std::move(nursery).finish());
   }
 }
