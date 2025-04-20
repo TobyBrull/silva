@@ -10,7 +10,7 @@ namespace silva {
   tokenization_t tokenization_t::copy() const
   {
     return tokenization_t{
-        .context         = context,
+        .swp             = swp,
         .filepath        = filepath,
         .token_locations = token_locations,
         .tokens          = tokens,
@@ -19,7 +19,7 @@ namespace silva {
 
   const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
   {
-    return &context->token_infos[tokens[token_index]];
+    return &swp->token_infos[tokens[token_index]];
   }
 
   token_id_t token_ward_get_token_id_from_info(syntax_ward_t* tw, const token_info_t& token_info)
@@ -83,7 +83,7 @@ namespace silva {
   {
     auto retval        = std::make_unique<tokenization_t>();
     retval->filepath   = std::move(filepath);
-    retval->context    = sw.ptr();
+    retval->swp        = sw.ptr();
     index_t text_index = 0;
     tokenization_t::location_t loc;
     while (text_index < text.size()) {
@@ -113,7 +113,7 @@ namespace silva {
     string_t retval;
     for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
       const token_id_t tii      = self.tokens[token_index];
-      const token_info_t* info  = &self.context->token_infos[tii];
+      const token_info_t* info  = &self.swp->token_infos[tii];
       const auto [line, column] = self.token_locations[token_index];
       retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }

@@ -112,7 +112,7 @@ namespace silva {
       parse_axe::parse_axe_t seed_parse_axe;
 
       seed_parse_tree_nursery_t(tokenization_ptr_t tp)
-        : parse_tree_nursery_t(tp), seed_parse_axe(create_parse_axe_expr(tp->context))
+        : parse_tree_nursery_t(tp), seed_parse_axe(create_parse_axe_expr(tp->swp))
       {
       }
 

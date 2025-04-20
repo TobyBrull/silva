@@ -49,7 +49,7 @@ namespace silva {
     });
   }
 
-  parse_tree_nursery_t::parse_tree_nursery_t(tokenization_ptr_t tp) : swp(tp->context), tp(tp) {}
+  parse_tree_nursery_t::parse_tree_nursery_t(tokenization_ptr_t tp) : swp(tp->swp), tp(tp) {}
 
   // Token helper functions.
 
@@ -66,7 +66,7 @@ namespace silva {
   const token_info_t* parse_tree_nursery_t::token_data_by(const index_t token_index_offset) const
   {
     const token_id_t token_id_ = token_id_by(token_index_offset);
-    return &(tp->context->token_infos[token_id_]);
+    return &(tp->swp->token_infos[token_id_]);
   }
 
   token_position_t parse_tree_nursery_t::token_position_by(const index_t token_index_offset) const

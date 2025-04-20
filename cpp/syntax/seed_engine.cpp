@@ -460,7 +460,7 @@ namespace silva {
 
       expected_t<void> check()
       {
-        SILVA_EXPECT(swp == t_tokenization.context,
+        SILVA_EXPECT(swp == t_tokenization.swp,
                      MAJOR,
                      "Seed and target parse-trees/tokenizations must be in same token_ward_t");
         return {};
