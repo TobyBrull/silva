@@ -65,6 +65,8 @@ namespace silva {
       }                                                                   \
       using enum error_level_t;                                           \
       return std::unexpected(silva::impl::silva_expect_fwd(               \
+          __FILE__,                                                       \
+          __LINE__,                                                       \
           std::move(__silva_result).error() __VA_OPT__(, ) __VA_ARGS__)); \
     }                                                                     \
     std::move(__silva_result).value();                                    \
@@ -115,12 +117,12 @@ namespace silva {
     std::move(__silva_result);                                              \
   })
 
-#define SILVA_EXPECT_ASSERT(x)                                         \
-  ({                                                                   \
-    auto result = (x);                                                 \
-    static_assert(is_expected_t<decltype(result)>::value);             \
-    SILVA_ASSERT(result, "Unexpected: {}", to_string(result.error())); \
-    std::move(result).value();                                         \
+#define SILVA_EXPECT_ASSERT(x)                                          \
+  ({                                                                    \
+    auto result = (x);                                                  \
+    static_assert(is_expected_t<decltype(result)>::value);              \
+    SILVA_ASSERT(result, "Unexpected:\n{}", to_string(result.error())); \
+    std::move(result).value();                                          \
   })
 
 // Semantics:
@@ -163,23 +165,35 @@ namespace silva::impl {
   }
 
   template<typename... Args>
-  error_t silva_expect_fwd(error_t error, const error_level_t error_level, Args&&... args)
+  error_t silva_expect_fwd(char const* file,
+                           const long line,
+                           error_t error,
+                           const error_level_t error_level,
+                           Args&&... args)
   {
     const error_level_t new_error_level = std::max(error.level, error_level);
+    std::array<error_t, 1> error_array{std::move(error)};
     if constexpr (sizeof...(Args) >= 1) {
-      std::array<error_t, 1> error_array{std::move(error)};
       error = make_error(new_error_level, error_array, std::forward<Args>(args)...);
     }
     else {
-      error.level = new_error_level;
+      error = make_error(new_error_level,
+                         error_array,
+                         "unexpected forwareded at [{}:{}]",
+                         string_view_t{file},
+                         line);
     }
     return std::move(error);
   }
 
   template<typename... Args>
-  error_t silva_expect_fwd(error_t error, Args&&... args)
+  error_t silva_expect_fwd(char const* file, const long line, error_t error, Args&&... args)
   {
-    return silva_expect_fwd(std::move(error), error_level_t::NO_ERROR, std::forward<Args>(args)...);
+    return silva_expect_fwd(file,
+                            line,
+                            std::move(error),
+                            error_level_t::NO_ERROR,
+                            std::forward<Args>(args)...);
   }
 
   template<typename... Args>
