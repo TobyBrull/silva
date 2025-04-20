@@ -2,6 +2,8 @@
 
 * review all error messages
 
+* There should be only one way to create a parse-axe, and that's via a _.Seed.Axe parse_tree_span_t
+
 ## Long Term
 
 * Seed

@@ -34,11 +34,11 @@ namespace silva::parse_axe {
         if (level_desc.assoc == NEST) {
           SILVA_EXPECT(may_be_nest,
                        MINOR,
-                       "the 'nest' level {} must occur before all non-'nest' levels",
+                       "{} the 'nest' levels must occur before all non-'nest' levels",
                        level_desc.pts);
           SILVA_EXPECT(variant_holds_t<atom_nest_t>{}(oper),
                        MINOR,
-                       "the 'nest' level {} only allows operators of type 'atom_nest'",
+                       "{} a 'nest' level only allows operators of type 'atom_nest'",
                        level_desc.pts);
         }
         else {
@@ -46,16 +46,16 @@ namespace silva::parse_axe {
           if (level_desc.assoc == LEFT_TO_RIGHT) {
             SILVA_EXPECT((variant_holds_t<postfix_t, postfix_nest_t, infix_t, ternary_t>{}(oper)),
                          MINOR,
-                         "LEFT_TO_RIGHT level only allows operators "
-                         "of type postfix_t, postfix_nest_t, "
-                         "infix_t, and ternary_t");
+                         "{} 'ltr' levels require operators of type [ postfix postfix_nest_t "
+                         "infix_t ternary_t ]",
+                         level_desc.pts);
           }
           else if (level_desc.assoc == RIGHT_TO_LEFT) {
             SILVA_EXPECT((variant_holds_t<prefix_t, prefix_nest_t, infix_t, ternary_t>{}(oper)),
                          MINOR,
-                         "RIGHT_TO_LEFT level only allows operators "
-                         "of type prefix_t, prefix_nest_t, "
-                         "infix_t, and ternary_t");
+                         "{} 'rtl' levels require operators of type [ prefix_t prefix_nest_t "
+                         "infix_t ternary_t ]",
+                         level_desc.pts);
           }
           else {
             SILVA_EXPECT(false, ASSERT, "Unknown level {}", std::to_underlying(level_desc.assoc));
@@ -69,21 +69,24 @@ namespace silva::parse_axe {
         .name = parse_axe_name,
     };
 
-    const auto register_op = [&retval](const token_id_t token_id,
-                                       const oper_any_t oper,
-                                       const name_id_t level_name,
-                                       const precedence_t precedence) -> expected_t<void> {
+    const auto register_op = [&retval, swp](const token_id_t token_id,
+                                            const oper_any_t oper,
+                                            const name_id_t level_name,
+                                            const precedence_t precedence,
+                                            const parse_tree_span_t& pts) -> expected_t<void> {
       auto& result = retval.results[token_id];
 
       if (variant_holds<oper_prefix_t>(oper)) {
         SILVA_EXPECT(!result.prefix.has_value(),
                      MINOR,
-                     "Trying to use token {} used twice as prefix operator",
-                     token_id);
+                     "{}: {} has been used as prefix-style operator before",
+                     pts,
+                     swp->token_id_wrap(token_id));
         SILVA_EXPECT(!result.is_right_bracket,
                      MINOR,
-                     "Trying to use token {} as right-bracket and prefix",
-                     token_id);
+                     "{}: {} has been used as right-bracket operator before",
+                     pts,
+                     swp->token_id_wrap(token_id));
         result.prefix = result_oper_t<oper_prefix_t>{
             .oper       = variant_get<oper_prefix_t>(oper),
             .name       = retval.swp->name_id(level_name, token_id),
@@ -93,12 +96,14 @@ namespace silva::parse_axe {
       else if (variant_holds<oper_regular_t>(oper)) {
         SILVA_EXPECT(!result.regular.has_value(),
                      MINOR,
-                     "Trying to use token {} used twice as regular operator",
-                     token_id);
+                     "{}: {} has been used as regular-style operator before",
+                     pts,
+                     swp->token_id_wrap(token_id));
         SILVA_EXPECT(!result.is_right_bracket,
                      MINOR,
-                     "Trying to use token {} as right-bracket and prefix",
-                     token_id);
+                     "{}: {} has been used as right-bracket operator before",
+                     pts,
+                     swp->token_id_wrap(token_id));
         result.regular = result_oper_t<oper_regular_t>{
             .oper       = variant_get<oper_regular_t>(oper),
             .name       = retval.swp->name_id(level_name, token_id),
@@ -111,16 +116,19 @@ namespace silva::parse_axe {
       return {};
     };
 
-    const auto register_right_op = [&](const token_id_t token_id) -> expected_t<void> {
+    const auto register_right_op = [&](const token_id_t token_id,
+                                       const parse_tree_span_t& pts) -> expected_t<void> {
       auto& result = retval.results[token_id];
       SILVA_EXPECT(!result.prefix.has_value(),
                    MINOR,
-                   "Trying to use token {} as right-bracket and prefix",
-                   token_id);
+                   "{}: {} has been used as prefix-style operator before",
+                   pts,
+                   swp->token_id_wrap(token_id));
       SILVA_EXPECT(!result.regular.has_value(),
                    MINOR,
-                   "Trying to use token {} as right-bracket and regular",
-                   token_id);
+                   "{}: {} has been used as right-bracket operator before",
+                   pts,
+                   swp->token_id_wrap(token_id));
       result.is_right_bracket = true;
       return {};
     };
@@ -128,22 +136,23 @@ namespace silva::parse_axe {
     for (index_t i = 0; i < level_descs.size(); ++i) {
       const auto& level_desc          = level_descs[i];
       const level_index_t level_index = level_descs.size() - i;
+      const name_id_t full_name       = swp->name_id(parse_axe_name, level_desc.base_name);
       const precedence_t precedence{
           .level_index = level_index,
           .assoc       = level_desc.assoc,
       };
+      const parse_tree_span_t& pts = level_desc.pts;
       for (const auto& oper: level_desc.opers) {
-        const name_id_t full_name = swp->name_id(parse_axe_name, level_desc.base_name);
         if (const auto* x = std::get_if<prefix_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, precedence));
+          SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, precedence, pts));
         }
         else if (const auto* x = std::get_if<prefix_nest_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence));
-          SILVA_EXPECT_FWD(register_right_op(x->right_bracket));
+          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence, pts));
+          SILVA_EXPECT_FWD(register_right_op(x->right_bracket, pts));
         }
         else if (const auto* x = std::get_if<atom_nest_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence));
-          SILVA_EXPECT_FWD(register_right_op(x->right_bracket));
+          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence, pts));
+          SILVA_EXPECT_FWD(register_right_op(x->right_bracket, pts));
         }
         else if (const auto* x = std::get_if<infix_t>(&oper); x) {
           precedence_t used_prec = precedence;
@@ -161,19 +170,19 @@ namespace silva::parse_axe {
             });
           }
           else {
-            SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, used_prec));
+            SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, used_prec, pts));
           }
         }
         else if (const auto* x = std::get_if<ternary_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->first, *x, full_name, precedence));
-          SILVA_EXPECT_FWD(register_right_op(x->second));
+          SILVA_EXPECT_FWD(register_op(x->first, *x, full_name, precedence, pts));
+          SILVA_EXPECT_FWD(register_right_op(x->second, pts));
         }
         else if (const auto* x = std::get_if<postfix_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, precedence));
+          SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, precedence, pts));
         }
         else if (const auto* x = std::get_if<postfix_nest_t>(&oper); x) {
-          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence));
-          SILVA_EXPECT_FWD(register_right_op(x->right_bracket));
+          SILVA_EXPECT_FWD(register_op(x->left_bracket, *x, full_name, precedence, pts));
+          SILVA_EXPECT_FWD(register_right_op(x->right_bracket, pts));
         }
         else {
           SILVA_EXPECT(false, MAJOR, "Unexpected variant: {}", oper.index());
