@@ -4,7 +4,7 @@
 
 namespace silva {
   struct tokenization_t : public menhir_t {
-    token_ward_ptr_t context;
+    syntax_ward_ptr_t context;
 
     filesystem_path_t filepath;
 

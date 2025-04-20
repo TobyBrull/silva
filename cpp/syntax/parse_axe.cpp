@@ -189,7 +189,7 @@ namespace silva::parse_axe {
 
     const parse_axe_t& parse_axe;
     parse_tree_nursery_t& nursery;
-    token_ward_ptr_t twp = nursery.twp;
+    syntax_ward_ptr_t twp = nursery.twp;
     const name_id_t atom_name_id;
     delegate_t<expected_t<parse_tree_node_t>()> atom;
 

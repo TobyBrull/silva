@@ -18,7 +18,7 @@ namespace silva {
   struct seed_engine_create_nursery_t {
     seed_engine_t* se          = nullptr;
     syntax_ward_ptr_t swp      = se->swp;
-    token_ward_ptr_t twp       = se->swp->token_ward().ptr();
+    syntax_ward_ptr_t twp      = se->swp;
     const name_id_style_t& nis = twp->default_name_id_style();
 
     const tokenization_t& s_tokenization;
@@ -411,7 +411,7 @@ namespace silva {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* se    = nullptr;
       syntax_ward_ptr_t swp      = se->swp;
-      token_ward_ptr_t twp       = se->swp->token_ward().ptr();
+      syntax_ward_ptr_t twp      = se->swp;
       const name_id_style_t& nis = twp->default_name_id_style();
 
       const tokenization_t& t_tokenization = *tp;

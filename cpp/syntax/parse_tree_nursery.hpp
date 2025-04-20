@@ -23,7 +23,7 @@ namespace silva {
     : public tree_nursery_t<parse_tree_node_t, parse_tree_nursery_state_t, parse_tree_nursery_t> {
     syntax_ward_t& sw;
     tokenization_ptr_t tp;
-    token_ward_ptr_t twp;
+    syntax_ward_ptr_t twp;
     index_t token_index = 0;
 
     parse_tree_nursery_t(syntax_ward_t&, tokenization_ptr_t);

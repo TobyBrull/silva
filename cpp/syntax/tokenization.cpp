@@ -22,7 +22,7 @@ namespace silva {
     return &context->token_infos[tokens[token_index]];
   }
 
-  token_id_t token_ward_get_token_id_from_info(token_ward_t* tw, const token_info_t& token_info)
+  token_id_t token_ward_get_token_id_from_info(syntax_ward_t* tw, const token_info_t& token_info)
   {
     const auto it = tw->token_lookup.find(token_info.str);
     if (it != tw->token_lookup.end()) {
@@ -83,7 +83,7 @@ namespace silva {
   {
     auto retval        = std::make_unique<tokenization_t>();
     retval->filepath   = std::move(filepath);
-    retval->context    = sw.token_ward().ptr();
+    retval->context    = sw.ptr();
     index_t text_index = 0;
     tokenization_t::location_t loc;
     while (text_index < text.size()) {

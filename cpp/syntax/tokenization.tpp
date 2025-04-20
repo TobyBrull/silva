@@ -48,7 +48,7 @@ namespace silva::test {
 
       {
         const name_id_style_t ts{
-            .twp       = sw.token_ward().ptr(),
+            .twp       = sw.ptr(),
             .root      = *sw.token_id("cpp"),
             .current   = *sw.token_id("this"),
             .parent    = *sw.token_id("super"),

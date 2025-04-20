@@ -138,7 +138,7 @@ namespace silva {
 
   expected_t<string_t> fern_to_string(const parse_tree_t* pt, const index_t start_node)
   {
-    token_ward_ptr_t twp         = pt->tp->context;
+    syntax_ward_ptr_t twp        = pt->tp->context;
     const name_id_t fni_fern     = twp->name_id_of("Fern");
     const name_id_t fni_lbl_item = twp->name_id_of(fni_fern, "LabeledItem");
     const name_id_t fni_label    = twp->name_id_of(fni_fern, "Label");
@@ -192,7 +192,7 @@ namespace silva {
 
   expected_t<string_t> fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
-    token_ward_ptr_t twp         = pt->tp->context;
+    syntax_ward_ptr_t twp        = pt->tp->context;
     const name_id_t fni_fern     = twp->name_id_of("Fern");
     const name_id_t fni_lbl_item = twp->name_id_of(fni_fern, "LabeledItem");
     const name_id_t fni_label    = twp->name_id_of(fni_fern, "Label");
@@ -390,7 +390,7 @@ namespace silva {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
-      token_ward_ptr_t twp           = parse_tree->tp->context;
+      syntax_ward_ptr_t twp          = parse_tree->tp->context;
 
       token_id_t tt_none  = *twp->token_id("none");
       token_id_t tt_true  = *twp->token_id("true");
