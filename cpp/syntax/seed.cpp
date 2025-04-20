@@ -111,8 +111,8 @@ namespace silva {
 
       parse_axe::parse_axe_t seed_parse_axe;
 
-      seed_parse_tree_nursery_t(syntax_ward_t& sw, tokenization_ptr_t tp)
-        : parse_tree_nursery_t(sw, tp), seed_parse_axe(create_parse_axe_expr(sw.ptr()))
+      seed_parse_tree_nursery_t(tokenization_ptr_t tp)
+        : parse_tree_nursery_t(tp), seed_parse_axe(create_parse_axe_expr(tp->context))
       {
       }
 
@@ -363,7 +363,7 @@ namespace silva {
 
   expected_t<parse_tree_ptr_t> seed_parse(syntax_ward_t& sw, tokenization_ptr_t tp)
   {
-    impl::seed_parse_tree_nursery_t nursery(sw, std::move(tp));
+    impl::seed_parse_tree_nursery_t nursery(std::move(tp));
     SILVA_EXPECT_FWD(nursery.seed());
     return sw.add(std::move(nursery).finish());
   }

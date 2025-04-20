@@ -32,10 +32,7 @@ namespace silva {
       name_id_t fni_label    = swp->name_id_of(fni_fern, "Label");
       name_id_t fni_value    = swp->name_id_of(fni_fern, "Value");
 
-      fern_parse_tree_nursery_t(syntax_ward_t& sw, tokenization_ptr_t tp)
-        : parse_tree_nursery_t(sw, tp)
-      {
-      }
+      fern_parse_tree_nursery_t(tokenization_ptr_t tp) : parse_tree_nursery_t(tp) {}
 
       expected_t<parse_tree_node_t> value()
       {
@@ -126,7 +123,7 @@ namespace silva {
   expected_t<parse_tree_ptr_t> fern_parse(syntax_ward_t& sw, tokenization_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
-    impl::fern_parse_tree_nursery_t nursery(sw, tp);
+    impl::fern_parse_tree_nursery_t nursery(tp);
     const parse_tree_node_t ptn = SILVA_EXPECT_FWD(nursery.fern());
     SILVA_EXPECT(ptn.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.subtree_size == nursery.tree.size(), ASSERT);

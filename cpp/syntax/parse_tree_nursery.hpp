@@ -21,12 +21,11 @@ namespace silva {
 
   struct parse_tree_nursery_t
     : public tree_nursery_t<parse_tree_node_t, parse_tree_nursery_state_t, parse_tree_nursery_t> {
-    syntax_ward_t& sw;
-    tokenization_ptr_t tp;
     syntax_ward_ptr_t swp;
+    tokenization_ptr_t tp;
     index_t token_index = 0;
 
-    parse_tree_nursery_t(syntax_ward_t&, tokenization_ptr_t);
+    parse_tree_nursery_t(tokenization_ptr_t);
 
     void on_get_state(parse_tree_nursery_state_t&) const;
     void on_set_state(const parse_tree_nursery_state_t&);

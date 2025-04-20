@@ -50,7 +50,7 @@ namespace silva::test {
       const parse_axe_t& parse_axe;
 
       test_nursery_t(const parse_axe_t& parse_axe, tokenization_ptr_t tp)
-        : parse_tree_nursery_t(*parse_axe.swp, tp), parse_axe(parse_axe)
+        : parse_tree_nursery_t(tp), parse_axe(parse_axe)
       {
       }
 
@@ -414,7 +414,7 @@ namespace silva::test {
       const parse_axe_t& parse_axe;
 
       test_nursery_t(const parse_axe_t& parse_axe, tokenization_ptr_t tp)
-        : parse_tree_nursery_t(*parse_axe.swp, tp), parse_axe(parse_axe)
+        : parse_tree_nursery_t(tp), parse_axe(parse_axe)
       {
       }
 

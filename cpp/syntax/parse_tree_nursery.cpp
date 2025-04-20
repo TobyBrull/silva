@@ -49,10 +49,7 @@ namespace silva {
     });
   }
 
-  parse_tree_nursery_t::parse_tree_nursery_t(syntax_ward_t& sw, tokenization_ptr_t tp)
-    : sw(sw), tp(tp), swp(sw.ptr())
-  {
-  }
+  parse_tree_nursery_t::parse_tree_nursery_t(tokenization_ptr_t tp) : swp(tp->context), tp(tp) {}
 
   // Token helper functions.
 
