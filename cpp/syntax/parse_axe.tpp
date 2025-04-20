@@ -57,7 +57,7 @@ namespace silva::test {
       expected_t<parse_tree_node_t> atom()
       {
         auto ss_rule = stake();
-        ss_rule.create_node(twp->name_id_of("test", "atom"));
+        ss_rule.create_node(swp->name_id_of("test", "atom"));
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
         SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
                          token_data_by()->category == token_category_t::IDENTIFIER,
@@ -70,7 +70,7 @@ namespace silva::test {
       {
         using dg_t = delegate_t<expected_t<parse_tree_node_t>()>;
         auto dg    = dg_t::make<&test_nursery_t::atom>(this);
-        return parse_axe.apply(*this, twp->name_id_of("atom"), dg);
+        return parse_axe.apply(*this, swp->name_id_of("atom"), dg);
       }
     };
 
@@ -421,7 +421,7 @@ namespace silva::test {
       expected_t<parse_tree_node_t> atom()
       {
         auto ss_rule = stake();
-        ss_rule.create_node(twp->name_id_of("test", "atom"));
+        ss_rule.create_node(swp->name_id_of("test", "atom"));
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
         if (token_data_by()->category == token_category_t::NUMBER) {
           SILVA_EXPECT(num_tokens_left() >= 2 &&
@@ -440,7 +440,7 @@ namespace silva::test {
       {
         using dg_t = delegate_t<expected_t<parse_tree_node_t>()>;
         auto dg    = dg_t::make<&test_nursery_t::atom>(this);
-        return parse_axe.apply(*this, twp->name_id_of("atom"), dg);
+        return parse_axe.apply(*this, swp->name_id_of("atom"), dg);
       }
     };
 

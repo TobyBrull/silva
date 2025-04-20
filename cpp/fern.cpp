@@ -20,17 +20,17 @@ namespace silva {
 
   namespace impl {
     struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
-      token_id_t tt_brkt_open  = *twp->token_id("[");
-      token_id_t tt_brkt_close = *twp->token_id("]");
-      token_id_t tt_colon      = *twp->token_id(":");
-      token_id_t tt_none       = *twp->token_id("none");
-      token_id_t tt_true       = *twp->token_id("true");
-      token_id_t tt_false      = *twp->token_id("false");
+      token_id_t tt_brkt_open  = *swp->token_id("[");
+      token_id_t tt_brkt_close = *swp->token_id("]");
+      token_id_t tt_colon      = *swp->token_id(":");
+      token_id_t tt_none       = *swp->token_id("none");
+      token_id_t tt_true       = *swp->token_id("true");
+      token_id_t tt_false      = *swp->token_id("false");
 
-      name_id_t fni_fern     = twp->name_id_of("Fern");
-      name_id_t fni_lbl_item = twp->name_id_of(fni_fern, "LabeledItem");
-      name_id_t fni_label    = twp->name_id_of(fni_fern, "Label");
-      name_id_t fni_value    = twp->name_id_of(fni_fern, "Value");
+      name_id_t fni_fern     = swp->name_id_of("Fern");
+      name_id_t fni_lbl_item = swp->name_id_of(fni_fern, "LabeledItem");
+      name_id_t fni_label    = swp->name_id_of(fni_fern, "Label");
+      name_id_t fni_value    = swp->name_id_of(fni_fern, "Value");
 
       fern_parse_tree_nursery_t(syntax_ward_t& sw, tokenization_ptr_t tp)
         : parse_tree_nursery_t(sw, tp)
@@ -47,7 +47,7 @@ namespace silva {
                                 token_id_by() == tt_false || token_data_by()->category == STRING ||
                                 token_data_by()->category == NUMBER),
                            "unexpected {}",
-                           twp->token_id_wrap(token_id_by()));
+                           swp->token_id_wrap(token_id_by()));
         token_index += 1;
         return ss_rule.commit();
       }
@@ -61,7 +61,7 @@ namespace silva {
             num_tokens_left() >= 1 &&
                 (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
             "expected string or identifier, found {}",
-            twp->token_id_wrap(token_id_by()));
+            swp->token_id_wrap(token_id_by()));
         token_index += 1;
         return ss_rule.commit();
       }
@@ -98,7 +98,7 @@ namespace silva {
                                    .finish(MINOR,
                                            "[{}] {}",
                                            token_position_at(ss_rule.orig_state.token_index),
-                                           twp->name_id_wrap(fni_lbl_item)));
+                                           swp->name_id_wrap(fni_lbl_item)));
       }
 
       expected_t<parse_tree_node_t> fern()
@@ -108,7 +108,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(fni_fern,
                            num_tokens_left() >= 1 && token_id_by() == tt_brkt_open,
                            "expected {}",
-                           twp->token_id_wrap(tt_brkt_open));
+                           swp->token_id_wrap(tt_brkt_open));
         token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() != tt_brkt_close) {
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_fern, labeled_item()));
@@ -116,7 +116,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(fni_fern,
                            num_tokens_left() >= 1 && token_id_by() == tt_brkt_close,
                            "expected {}",
-                           twp->token_id_wrap(tt_brkt_close));
+                           swp->token_id_wrap(tt_brkt_close));
         token_index += 1;
         return ss_rule.commit();
       }
