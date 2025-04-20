@@ -31,7 +31,7 @@ namespace silva::test {
                       const optional_t<string_view_t> expected_str)
   {
     INFO(text);
-    auto maybe_tt = tokenize(*swp, "", string_t{text});
+    auto maybe_tt = tokenize(swp, "", string_t{text});
     REQUIRE(maybe_tt.has_value());
     auto tt              = std::move(maybe_tt).value();
     auto maybe_result_pt = run_parse_axe<ParseAxeNursery>(*swp, pa, std::move(tt));

@@ -17,7 +17,7 @@ namespace silva {
 
     expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
-    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sw, cmdline_args[1]));
+    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
     parse_tree_ptr_t ptp;
     if (arg_seed_eng) {
       const auto fse{fern_seed_engine(sw)};

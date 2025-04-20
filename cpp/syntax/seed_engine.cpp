@@ -399,7 +399,7 @@ namespace silva {
   expected_t<parse_tree_ptr_t> seed_engine_t::add_complete_file(filesystem_path_t filepath,
                                                                 string_view_t text)
   {
-    auto tt  = SILVA_EXPECT_FWD(tokenize(*swp, std::move(filepath), std::move(text)));
+    auto tt  = SILVA_EXPECT_FWD(tokenize(swp, std::move(filepath), std::move(text)));
     auto ptp = SILVA_EXPECT_FWD(seed_parse(*swp, std::move(tt)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_string()));
     SILVA_EXPECT_FWD(add(ptp->span()));
@@ -462,7 +462,7 @@ namespace silva {
       {
         SILVA_EXPECT(swp == t_tokenization.swp,
                      MAJOR,
-                     "Seed and target parse-trees/tokenizations must be in same token_ward_t");
+                     "Seed and target parse-trees/tokenizations must be in same syntax_ward_t");
         return {};
       }
 

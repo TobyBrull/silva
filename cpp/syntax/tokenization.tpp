@@ -11,7 +11,7 @@ namespace silva::test {
     using enum token_category_t;
     using info_t = token_info_t;
     {
-      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sw, "unit.test", "Hello   123 .<>."));
+      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "unit.test", "Hello   123 .<>."));
       REQUIRE(result->tokens.size() == 3);
       CHECK(*result->token_info_get(0) == info_t{IDENTIFIER, "Hello"});
       CHECK(*result->token_info_get(1) == info_t{NUMBER, "123"});
@@ -20,7 +20,7 @@ namespace silva::test {
     }
 
     {
-      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sw, "unit.test", R"(
+      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "unit.test", R"(
         Silva 'Hel\'lo'  .(). # .().
         1 + 3
     )"));
@@ -104,8 +104,8 @@ namespace silva::test {
 [ 15]  13:3   ]
 [ 16]  14:1   ]
 )";
-      const auto tokenization      = SILVA_EXPECT_REQUIRE(tokenize(sw, "test.fern", source_code));
-      const auto result_str        = to_string(*tokenization);
+      const auto tokenization = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.fern", source_code));
+      const auto result_str   = to_string(*tokenization);
       CHECK(result_str.as_string_view() == expected.substr(1));
     }
   }

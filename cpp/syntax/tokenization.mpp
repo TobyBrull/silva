@@ -13,7 +13,7 @@ namespace silva {
 
     expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
-    const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sw, cmdline_args[1]));
+    const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
     fmt::print("{}\n", to_string(*tokenization));
     return {};
   }

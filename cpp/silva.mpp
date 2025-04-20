@@ -13,7 +13,7 @@ namespace silva {
     SILVA_EXPECT(cmdline_args.size() >= 2,
                  MINOR,
                  "First command-line arg must be a Silva filename");
-    auto tt = SILVA_EXPECT_FWD(tokenize_load(sw, cmdline_args[1]));
+    auto tt = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
     // auto spr = silva_seed_engine(tw.ptr());
     // auto pt  = SILVA_EXPECT_FWD(spr->apply(std::move(tt)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(*pt)));

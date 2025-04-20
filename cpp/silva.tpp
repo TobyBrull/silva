@@ -19,7 +19,7 @@ namespace silva::test {
     SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 
     const string_view_t expr_text = R"( 5 + 4 * 2 + 1 )";
-    const auto expr_tt            = SILVA_EXPECT_REQUIRE(tokenize(sw, "", expr_text));
+    const auto expr_tt            = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", expr_text));
     const auto expr_pt = SILVA_EXPECT_REQUIRE(se.apply(sw, expr_tt, sw.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
@@ -58,7 +58,7 @@ namespace silva::test {
     const string_view_t expr_text = R"(
     ( 5 + if a < 3 then b + 10 else c * 20 ) + 100
   )";
-    const auto expr_tt            = SILVA_EXPECT_REQUIRE(tokenize(sw, "", expr_text));
+    const auto expr_tt            = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", expr_text));
     const auto expr_pt = SILVA_EXPECT_REQUIRE(se.apply(sw, expr_tt, sw.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(

@@ -81,7 +81,7 @@ namespace silva::test {
     keyword1 f
     keyword3 g h i
   )'";
-    auto frog_tt                         = SILVA_EXPECT_REQUIRE(tokenize(sw, "", frog_source_code));
+    auto frog_tt = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", frog_source_code));
     auto frog_pt = SILVA_EXPECT_REQUIRE(se.apply(sw, frog_tt, sw.name_id_of("Frog")));
     const string_view_t expected = R"(
 [0]_.Frog                                         keyword1 a ... h i
@@ -128,7 +128,7 @@ namespace silva::test {
     const string_view_t code     = R"'(
     a b c x y z a b c
   )'";
-    auto tt                      = SILVA_EXPECT_REQUIRE(tokenize(sw, "", code));
+    auto tt                      = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", code));
     auto pt                      = SILVA_EXPECT_REQUIRE(se.apply(sw, tt, sw.name_id_of("Foo")));
     const string_view_t expected = R"(
 [0]_.Foo                                          a b ... b c
