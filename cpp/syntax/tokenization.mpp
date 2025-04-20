@@ -1,6 +1,7 @@
 #include "tokenization.hpp"
 
 #include "canopy/main.hpp"
+#include "syntax_catalog.hpp"
 
 #include <fmt/format.h>
 
@@ -10,8 +11,9 @@ namespace silva {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(2 == m, MINOR, "Usage: ... <file>");
 
-    token_catalog_t tc;
-    const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(tc.ptr(), cmdline_args[1]));
+    expected_traits_t expected_traits{.materialize_fwd = true};
+    syntax_catalog_t sc;
+    const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sc, cmdline_args[1]));
     fmt::print("{}\n", to_string(*tokenization));
     return {};
   }

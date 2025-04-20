@@ -3,60 +3,61 @@
 #include "canopy/expected.hpp"
 #include "parse_tree_nursery.hpp"
 #include "seed_engine.hpp"
+#include "syntax_catalog.hpp"
 #include "tokenization.hpp"
 
 namespace silva {
   using enum token_category_t;
 
-  parse_axe::parse_axe_t create_parse_axe_expr(token_catalog_ptr_t tcp)
+  parse_axe::parse_axe_t create_parse_axe_expr(syntax_catalog_ptr_t scp)
   {
     using namespace parse_axe;
     using enum assoc_t;
     vector_t<parse_axe_level_desc_t> level_descs;
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *tcp->token_id("Parens"),
+        .base_name = *scp->token_id("Parens"),
         .assoc     = NEST,
-        .opers     = {atom_nest_t{*tcp->token_id("("), *tcp->token_id(")")}},
+        .opers     = {atom_nest_t{*scp->token_id("("), *scp->token_id(")")}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *tcp->token_id("Prefix"),
+        .base_name = *scp->token_id("Prefix"),
         .assoc     = RIGHT_TO_LEFT,
         .opers =
             {
-                prefix_t{*tcp->token_id("not")},
+                prefix_t{*scp->token_id("not")},
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *tcp->token_id("Postfix"),
+        .base_name = *scp->token_id("Postfix"),
         .assoc     = LEFT_TO_RIGHT,
         .opers =
             {
-                postfix_t{*tcp->token_id("?")},
-                postfix_t{*tcp->token_id("*")},
-                postfix_t{*tcp->token_id("+")},
+                postfix_t{*scp->token_id("?")},
+                postfix_t{*scp->token_id("*")},
+                postfix_t{*scp->token_id("+")},
             },
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *tcp->token_id("Concat"),
+        .base_name = *scp->token_id("Concat"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{
-                .token_id = *tcp->token_id("concat"),
+                .token_id = *scp->token_id("concat"),
                 .concat   = true,
                 .flatten  = true,
         }},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *tcp->token_id("And"),
+        .base_name = *scp->token_id("And"),
         .assoc     = LEFT_TO_RIGHT,
-        .opers     = {infix_t{.token_id = *tcp->token_id("but_then"), .flatten = true}},
+        .opers     = {infix_t{.token_id = *scp->token_id("but_then"), .flatten = true}},
     });
     level_descs.push_back(parse_axe_level_desc_t{
-        .base_name = *tcp->token_id("Or"),
+        .base_name = *scp->token_id("Or"),
         .assoc     = LEFT_TO_RIGHT,
-        .opers     = {infix_t{.token_id = *tcp->token_id("|"), .flatten = true}},
+        .opers     = {infix_t{.token_id = *scp->token_id("|"), .flatten = true}},
     });
-    const name_id_t fni_expr = tcp->name_id_of("Seed", "Expr");
-    auto retval              = SILVA_EXPECT_ASSERT(parse_axe_create(tcp, fni_expr, level_descs));
+    const name_id_t fni_expr = scp->name_id_of("Seed", "Expr");
+    auto retval              = SILVA_EXPECT_ASSERT(parse_axe_create(scp, fni_expr, level_descs));
     return retval;
   }
 
@@ -110,9 +111,8 @@ namespace silva {
 
       parse_axe::parse_axe_t seed_parse_axe;
 
-      seed_parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
-        : parse_tree_nursery_t(tokenization)
-        , seed_parse_axe(create_parse_axe_expr(tokenization->context->ptr()))
+      seed_parse_tree_nursery_t(syntax_catalog_t& sc, tokenization_ptr_t tp)
+        : parse_tree_nursery_t(sc, tp), seed_parse_axe(create_parse_axe_expr(sc.ptr()))
       {
       }
 
@@ -361,17 +361,16 @@ namespace silva {
     };
   }
 
-  expected_t<unique_ptr_t<parse_tree_t>> seed_parse(shared_ptr_t<const tokenization_t> tokenization)
+  expected_t<parse_tree_ptr_t> seed_parse(syntax_catalog_t& sc, tokenization_ptr_t tp)
   {
-    expected_traits_t expected_traits{.materialize_fwd = true};
-    impl::seed_parse_tree_nursery_t nursery(std::move(tokenization));
+    impl::seed_parse_tree_nursery_t nursery(sc, std::move(tp));
     SILVA_EXPECT_FWD(nursery.seed());
-    return {std::make_unique<parse_tree_t>(std::move(nursery).finish())};
+    return sc.add(std::move(nursery).finish());
   }
 
-  unique_ptr_t<seed_engine_t> seed_seed_engine(token_catalog_ptr_t tcp)
+  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_catalog_t& sc)
   {
-    auto retval = std::make_unique<seed_engine_t>(tcp);
+    auto retval = std::make_unique<seed_engine_t>(sc.ptr());
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));
     return retval;
   }

@@ -16,7 +16,8 @@ namespace silva {
 
   struct seed_engine_create_nursery_t {
     seed_engine_t* se          = nullptr;
-    token_catalog_ptr_t tcp    = se->tcp;
+    syntax_catalog_ptr_t scp   = se->scp;
+    token_catalog_ptr_t tcp    = se->scp->token_catalog().ptr();
     const name_id_style_t& nis = tcp->default_name_id_style();
 
     const tokenization_t& s_tokenization;
@@ -227,7 +228,7 @@ namespace silva {
       }
       SILVA_EXPECT(atom_rule_name != name_id_root, MAJOR);
       auto pa =
-          SILVA_EXPECT_FWD(parse_axe::parse_axe_create(tcp, rule_name, std::move(level_descs)));
+          SILVA_EXPECT_FWD(parse_axe::parse_axe_create(scp, rule_name, std::move(level_descs)));
       return {{
           .atom_rule_name = atom_rule_name,
           .parse_axe      = std::move(pa),
@@ -323,7 +324,7 @@ namespace silva {
         for (index_t i = 0; i < pts_expr.size(); ++i) {
           if (pts_expr[i].rule_name == fni_term) {
             const index_t token_idx        = pts_expr[i].token_begin;
-            const token_id_t token_id      = pts_expr.tokenization->tokens[token_idx];
+            const token_id_t token_id      = pts_expr.tp->tokens[token_idx];
             const token_info_t& token_info = tcp->token_infos[token_id];
             if (token_info.category == token_category_t::STRING) {
               const auto keyword              = SILVA_EXPECT_FWD(tcp->token_id_in_string(token_id));
@@ -386,50 +387,34 @@ namespace silva {
     }
   };
 
-  seed_engine_t::seed_engine_t(token_catalog_ptr_t tcp) : tcp(tcp) {}
+  seed_engine_t::seed_engine_t(syntax_catalog_ptr_t scp) : scp(scp) {}
 
   expected_t<void> seed_engine_t::add(parse_tree_span_t stps)
   {
-    expected_traits_t expected_traits{.materialize_fwd = true};
-    seed_engine_create_nursery_t nursery(this, *stps.tokenization);
+    seed_engine_create_nursery_t nursery(this, *stps.tp);
     SILVA_EXPECT_FWD(nursery.handle_all(stps));
     return {};
   }
 
-  expected_t<void> seed_engine_t::add_parse_tree(shared_ptr_t<const parse_tree_t> seed_parse_tree)
+  expected_t<parse_tree_ptr_t> seed_engine_t::add_complete_file(filesystem_path_t filepath,
+                                                                string_view_t text)
   {
-    SILVA_EXPECT(seed_parse_tree->tokenization->context == tcp, MINOR);
-    seed_parse_trees.push_back(std::move(seed_parse_tree));
-    return {};
-  }
-
-  expected_t<void> seed_engine_t::add_complete(shared_ptr_t<const parse_tree_t> seed_parse_tree)
-  {
-    const auto spts = seed_parse_tree->span();
-    SILVA_EXPECT_FWD(add_parse_tree(seed_parse_tree), MINOR);
-    SILVA_EXPECT_FWD(add(spts));
-    return {};
-  }
-
-  expected_t<void> seed_engine_t::add_complete_file(filesystem_path_t filepath, string_view_t text)
-  {
-    auto tt = SILVA_EXPECT_FWD(tokenize(tcp, std::move(filepath), std::move(text)));
-    auto pt = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
+    auto tt  = SILVA_EXPECT_FWD(tokenize(*scp, std::move(filepath), std::move(text)));
+    auto ptp = SILVA_EXPECT_FWD(seed_parse(*scp, std::move(tt)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(pt->span().to_string()));
-    SILVA_EXPECT_FWD(add_complete(std::move(pt)));
-    return {};
+    SILVA_EXPECT_FWD(add(ptp->span()));
+    return ptp;
   }
 
   namespace impl {
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* se    = nullptr;
-      token_catalog_ptr_t tcp    = se->tcp;
+      syntax_catalog_ptr_t scp   = se->scp;
+      token_catalog_ptr_t tcp    = se->scp->token_catalog().ptr();
       const name_id_style_t& nis = tcp->default_name_id_style();
 
-      const tokenization_t& t_tokenization = *tokenization;
+      const tokenization_t& t_tokenization = *tp;
       const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
-
-      const vector_t<shared_ptr_t<const parse_tree_t>>& spts = se->seed_parse_trees;
 
       int rule_depth = 0;
 
@@ -469,9 +454,8 @@ namespace silva {
       const name_id_t fni_nt_base      = tcp->name_id_of(fni_nt, "Base");
       const name_id_t fni_term         = tcp->name_id_of(fni_seed, "Terminal");
 
-      seed_engine_nursery_t(shared_ptr_t<const tokenization_t> tokenization,
-                            const seed_engine_t* root)
-        : parse_tree_nursery_t(tokenization), se(root)
+      seed_engine_nursery_t(syntax_catalog_t& sc, tokenization_ptr_t tp, const seed_engine_t* root)
+        : parse_tree_nursery_t(sc, tp), se(root)
       {
       }
 
@@ -506,7 +490,7 @@ namespace silva {
         auto ss            = stake();
         const auto& s_node = pts[0];
         SILVA_EXPECT(s_node.rule_name == fni_term, MAJOR);
-        const token_id_t s_front_ti = pts.tokenization->tokens[s_node.token_begin];
+        const token_id_t s_front_ti = pts.tp->tokens[s_node.token_begin];
         if (s_front_ti == ti_eof) {
           SILVA_EXPECT_PARSE(t_rule_name,
                              num_tokens_left() == 0,
@@ -517,7 +501,7 @@ namespace silva {
         SILVA_EXPECT_PARSE(t_rule_name,
                            num_tokens_left() > 0,
                            "Reached end of token-stream when looking for {}",
-                           pts.tokenization->token_info_get(s_node.token_begin)->str);
+                           pts.tp->token_info_get(s_node.token_begin)->str);
         if ((s_front_ti == ti_id || s_front_ti == ti_op) && s_node.num_tokens() == 3) {
           SILVA_EXPECT(s_node.num_children == 0, MAJOR, "expected Terminal node have no children");
           if (s_front_ti == ti_id) {
@@ -535,7 +519,7 @@ namespace silva {
           else {
             SILVA_EXPECT(false, MAJOR, "Only 'identifier' and 'operator' may have regexes");
           }
-          const token_id_t regex_token_id = pts.tokenization->tokens[s_node.token_begin + 2];
+          const token_id_t regex_token_id = pts.tp->tokens[s_node.token_begin + 2];
           const auto it                   = se->regexes.find(regex_token_id);
           SILVA_EXPECT(it != se->regexes.end() && it->second.has_value(), MAJOR);
           const std::regex& re          = it->second.value();
@@ -591,7 +575,7 @@ namespace silva {
             ;
           }
           else {
-            const index_t s_token_id = pts.tokenization->tokens[s_node.token_begin];
+            const index_t s_token_id = pts.tp->tokens[s_node.token_begin];
             const auto it            = se->string_to_keyword.find(s_token_id);
             SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
             const token_id_t t_expected_ti = it->second;
@@ -813,7 +797,7 @@ namespace silva {
           return SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name));
         }
         else {
-          const token_id_t rule_token = pts.tokenization->tokens[s_node.token_begin];
+          const token_id_t rule_token = pts.tp->tokens[s_node.token_begin];
           SILVA_EXPECT(rule_token == ti_equal || rule_token == ti_alias,
                        MAJOR,
                        "Expected one of [ '=' '=>' ]");
@@ -840,16 +824,15 @@ namespace silva {
     };
   }
 
-  expected_t<unique_ptr_t<parse_tree_t>>
-  seed_engine_t::apply(shared_ptr_t<const tokenization_t> tokenization,
-                       const name_id_t goal_rule_name) const
+  expected_t<parse_tree_ptr_t> seed_engine_t::apply(syntax_catalog_t& sc,
+                                                    tokenization_ptr_t tokenization,
+                                                    const name_id_t goal_rule_name) const
   {
-    impl::seed_engine_nursery_t nursery(std::move(tokenization), this);
+    impl::seed_engine_nursery_t nursery(sc, std::move(tokenization), this);
     SILVA_EXPECT_FWD(nursery.check());
-    expected_traits_t expected_traits{.materialize_fwd = true};
     const auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
     SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
-    return {std::make_unique<parse_tree_t>(std::move(nursery).finish())};
+    return sc.add(std::move(nursery).finish());
   }
 }

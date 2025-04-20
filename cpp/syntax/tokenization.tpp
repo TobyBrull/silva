@@ -1,24 +1,26 @@
 #include "tokenization.hpp"
 
+#include "syntax_catalog.hpp"
+
 #include <catch2/catch_all.hpp>
 
 namespace silva::test {
   TEST_CASE("tokenization", "[tokenization_t]")
   {
-    token_catalog_t tc;
+    syntax_catalog_t sc;
     using enum token_category_t;
     using info_t = token_info_t;
     {
-      const auto result = SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "unit.test", "Hello   123 .<>."));
+      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sc, "unit.test", "Hello   123 .<>."));
       REQUIRE(result->tokens.size() == 3);
       CHECK(*result->token_info_get(0) == info_t{IDENTIFIER, "Hello"});
       CHECK(*result->token_info_get(1) == info_t{NUMBER, "123"});
       CHECK(*result->token_info_get(2) == info_t{OPERATOR, ".<>."});
-      REQUIRE(tc.token_infos.size() == 8);
+      REQUIRE(sc.token_infos.size() == 8);
     }
 
     {
-      const auto result = SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "unit.test", R"(
+      const auto result = SILVA_EXPECT_REQUIRE(tokenize(sc, "unit.test", R"(
         Silva 'Hel\'lo'  .(). # .().
         1 + 3
     )"));
@@ -32,25 +34,25 @@ namespace silva::test {
       CHECK(*result->token_info_get(6) == info_t{NUMBER, "1"});
       CHECK(*result->token_info_get(7) == info_t{OPERATOR, "+"});
       CHECK(*result->token_info_get(8) == info_t{NUMBER, "3"});
-      REQUIRE(tc.token_infos.size() == 15);
+      REQUIRE(sc.token_infos.size() == 15);
     }
 
     {
       using vv_t = vector_t<name_id_t>;
 
-      const name_id_t name1 = tc.name_id_of("std", "expr", "stmt");
-      const name_id_t name2 = tc.name_id_of("std", "expr");
-      const name_id_t name3 = tc.name_id_of("std", "ranges", "vector");
-      CHECK(tc.name_infos.size() == 6);
-      CHECK(tc.name_lookup.size() == 6);
+      const name_id_t name1 = sc.name_id_of("std", "expr", "stmt");
+      const name_id_t name2 = sc.name_id_of("std", "expr");
+      const name_id_t name3 = sc.name_id_of("std", "ranges", "vector");
+      CHECK(sc.name_infos.size() == 6);
+      CHECK(sc.name_lookup.size() == 6);
 
       {
         const name_id_style_t ts{
-            .tcp       = tc.ptr(),
-            .root      = *tc.token_id("cpp"),
-            .current   = *tc.token_id("this"),
-            .parent    = *tc.token_id("super"),
-            .separator = *tc.token_id("::"),
+            .tcp       = sc.token_catalog().ptr(),
+            .root      = *sc.token_id("cpp"),
+            .current   = *sc.token_id("this"),
+            .parent    = *sc.token_id("super"),
+            .separator = *sc.token_id("::"),
         };
         CHECK(ts.absolute(name1) == "cpp::std::expr::stmt");
         CHECK(ts.absolute(name2) == "cpp::std::expr");
@@ -102,8 +104,8 @@ namespace silva::test {
 [ 15]  13:3   ]
 [ 16]  14:1   ]
 )";
-      const auto tokenization = SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "test.fern", source_code));
-      const auto result_str   = to_string(*tokenization);
+      const auto tokenization      = SILVA_EXPECT_REQUIRE(tokenize(sc, "test.fern", source_code));
+      const auto result_str        = to_string(*tokenization);
       CHECK(result_str.as_string_view() == expected.substr(1));
     }
   }

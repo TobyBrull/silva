@@ -17,9 +17,9 @@ namespace silva::test {
       ]
     ]
   )'";
-    token_catalog_t tc;
-    seed_engine_t se(tc.ptr());
-    SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
+    syntax_catalog_t sc;
+    seed_engine_t se(sc.ptr());
+    auto ptp = SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
     const string_view_t expected_seed_pt = R"(
 [0]_.Seed                                         - Frog ... ] ]
   [0]_.Seed.Rule                                  Frog = ... ] ]
@@ -72,8 +72,7 @@ namespace silva::test {
                 [1]_.Seed.Terminal                'keyword2'
                 [2]_.Seed.Terminal                'keyword3'
 )";
-    const string_t seed_pt_str{
-        SILVA_EXPECT_REQUIRE(se.seed_parse_trees.front()->span().to_string())};
+    const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(ptp->span().to_string())};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
     const string_view_t frog_source_code = R"'(
@@ -82,8 +81,8 @@ namespace silva::test {
     keyword1 f
     keyword3 g h i
   )'";
-    auto frog_tt = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", frog_source_code)));
-    auto frog_pt = share(SILVA_EXPECT_REQUIRE(se.apply(frog_tt, tc.name_id_of("Frog"))));
+    auto frog_tt                         = SILVA_EXPECT_REQUIRE(tokenize(sc, "", frog_source_code));
+    auto frog_pt = SILVA_EXPECT_REQUIRE(se.apply(sc, frog_tt, sc.name_id_of("Frog")));
     const string_view_t expected = R"(
 [0]_.Frog                                         keyword1 a ... h i
   [0]_.Frog.Rule                                  keyword1 a b c
@@ -121,16 +120,16 @@ namespace silva::test {
       - x = 'x' 'y' 'z' _.Foo ?
     ]
   )'";
-    token_catalog_t tc;
-    seed_engine_t se(tc.ptr());
+    syntax_catalog_t sc;
+    seed_engine_t se(sc.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
     SILVA_EXPECT_REQUIRE(se.add_complete_file("text2.seed", text2_seed));
 
     const string_view_t code     = R"'(
     a b c x y z a b c
   )'";
-    auto tt                      = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", code)));
-    auto pt                      = share(SILVA_EXPECT_REQUIRE(se.apply(tt, tc.name_id_of("Foo"))));
+    auto tt                      = SILVA_EXPECT_REQUIRE(tokenize(sc, "", code));
+    auto pt                      = SILVA_EXPECT_REQUIRE(se.apply(sc, tt, sc.name_id_of("Foo")));
     const string_view_t expected = R"(
 [0]_.Foo                                          a b ... b c
   [0]_.Bar                                        x y ... b c

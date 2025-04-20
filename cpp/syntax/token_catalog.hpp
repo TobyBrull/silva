@@ -106,6 +106,8 @@ namespace silva {
 
     friend string_or_view_t to_string_impl(const name_id_wrap_t&);
   };
+
+  struct syntax_catalog_t;
 }
 
 // IMPLEMENTATION

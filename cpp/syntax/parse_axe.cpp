@@ -22,7 +22,7 @@ namespace silva::parse_axe {
     }
   };
 
-  expected_t<parse_axe_t> parse_axe_create(token_catalog_ptr_t tcp,
+  expected_t<parse_axe_t> parse_axe_create(syntax_catalog_ptr_t scp,
                                            const name_id_t parse_axe_name,
                                            const vector_t<parse_axe_level_desc_t>& level_descs)
   {
@@ -65,7 +65,7 @@ namespace silva::parse_axe {
     }
 
     parse_axe_t retval{
-        .tcp  = tcp,
+        .scp  = scp,
         .name = parse_axe_name,
     };
 
@@ -86,7 +86,7 @@ namespace silva::parse_axe {
                      token_id);
         result.prefix = result_oper_t<oper_prefix_t>{
             .oper       = variant_get<oper_prefix_t>(oper),
-            .name       = retval.tcp->name_id(level_name, token_id),
+            .name       = retval.scp->name_id(level_name, token_id),
             .precedence = precedence,
         };
       }
@@ -101,7 +101,7 @@ namespace silva::parse_axe {
                      token_id);
         result.regular = result_oper_t<oper_regular_t>{
             .oper       = variant_get<oper_regular_t>(oper),
-            .name       = retval.tcp->name_id(level_name, token_id),
+            .name       = retval.scp->name_id(level_name, token_id),
             .precedence = precedence,
         };
       }
@@ -133,7 +133,7 @@ namespace silva::parse_axe {
           .assoc       = level_desc.assoc,
       };
       for (const auto& oper: level_desc.opers) {
-        const name_id_t full_name = tcp->name_id(parse_axe_name, level_desc.base_name);
+        const name_id_t full_name = scp->name_id(parse_axe_name, level_desc.base_name);
         if (const auto* x = std::get_if<prefix_t>(&oper); x) {
           SILVA_EXPECT_FWD(register_op(x->token_id, *x, full_name, precedence));
         }
@@ -156,7 +156,7 @@ namespace silva::parse_axe {
                          "Trying to use 'concat' level twice");
             retval.concat_result.emplace(result_oper_t<oper_regular_t>{
                 .oper       = *x,
-                .name       = retval.tcp->name_id(full_name, x->token_id),
+                .name       = retval.scp->name_id(full_name, x->token_id),
                 .precedence = used_prec,
             });
           }
@@ -648,7 +648,7 @@ namespace silva::parse_axe {
       SILVA_EXPECT(nursery.token_index == expr_token_end, MINOR);
 
       ss_rule.commit();
-      parse_tree_span_t leave_atoms_tree_span{nursery.tree.data(), 1, nursery.tokenization};
+      parse_tree_span_t leave_atoms_tree_span{nursery.tree.data(), 1, nursery.tp};
       parse_tree_t leave_atoms_tree =
           leave_atoms_tree_span.sub_tree_span_at(ss.orig_state.tree_size).copy();
       const index_t final_token_index = nursery.token_index;

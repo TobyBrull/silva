@@ -3,6 +3,7 @@
 #include "canopy/tree_nursery.hpp"
 
 #include "parse_tree.hpp"
+#include "syntax_catalog.hpp"
 
 namespace silva {
 
@@ -21,11 +22,12 @@ namespace silva {
 
   struct parse_tree_nursery_t
     : public tree_nursery_t<parse_tree_node_t, parse_tree_nursery_state_t, parse_tree_nursery_t> {
-    shared_ptr_t<const tokenization_t> tokenization;
+    syntax_catalog_t& sc;
+    tokenization_ptr_t tp;
     token_catalog_ptr_t tcp;
     index_t token_index = 0;
 
-    parse_tree_nursery_t(shared_ptr_t<const tokenization_t>);
+    parse_tree_nursery_t(syntax_catalog_t&, tokenization_ptr_t);
 
     void on_get_state(parse_tree_nursery_state_t&) const;
     void on_set_state(const parse_tree_nursery_state_t&);
@@ -36,7 +38,7 @@ namespace silva {
     void on_stake_commit_pre(parse_tree_node_t& proto_node) const;
     void on_stake_commit_owning_to_proto(parse_tree_node_t& proto_node) const;
 
-    parse_tree_t finish() &&;
+    unique_ptr_t<parse_tree_t> finish() &&;
 
     const index_t num_tokens_left() const;
     const token_id_t token_id_by(index_t token_index_offset = 0) const;

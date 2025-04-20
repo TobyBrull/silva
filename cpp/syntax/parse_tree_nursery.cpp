@@ -1,5 +1,7 @@
 #include "parse_tree_nursery.hpp"
 
+#include "syntax_catalog.hpp"
+
 namespace silva {
 
   void parse_tree_nursery_t::on_get_state(parse_tree_nursery_state_t& s) const
@@ -39,16 +41,16 @@ namespace silva {
 
   // parse_tree_nursery_t
 
-  parse_tree_t parse_tree_nursery_t::finish() &&
+  unique_ptr_t<parse_tree_t> parse_tree_nursery_t::finish() &&
   {
-    return parse_tree_t{
-        .tokenization = std::move(tokenization),
-        .nodes        = std::move(tree),
-    };
+    return std::make_unique<parse_tree_t>(parse_tree_t{
+        .tp    = tp,
+        .nodes = std::move(tree),
+    });
   }
 
-  parse_tree_nursery_t::parse_tree_nursery_t(shared_ptr_t<const tokenization_t> tokenization)
-    : tokenization(tokenization), tcp(tokenization->context)
+  parse_tree_nursery_t::parse_tree_nursery_t(syntax_catalog_t& sc, tokenization_ptr_t tp)
+    : sc(sc), tp(tp), tcp(sc.token_catalog().ptr())
   {
   }
 
@@ -56,31 +58,31 @@ namespace silva {
 
   const index_t parse_tree_nursery_t::num_tokens_left() const
   {
-    return tokenization->tokens.size() - token_index;
+    return tp->tokens.size() - token_index;
   }
 
   const token_id_t parse_tree_nursery_t::token_id_by(const index_t token_index_offset) const
   {
-    return tokenization->tokens[token_index + token_index_offset];
+    return tp->tokens[token_index + token_index_offset];
   }
 
   const token_info_t* parse_tree_nursery_t::token_data_by(const index_t token_index_offset) const
   {
     const token_id_t token_id_ = token_id_by(token_index_offset);
-    return &(tokenization->context->token_infos[token_id_]);
+    return &(tp->context->token_infos[token_id_]);
   }
 
   token_position_t parse_tree_nursery_t::token_position_by(const index_t token_index_offset) const
   {
     return token_position_t{
-        .tp          = tokenization->ptr(),
+        .tp          = tp,
         .token_index = token_index + token_index_offset,
     };
   }
   token_position_t parse_tree_nursery_t::token_position_at(const index_t arg_token_index) const
   {
     return token_position_t{
-        .tp          = tokenization->ptr(),
+        .tp          = tp,
         .token_index = arg_token_index,
     };
   }

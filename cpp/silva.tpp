@@ -14,13 +14,13 @@ namespace silva::test {
     - Mult = Primary ( '*' Mult ) *
     - Primary = '(' Expr ')' | number
   )'";
-    token_catalog_t tc;
-    seed_engine_t se(tc.ptr());
+    syntax_catalog_t sc;
+    seed_engine_t se(sc.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 
     const string_view_t expr_text = R"( 5 + 4 * 2 + 1 )";
-    const auto expr_tt            = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", expr_text)));
-    const auto expr_pt            = SILVA_EXPECT_REQUIRE(se.apply(expr_tt, tc.name_id_of("Expr")));
+    const auto expr_tt            = SILVA_EXPECT_REQUIRE(tokenize(sc, "", expr_text));
+    const auto expr_pt = SILVA_EXPECT_REQUIRE(se.apply(sc, expr_tt, sc.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.Expr                                         5 + ... + 1
@@ -51,15 +51,15 @@ namespace silva::test {
     ]
     - Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
   )'";
-    token_catalog_t tc;
-    seed_engine_t se(tc.ptr());
+    syntax_catalog_t sc;
+    seed_engine_t se(sc.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 
     const string_view_t expr_text = R"(
     ( 5 + if a < 3 then b + 10 else c * 20 ) + 100
   )";
-    const auto expr_tt            = share(SILVA_EXPECT_REQUIRE(tokenize(tc.ptr(), "", expr_text)));
-    const auto expr_pt            = SILVA_EXPECT_REQUIRE(se.apply(expr_tt, tc.name_id_of("Expr")));
+    const auto expr_tt            = SILVA_EXPECT_REQUIRE(tokenize(sc, "", expr_text));
+    const auto expr_pt = SILVA_EXPECT_REQUIRE(se.apply(sc, expr_tt, sc.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.Expr.Add.+                                   ( 5 ... + 100

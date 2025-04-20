@@ -17,20 +17,19 @@ namespace silva {
     friend auto operator<=>(const parse_tree_node_t&, const parse_tree_node_t&) = default;
   };
 
-  struct parse_tree_t {
-    shared_ptr_t<const tokenization_t> tokenization;
+  struct parse_tree_t : public sprite_t {
+    tokenization_ptr_t tp;
     vector_t<parse_tree_node_t> nodes;
 
     auto span(this auto&&);
   };
+  using parse_tree_ptr_t = ptr_t<const parse_tree_t>;
 
   struct parse_tree_span_t : public tree_span_t<const parse_tree_node_t> {
-    shared_ptr_t<const tokenization_t> tokenization;
+    tokenization_ptr_t tp;
 
     parse_tree_span_t() = default;
-    parse_tree_span_t(const parse_tree_node_t* root,
-                      index_t stride,
-                      shared_ptr_t<const tokenization_t>);
+    parse_tree_span_t(const parse_tree_node_t* root, index_t stride, tokenization_ptr_t);
     parse_tree_span_t(const parse_tree_t&);
 
     parse_tree_t copy() const;
