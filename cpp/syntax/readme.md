@@ -12,8 +12,11 @@
 
 ```mermaid
 classDiagram
-    tokenization_t <-- parse_tree_t
-    syntax_ward_t *-- tokenization_t
-    syntax_ward_t *-- parse_tree_t
+    syntax_ward_t *-- "many" tokenization_t
+    syntax_ward_t *-- "many" parse_tree_t
     syntax_ward_t <-- tokenization_t
+    tokenization_t <-- parse_tree_t
+    parse_tree_t <-- parse_tree_span_t
+    seed_engine_t *-- "many" parse_tree_span_t
+    syntax_ward_t <-- seed_engine_t
 ```
