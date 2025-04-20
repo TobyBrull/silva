@@ -1,6 +1,12 @@
 #include "syntax_ward.hpp"
 
+#include "parse_tree.hpp"
+
 namespace silva {
+
+  syntax_ward_t::syntax_ward_t()  = default;
+  syntax_ward_t::~syntax_ward_t() = default;
+
   token_ward_t& syntax_ward_t::token_ward()
   {
     return *this;

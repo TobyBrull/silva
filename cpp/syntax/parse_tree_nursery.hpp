@@ -3,7 +3,6 @@
 #include "canopy/tree_nursery.hpp"
 
 #include "parse_tree.hpp"
-#include "syntax_ward.hpp"
 
 namespace silva {
 

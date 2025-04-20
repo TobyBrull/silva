@@ -6,6 +6,7 @@
 #include "parse_axe.hpp"
 #include "parse_tree.hpp"
 #include "parse_tree_nursery.hpp"
+#include "seed.hpp"
 #include "tokenization.hpp"
 
 #include <utility>

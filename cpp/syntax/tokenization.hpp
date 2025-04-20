@@ -1,8 +1,6 @@
 #pragma once
 
-#include "canopy/string_or_view.hpp"
-
-#include "token_ward.hpp"
+#include "syntax_ward.hpp"
 
 namespace silva {
   struct tokenization_t : public menhir_t {

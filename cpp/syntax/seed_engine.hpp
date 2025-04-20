@@ -1,8 +1,6 @@
 #pragma once
 
 #include "parse_axe.hpp"
-#include "seed.hpp"
-#include "syntax_ward.hpp"
 
 #include <regex>
 
