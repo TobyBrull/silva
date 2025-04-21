@@ -94,20 +94,21 @@ namespace silva {
       token_id_t tt_concat      = *swp->token_id("concat");
       token_id_t tt_keywords_of = *swp->token_id("keywords_of");
 
-      name_id_t fni_seed        = swp->name_id_of("Seed");
-      name_id_t fni_rule        = swp->name_id_of(fni_seed, "Rule");
-      name_id_t fni_expr_or_a   = swp->name_id_of(fni_seed, "ExprOrAlias");
-      name_id_t fni_expr        = swp->name_id_of(fni_seed, "Expr");
-      name_id_t fni_atom        = swp->name_id_of(fni_seed, "Atom");
-      name_id_t fni_axe         = swp->name_id_of(fni_seed, "Axe");
-      name_id_t fni_axe_level   = swp->name_id_of(fni_axe, "Level");
-      name_id_t fni_axe_assoc   = swp->name_id_of(fni_axe, "Assoc");
-      name_id_t fni_axe_ops     = swp->name_id_of(fni_axe, "Ops");
-      name_id_t fni_axe_op_type = swp->name_id_of(fni_axe, "OpType");
-      name_id_t fni_axe_op      = swp->name_id_of(fni_axe, "Op");
-      name_id_t fni_nt          = swp->name_id_of(fni_seed, "Nonterminal");
-      name_id_t fni_nt_base     = swp->name_id_of(fni_nt, "Base");
-      name_id_t fni_term        = swp->name_id_of(fni_seed, "Terminal");
+      name_id_t fni_seed          = swp->name_id_of("Seed");
+      name_id_t fni_rule          = swp->name_id_of(fni_seed, "Rule");
+      name_id_t fni_expr_or_a     = swp->name_id_of(fni_seed, "ExprOrAlias");
+      name_id_t fni_axe_with_atom = swp->name_id_of(fni_seed, "AxeWithAtom");
+      name_id_t fni_expr          = swp->name_id_of(fni_seed, "Expr");
+      name_id_t fni_atom          = swp->name_id_of(fni_seed, "Atom");
+      name_id_t fni_axe           = swp->name_id_of(fni_seed, "Axe");
+      name_id_t fni_axe_level     = swp->name_id_of(fni_axe, "Level");
+      name_id_t fni_axe_assoc     = swp->name_id_of(fni_axe, "Assoc");
+      name_id_t fni_axe_ops       = swp->name_id_of(fni_axe, "Ops");
+      name_id_t fni_axe_op_type   = swp->name_id_of(fni_axe, "OpType");
+      name_id_t fni_axe_op        = swp->name_id_of(fni_axe, "Op");
+      name_id_t fni_nt            = swp->name_id_of(fni_seed, "Nonterminal");
+      name_id_t fni_nt_base       = swp->name_id_of(fni_nt, "Base");
+      name_id_t fni_term          = swp->name_id_of(fni_seed, "Terminal");
 
       parse_axe::parse_axe_t seed_parse_axe;
 
@@ -235,7 +236,6 @@ namespace silva {
         ss_rule.create_node(fni_axe_level);
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe_level, nonterminal_base()));
         SILVA_EXPECT_PARSE_TOKEN_ID(fni_axe_level, tt_equal);
-        token_index += 1;
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe_level, axe_assoc()));
         while (auto result = axe_ops()) {
           ss_rule.add_proto_node(*result);
@@ -247,17 +247,12 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(fni_axe);
-        SILVA_EXPECT_PARSE_TOKEN_ID(fni_axe, tt_axe);
-        token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe, nonterminal()));
         SILVA_EXPECT_PARSE_TOKEN_ID(fni_axe, tt_brack_open);
-        token_index += 1;
         while (num_tokens_left() >= 1 && token_id_by() == tt_dash) {
           token_index += 1;
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe, axe_level()));
         }
         SILVA_EXPECT_PARSE_TOKEN_ID(fni_axe, tt_brack_close);
-        token_index += 1;
         return ss_rule.commit();
       }
 
@@ -314,6 +309,15 @@ namespace silva {
         return ss_rule.commit();
       }
 
+      expected_t<parse_tree_node_t> axe_with_atom()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(fni_axe_with_atom);
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe_with_atom, nonterminal()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_axe_with_atom, axe()));
+        return ss_rule.commit();
+      }
+
       expected_t<parse_tree_node_t> rule()
       {
         auto ss_rule = stake();
@@ -330,13 +334,13 @@ namespace silva {
           token_index += 2;
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, seed()));
           SILVA_EXPECT_PARSE_TOKEN_ID(fni_rule, tt_brack_close)
-          token_index += 1;
         }
         else if (op_ti == tt_equal || op_ti == tt_alias) {
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, expr_or_alias()));
         }
         else if (op_ti == tt_axe) {
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, axe()));
+          token_index += 1;
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, axe_with_atom()));
         }
         return ss_rule.commit();
       }

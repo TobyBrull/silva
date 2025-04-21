@@ -36,20 +36,21 @@ namespace silva {
     const token_id_t ti_ltr          = *swp->token_id("ltr");
     const token_id_t ti_rtl          = *swp->token_id("rtl");
 
-    const name_id_t fni_seed        = swp->name_id_of("Seed");
-    const name_id_t fni_rule        = swp->name_id_of(fni_seed, "Rule");
-    const name_id_t fni_expr_or_a   = swp->name_id_of(fni_seed, "ExprOrAlias");
-    const name_id_t fni_expr        = swp->name_id_of(fni_seed, "Expr");
-    const name_id_t fni_atom        = swp->name_id_of(fni_seed, "Atom");
-    const name_id_t fni_axe         = swp->name_id_of(fni_seed, "Axe");
-    const name_id_t fni_axe_level   = swp->name_id_of(fni_axe, "Level");
-    const name_id_t fni_axe_assoc   = swp->name_id_of(fni_axe, "Assoc");
-    const name_id_t fni_axe_ops     = swp->name_id_of(fni_axe, "Ops");
-    const name_id_t fni_axe_op_type = swp->name_id_of(fni_axe, "OpType");
-    const name_id_t fni_axe_op      = swp->name_id_of(fni_axe, "Op");
-    const name_id_t fni_nt          = swp->name_id_of(fni_seed, "Nonterminal");
-    const name_id_t fni_nt_base     = swp->name_id_of(fni_nt, "Base");
-    const name_id_t fni_term        = swp->name_id_of(fni_seed, "Terminal");
+    const name_id_t fni_seed          = swp->name_id_of("Seed");
+    const name_id_t fni_rule          = swp->name_id_of(fni_seed, "Rule");
+    const name_id_t fni_expr_or_a     = swp->name_id_of(fni_seed, "ExprOrAlias");
+    const name_id_t fni_axe_with_atom = swp->name_id_of(fni_seed, "AxeWithAtom");
+    const name_id_t fni_expr          = swp->name_id_of(fni_seed, "Expr");
+    const name_id_t fni_atom          = swp->name_id_of(fni_seed, "Atom");
+    const name_id_t fni_axe           = swp->name_id_of(fni_seed, "Axe");
+    const name_id_t fni_axe_level     = swp->name_id_of(fni_axe, "Level");
+    const name_id_t fni_axe_assoc     = swp->name_id_of(fni_axe, "Assoc");
+    const name_id_t fni_axe_ops       = swp->name_id_of(fni_axe, "Ops");
+    const name_id_t fni_axe_op_type   = swp->name_id_of(fni_axe, "OpType");
+    const name_id_t fni_axe_op        = swp->name_id_of(fni_axe, "Op");
+    const name_id_t fni_nt            = swp->name_id_of(fni_seed, "Nonterminal");
+    const name_id_t fni_nt_base       = swp->name_id_of(fni_nt, "Base");
+    const name_id_t fni_term          = swp->name_id_of(fni_seed, "Terminal");
 
     seed_engine_create_nursery_t(seed_engine_t* se, const tokenization_t& s_tokenization)
       : se(se), s_tokenization(s_tokenization)
@@ -203,30 +204,30 @@ namespace silva {
       return {};
     }
 
-    expected_t<seed_engine_t::parse_axe_data_t> create_parse_axe(const name_id_t scope_name,
-                                                                 const name_id_t rule_name,
-                                                                 const parse_tree_span_t pts_axe)
+    expected_t<seed_engine_t::parse_axe_data_t>
+    create_parse_axe(const name_id_t scope_name,
+                     const name_id_t rule_name,
+                     const parse_tree_span_t pts_axe_with_atom)
     {
-      const auto& s_node = pts_axe[0];
-      SILVA_EXPECT(s_node.rule_name == fni_axe, MINOR);
+      const auto& s_node = pts_axe_with_atom[0];
+      SILVA_EXPECT(s_node.rule_name == fni_axe_with_atom, MINOR);
+      const auto children = SILVA_EXPECT_FWD(pts_axe_with_atom.get_children<2>());
+
+      SILVA_EXPECT(pts_axe_with_atom[children[0]].rule_name == fni_nt, MINOR);
+      const name_id_t atom_rule_name = SILVA_EXPECT_FWD(
+          derive_name(scope_name, pts_axe_with_atom.sub_tree_span_at(children[0])));
+
+      const auto pts_axe = pts_axe_with_atom.sub_tree_span_at(children[1]);
+
       vector_t<parse_axe::parse_axe_level_desc_t> level_descs;
       SILVA_EXPECT(s_node.num_children >= 1, MINOR);
       level_descs.reserve(s_node.num_children - 1);
-      name_id_t atom_rule_name = name_id_root;
       for (const auto [child_node_index, child_index]: pts_axe.children_range()) {
-        if (child_index == 0) {
-          SILVA_EXPECT(pts_axe[child_node_index].rule_name == fni_nt, MINOR);
-          atom_rule_name =
-              SILVA_EXPECT_FWD(derive_name(scope_name, pts_axe.sub_tree_span_at(child_node_index)));
-        }
-        else {
-          SILVA_EXPECT(pts_axe[child_node_index].rule_name == fni_axe_level, MINOR);
-          auto& curr_level = level_descs.emplace_back();
-          SILVA_EXPECT_FWD(
-              axe_level(curr_level, rule_name, pts_axe.sub_tree_span_at(child_node_index)));
-        }
+        SILVA_EXPECT(pts_axe[child_node_index].rule_name == fni_axe_level, MINOR);
+        auto& curr_level = level_descs.emplace_back();
+        SILVA_EXPECT_FWD(
+            axe_level(curr_level, rule_name, pts_axe.sub_tree_span_at(child_node_index)));
       }
-      SILVA_EXPECT(atom_rule_name != name_id_root, MAJOR);
       auto pa =
           SILVA_EXPECT_FWD(parse_axe::parse_axe_create(swp, rule_name, std::move(level_descs)));
       return {{
@@ -314,9 +315,9 @@ namespace silva {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, pts_rule.sub_tree_span_at(children[1])));
       }
       else {
-        SILVA_EXPECT(expr_rule_name == fni_axe || expr_rule_name == fni_expr_or_a,
+        SILVA_EXPECT(expr_rule_name == fni_axe_with_atom || expr_rule_name == fni_expr_or_a,
                      MINOR,
-                     "last child of {} must not be  {}",
+                     "second child of {} must not be {}",
                      swp->name_id_wrap(fni_rule),
                      swp->name_id_wrap(expr_rule_name));
         const auto [it, inserted] =
@@ -343,7 +344,7 @@ namespace silva {
           }
         }
 
-        if (expr_rule_name == fni_axe) {
+        if (expr_rule_name == fni_axe_with_atom) {
           se->parse_axes[curr_rule_name] =
               SILVA_EXPECT_FWD(create_parse_axe(scope_name, curr_rule_name, pts_expr));
         }
@@ -443,25 +444,20 @@ namespace silva {
       const token_id_t ti_alias       = *swp->token_id("=>");
       const token_id_t ti_axe         = *swp->token_id("=/");
 
-      const name_id_t fni_seed         = swp->name_id_of("Seed");
-      const name_id_t fni_rule         = swp->name_id_of(fni_seed, "Rule");
-      const name_id_t fni_expr         = swp->name_id_of(fni_seed, "Expr");
-      const name_id_t fni_expr_parens  = swp->name_id_of(fni_expr, "Parens");
-      const name_id_t fni_expr_prefix  = swp->name_id_of(fni_expr, "Prefix");
-      const name_id_t fni_expr_postfix = swp->name_id_of(fni_expr, "Postfix");
-      const name_id_t fni_expr_concat  = swp->name_id_of(fni_expr, "Concat");
-      const name_id_t fni_expr_or      = swp->name_id_of(fni_expr, "Or");
-      const name_id_t fni_expr_and     = swp->name_id_of(fni_expr, "And");
-      const name_id_t fni_atom         = swp->name_id_of(fni_seed, "Atom");
-      const name_id_t fni_axe          = swp->name_id_of(fni_seed, "Axe");
-      const name_id_t fni_axe_level    = swp->name_id_of(fni_axe, "Level");
-      const name_id_t fni_axe_assoc    = swp->name_id_of(fni_axe, "Assoc");
-      const name_id_t fni_axe_ops      = swp->name_id_of(fni_axe, "Ops");
-      const name_id_t fni_axe_op_type  = swp->name_id_of(fni_axe, "OpType");
-      const name_id_t fni_axe_op       = swp->name_id_of(fni_axe, "Op");
-      const name_id_t fni_nt           = swp->name_id_of(fni_seed, "Nonterminal");
-      const name_id_t fni_nt_base      = swp->name_id_of(fni_nt, "Base");
-      const name_id_t fni_term         = swp->name_id_of(fni_seed, "Terminal");
+      const name_id_t fni_seed          = swp->name_id_of("Seed");
+      const name_id_t fni_rule          = swp->name_id_of(fni_seed, "Rule");
+      const name_id_t fni_expr          = swp->name_id_of(fni_seed, "Expr");
+      const name_id_t fni_expr_parens   = swp->name_id_of(fni_expr, "Parens");
+      const name_id_t fni_expr_prefix   = swp->name_id_of(fni_expr, "Prefix");
+      const name_id_t fni_expr_postfix  = swp->name_id_of(fni_expr, "Postfix");
+      const name_id_t fni_expr_concat   = swp->name_id_of(fni_expr, "Concat");
+      const name_id_t fni_expr_or       = swp->name_id_of(fni_expr, "Or");
+      const name_id_t fni_expr_and      = swp->name_id_of(fni_expr, "And");
+      const name_id_t fni_atom          = swp->name_id_of(fni_seed, "Atom");
+      const name_id_t fni_axe_with_atom = swp->name_id_of(fni_seed, "AxeWithAtom");
+      const name_id_t fni_nt            = swp->name_id_of(fni_seed, "Nonterminal");
+      const name_id_t fni_nt_base       = swp->name_id_of(fni_nt, "Base");
+      const name_id_t fni_term          = swp->name_id_of(fni_seed, "Terminal");
 
       seed_engine_nursery_t(tokenization_ptr_t tp, const seed_engine_t* root)
         : parse_tree_nursery_t(tp), se(root)
@@ -802,7 +798,7 @@ namespace silva {
         const parse_tree_span_t pts = it->second;
         const auto& s_node          = pts[0];
         const name_id_t s_expr_name = s_node.rule_name;
-        if (s_expr_name == fni_axe) {
+        if (s_expr_name == fni_axe_with_atom) {
           return SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name));
         }
         else {

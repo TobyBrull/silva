@@ -20,8 +20,9 @@ namespace silva {
   const string_view_t seed_seed = R"'(
     - Seed = [
       - x = ( '-' Rule ) *
-      - Rule = Nonterminal.Base ( '=' '[' x ']' | ExprOrAlias | Axe )
+      - Rule = Nonterminal.Base ( '=' '[' x ']' | ExprOrAlias | '=/' AxeWithAtom )
       - ExprOrAlias = ( '=' | '=>' ) Expr
+      - AxeWithAtom = Nonterminal Axe
       - Expr =/ Atom [
         - Parens    = nest  atom_nest '(' ')'
         - Prefix    = rtl   prefix 'not'
@@ -32,7 +33,7 @@ namespace silva {
       ]
       - Atom => Nonterminal | Terminal
       - Axe = [
-        - x = '=/' p.Nonterminal '[' ( '-' Level ) * ']'
+        - x = '[' ( '-' Level ) * ']'
         - Level = p.Nonterminal.Base '=' Assoc Ops *
         - Assoc = 'nest' | 'ltr' | 'rtl'
         - Ops = OpType Op *

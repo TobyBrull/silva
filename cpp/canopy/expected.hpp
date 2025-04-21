@@ -179,7 +179,7 @@ namespace silva::impl {
     else {
       error = make_error(new_error_level,
                          error_array,
-                         "unexpected forwareded at [{}:{}]",
+                         "unexpected forward at [{}:{}]",
                          string_view_t{file},
                          line);
     }

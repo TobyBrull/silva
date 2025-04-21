@@ -18,7 +18,8 @@ namespace silva {
                      num_tokens_left() >= 1 && token_id_by() == token_id, \
                      "expected {}, got {}",                               \
                      swp->token_id_wrap(token_id),                        \
-                     swp->token_id_wrap(token_id_by()));
+                     swp->token_id_wrap(token_id_by()));                  \
+  token_index += 1;
 
 #define SILVA_EXPECT_PARSE_FWD(name, expr) \
   SILVA_EXPECT_FWD(expr, "[{}] {}", token_position_by(), swp->name_id_wrap(name))

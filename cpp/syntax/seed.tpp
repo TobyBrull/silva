@@ -21,7 +21,6 @@ namespace silva::test {
     CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Rule")] == hashset_t<token_id_t>({}));
     CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Axe")] ==
           hashset_t<token_id_t>({
-              *sw.token_id("=/"),
               *sw.token_id("["),
               *sw.token_id("]"),
               *sw.token_id("-"),
