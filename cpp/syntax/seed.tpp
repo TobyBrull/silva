@@ -60,10 +60,12 @@ namespace silva::test {
     const std::string_view expected = R"(
 [0]_.Seed                                         - SimpleFern ... number ]
   [0]_.Seed.Rule                                  SimpleFern = ... number ]
-    [0]_.Seed.Nonterminal.Base                    SimpleFern
+    [0]_.Seed.Nonterminal                         SimpleFern
+      [0]_.Seed.Nonterminal.Base                  SimpleFern
     [1]_.Seed                                     - x ... | number
       [0]_.Seed.Rule                              x = ... * ']'
-        [0]_.Seed.Nonterminal.Base                x
+        [0]_.Seed.Nonterminal                     x
+          [0]_.Seed.Nonterminal.Base              x
         [1]_.Seed.ExprOrAlias                     = '[' ... * ']'
           [0]_.Seed.Expr.Concat.concat            '[' ( ... * ']'
             [0]_.Seed.Terminal                    '['
@@ -76,7 +78,8 @@ namespace silva::test {
                     [0]_.Seed.Terminal            ';'
             [2]_.Seed.Terminal                    ']'
       [1]_.Seed.Rule                              LabeledItem = ... ? Item
-        [0]_.Seed.Nonterminal.Base                LabeledItem
+        [0]_.Seed.Nonterminal                     LabeledItem
+          [0]_.Seed.Nonterminal.Base              LabeledItem
         [1]_.Seed.ExprOrAlias                     = ( ... ? Item
           [0]_.Seed.Expr.Concat.concat            ( Label ... ? Item
             [0]_.Seed.Expr.Postfix.?              ( Label ':' ) ?
@@ -88,11 +91,13 @@ namespace silva::test {
             [1]_.Seed.Nonterminal                 Item
               [0]_.Seed.Nonterminal.Base          Item
       [2]_.Seed.Rule                              Label = string
-        [0]_.Seed.Nonterminal.Base                Label
+        [0]_.Seed.Nonterminal                     Label
+          [0]_.Seed.Nonterminal.Base              Label
         [1]_.Seed.ExprOrAlias                     = string
           [0]_.Seed.Terminal                      string
       [3]_.Seed.Rule                              Item = ... | number
-        [0]_.Seed.Nonterminal.Base                Item
+        [0]_.Seed.Nonterminal                     Item
+          [0]_.Seed.Nonterminal.Base              Item
         [1]_.Seed.ExprOrAlias                     = x ... | number
           [0]_.Seed.Expr.Or.|                     x | string | number
             [0]_.Seed.Nonterminal                 x
@@ -115,15 +120,15 @@ namespace silva::test {
     const name_id_t fni_l       = sw.name_id_of(fni_sf, "Label");
     const name_id_t fni_i       = sw.name_id_of(fni_sf, "Item");
     const parse_tree_span_t pts = sw.parse_trees.front()->span();
-    CHECK(se.rule_exprs.at(fni_sf) == pts.sub_tree_span_at(6));
-    CHECK(se.rule_exprs.at(fni_li) == pts.sub_tree_span_at(19));
-    CHECK(se.rule_exprs.at(fni_l) == pts.sub_tree_span_at(31));
-    CHECK(se.rule_exprs.at(fni_i) == pts.sub_tree_span_at(35));
+    CHECK(se.rule_exprs.at(fni_sf) == pts.sub_tree_span_at(8));
+    CHECK(se.rule_exprs.at(fni_li) == pts.sub_tree_span_at(22));
+    CHECK(se.rule_exprs.at(fni_l) == pts.sub_tree_span_at(35));
+    CHECK(se.rule_exprs.at(fni_i) == pts.sub_tree_span_at(40));
     REQUIRE(se.nonterminal_rules.size() == 4);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(12)) == fni_li);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(24)) == fni_l);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(27)) == fni_i);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(37)) == fni_sf);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(14)) == fni_li);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(27)) == fni_l);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(30)) == fni_i);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(42)) == fni_sf);
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
     const auto sf_tt       = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", sf_code));

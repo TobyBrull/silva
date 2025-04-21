@@ -323,7 +323,7 @@ namespace silva {
         auto ss_rule = stake();
         ss_rule.create_node(fni_rule);
         const index_t orig_token_index = token_index;
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, nonterminal_base()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(fni_rule, nonterminal()));
         SILVA_EXPECT_PARSE(fni_rule, num_tokens_left() >= 1, "no more tokens in input");
         const token_id_t op_ti = token_id_by();
         SILVA_EXPECT_PARSE(fni_rule,

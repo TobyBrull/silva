@@ -11,6 +11,20 @@
 // algorithm.
 
 namespace silva::seed_axe {
+
+  const string_view_t seed_axe_seed = R"'(
+    - Seed.Axe = [
+      - x = '[' ( '-' Level ) * ']'
+      - Level = p.Nonterminal.Base '=' Assoc Ops *
+      - Assoc = 'nest' | 'ltr' | 'rtl'
+      - Ops = OpType Op *
+      - OpType = 'atom_nest' | 'prefix' | 'prefix_nest'
+               | 'infix' | 'infix_flat' | 'ternary'
+               | 'postfix' | 'postfix_nest'
+      - Op = string | 'concat'
+    ]
+  )'";
+
   enum class assoc_t {
     INVALID,
     NEST,

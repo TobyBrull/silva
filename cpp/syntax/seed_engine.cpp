@@ -302,13 +302,13 @@ namespace silva {
     {
       SILVA_EXPECT(pts_rule[0].rule_name == fni_rule, MINOR, "expected Rule");
       const auto children = SILVA_EXPECT_FWD(pts_rule.get_children<2>());
-      SILVA_EXPECT(pts_rule[children[0]].rule_name == fni_nt_base,
+      SILVA_EXPECT(pts_rule[children[0]].rule_name == fni_nt,
                    MINOR,
                    "first child of {} must be {}",
                    swp->name_id_wrap(fni_rule),
-                   swp->name_id_wrap(fni_nt_base));
-      const name_id_t curr_rule_name = SILVA_EXPECT_FWD(
-          derive_relative_name(scope_name, pts_rule.sub_tree_span_at(children[0])));
+                   swp->name_id_wrap(fni_nt));
+      const name_id_t curr_rule_name =
+          SILVA_EXPECT_FWD(derive_name(scope_name, pts_rule.sub_tree_span_at(children[0])));
       const index_t expr_rule_name = pts_rule[children[1]].rule_name;
       if (expr_rule_name == fni_seed) {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, pts_rule.sub_tree_span_at(children[1])));
@@ -320,7 +320,7 @@ namespace silva {
                      swp->name_id_wrap(fni_rule),
                      swp->name_id_wrap(expr_rule_name));
         const auto [it, inserted] =
-            se->rule_exprs.emplace(curr_rule_name, pts_rule.sub_tree_span_at(children.back()));
+            se->rule_exprs.emplace(curr_rule_name, pts_rule.sub_tree_span_at(children[1]));
         SILVA_EXPECT(inserted,
                      MINOR,
                      "{} rule {} defined again, previously defined at {}",

@@ -23,16 +23,19 @@ namespace silva::test {
     const string_view_t expected_seed_pt = R"(
 [0]_.Seed                                         - Frog ... ] ]
   [0]_.Seed.Rule                                  Frog = ... ] ]
-    [0]_.Seed.Nonterminal.Base                    Frog
+    [0]_.Seed.Nonterminal                         Frog
+      [0]_.Seed.Nonterminal.Base                  Frog
     [1]_.Seed                                     - x ... 'keyword3' ]
       [0]_.Seed.Rule                              x = Rule *
-        [0]_.Seed.Nonterminal.Base                x
+        [0]_.Seed.Nonterminal                     x
+          [0]_.Seed.Nonterminal.Base              x
         [1]_.Seed.ExprOrAlias                     = Rule *
           [0]_.Seed.Expr.Postfix.*                Rule *
             [0]_.Seed.Nonterminal                 Rule
               [0]_.Seed.Nonterminal.Base          Rule
       [1]_.Seed.Rule                              Rule = RuleName Expr
-        [0]_.Seed.Nonterminal.Base                Rule
+        [0]_.Seed.Nonterminal                     Rule
+          [0]_.Seed.Nonterminal.Base              Rule
         [1]_.Seed.ExprOrAlias                     = RuleName Expr
           [0]_.Seed.Expr.Concat.concat            RuleName Expr
             [0]_.Seed.Nonterminal                 RuleName
@@ -40,20 +43,23 @@ namespace silva::test {
             [1]_.Seed.Nonterminal                 Expr
               [0]_.Seed.Nonterminal.Base          Expr
       [2]_.Seed.Rule                              RuleName => ... . Keyword
-        [0]_.Seed.Nonterminal.Base                RuleName
+        [0]_.Seed.Nonterminal                     RuleName
+          [0]_.Seed.Nonterminal.Base              RuleName
         [1]_.Seed.ExprOrAlias                     => keywords_of x . Keyword
           [0]_.Seed.Terminal                      keywords_of x . Keyword
             [0]_.Seed.Nonterminal                 x . Keyword
               [0]_.Seed.Nonterminal.Base          x
               [1]_.Seed.Nonterminal.Base          Keyword
       [3]_.Seed.Rule                              Expr = Primary +
-        [0]_.Seed.Nonterminal.Base                Expr
+        [0]_.Seed.Nonterminal                     Expr
+          [0]_.Seed.Nonterminal.Base              Expr
         [1]_.Seed.ExprOrAlias                     = Primary +
           [0]_.Seed.Expr.Postfix.+                Primary +
             [0]_.Seed.Nonterminal                 Primary
               [0]_.Seed.Nonterminal.Base          Primary
       [4]_.Seed.Rule                              Primary = ... but_then identifier
-        [0]_.Seed.Nonterminal.Base                Primary
+        [0]_.Seed.Nonterminal                     Primary
+          [0]_.Seed.Nonterminal.Base              Primary
         [1]_.Seed.ExprOrAlias                     = not ... but_then identifier
           [0]_.Seed.Expr.And.but_then             not keywords_of Keyword but_then identifier
             [0]_.Seed.Expr.Prefix.not             not keywords_of Keyword
@@ -62,10 +68,12 @@ namespace silva::test {
                   [0]_.Seed.Nonterminal.Base      Keyword
             [1]_.Seed.Terminal                    identifier
       [5]_.Seed.Rule                              Keyword = ... 'keyword3' ]
-        [0]_.Seed.Nonterminal.Base                Keyword
+        [0]_.Seed.Nonterminal                     Keyword
+          [0]_.Seed.Nonterminal.Base              Keyword
         [1]_.Seed                                 - x ... | 'keyword3'
           [0]_.Seed.Rule                          x = ... | 'keyword3'
-            [0]_.Seed.Nonterminal.Base            x
+            [0]_.Seed.Nonterminal                 x
+              [0]_.Seed.Nonterminal.Base          x
             [1]_.Seed.ExprOrAlias                 = 'keyword1' ... | 'keyword3'
               [0]_.Seed.Expr.Or.|                 'keyword1' | 'keyword2' | 'keyword3'
                 [0]_.Seed.Terminal                'keyword1'
