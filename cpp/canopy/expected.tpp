@@ -26,7 +26,7 @@ namespace silva::test {
       const expected_t<int> result = func_2(-4);
       REQUIRE(!result.has_value());
       constexpr string_view_t expected = R"(
-  x=-4 must be positive
+x=-4 must be positive
 failed calling func_1(-4)
 )";
       const string_t result_str{to_string(result.error()).as_string()};

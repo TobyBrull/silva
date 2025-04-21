@@ -4,7 +4,6 @@
 #include "context.hpp"
 #include "error_level.hpp"
 #include "error_tree.hpp"
-#include "to_string.hpp"
 
 namespace silva {
 
@@ -13,7 +12,7 @@ namespace silva {
     constexpr static bool context_mutable_get = true;
 
     error_tree_t tree;
-    any_vector_t<to_string_t, move_ctor_t, dtor_t> any_vector;
+    to_string_any_vector_t any_vector;
 
     ~error_context_t();
   };
@@ -41,6 +40,9 @@ namespace silva {
 
     template<typename... MementoArgs>
     void replace_message(MementoArgs&&...);
+
+    string_or_view_t to_string_plain() const;
+    string_or_view_t to_string_structured() const;
 
     friend string_or_view_t to_string_impl(const error_t&);
 

@@ -14,30 +14,6 @@ namespace silva {
     SILVA_ASSERT(any_vector.is_empty());
   }
 
-  namespace impl {
-    void error_context_to_string(const error_context_t* error_context,
-                                 string_t& retval,
-                                 const index_t node_index,
-                                 const index_t indent)
-    {
-      error_context->tree.visit_children_reversed(
-          [&](const index_t child_node_index, const index_t child_index) {
-            error_context_to_string(error_context, retval, child_node_index, indent + 2);
-          },
-          node_index);
-
-      const auto& node = error_context->tree.nodes[node_index];
-      auto it          = error_context->any_vector.index_iter_at(node.memento_buffer_offset);
-      const auto end   = error_context->any_vector.index_iter_at(node.memento_buffer_offset_end);
-      vector_t<string_t> args;
-      for (; it != end; ++it) {
-        args.push_back(error_context->any_vector.apply(*it, to_string).as_string());
-      }
-      const string_t message = format_vector(args);
-      retval += fmt::format("{:{}}{}\n", "", indent, message);
-    }
-  }
-
   error_t::~error_t()
   {
     clear();
@@ -101,11 +77,119 @@ namespace silva {
     }
   }
 
-  string_or_view_t to_string_impl(const error_t& self)
+  namespace impl {
+    void to_string_plain(const error_context_t* error_context,
+                         string_t& retval,
+                         const index_t node_index,
+                         const index_t indent)
+    {
+      error_context->tree.visit_children_reversed(
+          [&](const index_t child_node_index, const index_t child_index) {
+            to_string_plain(error_context, retval, child_node_index, indent + 2);
+          },
+          node_index);
+      const auto& node       = error_context->tree.nodes[node_index];
+      const string_t message = node.to_string(error_context->any_vector);
+      retval += fmt::format("{:{}}{}\n", "", indent, message);
+    }
+  }
+
+  string_or_view_t error_t::to_string_plain() const
   {
     string_t retval;
-    impl::error_context_to_string(self.context.get(), retval, self.node_index, 0);
+    impl::to_string_plain(context.get(), retval, node_index, 0);
     return string_or_view_t{std::move(retval)};
+  }
+
+  namespace impl {
+    const static vector_t<string_view_t> box_chars = {
+        "  ", // [0]
+        "│ ", // [1]
+        "├─", // [2]
+        "┌─", // [3]
+
+        "─ ",
+        "┐ ",
+        "┘ ",
+        "┌ ",
+        "└ ",
+        "├ ",
+        "┤ ",
+        "┬ ",
+        "┴ ",
+        "┼ ",
+    };
+
+    void to_string_struct_indent(string_t& retval, vector_t<index_t>& box_levels)
+    {
+      for (const index_t idx: box_levels) {
+        retval += box_chars[idx];
+      }
+    }
+
+    enum class state_t {
+      NONE,
+      NEST_LAST,
+      NEST_OTHER,
+    };
+
+    void to_string_struct(const error_context_t* error_context,
+                          string_t& retval,
+                          vector_t<index_t>& box_levels,
+                          const index_t node_index,
+                          const state_t state)
+    {
+      const index_t num_children = error_context->tree.nodes[node_index].num_children;
+      if (num_children <= 1) {
+        error_context->tree.visit_children_reversed(
+            [&](const index_t child_node_index, const index_t child_index) {
+              to_string_struct(error_context, retval, box_levels, child_node_index, state_t::NONE);
+            },
+            node_index);
+      }
+      else {
+        error_context->tree.visit_children_reversed(
+            [&](const index_t child_node_index, const index_t child_index) {
+              state_t new_state = state_t::NONE;
+              if (child_index + 1 == num_children) {
+                box_levels.push_back(0);
+                new_state = state_t::NEST_LAST;
+              }
+              else {
+                box_levels.push_back(1);
+                new_state = state_t::NEST_OTHER;
+              }
+              to_string_struct(error_context, retval, box_levels, child_node_index, new_state);
+              box_levels.pop_back();
+            },
+            node_index);
+      }
+      optional_t<index_t> prev_back;
+      if (state != state_t::NONE) {
+        prev_back         = box_levels.back();
+        box_levels.back() = (state == state_t::NEST_OTHER) ? 2 : 3;
+      }
+      to_string_struct_indent(retval, box_levels);
+      if (prev_back.has_value()) {
+        box_levels.back() = prev_back.value();
+      }
+      const auto& node       = error_context->tree.nodes[node_index];
+      const string_t message = node.to_string(error_context->any_vector);
+      retval += message + "\n";
+    }
+  }
+
+  string_or_view_t error_t::to_string_structured() const
+  {
+    string_t retval;
+    vector_t<index_t> box_levels;
+    impl::to_string_struct(context.get(), retval, box_levels, node_index, impl::state_t::NONE);
+    return string_or_view_t{std::move(retval)};
+  }
+
+  string_or_view_t to_string_impl(const error_t& self)
+  {
+    return self.to_string_structured();
   }
 
   void error_t::materialize()
