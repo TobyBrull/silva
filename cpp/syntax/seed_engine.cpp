@@ -304,7 +304,9 @@ namespace silva {
       const auto children = SILVA_EXPECT_FWD(pts_rule.get_children<2>());
       SILVA_EXPECT(pts_rule[children[0]].rule_name == fni_nt_base,
                    MINOR,
-                   "First child of Rule must be Nonterminal.Base");
+                   "first child of {} must be {}",
+                   swp->name_id_wrap(fni_rule),
+                   swp->name_id_wrap(fni_nt_base));
       const name_id_t curr_rule_name = SILVA_EXPECT_FWD(
           derive_relative_name(scope_name, pts_rule.sub_tree_span_at(children[0])));
       const index_t expr_rule_name = pts_rule[children[1]].rule_name;
@@ -314,10 +316,17 @@ namespace silva {
       else {
         SILVA_EXPECT(expr_rule_name == fni_axe || expr_rule_name == fni_expr_or_a,
                      MINOR,
-                     "Second child of Rule must be one of [ Axe Seed ExprOrAlias ]");
+                     "last child of {} must not be  {}",
+                     swp->name_id_wrap(fni_rule),
+                     swp->name_id_wrap(expr_rule_name));
         const auto [it, inserted] =
-            se->rule_exprs.emplace(curr_rule_name, pts_rule.sub_tree_span_at(children[1]));
-        SILVA_EXPECT(inserted, MINOR, "Repeated rule name '{}'", nis.absolute(curr_rule_name));
+            se->rule_exprs.emplace(curr_rule_name, pts_rule.sub_tree_span_at(children.back()));
+        SILVA_EXPECT(inserted,
+                     MINOR,
+                     "{} rule {} defined again, previously defined at {}",
+                     pts_rule,
+                     swp->name_id_wrap(curr_rule_name),
+                     it->second);
 
         const auto pts_expr = pts_rule.sub_tree_span_at(children[1]);
 
@@ -432,6 +441,7 @@ namespace silva {
       const token_id_t ti_regex       = *swp->token_id("/");
       const token_id_t ti_equal       = *swp->token_id("=");
       const token_id_t ti_alias       = *swp->token_id("=>");
+      const token_id_t ti_axe         = *swp->token_id("=/");
 
       const name_id_t fni_seed         = swp->name_id_of("Seed");
       const name_id_t fni_rule         = swp->name_id_of(fni_seed, "Rule");
@@ -799,7 +809,9 @@ namespace silva {
           const token_id_t rule_token = pts.tp->tokens[s_node.token_begin];
           SILVA_EXPECT(rule_token == ti_equal || rule_token == ti_alias,
                        MAJOR,
-                       "Expected one of [ '=' '=>' ]");
+                       "expected one of [ '=' '=>' ], got {} at {}",
+                       swp->token_id_wrap(rule_token),
+                       pts);
           const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
           if (rule_token == ti_equal) {
             auto ss_rule = stake();

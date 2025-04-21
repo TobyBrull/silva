@@ -12,6 +12,14 @@ namespace silva {
                "[{}] {}: " fmt_str,                  \
                token_position_by(),                  \
                swp->name_id_wrap(name) __VA_OPT__(, ) __VA_ARGS__);
+
+#define SILVA_EXPECT_PARSE_TOKEN_ID(name, token_id)                       \
+  SILVA_EXPECT_PARSE(name,                                                \
+                     num_tokens_left() >= 1 && token_id_by() == token_id, \
+                     "expected {}, got {}",                               \
+                     swp->token_id_wrap(token_id),                        \
+                     swp->token_id_wrap(token_id_by()));
+
 #define SILVA_EXPECT_PARSE_FWD(name, expr) \
   SILVA_EXPECT_FWD(expr, "[{}] {}", token_position_by(), swp->name_id_wrap(name))
 
