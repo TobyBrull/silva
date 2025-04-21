@@ -40,7 +40,7 @@ namespace silva::test {
     CHECK(result == expected_parse_tree.substr(1));
   }
 
-  TEST_CASE("parse-axe-recursion", "")
+  TEST_CASE("seed-axe-recursion", "")
   {
     const string_view_t expr_seed_text = R"'(
     - Expr =/ Atom [

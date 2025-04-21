@@ -4,7 +4,7 @@ import pytest
 import termcolor
 import misc
 import pprint
-import parse_axe
+import seed_axe
 
 
 def _green(text: str) -> str:
@@ -34,7 +34,7 @@ class _TestTracker:
         self.failed = False
         self.full_test_names_attempted = set()
 
-    def set_parse_axe(self, paxe: parse_axe.ParseAxe, paxe_name: str):
+    def set_seed_axe(self, paxe: seed_axe.ParseAxe, paxe_name: str):
         self.curr_paxe = paxe
         self.curr_paxe_name = paxe_name
 
@@ -93,16 +93,16 @@ class _TestTracker:
             print(f'{self.parser_name:20}: {passed_str:31} {appendix}')
 
 
-Prefix = parse_axe.Prefix
-PrefixBracketed = parse_axe.PrefixBracketed
-Postfix = parse_axe.Postfix
-PostfixBracketed = parse_axe.PostfixBracketed
-Infix = parse_axe.Infix
-Ternary = parse_axe.Ternary
+Prefix = seed_axe.Prefix
+PrefixBracketed = seed_axe.PrefixBracketed
+Postfix = seed_axe.Postfix
+PostfixBracketed = seed_axe.PostfixBracketed
+Infix = seed_axe.Infix
+Ternary = seed_axe.Ternary
 
 
 def basic(tt: _TestTracker):
-    pan = parse_axe.ParseAxeNursery()
+    pan = seed_axe.ParseAxeNursery()
     pan.level_rtl('cal', Infix('.'))
     pan.level_ltr('sqb', PostfixBracketed('[', ']'))
     pan.level_ltr('var', Postfix('$'))
@@ -118,7 +118,7 @@ def basic(tt: _TestTracker):
     # pprint.pprint(paxe.op_map)
     # pprint.pprint(paxe.levels)
 
-    tt.set_parse_axe(paxe, "base")
+    tt.set_seed_axe(paxe, "base")
 
     tt.set_current_test_name("infix")
     tt("1", '1')
@@ -180,12 +180,12 @@ def basic(tt: _TestTracker):
     tt("a = b ? c = d : e = f", 'eqa{ a = eqa{ ter{ b ? eqa{ c = d } : e } = f } }')
     tt("a + b ? c + d : e + f", 'ter{ add{ a + b } ? add{ c + d } : add{ e + f } }')
 
-    pan = parse_axe.ParseAxeNursery()
+    pan = seed_axe.ParseAxeNursery()
     pan.level_flat('cal', Infix('.'))
     pan.level_ltr('exc', Postfix('!'))
     paxe = pan.finish()
 
-    tt.set_parse_axe(paxe, "low-postfix")
+    tt.set_seed_axe(paxe, "low-postfix")
 
     tt.set_current_test_name("flat")
     tt("a . b . c . d", 'cal{ a . b . c . d }')
@@ -195,7 +195,7 @@ def basic(tt: _TestTracker):
 
 
 def pq_notation(tt: _TestTracker):
-    pan = parse_axe.ParseAxeNursery()
+    pan = seed_axe.ParseAxeNursery()
     pan.level_ltr('l1', Postfix('q4'))
     pan.level_ltr('l2', Postfix('q3'))
     pan.level_rtl('l3', Prefix('p4'))
@@ -208,7 +208,7 @@ def pq_notation(tt: _TestTracker):
     pan.level_rtl('l10', Prefix('p1'))
     paxe = pan.finish()
 
-    tt.set_parse_axe(paxe, "pq")
+    tt.set_seed_axe(paxe, "pq")
 
     tt.set_current_test_name("allfix")
     tt('p2 p1 a', None)
@@ -221,11 +221,11 @@ def pq_notation(tt: _TestTracker):
 
 
 def ternary(tt: _TestTracker):
-    pan = parse_axe.ParseAxeNursery()
+    pan = seed_axe.ParseAxeNursery()
     pan.level_ltr('ter', Ternary('?', ':'))
     paxe = pan.finish()
 
-    tt.set_parse_axe(paxe, "ternary")
+    tt.set_seed_axe(paxe, "ternary")
 
     tt.set_current_test_name("easy")
     tt('a ? b : c', 'ter{ a ? b : c }')
@@ -234,34 +234,34 @@ def ternary(tt: _TestTracker):
 
 
 def parentheses(tt: _TestTracker):
-    pan = parse_axe.ParseAxeNursery(('(..', '..)'))
+    pan = seed_axe.ParseAxeNursery(('(..', '..)'))
     pan.level_ltr('ter', Ternary('(', ')'))
     pan.level_ltr('pst', PostfixBracketed('(', ')'))
     with pytest.raises(Exception):
         pan.finish()
 
-    pan = parse_axe.ParseAxeNursery()
+    pan = seed_axe.ParseAxeNursery()
     pan.level_rtl('prf', PrefixBracketed('(', ')'))
     with pytest.raises(Exception):
         pan.finish()
 
-    pan = parse_axe.ParseAxeNursery(("(..", "..)"))
+    pan = seed_axe.ParseAxeNursery(("(..", "..)"))
     pan.level_rtl('prf', PrefixBracketed('(', ')'))
     paxe = pan.finish()
 
-    tt.set_parse_axe(paxe, "parens")
+    tt.set_seed_axe(paxe, "parens")
 
     tt.set_current_test_name("easy")
     tt('( b ) a', 'prf{ ( b ) a }')
     tt('a (.. b ..)', None)
     tt('( (.. b ..) ) (.. a ..)', 'prf{ ( b ) a }')
 
-    pan = parse_axe.ParseAxeNursery(("(..", "..)"))
+    pan = seed_axe.ParseAxeNursery(("(..", "..)"))
     pan.level_rtl('prf', PrefixBracketed('(', ')'))
     pan.level_ltr('cat', Infix(None))
     paxe_concat = pan.finish()
 
-    tt.set_parse_axe(paxe_concat, "parens-concat")
+    tt.set_seed_axe(paxe_concat, "parens-concat")
 
     tt.set_current_test_name("easy")
     tt('( b ) a', 'prf{ ( b ) a }')
@@ -273,12 +273,12 @@ def parentheses(tt: _TestTracker):
     tt('a (.. b ..)', 'cat{ a CONCAT b }')
     tt('( (.. b ..) ) (.. a ..) (.. c ..)', 'cat{ prf{ ( b ) a } CONCAT c }')
 
-    pan = parse_axe.ParseAxeNursery(("(..", "..)"))
+    pan = seed_axe.ParseAxeNursery(("(..", "..)"))
     pan.level_ltr('cat', Infix(None))
     pan.level_rtl('prf', PrefixBracketed('(', ')'))
     paxe_concat_2 = pan.finish()
 
-    tt.set_parse_axe(paxe_concat_2, "parens-concat-2")
+    tt.set_seed_axe(paxe_concat_2, "parens-concat-2")
 
     tt.set_current_test_name("easy")
     tt('( b ) a', 'prf{ ( b ) a }')
@@ -295,7 +295,7 @@ def parentheses(tt: _TestTracker):
 
 
 def concat(tt: _TestTracker):
-    pan = parse_axe.ParseAxeNursery()
+    pan = seed_axe.ParseAxeNursery()
     pan.level_rtl('fnc', Infix('.'))
     pan.level_ltr('exc', Postfix('!'))
     pan.level_rtl('tld', Prefix('~'))
@@ -306,7 +306,7 @@ def concat(tt: _TestTracker):
     pan.level_rtl('eqa', Infix('='))
     paxe = pan.finish()
 
-    tt.set_parse_axe(paxe, "concat")
+    tt.set_seed_axe(paxe, "concat")
 
     tt.set_current_test_name("easy")
     tt('a b', "ifx{ a CONCAT b }")
@@ -323,7 +323,7 @@ def concat(tt: _TestTracker):
     tt('a ! b', "ifx{ exc{ a ! } CONCAT b }")
     tt('a ? b', None)
 
-    pan = parse_axe.ParseAxeNursery()
+    pan = seed_axe.ParseAxeNursery()
     pan.level_rtl('fnc', Infix('.'))
     pan.level_ltr('exc', Postfix('!'))
     pan.level_rtl('tld', Prefix('~'))
@@ -334,7 +334,7 @@ def concat(tt: _TestTracker):
     pan.level_rtl('eqa', Infix('='))
     paxe_rtl = pan.finish()
 
-    tt.set_parse_axe(paxe_rtl, "concat_rtl")
+    tt.set_seed_axe(paxe_rtl, "concat_rtl")
 
     tt.set_current_test_name("easy")
     tt('a b', "ifx{ a CONCAT b }")
@@ -344,7 +344,7 @@ def concat(tt: _TestTracker):
 
 
 def cpp(tt: _TestTracker):
-    pan = parse_axe.ParseAxeNursery()
+    pan = seed_axe.ParseAxeNursery()
     pan.level_ltr('nam', Infix('::'))
     pan.level_ltr(
         'pst',
@@ -385,7 +385,7 @@ def cpp(tt: _TestTracker):
     pan.level_ltr('com', Infix(','))
     paxe_cpp = pan.finish()
 
-    tt.set_parse_axe(paxe_cpp, "C++")
+    tt.set_seed_axe(paxe_cpp, "C++")
 
     tt.set_current_test_name("basic")
     tt('++ a', "prf{ ++ a }")

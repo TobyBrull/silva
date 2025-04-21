@@ -3,10 +3,10 @@
 #include "canopy/expected.hpp"
 #include "canopy/scope_exit.hpp"
 #include "canopy/small_vector.hpp"
-#include "parse_axe.hpp"
 #include "parse_tree.hpp"
 #include "parse_tree_nursery.hpp"
 #include "seed.hpp"
+#include "seed_axe.hpp"
 #include "tokenization.hpp"
 
 #include <utility>
@@ -57,7 +57,7 @@ namespace silva {
     {
     }
 
-    expected_t<void> axe_ops(parse_axe::parse_axe_level_desc_t& level,
+    expected_t<void> axe_ops(seed_axe::seed_axe_level_desc_t& level,
                              const parse_tree_span_t pts_axe_ops)
     {
       token_id_t axe_op_type = token_id_none;
@@ -102,21 +102,21 @@ namespace silva {
       while (i < axe_op_vec.size()) {
         if (axe_op_type == ti_atom_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
-          level.opers.push_back(parse_axe::atom_nest_t{
+          level.opers.push_back(seed_axe::atom_nest_t{
               .left_bracket  = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i])),
               .right_bracket = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
         else if (axe_op_type == ti_prefix) {
-          level.opers.push_back(parse_axe::prefix_t{
+          level.opers.push_back(seed_axe::prefix_t{
               .token_id = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i])),
           });
           i += 1;
         }
         else if (axe_op_type == ti_prefix_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
-          level.opers.push_back(parse_axe::prefix_nest_t{
+          level.opers.push_back(seed_axe::prefix_nest_t{
               .left_bracket  = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i])),
               .right_bracket = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i + 1])),
           });
@@ -125,14 +125,14 @@ namespace silva {
         else if (axe_op_type == ti_infix || axe_op_type == ti_infix_flat) {
           const bool flatten = (axe_op_type == ti_infix_flat);
           if (axe_op_vec[i] == ti_concat) {
-            level.opers.push_back(parse_axe::infix_t{
+            level.opers.push_back(seed_axe::infix_t{
                 .token_id = ti_concat,
                 .concat   = true,
                 .flatten  = flatten,
             });
           }
           else {
-            level.opers.push_back(parse_axe::infix_t{
+            level.opers.push_back(seed_axe::infix_t{
                 .token_id = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i])),
                 .flatten  = flatten,
             });
@@ -141,21 +141,21 @@ namespace silva {
         }
         else if (axe_op_type == ti_ternary) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
-          level.opers.push_back(parse_axe::ternary_t{
+          level.opers.push_back(seed_axe::ternary_t{
               .first  = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i])),
               .second = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i + 1])),
           });
           i += 2;
         }
         else if (axe_op_type == ti_postfix) {
-          level.opers.push_back(parse_axe::postfix_t{
+          level.opers.push_back(seed_axe::postfix_t{
               .token_id = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i])),
           });
           i += 1;
         }
         else if (axe_op_type == ti_postfix_nest) {
           SILVA_EXPECT(i + 1 < axe_op_vec.size(), ASSERT);
-          level.opers.push_back(parse_axe::postfix_nest_t{
+          level.opers.push_back(seed_axe::postfix_nest_t{
               .left_bracket  = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i])),
               .right_bracket = SILVA_EXPECT_FWD(swp->token_id_in_string(axe_op_vec[i + 1])),
           });
@@ -168,7 +168,7 @@ namespace silva {
       return {};
     }
 
-    expected_t<void> axe_level(parse_axe::parse_axe_level_desc_t& level,
+    expected_t<void> axe_level(seed_axe::seed_axe_level_desc_t& level,
                                const name_id_t scope_name,
                                const parse_tree_span_t pts_axe_level)
     {
@@ -181,7 +181,7 @@ namespace silva {
         else if (child_index == 1) {
           SILVA_EXPECT(pts_axe_level[child_node_index].rule_name == fni_axe_assoc, MINOR);
           const token_id_t assoc = s_tokens[pts_axe_level[child_node_index].token_begin];
-          using enum parse_axe::assoc_t;
+          using enum seed_axe::assoc_t;
           if (assoc == ti_nest) {
             level.assoc = NEST;
           }
@@ -204,10 +204,10 @@ namespace silva {
       return {};
     }
 
-    expected_t<seed_engine_t::parse_axe_data_t>
-    create_parse_axe(const name_id_t scope_name,
-                     const name_id_t rule_name,
-                     const parse_tree_span_t pts_axe_with_atom)
+    expected_t<seed_engine_t::seed_axe_data_t>
+    create_seed_axe(const name_id_t scope_name,
+                    const name_id_t rule_name,
+                    const parse_tree_span_t pts_axe_with_atom)
     {
       const auto& s_node = pts_axe_with_atom[0];
       SILVA_EXPECT(s_node.rule_name == fni_axe_with_atom, MINOR);
@@ -219,7 +219,7 @@ namespace silva {
 
       const auto pts_axe = pts_axe_with_atom.sub_tree_span_at(children[1]);
 
-      vector_t<parse_axe::parse_axe_level_desc_t> level_descs;
+      vector_t<seed_axe::seed_axe_level_desc_t> level_descs;
       SILVA_EXPECT(s_node.num_children >= 1, MINOR);
       level_descs.reserve(s_node.num_children - 1);
       for (const auto [child_node_index, child_index]: pts_axe.children_range()) {
@@ -228,11 +228,10 @@ namespace silva {
         SILVA_EXPECT_FWD(
             axe_level(curr_level, rule_name, pts_axe.sub_tree_span_at(child_node_index)));
       }
-      auto pa =
-          SILVA_EXPECT_FWD(parse_axe::parse_axe_create(swp, rule_name, std::move(level_descs)));
+      auto pa = SILVA_EXPECT_FWD(seed_axe::seed_axe_create(swp, rule_name, std::move(level_descs)));
       return {{
           .atom_rule_name = atom_rule_name,
-          .parse_axe      = std::move(pa),
+          .seed_axe       = std::move(pa),
       }};
     }
 
@@ -345,8 +344,8 @@ namespace silva {
         }
 
         if (expr_rule_name == fni_axe_with_atom) {
-          se->parse_axes[curr_rule_name] =
-              SILVA_EXPECT_FWD(create_parse_axe(scope_name, curr_rule_name, pts_expr));
+          se->seed_axes[curr_rule_name] =
+              SILVA_EXPECT_FWD(create_seed_axe(scope_name, curr_rule_name, pts_expr));
         }
         else {
           for (index_t i = 0; i < pts_expr.size(); ++i) {
@@ -765,20 +764,19 @@ namespace silva {
 
       expected_t<node_and_error_t> handle_rule_axe(const name_id_t t_rule_name)
       {
-        const auto it = se->parse_axes.find(t_rule_name);
-        SILVA_EXPECT(it != se->parse_axes.end(), MAJOR);
+        const auto it = se->seed_axes.find(t_rule_name);
+        SILVA_EXPECT(it != se->seed_axes.end(), MAJOR);
         auto ss{stake()};
-        const seed_engine_t::parse_axe_data_t& parse_axe_data = it->second;
+        const seed_engine_t::seed_axe_data_t& seed_axe_data = it->second;
         const delegate_t<expected_t<parse_tree_node_t>()>::pack_t pack{
             [&]() -> expected_t<parse_tree_node_t> {
-              node_and_error_t result =
-                  SILVA_EXPECT_FWD(handle_rule(parse_axe_data.atom_rule_name));
+              node_and_error_t result = SILVA_EXPECT_FWD(handle_rule(seed_axe_data.atom_rule_name));
               return std::move(result.node);
             },
         };
         ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(
             t_rule_name,
-            parse_axe_data.parse_axe.apply(*this, parse_axe_data.atom_rule_name, pack.delegate)));
+            seed_axe_data.seed_axe.apply(*this, seed_axe_data.atom_rule_name, pack.delegate)));
         return ss.commit();
       }
 

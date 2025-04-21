@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parse_axe.hpp"
+#include "seed_axe.hpp"
 
 #include <regex>
 
@@ -20,12 +20,12 @@ namespace silva {
     // Maps the token-id's that correspond to regexes to the compiled version of that regex.
     hashmap_t<token_id_t, optional_t<std::regex>> regexes;
 
-    // Maps the rule-name of a parse-axe to the corresponding parse-axe.
-    struct parse_axe_data_t {
+    // Maps the rule-name of a seed-axe to the corresponding seed-axe.
+    struct seed_axe_data_t {
       name_id_t atom_rule_name = name_id_root;
-      parse_axe::parse_axe_t parse_axe;
+      seed_axe::seed_axe_t seed_axe;
     };
-    hashmap_t<name_id_t, parse_axe_data_t> parse_axes;
+    hashmap_t<name_id_t, seed_axe_data_t> seed_axes;
 
     // Maps the scope/rule-name to the set of keywords associated with it.
     hashmap_t<name_id_t, hashset_t<token_id_t>> keyword_scopes;

@@ -1,9 +1,9 @@
-#include "parse_axe.hpp"
+#include "seed_axe.hpp"
 #include "canopy/variant.hpp"
 #include <ranges>
 #include <variant>
 
-namespace silva::parse_axe {
+namespace silva::seed_axe {
   bool operator<(const precedence_t& lhs, const precedence_t& rhs)
   {
     if (lhs.level_index < rhs.level_index) {
@@ -22,14 +22,14 @@ namespace silva::parse_axe {
     }
   };
 
-  expected_t<parse_axe_t> parse_axe_create(syntax_ward_ptr_t swp,
-                                           const name_id_t parse_axe_name,
-                                           const vector_t<parse_axe_level_desc_t>& level_descs)
+  expected_t<seed_axe_t> seed_axe_create(syntax_ward_ptr_t swp,
+                                         const name_id_t seed_axe_name,
+                                         const vector_t<seed_axe_level_desc_t>& level_descs)
   {
     using enum assoc_t;
     using enum error_level_t;
     bool may_be_nest = true;
-    for (const parse_axe_level_desc_t& level_desc: level_descs) {
+    for (const seed_axe_level_desc_t& level_desc: level_descs) {
       for (const auto& oper: level_desc.opers) {
         if (level_desc.assoc == NEST) {
           SILVA_EXPECT(may_be_nest,
@@ -64,9 +64,9 @@ namespace silva::parse_axe {
       }
     }
 
-    parse_axe_t retval{
+    seed_axe_t retval{
         .swp  = swp,
-        .name = parse_axe_name,
+        .name = seed_axe_name,
     };
 
     const auto register_op = [&retval, swp](const token_id_t token_id,
@@ -136,7 +136,7 @@ namespace silva::parse_axe {
     for (index_t i = 0; i < level_descs.size(); ++i) {
       const auto& level_desc          = level_descs[i];
       const level_index_t level_index = level_descs.size() - i;
-      const name_id_t full_name       = swp->name_id(parse_axe_name, level_desc.base_name);
+      const name_id_t full_name       = swp->name_id(seed_axe_name, level_desc.base_name);
       const precedence_t precedence{
           .level_index = level_index,
           .assoc       = level_desc.assoc,
@@ -193,10 +193,10 @@ namespace silva::parse_axe {
     return retval;
   }
 
-  struct parse_axe_run_t {
-    // parse_axe_t::apply() params
+  struct seed_axe_run_t {
+    // seed_axe_t::apply() params
 
-    const parse_axe_t& parse_axe;
+    const seed_axe_t& seed_axe;
     parse_tree_nursery_t& nursery;
     syntax_ward_ptr_t swp = nursery.swp;
     const name_id_t atom_name_id;
@@ -253,7 +253,7 @@ namespace silva::parse_axe {
       auto atom_result = std::move(maybe_atom_result).value();
       SILVA_EXPECT(atom_result.num_children == 1,
                    ASSERT,
-                   "The atom function given to parse_axe_t must always parse a single child");
+                   "The atom function given to seed_axe_t must always parse a single child");
       const index_t atom_child_index = ss_rule.proto_node.num_children;
       const pair_t<index_t, index_t> token_range{atom_result.token_begin, atom_result.token_end};
       ss_rule.add_proto_node(atom_result);
@@ -431,8 +431,8 @@ namespace silva::parse_axe {
       mode_t mode = ATOM_MODE;
 
       const auto hallucinate_concat = [&]() -> expected_t<void> {
-        SILVA_EXPECT(parse_axe.concat_result.has_value(), ASSERT);
-        const auto& reg = parse_axe.concat_result.value();
+        SILVA_EXPECT(seed_axe.concat_result.has_value(), ASSERT);
+        const auto& reg = seed_axe.concat_result.value();
         SILVA_EXPECT_FWD(stack_pair.stack_pop(reg.precedence));
         stack_pair.oper_stack.push_back(oper_item_t{
             .oper       = std::get<infix_t>(reg.oper),
@@ -445,9 +445,9 @@ namespace silva::parse_axe {
       };
 
       while (nursery.num_tokens_left() >= 1) {
-        const auto it = parse_axe.results.find(nursery.token_id_by());
-        if (it == parse_axe.results.end()) {
-          if (mode == INFIX_MODE && !parse_axe.concat_result.has_value()) {
+        const auto it = seed_axe.results.find(nursery.token_id_by());
+        if (it == seed_axe.results.end()) {
+          if (mode == INFIX_MODE && !seed_axe.concat_result.has_value()) {
             break;
           }
           // Current token is not one of the known operators, so it has to be an atom or the end of
@@ -456,7 +456,7 @@ namespace silva::parse_axe {
           if (!atom_data.has_value()) {
             break;
           }
-          if (mode == INFIX_MODE && parse_axe.concat_result.has_value()) {
+          if (mode == INFIX_MODE && seed_axe.concat_result.has_value()) {
             SILVA_EXPECT_FWD(hallucinate_concat());
           }
           if (mode == ATOM_MODE) {
@@ -474,11 +474,11 @@ namespace silva::parse_axe {
           }
         }
         else {
-          const parse_axe_result_t& pa_result = it->second;
+          const seed_axe_result_t& pa_result = it->second;
           if (pa_result.is_right_bracket) {
             break;
           }
-          if (mode == INFIX_MODE && parse_axe.concat_result.has_value()) {
+          if (mode == INFIX_MODE && seed_axe.concat_result.has_value()) {
             if (pa_result.prefix.has_value() && !pa_result.regular.has_value()) {
               SILVA_EXPECT_FWD(hallucinate_concat());
               continue;
@@ -490,7 +490,7 @@ namespace silva::parse_axe {
             }
           }
           if (mode == ATOM_MODE) {
-            SILVA_EXPECT_PARSE(parse_axe.name,
+            SILVA_EXPECT_PARSE(seed_axe.name,
                                pa_result.prefix.has_value(),
                                "found non-prefix operator {} when expecting next atom",
                                swp->token_id_wrap(nursery.token_id_by()));
@@ -605,7 +605,7 @@ namespace silva::parse_axe {
       }
       SILVA_EXPECT_FWD(stack_pair.stack_pop(precedence_min));
       SILVA_EXPECT(stack_pair.oper_stack.empty(), MINOR);
-      SILVA_EXPECT_PARSE(parse_axe.name, stack_pair.atom_stack.size() > 0, "empty expression");
+      SILVA_EXPECT_PARSE(seed_axe.name, stack_pair.atom_stack.size() > 0, "empty expression");
       SILVA_EXPECT(stack_pair.atom_stack.size() == 1, MINOR);
       SILVA_EXPECT(stack_pair.atom_stack.front().atom_tree_node_index + 1 == atom_tree.size(),
                    MINOR);
@@ -678,12 +678,12 @@ namespace silva::parse_axe {
   };
 
   expected_t<parse_tree_node_t>
-  parse_axe_t::apply(parse_tree_nursery_t& nursery,
-                     const name_id_t atom_name_id,
-                     delegate_t<expected_t<parse_tree_node_t>()> atom) const
+  seed_axe_t::apply(parse_tree_nursery_t& nursery,
+                    const name_id_t atom_name_id,
+                    delegate_t<expected_t<parse_tree_node_t>()> atom) const
   {
-    parse_axe_run_t run{
-        .parse_axe    = *this,
+    seed_axe_run_t run{
+        .seed_axe     = *this,
         .nursery      = nursery,
         .atom_name_id = atom_name_id,
         .atom         = atom,

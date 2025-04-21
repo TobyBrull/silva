@@ -10,7 +10,7 @@
 // An mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard
 // algorithm.
 
-namespace silva::parse_axe {
+namespace silva::seed_axe {
   enum class assoc_t {
     INVALID,
     NEST,
@@ -106,18 +106,18 @@ namespace silva::parse_axe {
     friend auto operator<=>(const result_oper_t<Oper>&, const result_oper_t<Oper>&) = default;
   };
 
-  struct parse_axe_result_t {
+  struct seed_axe_result_t {
     optional_t<result_oper_t<oper_prefix_t>> prefix;
     optional_t<result_oper_t<oper_regular_t>> regular;
     bool is_right_bracket = false;
 
-    friend auto operator<=>(const parse_axe_result_t&, const parse_axe_result_t&) = default;
+    friend auto operator<=>(const seed_axe_result_t&, const seed_axe_result_t&) = default;
   };
 
-  struct parse_axe_t {
+  struct seed_axe_t {
     syntax_ward_ptr_t swp;
     name_id_t name = name_id_root;
-    hashmap_t<token_id_t, parse_axe_result_t> results;
+    hashmap_t<token_id_t, seed_axe_result_t> results;
     optional_t<result_oper_t<oper_regular_t>> concat_result;
 
     expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&,
@@ -125,13 +125,13 @@ namespace silva::parse_axe {
                                         delegate_t<expected_t<parse_tree_node_t>()> atom) const;
   };
 
-  struct parse_axe_level_desc_t {
+  struct seed_axe_level_desc_t {
     token_id_t base_name = 0;
     assoc_t assoc        = assoc_t::INVALID;
     vector_t<oper_any_t> opers;
     parse_tree_span_t pts;
   };
-  expected_t<parse_axe_t> parse_axe_create(syntax_ward_ptr_t,
-                                           name_id_t parse_axe_name,
-                                           const vector_t<parse_axe_level_desc_t>&);
+  expected_t<seed_axe_t> seed_axe_create(syntax_ward_ptr_t,
+                                         name_id_t seed_axe_name,
+                                         const vector_t<seed_axe_level_desc_t>&);
 }

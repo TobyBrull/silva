@@ -5,7 +5,7 @@ import enum
 
 import misc
 import testset
-import parse_axe
+import seed_axe
 import parse_tree
 
 Node = parse_tree.Node
@@ -13,8 +13,8 @@ Node = parse_tree.Node
 
 @dataclasses.dataclass
 class OperItem:
-    op: parse_axe.Op
-    level_info: parse_axe.LevelInfo
+    op: seed_axe.Op
+    level_info: seed_axe.LevelInfo
     token_indexes: list[int]
     min_token_index: int | None = None
     max_token_index: int | None = None
@@ -40,17 +40,17 @@ def _consistent_range(tokens: list[int], token_ranges: list[tuple[int, int]]) ->
     return all_token_ranges[0][0], all_token_ranges[-1][1]
 
 
-ATOM_MODE = parse_axe.ParseMode.ATOM
-INFIX_MODE = parse_axe.ParseMode.INFIX
+ATOM_MODE = seed_axe.ParseMode.ATOM
+INFIX_MODE = seed_axe.ParseMode.INFIX
 
 
-def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomItem:
+def expr_impl(paxe: seed_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomItem:
     oper_stack: list[OperItem] = []
     atom_stack: list[AtomItem] = []
     mode = ATOM_MODE
     index = begin
 
-    def stack_pop(level_info: parse_axe.LevelInfo):
+    def stack_pop(level_info: seed_axe.LevelInfo):
         nonlocal oper_stack, atom_stack
         while (len(oper_stack) >= 1) and not (oper_stack[-1].level_info < level_info):
             oi = oper_stack[-1]
@@ -61,8 +61,8 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
             )
             assert (oi.min_token_index is None) or (oi.min_token_index <= token_begin)
             assert (oi.max_token_index is None) or (token_end <= oi.max_token_index)
-            if oi.level_info.assoc == parse_axe.Assoc.FLAT and atom_stack[-oi.op.arity].flat_flag:
-                assert type(oi.op) == parse_axe.Infix
+            if oi.level_info.assoc == seed_axe.Assoc.FLAT and atom_stack[-oi.op.arity].flat_flag:
+                assert type(oi.op) == seed_axe.Infix
                 assert oi.op.arity == 2
                 base_node = atom_stack[-2].node
                 add_node = atom_stack[-1].node
@@ -86,7 +86,7 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
         level_info = paxe.get_concat_info()
         assert level_info is not None
         stack_pop(level_info)
-        oper_stack.append(OperItem(parse_axe.Infix(None), level_info, []))
+        oper_stack.append(OperItem(seed_axe.Infix(None), level_info, []))
         mode = ATOM_MODE
 
     def handle_bracketed(left_bracket, right_bracket):
@@ -140,12 +140,12 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 (op, level_info) = lr.prefix_res
                 stack_pop(level_info)
 
-                if type(op) == parse_axe.Prefix:
+                if type(op) == seed_axe.Prefix:
                     oper_stack.append(OperItem(op, level_info, [index], min_token_index=index))
                     index += 1
                     continue
 
-                if type(op) == parse_axe.PrefixBracketed:
+                if type(op) == seed_axe.PrefixBracketed:
                     atom = handle_bracketed(op.left_bracket, op.right_bracket)
                     atom_stack.append(atom)
                     oper_stack.append(
@@ -158,24 +158,24 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
                 (op, level_info) = lr.regular_res
                 stack_pop(level_info)
 
-                if type(op) == parse_axe.Postfix:
+                if type(op) == seed_axe.Postfix:
                     oper_stack.append(OperItem(op, level_info, [index], max_token_index=index + 1))
                     index += 1
                     continue
 
-                if type(op) == parse_axe.PostfixBracketed:
+                if type(op) == seed_axe.PostfixBracketed:
                     atom = handle_bracketed(op.left_bracket, op.right_bracket)
                     atom_stack.append(atom)
                     oper_stack.append(OperItem(op, level_info, [], max_token_index=atom.token_end))
                     continue
 
-                if type(op) == parse_axe.Infix:
+                if type(op) == seed_axe.Infix:
                     oper_stack.append(OperItem(op, level_info, [index]))
                     mode = ATOM_MODE
                     index += 1
                     continue
 
-                if type(op) == parse_axe.Ternary:
+                if type(op) == seed_axe.Ternary:
                     atom_mid = handle_bracketed(op.first_name, op.second_name)
                     atom_stack.append(atom_mid)
                     oper_stack.append(OperItem(op, level_info, []))
@@ -184,13 +184,13 @@ def expr_impl(paxe: parse_axe.ParseAxe, tokens: list[misc.Token], begin: int) ->
 
         raise Exception(f'Unknown {tokens[index]=}')
 
-    stack_pop(parse_axe.LevelInfo('END', -1, parse_axe.Assoc.NONE))
+    stack_pop(seed_axe.LevelInfo('END', -1, seed_axe.Assoc.NONE))
     assert len(oper_stack) == 0, f'oper_stack not empty: {pprint.pformat(oper_stack)}'
     assert len(atom_stack) == 1, f'atom_stack not unit: {pprint.pformat(atom_stack)}'
     return atom_stack[0]
 
 
-def shunting_yard(paxe: parse_axe.ParseAxe, tokens: list[misc.Token]) -> Node:
+def shunting_yard(paxe: seed_axe.ParseAxe, tokens: list[misc.Token]) -> Node:
     retval = expr_impl(paxe, tokens, 0)
     assert retval.token_begin == 0
     assert retval.token_end == len(tokens)

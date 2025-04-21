@@ -9,17 +9,17 @@
 namespace silva {
   using enum token_category_t;
 
-  parse_axe::parse_axe_t create_parse_axe_expr(syntax_ward_ptr_t swp)
+  seed_axe::seed_axe_t create_seed_axe_expr(syntax_ward_ptr_t swp)
   {
-    using namespace parse_axe;
+    using namespace seed_axe;
     using enum assoc_t;
-    vector_t<parse_axe_level_desc_t> level_descs;
-    level_descs.push_back(parse_axe_level_desc_t{
+    vector_t<seed_axe_level_desc_t> level_descs;
+    level_descs.push_back(seed_axe_level_desc_t{
         .base_name = *swp->token_id("Parens"),
         .assoc     = NEST,
         .opers     = {atom_nest_t{*swp->token_id("("), *swp->token_id(")")}},
     });
-    level_descs.push_back(parse_axe_level_desc_t{
+    level_descs.push_back(seed_axe_level_desc_t{
         .base_name = *swp->token_id("Prefix"),
         .assoc     = RIGHT_TO_LEFT,
         .opers =
@@ -27,7 +27,7 @@ namespace silva {
                 prefix_t{*swp->token_id("not")},
             },
     });
-    level_descs.push_back(parse_axe_level_desc_t{
+    level_descs.push_back(seed_axe_level_desc_t{
         .base_name = *swp->token_id("Postfix"),
         .assoc     = LEFT_TO_RIGHT,
         .opers =
@@ -37,7 +37,7 @@ namespace silva {
                 postfix_t{*swp->token_id("+")},
             },
     });
-    level_descs.push_back(parse_axe_level_desc_t{
+    level_descs.push_back(seed_axe_level_desc_t{
         .base_name = *swp->token_id("Concat"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{
@@ -46,18 +46,18 @@ namespace silva {
                 .flatten  = true,
         }},
     });
-    level_descs.push_back(parse_axe_level_desc_t{
+    level_descs.push_back(seed_axe_level_desc_t{
         .base_name = *swp->token_id("And"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{.token_id = *swp->token_id("but_then"), .flatten = true}},
     });
-    level_descs.push_back(parse_axe_level_desc_t{
+    level_descs.push_back(seed_axe_level_desc_t{
         .base_name = *swp->token_id("Or"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{.token_id = *swp->token_id("|"), .flatten = true}},
     });
     const name_id_t fni_expr = swp->name_id_of("Seed", "Expr");
-    auto retval              = SILVA_EXPECT_ASSERT(parse_axe_create(swp, fni_expr, level_descs));
+    auto retval              = SILVA_EXPECT_ASSERT(seed_axe_create(swp, fni_expr, level_descs));
     return retval;
   }
 
@@ -110,10 +110,10 @@ namespace silva {
       name_id_t fni_nt_base       = swp->name_id_of(fni_nt, "Base");
       name_id_t fni_term          = swp->name_id_of(fni_seed, "Terminal");
 
-      parse_axe::parse_axe_t seed_parse_axe;
+      seed_axe::seed_axe_t seed_seed_axe;
 
       seed_parse_tree_nursery_t(tokenization_ptr_t tp)
-        : parse_tree_nursery_t(tp), seed_parse_axe(create_parse_axe_expr(tp->swp))
+        : parse_tree_nursery_t(tp), seed_seed_axe(create_seed_axe_expr(tp->swp))
       {
       }
 
@@ -290,7 +290,7 @@ namespace silva {
         using atom_delegate_t    = delegate_t<expected_t<parse_tree_node_t>()>;
         const auto atom_delegate = atom_delegate_t::make<&seed_parse_tree_nursery_t::atom>(this);
         ss.add_proto_node(
-            SILVA_EXPECT_PARSE_FWD(fni_expr, seed_parse_axe.apply(*this, fni_atom, atom_delegate)));
+            SILVA_EXPECT_PARSE_FWD(fni_expr, seed_seed_axe.apply(*this, fni_atom, atom_delegate)));
         return ss.commit();
       }
 
