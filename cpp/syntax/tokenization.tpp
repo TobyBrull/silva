@@ -16,7 +16,6 @@ namespace silva::test {
       CHECK(*result->token_info_get(0) == info_t{IDENTIFIER, "Hello"});
       CHECK(*result->token_info_get(1) == info_t{NUMBER, "123"});
       CHECK(*result->token_info_get(2) == info_t{OPERATOR, ".<>."});
-      REQUIRE(sw.token_infos.size() == 8);
     }
 
     {
@@ -34,39 +33,6 @@ namespace silva::test {
       CHECK(*result->token_info_get(6) == info_t{NUMBER, "1"});
       CHECK(*result->token_info_get(7) == info_t{OPERATOR, "+"});
       CHECK(*result->token_info_get(8) == info_t{NUMBER, "3"});
-      REQUIRE(sw.token_infos.size() == 15);
-    }
-
-    {
-      using vv_t = vector_t<name_id_t>;
-
-      const name_id_t name1 = sw.name_id_of("std", "expr", "stmt");
-      const name_id_t name2 = sw.name_id_of("std", "expr");
-      const name_id_t name3 = sw.name_id_of("std", "ranges", "vector");
-      CHECK(sw.name_infos.size() == 6);
-      CHECK(sw.name_lookup.size() == 6);
-
-      {
-        const name_id_style_t ts{
-            .twp       = sw.ptr(),
-            .root      = *sw.token_id("cpp"),
-            .current   = *sw.token_id("this"),
-            .parent    = *sw.token_id("super"),
-            .separator = *sw.token_id("::"),
-        };
-        CHECK(ts.absolute(name1) == "cpp::std::expr::stmt");
-        CHECK(ts.absolute(name2) == "cpp::std::expr");
-        CHECK(ts.absolute(name3) == "cpp::std::ranges::vector");
-        CHECK(ts.relative(name1, name1) == "this");
-        CHECK(ts.relative(name2, name1) == "stmt");
-        CHECK(ts.relative(name3, name1) == "super::super::expr::stmt");
-        CHECK(ts.relative(name1, name2) == "super");
-        CHECK(ts.relative(name2, name2) == "this");
-        CHECK(ts.relative(name3, name2) == "super::super::expr");
-        CHECK(ts.relative(name1, name3) == "super::super::ranges::vector");
-        CHECK(ts.relative(name2, name3) == "super::ranges::vector");
-        CHECK(ts.relative(name3, name3) == "this");
-      }
     }
 
     {

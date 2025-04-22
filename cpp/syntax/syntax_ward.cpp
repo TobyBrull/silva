@@ -2,6 +2,7 @@
 
 #include "canopy/convert.hpp"
 #include "parse_tree.hpp"
+#include "seed.hpp"
 
 namespace silva {
 
@@ -184,10 +185,10 @@ namespace silva {
   }
 
   struct syntax_ward_t::impl_t {
-    syntax_ward_ptr_t twp;
-    name_id_style_t default_nis{twp};
+    syntax_ward_ptr_t swp;
+    name_id_style_t default_nis{swp};
 
-    impl_t(syntax_ward_ptr_t twp) : twp(twp) {}
+    impl_t(syntax_ward_ptr_t swp) : swp(swp) {}
   };
 
   syntax_ward_t::syntax_ward_t()
@@ -291,75 +292,26 @@ namespace silva {
   token_id_wrap_t syntax_ward_t::token_id_wrap(const token_id_t token_id)
   {
     return token_id_wrap_t{
-        .twp      = ptr(),
+        .swp      = ptr(),
         .token_id = token_id,
     };
   }
   name_id_wrap_t syntax_ward_t::name_id_wrap(const name_id_t name_id)
   {
     return name_id_wrap_t{
-        .twp     = ptr(),
+        .swp     = ptr(),
         .name_id = name_id,
     };
   }
 
-  string_t name_id_style_t::absolute(const name_id_t target_fni) const
-  {
-    if (target_fni == name_id_root) {
-      return twp->token_infos[root].str;
-    }
-    const name_info_t& fni = twp->name_infos[target_fni];
-    return absolute(fni.parent_name) + twp->token_infos[separator].str +
-        twp->token_infos[fni.base_name].str;
-  }
-
-  string_t name_id_style_t::relative(const name_id_t current_fni, const name_id_t target_fni) const
-  {
-    const name_id_t lca = twp->name_id_lca(current_fni, target_fni);
-
-    string_t first_part;
-    {
-      name_id_t curr = current_fni;
-      while (curr != lca) {
-        if (!first_part.empty()) {
-          first_part += twp->token_infos[separator].str;
-        }
-        first_part += twp->token_infos[parent].str;
-        curr = twp->name_infos[curr].parent_name;
-      }
-    }
-
-    string_t second_part;
-    {
-      name_id_t curr = target_fni;
-      while (curr != lca) {
-        if (!second_part.empty()) {
-          second_part = twp->token_infos[separator].str + second_part;
-        }
-        const name_info_t* fni = &twp->name_infos[curr];
-        second_part            = twp->token_infos[fni->base_name].str + second_part;
-        curr                   = twp->name_infos[curr].parent_name;
-      }
-    }
-    if (!first_part.empty() && !second_part.empty()) {
-      return first_part + twp->token_infos[separator].str + second_part;
-    }
-    else if (first_part.empty() && second_part.empty()) {
-      return twp->token_infos[current].str;
-    }
-    else {
-      return first_part + second_part;
-    }
-  }
-
   string_or_view_t to_string_impl(const token_id_wrap_t& x)
   {
-    return string_or_view_t{fmt::format("token[ {} ]", x.twp->token_infos[x.token_id].str)};
+    return string_or_view_t{fmt::format("token[ {} ]", x.swp->token_infos[x.token_id].str)};
   }
 
   string_or_view_t to_string_impl(const name_id_wrap_t& x)
   {
-    return string_or_view_t{x.twp->default_name_id_style().absolute(x.name_id)};
+    return string_or_view_t{x.swp->default_name_id_style().absolute(x.name_id)};
   }
 
   tokenization_ptr_t syntax_ward_t::add(unique_ptr_t<const tokenization_t> x)

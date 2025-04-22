@@ -90,29 +90,15 @@ namespace silva {
   };
   using syntax_ward_ptr_t = ptr_t<syntax_ward_t>;
 
-  struct name_id_style_t {
-    syntax_ward_ptr_t twp;
-    token_id_t root      = *twp->token_id("_");
-    token_id_t current   = *twp->token_id("x");
-    token_id_t parent    = *twp->token_id("p");
-    token_id_t separator = *twp->token_id(".");
-
-    name_id_t from_token_span(name_id_t current, span_t<const token_id_t>) const;
-
-    string_t absolute(name_id_t) const;
-    string_t relative(name_id_t current, name_id_t) const;
-    string_t readable(name_id_t current, name_id_t) const;
-  };
-
   struct token_id_wrap_t {
-    syntax_ward_ptr_t twp;
+    syntax_ward_ptr_t swp;
     token_id_t token_id = token_id_none;
 
     friend string_or_view_t to_string_impl(const token_id_wrap_t&);
   };
 
   struct name_id_wrap_t {
-    syntax_ward_ptr_t twp;
+    syntax_ward_ptr_t swp;
     name_id_t name_id = name_id_root;
 
     friend string_or_view_t to_string_impl(const name_id_wrap_t&);

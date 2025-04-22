@@ -2,6 +2,7 @@
 
 #include "canopy/convert.hpp"
 #include "canopy/tree.hpp"
+#include "seed.hpp"
 
 namespace silva {
   constexpr index_t max_num_tokens = 5;

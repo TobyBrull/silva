@@ -135,11 +135,11 @@ namespace silva {
 
   expected_t<string_t> fern_to_string(const parse_tree_t* pt, const index_t start_node)
   {
-    syntax_ward_ptr_t twp        = pt->tp->swp;
-    const name_id_t fni_fern     = twp->name_id_of("Fern");
-    const name_id_t fni_lbl_item = twp->name_id_of(fni_fern, "LabeledItem");
-    const name_id_t fni_label    = twp->name_id_of(fni_fern, "Label");
-    const name_id_t fni_value    = twp->name_id_of(fni_fern, "Value");
+    syntax_ward_ptr_t swp        = pt->tp->swp;
+    const name_id_t fni_fern     = swp->name_id_of("Fern");
+    const name_id_t fni_lbl_item = swp->name_id_of(fni_fern, "LabeledItem");
+    const name_id_t fni_label    = swp->name_id_of(fni_fern, "Label");
+    const name_id_t fni_value    = swp->name_id_of(fni_fern, "Value");
 
     SILVA_EXPECT(pt->nodes[start_node].rule_name == fni_fern, ASSERT);
     string_t retval;
@@ -189,11 +189,11 @@ namespace silva {
 
   expected_t<string_t> fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
-    syntax_ward_ptr_t twp        = pt->tp->swp;
-    const name_id_t fni_fern     = twp->name_id_of("Fern");
-    const name_id_t fni_lbl_item = twp->name_id_of(fni_fern, "LabeledItem");
-    const name_id_t fni_label    = twp->name_id_of(fni_fern, "Label");
-    const name_id_t fni_value    = twp->name_id_of(fni_fern, "Value");
+    syntax_ward_ptr_t swp        = pt->tp->swp;
+    const name_id_t fni_fern     = swp->name_id_of("Fern");
+    const name_id_t fni_lbl_item = swp->name_id_of(fni_fern, "LabeledItem");
+    const name_id_t fni_label    = swp->name_id_of(fni_fern, "Label");
+    const name_id_t fni_value    = swp->name_id_of(fni_fern, "Value");
 
     SILVA_EXPECT(pt->nodes[start_node].rule_name == fni_fern, ASSERT);
     string_t retval    = "digraph Fern {\n";
@@ -387,16 +387,16 @@ namespace silva {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
-      syntax_ward_ptr_t twp          = parse_tree->tp->swp;
+      syntax_ward_ptr_t swp          = parse_tree->tp->swp;
 
-      token_id_t tt_none  = *twp->token_id("none");
-      token_id_t tt_true  = *twp->token_id("true");
-      token_id_t tt_false = *twp->token_id("false");
+      token_id_t tt_none  = *swp->token_id("none");
+      token_id_t tt_true  = *swp->token_id("true");
+      token_id_t tt_false = *swp->token_id("false");
 
-      name_id_t fni_fern     = twp->name_id_of("Fern");
-      name_id_t fni_lbl_item = twp->name_id_of(fni_fern, "LabeledItem");
-      name_id_t fni_label    = twp->name_id_of(fni_fern, "Label");
-      name_id_t fni_value    = twp->name_id_of(fni_fern, "Value");
+      name_id_t fni_fern     = swp->name_id_of("Fern");
+      name_id_t fni_lbl_item = swp->name_id_of(fni_fern, "LabeledItem");
+      name_id_t fni_label    = swp->name_id_of(fni_fern, "Label");
+      name_id_t fni_value    = swp->name_id_of(fni_fern, "Value");
 
       expected_t<fern_labeled_item_t> labeled_item(const parse_tree_span_t pts)
       {
