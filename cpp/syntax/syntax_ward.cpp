@@ -261,7 +261,7 @@ namespace silva {
   name_id_t syntax_ward_t::name_id_lca(const name_id_t lhs, const name_id_t rhs) const
   {
     // TODO: O(1) time, O(n) memory ?
-    const auto fni_path = [this](name_id_t x) {
+    const auto ni_path = [this](name_id_t x) {
       vector_t<name_id_t> retval;
       while (true) {
         retval.push_back(x);
@@ -273,8 +273,8 @@ namespace silva {
       std::ranges::reverse(retval);
       return retval;
     };
-    const auto lhs_path = fni_path(lhs);
-    const auto rhs_path = fni_path(rhs);
+    const auto lhs_path = ni_path(lhs);
+    const auto rhs_path = ni_path(rhs);
     const index_t n     = std::min(lhs_path.size(), rhs_path.size());
     index_t common      = 0;
     while (common + 1 < n && lhs_path[common + 1] == rhs_path[common + 1]) {

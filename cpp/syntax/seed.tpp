@@ -144,24 +144,24 @@ namespace silva::test {
     SILVA_EXPECT_REQUIRE(se.add(sf_seed_pt_1->span()));
     REQUIRE(se.rule_exprs.size() == 4);
     using rfl::json::write;
-    const name_id_t fni_sf      = sw.name_id_of("SimpleFern");
-    const name_id_t fni_li      = sw.name_id_of(fni_sf, "LabeledItem");
-    const name_id_t fni_l       = sw.name_id_of(fni_sf, "Label");
-    const name_id_t fni_i       = sw.name_id_of(fni_sf, "Item");
+    const name_id_t ni_sf       = sw.name_id_of("SimpleFern");
+    const name_id_t ni_li       = sw.name_id_of(ni_sf, "LabeledItem");
+    const name_id_t ni_l        = sw.name_id_of(ni_sf, "Label");
+    const name_id_t ni_i        = sw.name_id_of(ni_sf, "Item");
     const parse_tree_span_t pts = sw.parse_trees.front()->span();
-    CHECK(se.rule_exprs.at(fni_sf) == pts.sub_tree_span_at(8));
-    CHECK(se.rule_exprs.at(fni_li) == pts.sub_tree_span_at(22));
-    CHECK(se.rule_exprs.at(fni_l) == pts.sub_tree_span_at(35));
-    CHECK(se.rule_exprs.at(fni_i) == pts.sub_tree_span_at(40));
+    CHECK(se.rule_exprs.at(ni_sf) == pts.sub_tree_span_at(8));
+    CHECK(se.rule_exprs.at(ni_li) == pts.sub_tree_span_at(22));
+    CHECK(se.rule_exprs.at(ni_l) == pts.sub_tree_span_at(35));
+    CHECK(se.rule_exprs.at(ni_i) == pts.sub_tree_span_at(40));
     REQUIRE(se.nonterminal_rules.size() == 4);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(14)) == fni_li);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(27)) == fni_l);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(30)) == fni_i);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(42)) == fni_sf);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(14)) == ni_li);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(27)) == ni_l);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(30)) == ni_i);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(42)) == ni_sf);
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
     const auto sf_tt       = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", sf_code));
-    const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sf_tt, fni_sf));
+    const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sf_tt, ni_sf));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.SimpleFern                                   [ 'abc' ... ; ]
