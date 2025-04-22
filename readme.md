@@ -26,10 +26,11 @@ A recent C++ compiler is required. Clang 19 works for me.
 
 ```bash
 conda create --name silva-clang
-conda install --name silva-clang --channel conda-forge cmake catch2=3 fmt boost
-conda install --name silva-clang --channel conda-forge llvm=19 lldb=19 llvm-tools=19
-conda install --name silva-clang --channel conda-forge clang=19 clangxx=19 clang-tools=19
-conda install --name silva-clang --channel conda-forge compiler-rt=19 compiler-rt_linux-64=19
+conda install --name silva-clang --channel conda-forge \
+    cmake catch2=3 fmt boost llvm=19 lldb=19 llvm-tools=19 clang=19 \
+    clangxx=19 clang-tools=19 compiler-rt=19 compiler-rt_linux-64=19
+eval "$(conda shell.bash hook)"
+conda activate silva-clang
 ```
 
 ```bash
