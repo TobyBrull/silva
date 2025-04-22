@@ -1,5 +1,6 @@
 #include "format.hpp"
 
+#include <fmt/args.h>
 #include <fmt/format.h>
 
 namespace silva {
@@ -8,13 +9,11 @@ namespace silva {
     if (args.empty()) {
       return {};
     }
-    using ctx = fmt::format_context;
-    vector_t<fmt::basic_format_arg<ctx>> fmt_args;
-    for (index_t i = 1; i < args.size(); ++i) {
-      fmt_args.push_back(fmt::detail::make_arg<ctx>(args[i]));
+    fmt::dynamic_format_arg_store<fmt::format_context> store;
+    for (size_t i = 1; i < args.size(); ++i) {
+      store.push_back(args[i]);
     }
-    return fmt::vformat(args.front(),
-                        fmt::basic_format_args<ctx>(fmt_args.data(), fmt_args.size()));
+    return fmt::vformat(args.front(), store);
   }
 
   string_t format_vector(const span_t<string_t> args)
