@@ -148,4 +148,7 @@ namespace silva::seed_axe {
   expected_t<seed_axe_t> seed_axe_create(syntax_ward_ptr_t,
                                          name_id_t seed_axe_name,
                                          const vector_t<seed_axe_level_desc_t>&);
+
+  expected_t<seed_axe_t>
+  seed_axe_create(syntax_ward_ptr_t, name_id_t seed_axe_name, parse_tree_span_t);
 }
