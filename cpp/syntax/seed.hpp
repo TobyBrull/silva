@@ -32,16 +32,6 @@ namespace silva {
         - Or        = ltr   infix_flat '|'
       ]
       - Atom => Nonterminal | Terminal
-      - Axe = [
-        - x = '[' ( '-' Level ) * ']'
-        - Level = p.Nonterminal.Base '=' Assoc Ops *
-        - Assoc = 'nest' | 'ltr' | 'rtl'
-        - Ops = OpType Op *
-        - OpType = 'atom_nest' | 'prefix' | 'prefix_nest'
-                 | 'infix' | 'infix_flat' | 'ternary'
-                 | 'postfix' | 'postfix_nest'
-        - Op = string | 'concat'
-      ]
       - Nonterminal = [
         - x = Base ( '.' Base ) *
         - Base = '_' | 'x' | 'p' | identifier / '^[A-Z]'

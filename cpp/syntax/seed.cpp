@@ -369,6 +369,7 @@ namespace silva {
   {
     auto retval = std::make_unique<seed_engine_t>(std::move(swp));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));
+    SILVA_EXPECT_ASSERT(retval->add_complete_file("seed-axe.seed", seed_axe::seed_axe_seed));
     return retval;
   }
 

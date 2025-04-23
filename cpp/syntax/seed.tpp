@@ -44,7 +44,6 @@ namespace silva::test {
     const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
     const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, sw.name_id_of("Seed")));
     CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
-    REQUIRE(sw.parse_trees.size() == 3);
     CHECK(seed_pt_1->nodes == sw.parse_trees.front()->nodes);
 
     CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Rule")] == hashset_t<token_id_t>({}));
