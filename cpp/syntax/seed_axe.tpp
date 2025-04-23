@@ -6,9 +6,8 @@
 #include <catch2/catch_all.hpp>
 
 using namespace silva;
-using namespace silva::seed_axe;
-
-using enum assoc_t;
+using namespace silva::impl;
+using enum silva::impl::assoc_t;
 
 namespace silva::test {
   template<typename ParseAxeNursery>

@@ -23,7 +23,7 @@ namespace silva {
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
     struct seed_axe_data_t {
       name_id_t atom_rule_name = name_id_root;
-      seed_axe::seed_axe_t seed_axe;
+      seed_axe_t seed_axe;
     };
     hashmap_t<name_id_t, seed_axe_data_t> seed_axes;
 

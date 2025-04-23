@@ -9,9 +9,9 @@
 namespace silva {
   using enum token_category_t;
 
-  seed_axe::seed_axe_t create_seed_axe_expr(syntax_ward_ptr_t swp)
+  seed_axe_t create_seed_axe_expr(syntax_ward_ptr_t swp)
   {
-    using namespace seed_axe;
+    using namespace silva::impl;
     using enum assoc_t;
     vector_t<seed_axe_level_desc_t> level_descs;
     level_descs.push_back(seed_axe_level_desc_t{
@@ -110,7 +110,7 @@ namespace silva {
       name_id_t ni_nt_base       = swp->name_id_of(ni_nt, "Base");
       name_id_t ni_term          = swp->name_id_of(ni_seed, "Terminal");
 
-      seed_axe::seed_axe_t seed_seed_axe;
+      seed_axe_t seed_seed_axe;
 
       seed_parse_tree_nursery_t(tokenization_ptr_t tp)
         : parse_tree_nursery_t(tp), seed_seed_axe(create_seed_axe_expr(tp->swp))
@@ -369,7 +369,7 @@ namespace silva {
   {
     auto retval = std::make_unique<seed_engine_t>(std::move(swp));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("seed-axe.seed", seed_axe::seed_axe_seed));
+    SILVA_EXPECT_ASSERT(retval->add_complete_file("seed-axe.seed", seed_axe_seed));
     return retval;
   }
 

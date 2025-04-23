@@ -52,7 +52,7 @@ namespace silva {
           nis.derive_name(scope_name, pts_axe_with_atom.sub_tree_span_at(children[0])));
 
       const auto pts_axe = pts_axe_with_atom.sub_tree_span_at(children[1]);
-      auto sa            = SILVA_EXPECT_FWD(seed_axe::seed_axe_create(swp, rule_name, pts_axe));
+      auto sa            = SILVA_EXPECT_FWD(seed_axe_create(swp, rule_name, pts_axe));
       return {{
           .atom_rule_name = atom_rule_name,
           .seed_axe       = std::move(sa),
