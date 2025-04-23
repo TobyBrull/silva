@@ -43,8 +43,9 @@ namespace silva::test {
     const auto seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_seed}));
     const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
     const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, sw.name_id_of("Seed")));
+    // fmt::print("|{}|\n", *seed_pt_1->span().to_string());
+    // fmt::print("|{}|\n", *seed_pt_2->span().to_string());
     CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
-    CHECK(seed_pt_1->nodes == sw.parse_trees.front()->nodes);
 
     CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Rule")] == hashset_t<token_id_t>({}));
     CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Axe")] ==
@@ -147,7 +148,7 @@ namespace silva::test {
     const name_id_t ni_li       = sw.name_id_of(ni_sf, "LabeledItem");
     const name_id_t ni_l        = sw.name_id_of(ni_sf, "Label");
     const name_id_t ni_i        = sw.name_id_of(ni_sf, "Item");
-    const parse_tree_span_t pts = sw.parse_trees.front()->span();
+    const parse_tree_span_t pts = sf_seed_pt_1->span();
     CHECK(se.rule_exprs.at(ni_sf) == pts.sub_tree_span_at(8));
     CHECK(se.rule_exprs.at(ni_li) == pts.sub_tree_span_at(22));
     CHECK(se.rule_exprs.at(ni_l) == pts.sub_tree_span_at(35));
