@@ -56,7 +56,7 @@ namespace silva::test {
       expected_t<parse_tree_node_t> atom()
       {
         auto ss_rule = stake();
-        ss_rule.create_node(swp->name_id_of("test", "atom"));
+        ss_rule.create_node(swp->name_id_of("Test", "Atom"));
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
         SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
                          token_data_by()->category == token_category_t::IDENTIFIER,
@@ -69,69 +69,69 @@ namespace silva::test {
       {
         using dg_t = delegate_t<expected_t<parse_tree_node_t>()>;
         auto dg    = dg_t::make<&test_nursery_t::atom>(this);
-        return seed_axe.apply(*this, swp->name_id_of("atom"), dg);
+        return seed_axe.apply(*this, swp->name_id_of("Atom"), dg);
       }
     };
 
     syntax_ward_t sw;
     vector_t<seed_axe_level_desc_t> level_descs;
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("nst"),
+        .base_name = *sw.token_id("Nst"),
         .assoc     = NEST,
         .opers     = {atom_nest_t{*sw.token_id("("), *sw.token_id(")")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("dot"),
+        .base_name = *sw.token_id("Dot"),
         .assoc     = RIGHT_TO_LEFT,
         .opers     = {infix_t{*sw.token_id(".")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("sub"),
+        .base_name = *sw.token_id("Sub"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {postfix_nest_t{*sw.token_id("["), *sw.token_id("]")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("dol"),
+        .base_name = *sw.token_id("Dol"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {postfix_t{*sw.token_id("$")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("exc"),
+        .base_name = *sw.token_id("Exc"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {postfix_t{*sw.token_id("!")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("til"),
+        .base_name = *sw.token_id("Til"),
         .assoc     = RIGHT_TO_LEFT,
         .opers     = {prefix_t{*sw.token_id("~")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("prf"),
+        .base_name = *sw.token_id("Prf"),
         .assoc     = RIGHT_TO_LEFT,
         .opers     = {prefix_t{*sw.token_id("+")}, prefix_t{*sw.token_id("-")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("mul"),
+        .base_name = *sw.token_id("Mul"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{*sw.token_id("*")}, infix_t{*sw.token_id("/")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("add"),
+        .base_name = *sw.token_id("Add"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{*sw.token_id("+")}, infix_t{*sw.token_id("-")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("ter"),
+        .base_name = *sw.token_id("Ter"),
         .assoc     = RIGHT_TO_LEFT,
         .opers     = {ternary_t{*sw.token_id("?"), *sw.token_id(":")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("eqa"),
+        .base_name = *sw.token_id("Eqa"),
         .assoc     = RIGHT_TO_LEFT,
         .opers     = {infix_t{*sw.token_id("=")}},
     });
     const auto pa =
-        SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("expr"), level_descs));
+        SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), level_descs));
     CHECK(!pa.concat_result.has_value());
     CHECK(pa.results.size() == 15);
     CHECK(pa.results.at(*sw.token_id("=")) ==
@@ -140,7 +140,7 @@ namespace silva::test {
               .regular =
                   result_oper_t<oper_regular_t>{
                       .oper       = infix_t{*sw.token_id("=")},
-                      .name       = sw.name_id_of("expr", "eqa", "="),
+                      .name       = sw.name_id_of("Expr", "Eqa", "="),
                       .precedence = precedence_t{.level_index = 1, .assoc = RIGHT_TO_LEFT},
                   },
               .is_right_bracket = false,
@@ -151,7 +151,7 @@ namespace silva::test {
               .regular =
                   result_oper_t<oper_regular_t>{
                       .oper       = ternary_t{*sw.token_id("?"), *sw.token_id(":")},
-                      .name       = sw.name_id_of("expr", "ter", "?"),
+                      .name       = sw.name_id_of("Expr", "Ter", "?"),
                       .precedence = precedence_t{.level_index = 2, .assoc = RIGHT_TO_LEFT},
                   },
               .is_right_bracket = false,
@@ -167,13 +167,13 @@ namespace silva::test {
               .prefix =
                   result_oper_t<oper_prefix_t>{
                       .oper       = prefix_t{*sw.token_id("+")},
-                      .name       = sw.name_id_of("expr", "prf", "+"),
+                      .name       = sw.name_id_of("Expr", "Prf", "+"),
                       .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
                   },
               .regular =
                   result_oper_t<oper_regular_t>{
                       .oper       = infix_t{*sw.token_id("+")},
-                      .name       = sw.name_id_of("expr", "add", "+"),
+                      .name       = sw.name_id_of("Expr", "Add", "+"),
                       .precedence = precedence_t{.level_index = 3, .assoc = LEFT_TO_RIGHT},
                   },
               .is_right_bracket = false,
@@ -183,13 +183,13 @@ namespace silva::test {
               .prefix =
                   result_oper_t<oper_prefix_t>{
                       .oper       = prefix_t{*sw.token_id("-")},
-                      .name       = sw.name_id_of("expr", "prf", "-"),
+                      .name       = sw.name_id_of("Expr", "Prf", "-"),
                       .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
                   },
               .regular =
                   result_oper_t<oper_regular_t>{
                       .oper       = infix_t{*sw.token_id("-")},
-                      .name       = sw.name_id_of("expr", "add", "-"),
+                      .name       = sw.name_id_of("Expr", "Add", "-"),
                       .precedence = precedence_t{.level_index = 3, .assoc = LEFT_TO_RIGHT},
                   },
               .is_right_bracket = false,
@@ -199,7 +199,7 @@ namespace silva::test {
               .prefix =
                   result_oper_t<oper_prefix_t>{
                       .oper       = atom_nest_t{*sw.token_id("("), *sw.token_id(")")},
-                      .name       = sw.name_id_of("expr", "nst", "("),
+                      .name       = sw.name_id_of("Expr", "Nst", "("),
                       .precedence = precedence_t{.level_index = 11, .assoc = NEST},
                   },
               .regular          = none,
@@ -213,197 +213,197 @@ namespace silva::test {
           });
 
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "1", R"(
-[0]_.test.atom                                    1
+[0]_.Test.Atom                                    1
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "1 + 2", R"(
-[0]_.expr.add.+                                   1 + 2
-  [0]_.test.atom                                  1
-  [1]_.test.atom                                  2
+[0]_.Expr.Add.+                                   1 + 2
+  [0]_.Test.Atom                                  1
+  [1]_.Test.Atom                                  2
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "1 - 2", R"(
-[0]_.expr.add.-                                   1 - 2
-  [0]_.test.atom                                  1
-  [1]_.test.atom                                  2
+[0]_.Expr.Add.-                                   1 - 2
+  [0]_.Test.Atom                                  1
+  [1]_.Test.Atom                                  2
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "1 + 2 * 3 + 4", R"(
-[0]_.expr.add.+                                   1 + ... + 4
-  [0]_.expr.add.+                                 1 + 2 * 3
-    [0]_.test.atom                                1
-    [1]_.expr.mul.*                               2 * 3
-      [0]_.test.atom                              2
-      [1]_.test.atom                              3
-  [1]_.test.atom                                  4
+[0]_.Expr.Add.+                                   1 + ... + 4
+  [0]_.Expr.Add.+                                 1 + 2 * 3
+    [0]_.Test.Atom                                1
+    [1]_.Expr.Mul.*                               2 * 3
+      [0]_.Test.Atom                              2
+      [1]_.Test.Atom                              3
+  [1]_.Test.Atom                                  4
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(),
                                         pa,
                                         "1 - 2 + f . g . h * 3 / 4",
                                         R"(
-[0]_.expr.add.+                                   1 - ... / 4
-  [0]_.expr.add.-                                 1 - 2
-    [0]_.test.atom                                1
-    [1]_.test.atom                                2
-  [1]_.expr.mul./                                 f . ... / 4
-    [0]_.expr.mul.*                               f . ... * 3
-      [0]_.expr.dot..                             f . g . h
-        [0]_.test.atom                            f
-        [1]_.expr.dot..                           g . h
-          [0]_.test.atom                          g
-          [1]_.test.atom                          h
-      [1]_.test.atom                              3
-    [1]_.test.atom                                4
+[0]_.Expr.Add.+                                   1 - ... / 4
+  [0]_.Expr.Add.-                                 1 - 2
+    [0]_.Test.Atom                                1
+    [1]_.Test.Atom                                2
+  [1]_.Expr.Mul./                                 f . ... / 4
+    [0]_.Expr.Mul.*                               f . ... * 3
+      [0]_.Expr.Dot..                             f . g . h
+        [0]_.Test.Atom                            f
+        [1]_.Expr.Dot..                           g . h
+          [0]_.Test.Atom                          g
+          [1]_.Test.Atom                          h
+      [1]_.Test.Atom                              3
+    [1]_.Test.Atom                                4
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "2 ! + 3", R"(
-[0]_.expr.add.+                                   2 ! + 3
-  [0]_.expr.exc.!                                 2 !
-    [0]_.test.atom                                2
-  [1]_.test.atom                                  3
+[0]_.Expr.Add.+                                   2 ! + 3
+  [0]_.Expr.Exc.!                                 2 !
+    [0]_.Test.Atom                                2
+  [1]_.Test.Atom                                  3
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, " - + 1", R"(
-[0]_.expr.prf.-                                   - + 1
-  [0]_.expr.prf.+                                 + 1
-    [0]_.test.atom                                1
+[0]_.Expr.Prf.-                                   - + 1
+  [0]_.Expr.Prf.+                                 + 1
+    [0]_.Test.Atom                                1
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a + - + 1", R"(
-[0]_.expr.add.+                                   a + - + 1
-  [0]_.test.atom                                  a
-  [1]_.expr.prf.-                                 - + 1
-    [0]_.expr.prf.+                               + 1
-      [0]_.test.atom                              1
+[0]_.Expr.Add.+                                   a + - + 1
+  [0]_.Test.Atom                                  a
+  [1]_.Expr.Prf.-                                 - + 1
+    [0]_.Expr.Prf.+                               + 1
+      [0]_.Test.Atom                              1
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "- - 1 * 2", R"(
-[0]_.expr.mul.*                                   - - 1 * 2
-  [0]_.expr.prf.-                                 - - 1
-    [0]_.expr.prf.-                               - 1
-      [0]_.test.atom                              1
-  [1]_.test.atom                                  2
+[0]_.Expr.Mul.*                                   - - 1 * 2
+  [0]_.Expr.Prf.-                                 - - 1
+    [0]_.Expr.Prf.-                               - 1
+      [0]_.Test.Atom                              1
+  [1]_.Test.Atom                                  2
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "- - 1 . 2", R"(
-[0]_.expr.prf.-                                   - - 1 . 2
-  [0]_.expr.prf.-                                 - 1 . 2
-    [0]_.expr.dot..                               1 . 2
-      [0]_.test.atom                              1
-      [1]_.test.atom                              2
+[0]_.Expr.Prf.-                                   - - 1 . 2
+  [0]_.Expr.Prf.-                                 - 1 . 2
+    [0]_.Expr.Dot..                               1 . 2
+      [0]_.Test.Atom                              1
+      [1]_.Test.Atom                              2
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "1 . 2 !", R"(
-[0]_.expr.exc.!                                   1 . 2 !
-  [0]_.expr.dot..                                 1 . 2
-    [0]_.test.atom                                1
-    [1]_.test.atom                                2
+[0]_.Expr.Exc.!                                   1 . 2 !
+  [0]_.Expr.Dot..                                 1 . 2
+    [0]_.Test.Atom                                1
+    [1]_.Test.Atom                                2
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "1 + 2 !", R"(
-[0]_.expr.add.+                                   1 + 2 !
-  [0]_.test.atom                                  1
-  [1]_.expr.exc.!                                 2 !
-    [0]_.test.atom                                2
+[0]_.Expr.Add.+                                   1 + 2 !
+  [0]_.Test.Atom                                  1
+  [1]_.Expr.Exc.!                                 2 !
+    [0]_.Test.Atom                                2
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "2 ! . 3", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "2 . - 3", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "2 $ !", R"(
-[0]_.expr.exc.!                                   2 $ !
-  [0]_.expr.dol.$                                 2 $
-    [0]_.test.atom                                2
+[0]_.Expr.Exc.!                                   2 $ !
+  [0]_.Expr.Dol.$                                 2 $
+    [0]_.Test.Atom                                2
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "2 ! $", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "+ ~ 2", R"(
-[0]_.expr.prf.+                                   + ~ 2
-  [0]_.expr.til.~                                 ~ 2
-    [0]_.test.atom                                2
+[0]_.Expr.Prf.+                                   + ~ 2
+  [0]_.Expr.Til.~                                 ~ 2
+    [0]_.Test.Atom                                2
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "~ + 2", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "( ( 0 ) )", R"(
-[0]_.expr.nst.(                                   ( ( 0 ) )
-  [0]_.expr.nst.(                                 ( 0 )
-    [0]_.test.atom                                0
+[0]_.Expr.Nst.(                                   ( ( 0 ) )
+  [0]_.Expr.Nst.(                                 ( 0 )
+    [0]_.Test.Atom                                0
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "1 * ( 2 + 3 ) * 4", R"(
-[0]_.expr.mul.*                                   1 * ... * 4
-  [0]_.expr.mul.*                                 1 * ... 3 )
-    [0]_.test.atom                                1
-    [1]_.expr.nst.(                               ( 2 + 3 )
-      [0]_.expr.add.+                             2 + 3
-        [0]_.test.atom                            2
-        [1]_.test.atom                            3
-  [1]_.test.atom                                  4
+[0]_.Expr.Mul.*                                   1 * ... * 4
+  [0]_.Expr.Mul.*                                 1 * ... 3 )
+    [0]_.Test.Atom                                1
+    [1]_.Expr.Nst.(                               ( 2 + 3 )
+      [0]_.Expr.Add.+                             2 + 3
+        [0]_.Test.Atom                            2
+        [1]_.Test.Atom                            3
+  [1]_.Test.Atom                                  4
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "1 * ( 2 + 3 ) * 4", R"(
-[0]_.expr.mul.*                                   1 * ... * 4
-  [0]_.expr.mul.*                                 1 * ... 3 )
-    [0]_.test.atom                                1
-    [1]_.expr.nst.(                               ( 2 + 3 )
-      [0]_.expr.add.+                             2 + 3
-        [0]_.test.atom                            2
-        [1]_.test.atom                            3
-  [1]_.test.atom                                  4
+[0]_.Expr.Mul.*                                   1 * ... * 4
+  [0]_.Expr.Mul.*                                 1 * ... 3 )
+    [0]_.Test.Atom                                1
+    [1]_.Expr.Nst.(                               ( 2 + 3 )
+      [0]_.Expr.Add.+                             2 + 3
+        [0]_.Test.Atom                            2
+        [1]_.Test.Atom                            3
+  [1]_.Test.Atom                                  4
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a [ 0 ]", R"(
-[0]_.expr.sub.[                                   a [ 0 ]
-  [0]_.test.atom                                  a
-  [1]_.test.atom                                  0
+[0]_.Expr.Sub.[                                   a [ 0 ]
+  [0]_.Test.Atom                                  a
+  [1]_.Test.Atom                                  0
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a [ 0 ] [ 1 ]", R"(
-[0]_.expr.sub.[                                   a [ ... 1 ]
-  [0]_.expr.sub.[                                 a [ 0 ]
-    [0]_.test.atom                                a
-    [1]_.test.atom                                0
-  [1]_.test.atom                                  1
+[0]_.Expr.Sub.[                                   a [ ... 1 ]
+  [0]_.Expr.Sub.[                                 a [ 0 ]
+    [0]_.Test.Atom                                a
+    [1]_.Test.Atom                                0
+  [1]_.Test.Atom                                  1
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a [ 0 ] . b [ 1 ]", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a [ 0 ] + b [ 1 ]", R"(
-[0]_.expr.add.+                                   a [ ... 1 ]
-  [0]_.expr.sub.[                                 a [ 0 ]
-    [0]_.test.atom                                a
-    [1]_.test.atom                                0
-  [1]_.expr.sub.[                                 b [ 1 ]
-    [0]_.test.atom                                b
-    [1]_.test.atom                                1
+[0]_.Expr.Add.+                                   a [ ... 1 ]
+  [0]_.Expr.Sub.[                                 a [ 0 ]
+    [0]_.Test.Atom                                a
+    [1]_.Test.Atom                                0
+  [1]_.Expr.Sub.[                                 b [ 1 ]
+    [0]_.Test.Atom                                b
+    [1]_.Test.Atom                                1
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a ? b : c", R"(
-[0]_.expr.ter.?                                   a ? b : c
-  [0]_.test.atom                                  a
-  [1]_.test.atom                                  b
-  [2]_.test.atom                                  c
+[0]_.Expr.Ter.?                                   a ? b : c
+  [0]_.Test.Atom                                  a
+  [1]_.Test.Atom                                  b
+  [2]_.Test.Atom                                  c
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a ? b : c ? d : e", R"(
-[0]_.expr.ter.?                                   a ? ... : e
-  [0]_.test.atom                                  a
-  [1]_.test.atom                                  b
-  [2]_.expr.ter.?                                 c ? d : e
-    [0]_.test.atom                                c
-    [1]_.test.atom                                d
-    [2]_.test.atom                                e
+[0]_.Expr.Ter.?                                   a ? ... : e
+  [0]_.Test.Atom                                  a
+  [1]_.Test.Atom                                  b
+  [2]_.Expr.Ter.?                                 c ? d : e
+    [0]_.Test.Atom                                c
+    [1]_.Test.Atom                                d
+    [2]_.Test.Atom                                e
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a ? b ? c : d : e", R"(
-[0]_.expr.ter.?                                   a ? ... : e
-  [0]_.test.atom                                  a
-  [1]_.expr.ter.?                                 b ? c : d
-    [0]_.test.atom                                b
-    [1]_.test.atom                                c
-    [2]_.test.atom                                d
-  [2]_.test.atom                                  e
+[0]_.Expr.Ter.?                                   a ? ... : e
+  [0]_.Test.Atom                                  a
+  [1]_.Expr.Ter.?                                 b ? c : d
+    [0]_.Test.Atom                                b
+    [1]_.Test.Atom                                c
+    [2]_.Test.Atom                                d
+  [2]_.Test.Atom                                  e
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a = b ? c = d : e = f", R"(
-[0]_.expr.eqa.=                                   a = ... = f
-  [0]_.test.atom                                  a
-  [1]_.expr.eqa.=                                 b ? ... = f
-    [0]_.expr.ter.?                               b ? ... : e
-      [0]_.test.atom                              b
-      [1]_.expr.eqa.=                             c = d
-        [0]_.test.atom                            c
-        [1]_.test.atom                            d
-      [2]_.test.atom                              e
-    [1]_.test.atom                                f
+[0]_.Expr.Eqa.=                                   a = ... = f
+  [0]_.Test.Atom                                  a
+  [1]_.Expr.Eqa.=                                 b ? ... = f
+    [0]_.Expr.Ter.?                               b ? ... : e
+      [0]_.Test.Atom                              b
+      [1]_.Expr.Eqa.=                             c = d
+        [0]_.Test.Atom                            c
+        [1]_.Test.Atom                            d
+      [2]_.Test.Atom                              e
+    [1]_.Test.Atom                                f
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a + b ? c + d : e + f", R"(
-[0]_.expr.ter.?                                   a + ... + f
-  [0]_.expr.add.+                                 a + b
-    [0]_.test.atom                                a
-    [1]_.test.atom                                b
-  [1]_.expr.add.+                                 c + d
-    [0]_.test.atom                                c
-    [1]_.test.atom                                d
-  [2]_.expr.add.+                                 e + f
-    [0]_.test.atom                                e
-    [1]_.test.atom                                f
+[0]_.Expr.Ter.?                                   a + ... + f
+  [0]_.Expr.Add.+                                 a + b
+    [0]_.Test.Atom                                a
+    [1]_.Test.Atom                                b
+  [1]_.Expr.Add.+                                 c + d
+    [0]_.Test.Atom                                c
+    [1]_.Test.Atom                                d
+  [2]_.Expr.Add.+                                 e + f
+    [0]_.Test.Atom                                e
+    [1]_.Test.Atom                                f
 )");
   }
 
@@ -420,7 +420,7 @@ namespace silva::test {
       expected_t<parse_tree_node_t> atom()
       {
         auto ss_rule = stake();
-        ss_rule.create_node(swp->name_id_of("test", "atom"));
+        ss_rule.create_node(swp->name_id_of("Test", "Atom"));
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
         if (token_data_by()->category == token_category_t::NUMBER) {
           SILVA_EXPECT(num_tokens_left() >= 2 &&
@@ -439,161 +439,161 @@ namespace silva::test {
       {
         using dg_t = delegate_t<expected_t<parse_tree_node_t>()>;
         auto dg    = dg_t::make<&test_nursery_t::atom>(this);
-        return seed_axe.apply(*this, swp->name_id_of("atom"), dg);
+        return seed_axe.apply(*this, swp->name_id_of("Atom"), dg);
       }
     };
 
     syntax_ward_t sw;
     vector_t<seed_axe_level_desc_t> level_descs;
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("nst"),
+        .base_name = *sw.token_id("Nst"),
         .assoc     = NEST,
         .opers     = {atom_nest_t{*sw.token_id("<<"), *sw.token_id(">>")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("prf_hi"),
+        .base_name = *sw.token_id("Prf_hi"),
         .assoc     = RIGHT_TO_LEFT,
         .opers     = {prefix_nest_t{*sw.token_id("("), *sw.token_id(")")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("cat"),
+        .base_name = *sw.token_id("Cat"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{.token_id = *sw.token_id("cc"), .concat = true}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("prf_lo"),
+        .base_name = *sw.token_id("Prf_lo"),
         .assoc     = RIGHT_TO_LEFT,
         .opers     = {prefix_nest_t{*sw.token_id("{"), *sw.token_id("}")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("mul"),
+        .base_name = *sw.token_id("Mul"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{*sw.token_id("*")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("add"),
+        .base_name = *sw.token_id("Add"),
         .assoc     = LEFT_TO_RIGHT,
         .opers     = {infix_t{.token_id = *sw.token_id("+"), .flatten = true},
                       infix_t{*sw.token_id("-")}},
     });
     level_descs.push_back(seed_axe_level_desc_t{
-        .base_name = *sw.token_id("assign"),
+        .base_name = *sw.token_id("Assign"),
         .assoc     = RIGHT_TO_LEFT,
         .opers     = {infix_t{.token_id = *sw.token_id("="), .flatten = true},
                       infix_t{*sw.token_id("%")}},
     });
     const auto pa =
-        SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("expr"), level_descs));
+        SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), level_descs));
     CHECK(pa.concat_result.has_value());
     CHECK(pa.results.size() == 11);
 
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "x y z", R"(
-[0]_.expr.cat.cc                                  x y z
-  [0]_.expr.cat.cc                                x y
-    [0]_.test.atom                                x
-    [1]_.test.atom                                y
-  [1]_.test.atom                                  z
+[0]_.Expr.Cat.cc                                  x y z
+  [0]_.Expr.Cat.cc                                x y
+    [0]_.Test.Atom                                x
+    [1]_.Test.Atom                                y
+  [1]_.Test.Atom                                  z
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "{ b } a", R"(
-[0]_.expr.prf_lo.{                                { b } a
-  [0]_.test.atom                                  b
-  [1]_.test.atom                                  a
+[0]_.Expr.Prf_lo.{                                { b } a
+  [0]_.Test.Atom                                  b
+  [1]_.Test.Atom                                  a
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a { b } c", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a ( b ) c", R"(
-[0]_.expr.cat.cc                                  a ( b ) c
-  [0]_.test.atom                                  a
-  [1]_.expr.prf_hi.(                              ( b ) c
-    [0]_.test.atom                                b
-    [1]_.test.atom                                c
+[0]_.Expr.Cat.cc                                  a ( b ) c
+  [0]_.Test.Atom                                  a
+  [1]_.Expr.Prf_hi.(                              ( b ) c
+    [0]_.Test.Atom                                b
+    [1]_.Test.Atom                                c
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a << { b } c >>", R"(
-[0]_.expr.cat.cc                                  a << ... c >>
-  [0]_.test.atom                                  a
-  [1]_.expr.nst.<<                                << { ... c >>
-    [0]_.expr.prf_lo.{                            { b } c
-      [0]_.test.atom                              b
-      [1]_.test.atom                              c
+[0]_.Expr.Cat.cc                                  a << ... c >>
+  [0]_.Test.Atom                                  a
+  [1]_.Expr.Nst.<<                                << { ... c >>
+    [0]_.Expr.Prf_lo.{                            { b } c
+      [0]_.Test.Atom                              b
+      [1]_.Test.Atom                              c
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "<< a { b } >> c", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "x 1 x z", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "x 1 { z", R"(
-[0]_.expr.cat.cc                                  x 1 { z
-  [0]_.expr.cat.cc                                x 1 {
-    [0]_.test.atom                                x
-    [1]_.test.atom                                1 {
-  [1]_.test.atom                                  z
+[0]_.Expr.Cat.cc                                  x 1 { z
+  [0]_.Expr.Cat.cc                                x 1 {
+    [0]_.Test.Atom                                x
+    [1]_.Test.Atom                                1 {
+  [1]_.Test.Atom                                  z
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a + b + c", R"(
-[0]_.expr.add.+                                   a + b + c
-  [0]_.test.atom                                  a
-  [1]_.test.atom                                  b
-  [2]_.test.atom                                  c
+[0]_.Expr.Add.+                                   a + b + c
+  [0]_.Test.Atom                                  a
+  [1]_.Test.Atom                                  b
+  [2]_.Test.Atom                                  c
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a + b + c * d + e + f", R"(
-[0]_.expr.add.+                                   a + ... + f
-  [0]_.test.atom                                  a
-  [1]_.test.atom                                  b
-  [2]_.expr.mul.*                                 c * d
-    [0]_.test.atom                                c
-    [1]_.test.atom                                d
-  [3]_.test.atom                                  e
-  [4]_.test.atom                                  f
+[0]_.Expr.Add.+                                   a + ... + f
+  [0]_.Test.Atom                                  a
+  [1]_.Test.Atom                                  b
+  [2]_.Expr.Mul.*                                 c * d
+    [0]_.Test.Atom                                c
+    [1]_.Test.Atom                                d
+  [3]_.Test.Atom                                  e
+  [4]_.Test.Atom                                  f
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a + b + c - d - e + f + g", R"(
-[0]_.expr.add.+                                   a + ... + g
-  [0]_.expr.add.-                                 a + ... - e
-    [0]_.expr.add.-                               a + ... - d
-      [0]_.expr.add.+                             a + b + c
-        [0]_.test.atom                            a
-        [1]_.test.atom                            b
-        [2]_.test.atom                            c
-      [1]_.test.atom                              d
-    [1]_.test.atom                                e
-  [1]_.test.atom                                  f
-  [2]_.test.atom                                  g
+[0]_.Expr.Add.+                                   a + ... + g
+  [0]_.Expr.Add.-                                 a + ... - e
+    [0]_.Expr.Add.-                               a + ... - d
+      [0]_.Expr.Add.+                             a + b + c
+        [0]_.Test.Atom                            a
+        [1]_.Test.Atom                            b
+        [2]_.Test.Atom                            c
+      [1]_.Test.Atom                              d
+    [1]_.Test.Atom                                e
+  [1]_.Test.Atom                                  f
+  [2]_.Test.Atom                                  g
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a - b + c + d - e", R"(
-[0]_.expr.add.-                                   a - ... - e
-  [0]_.expr.add.+                                 a - ... + d
-    [0]_.expr.add.-                               a - b
-      [0]_.test.atom                              a
-      [1]_.test.atom                              b
-    [1]_.test.atom                                c
-    [2]_.test.atom                                d
-  [1]_.test.atom                                  e
+[0]_.Expr.Add.-                                   a - ... - e
+  [0]_.Expr.Add.+                                 a - ... + d
+    [0]_.Expr.Add.-                               a - b
+      [0]_.Test.Atom                              a
+      [1]_.Test.Atom                              b
+    [1]_.Test.Atom                                c
+    [2]_.Test.Atom                                d
+  [1]_.Test.Atom                                  e
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a + b + c - d + e + f", R"(
-[0]_.expr.add.+                                   a + ... + f
-  [0]_.expr.add.-                                 a + ... - d
-    [0]_.expr.add.+                               a + b + c
-      [0]_.test.atom                              a
-      [1]_.test.atom                              b
-      [2]_.test.atom                              c
-    [1]_.test.atom                                d
-  [1]_.test.atom                                  e
-  [2]_.test.atom                                  f
+[0]_.Expr.Add.+                                   a + ... + f
+  [0]_.Expr.Add.-                                 a + ... - d
+    [0]_.Expr.Add.+                               a + b + c
+      [0]_.Test.Atom                              a
+      [1]_.Test.Atom                              b
+      [2]_.Test.Atom                              c
+    [1]_.Test.Atom                                d
+  [1]_.Test.Atom                                  e
+  [2]_.Test.Atom                                  f
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a % b = c = d % e", R"(
-[0]_.expr.assign.%                                a % ... % e
-  [0]_.test.atom                                  a
-  [1]_.expr.assign.=                              b = ... % e
-    [0]_.test.atom                                b
-    [1]_.test.atom                                c
-    [2]_.expr.assign.%                            d % e
-      [0]_.test.atom                              d
-      [1]_.test.atom                              e
+[0]_.Expr.Assign.%                                a % ... % e
+  [0]_.Test.Atom                                  a
+  [1]_.Expr.Assign.=                              b = ... % e
+    [0]_.Test.Atom                                b
+    [1]_.Test.Atom                                c
+    [2]_.Expr.Assign.%                            d % e
+      [0]_.Test.Atom                              d
+      [1]_.Test.Atom                              e
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), pa, "a = b = c % d = e = f", R"(
-[0]_.expr.assign.=                                a = ... = f
-  [0]_.test.atom                                  a
-  [1]_.test.atom                                  b
-  [2]_.expr.assign.%                              c % ... = f
-    [0]_.test.atom                                c
-    [1]_.expr.assign.=                            d = e = f
-      [0]_.test.atom                              d
-      [1]_.test.atom                              e
-      [2]_.test.atom                              f
+[0]_.Expr.Assign.=                                a = ... = f
+  [0]_.Test.Atom                                  a
+  [1]_.Test.Atom                                  b
+  [2]_.Expr.Assign.%                              c % ... = f
+    [0]_.Test.Atom                                c
+    [1]_.Expr.Assign.=                            d = e = f
+      [0]_.Test.Atom                              d
+      [1]_.Test.Atom                              e
+      [2]_.Test.Atom                              f
 )");
   }
 }
