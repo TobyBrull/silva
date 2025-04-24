@@ -83,15 +83,6 @@ namespace silva::impl {
 
     friend auto operator<=>(const precedence_t&, const precedence_t&) = default;
   };
-  constexpr static inline precedence_t precedence_max{
-      .level_index = std::numeric_limits<level_index_t>::max(),
-      .assoc       = assoc_t::INVALID,
-  };
-  constexpr static inline precedence_t precedence_min{
-      .level_index = std::numeric_limits<level_index_t>::min(),
-      .assoc       = assoc_t::INVALID,
-  };
-
   template<typename Oper>
   struct result_oper_t {
     Oper oper;
@@ -107,12 +98,5 @@ namespace silva::impl {
     bool is_right_bracket = false;
 
     friend auto operator<=>(const seed_axe_result_t&, const seed_axe_result_t&) = default;
-  };
-
-  struct seed_axe_level_desc_t {
-    token_id_t base_name = 0;
-    assoc_t assoc        = assoc_t::INVALID;
-    vector_t<oper_any_t> opers;
-    parse_tree_span_t pts;
   };
 }

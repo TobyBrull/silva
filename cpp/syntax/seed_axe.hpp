@@ -36,11 +36,3 @@ namespace silva {
   expected_t<seed_axe_t>
   seed_axe_create(syntax_ward_ptr_t, name_id_t seed_axe_name, parse_tree_span_t);
 }
-
-// IMPLEMENTATION
-
-namespace silva::impl {
-  expected_t<seed_axe_t> seed_axe_create(syntax_ward_ptr_t,
-                                         name_id_t seed_axe_name,
-                                         const vector_t<impl::seed_axe_level_desc_t>&);
-}

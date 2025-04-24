@@ -4,6 +4,22 @@
 #include <variant>
 
 namespace silva::impl {
+  constexpr static inline precedence_t precedence_max{
+      .level_index = std::numeric_limits<level_index_t>::max(),
+      .assoc       = assoc_t::INVALID,
+  };
+  constexpr static inline precedence_t precedence_min{
+      .level_index = std::numeric_limits<level_index_t>::min(),
+      .assoc       = assoc_t::INVALID,
+  };
+
+  struct seed_axe_level_desc_t {
+    token_id_t base_name = 0;
+    assoc_t assoc        = assoc_t::INVALID;
+    vector_t<oper_any_t> opers;
+    parse_tree_span_t pts;
+  };
+
   bool operator<(const precedence_t& lhs, const precedence_t& rhs)
   {
     if (lhs.level_index < rhs.level_index) {
