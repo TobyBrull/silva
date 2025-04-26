@@ -70,10 +70,10 @@ namespace silva {
     // friend hash_value_t hash_impl(const tree_span_t& x);
 
     template<typename NodeDataFunc>
-    expected_t<string_t> to_string(NodeDataFunc);
+    expected_t<string_t> to_string(NodeDataFunc) const;
 
     template<typename NodeDataFunc>
-    expected_t<string_t> to_graphviz(NodeDataFunc);
+    expected_t<string_t> to_graphviz(NodeDataFunc) const;
   };
 
   template<typename NodeData>
@@ -280,7 +280,7 @@ namespace silva {
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   template<typename NodeDataFunc>
-  expected_t<string_t> tree_span_t<NodeData>::to_string(NodeDataFunc node_data_func)
+  expected_t<string_t> tree_span_t<NodeData>::to_string(NodeDataFunc node_data_func) const
   {
     string_t curr_line;
     string_t retval;
@@ -304,7 +304,7 @@ namespace silva {
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   template<typename NodeDataFunc>
-  expected_t<string_t> tree_span_t<NodeData>::to_graphviz(NodeDataFunc node_data_func)
+  expected_t<string_t> tree_span_t<NodeData>::to_graphviz(NodeDataFunc node_data_func) const
   {
     string_t retval;
     retval += "digraph parse_tree {\n";

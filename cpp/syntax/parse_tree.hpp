@@ -48,9 +48,9 @@ namespace silva {
       RELATIVE,
     };
     expected_t<string_t> to_string(index_t token_offset  = 50,
-                                   parse_tree_printing_t = parse_tree_printing_t::ABSOLUTE);
+                                   parse_tree_printing_t = parse_tree_printing_t::ABSOLUTE) const;
 
-    expected_t<string_t> to_graphviz();
+    expected_t<string_t> to_graphviz() const;
   };
 }
 

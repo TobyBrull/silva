@@ -18,7 +18,7 @@ namespace silva {
   }
 
   expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset,
-                                                    const parse_tree_printing_t printing)
+                                                    const parse_tree_printing_t printing) const
   {
     const name_id_style_t& nis = tp->swp->default_name_id_style();
     return tree_span_t::to_string([&](string_t& curr_line, auto& path) {
@@ -43,7 +43,7 @@ namespace silva {
     });
   }
 
-  expected_t<string_t> parse_tree_span_t::to_graphviz()
+  expected_t<string_t> parse_tree_span_t::to_graphviz() const
   {
     const name_id_style_t& nis = tp->swp->default_name_id_style();
     return tree_span_t::to_graphviz([&](auto& node) {
