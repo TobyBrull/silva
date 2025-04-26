@@ -13,8 +13,13 @@ namespace silva {
     NO_ERROR = 0,
     MINOR    = 1,
     MAJOR    = 2,
-    FATAL    = 3,
-    ASSERT   = 4,
+
+    // Errors that should never if the currently handled parse_tree(_span)_t was parsed according to
+    // the required Seed program.
+    BROKEN_SEED = 3,
+
+    FATAL  = 4,
+    ASSERT = 5,
   };
   constexpr bool error_level_is_primary(error_level_t);
 }
@@ -30,6 +35,7 @@ namespace silva {
 
       case error_level_t::MINOR:
       case error_level_t::MAJOR:
+      case error_level_t::BROKEN_SEED:
       case error_level_t::FATAL:
       case error_level_t::ASSERT:
         return true;

@@ -104,6 +104,7 @@ namespace silva::test {
                       .oper       = infix_t{*sw.token_id("=")},
                       .name       = sw.name_id_of("Expr", "Eqa", "="),
                       .precedence = precedence_t{.level_index = 1, .assoc = RIGHT_TO_LEFT},
+                      .pts        = pt->span().sub_tree_span_at(72),
                   },
               .is_right_bracket = false,
           });
@@ -115,6 +116,7 @@ namespace silva::test {
                       .oper       = ternary_t{*sw.token_id("?"), *sw.token_id(":")},
                       .name       = sw.name_id_of("Expr", "Ter", "?"),
                       .precedence = precedence_t{.level_index = 2, .assoc = RIGHT_TO_LEFT},
+                      .pts        = pt->span().sub_tree_span_at(65),
                   },
               .is_right_bracket = false,
           });
@@ -131,12 +133,14 @@ namespace silva::test {
                       .oper       = prefix_t{*sw.token_id("+")},
                       .name       = sw.name_id_of("Expr", "Prf", "+"),
                       .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
+                      .pts        = pt->span().sub_tree_span_at(44),
                   },
               .regular =
                   result_oper_t<oper_regular_t>{
                       .oper       = infix_t{*sw.token_id("+")},
                       .name       = sw.name_id_of("Expr", "Add", "+"),
                       .precedence = precedence_t{.level_index = 3, .assoc = LEFT_TO_RIGHT},
+                      .pts        = pt->span().sub_tree_span_at(58),
                   },
               .is_right_bracket = false,
           });
@@ -147,12 +151,14 @@ namespace silva::test {
                       .oper       = prefix_t{*sw.token_id("-")},
                       .name       = sw.name_id_of("Expr", "Prf", "-"),
                       .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
+                      .pts        = pt->span().sub_tree_span_at(45),
                   },
               .regular =
                   result_oper_t<oper_regular_t>{
                       .oper       = infix_t{*sw.token_id("-")},
                       .name       = sw.name_id_of("Expr", "Add", "-"),
                       .precedence = precedence_t{.level_index = 3, .assoc = LEFT_TO_RIGHT},
+                      .pts        = pt->span().sub_tree_span_at(59),
                   },
               .is_right_bracket = false,
           });
@@ -163,6 +169,7 @@ namespace silva::test {
                       .oper       = atom_nest_t{*sw.token_id("("), *sw.token_id(")")},
                       .name       = sw.name_id_of("Expr", "Nst", "("),
                       .precedence = precedence_t{.level_index = 11, .assoc = NEST},
+                      .pts        = pt->span().sub_tree_span_at(6),
                   },
               .regular          = none,
               .is_right_bracket = false,

@@ -70,6 +70,11 @@ namespace silva {
     return parse_tree_span_t{&((*this)[pos]), stride, tp};
   }
 
+  token_id_t parse_tree_span_t::first_token_id() const
+  {
+    return tp->tokens[(*this)[0].token_begin];
+  }
+
   token_range_t parse_tree_span_t::token_range() const
   {
     return token_range_t{

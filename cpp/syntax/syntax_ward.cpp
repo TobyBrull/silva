@@ -221,7 +221,11 @@ namespace silva {
 
   expected_t<token_id_t> syntax_ward_t::token_id_in_string(const token_id_t ti)
   {
-    const string_t str{SILVA_EXPECT_FWD(token_infos[ti].string_as_plain_contained())};
+    const auto& token_info = token_infos[ti];
+    SILVA_EXPECT(token_info.category == STRING, MINOR, "{} not a string", token_id_wrap(ti));
+    const string_t str{SILVA_EXPECT_FWD(token_info.string_as_plain_contained(),
+                                        "{} not a string containing a token",
+                                        token_id_wrap(ti))};
     return token_id(str);
   }
 

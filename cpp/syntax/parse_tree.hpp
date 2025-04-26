@@ -36,6 +36,8 @@ namespace silva {
 
     parse_tree_span_t sub_tree_span_at(index_t) const;
 
+    token_id_t first_token_id() const;
+
     token_range_t token_range() const;
     token_position_t token_position() const;
 

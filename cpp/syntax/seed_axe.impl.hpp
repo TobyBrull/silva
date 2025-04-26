@@ -88,6 +88,7 @@ namespace silva::impl {
     Oper oper;
     name_id_t name = 0;
     precedence_t precedence;
+    parse_tree_span_t pts;
 
     friend auto operator<=>(const result_oper_t<Oper>&, const result_oper_t<Oper>&) = default;
   };
