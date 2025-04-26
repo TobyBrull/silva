@@ -23,9 +23,9 @@ namespace silva {
       Derived* nursery = nullptr;
       StateType orig_state;
       NodeType proto_node;
-
       bool owns_node = false;
 
+      stake_t() = default;
       stake_t(Derived*);
 
       stake_t(stake_t&&);
@@ -104,6 +104,7 @@ namespace silva {
     : nursery(std::exchange(other.nursery, nullptr))
     , orig_state(std::move(other.orig_state))
     , proto_node(std::move(other.proto_node))
+    , owns_node(std::exchange(other.owns_node, false))
   {
   }
 
@@ -116,6 +117,7 @@ namespace silva {
       nursery    = std::exchange(other.nursery, nullptr);
       orig_state = std::move(other.orig_state);
       proto_node = std::move(other.proto_node);
+      owns_node  = std::exchange(other.owns_node, false);
     }
     return *this;
   }
@@ -133,7 +135,7 @@ namespace silva {
 
     if constexpr (requires(Derived d) {
                     d.on_stake_create_node(proto_node, std::forward<Args>(args)...);
-                  }) {
+                  } || sizeof...(Args) > 0) {
       nursery->on_stake_create_node(proto_node, std::forward<Args>(args)...);
     }
   }
