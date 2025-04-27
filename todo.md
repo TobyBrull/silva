@@ -5,6 +5,9 @@
 ## Long Term
 
 * Seed
+    * add `joined_f(',', Base)`
+    * add `- Nonterminal = name_f('.', '_' | 'x' | 'p' | identifier / '^[A-Z]')`
+    * add `- Arg = p.Expr | Variable | '<$' p.Nonterminal -> nt_v nonterminal_f(_, nt_v) '$>'`
     * add Seed functions/templates/macros?
         * e.g.> - func name_id(root_term, curr_term, parent_term, separator_term, token_nt) = [
                     - x = Base ( separator_terminal Base ) *
