@@ -5,12 +5,26 @@
 ## Long Term
 
 * Seed
-    * add Seed functions/templates?
+    * add Seed functions/templates/macros?
         * e.g.> - func name_id(root_term, curr_term, parent_term, separator_term, token_nt) = [
                     - x = Base ( separator_terminal Base ) *
                     - Base = root_term | curr_term | parent_term | token_nt
                   ]
         * e.g.> - SeedNonterminal = name_id('_', 'x', 'p', '.')
+        * e.g.> - Expr = axe_f(Atom, [
+                    - Prefix = rtl prefix 'not'
+                    - Postfix = ltr postfix '?' '*'
+                  ])
+        * e.g.> - Impl = 'impl' ':' _.Seed.Nonterminal -> nt_v print_f(nt_v) resolve_f(_, nt_v)
+        * e.g.> - Args = joined_f(',', p.Expr)
+        * e.g.> - Expr = parse_axe_f(Atom, <$ Axe [
+                  - Parens    = nest  atom_nest '(' ')'
+                  - Prefix    = rtl   prefix 'not'
+                  - Postfix   = ltr   postfix '?' '*' '+'
+                  - Concat    = ltr   infix_flat concat
+                  - And       = ltr   infix_flat 'but_then'
+                  - Or        = ltr   infix_flat '|'
+                  ] $> )
     * add Seed Axe derivation (sub-Axe, super-Axe) mechanism?
     * translate Seed program into IR:
         * check Seed program during translation

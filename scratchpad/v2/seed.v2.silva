@@ -1,0 +1,21 @@
+namespace Seed [
+  node x = Stmt *
+  node Stmt = Namespace | Node | Var | Macro | Func ;
+  node Namespace = 'namespace' Nonterminal '[' x ']' ;
+  node Node = 'node' Nonterminal '=' Expr ';' ;
+  namespace Var = [
+    node x = 'var' Name '=' p.Expr ';' ;
+    node Name = identifier / '^[a-z].*_v$' ;
+  ]
+  namespace Macro = [
+     node x = Name '(' Args ')'
+     node Name = identifier / '^[a-z].*_m$'
+     node Args = joined_f(',', p.Expr)
+  ]
+  namespace Func = [
+     node x = Name '(' Args ')'
+     node Name = identifier / '^[a-z].*_f$'
+     node Args = joined_f(',', p.Expr)
+  ]
+  var Atom = { Nonterminal ( '->' Variable ) ? | Terminal | Function | Variable }
+]

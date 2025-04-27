@@ -1,0 +1,26 @@
+import
+io.file
+io.net
+
+interface
+foo_f
+Frog
+
+impl Stem
+
+foo_f [] -> i32_t {
+  [1 2 3 4 5] | filter_m( arg % 2 == 0 ) =: evens_v;
+  evens_v | sum =: retval;
+  return retval;
+}
+
+impl Coal
+
+impl Seed
+
+- Frog = [
+  - x = '(' number * ')'
+  - Turd = identifier
+]
+- Hog = [
+]
