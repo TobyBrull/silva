@@ -12,12 +12,16 @@ namespace silva {
   namespace impl {
     struct seed_axe_parse_tree_nursery_t : public parse_tree_nursery_t {
       token_id_t ti_dot         = *swp->token_id(".");
+      token_id_t ti_comma       = *swp->token_id(",");
       token_id_t ti_dash        = *swp->token_id("-");
       token_id_t ti_equal       = *swp->token_id("=");
       token_id_t ti_axe         = *swp->token_id("=/");
       token_id_t ti_alias       = *swp->token_id("=>");
+      token_id_t ti_right_arrow = *swp->token_id("->");
       token_id_t ti_brack_open  = *swp->token_id("[");
       token_id_t ti_brack_close = *swp->token_id("]");
+      token_id_t ti_paren_open  = *swp->token_id("(");
+      token_id_t ti_paren_close = *swp->token_id(")");
       token_id_t ti_identifier  = *swp->token_id("identifier");
       token_id_t ti_regex       = *swp->token_id("/");
       token_id_t ti_up          = *swp->token_id("p");
@@ -48,12 +52,18 @@ namespace silva {
       name_id_t ni_axe_with_atom = swp->name_id_of(ni_seed, "AxeWithAtom");
       name_id_t ni_expr          = swp->name_id_of(ni_seed, "Expr");
       name_id_t ni_atom          = swp->name_id_of(ni_seed, "Atom");
+      name_id_t ni_var           = swp->name_id_of(ni_seed, "Var");
+      name_id_t ni_func          = swp->name_id_of(ni_seed, "Function");
+      name_id_t ni_func_name     = swp->name_id_of(ni_func, "Name");
+      name_id_t ni_func_arg      = swp->name_id_of(ni_func, "Arg");
+      name_id_t ni_func_args     = swp->name_id_of(ni_func, "Args");
       name_id_t ni_axe           = swp->name_id_of(ni_seed, "Axe");
       name_id_t ni_axe_level     = swp->name_id_of(ni_axe, "Level");
       name_id_t ni_axe_assoc     = swp->name_id_of(ni_axe, "Assoc");
       name_id_t ni_axe_ops       = swp->name_id_of(ni_axe, "Ops");
       name_id_t ni_axe_op_type   = swp->name_id_of(ni_axe, "OpType");
       name_id_t ni_axe_op        = swp->name_id_of(ni_axe, "Op");
+      name_id_t ni_nt_maybe_var  = swp->name_id_of(ni_seed, "NonterminalMaybeVar");
       name_id_t ni_nt            = swp->name_id_of(ni_seed, "Nonterminal");
       name_id_t ni_nt_base       = swp->name_id_of(ni_nt, "Base");
       name_id_t ni_term          = swp->name_id_of(ni_seed, "Terminal");
@@ -223,31 +233,141 @@ namespace silva {
       {
       }
 
+      expected_t<parse_tree_node_t> nonterminal_maybe_var()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_nt_maybe_var);
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_atom, nonterminal()));
+        if (num_tokens_left() >= 2 && token_id_by() == ti_right_arrow) {
+          token_index += 1;
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_atom, variable()));
+        }
+        return ss_rule.commit();
+      }
+
       expected_t<parse_tree_node_t> atom()
       {
         auto ss                        = stake();
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
 
-        auto result_1 = nonterminal();
-        if (result_1) {
-          ss.add_proto_node(*result_1);
-          return ss.commit();
+        {
+          auto result = nonterminal_maybe_var();
+          if (result) {
+            ss.add_proto_node(*result);
+            return ss.commit();
+          }
+          error_nursery.add_child_error(std::move(result).error());
         }
-        error_nursery.add_child_error(std::move(result_1).error());
 
-        auto result_2 = terminal();
-        if (result_2) {
-          ss.add_proto_node(*result_2);
-          return ss.commit();
+        {
+          auto result = terminal();
+          if (result) {
+            ss.add_proto_node(*result);
+            return ss.commit();
+          }
+          error_nursery.add_child_error(std::move(result).error());
         }
-        error_nursery.add_child_error(std::move(result_2).error());
+
+        {
+          auto result = function();
+          if (result) {
+            ss.add_proto_node(*result);
+            return ss.commit();
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
 
         return std::unexpected(std::move(error_nursery)
                                    .finish_short(error_level_t::MINOR,
                                                  "[{}] {}",
                                                  token_position_at(orig_token_index),
                                                  swp->name_id_wrap(ni_atom)));
+      }
+
+      expected_t<parse_tree_node_t> variable()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_var);
+        SILVA_EXPECT_PARSE(ni_var, num_tokens_left() >= 1, "no more tokens in input");
+        const auto& tstr = token_data_by()->str;
+        SILVA_EXPECT_PARSE(ni_var,
+                           token_data_by()->category == IDENTIFIER && tstr.size() >= 3 &&
+                               std::islower(tstr.front()) && tstr.ends_with("_v"),
+                           "unexpected {}",
+                           swp->token_id_wrap(token_id_by()));
+        token_index += 1;
+        return ss_rule.commit();
+      }
+
+      expected_t<parse_tree_node_t> function()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_func);
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_func, function_name()));
+        SILVA_EXPECT_PARSE_TOKEN_ID(ni_func, ti_paren_open);
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_func, function_args()));
+        SILVA_EXPECT_PARSE_TOKEN_ID(ni_func, ti_paren_close);
+        return ss_rule.commit();
+      }
+
+      expected_t<parse_tree_node_t> function_name()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_func_name);
+        SILVA_EXPECT_PARSE(ni_func_name, num_tokens_left() >= 1, "no more tokens in input");
+        const auto& tstr = token_data_by()->str;
+        SILVA_EXPECT_PARSE(ni_func_name,
+                           token_data_by()->category == IDENTIFIER && tstr.size() >= 3 &&
+                               std::islower(tstr.front()) && tstr.ends_with("_f"),
+                           "unexpected {}",
+                           swp->token_id_wrap(token_id_by()));
+        token_index += 1;
+        return ss_rule.commit();
+      }
+
+      expected_t<parse_tree_node_t> function_arg()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_func_arg);
+        const index_t orig_token_index = token_index;
+        error_nursery_t error_nursery;
+
+        {
+          auto result = expr();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            return ss_rule.commit();
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+
+        {
+          auto result = variable();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            return ss_rule.commit();
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+
+        return std::unexpected(std::move(error_nursery)
+                                   .finish_short(error_level_t::MINOR,
+                                                 "[{}] {}",
+                                                 token_position_at(orig_token_index),
+                                                 swp->name_id_wrap(ni_func_arg)));
+      }
+
+      expected_t<parse_tree_node_t> function_args()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_func_args);
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_func_args, function_arg()));
+        while (num_tokens_left() >= 2 && token_id_by() == ti_comma) {
+          token_index += 1;
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_func_args, function_arg()));
+        }
+        return ss_rule.commit();
       }
 
       expected_t<parse_tree_node_t> expr()

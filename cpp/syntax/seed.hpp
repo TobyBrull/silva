@@ -31,7 +31,15 @@ namespace silva {
         - And       = ltr   infix_flat 'but_then'
         - Or        = ltr   infix_flat '|'
       ]
-      - Atom => Nonterminal | Terminal
+      - Atom => NonterminalMaybeVar | Terminal | Function
+      - NonterminalMaybeVar = Nonterminal ( '->' p.Variable ) ?
+      - Variable = identifier / '^[a-z].*_v$'
+      - Function = [
+         - x = Name '(' Args ')'
+         - Name = identifier / '^[a-z].*_f$'
+         - Args = Arg ( ',' Arg ) *
+         - Arg = p.Expr | Variable
+      ]
       - Nonterminal = [
         - x = Base ( '.' Base ) *
         - Base = '_' | 'x' | 'p' | identifier / '^[A-Z]'

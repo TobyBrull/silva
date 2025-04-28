@@ -13,8 +13,9 @@ namespace silva {
     // For each rule name, gives the node-index of the expression describing that rule.
     hashmap_t<name_id_t, parse_tree_span_t> rule_exprs;
 
-    // For each node-index that is a "Silva.Seed.Nonterminal", gives the full name of the rule that
-    // this nonterminal references.
+    // For each node-index that is a "_.Seed.Nonterminal", gives the full name of the rule that this
+    // nonterminal references, taking into account the relative scope in which the rule was
+    // encountered.
     hashmap_t<parse_tree_span_t, name_id_t> nonterminal_rules;
 
     // Maps the token-id's that correspond to regexes to the compiled version of that regex.

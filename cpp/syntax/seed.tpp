@@ -101,8 +101,9 @@ namespace silva::test {
             [1]_.Seed.Expr.Postfix.*              ( LabeledItem ... ) *
               [0]_.Seed.Expr.Parens.(             ( LabeledItem ';' ? )
                 [0]_.Seed.Expr.Concat.concat      LabeledItem ';' ?
-                  [0]_.Seed.Nonterminal           LabeledItem
-                    [0]_.Seed.Nonterminal.Base    LabeledItem
+                  [0]_.Seed.NonterminalMaybeVar   LabeledItem
+                    [0]_.Seed.Nonterminal         LabeledItem
+                      [0]_.Seed.Nonterminal.Base  LabeledItem
                   [1]_.Seed.Expr.Postfix.?        ';' ?
                     [0]_.Seed.Terminal            ';'
             [2]_.Seed.Terminal                    ']'
@@ -114,11 +115,13 @@ namespace silva::test {
             [0]_.Seed.Expr.Postfix.?              ( Label ':' ) ?
               [0]_.Seed.Expr.Parens.(             ( Label ':' )
                 [0]_.Seed.Expr.Concat.concat      Label ':'
-                  [0]_.Seed.Nonterminal           Label
-                    [0]_.Seed.Nonterminal.Base    Label
+                  [0]_.Seed.NonterminalMaybeVar   Label
+                    [0]_.Seed.Nonterminal         Label
+                      [0]_.Seed.Nonterminal.Base  Label
                   [1]_.Seed.Terminal              ':'
-            [1]_.Seed.Nonterminal                 Item
-              [0]_.Seed.Nonterminal.Base          Item
+            [1]_.Seed.NonterminalMaybeVar         Item
+              [0]_.Seed.Nonterminal               Item
+                [0]_.Seed.Nonterminal.Base        Item
       [2]_.Seed.Rule                              Label = string
         [0]_.Seed.Nonterminal                     Label
           [0]_.Seed.Nonterminal.Base              Label
@@ -129,8 +132,9 @@ namespace silva::test {
           [0]_.Seed.Nonterminal.Base              Item
         [1]_.Seed.ExprOrAlias                     = x ... | number
           [0]_.Seed.Expr.Or.|                     x | string | number
-            [0]_.Seed.Nonterminal                 x
-              [0]_.Seed.Nonterminal.Base          x
+            [0]_.Seed.NonterminalMaybeVar         x
+              [0]_.Seed.Nonterminal               x
+                [0]_.Seed.Nonterminal.Base        x
             [1]_.Seed.Terminal                    string
             [2]_.Seed.Terminal                    number
 )";
@@ -150,14 +154,14 @@ namespace silva::test {
     const name_id_t ni_i        = sw.name_id_of(ni_sf, "Item");
     const parse_tree_span_t pts = sf_seed_pt_1->span();
     CHECK(se.rule_exprs.at(ni_sf) == pts.sub_tree_span_at(8));
-    CHECK(se.rule_exprs.at(ni_li) == pts.sub_tree_span_at(22));
-    CHECK(se.rule_exprs.at(ni_l) == pts.sub_tree_span_at(35));
-    CHECK(se.rule_exprs.at(ni_i) == pts.sub_tree_span_at(40));
+    CHECK(se.rule_exprs.at(ni_li) == pts.sub_tree_span_at(23));
+    CHECK(se.rule_exprs.at(ni_l) == pts.sub_tree_span_at(38));
+    CHECK(se.rule_exprs.at(ni_i) == pts.sub_tree_span_at(43));
     REQUIRE(se.nonterminal_rules.size() == 4);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(14)) == ni_li);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(27)) == ni_l);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(30)) == ni_i);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(42)) == ni_sf);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(15)) == ni_li);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(29)) == ni_l);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(33)) == ni_i);
+    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(46)) == ni_sf);
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
     const auto sf_tt       = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", sf_code));

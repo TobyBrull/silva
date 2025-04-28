@@ -29,8 +29,8 @@ namespace silva {
     const name_id_t ni_axe_with_atom = swp->name_id_of(ni_seed, "AxeWithAtom");
     const name_id_t ni_expr          = swp->name_id_of(ni_seed, "Expr");
     const name_id_t ni_atom          = swp->name_id_of(ni_seed, "Atom");
+    const name_id_t ni_nt_maybe_var  = swp->name_id_of(ni_seed, "NonterminalMaybeVar");
     const name_id_t ni_nt            = swp->name_id_of(ni_seed, "Nonterminal");
-    const name_id_t ni_nt_base       = swp->name_id_of(ni_nt, "Base");
     const name_id_t ni_term          = swp->name_id_of(ni_seed, "Terminal");
 
     seed_engine_create_nursery_t(seed_engine_t* se, const tokenization_t& s_tokenization)
@@ -227,8 +227,7 @@ namespace silva {
       const name_id_t ni_expr_and      = swp->name_id_of(ni_expr, "And");
       const name_id_t ni_atom          = swp->name_id_of(ni_seed, "Atom");
       const name_id_t ni_axe_with_atom = swp->name_id_of(ni_seed, "AxeWithAtom");
-      const name_id_t ni_nt            = swp->name_id_of(ni_seed, "Nonterminal");
-      const name_id_t ni_nt_base       = swp->name_id_of(ni_nt, "Base");
+      const name_id_t ni_nt_maybe_var  = swp->name_id_of(ni_seed, "NonterminalMaybeVar");
       const name_id_t ni_term          = swp->name_id_of(ni_seed, "Terminal");
 
       seed_engine_nursery_t(tokenization_ptr_t tp, const seed_engine_t* root)
@@ -524,8 +523,8 @@ namespace silva {
         else if (s_rule_name == ni_term) {
           return s_terminal(pts, t_rule_name);
         }
-        else if (s_rule_name == ni_nt) {
-          const auto it = se->nonterminal_rules.find(pts);
+        else if (s_rule_name == ni_nt_maybe_var) {
+          const auto it = se->nonterminal_rules.find(pts.sub_tree_span_at(1));
           SILVA_EXPECT(it != se->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
           const name_id_t t_rule_name = it->second;
           return handle_rule(t_rule_name);
