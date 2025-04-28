@@ -12,7 +12,10 @@ namespace silva {
 
     vector_t<string_view_t> cmdline_args;
     for (int i = 0; i < argc; ++i) {
-      cmdline_args.push_back(string_view_t{argv[i]});
+      const string_view_t arg_str{argv[i]};
+      if (!arg_str.starts_with("--")) {
+        cmdline_args.push_back(arg_str);
+      }
     }
     const silva::expected_t<void> result = (*real_main)(cmdline_args);
 

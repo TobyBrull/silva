@@ -6,14 +6,14 @@ extern char** environ;
 
 namespace silva {
   namespace impl {
-    void try_parse_variable(hashmap_t<string_or_view_t, string_or_view_t>& retval, const char* arg)
+    void try_parse_variable(hashmap_t<string_or_view_t, string_or_view_t>& retval,
+                            const string_view_t arg_str)
     {
-      const string_view_t environ_var(arg);
-      auto const pos = environ_var.find('=');
+      auto const pos = arg_str.find('=');
       if (pos != std::string::npos) {
-        SILVA_ASSERT(environ_var.size() >= pos + 1);
-        const string_view_t name       = environ_var.substr(0, pos);
-        const string_view_t value      = environ_var.substr(pos + 1);
+        SILVA_ASSERT(arg_str.size() >= pos + 1);
+        const string_view_t name       = arg_str.substr(0, pos);
+        const string_view_t value      = arg_str.substr(pos + 1);
         retval[string_or_view_t{name}] = string_or_view_t{value};
       }
     }
@@ -29,7 +29,10 @@ namespace silva {
   void var_context_fill_cmdline(var_context_t* var_context, const int argc, char* argv[])
   {
     for (int i = 1; i < argc; ++i) {
-      impl::try_parse_variable(var_context->variables, argv[i]);
+      const string_view_t arg_str{argv[i]};
+      if (arg_str.starts_with("--")) {
+        impl::try_parse_variable(var_context->variables, arg_str.substr(2));
+      }
     }
   }
 
