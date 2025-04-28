@@ -2,6 +2,8 @@
 
 * review all error messages
 
+* fix that unresolvable Nonterminal not properly handled in seed_engine::apply
+
 ## Long Term
 
 * Seed
