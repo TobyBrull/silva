@@ -90,7 +90,7 @@ namespace silva::test {
         - Eqa   = rtl   infix '='
       ] )'";
     const auto tt = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.seed-axe", test_seed_axe));
-    const auto se = seed_seed_engine(sw.ptr());
+    const auto se = standard_seed_engine(sw.ptr());
     const auto pt = SILVA_EXPECT_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Axe")));
     const auto sa =
         SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));
@@ -423,7 +423,7 @@ namespace silva::test {
         - Assign  = rtl   infix_flat '=' infix '%'
       ] )'";
     const auto tt = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.seed-axe", test_seed_axe));
-    const auto se = seed_seed_engine(sw.ptr());
+    const auto se = standard_seed_engine(sw.ptr());
     const auto pt = SILVA_EXPECT_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Axe")));
     const auto sa =
         SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));

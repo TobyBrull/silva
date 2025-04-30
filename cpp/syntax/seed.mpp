@@ -20,13 +20,13 @@ namespace silva {
     auto seed_tt = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
     parse_tree_ptr_t seed_pt;
     if (arg_seed_eng) {
-      const auto sse = seed_seed_engine(sw.ptr());
+      const auto sse = standard_seed_engine(sw.ptr());
       seed_pt        = SILVA_EXPECT_FWD(sse->apply(std::move(seed_tt), sw.name_id_of("Seed")));
     }
     else {
       seed_pt = SILVA_EXPECT_FWD(seed_parse(seed_tt));
     }
-    auto se = seed_seed_engine(sw.ptr());
+    auto se = standard_seed_engine(sw.ptr());
     SILVA_EXPECT_FWD(se->add(seed_pt->span()));
     if (m == 2) {
       fmt::print("{}\n", SILVA_EXPECT_FWD(seed_pt->span().to_string()));

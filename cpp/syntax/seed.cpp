@@ -452,7 +452,7 @@ namespace silva {
     return tp->swp->add(std::move(nursery).finish());
   }
 
-  unique_ptr_t<seed_engine_t> seed_seed_engine(syntax_ward_ptr_t swp)
+  unique_ptr_t<seed_engine_t> standard_seed_engine(syntax_ward_ptr_t swp)
   {
     auto retval = std::make_unique<seed_engine_t>(std::move(swp));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));

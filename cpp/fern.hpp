@@ -13,7 +13,7 @@ namespace silva {
   )'";
 
   // Invariant:
-  //    seed_seed_engine()->apply(tokenization, "Fern") == fern_parse(tokenization)
+  //    standard_seed_engine()->apply(tokenization, "Fern") == fern_parse(tokenization)
   expected_t<parse_tree_ptr_t> fern_parse(tokenization_ptr_t);
 
   // Fern parse_tree output functions
