@@ -4,19 +4,11 @@
 #include "canopy/error.hpp"
 #include "canopy/expected.hpp"
 #include "syntax/parse_tree_nursery.hpp"
-#include "syntax/seed_engine.hpp"
 #include "syntax/syntax_ward.hpp"
 
 namespace silva {
   using enum token_category_t;
   using enum error_level_t;
-
-  unique_ptr_t<seed_engine_t> fern_seed_engine(syntax_ward_ptr_t swp)
-  {
-    auto retval = std::make_unique<seed_engine_t>(std::move(swp));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern_seed));
-    return retval;
-  }
 
   namespace impl {
     struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
