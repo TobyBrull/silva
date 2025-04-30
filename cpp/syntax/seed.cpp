@@ -1,6 +1,7 @@
 #include "seed.hpp"
 
 #include "canopy/expected.hpp"
+#include "fern.hpp"
 #include "parse_tree_nursery.hpp"
 #include "seed_engine.hpp"
 #include "syntax_ward.hpp"
@@ -456,6 +457,7 @@ namespace silva {
     auto retval = std::make_unique<seed_engine_t>(std::move(swp));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed-axe.seed", seed_axe_seed));
+    SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern_seed));
     return retval;
   }
 
