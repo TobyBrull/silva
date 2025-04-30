@@ -1,11 +1,8 @@
 #include "seed.hpp"
 
 #include "canopy/expected.hpp"
-#include "fern.hpp"
-#include "parse_tree_nursery.hpp"
-#include "seed_engine.hpp"
-#include "syntax_ward.hpp"
-#include "tokenization.hpp"
+
+#include "syntax.hpp"
 
 namespace silva {
   using enum token_category_t;
@@ -450,15 +447,6 @@ namespace silva {
     impl::seed_parse_tree_nursery_t nursery(tp);
     SILVA_EXPECT_FWD(nursery.seed());
     return tp->swp->add(std::move(nursery).finish());
-  }
-
-  unique_ptr_t<seed_engine_t> standard_seed_engine(syntax_ward_ptr_t swp)
-  {
-    auto retval = std::make_unique<seed_engine_t>(std::move(swp));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("seed-axe.seed", seed_axe_seed));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern_seed));
-    return retval;
   }
 
   string_t name_id_style_t::absolute(const name_id_t target_fni) const

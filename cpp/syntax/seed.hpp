@@ -58,7 +58,6 @@ namespace silva {
   // Invariant (pseudo-code):
   //    standard_seed_engine()->apply(tokenization, "Seed") == seed_parse(tokenization)
   expected_t<parse_tree_ptr_t> seed_parse(tokenization_ptr_t);
-  unique_ptr_t<seed_engine_t> standard_seed_engine(syntax_ward_ptr_t);
 
   struct name_id_style_t {
     syntax_ward_ptr_t swp;

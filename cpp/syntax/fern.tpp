@@ -1,7 +1,6 @@
 #include "fern.hpp"
 
-#include "syntax/parse_tree.hpp"
-#include "syntax/seed_engine.hpp"
+#include "syntax.hpp"
 
 #include <catch2/catch_all.hpp>
 

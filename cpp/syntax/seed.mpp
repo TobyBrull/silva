@@ -3,8 +3,8 @@
 #include "canopy/expected.hpp"
 #include "canopy/main.hpp"
 #include "canopy/var_context.hpp"
-#include "seed_engine.hpp"
-#include "syntax_ward.hpp"
+
+#include "syntax.hpp"
 
 namespace silva {
   expected_t<void> seed_main(const span_t<string_view_t> cmdline_args)

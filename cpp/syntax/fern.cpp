@@ -3,8 +3,9 @@
 #include "canopy/convert.hpp"
 #include "canopy/error.hpp"
 #include "canopy/expected.hpp"
-#include "syntax/parse_tree_nursery.hpp"
-#include "syntax/syntax_ward.hpp"
+
+#include "parse_tree_nursery.hpp"
+#include "syntax_ward.hpp"
 
 namespace silva {
   using enum token_category_t;

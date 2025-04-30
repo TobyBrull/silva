@@ -9,6 +9,8 @@
 * [seed.hpp](seed.hpp)
 * [seed_axe.hpp](seed_axe.hpp)
 * [seed_engine.hpp](seed_engine.hpp)
+* [fern.hpp](fern.hpp)
+* [syntax.hpp](syntax.hpp)
 
 ```mermaid
 classDiagram

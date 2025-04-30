@@ -3,8 +3,8 @@
 #include "canopy/filesystem.hpp"
 #include "canopy/main.hpp"
 #include "canopy/var_context.hpp"
-#include "syntax/seed_engine.hpp"
-#include "syntax/syntax_ward.hpp"
+
+#include "syntax.hpp"
 
 namespace silva {
   expected_t<void> fern_main(const span_t<string_view_t> cmdline_args)

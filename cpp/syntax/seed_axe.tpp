@@ -1,9 +1,6 @@
 #include "seed_axe.hpp"
 
-#include "syntax/seed.hpp"
-#include "syntax/seed_engine.hpp"
-#include "syntax_ward.hpp"
-#include "tokenization.hpp"
+#include "syntax.hpp"
 
 #include <catch2/catch_all.hpp>
 
