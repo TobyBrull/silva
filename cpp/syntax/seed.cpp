@@ -328,16 +328,15 @@ namespace silva {
 
       expected_t<parse_tree_node_t> function_arg()
       {
-        auto ss_rule = stake();
-        ss_rule.create_node(ni_func_arg);
+        auto ss                        = stake();
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
 
         {
           auto result = expr();
           if (result) {
-            ss_rule.add_proto_node(*result);
-            return ss_rule.commit();
+            ss.add_proto_node(*result);
+            return ss.commit();
           }
           error_nursery.add_child_error(std::move(result).error());
         }
@@ -345,8 +344,8 @@ namespace silva {
         {
           auto result = variable();
           if (result) {
-            ss_rule.add_proto_node(*result);
-            return ss_rule.commit();
+            ss.add_proto_node(*result);
+            return ss.commit();
           }
           error_nursery.add_child_error(std::move(result).error());
         }

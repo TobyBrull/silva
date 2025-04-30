@@ -38,7 +38,7 @@ namespace silva {
          - x = Name '(' Args ')'
          - Name = identifier / '^[a-z].*_f$'
          - Args = Arg ( ',' Arg ) *
-         - Arg = p.Expr | p.Variable
+         - Arg => p.Expr | p.Variable
       ]
       - Nonterminal = [
         - x = Base ( '.' Base ) *
