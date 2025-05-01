@@ -294,17 +294,16 @@ namespace silva {
         auto ss = stake();
         return ss.commit();
       }
-      using func_table_t =
-          hashmap_t<token_id_t,
-                    function_t<expected_t<node_and_error_t>(span_t<const parse_tree_span_t>)>>;
+      using func_t = delegate_t<expected_t<node_and_error_t>(span_t<const parse_tree_span_t>)>;
+      using func_table_t      = hashmap_t<token_id_t, func_t>;
       func_table_t func_table = {
           {
               *swp->token_id("parse_f"),
-              std::bind(&seed_engine_nursery_t::parse_f, this, std::placeholders::_1),
+              func_t::make<&seed_engine_nursery_t::parse_f>(this),
           },
           {
               *swp->token_id("print_f"),
-              std::bind(&seed_engine_nursery_t::print_f, this, std::placeholders::_1),
+              func_t::make<&seed_engine_nursery_t::print_f>(this),
           },
       };
 
