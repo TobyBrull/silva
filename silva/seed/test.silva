@@ -1,0 +1,60 @@
+<$ Seed
+- CppStmts = [
+  - x = ( Expr ';' ) *
+  - Expr =/ Atom [
+      - Parens      = nest  atom_nest '(' ')'
+      - Namespace   = rtl   infix '::' prefix '::'
+      - Postfix     = ltr   postfix '++' '--'
+                            postfix_nest '(' ')' '[' ']'
+                            infix '.' '->'
+      - Prefix      = rtl   prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' 'new'
+                            prefix_nest '<.' '.>'
+      - Member      = ltr   infix '.*' '->*'
+      - Multiply    = ltr   infix '*' '/' '%'
+      - Addition    = ltr   infix '+' '-'
+      - Bitshift    = ltr   infix '<<' '>>'
+      - Spaceship   = ltr   infix '<=>'
+      - Comparison  = ltr   infix '<' '<=' '>' '>='
+      - Equality    = ltr   infix '==' '!='
+      - BitAnd      = ltr   infix '&'
+      - BitXor      = ltr   infix '^'
+      - BitOr       = ltr   infix '|'
+      - LogicalAnd  = ltr   infix '&&'
+      - LogicalOr   = ltr   infix '||'
+      - Assignment  = rtl   infix '=' '+=' '-='
+                            prefix 'throw'
+                            ternary '?' ':'
+      - Comma       = ltr   infix ','
+    ]
+  - Atom = number | string | identifier
+]
+$>
+
+<$ CppStmts
+1 + 2 * 3 + 4 * 5 ;
+a[1] = std::sin(3.14) ;
+1 | 0 <= x * 10 <= 2 + 3 ;
+std::get(x) = ::std::get(x) ;
+++ x ++ ;
+$>
+
+<$ Fern
+[
+  none
+  true
+  test: 'Hello'
+  [
+    1.000000
+    'two' : 2.000000
+    3.000000
+  ]
+]
+$>
+
+<$ Seed
+- AsAndBs = 'a' * 'b' *
+$>
+
+<$ AsAndBs
+a a a b b
+$>
