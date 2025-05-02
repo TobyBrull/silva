@@ -3,5 +3,15 @@
 #include "seed_engine.hpp"
 
 namespace silva {
+  const string_view_t silva_seed = R"'(
+    - Silva = [
+      - x = Section * end_of_file
+      - Section = '<$'
+        _.Seed.Nonterminal -> nt_v
+        parse_and_callback_f(_, nt_v)
+      '$>'
+    ]
+  )'";
+
   unique_ptr_t<seed_engine_t> standard_seed_engine(syntax_ward_ptr_t);
 }

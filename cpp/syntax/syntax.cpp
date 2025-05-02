@@ -9,6 +9,7 @@ namespace silva {
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed_seed));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed-axe.seed", seed_axe_seed));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern_seed));
+    SILVA_EXPECT_ASSERT(retval->add_complete_file("silva.seed", silva_seed));
     return retval;
   }
 }
