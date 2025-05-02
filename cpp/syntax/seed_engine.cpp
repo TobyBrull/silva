@@ -299,12 +299,12 @@ namespace silva {
         const index_t orig_token_index = token_index;
         const index_t curr_num_nodes   = tree.size();
         node_and_error_t nae           = SILVA_EXPECT_FWD(parse_f(params));
-        const auto it                  = se->parse_callbacks.find(nae.node.rule_name);
-        if (it != se->parse_callbacks.end()) {
-          const auto& cb = it->second;
-          if (tree.size() > curr_num_nodes) {
-            const parse_tree_span_t parsed_pts{&tree[curr_num_nodes], 1, tp};
-            auto cb_exp = cb(parsed_pts);
+        if (tree.size() > curr_num_nodes) {
+          const parse_tree_span_t parsed_pts{&tree[curr_num_nodes], 1, tp};
+          const auto it = se->parse_callbacks.find(parsed_pts[0].rule_name);
+          if (it != se->parse_callbacks.end()) {
+            const auto& cb = it->second;
+            auto cb_exp    = cb(parsed_pts);
             if (!cb_exp.has_value()) {
               error_nursery_t error_nursery;
               if (!nae.last_error.is_empty()) {
@@ -338,7 +338,7 @@ namespace silva {
           },
           {
               *swp->token_id("parse_and_callback_f"),
-              func_t::make<&seed_engine_nursery_t::parse_f>(this),
+              func_t::make<&seed_engine_nursery_t::parse_and_callback_f>(this),
           },
           {
               *swp->token_id("print_f"),

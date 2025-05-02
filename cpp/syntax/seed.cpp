@@ -50,7 +50,7 @@ namespace silva {
       name_id_t ni_axe_with_atom = swp->name_id_of(ni_seed, "AxeWithAtom");
       name_id_t ni_expr          = swp->name_id_of(ni_seed, "Expr");
       name_id_t ni_atom          = swp->name_id_of(ni_seed, "Atom");
-      name_id_t ni_var           = swp->name_id_of(ni_seed, "Var");
+      name_id_t ni_var           = swp->name_id_of(ni_seed, "Variable");
       name_id_t ni_func          = swp->name_id_of(ni_seed, "Function");
       name_id_t ni_func_name     = swp->name_id_of(ni_func, "Name");
       name_id_t ni_func_arg      = swp->name_id_of(ni_func, "Arg");
