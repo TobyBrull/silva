@@ -178,6 +178,12 @@ namespace silva {
     return {};
   }
 
+  expected_t<void> seed_engine_t::add_copy(const parse_tree_span_t& stps_ref)
+  {
+    parse_tree_ptr_t stps = swp->add(std::make_unique<parse_tree_t>(stps_ref.copy()));
+    return add(stps->span());
+  }
+
   expected_t<parse_tree_ptr_t> seed_engine_t::add_complete_file(filesystem_path_t filepath,
                                                                 string_view_t text)
   {
@@ -254,6 +260,7 @@ namespace silva {
         parse_tree_node_t node;
         error_t last_error;
 
+        node_and_error_t() = default;
         node_and_error_t(parse_tree_node_t node) : node(node) {}
         node_and_error_t(parse_tree_node_t node, error_t last_error)
           : node(node), last_error(std::move(last_error))
@@ -286,6 +293,34 @@ namespace silva {
         const name_id_t t_rule_name = SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_rel));
         return handle_rule(t_rule_name);
       }
+      expected_t<node_and_error_t>
+      parse_and_callback_f(const span_t<const parse_tree_span_t> params)
+      {
+        const index_t orig_token_index = token_index;
+        const index_t curr_num_nodes   = tree.size();
+        node_and_error_t nae           = SILVA_EXPECT_FWD(parse_f(params));
+        const auto it                  = se->parse_callbacks.find(nae.node.rule_name);
+        if (it != se->parse_callbacks.end()) {
+          const auto& cb = it->second;
+          if (tree.size() > curr_num_nodes) {
+            const parse_tree_span_t parsed_pts{&tree[curr_num_nodes], 1, tp};
+            auto cb_exp = cb(parsed_pts);
+            if (!cb_exp.has_value()) {
+              error_nursery_t error_nursery;
+              if (!nae.last_error.is_empty()) {
+                error_nursery.add_child_error(std::move(nae.last_error));
+              }
+              error_nursery.add_child_error(std::move(cb_exp).error());
+              return std::unexpected(std::move(error_nursery)
+                                         .finish(MINOR,
+                                                 "[{}] error running callback for {}",
+                                                 token_position_at(orig_token_index),
+                                                 swp->name_id_wrap(nae.node.rule_name)));
+            }
+          }
+        }
+        return nae;
+      }
       expected_t<node_and_error_t> print_f(const span_t<const parse_tree_span_t> params)
       {
         for (const auto& pts: params) {
@@ -299,6 +334,10 @@ namespace silva {
       func_table_t func_table = {
           {
               *swp->token_id("parse_f"),
+              func_t::make<&seed_engine_nursery_t::parse_f>(this),
+          },
+          {
+              *swp->token_id("parse_and_callback_f"),
               func_t::make<&seed_engine_nursery_t::parse_f>(this),
           },
           {

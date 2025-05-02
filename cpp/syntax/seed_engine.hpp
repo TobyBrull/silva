@@ -35,10 +35,15 @@ namespace silva {
     // [keyword] (i.e., of category: identifier or operator).
     hashmap_t<token_id_t, token_id_t> string_to_keyword;
 
+    // Callbacks triggered by Seed function "parse_and_callback_f".
+    using callback_t = delegate_t<expected_t<void>(const parse_tree_span_t&)>;
+    hashmap_t<name_id_t, callback_t> parse_callbacks;
+
     seed_engine_t(syntax_ward_ptr_t);
 
     // The given parse_tree_span_t should be part of one of the "seed_parse_trees".
     expected_t<void> add(parse_tree_span_t);
+    expected_t<void> add_copy(const parse_tree_span_t&);
 
     expected_t<parse_tree_ptr_t> add_complete_file(filesystem_path_t filepath, string_view_t text);
 
