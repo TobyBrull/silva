@@ -38,6 +38,7 @@ namespace silva {
     // Callbacks triggered by Seed function "parse_and_callback_f".
     using callback_t = delegate_t<expected_t<void>(const parse_tree_span_t&)>;
     hashmap_t<name_id_t, callback_t> parse_callbacks;
+    expected_t<void> callback_if(const parse_tree_span_t&) const;
 
     seed_engine_t(syntax_ward_ptr_t);
 

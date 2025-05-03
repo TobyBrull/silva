@@ -171,6 +171,16 @@ namespace silva {
 
   seed_engine_t::seed_engine_t(syntax_ward_ptr_t swp) : swp(swp) {}
 
+  expected_t<void> seed_engine_t::callback_if(const parse_tree_span_t& pts) const
+  {
+    const auto it = parse_callbacks.find(pts[0].rule_name);
+    if (it != parse_callbacks.end()) {
+      const auto& cb = it->second;
+      SILVA_EXPECT_FWD(cb(pts));
+    }
+    return {};
+  }
+
   expected_t<void> seed_engine_t::add(parse_tree_span_t stps)
   {
     seed_engine_create_nursery_t nursery(this, *stps.tp);
@@ -301,22 +311,18 @@ namespace silva {
         node_and_error_t nae           = SILVA_EXPECT_FWD(parse_f(params));
         if (tree.size() > curr_num_nodes) {
           const parse_tree_span_t parsed_pts{&tree[curr_num_nodes], 1, tp};
-          const auto it = se->parse_callbacks.find(parsed_pts[0].rule_name);
-          if (it != se->parse_callbacks.end()) {
-            const auto& cb = it->second;
-            auto cb_exp    = cb(parsed_pts);
-            if (!cb_exp.has_value()) {
-              error_nursery_t error_nursery;
-              if (!nae.last_error.is_empty()) {
-                error_nursery.add_child_error(std::move(nae.last_error));
-              }
-              error_nursery.add_child_error(std::move(cb_exp).error());
-              return std::unexpected(std::move(error_nursery)
-                                         .finish(MINOR,
-                                                 "[{}] error running callback for {}",
-                                                 token_position_at(orig_token_index),
-                                                 swp->name_id_wrap(nae.node.rule_name)));
+          auto cb_exp = se->callback_if(parsed_pts);
+          if (!cb_exp.has_value()) {
+            error_nursery_t error_nursery;
+            if (!nae.last_error.is_empty()) {
+              error_nursery.add_child_error(std::move(nae.last_error));
             }
+            error_nursery.add_child_error(std::move(cb_exp).error());
+            return std::unexpected(std::move(error_nursery)
+                                       .finish(MINOR,
+                                               "[{}] error running callback for {}",
+                                               token_position_at(orig_token_index),
+                                               swp->name_id_wrap(nae.node.rule_name)));
           }
         }
         return nae;
