@@ -17,6 +17,10 @@ func foo_f: i32_pair_t -> i32_t proto
 
 func bar_f: [] -> [] proto
 
+func main_f: [ i32_t, other: i32_t, ] -> i32_t proto
+
+func test_f: [ i32_t, ] proto
+
 implementation
 
 func little_gauss_f: -*-
@@ -45,4 +49,18 @@ func foo_f: -*-
     retval = first or second;
   };
   retval = 42 ;
+}
+
+func main_f: -*-
+{
+  retval = [ arg.0 , arg.1 , ] ;
+  retval = 2 ;
+  getval = [ 10, 100, ] ;
+}
+
+func test_f: -*-
+{
+  [ 10, 100 , ] | std.foo ;
+  ( [ 10, 100, ] | std.foo == 110 ) | assert ;
+  ( [ 20, 300, ] | std.foo == 320 ) | assert ;
 }

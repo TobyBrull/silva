@@ -1,4 +1,4 @@
-- Test = 'import' Imports 'interface' Interface 'implementation' Implementation end_of_file
+- SomeLang = 'import' Imports 'interface' Interface 'implementation' Implementation end_of_file
 - Imports = string *
 - Interface = Command *
 - Implementation = Command *
