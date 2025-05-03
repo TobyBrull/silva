@@ -25,19 +25,6 @@ namespace silva {
     return {};
   }
 
-  expected_t<name_id_t> infer_language_from_filename(syntax_ward_t& sw,
-                                                     const filesystem_path_t& fsp)
-  {
-    const string_t ext = fsp.extension().string();
-    SILVA_EXPECT(ext.size() >= 2 && ext.front() == '.',
-                 MAJOR,
-                 "Filename {} did not have an extension",
-                 fsp.string());
-    string_t lang = ext.substr(1);
-    lang[0]       = std::toupper(lang[0]);
-    return sw.name_id_of(lang);
-  }
-
   expected_t<void> silva_main(const span_t<string_view_t> cmdline_args)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
@@ -45,7 +32,7 @@ namespace silva {
     const auto se = standard_seed_engine(sw.ptr());
     for (const auto& cmdline_arg: cmdline_args.subspan(1)) {
       const filesystem_path_t fsp{cmdline_arg};
-      const name_id_t ni_goal = SILVA_EXPECT_FWD(infer_language_from_filename(sw, fsp));
+      const name_id_t ni_goal = SILVA_EXPECT_FWD(infer_goal_rule_name(sw, fsp));
       tokenization_ptr_t tt   = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_arg));
       parse_tree_ptr_t pt     = SILVA_EXPECT_FWD(se->apply(std::move(tt), ni_goal));
       SILVA_EXPECT_FWD(apply_action(pt->span()));
