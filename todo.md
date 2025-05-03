@@ -2,10 +2,6 @@
 
 * review all error messages
 
-* fix that unresolvable Nonterminal not properly handled in seed_engine::apply
-
-* allow to dynamically add end_of_file when parsing
-
 ## Long Term
 
 * Seed
