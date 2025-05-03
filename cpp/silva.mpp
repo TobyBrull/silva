@@ -1,22 +1,55 @@
 #include "silva.hpp"
 
-#include "canopy/expected.hpp"
+#include "canopy/filesystem.hpp"
 #include "canopy/main.hpp"
-#include "syntax/seed_engine.hpp"
-#include "syntax/syntax_ward.hpp"
+#include "canopy/var_context.hpp"
+#include "syntax/syntax.hpp"
 
 namespace silva {
+  expected_t<void> apply_action(const parse_tree_span_t pts)
+  {
+    const auto action =
+        SILVA_EXPECT_FWD_IF(var_context_get("action"), MAJOR).value_or("print-parse-tree");
+    if (action == "print-parse-tree") {
+      fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_string()));
+    }
+    else if (action == "print-graph") {
+      fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_graphviz()));
+    }
+    else if (action == "show-graph") {
+      graphviz_show_sync(SILVA_EXPECT_FWD(pts.to_graphviz()));
+    }
+    else {
+      SILVA_EXPECT(false, MAJOR, "Unknown action '{}'", string_t{action});
+    }
+    return {};
+  }
+
+  expected_t<name_id_t> infer_language_from_filename(syntax_ward_t& sw,
+                                                     const filesystem_path_t& fsp)
+  {
+    const string_t ext = fsp.extension().string();
+    SILVA_EXPECT(ext.size() >= 2 && ext.front() == '.',
+                 MAJOR,
+                 "Filename {} did not have an extension",
+                 fsp.string());
+    string_t lang = ext.substr(1);
+    lang[0]       = std::toupper(lang[0]);
+    return sw.name_id_of(lang);
+  }
+
   expected_t<void> silva_main(const span_t<string_view_t> cmdline_args)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
-    SILVA_EXPECT(cmdline_args.size() >= 2,
-                 MINOR,
-                 "First command-line arg must be a Silva filename");
-    auto tt = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
-    // auto spr = silva_seed_engine(tw.ptr());
-    // auto pt  = SILVA_EXPECT_FWD(spr->apply(std::move(tt)));
-    // fmt::print("{}\n", SILVA_EXPECT_FWD(parse_tree_to_string(*pt)));
+    const auto se = standard_seed_engine(sw.ptr());
+    for (const auto& cmdline_arg: cmdline_args.subspan(1)) {
+      const filesystem_path_t fsp{cmdline_arg};
+      const name_id_t ni_goal = SILVA_EXPECT_FWD(infer_language_from_filename(sw, fsp));
+      tokenization_ptr_t tt   = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_arg));
+      parse_tree_ptr_t pt     = SILVA_EXPECT_FWD(se->apply(std::move(tt), ni_goal));
+      SILVA_EXPECT_FWD(apply_action(pt->span()));
+    }
     return {};
   }
 }

@@ -12,9 +12,9 @@ endforeach()
 
 # Library
 
-add_library(silva ${SILVA_LIB_FILES})
-target_include_directories(silva PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(silva PUBLIC
+add_library(silvalib ${SILVA_LIB_FILES})
+target_include_directories(silvalib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_link_libraries(silvalib PUBLIC
   fmt::fmt
   reflect-cpp
 )
@@ -23,10 +23,13 @@ target_link_libraries(silva PUBLIC
 
 foreach(main_file ${SILVA_MAIN_FILES})
   get_filename_component(basename "${main_file}" NAME_WE)
-  add_executable("silva_${basename}" ${main_file})
-  target_link_libraries("silva_${basename}"
-    silva
-  )
+  if(basename STREQUAL "silva")
+    set(executable_name "silva")
+  else()
+    set(executable_name "silva_${basename}")
+  endif()
+  add_executable("${executable_name}" "${main_file}")
+  target_link_libraries("${executable_name}" silvalib)
 endforeach()
 
 # Tests
@@ -35,7 +38,7 @@ include(CTest)
 
 add_executable(silva_test "${SILVA_TEST_FILES}")
 target_link_libraries(silva_test PRIVATE
-  silva
+  silvalib
   Catch2::Catch2WithMain
 )
 

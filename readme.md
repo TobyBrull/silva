@@ -40,8 +40,8 @@ cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang
 ninja -C build/
 ninja -C build/ && ./build/cpp/silva_test
 ninja -C build/ && ./build/cpp/silva_tokenization silva/fern/simple.fern
-ninja -C build/ && ./build/cpp/silva silva/fern/simple.fern
-ninja -C build/ && ./build/cpp/silva silva/fern/broken.fern
+ninja -C build/ && ./build/cpp/silva_fern silva/fern/simple.fern
+ninja -C build/ && ./build/cpp/silva_fern silva/fern/broken.fern
 ninja -C build/ && ./build/cpp/silva silva/test.silva
 ninja -C build/ && ./build/cpp/silva silva/scratchpad/somelang.seed silva/scratchpad/test.somelang
 ```
