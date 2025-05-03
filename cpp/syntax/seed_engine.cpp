@@ -714,8 +714,9 @@ namespace silva {
         const parse_tree_span_t pts = it->second;
         const auto& s_node          = pts[0];
         const name_id_t s_expr_name = s_node.rule_name;
+        node_and_error_t retval;
         if (s_expr_name == ni_axe_with_atom) {
-          return SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name));
+          retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name));
         }
         else {
           const token_id_t rule_token = pts.tp->tokens[s_node.token_begin];
@@ -733,7 +734,7 @@ namespace silva {
                 t_rule_name,
                 s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map));
             ss_rule.add_proto_node(std::move(result.node));
-            return node_and_error_t{ss_rule.commit(), std::move(result.last_error)};
+            retval = node_and_error_t{ss_rule.commit(), std::move(result.last_error)};
           }
           else {
             auto ss     = stake();
@@ -741,9 +742,10 @@ namespace silva {
                 t_rule_name,
                 s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map));
             ss.add_proto_node(std::move(result.node));
-            return node_and_error_t{ss.commit(), std::move(result.last_error)};
+            retval = node_and_error_t{ss.commit(), std::move(result.last_error)};
           }
         }
+        return retval;
       }
     };
   }
