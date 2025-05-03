@@ -753,7 +753,14 @@ namespace silva {
   {
     impl::seed_engine_nursery_t nursery(tp, this);
     SILVA_EXPECT_FWD(nursery.check());
-    const auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
+    auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
+    if (ptn.node.token_begin != 0 || ptn.node.token_end != tp->tokens.size()) {
+      SILVA_EXPECT(!ptn.last_error.is_empty(),
+                   MAJOR,
+                   "could not parse entire tokenization of {}",
+                   tp->filepath);
+      return std::unexpected(std::move(ptn.last_error));
+    }
     SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
     return tp->swp->add(std::move(nursery).finish());
