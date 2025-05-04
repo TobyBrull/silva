@@ -2,6 +2,8 @@
 
 * review all error messages
 
+* default printer for tree_span_t::to_string()
+
 ## Long Term
 
 * Seed
