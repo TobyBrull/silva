@@ -1,8 +1,10 @@
 #include "seed_engine.hpp"
 
+#include "canopy/exec_trace.hpp"
 #include "canopy/expected.hpp"
 #include "canopy/scope_exit.hpp"
 #include "canopy/small_vector.hpp"
+#include "canopy/var_context.hpp"
 #include "parse_tree.hpp"
 #include "parse_tree_nursery.hpp"
 #include "seed.hpp"
@@ -208,6 +210,31 @@ namespace silva {
   using var_map_t = hashmap_t<token_id_t, index_t>;
 
   namespace impl {
+    struct seed_exec_trace_data_t {
+      name_id_t rule_name = name_id_root;
+      bool success        = false;
+    };
+    struct seed_exec_trace_t : public exec_trace_t<seed_exec_trace_data_t> {
+      syntax_ward_ptr_t swp;
+
+      expected_t<string_t> as_tree_to_string() &&
+      {
+        const auto& nis = swp->default_name_id_style();
+        auto ett        = SILVA_EXPECT_FWD(std::move(*this).as_tree());
+        tree_span_t ets{ett};
+        string_t retval =
+            SILVA_EXPECT_FWD(ets.to_string([&](string_t& curr_line, const auto& path) {
+              const auto& data = ets[path.back().node_index].item.data;
+              curr_line += nis.absolute(data.rule_name);
+              do {
+                curr_line += ' ';
+              } while (curr_line.size() < 60);
+              curr_line += fmt::format("{}", data.success);
+            }));
+        return {std::move(retval)};
+      }
+    };
+
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const seed_engine_t* se    = nullptr;
       syntax_ward_ptr_t swp      = se->swp;
@@ -217,6 +244,8 @@ namespace silva {
       const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
 
       int rule_depth = 0;
+
+      seed_exec_trace_t exec_trace{.swp = swp};
 
       const token_id_t ti_id          = *swp->token_id("identifier");
       const token_id_t ti_op          = *swp->token_id("operator");
@@ -700,6 +729,7 @@ namespace silva {
 
       expected_t<node_and_error_t> handle_rule(const name_id_t t_rule_name)
       {
+        auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name);
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
         SILVA_EXPECT(rule_depth <= 50,
@@ -745,6 +775,7 @@ namespace silva {
             retval = node_and_error_t{ss.commit(), std::move(result.last_error)};
           }
         }
+        ets->success = true;
         return retval;
       }
     };
@@ -765,6 +796,12 @@ namespace silva {
     }
     SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
+
+    if (SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("SEED_EXEC_TRACE"), MAJOR).value_or(false)) {
+      fmt::print("{}", SILVA_EXPECT_FWD(std::move(nursery.exec_trace).as_tree_to_string()));
+      std::exit(0);
+    }
+
     return tp->swp->add(std::move(nursery).finish());
   }
 }
