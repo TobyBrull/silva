@@ -13,6 +13,7 @@ namespace silva {
   using byte_t  = std::byte;
 
   using string_t = std::string;
+  void string_pad(string_t&, index_t size, char fill_char = ' ');
 
   using string_view_t = std::string_view;
 

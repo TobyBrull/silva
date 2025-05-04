@@ -36,9 +36,7 @@ namespace silva {
           curr_line += nis.absolute(pts[0].rule_name);
         }
       }
-      do {
-        curr_line.push_back(' ');
-      } while (curr_line.size() < token_offset);
+      string_pad(curr_line, token_offset);
       curr_line += silva::to_string(pts.token_range()).as_string_view();
     });
   }

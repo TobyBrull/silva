@@ -212,7 +212,8 @@ namespace silva {
   namespace impl {
     struct seed_exec_trace_data_t {
       name_id_t rule_name = name_id_root;
-      bool success        = false;
+      token_position_t token_pos;
+      bool success = false;
     };
     struct seed_exec_trace_t : public exec_trace_t<seed_exec_trace_data_t> {
       syntax_ward_ptr_t swp;
@@ -226,10 +227,10 @@ namespace silva {
             SILVA_EXPECT_FWD(ets.to_string([&](string_t& curr_line, const auto& path) {
               const auto& data = ets[path.back().node_index].item.data;
               curr_line += nis.absolute(data.rule_name);
-              do {
-                curr_line += ' ';
-              } while (curr_line.size() < 60);
+              string_pad(curr_line, 55);
               curr_line += fmt::format("{}", data.success);
+              string_pad(curr_line, 65);
+              curr_line += fmt::format("{}", to_string(data.token_pos));
             }));
         return {std::move(retval)};
       }
@@ -729,7 +730,7 @@ namespace silva {
 
       expected_t<node_and_error_t> handle_rule(const name_id_t t_rule_name)
       {
-        auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name);
+        auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name, token_position_by());
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
         SILVA_EXPECT(rule_depth <= 50,
