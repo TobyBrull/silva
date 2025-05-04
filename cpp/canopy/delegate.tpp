@@ -5,30 +5,32 @@
 #include <fmt/format.h>
 
 namespace silva::test {
-  std::string free_func(const int i, const float f)
-  {
-    return fmt::format("free_func({}, {})", i, f);
-  }
-
-  std::string free_func_data(const std::string* s, const int i, const float f)
-  {
-    return fmt::format("free_func_data({}, {}, {})", *s, i, f);
-  }
-
-  struct widget_t {
-    std::string member;
-
-    std::string member_func(const int i, const float f)
+  namespace {
+    std::string free_func(const int i, const float f)
     {
-      member += "(called)";
-      return fmt::format("widget_t::member_func({}, {}, {})", member, i, f);
+      return fmt::format("free_func({}, {})", i, f);
     }
 
-    std::string member_func_const(const int i, const float f) const
+    std::string free_func_data(const std::string* s, const int i, const float f)
     {
-      return fmt::format("widget_t::member_func_const({}, {}, {})", member, i, f);
+      return fmt::format("free_func_data({}, {}, {})", *s, i, f);
     }
-  };
+
+    struct widget_t {
+      std::string member;
+
+      std::string member_func(const int i, const float f)
+      {
+        member += "(called)";
+        return fmt::format("widget_t::member_func({}, {}, {})", member, i, f);
+      }
+
+      std::string member_func_const(const int i, const float f) const
+      {
+        return fmt::format("widget_t::member_func_const({}, {}, {})", member, i, f);
+      }
+    };
+  }
 
   TEST_CASE("delegate")
   {
