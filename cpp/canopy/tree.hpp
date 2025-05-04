@@ -26,7 +26,8 @@ namespace silva {
 
     tree_span_t() = default;
     tree_span_t(NodeData* root, index_t stride);
-    tree_span_t(span_t<NodeData>);
+    explicit tree_span_t(span_t<NodeData>);
+    explicit tree_span_t(vector_t<NodeData>&);
 
     index_t size() const;
 
@@ -121,6 +122,12 @@ namespace silva {
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   tree_span_t<NodeData>::tree_span_t(span_t<NodeData> vec) : root{vec.data()}, stride{1}
+  {
+  }
+
+  template<typename NodeData>
+    requires std::derived_from<NodeData, tree_node_t>
+  tree_span_t<NodeData>::tree_span_t(vector_t<NodeData>& vec) : root{vec.data()}, stride{1}
   {
   }
 

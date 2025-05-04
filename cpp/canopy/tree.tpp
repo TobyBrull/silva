@@ -21,15 +21,15 @@ namespace silva::test {
     test_tree.push_back({{1, 2}, "D"});
     test_tree.push_back({{0, 1}, "H"});
 
-    tree_span_t<test_tree_node_t> tspan;
+    tree_span_t tspan{test_tree};
     SECTION("normal")
     {
-      tspan = tree_span_t<test_tree_node_t>{test_tree};
+      tspan = tree_span_t{test_tree};
     }
     SECTION("reverse")
     {
       std::ranges::reverse(test_tree);
-      tspan = tree_span_t<test_tree_node_t>{&test_tree.back(), -1};
+      tspan = tree_span_t{&test_tree.back(), -1};
     }
 
     {
