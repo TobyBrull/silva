@@ -1,4 +1,10 @@
 <$ Seed
+- AsBs = 'a' * 'b' *
+$>
+
+<$ AsBs a a a b b $>
+
+<$ Seed
 - CppStmts = [
   - x = ( Expr ';' ) *
   - Expr =/ Atom [
@@ -42,17 +48,12 @@ $>
 [
   none
   true
-  test: 'Hello'
+  42
+  hello : 'World'
+  []
   [
-    1.000000
-    'two' : 2.000000
-    3.000000
+    'one' : 1.0
+    'two' : 2.0
   ]
 ]
 $>
-
-<$ Seed
-- AsBs = 'a' * 'b' *
-$>
-
-<$ AsBs a a a b b $>
