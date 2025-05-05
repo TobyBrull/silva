@@ -44,7 +44,7 @@ ATOM_MODE = seed_axe.ParseMode.ATOM
 INFIX_MODE = seed_axe.ParseMode.INFIX
 
 
-def expr_impl(paxe: seed_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> AtomItem:
+def expr_impl(saxe: seed_axe.SeedAxe, tokens: list[misc.Token], begin: int) -> AtomItem:
     oper_stack: list[OperItem] = []
     atom_stack: list[AtomItem] = []
     mode = ATOM_MODE
@@ -83,7 +83,7 @@ def expr_impl(paxe: seed_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> 
 
     def hallucinate_concat():
         nonlocal mode, index
-        level_info = paxe.get_concat_info()
+        level_info = saxe.get_concat_info()
         assert level_info is not None
         stack_pop(level_info)
         oper_stack.append(OperItem(seed_axe.Infix(None), level_info, []))
@@ -93,7 +93,7 @@ def expr_impl(paxe: seed_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> 
         nonlocal index
         assert index < len(tokens)
         assert tokens[index].name == left_bracket
-        retval = expr_impl(paxe, tokens, index + 1)
+        retval = expr_impl(saxe, tokens, index + 1)
         assert retval.token_end < len(tokens)
         assert tokens[retval.token_end].name == right_bracket
         index = retval.token_end + 1
@@ -111,16 +111,16 @@ def expr_impl(paxe: seed_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> 
                 index += 1
                 continue
 
-            if mode == INFIX_MODE and paxe.has_concat():
+            if mode == INFIX_MODE and saxe.has_concat():
                 hallucinate_concat()
                 continue
 
         elif tokens[index].type == misc.TokenType.OPER:
-            lr = paxe.lookup(token.name)
+            lr = saxe.lookup(token.name)
             if lr.is_right_bracket:
                 break
 
-            if mode == INFIX_MODE and paxe.has_concat():
+            if mode == INFIX_MODE and saxe.has_concat():
                 if lr.prefix_res is not None and lr.regular_res is None:
                     hallucinate_concat()
                     continue
@@ -190,8 +190,8 @@ def expr_impl(paxe: seed_axe.ParseAxe, tokens: list[misc.Token], begin: int) -> 
     return atom_stack[0]
 
 
-def shunting_yard(paxe: seed_axe.ParseAxe, tokens: list[misc.Token]) -> Node:
-    retval = expr_impl(paxe, tokens, 0)
+def shunting_yard(saxe: seed_axe.SeedAxe, tokens: list[misc.Token]) -> Node:
+    retval = expr_impl(saxe, tokens, 0)
     assert retval.token_begin == 0
     assert retval.token_end == len(tokens)
     return retval.node

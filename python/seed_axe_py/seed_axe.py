@@ -143,7 +143,7 @@ class LookupResult:
         return self.prefix_res[0].left_bracket, self.prefix_res[0].right_bracket
 
 
-class ParseAxe:
+class SeedAxe:
     def __init__(self):
         self._lookup_results: dict[str, LookupResult] = {}
         self._concat: LevelInfo | None = None
@@ -201,7 +201,7 @@ class _Level:
     ops: list[Op]
 
 
-class ParseAxeNursery:
+class SeedAxeNursery:
     def __init__(self, transparent_brackets: tuple[str, str] = ("(", ")")):
         self.levels: list[_Level] = []
         self.transparent_brackets = transparent_brackets
@@ -230,8 +230,8 @@ class ParseAxeNursery:
             )
         )
 
-    def finish(self) -> ParseAxe:
-        retval = ParseAxe()
+    def finish(self) -> SeedAxe:
+        retval = SeedAxe()
         tb = TransparentBrackets(
             left_bracket=self.transparent_brackets[0],
             right_bracket=self.transparent_brackets[1],

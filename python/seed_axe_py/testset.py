@@ -25,8 +25,8 @@ class _TestTracker:
         self.parser_name = parser.__name__
         self.full_test_names_excluded = set(excluded)
 
-        self.curr_paxe = None
-        self.curr_paxe_name = None
+        self.curr_saxe = None
+        self.curr_saxe_name = None
         self.curr_test_name = None
         self.curr_test_index = 0
 
@@ -34,16 +34,16 @@ class _TestTracker:
         self.failed = False
         self.full_test_names_attempted = set()
 
-    def set_seed_axe(self, paxe: seed_axe.ParseAxe, paxe_name: str):
-        self.curr_paxe = paxe
-        self.curr_paxe_name = paxe_name
+    def set_seed_axe(self, saxe: seed_axe.SeedAxe, saxe_name: str):
+        self.curr_saxe = saxe
+        self.curr_saxe_name = saxe_name
 
     def set_current_test_name(self, test_name: str):
         self.curr_test_index = 0
         self.curr_test_name = test_name
 
     def curr_full_test_name(self) -> str:
-        return f'{self.curr_paxe_name}/{self.curr_test_name}'
+        return f'{self.curr_saxe_name}/{self.curr_test_name}'
 
     def __call__(self, source_code: str, expected: str | None):
         ftn = self.curr_full_test_name()
@@ -56,7 +56,7 @@ class _TestTracker:
 
         tokens = misc.tokenize(source_code)
         try:
-            result_node = self.parser(self.curr_paxe, tokens)
+            result_node = self.parser(self.curr_saxe, tokens)
             result_str = result_node.render()
             err_msg = ''
         except Exception as e:
@@ -102,23 +102,23 @@ Ternary = seed_axe.Ternary
 
 
 def basic(tt: _TestTracker):
-    pan = seed_axe.ParseAxeNursery()
-    pan.level_rtl('cal', Infix('.'))
-    pan.level_ltr('sqb', PostfixBracketed('[', ']'))
-    pan.level_ltr('var', Postfix('$'))
-    pan.level_ltr('exc', Postfix('!'))
-    pan.level_rtl('til', Prefix('~'))
-    pan.level_rtl('prf', Prefix('+'), Prefix('-'))
-    pan.level_ltr('mul', Infix('*'), Infix('/'))
-    pan.level_flat('add', Infix('+'), Infix('-'))
-    pan.level_rtl('ter', Ternary('?', ':'))
-    pan.level_rtl('eqa', Infix('='))
-    paxe = pan.finish()
+    san = seed_axe.SeedAxeNursery()
+    san.level_rtl('cal', Infix('.'))
+    san.level_ltr('sqb', PostfixBracketed('[', ']'))
+    san.level_ltr('var', Postfix('$'))
+    san.level_ltr('exc', Postfix('!'))
+    san.level_rtl('til', Prefix('~'))
+    san.level_rtl('prf', Prefix('+'), Prefix('-'))
+    san.level_ltr('mul', Infix('*'), Infix('/'))
+    san.level_flat('add', Infix('+'), Infix('-'))
+    san.level_rtl('ter', Ternary('?', ':'))
+    san.level_rtl('eqa', Infix('='))
+    saxe = san.finish()
 
-    # pprint.pprint(paxe.op_map)
-    # pprint.pprint(paxe.levels)
+    # pprint.pprint(saxe.op_map)
+    # pprint.pprint(saxe.levels)
 
-    tt.set_seed_axe(paxe, "base")
+    tt.set_seed_axe(saxe, "base")
 
     tt.set_current_test_name("infix")
     tt("1", '1')
@@ -180,12 +180,12 @@ def basic(tt: _TestTracker):
     tt("a = b ? c = d : e = f", 'eqa{ a = eqa{ ter{ b ? eqa{ c = d } : e } = f } }')
     tt("a + b ? c + d : e + f", 'ter{ add{ a + b } ? add{ c + d } : add{ e + f } }')
 
-    pan = seed_axe.ParseAxeNursery()
-    pan.level_flat('cal', Infix('.'))
-    pan.level_ltr('exc', Postfix('!'))
-    paxe = pan.finish()
+    san = seed_axe.SeedAxeNursery()
+    san.level_flat('cal', Infix('.'))
+    san.level_ltr('exc', Postfix('!'))
+    saxe = san.finish()
 
-    tt.set_seed_axe(paxe, "low-postfix")
+    tt.set_seed_axe(saxe, "low-postfix")
 
     tt.set_current_test_name("flat")
     tt("a . b . c . d", 'cal{ a . b . c . d }')
@@ -195,20 +195,20 @@ def basic(tt: _TestTracker):
 
 
 def pq_notation(tt: _TestTracker):
-    pan = seed_axe.ParseAxeNursery()
-    pan.level_ltr('l1', Postfix('q4'))
-    pan.level_ltr('l2', Postfix('q3'))
-    pan.level_rtl('l3', Prefix('p4'))
-    pan.level_rtl('l4', Prefix('p3'))
-    pan.level_rtl('l5', Infix('x2'))
-    pan.level_ltr('l6', Infix('x1'))
-    pan.level_ltr('l7', Postfix('q2'))
-    pan.level_ltr('l8', Postfix('q1'))
-    pan.level_rtl('l9', Prefix('p2'))
-    pan.level_rtl('l10', Prefix('p1'))
-    paxe = pan.finish()
+    san = seed_axe.SeedAxeNursery()
+    san.level_ltr('l1', Postfix('q4'))
+    san.level_ltr('l2', Postfix('q3'))
+    san.level_rtl('l3', Prefix('p4'))
+    san.level_rtl('l4', Prefix('p3'))
+    san.level_rtl('l5', Infix('x2'))
+    san.level_ltr('l6', Infix('x1'))
+    san.level_ltr('l7', Postfix('q2'))
+    san.level_ltr('l8', Postfix('q1'))
+    san.level_rtl('l9', Prefix('p2'))
+    san.level_rtl('l10', Prefix('p1'))
+    saxe = san.finish()
 
-    tt.set_seed_axe(paxe, "pq")
+    tt.set_seed_axe(saxe, "pq")
 
     tt.set_current_test_name("allfix")
     tt('p2 p1 a', None)
@@ -221,11 +221,11 @@ def pq_notation(tt: _TestTracker):
 
 
 def ternary(tt: _TestTracker):
-    pan = seed_axe.ParseAxeNursery()
-    pan.level_ltr('ter', Ternary('?', ':'))
-    paxe = pan.finish()
+    san = seed_axe.SeedAxeNursery()
+    san.level_ltr('ter', Ternary('?', ':'))
+    saxe = san.finish()
 
-    tt.set_seed_axe(paxe, "ternary")
+    tt.set_seed_axe(saxe, "ternary")
 
     tt.set_current_test_name("easy")
     tt('a ? b : c', 'ter{ a ? b : c }')
@@ -234,34 +234,34 @@ def ternary(tt: _TestTracker):
 
 
 def parentheses(tt: _TestTracker):
-    pan = seed_axe.ParseAxeNursery(('(..', '..)'))
-    pan.level_ltr('ter', Ternary('(', ')'))
-    pan.level_ltr('pst', PostfixBracketed('(', ')'))
+    san = seed_axe.SeedAxeNursery(('(..', '..)'))
+    san.level_ltr('ter', Ternary('(', ')'))
+    san.level_ltr('pst', PostfixBracketed('(', ')'))
     with pytest.raises(Exception):
-        pan.finish()
+        san.finish()
 
-    pan = seed_axe.ParseAxeNursery()
-    pan.level_rtl('prf', PrefixBracketed('(', ')'))
+    san = seed_axe.SeedAxeNursery()
+    san.level_rtl('prf', PrefixBracketed('(', ')'))
     with pytest.raises(Exception):
-        pan.finish()
+        san.finish()
 
-    pan = seed_axe.ParseAxeNursery(("(..", "..)"))
-    pan.level_rtl('prf', PrefixBracketed('(', ')'))
-    paxe = pan.finish()
+    san = seed_axe.SeedAxeNursery(("(..", "..)"))
+    san.level_rtl('prf', PrefixBracketed('(', ')'))
+    saxe = san.finish()
 
-    tt.set_seed_axe(paxe, "parens")
+    tt.set_seed_axe(saxe, "parens")
 
     tt.set_current_test_name("easy")
     tt('( b ) a', 'prf{ ( b ) a }')
     tt('a (.. b ..)', None)
     tt('( (.. b ..) ) (.. a ..)', 'prf{ ( b ) a }')
 
-    pan = seed_axe.ParseAxeNursery(("(..", "..)"))
-    pan.level_rtl('prf', PrefixBracketed('(', ')'))
-    pan.level_ltr('cat', Infix(None))
-    paxe_concat = pan.finish()
+    san = seed_axe.SeedAxeNursery(("(..", "..)"))
+    san.level_rtl('prf', PrefixBracketed('(', ')'))
+    san.level_ltr('cat', Infix(None))
+    saxe_concat = san.finish()
 
-    tt.set_seed_axe(paxe_concat, "parens-concat")
+    tt.set_seed_axe(saxe_concat, "parens-concat")
 
     tt.set_current_test_name("easy")
     tt('( b ) a', 'prf{ ( b ) a }')
@@ -273,12 +273,12 @@ def parentheses(tt: _TestTracker):
     tt('a (.. b ..)', 'cat{ a CONCAT b }')
     tt('( (.. b ..) ) (.. a ..) (.. c ..)', 'cat{ prf{ ( b ) a } CONCAT c }')
 
-    pan = seed_axe.ParseAxeNursery(("(..", "..)"))
-    pan.level_ltr('cat', Infix(None))
-    pan.level_rtl('prf', PrefixBracketed('(', ')'))
-    paxe_concat_2 = pan.finish()
+    san = seed_axe.SeedAxeNursery(("(..", "..)"))
+    san.level_ltr('cat', Infix(None))
+    san.level_rtl('prf', PrefixBracketed('(', ')'))
+    saxe_concat_2 = san.finish()
 
-    tt.set_seed_axe(paxe_concat_2, "parens-concat-2")
+    tt.set_seed_axe(saxe_concat_2, "parens-concat-2")
 
     tt.set_current_test_name("easy")
     tt('( b ) a', 'prf{ ( b ) a }')
@@ -295,18 +295,18 @@ def parentheses(tt: _TestTracker):
 
 
 def concat(tt: _TestTracker):
-    pan = seed_axe.ParseAxeNursery()
-    pan.level_rtl('fnc', Infix('.'))
-    pan.level_ltr('exc', Postfix('!'))
-    pan.level_rtl('tld', Prefix('~'))
-    pan.level_ltr('add', Infix('+'))
-    pan.level_ltr('ifx', Infix(None), Infix('*'))
-    pan.level_ltr('qus', Postfix('?'))
-    pan.level_rtl('prf', Prefix('-'))
-    pan.level_rtl('eqa', Infix('='))
-    paxe = pan.finish()
+    san = seed_axe.SeedAxeNursery()
+    san.level_rtl('fnc', Infix('.'))
+    san.level_ltr('exc', Postfix('!'))
+    san.level_rtl('tld', Prefix('~'))
+    san.level_ltr('add', Infix('+'))
+    san.level_ltr('ifx', Infix(None), Infix('*'))
+    san.level_ltr('qus', Postfix('?'))
+    san.level_rtl('prf', Prefix('-'))
+    san.level_rtl('eqa', Infix('='))
+    saxe = san.finish()
 
-    tt.set_seed_axe(paxe, "concat")
+    tt.set_seed_axe(saxe, "concat")
 
     tt.set_current_test_name("easy")
     tt('a b', "ifx{ a CONCAT b }")
@@ -323,18 +323,18 @@ def concat(tt: _TestTracker):
     tt('a ! b', "ifx{ exc{ a ! } CONCAT b }")
     tt('a ? b', None)
 
-    pan = seed_axe.ParseAxeNursery()
-    pan.level_rtl('fnc', Infix('.'))
-    pan.level_ltr('exc', Postfix('!'))
-    pan.level_rtl('tld', Prefix('~'))
-    pan.level_ltr('add', Infix('+'), Infix('-'))
-    pan.level_rtl('ifx', Infix(None), Infix('*'))
-    pan.level_ltr('qus', Postfix('?'))
-    pan.level_rtl('prf', Prefix('-'))
-    pan.level_rtl('eqa', Infix('='))
-    paxe_rtl = pan.finish()
+    san = seed_axe.SeedAxeNursery()
+    san.level_rtl('fnc', Infix('.'))
+    san.level_ltr('exc', Postfix('!'))
+    san.level_rtl('tld', Prefix('~'))
+    san.level_ltr('add', Infix('+'), Infix('-'))
+    san.level_rtl('ifx', Infix(None), Infix('*'))
+    san.level_ltr('qus', Postfix('?'))
+    san.level_rtl('prf', Prefix('-'))
+    san.level_rtl('eqa', Infix('='))
+    saxe_rtl = san.finish()
 
-    tt.set_seed_axe(paxe_rtl, "concat_rtl")
+    tt.set_seed_axe(saxe_rtl, "concat_rtl")
 
     tt.set_current_test_name("easy")
     tt('a b', "ifx{ a CONCAT b }")
@@ -344,9 +344,9 @@ def concat(tt: _TestTracker):
 
 
 def cpp(tt: _TestTracker):
-    pan = seed_axe.ParseAxeNursery()
-    pan.level_ltr('nam', Infix('::'))
-    pan.level_ltr(
+    san = seed_axe.SeedAxeNursery()
+    san.level_ltr('nam', Infix('::'))
+    san.level_ltr(
         'pst',
         Postfix('++'),
         Postfix('--'),
@@ -355,7 +355,7 @@ def cpp(tt: _TestTracker):
         Infix('.'),
         Infix('->'),
     )
-    pan.level_rtl(
+    san.level_rtl(
         'prf',
         Prefix('++'),
         Prefix('--'),
@@ -369,23 +369,23 @@ def cpp(tt: _TestTracker):
         Prefix('sizeof'),
         Prefix('new'),
     )
-    pan.level_ltr('mem', Infix('.*'), Infix('->*'))
-    pan.level_ltr('mul', Infix('*'), Infix('/'), Infix('%'))
-    pan.level_ltr('add', Infix('+'), Infix('-'))
-    pan.level_ltr('sft', Infix('<<'), Infix('>>'))
-    pan.level_ltr('spc', Infix('<=>'))
-    pan.level_ltr('cmp', Infix('<'), Infix('<='), Infix('>'), Infix('>='))
-    pan.level_ltr('eqa', Infix('=='), Infix('!='))
-    pan.level_ltr('ban', Infix('&'))
-    pan.level_ltr('xor', Infix('^'))
-    pan.level_ltr('bor', Infix('|'))
-    pan.level_ltr('lan', Infix('&&'))
-    pan.level_ltr('lor', Infix('||'))
-    pan.level_rtl('asg', Ternary('?', ':'), Prefix('throw'), Infix('='), Infix('+='), Infix('-='))
-    pan.level_ltr('com', Infix(','))
-    paxe_cpp = pan.finish()
+    san.level_ltr('mem', Infix('.*'), Infix('->*'))
+    san.level_ltr('mul', Infix('*'), Infix('/'), Infix('%'))
+    san.level_ltr('add', Infix('+'), Infix('-'))
+    san.level_ltr('sft', Infix('<<'), Infix('>>'))
+    san.level_ltr('spc', Infix('<=>'))
+    san.level_ltr('cmp', Infix('<'), Infix('<='), Infix('>'), Infix('>='))
+    san.level_ltr('eqa', Infix('=='), Infix('!='))
+    san.level_ltr('ban', Infix('&'))
+    san.level_ltr('xor', Infix('^'))
+    san.level_ltr('bor', Infix('|'))
+    san.level_ltr('lan', Infix('&&'))
+    san.level_ltr('lor', Infix('||'))
+    san.level_rtl('asg', Ternary('?', ':'), Prefix('throw'), Infix('='), Infix('+='), Infix('-='))
+    san.level_ltr('com', Infix(','))
+    saxe_cpp = san.finish()
 
-    tt.set_seed_axe(paxe_cpp, "C++")
+    tt.set_seed_axe(saxe_cpp, "C++")
 
     tt.set_current_test_name("basic")
     tt('++ a', "prf{ ++ a }")

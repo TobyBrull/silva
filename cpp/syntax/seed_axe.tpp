@@ -9,12 +9,12 @@ using namespace silva::impl;
 using enum silva::impl::assoc_t;
 
 namespace silva::test {
-  template<typename ParseAxeNursery>
+  template<typename SeedAxeNursery>
   expected_t<parse_tree_ptr_t>
   run_seed_axe(syntax_ward_t& sw, const seed_axe_t& seed_axe, tokenization_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
-    ParseAxeNursery nursery(seed_axe, std::move(tp));
+    SeedAxeNursery nursery(seed_axe, std::move(tp));
     const parse_tree_node_t sub = SILVA_EXPECT_FWD(nursery.expression());
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.subtree_size == nursery.tree.size(), ASSERT);
@@ -22,7 +22,7 @@ namespace silva::test {
     return sw.add(std::move(nursery).finish());
   }
 
-  template<typename ParseAxeNursery>
+  template<typename SeedAxeNursery>
   void test_seed_axe(syntax_ward_ptr_t swp,
                      const seed_axe_t& pa,
                      const string_view_t text,
@@ -32,7 +32,7 @@ namespace silva::test {
     auto maybe_tt = tokenize(swp, "", string_t{text});
     REQUIRE(maybe_tt.has_value());
     auto tt              = std::move(maybe_tt).value();
-    auto maybe_result_pt = run_seed_axe<ParseAxeNursery>(*swp, pa, std::move(tt));
+    auto maybe_result_pt = run_seed_axe<SeedAxeNursery>(*swp, pa, std::move(tt));
     REQUIRE(maybe_result_pt.has_value() == expected_str.has_value());
     if (!expected_str.has_value()) {
       return;
