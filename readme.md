@@ -39,11 +39,11 @@ rm -rf build/
 cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 ninja -C build/
 ninja -C build/ && ./build/cpp/silva_test
-ninja -C build/ && ./build/cpp/silva_tokenization silva/fern/simple.fern
-ninja -C build/ && ./build/cpp/silva_fern silva/fern/simple.fern
-ninja -C build/ && ./build/cpp/silva_fern silva/fern/broken.fern
-ninja -C build/ && ./build/cpp/silva_syntax silva/fern/simplest.fern
-ninja -C build/ && SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/fern/simplest.fern --action=none
-ninja -C build/ && ./build/cpp/silva_syntax silva/test.silva
-ninja -C build/ && ./build/cpp/silva_syntax silva/scratchpad/somelang.seed silva/scratchpad/test.somelang
+ninja -C build/ && ./build/cpp/silva_tokenization silva/syntax/simple.fern
+ninja -C build/ && ./build/cpp/silva_fern silva/syntax/simple.fern
+ninja -C build/ && ./build/cpp/silva_fern silva/syntax/broken.fern
+ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/simplest.fern
+ninja -C build/ && SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/simplest.fern --action=none
+ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/test.silva
+ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/somelang.seed silva/syntax/test.somelang
 ```
