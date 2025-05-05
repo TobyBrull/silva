@@ -1,7 +1,5 @@
 # TODO
 
-* review all error messages
-
 ## Long Term
 
 * Seed
@@ -51,6 +49,8 @@
       structure from this first. Then parse the rest by filling in the gaps in this overall
       structure where possible, generating errors otherwise. The returned data-structure could be a
       parse_tree_t that contains `_.Error` rules in those gaps where parsing failed.
+
+* Write a language server
 
 * Library
     * output_buffer_t / string_output_buffer_t
