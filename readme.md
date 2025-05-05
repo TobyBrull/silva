@@ -43,6 +43,7 @@ ninja -C build/ && ./build/cpp/silva_tokenization silva/fern/simple.fern
 ninja -C build/ && ./build/cpp/silva_fern silva/fern/simple.fern
 ninja -C build/ && ./build/cpp/silva_fern silva/fern/broken.fern
 ninja -C build/ && ./build/cpp/silva silva/fern/simple.fern
+ninja -C build/ && SEED_EXEC_TRACE=true ./build/cpp/silva silva/fern/simple.fern --action=none
 ninja -C build/ && ./build/cpp/silva silva/test.silva
 ninja -C build/ && ./build/cpp/silva silva/scratchpad/somelang.seed silva/scratchpad/test.somelang
 ```

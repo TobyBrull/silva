@@ -10,7 +10,10 @@ namespace silva {
   {
     const auto action =
         SILVA_EXPECT_FWD_IF(var_context_get("action"), MAJOR).value_or("print-parse-tree");
-    if (action == "print-parse-tree") {
+    if (action == "none") {
+      ;
+    }
+    else if (action == "print-parse-tree") {
       fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_string()));
     }
     else if (action == "print-graph") {

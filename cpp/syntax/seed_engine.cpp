@@ -800,7 +800,6 @@ namespace silva {
 
     if (SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("SEED_EXEC_TRACE"), MAJOR).value_or(false)) {
       fmt::print("{}", SILVA_EXPECT_FWD(std::move(nursery.exec_trace).as_tree_to_string()));
-      std::exit(0);
     }
 
     return tp->swp->add(std::move(nursery).finish());
