@@ -1,9 +1,8 @@
-#include "silva.hpp"
+#include "syntax.hpp"
 
 #include "canopy/filesystem.hpp"
 #include "canopy/main.hpp"
 #include "canopy/var_context.hpp"
-#include "syntax/syntax.hpp"
 
 namespace silva {
   expected_t<void> apply_action(const parse_tree_span_t pts)
@@ -28,7 +27,7 @@ namespace silva {
     return {};
   }
 
-  expected_t<void> silva_main(const span_t<string_view_t> cmdline_args)
+  expected_t<void> syntax_main(const span_t<string_view_t> cmdline_args)
   {
     expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
@@ -44,4 +43,4 @@ namespace silva {
     return {};
   }
 }
-SILVA_MAIN(silva::silva_main);
+SILVA_MAIN(silva::syntax_main);
