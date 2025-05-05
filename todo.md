@@ -45,6 +45,12 @@
           is just one level ("could not parse ( 'a' | 'b' | 'c' )").
         * For Seed expressions of the form ( not keywords_of _.Fern ), give the error
           "not one of the keywords of _.Fern".
+    * Resumable parser, i.e., the parser should continue to produced a (broken) parse_tree_t even if
+      errors are encountered. For example, take all rules of the form `'<$' ... '$>'`, `'[' ... ']'`,
+      `( Expr ';' ) *`, or `( '-' Expr ) *`, determine how they are nested, and infer a overall
+      structure from this first. Then parse the rest by filling in the gaps in this overall
+      structure where possible, generating errors otherwise. The returned data-structure could be a
+      parse_tree_t that contains `_.Error` rules in those gaps where parsing failed.
 
 * Library
     * output_buffer_t / string_output_buffer_t
