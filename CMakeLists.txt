@@ -10,5 +10,4 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS On CACHE BOOL "Always write compile_commands.j
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-add_subdirectory(thirdparty/reflect-cpp)
 add_subdirectory(cpp)
