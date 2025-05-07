@@ -24,6 +24,7 @@ target_include_directories(silvalib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(silvalib PUBLIC
   fmt::fmt
   reflect-cpp
+  hh-date
 )
 
 # Command-line tools

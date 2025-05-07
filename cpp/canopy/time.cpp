@@ -1,6 +1,6 @@
 #include "time.hpp"
 
-#include <chrono>
+#include "date/date.h"
 
 using namespace std::chrono;
 
@@ -99,7 +99,8 @@ namespace silva {
     const seconds c_total_secs{secs};
     const days c_days         = duration_cast<days>(c_total_secs);
     const seconds c_secs      = (c_total_secs - c_days);
-    const string_t c_secs_str = std::format("{:%T}", c_secs);
+    const string_t c_secs_str = date::format("%T", c_secs);
+    // const string_t c_secs_str = std::format("{:%T}", c_secs);
     return fmt::format("{}/{}/{:03}.{:03}.{:03}", c_days.count(), c_secs_str, ms, us, ns);
   }
 
@@ -155,7 +156,8 @@ namespace silva {
       const auto [ms, total_us]   = std::lldiv(total_ns, 1'000'000);
       const auto [us, ns]         = std::lldiv(total_us, 1'000);
       const sys_secs_t sys_secs{seconds{secs}};
-      const auto sys_secs_str = std::format("{:%Y-%m-%d/%H:%M:%S}", sys_secs);
+      const auto sys_secs_str = date::format("%Y-%m-%d/%H:%M:%S", sys_secs);
+      // const auto sys_secs_str = std::format("{:%Y-%m-%d/%H:%M:%S}", sys_secs);
       return fmt::format("{}/{:03}.{:03}.{:03}", sys_secs_str, ms, us, ns);
     }
   }
@@ -166,7 +168,8 @@ namespace silva {
       return fmt::format("time_point_none");
     }
     else {
-      return std::format("{:%F %T}", nanos_to_chrono_system_clock(nanos_since_epoch));
+      return date::format("%F %T", nanos_to_chrono_system_clock(nanos_since_epoch));
+      // return std::format("{:%F %T}", nanos_to_chrono_system_clock(nanos_since_epoch));
     }
   }
 
