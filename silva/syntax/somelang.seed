@@ -23,7 +23,7 @@
 - FuncBody = '{' ( Stmt ';' ) * '}'
 - MemberName = identifier
 
-- Stmt => Func | StmtLoop | StmtIf | Expr | Keyword
+- Stmt => StmtLoop | StmtIf | Expr | Keyword
 - StmtLoop = 'loop' FuncBody
 - StmtIf = 'if' '(' Expr ')' FuncBody ( 'else' ( StmtIf | FuncBody ) ) ?
 - Keyword = 'break' 'continue'

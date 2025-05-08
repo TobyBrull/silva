@@ -529,8 +529,10 @@ namespace silva {
         index_t repeat_count                = 0;
         error_t last_error;
         while (repeat_count < max_repeat) {
-          if (auto result = s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map);
-              result.has_value()) {
+          auto result =
+              SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map),
+                                  MAJOR);
+          if (result.has_value()) {
             ss.add_proto_node(std::move(*result).as_node());
             repeat_count += 1;
           }
@@ -568,9 +570,10 @@ namespace silva {
             ss.add_proto_node(std::move(result->node));
           }
           else {
+            const error_level_t error_level = result.error().level;
             error_nursery.add_child_error(std::move(result).error());
             return std::unexpected(std::move(error_nursery)
-                                       .finish(MINOR,
+                                       .finish(error_level,
                                                "[{}] {}: expected sequence[ {} ]",
                                                token_position_at(orig_token_index),
                                                swp->name_id_wrap(t_rule_name),
@@ -600,6 +603,7 @@ namespace silva {
         const index_t orig_token_index = token_index;
         error_nursery_t error_nursery;
         optional_t<parse_tree_node_t> retval;
+        error_level_t error_level = MINOR;
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
           auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name, var_map);
           if (result.has_value()) {
@@ -607,14 +611,18 @@ namespace silva {
             break;
           }
           else {
+            error_level = result.error().level;
             error_nursery.add_child_error(std::move(result).error());
+            if (error_level >= MAJOR) {
+              break;
+            }
           }
         }
         if (retval.has_value()) {
           return std::move(retval).value();
         }
         return std::unexpected(std::move(error_nursery)
-                                   .finish(MINOR,
+                                   .finish(error_level,
                                            "[{}] {}: expected alternation[ {} ]",
                                            token_position_at(orig_token_index),
                                            swp->name_id_wrap(t_rule_name),
@@ -636,9 +644,10 @@ namespace silva {
                      MAJOR,
                      "{} couldn't lookup nonterminal",
                      pts);
-        const name_id_t next_t_rule_name    = nt_it->second;
-        const index_t parsed_tree_index     = tree.size();
-        expected_t<node_and_error_t> retval = handle_rule(next_t_rule_name);
+        const name_id_t next_t_rule_name = nt_it->second;
+        const index_t parsed_tree_index  = tree.size();
+        expected_t<node_and_error_t> retval =
+            SILVA_EXPECT_FWD_IF(handle_rule(next_t_rule_name), MAJOR);
         if (it != end) {
           const auto pts_var = pts.sub_tree_span_at(it.pos);
           const auto var_ti  = pts_var.first_token_id();
