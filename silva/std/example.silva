@@ -1,0 +1,28 @@
+<$ Soil
+
+name_t = str_t
+age_t = i32_t
+
+person_t = [
+  [
+    name_t : first
+    name_t : last
+  ] : name
+  age_t : age
+]
+
+bs = person_t :: [ [ 'Bjarne' 'Stroustrup' ] 80 ]
+
+is_adult_f = person_t -> bool_t {
+  retval = arg.age >= 18;
+}
+
+main_f = [] {
+  age = age_t :: 42;
+  p1 = person_t :: [ name : [ first : 'Bob' last : 'Bobson' ] age : 20 ];
+  p2 = person_t :: [ [ 'Alice' 'Allison' ] 30 ];
+  ['{} is-adult = {}' p1 is_adult_f(p1)] | log_f;
+  vector_f(person_t) :: [ p1 p2 ] | filter_m(arg.age <= 40) | log_f;
+}
+
+$>

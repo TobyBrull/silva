@@ -1,0 +1,51 @@
+<$ Seed
+
+- Soil = [
+  - x = ( Type.Defn | Func.Defn | Variable.Defn ) *
+  - Type = [
+    - x = Name | Struct
+    - Name = identifier / '_t$'
+    - Defn = Name '=' x
+    - Struct = [
+      - x = '[' Member * ']'
+      - Member = [
+        - x = p.p ( ':' Name ) ?
+        - Name = identifier
+      ]
+    ]
+  ]
+  - Expr = [
+    - x = Axe
+    - Axe =/ Atom [
+      - Parens    = nest atom_nest '(' ')'
+      - Member    = ltr infix '.'
+      - CallPost  = ltr postfix_nest '(' ')'
+      - Typing    = ltr infix '::'
+      - CallPipe  = ltr infix '|'
+      - Mul       = ltr infix '*' '//'
+      - Add       = ltr infix '+' '-'
+      - Comp      = ltr infix '==' '<=' '<' '>' '>='
+      - Logic     = ltr infix 'and' 'or'
+      - Assign    = ltr infix '=' '+=' '*='
+    ]
+    - Atom = identifier | string | number | Struct | 'true' | 'false' | 'none'
+    - Struct = [
+      - x = '[' LabeledItem * ']'
+      - LabeledItem = ( _.Soil.Variable.Name ':' ) ? ( x | p )
+    ]
+  ]
+  - Func = [
+    - x = Name
+    - Name = identifier / '_f$'
+    - Defn = Name '=' Signature Body
+    - Signature = p.Type ( '->' p.Type ) ?
+    - Body = '{' Stmt * '}'
+    - Stmt = p.Expr ';'
+  ]
+  - Variable = [
+    - Name = not p.Type.Name but_then not p.Func.Name but_then identifier
+    - Defn = Name '=' p.Expr
+  ]
+]
+
+$>
