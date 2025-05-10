@@ -496,23 +496,45 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                     [0]_.Seed.Nonterminal         Member
                       [0]_.Seed.Nonterminal.Base  Member
                     [1]_.Seed                     - x ... = identifier
-                      [0]_.Seed.Rule              x = ... ) ?
+                      [0]_.Seed.Rule              x = ... ? ';'
                         [0]_.Seed.Nonterminal     x
                           [0]_.Seed.Nonterminal.Base x
-                        [1]_.Seed.ExprOrAlias     = p ... ) ?
-                          [0]_.Seed.Expr.Concat.concat p . ... ) ?
+                        [1]_.Seed.ExprOrAlias     = p ... ? ';'
+                          [0]_.Seed.Expr.Concat.concat p . ... ? ';'
                             [0]_.Seed.NonterminalMaybeVar p . p
                               [0]_.Seed.Nonterminal p . p
                                 [0]_.Seed.Nonterminal.Base p
                                 [1]_.Seed.Nonterminal.Base p
-                            [1]_.Seed.Expr.Postfix.? ( ':' Name ) ?
-                              [0]_.Seed.Expr.Parens.( ( ':' Name )
-                                [0]_.Seed.Expr.Concat.concat ':' Name
-                                  [0]_.Seed.Terminal ':'
-                                  [1]_.Seed.NonterminalMaybeVar Name
-                                    [0]_.Seed.Nonterminal Name
-                                      [0]_.Seed.Nonterminal.Base Name
-                      [1]_.Seed.Rule              Name = identifier
+                            [1]_.Seed.Expr.Postfix.? Label ?
+                              [0]_.Seed.NonterminalMaybeVar Label
+                                [0]_.Seed.Nonterminal Label
+                                  [0]_.Seed.Nonterminal.Base Label
+                            [2]_.Seed.Expr.Postfix.? Init ?
+                              [0]_.Seed.NonterminalMaybeVar Init
+                                [0]_.Seed.Nonterminal Init
+                                  [0]_.Seed.Nonterminal.Base Init
+                            [3]_.Seed.Terminal    ';'
+                      [1]_.Seed.Rule              Label = ':' Name
+                        [0]_.Seed.Nonterminal     Label
+                          [0]_.Seed.Nonterminal.Base Label
+                        [1]_.Seed.ExprOrAlias     = ':' Name
+                          [0]_.Seed.Expr.Concat.concat ':' Name
+                            [0]_.Seed.Terminal    ':'
+                            [1]_.Seed.NonterminalMaybeVar Name
+                              [0]_.Seed.Nonterminal Name
+                                [0]_.Seed.Nonterminal.Base Name
+                      [2]_.Seed.Rule              Init = ... . Expr
+                        [0]_.Seed.Nonterminal     Init
+                          [0]_.Seed.Nonterminal.Base Init
+                        [1]_.Seed.ExprOrAlias     = '=' ... . Expr
+                          [0]_.Seed.Expr.Concat.concat '=' _ ... . Expr
+                            [0]_.Seed.Terminal    '='
+                            [1]_.Seed.NonterminalMaybeVar _ . Soil . Expr
+                              [0]_.Seed.Nonterminal _ . Soil . Expr
+                                [0]_.Seed.Nonterminal.Base _
+                                [1]_.Seed.Nonterminal.Base Soil
+                                [2]_.Seed.Nonterminal.Base Expr
+                      [3]_.Seed.Rule              Name = identifier
                         [0]_.Seed.Nonterminal     Name
                           [0]_.Seed.Nonterminal.Base Name
                         [1]_.Seed.ExprOrAlias     = identifier
@@ -663,10 +685,10 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                             [1]_.Seed.NonterminalMaybeVar p
                               [0]_.Seed.Nonterminal p
                                 [0]_.Seed.Nonterminal.Base p
-          [3]_.Seed.Rule                          Func = ... ';' ]
+          [3]_.Seed.Rule                          Func = ... ] ]
             [0]_.Seed.Nonterminal                 Func
               [0]_.Seed.Nonterminal.Base          Func
-            [1]_.Seed                             - x ... Expr ';'
+            [1]_.Seed                             - x ... ] ]
               [0]_.Seed.Rule                      x = Name
                 [0]_.Seed.Nonterminal             x
                   [0]_.Seed.Nonterminal.Base      x
@@ -722,16 +744,69 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                         [0]_.Seed.Nonterminal     Stmt
                           [0]_.Seed.Nonterminal.Base Stmt
                     [2]_.Seed.Terminal            '}'
-              [5]_.Seed.Rule                      Stmt = ... Expr ';'
+              [5]_.Seed.Rule                      Stmt = ... ] ]
                 [0]_.Seed.Nonterminal             Stmt
                   [0]_.Seed.Nonterminal.Base      Stmt
-                [1]_.Seed.ExprOrAlias             = p . Expr ';'
-                  [0]_.Seed.Expr.Concat.concat    p . Expr ';'
-                    [0]_.Seed.NonterminalMaybeVar p . Expr
-                      [0]_.Seed.Nonterminal       p . Expr
-                        [0]_.Seed.Nonterminal.Base p
-                        [1]_.Seed.Nonterminal.Base Expr
-                    [1]_.Seed.Terminal            ';'
+                [1]_.Seed                         - x ... Body ]
+                  [0]_.Seed.Rule                  x = ... | If
+                    [0]_.Seed.Nonterminal         x
+                      [0]_.Seed.Nonterminal.Base  x
+                    [1]_.Seed.ExprOrAlias         = _ ... | If
+                      [0]_.Seed.Expr.Or.|         _ . ... | If
+                        [0]_.Seed.Expr.Concat.concat _ . ... Expr ';'
+                          [0]_.Seed.NonterminalMaybeVar _ . Soil . Expr
+                            [0]_.Seed.Nonterminal _ . Soil . Expr
+                              [0]_.Seed.Nonterminal.Base _
+                              [1]_.Seed.Nonterminal.Base Soil
+                              [2]_.Seed.Nonterminal.Base Expr
+                          [1]_.Seed.Terminal      ';'
+                        [1]_.Seed.NonterminalMaybeVar If
+                          [0]_.Seed.Nonterminal   If
+                            [0]_.Seed.Nonterminal.Base If
+                  [1]_.Seed.Rule                  If = ... Body ]
+                    [0]_.Seed.Nonterminal         If
+                      [0]_.Seed.Nonterminal.Base  If
+                    [1]_.Seed                     - x ... . Body
+                      [0]_.Seed.Rule              x = ... ) ?
+                        [0]_.Seed.Nonterminal     x
+                          [0]_.Seed.Nonterminal.Base x
+                        [1]_.Seed.ExprOrAlias     = 'if' ... ) ?
+                          [0]_.Seed.Expr.Concat.concat 'if' Branch ... ) ?
+                            [0]_.Seed.Terminal    'if'
+                            [1]_.Seed.NonterminalMaybeVar Branch
+                              [0]_.Seed.Nonterminal Branch
+                                [0]_.Seed.Nonterminal.Base Branch
+                            [2]_.Seed.Expr.Postfix.* ( 'elif' Branch ) *
+                              [0]_.Seed.Expr.Parens.( ( 'elif' Branch )
+                                [0]_.Seed.Expr.Concat.concat 'elif' Branch
+                                  [0]_.Seed.Terminal 'elif'
+                                  [1]_.Seed.NonterminalMaybeVar Branch
+                                    [0]_.Seed.Nonterminal Branch
+                                      [0]_.Seed.Nonterminal.Base Branch
+                            [3]_.Seed.Expr.Postfix.? ( 'else' ... ) ?
+                              [0]_.Seed.Expr.Parens.( ( 'else' ... Body )
+                                [0]_.Seed.Expr.Concat.concat 'else' p ... . Body
+                                  [0]_.Seed.Terminal 'else'
+                                  [1]_.Seed.NonterminalMaybeVar p . p . Body
+                                    [0]_.Seed.Nonterminal p . p . Body
+                                      [0]_.Seed.Nonterminal.Base p
+                                      [1]_.Seed.Nonterminal.Base p
+                                      [2]_.Seed.Nonterminal.Base Body
+                      [1]_.Seed.Rule              Branch = ... . Body
+                        [0]_.Seed.Nonterminal     Branch
+                          [0]_.Seed.Nonterminal.Base Branch
+                        [1]_.Seed.ExprOrAlias     = _ ... . Body
+                          [0]_.Seed.Expr.Concat.concat _ . ... . Body
+                            [0]_.Seed.NonterminalMaybeVar _ . Soil . Expr
+                              [0]_.Seed.Nonterminal _ . Soil . Expr
+                                [0]_.Seed.Nonterminal.Base _
+                                [1]_.Seed.Nonterminal.Base Soil
+                                [2]_.Seed.Nonterminal.Base Expr
+                            [1]_.Seed.NonterminalMaybeVar p . p . Body
+                              [0]_.Seed.Nonterminal p . p . Body
+                                [0]_.Seed.Nonterminal.Base p
+                                [1]_.Seed.Nonterminal.Base p
+                                [2]_.Seed.Nonterminal.Base Body
           [4]_.Seed.Rule                          Variable = ... Expr ]
             [0]_.Seed.Nonterminal                 Variable
               [0]_.Seed.Nonterminal.Base          Variable
@@ -772,7 +847,7 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
   [0]_.Silva.Section                              <$ Soil ... } $>
     [0]_.Seed.Nonterminal                         Soil
       [0]_.Seed.Nonterminal.Base                  Soil
-    [1]_.Soil                                     name_t = ... ; }
+    [1]_.Soil                                     name_t = ... } }
       [0]_.Soil.Type.Defn                         name_t = str_t
         [0]_.Soil.Type.Name                       name_t
         [1]_.Soil.Type                            str_t
@@ -781,26 +856,50 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
         [0]_.Soil.Type.Name                       age_t
         [1]_.Soil.Type                            i32_t
           [0]_.Soil.Type.Name                     i32_t
-      [2]_.Soil.Type.Defn                         person_t = ... age ]
+      [2]_.Soil.Type.Defn                         person_t = ... ; ]
         [0]_.Soil.Type.Name                       person_t
-        [1]_.Soil.Type                            [ [ ... age ]
-          [0]_.Soil.Type.Struct                   [ [ ... age ]
-            [0]_.Soil.Type.Struct.Member          [ name_t ... : name
-              [0]_.Soil.Type                      [ name_t ... last ]
-                [0]_.Soil.Type.Struct             [ name_t ... last ]
-                  [0]_.Soil.Type.Struct.Member    name_t : first
+        [1]_.Soil.Type                            [ [ ... ; ]
+          [0]_.Soil.Type.Struct                   [ [ ... ; ]
+            [0]_.Soil.Type.Struct.Member          [ name_t ... ] ;
+              [0]_.Soil.Type                      [ name_t ... ; ]
+                [0]_.Soil.Type.Struct             [ name_t ... ; ]
+                  [0]_.Soil.Type.Struct.Member    name_t : first ;
                     [0]_.Soil.Type                name_t
                       [0]_.Soil.Type.Name         name_t
-                    [1]_.Soil.Type.Struct.Member.Name first
-                  [1]_.Soil.Type.Struct.Member    name_t : last
+                    [1]_.Soil.Type.Struct.Member.Label : first
+                      [0]_.Soil.Type.Struct.Member.Name first
+                  [1]_.Soil.Type.Struct.Member    name_t : ... 'Trump' ;
                     [0]_.Soil.Type                name_t
                       [0]_.Soil.Type.Name         name_t
-                    [1]_.Soil.Type.Struct.Member.Name last
-              [1]_.Soil.Type.Struct.Member.Name   name
-            [1]_.Soil.Type.Struct.Member          age_t : age
+                    [1]_.Soil.Type.Struct.Member.Label : last
+                      [0]_.Soil.Type.Struct.Member.Name last
+                    [2]_.Soil.Type.Struct.Member.Init = 'Trump'
+                      [0]_.Soil.Expr              'Trump'
+                        [0]_.Soil.Expr.Atom       'Trump'
+              [1]_.Soil.Type.Struct.Member.Label  : name
+                [0]_.Soil.Type.Struct.Member.Name name
+              [2]_.Soil.Type.Struct.Member.Init   = [ 'Arno' 'Nym' ]
+                [0]_.Soil.Expr                    [ 'Arno' 'Nym' ]
+                  [0]_.Soil.Expr.Atom             [ 'Arno' 'Nym' ]
+                    [0]_.Soil.Expr.Struct         [ 'Arno' 'Nym' ]
+                      [0]_.Soil.Expr.Struct.LabeledItem 'Arno'
+                        [0]_.Soil.Expr            'Arno'
+                          [0]_.Soil.Expr.Atom     'Arno'
+                      [1]_.Soil.Expr.Struct.LabeledItem 'Nym'
+                        [0]_.Soil.Expr            'Nym'
+                          [0]_.Soil.Expr.Atom     'Nym'
+            [1]_.Soil.Type.Struct.Member          age_t : ... ) ;
               [0]_.Soil.Type                      age_t
                 [0]_.Soil.Type.Name               age_t
-              [1]_.Soil.Type.Struct.Member.Name   age
+              [1]_.Soil.Type.Struct.Member.Label  : age
+                [0]_.Soil.Type.Struct.Member.Name age
+              [2]_.Soil.Type.Struct.Member.Init   = size_f ... first )
+                [0]_.Soil.Expr                    size_f ( ... first )
+                  [0]_.Soil.Expr.Axe.CallPost.(   size_f ( ... first )
+                    [0]_.Soil.Expr.Atom           size_f
+                    [1]_.Soil.Expr.Axe.Member..   name . first
+                      [0]_.Soil.Expr.Atom         name
+                      [1]_.Soil.Expr.Atom         first
       [3]_.Soil.Variable.Defn                     bs = ... 80 ]
         [0]_.Soil.Variable.Name                   bs
         [1]_.Soil.Expr                            person_t :: ... 80 ]
@@ -836,12 +935,12 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                     [0]_.Soil.Expr.Atom           arg
                     [1]_.Soil.Expr.Atom           age
                   [1]_.Soil.Expr.Atom             18
-      [5]_.Soil.Func.Defn                         example_f = ... ; }
+      [5]_.Soil.Func.Defn                         example_f = ... } }
         [0]_.Soil.Func.Name                       example_f
         [1]_.Soil.Func.Signature                  [ ]
           [0]_.Soil.Type                          [ ]
             [0]_.Soil.Type.Struct                 [ ]
-        [2]_.Soil.Func.Body                       { age ... ; }
+        [2]_.Soil.Func.Body                       { age ... } }
           [0]_.Soil.Func.Stmt                     age = ... 42 ;
             [0]_.Soil.Expr                        age = age_t :: 42
               [0]_.Soil.Expr.Axe.Assign.=         age = age_t :: 42
@@ -924,8 +1023,10 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                         [1]_.Soil.Expr.Struct.LabeledItem p2
                           [0]_.Soil.Expr          p2
                             [0]_.Soil.Expr.Atom   p2
-                  [1]_.Soil.Expr.Axe.CallPost.(   filter_m ( ... 40 )
-                    [0]_.Soil.Expr.Atom           filter_m
+                  [1]_.Soil.Expr.Axe.CallPost.(   std . ... 40 )
+                    [0]_.Soil.Expr.Axe.Member..   std . filter_m
+                      [0]_.Soil.Expr.Atom         std
+                      [1]_.Soil.Expr.Atom         filter_m
                     [1]_.Soil.Expr.Axe.Comp.<=    arg . age <= 40
                       [0]_.Soil.Expr.Axe.Member.. arg . age
                         [0]_.Soil.Expr.Atom       arg
@@ -947,4 +1048,46 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                           [0]_.Seed.Expr.Postfix.* identifier *
                             [0]_.Seed.Terminal    identifier
                 [1]_.Soil.Expr.Atom               print_f
+          [6]_.Soil.Func.Stmt                     if p1 ... ; }
+            [0]_.Soil.Func.Stmt.If                if p1 ... ; }
+              [0]_.Soil.Func.Stmt.If.Branch       p1 . ... ; }
+                [0]_.Soil.Expr                    p1 . ... > 10
+                  [0]_.Soil.Expr.Axe.Comp.>       p1 . ... > 10
+                    [0]_.Soil.Expr.Axe.CallPipe.| p1 . ... | size_f
+                      [0]_.Soil.Expr.Axe.Member.. p1 . name . first
+                        [0]_.Soil.Expr.Axe.Member.. p1 . name
+                          [0]_.Soil.Expr.Atom     p1
+                          [1]_.Soil.Expr.Atom     name
+                        [1]_.Soil.Expr.Atom       first
+                      [1]_.Soil.Expr.Atom         size_f
+                    [1]_.Soil.Expr.Atom           10
+                [1]_.Soil.Func.Body               { 'This name is long' ... ; }
+                  [0]_.Soil.Func.Stmt             'This name is long' | log_f ;
+                    [0]_.Soil.Expr                'This name is long' | log_f
+                      [0]_.Soil.Expr.Axe.CallPipe.| 'This name is long' | log_f
+                        [0]_.Soil.Expr.Atom       'This name is long'
+                        [1]_.Soil.Expr.Atom       log_f
+              [1]_.Soil.Func.Stmt.If.Branch       p1 . ... ; }
+                [0]_.Soil.Expr                    p1 . ... > 5
+                  [0]_.Soil.Expr.Axe.Comp.>       p1 . ... > 5
+                    [0]_.Soil.Expr.Axe.CallPipe.| p1 . ... | size_f
+                      [0]_.Soil.Expr.Axe.Member.. p1 . name . first
+                        [0]_.Soil.Expr.Axe.Member.. p1 . name
+                          [0]_.Soil.Expr.Atom     p1
+                          [1]_.Soil.Expr.Atom     name
+                        [1]_.Soil.Expr.Atom       first
+                      [1]_.Soil.Expr.Atom         size_f
+                    [1]_.Soil.Expr.Atom           5
+                [1]_.Soil.Func.Body               { 'This name it not long' ... ; }
+                  [0]_.Soil.Func.Stmt             'This name it not long' | log_f ;
+                    [0]_.Soil.Expr                'This name it not long' | log_f
+                      [0]_.Soil.Expr.Axe.CallPipe.| 'This name it not long' | log_f
+                        [0]_.Soil.Expr.Atom       'This name it not long'
+                        [1]_.Soil.Expr.Atom       log_f
+              [2]_.Soil.Func.Body                 { 'This name it short' ... ; }
+                [0]_.Soil.Func.Stmt               'This name it short' | log_f ;
+                  [0]_.Soil.Expr                  'This name it short' | log_f
+                    [0]_.Soil.Expr.Axe.CallPipe.| 'This name it short' | log_f
+                      [0]_.Soil.Expr.Atom         'This name it short'
+                      [1]_.Soil.Expr.Atom         log_f
 

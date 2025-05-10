@@ -9,7 +9,9 @@
     - Struct = [
       - x = '[' Member * ']'
       - Member = [
-        - x = p.p ( ':' Name ) ?
+        - x = p.p Label ? Init ? ';'
+        - Label = ':' Name
+        - Init = '=' _.Soil.Expr
         - Name = identifier
       ]
     ]
@@ -40,7 +42,13 @@
     - Defn = Name '=' Signature Body
     - Signature = p.Type ( '->' p.Type ) ?
     - Body = '{' Stmt * '}'
-    - Stmt = p.Expr ';'
+    - Stmt = [
+      - x = _.Soil.Expr ';' | If
+      - If = [
+        - x = 'if' Branch ( 'elif' Branch ) * ( 'else' p.p.Body ) ?
+        - Branch = _.Soil.Expr p.p.Body
+      ]
+    ]
   ]
   - Variable = [
     - Name = not p.Type.Name but_then not p.Func.Name but_then identifier
