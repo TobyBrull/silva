@@ -1,0 +1,887 @@
+Randomness seeded to: 1464400537
+===============================================================================
+All tests passed (406 assertions in 28 test cases)
+
+[  0]   1:1   [
+[  1]   2:3   none
+[  2]   3:3   true
+[  3]   4:3   42
+[  4]   5:3   hello
+[  5]   5:9   :
+[  6]   5:11  'World'
+[  7]   6:3   [
+[  8]   6:4   ]
+[  9]   7:3   [
+[ 10]   8:5   'one'
+[ 11]   8:11  :
+[ 12]   8:13  1.0
+[ 13]   9:5   'two'
+[ 14]   9:11  :
+[ 15]   9:13  2.0
+[ 16]  10:3   ]
+[ 17]  11:1   ]
+
+[
+  none
+  true
+  42
+  hello : 'World'
+  []
+  [
+    'one' : 1.0
+    'two' : 2.0
+  ]
+]
+[0]_.Fern                                         [ none ... ] ]
+  [0]_.Fern.LabeledItem                           none
+    [0]_.Fern.Value                               none
+  [1]_.Fern.LabeledItem                           [ ]
+    [0]_.Fern                                     [ ]
+  [2]_.Fern.LabeledItem                           [ none ]
+    [0]_.Fern                                     [ none ]
+      [0]_.Fern.LabeledItem                       none
+        [0]_.Fern.Value                           none
+
+[0]_                                                   false     unknown token_position
+  [0]_.Fern                                            true      01-simplest.fern:1:1
+    [0]_.Fern.LabeledItem                              true      01-simplest.fern:2:3
+      [0]_.Fern.Label                                  true      01-simplest.fern:2:3
+      [1]_.Fern                                        false     01-simplest.fern:2:3
+      [2]_.Fern.Value                                  true      01-simplest.fern:2:3
+    [1]_.Fern.LabeledItem                              true      01-simplest.fern:3:3
+      [0]_.Fern.Label                                  false     01-simplest.fern:3:3
+      [1]_.Fern                                        true      01-simplest.fern:3:3
+        [0]_.Fern.LabeledItem                          false     01-simplest.fern:3:4
+          [0]_.Fern.Label                              false     01-simplest.fern:3:4
+          [1]_.Fern                                    false     01-simplest.fern:3:4
+          [2]_.Fern.Value                              false     01-simplest.fern:3:4
+    [2]_.Fern.LabeledItem                              true      01-simplest.fern:4:3
+      [0]_.Fern.Label                                  false     01-simplest.fern:4:3
+      [1]_.Fern                                        true      01-simplest.fern:4:3
+        [0]_.Fern.LabeledItem                          true      01-simplest.fern:5:5
+          [0]_.Fern.Label                              true      01-simplest.fern:5:5
+          [1]_.Fern                                    false     01-simplest.fern:5:5
+          [2]_.Fern.Value                              true      01-simplest.fern:5:5
+        [1]_.Fern.LabeledItem                          false     01-simplest.fern:6:3
+          [0]_.Fern.Label                              false     01-simplest.fern:6:3
+          [1]_.Fern                                    false     01-simplest.fern:6:3
+          [2]_.Fern.Value                              false     01-simplest.fern:6:3
+    [3]_.Fern.LabeledItem                              false     01-simplest.fern:7:1
+      [0]_.Fern.Label                                  false     01-simplest.fern:7:1
+      [1]_.Fern                                        false     01-simplest.fern:7:1
+      [2]_.Fern.Value                                  false     01-simplest.fern:7:1
+[0]_.Silva                                        <$ Seed ... ] $>
+  [0]_.Silva.Section                              <$ Seed ... * $>
+    [0]_.Seed.Nonterminal                         Seed
+      [0]_.Seed.Nonterminal.Base                  Seed
+    [1]_.Seed                                     - AsBs ... 'b' *
+      [0]_.Seed.Rule                              AsBs = ... 'b' *
+        [0]_.Seed.Nonterminal                     AsBs
+          [0]_.Seed.Nonterminal.Base              AsBs
+        [1]_.Seed.ExprOrAlias                     = 'a' * 'b' *
+          [0]_.Seed.Expr.Concat.concat            'a' * 'b' *
+            [0]_.Seed.Expr.Postfix.*              'a' *
+              [0]_.Seed.Terminal                  'a'
+            [1]_.Seed.Expr.Postfix.*              'b' *
+              [0]_.Seed.Terminal                  'b'
+  [1]_.Silva.Section                              <$ AsBs ... b $>
+    [0]_.Seed.Nonterminal                         AsBs
+      [0]_.Seed.Nonterminal.Base                  AsBs
+    [1]_.AsBs                                     a a a b b
+  [2]_.Silva.Section                              <$ Seed ... ] $>
+    [0]_.Seed.Nonterminal                         Seed
+      [0]_.Seed.Nonterminal.Base                  Seed
+    [1]_.Seed                                     - CppStmts ... identifier ]
+      [0]_.Seed.Rule                              CppStmts = ... identifier ]
+        [0]_.Seed.Nonterminal                     CppStmts
+          [0]_.Seed.Nonterminal.Base              CppStmts
+        [1]_.Seed                                 - x ... | identifier
+          [0]_.Seed.Rule                          x = ... ) *
+            [0]_.Seed.Nonterminal                 x
+              [0]_.Seed.Nonterminal.Base          x
+            [1]_.Seed.ExprOrAlias                 = ( ... ) *
+              [0]_.Seed.Expr.Postfix.*            ( Expr ';' ) *
+                [0]_.Seed.Expr.Parens.(           ( Expr ';' )
+                  [0]_.Seed.Expr.Concat.concat    Expr ';'
+                    [0]_.Seed.NonterminalMaybeVar Expr
+                      [0]_.Seed.Nonterminal       Expr
+                        [0]_.Seed.Nonterminal.Base Expr
+                    [1]_.Seed.Terminal            ';'
+          [1]_.Seed.Rule                          Expr =/ ... ',' ]
+            [0]_.Seed.Nonterminal                 Expr
+              [0]_.Seed.Nonterminal.Base          Expr
+            [1]_.Seed.AxeWithAtom                 Atom [ ... ',' ]
+              [0]_.Seed.Nonterminal               Atom
+                [0]_.Seed.Nonterminal.Base        Atom
+              [1]_.Seed.Axe                       [ - ... ',' ]
+                [0]_.Seed.Axe.Level               Parens = ... '(' ')'
+                  [0]_.Seed.Nonterminal.Base      Parens
+                  [1]_.Seed.Axe.Assoc             nest
+                  [2]_.Seed.Axe.Ops               atom_nest '(' ')'
+                    [0]_.Seed.Axe.OpType          atom_nest
+                    [1]_.Seed.Axe.Op              '('
+                    [2]_.Seed.Axe.Op              ')'
+                [1]_.Seed.Axe.Level               Namespace = ... prefix '::'
+                  [0]_.Seed.Nonterminal.Base      Namespace
+                  [1]_.Seed.Axe.Assoc             rtl
+                  [2]_.Seed.Axe.Ops               infix '::'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '::'
+                  [3]_.Seed.Axe.Ops               prefix '::'
+                    [0]_.Seed.Axe.OpType          prefix
+                    [1]_.Seed.Axe.Op              '::'
+                [2]_.Seed.Axe.Level               Postfix = ... '.' '->'
+                  [0]_.Seed.Nonterminal.Base      Postfix
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               postfix '++' '--'
+                    [0]_.Seed.Axe.OpType          postfix
+                    [1]_.Seed.Axe.Op              '++'
+                    [2]_.Seed.Axe.Op              '--'
+                  [3]_.Seed.Axe.Ops               postfix_nest '(' ')' '[' ']'
+                    [0]_.Seed.Axe.OpType          postfix_nest
+                    [1]_.Seed.Axe.Op              '('
+                    [2]_.Seed.Axe.Op              ')'
+                    [3]_.Seed.Axe.Op              '['
+                    [4]_.Seed.Axe.Op              ']'
+                  [4]_.Seed.Axe.Ops               infix '.' '->'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '.'
+                    [2]_.Seed.Axe.Op              '->'
+                [3]_.Seed.Axe.Level               Prefix = ... '<.' '.>'
+                  [0]_.Seed.Nonterminal.Base      Prefix
+                  [1]_.Seed.Axe.Assoc             rtl
+                  [2]_.Seed.Axe.Ops               prefix '++' ... 'sizeof' 'new'
+                    [0]_.Seed.Axe.OpType          prefix
+                    [1]_.Seed.Axe.Op              '++'
+                    [2]_.Seed.Axe.Op              '--'
+                    [3]_.Seed.Axe.Op              '+'
+                    [4]_.Seed.Axe.Op              '-'
+                    [5]_.Seed.Axe.Op              '!'
+                    [6]_.Seed.Axe.Op              '~'
+                    [7]_.Seed.Axe.Op              '*'
+                    [8]_.Seed.Axe.Op              '&'
+                    [9]_.Seed.Axe.Op              'sizeof'
+                    [10]_.Seed.Axe.Op             'new'
+                  [3]_.Seed.Axe.Ops               prefix_nest '<.' '.>'
+                    [0]_.Seed.Axe.OpType          prefix_nest
+                    [1]_.Seed.Axe.Op              '<.'
+                    [2]_.Seed.Axe.Op              '.>'
+                [4]_.Seed.Axe.Level               Member = ... '.*' '->*'
+                  [0]_.Seed.Nonterminal.Base      Member
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '.*' '->*'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '.*'
+                    [2]_.Seed.Axe.Op              '->*'
+                [5]_.Seed.Axe.Level               Multiply = ... '/' '%'
+                  [0]_.Seed.Nonterminal.Base      Multiply
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '*' '/' '%'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '*'
+                    [2]_.Seed.Axe.Op              '/'
+                    [3]_.Seed.Axe.Op              '%'
+                [6]_.Seed.Axe.Level               Addition = ... '+' '-'
+                  [0]_.Seed.Nonterminal.Base      Addition
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '+' '-'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '+'
+                    [2]_.Seed.Axe.Op              '-'
+                [7]_.Seed.Axe.Level               Bitshift = ... '<<' '>>'
+                  [0]_.Seed.Nonterminal.Base      Bitshift
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '<<' '>>'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '<<'
+                    [2]_.Seed.Axe.Op              '>>'
+                [8]_.Seed.Axe.Level               Spaceship = ltr infix '<=>'
+                  [0]_.Seed.Nonterminal.Base      Spaceship
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '<=>'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '<=>'
+                [9]_.Seed.Axe.Level               Comparison = ... '>' '>='
+                  [0]_.Seed.Nonterminal.Base      Comparison
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '<' '<=' '>' '>='
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '<'
+                    [2]_.Seed.Axe.Op              '<='
+                    [3]_.Seed.Axe.Op              '>'
+                    [4]_.Seed.Axe.Op              '>='
+                [10]_.Seed.Axe.Level              Equality = ... '==' '!='
+                  [0]_.Seed.Nonterminal.Base      Equality
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '==' '!='
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '=='
+                    [2]_.Seed.Axe.Op              '!='
+                [11]_.Seed.Axe.Level              BitAnd = ltr infix '&'
+                  [0]_.Seed.Nonterminal.Base      BitAnd
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '&'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '&'
+                [12]_.Seed.Axe.Level              BitXor = ltr infix '^'
+                  [0]_.Seed.Nonterminal.Base      BitXor
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '^'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '^'
+                [13]_.Seed.Axe.Level              BitOr = ltr infix '|'
+                  [0]_.Seed.Nonterminal.Base      BitOr
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '|'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '|'
+                [14]_.Seed.Axe.Level              LogicalAnd = ltr infix '&&'
+                  [0]_.Seed.Nonterminal.Base      LogicalAnd
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '&&'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '&&'
+                [15]_.Seed.Axe.Level              LogicalOr = ltr infix '||'
+                  [0]_.Seed.Nonterminal.Base      LogicalOr
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix '||'
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '||'
+                [16]_.Seed.Axe.Level              Assignment = ... '?' ':'
+                  [0]_.Seed.Nonterminal.Base      Assignment
+                  [1]_.Seed.Axe.Assoc             rtl
+                  [2]_.Seed.Axe.Ops               infix '=' '+=' '-='
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              '='
+                    [2]_.Seed.Axe.Op              '+='
+                    [3]_.Seed.Axe.Op              '-='
+                  [3]_.Seed.Axe.Ops               prefix 'throw'
+                    [0]_.Seed.Axe.OpType          prefix
+                    [1]_.Seed.Axe.Op              'throw'
+                  [4]_.Seed.Axe.Ops               ternary '?' ':'
+                    [0]_.Seed.Axe.OpType          ternary
+                    [1]_.Seed.Axe.Op              '?'
+                    [2]_.Seed.Axe.Op              ':'
+                [17]_.Seed.Axe.Level              Comma = ltr infix ','
+                  [0]_.Seed.Nonterminal.Base      Comma
+                  [1]_.Seed.Axe.Assoc             ltr
+                  [2]_.Seed.Axe.Ops               infix ','
+                    [0]_.Seed.Axe.OpType          infix
+                    [1]_.Seed.Axe.Op              ','
+          [2]_.Seed.Rule                          Atom = ... | identifier
+            [0]_.Seed.Nonterminal                 Atom
+              [0]_.Seed.Nonterminal.Base          Atom
+            [1]_.Seed.ExprOrAlias                 = number ... | identifier
+              [0]_.Seed.Expr.Or.|                 number | string | identifier
+                [0]_.Seed.Terminal                number
+                [1]_.Seed.Terminal                string
+                [2]_.Seed.Terminal                identifier
+  [3]_.Silva.Section                              <$ CppStmts ... ; $>
+    [0]_.Seed.Nonterminal                         CppStmts
+      [0]_.Seed.Nonterminal.Base                  CppStmts
+    [1]_.CppStmts                                 1 + ... ++ ;
+      [0]_.CppStmts.Expr.Addition.+               1 + ... * 5
+        [0]_.CppStmts.Expr.Addition.+             1 + 2 * 3
+          [0]_.CppStmts.Atom                      1
+          [1]_.CppStmts.Expr.Multiply.*           2 * 3
+            [0]_.CppStmts.Atom                    2
+            [1]_.CppStmts.Atom                    3
+        [1]_.CppStmts.Expr.Multiply.*             4 * 5
+          [0]_.CppStmts.Atom                      4
+          [1]_.CppStmts.Atom                      5
+      [1]_.CppStmts.Expr.Assignment.=             a [ ... 3.14 )
+        [0]_.CppStmts.Expr.Postfix.[              a [ 1 ]
+          [0]_.CppStmts.Atom                      a
+          [1]_.CppStmts.Atom                      1
+        [1]_.CppStmts.Expr.Postfix.(              std :: ... 3.14 )
+          [0]_.CppStmts.Expr.Namespace.::         std :: sin
+            [0]_.CppStmts.Atom                    std
+            [1]_.CppStmts.Atom                    sin
+          [1]_.CppStmts.Atom                      3.14
+      [2]_.CppStmts.Expr.BitOr.|                  1 | ... + 3
+        [0]_.CppStmts.Atom                        1
+        [1]_.CppStmts.Expr.Comparison.<=          0 <= ... + 3
+          [0]_.CppStmts.Expr.Comparison.<=        0 <= x * 10
+            [0]_.CppStmts.Atom                    0
+            [1]_.CppStmts.Expr.Multiply.*         x * 10
+              [0]_.CppStmts.Atom                  x
+              [1]_.CppStmts.Atom                  10
+          [1]_.CppStmts.Expr.Addition.+           2 + 3
+            [0]_.CppStmts.Atom                    2
+            [1]_.CppStmts.Atom                    3
+      [3]_.CppStmts.Expr.Assignment.=             std :: ... x )
+        [0]_.CppStmts.Expr.Postfix.(              std :: ... x )
+          [0]_.CppStmts.Expr.Namespace.::         std :: get
+            [0]_.CppStmts.Atom                    std
+            [1]_.CppStmts.Atom                    get
+          [1]_.CppStmts.Atom                      x
+        [1]_.CppStmts.Expr.Postfix.(              :: std ... x )
+          [0]_.CppStmts.Expr.Namespace.::         :: std :: get
+            [0]_.CppStmts.Expr.Namespace.::       std :: get
+              [0]_.CppStmts.Atom                  std
+              [1]_.CppStmts.Atom                  get
+          [1]_.CppStmts.Atom                      x
+      [4]_.CppStmts.Expr.Prefix.++                ++ x ++
+        [0]_.CppStmts.Expr.Postfix.++             x ++
+          [0]_.CppStmts.Atom                      x
+  [4]_.Silva.Section                              <$ Fern ... ] $>
+    [0]_.Seed.Nonterminal                         Fern
+      [0]_.Seed.Nonterminal.Base                  Fern
+    [1]_.Fern                                     [ none ... ] ]
+      [0]_.Fern.LabeledItem                       none
+        [0]_.Fern.Value                           none
+      [1]_.Fern.LabeledItem                       true
+        [0]_.Fern.Value                           true
+      [2]_.Fern.LabeledItem                       42
+        [0]_.Fern.Value                           42
+      [3]_.Fern.LabeledItem                       hello : 'World'
+        [0]_.Fern.Label                           hello
+        [1]_.Fern.Value                           'World'
+      [4]_.Fern.LabeledItem                       [ ]
+        [0]_.Fern                                 [ ]
+      [5]_.Fern.LabeledItem                       [ 'one' ... 2.0 ]
+        [0]_.Fern                                 [ 'one' ... 2.0 ]
+          [0]_.Fern.LabeledItem                   'one' : 1.0
+            [0]_.Fern.Label                       'one'
+            [1]_.Fern.Value                       1.0
+          [1]_.Fern.LabeledItem                   'two' : 2.0
+            [0]_.Fern.Label                       'two'
+            [1]_.Fern.Value                       2.0
+
+[0]_.Seed                                         - Somelang ... | StructValue
+  [0]_.Seed.Rule                                  Somelang = ... Implementation end_of_file
+    [0]_.Seed.Nonterminal                         Somelang
+      [0]_.Seed.Nonterminal.Base                  Somelang
+    [1]_.Seed.ExprOrAlias                         = 'import' ... Implementation end_of_file
+      [0]_.Seed.Expr.Concat.concat                'import' Imports ... Implementation end_of_file
+        [0]_.Seed.Terminal                        'import'
+        [1]_.Seed.NonterminalMaybeVar             Imports
+          [0]_.Seed.Nonterminal                   Imports
+            [0]_.Seed.Nonterminal.Base            Imports
+        [2]_.Seed.Terminal                        'interface'
+        [3]_.Seed.NonterminalMaybeVar             Interface
+          [0]_.Seed.Nonterminal                   Interface
+            [0]_.Seed.Nonterminal.Base            Interface
+        [4]_.Seed.Terminal                        'implementation'
+        [5]_.Seed.NonterminalMaybeVar             Implementation
+          [0]_.Seed.Nonterminal                   Implementation
+            [0]_.Seed.Nonterminal.Base            Implementation
+        [6]_.Seed.Terminal                        end_of_file
+  [1]_.Seed.Rule                                  Imports = string *
+    [0]_.Seed.Nonterminal                         Imports
+      [0]_.Seed.Nonterminal.Base                  Imports
+    [1]_.Seed.ExprOrAlias                         = string *
+      [0]_.Seed.Expr.Postfix.*                    string *
+        [0]_.Seed.Terminal                        string
+  [2]_.Seed.Rule                                  Interface = Command *
+    [0]_.Seed.Nonterminal                         Interface
+      [0]_.Seed.Nonterminal.Base                  Interface
+    [1]_.Seed.ExprOrAlias                         = Command *
+      [0]_.Seed.Expr.Postfix.*                    Command *
+        [0]_.Seed.NonterminalMaybeVar             Command
+          [0]_.Seed.Nonterminal                   Command
+            [0]_.Seed.Nonterminal.Base            Command
+  [3]_.Seed.Rule                                  Implementation = Command *
+    [0]_.Seed.Nonterminal                         Implementation
+      [0]_.Seed.Nonterminal.Base                  Implementation
+    [1]_.Seed.ExprOrAlias                         = Command *
+      [0]_.Seed.Expr.Postfix.*                    Command *
+        [0]_.Seed.NonterminalMaybeVar             Command
+          [0]_.Seed.Nonterminal                   Command
+            [0]_.Seed.Nonterminal.Base            Command
+  [4]_.Seed.Rule                                  Command = ... | FuncDefn
+    [0]_.Seed.Nonterminal                         Command
+      [0]_.Seed.Nonterminal.Base                  Command
+    [1]_.Seed.ExprOrAlias                         = 'namespace' ... | FuncDefn
+      [0]_.Seed.Expr.Or.|                         'namespace' NestedNamespace ... | FuncDefn
+        [0]_.Seed.Expr.Concat.concat              'namespace' NestedNamespace
+          [0]_.Seed.Terminal                      'namespace'
+          [1]_.Seed.NonterminalMaybeVar           NestedNamespace
+            [0]_.Seed.Nonterminal                 NestedNamespace
+              [0]_.Seed.Nonterminal.Base          NestedNamespace
+        [1]_.Seed.NonterminalMaybeVar             TypeDefn
+          [0]_.Seed.Nonterminal                   TypeDefn
+            [0]_.Seed.Nonterminal.Base            TypeDefn
+        [2]_.Seed.NonterminalMaybeVar             FuncDefn
+          [0]_.Seed.Nonterminal                   FuncDefn
+            [0]_.Seed.Nonterminal.Base            FuncDefn
+  [5]_.Seed.Rule                                  NestedNamespace = ... ) *
+    [0]_.Seed.Nonterminal                         NestedNamespace
+      [0]_.Seed.Nonterminal.Base                  NestedNamespace
+    [1]_.Seed.ExprOrAlias                         = Namespace ... ) *
+      [0]_.Seed.Expr.Concat.concat                Namespace ( ... ) *
+        [0]_.Seed.NonterminalMaybeVar             Namespace
+          [0]_.Seed.Nonterminal                   Namespace
+            [0]_.Seed.Nonterminal.Base            Namespace
+        [1]_.Seed.Expr.Postfix.*                  ( '.' Namespace ) *
+          [0]_.Seed.Expr.Parens.(                 ( '.' Namespace )
+            [0]_.Seed.Expr.Concat.concat          '.' Namespace
+              [0]_.Seed.Terminal                  '.'
+              [1]_.Seed.NonterminalMaybeVar       Namespace
+                [0]_.Seed.Nonterminal             Namespace
+                  [0]_.Seed.Nonterminal.Base      Namespace
+  [6]_.Seed.Rule                                  Namespace = identifier
+    [0]_.Seed.Nonterminal                         Namespace
+      [0]_.Seed.Nonterminal.Base                  Namespace
+    [1]_.Seed.ExprOrAlias                         = identifier
+      [0]_.Seed.Terminal                          identifier
+  [7]_.Seed.Rule                                  TypeName = ... | StructBody
+    [0]_.Seed.Nonterminal                         TypeName
+      [0]_.Seed.Nonterminal.Base                  TypeName
+    [1]_.Seed.ExprOrAlias                         = identifier ... | StructBody
+      [0]_.Seed.Expr.Or.|                         identifier / '_t$' | StructBody
+        [0]_.Seed.Terminal                        identifier / '_t$'
+        [1]_.Seed.NonterminalMaybeVar             StructBody
+          [0]_.Seed.Nonterminal                   StructBody
+            [0]_.Seed.Nonterminal.Base            StructBody
+  [8]_.Seed.Rule                                  FuncName = identifier / '_f$'
+    [0]_.Seed.Nonterminal                         FuncName
+      [0]_.Seed.Nonterminal.Base                  FuncName
+    [1]_.Seed.ExprOrAlias                         = identifier / '_f$'
+      [0]_.Seed.Terminal                          identifier / '_f$'
+  [9]_.Seed.Rule                                  Type =/ ... '&' ]
+    [0]_.Seed.Nonterminal                         Type
+      [0]_.Seed.Nonterminal.Base                  Type
+    [1]_.Seed.AxeWithAtom                         TypeName [ ... '&' ]
+      [0]_.Seed.Nonterminal                       TypeName
+        [0]_.Seed.Nonterminal.Base                TypeName
+      [1]_.Seed.Axe                               [ - ... '&' ]
+        [0]_.Seed.Axe.Level                       Ptr = ... '*' '&'
+          [0]_.Seed.Nonterminal.Base              Ptr
+          [1]_.Seed.Axe.Assoc                     rtl
+          [2]_.Seed.Axe.Ops                       prefix '*' '&'
+            [0]_.Seed.Axe.OpType                  prefix
+            [1]_.Seed.Axe.Op                      '*'
+            [2]_.Seed.Axe.Op                      '&'
+  [10]_.Seed.Rule                                 TypeDefn = ... ':' Type
+    [0]_.Seed.Nonterminal                         TypeDefn
+      [0]_.Seed.Nonterminal.Base                  TypeDefn
+    [1]_.Seed.ExprOrAlias                         = 'type' TypeName ':' Type
+      [0]_.Seed.Expr.Concat.concat                'type' TypeName ':' Type
+        [0]_.Seed.Terminal                        'type'
+        [1]_.Seed.NonterminalMaybeVar             TypeName
+          [0]_.Seed.Nonterminal                   TypeName
+            [0]_.Seed.Nonterminal.Base            TypeName
+        [2]_.Seed.Terminal                        ':'
+        [3]_.Seed.NonterminalMaybeVar             Type
+          [0]_.Seed.Nonterminal                   Type
+            [0]_.Seed.Nonterminal.Base            Type
+  [11]_.Seed.Rule                                 FuncDefn = ... FuncBody )
+    [0]_.Seed.Nonterminal                         FuncDefn
+      [0]_.Seed.Nonterminal.Base                  FuncDefn
+    [1]_.Seed.ExprOrAlias                         = 'func' ... FuncBody )
+      [0]_.Seed.Expr.Concat.concat                'func' FuncName ... FuncBody )
+        [0]_.Seed.Terminal                        'func'
+        [1]_.Seed.NonterminalMaybeVar             FuncName
+          [0]_.Seed.Nonterminal                   FuncName
+            [0]_.Seed.Nonterminal.Base            FuncName
+        [2]_.Seed.Terminal                        ':'
+        [3]_.Seed.NonterminalMaybeVar             FuncHeader
+          [0]_.Seed.Nonterminal                   FuncHeader
+            [0]_.Seed.Nonterminal.Base            FuncHeader
+        [4]_.Seed.Expr.Parens.(                   ( 'proto' | FuncBody )
+          [0]_.Seed.Expr.Or.|                     'proto' | FuncBody
+            [0]_.Seed.Terminal                    'proto'
+            [1]_.Seed.NonterminalMaybeVar         FuncBody
+              [0]_.Seed.Nonterminal               FuncBody
+                [0]_.Seed.Nonterminal.Base        FuncBody
+  [12]_.Seed.Rule                                 FuncHeader = ... ) ?
+    [0]_.Seed.Nonterminal                         FuncHeader
+      [0]_.Seed.Nonterminal.Base                  FuncHeader
+    [1]_.Seed.ExprOrAlias                         = '-*-' ... ) ?
+      [0]_.Seed.Expr.Or.|                         '-*-' | ... ) ?
+        [0]_.Seed.Terminal                        '-*-'
+        [1]_.Seed.Expr.Concat.concat              Type ( ... ) ?
+          [0]_.Seed.NonterminalMaybeVar           Type
+            [0]_.Seed.Nonterminal                 Type
+              [0]_.Seed.Nonterminal.Base          Type
+          [1]_.Seed.Expr.Postfix.?                ( '->' Type ) ?
+            [0]_.Seed.Expr.Parens.(               ( '->' Type )
+              [0]_.Seed.Expr.Concat.concat        '->' Type
+                [0]_.Seed.Terminal                '->'
+                [1]_.Seed.NonterminalMaybeVar     Type
+                  [0]_.Seed.Nonterminal           Type
+                    [0]_.Seed.Nonterminal.Base    Type
+  [13]_.Seed.Rule                                 StructBody = ... * ']'
+    [0]_.Seed.Nonterminal                         StructBody
+      [0]_.Seed.Nonterminal.Base                  StructBody
+    [1]_.Seed.ExprOrAlias                         = '[' ... * ']'
+      [0]_.Seed.Expr.Concat.concat                '[' ( ... * ']'
+        [0]_.Seed.Terminal                        '['
+        [1]_.Seed.Expr.Postfix.*                  ( ( ... ) *
+          [0]_.Seed.Expr.Parens.(                 ( ( ... ',' )
+            [0]_.Seed.Expr.Concat.concat          ( MemberName ... Type ','
+              [0]_.Seed.Expr.Postfix.?            ( MemberName ':' ) ?
+                [0]_.Seed.Expr.Parens.(           ( MemberName ':' )
+                  [0]_.Seed.Expr.Concat.concat    MemberName ':'
+                    [0]_.Seed.NonterminalMaybeVar MemberName
+                      [0]_.Seed.Nonterminal       MemberName
+                        [0]_.Seed.Nonterminal.Base MemberName
+                    [1]_.Seed.Terminal            ':'
+              [1]_.Seed.NonterminalMaybeVar       Type
+                [0]_.Seed.Nonterminal             Type
+                  [0]_.Seed.Nonterminal.Base      Type
+              [2]_.Seed.Terminal                  ','
+        [2]_.Seed.Terminal                        ']'
+  [14]_.Seed.Rule                                 StructValue = ... * ']'
+    [0]_.Seed.Nonterminal                         StructValue
+      [0]_.Seed.Nonterminal.Base                  StructValue
+    [1]_.Seed.ExprOrAlias                         = '[' ... * ']'
+      [0]_.Seed.Expr.Concat.concat                '[' ( ... * ']'
+        [0]_.Seed.Terminal                        '['
+        [1]_.Seed.Expr.Postfix.*                  ( Expr ',' ) *
+          [0]_.Seed.Expr.Parens.(                 ( Expr ',' )
+            [0]_.Seed.Expr.Concat.concat          Expr ','
+              [0]_.Seed.NonterminalMaybeVar       Expr
+                [0]_.Seed.Nonterminal             Expr
+                  [0]_.Seed.Nonterminal.Base      Expr
+              [1]_.Seed.Terminal                  ','
+        [2]_.Seed.Terminal                        ']'
+  [15]_.Seed.Rule                                 FuncBody = ... * '}'
+    [0]_.Seed.Nonterminal                         FuncBody
+      [0]_.Seed.Nonterminal.Base                  FuncBody
+    [1]_.Seed.ExprOrAlias                         = '{' ... * '}'
+      [0]_.Seed.Expr.Concat.concat                '{' ( ... * '}'
+        [0]_.Seed.Terminal                        '{'
+        [1]_.Seed.Expr.Postfix.*                  ( Stmt ';' ) *
+          [0]_.Seed.Expr.Parens.(                 ( Stmt ';' )
+            [0]_.Seed.Expr.Concat.concat          Stmt ';'
+              [0]_.Seed.NonterminalMaybeVar       Stmt
+                [0]_.Seed.Nonterminal             Stmt
+                  [0]_.Seed.Nonterminal.Base      Stmt
+              [1]_.Seed.Terminal                  ';'
+        [2]_.Seed.Terminal                        '}'
+  [16]_.Seed.Rule                                 MemberName = identifier
+    [0]_.Seed.Nonterminal                         MemberName
+      [0]_.Seed.Nonterminal.Base                  MemberName
+    [1]_.Seed.ExprOrAlias                         = identifier
+      [0]_.Seed.Terminal                          identifier
+  [17]_.Seed.Rule                                 Stmt => ... | Keyword
+    [0]_.Seed.Nonterminal                         Stmt
+      [0]_.Seed.Nonterminal.Base                  Stmt
+    [1]_.Seed.ExprOrAlias                         => StmtLoop ... | Keyword
+      [0]_.Seed.Expr.Or.|                         StmtLoop | ... | Keyword
+        [0]_.Seed.NonterminalMaybeVar             StmtLoop
+          [0]_.Seed.Nonterminal                   StmtLoop
+            [0]_.Seed.Nonterminal.Base            StmtLoop
+        [1]_.Seed.NonterminalMaybeVar             StmtIf
+          [0]_.Seed.Nonterminal                   StmtIf
+            [0]_.Seed.Nonterminal.Base            StmtIf
+        [2]_.Seed.NonterminalMaybeVar             Expr
+          [0]_.Seed.Nonterminal                   Expr
+            [0]_.Seed.Nonterminal.Base            Expr
+        [3]_.Seed.NonterminalMaybeVar             Keyword
+          [0]_.Seed.Nonterminal                   Keyword
+            [0]_.Seed.Nonterminal.Base            Keyword
+  [18]_.Seed.Rule                                 StmtLoop = 'loop' FuncBody
+    [0]_.Seed.Nonterminal                         StmtLoop
+      [0]_.Seed.Nonterminal.Base                  StmtLoop
+    [1]_.Seed.ExprOrAlias                         = 'loop' FuncBody
+      [0]_.Seed.Expr.Concat.concat                'loop' FuncBody
+        [0]_.Seed.Terminal                        'loop'
+        [1]_.Seed.NonterminalMaybeVar             FuncBody
+          [0]_.Seed.Nonterminal                   FuncBody
+            [0]_.Seed.Nonterminal.Base            FuncBody
+  [19]_.Seed.Rule                                 StmtIf = ... ) ?
+    [0]_.Seed.Nonterminal                         StmtIf
+      [0]_.Seed.Nonterminal.Base                  StmtIf
+    [1]_.Seed.ExprOrAlias                         = 'if' ... ) ?
+      [0]_.Seed.Expr.Concat.concat                'if' '(' ... ) ?
+        [0]_.Seed.Terminal                        'if'
+        [1]_.Seed.Terminal                        '('
+        [2]_.Seed.NonterminalMaybeVar             Expr
+          [0]_.Seed.Nonterminal                   Expr
+            [0]_.Seed.Nonterminal.Base            Expr
+        [3]_.Seed.Terminal                        ')'
+        [4]_.Seed.NonterminalMaybeVar             FuncBody
+          [0]_.Seed.Nonterminal                   FuncBody
+            [0]_.Seed.Nonterminal.Base            FuncBody
+        [5]_.Seed.Expr.Postfix.?                  ( 'else' ... ) ?
+          [0]_.Seed.Expr.Parens.(                 ( 'else' ... ) )
+            [0]_.Seed.Expr.Concat.concat          'else' ( ... FuncBody )
+              [0]_.Seed.Terminal                  'else'
+              [1]_.Seed.Expr.Parens.(             ( StmtIf | FuncBody )
+                [0]_.Seed.Expr.Or.|               StmtIf | FuncBody
+                  [0]_.Seed.NonterminalMaybeVar   StmtIf
+                    [0]_.Seed.Nonterminal         StmtIf
+                      [0]_.Seed.Nonterminal.Base  StmtIf
+                  [1]_.Seed.NonterminalMaybeVar   FuncBody
+                    [0]_.Seed.Nonterminal         FuncBody
+                      [0]_.Seed.Nonterminal.Base  FuncBody
+  [20]_.Seed.Rule                                 Keyword = 'break' 'continue'
+    [0]_.Seed.Nonterminal                         Keyword
+      [0]_.Seed.Nonterminal.Base                  Keyword
+    [1]_.Seed.ExprOrAlias                         = 'break' 'continue'
+      [0]_.Seed.Expr.Concat.concat                'break' 'continue'
+        [0]_.Seed.Terminal                        'break'
+        [1]_.Seed.Terminal                        'continue'
+  [21]_.Seed.Rule                                 Expr =/ ... '-=' ]
+    [0]_.Seed.Nonterminal                         Expr
+      [0]_.Seed.Nonterminal.Base                  Expr
+    [1]_.Seed.AxeWithAtom                         Atom [ ... '-=' ]
+      [0]_.Seed.Nonterminal                       Atom
+        [0]_.Seed.Nonterminal.Base                Atom
+      [1]_.Seed.Axe                               [ - ... '-=' ]
+        [0]_.Seed.Axe.Level                       Parens = ... '(' ')'
+          [0]_.Seed.Nonterminal.Base              Parens
+          [1]_.Seed.Axe.Assoc                     nest
+          [2]_.Seed.Axe.Ops                       atom_nest '(' ')'
+            [0]_.Seed.Axe.OpType                  atom_nest
+            [1]_.Seed.Axe.Op                      '('
+            [2]_.Seed.Axe.Op                      ')'
+        [1]_.Seed.Axe.Level                       Member = ltr infix '.'
+          [0]_.Seed.Nonterminal.Base              Member
+          [1]_.Seed.Axe.Assoc                     ltr
+          [2]_.Seed.Axe.Ops                       infix '.'
+            [0]_.Seed.Axe.OpType                  infix
+            [1]_.Seed.Axe.Op                      '.'
+        [2]_.Seed.Axe.Level                       Call = ltr infix '|'
+          [0]_.Seed.Nonterminal.Base              Call
+          [1]_.Seed.Axe.Assoc                     ltr
+          [2]_.Seed.Axe.Ops                       infix '|'
+            [0]_.Seed.Axe.OpType                  infix
+            [1]_.Seed.Axe.Op                      '|'
+        [3]_.Seed.Axe.Level                       Mul = ... '*' '//'
+          [0]_.Seed.Nonterminal.Base              Mul
+          [1]_.Seed.Axe.Assoc                     ltr
+          [2]_.Seed.Axe.Ops                       infix '*' '//'
+            [0]_.Seed.Axe.OpType                  infix
+            [1]_.Seed.Axe.Op                      '*'
+            [2]_.Seed.Axe.Op                      '//'
+        [4]_.Seed.Axe.Level                       Add = ... '+' '-'
+          [0]_.Seed.Nonterminal.Base              Add
+          [1]_.Seed.Axe.Assoc                     ltr
+          [2]_.Seed.Axe.Ops                       infix '+' '-'
+            [0]_.Seed.Axe.OpType                  infix
+            [1]_.Seed.Axe.Op                      '+'
+            [2]_.Seed.Axe.Op                      '-'
+        [5]_.Seed.Axe.Level                       Comp = ... '>' '>='
+          [0]_.Seed.Nonterminal.Base              Comp
+          [1]_.Seed.Axe.Assoc                     ltr
+          [2]_.Seed.Axe.Ops                       infix '==' ... '>' '>='
+            [0]_.Seed.Axe.OpType                  infix
+            [1]_.Seed.Axe.Op                      '=='
+            [2]_.Seed.Axe.Op                      '<='
+            [3]_.Seed.Axe.Op                      '<'
+            [4]_.Seed.Axe.Op                      '>'
+            [5]_.Seed.Axe.Op                      '>='
+        [6]_.Seed.Axe.Level                       Logic = ... 'and' 'or'
+          [0]_.Seed.Nonterminal.Base              Logic
+          [1]_.Seed.Axe.Assoc                     ltr
+          [2]_.Seed.Axe.Ops                       infix 'and' 'or'
+            [0]_.Seed.Axe.OpType                  infix
+            [1]_.Seed.Axe.Op                      'and'
+            [2]_.Seed.Axe.Op                      'or'
+        [7]_.Seed.Axe.Level                       Assign = ... '+=' '-='
+          [0]_.Seed.Nonterminal.Base              Assign
+          [1]_.Seed.Axe.Assoc                     rtl
+          [2]_.Seed.Axe.Ops                       infix '=' '+=' '-='
+            [0]_.Seed.Axe.OpType                  infix
+            [1]_.Seed.Axe.Op                      '='
+            [2]_.Seed.Axe.Op                      '+='
+            [3]_.Seed.Axe.Op                      '-='
+  [22]_.Seed.Rule                                 Atom = ... | StructValue
+    [0]_.Seed.Nonterminal                         Atom
+      [0]_.Seed.Nonterminal.Base                  Atom
+    [1]_.Seed.ExprOrAlias                         = identifier ... | StructValue
+      [0]_.Seed.Expr.Or.|                         identifier | ... | StructValue
+        [0]_.Seed.Terminal                        identifier
+        [1]_.Seed.Terminal                        string
+        [2]_.Seed.Terminal                        number
+        [3]_.Seed.NonterminalMaybeVar             StructValue
+          [0]_.Seed.Nonterminal                   StructValue
+            [0]_.Seed.Nonterminal.Base            StructValue
+
+[0]_.Somelang                                     import interface ... ; }
+  [0]_.Imports                                    
+  [1]_.Interface                                  namespace std ... ] proto
+    [0]_.Command                                  namespace std
+      [0]_.NestedNamespace                        std
+        [0]_.Namespace                            std
+    [1]_.Command                                  func sin_f ... f64_t proto
+      [0]_.FuncDefn                               func sin_f ... f64_t proto
+        [0]_.FuncName                             sin_f
+        [1]_.FuncHeader                           f64_t -> f64_t
+          [0]_.TypeName                           f64_t
+          [1]_.TypeName                           f64_t
+    [2]_.Command                                  func little_gauss_f ... i32_t proto
+      [0]_.FuncDefn                               func little_gauss_f ... i32_t proto
+        [0]_.FuncName                             little_gauss_f
+        [1]_.FuncHeader                           i32_t -> i32_t
+          [0]_.TypeName                           i32_t
+          [1]_.TypeName                           i32_t
+    [3]_.Command                                  type i32_pair_t ... , ]
+      [0]_.TypeDefn                               type i32_pair_t ... , ]
+        [0]_.TypeName                             i32_pair_t
+        [1]_.TypeName                             [ first ... , ]
+          [0]_.StructBody                         [ first ... , ]
+            [0]_.MemberName                       first
+            [1]_.Type.Ptr.*                       * i32_t
+              [0]_.TypeName                       i32_t
+            [2]_.MemberName                       second
+            [3]_.TypeName                         i32_t
+    [4]_.Command                                  func foo_f ... i32_t proto
+      [0]_.FuncDefn                               func foo_f ... i32_t proto
+        [0]_.FuncName                             foo_f
+        [1]_.FuncHeader                           i32_pair_t -> i32_t
+          [0]_.TypeName                           i32_pair_t
+          [1]_.TypeName                           i32_t
+    [5]_.Command                                  func bar_f ... ] proto
+      [0]_.FuncDefn                               func bar_f ... ] proto
+        [0]_.FuncName                             bar_f
+        [1]_.FuncHeader                           [ ] -> [ ]
+          [0]_.TypeName                           [ ]
+            [0]_.StructBody                       [ ]
+          [1]_.TypeName                           [ ]
+            [0]_.StructBody                       [ ]
+    [6]_.Command                                  func main_f ... i32_t proto
+      [0]_.FuncDefn                               func main_f ... i32_t proto
+        [0]_.FuncName                             main_f
+        [1]_.FuncHeader                           [ i32_t ... -> i32_t
+          [0]_.TypeName                           [ i32_t ... , ]
+            [0]_.StructBody                       [ i32_t ... , ]
+              [0]_.TypeName                       i32_t
+              [1]_.MemberName                     other
+              [2]_.TypeName                       i32_t
+          [1]_.TypeName                           i32_t
+    [7]_.Command                                  func test_f ... ] proto
+      [0]_.FuncDefn                               func test_f ... ] proto
+        [0]_.FuncName                             test_f
+        [1]_.FuncHeader                           [ i32_t , ]
+          [0]_.TypeName                           [ i32_t , ]
+            [0]_.StructBody                       [ i32_t , ]
+              [0]_.TypeName                       i32_t
+  [2]_.Implementation                             func little_gauss_f ... ; }
+    [0]_.Command                                  func little_gauss_f ... ; }
+      [0]_.FuncDefn                               func little_gauss_f ... ; }
+        [0]_.FuncName                             little_gauss_f
+        [1]_.FuncHeader                           -*-
+        [2]_.FuncBody                             { retval ... ; }
+          [0]_.Expr.Assign.=                      retval = 0
+            [0]_.Atom                             retval
+            [1]_.Atom                             0
+          [1]_.Expr.Assign.=                      i = 0
+            [0]_.Atom                             i
+            [1]_.Atom                             0
+          [2]_.StmtLoop                           loop { ... ; }
+            [0]_.FuncBody                         { i ... ; }
+              [0]_.Expr.Assign.+=                 i += 1
+                [0]_.Atom                         i
+                [1]_.Atom                         1
+              [1]_.Expr.Assign.+=                 retval += i
+                [0]_.Atom                         retval
+                [1]_.Atom                         i
+              [2]_.StmtIf                         if ( ... ; }
+                [0]_.Expr.Comp.>=                 i >= arg
+                  [0]_.Atom                       i
+                  [1]_.Atom                       arg
+                [1]_.FuncBody                     { break ; }
+                  [0]_.Atom                       break
+    [1]_.Command                                  func foo_f ... ; }
+      [0]_.FuncDefn                               func foo_f ... ; }
+        [0]_.FuncName                             foo_f
+        [1]_.FuncHeader                           -*-
+        [2]_.FuncBody                             { if ... ; }
+          [0]_.StmtIf                             if ( ... ; }
+            [0]_.Expr.Comp.<                      a < 0
+              [0]_.Atom                           a
+              [1]_.Atom                           0
+            [1]_.FuncBody                         { retval ... ; }
+              [0]_.Expr.Assign.=                  retval = first * second
+                [0]_.Atom                         retval
+                [1]_.Expr.Mul.*                   first * second
+                  [0]_.Atom                       first
+                  [1]_.Atom                       second
+            [2]_.StmtIf                           if ( ... ; }
+              [0]_.Expr.Comp.>                    b > 0
+                [0]_.Atom                         b
+                [1]_.Atom                         0
+              [1]_.FuncBody                       { retval ... ; }
+                [0]_.Expr.Assign.=                retval = first + second
+                  [0]_.Atom                       retval
+                  [1]_.Expr.Add.+                 first + second
+                    [0]_.Atom                     first
+                    [1]_.Atom                     second
+              [2]_.FuncBody                       { retval ... ; }
+                [0]_.Expr.Assign.=                retval = first - second
+                  [0]_.Atom                       retval
+                  [1]_.Expr.Add.-                 first - second
+                    [0]_.Atom                     first
+                    [1]_.Atom                     second
+          [1]_.StmtIf                             if ( ... ; }
+            [0]_.Expr.Comp.>                      a > b
+              [0]_.Atom                           a
+              [1]_.Atom                           b
+            [1]_.FuncBody                         { retval ... ; }
+              [0]_.Expr.Assign.=                  retval = first or second
+                [0]_.Atom                         retval
+                [1]_.Expr.Logic.or                first or second
+                  [0]_.Atom                       first
+                  [1]_.Atom                       second
+          [2]_.Expr.Assign.=                      retval = 42
+            [0]_.Atom                             retval
+            [1]_.Atom                             42
+    [2]_.Command                                  func main_f ... ; }
+      [0]_.FuncDefn                               func main_f ... ; }
+        [0]_.FuncName                             main_f
+        [1]_.FuncHeader                           -*-
+        [2]_.FuncBody                             { retval ... ; }
+          [0]_.Expr.Assign.=                      retval = ... , ]
+            [0]_.Atom                             retval
+            [1]_.Atom                             [ arg ... , ]
+              [0]_.StructValue                    [ arg ... , ]
+                [0]_.Expr.Member..                arg . 0
+                  [0]_.Atom                       arg
+                  [1]_.Atom                       0
+                [1]_.Expr.Member..                arg . 1
+                  [0]_.Atom                       arg
+                  [1]_.Atom                       1
+          [1]_.Expr.Assign.=                      retval = 2
+            [0]_.Atom                             retval
+            [1]_.Atom                             2
+          [2]_.Expr.Assign.=                      getval = ... , ]
+            [0]_.Atom                             getval
+            [1]_.Atom                             [ 10 ... , ]
+              [0]_.StructValue                    [ 10 ... , ]
+                [0]_.Atom                         10
+                [1]_.Atom                         100
+    [3]_.Command                                  func test_f ... ; }
+      [0]_.FuncDefn                               func test_f ... ; }
+        [0]_.FuncName                             test_f
+        [1]_.FuncHeader                           -*-
+        [2]_.FuncBody                             { [ ... ; }
+          [0]_.Expr.Call.|                        [ 10 ... . foo
+            [0]_.Atom                             [ 10 ... , ]
+              [0]_.StructValue                    [ 10 ... , ]
+                [0]_.Atom                         10
+                [1]_.Atom                         100
+            [1]_.Expr.Member..                    std . foo
+              [0]_.Atom                           std
+              [1]_.Atom                           foo
+          [1]_.Expr.Call.|                        ( [ ... | assert
+            [0]_.Expr.Parens.(                    ( [ ... 110 )
+              [0]_.Expr.Comp.==                   [ 10 ... == 110
+                [0]_.Expr.Call.|                  [ 10 ... . foo
+                  [0]_.Atom                       [ 10 ... , ]
+                    [0]_.StructValue              [ 10 ... , ]
+                      [0]_.Atom                   10
+                      [1]_.Atom                   100
+                  [1]_.Expr.Member..              std . foo
+                    [0]_.Atom                     std
+                    [1]_.Atom                     foo
+                [1]_.Atom                         110
+            [1]_.Atom                             assert
+          [2]_.Expr.Call.|                        ( [ ... | assert
+            [0]_.Expr.Parens.(                    ( [ ... 320 )
+              [0]_.Expr.Comp.==                   [ 20 ... == 320
+                [0]_.Expr.Call.|                  [ 20 ... . foo
+                  [0]_.Atom                       [ 20 ... , ]
+                    [0]_.StructValue              [ 20 ... , ]
+                      [0]_.Atom                   20
+                      [1]_.Atom                   300
+                  [1]_.Expr.Member..              std . foo
+                    [0]_.Atom                     std
+                    [1]_.Atom                     foo
+                [1]_.Atom                         320
+            [1]_.Atom                             assert
+

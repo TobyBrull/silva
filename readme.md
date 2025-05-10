@@ -32,6 +32,11 @@ conda install --name silva-clang --channel conda-forge \
     clangxx=19 clang-tools=19 compiler-rt=19 compiler-rt_linux-64=19
 eval "$(conda shell.bash hook)"
 conda activate silva-clang
+
+rm -rf build/
+cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+ninja -C build/
+ctest --test-dir build/cpp/
 ```
 
 ```bash
