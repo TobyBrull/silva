@@ -40,15 +40,16 @@ cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang
 ninja -C build/
 ninja -C build/ && ./build/cpp/silva_test
 
-ninja -C build/ && ./build/cpp/silva_tokenization silva/syntax/simple.fern
+ninja -C build/ && ./build/cpp/silva_tokenization silva/syntax/01-simple.fern
 
-ninja -C build/ && ./build/cpp/silva_fern silva/syntax/simple.fern
-ninja -C build/ && ./build/cpp/silva_fern silva/syntax/broken.fern
-ninja -C build/ && time ./build/cpp/silva_fern silva/syntax/large.fern --process=none --seed-engine=false
-ninja -C build/ && time ./build/cpp/silva_fern silva/syntax/large.fern --process=none --seed-engine=true
+ninja -C build/ && ./build/cpp/silva_fern silva/syntax/01-simple.fern
+ninja -C build/ && ./build/cpp/silva_fern silva/syntax/01-broken.fern
+ninja -C build/ && time ./build/cpp/silva_fern silva/syntax/01-large.fern --process=none --seed-engine=false
+ninja -C build/ && time ./build/cpp/silva_fern silva/syntax/01-large.fern --process=none --seed-engine=true
 
-ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/simplest.fern
-ninja -C build/ && SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/simplest.fern --action=none
-ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/test.silva
-ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/somelang.seed silva/syntax/test.somelang
+ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/01-simplest.fern
+ninja -C build/ && SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --action=none
+
+ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/02-test.silva
+ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
 ```
