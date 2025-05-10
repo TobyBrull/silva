@@ -1,5 +1,7 @@
 # TODO
 
+* Rename "Seed" to "Root" or "Tree" ?
+
 ## Long Term
 
 * Seed
