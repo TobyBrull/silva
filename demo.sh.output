@@ -417,3 +417,514 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
   [0]_.Somelang.As                                a a a a
   [1]_.Somelang.Bs                                b b b
 
+[0]_.Silva                                        <$ Seed ... ] $>
+  [0]_.Silva.Section                              <$ Seed ... ] $>
+    [0]_.Seed.Nonterminal                         Seed
+      [0]_.Seed.Nonterminal.Base                  Seed
+    [1]_.Seed                                     - Soil ... ] ]
+      [0]_.Seed.Rule                              Soil = ... ] ]
+        [0]_.Seed.Nonterminal                     Soil
+          [0]_.Seed.Nonterminal.Base              Soil
+        [1]_.Seed                                 - x ... Expr ]
+          [0]_.Seed.Rule                          x = ... ) *
+            [0]_.Seed.Nonterminal                 x
+              [0]_.Seed.Nonterminal.Base          x
+            [1]_.Seed.ExprOrAlias                 = ( ... ) *
+              [0]_.Seed.Expr.Postfix.*            ( Type ... ) *
+                [0]_.Seed.Expr.Parens.(           ( Type ... Defn )
+                  [0]_.Seed.Expr.Or.|             Type . ... . Defn
+                    [0]_.Seed.NonterminalMaybeVar Type . Defn
+                      [0]_.Seed.Nonterminal       Type . Defn
+                        [0]_.Seed.Nonterminal.Base Type
+                        [1]_.Seed.Nonterminal.Base Defn
+                    [1]_.Seed.NonterminalMaybeVar Func . Defn
+                      [0]_.Seed.Nonterminal       Func . Defn
+                        [0]_.Seed.Nonterminal.Base Func
+                        [1]_.Seed.Nonterminal.Base Defn
+                    [2]_.Seed.NonterminalMaybeVar Variable . Defn
+                      [0]_.Seed.Nonterminal       Variable . Defn
+                        [0]_.Seed.Nonterminal.Base Variable
+                        [1]_.Seed.Nonterminal.Base Defn
+          [1]_.Seed.Rule                          Type = ... ] ]
+            [0]_.Seed.Nonterminal                 Type
+              [0]_.Seed.Nonterminal.Base          Type
+            [1]_.Seed                             - x ... ] ]
+              [0]_.Seed.Rule                      x = Name | Struct
+                [0]_.Seed.Nonterminal             x
+                  [0]_.Seed.Nonterminal.Base      x
+                [1]_.Seed.ExprOrAlias             = Name | Struct
+                  [0]_.Seed.Expr.Or.|             Name | Struct
+                    [0]_.Seed.NonterminalMaybeVar Name
+                      [0]_.Seed.Nonterminal       Name
+                        [0]_.Seed.Nonterminal.Base Name
+                    [1]_.Seed.NonterminalMaybeVar Struct
+                      [0]_.Seed.Nonterminal       Struct
+                        [0]_.Seed.Nonterminal.Base Struct
+              [1]_.Seed.Rule                      Name = identifier / '_t$'
+                [0]_.Seed.Nonterminal             Name
+                  [0]_.Seed.Nonterminal.Base      Name
+                [1]_.Seed.ExprOrAlias             = identifier / '_t$'
+                  [0]_.Seed.Terminal              identifier / '_t$'
+              [2]_.Seed.Rule                      Defn = Name '=' x
+                [0]_.Seed.Nonterminal             Defn
+                  [0]_.Seed.Nonterminal.Base      Defn
+                [1]_.Seed.ExprOrAlias             = Name '=' x
+                  [0]_.Seed.Expr.Concat.concat    Name '=' x
+                    [0]_.Seed.NonterminalMaybeVar Name
+                      [0]_.Seed.Nonterminal       Name
+                        [0]_.Seed.Nonterminal.Base Name
+                    [1]_.Seed.Terminal            '='
+                    [2]_.Seed.NonterminalMaybeVar x
+                      [0]_.Seed.Nonterminal       x
+                        [0]_.Seed.Nonterminal.Base x
+              [3]_.Seed.Rule                      Struct = ... ] ]
+                [0]_.Seed.Nonterminal             Struct
+                  [0]_.Seed.Nonterminal.Base      Struct
+                [1]_.Seed                         - x ... identifier ]
+                  [0]_.Seed.Rule                  x = ... * ']'
+                    [0]_.Seed.Nonterminal         x
+                      [0]_.Seed.Nonterminal.Base  x
+                    [1]_.Seed.ExprOrAlias         = '[' Member * ']'
+                      [0]_.Seed.Expr.Concat.concat '[' Member * ']'
+                        [0]_.Seed.Terminal        '['
+                        [1]_.Seed.Expr.Postfix.*  Member *
+                          [0]_.Seed.NonterminalMaybeVar Member
+                            [0]_.Seed.Nonterminal Member
+                              [0]_.Seed.Nonterminal.Base Member
+                        [2]_.Seed.Terminal        ']'
+                  [1]_.Seed.Rule                  Member = ... identifier ]
+                    [0]_.Seed.Nonterminal         Member
+                      [0]_.Seed.Nonterminal.Base  Member
+                    [1]_.Seed                     - x ... = identifier
+                      [0]_.Seed.Rule              x = ... ) ?
+                        [0]_.Seed.Nonterminal     x
+                          [0]_.Seed.Nonterminal.Base x
+                        [1]_.Seed.ExprOrAlias     = p ... ) ?
+                          [0]_.Seed.Expr.Concat.concat p . ... ) ?
+                            [0]_.Seed.NonterminalMaybeVar p . p
+                              [0]_.Seed.Nonterminal p . p
+                                [0]_.Seed.Nonterminal.Base p
+                                [1]_.Seed.Nonterminal.Base p
+                            [1]_.Seed.Expr.Postfix.? ( ':' Name ) ?
+                              [0]_.Seed.Expr.Parens.( ( ':' Name )
+                                [0]_.Seed.Expr.Concat.concat ':' Name
+                                  [0]_.Seed.Terminal ':'
+                                  [1]_.Seed.NonterminalMaybeVar Name
+                                    [0]_.Seed.Nonterminal Name
+                                      [0]_.Seed.Nonterminal.Base Name
+                      [1]_.Seed.Rule              Name = identifier
+                        [0]_.Seed.Nonterminal     Name
+                          [0]_.Seed.Nonterminal.Base Name
+                        [1]_.Seed.ExprOrAlias     = identifier
+                          [0]_.Seed.Terminal      identifier
+          [2]_.Seed.Rule                          Expr = ... ] ]
+            [0]_.Seed.Nonterminal                 Expr
+              [0]_.Seed.Nonterminal.Base          Expr
+            [1]_.Seed                             - x ... ) ]
+              [0]_.Seed.Rule                      x = Axe
+                [0]_.Seed.Nonterminal             x
+                  [0]_.Seed.Nonterminal.Base      x
+                [1]_.Seed.ExprOrAlias             = Axe
+                  [0]_.Seed.NonterminalMaybeVar   Axe
+                    [0]_.Seed.Nonterminal         Axe
+                      [0]_.Seed.Nonterminal.Base  Axe
+              [1]_.Seed.Rule                      Axe =/ ... '*=' ]
+                [0]_.Seed.Nonterminal             Axe
+                  [0]_.Seed.Nonterminal.Base      Axe
+                [1]_.Seed.AxeWithAtom             Atom [ ... '*=' ]
+                  [0]_.Seed.Nonterminal           Atom
+                    [0]_.Seed.Nonterminal.Base    Atom
+                  [1]_.Seed.Axe                   [ - ... '*=' ]
+                    [0]_.Seed.Axe.Level           Parens = ... '(' ')'
+                      [0]_.Seed.Nonterminal.Base  Parens
+                      [1]_.Seed.Axe.Assoc         nest
+                      [2]_.Seed.Axe.Ops           atom_nest '(' ')'
+                        [0]_.Seed.Axe.OpType      atom_nest
+                        [1]_.Seed.Axe.Op          '('
+                        [2]_.Seed.Axe.Op          ')'
+                    [1]_.Seed.Axe.Level           Member = ltr infix '.'
+                      [0]_.Seed.Nonterminal.Base  Member
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           infix '.'
+                        [0]_.Seed.Axe.OpType      infix
+                        [1]_.Seed.Axe.Op          '.'
+                    [2]_.Seed.Axe.Level           CallPost = ... '(' ')'
+                      [0]_.Seed.Nonterminal.Base  CallPost
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           postfix_nest '(' ')'
+                        [0]_.Seed.Axe.OpType      postfix_nest
+                        [1]_.Seed.Axe.Op          '('
+                        [2]_.Seed.Axe.Op          ')'
+                    [3]_.Seed.Axe.Level           Typing = ltr infix '::'
+                      [0]_.Seed.Nonterminal.Base  Typing
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           infix '::'
+                        [0]_.Seed.Axe.OpType      infix
+                        [1]_.Seed.Axe.Op          '::'
+                    [4]_.Seed.Axe.Level           CallPipe = ltr infix '|'
+                      [0]_.Seed.Nonterminal.Base  CallPipe
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           infix '|'
+                        [0]_.Seed.Axe.OpType      infix
+                        [1]_.Seed.Axe.Op          '|'
+                    [5]_.Seed.Axe.Level           Mul = ... '*' '//'
+                      [0]_.Seed.Nonterminal.Base  Mul
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           infix '*' '//'
+                        [0]_.Seed.Axe.OpType      infix
+                        [1]_.Seed.Axe.Op          '*'
+                        [2]_.Seed.Axe.Op          '//'
+                    [6]_.Seed.Axe.Level           Add = ... '+' '-'
+                      [0]_.Seed.Nonterminal.Base  Add
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           infix '+' '-'
+                        [0]_.Seed.Axe.OpType      infix
+                        [1]_.Seed.Axe.Op          '+'
+                        [2]_.Seed.Axe.Op          '-'
+                    [7]_.Seed.Axe.Level           Comp = ... '>' '>='
+                      [0]_.Seed.Nonterminal.Base  Comp
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           infix '==' ... '>' '>='
+                        [0]_.Seed.Axe.OpType      infix
+                        [1]_.Seed.Axe.Op          '=='
+                        [2]_.Seed.Axe.Op          '<='
+                        [3]_.Seed.Axe.Op          '<'
+                        [4]_.Seed.Axe.Op          '>'
+                        [5]_.Seed.Axe.Op          '>='
+                    [8]_.Seed.Axe.Level           Logic = ... 'and' 'or'
+                      [0]_.Seed.Nonterminal.Base  Logic
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           infix 'and' 'or'
+                        [0]_.Seed.Axe.OpType      infix
+                        [1]_.Seed.Axe.Op          'and'
+                        [2]_.Seed.Axe.Op          'or'
+                    [9]_.Seed.Axe.Level           Assign = ... '+=' '*='
+                      [0]_.Seed.Nonterminal.Base  Assign
+                      [1]_.Seed.Axe.Assoc         ltr
+                      [2]_.Seed.Axe.Ops           infix '=' '+=' '*='
+                        [0]_.Seed.Axe.OpType      infix
+                        [1]_.Seed.Axe.Op          '='
+                        [2]_.Seed.Axe.Op          '+='
+                        [3]_.Seed.Axe.Op          '*='
+              [2]_.Seed.Rule                      Atom = ... | 'none'
+                [0]_.Seed.Nonterminal             Atom
+                  [0]_.Seed.Nonterminal.Base      Atom
+                [1]_.Seed.ExprOrAlias             = identifier ... | 'none'
+                  [0]_.Seed.Expr.Or.|             identifier | ... | 'none'
+                    [0]_.Seed.Terminal            identifier
+                    [1]_.Seed.Terminal            string
+                    [2]_.Seed.Terminal            number
+                    [3]_.Seed.NonterminalMaybeVar Struct
+                      [0]_.Seed.Nonterminal       Struct
+                        [0]_.Seed.Nonterminal.Base Struct
+                    [4]_.Seed.Terminal            'true'
+                    [5]_.Seed.Terminal            'false'
+                    [6]_.Seed.Terminal            'none'
+              [3]_.Seed.Rule                      Struct = ... ) ]
+                [0]_.Seed.Nonterminal             Struct
+                  [0]_.Seed.Nonterminal.Base      Struct
+                [1]_.Seed                         - x ... p )
+                  [0]_.Seed.Rule                  x = ... * ']'
+                    [0]_.Seed.Nonterminal         x
+                      [0]_.Seed.Nonterminal.Base  x
+                    [1]_.Seed.ExprOrAlias         = '[' LabeledItem * ']'
+                      [0]_.Seed.Expr.Concat.concat '[' LabeledItem * ']'
+                        [0]_.Seed.Terminal        '['
+                        [1]_.Seed.Expr.Postfix.*  LabeledItem *
+                          [0]_.Seed.NonterminalMaybeVar LabeledItem
+                            [0]_.Seed.Nonterminal LabeledItem
+                              [0]_.Seed.Nonterminal.Base LabeledItem
+                        [2]_.Seed.Terminal        ']'
+                  [1]_.Seed.Rule                  LabeledItem = ... p )
+                    [0]_.Seed.Nonterminal         LabeledItem
+                      [0]_.Seed.Nonterminal.Base  LabeledItem
+                    [1]_.Seed.ExprOrAlias         = ( ... p )
+                      [0]_.Seed.Expr.Concat.concat ( _ ... p )
+                        [0]_.Seed.Expr.Postfix.?  ( _ ... ) ?
+                          [0]_.Seed.Expr.Parens.( ( _ ... ':' )
+                            [0]_.Seed.Expr.Concat.concat _ . ... Name ':'
+                              [0]_.Seed.NonterminalMaybeVar _ . ... . Name
+                                [0]_.Seed.Nonterminal _ . ... . Name
+                                  [0]_.Seed.Nonterminal.Base _
+                                  [1]_.Seed.Nonterminal.Base Soil
+                                  [2]_.Seed.Nonterminal.Base Variable
+                                  [3]_.Seed.Nonterminal.Base Name
+                              [1]_.Seed.Terminal  ':'
+                        [1]_.Seed.Expr.Parens.(   ( x | p )
+                          [0]_.Seed.Expr.Or.|     x | p
+                            [0]_.Seed.NonterminalMaybeVar x
+                              [0]_.Seed.Nonterminal x
+                                [0]_.Seed.Nonterminal.Base x
+                            [1]_.Seed.NonterminalMaybeVar p
+                              [0]_.Seed.Nonterminal p
+                                [0]_.Seed.Nonterminal.Base p
+          [3]_.Seed.Rule                          Func = ... ';' ]
+            [0]_.Seed.Nonterminal                 Func
+              [0]_.Seed.Nonterminal.Base          Func
+            [1]_.Seed                             - x ... Expr ';'
+              [0]_.Seed.Rule                      x = Name
+                [0]_.Seed.Nonterminal             x
+                  [0]_.Seed.Nonterminal.Base      x
+                [1]_.Seed.ExprOrAlias             = Name
+                  [0]_.Seed.NonterminalMaybeVar   Name
+                    [0]_.Seed.Nonterminal         Name
+                      [0]_.Seed.Nonterminal.Base  Name
+              [1]_.Seed.Rule                      Name = identifier / '_f$'
+                [0]_.Seed.Nonterminal             Name
+                  [0]_.Seed.Nonterminal.Base      Name
+                [1]_.Seed.ExprOrAlias             = identifier / '_f$'
+                  [0]_.Seed.Terminal              identifier / '_f$'
+              [2]_.Seed.Rule                      Defn = ... Signature Body
+                [0]_.Seed.Nonterminal             Defn
+                  [0]_.Seed.Nonterminal.Base      Defn
+                [1]_.Seed.ExprOrAlias             = Name '=' Signature Body
+                  [0]_.Seed.Expr.Concat.concat    Name '=' Signature Body
+                    [0]_.Seed.NonterminalMaybeVar Name
+                      [0]_.Seed.Nonterminal       Name
+                        [0]_.Seed.Nonterminal.Base Name
+                    [1]_.Seed.Terminal            '='
+                    [2]_.Seed.NonterminalMaybeVar Signature
+                      [0]_.Seed.Nonterminal       Signature
+                        [0]_.Seed.Nonterminal.Base Signature
+                    [3]_.Seed.NonterminalMaybeVar Body
+                      [0]_.Seed.Nonterminal       Body
+                        [0]_.Seed.Nonterminal.Base Body
+              [3]_.Seed.Rule                      Signature = ... ) ?
+                [0]_.Seed.Nonterminal             Signature
+                  [0]_.Seed.Nonterminal.Base      Signature
+                [1]_.Seed.ExprOrAlias             = p ... ) ?
+                  [0]_.Seed.Expr.Concat.concat    p . ... ) ?
+                    [0]_.Seed.NonterminalMaybeVar p . Type
+                      [0]_.Seed.Nonterminal       p . Type
+                        [0]_.Seed.Nonterminal.Base p
+                        [1]_.Seed.Nonterminal.Base Type
+                    [1]_.Seed.Expr.Postfix.?      ( '->' ... ) ?
+                      [0]_.Seed.Expr.Parens.(     ( '->' ... Type )
+                        [0]_.Seed.Expr.Concat.concat '->' p . Type
+                          [0]_.Seed.Terminal      '->'
+                          [1]_.Seed.NonterminalMaybeVar p . Type
+                            [0]_.Seed.Nonterminal p . Type
+                              [0]_.Seed.Nonterminal.Base p
+                              [1]_.Seed.Nonterminal.Base Type
+              [4]_.Seed.Rule                      Body = ... * '}'
+                [0]_.Seed.Nonterminal             Body
+                  [0]_.Seed.Nonterminal.Base      Body
+                [1]_.Seed.ExprOrAlias             = '{' Stmt * '}'
+                  [0]_.Seed.Expr.Concat.concat    '{' Stmt * '}'
+                    [0]_.Seed.Terminal            '{'
+                    [1]_.Seed.Expr.Postfix.*      Stmt *
+                      [0]_.Seed.NonterminalMaybeVar Stmt
+                        [0]_.Seed.Nonterminal     Stmt
+                          [0]_.Seed.Nonterminal.Base Stmt
+                    [2]_.Seed.Terminal            '}'
+              [5]_.Seed.Rule                      Stmt = ... Expr ';'
+                [0]_.Seed.Nonterminal             Stmt
+                  [0]_.Seed.Nonterminal.Base      Stmt
+                [1]_.Seed.ExprOrAlias             = p . Expr ';'
+                  [0]_.Seed.Expr.Concat.concat    p . Expr ';'
+                    [0]_.Seed.NonterminalMaybeVar p . Expr
+                      [0]_.Seed.Nonterminal       p . Expr
+                        [0]_.Seed.Nonterminal.Base p
+                        [1]_.Seed.Nonterminal.Base Expr
+                    [1]_.Seed.Terminal            ';'
+          [4]_.Seed.Rule                          Variable = ... Expr ]
+            [0]_.Seed.Nonterminal                 Variable
+              [0]_.Seed.Nonterminal.Base          Variable
+            [1]_.Seed                             - Name ... . Expr
+              [0]_.Seed.Rule                      Name = ... but_then identifier
+                [0]_.Seed.Nonterminal             Name
+                  [0]_.Seed.Nonterminal.Base      Name
+                [1]_.Seed.ExprOrAlias             = not ... but_then identifier
+                  [0]_.Seed.Expr.And.but_then     not p ... but_then identifier
+                    [0]_.Seed.Expr.Prefix.not     not p ... . Name
+                      [0]_.Seed.NonterminalMaybeVar p . Type . Name
+                        [0]_.Seed.Nonterminal     p . Type . Name
+                          [0]_.Seed.Nonterminal.Base p
+                          [1]_.Seed.Nonterminal.Base Type
+                          [2]_.Seed.Nonterminal.Base Name
+                    [1]_.Seed.Expr.Prefix.not     not p ... . Name
+                      [0]_.Seed.NonterminalMaybeVar p . Func . Name
+                        [0]_.Seed.Nonterminal     p . Func . Name
+                          [0]_.Seed.Nonterminal.Base p
+                          [1]_.Seed.Nonterminal.Base Func
+                          [2]_.Seed.Nonterminal.Base Name
+                    [2]_.Seed.Terminal            identifier
+              [1]_.Seed.Rule                      Defn = ... . Expr
+                [0]_.Seed.Nonterminal             Defn
+                  [0]_.Seed.Nonterminal.Base      Defn
+                [1]_.Seed.ExprOrAlias             = Name ... . Expr
+                  [0]_.Seed.Expr.Concat.concat    Name '=' p . Expr
+                    [0]_.Seed.NonterminalMaybeVar Name
+                      [0]_.Seed.Nonterminal       Name
+                        [0]_.Seed.Nonterminal.Base Name
+                    [1]_.Seed.Terminal            '='
+                    [2]_.Seed.NonterminalMaybeVar p . Expr
+                      [0]_.Seed.Nonterminal       p . Expr
+                        [0]_.Seed.Nonterminal.Base p
+                        [1]_.Seed.Nonterminal.Base Expr
+
+[0]_.Silva                                        <$ Soil ... } $>
+  [0]_.Silva.Section                              <$ Soil ... } $>
+    [0]_.Seed.Nonterminal                         Soil
+      [0]_.Seed.Nonterminal.Base                  Soil
+    [1]_.Soil                                     name_t = ... ; }
+      [0]_.Soil.Type.Defn                         name_t = str_t
+        [0]_.Soil.Type.Name                       name_t
+        [1]_.Soil.Type                            str_t
+          [0]_.Soil.Type.Name                     str_t
+      [1]_.Soil.Type.Defn                         age_t = i32_t
+        [0]_.Soil.Type.Name                       age_t
+        [1]_.Soil.Type                            i32_t
+          [0]_.Soil.Type.Name                     i32_t
+      [2]_.Soil.Type.Defn                         person_t = ... age ]
+        [0]_.Soil.Type.Name                       person_t
+        [1]_.Soil.Type                            [ [ ... age ]
+          [0]_.Soil.Type.Struct                   [ [ ... age ]
+            [0]_.Soil.Type.Struct.Member          [ name_t ... : name
+              [0]_.Soil.Type                      [ name_t ... last ]
+                [0]_.Soil.Type.Struct             [ name_t ... last ]
+                  [0]_.Soil.Type.Struct.Member    name_t : first
+                    [0]_.Soil.Type                name_t
+                      [0]_.Soil.Type.Name         name_t
+                    [1]_.Soil.Type.Struct.Member.Name first
+                  [1]_.Soil.Type.Struct.Member    name_t : last
+                    [0]_.Soil.Type                name_t
+                      [0]_.Soil.Type.Name         name_t
+                    [1]_.Soil.Type.Struct.Member.Name last
+              [1]_.Soil.Type.Struct.Member.Name   name
+            [1]_.Soil.Type.Struct.Member          age_t : age
+              [0]_.Soil.Type                      age_t
+                [0]_.Soil.Type.Name               age_t
+              [1]_.Soil.Type.Struct.Member.Name   age
+      [3]_.Soil.Variable.Defn                     bs = ... 80 ]
+        [0]_.Soil.Variable.Name                   bs
+        [1]_.Soil.Expr                            person_t :: ... 80 ]
+          [0]_.Soil.Expr.Axe.Typing.::            person_t :: ... 80 ]
+            [0]_.Soil.Expr.Atom                   person_t
+            [1]_.Soil.Expr.Atom                   [ [ ... 80 ]
+              [0]_.Soil.Expr.Struct               [ [ ... 80 ]
+                [0]_.Soil.Expr.Struct.LabeledItem [ 'Bjarne' 'Stroustrup' ]
+                  [0]_.Soil.Expr.Struct           [ 'Bjarne' 'Stroustrup' ]
+                    [0]_.Soil.Expr.Struct.LabeledItem 'Bjarne'
+                      [0]_.Soil.Expr              'Bjarne'
+                        [0]_.Soil.Expr.Atom       'Bjarne'
+                    [1]_.Soil.Expr.Struct.LabeledItem 'Stroustrup'
+                      [0]_.Soil.Expr              'Stroustrup'
+                        [0]_.Soil.Expr.Atom       'Stroustrup'
+                [1]_.Soil.Expr.Struct.LabeledItem 80
+                  [0]_.Soil.Expr                  80
+                    [0]_.Soil.Expr.Atom           80
+      [4]_.Soil.Func.Defn                         is_adult_f = ... ; }
+        [0]_.Soil.Func.Name                       is_adult_f
+        [1]_.Soil.Func.Signature                  person_t -> bool_t
+          [0]_.Soil.Type                          person_t
+            [0]_.Soil.Type.Name                   person_t
+          [1]_.Soil.Type                          bool_t
+            [0]_.Soil.Type.Name                   bool_t
+        [2]_.Soil.Func.Body                       { retval ... ; }
+          [0]_.Soil.Func.Stmt                     retval = ... 18 ;
+            [0]_.Soil.Expr                        retval = ... >= 18
+              [0]_.Soil.Expr.Axe.Assign.=         retval = ... >= 18
+                [0]_.Soil.Expr.Atom               retval
+                [1]_.Soil.Expr.Axe.Comp.>=        arg . age >= 18
+                  [0]_.Soil.Expr.Axe.Member..     arg . age
+                    [0]_.Soil.Expr.Atom           arg
+                    [1]_.Soil.Expr.Atom           age
+                  [1]_.Soil.Expr.Atom             18
+      [5]_.Soil.Func.Defn                         main_f = ... ; }
+        [0]_.Soil.Func.Name                       main_f
+        [1]_.Soil.Func.Signature                  [ ]
+          [0]_.Soil.Type                          [ ]
+            [0]_.Soil.Type.Struct                 [ ]
+        [2]_.Soil.Func.Body                       { age ... ; }
+          [0]_.Soil.Func.Stmt                     age = ... 42 ;
+            [0]_.Soil.Expr                        age = age_t :: 42
+              [0]_.Soil.Expr.Axe.Assign.=         age = age_t :: 42
+                [0]_.Soil.Expr.Atom               age
+                [1]_.Soil.Expr.Axe.Typing.::      age_t :: 42
+                  [0]_.Soil.Expr.Atom             age_t
+                  [1]_.Soil.Expr.Atom             42
+          [1]_.Soil.Func.Stmt                     p1 = ... ] ;
+            [0]_.Soil.Expr                        p1 = ... 20 ]
+              [0]_.Soil.Expr.Axe.Assign.=         p1 = ... 20 ]
+                [0]_.Soil.Expr.Atom               p1
+                [1]_.Soil.Expr.Axe.Typing.::      person_t :: ... 20 ]
+                  [0]_.Soil.Expr.Atom             person_t
+                  [1]_.Soil.Expr.Atom             [ name ... 20 ]
+                    [0]_.Soil.Expr.Struct         [ name ... 20 ]
+                      [0]_.Soil.Expr.Struct.LabeledItem name : ... 'Bobson' ]
+                        [0]_.Soil.Variable.Name   name
+                        [1]_.Soil.Expr.Struct     [ first ... 'Bobson' ]
+                          [0]_.Soil.Expr.Struct.LabeledItem first : 'Bob'
+                            [0]_.Soil.Variable.Name first
+                            [1]_.Soil.Expr        'Bob'
+                              [0]_.Soil.Expr.Atom 'Bob'
+                          [1]_.Soil.Expr.Struct.LabeledItem last : 'Bobson'
+                            [0]_.Soil.Variable.Name last
+                            [1]_.Soil.Expr        'Bobson'
+                              [0]_.Soil.Expr.Atom 'Bobson'
+                      [1]_.Soil.Expr.Struct.LabeledItem age : 20
+                        [0]_.Soil.Variable.Name   age
+                        [1]_.Soil.Expr            20
+                          [0]_.Soil.Expr.Atom     20
+          [2]_.Soil.Func.Stmt                     p2 = ... ] ;
+            [0]_.Soil.Expr                        p2 = ... 30 ]
+              [0]_.Soil.Expr.Axe.Assign.=         p2 = ... 30 ]
+                [0]_.Soil.Expr.Atom               p2
+                [1]_.Soil.Expr.Axe.Typing.::      person_t :: ... 30 ]
+                  [0]_.Soil.Expr.Atom             person_t
+                  [1]_.Soil.Expr.Atom             [ [ ... 30 ]
+                    [0]_.Soil.Expr.Struct         [ [ ... 30 ]
+                      [0]_.Soil.Expr.Struct.LabeledItem [ 'Alice' 'Allison' ]
+                        [0]_.Soil.Expr.Struct     [ 'Alice' 'Allison' ]
+                          [0]_.Soil.Expr.Struct.LabeledItem 'Alice'
+                            [0]_.Soil.Expr        'Alice'
+                              [0]_.Soil.Expr.Atom 'Alice'
+                          [1]_.Soil.Expr.Struct.LabeledItem 'Allison'
+                            [0]_.Soil.Expr        'Allison'
+                              [0]_.Soil.Expr.Atom 'Allison'
+                      [1]_.Soil.Expr.Struct.LabeledItem 30
+                        [0]_.Soil.Expr            30
+                          [0]_.Soil.Expr.Atom     30
+          [3]_.Soil.Func.Stmt                     [ '{} is-adult = {}' ... log_f ;
+            [0]_.Soil.Expr                        [ '{} is-adult = {}' ... | log_f
+              [0]_.Soil.Expr.Axe.CallPipe.|       [ '{} is-adult = {}' ... | log_f
+                [0]_.Soil.Expr.Atom               [ '{} is-adult = {}' ... ) ]
+                  [0]_.Soil.Expr.Struct           [ '{} is-adult = {}' ... ) ]
+                    [0]_.Soil.Expr.Struct.LabeledItem '{} is-adult = {}'
+                      [0]_.Soil.Expr              '{} is-adult = {}'
+                        [0]_.Soil.Expr.Atom       '{} is-adult = {}'
+                    [1]_.Soil.Expr.Struct.LabeledItem p1
+                      [0]_.Soil.Expr              p1
+                        [0]_.Soil.Expr.Atom       p1
+                    [2]_.Soil.Expr.Struct.LabeledItem is_adult_f ( p1 )
+                      [0]_.Soil.Expr              is_adult_f ( p1 )
+                        [0]_.Soil.Expr.Axe.CallPost.( is_adult_f ( p1 )
+                          [0]_.Soil.Expr.Atom     is_adult_f
+                          [1]_.Soil.Expr.Atom     p1
+                [1]_.Soil.Expr.Atom               log_f
+          [4]_.Soil.Func.Stmt                     vector_f ( ... log_f ;
+            [0]_.Soil.Expr                        vector_f ( ... | log_f
+              [0]_.Soil.Expr.Axe.CallPipe.|       vector_f ( ... | log_f
+                [0]_.Soil.Expr.Axe.CallPipe.|     vector_f ( ... 40 )
+                  [0]_.Soil.Expr.Axe.Typing.::    vector_f ( ... p2 ]
+                    [0]_.Soil.Expr.Axe.CallPost.( vector_f ( person_t )
+                      [0]_.Soil.Expr.Atom         vector_f
+                      [1]_.Soil.Expr.Atom         person_t
+                    [1]_.Soil.Expr.Atom           [ p1 p2 ]
+                      [0]_.Soil.Expr.Struct       [ p1 p2 ]
+                        [0]_.Soil.Expr.Struct.LabeledItem p1
+                          [0]_.Soil.Expr          p1
+                            [0]_.Soil.Expr.Atom   p1
+                        [1]_.Soil.Expr.Struct.LabeledItem p2
+                          [0]_.Soil.Expr          p2
+                            [0]_.Soil.Expr.Atom   p2
+                  [1]_.Soil.Expr.Axe.CallPost.(   filter_m ( ... 40 )
+                    [0]_.Soil.Expr.Atom           filter_m
+                    [1]_.Soil.Expr.Axe.Comp.<=    arg . age <= 40
+                      [0]_.Soil.Expr.Axe.Member.. arg . age
+                        [0]_.Soil.Expr.Atom       arg
+                        [1]_.Soil.Expr.Atom       age
+                      [1]_.Soil.Expr.Atom         40
+                [1]_.Soil.Expr.Atom               log_f
+
