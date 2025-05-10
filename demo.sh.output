@@ -617,9 +617,14 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                     [3]_.Seed.NonterminalMaybeVar Struct
                       [0]_.Seed.Nonterminal       Struct
                         [0]_.Seed.Nonterminal.Base Struct
-                    [4]_.Seed.Terminal            'true'
-                    [5]_.Seed.Terminal            'false'
-                    [6]_.Seed.Terminal            'none'
+                    [4]_.Seed.NonterminalMaybeVar _ . Silva . Section
+                      [0]_.Seed.Nonterminal       _ . Silva . Section
+                        [0]_.Seed.Nonterminal.Base _
+                        [1]_.Seed.Nonterminal.Base Silva
+                        [2]_.Seed.Nonterminal.Base Section
+                    [5]_.Seed.Terminal            'true'
+                    [6]_.Seed.Terminal            'false'
+                    [7]_.Seed.Terminal            'none'
               [3]_.Seed.Rule                      Struct = ... ) ]
                 [0]_.Seed.Nonterminal             Struct
                   [0]_.Seed.Nonterminal.Base      Struct
@@ -831,8 +836,8 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                     [0]_.Soil.Expr.Atom           arg
                     [1]_.Soil.Expr.Atom           age
                   [1]_.Soil.Expr.Atom             18
-      [5]_.Soil.Func.Defn                         main_f = ... ; }
-        [0]_.Soil.Func.Name                       main_f
+      [5]_.Soil.Func.Defn                         example_f = ... ; }
+        [0]_.Soil.Func.Name                       example_f
         [1]_.Soil.Func.Signature                  [ ]
           [0]_.Soil.Type                          [ ]
             [0]_.Soil.Type.Struct                 [ ]
@@ -927,4 +932,19 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                         [1]_.Soil.Expr.Atom       age
                       [1]_.Soil.Expr.Atom         40
                 [1]_.Soil.Expr.Atom               log_f
+          [5]_.Soil.Func.Stmt                     <$ Seed ... print_f ;
+            [0]_.Soil.Expr                        <$ Seed ... | print_f
+              [0]_.Soil.Expr.Axe.CallPipe.|       <$ Seed ... | print_f
+                [0]_.Soil.Expr.Atom               <$ Seed ... * $>
+                  [0]_.Silva.Section              <$ Seed ... * $>
+                    [0]_.Seed.Nonterminal         Seed
+                      [0]_.Seed.Nonterminal.Base  Seed
+                    [1]_.Seed                     - SomeRule = identifier *
+                      [0]_.Seed.Rule              SomeRule = identifier *
+                        [0]_.Seed.Nonterminal     SomeRule
+                          [0]_.Seed.Nonterminal.Base SomeRule
+                        [1]_.Seed.ExprOrAlias     = identifier *
+                          [0]_.Seed.Expr.Postfix.* identifier *
+                            [0]_.Seed.Terminal    identifier
+                [1]_.Soil.Expr.Atom               print_f
 

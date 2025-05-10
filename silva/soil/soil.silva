@@ -28,7 +28,7 @@
       - Logic     = ltr infix 'and' 'or'
       - Assign    = ltr infix '=' '+=' '*='
     ]
-    - Atom = identifier | string | number | Struct | 'true' | 'false' | 'none'
+    - Atom = identifier | string | number | Struct | _.Silva.Section | 'true' | 'false' | 'none'
     - Struct = [
       - x = '[' LabeledItem * ']'
       - LabeledItem = ( _.Soil.Variable.Name ':' ) ? ( x | p )
