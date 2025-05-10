@@ -1,0 +1,18 @@
+#include "silva.hpp"
+
+#include "canopy/main.hpp"
+#include "syntax/syntax.hpp"
+
+namespace silva {
+  expected_t<void> silva_main(const span_t<string_view_t> cmdline_args)
+  {
+    SILVA_EXPECT(cmdline_args.size() == 3, MINOR, "Usage: silva <module-folder> <command>");
+    const filesystem_path_t module_folder = cmdline_args[1];
+    const filesystem_path_t command       = cmdline_args[2];
+    expected_traits_t expected_traits{.materialize_fwd = true};
+    syntax_ward_t sw;
+    const auto se = standard_seed_engine(sw.ptr());
+    return {};
+  }
+}
+SILVA_MAIN(silva::silva_main);
