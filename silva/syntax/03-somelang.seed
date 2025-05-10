@@ -1,41 +1,5 @@
-- Somelang = 'import' Imports 'interface' Interface 'implementation' Implementation end_of_file
-- Imports = string *
-- Interface = Command *
-- Implementation = Command *
-
-- Command = 'namespace' NestedNamespace | TypeDefn | FuncDefn
-
-- NestedNamespace = Namespace ( '.' Namespace ) *
-- Namespace = identifier
-
-- TypeName = identifier / '_t$' | StructBody
-- FuncName = identifier / '_f$'
-
-- Type =/ TypeName [
-  - Ptr       = rtl prefix '*' '&'
+- Somelang = [
+  - x = As Bs
+  - As = 'a' *
+  - Bs = 'b' *
 ]
-
-- TypeDefn = 'type' TypeName ':' Type
-- FuncDefn = 'func' FuncName ':' FuncHeader ( 'proto' | FuncBody )
-- FuncHeader = '-*-' | Type ( '->' Type ) ?
-- StructBody = '[' ( ( MemberName ':' ) ? Type ',') * ']'
-- StructValue = '[' ( Expr ',' ) * ']'
-- FuncBody = '{' ( Stmt ';' ) * '}'
-- MemberName = identifier
-
-- Stmt => StmtLoop | StmtIf | Expr | Keyword
-- StmtLoop = 'loop' FuncBody
-- StmtIf = 'if' '(' Expr ')' FuncBody ( 'else' ( StmtIf | FuncBody ) ) ?
-- Keyword = 'break' 'continue'
-
-- Expr =/ Atom [
-  - Parens    = nest atom_nest '(' ')'
-  - Member    = ltr infix '.'
-  - Call      = ltr infix '|'
-  - Mul       = ltr infix '*' '//'
-  - Add       = ltr infix '+' '-'
-  - Comp      = ltr infix '==' '<=' '<' '>' '>='
-  - Logic     = ltr infix 'and' 'or'
-  - Assign    = rtl infix '=' '+=' '-='
-]
-- Atom = identifier | string | number | StructValue

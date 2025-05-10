@@ -12,5 +12,5 @@ time ./build/cpp/silva_fern silva/syntax/01-large.fern --process=none --seed-eng
 ./build/cpp/silva_syntax silva/syntax/01-simplest.fern
 SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --action=none
 
-./build/cpp/silva_syntax silva/syntax/02-test.silva
+./build/cpp/silva_syntax silva/syntax/02-example.silva
 ./build/cpp/silva_syntax silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
