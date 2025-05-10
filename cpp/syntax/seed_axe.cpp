@@ -511,8 +511,15 @@ namespace silva::impl {
 
     struct stack_pair_t {
       vector_t<atom_tree_node_t>* atom_tree = nullptr;
+      parse_tree_nursery_t* nursery         = nullptr;
       vector_t<oper_item_t> oper_stack;
       vector_t<atom_item_t> atom_stack;
+      syntax_ward_ptr_t swp = nursery->swp;
+
+      token_position_t token_position_by(index_t token_index_offset = 0) const
+      {
+        return nursery->token_position_by(token_index_offset);
+      }
 
       struct consistent_range_t {
         index_t num_atoms          = 0;
@@ -535,7 +542,12 @@ namespace silva::impl {
         }
         SILVA_EXPECT(common_arity >= 1, ASSERT);
         const index_t combined_arity = (common_arity - 1) * ois.size() + 1;
-        SILVA_EXPECT(combined_arity <= atom_stack.size(), MINOR);
+        SILVA_EXPECT(combined_arity <= atom_stack.size(),
+                     MINOR,
+                     "[{}] Operator(s) expected at total of {} operands, but only found {}",
+                     nursery->token_position_by(),
+                     combined_arity,
+                     atom_stack.size());
         const index_t atom_stack_begin = atom_stack.size() - combined_arity;
         const auto& front_atn = (*atom_tree)[atom_stack[atom_stack_begin].atom_tree_node_index];
         consistent_range_t retval{
@@ -621,7 +633,9 @@ namespace silva::impl {
           }
           const span_t<const oper_item_t> ois{&oper_stack[oper_stack_begin],
                                               &oper_stack[oper_stack_end]};
-          const consistent_range_t cr = SILVA_EXPECT_FWD(consistent_range(ois));
+          const consistent_range_t cr =
+              SILVA_EXPECT_PARSE_FWD(oper_stack[oper_stack_begin].level_name,
+                                     consistent_range(ois));
           oper_stack.resize(oper_stack.size() - ois.size());
           SILVA_EXPECT(cr.num_atoms <= atom_stack.size(), MINOR);
           index_t subtree_size = 1;
@@ -672,7 +686,10 @@ namespace silva::impl {
 
     expected_t<void> go_parse(parse_tree_nursery_t::stake_t& ss_rule)
     {
-      stack_pair_t stack_pair{.atom_tree = &atom_tree};
+      stack_pair_t stack_pair{
+          .atom_tree = &atom_tree,
+          .nursery   = &nursery,
+      };
       mode_t mode = ATOM_MODE;
 
       const auto hallucinate_concat = [&]() -> expected_t<void> {
@@ -848,7 +865,9 @@ namespace silva::impl {
         }
         SILVA_EXPECT(false, ASSERT);
       }
-      SILVA_EXPECT_FWD(stack_pair.stack_pop(precedence_min));
+      SILVA_EXPECT_FWD(stack_pair.stack_pop(precedence_min),
+                       "[{}] at the end of the expression",
+                       token_position_by());
       SILVA_EXPECT(stack_pair.oper_stack.empty(), MINOR);
       SILVA_EXPECT_PARSE(seed_axe.name, stack_pair.atom_stack.size() > 0, "empty expression");
       SILVA_EXPECT(stack_pair.atom_stack.size() == 1, MINOR);
@@ -893,7 +912,7 @@ namespace silva::impl {
       auto ss      = nursery.stake();
       auto ss_rule = nursery.stake();
       ss_rule.create_node(name_id_root);
-      SILVA_EXPECT_FWD(go_parse(ss_rule));
+      SILVA_EXPECT_PARSE_FWD(seed_axe.name, go_parse(ss_rule));
 
       const auto& root_node          = atom_tree.back();
       const index_t expr_token_begin = root_node.token_range.first;
@@ -935,8 +954,11 @@ namespace silva {
         .atom_name_id = atom_name_id,
         .atom         = atom,
     };
-    const index_t created_node = SILVA_EXPECT_FWD(run.go());
-    auto& rv_nodes             = nursery.tree;
+    const index_t orig_token_index = nursery.token_index;
+    const index_t created_node     = SILVA_EXPECT_FWD(run.go(),
+                                                  "[{}] when parsing expression starting here",
+                                                  nursery.token_position_at(orig_token_index));
+    auto& rv_nodes                 = nursery.tree;
     parse_tree_node_t retval;
     retval.num_children = 1;
     retval.subtree_size = rv_nodes[created_node].subtree_size;
