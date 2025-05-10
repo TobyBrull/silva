@@ -39,9 +39,14 @@ rm -rf build/
 cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 ninja -C build/
 ninja -C build/ && ./build/cpp/silva_test
+
 ninja -C build/ && ./build/cpp/silva_tokenization silva/syntax/simple.fern
+
 ninja -C build/ && ./build/cpp/silva_fern silva/syntax/simple.fern
 ninja -C build/ && ./build/cpp/silva_fern silva/syntax/broken.fern
+ninja -C build/ && time ./build/cpp/silva_fern silva/syntax/large.fern --process=none --seed-engine=false
+ninja -C build/ && time ./build/cpp/silva_fern silva/syntax/large.fern --process=none --seed-engine=true
+
 ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/simplest.fern
 ninja -C build/ && SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/simplest.fern --action=none
 ninja -C build/ && ./build/cpp/silva_syntax silva/syntax/test.silva

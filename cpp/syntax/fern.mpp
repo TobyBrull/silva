@@ -29,7 +29,7 @@ namespace silva {
       ptp = SILVA_EXPECT_FWD(fern_parse(tp));
     }
 
-    if (arg_process.empty()) {
+    if (arg_process == "none") {
       ;
     }
     else if (arg_process.starts_with("fern_t/")) {

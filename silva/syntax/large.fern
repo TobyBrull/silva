@@ -7,17 +7,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -47,8 +47,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -75,17 +75,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -115,8 +115,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -143,17 +143,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -183,8 +183,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -211,17 +211,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -251,8 +251,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -279,17 +279,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -319,8 +319,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -347,17 +347,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -387,8 +387,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -415,17 +415,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -455,8 +455,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -483,17 +483,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -523,8 +523,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -551,17 +551,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -591,8 +591,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -619,17 +619,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -659,8 +659,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -687,17 +687,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -727,8 +727,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -755,17 +755,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -795,8 +795,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -823,17 +823,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -863,8 +863,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -891,17 +891,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -931,8 +931,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -959,17 +959,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -999,8 +999,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1027,17 +1027,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1067,8 +1067,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1095,17 +1095,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1135,8 +1135,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1163,17 +1163,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1203,8 +1203,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1231,17 +1231,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1271,8 +1271,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1299,17 +1299,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1339,8 +1339,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1367,17 +1367,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1407,8 +1407,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1435,17 +1435,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1475,8 +1475,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1503,17 +1503,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1543,8 +1543,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1571,17 +1571,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1611,8 +1611,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1639,17 +1639,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1679,8 +1679,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1707,17 +1707,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1747,8 +1747,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1775,17 +1775,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1815,8 +1815,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1843,17 +1843,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1883,8 +1883,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1911,17 +1911,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -1951,8 +1951,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -1979,17 +1979,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2019,8 +2019,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2047,17 +2047,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2087,8 +2087,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2115,17 +2115,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2155,8 +2155,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2183,17 +2183,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2223,8 +2223,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2251,17 +2251,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2291,8 +2291,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2319,17 +2319,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2359,8 +2359,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2387,17 +2387,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2427,8 +2427,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2455,17 +2455,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2495,8 +2495,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2523,17 +2523,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2563,8 +2563,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2591,17 +2591,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2631,8 +2631,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2659,17 +2659,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2699,8 +2699,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2727,17 +2727,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2767,8 +2767,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2795,17 +2795,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2835,8 +2835,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2863,17 +2863,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2903,8 +2903,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2931,17 +2931,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -2971,8 +2971,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -2999,17 +2999,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3039,8 +3039,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3067,17 +3067,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3107,8 +3107,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3135,17 +3135,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3175,8 +3175,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3203,17 +3203,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3243,8 +3243,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3271,17 +3271,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3311,8 +3311,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3339,17 +3339,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3379,8 +3379,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3407,17 +3407,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3447,8 +3447,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3475,17 +3475,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3515,8 +3515,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3543,17 +3543,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3583,8 +3583,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3611,17 +3611,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3651,8 +3651,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3679,17 +3679,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3719,8 +3719,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3747,17 +3747,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3787,8 +3787,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3815,17 +3815,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3855,8 +3855,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3883,17 +3883,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3923,8 +3923,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -3951,17 +3951,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -3991,8 +3991,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4019,17 +4019,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4059,8 +4059,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4087,17 +4087,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4127,8 +4127,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4155,17 +4155,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4195,8 +4195,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4223,17 +4223,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4263,8 +4263,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4291,17 +4291,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4331,8 +4331,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4359,17 +4359,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4399,8 +4399,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4427,17 +4427,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4467,8 +4467,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4495,17 +4495,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4535,8 +4535,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4563,17 +4563,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4603,8 +4603,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4631,17 +4631,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4671,8 +4671,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4699,17 +4699,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4739,8 +4739,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4767,17 +4767,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4807,8 +4807,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4835,17 +4835,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4875,8 +4875,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4903,17 +4903,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -4943,8 +4943,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -4971,17 +4971,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5011,8 +5011,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5039,17 +5039,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5079,8 +5079,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5107,17 +5107,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5147,8 +5147,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5175,17 +5175,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5215,8 +5215,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5243,17 +5243,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5283,8 +5283,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5311,17 +5311,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5351,8 +5351,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5379,17 +5379,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5419,8 +5419,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5447,17 +5447,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5487,8 +5487,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5515,17 +5515,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5555,8 +5555,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5583,17 +5583,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5623,8 +5623,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5651,17 +5651,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5691,8 +5691,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5719,17 +5719,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5759,8 +5759,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5787,17 +5787,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5827,8 +5827,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5855,17 +5855,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5895,8 +5895,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5923,17 +5923,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -5963,8 +5963,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -5991,17 +5991,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6031,8 +6031,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6059,17 +6059,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6099,8 +6099,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6127,17 +6127,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6167,8 +6167,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6195,17 +6195,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6235,8 +6235,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6263,17 +6263,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6303,8 +6303,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6331,17 +6331,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6371,8 +6371,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6399,17 +6399,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6439,8 +6439,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6467,17 +6467,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6507,8 +6507,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6535,17 +6535,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6575,8 +6575,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6603,17 +6603,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6643,8 +6643,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6671,17 +6671,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6711,8 +6711,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6739,17 +6739,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6779,8 +6779,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6807,17 +6807,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6847,8 +6847,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6875,17 +6875,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6915,8 +6915,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -6943,17 +6943,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -6983,8 +6983,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7011,17 +7011,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7051,8 +7051,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7079,17 +7079,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7119,8 +7119,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7147,17 +7147,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7187,8 +7187,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7215,17 +7215,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7255,8 +7255,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7283,17 +7283,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7323,8 +7323,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7351,17 +7351,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7391,8 +7391,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7419,17 +7419,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7459,8 +7459,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7487,17 +7487,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7527,8 +7527,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7555,17 +7555,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7595,8 +7595,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7623,17 +7623,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7663,8 +7663,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7691,17 +7691,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7731,8 +7731,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7759,17 +7759,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7799,8 +7799,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7827,17 +7827,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7867,8 +7867,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7895,17 +7895,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -7935,8 +7935,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -7963,17 +7963,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8003,8 +8003,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8031,17 +8031,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8071,8 +8071,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8099,17 +8099,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8139,8 +8139,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8167,17 +8167,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8207,8 +8207,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8235,17 +8235,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8275,8 +8275,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8303,17 +8303,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8343,8 +8343,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8371,17 +8371,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8411,8 +8411,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8439,17 +8439,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8479,8 +8479,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8507,17 +8507,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8547,8 +8547,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8575,17 +8575,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8615,8 +8615,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8643,17 +8643,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8683,8 +8683,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8711,17 +8711,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8751,8 +8751,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8779,17 +8779,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8819,8 +8819,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8847,17 +8847,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8887,8 +8887,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8915,17 +8915,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -8955,8 +8955,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -8983,17 +8983,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9023,8 +9023,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9051,17 +9051,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9091,8 +9091,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9119,17 +9119,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9159,8 +9159,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9187,17 +9187,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9227,8 +9227,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9255,17 +9255,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9295,8 +9295,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9323,17 +9323,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9363,8 +9363,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9391,17 +9391,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9431,8 +9431,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9459,17 +9459,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9499,8 +9499,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9527,17 +9527,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9567,8 +9567,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9595,17 +9595,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9635,8 +9635,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9663,17 +9663,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9703,8 +9703,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9731,17 +9731,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9771,8 +9771,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9799,17 +9799,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9839,8 +9839,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9867,17 +9867,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9907,8 +9907,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -9935,17 +9935,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -9975,8 +9975,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10003,17 +10003,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10043,8 +10043,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10071,17 +10071,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10111,8 +10111,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10139,17 +10139,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10179,8 +10179,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10207,17 +10207,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10247,8 +10247,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10275,17 +10275,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10315,8 +10315,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10343,17 +10343,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10383,8 +10383,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10411,17 +10411,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10451,8 +10451,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10479,17 +10479,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10519,8 +10519,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10547,17 +10547,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10587,8 +10587,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10615,17 +10615,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10655,8 +10655,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10683,17 +10683,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10723,8 +10723,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
@@ -10751,17 +10751,17 @@
   none: none
 
   # semi-colon is optimal as a delimiter
-  'some value' ;
+  'some value'
 
   # keys are always strings and don't require quotes
   # values are be int, float, string (requires quotes), bool, none_t, or Fern
   do: 'for'
 
   array: [ 2 3 4 5 6 ]
-  array2: [ 2 3 ; 4 5 ; 6 ]
+  array2: [ 2 3 4 5 6 ]
   # maximum number of semi-colons
-  array3: [ 2 ; 3 ; 4 ; 5 ; 6 ; ]
-  array4: [ 2 ; 3 ; 4 ; 5 ; 6 ]
+  array3: [ 2 3 4 5 6 ]
+  array4: [ 2 3 4 5 6 ]
   array5: [ 2 3 4 five: 5 6 ]
   object: [
     'labels may or may not have quotes, but require quotes if they contain spaces': none
@@ -10791,8 +10791,8 @@
   empty: none
 
   array: [ 2 3 4 5 6 ]
-  array_semicolon_1: [ 2; 3; 4; 5; 6; ]
-  array_semicolon_2: [ 2 ; 3 ; 4 ; 5 ; 6 ;]
+  array_semicolon_1: [ 23456]
+  array_semicolon_2: [ 2 3 4 5 6]
 
   # objects still have an order to them
   object: [
