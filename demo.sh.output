@@ -1,7 +1,3 @@
-Randomness seeded to: 1464400537
-===============================================================================
-All tests passed (406 assertions in 28 test cases)
-
 [  0]   1:1   [
 [  1]   2:3   none
 [  2]   3:3   true
@@ -32,6 +28,46 @@ All tests passed (406 assertions in 28 test cases)
     'two' : 2.0
   ]
 ]
+ERROR (MINOR):
+    ┌─[01-broken.fern:9:3] _.Fern.Label: expected string
+    ├─[01-broken.fern:9:3] _.Fern.Label: expected identifier
+    [01-broken.fern:9:3] _.Fern.Label: expected alternation[ string | identifier ]
+    [01-broken.fern:9:3] _.Fern.Label
+  ┌─[01-broken.fern:9:3] _.Fern.LabeledItem: expected sequence[ Label ':' ]
+  │       [01-broken.fern:11:5] _.Fern.LabeledItem: expected token[ : ]
+  │     ┌─[01-broken.fern:10:5] _.Fern.LabeledItem: expected sequence[ Label ':' ]
+  │     │   [01-broken.fern:10:5] _.Fern: expected token[ [ ]
+  │     │   [01-broken.fern:10:5] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
+  │     │ ┌─[01-broken.fern:10:5] _.Fern
+  │     │ │ ┌─[01-broken.fern:10:5] _.Fern.Value: expected token[ none ]
+  │     │ │ ├─[01-broken.fern:10:5] _.Fern.Value: expected token[ true ]
+  │     │ │ ├─[01-broken.fern:10:5] _.Fern.Value: expected token[ false ]
+  │     │ │ ├─[01-broken.fern:10:5] _.Fern.Value: expected string
+  │     │ │ ├─[01-broken.fern:10:5] _.Fern.Value: expected number
+  │     │ │ [01-broken.fern:10:5] _.Fern.Value: expected alternation[ 'none' | ... | number ]
+  │     │ ├─[01-broken.fern:10:5] _.Fern.Value
+  │     ├─[01-broken.fern:10:5] _.Fern.LabeledItem: expected alternation[ x | Value ]
+  │     [01-broken.fern:10:5] _.Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
+  │   ┌─[01-broken.fern:10:5] _.Fern.LabeledItem
+  │   ├─[01-broken.fern:10:5] _.Fern: expected token[ ] ]
+  │   [01-broken.fern:9:3] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
+  │ ┌─[01-broken.fern:9:3] _.Fern
+  │ │ ┌─[01-broken.fern:9:3] _.Fern.Value: expected token[ none ]
+  │ │ ├─[01-broken.fern:9:3] _.Fern.Value: expected token[ true ]
+  │ │ ├─[01-broken.fern:9:3] _.Fern.Value: expected token[ false ]
+  │ │ ├─[01-broken.fern:9:3] _.Fern.Value: expected string
+  │ │ ├─[01-broken.fern:9:3] _.Fern.Value: expected number
+  │ │ [01-broken.fern:9:3] _.Fern.Value: expected alternation[ 'none' | ... | number ]
+  │ ├─[01-broken.fern:9:3] _.Fern.Value
+  ├─[01-broken.fern:9:3] _.Fern.LabeledItem: expected alternation[ x | Value ]
+  [01-broken.fern:9:3] _.Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
+┌─[01-broken.fern:9:3] _.Fern.LabeledItem
+├─[01-broken.fern:9:3] _.Fern: expected token[ ] ]
+[01-broken.fern:1:1] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
+[01-broken.fern:1:1] _.Fern
+unexpected forward at [/home/toby/git/silva/cpp/syntax/seed_engine.cpp:799]
+unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
+
 [0]_.Fern                                         [ none ... ] ]
   [0]_.Fern.LabeledItem                           none
     [0]_.Fern.Value                               none

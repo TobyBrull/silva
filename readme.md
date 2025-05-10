@@ -40,5 +40,5 @@ ctest --test-dir build/cpp/
 ```
 
 ```bash
-bash demo.sh
+bash demo.sh > demo.sh.output
 ```

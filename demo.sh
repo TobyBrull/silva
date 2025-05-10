@@ -2,12 +2,10 @@
 
 set -Eeuxo pipefail
 
-./build/cpp/silva_test
-
 ./build/cpp/silva_tokenization silva/syntax/01-simple.fern
 
 ./build/cpp/silva_fern silva/syntax/01-simple.fern
-./build/cpp/silva_fern silva/syntax/01-broken.fern || true
+./build/cpp/silva_fern silva/syntax/01-broken.fern 2>&1 || true
 time ./build/cpp/silva_fern silva/syntax/01-large.fern --process=none --seed-engine=false
 time ./build/cpp/silva_fern silva/syntax/01-large.fern --process=none --seed-engine=true
 
