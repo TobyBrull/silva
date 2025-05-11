@@ -18,6 +18,7 @@
   ]
   - Expr = [
     - x = Axe
+    - Maybe = x | 'none'
     - Axe =/ Atom [
       - Parens    = nest atom_nest '(' ')'
       - Member    = ltr infix '.'
@@ -30,7 +31,9 @@
       - Logic     = ltr infix 'and' 'or'
       - Assign    = ltr infix '=' '+=' '*='
     ]
-    - Atom = identifier | string | number | Struct | _.Silva.Section | 'true' | 'false' | 'none'
+    - Atom = Struct | _.Silva.Section
+           | not keywords_of _.Soil but_then identifier | string | number
+           | 'true' | 'false' | 'none'
     - Struct = [
       - x = '[' LabeledItem * ']'
       - LabeledItem = ( _.Soil.Variable.Name ':' ) ? ( x | p )
@@ -43,12 +46,12 @@
     - Signature = p.Type ( '->' p.Type ) ?
     - Body = '{' Stmt * '}'
     - Stmt = [
-      - x = _.Soil.Expr ';' | If | For
+      - x = If | For | _.Soil.Expr ';'
       - If = [
         - x = 'if' Branch ( 'elif' Branch ) * ( 'else' p.p.Body ) ?
         - Branch = _.Soil.Expr p.p.Body
       ]
-      - For = 'for' _.Soil.Expr ';' _.Soil.Expr ';' _.Soil.Expr p.Body
+      - For = 'for' _.Soil.Expr.Maybe ';' _.Soil.Expr.Maybe ';' _.Soil.Expr.Maybe p.Body
     ]
   ]
   - Variable = [

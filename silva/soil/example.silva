@@ -37,6 +37,11 @@ example_f = [] {
   for i = i64_t :: 0; i < n; i += 1 {
     sum += i;
   }
+
+  abc = 42;
+  for none ; i < n; none {
+    sum += i;
+  }
 }
 
 $>
