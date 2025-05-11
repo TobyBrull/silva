@@ -561,8 +561,22 @@ namespace silva {
         const index_t orig_token_index = token_index;
         auto ss                        = stake();
         error_nursery_t error_nursery;
+
+        // Could do this bit ahead of time and store a map in the seed_engine_t.
+        index_t lead_terminals = 0;
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-          auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name, var_map);
+          const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
+          if (sub_pts[0].rule_name == ni_term) {
+            lead_terminals += 1;
+          }
+          else {
+            break;
+          }
+        }
+
+        for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
+          const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
+          auto result        = s_expr(sub_pts, t_rule_name, var_map);
           if (result.has_value()) {
             if (!result->last_error.is_empty()) {
               error_nursery.add_child_error(std::move(result->last_error));
@@ -570,7 +584,10 @@ namespace silva {
             ss.add_proto_node(std::move(result->node));
           }
           else {
-            const error_level_t error_level = result.error().level;
+            error_level_t error_level = result.error().level;
+            if (lead_terminals >= 1 && child_index >= lead_terminals) {
+              error_level = std::max(error_level, MAJOR);
+            }
             error_nursery.add_child_error(std::move(result).error());
             return std::unexpected(std::move(error_nursery)
                                        .finish(error_level,

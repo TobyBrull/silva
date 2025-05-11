@@ -35,8 +35,7 @@ conda activate silva-clang
 
 rm -rf build/
 cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
-ninja -C build/
-ctest --test-dir build/cpp/
+ninja -C build/ && ./build/cpp/silva_test
 ```
 
 ```bash
