@@ -253,6 +253,7 @@ namespace silva {
       const token_id_t ti_string      = *swp->token_id("string");
       const token_id_t ti_number      = *swp->token_id("number");
       const token_id_t ti_any         = *swp->token_id("any");
+      const token_id_t ti_eps         = *swp->token_id("epsilon");
       const token_id_t ti_eof         = *swp->token_id("end_of_file");
       const token_id_t ti_keywords_of = *swp->token_id("keywords_of");
       const token_id_t ti_ques        = *swp->token_id("?");
@@ -389,6 +390,9 @@ namespace silva {
         const auto& s_node = pts[0];
         SILVA_EXPECT(s_node.rule_name == ni_term, MAJOR);
         const token_id_t s_front_ti = pts.tp->tokens[s_node.token_begin];
+        if (s_front_ti == ti_eps) {
+          return ss.commit();
+        }
         if (s_front_ti == ti_eof) {
           SILVA_EXPECT_PARSE(t_rule_name,
                              num_tokens_left() == 0,

@@ -49,7 +49,7 @@ namespace silva {
                  | 'operator' ( '/' string ) ?
                  | 'keywords_of' Nonterminal
                  | 'string' | 'number'
-                 | 'any' | 'end_of_file'
+                 | 'any' | 'epsilon' | 'end_of_file'
     ]
   )'";
 

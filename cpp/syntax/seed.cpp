@@ -29,6 +29,7 @@ namespace silva {
       token_id_t ti_string      = *swp->token_id("string");
       token_id_t ti_number      = *swp->token_id("number");
       token_id_t ti_any         = *swp->token_id("any");
+      token_id_t ti_eps         = *swp->token_id("epsilon");
       token_id_t ti_eof         = *swp->token_id("end_of_file");
       token_id_t ti_nest        = *swp->token_id("nest");
       token_id_t ti_ltr         = *swp->token_id("ltr");
@@ -87,7 +88,8 @@ namespace silva {
                              token_data_by()->category == STRING ||
                                  token_id_by() == ti_identifier || token_id_by() == ti_operator ||
                                  token_id_by() == ti_string || token_id_by() == ti_number ||
-                                 token_id_by() == ti_any || token_id_by() == ti_eof,
+                                 token_id_by() == ti_any || token_id_by() == ti_eps ||
+                                 token_id_by() == ti_eof,
                              "unexpected {}",
                              swp->token_id_wrap(token_id_by()));
           token_index += 1;

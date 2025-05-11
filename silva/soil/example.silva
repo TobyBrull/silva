@@ -39,7 +39,7 @@ example_f = [] {
   }
 
   abc = 42;
-  for none ; i < n; none {
+  for ; i < n; {
     sum += i;
   }
 }

@@ -57,7 +57,7 @@ ERROR (MAJOR):
 [01-broken.fern:9:3] _.Fern.LabeledItem
 [01-broken.fern:1:1] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
 [01-broken.fern:1:1] _.Fern
-unexpected forward at [/home/toby/git/silva/cpp/syntax/seed_engine.cpp:816]
+unexpected forward at [/home/toby/git/silva/cpp/syntax/seed_engine.cpp:820]
 unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
 
 [0]_.Fern                                         [ none ... ] ]
@@ -542,15 +542,15 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
                   [0]_.Seed.NonterminalMaybeVar   Axe
                     [0]_.Seed.Nonterminal         Axe
                       [0]_.Seed.Nonterminal.Base  Axe
-              [1]_.Seed.Rule                      Maybe = x | 'none'
+              [1]_.Seed.Rule                      Maybe = x | epsilon
                 [0]_.Seed.Nonterminal             Maybe
                   [0]_.Seed.Nonterminal.Base      Maybe
-                [1]_.Seed.ExprOrAlias             = x | 'none'
-                  [0]_.Seed.Expr.Or.|             x | 'none'
+                [1]_.Seed.ExprOrAlias             = x | epsilon
+                  [0]_.Seed.Expr.Or.|             x | epsilon
                     [0]_.Seed.NonterminalMaybeVar x
                       [0]_.Seed.Nonterminal       x
                         [0]_.Seed.Nonterminal.Base x
-                    [1]_.Seed.Terminal            'none'
+                    [1]_.Seed.Terminal            epsilon
               [2]_.Seed.Rule                      Axe =/ ... '*=' ]
                 [0]_.Seed.Nonterminal             Axe
                   [0]_.Seed.Nonterminal.Base      Axe
@@ -1167,19 +1167,15 @@ unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
               [0]_.Soil.Expr.Axe.Assign.=         abc = 42
                 [0]_.Soil.Expr.Atom               abc
                 [1]_.Soil.Expr.Atom               42
-          [10]_.Soil.Func.Stmt                    for none ... ; }
-            [0]_.Soil.Func.Stmt.For               for none ... ; }
-              [0]_.Soil.Expr.Maybe                none
-                [0]_.Soil.Expr                    none
-                  [0]_.Soil.Expr.Atom             none
+          [10]_.Soil.Func.Stmt                    for ; ... ; }
+            [0]_.Soil.Func.Stmt.For               for ; ... ; }
+              [0]_.Soil.Expr.Maybe                
               [1]_.Soil.Expr.Maybe                i < n
                 [0]_.Soil.Expr                    i < n
                   [0]_.Soil.Expr.Axe.Comp.<       i < n
                     [0]_.Soil.Expr.Atom           i
                     [1]_.Soil.Expr.Atom           n
-              [2]_.Soil.Expr.Maybe                none
-                [0]_.Soil.Expr                    none
-                  [0]_.Soil.Expr.Atom             none
+              [2]_.Soil.Expr.Maybe                
               [3]_.Soil.Func.Body                 { sum ... ; }
                 [0]_.Soil.Func.Stmt               sum += i ;
                   [0]_.Soil.Expr                  sum += i
