@@ -32,6 +32,11 @@ example_f = [] {
   } else {
     'This name it short' | log_f;
   }
+
+  sum = i64_t :: 0;
+  for i = i64_t :: 0; i < n; i += 1 {
+    sum += i;
+  }
 }
 
 $>

@@ -43,11 +43,12 @@
     - Signature = p.Type ( '->' p.Type ) ?
     - Body = '{' Stmt * '}'
     - Stmt = [
-      - x = _.Soil.Expr ';' | If
+      - x = _.Soil.Expr ';' | If | For
       - If = [
         - x = 'if' Branch ( 'elif' Branch ) * ( 'else' p.p.Body ) ?
         - Branch = _.Soil.Expr p.p.Body
       ]
+      - For = 'for' _.Soil.Expr ';' _.Soil.Expr ';' _.Soil.Expr p.Body
     ]
   ]
   - Variable = [
