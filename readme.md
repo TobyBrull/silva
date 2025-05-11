@@ -40,5 +40,5 @@ ctest --test-dir build/cpp/
 ```
 
 ```bash
-bash demo.sh > demo.sh.output
+ninja -C build/ && bash demo.sh > demo.sh.output
 ```
