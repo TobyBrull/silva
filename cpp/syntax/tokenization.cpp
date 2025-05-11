@@ -42,9 +42,14 @@ namespace silva {
       return string_or_view_t{string_view_t{"unknown token_position"}};
     }
     string_t retval;
-    const auto [line, column] = self.tp->token_locations[self.token_index];
-    const string_t filename   = self.tp->filepath.filename().string();
-    return string_or_view_t{fmt::format("{}:{}:{}", filename, line + 1, column + 1)};
+    const string_t filename = self.tp->filepath.filename().string();
+    if (self.token_index < self.tp->token_locations.size()) {
+      const auto [line, column] = self.tp->token_locations[self.token_index];
+      return string_or_view_t{fmt::format("{}:{}:{}", filename, line + 1, column + 1)};
+    }
+    else {
+      return string_or_view_t{fmt::format("{}:EOF", filename)};
+    }
   }
 
   string_or_view_t to_string_impl(const token_range_t& self)
