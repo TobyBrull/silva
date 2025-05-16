@@ -2,6 +2,10 @@
 
 * Rename "Seed" to "Root" or "Tree" ?
 
+* Use Python-style indenting (i.e., such that it generated tokens in the tokenization)?
+
+* Support specifying custom tokenizations in Seed.
+
 ## Long Term
 
 * Seed
