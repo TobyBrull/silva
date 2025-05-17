@@ -2,6 +2,8 @@
 
 * Rename "Seed" to "Root" or "Tree" ?
 
+* Rename seed_engine_t to seed_interpreter_t
+
 * Use Python-style indenting (i.e., such that it generated tokens in the tokenization)?
 
 * Support specifying custom tokenizations in Seed.
