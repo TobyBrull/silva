@@ -66,6 +66,7 @@ namespace silva::test {
               *sw.token_id("postfix"),
               *sw.token_id("postfix_nest"),
               *sw.token_id("concat"),
+              *sw.token_id("->"),
           }));
   }
 

@@ -672,12 +672,18 @@ namespace silva::impl {
                                                      const token_id_t right_token)
     {
       const index_t token_begin = nursery.token_index;
-      SILVA_EXPECT(nursery.num_tokens_left() >= 1, ASSERT);
-      SILVA_EXPECT(nursery.token_id_by() == left_token, ASSERT);
+      SILVA_EXPECT_PARSE(ss_rule.proto_node.rule_name,
+                         nursery.num_tokens_left() >= 1 && nursery.token_id_by() == left_token,
+                         "expected {}, got {}",
+                         swp->token_id_wrap(left_token),
+                         swp->token_id_wrap(nursery.token_id_by()));
       nursery.token_index += 1;
       SILVA_EXPECT_FWD(go_parse(ss_rule));
-      SILVA_EXPECT(nursery.num_tokens_left() >= 1, ASSERT);
-      SILVA_EXPECT(nursery.token_id_by() == right_token, ASSERT);
+      SILVA_EXPECT_PARSE(ss_rule.proto_node.rule_name,
+                         nursery.num_tokens_left() >= 1 && nursery.token_id_by() == right_token,
+                         "expected {}, got {}",
+                         swp->token_id_wrap(right_token),
+                         swp->token_id_wrap(nursery.token_id_by()));
       nursery.token_index += 1;
       SILVA_EXPECT(atom_tree.size() >= 1, ASSERT);
       const index_t token_end = nursery.token_index;

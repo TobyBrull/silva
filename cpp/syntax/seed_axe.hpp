@@ -14,7 +14,7 @@ namespace silva {
       - x = '[' ( '-' Level ) * ']'
       - Level = p.Nonterminal.Base '=' Assoc Ops *
       - Assoc = 'nest' | 'ltr' | 'rtl'
-      - Ops = OpType Op *
+      - Ops = OpType ( '->' p.Nonterminal ) ? Op *
       - OpType = 'atom_nest' | 'prefix' | 'prefix_nest'
                | 'infix' | 'infix_flat' | 'ternary'
                | 'postfix' | 'postfix_nest'

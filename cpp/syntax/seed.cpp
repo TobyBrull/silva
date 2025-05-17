@@ -163,6 +163,10 @@ namespace silva {
         auto ss_rule = stake();
         ss_rule.create_node(ni_axe_ops);
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_axe_ops, axe_op_type()));
+        if (num_tokens_left() > 0 && token_id_by() == ti_right_arrow) {
+          token_index += 1;
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_axe_ops, nonterminal()));
+        }
         while (auto result = axe_op()) {
           ss_rule.add_proto_node(*result);
         }
@@ -213,8 +217,17 @@ namespace silva {
 
   seed_axe_t create_seed_axe_expr(syntax_ward_ptr_t swp)
   {
-    const string_view_t axe_defn = seed_seed.substr(222, 283);
-    // fmt::print("\n\n|{}|\n\n", axe_defn);
+    const string_view_t axe_defn = [] -> string_view_t {
+      const string_view_t start_str = "- Expr =/ Atom ";
+      const size_t fi_begin         = seed_seed.find(start_str);
+      SILVA_ASSERT(fi_begin != string_view_t::npos);
+      const string_view_t axe_defn_str_with_rest = seed_seed.substr(fi_begin + start_str.size());
+      const size_t fi_end                        = axe_defn_str_with_rest.find(']');
+      SILVA_ASSERT(fi_end != string_view_t::npos);
+      const string_view_t retval = axe_defn_str_with_rest.substr(0, fi_end + 1);
+      // fmt::print("\n\n|{}|\n\n", retval);
+      return retval;
+    }();
     auto tt = SILVA_EXPECT_ASSERT(tokenize(swp, "seed.axe", axe_defn));
     impl::seed_axe_parse_tree_nursery_t nursery(tt);
     SILVA_EXPECT_ASSERT(nursery.axe());
