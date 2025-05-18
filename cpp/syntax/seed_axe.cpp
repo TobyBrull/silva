@@ -64,15 +64,12 @@ namespace silva::impl {
     const name_id_t ni_term        = swp->name_id_of(ni_seed, "Terminal");
 
     seed_axe_t retval{
-        .swp       = swp,
-        .name      = seed_axe_name,
-        .atom_rule = atom_rule_name_id,
+        .swp  = swp,
+        .name = seed_axe_name,
     };
 
-    seed_axe_create_nursery_t(syntax_ward_ptr_t swp,
-                              const name_id_t seed_axe_name,
-                              const name_id_t atom_rule_name_id)
-      : swp(swp), seed_axe_name(seed_axe_name), atom_rule_name_id(atom_rule_name_id)
+    seed_axe_create_nursery_t(syntax_ward_ptr_t swp, const name_id_t seed_axe_name)
+      : swp(swp), seed_axe_name(seed_axe_name)
     {
     }
 
@@ -421,10 +418,19 @@ namespace silva::impl {
 
     expected_t<void> run(const parse_tree_span_t pts_axe)
     {
-      const index_t num_levels = pts_axe[0].num_children;
-      for (const auto [child_node_index, child_index]: pts_axe.children_range()) {
-        const index_t level_index = num_levels - child_index;
-        SILVA_EXPECT_FWD(level(level_index, pts_axe.sub_tree_span_at(child_node_index)));
+      auto [it, end] = pts_axe.children_range();
+      SILVA_EXPECT(it != end, MINOR, "{} should have at least one child", pts_axe);
+      const auto pts_axe_nt = pts_axe.sub_tree_span_at(it.pos);
+      ++it;
+      SILVA_EXPECT(pts_axe_nt[0].rule_name == ni_nt, MINOR);
+      const name_id_t parent_scope = swp->name_infos[seed_axe_name].parent_name;
+      retval.atom_rule             = SILVA_EXPECT_FWD(nis.derive_name(parent_scope, pts_axe_nt));
+
+      index_t curr_level = pts_axe[0].num_children;
+      while (it != end) {
+        curr_level -= 1;
+        SILVA_EXPECT_FWD(level(curr_level, pts_axe.sub_tree_span_at(it.pos)));
+        ++it;
       }
       return {};
     }
@@ -432,12 +438,10 @@ namespace silva::impl {
 }
 
 namespace silva {
-  expected_t<seed_axe_t> seed_axe_create(syntax_ward_ptr_t swp,
-                                         const name_id_t seed_axe_name,
-                                         const name_id_t atom_rule_name_id,
-                                         const parse_tree_span_t pts)
+  expected_t<seed_axe_t>
+  seed_axe_create(syntax_ward_ptr_t swp, const name_id_t seed_axe_name, const parse_tree_span_t pts)
   {
-    impl::seed_axe_create_nursery_t nursery(swp, seed_axe_name, atom_rule_name_id);
+    impl::seed_axe_create_nursery_t nursery(swp, seed_axe_name);
     SILVA_EXPECT_FWD(nursery.run(pts));
     return std::move(nursery.retval);
   }

@@ -45,27 +45,26 @@ namespace silva {
       token_id_t ti_concat      = *swp->token_id("concat");
       token_id_t ti_keywords_of = *swp->token_id("keywords_of");
 
-      name_id_t ni_seed          = swp->name_id_of("Seed");
-      name_id_t ni_rule          = swp->name_id_of(ni_seed, "Rule");
-      name_id_t ni_expr_or_a     = swp->name_id_of(ni_seed, "ExprOrAlias");
-      name_id_t ni_axe_with_atom = swp->name_id_of(ni_seed, "AxeWithAtom");
-      name_id_t ni_expr          = swp->name_id_of(ni_seed, "Expr");
-      name_id_t ni_atom          = swp->name_id_of(ni_seed, "Atom");
-      name_id_t ni_var           = swp->name_id_of(ni_seed, "Variable");
-      name_id_t ni_func          = swp->name_id_of(ni_seed, "Function");
-      name_id_t ni_func_name     = swp->name_id_of(ni_func, "Name");
-      name_id_t ni_func_arg      = swp->name_id_of(ni_func, "Arg");
-      name_id_t ni_func_args     = swp->name_id_of(ni_func, "Args");
-      name_id_t ni_axe           = swp->name_id_of(ni_seed, "Axe");
-      name_id_t ni_axe_level     = swp->name_id_of(ni_axe, "Level");
-      name_id_t ni_axe_assoc     = swp->name_id_of(ni_axe, "Assoc");
-      name_id_t ni_axe_ops       = swp->name_id_of(ni_axe, "Ops");
-      name_id_t ni_axe_op_type   = swp->name_id_of(ni_axe, "OpType");
-      name_id_t ni_axe_op        = swp->name_id_of(ni_axe, "Op");
-      name_id_t ni_nt_maybe_var  = swp->name_id_of(ni_seed, "NonterminalMaybeVar");
-      name_id_t ni_nt            = swp->name_id_of(ni_seed, "Nonterminal");
-      name_id_t ni_nt_base       = swp->name_id_of(ni_nt, "Base");
-      name_id_t ni_term          = swp->name_id_of(ni_seed, "Terminal");
+      name_id_t ni_seed         = swp->name_id_of("Seed");
+      name_id_t ni_rule         = swp->name_id_of(ni_seed, "Rule");
+      name_id_t ni_expr_or_a    = swp->name_id_of(ni_seed, "ExprOrAlias");
+      name_id_t ni_expr         = swp->name_id_of(ni_seed, "Expr");
+      name_id_t ni_atom         = swp->name_id_of(ni_seed, "Atom");
+      name_id_t ni_var          = swp->name_id_of(ni_seed, "Variable");
+      name_id_t ni_func         = swp->name_id_of(ni_seed, "Function");
+      name_id_t ni_func_name    = swp->name_id_of(ni_func, "Name");
+      name_id_t ni_func_arg     = swp->name_id_of(ni_func, "Arg");
+      name_id_t ni_func_args    = swp->name_id_of(ni_func, "Args");
+      name_id_t ni_axe          = swp->name_id_of(ni_seed, "Axe");
+      name_id_t ni_axe_level    = swp->name_id_of(ni_axe, "Level");
+      name_id_t ni_axe_assoc    = swp->name_id_of(ni_axe, "Assoc");
+      name_id_t ni_axe_ops      = swp->name_id_of(ni_axe, "Ops");
+      name_id_t ni_axe_op_type  = swp->name_id_of(ni_axe, "OpType");
+      name_id_t ni_axe_op       = swp->name_id_of(ni_axe, "Op");
+      name_id_t ni_nt_maybe_var = swp->name_id_of(ni_seed, "NonterminalMaybeVar");
+      name_id_t ni_nt           = swp->name_id_of(ni_seed, "Nonterminal");
+      name_id_t ni_nt_base      = swp->name_id_of(ni_nt, "Base");
+      name_id_t ni_term         = swp->name_id_of(ni_seed, "Terminal");
 
       seed_axe_parse_tree_nursery_t(tokenization_ptr_t tp) : parse_tree_nursery_t(tp) {}
 
@@ -204,6 +203,7 @@ namespace silva {
       {
         auto ss_rule = stake();
         ss_rule.create_node(ni_axe);
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_axe, nonterminal()));
         SILVA_EXPECT_PARSE_TOKEN_ID(ni_axe, ti_brack_open);
         while (num_tokens_left() >= 1 && token_id_by() == ti_dash) {
           token_index += 1;
@@ -218,7 +218,7 @@ namespace silva {
   seed_axe_t create_seed_axe_expr(syntax_ward_ptr_t swp)
   {
     const string_view_t axe_defn = [] -> string_view_t {
-      const string_view_t start_str = "- Expr =/ Atom ";
+      const string_view_t start_str = "- Expr =/ ";
       const size_t fi_begin         = seed_seed.find(start_str);
       SILVA_ASSERT(fi_begin != string_view_t::npos);
       const string_view_t axe_defn_str_with_rest = seed_seed.substr(fi_begin + start_str.size());
@@ -233,8 +233,7 @@ namespace silva {
     SILVA_EXPECT_ASSERT(nursery.axe());
     parse_tree_ptr_t pt     = swp->add(std::move(nursery).finish());
     const name_id_t ni_expr = swp->name_id_of("Seed", "Expr");
-    const name_id_t ni_atom = swp->name_id_of("Seed", "Atom");
-    auto retval = SILVA_EXPECT_ASSERT(seed_axe_create(swp, ni_expr, ni_atom, pt->span()));
+    auto retval             = SILVA_EXPECT_ASSERT(seed_axe_create(swp, ni_expr, pt->span()));
     return retval;
   }
 
@@ -418,15 +417,6 @@ namespace silva {
         return ss_rule.commit();
       }
 
-      expected_t<parse_tree_node_t> axe_with_atom()
-      {
-        auto ss_rule = stake();
-        ss_rule.create_node(ni_axe_with_atom);
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_axe_with_atom, nonterminal()));
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_axe_with_atom, axe()));
-        return ss_rule.commit();
-      }
-
       expected_t<parse_tree_node_t> rule()
       {
         auto ss_rule = stake();
@@ -449,7 +439,7 @@ namespace silva {
         }
         else if (op_ti == ti_axe) {
           token_index += 1;
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_rule, axe_with_atom()));
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_rule, axe()));
         }
         return ss_rule.commit();
       }

@@ -11,7 +11,7 @@ namespace silva {
 
   const string_view_t seed_axe_seed = R"'(
     - Seed.Axe = [
-      - x = '[' ( '-' Level ) * ']'
+      - x = p.Nonterminal '[' ( '-' Level ) * ']'
       - Level = p.Nonterminal.Base '=' Assoc Ops *
       - Assoc = 'nest' | 'ltr' | 'rtl'
       - Ops = OpType ( '->' p.Nonterminal ) ? Op *
@@ -33,8 +33,6 @@ namespace silva {
     expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, parse_delegate_t) const;
   };
 
-  expected_t<seed_axe_t> seed_axe_create(syntax_ward_ptr_t,
-                                         name_id_t seed_axe_name,
-                                         name_id_t atom_rule_name_id,
-                                         parse_tree_span_t);
+  expected_t<seed_axe_t>
+  seed_axe_create(syntax_ward_ptr_t, name_id_t seed_axe_name, parse_tree_span_t);
 }
