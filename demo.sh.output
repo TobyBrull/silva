@@ -57,7 +57,7 @@ ERROR (MAJOR):
 [01-broken.fern:9:3] _.Fern.LabeledItem
 [01-broken.fern:1:1] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
 [01-broken.fern:1:1] _.Fern
-unexpected forward at [/home/toby/git/silva/cpp/syntax/seed_engine.cpp:820]
+seed_engine_t::apply(_.Fern) failed to parse
 unexpected forward at [/home/toby/git/silva/cpp/syntax/fern.mpp:26]
 
 [0]_.Fern                                         [ none ... ] ]

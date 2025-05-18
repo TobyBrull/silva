@@ -35,8 +35,9 @@ namespace silva::impl {
 
   struct seed_axe_create_nursery_t {
     syntax_ward_ptr_t swp;
-    name_id_t seed_axe_name    = name_id_root;
-    const name_id_style_t& nis = swp->default_name_id_style();
+    name_id_t seed_axe_name     = name_id_root;
+    name_id_t atom_rule_name_id = name_id_root;
+    const name_id_style_t& nis  = swp->default_name_id_style();
 
     const token_id_t ti_atom_nest    = *swp->token_id("atom_nest");
     const token_id_t ti_prefix       = *swp->token_id("prefix");
@@ -63,12 +64,15 @@ namespace silva::impl {
     const name_id_t ni_term        = swp->name_id_of(ni_seed, "Terminal");
 
     seed_axe_t retval{
-        .swp  = swp,
-        .name = seed_axe_name,
+        .swp       = swp,
+        .name      = seed_axe_name,
+        .atom_rule = atom_rule_name_id,
     };
 
-    seed_axe_create_nursery_t(syntax_ward_ptr_t swp, const name_id_t seed_axe_name)
-      : swp(swp), seed_axe_name(seed_axe_name)
+    seed_axe_create_nursery_t(syntax_ward_ptr_t swp,
+                              const name_id_t seed_axe_name,
+                              const name_id_t atom_rule_name_id)
+      : swp(swp), seed_axe_name(seed_axe_name), atom_rule_name_id(atom_rule_name_id)
     {
     }
 
@@ -428,10 +432,12 @@ namespace silva::impl {
 }
 
 namespace silva {
-  expected_t<seed_axe_t>
-  seed_axe_create(syntax_ward_ptr_t swp, const name_id_t seed_axe_name, const parse_tree_span_t pts)
+  expected_t<seed_axe_t> seed_axe_create(syntax_ward_ptr_t swp,
+                                         const name_id_t seed_axe_name,
+                                         const name_id_t atom_rule_name_id,
+                                         const parse_tree_span_t pts)
   {
-    impl::seed_axe_create_nursery_t nursery(swp, seed_axe_name);
+    impl::seed_axe_create_nursery_t nursery(swp, seed_axe_name, atom_rule_name_id);
     SILVA_EXPECT_FWD(nursery.run(pts));
     return std::move(nursery.retval);
   }
@@ -444,8 +450,7 @@ namespace silva::impl {
     const seed_axe_t& seed_axe;
     parse_tree_nursery_t& nursery;
     syntax_ward_ptr_t swp = nursery.swp;
-    const name_id_t atom_name_id;
-    delegate_t<expected_t<parse_tree_node_t>()> atom;
+    delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser;
 
     token_position_t token_position_by(index_t token_index_offset = 0) const
     {
@@ -491,7 +496,7 @@ namespace silva::impl {
 
     expected_t<optional_t<atom_data_t>> try_parse_atom(parse_tree_nursery_t::stake_t& ss_rule)
     {
-      auto maybe_atom_result = atom();
+      auto maybe_atom_result = rule_parser(seed_axe.atom_rule);
       if (!maybe_atom_result) {
         return none;
       }
@@ -503,7 +508,7 @@ namespace silva::impl {
       const pair_t<index_t, index_t> token_range{atom_result.token_begin, atom_result.token_end};
       ss_rule.add_proto_node(atom_result);
       return {atom_data_t{
-          .name             = atom_name_id,
+          .name             = seed_axe.atom_rule,
           .token_range      = token_range,
           .atom_child_index = atom_child_index,
       }};
@@ -951,14 +956,12 @@ namespace silva::impl {
 namespace silva {
   expected_t<parse_tree_node_t>
   seed_axe_t::apply(parse_tree_nursery_t& nursery,
-                    const name_id_t atom_name_id,
-                    delegate_t<expected_t<parse_tree_node_t>()> atom) const
+                    delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser) const
   {
     impl::seed_axe_run_t run{
-        .seed_axe     = *this,
-        .nursery      = nursery,
-        .atom_name_id = atom_name_id,
-        .atom         = atom,
+        .seed_axe    = *this,
+        .nursery     = nursery,
+        .rule_parser = rule_parser,
     };
     const index_t orig_token_index = nursery.token_index;
     const index_t created_node     = SILVA_EXPECT_FWD(run.go(),

@@ -24,15 +24,17 @@ namespace silva {
 
   struct seed_axe_t {
     syntax_ward_ptr_t swp;
-    name_id_t name = name_id_root;
+    name_id_t name      = name_id_root;
+    name_id_t atom_rule = name_id_root;
     hashmap_t<token_id_t, impl::seed_axe_result_t> results;
     optional_t<impl::result_oper_t<impl::oper_regular_t>> concat_result;
 
-    expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&,
-                                        name_id_t atom_name_id,
-                                        delegate_t<expected_t<parse_tree_node_t>()> atom) const;
+    using parse_delegate_t = delegate_t<expected_t<parse_tree_node_t>(name_id_t)>;
+    expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, parse_delegate_t) const;
   };
 
-  expected_t<seed_axe_t>
-  seed_axe_create(syntax_ward_ptr_t, name_id_t seed_axe_name, parse_tree_span_t);
+  expected_t<seed_axe_t> seed_axe_create(syntax_ward_ptr_t,
+                                         name_id_t seed_axe_name,
+                                         name_id_t atom_rule_name_id,
+                                         parse_tree_span_t);
 }

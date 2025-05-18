@@ -22,11 +22,7 @@ namespace silva {
     hashmap_t<token_id_t, optional_t<std::regex>> regexes;
 
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
-    struct seed_axe_data_t {
-      name_id_t atom_rule_name = name_id_root;
-      seed_axe_t seed_axe;
-    };
-    hashmap_t<name_id_t, seed_axe_data_t> seed_axes;
+    hashmap_t<name_id_t, seed_axe_t> seed_axes;
 
     // Maps the scope/rule-name to the set of keywords associated with it.
     hashmap_t<name_id_t, hashset_t<token_id_t>> keyword_scopes;

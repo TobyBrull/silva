@@ -47,6 +47,8 @@ namespace silva::test {
     struct test_nursery_t : public parse_tree_nursery_t {
       const seed_axe_t& seed_axe;
 
+      const name_id_t ni_atom = swp->name_id_of("Test", "Atom");
+
       test_nursery_t(const seed_axe_t& seed_axe, tokenization_ptr_t tp)
         : parse_tree_nursery_t(tp), seed_axe(seed_axe)
       {
@@ -55,7 +57,7 @@ namespace silva::test {
       expected_t<parse_tree_node_t> atom()
       {
         auto ss_rule = stake();
-        ss_rule.create_node(swp->name_id_of("Test", "Atom"));
+        ss_rule.create_node(ni_atom);
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
         SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
                          token_data_by()->category == token_category_t::IDENTIFIER,
@@ -64,11 +66,20 @@ namespace silva::test {
         return ss_rule.commit();
       }
 
+      expected_t<parse_tree_node_t> any_rule(const name_id_t rule_name)
+      {
+        if (rule_name == ni_atom) {
+          return atom();
+        }
+        else {
+          SILVA_EXPECT(false, MAJOR, "unexpected rule {}", swp->name_id_wrap(rule_name));
+        }
+      }
+
       expected_t<parse_tree_node_t> expression()
       {
-        using dg_t = delegate_t<expected_t<parse_tree_node_t>()>;
-        auto dg    = dg_t::make<&test_nursery_t::atom>(this);
-        return seed_axe.apply(*this, swp->name_id_of("Atom"), dg);
+        const auto dg = seed_axe_t::parse_delegate_t::make<&test_nursery_t::any_rule>(this);
+        return seed_axe.apply(*this, dg);
       }
     };
 
@@ -89,8 +100,10 @@ namespace silva::test {
     const auto tt = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.seed-axe", test_seed_axe));
     const auto se = standard_seed_engine(sw.ptr());
     const auto pt = SILVA_EXPECT_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Axe")));
-    const auto sa =
-        SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));
+    const auto sa = SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(),
+                                                         sw.name_id_of("Expr"),
+                                                         sw.name_id_of("Test", "Atom"),
+                                                         pt->span()));
     CHECK(!sa.concat_result.has_value());
     CHECK(sa.results.size() == 15);
     CHECK(sa.results.at(*sw.token_id("=")) ==
@@ -378,6 +391,8 @@ namespace silva::test {
     struct test_nursery_t : public parse_tree_nursery_t {
       const seed_axe_t& seed_axe;
 
+      const name_id_t ni_atom = swp->name_id_of("Test", "Atom");
+
       test_nursery_t(const seed_axe_t& seed_axe, tokenization_ptr_t tp)
         : parse_tree_nursery_t(tp), seed_axe(seed_axe)
       {
@@ -386,7 +401,7 @@ namespace silva::test {
       expected_t<parse_tree_node_t> atom()
       {
         auto ss_rule = stake();
-        ss_rule.create_node(swp->name_id_of("Test", "Atom"));
+        ss_rule.create_node(ni_atom);
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
         if (token_data_by()->category == token_category_t::NUMBER) {
           SILVA_EXPECT(num_tokens_left() >= 2 &&
@@ -401,11 +416,20 @@ namespace silva::test {
         return ss_rule.commit();
       }
 
+      expected_t<parse_tree_node_t> any_rule(const name_id_t rule_name)
+      {
+        if (rule_name == ni_atom) {
+          return atom();
+        }
+        else {
+          SILVA_EXPECT(false, MAJOR, "unexpected rule {}", swp->name_id_wrap(rule_name));
+        }
+      }
+
       expected_t<parse_tree_node_t> expression()
       {
-        using dg_t = delegate_t<expected_t<parse_tree_node_t>()>;
-        auto dg    = dg_t::make<&test_nursery_t::atom>(this);
-        return seed_axe.apply(*this, swp->name_id_of("Atom"), dg);
+        const auto dg = seed_axe_t::parse_delegate_t::make<&test_nursery_t::any_rule>(this);
+        return seed_axe.apply(*this, dg);
       }
     };
 
@@ -422,8 +446,10 @@ namespace silva::test {
     const auto tt = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.seed-axe", test_seed_axe));
     const auto se = standard_seed_engine(sw.ptr());
     const auto pt = SILVA_EXPECT_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Axe")));
-    const auto sa =
-        SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));
+    const auto sa = SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(),
+                                                         sw.name_id_of("Expr"),
+                                                         sw.name_id_of("Test", "Atom"),
+                                                         pt->span()));
     CHECK(sa.concat_result.has_value());
     CHECK(sa.results.size() == 11);
 

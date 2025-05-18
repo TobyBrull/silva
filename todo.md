@@ -8,6 +8,8 @@
 
 * Support specifying custom tokenizations in Seed.
 
+* Allow error forwarding completely without adding error node. (fern.mpp:26)
+
 ## Long Term
 
 * Seed

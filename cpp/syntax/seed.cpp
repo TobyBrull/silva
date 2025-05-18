@@ -1,8 +1,8 @@
 #include "seed.hpp"
 
-#include "canopy/expected.hpp"
+#include "seed_axe.hpp"
 
-#include "syntax.hpp"
+#include "canopy/expected.hpp"
 
 namespace silva {
   using enum token_category_t;
@@ -233,7 +233,8 @@ namespace silva {
     SILVA_EXPECT_ASSERT(nursery.axe());
     parse_tree_ptr_t pt     = swp->add(std::move(nursery).finish());
     const name_id_t ni_expr = swp->name_id_of("Seed", "Expr");
-    auto retval             = SILVA_EXPECT_ASSERT(seed_axe_create(swp, ni_expr, pt->span()));
+    const name_id_t ni_atom = swp->name_id_of("Seed", "Atom");
+    auto retval = SILVA_EXPECT_ASSERT(seed_axe_create(swp, ni_expr, ni_atom, pt->span()));
     return retval;
   }
 
@@ -382,14 +383,23 @@ namespace silva {
         return ss_rule.commit();
       }
 
+      expected_t<parse_tree_node_t> any_rule(const name_id_t rule_name)
+      {
+        if (rule_name == ni_atom) {
+          return atom();
+        }
+        else {
+          SILVA_EXPECT(false, MAJOR, "unexpected rule {}", swp->name_id_wrap(rule_name));
+        }
+      }
+
       expected_t<parse_tree_node_t> expr()
       {
         auto ss = stake();
         SILVA_EXPECT_PARSE(ni_expr, num_tokens_left() >= 1, "no more tokens in input");
-        using atom_delegate_t    = delegate_t<expected_t<parse_tree_node_t>()>;
-        const auto atom_delegate = atom_delegate_t::make<&seed_parse_tree_nursery_t::atom>(this);
-        ss.add_proto_node(
-            SILVA_EXPECT_PARSE_FWD(ni_expr, seed_seed_axe.apply(*this, ni_atom, atom_delegate)));
+        const auto dg =
+            seed_axe_t::parse_delegate_t::make<&seed_parse_tree_nursery_t::any_rule>(this);
+        ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_expr, seed_seed_axe.apply(*this, dg)));
         return ss.commit();
       }
 

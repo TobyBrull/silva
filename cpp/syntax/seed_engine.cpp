@@ -40,10 +40,9 @@ namespace silva {
     {
     }
 
-    expected_t<seed_engine_t::seed_axe_data_t>
-    create_seed_axe(const name_id_t scope_name,
-                    const name_id_t rule_name,
-                    const parse_tree_span_t pts_axe_with_atom)
+    expected_t<seed_axe_t> create_seed_axe(const name_id_t scope_name,
+                                           const name_id_t rule_name,
+                                           const parse_tree_span_t pts_axe_with_atom)
     {
       const auto& s_node = pts_axe_with_atom[0];
       SILVA_EXPECT(s_node.rule_name == ni_axe_with_atom, MINOR);
@@ -54,11 +53,8 @@ namespace silva {
           nis.derive_name(scope_name, pts_axe_with_atom.sub_tree_span_at(children[0])));
 
       const auto pts_axe = pts_axe_with_atom.sub_tree_span_at(children[1]);
-      auto sa            = SILVA_EXPECT_FWD(seed_axe_create(swp, rule_name, pts_axe));
-      return {{
-          .atom_rule_name = atom_rule_name,
-          .seed_axe       = std::move(sa),
-      }};
+      auto sa = SILVA_EXPECT_FWD(seed_axe_create(swp, rule_name, atom_rule_name, pts_axe));
+      return {std::move(sa)};
     }
 
     expected_t<void> recognize_keyword(name_id_t rule_name, const token_id_t keyword)
@@ -745,16 +741,15 @@ namespace silva {
         const auto it = se->seed_axes.find(t_rule_name);
         SILVA_EXPECT(it != se->seed_axes.end(), MAJOR);
         auto ss{stake()};
-        const seed_engine_t::seed_axe_data_t& seed_axe_data = it->second;
-        const delegate_t<expected_t<parse_tree_node_t>()>::pack_t pack{
-            [&]() -> expected_t<parse_tree_node_t> {
-              node_and_error_t result = SILVA_EXPECT_FWD(handle_rule(seed_axe_data.atom_rule_name));
-              return std::move(result.node);
+        const seed_axe_t& seed_axe = it->second;
+        const seed_axe_t::parse_delegate_t::pack_t pack{
+            [&](const name_id_t rule_name) -> expected_t<parse_tree_node_t> {
+              node_and_error_t result = SILVA_EXPECT_FWD(handle_rule(rule_name));
+              return std::move(result).as_node();
             },
         };
-        ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(
-            t_rule_name,
-            seed_axe_data.seed_axe.apply(*this, seed_axe_data.atom_rule_name, pack.delegate)));
+        ss.add_proto_node(
+            SILVA_EXPECT_PARSE_FWD(t_rule_name, seed_axe.apply(*this, pack.delegate)));
         return ss.commit();
       }
 
@@ -817,7 +812,9 @@ namespace silva {
   {
     impl::seed_engine_nursery_t nursery(tp, this);
     SILVA_EXPECT_FWD(nursery.check());
-    auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name));
+    auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name),
+                                "seed_engine_t::apply({}) failed to parse",
+                                tp->swp->name_id_wrap(goal_rule_name));
     if (ptn.node.token_begin != 0 || ptn.node.token_end != tp->tokens.size()) {
       SILVA_EXPECT(!ptn.last_error.is_empty(),
                    MAJOR,
