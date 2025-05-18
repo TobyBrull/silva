@@ -7,6 +7,7 @@
 using namespace silva;
 using namespace silva::impl;
 using enum silva::impl::assoc_t;
+using enum silva::token_category_t;
 
 namespace silva::test {
   template<typename SeedAxeNursery>
@@ -33,12 +34,19 @@ namespace silva::test {
     REQUIRE(maybe_tt.has_value());
     auto tt              = std::move(maybe_tt).value();
     auto maybe_result_pt = run_seed_axe<SeedAxeNursery>(*swp, pa, std::move(tt));
+    optional_t<string_t> result_str;
+    if (maybe_result_pt.has_value()) {
+      auto result_pt = std::move(maybe_result_pt).value();
+      result_str     = SILVA_EXPECT_REQUIRE(result_pt->span().to_string());
+      UNSCOPED_INFO(result_str.value());
+    }
+    else {
+      UNSCOPED_INFO(to_string(maybe_result_pt.error()).as_string_view());
+    }
     REQUIRE(maybe_result_pt.has_value() == expected_str.has_value());
     if (!expected_str.has_value()) {
       return;
     }
-    auto result_pt        = std::move(maybe_result_pt).value();
-    const auto result_str = SILVA_EXPECT_REQUIRE(result_pt->span().to_string());
     CHECK(result_str == expected_str.value().substr(1));
   }
 
@@ -48,6 +56,7 @@ namespace silva::test {
       const seed_axe_t& seed_axe;
 
       const name_id_t ni_atom = swp->name_id_of("Test", "Atom");
+      const name_id_t ni_expr = swp->name_id_of("Expr");
 
       test_nursery_t(const seed_axe_t& seed_axe, tokenization_ptr_t tp)
         : parse_tree_nursery_t(tp), seed_axe(seed_axe)
@@ -59,8 +68,7 @@ namespace silva::test {
         auto ss_rule = stake();
         ss_rule.create_node(ni_atom);
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
-        SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
-                         token_data_by()->category == token_category_t::IDENTIFIER,
+        SILVA_EXPECT(token_data_by()->category == NUMBER || token_data_by()->category == IDENTIFIER,
                      MINOR);
         token_index += 1;
         return ss_rule.commit();
@@ -70,6 +78,9 @@ namespace silva::test {
       {
         if (rule_name == ni_atom) {
           return atom();
+        }
+        else if (rule_name == ni_expr) {
+          return expression();
         }
         else {
           SILVA_EXPECT(false, MAJOR, "unexpected rule {}", swp->name_id_wrap(rule_name));
@@ -389,7 +400,9 @@ namespace silva::test {
     struct test_nursery_t : public parse_tree_nursery_t {
       const seed_axe_t& seed_axe;
 
-      const name_id_t ni_atom = swp->name_id_of("Test", "Atom");
+      const name_id_t ni_expr       = swp->name_id_of("Expr");
+      const name_id_t ni_atom       = swp->name_id_of("Test", "Atom");
+      const name_id_t ni_funny_expr = swp->name_id_of("Test", "FunnyExpr");
 
       test_nursery_t(const seed_axe_t& seed_axe, tokenization_ptr_t tp)
         : parse_tree_nursery_t(tp), seed_axe(seed_axe)
@@ -401,14 +414,22 @@ namespace silva::test {
         auto ss_rule = stake();
         ss_rule.create_node(ni_atom);
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
-        if (token_data_by()->category == token_category_t::NUMBER) {
-          SILVA_EXPECT(num_tokens_left() >= 2 &&
-                           token_data_by(1)->category == token_category_t::OPERATOR,
-                       MINOR);
+        if (token_data_by()->category == NUMBER) {
+          SILVA_EXPECT(num_tokens_left() >= 2 && token_data_by(1)->category == OPERATOR, MINOR);
           token_index += 2;
         }
         else {
-          SILVA_EXPECT(token_data_by()->category == token_category_t::IDENTIFIER, MINOR);
+          SILVA_EXPECT(token_data_by()->category == IDENTIFIER, MINOR);
+          token_index += 1;
+        }
+        return ss_rule.commit();
+      }
+
+      expected_t<parse_tree_node_t> funny_expr()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_funny_expr);
+        while (num_tokens_left() >= 1 && token_data_by()->category == STRING) {
           token_index += 1;
         }
         return ss_rule.commit();
@@ -418,6 +439,12 @@ namespace silva::test {
       {
         if (rule_name == ni_atom) {
           return atom();
+        }
+        else if (rule_name == ni_expr) {
+          return expression();
+        }
+        else if (rule_name == ni_funny_expr) {
+          return funny_expr();
         }
         else {
           SILVA_EXPECT(false, MAJOR, "unexpected rule {}", swp->name_id_wrap(rule_name));
@@ -437,6 +464,7 @@ namespace silva::test {
         - Prf_hi  = rtl   prefix_nest '(' ')'
         - Cat     = ltr   infix concat
         - Prf_lo  = rtl   prefix_nest '{' '}'
+                          prefix_nest -> _.Test.FunnyExpr '<:' ':>'
         - Mul     = ltr   infix '*'
         - Add     = ltr   infix_flat '+' infix '-'
         - Assign  = rtl   infix_flat '=' infix '%'
@@ -447,14 +475,22 @@ namespace silva::test {
     const auto sa =
         SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));
     CHECK(sa.concat_result.has_value());
-    CHECK(sa.results.size() == 11);
+    CHECK(sa.results.size() == 13);
 
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "x", R"(
+[0]_.Test.Atom                                    x
+)");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "x y z", R"(
 [0]_.Expr.Cat.concat                              x y z
   [0]_.Expr.Cat.concat                            x y
     [0]_.Test.Atom                                x
     [1]_.Test.Atom                                y
   [1]_.Test.Atom                                  z
+)");
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "<: 'foo' 'bar' 'baz' :> a", R"(
+[0]_.Expr.Prf_lo.<:                               <: 'foo' ... :> a
+  [0]_.Test.FunnyExpr                             'foo' 'bar' 'baz'
+  [1]_.Test.Atom                                  a
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "{ b } a", R"(
 [0]_.Expr.Prf_lo.{                                { b } a

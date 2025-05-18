@@ -25,6 +25,8 @@ namespace silva::impl {
     token_id_t left_bracket{0};
     token_id_t right_bracket{0};
 
+    name_id_t nest_rule_name = name_id_root;
+
     friend auto operator<=>(const prefix_nest_t&, const prefix_nest_t&) = default;
   };
 
@@ -32,6 +34,8 @@ namespace silva::impl {
     constexpr static inline index_t arity = -1;
     token_id_t left_bracket{0};
     token_id_t right_bracket{0};
+
+    name_id_t nest_rule_name = name_id_root;
 
     friend auto operator<=>(const atom_nest_t&, const atom_nest_t&) = default;
   };
@@ -50,6 +54,8 @@ namespace silva::impl {
     token_id_t first{0};
     token_id_t second{0};
 
+    name_id_t nest_rule_name = name_id_root;
+
     friend auto operator<=>(const ternary_t&, const ternary_t&) = default;
   };
 
@@ -64,6 +70,8 @@ namespace silva::impl {
     constexpr static inline index_t arity = 2;
     token_id_t left_bracket{0};
     token_id_t right_bracket{0};
+
+    name_id_t nest_rule_name = name_id_root;
 
     friend auto operator<=>(const postfix_nest_t&, const postfix_nest_t&) = default;
   };

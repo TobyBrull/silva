@@ -387,6 +387,9 @@ namespace silva {
         if (rule_name == ni_atom) {
           return atom();
         }
+        else if (rule_name == ni_expr) {
+          return expr();
+        }
         else {
           SILVA_EXPECT(false, MAJOR, "unexpected rule {}", swp->name_id_wrap(rule_name));
         }

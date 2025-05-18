@@ -17,8 +17,9 @@
     - Block = '{' _.Lox.Decl * '}'
   ]
   - Expr = [
-    - x =/ Atom [
+    - x =/ x.Expr.Atom [
       - Primary     = nest atom_nest '(' ')'
+      - Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
       - Unary       = rtl prefix '!' '-'
       - Factor      = ltr infix '/' '*'
       - Term        = ltr infix '-' '+'
@@ -27,12 +28,11 @@
       - LogicAnd    = ltr infix 'and'
       - LogicOr     = ltr infix 'or'
       - Assign      = ltr infix '='
-      - Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
       - Comma       = ltr infix_flat ','
     ]
     - Atom = 'true' | 'false' | 'none' | 'this'
            | number | string | identifier
-    - Arguments = Expr ( ',' Expr ) *
+    - Arguments = ( x ( ',' x ) * ) ?
   ]
   - Function = [
     - x = identifier '(' Parameters ? ')' _.Lox.Stmt.Block

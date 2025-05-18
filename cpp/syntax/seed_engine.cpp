@@ -741,7 +741,7 @@ namespace silva {
         auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name, token_position_by());
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
-        SILVA_EXPECT(rule_depth <= 50,
+        SILVA_EXPECT(rule_depth <= 100,
                      FATAL,
                      "Stack is getting too deep. Infinite recursion in grammar?");
         const index_t orig_token_index = token_index;
