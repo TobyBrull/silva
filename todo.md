@@ -1,14 +1,12 @@
 # TODO
 
-* Rename "Seed" to "Root" or "Tree" ?
+* Allow error forwarding completely without adding error node. (fern.mpp:26)
 
 * Rename seed_engine_t to seed_interpreter_t
 
-* Use Python-style indenting (i.e., such that it generated tokens in the tokenization)?
-
-* Support specifying custom tokenizations in Seed.
-
-* Allow error forwarding completely without adding error node. (fern.mpp:26)
+* tokenization:
+    * Allow for python-style indenting (i.e., such that indentation generates it generated tokens in the tokenization)?
+    * Support user-defined tokenization rules.
 
 ## Long Term
 

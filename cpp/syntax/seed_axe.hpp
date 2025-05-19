@@ -2,6 +2,10 @@
 
 #include "seed_axe.impl.hpp"
 
+#include "parse_tree_nursery.hpp"
+
+#include "canopy/delegate.hpp"
+
 // * https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing
 
 // An mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard

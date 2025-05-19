@@ -1,5 +1,9 @@
 #include "seed_axe.hpp"
+
+#include "seed.hpp"
+
 #include "canopy/variant.hpp"
+
 #include <ranges>
 #include <variant>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parse_tree_nursery.hpp"
+#include "syntax/parse_tree.hpp"
 
 // Recommended reading:
 //

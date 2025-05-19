@@ -1,9 +1,9 @@
 #pragma once
 
-#include "canopy/delegate.hpp"
-#include "canopy/types.hpp"
+#include "parse_tree.hpp"
+#include "syntax_ward.hpp"
 
-#include "seed.hpp"
+#include "canopy/types.hpp"
 
 namespace silva::impl {
   enum class assoc_t {
