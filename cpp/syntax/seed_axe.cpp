@@ -523,24 +523,20 @@ namespace silva::impl {
 
     // functions
 
-    expected_t<optional_t<atom_data_t>> try_parse_atom(parse_tree_nursery_t::stake_t& ss_rule)
+    expected_t<atom_data_t> try_parse_atom(parse_tree_nursery_t::stake_t& ss_rule)
     {
-      auto maybe_atom_result = SILVA_EXPECT_FWD_IF(rule_parser(seed_axe.atom_rule), MAJOR);
-      if (!maybe_atom_result) {
-        return none;
-      }
-      auto atom_result = std::move(maybe_atom_result).value();
+      auto atom_result = SILVA_EXPECT_FWD(rule_parser(seed_axe.atom_rule));
       SILVA_EXPECT(atom_result.num_children == 1,
                    ASSERT,
                    "The atom function given to seed_axe_t must always parse a single child");
       const index_t atom_child_index = ss_rule.proto_node.num_children;
       const pair_t<index_t, index_t> token_range{atom_result.token_begin, atom_result.token_end};
       ss_rule.add_proto_node(atom_result);
-      return {atom_data_t{
+      return atom_data_t{
           .name             = seed_axe.atom_rule,
           .token_range      = token_range,
           .atom_child_index = atom_child_index,
-      }};
+      };
     }
 
     struct stack_pair_t {
@@ -776,7 +772,7 @@ namespace silva::impl {
           }
           // Current token is not one of the known operators, so it has to be an atom or the end
           // of the expression
-          const optional_t<atom_data_t> atom_data = SILVA_EXPECT_FWD(try_parse_atom(ss_rule));
+          auto atom_data = SILVA_EXPECT_FWD_IF(try_parse_atom(ss_rule), MAJOR);
           if (!atom_data.has_value()) {
             break;
           }
@@ -790,7 +786,7 @@ namespace silva::impl {
                     .num_children = 0,
                     .subtree_size = 1,
                 },
-                atom_data.value(),
+                std::move(atom_data).value(),
             });
             stack_pair.atom_stack.push_back(atom_item_t{atom_tree_node_index});
             mode = INFIX_MODE;
