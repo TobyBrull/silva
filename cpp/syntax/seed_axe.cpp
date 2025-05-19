@@ -539,6 +539,51 @@ namespace silva::impl {
       };
     }
 
+    expected_t<pair_t<index_t, index_t>> handle_nest(parse_tree_nursery_t::stake_t& ss_rule,
+                                                     const token_id_t left_token,
+                                                     const token_id_t right_token,
+                                                     const name_id_t nest_rule_name)
+    {
+      const index_t token_begin = nursery.token_index;
+      SILVA_EXPECT_PARSE(ss_rule.proto_node.rule_name,
+                         nursery.num_tokens_left() >= 1 && nursery.token_id_by() == left_token,
+                         "expected {}, got {}",
+                         swp->token_id_wrap(left_token),
+                         swp->token_id_wrap(nursery.token_id_by()));
+      nursery.token_index += 1;
+
+      const name_id_t used_rule_name =
+          (nest_rule_name != name_id_root) ? nest_rule_name : seed_axe.name;
+      const auto sub_expr = SILVA_EXPECT_FWD(rule_parser(used_rule_name));
+      SILVA_EXPECT(sub_expr.num_children == 1,
+                   MINOR,
+                   "nest expression must always result in a single node");
+      const index_t atom_child_index = ss_rule.proto_node.num_children;
+      ss_rule.add_proto_node(sub_expr);
+
+      SILVA_EXPECT_PARSE(ss_rule.proto_node.rule_name,
+                         nursery.num_tokens_left() >= 1 && nursery.token_id_by() == right_token,
+                         "expected {}, got {}",
+                         swp->token_id_wrap(right_token),
+                         swp->token_id_wrap(nursery.token_id_by()));
+      nursery.token_index += 1;
+
+      const index_t token_end = nursery.token_index;
+      const atom_data_t atom_data{
+          .name             = used_rule_name,
+          .token_range      = {token_begin + 1, token_end - 1},
+          .atom_child_index = atom_child_index,
+      };
+      atom_tree.push_back(atom_tree_node_t{
+          {
+              .num_children = 0,
+              .subtree_size = 1,
+          },
+          atom_data,
+      });
+      return {{token_begin, token_end}};
+    }
+
     struct stack_pair_t {
       vector_t<atom_tree_node_t>* atom_tree = nullptr;
       parse_tree_nursery_t* nursery         = nullptr;
@@ -696,51 +741,6 @@ namespace silva::impl {
         return {};
       }
     };
-
-    expected_t<pair_t<index_t, index_t>> handle_nest(parse_tree_nursery_t::stake_t& ss_rule,
-                                                     const token_id_t left_token,
-                                                     const token_id_t right_token,
-                                                     const name_id_t nest_rule_name)
-    {
-      const index_t token_begin = nursery.token_index;
-      SILVA_EXPECT_PARSE(ss_rule.proto_node.rule_name,
-                         nursery.num_tokens_left() >= 1 && nursery.token_id_by() == left_token,
-                         "expected {}, got {}",
-                         swp->token_id_wrap(left_token),
-                         swp->token_id_wrap(nursery.token_id_by()));
-      nursery.token_index += 1;
-
-      const name_id_t used_rule_name =
-          (nest_rule_name != name_id_root) ? nest_rule_name : seed_axe.name;
-      const auto sub_expr = SILVA_EXPECT_FWD(rule_parser(used_rule_name));
-      SILVA_EXPECT(sub_expr.num_children == 1,
-                   MINOR,
-                   "nest expression must always result in a single node");
-      const index_t atom_child_index = ss_rule.proto_node.num_children;
-      ss_rule.add_proto_node(sub_expr);
-
-      SILVA_EXPECT_PARSE(ss_rule.proto_node.rule_name,
-                         nursery.num_tokens_left() >= 1 && nursery.token_id_by() == right_token,
-                         "expected {}, got {}",
-                         swp->token_id_wrap(right_token),
-                         swp->token_id_wrap(nursery.token_id_by()));
-      nursery.token_index += 1;
-
-      const index_t token_end = nursery.token_index;
-      const atom_data_t atom_data{
-          .name             = used_rule_name,
-          .token_range      = {token_begin + 1, token_end - 1},
-          .atom_child_index = atom_child_index,
-      };
-      atom_tree.push_back(atom_tree_node_t{
-          {
-              .num_children = 0,
-              .subtree_size = 1,
-          },
-          atom_data,
-      });
-      return {{token_begin, token_end}};
-    }
 
     expected_t<void> go_parse(parse_tree_nursery_t::stake_t& ss_rule)
     {
