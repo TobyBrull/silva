@@ -474,12 +474,11 @@ namespace silva {
 
 namespace silva::impl {
   struct seed_axe_run_t {
-    // seed_axe_t::apply() params
-
     const seed_axe_t& seed_axe;
     parse_tree_nursery_t& nursery;
-    syntax_ward_ptr_t swp = nursery.swp;
     delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser;
+
+    syntax_ward_ptr_t swp = nursery.swp;
 
     token_position_t token_position_by(index_t token_index_offset = 0) const
     {
@@ -520,6 +519,9 @@ namespace silva::impl {
 
     vector_t<atom_tree_node_t> atom_tree;
     using atom_tree_span_t = tree_span_t<const atom_tree_node_t>;
+
+    vector_t<oper_item_t> oper_stack;
+    vector_t<atom_item_t> atom_stack;
 
     // functions
 
@@ -584,179 +586,161 @@ namespace silva::impl {
       return {{token_begin, token_end}};
     }
 
-    struct stack_pair_t {
-      vector_t<atom_tree_node_t>* atom_tree = nullptr;
-      parse_tree_nursery_t* nursery         = nullptr;
-      vector_t<oper_item_t> oper_stack;
-      vector_t<atom_item_t> atom_stack;
-      syntax_ward_ptr_t swp = nursery->swp;
+    struct consistent_range_t {
+      index_t num_atoms          = 0;
+      name_id_t joint_level_name = name_id_root;
+      index_t token_begin        = 0;
+      index_t token_end          = 0;
+    };
+    expected_t<consistent_range_t> consistent_range(span_t<const oper_item_t> ois) const
+    {
+      // The following probably doesn't make sense if ois.size() > 1 and the operators are of
+      // type ternary_t, prefix_nest_t, or postfix_nest_t. Should probably rewrite the logic to
+      // cover this case explicitly, and then handle ois.size() > 1 only for prefix_t,
+      // postfix_t, and infix_t.
 
-      token_position_t token_position_by(index_t token_index_offset = 0) const
-      {
-        return nursery->token_position_by(token_index_offset);
+      SILVA_EXPECT(!ois.empty(), ASSERT);
+      const index_t common_arity = ois.front().arity;
+      for (index_t i = 1; i < ois.size(); ++i) {
+        SILVA_EXPECT(ois.front().oper == ois[i].oper, ASSERT);
+        SILVA_EXPECT(common_arity == ois[i].arity, ASSERT);
       }
-
-      struct consistent_range_t {
-        index_t num_atoms          = 0;
-        name_id_t joint_level_name = name_id_root;
-        index_t token_begin        = 0;
-        index_t token_end          = 0;
+      SILVA_EXPECT(common_arity >= 1, ASSERT);
+      const index_t combined_arity = (common_arity - 1) * ois.size() + 1;
+      SILVA_EXPECT(combined_arity <= atom_stack.size(),
+                   MINOR,
+                   "[{}] Operator(s) expected at total of {} operands, but only found {}",
+                   nursery.token_position_by(),
+                   combined_arity,
+                   atom_stack.size());
+      const index_t atom_stack_begin = atom_stack.size() - combined_arity;
+      const auto& front_atn          = atom_tree[atom_stack[atom_stack_begin].atom_tree_node_index];
+      consistent_range_t retval{
+          .num_atoms        = combined_arity,
+          .joint_level_name = ois.front().level_name,
+          .token_begin      = front_atn.token_range.first,
+          .token_end        = front_atn.token_range.second,
       };
-      expected_t<consistent_range_t> consistent_range(span_t<const oper_item_t> ois) const
-      {
-        // The following probably doesn't make sense if ois.size() > 1 and the operators are of
-        // type ternary_t, prefix_nest_t, or postfix_nest_t. Should probably rewrite the logic to
-        // cover this case explicitly, and then handle ois.size() > 1 only for prefix_t,
-        // postfix_t, and infix_t.
 
-        SILVA_EXPECT(!ois.empty(), ASSERT);
-        const index_t common_arity = ois.front().arity;
-        for (index_t i = 1; i < ois.size(); ++i) {
-          SILVA_EXPECT(ois.front().oper == ois[i].oper, ASSERT);
-          SILVA_EXPECT(common_arity == ois[i].arity, ASSERT);
+      const auto check_coverage = [&](const oper_item_t& oi) -> expected_t<void> {
+        SILVA_EXPECT(!oi.min_token_index.has_value() || oi.min_token_index <= retval.token_begin,
+                     MINOR);
+        SILVA_EXPECT(!oi.max_token_index.has_value() || retval.token_end <= oi.max_token_index,
+                     MINOR);
+        return {};
+      };
+
+      index_t oi_index = 0;
+      index_t cti_pos  = 0;
+      while (oi_index < ois.size() && ois[oi_index].covered_token_indexes.size == 0) {
+        SILVA_EXPECT_FWD(check_coverage(ois[oi_index]));
+        oi_index += 1;
+      }
+      const auto cti_peek = [&]() -> optional_t<index_t> {
+        if (oi_index < ois.size() && cti_pos < ois[oi_index].covered_token_indexes.size) {
+          return ois[oi_index].covered_token_indexes[cti_pos];
         }
-        SILVA_EXPECT(common_arity >= 1, ASSERT);
-        const index_t combined_arity = (common_arity - 1) * ois.size() + 1;
-        SILVA_EXPECT(combined_arity <= atom_stack.size(),
-                     MINOR,
-                     "[{}] Operator(s) expected at total of {} operands, but only found {}",
-                     nursery->token_position_by(),
-                     combined_arity,
-                     atom_stack.size());
-        const index_t atom_stack_begin = atom_stack.size() - combined_arity;
-        const auto& front_atn = (*atom_tree)[atom_stack[atom_stack_begin].atom_tree_node_index];
-        consistent_range_t retval{
-            .num_atoms        = combined_arity,
-            .joint_level_name = ois.front().level_name,
-            .token_begin      = front_atn.token_range.first,
-            .token_end        = front_atn.token_range.second,
-        };
-
-        const auto check_coverage = [&](const oper_item_t& oi) -> expected_t<void> {
-          SILVA_EXPECT(!oi.min_token_index.has_value() || oi.min_token_index <= retval.token_begin,
-                       MINOR);
-          SILVA_EXPECT(!oi.max_token_index.has_value() || retval.token_end <= oi.max_token_index,
-                       MINOR);
-          return {};
-        };
-
-        index_t oi_index = 0;
-        index_t cti_pos  = 0;
-        while (oi_index < ois.size() && ois[oi_index].covered_token_indexes.size == 0) {
+        else {
+          return none;
+        }
+      };
+      const auto cti_advance = [&]() -> expected_t<void> {
+        cti_pos += 1;
+        if (cti_pos == ois[oi_index].covered_token_indexes.size) {
           SILVA_EXPECT_FWD(check_coverage(ois[oi_index]));
           oi_index += 1;
-        }
-        const auto cti_peek = [&]() -> optional_t<index_t> {
-          if (oi_index < ois.size() && cti_pos < ois[oi_index].covered_token_indexes.size) {
-            return ois[oi_index].covered_token_indexes[cti_pos];
-          }
-          else {
-            return none;
-          }
-        };
-        const auto cti_advance = [&]() -> expected_t<void> {
-          cti_pos += 1;
-          if (cti_pos == ois[oi_index].covered_token_indexes.size) {
-            SILVA_EXPECT_FWD(check_coverage(ois[oi_index]));
-            oi_index += 1;
-            cti_pos = 0;
-          }
-          return {};
-        };
-        const auto try_ctis = [&]() -> expected_t<void> {
-          if (const auto cti = cti_peek(); cti.has_value() && cti.value() < retval.token_begin) {
-            SILVA_EXPECT(cti.value() + 1 == retval.token_begin, MINOR);
-            retval.token_begin -= 1;
-            SILVA_EXPECT_FWD(cti_advance());
-          }
-          if (const auto cti = cti_peek(); cti.has_value()) {
-            SILVA_EXPECT(retval.token_end <= cti.value(), MINOR);
-            if (retval.token_end == cti.value()) {
-              retval.token_end += 1;
-              SILVA_EXPECT_FWD(cti_advance());
-            }
-          }
-          return {};
-        };
-
-        SILVA_EXPECT_FWD(try_ctis());
-        for (index_t atom_stack_index = atom_stack_begin + 1; atom_stack_index < atom_stack.size();
-             ++atom_stack_index) {
-          const auto& atn = (*atom_tree)[atom_stack[atom_stack_index].atom_tree_node_index];
-          SILVA_EXPECT(retval.token_end == atn.token_range.first, MINOR);
-          retval.token_end = atn.token_range.second;
-          SILVA_EXPECT_FWD(try_ctis());
-        }
-
-        SILVA_EXPECT(oi_index == ois.size(), MINOR);
-        SILVA_EXPECT(cti_pos == 0, MINOR);
-
-        return retval;
-      }
-
-      expected_t<void> stack_pop(precedence_t prec)
-      {
-        while (!oper_stack.empty() && !(oper_stack.back().precedence < prec)) {
-          const index_t oper_stack_end = oper_stack.size();
-          index_t oper_stack_begin     = oper_stack_end - 1;
-          if (const auto* infix_op = std::get_if<infix_t>(&oper_stack[oper_stack_end - 1].oper);
-              infix_op != nullptr && infix_op->flatten) {
-            while (oper_stack_begin > 0 &&
-                   oper_stack[oper_stack_begin - 1].oper == oper_stack[oper_stack_end - 1].oper) {
-              oper_stack_begin -= 1;
-            }
-          }
-          const span_t<const oper_item_t> ois{&oper_stack[oper_stack_begin],
-                                              &oper_stack[oper_stack_end]};
-          const consistent_range_t cr =
-              SILVA_EXPECT_PARSE_FWD(oper_stack[oper_stack_begin].level_name,
-                                     consistent_range(ois));
-          oper_stack.resize(oper_stack.size() - ois.size());
-          SILVA_EXPECT(cr.num_atoms <= atom_stack.size(), MINOR);
-          index_t subtree_size = 1;
-          for (index_t i = atom_stack.size() - cr.num_atoms; i < atom_stack.size(); ++i) {
-            const index_t curr_subtree_size =
-                (*atom_tree)[atom_stack[i].atom_tree_node_index].subtree_size;
-            if (i > atom_stack.size() - cr.num_atoms) {
-              SILVA_EXPECT(atom_stack[i - 1].atom_tree_node_index ==
-                               atom_stack[i].atom_tree_node_index - curr_subtree_size,
-                           ASSERT);
-            }
-            subtree_size += curr_subtree_size;
-          }
-          atom_stack.resize(atom_stack.size() - cr.num_atoms);
-          atom_stack.push_back(atom_item_t{.atom_tree_node_index = index_t(atom_tree->size())});
-          atom_tree->push_back(atom_tree_node_t{
-              {
-                  .num_children = cr.num_atoms,
-                  .subtree_size = subtree_size,
-              },
-              {
-                  .name                  = cr.joint_level_name,
-                  .token_range           = {cr.token_begin, cr.token_end},
-                  .atom_child_node_index = none,
-              },
-          });
+          cti_pos = 0;
         }
         return {};
+      };
+      const auto try_ctis = [&]() -> expected_t<void> {
+        if (const auto cti = cti_peek(); cti.has_value() && cti.value() < retval.token_begin) {
+          SILVA_EXPECT(cti.value() + 1 == retval.token_begin, MINOR);
+          retval.token_begin -= 1;
+          SILVA_EXPECT_FWD(cti_advance());
+        }
+        if (const auto cti = cti_peek(); cti.has_value()) {
+          SILVA_EXPECT(retval.token_end <= cti.value(), MINOR);
+          if (retval.token_end == cti.value()) {
+            retval.token_end += 1;
+            SILVA_EXPECT_FWD(cti_advance());
+          }
+        }
+        return {};
+      };
+
+      SILVA_EXPECT_FWD(try_ctis());
+      for (index_t atom_stack_index = atom_stack_begin + 1; atom_stack_index < atom_stack.size();
+           ++atom_stack_index) {
+        const auto& atn = atom_tree[atom_stack[atom_stack_index].atom_tree_node_index];
+        SILVA_EXPECT(retval.token_end == atn.token_range.first, MINOR);
+        retval.token_end = atn.token_range.second;
+        SILVA_EXPECT_FWD(try_ctis());
       }
-    };
+
+      SILVA_EXPECT(oi_index == ois.size(), MINOR);
+      SILVA_EXPECT(cti_pos == 0, MINOR);
+
+      return retval;
+    }
+
+    expected_t<void> stack_pop(precedence_t prec)
+    {
+      while (!oper_stack.empty() && !(oper_stack.back().precedence < prec)) {
+        const index_t oper_stack_end = oper_stack.size();
+        index_t oper_stack_begin     = oper_stack_end - 1;
+        if (const auto* infix_op = std::get_if<infix_t>(&oper_stack[oper_stack_end - 1].oper);
+            infix_op != nullptr && infix_op->flatten) {
+          while (oper_stack_begin > 0 &&
+                 oper_stack[oper_stack_begin - 1].oper == oper_stack[oper_stack_end - 1].oper) {
+            oper_stack_begin -= 1;
+          }
+        }
+        const span_t<const oper_item_t> ois{&oper_stack[oper_stack_begin],
+                                            &oper_stack[oper_stack_end]};
+        const consistent_range_t cr =
+            SILVA_EXPECT_PARSE_FWD(oper_stack[oper_stack_begin].level_name, consistent_range(ois));
+        oper_stack.resize(oper_stack.size() - ois.size());
+        SILVA_EXPECT(cr.num_atoms <= atom_stack.size(), MINOR);
+        index_t subtree_size = 1;
+        for (index_t i = atom_stack.size() - cr.num_atoms; i < atom_stack.size(); ++i) {
+          const index_t curr_subtree_size =
+              atom_tree[atom_stack[i].atom_tree_node_index].subtree_size;
+          if (i > atom_stack.size() - cr.num_atoms) {
+            SILVA_EXPECT(atom_stack[i - 1].atom_tree_node_index ==
+                             atom_stack[i].atom_tree_node_index - curr_subtree_size,
+                         ASSERT);
+          }
+          subtree_size += curr_subtree_size;
+        }
+        atom_stack.resize(atom_stack.size() - cr.num_atoms);
+        atom_stack.push_back(atom_item_t{.atom_tree_node_index = index_t(atom_tree.size())});
+        atom_tree.push_back(atom_tree_node_t{
+            {
+                .num_children = cr.num_atoms,
+                .subtree_size = subtree_size,
+            },
+            {
+                .name                  = cr.joint_level_name,
+                .token_range           = {cr.token_begin, cr.token_end},
+                .atom_child_node_index = none,
+            },
+        });
+      }
+      return {};
+    }
 
     expected_t<parse_tree_node_t> go_parse()
     {
       auto ss = nursery.stake();
 
-      stack_pair_t stack_pair{
-          .atom_tree = &atom_tree,
-          .nursery   = &nursery,
-      };
       mode_t mode = ATOM_MODE;
 
       const auto hallucinate_concat = [&]() -> expected_t<void> {
         SILVA_EXPECT(seed_axe.concat_result.has_value(), ASSERT);
         const auto& reg = seed_axe.concat_result.value();
-        SILVA_EXPECT_FWD(stack_pair.stack_pop(reg.precedence));
-        stack_pair.oper_stack.push_back(oper_item_t{
+        SILVA_EXPECT_FWD(stack_pop(reg.precedence));
+        oper_stack.push_back(oper_item_t{
             .oper       = std::get<infix_t>(reg.oper),
             .arity      = infix_t::arity,
             .level_name = reg.name,
@@ -790,7 +774,7 @@ namespace silva::impl {
                 },
                 std::move(atom_data).value(),
             });
-            stack_pair.atom_stack.push_back(atom_item_t{atom_tree_node_index});
+            atom_stack.push_back(atom_item_t{atom_tree_node_index});
             mode = INFIX_MODE;
             continue;
           }
@@ -817,7 +801,7 @@ namespace silva::impl {
                                "found non-prefix operator {} when expecting next atom",
                                swp->token_id_wrap(nursery.token_id_by()));
             const auto& res = pa_result.prefix.value();
-            SILVA_EXPECT_FWD(stack_pair.stack_pop(res.precedence));
+            SILVA_EXPECT_FWD(stack_pop(res.precedence));
 
             if (const auto* x = std::get_if<atom_nest_t>(&res.oper)) {
               const auto [token_begin, token_end] = SILVA_EXPECT_FWD(
@@ -833,12 +817,12 @@ namespace silva::impl {
                       .atom_child_node_index = none,
                   },
               });
-              stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
+              atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
               mode = INFIX_MODE;
               continue;
             }
             else if (const auto* x = std::get_if<prefix_t>(&res.oper)) {
-              stack_pair.oper_stack.push_back(oper_item_t{
+              oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = prefix_t::arity,
                   .level_name            = res.name,
@@ -852,8 +836,8 @@ namespace silva::impl {
             else if (const auto* x = std::get_if<prefix_nest_t>(&res.oper)) {
               const auto [token_begin, token_end] = SILVA_EXPECT_FWD(
                   handle_nest(ss, x->left_bracket, x->right_bracket, x->nest_rule_name));
-              stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
-              stack_pair.oper_stack.push_back(oper_item_t{
+              atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
+              oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = prefix_nest_t::arity,
                   .level_name            = res.name,
@@ -867,10 +851,10 @@ namespace silva::impl {
           else {
             SILVA_EXPECT(pa_result.regular.has_value(), MINOR);
             const auto& res = pa_result.regular.value();
-            SILVA_EXPECT_FWD(stack_pair.stack_pop(res.precedence));
+            SILVA_EXPECT_FWD(stack_pop(res.precedence));
 
             if (const auto* x = std::get_if<postfix_t>(&res.oper)) {
-              stack_pair.oper_stack.push_back(oper_item_t{
+              oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = postfix_t::arity,
                   .level_name            = res.name,
@@ -884,8 +868,8 @@ namespace silva::impl {
             else if (const auto* x = std::get_if<postfix_nest_t>(&res.oper)) {
               const auto [token_begin, token_end] = SILVA_EXPECT_FWD(
                   handle_nest(ss, x->left_bracket, x->right_bracket, x->nest_rule_name));
-              stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
-              stack_pair.oper_stack.push_back(oper_item_t{
+              atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
+              oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = postfix_nest_t::arity,
                   .level_name            = res.name,
@@ -896,7 +880,7 @@ namespace silva::impl {
               continue;
             }
             else if (const auto* x = std::get_if<infix_t>(&res.oper)) {
-              stack_pair.oper_stack.push_back(oper_item_t{
+              oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = infix_t::arity,
                   .level_name            = res.name,
@@ -910,8 +894,8 @@ namespace silva::impl {
             else if (const auto* x = std::get_if<ternary_t>(&res.oper)) {
               const auto [token_begin, token_end] =
                   SILVA_EXPECT_FWD(handle_nest(ss, x->first, x->second, x->nest_rule_name));
-              stack_pair.atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
-              stack_pair.oper_stack.push_back(oper_item_t{
+              atom_stack.push_back(atom_item_t{index_t(atom_tree.size() - 1)});
+              oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = ternary_t::arity,
                   .level_name            = res.name,
@@ -925,14 +909,13 @@ namespace silva::impl {
         }
         SILVA_EXPECT(false, ASSERT);
       }
-      SILVA_EXPECT_FWD(stack_pair.stack_pop(precedence_min),
+      SILVA_EXPECT_FWD(stack_pop(precedence_min),
                        "[{}] at the end of the expression",
                        token_position_by());
-      SILVA_EXPECT(stack_pair.oper_stack.empty(), MINOR);
-      SILVA_EXPECT_PARSE(seed_axe.name, stack_pair.atom_stack.size() > 0, "empty expression");
-      SILVA_EXPECT(stack_pair.atom_stack.size() == 1, MINOR);
-      SILVA_EXPECT(stack_pair.atom_stack.front().atom_tree_node_index + 1 == atom_tree.size(),
-                   MINOR);
+      SILVA_EXPECT(oper_stack.empty(), MINOR);
+      SILVA_EXPECT_PARSE(seed_axe.name, atom_stack.size() > 0, "empty expression");
+      SILVA_EXPECT(atom_stack.size() == 1, MINOR);
+      SILVA_EXPECT(atom_stack.front().atom_tree_node_index + 1 == atom_tree.size(), MINOR);
       return ss.commit();
     }
 
@@ -963,7 +946,7 @@ namespace silva::impl {
       return retval;
     }
 
-    expected_t<index_t> go()
+    expected_t<index_t> run()
     {
       auto ss      = nursery.stake();
       auto ss_rule = nursery.stake();
@@ -1009,7 +992,7 @@ namespace silva {
         .rule_parser = rule_parser,
     };
     const index_t orig_token_index = nursery.token_index;
-    const index_t created_node     = SILVA_EXPECT_FWD(run.go(),
+    const index_t created_node     = SILVA_EXPECT_FWD(run.run(),
                                                   "[{}] when parsing expression starting here",
                                                   nursery.token_position_at(orig_token_index));
     auto& rv_nodes                 = nursery.tree;
