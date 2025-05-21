@@ -44,6 +44,7 @@ namespace silva::impl {
     const name_id_style_t& nis  = swp->default_name_id_style();
 
     const token_id_t ti_atom_nest    = *swp->token_id("atom_nest");
+    const token_id_t ti_atom_nest_t  = *swp->token_id("atom_nest_transparent");
     const token_id_t ti_prefix       = *swp->token_id("prefix");
     const token_id_t ti_prefix_nest  = *swp->token_id("prefix_nest");
     const token_id_t ti_infix        = *swp->token_id("infix");
@@ -176,10 +177,11 @@ namespace silva::impl {
       const auto pts_op_type = pts_ops.sub_tree_span_at(it.pos);
       SILVA_EXPECT(pts_op_type[0].rule_name == ni_axe_op_type, BROKEN_SEED);
       const token_id_t axe_op_type = pts_op_type.first_token_id();
-      SILVA_EXPECT(axe_op_type == ti_atom_nest || axe_op_type == ti_prefix ||
-                       axe_op_type == ti_prefix_nest || axe_op_type == ti_infix ||
-                       axe_op_type == ti_infix_flat || axe_op_type == ti_ternary ||
-                       axe_op_type == ti_postfix || axe_op_type == ti_postfix_nest,
+      SILVA_EXPECT(axe_op_type == ti_atom_nest || axe_op_type == ti_atom_nest_t ||
+                       axe_op_type == ti_prefix || axe_op_type == ti_prefix_nest ||
+                       axe_op_type == ti_infix || axe_op_type == ti_infix_flat ||
+                       axe_op_type == ti_ternary || axe_op_type == ti_postfix ||
+                       axe_op_type == ti_postfix_nest,
                    BROKEN_SEED);
       ++it;
 
@@ -192,27 +194,29 @@ namespace silva::impl {
         }
       }
 
-      if (axe_op_type == ti_atom_nest || axe_op_type == ti_prefix_nest ||
-          axe_op_type == ti_ternary || axe_op_type == ti_postfix_nest) {
+      if (axe_op_type == ti_atom_nest || axe_op_type == ti_atom_nest_t ||
+          axe_op_type == ti_prefix_nest || axe_op_type == ti_ternary ||
+          axe_op_type == ti_postfix_nest) {
         const index_t num_op_tokens = pts_ops[0].num_children - it.child_index;
         SILVA_EXPECT(num_op_tokens % 2 == 0,
                      MINOR,
-                     "{} for operations [ atom_nest prefix_nest ternary postfix_nest ] "
-                     "an even number of operators is expected",
+                     "{} for operations [ atom_nest atom_nest_transparent prefix_nest ternary "
+                     "postfix_nest ] an even number of operators is expected",
                      pts_ops);
       }
       else {
         SILVA_EXPECT(!nest_rule_name.has_value(),
                      MINOR,
-                     "{} nested rule is only allowed on operation types [ atom_nest prefix_nest "
-                     "ternary postfix_nest ]",
+                     "{} nested rule is only allowed on operation types [ atom_nest "
+                     "atom_nest_transparent prefix_nest ternary postfix_nest ]",
                      pts_ops);
       }
 
       if (assoc == NEST) {
-        SILVA_EXPECT(axe_op_type == ti_atom_nest,
+        SILVA_EXPECT(axe_op_type == ti_atom_nest || axe_op_type == ti_atom_nest_t,
                      MINOR,
-                     "{} a 'nest' level only allows operators of type 'atom_nest', not {}",
+                     "{} a 'nest' level only allows operators of type [ atom_nest "
+                     "atom_nest_transparent ], not {}",
                      pts_ops,
                      swp->token_id_wrap(axe_op_type));
       }
@@ -278,7 +282,7 @@ namespace silva::impl {
       // Conceptually, it would make more sense to lower the "while" loop into each of the "if-else"
       // conditions, but the code is a bit shorter this way.
       while (it != end) {
-        if (axe_op_type == ti_atom_nest) {
+        if (axe_op_type == ti_atom_nest || axe_op_type == ti_atom_nest_t) {
           const auto [ti_left, pts_left]   = SILVA_EXPECT_FWD(get_next_not_concat());
           const auto [ti_right, pts_right] = SILVA_EXPECT_FWD(get_next_not_concat());
           SILVA_EXPECT_FWD(register_op(ti_left,
@@ -286,6 +290,7 @@ namespace silva::impl {
                                            .left_bracket   = ti_left,
                                            .right_bracket  = ti_right,
                                            .nest_rule_name = nest_rule_name,
+                                           .creates_node   = (axe_op_type != ti_atom_nest_t),
                                        },
                                        full_name,
                                        precedence,
@@ -565,6 +570,7 @@ namespace silva::impl {
                          swp->token_id_wrap(nursery.token_id_by()));
       nursery.token_index += 1;
 
+      open_term_stack.push_back(output_tree.size());
       output_tree.push_back(tn);
       return {{token_begin, nursery.token_index, ss.commit()}};
     }
@@ -779,15 +785,27 @@ namespace silva::impl {
               const auto [token_begin, token_end, ptn] = SILVA_EXPECT_FWD(
                   handle_nest(x->left_bracket, x->right_bracket, x->nest_rule_name));
               ss.add_proto_node(ptn);
-              open_term_stack.push_back(output_tree.size());
-              term_node_t tn;
-              tn.num_children = 1;
-              tn.subtree_size = output_tree.back().subtree_size + 1;
-              tn.rule_name    = res.name;
-              tn.token_begin  = token_begin;
-              tn.token_end    = token_end;
-              tn.tree_index   = none;
-              output_tree.push_back(tn);
+
+              if (x->creates_node) {
+                open_term_stack.pop_back();
+                open_term_stack.push_back(output_tree.size());
+                term_node_t tn;
+                tn.num_children = 1;
+
+                SILVA_EXPECT(output_tree.back().subtree_size + 1 == 2, ASSERT);
+                tn.subtree_size = 2;
+
+                tn.rule_name   = res.name;
+                tn.token_begin = token_begin;
+                tn.token_end   = token_end;
+                tn.tree_index  = none;
+                output_tree.push_back(tn);
+              }
+              else {
+                output_tree.back().token_begin -= 1;
+                output_tree.back().token_end += 1;
+              }
+
               mode = INFIX_MODE;
               continue;
             }
@@ -807,7 +825,6 @@ namespace silva::impl {
               const auto [token_begin, token_end, ptn] = SILVA_EXPECT_FWD(
                   handle_nest(x->left_bracket, x->right_bracket, x->nest_rule_name));
               ss.add_proto_node(ptn);
-              open_term_stack.push_back(output_tree.size() - 1);
               oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = prefix_nest_t::arity,
@@ -840,7 +857,6 @@ namespace silva::impl {
               const auto [token_begin, token_end, ptn] = SILVA_EXPECT_FWD(
                   handle_nest(x->left_bracket, x->right_bracket, x->nest_rule_name));
               ss.add_proto_node(ptn);
-              open_term_stack.push_back(output_tree.size() - 1);
               oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = postfix_nest_t::arity,
@@ -867,7 +883,6 @@ namespace silva::impl {
               const auto [token_begin, token_end, ptn] =
                   SILVA_EXPECT_FWD(handle_nest(x->first, x->second, x->nest_rule_name));
               ss.add_proto_node(ptn);
-              open_term_stack.push_back(output_tree.size() - 1);
               oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = ternary_t::arity,

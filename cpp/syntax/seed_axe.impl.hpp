@@ -37,6 +37,8 @@ namespace silva::impl {
 
     optional_t<name_id_t> nest_rule_name;
 
+    bool creates_node = true;
+
     friend auto operator<=>(const atom_nest_t&, const atom_nest_t&) = default;
   };
 

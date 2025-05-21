@@ -19,7 +19,8 @@ namespace silva {
       - Level = p.Nonterminal.Base '=' Assoc Ops *
       - Assoc = 'nest' | 'ltr' | 'rtl'
       - Ops = OpType ( '->' p.Nonterminal ) ? Op *
-      - OpType = 'atom_nest' | 'prefix' | 'prefix_nest'
+      - OpType = 'atom_nest' | 'atom_nest_transparent'
+               | 'prefix' | 'prefix_nest'
                | 'infix' | 'infix_flat' | 'ternary'
                | 'postfix' | 'postfix_nest'
       - Op = string | 'concat'

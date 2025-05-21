@@ -58,6 +58,7 @@ namespace silva::test {
               *sw.token_id("ltr"),
               *sw.token_id("rtl"),
               *sw.token_id("atom_nest"),
+              *sw.token_id("atom_nest_transparent"),
               *sw.token_id("prefix"),
               *sw.token_id("prefix_nest"),
               *sw.token_id("infix"),

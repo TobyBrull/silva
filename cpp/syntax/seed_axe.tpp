@@ -490,7 +490,7 @@ namespace silva::test {
 
     syntax_ward_t sw;
     const string_view_t test_seed_axe = R"'( _.Test.Atom [
-        - Nst     = nest  atom_nest '<<' '>>'
+        - Nst     = nest  atom_nest_transparent '<<' '>>'
         - Prf_hi  = rtl   prefix_nest '(' ')'
         - Cat     = ltr   infix concat
         - Prf_lo  = rtl   prefix_nest '{' '}'
@@ -562,10 +562,9 @@ namespace silva::test {
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "a << { b } c >>", R"(
 [0]_.Expr.Cat.concat                              a << ... c >>
   [0]_.Test.Atom                                  a
-  [1]_.Expr.Nst.<<                                << { ... c >>
-    [0]_.Expr.Prf_lo.{                            { b } c
-      [0]_.Test.Atom                              b
-      [1]_.Test.Atom                              c
+  [1]_.Expr.Prf_lo.{                              { b } c
+    [0]_.Test.Atom                                b
+    [1]_.Test.Atom                                c
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "<< a { b } >> c", none);
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "x 1 x z", none);
