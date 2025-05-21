@@ -1,6 +1,7 @@
 #include "seed_axe.hpp"
 
 #include "syntax.hpp"
+#include "syntax/parse_tree_nursery.hpp"
 
 #include <catch2/catch_all.hpp>
 
@@ -47,7 +48,7 @@ namespace silva::test {
     if (!expected_str.has_value()) {
       return;
     }
-    CHECK(result_str == expected_str.value().substr(1));
+    CHECK(result_str.value() == expected_str.value().substr(1));
   }
 
   TEST_CASE("seed-axe-basic", "[seed_axe_t]")
@@ -400,9 +401,12 @@ namespace silva::test {
     struct test_nursery_t : public parse_tree_nursery_t {
       const seed_axe_t& seed_axe;
 
-      const name_id_t ni_expr       = swp->name_id_of("Expr");
-      const name_id_t ni_atom       = swp->name_id_of("Test", "Atom");
-      const name_id_t ni_funny_expr = swp->name_id_of("Test", "FunnyExpr");
+      const token_id_t ti_comma = swp->token_id(",").value();
+
+      const name_id_t ni_expr = swp->name_id_of("Expr");
+      const name_id_t ni_atom = swp->name_id_of("Test", "Atom");
+      const name_id_t ni_arg  = swp->name_id_of("Test", "Arg");
+      const name_id_t ni_args = swp->name_id_of("Test", "Args");
 
       test_nursery_t(const seed_axe_t& seed_axe, tokenization_ptr_t tp)
         : parse_tree_nursery_t(tp), seed_axe(seed_axe)
@@ -425,12 +429,38 @@ namespace silva::test {
         return ss_rule.commit();
       }
 
-      expected_t<parse_tree_node_t> funny_expr()
+      expected_t<parse_tree_node_t> arg()
       {
         auto ss_rule = stake();
-        ss_rule.create_node(ni_funny_expr);
-        while (num_tokens_left() >= 1 && token_data_by()->category == STRING) {
-          token_index += 1;
+        ss_rule.create_node(ni_arg);
+        SILVA_EXPECT_PARSE(ni_arg, token_data_by()->category == STRING, "expected string");
+        token_index += 1;
+        return ss_rule.commit();
+      }
+
+      expected_t<parse_tree_node_t> args()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_args);
+        bool first = true;
+        while (num_tokens_left() >= 1) {
+          if (!first) {
+            if (token_id_by() == ti_comma) {
+              token_index += 1;
+              ss_rule.add_proto_node(SILVA_EXPECT_FWD(arg()));
+            }
+            else {
+              break;
+            }
+          }
+          else {
+            auto res = arg();
+            if (!res.has_value()) {
+              break;
+            }
+            ss_rule.add_proto_node(std::move(res).value());
+          }
+          first = false;
         }
         return ss_rule.commit();
       }
@@ -443,8 +473,8 @@ namespace silva::test {
         else if (rule_name == ni_expr) {
           return expression();
         }
-        else if (rule_name == ni_funny_expr) {
-          return funny_expr();
+        else if (rule_name == ni_args) {
+          return args();
         }
         else {
           SILVA_EXPECT(false, MAJOR, "unexpected rule {}", swp->name_id_wrap(rule_name));
@@ -464,7 +494,7 @@ namespace silva::test {
         - Prf_hi  = rtl   prefix_nest '(' ')'
         - Cat     = ltr   infix concat
         - Prf_lo  = rtl   prefix_nest '{' '}'
-                          prefix_nest -> _.Test.FunnyExpr '<:' ':>'
+                          prefix_nest -> _.Test.Args '<:' ':>'
         - Mul     = ltr   infix '*'
         - Add     = ltr   infix_flat '+' infix '-'
         - Assign  = rtl   infix_flat '=' infix '%'
@@ -487,10 +517,34 @@ namespace silva::test {
     [1]_.Test.Atom                                y
   [1]_.Test.Atom                                  z
 )");
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "<: 'foo' 'bar' 'baz' :> a", R"(
-[0]_.Expr.Prf_lo.<:                               <: 'foo' ... :> a
-  [0]_.Test.FunnyExpr                             'foo' 'bar' 'baz'
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "<: :> a", R"(
+[0]_.Expr.Prf_lo.<:                               <: :> a
+  [0]_.Test.Args                                  
   [1]_.Test.Atom                                  a
+)");
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "<: 'foo' :> a", R"(
+[0]_.Expr.Prf_lo.<:                               <: 'foo' :> a
+  [0]_.Test.Args                                  'foo'
+    [0]_.Test.Arg                                 'foo'
+  [1]_.Test.Atom                                  a
+)");
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "<: 'foo' , 'bar' , 'baz' :> a", R"(
+[0]_.Expr.Prf_lo.<:                               <: 'foo' ... :> a
+  [0]_.Test.Args                                  'foo' , 'bar' , 'baz'
+    [0]_.Test.Arg                                 'foo'
+    [1]_.Test.Arg                                 'bar'
+    [2]_.Test.Arg                                 'baz'
+  [1]_.Test.Atom                                  a
+)");
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "x * <: 'foo' , 'bar' , 'baz' :> a", R"(
+[0]_.Expr.Mul.*                                   x * ... :> a
+  [0]_.Test.Atom                                  x
+  [1]_.Expr.Prf_lo.<:                             <: 'foo' ... :> a
+    [0]_.Test.Args                                'foo' , 'bar' , 'baz'
+      [0]_.Test.Arg                               'foo'
+      [1]_.Test.Arg                               'bar'
+      [2]_.Test.Arg                               'baz'
+    [1]_.Test.Atom                                a
 )");
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "{ b } a", R"(
 [0]_.Expr.Prf_lo.{                                { b } a
