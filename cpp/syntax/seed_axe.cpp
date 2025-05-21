@@ -508,41 +508,54 @@ namespace silva::impl {
     // Indexes into the "output_tree" vector.
     vector_t<index_t> open_term_stack;
 
-    struct term_data_t {
-      name_id_t rule_name = 0;
-      index_t token_begin = std::numeric_limits<index_t>::max();
-      index_t token_end   = std::numeric_limits<index_t>::min();
-
+    struct term_node_t : public parse_tree_node_t {
       // If the term is a subtree that was parsed via the "rule_parser", this is an index into
       // "nursery.tree" (and later, during "generate_output()", an index into the temporary vector_t
       // "leaf_terms_tree"). Otherwise, i.e., if the term is an expression derived from an operator,
       // this value is "none".
       optional_t<index_t> tree_index;
     };
-    struct term_tree_node_t
-      : public tree_node_t
-      , public term_data_t {};
     // This is the leaves-down tree that gets constructed inside the "shunting_yard()" function.
     // Eventually, this tree is turned into the final root-up tree via the "generate_output()"
     // function.
-    vector_t<term_tree_node_t> output_tree;
+    vector_t<term_node_t> output_tree;
 
     // functions
 
-    expected_t<term_data_t> try_parse_atom(parse_tree_nursery_t::stake_t& ss_rule)
+    // struct rule_parser_result_t {};
+    // expected_t<term_data_t> invoke_rule_parser()
+    // {
+    //   auto ss                  = nursery.stake();
+    //   const index_t tree_index = nursery.tree.size();
+    //   auto atom_result         = SILVA_EXPECT_FWD(rule_parser(seed_axe.atom_rule));
+    //   SILVA_EXPECT(atom_result.num_children == 1,
+    //                ASSERT,
+    //                "The atom function given to seed_axe_t must always parse a single child");
+    //   ss.add_proto_node(atom_result);
+    //   return term_data_t{
+    //       .rule_name   = seed_axe.atom_rule,
+    //       .token_begin = atom_result.token_begin,
+    //       .token_end   = atom_result.token_end,
+    //       .tree_index  = tree_index,
+    //   };
+    // }
+
+    expected_t<term_node_t> try_parse_atom(parse_tree_nursery_t::stake_t& ss_rule)
     {
       const index_t atom_child_node_index = nursery.tree.size();
       auto atom_result                    = SILVA_EXPECT_FWD(rule_parser(seed_axe.atom_rule));
       SILVA_EXPECT(atom_result.num_children == 1,
-                   ASSERT,
+                   MAJOR,
                    "The atom function given to seed_axe_t must always parse a single child");
       ss_rule.add_proto_node(atom_result);
-      return term_data_t{
-          .rule_name   = seed_axe.atom_rule,
-          .token_begin = atom_result.token_begin,
-          .token_end   = atom_result.token_end,
-          .tree_index  = atom_child_node_index,
-      };
+      term_node_t retval;
+      retval.num_children = 0;
+      retval.subtree_size = 1;
+      retval.rule_name    = seed_axe.atom_rule;
+      retval.token_begin  = atom_result.token_begin;
+      retval.token_end    = atom_result.token_end;
+      retval.tree_index   = atom_child_node_index;
+      return retval;
     }
 
     expected_t<pair_t<index_t, index_t>> handle_nest(parse_tree_nursery_t::stake_t& ss_rule,
@@ -563,9 +576,8 @@ namespace silva::impl {
       const index_t atom_child_node_index = nursery.tree.size();
       const auto sub_expr                 = SILVA_EXPECT_FWD(rule_parser(used_rule_name));
       SILVA_EXPECT(sub_expr.num_children == 1,
-                   MINOR,
+                   MAJOR,
                    "nest expression must always result in a single node");
-      ss_rule.add_proto_node(sub_expr);
 
       SILVA_EXPECT_PARSE(ss_rule.proto_node.rule_name,
                          nursery.num_tokens_left() >= 1 && nursery.token_id_by() == right_token,
@@ -574,20 +586,17 @@ namespace silva::impl {
                          swp->token_id_wrap(nursery.token_id_by()));
       nursery.token_index += 1;
 
+      ss_rule.add_proto_node(sub_expr);
+
       const index_t token_end = nursery.token_index;
-      const term_data_t atom_data{
-          .rule_name   = used_rule_name,
-          .token_begin = token_begin + 1,
-          .token_end   = token_end - 1,
-          .tree_index  = atom_child_node_index,
-      };
-      output_tree.push_back(term_tree_node_t{
-          {
-              .num_children = 0,
-              .subtree_size = 1,
-          },
-          atom_data,
-      });
+      term_node_t tn;
+      tn.num_children = 0;
+      tn.subtree_size = 1;
+      tn.rule_name    = used_rule_name;
+      tn.token_begin  = token_begin + 1;
+      tn.token_end    = token_end - 1;
+      tn.tree_index   = atom_child_node_index;
+      output_tree.push_back(tn);
       return {{token_begin, token_end}};
     }
 
@@ -718,18 +727,14 @@ namespace silva::impl {
         }
         open_term_stack.resize(open_term_stack.size() - cr.num_atoms);
         open_term_stack.push_back(output_tree.size());
-        output_tree.push_back(term_tree_node_t{
-            {
-                .num_children = cr.num_atoms,
-                .subtree_size = subtree_size,
-            },
-            {
-                .rule_name   = cr.joint_level_name,
-                .token_begin = cr.token_begin,
-                .token_end   = cr.token_end,
-                .tree_index  = none,
-            },
-        });
+        term_node_t tn;
+        tn.num_children = cr.num_atoms;
+        tn.subtree_size = subtree_size;
+        tn.rule_name    = cr.joint_level_name;
+        tn.token_begin  = cr.token_begin;
+        tn.token_end    = cr.token_end;
+        tn.tree_index   = none;
+        output_tree.push_back(tn);
       }
       return {};
     }
@@ -761,8 +766,8 @@ namespace silva::impl {
           }
           // Current token is not one of the known operators, so it has to be an atom or the end
           // of the expression
-          auto atom_data = SILVA_EXPECT_FWD_IF(try_parse_atom(ss), MAJOR);
-          if (!atom_data.has_value()) {
+          auto maybe_tn = SILVA_EXPECT_FWD_IF(try_parse_atom(ss), MAJOR);
+          if (!maybe_tn.has_value()) {
             break;
           }
           if (mode == INFIX_MODE && seed_axe.concat_result.has_value()) {
@@ -770,13 +775,7 @@ namespace silva::impl {
           }
           if (mode == ATOM_MODE) {
             const index_t atom_tree_node_index = output_tree.size();
-            output_tree.push_back(term_tree_node_t{
-                {
-                    .num_children = 0,
-                    .subtree_size = 1,
-                },
-                std::move(atom_data).value(),
-            });
+            output_tree.push_back(std::move(maybe_tn).value());
             open_term_stack.push_back(atom_tree_node_index);
             mode = INFIX_MODE;
             continue;
@@ -809,18 +808,14 @@ namespace silva::impl {
             if (const auto* x = std::get_if<atom_nest_t>(&res.oper)) {
               const auto [token_begin, token_end] = SILVA_EXPECT_FWD(
                   handle_nest(ss, x->left_bracket, x->right_bracket, x->nest_rule_name));
-              output_tree.push_back(term_tree_node_t{
-                  {
-                      .num_children = 1,
-                      .subtree_size = output_tree.back().subtree_size + 1,
-                  },
-                  {
-                      .rule_name   = res.name,
-                      .token_begin = token_begin,
-                      .token_end   = token_end,
-                      .tree_index  = none,
-                  },
-              });
+              term_node_t tn;
+              tn.num_children = 1;
+              tn.subtree_size = output_tree.back().subtree_size + 1;
+              tn.rule_name    = res.name;
+              tn.token_begin  = token_begin;
+              tn.token_end    = token_end;
+              tn.tree_index   = none;
+              output_tree.push_back(tn);
               open_term_stack.push_back(output_tree.size() - 1);
               mode = INFIX_MODE;
               continue;
@@ -923,7 +918,7 @@ namespace silva::impl {
       return ss.commit();
     }
 
-    index_t generate_output(const tree_span_t<const term_tree_node_t> ats,
+    index_t generate_output(const tree_span_t<const term_node_t> ats,
                             const parse_tree_t& leaf_terms_tree)
     {
       auto& rv_nodes       = nursery.tree;
@@ -980,7 +975,7 @@ namespace silva::impl {
       nursery.token_index = final_token_index;
 
       SILVA_EXPECT(output_tree.size() >= 1, ASSERT);
-      tree_span_t<const term_tree_node_t> ats{&output_tree.back(), -1};
+      tree_span_t<const term_node_t> ats{&output_tree.back(), -1};
       const index_t retval = generate_output(ats, leaf_terms_tree);
       return {retval};
     }
