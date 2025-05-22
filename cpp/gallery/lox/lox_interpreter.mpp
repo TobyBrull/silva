@@ -1,0 +1,13 @@
+#include "lox_interpreter.hpp"
+
+#include "canopy/main.hpp"
+
+namespace silva {
+  expected_t<void> fern_main(const span_t<string_view_t> cmdline_args)
+  {
+    const index_t m = cmdline_args.size();
+    SILVA_EXPECT(2 == m, MINOR, "Usage: ... <lox-file>");
+    return {};
+  }
+}
+SILVA_MAIN(silva::fern_main);

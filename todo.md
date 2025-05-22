@@ -14,39 +14,6 @@
         >
     * put "clock" function in global namespace
 
-```
-fun sayHi(first, last) {
- print "Hi, " + first + " " + last + "!";
-}
-sayHi("Dear", "Reader");
-print sayHi;
-
-
-fun fib(n) {
-    if (n <= 1) return n;
-    return fib(n - 2) + fib(n - 1);
-}
-for (var i = 0; i < 20; i = i + 1) {
-    print fib(i);
-}
-
-
-
-
-
-fun makeCounter() {
- var i = 0;
- fun count() {
- i = i + 1;
- print i;
- }
- return count;
-}
-var counter = makeCounter();
-counter(); // "1".
-counter(); // "2".
-```
-
 * Soil
     * Make variable declarations explicit (`let` and `let mut`)
 
