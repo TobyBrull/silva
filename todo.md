@@ -1,5 +1,55 @@
 # TODO
 
+* Lox
+    * variables with lexical scoping
+        * Cactus-stack for processing variable scopes: `env_stack_t<token_id_t, lox::value>`.
+    * conditional exec
+        * if (`isTruthy()`)
+        * and/or (short-circuit)
+        * while/for loops
+    * function calls
+    * lox::value = variant_t<
+        std::nullopt_t, bool, double, string_t,
+        lox::func_t, lox::object_t, lox::class_t
+        >
+    * put "clock" function in global namespace
+
+```
+fun sayHi(first, last) {
+ print "Hi, " + first + " " + last + "!";
+}
+sayHi("Dear", "Reader");
+print sayHi;
+
+
+fun fib(n) {
+    if (n <= 1) return n;
+    return fib(n - 2) + fib(n - 1);
+}
+for (var i = 0; i < 20; i = i + 1) {
+    print fib(i);
+}
+
+
+
+
+
+fun makeCounter() {
+ var i = 0;
+ fun count() {
+ i = i + 1;
+ print i;
+ }
+ return count;
+}
+var counter = makeCounter();
+counter(); // "1".
+counter(); // "2".
+```
+
+* Soil
+    * Make variable declarations explicit (`let` and `let mut`)
+
 * Allow error forwarding completely without adding error node. (fern.mpp:26)
 
 * Rename seed_engine_t to seed_interpreter_t
