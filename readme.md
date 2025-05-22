@@ -10,7 +10,7 @@ language.
 The Seed language is as a formal specification for the syntax of another language.
 
 The Fern language is akin to JSON. Its syntax is described by the Seed program
-`silva::fern_seed` ([fern.hpp](cpp/fern.hpp)).
+`silva::fern_seed` ([fern.hpp](cpp/gallery/fern/fern.hpp)).
 
 The syntax of the Seed language itself is described by the Seed program
 `silva::seed_seed` ([seed.hpp](cpp/syntax/seed.hpp)) and
