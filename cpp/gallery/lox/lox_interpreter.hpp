@@ -2,8 +2,8 @@
 
 #include "syntax/parse_tree.hpp"
 
-namespace silva {
-  const string_view_t lox_seed = R"'(
+namespace silva::lox {
+  const string_view_t seed_str = R"'(
     - Lox = [
       - x = Decl *
       - Decl = [
@@ -46,4 +46,6 @@ namespace silva {
       ]
     ]
   )'";
+
+  struct interpreter_t {};
 }

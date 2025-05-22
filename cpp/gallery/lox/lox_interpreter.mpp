@@ -1,13 +1,24 @@
 #include "lox_interpreter.hpp"
 
 #include "canopy/main.hpp"
+#include "syntax/syntax.hpp"
 
-namespace silva {
-  expected_t<void> fern_main(const span_t<string_view_t> cmdline_args)
+namespace silva::lox {
+  expected_t<void> main(const span_t<string_view_t> cmdline_args)
   {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(2 == m, MINOR, "Usage: ... <lox-file>");
+
+    syntax_ward_t sw;
+    auto se = standard_seed_engine(sw.ptr());
+    SILVA_EXPECT_FWD(se->add_complete_file("lox.seed", seed_str));
+    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
+    parse_tree_ptr_t pt   = SILVA_EXPECT_FWD(se->apply(tp, sw.name_id_of("Lox")),
+                                           "error parsing Lox file {}",
+                                           cmdline_args[1]);
+    string_t pts          = SILVA_EXPECT_FWD(pt->span().to_string());
+    fmt::print("{}\n", pts);
     return {};
   }
 }
-SILVA_MAIN(silva::fern_main);
+SILVA_MAIN(silva::lox::main);

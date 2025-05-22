@@ -3,7 +3,7 @@
 #include "seed_engine.hpp"
 
 namespace silva {
-  const string_view_t silva_seed = R"'(
+  const string_view_t seed_str = R"'(
     - Silva = [
       - x = Section * end_of_file
       - Section = '<$'

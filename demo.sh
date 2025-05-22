@@ -16,3 +16,5 @@ SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --ac
 ./build/cpp/silva_syntax silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
 
 ./build/cpp/silva_syntax silva/soil/soil.silva silva/soil/example.silva
+
+./build/cpp/silva_lox_interpreter cpp/gallery/lox/example.lox

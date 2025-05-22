@@ -1,4 +1,4 @@
 #include "lox_interpreter.hpp"
 
-namespace silva {
+namespace silva::lox {
 }

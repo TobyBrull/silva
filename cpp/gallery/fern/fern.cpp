@@ -7,7 +7,7 @@
 #include "syntax/parse_tree_nursery.hpp"
 #include "syntax/syntax_ward.hpp"
 
-namespace silva {
+namespace silva::fern {
   using enum token_category_t;
   using enum error_level_t;
 
@@ -113,7 +113,7 @@ namespace silva {
     };
   }
 
-  expected_t<parse_tree_ptr_t> fern_parse(tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
     impl::fern_parse_tree_nursery_t nursery(tp);
@@ -126,7 +126,7 @@ namespace silva {
 
   // Fern parse_tree output functions /////////////////////////////////////////////////////////////
 
-  expected_t<string_t> fern_to_string(const parse_tree_t* pt, const index_t start_node)
+  expected_t<string_t> to_string(const parse_tree_t* pt, const index_t start_node)
   {
     syntax_ward_ptr_t swp       = pt->tp->swp;
     const name_id_t ni_fern     = swp->name_id_of("Fern");
@@ -180,7 +180,7 @@ namespace silva {
     return retval;
   }
 
-  expected_t<string_t> fern_to_graphviz(const parse_tree_t* pt, const index_t start_node)
+  expected_t<string_t> to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
     syntax_ward_ptr_t swp       = pt->tp->swp;
     const name_id_t ni_fern     = swp->name_id_of("Fern");
@@ -450,7 +450,7 @@ namespace silva {
     };
   }
 
-  expected_t<fern_t> fern_create(const parse_tree_t* parse_tree, const index_t start_node)
+  expected_t<fern_t> create(const parse_tree_t* parse_tree, const index_t start_node)
   {
     impl::fern_nursery_t fern_nursery{.parse_tree = parse_tree};
     return fern_nursery.fern(parse_tree->span());

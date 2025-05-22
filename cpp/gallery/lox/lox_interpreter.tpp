@@ -2,7 +2,7 @@
 
 #include <catch2/catch_all.hpp>
 
-namespace silva::test {
+namespace silva::lox::test {
   TEST_CASE("lox", "[lox]")
   {
     constexpr string_view_t lox_example = R"(

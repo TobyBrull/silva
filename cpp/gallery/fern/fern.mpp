@@ -6,8 +6,8 @@
 
 #include "syntax/syntax.hpp"
 
-namespace silva {
-  expected_t<void> fern_main(const span_t<string_view_t> cmdline_args)
+namespace silva::fern {
+  expected_t<void> main(const span_t<string_view_t> cmdline_args)
   {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
@@ -26,7 +26,7 @@ namespace silva {
       ptp = SILVA_EXPECT_FWD(fse->apply(tp, sw.name_id_of("Fern")), "error parsing Fern");
     }
     else {
-      ptp = SILVA_EXPECT_FWD(fern_parse(tp), "error parsing Fern");
+      ptp = SILVA_EXPECT_FWD(parse(tp), "error parsing Fern");
     }
 
     if (arg_process == "none") {
@@ -34,7 +34,7 @@ namespace silva {
     }
     else if (arg_process.starts_with("fern_t/")) {
       const auto rest   = arg_process.substr(7);
-      const fern_t fern = SILVA_EXPECT_FWD(fern_create(ptp.get()));
+      const fern_t fern = SILVA_EXPECT_FWD(create(ptp.get()));
       if (rest == "string") {
         fmt::print("{}\n", fern.to_string());
       }
@@ -51,13 +51,13 @@ namespace silva {
     else if (arg_process.starts_with("direct/")) {
       const auto rest = arg_process.substr(7);
       if (rest == "string") {
-        fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_string(ptp.get())));
+        fmt::print("{}\n", SILVA_EXPECT_FWD(to_string(ptp.get())));
       }
       else if (rest == "graphviz") {
-        fmt::print("{}\n", SILVA_EXPECT_FWD(fern_to_graphviz(ptp.get())));
+        fmt::print("{}\n", SILVA_EXPECT_FWD(to_graphviz(ptp.get())));
       }
       else if (rest == "graphviz_show") {
-        graphviz_show_sync(SILVA_EXPECT_FWD(fern_to_graphviz(ptp.get())));
+        graphviz_show_sync(SILVA_EXPECT_FWD(to_graphviz(ptp.get())));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
@@ -85,4 +85,4 @@ namespace silva {
     return {};
   }
 }
-SILVA_MAIN(silva::fern_main);
+SILVA_MAIN(silva::fern::main);

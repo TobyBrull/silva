@@ -4,7 +4,7 @@
 
 #include <catch2/catch_all.hpp>
 
-namespace silva::test {
+namespace silva::fern::test {
   TEST_CASE("fern", "[fern]")
   {
     const string_view_t fern_text = R"([
@@ -21,15 +21,15 @@ namespace silva::test {
 ])";
     syntax_ward_t sw;
     const auto tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", fern_text));
-    const auto pt_1 = SILVA_EXPECT_REQUIRE(fern_parse(tt));
+    const auto pt_1 = SILVA_EXPECT_REQUIRE(parse(tt));
     const auto fpr  = standard_seed_engine(sw.ptr());
     const auto pt_2 = SILVA_EXPECT_REQUIRE(fpr->apply(tt, sw.name_id_of("Fern")));
     CHECK(pt_1->nodes == pt_2->nodes);
-    const fern_t fern       = SILVA_EXPECT_REQUIRE(fern_create(pt_1.get()));
-    const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(fern_to_string(pt_1.get()));
+    const fern_t fern       = SILVA_EXPECT_REQUIRE(create(pt_1.get()));
+    const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(to_string(pt_1.get()));
     CHECK(pt_str_1 == fern_text);
     CHECK(fern.to_string() == fern_text);
-    const string_t gv_str_1 = SILVA_EXPECT_REQUIRE(fern_to_graphviz(pt_1.get()));
+    const string_t gv_str_1 = SILVA_EXPECT_REQUIRE(to_graphviz(pt_1.get()));
     CHECK(fern.to_graphviz() == gv_str_1);
 
     const string_view_t expected_parse_tree_str = R"(
