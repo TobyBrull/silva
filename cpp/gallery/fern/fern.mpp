@@ -4,7 +4,7 @@
 #include "canopy/main.hpp"
 #include "canopy/var_context.hpp"
 
-#include "syntax.hpp"
+#include "syntax/syntax.hpp"
 
 namespace silva {
   expected_t<void> fern_main(const span_t<string_view_t> cmdline_args)
@@ -23,10 +23,10 @@ namespace silva {
     parse_tree_ptr_t ptp;
     if (arg_seed_eng) {
       const auto fse{standard_seed_engine(sw.ptr())};
-      ptp = SILVA_EXPECT_FWD(fse->apply(tp, sw.name_id_of("Fern")));
+      ptp = SILVA_EXPECT_FWD(fse->apply(tp, sw.name_id_of("Fern")), "error parsing Fern");
     }
     else {
-      ptp = SILVA_EXPECT_FWD(fern_parse(tp));
+      ptp = SILVA_EXPECT_FWD(fern_parse(tp), "error parsing Fern");
     }
 
     if (arg_process == "none") {

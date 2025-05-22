@@ -1,6 +1,6 @@
 #include "fern.hpp"
 
-#include "syntax.hpp"
+#include "syntax/syntax.hpp"
 
 #include <catch2/catch_all.hpp>
 

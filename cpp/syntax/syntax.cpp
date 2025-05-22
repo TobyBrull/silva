@@ -1,7 +1,8 @@
 #include "syntax.hpp"
 
-#include "fern.hpp"
 #include "seed.hpp"
+
+#include "gallery/fern/fern.hpp"
 
 namespace silva {
   expected_t<name_id_t> infer_goal_rule_name(syntax_ward_t& sw, const filesystem_path_t& fsp)
