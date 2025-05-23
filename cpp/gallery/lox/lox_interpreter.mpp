@@ -1,6 +1,7 @@
 #include "lox_interpreter.hpp"
 
 #include "canopy/main.hpp"
+#include "canopy/var_context.hpp"
 #include "syntax/syntax.hpp"
 
 namespace silva::lox {
@@ -17,7 +18,10 @@ namespace silva::lox {
                                            "error parsing Lox file {}",
                                            cmdline_args[1]);
     string_t pts          = SILVA_EXPECT_FWD(pt->span().to_string());
-    fmt::print("{}\n", pts);
+
+    if (SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("SHOW_PARSE_TREE"), MAJOR).value_or(false)) {
+      fmt::print("{}\n", pts);
+    }
     return {};
   }
 }
