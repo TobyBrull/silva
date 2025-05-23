@@ -1,8 +1,8 @@
 #include "syntax_ward.hpp"
 
 #include "canopy/convert.hpp"
+#include "name_id_style.hpp"
 #include "parse_tree.hpp"
-#include "seed.hpp"
 
 namespace silva {
 

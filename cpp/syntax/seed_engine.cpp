@@ -5,6 +5,7 @@
 #include "canopy/scope_exit.hpp"
 #include "canopy/small_vector.hpp"
 #include "canopy/var_context.hpp"
+#include "name_id_style.hpp"
 #include "parse_tree.hpp"
 #include "parse_tree_nursery.hpp"
 #include "seed.hpp"

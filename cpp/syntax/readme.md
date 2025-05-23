@@ -5,6 +5,7 @@
 * [syntax_ward.hpp](syntax_ward.hpp)
 * [tokenization.hpp](tokenization.hpp)
 * [parse_tree.hpp](parse_tree.hpp)
+* [name_id_style.hpp](name_id_style.hpp)
 * [parse_tree_nursery.hpp](parse_tree_nursery.hpp)
 * [seed.hpp](seed.hpp)
 * [seed_axe.hpp](seed_axe.hpp)

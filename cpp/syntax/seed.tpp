@@ -1,5 +1,6 @@
 #include "seed.hpp"
 
+#include "name_id_style.hpp"
 #include "syntax.hpp"
 
 #include "rfl/json/write.hpp"
