@@ -4,36 +4,6 @@ using enum silva::token_category_t;
 
 namespace silva::lox {
 
-  struct value_to_string_impl_visitor_t {
-    string_or_view_t operator()(const double& x) const
-    {
-      return string_or_view_t{std::to_string(x)};
-    }
-    string_or_view_t operator()(const string_t& x) const { return string_or_view_t{string_t{x}}; }
-    string_or_view_t operator()(const auto& x) const
-    {
-      return string_or_view_t{string_view_t{"Unknown lox::value_t"}};
-    }
-  };
-  string_or_view_t to_string_impl(const value_t& value)
-  {
-    return std::visit(value_to_string_impl_visitor_t{}, value.data);
-  }
-
-  expected_t<value_t> operator*(const value_t& lhs, const value_t& rhs)
-  {
-    SILVA_EXPECT(variant_holds_t<double>{}(lhs.data), MINOR);
-    SILVA_EXPECT(variant_holds_t<double>{}(rhs.data), MINOR);
-    return {std::get<double>(lhs.data) * std::get<double>(rhs.data)};
-  }
-
-  expected_t<value_t> operator+(const value_t& lhs, const value_t& rhs)
-  {
-    SILVA_EXPECT(variant_holds_t<double>{}(lhs.data), MINOR);
-    SILVA_EXPECT(variant_holds_t<double>{}(rhs.data), MINOR);
-    return {std::get<double>(lhs.data) + std::get<double>(rhs.data)};
-  }
-
   struct evaluation_t {
     interpreter_t* intp        = nullptr;
     syntax_ward_ptr_t swp      = intp->swp;
@@ -41,25 +11,56 @@ namespace silva::lox {
 
     expected_t<value_t> expr(const parse_tree_span_t pts)
     {
+#define UNARY(op_rule_name, op)                                                            \
+  else if (rn == op_rule_name)                                                             \
+  {                                                                                        \
+    const auto [node_idx] = SILVA_EXPECT_FWD(pts.get_children<1>());                       \
+    auto res              = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(node_idx)), \
+                                "{} error evaluating unary operand",          \
+                                pts);                                         \
+    return op std::move(res);                                                              \
+  }
+
+#define BINARY(op_rule_name, op)                                                      \
+  else if (rn == op_rule_name)                                                        \
+  {                                                                                   \
+    const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());                  \
+    auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)), \
+                                    "{} error evaluating left-hand-side",    \
+                                    pts);                                    \
+    auto rhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)), \
+                                    "{} error evaluating right-hand-side",   \
+                                    pts);                                    \
+    return std::move(lhs_res) op std::move(rhs_res);                                  \
+  }
+
       const name_id_t rn = pts[0].rule_name;
-      if (rn == intp->ni_expr_b_mul) {
-        const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
-        const auto lhs_res    = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)));
-        const auto rhs_res    = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)));
-        return lhs_res * rhs_res;
+      if (false) {
       }
-      else if (rn == intp->ni_expr_b_add) {
-        const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
-        const auto lhs_res    = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)));
-        const auto rhs_res    = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)));
-        return lhs_res + rhs_res;
-      }
-      else {
+      UNARY(intp->ni_expr_u_exc, !)
+      UNARY(intp->ni_expr_u_sub, -)
+      BINARY(intp->ni_expr_b_mul, *)
+      BINARY(intp->ni_expr_b_div, /)
+      BINARY(intp->ni_expr_b_add, +)
+      BINARY(intp->ni_expr_b_sub, -)
+      // BINARY(intp->ni_expr_b_lt, <)
+      // BINARY(intp->ni_expr_b_gt, >)
+      // BINARY(intp->ni_expr_b_lte, <=)
+      // BINARY(intp->ni_expr_b_gte, >=)
+      // BINARY(intp->ni_expr_b_eq, ==)
+      // BINARY(intp->ni_expr_b_neq, !=)
+      // BINARY(intp->ni_expr_b_and, &&)
+      // BINARY(intp->ni_expr_b_or, ||)
+      else
+      {
         SILVA_EXPECT(false,
                      MAJOR,
                      "can't evaluate expression {}",
                      swp->name_id_wrap(pts[0].rule_name));
       }
+
+#undef BINARY
+#undef UNARY
       return {none};
     }
 
@@ -133,8 +134,10 @@ namespace silva::lox {
     {
       const name_id_t rule_name = pts[0].rule_name;
       if (rule_name == intp->ni_stmt_print) {
-        const value_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1)));
-        fmt::print("{}\n", to_string(value));
+        value_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1)),
+                                         "{} error evaluating argument to 'print'",
+                                         pts);
+        fmt::print("{}\n", to_string(std::move(value)));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} can't execute {}", pts, swp->name_id_wrap(rule_name));

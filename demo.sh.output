@@ -1185,14 +1185,20 @@ error parsing Fern
   [0]_.Lox.Stmt                                   print 'Hello, World!' ;
     [0]_.Lox.Stmt.Print                           print 'Hello, World!' ;
       [0]_.Lox.Expr.Atom                          'Hello, World!'
-  [1]_.Lox.Stmt                                   print 1 ... 3 ;
-    [0]_.Lox.Stmt.Print                           print 1 ... 3 ;
-      [0]_.Lox.Expr.Term.+                        1 + 2 * 3
-        [0]_.Lox.Expr.Atom                        1
-        [1]_.Lox.Expr.Factor.*                    2 * 3
-          [0]_.Lox.Expr.Atom                      2
-          [1]_.Lox.Expr.Atom                      3
-  [2]_.Lox.Decl                                   fun sayHi ... ; }
+  [1]_.Lox.Stmt                                   print - 42 ;
+    [0]_.Lox.Stmt.Print                           print - 42 ;
+      [0]_.Lox.Expr.Unary.-                       - 42
+        [0]_.Lox.Expr.Atom                        42
+  [2]_.Lox.Stmt                                   print 1 ... 4 ;
+    [0]_.Lox.Stmt.Print                           print 1 ... 4 ;
+      [0]_.Lox.Expr.Term.-                        1 + ... - 4
+        [0]_.Lox.Expr.Term.+                      1 + 2 * 3
+          [0]_.Lox.Expr.Atom                      1
+          [1]_.Lox.Expr.Factor.*                  2 * 3
+            [0]_.Lox.Expr.Atom                    2
+            [1]_.Lox.Expr.Atom                    3
+        [1]_.Lox.Expr.Atom                        4
+  [3]_.Lox.Decl                                   fun sayHi ... ; }
     [0]_.Lox.Decl.Fun                             fun sayHi ... ; }
       [0]_.Lox.Function                           sayHi ( ... ; }
         [0]_.Lox.Function.Parameters              first , last
@@ -1210,17 +1216,17 @@ error parsing Fern
                     [1]_.Lox.Expr.Atom            ' '
                   [1]_.Lox.Expr.Atom              last
                 [1]_.Lox.Expr.Atom                '!'
-  [3]_.Lox.Stmt                                   sayHi ( ... ) ;
+  [4]_.Lox.Stmt                                   sayHi ( ... ) ;
     [0]_.Lox.Stmt.ExprStmt                        sayHi ( ... ) ;
       [0]_.Lox.Expr.Call.(                        sayHi ( ... 'Reader' )
         [0]_.Lox.Expr.Atom                        sayHi
         [1]_.Lox.Expr.Arguments                   'Dear' , 'Reader'
           [0]_.Lox.Expr.Atom                      'Dear'
           [1]_.Lox.Expr.Atom                      'Reader'
-  [4]_.Lox.Stmt                                   print sayHi ;
+  [5]_.Lox.Stmt                                   print sayHi ;
     [0]_.Lox.Stmt.Print                           print sayHi ;
       [0]_.Lox.Expr.Atom                          sayHi
-  [5]_.Lox.Decl                                   fun fib ... ; }
+  [6]_.Lox.Decl                                   fun fib ... ; }
     [0]_.Lox.Decl.Fun                             fun fib ... ; }
       [0]_.Lox.Function                           fib ( ... ; }
         [0]_.Lox.Function.Parameters              n
@@ -1249,7 +1255,7 @@ error parsing Fern
                     [0]_.Lox.Expr.Term.-          n - 1
                       [0]_.Lox.Expr.Atom          n
                       [1]_.Lox.Expr.Atom          1
-  [6]_.Lox.Stmt                                   for ( ... ; }
+  [7]_.Lox.Stmt                                   for ( ... ; }
     [0]_.Lox.Stmt.For                             for ( ... ; }
       [0]_.Lox.Decl.Var                           var i = 0 ;
         [0]_.Lox.Expr.Atom                        0
@@ -1269,7 +1275,7 @@ error parsing Fern
                 [0]_.Lox.Expr.Atom                fib
                 [1]_.Lox.Expr.Arguments           i
                   [0]_.Lox.Expr.Atom              i
-  [7]_.Lox.Decl                                   fun makeCounter ... ; }
+  [8]_.Lox.Decl                                   fun makeCounter ... ; }
     [0]_.Lox.Decl.Fun                             fun makeCounter ... ; }
       [0]_.Lox.Function                           makeCounter ( ... ; }
         [0]_.Lox.Function.Parameters              
@@ -1295,25 +1301,26 @@ error parsing Fern
           [2]_.Lox.Stmt                           return count ;
             [0]_.Lox.Stmt.Return                  return count ;
               [0]_.Lox.Expr.Atom                  count
-  [8]_.Lox.Decl                                   var counter ... ) ;
+  [9]_.Lox.Decl                                   var counter ... ) ;
     [0]_.Lox.Decl.Var                             var counter ... ) ;
       [0]_.Lox.Expr.Call.(                        makeCounter ( )
         [0]_.Lox.Expr.Atom                        makeCounter
-        [1]_.Lox.Expr.Arguments                   
-  [9]_.Lox.Stmt                                   counter ( ) ;
-    [0]_.Lox.Stmt.ExprStmt                        counter ( ) ;
-      [0]_.Lox.Expr.Call.(                        counter ( )
-        [0]_.Lox.Expr.Atom                        counter
         [1]_.Lox.Expr.Arguments                   
   [10]_.Lox.Stmt                                  counter ( ) ;
     [0]_.Lox.Stmt.ExprStmt                        counter ( ) ;
       [0]_.Lox.Expr.Call.(                        counter ( )
         [0]_.Lox.Expr.Atom                        counter
         [1]_.Lox.Expr.Arguments                   
+  [11]_.Lox.Stmt                                  counter ( ) ;
+    [0]_.Lox.Stmt.ExprStmt                        counter ( ) ;
+      [0]_.Lox.Expr.Call.(                        counter ( )
+        [0]_.Lox.Expr.Atom                        counter
+        [1]_.Lox.Expr.Arguments                   
 
 Hello, World!
-7.000000
+42
+3
 ERROR (MAJOR):
-[example.lox:5:1] parse_tree_span[ fun sayHi ... ; } ] can't execute _.Lox.Decl.Fun
+[example.lox:6:1] parse_tree_span[ fun sayHi ... ; } ] can't execute _.Lox.Decl.Fun
 failed executing Lox script cpp/gallery/lox/example.lox
 

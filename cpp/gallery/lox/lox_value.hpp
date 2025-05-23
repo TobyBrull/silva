@@ -1,0 +1,45 @@
+#pragma once
+
+#include "canopy/expected.hpp"
+
+namespace silva::lox {
+  struct value_t {
+    variant_t<std::nullopt_t, bool, double, string_t> data;
+
+    template<typename T>
+    value_t(T&& data);
+
+    bool is_none() const;
+    bool holds_bool() const;
+    bool holds_double() const;
+    bool holds_string() const;
+
+    bool is_truthy() const;
+
+    friend expected_t<value_t> operator!(const value_t&);
+    friend expected_t<value_t> operator-(const value_t&);
+    friend expected_t<value_t> operator*(const value_t&, const value_t&);
+    friend expected_t<value_t> operator/(const value_t&, const value_t&);
+    friend expected_t<value_t> operator+(const value_t&, const value_t&);
+    friend expected_t<value_t> operator-(const value_t&, const value_t&);
+    friend expected_t<value_t> operator<(const value_t&, const value_t&);
+    friend expected_t<value_t> operator>(const value_t&, const value_t&);
+    friend expected_t<value_t> operator<=(const value_t&, const value_t&);
+    friend expected_t<value_t> operator>=(const value_t&, const value_t&);
+    friend expected_t<value_t> operator==(const value_t&, const value_t&);
+    friend expected_t<value_t> operator!=(const value_t&, const value_t&);
+    friend expected_t<value_t> operator&&(const value_t&, const value_t&);
+    friend expected_t<value_t> operator||(const value_t&, const value_t&);
+
+    friend string_or_view_t to_string_impl(const value_t&);
+  };
+}
+
+// IMPLEMENTATION
+
+namespace silva::lox {
+  template<typename T>
+  value_t::value_t(T&& data) : data(std::forward<T>(data))
+  {
+  }
+}

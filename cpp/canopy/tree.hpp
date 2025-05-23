@@ -255,7 +255,11 @@ namespace silva {
   expected_t<array_t<index_t, N>> tree_span_t<NodeData>::get_children() const
   {
     const auto& node = (*this)[0];
-    SILVA_EXPECT(node.num_children == N, MAJOR);
+    SILVA_EXPECT(node.num_children == N,
+                 MAJOR,
+                 "expected {} children, got {}",
+                 N,
+                 node.num_children);
     array_t<index_t, N> retval;
     for (const auto [child_node_index, child_index]: children_range()) {
       retval[child_index] = child_node_index;

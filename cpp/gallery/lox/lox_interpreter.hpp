@@ -1,5 +1,7 @@
 #pragma once
 
+#include "lox_value.hpp"
+
 #include "syntax/parse_tree.hpp"
 
 namespace silva::lox {
@@ -13,7 +15,7 @@ namespace silva::lox {
         - Var = 'var' identifier ( '=' _.Lox.Expr ) ? ';'
       ]
       - Stmt = [
-        - x = ExprStmt | For | If | Print | Return | While | Block
+        - x = For | If | Print | Return | While | Block | ExprStmt
         - ExprStmt = _.Lox.Expr ';'
         - For = 'for' '(' ( _.Lox.Decl.Var | ExprStmt | ';' ) _.Lox.Expr ? ';' _.Lox.Expr ? ')' x
         - If = 'if' '(' _.Lox.Expr ')' x ( 'else' x ) ?
@@ -47,28 +49,6 @@ namespace silva::lox {
     ]
   )'";
 
-  struct value_t {
-    variant_t<std::nullopt_t, bool, double, string_t> data;
-
-    template<typename T>
-    value_t(T&& data);
-
-    friend expected_t<value_t> operator!(const value_t&);
-    friend expected_t<value_t> operator-(const value_t&);
-    friend expected_t<value_t> operator*(const value_t&, const value_t&);
-    friend expected_t<value_t> operator/(const value_t&, const value_t&);
-    friend expected_t<value_t> operator+(const value_t&, const value_t&);
-    friend expected_t<value_t> operator-(const value_t&, const value_t&);
-    friend expected_t<value_t> operator<(const value_t&, const value_t&);
-    friend expected_t<value_t> operator>(const value_t&, const value_t&);
-    friend expected_t<value_t> operator<=(const value_t&, const value_t&);
-    friend expected_t<value_t> operator>=(const value_t&, const value_t&);
-    friend expected_t<value_t> operator&&(const value_t&, const value_t&);
-    friend expected_t<value_t> operator||(const value_t&, const value_t&);
-
-    friend string_or_view_t to_string_impl(const value_t&);
-  };
-
   struct interpreter_t {
     syntax_ward_ptr_t swp;
 
@@ -83,21 +63,24 @@ namespace silva::lox {
     name_id_t ni_stmt_print   = swp->name_id_of(ni_stmt, "Print");
     name_id_t ni_expr         = swp->name_id_of(ni_lox, "Expr");
     name_id_t ni_expr_primary = swp->name_id_of(ni_expr, "Primary");
+    name_id_t ni_expr_u_exc   = swp->name_id_of(ni_expr, "Unary", "!");
+    name_id_t ni_expr_u_sub   = swp->name_id_of(ni_expr, "Unary", "-");
     name_id_t ni_expr_b_mul   = swp->name_id_of(ni_expr, "Factor", "*");
+    name_id_t ni_expr_b_div   = swp->name_id_of(ni_expr, "Factor", "/");
     name_id_t ni_expr_b_add   = swp->name_id_of(ni_expr, "Term", "+");
+    name_id_t ni_expr_b_sub   = swp->name_id_of(ni_expr, "Term", "-");
+    name_id_t ni_expr_b_lt    = swp->name_id_of(ni_expr, "Comparison", "<");
+    name_id_t ni_expr_b_gt    = swp->name_id_of(ni_expr, "Comparison", ">");
+    name_id_t ni_expr_b_lte   = swp->name_id_of(ni_expr, "Comparison", "<=");
+    name_id_t ni_expr_b_gte   = swp->name_id_of(ni_expr, "Comparison", ">=");
+    name_id_t ni_expr_b_eq    = swp->name_id_of(ni_expr, "Equality", "==");
+    name_id_t ni_expr_b_neq   = swp->name_id_of(ni_expr, "Equality", "!=");
+    name_id_t ni_expr_b_and   = swp->name_id_of(ni_expr, "LogicAnd", "and");
+    name_id_t ni_expr_b_or    = swp->name_id_of(ni_expr, "LogicOr", "or");
     name_id_t ni_expr_atom    = swp->name_id_of(ni_expr, "Atom");
 
     expected_t<value_t> evaluate(parse_tree_span_t);
 
     expected_t<void> execute(parse_tree_span_t);
   };
-}
-
-// IMPLEMENTATION
-
-namespace silva::lox {
-  template<typename T>
-  value_t::value_t(T&& data) : data(std::forward<T>(data))
-  {
-  }
 }
