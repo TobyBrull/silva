@@ -1220,16 +1220,16 @@ error parsing Fern
                     [1]_.Lox.Expr.Atom            ' '
                   [1]_.Lox.Expr.Atom              last
                 [1]_.Lox.Expr.Atom                '!'
-  [5]_.Lox.Stmt                                   sayHi ( ... ) ;
+  [5]_.Lox.Stmt                                   print sayHi ;
+    [0]_.Lox.Stmt.Print                           print sayHi ;
+      [0]_.Lox.Expr.Atom                          sayHi
+  [6]_.Lox.Stmt                                   sayHi ( ... ) ;
     [0]_.Lox.Stmt.ExprStmt                        sayHi ( ... ) ;
       [0]_.Lox.Expr.Call.(                        sayHi ( ... 'Reader' )
         [0]_.Lox.Expr.Atom                        sayHi
         [1]_.Lox.Expr.Arguments                   'Dear' , 'Reader'
           [0]_.Lox.Expr.Atom                      'Dear'
           [1]_.Lox.Expr.Atom                      'Reader'
-  [6]_.Lox.Stmt                                   print sayHi ;
-    [0]_.Lox.Stmt.Print                           print sayHi ;
-      [0]_.Lox.Expr.Atom                          sayHi
   [7]_.Lox.Decl                                   fun fib ... ; }
     [0]_.Lox.Decl.Fun                             fun fib ... ; }
       [0]_.Lox.Function                           fib ( ... ; }
@@ -1324,7 +1324,9 @@ error parsing Fern
 Hello, World!
 3
 142
-ERROR (ASSERT):
-not yet implemented
+<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>
+ERROR (MAJOR):
+can't evaluate expression _.Lox.Expr.Call.(
+[example.lox:11:1] parse_tree_span[ sayHi ( ... ) ; ] error evaluating expression statement
 failed executing Lox script cpp/gallery/lox/example.lox
 

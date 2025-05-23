@@ -160,8 +160,8 @@ namespace silva::lox {
     {
       const name_id_t rule_name = pts[0].rule_name;
       if (rule_name == intp->ni_decl_var) {
-        const auto children       = SILVA_EXPECT_FWD(pts.get_children_up_to<1>());
         const token_id_t var_name = pts.tp->tokens[pts[0].token_begin + 1];
+        const auto children       = SILVA_EXPECT_FWD(pts.get_children_up_to<1>());
         value_t initializer;
         if (children.size == 1) {
           initializer =
@@ -170,7 +170,10 @@ namespace silva::lox {
         SILVA_EXPECT_FWD(current_scope->define(var_name, std::move(initializer)));
       }
       else if (rule_name == intp->ni_decl_fun) {
-        SILVA_EXPECT(false, ASSERT, "not yet implemented");
+        const token_id_t fun_name = pts.tp->tokens[pts[0].token_begin + 1];
+        SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
+        const auto func_pts = pts.sub_tree_span_at(1);
+        SILVA_EXPECT_FWD(current_scope->define(fun_name, value_t{function_t{.pts = func_pts}}));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} can't execute {}", pts, swp->name_id_wrap(rule_name));
@@ -186,6 +189,11 @@ namespace silva::lox {
                                          "{} error evaluating argument to 'print'",
                                          pts);
         fmt::print("{}\n", to_string(std::move(value)));
+      }
+      else if (rule_name == intp->ni_stmt_expr) {
+        SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), current_scope),
+                         "{} error evaluating expression statement",
+                         pts);
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} can't execute {}", pts, swp->name_id_wrap(rule_name));

@@ -7,8 +7,7 @@
 namespace silva::lox {
 
   struct function_t {
-    vector_t<token_id_t> parameters;
-    parse_tree_span_t body;
+    parse_tree_span_t pts;
     friend bool operator==(const function_t&, const function_t&) = default;
   };
 

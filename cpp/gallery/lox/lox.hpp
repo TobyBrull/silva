@@ -13,7 +13,7 @@ namespace silva::lox {
         - Class = 'class' identifier ( '<' identifier ) ? '{' _.Lox.Function * '}'
       ]
       - Function = [
-        - x = identifier '(' Parameters ? ')' _.Lox.Stmt.Block
+        - x = identifier '(' Parameters ')' _.Lox.Stmt.Block
         - Parameters = ( Parameter ( ',' Parameter ) * ) ?
         - Parameter = identifier
       ]

@@ -131,6 +131,10 @@ namespace silva::lox {
       return string_or_view_t{std::move(retval)};
     }
     string_or_view_t operator()(const string_t& x) const { return string_or_view_t{string_t{x}}; }
+    string_or_view_t operator()(const function_t& x) const
+    {
+      return string_or_view_t{fmt::format("<function {}>", to_string(x.pts))};
+    }
     string_or_view_t operator()(const auto& x) const
     {
       return string_or_view_t{string_view_t{"Unknown lox::value_t"}};

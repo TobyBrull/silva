@@ -7,8 +7,8 @@ print x;
 fun sayHi(first, last) {
   print 'Hi, ' + first + ' ' + last + '!';
 }
-sayHi('Dear', 'Reader');
 print sayHi;
+sayHi('Dear', 'Reader');
 
 fun fib(n) {
     if (n <= 1) return n;
