@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lox_value.hpp"
+#include "value.hpp"
 
 #include "syntax/parse_tree.hpp"
 

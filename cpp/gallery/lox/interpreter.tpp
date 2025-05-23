@@ -1,4 +1,4 @@
-#include "lox_interpreter.hpp"
+#include "interpreter.hpp"
 
 #include <catch2/catch_all.hpp>
 

@@ -1,4 +1,4 @@
-#include "lox_interpreter.hpp"
+#include "interpreter.hpp"
 
 #include "canopy/main.hpp"
 #include "canopy/var_context.hpp"

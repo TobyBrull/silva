@@ -1,4 +1,4 @@
-#include "lox_interpreter.hpp"
+#include "interpreter.hpp"
 
 using enum silva::token_category_t;
 
