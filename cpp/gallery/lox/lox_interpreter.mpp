@@ -10,6 +10,7 @@ namespace silva::lox {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(2 == m, MINOR, "Usage: ... <lox-file>");
 
+    constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
     auto se = standard_seed_engine(sw.ptr());
     SILVA_EXPECT_FWD(se->add_complete_file("lox.seed", seed_str));
@@ -24,7 +25,7 @@ namespace silva::lox {
     }
 
     interpreter_t li{sw.ptr()};
-    SILVA_EXPECT_FWD(li.apply(pt->span()));
+    SILVA_EXPECT_FWD(li.execute(pt->span()), "failed executing Lox script {}", cmdline_args[1]);
     return {};
   }
 }

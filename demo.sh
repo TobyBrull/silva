@@ -2,10 +2,14 @@
 
 set -Eeuxo pipefail
 
+TEMPFILE=$( mktemp )
+trap 'rm -f "$TEMPFILE"' EXIT
+
 ./build/cpp/silva_tokenization silva/syntax/01-simple.fern
 
 ./build/cpp/silva_fern silva/syntax/01-simple.fern
-./build/cpp/silva_fern silva/syntax/01-broken.fern 2>&1 || true
+./build/cpp/silva_fern silva/syntax/01-broken.fern 2>"$TEMPFILE" || true
+cat "$TEMPFILE"
 time ./build/cpp/silva_fern silva/syntax/01-large.fern --process=none --seed-engine=false
 time ./build/cpp/silva_fern silva/syntax/01-large.fern --process=none --seed-engine=true
 
@@ -17,4 +21,5 @@ SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --ac
 
 ./build/cpp/silva_syntax silva/soil/soil.silva silva/soil/example.silva
 
-SHOW_PARSE_TREE=true ./build/cpp/silva_lox_interpreter cpp/gallery/lox/example.lox
+SHOW_PARSE_TREE=true ./build/cpp/silva_lox_interpreter cpp/gallery/lox/example.lox 2>"$TEMPFILE" || true
+cat "$TEMPFILE"

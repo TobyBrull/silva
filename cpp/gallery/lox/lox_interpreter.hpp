@@ -5,9 +5,9 @@
 namespace silva::lox {
   const string_view_t seed_str = R"'(
     - Lox = [
-      - x = Decl *
+      - x = ( Decl | Stmt ) *
       - Decl = [
-        - x = Class | Fun | Var | _.Lox.Stmt
+        - x = Class | Fun | Var
         - Class = 'class' identifier ( '<' identifier ) ? '{' _.Lox.Function * '}'
         - Fun = 'fun' _.Lox.Function
         - Var = 'var' identifier ( '=' _.Lox.Expr ) ? ';'
@@ -20,7 +20,7 @@ namespace silva::lox {
         - Print = 'print' _.Lox.Expr ';'
         - Return = 'return' _.Lox.Expr ? ';'
         - While = 'while' '(' _.Lox.Expr ')' x
-        - Block = '{' _.Lox.Decl * '}'
+        - Block = '{' ( _.Lox.Decl | x ) * '}'
       ]
       - Expr = [
         - x =/ x.Expr.Atom [
@@ -47,9 +47,47 @@ namespace silva::lox {
     ]
   )'";
 
+  struct value_t {
+    variant_t<std::nullopt_t, bool, double, string_t> data;
+
+    template<typename T>
+    value_t(T&& data);
+
+    friend expected_t<value_t> operator*(const value_t&, const value_t&);
+    friend expected_t<value_t> operator+(const value_t&, const value_t&);
+
+    friend string_or_view_t to_string_impl(const value_t&);
+  };
+
   struct interpreter_t {
     syntax_ward_ptr_t swp;
 
-    expected_t<void> apply(parse_tree_span_t) const;
+    token_id_t ti_true  = swp->token_id("true").value();
+    token_id_t ti_false = swp->token_id("false").value();
+    token_id_t ti_none  = swp->token_id("none").value();
+    token_id_t ti_this  = swp->token_id("this").value();
+
+    name_id_t ni_lox          = swp->name_id_of("Lox");
+    name_id_t ni_decl         = swp->name_id_of(ni_lox, "Decl");
+    name_id_t ni_stmt         = swp->name_id_of(ni_lox, "Stmt");
+    name_id_t ni_stmt_print   = swp->name_id_of(ni_stmt, "Print");
+    name_id_t ni_expr         = swp->name_id_of(ni_lox, "Expr");
+    name_id_t ni_expr_primary = swp->name_id_of(ni_expr, "Primary");
+    name_id_t ni_expr_b_mul   = swp->name_id_of(ni_expr, "Factor", "*");
+    name_id_t ni_expr_b_add   = swp->name_id_of(ni_expr, "Term", "+");
+    name_id_t ni_expr_atom    = swp->name_id_of(ni_expr, "Atom");
+
+    expected_t<value_t> evaluate(parse_tree_span_t);
+
+    expected_t<void> execute(parse_tree_span_t);
   };
+}
+
+// IMPLEMENTATION
+
+namespace silva::lox {
+  template<typename T>
+  value_t::value_t(T&& data) : data(std::forward<T>(data))
+  {
+  }
 }

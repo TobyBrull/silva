@@ -19,7 +19,7 @@ namespace silva {
   struct expected_traits_t {
     bool materialize_fwd = false;
   };
-  inline expected_traits_t expected_traits;
+  constexpr inline expected_traits_t expected_traits;
 
 // Semantics:
 // Must only be used inside functions whose return value is "expected_t<...>". If the "condition"
@@ -60,7 +60,7 @@ namespace silva {
     auto __silva_result = (expression);                                   \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
     if (!__silva_result) {                                                \
-      if (expected_traits.materialize_fwd) {                              \
+      if constexpr (expected_traits.materialize_fwd) {                    \
         __silva_result.error().materialize();                             \
       }                                                                   \
       using enum error_level_t;                                           \
@@ -68,6 +68,19 @@ namespace silva {
           __FILE__,                                                       \
           __LINE__,                                                       \
           std::move(__silva_result).error() __VA_OPT__(, ) __VA_ARGS__)); \
+    }                                                                     \
+    std::move(__silva_result).value();                                    \
+  })
+
+#define SILVA_EXPECT_FWD_PLAIN(expression)                                \
+  ({                                                                      \
+    auto __silva_result = (expression);                                   \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    if (!__silva_result) {                                                \
+      if constexpr (expected_traits.materialize_fwd) {                    \
+        __silva_result.error().materialize();                             \
+      }                                                                   \
+      return std::unexpected(std::move(__silva_result).error());          \
     }                                                                     \
     std::move(__silva_result).value();                                    \
   })
@@ -84,7 +97,7 @@ namespace silva {
       auto error = std::move(__silva_result).error();                     \
       using enum error_level_t;                                           \
       silva::impl::silva_expect_fwd_as(error __VA_OPT__(, ) __VA_ARGS__); \
-      if (expected_traits.materialize_fwd) {                              \
+      if constexpr (expected_traits.materialize_fwd) {                    \
         error.materialize();                                              \
       }                                                                   \
       return std::unexpected(std::move(error));                           \
@@ -109,7 +122,7 @@ namespace silva {
     static_assert(error_level_is_primary(error_level));                     \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value);   \
     if (!__silva_result && (__silva_result.error().level >= error_level)) { \
-      if (expected_traits.materialize_fwd) {                                \
+      if constexpr (expected_traits.materialize_fwd) {                      \
         __silva_result.error().materialize();                               \
       }                                                                     \
       return std::unexpected(std::move(__silva_result).error());            \

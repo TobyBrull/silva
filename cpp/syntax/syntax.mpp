@@ -29,7 +29,7 @@ namespace silva {
 
   expected_t<void> syntax_main(const span_t<string_view_t> cmdline_args)
   {
-    expected_traits_t expected_traits{.materialize_fwd = true};
+    constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
     const auto se = standard_seed_engine(sw.ptr());
     for (const auto& cmdline_arg: cmdline_args.subspan(1)) {
