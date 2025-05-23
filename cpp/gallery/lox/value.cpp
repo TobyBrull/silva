@@ -3,7 +3,7 @@
 namespace silva::lox {
   bool value_t::is_none() const
   {
-    return variant_holds_t<std::nullopt_t>{}(data);
+    return variant_holds_t<none_t>{}(data);
   }
   bool value_t::holds_bool() const
   {
@@ -62,6 +62,19 @@ namespace silva::lox {
   BINARY_DOUBLE(+)
   BINARY_DOUBLE(-)
 #undef BINARY_DOUBLE
+
+  struct equal_visitor_t {
+    template<typename T>
+    bool operator()(const T& ll, const T& rr) const
+    {
+      return ll == rr;
+    }
+    bool operator()(const auto& ll, const auto& rr) const { return false; }
+  };
+  bool operator==(const value_t& lhs, const value_t& rhs)
+  {
+    return std::visit(equal_visitor_t{}, lhs.data, rhs.data);
+  }
 
   struct value_to_string_impl_visitor_t {
     string_or_view_t operator()(const double& x) const

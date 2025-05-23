@@ -190,7 +190,7 @@ namespace silva {
           const bool cont =
               SILVA_EXPECT_FWD(visitor(span_t<const tree_branch_t>{path}, tree_event_t::ON_EXIT));
           if (!cont) {
-            return {none};
+            return {{none}};
           }
         }
         path.pop_back();

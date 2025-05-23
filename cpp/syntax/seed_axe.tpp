@@ -118,7 +118,7 @@ namespace silva::seed::test {
     CHECK(sa.results.size() == 15);
     CHECK(sa.results.at(*sw.token_id("=")) ==
           seed_axe_result_t{
-              .prefix = none,
+              .prefix = {none},
               .regular =
                   result_oper_t<oper_regular_t>{
                       .oper       = infix_t{*sw.token_id("=")},
@@ -130,7 +130,7 @@ namespace silva::seed::test {
           });
     CHECK(sa.results.at(*sw.token_id("?")) ==
           seed_axe_result_t{
-              .prefix = none,
+              .prefix = {none},
               .regular =
                   result_oper_t<oper_regular_t>{
                       .oper       = ternary_t{*sw.token_id("?"), *sw.token_id(":")},
@@ -142,8 +142,8 @@ namespace silva::seed::test {
           });
     CHECK(sa.results.at(*sw.token_id(":")) ==
           seed_axe_result_t{
-              .prefix           = none,
-              .regular          = none,
+              .prefix           = {none},
+              .regular          = {none},
               .is_right_bracket = true,
           });
     CHECK(sa.results.at(*sw.token_id("+")) ==
@@ -191,13 +191,13 @@ namespace silva::seed::test {
                       .precedence = precedence_t{.level_index = 11, .assoc = NEST},
                       .pts        = pt->span().sub_tree_span_at(10),
                   },
-              .regular          = none,
+              .regular          = {none},
               .is_right_bracket = false,
           });
     CHECK(sa.results.at(*sw.token_id(")")) ==
           seed_axe_result_t{
-              .prefix           = none,
-              .regular          = none,
+              .prefix           = {none},
+              .regular          = {none},
               .is_right_bracket = true,
           });
 
@@ -285,20 +285,20 @@ namespace silva::seed::test {
   [1]_.Expr.Exc.!                                 2 !
     [0]_.Test.Atom                                2
 )");
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "2 ! . 3", none);
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "2 . - 3", none);
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "2 ! . 3", {none});
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "2 . - 3", {none});
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "2 $ !", R"(
 [0]_.Expr.Exc.!                                   2 $ !
   [0]_.Expr.Dol.$                                 2 $
     [0]_.Test.Atom                                2
 )");
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "2 ! $", none);
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "2 ! $", {none});
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "+ ~ 2", R"(
 [0]_.Expr.Prf.+                                   + ~ 2
   [0]_.Expr.Til.~                                 ~ 2
     [0]_.Test.Atom                                2
 )");
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "~ + 2", none);
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "~ + 2", {none});
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "( ( 0 ) )", R"(
 [0]_.Expr.Nst.(                                   ( ( 0 ) )
   [0]_.Expr.Nst.(                                 ( 0 )
@@ -336,7 +336,7 @@ namespace silva::seed::test {
     [1]_.Test.Atom                                0
   [1]_.Test.Atom                                  1
 )");
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "a [ 0 ] . b [ 1 ]", none);
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "a [ 0 ] . b [ 1 ]", {none});
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "a [ 0 ] + b [ 1 ]", R"(
 [0]_.Expr.Add.+                                   a [ ... 1 ]
   [0]_.Expr.Sub.[                                 a [ 0 ]
@@ -551,7 +551,7 @@ namespace silva::seed::test {
   [0]_.Test.Atom                                  b
   [1]_.Test.Atom                                  a
 )");
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "a { b } c", none);
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "a { b } c", {none});
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "a ( b ) c", R"(
 [0]_.Expr.Cat.concat                              a ( b ) c
   [0]_.Test.Atom                                  a
@@ -566,8 +566,8 @@ namespace silva::seed::test {
     [0]_.Test.Atom                                b
     [1]_.Test.Atom                                c
 )");
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "<< a { b } >> c", none);
-    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "x 1 x z", none);
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "<< a { b } >> c", {none});
+    test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "x 1 x z", {none});
     test::test_seed_axe<test_nursery_t>(sw.ptr(), sa, "x 1 { z", R"(
 [0]_.Expr.Cat.concat                              x 1 { z
   [0]_.Expr.Cat.concat                            x 1 {

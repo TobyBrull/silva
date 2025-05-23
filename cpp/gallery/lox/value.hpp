@@ -4,7 +4,7 @@
 
 namespace silva::lox {
   struct value_t {
-    variant_t<std::nullopt_t, bool, double, string_t> data;
+    variant_t<none_t, bool, double, string_t> data;
 
     template<typename T>
     value_t(T&& data);
@@ -26,10 +26,8 @@ namespace silva::lox {
     friend expected_t<value_t> operator>(const value_t&, const value_t&);
     friend expected_t<value_t> operator<=(const value_t&, const value_t&);
     friend expected_t<value_t> operator>=(const value_t&, const value_t&);
-    friend expected_t<value_t> operator==(const value_t&, const value_t&);
-    friend expected_t<value_t> operator!=(const value_t&, const value_t&);
-    friend expected_t<value_t> operator&&(const value_t&, const value_t&);
-    friend expected_t<value_t> operator||(const value_t&, const value_t&);
+    friend bool operator==(const value_t&, const value_t&);
+    friend bool operator!=(const value_t&, const value_t&);
 
     friend string_or_view_t to_string_impl(const value_t&);
   };

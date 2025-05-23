@@ -97,7 +97,7 @@ namespace silva {
         return index;
       }
       else {
-        return none;
+        return {none};
       }
     }
 

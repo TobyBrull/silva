@@ -32,8 +32,11 @@ namespace silva {
   template<typename T>
   using optional_t = std::optional<T>;
 
-  using none_t          = std::nullopt_t;
-  constexpr none_t none = std::nullopt;
+  struct none_t {
+    operator std::nullopt_t() const { return std::nullopt; }
+    friend auto operator<=>(const none_t&, const none_t&) = default;
+  };
+  constexpr none_t none = {};
 
   template<typename T, typename U>
   using pair_t = std::pair<T, U>;

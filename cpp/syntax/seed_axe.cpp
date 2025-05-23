@@ -630,7 +630,7 @@ namespace silva::seed::impl {
           return ois[oi_index].covered_token_indexes[cti_pos];
         }
         else {
-          return none;
+          return {none};
         }
       };
       const auto cti_advance = [&]() -> expected_t<void> {
