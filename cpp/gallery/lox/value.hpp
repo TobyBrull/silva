@@ -12,7 +12,7 @@ namespace silva::lox {
     value_t& operator=(const value_t&) = default;
 
     template<typename T>
-    value_t(T&& data);
+    explicit value_t(T&& data);
 
     bool is_none() const;
     bool holds_bool() const;
@@ -38,6 +38,7 @@ namespace silva::lox {
     friend bool operator!=(const value_t&, const value_t&);
 
     friend string_or_view_t to_string_impl(const value_t&);
+    friend std::ostream& operator<<(std::ostream&, const value_t&);
   };
 }
 
@@ -49,3 +50,13 @@ namespace silva::lox {
   {
   }
 }
+
+template<>
+struct fmt::formatter<silva::lox::value_t> {
+  constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+  template<typename FormatContext>
+  auto format(const silva::lox::value_t& x, FormatContext& ctx) const
+  {
+    return fmt::format_to(ctx.out(), "lox_v[{}]", to_string_impl(x));
+  }
+};

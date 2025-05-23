@@ -1,6 +1,4 @@
 print 'Hello, World!';
-
-print -42;
 print 1 + 2 * 3 - 4;
 
 fun sayHi(first, last) {

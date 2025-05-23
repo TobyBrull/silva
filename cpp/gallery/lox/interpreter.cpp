@@ -18,7 +18,7 @@ namespace silva::lox {
     auto res              = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(node_idx)), \
                                 "{} error evaluating unary operand",          \
                                 pts);                                         \
-    return op std::move(res);                                                              \
+    return expected_t<value_t>{op std::move(res)};                                         \
   }
 
 #define BINARY(op_rule_name, op)                                                      \
@@ -31,7 +31,7 @@ namespace silva::lox {
     auto rhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)), \
                                     "{} error evaluating right-hand-side",   \
                                     pts);                                    \
-    return std::move(lhs_res) op std::move(rhs_res);                                  \
+    return expected_t<value_t>{std::move(lhs_res) op std::move(rhs_res)};             \
   }
 
       const name_id_t rn = pts[0].rule_name;
@@ -87,7 +87,7 @@ namespace silva::lox {
 
 #undef BINARY
 #undef UNARY
-      return {none};
+      return value_t{none};
     }
 
     expected_t<value_t> atom(const parse_tree_span_t pts)
@@ -95,19 +95,19 @@ namespace silva::lox {
       const token_id_t ti            = pts.tp->tokens[pts[0].token_begin];
       const token_info_t* token_info = pts.tp->token_info_get(pts[0].token_begin);
       if (ti == intp->ti_true) {
-        return {true};
+        return value_t{true};
       }
       else if (ti == intp->ti_false) {
-        return {false};
+        return value_t{false};
       }
       else if (ti == intp->ti_none) {
-        return {none};
+        return value_t{none};
       }
       else if (token_info->category == STRING) {
-        return {string_t{SILVA_EXPECT_FWD(token_info->string_as_plain_contained())}};
+        return value_t{string_t{SILVA_EXPECT_FWD(token_info->string_as_plain_contained())}};
       }
       else if (token_info->category == NUMBER) {
-        return {double{SILVA_EXPECT_FWD(token_info->number_as_double())}};
+        return value_t{double{SILVA_EXPECT_FWD(token_info->number_as_double())}};
       }
       else {
         SILVA_EXPECT(false,
@@ -131,7 +131,7 @@ namespace silva::lox {
       else {
         SILVA_EXPECT(false, MAJOR, "can't evaluate {}", swp->name_id_wrap(rule_name));
       }
-      return {none};
+      return value_t{none};
     }
   };
 

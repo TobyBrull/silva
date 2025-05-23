@@ -36,26 +36,26 @@ namespace silva::lox {
   expected_t<value_t> operator-(const value_t& x)
   {
     if (x.holds_double()) {
-      return std::get<double>(x.data);
+      return value_t{-std::get<double>(x.data)};
     }
     else {
       SILVA_EXPECT(false, MAJOR, "runtime type error: - {} ", to_string(x));
     }
   }
 
-#define BINARY_DOUBLE(op)                                                   \
-  expected_t<value_t> operator op(const value_t & lhs, const value_t & rhs) \
-  {                                                                         \
-    if (lhs.holds_double() && rhs.holds_double()) {                         \
-      return {std::get<double>(lhs.data) op std::get<double>(rhs.data)};    \
-    }                                                                       \
-    else {                                                                  \
-      SILVA_EXPECT(false,                                                   \
-                   MAJOR,                                                   \
-                   "runtime type error: {} " #op " {}",                     \
-                   to_string(lhs),                                          \
-                   to_string(rhs));                                         \
-    }                                                                       \
+#define BINARY_DOUBLE(op)                                                       \
+  expected_t<value_t> operator op(const value_t & lhs, const value_t & rhs)     \
+  {                                                                             \
+    if (lhs.holds_double() && rhs.holds_double()) {                             \
+      return value_t{std::get<double>(lhs.data) op std::get<double>(rhs.data)}; \
+    }                                                                           \
+    else {                                                                      \
+      SILVA_EXPECT(false,                                                       \
+                   MAJOR,                                                       \
+                   "runtime type error: {} " #op " {}",                         \
+                   to_string(lhs),                                              \
+                   to_string(rhs));                                             \
+    }                                                                           \
   }
   BINARY_DOUBLE(*)
   BINARY_DOUBLE(/)
@@ -69,10 +69,10 @@ namespace silva::lox {
   expected_t<value_t> operator+(const value_t& lhs, const value_t& rhs)
   {
     if (lhs.holds_double() && rhs.holds_double()) {
-      return std::get<double>(lhs.data) + std::get<double>(rhs.data);
+      return value_t{std::get<double>(lhs.data) + std::get<double>(rhs.data)};
     }
     else if (lhs.holds_string() && rhs.holds_string()) {
-      return std::get<string_t>(lhs.data) + std::get<string_t>(rhs.data);
+      return value_t{std::get<string_t>(lhs.data) + std::get<string_t>(rhs.data)};
     }
     else {
       SILVA_EXPECT(false, MAJOR, "runtime type error: {} + {}", to_string(lhs), to_string(rhs));
@@ -97,6 +97,19 @@ namespace silva::lox {
   }
 
   struct value_to_string_impl_visitor_t {
+    string_or_view_t operator()(const none_t& x) const
+    {
+      return string_or_view_t{string_view_t{"none"}};
+    }
+    string_or_view_t operator()(const bool& x) const
+    {
+      if (x) {
+        return string_or_view_t{string_view_t{"true"}};
+      }
+      else {
+        return string_or_view_t{string_view_t{"false"}};
+      }
+    }
     string_or_view_t operator()(const double& x) const
     {
       auto retval = std::to_string(x);
@@ -117,5 +130,9 @@ namespace silva::lox {
   string_or_view_t to_string_impl(const value_t& value)
   {
     return std::visit(value_to_string_impl_visitor_t{}, value.data);
+  }
+  std::ostream& operator<<(std::ostream& os, const value_t& x)
+  {
+    return os << to_string_impl(x).as_string_view();
   }
 }
