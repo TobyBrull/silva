@@ -6,11 +6,11 @@
 #include <catch2/catch_all.hpp>
 
 using namespace silva;
-using namespace silva::impl;
-using enum silva::impl::assoc_t;
+using namespace silva::seed::impl;
+using enum silva::seed::impl::assoc_t;
 using enum silva::token_category_t;
 
-namespace silva::test {
+namespace silva::seed::test {
   template<typename SeedAxeNursery>
   expected_t<parse_tree_ptr_t>
   run_seed_axe(syntax_ward_t& sw, const seed_axe_t& seed_axe, tokenization_ptr_t tp)

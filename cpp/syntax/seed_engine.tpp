@@ -2,7 +2,7 @@
 
 #include <catch2/catch_all.hpp>
 
-namespace silva::test {
+namespace silva::seed::test {
   TEST_CASE("not-but_then-keywords", "[seed_engine_t][seed]")
   {
     const string_view_t frog_seed = R"'(

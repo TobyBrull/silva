@@ -14,7 +14,7 @@
 
 #include <utility>
 
-namespace silva {
+namespace silva::seed {
   using enum token_category_t;
   using enum error_level_t;
 
@@ -180,7 +180,7 @@ namespace silva {
                                                                 string_view_t text)
   {
     auto tt  = SILVA_EXPECT_FWD(tokenize(swp, std::move(filepath), std::move(text)));
-    auto ptp = SILVA_EXPECT_FWD(seed_parse(std::move(tt)));
+    auto ptp = SILVA_EXPECT_FWD(seed::seed_parse(std::move(tt)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
     SILVA_EXPECT_FWD(add(ptp->span()));
     return ptp;

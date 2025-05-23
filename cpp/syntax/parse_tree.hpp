@@ -5,8 +5,6 @@
 #include "tokenization.hpp"
 
 namespace silva {
-  struct seed_engine_t;
-
   struct parse_tree_node_t : public tree_node_t {
     name_id_t rule_name = 0;
     index_t token_begin = std::numeric_limits<index_t>::max();

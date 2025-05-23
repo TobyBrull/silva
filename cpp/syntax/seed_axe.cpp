@@ -7,7 +7,7 @@
 #include <ranges>
 #include <variant>
 
-namespace silva::impl {
+namespace silva::seed::impl {
   using enum assoc_t;
 
   constexpr static inline precedence_t precedence_max{
@@ -467,7 +467,7 @@ namespace silva::impl {
   };
 }
 
-namespace silva {
+namespace silva::seed {
   expected_t<seed_axe_t>
   seed_axe_create(syntax_ward_ptr_t swp, const name_id_t seed_axe_name, const parse_tree_span_t pts)
   {
@@ -477,7 +477,7 @@ namespace silva {
   }
 }
 
-namespace silva::impl {
+namespace silva::seed::impl {
   struct seed_axe_run_t {
     const seed_axe_t& seed_axe;
     parse_tree_nursery_t& nursery;
@@ -971,7 +971,7 @@ namespace silva::impl {
   };
 }
 
-namespace silva {
+namespace silva::seed {
   expected_t<parse_tree_node_t>
   seed_axe_t::apply(parse_tree_nursery_t& nursery,
                     delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser) const

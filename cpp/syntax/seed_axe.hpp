@@ -11,7 +11,7 @@
 // An mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard
 // algorithm.
 
-namespace silva {
+namespace silva::seed {
 
   const string_view_t seed_axe_seed = R"'(
     - Seed.Axe = [

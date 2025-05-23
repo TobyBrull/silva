@@ -12,7 +12,7 @@ namespace silva::test {
     - Primary = '(' Expr ')' | number
   )'";
     syntax_ward_t sw;
-    seed_engine_t se(sw.ptr());
+    seed::seed_engine_t se(sw.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 
     const string_view_t expr_text = R"( 5 + 4 * 2 + 1 )";
@@ -49,7 +49,7 @@ namespace silva::test {
     - Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
   )'";
     syntax_ward_t sw;
-    seed_engine_t se(sw.ptr());
+    seed::seed_engine_t se(sw.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("expr.seed", expr_seed_text));
 
     const string_view_t expr_text = R"(

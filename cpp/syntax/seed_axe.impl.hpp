@@ -5,7 +5,7 @@
 
 #include "canopy/types.hpp"
 
-namespace silva::impl {
+namespace silva::seed::impl {
   enum class assoc_t {
     INVALID,
     NEST,

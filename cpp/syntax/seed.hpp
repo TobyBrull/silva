@@ -11,13 +11,13 @@
 //  * Guido van Rossum's "PEG Parsing Series"
 //    https://medium.com/@gvanrossum_83706/peg-parsing-series-de5d41b2ed60
 
-namespace silva {
+namespace silva::seed {
 
   // A program in the Seed language describes a way to turn a tokenization_t
   // into a parse_tree_t. The actual algorithm to do this is implemented
   // in "seed_engine_t".
 
-  const string_view_t seed_seed = R"'(
+  const string_view_t seed_str = R"'(
     - Seed = [
       - x = ( '-' Rule ) *
       - Rule = Nonterminal ( '=' '[' x ']' | ExprOrAlias | '=/' Axe )

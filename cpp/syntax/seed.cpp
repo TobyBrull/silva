@@ -4,7 +4,7 @@
 
 #include "canopy/expected.hpp"
 
-namespace silva {
+namespace silva::seed {
   using enum token_category_t;
 
   namespace impl {
@@ -219,9 +219,9 @@ namespace silva {
   {
     const string_view_t axe_defn = [] -> string_view_t {
       const string_view_t start_str = "- Expr =/ ";
-      const size_t fi_begin         = seed_seed.find(start_str);
+      const size_t fi_begin         = seed_str.find(start_str);
       SILVA_ASSERT(fi_begin != string_view_t::npos);
-      const string_view_t axe_defn_str_with_rest = seed_seed.substr(fi_begin + start_str.size());
+      const string_view_t axe_defn_str_with_rest = seed_str.substr(fi_begin + start_str.size());
       const size_t fi_end                        = axe_defn_str_with_rest.find(']');
       SILVA_ASSERT(fi_end != string_view_t::npos);
       const string_view_t retval = axe_defn_str_with_rest.substr(0, fi_end + 1);

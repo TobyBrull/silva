@@ -7,7 +7,7 @@
 
 #include <catch2/catch_all.hpp>
 
-namespace silva::test {
+namespace silva::seed::test {
   TEST_CASE("name-id-style", "[name_id_style_t]")
   {
     syntax_ward_t sw;
@@ -41,7 +41,7 @@ namespace silva::test {
   {
     syntax_ward_t sw;
     const auto spr       = standard_seed_engine(sw.ptr());
-    const auto seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_seed}));
+    const auto seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_str}));
     const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(seed_parse(seed_tt));
     const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, sw.name_id_of("Seed")));
     // fmt::print("|{}|\n", *seed_pt_1->span().to_string());

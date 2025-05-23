@@ -4,7 +4,7 @@
 
 #include <regex>
 
-namespace silva {
+namespace silva::seed {
 
   // Driver for a program in the Seed language.
   struct seed_engine_t {
