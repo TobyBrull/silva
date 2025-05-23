@@ -2,9 +2,18 @@
 
 #include "canopy/expected.hpp"
 
+#include "syntax/parse_tree.hpp"
+
 namespace silva::lox {
+
+  struct function_t {
+    vector_t<token_id_t> parameters;
+    parse_tree_span_t body;
+    friend bool operator==(const function_t&, const function_t&) = default;
+  };
+
   struct value_t {
-    variant_t<none_t, bool, double, string_t> data;
+    variant_t<none_t, bool, double, string_t, function_t> data;
 
     value_t() = default;
 
@@ -20,6 +29,7 @@ namespace silva::lox {
     bool holds_bool() const;
     bool holds_double() const;
     bool holds_string() const;
+    bool holds_function() const;
 
     bool is_truthy() const;
 
@@ -42,6 +52,22 @@ namespace silva::lox {
 
     friend string_or_view_t to_string_impl(const value_t&);
     friend std::ostream& operator<<(std::ostream&, const value_t&);
+  };
+
+  struct scope_t;
+  using scope_ptr_t = shared_ptr_t<scope_t>;
+  struct scope_t {
+    syntax_ward_ptr_t swp;
+    scope_ptr_t parent;
+    hashmap_t<token_id_t, value_t> values;
+
+    expected_t<const value_t*> get(token_id_t) const;
+
+    // Assumes the name is already defined is some scope.
+    expected_t<void> assign(token_id_t, value_t);
+
+    // Assumes the name is not defined yet in the local scope.
+    expected_t<void> define(token_id_t, value_t);
   };
 }
 

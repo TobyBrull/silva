@@ -49,6 +49,8 @@ namespace silva {
                                    parse_tree_printing_t = parse_tree_printing_t::ABSOLUTE) const;
 
     expected_t<string_t> to_graphviz() const;
+
+    friend bool operator==(const parse_tree_span_t&, const parse_tree_span_t&) = default;
   };
 }
 

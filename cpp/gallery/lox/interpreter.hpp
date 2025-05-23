@@ -5,22 +5,6 @@
 #include "syntax/parse_tree.hpp"
 
 namespace silva::lox {
-  struct scope_t;
-  using scope_ptr_t = shared_ptr_t<scope_t>;
-  struct scope_t {
-    syntax_ward_ptr_t swp;
-    scope_ptr_t parent;
-    hashmap_t<token_id_t, value_t> values;
-
-    expected_t<const value_t*> get(token_id_t) const;
-
-    // Assumes the name is already defined is some scope.
-    expected_t<void> assign(token_id_t, value_t);
-
-    // Assumes the name is not defined yet in the local scope.
-    expected_t<void> define(token_id_t, value_t);
-  };
-
   struct interpreter_t {
     syntax_ward_ptr_t swp;
 

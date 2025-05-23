@@ -67,7 +67,7 @@ namespace silva {
     template<index_t N>
     expected_t<small_vector_t<index_t, N>> get_children_up_to() const;
 
-    friend auto operator<=>(const tree_span_t&, const tree_span_t&) = default;
+    friend bool operator==(const tree_span_t&, const tree_span_t&) = default;
     // friend hash_value_t hash_impl(const tree_span_t& x);
 
     template<typename NodeDataFunc>

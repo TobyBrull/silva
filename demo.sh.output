@@ -1324,7 +1324,7 @@ error parsing Fern
 Hello, World!
 3
 142
-ERROR (MAJOR):
-[example.lox:7:1] parse_tree_span[ fun sayHi ... ; } ] can't execute _.Lox.Decl.Fun
+ERROR (ASSERT):
+not yet implemented
 failed executing Lox script cpp/gallery/lox/example.lox
 

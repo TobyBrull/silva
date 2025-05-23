@@ -3,52 +3,6 @@
 using enum silva::token_category_t;
 
 namespace silva::lox {
-
-  expected_t<const value_t*> scope_t::get(const token_id_t ti) const
-  {
-    const scope_t* sp = this;
-    while (true) {
-      const auto it = sp->values.find(ti);
-      if (it == sp->values.end()) {
-        SILVA_EXPECT(parent, MINOR, "couldn't find identifier {}", swp->token_id_wrap(ti));
-        sp = parent.get();
-      }
-      else {
-        return {&it->second};
-      }
-    }
-  }
-  expected_t<void> scope_t::assign(const token_id_t ti, value_t x)
-  {
-    scope_t* sp = this;
-    while (true) {
-      auto it = sp->values.find(ti);
-      if (it == sp->values.end()) {
-        SILVA_EXPECT(parent,
-                     MINOR,
-                     "couldn't find identifier {} (trying to assign {} to it)",
-                     swp->token_id_wrap(ti),
-                     to_string(x));
-        sp = parent.get();
-      }
-      else {
-        it->second = std::move(x);
-      }
-    }
-  }
-  expected_t<void> scope_t::define(const token_id_t ti, value_t x)
-  {
-    const auto [it, inserted] = values.emplace(ti, value_t{});
-    SILVA_EXPECT(inserted,
-                 MINOR,
-                 "couldn't define identifier {} (with initializer {}) because the value already "
-                 "exists in the local scope",
-                 swp->token_id_wrap(ti),
-                 to_string(x));
-    it->second = std::move(x);
-    return {};
-  }
-
   struct evaluation_t {
     interpreter_t* intp        = nullptr;
     syntax_ward_ptr_t swp      = intp->swp;
@@ -214,6 +168,9 @@ namespace silva::lox {
               SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(children[0]), current_scope));
         }
         SILVA_EXPECT_FWD(current_scope->define(var_name, std::move(initializer)));
+      }
+      else if (rule_name == intp->ni_decl_fun) {
+        SILVA_EXPECT(false, ASSERT, "not yet implemented");
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} can't execute {}", pts, swp->name_id_wrap(rule_name));

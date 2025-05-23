@@ -1,6 +1,11 @@
 #include "value.hpp"
 
 namespace silva::lox {
+
+  // function_t
+
+  // value_t
+
   bool value_t::is_none() const
   {
     return variant_holds_t<none_t>{}(data);
@@ -16,6 +21,10 @@ namespace silva::lox {
   bool value_t::holds_string() const
   {
     return variant_holds_t<string_t>{}(data);
+  }
+  bool value_t::holds_function() const
+  {
+    return variant_holds_t<function_t>{}(data);
   }
 
   bool value_t::is_truthy() const
@@ -135,4 +144,52 @@ namespace silva::lox {
   {
     return os << to_string_impl(x).as_string_view();
   }
+
+  // scope_t
+
+  expected_t<const value_t*> scope_t::get(const token_id_t ti) const
+  {
+    const scope_t* sp = this;
+    while (true) {
+      const auto it = sp->values.find(ti);
+      if (it == sp->values.end()) {
+        SILVA_EXPECT(parent, MINOR, "couldn't find identifier {}", swp->token_id_wrap(ti));
+        sp = parent.get();
+      }
+      else {
+        return {&it->second};
+      }
+    }
+  }
+  expected_t<void> scope_t::assign(const token_id_t ti, value_t x)
+  {
+    scope_t* sp = this;
+    while (true) {
+      auto it = sp->values.find(ti);
+      if (it == sp->values.end()) {
+        SILVA_EXPECT(parent,
+                     MINOR,
+                     "couldn't find identifier {} (trying to assign {} to it)",
+                     swp->token_id_wrap(ti),
+                     to_string(x));
+        sp = parent.get();
+      }
+      else {
+        it->second = std::move(x);
+      }
+    }
+  }
+  expected_t<void> scope_t::define(const token_id_t ti, value_t x)
+  {
+    const auto [it, inserted] = values.emplace(ti, value_t{});
+    SILVA_EXPECT(inserted,
+                 MINOR,
+                 "couldn't define identifier {} (with initializer {}) because the value already "
+                 "exists in the local scope",
+                 swp->token_id_wrap(ti),
+                 to_string(x));
+    it->second = std::move(x);
+    return {};
+  }
+
 }

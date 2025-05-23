@@ -100,7 +100,7 @@ namespace silva::seed::impl {
     precedence_t precedence;
     parse_tree_span_t pts;
 
-    friend auto operator<=>(const result_oper_t<Oper>&, const result_oper_t<Oper>&) = default;
+    friend bool operator==(const result_oper_t<Oper>&, const result_oper_t<Oper>&) = default;
   };
 
   struct seed_axe_result_t {
@@ -108,6 +108,6 @@ namespace silva::seed::impl {
     optional_t<result_oper_t<oper_regular_t>> regular;
     bool is_right_bracket = false;
 
-    friend auto operator<=>(const seed_axe_result_t&, const seed_axe_result_t&) = default;
+    friend bool operator==(const seed_axe_result_t&, const seed_axe_result_t&) = default;
   };
 }
