@@ -16,6 +16,11 @@ namespace silva {
   template<typename T>
   struct is_expected_t<std::expected<T, error_t>> : std::true_type {};
 
+  // If std::remove_cv_t<T> already is_expected_t, returns "x" as is.
+  // Otherwise, wraps "x" in an expected_t.
+  template<typename T>
+  auto expectify(T&& x);
+
   struct expected_traits_t {
     bool materialize_fwd = false;
   };
@@ -159,6 +164,20 @@ namespace silva {
 }
 
 // IMPLEMENTATION
+
+namespace silva {
+  template<typename T>
+  auto expectify(T&& x)
+  {
+    using TT = std::remove_cv_t<T>;
+    if constexpr (is_expected_t<TT>::value) {
+      return std::forward<T>(x);
+    }
+    else {
+      return expected_t<TT>{std::forward<T>(x)};
+    }
+  }
+}
 
 namespace silva::impl {
   inline error_t silva_expect(char const* file, const long line, const error_level_t error_level)

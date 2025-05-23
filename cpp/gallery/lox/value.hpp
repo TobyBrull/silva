@@ -22,15 +22,16 @@ namespace silva::lox {
     bool is_truthy() const;
 
     friend bool operator!(const value_t&);
-    friend expected_t<value_t> operator-(const value_t&);
+    friend expected_t<double> operator-(const value_t&);
 
-    friend expected_t<value_t> operator*(const value_t&, const value_t&);
-    friend expected_t<value_t> operator/(const value_t&, const value_t&);
-    friend expected_t<value_t> operator-(const value_t&, const value_t&);
-    friend expected_t<value_t> operator<(const value_t&, const value_t&);
-    friend expected_t<value_t> operator>(const value_t&, const value_t&);
-    friend expected_t<value_t> operator<=(const value_t&, const value_t&);
-    friend expected_t<value_t> operator>=(const value_t&, const value_t&);
+    friend expected_t<double> operator*(const value_t&, const value_t&);
+    friend expected_t<double> operator/(const value_t&, const value_t&);
+    friend expected_t<double> operator-(const value_t&, const value_t&);
+
+    friend expected_t<bool> operator<(const value_t&, const value_t&);
+    friend expected_t<bool> operator>(const value_t&, const value_t&);
+    friend expected_t<bool> operator<=(const value_t&, const value_t&);
+    friend expected_t<bool> operator>=(const value_t&, const value_t&);
 
     friend expected_t<value_t> operator+(const value_t&, const value_t&);
 

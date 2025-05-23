@@ -11,14 +11,14 @@ namespace silva::lox {
 
     expected_t<value_t> expr(const parse_tree_span_t pts)
     {
-#define UNARY(op_rule_name, op)                                                            \
-  else if (rn == op_rule_name)                                                             \
-  {                                                                                        \
-    const auto [node_idx] = SILVA_EXPECT_FWD(pts.get_children<1>());                       \
-    auto res              = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(node_idx)), \
-                                "{} error evaluating unary operand",          \
-                                pts);                                         \
-    return expected_t<value_t>{op std::move(res)};                                         \
+#define UNARY(op_rule_name, op)                                                                  \
+  else if (rn == op_rule_name)                                                                   \
+  {                                                                                              \
+    const auto [node_idx] = SILVA_EXPECT_FWD(pts.get_children<1>());                             \
+    auto res              = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(node_idx)),       \
+                                "{} error evaluating unary operand",                \
+                                pts);                                               \
+    return expectify(op std::move(res)).transform([](auto x) { return value_t{std::move(x)}; }); \
   }
 
 #define BINARY(op_rule_name, op)                                                      \
@@ -31,7 +31,9 @@ namespace silva::lox {
     auto rhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)), \
                                     "{} error evaluating right-hand-side",   \
                                     pts);                                    \
-    return expected_t<value_t>{std::move(lhs_res) op std::move(rhs_res)};             \
+    return expectify(std::move(lhs_res) op std::move(rhs_res)).transform([](auto x) { \
+      return value_t{std::move(x)};                                                   \
+    });                                                                               \
   }
 
       const name_id_t rn = pts[0].rule_name;
