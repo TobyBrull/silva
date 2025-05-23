@@ -93,7 +93,7 @@ namespace silva {
         }
         index += 1;
       }
-      if (index < rest.size() && rest[index - 1] == '\'') {
+      if (rest[index - 1] == '\'') {
         return index;
       }
       else {
