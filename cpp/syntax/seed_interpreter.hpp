@@ -5,7 +5,6 @@
 #include <regex>
 
 namespace silva::seed {
-
   // Driver for a program in the Seed language.
   struct interpreter_t {
     syntax_ward_ptr_t swp;

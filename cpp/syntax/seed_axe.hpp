@@ -13,7 +13,7 @@
 
 namespace silva::seed {
 
-  const string_view_t seed_axe_seed = R"'(
+  const string_view_t seed_axe_str = R"'(
     - Seed.Axe = [
       - x = p.Nonterminal '[' ( '-' Level ) * ']'
       - Level = p.Nonterminal.Base '=' Assoc Ops *

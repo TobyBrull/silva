@@ -21,7 +21,7 @@ namespace silva {
   {
     auto retval = std::make_unique<seed::interpreter_t>(swp);
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed::seed_str));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("seed-axe.seed", seed::seed_axe_seed));
+    SILVA_EXPECT_ASSERT(retval->add_complete_file("seed-axe.seed", seed::seed_axe_str));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern::seed_str));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("silva.seed", seed_str));
     retval->parse_callbacks[swp->name_id_of("Seed")] =

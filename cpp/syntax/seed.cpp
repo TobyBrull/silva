@@ -460,7 +460,7 @@ namespace silva::seed {
     };
   }
 
-  expected_t<parse_tree_ptr_t> seed_parse(tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)
   {
     impl::seed_parse_tree_nursery_t nursery(tp);
     SILVA_EXPECT_FWD(nursery.seed());

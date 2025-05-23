@@ -180,7 +180,7 @@ namespace silva::seed {
                                                                 string_view_t text)
   {
     auto tt  = SILVA_EXPECT_FWD(tokenize(swp, std::move(filepath), std::move(text)));
-    auto ptp = SILVA_EXPECT_FWD(seed::seed_parse(std::move(tt)));
+    auto ptp = SILVA_EXPECT_FWD(seed::parse(std::move(tt)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
     SILVA_EXPECT_FWD(add(ptp->span()));
     return ptp;
