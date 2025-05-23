@@ -1,6 +1,9 @@
 print 'Hello, World!';
 print 1 + 2 * 3 - 4;
 
+var x = 100 + 42;
+print x;
+
 fun sayHi(first, last) {
   print 'Hi, ' + first + ' ' + last + '!';
 }

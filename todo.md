@@ -1,6 +1,7 @@
 # TODO
 
 * Lox
+    * Make a REPL
     * variables with lexical scoping
         * Cactus-stack for processing variable scopes: `env_stack_t<token_id_t, lox::value>`.
     * conditional exec

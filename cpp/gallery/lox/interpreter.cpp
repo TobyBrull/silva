@@ -4,10 +4,56 @@ using enum silva::token_category_t;
 
 namespace silva::lox {
 
+  expected_t<const value_t*> scope_t::get(const token_id_t ti) const
+  {
+    const scope_t* sp = this;
+    while (true) {
+      const auto it = sp->values.find(ti);
+      if (it == sp->values.end()) {
+        SILVA_EXPECT(parent, MINOR, "couldn't find identifier {}", swp->token_id_wrap(ti));
+        sp = parent.get();
+      }
+      else {
+        return {&it->second};
+      }
+    }
+  }
+  expected_t<void> scope_t::assign(const token_id_t ti, value_t x)
+  {
+    scope_t* sp = this;
+    while (true) {
+      auto it = sp->values.find(ti);
+      if (it == sp->values.end()) {
+        SILVA_EXPECT(parent,
+                     MINOR,
+                     "couldn't find identifier {} (trying to assign {} to it)",
+                     swp->token_id_wrap(ti),
+                     to_string(x));
+        sp = parent.get();
+      }
+      else {
+        it->second = std::move(x);
+      }
+    }
+  }
+  expected_t<void> scope_t::define(const token_id_t ti, value_t x)
+  {
+    const auto [it, inserted] = values.emplace(ti, value_t{});
+    SILVA_EXPECT(inserted,
+                 MINOR,
+                 "couldn't define identifier {} (with initializer {}) because the value already "
+                 "exists in the local scope",
+                 swp->token_id_wrap(ti),
+                 to_string(x));
+    it->second = std::move(x);
+    return {};
+  }
+
   struct evaluation_t {
     interpreter_t* intp        = nullptr;
     syntax_ward_ptr_t swp      = intp->swp;
     const name_id_style_t& nis = swp->default_name_id_style();
+    scope_ptr_t scope;
 
     expected_t<value_t> expr(const parse_tree_span_t pts)
     {
@@ -111,6 +157,10 @@ namespace silva::lox {
       else if (token_info->category == NUMBER) {
         return value_t{double{SILVA_EXPECT_FWD(token_info->number_as_double())}};
       }
+      else if (token_info->category == IDENTIFIER) {
+        const value_t* val = SILVA_EXPECT_FWD(scope->get(ti));
+        return *val;
+      }
       else {
         SILVA_EXPECT(false,
                      MAJOR,
@@ -137,9 +187,12 @@ namespace silva::lox {
     }
   };
 
-  expected_t<value_t> interpreter_t::evaluate(const parse_tree_span_t pts)
+  expected_t<value_t> interpreter_t::evaluate(const parse_tree_span_t pts, scope_ptr_t scope)
   {
-    evaluation_t eval_run{.intp = this};
+    evaluation_t eval_run{
+        .intp  = this,
+        .scope = scope,
+    };
     return eval_run.expr_or_atom(pts);
   }
 
@@ -147,10 +200,20 @@ namespace silva::lox {
     interpreter_t* intp   = nullptr;
     syntax_ward_ptr_t swp = intp->swp;
 
+    scope_ptr_t current_scope;
+
     expected_t<void> decl(const parse_tree_span_t pts)
     {
       const name_id_t rule_name = pts[0].rule_name;
-      if (false) {
+      if (rule_name == intp->ni_decl_var) {
+        const auto children       = SILVA_EXPECT_FWD(pts.get_children_up_to<1>());
+        const token_id_t var_name = pts.tp->tokens[pts[0].token_begin + 1];
+        value_t initializer;
+        if (children.size == 1) {
+          initializer =
+              SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(children[0]), current_scope));
+        }
+        SILVA_EXPECT_FWD(current_scope->define(var_name, std::move(initializer)));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} can't execute {}", pts, swp->name_id_wrap(rule_name));
@@ -162,7 +225,7 @@ namespace silva::lox {
     {
       const name_id_t rule_name = pts[0].rule_name;
       if (rule_name == intp->ni_stmt_print) {
-        value_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1)),
+        value_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), current_scope),
                                          "{} error evaluating argument to 'print'",
                                          pts);
         fmt::print("{}\n", to_string(std::move(value)));
@@ -197,7 +260,7 @@ namespace silva::lox {
 
   expected_t<void> interpreter_t::execute(const parse_tree_span_t pts)
   {
-    execution_t exec_run{.intp = this};
+    execution_t exec_run{.intp = this, .current_scope = globals};
     SILVA_EXPECT_FWD_PLAIN(exec_run.go(pts));
     return {};
   }

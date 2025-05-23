@@ -5,6 +5,22 @@
 #include "syntax/parse_tree.hpp"
 
 namespace silva::lox {
+  struct scope_t;
+  using scope_ptr_t = shared_ptr_t<scope_t>;
+  struct scope_t {
+    syntax_ward_ptr_t swp;
+    scope_ptr_t parent;
+    hashmap_t<token_id_t, value_t> values;
+
+    expected_t<const value_t*> get(token_id_t) const;
+
+    // Assumes the name is already defined is some scope.
+    expected_t<void> assign(token_id_t, value_t);
+
+    // Assumes the name is not defined yet in the local scope.
+    expected_t<void> define(token_id_t, value_t);
+  };
+
   struct interpreter_t {
     syntax_ward_ptr_t swp;
 
@@ -15,6 +31,7 @@ namespace silva::lox {
 
     name_id_t ni_lox          = swp->name_id_of("Lox");
     name_id_t ni_decl         = swp->name_id_of(ni_lox, "Decl");
+    name_id_t ni_decl_var     = swp->name_id_of(ni_decl, "Var");
     name_id_t ni_stmt         = swp->name_id_of(ni_lox, "Stmt");
     name_id_t ni_stmt_print   = swp->name_id_of(ni_stmt, "Print");
     name_id_t ni_expr         = swp->name_id_of(ni_lox, "Expr");
@@ -35,7 +52,9 @@ namespace silva::lox {
     name_id_t ni_expr_b_or    = swp->name_id_of(ni_expr, "LogicOr", "or");
     name_id_t ni_expr_atom    = swp->name_id_of(ni_expr, "Atom");
 
-    expected_t<value_t> evaluate(parse_tree_span_t);
+    scope_ptr_t globals = std::make_unique<scope_t>();
+
+    expected_t<value_t> evaluate(parse_tree_span_t, scope_ptr_t);
 
     expected_t<void> execute(parse_tree_span_t);
   };
