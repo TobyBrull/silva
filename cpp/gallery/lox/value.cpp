@@ -4,6 +4,19 @@ namespace silva::lox {
 
   // function_t
 
+  index_t function_t::arity() const
+  {
+    return pts[1].num_children;
+  }
+  parse_tree_span_t function_t::parameters() const
+  {
+    return pts.sub_tree_span_at(1);
+  }
+  parse_tree_span_t function_t::body() const
+  {
+    return pts.sub_tree_span_at(pts[1].subtree_size + 1);
+  }
+
   // value_t
 
   bool value_t::is_none() const
@@ -194,6 +207,12 @@ namespace silva::lox {
                  to_string(x));
     it->second = std::move(x);
     return {};
+  }
+  scope_ptr_t scope_t::make_child_scope()
+  {
+    auto retval    = std::make_shared<scope_t>();
+    retval->parent = shared_from_this();
+    return retval;
   }
 
 }

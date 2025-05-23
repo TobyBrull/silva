@@ -1325,8 +1325,8 @@ Hello, World!
 3
 142
 <function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>
+Hi, Dear Reader!
 ERROR (MAJOR):
-can't evaluate expression _.Lox.Expr.Call.(
-[example.lox:11:1] parse_tree_span[ sayHi ( ... ) ; ] error evaluating expression statement
+[example.lox:17:1] parse_tree_span[ for ( ... ; } ] can't execute _.Lox.Stmt.For
 failed executing Lox script cpp/gallery/lox/example.lox
 

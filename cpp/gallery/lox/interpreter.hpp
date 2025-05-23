@@ -28,6 +28,8 @@ namespace silva::lox {
     name_id_t ni_stmt_expr    = swp->name_id_of(ni_stmt, "ExprStmt");
     name_id_t ni_expr         = swp->name_id_of(ni_lox, "Expr");
     name_id_t ni_expr_primary = swp->name_id_of(ni_expr, "Primary");
+    name_id_t ni_expr_call    = swp->name_id_of(ni_expr, "Call", "(");
+    name_id_t ni_expr_member  = swp->name_id_of(ni_expr, "Call", ".");
     name_id_t ni_expr_u_exc   = swp->name_id_of(ni_expr, "Unary", "!");
     name_id_t ni_expr_u_sub   = swp->name_id_of(ni_expr, "Unary", "-");
     name_id_t ni_expr_b_mul   = swp->name_id_of(ni_expr, "Factor", "*");
@@ -48,6 +50,6 @@ namespace silva::lox {
 
     expected_t<value_t> evaluate(parse_tree_span_t, scope_ptr_t);
 
-    expected_t<void> execute(parse_tree_span_t);
+    expected_t<void> execute(parse_tree_span_t, scope_ptr_t);
   };
 }

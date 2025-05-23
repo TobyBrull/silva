@@ -79,6 +79,45 @@ namespace silva::lox {
                                         pts);
         return rhs_res;
       }
+      else if (rn == intp->ni_expr_call)
+      {
+        const auto [fun_idx, args_idx] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        auto fun_res = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(fun_idx)),
+                                        "{} error evaluating left-hand-side",
+                                        pts);
+        SILVA_EXPECT(fun_res.holds_function(),
+                     MINOR,
+                     "left-hand-side of call-operator must evaluate to function");
+        function_t& fun = std::get<function_t>(fun_res.data);
+
+        const auto pts_args = pts.sub_tree_span_at(args_idx);
+        const index_t arity = fun.arity();
+        SILVA_EXPECT(arity == pts_args[0].num_children,
+                     MINOR,
+                     "trying to call <function {}>, which has {} parameters, with {} arguments",
+                     fun.pts,
+                     arity,
+                     pts_args[0].num_children);
+
+        const auto fun_params        = fun.parameters();
+        auto [args_it, args_end]     = pts_args.children_range();
+        auto [params_it, params_end] = fun_params.children_range();
+        auto func_scope              = scope->make_child_scope();
+        for (index_t i = 0; i < arity; ++i) {
+          SILVA_EXPECT(args_it != args_end && params_it != params_end, MAJOR);
+          auto val = SILVA_EXPECT_FWD(expr_or_atom(pts_args.sub_tree_span_at(args_it.pos)),
+                                      "{} error evaluating {}-th argument (counted 0-based)",
+                                      pts,
+                                      i);
+          const token_id_t ti_param =
+              fun_params.tp->tokens[fun_params.sub_tree_span_at(params_it.pos)[0].token_begin];
+          SILVA_EXPECT_FWD(func_scope->define(ti_param, std::move(val)));
+          ++args_it;
+          ++params_it;
+        }
+        SILVA_EXPECT(args_it == args_end && params_it == params_end, MAJOR);
+        SILVA_EXPECT_FWD(intp->execute(fun.body(), func_scope));
+      }
       else
       {
         SILVA_EXPECT(false,
@@ -154,7 +193,7 @@ namespace silva::lox {
     interpreter_t* intp   = nullptr;
     syntax_ward_ptr_t swp = intp->swp;
 
-    scope_ptr_t current_scope;
+    scope_ptr_t scope;
 
     expected_t<void> decl(const parse_tree_span_t pts)
     {
@@ -164,16 +203,15 @@ namespace silva::lox {
         const auto children       = SILVA_EXPECT_FWD(pts.get_children_up_to<1>());
         value_t initializer;
         if (children.size == 1) {
-          initializer =
-              SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(children[0]), current_scope));
+          initializer = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(children[0]), scope));
         }
-        SILVA_EXPECT_FWD(current_scope->define(var_name, std::move(initializer)));
+        SILVA_EXPECT_FWD(scope->define(var_name, std::move(initializer)));
       }
       else if (rule_name == intp->ni_decl_fun) {
         const token_id_t fun_name = pts.tp->tokens[pts[0].token_begin + 1];
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
-        SILVA_EXPECT_FWD(current_scope->define(fun_name, value_t{function_t{.pts = func_pts}}));
+        SILVA_EXPECT_FWD(scope->define(fun_name, value_t{function_t{.pts = func_pts}}));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} can't execute {}", pts, swp->name_id_wrap(rule_name));
@@ -185,13 +223,13 @@ namespace silva::lox {
     {
       const name_id_t rule_name = pts[0].rule_name;
       if (rule_name == intp->ni_stmt_print) {
-        value_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), current_scope),
+        value_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                                          "{} error evaluating argument to 'print'",
                                          pts);
         fmt::print("{}\n", to_string(std::move(value)));
       }
       else if (rule_name == intp->ni_stmt_expr) {
-        SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), current_scope),
+        SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                          "{} error evaluating expression statement",
                          pts);
       }
@@ -216,6 +254,11 @@ namespace silva::lox {
       else if (rule_name == intp->ni_stmt) {
         return stmt(pts.sub_tree_span_at(1));
       }
+      else if (rule_name == intp->ni_stmt_block) {
+        for (const auto [node_idx, child_idx]: pts.children_range()) {
+          SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
+        }
+      }
       else {
         SILVA_EXPECT(false, MAJOR, "{} can't execute {}", pts, swp->name_id_wrap(rule_name));
       }
@@ -223,9 +266,9 @@ namespace silva::lox {
     }
   };
 
-  expected_t<void> interpreter_t::execute(const parse_tree_span_t pts)
+  expected_t<void> interpreter_t::execute(const parse_tree_span_t pts, scope_ptr_t scope)
   {
-    execution_t exec_run{.intp = this, .current_scope = globals};
+    execution_t exec_run{.intp = this, .scope = scope};
     SILVA_EXPECT_FWD_PLAIN(exec_run.go(pts));
     return {};
   }

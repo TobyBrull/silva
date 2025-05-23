@@ -8,6 +8,11 @@ namespace silva::lox {
 
   struct function_t {
     parse_tree_span_t pts;
+
+    index_t arity() const;
+    parse_tree_span_t parameters() const;
+    parse_tree_span_t body() const;
+
     friend bool operator==(const function_t&, const function_t&) = default;
   };
 
@@ -55,7 +60,7 @@ namespace silva::lox {
 
   struct scope_t;
   using scope_ptr_t = shared_ptr_t<scope_t>;
-  struct scope_t {
+  struct scope_t : public std::enable_shared_from_this<scope_t> {
     syntax_ward_ptr_t swp;
     scope_ptr_t parent;
     hashmap_t<token_id_t, value_t> values;
@@ -67,6 +72,8 @@ namespace silva::lox {
 
     // Assumes the name is not defined yet in the local scope.
     expected_t<void> define(token_id_t, value_t);
+
+    scope_ptr_t make_child_scope();
   };
 }
 

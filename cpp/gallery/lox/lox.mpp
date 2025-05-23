@@ -26,7 +26,9 @@ namespace silva::lox {
     }
 
     interpreter_t li{sw.ptr()};
-    SILVA_EXPECT_FWD(li.execute(pt->span()), "failed executing Lox script {}", cmdline_args[1]);
+    SILVA_EXPECT_FWD(li.execute(pt->span(), li.globals),
+                     "failed executing Lox script {}",
+                     cmdline_args[1]);
     return {};
   }
 }
