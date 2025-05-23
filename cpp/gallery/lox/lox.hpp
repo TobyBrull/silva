@@ -9,13 +9,13 @@ namespace silva::lox {
       - Decl = [
         - x = Var | Fun | Class
         - Var = 'var' identifier ( '=' _.Lox.Expr ) ? ';'
-        - Fun = 'fun' _.Lox.Function
-        - Class = 'class' identifier ( '<' identifier ) ? '{' _.Lox.Function * '}'
-      ]
-      - Function = [
-        - x = identifier '(' Parameters ')' _.Lox.Stmt.Block
-        - Parameters = ( Parameter ( ',' Parameter ) * ) ?
-        - Parameter = identifier
+        - Fun = 'fun' Function
+        - Class = 'class' identifier ( '<' identifier ) ? '{' Function * '}'
+        - Function = [
+          - x = identifier '(' Parameters ')' _.Lox.Stmt.Block
+          - Parameters = ( Parameter ( ',' Parameter ) * ) ?
+          - Parameter = identifier
+        ]
       ]
       - Stmt = [
         - x = Print | If | For | While | Return | Block | ExprStmt
