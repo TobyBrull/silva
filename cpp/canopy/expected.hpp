@@ -59,7 +59,7 @@ namespace silva {
   ({                                                                      \
     auto __silva_result = (expression);                                   \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
-    if (!__silva_result) {                                                \
+    if (!__silva_result.has_value()) {                                    \
       if constexpr (expected_traits.materialize_fwd) {                    \
         __silva_result.error().materialize();                             \
       }                                                                   \
@@ -76,7 +76,7 @@ namespace silva {
   ({                                                                      \
     auto __silva_result = (expression);                                   \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
-    if (!__silva_result) {                                                \
+    if (!__silva_result.has_value()) {                                    \
       if constexpr (expected_traits.materialize_fwd) {                    \
         __silva_result.error().materialize();                             \
       }                                                                   \
@@ -93,7 +93,7 @@ namespace silva {
   ({                                                                      \
     auto __silva_result = (expression);                                   \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
-    if (!__silva_result) {                                                \
+    if (!__silva_result.has_value()) {                                    \
       auto error = std::move(__silva_result).error();                     \
       using enum error_level_t;                                           \
       silva::impl::silva_expect_fwd_as(error __VA_OPT__(, ) __VA_ARGS__); \
@@ -115,27 +115,27 @@ namespace silva {
 // Usage:
 //  - SILVA_EXPECT_FWD_IF(foo(x), MAJOR)
 //
-#define SILVA_EXPECT_FWD_IF(expression, error_level)                        \
-  ({                                                                        \
-    auto __silva_result = (expression);                                     \
-    using enum error_level_t;                                               \
-    static_assert(error_level_is_primary(error_level));                     \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);   \
-    if (!__silva_result && (__silva_result.error().level >= error_level)) { \
-      if constexpr (expected_traits.materialize_fwd) {                      \
-        __silva_result.error().materialize();                               \
-      }                                                                     \
-      return std::unexpected(std::move(__silva_result).error());            \
-    }                                                                       \
-    std::move(__silva_result);                                              \
+#define SILVA_EXPECT_FWD_IF(expression, error_level)                                    \
+  ({                                                                                    \
+    auto __silva_result = (expression);                                                 \
+    using enum error_level_t;                                                           \
+    static_assert(error_level_is_primary(error_level));                                 \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);               \
+    if (!__silva_result.has_value() && (__silva_result.error().level >= error_level)) { \
+      if constexpr (expected_traits.materialize_fwd) {                                  \
+        __silva_result.error().materialize();                                           \
+      }                                                                                 \
+      return std::unexpected(std::move(__silva_result).error());                        \
+    }                                                                                   \
+    std::move(__silva_result);                                                          \
   })
 
-#define SILVA_EXPECT_ASSERT(x)                                                 \
-  ({                                                                           \
-    auto result = (x);                                                         \
-    static_assert(is_expected_t<decltype(result)>::value);                     \
-    SILVA_ASSERT(result, "Unexpected:\n{}", silva::to_string(result.error())); \
-    std::move(result).value();                                                 \
+#define SILVA_EXPECT_ASSERT(x)                                                             \
+  ({                                                                                       \
+    auto result = (x);                                                                     \
+    static_assert(is_expected_t<decltype(result)>::value);                                 \
+    SILVA_ASSERT(result.has_value(), "Unexpected:\n{}", silva::to_string(result.error())); \
+    std::move(result).value();                                                             \
   })
 
 // Semantics:
@@ -147,13 +147,14 @@ namespace silva {
 // Usage:
 //  - SILVA_EXPECT_REQUIRE(foo(x))
 //
-#define SILVA_EXPECT_REQUIRE(expression)                                                      \
-  ({                                                                                          \
-    auto __silva_result = (expression);                                                       \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                     \
-    INFO((!__silva_result ? silva::to_string(__silva_result.error()).as_string_view() : "")); \
-    REQUIRE(__silva_result);                                                                  \
-    std::move(__silva_result).value();                                                        \
+#define SILVA_EXPECT_REQUIRE(expression)                                                          \
+  ({                                                                                              \
+    auto __silva_result = (expression);                                                           \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                         \
+    INFO((!__silva_result.has_value() ? silva::to_string(__silva_result.error()).as_string_view() \
+                                      : ""));                                                     \
+    REQUIRE(__silva_result);                                                                      \
+    std::move(__silva_result).value();                                                            \
   })
 }
 

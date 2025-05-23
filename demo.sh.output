@@ -1196,6 +1196,8 @@ error parsing Fern
     [0]_.Lox.Decl.Fun                             fun sayHi ... ; }
       [0]_.Lox.Function                           sayHi ( ... ; }
         [0]_.Lox.Function.Parameters              first , last
+          [0]_.Lox.Function.Parameter             first
+          [1]_.Lox.Function.Parameter             last
         [1]_.Lox.Stmt.Block                       { print ... ; }
           [0]_.Lox.Stmt                           print 'Hi, ' ... '!' ;
             [0]_.Lox.Stmt.Print                   print 'Hi, ' ... '!' ;
@@ -1213,9 +1215,8 @@ error parsing Fern
       [0]_.Lox.Expr.Call.(                        sayHi ( ... 'Reader' )
         [0]_.Lox.Expr.Atom                        sayHi
         [1]_.Lox.Expr.Arguments                   'Dear' , 'Reader'
-          [0]_.Lox.Expr.Comma.,                   'Dear' , 'Reader'
-            [0]_.Lox.Expr.Atom                    'Dear'
-            [1]_.Lox.Expr.Atom                    'Reader'
+          [0]_.Lox.Expr.Atom                      'Dear'
+          [1]_.Lox.Expr.Atom                      'Reader'
   [4]_.Lox.Stmt                                   print sayHi ;
     [0]_.Lox.Stmt.Print                           print sayHi ;
       [0]_.Lox.Expr.Atom                          sayHi
@@ -1223,6 +1224,7 @@ error parsing Fern
     [0]_.Lox.Decl.Fun                             fun fib ... ; }
       [0]_.Lox.Function                           fib ( ... ; }
         [0]_.Lox.Function.Parameters              n
+          [0]_.Lox.Function.Parameter             n
         [1]_.Lox.Stmt.Block                       { if ... ; }
           [0]_.Lox.Stmt                           if ( ... n ;
             [0]_.Lox.Stmt.If                      if ( ... n ;
@@ -1270,14 +1272,16 @@ error parsing Fern
   [7]_.Lox.Decl                                   fun makeCounter ... ; }
     [0]_.Lox.Decl.Fun                             fun makeCounter ... ; }
       [0]_.Lox.Function                           makeCounter ( ... ; }
-        [0]_.Lox.Stmt.Block                       { var ... ; }
+        [0]_.Lox.Function.Parameters              
+        [1]_.Lox.Stmt.Block                       { var ... ; }
           [0]_.Lox.Decl                           var i = 0 ;
             [0]_.Lox.Decl.Var                     var i = 0 ;
               [0]_.Lox.Expr.Atom                  0
           [1]_.Lox.Decl                           fun count ... ; }
             [0]_.Lox.Decl.Fun                     fun count ... ; }
               [0]_.Lox.Function                   count ( ... ; }
-                [0]_.Lox.Stmt.Block               { i ... ; }
+                [0]_.Lox.Function.Parameters      
+                [1]_.Lox.Stmt.Block               { i ... ; }
                   [0]_.Lox.Stmt                   i = ... 1 ;
                     [0]_.Lox.Stmt.ExprStmt        i = ... 1 ;
                       [0]_.Lox.Expr.Assign.=      i = i + 1

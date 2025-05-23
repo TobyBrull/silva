@@ -27,14 +27,13 @@ namespace silva::lox {
           - Primary     = nest atom_nest '(' ')'
           - Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
           - Unary       = rtl prefix '!' '-'
-          - Factor      = ltr infix '/' '*'
-          - Term        = ltr infix '-' '+'
-          - Comparison  = ltr infix '>' '>=' '<' '<='
+          - Factor      = ltr infix '*' '/'
+          - Term        = ltr infix '+' '-'
+          - Comparison  = ltr infix '<' '>' '<=' '>='
           - Equality    = ltr infix '==' '!='
           - LogicAnd    = ltr infix 'and'
           - LogicOr     = ltr infix 'or'
           - Assign      = ltr infix '='
-          - Comma       = ltr infix_flat ','
         ]
         - Atom = 'true' | 'false' | 'none' | 'this'
                | number | string | identifier
@@ -42,7 +41,8 @@ namespace silva::lox {
       ]
       - Function = [
         - x = identifier '(' Parameters ? ')' _.Lox.Stmt.Block
-        - Parameters = identifier ( ',' identifier ) *
+        - Parameters = ( Parameter ( ',' Parameter ) * ) ?
+        - Parameter = identifier
       ]
     ]
   )'";
@@ -53,8 +53,18 @@ namespace silva::lox {
     template<typename T>
     value_t(T&& data);
 
+    friend expected_t<value_t> operator!(const value_t&);
+    friend expected_t<value_t> operator-(const value_t&);
     friend expected_t<value_t> operator*(const value_t&, const value_t&);
+    friend expected_t<value_t> operator/(const value_t&, const value_t&);
     friend expected_t<value_t> operator+(const value_t&, const value_t&);
+    friend expected_t<value_t> operator-(const value_t&, const value_t&);
+    friend expected_t<value_t> operator<(const value_t&, const value_t&);
+    friend expected_t<value_t> operator>(const value_t&, const value_t&);
+    friend expected_t<value_t> operator<=(const value_t&, const value_t&);
+    friend expected_t<value_t> operator>=(const value_t&, const value_t&);
+    friend expected_t<value_t> operator&&(const value_t&, const value_t&);
+    friend expected_t<value_t> operator||(const value_t&, const value_t&);
 
     friend string_or_view_t to_string_impl(const value_t&);
   };
