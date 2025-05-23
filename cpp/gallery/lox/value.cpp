@@ -29,7 +29,7 @@ namespace silva::lox {
     return true;
   }
 
-  expected_t<value_t> operator!(const value_t& x)
+  bool operator!(const value_t& x)
   {
     return !x.is_truthy();
   }
@@ -59,9 +59,25 @@ namespace silva::lox {
   }
   BINARY_DOUBLE(*)
   BINARY_DOUBLE(/)
-  BINARY_DOUBLE(+)
   BINARY_DOUBLE(-)
+  BINARY_DOUBLE(<)
+  BINARY_DOUBLE(>)
+  BINARY_DOUBLE(<=)
+  BINARY_DOUBLE(>=)
 #undef BINARY_DOUBLE
+
+  expected_t<value_t> operator+(const value_t& lhs, const value_t& rhs)
+  {
+    if (lhs.holds_double() && rhs.holds_double()) {
+      return std::get<double>(lhs.data) + std::get<double>(rhs.data);
+    }
+    else if (lhs.holds_string() && rhs.holds_string()) {
+      return std::get<string_t>(lhs.data) + std::get<string_t>(rhs.data);
+    }
+    else {
+      SILVA_EXPECT(false, MAJOR, "runtime type error: {} + {}", to_string(lhs), to_string(rhs));
+    }
+  }
 
   struct equal_visitor_t {
     template<typename T>
@@ -74,6 +90,10 @@ namespace silva::lox {
   bool operator==(const value_t& lhs, const value_t& rhs)
   {
     return std::visit(equal_visitor_t{}, lhs.data, rhs.data);
+  }
+  bool operator!=(const value_t& lhs, const value_t& rhs)
+  {
+    return !(lhs == rhs);
   }
 
   struct value_to_string_impl_visitor_t {

@@ -6,6 +6,11 @@ namespace silva::lox {
   struct value_t {
     variant_t<none_t, bool, double, string_t> data;
 
+    value_t(value_t&&)                 = default;
+    value_t(const value_t&)            = default;
+    value_t& operator=(value_t&&)      = default;
+    value_t& operator=(const value_t&) = default;
+
     template<typename T>
     value_t(T&& data);
 
@@ -16,16 +21,19 @@ namespace silva::lox {
 
     bool is_truthy() const;
 
-    friend expected_t<value_t> operator!(const value_t&);
+    friend bool operator!(const value_t&);
     friend expected_t<value_t> operator-(const value_t&);
+
     friend expected_t<value_t> operator*(const value_t&, const value_t&);
     friend expected_t<value_t> operator/(const value_t&, const value_t&);
-    friend expected_t<value_t> operator+(const value_t&, const value_t&);
     friend expected_t<value_t> operator-(const value_t&, const value_t&);
     friend expected_t<value_t> operator<(const value_t&, const value_t&);
     friend expected_t<value_t> operator>(const value_t&, const value_t&);
     friend expected_t<value_t> operator<=(const value_t&, const value_t&);
     friend expected_t<value_t> operator>=(const value_t&, const value_t&);
+
+    friend expected_t<value_t> operator+(const value_t&, const value_t&);
+
     friend bool operator==(const value_t&, const value_t&);
     friend bool operator!=(const value_t&, const value_t&);
 

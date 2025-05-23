@@ -43,14 +43,40 @@ namespace silva::lox {
       BINARY(intp->ni_expr_b_div, /)
       BINARY(intp->ni_expr_b_add, +)
       BINARY(intp->ni_expr_b_sub, -)
-      // BINARY(intp->ni_expr_b_lt, <)
-      // BINARY(intp->ni_expr_b_gt, >)
-      // BINARY(intp->ni_expr_b_lte, <=)
-      // BINARY(intp->ni_expr_b_gte, >=)
-      // BINARY(intp->ni_expr_b_eq, ==)
-      // BINARY(intp->ni_expr_b_neq, !=)
-      // BINARY(intp->ni_expr_b_and, &&)
-      // BINARY(intp->ni_expr_b_or, ||)
+      BINARY(intp->ni_expr_b_lt, <)
+      BINARY(intp->ni_expr_b_gt, >)
+      BINARY(intp->ni_expr_b_lte, <=)
+      BINARY(intp->ni_expr_b_gte, >=)
+      BINARY(intp->ni_expr_b_eq, ==)
+      BINARY(intp->ni_expr_b_neq, !=)
+      else if (rn == intp->ni_expr_b_and)
+      {
+        const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),
+                                        "{} error evaluating left-hand-side",
+                                        pts);
+        if (!lhs_res.is_truthy()) {
+          return lhs_res;
+        }
+        auto rhs_res = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)),
+                                        "{} error evaluating right-hand-side",
+                                        pts);
+        return rhs_res;
+      }
+      else if (rn == intp->ni_expr_b_or)
+      {
+        const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),
+                                        "{} error evaluating left-hand-side",
+                                        pts);
+        if (lhs_res.is_truthy()) {
+          return lhs_res;
+        }
+        auto rhs_res = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)),
+                                        "{} error evaluating right-hand-side",
+                                        pts);
+        return rhs_res;
+      }
       else
       {
         SILVA_EXPECT(false,
