@@ -47,5 +47,9 @@ namespace silva::lox {
     ]
   )'";
 
-  struct interpreter_t {};
+  struct interpreter_t {
+    syntax_ward_ptr_t swp;
+
+    expected_t<void> apply(parse_tree_span_t) const;
+  };
 }
