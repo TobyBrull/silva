@@ -18,7 +18,7 @@ The syntax of the Seed language itself is described by the Seed program
 
 A parser can automatically be derived from a Seed program.
 This is implemented in the class
-`silva::seed_engine_t` ([seed_engine.hpp](cpp/syntax/seed_engine.hpp)).
+`silva::seed::interpreter_t` ([seed_interpreter.hpp](cpp/syntax/seed_interpreter.hpp)).
 
 
 ## Building and Running

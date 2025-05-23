@@ -7,7 +7,7 @@
 namespace silva::seed {
 
   // Driver for a program in the Seed language.
-  struct seed_engine_t {
+  struct interpreter_t {
     syntax_ward_ptr_t swp;
 
     // For each rule name, gives the node-index of the expression describing that rule.
@@ -36,7 +36,7 @@ namespace silva::seed {
     hashmap_t<name_id_t, callback_t> parse_callbacks;
     expected_t<void> callback_if(const parse_tree_span_t&) const;
 
-    seed_engine_t(syntax_ward_ptr_t);
+    interpreter_t(syntax_ward_ptr_t);
 
     // The given parse_tree_span_t should be part of one of the "seed_parse_trees".
     expected_t<void> add(parse_tree_span_t);

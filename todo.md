@@ -19,8 +19,6 @@
 
 * Allow error forwarding completely without adding error node. (fern.mpp:26)
 
-* Rename seed_engine_t to seed_interpreter_t
-
 * tokenization:
     * Allow for python-style indenting (i.e., such that indentation generates it generated tokens in the tokenization)?
     * Support user-defined tokenization rules.

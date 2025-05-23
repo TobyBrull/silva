@@ -15,7 +15,7 @@ namespace silva::seed {
 
   // A program in the Seed language describes a way to turn a tokenization_t
   // into a parse_tree_t. The actual algorithm to do this is implemented
-  // in "seed_engine_t".
+  // in "seed::interpreter_t".
 
   const string_view_t seed_str = R"'(
     - Seed = [
@@ -51,8 +51,6 @@ namespace silva::seed {
                  | 'any' | 'epsilon' | 'end_of_file'
     ]
   )'";
-
-  struct seed_engine_t;
 
   // Invariant (pseudo-code):
   //    standard_seed_engine()->apply(tokenization, "Seed") == seed_parse(tokenization)

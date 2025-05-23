@@ -37,7 +37,7 @@ namespace silva::seed::test {
     CHECK(ts.relative(name3, name3) == "this");
   }
 
-  TEST_CASE("seed-parse-root", "[seed][seed_engine_t]")
+  TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
     syntax_ward_t sw;
     const auto spr       = standard_seed_engine(sw.ptr());
@@ -72,7 +72,7 @@ namespace silva::seed::test {
           }));
   }
 
-  TEST_CASE("seed", "[seed][seed_engine_t]")
+  TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
     - SimpleFern = [
@@ -147,7 +147,7 @@ namespace silva::seed::test {
     CHECK(pt_str_1 == expected.substr(1));
     CHECK(pt_str_2 == expected.substr(1));
 
-    seed_engine_t se(sw.ptr());
+    interpreter_t se(sw.ptr());
     SILVA_EXPECT_REQUIRE(se.add(sf_seed_pt_1->span()));
     REQUIRE(se.rule_exprs.size() == 4);
     using rfl::json::write;

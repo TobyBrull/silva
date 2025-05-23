@@ -57,7 +57,7 @@ ERROR (MAJOR):
 [01-broken.fern:9:3] _.Fern.LabeledItem
 [01-broken.fern:1:1] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
 [01-broken.fern:1:1] _.Fern
-seed_engine_t::apply(_.Fern) failed to parse
+seed::interpreter_t::apply(_.Fern) failed to parse
 error parsing Fern
 
 [0]_.Fern                                         [ none ... ] ]

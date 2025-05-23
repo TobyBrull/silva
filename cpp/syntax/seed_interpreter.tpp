@@ -1,9 +1,9 @@
-#include "seed_engine.hpp"
+#include "seed_interpreter.hpp"
 
 #include <catch2/catch_all.hpp>
 
 namespace silva::seed::test {
-  TEST_CASE("not-but_then-keywords", "[seed_engine_t][seed]")
+  TEST_CASE("not-but_then-keywords", "[seed::interpreter_t][seed]")
   {
     const string_view_t frog_seed = R"'(
     - Frog = [
@@ -18,7 +18,7 @@ namespace silva::seed::test {
     ]
   )'";
     syntax_ward_t sw;
-    seed_engine_t se(sw.ptr());
+    interpreter_t se(sw.ptr());
     auto ptp = SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
     const string_view_t expected_seed_pt = R"(
 [0]_.Seed                                         - Frog ... ] ]
@@ -119,7 +119,7 @@ namespace silva::seed::test {
     CHECK(frog_pt_str == expected.substr(1));
   }
 
-  TEST_CASE("multiple-texts", "[seed_engine_t]")
+  TEST_CASE("multiple-texts", "[seed::interpreter_t]")
   {
     const string_view_t text1_seed = R"'(
     - Foo = [
@@ -133,7 +133,7 @@ namespace silva::seed::test {
     ]
   )'";
     syntax_ward_t sw;
-    seed_engine_t se(sw.ptr());
+    interpreter_t se(sw.ptr());
     SILVA_EXPECT_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
     SILVA_EXPECT_REQUIRE(se.add_complete_file("text2.seed", text2_seed));
 

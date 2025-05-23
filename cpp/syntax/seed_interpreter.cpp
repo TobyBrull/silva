@@ -1,4 +1,4 @@
-#include "seed_engine.hpp"
+#include "seed_interpreter.hpp"
 
 #include "canopy/exec_trace.hpp"
 #include "canopy/expected.hpp"
@@ -19,7 +19,7 @@ namespace silva::seed {
   using enum error_level_t;
 
   struct seed_engine_create_nursery_t {
-    seed_engine_t* se          = nullptr;
+    interpreter_t* se          = nullptr;
     syntax_ward_ptr_t swp      = se->swp;
     const name_id_style_t& nis = swp->default_name_id_style();
 
@@ -36,7 +36,7 @@ namespace silva::seed {
     const name_id_t ni_nt           = swp->name_id_of(ni_seed, "Nonterminal");
     const name_id_t ni_term         = swp->name_id_of(ni_seed, "Terminal");
 
-    seed_engine_create_nursery_t(seed_engine_t* se, const tokenization_t& s_tokenization)
+    seed_engine_create_nursery_t(interpreter_t* se, const tokenization_t& s_tokenization)
       : se(se), s_tokenization(s_tokenization)
     {
     }
@@ -151,9 +151,9 @@ namespace silva::seed {
     }
   };
 
-  seed_engine_t::seed_engine_t(syntax_ward_ptr_t swp) : swp(swp) {}
+  interpreter_t::interpreter_t(syntax_ward_ptr_t swp) : swp(swp) {}
 
-  expected_t<void> seed_engine_t::callback_if(const parse_tree_span_t& pts) const
+  expected_t<void> interpreter_t::callback_if(const parse_tree_span_t& pts) const
   {
     const auto it = parse_callbacks.find(pts[0].rule_name);
     if (it != parse_callbacks.end()) {
@@ -163,20 +163,20 @@ namespace silva::seed {
     return {};
   }
 
-  expected_t<void> seed_engine_t::add(parse_tree_span_t stps)
+  expected_t<void> interpreter_t::add(parse_tree_span_t stps)
   {
     seed_engine_create_nursery_t nursery(this, *stps.tp);
     SILVA_EXPECT_FWD(nursery.handle_all(stps));
     return {};
   }
 
-  expected_t<void> seed_engine_t::add_copy(const parse_tree_span_t& stps_ref)
+  expected_t<void> interpreter_t::add_copy(const parse_tree_span_t& stps_ref)
   {
     parse_tree_ptr_t stps = swp->add(std::make_unique<parse_tree_t>(stps_ref.copy()));
     return add(stps->span());
   }
 
-  expected_t<parse_tree_ptr_t> seed_engine_t::add_complete_file(filesystem_path_t filepath,
+  expected_t<parse_tree_ptr_t> interpreter_t::add_complete_file(filesystem_path_t filepath,
                                                                 string_view_t text)
   {
     auto tt  = SILVA_EXPECT_FWD(tokenize(swp, std::move(filepath), std::move(text)));
@@ -217,7 +217,7 @@ namespace silva::seed {
     };
 
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
-      const seed_engine_t* se    = nullptr;
+      const interpreter_t* se    = nullptr;
       syntax_ward_ptr_t swp      = se->swp;
       const name_id_style_t& nis = swp->default_name_id_style();
 
@@ -264,7 +264,7 @@ namespace silva::seed {
       const name_id_t ni_term         = swp->name_id_of(ni_seed, "Terminal");
       const name_id_t ni_var          = swp->name_id_of(ni_seed, "Variable");
 
-      seed_engine_nursery_t(tokenization_ptr_t tp, const seed_engine_t* root)
+      seed_engine_nursery_t(tokenization_ptr_t tp, const interpreter_t* root)
         : parse_tree_nursery_t(tp), se(root)
       {
       }
@@ -546,7 +546,7 @@ namespace silva::seed {
         auto ss                        = stake();
         error_nursery_t error_nursery;
 
-        // Could do this bit ahead of time and store a map in the seed_engine_t.
+        // Could do this bit ahead of time and store a map in the interpreter_t.
         index_t lead_terminals = 0;
         for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
           const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
@@ -791,13 +791,13 @@ namespace silva::seed {
     };
   }
 
-  expected_t<parse_tree_ptr_t> seed_engine_t::apply(tokenization_ptr_t tp,
+  expected_t<parse_tree_ptr_t> interpreter_t::apply(tokenization_ptr_t tp,
                                                     const name_id_t goal_rule_name) const
   {
     impl::seed_engine_nursery_t nursery(tp, this);
     SILVA_EXPECT_FWD(nursery.check());
     auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name),
-                                "seed_engine_t::apply({}) failed to parse",
+                                "seed::interpreter_t::apply({}) failed to parse",
                                 tp->swp->name_id_wrap(goal_rule_name));
     if (ptn.node.token_begin != 0 || ptn.node.token_end != tp->tokens.size()) {
       SILVA_EXPECT(!ptn.last_error.is_empty(),

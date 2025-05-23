@@ -9,7 +9,7 @@
 * [parse_tree_nursery.hpp](parse_tree_nursery.hpp)
 * [seed.hpp](seed.hpp)
 * [seed_axe.hpp](seed_axe.hpp)
-* [seed_engine.hpp](seed_engine.hpp)
+* [seed_interpreter.hpp](seed_interpreter.hpp)
 * [fern.hpp](fern.hpp)
 * [syntax.hpp](syntax.hpp)
 
@@ -20,6 +20,6 @@ classDiagram
     syntax_ward_t <-- tokenization_t
     tokenization_t <-- parse_tree_t
     parse_tree_t <-- parse_tree_span_t
-    seed_engine_t *-- "many" parse_tree_span_t
-    syntax_ward_t <-- seed_engine_t
+    seed_interpreter_t *-- "many" parse_tree_span_t
+    syntax_ward_t <-- seed_interpreter_t
 ```
