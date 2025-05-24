@@ -1328,5 +1328,5 @@ Hello, World!
 Hi, Dear Reader!
 ERROR (MAJOR):
 [example.lox:17:1] parse_tree_span[ for ( ... ; } ] can't execute _.Lox.Stmt.For
-failed executing Lox script cpp/gallery/lox/example.lox
+failed executing Lox script cpp/zoo/lox/example.lox
 

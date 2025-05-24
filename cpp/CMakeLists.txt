@@ -8,8 +8,8 @@ find_package(Fmt REQUIRED)
 file(GLOB SILVA_LIB_FILES
   "canopy/*.cpp"
   "syntax/*.cpp"
-  "gallery/fern/*.cpp"
-  "gallery/lox/*.cpp"
+  "zoo/fern/*.cpp"
+  "zoo/lox/*.cpp"
   "*.cpp"
 )
 file(GLOB_RECURSE SILVA_TEST_FILES "*.tpp")
