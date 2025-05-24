@@ -1259,13 +1259,16 @@ error parsing Fern
                     [0]_.Lox.Expr.Term.-          n - 1
                       [0]_.Lox.Expr.Atom          n
                       [1]_.Lox.Expr.Atom          1
-  [8]_.Lox.Stmt                                   for ( ... ; }
+  [8]_.Lox.Stmt                                   print 'Fibonacci ==' ;
+    [0]_.Lox.Stmt.Print                           print 'Fibonacci ==' ;
+      [0]_.Lox.Expr.Atom                          'Fibonacci =='
+  [9]_.Lox.Stmt                                   for ( ... ; }
     [0]_.Lox.Stmt.For                             for ( ... ; }
       [0]_.Lox.Decl.Var                           var i = 0 ;
         [0]_.Lox.Expr.Atom                        0
-      [1]_.Lox.Expr.Comparison.<                  i < 20
+      [1]_.Lox.Expr.Comparison.<                  i < 10
         [0]_.Lox.Expr.Atom                        i
-        [1]_.Lox.Expr.Atom                        20
+        [1]_.Lox.Expr.Atom                        10
       [2]_.Lox.Expr.Assign.=                      i = i + 1
         [0]_.Lox.Expr.Atom                        i
         [1]_.Lox.Expr.Term.+                      i + 1
@@ -1279,7 +1282,10 @@ error parsing Fern
                 [0]_.Lox.Expr.Atom                fib
                 [1]_.Lox.Expr.Arguments           i
                   [0]_.Lox.Expr.Atom              i
-  [9]_.Lox.Decl                                   fun makeCounter ... ; }
+  [10]_.Lox.Stmt                                  print 'Fibonacci ==' ;
+    [0]_.Lox.Stmt.Print                           print 'Fibonacci ==' ;
+      [0]_.Lox.Expr.Atom                          'Fibonacci =='
+  [11]_.Lox.Decl                                  fun makeCounter ... ; }
     [0]_.Lox.Decl.Fun                             fun makeCounter ... ; }
       [0]_.Lox.Decl.Function                      makeCounter ( ... ; }
         [0]_.Lox.Decl.Function.Parameters         
@@ -1305,17 +1311,22 @@ error parsing Fern
           [2]_.Lox.Stmt                           return count ;
             [0]_.Lox.Stmt.Return                  return count ;
               [0]_.Lox.Expr.Atom                  count
-  [10]_.Lox.Decl                                  var counter ... ) ;
+  [12]_.Lox.Decl                                  var counter ... ) ;
     [0]_.Lox.Decl.Var                             var counter ... ) ;
       [0]_.Lox.Expr.Call.(                        makeCounter ( )
         [0]_.Lox.Expr.Atom                        makeCounter
         [1]_.Lox.Expr.Arguments                   
-  [11]_.Lox.Stmt                                  counter ( ) ;
+  [13]_.Lox.Stmt                                  counter ( ) ;
     [0]_.Lox.Stmt.ExprStmt                        counter ( ) ;
       [0]_.Lox.Expr.Call.(                        counter ( )
         [0]_.Lox.Expr.Atom                        counter
         [1]_.Lox.Expr.Arguments                   
-  [12]_.Lox.Stmt                                  counter ( ) ;
+  [14]_.Lox.Stmt                                  counter ( ) ;
+    [0]_.Lox.Stmt.ExprStmt                        counter ( ) ;
+      [0]_.Lox.Expr.Call.(                        counter ( )
+        [0]_.Lox.Expr.Atom                        counter
+        [1]_.Lox.Expr.Arguments                   
+  [15]_.Lox.Stmt                                  counter ( ) ;
     [0]_.Lox.Stmt.ExprStmt                        counter ( ) ;
       [0]_.Lox.Expr.Call.(                        counter ( )
         [0]_.Lox.Expr.Atom                        counter
@@ -1326,7 +1337,8 @@ Hello, World!
 142
 <function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>
 Hi, Dear Reader!
+Fibonacci ==
 ERROR (MAJOR):
-[example.lox:17:1] parse_tree_span[ for ( ... ; } ] can't execute _.Lox.Stmt.For
+[example.lox:18:1] parse_tree_span[ for ( ... ; } ] can't execute _.Lox.Stmt.For
 failed executing Lox script cpp/zoo/lox/example.lox
 

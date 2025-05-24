@@ -50,6 +50,7 @@ namespace silva::seed {
                  | 'string' | 'number'
                  | 'any' | 'epsilon' | 'end_of_file'
     ]
+    - None = epsilon
   )'";
 
   // Invariant (pseudo-code):
