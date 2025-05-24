@@ -164,14 +164,18 @@ namespace silva::lox {
 
   // scope_t
 
+  scope_t::scope_t(syntax_ward_ptr_t swp, scope_ptr_t parent) : swp(swp), parent(std::move(parent))
+  {
+  }
+
   expected_t<const value_t*> scope_t::get(const token_id_t ti) const
   {
     const scope_t* sp = this;
     while (true) {
       const auto it = sp->values.find(ti);
       if (it == sp->values.end()) {
-        SILVA_EXPECT(parent, MINOR, "couldn't find identifier {}", swp->token_id_wrap(ti));
-        sp = parent.get();
+        SILVA_EXPECT(sp->parent, MINOR, "couldn't find identifier {}", swp->token_id_wrap(ti));
+        sp = sp->parent.get();
       }
       else {
         return {&it->second};
@@ -184,15 +188,16 @@ namespace silva::lox {
     while (true) {
       auto it = sp->values.find(ti);
       if (it == sp->values.end()) {
-        SILVA_EXPECT(parent,
+        SILVA_EXPECT(sp->parent,
                      MINOR,
                      "couldn't find identifier {} (trying to assign {} to it)",
                      swp->token_id_wrap(ti),
                      to_string(x));
-        sp = parent.get();
+        sp = sp->parent.get();
       }
       else {
         it->second = std::move(x);
+        return {};
       }
     }
   }
@@ -210,9 +215,23 @@ namespace silva::lox {
   }
   scope_ptr_t scope_t::make_child_scope()
   {
-    auto retval    = std::make_shared<scope_t>();
-    retval->parent = shared_from_this();
+    auto retval = std::make_shared<scope_t>(swp, shared_from_this());
+    children.push_back(retval);
     return retval;
   }
 
+  scope_t::~scope_t()
+  {
+    deep_clear();
+  }
+
+  void scope_t::deep_clear()
+  {
+    // TODO: proper ref-counting
+    for (auto& child: children) {
+      child->deep_clear();
+    }
+    children.clear();
+    values.clear();
+  }
 }
