@@ -51,7 +51,7 @@ namespace silva::lox {
     name_id_t ni_expr_b_assign = swp->name_id_of(ni_expr, "Assign", "=");
     name_id_t ni_expr_atom     = swp->name_id_of(ni_expr, "Atom");
 
-    dyn_object_pool_t dyn_object_pool;
+    dyn_object_pool_t pool;
     scope_ptr_t globals = std::make_unique<scope_t>(swp, nullptr);
 
     expected_t<dyn_object_ref_t> evaluate(parse_tree_span_t, scope_ptr_t);

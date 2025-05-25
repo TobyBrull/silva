@@ -22,6 +22,8 @@ namespace silva {
    public:
     template<typename... Args>
     object_ref_t<T> make(Args&&...);
+
+    string_t to_string() const;
   };
   template<typename T>
   using object_pool_ptr_t = ptr_t<object_pool_t<T>>;
@@ -62,6 +64,12 @@ namespace silva {
         .next_free = -1,
     });
     return object_ref_t<T>{ptr(), idx};
+  }
+
+  template<typename T>
+  string_t object_pool_t<T>::to_string() const
+  {
+    return fmt::format("object_pool_t with {} objects", items.size());
   }
 
   // object_ref_t

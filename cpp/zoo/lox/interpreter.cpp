@@ -18,7 +18,7 @@ namespace silva::lox {
     auto res              = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(node_idx)), \
                                 "{} error evaluating unary operand",          \
                                 pts);                                         \
-    return op_func(intp->dyn_object_pool, std::move(res));                                 \
+    return op_func(intp->pool, std::move(res));                                            \
   }
 
 #define BINARY(op_rule_name, op_func)                                                 \
@@ -31,7 +31,7 @@ namespace silva::lox {
     auto rhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)), \
                                     "{} error evaluating right-hand-side",   \
                                     pts);                                    \
-    return op_func(intp->dyn_object_pool, std::move(lhs_res), std::move(rhs_res));    \
+    return op_func(intp->pool, std::move(lhs_res), std::move(rhs_res));               \
   }
 
       const name_id_t rn = pts[0].rule_name;
@@ -117,7 +117,7 @@ namespace silva::lox {
 
         function_t& fun2 = std::get<function_t>(fun_res->data);
         auto res         = SILVA_EXPECT_FWD(intp->execute(fun2.body(), func_scope));
-        return res.value_or(intp->dyn_object_pool.make(none));
+        return res.value_or(intp->pool.make(none));
       }
       else if (rn == intp->ni_expr_b_assign)
       {
@@ -143,7 +143,7 @@ namespace silva::lox {
 
 #undef BINARY
 #undef UNARY
-      return intp->dyn_object_pool.make(none);
+      return intp->pool.make(none);
     }
 
     expected_t<dyn_object_ref_t> atom(const parse_tree_span_t pts)
@@ -151,20 +151,19 @@ namespace silva::lox {
       const token_id_t ti            = pts.tp->tokens[pts[0].token_begin];
       const token_info_t* token_info = pts.tp->token_info_get(pts[0].token_begin);
       if (ti == intp->ti_true) {
-        return intp->dyn_object_pool.make(true);
+        return intp->pool.make(true);
       }
       else if (ti == intp->ti_false) {
-        return intp->dyn_object_pool.make(false);
+        return intp->pool.make(false);
       }
       else if (ti == intp->ti_none) {
-        return intp->dyn_object_pool.make(none);
+        return intp->pool.make(none);
       }
       else if (token_info->category == STRING) {
-        return intp->dyn_object_pool.make(
-            string_t{SILVA_EXPECT_FWD(token_info->string_as_plain_contained())});
+        return intp->pool.make(string_t{SILVA_EXPECT_FWD(token_info->string_as_plain_contained())});
       }
       else if (token_info->category == NUMBER) {
-        return intp->dyn_object_pool.make(double{SILVA_EXPECT_FWD(token_info->number_as_double())});
+        return intp->pool.make(double{SILVA_EXPECT_FWD(token_info->number_as_double())});
       }
       else if (token_info->category == IDENTIFIER) {
         auto ref = SILVA_EXPECT_FWD(scope->get(ti));
@@ -192,7 +191,7 @@ namespace silva::lox {
       else {
         SILVA_EXPECT(false, MAJOR, "can't evaluate {}", swp->name_id_wrap(rule_name));
       }
-      return intp->dyn_object_pool.make(none);
+      return intp->pool.make(none);
     }
   };
 
@@ -228,8 +227,7 @@ namespace silva::lox {
         const token_id_t fun_name = pts.tp->tokens[pts[0].token_begin + 1];
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
-        SILVA_EXPECT_FWD(
-            scope->define(fun_name, intp->dyn_object_pool.make(function_t{func_pts, scope})));
+        SILVA_EXPECT_FWD(scope->define(fun_name, intp->pool.make(function_t{func_pts, scope})));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));

@@ -28,17 +28,17 @@ namespace silva::lox::test {
     SILVA_EXPECT_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
     test_interpreter_t lti{{sw.ptr()}, si.get()};
 
-    const auto ff = lti.dyn_object_pool.make(false);
-    const auto tt = lti.dyn_object_pool.make(true);
+    const auto ff = lti.pool.make(false);
+    const auto tt = lti.pool.make(true);
 
     CHECK(lti.eval("!42").value()->is_truthy() == false);
     CHECK(lti.eval("!false").value()->is_truthy());
     CHECK(lti.eval("!true").value()->is_truthy() == false);
     CHECK(lti.eval("! ! none").value()->is_truthy() == false);
     CHECK(lti.eval(R"(!'')").value()->is_truthy() == false);
-    CHECK(*lti.eval("-42").value() == *lti.dyn_object_pool.make(-42.0));
-    CHECK(*lti.eval("1 + 2 * 3 - 4 / 2").value() == *lti.dyn_object_pool.make(5.0));
-    CHECK(*lti.eval("'1' + '2'").value() == *lti.dyn_object_pool.make("12"));
+    CHECK(*lti.eval("-42").value() == *lti.pool.make(-42.0));
+    CHECK(*lti.eval("1 + 2 * 3 - 4 / 2").value() == *lti.pool.make(5.0));
+    CHECK(*lti.eval("'1' + '2'").value() == *lti.pool.make("12"));
     CHECK(lti.eval("'1' + 2").has_value() == false);
     CHECK(lti.eval("'1' * '2'").has_value() == false);
     CHECK(lti.eval("1 < 3").value()->is_truthy());
