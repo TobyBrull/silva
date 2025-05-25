@@ -88,13 +88,13 @@ namespace silva::lox {
   BINARY_DOUBLE(bool, >=)
 #undef BINARY_DOUBLE
 
-  expected_t<value_t> operator+(const value_t& lhs, const value_t& rhs)
+  expected_t<variant_t<double, string_t>> operator+(const value_t& lhs, const value_t& rhs)
   {
     if (lhs.holds_double() && rhs.holds_double()) {
-      return value_t{std::get<double>(lhs.data) + std::get<double>(rhs.data)};
+      return std::get<double>(lhs.data) + std::get<double>(rhs.data);
     }
     else if (lhs.holds_string() && rhs.holds_string()) {
-      return value_t{std::get<string_t>(lhs.data) + std::get<string_t>(rhs.data)};
+      return std::get<string_t>(lhs.data) + std::get<string_t>(rhs.data);
     }
     else {
       SILVA_EXPECT(false, MAJOR, "runtime type error: {} + {}", to_string(lhs), to_string(rhs));
@@ -162,13 +162,84 @@ namespace silva::lox {
     return os << to_string_impl(x).as_string_view();
   }
 
+  value_ref_t::value_ref_t(value_pool_ptr_t pool, const index_t idx)
+    : pool(std::move(pool)), idx(idx)
+  {
+  }
+
+  bool value_ref_t::is_truthy() const
+  {
+    return pool->items[idx].value.is_truthy();
+  }
+  value_t* value_ref_t::operator->() const
+  {
+    return &(pool->items[idx].value);
+  }
+  value_t& value_ref_t::operator*() const
+  {
+    return pool->items[idx].value;
+  }
+
+  bool operator==(const value_ref_t& lhs, const value_ref_t& rhs)
+  {
+    return *lhs == *rhs;
+  }
+  bool operator!=(const value_ref_t& lhs, const value_ref_t& rhs)
+  {
+    return *lhs != *rhs;
+  }
+
+  string_or_view_t to_string_impl(const value_ref_t& x)
+  {
+    return to_string_impl(*x);
+  }
+  std::ostream& operator<<(std::ostream& os, const value_ref_t& x)
+  {
+    return os << *x;
+  }
+
+  expected_t<value_ref_t> value_neg(value_pool_ptr_t pool, value_ref_t x)
+  {
+    return pool->make(!(*x));
+  }
+  expected_t<value_ref_t> value_inv(value_pool_ptr_t pool, value_ref_t x)
+  {
+    return pool->make(SILVA_EXPECT_FWD(-(*x)));
+  }
+  expected_t<value_ref_t> value_add(value_pool_ptr_t pool, value_ref_t lhs, value_ref_t rhs)
+  {
+    auto res = SILVA_EXPECT_FWD(*lhs + *rhs);
+    return std::visit([&](auto x) { return pool->make(std::move(x)); }, std::move(res));
+  }
+#define VALUE_IMPL(func_name, op)                                                            \
+  expected_t<value_ref_t> func_name(value_pool_ptr_t pool, value_ref_t lhs, value_ref_t rhs) \
+  {                                                                                          \
+    return pool->make(SILVA_EXPECT_FWD(*lhs op * rhs));                                      \
+  }
+  VALUE_IMPL(value_sub, -);
+  VALUE_IMPL(value_mul, *);
+  VALUE_IMPL(value_div, /);
+  VALUE_IMPL(value_lt, <);
+  VALUE_IMPL(value_gt, >);
+  VALUE_IMPL(value_lte, <=);
+  VALUE_IMPL(value_gte, >=);
+#undef VALUE_IMPL
+  expected_t<value_ref_t> value_eq(value_pool_ptr_t pool, value_ref_t lhs, value_ref_t rhs)
+  {
+    return pool->make(*lhs == *rhs);
+  }
+  expected_t<value_ref_t> value_neq(value_pool_ptr_t pool, value_ref_t lhs, value_ref_t rhs)
+  {
+    return pool->make(*lhs != *rhs);
+  }
+
   // scope_t
 
   scope_t::scope_t(syntax_ward_ptr_t swp, scope_ptr_t parent) : swp(swp), parent(std::move(parent))
   {
   }
 
-  expected_t<const value_t*> scope_t::get(const token_id_t ti) const
+  expected_t<value_ref_t> scope_t::get(const token_id_t ti) const
   {
     const scope_t* sp = this;
     while (true) {
@@ -178,11 +249,11 @@ namespace silva::lox {
         sp = sp->parent.get();
       }
       else {
-        return {&it->second};
+        return {it->second};
       }
     }
   }
-  expected_t<void> scope_t::assign(const token_id_t ti, value_t x)
+  expected_t<void> scope_t::assign(const token_id_t ti, value_ref_t x)
   {
     scope_t* sp = this;
     while (true) {
@@ -201,9 +272,9 @@ namespace silva::lox {
       }
     }
   }
-  expected_t<void> scope_t::define(const token_id_t ti, value_t x)
+  expected_t<void> scope_t::define(const token_id_t ti, value_ref_t x)
   {
-    const auto [it, inserted] = values.emplace(ti, value_t{});
+    const auto [it, inserted] = values.emplace(ti, value_ref_t{});
     SILVA_EXPECT(inserted,
                  MINOR,
                  "couldn't define identifier {} (with initializer {}) because the value already "
@@ -216,22 +287,6 @@ namespace silva::lox {
   scope_ptr_t scope_t::make_child_scope()
   {
     auto retval = std::make_shared<scope_t>(swp, shared_from_this());
-    children.push_back(retval);
     return retval;
-  }
-
-  scope_t::~scope_t()
-  {
-    deep_clear();
-  }
-
-  void scope_t::deep_clear()
-  {
-    // TODO: proper ref-counting
-    for (auto& child: children) {
-      child->deep_clear();
-    }
-    children.clear();
-    values.clear();
   }
 }

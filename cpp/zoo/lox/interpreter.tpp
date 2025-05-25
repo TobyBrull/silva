@@ -10,7 +10,7 @@ namespace silva::lox::test {
   struct test_interpreter_t : public interpreter_t {
     seed::interpreter_t* si = nullptr;
 
-    expected_t<value_t> eval(const string_view_t expr_str)
+    expected_t<value_ref_t> eval(const string_view_t expr_str)
     {
       INFO(expr_str);
       auto tp = SILVA_EXPECT_REQUIRE(tokenize(swp, "test.lox", expr_str));
@@ -28,14 +28,17 @@ namespace silva::lox::test {
     SILVA_EXPECT_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
     test_interpreter_t lti{{sw.ptr()}, si.get()};
 
-    CHECK(lti.eval("!42") == value_t{false});
-    CHECK(lti.eval("!false") == value_t{true});
-    CHECK(lti.eval("!true") == value_t{false});
-    CHECK(lti.eval("! ! none") == value_t{false});
-    CHECK(lti.eval(R"(!'')") == value_t{false});
-    CHECK(lti.eval("-42") == value_t{-42.0});
-    CHECK(lti.eval("1 + 2 * 3 - 4 / 2") == value_t{5.0});
-    CHECK(lti.eval("'1' + '2'") == value_t{"12"});
+    const auto ff = lti.value_pool.make(false);
+    const auto tt = lti.value_pool.make(true);
+
+    CHECK(lti.eval("!42") == ff);
+    CHECK(lti.eval("!false") == tt);
+    CHECK(lti.eval("!true") == ff);
+    CHECK(lti.eval("! ! none") == ff);
+    CHECK(lti.eval(R"(!'')") == ff);
+    CHECK(lti.eval("-42") == lti.value_pool.make(-42.0));
+    CHECK(lti.eval("1 + 2 * 3 - 4 / 2") == lti.value_pool.make(5.0));
+    CHECK(lti.eval("'1' + '2'") == lti.value_pool.make("12"));
     CHECK(lti.eval("'1' + 2").has_value() == false);
     CHECK(lti.eval("'1' * '2'").has_value() == false);
     CHECK(lti.eval("1 < 3")->is_truthy());
