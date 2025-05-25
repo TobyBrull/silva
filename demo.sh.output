@@ -1353,27 +1353,27 @@ Fibonacci ==
 2
 3
 object_pool_t with 23 objects
+  - 1 lox_v[142]
+  - 1 lox_v[10]
+  - tombstone
   - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
   - 1 lox_v[<function [example.lox:13:5] parse_tree_span[ fib ( ... ; } ]>]
-  - 1 lox_v[142]
-  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
-  - 0 lox_v[none]
-  - 1 lox_v[10]
-  - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
-  - 0 lox_v[2]
+  - tombstone
   - 1 lox_v[3]
-  - 0 lox_v[8]
-  - 0 lox_v[13]
-  - 0 lox_v[6]
-  - 0 lox_v[8]
-  - 0 lox_v[3]
-  - 0 lox_v[none]
-  - 0 lox_v[3]
-  - 0 lox_v[2]
-  - 0 lox_v[3]
-  - 0 lox_v[1]
-  - 0 lox_v[2]
-  - 0 lox_v[none]
-  - 0 lox_v[1]
-  - 0 lox_v[true]
+  - tombstone
+  - tombstone
+  - tombstone
+  - tombstone
+  - tombstone
+  - tombstone
+  - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
+  - tombstone
+  - tombstone
+  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
+  - tombstone
+  - tombstone
+  - tombstone
+  - tombstone
+  - tombstone
+  - tombstone
 

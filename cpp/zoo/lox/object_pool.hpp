@@ -15,7 +15,9 @@ namespace silva {
       index_t next_free = -1;
     };
     vector_t<object_data_t> object_datas;
-    index_t next_free = 0;
+    index_t next_free = -1;
+
+    void free(index_t);
 
     friend class object_ref_t<T>;
 
@@ -63,23 +65,28 @@ namespace silva {
   // object_pool_t
 
   template<typename T>
+  void object_pool_t<T>::free(const index_t idx)
+  {
+    SILVA_ASSERT(object_datas[idx].ref_count == 0);
+    object_datas[idx].obj.reset();
+    object_datas[idx].next_free = next_free;
+    next_free                   = idx;
+  }
+
+  template<typename T>
   template<typename... Args>
   object_ref_t<T> object_pool_t<T>::make(Args&&... args)
   {
-    const index_t idx = [&]() -> index_t {
-      for (index_t i = 0; i < object_datas.size(); ++i) {
-        if (object_datas[i].ref_count == 0) {
-          return i;
-        }
-      }
-      return object_datas.size();
-    }();
-    if (idx == object_datas.size()) {
+    index_t idx{};
+    if (next_free == -1) {
+      idx = object_datas.size();
       object_datas.push_back(object_data_t{
           .obj = T{std::forward<Args>(args)...},
       });
     }
     else {
+      idx                   = next_free;
+      next_free             = object_datas[idx].next_free;
       object_datas[idx].obj = T{std::forward<Args>(args)...};
     }
     return object_ref_t<T>{ptr(), idx};
@@ -91,7 +98,12 @@ namespace silva {
     string_t retval;
     retval += fmt::format("object_pool_t with {} objects\n", object_datas.size());
     for (const auto& od: object_datas) {
-      retval += fmt::format("  - {} {}\n", od.ref_count, od.obj.value_or(T{}));
+      if (od.obj.has_value()) {
+        retval += fmt::format("  - {} {}\n", od.ref_count, od.obj.value_or(T{}));
+      }
+      else {
+        retval += fmt::format("  - tombstone\n");
+      }
     }
     return retval;
   }
@@ -157,6 +169,9 @@ namespace silva {
   {
     if (!pool.is_nullptr()) {
       pool->object_datas[idx].ref_count -= 1;
+      if (pool->object_datas[idx].ref_count == 0) {
+        pool->free(idx);
+      }
       pool.clear();
       idx = -1;
     }
