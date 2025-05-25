@@ -18,37 +18,37 @@ namespace silva::lox {
     auto res              = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(node_idx)), \
                                 "{} error evaluating unary operand",          \
                                 pts);                                         \
-    return op_func(intp->dyn_object_pool.ptr(), std::move(res));                           \
+    return op_func(intp->dyn_object_pool, std::move(res));                                 \
   }
 
-#define BINARY(op_rule_name, op_func)                                                    \
-  else if (rn == op_rule_name)                                                           \
-  {                                                                                      \
-    const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());                     \
-    auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),    \
-                                    "{} error evaluating left-hand-side",       \
-                                    pts);                                       \
-    auto rhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)),    \
-                                    "{} error evaluating right-hand-side",      \
-                                    pts);                                       \
-    return op_func(intp->dyn_object_pool.ptr(), std::move(lhs_res), std::move(rhs_res)); \
+#define BINARY(op_rule_name, op_func)                                                 \
+  else if (rn == op_rule_name)                                                        \
+  {                                                                                   \
+    const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());                  \
+    auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)), \
+                                    "{} error evaluating left-hand-side",    \
+                                    pts);                                    \
+    auto rhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)), \
+                                    "{} error evaluating right-hand-side",   \
+                                    pts);                                    \
+    return op_func(intp->dyn_object_pool, std::move(lhs_res), std::move(rhs_res));    \
   }
 
       const name_id_t rn = pts[0].rule_name;
       if (false) {
       }
-      UNARY(intp->ni_expr_u_exc, dyn_object_neg)
-      UNARY(intp->ni_expr_u_sub, dyn_object_inv)
-      BINARY(intp->ni_expr_b_mul, dyn_object_mul)
-      BINARY(intp->ni_expr_b_div, dyn_object_div)
-      BINARY(intp->ni_expr_b_add, dyn_object_add)
-      BINARY(intp->ni_expr_b_sub, dyn_object_sub)
-      BINARY(intp->ni_expr_b_lt, dyn_object_lt)
-      BINARY(intp->ni_expr_b_gt, dyn_object_gt)
-      BINARY(intp->ni_expr_b_lte, dyn_object_lte)
-      BINARY(intp->ni_expr_b_gte, dyn_object_gte)
-      BINARY(intp->ni_expr_b_eq, dyn_object_eq)
-      BINARY(intp->ni_expr_b_neq, dyn_object_neq)
+      UNARY(intp->ni_expr_u_exc, neg)
+      UNARY(intp->ni_expr_u_sub, inv)
+      BINARY(intp->ni_expr_b_mul, mul)
+      BINARY(intp->ni_expr_b_div, div)
+      BINARY(intp->ni_expr_b_add, add)
+      BINARY(intp->ni_expr_b_sub, sub)
+      BINARY(intp->ni_expr_b_lt, lt)
+      BINARY(intp->ni_expr_b_gt, gt)
+      BINARY(intp->ni_expr_b_lte, lte)
+      BINARY(intp->ni_expr_b_gte, gte)
+      BINARY(intp->ni_expr_b_eq, eq)
+      BINARY(intp->ni_expr_b_neq, neq)
       else if (rn == intp->ni_expr_b_and)
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());

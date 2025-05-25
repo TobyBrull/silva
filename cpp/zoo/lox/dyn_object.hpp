@@ -102,28 +102,18 @@ namespace silva::lox {
     friend std::ostream& operator<<(std::ostream&, const dyn_object_ref_t&);
   };
 
-  expected_t<dyn_object_ref_t> dyn_object_neg(dyn_object_pool_ptr_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t> dyn_object_inv(dyn_object_pool_ptr_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_add(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_sub(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_mul(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_div(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_lt(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_gt(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_lte(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_gte(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_eq(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
-  expected_t<dyn_object_ref_t>
-      dyn_object_neq(dyn_object_pool_ptr_t, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> neg(dyn_object_pool_t&, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> inv(dyn_object_pool_t&, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> add(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> sub(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> mul(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> div(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> lt(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> gt(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> lte(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> gte(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> eq(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
+  expected_t<dyn_object_ref_t> neq(dyn_object_pool_t&, dyn_object_ref_t, dyn_object_ref_t);
 
   struct scope_t : public std::enable_shared_from_this<scope_t> {
     syntax_ward_ptr_t swp;

@@ -186,44 +186,44 @@ namespace silva::lox {
     return os << *x;
   }
 
-  expected_t<dyn_object_ref_t> dyn_object_neg(dyn_object_pool_ptr_t pool, dyn_object_ref_t x)
+  expected_t<dyn_object_ref_t> neg(dyn_object_pool_t& pool, dyn_object_ref_t x)
   {
-    return pool->make(!(*x));
+    return pool.make(!(*x));
   }
-  expected_t<dyn_object_ref_t> dyn_object_inv(dyn_object_pool_ptr_t pool, dyn_object_ref_t x)
+  expected_t<dyn_object_ref_t> inv(dyn_object_pool_t& pool, dyn_object_ref_t x)
   {
-    return pool->make(SILVA_EXPECT_FWD(-(*x)));
+    return pool.make(SILVA_EXPECT_FWD(-(*x)));
   }
   expected_t<dyn_object_ref_t>
-  dyn_object_add(dyn_object_pool_ptr_t pool, dyn_object_ref_t lhs, dyn_object_ref_t rhs)
+  add(dyn_object_pool_t& pool, dyn_object_ref_t lhs, dyn_object_ref_t rhs)
   {
     auto res = SILVA_EXPECT_FWD(*lhs + *rhs);
-    return std::visit([&](auto x) { return pool->make(std::move(x)); }, std::move(res));
+    return std::visit([&](auto x) { return pool.make(std::move(x)); }, std::move(res));
   }
-#define DYN_OBJECT_IMPL(func_name, op)                               \
-  expected_t<dyn_object_ref_t> func_name(dyn_object_pool_ptr_t pool, \
-                                         dyn_object_ref_t lhs,       \
-                                         dyn_object_ref_t rhs)       \
-  {                                                                  \
-    return pool->make(SILVA_EXPECT_FWD(*lhs op * rhs));              \
+#define DYN_OBJECT_IMPL(func_name, op)                            \
+  expected_t<dyn_object_ref_t> func_name(dyn_object_pool_t& pool, \
+                                         dyn_object_ref_t lhs,    \
+                                         dyn_object_ref_t rhs)    \
+  {                                                               \
+    return pool.make(SILVA_EXPECT_FWD(*lhs op * rhs));            \
   }
-  DYN_OBJECT_IMPL(dyn_object_sub, -);
-  DYN_OBJECT_IMPL(dyn_object_mul, *);
-  DYN_OBJECT_IMPL(dyn_object_div, /);
-  DYN_OBJECT_IMPL(dyn_object_lt, <);
-  DYN_OBJECT_IMPL(dyn_object_gt, >);
-  DYN_OBJECT_IMPL(dyn_object_lte, <=);
-  DYN_OBJECT_IMPL(dyn_object_gte, >=);
+  DYN_OBJECT_IMPL(sub, -);
+  DYN_OBJECT_IMPL(mul, *);
+  DYN_OBJECT_IMPL(div, /);
+  DYN_OBJECT_IMPL(lt, <);
+  DYN_OBJECT_IMPL(gt, >);
+  DYN_OBJECT_IMPL(lte, <=);
+  DYN_OBJECT_IMPL(gte, >=);
 #undef DYN_OBJECT_IMPL
   expected_t<dyn_object_ref_t>
-  dyn_object_eq(dyn_object_pool_ptr_t pool, dyn_object_ref_t lhs, dyn_object_ref_t rhs)
+  eq(dyn_object_pool_t& pool, dyn_object_ref_t lhs, dyn_object_ref_t rhs)
   {
-    return pool->make(*lhs == *rhs);
+    return pool.make(*lhs == *rhs);
   }
   expected_t<dyn_object_ref_t>
-  dyn_object_neq(dyn_object_pool_ptr_t pool, dyn_object_ref_t lhs, dyn_object_ref_t rhs)
+  neq(dyn_object_pool_t& pool, dyn_object_ref_t lhs, dyn_object_ref_t rhs)
   {
-    return pool->make(*lhs != *rhs);
+    return pool.make(*lhs != *rhs);
   }
 
   // scope_t
