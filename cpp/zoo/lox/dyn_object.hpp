@@ -1,5 +1,7 @@
 #pragma once
 
+#include "object_pool.hpp"
+
 #include "canopy/expected.hpp"
 
 #include "syntax/parse_tree.hpp"
@@ -20,20 +22,17 @@ namespace silva::lox {
     friend bool operator==(const function_t&, const function_t&) = default;
   };
 
-  class dyn_object_t {
+  struct dyn_object_t {
     dyn_object_t() = default;
+
+    template<typename T>
+    explicit dyn_object_t(T&& data);
 
     dyn_object_t(dyn_object_t&&)                 = default;
     dyn_object_t(const dyn_object_t&)            = default;
     dyn_object_t& operator=(dyn_object_t&&)      = default;
     dyn_object_t& operator=(const dyn_object_t&) = default;
 
-    template<typename T>
-    explicit dyn_object_t(T&& data);
-
-    friend class dyn_object_pool_t;
-
-   public:
     variant_t<none_t, bool, double, string_t, function_t> data;
 
     bool is_none() const;
@@ -66,41 +65,9 @@ namespace silva::lox {
     friend std::ostream& operator<<(std::ostream&, const dyn_object_t&);
   };
 
-  class dyn_object_ref_t;
-
-  class dyn_object_pool_t : public menhir_t {
-    struct item_t {
-      index_t ref_count = 0;
-      dyn_object_t value;
-      index_t next_free = -1;
-    };
-    vector_t<item_t> items;
-    index_t next_free = 0;
-
-    friend class dyn_object_ref_t;
-
-   public:
-    template<typename T>
-    dyn_object_ref_t make(T&&);
-  };
-  using dyn_object_pool_ptr_t = ptr_t<dyn_object_pool_t>;
-
-  class dyn_object_ref_t {
-    dyn_object_pool_ptr_t pool;
-    index_t idx = 0;
-
-    friend class dyn_object_pool_t;
-    dyn_object_ref_t(dyn_object_pool_ptr_t, index_t);
-
-   public:
-    dyn_object_ref_t() = default;
-
-    dyn_object_t* operator->() const;
-    dyn_object_t& operator*() const;
-
-    friend string_or_view_t to_string_impl(const dyn_object_ref_t&);
-    friend std::ostream& operator<<(std::ostream&, const dyn_object_ref_t&);
-  };
+  using dyn_object_pool_t     = object_pool_t<dyn_object_t>;
+  using dyn_object_pool_ptr_t = object_pool_ptr_t<dyn_object_t>;
+  using dyn_object_ref_t      = object_ref_t<dyn_object_t>;
 
   expected_t<dyn_object_ref_t> neg(dyn_object_pool_t&, dyn_object_ref_t);
   expected_t<dyn_object_ref_t> inv(dyn_object_pool_t&, dyn_object_ref_t);
@@ -140,18 +107,6 @@ namespace silva::lox {
   template<typename T>
   dyn_object_t::dyn_object_t(T&& data) : data(std::forward<T>(data))
   {
-  }
-
-  template<typename T>
-  dyn_object_ref_t dyn_object_pool_t::make(T&& x)
-  {
-    const index_t idx = items.size();
-    items.push_back(item_t{
-        .ref_count = 1,
-        .value     = dyn_object_t{std::forward<T>(x)},
-        .next_free = -1,
-    });
-    return dyn_object_ref_t{ptr(), idx};
   }
 }
 

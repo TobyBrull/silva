@@ -163,29 +163,6 @@ namespace silva::lox {
     return os << to_string_impl(x).as_string_view();
   }
 
-  dyn_object_ref_t::dyn_object_ref_t(dyn_object_pool_ptr_t pool, const index_t idx)
-    : pool(std::move(pool)), idx(idx)
-  {
-  }
-
-  dyn_object_t* dyn_object_ref_t::operator->() const
-  {
-    return &(pool->items[idx].value);
-  }
-  dyn_object_t& dyn_object_ref_t::operator*() const
-  {
-    return pool->items[idx].value;
-  }
-
-  string_or_view_t to_string_impl(const dyn_object_ref_t& x)
-  {
-    return to_string_impl(*x);
-  }
-  std::ostream& operator<<(std::ostream& os, const dyn_object_ref_t& x)
-  {
-    return os << *x;
-  }
-
   expected_t<dyn_object_ref_t> neg(dyn_object_pool_t& pool, dyn_object_ref_t x)
   {
     return pool.make(!(*x));
