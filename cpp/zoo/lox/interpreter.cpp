@@ -9,7 +9,7 @@ namespace silva::lox {
     const name_id_style_t& nis = swp->default_name_id_style();
     scope_ptr_t scope;
 
-    expected_t<dyn_object_ref_t> expr(const parse_tree_span_t pts)
+    expected_t<object_ref_t> expr(const parse_tree_span_t pts)
     {
 #define UNARY(op_rule_name, op_func)                                                       \
   else if (rn == op_rule_name)                                                             \
@@ -146,7 +146,7 @@ namespace silva::lox {
       return intp->pool.make(none);
     }
 
-    expected_t<dyn_object_ref_t> atom(const parse_tree_span_t pts)
+    expected_t<object_ref_t> atom(const parse_tree_span_t pts)
     {
       const token_id_t ti            = pts.tp->tokens[pts[0].token_begin];
       const token_info_t* token_info = pts.tp->token_info_get(pts[0].token_begin);
@@ -178,7 +178,7 @@ namespace silva::lox {
       }
     }
 
-    expected_t<dyn_object_ref_t> expr_or_atom(const parse_tree_span_t pts)
+    expected_t<object_ref_t> expr_or_atom(const parse_tree_span_t pts)
     {
       SILVA_EXPECT(pts.size() > 0, MAJOR);
       const name_id_t rule_name = pts[0].rule_name;
@@ -195,8 +195,7 @@ namespace silva::lox {
     }
   };
 
-  expected_t<dyn_object_ref_t> interpreter_t::evaluate(const parse_tree_span_t pts,
-                                                       scope_ptr_t scope)
+  expected_t<object_ref_t> interpreter_t::evaluate(const parse_tree_span_t pts, scope_ptr_t scope)
   {
     evaluation_t eval_run{
         .intp  = this,
@@ -217,7 +216,7 @@ namespace silva::lox {
       if (rule_name == intp->ni_decl_var) {
         const token_id_t var_name = pts.tp->tokens[pts[0].token_begin + 1];
         const auto children       = SILVA_EXPECT_FWD(pts.get_children_up_to<1>());
-        dyn_object_ref_t initializer;
+        object_ref_t initializer;
         if (children.size == 1) {
           initializer = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(children[0]), scope));
         }
@@ -235,13 +234,13 @@ namespace silva::lox {
       return {};
     }
 
-    expected_t<return_t<dyn_object_ref_t>> stmt(const parse_tree_span_t pts)
+    expected_t<return_t<object_ref_t>> stmt(const parse_tree_span_t pts)
     {
       const name_id_t rule_name = pts[0].rule_name;
       if (rule_name == intp->ni_stmt_print) {
-        dyn_object_ref_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
-                                                  "{} error evaluating argument to 'print'",
-                                                  pts);
+        object_ref_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
+                                              "{} error evaluating argument to 'print'",
+                                              pts);
         fmt::println("{}", to_string(std::move(value)));
       }
       else if (rule_name == intp->ni_stmt_if) {
@@ -296,7 +295,7 @@ namespace silva::lox {
         auto res = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                                     "{} error evaluating expression of return statement",
                                     pts);
-        return {return_t<dyn_object_ref_t>{std::move(res)}};
+        return {return_t<object_ref_t>{std::move(res)}};
       }
       else if (rule_name == intp->ni_stmt_block) {
         // TODO: make block scope
@@ -318,7 +317,7 @@ namespace silva::lox {
       return {{std::nullopt}};
     }
 
-    expected_t<return_t<dyn_object_ref_t>> go(const parse_tree_span_t pts)
+    expected_t<return_t<object_ref_t>> go(const parse_tree_span_t pts)
     {
       SILVA_EXPECT(pts.size() > 0, MAJOR);
       const name_id_t rule_name = pts[0].rule_name;
@@ -349,8 +348,8 @@ namespace silva::lox {
     }
   };
 
-  expected_t<return_t<dyn_object_ref_t>> interpreter_t::execute(const parse_tree_span_t pts,
-                                                                scope_ptr_t scope)
+  expected_t<return_t<object_ref_t>> interpreter_t::execute(const parse_tree_span_t pts,
+                                                            scope_ptr_t scope)
   {
     execution_t exec_run{.intp = this, .scope = scope};
     return exec_run.go(pts);

@@ -10,7 +10,7 @@ namespace silva::lox::test {
   struct test_interpreter_t : public interpreter_t {
     seed::interpreter_t* si = nullptr;
 
-    expected_t<dyn_object_ref_t> eval(const string_view_t expr_str)
+    expected_t<object_ref_t> eval(const string_view_t expr_str)
     {
       INFO(expr_str);
       auto tp = SILVA_EXPECT_REQUIRE(tokenize(swp, "test.lox", expr_str));
