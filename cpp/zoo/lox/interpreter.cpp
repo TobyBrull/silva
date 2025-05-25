@@ -55,7 +55,7 @@ namespace silva::lox {
         auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),
                                         "{} error evaluating left-hand-side",
                                         pts);
-        if (!lhs_res.is_truthy()) {
+        if (!lhs_res->is_truthy()) {
           return lhs_res;
         }
         auto rhs_res = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)),
@@ -69,7 +69,7 @@ namespace silva::lox {
         auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),
                                         "{} error evaluating left-hand-side",
                                         pts);
-        if (lhs_res.is_truthy()) {
+        if (lhs_res->is_truthy()) {
           return lhs_res;
         }
         auto rhs_res = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)),
@@ -254,7 +254,7 @@ namespace silva::lox {
                                            pts);
         ++it;
         SILVA_EXPECT(it != end, MAJOR);
-        if (cond.is_truthy()) {
+        if (cond->is_truthy()) {
           auto res = SILVA_EXPECT_FWD(intp->execute(pts.sub_tree_span_at(it.pos), scope));
           if (res.has_value()) {
             return res;
@@ -281,7 +281,7 @@ namespace silva::lox {
           const auto cond = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(cond_idx), scope),
                                              "{} error evaluating for-condition",
                                              pts);
-          if (!cond.is_truthy()) {
+          if (!cond->is_truthy()) {
             break;
           }
           auto res = SILVA_EXPECT_FWD(intp->execute(pts.sub_tree_span_at(body_idx), scope));

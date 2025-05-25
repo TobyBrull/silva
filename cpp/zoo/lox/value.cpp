@@ -167,10 +167,6 @@ namespace silva::lox {
   {
   }
 
-  bool value_ref_t::is_truthy() const
-  {
-    return pool->items[idx].value.is_truthy();
-  }
   value_t* value_ref_t::operator->() const
   {
     return &(pool->items[idx].value);
@@ -178,15 +174,6 @@ namespace silva::lox {
   value_t& value_ref_t::operator*() const
   {
     return pool->items[idx].value;
-  }
-
-  bool operator==(const value_ref_t& lhs, const value_ref_t& rhs)
-  {
-    return *lhs == *rhs;
-  }
-  bool operator!=(const value_ref_t& lhs, const value_ref_t& rhs)
-  {
-    return *lhs != *rhs;
   }
 
   string_or_view_t to_string_impl(const value_ref_t& x)

@@ -94,13 +94,8 @@ namespace silva::lox {
    public:
     value_ref_t() = default;
 
-    bool is_truthy() const;
-
     value_t* operator->() const;
     value_t& operator*() const;
-
-    friend bool operator==(const value_ref_t&, const value_ref_t&);
-    friend bool operator!=(const value_ref_t&, const value_ref_t&);
 
     friend string_or_view_t to_string_impl(const value_ref_t&);
     friend std::ostream& operator<<(std::ostream&, const value_ref_t&);
