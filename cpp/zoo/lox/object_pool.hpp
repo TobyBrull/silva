@@ -9,12 +9,12 @@ namespace silva {
 
   template<typename T>
   class object_pool_t : public menhir_t {
-    struct item_t {
+    struct object_data_t {
       index_t ref_count = 0;
-      optional_t<T> value;
+      optional_t<T> obj;
       index_t next_free = -1;
     };
-    vector_t<item_t> items;
+    vector_t<object_data_t> object_datas;
     index_t next_free = 0;
 
     friend class object_ref_t<T>;
@@ -31,13 +31,22 @@ namespace silva {
   template<typename T>
   class object_ref_t {
     object_pool_ptr_t<T> pool;
-    index_t idx = 0;
+    index_t idx = -1;
 
     friend class object_pool_t<T>;
     object_ref_t(object_pool_ptr_t<T>, index_t);
 
    public:
     object_ref_t() = default;
+    ~object_ref_t();
+
+    object_ref_t(object_ref_t&&);
+    object_ref_t(const object_ref_t&);
+    object_ref_t& operator=(object_ref_t&&);
+    object_ref_t& operator=(const object_ref_t&);
+
+    bool is_nullptr() const;
+    void clear();
 
     T* operator->() const;
     T& operator*() const;
@@ -57,37 +66,110 @@ namespace silva {
   template<typename... Args>
   object_ref_t<T> object_pool_t<T>::make(Args&&... args)
   {
-    const index_t idx = items.size();
-    items.push_back(item_t{
-        .ref_count = 1,
-        .value     = T{std::forward<Args>(args)...},
-        .next_free = -1,
-    });
+    const index_t idx = [&]() -> index_t {
+      for (index_t i = 0; i < object_datas.size(); ++i) {
+        if (object_datas[i].ref_count == 0) {
+          return i;
+        }
+      }
+      return object_datas.size();
+    }();
+    if (idx == object_datas.size()) {
+      object_datas.push_back(object_data_t{
+          .obj = T{std::forward<Args>(args)...},
+      });
+    }
+    else {
+      object_datas[idx].obj = T{std::forward<Args>(args)...};
+    }
     return object_ref_t<T>{ptr(), idx};
   }
 
   template<typename T>
   string_t object_pool_t<T>::to_string() const
   {
-    return fmt::format("object_pool_t with {} objects", items.size());
+    string_t retval;
+    retval += fmt::format("object_pool_t with {} objects\n", object_datas.size());
+    for (const auto& od: object_datas) {
+      retval += fmt::format("  - {} {}\n", od.ref_count, od.obj.value_or(T{}));
+    }
+    return retval;
   }
 
   // object_ref_t
 
   template<typename T>
-  object_ref_t<T>::object_ref_t(object_pool_ptr_t<T> pool, const index_t idx)
-    : pool(std::move(pool)), idx(idx)
+  object_ref_t<T>::object_ref_t(object_pool_ptr_t<T> arg_pool, const index_t idx)
+    : pool(std::move(arg_pool)), idx(idx)
   {
+    pool->object_datas[idx].ref_count += 1;
+  }
+
+  template<typename T>
+  object_ref_t<T>::~object_ref_t()
+  {
+    clear();
+  }
+
+  template<typename T>
+  object_ref_t<T>::object_ref_t(object_ref_t&& other)
+    : pool(std::move(other.pool)), idx(std::exchange(other.idx, -1))
+  {
+  }
+  template<typename T>
+  object_ref_t<T>::object_ref_t(const object_ref_t& other) : pool(other.pool), idx(other.idx)
+  {
+    if (!pool.is_nullptr()) {
+      pool->object_datas[idx].ref_count += 1;
+    }
+  }
+  template<typename T>
+  object_ref_t<T>& object_ref_t<T>::operator=(object_ref_t&& other)
+  {
+    if (this != &other) {
+      clear();
+      pool = std::move(other.pool);
+      idx  = std::exchange(other.idx, -1);
+    }
+    return *this;
+  }
+  template<typename T>
+  object_ref_t<T>& object_ref_t<T>::operator=(const object_ref_t& other)
+  {
+    if (this != &other) {
+      clear();
+      pool = other.pool;
+      idx  = other.idx;
+      if (!pool.is_nullptr()) {
+        pool->object_datas[idx].ref_count += 1;
+      }
+    }
+    return *this;
+  }
+
+  template<typename T>
+  bool object_ref_t<T>::is_nullptr() const
+  {
+    return pool.is_nullptr();
+  }
+  template<typename T>
+  void object_ref_t<T>::clear()
+  {
+    if (!pool.is_nullptr()) {
+      pool->object_datas[idx].ref_count -= 1;
+      pool.clear();
+      idx = -1;
+    }
   }
 
   template<typename T>
   T* object_ref_t<T>::operator->() const
   {
-    return &(pool->items[idx].value.value());
+    return &(pool->object_datas[idx].obj.value());
   }
   template<typename T>
   T& object_ref_t<T>::operator*() const
   {
-    return pool->items[idx].value.value();
+    return pool->object_datas[idx].obj.value();
   }
 }
