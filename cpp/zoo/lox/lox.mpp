@@ -28,9 +28,12 @@ namespace silva::lox {
     }
 
     interpreter_t li{sw.ptr()};
-    SILVA_EXPECT_FWD(li.execute(pt->span(), li.scopes.root()),
-                     "failed executing Lox script {}",
-                     cmdline_args[1]);
+    {
+      auto root = li.scopes.root();
+      SILVA_EXPECT_FWD(li.execute(pt->span(), root),
+                       "failed executing Lox script {}",
+                       cmdline_args[1]);
+    }
     if (verbose) {
       fmt::println("{}", li.pool.to_string());
     }

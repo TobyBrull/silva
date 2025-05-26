@@ -1,7 +1,5 @@
 #include "interpreter.hpp"
 
-#include "canopy/scope_exit.hpp"
-
 using enum silva::token_category_t;
 
 namespace silva::lox {
@@ -118,9 +116,8 @@ namespace silva::lox {
         SILVA_EXPECT(args_it == args_end && params_it == params_end, MAJOR);
 
         function_t& fun2 = std::get<function_t>(fun_res->data);
-        interpreter_t::execute_result_t res =
-            SILVA_EXPECT_FWD(intp->execute(fun2.body(), func_scope));
-        return res.retval.value_or(intp->pool.make(none));
+        auto result      = SILVA_EXPECT_FWD(intp->execute(fun2.body(), func_scope));
+        return result.value_or(intp->pool.make(none));
       }
       else if (rn == intp->ni_expr_b_assign)
       {
@@ -213,9 +210,7 @@ namespace silva::lox {
     interpreter_t* intp   = nullptr;
     syntax_ward_ptr_t swp = intp->swp;
 
-    using exec_res_t = interpreter_t::execute_result_t;
-
-    expected_t<exec_res_t> decl(const parse_tree_span_t pts, scope_ptr_t scope)
+    expected_t<return_t<object_ref_t>> decl(const parse_tree_span_t pts, scope_ptr_t& scope)
     {
       const name_id_t rule_name = pts[0].rule_name;
       if (rule_name == intp->ni_decl_var) {
@@ -240,10 +235,10 @@ namespace silva::lox {
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
       }
-      return exec_res_t{{std::nullopt}, scope};
+      return {std::nullopt};
     }
 
-    expected_t<exec_res_t> stmt(const parse_tree_span_t pts, scope_ptr_t scope)
+    expected_t<return_t<object_ref_t>> stmt(const parse_tree_span_t pts, scope_ptr_t& scope)
     {
       const name_id_t rule_name = pts[0].rule_name;
       if (rule_name == intp->ni_stmt_print) {
@@ -263,7 +258,7 @@ namespace silva::lox {
         SILVA_EXPECT(it != end, MAJOR);
         if (cond->is_truthy()) {
           auto res = SILVA_EXPECT_FWD(intp->execute(pts.sub_tree_span_at(it.pos), scope));
-          if (res.retval.has_value()) {
+          if (res.has_value()) {
             return res;
           }
         }
@@ -271,7 +266,7 @@ namespace silva::lox {
           ++it;
           if (it != end) {
             auto res = SILVA_EXPECT_FWD(intp->execute(pts.sub_tree_span_at(it.pos), scope));
-            if (res.retval.has_value()) {
+            if (res.has_value()) {
               return res;
             }
           }
@@ -284,7 +279,6 @@ namespace silva::lox {
         auto res = SILVA_EXPECT_FWD(intp->execute(pts.sub_tree_span_at(init_idx), scope),
                                     "{} error evaluating for-initializer",
                                     pts);
-        scope    = res.new_scope;
         while (true) {
           const auto cond = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(cond_idx), scope),
                                              "{} error evaluating for-condition",
@@ -293,7 +287,7 @@ namespace silva::lox {
             break;
           }
           auto res = SILVA_EXPECT_FWD(intp->execute(pts.sub_tree_span_at(body_idx), scope));
-          if (res.retval.has_value()) {
+          if (res.has_value()) {
             return res;
           }
           SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(inc_idx), scope),
@@ -305,16 +299,15 @@ namespace silva::lox {
         auto res = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                                     "{} error evaluating expression of return statement",
                                     pts);
-        return exec_res_t{return_t<object_ref_t>{std::move(res)}, scope};
+        return return_t<object_ref_t>{std::move(res)};
       }
       else if (rule_name == intp->ni_stmt_block) {
         scope = scope.new_scope();
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           auto res = SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx), scope));
-          if (res.retval.has_value()) {
+          if (res.has_value()) {
             return res;
           }
-          scope = res.new_scope;
         }
       }
       else if (rule_name == intp->ni_stmt_expr) {
@@ -325,10 +318,10 @@ namespace silva::lox {
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown statement {}", pts, swp->name_id_wrap(rule_name));
       }
-      return exec_res_t{{std::nullopt}, scope};
+      return {std::nullopt};
     }
 
-    expected_t<exec_res_t> go(const parse_tree_span_t pts, scope_ptr_t scope)
+    expected_t<return_t<object_ref_t>> go(const parse_tree_span_t pts, scope_ptr_t& scope)
     {
       SILVA_EXPECT(pts.size() > 0, MAJOR);
       const name_id_t rule_name = pts[0].rule_name;
@@ -338,7 +331,6 @@ namespace silva::lox {
       else if (rule_name == intp->ni_lox) {
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           auto res = SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx), scope));
-          scope    = res.new_scope;
         }
       }
       else if (rule_name == intp->ni_decl) {
@@ -356,12 +348,12 @@ namespace silva::lox {
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown rule {}", pts, swp->name_id_wrap(rule_name));
       }
-      return exec_res_t{{std::nullopt}, scope};
+      return {std::nullopt};
     }
   };
 
-  expected_t<interpreter_t::execute_result_t> interpreter_t::execute(const parse_tree_span_t pts,
-                                                                     scope_ptr_t scope)
+  expected_t<return_t<object_ref_t>> interpreter_t::execute(const parse_tree_span_t pts,
+                                                            scope_ptr_t& scope)
   {
     execution_t exec_run{.intp = this};
     return exec_run.go(pts, scope);
