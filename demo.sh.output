@@ -1181,7 +1181,7 @@ error parsing Fern
                       [0]_.Soil.Expr.Atom         sum
                       [1]_.Soil.Expr.Atom         i
 
-[0]_.Lox                                          print 'Hello, World!' ... ) ;
+[0]_.Lox                                          print 'Hello, World!' ... ; }
   [0]_.Lox.Stmt                                   print 'Hello, World!' ;
     [0]_.Lox.Stmt.Print                           print 'Hello, World!' ;
       [0]_.Lox.Expr.Atom                          'Hello, World!'
@@ -1331,6 +1331,35 @@ error parsing Fern
       [0]_.Lox.Expr.Call.(                        counter ( )
         [0]_.Lox.Expr.Atom                        counter
         [1]_.Lox.Expr.Arguments                   
+  [16]_.Lox.Decl                                  var a = 'global' ;
+    [0]_.Lox.Decl.Var                             var a = 'global' ;
+      [0]_.Lox.Expr.Atom                          'global'
+  [17]_.Lox.Stmt                                  { fun ... ; }
+    [0]_.Lox.Stmt.Block                           { fun ... ; }
+      [0]_.Lox.Decl                               fun showA ... ; }
+        [0]_.Lox.Decl.Fun                         fun showA ... ; }
+          [0]_.Lox.Decl.Function                  showA ( ... ; }
+            [0]_.Lox.Decl.Function.Parameters     
+            [1]_.Lox.Stmt.Block                   { print a ; }
+              [0]_.Lox.Stmt                       print a ;
+                [0]_.Lox.Stmt.Print               print a ;
+                  [0]_.Lox.Expr.Atom              a
+      [1]_.Lox.Stmt                               showA ( ) ;
+        [0]_.Lox.Stmt.ExprStmt                    showA ( ) ;
+          [0]_.Lox.Expr.Call.(                    showA ( )
+            [0]_.Lox.Expr.Atom                    showA
+            [1]_.Lox.Expr.Arguments               
+      [2]_.Lox.Decl                               var a = 'block' ;
+        [0]_.Lox.Decl.Var                         var a = 'block' ;
+          [0]_.Lox.Expr.Atom                      'block'
+      [3]_.Lox.Stmt                               showA ( ) ;
+        [0]_.Lox.Stmt.ExprStmt                    showA ( ) ;
+          [0]_.Lox.Expr.Call.(                    showA ( )
+            [0]_.Lox.Expr.Atom                    showA
+            [1]_.Lox.Expr.Arguments               
+      [4]_.Lox.Stmt                               print a ;
+        [0]_.Lox.Stmt.Print                       print a ;
+          [0]_.Lox.Expr.Atom                      a
 
 Hello, World!
 3
@@ -1352,6 +1381,9 @@ Fibonacci ==
 1
 2
 3
+global
+block
+block
 object_pool_t with 23 objects
   - 1 lox_v[142]
   - 1 lox_v[10]
@@ -1361,13 +1393,13 @@ object_pool_t with 23 objects
   - tombstone
   - 1 lox_v[3]
   - tombstone
+  - 1 lox_v[global]
   - tombstone
   - tombstone
-  - tombstone
-  - tombstone
+  - 1 lox_v[block]
   - tombstone
   - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
-  - tombstone
+  - 1 lox_v[<function [example.lox:38:7] parse_tree_span[ showA ( ... ; } ]>]
   - tombstone
   - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
   - tombstone

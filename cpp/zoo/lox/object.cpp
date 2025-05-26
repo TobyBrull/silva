@@ -241,7 +241,7 @@ namespace silva::lox {
     const auto [it, inserted] = values.emplace(ti, object_ref_t{});
     SILVA_EXPECT(inserted,
                  MINOR,
-                 "couldn't define identifier {} (with initializer {}) because the value already "
+                 "couldn't define identifier {} (with initializer = {}) because the value already "
                  "exists in the local scope",
                  swp->token_id_wrap(ti),
                  to_string(x));

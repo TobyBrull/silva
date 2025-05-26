@@ -1,5 +1,7 @@
 #include "interpreter.hpp"
 
+#include "canopy/scope_exit.hpp"
+
 using enum silva::token_category_t;
 
 namespace silva::lox {
@@ -220,7 +222,10 @@ namespace silva::lox {
         if (children.size == 1) {
           initializer = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(children[0]), scope));
         }
-        SILVA_EXPECT_FWD(scope->define(var_name, std::move(initializer)));
+        SILVA_EXPECT_FWD(scope->define(var_name, std::move(initializer)),
+                         "{} error defining variable {}",
+                         pts,
+                         swp->token_id_wrap(var_name));
       }
       else if (rule_name == intp->ni_decl_fun) {
         const token_id_t fun_name = pts.tp->tokens[pts[0].token_begin + 1];
@@ -298,7 +303,9 @@ namespace silva::lox {
         return {return_t<object_ref_t>{std::move(res)}};
       }
       else if (rule_name == intp->ni_stmt_block) {
-        // TODO: make block scope
+        auto parent_scope = scope;
+        scope_exit_t scope_exit([&] { scope = parent_scope; });
+        scope = scope->make_child_scope();
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           auto res = SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
           if (res.has_value()) {
@@ -330,10 +337,10 @@ namespace silva::lox {
         }
       }
       else if (rule_name == intp->ni_decl) {
-        SILVA_EXPECT_FWD(decl(pts.sub_tree_span_at(1)));
+        SILVA_EXPECT_FWD_PLAIN(decl(pts.sub_tree_span_at(1)));
       }
       else if (swp->name_infos[rule_name].parent_name == intp->ni_decl) {
-        SILVA_EXPECT_FWD(decl(pts));
+        SILVA_EXPECT_FWD_PLAIN(decl(pts));
       }
       else if (rule_name == intp->ni_stmt) {
         return stmt(pts.sub_tree_span_at(1));
