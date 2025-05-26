@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cactus.hpp"
 #include "object_pool.hpp"
 
 #include "canopy/expected.hpp"
@@ -8,8 +9,12 @@
 
 namespace silva::lox {
 
-  struct scope_t;
-  using scope_ptr_t = shared_ptr_t<scope_t>;
+  struct object_t;
+  using object_pool_t     = object_pool_t<object_t>;
+  using object_pool_ptr_t = object_pool_ptr_t<object_t>;
+  using object_ref_t      = object_ref_t<object_t>;
+
+  using scope_ptr_t = cactus_arm_t<token_id_t, object_ref_t>;
 
   struct function_t {
     parse_tree_span_t pts;
@@ -64,10 +69,6 @@ namespace silva::lox {
     friend std::ostream& operator<<(std::ostream&, const object_t&);
   };
 
-  using object_pool_t     = object_pool_t<object_t>;
-  using object_pool_ptr_t = object_pool_ptr_t<object_t>;
-  using object_ref_t      = object_ref_t<object_t>;
-
   expected_t<object_ref_t> neg(object_pool_t&, object_ref_t);
   expected_t<object_ref_t> inv(object_pool_t&, object_ref_t);
   expected_t<object_ref_t> add(object_pool_t&, object_ref_t, object_ref_t);
@@ -80,24 +81,6 @@ namespace silva::lox {
   expected_t<object_ref_t> gte(object_pool_t&, object_ref_t, object_ref_t);
   expected_t<object_ref_t> eq(object_pool_t&, object_ref_t, object_ref_t);
   expected_t<object_ref_t> neq(object_pool_t&, object_ref_t, object_ref_t);
-
-  struct scope_t : public std::enable_shared_from_this<scope_t> {
-    syntax_ward_ptr_t swp;
-    scope_ptr_t parent;
-    hashmap_t<token_id_t, object_ref_t> values;
-
-    scope_t(syntax_ward_ptr_t, scope_ptr_t parent);
-
-    expected_t<object_ref_t> get(token_id_t) const;
-
-    // Assumes the name is already defined is some scope.
-    expected_t<void> assign(token_id_t, object_ref_t);
-
-    // Assumes the name is not defined yet in the local scope.
-    expected_t<void> define(token_id_t, object_ref_t);
-
-    scope_ptr_t make_child_scope();
-  };
 }
 
 // IMPLEMENTATION

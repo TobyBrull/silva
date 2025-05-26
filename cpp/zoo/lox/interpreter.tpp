@@ -17,7 +17,7 @@ namespace silva::lox::test {
       INFO(to_string(*tp).as_string_view());
       auto pt = SILVA_EXPECT_REQUIRE(si->apply(tp, swp->name_id_of("Lox", "Expr")));
       INFO(to_string(pt->span()).as_string_view());
-      return evaluate(pt->span(), globals);
+      return evaluate(pt->span(), scopes.root());
     };
   };
 

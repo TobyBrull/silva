@@ -52,9 +52,13 @@ namespace silva::lox {
     name_id_t ni_expr_atom     = swp->name_id_of(ni_expr, "Atom");
 
     object_pool_t pool;
-    scope_ptr_t globals = std::make_unique<scope_t>(swp, nullptr);
+    cactus_t<token_id_t, object_ref_t> scopes;
 
     expected_t<object_ref_t> evaluate(parse_tree_span_t, scope_ptr_t);
-    expected_t<return_t<object_ref_t>> execute(parse_tree_span_t, scope_ptr_t);
+    struct execute_result_t {
+      return_t<object_ref_t> retval;
+      scope_ptr_t new_scope;
+    };
+    expected_t<execute_result_t> execute(parse_tree_span_t, scope_ptr_t);
   };
 }
