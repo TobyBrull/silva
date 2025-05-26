@@ -18,7 +18,6 @@ namespace silva {
     index_t next_free = -1;
 
     void free(index_t);
-
     friend class object_ref_t<T>;
 
    public:

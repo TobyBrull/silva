@@ -1,5 +1,7 @@
 # TODO
 
+* Unify: object_pool_t, cactus_t, and syntax_ward_t::name_infos?
+
 * Lox
     * Make a REPL
     * variables with lexical scoping
