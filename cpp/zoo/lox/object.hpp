@@ -27,6 +27,21 @@ namespace silva::lox {
     friend bool operator==(const function_t&, const function_t&) = default;
   };
 
+  struct class_t {
+    token_id_t name = token_id_none;
+    parse_tree_span_t pts;
+    hashmap_t<token_id_t, object_ref_t> methods;
+
+    friend bool operator==(const class_t&, const class_t&) = default;
+  };
+
+  struct class_instance_t {
+    object_ref_t _class;
+    hashmap_t<token_id_t, object_ref_t> fields;
+
+    friend bool operator==(const class_instance_t&, const class_instance_t&) = default;
+  };
+
   struct object_t {
     object_t() = default;
 
@@ -38,13 +53,15 @@ namespace silva::lox {
     object_t& operator=(object_t&&)      = default;
     object_t& operator=(const object_t&) = default;
 
-    variant_t<none_t, bool, double, string_t, function_t> data;
+    variant_t<none_t, bool, double, string_t, function_t, class_t, class_instance_t> data;
 
     bool is_none() const;
     bool holds_bool() const;
     bool holds_double() const;
     bool holds_string() const;
     bool holds_function() const;
+    bool holds_class() const;
+    bool holds_class_instance() const;
 
     bool is_truthy() const;
 

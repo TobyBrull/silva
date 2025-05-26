@@ -1181,7 +1181,7 @@ error parsing Fern
                       [0]_.Soil.Expr.Atom         sum
                       [1]_.Soil.Expr.Atom         i
 
-[0]_.Lox                                          print 'Hello, World!' ... ; }
+[0]_.Lox                                          print 'Hello, World!' ... ) ;
   [0]_.Lox.Stmt                                   print 'Hello, World!' ;
     [0]_.Lox.Stmt.Print                           print 'Hello, World!' ;
       [0]_.Lox.Expr.Atom                          'Hello, World!'
@@ -1360,6 +1360,47 @@ error parsing Fern
       [4]_.Lox.Stmt                               print a ;
         [0]_.Lox.Stmt.Print                       print a ;
           [0]_.Lox.Expr.Atom                      a
+  [18]_.Lox.Decl                                  class Person ... } }
+    [0]_.Lox.Decl.Class                           class Person ... } }
+      [0]_.Lox.Decl.Class.Super                   
+      [1]_.Lox.Decl.Function                      sayName ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         
+        [1]_.Lox.Stmt.Block                       { print ... ; }
+          [0]_.Lox.Stmt                           print Mr ... name ;
+            [0]_.Lox.Stmt.Print                   print Mr ... name ;
+              [0]_.Lox.Expr.Term.+                Mr + this . name
+                [0]_.Lox.Expr.Atom                Mr
+                [1]_.Lox.Expr.Call..              this . name
+                  [0]_.Lox.Expr.Atom              this
+                  [1]_.Lox.Expr.Atom              name
+  [19]_.Lox.Stmt                                  print Person ;
+    [0]_.Lox.Stmt.Print                           print Person ;
+      [0]_.Lox.Expr.Atom                          Person
+  [20]_.Lox.Decl                                  var jane ... ) ;
+    [0]_.Lox.Decl.Var                             var jane ... ) ;
+      [0]_.Lox.Expr.Call.(                        Person ( )
+        [0]_.Lox.Expr.Atom                        Person
+        [1]_.Lox.Expr.Arguments                   
+  [21]_.Lox.Stmt                                  print jane ;
+    [0]_.Lox.Stmt.Print                           print jane ;
+      [0]_.Lox.Expr.Atom                          jane
+  [22]_.Lox.Stmt                                  jane . ... Jane ;
+    [0]_.Lox.Stmt.ExprStmt                        jane . ... Jane ;
+      [0]_.Lox.Expr.Assign.=                      jane . name = Jane
+        [0]_.Lox.Expr.Call..                      jane . name
+          [0]_.Lox.Expr.Atom                      jane
+          [1]_.Lox.Expr.Atom                      name
+        [1]_.Lox.Expr.Atom                        Jane
+  [23]_.Lox.Decl                                  var method ... sayName ;
+    [0]_.Lox.Decl.Var                             var method ... sayName ;
+      [0]_.Lox.Expr.Call..                        jane . sayName
+        [0]_.Lox.Expr.Atom                        jane
+        [1]_.Lox.Expr.Atom                        sayName
+  [24]_.Lox.Stmt                                  method ( ) ;
+    [0]_.Lox.Stmt.ExprStmt                        method ( ) ;
+      [0]_.Lox.Expr.Call.(                        method ( )
+        [0]_.Lox.Expr.Atom                        method
+        [1]_.Lox.Expr.Arguments                   
 
 Hello, World!
 3
@@ -1384,28 +1425,10 @@ Fibonacci ==
 global
 global
 block
-object_pool_t with 23 objects
-  - 1 lox_v[142]
-  - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
-  - tombstone
-  - 1 lox_v[<function [example.lox:13:5] parse_tree_span[ fib ( ... ; } ]>]
-  - 1 lox_v[10]
-  - tombstone
-  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
-  - tombstone
-  - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
-  - tombstone
-  - tombstone
-  - 1 lox_v[<function [example.lox:38:7] parse_tree_span[ showA ( ... ; } ]>]
-  - tombstone
-  - 1 lox_v[global]
-  - tombstone
-  - tombstone
-  - 1 lox_v[3]
-  - tombstone
-  - tombstone
-  - tombstone
-  - tombstone
-  - tombstone
-  - tombstone
+<class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>
+<instance of <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>>
+ERROR (MAJOR):
+[example.lox:56:1] parse_tree_span[ jane . name ] left-hand-side of assignment must be plain identifier for now
+[example.lox:56:1] parse_tree_span[ jane . ... Jane ; ] error evaluating expression statement
+failed executing Lox script cpp/zoo/lox/example.lox
 

@@ -22,6 +22,8 @@ namespace silva::lox {
     name_id_t ni_decl_var      = swp->name_id_of(ni_decl, "Var");
     name_id_t ni_decl_fun      = swp->name_id_of(ni_decl, "Fun");
     name_id_t ni_decl_class    = swp->name_id_of(ni_decl, "Class");
+    name_id_t ni_decl_class_s  = swp->name_id_of(ni_decl_class, "Super");
+    name_id_t ni_decl_function = swp->name_id_of(ni_decl, "Function");
     name_id_t ni_stmt          = swp->name_id_of(ni_lox, "Stmt");
     name_id_t ni_stmt_print    = swp->name_id_of(ni_stmt, "Print");
     name_id_t ni_stmt_if       = swp->name_id_of(ni_stmt, "If");

@@ -4,17 +4,10 @@
 
 * Lox
     * Make a REPL
-    * variables with lexical scoping
-        * Cactus-stack for processing variable scopes: `env_stack_t<token_id_t, lox::value>`.
     * conditional exec
         * if (`isTruthy()`)
         * and/or (short-circuit)
         * while/for loops
-    * function calls
-    * lox::value = variant_t<
-        std::nullopt_t, bool, double, string_t,
-        lox::func_t, lox::object_t, lox::class_t
-        >
     * put "clock" function in global namespace
 
 * Soil

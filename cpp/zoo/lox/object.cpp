@@ -39,6 +39,14 @@ namespace silva::lox {
   {
     return variant_holds_t<function_t>{}(data);
   }
+  bool object_t::holds_class() const
+  {
+    return variant_holds_t<class_t>{}(data);
+  }
+  bool object_t::holds_class_instance() const
+  {
+    return variant_holds_t<class_instance_t>{}(data);
+  }
 
   bool object_t::is_truthy() const
   {
@@ -147,6 +155,14 @@ namespace silva::lox {
     string_or_view_t operator()(const function_t& x) const
     {
       return string_or_view_t{fmt::format("<function {}>", to_string(x.pts))};
+    }
+    string_or_view_t operator()(const class_t& x) const
+    {
+      return string_or_view_t{fmt::format("<class {}>", to_string(x.pts))};
+    }
+    string_or_view_t operator()(const class_instance_t& x) const
+    {
+      return string_or_view_t{fmt::format("<instance of {}>", to_string(x._class))};
     }
     string_or_view_t operator()(const auto& x) const
     {

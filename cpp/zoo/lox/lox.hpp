@@ -10,7 +10,10 @@ namespace silva::lox {
         - x = Var | Fun | Class
         - Var = 'var' identifier ( '=' p.Expr ) ? ';'
         - Fun = 'fun' Function
-        - Class = 'class' identifier ( '<' identifier ) ? '{' Function * '}'
+        - Class = [
+          - x = 'class' identifier Super '{' p.Function * '}'
+          - Super = ( '<' identifier ) ?
+        ]
         - Function = [
           - x = identifier '(' Parameters ')' _.Lox.Stmt.Block
           - Parameters = ( Parameter ( ',' Parameter ) * ) ?
