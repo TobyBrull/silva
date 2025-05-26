@@ -14,13 +14,14 @@ namespace silva {
   class cactus_t : public menhir_t {
     struct new_scope_t {};
     struct arm_t {
-      index_t ref_count    = 0;
-      index_t parent_index = -1;
+      index_t ref_count = 0;
+      cactus_arm_t<Key, Value> parent;
       variant_t<none_t, new_scope_t, pair_t<Key, Value>> data;
       index_t next_free = -1;
     };
     vector_t<arm_t> arms;
     index_t next_free = -1;
+    index_t size_occ  = 0;
 
     index_t alloc_arm();
 
@@ -29,6 +30,9 @@ namespace silva {
 
    public:
     cactus_t();
+
+    index_t size_total() const;
+    index_t size_occupied() const;
 
     cactus_arm_t<Key, Value> root();
   };
@@ -55,6 +59,8 @@ namespace silva {
     bool is_nullptr() const;
     void clear();
 
+    friend bool operator==(const cactus_arm_t&, const cactus_arm_t&) = default;
+
     // Return unexpected if the Key is *not* already defined somewhere along this arm to the root.
     expected_t<Value*> get(const Key&) const;
     expected_t<void> assign(const Key&, Value) const;
@@ -76,11 +82,11 @@ namespace silva {
   cactus_t<Key, Value>::cactus_t()
   {
     arms.push_back(arm_t{
-        .ref_count    = 1,
-        .parent_index = -1,
-        .data         = new_scope_t{},
-        .next_free    = -1,
+        .ref_count = 1,
+        .data      = new_scope_t{},
+        .next_free = -1,
     });
+    size_occ = 1;
   }
 
   template<typename Key, typename Value>
@@ -95,6 +101,7 @@ namespace silva {
       idx       = next_free;
       next_free = arms[idx].next_free;
     }
+    size_occ += 1;
     return idx;
   }
 
@@ -104,7 +111,20 @@ namespace silva {
     SILVA_ASSERT(arms[idx].ref_count == 0);
     arms[idx].data      = none;
     arms[idx].next_free = next_free;
-    next_free           = idx;
+    arms[idx].parent.clear();
+    next_free = idx;
+    size_occ -= 1;
+  }
+
+  template<typename Key, typename Value>
+  index_t cactus_t<Key, Value>::size_total() const
+  {
+    return arms.size();
+  }
+  template<typename Key, typename Value>
+  index_t cactus_t<Key, Value>::size_occupied() const
+  {
+    return size_occ;
   }
 
   template<typename Key, typename Value>
@@ -138,7 +158,7 @@ namespace silva {
     : cactus(other.cactus), idx(other.idx)
   {
     if (!cactus.is_nullptr()) {
-      cactus->object_datas[idx].ref_count += 1;
+      cactus->arms[idx].ref_count += 1;
     }
   }
   template<typename Key, typename Value>
@@ -159,7 +179,7 @@ namespace silva {
       cactus = other.cactus;
       idx    = other.idx;
       if (!cactus.is_nullptr()) {
-        cactus->object_datas[idx].ref_count += 1;
+        cactus->arms[idx].ref_count += 1;
       }
     }
     return *this;
@@ -197,7 +217,7 @@ namespace silva {
       if (curr_idx == 0) {
         break;
       }
-      curr_idx = arm->parent_index;
+      curr_idx = arm->parent.idx;
     }
     SILVA_EXPECT(false, MINOR, "couldn't find key");
   }
@@ -205,15 +225,16 @@ namespace silva {
   expected_t<void> cactus_arm_t<Key, Value>::assign(const Key& k, Value v) const
   {
     Value* tgt_value_ptr = SILVA_EXPECT_FWD_PLAIN(get(k));
-    SILVA_EXPECT(!tgt_value_ptr, ASSERT);
+    SILVA_EXPECT(tgt_value_ptr, ASSERT);
     *tgt_value_ptr = std::move(v);
+    return {};
   }
   template<typename Key, typename Value>
   cactus_arm_t<Key, Value> cactus_arm_t<Key, Value>::new_scope() const
   {
-    const auto new_idx                 = cactus->alloc_arm();
-    cactus->arms[new_idx].parent_index = idx;
-    cactus->arms[new_idx].data         = typename cactus_t<Key, Value>::new_scope_t{};
+    const auto new_idx           = cactus->alloc_arm();
+    cactus->arms[new_idx].parent = *this;
+    cactus->arms[new_idx].data   = typename cactus_t<Key, Value>::new_scope_t{};
     return cactus_arm_t(cactus, new_idx);
   }
   template<typename Key, typename Value>
@@ -232,12 +253,12 @@ namespace silva {
       if (curr_idx == 0) {
         break;
       }
-      curr_idx = arm->parent_index;
+      curr_idx = arm->parent.idx;
     }
 
-    const auto new_idx                 = cactus->alloc_arm();
-    cactus->arms[new_idx].parent_index = idx;
-    cactus->arms[new_idx].data         = pair_t<Key, Value>{k, std::move(v)};
+    const auto new_idx           = cactus->alloc_arm();
+    cactus->arms[new_idx].parent = *this;
+    cactus->arms[new_idx].data   = pair_t<Key, Value>{k, std::move(v)};
     return cactus_arm_t(cactus, new_idx);
   }
 }
