@@ -47,12 +47,12 @@ var a = 'global';
 
 class Person {
   sayName() {
-    print "Mr " + this.name;
+    print 'Mr ' + this.name;
   }
 }
 print Person;
 var jane = Person();
 print jane;
-jane.name = "Jane";
+jane.name = 'Jane';
 var method = jane.sayName;
 method();

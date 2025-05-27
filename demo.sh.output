@@ -1366,10 +1366,10 @@ error parsing Fern
       [1]_.Lox.Decl.Function                      sayName ( ... ; }
         [0]_.Lox.Decl.Function.Parameters         
         [1]_.Lox.Stmt.Block                       { print ... ; }
-          [0]_.Lox.Stmt                           print Mr ... name ;
-            [0]_.Lox.Stmt.Print                   print Mr ... name ;
-              [0]_.Lox.Expr.Term.+                Mr + this . name
-                [0]_.Lox.Expr.Atom                Mr
+          [0]_.Lox.Stmt                           print 'Mr ' ... name ;
+            [0]_.Lox.Stmt.Print                   print 'Mr ' ... name ;
+              [0]_.Lox.Expr.Term.+                'Mr ' + this . name
+                [0]_.Lox.Expr.Atom                'Mr '
                 [1]_.Lox.Expr.Call..              this . name
                   [0]_.Lox.Expr.Atom              this
                   [1]_.Lox.Expr.Atom              name
@@ -1384,13 +1384,13 @@ error parsing Fern
   [21]_.Lox.Stmt                                  print jane ;
     [0]_.Lox.Stmt.Print                           print jane ;
       [0]_.Lox.Expr.Atom                          jane
-  [22]_.Lox.Stmt                                  jane . ... Jane ;
-    [0]_.Lox.Stmt.ExprStmt                        jane . ... Jane ;
-      [0]_.Lox.Expr.Assign.=                      jane . name = Jane
+  [22]_.Lox.Stmt                                  jane . ... 'Jane' ;
+    [0]_.Lox.Stmt.ExprStmt                        jane . ... 'Jane' ;
+      [0]_.Lox.Expr.Assign.=                      jane . name = 'Jane'
         [0]_.Lox.Expr.Call..                      jane . name
           [0]_.Lox.Expr.Atom                      jane
           [1]_.Lox.Expr.Atom                      name
-        [1]_.Lox.Expr.Atom                        Jane
+        [1]_.Lox.Expr.Atom                        'Jane'
   [23]_.Lox.Decl                                  var method ... sayName ;
     [0]_.Lox.Decl.Var                             var method ... sayName ;
       [0]_.Lox.Expr.Call..                        jane . sayName
@@ -1427,8 +1427,29 @@ global
 block
 <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>
 <instance of <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>>
-ERROR (MAJOR):
-[example.lox:56:1] parse_tree_span[ jane . name ] left-hand-side of assignment must be plain identifier for now
-[example.lox:56:1] parse_tree_span[ jane . ... Jane ; ] error evaluating expression statement
-failed executing Lox script cpp/zoo/lox/example.lox
+Mr Jane
+object_pool_t with 23 objects
+  - 1 lox_v[142]
+  - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
+  - tombstone
+  - 1 lox_v[<function [example.lox:13:5] parse_tree_span[ fib ( ... ; } ]>]
+  - 1 lox_v[10]
+  - 1 lox_v[3]
+  - tombstone
+  - tombstone
+  - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
+  - 1 lox_v[<class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>]
+  - tombstone
+  - 1 lox_v[<function [example.lox:38:7] parse_tree_span[ showA ( ... ; } ]>]
+  - tombstone
+  - 1 lox_v[block]
+  - 1 lox_v[global]
+  - tombstone
+  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
+  - tombstone
+  - tombstone
+  - tombstone
+  - 1 lox_v[<function [example.lox:49:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - tombstone
+  - tombstone
 

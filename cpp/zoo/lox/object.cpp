@@ -17,6 +17,39 @@ namespace silva::lox {
     return pts.sub_tree_span_at(pts[1].subtree_size + 1);
   }
 
+  // class_instance_t
+
+  class_t& class_instance_t::get_class() const
+  {
+    SILVA_ASSERT(_class->holds_class());
+    return std::get<class_t>(_class->data);
+  }
+
+  expected_t<object_ref_t> class_instance_t::member_access(object_pool_t& pool,
+                                                           const token_id_t ti_this,
+                                                           const object_ref_t& ref_this,
+                                                           const token_id_t field_name,
+                                                           const bool create_if_nonexistent)
+  {
+    if (const auto it = fields.find(field_name); it != fields.end()) {
+      return it->second;
+    }
+    const auto& cc = get_class();
+    if (const auto it = cc.methods.find(field_name); it != cc.methods.end()) {
+      const object_ref_t method = it->second;
+      SILVA_EXPECT(method->holds_function(), ASSERT);
+      const function_t& fun = std::get<function_t>(method->data);
+      auto bound_scope      = SILVA_EXPECT_FWD(fun.closure.define(ti_this, ref_this));
+      function_t bound_func{
+          .pts     = fun.pts,
+          .closure = std::move(bound_scope),
+      };
+      return pool.make(std::move(bound_func));
+    }
+    SILVA_EXPECT(create_if_nonexistent, MINOR, "couldn't access member");
+    return fields[field_name] = pool.make(none);
+  }
+
   // object_t
 
   bool object_t::is_none() const

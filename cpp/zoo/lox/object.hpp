@@ -39,6 +39,14 @@ namespace silva::lox {
     object_ref_t _class;
     hashmap_t<token_id_t, object_ref_t> fields;
 
+    class_t& get_class() const;
+
+    expected_t<object_ref_t> member_access(object_pool_t& pool,
+                                           const token_id_t ti_this,
+                                           const object_ref_t& ref_this,
+                                           token_id_t field_name,
+                                           bool create_if_nonexistent);
+
     friend bool operator==(const class_instance_t&, const class_instance_t&) = default;
   };
 
