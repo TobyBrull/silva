@@ -19,16 +19,16 @@ namespace silva::lox {
 
   // class_instance_t
 
-  expected_t<object_ref_t> member_access(const object_ref_t& obj,
+  expected_t<object_ref_t> member_access(const object_ref_t& class_instance,
                                          token_id_t field_name,
                                          bool create_if_nonexistent,
                                          object_pool_t& pool,
                                          const token_id_t ti_this)
   {
-    SILVA_EXPECT(obj->holds_class_instance(),
+    SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
                  "left-hand-side of member-access operator must evaluate to class instance");
-    class_instance_t& ci = std::get<class_instance_t>(obj->data);
+    class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
     if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
     }
@@ -38,7 +38,7 @@ namespace silva::lox {
       const object_ref_t method = it->second;
       SILVA_EXPECT(method->holds_function(), ASSERT);
       const function_t& fun = std::get<function_t>(method->data);
-      auto bound_scope      = SILVA_EXPECT_FWD(fun.closure.define(ti_this, obj));
+      auto bound_scope      = SILVA_EXPECT_FWD(fun.closure.define(ti_this, class_instance));
       function_t bound_func{
           .pts     = fun.pts,
           .closure = std::move(bound_scope),

@@ -125,10 +125,16 @@ namespace silva::lox {
           return call_function(fun, pts_args, ac);
         }
         else if (callee->holds_class()) {
-          class_t& cc = std::get<class_t>(callee->data);
-          class_instance_t instance;
-          instance._class = callee;
-          return intp->pool.make(std::move(instance));
+          object_ref_t retval = intp->pool.make(class_instance_t{._class = callee});
+          class_t& cc         = std::get<class_t>(callee->data);
+          if (const auto it = cc.methods.find(intp->ti_init); it != cc.methods.end()) {
+            object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
+                member_access(retval, intp->ti_init, false, intp->pool, intp->ti_this));
+            SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
+            function_t& init_fun = std::get<function_t>(init_fun_ref->data);
+            SILVA_EXPECT_FWD(call_function(init_fun, pts_args, ac));
+          }
+          return retval;
         }
       }
       else if (rn == intp->ni_expr_member)

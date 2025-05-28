@@ -42,7 +42,7 @@ namespace silva::lox {
     friend bool operator==(const class_instance_t&, const class_instance_t&) = default;
   };
 
-  expected_t<object_ref_t> member_access(const object_ref_t&,
+  expected_t<object_ref_t> member_access(const object_ref_t& class_instance,
                                          token_id_t field_name,
                                          bool create_if_nonexistent,
                                          object_pool_t& pool,

@@ -1474,11 +1474,30 @@ block
 <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>
 <instance of <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>>
 Mr Jane
-ERROR (MINOR):
-couldn't access member
-[example.lox:67:13] parse_tree_span[ this . mode ] could not find token[ mode ] in <instance of <class [example.lox:60:1] parse_tree_span[ class Thing ... } } ]>>
-[example.lox:67:7] parse_tree_span[ print this . mode ; ] error evaluating argument to 'print'
-unexpected forward at [/home/toby/git/silva/cpp/zoo/lox/interpreter.cpp:41]
-[example.lox:73:1] parse_tree_span[ callback ( ) ; ] error evaluating expression statement
-failed executing Lox script cpp/zoo/lox/example.lox
+init()
+start
+object_pool_t with 23 objects
+  - 1 lox_v[142]
+  - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:65:3] parse_tree_span[ getCallback ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:13:5] parse_tree_span[ fib ( ... ; } ]>]
+  - 1 lox_v[10]
+  - 1 lox_v[3]
+  - 2 lox_v[<class [example.lox:60:1] parse_tree_span[ class Thing ... } } ]>]
+  - 1 lox_v[start]
+  - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
+  - 2 lox_v[<class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>]
+  - 1 lox_v[<function [example.lox:61:3] parse_tree_span[ init ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:38:7] parse_tree_span[ showA ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:49:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 1 lox_v[block]
+  - 1 lox_v[global]
+  - 2 lox_v[<instance of <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>>]
+  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
+  - 1 lox_v[<instance of <class [example.lox:60:1] parse_tree_span[ class Thing ... } } ]>>]
+  - 1 lox_v[Jane]
+  - tombstone
+  - 1 lox_v[<function [example.lox:49:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:66:9] parse_tree_span[ localFunction ( ... ; } ]>]
+  - tombstone
 
