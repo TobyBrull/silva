@@ -9,6 +9,39 @@ namespace silva::lox {
     const name_id_style_t& nis = swp->default_name_id_style();
     scope_ptr_t scope;
 
+    expected_t<object_ref_t>
+    call_function(function_t& fun, const parse_tree_span_t pts_args, const bool access_creates)
+    {
+      const index_t arity = fun.arity();
+      SILVA_EXPECT(arity == pts_args[0].num_children,
+                   MINOR,
+                   "trying to call <function {}>, which has {} parameters, with {} arguments",
+                   fun.pts,
+                   arity,
+                   pts_args[0].num_children);
+
+      const auto fun_params        = fun.parameters();
+      auto [args_it, args_end]     = pts_args.children_range();
+      auto [params_it, params_end] = fun_params.children_range();
+      auto func_scope              = fun.closure.new_scope();
+      for (index_t i = 0; i < arity; ++i) {
+        SILVA_EXPECT(args_it != args_end && params_it != params_end, MAJOR);
+        auto val =
+            SILVA_EXPECT_FWD(expr_or_atom(pts_args.sub_tree_span_at(args_it.pos), access_creates),
+                             "{} error evaluating {}-th argument (counted 0-based)",
+                             pts_args,
+                             i);
+        const token_id_t ti_param =
+            fun_params.tp->tokens[fun_params.sub_tree_span_at(params_it.pos)[0].token_begin];
+        func_scope = SILVA_EXPECT_FWD(func_scope.define(ti_param, std::move(val)));
+        ++args_it;
+        ++params_it;
+      }
+      SILVA_EXPECT(args_it == args_end && params_it == params_end, MAJOR);
+      auto result = SILVA_EXPECT_FWD(intp->execute(fun.body(), func_scope));
+      return result.value_or(intp->pool.make(none));
+    }
+
     expected_t<object_ref_t> expr(const parse_tree_span_t pts, const bool ac)
     {
 #define UNARY(op_rule_name, op_func)                                                           \
@@ -83,50 +116,19 @@ namespace silva::lox {
         auto callee = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(fun_idx), ac),
                                        "{} error evaluating left-hand-side",
                                        pts);
+        SILVA_EXPECT(callee->holds_function() || callee->holds_class(),
+                     MINOR,
+                     "left-hand-side of call-operator must evaluate to function or class");
+        const auto pts_args = pts.sub_tree_span_at(args_idx);
         if (callee->holds_function()) {
           function_t& fun = std::get<function_t>(callee->data);
-
-          const auto pts_args = pts.sub_tree_span_at(args_idx);
-          const index_t arity = fun.arity();
-          SILVA_EXPECT(arity == pts_args[0].num_children,
-                       MINOR,
-                       "trying to call <function {}>, which has {} parameters, with {} arguments",
-                       fun.pts,
-                       arity,
-                       pts_args[0].num_children);
-
-          const auto fun_params        = fun.parameters();
-          auto [args_it, args_end]     = pts_args.children_range();
-          auto [params_it, params_end] = fun_params.children_range();
-          auto func_scope              = fun.closure.new_scope();
-          for (index_t i = 0; i < arity; ++i) {
-            SILVA_EXPECT(args_it != args_end && params_it != params_end, MAJOR);
-            auto val = SILVA_EXPECT_FWD(expr_or_atom(pts_args.sub_tree_span_at(args_it.pos), ac),
-                                        "{} error evaluating {}-th argument (counted 0-based)",
-                                        pts,
-                                        i);
-            const token_id_t ti_param =
-                fun_params.tp->tokens[fun_params.sub_tree_span_at(params_it.pos)[0].token_begin];
-            func_scope = SILVA_EXPECT_FWD(func_scope.define(ti_param, std::move(val)));
-            ++args_it;
-            ++params_it;
-          }
-          SILVA_EXPECT(args_it == args_end && params_it == params_end, MAJOR);
-
-          function_t& fun2 = std::get<function_t>(callee->data);
-          auto result      = SILVA_EXPECT_FWD(intp->execute(fun2.body(), func_scope));
-          return result.value_or(intp->pool.make(none));
+          return call_function(fun, pts_args, ac);
         }
         else if (callee->holds_class()) {
           class_t& cc = std::get<class_t>(callee->data);
           class_instance_t instance;
           instance._class = callee;
           return intp->pool.make(std::move(instance));
-        }
-        else {
-          SILVA_EXPECT(false,
-                       MINOR,
-                       "left-hand-side of call-operator must evaluate to function or class");
         }
       }
       else if (rn == intp->ni_expr_member)

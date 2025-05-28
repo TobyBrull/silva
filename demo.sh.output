@@ -1478,7 +1478,7 @@ ERROR (MINOR):
 couldn't access member
 [example.lox:67:13] parse_tree_span[ this . mode ] could not find token[ mode ] in <instance of <class [example.lox:60:1] parse_tree_span[ class Thing ... } } ]>>
 [example.lox:67:7] parse_tree_span[ print this . mode ; ] error evaluating argument to 'print'
-unexpected forward at [/home/toby/git/silva/cpp/zoo/lox/interpreter.cpp:117]
+unexpected forward at [/home/toby/git/silva/cpp/zoo/lox/interpreter.cpp:41]
 [example.lox:73:1] parse_tree_span[ callback ( ) ; ] error evaluating expression statement
 failed executing Lox script cpp/zoo/lox/example.lox
 
