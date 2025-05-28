@@ -142,21 +142,11 @@ namespace silva::lox {
                      "{} right-hand-side of member-access operator must be plain identifier",
                      pts_rhs);
         const token_id_t field_name = pts.tp->tokens[pts_rhs[0].token_begin];
-
-        if (lhs_ref->holds_class_instance()) {
-          class_instance_t& ci = std::get<class_instance_t>(lhs_ref->data);
-          return SILVA_EXPECT_FWD(
-              ci.member_access(intp->pool, intp->ti_this, lhs_ref, field_name, ac),
-              "{} could not find {} in {}",
-              pts,
-              swp->token_id_wrap(field_name),
-              to_string(lhs_ref));
-        }
-        else {
-          SILVA_EXPECT(false,
-                       MINOR,
-                       "left-hand-side of member-access operator must evaluate to class instance");
-        }
+        return SILVA_EXPECT_FWD(member_access(lhs_ref, field_name, ac, intp->pool, intp->ti_this),
+                                "{} could not find {} in {}",
+                                pts,
+                                swp->token_id_wrap(field_name),
+                                to_string(lhs_ref));
       }
       else if (rn == intp->ni_expr_b_assign)
       {

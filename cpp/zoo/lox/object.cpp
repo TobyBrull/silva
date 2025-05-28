@@ -19,27 +19,26 @@ namespace silva::lox {
 
   // class_instance_t
 
-  class_t& class_instance_t::get_class() const
+  expected_t<object_ref_t> member_access(const object_ref_t& obj,
+                                         token_id_t field_name,
+                                         bool create_if_nonexistent,
+                                         object_pool_t& pool,
+                                         const token_id_t ti_this)
   {
-    SILVA_ASSERT(_class->holds_class());
-    return std::get<class_t>(_class->data);
-  }
-
-  expected_t<object_ref_t> class_instance_t::member_access(object_pool_t& pool,
-                                                           const token_id_t ti_this,
-                                                           const object_ref_t& ref_this,
-                                                           const token_id_t field_name,
-                                                           const bool create_if_nonexistent)
-  {
-    if (const auto it = fields.find(field_name); it != fields.end()) {
+    SILVA_EXPECT(obj->holds_class_instance(),
+                 MINOR,
+                 "left-hand-side of member-access operator must evaluate to class instance");
+    class_instance_t& ci = std::get<class_instance_t>(obj->data);
+    if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
     }
-    const auto& cc = get_class();
+    SILVA_ASSERT(ci._class->holds_class());
+    const auto& cc = std::get<class_t>(ci._class->data);
     if (const auto it = cc.methods.find(field_name); it != cc.methods.end()) {
       const object_ref_t method = it->second;
       SILVA_EXPECT(method->holds_function(), ASSERT);
       const function_t& fun = std::get<function_t>(method->data);
-      auto bound_scope      = SILVA_EXPECT_FWD(fun.closure.define(ti_this, ref_this));
+      auto bound_scope      = SILVA_EXPECT_FWD(fun.closure.define(ti_this, obj));
       function_t bound_func{
           .pts     = fun.pts,
           .closure = std::move(bound_scope),
@@ -47,7 +46,7 @@ namespace silva::lox {
       return pool.make(std::move(bound_func));
     }
     SILVA_EXPECT(create_if_nonexistent, MINOR, "couldn't access member");
-    return fields[field_name] = pool.make(none);
+    return ci.fields[field_name] = pool.make(none);
   }
 
   // object_t

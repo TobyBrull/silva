@@ -1401,6 +1401,52 @@ error parsing Fern
       [0]_.Lox.Expr.Call.(                        method ( )
         [0]_.Lox.Expr.Atom                        method
         [1]_.Lox.Expr.Arguments                   
+  [25]_.Lox.Decl                                  class Thing ... } }
+    [0]_.Lox.Decl.Class                           class Thing ... } }
+      [0]_.Lox.Decl.Class.Super                   
+      [1]_.Lox.Decl.Function                      init ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         
+        [1]_.Lox.Stmt.Block                       { print ... ; }
+          [0]_.Lox.Stmt                           print 'init()' ;
+            [0]_.Lox.Stmt.Print                   print 'init()' ;
+              [0]_.Lox.Expr.Atom                  'init()'
+          [1]_.Lox.Stmt                           this . ... 'start' ;
+            [0]_.Lox.Stmt.ExprStmt                this . ... 'start' ;
+              [0]_.Lox.Expr.Assign.=              this . mode = 'start'
+                [0]_.Lox.Expr.Call..              this . mode
+                  [0]_.Lox.Expr.Atom              this
+                  [1]_.Lox.Expr.Atom              mode
+                [1]_.Lox.Expr.Atom                'start'
+      [2]_.Lox.Decl.Function                      getCallback ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         
+        [1]_.Lox.Stmt.Block                       { fun ... ; }
+          [0]_.Lox.Decl                           fun localFunction ... ; }
+            [0]_.Lox.Decl.Fun                     fun localFunction ... ; }
+              [0]_.Lox.Decl.Function              localFunction ( ... ; }
+                [0]_.Lox.Decl.Function.Parameters 
+                [1]_.Lox.Stmt.Block               { print ... ; }
+                  [0]_.Lox.Stmt                   print this . mode ;
+                    [0]_.Lox.Stmt.Print           print this . mode ;
+                      [0]_.Lox.Expr.Call..        this . mode
+                        [0]_.Lox.Expr.Atom        this
+                        [1]_.Lox.Expr.Atom        mode
+          [1]_.Lox.Stmt                           return localFunction ;
+            [0]_.Lox.Stmt.Return                  return localFunction ;
+              [0]_.Lox.Expr.Atom                  localFunction
+  [26]_.Lox.Decl                                  var callback ... ) ;
+    [0]_.Lox.Decl.Var                             var callback ... ) ;
+      [0]_.Lox.Expr.Call.(                        Thing ( ... ( )
+        [0]_.Lox.Expr.Call..                      Thing ( ) . getCallback
+          [0]_.Lox.Expr.Call.(                    Thing ( )
+            [0]_.Lox.Expr.Atom                    Thing
+            [1]_.Lox.Expr.Arguments               
+          [1]_.Lox.Expr.Atom                      getCallback
+        [1]_.Lox.Expr.Arguments                   
+  [27]_.Lox.Stmt                                  callback ( ) ;
+    [0]_.Lox.Stmt.ExprStmt                        callback ( ) ;
+      [0]_.Lox.Expr.Call.(                        callback ( )
+        [0]_.Lox.Expr.Atom                        callback
+        [1]_.Lox.Expr.Arguments                   
 
 Hello, World!
 3
@@ -1428,28 +1474,11 @@ block
 <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>
 <instance of <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>>
 Mr Jane
-object_pool_t with 23 objects
-  - 1 lox_v[142]
-  - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
-  - tombstone
-  - 1 lox_v[<function [example.lox:13:5] parse_tree_span[ fib ( ... ; } ]>]
-  - 1 lox_v[10]
-  - 1 lox_v[3]
-  - tombstone
-  - tombstone
-  - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
-  - 1 lox_v[<class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>]
-  - tombstone
-  - 1 lox_v[<function [example.lox:38:7] parse_tree_span[ showA ( ... ; } ]>]
-  - tombstone
-  - 1 lox_v[block]
-  - 1 lox_v[global]
-  - tombstone
-  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
-  - tombstone
-  - tombstone
-  - tombstone
-  - 1 lox_v[<function [example.lox:49:3] parse_tree_span[ sayName ( ... ; } ]>]
-  - tombstone
-  - tombstone
+ERROR (MINOR):
+couldn't access member
+[example.lox:67:13] parse_tree_span[ this . mode ] could not find token[ mode ] in <instance of <class [example.lox:60:1] parse_tree_span[ class Thing ... } } ]>>
+[example.lox:67:7] parse_tree_span[ print this . mode ; ] error evaluating argument to 'print'
+unexpected forward at [/home/toby/git/silva/cpp/zoo/lox/interpreter.cpp:117]
+[example.lox:73:1] parse_tree_span[ callback ( ) ; ] error evaluating expression statement
+failed executing Lox script cpp/zoo/lox/example.lox
 

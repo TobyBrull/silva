@@ -56,3 +56,18 @@ print jane;
 jane.name = 'Jane';
 var method = jane.sayName;
 method();
+
+class Thing {
+  init() {
+    print 'init()';
+    this.mode = 'start';
+  }
+  getCallback() {
+    fun localFunction() {
+      print this.mode;
+    }
+    return localFunction;
+  }
+}
+var callback = Thing().getCallback();
+callback();
