@@ -1476,7 +1476,8 @@ block
 Mr Jane
 init()
 start
-object_pool_t with 23 objects
+object_pool_t with 24 objects
+  - 1 lox_v[<builtin-function 'clock'>]
   - 1 lox_v[142]
   - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
   - 1 lox_v[<function [example.lox:65:3] parse_tree_span[ getCallback ( ... ; } ]>]
@@ -1498,6 +1499,6 @@ object_pool_t with 23 objects
   - 1 lox_v[Jane]
   - tombstone
   - 1 lox_v[<function [example.lox:49:3] parse_tree_span[ sayName ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:66:9] parse_tree_span[ localFunction ( ... ; } ]>]
+  - 2 lox_v[<function [example.lox:66:9] parse_tree_span[ localFunction ( ... ; } ]>]
   - tombstone
 

@@ -16,7 +16,7 @@ namespace silva::lox {
 
   using scope_ptr_t = cactus_arm_t<token_id_t, object_ref_t>;
 
-  struct function_t {
+  struct function_userdef_t {
     parse_tree_span_t pts;
     scope_ptr_t closure;
 
@@ -24,7 +24,18 @@ namespace silva::lox {
     parse_tree_span_t parameters() const;
     parse_tree_span_t body() const;
 
-    friend bool operator==(const function_t&, const function_t&) = default;
+    friend bool operator==(const function_userdef_t&, const function_userdef_t&) = default;
+  };
+
+  struct function_builtin_t {
+    syntax_ward_ptr_t swp;
+    token_id_t name = token_id_none;
+    index_t arity   = 0;
+    vector_t<token_id_t> parameters;
+    function_t<object_ref_t(object_pool_t&, scope_ptr_t)> impl;
+
+    friend bool operator==(const function_builtin_t& lhs, const function_builtin_t& rhs);
+    friend bool operator!=(const function_builtin_t& lhs, const function_builtin_t& rhs) = default;
   };
 
   struct class_t {
@@ -59,7 +70,15 @@ namespace silva::lox {
     object_t& operator=(object_t&&)      = default;
     object_t& operator=(const object_t&) = default;
 
-    variant_t<none_t, bool, double, string_t, function_t, class_t, class_instance_t> data;
+    variant_t<none_t,
+              bool,
+              double,
+              string_t,
+              function_userdef_t,
+              function_builtin_t,
+              class_t,
+              class_instance_t>
+        data;
 
     bool is_none() const;
     bool holds_bool() const;

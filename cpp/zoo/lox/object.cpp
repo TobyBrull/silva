@@ -2,19 +2,27 @@
 
 namespace silva::lox {
 
-  // function_t
+  // function_userdef_t
 
-  index_t function_t::arity() const
+  index_t function_userdef_t::arity() const
   {
     return pts[1].num_children;
   }
-  parse_tree_span_t function_t::parameters() const
+  parse_tree_span_t function_userdef_t::parameters() const
   {
     return pts.sub_tree_span_at(1);
   }
-  parse_tree_span_t function_t::body() const
+  parse_tree_span_t function_userdef_t::body() const
   {
     return pts.sub_tree_span_at(pts[1].subtree_size + 1);
+  }
+
+  // function_builtin_t
+
+  bool operator==(const function_builtin_t& lhs, const function_builtin_t& rhs)
+  {
+    return std::tie(lhs.name, lhs.arity, lhs.parameters) ==
+        std::tie(rhs.name, rhs.arity, rhs.parameters);
   }
 
   // class_instance_t
@@ -37,9 +45,9 @@ namespace silva::lox {
     if (const auto it = cc.methods.find(field_name); it != cc.methods.end()) {
       const object_ref_t method = it->second;
       SILVA_EXPECT(method->holds_function(), ASSERT);
-      const function_t& fun = std::get<function_t>(method->data);
-      auto bound_scope      = SILVA_EXPECT_FWD(fun.closure.define(ti_this, class_instance));
-      function_t bound_func{
+      const function_userdef_t& fun = std::get<function_userdef_t>(method->data);
+      auto bound_scope              = SILVA_EXPECT_FWD(fun.closure.define(ti_this, class_instance));
+      function_userdef_t bound_func{
           .pts     = fun.pts,
           .closure = std::move(bound_scope),
       };
@@ -69,7 +77,7 @@ namespace silva::lox {
   }
   bool object_t::holds_function() const
   {
-    return variant_holds_t<function_t>{}(data);
+    return variant_holds_t<function_userdef_t>{}(data);
   }
   bool object_t::holds_class() const
   {
@@ -184,9 +192,14 @@ namespace silva::lox {
       return string_or_view_t{std::move(retval)};
     }
     string_or_view_t operator()(const string_t& x) const { return string_or_view_t{string_t{x}}; }
-    string_or_view_t operator()(const function_t& x) const
+    string_or_view_t operator()(const function_userdef_t& x) const
     {
       return string_or_view_t{fmt::format("<function {}>", to_string(x.pts))};
+    }
+    string_or_view_t operator()(const function_builtin_t& x) const
+    {
+      return string_or_view_t{
+          fmt::format("<builtin-function '{}'>", x.swp->token_infos[x.name].str)};
     }
     string_or_view_t operator()(const class_t& x) const
     {

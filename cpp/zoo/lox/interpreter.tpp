@@ -10,6 +10,11 @@ namespace silva::lox::test {
   struct test_interpreter_t : public interpreter_t {
     seed::interpreter_t* si = nullptr;
 
+    test_interpreter_t(seed::interpreter_t* si, syntax_ward_ptr_t swp)
+      : interpreter_t(std::move(swp)), si(si)
+    {
+    }
+
     expected_t<object_ref_t> eval(const string_view_t expr_str)
     {
       INFO(expr_str);
@@ -17,7 +22,7 @@ namespace silva::lox::test {
       INFO(to_string(*tp).as_string_view());
       auto pt = SILVA_EXPECT_REQUIRE(si->apply(tp, swp->name_id_of("Lox", "Expr")));
       INFO(to_string(pt->span()).as_string_view());
-      return evaluate(pt->span(), scopes.root());
+      return evaluate(pt->span(), globals);
     };
   };
 
@@ -26,7 +31,7 @@ namespace silva::lox::test {
     syntax_ward_t sw;
     auto si = standard_seed_engine(sw.ptr());
     SILVA_EXPECT_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
-    test_interpreter_t lti{{sw.ptr()}, si.get()};
+    test_interpreter_t lti{si.get(), sw.ptr()};
 
     const auto ff = lti.pool.make(false);
     const auto tt = lti.pool.make(true);

@@ -56,6 +56,9 @@ namespace silva::lox {
 
     object_pool_t pool;
     cactus_t<token_id_t, object_ref_t> scopes;
+    scope_ptr_t globals = scopes.root();
+
+    interpreter_t(syntax_ward_ptr_t);
 
     expected_t<object_ref_t> evaluate(parse_tree_span_t, scope_ptr_t);
     expected_t<return_t<object_ref_t>> execute(parse_tree_span_t, scope_ptr_t&);
