@@ -1331,10 +1331,14 @@ error parsing Fern
       [0]_.Lox.Expr.Call.(                        counter ( )
         [0]_.Lox.Expr.Atom                        counter
         [1]_.Lox.Expr.Arguments                   
-  [16]_.Lox.Decl                                  var a = 'global' ;
-    [0]_.Lox.Decl.Var                             var a = 'global' ;
-      [0]_.Lox.Expr.Atom                          'global'
-  [17]_.Lox.Stmt                                  { fun ... ; }
+  [16]_.Lox.Decl                                  var a ;
+    [0]_.Lox.Decl.Var                             var a ;
+  [17]_.Lox.Stmt                                  a = 'global' ;
+    [0]_.Lox.Stmt.ExprStmt                        a = 'global' ;
+      [0]_.Lox.Expr.Assign.=                      a = 'global'
+        [0]_.Lox.Expr.Atom                        a
+        [1]_.Lox.Expr.Atom                        'global'
+  [18]_.Lox.Stmt                                  { fun ... ; }
     [0]_.Lox.Stmt.Block                           { fun ... ; }
       [0]_.Lox.Decl                               fun showA ... ; }
         [0]_.Lox.Decl.Fun                         fun showA ... ; }
@@ -1360,7 +1364,7 @@ error parsing Fern
       [4]_.Lox.Stmt                               print a ;
         [0]_.Lox.Stmt.Print                       print a ;
           [0]_.Lox.Expr.Atom                      a
-  [18]_.Lox.Decl                                  class Person ... } }
+  [19]_.Lox.Decl                                  class Person ... } }
     [0]_.Lox.Decl.Class                           class Person ... } }
       [0]_.Lox.Decl.Class.Super                   
       [1]_.Lox.Decl.Function                      sayName ( ... ; }
@@ -1373,35 +1377,35 @@ error parsing Fern
                 [1]_.Lox.Expr.Call..              this . name
                   [0]_.Lox.Expr.Atom              this
                   [1]_.Lox.Expr.Atom              name
-  [19]_.Lox.Stmt                                  print Person ;
+  [20]_.Lox.Stmt                                  print Person ;
     [0]_.Lox.Stmt.Print                           print Person ;
       [0]_.Lox.Expr.Atom                          Person
-  [20]_.Lox.Decl                                  var jane ... ) ;
+  [21]_.Lox.Decl                                  var jane ... ) ;
     [0]_.Lox.Decl.Var                             var jane ... ) ;
       [0]_.Lox.Expr.Call.(                        Person ( )
         [0]_.Lox.Expr.Atom                        Person
         [1]_.Lox.Expr.Arguments                   
-  [21]_.Lox.Stmt                                  print jane ;
+  [22]_.Lox.Stmt                                  print jane ;
     [0]_.Lox.Stmt.Print                           print jane ;
       [0]_.Lox.Expr.Atom                          jane
-  [22]_.Lox.Stmt                                  jane . ... 'Jane' ;
+  [23]_.Lox.Stmt                                  jane . ... 'Jane' ;
     [0]_.Lox.Stmt.ExprStmt                        jane . ... 'Jane' ;
       [0]_.Lox.Expr.Assign.=                      jane . name = 'Jane'
         [0]_.Lox.Expr.Call..                      jane . name
           [0]_.Lox.Expr.Atom                      jane
           [1]_.Lox.Expr.Atom                      name
         [1]_.Lox.Expr.Atom                        'Jane'
-  [23]_.Lox.Decl                                  var method ... sayName ;
+  [24]_.Lox.Decl                                  var method ... sayName ;
     [0]_.Lox.Decl.Var                             var method ... sayName ;
       [0]_.Lox.Expr.Call..                        jane . sayName
         [0]_.Lox.Expr.Atom                        jane
         [1]_.Lox.Expr.Atom                        sayName
-  [24]_.Lox.Stmt                                  method ( ) ;
+  [25]_.Lox.Stmt                                  method ( ) ;
     [0]_.Lox.Stmt.ExprStmt                        method ( ) ;
       [0]_.Lox.Expr.Call.(                        method ( )
         [0]_.Lox.Expr.Atom                        method
         [1]_.Lox.Expr.Arguments                   
-  [25]_.Lox.Decl                                  class Thing ... } }
+  [26]_.Lox.Decl                                  class Thing ... } }
     [0]_.Lox.Decl.Class                           class Thing ... } }
       [0]_.Lox.Decl.Class.Super                   
       [1]_.Lox.Decl.Function                      init ( ... ; }
@@ -1433,7 +1437,7 @@ error parsing Fern
           [1]_.Lox.Stmt                           return localFunction ;
             [0]_.Lox.Stmt.Return                  return localFunction ;
               [0]_.Lox.Expr.Atom                  localFunction
-  [26]_.Lox.Decl                                  var callback ... ) ;
+  [27]_.Lox.Decl                                  var callback ... ) ;
     [0]_.Lox.Decl.Var                             var callback ... ) ;
       [0]_.Lox.Expr.Call.(                        Thing ( ... ( )
         [0]_.Lox.Expr.Call..                      Thing ( ) . getCallback
@@ -1442,7 +1446,7 @@ error parsing Fern
             [1]_.Lox.Expr.Arguments               
           [1]_.Lox.Expr.Atom                      getCallback
         [1]_.Lox.Expr.Arguments                   
-  [27]_.Lox.Stmt                                  callback ( ) ;
+  [28]_.Lox.Stmt                                  callback ( ) ;
     [0]_.Lox.Stmt.ExprStmt                        callback ( ) ;
       [0]_.Lox.Expr.Call.(                        callback ( )
         [0]_.Lox.Expr.Atom                        callback
@@ -1471,8 +1475,8 @@ Fibonacci ==
 global
 global
 block
-<class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>
-<instance of <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>>
+<class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>
+<instance of <class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>>
 Mr Jane
 init()
 start
@@ -1480,25 +1484,25 @@ object_pool_t with 24 objects
   - 1 lox_v[<builtin-function 'clock'>]
   - 1 lox_v[142]
   - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:65:3] parse_tree_span[ getCallback ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:66:3] parse_tree_span[ getCallback ( ... ; } ]>]
   - 1 lox_v[<function [example.lox:13:5] parse_tree_span[ fib ( ... ; } ]>]
   - 1 lox_v[10]
   - 1 lox_v[3]
-  - 2 lox_v[<class [example.lox:60:1] parse_tree_span[ class Thing ... } } ]>]
+  - 2 lox_v[<class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>]
   - 1 lox_v[start]
   - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
-  - 2 lox_v[<class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>]
-  - 1 lox_v[<function [example.lox:61:3] parse_tree_span[ init ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:38:7] parse_tree_span[ showA ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:49:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 2 lox_v[<class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>]
+  - 1 lox_v[<function [example.lox:62:3] parse_tree_span[ init ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:39:7] parse_tree_span[ showA ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:50:3] parse_tree_span[ sayName ( ... ; } ]>]
   - 1 lox_v[block]
   - 1 lox_v[global]
-  - 2 lox_v[<instance of <class [example.lox:48:1] parse_tree_span[ class Person ... } } ]>>]
+  - 2 lox_v[<instance of <class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>>]
   - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
-  - 1 lox_v[<instance of <class [example.lox:60:1] parse_tree_span[ class Thing ... } } ]>>]
+  - 1 lox_v[<instance of <class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>>]
   - 1 lox_v[Jane]
   - tombstone
-  - 1 lox_v[<function [example.lox:49:3] parse_tree_span[ sayName ( ... ; } ]>]
-  - 2 lox_v[<function [example.lox:66:9] parse_tree_span[ localFunction ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:50:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 2 lox_v[<function [example.lox:67:9] parse_tree_span[ localFunction ( ... ; } ]>]
   - tombstone
 

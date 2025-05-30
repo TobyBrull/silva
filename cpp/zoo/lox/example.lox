@@ -33,7 +33,8 @@ counter();
 counter();
 counter();
 
-var a = 'global';
+var a;
+a = 'global';
 {
   fun showA() {
     print a;

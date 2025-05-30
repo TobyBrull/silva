@@ -34,7 +34,7 @@ namespace silva::lox {
     name_id_t ni_stmt_block    = swp->name_id_of(ni_stmt, "Block");
     name_id_t ni_stmt_expr     = swp->name_id_of(ni_stmt, "ExprStmt");
     name_id_t ni_expr          = swp->name_id_of(ni_lox, "Expr");
-    name_id_t ni_expr_primary  = swp->name_id_of(ni_expr, "Primary");
+    name_id_t ni_expr_primary  = swp->name_id_of(ni_expr, "Primary", "(");
     name_id_t ni_expr_call     = swp->name_id_of(ni_expr, "Call", "(");
     name_id_t ni_expr_member   = swp->name_id_of(ni_expr, "Call", ".");
     name_id_t ni_expr_u_exc    = swp->name_id_of(ni_expr, "Unary", "!");

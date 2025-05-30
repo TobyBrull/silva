@@ -189,6 +189,10 @@ namespace silva::lox {
                                         pts);
         *lhs_ref              = *rhs_ref;
       }
+      else if (rn == intp->ni_expr_primary)
+      {
+        return expr_or_atom(pts.sub_tree_span_at(1), ac);
+      }
       else
       {
         SILVA_EXPECT(false,
@@ -277,6 +281,9 @@ namespace silva::lox {
           initializer = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(children[0]), scope),
                                          "{} when evaluating initializer of variable declaration",
                                          pts);
+        }
+        else {
+          initializer = intp->pool.make(none);
         }
         scope = SILVA_EXPECT_FWD(scope.define(var_name, std::move(initializer)),
                                  "{} error defining variable {}",

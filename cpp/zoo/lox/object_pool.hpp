@@ -181,11 +181,13 @@ namespace silva {
   template<typename T>
   T* object_ref_t<T>::operator->() const
   {
+    SILVA_ASSERT(idx >= 0);
     return &(pool->object_datas[idx].obj.value());
   }
   template<typename T>
   T& object_ref_t<T>::operator*() const
   {
+    SILVA_ASSERT(idx >= 0);
     return pool->object_datas[idx].obj.value();
   }
 }
