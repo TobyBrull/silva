@@ -352,9 +352,6 @@ namespace silva::lox {
                                          "{} when evaluating initializer of variable declaration",
                                          pts);
         }
-        else {
-          initializer = intp->pool.make(none);
-        }
         scope = SILVA_EXPECT_FWD(scope.define(var_name, std::move(initializer)),
                                  "{} error defining variable {}",
                                  pts,
