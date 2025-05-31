@@ -249,11 +249,11 @@ class Scanner {
         # Newline
         this.line = this.line + 1;  
       }
-      else if (ch == 34) {
+      else if (ch == 39) {
         # Strings (start and end with double quote)
         var line = this.line;
         var value = '';
-        while (this.ch >= 0 and this.ch != 34) {
+        while (this.ch >= 0 and this.ch != 39) {
           if (this.ch == 10) {
             this.line = this.line + 1;
           }
@@ -305,7 +305,7 @@ class Scanner {
         return Token(IDENTIFIER, name, this.line);
       }
       else {
-        return Token(INVALID, 'Unexpected character.', this.line);
+        return Token(INVALID, 'Unexpected character: ' + chr(ch), this.line);
       }
     }
     return Token(EOF, none, this.line);
@@ -771,7 +771,7 @@ class Literal {
       return numberStr(this.value);
     }
     if (this.kind == 'string') {
-      return chr(34) + this.value + chr(34);
+      return chr(39) + this.value + chr(39);
     }
     return '<unexpected kind>';
   }

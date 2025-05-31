@@ -1181,7 +1181,7 @@ error parsing Fern
                       [0]_.Soil.Expr.Atom         sum
                       [1]_.Soil.Expr.Atom         i
 
-[0]_.Lox                                          print 'Hello, World!' ... ) ;
+[0]_.Lox                                          print 'Hello, World!' ... outer ;
   [0]_.Lox.Stmt                                   print 'Hello, World!' ;
     [0]_.Lox.Stmt.Print                           print 'Hello, World!' ;
       [0]_.Lox.Expr.Atom                          'Hello, World!'
@@ -1451,6 +1451,41 @@ error parsing Fern
       [0]_.Lox.Expr.Call.(                        callback ( )
         [0]_.Lox.Expr.Atom                        callback
         [1]_.Lox.Expr.Arguments                   
+  [29]_.Lox.Stmt                                  print chr ... ) ;
+    [0]_.Lox.Stmt.Print                           print chr ... ) ;
+      [0]_.Lox.Expr.Call.(                        chr ( 81 )
+        [0]_.Lox.Expr.Atom                        chr
+        [1]_.Lox.Expr.Arguments                   81
+          [0]_.Lox.Expr.Atom                      81
+  [30]_.Lox.Decl                                  fun foo ... ; }
+    [0]_.Lox.Decl.Fun                             fun foo ... ; }
+      [0]_.Lox.Decl.Function                      foo ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         x
+          [0]_.Lox.Decl.Function.Parameter        x
+        [1]_.Lox.Stmt.Block                       { var ... ; }
+          [0]_.Lox.Decl                           var a = x ;
+            [0]_.Lox.Decl.Var                     var a = x ;
+              [0]_.Lox.Expr.Atom                  x
+          [1]_.Lox.Stmt                           x = 123 ;
+            [0]_.Lox.Stmt.ExprStmt                x = 123 ;
+              [0]_.Lox.Expr.Assign.=              x = 123
+                [0]_.Lox.Expr.Atom                x
+                [1]_.Lox.Expr.Atom                123
+          [2]_.Lox.Stmt                           return a ;
+            [0]_.Lox.Stmt.Return                  return a ;
+              [0]_.Lox.Expr.Atom                  a
+  [31]_.Lox.Decl                                  var outer = 42 ;
+    [0]_.Lox.Decl.Var                             var outer = 42 ;
+      [0]_.Lox.Expr.Atom                          42
+  [32]_.Lox.Stmt                                  print foo ... ) ;
+    [0]_.Lox.Stmt.Print                           print foo ... ) ;
+      [0]_.Lox.Expr.Call.(                        foo ( outer )
+        [0]_.Lox.Expr.Atom                        foo
+        [1]_.Lox.Expr.Arguments                   outer
+          [0]_.Lox.Expr.Atom                      outer
+  [33]_.Lox.Stmt                                  print outer ;
+    [0]_.Lox.Stmt.Print                           print outer ;
+      [0]_.Lox.Expr.Atom                          outer
 
 Hello, World!
 3
@@ -1480,8 +1515,15 @@ block
 Mr Jane
 init()
 start
-object_pool_t with 25 objects
+none
+123
+123
+object_pool_t with 29 objects
   - 1 lox_v[<builtin-function 'clock'>]
+  - 1 lox_v[<builtin-function 'getc'>]
+  - 1 lox_v[<builtin-function 'chr'>]
+  - 1 lox_v[<builtin-function 'exit'>]
+  - 1 lox_v[<builtin-function 'print_error'>]
   - 1 lox_v[10]
   - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
   - 1 lox_v[142]
@@ -1489,7 +1531,7 @@ object_pool_t with 25 objects
   - 1 lox_v[<function [example.lox:66:3] parse_tree_span[ getCallback ( ... ; } ]>]
   - 1 lox_v[global]
   - 2 lox_v[<class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>]
-  - tombstone
+  - 1 lox_v[<function [example.lox:78:5] parse_tree_span[ foo ( ... ; } ]>]
   - 1 lox_v[3]
   - 2 lox_v[<class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>]
   - 1 lox_v[<function [example.lox:50:3] parse_tree_span[ sayName ( ... ; } ]>]
@@ -1503,7 +1545,7 @@ object_pool_t with 25 objects
   - 2 lox_v[<instance of <class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>>]
   - 1 lox_v[start]
   - 1 lox_v[<function [example.lox:50:3] parse_tree_span[ sayName ( ... ; } ]>]
-  - tombstone
+  - 1 lox_v[123]
   - 1 lox_v[<instance of <class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>>]
   - 2 lox_v[<function [example.lox:67:9] parse_tree_span[ localFunction ( ... ; } ]>]
 

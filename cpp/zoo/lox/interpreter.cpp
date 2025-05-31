@@ -1,27 +1,96 @@
 #include "interpreter.hpp"
 
 #include <chrono>
+#include <cstdio>
 
 using enum silva::token_category_t;
 
 namespace silva::lox {
   interpreter_t::interpreter_t(syntax_ward_ptr_t swp) : swp(swp)
   {
-    const token_id_t name = swp->token_id("clock").value();
-    object_ref_t obj_ref  = pool.make(function_builtin_t{
-         .swp        = swp,
-         .name       = name,
-         .arity      = 0,
-         .parameters = {},
-         .impl       = [](object_pool_t& pool, scope_ptr_t) -> object_ref_t {
-          const auto now      = std::chrono::system_clock::now();
-          const auto duration = now.time_since_epoch();
-          const double retval =
-              std::chrono::duration_cast<std::chrono::duration<double>>(duration).count();
-          return pool.make(retval);
-        },
-    });
-    globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
+    {
+      const token_id_t name = swp->token_id("clock").value();
+      object_ref_t obj_ref  = pool.make(function_builtin_t{
+           .swp        = swp,
+           .name       = name,
+           .arity      = 0,
+           .parameters = {},
+           .impl       = [](object_pool_t& pool, scope_ptr_t) -> object_ref_t {
+            const auto now      = std::chrono::system_clock::now();
+            const auto duration = now.time_since_epoch();
+            const double retval =
+                std::chrono::duration_cast<std::chrono::duration<double>>(duration).count();
+            return pool.make(retval);
+          },
+      });
+      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
+    }
+    {
+      const token_id_t name = swp->token_id("getc").value();
+      object_ref_t obj_ref  = pool.make(function_builtin_t{
+           .swp        = swp,
+           .name       = name,
+           .arity      = 0,
+           .parameters = {},
+           .impl       = [](object_pool_t& pool, scope_ptr_t) -> object_ref_t {
+            const char retval_char = getchar();
+            return pool.make(double(retval_char));
+          },
+      });
+      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
+    }
+    {
+      const token_id_t name = swp->token_id("chr").value();
+      object_ref_t obj_ref  = pool.make(function_builtin_t{
+           .swp        = swp,
+           .name       = name,
+           .arity      = 1,
+           .parameters = {swp->token_id("ascii_code").value()},
+           .impl       = [swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
+            const object_ref_t val =
+                *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("ascii_code").value()));
+            SILVA_ASSERT(val->holds_double());
+            const double double_val = std::get<double>(val->data);
+            string_t retval{(char)double_val};
+            return pool.make(retval);
+          },
+      });
+      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
+    }
+    {
+      const token_id_t name = swp->token_id("exit").value();
+      object_ref_t obj_ref  = pool.make(function_builtin_t{
+           .swp        = swp,
+           .name       = name,
+           .arity      = 1,
+           .parameters = {swp->token_id("exit_code").value()},
+           .impl       = [swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
+            const object_ref_t val =
+                *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("exit_code").value()));
+            SILVA_ASSERT(val->holds_double());
+            const double double_val = std::get<double>(val->data);
+            std::exit((int)double_val);
+          },
+      });
+      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
+    }
+    {
+      const token_id_t name = swp->token_id("print_error").value();
+      object_ref_t obj_ref  = pool.make(function_builtin_t{
+           .swp        = swp,
+           .name       = name,
+           .arity      = 1,
+           .parameters = {swp->token_id("text").value()},
+           .impl       = [swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
+            const object_ref_t val = *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("text").value()));
+            SILVA_ASSERT(val->holds_string());
+            const auto& text = std::get<string_t>(val->data);
+            fmt::println("ERROR: {}", text);
+            return pool.make(none);
+          },
+      });
+      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
+    }
   }
 
   struct evaluation_t {
