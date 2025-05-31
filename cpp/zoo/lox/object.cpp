@@ -35,7 +35,8 @@ namespace silva::lox {
   {
     SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
-                 "left-hand-side of member-access operator must evaluate to class instance");
+                 "left-hand-side of member-access operator must evaluate to class instance, not {}",
+                 to_string(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
     if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
@@ -44,7 +45,7 @@ namespace silva::lox {
     const auto& cc = std::get<class_t>(ci._class->data);
     if (const auto it = cc.methods.find(field_name); it != cc.methods.end()) {
       const object_ref_t method = it->second;
-      SILVA_EXPECT(method->holds_function(), ASSERT);
+      SILVA_EXPECT(method->holds_function_userdef(), ASSERT);
       const function_userdef_t& fun = std::get<function_userdef_t>(method->data);
       auto bound_scope              = SILVA_EXPECT_FWD(fun.closure.define(ti_this, class_instance));
       function_userdef_t bound_func{
@@ -75,9 +76,18 @@ namespace silva::lox {
   {
     return variant_holds_t<string_t>{}(data);
   }
-  bool object_t::holds_function() const
+  bool object_t::holds_fundamental() const
+  {
+    return is_none() || holds_bool() || holds_double() || holds_string();
+  }
+
+  bool object_t::holds_function_userdef() const
   {
     return variant_holds_t<function_userdef_t>{}(data);
+  }
+  bool object_t::holds_function_builtin() const
+  {
+    return variant_holds_t<function_builtin_t>{}(data);
   }
   bool object_t::holds_class() const
   {

@@ -84,7 +84,11 @@ namespace silva::lox {
     bool holds_bool() const;
     bool holds_double() const;
     bool holds_string() const;
-    bool holds_function() const;
+
+    bool holds_fundamental() const;
+
+    bool holds_function_userdef() const;
+    bool holds_function_builtin() const;
     bool holds_class() const;
     bool holds_class_instance() const;
 

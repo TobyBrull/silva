@@ -138,11 +138,12 @@ namespace silva::lox {
         auto callee = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(fun_idx), ac),
                                        "{} error evaluating left-hand-side",
                                        pts);
-        SILVA_EXPECT(callee->holds_function() || callee->holds_class(),
+        SILVA_EXPECT(callee->holds_function_userdef() || callee->holds_function_builtin() ||
+                         callee->holds_class(),
                      MINOR,
                      "left-hand-side of call-operator must evaluate to function or class");
         const auto pts_args = pts.sub_tree_span_at(args_idx);
-        if (callee->holds_function()) {
+        if (callee->holds_function_userdef()) {
           function_userdef_t& fun = std::get<function_userdef_t>(callee->data);
           return call_function(fun, pts_args, ac);
         }
@@ -152,7 +153,7 @@ namespace silva::lox {
           if (const auto it = cc.methods.find(intp->ti_init); it != cc.methods.end()) {
             object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
                 member_access(retval, intp->ti_init, false, intp->pool, intp->ti_this));
-            SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
+            SILVA_EXPECT(init_fun_ref->holds_function_userdef(), MINOR);
             function_userdef_t& init_fun = std::get<function_userdef_t>(init_fun_ref->data);
             SILVA_EXPECT_FWD(call_function(init_fun, pts_args, ac));
           }
@@ -276,7 +277,7 @@ namespace silva::lox {
       if (rule_name == intp->ni_decl_var) {
         const token_id_t var_name = pts.tp->tokens[pts[0].token_begin + 1];
         const auto children       = SILVA_EXPECT_FWD(pts.get_children_up_to<1>());
-        object_ref_t initializer;
+        object_ref_t initializer  = intp->pool.make(none);
         if (children.size == 1) {
           initializer = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(children[0]), scope),
                                          "{} when evaluating initializer of variable declaration",

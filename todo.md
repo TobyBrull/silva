@@ -2,6 +2,8 @@
 
 * Unify: object_pool_t, cactus_t, and syntax_ward_t::name_infos?
 
+* Allow lox::object_ref_t directly in error message
+
 * Lox
     * Make a REPL
     * conditional exec
