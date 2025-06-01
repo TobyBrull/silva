@@ -1,4 +1,5 @@
 #include "interpreter.hpp"
+#include "syntax/tokenization.hpp"
 
 #include <chrono>
 #include <cstdio>
@@ -6,91 +7,100 @@
 using enum silva::token_category_t;
 
 namespace silva::lox {
-  interpreter_t::interpreter_t(syntax_ward_ptr_t swp) : swp(swp)
+  const string_view_t builtins_lox_str = R"'(
+    fun clock() {}
+    fun getc() {}
+    fun chr(ascii_code) {}
+    fun exit(exit_code) {}
+    fun print_error(text) {}
+  )'";
+
+  expected_t<void> interpreter_t::load_builtins(const parser_t& parser)
   {
-    {
-      const token_id_t name = swp->token_id("clock").value();
-      object_ref_t obj_ref  = pool.make(function_builtin_t{
-           .swp        = swp,
-           .name       = name,
-           .arity      = 0,
-           .parameters = {},
-           .impl       = [](object_pool_t& pool, scope_ptr_t) -> object_ref_t {
-            const auto now      = std::chrono::system_clock::now();
-            const auto duration = now.time_since_epoch();
-            const double retval =
-                std::chrono::duration_cast<std::chrono::duration<double>>(duration).count();
-            return pool.make(retval);
+    const tokenization_ptr_t builtin_tt =
+        SILVA_EXPECT_FWD(tokenize(swp, "builtins.lox", builtins_lox_str));
+    const auto pts_builtin = SILVA_EXPECT_FWD(parser(builtin_tt, swp->name_id_of("Lox")))->span();
+
+    struct builtin_decl_t {
+      token_id_t name = token_id_none;
+      silva::function_t<object_ref_t(object_pool_t&, scope_ptr_t)> impl;
+    };
+    vector_t<builtin_decl_t> builtin_decls{
+        builtin_decl_t{
+            .name = swp->token_id("clock").value(),
+            .impl = [](object_pool_t& pool, scope_ptr_t) -> object_ref_t {
+              const auto now      = std::chrono::system_clock::now();
+              const auto duration = now.time_since_epoch();
+              const double retval =
+                  std::chrono::duration_cast<std::chrono::duration<double>>(duration).count();
+              return pool.make(retval);
+            },
+        },
+        builtin_decl_t{
+            .name = swp->token_id("getc").value(),
+            .impl = [](object_pool_t& pool, scope_ptr_t) -> object_ref_t {
+              const char retval_char = getchar();
+              return pool.make(double(retval_char));
+            },
+        },
+        builtin_decl_t{
+            .name = swp->token_id("chr").value(),
+            .impl = [swp = swp, ti_ascii_code = swp->token_id("ascii_code").value()](
+                        object_pool_t& pool,
+                        scope_ptr_t scope) -> object_ref_t {
+              const object_ref_t val = *SILVA_EXPECT_ASSERT(scope.get(ti_ascii_code));
+              SILVA_ASSERT(val->holds_double());
+              const double double_val = std::get<double>(val->data);
+              string_t retval{(char)double_val};
+              return pool.make(retval);
+            },
+        },
+        builtin_decl_t{
+            .name = swp->token_id("exit").value(),
+            .impl = [swp = swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
+              const object_ref_t val =
+                  *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("exit_code").value()));
+              SILVA_ASSERT(val->holds_double());
+              const double double_val = std::get<double>(val->data);
+              std::exit((int)double_val);
+            },
+        },
+        builtin_decl_t{
+            .name = swp->token_id("print_error").value(),
+            .impl = [swp = swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
+              const object_ref_t val =
+                  *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("text").value()));
+              SILVA_ASSERT(val->holds_string());
+              const auto& text = std::get<string_t>(val->data);
+              fmt::println("ERROR: {}", text);
+              return pool.make(none);
+            },
+        },
+    };
+
+    auto [it, end] = pts_builtin.children_range();
+    for (const builtin_decl_t& builtin_decl: builtin_decls) {
+      SILVA_EXPECT(it != end, ASSERT);
+      const auto pts_function =
+          pts_builtin.sub_tree_span_at(it.pos).sub_tree_span_at(1).sub_tree_span_at(1);
+      const token_id_t lox_name = pts_function.tp->tokens[pts_function[0].token_begin];
+      SILVA_EXPECT(lox_name == builtin_decl.name,
+                   ASSERT,
+                   "expected function '{}', but found '{}'",
+                   swp->token_id_wrap(lox_name),
+                   swp->token_id_wrap(builtin_decl.name));
+      object_ref_t obj_ref = pool.make(function_builtin_t{
+          {
+              .pts     = pts_function,
+              .closure = scopes.root(),
           },
+          builtin_decl.impl,
       });
-      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
+      ++it;
+      globals = SILVA_EXPECT_ASSERT(globals.define(lox_name, std::move(obj_ref)));
     }
-    {
-      const token_id_t name = swp->token_id("getc").value();
-      object_ref_t obj_ref  = pool.make(function_builtin_t{
-           .swp        = swp,
-           .name       = name,
-           .arity      = 0,
-           .parameters = {},
-           .impl       = [](object_pool_t& pool, scope_ptr_t) -> object_ref_t {
-            const char retval_char = getchar();
-            return pool.make(double(retval_char));
-          },
-      });
-      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
-    }
-    {
-      const token_id_t name = swp->token_id("chr").value();
-      object_ref_t obj_ref  = pool.make(function_builtin_t{
-           .swp        = swp,
-           .name       = name,
-           .arity      = 1,
-           .parameters = {swp->token_id("ascii_code").value()},
-           .impl       = [swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
-            const object_ref_t val =
-                *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("ascii_code").value()));
-            SILVA_ASSERT(val->holds_double());
-            const double double_val = std::get<double>(val->data);
-            string_t retval{(char)double_val};
-            return pool.make(retval);
-          },
-      });
-      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
-    }
-    {
-      const token_id_t name = swp->token_id("exit").value();
-      object_ref_t obj_ref  = pool.make(function_builtin_t{
-           .swp        = swp,
-           .name       = name,
-           .arity      = 1,
-           .parameters = {swp->token_id("exit_code").value()},
-           .impl       = [swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
-            const object_ref_t val =
-                *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("exit_code").value()));
-            SILVA_ASSERT(val->holds_double());
-            const double double_val = std::get<double>(val->data);
-            std::exit((int)double_val);
-          },
-      });
-      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
-    }
-    {
-      const token_id_t name = swp->token_id("print_error").value();
-      object_ref_t obj_ref  = pool.make(function_builtin_t{
-           .swp        = swp,
-           .name       = name,
-           .arity      = 1,
-           .parameters = {swp->token_id("text").value()},
-           .impl       = [swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
-            const object_ref_t val = *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("text").value()));
-            SILVA_ASSERT(val->holds_string());
-            const auto& text = std::get<string_t>(val->data);
-            fmt::println("ERROR: {}", text);
-            return pool.make(none);
-          },
-      });
-      globals               = SILVA_EXPECT_ASSERT(globals.define(name, std::move(obj_ref)));
-    }
+
+    return {};
   }
 
   struct evaluation_t {
@@ -99,9 +109,9 @@ namespace silva::lox {
     const name_id_style_t& nis = swp->default_name_id_style();
     scope_ptr_t scope;
 
-    expected_t<object_ref_t> call_function(function_userdef_t& fun,
-                                           const parse_tree_span_t pts_args,
-                                           const bool access_creates)
+    template<typename Func>
+    expected_t<object_ref_t>
+    call_function(Func& fun, const parse_tree_span_t pts_args, const bool access_creates)
     {
       const index_t arity = fun.arity();
       SILVA_EXPECT(arity == pts_args[0].num_children,
@@ -129,8 +139,16 @@ namespace silva::lox {
         ++params_it;
       }
       SILVA_EXPECT(args_it == args_end && params_it == params_end, MAJOR);
-      auto result = SILVA_EXPECT_FWD(intp->execute(fun.body(), func_scope));
-      return result.value_or(intp->pool.make(none));
+      if constexpr (std::same_as<Func, function_t>) {
+        auto result = SILVA_EXPECT_FWD(intp->execute(fun.body(), func_scope));
+        return result.value_or(intp->pool.make(none));
+      }
+      else if constexpr (std::same_as<Func, function_builtin_t>) {
+        return fun.impl(intp->pool, func_scope);
+      }
+      else {
+        static_assert(false, "unexpected");
+      }
     }
 
     expected_t<object_ref_t> expr(const parse_tree_span_t pts, const bool ac)
@@ -207,13 +225,17 @@ namespace silva::lox {
         auto callee = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(fun_idx), ac),
                                        "{} error evaluating left-hand-side",
                                        pts);
-        SILVA_EXPECT(callee->holds_function_userdef() || callee->holds_function_builtin() ||
+        SILVA_EXPECT(callee->holds_function() || callee->holds_function_builtin() ||
                          callee->holds_class(),
                      MINOR,
                      "left-hand-side of call-operator must evaluate to function or class");
         const auto pts_args = pts.sub_tree_span_at(args_idx);
-        if (callee->holds_function_userdef()) {
-          function_userdef_t& fun = std::get<function_userdef_t>(callee->data);
+        if (callee->holds_function()) {
+          function_t& fun = std::get<function_t>(callee->data);
+          return call_function(fun, pts_args, ac);
+        }
+        else if (callee->holds_function_builtin()) {
+          function_builtin_t& fun = std::get<function_builtin_t>(callee->data);
           return call_function(fun, pts_args, ac);
         }
         else if (callee->holds_class()) {
@@ -222,8 +244,8 @@ namespace silva::lox {
           if (const auto it = cc.methods.find(intp->ti_init); it != cc.methods.end()) {
             object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
                 member_access(retval, intp->ti_init, false, intp->pool, intp->ti_this));
-            SILVA_EXPECT(init_fun_ref->holds_function_userdef(), MINOR);
-            function_userdef_t& init_fun = std::get<function_userdef_t>(init_fun_ref->data);
+            SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
+            function_t& init_fun = std::get<function_t>(init_fun_ref->data);
             SILVA_EXPECT_FWD(call_function(init_fun, pts_args, ac));
           }
           return retval;
@@ -362,8 +384,7 @@ namespace silva::lox {
         scope                     = SILVA_EXPECT_FWD(scope.define(fun_name, intp->pool.make(none)));
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
-        SILVA_EXPECT_FWD(
-            scope.assign(fun_name, intp->pool.make(function_userdef_t{func_pts, scope})));
+        SILVA_EXPECT_FWD(scope.assign(fun_name, intp->pool.make(function_t{func_pts, scope})));
       }
       else if (rule_name == intp->ni_decl_class) {
         const token_id_t class_name = pts.tp->tokens[pts[0].token_begin + 1];
@@ -380,7 +401,7 @@ namespace silva::lox {
           const auto pts_method = pts.sub_tree_span_at(it.pos);
           SILVA_EXPECT(pts_method[0].rule_name == intp->ni_decl_function, MAJOR);
           const token_id_t method_name = pts.tp->tokens[pts_method[0].token_begin];
-          cc.methods[method_name]      = intp->pool.make(function_userdef_t{pts_method, scope});
+          cc.methods[method_name]      = intp->pool.make(function_t{pts_method, scope});
           ++it;
         }
         SILVA_EXPECT_FWD(scope.assign(class_name, intp->pool.make(std::move(cc))));

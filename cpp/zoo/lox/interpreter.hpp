@@ -3,6 +3,7 @@
 #include "object.hpp"
 
 #include "syntax/parse_tree.hpp"
+#include "syntax/syntax.hpp"
 
 namespace silva::lox {
   template<typename T>
@@ -58,7 +59,8 @@ namespace silva::lox {
     cactus_t<token_id_t, object_ref_t> scopes;
     scope_ptr_t globals = scopes.root();
 
-    interpreter_t(syntax_ward_ptr_t);
+    // The parser needs to be able to parse Lox.
+    expected_t<void> load_builtins(const parser_t&);
 
     expected_t<object_ref_t> evaluate(parse_tree_span_t, scope_ptr_t);
     expected_t<return_t<object_ref_t>> execute(parse_tree_span_t, scope_ptr_t&);
