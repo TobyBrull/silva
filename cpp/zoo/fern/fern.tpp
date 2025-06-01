@@ -22,7 +22,7 @@ namespace silva::fern::test {
     syntax_ward_t sw;
     const auto tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", fern_text));
     const auto pt_1 = SILVA_EXPECT_REQUIRE(parse(tt));
-    const auto fpr  = standard_seed_engine(sw.ptr());
+    const auto fpr  = standard_seed_interpreter(sw.ptr());
     const auto pt_2 = SILVA_EXPECT_REQUIRE(fpr->apply(tt, sw.name_id_of("Fern")));
     CHECK(pt_1->nodes == pt_2->nodes);
     const fern_t fern       = SILVA_EXPECT_REQUIRE(create(pt_1.get()));

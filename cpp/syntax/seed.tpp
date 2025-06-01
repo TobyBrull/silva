@@ -40,7 +40,7 @@ namespace silva::seed::test {
   TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
     syntax_ward_t sw;
-    const auto spr       = standard_seed_engine(sw.ptr());
+    const auto spr       = standard_seed_interpreter(sw.ptr());
     const auto seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_str}));
     const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(parse(seed_tt));
     const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, sw.name_id_of("Seed")));
@@ -85,7 +85,7 @@ namespace silva::seed::test {
     syntax_ward_t sw;
     const auto sf_seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", sf_text));
     const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(parse(sf_seed_tt));
-    const auto spr          = standard_seed_engine(sw.ptr());
+    const auto spr          = standard_seed_interpreter(sw.ptr());
     const auto sf_seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(sf_seed_tt, sw.name_id_of("Seed")));
     CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 

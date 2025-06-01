@@ -11,7 +11,7 @@ namespace silva {
     const filesystem_path_t command       = cmdline_args[2];
     expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
-    const auto se = standard_seed_engine(sw.ptr());
+    const auto se = standard_seed_interpreter(sw.ptr());
     return {};
   }
 }

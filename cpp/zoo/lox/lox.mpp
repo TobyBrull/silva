@@ -13,7 +13,7 @@ namespace silva::lox {
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
-    auto se = standard_seed_engine(sw.ptr());
+    auto se = standard_seed_interpreter(sw.ptr());
     SILVA_EXPECT_FWD(se->add_complete_file("lox.seed", seed_str));
     tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
     parse_tree_ptr_t pt   = SILVA_EXPECT_FWD(se->apply(tp, sw.name_id_of("Lox")),

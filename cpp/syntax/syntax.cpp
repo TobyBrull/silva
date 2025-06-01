@@ -5,6 +5,13 @@
 #include "zoo/fern/fern.hpp"
 
 namespace silva {
+  parser_t as_parser(const seed::interpreter_t* si)
+  {
+    return [si](const tokenization_ptr_t tp, const name_id_t ni) {
+      return si->apply(tp, ni);
+    };
+  }
+
   expected_t<name_id_t> infer_goal_rule_name(syntax_ward_t& sw, const filesystem_path_t& fsp)
   {
     const string_t ext = fsp.extension().string();
@@ -17,7 +24,7 @@ namespace silva {
     return sw.name_id_of(lang);
   }
 
-  unique_ptr_t<seed::interpreter_t> standard_seed_engine(syntax_ward_ptr_t swp)
+  unique_ptr_t<seed::interpreter_t> standard_seed_interpreter(syntax_ward_ptr_t swp)
   {
     auto retval = std::make_unique<seed::interpreter_t>(swp);
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed::seed_str));

@@ -31,7 +31,7 @@ namespace silva {
   {
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
-    const auto se = standard_seed_engine(sw.ptr());
+    const auto se = standard_seed_interpreter(sw.ptr());
     for (const auto& cmdline_arg: cmdline_args.subspan(1)) {
       const filesystem_path_t fsp{cmdline_arg};
       const name_id_t ni_goal = SILVA_EXPECT_FWD(infer_goal_rule_name(sw, fsp));

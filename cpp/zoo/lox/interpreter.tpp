@@ -29,7 +29,7 @@ namespace silva::lox::test {
   TEST_CASE("lox-evaluate", "[lox]")
   {
     syntax_ward_t sw;
-    auto si = standard_seed_engine(sw.ptr());
+    auto si = standard_seed_interpreter(sw.ptr());
     SILVA_EXPECT_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
     test_interpreter_t lti{si.get(), sw.ptr()};
 
