@@ -61,8 +61,10 @@ namespace silva {
 
     friend bool operator==(const cactus_arm_t&, const cactus_arm_t&) = default;
 
-    // Return unexpected if the Key is *not* already defined somewhere along this arm to the root.
+    // Returns unexpected if the Key is *not* already defined somewhere along this arm to the root.
     expected_t<Value*> get(const Key&) const;
+
+    // Returns unexpected if the Key is *not* in the current scope.
     expected_t<void> assign(const Key&, Value) const;
 
     cactus_arm_t new_scope() const;
@@ -224,10 +226,22 @@ namespace silva {
   template<typename Key, typename Value>
   expected_t<void> cactus_arm_t<Key, Value>::assign(const Key& k, Value v) const
   {
-    Value* tgt_value_ptr = SILVA_EXPECT_FWD_PLAIN(get(k));
-    SILVA_EXPECT(tgt_value_ptr, ASSERT);
-    *tgt_value_ptr = std::move(v);
-    return {};
+    using new_scope_t = typename cactus_t<Key, Value>::new_scope_t;
+    index_t curr_idx  = idx;
+    while (true) {
+      typename cactus_t<Key, Value>::arm_t* arm = &cactus->arms[curr_idx];
+      if (auto* x = std::get_if<pair_t<Key, Value>>(&arm->data); x) {
+        if (x->first == k) {
+          x->second = v;
+          return {};
+        }
+      }
+      else if (auto* x = std::get_if<new_scope_t>(&arm->data); x) {
+        SILVA_EXPECT(false, MINOR, "key not in current scope");
+      }
+      SILVA_EXPECT(curr_idx != 0, MINOR, "key not in root scope");
+      curr_idx = arm->parent.idx;
+    }
   }
   template<typename Key, typename Value>
   cactus_arm_t<Key, Value> cactus_arm_t<Key, Value>::new_scope() const

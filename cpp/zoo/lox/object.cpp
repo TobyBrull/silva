@@ -36,8 +36,9 @@ namespace silva::lox {
                  "left-hand-side of member-access operator must evaluate to class instance, not {}",
                  to_string(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
-    if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
-      return it->second;
+    const auto ref       = ci.scope.get(field_name);
+    if (ref.has_value()) {
+      return *std::move(*ref);
     }
     SILVA_ASSERT(ci._class->holds_class());
     const auto& cc = std::get<class_t>(ci._class->data);
@@ -50,7 +51,8 @@ namespace silva::lox {
       return pool.make(std::move(bound_func));
     }
     SILVA_EXPECT(create_if_nonexistent, MINOR, "couldn't access member");
-    return ci.fields[field_name] = pool.make(none);
+    ci.scope = SILVA_EXPECT_FWD(ci.scope.define(field_name, pool.make(none)));
+    return *SILVA_EXPECT_FWD(ci.scope.get(field_name), ASSERT);
   }
 
   // object_t

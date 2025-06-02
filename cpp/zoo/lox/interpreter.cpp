@@ -239,7 +239,10 @@ namespace silva::lox {
           return call_function(fun, pts_args, ac);
         }
         else if (callee->holds_class()) {
-          object_ref_t retval = intp->pool.make(class_instance_t{._class = callee});
+          object_ref_t retval = intp->pool.make(class_instance_t{
+              ._class = callee,
+              .scope  = intp->globals.new_scope(),
+          });
           class_t& cc         = std::get<class_t>(callee->data);
           if (const auto it = cc.methods.find(intp->ti_init); it != cc.methods.end()) {
             object_ref_t init_fun_ref = SILVA_EXPECT_FWD(

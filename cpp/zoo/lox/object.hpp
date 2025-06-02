@@ -44,7 +44,7 @@ namespace silva::lox {
 
   struct class_instance_t {
     object_ref_t _class;
-    hashmap_t<token_id_t, object_ref_t> fields;
+    scope_ptr_t scope;
 
     friend bool operator==(const class_instance_t&, const class_instance_t&) = default;
   };
