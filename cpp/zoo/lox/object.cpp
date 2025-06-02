@@ -36,14 +36,13 @@ namespace silva::lox {
                  "left-hand-side of member-access operator must evaluate to class instance, not {}",
                  to_string(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
-    const auto ref       = ci.scope.get(field_name);
-    if (ref.has_value()) {
+    if (auto ref = ci.scope.get(field_name); ref.has_value()) {
       return *std::move(*ref);
     }
     SILVA_ASSERT(ci._class->holds_class());
-    const auto& cc = std::get<class_t>(ci._class->data);
-    if (const auto it = cc.methods.find(field_name); it != cc.methods.end()) {
-      const object_ref_t method = it->second;
+    const class_t& cc = std::get<class_t>(ci._class->data);
+    if (auto ref = cc.scope.get(field_name); ref.has_value()) {
+      const object_ref_t method = *std::move(*ref);
       SILVA_EXPECT(method->holds_function(), ASSERT);
       const function_t& fun = std::get<function_t>(method->data);
       auto bound_scope      = SILVA_EXPECT_FWD(fun.closure.define(ti_this, class_instance));

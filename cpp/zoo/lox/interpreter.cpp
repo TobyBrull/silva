@@ -241,10 +241,10 @@ namespace silva::lox {
         else if (callee->holds_class()) {
           object_ref_t retval = intp->pool.make(class_instance_t{
               ._class = callee,
-              .scope  = intp->globals.new_scope(),
+              .scope  = intp->scopes.root(),
           });
           class_t& cc         = std::get<class_t>(callee->data);
-          if (const auto it = cc.methods.find(intp->ti_init); it != cc.methods.end()) {
+          if (auto ref = cc.scope.get(intp->ti_init); ref.has_value()) {
             object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
                 member_access(retval, intp->ti_init, false, intp->pool, intp->ti_this));
             SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
@@ -396,15 +396,15 @@ namespace silva::lox {
         SILVA_EXPECT(it != end, MAJOR);
         const auto pts_super = pts.sub_tree_span_at(it.pos);
         SILVA_EXPECT(pts_super[0].rule_name == intp->ni_decl_class_s, MAJOR);
-        class_t cc;
-        cc.name = class_name;
-        cc.pts  = pts;
+        class_t cc{.scope = intp->scopes.root()};
+        cc.pts = pts;
         ++it;
         while (it != end) {
           const auto pts_method = pts.sub_tree_span_at(it.pos);
           SILVA_EXPECT(pts_method[0].rule_name == intp->ni_decl_function, MAJOR);
           const token_id_t method_name = pts.tp->tokens[pts_method[0].token_begin];
-          cc.methods[method_name]      = intp->pool.make(function_t{pts_method, scope});
+          cc.scope                     = SILVA_EXPECT_FWD(
+              cc.scope.define(method_name, intp->pool.make(function_t{pts_method, scope})));
           ++it;
         }
         SILVA_EXPECT_FWD(scope.assign(class_name, intp->pool.make(std::move(cc))));
