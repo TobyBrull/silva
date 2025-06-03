@@ -1516,9 +1516,9 @@ Mr Jane
 init()
 start
 Q
-123
-123
-object_pool_t with 29 objects
+42
+42
+object_pool_t with 30 objects
   - 1 lox_v[<builtin-function '[builtins.lox:2:9] parse_tree_span[ clock ( ) { } ]'>]
   - 1 lox_v[<builtin-function '[builtins.lox:3:9] parse_tree_span[ getc ( ) { } ]'>]
   - 1 lox_v[<builtin-function '[builtins.lox:4:9] parse_tree_span[ chr ( ... { } ]'>]
@@ -1528,24 +1528,25 @@ object_pool_t with 29 objects
   - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
   - 1 lox_v[142]
   - 1 lox_v[<function [example.lox:13:5] parse_tree_span[ fib ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:66:3] parse_tree_span[ getCallback ( ... ; } ]>]
-  - 1 lox_v[Jane]
-  - 2 lox_v[<class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>]
   - tombstone
-  - 1 lox_v[3]
-  - 2 lox_v[<class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>]
+  - 1 lox_v[<function [example.lox:66:3] parse_tree_span[ getCallback ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
   - 1 lox_v[<function [example.lox:50:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 1 lox_v[3]
+  - 2 lox_v[<class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>]
+  - 2 lox_v[<class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>]
   - 1 lox_v[<function [example.lox:39:7] parse_tree_span[ showA ( ... ; } ]>]
   - 1 lox_v[<function [example.lox:62:3] parse_tree_span[ init ( ... ; } ]>]
   - 1 lox_v[global]
   - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
   - 1 lox_v[block]
-  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
+  - 1 lox_v[Jane]
   - 1 lox_v[<function [example.lox:78:5] parse_tree_span[ foo ( ... ; } ]>]
   - 2 lox_v[<instance of <class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>>]
   - 1 lox_v[start]
   - 1 lox_v[<function [example.lox:50:3] parse_tree_span[ sayName ( ... ; } ]>]
-  - 1 lox_v[123]
+  - 1 lox_v[42]
   - 1 lox_v[<instance of <class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>>]
   - 2 lox_v[<function [example.lox:67:9] parse_tree_span[ localFunction ( ... ; } ]>]
+  - tombstone
 

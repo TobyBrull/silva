@@ -276,13 +276,33 @@ namespace silva::lox {
       else if (rn == intp->ni_expr_b_assign)
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
-        auto lhs_ref          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs), true),
-                                        "{} error evaluating left-hand-side of assignment",
-                                        pts);
         auto rhs_ref          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs), ac),
                                         "{} error evaluating right-hand-side of assignment",
                                         pts);
-        *lhs_ref              = *rhs_ref;
+        auto lhs_pts          = pts.sub_tree_span_at(lhs);
+        if (lhs_pts[0].rule_name == intp->ni_expr_member) {
+          const auto [ll, lr] = SILVA_EXPECT_FWD(lhs_pts.get_children<2>());
+          auto ll_ref         = SILVA_EXPECT_FWD(expr_or_atom(lhs_pts.sub_tree_span_at(ll), true),
+                                         "{} error evaluating part of left-hand-side of assignment",
+                                         lhs_pts);
+
+          auto lr_pts = lhs_pts.sub_tree_span_at(lr);
+          SILVA_EXPECT(lr_pts[0].rule_name == intp->ni_expr_atom, MINOR);
+          const token_id_t ti = pts.tp->tokens[lr_pts[0].token_begin];
+          SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
+
+          SILVA_EXPECT(ll_ref->holds_class_instance(), MINOR);
+          auto& ci = std::get<class_instance_t>(ll_ref->data);
+          ci.scope = SILVA_EXPECT_FWD(ci.scope.set(ti, rhs_ref, true));
+        }
+        else if (lhs_pts[0].rule_name == intp->ni_expr_atom) {
+          const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
+          SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
+          SILVA_EXPECT_FWD(scope.set(ti, rhs_ref), "{} here", pts);
+        }
+        else {
+          SILVA_EXPECT(false, MINOR, "{} unexpected left-hand-side in assignment", lhs_pts);
+        }
       }
       else if (rn == intp->ni_expr_primary)
       {
@@ -387,7 +407,8 @@ namespace silva::lox {
         scope                     = SILVA_EXPECT_FWD(scope.define(fun_name, intp->pool.make(none)));
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
-        SILVA_EXPECT_FWD(scope.assign(fun_name, intp->pool.make(function_t{func_pts, scope})));
+        // TODO: use only scope.define()
+        SILVA_EXPECT_FWD(scope.set(fun_name, intp->pool.make(function_t{func_pts, scope})));
       }
       else if (rule_name == intp->ni_decl_class) {
         const token_id_t class_name = pts.tp->tokens[pts[0].token_begin + 1];
@@ -407,7 +428,8 @@ namespace silva::lox {
               cc.scope.define(method_name, intp->pool.make(function_t{pts_method, scope})));
           ++it;
         }
-        SILVA_EXPECT_FWD(scope.assign(class_name, intp->pool.make(std::move(cc))));
+        // TODO: use only scope.define()
+        SILVA_EXPECT_FWD(scope.set(class_name, intp->pool.make(std::move(cc))));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
