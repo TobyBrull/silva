@@ -109,22 +109,30 @@ namespace silva::lox {
     const name_id_style_t& nis = swp->default_name_id_style();
     scope_ptr_t scope;
 
-    template<typename Func>
     expected_t<object_ref_t>
-    call_function(Func& fun, const parse_tree_span_t pts_args, const bool access_creates)
+    call_function(object_ref_t callee, const parse_tree_span_t pts_args, const bool access_creates)
     {
-      const index_t arity = fun.arity();
+      function_t* fun = nullptr;
+      if (callee->holds_function()) {
+        fun = std::get_if<function_t>(&callee->data);
+      }
+      else if (callee->holds_function_builtin()) {
+        fun = std::get_if<function_builtin_t>(&callee->data);
+      }
+      SILVA_EXPECT(fun, ASSERT);
+
+      const index_t arity = fun->arity();
       SILVA_EXPECT(arity == pts_args[0].num_children,
                    MINOR,
                    "trying to call <function {}>, which has {} parameters, with {} arguments",
-                   fun.pts,
+                   fun->pts,
                    arity,
                    pts_args[0].num_children);
 
-      const auto fun_params        = fun.parameters();
+      const auto fun_params        = fun->parameters();
       auto [args_it, args_end]     = pts_args.children_range();
       auto [params_it, params_end] = fun_params.children_range();
-      auto func_scope              = fun.closure.new_scope();
+      auto func_scope              = fun->closure.new_scope();
       for (index_t i = 0; i < arity; ++i) {
         SILVA_EXPECT(args_it != args_end && params_it != params_end, MAJOR);
         auto val =
@@ -138,16 +146,19 @@ namespace silva::lox {
         ++args_it;
         ++params_it;
       }
+
       SILVA_EXPECT(args_it == args_end && params_it == params_end, MAJOR);
-      if constexpr (std::same_as<Func, function_t>) {
-        auto result = SILVA_EXPECT_FWD(intp->execute(fun.body(), func_scope));
+      if (callee->holds_function()) {
+        const auto& ff = std::get<function_t>(callee->data);
+        auto result    = SILVA_EXPECT_FWD(intp->execute(ff.body(), func_scope));
         return result.value_or(intp->pool.make(none));
       }
-      else if constexpr (std::same_as<Func, function_builtin_t>) {
-        return fun.impl(intp->pool, func_scope);
+      else if (callee->holds_function_builtin()) {
+        const auto& fb = std::get<function_builtin_t>(callee->data);
+        return fb.impl(intp->pool, func_scope);
       }
       else {
-        static_assert(false, "unexpected");
+        SILVA_EXPECT(false, ASSERT);
       }
     }
 
@@ -230,13 +241,8 @@ namespace silva::lox {
                      MINOR,
                      "left-hand-side of call-operator must evaluate to function or class");
         const auto pts_args = pts.sub_tree_span_at(args_idx);
-        if (callee->holds_function()) {
-          function_t& fun = std::get<function_t>(callee->data);
-          return call_function(fun, pts_args, ac);
-        }
-        else if (callee->holds_function_builtin()) {
-          function_builtin_t& fun = std::get<function_builtin_t>(callee->data);
-          return call_function(fun, pts_args, ac);
+        if (callee->holds_function() || callee->holds_function_builtin()) {
+          return call_function(callee, pts_args, ac);
         }
         else if (callee->holds_class()) {
           object_ref_t retval = intp->pool.make(class_instance_t{
@@ -248,8 +254,7 @@ namespace silva::lox {
             object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
                 member_access(retval, intp->ti_init, false, intp->pool, intp->ti_this));
             SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
-            function_t& init_fun = std::get<function_t>(init_fun_ref->data);
-            SILVA_EXPECT_FWD(call_function(init_fun, pts_args, ac));
+            SILVA_EXPECT_FWD(call_function(init_fun_ref, pts_args, ac));
           }
           return retval;
         }
@@ -511,10 +516,15 @@ namespace silva::lox {
         }
       }
       else if (rule_name == intp->ni_stmt_return) {
-        auto res = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
-                                    "{} error evaluating expression of return statement",
-                                    pts);
-        return return_t<object_ref_t>{std::move(res)};
+        if (pts[0].num_children == 1) {
+          auto res = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
+                                      "{} error evaluating expression of return statement",
+                                      pts);
+          return return_t<object_ref_t>{std::move(res)};
+        }
+        else {
+          return return_t<object_ref_t>{intp->pool.make(none)};
+        }
       }
       else if (rule_name == intp->ni_stmt_block) {
         scope = scope.new_scope();

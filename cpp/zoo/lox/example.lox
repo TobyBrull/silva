@@ -6,6 +6,7 @@ print x;
 
 fun sayHi(first, last) {
   print 'Hi, ' + first + ' ' + last + '!';
+  return;
 }
 print sayHi;
 sayHi('Dear', 'Reader');

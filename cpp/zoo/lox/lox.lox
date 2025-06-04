@@ -1836,7 +1836,7 @@ class Resolver {
     }
     function.params.foreach(declareParam);
     fun resolveStatement(statement) {
-      statement.resolve(resolver);
+      statement.resolve(this);
     }
     function.body.foreach(resolveStatement);
     this.endScope();

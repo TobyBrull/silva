@@ -1220,6 +1220,8 @@ error parsing Fern
                     [1]_.Lox.Expr.Atom            ' '
                   [1]_.Lox.Expr.Atom              last
                 [1]_.Lox.Expr.Atom                '!'
+          [1]_.Lox.Stmt                           return ;
+            [0]_.Lox.Stmt.Return                  return ;
   [5]_.Lox.Stmt                                   print sayHi ;
     [0]_.Lox.Stmt.Print                           print sayHi ;
       [0]_.Lox.Expr.Atom                          sayHi
@@ -1490,7 +1492,7 @@ error parsing Fern
 Hello, World!
 3
 142
-<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>
+<function [example.lox:8:5] parse_tree_span[ sayHi ( ... ; } ]>
 Hi, Dear Reader!
 Fibonacci ==
 0
@@ -1510,8 +1512,8 @@ Fibonacci ==
 global
 global
 block
-<class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>
-<instance of <class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>>
+<class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>
+<instance of <class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>>
 Mr Jane
 init()
 start
@@ -1525,28 +1527,28 @@ object_pool_t with 30 objects
   - 1 lox_v[<builtin-function '[builtins.lox:5:9] parse_tree_span[ exit ( ... { } ]'>]
   - 1 lox_v[<builtin-function '[builtins.lox:6:9] parse_tree_span[ print_error ( ... { } ]'>]
   - 1 lox_v[10]
-  - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:8:5] parse_tree_span[ sayHi ( ... ; } ]>]
   - 1 lox_v[142]
-  - 1 lox_v[<function [example.lox:13:5] parse_tree_span[ fib ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:15:5] parse_tree_span[ fib ( ... ; } ]>]
   - tombstone
-  - 1 lox_v[<function [example.lox:66:3] parse_tree_span[ getCallback ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:23:5] parse_tree_span[ makeCounter ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:50:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:68:3] parse_tree_span[ getCallback ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:25:5] parse_tree_span[ makeCounter ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:52:3] parse_tree_span[ sayName ( ... ; } ]>]
   - 1 lox_v[3]
-  - 2 lox_v[<class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>]
-  - 2 lox_v[<class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>]
-  - 1 lox_v[<function [example.lox:39:7] parse_tree_span[ showA ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:62:3] parse_tree_span[ init ( ... ; } ]>]
+  - 2 lox_v[<class [example.lox:63:1] parse_tree_span[ class Thing ... } } ]>]
+  - 2 lox_v[<class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>]
+  - 1 lox_v[<function [example.lox:41:7] parse_tree_span[ showA ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:64:3] parse_tree_span[ init ( ... ; } ]>]
   - 1 lox_v[global]
-  - 2 lox_v[<function [example.lox:25:7] parse_tree_span[ count ( ... ; } ]>]
+  - 2 lox_v[<function [example.lox:27:7] parse_tree_span[ count ( ... ; } ]>]
   - 1 lox_v[block]
   - 1 lox_v[Jane]
-  - 1 lox_v[<function [example.lox:78:5] parse_tree_span[ foo ( ... ; } ]>]
-  - 2 lox_v[<instance of <class [example.lox:49:1] parse_tree_span[ class Person ... } } ]>>]
+  - 1 lox_v[<function [example.lox:80:5] parse_tree_span[ foo ( ... ; } ]>]
+  - 2 lox_v[<instance of <class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>>]
   - 1 lox_v[start]
-  - 1 lox_v[<function [example.lox:50:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:52:3] parse_tree_span[ sayName ( ... ; } ]>]
   - 1 lox_v[42]
-  - 1 lox_v[<instance of <class [example.lox:61:1] parse_tree_span[ class Thing ... } } ]>>]
-  - 2 lox_v[<function [example.lox:67:9] parse_tree_span[ localFunction ( ... ; } ]>]
+  - 1 lox_v[<instance of <class [example.lox:63:1] parse_tree_span[ class Thing ... } } ]>>]
+  - 2 lox_v[<function [example.lox:69:9] parse_tree_span[ localFunction ( ... ; } ]>]
   - tombstone
 
