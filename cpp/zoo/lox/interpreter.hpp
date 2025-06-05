@@ -65,6 +65,6 @@ namespace silva::lox {
     expected_t<void> load_builtins(const parser_t&);
 
     expected_t<object_ref_t> evaluate(parse_tree_span_t, scope_ptr_t);
-    expected_t<return_t<object_ref_t>> execute(parse_tree_span_t, scope_ptr_t);
+    expected_t<return_t<object_ref_t>> execute(parse_tree_span_t, scope_ptr_t&);
   };
 }
