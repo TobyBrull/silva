@@ -420,16 +420,13 @@ namespace silva::lox {
       }
       else if (rule_name == intp->ni_decl_fun) {
         const token_id_t fun_name = pts.tp->tokens[pts[0].token_begin + 1];
-        SILVA_EXPECT_FWD(scope.define(fun_name, intp->pool.make(none)));
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
-        // TODO: use only scope.define()
-        SILVA_EXPECT_FWD(scope.set(fun_name, intp->pool.make(function_t{func_pts, scope})));
+        SILVA_EXPECT_FWD(scope.define(fun_name, intp->pool.make(function_t{func_pts, scope})));
       }
       else if (rule_name == intp->ni_decl_class) {
         const token_id_t class_name = pts.tp->tokens[pts[0].token_begin + 1];
-        SILVA_EXPECT_FWD(scope.define(class_name, intp->pool.make(none)));
-        auto [it, end] = pts.children_range();
+        auto [it, end]              = pts.children_range();
         SILVA_EXPECT(it != end, MAJOR);
         const auto pts_super = pts.sub_tree_span_at(it.pos);
         SILVA_EXPECT(pts_super[0].rule_name == intp->ni_decl_class_s, MAJOR);
@@ -444,8 +441,7 @@ namespace silva::lox {
               cc.scope.define(method_name, intp->pool.make(function_t{pts_method, scope})));
           ++it;
         }
-        // TODO: use only scope.define()
-        SILVA_EXPECT_FWD(scope.set(class_name, intp->pool.make(std::move(cc))));
+        SILVA_EXPECT_FWD(scope.define(class_name, intp->pool.make(std::move(cc))));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
