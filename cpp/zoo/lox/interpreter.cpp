@@ -57,7 +57,9 @@ namespace silva::lox {
             .impl = [swp = swp, ti_ascii_code = swp->token_id("ascii_code").value()](
                         object_pool_t& pool,
                         scope_ptr_t scope) -> object_ref_t {
-              const object_ref_t val = *SILVA_EXPECT_ASSERT(scope.get(ti_ascii_code));
+              const object_ref_t* ptr = scope.get(ti_ascii_code);
+              SILVA_ASSERT(ptr != nullptr, "couldn't find parameter 'ascii_code'");
+              const object_ref_t& val = *ptr;
               SILVA_ASSERT(val->holds_double());
               const double double_val = std::get<double>(val->data);
               string_t retval{(char)double_val};
@@ -66,9 +68,12 @@ namespace silva::lox {
         },
         builtin_decl_t{
             .name = swp->token_id("exit").value(),
-            .impl = [swp = swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
-              const object_ref_t val =
-                  *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("exit_code").value()));
+            .impl = [swp = swp, ti_exit_code = swp->token_id("exit_code").value()](
+                        object_pool_t& pool,
+                        scope_ptr_t scope) -> object_ref_t {
+              const object_ref_t* ptr = scope.get(ti_exit_code);
+              SILVA_ASSERT(ptr != nullptr, "couldn't find parameter 'exit_code'");
+              const object_ref_t val = *ptr;
               SILVA_ASSERT(val->holds_double());
               const double double_val = std::get<double>(val->data);
               std::exit((int)double_val);
@@ -76,9 +81,12 @@ namespace silva::lox {
         },
         builtin_decl_t{
             .name = swp->token_id("print_error").value(),
-            .impl = [swp = swp](object_pool_t& pool, scope_ptr_t scope) -> object_ref_t {
-              const object_ref_t val =
-                  *SILVA_EXPECT_ASSERT(scope.get(swp->token_id("text").value()));
+            .impl = [swp     = swp,
+                     ti_text = swp->token_id("text").value()](object_pool_t& pool,
+                                                              scope_ptr_t scope) -> object_ref_t {
+              const object_ref_t* ptr = scope.get(ti_text);
+              SILVA_ASSERT(ptr != nullptr, "couldn't find parameter 'text'");
+              const object_ref_t val = *ptr;
               SILVA_ASSERT(val->holds_string());
               const auto& text = std::get<string_t>(val->data);
               fmt::println("ERROR: {}", text);
@@ -259,7 +267,7 @@ namespace silva::lox {
               ._class = callee,
               .scope  = cc.scope.make_child_arm(),
           });
-          if (auto ref = cc.scope.get(intp->ti_init); ref.has_value()) {
+          if (auto* ref = cc.scope.get(intp->ti_init); ref != nullptr) {
             object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
                 member_access(retval, intp->ti_init, false, intp->pool, intp->ti_this));
             SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
@@ -355,10 +363,12 @@ namespace silva::lox {
         return intp->pool.make(double{SILVA_EXPECT_FWD(token_info->number_as_double())});
       }
       else if (token_info->category == IDENTIFIER) {
-        auto ref = SILVA_EXPECT_FWD(scope.get(ti),
-                                    "trying to resolve variable {}",
-                                    swp->token_id_wrap(ti));
-        return *ref;
+        auto* ptr = scope.get(ti);
+        SILVA_EXPECT(ptr != nullptr,
+                     MINOR,
+                     "trying to resolve variable {}",
+                     swp->token_id_wrap(ti));
+        return *ptr;
       }
       else {
         SILVA_EXPECT(false,
