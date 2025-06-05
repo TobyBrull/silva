@@ -1181,7 +1181,7 @@ error parsing Fern
                       [0]_.Soil.Expr.Atom         sum
                       [1]_.Soil.Expr.Atom         i
 
-[0]_.Lox                                          print 'Hello, World!' ... outer ;
+[0]_.Lox                                          print 'Hello, World!' ... value ;
   [0]_.Lox.Stmt                                   print 'Hello, World!' ;
     [0]_.Lox.Stmt.Print                           print 'Hello, World!' ;
       [0]_.Lox.Expr.Atom                          'Hello, World!'
@@ -1488,6 +1488,101 @@ error parsing Fern
   [33]_.Lox.Stmt                                  print outer ;
     [0]_.Lox.Stmt.Print                           print outer ;
       [0]_.Lox.Expr.Atom                          outer
+  [34]_.Lox.Stmt                                  exit ( 0 ) ;
+    [0]_.Lox.Stmt.ExprStmt                        exit ( 0 ) ;
+      [0]_.Lox.Expr.Call.(                        exit ( 0 )
+        [0]_.Lox.Expr.Atom                        exit
+        [1]_.Lox.Expr.Arguments                   0
+          [0]_.Lox.Expr.Atom                      0
+  [35]_.Lox.Decl                                  class Number ... } }
+    [0]_.Lox.Decl.Class                           class Number ... } }
+      [0]_.Lox.Decl.Class.Super                   
+      [1]_.Lox.Decl.Function                      init ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         x
+          [0]_.Lox.Decl.Function.Parameter        x
+        [1]_.Lox.Stmt.Block                       { this ... ; }
+          [0]_.Lox.Stmt                           this . ... x ;
+            [0]_.Lox.Stmt.ExprStmt                this . ... x ;
+              [0]_.Lox.Expr.Assign.=              this . value = x
+                [0]_.Lox.Expr.Call..              this . value
+                  [0]_.Lox.Expr.Atom              this
+                  [1]_.Lox.Expr.Atom              value
+                [1]_.Lox.Expr.Atom                x
+  [36]_.Lox.Decl                                  class Inc ... } }
+    [0]_.Lox.Decl.Class                           class Inc ... } }
+      [0]_.Lox.Decl.Class.Super                   
+      [1]_.Lox.Decl.Function                      init ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         
+        [1]_.Lox.Stmt.Block                       { this ... ; }
+          [0]_.Lox.Stmt                           this . ... 0 ;
+            [0]_.Lox.Stmt.ExprStmt                this . ... 0 ;
+              [0]_.Lox.Expr.Assign.=              this . i = 0
+                [0]_.Lox.Expr.Call..              this . i
+                  [0]_.Lox.Expr.Atom              this
+                  [1]_.Lox.Expr.Atom              i
+                [1]_.Lox.Expr.Atom                0
+          [1]_.Lox.Stmt                           this . ... ) ;
+            [0]_.Lox.Stmt.ExprStmt                this . ... ) ;
+              [0]_.Lox.Expr.Assign.=              this . ... 0 )
+                [0]_.Lox.Expr.Call..              this . value
+                  [0]_.Lox.Expr.Atom              this
+                  [1]_.Lox.Expr.Atom              value
+                [1]_.Lox.Expr.Call.(              Number ( 0 )
+                  [0]_.Lox.Expr.Atom              Number
+                  [1]_.Lox.Expr.Arguments         0
+                    [0]_.Lox.Expr.Atom            0
+      [2]_.Lox.Decl.Function                      inc ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         
+        [1]_.Lox.Stmt.Block                       { this ... ; }
+          [0]_.Lox.Stmt                           this . ... 10 ;
+            [0]_.Lox.Stmt.ExprStmt                this . ... 10 ;
+              [0]_.Lox.Expr.Assign.=              this . ... + 10
+                [0]_.Lox.Expr.Call..              this . i
+                  [0]_.Lox.Expr.Atom              this
+                  [1]_.Lox.Expr.Atom              i
+                [1]_.Lox.Expr.Term.+              this . i + 10
+                  [0]_.Lox.Expr.Call..            this . i
+                    [0]_.Lox.Expr.Atom            this
+                    [1]_.Lox.Expr.Atom            i
+                  [1]_.Lox.Expr.Atom              10
+          [1]_.Lox.Stmt                           this . ... ) ;
+            [0]_.Lox.Stmt.ExprStmt                this . ... ) ;
+              [0]_.Lox.Expr.Assign.=              this . ... i )
+                [0]_.Lox.Expr.Call..              this . value
+                  [0]_.Lox.Expr.Atom              this
+                  [1]_.Lox.Expr.Atom              value
+                [1]_.Lox.Expr.Call.(              Number ( ... i )
+                  [0]_.Lox.Expr.Atom              Number
+                  [1]_.Lox.Expr.Arguments         this . i
+                    [0]_.Lox.Expr.Call..          this . i
+                      [0]_.Lox.Expr.Atom          this
+                      [1]_.Lox.Expr.Atom          i
+  [37]_.Lox.Decl                                  var inc ... ) ;
+    [0]_.Lox.Decl.Var                             var inc ... ) ;
+      [0]_.Lox.Expr.Call.(                        Inc ( )
+        [0]_.Lox.Expr.Atom                        Inc
+        [1]_.Lox.Expr.Arguments                   
+  [38]_.Lox.Stmt                                  inc . ... ) ;
+    [0]_.Lox.Stmt.ExprStmt                        inc . ... ) ;
+      [0]_.Lox.Expr.Call.(                        inc . inc ( )
+        [0]_.Lox.Expr.Call..                      inc . inc
+          [0]_.Lox.Expr.Atom                      inc
+          [1]_.Lox.Expr.Atom                      inc
+        [1]_.Lox.Expr.Arguments                   
+  [39]_.Lox.Stmt                                  inc . ... ) ;
+    [0]_.Lox.Stmt.ExprStmt                        inc . ... ) ;
+      [0]_.Lox.Expr.Call.(                        inc . inc ( )
+        [0]_.Lox.Expr.Call..                      inc . inc
+          [0]_.Lox.Expr.Atom                      inc
+          [1]_.Lox.Expr.Atom                      inc
+        [1]_.Lox.Expr.Arguments                   
+  [40]_.Lox.Stmt                                  print inc ... value ;
+    [0]_.Lox.Stmt.Print                           print inc ... value ;
+      [0]_.Lox.Expr.Call..                        inc . value . value
+        [0]_.Lox.Expr.Call..                      inc . value
+          [0]_.Lox.Expr.Atom                      inc
+          [1]_.Lox.Expr.Atom                      value
+        [1]_.Lox.Expr.Atom                        value
 
 Hello, World!
 3
@@ -1520,35 +1615,3 @@ start
 Q
 42
 42
-object_pool_t with 30 objects
-  - 1 lox_v[<builtin-function '[builtins.lox:2:9] parse_tree_span[ clock ( ) { } ]'>]
-  - 1 lox_v[<builtin-function '[builtins.lox:3:9] parse_tree_span[ getc ( ) { } ]'>]
-  - 1 lox_v[<builtin-function '[builtins.lox:4:9] parse_tree_span[ chr ( ... { } ]'>]
-  - 1 lox_v[<builtin-function '[builtins.lox:5:9] parse_tree_span[ exit ( ... { } ]'>]
-  - 1 lox_v[<builtin-function '[builtins.lox:6:9] parse_tree_span[ print_error ( ... { } ]'>]
-  - 1 lox_v[10]
-  - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
-  - 1 lox_v[142]
-  - 1 lox_v[<function [example.lox:14:5] parse_tree_span[ fib ( ... ; } ]>]
-  - tombstone
-  - 1 lox_v[<function [example.lox:67:3] parse_tree_span[ getCallback ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:24:5] parse_tree_span[ makeCounter ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:51:3] parse_tree_span[ sayName ( ... ; } ]>]
-  - 1 lox_v[3]
-  - 2 lox_v[<class [example.lox:62:1] parse_tree_span[ class Thing ... } } ]>]
-  - 2 lox_v[<class [example.lox:50:1] parse_tree_span[ class Person ... } } ]>]
-  - 1 lox_v[<function [example.lox:40:7] parse_tree_span[ showA ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:63:3] parse_tree_span[ init ( ... ; } ]>]
-  - 1 lox_v[global]
-  - 2 lox_v[<function [example.lox:26:7] parse_tree_span[ count ( ... ; } ]>]
-  - 1 lox_v[block]
-  - 1 lox_v[Jane]
-  - 1 lox_v[<function [example.lox:79:5] parse_tree_span[ foo ( ... ; } ]>]
-  - 2 lox_v[<instance of <class [example.lox:50:1] parse_tree_span[ class Person ... } } ]>>]
-  - 1 lox_v[start]
-  - 1 lox_v[<function [example.lox:51:3] parse_tree_span[ sayName ( ... ; } ]>]
-  - 1 lox_v[42]
-  - 1 lox_v[<instance of <class [example.lox:62:1] parse_tree_span[ class Thing ... } } ]>>]
-  - 2 lox_v[<function [example.lox:68:9] parse_tree_span[ localFunction ( ... ; } ]>]
-  - tombstone
-

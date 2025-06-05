@@ -133,7 +133,7 @@ fun tokenTypeStr(type) {
   if (type == EOF) return '<eof>';
   if (type == INVALID) return '<invalid>';
 
-  return none;
+  return '<unknown>';
 }
 
 # Convert a keyword string to its token type constant, or return none

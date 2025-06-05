@@ -84,3 +84,26 @@ fun foo(x) {
 var outer = 42;
 print foo(outer);
 print outer;
+
+exit(0);
+
+class Number {
+  init(x) {
+    this.value = x;
+  }
+}
+class Inc {
+  init() {
+    this.i = 0;
+    this.value = Number(0);
+  }
+
+  inc() {
+    this.i = this.i + 10;
+    this.value = Number(this.i);
+  }
+}
+var inc = Inc();
+inc.inc();
+inc.inc();
+print inc.value.value;
