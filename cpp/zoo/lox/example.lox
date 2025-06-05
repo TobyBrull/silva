@@ -46,6 +46,7 @@ a = 'global';
   showA();
   print a;
 }
+print a;
 
 class Person {
   sayName() {
@@ -84,8 +85,6 @@ fun foo(x) {
 var outer = 42;
 print foo(outer);
 print outer;
-
-exit(0);
 
 class Number {
   init(x) {

@@ -1366,7 +1366,10 @@ error parsing Fern
       [4]_.Lox.Stmt                               print a ;
         [0]_.Lox.Stmt.Print                       print a ;
           [0]_.Lox.Expr.Atom                      a
-  [19]_.Lox.Decl                                  class Person ... } }
+  [19]_.Lox.Stmt                                  print a ;
+    [0]_.Lox.Stmt.Print                           print a ;
+      [0]_.Lox.Expr.Atom                          a
+  [20]_.Lox.Decl                                  class Person ... } }
     [0]_.Lox.Decl.Class                           class Person ... } }
       [0]_.Lox.Decl.Class.Super                   
       [1]_.Lox.Decl.Function                      sayName ( ... ; }
@@ -1379,35 +1382,35 @@ error parsing Fern
                 [1]_.Lox.Expr.Call..              this . name
                   [0]_.Lox.Expr.Atom              this
                   [1]_.Lox.Expr.Atom              name
-  [20]_.Lox.Stmt                                  print Person ;
+  [21]_.Lox.Stmt                                  print Person ;
     [0]_.Lox.Stmt.Print                           print Person ;
       [0]_.Lox.Expr.Atom                          Person
-  [21]_.Lox.Decl                                  var jane ... ) ;
+  [22]_.Lox.Decl                                  var jane ... ) ;
     [0]_.Lox.Decl.Var                             var jane ... ) ;
       [0]_.Lox.Expr.Call.(                        Person ( )
         [0]_.Lox.Expr.Atom                        Person
         [1]_.Lox.Expr.Arguments                   
-  [22]_.Lox.Stmt                                  print jane ;
+  [23]_.Lox.Stmt                                  print jane ;
     [0]_.Lox.Stmt.Print                           print jane ;
       [0]_.Lox.Expr.Atom                          jane
-  [23]_.Lox.Stmt                                  jane . ... 'Jane' ;
+  [24]_.Lox.Stmt                                  jane . ... 'Jane' ;
     [0]_.Lox.Stmt.ExprStmt                        jane . ... 'Jane' ;
       [0]_.Lox.Expr.Assign.=                      jane . name = 'Jane'
         [0]_.Lox.Expr.Call..                      jane . name
           [0]_.Lox.Expr.Atom                      jane
           [1]_.Lox.Expr.Atom                      name
         [1]_.Lox.Expr.Atom                        'Jane'
-  [24]_.Lox.Decl                                  var method ... sayName ;
+  [25]_.Lox.Decl                                  var method ... sayName ;
     [0]_.Lox.Decl.Var                             var method ... sayName ;
       [0]_.Lox.Expr.Call..                        jane . sayName
         [0]_.Lox.Expr.Atom                        jane
         [1]_.Lox.Expr.Atom                        sayName
-  [25]_.Lox.Stmt                                  method ( ) ;
+  [26]_.Lox.Stmt                                  method ( ) ;
     [0]_.Lox.Stmt.ExprStmt                        method ( ) ;
       [0]_.Lox.Expr.Call.(                        method ( )
         [0]_.Lox.Expr.Atom                        method
         [1]_.Lox.Expr.Arguments                   
-  [26]_.Lox.Decl                                  class Thing ... } }
+  [27]_.Lox.Decl                                  class Thing ... } }
     [0]_.Lox.Decl.Class                           class Thing ... } }
       [0]_.Lox.Decl.Class.Super                   
       [1]_.Lox.Decl.Function                      init ( ... ; }
@@ -1439,7 +1442,7 @@ error parsing Fern
           [1]_.Lox.Stmt                           return localFunction ;
             [0]_.Lox.Stmt.Return                  return localFunction ;
               [0]_.Lox.Expr.Atom                  localFunction
-  [27]_.Lox.Decl                                  var callback ... ) ;
+  [28]_.Lox.Decl                                  var callback ... ) ;
     [0]_.Lox.Decl.Var                             var callback ... ) ;
       [0]_.Lox.Expr.Call.(                        Thing ( ... ( )
         [0]_.Lox.Expr.Call..                      Thing ( ) . getCallback
@@ -1448,18 +1451,18 @@ error parsing Fern
             [1]_.Lox.Expr.Arguments               
           [1]_.Lox.Expr.Atom                      getCallback
         [1]_.Lox.Expr.Arguments                   
-  [28]_.Lox.Stmt                                  callback ( ) ;
+  [29]_.Lox.Stmt                                  callback ( ) ;
     [0]_.Lox.Stmt.ExprStmt                        callback ( ) ;
       [0]_.Lox.Expr.Call.(                        callback ( )
         [0]_.Lox.Expr.Atom                        callback
         [1]_.Lox.Expr.Arguments                   
-  [29]_.Lox.Stmt                                  print chr ... ) ;
+  [30]_.Lox.Stmt                                  print chr ... ) ;
     [0]_.Lox.Stmt.Print                           print chr ... ) ;
       [0]_.Lox.Expr.Call.(                        chr ( 81 )
         [0]_.Lox.Expr.Atom                        chr
         [1]_.Lox.Expr.Arguments                   81
           [0]_.Lox.Expr.Atom                      81
-  [30]_.Lox.Decl                                  fun foo ... ; }
+  [31]_.Lox.Decl                                  fun foo ... ; }
     [0]_.Lox.Decl.Fun                             fun foo ... ; }
       [0]_.Lox.Decl.Function                      foo ( ... ; }
         [0]_.Lox.Decl.Function.Parameters         x
@@ -1476,24 +1479,18 @@ error parsing Fern
           [2]_.Lox.Stmt                           return a ;
             [0]_.Lox.Stmt.Return                  return a ;
               [0]_.Lox.Expr.Atom                  a
-  [31]_.Lox.Decl                                  var outer = 42 ;
+  [32]_.Lox.Decl                                  var outer = 42 ;
     [0]_.Lox.Decl.Var                             var outer = 42 ;
       [0]_.Lox.Expr.Atom                          42
-  [32]_.Lox.Stmt                                  print foo ... ) ;
+  [33]_.Lox.Stmt                                  print foo ... ) ;
     [0]_.Lox.Stmt.Print                           print foo ... ) ;
       [0]_.Lox.Expr.Call.(                        foo ( outer )
         [0]_.Lox.Expr.Atom                        foo
         [1]_.Lox.Expr.Arguments                   outer
           [0]_.Lox.Expr.Atom                      outer
-  [33]_.Lox.Stmt                                  print outer ;
+  [34]_.Lox.Stmt                                  print outer ;
     [0]_.Lox.Stmt.Print                           print outer ;
       [0]_.Lox.Expr.Atom                          outer
-  [34]_.Lox.Stmt                                  exit ( 0 ) ;
-    [0]_.Lox.Stmt.ExprStmt                        exit ( 0 ) ;
-      [0]_.Lox.Expr.Call.(                        exit ( 0 )
-        [0]_.Lox.Expr.Atom                        exit
-        [1]_.Lox.Expr.Arguments                   0
-          [0]_.Lox.Expr.Atom                      0
   [35]_.Lox.Decl                                  class Number ... } }
     [0]_.Lox.Decl.Class                           class Number ... } }
       [0]_.Lox.Decl.Class.Super                   
@@ -1607,11 +1604,55 @@ Fibonacci ==
 global
 block
 block
-<class [example.lox:50:1] parse_tree_span[ class Person ... } } ]>
-<instance of <class [example.lox:50:1] parse_tree_span[ class Person ... } } ]>>
+block
+<class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>
+<instance of <class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>>
 Mr Jane
 init()
 start
 Q
 42
 42
+<instance of <class [example.lox:89:1] parse_tree_span[ class Number ... } } ]>>
+object_pool_t with 40 objects
+  - 1 lox_v[<builtin-function '[builtins.lox:2:9] parse_tree_span[ clock ( ) { } ]'>]
+  - 1 lox_v[<builtin-function '[builtins.lox:3:9] parse_tree_span[ getc ( ) { } ]'>]
+  - 1 lox_v[<builtin-function '[builtins.lox:4:9] parse_tree_span[ chr ( ... { } ]'>]
+  - 1 lox_v[<builtin-function '[builtins.lox:5:9] parse_tree_span[ exit ( ... { } ]'>]
+  - 1 lox_v[<builtin-function '[builtins.lox:6:9] parse_tree_span[ print_error ( ... { } ]'>]
+  - 1 lox_v[20]
+  - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
+  - 1 lox_v[142]
+  - 1 lox_v[<function [example.lox:14:5] parse_tree_span[ fib ( ... ; } ]>]
+  - tombstone
+  - 1 lox_v[<function [example.lox:68:3] parse_tree_span[ getCallback ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:24:5] parse_tree_span[ makeCounter ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:52:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 1 lox_v[3]
+  - 2 lox_v[<class [example.lox:63:1] parse_tree_span[ class Thing ... } } ]>]
+  - 2 lox_v[<class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>]
+  - 1 lox_v[<function [example.lox:40:7] parse_tree_span[ showA ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:64:3] parse_tree_span[ init ( ... ; } ]>]
+  - 1 lox_v[global]
+  - 2 lox_v[<function [example.lox:26:7] parse_tree_span[ count ( ... ; } ]>]
+  - 1 lox_v[block]
+  - 1 lox_v[Jane]
+  - 1 lox_v[<function [example.lox:80:5] parse_tree_span[ foo ( ... ; } ]>]
+  - 2 lox_v[<instance of <class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>>]
+  - 1 lox_v[start]
+  - 1 lox_v[<function [example.lox:52:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 1 lox_v[42]
+  - 1 lox_v[<instance of <class [example.lox:63:1] parse_tree_span[ class Thing ... } } ]>>]
+  - 2 lox_v[<function [example.lox:69:9] parse_tree_span[ localFunction ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:90:3] parse_tree_span[ init ( ... ; } ]>]
+  - 2 lox_v[<class [example.lox:89:1] parse_tree_span[ class Number ... } } ]>]
+  - 1 lox_v[<function [example.lox:95:3] parse_tree_span[ init ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:100:3] parse_tree_span[ inc ( ... ; } ]>]
+  - 2 lox_v[<class [example.lox:94:1] parse_tree_span[ class Inc ... } } ]>]
+  - 1 lox_v[<instance of <class [example.lox:94:1] parse_tree_span[ class Inc ... } } ]>>]
+  - tombstone
+  - tombstone
+  - tombstone
+  - 1 lox_v[<instance of <class [example.lox:89:1] parse_tree_span[ class Number ... } } ]>>]
+  - tombstone
+
