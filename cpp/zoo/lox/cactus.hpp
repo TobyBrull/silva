@@ -62,6 +62,7 @@ namespace silva {
     friend bool operator==(const cactus_arm_t&, const cactus_arm_t&) = default;
 
     // Returns unexpected if the Key cannot be found somewhere along this arm to the root.
+    Value* get_here(const Key&) const;
     expected_t<Value*> get(const Key&) const;
 
     // Returns unexpected if the Key cannot be found somewhere along this arm to the root and
@@ -202,6 +203,19 @@ namespace silva {
       }
       cactus.clear();
       idx = -1;
+    }
+  }
+
+  template<typename Key, typename Value>
+  Value* cactus_arm_t<Key, Value>::get_here(const Key& k) const
+  {
+    auto& arm     = cactus->arms[idx];
+    const auto it = arm.hashmap.find(k);
+    if (it != arm.hashmap.end()) {
+      return &(it->second);
+    }
+    else {
+      return nullptr;
     }
   }
 
