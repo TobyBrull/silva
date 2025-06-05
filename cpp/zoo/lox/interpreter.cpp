@@ -7,6 +7,14 @@
 using enum silva::token_category_t;
 
 namespace silva::lox {
+
+  interpreter_t::interpreter_t(syntax_ward_ptr_t swp) : swp(std::move(swp)) {}
+
+  interpreter_t::~interpreter_t()
+  {
+    pool.for_each_object([&](object_t& obj) { obj.clear_scopes(); });
+  }
+
   const string_view_t builtins_lox_str = R"'(
     fun clock() {}
     fun getc() {}
@@ -97,7 +105,7 @@ namespace silva::lox {
           builtin_decl.impl,
       });
       ++it;
-      globals = SILVA_EXPECT_ASSERT(globals.define(lox_name, std::move(obj_ref)));
+      SILVA_EXPECT_ASSERT(scopes.root().define(lox_name, std::move(obj_ref)));
     }
 
     return {};
@@ -132,7 +140,7 @@ namespace silva::lox {
       const auto fun_params        = fun->parameters();
       auto [args_it, args_end]     = pts_args.children_range();
       auto [params_it, params_end] = fun_params.children_range();
-      auto func_scope              = fun->closure.new_scope();
+      auto used_scope              = fun->closure.make_child_arm();
       for (index_t i = 0; i < arity; ++i) {
         SILVA_EXPECT(args_it != args_end && params_it != params_end, MAJOR);
         auto val =
@@ -142,7 +150,7 @@ namespace silva::lox {
                              i);
         const token_id_t ti_param =
             fun_params.tp->tokens[fun_params.sub_tree_span_at(params_it.pos)[0].token_begin];
-        func_scope = SILVA_EXPECT_FWD(func_scope.define(ti_param, std::move(val)));
+        SILVA_EXPECT_FWD(used_scope.define(ti_param, std::move(val)));
         ++args_it;
         ++params_it;
       }
@@ -150,12 +158,12 @@ namespace silva::lox {
       SILVA_EXPECT(args_it == args_end && params_it == params_end, MAJOR);
       if (callee->holds_function()) {
         const auto& ff = std::get<function_t>(callee->data);
-        auto result    = SILVA_EXPECT_FWD(intp->execute(ff.body(), func_scope));
+        auto result    = SILVA_EXPECT_FWD(intp->execute(ff.body(), used_scope));
         return result.value_or(intp->pool.make(none));
       }
       else if (callee->holds_function_builtin()) {
         const auto& fb = std::get<function_builtin_t>(callee->data);
-        return fb.impl(intp->pool, func_scope);
+        return fb.impl(intp->pool, used_scope);
       }
       else {
         SILVA_EXPECT(false, ASSERT);
@@ -298,7 +306,7 @@ namespace silva::lox {
 
           SILVA_EXPECT(ll_ref->holds_class_instance(), MINOR);
           auto& ci = std::get<class_instance_t>(ll_ref->data);
-          ci.scope = SILVA_EXPECT_FWD(ci.scope.set(ti, rhs_ref, true));
+          SILVA_EXPECT_FWD(ci.scope.set(ti, rhs_ref, true));
         }
         else if (lhs_pts[0].rule_name == intp->ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
@@ -402,14 +410,14 @@ namespace silva::lox {
                                          "{} when evaluating initializer of variable declaration",
                                          pts);
         }
-        scope = SILVA_EXPECT_FWD(scope.define(var_name, std::move(initializer)),
-                                 "{} error defining variable {}",
-                                 pts,
-                                 swp->token_id_wrap(var_name));
+        SILVA_EXPECT_FWD(scope.define(var_name, std::move(initializer)),
+                         "{} error defining variable {}",
+                         pts,
+                         swp->token_id_wrap(var_name));
       }
       else if (rule_name == intp->ni_decl_fun) {
         const token_id_t fun_name = pts.tp->tokens[pts[0].token_begin + 1];
-        scope                     = SILVA_EXPECT_FWD(scope.define(fun_name, intp->pool.make(none)));
+        SILVA_EXPECT_FWD(scope.define(fun_name, intp->pool.make(none)));
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
         // TODO: use only scope.define()
@@ -417,19 +425,19 @@ namespace silva::lox {
       }
       else if (rule_name == intp->ni_decl_class) {
         const token_id_t class_name = pts.tp->tokens[pts[0].token_begin + 1];
-        scope          = SILVA_EXPECT_FWD(scope.define(class_name, intp->pool.make(none)));
+        SILVA_EXPECT_FWD(scope.define(class_name, intp->pool.make(none)));
         auto [it, end] = pts.children_range();
         SILVA_EXPECT(it != end, MAJOR);
         const auto pts_super = pts.sub_tree_span_at(it.pos);
         SILVA_EXPECT(pts_super[0].rule_name == intp->ni_decl_class_s, MAJOR);
-        class_t cc{.scope = intp->scopes.root()};
+        class_t cc{.scope = intp->scopes.root().make_child_arm()};
         cc.pts = pts;
         ++it;
         while (it != end) {
           const auto pts_method = pts.sub_tree_span_at(it.pos);
           SILVA_EXPECT(pts_method[0].rule_name == intp->ni_decl_function, MAJOR);
           const token_id_t method_name = pts.tp->tokens[pts_method[0].token_begin];
-          cc.scope                     = SILVA_EXPECT_FWD(
+          SILVA_EXPECT_FWD(
               cc.scope.define(method_name, intp->pool.make(function_t{pts_method, scope})));
           ++it;
         }
@@ -527,7 +535,7 @@ namespace silva::lox {
         }
       }
       else if (rule_name == intp->ni_stmt_block) {
-        scope = scope.new_scope();
+        scope = scope.make_child_arm();
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           auto res = SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx), scope));
           if (res.has_value()) {

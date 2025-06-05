@@ -44,14 +44,14 @@ namespace silva::lox {
     if (auto ref = cc.scope.get(field_name); ref.has_value()) {
       const object_ref_t method = *std::move(*ref);
       SILVA_EXPECT(method->holds_function(), ASSERT);
-      const function_t& fun = std::get<function_t>(method->data);
-      auto bound_scope      = SILVA_EXPECT_FWD(fun.closure.define(ti_this, class_instance));
-      function_t bound_func{fun.pts, std::move(bound_scope)};
+      const function_t& fun  = std::get<function_t>(method->data);
+      auto closure_with_this = fun.closure.make_child_arm();
+      SILVA_EXPECT_FWD(closure_with_this.define(ti_this, class_instance));
+      function_t bound_func{fun.pts, std::move(closure_with_this)};
       return pool.make(std::move(bound_func));
     }
     SILVA_EXPECT(create_if_nonexistent, MINOR, "couldn't access member");
-    ci.scope = SILVA_EXPECT_FWD(ci.scope.define(field_name, pool.make(none)));
-    return *SILVA_EXPECT_FWD(ci.scope.get(field_name), ASSERT);
+    return *SILVA_EXPECT_FWD(ci.scope.define(field_name, pool.make(none)));
   }
 
   // object_t

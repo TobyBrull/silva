@@ -30,7 +30,8 @@ namespace silva::lox {
     interpreter_t li{sw.ptr()};
     SILVA_EXPECT_FWD(li.load_builtins(as_parser(si.get())));
     {
-      SILVA_EXPECT_FWD(li.execute(pt->span(), li.globals),
+      auto scope = li.scopes.root();
+      SILVA_EXPECT_FWD(li.execute(pt->span(), scope),
                        "failed executing Lox script {}",
                        cmdline_args[1]);
     }

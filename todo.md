@@ -1,5 +1,7 @@
 # TODO
 
+* Lexical scoping in Lox (i.e., fix the "global block block" test in example.lox)
+
 * Unify: object_pool_t, cactus_t, and syntax_ward_t::name_infos?
 
 * Allow lox::object_ref_t directly in error message

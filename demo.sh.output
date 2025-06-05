@@ -1605,7 +1605,7 @@ Fibonacci ==
 2
 3
 global
-global
+block
 block
 <class [example.lox:50:1] parse_tree_span[ class Person ... } } ]>
 <instance of <class [example.lox:50:1] parse_tree_span[ class Person ... } } ]>>

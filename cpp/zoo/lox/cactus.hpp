@@ -16,7 +16,7 @@ namespace silva {
     struct arm_t {
       index_t ref_count = 0;
       cactus_arm_t<Key, Value> parent;
-      variant_t<none_t, new_scope_t, pair_t<Key, Value>> data;
+      hashmap_t<Key, Value> hashmap;
       index_t next_free = -1;
     };
     vector_t<arm_t> arms;
@@ -61,17 +61,17 @@ namespace silva {
 
     friend bool operator==(const cactus_arm_t&, const cactus_arm_t&) = default;
 
-    // Returns unexpected if the Key is *not* already defined somewhere along this arm to the root.
+    // Returns unexpected if the Key cannot be found somewhere along this arm to the root.
     expected_t<Value*> get(const Key&) const;
 
-    // Returns unexpected if the Key is *not* in the current scope.
-    expected_t<cactus_arm_t<Key, Value>>
-    set(const Key&, Value, bool define_if_unavailable = false) const;
+    // Returns unexpected if the Key cannot be found somewhere along this arm to the root and
+    // "define_if_unavailable" is "false".
+    expected_t<Value*> set(const Key&, Value, bool define_if_unavailable = false) const;
 
-    cactus_arm_t new_scope() const;
+    cactus_arm_t make_child_arm() const;
 
-    // Return unexpected if the Key is *already* defined in this scope.
-    expected_t<cactus_arm_t> define(const Key&, Value) const;
+    // Returns unexpected if the Key is already defined in this arm.
+    expected_t<Value*> define(const Key&, Value) const;
   };
 }
 
@@ -86,7 +86,6 @@ namespace silva {
   {
     arms.push_back(arm_t{
         .ref_count = 1,
-        .data      = new_scope_t{},
         .next_free = -1,
     });
     size_occ = 1;
@@ -112,7 +111,7 @@ namespace silva {
   void cactus_t<Key, Value>::free_arm(const index_t idx)
   {
     SILVA_ASSERT(arms[idx].ref_count == 0);
-    arms[idx].data      = none;
+    arms[idx].hashmap.clear();
     arms[idx].next_free = next_free;
     arms[idx].parent.clear();
     next_free = idx;
@@ -211,71 +210,54 @@ namespace silva {
   {
     index_t curr_idx = idx;
     while (true) {
-      typename cactus_t<Key, Value>::arm_t* arm = &cactus->arms[curr_idx];
-      if (auto* x = std::get_if<pair_t<Key, Value>>(&arm->data); x) {
-        if (x->first == k) {
-          return &(x->second);
-        }
+      auto& arm     = cactus->arms[curr_idx];
+      const auto it = arm.hashmap.find(k);
+      if (it != arm.hashmap.end()) {
+        return &(it->second);
       }
       if (curr_idx == 0) {
         break;
       }
-      curr_idx = arm->parent.idx;
+      curr_idx = arm.parent.idx;
     }
     SILVA_EXPECT(false, MINOR, "couldn't find key");
   }
+
   template<typename Key, typename Value>
-  expected_t<cactus_arm_t<Key, Value>>
+  expected_t<Value*>
   cactus_arm_t<Key, Value>::set(const Key& k, Value v, const bool define_if_unavailable) const
   {
-    using new_scope_t = typename cactus_t<Key, Value>::new_scope_t;
-    index_t curr_idx  = idx;
+    index_t curr_idx = idx;
     while (true) {
-      typename cactus_t<Key, Value>::arm_t* arm = &cactus->arms[curr_idx];
-      if (auto* x = std::get_if<pair_t<Key, Value>>(&arm->data); x) {
-        if (x->first == k) {
-          x->second = std::move(v);
-          return *this;
-        }
+      auto& arm     = cactus->arms[curr_idx];
+      const auto it = arm.hashmap.find(k);
+      if (it != arm.hashmap.end()) {
+        it->second = std::move(v);
+        return &(it->second);
       }
       if (curr_idx == 0) {
         break;
       }
-      curr_idx = arm->parent.idx;
+      curr_idx = arm.parent.idx;
     }
     SILVA_EXPECT(define_if_unavailable, MINOR, "key not in scope");
     return define(k, std::move(v));
   }
+
   template<typename Key, typename Value>
-  cactus_arm_t<Key, Value> cactus_arm_t<Key, Value>::new_scope() const
+  cactus_arm_t<Key, Value> cactus_arm_t<Key, Value>::make_child_arm() const
   {
     const auto new_idx           = cactus->alloc_arm();
     cactus->arms[new_idx].parent = *this;
-    cactus->arms[new_idx].data   = typename cactus_t<Key, Value>::new_scope_t{};
     return cactus_arm_t(cactus, new_idx);
   }
-  template<typename Key, typename Value>
-  expected_t<cactus_arm_t<Key, Value>> cactus_arm_t<Key, Value>::define(const Key& k, Value v) const
-  {
-    using new_scope_t = typename cactus_t<Key, Value>::new_scope_t;
-    index_t curr_idx  = idx;
-    while (true) {
-      const typename cactus_t<Key, Value>::arm_t* arm = &cactus->arms[curr_idx];
-      if (const auto* x = std::get_if<pair_t<Key, Value>>(&arm->data); x) {
-        SILVA_EXPECT(x->first != k, MINOR, "key already defined in the current scope");
-      }
-      if (const auto* x = std::get_if<new_scope_t>(&arm->data); x) {
-        break;
-      }
-      if (curr_idx == 0) {
-        break;
-      }
-      curr_idx = arm->parent.idx;
-    }
 
-    const auto new_idx           = cactus->alloc_arm();
-    cactus->arms[new_idx].parent = *this;
-    cactus->arms[new_idx].data   = pair_t<Key, Value>{k, std::move(v)};
-    return cactus_arm_t(cactus, new_idx);
+  template<typename Key, typename Value>
+  expected_t<Value*> cactus_arm_t<Key, Value>::define(const Key& k, Value v) const
+  {
+    auto& arm                 = cactus->arms[idx];
+    const auto [it, inserted] = arm.hashmap.emplace(k, v);
+    SILVA_EXPECT(inserted, MINOR, "key already defined in the current scope");
+    return &(it->second);
   }
 }

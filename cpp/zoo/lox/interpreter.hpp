@@ -57,7 +57,9 @@ namespace silva::lox {
 
     object_pool_t pool;
     cactus_t<token_id_t, object_ref_t> scopes;
-    scope_ptr_t globals = scopes.root();
+
+    interpreter_t(syntax_ward_ptr_t);
+    ~interpreter_t();
 
     // The parser needs to be able to parse Lox.
     expected_t<void> load_builtins(const parser_t&);
