@@ -94,6 +94,18 @@ namespace silva::lox {
     return variant_holds_t<class_instance_t>{}(data);
   }
 
+  struct clear_scopes_visitor_t {
+    void operator()(function_t& x) { x.closure.clear(); }
+    void operator()(function_builtin_t& x) { x.closure.clear(); }
+    void operator()(class_t& x) { x.scope.clear(); }
+    void operator()(class_instance_t& x) { x.scope.clear(); }
+    void operator()(auto&) {}
+  };
+  void object_t::clear_scopes()
+  {
+    std::visit(clear_scopes_visitor_t{}, data);
+  }
+
   bool object_t::is_truthy() const
   {
     if (is_none()) {

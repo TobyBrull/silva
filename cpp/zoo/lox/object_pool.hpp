@@ -24,6 +24,16 @@ namespace silva {
     template<typename... Args>
     object_ref_t<T> make(Args&&...);
 
+    template<typename F>
+    void for_each_object(F f)
+    {
+      for (auto& x: object_datas) {
+        if (x.obj.has_value()) {
+          f(x.obj.value());
+        }
+      }
+    }
+
     string_t to_string() const;
   };
   template<typename T>

@@ -87,6 +87,8 @@ namespace silva::lox {
     bool holds_class() const;
     bool holds_class_instance() const;
 
+    void clear_scopes();
+
     bool is_truthy() const;
 
     friend bool operator!(const object_t&);
