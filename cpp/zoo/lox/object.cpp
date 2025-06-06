@@ -95,8 +95,8 @@ namespace silva::lox {
   struct clear_scopes_visitor_t {
     void operator()(function_t& x) { x.closure.clear(); }
     void operator()(function_builtin_t& x) { x.closure.clear(); }
-    void operator()(class_t& x) { x.methods.clear(); }
-    void operator()(class_instance_t& x) { x.fields.clear(); }
+    void operator()(class_t& x) {}
+    void operator()(class_instance_t& x) {}
     void operator()(auto&) {}
   };
   void object_t::clear_scopes()
