@@ -36,23 +36,22 @@ namespace silva::lox {
 
   struct class_t {
     parse_tree_span_t pts;
-    scope_ptr_t scope;
+    hashmap_t<token_id_t, object_ref_t> methods;
 
     friend bool operator==(const class_t&, const class_t&) = default;
   };
 
   struct class_instance_t {
     object_ref_t _class;
-    scope_ptr_t scope;
+    hashmap_t<token_id_t, object_ref_t> fields;
 
     friend bool operator==(const class_instance_t&, const class_instance_t&) = default;
   };
 
-  expected_t<object_ref_t> member_access(const object_ref_t& class_instance,
-                                         token_id_t field_name,
-                                         bool create_if_nonexistent,
-                                         object_pool_t& pool,
-                                         const token_id_t ti_this);
+  expected_t<object_ref_t> member_get(const object_ref_t& class_instance,
+                                      token_id_t field_name,
+                                      object_pool_t& pool,
+                                      const token_id_t ti_this);
 
   struct object_t {
     object_t() = default;

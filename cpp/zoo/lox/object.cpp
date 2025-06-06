@@ -25,24 +25,23 @@ namespace silva::lox {
 
   // class_instance_t
 
-  expected_t<object_ref_t> member_access(const object_ref_t& class_instance,
-                                         token_id_t field_name,
-                                         bool create_if_nonexistent,
-                                         object_pool_t& pool,
-                                         const token_id_t ti_this)
+  expected_t<object_ref_t> member_get(const object_ref_t& class_instance,
+                                      token_id_t field_name,
+                                      object_pool_t& pool,
+                                      const token_id_t ti_this)
   {
     SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
-                 "left-hand-side of member-access operator must evaluate to class instance, not {}",
+                 "can only get member from class instance",
                  to_string(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
-    if (auto* val = ci.scope.get(field_name, 1); val != nullptr) {
-      return *val;
+    if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
+      return it->second;
     }
     SILVA_ASSERT(ci._class->holds_class());
     const class_t& cc = std::get<class_t>(ci._class->data);
-    if (auto* ref = cc.scope.get(field_name); ref != nullptr) {
-      const object_ref_t method = *ref;
+    if (const auto it = cc.methods.find(field_name); it != cc.methods.end()) {
+      const object_ref_t method = it->second;
       SILVA_EXPECT(method->holds_function(), ASSERT);
       const function_t& fun  = std::get<function_t>(method->data);
       auto closure_with_this = fun.closure.make_child_arm();
@@ -50,8 +49,7 @@ namespace silva::lox {
       function_t bound_func{fun.pts, std::move(closure_with_this)};
       return pool.make(std::move(bound_func));
     }
-    SILVA_EXPECT(create_if_nonexistent, MINOR, "couldn't access member");
-    return *SILVA_EXPECT_FWD(ci.scope.define(field_name, pool.make(none)));
+    SILVA_EXPECT(false, MINOR, "couldn't access member");
   }
 
   // object_t
@@ -97,8 +95,8 @@ namespace silva::lox {
   struct clear_scopes_visitor_t {
     void operator()(function_t& x) { x.closure.clear(); }
     void operator()(function_builtin_t& x) { x.closure.clear(); }
-    void operator()(class_t& x) { x.scope.clear(); }
-    void operator()(class_instance_t& x) { x.scope.clear(); }
+    void operator()(class_t& x) { x.methods.clear(); }
+    void operator()(class_instance_t& x) { x.fields.clear(); }
     void operator()(auto&) {}
   };
   void object_t::clear_scopes()
