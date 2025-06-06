@@ -1657,3 +1657,36 @@ object_pool_t with 41 objects
   - 2 lox_v[20]
   - tombstone
 
+Hello, World!
+3
+142
+<instance of <class [lox.lox:1278:1] parse_tree_span[ class LoxFunction ... } } ]>>
+Hi, Dear Reader!
+Fibonacci ==
+0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+Fibonacci ==
+1
+2
+3
+global
+global
+block
+global
+<instance of <class [lox.lox:1338:1] parse_tree_span[ class LoxClass ... } } ]>>
+<instance of <class [lox.lox:1315:1] parse_tree_span[ class LoxInstance ... } } ]>>
+Mr Jane
+init()
+start
+Q
+42
+42
+20

@@ -23,3 +23,5 @@ SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --ac
 
 VERBOSE=true ./build/cpp/silva_lox cpp/zoo/lox/example.lox 2>"$TEMPFILE" || true
 cat "$TEMPFILE"
+
+./build/cpp/silva_lox cpp/zoo/lox/lox.lox < cpp/zoo/lox/example.lox
