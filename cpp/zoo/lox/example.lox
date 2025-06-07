@@ -106,3 +106,8 @@ var inc = Inc();
 inc.inc();
 inc.inc();
 print inc.value.value;
+
+print true or 'short-circuit-1';
+print false or 'short-circuit-2';
+print true and 'short-circuit-3';
+print false and 'short-circuit-4';

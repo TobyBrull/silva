@@ -488,7 +488,6 @@ namespace silva::lox {
       else if (rule_name == intp->ni_stmt_for) {
         const auto [init_idx, cond_idx, inc_idx, body_idx] =
             SILVA_EXPECT_FWD(pts.get_children<4>());
-        // TODO: make nested scope?
         auto res = SILVA_EXPECT_FWD(intp->execute(pts.sub_tree_span_at(init_idx), scope),
                                     "{} error evaluating for-initializer",
                                     pts);
@@ -510,7 +509,6 @@ namespace silva::lox {
       }
       else if (rule_name == intp->ni_stmt_while) {
         const auto [cond_idx, body_idx] = SILVA_EXPECT_FWD(pts.get_children<2>());
-        // TODO: make nested scope?
         while (true) {
           const auto cond = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(cond_idx), scope),
                                              "{} error evaluating for-condition",

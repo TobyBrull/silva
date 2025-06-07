@@ -58,7 +58,6 @@ ERROR (MAJOR):
 [01-broken.fern:1:1] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
 [01-broken.fern:1:1] _.Fern
 seed::interpreter_t::apply(_.Fern) failed to parse
-error parsing Fern
 
 [0]_.Fern                                         [ none ... ] ]
   [0]_.Fern.LabeledItem                           none
@@ -1181,7 +1180,7 @@ error parsing Fern
                       [0]_.Soil.Expr.Atom         sum
                       [1]_.Soil.Expr.Atom         i
 
-[0]_.Lox                                          print 'Hello, World!' ... value ;
+[0]_.Lox                                          print 'Hello, World!' ... 'short-circuit-4' ;
   [0]_.Lox.Stmt                                   print 'Hello, World!' ;
     [0]_.Lox.Stmt.Print                           print 'Hello, World!' ;
       [0]_.Lox.Expr.Atom                          'Hello, World!'
@@ -1580,6 +1579,26 @@ error parsing Fern
           [0]_.Lox.Expr.Atom                      inc
           [1]_.Lox.Expr.Atom                      value
         [1]_.Lox.Expr.Atom                        value
+  [41]_.Lox.Stmt                                  print true or 'short-circuit-1' ;
+    [0]_.Lox.Stmt.Print                           print true or 'short-circuit-1' ;
+      [0]_.Lox.Expr.LogicOr.or                    true or 'short-circuit-1'
+        [0]_.Lox.Expr.Atom                        true
+        [1]_.Lox.Expr.Atom                        'short-circuit-1'
+  [42]_.Lox.Stmt                                  print false or 'short-circuit-2' ;
+    [0]_.Lox.Stmt.Print                           print false or 'short-circuit-2' ;
+      [0]_.Lox.Expr.LogicOr.or                    false or 'short-circuit-2'
+        [0]_.Lox.Expr.Atom                        false
+        [1]_.Lox.Expr.Atom                        'short-circuit-2'
+  [43]_.Lox.Stmt                                  print true and 'short-circuit-3' ;
+    [0]_.Lox.Stmt.Print                           print true and 'short-circuit-3' ;
+      [0]_.Lox.Expr.LogicAnd.and                  true and 'short-circuit-3'
+        [0]_.Lox.Expr.Atom                        true
+        [1]_.Lox.Expr.Atom                        'short-circuit-3'
+  [44]_.Lox.Stmt                                  print false and 'short-circuit-4' ;
+    [0]_.Lox.Stmt.Print                           print false and 'short-circuit-4' ;
+      [0]_.Lox.Expr.LogicAnd.and                  false and 'short-circuit-4'
+        [0]_.Lox.Expr.Atom                        false
+        [1]_.Lox.Expr.Atom                        'short-circuit-4'
 
 Hello, World!
 3
@@ -1614,6 +1633,10 @@ Q
 42
 42
 20
+true
+short-circuit-2
+short-circuit-3
+false
 object_pool_t with 41 objects
   - 1 lox_v[<builtin-function '[builtins.lox:2:9] parse_tree_span[ clock ( ) { } ]'>]
   - 1 lox_v[<builtin-function '[builtins.lox:3:9] parse_tree_span[ getc ( ) { } ]'>]
@@ -1690,3 +1713,7 @@ Q
 42
 42
 20
+true
+short-circuit-2
+short-circuit-3
+false

@@ -1,27 +1,21 @@
 # TODO
 
-* Lexical scoping in Lox (i.e., fix the "global block block" test in example.lox)
-
-* Unify: object_pool_t, cactus_t, and syntax_ward_t::name_infos?
-
-* Allow lox::object_ref_t directly in error message
-
-* Lox
+* Lox:
+    * Lexical scoping via Resolver (i.e., fix the "global block block" test in example.lox)
+    * Inheritance
     * Make a REPL
-    * conditional exec
-        * if (`isTruthy()`)
-        * and/or (short-circuit)
-        * while/for loops
-    * put "clock" function in global namespace
-
-* Soil
-    * Make variable declarations explicit (`let` and `let mut`)
-
-* Allow error forwarding completely without adding error node. (fern.mpp:26)
+    * Refactor:
+        * Unify: object_pool_t, cactus_t
+            * get rid of object_t::clear_scopes()
+        * Allow lox::object_ref_t directly in error message
 
 * tokenization:
     * Allow for python-style indenting (i.e., such that indentation generates it generated tokens in the tokenization)?
     * Support user-defined tokenization rules.
+        * Parse "real" Lox
+
+* Soil
+    * Make variable declarations explicit (`let` and `let mut`)
 
 ## Long Term
 
