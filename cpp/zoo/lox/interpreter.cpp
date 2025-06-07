@@ -122,7 +122,7 @@ namespace silva::lox {
 
   expected_t<void> interpreter_t::resolve(parse_tree_span_t pts)
   {
-    vector_t<hashset_t<token_id_t>> variables;
+    vector_t<hashmap_t<token_id_t, bool>> variables;
     variables.push_back({});
 
     const auto count_variable = [&](const parse_tree_span_t ti_pts,
@@ -150,17 +150,20 @@ namespace silva::lox {
         }
       }
       else if (node.rule_name == ni_decl_var) {
+        const auto ti = pts.tp->tokens[node.token_begin + 1];
         if (is_on_entry(event)) {
-          const auto ti = pts.tp->tokens[node.token_begin + 1];
-          variables.back().insert(ti);
+          variables.back().emplace(ti, false);
+        }
+        if (is_on_exit(event)) {
+          variables.back()[ti] = true;
         }
       }
       else if (node.rule_name == ni_decl_class) {
         if (is_on_entry(event)) {
           const auto ti = pts.tp->tokens[node.token_begin + 1];
-          variables.back().insert(ti);
+          variables.back().emplace(ti, true);
           variables.push_back({});
-          variables.back().insert(ti_this);
+          variables.back().emplace(ti_this, true);
         }
         if (is_on_exit(event)) {
           variables.pop_back();
@@ -169,7 +172,7 @@ namespace silva::lox {
       else if (node.rule_name == ni_decl_function) {
         if (is_on_entry(event)) {
           const auto ti = pts.tp->tokens[node.token_begin];
-          variables.back().insert(ti);
+          variables.back().emplace(ti, true);
           variables.push_back({});
         }
         if (is_on_exit(event)) {
@@ -179,7 +182,7 @@ namespace silva::lox {
       else if (node.rule_name == ni_decl_function_param) {
         if (is_on_entry(event)) {
           const auto ti = pts.tp->tokens[node.token_begin];
-          variables.back().insert(ti);
+          variables.back().emplace(ti, true);
         }
       }
       else if (node.rule_name == ni_expr_atom) {
@@ -194,6 +197,12 @@ namespace silva::lox {
           const bool is_func_callee   = (pr == ni_expr_call && path.back().child_index == 0);
           if (is_identifier && !is_keyword && !is_member_access && !is_func_callee) {
             const auto pts_ti = pts.sub_tree_span_at(path.back().node_index);
+            if (const auto it = variables.back().find(ti); it != variables.back().end()) {
+              SILVA_EXPECT(it->second,
+                           MINOR,
+                           "{} can't read local variable in its own initializer",
+                           pts_ti);
+            }
             if (const auto dist_val = count_variable(pts_ti, ti)) {
               resolution[pts_ti] = dist_val.value();
             }
