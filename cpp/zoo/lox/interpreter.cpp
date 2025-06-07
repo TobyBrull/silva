@@ -169,6 +169,16 @@ namespace silva::lox {
           variables.pop_back();
         }
       }
+      else if (node.rule_name == ni_decl_class_s) {
+        SILVA_EXPECT(path.size() >= 2, MAJOR);
+        if (node.token_begin < node.token_end) {
+          const auto& p_node  = pts[path[path.size() - 2].node_index];
+          const auto ti_sub   = pts.tp->tokens[p_node.token_begin + 1];
+          const auto ti_super = pts.tp->tokens[node.token_begin + 1];
+          const auto pts_sub  = pts.sub_tree_span_at(path[path.size() - 2].node_index);
+          SILVA_EXPECT(ti_sub != ti_super, MINOR, "{} class can't inherit from itself", pts_sub);
+        }
+      }
       else if (node.rule_name == ni_decl_function) {
         if (is_on_entry(event)) {
           const auto ti = pts.tp->tokens[node.token_begin];
