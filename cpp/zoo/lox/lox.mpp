@@ -29,6 +29,7 @@ namespace silva::lox {
 
     interpreter_t li{sw.ptr()};
     SILVA_EXPECT_FWD(li.load_builtins(as_parser(si.get())));
+    SILVA_EXPECT_FWD(li.resolve(pt->span()));
     {
       auto scope = li.scopes.root();
       SILVA_EXPECT_FWD(li.execute(pt->span(), scope),

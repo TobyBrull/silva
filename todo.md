@@ -1,7 +1,6 @@
 # TODO
 
 * Lox:
-    * Lexical scoping via Resolver (i.e., fix the "global block block" test in example.lox)
     * Inheritance
     * Make a REPL
     * Refactor:

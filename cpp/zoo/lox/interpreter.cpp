@@ -120,6 +120,98 @@ namespace silva::lox {
     return {};
   }
 
+  expected_t<void> interpreter_t::resolve(parse_tree_span_t pts)
+  {
+    vector_t<hashset_t<token_id_t>> variables;
+    variables.push_back({});
+
+    const auto count_variable = [&](const parse_tree_span_t ti_pts,
+                                    const token_id_t ti) -> optional_t<index_t> {
+      index_t n      = variables.size();
+      index_t retval = 0;
+      for (; retval < n; ++retval) {
+        if (variables[n - 1 - retval].contains(ti)) {
+          return retval;
+        }
+      }
+      return {none};
+    };
+
+    auto result = pts.visit_subtree([&](const span_t<const tree_branch_t> path,
+                                        const tree_event_t event) -> expected_t<bool> {
+      SILVA_EXPECT(variables.size() >= 1, ASSERT);
+      const auto& node = pts[path.back().node_index];
+      if (node.rule_name == ni_stmt_block) {
+        if (is_on_entry(event)) {
+          variables.push_back({});
+        }
+        if (is_on_exit(event)) {
+          variables.pop_back();
+        }
+      }
+      else if (node.rule_name == ni_decl_var) {
+        if (is_on_entry(event)) {
+          const auto ti = pts.tp->tokens[node.token_begin + 1];
+          variables.back().insert(ti);
+        }
+      }
+      else if (node.rule_name == ni_decl_class) {
+        if (is_on_entry(event)) {
+          const auto ti = pts.tp->tokens[node.token_begin + 1];
+          variables.back().insert(ti);
+          variables.push_back({});
+          variables.back().insert(ti_this);
+        }
+        if (is_on_exit(event)) {
+          variables.pop_back();
+        }
+      }
+      else if (node.rule_name == ni_decl_function) {
+        if (is_on_entry(event)) {
+          const auto ti = pts.tp->tokens[node.token_begin];
+          variables.back().insert(ti);
+          variables.push_back({});
+        }
+        if (is_on_exit(event)) {
+          variables.pop_back();
+        }
+      }
+      else if (node.rule_name == ni_decl_function_param) {
+        if (is_on_entry(event)) {
+          const auto ti = pts.tp->tokens[node.token_begin];
+          variables.back().insert(ti);
+        }
+      }
+      else if (node.rule_name == ni_expr_atom) {
+        if (is_on_entry(event)) {
+          const token_id_t ti      = pts.tp->tokens[node.token_begin];
+          const auto* tinfo        = pts.tp->token_info_get(node.token_begin);
+          const bool is_identifier = tinfo->category == IDENTIFIER;
+          const bool is_keyword    = (ti == ti_true || ti == ti_false || ti == ti_none);
+          const name_id_t pr =
+              (path.size() >= 2) ? pts[path[path.size() - 2].node_index].rule_name : name_id_root;
+          const bool is_member_access = (pr == ni_expr_member && path.back().child_index == 1);
+          const bool is_func_callee   = (pr == ni_expr_call && path.back().child_index == 0);
+          if (is_identifier && !is_keyword && !is_member_access && !is_func_callee) {
+            const auto pts_ti = pts.sub_tree_span_at(path.back().node_index);
+            if (const auto dist_val = count_variable(pts_ti, ti)) {
+              resolution[pts_ti] = dist_val.value();
+            }
+          }
+        }
+      }
+      return true;
+    });
+    SILVA_EXPECT_FWD(std::move(result));
+    SILVA_EXPECT(variables.size() == 1, ASSERT);
+
+    // for (const auto& [pts_ti, count]: resolution) {
+    //   fmt::println("RESOLUTION : {} : {}", to_string(pts_ti), count);
+    // }
+
+    return {};
+  }
+
   struct evaluation_t {
     interpreter_t* intp        = nullptr;
     syntax_ward_ptr_t swp      = intp->swp;
@@ -358,7 +450,15 @@ namespace silva::lox {
         return intp->pool.make(double{SILVA_EXPECT_FWD(token_info->number_as_double())});
       }
       else if (token_info->category == IDENTIFIER) {
-        auto* ptr = scope.get(ti);
+        object_ref_t* ptr = [&] {
+          const auto it = intp->resolution.find(pts);
+          if (it != intp->resolution.end()) {
+            return scope.get_at(ti, it->second);
+          }
+          else {
+            return scope.get(ti);
+          }
+        }();
         SILVA_EXPECT(ptr != nullptr,
                      MINOR,
                      "trying to resolve variable {}",

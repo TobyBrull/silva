@@ -62,7 +62,8 @@ namespace silva {
     friend bool operator==(const cactus_arm_t&, const cactus_arm_t&) = default;
 
     // Returns unexpected if the Key cannot be found somewhere along this arm to the root.
-    Value* get(const Key&, index_t max_levels = 0) const;
+    Value* get(const Key&) const;
+    Value* get_at(const Key&, index_t distance) const;
 
     // Returns unexpected if the Key cannot be found somewhere along this arm to the root and
     // "define_if_unavailable" is "false".
@@ -206,13 +207,10 @@ namespace silva {
   }
 
   template<typename Key, typename Value>
-  Value* cactus_arm_t<Key, Value>::get(const Key& k, index_t max_levels) const
+  Value* cactus_arm_t<Key, Value>::get(const Key& k) const
   {
-    if (max_levels == 0) {
-      max_levels = std::numeric_limits<index_t>::max();
-    }
     index_t curr_idx = idx;
-    while (max_levels > 0) {
+    while (true) {
       auto& arm     = cactus->arms[curr_idx];
       const auto it = arm.hashmap.find(k);
       if (it != arm.hashmap.end()) {
@@ -222,9 +220,30 @@ namespace silva {
         break;
       }
       curr_idx = arm.parent.idx;
-      max_levels -= 1;
     }
     return nullptr;
+  }
+
+  template<typename Key, typename Value>
+  Value* cactus_arm_t<Key, Value>::get_at(const Key& k, index_t dist) const
+  {
+    index_t curr_idx = idx;
+    while (dist > 0 && curr_idx != 0) {
+      auto& arm = cactus->arms[curr_idx];
+      curr_idx  = arm.parent.idx;
+      dist -= 1;
+    }
+    if (dist > 0) {
+      return nullptr;
+    }
+    auto& arm     = cactus->arms[curr_idx];
+    const auto it = arm.hashmap.find(k);
+    if (it != arm.hashmap.end()) {
+      return &(it->second);
+    }
+    else {
+      return nullptr;
+    }
   }
 
   template<typename Key, typename Value>
