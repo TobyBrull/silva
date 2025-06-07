@@ -1180,7 +1180,7 @@ seed::interpreter_t::apply(_.Fern) failed to parse
                       [0]_.Soil.Expr.Atom         sum
                       [1]_.Soil.Expr.Atom         i
 
-[0]_.Lox                                          print 'Hello, World!' ... 'short-circuit-4' ;
+[0]_.Lox                                          print 'Hello, World!' ... ) ;
   [0]_.Lox.Stmt                                   print 'Hello, World!' ;
     [0]_.Lox.Stmt.Print                           print 'Hello, World!' ;
       [0]_.Lox.Expr.Atom                          'Hello, World!'
@@ -1599,11 +1599,56 @@ seed::interpreter_t::apply(_.Fern) failed to parse
       [0]_.Lox.Expr.LogicAnd.and                  false and 'short-circuit-4'
         [0]_.Lox.Expr.Atom                        false
         [1]_.Lox.Expr.Atom                        'short-circuit-4'
+  [45]_.Lox.Decl                                  class Animal ... } }
+    [0]_.Lox.Decl.Class                           class Animal ... } }
+      [0]_.Lox.Decl.Class.Super                   
+      [1]_.Lox.Decl.Function                      makeSound ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         
+        [1]_.Lox.Stmt.Block                       { print '...' ; }
+          [0]_.Lox.Stmt                           print '...' ;
+            [0]_.Lox.Stmt.Print                   print '...' ;
+              [0]_.Lox.Expr.Atom                  '...'
+  [46]_.Lox.Decl                                  class Cat ... } }
+    [0]_.Lox.Decl.Class                           class Cat ... } }
+      [0]_.Lox.Decl.Class.Super                   < Animal
+      [1]_.Lox.Decl.Function                      makeSound ( ... ; }
+        [0]_.Lox.Decl.Function.Parameters         
+        [1]_.Lox.Stmt.Block                       { print 'meow' ; }
+          [0]_.Lox.Stmt                           print 'meow' ;
+            [0]_.Lox.Stmt.Print                   print 'meow' ;
+              [0]_.Lox.Expr.Atom                  'meow'
+  [47]_.Lox.Decl                                  class Dog ... { }
+    [0]_.Lox.Decl.Class                           class Dog ... { }
+      [0]_.Lox.Decl.Class.Super                   < Animal
+  [48]_.Lox.Decl                                  var cat ... ) ;
+    [0]_.Lox.Decl.Var                             var cat ... ) ;
+      [0]_.Lox.Expr.Call.(                        Cat ( )
+        [0]_.Lox.Expr.Atom                        Cat
+        [1]_.Lox.Expr.Arguments                   
+  [49]_.Lox.Decl                                  var dog ... ) ;
+    [0]_.Lox.Decl.Var                             var dog ... ) ;
+      [0]_.Lox.Expr.Call.(                        Dog ( )
+        [0]_.Lox.Expr.Atom                        Dog
+        [1]_.Lox.Expr.Arguments                   
+  [50]_.Lox.Stmt                                  cat . ... ) ;
+    [0]_.Lox.Stmt.ExprStmt                        cat . ... ) ;
+      [0]_.Lox.Expr.Call.(                        cat . makeSound ( )
+        [0]_.Lox.Expr.Call..                      cat . makeSound
+          [0]_.Lox.Expr.Atom                      cat
+          [1]_.Lox.Expr.Atom                      makeSound
+        [1]_.Lox.Expr.Arguments                   
+  [51]_.Lox.Stmt                                  dog . ... ) ;
+    [0]_.Lox.Stmt.ExprStmt                        dog . ... ) ;
+      [0]_.Lox.Expr.Call.(                        dog . makeSound ( )
+        [0]_.Lox.Expr.Call..                      dog . makeSound
+          [0]_.Lox.Expr.Atom                      dog
+          [1]_.Lox.Expr.Atom                      makeSound
+        [1]_.Lox.Expr.Arguments                   
 
 Hello, World!
 3
 142
-<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>
+<function [example.lox:8:5] parse_tree_span[ sayHi ( ... ; } ]>
 Hi, Dear Reader!
 Fibonacci ==
 0
@@ -1624,8 +1669,8 @@ global
 global
 block
 global
-<class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>
-<instance of <class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>>
+<class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>
+<instance of <class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>>
 Mr Jane
 init()
 start
@@ -1637,53 +1682,59 @@ true
 short-circuit-2
 short-circuit-3
 false
-object_pool_t with 41 objects
+meow
+...
+object_pool_t with 45 objects
   - 1 lox_v[<builtin-function '[builtins.lox:2:9] parse_tree_span[ clock ( ) { } ]'>]
   - 1 lox_v[<builtin-function '[builtins.lox:3:9] parse_tree_span[ getc ( ) { } ]'>]
   - 1 lox_v[<builtin-function '[builtins.lox:4:9] parse_tree_span[ chr ( ... { } ]'>]
   - 1 lox_v[<builtin-function '[builtins.lox:5:9] parse_tree_span[ exit ( ... { } ]'>]
   - 1 lox_v[<builtin-function '[builtins.lox:6:9] parse_tree_span[ print_error ( ... { } ]'>]
   - 1 lox_v[10]
-  - 1 lox_v[<function [example.lox:80:5] parse_tree_span[ foo ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:88:5] parse_tree_span[ foo ( ... ; } ]>]
   - 1 lox_v[142]
-  - 1 lox_v[<function [example.lox:7:5] parse_tree_span[ sayHi ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:14:5] parse_tree_span[ fib ( ... ; } ]>]
-  - 2 lox_v[<class [example.lox:63:1] parse_tree_span[ class Thing ... } } ]>]
-  - 1 lox_v[<function [example.lox:40:7] parse_tree_span[ showA ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:52:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:8:5] parse_tree_span[ sayHi ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:16:5] parse_tree_span[ fib ( ... ; } ]>]
+  - 2 lox_v[<class [example.lox:69:1] parse_tree_span[ class Thing ... } } ]>]
+  - 1 lox_v[<function [example.lox:44:7] parse_tree_span[ showA ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:57:3] parse_tree_span[ sayName ( ... ; } ]>]
   - 1 lox_v[3]
-  - 1 lox_v[<function [example.lox:90:3] parse_tree_span[ init ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:99:3] parse_tree_span[ init ( ... ; } ]>]
   - 1 lox_v[Jane]
-  - 1 lox_v[<function [example.lox:52:3] parse_tree_span[ sayName ( ... ; } ]>]
-  - 2 lox_v[<function [example.lox:68:3] parse_tree_span[ getCallback ( ... ; } ]>]
-  - 2 lox_v[<function [example.lox:26:7] parse_tree_span[ count ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:57:3] parse_tree_span[ sayName ( ... ; } ]>]
+  - 2 lox_v[<function [example.lox:74:3] parse_tree_span[ getCallback ( ... ; } ]>]
+  - 2 lox_v[<function [example.lox:29:7] parse_tree_span[ count ( ... ; } ]>]
   - 1 lox_v[global]
   - 1 lox_v[block]
-  - 1 lox_v[<function [example.lox:24:5] parse_tree_span[ makeCounter ( ... ; } ]>]
-  - 2 lox_v[<function [example.lox:64:3] parse_tree_span[ init ( ... ; } ]>]
-  - 2 lox_v[<instance of <class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>>]
+  - 1 lox_v[<function [example.lox:27:5] parse_tree_span[ makeCounter ( ... ; } ]>]
+  - 2 lox_v[<function [example.lox:70:3] parse_tree_span[ init ( ... ; } ]>]
+  - 2 lox_v[<instance of <class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>>]
   - 1 lox_v[start]
-  - 3 lox_v[<class [example.lox:51:1] parse_tree_span[ class Person ... } } ]>]
-  - 2 lox_v[<function [example.lox:69:9] parse_tree_span[ localFunction ( ... ; } ]>]
-  - 1 lox_v[<instance of <class [example.lox:63:1] parse_tree_span[ class Thing ... } } ]>>]
+  - 3 lox_v[<class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>]
+  - 2 lox_v[<function [example.lox:75:9] parse_tree_span[ localFunction ( ... ; } ]>]
+  - 1 lox_v[<instance of <class [example.lox:69:1] parse_tree_span[ class Thing ... } } ]>>]
   - 1 lox_v[42]
-  - 2 lox_v[<class [example.lox:89:1] parse_tree_span[ class Number ... } } ]>]
-  - 1 lox_v[<function [example.lox:95:3] parse_tree_span[ init ( ... ; } ]>]
-  - 1 lox_v[<function [example.lox:100:3] parse_tree_span[ inc ( ... ; } ]>]
-  - 2 lox_v[<class [example.lox:94:1] parse_tree_span[ class Inc ... } } ]>]
-  - 1 lox_v[<instance of <class [example.lox:89:1] parse_tree_span[ class Number ... } } ]>>]
-  - 1 lox_v[<instance of <class [example.lox:94:1] parse_tree_span[ class Inc ... } } ]>>]
-  - tombstone
-  - tombstone
-  - tombstone
-  - tombstone
+  - 2 lox_v[<class [example.lox:98:1] parse_tree_span[ class Number ... } } ]>]
+  - 1 lox_v[<function [example.lox:104:3] parse_tree_span[ init ( ... ; } ]>]
+  - 1 lox_v[<function [example.lox:109:3] parse_tree_span[ inc ( ... ; } ]>]
+  - 2 lox_v[<class [example.lox:103:1] parse_tree_span[ class Inc ... } } ]>]
+  - 1 lox_v[<instance of <class [example.lox:98:1] parse_tree_span[ class Number ... } } ]>>]
+  - 1 lox_v[<instance of <class [example.lox:103:1] parse_tree_span[ class Inc ... } } ]>>]
+  - 2 lox_v[<class [example.lox:131:1] parse_tree_span[ class Cat ... } } ]>]
+  - 1 lox_v[<function [example.lox:127:3] parse_tree_span[ makeSound ( ... ; } ]>]
+  - 3 lox_v[<class [example.lox:126:1] parse_tree_span[ class Animal ... } } ]>]
+  - 1 lox_v[<function [example.lox:132:3] parse_tree_span[ makeSound ( ... ; } ]>]
   - 2 lox_v[20]
+  - 2 lox_v[<class [example.lox:136:1] parse_tree_span[ class Dog ... { } ]>]
+  - tombstone
+  - 1 lox_v[<instance of <class [example.lox:131:1] parse_tree_span[ class Cat ... } } ]>>]
+  - 1 lox_v[<instance of <class [example.lox:136:1] parse_tree_span[ class Dog ... { } ]>>]
   - tombstone
 
 Hello, World!
 3
 142
-<instance of <class [lox.lox:1278:1] parse_tree_span[ class LoxFunction ... } } ]>>
+<instance of <class [lox.lox:1282:1] parse_tree_span[ class LoxFunction ... } } ]>>
 Hi, Dear Reader!
 Fibonacci ==
 0
@@ -1704,8 +1755,8 @@ global
 global
 block
 global
-<instance of <class [lox.lox:1338:1] parse_tree_span[ class LoxClass ... } } ]>>
-<instance of <class [lox.lox:1315:1] parse_tree_span[ class LoxInstance ... } } ]>>
+<instance of <class [lox.lox:1342:1] parse_tree_span[ class LoxClass ... } } ]>>
+<instance of <class [lox.lox:1319:1] parse_tree_span[ class LoxInstance ... } } ]>>
 Mr Jane
 init()
 start
@@ -1717,3 +1768,5 @@ true
 short-circuit-2
 short-circuit-3
 false
+meow
+...

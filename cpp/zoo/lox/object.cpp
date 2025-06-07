@@ -38,16 +38,24 @@ namespace silva::lox {
     if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
     }
-    SILVA_ASSERT(ci._class->holds_class());
-    const class_t& cc = std::get<class_t>(ci._class->data);
-    if (const auto it = cc.methods.find(field_name); it != cc.methods.end()) {
-      const object_ref_t method = it->second;
-      SILVA_EXPECT(method->holds_function(), ASSERT);
-      const function_t& fun  = std::get<function_t>(method->data);
-      auto closure_with_this = fun.closure.make_child_arm();
-      SILVA_EXPECT_FWD(closure_with_this.define(ti_this, class_instance));
-      function_t bound_func{fun.pts, std::move(closure_with_this)};
-      return pool.make(std::move(bound_func));
+    object_ref_t cc = ci._class;
+    while (!cc.is_nullptr()) {
+      SILVA_ASSERT(cc->holds_class());
+      const class_t& ccc = std::get<class_t>(cc->data);
+      const auto it      = ccc.methods.find(field_name);
+      if (it == ccc.methods.end()) {
+        cc = ccc.superclass;
+        continue;
+      }
+      else {
+        const object_ref_t method = it->second;
+        SILVA_EXPECT(method->holds_function(), ASSERT);
+        const function_t& fun  = std::get<function_t>(method->data);
+        auto closure_with_this = fun.closure.make_child_arm();
+        SILVA_EXPECT_FWD(closure_with_this.define(ti_this, class_instance));
+        function_t bound_func{fun.pts, std::move(closure_with_this)};
+        return pool.make(std::move(bound_func));
+      }
     }
     SILVA_EXPECT(false, MINOR, "couldn't access member");
   }

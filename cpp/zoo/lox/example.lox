@@ -1,9 +1,10 @@
+# Basic expressions
 print 'Hello, World!';
 print 1 + 2 * 3 - 4;
-
 var x = 100 + 42;
 print x;
 
+# Functions
 fun sayHi(first, last) {
   print 'Hi, ' + first + ' ' + last + '!';
   return;
@@ -11,6 +12,7 @@ fun sayHi(first, last) {
 print sayHi;
 sayHi('Dear', 'Reader');
 
+# Recursive functions
 fun fib(n) {
     if (n <= 1) return n;
     return fib(n - 2) + fib(n - 1);
@@ -21,6 +23,7 @@ for (var i = 0; i < 10; i = i + 1) {
 }
 print 'Fibonacci ==';
 
+# Closures
 fun makeCounter() {
   var i = 0;
   fun count() {
@@ -34,6 +37,7 @@ counter();
 counter();
 counter();
 
+# Scoping
 var a;
 a = 'global';
 {
@@ -48,6 +52,7 @@ a = 'global';
 }
 print a;
 
+# Classes
 class Person {
   sayName() {
     print 'Mr ' + this.name;
@@ -60,6 +65,7 @@ jane.name = 'Jane';
 var method = jane.sayName;
 method();
 
+# Scoping
 class Thing {
   init() {
     print 'init()';
@@ -75,8 +81,10 @@ class Thing {
 var callback = Thing().getCallback();
 callback();
 
+# Builtin functions
 print chr(81);
 
+# Call-by-reference semantics
 fun foo(x) {
   var a = x;
   x = 123;
@@ -86,6 +94,7 @@ var outer = 42;
 print foo(outer);
 print outer;
 
+# Classes
 class Number {
   init(x) {
     this.value = x;
@@ -107,7 +116,26 @@ inc.inc();
 inc.inc();
 print inc.value.value;
 
+# Short-circuit behaviour
 print true or 'short-circuit-1';
 print false or 'short-circuit-2';
 print true and 'short-circuit-3';
 print false and 'short-circuit-4';
+
+# Inheritance
+class Animal {
+  makeSound () {
+    print '...';
+  }
+}
+class Cat < Animal {
+  makeSound () {
+    print 'meow';
+  }
+}
+class Dog < Animal {
+}
+var cat = Cat();
+var dog = Dog();
+cat.makeSound();
+dog.makeSound();

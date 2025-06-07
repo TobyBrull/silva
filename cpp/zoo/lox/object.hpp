@@ -36,6 +36,7 @@ namespace silva::lox {
 
   struct class_t {
     parse_tree_span_t pts;
+    object_ref_t superclass;
     hashmap_t<token_id_t, object_ref_t> methods;
 
     friend bool operator==(const class_t&, const class_t&) = default;

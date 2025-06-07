@@ -426,7 +426,7 @@ namespace silva::lox {
         else if (lhs_pts[0].rule_name == intp->ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
           SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
-          SILVA_EXPECT_FWD(scope.set(ti, rhs_ref), "{} here", pts);
+          SILVA_EXPECT_FWD(scope.set(ti, rhs_ref), "{} assignment to undeclared variable", pts);
         }
         else {
           SILVA_EXPECT(false, MINOR, "{} unexpected left-hand-side in assignment", lhs_pts);
@@ -553,6 +553,21 @@ namespace silva::lox {
         const auto pts_super = pts.sub_tree_span_at(it.pos);
         SILVA_EXPECT(pts_super[0].rule_name == intp->ni_decl_class_s, MAJOR);
         class_t cc;
+        if (pts_super[0].token_begin < pts_super[0].token_end) {
+          const auto ti_super              = pts.tp->tokens[pts_super[0].token_begin + 1];
+          const object_ref_t* p_superclass = scope.get(ti_super);
+          SILVA_EXPECT(p_superclass != nullptr,
+                       MINOR,
+                       "{} could not find superclass {}",
+                       pts,
+                       swp->token_id_wrap(ti_super));
+          SILVA_EXPECT((*p_superclass)->holds_class(),
+                       MINOR,
+                       "{} superclass expression does not resolve to a class, but {}",
+                       pts,
+                       *p_superclass);
+          cc.superclass = *p_superclass;
+        }
         cc.pts = pts;
         ++it;
         while (it != end) {

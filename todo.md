@@ -6,7 +6,6 @@
     * Refactor:
         * Unify: object_pool_t, cactus_t
             * get rid of object_t::clear_scopes()
-        * Allow lox::object_ref_t directly in error message
 
 * tokenization:
     * Allow for python-style indenting (i.e., such that indentation generates it generated tokens in the tokenization)?

@@ -38,6 +38,7 @@ var MINUS = 45;
 var PLUS = 43;
 var SEMICOLON = 59;
 var SLASH = 47;
+var HASH = 35;
 var STAR = 42;
 var BANG = 33;
 var EQUAL = 61;
@@ -98,6 +99,7 @@ fun tokenTypeStr(type) {
   if (type == PLUS) return '+';
   if (type == SEMICOLON) return ';';
   if (type == SLASH) return '/';
+  if (type == HASH) return '#';
   if (type == STAR) return '*';
   if (type == BANG) return '!';
   if (type == EQUAL) return '=';
@@ -231,7 +233,9 @@ class Scanner {
         return Token(GREATER, none, this.line);
       }
       else if (ch == SLASH) {
-        if (this.ch != SLASH) return Token(SLASH, none, this.line);
+        return Token(SLASH, none, this.line);
+      }
+      else if (ch == HASH) {
         # Comment till end of line
         this.advance();
         while (this.ch >= 0 and this.ch != 10) {
