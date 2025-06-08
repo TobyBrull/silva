@@ -5,6 +5,11 @@ add_subdirectory(thirdparty/date-3.0.3)
 # find_package(Boost REQUIRED)
 find_package(Fmt REQUIRED)
 
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/config.hpp"
+  )
+
 file(GLOB SILVA_LIB_FILES
   "canopy/*.cpp"
   "syntax/*.cpp"
@@ -23,6 +28,7 @@ endforeach()
 
 add_library(silvalib ${SILVA_LIB_FILES})
 target_include_directories(silvalib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(silvalib PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(silvalib PUBLIC
   fmt::fmt
   reflect-cpp

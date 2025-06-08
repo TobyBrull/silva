@@ -13,7 +13,9 @@ namespace silva {
   class ptr_t;
 
   class sprite_t {
+#ifndef SILVA_OPTIMIZED_BUILD
     mutable std::atomic<index_t> ptr_count = 0;
+#endif
 
     template<typename T>
     friend class ptr_t;
@@ -97,7 +99,9 @@ namespace silva {
 namespace silva {
   inline sprite_t::~sprite_t()
   {
+#ifndef SILVA_OPTIMIZED_BUILD
     SILVA_ASSERT(ptr_count == 0, "ptr_count should be zero, was {}", ptr_count.load());
+#endif
   }
 
   inline sprite_t::sprite_t(sprite_t&&)
@@ -114,17 +118,21 @@ namespace silva {
   template<typename T>
   ptr_t<T>::ptr_t(T* ptr) : ptr(ptr)
   {
+#ifndef SILVA_OPTIMIZED_BUILD
     if (ptr) {
       ptr->ptr_count += 1;
     }
+#endif
   }
 
   template<typename T>
   ptr_t<T>::~ptr_t()
   {
+#ifndef SILVA_OPTIMIZED_BUILD
     if (ptr != nullptr) {
       ptr->ptr_count -= 1;
     }
+#endif
   }
 
   template<typename T>
@@ -135,9 +143,11 @@ namespace silva {
   template<typename T>
   ptr_t<T>::ptr_t(const ptr_t& other) : ptr(other.ptr)
   {
+#ifndef SILVA_OPTIMIZED_BUILD
     if (ptr) {
       ptr->ptr_count += 1;
     }
+#endif
   }
 
   template<typename T>
@@ -156,9 +166,11 @@ namespace silva {
     if (this != &other) {
       clear();
       ptr = other.ptr;
+#ifndef SILVA_OPTIMIZED_BUILD
       if (ptr) {
         ptr->ptr_count += 1;
       }
+#endif
     }
     return *this;
   }
@@ -172,9 +184,11 @@ namespace silva {
   template<typename T>
   void ptr_t<T>::clear()
   {
+#ifndef SILVA_OPTIMIZED_BUILD
     if (ptr != nullptr) {
       ptr->ptr_count -= 1;
     }
+#endif
     ptr = nullptr;
   }
 
