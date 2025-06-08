@@ -1,8 +1,10 @@
 # TODO
 
 * Lox:
-    * Inheritance
     * Make a REPL
+    * lox.lox
+        * allow it to recursively interpret itself, like silva_lox lox.lox lox.lox example.lox?
+        * replace the 'chr' builtins with a load_file'?
     * Refactor:
         * Unify: object_pool_t, cactus_t
             * get rid of object_t::clear_scopes()
