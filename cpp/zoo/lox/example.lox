@@ -130,6 +130,8 @@ class Animal {
 }
 class Cat < Animal {
   makeSound () {
+    var mm = super.makeSound;
+    mm();
     print 'meow';
   }
 }
@@ -139,3 +141,24 @@ var cat = Cat();
 var dog = Dog();
 cat.makeSound();
 dog.makeSound();
+
+class A {
+  method() {
+    print 'A method: ' + this.value;
+  }
+}
+class B < A {
+  method() {
+    print 'B method: ' + this.value;
+  }
+  test() {
+    print 'in test(): ' + this.value;
+    print super.method;
+    super.method();
+  }
+}
+class C < B {
+}
+var c = C();
+c.value = 'ccc';
+c.test();

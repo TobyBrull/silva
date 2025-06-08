@@ -48,7 +48,8 @@ namespace silva::lox {
           - Assign      = ltr infix '='
         ]
         - Atom = 'true' | 'false' | 'none' | 'this'
-               | number | string | identifier
+               | number | string
+               | 'super' '.' identifier | identifier
         - Arguments = ( x ( ',' x ) * ) ?
       ]
     ]

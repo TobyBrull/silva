@@ -53,6 +53,11 @@ namespace silva::lox {
                                       token_id_t field_name,
                                       object_pool_t& pool,
                                       const token_id_t ti_this);
+  expected_t<object_ref_t> member_bind(const object_ref_t& class_instance,
+                                       object_ref_t _class,
+                                       token_id_t field_name,
+                                       object_pool_t& pool,
+                                       const token_id_t ti_this);
 
   struct object_t {
     object_t() = default;

@@ -1217,8 +1217,12 @@ true
 short-circuit-2
 short-circuit-3
 false
+...
 meow
 ...
+in test(): ccc
+<function [example.lox:146:3] parse_tree_span[ method ( ... ; } ]>
+A method: ccc
 Hello, World!
 3
 142
@@ -1256,5 +1260,9 @@ true
 short-circuit-2
 short-circuit-3
 false
+...
 meow
 ...
+in test(): ccc
+<instance of <class [lox.lox:1282:1] parse_tree_span[ class LoxFunction ... } } ]>>
+A method: ccc

@@ -38,13 +38,29 @@ namespace silva::lox {
     if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
     }
-    object_ref_t cc = ci._class;
-    while (!cc.is_nullptr()) {
-      SILVA_ASSERT(cc->holds_class());
-      const class_t& ccc = std::get<class_t>(cc->data);
+    return member_bind(class_instance, {}, field_name, pool, ti_this);
+  }
+
+  expected_t<object_ref_t> member_bind(const object_ref_t& class_instance,
+                                       object_ref_t _class,
+                                       token_id_t field_name,
+                                       object_pool_t& pool,
+                                       const token_id_t ti_this)
+  {
+    SILVA_EXPECT(class_instance->holds_class_instance(),
+                 MINOR,
+                 "can only get member from class instance",
+                 to_string(class_instance));
+    class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
+    if (_class.is_nullptr()) {
+      _class = ci._class;
+    }
+    while (!_class.is_nullptr()) {
+      SILVA_EXPECT(_class->holds_class(), ASSERT);
+      const class_t& ccc = std::get<class_t>(_class->data);
       const auto it      = ccc.methods.find(field_name);
       if (it == ccc.methods.end()) {
-        cc = ccc.superclass;
+        _class = ccc.superclass;
         continue;
       }
       else {
