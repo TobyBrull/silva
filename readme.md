@@ -34,8 +34,10 @@ eval "$(conda shell.bash hook)"
 conda activate silva-clang
 
 rm -rf build/
-cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Debug   -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
-cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+CMAKE_ARGS=("-S" "." "-B" "build/" "-G" "Ninja" "-DCMAKE_CXX_COMPILER=clang++")
+cmake "${CMAKE_ARGS[@]}" -DCMAKE_BUILD_TYPE=Debug
+cmake "${CMAKE_ARGS[@]}" -DCMAKE_BUILD_TYPE=Release
+cmake "${CMAKE_ARGS[@]}" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_TRACY=On
 ninja -C build/ && ./build/cpp/silva_test
 ninja -C build/ && bash demo.sh > demo.sh.output && git status
 ```

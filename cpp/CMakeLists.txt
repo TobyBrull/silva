@@ -34,6 +34,7 @@ target_link_libraries(silvalib PUBLIC
   reflect-cpp
   hh-date
 )
+target_link_libraries(silvalib PUBLIC TracyClient)
 
 # Command-line tools
 
