@@ -1,6 +1,7 @@
 #pragma once
 
 #include "config.hpp"
+#include "tracy.hpp"
 
 #include <cstdint>
 #include <filesystem>

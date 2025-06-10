@@ -34,6 +34,16 @@ namespace silva {
   template<typename Enum>
     requires std::is_enum_v<Enum>
   string_or_view_t to_string_impl(const Enum& x);
+
+#ifdef TRACY_ENABLE
+#  define ZoneTextToString(x)                \
+    {                                        \
+      const auto sov = to_string(x);         \
+      const auto sv  = sov.as_string_view(); \
+      ZoneText(sv.data(), sv.size());        \
+    }
+#endif
+
 }
 
 // IMPLEMENTATION
