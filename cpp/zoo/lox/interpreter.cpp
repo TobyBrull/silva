@@ -514,24 +514,12 @@ namespace silva::lox {
 
     expected_t<object_ref_t> atom(const parse_tree_span_t pts)
     {
+      if (const auto it = intp->literals.find(pts); it != intp->literals.end()) {
+        return it->second;
+      }
       const token_id_t ti            = pts.tp->tokens[pts[0].token_begin];
       const token_info_t* token_info = pts.tp->token_info_get(pts[0].token_begin);
-      if (ti == intp->ti_true) {
-        return intp->pool.make(true);
-      }
-      else if (ti == intp->ti_false) {
-        return intp->pool.make(false);
-      }
-      else if (ti == intp->ti_none) {
-        return intp->pool.make(none);
-      }
-      else if (token_info->category == STRING) {
-        return intp->pool.make(string_t{SILVA_EXPECT_FWD(token_info->string_as_plain_contained())});
-      }
-      else if (token_info->category == NUMBER) {
-        return intp->pool.make(double{SILVA_EXPECT_FWD(token_info->number_as_double())});
-      }
-      else if (ti == intp->ti_super) {
+      if (ti == intp->ti_super) {
         SILVA_EXPECT(pts[0].token_end - pts[0].token_begin == 3, MAJOR);
         const auto it = intp->resolution.find(pts);
         SILVA_EXPECT(it != intp->resolution.end(), MAJOR, "{} could not resolve", pts);
