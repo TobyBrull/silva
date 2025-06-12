@@ -67,13 +67,13 @@ namespace silva::lox {
 
     object_t(object_t&&)                 = default;
     object_t(const object_t&)            = default;
-    object_t& operator=(object_t&&)      = default;
-    object_t& operator=(const object_t&) = default;
+    object_t& operator=(object_t&&)      = delete;
+    object_t& operator=(const object_t&) = delete;
 
-    variant_t<none_t,
-              bool,
-              double,
-              string_t,
+    variant_t<const none_t,
+              const bool,
+              const double,
+              const string_t,
               function_t,
               function_builtin_t,
               class_t,

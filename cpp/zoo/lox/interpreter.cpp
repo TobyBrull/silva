@@ -61,7 +61,7 @@ namespace silva::lox {
               SILVA_ASSERT(ptr != nullptr, "couldn't find parameter 'ascii_code'");
               const object_ref_t& val = *ptr;
               SILVA_ASSERT(val->holds_double());
-              const double double_val = std::get<double>(val->data);
+              const double double_val = std::get<const double>(val->data);
               string_t retval{(char)double_val};
               return pool.make(retval);
             },
@@ -75,7 +75,7 @@ namespace silva::lox {
               SILVA_ASSERT(ptr != nullptr, "couldn't find parameter 'exit_code'");
               const object_ref_t val = *ptr;
               SILVA_ASSERT(val->holds_double());
-              const double double_val = std::get<double>(val->data);
+              const double double_val = std::get<const double>(val->data);
               std::exit((int)double_val);
             },
         },
@@ -88,7 +88,7 @@ namespace silva::lox {
               SILVA_ASSERT(ptr != nullptr, "couldn't find parameter 'text'");
               const object_ref_t val = *ptr;
               SILVA_ASSERT(val->holds_string());
-              const auto& text = std::get<string_t>(val->data);
+              const auto& text = std::get<const string_t>(val->data);
               fmt::println("ERROR: {}", text);
               return pool.make(none);
             },

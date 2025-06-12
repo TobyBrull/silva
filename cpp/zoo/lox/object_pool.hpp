@@ -91,14 +91,13 @@ namespace silva {
     index_t idx{};
     if (next_free == -1) {
       idx = object_datas.size();
-      object_datas.push_back(object_data_t{
-          .obj = T{std::forward<Args>(args)...},
-      });
+      object_datas.emplace_back();
+      object_datas.back().obj.emplace(std::forward<Args>(args)...);
     }
     else {
-      idx                   = next_free;
-      next_free             = object_datas[idx].next_free;
-      object_datas[idx].obj = T{std::forward<Args>(args)...};
+      idx       = next_free;
+      next_free = object_datas[idx].next_free;
+      object_datas[idx].obj.emplace(std::forward<Args>(args)...);
     }
     return object_ref_t<T>{ptr(), idx};
   }

@@ -80,19 +80,19 @@ namespace silva::lox {
 
   bool object_t::is_none() const
   {
-    return variant_holds_t<none_t>{}(data);
+    return variant_holds_t<const none_t>{}(data);
   }
   bool object_t::holds_bool() const
   {
-    return variant_holds_t<bool>{}(data);
+    return variant_holds_t<const bool>{}(data);
   }
   bool object_t::holds_double() const
   {
-    return variant_holds_t<double>{}(data);
+    return variant_holds_t<const double>{}(data);
   }
   bool object_t::holds_string() const
   {
-    return variant_holds_t<string_t>{}(data);
+    return variant_holds_t<const string_t>{}(data);
   }
   bool object_t::holds_fundamental() const
   {
@@ -134,7 +134,7 @@ namespace silva::lox {
       return false;
     }
     if (holds_bool()) {
-      return std::get<bool>(data);
+      return std::get<const bool>(data);
     }
     return true;
   }
@@ -146,26 +146,26 @@ namespace silva::lox {
   expected_t<double> operator-(const object_t& x)
   {
     if (x.holds_double()) {
-      return -std::get<double>(x.data);
+      return -std::get<const double>(x.data);
     }
     else {
       SILVA_EXPECT(false, MAJOR, "runtime type error: - {} ", to_string(x));
     }
   }
 
-#define BINARY_DOUBLE(return_type, op)                                            \
-  expected_t<return_type> operator op(const object_t & lhs, const object_t & rhs) \
-  {                                                                               \
-    if (lhs.holds_double() && rhs.holds_double()) {                               \
-      return std::get<double>(lhs.data) op std::get<double>(rhs.data);            \
-    }                                                                             \
-    else {                                                                        \
-      SILVA_EXPECT(false,                                                         \
-                   MAJOR,                                                         \
-                   "runtime type error: {} " #op " {}",                           \
-                   to_string(lhs),                                                \
-                   to_string(rhs));                                               \
-    }                                                                             \
+#define BINARY_DOUBLE(return_type, op)                                             \
+  expected_t<return_type> operator op(const object_t & lhs, const object_t & rhs)  \
+  {                                                                                \
+    if (lhs.holds_double() && rhs.holds_double()) {                                \
+      return std::get<const double>(lhs.data) op std::get<const double>(rhs.data); \
+    }                                                                              \
+    else {                                                                         \
+      SILVA_EXPECT(false,                                                          \
+                   MAJOR,                                                          \
+                   "runtime type error: {} " #op " {}",                            \
+                   to_string(lhs),                                                 \
+                   to_string(rhs));                                                \
+    }                                                                              \
   }
   BINARY_DOUBLE(double, *)
   BINARY_DOUBLE(double, /)
@@ -179,10 +179,10 @@ namespace silva::lox {
   expected_t<variant_t<double, string_t>> operator+(const object_t& lhs, const object_t& rhs)
   {
     if (lhs.holds_double() && rhs.holds_double()) {
-      return std::get<double>(lhs.data) + std::get<double>(rhs.data);
+      return std::get<const double>(lhs.data) + std::get<const double>(rhs.data);
     }
     else if (lhs.holds_string() && rhs.holds_string()) {
-      return std::get<string_t>(lhs.data) + std::get<string_t>(rhs.data);
+      return std::get<const string_t>(lhs.data) + std::get<const string_t>(rhs.data);
     }
     else {
       SILVA_EXPECT(false, MAJOR, "runtime type error: {} + {}", to_string(lhs), to_string(rhs));
