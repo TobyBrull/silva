@@ -62,8 +62,6 @@ namespace silva {
     T* operator->() const;
     T& operator*() const;
 
-    friend bool operator==(const object_ref_t&, const object_ref_t&) = default;
-
     friend string_or_view_t to_string_impl(const object_ref_t& x) { return to_string_impl(*x); }
     friend std::ostream& operator<<(std::ostream& os, const object_ref_t& x) { return os << *x; }
   };

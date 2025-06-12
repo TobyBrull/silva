@@ -24,14 +24,13 @@ namespace silva::lox {
     parse_tree_span_t parameters() const;
     parse_tree_span_t body() const;
 
-    friend bool operator==(const function_t&, const function_t&) = default;
+    friend bool operator==(const function_t&, const function_t&);
   };
 
   struct function_builtin_t : public function_t {
     silva::function_t<object_ref_t(object_pool_t&, scope_ptr_t)> impl;
 
-    friend bool operator==(const function_builtin_t& lhs, const function_builtin_t& rhs);
-    friend bool operator!=(const function_builtin_t& lhs, const function_builtin_t& rhs) = default;
+    friend bool operator==(const function_builtin_t&, const function_builtin_t&);
   };
 
   struct class_t {
@@ -39,14 +38,14 @@ namespace silva::lox {
     object_ref_t superclass;
     hashmap_t<token_id_t, object_ref_t> methods;
 
-    friend bool operator==(const class_t&, const class_t&) = default;
+    friend bool operator==(const class_t&, const class_t&);
   };
 
   struct class_instance_t {
     object_ref_t _class;
     hashmap_t<token_id_t, object_ref_t> fields;
 
-    friend bool operator==(const class_instance_t&, const class_instance_t&) = default;
+    friend bool operator==(const class_instance_t&, const class_instance_t&);
   };
 
   expected_t<object_ref_t> member_get(const object_ref_t& class_instance,

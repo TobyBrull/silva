@@ -162,3 +162,10 @@ class C < B {
 var c = C();
 c.value = 'ccc';
 c.test();
+
+class Foo {
+}
+var f1 = Foo();
+var f2 = Foo();
+print f1 == f2;
+print f1 == f1;

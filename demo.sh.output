@@ -1223,6 +1223,8 @@ meow
 in test(): ccc
 <function [example.lox:146:3] parse_tree_span[ method ( ... ; } ]>
 A method: ccc
+false
+true
 Hello, World!
 3
 142
@@ -1266,3 +1268,5 @@ meow
 in test(): ccc
 <instance of <class [lox.lox:1282:1] parse_tree_span[ class LoxFunction ... } } ]>>
 A method: ccc
+false
+true

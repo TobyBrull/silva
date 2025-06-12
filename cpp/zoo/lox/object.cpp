@@ -18,9 +18,21 @@ namespace silva::lox {
     return pts.sub_tree_span_at(pts[1].subtree_size + 1);
   }
 
+  bool operator==(const function_t& lhs, const function_t& rhs)
+  {
+    return &lhs == &rhs;
+  }
   bool operator==(const function_builtin_t& lhs, const function_builtin_t& rhs)
   {
     return ((const function_t&)lhs) == ((const function_t&)rhs);
+  }
+  bool operator==(const class_t& lhs, const class_t& rhs)
+  {
+    return &lhs == &rhs;
+  }
+  bool operator==(const class_instance_t& lhs, const class_instance_t& rhs)
+  {
+    return &lhs == &rhs;
   }
 
   // class_instance_t
