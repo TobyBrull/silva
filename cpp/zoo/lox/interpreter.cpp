@@ -217,6 +217,7 @@ namespace silva::lox {
         if (is_on_entry(event)) {
           const token_id_t ti = pts.tp->tokens[pts_curr[0].token_begin];
           const auto* tinfo   = pts.tp->token_info_get(pts_curr[0].token_begin);
+          const auto pts_ti   = pts.sub_tree_span_at(path.back().node_index);
 
           const bool is_super = (ti == ti_super);
           if (is_super) {
@@ -233,8 +234,7 @@ namespace silva::lox {
           const bool is_member_access = (pr == ni_expr_member && path.back().child_index == 1);
           const bool is_func_callee   = (pr == ni_expr_call && path.back().child_index == 0);
           if ((is_identifier && !is_keyword && !is_member_access && !is_func_callee) || is_super) {
-            const auto pts_ti = pts.sub_tree_span_at(path.back().node_index);
-            const auto& vars  = static_scopes.back().variables;
+            const auto& vars = static_scopes.back().variables;
             if (const auto it = vars.find(ti); it != vars.end()) {
               SILVA_EXPECT(it->second,
                            MINOR,
@@ -244,6 +244,38 @@ namespace silva::lox {
             if (const auto dist_val = count_variable(pts_ti, ti)) {
               resolution[pts_ti] = dist_val.value();
             }
+          }
+
+          const bool is_number = tinfo->category == NUMBER;
+          const bool is_string = tinfo->category == STRING;
+          if (is_keyword || is_number || is_string) {
+            object_ref_t literal;
+            if (ti == ti_none) {
+              literal = pool.make(none);
+            }
+            else if (ti == ti_true) {
+              literal = pool.make(true);
+            }
+            else if (ti == ti_false) {
+              literal = pool.make(false);
+            }
+            else if (tinfo->category == STRING) {
+              const auto sov = SILVA_EXPECT_FWD(tinfo->string_as_plain_contained());
+              literal        = pool.make(string_t{sov});
+            }
+            else if (tinfo->category == NUMBER) {
+              const auto dd = SILVA_EXPECT_FWD(tinfo->number_as_double());
+              literal       = pool.make(double{dd});
+            }
+            else {
+              SILVA_EXPECT(false, ASSERT);
+            }
+            SILVA_EXPECT(!literal.is_nullptr(),
+                         MINOR,
+                         "{} could not turn literal into lox object {}",
+                         pts_ti,
+                         swp->token_id_wrap(ti));
+            literals[pts_ti] = literal;
           }
         }
       }

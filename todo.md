@@ -2,6 +2,10 @@
 
 * Lox:
     * Make a REPL
+    * Interpreter
+        * transform original AST to a new ast that has:
+            * literal object_ref_t's inline
+            * resultion depth inline
     * lox.lox
         * allow it to recursively interpret itself, like silva_lox lox.lox lox.lox example.lox?
         * replace the 'chr' builtins with a load_file'?
