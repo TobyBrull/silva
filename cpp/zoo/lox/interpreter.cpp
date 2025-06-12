@@ -287,6 +287,9 @@ namespace silva::lox {
     // for (const auto& [pts_ti, count]: resolution) {
     //   fmt::println("RESOLUTION : {} : {}", to_string(pts_ti), count);
     // }
+    // for (const auto& [pts_ti, obj_ref]: literals) {
+    //   fmt::println("LITERALS : {} : {}", to_string(pts_ti), to_string(obj_ref));
+    // }
 
     return {};
   }
