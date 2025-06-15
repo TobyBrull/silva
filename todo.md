@@ -14,9 +14,12 @@
             * get rid of object_t::clear_scopes()
 
 * tokenization:
-    * Allow for python-style indenting (i.e., such that indentation generates it generated tokens in the tokenization)?
     * Support user-defined tokenization rules.
         * Parse "real" Lox
+    * Allow for python-style indenting (i.e., such that indentation generates it generated tokens in the tokenization)?
+    * Tokenize all of Python
+        * string interpolation
+    * After errors, parsing should be resu
 
 * Soil
     * Make variable declarations explicit (`let` and `let mut`)
