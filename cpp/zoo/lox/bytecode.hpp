@@ -46,13 +46,13 @@ namespace silva::lox::bytecode {
   };
 
   struct chunk_t {
-    parse_tree_ptr_t pts;
+    parse_tree_ptr_t ptp;
     vector_t<byte_t> bytecode;
     // (index in "bytecode") -> (index in "pts")
     flatmap_t<index_t, index_t> origin_info;
     vector_t<object_ref_t> constant_table;
 
     expected_t<string_t> to_string() const;
-    expected_t<pair_t<string_t, index_t>> to_string_at(index_t) const;
+    expected_t<index_t> to_string_at(string_t&, index_t) const;
   };
 }
