@@ -8,7 +8,6 @@ namespace silva::lox::bytecode {
     index_t idx    = 0;
     auto it        = origin_info.begin();
     const auto end = origin_info.end();
-    const auto pts = ptp->span();
     while (true) {
       retval += fmt::format("{:4}", idx);
 

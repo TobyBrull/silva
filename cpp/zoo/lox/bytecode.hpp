@@ -46,7 +46,7 @@ namespace silva::lox::bytecode {
   };
 
   struct chunk_t {
-    parse_tree_ptr_t ptp;
+    parse_tree_span_t pts;
     vector_t<byte_t> bytecode;
     // (index in "bytecode") -> (index in "pts")
     flatmap_t<index_t, index_t> origin_info;
