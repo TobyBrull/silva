@@ -128,6 +128,17 @@ namespace silva::lox {
     return variant_holds_t<class_instance_t>{}(data);
   }
 
+  expected_t<double> object_t::as_double() const
+  {
+    SILVA_EXPECT(holds_double(), MINOR, "not a double");
+    return std::get<const double>(data);
+  }
+  expected_t<string_t> object_t::as_string() const
+  {
+    SILVA_EXPECT(holds_string(), MINOR, "not a string");
+    return std::get<const std::string>(data);
+  }
+
   struct clear_scopes_visitor_t {
     void operator()(function_t& x) { x.closure.clear(); }
     void operator()(function_builtin_t& x) { x.closure.clear(); }

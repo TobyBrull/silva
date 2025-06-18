@@ -91,6 +91,9 @@ namespace silva::lox {
     bool holds_class() const;
     bool holds_class_instance() const;
 
+    expected_t<double> as_double() const;
+    expected_t<string_t> as_string() const;
+
     void clear_scopes();
 
     bool is_truthy() const;
