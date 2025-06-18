@@ -2,6 +2,8 @@
 
 #include "canopy/types.hpp"
 
+#include "syntax/seed_interpreter.hpp"
+
 namespace silva::lox {
   const string_view_t seed_str = R"'(
     - Lox = [
@@ -54,4 +56,6 @@ namespace silva::lox {
       ]
     ]
   )'";
+
+  unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_ward_ptr_t);
 }

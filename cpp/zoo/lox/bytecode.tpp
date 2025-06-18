@@ -2,6 +2,8 @@
 #include "bytecode_compiler.hpp"
 #include "bytecode_vm.hpp"
 
+#include "lox.hpp"
+
 #include <catch2/catch_all.hpp>
 
 namespace silva::lox::test {
@@ -10,5 +12,8 @@ namespace silva::lox::test {
     const string_view_t lox_expr = R"'(
       1 + 2 * 3 + 4
     )'";
+
+    syntax_ward_t sw;
+    auto si = seed_interpreter(sw.ptr());
   }
 }
