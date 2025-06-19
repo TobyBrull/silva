@@ -8,10 +8,11 @@ namespace silva::lox::bytecode {
     index_t idx    = 0;
     auto it        = origin_info.begin();
     const auto end = origin_info.end();
-    while (true) {
+    while (idx < bytecode.size()) {
       retval += fmt::format("{:4}", idx);
 
       bool moved = false;
+      SILVA_EXPECT(it != end, MAJOR);
       while (std::next(it) != end && (*std::next(it)).first <= idx) {
         ++it;
       }
@@ -82,6 +83,11 @@ namespace silva::lox::bytecode {
   {
     using enum opcode_t;
 
+    SILVA_EXPECT(idx < bytecode.size(),
+                 MAJOR,
+                 "index {} out of bytecode range ( < {} )",
+                 idx,
+                 bytecode.size());
     const span_t<const byte_t> bc = span_t<const byte_t>(bytecode).subspan(idx);
     impl::to_string_at_impl tsai{
         .chunk  = this,

@@ -11,13 +11,15 @@ namespace silva::lox::bytecode::test {
   {
     syntax_ward_t sw;
     auto si = seed_interpreter(sw.ptr());
+    compiler_t compiler(sw.ptr());
     vm_t vm;
 
     const auto& eval = [&](const string_view_t lox_code) -> object_ref_t {
       const auto tp       = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
       const auto pt       = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox", "Expr")));
-      const chunk_t chunk = SILVA_EXPECT_REQUIRE(compile(pt->span()));
-      const auto res      = SILVA_EXPECT_REQUIRE(vm.run(chunk));
+      const chunk_t chunk = SILVA_EXPECT_REQUIRE(compiler.compile(pt->span()));
+      std::cout << SILVA_EXPECT_REQUIRE(chunk.to_string()) << '\n';
+      const auto res = SILVA_EXPECT_REQUIRE(vm.run(chunk));
       REQUIRE(vm.stack.empty());
       return res;
     };

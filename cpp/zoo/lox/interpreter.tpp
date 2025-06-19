@@ -18,9 +18,9 @@ namespace silva::lox::test {
     expected_t<object_ref_t> eval(const string_view_t expr_str)
     {
       INFO(expr_str);
-      auto tp = SILVA_EXPECT_REQUIRE(tokenize(swp, "test.lox", expr_str));
+      auto tp = SILVA_EXPECT_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
       INFO(to_string(*tp).as_string_view());
-      auto pt = SILVA_EXPECT_REQUIRE(si->apply(tp, swp->name_id_of("Lox", "Expr")));
+      auto pt = SILVA_EXPECT_REQUIRE(si->apply(tp, lexicon.swp->name_id_of("Lox", "Expr")));
       INFO(to_string(pt->span()).as_string_view());
       SILVA_EXPECT_REQUIRE(resolve(pt->span()));
       auto retval = evaluate(pt->span(), scopes.root());
