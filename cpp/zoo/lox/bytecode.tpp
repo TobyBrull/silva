@@ -25,6 +25,7 @@ namespace silva::lox::bytecode::test {
       REQUIRE(vm.stack.size() == 1);
       const auto result = vm.stack.back();
       INFO(result);
+      INFO(expected);
       vm.stack.clear();
       CHECK(*result == *expected);
     };
@@ -35,5 +36,6 @@ namespace silva::lox::bytecode::test {
     test(" ! true ", pool.make(false));
     test(" ! ( 1 + 2 == 3 ) ", pool.make(false));
     test(" 1 + 2 != 4 ", pool.make(true));
+    test(" 'hello' + ' world' ", pool.make("hello world"));
   }
 }

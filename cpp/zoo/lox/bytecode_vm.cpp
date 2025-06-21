@@ -36,9 +36,9 @@ namespace silva::lox::bytecode {
   expected_t<void> here_name()                                                           \
   {                                                                                      \
     SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);                                         \
-    auto lhs = vm.stack.back();                                                          \
-    vm.stack.pop_back();                                                                 \
     auto rhs = vm.stack.back();                                                          \
+    vm.stack.pop_back();                                                                 \
+    auto lhs = vm.stack.back();                                                          \
     vm.stack.pop_back();                                                                 \
     auto new_val =                                                                       \
         SILVA_EXPECT_FWD_AS(obj_name(vm.pool, std::move(lhs), std::move(rhs)), RUNTIME); \
