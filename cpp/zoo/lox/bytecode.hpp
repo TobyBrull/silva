@@ -55,4 +55,12 @@ namespace silva::lox::bytecode {
     expected_t<string_t> to_string() const;
     expected_t<index_t> to_string_at(string_t&, index_t) const;
   };
+
+  struct chunk_nursery_t {
+    chunk_t retval;
+
+    expected_t<void> append_constant(object_ref_t);
+
+    chunk_t finish() &&;
+  };
 }

@@ -12,8 +12,8 @@ namespace silva::lox {
 
   struct interpreter_t : public menhir_t {
     lexicon_t lexicon;
-
     object_pool_t pool;
+
     cactus_t<token_id_t, object_ref_t> scopes;
 
     hashmap_t<parse_tree_span_t, object_ref_t> literals;

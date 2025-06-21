@@ -8,6 +8,17 @@ namespace silva {
     vector_t<Key> keys;
     vector_t<Value> values;
 
+    Value& operator[](const Key& key)
+    {
+      auto it = std::lower_bound(keys.begin(), keys.end(), key);
+      if (it == keys.end() || *it != key) {
+        const index_t idx = std::distance(keys.begin(), it);
+        keys.insert(it, key);
+        it = values.emplace(values.begin() + idx);
+      }
+      return *it;
+    }
+
     struct const_iterator_t {
       using difference_type   = std::ptrdiff_t;
       using value_type        = pair_t<const Key&, const Value&>;

@@ -88,6 +88,38 @@ namespace silva::lox {
     SILVA_EXPECT(false, MINOR, "couldn't access member");
   }
 
+  expected_t<object_ref_t> object_ref_from_literal(const parse_tree_span_t& pts,
+                                                   object_pool_t& pool,
+                                                   const lexicon_t& lexicon)
+  {
+    using enum token_category_t;
+    SILVA_EXPECT(pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
+    const auto ti    = pts.tp->tokens[pts[0].token_begin];
+    const auto tinfo = pts.tp->token_info_get(pts[0].token_begin);
+    if (ti == lexicon.ti_none) {
+      return pool.make(none);
+    }
+    else if (ti == lexicon.ti_true) {
+      return pool.make(true);
+    }
+    else if (ti == lexicon.ti_false) {
+      return pool.make(false);
+    }
+    else if (tinfo->category == STRING) {
+      const auto sov = SILVA_EXPECT_FWD(tinfo->string_as_plain_contained());
+      return pool.make(string_t{sov});
+    }
+    else if (tinfo->category == NUMBER) {
+      const auto dd = SILVA_EXPECT_FWD(tinfo->number_as_double());
+      return pool.make(double{dd});
+    }
+    SILVA_EXPECT(false,
+                 MINOR,
+                 "{} could not turn literal into lox object {}",
+                 pts,
+                 lexicon.swp->token_id_wrap(ti));
+  }
+
   // object_t
 
   bool object_t::is_none() const

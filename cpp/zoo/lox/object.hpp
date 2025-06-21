@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cactus.hpp"
+#include "lox.hpp"
 #include "object_pool.hpp"
 
 #include "canopy/expected.hpp"
@@ -57,6 +58,9 @@ namespace silva::lox {
                                        token_id_t field_name,
                                        object_pool_t& pool,
                                        const token_id_t ti_this);
+
+  expected_t<object_ref_t>
+  object_ref_from_literal(const parse_tree_span_t&, object_pool_t&, const lexicon_t&);
 
   struct object_t {
     object_t() = default;

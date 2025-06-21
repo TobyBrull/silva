@@ -2,6 +2,8 @@
 
 namespace silva::lox::bytecode {
 
+  using enum opcode_t;
+
   expected_t<string_t> chunk_t::to_string() const
   {
     string_t retval;
@@ -81,8 +83,6 @@ namespace silva::lox::bytecode {
 
   expected_t<index_t> chunk_t::to_string_at(string_t& retval, const index_t idx) const
   {
-    using enum opcode_t;
-
     SILVA_EXPECT(idx < bytecode.size(),
                  MAJOR,
                  "index {} out of bytecode range ( < {} )",
@@ -99,67 +99,67 @@ namespace silva::lox::bytecode {
 
     switch (opcode_t(bc.front())) {
       case CONSTANT:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("CONSTANT"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("CONSTANT"));
       case NIL:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("NIL"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("NIL"));
       case TRUE:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("TRUE"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("TRUE"));
       case FALSE:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("FALSE"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("FALSE"));
       case POP:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("POP"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("POP"));
       case GET_LOCAL:
-        instr_len = SILVA_EXPECT_FWD(tsai.byte_instr("GET_LOCAL"));
+        return SILVA_EXPECT_FWD(tsai.byte_instr("GET_LOCAL"));
       case SET_LOCAL:
-        instr_len = SILVA_EXPECT_FWD(tsai.byte_instr("SET_LOCAL"));
+        return SILVA_EXPECT_FWD(tsai.byte_instr("SET_LOCAL"));
       case GET_GLOBAL:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("GET_GLOBAL"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("GET_GLOBAL"));
       case DEFINE_GLOBAL:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("DEFINE_GLOBAL"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("DEFINE_GLOBAL"));
       case SET_GLOBAL:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("SET_GLOBAL"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("SET_GLOBAL"));
       case GET_UPVALUE:
-        instr_len = SILVA_EXPECT_FWD(tsai.byte_instr("GET_UPVALUE"));
+        return SILVA_EXPECT_FWD(tsai.byte_instr("GET_UPVALUE"));
       case SET_UPVALUE:
-        instr_len = SILVA_EXPECT_FWD(tsai.byte_instr("SET_UPVALUE"));
+        return SILVA_EXPECT_FWD(tsai.byte_instr("SET_UPVALUE"));
       case GET_PROPERTY:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("GET_PROPERTY"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("GET_PROPERTY"));
       case SET_PROPERTY:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("SET_PROPERTY"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("SET_PROPERTY"));
       case GET_SUPER:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("GET_SUPER"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("GET_SUPER"));
       case EQUAL:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("EQUAL"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("EQUAL"));
       case GREATER:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("GREATER"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("GREATER"));
       case LESS:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("LESS"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("LESS"));
       case ADD:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("ADD"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("ADD"));
       case SUBTRACT:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("SUBTRACT"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("SUBTRACT"));
       case MULTIPLY:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("MULTIPLY"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("MULTIPLY"));
       case DIVIDE:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("DIVIDE"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("DIVIDE"));
       case NOT:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("NOT"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("NOT"));
       case NEGATE:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("NEGATE"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("NEGATE"));
       case PRINT:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("PRINT"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("PRINT"));
       case JUMP:
-        instr_len = SILVA_EXPECT_FWD(tsai.jump_instr("JUMP", 1));
+        return SILVA_EXPECT_FWD(tsai.jump_instr("JUMP", 1));
       case JUMP_IF_FALSE:
-        instr_len = SILVA_EXPECT_FWD(tsai.jump_instr("JUMP_IF_FALSE", 1));
+        return SILVA_EXPECT_FWD(tsai.jump_instr("JUMP_IF_FALSE", 1));
       case LOOP:
-        instr_len = SILVA_EXPECT_FWD(tsai.jump_instr("LOOP", -1));
+        return SILVA_EXPECT_FWD(tsai.jump_instr("LOOP", -1));
       case CALL:
-        instr_len = SILVA_EXPECT_FWD(tsai.byte_instr("CALL"));
+        return SILVA_EXPECT_FWD(tsai.byte_instr("CALL"));
       case INVOKE:
-        instr_len = SILVA_EXPECT_FWD(tsai.invoke_instr("INVOKE"));
+        return SILVA_EXPECT_FWD(tsai.invoke_instr("INVOKE"));
       case SUPER_INVOKE:
-        instr_len = SILVA_EXPECT_FWD(tsai.invoke_instr("SUPER_INVOKE"));
+        return SILVA_EXPECT_FWD(tsai.invoke_instr("SUPER_INVOKE"));
       case CLOSURE: {
         // offset++;
         // uint8_t constant = chunk->code[offset++];
@@ -175,27 +175,41 @@ namespace silva::lox::bytecode {
         //          isLocal ? "local" : "upvalue",
         //          index);
         // }
-        // instr_len = offset;
+        // return offset;
       }
       case CLOSE_UPVALUE:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("CLOSE_UPVALUE"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("CLOSE_UPVALUE"));
       case RETURN:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("RETURN"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("RETURN"));
       case CLASS:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("CLASS"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("CLASS"));
       case INHERIT:
-        instr_len = SILVA_EXPECT_FWD(tsai.simple_instr("INHERIT"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("INHERIT"));
       case METHOD:
-        instr_len = SILVA_EXPECT_FWD(tsai.const_instr("METHOD"));
+        return SILVA_EXPECT_FWD(tsai.const_instr("METHOD"));
       default:
         SILVA_EXPECT(false,
-                     MINOR,
+                     MAJOR,
                      "unknown instruction '{}' at index {}",
                      uint8_t(bc.front()),
                      idx);
-        instr_len = 1;
     }
+  }
 
-    return {instr_len};
+  expected_t<void> chunk_nursery_t::append_constant(object_ref_t obj_ref)
+  {
+    const auto idx     = retval.constant_table.size();
+    const auto max_idx = index_t(std::numeric_limits<std::underlying_type_t<std::byte>>::max());
+    SILVA_EXPECT(idx < max_idx, MAJOR, "Too many constants in chunk {} < {}", idx, max_idx);
+    retval.constant_table.push_back(std::move(obj_ref));
+    retval.bytecode.push_back(byte_t(CONSTANT));
+    retval.bytecode.push_back(byte_t(idx));
+    retval.origin_info[idx] = 0;
+    return {};
+  }
+
+  chunk_t chunk_nursery_t::finish() &&
+  {
+    return std::move(*this).retval;
   }
 }

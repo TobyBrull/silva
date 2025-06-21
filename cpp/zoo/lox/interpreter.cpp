@@ -253,33 +253,9 @@ namespace silva::lox {
           const bool is_number = tinfo->category == NUMBER;
           const bool is_string = tinfo->category == STRING;
           if (is_keyword || is_number || is_string) {
-            object_ref_t literal;
-            if (ti == lexicon.ti_none) {
-              literal = pool.make(none);
-            }
-            else if (ti == lexicon.ti_true) {
-              literal = pool.make(true);
-            }
-            else if (ti == lexicon.ti_false) {
-              literal = pool.make(false);
-            }
-            else if (tinfo->category == STRING) {
-              const auto sov = SILVA_EXPECT_FWD(tinfo->string_as_plain_contained());
-              literal        = pool.make(string_t{sov});
-            }
-            else if (tinfo->category == NUMBER) {
-              const auto dd = SILVA_EXPECT_FWD(tinfo->number_as_double());
-              literal       = pool.make(double{dd});
-            }
-            else {
-              SILVA_EXPECT(false, ASSERT);
-            }
-            SILVA_EXPECT(!literal.is_nullptr(),
-                         MINOR,
-                         "{} could not turn literal into lox object {}",
-                         pts_ti,
-                         lexicon.swp->token_id_wrap(ti));
-            literals[pts_ti] = literal;
+            object_ref_t literal =
+                SILVA_EXPECT_FWD_AS(object_ref_from_literal(pts_ti, pool, lexicon), MAJOR);
+            literals[pts_ti] = std::move(literal);
           }
         }
       }
