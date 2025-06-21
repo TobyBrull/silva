@@ -196,7 +196,7 @@ namespace silva::lox::bytecode {
     }
   }
 
-  expected_t<void> chunk_nursery_t::append_constant(object_ref_t obj_ref)
+  expected_t<void> chunk_nursery_t::append_constant_instr(object_ref_t obj_ref)
   {
     const auto idx     = retval.constant_table.size();
     const auto max_idx = index_t(std::numeric_limits<std::underlying_type_t<std::byte>>::max());
@@ -205,6 +205,12 @@ namespace silva::lox::bytecode {
     retval.bytecode.push_back(byte_t(CONSTANT));
     retval.bytecode.push_back(byte_t(idx));
     retval.origin_info[idx] = 0;
+    return {};
+  }
+
+  expected_t<void> chunk_nursery_t::append_simple_instr(const opcode_t opcode)
+  {
+    retval.bytecode.push_back(byte_t(opcode));
     return {};
   }
 

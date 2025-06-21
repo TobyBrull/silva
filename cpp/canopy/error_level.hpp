@@ -11,15 +11,16 @@ namespace silva {
 
   enum class error_level_t : uint8_t {
     NO_ERROR = 0,
-    MINOR    = 1,
-    MAJOR    = 2,
+    RUNTIME  = 1,
+    MINOR    = 2,
+    MAJOR    = 3,
 
     // Errors that should never if the currently handled parse_tree(_span)_t was parsed according to
     // the required Seed program.
-    BROKEN_SEED = 3,
+    BROKEN_SEED = 4,
 
-    FATAL  = 4,
-    ASSERT = 5,
+    FATAL  = 5,
+    ASSERT = 6,
   };
   constexpr bool error_level_is_primary(error_level_t);
 }
@@ -29,15 +30,18 @@ namespace silva {
 namespace silva {
   constexpr bool error_level_is_primary(const error_level_t error_level)
   {
+    using enum error_level_t;
+
     switch (error_level) {
-      case error_level_t::NO_ERROR:
+      case NO_ERROR:
         return false;
 
-      case error_level_t::MINOR:
-      case error_level_t::MAJOR:
-      case error_level_t::BROKEN_SEED:
-      case error_level_t::FATAL:
-      case error_level_t::ASSERT:
+      case RUNTIME:
+      case MINOR:
+      case MAJOR:
+      case BROKEN_SEED:
+      case FATAL:
+      case ASSERT:
         return true;
     }
   }

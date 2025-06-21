@@ -15,7 +15,7 @@ namespace silva::lox::bytecode::test {
     compiler_t compiler(sw.ptr());
     vm_t vm;
 
-    const auto& eval = [&](const string_view_t lox_code) -> object_ref_t {
+    const auto& test = [&](const string_view_t lox_code, const object_ref_t expected) {
       const auto tp = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
       const auto pt = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox", "Expr")));
       INFO(SILVA_EXPECT_REQUIRE(pt->span().to_string()));
@@ -23,10 +23,17 @@ namespace silva::lox::bytecode::test {
       INFO(SILVA_EXPECT_REQUIRE(chunk.to_string()));
       SILVA_EXPECT_REQUIRE(vm.run(chunk));
       REQUIRE(vm.stack.size() == 1);
-      return vm.stack.back();
+      const auto result = vm.stack.back();
+      INFO(result);
+      vm.stack.clear();
+      CHECK(*result == *expected);
     };
 
-    CHECK(eval(" 42.0 ")->as_double() == 42.0);
-    // CHECK(eval(" 1 + 2 * 3 + 4 ")->as_double() == 11.0);
+    test(" 42.0 ", pool.make(42.0));
+    test(" - 42.0 ", pool.make(-42.0));
+    test(" 1 + 2 * 3 + 4 ", pool.make(11.0));
+    test(" ! true ", pool.make(false));
+    test(" ! ( 1 + 2 == 3 ) ", pool.make(false));
+    test(" 1 + 2 != 4 ", pool.make(true));
   }
 }

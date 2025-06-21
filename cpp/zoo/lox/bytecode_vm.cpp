@@ -17,43 +17,72 @@ namespace silva::lox::bytecode {
       ip += 2;
       return {};
     }
+    expected_t<void> _nil() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _true() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _false() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _pop() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_local() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _set_local() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_global() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _define_global() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _set_global() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_upvalue() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _set_upvalue() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_property() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _set_property() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_super() { SILVA_EXPECT(false, ASSERT); }
 
-    expected_t<void> nil() { return {}; }
-    expected_t<void> _true() { return {}; }
-    expected_t<void> _false() { return {}; }
-    expected_t<void> _pop() { return {}; }
-    expected_t<void> _get_local() { return {}; }
-    expected_t<void> _set_local() { return {}; }
-    expected_t<void> _get_global() { return {}; }
-    expected_t<void> _define_global() { return {}; }
-    expected_t<void> _set_global() { return {}; }
-    expected_t<void> _get_upvalue() { return {}; }
-    expected_t<void> _set_upvalue() { return {}; }
-    expected_t<void> _get_property() { return {}; }
-    expected_t<void> _set_property() { return {}; }
-    expected_t<void> _get_super() { return {}; }
-    expected_t<void> _equal() { return {}; }
-    expected_t<void> _greater() { return {}; }
-    expected_t<void> _less() { return {}; }
-    expected_t<void> _add() { return {}; }
-    expected_t<void> _subtract() { return {}; }
-    expected_t<void> _multiply() { return {}; }
-    expected_t<void> _divide() { return {}; }
-    expected_t<void> _not() { return {}; }
-    expected_t<void> _negate() { return {}; }
-    expected_t<void> _print() { return {}; }
-    expected_t<void> _jump() { return {}; }
-    expected_t<void> _jump_if_false() { return {}; }
-    expected_t<void> _loop() { return {}; }
-    expected_t<void> _call() { return {}; }
-    expected_t<void> _invoke() { return {}; }
-    expected_t<void> _super_invoke() { return {}; }
-    expected_t<void> _closure() { return {}; }
-    expected_t<void> _close_upvalue() { return {}; }
-    expected_t<void> _return() { return {}; }
-    expected_t<void> _class() { return {}; }
-    expected_t<void> _inherit() { return {}; }
-    expected_t<void> _method() { return {}; }
+#define SIMPLE_BINARY_OP(here_name, obj_name)                                            \
+  expected_t<void> here_name()                                                           \
+  {                                                                                      \
+    SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);                                         \
+    auto lhs = vm.stack.back();                                                          \
+    vm.stack.pop_back();                                                                 \
+    auto rhs = vm.stack.back();                                                          \
+    vm.stack.pop_back();                                                                 \
+    auto new_val =                                                                       \
+        SILVA_EXPECT_FWD_AS(obj_name(vm.pool, std::move(lhs), std::move(rhs)), RUNTIME); \
+    vm.stack.push_back(std::move(new_val));                                              \
+    ip += 1;                                                                             \
+    return {};                                                                           \
+  }
+    SIMPLE_BINARY_OP(_add, add);
+    SIMPLE_BINARY_OP(_subtract, sub);
+    SIMPLE_BINARY_OP(_multiply, mul);
+    SIMPLE_BINARY_OP(_divide, div);
+    SIMPLE_BINARY_OP(_equal, eq);
+    SIMPLE_BINARY_OP(_greater, gt);
+    SIMPLE_BINARY_OP(_less, lt);
+#undef SIMPLE_BINARY_OP
+
+#define SIMPLE_UNARY_OP(here_name, obj_name)                                        \
+  expected_t<void> here_name()                                                      \
+  {                                                                                 \
+    SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);                                    \
+    auto lhs = vm.stack.back();                                                     \
+    vm.stack.pop_back();                                                            \
+    auto new_val = SILVA_EXPECT_FWD_AS(obj_name(vm.pool, std::move(lhs)), RUNTIME); \
+    vm.stack.push_back(std::move(new_val));                                         \
+    ip += 1;                                                                        \
+    return {};                                                                      \
+  }
+    SIMPLE_UNARY_OP(_not, neg);
+    SIMPLE_UNARY_OP(_negate, inv);
+#undef SIMPLE_UNARY_OP
+
+    expected_t<void> _print() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _jump() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _jump_if_false() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _loop() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _call() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _invoke() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _super_invoke() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _closure() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _close_upvalue() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _return() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _class() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _inherit() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _method() { SILVA_EXPECT(false, ASSERT); }
 
     expected_t<void> any()
     {
@@ -61,7 +90,7 @@ namespace silva::lox::bytecode {
         case CONSTANT:
           return _constant();
         case NIL:
-          return nil();
+          return _nil();
         case TRUE:
           return _true();
         case FALSE:
@@ -140,12 +169,20 @@ namespace silva::lox::bytecode {
                        ip);
       }
     }
+
+    expected_t<void> go()
+    {
+      while (ip < bytecode.size()) {
+        SILVA_EXPECT_FWD(any());
+      }
+      return {};
+    }
   };
 
   expected_t<void> vm_t::run(const chunk_t& chunk)
   {
     runner_t runner{chunk, chunk.bytecode, *this};
-    SILVA_EXPECT_FWD(runner.any());
+    SILVA_EXPECT_FWD(runner.go());
     return {};
   }
 

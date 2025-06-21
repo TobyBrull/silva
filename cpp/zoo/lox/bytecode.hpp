@@ -59,7 +59,8 @@ namespace silva::lox::bytecode {
   struct chunk_nursery_t {
     chunk_t retval;
 
-    expected_t<void> append_constant(object_ref_t);
+    expected_t<void> append_constant_instr(object_ref_t);
+    expected_t<void> append_simple_instr(opcode_t);
 
     chunk_t finish() &&;
   };
