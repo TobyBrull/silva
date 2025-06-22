@@ -1,6 +1,5 @@
 #include "bytecode_compiler.hpp"
 
-#include "syntax/name_id_style.hpp"
 #include "zoo/lox/object.hpp"
 
 namespace silva::lox::bytecode {
@@ -18,9 +17,21 @@ namespace silva::lox::bytecode {
 
     expected_t<void> expr_atom(const parse_tree_span_t pts)
     {
-      auto obj_ref = SILVA_EXPECT_FWD(object_ref_from_literal(pts, pool, lexicon));
-      nursery.register_origin_info(pts);
-      SILVA_EXPECT_FWD(nursery.append_constant_instr(std::move(obj_ref)));
+      const auto ti = pts.tp->tokens[pts[0].token_begin];
+      if (ti == lexicon.ti_none) {
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(NIL));
+      }
+      else if (ti == lexicon.ti_true) {
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(TRUE));
+      }
+      else if (ti == lexicon.ti_false) {
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(FALSE));
+      }
+      else {
+        auto obj_ref = SILVA_EXPECT_FWD(object_ref_from_literal(pts, pool, lexicon));
+        nursery.register_origin_info(pts);
+        SILVA_EXPECT_FWD(nursery.append_constant_instr(std::move(obj_ref)));
+      }
       return {};
     }
 

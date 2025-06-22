@@ -222,6 +222,10 @@ namespace silva::lox::bytecode {
 
   expected_t<void> chunk_nursery_t::append_simple_instr(const opcode_t opcode)
   {
+    SILVA_EXPECT(opcode == NIL || opcode == TRUE || opcode == FALSE || opcode == EQUAL ||
+                     opcode == GREATER || opcode == LESS || opcode == ADD || opcode == SUBTRACT ||
+                     opcode == MULTIPLY || opcode == DIVIDE || opcode == NOT || opcode == NEGATE,
+                 ASSERT);
     retval.bytecode.push_back(byte_t(opcode));
     return {};
   }

@@ -17,9 +17,24 @@ namespace silva::lox::bytecode {
       ip += 2;
       return {};
     }
-    expected_t<void> _nil() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _true() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _false() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _nil()
+    {
+      vm.stack.push_back(vm.pool.const_nil);
+      ip += 1;
+      return {};
+    }
+    expected_t<void> _true()
+    {
+      vm.stack.push_back(vm.pool.const_true);
+      ip += 1;
+      return {};
+    }
+    expected_t<void> _false()
+    {
+      vm.stack.push_back(vm.pool.const_false);
+      ip += 1;
+      return {};
+    }
     expected_t<void> _pop() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_local() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _set_local() { SILVA_EXPECT(false, ASSERT); }

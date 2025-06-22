@@ -11,7 +11,7 @@
 namespace silva::lox {
 
   struct object_t;
-  using object_pool_t     = object_pool_t<object_t>;
+  struct object_pool_t;
   using object_pool_ptr_t = object_pool_ptr_t<object_t>;
   using object_ref_t      = object_ref_t<object_t>;
 
@@ -135,6 +135,19 @@ namespace silva::lox {
   expected_t<object_ref_t> gte(object_pool_t&, object_ref_t, object_ref_t);
   expected_t<object_ref_t> eq(object_pool_t&, object_ref_t, object_ref_t);
   expected_t<object_ref_t> neq(object_pool_t&, object_ref_t, object_ref_t);
+
+  struct object_pool_t : public silva::object_pool_t<object_t> {
+    using parent_t = silva::object_pool_t<object_t>;
+
+    object_pool_t();
+
+    object_ref_t const_nil   = parent_t::make(none);
+    object_ref_t const_true  = parent_t::make(true);
+    object_ref_t const_false = parent_t::make(false);
+
+    template<typename Arg>
+    object_ref_t make(Arg&&);
+  };
 }
 
 // IMPLEMENTATION
@@ -143,6 +156,27 @@ namespace silva::lox {
   template<typename T>
   object_t::object_t(T&& data) : data(std::forward<T>(data))
   {
+  }
+
+  inline object_pool_t::object_pool_t() {}
+
+  template<typename Arg>
+  object_ref_t object_pool_t::make(Arg&& arg)
+  {
+    if constexpr (std::same_as<Arg, none_t>) {
+      return const_nil;
+    }
+    else if constexpr (std::same_as<Arg, bool>) {
+      if (arg == true) {
+        return const_true;
+      }
+      else {
+        return const_false;
+      }
+    }
+    else {
+      return parent_t::make(std::forward<Arg>(arg));
+    }
   }
 }
 
