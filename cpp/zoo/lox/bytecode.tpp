@@ -51,10 +51,14 @@ namespace silva::lox::bytecode::test {
     test(" 42.0 ", pool.make(42.0));
     test(" - 42.0 ", pool.make(-42.0));
     test(" 1 + 2 * 3 + 4 ", pool.make(11.0));
-    test(" ! true ", pool.make(false));
-    test(" ! ( 1 + 2 == 3 ) ", pool.make(false));
-    test(" 1 + 2 != 4 ", pool.make(true));
+    test(" ! true ", pool.const_false);
+    test(" ! ( 1 + 2 == 3 ) ", pool.const_false);
+    test(" 1 + 2 != 4 ", pool.const_true);
+    test(" 1 + 2 <= 2 ", pool.const_false);
+    test(" 1 + 2 <= 3 ", pool.const_true);
+    test(" 1 + 2 <= 4 ", pool.const_true);
     test(" 'hello' + ' world' ", pool.make("hello world"));
+    test(" !(5 - 4 > 3 * 2 == !none) ", pool.const_true);
 
     const auto test_runtime_error = [&](const string_view_t lox_code,
                                         const vector_t<string_t> expected_err_msgs) {

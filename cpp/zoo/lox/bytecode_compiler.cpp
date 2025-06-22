@@ -91,12 +91,14 @@ namespace silva::lox::bytecode {
       else if (pts[0].rule_name == lexicon.ni_expr_b_gt) {
         return expr_binary(pts, GREATER);
       }
-      // else if (pts[0].rule_name == lexicon.ni_expr_b_lte) {
-      //   return expr_binary(pts, SUBTRACT);
-      // }
-      // else if (pts[0].rule_name == lexicon.ni_expr_b_gte) {
-      //   return expr_binary(pts, SUBTRACT);
-      // }
+      else if (pts[0].rule_name == lexicon.ni_expr_b_lte) {
+        SILVA_EXPECT_FWD(expr_binary(pts, GREATER));
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(NOT));
+      }
+      else if (pts[0].rule_name == lexicon.ni_expr_b_gte) {
+        SILVA_EXPECT_FWD(expr_binary(pts, LESS));
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(NOT));
+      }
       else if (pts[0].rule_name == lexicon.ni_expr_b_eq) {
         return expr_binary(pts, EQUAL);
       }
