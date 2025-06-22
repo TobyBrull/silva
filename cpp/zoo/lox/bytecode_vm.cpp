@@ -32,19 +32,18 @@ namespace silva::lox::bytecode {
     expected_t<void> _set_property() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_super() { SILVA_EXPECT(false, ASSERT); }
 
-#define SIMPLE_BINARY_OP(here_name, obj_name)                                            \
-  expected_t<void> here_name()                                                           \
-  {                                                                                      \
-    SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);                                         \
-    auto rhs = vm.stack.back();                                                          \
-    vm.stack.pop_back();                                                                 \
-    auto lhs = vm.stack.back();                                                          \
-    vm.stack.pop_back();                                                                 \
-    auto new_val =                                                                       \
-        SILVA_EXPECT_FWD_AS(obj_name(vm.pool, std::move(lhs), std::move(rhs)), RUNTIME); \
-    vm.stack.push_back(std::move(new_val));                                              \
-    ip += 1;                                                                             \
-    return {};                                                                           \
+#define SIMPLE_BINARY_OP(here_name, obj_name)                           \
+  expected_t<void> here_name()                                          \
+  {                                                                     \
+    SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);                        \
+    auto rhs     = vm.stack.back();                                     \
+    auto lhs     = vm.stack[vm.stack.size() - 2];                       \
+    auto new_val = SILVA_EXPECT_FWD_PLAIN(obj_name(vm.pool, lhs, rhs)); \
+    vm.stack.pop_back();                                                \
+    vm.stack.pop_back();                                                \
+    vm.stack.push_back(std::move(new_val));                             \
+    ip += 1;                                                            \
+    return {};                                                          \
   }
     SIMPLE_BINARY_OP(_add, add);
     SIMPLE_BINARY_OP(_subtract, sub);
@@ -55,16 +54,16 @@ namespace silva::lox::bytecode {
     SIMPLE_BINARY_OP(_less, lt);
 #undef SIMPLE_BINARY_OP
 
-#define SIMPLE_UNARY_OP(here_name, obj_name)                                        \
-  expected_t<void> here_name()                                                      \
-  {                                                                                 \
-    SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);                                    \
-    auto lhs = vm.stack.back();                                                     \
-    vm.stack.pop_back();                                                            \
-    auto new_val = SILVA_EXPECT_FWD_AS(obj_name(vm.pool, std::move(lhs)), RUNTIME); \
-    vm.stack.push_back(std::move(new_val));                                         \
-    ip += 1;                                                                        \
-    return {};                                                                      \
+#define SIMPLE_UNARY_OP(here_name, obj_name)                 \
+  expected_t<void> here_name()                               \
+  {                                                          \
+    SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);             \
+    auto lhs     = vm.stack.back();                          \
+    auto new_val = SILVA_EXPECT_FWD(obj_name(vm.pool, lhs)); \
+    vm.stack.pop_back();                                     \
+    vm.stack.push_back(std::move(new_val));                  \
+    ip += 1;                                                 \
+    return {};                                               \
   }
     SIMPLE_UNARY_OP(_not, neg);
     SIMPLE_UNARY_OP(_negate, inv);
@@ -173,7 +172,7 @@ namespace silva::lox::bytecode {
     expected_t<void> go()
     {
       while (ip < bytecode.size()) {
-        SILVA_EXPECT_FWD(any());
+        SILVA_EXPECT_FWD(any(), "while executing instruction {}", chunk.origin_info_at_instr(ip));
       }
       return {};
     }
@@ -182,7 +181,7 @@ namespace silva::lox::bytecode {
   expected_t<void> vm_t::run(const chunk_t& chunk)
   {
     runner_t runner{chunk, chunk.bytecode, *this};
-    SILVA_EXPECT_FWD(runner.go());
+    SILVA_EXPECT_FWD_PLAIN(runner.go());
     return {};
   }
 

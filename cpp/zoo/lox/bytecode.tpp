@@ -37,5 +37,28 @@ namespace silva::lox::bytecode::test {
     test(" ! ( 1 + 2 == 3 ) ", pool.make(false));
     test(" 1 + 2 != 4 ", pool.make(true));
     test(" 'hello' + ' world' ", pool.make("hello world"));
+
+    const auto& test_runtime_error = [&](const string_view_t lox_code,
+                                         const vector_t<string_t> expected_err_msgs) {
+      const auto tp = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
+      const auto pt = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox", "Expr")));
+      INFO(SILVA_EXPECT_REQUIRE(pt->span().to_string()));
+      const chunk_t chunk = SILVA_EXPECT_REQUIRE(compiler.compile(pt->span(), pool));
+      INFO(SILVA_EXPECT_REQUIRE(chunk.to_string()));
+      auto result = vm.run(chunk);
+      REQUIRE(!result.has_value());
+      const string_t err_msg = to_string(std::move(result).error()).as_string();
+      INFO(err_msg);
+      for (const auto expected_err_msg: expected_err_msgs) {
+        INFO(expected_err_msg);
+        CHECK(err_msg.contains(expected_err_msg));
+      }
+    };
+    test_runtime_error(" 42 + 'world' ",
+                       {
+                           "runtime type error",
+                           "while executing instruction",
+                           "42 + 'world'",
+                       });
   }
 }

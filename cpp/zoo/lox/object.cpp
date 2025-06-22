@@ -204,7 +204,7 @@ namespace silva::lox {
       return -std::get<const double>(x.data);
     }
     else {
-      SILVA_EXPECT(false, MAJOR, "runtime type error: - {} ", to_string(x));
+      SILVA_EXPECT(false, RUNTIME, "runtime type error: - {} ", to_string(x));
     }
   }
 
@@ -216,7 +216,7 @@ namespace silva::lox {
     }                                                                              \
     else {                                                                         \
       SILVA_EXPECT(false,                                                          \
-                   MAJOR,                                                          \
+                   RUNTIME,                                                        \
                    "runtime type error: {} " #op " {}",                            \
                    to_string(lhs),                                                 \
                    to_string(rhs));                                                \
@@ -240,7 +240,7 @@ namespace silva::lox {
       return std::get<const string_t>(lhs.data) + std::get<const string_t>(rhs.data);
     }
     else {
-      SILVA_EXPECT(false, MAJOR, "runtime type error: {} + {}", to_string(lhs), to_string(rhs));
+      SILVA_EXPECT(false, RUNTIME, "runtime type error: {} + {}", to_string(lhs), to_string(rhs));
     }
   }
 
@@ -323,17 +323,17 @@ namespace silva::lox {
   }
   expected_t<object_ref_t> inv(object_pool_t& pool, object_ref_t x)
   {
-    return pool.make(SILVA_EXPECT_FWD(-(*x)));
+    return pool.make(SILVA_EXPECT_FWD_PLAIN(-(*x)));
   }
   expected_t<object_ref_t> add(object_pool_t& pool, object_ref_t lhs, object_ref_t rhs)
   {
-    auto res = SILVA_EXPECT_FWD(*lhs + *rhs);
+    auto res = SILVA_EXPECT_FWD_PLAIN(*lhs + *rhs);
     return std::visit([&](auto x) { return pool.make(std::move(x)); }, std::move(res));
   }
 #define OBJECT_IMPL(func_name, op)                                                            \
   expected_t<object_ref_t> func_name(object_pool_t& pool, object_ref_t lhs, object_ref_t rhs) \
   {                                                                                           \
-    return pool.make(SILVA_EXPECT_FWD(*lhs op * rhs));                                        \
+    return pool.make(SILVA_EXPECT_FWD_PLAIN(*lhs op * rhs));                                  \
   }
   OBJECT_IMPL(sub, -);
   OBJECT_IMPL(mul, *);

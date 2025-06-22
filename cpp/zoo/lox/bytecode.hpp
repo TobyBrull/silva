@@ -46,11 +46,13 @@ namespace silva::lox::bytecode {
   };
 
   struct chunk_t {
-    parse_tree_span_t pts;
     vector_t<byte_t> bytecode;
-    // (index in "bytecode") -> (index in "pts")
-    flatmap_t<index_t, index_t> origin_info;
+
     vector_t<object_ref_t> constant_table;
+
+    // (index in "bytecode") -> "pts"
+    flatmap_t<index_t, parse_tree_span_t> origin_info;
+    parse_tree_span_t origin_info_at_instr(index_t) const;
 
     expected_t<string_t> to_string() const;
     expected_t<index_t> to_string_at(string_t&, index_t) const;
@@ -58,6 +60,8 @@ namespace silva::lox::bytecode {
 
   struct chunk_nursery_t {
     chunk_t retval;
+
+    void register_origin_info(parse_tree_span_t);
 
     expected_t<void> append_constant_instr(object_ref_t);
     expected_t<void> append_simple_instr(opcode_t);

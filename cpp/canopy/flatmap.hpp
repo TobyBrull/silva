@@ -10,13 +10,13 @@ namespace silva {
 
     Value& operator[](const Key& key)
     {
-      auto it = std::lower_bound(keys.begin(), keys.end(), key);
+      auto it           = std::lower_bound(keys.begin(), keys.end(), key);
+      const index_t idx = std::distance(keys.begin(), it);
       if (it == keys.end() || *it != key) {
-        const index_t idx = std::distance(keys.begin(), it);
         keys.insert(it, key);
-        it = values.emplace(values.begin() + idx);
+        values.emplace(values.begin() + idx);
       }
-      return *it;
+      return values[idx];
     }
 
     struct const_iterator_t {
@@ -77,6 +77,15 @@ namespace silva {
         return *this;
       }
     };
+
+    bool empty() const { return keys.empty(); }
+
+    const_iterator_t find(const Key& key) const
+    {
+      auto it           = std::lower_bound(keys.begin(), keys.end(), key);
+      const index_t idx = std::distance(keys.begin(), it);
+      return {keys.begin() + idx, values.begin() + idx};
+    }
 
     const_iterator_t begin() const { return {keys.begin(), values.begin()}; }
     const_iterator_t end() const { return {keys.end(), values.end()}; }

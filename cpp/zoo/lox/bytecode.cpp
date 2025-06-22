@@ -4,33 +4,40 @@ namespace silva::lox::bytecode {
 
   using enum opcode_t;
 
+  parse_tree_span_t chunk_t::origin_info_at_instr(const index_t ip) const
+  {
+    if (origin_info.empty()) {
+      return {};
+    }
+    auto it = origin_info.find(ip);
+    if (it == origin_info.end() || (it != origin_info.begin() && (*it).first != ip)) {
+      --it;
+    }
+    return (*it).second;
+  }
+
   expected_t<string_t> chunk_t::to_string() const
   {
     string_t retval;
-    index_t idx    = 0;
+    index_t ip = 0;
+    parse_tree_span_t prev_pts;
     auto it        = origin_info.begin();
     const auto end = origin_info.end();
-    while (idx < bytecode.size()) {
-      retval += fmt::format("{:4}", idx);
-
-      bool moved = false;
-      SILVA_EXPECT(it != end, MAJOR);
-      while (std::next(it) != end && (*std::next(it)).first <= idx) {
-        ++it;
-      }
-      if (moved) {
-        const index_t node_idx = (*it).second;
-        const auto curr_pts    = pts.sub_tree_span_at(node_idx);
-        const auto tloc        = pts.tp->token_locations[curr_pts[0].token_begin];
-        retval += fmt::format("{:3}:{:3} ", tloc.line_num, tloc.column);
+    while (ip < bytecode.size()) {
+      retval += fmt::format("{:4} ", ip);
+      const parse_tree_span_t pts = origin_info_at_instr(ip);
+      if (pts != prev_pts) {
+        SILVA_EXPECT(pts != parse_tree_span_t{}, ASSERT);
+        const auto& tloc = pts.tp->token_locations[pts[0].token_begin];
+        retval += fmt::format("{:20}", fmt::format("[{}:{}]", tloc.line_num + 1, tloc.column + 1));
       }
       else {
-        retval += fmt::format("        ");
+        retval += fmt::format("{:20}", "");
       }
-
-      const auto ll = SILVA_EXPECT_FWD(to_string_at(retval, idx));
+      prev_pts      = pts;
+      const auto ll = SILVA_EXPECT_FWD(to_string_at(retval, ip));
       retval += '\n';
-      idx += ll;
+      ip += ll;
     }
     return retval;
   }
@@ -196,6 +203,12 @@ namespace silva::lox::bytecode {
     }
   }
 
+  void chunk_nursery_t::register_origin_info(const parse_tree_span_t pts)
+  {
+    // TODO: insert with hint at the end of the flatmap.
+    retval.origin_info[retval.bytecode.size()] = pts;
+  }
+
   expected_t<void> chunk_nursery_t::append_constant_instr(object_ref_t obj_ref)
   {
     const auto idx     = retval.constant_table.size();
@@ -204,7 +217,6 @@ namespace silva::lox::bytecode {
     retval.constant_table.push_back(std::move(obj_ref));
     retval.bytecode.push_back(byte_t(CONSTANT));
     retval.bytecode.push_back(byte_t(idx));
-    retval.origin_info[idx] = 0;
     return {};
   }
 

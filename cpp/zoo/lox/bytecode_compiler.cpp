@@ -19,6 +19,7 @@ namespace silva::lox::bytecode {
     expected_t<void> expr_atom(const parse_tree_span_t pts)
     {
       auto obj_ref = SILVA_EXPECT_FWD(object_ref_from_literal(pts, pool, lexicon));
+      nursery.register_origin_info(pts);
       SILVA_EXPECT_FWD(nursery.append_constant_instr(std::move(obj_ref)));
       return {};
     }
@@ -27,6 +28,7 @@ namespace silva::lox::bytecode {
     {
       SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
       SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(1)));
+      nursery.register_origin_info(pts);
       SILVA_EXPECT_FWD(nursery.append_simple_instr(opcode));
       return {};
     }
@@ -40,6 +42,7 @@ namespace silva::lox::bytecode {
       ++it;
       SILVA_EXPECT(it != end, MAJOR);
       SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(it.pos)));
+      nursery.register_origin_info(pts);
       SILVA_EXPECT_FWD(nursery.append_simple_instr(opcode));
       return {};
     }
