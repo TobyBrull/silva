@@ -84,7 +84,15 @@ namespace silva::lox::bytecode {
     SIMPLE_UNARY_OP(_negate, inv);
 #undef SIMPLE_UNARY_OP
 
-    expected_t<void> _print() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _print()
+    {
+      SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);
+      auto x = vm.stack.back();
+      fmt::println("{}", to_string(std::move(x)));
+      vm.stack.pop_back();
+      ip += 1;
+      return {};
+    }
     expected_t<void> _jump() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _jump_if_false() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _loop() { SILVA_EXPECT(false, ASSERT); }

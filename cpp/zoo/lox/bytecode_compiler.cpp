@@ -111,12 +111,84 @@ namespace silva::lox::bytecode {
       }
       return {};
     }
+
+    expected_t<void> decl(const parse_tree_span_t pts)
+    {
+      const name_id_t rule_name = pts[0].rule_name;
+      if (false) {
+      }
+      else {
+        SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
+      }
+      return {};
+    }
+
+    expected_t<void> stmt(const parse_tree_span_t pts)
+    {
+      const name_id_t rule_name = pts[0].rule_name;
+      if (rule_name == lexicon.ni_stmt_print) {
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(1)),
+                         "{} error compiling argument to 'print'",
+                         pts);
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(PRINT));
+      }
+      else if (rule_name == lexicon.ni_stmt_return) {
+        if (pts[0].num_children == 1) {
+          SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(1)),
+                           "{} error compiling expression of return statement",
+                           pts);
+        }
+        else {
+          SILVA_EXPECT_FWD(nursery.append_simple_instr(NIL));
+        }
+      }
+      else if (rule_name == lexicon.ni_stmt_expr) {
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(1)),
+                         "{} error compiling expression statement",
+                         pts);
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(POP));
+      }
+      else {
+        SILVA_EXPECT(false, MAJOR, "{} unknown statement {}", pts, swp->name_id_wrap(rule_name));
+      }
+      return {};
+    }
+
+    expected_t<void> go(const parse_tree_span_t pts)
+    {
+      SILVA_EXPECT(pts.size() > 0, MAJOR);
+      const name_id_t rule_name = pts[0].rule_name;
+      if (rule_name == lexicon.ni_none) {
+        ;
+      }
+      else if (rule_name == lexicon.ni_lox) {
+        for (const auto [node_idx, child_idx]: pts.children_range()) {
+          SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
+        }
+      }
+      else if (rule_name == lexicon.ni_decl) {
+        return decl(pts.sub_tree_span_at(1));
+      }
+      else if (swp->name_infos[rule_name].parent_name == lexicon.ni_decl) {
+        return decl(pts);
+      }
+      else if (rule_name == lexicon.ni_stmt) {
+        return stmt(pts.sub_tree_span_at(1));
+      }
+      else if (swp->name_infos[rule_name].parent_name == lexicon.ni_stmt) {
+        return stmt(pts);
+      }
+      else {
+        SILVA_EXPECT(false, MAJOR, "{} unknown rule {}", pts, swp->name_id_wrap(rule_name));
+      }
+      return {};
+    }
   };
 
   expected_t<chunk_t> compiler_t::compile(const parse_tree_span_t pts, object_pool_t& pool)
   {
     compile_run_t run{lexicon.swp, lexicon, pool};
-    SILVA_EXPECT_FWD(run.expr(pts));
+    SILVA_EXPECT_FWD(run.go(pts));
     return {std::move(run.nursery).finish()};
   }
 }
