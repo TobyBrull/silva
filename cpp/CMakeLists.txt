@@ -3,7 +3,7 @@ add_subdirectory(thirdparty/date-3.0.3)
 
 # find_package(Threads REQUIRED)
 # find_package(Boost REQUIRED)
-find_package(Fmt REQUIRED)
+# find_package(Fmt REQUIRED)
 
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in"

@@ -21,5 +21,6 @@ endif()
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(USE_TRACY "Build using tracy" OFF)
 include(cmake/tracy.cmake)
+include(cmake/fmtlib.cmake)
 
 add_subdirectory(cpp)
