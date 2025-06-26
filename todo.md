@@ -12,6 +12,7 @@
     * Refactor:
         * Unify: object_pool_t, cactus_t
             * get rid of object_t::clear_scopes()
+    * Remove silva::lox::bytecode namespace. Namespaces should exactly align with languages.
 
 * tokenization:
     * Support user-defined tokenization rules.
