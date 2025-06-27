@@ -30,8 +30,13 @@ namespace silva {
 
     stream_out_mem_t(index_t init_buffer_size = 4 * 1'024);
 
+    void clear();
+
     span_t<const byte_t> content() const;
+    vector_t<byte_t> content_fetch();
+
     string_view_t content_str() const;
+    string_t content_str_fetch();
 
     void flush(index_t = 0) final;
   };

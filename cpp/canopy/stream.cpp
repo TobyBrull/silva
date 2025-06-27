@@ -57,16 +57,34 @@ namespace silva {
     return curr_size;
   }
 
+  void stream_out_mem_t::clear()
+  {
+    target = buffer;
+  }
+
   span_t<const byte_t> stream_out_mem_t::content() const
   {
     const index_t curr_used = buffer.size() - target.size();
     return span_t<const byte_t>(buffer).subspan(0, curr_used);
+  }
+  vector_t<byte_t> stream_out_mem_t::content_fetch()
+  {
+    const auto range = content();
+    vector_t<byte_t> retval{range.begin(), range.end()};
+    clear();
+    return retval;
   }
 
   string_view_t stream_out_mem_t::content_str() const
   {
     const auto retval = content();
     return string_view_t{(const char*)retval.data(), retval.size()};
+  }
+  string_t stream_out_mem_t::content_str_fetch()
+  {
+    string_t retval{content_str()};
+    clear();
+    return retval;
   }
 
   void stream_out_mem_t::flush(const index_t next_write_hint)

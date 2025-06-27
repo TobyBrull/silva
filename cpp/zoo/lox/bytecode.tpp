@@ -13,12 +13,13 @@ namespace silva::lox::bytecode::test {
     auto si = seed_interpreter(sw.ptr());
     object_pool_t pool;
     compiler_t compiler(sw.ptr());
-    vm_t vm;
+    stream_out_mem_t print_buffer;
+    vm_t vm{.print_stream = &print_buffer};
 
     const auto make_chunk =
         [&](const string_view_t lox_code) -> tuple_t<parse_tree_ptr_t, chunk_t> {
       const auto tp       = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
-      const auto ptp      = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox", "Stmt")));
+      const auto ptp      = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
       const chunk_t chunk = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span(), pool));
       return {ptp, chunk};
     };
@@ -36,30 +37,29 @@ namespace silva::lox::bytecode::test {
       CHECK(SILVA_EXPECT_REQUIRE(chunk.to_string()) == expected.substr(1));
     }
 
-    const auto test = [&](const string_view_t lox_code, const object_ref_t expected) {
+    const auto test = [&](const string_view_t lox_code, const string_view_t expected) {
       const auto [ptp, chunk] = make_chunk(lox_code);
       INFO(SILVA_EXPECT_REQUIRE(ptp->span().to_string()));
       INFO(SILVA_EXPECT_REQUIRE(chunk.to_string()));
       SILVA_EXPECT_REQUIRE(vm.run(chunk));
-      REQUIRE(vm.stack.size() == 1);
-      const auto result = vm.stack.back();
+      const auto result = print_buffer.content_str_fetch();
       INFO(result);
       INFO(expected);
       vm.stack.clear();
-      CHECK(*result == *expected);
+      CHECK(result == expected);
     };
 
-    test(" return 42.0 ; ", pool.make(42.0));
-    test(" return - 42.0 ; ", pool.make(-42.0));
-    test(" return 1 + 2 * 3 + 4 ; ", pool.make(11.0));
-    test(" return ! true ; ", pool.const_false);
-    test(" return ! ( 1 + 2 == 3 ) ; ", pool.const_false);
-    test(" return 1 + 2 != 4 ; ", pool.const_true);
-    test(" return 1 + 2 <= 2 ; ", pool.const_false);
-    test(" return 1 + 2 <= 3 ; ", pool.const_true);
-    test(" return 1 + 2 <= 4 ; ", pool.const_true);
-    test(" return 'hello' + ' world' ; ", pool.make("hello world"));
-    test(" return ! ( 5 - 4 > 3 * 2 == ! none ) ; ", pool.const_true);
+    test(" print 42.0 ; ", "42");
+    test(" print - 42.0 ; ", "-42");
+    test(" print 1 + 2 * 3 + 4 ; ", "11");
+    test(" print ! true ; ", "false");
+    test(" print ! ( 1 + 2 == 3 ) ; ", "false");
+    test(" print 1 + 2 != 4 ; ", "true");
+    test(" print 1 + 2 <= 2 ; ", "false");
+    test(" print 1 + 2 <= 3 ; ", "true");
+    test(" print 1 + 2 <= 4 ; ", "true");
+    test(" print 'hello' + ' world' ; ", "hello world");
+    test(" print ! ( 5 - 4 > 3 * 2 == ! none ) ; ", "true");
 
     const auto test_runtime_error = [&](const string_view_t lox_code,
                                         const vector_t<string_t> expected_err_msgs) {
