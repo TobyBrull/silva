@@ -7,6 +7,17 @@
 #include <utility>
 
 namespace silva {
+  string_t to_string(const error_tree_t::node_t& node,
+                     const any_vector_t<pretty_write_string_t, move_ctor_t, dtor_t>& av)
+  {
+    vector_t<string_t> args;
+    const auto end = av.index_iter_at(node.memento_buffer_offset_end);
+    for (auto it = av.index_iter_at(node.memento_buffer_offset); it != end; ++it) {
+      args.push_back(av.apply(*it, silva::pretty_write_string));
+    }
+    string_t message = format_vector(args);
+    return message;
+  }
 
   error_context_t::~error_context_t()
   {
@@ -89,7 +100,7 @@ namespace silva {
           },
           node_index);
       const auto& node       = error_context->tree.nodes[node_index];
-      const string_t message = node.to_string(error_context->any_vector);
+      const string_t message = to_string(node, error_context->any_vector);
       retval += fmt::format("{:{}}{}\n", "", indent, message);
     }
   }
@@ -174,7 +185,7 @@ namespace silva {
         box_levels.back() = prev_back.value();
       }
       const auto& node       = error_context->tree.nodes[node_index];
-      const string_t message = node.to_string(error_context->any_vector);
+      const string_t message = to_string(node, error_context->any_vector);
       retval += message + "\n";
     }
   }

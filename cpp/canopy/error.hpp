@@ -4,6 +4,7 @@
 #include "context.hpp"
 #include "error_level.hpp"
 #include "error_tree.hpp"
+#include "pretty_write.hpp"
 
 namespace silva {
 
@@ -12,7 +13,7 @@ namespace silva {
     constexpr static bool context_mutable_get = true;
 
     error_tree_t tree;
-    to_string_any_vector_t any_vector;
+    any_vector_t<pretty_write_string_t, move_ctor_t, dtor_t> any_vector;
 
     ~error_context_t();
   };
