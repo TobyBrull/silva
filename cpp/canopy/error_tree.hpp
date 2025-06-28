@@ -2,7 +2,7 @@
 
 #include "any_vector.hpp"
 #include "assert.hpp"
-#include "to_string.hpp"
+#include "stream_out.hpp"
 
 namespace silva {
   enum class tree_event_t {
