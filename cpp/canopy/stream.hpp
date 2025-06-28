@@ -29,7 +29,7 @@ namespace silva {
   struct stream_memory_t : public stream_t {
     vector_t<byte_t> buffer;
 
-    stream_memory_t(index_t init_buffer_size = 4 * 1'024);
+    stream_memory_t(index_t init_buffer_size = 32);
 
     void clear();
 
