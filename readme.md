@@ -38,6 +38,6 @@ CMAKE_ARGS=("-S" "." "-G" "Ninja" "-DCMAKE_CXX_COMPILER=clang++")
 cmake "${CMAKE_ARGS[@]}" -B build/ -DCMAKE_BUILD_TYPE=Debug
 cmake "${CMAKE_ARGS[@]}" -B build/ -DCMAKE_BUILD_TYPE=Release
 cmake "${CMAKE_ARGS[@]}" -B build/ -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_TRACY=On
-ninja -C build/ && ./build/cpp/silva_test
+ninja -C build/ && time ./build/cpp/silva_test
 ninja -C build/ && bash demo.sh > demo.sh.output && git status
 ```

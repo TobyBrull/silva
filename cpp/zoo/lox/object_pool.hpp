@@ -62,9 +62,9 @@ namespace silva {
     T* operator->() const;
     T& operator*() const;
 
-    friend void to_string_impl(stream_t* stream, const object_ref_t& x)
+    friend void stream_out_impl(stream_t* stream, const object_ref_t& x)
     {
-      return to_string_impl(stream, *x);
+      return stream_out_impl(stream, *x);
     }
     friend std::ostream& operator<<(std::ostream& os, const object_ref_t& x) { return os << *x; }
   };

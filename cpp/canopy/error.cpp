@@ -187,7 +187,7 @@ namespace silva {
     return string_or_view_t{std::move(retval)};
   }
 
-  void to_string_impl(stream_t* stream, const error_t& self)
+  void stream_out_impl(stream_t* stream, const error_t& self)
   {
     stream->write_str(self.to_string_structured().as_string_view());
   }
