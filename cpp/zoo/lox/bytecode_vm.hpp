@@ -9,7 +9,7 @@ namespace silva::lox::bytecode {
     object_pool_t pool;
     vector_t<object_ref_t> stack;
 
-    stream_out_t* print_stream = nullptr;
+    stream_t* print_stream = nullptr;
 
     expected_t<void> run(const chunk_t&);
 

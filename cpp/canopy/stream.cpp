@@ -3,9 +3,9 @@
 #include <iostream>
 
 namespace silva {
-  // stream_out_t
+  // stream_t
 
-  void stream_out_t::write(span_t<const byte_t> data)
+  void stream_t::write(span_t<const byte_t> data)
   {
     bool first = true;
     while (!data.empty()) {
@@ -20,19 +20,19 @@ namespace silva {
     }
   }
 
-  void stream_out_t::write_str(string_view_t data)
+  void stream_t::write_str(string_view_t data)
   {
     return write(span_t<const byte_t>((const byte_t*)data.data(), data.size()));
   }
 
-  // stream_out_std_t
+  // stream_stdout_t
 
-  stream_out_std_t::stream_out_std_t(const index_t init_buffer_size) : buffer(init_buffer_size)
+  stream_stdout_t::stream_stdout_t(const index_t init_buffer_size) : buffer(init_buffer_size)
   {
     target = buffer;
   }
 
-  void stream_out_std_t::flush(const index_t next_write_hint)
+  void stream_stdout_t::flush(const index_t next_write_hint)
   {
     const index_t curr_used = buffer.size() - target.size();
     const string_view_t data((const char*)buffer.data(), curr_used);
@@ -41,9 +41,9 @@ namespace silva {
     target = buffer;
   }
 
-  // stream_out_mem_t
+  // stream_memory_t
 
-  stream_out_mem_t::stream_out_mem_t(const index_t init_buffer_size) : buffer(init_buffer_size)
+  stream_memory_t::stream_memory_t(const index_t init_buffer_size) : buffer(init_buffer_size)
   {
     target = buffer;
   }
@@ -57,17 +57,17 @@ namespace silva {
     return curr_size;
   }
 
-  void stream_out_mem_t::clear()
+  void stream_memory_t::clear()
   {
     target = buffer;
   }
 
-  span_t<const byte_t> stream_out_mem_t::content() const
+  span_t<const byte_t> stream_memory_t::content() const
   {
     const index_t curr_used = buffer.size() - target.size();
     return span_t<const byte_t>(buffer).subspan(0, curr_used);
   }
-  vector_t<byte_t> stream_out_mem_t::content_fetch()
+  vector_t<byte_t> stream_memory_t::content_fetch()
   {
     const auto range = content();
     vector_t<byte_t> retval{range.begin(), range.end()};
@@ -75,19 +75,19 @@ namespace silva {
     return retval;
   }
 
-  string_view_t stream_out_mem_t::content_str() const
+  string_view_t stream_memory_t::content_str() const
   {
     const auto retval = content();
     return string_view_t{(const char*)retval.data(), retval.size()};
   }
-  string_t stream_out_mem_t::content_str_fetch()
+  string_t stream_memory_t::content_str_fetch()
   {
     string_t retval{content_str()};
     clear();
     return retval;
   }
 
-  void stream_out_mem_t::flush(const index_t next_write_hint)
+  void stream_memory_t::flush(const index_t next_write_hint)
   {
     const index_t curr_used = buffer.size() - target.size();
     const index_t new_size  = _mem_new_size(buffer.size(), curr_used, next_write_hint);

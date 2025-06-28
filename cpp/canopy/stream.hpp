@@ -5,7 +5,7 @@
 #include <fmt/format.h>
 
 namespace silva {
-  struct stream_out_t {
+  struct stream_t {
     span_t<byte_t> target;
 
     void write(span_t<const byte_t>);
@@ -17,18 +17,18 @@ namespace silva {
     virtual void flush(index_t next_write_hint = 0) = 0;
   };
 
-  struct stream_out_std_t : public stream_out_t {
+  struct stream_stdout_t : public stream_t {
     vector_t<byte_t> buffer;
 
-    stream_out_std_t(index_t init_buffer_size = 4 * 1'024);
+    stream_stdout_t(index_t init_buffer_size = 4 * 1'024);
 
     void flush(index_t = 0) final;
   };
 
-  struct stream_out_mem_t : public stream_out_t {
+  struct stream_memory_t : public stream_t {
     vector_t<byte_t> buffer;
 
-    stream_out_mem_t(index_t init_buffer_size = 4 * 1'024);
+    stream_memory_t(index_t init_buffer_size = 4 * 1'024);
 
     void clear();
 
@@ -46,7 +46,7 @@ namespace silva {
 
 namespace silva {
   template<typename... Args>
-  void stream_out_t::format(fmt::format_string<Args...> fmt, Args&&... args)
+  void stream_t::format(fmt::format_string<Args...> fmt, Args&&... args)
   {
     const auto temp = fmt::format(fmt, std::forward<Args>(args)...);
     write_str(temp);
