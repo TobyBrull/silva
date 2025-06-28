@@ -8,6 +8,8 @@ namespace silva {
   struct stream_t {
     span_t<byte_t> target;
 
+    static constexpr index_t min_buffer_size = 64;
+
     void write(span_t<const byte_t>);
     void write_str(string_view_t);
 
@@ -20,7 +22,7 @@ namespace silva {
   struct stream_stdout_t : public stream_t {
     vector_t<byte_t> buffer;
 
-    stream_stdout_t(index_t init_buffer_size = 4 * 1'024);
+    stream_stdout_t(index_t init_buffer_size = min_buffer_size);
     ~stream_stdout_t();
 
     void flush(index_t = 0) final;
@@ -29,7 +31,7 @@ namespace silva {
   struct stream_memory_t : public stream_t {
     vector_t<byte_t> buffer;
 
-    stream_memory_t(index_t init_buffer_size = 32);
+    stream_memory_t(index_t init_buffer_size = min_buffer_size);
 
     void clear();
 
