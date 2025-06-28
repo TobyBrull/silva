@@ -52,10 +52,10 @@ namespace silva {
 
   struct syntax_ward_t : public menhir_t {
     vector_t<token_info_t> token_infos;
-    hashmap_t<string_t, token_id_t> token_lookup;
+    hash_map_t<string_t, token_id_t> token_lookup;
 
     vector_t<name_info_t> name_infos;
-    hashmap_t<name_info_t, name_id_t> name_lookup;
+    hash_map_t<name_info_t, name_id_t> name_lookup;
 
     vector_t<unique_ptr_t<const tokenization_t>> tokenizations;
     vector_t<unique_ptr_t<const parse_tree_t>> parse_trees;

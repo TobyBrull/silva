@@ -48,9 +48,9 @@ namespace silva::seed::test {
     // fmt::print("|{}|\n", *seed_pt_2->span().to_string());
     CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
 
-    CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Rule")] == hashset_t<token_id_t>({}));
+    CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Rule")] == hash_set_t<token_id_t>({}));
     CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Axe")] ==
-          hashset_t<token_id_t>({
+          hash_set_t<token_id_t>({
               *sw.token_id("["),
               *sw.token_id("]"),
               *sw.token_id("-"),

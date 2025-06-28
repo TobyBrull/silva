@@ -187,7 +187,7 @@ namespace silva::seed {
   }
 
   // Maps variable name to the index in the parsed tree that it refers to.
-  using var_map_t = hashmap_t<token_id_t, index_t>;
+  using var_map_t = hash_map_t<token_id_t, index_t>;
 
   namespace impl {
     struct seed_exec_trace_data_t {
@@ -347,7 +347,7 @@ namespace silva::seed {
         return ss.commit();
       }
       using func_t = delegate_t<expected_t<node_and_error_t>(span_t<const parse_tree_span_t>)>;
-      using func_table_t      = hashmap_t<token_id_t, func_t>;
+      using func_table_t      = hash_map_t<token_id_t, func_t>;
       func_table_t func_table = {
           {
               *swp->token_id("parse_f"),
@@ -424,7 +424,7 @@ namespace silva::seed {
                        MAJOR,
                        "keywords_of {}: no such nonterminal",
                        swp->name_id_wrap(keyword_scope));
-          const hashset_t<token_id_t>& keywords = it2->second;
+          const hash_set_t<token_id_t>& keywords = it2->second;
           SILVA_EXPECT(keywords.contains(token_id_by()),
                        MINOR,
                        "{} '{}' not in keywords_of {}",

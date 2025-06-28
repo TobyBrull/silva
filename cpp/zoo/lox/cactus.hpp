@@ -16,7 +16,7 @@ namespace silva {
     struct arm_t {
       index_t ref_count = 0;
       cactus_arm_t<Key, Value> parent;
-      hashmap_t<Key, Value> hashmap;
+      hash_map_t<Key, Value> hashmap;
       index_t next_free = -1;
     };
     vector_t<arm_t> arms;

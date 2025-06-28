@@ -17,10 +17,10 @@ namespace silva {
   inline constexpr hash_t hash;
 
   template<typename K, typename V>
-  using hashmap_t = std::unordered_map<K, V, hash_t>;
+  using hash_map_t = std::unordered_map<K, V, hash_t>;
 
   template<typename T>
-  using hashset_t = std::unordered_set<T, hash_t>;
+  using hash_set_t = std::unordered_set<T, hash_t>;
 
   struct hash_combiner_t {
     hash_value_t value = 0;

@@ -196,7 +196,7 @@ namespace silva {
   {
     auto& any_vector = context->any_vector;
     any_vector_t<to_string_value_t, move_ctor_t, dtor_t> new_any_vector;
-    hashmap_t<any_vector_index_t, any_vector_index_t> offset_mapping;
+    hash_map_t<any_vector_index_t, any_vector_index_t> offset_mapping;
     {
       for (const auto avi: any_vector.index_range()) {
         string_t x          = any_vector.apply(avi, to_string_value);

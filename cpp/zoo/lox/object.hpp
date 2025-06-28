@@ -37,14 +37,14 @@ namespace silva::lox {
   struct class_t {
     parse_tree_span_t pts;
     object_ref_t superclass;
-    hashmap_t<token_id_t, object_ref_t> methods;
+    hash_map_t<token_id_t, object_ref_t> methods;
 
     friend bool operator==(const class_t&, const class_t&);
   };
 
   struct class_instance_t {
     object_ref_t _class;
-    hashmap_t<token_id_t, object_ref_t> fields;
+    hash_map_t<token_id_t, object_ref_t> fields;
 
     friend bool operator==(const class_instance_t&, const class_instance_t&);
   };

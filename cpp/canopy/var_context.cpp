@@ -6,7 +6,7 @@ extern char** environ;
 
 namespace silva {
   namespace impl {
-    void try_parse_variable(hashmap_t<string_or_view_t, string_or_view_t>& retval,
+    void try_parse_variable(hash_map_t<string_or_view_t, string_or_view_t>& retval,
                             const string_view_t arg_str)
     {
       auto const pos = arg_str.find('=');

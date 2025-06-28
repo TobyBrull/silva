@@ -130,7 +130,7 @@ namespace silva::lox {
       SUBCLASS,
     };
     struct static_scope_t {
-      hashmap_t<token_id_t, bool> variables;
+      hash_map_t<token_id_t, bool> variables;
       class_type_t class_type = NONE;
     };
     vector_t<static_scope_t> static_scopes;

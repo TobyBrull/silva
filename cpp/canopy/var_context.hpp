@@ -11,7 +11,7 @@ namespace silva {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = false;
 
-    hashmap_t<string_or_view_t, string_or_view_t> variables;
+    hash_map_t<string_or_view_t, string_or_view_t> variables;
 
     var_context_t() = default;
   };
