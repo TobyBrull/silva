@@ -59,7 +59,7 @@ namespace silva::lox::bytecode {
         const index_t const_idx = index_t(bc[1]);
         SILVA_EXPECT(0 <= const_idx && const_idx < chunk->constant_table.size(), MINOR);
         const auto& cc = chunk->constant_table[const_idx];
-        retval += fmt::format("{} {} {}", name, const_idx, silva::to_string_value(cc));
+        retval += fmt::format("{} {} {}", name, const_idx, silva::pretty_write_string(cc));
         return 2;
       }
       expected_t<index_t> invoke_instr(const string_view_t name)

@@ -2,7 +2,7 @@
 
 #include "any_vector.hpp"
 #include "assert.hpp"
-#include "stream_out.hpp"
+#include "pretty_write.hpp"
 
 namespace silva {
   enum class tree_event_t {
@@ -22,7 +22,7 @@ namespace silva {
     index_t child_index = 0;
   };
 
-  using to_string_any_vector_t = any_vector_t<to_string_value_t, move_ctor_t, dtor_t>;
+  using to_string_any_vector_t = any_vector_t<pretty_write_string_t, move_ctor_t, dtor_t>;
 
   struct error_tree_t {
     struct node_t {

@@ -135,12 +135,14 @@ namespace silva {
     std::move(__silva_result);                                                          \
   })
 
-#define SILVA_EXPECT_ASSERT(x)                                                                   \
-  ({                                                                                             \
-    auto result = (x);                                                                           \
-    static_assert(is_expected_t<decltype(result)>::value);                                       \
-    SILVA_ASSERT(result.has_value(), "Unexpected:\n{}", silva::to_string_value(result.error())); \
-    std::move(result).value();                                                                   \
+#define SILVA_EXPECT_ASSERT(x)                                \
+  ({                                                          \
+    auto result = (x);                                        \
+    static_assert(is_expected_t<decltype(result)>::value);    \
+    SILVA_ASSERT(result.has_value(),                          \
+                 "Unexpected:\n{}",                           \
+                 silva::pretty_write_string(result.error())); \
+    std::move(result).value();                                \
   })
 
 // Semantics:
@@ -152,13 +154,13 @@ namespace silva {
 // Usage:
 //  - SILVA_EXPECT_REQUIRE(foo(x))
 //
-#define SILVA_EXPECT_REQUIRE(expression)                                                       \
-  ({                                                                                           \
-    auto __silva_result = (expression);                                                        \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                      \
-    INFO((!__silva_result.has_value() ? silva::to_string_value(__silva_result.error()) : "")); \
-    REQUIRE(__silva_result);                                                                   \
-    std::move(__silva_result).value();                                                         \
+#define SILVA_EXPECT_REQUIRE(expression)                                                           \
+  ({                                                                                               \
+    auto __silva_result = (expression);                                                            \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                          \
+    INFO((!__silva_result.has_value() ? silva::pretty_write_string(__silva_result.error()) : "")); \
+    REQUIRE(__silva_result);                                                                       \
+    std::move(__silva_result).value();                                                             \
   })
 }
 

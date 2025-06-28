@@ -187,7 +187,7 @@ namespace silva {
     return string_or_view_t{std::move(retval)};
   }
 
-  void stream_out_impl(byte_sink_t* stream, const error_t& self)
+  void pretty_write_impl(byte_sink_t* stream, const error_t& self)
   {
     stream->write_str(self.to_string_structured().as_string_view());
   }
@@ -195,11 +195,11 @@ namespace silva {
   void error_t::materialize()
   {
     auto& any_vector = context->any_vector;
-    any_vector_t<to_string_value_t, move_ctor_t, dtor_t> new_any_vector;
+    any_vector_t<pretty_write_string_t, move_ctor_t, dtor_t> new_any_vector;
     hash_map_t<any_vector_index_t, any_vector_index_t> offset_mapping;
     {
       for (const auto avi: any_vector.index_range()) {
-        string_t x          = any_vector.apply(avi, to_string_value);
+        string_t x          = any_vector.apply(avi, pretty_write_string);
         offset_mapping[avi] = new_any_vector.push_back(std::move(x));
       }
       offset_mapping[any_vector.next_index()] = new_any_vector.next_index();

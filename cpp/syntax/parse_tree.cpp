@@ -7,15 +7,15 @@
 namespace silva {
   constexpr index_t max_num_tokens = 5;
 
-  void stream_out_impl(byte_sink_t* stream, const parse_tree_span_t& pts)
+  void pretty_write_impl(byte_sink_t* stream, const parse_tree_span_t& pts)
   {
     if (pts.tp.is_nullptr()) {
       stream->write_str("unknown parse_tree_span");
     }
     else {
       stream->format("[{}] parse_tree_span[ {} ]",
-                     to_string_value(pts.token_position()),
-                     to_string_value(pts.token_range()));
+                     pretty_write_string(pts.token_position()),
+                     pretty_write_string(pts.token_range()));
     }
   }
 
@@ -39,7 +39,7 @@ namespace silva {
         }
       }
       string_pad(curr_line, token_offset);
-      curr_line += silva::to_string_value(pts.token_range());
+      curr_line += silva::pretty_write_string(pts.token_range());
     });
   }
 

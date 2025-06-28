@@ -119,7 +119,7 @@ namespace silva::lox {
     friend bool operator==(const object_t&, const object_t&);
     friend bool operator!=(const object_t&, const object_t&);
 
-    friend void stream_out_impl(byte_sink_t*, const object_t&);
+    friend void pretty_write_impl(byte_sink_t*, const object_t&);
     friend std::ostream& operator<<(std::ostream&, const object_t&);
   };
 
@@ -186,6 +186,6 @@ struct fmt::formatter<silva::lox::object_t> {
   template<typename FormatContext>
   auto format(const silva::lox::object_t& x, FormatContext& ctx) const
   {
-    return fmt::format_to(ctx.out(), "lox_v[{}]", silva::to_string_value(x));
+    return fmt::format_to(ctx.out(), "lox_v[{}]", silva::pretty_write_string(x));
   }
 };

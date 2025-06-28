@@ -29,7 +29,7 @@ namespace silva::test {
 x=-4 must be positive
 failed calling func_1(-4)
 )";
-      const auto result_str            = to_string_value(result.error());
+      const auto result_str            = pretty_write_string(result.error());
       CHECK(result_str == expected.substr(1));
     }
   }

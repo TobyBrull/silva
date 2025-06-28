@@ -442,7 +442,7 @@ namespace silva::lox {
                                 "{} could not find {} in {}",
                                 pts,
                                 swp->token_id_wrap(field_name),
-                                to_string_value(lhs_ref));
+                                pretty_write_string(lhs_ref));
       }
       else if (rn == intp->lexicon.ni_expr_b_assign)
       {
@@ -642,7 +642,7 @@ namespace silva::lox {
         object_ref_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                                               "{} error evaluating argument to 'print'",
                                               pts);
-        fmt::println("{}", to_string_value(std::move(value)));
+        fmt::println("{}", pretty_write_string(std::move(value)));
       }
       else if (rule_name == intp->lexicon.ni_stmt_if) {
         auto [it, end] = pts.children_range();

@@ -45,7 +45,7 @@ namespace silva::lox {
     SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
                  "can only get member from class instance, not from {}",
-                 to_string_value(class_instance));
+                 pretty_write_string(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
     if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
@@ -62,7 +62,7 @@ namespace silva::lox {
     SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
                  "can only get member from class instance",
-                 to_string_value(class_instance));
+                 pretty_write_string(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
     if (_class.is_nullptr()) {
       _class = ci._class;
@@ -204,7 +204,7 @@ namespace silva::lox {
       return -std::get<const double>(x.data);
     }
     else {
-      SILVA_EXPECT(false, RUNTIME, "runtime type error: - {} ", to_string_value(x));
+      SILVA_EXPECT(false, RUNTIME, "runtime type error: - {} ", pretty_write_string(x));
     }
   }
 
@@ -218,8 +218,8 @@ namespace silva::lox {
       SILVA_EXPECT(false,                                                          \
                    RUNTIME,                                                        \
                    "runtime type error: {} " #op " {}",                            \
-                   to_string_value(lhs),                                           \
-                   to_string_value(rhs));                                          \
+                   pretty_write_string(lhs),                                       \
+                   pretty_write_string(rhs));                                      \
     }                                                                              \
   }
   BINARY_DOUBLE(double, *)
@@ -243,8 +243,8 @@ namespace silva::lox {
       SILVA_EXPECT(false,
                    RUNTIME,
                    "runtime type error: {} + {}",
-                   to_string_value(lhs),
-                   to_string_value(rhs));
+                   pretty_write_string(lhs),
+                   pretty_write_string(rhs));
     }
   }
 
@@ -265,7 +265,7 @@ namespace silva::lox {
     return !(lhs == rhs);
   }
 
-  struct object_stream_out_impl_visitor_t {
+  struct object_pretty_write_impl_visitor_t {
     byte_sink_t* stream = nullptr;
 
     void operator()(const none_t& x) const { stream->write_str("none"); }
@@ -292,29 +292,29 @@ namespace silva::lox {
     void operator()(const string_t& x) const { stream->write_str(x); }
     void operator()(const function_t& x) const
     {
-      stream->format("<function {}>", to_string_value(x.pts));
+      stream->format("<function {}>", pretty_write_string(x.pts));
     }
     void operator()(const function_builtin_t& x) const
     {
-      stream->format("<builtin-function '{}'>", to_string_value(x.pts));
+      stream->format("<builtin-function '{}'>", pretty_write_string(x.pts));
     }
     void operator()(const class_t& x) const
     {
-      stream->format("<class {}>", to_string_value(x.pts));
+      stream->format("<class {}>", pretty_write_string(x.pts));
     }
     void operator()(const class_instance_t& x) const
     {
-      stream->format("<instance of {}>", to_string_value(x._class));
+      stream->format("<instance of {}>", pretty_write_string(x._class));
     }
     void operator()(const auto& x) const { stream->format("Unknown lox::object_t"); }
   };
-  void stream_out_impl(byte_sink_t* stream, const object_t& value)
+  void pretty_write_impl(byte_sink_t* stream, const object_t& value)
   {
-    return std::visit(object_stream_out_impl_visitor_t{stream}, value.data);
+    return std::visit(object_pretty_write_impl_visitor_t{stream}, value.data);
   }
   std::ostream& operator<<(std::ostream& os, const object_t& x)
   {
-    return os << silva::to_string_value(x);
+    return os << silva::pretty_write_string(x);
   }
 
   expected_t<object_ref_t> neg(object_pool_t& pool, object_ref_t x)
