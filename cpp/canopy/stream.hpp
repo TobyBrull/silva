@@ -21,6 +21,7 @@ namespace silva {
     vector_t<byte_t> buffer;
 
     stream_stdout_t(index_t init_buffer_size = 4 * 1'024);
+    ~stream_stdout_t();
 
     void flush(index_t = 0) final;
   };

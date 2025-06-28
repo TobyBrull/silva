@@ -7,14 +7,16 @@
 namespace silva {
   constexpr index_t max_num_tokens = 5;
 
-  string_or_view_t to_string_impl(const parse_tree_span_t& pts)
+  void to_string_impl(stream_t* stream, const parse_tree_span_t& pts)
   {
     if (pts.tp.is_nullptr()) {
-      return string_or_view_t{string_view_t{"unknown parse_tree_span"}};
+      stream->write_str("unknown parse_tree_span");
     }
-    return string_or_view_t{fmt::format("[{}] parse_tree_span[ {} ]",
-                                        to_string(pts.token_position()),
-                                        to_string(pts.token_range()))};
+    else {
+      stream->format("[{}] parse_tree_span[ {} ]",
+                     to_string_value(pts.token_position()),
+                     to_string_value(pts.token_range()));
+    }
   }
 
   expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset,
@@ -37,7 +39,7 @@ namespace silva {
         }
       }
       string_pad(curr_line, token_offset);
-      curr_line += silva::to_string(pts.token_range()).as_string_view();
+      curr_line += silva::to_string_value(pts.token_range());
     });
   }
 

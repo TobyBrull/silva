@@ -210,7 +210,7 @@ namespace silva::seed {
               string_pad(curr_line, 55);
               curr_line += fmt::format("{}", data.success);
               string_pad(curr_line, 65);
-              curr_line += fmt::format("{}", to_string(data.token_pos));
+              curr_line += to_string_value(data.token_pos);
             }));
         return {std::move(retval)};
       }
@@ -341,7 +341,7 @@ namespace silva::seed {
       expected_t<node_and_error_t> print_f(const span_t<const parse_tree_span_t> params)
       {
         for (const auto& pts: params) {
-          fmt::print("{}\n", to_string(pts));
+          fmt::print("{}\n", to_string_value(pts));
         }
         auto ss = stake();
         return ss.commit();

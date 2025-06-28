@@ -1,7 +1,7 @@
 #pragma once
 
 #include "canopy/sprite.hpp"
-#include "canopy/string_or_view.hpp"
+#include "canopy/stream.hpp"
 
 namespace silva {
   template<typename T>
@@ -62,7 +62,10 @@ namespace silva {
     T* operator->() const;
     T& operator*() const;
 
-    friend string_or_view_t to_string_impl(const object_ref_t& x) { return to_string_impl(*x); }
+    friend void to_string_impl(stream_t* stream, const object_ref_t& x)
+    {
+      return to_string_impl(stream, *x);
+    }
     friend std::ostream& operator<<(std::ostream& os, const object_ref_t& x) { return os << *x; }
   };
 }

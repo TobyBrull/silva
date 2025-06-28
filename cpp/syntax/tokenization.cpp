@@ -36,23 +36,24 @@ namespace silva {
     }
   }
 
-  string_or_view_t to_string_impl(const token_position_t& self)
+  void to_string_impl(stream_t* stream, const token_position_t& self)
   {
     if (self.tp.is_nullptr()) {
-      return string_or_view_t{string_view_t{"unknown token_position"}};
+      stream->write_str("unknown token_position");
+      return;
     }
     string_t retval;
     const string_t filename = self.tp->filepath.filename().string();
     if (self.token_index < self.tp->token_locations.size()) {
       const auto [line, column] = self.tp->token_locations[self.token_index];
-      return string_or_view_t{fmt::format("{}:{}:{}", filename, line + 1, column + 1)};
+      stream->format("{}:{}:{}", filename, line + 1, column + 1);
     }
     else {
-      return string_or_view_t{fmt::format("{}:EOF", filename)};
+      stream->format("{}:EOF", filename);
     }
   }
 
-  string_or_view_t to_string_impl(const token_range_t& self)
+  void to_string_impl(stream_t* stream, const token_range_t& self)
   {
     constexpr index_t max_num_tokens = 5;
     string_t retval;
@@ -73,7 +74,7 @@ namespace silva {
       retval += " ... ";
       print_tokens(self.token_end - max_num_tokens / 2, self.token_end);
     }
-    return string_or_view_t{std::move(retval)};
+    stream->write_str(retval);
   }
 
   expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t swp, filesystem_path_t filepath)
@@ -114,15 +115,13 @@ namespace silva {
     return swp->add(std::move(retval));
   }
 
-  string_or_view_t to_string_impl(const tokenization_t& self)
+  void to_string_impl(stream_t* stream, const tokenization_t& self)
   {
-    string_t retval;
     for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
       const token_id_t tii      = self.tokens[token_index];
       const token_info_t* info  = &self.swp->token_infos[tii];
       const auto [line, column] = self.token_locations[token_index];
-      retval += fmt::format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
+      stream->format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }
-    return string_or_view_t{std::move(retval)};
   }
 }

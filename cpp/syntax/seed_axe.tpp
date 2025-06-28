@@ -42,7 +42,7 @@ namespace silva::seed::test {
       UNSCOPED_INFO(result_str.value());
     }
     else {
-      UNSCOPED_INFO(to_string(maybe_result_pt.error()).as_string_view());
+      UNSCOPED_INFO(to_string_value(maybe_result_pt.error()));
     }
     REQUIRE(maybe_result_pt.has_value() == expected_str.has_value());
     if (!expected_str.has_value()) {

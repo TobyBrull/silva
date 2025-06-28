@@ -31,6 +31,10 @@ namespace silva {
   {
     target = buffer;
   }
+  stream_stdout_t::~stream_stdout_t()
+  {
+    flush();
+  }
 
   void stream_stdout_t::flush(const index_t next_write_hint)
   {

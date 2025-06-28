@@ -68,7 +68,7 @@ namespace silva::lox::bytecode::test {
       INFO(SILVA_EXPECT_REQUIRE(chunk.to_string()));
       const auto result = vm.run(chunk);
       REQUIRE(!result.has_value());
-      const string_t err_msg = to_string(std::move(result).error()).as_string();
+      const string_t err_msg = to_string_value(std::move(result).error());
       INFO(err_msg);
       for (const auto expected_err_msg: expected_err_msgs) {
         INFO(expected_err_msg);

@@ -2,103 +2,117 @@
 
 #include "customization_point.hpp"
 #include "enum.hpp"
+#include "stream.hpp"
 #include "string_or_view.hpp"
 
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 
 namespace silva {
-  struct to_string_t : public customization_point_t<string_or_view_t(const void*)> {
+  struct to_string_t : public customization_point_t<void(stream_t*, const void*)> {
     template<typename T>
-    constexpr string_or_view_t operator()(const T&) const;
+    constexpr void operator()(stream_t*, const T&) const;
   };
   inline constexpr to_string_t to_string;
 
-  string_or_view_t to_string_impl(const string_t&);
-  string_or_view_t to_string_impl(const string_view_t&);
-  string_or_view_t to_string_impl(const string_or_view_t&);
+  void to_string_impl(stream_t*, const string_t&);
+  void to_string_impl(stream_t*, const string_view_t&);
+  void to_string_impl(stream_t*, const string_or_view_t&);
 
   template<typename T>
     requires std::is_arithmetic_v<T>
-  string_or_view_t to_string_impl(const T&);
+  void to_string_impl(stream_t*, const T&);
 
   template<typename T, typename U>
-  string_or_view_t to_string_impl(const pair_t<T, U>&);
+  void to_string_impl(stream_t*, const pair_t<T, U>&);
 
   template<typename... Ts>
-  string_or_view_t to_string_impl(const tuple_t<Ts...>&);
+  void to_string_impl(stream_t*, const tuple_t<Ts...>&);
 
   template<typename... Ts>
-  string_or_view_t to_string_impl(const variant_t<Ts...>&);
+  void to_string_impl(stream_t*, const variant_t<Ts...>&);
 
   template<typename Enum>
     requires std::is_enum_v<Enum>
-  string_or_view_t to_string_impl(const Enum& x);
+  void to_string_impl(stream_t*, const Enum& x);
+
+  struct to_string_value_t : public customization_point_t<string_t(const void*)> {
+    template<typename T>
+    constexpr string_t operator()(const T&) const;
+  };
+  inline constexpr to_string_value_t to_string_value;
 
 #ifdef TRACY_ENABLE
-#  define ZoneTextToString(x)                \
-    {                                        \
-      const auto sov = to_string(x);         \
-      const auto sv  = sov.as_string_view(); \
-      ZoneText(sv.data(), sv.size());        \
+#  define ZoneTextToString(x)              \
+    {                                      \
+      const auto sov = to_string_value(x); \
+      const auto sv  = temp.content_str(); \
+      ZoneText(sv.data(), sv.size());      \
     }
 #endif
-
 }
 
 // IMPLEMENTATION
 
 namespace silva {
   template<typename T>
-  constexpr string_or_view_t to_string_t::operator()(const T& x) const
+  constexpr void to_string_t::operator()(stream_t* stream, const T& x) const
   {
     using silva::to_string_impl;
-    return to_string_impl(x);
+    return to_string_impl(stream, x);
   }
 
-  inline string_or_view_t to_string_impl(const string_t& x)
+  template<typename T>
+  constexpr string_t to_string_value_t::operator()(const T& x) const
   {
-    return string_or_view_t{string_t{x}};
+    stream_memory_t temp;
+    silva::to_string(&temp, x);
+    return temp.content_str_fetch();
   }
-  inline string_or_view_t to_string_impl(const string_view_t& x)
+
+  inline void to_string_impl(stream_t* stream, const string_t& x)
   {
-    return string_or_view_t{x};
+    stream->write_str(x);
   }
-  inline string_or_view_t to_string_impl(const string_or_view_t& x)
+  inline void to_string_impl(stream_t* stream, const string_view_t& x)
   {
-    return x;
+    stream->write_str(x);
+  }
+  inline void to_string_impl(stream_t* stream, const string_or_view_t& x)
+  {
+    stream->write_str(x.as_string_view());
   }
 
   template<typename T>
     requires std::is_arithmetic_v<T>
-  string_or_view_t to_string_impl(const T& x)
+  void to_string_impl(stream_t* stream, const T& x)
   {
-    return string_or_view_t{std::to_string(x)};
+    stream->write_str(std::to_string(x));
   }
 
   template<typename T, typename U>
-  string_or_view_t to_string_impl(const pair_t<T, U>& x)
+  void to_string_impl(stream_t* stream, const pair_t<T, U>& x)
   {
-    return string_or_view_t{fmt::format("[{} {}]", x.first, x.second)};
+    stream->format("[{} {}]", x.first, x.second);
   }
 
   template<typename... Ts>
-  string_or_view_t to_string_impl(const tuple_t<Ts...>& x)
+  void to_string_impl(stream_t* stream, const tuple_t<Ts...>& x)
   {
-    return string_or_view_t{fmt::format("[{}]", fmt::join(x, " "))};
+    stream->format("[{}]", fmt::join(x, " "));
   }
 
   template<typename... Ts>
-  string_or_view_t to_string_impl(const variant_t<Ts...>& x)
+  void to_string_impl(stream_t* stream, const variant_t<Ts...>& x)
   {
-    return std::visit([](const auto& value) -> string_or_view_t { return to_string(value); }, x);
+    std::visit([stream](const auto& value) { to_string(stream, value); }, x);
   }
 
   template<typename Enum>
     requires std::is_enum_v<Enum>
-  string_or_view_t to_string_impl(const Enum& x)
+  void to_string_impl(stream_t* stream, const Enum& x)
   {
     static const auto vals = enum_hashmap_to_string<Enum>();
-    return string_or_view_t{string_view_t{vals.at(x)}};
+    stream->write_str(string_view_t{vals.at(x)});
   }
 }

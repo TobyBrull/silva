@@ -88,7 +88,7 @@ namespace silva::lox::bytecode {
     {
       SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);
       auto x = vm.stack.back();
-      vm.print_stream->format("{}", to_string(std::move(x)));
+      vm.print_stream->format("{}", to_string_value(std::move(x)));
       vm.stack.pop_back();
       ip += 1;
       return {};

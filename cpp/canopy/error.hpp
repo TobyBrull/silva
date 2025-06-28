@@ -44,7 +44,7 @@ namespace silva {
     string_or_view_t to_string_plain() const;
     string_or_view_t to_string_structured() const;
 
-    friend string_or_view_t to_string_impl(const error_t&);
+    friend void to_string_impl(stream_t*, const error_t&);
 
     // Rewrite the error to resolve all pointers/references.
     void materialize();

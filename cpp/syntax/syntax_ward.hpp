@@ -94,14 +94,14 @@ namespace silva {
     syntax_ward_ptr_t swp;
     token_id_t token_id = token_id_none;
 
-    friend string_or_view_t to_string_impl(const token_id_wrap_t&);
+    friend void to_string_impl(stream_t*, const token_id_wrap_t&);
   };
 
   struct name_id_wrap_t {
     syntax_ward_ptr_t swp;
     name_id_t name_id = name_id_root;
 
-    friend string_or_view_t to_string_impl(const name_id_wrap_t&);
+    friend void to_string_impl(stream_t*, const name_id_wrap_t&);
   };
 }
 

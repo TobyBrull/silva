@@ -1,6 +1,7 @@
 #include "tokenization.hpp"
 
 #include "canopy/main.hpp"
+#include "canopy/stream.hpp"
 #include "syntax_ward.hpp"
 
 #include <fmt/format.h>
@@ -13,8 +14,9 @@ namespace silva {
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
+    stream_stdout_t _stdout;
     const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
-    fmt::print("{}\n", to_string(*tokenization));
+    to_string(&_stdout, *tokenization);
     return {};
   }
 }

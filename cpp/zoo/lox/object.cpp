@@ -44,8 +44,8 @@ namespace silva::lox {
   {
     SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
-                 "can only get member from class instance",
-                 to_string(class_instance));
+                 "can only get member from class instance, not from {}",
+                 to_string_value(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
     if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
@@ -62,7 +62,7 @@ namespace silva::lox {
     SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
                  "can only get member from class instance",
-                 to_string(class_instance));
+                 to_string_value(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
     if (_class.is_nullptr()) {
       _class = ci._class;
@@ -204,7 +204,7 @@ namespace silva::lox {
       return -std::get<const double>(x.data);
     }
     else {
-      SILVA_EXPECT(false, RUNTIME, "runtime type error: - {} ", to_string(x));
+      SILVA_EXPECT(false, RUNTIME, "runtime type error: - {} ", to_string_value(x));
     }
   }
 
@@ -218,8 +218,8 @@ namespace silva::lox {
       SILVA_EXPECT(false,                                                          \
                    RUNTIME,                                                        \
                    "runtime type error: {} " #op " {}",                            \
-                   to_string(lhs),                                                 \
-                   to_string(rhs));                                                \
+                   to_string_value(lhs),                                           \
+                   to_string_value(rhs));                                          \
     }                                                                              \
   }
   BINARY_DOUBLE(double, *)
@@ -240,7 +240,11 @@ namespace silva::lox {
       return std::get<const string_t>(lhs.data) + std::get<const string_t>(rhs.data);
     }
     else {
-      SILVA_EXPECT(false, RUNTIME, "runtime type error: {} + {}", to_string(lhs), to_string(rhs));
+      SILVA_EXPECT(false,
+                   RUNTIME,
+                   "runtime type error: {} + {}",
+                   to_string_value(lhs),
+                   to_string_value(rhs));
     }
   }
 
@@ -262,20 +266,19 @@ namespace silva::lox {
   }
 
   struct object_to_string_impl_visitor_t {
-    string_or_view_t operator()(const none_t& x) const
-    {
-      return string_or_view_t{string_view_t{"none"}};
-    }
-    string_or_view_t operator()(const bool& x) const
+    stream_t* stream = nullptr;
+
+    void operator()(const none_t& x) const { stream->write_str("none"); }
+    void operator()(const bool& x) const
     {
       if (x) {
-        return string_or_view_t{string_view_t{"true"}};
+        stream->write_str("true");
       }
       else {
-        return string_or_view_t{string_view_t{"false"}};
+        stream->write_str("false");
       }
     }
-    string_or_view_t operator()(const double& x) const
+    void operator()(const double& x) const
     {
       auto retval = std::to_string(x);
       while (retval.size() >= 2 && retval.back() == '0') {
@@ -284,37 +287,34 @@ namespace silva::lox {
       if (retval.size() >= 2 && retval.back() == '.') {
         retval.pop_back();
       }
-      return string_or_view_t{std::move(retval)};
+      stream->write_str(retval);
     }
-    string_or_view_t operator()(const string_t& x) const { return string_or_view_t{string_t{x}}; }
-    string_or_view_t operator()(const function_t& x) const
+    void operator()(const string_t& x) const { stream->write_str(x); }
+    void operator()(const function_t& x) const
     {
-      return string_or_view_t{fmt::format("<function {}>", to_string(x.pts))};
+      stream->format("<function {}>", to_string_value(x.pts));
     }
-    string_or_view_t operator()(const function_builtin_t& x) const
+    void operator()(const function_builtin_t& x) const
     {
-      return string_or_view_t{fmt::format("<builtin-function '{}'>", to_string(x.pts))};
+      stream->format("<builtin-function '{}'>", to_string_value(x.pts));
     }
-    string_or_view_t operator()(const class_t& x) const
+    void operator()(const class_t& x) const
     {
-      return string_or_view_t{fmt::format("<class {}>", to_string(x.pts))};
+      stream->format("<class {}>", to_string_value(x.pts));
     }
-    string_or_view_t operator()(const class_instance_t& x) const
+    void operator()(const class_instance_t& x) const
     {
-      return string_or_view_t{fmt::format("<instance of {}>", to_string(x._class))};
+      stream->format("<instance of {}>", to_string_value(x._class));
     }
-    string_or_view_t operator()(const auto& x) const
-    {
-      return string_or_view_t{string_view_t{"Unknown lox::object_t"}};
-    }
+    void operator()(const auto& x) const { stream->format("Unknown lox::object_t"); }
   };
-  string_or_view_t to_string_impl(const object_t& value)
+  void to_string_impl(stream_t* stream, const object_t& value)
   {
-    return std::visit(object_to_string_impl_visitor_t{}, value.data);
+    return std::visit(object_to_string_impl_visitor_t{stream}, value.data);
   }
   std::ostream& operator<<(std::ostream& os, const object_t& x)
   {
-    return os << to_string_impl(x).as_string_view();
+    return os << silva::to_string_value(x);
   }
 
   expected_t<object_ref_t> neg(object_pool_t& pool, object_ref_t x)
