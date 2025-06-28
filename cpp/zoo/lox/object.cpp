@@ -266,7 +266,7 @@ namespace silva::lox {
   }
 
   struct object_stream_out_impl_visitor_t {
-    stream_t* stream = nullptr;
+    byte_sink_t* stream = nullptr;
 
     void operator()(const none_t& x) const { stream->write_str("none"); }
     void operator()(const bool& x) const
@@ -308,7 +308,7 @@ namespace silva::lox {
     }
     void operator()(const auto& x) const { stream->format("Unknown lox::object_t"); }
   };
-  void stream_out_impl(stream_t* stream, const object_t& value)
+  void stream_out_impl(byte_sink_t* stream, const object_t& value)
   {
     return std::visit(object_stream_out_impl_visitor_t{stream}, value.data);
   }

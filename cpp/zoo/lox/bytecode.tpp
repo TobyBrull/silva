@@ -13,7 +13,7 @@ namespace silva::lox::bytecode::test {
     auto si = seed_interpreter(sw.ptr());
     object_pool_t pool;
     compiler_t compiler(sw.ptr());
-    stream_memory_t print_buffer;
+    byte_sink_memory_t print_buffer;
     vm_t vm{.print_stream = &print_buffer};
 
     const auto make_chunk =

@@ -2,14 +2,14 @@
 
 #include "bytecode.hpp"
 
-#include "canopy/stream.hpp"
+#include "canopy/byte_sink.hpp"
 
 namespace silva::lox::bytecode {
   struct vm_t {
     object_pool_t pool;
     vector_t<object_ref_t> stack;
 
-    stream_t* print_stream = nullptr;
+    byte_sink_t* print_stream = nullptr;
 
     expected_t<void> run(const chunk_t&);
 

@@ -1,7 +1,7 @@
 #pragma once
 
+#include "canopy/byte_sink.hpp"
 #include "canopy/sprite.hpp"
-#include "canopy/stream.hpp"
 
 namespace silva {
   template<typename T>
@@ -62,7 +62,7 @@ namespace silva {
     T* operator->() const;
     T& operator*() const;
 
-    friend void stream_out_impl(stream_t* stream, const object_ref_t& x)
+    friend void stream_out_impl(byte_sink_t* stream, const object_ref_t& x)
     {
       return stream_out_impl(stream, *x);
     }

@@ -39,7 +39,7 @@ namespace silva {
     token_range_t token_range() const;
     token_position_t token_position() const;
 
-    friend void stream_out_impl(stream_t*, const parse_tree_span_t&);
+    friend void stream_out_impl(byte_sink_t*, const parse_tree_span_t&);
 
     enum class parse_tree_printing_t {
       ABSOLUTE,

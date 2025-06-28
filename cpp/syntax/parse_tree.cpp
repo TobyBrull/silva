@@ -7,7 +7,7 @@
 namespace silva {
   constexpr index_t max_num_tokens = 5;
 
-  void stream_out_impl(stream_t* stream, const parse_tree_span_t& pts)
+  void stream_out_impl(byte_sink_t* stream, const parse_tree_span_t& pts)
   {
     if (pts.tp.is_nullptr()) {
       stream->write_str("unknown parse_tree_span");

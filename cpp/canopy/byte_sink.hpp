@@ -5,10 +5,8 @@
 #include <fmt/format.h>
 
 namespace silva {
-  struct stream_t {
-    span_t<byte_t> target;
-
-    static constexpr index_t min_buffer_size = 64;
+  struct byte_sink_t {
+    span_t<byte_t> span;
 
     void write(span_t<const byte_t>);
     void write_str(string_view_t);
@@ -16,22 +14,24 @@ namespace silva {
     template<typename... T>
     void format(fmt::format_string<T...> fmt, T&&... args);
 
-    virtual void flush(index_t next_write_hint = 0) = 0;
+    static constexpr index_t min_buffer_size = 64;
+
+    virtual void on_out_of_span(index_t size_hint = 0) = 0;
   };
 
-  struct stream_stdout_t : public stream_t {
+  struct byte_sink_stdout_t : public byte_sink_t {
     vector_t<byte_t> buffer;
 
-    stream_stdout_t(index_t init_buffer_size = min_buffer_size);
-    ~stream_stdout_t();
+    byte_sink_stdout_t(index_t init_buffer_size = min_buffer_size);
+    ~byte_sink_stdout_t();
 
-    void flush(index_t = 0) final;
+    void on_out_of_span(index_t = 0) final;
   };
 
-  struct stream_memory_t : public stream_t {
+  struct byte_sink_memory_t : public byte_sink_t {
     vector_t<byte_t> buffer;
 
-    stream_memory_t(index_t init_buffer_size = min_buffer_size);
+    byte_sink_memory_t(index_t init_buffer_size = min_buffer_size);
 
     void clear();
 
@@ -41,7 +41,7 @@ namespace silva {
     string_view_t content_str() const;
     string_t content_str_fetch();
 
-    void flush(index_t = 0) final;
+    void on_out_of_span(index_t = 0) final;
   };
 }
 
@@ -49,7 +49,7 @@ namespace silva {
 
 namespace silva {
   template<typename... Args>
-  void stream_t::format(fmt::format_string<Args...> fmt, Args&&... args)
+  void byte_sink_t::format(fmt::format_string<Args...> fmt, Args&&... args)
   {
     const auto temp = fmt::format(fmt, std::forward<Args>(args)...);
     write_str(temp);

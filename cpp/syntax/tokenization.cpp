@@ -36,7 +36,7 @@ namespace silva {
     }
   }
 
-  void stream_out_impl(stream_t* stream, const token_position_t& self)
+  void stream_out_impl(byte_sink_t* stream, const token_position_t& self)
   {
     if (self.tp.is_nullptr()) {
       stream->write_str("unknown token_position");
@@ -53,7 +53,7 @@ namespace silva {
     }
   }
 
-  void stream_out_impl(stream_t* stream, const token_range_t& self)
+  void stream_out_impl(byte_sink_t* stream, const token_range_t& self)
   {
     constexpr index_t max_num_tokens = 5;
     string_t retval;
@@ -115,7 +115,7 @@ namespace silva {
     return swp->add(std::move(retval));
   }
 
-  void stream_out_impl(stream_t* stream, const tokenization_t& self)
+  void stream_out_impl(byte_sink_t* stream, const tokenization_t& self)
   {
     for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
       const token_id_t tii      = self.tokens[token_index];

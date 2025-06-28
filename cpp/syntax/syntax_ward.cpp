@@ -308,12 +308,12 @@ namespace silva {
     };
   }
 
-  void stream_out_impl(stream_t* stream, const token_id_wrap_t& x)
+  void stream_out_impl(byte_sink_t* stream, const token_id_wrap_t& x)
   {
     stream->format("token[ {} ]", x.swp->token_infos[x.token_id].str);
   }
 
-  void stream_out_impl(stream_t* stream, const name_id_wrap_t& x)
+  void stream_out_impl(byte_sink_t* stream, const name_id_wrap_t& x)
   {
     stream->write_str(x.swp->default_name_id_style().absolute(x.name_id));
   }

@@ -119,7 +119,7 @@ namespace silva::lox {
     friend bool operator==(const object_t&, const object_t&);
     friend bool operator!=(const object_t&, const object_t&);
 
-    friend void stream_out_impl(stream_t*, const object_t&);
+    friend void stream_out_impl(byte_sink_t*, const object_t&);
     friend std::ostream& operator<<(std::ostream&, const object_t&);
   };
 
