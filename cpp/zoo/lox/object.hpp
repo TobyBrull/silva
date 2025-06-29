@@ -119,7 +119,7 @@ namespace silva::lox {
     friend bool operator==(const object_t&, const object_t&);
     friend bool operator!=(const object_t&, const object_t&);
 
-    friend void pretty_write_impl(byte_sink_t*, const object_t&);
+    friend void pretty_write_impl(const object_t&, byte_sink_t*);
     friend std::ostream& operator<<(std::ostream&, const object_t&);
   };
 

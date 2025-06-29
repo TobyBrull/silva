@@ -62,9 +62,9 @@ namespace silva {
     T* operator->() const;
     T& operator*() const;
 
-    friend void pretty_write_impl(byte_sink_t* stream, const object_ref_t& x)
+    friend void pretty_write_impl(const object_ref_t& x, byte_sink_t* stream)
     {
-      return pretty_write_impl(stream, *x);
+      return pretty_write_impl(*x, stream);
     }
     friend std::ostream& operator<<(std::ostream& os, const object_ref_t& x) { return os << *x; }
   };

@@ -198,7 +198,7 @@ namespace silva {
     return string_or_view_t{std::move(retval)};
   }
 
-  void pretty_write_impl(byte_sink_t* stream, const error_t& self)
+  void pretty_write_impl(const error_t& self, byte_sink_t* stream)
   {
     stream->write_str(self.to_string_structured().as_string_view());
   }

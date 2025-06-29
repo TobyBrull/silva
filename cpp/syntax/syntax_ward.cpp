@@ -308,14 +308,14 @@ namespace silva {
     };
   }
 
-  void pretty_write_impl(byte_sink_t* stream, const token_id_wrap_t& x)
+  void pretty_write_impl(const token_id_wrap_t& x, byte_sink_t* byte_sink)
   {
-    stream->format("token[ {} ]", x.swp->token_infos[x.token_id].str);
+    byte_sink->format("token[ {} ]", x.swp->token_infos[x.token_id].str);
   }
 
-  void pretty_write_impl(byte_sink_t* stream, const name_id_wrap_t& x)
+  void pretty_write_impl(const name_id_wrap_t& x, byte_sink_t* byte_sink)
   {
-    stream->write_str(x.swp->default_name_id_style().absolute(x.name_id));
+    byte_sink->write_str(x.swp->default_name_id_style().absolute(x.name_id));
   }
 
   tokenization_ptr_t syntax_ward_t::add(unique_ptr_t<const tokenization_t> x)

@@ -10,32 +10,32 @@
 
 namespace silva {
 
-  struct pretty_write_t : public customization_point_t<void(byte_sink_t*, const void*)> {
+  struct pretty_write_t : public customization_point_t<void(const void*, byte_sink_t*)> {
     template<typename T>
-    constexpr void operator()(byte_sink_t*, const T&) const;
+    constexpr void operator()(const T&, byte_sink_t*) const;
   };
   inline constexpr pretty_write_t pretty_write;
 
-  void pretty_write_impl(byte_sink_t*, const string_t&);
-  void pretty_write_impl(byte_sink_t*, const string_view_t&);
-  void pretty_write_impl(byte_sink_t*, const string_or_view_t&);
+  void pretty_write_impl(const string_t&, byte_sink_t*);
+  void pretty_write_impl(const string_view_t&, byte_sink_t*);
+  void pretty_write_impl(const string_or_view_t&, byte_sink_t*);
 
   template<typename T>
     requires std::is_arithmetic_v<T>
-  void pretty_write_impl(byte_sink_t*, const T&);
+  void pretty_write_impl(const T&, byte_sink_t*);
 
   template<typename T, typename U>
-  void pretty_write_impl(byte_sink_t*, const pair_t<T, U>&);
+  void pretty_write_impl(const pair_t<T, U>&, byte_sink_t*);
 
   template<typename... Ts>
-  void pretty_write_impl(byte_sink_t*, const tuple_t<Ts...>&);
+  void pretty_write_impl(const tuple_t<Ts...>&, byte_sink_t*);
 
   template<typename... Ts>
-  void pretty_write_impl(byte_sink_t*, const variant_t<Ts...>&);
+  void pretty_write_impl(const variant_t<Ts...>&, byte_sink_t*);
 
   template<typename Enum>
     requires std::is_enum_v<Enum>
-  void pretty_write_impl(byte_sink_t*, const Enum& x);
+  void pretty_write_impl(const Enum& x, byte_sink_t*);
 
   struct pretty_write_string_t : public customization_point_t<string_t(const void*)> {
     template<typename T>
@@ -44,11 +44,11 @@ namespace silva {
   inline constexpr pretty_write_string_t pretty_write_string;
 
 #ifdef TRACY_ENABLE
-#  define ZoneTextToString(x)              \
-    {                                      \
-      const auto sov = to_string_value(x); \
-      const auto sv  = temp.content_str(); \
-      ZoneText(sv.data(), sv.size());      \
+#  define ZoneTextToString(x)                  \
+    {                                          \
+      const auto sov = pretty_write_string(x); \
+      const auto sv  = temp.content_str();     \
+      ZoneText(sv.data(), sv.size());          \
     }
 #endif
 }
@@ -57,63 +57,63 @@ namespace silva {
 
 namespace silva {
   template<typename T>
-  constexpr void pretty_write_t::operator()(byte_sink_t* stream, const T& x) const
+  constexpr void pretty_write_t::operator()(const T& x, byte_sink_t* byte_sink) const
   {
     using silva::pretty_write_impl;
-    return pretty_write_impl(stream, x);
+    return pretty_write_impl(x, byte_sink);
   }
 
   template<typename T>
   constexpr string_t pretty_write_string_t::operator()(const T& x) const
   {
     byte_sink_memory_t temp;
-    silva::pretty_write(&temp, x);
+    silva::pretty_write(x, &temp);
     return temp.content_str_fetch();
   }
 
-  inline void pretty_write_impl(byte_sink_t* stream, const string_t& x)
+  inline void pretty_write_impl(const string_t& x, byte_sink_t* byte_sink)
   {
-    stream->write_str(x);
+    byte_sink->write_str(x);
   }
-  inline void pretty_write_impl(byte_sink_t* stream, const string_view_t& x)
+  inline void pretty_write_impl(const string_view_t& x, byte_sink_t* byte_sink)
   {
-    stream->write_str(x);
+    byte_sink->write_str(x);
   }
-  inline void pretty_write_impl(byte_sink_t* stream, const string_or_view_t& x)
+  inline void pretty_write_impl(const string_or_view_t& x, byte_sink_t* byte_sink)
   {
-    stream->write_str(x.as_string_view());
+    byte_sink->write_str(x.as_string_view());
   }
 
   template<typename T>
     requires std::is_arithmetic_v<T>
-  void pretty_write_impl(byte_sink_t* stream, const T& x)
+  void pretty_write_impl(const T& x, byte_sink_t* byte_sink)
   {
-    stream->write_str(std::to_string(x));
+    byte_sink->write_str(std::to_string(x));
   }
 
   template<typename T, typename U>
-  void pretty_write_impl(byte_sink_t* stream, const pair_t<T, U>& x)
+  void pretty_write_impl(const pair_t<T, U>& x, byte_sink_t* byte_sink)
   {
-    stream->format("[{} {}]", x.first, x.second);
+    byte_sink->format("[{} {}]", x.first, x.second);
   }
 
   template<typename... Ts>
-  void pretty_write_impl(byte_sink_t* stream, const tuple_t<Ts...>& x)
+  void pretty_write_impl(const tuple_t<Ts...>& x, byte_sink_t* byte_sink)
   {
-    stream->format("[{}]", fmt::join(x, " "));
+    byte_sink->format("[{}]", fmt::join(x, " "));
   }
 
   template<typename... Ts>
-  void pretty_write_impl(byte_sink_t* stream, const variant_t<Ts...>& x)
+  void pretty_write_impl(const variant_t<Ts...>& x, byte_sink_t* byte_sink)
   {
-    std::visit([stream](const auto& value) { pretty_write(stream, value); }, x);
+    std::visit([byte_sink](const auto& value) { pretty_write(value, byte_sink); }, x);
   }
 
   template<typename Enum>
     requires std::is_enum_v<Enum>
-  void pretty_write_impl(byte_sink_t* stream, const Enum& x)
+  void pretty_write_impl(const Enum& x, byte_sink_t* byte_sink)
   {
     static const auto vals = enum_hashmap_to_string<Enum>();
-    stream->write_str(string_view_t{vals.at(x)});
+    byte_sink->write_str(string_view_t{vals.at(x)});
   }
 }

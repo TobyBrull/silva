@@ -16,7 +16,7 @@ namespace silva {
     syntax_ward_t sw;
     byte_sink_stdout_t _stdout;
     const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
-    pretty_write(&_stdout, *tokenization);
+    pretty_write(*tokenization, &_stdout);
     return {};
   }
 }

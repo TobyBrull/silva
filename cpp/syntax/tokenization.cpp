@@ -36,7 +36,7 @@ namespace silva {
     }
   }
 
-  void pretty_write_impl(byte_sink_t* stream, const token_position_t& self)
+  void pretty_write_impl(const token_position_t& self, byte_sink_t* stream)
   {
     if (self.tp.is_nullptr()) {
       stream->write_str("unknown token_position");
@@ -53,7 +53,7 @@ namespace silva {
     }
   }
 
-  void pretty_write_impl(byte_sink_t* stream, const token_range_t& self)
+  void pretty_write_impl(const token_range_t& self, byte_sink_t* stream)
   {
     constexpr index_t max_num_tokens = 5;
     string_t retval;
@@ -115,7 +115,7 @@ namespace silva {
     return swp->add(std::move(retval));
   }
 
-  void pretty_write_impl(byte_sink_t* stream, const tokenization_t& self)
+  void pretty_write_impl(const tokenization_t& self, byte_sink_t* stream)
   {
     for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
       const token_id_t tii      = self.tokens[token_index];

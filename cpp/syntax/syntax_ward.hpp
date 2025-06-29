@@ -94,14 +94,14 @@ namespace silva {
     syntax_ward_ptr_t swp;
     token_id_t token_id = token_id_none;
 
-    friend void pretty_write_impl(byte_sink_t*, const token_id_wrap_t&);
+    friend void pretty_write_impl(const token_id_wrap_t&, byte_sink_t*);
   };
 
   struct name_id_wrap_t {
     syntax_ward_ptr_t swp;
     name_id_t name_id = name_id_root;
 
-    friend void pretty_write_impl(byte_sink_t*, const name_id_wrap_t&);
+    friend void pretty_write_impl(const name_id_wrap_t&, byte_sink_t*);
   };
 }
 

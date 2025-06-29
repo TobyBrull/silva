@@ -266,16 +266,16 @@ namespace silva::lox {
   }
 
   struct object_pretty_write_impl_visitor_t {
-    byte_sink_t* stream = nullptr;
+    byte_sink_t* byte_sink = nullptr;
 
-    void operator()(const none_t& x) const { stream->write_str("none"); }
+    void operator()(const none_t& x) const { byte_sink->write_str("none"); }
     void operator()(const bool& x) const
     {
       if (x) {
-        stream->write_str("true");
+        byte_sink->write_str("true");
       }
       else {
-        stream->write_str("false");
+        byte_sink->write_str("false");
       }
     }
     void operator()(const double& x) const
@@ -287,30 +287,30 @@ namespace silva::lox {
       if (retval.size() >= 2 && retval.back() == '.') {
         retval.pop_back();
       }
-      stream->write_str(retval);
+      byte_sink->write_str(retval);
     }
-    void operator()(const string_t& x) const { stream->write_str(x); }
+    void operator()(const string_t& x) const { byte_sink->write_str(x); }
     void operator()(const function_t& x) const
     {
-      stream->format("<function {}>", pretty_write_string(x.pts));
+      byte_sink->format("<function {}>", pretty_write_string(x.pts));
     }
     void operator()(const function_builtin_t& x) const
     {
-      stream->format("<builtin-function '{}'>", pretty_write_string(x.pts));
+      byte_sink->format("<builtin-function '{}'>", pretty_write_string(x.pts));
     }
     void operator()(const class_t& x) const
     {
-      stream->format("<class {}>", pretty_write_string(x.pts));
+      byte_sink->format("<class {}>", pretty_write_string(x.pts));
     }
     void operator()(const class_instance_t& x) const
     {
-      stream->format("<instance of {}>", pretty_write_string(x._class));
+      byte_sink->format("<instance of {}>", pretty_write_string(x._class));
     }
-    void operator()(const auto& x) const { stream->format("Unknown lox::object_t"); }
+    void operator()(const auto& x) const { byte_sink->format("Unknown lox::object_t"); }
   };
-  void pretty_write_impl(byte_sink_t* stream, const object_t& value)
+  void pretty_write_impl(const object_t& value, byte_sink_t* byte_sink)
   {
-    return std::visit(object_pretty_write_impl_visitor_t{stream}, value.data);
+    return std::visit(object_pretty_write_impl_visitor_t{byte_sink}, value.data);
   }
   std::ostream& operator<<(std::ostream& os, const object_t& x)
   {
