@@ -218,8 +218,8 @@ namespace silva::lox {
       SILVA_EXPECT(false,                                                          \
                    RUNTIME,                                                        \
                    "runtime type error: {} " #op " {}",                            \
-                   pretty_string(lhs),                                       \
-                   pretty_string(rhs));                                      \
+                   pretty_string(lhs),                                             \
+                   pretty_string(rhs));                                            \
     }                                                                              \
   }
   BINARY_DOUBLE(double, *)

@@ -44,11 +44,11 @@ namespace silva {
   inline constexpr pretty_string_t pretty_string;
 
 #ifdef TRACY_ENABLE
-#  define ZoneTextToString(x)                  \
-    {                                          \
-      const auto sov = pretty_string(x); \
-      const auto sv  = temp.content_str();     \
-      ZoneText(sv.data(), sv.size());          \
+#  define ZoneTextPrettyString(x)          \
+    {                                      \
+      const auto sov = pretty_string(x);   \
+      const auto sv  = temp.content_str(); \
+      ZoneText(sv.data(), sv.size());      \
     }
 #endif
 }
