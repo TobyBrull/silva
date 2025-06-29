@@ -94,13 +94,24 @@ namespace silva {
   template<typename T, typename U>
   void pretty_write_impl(const pair_t<T, U>& x, byte_sink_t* byte_sink)
   {
-    byte_sink->format("[{} {}]", x.first, x.second);
+    byte_sink->write_str("[");
+    silva::pretty_write(x.first, byte_sink);
+    byte_sink->write_str(" ");
+    silva::pretty_write(x.second, byte_sink);
+    byte_sink->write_str("]");
   }
 
   template<typename... Ts>
   void pretty_write_impl(const tuple_t<Ts...>& x, byte_sink_t* byte_sink)
   {
-    byte_sink->format("[{}]", fmt::join(x, " "));
+    byte_sink->write_str("[ ");
+    std::apply(
+        [&](const auto&... xx) {
+          ((silva::pretty_write(xx, byte_sink), byte_sink->write_str(" ")), ...);
+        },
+        x);
+
+    byte_sink->write_str("]");
   }
 
   template<typename... Ts>

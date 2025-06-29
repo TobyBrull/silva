@@ -15,7 +15,7 @@ namespace silva::test {
     const auto i3 = av.push_back(tuple_t<int, int, int>{5, 1, 3});
     CHECK(av.apply(i1, pretty_string) == "Hello");
     CHECK(av.apply(i2, pretty_string) == "314");
-    CHECK(av.apply(i3, pretty_string) == "[5 1 3]");
+    CHECK(av.apply(i3, pretty_string) == "[ 5 1 3 ]");
     CHECK(av.size() == 3);
     CHECK(av.byte_size() ==
           8 + chunked_size(sizeof(string_t), av.alignment) + 8 +
@@ -34,8 +34,8 @@ namespace silva::test {
     });
     CHECK(av.size() == 3);
     CHECK(av.apply(i1, pretty_string) == "Hello");
-    CHECK(av.apply(i4, pretty_string) == "[42 1.5]");
-    CHECK(av.apply(i5, pretty_string) == "[123 2.5]");
+    CHECK(av.apply(i4, pretty_string) == "[42 1.500000]");
+    CHECK(av.apply(i5, pretty_string) == "[123 2.500000]");
     const auto i6 = av.push_back("World");
     CHECK(av.apply(i6, pretty_string) == "World");
   }
