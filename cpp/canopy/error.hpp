@@ -13,7 +13,7 @@ namespace silva {
     constexpr static bool context_mutable_get = true;
 
     error_tree_t tree;
-    any_vector_t<pretty_write_string_t, move_ctor_t, dtor_t> any_vector;
+    any_vector_t<pretty_string_t, move_ctor_t, dtor_t> any_vector;
 
     ~error_context_t();
   };

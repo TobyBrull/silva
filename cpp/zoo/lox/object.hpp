@@ -186,6 +186,6 @@ struct fmt::formatter<silva::lox::object_t> {
   template<typename FormatContext>
   auto format(const silva::lox::object_t& x, FormatContext& ctx) const
   {
-    return fmt::format_to(ctx.out(), "lox_v[{}]", silva::pretty_write_string(x));
+    return fmt::format_to(ctx.out(), "lox_v[{}]", silva::pretty_string(x));
   }
 };

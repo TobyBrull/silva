@@ -45,7 +45,7 @@ namespace silva::lox {
     SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
                  "can only get member from class instance, not from {}",
-                 pretty_write_string(class_instance));
+                 pretty_string(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
     if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
@@ -62,7 +62,7 @@ namespace silva::lox {
     SILVA_EXPECT(class_instance->holds_class_instance(),
                  MINOR,
                  "can only get member from class instance",
-                 pretty_write_string(class_instance));
+                 pretty_string(class_instance));
     class_instance_t& ci = std::get<class_instance_t>(class_instance->data);
     if (_class.is_nullptr()) {
       _class = ci._class;
@@ -204,7 +204,7 @@ namespace silva::lox {
       return -std::get<const double>(x.data);
     }
     else {
-      SILVA_EXPECT(false, RUNTIME, "runtime type error: - {} ", pretty_write_string(x));
+      SILVA_EXPECT(false, RUNTIME, "runtime type error: - {} ", pretty_string(x));
     }
   }
 
@@ -218,8 +218,8 @@ namespace silva::lox {
       SILVA_EXPECT(false,                                                          \
                    RUNTIME,                                                        \
                    "runtime type error: {} " #op " {}",                            \
-                   pretty_write_string(lhs),                                       \
-                   pretty_write_string(rhs));                                      \
+                   pretty_string(lhs),                                       \
+                   pretty_string(rhs));                                      \
     }                                                                              \
   }
   BINARY_DOUBLE(double, *)
@@ -243,8 +243,8 @@ namespace silva::lox {
       SILVA_EXPECT(false,
                    RUNTIME,
                    "runtime type error: {} + {}",
-                   pretty_write_string(lhs),
-                   pretty_write_string(rhs));
+                   pretty_string(lhs),
+                   pretty_string(rhs));
     }
   }
 
@@ -292,19 +292,19 @@ namespace silva::lox {
     void operator()(const string_t& x) const { byte_sink->write_str(x); }
     void operator()(const function_t& x) const
     {
-      byte_sink->format("<function {}>", pretty_write_string(x.pts));
+      byte_sink->format("<function {}>", pretty_string(x.pts));
     }
     void operator()(const function_builtin_t& x) const
     {
-      byte_sink->format("<builtin-function '{}'>", pretty_write_string(x.pts));
+      byte_sink->format("<builtin-function '{}'>", pretty_string(x.pts));
     }
     void operator()(const class_t& x) const
     {
-      byte_sink->format("<class {}>", pretty_write_string(x.pts));
+      byte_sink->format("<class {}>", pretty_string(x.pts));
     }
     void operator()(const class_instance_t& x) const
     {
-      byte_sink->format("<instance of {}>", pretty_write_string(x._class));
+      byte_sink->format("<instance of {}>", pretty_string(x._class));
     }
     void operator()(const auto& x) const { byte_sink->format("Unknown lox::object_t"); }
   };
@@ -314,7 +314,7 @@ namespace silva::lox {
   }
   std::ostream& operator<<(std::ostream& os, const object_t& x)
   {
-    return os << silva::pretty_write_string(x);
+    return os << silva::pretty_string(x);
   }
 
   expected_t<object_ref_t> neg(object_pool_t& pool, object_ref_t x)

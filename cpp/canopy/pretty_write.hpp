@@ -37,16 +37,16 @@ namespace silva {
     requires std::is_enum_v<Enum>
   void pretty_write_impl(const Enum& x, byte_sink_t*);
 
-  struct pretty_write_string_t : public customization_point_t<string_t(const void*)> {
+  struct pretty_string_t : public customization_point_t<string_t(const void*)> {
     template<typename T>
     constexpr string_t operator()(const T&) const;
   };
-  inline constexpr pretty_write_string_t pretty_write_string;
+  inline constexpr pretty_string_t pretty_string;
 
 #ifdef TRACY_ENABLE
 #  define ZoneTextToString(x)                  \
     {                                          \
-      const auto sov = pretty_write_string(x); \
+      const auto sov = pretty_string(x); \
       const auto sv  = temp.content_str();     \
       ZoneText(sv.data(), sv.size());          \
     }
@@ -64,7 +64,7 @@ namespace silva {
   }
 
   template<typename T>
-  constexpr string_t pretty_write_string_t::operator()(const T& x) const
+  constexpr string_t pretty_string_t::operator()(const T& x) const
   {
     byte_sink_memory_t temp;
     silva::pretty_write(x, &temp);

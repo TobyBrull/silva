@@ -141,7 +141,7 @@ namespace silva {
     static_assert(is_expected_t<decltype(result)>::value);    \
     SILVA_ASSERT(result.has_value(),                          \
                  "Unexpected:\n{}",                           \
-                 silva::pretty_write_string(result.error())); \
+                 silva::pretty_string(result.error())); \
     std::move(result).value();                                \
   })
 
@@ -158,7 +158,7 @@ namespace silva {
   ({                                                                                               \
     auto __silva_result = (expression);                                                            \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                          \
-    INFO((!__silva_result.has_value() ? silva::pretty_write_string(__silva_result.error()) : "")); \
+    INFO((!__silva_result.has_value() ? silva::pretty_string(__silva_result.error()) : "")); \
     REQUIRE(__silva_result);                                                                       \
     std::move(__silva_result).value();                                                             \
   })

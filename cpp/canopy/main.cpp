@@ -23,8 +23,8 @@ namespace silva {
       const silva::error_t& error = result.error();
       fmt::print(stderr,
                  "ERROR ({}):\n{}\n",
-                 pretty_write_string(error.level),
-                 pretty_write_string(error));
+                 pretty_string(error.level),
+                 pretty_string(error));
       return static_cast<int>(error.level);
     }
     else {

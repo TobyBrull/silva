@@ -14,8 +14,8 @@ namespace silva {
     }
     else {
       stream->format("[{}] parse_tree_span[ {} ]",
-                     pretty_write_string(pts.token_position()),
-                     pretty_write_string(pts.token_range()));
+                     pretty_string(pts.token_position()),
+                     pretty_string(pts.token_range()));
     }
   }
 
@@ -39,7 +39,7 @@ namespace silva {
         }
       }
       string_pad(curr_line, token_offset);
-      curr_line += silva::pretty_write_string(pts.token_range());
+      curr_line += silva::pretty_string(pts.token_range());
     });
   }
 

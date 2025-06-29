@@ -8,12 +8,12 @@
 
 namespace silva {
   string_t to_string(const error_tree_t::node_t& node,
-                     const any_vector_t<pretty_write_string_t, move_ctor_t, dtor_t>& av)
+                     const any_vector_t<pretty_string_t, move_ctor_t, dtor_t>& av)
   {
     vector_t<string_t> args;
     const auto end = av.index_iter_at(node.memento_buffer_offset_end);
     for (auto it = av.index_iter_at(node.memento_buffer_offset); it != end; ++it) {
-      args.push_back(av.apply(*it, silva::pretty_write_string));
+      args.push_back(av.apply(*it, silva::pretty_string));
     }
     string_t message = format_vector(args);
     return message;
@@ -206,11 +206,11 @@ namespace silva {
   void error_t::materialize()
   {
     auto& any_vector = context->any_vector;
-    any_vector_t<pretty_write_string_t, move_ctor_t, dtor_t> new_any_vector;
+    any_vector_t<pretty_string_t, move_ctor_t, dtor_t> new_any_vector;
     hash_map_t<any_vector_index_t, any_vector_index_t> offset_mapping;
     {
       for (const auto avi: any_vector.index_range()) {
-        string_t x          = any_vector.apply(avi, pretty_write_string);
+        string_t x          = any_vector.apply(avi, pretty_string);
         offset_mapping[avi] = new_any_vector.push_back(std::move(x));
       }
       offset_mapping[any_vector.next_index()] = new_any_vector.next_index();
