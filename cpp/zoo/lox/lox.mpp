@@ -26,7 +26,8 @@ namespace silva::lox {
       fmt::print("{}\n", pts);
     }
 
-    interpreter_t li{sw.ptr()};
+    byte_sink_stdout_t _stdout;
+    interpreter_t li{sw.ptr(), &_stdout};
     SILVA_EXPECT_FWD(li.load_builtins(as_parser(si.get())));
     SILVA_EXPECT_FWD(li.resolve(pt->span()));
     {

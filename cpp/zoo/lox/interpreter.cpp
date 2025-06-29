@@ -9,7 +9,10 @@ using enum silva::token_category_t;
 
 namespace silva::lox {
 
-  interpreter_t::interpreter_t(syntax_ward_ptr_t swp) : lexicon(std::move(swp)) {}
+  interpreter_t::interpreter_t(syntax_ward_ptr_t swp, byte_sink_t* byte_sink)
+    : lexicon(std::move(swp)), print_stream(byte_sink)
+  {
+  }
 
   interpreter_t::~interpreter_t()
   {
@@ -642,7 +645,7 @@ namespace silva::lox {
         object_ref_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                                               "{} error evaluating argument to 'print'",
                                               pts);
-        fmt::println("{}", pretty_string(std::move(value)));
+        intp->print_stream->format("{}\n", pretty_string(std::move(value)));
       }
       else if (rule_name == intp->lexicon.ni_stmt_if) {
         auto [it, end] = pts.children_range();
