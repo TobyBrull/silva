@@ -13,8 +13,9 @@ namespace silva::lox::bytecode {
 
     expected_t<void> _constant()
     {
-      vm.stack.push_back(chunk.constant_table[index_t(bytecode[ip + 1])]);
-      ip += 2;
+      const auto const_idx = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
+      vm.stack.push_back(chunk.constant_table[const_idx]);
+      ip += 5;
       return {};
     }
     expected_t<void> _nil()
@@ -38,8 +39,31 @@ namespace silva::lox::bytecode {
     expected_t<void> _pop() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_local() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _set_local() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _get_global() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _define_global() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_global()
+    {
+      const auto ti = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
+      auto it       = vm.globals.find(ti);
+      SILVA_EXPECT(it != vm.globals.end(),
+                   RUNTIME,
+                   "{} couldn't find global variable {}",
+                   chunk.origin_info_at_instr(ip),
+                   vm.swp->token_id_wrap(ti));
+      vm.stack.push_back(std::move(it->second));
+      ip += 5;
+      return {};
+    }
+    expected_t<void> _define_global()
+    {
+      const auto ti = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
+      SILVA_EXPECT(vm.stack.size() >= 1,
+                   RUNTIME,
+                   "{} bytecode instruction 'PRINT' needs non-empty stack",
+                   chunk.origin_info_at_instr(ip));
+      vm.globals[ti] = vm.stack.back();
+      vm.stack.pop_back();
+      ip += 5;
+      return {};
+    }
     expected_t<void> _set_global() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_upvalue() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _set_upvalue() { SILVA_EXPECT(false, ASSERT); }
@@ -47,18 +71,21 @@ namespace silva::lox::bytecode {
     expected_t<void> _set_property() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_super() { SILVA_EXPECT(false, ASSERT); }
 
-#define SIMPLE_BINARY_OP(here_name, obj_name)                           \
-  expected_t<void> here_name()                                          \
-  {                                                                     \
-    SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);                        \
-    auto rhs     = vm.stack.back();                                     \
-    auto lhs     = vm.stack[vm.stack.size() - 2];                       \
-    auto new_val = SILVA_EXPECT_FWD_PLAIN(obj_name(vm.pool, lhs, rhs)); \
-    vm.stack.pop_back();                                                \
-    vm.stack.pop_back();                                                \
-    vm.stack.push_back(std::move(new_val));                             \
-    ip += 1;                                                            \
-    return {};                                                          \
+#define SIMPLE_BINARY_OP(here_name, obj_name)                                           \
+  expected_t<void> here_name()                                                          \
+  {                                                                                     \
+    SILVA_EXPECT(vm.stack.size() >= 2,                                                  \
+                 RUNTIME,                                                               \
+                 "{} bytecode instruction 'obj_name' needs at least two stack entries", \
+                 chunk.origin_info_at_instr(ip));                                       \
+    auto rhs     = vm.stack.back();                                                     \
+    auto lhs     = vm.stack[vm.stack.size() - 2];                                       \
+    auto new_val = SILVA_EXPECT_FWD_PLAIN(obj_name(vm.pool, lhs, rhs));                 \
+    vm.stack.pop_back();                                                                \
+    vm.stack.pop_back();                                                                \
+    vm.stack.push_back(std::move(new_val));                                             \
+    ip += 1;                                                                            \
+    return {};                                                                          \
   }
     SIMPLE_BINARY_OP(_add, add);
     SIMPLE_BINARY_OP(_subtract, sub);
@@ -69,16 +96,19 @@ namespace silva::lox::bytecode {
     SIMPLE_BINARY_OP(_less, lt);
 #undef SIMPLE_BINARY_OP
 
-#define SIMPLE_UNARY_OP(here_name, obj_name)                 \
-  expected_t<void> here_name()                               \
-  {                                                          \
-    SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);             \
-    auto lhs     = vm.stack.back();                          \
-    auto new_val = SILVA_EXPECT_FWD(obj_name(vm.pool, lhs)); \
-    vm.stack.pop_back();                                     \
-    vm.stack.push_back(std::move(new_val));                  \
-    ip += 1;                                                 \
-    return {};                                               \
+#define SIMPLE_UNARY_OP(here_name, obj_name)                                 \
+  expected_t<void> here_name()                                               \
+  {                                                                          \
+    SILVA_EXPECT(vm.stack.size() >= 1,                                       \
+                 RUNTIME,                                                    \
+                 "{} bytecode instruction 'obj_name' needs non-empty stack", \
+                 chunk.origin_info_at_instr(ip));                            \
+    auto lhs     = vm.stack.back();                                          \
+    auto new_val = SILVA_EXPECT_FWD(obj_name(vm.pool, lhs));                 \
+    vm.stack.pop_back();                                                     \
+    vm.stack.push_back(std::move(new_val));                                  \
+    ip += 1;                                                                 \
+    return {};                                                               \
   }
     SIMPLE_UNARY_OP(_not, neg);
     SIMPLE_UNARY_OP(_negate, inv);
@@ -86,7 +116,10 @@ namespace silva::lox::bytecode {
 
     expected_t<void> _print()
     {
-      SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);
+      SILVA_EXPECT(vm.stack.size() >= 1,
+                   RUNTIME,
+                   "{} bytecode instruction 'PRINT' needs non-empty stack",
+                   chunk.origin_info_at_instr(ip));
       auto x = vm.stack.back();
       vm.print_stream->format("{}", pretty_string(std::move(x)));
       vm.stack.pop_back();

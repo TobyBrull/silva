@@ -1,5 +1,7 @@
 #include "bytecode.hpp"
 
+#include "canopy/bit.hpp"
+
 namespace silva::lox::bytecode {
 
   using enum opcode_t;
@@ -55,12 +57,21 @@ namespace silva::lox::bytecode {
       }
       expected_t<index_t> const_instr(const string_view_t name)
       {
-        SILVA_EXPECT(bc.size() >= 2, MINOR, "no operand for constant-instruction");
-        const index_t const_idx = index_t(bc[1]);
+        SILVA_EXPECT(bc.size() >= 5, MINOR, "no operand for constant-instruction");
+        const auto const_idx = bit_cast_ptr<index_t>(&bc[1]);
         SILVA_EXPECT(0 <= const_idx && const_idx < chunk->constant_table.size(), MINOR);
         const auto& cc = chunk->constant_table[const_idx];
         retval += fmt::format("{} {} {}", name, const_idx, silva::pretty_string(cc));
-        return 2;
+        return 5;
+      }
+      expected_t<index_t> token_instr(const string_view_t name)
+      {
+        SILVA_EXPECT(bc.size() >= 5, MINOR, "no operand for token-instruction");
+        const auto ti = bit_cast_ptr<index_t>(&bc[1]);
+        SILVA_EXPECT(0 <= ti && ti < chunk->swp->token_infos.size(), MINOR);
+        const auto tinfo = chunk->swp->token_infos[ti];
+        retval += fmt::format("{} {} {}", name, ti, tinfo.str);
+        return 5;
       }
       expected_t<index_t> invoke_instr(const string_view_t name)
       {
@@ -120,11 +131,11 @@ namespace silva::lox::bytecode {
       case SET_LOCAL:
         return SILVA_EXPECT_FWD(tsai.byte_instr("SET_LOCAL"));
       case GET_GLOBAL:
-        return SILVA_EXPECT_FWD(tsai.const_instr("GET_GLOBAL"));
+        return SILVA_EXPECT_FWD(tsai.token_instr("GET_GLOBAL"));
       case DEFINE_GLOBAL:
-        return SILVA_EXPECT_FWD(tsai.const_instr("DEFINE_GLOBAL"));
+        return SILVA_EXPECT_FWD(tsai.token_instr("DEFINE_GLOBAL"));
       case SET_GLOBAL:
-        return SILVA_EXPECT_FWD(tsai.const_instr("SET_GLOBAL"));
+        return SILVA_EXPECT_FWD(tsai.token_instr("SET_GLOBAL"));
       case GET_UPVALUE:
         return SILVA_EXPECT_FWD(tsai.byte_instr("GET_UPVALUE"));
       case SET_UPVALUE:
@@ -203,31 +214,54 @@ namespace silva::lox::bytecode {
     }
   }
 
-  void chunk_nursery_t::register_origin_info(const parse_tree_span_t pts)
+  void chunk_nursery_t::set_pts(const parse_tree_span_t& pts)
   {
     // TODO: insert with hint at the end of the flatmap.
     retval.origin_info[retval.bytecode.size()] = pts;
   }
 
-  expected_t<void> chunk_nursery_t::append_constant_instr(object_ref_t obj_ref)
+  template<typename T>
+  void chunk_nursery_t::append_bit(const T x)
   {
-    const auto idx     = retval.constant_table.size();
+    const index_t pos = retval.bytecode.size();
+    retval.bytecode.resize(retval.bytecode.size() + sizeof(T));
+    bit_write_at<index_t>(&retval.bytecode[pos], x);
+  }
+
+  expected_t<void> chunk_nursery_t::append_constant_instr(const parse_tree_span_t& pts,
+                                                          object_ref_t obj_ref)
+  {
+    set_pts(pts);
+    const index_t idx  = retval.constant_table.size();
     const auto max_idx = index_t(std::numeric_limits<std::underlying_type_t<std::byte>>::max());
     SILVA_EXPECT(idx < max_idx, MAJOR, "Too many constants in chunk {} < {}", idx, max_idx);
     retval.constant_table.push_back(std::move(obj_ref));
     retval.bytecode.push_back(byte_t(CONSTANT));
-    retval.bytecode.push_back(byte_t(idx));
+    append_bit(idx);
     return {};
   }
 
-  expected_t<void> chunk_nursery_t::append_simple_instr(const opcode_t opcode)
+  expected_t<void> chunk_nursery_t::append_simple_instr(const parse_tree_span_t& pts,
+                                                        const opcode_t opcode)
   {
     SILVA_EXPECT(opcode == NIL || opcode == TRUE || opcode == FALSE || opcode == POP ||
                      opcode == EQUAL || opcode == GREATER || opcode == LESS || opcode == ADD ||
                      opcode == SUBTRACT || opcode == MULTIPLY || opcode == DIVIDE ||
                      opcode == NOT || opcode == NEGATE || opcode == PRINT || opcode == RETURN,
                  ASSERT);
+    set_pts(pts);
     retval.bytecode.push_back(byte_t(opcode));
+    return {};
+  }
+
+  expected_t<void> chunk_nursery_t::append_token_instr(const parse_tree_span_t& pts,
+                                                       const opcode_t opcode,
+                                                       const token_id_t ti)
+  {
+    SILVA_EXPECT(opcode == DEFINE_GLOBAL || opcode == SET_GLOBAL || opcode == GET_GLOBAL, ASSERT);
+    set_pts(pts);
+    retval.bytecode.push_back(byte_t(opcode));
+    append_bit(ti);
     return {};
   }
 

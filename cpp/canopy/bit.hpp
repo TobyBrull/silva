@@ -23,20 +23,20 @@ namespace silva {
   {
     const index_t old_size = buffer.size();
     buffer.resize(old_size + sizeof(T));
-    memcpy(buffer.data() + old_size, &x, sizeof(T));
+    std::memcpy(buffer.data() + old_size, &x, sizeof(T));
   }
 
   template<typename T>
   T bit_cast_ptr(const void* ptr)
   {
     T retval;
-    memcpy(&retval, ptr, sizeof(T));
+    std::memcpy(&retval, ptr, sizeof(T));
     return retval;
   }
 
   template<typename T>
   void bit_write_at(void* ptr, T x)
   {
-    memcpy(ptr, &x, sizeof(T));
+    std::memcpy(ptr, &x, sizeof(T));
   }
 }

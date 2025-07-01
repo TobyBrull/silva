@@ -500,8 +500,8 @@ namespace silva::lox {
       if (const auto it = intp->literals.find(pts); it != intp->literals.end()) {
         return it->second;
       }
-      const token_id_t ti            = pts.tp->tokens[pts[0].token_begin];
-      const token_info_t* token_info = pts.tp->token_info_get(pts[0].token_begin);
+      const token_id_t ti       = pts.tp->tokens[pts[0].token_begin];
+      const token_info_t* tinfo = pts.tp->token_info_get(pts[0].token_begin);
       if (ti == intp->lexicon.ti_super) {
         SILVA_EXPECT(pts[0].token_end - pts[0].token_begin == 3, MAJOR);
         const auto it = intp->resolution.find(pts);
@@ -518,7 +518,7 @@ namespace silva::lox {
             pts,
             swp->token_id_wrap(field_name));
       }
-      else if (token_info->category == IDENTIFIER) {
+      else if (tinfo->category == IDENTIFIER) {
         object_ref_t* ptr = [&] {
           const auto it = intp->resolution.find(pts);
           if (it != intp->resolution.end()) {
