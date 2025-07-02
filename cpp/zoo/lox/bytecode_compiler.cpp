@@ -109,6 +109,37 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT_FWD(expr_binary(pts, EQUAL));
         SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, NOT));
       }
+      else if (pts[0].rule_name == lexicon.ni_expr_b_assign) {
+        const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(rhs)),
+                         "{} error evaluating right-hand-side of assignment",
+                         pts);
+        auto lhs_pts = pts.sub_tree_span_at(lhs);
+        if (lhs_pts[0].rule_name == lexicon.ni_expr_member) {
+          SILVA_EXPECT(false, ASSERT, "not implemented yet");
+
+          const auto [ll, lr] = SILVA_EXPECT_FWD(lhs_pts.get_children<2>());
+          SILVA_EXPECT_FWD(expr(lhs_pts.sub_tree_span_at(ll)),
+                           "{} error evaluating part of left-hand-side of assignment",
+                           lhs_pts);
+          auto lr_pts = lhs_pts.sub_tree_span_at(lr);
+          SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
+          const token_id_t ti = pts.tp->tokens[lr_pts[0].token_begin];
+          SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
+
+          // SILVA_EXPECT(ll_ref->holds_class_instance(), MINOR);
+          // auto& ci      = std::get<class_instance_t>(ll_ref->data);
+          // ci.fields[ti] = rhs_ref;
+        }
+        else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
+          const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
+          SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
+          SILVA_EXPECT_FWD(nursery.append_token_instr(pts, SET_GLOBAL, ti));
+        }
+        else {
+          SILVA_EXPECT(false, MINOR, "{} unexpected left-hand-side in assignment", lhs_pts);
+        }
+      }
       else {
         SILVA_EXPECT(false, ASSERT, "Not yet implemented: {}", swp->name_id_wrap(pts[0].rule_name));
       }

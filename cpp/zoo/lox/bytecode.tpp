@@ -63,6 +63,7 @@ namespace silva::lox::bytecode::test {
     test(" print 'hello' + ' world' ; ", "hello world");
     test(" print ! ( 5 - 4 > 3 * 2 == ! none ) ; ", "true");
     test(" var abc = 42 ; print 100 + abc ;", "142");
+    test(" var a = 3 ; var b = 5 ; a = 10 + b * a ; print a ;", "25");
 
     const auto test_runtime_error = [&](const string_view_t lox_code,
                                         const vector_t<string_t> expected_err_msgs) {

@@ -36,7 +36,12 @@ namespace silva::lox::bytecode {
       ip += 1;
       return {};
     }
-    expected_t<void> _pop() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _pop()
+    {
+      vm.stack.pop_back();
+      ip += 1;
+      return {};
+    }
     expected_t<void> _get_local() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _set_local() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_global()
@@ -57,14 +62,31 @@ namespace silva::lox::bytecode {
       const auto ti = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
       SILVA_EXPECT(vm.stack.size() >= 1,
                    RUNTIME,
-                   "{} bytecode instruction 'PRINT' needs non-empty stack",
+                   "{} bytecode instruction DEFINE_GLOBAL needs non-empty stack",
                    chunk.origin_info_at_instr(ip));
       vm.globals[ti] = vm.stack.back();
       vm.stack.pop_back();
       ip += 5;
       return {};
     }
-    expected_t<void> _set_global() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _set_global()
+    {
+      const auto ti = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
+      SILVA_EXPECT(vm.stack.size() >= 1,
+                   RUNTIME,
+                   "{} bytecode instruction SET_GLOBAL needs non-empty stack",
+                   chunk.origin_info_at_instr(ip));
+      auto it = vm.globals.find(ti);
+      SILVA_EXPECT(it != vm.globals.end(),
+                   RUNTIME,
+                   "{} bytecode instruction SET_GLOBAL tried to assign to global variable {} which "
+                   "was not previously defined",
+                   chunk.origin_info_at_instr(ip),
+                   vm.swp->token_id_wrap(ti));
+      it->second = vm.stack.back();
+      ip += 5;
+      return {};
+    }
     expected_t<void> _get_upvalue() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _set_upvalue() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_property() { SILVA_EXPECT(false, ASSERT); }
@@ -118,7 +140,7 @@ namespace silva::lox::bytecode {
     {
       SILVA_EXPECT(vm.stack.size() >= 1,
                    RUNTIME,
-                   "{} bytecode instruction 'PRINT' needs non-empty stack",
+                   "{} bytecode instruction PRINT needs non-empty stack",
                    chunk.origin_info_at_instr(ip));
       auto x = vm.stack.back();
       vm.print_stream->format("{}", pretty_string(std::move(x)));
