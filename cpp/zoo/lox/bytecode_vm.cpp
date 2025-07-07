@@ -42,8 +42,30 @@ namespace silva::lox::bytecode {
       ip += 1;
       return {};
     }
-    expected_t<void> _get_local() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _set_local() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_local()
+    {
+      const auto stack_idx = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
+      SILVA_EXPECT(0 <= stack_idx && stack_idx < vm.stack.size(),
+                   RUNTIME,
+                   "{} stack index {} not inside stack",
+                   chunk.origin_info_at_instr(ip),
+                   stack_idx);
+      vm.stack.push_back(vm.stack[stack_idx]);
+      ip += 5;
+      return {};
+    }
+    expected_t<void> _set_local()
+    {
+      const auto stack_idx = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
+      SILVA_EXPECT(0 <= stack_idx && stack_idx < vm.stack.size(),
+                   RUNTIME,
+                   "{} stack index {} not inside stack",
+                   chunk.origin_info_at_instr(ip),
+                   stack_idx);
+      vm.stack[stack_idx] = vm.stack.back();
+      ip += 5;
+      return {};
+    }
     expected_t<void> _get_global()
     {
       const auto ti = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
@@ -53,7 +75,7 @@ namespace silva::lox::bytecode {
                    "{} couldn't find global variable {}",
                    chunk.origin_info_at_instr(ip),
                    vm.swp->token_id_wrap(ti));
-      vm.stack.push_back(std::move(it->second));
+      vm.stack.push_back(it->second);
       ip += 5;
       return {};
     }
@@ -143,7 +165,7 @@ namespace silva::lox::bytecode {
                    "{} bytecode instruction PRINT needs non-empty stack",
                    chunk.origin_info_at_instr(ip));
       auto x = vm.stack.back();
-      vm.print_stream->format("{}", pretty_string(std::move(x)));
+      vm.print_stream->format("{}\n", pretty_string(std::move(x)));
       vm.stack.pop_back();
       ip += 1;
       return {};

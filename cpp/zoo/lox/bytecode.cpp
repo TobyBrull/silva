@@ -73,6 +73,13 @@ namespace silva::lox::bytecode {
         retval += fmt::format("{} {} {}", name, ti, tinfo.str);
         return 5;
       }
+      expected_t<index_t> index_instr(const string_view_t name)
+      {
+        SILVA_EXPECT(bc.size() >= 5, MINOR, "no operand for index-instruction");
+        const auto index = bit_cast_ptr<index_t>(&bc[1]);
+        retval += fmt::format("{} {}", name, index);
+        return 5;
+      }
       expected_t<index_t> invoke_instr(const string_view_t name)
       {
         // uint8_t constant = chunk->code[offset + 1];
@@ -81,13 +88,6 @@ namespace silva::lox::bytecode {
         // printValue(chunk->constants.values[constant]);
         // printf("'\n");
         return 3;
-      }
-      expected_t<index_t> byte_instr(const string_view_t name)
-      {
-        SILVA_EXPECT(bc.size() >= 2, MINOR, "no operand for byte-instruction");
-        const index_t slot = index_t(bc[1]);
-        retval += fmt::format("{} slot {}", name, slot);
-        return 2;
       }
       expected_t<index_t> jump_instr(const string_view_t name, index_t sign)
       {
@@ -127,9 +127,9 @@ namespace silva::lox::bytecode {
       case POP:
         return SILVA_EXPECT_FWD(tsai.simple_instr("POP"));
       case GET_LOCAL:
-        return SILVA_EXPECT_FWD(tsai.byte_instr("GET_LOCAL"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("GET_LOCAL"));
       case SET_LOCAL:
-        return SILVA_EXPECT_FWD(tsai.byte_instr("SET_LOCAL"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("SET_LOCAL"));
       case GET_GLOBAL:
         return SILVA_EXPECT_FWD(tsai.token_instr("GET_GLOBAL"));
       case DEFINE_GLOBAL:
@@ -137,9 +137,9 @@ namespace silva::lox::bytecode {
       case SET_GLOBAL:
         return SILVA_EXPECT_FWD(tsai.token_instr("SET_GLOBAL"));
       case GET_UPVALUE:
-        return SILVA_EXPECT_FWD(tsai.byte_instr("GET_UPVALUE"));
+        return SILVA_EXPECT_FWD(tsai.token_instr("GET_UPVALUE"));
       case SET_UPVALUE:
-        return SILVA_EXPECT_FWD(tsai.byte_instr("SET_UPVALUE"));
+        return SILVA_EXPECT_FWD(tsai.token_instr("SET_UPVALUE"));
       case GET_PROPERTY:
         return SILVA_EXPECT_FWD(tsai.const_instr("GET_PROPERTY"));
       case SET_PROPERTY:
@@ -173,7 +173,7 @@ namespace silva::lox::bytecode {
       case LOOP:
         return SILVA_EXPECT_FWD(tsai.jump_instr("LOOP", -1));
       case CALL:
-        return SILVA_EXPECT_FWD(tsai.byte_instr("CALL"));
+        return SILVA_EXPECT_FWD(tsai.token_instr("CALL"));
       case INVOKE:
         return SILVA_EXPECT_FWD(tsai.invoke_instr("INVOKE"));
       case SUPER_INVOKE:
@@ -254,14 +254,16 @@ namespace silva::lox::bytecode {
     return {};
   }
 
-  expected_t<void> chunk_nursery_t::append_token_instr(const parse_tree_span_t& pts,
+  expected_t<void> chunk_nursery_t::append_index_instr(const parse_tree_span_t& pts,
                                                        const opcode_t opcode,
-                                                       const token_id_t ti)
+                                                       const index_t idx)
   {
-    SILVA_EXPECT(opcode == DEFINE_GLOBAL || opcode == SET_GLOBAL || opcode == GET_GLOBAL, ASSERT);
+    SILVA_EXPECT(opcode == DEFINE_GLOBAL || opcode == SET_LOCAL || opcode == GET_LOCAL ||
+                     opcode == SET_GLOBAL || opcode == GET_GLOBAL,
+                 ASSERT);
     set_pts(pts);
     retval.bytecode.push_back(byte_t(opcode));
-    append_bit(ti);
+    append_bit(idx);
     return {};
   }
 

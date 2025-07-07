@@ -17,6 +17,24 @@ namespace silva::lox::bytecode {
 
     chunk_nursery_t nursery;
 
+    index_t scope_depth = 0;
+    struct local_t {
+      token_id_t var_name = token_id_none;
+      index_t scope_depth = 0;
+    };
+    vector_t<local_t> locals;
+
+    optional_t<index_t> find_local(const token_id_t var_name)
+    {
+      const index_t n = locals.size();
+      for (index_t stack_idx = n - 1; stack_idx >= 0; --stack_idx) {
+        if (locals[stack_idx].var_name == var_name) {
+          return stack_idx;
+        }
+      }
+      return {};
+    }
+
     expected_t<void> expr_atom(const parse_tree_span_t pts)
     {
       const auto ti             = pts.tp->tokens[pts[0].token_begin];
@@ -31,7 +49,13 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, FALSE));
       }
       else if (tinfo->category == IDENTIFIER) {
-        SILVA_EXPECT_FWD(nursery.append_token_instr(pts, GET_GLOBAL, ti));
+        const auto fl = find_local(ti);
+        if (fl.has_value()) {
+          SILVA_EXPECT_FWD(nursery.append_index_instr(pts, GET_LOCAL, fl.value()));
+        }
+        else {
+          SILVA_EXPECT_FWD(nursery.append_index_instr(pts, GET_GLOBAL, ti));
+        }
       }
       else {
         auto obj_ref = SILVA_EXPECT_FWD(object_ref_from_literal(pts, pool, lexicon));
@@ -134,7 +158,13 @@ namespace silva::lox::bytecode {
         else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
           SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
-          SILVA_EXPECT_FWD(nursery.append_token_instr(pts, SET_GLOBAL, ti));
+          const auto fl = find_local(ti);
+          if (fl.has_value()) {
+            SILVA_EXPECT_FWD(nursery.append_index_instr(pts, SET_LOCAL, fl.value()));
+          }
+          else {
+            SILVA_EXPECT_FWD(nursery.append_index_instr(pts, SET_GLOBAL, ti));
+          }
         }
         else {
           SILVA_EXPECT(false, MINOR, "{} unexpected left-hand-side in assignment", lhs_pts);
@@ -160,7 +190,15 @@ namespace silva::lox::bytecode {
         else {
           SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, NIL));
         }
-        SILVA_EXPECT_FWD(nursery.append_token_instr(pts, DEFINE_GLOBAL, var_name));
+        if (scope_depth == 0) {
+          SILVA_EXPECT_FWD(nursery.append_index_instr(pts, DEFINE_GLOBAL, var_name));
+        }
+        else {
+          locals.push_back(local_t{
+              .var_name    = var_name,
+              .scope_depth = scope_depth,
+          });
+        }
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
@@ -186,6 +224,17 @@ namespace silva::lox::bytecode {
         else {
           SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, NIL));
         }
+      }
+      else if (rule_name == lexicon.ni_stmt_block) {
+        scope_depth += 1;
+        for (const auto [node_idx, child_idx]: pts.children_range()) {
+          SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
+        }
+        while (!locals.empty() && locals.back().scope_depth == scope_depth) {
+          locals.pop_back();
+          SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
+        }
+        scope_depth -= 1;
       }
       else if (rule_name == lexicon.ni_stmt_expr) {
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(1)),

@@ -51,19 +51,21 @@ namespace silva::lox::bytecode::test {
       CHECK(result == expected);
     };
 
-    test(" print 42.0 ; ", "42");
-    test(" print - 42.0 ; ", "-42");
-    test(" print 1 + 2 * 3 + 4 ; ", "11");
-    test(" print ! true ; ", "false");
-    test(" print ! ( 1 + 2 == 3 ) ; ", "false");
-    test(" print 1 + 2 != 4 ; ", "true");
-    test(" print 1 + 2 <= 2 ; ", "false");
-    test(" print 1 + 2 <= 3 ; ", "true");
-    test(" print 1 + 2 <= 4 ; ", "true");
-    test(" print 'hello' + ' world' ; ", "hello world");
-    test(" print ! ( 5 - 4 > 3 * 2 == ! none ) ; ", "true");
-    test(" var abc = 42 ; print 100 + abc ;", "142");
-    test(" var a = 3 ; var b = 5 ; a = 10 + b * a ; print a ;", "25");
+    test(" print 42.0 ; print 12.0 ; ", "42\n12\n");
+    test(" print - 42.0 ; ", "-42\n");
+    test(" print 1 + 2 * 3 + 4 ; ", "11\n");
+    test(" print ! true ; ", "false\n");
+    test(" print ! ( 1 + 2 == 3 ) ; ", "false\n");
+    test(" print 1 + 2 != 4 ; ", "true\n");
+    test(" print 1 + 2 <= 2 ; ", "false\n");
+    test(" print 1 + 2 <= 3 ; ", "true\n");
+    test(" print 1 + 2 <= 4 ; ", "true\n");
+    test(" print 'hello' + ' world' ; ", "hello world\n");
+    test(" print ! ( 5 - 4 > 3 * 2 == ! none ) ; ", "true\n");
+    test(" var abc = 42 ; print 100 + abc ;", "142\n");
+    test(" var a = 3 ; var b = 5 ; a = 10 + b * a ; print a ;", "25\n");
+    test(" var a = 10 ; { print a ; var a = 20 ; var b = 30 ; print a ; print b ; } print a ; ",
+         "10\n20\n30\n10\n");
 
     const auto test_runtime_error = [&](const string_view_t lox_code,
                                         const vector_t<string_t> expected_err_msgs) {
