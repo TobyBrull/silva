@@ -215,6 +215,27 @@ namespace silva::lox::bytecode {
                          pts);
         SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, PRINT));
       }
+      else if (rule_name == lexicon.ni_stmt_if) {
+        auto [it, end] = pts.children_range();
+        SILVA_EXPECT(it != end, MAJOR);
+        pts.sub_tree_span_at(it.pos);
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(it.pos)),
+                         "{} error evaluating if-condition",
+                         pts);
+        ++it;
+        SILVA_EXPECT(it != end, MAJOR);
+        const index_t j1 = SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP_IF_FALSE, 0));
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
+        SILVA_EXPECT_FWD(go(pts.sub_tree_span_at(it.pos)));
+        const index_t j2 = SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP, 0));
+        SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j1, nursery.retval.bytecode.size() - j1));
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
+        ++it;
+        if (it != end) {
+          SILVA_EXPECT_FWD(go(pts.sub_tree_span_at(it.pos)));
+        }
+        SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j2, nursery.retval.bytecode.size() - j2));
+      }
       else if (rule_name == lexicon.ni_stmt_return) {
         if (pts[0].num_children == 1) {
           SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(1)),

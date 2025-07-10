@@ -66,6 +66,10 @@ namespace silva::lox::bytecode::test {
     test(" var a = 3 ; var b = 5 ; a = 10 + b * a ; print a ;", "25\n");
     test(" var a = 10 ; { print a ; var a = 20 ; var b = 30 ; print a ; print b ; } print a ; ",
          "10\n20\n30\n10\n");
+    test(" var a; if ( 1 + 2 < 4 ) { a = 'true' ; } else { a = 'false' ; } print a ; ", "true\n");
+    test(" var a; if ( 1 + 2 > 4 ) { a = 'true' ; } else { a = 'false' ; } print a ; ", "false\n");
+    test(" var a; if ( 1 + 2 < 4 ) { a = 'true' ; } print a ; ", "true\n");
+    test(" var a; if ( 1 + 2 > 4 ) { a = 'true' ; } print a ; ", "none\n");
 
     const auto test_runtime_error = [&](const string_view_t lox_code,
                                         const vector_t<string_t> expected_err_msgs) {

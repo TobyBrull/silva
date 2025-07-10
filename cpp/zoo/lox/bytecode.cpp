@@ -89,13 +89,6 @@ namespace silva::lox::bytecode {
         // printf("'\n");
         return 3;
       }
-      expected_t<index_t> jump_instr(const string_view_t name, index_t sign)
-      {
-        SILVA_EXPECT(bc.size() >= 3, MINOR, "no two operands for jump-instruction");
-        const index_t jump = index_t(size_t(bc[1] << 8) | size_t(bc[2])) * sign;
-        retval += fmt::format("{} relative {}", name, jump);
-        return 3;
-      }
     };
   }
 
@@ -167,11 +160,11 @@ namespace silva::lox::bytecode {
       case PRINT:
         return SILVA_EXPECT_FWD(tsai.simple_instr("PRINT"));
       case JUMP:
-        return SILVA_EXPECT_FWD(tsai.jump_instr("JUMP", 1));
+        return SILVA_EXPECT_FWD(tsai.index_instr("JUMP"));
       case JUMP_IF_FALSE:
-        return SILVA_EXPECT_FWD(tsai.jump_instr("JUMP_IF_FALSE", 1));
+        return SILVA_EXPECT_FWD(tsai.index_instr("JUMP_IF_FALSE"));
       case LOOP:
-        return SILVA_EXPECT_FWD(tsai.jump_instr("LOOP", -1));
+        return SILVA_EXPECT_FWD(tsai.index_instr("LOOP"));
       case CALL:
         return SILVA_EXPECT_FWD(tsai.token_instr("CALL"));
       case INVOKE:
@@ -254,16 +247,24 @@ namespace silva::lox::bytecode {
     return {};
   }
 
-  expected_t<void> chunk_nursery_t::append_index_instr(const parse_tree_span_t& pts,
-                                                       const opcode_t opcode,
-                                                       const index_t idx)
+  expected_t<index_t> chunk_nursery_t::append_index_instr(const parse_tree_span_t& pts,
+                                                          const opcode_t opcode,
+                                                          const index_t idx)
   {
     SILVA_EXPECT(opcode == DEFINE_GLOBAL || opcode == SET_LOCAL || opcode == GET_LOCAL ||
-                     opcode == SET_GLOBAL || opcode == GET_GLOBAL,
+                     opcode == SET_GLOBAL || opcode == GET_GLOBAL || opcode == JUMP ||
+                     opcode == JUMP_IF_FALSE || opcode == LOOP,
                  ASSERT);
     set_pts(pts);
+    const index_t rv = retval.bytecode.size();
     retval.bytecode.push_back(byte_t(opcode));
     append_bit(idx);
+    return rv;
+  }
+
+  expected_t<void> chunk_nursery_t::backpatch_index_instr(const index_t position, const index_t idx)
+  {
+    bit_write_at<index_t>(&retval.bytecode[position + 1], idx);
     return {};
   }
 

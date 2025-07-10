@@ -68,7 +68,8 @@ namespace silva::lox::bytecode {
 
     expected_t<void> append_constant_instr(const parse_tree_span_t&, object_ref_t);
     expected_t<void> append_simple_instr(const parse_tree_span_t&, opcode_t);
-    expected_t<void> append_index_instr(const parse_tree_span_t&, opcode_t, index_t);
+    expected_t<index_t> append_index_instr(const parse_tree_span_t&, opcode_t, index_t);
+    expected_t<void> backpatch_index_instr(index_t position, index_t);
 
     chunk_t finish() &&;
 

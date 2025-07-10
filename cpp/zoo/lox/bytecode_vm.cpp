@@ -170,8 +170,27 @@ namespace silva::lox::bytecode {
       ip += 1;
       return {};
     }
-    expected_t<void> _jump() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _jump_if_false() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _jump()
+    {
+      const auto offset = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
+      ip += offset;
+      return {};
+    }
+    expected_t<void> _jump_if_false()
+    {
+      const auto offset = bit_cast_ptr<index_t>(&bytecode[ip + 1]);
+      SILVA_EXPECT(vm.stack.size() >= 1,
+                   RUNTIME,
+                   "{} bytecode instruction JUMP_IF_FALSE needs non-empty stack",
+                   chunk.origin_info_at_instr(ip));
+      if (!vm.stack.back()->is_truthy()) {
+        ip += offset;
+      }
+      else {
+        ip += 5;
+      }
+      return {};
+    }
     expected_t<void> _loop() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _call() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _invoke() { SILVA_EXPECT(false, ASSERT); }
