@@ -47,7 +47,7 @@ namespace silva::lox::bytecode::test {
       const auto result = print_buffer.content_str_fetch();
       INFO(result);
       INFO(expected);
-      vm.stack.clear();
+      CHECK(vm.stack.empty());
       CHECK(result == expected);
     };
 
@@ -74,6 +74,8 @@ namespace silva::lox::bytecode::test {
     test(" var a = ( 1 + 2 < 4 ) or 'test' ; print a ; ", "true\n");
     test(" var a = ( 1 + 2 > 4 ) and 'test' ; print a ; ", "false\n");
     test(" var a = ( 1 + 2 < 4 ) and 'test' ; print a ; ", "test\n");
+    test(" var sum = 0 ; var i = 0 ; while ( i < 10 ) { sum = sum + i ; i = i + 1 ; } print sum ;",
+         "45\n");
 
     const auto test_runtime_error = [&](const string_view_t lox_code,
                                         const vector_t<string_t> expected_err_msgs) {
