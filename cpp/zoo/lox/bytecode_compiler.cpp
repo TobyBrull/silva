@@ -133,6 +133,24 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT_FWD(expr_binary(pts, EQUAL));
         SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, NOT));
       }
+      else if (pts[0].rule_name == lexicon.ni_expr_b_and) {
+        const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(lhs)));
+        const index_t j1 = SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP_IF_FALSE, 0));
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(rhs)));
+        SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j1, nursery.retval.bytecode.size() - j1));
+      }
+      else if (pts[0].rule_name == lexicon.ni_expr_b_or) {
+        const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(lhs)));
+        const index_t j1 = SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP_IF_FALSE, 0));
+        const index_t j2 = SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP, 0));
+        SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j1, nursery.retval.bytecode.size() - j1));
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(rhs)));
+        SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j2, nursery.retval.bytecode.size() - j2));
+      }
       else if (pts[0].rule_name == lexicon.ni_expr_b_assign) {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(rhs)),
