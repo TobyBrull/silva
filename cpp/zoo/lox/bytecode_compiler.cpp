@@ -155,7 +155,7 @@ namespace silva::lox::bytecode {
       else if (pts[0].rule_name == lexicon.ni_expr_b_assign) {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(rhs)),
-                         "{} error evaluating right-hand-side of assignment",
+                         "{} error compiling right-hand-side of assignment",
                          pts);
         auto lhs_pts = pts.sub_tree_span_at(lhs);
         if (lhs_pts[0].rule_name == lexicon.ni_expr_member) {
@@ -163,7 +163,7 @@ namespace silva::lox::bytecode {
 
           const auto [ll, lr] = SILVA_EXPECT_FWD(lhs_pts.get_children<2>());
           SILVA_EXPECT_FWD(expr(lhs_pts.sub_tree_span_at(ll)),
-                           "{} error evaluating part of left-hand-side of assignment",
+                           "{} error compiling part of left-hand-side of assignment",
                            lhs_pts);
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
           SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
@@ -239,7 +239,7 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT(it != end, MAJOR);
         pts.sub_tree_span_at(it.pos);
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(it.pos)),
-                         "{} error evaluating if-condition",
+                         "{} error compiling if-condition",
                          pts);
         ++it;
         SILVA_EXPECT(it != end, MAJOR);
@@ -255,16 +255,47 @@ namespace silva::lox::bytecode {
         }
         SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j2, bytecode.size() - j2));
       }
+      else if (rule_name == lexicon.ni_stmt_for) {
+        const auto [init_idx, cond_idx, inc_idx, body_idx] =
+            SILVA_EXPECT_FWD(pts.get_children<4>());
+
+        SILVA_EXPECT_FWD(go(pts.sub_tree_span_at(init_idx)),
+                         "{} error compiling 'for' initializer",
+                         pts);
+
+        const index_t cond_label = bytecode.size();
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(cond_idx)),
+                         "{} error compiling 'for' condition",
+                         pts);
+        const index_t j1 = SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP_IF_FALSE, 0));
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
+        const index_t j2 = SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP, 0));
+
+        const index_t inc_label = bytecode.size();
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(inc_idx)),
+                         "{} error compiling 'for' increment",
+                         pts);
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
+        SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP, cond_label - bytecode.size()));
+
+        SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j2, bytecode.size() - j2));
+        const index_t body_label = bytecode.size();
+        SILVA_EXPECT_FWD(go(pts.sub_tree_span_at(body_idx)), "{} error compiling 'for' body", pts);
+        SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP, inc_label - bytecode.size()));
+
+        SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j1, bytecode.size() - j1));
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
+      }
       else if (rule_name == lexicon.ni_stmt_while) {
         const auto [cond_idx, body_idx] = SILVA_EXPECT_FWD(pts.get_children<2>());
-        const index_t loop_entry        = bytecode.size();
+        const index_t cond_label        = bytecode.size();
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(cond_idx)),
-                         "{} error evaluating while-condition",
+                         "{} error compiling 'while' condition",
                          pts);
         const index_t j1 = SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP_IF_FALSE, 0));
         SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
         SILVA_EXPECT_FWD(go(pts.sub_tree_span_at(body_idx)));
-        SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP, loop_entry - bytecode.size()));
+        SILVA_EXPECT_FWD(nursery.append_index_instr(pts, JUMP, cond_label - bytecode.size()));
         SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j1, bytecode.size() - j1));
         SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
       }
