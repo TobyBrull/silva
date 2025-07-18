@@ -61,7 +61,7 @@ namespace silva::lox::bytecode {
   };
 
   struct chunk_nursery_t {
-    chunk_t retval;
+    unique_ptr_t<chunk_t> retval = std::make_unique<chunk_t>();
 
     template<typename T>
     void append_bit(T);
@@ -71,7 +71,7 @@ namespace silva::lox::bytecode {
     expected_t<index_t> append_index_instr(const parse_tree_span_t&, opcode_t, index_t);
     expected_t<void> backpatch_index_instr(index_t position, index_t);
 
-    chunk_t finish() &&;
+    unique_ptr_t<chunk_t> finish() &&;
 
    private:
     void set_pts(const parse_tree_span_t&);

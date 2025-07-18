@@ -17,10 +17,10 @@ namespace silva::lox::bytecode::test {
     vm_t vm{.print_stream = &print_buffer};
 
     const auto make_chunk =
-        [&](const string_view_t lox_code) -> tuple_t<parse_tree_ptr_t, chunk_t> {
+        [&](const string_view_t lox_code) -> tuple_t<parse_tree_ptr_t, unique_ptr_t<chunk_t>> {
       const auto tp  = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
       const auto ptp = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
-      chunk_t chunk  = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span(), pool));
+      auto chunk     = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span(), pool));
       return {ptp, std::move(chunk)};
     };
 
@@ -36,14 +36,14 @@ namespace silva::lox::bytecode::test {
   26 [1:23]              ADD
   27 [1:23]              POP
 )";
-      CHECK(SILVA_EXPECT_REQUIRE(chunk.to_string()) == expected.substr(1));
+      CHECK(SILVA_EXPECT_REQUIRE(chunk->to_string()) == expected.substr(1));
     }
 
     const auto test = [&](const string_view_t lox_code, const string_view_t expected) {
       const auto [ptp, chunk] = make_chunk(lox_code);
       INFO(SILVA_EXPECT_REQUIRE(ptp->span().to_string()));
-      INFO(SILVA_EXPECT_REQUIRE(chunk.to_string()));
-      SILVA_EXPECT_REQUIRE(vm.run(chunk));
+      INFO(SILVA_EXPECT_REQUIRE(chunk->to_string()));
+      SILVA_EXPECT_REQUIRE(vm.run(*chunk));
       const auto result = print_buffer.content_str_fetch();
       INFO(result);
       INFO(expected);
@@ -93,8 +93,8 @@ namespace silva::lox::bytecode::test {
                                         const vector_t<string_t> expected_err_msgs) {
       const auto [ptp, chunk] = make_chunk(lox_code);
       INFO(SILVA_EXPECT_REQUIRE(ptp->span().to_string()));
-      INFO(SILVA_EXPECT_REQUIRE(chunk.to_string()));
-      const auto result = vm.run(chunk);
+      INFO(SILVA_EXPECT_REQUIRE(chunk->to_string()));
+      const auto result = vm.run(*chunk);
       REQUIRE(!result.has_value());
       const string_t err_msg = pretty_string(std::move(result).error());
       INFO(err_msg);

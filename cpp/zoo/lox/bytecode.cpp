@@ -210,26 +210,26 @@ namespace silva::lox::bytecode {
   void chunk_nursery_t::set_pts(const parse_tree_span_t& pts)
   {
     // TODO: insert with hint at the end of the flatmap.
-    retval.origin_info[retval.bytecode.size()] = pts;
+    retval->origin_info[retval->bytecode.size()] = pts;
   }
 
   template<typename T>
   void chunk_nursery_t::append_bit(const T x)
   {
-    const index_t pos = retval.bytecode.size();
-    retval.bytecode.resize(retval.bytecode.size() + sizeof(T));
-    bit_write_at<index_t>(&retval.bytecode[pos], x);
+    const index_t pos = retval->bytecode.size();
+    retval->bytecode.resize(retval->bytecode.size() + sizeof(T));
+    bit_write_at<index_t>(&retval->bytecode[pos], x);
   }
 
   expected_t<void> chunk_nursery_t::append_constant_instr(const parse_tree_span_t& pts,
                                                           object_ref_t obj_ref)
   {
     set_pts(pts);
-    const index_t idx  = retval.constant_table.size();
+    const index_t idx  = retval->constant_table.size();
     const auto max_idx = index_t(std::numeric_limits<std::underlying_type_t<std::byte>>::max());
     SILVA_EXPECT(idx < max_idx, MAJOR, "Too many constants in chunk {} < {}", idx, max_idx);
-    retval.constant_table.push_back(std::move(obj_ref));
-    retval.bytecode.push_back(byte_t(CONSTANT));
+    retval->constant_table.push_back(std::move(obj_ref));
+    retval->bytecode.push_back(byte_t(CONSTANT));
     append_bit(idx);
     return {};
   }
@@ -243,7 +243,7 @@ namespace silva::lox::bytecode {
                      opcode == NOT || opcode == NEGATE || opcode == PRINT || opcode == RETURN,
                  ASSERT);
     set_pts(pts);
-    retval.bytecode.push_back(byte_t(opcode));
+    retval->bytecode.push_back(byte_t(opcode));
     return {};
   }
 
@@ -256,19 +256,19 @@ namespace silva::lox::bytecode {
                      opcode == JUMP_IF_FALSE || opcode == LOOP,
                  ASSERT);
     set_pts(pts);
-    const index_t rv = retval.bytecode.size();
-    retval.bytecode.push_back(byte_t(opcode));
+    const index_t rv = retval->bytecode.size();
+    retval->bytecode.push_back(byte_t(opcode));
     append_bit(idx);
     return rv;
   }
 
   expected_t<void> chunk_nursery_t::backpatch_index_instr(const index_t position, const index_t idx)
   {
-    bit_write_at<index_t>(&retval.bytecode[position + 1], idx);
+    bit_write_at<index_t>(&retval->bytecode[position + 1], idx);
     return {};
   }
 
-  chunk_t chunk_nursery_t::finish() &&
+  unique_ptr_t<chunk_t> chunk_nursery_t::finish() &&
   {
     return std::move(*this).retval;
   }

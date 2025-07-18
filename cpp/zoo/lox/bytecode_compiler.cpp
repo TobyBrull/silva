@@ -16,7 +16,7 @@ namespace silva::lox::bytecode {
     object_pool_t& pool;
 
     chunk_nursery_t nursery;
-    vector_t<byte_t>& bytecode = nursery.retval.bytecode;
+    vector_t<byte_t>& bytecode = nursery.retval->bytecode;
 
     index_t scope_depth = 0;
     struct local_t {
@@ -363,12 +363,13 @@ namespace silva::lox::bytecode {
     }
   };
 
-  expected_t<chunk_t> compiler_t::compile(const parse_tree_span_t pts, object_pool_t& pool)
+  expected_t<unique_ptr_t<chunk_t>> compiler_t::compile(const parse_tree_span_t pts,
+                                                        object_pool_t& pool)
   {
     compile_run_t run{lexicon.swp, lexicon, pool};
     SILVA_EXPECT_FWD(run.go(pts));
     auto retval = std::move(run.nursery).finish();
-    retval.swp  = lexicon.swp;
+    retval->swp = lexicon.swp;
     return retval;
   }
 }
