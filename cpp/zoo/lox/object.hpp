@@ -8,6 +8,9 @@
 
 #include "syntax/parse_tree.hpp"
 
+namespace silva::lox::bytecode {
+  struct chunk_t;
+}
 namespace silva::lox {
 
   struct object_t;
@@ -20,6 +23,13 @@ namespace silva::lox {
   struct function_t {
     parse_tree_span_t pts;
     scope_ptr_t closure;
+
+    unique_ptr_t<bytecode::chunk_t> chunk;
+
+    function_t(parse_tree_span_t);
+    function_t(function_t&&);
+    function_t& operator=(function_t&&);
+    ~function_t();
 
     index_t arity() const;
     parse_tree_span_t parameters() const;
@@ -69,7 +79,7 @@ namespace silva::lox {
     explicit object_t(T&& data);
 
     object_t(object_t&&)                 = default;
-    object_t(const object_t&)            = default;
+    object_t(const object_t&)            = delete;
     object_t& operator=(object_t&&)      = delete;
     object_t& operator=(const object_t&) = delete;
 

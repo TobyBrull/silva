@@ -1,8 +1,15 @@
 #include "object.hpp"
 
+#include "bytecode.hpp"
+
 namespace silva::lox {
 
   // functions
+
+  function_t::function_t(parse_tree_span_t pts) : pts(std::move(pts)) {}
+  function_t::function_t(function_t&&)            = default;
+  function_t& function_t::operator=(function_t&&) = default;
+  function_t::~function_t()                       = default;
 
   index_t function_t::arity() const
   {
@@ -81,7 +88,8 @@ namespace silva::lox {
         const function_t& fun  = std::get<function_t>(method->data);
         auto closure_with_this = fun.closure.make_child_arm();
         SILVA_EXPECT_FWD(closure_with_this.define(ti_this, class_instance));
-        function_t bound_func{fun.pts, std::move(closure_with_this)};
+        function_t bound_func{fun.pts};
+        bound_func.closure = std::move(closure_with_this);
         return pool.make(std::move(bound_func));
       }
     }

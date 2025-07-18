@@ -112,7 +112,7 @@ namespace silva {
     retval += fmt::format("object_pool_t with {} objects\n", object_datas.size());
     for (const auto& od: object_datas) {
       if (od.obj.has_value()) {
-        retval += fmt::format("  - {} {}\n", od.ref_count, od.obj.value_or(T{}));
+        retval += fmt::format("  - {} {}\n", od.ref_count, *od.obj);
       }
       else {
         retval += fmt::format("  - tombstone\n");

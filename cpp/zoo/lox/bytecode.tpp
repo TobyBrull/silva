@@ -12,7 +12,7 @@ namespace silva::lox::bytecode::test {
     syntax_ward_t sw;
     auto si = seed_interpreter(sw.ptr());
     object_pool_t pool;
-    compiler_t compiler(sw.ptr());
+    compiler_t compiler(sw.ptr(), pool);
     byte_sink_memory_t print_buffer;
     vm_t vm{.print_stream = &print_buffer};
 
@@ -20,7 +20,7 @@ namespace silva::lox::bytecode::test {
         [&](const string_view_t lox_code) -> tuple_t<parse_tree_ptr_t, unique_ptr_t<chunk_t>> {
       const auto tp  = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
       const auto ptp = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
-      auto chunk     = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span(), pool));
+      auto chunk     = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span()));
       return {ptp, std::move(chunk)};
     };
 

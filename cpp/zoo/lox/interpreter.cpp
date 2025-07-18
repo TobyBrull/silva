@@ -111,13 +111,9 @@ namespace silva::lox {
                    "expected function '{}', but found '{}'",
                    lexicon.swp->token_id_wrap(lox_name),
                    lexicon.swp->token_id_wrap(builtin_decl.name));
-      object_ref_t obj_ref = pool.make(function_builtin_t{
-          {
-              .pts     = pts_function,
-              .closure = scopes.root(),
-          },
-          builtin_decl.impl,
-      });
+      function_builtin_t fb{{pts_function}, builtin_decl.impl};
+      fb.closure           = scopes.root();
+      object_ref_t obj_ref = pool.make(std::move(fb));
       ++it;
       SILVA_EXPECT_ASSERT(scopes.root().define(lox_name, std::move(obj_ref)));
     }
@@ -594,7 +590,9 @@ namespace silva::lox {
         const token_id_t fun_name = pts.tp->tokens[pts[0].token_begin + 1];
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
-        SILVA_EXPECT_FWD(scope.define(fun_name, intp->pool.make(function_t{func_pts, scope})));
+        function_t ff{func_pts};
+        ff.closure = scope;
+        SILVA_EXPECT_FWD(scope.define(fun_name, intp->pool.make(std::move(ff))));
       }
       else if (rule_name == intp->lexicon.ni_decl_class) {
         const token_id_t class_name = pts.tp->tokens[pts[0].token_begin + 1];
@@ -627,7 +625,9 @@ namespace silva::lox {
           const auto pts_method = pts.sub_tree_span_at(it.pos);
           SILVA_EXPECT(pts_method[0].rule_name == intp->lexicon.ni_decl_function, MAJOR);
           const token_id_t method_name = pts.tp->tokens[pts_method[0].token_begin];
-          cc.methods[method_name]      = intp->pool.make(function_t{pts_method, used_scope});
+          function_t ff{pts_method};
+          ff.closure              = used_scope;
+          cc.methods[method_name] = intp->pool.make(std::move(ff));
           ++it;
         }
         SILVA_EXPECT_FWD(scope.define(class_name, intp->pool.make(std::move(cc))));
