@@ -1,6 +1,7 @@
 #pragma once
 
 #include "canopy/byte_sink.hpp"
+#include "canopy/hash.hpp"
 #include "canopy/sprite.hpp"
 
 namespace silva {
@@ -67,6 +68,7 @@ namespace silva {
       return pretty_write_impl(*x, stream);
     }
     friend std::ostream& operator<<(std::ostream& os, const object_ref_t& x) { return os << *x; }
+    friend hash_value_t hash_impl(const object_ref_t& x) { return hash(x.idx); }
   };
 }
 

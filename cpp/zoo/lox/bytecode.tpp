@@ -18,10 +18,10 @@ namespace silva::lox::bytecode::test {
 
     const auto make_chunk =
         [&](const string_view_t lox_code) -> tuple_t<parse_tree_ptr_t, chunk_t> {
-      const auto tp       = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
-      const auto ptp      = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
-      const chunk_t chunk = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span(), pool));
-      return {ptp, chunk};
+      const auto tp  = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
+      const auto ptp = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
+      chunk_t chunk  = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span(), pool));
+      return {ptp, std::move(chunk)};
     };
 
     {
