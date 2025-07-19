@@ -14,19 +14,21 @@ namespace silva::lox::bytecode {
   }
 
   struct compile_run_t {
-    syntax_ward_ptr_t swp;
-    const lexicon_t& lexicon;
-    object_pool_t& pool;
+    compiler_t* compiler = nullptr;
+
+    const lexicon_t& lexicon = compiler->lexicon;
+    syntax_ward_ptr_t swp    = lexicon.swp;
+    object_pool_t& pool      = compiler->object_pool;
+
+    vector_t<compiler_t::local_t>& locals = compiler->locals;
 
     chunk_nursery_t nursery;
-    vector_t<byte_t>& bytecode = nursery.retval->bytecode;
+    vector_t<byte_t>& bytecode = nursery.chunk.bytecode;
 
-    index_t scope_depth = 0;
-    struct local_t {
-      token_id_t var_name = token_id_none;
-      index_t scope_depth = 0;
-    };
-    vector_t<local_t> locals;
+    compile_run_t(compiler_t* compiler, chunk_t& target)
+      : compiler(compiler), nursery{.chunk = target}
+    {
+    }
 
     optional_t<index_t> find_local(const token_id_t var_name)
     {
@@ -155,6 +157,34 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(rhs)));
         SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j2, bytecode.size() - j2));
       }
+      else if (pts[0].rule_name == lexicon.ni_expr_call) {
+        // TODO_CURR
+        //
+        // const auto [fun_idx, args_idx] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        // auto callee = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(fun_idx)),
+        //                                "{} error evaluating left-hand-side",
+        //                                pts);
+        // SILVA_EXPECT(callee->holds_function() || callee->holds_function_builtin() ||
+        //                  callee->holds_class(),
+        //              MINOR,
+        //              "left-hand-side of call-operator must evaluate to function or class");
+        // const auto pts_args = pts.sub_tree_span_at(args_idx);
+        // if (callee->holds_function() || callee->holds_function_builtin()) {
+        //   return call_function(callee, pts_args);
+        // }
+        // else if (callee->holds_class()) {
+        //   class_t& cc         = std::get<class_t>(callee->data);
+        //   object_ref_t retval = intp->pool.make(class_instance_t{._class = callee});
+        //   if (const auto it = cc.methods.find(intp->lexicon.ti_init); it != cc.methods.end()) {
+        //     object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
+        //         member_bind(retval, {}, intp->lexicon.ti_init, intp->pool,
+        //         intp->lexicon.ti_this));
+        //     SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
+        //     SILVA_EXPECT_FWD(call_function(init_fun_ref, pts_args));
+        //   }
+        //   return retval;
+        // }
+      }
       else if (pts[0].rule_name == lexicon.ni_expr_b_assign) {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(rhs)),
@@ -215,23 +245,25 @@ namespace silva::lox::bytecode {
         }
       }
       else if (rule_name == lexicon.ni_decl_fun) {
-        SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
-        const auto func_pts = pts.sub_tree_span_at(1);
-        function_t ff{func_pts};
-        // ...
-        object_ref_t func = pool.make(std::move(ff));
+        // TODO_CURR
+        //
+        // SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
+        // const auto func_pts = pts.sub_tree_span_at(1);
+        // function_t ff{func_pts};
+        // object_ref_t func = pool.make(std::move(ff));
+        // SILVA_EXPECT_FWD(nursery.append_constant_instr(pts, std::move(func)));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
       }
 
-      if (scope_depth == 0) {
+      if (compiler->scope_depth == 0) {
         SILVA_EXPECT_FWD(nursery.append_index_instr(pts, DEFINE_GLOBAL, decl_name));
       }
       else {
-        locals.push_back(local_t{
+        locals.push_back(compiler_t::local_t{
             .var_name    = decl_name,
-            .scope_depth = scope_depth,
+            .scope_depth = compiler->scope_depth,
         });
       }
       return {};
@@ -322,15 +354,15 @@ namespace silva::lox::bytecode {
         }
       }
       else if (rule_name == lexicon.ni_stmt_block) {
-        scope_depth += 1;
+        compiler->scope_depth += 1;
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
         }
-        while (!locals.empty() && locals.back().scope_depth == scope_depth) {
+        while (!locals.empty() && locals.back().scope_depth == compiler->scope_depth) {
           locals.pop_back();
           SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, POP));
         }
-        scope_depth -= 1;
+        compiler->scope_depth -= 1;
       }
       else if (rule_name == lexicon.ni_stmt_expr) {
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(1)),
@@ -375,12 +407,10 @@ namespace silva::lox::bytecode {
     }
   };
 
-  expected_t<unique_ptr_t<chunk_t>> compiler_t::compile(const parse_tree_span_t pts)
+  expected_t<void> compiler_t::compile(const parse_tree_span_t pts, chunk_t& target)
   {
-    compile_run_t run{lexicon.swp, lexicon, object_pool};
+    compile_run_t run{this, target};
     SILVA_EXPECT_FWD(run.go(pts));
-    auto retval = std::move(run.nursery).finish();
-    retval->swp = lexicon.swp;
-    return retval;
+    return {};
   }
 }

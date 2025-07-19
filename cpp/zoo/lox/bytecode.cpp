@@ -6,6 +6,8 @@ namespace silva::lox::bytecode {
 
   using enum opcode_t;
 
+  chunk_t::chunk_t(syntax_ward_ptr_t swp) : swp(std::move(swp)) {}
+
   parse_tree_span_t chunk_t::origin_info_at_instr(const index_t ip) const
   {
     if (origin_info.empty()) {
@@ -207,30 +209,32 @@ namespace silva::lox::bytecode {
     }
   }
 
-  void chunk_nursery_t::set_pts(const parse_tree_span_t& pts)
-  {
-    // TODO: insert with hint at the end of the flatmap.
-    retval->origin_info[retval->bytecode.size()] = pts;
-  }
+  namespace detail {
+    void set_pts(chunk_t& self, const parse_tree_span_t& pts)
+    {
+      // TODO: insert with hint at the end of the flatmap.
+      self.origin_info[self.bytecode.size()] = pts;
+    }
 
-  template<typename T>
-  void chunk_nursery_t::append_bit(const T x)
-  {
-    const index_t pos = retval->bytecode.size();
-    retval->bytecode.resize(retval->bytecode.size() + sizeof(T));
-    bit_write_at<index_t>(&retval->bytecode[pos], x);
+    template<typename T>
+    void append_bit(chunk_t& self, const T x)
+    {
+      const index_t pos = self.bytecode.size();
+      self.bytecode.resize(self.bytecode.size() + sizeof(T));
+      bit_write_at<index_t>(&self.bytecode[pos], x);
+    }
   }
 
   expected_t<void> chunk_nursery_t::append_constant_instr(const parse_tree_span_t& pts,
                                                           object_ref_t obj_ref)
   {
-    set_pts(pts);
-    const index_t idx  = retval->constant_table.size();
+    detail::set_pts(chunk, pts);
+    const index_t idx  = chunk.constant_table.size();
     const auto max_idx = index_t(std::numeric_limits<std::underlying_type_t<std::byte>>::max());
     SILVA_EXPECT(idx < max_idx, MAJOR, "Too many constants in chunk {} < {}", idx, max_idx);
-    retval->constant_table.push_back(std::move(obj_ref));
-    retval->bytecode.push_back(byte_t(CONSTANT));
-    append_bit(idx);
+    chunk.constant_table.push_back(std::move(obj_ref));
+    chunk.bytecode.push_back(byte_t(CONSTANT));
+    detail::append_bit(chunk, idx);
     return {};
   }
 
@@ -242,8 +246,8 @@ namespace silva::lox::bytecode {
                      opcode == SUBTRACT || opcode == MULTIPLY || opcode == DIVIDE ||
                      opcode == NOT || opcode == NEGATE || opcode == PRINT || opcode == RETURN,
                  ASSERT);
-    set_pts(pts);
-    retval->bytecode.push_back(byte_t(opcode));
+    detail::set_pts(chunk, pts);
+    chunk.bytecode.push_back(byte_t(opcode));
     return {};
   }
 
@@ -255,21 +259,16 @@ namespace silva::lox::bytecode {
                      opcode == SET_GLOBAL || opcode == GET_GLOBAL || opcode == JUMP ||
                      opcode == JUMP_IF_FALSE || opcode == LOOP,
                  ASSERT);
-    set_pts(pts);
-    const index_t rv = retval->bytecode.size();
-    retval->bytecode.push_back(byte_t(opcode));
-    append_bit(idx);
+    detail::set_pts(chunk, pts);
+    const index_t rv = chunk.bytecode.size();
+    chunk.bytecode.push_back(byte_t(opcode));
+    detail::append_bit(chunk, idx);
     return rv;
   }
 
   expected_t<void> chunk_nursery_t::backpatch_index_instr(const index_t position, const index_t idx)
   {
-    bit_write_at<index_t>(&retval->bytecode[position + 1], idx);
+    bit_write_at<index_t>(&chunk.bytecode[position + 1], idx);
     return {};
-  }
-
-  unique_ptr_t<chunk_t> chunk_nursery_t::finish() &&
-  {
-    return std::move(*this).retval;
   }
 }

@@ -20,7 +20,8 @@ namespace silva::lox::bytecode::test {
         [&](const string_view_t lox_code) -> tuple_t<parse_tree_ptr_t, unique_ptr_t<chunk_t>> {
       const auto tp  = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
       const auto ptp = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
-      auto chunk     = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span()));
+      auto chunk     = std::make_unique<chunk_t>(sw.ptr());
+      SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span(), *chunk));
       return {ptp, std::move(chunk)};
     };
 
@@ -88,6 +89,30 @@ namespace silva::lox::bytecode::test {
         print sum ;
       )",
          "6\n45\n");
+    // TODO_CURR
+    //
+    // test(R"(
+    //     fun foo(y) {
+    //       return y * 10;
+    //     }
+    //     fun bar(x) {
+    //       x = x + 10;
+    //       x = x + foo(x);
+    //       return x;
+    //     }
+    //     print bar(10);
+    //   )",
+    //      "220\n");
+    // test(R"(
+    //     fun fib(n) {
+    //       if (n < 2) return n;
+    //       return fib(n - 1) + fib(n - 2);
+    //     }
+    //     for ( var i = 1; i <= 4 ; i = i + 1 ) {
+    //       print fib(i);
+    //     }
+    //   )",
+    //      "1\n1\n");
 
     const auto test_runtime_error = [&](const string_view_t lox_code,
                                         const vector_t<string_t> expected_err_msgs) {
