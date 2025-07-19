@@ -28,14 +28,20 @@ namespace silva::lox::bytecode::test {
     {
       const auto [ptp, chunk]      = make_chunk("var hello = 'world' ; 1 + 2 * 3 ;");
       const string_view_t expected = R"(
-   0 [1:13]              CONSTANT 0 world
+   0 [1:13]              CONSTANT 0
    5 [1:1]               DEFINE_GLOBAL 209 hello
-  10 [1:23]              CONSTANT 1 1
-  15 [1:27]              CONSTANT 2 2
-  20 [1:31]              CONSTANT 3 3
+  10 [1:23]              CONSTANT 1
+  15 [1:27]              CONSTANT 2
+  20 [1:31]              CONSTANT 3
   25 [1:27]              MULTIPLY
   26 [1:23]              ADD
-  27 [1:23]              POP
+  27  --                 POP
+
+CONSTANT-TABLE
+CONSTANT 0 world
+CONSTANT 1 1
+CONSTANT 2 2
+CONSTANT 3 3
 )";
       CHECK(SILVA_EXPECT_REQUIRE(chunk->to_string()) == expected.substr(1));
     }

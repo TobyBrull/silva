@@ -20,28 +20,53 @@ namespace silva::lox::bytecode {
     return (*it).second;
   }
 
-  expected_t<string_t> chunk_t::to_string() const
+  expected_t<string_t> chunk_t::to_string(const index_t level) const
   {
+    string_t space_buf(level * 2 + 2, ' ');
+    string_view_t space{space_buf};
     string_t retval;
     index_t ip = 0;
-    parse_tree_span_t prev_pts;
+    const tokenization_t::location_t* prev_tloc{nullptr};
     auto it        = origin_info.begin();
     const auto end = origin_info.end();
     while (ip < bytecode.size()) {
+      retval += space.substr(0, level * 2);
       retval += fmt::format("{:4} ", ip);
       const parse_tree_span_t pts = origin_info_at_instr(ip);
-      if (pts != prev_pts) {
-        SILVA_EXPECT(pts != parse_tree_span_t{}, ASSERT);
-        const auto& tloc = pts.tp->token_locations[pts[0].token_begin];
-        retval += fmt::format("{:20}", fmt::format("[{}:{}]", tloc.line_num + 1, tloc.column + 1));
+      SILVA_EXPECT(pts != parse_tree_span_t{}, ASSERT);
+      const tokenization_t::location_t* tloc = &pts.tp->token_locations[pts[0].token_begin];
+      if (prev_tloc == nullptr || *prev_tloc != *tloc) {
+        retval +=
+            fmt::format("{:20}", fmt::format("[{}:{}]", tloc->line_num + 1, tloc->column + 1));
       }
       else {
-        retval += fmt::format("{:20}", "");
+        retval += fmt::format("{:20}", " -- ");
       }
-      prev_pts      = pts;
+      prev_tloc     = tloc;
       const auto ll = SILVA_EXPECT_FWD(to_string_at(retval, ip));
       retval += '\n';
       ip += ll;
+    }
+    if (!constant_table.empty()) {
+      retval += "\n";
+      retval += space.substr(0, level * 2);
+      retval += "CONSTANT-TABLE\n";
+      for (index_t i = 0; i < constant_table.size(); ++i) {
+        retval += space.substr(0, level * 2);
+        retval += fmt::format("CONSTANT {} ", i);
+        const object_ref_t& cc = constant_table[i];
+        if (cc->holds_function()) {
+          const function_t& fun = std::get<function_t>(cc->data);
+          retval += silva::pretty_string(fun.pts);
+          retval += '\n';
+          SILVA_EXPECT(fun.chunk, MAJOR);
+          retval += SILVA_EXPECT_FWD(fun.chunk->to_string(level + 1));
+        }
+        else {
+          retval += silva::pretty_string(cc);
+          retval += '\n';
+        }
+      }
     }
     return retval;
   }
@@ -63,7 +88,7 @@ namespace silva::lox::bytecode {
         const auto const_idx = bit_cast_ptr<index_t>(&bc[1]);
         SILVA_EXPECT(0 <= const_idx && const_idx < chunk->constant_table.size(), MINOR);
         const auto& cc = chunk->constant_table[const_idx];
-        retval += fmt::format("{} {} {}", name, const_idx, silva::pretty_string(cc));
+        retval += fmt::format("{} {}", name, const_idx);
         return 5;
       }
       expected_t<index_t> token_instr(const string_view_t name)
@@ -168,7 +193,7 @@ namespace silva::lox::bytecode {
       case LOOP:
         return SILVA_EXPECT_FWD(tsai.index_instr("LOOP"));
       case CALL:
-        return SILVA_EXPECT_FWD(tsai.token_instr("CALL"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("CALL"));
       case INVOKE:
         return SILVA_EXPECT_FWD(tsai.invoke_instr("INVOKE"));
       case SUPER_INVOKE:
@@ -257,7 +282,7 @@ namespace silva::lox::bytecode {
   {
     SILVA_EXPECT(opcode == DEFINE_GLOBAL || opcode == SET_LOCAL || opcode == GET_LOCAL ||
                      opcode == SET_GLOBAL || opcode == GET_GLOBAL || opcode == JUMP ||
-                     opcode == JUMP_IF_FALSE || opcode == LOOP,
+                     opcode == JUMP_IF_FALSE || opcode == LOOP || opcode == CALL,
                  ASSERT);
     detail::set_pts(chunk, pts);
     const index_t rv = chunk.bytecode.size();

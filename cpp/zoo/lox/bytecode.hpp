@@ -58,7 +58,7 @@ namespace silva::lox::bytecode {
 
     chunk_t(syntax_ward_ptr_t);
 
-    expected_t<string_t> to_string() const;
+    expected_t<string_t> to_string(index_t level = 0) const;
     expected_t<index_t> to_string_at(string_t&, index_t) const;
   };
 

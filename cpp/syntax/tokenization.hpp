@@ -11,6 +11,8 @@ namespace silva {
     struct location_t {
       index_t line_num = 0;
       index_t column   = 0;
+
+      friend auto operator<=>(const location_t&, const location_t&) = default;
     };
     vector_t<location_t> token_locations;
     vector_t<token_id_t> tokens;

@@ -158,32 +158,13 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT_FWD(nursery.backpatch_index_instr(j2, bytecode.size() - j2));
       }
       else if (pts[0].rule_name == lexicon.ni_expr_call) {
-        // TODO_CURR
-        //
-        // const auto [fun_idx, args_idx] = SILVA_EXPECT_FWD(pts.get_children<2>());
-        // auto callee = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(fun_idx)),
-        //                                "{} error evaluating left-hand-side",
-        //                                pts);
-        // SILVA_EXPECT(callee->holds_function() || callee->holds_function_builtin() ||
-        //                  callee->holds_class(),
-        //              MINOR,
-        //              "left-hand-side of call-operator must evaluate to function or class");
-        // const auto pts_args = pts.sub_tree_span_at(args_idx);
-        // if (callee->holds_function() || callee->holds_function_builtin()) {
-        //   return call_function(callee, pts_args);
-        // }
-        // else if (callee->holds_class()) {
-        //   class_t& cc         = std::get<class_t>(callee->data);
-        //   object_ref_t retval = intp->pool.make(class_instance_t{._class = callee});
-        //   if (const auto it = cc.methods.find(intp->lexicon.ti_init); it != cc.methods.end()) {
-        //     object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
-        //         member_bind(retval, {}, intp->lexicon.ti_init, intp->pool,
-        //         intp->lexicon.ti_this));
-        //     SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
-        //     SILVA_EXPECT_FWD(call_function(init_fun_ref, pts_args));
-        //   }
-        //   return retval;
-        // }
+        const auto [fun_idx, args_idx] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(fun_idx)));
+        const auto pts_args = pts.sub_tree_span_at(args_idx);
+        for (const auto [node_idx, child_idx]: pts_args.children_range()) {
+          SILVA_EXPECT_FWD(expr(pts_args.sub_tree_span_at(node_idx)));
+        }
+        SILVA_EXPECT_FWD(nursery.append_index_instr(pts, CALL, pts_args[0].num_children));
       }
       else if (pts[0].rule_name == lexicon.ni_expr_b_assign) {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
@@ -257,8 +238,14 @@ namespace silva::lox::bytecode {
               .scope_depth = compiler->scope_depth + 1,
           });
         }
+
         auto chunk = std::make_unique<chunk_t>(swp);
         SILVA_EXPECT_FWD(compiler->compile(fun.body(), *chunk));
+        chunk_nursery_t sub_nursery{*chunk};
+        SILVA_EXPECT_FWD(sub_nursery.append_simple_instr(func_pts, NIL));
+        SILVA_EXPECT_FWD(sub_nursery.append_simple_instr(func_pts, RETURN));
+
+        fun.chunk         = std::move(chunk);
         object_ref_t func = pool.make(std::move(fun));
         SILVA_EXPECT_FWD(nursery.append_constant_instr(pts, std::move(func)));
       }
@@ -361,6 +348,7 @@ namespace silva::lox::bytecode {
         else {
           SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, NIL));
         }
+        SILVA_EXPECT_FWD(nursery.append_simple_instr(pts, RETURN));
       }
       else if (rule_name == lexicon.ni_stmt_block) {
         compiler->scope_depth += 1;
