@@ -6,7 +6,7 @@
 namespace silva::lox::bytecode {
   struct compiler_t {
     lexicon_t lexicon;
-    object_pool_t& object_pool;
+    object_pool_t* object_pool = nullptr;
 
     index_t scope_depth = 0;
     struct local_t {
@@ -15,7 +15,7 @@ namespace silva::lox::bytecode {
     };
     vector_t<local_t> locals;
 
-    compiler_t(syntax_ward_ptr_t, object_pool_t&);
+    compiler_t(syntax_ward_ptr_t, object_pool_t*);
 
     expected_t<void> compile(parse_tree_span_t, chunk_t& target);
   };

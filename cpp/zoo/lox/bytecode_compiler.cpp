@@ -8,7 +8,7 @@ namespace silva::lox::bytecode {
 
   using enum opcode_t;
 
-  compiler_t::compiler_t(syntax_ward_ptr_t swp, object_pool_t& object_pool)
+  compiler_t::compiler_t(syntax_ward_ptr_t swp, object_pool_t* object_pool)
     : lexicon(std::move(swp)), object_pool(object_pool)
   {
   }
@@ -16,9 +16,9 @@ namespace silva::lox::bytecode {
   struct compile_run_t {
     compiler_t* compiler = nullptr;
 
-    const lexicon_t& lexicon = compiler->lexicon;
-    syntax_ward_ptr_t swp    = lexicon.swp;
-    object_pool_t& pool      = compiler->object_pool;
+    const lexicon_t& lexicon   = compiler->lexicon;
+    syntax_ward_ptr_t swp      = lexicon.swp;
+    object_pool_t& object_pool = *compiler->object_pool;
 
     vector_t<compiler_t::local_t>& locals = compiler->locals;
 
@@ -64,7 +64,7 @@ namespace silva::lox::bytecode {
         }
       }
       else {
-        auto obj_ref = SILVA_EXPECT_FWD(object_ref_from_literal(pts, pool, lexicon));
+        auto obj_ref = SILVA_EXPECT_FWD(object_ref_from_literal(pts, object_pool, lexicon));
         SILVA_EXPECT_FWD(nursery.append_constant_instr(pts, std::move(obj_ref)));
       }
       return {};
@@ -229,6 +229,10 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
         function_t fun{func_pts};
+        compiler->locals.push_back(compiler_t::local_t{
+            .var_name    = token_id_none,
+            .scope_depth = compiler->scope_depth + 1,
+        });
         const auto pts_fun_p = fun.parameters();
         for (const auto [node_idx, child_idx]: pts_fun_p.children_range()) {
           const auto pts_p          = pts_fun_p.sub_tree_span_at(node_idx);
@@ -246,7 +250,7 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT_FWD(sub_nursery.append_simple_instr(func_pts, RETURN));
 
         fun.chunk         = std::move(chunk);
-        object_ref_t func = pool.make(std::move(fun));
+        object_ref_t func = object_pool.make(std::move(fun));
         SILVA_EXPECT_FWD(nursery.append_constant_instr(pts, std::move(func)));
       }
       else {
