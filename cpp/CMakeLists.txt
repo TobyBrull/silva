@@ -52,15 +52,10 @@ endforeach()
 # Tests
 
 include(CTest)
-
+include(Catch)
 add_executable(silva_test "${SILVA_TEST_FILES}")
 target_link_libraries(silva_test PRIVATE
   silvalib
   Catch2::Catch2WithMain
 )
-
-find_package(Catch2 3 REQUIRED)
-include(Catch)
-
 catch_discover_tests(silva_test)
-
