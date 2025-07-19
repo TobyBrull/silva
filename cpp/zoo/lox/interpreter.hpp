@@ -12,7 +12,7 @@ namespace silva::lox {
 
   struct interpreter_t : public menhir_t {
     lexicon_t lexicon;
-    object_pool_t pool;
+    object_pool_t object_pool;
 
     byte_sink_t* print_stream = nullptr;
 

@@ -37,7 +37,7 @@ namespace silva::lox {
                        cmdline_args[1]);
     }
     if (verbose) {
-      fmt::println("{}", li.pool.to_string());
+      fmt::println("{}", li.object_pool.to_string());
     }
     return {};
   }

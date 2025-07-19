@@ -46,7 +46,7 @@ namespace silva::lox {
 
   expected_t<object_ref_t> member_get(const object_ref_t& class_instance,
                                       token_id_t field_name,
-                                      object_pool_t& pool,
+                                      object_pool_t& object_pool,
                                       const token_id_t ti_this)
   {
     SILVA_EXPECT(class_instance->holds_class_instance(),
@@ -57,13 +57,13 @@ namespace silva::lox {
     if (const auto it = ci.fields.find(field_name); it != ci.fields.end()) {
       return it->second;
     }
-    return member_bind(class_instance, {}, field_name, pool, ti_this);
+    return member_bind(class_instance, {}, field_name, object_pool, ti_this);
   }
 
   expected_t<object_ref_t> member_bind(const object_ref_t& class_instance,
                                        object_ref_t _class,
                                        token_id_t field_name,
-                                       object_pool_t& pool,
+                                       object_pool_t& object_pool,
                                        const token_id_t ti_this)
   {
     SILVA_EXPECT(class_instance->holds_class_instance(),
@@ -90,14 +90,14 @@ namespace silva::lox {
         SILVA_EXPECT_FWD(closure_with_this.define(ti_this, class_instance));
         function_t bound_func{fun.pts};
         bound_func.closure = std::move(closure_with_this);
-        return pool.make(std::move(bound_func));
+        return object_pool.make(std::move(bound_func));
       }
     }
     SILVA_EXPECT(false, MINOR, "couldn't access member");
   }
 
   expected_t<object_ref_t> object_ref_from_literal(const parse_tree_span_t& pts,
-                                                   object_pool_t& pool,
+                                                   object_pool_t& object_pool,
                                                    const lexicon_t& lexicon)
   {
     using enum token_category_t;
@@ -105,21 +105,21 @@ namespace silva::lox {
     const auto ti    = pts.tp->tokens[pts[0].token_begin];
     const auto tinfo = pts.tp->token_info_get(pts[0].token_begin);
     if (ti == lexicon.ti_none) {
-      return pool.make(none);
+      return object_pool.make(none);
     }
     else if (ti == lexicon.ti_true) {
-      return pool.make(true);
+      return object_pool.make(true);
     }
     else if (ti == lexicon.ti_false) {
-      return pool.make(false);
+      return object_pool.make(false);
     }
     else if (tinfo->category == STRING) {
       const auto sov = SILVA_EXPECT_FWD(tinfo->string_as_plain_contained());
-      return pool.make(string_t{sov});
+      return object_pool.make(string_t{sov});
     }
     else if (tinfo->category == NUMBER) {
       const auto dd = SILVA_EXPECT_FWD(tinfo->number_as_double());
-      return pool.make(double{dd});
+      return object_pool.make(double{dd});
     }
     SILVA_EXPECT(false,
                  MINOR,
@@ -212,7 +212,7 @@ namespace silva::lox {
       return -std::get<const double>(x.data);
     }
     else {
-      SILVA_EXPECT(false, RUNTIME, "runtime type error: - {} ", pretty_string(x));
+      SILVA_EXPECT(false, RUNTIME, "type error evaluating expression: - {} ", pretty_string(x));
     }
   }
 
@@ -225,7 +225,7 @@ namespace silva::lox {
     else {                                                                         \
       SILVA_EXPECT(false,                                                          \
                    RUNTIME,                                                        \
-                   "runtime type error: {} " #op " {}",                            \
+                   "type error evaluating expression: {} " #op " {}",              \
                    pretty_string(lhs),                                             \
                    pretty_string(rhs));                                            \
     }                                                                              \
@@ -250,7 +250,7 @@ namespace silva::lox {
     else {
       SILVA_EXPECT(false,
                    RUNTIME,
-                   "runtime type error: {} + {}",
+                   "type error evaluating expression: {} + {}",
                    pretty_string(lhs),
                    pretty_string(rhs));
     }
@@ -325,23 +325,25 @@ namespace silva::lox {
     return os << silva::pretty_string(x);
   }
 
-  expected_t<object_ref_t> neg(object_pool_t& pool, object_ref_t x)
+  expected_t<object_ref_t> neg(object_pool_t& object_pool, object_ref_t x)
   {
-    return pool.make(!(*x));
+    return object_pool.make(!(*x));
   }
-  expected_t<object_ref_t> inv(object_pool_t& pool, object_ref_t x)
+  expected_t<object_ref_t> inv(object_pool_t& object_pool, object_ref_t x)
   {
-    return pool.make(SILVA_EXPECT_FWD_PLAIN(-(*x)));
+    return object_pool.make(SILVA_EXPECT_FWD_PLAIN(-(*x)));
   }
-  expected_t<object_ref_t> add(object_pool_t& pool, object_ref_t lhs, object_ref_t rhs)
+  expected_t<object_ref_t> add(object_pool_t& object_pool, object_ref_t lhs, object_ref_t rhs)
   {
     auto res = SILVA_EXPECT_FWD_PLAIN(*lhs + *rhs);
-    return std::visit([&](auto x) { return pool.make(std::move(x)); }, std::move(res));
+    return std::visit([&](auto x) { return object_pool.make(std::move(x)); }, std::move(res));
   }
-#define OBJECT_IMPL(func_name, op)                                                            \
-  expected_t<object_ref_t> func_name(object_pool_t& pool, object_ref_t lhs, object_ref_t rhs) \
-  {                                                                                           \
-    return pool.make(SILVA_EXPECT_FWD_PLAIN(*lhs op * rhs));                                  \
+#define OBJECT_IMPL(func_name, op)                                  \
+  expected_t<object_ref_t> func_name(object_pool_t& object_pool,    \
+                                     object_ref_t lhs,              \
+                                     object_ref_t rhs)              \
+  {                                                                 \
+    return object_pool.make(SILVA_EXPECT_FWD_PLAIN(*lhs op * rhs)); \
   }
   OBJECT_IMPL(sub, -);
   OBJECT_IMPL(mul, *);
@@ -351,12 +353,12 @@ namespace silva::lox {
   OBJECT_IMPL(lte, <=);
   OBJECT_IMPL(gte, >=);
 #undef OBJECT_IMPL
-  expected_t<object_ref_t> eq(object_pool_t& pool, object_ref_t lhs, object_ref_t rhs)
+  expected_t<object_ref_t> eq(object_pool_t& object_pool, object_ref_t lhs, object_ref_t rhs)
   {
-    return pool.make(*lhs == *rhs);
+    return object_pool.make(*lhs == *rhs);
   }
-  expected_t<object_ref_t> neq(object_pool_t& pool, object_ref_t lhs, object_ref_t rhs)
+  expected_t<object_ref_t> neq(object_pool_t& object_pool, object_ref_t lhs, object_ref_t rhs)
   {
-    return pool.make(*lhs != *rhs);
+    return object_pool.make(*lhs != *rhs);
   }
 }

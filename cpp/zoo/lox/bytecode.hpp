@@ -33,7 +33,6 @@ namespace silva::lox::bytecode {
     PRINT,
     JUMP,
     JUMP_IF_FALSE,
-    LOOP,
     CALL,
     INVOKE,
     SUPER_INVOKE,

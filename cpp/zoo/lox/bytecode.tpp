@@ -136,7 +136,7 @@ CONSTANT 3 3
     };
     test_runtime_error(" return 1 + ( 42 + 'world' ) ; ",
                        {
-                           "runtime type error",
+                           "type error evaluating expression",
                            "while executing instruction",
                            "42 + 'world'",
                            "[test.lox:1:15]",

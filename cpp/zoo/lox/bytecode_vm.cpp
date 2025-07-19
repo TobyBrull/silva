@@ -191,7 +191,6 @@ namespace silva::lox::bytecode {
       }
       return {};
     }
-    expected_t<void> _loop() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _call() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _invoke() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _super_invoke() { SILVA_EXPECT(false, ASSERT); }
@@ -259,8 +258,6 @@ namespace silva::lox::bytecode {
           return _jump();
         case JUMP_IF_FALSE:
           return _jump_if_false();
-        case LOOP:
-          return _loop();
         case CALL:
           return _call();
         case INVOKE:

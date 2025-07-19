@@ -190,8 +190,6 @@ namespace silva::lox::bytecode {
         return SILVA_EXPECT_FWD(tsai.index_instr("JUMP"));
       case JUMP_IF_FALSE:
         return SILVA_EXPECT_FWD(tsai.index_instr("JUMP_IF_FALSE"));
-      case LOOP:
-        return SILVA_EXPECT_FWD(tsai.index_instr("LOOP"));
       case CALL:
         return SILVA_EXPECT_FWD(tsai.index_instr("CALL"));
       case INVOKE:
@@ -282,7 +280,7 @@ namespace silva::lox::bytecode {
   {
     SILVA_EXPECT(opcode == DEFINE_GLOBAL || opcode == SET_LOCAL || opcode == GET_LOCAL ||
                      opcode == SET_GLOBAL || opcode == GET_GLOBAL || opcode == JUMP ||
-                     opcode == JUMP_IF_FALSE || opcode == LOOP || opcode == CALL,
+                     opcode == JUMP_IF_FALSE || opcode == CALL,
                  ASSERT);
     detail::set_pts(chunk, pts);
     const index_t rv = chunk.bytecode.size();
