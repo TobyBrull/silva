@@ -245,13 +245,22 @@ namespace silva::lox::bytecode {
         }
       }
       else if (rule_name == lexicon.ni_decl_fun) {
-        // TODO_CURR
-        //
-        // SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
-        // const auto func_pts = pts.sub_tree_span_at(1);
-        // function_t ff{func_pts};
-        // object_ref_t func = pool.make(std::move(ff));
-        // SILVA_EXPECT_FWD(nursery.append_constant_instr(pts, std::move(func)));
+        SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
+        const auto func_pts = pts.sub_tree_span_at(1);
+        function_t fun{func_pts};
+        const auto pts_fun_p = fun.parameters();
+        for (const auto [node_idx, child_idx]: pts_fun_p.children_range()) {
+          const auto pts_p          = pts_fun_p.sub_tree_span_at(node_idx);
+          const token_id_t ti_param = pts_p.tp->tokens[pts_p[0].token_begin];
+          compiler->locals.push_back(compiler_t::local_t{
+              .var_name    = ti_param,
+              .scope_depth = compiler->scope_depth + 1,
+          });
+        }
+        auto chunk = std::make_unique<chunk_t>(swp);
+        SILVA_EXPECT_FWD(compiler->compile(fun.body(), *chunk));
+        object_ref_t func = pool.make(std::move(fun));
+        SILVA_EXPECT_FWD(nursery.append_constant_instr(pts, std::move(func)));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
