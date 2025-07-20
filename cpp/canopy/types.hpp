@@ -93,7 +93,7 @@ namespace silva {
   vector_t<T>::~vector_t()
   {
     while (!this->empty()) {
-      this->resize(this->size() - 1);
+      this->pop_back();
     }
   }
 

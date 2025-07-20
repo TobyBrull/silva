@@ -20,8 +20,7 @@ namespace silva::lox::bytecode::test {
     {
       const auto tp  = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
       const auto ptp = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
-      auto chunk     = std::make_unique<chunk_t>(sw.ptr());
-      SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span(), *chunk));
+      auto chunk     = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span()));
       return {ptp, std::move(chunk)};
     };
 
@@ -123,7 +122,10 @@ CONSTANT 3 3
                     "6\n45\n");
     th.test_success(R"(
         fun foo1(y) {
-          print y * 10;
+          fun printer(x) {
+            print x;
+          }
+          printer(y * 10);
         }
         fun foo2(y) {
           print y * 100;
@@ -149,6 +151,18 @@ CONSTANT 3 3
         }
       )",
                     "1\n1\n2\n3\n5\n8\n");
+    th.test_success(R"(
+        var x = 'global';
+        fun outer() {
+          var x = 'outer';
+          fun inner() {
+            print x;
+          }
+          inner();
+        }
+        outer();
+      )",
+                    "global\n");
   }
 
   TEST_CASE("lox-bytecode-error", "[lox][bytecode]")
