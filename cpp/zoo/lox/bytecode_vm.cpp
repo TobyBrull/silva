@@ -23,9 +23,16 @@ namespace silva::lox::bytecode {
     return retval;
   }
 
-  object_ref_t& stack_by(vm_t& vm, const index_t offset)
+  expected_t<object_ref_t*> stack_by(vm_t& vm, const index_t offset)
   {
-    return vm.stack[vm.call_frames.back().stack_offset + offset];
+    const index_t idx = vm.call_frames.back().stack_offset + offset;
+    SILVA_EXPECT(0 <= idx && idx < vm.stack.size(),
+                 RUNTIME,
+                 "Stack access with offset={} idx={} stack-size={} is out-of-bounds",
+                 offset,
+                 idx,
+                 vm.stack.size());
+    return &vm.stack[idx];
   }
 
   struct runner_t {
@@ -100,7 +107,7 @@ namespace silva::lox::bytecode {
                    "{} stack index {} not inside stack",
                    curr_info_at_instr(),
                    stack_idx);
-      vm.stack.push_back(stack_by(vm, stack_idx));
+      vm.stack.push_back(*SILVA_EXPECT_FWD(stack_by(vm, stack_idx)));
       curr_ip() += 5;
       return {};
     }
@@ -112,7 +119,7 @@ namespace silva::lox::bytecode {
                    "{} stack index {} not inside stack",
                    curr_info_at_instr(),
                    stack_idx);
-      stack_by(vm, stack_idx) = vm.stack.back();
+      *SILVA_EXPECT_FWD(stack_by(vm, stack_idx)) = vm.stack.back();
       curr_ip() += 5;
       return {};
     }
