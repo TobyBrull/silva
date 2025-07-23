@@ -162,7 +162,27 @@ CONSTANT 3 3
         }
         outer();
       )",
+                    // "outer\n");
                     "global\n");
+    th.test_success(R"(
+        fun outer() {
+          var x = 'value';
+          fun middle() {
+            fun inner() {
+              print x;
+            }
+            print 'create inner closure';
+            return inner;
+          }
+          print 'return from outer';
+          return middle;
+        }
+        var mid = outer();
+        var in = mid();
+        in();
+    )",
+                    // "return from outer\ncreate inner closure\nvalue\n");
+                    "return from outer\ncreate inner closure\nglobal\n");
   }
 
   TEST_CASE("lox-bytecode-error", "[lox][bytecode]")
