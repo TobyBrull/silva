@@ -207,8 +207,8 @@ namespace silva::lox::bytecode {
         tsai.retval += fmt::format("CLOSURE {} with {} upvalues: ", index, size);
         for (index_t i = 0; i < size; ++i) {
           const index_t base  = 1 + (2 + 2 * i) * sizeof(index_t);
-          const auto is_local = bit_cast_ptr<index_t>(&bc[base]);
-          const auto index    = bit_cast_ptr<index_t>(&bc[base + sizeof(index_t)]);
+          const auto index    = bit_cast_ptr<index_t>(&bc[base]);
+          const auto is_local = bit_cast_ptr<index_t>(&bc[base + sizeof(index_t)]);
           tsai.retval += fmt::format("({}, {}) ", is_local, index);
         }
         return total_size;

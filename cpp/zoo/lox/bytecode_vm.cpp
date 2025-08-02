@@ -106,7 +106,7 @@ namespace silva::lox::bytecode {
       const index_t stack_idx = curr_index_in_instr();
       SILVA_EXPECT(0 <= stack_idx && stack_idx < vm.stack.size(),
                    RUNTIME,
-                   "{} stack index {} not inside stack",
+                   "{} stack index {} not inside stack GET_LOCAL",
                    curr_info_at_instr(),
                    stack_idx);
       vm.stack.push_back(*SILVA_EXPECT_FWD(stack_by(vm, stack_idx)));
@@ -118,7 +118,7 @@ namespace silva::lox::bytecode {
       const index_t stack_idx = curr_index_in_instr();
       SILVA_EXPECT(0 <= stack_idx && stack_idx < vm.stack.size(),
                    RUNTIME,
-                   "{} stack index {} not inside stack",
+                   "{} stack index {} not inside stack in SET_LOCAL",
                    curr_info_at_instr(),
                    stack_idx);
       *SILVA_EXPECT_FWD(stack_by(vm, stack_idx)) = vm.stack.back();

@@ -31,7 +31,9 @@ namespace silva::lox::bytecode::test {
       INFO(SILVA_EXPECT_REQUIRE(chunk->to_string()));
       SILVA_EXPECT_REQUIRE(vm.run(*chunk));
       const auto result = print_buffer.content_str_fetch();
+      INFO("result");
       INFO(result);
+      INFO("expected");
       INFO(expected);
       CHECK(vm.stack.empty());
       CHECK(result == expected);
