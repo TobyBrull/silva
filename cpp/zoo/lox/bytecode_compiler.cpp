@@ -28,7 +28,6 @@ namespace silva::lox::bytecode {
       index_t scope_depth = 0;
       struct local_t {
         token_id_t var_name = token_id_none;
-        index_t scope_depth = 0;
       };
       vector_t<local_t> locals;
 
@@ -278,10 +277,7 @@ namespace silva::lox::bytecode {
         SILVA_EXPECT_FWD(cfs().nursery.append_index_instr(pts, DEFINE_GLOBAL, decl_name));
       }
       else {
-        cfs().locals.push_back(func_scope_t::local_t{
-            .var_name    = decl_name,
-            .scope_depth = cfs().scope_depth,
-        });
+        cfs().locals.push_back(func_scope_t::local_t{.var_name = decl_name});
       }
       return {};
     }
@@ -379,10 +375,11 @@ namespace silva::lox::bytecode {
       }
       else if (rule_name == lexicon.ni_stmt_block) {
         cfs().scope_depth += 1;
+        const index_t start_num_locals = cfs().locals.size();
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
         }
-        while (!cfs().locals.empty() && cfs().locals.back().scope_depth == cfs().scope_depth) {
+        while (cfs().locals.size() > start_num_locals) {
           SILVA_EXPECT_FWD(cfs().nursery.append_simple_instr(pts, POP));
           cfs().locals.pop_back();
         }
