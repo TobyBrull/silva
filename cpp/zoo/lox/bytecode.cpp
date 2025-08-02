@@ -157,9 +157,9 @@ namespace silva::lox::bytecode {
       case SET_GLOBAL:
         return SILVA_EXPECT_FWD(tsai.token_instr("SET_GLOBAL"));
       case GET_UPVALUE:
-        return SILVA_EXPECT_FWD(tsai.token_instr("GET_UPVALUE"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("GET_UPVALUE"));
       case SET_UPVALUE:
-        return SILVA_EXPECT_FWD(tsai.token_instr("SET_UPVALUE"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("SET_UPVALUE"));
       case GET_PROPERTY:
         return SILVA_EXPECT_FWD(tsai.const_instr("GET_PROPERTY"));
       case SET_PROPERTY:
@@ -197,21 +197,21 @@ namespace silva::lox::bytecode {
       case SUPER_INVOKE:
         return SILVA_EXPECT_FWD(tsai.invoke_instr("SUPER_INVOKE"));
       case CLOSURE: {
-        // offset++;
-        // uint8_t constant = chunk->code[offset++];
-        // printf("%-16s %4d ", "CLOSURE", constant);
-        // printValue(chunk->constants.values[constant]);
-        // printf("\n");
-        // ObjFunction* function = AS_FUNCTION(chunk->constants.values[constant]);
-        // for (index_t j = 0; j < function->upvalueCount; j++) {
-        //   const index_t isLocal = chunk->code[offset++];
-        //   const index_t index   = chunk->code[offset++];
-        //   printf("%04d      |                     %s %d\n",
-        //          offset - 2,
-        //          isLocal ? "local" : "upvalue",
-        //          index);
-        // }
-        // return offset;
+        SILVA_EXPECT(bc.size() >= 1 + 2 * sizeof(index_t),
+                     MINOR,
+                     "no index and size for CLOSURE instruction");
+        const auto index         = bit_cast_ptr<index_t>(&bc[1]);
+        const auto size          = bit_cast_ptr<index_t>(&bc[1 + sizeof(index_t)]);
+        const index_t total_size = 1 + (2 + 2 * size) * sizeof(index_t);
+        SILVA_EXPECT(bc.size() >= total_size, MINOR, "no upvalue array for CLOSURE instruction");
+        tsai.retval += fmt::format("CLOSURE {} with {} upvalues: ", index, size);
+        for (index_t i = 0; i < size; ++i) {
+          const index_t base  = 1 + (2 + 2 * i) * sizeof(index_t);
+          const auto is_local = bit_cast_ptr<index_t>(&bc[base]);
+          const auto index    = bit_cast_ptr<index_t>(&bc[base + sizeof(index_t)]);
+          tsai.retval += fmt::format("({}, {}) ", is_local, index);
+        }
+        return total_size;
       }
       case CLOSE_UPVALUE:
         return SILVA_EXPECT_FWD(tsai.simple_instr("CLOSE_UPVALUE"));
@@ -238,37 +238,22 @@ namespace silva::lox::bytecode {
       // TODO: insert with hint at the end of the flatmap.
       self.origin_info[self.bytecode.size()] = pts;
     }
-
-    template<typename T>
-    void append_bit(chunk_t& self, const T x)
-    {
-      const index_t pos = self.bytecode.size();
-      self.bytecode.resize(self.bytecode.size() + sizeof(T));
-      bit_write_at<index_t>(&self.bytecode[pos], x);
-    }
   }
 
   expected_t<void> chunk_nursery_t::append_constant_instr(const parse_tree_span_t& pts,
                                                           object_ref_t obj_ref)
   {
     detail::set_pts(chunk, pts);
-    const index_t idx  = chunk.constant_table.size();
-    const auto max_idx = index_t(std::numeric_limits<std::underlying_type_t<std::byte>>::max());
-    SILVA_EXPECT(idx < max_idx, MAJOR, "Too many constants in chunk {} < {}", idx, max_idx);
+    const index_t idx = chunk.constant_table.size();
     chunk.constant_table.push_back(std::move(obj_ref));
     chunk.bytecode.push_back(byte_t(CONSTANT));
-    detail::append_bit(chunk, idx);
+    SILVA_EXPECT_FWD(append(pts, idx));
     return {};
   }
 
   expected_t<void> chunk_nursery_t::append_simple_instr(const parse_tree_span_t& pts,
                                                         const opcode_t opcode)
   {
-    SILVA_EXPECT(opcode == NIL || opcode == TRUE || opcode == FALSE || opcode == POP ||
-                     opcode == EQUAL || opcode == GREATER || opcode == LESS || opcode == ADD ||
-                     opcode == SUBTRACT || opcode == MULTIPLY || opcode == DIVIDE ||
-                     opcode == NOT || opcode == NEGATE || opcode == PRINT || opcode == RETURN,
-                 ASSERT);
     detail::set_pts(chunk, pts);
     chunk.bytecode.push_back(byte_t(opcode));
     return {};
@@ -278,14 +263,10 @@ namespace silva::lox::bytecode {
                                                           const opcode_t opcode,
                                                           const index_t idx)
   {
-    SILVA_EXPECT(opcode == DEFINE_GLOBAL || opcode == SET_LOCAL || opcode == GET_LOCAL ||
-                     opcode == SET_GLOBAL || opcode == GET_GLOBAL || opcode == JUMP ||
-                     opcode == JUMP_IF_FALSE || opcode == CALL,
-                 ASSERT);
     detail::set_pts(chunk, pts);
     const index_t rv = chunk.bytecode.size();
     chunk.bytecode.push_back(byte_t(opcode));
-    detail::append_bit(chunk, idx);
+    SILVA_EXPECT_FWD(append(pts, idx));
     return rv;
   }
 

@@ -38,6 +38,21 @@ namespace silva::lox {
     friend bool operator==(const function_t&, const function_t&);
   };
 
+  struct closure_t {
+    object_ref_t func;
+    vector_t<object_ref_t> upvalues;
+
+    friend bool operator==(const closure_t&, const closure_t&);
+  };
+
+  struct upvalue_t {
+    // The "index_t" here is an index into vm_t::stack and means that the upvalue is not yet closed.
+    // The "object_ref_t" represents a closed upvalue.
+    variant_t<index_t, object_ref_t> value;
+
+    friend bool operator==(const upvalue_t&, const upvalue_t&);
+  };
+
   struct function_builtin_t : public function_t {
     silva::function_t<object_ref_t(object_pool_t&, scope_ptr_t)> impl;
 
@@ -88,6 +103,8 @@ namespace silva::lox {
               const double,
               const string_t,
               function_t,
+              closure_t,
+              upvalue_t,
               function_builtin_t,
               class_t,
               class_instance_t>
@@ -101,6 +118,8 @@ namespace silva::lox {
     bool holds_fundamental() const;
 
     bool holds_function() const;
+    bool holds_closure() const;
+    bool holds_upvalue() const;
     bool holds_function_builtin() const;
     bool holds_class() const;
     bool holds_class_instance() const;

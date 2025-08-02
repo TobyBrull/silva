@@ -64,9 +64,25 @@ namespace silva::lox::bytecode {
   struct chunk_nursery_t {
     chunk_t& chunk;
 
+    template<typename T>
+    expected_t<void> append(const parse_tree_span_t&, const T&);
+
     expected_t<void> append_constant_instr(const parse_tree_span_t&, object_ref_t);
     expected_t<void> append_simple_instr(const parse_tree_span_t&, opcode_t);
     expected_t<index_t> append_index_instr(const parse_tree_span_t&, opcode_t, index_t);
     expected_t<void> backpatch_index_instr(index_t position, index_t);
   };
+}
+
+// IMPLEMENTATION
+
+namespace silva::lox::bytecode {
+  template<typename T>
+  expected_t<void> chunk_nursery_t::append(const parse_tree_span_t& pts, const T& x)
+  {
+    const index_t pos = chunk.bytecode.size();
+    chunk.bytecode.resize(chunk.bytecode.size() + sizeof(T));
+    bit_write_at<T>(&chunk.bytecode[pos], x);
+    return {};
+  }
 }
