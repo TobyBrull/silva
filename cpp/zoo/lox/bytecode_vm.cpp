@@ -38,10 +38,10 @@ namespace silva::lox::bytecode {
   struct runner_t {
     vm_t& vm;
 
-    index_t curr_index_in_instr()
+    index_t curr_index_in_instr(const index_t offset = 0)
     {
       const auto& ccf = vm.call_frames.back();
-      return bit_cast_ptr<index_t>(&ccf.chunk->bytecode[ccf.ip + 1]);
+      return bit_cast_ptr<index_t>(&ccf.chunk->bytecode[ccf.ip + 1 + offset * sizeof(index_t)]);
     }
     index_t& curr_ip()
     {
@@ -71,7 +71,9 @@ namespace silva::lox::bytecode {
 
     expected_t<void> _constant()
     {
-      vm.stack.push_back(curr_constant_table()[curr_index_in_instr()]);
+      const index_t idx = curr_index_in_instr();
+      const auto& ct    = curr_constant_table();
+      vm.stack.push_back(ct[idx]);
       curr_ip() += 5;
       return {};
     }
@@ -166,8 +168,6 @@ namespace silva::lox::bytecode {
       curr_ip() += 5;
       return {};
     }
-    expected_t<void> _get_upvalue() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _set_upvalue() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_property() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _set_property() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _get_super() { SILVA_EXPECT(false, ASSERT); }
@@ -270,8 +270,12 @@ namespace silva::lox::bytecode {
     }
     expected_t<void> _invoke() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _super_invoke() { SILVA_EXPECT(false, ASSERT); }
+
+    expected_t<void> _get_upvalue() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _set_upvalue() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _closure() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _close_upvalue() { SILVA_EXPECT(false, ASSERT); }
+
     expected_t<void> _return()
     {
       SILVA_EXPECT(!vm.stack.empty(), RUNTIME, "stack empty for return statement");
