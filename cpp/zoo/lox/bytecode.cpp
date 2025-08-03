@@ -240,39 +240,34 @@ namespace silva::lox::bytecode {
     }
   }
 
-  expected_t<void> chunk_nursery_t::append_constant_instr(const parse_tree_span_t& pts,
-                                                          object_ref_t obj_ref)
+  void chunk_nursery_t::append_constant_instr(const parse_tree_span_t& pts, object_ref_t obj_ref)
   {
     detail::set_pts(chunk, pts);
     const index_t idx = chunk.constant_table.size();
     chunk.constant_table.push_back(std::move(obj_ref));
     chunk.bytecode.push_back(byte_t(CONSTANT));
-    SILVA_EXPECT_FWD(append(pts, idx));
-    return {};
+    append(pts, idx);
   }
 
-  expected_t<void> chunk_nursery_t::append_simple_instr(const parse_tree_span_t& pts,
-                                                        const opcode_t opcode)
+  void chunk_nursery_t::append_simple_instr(const parse_tree_span_t& pts, const opcode_t opcode)
   {
     detail::set_pts(chunk, pts);
     chunk.bytecode.push_back(byte_t(opcode));
-    return {};
   }
 
-  expected_t<index_t> chunk_nursery_t::append_index_instr(const parse_tree_span_t& pts,
-                                                          const opcode_t opcode,
-                                                          const index_t idx)
+  index_t chunk_nursery_t::append_index_instr(const parse_tree_span_t& pts,
+                                              const opcode_t opcode,
+                                              const index_t idx)
   {
     detail::set_pts(chunk, pts);
     const index_t rv = chunk.bytecode.size();
     chunk.bytecode.push_back(byte_t(opcode));
-    SILVA_EXPECT_FWD(append(pts, idx));
+    append(pts, idx);
     return rv;
   }
 
-  expected_t<void> chunk_nursery_t::backpatch_index_instr(const index_t position, const index_t idx)
+  void chunk_nursery_t::backpatch_index_instr(const index_t position, const index_t idx)
   {
     bit_write_at<index_t>(&chunk.bytecode[position + 1], idx);
-    return {};
   }
 }
