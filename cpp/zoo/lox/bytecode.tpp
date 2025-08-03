@@ -153,6 +153,76 @@ CONSTANT 3 3
         }
       )",
                     "1\n1\n2\n3\n5\n8\n");
+  }
+
+  TEST_CASE("lox-bytecode-closure", "[lox][bytecode]")
+  {
+    test_harness_t th;
+    th.test_success(R"(
+        fun aaa() {
+          var temp;
+          {
+            var x = 11;
+            var y = 22;
+            fun bbb() {
+              print y;
+              print x;
+            }
+            temp = bbb;
+          }
+          return temp;
+        }
+        var rv = aaa();
+        rv();
+      )",
+                    "22\n11\n");
+    th.test_success(R"(
+        fun aaa() {
+          var y = 123;
+          fun bbb() {
+            var temp;
+            {
+              var x = 42;
+              fun ccc() {
+                print x;
+                print y;
+              }
+              temp = ccc;
+            }
+            temp();
+          }
+          return bbb;
+        }
+        var rv = aaa();
+        rv();
+      )",
+                    "42\n123\n");
+    th.test_success(R"(
+        fun aaa() {
+          var xxx = 123;
+          fun bbb() {
+            fun ccc() {
+              print xxx;
+            }
+            var xxx = 42;
+            fun ddd() {
+              print xxx;
+            }
+            ccc();
+            ddd();
+            xxx = 43;
+            ccc();
+            ddd();
+            return ccc;
+          }
+          var inner = bbb();
+          inner();
+          return inner;
+        }
+        var rv = aaa();
+        rv();
+      )",
+                    "123\n42\n123\n43\n123\n123\n");
     th.test_success(R"(
         var x = 'global';
         fun outer() {
@@ -164,8 +234,7 @@ CONSTANT 3 3
         }
         outer();
       )",
-                    // "outer\n");
-                    "global\n");
+                    "outer\n");
     th.test_success(R"(
         fun outer() {
           var x = 'value';
@@ -183,8 +252,42 @@ CONSTANT 3 3
         var in = mid();
         in();
     )",
-                    // "return from outer\ncreate inner closure\nvalue\n");
-                    "return from outer\ncreate inner closure\nglobal\n");
+                    "return from outer\ncreate inner closure\nvalue\n");
+    th.test_success(R"(
+        var globalSet;
+        var globalGet;
+        fun main() {
+          var a = 'initial';
+          fun set() { a = 'updated'; }
+          fun get() { print a; }
+          globalSet = set;
+          globalGet = get;
+        }
+        main();
+        globalGet();
+        globalSet();
+        globalGet();
+    )",
+                    "initial\nupdated\n");
+    th.test_success(R"(
+        fun make_counter() {
+          var x = 0;
+          fun retval() {
+            x = x + 1;
+            print x;
+          }
+          return retval;
+        }
+        var c1 = make_counter();
+        var c2 = make_counter();
+        c1();
+        c1();
+        c1();
+        c2();
+        c2();
+        c1();
+    )",
+                    "1\n2\n3\n1\n2\n4\n");
   }
 
   TEST_CASE("lox-bytecode-error", "[lox][bytecode]")

@@ -31,9 +31,45 @@ namespace silva::lox::bytecode {
       };
       vector_t<local_t> locals;
 
+      struct upvalue_info_t {
+        index_t index = 0;
+        bool is_local = false;
+
+        friend auto operator<=>(const upvalue_info_t&, const upvalue_info_t&) = default;
+      };
+      vector_t<upvalue_info_t> upvalue_infos;
+
       func_scope_t(syntax_ward_ptr_t swp) : chunk{std::make_unique<chunk_t>(swp)} {}
     };
     vector_t<func_scope_t> func_scopes;
+
+    // returns index into "upvalue_infos" of the "func_scopes" entry with index "fs_idx".
+    optional_t<index_t> resolve_upvalue(const index_t fs_idx, const index_t ti)
+    {
+      if (fs_idx > 0) {
+        if (const auto idx = resolve_local(fs_idx - 1, ti); idx.has_value()) {
+          return get_or_create_upvalue(fs_idx - 1, func_scope_t::upvalue_info_t{idx.value(), true});
+        }
+        if (const auto idx = resolve_upvalue(fs_idx - 1, ti); idx.has_value()) {
+          return get_or_create_upvalue(fs_idx - 1,
+                                       func_scope_t::upvalue_info_t{idx.value(), false});
+        }
+      }
+      return std::nullopt;
+    }
+    index_t get_or_create_upvalue(const index_t fs_idx,
+                                  const func_scope_t::upvalue_info_t& upvalue_info)
+    {
+      auto& fs = func_scopes[fs_idx];
+      for (index_t i = 0; i < fs.upvalue_infos.size(); ++i) {
+        if (fs.upvalue_infos[i] == upvalue_info) {
+          return i;
+        }
+      }
+      const index_t retval = fs.upvalue_infos.size();
+      fs.upvalue_infos.push_back(upvalue_info);
+      return retval;
+    }
 
     struct func_scope_guard_t {
       compile_run_t* compile_run = nullptr;
@@ -76,6 +112,9 @@ namespace silva::lox::bytecode {
       else if (tinfo->category == IDENTIFIER) {
         if (const auto idx = resolve_local(func_scopes.size() - 1, ti); idx.has_value()) {
           SILVA_EXPECT_FWD(cfs().nursery.append_index_instr(pts, GET_LOCAL, idx.value()));
+        }
+        else if (const auto idx = resolve_upvalue(func_scopes.size() - 1, ti); idx.has_value()) {
+          SILVA_EXPECT_FWD(cfs().nursery.append_index_instr(pts, GET_UPVALUE, idx.value()));
         }
         else {
           SILVA_EXPECT_FWD(cfs().nursery.append_index_instr(pts, GET_GLOBAL, ti));
@@ -214,6 +253,9 @@ namespace silva::lox::bytecode {
           if (const auto idx = resolve_local(func_scopes.size() - 1, ti); idx.has_value()) {
             SILVA_EXPECT_FWD(cfs().nursery.append_index_instr(pts, SET_LOCAL, idx.value()));
           }
+          else if (const auto idx = resolve_upvalue(func_scopes.size() - 1, ti); idx.has_value()) {
+            SILVA_EXPECT_FWD(cfs().nursery.append_index_instr(pts, SET_UPVALUE, idx.value()));
+          }
           else {
             SILVA_EXPECT_FWD(cfs().nursery.append_index_instr(pts, SET_GLOBAL, ti));
           }
@@ -267,7 +309,17 @@ namespace silva::lox::bytecode {
           fun.chunk = std::move(cfs().chunk);
         }
         object_ref_t func = object_pool.make(std::move(fun));
-        SILVA_EXPECT_FWD(cfs().nursery.append_constant_instr(pts, std::move(func)));
+        auto& nn          = cfs().nursery;
+        const index_t idx = nn.chunk.constant_table.size();
+        nn.chunk.constant_table.push_back(std::move(func));
+        SILVA_EXPECT_FWD(nn.append(pts, CLOSURE));
+        SILVA_EXPECT_FWD(nn.append(pts, idx));
+        const auto& upvalue_infos = cfs().upvalue_infos;
+        SILVA_EXPECT_FWD(nn.append(pts, index_t(upvalue_infos.size())));
+        for (const auto& upvalue_info: upvalue_infos) {
+          SILVA_EXPECT_FWD(nn.append(pts, upvalue_info.index));
+          SILVA_EXPECT_FWD(nn.append(pts, index_t(upvalue_info.is_local)));
+        }
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
@@ -375,12 +427,29 @@ namespace silva::lox::bytecode {
       }
       else if (rule_name == lexicon.ni_stmt_block) {
         cfs().scope_depth += 1;
-        const index_t start_num_locals = cfs().locals.size();
+        const index_t start_num_locals        = cfs().locals.size();
+        const index_t start_num_upvalue_infos = cfs().upvalue_infos.size();
+
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
         }
+
+        vector_t<index_t> upvalue_locals;
+        while (cfs().upvalue_infos.size() > start_num_upvalue_infos) {
+          if (cfs().upvalue_infos.back().is_local) {
+            upvalue_locals.push_back(cfs().upvalue_infos.back().index);
+          }
+          cfs().upvalue_infos.pop_back();
+        }
+        std::ranges::sort(upvalue_locals);
         while (cfs().locals.size() > start_num_locals) {
-          SILVA_EXPECT_FWD(cfs().nursery.append_simple_instr(pts, POP));
+          if (!upvalue_locals.empty() && upvalue_locals.back() + 1 == cfs().locals.size()) {
+            SILVA_EXPECT_FWD(cfs().nursery.append_simple_instr(pts, CLOSE_UPVALUE));
+            upvalue_locals.pop_back();
+          }
+          else {
+            SILVA_EXPECT_FWD(cfs().nursery.append_simple_instr(pts, POP));
+          }
           cfs().locals.pop_back();
         }
         cfs().scope_depth -= 1;

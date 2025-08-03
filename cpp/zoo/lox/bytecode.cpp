@@ -209,7 +209,7 @@ namespace silva::lox::bytecode {
           const index_t base  = 1 + (2 + 2 * i) * sizeof(index_t);
           const auto index    = bit_cast_ptr<index_t>(&bc[base]);
           const auto is_local = bit_cast_ptr<index_t>(&bc[base + sizeof(index_t)]);
-          tsai.retval += fmt::format("({}, {}) ", is_local, index);
+          tsai.retval += fmt::format("({}, {}) ", index, is_local);
         }
         return total_size;
       }

@@ -255,12 +255,16 @@ namespace silva::lox::bytecode {
                    RUNTIME,
                    "not enough elements on stack for call to function with {} arguments",
                    num_args);
-      const index_t sp = vm.stack.size() - 1 - num_args;
-      const auto& func = vm.stack[sp];
-      SILVA_EXPECT(func->holds_function(), RUNTIME, "object {} cannot be called");
-      const function_t& ffunc = std::get<function_t>(func->data);
+      const index_t sp    = vm.stack.size() - 1 - num_args;
+      const auto& closure = vm.stack[sp];
+      SILVA_EXPECT(closure->holds_closure(), RUNTIME, "expected closure");
+      const auto& cclosure = std::get<closure_t>(closure->data);
+      const auto& func     = cclosure.func;
+      SILVA_EXPECT(func->holds_function(), RUNTIME, "expected function");
+      const auto& ffunc = std::get<function_t>(func->data);
       curr_ip() += 5;
       vm.call_frames.push_back(vm_t::call_frame_t{
+          .closure      = closure,
           .func         = func,
           .chunk        = ffunc.chunk.get(),
           .ip           = 0,
@@ -271,16 +275,123 @@ namespace silva::lox::bytecode {
     expected_t<void> _invoke() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _super_invoke() { SILVA_EXPECT(false, ASSERT); }
 
-    expected_t<void> _get_upvalue() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _set_upvalue() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _closure() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _close_upvalue() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<closure_t*> _get_curr_closure()
+    {
+      const auto& closure = vm.call_frames.back().closure;
+      SILVA_EXPECT(closure->holds_closure(), ASSERT, "expected closure");
+      auto& cclosure = std::get<closure_t>(closure->data);
+      return &cclosure;
+    }
+    expected_t<object_ref_t> capture_upvalue(const index_t stack_idx)
+    {
+      index_t insert_idx = 0;
+      for (index_t i = vm.open_upvalues.size() - 1; i >= 0; --i) {
+        const auto& upvalue = vm.open_upvalues[i];
+        SILVA_EXPECT(upvalue->holds_upvalue(), ASSERT, "expected upvalue");
+        const auto& uupvalue = std::get<upvalue_t>(upvalue->data);
+        SILVA_EXPECT(std::holds_alternative<index_t>(uupvalue.value),
+                     ASSERT,
+                     "expected open upvalue");
+        const auto upvalue_stack_idx = std::get<index_t>(uupvalue.value);
+        if (upvalue_stack_idx == stack_idx) {
+          return upvalue;
+        }
+        else if (upvalue_stack_idx < stack_idx) {
+          insert_idx = i + 1;
+          break;
+        }
+      }
+      auto new_upvalue = vm.object_pool->make(upvalue_t{
+          .value = stack_idx,
+      });
+      vm.open_upvalues.insert(vm.open_upvalues.begin() + insert_idx, new_upvalue);
+      return new_upvalue;
+    }
+    expected_t<void> _closure()
+    {
+      const index_t index      = curr_index_in_instr(0);
+      const index_t size       = curr_index_in_instr(1);
+      const index_t total_size = 1 + (2 + 2 * size) * sizeof(index_t);
+      auto func                = curr_constant_table()[index];
+      SILVA_EXPECT(func->holds_function(), RUNTIME, "expected function");
+      closure_t new_closure{.func = std::move(func)};
+      for (index_t i = 0; i < size; ++i) {
+        const auto index    = curr_index_in_instr(2 + 2 * i);
+        const auto is_local = curr_index_in_instr(2 + 2 * i + 1);
+        if (is_local) {
+          new_closure.upvalues.push_back(
+              SILVA_EXPECT_FWD(capture_upvalue(vm.call_frames.back().stack_offset + index)));
+        }
+        else {
+          auto* closure = SILVA_EXPECT_FWD(_get_curr_closure());
+          new_closure.upvalues.push_back(closure->upvalues[index]);
+        }
+      }
+      vm.stack.push_back(vm.object_pool->make(std::move(new_closure)));
+      curr_ip() += total_size;
+      return {};
+    }
+    expected_t<object_ref_t*> _deref_upvalue(const index_t idx)
+    {
+      auto* closure       = SILVA_EXPECT_FWD(_get_curr_closure());
+      const auto& upvalue = closure->upvalues[idx];
+      SILVA_EXPECT(upvalue->holds_upvalue(), RUNTIME, "expected upvalue");
+      auto& uupvalue = std::get<upvalue_t>(upvalue->data);
+      if (std::holds_alternative<index_t>(uupvalue.value)) {
+        const index_t stack_idx = std::get<index_t>(uupvalue.value);
+        return {&vm.stack[stack_idx]};
+      }
+      else {
+        SILVA_EXPECT(std::holds_alternative<object_ref_t>(uupvalue.value), ASSERT);
+        return {&std::get<object_ref_t>(uupvalue.value)};
+      }
+    }
+    expected_t<void> _get_upvalue()
+    {
+      const index_t idx = curr_index_in_instr();
+      vm.stack.push_back(*SILVA_EXPECT_FWD(_deref_upvalue(idx)));
+      curr_ip() += 5;
+      return {};
+    }
+    expected_t<void> _set_upvalue()
+    {
+      const index_t idx                      = curr_index_in_instr();
+      *SILVA_EXPECT_FWD(_deref_upvalue(idx)) = vm.stack.back();
+      curr_ip() += 5;
+      return {};
+    }
+    expected_t<void> _close_upvalue_till(const index_t stack_idx)
+    {
+      while (!vm.open_upvalues.empty()) {
+        auto& curr_upvalue = vm.open_upvalues.back();
+        SILVA_EXPECT(curr_upvalue->holds_upvalue(), ASSERT);
+        auto& curr_uupvalue = std::get<upvalue_t>(curr_upvalue->data);
+        SILVA_EXPECT(std::holds_alternative<index_t>(curr_uupvalue.value), ASSERT);
+        const auto idx = std::get<index_t>(curr_uupvalue.value);
+        if (idx < stack_idx) {
+          break;
+        }
+        curr_uupvalue.value = vm.stack[idx];
+        vm.open_upvalues.pop_back();
+      }
+      return {};
+    }
+    expected_t<void> _close_upvalue()
+    {
+      const auto& ccf         = vm.call_frames.back();
+      const index_t stack_idx = index_t(vm.stack.size()) - 1;
+      SILVA_EXPECT_FWD(_close_upvalue_till(stack_idx));
+      vm.stack.pop_back();
+      curr_ip() += 1;
+      return {};
+    }
 
     expected_t<void> _return()
     {
       SILVA_EXPECT(!vm.stack.empty(), RUNTIME, "stack empty for return statement");
       object_ref_t retval = vm.stack.back();
       const auto& ccf     = vm.call_frames.back();
+      SILVA_EXPECT_FWD(_close_upvalue_till(ccf.stack_offset));
       vm.stack.resize(ccf.stack_offset);
       vm.stack.push_back(retval);
       vm.call_frames.pop_back();
@@ -389,6 +500,7 @@ namespace silva::lox::bytecode {
   expected_t<void> vm_t::run(const chunk_t& chunk)
   {
     call_frames.push_back(vm_t::call_frame_t{
+        .closure      = {},
         .func         = {},
         .chunk        = &chunk,
         .ip           = 0,
