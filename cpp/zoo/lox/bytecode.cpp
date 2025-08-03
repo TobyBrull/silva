@@ -84,28 +84,30 @@ namespace silva::lox::bytecode {
       }
       expected_t<index_t> const_instr(const string_view_t name)
       {
-        SILVA_EXPECT(bc.size() >= 5, MINOR, "no operand for constant-instruction");
+        SILVA_EXPECT(bc.size() >= 1 + sizeof(index_t),
+                     MINOR,
+                     "no operand for constant-instruction");
         const auto const_idx = bit_cast_ptr<index_t>(&bc[1]);
         SILVA_EXPECT(0 <= const_idx && const_idx < chunk->constant_table.size(), MINOR);
         const auto& cc = chunk->constant_table[const_idx];
         retval += fmt::format("{} {}", name, const_idx);
-        return 5;
+        return 1 + sizeof(index_t);
       }
       expected_t<index_t> token_instr(const string_view_t name)
       {
-        SILVA_EXPECT(bc.size() >= 5, MINOR, "no operand for token-instruction");
+        SILVA_EXPECT(bc.size() >= 1 + sizeof(index_t), MINOR, "no operand for token-instruction");
         const auto ti = bit_cast_ptr<index_t>(&bc[1]);
         SILVA_EXPECT(0 <= ti && ti < chunk->swp->token_infos.size(), MINOR);
         const auto tinfo = chunk->swp->token_infos[ti];
         retval += fmt::format("{} {} {}", name, ti, tinfo.str);
-        return 5;
+        return 1 + sizeof(index_t);
       }
       expected_t<index_t> index_instr(const string_view_t name)
       {
-        SILVA_EXPECT(bc.size() >= 5, MINOR, "no operand for index-instruction");
+        SILVA_EXPECT(bc.size() >= 1 + sizeof(index_t), MINOR, "no operand for index-instruction");
         const auto index = bit_cast_ptr<index_t>(&bc[1]);
         retval += fmt::format("{} {}", name, index);
-        return 5;
+        return 1 + sizeof(index_t);
       }
       expected_t<index_t> invoke_instr(const string_view_t name)
       {

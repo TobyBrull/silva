@@ -74,7 +74,7 @@ namespace silva::lox::bytecode {
       const index_t idx = curr_index_in_instr();
       const auto& ct    = curr_constant_table();
       vm.stack.push_back(ct[idx]);
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       return {};
     }
     expected_t<void> _nil()
@@ -110,7 +110,7 @@ namespace silva::lox::bytecode {
                    curr_info_at_instr(),
                    stack_idx);
       vm.stack.push_back(*SILVA_EXPECT_FWD(stack_by(vm, stack_idx)));
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       return {};
     }
     expected_t<void> _set_local()
@@ -122,7 +122,7 @@ namespace silva::lox::bytecode {
                    curr_info_at_instr(),
                    stack_idx);
       *SILVA_EXPECT_FWD(stack_by(vm, stack_idx)) = vm.stack.back();
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       return {};
     }
     expected_t<void> _get_global()
@@ -135,7 +135,7 @@ namespace silva::lox::bytecode {
                    curr_info_at_instr(),
                    vm.swp->token_id_wrap(ti));
       vm.stack.push_back(it->second);
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       return {};
     }
     expected_t<void> _define_global()
@@ -147,7 +147,7 @@ namespace silva::lox::bytecode {
                    curr_info_at_instr());
       vm.globals[ti] = vm.stack.back();
       vm.stack.pop_back();
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       return {};
     }
     expected_t<void> _set_global()
@@ -165,7 +165,7 @@ namespace silva::lox::bytecode {
                    curr_info_at_instr(),
                    vm.swp->token_id_wrap(ti));
       it->second = vm.stack.back();
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       return {};
     }
     expected_t<void> _get_property() { SILVA_EXPECT(false, ASSERT); }
@@ -244,7 +244,7 @@ namespace silva::lox::bytecode {
         curr_ip() += offset;
       }
       else {
-        curr_ip() += 5;
+        curr_ip() += 1 + sizeof(index_t);
       }
       return {};
     }
@@ -262,7 +262,7 @@ namespace silva::lox::bytecode {
       const auto& func     = cclosure.func;
       SILVA_EXPECT(func->holds_function(), RUNTIME, "expected function");
       const auto& ffunc = std::get<function_t>(func->data);
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       vm.call_frames.push_back(vm_t::call_frame_t{
           .closure      = closure,
           .func         = func,
@@ -350,14 +350,14 @@ namespace silva::lox::bytecode {
     {
       const index_t idx = curr_index_in_instr();
       vm.stack.push_back(*SILVA_EXPECT_FWD(_deref_upvalue(idx)));
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       return {};
     }
     expected_t<void> _set_upvalue()
     {
       const index_t idx                      = curr_index_in_instr();
       *SILVA_EXPECT_FWD(_deref_upvalue(idx)) = vm.stack.back();
-      curr_ip() += 5;
+      curr_ip() += 1 + sizeof(index_t);
       return {};
     }
     expected_t<void> _close_upvalue_till(const index_t stack_idx)

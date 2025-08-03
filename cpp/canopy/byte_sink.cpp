@@ -54,7 +54,7 @@ namespace silva {
 
   index_t _mem_new_size(index_t curr_size, const index_t curr_used, const index_t size_hint)
   {
-    const index_t min_req_size = curr_used + std::max(1, size_hint);
+    const index_t min_req_size = curr_used + std::max<index_t>(1, size_hint);
     while (curr_size < min_req_size) {
       curr_size *= 2;
     }
