@@ -223,6 +223,14 @@ namespace silva::lox::bytecode {
         }
         cfs().nursery.append_index_instr(pts, CALL, pts_args[0].num_children);
       }
+      else if (pts[0].rule_name == lexicon.ni_expr_member) {
+        const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
+        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(lhs)));
+        const auto pts_rhs = pts.sub_tree_span_at(rhs);
+        SILVA_EXPECT(pts_rhs[0].rule_name == lexicon.ni_expr_atom, MINOR);
+        const token_id_t field_name = pts.tp->tokens[pts_rhs[0].token_begin];
+        cfs().nursery.append_index_instr(pts, GET_PROPERTY, field_name);
+      }
       else if (pts[0].rule_name == lexicon.ni_expr_b_assign) {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(rhs)),
@@ -230,20 +238,13 @@ namespace silva::lox::bytecode {
                          pts);
         auto lhs_pts = pts.sub_tree_span_at(lhs);
         if (lhs_pts[0].rule_name == lexicon.ni_expr_member) {
-          SILVA_EXPECT(false, ASSERT, "not implemented yet");
-
           const auto [ll, lr] = SILVA_EXPECT_FWD(lhs_pts.get_children<2>());
-          SILVA_EXPECT_FWD(expr(lhs_pts.sub_tree_span_at(ll)),
-                           "{} error compiling part of left-hand-side of assignment",
-                           lhs_pts);
+          SILVA_EXPECT_FWD(expr(lhs_pts.sub_tree_span_at(ll)));
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
           SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
-          const token_id_t ti = pts.tp->tokens[lr_pts[0].token_begin];
-          SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
-
-          // SILVA_EXPECT(ll_ref->holds_class_instance(), MINOR);
-          // auto& ci      = std::get<class_instance_t>(ll_ref->data);
-          // ci.fields[ti] = rhs_ref;
+          const token_id_t field_name = pts.tp->tokens[lr_pts[0].token_begin];
+          SILVA_EXPECT(swp->token_infos[field_name].category == IDENTIFIER, MINOR);
+          cfs().nursery.append_index_instr(pts, SET_PROPERTY, field_name);
         }
         else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
@@ -318,6 +319,9 @@ namespace silva::lox::bytecode {
           nn.append(pts, upvalue_info.index);
           nn.append(pts, index_t(upvalue_info.is_local));
         }
+      }
+      else if (rule_name == lexicon.ni_decl_class) {
+        cfs().nursery.append_simple_instr(pts, CLASS);
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));

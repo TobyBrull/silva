@@ -163,9 +163,9 @@ namespace silva::lox::bytecode {
       case SET_UPVALUE:
         return SILVA_EXPECT_FWD(tsai.index_instr("SET_UPVALUE"));
       case GET_PROPERTY:
-        return SILVA_EXPECT_FWD(tsai.const_instr("GET_PROPERTY"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("GET_PROPERTY"));
       case SET_PROPERTY:
-        return SILVA_EXPECT_FWD(tsai.const_instr("SET_PROPERTY"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("SET_PROPERTY"));
       case GET_SUPER:
         return SILVA_EXPECT_FWD(tsai.const_instr("GET_SUPER"));
       case EQUAL:
@@ -220,7 +220,7 @@ namespace silva::lox::bytecode {
       case RETURN:
         return SILVA_EXPECT_FWD(tsai.simple_instr("RETURN"));
       case CLASS:
-        return SILVA_EXPECT_FWD(tsai.const_instr("CLASS"));
+        return SILVA_EXPECT_FWD(tsai.simple_instr("CLASS"));
       case INHERIT:
         return SILVA_EXPECT_FWD(tsai.simple_instr("INHERIT"));
       case METHOD:

@@ -143,8 +143,7 @@ namespace silva::lox::bytecode {
       const index_t ti = curr_index_in_instr();
       SILVA_EXPECT(vm.stack.size() >= 1,
                    RUNTIME,
-                   "{} bytecode instruction DEFINE_GLOBAL needs non-empty stack",
-                   curr_info_at_instr());
+                   "bytecode instruction DEFINE_GLOBAL needs non-empty stack");
       vm.globals[ti] = vm.stack.back();
       vm.stack.pop_back();
       curr_ip() += 1 + sizeof(index_t);
@@ -155,21 +154,46 @@ namespace silva::lox::bytecode {
       const index_t ti = curr_index_in_instr();
       SILVA_EXPECT(vm.stack.size() >= 1,
                    RUNTIME,
-                   "{} bytecode instruction SET_GLOBAL needs non-empty stack",
-                   curr_info_at_instr());
+                   "bytecode instruction SET_GLOBAL needs non-empty stack");
       auto it = vm.globals.find(ti);
       SILVA_EXPECT(it != vm.globals.end(),
                    RUNTIME,
-                   "{} bytecode instruction SET_GLOBAL tried to assign to global variable {} which "
+                   "bytecode instruction SET_GLOBAL tried to assign to global variable {} which "
                    "was not previously defined",
-                   curr_info_at_instr(),
                    vm.swp->token_id_wrap(ti));
       it->second = vm.stack.back();
       curr_ip() += 1 + sizeof(index_t);
       return {};
     }
-    expected_t<void> _get_property() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _set_property() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_property()
+    {
+      const index_t field_name = curr_index_in_instr();
+      SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);
+      auto class_instance = vm.stack.back();
+      SILVA_EXPECT(class_instance->holds_class_instance(), RUNTIME);
+      vm.stack.pop_back();
+      const auto& cci = std::get<class_instance_t>(class_instance->data);
+      const auto it   = cci.fields.find(field_name);
+      SILVA_EXPECT(it != cci.fields.end(), RUNTIME);
+      vm.stack.push_back(it->second);
+      curr_ip() += 1 + sizeof(index_t);
+      return {};
+    }
+    expected_t<void> _set_property()
+    {
+      const index_t field_name = curr_index_in_instr();
+      SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);
+      auto class_instance = vm.stack.back();
+      SILVA_EXPECT(class_instance->holds_class_instance(),
+                   RUNTIME,
+                   "expected class-instance on top of stack, not {}",
+                   class_instance);
+      vm.stack.pop_back();
+      auto& cci              = std::get<class_instance_t>(class_instance->data);
+      cci.fields[field_name] = vm.stack.back();
+      curr_ip() += 1 + sizeof(index_t);
+      return {};
+    }
     expected_t<void> _get_super() { SILVA_EXPECT(false, ASSERT); }
 
 #define SIMPLE_BINARY_OP(here_name, obj_name)                                           \
@@ -250,27 +274,37 @@ namespace silva::lox::bytecode {
     }
     expected_t<void> _call()
     {
-      const index_t num_args = curr_index_in_instr();
-      SILVA_EXPECT(vm.stack.size() >= num_args + 1,
-                   RUNTIME,
-                   "not enough elements on stack for call to function with {} arguments",
-                   num_args);
-      const index_t sp    = vm.stack.size() - 1 - num_args;
-      const auto& closure = vm.stack[sp];
-      SILVA_EXPECT(closure->holds_closure(), RUNTIME, "expected closure");
-      const auto& cclosure = std::get<closure_t>(closure->data);
-      const auto& func     = cclosure.func;
-      SILVA_EXPECT(func->holds_function(), RUNTIME, "expected function");
-      const auto& ffunc = std::get<function_t>(func->data);
-      curr_ip() += 1 + sizeof(index_t);
-      vm.call_frames.push_back(vm_t::call_frame_t{
-          .closure      = closure,
-          .func         = func,
-          .chunk        = ffunc.chunk.get(),
-          .ip           = 0,
-          .stack_offset = sp,
-      });
-      return {};
+      SILVA_EXPECT(!vm.stack.empty(), RUNTIME, "stack empty for CALL instruction");
+      if (vm.stack.back()->holds_class()) {
+        class_instance_t new_class_instance{._class = vm.stack.back()};
+        vm.stack.pop_back();
+        vm.stack.push_back(vm.object_pool->make(std::move(new_class_instance)));
+        curr_ip() += 1 + sizeof(index_t);
+        return {};
+      }
+      else {
+        const index_t num_args = curr_index_in_instr();
+        SILVA_EXPECT(vm.stack.size() >= num_args + 1,
+                     RUNTIME,
+                     "not enough elements on stack for call to function with {} arguments",
+                     num_args);
+        const index_t sp    = vm.stack.size() - 1 - num_args;
+        const auto& closure = vm.stack[sp];
+        SILVA_EXPECT(closure->holds_closure(), RUNTIME, "expected closure");
+        const auto& cclosure = std::get<closure_t>(closure->data);
+        const auto& func     = cclosure.func;
+        SILVA_EXPECT(func->holds_function(), RUNTIME, "expected function");
+        const auto& ffunc = std::get<function_t>(func->data);
+        curr_ip() += 1 + sizeof(index_t);
+        vm.call_frames.push_back(vm_t::call_frame_t{
+            .closure      = closure,
+            .func         = func,
+            .chunk        = ffunc.chunk.get(),
+            .ip           = 0,
+            .stack_offset = sp,
+        });
+        return {};
+      }
     }
     expected_t<void> _invoke() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _super_invoke() { SILVA_EXPECT(false, ASSERT); }
@@ -388,7 +422,7 @@ namespace silva::lox::bytecode {
 
     expected_t<void> _return()
     {
-      SILVA_EXPECT(!vm.stack.empty(), RUNTIME, "stack empty for return statement");
+      SILVA_EXPECT(!vm.stack.empty(), RUNTIME, "stack empty for RETURN instruction");
       object_ref_t retval = vm.stack.back();
       const auto& ccf     = vm.call_frames.back();
       SILVA_EXPECT_FWD(_close_upvalue_till(ccf.stack_offset));
@@ -397,7 +431,12 @@ namespace silva::lox::bytecode {
       vm.call_frames.pop_back();
       return {};
     }
-    expected_t<void> _class() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _class()
+    {
+      vm.stack.push_back(vm.object_pool->make(class_t{.pts = curr_info_at_instr()}));
+      curr_ip() += 1;
+      return {};
+    }
     expected_t<void> _inherit() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _method() { SILVA_EXPECT(false, ASSERT); }
 

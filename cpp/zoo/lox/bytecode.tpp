@@ -290,6 +290,25 @@ CONSTANT 3 3
                     "1\n2\n3\n1\n2\n4\n");
   }
 
+  TEST_CASE("lox-bytecode-classes", "[lox][bytecode]")
+  {
+    test_harness_t th;
+    th.test_success(R"(
+        {
+          class Toast {}
+          var toast = Toast();
+          print toast.jam = 'grape';
+        }
+
+        class Pair {}
+        var pair = Pair();
+        pair.first = 1;
+        pair.second = 2;
+        print pair.first + pair.second;
+    )",
+                    "grape\n3\n");
+  }
+
   TEST_CASE("lox-bytecode-error", "[lox][bytecode]")
   {
     test_harness_t th;

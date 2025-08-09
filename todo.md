@@ -1,6 +1,7 @@
 # TODO
 
 * Lox:
+    * Have common test-suite
     * Make a REPL
     * Interpreter
         * transform original AST to a new ast that has:
