@@ -11,15 +11,10 @@ namespace silva::lox {
       - Decl = [
         - x = Var | Fun | Class
         - Var = 'var' identifier ( '=' p.Expr ) ? ';'
-        - Fun = 'fun' Function
+        - Fun = 'fun' p.Function
         - Class = [
-          - x = 'class' identifier Super '{' p.Function * '}'
+          - x = 'class' identifier Super '{' p.p.Function * '}'
           - Super = ( '<' identifier ) ?
-        ]
-        - Function = [
-          - x = identifier '(' Parameters ')' _.Lox.Stmt.Block
-          - Parameters = ( Parameter ( ',' Parameter ) * ) ?
-          - Parameter = identifier
         ]
       ]
       - Stmt = [
@@ -54,6 +49,11 @@ namespace silva::lox {
                | 'super' '.' identifier | identifier
         - Arguments = ( x ( ',' x ) * ) ?
       ]
+      - Function = [
+        - x = identifier '(' Parameters ')' _.Lox.Stmt.Block
+        - Parameters = ( Parameter ( ',' Parameter ) * ) ?
+        - Parameter = identifier
+      ]
     ]
   )'";
 
@@ -69,42 +69,42 @@ namespace silva::lox {
     token_id_t ti_super = swp->token_id("super").value();
     token_id_t ti_init  = swp->token_id("init").value();
 
-    name_id_t ni_none                = swp->name_id_of("None");
-    name_id_t ni_lox                 = swp->name_id_of("Lox");
-    name_id_t ni_decl                = swp->name_id_of(ni_lox, "Decl");
-    name_id_t ni_decl_var            = swp->name_id_of(ni_decl, "Var");
-    name_id_t ni_decl_fun            = swp->name_id_of(ni_decl, "Fun");
-    name_id_t ni_decl_class          = swp->name_id_of(ni_decl, "Class");
-    name_id_t ni_decl_class_s        = swp->name_id_of(ni_decl_class, "Super");
-    name_id_t ni_decl_function       = swp->name_id_of(ni_decl, "Function");
-    name_id_t ni_decl_function_param = swp->name_id_of(ni_decl_function, "Parameter");
-    name_id_t ni_stmt                = swp->name_id_of(ni_lox, "Stmt");
-    name_id_t ni_stmt_print          = swp->name_id_of(ni_stmt, "Print");
-    name_id_t ni_stmt_if             = swp->name_id_of(ni_stmt, "If");
-    name_id_t ni_stmt_for            = swp->name_id_of(ni_stmt, "For");
-    name_id_t ni_stmt_while          = swp->name_id_of(ni_stmt, "While");
-    name_id_t ni_stmt_return         = swp->name_id_of(ni_stmt, "Return");
-    name_id_t ni_stmt_block          = swp->name_id_of(ni_stmt, "Block");
-    name_id_t ni_stmt_expr           = swp->name_id_of(ni_stmt, "ExprStmt");
-    name_id_t ni_expr                = swp->name_id_of(ni_lox, "Expr");
-    name_id_t ni_expr_primary        = swp->name_id_of(ni_expr, "Primary", "(");
-    name_id_t ni_expr_call           = swp->name_id_of(ni_expr, "Call", "(");
-    name_id_t ni_expr_member         = swp->name_id_of(ni_expr, "Call", ".");
-    name_id_t ni_expr_u_exc          = swp->name_id_of(ni_expr, "Unary", "!");
-    name_id_t ni_expr_u_sub          = swp->name_id_of(ni_expr, "Unary", "-");
-    name_id_t ni_expr_b_mul          = swp->name_id_of(ni_expr, "Factor", "*");
-    name_id_t ni_expr_b_div          = swp->name_id_of(ni_expr, "Factor", "/");
-    name_id_t ni_expr_b_add          = swp->name_id_of(ni_expr, "Term", "+");
-    name_id_t ni_expr_b_sub          = swp->name_id_of(ni_expr, "Term", "-");
-    name_id_t ni_expr_b_lt           = swp->name_id_of(ni_expr, "Comparison", "<");
-    name_id_t ni_expr_b_gt           = swp->name_id_of(ni_expr, "Comparison", ">");
-    name_id_t ni_expr_b_lte          = swp->name_id_of(ni_expr, "Comparison", "<=");
-    name_id_t ni_expr_b_gte          = swp->name_id_of(ni_expr, "Comparison", ">=");
-    name_id_t ni_expr_b_eq           = swp->name_id_of(ni_expr, "Equality", "==");
-    name_id_t ni_expr_b_neq          = swp->name_id_of(ni_expr, "Equality", "!=");
-    name_id_t ni_expr_b_and          = swp->name_id_of(ni_expr, "LogicAnd", "and");
-    name_id_t ni_expr_b_or           = swp->name_id_of(ni_expr, "LogicOr", "or");
-    name_id_t ni_expr_b_assign       = swp->name_id_of(ni_expr, "Assign", "=");
-    name_id_t ni_expr_atom           = swp->name_id_of(ni_expr, "Atom");
+    name_id_t ni_none           = swp->name_id_of("None");
+    name_id_t ni_lox            = swp->name_id_of("Lox");
+    name_id_t ni_decl           = swp->name_id_of(ni_lox, "Decl");
+    name_id_t ni_decl_var       = swp->name_id_of(ni_decl, "Var");
+    name_id_t ni_decl_fun       = swp->name_id_of(ni_decl, "Fun");
+    name_id_t ni_decl_class     = swp->name_id_of(ni_decl, "Class");
+    name_id_t ni_decl_class_s   = swp->name_id_of(ni_decl_class, "Super");
+    name_id_t ni_stmt           = swp->name_id_of(ni_lox, "Stmt");
+    name_id_t ni_stmt_print     = swp->name_id_of(ni_stmt, "Print");
+    name_id_t ni_stmt_if        = swp->name_id_of(ni_stmt, "If");
+    name_id_t ni_stmt_for       = swp->name_id_of(ni_stmt, "For");
+    name_id_t ni_stmt_while     = swp->name_id_of(ni_stmt, "While");
+    name_id_t ni_stmt_return    = swp->name_id_of(ni_stmt, "Return");
+    name_id_t ni_stmt_block     = swp->name_id_of(ni_stmt, "Block");
+    name_id_t ni_stmt_expr      = swp->name_id_of(ni_stmt, "ExprStmt");
+    name_id_t ni_expr           = swp->name_id_of(ni_lox, "Expr");
+    name_id_t ni_expr_primary   = swp->name_id_of(ni_expr, "Primary", "(");
+    name_id_t ni_expr_call      = swp->name_id_of(ni_expr, "Call", "(");
+    name_id_t ni_expr_member    = swp->name_id_of(ni_expr, "Call", ".");
+    name_id_t ni_expr_u_exc     = swp->name_id_of(ni_expr, "Unary", "!");
+    name_id_t ni_expr_u_sub     = swp->name_id_of(ni_expr, "Unary", "-");
+    name_id_t ni_expr_b_mul     = swp->name_id_of(ni_expr, "Factor", "*");
+    name_id_t ni_expr_b_div     = swp->name_id_of(ni_expr, "Factor", "/");
+    name_id_t ni_expr_b_add     = swp->name_id_of(ni_expr, "Term", "+");
+    name_id_t ni_expr_b_sub     = swp->name_id_of(ni_expr, "Term", "-");
+    name_id_t ni_expr_b_lt      = swp->name_id_of(ni_expr, "Comparison", "<");
+    name_id_t ni_expr_b_gt      = swp->name_id_of(ni_expr, "Comparison", ">");
+    name_id_t ni_expr_b_lte     = swp->name_id_of(ni_expr, "Comparison", "<=");
+    name_id_t ni_expr_b_gte     = swp->name_id_of(ni_expr, "Comparison", ">=");
+    name_id_t ni_expr_b_eq      = swp->name_id_of(ni_expr, "Equality", "==");
+    name_id_t ni_expr_b_neq     = swp->name_id_of(ni_expr, "Equality", "!=");
+    name_id_t ni_expr_b_and     = swp->name_id_of(ni_expr, "LogicAnd", "and");
+    name_id_t ni_expr_b_or      = swp->name_id_of(ni_expr, "LogicOr", "or");
+    name_id_t ni_expr_b_assign  = swp->name_id_of(ni_expr, "Assign", "=");
+    name_id_t ni_expr_atom      = swp->name_id_of(ni_expr, "Atom");
+    name_id_t ni_function       = swp->name_id_of(ni_lox, "Function");
+    name_id_t ni_function_param = swp->name_id_of(ni_function, "Parameter");
   };
 }

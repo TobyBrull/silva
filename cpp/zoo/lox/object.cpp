@@ -29,6 +29,10 @@ namespace silva::lox {
   {
     return &lhs == &rhs;
   }
+  bool operator==(const bound_method_t& lhs, const bound_method_t& rhs)
+  {
+    return &lhs == &rhs;
+  }
   bool operator==(const closure_t& lhs, const closure_t& rhs)
   {
     return &lhs == &rhs;
@@ -162,6 +166,10 @@ namespace silva::lox {
   bool object_t::holds_function() const
   {
     return variant_holds_t<function_t>{}(data);
+  }
+  bool object_t::holds_bound_method() const
+  {
+    return variant_holds_t<bound_method_t>{}(data);
   }
   bool object_t::holds_closure() const
   {

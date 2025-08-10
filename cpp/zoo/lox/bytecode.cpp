@@ -224,7 +224,7 @@ namespace silva::lox::bytecode {
       case INHERIT:
         return SILVA_EXPECT_FWD(tsai.simple_instr("INHERIT"));
       case METHOD:
-        return SILVA_EXPECT_FWD(tsai.const_instr("METHOD"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("METHOD"));
       default:
         SILVA_EXPECT(false,
                      MAJOR,

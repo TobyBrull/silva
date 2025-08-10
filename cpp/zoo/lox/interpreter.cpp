@@ -198,7 +198,7 @@ namespace silva::lox {
           SILVA_EXPECT(ti_sub != ti_super, MINOR, "{} class can't inherit from itself", pts_sub);
         }
       }
-      else if (pts_curr[0].rule_name == lexicon.ni_decl_function) {
+      else if (pts_curr[0].rule_name == lexicon.ni_function) {
         if (is_on_entry(event)) {
           const auto ti = pts.tp->tokens[pts_curr[0].token_begin];
           static_scopes.back().variables.emplace(ti, true);
@@ -208,7 +208,7 @@ namespace silva::lox {
           static_scopes.pop_back();
         }
       }
-      else if (pts_curr[0].rule_name == lexicon.ni_decl_function_param) {
+      else if (pts_curr[0].rule_name == lexicon.ni_function_param) {
         if (is_on_entry(event)) {
           const auto ti = pts.tp->tokens[pts_curr[0].token_begin];
           static_scopes.back().variables.emplace(ti, true);
@@ -630,7 +630,7 @@ namespace silva::lox {
         ++it;
         while (it != end) {
           const auto pts_method = pts.sub_tree_span_at(it.pos);
-          SILVA_EXPECT(pts_method[0].rule_name == intp->lexicon.ni_decl_function, MAJOR);
+          SILVA_EXPECT(pts_method[0].rule_name == intp->lexicon.ni_function, MAJOR);
           const token_id_t method_name = pts.tp->tokens[pts_method[0].token_begin];
           function_t ff{pts_method};
           ff.closure              = used_scope;

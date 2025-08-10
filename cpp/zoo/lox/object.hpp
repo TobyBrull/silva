@@ -84,6 +84,13 @@ namespace silva::lox {
                                        object_pool_t& pool,
                                        const token_id_t ti_this);
 
+  struct bound_method_t {
+    object_ref_t receiver; // this
+    object_ref_t method;   // closure_t
+
+    friend bool operator==(const bound_method_t&, const bound_method_t&);
+  };
+
   expected_t<object_ref_t>
   object_ref_from_literal(const parse_tree_span_t&, object_pool_t&, const lexicon_t&);
 
@@ -103,6 +110,7 @@ namespace silva::lox {
               const double,
               const string_t,
               function_t,
+              bound_method_t,
               closure_t,
               upvalue_t,
               function_builtin_t,
@@ -118,6 +126,7 @@ namespace silva::lox {
     bool holds_fundamental() const;
 
     bool holds_function() const;
+    bool holds_bound_method() const;
     bool holds_closure() const;
     bool holds_upvalue() const;
     bool holds_function_builtin() const;

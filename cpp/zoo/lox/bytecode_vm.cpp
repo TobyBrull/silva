@@ -165,6 +165,21 @@ namespace silva::lox::bytecode {
       curr_ip() += 1 + sizeof(index_t);
       return {};
     }
+    expected_t<void> bind_method(const object_ref_t& class_instance,
+                                 const class_instance_t& cci,
+                                 const token_id_t field_name)
+    {
+      SILVA_EXPECT(cci._class->holds_class(), ASSERT);
+      const auto& cc = std::get<class_t>(cci._class->data);
+      const auto it  = cc.methods.find(field_name);
+      SILVA_EXPECT(it != cc.methods.end(),
+                   RUNTIME,
+                   "could not find field {}",
+                   vm.swp->token_id_wrap(field_name));
+      bound_method_t bm{.receiver = class_instance, .method = it->second};
+      vm.stack.push_back(vm.object_pool->make(std::move(bm)));
+      return {};
+    }
     expected_t<void> _get_property()
     {
       const index_t field_name = curr_index_in_instr();
@@ -174,8 +189,12 @@ namespace silva::lox::bytecode {
       vm.stack.pop_back();
       const auto& cci = std::get<class_instance_t>(class_instance->data);
       const auto it   = cci.fields.find(field_name);
-      SILVA_EXPECT(it != cci.fields.end(), RUNTIME);
-      vm.stack.push_back(it->second);
+      if (it != cci.fields.end()) {
+        vm.stack.push_back(it->second);
+      }
+      else {
+        SILVA_EXPECT_FWD(bind_method(class_instance, cci, field_name));
+      }
       curr_ip() += 1 + sizeof(index_t);
       return {};
     }
@@ -289,8 +308,21 @@ namespace silva::lox::bytecode {
                      "not enough elements on stack for call to function with {} arguments",
                      num_args);
         const index_t sp    = vm.stack.size() - 1 - num_args;
-        const auto& closure = vm.stack[sp];
-        SILVA_EXPECT(closure->holds_closure(), RUNTIME, "expected closure");
+        const auto& to_call = vm.stack[sp];
+        object_ref_t closure;
+
+        if (to_call->holds_closure()) {
+          closure = to_call;
+        }
+        else if (to_call->holds_bound_method()) {
+          const auto& bbm = std::get<bound_method_t>(to_call->data);
+          closure         = bbm.method;
+        }
+        else {
+          SILVA_EXPECT(false, RUNTIME, "expected closure or bound-method in CALL instruction");
+        }
+
+        SILVA_EXPECT(closure->holds_closure(), ASSERT, "expected closure");
         const auto& cclosure = std::get<closure_t>(closure->data);
         const auto& func     = cclosure.func;
         SILVA_EXPECT(func->holds_function(), RUNTIME, "expected function");
@@ -303,6 +335,12 @@ namespace silva::lox::bytecode {
             .ip           = 0,
             .stack_offset = sp,
         });
+
+        if (to_call->holds_bound_method()) {
+          const auto& bbm = std::get<bound_method_t>(to_call->data);
+          vm.stack[sp]    = bbm.receiver;
+        }
+
         return {};
       }
     }
@@ -438,7 +476,23 @@ namespace silva::lox::bytecode {
       return {};
     }
     expected_t<void> _inherit() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _method() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _method()
+    {
+      const index_t method_name = curr_index_in_instr();
+      SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);
+      auto closure = vm.stack.back();
+      SILVA_EXPECT(closure->holds_closure(),
+                   RUNTIME,
+                   "expected closure on top of stack, not {}",
+                   closure);
+      vm.stack.pop_back();
+      auto klass = vm.stack.back();
+      SILVA_EXPECT(klass->holds_class(), RUNTIME, "expected class on top of stack, not {}", klass);
+      auto& cc                = std::get<class_t>(klass->data);
+      cc.methods[method_name] = closure;
+      curr_ip() += 1 + sizeof(index_t);
+      return {};
+    }
 
     expected_t<void> any()
     {

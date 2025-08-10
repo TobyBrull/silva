@@ -269,12 +269,50 @@ namespace silva::lox::bytecode {
       return {};
     }
 
+    expected_t<void> function(const parse_tree_span_t pts, const bool with_this)
+    {
+      SILVA_EXPECT(pts[0].rule_name == lexicon.ni_function, ASSERT);
+      function_t fun{pts};
+      {
+        func_scope_guard_t fsg{this};
+        cfs().locals.push_back(func_scope_t::local_t{
+            .var_name = with_this ? lexicon.ti_this : token_id_none,
+        });
+        const auto pts_fun_p = fun.parameters();
+        for (const auto [node_idx, child_idx]: pts_fun_p.children_range()) {
+          const auto pts_p          = pts_fun_p.sub_tree_span_at(node_idx);
+          const token_id_t ti_param = pts_p.tp->tokens[pts_p[0].token_begin];
+          cfs().locals.push_back(func_scope_t::local_t{
+              .var_name = ti_param,
+          });
+        }
+
+        SILVA_EXPECT_FWD(go(fun.body()));
+        cfs().nursery.append_simple_instr(pts, NIL);
+        cfs().nursery.append_simple_instr(pts, RETURN);
+
+        fun.chunk = std::move(cfs().chunk);
+      }
+      object_ref_t func = object_pool.make(std::move(fun));
+      auto& nn          = cfs().nursery;
+      const index_t idx = nn.chunk.constant_table.size();
+      nn.chunk.constant_table.push_back(std::move(func));
+      nn.append(pts, CLOSURE);
+      nn.append(pts, idx);
+      const auto& upvalue_infos = cfs().upvalue_infos;
+      nn.append(pts, index_t(upvalue_infos.size()));
+      for (const auto& upvalue_info: upvalue_infos) {
+        nn.append(pts, upvalue_info.index);
+        nn.append(pts, index_t(upvalue_info.is_local));
+      }
+      return {};
+    }
+
     expected_t<void> decl(const parse_tree_span_t pts)
     {
       const name_id_t rule_name  = pts[0].rule_name;
       const token_id_t decl_name = pts.tp->tokens[pts[0].token_begin + 1];
-
-      if (pts[0].rule_name == lexicon.ni_decl_var) {
+      if (rule_name == lexicon.ni_decl_var) {
         const auto children = SILVA_EXPECT_FWD(pts.get_children_up_to<1>());
         if (children.size == 1) {
           SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(children[0])),
@@ -288,40 +326,25 @@ namespace silva::lox::bytecode {
       else if (rule_name == lexicon.ni_decl_fun) {
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
-        function_t fun{func_pts};
-        {
-          func_scope_guard_t fsg{this};
-          cfs().locals.emplace_back();
-          const auto pts_fun_p = fun.parameters();
-          for (const auto [node_idx, child_idx]: pts_fun_p.children_range()) {
-            const auto pts_p          = pts_fun_p.sub_tree_span_at(node_idx);
-            const token_id_t ti_param = pts_p.tp->tokens[pts_p[0].token_begin];
-            cfs().locals.push_back(func_scope_t::local_t{
-                .var_name = ti_param,
-            });
-          }
-
-          SILVA_EXPECT_FWD(go(fun.body()));
-          cfs().nursery.append_simple_instr(func_pts, NIL);
-          cfs().nursery.append_simple_instr(func_pts, RETURN);
-
-          fun.chunk = std::move(cfs().chunk);
-        }
-        object_ref_t func = object_pool.make(std::move(fun));
-        auto& nn          = cfs().nursery;
-        const index_t idx = nn.chunk.constant_table.size();
-        nn.chunk.constant_table.push_back(std::move(func));
-        nn.append(pts, CLOSURE);
-        nn.append(pts, idx);
-        const auto& upvalue_infos = cfs().upvalue_infos;
-        nn.append(pts, index_t(upvalue_infos.size()));
-        for (const auto& upvalue_info: upvalue_infos) {
-          nn.append(pts, upvalue_info.index);
-          nn.append(pts, index_t(upvalue_info.is_local));
-        }
+        SILVA_EXPECT_FWD(function(func_pts, false));
       }
       else if (rule_name == lexicon.ni_decl_class) {
         cfs().nursery.append_simple_instr(pts, CLASS);
+        auto [it, end] = pts.children_range();
+        SILVA_EXPECT(it != end, MAJOR);
+        const auto pts_super = pts.sub_tree_span_at(it.pos);
+        SILVA_EXPECT(pts_super[0].rule_name == lexicon.ni_decl_class_s, MAJOR);
+        if (pts_super[0].token_begin < pts_super[0].token_end) {
+          SILVA_EXPECT(false, ASSERT);
+        }
+        ++it;
+        while (it != end) {
+          const auto pts_method = pts.sub_tree_span_at(it.pos);
+          SILVA_EXPECT_FWD(function(pts_method, true));
+          const token_id_t method_name = pts.tp->tokens[pts_method[0].token_begin];
+          cfs().nursery.append_index_instr(pts_method, METHOD, method_name);
+          ++it;
+        }
       }
       else {
         SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));

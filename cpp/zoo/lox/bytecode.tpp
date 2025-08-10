@@ -307,6 +307,33 @@ CONSTANT 3 3
         print pair.first + pair.second;
     )",
                     "grape\n3\n");
+    th.test_success(R"(
+        class Foo {
+          bar(first, second) {
+            print 'bar with ' + first + ' and ' + second;
+          }
+          baz(x) {
+            print 'baz with ' + x;
+          }
+        }
+        var foo = Foo();
+        foo.bar('aa', 'bb');
+        var bound_method = foo.baz;
+        bound_method('cc');
+    )",
+                    "bar with aa and bb\nbaz with cc\n");
+    th.test_success(R"(
+        class Person {
+          sayName() {
+            print this.name;
+          }
+        }
+        var jane = Person();
+        jane.name = 'Jane';
+        var method = jane.sayName;
+        method();
+    )",
+                    "Jane\n");
   }
 
   TEST_CASE("lox-bytecode-error", "[lox][bytecode]")
