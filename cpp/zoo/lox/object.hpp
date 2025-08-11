@@ -54,7 +54,7 @@ namespace silva::lox {
   };
 
   struct function_builtin_t : public function_t {
-    silva::function_t<object_ref_t(object_pool_t&, scope_ptr_t)> impl;
+    silva::function_t<expected_t<object_ref_t>(object_pool_t&, span_t<const object_ref_t>)> impl;
 
     friend bool operator==(const function_builtin_t&, const function_builtin_t&);
   };
