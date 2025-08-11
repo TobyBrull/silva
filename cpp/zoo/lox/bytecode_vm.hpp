@@ -18,6 +18,7 @@ namespace silva::lox::bytecode {
       const chunk_t* chunk = nullptr;
       index_t ip           = 0;
       index_t stack_offset = 0;
+      object_ref_t override_return_value;
     };
     vector_t<call_frame_t> call_frames;
     string_t call_frames_to_string() const;

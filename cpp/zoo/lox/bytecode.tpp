@@ -334,6 +334,18 @@ CONSTANT 3 3
         method();
     )",
                     "Jane\n");
+    th.test_success(R"(
+        class Person {
+          init(name_param) {
+            this.name = name_param;
+          }
+          sayName() {
+            print 'I am ' + this.name;
+          }
+        }
+        Person('Jane').sayName();
+    )",
+                    "I am Jane\n");
   }
 
   TEST_CASE("lox-bytecode-error", "[lox][bytecode]")

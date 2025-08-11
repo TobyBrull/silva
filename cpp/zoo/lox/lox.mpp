@@ -1,3 +1,5 @@
+#include "bytecode_compiler.hpp"
+#include "bytecode_vm.hpp"
 #include "interpreter.hpp"
 #include "lox.hpp"
 
@@ -10,6 +12,9 @@ namespace silva::lox {
   {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(2 == m, MINOR, "Usage: ... <lox-file>");
+
+    const bool use_interpreter =
+        SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("use-interpreter"), MAJOR).value_or(false);
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_ward_t sw;
@@ -27,17 +32,28 @@ namespace silva::lox {
     }
 
     byte_sink_stdout_t _stdout;
-    interpreter_t li{sw.ptr(), &_stdout};
-    SILVA_EXPECT_FWD(li.load_builtins(as_parser(si.get())));
-    SILVA_EXPECT_FWD(li.resolve(pt->span()));
-    {
-      auto scope = li.scopes.root();
-      SILVA_EXPECT_FWD(li.execute(pt->span(), scope),
-                       "failed executing Lox script {}",
-                       cmdline_args[1]);
+
+    if (use_interpreter) {
+      interpreter_t li{sw.ptr(), &_stdout};
+      SILVA_EXPECT_FWD(li.load_builtins(as_parser(si.get())));
+      SILVA_EXPECT_FWD(li.resolve(pt->span()));
+      {
+        auto scope = li.scopes.root();
+        SILVA_EXPECT_FWD(li.execute(pt->span(), scope),
+                         "failed executing Lox script {}",
+                         cmdline_args[1]);
+      }
+      if (verbose) {
+        fmt::println("{}", li.object_pool.to_string());
+      }
     }
-    if (verbose) {
-      fmt::println("{}", li.object_pool.to_string());
+    else {
+      using namespace silva::lox::bytecode;
+      object_pool_t object_pool;
+      compiler_t compiler = {sw.ptr(), &object_pool};
+      vm_t vm{sw.ptr(), &object_pool, &_stdout};
+      auto chunk = SILVA_EXPECT_FWD(compiler.compile(pt->span()));
+      SILVA_EXPECT_FWD(vm.run(*chunk));
     }
     return {};
   }

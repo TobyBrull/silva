@@ -38,6 +38,9 @@ namespace silva::lox::bytecode {
   struct runner_t {
     vm_t& vm;
 
+    token_id_t ti_super = vm.swp->token_id("super").value();
+    token_id_t ti_init  = vm.swp->token_id("init").value();
+
     index_t curr_index_in_instr(const index_t offset = 0)
     {
       const auto& ccf = vm.call_frames.back();
@@ -293,56 +296,52 @@ namespace silva::lox::bytecode {
     }
     expected_t<void> _call()
     {
-      SILVA_EXPECT(!vm.stack.empty(), RUNTIME, "stack empty for CALL instruction");
-      if (vm.stack.back()->holds_class()) {
-        class_instance_t new_class_instance{._class = vm.stack.back()};
-        vm.stack.pop_back();
-        vm.stack.push_back(vm.object_pool->make(std::move(new_class_instance)));
-        curr_ip() += 1 + sizeof(index_t);
-        return {};
+      const index_t num_args = curr_index_in_instr();
+      SILVA_EXPECT(vm.stack.size() >= num_args + 1,
+                   RUNTIME,
+                   "not enough elements on stack for call to function with {} arguments",
+                   num_args);
+      const index_t sp   = vm.stack.size() - 1 - num_args;
+      const auto to_call = vm.stack[sp];
+      object_ref_t new_instance;
+      object_ref_t closure;
+      if (to_call->holds_class()) {
+        new_instance   = vm.object_pool->make(class_instance_t{._class = to_call});
+        const auto& cc = std::get<class_t>(to_call->data);
+        const auto it  = cc.methods.find(ti_init);
+        if (it != cc.methods.end()) {
+          closure = it->second;
+        }
+        vm.stack[sp] = new_instance;
+      }
+      else if (to_call->holds_closure()) {
+        closure = to_call;
+      }
+      else if (to_call->holds_bound_method()) {
+        const auto& bbm = std::get<bound_method_t>(to_call->data);
+        closure         = bbm.method;
+        vm.stack[sp]    = bbm.receiver;
       }
       else {
-        const index_t num_args = curr_index_in_instr();
-        SILVA_EXPECT(vm.stack.size() >= num_args + 1,
-                     RUNTIME,
-                     "not enough elements on stack for call to function with {} arguments",
-                     num_args);
-        const index_t sp    = vm.stack.size() - 1 - num_args;
-        const auto& to_call = vm.stack[sp];
-        object_ref_t closure;
-
-        if (to_call->holds_closure()) {
-          closure = to_call;
-        }
-        else if (to_call->holds_bound_method()) {
-          const auto& bbm = std::get<bound_method_t>(to_call->data);
-          closure         = bbm.method;
-        }
-        else {
-          SILVA_EXPECT(false, RUNTIME, "expected closure or bound-method in CALL instruction");
-        }
-
+        SILVA_EXPECT(false, RUNTIME, "expected closure or bound-method in CALL instruction");
+      }
+      curr_ip() += 1 + sizeof(index_t);
+      if (!closure.is_nullptr()) {
         SILVA_EXPECT(closure->holds_closure(), ASSERT, "expected closure");
         const auto& cclosure = std::get<closure_t>(closure->data);
         const auto& func     = cclosure.func;
         SILVA_EXPECT(func->holds_function(), RUNTIME, "expected function");
         const auto& ffunc = std::get<function_t>(func->data);
-        curr_ip() += 1 + sizeof(index_t);
         vm.call_frames.push_back(vm_t::call_frame_t{
-            .closure      = closure,
-            .func         = func,
-            .chunk        = ffunc.chunk.get(),
-            .ip           = 0,
-            .stack_offset = sp,
+            .closure               = closure,
+            .func                  = func,
+            .chunk                 = ffunc.chunk.get(),
+            .ip                    = 0,
+            .stack_offset          = sp,
+            .override_return_value = new_instance,
         });
-
-        if (to_call->holds_bound_method()) {
-          const auto& bbm = std::get<bound_method_t>(to_call->data);
-          vm.stack[sp]    = bbm.receiver;
-        }
-
-        return {};
       }
+      return {};
     }
     expected_t<void> _invoke() { SILVA_EXPECT(false, ASSERT); }
     expected_t<void> _super_invoke() { SILVA_EXPECT(false, ASSERT); }
@@ -465,7 +464,12 @@ namespace silva::lox::bytecode {
       const auto& ccf     = vm.call_frames.back();
       SILVA_EXPECT_FWD(_close_upvalue_till(ccf.stack_offset));
       vm.stack.resize(ccf.stack_offset);
-      vm.stack.push_back(retval);
+      if (!vm.call_frames.back().override_return_value.is_nullptr()) {
+        vm.stack.push_back(vm.call_frames.back().override_return_value);
+      }
+      else {
+        vm.stack.push_back(retval);
+      }
       vm.call_frames.pop_back();
       return {};
     }
