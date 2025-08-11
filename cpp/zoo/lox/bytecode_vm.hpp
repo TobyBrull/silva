@@ -2,6 +2,8 @@
 
 #include "bytecode.hpp"
 
+#include "syntax/syntax.hpp"
+
 #include "canopy/byte_sink.hpp"
 
 namespace silva::lox::bytecode {
@@ -26,6 +28,9 @@ namespace silva::lox::bytecode {
     byte_sink_t* print_target = nullptr;
 
     vm_t(syntax_ward_ptr_t, object_pool_t*, byte_sink_t*);
+
+    // The parser needs to be able to parse Lox.
+    expected_t<void> load_builtins(const parser_t&);
 
     expected_t<void> run(const chunk_t&);
 

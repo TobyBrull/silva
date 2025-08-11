@@ -52,6 +52,7 @@ namespace silva::lox {
       object_pool_t object_pool;
       compiler_t compiler = {sw.ptr(), &object_pool};
       vm_t vm{sw.ptr(), &object_pool, &_stdout};
+      SILVA_EXPECT_FWD(vm.load_builtins(as_parser(si.get())));
       auto chunk = SILVA_EXPECT_FWD(compiler.compile(pt->span()));
       SILVA_EXPECT_FWD(vm.run(*chunk));
     }

@@ -1,5 +1,7 @@
 #include "bytecode_vm.hpp"
 
+#include "builtins.hpp"
+
 namespace silva::lox::bytecode {
 
   using enum opcode_t;
@@ -21,6 +23,15 @@ namespace silva::lox::bytecode {
       }
     }
     return retval;
+  }
+
+  expected_t<void> vm_t::load_builtins(const parser_t& parser)
+  {
+    auto builtins = SILVA_EXPECT_FWD(make_builtins(swp, parser, *object_pool));
+    for (auto& [name, builtin]: builtins) {
+      globals[name] = std::move(builtin);
+    }
+    return {};
   }
 
   expected_t<object_ref_t*> stack_by(vm_t& vm, const index_t offset)
@@ -322,8 +333,16 @@ namespace silva::lox::bytecode {
         closure         = bbm.method;
         vm.stack[sp]    = bbm.receiver;
       }
+      else if (to_call->holds_function_builtin()) {
+        auto& fb = std::get<function_builtin_t>(to_call->data);
+        const span_t<const object_ref_t> args{&vm.stack[sp + 1], size_t(num_args)};
+        vm.stack[sp] = SILVA_EXPECT_FWD(fb.impl(*vm.object_pool, args));
+        vm.stack.resize(sp + 1);
+      }
       else {
-        SILVA_EXPECT(false, RUNTIME, "expected closure or bound-method in CALL instruction");
+        SILVA_EXPECT(false,
+                     RUNTIME,
+                     "expected class, closure, bound-method, or builtin in CALL instruction");
       }
       curr_ip() += 1 + sizeof(index_t);
       if (!closure.is_nullptr()) {
