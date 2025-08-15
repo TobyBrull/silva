@@ -498,7 +498,23 @@ namespace silva::lox::bytecode {
       curr_ip() += 1;
       return {};
     }
-    expected_t<void> _inherit() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _inherit()
+    {
+      SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);
+      auto superclass = vm.stack.back();
+      SILVA_EXPECT(superclass->holds_class(),
+                   RUNTIME,
+                   "expected class on top of stack, not {}",
+                   superclass);
+      vm.stack.pop_back();
+      auto klass = vm.stack.back();
+      SILVA_EXPECT(klass->holds_class(), RUNTIME, "expected class on top of stack, not {}", klass);
+      auto& sc = std::get<class_t>(superclass->data);
+      auto& cc = std::get<class_t>(klass->data);
+      cc.methods.insert(sc.methods.begin(), sc.methods.end());
+      curr_ip() += 1;
+      return {};
+    }
     expected_t<void> _method()
     {
       const index_t method_name = curr_index_in_instr();

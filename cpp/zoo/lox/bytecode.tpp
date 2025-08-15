@@ -346,6 +346,55 @@ CONSTANT 3 3
         Person('Jane').sayName();
     )",
                     "I am Jane\n");
+    th.test_success(R"(
+        class A {
+          foo() { print 'A foo'; }
+          bar() { print 'A bar'; }
+        }
+        class B < A {
+          foo() { print 'B foo'; }
+        }
+        class C < B {}
+        var c = C();
+        c.foo();
+        c.bar();
+    )",
+                    "B foo\nA bar\n");
+    // th.test_success(R"(
+    //     class A {
+    //       method() { print 'A method'; }
+    //     }
+    //     class B < A {
+    //       method() { print 'B method'; }
+    //       test() { super.method(); }
+    //     }
+    //     class C < B {}
+    //     var c = C();
+    //     c.method();
+    //     c.test();
+    // )",
+    //                 "B method\nA method\n");
+    // th.test_success(R"(
+    //     class D {
+    //       foo() {
+    //         print 'foo D';
+    //       }
+    //     }
+    //     class E < D {
+    //       method() {
+    //         var closure = super.foo;
+    //         closure();
+    //       }
+    //       foo() {
+    //         print 'foo E';
+    //       }
+    //     }
+    //     class F < E {
+    //     }
+    //     var f = F();
+    //     f.method();
+    // )",
+    //                 "foo D\n");
   }
 
   TEST_CASE("lox-bytecode-error", "[lox][bytecode]")
