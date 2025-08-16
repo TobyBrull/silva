@@ -22,5 +22,6 @@ SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --ac
 ./build/cpp/silva_syntax silva/soil/soil.silva silva/soil/example.silva
 
 ./build/cpp/silva_lox cpp/zoo/lox/example.lox --use-interpreter=true
+./build/cpp/silva_lox cpp/zoo/lox/example.lox --use-interpreter=false
 ./build/cpp/silva_lox cpp/zoo/lox/lox.lox --use-interpreter=true < cpp/zoo/lox/example.lox
 ./build/cpp/silva_lox cpp/zoo/lox/lox.lox --use-interpreter=false < cpp/zoo/lox/example.lox

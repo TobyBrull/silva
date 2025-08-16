@@ -398,18 +398,28 @@ namespace silva::lox::bytecode {
 
       if (rule_name == lexicon.ni_decl_class) {
         block_scope_guard_t bsg(this, pts);
-        cfs().locals.push_back(func_scope_t::local_t{.var_name = lexicon.ti_super});
-        SILVA_EXPECT_FWD(get_variable(pts, decl_name));
+
+        token_id_t superclass_name = token_id_none;
+
         auto [it, end] = pts.children_range();
+
         SILVA_EXPECT(it != end, MAJOR);
         const auto pts_super = pts.sub_tree_span_at(it.pos);
         SILVA_EXPECT(pts_super[0].rule_name == lexicon.ni_decl_class_s, MAJOR);
         if (pts_super[0].token_begin < pts_super[0].token_end) {
-          const token_id_t superclass_name = pts.tp->tokens[pts_super[0].token_begin + 1];
+          superclass_name = pts.tp->tokens[pts_super[0].token_begin + 1];
           SILVA_EXPECT_FWD(get_variable(pts_super, superclass_name));
-          cfs().nursery.append_simple_instr(pts_super, INHERIT);
+          cfs().locals.push_back(func_scope_t::local_t{.var_name = lexicon.ti_super});
         }
         ++it;
+
+        SILVA_EXPECT_FWD(get_variable(pts, decl_name));
+        cfs().locals.push_back(func_scope_t::local_t{.var_name = token_id_none});
+
+        if (superclass_name != token_id_none) {
+          cfs().nursery.append_simple_instr(pts_super, INHERIT);
+        }
+
         while (it != end) {
           const auto pts_method = pts.sub_tree_span_at(it.pos);
           SILVA_EXPECT_FWD(function(pts_method, true));

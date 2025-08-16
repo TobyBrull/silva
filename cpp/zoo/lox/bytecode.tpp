@@ -360,41 +360,41 @@ CONSTANT 3 3
         c.bar();
     )",
                     "B foo\nA bar\n");
-    // th.test_success(R"(
-    //     class A {
-    //       method() { print 'A method'; }
-    //     }
-    //     class B < A {
-    //       method() { print 'B method'; }
-    //       test() { super.method(); }
-    //     }
-    //     class C < B {}
-    //     var c = C();
-    //     c.method();
-    //     c.test();
-    // )",
-    //                 "B method\nA method\n");
-    // th.test_success(R"(
-    //     class D {
-    //       foo() {
-    //         print 'foo D';
-    //       }
-    //     }
-    //     class E < D {
-    //       method() {
-    //         var closure = super.foo;
-    //         closure();
-    //       }
-    //       foo() {
-    //         print 'foo E';
-    //       }
-    //     }
-    //     class F < E {
-    //     }
-    //     var f = F();
-    //     f.method();
-    // )",
-    //                 "foo D\n");
+    th.test_success(R"(
+        class A {
+          method() { print 'A method'; }
+        }
+        class B < A {
+          method() { print 'B method'; }
+          test() { super.method(); }
+        }
+        class C < B {}
+        var c = C();
+        c.method();
+        c.test();
+    )",
+                    "B method\nA method\n");
+    th.test_success(R"(
+        class D {
+          foo() {
+            print 'foo D';
+          }
+        }
+        class E < D {
+          method() {
+            var closure = super.foo;
+            closure();
+          }
+          foo() {
+            print 'foo E';
+          }
+        }
+        class F < E {
+        }
+        var f = F();
+        f.method();
+    )",
+                    "foo D\n");
   }
 
   TEST_CASE("lox-bytecode-error", "[lox][bytecode]")

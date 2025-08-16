@@ -515,16 +515,15 @@ namespace silva::lox::bytecode {
     expected_t<void> _inherit()
     {
       SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);
-      auto superclass = vm.stack.back();
-      SILVA_EXPECT(superclass->holds_class(),
+      auto klass      = vm.stack.back();
+      auto superclass = vm.stack[vm.stack.size() - 2];
+      SILVA_EXPECT(klass->holds_class() && superclass->holds_class(),
                    RUNTIME,
-                   "expected class on top of stack, not {}",
+                   "the INHERIT instruction expects two classes on top of the stack, not {} and {}",
+                   klass,
                    superclass);
-      vm.stack.pop_back();
-      auto klass = vm.stack.back();
-      SILVA_EXPECT(klass->holds_class(), RUNTIME, "expected class on top of stack, not {}", klass);
-      auto& sc = std::get<class_t>(superclass->data);
       auto& cc = std::get<class_t>(klass->data);
+      auto& sc = std::get<class_t>(superclass->data);
       cc.methods.insert(sc.methods.begin(), sc.methods.end());
       curr_ip() += 1;
       return {};

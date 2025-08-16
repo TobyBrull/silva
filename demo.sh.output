@@ -1227,6 +1227,51 @@ true
 Hello, World!
 3
 142
+Unknown lox::object_t
+Hi, Dear Reader!
+Fibonacci ==
+0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+Fibonacci ==
+1
+2
+3
+global
+global
+block
+global
+<class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>
+<instance of <class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>>
+Mr Jane
+init()
+start
+Q
+42
+42
+20
+true
+short-circuit-2
+short-circuit-3
+false
+...
+meow
+...
+in test(): ccc
+Unknown lox::object_t
+A method: ccc
+false
+true
+Hello, World!
+3
+142
 <instance of <class [lox.lox:1282:1] parse_tree_span[ class LoxFunction ... } } ]>>
 Hi, Dear Reader!
 Fibonacci ==
