@@ -82,6 +82,43 @@ namespace silva::lox::bytecode {
     func_scope_guard_t global_scope_guard{this};
     func_scope_t& cfs() { return func_scopes.back(); }
 
+    struct block_scope_guard_t {
+      compile_run_t* compile_run = nullptr;
+      parse_tree_span_t pts;
+      index_t start_num_locals        = 0;
+      index_t start_num_upvalue_infos = 0;
+      block_scope_guard_t(compile_run_t* compile_run, const parse_tree_span_t& pts)
+        : compile_run(compile_run), pts(pts)
+      {
+        compile_run->cfs().scope_depth += 1;
+        start_num_locals        = compile_run->cfs().locals.size();
+        start_num_upvalue_infos = compile_run->cfs().upvalue_infos.size();
+      };
+      ~block_scope_guard_t()
+      {
+        vector_t<index_t> upvalue_locals;
+        while (compile_run->cfs().upvalue_infos.size() > start_num_upvalue_infos) {
+          if (compile_run->cfs().upvalue_infos.back().is_local) {
+            upvalue_locals.push_back(compile_run->cfs().upvalue_infos.back().index);
+          }
+          compile_run->cfs().upvalue_infos.pop_back();
+        }
+        std::ranges::sort(upvalue_locals);
+        while (compile_run->cfs().locals.size() > start_num_locals) {
+          if (!upvalue_locals.empty() &&
+              upvalue_locals.back() + 1 == compile_run->cfs().locals.size()) {
+            compile_run->cfs().nursery.append_simple_instr(pts, CLOSE_UPVALUE);
+            upvalue_locals.pop_back();
+          }
+          else {
+            compile_run->cfs().nursery.append_simple_instr(pts, POP);
+          }
+          compile_run->cfs().locals.pop_back();
+        }
+        compile_run->cfs().scope_depth -= 1;
+      }
+    };
+
     compile_run_t(compiler_t* compiler) : compiler(compiler) {}
 
     optional_t<index_t> resolve_local(const index_t fs_idx, const token_id_t var_name)
@@ -341,6 +378,22 @@ namespace silva::lox::bytecode {
       }
       else if (rule_name == lexicon.ni_decl_class) {
         cfs().nursery.append_simple_instr(pts, CLASS);
+      }
+      else {
+        SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
+      }
+
+      if (func_scopes.size() == 1 && cfs().scope_depth == 0) {
+        cfs().nursery.append_index_instr(pts, DEFINE_GLOBAL, decl_name);
+      }
+      else {
+        cfs().locals.push_back(func_scope_t::local_t{.var_name = decl_name});
+      }
+
+      if (rule_name == lexicon.ni_decl_class) {
+        block_scope_guard_t bsg(this, pts);
+        cfs().locals.push_back(func_scope_t::local_t{.var_name = lexicon.ti_super});
+        SILVA_EXPECT_FWD(get_variable(pts, decl_name));
         auto [it, end] = pts.children_range();
         SILVA_EXPECT(it != end, MAJOR);
         const auto pts_super = pts.sub_tree_span_at(it.pos);
@@ -359,16 +412,7 @@ namespace silva::lox::bytecode {
           ++it;
         }
       }
-      else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
-      }
 
-      if (func_scopes.size() == 1 && cfs().scope_depth == 0) {
-        cfs().nursery.append_index_instr(pts, DEFINE_GLOBAL, decl_name);
-      }
-      else {
-        cfs().locals.push_back(func_scope_t::local_t{.var_name = decl_name});
-      }
       return {};
     }
 
@@ -458,33 +502,10 @@ namespace silva::lox::bytecode {
         cfs().nursery.append_simple_instr(pts, RETURN);
       }
       else if (rule_name == lexicon.ni_stmt_block) {
-        cfs().scope_depth += 1;
-        const index_t start_num_locals        = cfs().locals.size();
-        const index_t start_num_upvalue_infos = cfs().upvalue_infos.size();
-
+        block_scope_guard_t bsg{this, pts};
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
         }
-
-        vector_t<index_t> upvalue_locals;
-        while (cfs().upvalue_infos.size() > start_num_upvalue_infos) {
-          if (cfs().upvalue_infos.back().is_local) {
-            upvalue_locals.push_back(cfs().upvalue_infos.back().index);
-          }
-          cfs().upvalue_infos.pop_back();
-        }
-        std::ranges::sort(upvalue_locals);
-        while (cfs().locals.size() > start_num_locals) {
-          if (!upvalue_locals.empty() && upvalue_locals.back() + 1 == cfs().locals.size()) {
-            cfs().nursery.append_simple_instr(pts, CLOSE_UPVALUE);
-            upvalue_locals.pop_back();
-          }
-          else {
-            cfs().nursery.append_simple_instr(pts, POP);
-          }
-          cfs().locals.pop_back();
-        }
-        cfs().scope_depth -= 1;
       }
       else if (rule_name == lexicon.ni_stmt_expr) {
         SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(1)),

@@ -179,13 +179,10 @@ namespace silva::lox::bytecode {
       curr_ip() += 1 + sizeof(index_t);
       return {};
     }
-    expected_t<void> bind_method(const object_ref_t& class_instance,
-                                 const class_instance_t& cci,
-                                 const token_id_t field_name)
+    expected_t<void>
+    bind_method(const object_ref_t& class_instance, const class_t& cc, const token_id_t field_name)
     {
-      SILVA_EXPECT(cci._class->holds_class(), ASSERT);
-      const auto& cc = std::get<class_t>(cci._class->data);
-      const auto it  = cc.methods.find(field_name);
+      const auto it = cc.methods.find(field_name);
       SILVA_EXPECT(it != cc.methods.end(),
                    RUNTIME,
                    "could not find field {}",
@@ -207,7 +204,9 @@ namespace silva::lox::bytecode {
         vm.stack.push_back(it->second);
       }
       else {
-        SILVA_EXPECT_FWD(bind_method(class_instance, cci, field_name));
+        SILVA_EXPECT(cci._class->holds_class(), ASSERT);
+        const auto& cc = std::get<class_t>(cci._class->data);
+        SILVA_EXPECT_FWD(bind_method(class_instance, cc, field_name));
       }
       curr_ip() += 1 + sizeof(index_t);
       return {};
@@ -227,7 +226,21 @@ namespace silva::lox::bytecode {
       curr_ip() += 1 + sizeof(index_t);
       return {};
     }
-    expected_t<void> _get_super() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _get_super()
+    {
+      const index_t field_name = curr_index_in_instr();
+      SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);
+      auto superclass = vm.stack.back();
+      SILVA_EXPECT(superclass->holds_class(), RUNTIME);
+      vm.stack.pop_back();
+      const auto& sc      = std::get<class_t>(superclass->data);
+      auto class_instance = vm.stack.back();
+      SILVA_EXPECT(class_instance->holds_class_instance(), RUNTIME);
+      vm.stack.pop_back();
+      SILVA_EXPECT_FWD(bind_method(class_instance, sc, field_name));
+      curr_ip() += 1 + sizeof(index_t);
+      return {};
+    }
 
 #define SIMPLE_BINARY_OP(here_name, obj_name)                                           \
   expected_t<void> here_name()                                                          \
