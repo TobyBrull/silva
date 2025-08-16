@@ -167,7 +167,7 @@ namespace silva::lox::bytecode {
       case SET_PROPERTY:
         return SILVA_EXPECT_FWD(tsai.index_instr("SET_PROPERTY"));
       case GET_SUPER:
-        return SILVA_EXPECT_FWD(tsai.const_instr("GET_SUPER"));
+        return SILVA_EXPECT_FWD(tsai.index_instr("GET_SUPER"));
       case EQUAL:
         return SILVA_EXPECT_FWD(tsai.simple_instr("EQUAL"));
       case GREATER:

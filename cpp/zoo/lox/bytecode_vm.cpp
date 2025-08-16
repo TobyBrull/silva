@@ -111,6 +111,7 @@ namespace silva::lox::bytecode {
     }
     expected_t<void> _pop()
     {
+      SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME, "cannot pop on empty stack");
       vm.stack.pop_back();
       curr_ip() += 1;
       return {};

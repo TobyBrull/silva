@@ -173,6 +173,12 @@ namespace silva::lox::bytecode {
       else if (ti == lexicon.ti_false) {
         cfs().nursery.append_simple_instr(pts, FALSE);
       }
+      else if (ti == lexicon.ti_super) {
+        SILVA_EXPECT(pts[0].token_begin + 3 == pts[0].token_end, MAJOR);
+        SILVA_EXPECT_FWD(get_variable(pts, lexicon.ti_this));
+        SILVA_EXPECT_FWD(get_variable(pts, lexicon.ti_super));
+        cfs().nursery.append_index_instr(pts, GET_SUPER, pts.tp->tokens[pts[0].token_begin + 2]);
+      }
       else if (tinfo->category == IDENTIFIER) {
         SILVA_EXPECT_FWD(get_variable(pts, ti));
       }
