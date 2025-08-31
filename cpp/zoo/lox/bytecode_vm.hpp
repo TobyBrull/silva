@@ -34,6 +34,8 @@ namespace silva::lox {
 
     expected_t<void> run(const bytecode_chunk_t&);
 
+    void reset();
+
     expected_t<string_t> to_string() const;
   };
 }

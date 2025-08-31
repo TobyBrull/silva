@@ -1,6 +1,7 @@
 #include "interpreter.hpp"
 
 #include "lox.hpp"
+#include "test_suite.hpp"
 
 #include "syntax/syntax.hpp"
 
@@ -18,8 +19,15 @@ namespace silva::lox::test {
       print_stream = &print_buffer;
     }
 
-    void test(const string_view_t expr_str, const string_view_t expected)
+    void prepare()
     {
+      scopes.root().remove_all_definitions();
+      SILVA_EXPECT_REQUIRE(load_builtins(as_parser(si)));
+    }
+
+    void test_success(const string_view_t expr_str, const string_view_t expected)
+    {
+      prepare();
       INFO(expr_str);
       auto tp = SILVA_EXPECT_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
       INFO(pretty_string(*tp));
@@ -34,6 +42,7 @@ namespace silva::lox::test {
 
     void test_runtime_error(const string_view_t expr_str)
     {
+      prepare();
       INFO(expr_str);
       auto tp = SILVA_EXPECT_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
       INFO(pretty_string(*tp));
@@ -53,36 +62,16 @@ namespace silva::lox::test {
     SILVA_EXPECT_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
     test_interpreter_t lti{si.get(), sw.ptr()};
 
-    lti.test("print ! 42 ;", "false\n");
-    lti.test("print ! false ;", "true\n");
-    lti.test("print ! true ;", "false\n");
-    lti.test("print ! ! none ;", "false\n");
-    lti.test(R"(print ! '' ;)", "false\n");
-    lti.test("print - 42 ;", "-42\n");
-    lti.test("print 1 + 2 * 3 - 4 / 2 ;", "5\n");
-    lti.test("print '1' + '2' ;", "12\n");
-    lti.test_runtime_error("print '1' + 2 ;");
-    lti.test_runtime_error("print '1' * '2' ;");
-    lti.test("print 1 < 3 ;", "true\n");
-    lti.test("print 3 < 3 ;", "false\n");
-    lti.test("print 1 <= 3 ;", "true\n");
-    lti.test("print 3 <= 3 ;", "true\n");
-    lti.test("print 4 <= 3 ;", "false\n");
-    lti.test("print 3 > 1 ;", "true\n");
-    lti.test("print 3 > 3 ;", "false\n");
-    lti.test("print 3 >= 1 ;", "true\n");
-    lti.test("print 3 >= 3 ;", "true\n");
-    lti.test("print 3 >= 4 ;", "false\n");
-    lti.test("print 3 == 3 ;", "true\n");
-    lti.test("print 3 == '3' ;", "false\n");
-    lti.test("print 3 != '3' ;", "true\n");
-    lti.test("print true and true ;", "true\n");
-    lti.test("print false and true ;", "false\n");
-    lti.test("print true and false ;", "false\n");
-    lti.test("print false and false ;", "false\n");
-    lti.test("print true or true ;", "true\n");
-    lti.test("print false or true ;", "true\n");
-    lti.test("print true or false ;", "true\n");
-    lti.test("print false or false ;", "false\n");
+    const auto ts = test_suite();
+    for (const auto& chapter: ts) {
+      for (const auto& test_case: chapter.test_cases) {
+        if (test_case.is_success_expected()) {
+          lti.test_success(test_case.lox_code, std::get<string_view_t>(test_case.expected));
+        }
+        else {
+          lti.test_runtime_error(test_case.lox_code);
+        }
+      }
+    }
   }
 }

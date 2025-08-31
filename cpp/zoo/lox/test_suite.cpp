@@ -18,6 +18,39 @@ namespace silva::lox {
       rv.push_back(test_case_t{" print 1 + 2 <= 4 ; ", "true\n"});
       rv.push_back(test_case_t{" print 'hello' + ' world' ; ", "hello world\n"});
       rv.push_back(test_case_t{" print ! ( 5 - 4 > 3 * 2 == ! none ) ; ", "true\n"});
+
+      rv.push_back(test_case_t{"print ! 42 ;", "false\n"});
+      rv.push_back(test_case_t{"print ! false ;", "true\n"});
+      rv.push_back(test_case_t{"print ! true ;", "false\n"});
+      rv.push_back(test_case_t{"print ! ! none ;", "false\n"});
+      rv.push_back(test_case_t{R"(print ! '' ;)", "false\n"});
+      rv.push_back(test_case_t{"print - 42 ;", "-42\n"});
+      rv.push_back(test_case_t{"print 1 + 2 * 3 - 4 / 2 ;", "5\n"});
+      rv.push_back(test_case_t{"print '1' + '2' ;", "12\n"});
+      rv.push_back(test_case_t{"print '1' + 2 ;", test_error_t{{"type error"}}});
+      rv.push_back(test_case_t{"print '1' * '2' ;", test_error_t{{"type error"}}});
+      rv.push_back(test_case_t{"print 1 < 3 ;", "true\n"});
+      rv.push_back(test_case_t{"print 3 < 3 ;", "false\n"});
+      rv.push_back(test_case_t{"print 1 <= 3 ;", "true\n"});
+      rv.push_back(test_case_t{"print 3 <= 3 ;", "true\n"});
+      rv.push_back(test_case_t{"print 4 <= 3 ;", "false\n"});
+      rv.push_back(test_case_t{"print 3 > 1 ;", "true\n"});
+      rv.push_back(test_case_t{"print 3 > 3 ;", "false\n"});
+      rv.push_back(test_case_t{"print 3 >= 1 ;", "true\n"});
+      rv.push_back(test_case_t{"print 3 >= 3 ;", "true\n"});
+      rv.push_back(test_case_t{"print 3 >= 4 ;", "false\n"});
+      rv.push_back(test_case_t{"print 3 == 3 ;", "true\n"});
+      rv.push_back(test_case_t{"print 3 == '3' ;", "false\n"});
+      rv.push_back(test_case_t{"print 3 != '3' ;", "true\n"});
+      rv.push_back(test_case_t{"print true and true ;", "true\n"});
+      rv.push_back(test_case_t{"print false and true ;", "false\n"});
+      rv.push_back(test_case_t{"print true and false ;", "false\n"});
+      rv.push_back(test_case_t{"print false and false ;", "false\n"});
+      rv.push_back(test_case_t{"print true or true ;", "true\n"});
+      rv.push_back(test_case_t{"print false or true ;", "true\n"});
+      rv.push_back(test_case_t{"print true or false ;", "true\n"});
+      rv.push_back(test_case_t{"print false or false ;", "false\n"});
+
       rv.push_back(test_case_t{" var abc = 42 ; print 100 + abc ;", "142\n"});
       rv.push_back(test_case_t{" var a = 3 ; var b = 5 ; a = 10 + b * a ; print a ;", "25\n"});
       rv.push_back(test_case_t{
@@ -302,19 +335,21 @@ namespace silva::lox {
       auto& rv = retval.back().test_cases;
       rv.push_back(test_case_t{
           R"(
-        {
-          class Toast {}
-          var toast = Toast();
-          print toast.jam = 'grape';
-        }
-
+        class Toast {}
+        var toast = Toast();
+        print toast.jam = 'grape';
+    )",
+          "grape\n",
+      });
+      rv.push_back(test_case_t{
+          R"(
         class Pair {}
         var pair = Pair();
         pair.first = 1;
         pair.second = 2;
         print pair.first + pair.second;
     )",
-          "grape\n3\n",
+          "3\n",
       });
       rv.push_back(test_case_t{
           R"(

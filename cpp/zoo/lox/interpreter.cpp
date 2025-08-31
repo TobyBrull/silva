@@ -391,6 +391,7 @@ namespace silva::lox {
         else {
           SILVA_EXPECT(false, MINOR, "{} unexpected left-hand-side in assignment", lhs_pts);
         }
+        return rhs_ref;
       }
       else if (rn == intp->lexicon.ni_expr_primary)
       {

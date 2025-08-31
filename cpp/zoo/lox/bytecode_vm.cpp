@@ -662,6 +662,12 @@ namespace silva::lox {
     return {};
   }
 
+  void bytecode_vm_t::reset()
+  {
+    stack.clear();
+    call_frames.clear();
+  }
+
   expected_t<string_t> bytecode_vm_t::to_string() const
   {
     return {};

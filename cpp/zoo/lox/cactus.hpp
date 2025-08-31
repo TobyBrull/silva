@@ -58,6 +58,7 @@ namespace silva {
 
     bool is_nullptr() const;
     void clear();
+    void remove_all_definitions();
 
     friend bool operator==(const cactus_arm_t&, const cactus_arm_t&) = default;
 
@@ -204,6 +205,11 @@ namespace silva {
       cactus.clear();
       idx = -1;
     }
+  }
+  template<typename Key, typename Value>
+  void cactus_arm_t<Key, Value>::remove_all_definitions()
+  {
+    cactus->arms[idx].hashmap.clear();
   }
 
   template<typename Key, typename Value>

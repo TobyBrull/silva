@@ -19,6 +19,8 @@ namespace silva::lox::test {
 
     test_harness_t() { SILVA_EXPECT_REQUIRE(vm.load_builtins(as_parser(si.get()))); }
 
+    void prepare() { vm.reset(); }
+
     tuple_t<parse_tree_ptr_t, unique_ptr_t<bytecode_chunk_t>>
     make_chunk(const string_view_t lox_code)
     {
@@ -30,6 +32,7 @@ namespace silva::lox::test {
 
     void test_success(const string_view_t lox_code, const string_view_t expected)
     {
+      prepare();
       const auto [ptp, chunk] = make_chunk(lox_code);
       INFO(SILVA_EXPECT_REQUIRE(ptp->span().to_string()));
       INFO(SILVA_EXPECT_REQUIRE(chunk->to_string()));
@@ -46,6 +49,7 @@ namespace silva::lox::test {
     void test_runtime_error(const string_view_t lox_code,
                             const vector_t<string_view_t>& expected_err_msgs)
     {
+      prepare();
       const auto [ptp, chunk] = make_chunk(lox_code);
       INFO(SILVA_EXPECT_REQUIRE(ptp->span().to_string()));
       INFO(SILVA_EXPECT_REQUIRE(chunk->to_string()));
