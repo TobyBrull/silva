@@ -3,16 +3,9 @@
 * Lox:
     * Have common test-suite
     * Make a REPL
-    * Interpreter
-        * transform original AST to a new ast that has:
-            * literal object_ref_t's inline
-            * resultion depth inline
-    * lox.lox
-        * allow it to recursively interpret itself, like silva_lox lox.lox lox.lox example.lox?
-        * replace the 'chr' builtins with a load_file'?
-    * Refactor:
-        * Unify: object_pool_t, cactus_t
-            * get rid of object_t::clear_scopes()
+    * lox.lox: replace the 'chr' builtins with a load_file'?
+    * Unify: object_pool_t, cactus_t?
+        * get rid of object_t::clear_scopes()
     * Remove silva::lox::bytecode namespace. Namespaces should exactly align with languages.
 
 * tokenization:
