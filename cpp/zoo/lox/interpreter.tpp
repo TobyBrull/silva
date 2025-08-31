@@ -19,11 +19,7 @@ namespace silva::lox::test {
       print_stream = &print_buffer;
     }
 
-    void prepare()
-    {
-      scopes.root().remove_all_definitions();
-      SILVA_EXPECT_REQUIRE(load_builtins(as_parser(si)));
-    }
+    void prepare() { scopes.root().remove_all_definitions(); }
 
     void test_success(const string_view_t expr_str, const string_view_t expected)
     {

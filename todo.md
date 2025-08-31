@@ -1,7 +1,6 @@
 # TODO
 
 * Lox:
-    * Have common test-suite
     * Make a REPL
     * lox.lox: replace the 'chr' builtins with a load_file'?
     * Unify: object_pool_t, cactus_t?

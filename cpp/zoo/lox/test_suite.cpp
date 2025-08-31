@@ -150,7 +150,6 @@ namespace silva::lox {
         print a;
       )",
           "global\nglobal\nblock\nglobal\n"});
-      rv.push_back(test_case_t{" print chr(81); ", "Q\n"});
       rv.push_back(test_case_t{
           R"(
         fun foo(x) {
