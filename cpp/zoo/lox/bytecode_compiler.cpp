@@ -4,25 +4,25 @@
 
 using enum silva::token_category_t;
 
-namespace silva::lox::bytecode {
+namespace silva::lox {
 
   using enum opcode_t;
 
-  compiler_t::compiler_t(syntax_ward_ptr_t swp, object_pool_t* object_pool)
+  bytecode_compiler_t::bytecode_compiler_t(syntax_ward_ptr_t swp, object_pool_t* object_pool)
     : lexicon(std::move(swp)), object_pool(object_pool)
   {
   }
 
   struct compile_run_t {
-    compiler_t* compiler = nullptr;
+    bytecode_compiler_t* compiler = nullptr;
 
     const lexicon_t& lexicon   = compiler->lexicon;
     syntax_ward_ptr_t swp      = lexicon.swp;
     object_pool_t& object_pool = *compiler->object_pool;
 
     struct func_scope_t {
-      unique_ptr_t<chunk_t> chunk;
-      chunk_nursery_t nursery{.chunk = *chunk};
+      unique_ptr_t<bytecode_chunk_t> chunk;
+      bytecode_chunk_nursery_t nursery{.chunk = *chunk};
       vector_t<byte_t>& bytecode = nursery.chunk.bytecode;
 
       index_t scope_depth = 0;
@@ -39,7 +39,7 @@ namespace silva::lox::bytecode {
       };
       vector_t<upvalue_info_t> upvalue_infos;
 
-      func_scope_t(syntax_ward_ptr_t swp) : chunk{std::make_unique<chunk_t>(swp)} {}
+      func_scope_t(syntax_ward_ptr_t swp) : chunk{std::make_unique<bytecode_chunk_t>(swp)} {}
     };
     vector_t<func_scope_t> func_scopes;
 
@@ -119,7 +119,7 @@ namespace silva::lox::bytecode {
       }
     };
 
-    compile_run_t(compiler_t* compiler) : compiler(compiler) {}
+    compile_run_t(bytecode_compiler_t* compiler) : compiler(compiler) {}
 
     optional_t<index_t> resolve_local(const index_t fs_idx, const token_id_t var_name)
     {
@@ -566,7 +566,8 @@ namespace silva::lox::bytecode {
     }
   };
 
-  expected_t<unique_ptr_t<chunk_t>> compiler_t::compile(const parse_tree_span_t pts)
+  expected_t<unique_ptr_t<bytecode_chunk_t>>
+  bytecode_compiler_t::compile(const parse_tree_span_t pts)
   {
     compile_run_t run{this};
     SILVA_EXPECT_FWD(run.go(pts));

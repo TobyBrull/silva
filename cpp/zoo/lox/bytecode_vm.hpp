@@ -6,8 +6,8 @@
 
 #include "canopy/byte_sink.hpp"
 
-namespace silva::lox::bytecode {
-  struct vm_t {
+namespace silva::lox {
+  struct bytecode_vm_t {
     syntax_ward_ptr_t swp;
     object_pool_t* object_pool = nullptr;
     vector_t<object_ref_t> stack;
@@ -17,9 +17,9 @@ namespace silva::lox::bytecode {
     struct call_frame_t {
       object_ref_t closure;
       object_ref_t func;
-      const chunk_t* chunk = nullptr;
-      index_t ip           = 0;
-      index_t stack_offset = 0;
+      const bytecode_chunk_t* chunk = nullptr;
+      index_t ip                    = 0;
+      index_t stack_offset          = 0;
       object_ref_t override_return_value;
     };
     vector_t<call_frame_t> call_frames;
@@ -27,12 +27,12 @@ namespace silva::lox::bytecode {
 
     byte_sink_t* print_target = nullptr;
 
-    vm_t(syntax_ward_ptr_t, object_pool_t*, byte_sink_t*);
+    bytecode_vm_t(syntax_ward_ptr_t, object_pool_t*, byte_sink_t*);
 
     // The parser needs to be able to parse Lox.
     expected_t<void> load_builtins(const parser_t&);
 
-    expected_t<void> run(const chunk_t&);
+    expected_t<void> run(const bytecode_chunk_t&);
 
     expected_t<string_t> to_string() const;
   };

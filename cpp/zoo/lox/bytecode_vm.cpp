@@ -2,16 +2,18 @@
 
 #include "builtins.hpp"
 
-namespace silva::lox::bytecode {
+namespace silva::lox {
 
   using enum opcode_t;
 
-  vm_t::vm_t(syntax_ward_ptr_t swp, object_pool_t* object_pool, byte_sink_t* print_target)
+  bytecode_vm_t::bytecode_vm_t(syntax_ward_ptr_t swp,
+                               object_pool_t* object_pool,
+                               byte_sink_t* print_target)
     : swp(swp), object_pool(object_pool), print_target(print_target)
   {
   }
 
-  string_t vm_t::call_frames_to_string() const
+  string_t bytecode_vm_t::call_frames_to_string() const
   {
     string_t retval;
     for (const auto& cf: call_frames) {
@@ -25,7 +27,7 @@ namespace silva::lox::bytecode {
     return retval;
   }
 
-  expected_t<void> vm_t::load_builtins(const parser_t& parser)
+  expected_t<void> bytecode_vm_t::load_builtins(const parser_t& parser)
   {
     auto builtins = SILVA_EXPECT_FWD(make_builtins(swp, parser, *object_pool));
     for (auto& [name, builtin]: builtins) {
@@ -34,7 +36,7 @@ namespace silva::lox::bytecode {
     return {};
   }
 
-  expected_t<object_ref_t*> stack_by(vm_t& vm, const index_t offset)
+  expected_t<object_ref_t*> stack_by(bytecode_vm_t& vm, const index_t offset)
   {
     const index_t idx = vm.call_frames.back().stack_offset + offset;
     SILVA_EXPECT(0 <= idx && idx < vm.stack.size(),
@@ -47,7 +49,7 @@ namespace silva::lox::bytecode {
   }
 
   struct runner_t {
-    vm_t& vm;
+    bytecode_vm_t& vm;
 
     token_id_t ti_super = vm.swp->token_id("super").value();
     token_id_t ti_init  = vm.swp->token_id("init").value();
@@ -77,7 +79,7 @@ namespace silva::lox::bytecode {
       auto& ccf = vm.call_frames.back();
       return opcode_t(ccf.chunk->bytecode[ccf.ip]);
     }
-    const chunk_t& curr_chunk()
+    const bytecode_chunk_t& curr_chunk()
     {
       auto& ccf = vm.call_frames.back();
       return *ccf.chunk;
@@ -365,7 +367,7 @@ namespace silva::lox::bytecode {
         const auto& func     = cclosure.func;
         SILVA_EXPECT(func->holds_function(), RUNTIME, "expected function");
         const auto& ffunc = std::get<function_t>(func->data);
-        vm.call_frames.push_back(vm_t::call_frame_t{
+        vm.call_frames.push_back(bytecode_vm_t::call_frame_t{
             .closure               = closure,
             .func                  = func,
             .chunk                 = ffunc.chunk.get(),
@@ -642,9 +644,9 @@ namespace silva::lox::bytecode {
     }
   };
 
-  expected_t<void> vm_t::run(const chunk_t& chunk)
+  expected_t<void> bytecode_vm_t::run(const bytecode_chunk_t& chunk)
   {
-    call_frames.push_back(vm_t::call_frame_t{
+    call_frames.push_back(bytecode_vm_t::call_frame_t{
         .closure      = {},
         .func         = {},
         .chunk        = &chunk,
@@ -660,7 +662,7 @@ namespace silva::lox::bytecode {
     return {};
   }
 
-  expected_t<string_t> vm_t::to_string() const
+  expected_t<string_t> bytecode_vm_t::to_string() const
   {
     return {};
   }

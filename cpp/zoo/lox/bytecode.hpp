@@ -4,7 +4,7 @@
 
 #include "object.hpp"
 
-namespace silva::lox::bytecode {
+namespace silva::lox {
   enum class opcode_t : uint8_t {
     CONSTANT,
     NIL,
@@ -44,7 +44,7 @@ namespace silva::lox::bytecode {
     METHOD
   };
 
-  struct chunk_t {
+  struct bytecode_chunk_t {
     syntax_ward_ptr_t swp;
 
     vector_t<byte_t> bytecode;
@@ -55,14 +55,14 @@ namespace silva::lox::bytecode {
     flatmap_t<index_t, parse_tree_span_t> origin_info;
     parse_tree_span_t origin_info_at_instr(index_t) const;
 
-    chunk_t(syntax_ward_ptr_t);
+    bytecode_chunk_t(syntax_ward_ptr_t);
 
     expected_t<string_t> to_string(index_t level = 0) const;
     expected_t<index_t> to_string_at(string_t&, index_t) const;
   };
 
-  struct chunk_nursery_t {
-    chunk_t& chunk;
+  struct bytecode_chunk_nursery_t {
+    bytecode_chunk_t& chunk;
 
     template<typename T>
     void append(const parse_tree_span_t&, const T&);
@@ -76,9 +76,9 @@ namespace silva::lox::bytecode {
 
 // IMPLEMENTATION
 
-namespace silva::lox::bytecode {
+namespace silva::lox {
   template<typename T>
-  void chunk_nursery_t::append(const parse_tree_span_t& pts, const T& x)
+  void bytecode_chunk_nursery_t::append(const parse_tree_span_t& pts, const T& x)
   {
     const index_t pos = chunk.bytecode.size();
     chunk.bytecode.resize(chunk.bytecode.size() + sizeof(T));

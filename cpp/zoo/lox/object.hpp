@@ -8,11 +8,7 @@
 
 #include "syntax/parse_tree.hpp"
 
-namespace silva::lox::bytecode {
-  struct chunk_t;
-}
 namespace silva::lox {
-
   struct object_t;
   struct object_pool_t;
   using object_pool_ptr_t = object_pool_ptr_t<object_t>;
@@ -20,11 +16,13 @@ namespace silva::lox {
 
   using scope_ptr_t = cactus_arm_t<token_id_t, object_ref_t>;
 
+  struct bytecode_chunk_t;
+
   struct function_t {
     parse_tree_span_t pts;
     scope_ptr_t closure;
 
-    unique_ptr_t<bytecode::chunk_t> chunk;
+    unique_ptr_t<bytecode_chunk_t> chunk;
 
     function_t(parse_tree_span_t);
     function_t(function_t&&);

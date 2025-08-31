@@ -2,13 +2,13 @@
 
 #include "canopy/bit.hpp"
 
-namespace silva::lox::bytecode {
+namespace silva::lox {
 
   using enum opcode_t;
 
-  chunk_t::chunk_t(syntax_ward_ptr_t swp) : swp(std::move(swp)) {}
+  bytecode_chunk_t::bytecode_chunk_t(syntax_ward_ptr_t swp) : swp(std::move(swp)) {}
 
-  parse_tree_span_t chunk_t::origin_info_at_instr(const index_t ip) const
+  parse_tree_span_t bytecode_chunk_t::origin_info_at_instr(const index_t ip) const
   {
     if (origin_info.empty()) {
       return {};
@@ -20,7 +20,7 @@ namespace silva::lox::bytecode {
     return (*it).second;
   }
 
-  expected_t<string_t> chunk_t::to_string(const index_t level) const
+  expected_t<string_t> bytecode_chunk_t::to_string(const index_t level) const
   {
     string_t space_buf(level * 2 + 2, ' ');
     string_view_t space{space_buf};
@@ -73,7 +73,7 @@ namespace silva::lox::bytecode {
 
   namespace impl {
     struct to_string_at_impl {
-      const chunk_t* chunk = nullptr;
+      const bytecode_chunk_t* chunk = nullptr;
       string_t& retval;
       const span_t<const byte_t> bc;
 
@@ -121,7 +121,7 @@ namespace silva::lox::bytecode {
     };
   }
 
-  expected_t<index_t> chunk_t::to_string_at(string_t& retval, const index_t idx) const
+  expected_t<index_t> bytecode_chunk_t::to_string_at(string_t& retval, const index_t idx) const
   {
     SILVA_EXPECT(idx < bytecode.size(),
                  MAJOR,
@@ -235,14 +235,15 @@ namespace silva::lox::bytecode {
   }
 
   namespace detail {
-    void set_pts(chunk_t& self, const parse_tree_span_t& pts)
+    void set_pts(bytecode_chunk_t& self, const parse_tree_span_t& pts)
     {
       // TODO: insert with hint at the end of the flatmap.
       self.origin_info[self.bytecode.size()] = pts;
     }
   }
 
-  void chunk_nursery_t::append_constant_instr(const parse_tree_span_t& pts, object_ref_t obj_ref)
+  void bytecode_chunk_nursery_t::append_constant_instr(const parse_tree_span_t& pts,
+                                                       object_ref_t obj_ref)
   {
     detail::set_pts(chunk, pts);
     const index_t idx = chunk.constant_table.size();
@@ -251,15 +252,16 @@ namespace silva::lox::bytecode {
     append(pts, idx);
   }
 
-  void chunk_nursery_t::append_simple_instr(const parse_tree_span_t& pts, const opcode_t opcode)
+  void bytecode_chunk_nursery_t::append_simple_instr(const parse_tree_span_t& pts,
+                                                     const opcode_t opcode)
   {
     detail::set_pts(chunk, pts);
     chunk.bytecode.push_back(byte_t(opcode));
   }
 
-  index_t chunk_nursery_t::append_index_instr(const parse_tree_span_t& pts,
-                                              const opcode_t opcode,
-                                              const index_t idx)
+  index_t bytecode_chunk_nursery_t::append_index_instr(const parse_tree_span_t& pts,
+                                                       const opcode_t opcode,
+                                                       const index_t idx)
   {
     detail::set_pts(chunk, pts);
     const index_t rv = chunk.bytecode.size();
@@ -268,7 +270,7 @@ namespace silva::lox::bytecode {
     return rv;
   }
 
-  void chunk_nursery_t::backpatch_index_instr(const index_t position, const index_t idx)
+  void bytecode_chunk_nursery_t::backpatch_index_instr(const index_t position, const index_t idx)
   {
     bit_write_at<index_t>(&chunk.bytecode[position + 1], idx);
   }
