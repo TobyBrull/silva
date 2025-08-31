@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 
+# Prelude
 set -Eeuxo pipefail
-
 TEMPFILE=$( mktemp )
 trap 'rm -f "$TEMPFILE"' EXIT
 
+# Simple parsing (including error message)
 ./build/cpp/silva_tokenization silva/syntax/01-simple.fern
-
 ./build/cpp/silva_fern silva/syntax/01-simple.fern
 ./build/cpp/silva_fern silva/syntax/01-broken.fern 2>"$TEMPFILE" || true
 cat "$TEMPFILE"
-
 ./build/cpp/silva_syntax silva/syntax/01-simplest.fern
 SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --action=none
 
+# Parsing user-defined languages
 ./build/cpp/silva_syntax silva/syntax/02-example.silva
 ./build/cpp/silva_syntax silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
-
 ./build/cpp/silva_syntax silva/soil/soil.silva silva/soil/example.silva
 
+# Lox
 ./build/cpp/silva_lox cpp/zoo/lox/lox.lox --use-interpreter=true < cpp/zoo/lox/example.lox
 ./build/cpp/silva_lox cpp/zoo/lox/lox.lox --use-interpreter=false < cpp/zoo/lox/example.lox
