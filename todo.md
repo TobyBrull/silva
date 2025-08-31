@@ -1,8 +1,6 @@
 # TODO
 
 * Lox:
-    * Make a REPL
-    * lox.lox: replace the 'chr' builtins with a load_file'?
     * Unify: object_pool_t, cactus_t?
         * get rid of object_t::clear_scopes()
 
@@ -76,6 +74,7 @@
       parse_tree_t that contains `_.Error` rules in those gaps where parsing failed.
 
 * Write a language server
+* Write a REPL
 
 * Library
     * output_buffer_t / string_output_buffer_t
