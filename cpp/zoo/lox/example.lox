@@ -1,28 +1,3 @@
-# Basic expressions
-print 'Hello, World!';
-print 1 + 2 * 3 - 4;
-var x = 100 + 42;
-print x;
-
-# Functions
-fun sayHi(first, last) {
-  print 'Hi, ' + first + ' ' + last + '!';
-  return;
-}
-print sayHi;
-sayHi('Dear', 'Reader');
-
-# Recursive functions
-fun fib(n) {
-    if (n <= 1) return n;
-    return fib(n - 2) + fib(n - 1);
-}
-print 'Fibonacci ==';
-for (var i = 0; i < 10; i = i + 1) {
-    print fib(i);
-}
-print 'Fibonacci ==';
-
 # Closures
 fun makeCounter() {
   var i = 0;
@@ -37,135 +12,13 @@ counter();
 counter();
 counter();
 
-# Scoping
-var a;
-a = 'global';
-{
-  fun showA() {
-    print a;
-  }
-
-  showA();
-  var a = 'block';
-  showA();
-  print a;
-}
-print a;
-
 # Classes
 class Person {
   sayName() {
     print 'Mr ' + this.name;
   }
 }
-print Person;
 var jane = Person();
-print jane;
 jane.name = 'Jane';
 var method = jane.sayName;
-method();
-
-# Scoping
-class Thing {
-  init() {
-    print 'init()';
-    this.mode = 'start';
-  }
-  getCallback() {
-    fun localFunction() {
-      print this.mode;
-    }
-    return localFunction;
-  }
-}
-var callback = Thing().getCallback();
-callback();
-
-# Builtin functions
-print chr(81);
-
-# Call-by-reference semantics
-fun foo(x) {
-  var a = x;
-  x = 123;
-  return a;
-}
-var outer = 42;
-print foo(outer);
-print outer;
-
-# Classes
-class Number {
-  init(x) {
-    this.value = x;
-  }
-}
-class Inc {
-  init() {
-    this.i = 0;
-    this.value = Number(0);
-  }
-
-  inc() {
-    this.i = this.i + 10;
-    this.value = Number(this.i);
-  }
-}
-var inc = Inc();
-inc.inc();
-inc.inc();
-print inc.value.value;
-
-# Short-circuit behaviour
-print true or 'short-circuit-1';
-print false or 'short-circuit-2';
-print true and 'short-circuit-3';
-print false and 'short-circuit-4';
-
-# Inheritance
-class Animal {
-  makeSound () {
-    print '...';
-  }
-}
-class Cat < Animal {
-  makeSound () {
-    var mm = super.makeSound;
-    mm();
-    print 'meow';
-  }
-}
-class Dog < Animal {
-}
-var cat = Cat();
-var dog = Dog();
-cat.makeSound();
-dog.makeSound();
-
-class A {
-  method() {
-    print 'A method: ' + this.value;
-  }
-}
-class B < A {
-  method() {
-    print 'B method: ' + this.value;
-  }
-  test() {
-    print 'in test(): ' + this.value;
-    print super.method;
-    super.method();
-  }
-}
-class C < B {
-}
-var c = C();
-c.value = 'ccc';
-c.test();
-
-class Foo {
-}
-var f1 = Foo();
-var f2 = Foo();
-print f1 == f2;
-print f1 == f1;
+jane.sayName();

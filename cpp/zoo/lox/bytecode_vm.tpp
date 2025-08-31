@@ -17,6 +17,8 @@ namespace silva::lox::test {
     byte_sink_memory_t print_buffer;
     bytecode_vm_t vm{sw.ptr(), &object_pool, &print_buffer};
 
+    test_harness_t() { SILVA_EXPECT_REQUIRE(vm.load_builtins(as_parser(si.get()))); }
+
     tuple_t<parse_tree_ptr_t, unique_ptr_t<bytecode_chunk_t>>
     make_chunk(const string_view_t lox_code)
     {
@@ -64,7 +66,7 @@ namespace silva::lox::test {
     const auto [ptp, chunk]      = th.make_chunk("var hello = 'world' ; 1 + 2 * 3 ;");
     const string_view_t expected = R"(
    0 [1:13]              CONSTANT 0
-   5 [1:1]               DEFINE_GLOBAL 209 hello
+   5 [1:1]               DEFINE_GLOBAL 219 hello
   10 [1:23]              CONSTANT 1
   15 [1:27]              CONSTANT 2
   20 [1:31]              CONSTANT 3

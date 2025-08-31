@@ -50,10 +50,23 @@ namespace silva::lox {
         print sum ;
       )",
           "6\n45\n"});
+      rv.push_back(test_case_t{"print true or 'short-circuit-1';", "true\n"});
+      rv.push_back(test_case_t{"print false or 'short-circuit-2';", "short-circuit-2\n"});
+      rv.push_back(test_case_t{"print true and 'short-circuit-3';", "short-circuit-3\n"});
+      rv.push_back(test_case_t{"print false and 'short-circuit-4';", "false\n"});
     }
     {
       retval.push_back(test_chapter_t{.name = "functions"});
       auto& rv = retval.back().test_cases;
+      rv.push_back(test_case_t{
+          R"(
+        fun sayHi(first, last) {
+          print 'Hi, ' + first + ' ' + last + '!';
+          return;
+        }
+        sayHi('Dear', 'Reader');
+        )",
+          "Hi, Dear Reader!\n"});
       rv.push_back(test_case_t{
           R"(
         fun foo1(y) {
@@ -87,10 +100,58 @@ namespace silva::lox {
         }
       )",
           "1\n1\n2\n3\n5\n8\n"});
+      rv.push_back(test_case_t{
+          R"(
+        var a;
+        a = 'global';
+        {
+          fun showA() {
+            print a;
+          }
+
+          showA();
+          var a = 'block';
+          showA();
+          print a;
+        }
+        print a;
+      )",
+          "global\nglobal\nblock\nglobal\n"});
+      rv.push_back(test_case_t{" print chr(81); ", "Q\n"});
+      rv.push_back(test_case_t{
+          R"(
+        fun foo(x) {
+          var a = x;
+          x = 123;
+          return a;
+        }
+        var outer = 42;
+        print foo(outer);
+        print outer;
+    )",
+          "42\n42\n",
+      });
     }
     {
       retval.push_back(test_chapter_t{.name = "closures"});
       auto& rv = retval.back().test_cases;
+      rv.push_back(test_case_t{
+          R"(
+        fun makeCounter() {
+          var i = 0;
+          fun count() {
+            i = i + 1;
+            print i;
+          }
+          return count;
+        }
+        var counter = makeCounter();
+        counter();
+        counter();
+        counter();
+      )",
+          "1\n2\n3\n",
+      });
       rv.push_back(test_case_t{
           R"(
         fun aaa() {
@@ -354,6 +415,108 @@ namespace silva::lox {
         f.method();
     )",
           "foo D\n",
+      });
+      rv.push_back(test_case_t{
+          R"(
+        class Thing {
+          init() {
+            print 'init()';
+            this.mode = 'start';
+          }
+          getCallback() {
+            fun localFunction() {
+              print this.mode;
+            }
+            return localFunction;
+          }
+        }
+        var callback = Thing().getCallback();
+        callback();
+    )",
+          "init()\nstart\n",
+      });
+      rv.push_back(test_case_t{
+          R"(
+        class Number {
+          init(x) {
+            this.value = x;
+          }
+        }
+        class Inc {
+          init() {
+            this.i = 0;
+            this.value = Number(0);
+          }
+
+          inc() {
+            this.i = this.i + 10;
+            this.value = Number(this.i);
+          }
+        }
+        var inc = Inc();
+        inc.inc();
+        inc.inc();
+        print inc.value.value;
+    )",
+          "20\n",
+      });
+      rv.push_back(test_case_t{
+          R"(
+        class Animal {
+          makeSound () {
+            print '...';
+          }
+        }
+        class Cat < Animal {
+          makeSound () {
+            var mm = super.makeSound;
+            mm();
+            print 'meow';
+          }
+        }
+        class Dog < Animal {
+        }
+        var cat = Cat();
+        var dog = Dog();
+        cat.makeSound();
+        dog.makeSound();
+    )",
+          "...\nmeow\n...\n",
+      });
+      rv.push_back(test_case_t{
+          R"(
+        class A {
+          method() {
+            print 'A method: ' + this.value;
+          }
+        }
+        class B < A {
+          method() {
+            print 'B method: ' + this.value;
+          }
+          test() {
+            print 'in test(): ' + this.value;
+            super.method();
+          }
+        }
+        class C < B {
+        }
+        var c = C();
+        c.value = 'ccc';
+        c.test();
+    )",
+          "in test(): ccc\nA method: ccc\n",
+      });
+      rv.push_back(test_case_t{
+          R"(
+        class Foo {
+        }
+        var f1 = Foo();
+        var f2 = Foo();
+        print f1 == f2;
+        print f1 == f1;
+    )",
+          "false\ntrue\n",
       });
     }
     {

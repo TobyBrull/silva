@@ -1179,183 +1179,19 @@ seed::interpreter_t::apply(_.Fern) failed to parse
                       [0]_.Soil.Expr.Atom         sum
                       [1]_.Soil.Expr.Atom         i
 
-Hello, World!
-3
-142
-<function [example.lox:8:5] parse_tree_span[ sayHi ( ... ; } ]>
-Hi, Dear Reader!
-Fibonacci ==
-0
-1
 1
 2
 3
-5
-8
-13
-21
-34
-Fibonacci ==
-1
-2
-3
-global
-global
-block
-global
-<class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>
-<instance of <class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>>
 Mr Jane
-init()
-start
-Q
-42
-42
-20
-true
-short-circuit-2
-short-circuit-3
-false
-...
-meow
-...
-in test(): ccc
-<function [example.lox:146:3] parse_tree_span[ method ( ... ; } ]>
-A method: ccc
-false
-true
-Hello, World!
-3
-142
-Unknown lox::object_t
-Hi, Dear Reader!
-Fibonacci ==
-0
-1
 1
 2
 3
-5
-8
-13
-21
-34
-Fibonacci ==
-1
-2
-3
-global
-global
-block
-global
-<class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>
-<instance of <class [example.lox:56:1] parse_tree_span[ class Person ... } } ]>>
 Mr Jane
-init()
-start
-Q
-42
-42
-20
-true
-short-circuit-2
-short-circuit-3
-false
-...
-meow
-...
-in test(): ccc
-Unknown lox::object_t
-A method: ccc
-false
-true
-Hello, World!
-3
-142
-<instance of <class [lox.lox:1282:1] parse_tree_span[ class LoxFunction ... } } ]>>
-Hi, Dear Reader!
-Fibonacci ==
-0
-1
 1
 2
 3
-5
-8
-13
-21
-34
-Fibonacci ==
-1
-2
-3
-global
-global
-block
-global
-<instance of <class [lox.lox:1342:1] parse_tree_span[ class LoxClass ... } } ]>>
-<instance of <class [lox.lox:1319:1] parse_tree_span[ class LoxInstance ... } } ]>>
 Mr Jane
-init()
-start
-Q
-42
-42
-20
-true
-short-circuit-2
-short-circuit-3
-false
-...
-meow
-...
-in test(): ccc
-<instance of <class [lox.lox:1282:1] parse_tree_span[ class LoxFunction ... } } ]>>
-A method: ccc
-false
-true
-Hello, World!
-3
-142
-<instance of <class [lox.lox:1282:1] parse_tree_span[ class LoxFunction ... } } ]>>
-Hi, Dear Reader!
-Fibonacci ==
-0
-1
 1
 2
 3
-5
-8
-13
-21
-34
-Fibonacci ==
-1
-2
-3
-global
-global
-block
-global
-<instance of <class [lox.lox:1342:1] parse_tree_span[ class LoxClass ... } } ]>>
-<instance of <class [lox.lox:1319:1] parse_tree_span[ class LoxInstance ... } } ]>>
 Mr Jane
-init()
-start
-Q
-42
-42
-20
-true
-short-circuit-2
-short-circuit-3
-false
-...
-meow
-...
-in test(): ccc
-<instance of <class [lox.lox:1282:1] parse_tree_span[ class LoxFunction ... } } ]>>
-A method: ccc
-false
-true
