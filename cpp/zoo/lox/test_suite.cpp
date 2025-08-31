@@ -50,6 +50,10 @@ namespace silva::lox {
         print sum ;
       )",
           "6\n45\n"});
+    }
+    {
+      retval.push_back(test_chapter_t{.name = "functions"});
+      auto& rv = retval.back().test_cases;
       rv.push_back(test_case_t{
           R"(
         fun foo1(y) {
@@ -85,7 +89,7 @@ namespace silva::lox {
           "1\n1\n2\n3\n5\n8\n"});
     }
     {
-      retval.push_back(test_chapter_t{.name = "closure"});
+      retval.push_back(test_chapter_t{.name = "closures"});
       auto& rv = retval.back().test_cases;
       rv.push_back(test_case_t{
           R"(
