@@ -22,6 +22,14 @@
     * Tokenize all of Python
         * string interpolation
     * After errors, parsing should be resu
+    * Tokenize zig multi-line strings
+    * UTF-8 (for mathematical symbols as used in Lean)
+
+* ParseTrees
+    * Support conversion of parse_tree_t (with Seed) back to text/tokenization_t.
+        * I think the parse_tree_t should be detached from the tokenization_t
+    * Support construction of parse_tree_t's
+    * Support checking if a parse_tree_t is valid according to a given Seed.
 
 * Soil
     * Make variable declarations explicit (`let` and `let mut`)
