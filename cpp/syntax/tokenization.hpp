@@ -13,7 +13,11 @@ namespace silva {
       index_t column   = 0;
 
       friend auto operator<=>(const location_t&, const location_t&) = default;
+
+      friend void pretty_write_impl(const location_t&, byte_sink_t*);
     };
+    static constexpr location_t location_eof{.line_num = -1, .column = -1};
+
     vector_t<location_t> token_locations;
     vector_t<token_id_t> tokens;
 

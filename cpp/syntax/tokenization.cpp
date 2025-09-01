@@ -36,21 +36,32 @@ namespace silva {
     }
   }
 
+  void pretty_write_impl(const tokenization_t::location_t& self, byte_sink_t* stream)
+  {
+    if (self == tokenization_t::location_eof) {
+      stream->format("EOF");
+    }
+    else {
+      stream->format("{}:{}", self.line_num + 1, self.column + 1);
+    }
+  }
+
   void pretty_write_impl(const token_position_t& self, byte_sink_t* stream)
   {
     if (self.tp.is_nullptr()) {
       stream->write_str("unknown token_position");
       return;
     }
-    string_t retval;
-    const string_t filename = self.tp->filepath.filename().string();
-    if (self.token_index < self.tp->token_locations.size()) {
-      const auto [line, column] = self.tp->token_locations[self.token_index];
-      stream->format("{}:{}:{}", filename, line + 1, column + 1);
-    }
-    else {
-      stream->format("{}:EOF", filename);
-    }
+    stream->format("{}:", self.tp->filepath.filename().string());
+    const tokenization_t::location_t loc = [&] {
+      if (self.token_index < self.tp->token_locations.size()) {
+        return self.tp->token_locations[self.token_index];
+      }
+      else {
+        return tokenization_t::location_eof;
+      }
+    }();
+    silva::pretty_write(loc, stream);
   }
 
   void pretty_write_impl(const token_range_t& self, byte_sink_t* stream)
@@ -81,7 +92,7 @@ namespace silva {
   {
     string_t text = SILVA_EXPECT_FWD(read_file(filepath));
     tokenization_ptr_t tp =
-        SILVA_EXPECT_FWD(tokenize(std::move(swp), std::move(filepath), std::move(text)));
+        SILVA_EXPECT_FWD_PLAIN(tokenize(std::move(swp), std::move(filepath), std::move(text)));
     return tp;
   }
 
@@ -95,10 +106,21 @@ namespace silva {
     tokenization_t::location_t loc;
     while (text_index < text.size()) {
       const auto [tokenized_str, token_cat] = tokenize_one(text.substr(text_index));
+      SILVA_EXPECT(token_cat != INVALID,
+                   MINOR,
+                   "token {} at [{}] is invalid",
+                   string_t{tokenized_str},
+                   loc);
       text_index += tokenized_str.size();
       const auto old_loc = loc;
       loc.column += tokenized_str.size();
-      if (token_cat != NONE) {
+      if (token_cat == WHITESPACE || token_cat == COMMENT) {
+        if (tokenized_str == "\n") {
+          loc.line_num += 1;
+          loc.column = 0;
+        }
+      }
+      else {
         token_info_t ti{
             .category = token_cat,
             .str      = string_t{tokenized_str},
@@ -106,10 +128,6 @@ namespace silva {
         const token_id_t tii = syntax_ward_get_token_id_from_info(*swp, std::move(ti));
         retval->tokens.push_back(tii);
         retval->token_locations.push_back(old_loc);
-      }
-      else if (tokenized_str == "\n") {
-        loc.line_num += 1;
-        loc.column = 0;
       }
     }
     return swp->add(std::move(retval));

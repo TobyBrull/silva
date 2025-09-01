@@ -118,7 +118,7 @@ namespace silva {
     const char c = text.front();
     if (impl::is_one_of(c, impl::whitespace_chars)) {
       const index_t len = impl::find_whitespace_length(text);
-      return {text.substr(0, len), NONE};
+      return {text.substr(0, len), WHITESPACE};
     }
     else if (std::isalpha(c) || impl::is_one_of(c, impl::identifier_chars)) {
       const index_t len = impl::find_token_length(text, [](const char x) {
@@ -141,12 +141,12 @@ namespace silva {
         return {text.substr(0, maybe_length.value()), STRING};
       }
       else {
-        return {text, NONE};
+        return {text, INVALID};
       }
     }
     else if (c == '#') {
       const index_t len = impl::find_comment_length(text);
-      return {text.substr(0, len), NONE};
+      return {text.substr(0, len), COMMENT};
     }
     else if (std::isdigit(c)) {
       const index_t len = impl::find_token_length(text, [](const char x) {
@@ -155,10 +155,10 @@ namespace silva {
       return {text.substr(0, len), NUMBER};
     }
     else if (c == '\n') {
-      return {text.substr(0, 1), NONE};
+      return {text.substr(0, 1), WHITESPACE};
     }
     else {
-      return {text.substr(0, 1), NONE};
+      return {text.substr(0, 1), INVALID};
     }
   }
 

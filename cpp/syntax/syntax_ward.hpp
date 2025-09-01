@@ -4,11 +4,13 @@
 
 namespace silva {
   enum class token_category_t {
-    NONE = 0,
+    INVALID = 0,
     IDENTIFIER,
     OPERATOR,
     STRING,
     NUMBER,
+    WHITESPACE,
+    COMMENT,
   };
 
   tuple_t<string_view_t, token_category_t> tokenize_one(const string_view_t text);
@@ -24,7 +26,7 @@ namespace silva {
   constexpr inline name_id_t name_id_root   = 0;
 
   struct token_info_t {
-    token_category_t category = token_category_t::NONE;
+    token_category_t category = token_category_t::INVALID;
     string_t str;
 
     expected_t<string_view_t> string_as_plain_contained() const;
