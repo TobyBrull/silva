@@ -1,0 +1,29 @@
+None = epsilon
+Seed =
+  x = ( '-' Rule ) *
+  Rule = Nonterminal ( '=' indent x dedent | ExprOrAlias | '=' 'axe' Axe )
+  ExprOrAlias = ( '=' | '=' 'alias' ) Expr
+  Expr = axe Atom
+    Parens    = nest  atom_nest '(' ')'
+    Prefix    = rtl   prefix 'not'
+    Postfix   = ltr   postfix '?' '*' '+'
+    Concat    = ltr   infix_flat concat
+    And       = ltr   infix_flat 'but_then'
+    Or        = ltr   infix_flat '|'
+  Atom = alias NonterminalMaybeVar | Terminal | Function
+  NonterminalMaybeVar = Nonterminal ( '->' Variable ) ?
+  Variable = identifier / '^[a-z].*_v$'
+  Function =
+    x = Name '(' Args ')'
+    Name = identifier / '^[a-z].*_f$'
+    Args = Arg ( ',' Arg ) *
+    Arg = alias p.Expr | p.Variable
+  Nonterminal =
+    x = Base ( '.' Base ) *
+    Base = '_' | 'x' | 'p' | identifier / '^[A-Z]'
+  Terminal = ( string
+             | 'identifier' ( '/' string ) ?
+             | 'operator' ( '/' string ) ?
+             | 'keywords_of' Nonterminal
+             | 'string' | 'number'
+             | 'any' | 'epsilon' | 'end_of_file' )
