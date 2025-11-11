@@ -1,0 +1,48 @@
+name_t = str_t
+
+person_t = [
+  name_t : first,
+  name_t : last,
+  age_t : age,
+]
+
+is_adult_f = person_t -> bool_t {
+  retval = arg.age >= 18;
+}
+
+bjarne = person_t :: [ [ 'Bjarne' 'Stroustrup' ] 80 ]
+
+main_f = {
+  iba_v = bjarne_v | is_adult_f;
+}
+
+<$ Seed
+  Predy =
+    x = 'a' * 'b' *
+$>
+
+<$ Lox
+class Foo {
+}
+$>
+
+pred_f = [ predy: parse_tree Predy, x: T, T: type_t ] -> bool_f {
+  # Turn 'predy' into a function that evaluates it...
+}
+
+vector_f = T : type_t -> type_t {
+}
+
+mainer_f = {
+  vv = vector_f f32_t :: )
+    1.2
+    3.4
+  (
+
+  pred_f [ <$ Predy a a a b b $> 123 index_t ] | log_f
+
+  pred_f a a a b b 123 | log_f
+
+  pp = pred_f a a a b b
+  pp 123 | log_f
+}

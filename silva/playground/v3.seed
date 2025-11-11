@@ -1,0 +1,49 @@
+token string = regex('hello', 'xx\'as')
+token c_identifier = regex(abc, i18n)
+token unicode_identifier = regex(c_identifier, chinese_word, arabic_word, ...)
+token operator = regex(*, -, ..., ⇒, ...)
+token epsilon = regex()
+
+rule None = epsilon
+
+tokenization Default = [
+  indent_up
+  indent_down
+  identifier
+  operator
+  string
+  number
+]
+
+language Seed : tokenization Default
+  rule ⊙ = ( '-' Rule ) *
+  rule Rule = Nonterminal ( '=' '[' x ']' | ExprOrAlias | '=/' Axe )
+  rule ExprOrAlias = ( '=' | '=>' ) Expr
+  expr Expr = Atom [
+    - Parens    = nest  atom_nest '(' ')'
+    - Prefix    = rtl   prefix 'not'
+    - Postfix   = ltr   postfix '?' '*' '+'
+    - Concat    = ltr   infix_flat concat
+    - And       = ltr   infix_flat 'but_then'
+    - Or        = ltr   infix_flat '|'
+  ]
+  alias Atom = NonterminalMaybeVar | Terminal | Function
+  rule NonterminalMaybeVar = Nonterminal ( '->' Variable ) ?
+  rule Variable = identifier / '^[a-z].*_v$'
+
+  namespace Function
+    rule ⊙ = Name '(' Args ')'
+    rule Name = identifier / '^[a-z].*_f$'
+    rule Args = Arg ( ',' Arg ) *
+    alias Arg = p.Expr | p.Variable
+
+  namespace Nonterminal
+    rule x = Base ( '.' Base ) *
+    rule Base = '_' | 'x' | 'p' | identifier / '^[A-Z]'
+
+  rule Terminal = string
+             | 'identifier' ( '/' string ) ?
+             | 'operator' ( '/' string ) ?
+             | 'keywords_of' Nonterminal
+             | 'string' | 'number'
+             | 'any' | 'epsilon' | 'end_of_file'

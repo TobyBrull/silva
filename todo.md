@@ -1,9 +1,5 @@
 # TODO
 
-* Lox:
-    * Unify: object_pool_t, cactus_t?
-        * get rid of object_t::clear_scopes()
-
 * tokenization:
     * Support user-defined tokenization rules.
         * Parse "real" Lox
@@ -14,14 +10,17 @@
     * Tokenize zig multi-line strings
     * UTF-8 (for mathematical symbols as used in Lean)
 
+* Lox:
+    * Unify: object_pool_t, cactus_t?
+        * get rid of object_t::clear_scopes()
+
 * ParseTrees
     * Support conversion of parse_tree_t (with Seed) back to text/tokenization_t.
         * I think the parse_tree_t should be detached from the tokenization_t
     * Support construction of parse_tree_t's
+        * Allow a parse_tree_t to be spliced into another parse_tree_t.
     * Support checking if a parse_tree_t is valid according to a given Seed.
 
-* Soil
-    * Make variable declarations explicit (`let` and `let mut`)
 
 ## Long Term
 
