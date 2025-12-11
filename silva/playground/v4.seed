@@ -1,0 +1,56 @@
+None = ε
+
+lexer Brainstorm:
+  indent = yes
+  string = ' " \\
+  comment = # // /*
+  operator =
+  identifier =
+  number = int float complex
+
+lexer Default:
+  indent = indent Python
+  newline = newline Python
+  operator = explicit [ ] ( ) { } ~ freestyle , . : < > = + / & | ^ @ ! ? ; $ `
+
+lexer Seed < lexer Default:
+  ind = indent like Python
+  str = string '
+  variable = identifier snail_case endswith '_v'
+  nt_base = identifier CamelCase
+  function = identifier snail_case endswith'_f'
+
+language Seed uses lexer Default:
+  ⊙ = ( '-' Rule ) *
+  Rule = Nonterminal ( '=' '[' x ']' | ExprOrAlias | '=/' Axe )
+  ExprOrAlias = ( '=' | '=>' ) Expr
+  Expr = axe Atom
+    Parens    = nest  atom_nest '(' ')'
+    Prefix    = rtl   prefix 'not'
+    Postfix   = ltr   postfix '?' '*' '+'
+    Concat    = ltr   infix_flat concat
+    And       = ltr   infix_flat 'but_then'
+    Or        = ltr   infix_flat '|'
+  Atom = alias NonterminalMaybeVar | Terminal | Function
+  NonterminalMaybeVar = Nonterminal ( '->' Variable ) ?
+  Variable = identifier / '^[a-z].*_v$'
+
+  Function =
+    ⊙ = Name '(' Args ')'
+    Name = identifier / '^[a-z].*_f$'
+    Args = Arg ( ',' Arg ) *
+    Arg = alias p.Expr | p.Variable
+
+  Nonterminal =
+    ⊙ = Base ( '.' Base ) *
+    Base = '_' | 'x' | 'p' | identifier / '^[A-Z]'
+
+  Terminal = string
+             | 'identifier' ( '/' string ) ?
+             | 'operator' ( '/' string ) ?
+             | 'keywords_of' Nonterminal
+             | 'string' | 'number'
+             | 'any' | 'epsilon' | 'end_of_file'
+
+# « [ 42 31 20 '--»--' ] »
+
