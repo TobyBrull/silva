@@ -1,6 +1,6 @@
 None = ε
 
-lexer Brainstorm:
+tokenization brainstorm:
   indent = yes
   string = ' " \\
   comment = # // /*
@@ -8,19 +8,31 @@ lexer Brainstorm:
   identifier =
   number = int float complex
 
-lexer Default:
-  indent = indent Python
-  newline = newline Python
-  operator = explicit [ ] ( ) { } ~ freestyle , . : < > = + / & | ^ @ ! ? ; $ `
+tokenization silva:
+  _ = comment #
+  indent = indent
+  newline = newline () {} []
+  string = string '' \\
+  identifier = identifier
+  number = number 0 0.0 0.0e0
+  parens = parenthesis () {} []
+  op = ~ , . : < > = + / & | ^ @ ! ? ; $ `
 
-lexer Seed < lexer Default:
-  ind = indent like Python
-  str = string '
+tokenization peat < default:
+  string = string ''
+  str = string '' r%""%
   variable = identifier snail_case endswith '_v'
   nt_base = identifier CamelCase
   function = identifier snail_case endswith'_f'
+  kw = identifier concat ε
+  op = operator | / ? =/ parenthesis ()
 
-language Seed uses lexer Default:
+tokenization mine:
+  indent = indent
+  newline = newline () [] {}
+
+
+language Seed uses tokenization Default:
   ⊙ = ( '-' Rule ) *
   Rule = Nonterminal ( '=' '[' x ']' | ExprOrAlias | '=/' Axe )
   ExprOrAlias = ( '=' | '=>' ) Expr
