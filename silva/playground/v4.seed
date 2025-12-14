@@ -1,24 +1,17 @@
 None = ε
 
-tokenization brainstorm:
-  indent = yes
-  string = ' " \\
-  comment = # // /*
-  operator =
-  identifier =
-  number = int float complex
-
-tokenization silva:
+tokenization base:
   _ = comment #
   indent = indent
   newline = newline () {} []
   string = string '' \\
-  identifier = identifier
-  number = number 0 0.0 0.0e0
+  number = number *
   parens = parenthesis () {} []
-  op = ~ , . : < > = + / & | ^ @ ! ? ; $ `
 
-tokenization peat < default:
+tokenization peat < base:
+  equal = operator =
+
+tokenization seed < base:
   string = string ''
   str = string '' r%""%
   variable = identifier snail_case endswith '_v'
@@ -27,10 +20,9 @@ tokenization peat < default:
   kw = identifier concat ε
   op = operator | / ? =/ parenthesis ()
 
-tokenization mine:
-  indent = indent
-  newline = newline () [] {}
-
+tokenization silva < base:
+  identifier = identifier snail_case
+  op = operator ~ , . :: : <= < >= > == = startswith(!) startswith(*)
 
 language Seed uses tokenization Default:
   ⊙ = ( '-' Rule ) *

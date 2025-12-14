@@ -28,8 +28,8 @@ the semantic part of the input file.
 * [operator,parenthesis] Every unicode code-point that has the derived core property Math but is not
 also in XID_Continue. A distinction is made between operators representing opening or closing
 parentheses (called parentheses-chars, as per [this
-answer](https://stackoverflow.com/a/13535289/1171688)) and all other operator-chars. The
-parentheses-chars are expected to be properly nested.
+answer](https://stackoverflow.com/a/13535289/1171688)) and all other operator chars. The
+parentheses chars are expected to be properly nested already at this stage.
 * [indent,newline] Only space and newline are allowed. Indenting works like Python except that one
 level of indent always corresponds to two spaces. Note that here the equivalent of Python's INDENT
 and DEDENT are still fragments rather than tokens. Also, at this stage there is only a single
