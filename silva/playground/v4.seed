@@ -1,60 +1,81 @@
 None = ε
 
-tokenization base:
-  _ = comment #
-  indent = indent
-  newline = newline () {} []
-  string = string '' \\
-  number = number *
-  parens = parenthesis () {} []
+tokenization_silva:
+  tok_string = string '\'\'' '\\\\'
+  tok_identifier = identifier any
+  tok_number = number any
+  tok_operator = operator any
+  tok_parens = parenthesis '()' '{}' '[]' '‹›' '«»'
+  tok_indent = indent
+  tok_dedent = dedent
+  tok_newline = newline except tok_parens
+  ignore comment '#'
+  language parenthesis '«»'
 
-tokenization peat < base:
-  equal = operator =
+tokenization_c:
+  tok_string = string '""'
+  tok_number = number any
+  tok_operator = operator '<=' '>=' '==' '!=' '<' '>' '!' '=' \
+                          '++' '--' '+=' '-=' '+' '-'
+  tok_parens = parenthesis '()' '{}' '[]'
+  ignore comment '/**/' '//'
+  ignore newline
+  ignore indent
+  ignore dedent
 
-tokenization seed < base:
-  string = string ''
-  str = string '' r%""%
-  variable = identifier snail_case endswith '_v'
-  nt_base = identifier CamelCase
-  function = identifier snail_case endswith'_f'
-  kw = identifier concat ε
-  op = operator | / ? =/ parenthesis ()
+language Seed:
+  uses tokenization_silva with:
+    tok_name = identifier camel_case
+    tok_var_name = identifier snail_case 'var_*'
+    tok_func_name = identifier snail_case 'fun_*'
+    tok_token_name = identifier snail_case 'tok_*'
+    tok_tokenization_name = identifier snail_case 'tokenization_*'
 
-tokenization silva < base:
-  identifier = identifier snail_case
-  op = operator ~ , . :: : <= < >= > == = startswith(!) startswith(*)
+  ⊙ = ( Tokenization | Language | Rule ) *
 
-language Seed uses tokenization Default:
-  ⊙ = ( '-' Rule ) *
-  Rule = Nonterminal ( '=' '[' x ']' | ExprOrAlias | '=/' Axe )
-  ExprOrAlias = ( '=' | '=>' ) Expr
-  Expr = axe Atom
-    Parens    = nest  atom_nest '(' ')'
-    Prefix    = rtl   prefix 'not'
-    Postfix   = ltr   postfix '?' '*' '+'
-    Concat    = ltr   infix_flat concat
-    And       = ltr   infix_flat 'but_then'
-    Or        = ltr   infix_flat '|'
-  Atom = alias NonterminalMaybeVar | Terminal | Function
-  NonterminalMaybeVar = Nonterminal ( '->' Variable ) ?
-  Variable = identifier / '^[a-z].*_v$'
+  Tokenization =
+    ⊙ = tok_tokenization_name ':' tok_newline Body
+    Body = tok_indent ( Rule tok_newline ) * tok_dedent
+    Rule = ( 'ignore' | 'language' | tok_token_name '=' ) Pattern
+    Pattern = tok_identifier ( tok_identifier | tok_string ) *
 
-  Function =
-    ⊙ = Name '(' Args ')'
-    Name = identifier / '^[a-z].*_f$'
-    Args = Arg ( ',' Arg ) *
-    Arg = alias p.Expr | p.Variable
+  Language =
+    ⊙ = 'language' tok_name ':' tok_newline tok_indent ( TokenizationUsage Rule * ) tok_dedent
+    TokenizationUsage = 'uses' tok_tokenization_name 'with' ':' tok_newline Tokenization.Body
 
-  Nonterminal =
-    ⊙ = Base ( '.' Base ) *
-    Base = '_' | 'x' | 'p' | identifier / '^[A-Z]'
+  Rule =
+    ⊙ = Nonterminal '=' ( 'axe' Axe | 'alias' Expr | Expr )
+    Expr = axe Atom
+      Parens    = nest  atom_nest '(' ')'
+      Prefix    = rtl   prefix 'not'
+      Postfix   = ltr   postfix '?' '*' '+'
+      Concat    = ltr   infix_flat concat
+      And       = ltr   infix_flat 'but_then'
+      Or        = ltr   infix_flat '|'
+    Atom = alias NonterminalMaybeVar | Terminal | Function
+    NonterminalMaybeVar = Nonterminal ( '->' tok_var_name ) ?
 
-  Terminal = string
-             | 'identifier' ( '/' string ) ?
-             | 'operator' ( '/' string ) ?
-             | 'keywords_of' Nonterminal
-             | 'string' | 'number'
-             | 'any' | 'epsilon' | 'end_of_file'
+    Function =
+      ⊙ = tok_func_name '(' Args ')'
+      Args = Arg ( ',' Arg ) *
+      Arg = alias Expr | variable
 
-# « [ 42 31 20 '--»--' ] »
+    Nonterminal =
+      ⊙ = '.' ? Base ( '.' Base ) *
+      Base = '⊙' | tok_name
 
+    Terminal = tok_string | tok_token_name
+               | 'keywords_of' Nonterminal
+               | 'any' | 'ε' | 'end_of_file'
+
+Seed.Rule.Axe =
+  ⊙ = Nonterminal tok_newline tok_ident Body tok_dedent
+  Body = Level *
+  Level = Nonterminal.Base '=' Assoc Ops *
+  Assoc = 'nest' | 'ltr' | 'rtl'
+  Ops = OpType ( '->' Nonterminal ) ? Op *
+  OpType = 'atom_nest' | 'atom_nest_transparent'
+         | 'prefix' | 'prefix_nest'
+         | 'infix' | 'infix_flat' | 'ternary'
+         | 'postfix' | 'postfix_nest'
+  Op = string | 'concat'

@@ -14,15 +14,16 @@ name.
 
 * [comment] find comments that cover most languages: C-style (/**/), C++-style (//), and
 Python-style comments (#).
-* [string] find strings in such a way that covers 99% of string uses in across all major programming
-languages (Python, C++, ..., but also Zig's multi-line literals). This part could also be made to
-support Python-style f-strings.
 * [whitespace] Only space and newlines are allowed. Some of those are then interpreted under the
 "indent" and "newline" rubriks below, others are genuine whitespace.
 * The content of string-literals, comments, and real whitespace together is called the
 "non-semantic" part of an input file. String-literals, comments, and real whitespace are called
 non-semantic fragments. The following, on the other hand, are called "semantic" fragments, forming
-the semantic part of the input file.
+the semantic part of the input file. Also, a '\' at the end of a line (unless in string) will be
+treated as a line continuation.
+* [string] find strings in such a way that covers 99% of string uses in across all major programming
+languages (Python, C++, ..., but also Zig's multi-line literals). This part could also be made to
+support Python-style f-strings.
 * [identifier] XID_Start XID_Continue*.
 * [number] everything that starts with [0-9] followed by XID_Continue.
 * [operator,parenthesis] Every unicode code-point that has the derived core property Math but is not
