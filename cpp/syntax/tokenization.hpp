@@ -45,7 +45,8 @@ namespace silva {
   };
 
   expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t, filesystem_path_t);
-  expected_t<tokenization_ptr_t> tokenize(syntax_ward_ptr_t, filesystem_path_t, string_view_t text);
+  expected_t<tokenization_ptr_t>
+  tokenize(syntax_ward_ptr_t, filesystem_path_t, string_view_t source_code);
 }
 
 // IMPLEMENTATION

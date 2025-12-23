@@ -12,26 +12,24 @@ Fragmentation is fixed across all languages in Silva.
 By 'XID_Start' and 'XID_Continue' here we mean the Unicode derived core properties with the same
 name.
 
-* [comment] find comments that cover most languages: C-style (/**/), C++-style (//), and
-Python-style comments (#).
-* [whitespace] Only space and newlines are allowed. Some of those are then interpreted under the
-"indent" and "newline" rubriks below, others are genuine whitespace.
-* The content of string-literals, comments, and real whitespace together is called the
+* [whitespace] Only space and newlines are allowed; no tabs; no carriage-return. Some of those are
+then interpreted under the "indent" and "newline" rubriks below, others are "genuine whitespace".
+* [comment] This covers C-style (/**/), C++-style (//), and Python-style comments (#).
+* [string] Allows a wide range of string literals of C++ and Python. Also supports Zig's multi-line
+literals. This part could also be made to support Python-style f-strings.
+* The content of string-literals, comments, and genuine whitespace together is called the
 "non-semantic" part of an input file. String-literals, comments, and real whitespace are called
 non-semantic fragments. The following, on the other hand, are called "semantic" fragments, forming
-the semantic part of the input file. Also, a '\' at the end of a line (unless in string) will be
+the semantic part of the input file. Also, a '\\' at the end of a line (unless in string) will be
 treated as a line continuation.
-* [string] find strings in such a way that covers 99% of string uses in across all major programming
-languages (Python, C++, ..., but also Zig's multi-line literals). This part could also be made to
-support Python-style f-strings.
 * [identifier] XID_Start XID_Continue*.
 * [number] everything that starts with [0-9] followed by XID_Continue.
 * [operator,parenthesis] Every unicode code-point that has the derived core property Math but is not
 also in XID_Continue. A distinction is made between operators representing opening or closing
 parentheses (called parentheses-chars, as per [this
-answer](https://stackoverflow.com/a/13535289/1171688)) and all other operator chars. The
-parentheses chars are expected to be properly nested already at this stage.
-* [indent,newline] Only space and newline are allowed. Indenting works like Python except that one
+answer](https://stackoverflow.com/a/13535289/1171688)) and all other operator chars. The parentheses
+chars are expected to be properly nested already at this stage.
+* [indent,dedent,newline] Only space and newline are allowed. Indenting works like Python except that one
 level of indent always corresponds to two spaces. Note that here the equivalent of Python's INDENT
 and DEDENT are still fragments rather than tokens. Also, at this stage there is only a single
 NEWLINE fragment (the equivalent of the Python distinction between NL and NEWLINE happens in

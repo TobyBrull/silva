@@ -64,9 +64,7 @@ language Seed:
       ⊙ = '.' ? Base ( '.' Base ) *
       Base = '⊙' | tok_name
 
-    Terminal = tok_string | tok_token_name
-               | 'keywords_of' Nonterminal
-               | 'any' | 'ε' | 'end_of_file'
+    Terminal = tok_string | tok_token_name | 'any' | 'ε' | 'end_of_file'
 
 Seed.Rule.Axe =
   ⊙ = Nonterminal tok_newline tok_ident Body tok_dedent

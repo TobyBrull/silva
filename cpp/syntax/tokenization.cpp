@@ -90,22 +90,22 @@ namespace silva {
 
   expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t swp, filesystem_path_t filepath)
   {
-    string_t text = SILVA_EXPECT_FWD(read_file(filepath));
-    tokenization_ptr_t tp =
-        SILVA_EXPECT_FWD_PLAIN(tokenize(std::move(swp), std::move(filepath), std::move(text)));
+    string_t source_code  = SILVA_EXPECT_FWD(read_file(filepath));
+    tokenization_ptr_t tp = SILVA_EXPECT_FWD_PLAIN(
+        tokenize(std::move(swp), std::move(filepath), std::move(source_code)));
     return tp;
   }
 
   expected_t<tokenization_ptr_t>
-  tokenize(syntax_ward_ptr_t swp, filesystem_path_t filepath, string_view_t text)
+  tokenize(syntax_ward_ptr_t swp, filesystem_path_t filepath, string_view_t source_code)
   {
     auto retval        = std::make_unique<tokenization_t>();
     retval->filepath   = std::move(filepath);
     retval->swp        = swp;
     index_t text_index = 0;
     tokenization_t::location_t loc;
-    while (text_index < text.size()) {
-      const auto [tokenized_str, token_cat] = tokenize_one(text.substr(text_index));
+    while (text_index < source_code.size()) {
+      const auto [tokenized_str, token_cat] = tokenize_one(source_code.substr(text_index));
       SILVA_EXPECT(token_cat != INVALID,
                    MINOR,
                    "token {} at [{}] is invalid",
