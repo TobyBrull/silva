@@ -1,0 +1,21 @@
+#include "fragmentization.hpp"
+
+#include "canopy/byte_sink.hpp"
+#include "canopy/main.hpp"
+
+namespace silva {
+  expected_t<void> fragmentization_main(const span_t<string_view_t> cmdline_args)
+  {
+    const index_t m = cmdline_args.size();
+    SILVA_EXPECT(2 == m, MINOR, "Usage: ... <file>");
+
+    constexpr expected_traits_t expected_traits{.materialize_fwd = true};
+    byte_sink_stdout_t _stdout;
+    const auto tokenization = SILVA_EXPECT_FWD(fragmentize_load(cmdline_args[1]),
+                                               "while fragmentizing {}",
+                                               cmdline_args[1]);
+    pretty_write(*tokenization, &_stdout);
+    return {};
+  }
+}
+SILVA_MAIN(silva::fragmentization_main);
