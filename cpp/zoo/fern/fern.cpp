@@ -1,8 +1,8 @@
 #include "fern.hpp"
 
-#include "canopy/convert.hpp"
 #include "canopy/error.hpp"
 #include "canopy/expected.hpp"
+#include "canopy/string_convert.hpp"
 
 #include "syntax/parse_tree_nursery.hpp"
 #include "syntax/syntax_ward.hpp"

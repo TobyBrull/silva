@@ -1,6 +1,6 @@
 #include "parse_tree.hpp"
 
-#include "canopy/convert.hpp"
+#include "canopy/string_convert.hpp"
 #include "canopy/tree.hpp"
 #include "name_id_style.hpp"
 
