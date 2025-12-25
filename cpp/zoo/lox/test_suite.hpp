@@ -1,6 +1,6 @@
 #pragma once
 
-#include "canopy/types.hpp"
+#include "canopy/string.hpp"
 #include "canopy/variant.hpp"
 
 namespace silva::lox {

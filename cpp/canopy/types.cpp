@@ -1,5 +1,7 @@
 #include "types.hpp"
 
+#include "string.hpp"
+
 namespace silva {
   void string_pad(string_t& retval, const index_t size, const char fill_char)
   {

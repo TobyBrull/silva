@@ -1,6 +1,7 @@
 #pragma once
 
 #include "customization_point.hpp"
+#include "string.hpp"
 #include "variant.hpp"
 
 #include <typeindex>

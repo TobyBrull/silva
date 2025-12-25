@@ -8,17 +8,11 @@
 #include <functional>
 #include <optional>
 #include <span>
-#include <string>
 #include <vector>
 
 namespace silva {
   using index_t = int32_t;
   using byte_t  = std::byte;
-
-  using string_t = std::string;
-  void string_pad(string_t&, index_t size, char fill_char = ' ');
-
-  using string_view_t = std::string_view;
 
   template<typename T, typename Deleter = std::default_delete<T>>
   using unique_ptr_t = std::unique_ptr<T, Deleter>;
