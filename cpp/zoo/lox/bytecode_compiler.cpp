@@ -23,13 +23,13 @@ namespace silva::lox {
     struct func_scope_t {
       unique_ptr_t<bytecode_chunk_t> chunk;
       bytecode_chunk_nursery_t nursery{.chunk = *chunk};
-      vector_t<byte_t>& bytecode = nursery.chunk.bytecode;
+      array_t<byte_t>& bytecode = nursery.chunk.bytecode;
 
       index_t scope_depth = 0;
       struct local_t {
         token_id_t var_name = token_id_none;
       };
-      vector_t<local_t> locals;
+      array_t<local_t> locals;
 
       struct upvalue_info_t {
         index_t index = 0;
@@ -37,11 +37,11 @@ namespace silva::lox {
 
         friend auto operator<=>(const upvalue_info_t&, const upvalue_info_t&) = default;
       };
-      vector_t<upvalue_info_t> upvalue_infos;
+      array_t<upvalue_info_t> upvalue_infos;
 
       func_scope_t(syntax_ward_ptr_t swp) : chunk{std::make_unique<bytecode_chunk_t>(swp)} {}
     };
-    vector_t<func_scope_t> func_scopes;
+    array_t<func_scope_t> func_scopes;
 
     // returns index into "upvalue_infos" of the "func_scopes" entry with index "fs_idx".
     optional_t<index_t> resolve_upvalue(const index_t fs_idx, const index_t ti)
@@ -96,7 +96,7 @@ namespace silva::lox {
       };
       ~block_scope_guard_t()
       {
-        vector_t<index_t> upvalue_locals;
+        array_t<index_t> upvalue_locals;
         while (compile_run->cfs().upvalue_infos.size() > start_num_upvalue_infos) {
           if (compile_run->cfs().upvalue_infos.back().is_local) {
             upvalue_locals.push_back(compile_run->cfs().upvalue_infos.back().index);

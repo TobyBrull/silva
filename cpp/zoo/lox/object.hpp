@@ -38,7 +38,7 @@ namespace silva::lox {
 
   struct closure_t {
     object_ref_t func;
-    vector_t<object_ref_t> upvalues;
+    array_t<object_ref_t> upvalues;
 
     friend bool operator==(const closure_t&, const closure_t&);
   };

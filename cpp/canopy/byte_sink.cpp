@@ -71,10 +71,10 @@ namespace silva {
     const index_t curr_used = buffer.size() - span.size();
     return span_t<const byte_t>(buffer).subspan(0, curr_used);
   }
-  vector_t<byte_t> byte_sink_memory_t::content_fetch()
+  array_t<byte_t> byte_sink_memory_t::content_fetch()
   {
     const auto range = content();
-    vector_t<byte_t> retval{range.begin(), range.end()};
+    array_t<byte_t> retval{range.begin(), range.end()};
     clear();
     return retval;
   }

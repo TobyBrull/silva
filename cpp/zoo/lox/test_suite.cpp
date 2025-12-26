@@ -1,9 +1,9 @@
 #include "test_suite.hpp"
 
 namespace silva::lox {
-  vector_t<test_chapter_t> test_suite()
+  array_t<test_chapter_t> test_suite()
   {
-    vector_t<test_chapter_t> retval;
+    array_t<test_chapter_t> retval;
     {
       retval.push_back(test_chapter_t{.name = "basic"});
       auto& rv = retval.back().test_cases;

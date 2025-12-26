@@ -24,7 +24,7 @@ namespace silva::seed {
     const name_id_style_t& nis = swp->default_name_id_style();
 
     const tokenization_t& s_tokenization;
-    const vector_t<token_id_t>& s_tokens = s_tokenization.tokens;
+    const array_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
     const name_id_t ni_seed         = swp->name_id_of("Seed");
     const name_id_t ni_rule         = swp->name_id_of(ni_seed, "Rule");
@@ -222,7 +222,7 @@ namespace silva::seed {
       const name_id_style_t& nis = swp->default_name_id_style();
 
       const tokenization_t& t_tokenization = *tp;
-      const vector_t<token_id_t>& t_tokens = t_tokenization.tokens;
+      const array_t<token_id_t>& t_tokens  = t_tokenization.tokens;
 
       int rule_depth = 0;
 
@@ -667,7 +667,7 @@ namespace silva::seed {
         const auto& func = f_it->second;
 
         const auto pts_args = pts.sub_tree_span_at(children[1]);
-        vector_t<parse_tree_span_t> args;
+        array_t<parse_tree_span_t> args;
         for (const auto [child_node_index, child_index]: pts_args.children_range()) {
           const auto pts_arg = pts_args.sub_tree_span_at(child_node_index);
           if (pts_arg[0].rule_name == ni_var) {

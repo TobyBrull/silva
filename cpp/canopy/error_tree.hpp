@@ -30,7 +30,7 @@ namespace silva {
       any_vector_index_t memento_buffer_offset_end;
       any_vector_index_t memento_buffer_begin;
     };
-    vector_t<node_t> nodes;
+    array_t<node_t> nodes;
 
     template<typename Visitor>
       requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
@@ -65,7 +65,7 @@ namespace silva {
     requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
   void error_tree_t::visit_subtree(Visitor visitor, const index_t start_node_index) const
   {
-    vector_t<tree_branch_t> path;
+    array_t<tree_branch_t> path;
     const auto clean_stack_till = [&](const index_t prev_node_index) -> optional_t<index_t> {
       index_t next_child_index = 0;
       while (!path.empty() && prev_node_index <= nodes[path.back().node_index].children_begin) {

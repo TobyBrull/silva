@@ -271,7 +271,7 @@ namespace silva::fern {
       return "[]";
     }
     else {
-      vector_t<optional_t<string_view_t>> used_labels;
+      array_t<optional_t<string_view_t>> used_labels;
       used_labels.resize(n);
       for (const auto& [k, v]: labels) {
         used_labels[v] = k;
@@ -354,7 +354,7 @@ namespace silva::fern {
     void fern_t__to_graphviz__fern(string_t& retval, const fern_t& fern, const string_view_t prefix)
     {
       const index_t n = fern.items.size();
-      vector_t<optional_t<string_t>> labels(n);
+      array_t<optional_t<string_t>> labels(n);
       for (const auto& [k, v]: fern.labels) {
         labels[v] = k;
       }

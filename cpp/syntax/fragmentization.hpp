@@ -22,9 +22,9 @@ namespace silva {
 
     // The first offset will always be zero. The last fragment goes from "back()" to the end of the
     // "source_code"
-    vector_t<index_t> fragment_start_indexes;
+    array_t<index_t> fragment_start_indexes;
 
-    vector_t<fragment_category_t> categories;
+    array_t<fragment_category_t> categories;
 
     friend void pretty_write_impl(const fragmentization_t&, byte_sink_t*);
   };

@@ -15,7 +15,7 @@ namespace silva {
       index_t depth = 0;
       T data        = {};
     };
-    vector_t<item_t> items;
+    array_t<item_t> items;
     index_t depth = 0;
 
     struct scope_t;
@@ -90,7 +90,7 @@ namespace silva {
       using stake_t     = tree_nursery_t<typename exec_trace_t<T>::node_t,
                                          exec_state_t,
                                          exec_tree_nursery_t<T>>::stake_t;
-      vector_t<stake_t> stakes;
+      array_t<stake_t> stakes;
 
       template<typename... Args>
       exec_tree_nursery_t(Args&&... args)

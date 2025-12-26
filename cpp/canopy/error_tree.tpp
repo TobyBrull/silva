@@ -39,7 +39,7 @@ namespace silva::test {
     tree.nodes.push_back(node_t{.num_children = 1, .children_begin = 12}); // [13]
     tree.nodes.push_back(node_t{.num_children = 4, .children_begin = 0});  // [14]
 
-    vector_t<result_t> result;
+    array_t<result_t> result;
     tree.visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> bool {
           result.push_back(result_t{
@@ -51,7 +51,7 @@ namespace silva::test {
         },
         tree.nodes.size() - 1);
     CHECK(result ==
-          vector_t<result_t>{{
+          array_t<result_t>{{
               result_t{.stack_size = 1, .node_index = 14, .event = ON_ENTRY},
 
               result_t{.stack_size = 2, .node_index = 13, .event = ON_ENTRY},

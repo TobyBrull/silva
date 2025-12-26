@@ -9,7 +9,7 @@ namespace silva::test {
   {
     error_context_t error_context;
 
-    vector_t<silva::error_t> errors;
+    array_t<silva::error_t> errors;
 
     silva::error_t final_error;
     {

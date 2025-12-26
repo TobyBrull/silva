@@ -10,8 +10,8 @@ namespace silva::lox {
   struct bytecode_vm_t {
     syntax_ward_ptr_t swp;
     object_pool_t* object_pool = nullptr;
-    vector_t<object_ref_t> stack;
-    vector_t<object_ref_t> open_upvalues;
+    array_t<object_ref_t> stack;
+    array_t<object_ref_t> open_upvalues;
     hash_map_t<token_id_t, object_ref_t> globals;
 
     struct call_frame_t {
@@ -22,7 +22,7 @@ namespace silva::lox {
       index_t stack_offset          = 0;
       object_ref_t override_return_value;
     };
-    vector_t<call_frame_t> call_frames;
+    array_t<call_frame_t> call_frames;
     string_t call_frames_to_string() const;
 
     byte_sink_t* print_target = nullptr;

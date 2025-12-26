@@ -266,7 +266,7 @@ namespace silva {
   {
     // TODO: O(1) time, O(n) memory ?
     const auto ni_path = [this](name_id_t x) {
-      vector_t<name_id_t> retval;
+      array_t<name_id_t> retval;
       while (true) {
         retval.push_back(x);
         if (x == name_id_root) {

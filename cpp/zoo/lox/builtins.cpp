@@ -22,7 +22,7 @@ namespace silva::lox {
       token_id_t name = token_id_none;
       silva::function_t<expected_t<object_ref_t>(object_pool_t&, span_t<const object_ref_t>)> impl;
     };
-    vector_t<builtin_decl_t> builtin_decls{
+    array_t<builtin_decl_t> builtin_decls{
         builtin_decl_t{
             .name = swp->token_id("clock").value(),
             .impl = [](object_pool_t& object_pool,

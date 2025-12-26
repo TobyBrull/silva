@@ -508,10 +508,10 @@ namespace silva::seed::impl {
       optional_t<index_t> min_token_index;
       optional_t<index_t> max_token_index;
     };
-    vector_t<oper_item_t> oper_stack;
+    array_t<oper_item_t> oper_stack;
 
     // Indexes into the "output_tree" vector.
-    vector_t<index_t> open_term_stack;
+    array_t<index_t> open_term_stack;
 
     struct term_node_t : public parse_tree_node_t {
       // If the term is a subtree that was parsed via the "rule_parser", this is an index into
@@ -523,7 +523,7 @@ namespace silva::seed::impl {
     // This is the leaves-down tree that gets constructed inside the "shunting_yard()" function.
     // Eventually, this tree is turned into the final root-up tree via the "generate_output()"
     // function.
-    vector_t<term_node_t> output_tree;
+    array_t<term_node_t> output_tree;
 
     // functions
 

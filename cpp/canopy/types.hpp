@@ -45,21 +45,21 @@ namespace silva {
   using span_t = std::span<T>;
 
   template<typename T>
-  struct vector_t : public std::vector<T> {
+  struct array_t : public std::vector<T> {
     using std::vector<T>::vector;
-    vector_t()                           = default;
-    vector_t(const vector_t&)            = default;
-    vector_t& operator=(const vector_t&) = default;
-    vector_t(vector_t&&)                 = default;
-    vector_t& operator=(vector_t&&)      = default;
-    ~vector_t();
+    array_t()                          = default;
+    array_t(const array_t&)            = default;
+    array_t& operator=(const array_t&) = default;
+    array_t(array_t&&)                 = default;
+    array_t& operator=(array_t&&)      = default;
+    ~array_t();
   };
 
   template<typename T>
   span_t<T> optional_to_span(optional_t<T>& x);
 
   template<typename T, index_t N>
-  using array_t = std::array<T, N>;
+  using array_fixed_t = std::array<T, N>;
 
   using filesystem_path_t = std::filesystem::path;
 
@@ -84,7 +84,7 @@ namespace silva {
 
 namespace silva {
   template<typename T>
-  vector_t<T>::~vector_t()
+  array_t<T>::~array_t()
   {
     while (!this->empty()) {
       this->pop_back();

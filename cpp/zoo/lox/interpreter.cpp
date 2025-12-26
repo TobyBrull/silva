@@ -42,7 +42,7 @@ namespace silva::lox {
       hash_map_t<token_id_t, bool> variables;
       class_type_t class_type = NONE;
     };
-    vector_t<static_scope_t> static_scopes;
+    array_t<static_scope_t> static_scopes;
     static_scopes.push_back({});
 
     const auto count_variable = [&](const parse_tree_span_t ti_pts,
@@ -225,7 +225,7 @@ namespace silva::lox {
       }
       else if (callee->holds_function_builtin()) {
         const function_builtin_t& fb = std::get<function_builtin_t>(callee->data);
-        vector_t<object_ref_t> args;
+        array_t<object_ref_t> args;
         auto [args_it, args_end] = pts_args.children_range();
         index_t i                = 0;
         while (args_it != args_end) {

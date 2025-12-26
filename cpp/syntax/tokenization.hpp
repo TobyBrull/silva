@@ -18,8 +18,8 @@ namespace silva {
     };
     static constexpr location_t location_eof{.line_num = -1, .column = -1};
 
-    vector_t<location_t> token_locations;
-    vector_t<token_id_t> tokens;
+    array_t<location_t> token_locations;
+    array_t<token_id_t> tokens;
 
     tokenization_t copy() const;
 

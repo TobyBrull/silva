@@ -18,7 +18,7 @@ namespace silva {
 
   string_t format_vector(const span_t<string_t> args)
   {
-    vector_t<string_view_t> args_view;
+    array_t<string_view_t> args_view;
     for (const auto& arg: args) {
       args_view.emplace_back(arg);
     }

@@ -20,7 +20,7 @@ namespace silva {
   };
 
   struct byte_sink_stdout_t : public byte_sink_t {
-    vector_t<byte_t> buffer;
+    array_t<byte_t> buffer;
 
     byte_sink_stdout_t(index_t init_buffer_size = min_buffer_size);
     ~byte_sink_stdout_t();
@@ -29,14 +29,14 @@ namespace silva {
   };
 
   struct byte_sink_memory_t : public byte_sink_t {
-    vector_t<byte_t> buffer;
+    array_t<byte_t> buffer;
 
     byte_sink_memory_t(index_t init_buffer_size = min_buffer_size);
 
     void clear();
 
     span_t<const byte_t> content() const;
-    vector_t<byte_t> content_fetch();
+    array_t<byte_t> content_fetch();
 
     string_view_t content_str() const;
     string_t content_str_fetch();

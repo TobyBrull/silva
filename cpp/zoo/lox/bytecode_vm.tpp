@@ -45,7 +45,7 @@ namespace silva::lox::test {
     };
 
     void test_runtime_error(const string_view_t lox_code,
-                            const vector_t<string_view_t>& expected_err_msgs)
+                            const array_t<string_view_t>& expected_err_msgs)
     {
       prepare();
       const auto [ptp, chunk] = make_chunk(lox_code);

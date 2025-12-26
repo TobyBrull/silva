@@ -53,14 +53,14 @@ namespace silva {
   using parse_tree_ptr_t   = ptr_t<const parse_tree_t>;
 
   struct syntax_ward_t : public menhir_t {
-    vector_t<token_info_t> token_infos;
+    array_t<token_info_t> token_infos;
     hash_map_t<string_t, token_id_t> token_lookup;
 
-    vector_t<name_info_t> name_infos;
+    array_t<name_info_t> name_infos;
     hash_map_t<name_info_t, name_id_t> name_lookup;
 
-    vector_t<unique_ptr_t<const tokenization_t>> tokenizations;
-    vector_t<unique_ptr_t<const parse_tree_t>> parse_trees;
+    array_t<unique_ptr_t<const tokenization_t>> tokenizations;
+    array_t<unique_ptr_t<const parse_tree_t>> parse_trees;
 
     struct impl_t;
     unique_ptr_t<impl_t> impl;
@@ -113,7 +113,7 @@ namespace silva {
   template<typename... Ts>
   name_id_t syntax_ward_t::name_id_of(Ts&&... xs)
   {
-    vector_t<token_id_t> vec;
+    array_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
     return name_id_span(name_id_root, vec);
   }
@@ -121,7 +121,7 @@ namespace silva {
   template<typename... Ts>
   name_id_t syntax_ward_t::name_id_of(name_id_t parent_name, Ts&&... xs)
   {
-    vector_t<token_id_t> vec;
+    array_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
     return name_id_span(parent_name, vec);
   }

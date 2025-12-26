@@ -5,8 +5,8 @@
 namespace silva {
   template<typename Key, typename Value>
   struct flatmap_t {
-    vector_t<Key> keys;
-    vector_t<Value> values;
+    array_t<Key> keys;
+    array_t<Value> values;
 
     Value& operator[](const Key& key)
     {
@@ -26,8 +26,8 @@ namespace silva {
       using reference         = value_type&;
       using iterator_category = std::random_access_iterator_tag;
 
-      typename vector_t<Key>::const_iterator keys_iter;
-      typename vector_t<Value>::const_iterator values_iter;
+      typename array_t<Key>::const_iterator keys_iter;
+      typename array_t<Value>::const_iterator values_iter;
 
       pair_t<const Key&, const Value&> operator*() const { return {*keys_iter, *values_iter}; }
 

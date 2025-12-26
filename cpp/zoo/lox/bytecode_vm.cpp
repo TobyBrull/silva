@@ -64,7 +64,7 @@ namespace silva::lox {
       auto& ccf = vm.call_frames.back();
       return ccf.ip;
     }
-    vector_t<object_ref_t> curr_constant_table()
+    array_t<object_ref_t> curr_constant_table()
     {
       auto& ccf = vm.call_frames.back();
       return ccf.chunk->constant_table;

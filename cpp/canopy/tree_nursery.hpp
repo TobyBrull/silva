@@ -12,7 +12,7 @@ namespace silva {
     static_assert(std::derived_from<NodeType, tree_node_t>);
     static_assert(std::derived_from<StateType, tree_nursery_state_t>);
 
-    vector_t<NodeType> tree;
+    array_t<NodeType> tree;
 
     tree_nursery_t();
 
@@ -45,7 +45,7 @@ namespace silva {
     };
     [[nodiscard]] stake_t stake(this auto& self) { return stake_t{&self}; }
 
-    vector_t<NodeType> finish() &&;
+    array_t<NodeType> finish() &&;
 
     tree_nursery_t(tree_nursery_t&&)                 = delete;
     tree_nursery_t& operator=(tree_nursery_t&&)      = delete;
@@ -190,7 +190,7 @@ namespace silva {
   // tree_nursery_t
 
   template<typename NodeType, typename StateType, typename Derived>
-  vector_t<NodeType> tree_nursery_t<NodeType, StateType, Derived>::finish() &&
+  array_t<NodeType> tree_nursery_t<NodeType, StateType, Derived>::finish() &&
   {
     return std::move(tree);
   }

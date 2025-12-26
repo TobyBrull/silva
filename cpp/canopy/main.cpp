@@ -10,7 +10,7 @@ namespace silva {
     silva::var_context_t var_context_cmdline;
     silva::var_context_fill_cmdline(&var_context_cmdline, argc, argv);
 
-    vector_t<string_view_t> cmdline_args;
+    array_t<string_view_t> cmdline_args;
     for (int i = 0; i < argc; ++i) {
       const string_view_t arg_str{argv[i]};
       if (!arg_str.starts_with("--")) {

@@ -15,7 +15,7 @@ namespace silva {
       optional_t<T> obj;
       index_t next_free = -1;
     };
-    vector_t<object_data_t> object_datas;
+    array_t<object_data_t> object_datas;
     index_t next_free = -1;
 
     void free(index_t);

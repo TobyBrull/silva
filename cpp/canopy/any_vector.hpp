@@ -33,7 +33,7 @@ namespace silva {
   class any_vector_t {
     index_t _chunk_byte_capacity = 0;
 
-    vector_t<tuple_t<decltype(Fs{}.template any_function<int>())...>> _type_funcs;
+    array_t<tuple_t<decltype(Fs{}.template any_function<int>())...>> _type_funcs;
     hash_map_t<std::type_index, index_t> _type_to_index;
     template<typename T>
     index_t type_index_of();

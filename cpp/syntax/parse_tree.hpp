@@ -17,7 +17,7 @@ namespace silva {
 
   struct parse_tree_t : public sprite_t {
     tokenization_ptr_t tp;
-    vector_t<parse_tree_node_t> nodes;
+    array_t<parse_tree_node_t> nodes;
 
     auto span(this auto&&);
   };

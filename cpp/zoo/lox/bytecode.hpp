@@ -47,9 +47,9 @@ namespace silva::lox {
   struct bytecode_chunk_t {
     syntax_ward_ptr_t swp;
 
-    vector_t<byte_t> bytecode;
+    array_t<byte_t> bytecode;
 
-    vector_t<object_ref_t> constant_table;
+    array_t<object_ref_t> constant_table;
 
     // (index in "bytecode") -> "pts"
     flatmap_t<index_t, parse_tree_span_t> origin_info;

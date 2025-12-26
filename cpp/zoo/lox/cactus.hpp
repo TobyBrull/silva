@@ -19,7 +19,7 @@ namespace silva {
       hash_map_t<Key, Value> hashmap;
       index_t next_free = -1;
     };
-    vector_t<arm_t> arms;
+    array_t<arm_t> arms;
     index_t next_free = -1;
     index_t size_occ  = 0;
 

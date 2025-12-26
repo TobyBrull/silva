@@ -10,7 +10,7 @@ namespace silva {
   string_t to_string(const error_tree_t::node_t& node,
                      const any_vector_t<pretty_string_t, move_ctor_t, dtor_t>& av)
   {
-    vector_t<string_t> args;
+    array_t<string_t> args;
     const auto end = av.index_iter_at(node.memento_buffer_offset_end);
     for (auto it = av.index_iter_at(node.memento_buffer_offset); it != end; ++it) {
       args.push_back(av.apply(*it, silva::pretty_string));
@@ -113,7 +113,7 @@ namespace silva {
   }
 
   namespace impl {
-    const static vector_t<string_view_t> box_chars = {
+    const static array_t<string_view_t> box_chars = {
         "  ", // [0]
         "│ ", // [1]
         "├─", // [2]
@@ -131,7 +131,7 @@ namespace silva {
         "┼ ",
     };
 
-    void to_string_struct_indent(string_t& retval, vector_t<index_t>& box_levels)
+    void to_string_struct_indent(string_t& retval, array_t<index_t>& box_levels)
     {
       for (const index_t idx: box_levels) {
         retval += box_chars[idx];
@@ -146,7 +146,7 @@ namespace silva {
 
     void to_string_struct(const error_context_t* error_context,
                           string_t& retval,
-                          vector_t<index_t>& box_levels,
+                          array_t<index_t>& box_levels,
                           const index_t node_index,
                           const state_t state)
     {
@@ -193,7 +193,7 @@ namespace silva {
   string_or_view_t error_t::to_string_structured() const
   {
     string_t retval;
-    vector_t<index_t> box_levels;
+    array_t<index_t> box_levels;
     impl::to_string_struct(context.get(), retval, box_levels, node_index, impl::state_t::NONE);
     return string_or_view_t{std::move(retval)};
   }

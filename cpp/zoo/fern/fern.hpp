@@ -31,7 +31,7 @@ namespace silva::fern {
     fern_item_t item;
   };
   struct fern_t {
-    vector_t<fern_item_t> items;
+    array_t<fern_item_t> items;
     hash_map_t<string_t, index_t> labels;
 
     void push_back(fern_labeled_item_t&&);

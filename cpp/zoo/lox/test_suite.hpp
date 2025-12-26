@@ -5,7 +5,7 @@
 
 namespace silva::lox {
   struct test_error_t {
-    vector_t<string_view_t> error_parts;
+    array_t<string_view_t> error_parts;
   };
 
   struct test_case_t {
@@ -17,8 +17,8 @@ namespace silva::lox {
 
   struct test_chapter_t {
     string_view_t name;
-    vector_t<test_case_t> test_cases;
+    array_t<test_case_t> test_cases;
   };
 
-  vector_t<test_chapter_t> test_suite();
+  array_t<test_chapter_t> test_suite();
 }
