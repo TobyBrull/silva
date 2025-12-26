@@ -1,19 +1,17 @@
-# find_package(Threads REQUIRED)
-# find_package(Boost REQUIRED)
-# find_package(Fmt REQUIRED)
+# find_package(Threads REQUIRED) find_package(Boost REQUIRED) find_package(Fmt
+# REQUIRED)
 
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/config.hpp"
-  )
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in"
+               "${CMAKE_CURRENT_BINARY_DIR}/config.hpp")
 
-file(GLOB SILVA_LIB_FILES
+file(
+  GLOB
+  SILVA_LIB_FILES
   "canopy/*.cpp"
   "syntax/*.cpp"
   "zoo/fern/*.cpp"
   "zoo/lox/*.cpp"
-  "*.cpp"
-)
+  "*.cpp")
 file(GLOB_RECURSE SILVA_TEST_FILES "*.tpp")
 file(GLOB_RECURSE SILVA_MAIN_FILES "*.mpp")
 
@@ -26,11 +24,7 @@ endforeach()
 add_library(silvalib ${SILVA_LIB_FILES})
 target_include_directories(silvalib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(silvalib PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
-target_link_libraries(silvalib PUBLIC
-  fmt::fmt
-  reflect-cpp
-  hh-date
-)
+target_link_libraries(silvalib PUBLIC fmt::fmt reflect-cpp hh-date)
 target_link_libraries(silvalib PUBLIC TracyClient)
 
 # Command-line tools
@@ -51,8 +45,5 @@ endforeach()
 include(CTest)
 include(Catch)
 add_executable(silva_test "${SILVA_TEST_FILES}")
-target_link_libraries(silva_test PRIVATE
-  silvalib
-  Catch2::Catch2WithMain
-)
+target_link_libraries(silva_test PRIVATE silvalib Catch2::Catch2WithMain)
 catch_discover_tests(silva_test)
