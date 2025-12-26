@@ -41,3 +41,14 @@ cmake "${CMAKE_ARGS[@]}" -B build/ -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_TRACY
 ninja -C build/ && time ./build/cpp/silva_test
 ninja -C build/ && bash demo.sh > demo.sh.output && git status
 ```
+
+## Formatting
+
+```bash
+# C++
+find ./cpp -name "*pp" -type f | xargs clang-format -i
+
+# CMake
+pip install cmake-format
+find . \( -name "*.cmake" -o -name "CMakeLists.txt" \) -not -path "./.*" -not -path "./build*" | xargs cmake-format -i
+```
