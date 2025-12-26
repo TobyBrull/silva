@@ -1,6 +1,3 @@
-add_subdirectory(thirdparty/reflect-cpp)
-add_subdirectory(thirdparty/date-3.0.3)
-
 # find_package(Threads REQUIRED)
 # find_package(Boost REQUIRED)
 # find_package(Fmt REQUIRED)
