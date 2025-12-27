@@ -1,5 +1,6 @@
 #pragma once
 
+#include "array.hpp"
 #include "string.hpp"
 
 namespace silva {

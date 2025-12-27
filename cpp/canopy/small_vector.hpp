@@ -1,7 +1,7 @@
 #pragma once
 
+#include "array.hpp"
 #include "assert.hpp"
-#include "types.hpp"
 
 #include <memory>
 

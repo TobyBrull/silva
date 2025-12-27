@@ -1,5 +1,6 @@
 #pragma once
 
+#include "array.hpp"
 #include "bit.hpp"
 #include "hash.hpp"
 #include "iterator_facade.hpp"

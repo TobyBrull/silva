@@ -1,5 +1,6 @@
 #pragma once
 
+#include "canopy/array.hpp"
 #include "canopy/string.hpp"
 #include "canopy/variant.hpp"
 

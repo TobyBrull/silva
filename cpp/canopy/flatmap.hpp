@@ -1,6 +1,6 @@
 #pragma once
 
-#include "canopy/types.hpp"
+#include "canopy/array.hpp"
 
 namespace silva {
   template<typename Key, typename Value>
