@@ -504,7 +504,7 @@ namespace silva::seed::impl {
       index_t arity        = 0;
       name_id_t level_name = 0;
       precedence_t precedence;
-      small_vector_t<index_t, 2> covered_token_indexes;
+      array_small_t<index_t, 2> covered_token_indexes;
       optional_t<index_t> min_token_index;
       optional_t<index_t> max_token_index;
     };

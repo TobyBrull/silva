@@ -526,7 +526,7 @@ namespace silva::seed {
           }
         }
         if (repeat_count < min_repeat) {
-          small_vector_t<error_t, 1> maybe_child_error;
+          array_small_t<error_t, 1> maybe_child_error;
           if (!last_error.is_empty()) {
             maybe_child_error.emplace_back(std::move(last_error));
           }

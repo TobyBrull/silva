@@ -5,7 +5,7 @@
 namespace silva::test {
   TEST_CASE("short_vector", "[short_vector_t]")
   {
-    small_vector_t<int, 4> sv;
+    array_small_t<int, 4> sv;
     CHECK(sv.size == 0);
     sv.emplace_back(42);
     CHECK(sv.size == 1);
@@ -20,7 +20,7 @@ namespace silva::test {
     CHECK(sv[2] == 4);
     CHECK(sv[3] == 2);
 
-    small_vector_t<int, 4> sv2 = sv;
+    array_small_t<int, 4> sv2 = sv;
     CHECK(sv2.size == 4);
     CHECK(sv2[0] == 42);
     CHECK(sv2[1] == 8);
