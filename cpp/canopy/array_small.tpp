@@ -1,4 +1,4 @@
-#include "small_vector.hpp"
+#include "array_small.hpp"
 
 #include <catch2/catch_all.hpp>
 

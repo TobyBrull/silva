@@ -1,9 +1,9 @@
 #include "seed_interpreter.hpp"
 
+#include "canopy/array_small.hpp"
 #include "canopy/exec_trace.hpp"
 #include "canopy/expected.hpp"
 #include "canopy/scope_exit.hpp"
-#include "canopy/small_vector.hpp"
 #include "canopy/var_context.hpp"
 #include "name_id_style.hpp"
 #include "parse_tree.hpp"
