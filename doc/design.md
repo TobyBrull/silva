@@ -1,9 +1,35 @@
-# Design Ideas
+# Design
 
-All input files must be in UTF-8.
+## Tokenization
 
+As a language-oriented programming language, Silva allows to nest one language in another language.
+To indicate one language inside another, Silva mainly uses the double-angle quotation marks.
+
+```
+auto x = Json « { "Hello": "World" } »
+```
+
+We want to allow some flexibility in terms of the tokenization of different languages. For example,
+we want to allow languages in which identation is part of the tokenization (like in Python) and
+languages in which it is not (like in C). This implies that nested languages can only be tokenized
+once the outer language has decided what language is expected in the inner language. This then
+raises the question where to start and stop the first tokenization of the outer language.
+
+Although we want *some* flexibility of the tokenization, we're also happy to accept certain
+invariants between different tokenization; for example, in `x = "Hello"` the `"Hello"` bit will
+always be a string literal. For this reason, Silva uses the concept of "fragmentation" (or
+pre-tokenization), which expresses a common denominator with respect to tokenization between all
+languages that Silva supports. Fragmentation also already checks that all "parentheses" are
+nested/well-formed in the standard way. This nesting structure can then be used to define nested
+languages.
+
+The nature of fragmentation, as described below, means that Silva can't parse Rust, for example,
+because Rust uses `'a` as lifetime annotation, but this would always be fragmented as the beginning
+of a string in Silva.
 
 ## Text Fragmentation (Pre-Tokenization)
+
+All input files are assumed to be in UTF-8.
 
 Input: UTF-8 string. Output: Vector of fragments.
 

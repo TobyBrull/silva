@@ -23,6 +23,12 @@ tokenization_c:
   ignore indent
   ignore dedent
 
+tokenization_zig:
+  tok_builtin = identifier '@*' # Note: '@' not fragmented as identifier but still allowed here.
+  ignore newline
+  ignore indent
+  ignore dedent
+
 language Seed:
   uses tokenization_silva with:
     tok_name = identifier camel_case
