@@ -1,3 +1,4 @@
 build*/
+var/
 .cache/
 __pycache__/
