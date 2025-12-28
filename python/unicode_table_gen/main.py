@@ -13,12 +13,6 @@ unicode_files = (
     "UnicodeData.txt",
 )
 
-excluded_derived_properties = (
-    'FC_NFKC',
-    'NFKC_CF',
-    "NFKC_SCF",
-)
-
 
 def handle_download(args):
     for unicode_file in unicode_files:
@@ -86,9 +80,8 @@ def parse_derived_file(filename: str) -> list[UnicodeProperty]:
             assert False, f'expected each row to have 2 or 3 fields'
     retval = []
     for k, v in propname_map.items():
-        if k not in excluded_derived_properties:
-            v.name = k
-            retval.append(v)
+        v.name = k
+        retval.append(v)
     return retval
 
 
@@ -101,13 +94,48 @@ def parse_unicode_data(filename: str) -> list[UnicodeProperty]:
     return [retval]
 
 
+@dataclasses.dataclass
+class PropertyMapping:
+    new_name: str | None = None
+    value_mapping: dict[str, str] = dataclasses.field(default_factory=dict)
+
+    def apply(self, prop: UnicodeProperty) -> UnicodeProperty:
+        if self.new_name:
+            prop.name = self.new_name
+        return prop
+
+
+YES_map = {"": "NO", "YES": "YES"}
+used_properties_mappings = {
+    "General_Category": PropertyMapping(
+        value_mapping={
+            "Pe": "PunctuationEnd",
+            "Ps": "PunctuationStart",
+        },
+    ),
+    'XID_Start': PropertyMapping(value_mapping=YES_map),
+    'XID_Continue': PropertyMapping(value_mapping=YES_map),
+    'Math': PropertyMapping(value_mapping=YES_map),
+    'NFC_QC': PropertyMapping(
+        new_name="NFC_Quick_Check",
+        value_mapping={"": "YES", "N": "NO", "M": "NO"},
+    ),
+}
+
+
 def handle_generate(args):
     props_1 = parse_derived_file(os.path.join(args.workdir, unicode_files[0]))
     props_2 = parse_derived_file(os.path.join(args.workdir, unicode_files[1]))
     props_3 = parse_unicode_data(os.path.join(args.workdir, unicode_files[2]))
     props = props_1 + props_2 + props_3
 
+    cleaned_props = []
     for prop in props:
+        if prop.name in used_properties_mappings:
+            prop_mapping = used_properties_mappings[prop.name]
+            cleaned_props.append(prop_mapping.apply(prop))
+
+    for prop in cleaned_props:
         print("===========================")
         print(prop.name)
         print(prop.value_set)
