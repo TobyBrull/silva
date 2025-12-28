@@ -68,7 +68,7 @@ seed::interpreter_t::apply(_.Fern) failed to parse
       [0]_.Fern.LabeledItem                       none
         [0]_.Fern.Value                           none
 
-[0]_                                                   false     unknown token_position
+[0]_                                                   false     unknown token-location
   [0]_.Fern                                            true      01-simplest.fern:1:1
     [0]_.Fern.LabeledItem                              true      01-simplest.fern:2:3
       [0]_.Fern.Label                                  true      01-simplest.fern:2:3

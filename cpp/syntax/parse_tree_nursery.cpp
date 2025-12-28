@@ -69,16 +69,16 @@ namespace silva {
     return &(tp->swp->token_infos[token_id_]);
   }
 
-  token_position_t parse_tree_nursery_t::token_position_by(const index_t token_index_offset) const
+  token_location_t parse_tree_nursery_t::token_location_by(const index_t token_index_offset) const
   {
-    return token_position_t{
+    return token_location_t{
         .tp          = tp,
         .token_index = token_index + token_index_offset,
     };
   }
-  token_position_t parse_tree_nursery_t::token_position_at(const index_t arg_token_index) const
+  token_location_t parse_tree_nursery_t::token_location_at(const index_t arg_token_index) const
   {
-    return token_position_t{
+    return token_location_t{
         .tp          = tp,
         .token_index = arg_token_index,
     };

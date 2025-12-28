@@ -14,7 +14,7 @@ namespace silva {
     }
     else {
       stream->format("[{}] parse_tree_span[ {} ]",
-                     pretty_string(pts.token_position()),
+                     pretty_string(pts.token_location()),
                      pretty_string(pts.token_range()));
     }
   }
@@ -84,9 +84,9 @@ namespace silva {
     };
   }
 
-  token_position_t parse_tree_span_t::token_position() const
+  token_location_t parse_tree_span_t::token_location() const
   {
-    return token_position_t{
+    return token_location_t{
         .tp          = tp,
         .token_index = (*this)[0].token_begin,
     };

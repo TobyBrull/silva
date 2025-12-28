@@ -87,7 +87,7 @@ namespace silva::fern {
         return std::unexpected(std::move(error_nursery)
                                    .finish(MINOR,
                                            "[{}] {}",
-                                           token_position_at(ss_rule.orig_state.token_index),
+                                           token_location_at(ss_rule.orig_state.token_index),
                                            swp->name_id_wrap(ni_lbl_item)));
       }
 

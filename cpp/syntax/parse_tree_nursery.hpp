@@ -10,7 +10,7 @@ namespace silva {
   SILVA_EXPECT(cond,                                 \
                MINOR,                                \
                "[{}] {}: " fmt_str,                  \
-               token_position_by(),                  \
+               token_location_by(),                  \
                swp->name_id_wrap(name) __VA_OPT__(, ) __VA_ARGS__);
 
 #define SILVA_EXPECT_PARSE_TOKEN_ID(name, token_id)                       \
@@ -22,7 +22,7 @@ namespace silva {
   token_index += 1;
 
 #define SILVA_EXPECT_PARSE_FWD(name, expr) \
-  SILVA_EXPECT_FWD(expr, "[{}] {}", token_position_by(), swp->name_id_wrap(name))
+  SILVA_EXPECT_FWD(expr, "[{}] {}", token_location_by(), swp->name_id_wrap(name))
 
   struct parse_tree_nursery_state_t : public tree_nursery_state_t {
     index_t token_index = 0;
@@ -50,7 +50,7 @@ namespace silva {
     const index_t num_tokens_left() const;
     const token_id_t token_id_by(index_t token_index_offset = 0) const;
     const token_info_t* token_data_by(index_t token_index_offset = 0) const;
-    token_position_t token_position_by(index_t token_index_offset = 0) const;
-    token_position_t token_position_at(index_t token_index) const;
+    token_location_t token_location_by(index_t token_index_offset = 0) const;
+    token_location_t token_location_at(index_t token_index) const;
   };
 }

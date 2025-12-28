@@ -29,11 +29,11 @@ namespace silva {
   };
   using tokenization_ptr_t = ptr_t<const tokenization_t>;
 
-  struct token_position_t {
+  struct token_location_t {
     tokenization_ptr_t tp;
     index_t token_index = 0;
 
-    friend void pretty_write_impl(const token_position_t&, byte_sink_t*);
+    friend void pretty_write_impl(const token_location_t&, byte_sink_t*);
   };
 
   struct token_range_t {
@@ -45,8 +45,9 @@ namespace silva {
   };
 
   expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t, filesystem_path_t);
-  expected_t<tokenization_ptr_t>
-  tokenize(syntax_ward_ptr_t, filesystem_path_t, string_view_t source_code);
+  expected_t<tokenization_ptr_t> tokenize(syntax_ward_ptr_t syntax_ward_ptr,
+                                          filesystem_path_t descriptive_path,
+                                          string_view_t source_code);
 }
 
 // IMPLEMENTATION

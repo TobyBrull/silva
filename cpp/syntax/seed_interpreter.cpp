@@ -192,7 +192,7 @@ namespace silva::seed {
   namespace impl {
     struct seed_exec_trace_data_t {
       name_id_t rule_name = name_id_root;
-      token_position_t token_pos;
+      token_location_t token_pos;
       bool success = false;
     };
     struct seed_exec_trace_t : public exec_trace_t<seed_exec_trace_data_t> {
@@ -332,7 +332,7 @@ namespace silva::seed {
             return std::unexpected(std::move(error_nursery)
                                        .finish(MINOR,
                                                "[{}] error running callback for {}",
-                                               token_position_at(orig_token_index),
+                                               token_location_at(orig_token_index),
                                                swp->name_id_wrap(nae.node.rule_name)));
           }
         }
@@ -428,7 +428,7 @@ namespace silva::seed {
           SILVA_EXPECT(keywords.contains(token_id_by()),
                        MINOR,
                        "{} '{}' not in keywords_of {}",
-                       token_position_by(),
+                       token_location_by(),
                        swp->token_id_wrap(token_id_by()),
                        swp->name_id_wrap(keyword_scope));
         }
@@ -576,7 +576,7 @@ namespace silva::seed {
             return std::unexpected(std::move(error_nursery)
                                        .finish(error_level,
                                                "[{}] {}: expected sequence[ {} ]",
-                                               token_position_at(orig_token_index),
+                                               token_location_at(orig_token_index),
                                                swp->name_id_wrap(t_rule_name),
                                                pts.token_range()));
           }
@@ -625,7 +625,7 @@ namespace silva::seed {
         return std::unexpected(std::move(error_nursery)
                                    .finish(error_level,
                                            "[{}] {}: expected alternation[ {} ]",
-                                           token_position_at(orig_token_index),
+                                           token_location_at(orig_token_index),
                                            swp->name_id_wrap(t_rule_name),
                                            pts.token_range()));
       }
@@ -739,7 +739,7 @@ namespace silva::seed {
 
       expected_t<node_and_error_t> handle_rule(const name_id_t t_rule_name)
       {
-        auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name, token_position_by());
+        auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name, token_location_by());
         rule_depth += 1;
         scope_exit_t scope_exit([this] { rule_depth -= 1; });
         SILVA_EXPECT(rule_depth <= 100,

@@ -485,9 +485,9 @@ namespace silva::seed::impl {
 
     syntax_ward_ptr_t swp = nursery.swp;
 
-    token_position_t token_position_by(index_t token_index_offset = 0) const
+    token_location_t token_location_by(index_t token_index_offset = 0) const
     {
-      return nursery.token_position_by(token_index_offset);
+      return nursery.token_location_by(token_index_offset);
     }
 
     // internal state associated with a run
@@ -599,7 +599,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT(combined_arity <= open_term_stack.size(),
                    MINOR,
                    "[{}] Operator(s) expected at total of {} operands, but only found {}",
-                   nursery.token_position_by(),
+                   nursery.token_location_by(),
                    combined_arity,
                    open_term_stack.size());
       const index_t atom_stack_begin = open_term_stack.size() - combined_arity;
@@ -899,7 +899,7 @@ namespace silva::seed::impl {
       }
       SILVA_EXPECT_FWD(stack_pop(precedence_min),
                        "[{}] at the end of the expression",
-                       token_position_by());
+                       token_location_by());
       SILVA_EXPECT(oper_stack.empty(), MINOR);
       SILVA_EXPECT_PARSE(seed_axe.name, open_term_stack.size() > 0, "empty expression");
       SILVA_EXPECT(open_term_stack.size() == 1, MINOR);
@@ -984,7 +984,7 @@ namespace silva::seed {
     const index_t orig_token_index = nursery.token_index;
     const index_t created_node     = SILVA_EXPECT_FWD(run.run(),
                                                   "[{}] when parsing expression starting here",
-                                                  nursery.token_position_at(orig_token_index));
+                                                  nursery.token_location_at(orig_token_index));
     auto& rv_nodes                 = nursery.tree;
     parse_tree_node_t retval;
     retval.num_children = 1;

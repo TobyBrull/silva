@@ -46,10 +46,10 @@ namespace silva {
     }
   }
 
-  void pretty_write_impl(const token_position_t& self, byte_sink_t* stream)
+  void pretty_write_impl(const token_location_t& self, byte_sink_t* stream)
   {
     if (self.tp.is_nullptr()) {
-      stream->write_str("unknown token_position");
+      stream->write_str("unknown token-location");
       return;
     }
     stream->format("{}:", self.tp->filepath.filename().string());

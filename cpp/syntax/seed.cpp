@@ -294,7 +294,7 @@ namespace silva::seed {
         return std::unexpected(std::move(error_nursery)
                                    .finish_short(error_level_t::MINOR,
                                                  "[{}] {}",
-                                                 token_position_at(orig_token_index),
+                                                 token_location_at(orig_token_index),
                                                  swp->name_id_wrap(ni_atom)));
       }
 
@@ -366,7 +366,7 @@ namespace silva::seed {
         return std::unexpected(std::move(error_nursery)
                                    .finish_short(error_level_t::MINOR,
                                                  "[{}] {}",
-                                                 token_position_at(orig_token_index),
+                                                 token_location_at(orig_token_index),
                                                  swp->name_id_wrap(ni_func_arg)));
       }
 

@@ -37,7 +37,7 @@ namespace silva {
     token_id_t first_token_id() const;
 
     token_range_t token_range() const;
-    token_position_t token_position() const;
+    token_location_t token_location() const;
 
     friend void pretty_write_impl(const parse_tree_span_t&, byte_sink_t*);
 
