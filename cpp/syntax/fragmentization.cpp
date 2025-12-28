@@ -6,16 +6,18 @@
 namespace silva {
   using enum fragment_category_t;
 
-  expected_t<fragmentization_ptr_t> fragmentize_load(filesystem_path_t filepath)
+  expected_t<unique_ptr_t<fragmentization_t>> fragmentize_load(filesystem_path_t filepath)
   {
-    string_t source_code     = SILVA_EXPECT_FWD(read_file(filepath));
-    fragmentization_ptr_t fp = SILVA_EXPECT_FWD_PLAIN(fragmentize(std::move(source_code)));
-    return fp;
+    string_t source_code = SILVA_EXPECT_FWD(read_file(filepath));
+    auto retval = SILVA_EXPECT_FWD_PLAIN(fragmentize(std::move(filepath), std::move(source_code)));
+    return retval;
   }
 
-  expected_t<fragmentization_ptr_t> fragmentize(string_view_t source_code)
+  expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filesystem_path_t descriptive_path,
+                                                          string_t source_code)
   {
-    return {};
+    auto retval = std::make_unique<fragmentization_t>();
+    return {std::move(retval)};
   }
 
   void pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream)
@@ -26,7 +28,8 @@ namespace silva {
       const index_t start_index = self.fragment_start_indexes[idx];
       const index_t end_index =
           (idx + 1 < n) ? self.fragment_start_indexes[idx + 1] : self.source_code.size();
-      const string_view_t sv       = self.source_code.substr(start_index, end_index - start_index);
+      const string_view_t sv =
+          string_view_t{self.source_code}.substr(start_index, end_index - start_index);
       const fragment_category_t fc = self.categories[idx];
       stream->format("[{:3}] [", start_index);
       silva::pretty_write(fc, stream);
