@@ -16,7 +16,13 @@ namespace silva {
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filesystem_path_t descriptive_path,
                                                           string_t source_code)
   {
-    auto retval = std::make_unique<fragmentization_t>();
+    const index_t n  = source_code.size();
+    auto retval      = std::make_unique<fragmentization_t>();
+    retval->filepath = std::move(descriptive_path);
+    index_t idx      = 0;
+    while (idx < n) {
+      idx += 1;
+    }
     return {std::move(retval)};
   }
 
