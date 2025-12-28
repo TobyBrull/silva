@@ -1,24 +1,14 @@
 #pragma once
 
+#include "canopy/file_location.hpp"
+
 #include "syntax_ward.hpp"
 
 namespace silva {
   struct tokenization_t : public menhir_t {
     syntax_ward_ptr_t swp;
-
     filesystem_path_t filepath;
-
-    struct location_t {
-      index_t line_num = 0;
-      index_t column   = 0;
-
-      friend auto operator<=>(const location_t&, const location_t&) = default;
-
-      friend void pretty_write_impl(const location_t&, byte_sink_t*);
-    };
-    static constexpr location_t location_eof{.line_num = -1, .column = -1};
-
-    array_t<location_t> token_locations;
+    array_t<file_location_t> token_locations;
     array_t<token_id_t> tokens;
 
     tokenization_t copy() const;

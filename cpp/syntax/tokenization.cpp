@@ -36,16 +36,6 @@ namespace silva {
     }
   }
 
-  void pretty_write_impl(const tokenization_t::location_t& self, byte_sink_t* stream)
-  {
-    if (self == tokenization_t::location_eof) {
-      stream->format("EOF");
-    }
-    else {
-      stream->format("{}:{}", self.line_num + 1, self.column + 1);
-    }
-  }
-
   void pretty_write_impl(const token_location_t& self, byte_sink_t* stream)
   {
     if (self.tp.is_nullptr()) {
@@ -53,12 +43,12 @@ namespace silva {
       return;
     }
     stream->format("{}:", self.tp->filepath.filename().string());
-    const tokenization_t::location_t loc = [&] {
+    const file_location_t loc = [&] {
       if (self.token_index < self.tp->token_locations.size()) {
         return self.tp->token_locations[self.token_index];
       }
       else {
-        return tokenization_t::location_eof;
+        return file_location_eof;
       }
     }();
     silva::pretty_write(loc, stream);
@@ -103,7 +93,7 @@ namespace silva {
     retval->filepath   = std::move(filepath);
     retval->swp        = swp;
     index_t text_index = 0;
-    tokenization_t::location_t loc;
+    file_location_t loc;
     while (text_index < source_code.size()) {
       const auto [tokenized_str, token_cat] = tokenize_one(source_code.substr(text_index));
       SILVA_EXPECT(token_cat != INVALID,
