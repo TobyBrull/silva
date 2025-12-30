@@ -32,8 +32,7 @@ def handle_download(args):
 @dataclasses.dataclass
 class UnicodeProperty:
     name: str = ""
-    value_set: set[str] = dataclasses.field(default_factory=lambda: set([""]))
-    values: list[str] = dataclasses.field(default_factory=lambda: [""] * 0x110000)
+    values: list[str] = dataclasses.field(default_factory=lambda: ["Invalid"] * 0x110000)
 
     def recognise(self, codepoint_str: str, value: str):
         if ".." in codepoint_str:
@@ -42,17 +41,16 @@ class UnicodeProperty:
             codepoint_from = int(codepoint_range[0], 16)
             codepoint_upto = int(codepoint_range[1], 16)
             for codepoint in range(codepoint_from, codepoint_upto + 1):
-                self._recognise_impl(codepoint, value)
+                self.recognise_impl(codepoint, value)
         else:
             codepoint = int(codepoint_str, 16)
-            self._recognise_impl(codepoint, value)
+            self.recognise_impl(codepoint, value)
 
     def recognise_one(self, codepoint_str: str, value: str):
         codepoint = int(codepoint_str, 16)
-        self._recognise_impl(codepoint, value)
+        self.recognise_impl(codepoint, value)
 
-    def _recognise_impl(self, codepoint: int, value: str):
-        self.value_set.add(value)
+    def recognise_impl(self, codepoint: int, value: str):
         self.values[codepoint] = value
 
 
@@ -100,12 +98,15 @@ class PropertyMapping:
     value_mapping: dict[str, str] = dataclasses.field(default_factory=dict)
 
     def apply(self, prop: UnicodeProperty) -> UnicodeProperty:
-        if self.new_name:
-            prop.name = self.new_name
-        return prop
+        retval = UnicodeProperty()
+        retval.name = self.new_name or prop.name
+        for codepoint, value in enumerate(prop.values):
+            new_value = self.value_mapping.get(value, 'Invalid')
+            retval.recognise_impl(codepoint, new_value)
+        return retval
 
 
-YES_map = {"": "NO", "YES": "YES"}
+YES_map = {"Invalid": "No", "YES": "Yes"}
 used_properties_mappings = {
     "General_Category": PropertyMapping(
         value_mapping={
@@ -118,9 +119,66 @@ used_properties_mappings = {
     'Math': PropertyMapping(value_mapping=YES_map),
     'NFC_QC': PropertyMapping(
         new_name="NFC_Quick_Check",
-        value_mapping={"": "YES", "N": "NO", "M": "NO"},
+        value_mapping={"Invalid": "Yes", "N": "No", "M": "No"},
     ),
 }
+
+
+class MultistageTable:
+    def __init__(
+        self, num_lower_bits: int, stage_1: list[int], stage_2: list[int], stage_3: list[dict]
+    ):
+        self.num_lower_bits = num_lower_bits
+        self.stage_1 = stage_1
+        self.stage_2 = stage_2
+        self.stage_3 = stage_3
+
+    def stats(self) -> str:
+        total_size = len(self.stage_1) + len(self.stage_2) + len(self.stage_3) * len(self.stage_3[0])
+        return f'{len(self.stage_1)=} {len(self.stage_2)=} {len(self.stage_3)=} = {total_size=}'
+
+
+def make_multi_stage_table(num_lower_bits: int, props: list[UnicodeProperty]) -> MultistageTable:
+    len_stage_1 = 0x110000 >> num_lower_bits
+    block_len_stage_2 = 1 << num_lower_bits
+    print(f'{len_stage_1=} {block_len_stage_2=}')
+    stage_1 = [0] * len_stage_1
+    stage_2_blocks: dict[tuple, int] = {}
+    stage_2 = []
+    stage_3_props: dict[frozenset, int] = {}
+    stage_3 = []
+
+    # for codepoint in range(0x11000):
+    for stage_1_idx in range(len_stage_1):
+        new_block = []
+        for stage_2_block_idx in range(block_len_stage_2):
+            codepoint = (stage_1_idx << num_lower_bits) | stage_2_block_idx
+
+            curr_props = {}
+            for prop in props:
+                curr_props[prop.name] = prop.values[codepoint]
+            curr_props = frozenset(curr_props.items())
+
+            if curr_props in stage_3_props:
+                stage_3_idx = stage_3_props[curr_props]
+            else:
+                stage_3_idx = len(stage_3)
+                stage_3_props[curr_props] = stage_3_idx
+                stage_3.append(curr_props)
+
+            new_block.append(stage_3_idx)
+
+        new_block_tuple = tuple(new_block)
+        if new_block_tuple in stage_2_blocks:
+            stage_2_idx = stage_2_blocks[new_block_tuple]
+        else:
+            stage_2_idx = len(stage_2) // block_len_stage_2
+            stage_2_blocks[new_block_tuple] = stage_2_idx
+            stage_2.extend(new_block)
+
+        stage_1[stage_1_idx] = stage_2_idx
+
+    return MultistageTable(num_lower_bits, stage_1, stage_2, stage_3)
 
 
 def handle_generate(args):
@@ -138,7 +196,10 @@ def handle_generate(args):
     for prop in cleaned_props:
         print("===========================")
         print(prop.name)
-        print(prop.value_set)
+        print(sorted(set(prop.values)))
+
+    mst = make_multi_stage_table(args.num_lower_bits, cleaned_props)
+    print(mst.stats())
 
 
 def main():
@@ -149,6 +210,7 @@ def main():
     download_parser.set_defaults(func=handle_download)
     generate_parser = subparsers.add_parser('generate')
     generate_parser.set_defaults(func=handle_generate)
+    generate_parser.add_argument('--num-lower-bits', type=int, default=8)
     args = parser.parse_args()
     assert os.path.exists(args.workdir) and os.path.isdir(
         args.workdir
