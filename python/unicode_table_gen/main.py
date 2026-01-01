@@ -41,10 +41,14 @@ def codepoint_to_str(cp: Codepoint) -> str:
     return retval
 
 
-@dataclasses.dataclass
+def str_to_codepoint(cp_str: str) -> Codepoint:
+    assert len(cp_str) == 1
+    return ord(cp_str[0])
+
+
 class UnicodeProperty:
-    name: str = ""
-    values: list[str] = dataclasses.field(default_factory=lambda: ["Invalid"] * 0x110000)
+    def __init__(self, init_value: str = "Invalid"):
+        self.values: list[str] = [init_value] * 0x110000
 
     def recognise(self, codepoint_str: str, value: str):
         if ".." in codepoint_str:
@@ -66,17 +70,63 @@ class UnicodeProperty:
         self.values[cp] = value
 
     def to_string(self) -> str:
-        retval = f"========= {self.name} =========\n"
         mm: dict[str, list[Codepoint]] = collections.defaultdict(list)
         for cp, val in enumerate(self.values):
             mm[val].append(cp)
-        for k, codepoints in sorted(mm.items()):
+        retval = ""
+        for k, codepoints in mm.items():
             retval += f"{k:20} [{len(codepoints):7}] "
             for cp in codepoints[:10]:
                 retval += f"0x{cp:04x}, "
             retval += "\n"
-        retval += "\n"
         return retval
+
+    def compute_enum_ints(self) -> dict[str, int]:
+        enum_values: dict[str, bool] = {}
+        for cp, val in enumerate(self.values):
+            enum_values[val] = True
+        retval: dict[str, int] = {}
+        for idx, ev in enumerate(enum_values):
+            retval[ev] = idx
+        return retval
+
+    def to_cpp(self, include_filename: str) -> tuple[str, str]:
+        enum_ints = self.compute_enum_ints()
+
+        hpp = ""
+        hpp += "#include <cstdint>\n"
+        hpp += "#include <vector>\n"
+        hpp += "\n"
+        hpp += "namespace silva {\n"
+        hpp += "  enum class fragment_category_t : int8_t {\n"
+        for ev, idx in enum_ints.items():
+            hpp += f"    {ev} = {idx},\n"
+        hpp += "  };\n"
+        hpp += "\n"
+        hpp += "  extern std::vector<fragment_category_t> fragment_category_by_codepoint;\n"
+        hpp += "}\n"
+
+        cpp = ""
+        cpp += f"#include \"{include_filename}\"\n"
+        cpp += "\n"
+        cpp += "namespace silva {\n"
+        cpp += "  const int8_t impl[] = {"
+        for cp, val in enumerate(self.values):
+            if cp % 32 == 0:
+                cpp += "\n    "
+            cpp += f"{enum_ints[val]},"
+        cpp += "\n  };\n"
+        cpp += "\n"
+        cpp += "  std::vector<fragment_category_t> fragment_category_by_codepoint = [] {\n"
+        cpp += "    std::vector<fragment_category_t> retval;\n"
+        cpp += "    retval.reserve(std::size(impl));\n"
+        cpp += "    for (const auto x: impl) {\n"
+        cpp += "      retval.push_back(fragment_category_t{x});\n"
+        cpp += "    }\n"
+        cpp += "    return retval;\n"
+        cpp += "  }();\n"
+        cpp += "}\n"
+        return hpp, cpp
 
     def get_by_value(self, value: str) -> list[Codepoint]:
         retval = []
@@ -94,6 +144,21 @@ class UnicodeProperty:
             if mask[idx]:
                 self.values[idx] = new_value
 
+    def value_set(self) -> list[str]:
+        return list(sorted(set(self.values)))
+
+    def ingest(self, other: 'UnicodeProperty', other_value: str, self_value: str):
+        for cp, val in enumerate(other.values):
+            if val == other_value:
+                self.values[cp] = self_value
+
+    @staticmethod
+    def combine(lhs: "UnicodeProperty", rhs: "UnicodeProperty") -> "UnicodeProperty":
+        retval = UnicodeProperty()
+        for cp, (val1, val2) in enumerate(zip(lhs.values, rhs.values)):
+            retval.recognise_impl(cp, val1 + val2)
+        return retval
+
 
 def _load_derived_file(filename: str) -> list[tuple[str, ...]]:
     results = []
@@ -107,8 +172,8 @@ def _load_derived_file(filename: str) -> list[tuple[str, ...]]:
     return results
 
 
-def parse_derived_file(filename: str) -> list[UnicodeProperty]:
-    propname_map = collections.defaultdict(UnicodeProperty)
+def parse_derived_file(filename: str) -> dict[str, UnicodeProperty]:
+    propname_map: dict[str, UnicodeProperty] = collections.defaultdict(UnicodeProperty)
     rows = _load_derived_file(filename)
     for row in rows:
         if len(row) == 2:
@@ -117,10 +182,9 @@ def parse_derived_file(filename: str) -> list[UnicodeProperty]:
             propname_map[row[1]].recognise(row[0], row[2])
         else:
             assert False, f'expected each row to have 2 or 3 fields'
-    retval = []
-    for k, v in propname_map.items():
-        v.name = "Derived_" + k
-        retval.append(v)
+    retval = {}
+    for prop_name, prop in propname_map.items():
+        retval["Derived_" + prop_name] = prop
     return retval
 
 
@@ -131,9 +195,9 @@ class RangeStart:
     value: str
 
 
-def parse_unicode_data(filename: str) -> tuple[list[str], list[UnicodeProperty]]:
-    prop = UnicodeProperty(name="General_Category")
-    names = UnicodeProperty(name="Names")
+def parse_unicode_data(filename: str) -> dict[str, UnicodeProperty]:
+    prop_gen_cat = UnicodeProperty()
+    prop_names = UnicodeProperty()
     with open(filename, 'r') as file:
         reader = csv.reader(file, delimiter=';')
         range_start: RangeStart | None = None
@@ -148,8 +212,8 @@ def parse_unicode_data(filename: str) -> tuple[list[str], list[UnicodeProperty]]
                     assert range_start is not None
                     assert range_start.name + "Last" == row_name
                     assert range_start.value == row[2]
-                    prop.recognise(f"{range_start.codepoint_str}..{row[0]}", row[2])
-                    prop.recognise(f"{range_start.codepoint_str}..{row[0]}", row[1])
+                    prop_gen_cat.recognise(f"{range_start.codepoint_str}..{row[0]}", row[2])
+                    prop_gen_cat.recognise(f"{range_start.codepoint_str}..{row[0]}", row[1])
                     range_start = None
                 else:
                     raise Exception(
@@ -157,9 +221,9 @@ def parse_unicode_data(filename: str) -> tuple[list[str], list[UnicodeProperty]]
                     )
             else:
                 assert range_start is None, f"{line_num=}"
-                prop.recognise_one(row[0], row[2])
-                names.recognise_one(row[0], row[1])
-    return names.values, [prop]
+                prop_gen_cat.recognise_one(row[0], row[2])
+                prop_names.recognise_one(row[0], row[1])
+    return {"Names": prop_names, "General_Category": prop_gen_cat}
 
 
 def make_mapping(map: dict[str, str], default: str = "Invalid"):
@@ -169,9 +233,8 @@ def make_mapping(map: dict[str, str], default: str = "Invalid"):
     return retval
 
 
-def apply_mapping(prop: UnicodeProperty, mapping, new_name: str | None = None) -> UnicodeProperty:
+def apply_mapping(prop: UnicodeProperty, mapping) -> UnicodeProperty:
     retval = UnicodeProperty()
-    retval.name = new_name or prop.name
     for cp in range(len(prop.values)):
         value = prop.values[cp]
         new_value = mapping(value)
@@ -182,10 +245,10 @@ def apply_mapping(prop: UnicodeProperty, mapping, new_name: str | None = None) -
 YES_mapping = make_mapping({"Invalid": "No", "YES": "Yes"})
 
 
-def process_props(loaded_props: dict[str, UnicodeProperty]) -> list[UnicodeProperty]:
-    retval: list[UnicodeProperty] = []
+def process_props(loaded_props: dict[str, UnicodeProperty]) -> dict[str, UnicodeProperty]:
+    retval: dict[str, UnicodeProperty] = {}
 
-    general_cat = apply_mapping(
+    prop_gen_cat = apply_mapping(
         loaded_props["General_Category"],
         make_mapping(
             {
@@ -215,35 +278,44 @@ def process_props(loaded_props: dict[str, UnicodeProperty]) -> list[UnicodePrope
                 "Sk": "SymbolModifier",
                 "So": "SymbolOther",
                 "Cc": "Unassigned",  # "ControlOther",
-                "Cf": "ControlFormat",
+                "Cf": "Unassigned",  # "ControlFormat",
                 "Cs": "Unassigned",  # "ControlSurrogate",
                 "Co": "Unassigned",  # "ControlPrivateUse",
                 "Cn": "Unassigned",  # "ControlNotAssigned",
                 "Invalid": "Unassigned",
             },
-            "Other",
+            "Unassigned",
         ),
-        new_name="GeneralCategory",
     )
-    # retval.append(general_cat)
+    retval["General_Category"] = prop_gen_cat
 
-    retval.append(apply_mapping(loaded_props["Derived_XID_Start"], YES_mapping, new_name="DerivedXIDStart"))
-    retval.append(apply_mapping(loaded_props["Derived_XID_Continue"], YES_mapping, new_name="DerivedXIDContinue"))
-    retval.append(apply_mapping(loaded_props["Derived_Math"], YES_mapping, new_name="DerivedMath"))
+    retval["XID_Start"] = apply_mapping(loaded_props["Derived_XID_Start"], YES_mapping)
+    retval["XID_Continue"] = apply_mapping(loaded_props["Derived_XID_Continue"], YES_mapping)
 
-    nfc_qc = apply_mapping(
-        loaded_props["Derived_NFC_QC"],
+    # retval["Math"] = apply_mapping(loaded_props["Derived_Math"], YES_mapping)
+    retval["Operator"] = apply_mapping(
+        prop_gen_cat,
         make_mapping(
             {
-                "N": "No",
-                "M": "No",
+                "PunctuationConnector": "Yes",
+                "PunctuationDash": "Yes",
+                "PunctuationOpen": "Yes",
+                "PunctuationClose": "Yes",
+                "PunctuationInitial": "Yes",
+                "PunctuationFinal": "Yes",
+                "PunctuationOther": "Yes",
+                "SymbolMath": "Yes",
+                "SymbolCurrency": "Yes",
+                "SymbolModifier": "Yes",
+                "SymbolOther": "Yes",
             },
-            "Yes",
+            "No",
         ),
-        new_name="DerivedNFCQuickCheck"
     )
-    nfc_qc.update_masked(general_cat.get_mask("Unassigned"), "No")
-    retval.append(nfc_qc)
+
+    retval["NFC_QuickCheck"] = apply_mapping(
+        loaded_props["Derived_NFC_QC"], make_mapping({"N": "No", "M": "No"}, "Yes")
+    )
 
     return retval
 
@@ -263,15 +335,55 @@ class MultistageTable:
         )
         return f'{len(self.stage_1)=} {len(self.stage_2)=} {len(self.stage_3)=} = {total_size=}'
 
+    def to_cpp(self, include_filename: str) -> tuple[str, str]:
+        hpp = ""
+        hpp += "// clang-format off\n"
+        hpp += "#include <cstdint>\n"
+        hpp += "#include <vector>\n"
+        hpp += "\n"
+        hpp += "#include \"canopy/unicode.hpp\"\n"
+        hpp += "\n"
+        hpp += "namespace silva {\n"
+        hpp += "  enum class fragment_category_t {\n"
+        for idx, value in enumerate(self.stage_3):
+            hpp += f"    {value} = {idx},\n"
+        hpp += "  };\n"
+        hpp += "\n"
+        hpp += "  extern unicode::table_t<fragment_category_t> fragment_table;\n"
+        hpp += "}\n"
 
-def make_multi_stage_table(num_lower_bits: int, props: list[UnicodeProperty]) -> MultistageTable:
+        cpp = ""
+        def array_to_str(arr: list):
+            retval = ""
+            for cp, val in enumerate(arr):
+                if cp % 32 == 0:
+                    retval += "\n      "
+                retval += f"{val},"
+                if cp % 32 != 31:
+                    retval += " "
+            return retval
+
+        cpp += "// clang-format off\n"
+        cpp += f"#include \"{include_filename}\"\n"
+        cpp += "namespace silva {\n"
+        cpp += "  using enum fragment_category_t;\n"
+        cpp += "  unicode::table_t<fragment_category_t> fragment_table {\n"
+        cpp += "    .stage_1 = {" + array_to_str(self.stage_1) + "},\n"
+        cpp += "    .stage_2 = {" + array_to_str(self.stage_2) + "},\n"
+        cpp += "    .stage_3 = {" + array_to_str(self.stage_3) + "},\n"
+        cpp += "  };"
+        cpp += "}\n"
+        return hpp, cpp
+
+
+def make_multi_stage_table(num_lower_bits: int, prop: UnicodeProperty) -> MultistageTable:
     len_stage_1 = 0x110000 >> num_lower_bits
     block_len_stage_2 = 1 << num_lower_bits
     print(f'{len_stage_1=} {block_len_stage_2=}')
     stage_1 = [0] * len_stage_1
     stage_2_blocks: dict[tuple, int] = {}
     stage_2 = []
-    stage_3_props: dict[frozenset, int] = {}
+    stage_3_props: dict[str, int] = {}
     stage_3 = []
 
     # for codepoint in range(0x11000):
@@ -279,11 +391,7 @@ def make_multi_stage_table(num_lower_bits: int, props: list[UnicodeProperty]) ->
         new_block = []
         for stage_2_block_idx in range(block_len_stage_2):
             codepoint = (stage_1_idx << num_lower_bits) | stage_2_block_idx
-
-            curr_props = {}
-            for prop in props:
-                curr_props[prop.name] = prop.values[codepoint]
-            curr_props = frozenset(curr_props.items())
+            curr_props = prop.values[codepoint]
 
             if curr_props in stage_3_props:
                 stage_3_idx = stage_3_props[curr_props]
@@ -298,7 +406,7 @@ def make_multi_stage_table(num_lower_bits: int, props: list[UnicodeProperty]) ->
         if new_block_tuple in stage_2_blocks:
             stage_2_idx = stage_2_blocks[new_block_tuple]
         else:
-            stage_2_idx = len(stage_2) // block_len_stage_2
+            stage_2_idx = len(stage_2)
             stage_2_blocks[new_block_tuple] = stage_2_idx
             stage_2.extend(new_block)
 
@@ -348,7 +456,7 @@ def discover_parentheses(
             parens.append(Parentheses(name=name, left=pp.left, right=pp.right))
     parens = sorted(parens, key=lambda pp: pp.left)
 
-    parens_prop = UnicodeProperty(name="IsParenthesis", values=["No"] * 0x110000)
+    parens_prop = UnicodeProperty("No")
     for pp in parens:
         parens_prop.recognise_impl(pp.left, "Left")
         parens_prop.recognise_impl(pp.right, "Right")
@@ -357,26 +465,87 @@ def discover_parentheses(
 
 
 def handle_generate(args):
+    # Load UCD data.
     props_1 = parse_derived_file(os.path.join(args.workdir, unicode_files[0]))
     props_2 = parse_derived_file(os.path.join(args.workdir, unicode_files[1]))
-    codepoint_names, props_3 = parse_unicode_data(os.path.join(args.workdir, unicode_files[2]))
-    props = props_1 + props_2 + props_3
-    loaded_props: dict[str, UnicodeProperty] = {prop.name: prop for prop in props}
+    props_3 = parse_unicode_data(os.path.join(args.workdir, unicode_files[2]))
+    loaded_props = props_1 | props_2 | props_3
 
+    # Process UCD data.
     cleaned_props = process_props(loaded_props)
-
     general_category = loaded_props["General_Category"]
-    parens, parens_prop = discover_parentheses(general_category, codepoint_names)
+    parens, parens_prop = discover_parentheses(general_category, loaded_props["Names"].values)
+    cleaned_props["IsParenthesis"] = parens_prop
 
-    cleaned_props.append(parens_prop)
-
-    for prop in cleaned_props:
+    # Print processed UCD data.
+    for name, prop in cleaned_props.items():
+        print(f"===== {name} =======")
         print(prop.to_string())
-
     pprint.pprint(parens[:10])
+    print()
 
-    mst = make_multi_stage_table(args.num_lower_bits, cleaned_props)
+    prop_comb = UnicodeProperty.combine(cleaned_props["XID_Start"], cleaned_props["XID_Continue"])
+    assert "YesNo" not in prop_comb.value_set(), f'Expected XID_Start to be subset of XID_Continue'
+
+    prop_comb = UnicodeProperty.combine(cleaned_props["XID_Continue"], cleaned_props["Operator"])
+    assert prop_comb.get_by_value("YesYes") == [
+        str_to_codepoint(x)
+        for x in [
+            '_',
+            '·',
+            '·',
+            '‿',
+            '⁀',
+            '⁔',
+            '℘',
+            '℮',
+            '・',
+            '︳',
+            '︴',
+            '﹍',
+            '﹎',
+            '﹏',
+            '＿',
+            '･',
+        ]
+    ], f'Expected only one element in intersection of XID_Continue and Operator'
+
+    main_prop = UnicodeProperty("Forbidden")
+    main_prop.ingest(cleaned_props["Operator"], "Yes", "Operator")
+    main_prop.ingest(cleaned_props["IsParenthesis"], "Left", "ParenthesisLeft")
+    main_prop.ingest(cleaned_props["IsParenthesis"], "Right", "ParenthesisRight")
+    main_prop.ingest(cleaned_props["XID_Continue"], "Yes", "XID_Continue")
+    main_prop.ingest(cleaned_props["XID_Start"], "Yes", "XID_Start")
+    main_prop.values[str_to_codepoint('_')] = "XID_Start"
+    main_prop.ingest(cleaned_props["General_Category"], "Unassigned", "Forbidden")
+    main_prop.ingest(cleaned_props["NFC_QuickCheck"], "No", "Forbidden")
+    main_prop.values[str_to_codepoint('\n')] = "Newline"
+    main_prop.values[str_to_codepoint(' ')] = "Space"
+
+    assert main_prop.values[str_to_codepoint('_')] == "XID_Start"
+    assert main_prop.values[str_to_codepoint('a')] == "XID_Start"
+    assert main_prop.values[str_to_codepoint('0')] == "XID_Continue"
+    assert main_prop.values[str_to_codepoint('"')] == "Operator"
+    assert main_prop.values[str_to_codepoint('*')] == "Operator"
+    assert main_prop.values[str_to_codepoint('!')] == "Operator"
+    assert main_prop.values[str_to_codepoint('⊙')] == "Operator"
+
+    print(main_prop.to_string())
+
+    hpp_filename = f'{args.output_file_base}.hpp'
+    cpp_filename = f'{args.output_file_base}.cpp'
+    include_filename = os.path.basename(hpp_filename)
+
+    # hpp, cpp = main_prop.to_cpp(include_filename)
+
+    mst = make_multi_stage_table(args.num_lower_bits, main_prop)
     print(mst.stats())
+    hpp, cpp = mst.to_cpp(include_filename)
+
+    with open(hpp_filename, 'w') as fh:
+        fh.write(hpp)
+    with open(cpp_filename, 'w') as fh:
+        fh.write(cpp)
 
 
 def main():
@@ -388,6 +557,7 @@ def main():
     generate_parser = subparsers.add_parser('generate')
     generate_parser.set_defaults(func=handle_generate)
     generate_parser.add_argument('--num-lower-bits', type=int, default=8)
+    generate_parser.add_argument('--output-file-base', type=str, required=True)
     args = parser.parse_args()
     assert os.path.exists(args.workdir) and os.path.isdir(
         args.workdir
