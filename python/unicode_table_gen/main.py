@@ -6,6 +6,11 @@ import requests
 import argparse
 import collections
 import dataclasses
+import enum
+
+import numpy as np
+
+from typing import Any
 
 unicode_files = (
     "DerivedNormalizationProps.txt",
@@ -53,6 +58,42 @@ class UnicodeProperty:
     def recognise_impl(self, codepoint: int, value: str):
         self.values[codepoint] = value
 
+    def to_string(self) -> str:
+        retval = f"========= {self.name} =========\n"
+        mm = collections.defaultdict(list)
+        for codepoint, val in enumerate(self.values):
+            utf8 = ''
+            try:
+                utf8 = chr(codepoint)
+            except:
+                pass
+            mm[val].append(utf8)
+        for k, v in sorted(mm.items()):
+            retval += f'{k:20} [{len(v):7}] {v[:10]}\n'
+        retval += "\n"
+        return retval
+
+    def get_by_value(self, value: str) -> list[str]:
+        retval = []
+        for codepoint, val in enumerate(self.values):
+            if val == value:
+                utf8 = ''
+                try:
+                    utf8 = chr(codepoint)
+                except:
+                    pass
+                retval.append(utf8)
+        return retval
+
+    def get_mask(self, value: str) -> list[bool]:
+        return [x == value for x in self.values]
+
+    def update_masked(self, mask, new_value):
+        assert len(mask) == len(self.values)
+        for idx in range(len(mask)):
+            if mask[idx]:
+                self.values[idx] = new_value
+
 
 def _load_derived_file(filename: str) -> list[tuple[str, ...]]:
     results = []
@@ -78,50 +119,132 @@ def parse_derived_file(filename: str) -> list[UnicodeProperty]:
             assert False, f'expected each row to have 2 or 3 fields'
     retval = []
     for k, v in propname_map.items():
-        v.name = k
+        v.name = "Derived_" + k
         retval.append(v)
     return retval
 
 
-def parse_unicode_data(filename: str) -> list[UnicodeProperty]:
-    retval = UnicodeProperty(name="General_Category")
+@dataclasses.dataclass
+class RangeStart:
+    name: str
+    codepoint: str
+    value: str
+
+
+def parse_unicode_data(filename: str) -> tuple[list[str], list[UnicodeProperty]]:
+    prop = UnicodeProperty(name="General_Category")
+    names = UnicodeProperty(name="Names")
     with open(filename, 'r') as file:
         reader = csv.reader(file, delimiter=';')
-        for row in reader:
-            retval.recognise_one(row[0], row[2])
-    return [retval]
+        range_start: RangeStart | None = None
+        for line_num, row in enumerate(reader):
+            row_name = row[1]
+            if (row_name[0] == "<" and row_name[-1] == ">") and row_name != "<control>":
+                row_name = row_name[1:-1]
+                if row_name.endswith("First"):
+                    assert range_start is None
+                    range_start = RangeStart(name=row_name[:-5], codepoint=row[0], value=row[2])
+                elif row_name.endswith("Last"):
+                    assert range_start is not None
+                    assert range_start.name + "Last" == row_name
+                    assert range_start.value == row[2]
+                    prop.recognise(f"{range_start.codepoint}..{row[0]}", row[2])
+                    prop.recognise(f"{range_start.codepoint}..{row[0]}", row[1])
+                    range_start = None
+                else:
+                    raise Exception(
+                        f"Error in processing range in {filename=} {row_name=} {line_num=}"
+                    )
+            else:
+                assert range_start is None, f"{line_num=}"
+                prop.recognise_one(row[0], row[2])
+                names.recognise_one(row[0], row[1])
+    return names.values, [prop]
 
 
-@dataclasses.dataclass
-class PropertyMapping:
-    new_name: str | None = None
-    value_mapping: dict[str, str] = dataclasses.field(default_factory=dict)
+def make_mapping(map: dict[str, str], default: str = "Invalid"):
+    def retval(x: str) -> str:
+        return map.get(x, default)
 
-    def apply(self, prop: UnicodeProperty) -> UnicodeProperty:
-        retval = UnicodeProperty()
-        retval.name = self.new_name or prop.name
-        for codepoint, value in enumerate(prop.values):
-            new_value = self.value_mapping.get(value, 'Invalid')
-            retval.recognise_impl(codepoint, new_value)
-        return retval
+    return retval
 
 
-YES_map = {"Invalid": "No", "YES": "Yes"}
-used_properties_mappings = {
-    "General_Category": PropertyMapping(
-        value_mapping={
-            "Pe": "PunctuationEnd",
-            "Ps": "PunctuationStart",
-        },
-    ),
-    'XID_Start': PropertyMapping(value_mapping=YES_map),
-    'XID_Continue': PropertyMapping(value_mapping=YES_map),
-    'Math': PropertyMapping(value_mapping=YES_map),
-    'NFC_QC': PropertyMapping(
-        new_name="NFC_Quick_Check",
-        value_mapping={"Invalid": "Yes", "N": "No", "M": "No"},
-    ),
-}
+def apply_mapping(prop: UnicodeProperty, mapping, new_name: str | None = None) -> UnicodeProperty:
+    retval = UnicodeProperty()
+    retval.name = new_name or prop.name
+    for codepoint in range(len(prop.values)):
+        value = prop.values[codepoint]
+        new_value = mapping(value)
+        retval.recognise_impl(codepoint, new_value)
+    return retval
+
+
+YES_mapping = make_mapping({"Invalid": "No", "YES": "Yes"})
+
+
+def process_props(loaded_props: dict[str, UnicodeProperty]) -> list[UnicodeProperty]:
+    retval: list[UnicodeProperty] = []
+
+    general_cat = apply_mapping(
+        loaded_props["General_Category"],
+        make_mapping(
+            {
+                "Lu": "LetterUppercase",
+                "Ll": "LetterLowercase",
+                "Lt": "LetterTitlecase",
+                "Mn": "MarkNonSpacing",
+                "Mc": "MarkSpacingCombining",
+                "Me": "MarkEnclosing",
+                "Nd": "NumberDecimalDigit",
+                "Nl": "NumberLetter",
+                "No": "NumberOther",
+                "Zs": "SeparatorSpace",
+                "Zl": "SeparatorLine",
+                "Zp": "SeparatorParagraph",
+                "Lm": "LetterModifier",
+                "Lo": "LetterOther",
+                "Pc": "PunctuationConnector",
+                "Pd": "PunctuationDash",
+                "Ps": "PunctuationOpen",
+                "Pe": "PunctuationClose",
+                "Pi": "PunctuationOpen",  # "PunctuationInitial",
+                "Pf": "PunctuationClose",  # "PunctuationFinal",
+                "Po": "PunctuationOther",
+                "Sm": "SymbolMath",
+                "Sc": "SymbolCurrency",
+                "Sk": "SymbolModifier",
+                "So": "SymbolOther",
+                "Cc": "Unassigned",  # "ControlOther",
+                "Cf": "ControlFormat",
+                "Cs": "Unassigned",  # "ControlSurrogate",
+                "Co": "Unassigned",  # "ControlPrivateUse",
+                "Cn": "Unassigned",  # "ControlNotAssigned",
+                "Invalid": "Unassigned",
+            },
+            "Other",
+        ),
+        new_name="Parentheses",
+    )
+    retval.append(general_cat)
+
+    retval.append(apply_mapping(loaded_props["Derived_XID_Start"], YES_mapping))
+    retval.append(apply_mapping(loaded_props["Derived_XID_Continue"], YES_mapping))
+    retval.append(apply_mapping(loaded_props["Derived_Math"], YES_mapping))
+
+    nfc_qc = apply_mapping(
+        loaded_props["Derived_NFC_QC"],
+        make_mapping(
+            {
+                "N": "No",
+                "M": "No",
+            },
+            "Yes",
+        ),
+    )
+    nfc_qc.update_masked(general_cat.get_mask("Unassigned"), "No")
+    retval.append(nfc_qc)
+
+    return retval
 
 
 class MultistageTable:
@@ -134,7 +257,9 @@ class MultistageTable:
         self.stage_3 = stage_3
 
     def stats(self) -> str:
-        total_size = len(self.stage_1) + len(self.stage_2) + len(self.stage_3) * len(self.stage_3[0])
+        total_size = (
+            len(self.stage_1) + len(self.stage_2) + len(self.stage_3) * len(self.stage_3[0])
+        )
         return f'{len(self.stage_1)=} {len(self.stage_2)=} {len(self.stage_3)=} = {total_size=}'
 
 
@@ -184,19 +309,16 @@ def make_multi_stage_table(num_lower_bits: int, props: list[UnicodeProperty]) ->
 def handle_generate(args):
     props_1 = parse_derived_file(os.path.join(args.workdir, unicode_files[0]))
     props_2 = parse_derived_file(os.path.join(args.workdir, unicode_files[1]))
-    props_3 = parse_unicode_data(os.path.join(args.workdir, unicode_files[2]))
+    codepoint_names, props_3 = parse_unicode_data(os.path.join(args.workdir, unicode_files[2]))
     props = props_1 + props_2 + props_3
+    loaded_props: dict[str, UnicodeProperty] = {prop.name: prop for prop in props}
 
-    cleaned_props = []
-    for prop in props:
-        if prop.name in used_properties_mappings:
-            prop_mapping = used_properties_mappings[prop.name]
-            cleaned_props.append(prop_mapping.apply(prop))
+    cleaned_props = process_props(loaded_props)
 
     for prop in cleaned_props:
-        print("===========================")
-        print(prop.name)
-        print(sorted(set(prop.values)))
+        print(prop.to_string())
+    print(cleaned_props[0].get_by_value("PunctuationOpen"))
+    print(cleaned_props[0].get_by_value("PunctuationClose"))
 
     mst = make_multi_stage_table(args.num_lower_bits, cleaned_props)
     print(mst.stats())

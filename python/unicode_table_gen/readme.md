@@ -7,7 +7,7 @@
 rm -rf venv/
 python -m venv venv/
 source venv/bin/activate
-python -m pip install pytest black pyright requests
+python -m pip install pytest black pyright requests numpy
 python python/unicode_table_gen/main.py --workdir=var/ download
 python python/unicode_table_gen/main.py --workdir=var/ generate
 ```
