@@ -1,4 +1,7 @@
+// GENERATED: DO NOT EDIT!
+//
 // clang-format off
+#include "canopy/hash.hpp"
 #include "canopy/unicode.hpp"
 
 namespace silva {
@@ -14,4 +17,7 @@ namespace silva {
   };
 
   extern unicode::table_t<fragment_category_t> fragment_table;
+
+  extern hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis;
+
 }

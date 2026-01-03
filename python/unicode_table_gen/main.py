@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
-import os
+import os, sys
 import csv
 import requests
 import argparse
 import collections
 import dataclasses
 import pprint
+
+from cpp_writer import CppWriter
 
 unicode_files = (
     "DerivedNormalizationProps.txt",
@@ -89,44 +91,6 @@ class UnicodeProperty:
         for idx, ev in enumerate(enum_values):
             retval[ev] = idx
         return retval
-
-    def to_cpp(self, include_filename: str) -> tuple[str, str]:
-        enum_ints = self.compute_enum_ints()
-
-        hpp = ""
-        hpp += "#include <cstdint>\n"
-        hpp += "#include <vector>\n"
-        hpp += "\n"
-        hpp += "namespace silva {\n"
-        hpp += "  enum class fragment_category_t : int8_t {\n"
-        for ev, idx in enum_ints.items():
-            hpp += f"    {ev} = {idx},\n"
-        hpp += "  };\n"
-        hpp += "\n"
-        hpp += "  extern std::vector<fragment_category_t> fragment_category_by_codepoint;\n"
-        hpp += "}\n"
-
-        cpp = ""
-        cpp += f"#include \"{include_filename}\"\n"
-        cpp += "\n"
-        cpp += "namespace silva {\n"
-        cpp += "  const int8_t impl[] = {"
-        for cp, val in enumerate(self.values):
-            if cp % 32 == 0:
-                cpp += "\n    "
-            cpp += f"{enum_ints[val]},"
-        cpp += "\n  };\n"
-        cpp += "\n"
-        cpp += "  std::vector<fragment_category_t> fragment_category_by_codepoint = [] {\n"
-        cpp += "    std::vector<fragment_category_t> retval;\n"
-        cpp += "    retval.reserve(std::size(impl));\n"
-        cpp += "    for (const auto x: impl) {\n"
-        cpp += "      retval.push_back(fragment_category_t{x});\n"
-        cpp += "    }\n"
-        cpp += "    return retval;\n"
-        cpp += "  }();\n"
-        cpp += "}\n"
-        return hpp, cpp
 
     def get_by_value(self, value: str) -> list[Codepoint]:
         retval = []
@@ -335,21 +299,15 @@ class MultistageTable:
         )
         return f'{len(self.stage_1)=} {len(self.stage_2)=} {len(self.stage_3)=} = {total_size=}'
 
-    def to_cpp(self, include_filename: str) -> tuple[str, str]:
-        hpp = ""
-        hpp += "// clang-format off\n"
-        hpp += "#include \"canopy/unicode.hpp\"\n"
-        hpp += "\n"
-        hpp += "namespace silva {\n"
-        hpp += "  enum class fragment_category_t {\n"
+    def to_cpp(self, cppw: CppWriter):
+        cppw.hpp += "  enum class fragment_category_t {\n"
         for idx, value in enumerate(self.stage_3):
-            hpp += f"    {value} = {idx},\n"
-        hpp += "  };\n"
-        hpp += "\n"
-        hpp += "  extern unicode::table_t<fragment_category_t> fragment_table;\n"
-        hpp += "}\n"
+            cppw.hpp += f"    {value} = {idx},\n"
+        cppw.hpp += "  };\n"
+        cppw.hpp += "\n"
+        cppw.hpp += "  extern unicode::table_t<fragment_category_t> fragment_table;\n"
+        cppw.hpp += "\n"
 
-        cpp = ""
         def array_to_str(arr: list):
             retval = ""
             for cp, val in enumerate(arr):
@@ -360,19 +318,12 @@ class MultistageTable:
                     retval += " "
             return retval
 
-        cpp += "// clang-format off\n"
-        cpp += f"#include \"{include_filename}\"\n"
-        cpp += "\n"
-        cpp += "namespace silva {\n"
-        cpp += "  using enum fragment_category_t;\n"
-        cpp += "\n"
-        cpp += "  unicode::table_t<fragment_category_t> fragment_table {\n"
-        cpp += "    .stage_1 = {" + array_to_str(self.stage_1) + "},\n"
-        cpp += "    .stage_2 = {" + array_to_str(self.stage_2) + "},\n"
-        cpp += "    .stage_3 = {" + array_to_str(self.stage_3) + "},\n"
-        cpp += "  };"
-        cpp += "}\n"
-        return hpp, cpp
+        cppw.cpp += "  unicode::table_t<fragment_category_t> fragment_table {\n"
+        cppw.cpp += "    .stage_1 = {" + array_to_str(self.stage_1) + "},\n"
+        cppw.cpp += "    .stage_2 = {" + array_to_str(self.stage_2) + "},\n"
+        cppw.cpp += "    .stage_3 = {" + array_to_str(self.stage_3) + "},\n"
+        cppw.cpp += "  };\n"
+        cppw.cpp += "\n"
 
 
 def make_multi_stage_table(num_lower_bits: int, prop: UnicodeProperty) -> MultistageTable:
@@ -415,7 +366,7 @@ def make_multi_stage_table(num_lower_bits: int, prop: UnicodeProperty) -> Multis
 
 
 @dataclasses.dataclass
-class Parentheses:
+class ParenthesesPair:
     name: str = ""
     left: Codepoint = -1
     right: Codepoint = -1
@@ -431,10 +382,27 @@ class Parentheses:
         return retval
 
 
+class ParenthesesMap:
+    def __init__(self, parens: list[ParenthesesPair]):
+        self.parens = parens
+
+    def to_cpp(self, cppw: CppWriter):
+        cppw.hpp += "  extern hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis;\n"
+        cppw.hpp += "\n"
+
+        cppw.cpp += "  hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis {\n"
+        for pp in self.parens:
+            cppw.cpp += f"    {{{pp.left}, {pp.right}}},\n"
+            cppw.cpp += f"    {{{pp.right}, {pp.left}}},\n"
+        cppw.cpp += "  };\n"
+        cppw.cpp += "\n"
+
+
 def discover_parentheses(
     general_category: UnicodeProperty, codepoint_names: list[str]
-) -> tuple[list[Parentheses], UnicodeProperty]:
-    left_right: dict[str, Parentheses] = collections.defaultdict(Parentheses)
+) -> tuple[ParenthesesMap, UnicodeProperty]:
+
+    left_right: dict[str, ParenthesesPair] = collections.defaultdict(ParenthesesPair)
     for cp, name in enumerate(codepoint_names):
         if "LEFT" in name and "RIGHT" in name:
             continue
@@ -449,10 +417,10 @@ def discover_parentheses(
         gencat = general_category.values[cp]
         return gencat == "Ps" or gencat == "Pe" or gencat == "Pi" or gencat == "Pf"
 
-    parens: list[Parentheses] = []
+    parens: list[ParenthesesPair] = []
     for name, pp in left_right.items():
         if pp.is_complete() and is_punct(pp.left) and is_punct(pp.right):
-            parens.append(Parentheses(name=name, left=pp.left, right=pp.right))
+            parens.append(ParenthesesPair(name=name, left=pp.left, right=pp.right))
     parens = sorted(parens, key=lambda pp: pp.left)
 
     parens_prop = UnicodeProperty("No")
@@ -460,7 +428,7 @@ def discover_parentheses(
         parens_prop.recognise_impl(pp.left, "Left")
         parens_prop.recognise_impl(pp.right, "Right")
 
-    return parens, parens_prop
+    return ParenthesesMap(parens), parens_prop
 
 
 def handle_generate(args):
@@ -480,7 +448,7 @@ def handle_generate(args):
     for name, prop in cleaned_props.items():
         print(f"===== {name} =======")
         print(prop.to_string())
-    pprint.pprint(parens[:10])
+    pprint.pprint(parens.parens[:10])
     print()
 
     prop_comb = UnicodeProperty.combine(cleaned_props["XID_Start"], cleaned_props["XID_Continue"])
@@ -531,20 +499,15 @@ def handle_generate(args):
 
     print(main_prop.to_string())
 
-    hpp_filename = f'{args.output_file_base}.hpp'
-    cpp_filename = f'{args.output_file_base}.cpp'
-    include_filename = os.path.basename(hpp_filename)
-
-    # hpp, cpp = main_prop.to_cpp(include_filename)
-
     mst = make_multi_stage_table(args.num_lower_bits, main_prop)
     print(mst.stats())
-    hpp, cpp = mst.to_cpp(include_filename)
 
-    with open(hpp_filename, 'w') as fh:
-        fh.write(hpp)
-    with open(cpp_filename, 'w') as fh:
-        fh.write(cpp)
+    cppw = CppWriter(args.output_file_base)
+    cppw.init()
+    mst.to_cpp(cppw)
+    parens.to_cpp(cppw)
+    cppw.finalize()
+    cppw.write()
 
 
 def main():
