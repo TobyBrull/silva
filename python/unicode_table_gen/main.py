@@ -390,10 +390,13 @@ class ParenthesesMap:
         cppw.hpp += "  extern hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis;\n"
         cppw.hpp += "\n"
 
-        cppw.cpp += "  hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis {\n"
+        cppw.cpp += (
+            "  hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis {\n"
+        )
         for pp in self.parens:
-            cppw.cpp += f"    {{{pp.left}, {pp.right}}},\n"
-            cppw.cpp += f"    {{{pp.right}, {pp.left}}},\n"
+            cppw.cpp += f"    {{0x{pp.left:04x}, 0x{pp.right:04x}}}, "
+            cppw.cpp += f"{{0x{pp.right:04x}, 0x{pp.left:04x}}},"
+            cppw.cpp += f" // {codepoint_to_str(pp.left)} {codepoint_to_str(pp.right)}\n"
         cppw.cpp += "  };\n"
         cppw.cpp += "\n"
 
