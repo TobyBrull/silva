@@ -1,7 +1,9 @@
 // clang-format off
 #include "fragmentization_data.hpp"
+
 namespace silva {
   using enum fragment_category_t;
+
   unicode::table_t<fragment_category_t> fragment_table {
     .stage_1 = {
       0, 256, 512, 768, 1024, 1280, 1536, 1792, 2048, 2304, 2560, 2816, 3072, 3328, 3584, 3840, 4096, 4352, 4608, 4864, 5120, 256, 5376, 5632, 5888, 6144, 6400, 6656, 6912, 7168, 256, 7424,

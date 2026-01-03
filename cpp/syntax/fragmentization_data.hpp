@@ -1,7 +1,4 @@
 // clang-format off
-#include <cstdint>
-#include <vector>
-
 #include "canopy/unicode.hpp"
 
 namespace silva {

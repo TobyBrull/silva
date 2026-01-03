@@ -338,9 +338,6 @@ class MultistageTable:
     def to_cpp(self, include_filename: str) -> tuple[str, str]:
         hpp = ""
         hpp += "// clang-format off\n"
-        hpp += "#include <cstdint>\n"
-        hpp += "#include <vector>\n"
-        hpp += "\n"
         hpp += "#include \"canopy/unicode.hpp\"\n"
         hpp += "\n"
         hpp += "namespace silva {\n"
@@ -365,8 +362,10 @@ class MultistageTable:
 
         cpp += "// clang-format off\n"
         cpp += f"#include \"{include_filename}\"\n"
+        cpp += "\n"
         cpp += "namespace silva {\n"
         cpp += "  using enum fragment_category_t;\n"
+        cpp += "\n"
         cpp += "  unicode::table_t<fragment_category_t> fragment_table {\n"
         cpp += "    .stage_1 = {" + array_to_str(self.stage_1) + "},\n"
         cpp += "    .stage_2 = {" + array_to_str(self.stage_2) + "},\n"
