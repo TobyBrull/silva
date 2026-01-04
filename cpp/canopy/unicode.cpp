@@ -78,4 +78,22 @@ namespace silva::unicode {
     SILVA_EXPECT(((retval >> 11) != 0x1B), MINOR, "surrogate half");
     return {{retval, len}};
   }
+
+  std::generator<expected_t<codepoint_data_t>> utf8_decode_generator(const string_view_t s)
+  {
+    index_t pos = 0;
+    while (pos < s.size()) {
+      const auto [codepoint, len] = SILVA_EXPECT_FWD_IMPL(co_yield,
+                                                          utf8_decode_one(s.substr(pos)),
+                                                          "unable to decode codepoint at {}",
+                                                          pos);
+      const codepoint_data_t cd{
+          .codepoint   = codepoint,
+          .byte_offset = pos,
+          .len         = len,
+      };
+      co_yield cd;
+      pos += len;
+    }
+  }
 }

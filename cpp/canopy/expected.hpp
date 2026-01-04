@@ -36,15 +36,16 @@ namespace silva {
 //  - SILVA_EXPECT(0 < x, MINOR, "x too small");
 //  - SILVA_EXPECT(0 < x, MINOR, "x (={}) must be positive", x);
 //
-#define SILVA_EXPECT(condition, error_level, ...)                                                 \
+#define SILVA_EXPECT_IMPL(return_stmt, condition, error_level, ...)                               \
   do {                                                                                            \
     using enum error_level_t;                                                                     \
     static_assert(error_level_is_primary(error_level));                                           \
     if (!(condition)) {                                                                           \
-      return std::unexpected(                                                                     \
+      return_stmt std::unexpected(                                                                \
           silva::impl::silva_expect(__FILE__, __LINE__, error_level __VA_OPT__(, ) __VA_ARGS__)); \
     }                                                                                             \
   } while (false)
+#define SILVA_EXPECT(...) SILVA_EXPECT_IMPL(return, __VA_ARGS__)
 
 // Semantics:
 // Must only be used inside functions whose return value is "expected_t<...>". Also the provided
@@ -60,7 +61,7 @@ namespace silva {
 //  - SILVA_EXPECT_FWD(foo(x), MAJOR)
 //  - SILVA_EXPECT_FWD(foo(x), MAJOR, "foo failed for x={}", x);
 //
-#define SILVA_EXPECT_FWD(expression, ...)                                 \
+#define SILVA_EXPECT_FWD_IMPL(return_stmt, expression, ...)               \
   ({                                                                      \
     auto __silva_result = (expression);                                   \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
@@ -69,13 +70,14 @@ namespace silva {
         __silva_result.error().materialize();                             \
       }                                                                   \
       using enum error_level_t;                                           \
-      return std::unexpected(silva::impl::silva_expect_fwd(               \
+      return_stmt std::unexpected(silva::impl::silva_expect_fwd(          \
           __FILE__,                                                       \
           __LINE__,                                                       \
           std::move(__silva_result).error() __VA_OPT__(, ) __VA_ARGS__)); \
     }                                                                     \
     std::move(__silva_result).value();                                    \
   })
+#define SILVA_EXPECT_FWD(...) SILVA_EXPECT_FWD_IMPL(return, __VA_ARGS__)
 
 #define SILVA_EXPECT_FWD_PLAIN(expression)                                \
   ({                                                                      \

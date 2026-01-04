@@ -14,7 +14,7 @@ namespace silva {
     time_span_t() = default;
     explicit time_span_t(time_repr_t nanos_since_epoch);
 
-    friend auto operator<=>(const time_span_t& lhs, const time_span_t& rhs) = default;
+    friend auto operator<=>(const time_span_t&, const time_span_t&) = default;
 
     string_t to_string_default() const; // "365/13:03:44/123.456.789"
 

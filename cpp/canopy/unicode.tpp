@@ -4,10 +4,23 @@
 #include <catch2/catch_all.hpp>
 
 namespace silva::unicode::test {
+  using namespace Catch::Matchers;
+
   TEST_CASE("unicode", "[codepoint_t]")
   {
     const auto null_f = [](const auto&...) -> expected_t<void> {
       return {};
+    };
+
+    const auto utf8_decode_vector = [](const string_view_t s) {
+      array_t<codepoint_data_t> results;
+      auto res = utf8_decode_for_each(string_view_t{s},
+                                      [&](const codepoint_data_t& cd) -> expected_t<void> {
+                                        results.emplace_back(cd);
+                                        return {};
+                                      });
+      SILVA_EXPECT_REQUIRE(std::move(res));
+      return results;
     };
 
     SECTION("basic")
@@ -20,23 +33,16 @@ namespace silva::unicode::test {
       utf8_encode_one(s, 0x10437);
       CHECK(s == "A⊙ß€𐐷");
 
-      array_t<tuple_t<codepoint_t, index_t, index_t>> results;
-      auto res = for_each_codepoint(
-          string_view_t{s},
-          [&](const codepoint_t a, const index_t b, const index_t c) -> expected_t<void> {
-            results.emplace_back(a, b, c);
-            return {};
-          });
-      SILVA_EXPECT_REQUIRE(std::move(res));
+      auto result = utf8_decode_vector(s);
 
-      const array_t<tuple_t<codepoint_t, index_t, index_t>> expected = {
+      const array_t<codepoint_data_t> expected = {
           {0x0041, 0, 1},
           {0x2299, 1, 3},
           {0x00DF, 4, 2},
           {0x20AC, 6, 3},
           {0x10437, 9, 4},
       };
-      CHECK(results == expected);
+      CHECK(result == expected);
       CHECK(s.size() == 13);
     }
     SECTION("edge-cases")
@@ -51,16 +57,9 @@ namespace silva::unicode::test {
       utf8_encode_one(s, 0x10000);
       utf8_encode_one(s, 0x10FFFF);
 
-      array_t<tuple_t<codepoint_t, index_t, index_t>> results;
-      auto res = for_each_codepoint(
-          string_view_t{s},
-          [&](const codepoint_t a, const index_t b, const index_t c) -> expected_t<void> {
-            results.emplace_back(a, b, c);
-            return {};
-          });
-      SILVA_EXPECT_REQUIRE(std::move(res));
+      auto result = utf8_decode_vector(s);
 
-      const array_t<tuple_t<codepoint_t, index_t, index_t>> expected = {
+      const array_t<codepoint_data_t> expected = {
           {0x0000, 0, 1},
           {0x007F, 1, 1},
           {0x0080, 2, 2},
@@ -70,7 +69,7 @@ namespace silva::unicode::test {
           {0x10000, 12, 4},
           {0x10FFFF, 16, 4},
       };
-      CHECK(results == expected);
+      CHECK(result == expected);
       CHECK(s.size() == 20);
     }
     SECTION("error_1")
@@ -79,11 +78,11 @@ namespace silva::unicode::test {
       utf8_encode_one(s, 0x0041);
       utf8_encode_one(s, 0x110000);
 
-      expected_t<void> res = for_each_codepoint(string_view_t{s}, null_f);
+      expected_t<void> res = utf8_decode_for_each(string_view_t{s}, null_f);
       REQUIRE(!res.has_value());
       const auto err_str = res.error().to_string_plain().as_string();
-      CHECK_THAT(err_str, Catch::Matchers::ContainsSubstring("codepoint above 0x10FFFF"));
-      CHECK_THAT(err_str, Catch::Matchers::ContainsSubstring("unable to decode codepoint at 1"));
+      CHECK_THAT(err_str, ContainsSubstring("codepoint above 0x10FFFF"));
+      CHECK_THAT(err_str, ContainsSubstring("unable to decode codepoint at 1"));
     }
     SECTION("error_2")
     {
@@ -91,11 +90,11 @@ namespace silva::unicode::test {
       utf8_encode_one(s, 0x0041);
       utf8_encode_one(s, 0xDAFA);
 
-      expected_t<void> res = for_each_codepoint(string_view_t{s}, null_f);
+      expected_t<void> res = utf8_decode_for_each(string_view_t{s}, null_f);
       REQUIRE(!res.has_value());
       const auto err_str = res.error().to_string_plain().as_string();
-      CHECK_THAT(err_str, Catch::Matchers::ContainsSubstring("surrogate half"));
-      CHECK_THAT(err_str, Catch::Matchers::ContainsSubstring("unable to decode codepoint at 1"));
+      CHECK_THAT(err_str, ContainsSubstring("surrogate half"));
+      CHECK_THAT(err_str, ContainsSubstring("unable to decode codepoint at 1"));
     }
   }
 }

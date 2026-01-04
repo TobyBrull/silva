@@ -21,29 +21,15 @@ namespace silva {
     auto retval      = std::make_unique<fragmentization_t>();
     retval->filepath = std::move(descriptive_path);
 
-    const auto f = [&](const unicode::codepoint_t cp,
-                       const index_t bo,
-                       const index_t len) -> expected_t<void> {
-      const codepoint_category_t cc = codepoint_category_table[cp];
-      SILVA_EXPECT(cc != Forbidden, MINOR, "Forbidden codepoint 0x{:04x}", cp);
-      if (cc == Newline) {
-      }
-      else if (cc == Space) {
-      }
-      else if (cc == Operator) {
-      }
-      else if (cc == ParenthesisLeft) {
-      }
-      else if (cc == ParenthesisRight) {
-      }
-      else if (cc == XID_Continue) {
-      }
-      else if (cc == XID_Start) {
-      }
-      return {};
-    };
-    auto res = unicode::for_each_codepoint(source_code, f);
-    SILVA_EXPECT_FWD(std::move(res));
+    auto range     = unicode::utf8_decode_generator(source_code);
+    auto it        = range.begin();
+    const auto end = range.end();
+    while (it != end) {
+      const unicode::codepoint_data_t cd = SILVA_EXPECT_FWD(*it);
+      const codepoint_category_t cc      = codepoint_category_table[cd.codepoint];
+      SILVA_EXPECT(cc != Forbidden, MINOR, "Forbidden codepoint 0x{:04x}", cd.codepoint);
+      ++it;
+    }
 
     return {std::move(retval)};
   }
