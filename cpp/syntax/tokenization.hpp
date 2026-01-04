@@ -8,8 +8,9 @@ namespace silva {
   struct tokenization_t : public menhir_t {
     syntax_ward_ptr_t swp;
     filesystem_path_t filepath;
-    array_t<file_location_t> token_locations;
+
     array_t<token_id_t> tokens;
+    array_t<file_location_t> locations;
 
     tokenization_t copy() const;
 

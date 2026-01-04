@@ -28,12 +28,12 @@ namespace silva {
 
   void pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream)
   {
-    const index_t n = self.fragment_start_indexes.size();
-    SILVA_ASSERT(n == self.categories.size());
+    const index_t n = self.categories.size();
+    SILVA_ASSERT(n == self.locations.size());
     for (index_t idx = 0; idx < n; ++idx) {
-      const index_t start_index = self.fragment_start_indexes[idx];
+      const index_t start_index = self.locations[idx].byte_offset;
       const index_t end_index =
-          (idx + 1 < n) ? self.fragment_start_indexes[idx + 1] : self.source_code.size();
+          (idx + 1 < n) ? self.locations[idx + 1].byte_offset : self.source_code.size();
       const string_view_t sv =
           string_view_t{self.source_code}.substr(start_index, end_index - start_index);
       const fragment_category_t fc = self.categories[idx];
