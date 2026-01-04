@@ -5,21 +5,21 @@
 namespace silva::test {
   TEST_CASE("fragmentization-data", "[fragmentization_t]")
   {
-    const unicode::table_t<fragment_category_t>& ft = silva::fragment_table;
-    SILVA_EXPECT_REQUIRE(ft.validate());
-    REQUIRE(ft.key_size() == 0x110000);
+    const unicode::table_t<codepoint_category_t>& cct = silva::codepoint_category_table;
+    SILVA_EXPECT_REQUIRE(cct.validate());
+    REQUIRE(cct.key_size() == 0x110000);
 
-    using enum fragment_category_t;
-    CHECK(ft[U'\t'] == Forbidden);
-    CHECK(ft[U'\n'] == Newline);
-    CHECK(ft[U' '] == Space);
-    CHECK(ft[U'*'] == Operator);
-    CHECK(ft[U'⊙'] == Operator);
-    CHECK(ft[U'«'] == ParenthesisLeft);
-    CHECK(ft[U'»'] == ParenthesisRight);
-    CHECK(ft[U'8'] == XID_Continue);
-    CHECK(ft[U'A'] == XID_Start);
-    CHECK(ft[U'_'] == XID_Start);
+    using enum codepoint_category_t;
+    CHECK(cct[U'\t'] == Forbidden);
+    CHECK(cct[U'\n'] == Newline);
+    CHECK(cct[U' '] == Space);
+    CHECK(cct[U'*'] == Operator);
+    CHECK(cct[U'⊙'] == Operator);
+    CHECK(cct[U'«'] == ParenthesisLeft);
+    CHECK(cct[U'»'] == ParenthesisRight);
+    CHECK(cct[U'8'] == XID_Continue);
+    CHECK(cct[U'A'] == XID_Start);
+    CHECK(cct[U'_'] == XID_Start);
   }
 
   TEST_CASE("fragmentization", "[fragmentization_t]") {}

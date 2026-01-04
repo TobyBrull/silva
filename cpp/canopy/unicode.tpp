@@ -6,7 +6,8 @@
 namespace silva::unicode::test {
   TEST_CASE("unicode", "[codepoint_t]")
   {
-    const auto null_f = [](const auto&...) {
+    const auto null_f = [](const auto&...) -> expected_t<void> {
+      return {};
     };
 
     SECTION("basic")
@@ -20,10 +21,12 @@ namespace silva::unicode::test {
       CHECK(s == "A⊙ß€𐐷");
 
       array_t<tuple_t<codepoint_t, index_t, index_t>> results;
-      auto res = for_each_codepoint(string_view_t{s},
-                                    [&](const codepoint_t a, const index_t b, const index_t c) {
-                                      results.emplace_back(a, b, c);
-                                    });
+      auto res = for_each_codepoint(
+          string_view_t{s},
+          [&](const codepoint_t a, const index_t b, const index_t c) -> expected_t<void> {
+            results.emplace_back(a, b, c);
+            return {};
+          });
       SILVA_EXPECT_REQUIRE(std::move(res));
 
       const array_t<tuple_t<codepoint_t, index_t, index_t>> expected = {
@@ -49,10 +52,12 @@ namespace silva::unicode::test {
       utf8_encode_one(s, 0x10FFFF);
 
       array_t<tuple_t<codepoint_t, index_t, index_t>> results;
-      auto res = for_each_codepoint(string_view_t{s},
-                                    [&](const codepoint_t a, const index_t b, const index_t c) {
-                                      results.emplace_back(a, b, c);
-                                    });
+      auto res = for_each_codepoint(
+          string_view_t{s},
+          [&](const codepoint_t a, const index_t b, const index_t c) -> expected_t<void> {
+            results.emplace_back(a, b, c);
+            return {};
+          });
       SILVA_EXPECT_REQUIRE(std::move(res));
 
       const array_t<tuple_t<codepoint_t, index_t, index_t>> expected = {

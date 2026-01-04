@@ -5,7 +5,7 @@
 #include "canopy/unicode.hpp"
 
 namespace silva {
-  enum class fragment_category_t {
+  enum class codepoint_category_t {
     Forbidden = 0,
     Newline = 1,
     Space = 2,
@@ -16,7 +16,7 @@ namespace silva {
     XID_Start = 7,
   };
 
-  extern unicode::table_t<fragment_category_t> fragment_table;
+  extern unicode::table_t<codepoint_category_t> codepoint_category_table;
 
   extern hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis;
 

@@ -25,7 +25,7 @@ class CppWriter:
         self.cpp += f"#include \"{self.include_filename}\"\n"
         self.cpp += "\n"
         self.cpp += "namespace silva {\n"
-        self.cpp += "  using enum fragment_category_t;\n"
+        self.cpp += "  using enum codepoint_category_t;\n"
         self.cpp += "\n"
 
     def finalize(self):

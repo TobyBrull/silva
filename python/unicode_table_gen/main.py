@@ -300,12 +300,12 @@ class MultistageTable:
         return f'{len(self.stage_1)=} {len(self.stage_2)=} {len(self.stage_3)=} = {total_size=}'
 
     def to_cpp(self, cppw: CppWriter):
-        cppw.hpp += "  enum class fragment_category_t {\n"
+        cppw.hpp += "  enum class codepoint_category_t {\n"
         for idx, value in enumerate(self.stage_3):
             cppw.hpp += f"    {value} = {idx},\n"
         cppw.hpp += "  };\n"
         cppw.hpp += "\n"
-        cppw.hpp += "  extern unicode::table_t<fragment_category_t> fragment_table;\n"
+        cppw.hpp += "  extern unicode::table_t<codepoint_category_t> codepoint_category_table;\n"
         cppw.hpp += "\n"
 
         def array_to_str(arr: list):
@@ -318,7 +318,7 @@ class MultistageTable:
                     retval += " "
             return retval
 
-        cppw.cpp += "  unicode::table_t<fragment_category_t> fragment_table {\n"
+        cppw.cpp += "  unicode::table_t<codepoint_category_t> codepoint_category_table {\n"
         cppw.cpp += "    .stage_1 = {" + array_to_str(self.stage_1) + "},\n"
         cppw.cpp += "    .stage_2 = {" + array_to_str(self.stage_2) + "},\n"
         cppw.cpp += "    .stage_3 = {" + array_to_str(self.stage_3) + "},\n"

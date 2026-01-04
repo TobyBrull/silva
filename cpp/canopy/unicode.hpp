@@ -29,7 +29,7 @@ namespace silva::unicode {
     while (pos < s.size()) {
       const auto [codepoint, len] =
           SILVA_EXPECT_FWD(utf8_decode_one(s.substr(pos)), "unable to decode codepoint at {}", pos);
-      f(codepoint, pos, len);
+      SILVA_EXPECT_FWD(f(codepoint, pos, len));
       pos += len;
     }
     SILVA_EXPECT(pos == s.size(), MINOR, "not able to consume complete string");

@@ -6,6 +6,20 @@
 #include "fragmentization_data.hpp"
 
 namespace silva {
+  enum class fragment_category_t {
+    INVALID = 0,
+    WHITESPACE,
+    COMMENT,
+    STRING,
+    IDENTIFIER,
+    NUMBER,
+    OPERATOR,
+    PARENTHESIS,
+    INDENT,
+    DEDENT,
+    NEWLINE,
+  };
+
   struct fragmentization_t : public menhir_t {
     filesystem_path_t filepath;
     string_t source_code;
