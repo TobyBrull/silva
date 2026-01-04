@@ -10,6 +10,7 @@ namespace silva::test {
     REQUIRE(ft.key_size() == 0x110000);
 
     using enum fragment_category_t;
+    CHECK(ft[U'\t'] == Forbidden);
     CHECK(ft[U'\n'] == Newline);
     CHECK(ft[U' '] == Space);
     CHECK(ft[U'*'] == Operator);
