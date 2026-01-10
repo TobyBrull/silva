@@ -10,6 +10,7 @@ namespace silva::unicode {
   using codepoint_t = char32_t;
 
   void utf8_encode_one(string_t& output, codepoint_t);
+  string_t utf8_encode_one(codepoint_t);
 
   expected_t<tuple_t<codepoint_t, index_t>> utf8_decode_one(string_view_t);
 

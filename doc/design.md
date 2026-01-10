@@ -55,11 +55,10 @@ also in XID_Continue. A distinction is made between operators representing openi
 parentheses (called parentheses-chars, as per [this
 answer](https://stackoverflow.com/a/13535289/1171688)) and all other operator chars. The parentheses
 chars are expected to be properly nested already at this stage.
-* [indent,dedent,newline] Only space and newline are allowed. Indenting works like Python except that one
-level of indent always corresponds to two spaces. Note that here the equivalent of Python's INDENT
-and DEDENT are still fragments rather than tokens. Also, at this stage there is only a single
-NEWLINE fragment (the equivalent of the Python distinction between NL and NEWLINE happens in
-tokenization).
+* [indent,dedent,newline] Only space and newline are allowed. Indenting works like Python. Note that
+here the equivalent of Python's INDENT and DEDENT are still fragments rather than tokens. Also, at
+this stage there is only a single NEWLINE fragment (not NL and NEWLINE like in Python). Consecutive
+newlines are fragmented as a single NEWLINE followed by whitespace.
 * Any other Unicode code-point not explicitly allowed by any of the semantic fragments or any
 sequence that's not in NFC in the semantic part means that the input file is ill-formed.
 

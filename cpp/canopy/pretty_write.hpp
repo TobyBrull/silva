@@ -53,6 +53,21 @@ namespace silva {
 #endif
 }
 
+// CATCH2 GLUE CODE
+
+namespace silva {
+  template<typename T>
+    requires(!std::same_as<T, string_t> && !std::same_as<T, string_view_t> &&
+             !std::same_as<T, char> &&
+             requires { pretty_write_impl(std::declval<T>(), std::declval<byte_sink_t*>()); })
+  std::ostream& operator<<(std::ostream& os, const T& x)
+  {
+    byte_sink_memory_t temp;
+    silva::pretty_write(x, &temp);
+    return os << temp.content_str_fetch();
+  }
+}
+
 // IMPLEMENTATION
 
 namespace silva {

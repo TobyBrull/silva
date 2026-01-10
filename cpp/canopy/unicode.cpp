@@ -22,6 +22,12 @@ namespace silva::unicode {
       output.push_back(((cp >> 0) & 0x3F) | 0x80);
     }
   }
+  string_t utf8_encode_one(const codepoint_t cp)
+  {
+    string_t retval;
+    utf8_encode_one(retval, cp);
+    return retval;
+  }
 
   expected_t<tuple_t<codepoint_t, index_t>> utf8_decode_one(const string_view_t buffer)
   {

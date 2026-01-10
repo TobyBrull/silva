@@ -27,9 +27,19 @@ namespace silva::test {
   TEST_CASE("fragmentization", "[fragmentization_t]")
   {
     const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", "\n\nx\n\n"));
-    const array_t<fragment_category_t> expected_categories{NEWLINE, NEWLINE};
+    const array_t<fragment_category_t> expected_categories{
+        WHITESPACE,
+        IDENTIFIER,
+        NEWLINE,
+        WHITESPACE,
+    };
     CHECK(frag->categories == expected_categories);
-    const array_t<file_location_t> expected_locations{{0, 0, 0}, {2, 1, 3}};
+    const array_t<file_location_t> expected_locations{
+        {0, 0, 0},
+        {2, 0, 2},
+        {2, 1, 3},
+        {3, 0, 4},
+    };
     CHECK(frag->locations == expected_locations);
   }
 }

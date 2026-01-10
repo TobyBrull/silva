@@ -5,7 +5,7 @@ tokenization_silva:
   tok_identifier = identifier any
   tok_number = number any
   tok_operator = operator any
-  tok_parens = parenthesis '()' '{}' '[]' '‹›' '«»'
+  tok_parens = parenthesis '()' '{}' '[]' '‹›'
   tok_indent = indent
   tok_dedent = dedent
   tok_newline = newline except tok_parens
