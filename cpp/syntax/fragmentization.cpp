@@ -16,6 +16,15 @@ namespace silva {
     return retval;
   }
 
+  constexpr bool is_ascii_digit(const unicode::codepoint_t cp)
+  {
+    return '0' <= cp && cp < '9';
+  }
+  constexpr bool is_ascii_alpha(const unicode::codepoint_t cp)
+  {
+    return ('a' <= cp && cp < 'z') || ('A' <= cp && cp < 'Z');
+  }
+
   struct codepoint_wrap_t {
     unicode::codepoint_t codepoint = 0;
     codepoint_category_t category  = codepoint_category_t::Forbidden;
@@ -23,9 +32,9 @@ namespace silva {
 
     friend void pretty_write_impl(const codepoint_wrap_t& x, byte_sink_t* byte_sink)
     {
-      byte_sink->format("codepoint[{}, 0x{:04x}, {}] at ",
+      byte_sink->format("codepoint[ {}, 0x{:04x}, {}] at ",
                         unicode::utf8_encode_one(x.codepoint),
-                        int(x.codepoint),
+                        uint32_t(x.codepoint),
                         rfl::enum_to_string(x.category));
       silva::pretty_write(x.location, byte_sink);
     }
@@ -62,8 +71,9 @@ namespace silva {
       for (auto maybe_ud: unicode::utf8_decode_generator(retval->source_code)) {
         const auto ud                 = SILVA_EXPECT_FWD(std::move(maybe_ud));
         const codepoint_category_t cc = codepoint_category_table[ud.codepoint];
-        SILVA_EXPECT(cc != Forbidden, MINOR, "Forbidden codepoint 0x{:04x}", ud.codepoint);
-        ccd.emplace_back(ud, cc, loc);
+        categorized_codepoint_data_t cc2{ud, cc, loc};
+        SILVA_EXPECT(cc != Forbidden, MINOR, "Forbidden {}", cc2.to_wrap());
+        ccd.emplace_back(std::move(cc2));
         if (ud.codepoint == U'\n') {
           loc.line_num += 1;
           loc.column = 0;
@@ -83,20 +93,28 @@ namespace silva {
       retval->categories.push_back(fc);
     }
 
-    index_t prev_indent = 0;
-    bool recognize_indent(const index_t idx, const index_t indent)
+    array_t<index_t> indents = {0};
+    expected_t<bool> recognize_indent(const index_t idx, const index_t indent)
     {
-      bool retval = false;
-      if (prev_indent < indent) {
-        emit(idx, DEDENT);
-        retval = true;
-      }
-      else if (prev_indent > indent) {
+      SILVA_EXPECT(indent >= 0, ASSERT);
+      SILVA_EXPECT(!indents.empty(), ASSERT);
+      if (indents.back() < indent) {
         emit(idx, INDENT);
-        retval = true;
+        indents.push_back(indent);
+        return true;
       }
-      prev_indent = indent;
-      return retval;
+      else if (indents.back() > indent) {
+        while (indents.back() > indent) {
+          emit(idx, DEDENT);
+          indents.pop_back();
+        }
+        SILVA_EXPECT(indents.back() == indent,
+                     MINOR,
+                     "inconsistent indent: indent at {} doesn't match any previous indent",
+                     ccd[idx].location);
+        return true;
+      }
+      return false;
     }
 
     expected_t<void> run()
@@ -106,54 +124,99 @@ namespace silva {
         if (ccd[i].category == Newline) {
           emit(i++, NEWLINE);
           SILVA_EXPECT_FWD(recognize_various_following_newline());
-          continue;
         }
-        if (ccd[i].category == ParenthesisLeft) {
-          emit(i++, PARENTHESIS_LEFT);
+        else if (ccd[i].category == Space) {
+          emit(i, WHITESPACE);
+          while (i < n && ccd[i].category == Space) {
+            ++i;
+          }
+        }
+        else if (ccd[i].category == ParenthesisLeft) {
+          emit(i++, PAREN_LEFT);
         }
         else if (ccd[i].category == ParenthesisRight) {
-          emit(i++, PARENTHESIS_RIGHT);
+          emit(i++, PAREN_RIGHT);
         }
         else if (ccd[i].category == Operator) {
-          if (ccd[i].codepoint == U'"' || ccd[i].codepoint == U'\'') {
-            SILVA_EXPECT_FWD(recognize_string());
+          if (!SILVA_EXPECT_FWD(try_recognize_string())) {
+            emit(i++, OPERATOR);
           }
-          emit(i++, OPERATOR);
         }
         else if (ccd[i].category == XID_Start) {
           SILVA_EXPECT_FWD(recognize_identifier());
         }
-        else if (ccd[i].category == XID_Continue) {
+        else if (is_ascii_digit(ccd[i].codepoint)) {
           SILVA_EXPECT_FWD(recognize_number());
         }
         else {
           SILVA_EXPECT(false, MINOR, "fragmentization doesn't allow {}", ccd[i].to_wrap());
         }
       }
-      recognize_indent(n, 0);
+      SILVA_EXPECT_FWD(recognize_indent(n, 0));
       return {};
     }
 
     expected_t<void> recognize_identifier()
     {
-      emit(i++, IDENTIFIER);
+      SILVA_EXPECT(ccd[i].category == XID_Start, ASSERT);
+      emit(i, IDENTIFIER);
+      while (i < n && (ccd[i].category == XID_Start || ccd[i].category == XID_Continue)) {
+        ++i;
+      }
       return {};
     }
 
     expected_t<void> recognize_number()
     {
-      SILVA_EXPECT('0' <= ccd[i].codepoint && ccd[i].codepoint < '9',
-                   MINOR,
-                   "fragmentization doesn't allow {}",
-                   ccd[i].to_wrap());
-      emit(i++, NUMBER);
+      SILVA_EXPECT(is_ascii_digit(ccd[i].codepoint), ASSERT);
+      emit(i, NUMBER);
+      const auto is_number_cont = [](const unicode::codepoint_t cp) -> bool {
+        if (is_ascii_digit(cp)) {
+          return true;
+        }
+        if (cp == U'.' || cp == U'\'' || cp == '+' || cp == '-') {
+          return true;
+        }
+        if (is_ascii_alpha(cp)) {
+          return true;
+        }
+        return false;
+      };
+      while (i < n && is_number_cont(ccd[i].codepoint)) {
+        ++i;
+      }
       return {};
     }
 
-    expected_t<void> recognize_string()
+    expected_t<bool> try_recognize_string()
     {
-      emit(i++, STRING);
-      return {};
+      if (i < n && (ccd[i].codepoint == U'"' || ccd[i].codepoint == U'\'')) {
+        emit(i, STRING);
+        const unicode::codepoint_t delim = ccd[i].codepoint;
+        i++;
+        while (i < n) {
+          if (ccd[i].codepoint == U'\\') {
+            SILVA_EXPECT(i + 1 < n, MINOR, "expected character after '\\' at {}", ccd[i].location);
+            i += 2;
+          }
+          else if (ccd[i].codepoint == delim) {
+            i += 1;
+            break;
+          }
+          else {
+            i += 1;
+          }
+        }
+        return true;
+      }
+      else if (i + 1 < n && (ccd[i].codepoint == U'\\' && ccd[i + 1].codepoint == U'\\')) {
+        emit(i, STRING);
+        while (i < n && ccd[i].category != Newline) {
+          ++i;
+        }
+        return true;
+      }
+      return false;
     }
 
     // Gobbles up all whitespace and comments after a newline. Leaves "i" at the first codepoint
@@ -192,7 +255,7 @@ namespace silva {
           emit(prev_i, WHITESPACE);
           prev_i = i - last_indent;
         }
-        const bool emitted_indent = recognize_indent(prev_i, last_indent);
+        const bool emitted_indent = SILVA_EXPECT_FWD(recognize_indent(prev_i, last_indent));
         if (!emitted_indent && last_indent > 0) {
           emit(prev_i, WHITESPACE);
         }
@@ -234,9 +297,17 @@ namespace silva {
       const string_view_t sv =
           string_view_t{self.source_code}.substr(start_index, end_index - start_index);
       const fragment_category_t fc = self.categories[idx];
-      stream->format("[{:3}] [", start_index);
-      silva::pretty_write(fc, stream);
-      stream->format("] [{}]\n", hexdump(sv));
+      stream->format("{:8} {:11}",
+                     silva::pretty_string(self.locations[idx]),
+                     silva::pretty_string(fc));
+      if (std::ranges::all_of(sv, [](const char c) { return c != ' ' && c != '\n'; })) {
+        stream->format(" {:20}", sv);
+      }
+      else {
+        stream->format(" {:20}", "");
+      }
+      stream->format("[{}]", hexdump(sv));
+      stream->write_str("\n");
     }
   }
 }

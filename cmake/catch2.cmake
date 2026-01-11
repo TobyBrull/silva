@@ -1,6 +1,6 @@
 include(FetchContent)
 set(CATCH_CONFIG_CONSOLE_WIDTH
-    256
+    120
     CACHE STRING "wide console")
 FetchContent_Declare(
   Catch2

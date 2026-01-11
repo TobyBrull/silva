@@ -7,10 +7,15 @@ namespace silva {
   {
     string_t retval;
     for (index_t idx = 0; idx < sv.size(); ++idx) {
-      if (idx > 0 && idx % 32 == 0) {
-        retval += '\n';
+      if (idx > 0) {
+        if (idx % 32 == 0) {
+          retval += '\n';
+        }
+        else {
+          retval += ' ';
+        }
       }
-      retval += fmt::format("0x{:02x} ", sv[idx]);
+      retval += fmt::format("0x{:02x}", sv[idx]);
     }
     return retval;
   }
