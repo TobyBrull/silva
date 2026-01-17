@@ -89,8 +89,10 @@ namespace silva {
 
     void emit(const index_t idx, const fragment_category_t fc)
     {
-      retval->locations.push_back(ccd[idx].location);
-      retval->categories.push_back(fc);
+      retval->fragments.push_back(fragmentization_t::fragment_t{
+          .category = fc,
+          .location = ccd[idx].location,
+      });
     }
 
     array_t<index_t> indents = {0};
@@ -286,20 +288,23 @@ namespace silva {
     return std::move(ff.retval);
   }
 
+  void pretty_write_impl(const fragmentization_t::fragment_t& ff, byte_sink_t* stream)
+  {
+    stream->format("{} {}", silva::pretty_string(ff.category), silva::pretty_string(ff.location));
+  }
+
   void pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream)
   {
-    const index_t n = self.categories.size();
-    SILVA_ASSERT(n == self.locations.size());
+    const index_t n = self.fragments.size();
     for (index_t idx = 0; idx < n; ++idx) {
-      const index_t start_index = self.locations[idx].byte_offset;
+      const auto& [cat, loc]    = self.fragments[idx];
+      const index_t start_index = loc.byte_offset;
       const index_t end_index =
-          (idx + 1 < n) ? self.locations[idx + 1].byte_offset : self.source_code.size();
+          (idx + 1 < n) ? self.fragments[idx + 1].location.byte_offset : self.source_code.size();
       const string_view_t sv =
           string_view_t{self.source_code}.substr(start_index, end_index - start_index);
-      const fragment_category_t fc = self.categories[idx];
-      stream->format("{:8} {:11}",
-                     silva::pretty_string(self.locations[idx]),
-                     silva::pretty_string(fc));
+      const fragment_category_t fc = cat;
+      stream->format("{:8} {:11}", silva::pretty_string(loc), silva::pretty_string(fc));
       if (std::ranges::all_of(sv, [](const char c) { return c != ' ' && c != '\n'; })) {
         stream->format(" {:20}", sv);
       }

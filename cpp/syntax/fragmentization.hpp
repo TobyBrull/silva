@@ -16,6 +16,8 @@ namespace silva {
     OPERATOR,
     PAREN_LEFT,
     PAREN_RIGHT,
+    LANGUAGE_BEGIN,
+    LANGUAGE_END,
     INDENT,
     DEDENT,
     NEWLINE,
@@ -25,8 +27,15 @@ namespace silva {
     filesystem_path_t filepath;
     string_t source_code;
 
-    array_t<fragment_category_t> categories;
-    array_t<file_location_t> locations;
+    struct fragment_t {
+      fragment_category_t category = fragment_category_t::INVALID;
+      file_location_t location;
+
+      friend auto operator<=>(const fragment_t&, const fragment_t&) = default;
+
+      friend void pretty_write_impl(const fragment_t&, byte_sink_t*);
+    };
+    array_t<fragment_t> fragments;
 
     friend void pretty_write_impl(const fragmentization_t&, byte_sink_t*);
   };
