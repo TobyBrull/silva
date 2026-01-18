@@ -98,5 +98,80 @@ back
       };
       CHECK(frag->fragments == expected_fragments);
     }
+    SECTION("parentheses")
+    {
+      const auto text = R"(
+def
+    id # Ho
+        id (
+b    # Hi
+  c
+)
+    id
+)";
+      const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));
+      const array_t<fragment_t> expected_fragments{
+          {WHITESPACE, {0, 0, 0}},   //
+          {IDENTIFIER, {1, 0, 1}},   // def
+          {NEWLINE, {1, 3, 4}},      //
+          {INDENT, {2, 0, 5}},       //
+          {IDENTIFIER, {2, 4, 9}},   // id
+          {WHITESPACE, {2, 6, 11}},  //
+          {COMMENT, {2, 7, 12}},     //
+          {NEWLINE, {2, 11, 16}},    //
+          {INDENT, {3, 0, 17}},      //
+          {IDENTIFIER, {3, 8, 25}},  // id
+          {WHITESPACE, {3, 10, 27}}, //
+          {PAREN_LEFT, {3, 11, 28}}, // (
+          {WHITESPACE, {3, 12, 29}}, //
+          {IDENTIFIER, {4, 0, 30}},  // b
+          {WHITESPACE, {4, 1, 31}},  //
+          {COMMENT, {4, 5, 35}},     // # Hi
+          {WHITESPACE, {4, 9, 39}},  //
+          {IDENTIFIER, {5, 2, 42}},  // c
+          {WHITESPACE, {5, 3, 43}},  //
+          {PAREN_RIGHT, {6, 0, 44}}, // )
+          {NEWLINE, {6, 1, 45}},     //
+          {DEDENT, {7, 0, 46}},      //
+          {IDENTIFIER, {7, 4, 50}},  // id
+          {NEWLINE, {7, 6, 52}},     //
+          {DEDENT, {8, 0, 53}},      //
+      };
+      CHECK(frag->fragments == expected_fragments);
+    }
+    SECTION("language")
+    {
+      const auto text = R"(
+def
+  id
+    id (
+b
+)
+  id
+
+
+var x = Python §def f(x, y):
+               §  return (x +
+               §    y)
+               §
+               §x = C § int main () {
+               §      §   return 42;
+               §      § }
+
+var x = Python «
+def f(x, y):
+  return (x +
+y )
+
+x = language C « int main () { return 42; } »
+»
+)";
+      const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));
+      const array_t<fragment_t> expected_fragments{
+          {WHITESPACE, {0, 0, 0}}, //
+          {WHITESPACE, {0, 0, 0}}, //
+      };
+      // CHECK(frag->fragments == expected_fragments);
+    }
   }
 }

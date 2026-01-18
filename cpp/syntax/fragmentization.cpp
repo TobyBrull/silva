@@ -69,8 +69,8 @@ namespace silva {
     {
       file_location_t loc;
       for (auto maybe_ud: unicode::utf8_decode_generator(retval->source_code)) {
-        const auto ud                 = SILVA_EXPECT_FWD(std::move(maybe_ud));
-        const codepoint_category_t cc = codepoint_category_table[ud.codepoint];
+        const unicode::codepoint_data_t ud = SILVA_EXPECT_FWD(std::move(maybe_ud));
+        const codepoint_category_t cc      = codepoint_category_table[ud.codepoint];
         categorized_codepoint_data_t cc2{ud, cc, loc};
         SILVA_EXPECT(cc != Forbidden, MINOR, "Forbidden {}", cc2.to_wrap());
         ccd.emplace_back(std::move(cc2));
@@ -84,6 +84,15 @@ namespace silva {
         loc.byte_offset += ud.len;
       }
       n = ccd.size();
+      ccd.push_back(categorized_codepoint_data_t{
+          unicode::codepoint_data_t{
+              .codepoint   = U'\0',
+              .byte_offset = index_t(retval->source_code.size()),
+              .len         = 0,
+          },
+          Forbidden,
+          loc,
+      });
       return {};
     }
 
@@ -95,7 +104,9 @@ namespace silva {
       });
     }
 
+    array_t<categorized_codepoint_data_t> parentheses;
     array_t<index_t> indents = {0};
+
     expected_t<bool> recognize_indent(const index_t idx, const index_t indent)
     {
       SILVA_EXPECT(indent >= 0, ASSERT);
@@ -124,7 +135,9 @@ namespace silva {
       SILVA_EXPECT_FWD(recognize_various_following_newline());
       while (i < n) {
         if (ccd[i].category == Newline) {
-          emit(i++, NEWLINE);
+          if (parentheses.empty()) {
+            emit(i++, NEWLINE);
+          }
           SILVA_EXPECT_FWD(recognize_various_following_newline());
         }
         else if (ccd[i].category == Space) {
@@ -134,12 +147,26 @@ namespace silva {
           }
         }
         else if (ccd[i].category == ParenthesisLeft) {
+          parentheses.push_back(ccd[i]);
           emit(i++, PAREN_LEFT);
         }
         else if (ccd[i].category == ParenthesisRight) {
+          const auto expected_open_paren_it = opposite_parenthesis.find(ccd[i].codepoint);
+          SILVA_EXPECT(expected_open_paren_it != opposite_parenthesis.end(), ASSERT);
+          const unicode::codepoint_t expected_open_paren = expected_open_paren_it->second;
+          SILVA_EXPECT(!parentheses.empty() && parentheses.back().codepoint == expected_open_paren,
+                       MINOR,
+                       "Mismatching parentheses between {} and {}",
+                       parentheses.back().location,
+                       ccd[i].location);
+          parentheses.pop_back();
           emit(i++, PAREN_RIGHT);
         }
         else if (ccd[i].category == Operator) {
+          if (ccd[i].codepoint == U'#') {
+            SILVA_EXPECT_FWD(recognize_comment());
+            continue;
+          }
           if (!SILVA_EXPECT_FWD(try_recognize_string())) {
             emit(i++, OPERATOR);
           }
@@ -154,6 +181,10 @@ namespace silva {
           SILVA_EXPECT(false, MINOR, "fragmentization doesn't allow {}", ccd[i].to_wrap());
         }
       }
+      SILVA_EXPECT(parentheses.empty(),
+                   MINOR,
+                   "Unmatched parenthesis at {}",
+                   parentheses.back().location);
       SILVA_EXPECT_FWD(recognize_indent(n, 0));
       return {};
     }
@@ -247,7 +278,7 @@ namespace silva {
           break;
         }
       }
-      if (i == n) {
+      if (i == n || !parentheses.empty()) {
         if (prev_i < i) {
           emit(prev_i, WHITESPACE);
         }
