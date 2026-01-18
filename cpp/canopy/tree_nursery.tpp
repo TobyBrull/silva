@@ -67,7 +67,7 @@ namespace silva::test {
     {
       auto tspan = tree_span_t<test_tree_node_t>{result};
       const string_t result_str =
-          SILVA_EXPECT_REQUIRE(tspan.to_string([&](string_t& curr_line, auto& path) {
+          SILVA_REQUIRE(tspan.to_string([&](string_t& curr_line, auto& path) {
             curr_line += fmt::format(" {}", tspan[path.back().node_index].name);
           }));
       const string_view_t expected = R"(

@@ -37,7 +37,7 @@ namespace silva::seed::test {
     optional_t<string_t> result_str;
     if (maybe_result_pt.has_value()) {
       auto result_pt = std::move(maybe_result_pt).value();
-      result_str     = SILVA_EXPECT_REQUIRE(result_pt->span().to_string());
+      result_str     = SILVA_REQUIRE(result_pt->span().to_string());
       UNSCOPED_INFO(result_str.value());
     }
     else {
@@ -109,11 +109,10 @@ namespace silva::seed::test {
         - Ter   = rtl   ternary '?' ':'
         - Eqa   = rtl   infix '='
       ] )'";
-    const auto tt = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.seed-axe", test_seed_axe));
+    const auto tt = SILVA_REQUIRE(tokenize(sw.ptr(), "test.seed-axe", test_seed_axe));
     const auto se = standard_seed_interpreter(sw.ptr());
-    const auto pt = SILVA_EXPECT_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Axe")));
-    const auto sa =
-        SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));
+    const auto pt = SILVA_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Axe")));
+    const auto sa = SILVA_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));
     CHECK(!sa.concat_result.has_value());
     CHECK(sa.results.size() == 15);
     CHECK(sa.results.at(*sw.token_id("=")) ==
@@ -503,11 +502,10 @@ namespace silva::seed::test {
         - Add     = ltr   infix_flat '+' infix '-'
         - Assign  = rtl   infix_flat '=' infix '%'
       ] )'";
-    const auto tt = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.seed-axe", test_seed_axe));
+    const auto tt = SILVA_REQUIRE(tokenize(sw.ptr(), "test.seed-axe", test_seed_axe));
     const auto se = standard_seed_interpreter(sw.ptr());
-    const auto pt = SILVA_EXPECT_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Axe")));
-    const auto sa =
-        SILVA_EXPECT_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));
+    const auto pt = SILVA_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Axe")));
+    const auto sa = SILVA_REQUIRE(seed_axe_create(sw.ptr(), sw.name_id_of("Expr"), pt->span()));
     CHECK(sa.concat_result.has_value());
     CHECK(sa.results.size() == 13);
 

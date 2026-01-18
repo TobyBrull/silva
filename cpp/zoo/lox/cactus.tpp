@@ -9,8 +9,8 @@ namespace silva::test {
     auto cr = cc.root();
     {
       auto scope      = cr.make_child_arm();
-      const int* res1 = SILVA_EXPECT_REQUIRE(scope.define("hello", 42));
-      const auto res2 = SILVA_EXPECT_REQUIRE(scope.define("world", 100));
+      const int* res1 = SILVA_REQUIRE(scope.define("hello", 42));
+      const auto res2 = SILVA_REQUIRE(scope.define("world", 100));
       CHECK(*res1 == 42);
       CHECK(*res2 == 100);
       CHECK(*scope.get("hello") == 42);
@@ -18,7 +18,7 @@ namespace silva::test {
 
       CHECK(scope.define("hello", 1).has_value() == false);
       const auto sub_scope = scope.make_child_arm();
-      const auto res4      = SILVA_EXPECT_REQUIRE(sub_scope.define("hello", 4000));
+      const auto res4      = SILVA_REQUIRE(sub_scope.define("hello", 4000));
       CHECK(*res4 == 4000);
       CHECK(*sub_scope.get("world") == 100);
       CHECK(*sub_scope.get("hello") == 4000);

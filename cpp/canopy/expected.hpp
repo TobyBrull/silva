@@ -152,9 +152,9 @@ namespace silva {
 // evaluates to the contained value of type "Result".
 //
 // Usage:
-//  - SILVA_EXPECT_REQUIRE(foo(x))
+//  - SILVA_REQUIRE(foo(x))
 //
-#define SILVA_EXPECT_REQUIRE(expression)                                                     \
+#define SILVA_REQUIRE(expression)                                                            \
   ({                                                                                         \
     auto __silva_result = (expression);                                                      \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                    \

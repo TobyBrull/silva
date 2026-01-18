@@ -19,7 +19,7 @@ namespace silva::unicode::test {
                                         results.emplace_back(cd);
                                         return {};
                                       });
-      SILVA_EXPECT_REQUIRE(std::move(res));
+      SILVA_REQUIRE(std::move(res));
       return results;
     };
 

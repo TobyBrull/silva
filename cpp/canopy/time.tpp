@@ -18,12 +18,12 @@ namespace silva::test {
     CHECK(tp.to_string_default() == "2025-05-04/13:03:44/123.456.789");
     CHECK(tp.to_string_ostream() == "2025-05-04 13:03:44.123456789");
 
-    tp = SILVA_EXPECT_REQUIRE(time_point_t::from_string_default("2025-05-04/13:32:29/123.456.789"));
+    tp = SILVA_REQUIRE(time_point_t::from_string_default("2025-05-04/13:32:29/123.456.789"));
     CHECK(!tp.is_none());
     CHECK(tp.to_string_default() == "2025-05-04/13:32:29/123.456.789");
     CHECK(tp.to_string_ostream() == "2025-05-04 13:32:29.123456789");
 
-    tp = SILVA_EXPECT_REQUIRE(time_point_t::from_string_ostream("2025-05-04 13:32:29.123456789"));
+    tp = SILVA_REQUIRE(time_point_t::from_string_ostream("2025-05-04 13:32:29.123456789"));
     CHECK(!tp.is_none());
     CHECK(tp.to_string_default() == "2025-05-04/13:32:29/123.456.789");
     CHECK(tp.to_string_ostream() == "2025-05-04 13:32:29.123456789");

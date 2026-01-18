@@ -20,16 +20,16 @@ namespace silva::fern::test {
   ]
 ])";
     syntax_ward_t sw;
-    const auto tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", fern_text));
-    const auto pt_1 = SILVA_EXPECT_REQUIRE(parse(tt));
+    const auto tt   = SILVA_REQUIRE(tokenize(sw.ptr(), "", fern_text));
+    const auto pt_1 = SILVA_REQUIRE(parse(tt));
     const auto fpr  = standard_seed_interpreter(sw.ptr());
-    const auto pt_2 = SILVA_EXPECT_REQUIRE(fpr->apply(tt, sw.name_id_of("Fern")));
+    const auto pt_2 = SILVA_REQUIRE(fpr->apply(tt, sw.name_id_of("Fern")));
     CHECK(pt_1->nodes == pt_2->nodes);
-    const fern_t fern       = SILVA_EXPECT_REQUIRE(create(pt_1.get()));
-    const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(to_string(pt_1.get()));
+    const fern_t fern       = SILVA_REQUIRE(create(pt_1.get()));
+    const string_t pt_str_1 = SILVA_REQUIRE(to_string(pt_1.get()));
     CHECK(pt_str_1 == fern_text);
     CHECK(fern.to_string() == fern_text);
-    const string_t gv_str_1 = SILVA_EXPECT_REQUIRE(to_graphviz(pt_1.get()));
+    const string_t gv_str_1 = SILVA_REQUIRE(to_graphviz(pt_1.get()));
     CHECK(fern.to_graphviz() == gv_str_1);
 
     const string_view_t expected_parse_tree_str = R"(
@@ -56,7 +56,7 @@ namespace silva::fern::test {
         [0]_.Fern.Value                           3
 )";
 
-    const string_t result_str = SILVA_EXPECT_REQUIRE(pt_1->span().to_string());
+    const string_t result_str = SILVA_REQUIRE(pt_1->span().to_string());
     CHECK(result_str == expected_parse_tree_str.substr(1));
 
     const string_view_t expected_parse_tree_str_graphviz = R"(
@@ -103,7 +103,7 @@ digraph parse_tree {
   "/5/0/2/" -> "/5/0/2/0/"
   "/5/0/2/0/" [label="[0]_.Fern.Value\n3"]
 })";
-    const string_t result_graphviz = SILVA_EXPECT_REQUIRE(pt_1->span().to_graphviz());
+    const string_t result_graphviz = SILVA_REQUIRE(pt_1->span().to_graphviz());
     CHECK(result_graphviz == expected_parse_tree_str_graphviz.substr(1));
   }
 }

@@ -19,7 +19,7 @@ namespace silva::seed::test {
   )'";
     syntax_ward_t sw;
     interpreter_t se(sw.ptr());
-    auto ptp = SILVA_EXPECT_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
+    auto ptp = SILVA_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
     const string_view_t expected_seed_pt = R"(
 [0]_.Seed                                         - Frog ... ] ]
   [0]_.Seed.Rule                                  Frog = ... ] ]
@@ -84,7 +84,7 @@ namespace silva::seed::test {
                 [1]_.Seed.Terminal                'keyword2'
                 [2]_.Seed.Terminal                'keyword3'
 )";
-    const string_t seed_pt_str{SILVA_EXPECT_REQUIRE(ptp->span().to_string())};
+    const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
     const string_view_t frog_source_code = R"'(
@@ -93,9 +93,9 @@ namespace silva::seed::test {
     keyword1 f
     keyword3 g h i
   )'";
-    const auto frog_tt           = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", frog_source_code));
-    const auto frog_pt           = SILVA_EXPECT_REQUIRE(se.apply(frog_tt, sw.name_id_of("Frog")));
-    const string_view_t expected = R"(
+    const auto frog_tt                   = SILVA_REQUIRE(tokenize(sw.ptr(), "", frog_source_code));
+    const auto frog_pt                   = SILVA_REQUIRE(se.apply(frog_tt, sw.name_id_of("Frog")));
+    const string_view_t expected         = R"(
 [0]_.Frog                                         keyword1 a ... h i
   [0]_.Frog.Rule                                  keyword1 a b c
     [0]_.Frog.Expr                                a b c
@@ -115,7 +115,7 @@ namespace silva::seed::test {
       [1]_.Frog.Primary                           h
       [2]_.Frog.Primary                           i
 )";
-    const string_t frog_pt_str{SILVA_EXPECT_REQUIRE(frog_pt->span().to_string())};
+    const string_t frog_pt_str{SILVA_REQUIRE(frog_pt->span().to_string())};
     CHECK(frog_pt_str == expected.substr(1));
   }
 
@@ -134,20 +134,20 @@ namespace silva::seed::test {
   )'";
     syntax_ward_t sw;
     interpreter_t se(sw.ptr());
-    SILVA_EXPECT_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
-    SILVA_EXPECT_REQUIRE(se.add_complete_file("text2.seed", text2_seed));
+    SILVA_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
+    SILVA_REQUIRE(se.add_complete_file("text2.seed", text2_seed));
 
     const string_view_t code     = R"'(
     a b c x y z a b c
   )'";
-    auto tt                      = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", code));
-    auto pt                      = SILVA_EXPECT_REQUIRE(se.apply(tt, sw.name_id_of("Foo")));
+    auto tt                      = SILVA_REQUIRE(tokenize(sw.ptr(), "", code));
+    auto pt                      = SILVA_REQUIRE(se.apply(tt, sw.name_id_of("Foo")));
     const string_view_t expected = R"(
 [0]_.Foo                                          a b ... b c
   [0]_.Bar                                        x y ... b c
     [0]_.Foo                                      a b c
 )";
-    const string_t result_str{SILVA_EXPECT_REQUIRE(pt->span().to_string())};
+    const string_t result_str{SILVA_REQUIRE(pt->span().to_string())};
     CHECK(result_str == expected.substr(1));
   }
 }

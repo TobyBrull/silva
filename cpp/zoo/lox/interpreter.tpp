@@ -25,13 +25,13 @@ namespace silva::lox::test {
     {
       prepare();
       INFO(expr_str);
-      auto tp = SILVA_EXPECT_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
+      auto tp = SILVA_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
       INFO(pretty_string(*tp));
-      auto pt = SILVA_EXPECT_REQUIRE(si->apply(tp, lexicon.swp->name_id_of("Lox")));
+      auto pt = SILVA_REQUIRE(si->apply(tp, lexicon.swp->name_id_of("Lox")));
       INFO(pretty_string(pt->span()));
-      SILVA_EXPECT_REQUIRE(resolve(pt->span()));
+      SILVA_REQUIRE(resolve(pt->span()));
       auto scope = scopes.root();
-      SILVA_EXPECT_REQUIRE(execute(pt->span(), scope));
+      SILVA_REQUIRE(execute(pt->span(), scope));
       const auto result = print_buffer.content_str_fetch();
       CHECK(result == expected);
     };
@@ -40,11 +40,11 @@ namespace silva::lox::test {
     {
       prepare();
       INFO(expr_str);
-      auto tp = SILVA_EXPECT_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
+      auto tp = SILVA_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
       INFO(pretty_string(*tp));
-      auto pt = SILVA_EXPECT_REQUIRE(si->apply(tp, lexicon.swp->name_id_of("Lox")));
+      auto pt = SILVA_REQUIRE(si->apply(tp, lexicon.swp->name_id_of("Lox")));
       INFO(pretty_string(pt->span()));
-      SILVA_EXPECT_REQUIRE(resolve(pt->span()));
+      SILVA_REQUIRE(resolve(pt->span()));
       auto scope        = scopes.root();
       const auto result = execute(pt->span(), scope);
       REQUIRE(!result.has_value());
@@ -55,7 +55,7 @@ namespace silva::lox::test {
   {
     syntax_ward_t sw;
     auto si = standard_seed_interpreter(sw.ptr());
-    SILVA_EXPECT_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
+    SILVA_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
     test_interpreter_t lti{si.get(), sw.ptr()};
 
     const auto ts = test_suite();

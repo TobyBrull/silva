@@ -18,7 +18,7 @@ namespace silva::test {
   TEST_CASE("expected", "[expected_t]")
   {
     {
-      const int result = SILVA_EXPECT_REQUIRE(func_2(1));
+      const int result = SILVA_REQUIRE(func_2(1));
       CHECK(result == 12);
     }
 

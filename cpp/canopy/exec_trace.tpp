@@ -32,9 +32,9 @@ namespace silva::test {
     widget.func_2();
     widget.func_1();
     widget.func_2();
-    auto etr = SILVA_EXPECT_REQUIRE(widget.et.as_tree("ROOT"));
+    auto etr = SILVA_REQUIRE(widget.et.as_tree("ROOT"));
     tree_span_t ets{etr};
-    const string_t estr = SILVA_EXPECT_REQUIRE(ets.to_string([&](string_t& curr_line, auto& path) {
+    const string_t estr = SILVA_REQUIRE(ets.to_string([&](string_t& curr_line, auto& path) {
       const widget_t::data_t& dd = ets.sub_tree_span_at(path.back().node_index)[0].item.data;
       curr_line += fmt::format("{} / {}", dd.name, dd.success);
     }));

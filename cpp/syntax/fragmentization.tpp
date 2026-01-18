@@ -12,7 +12,7 @@ namespace silva::test {
   TEST_CASE("fragmentization-data", "[fragmentization_t]")
   {
     const unicode::table_t<codepoint_category_t>& cct = silva::codepoint_category_table;
-    SILVA_EXPECT_REQUIRE(cct.validate());
+    SILVA_REQUIRE(cct.validate());
     REQUIRE(cct.key_size() == 0x110000);
 
     CHECK(cct[U'\t'] == Forbidden);
@@ -41,7 +41,7 @@ namespace silva::test {
         const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", ""));
         CHECK_THAT(err_msg, ContainsSubstring("source-code expected to end with newline"));
       }
-      SILVA_EXPECT_REQUIRE(fragmentize("..", "\n"));
+      SILVA_REQUIRE(fragmentize("..", "\n"));
     }
     SECTION("basic")
     {
@@ -50,7 +50,7 @@ namespace silva::test {
 xyz123_äß
 
 )";
-      const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
           {WHITESPACE, {0, 0, 0}},
           {IDENTIFIER, {2, 0, 2}},
@@ -72,7 +72,7 @@ def
 back
 
 )";
-      const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
           {WHITESPACE, {0, 0, 0}},   //
           {IDENTIFIER, {1, 0, 1}},   // def
@@ -115,7 +115,7 @@ b    # Hi
 )
     id
 )";
-      const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
           {WHITESPACE, {0, 0, 0}},   //
           {IDENTIFIER, {1, 0, 1}},   // def
@@ -156,7 +156,7 @@ xyz'
   retval \
 y
 )";
-      const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
           {WHITESPACE, {0, 0, 0}},  //
           {IDENTIFIER, {1, 0, 1}},  // def
@@ -201,7 +201,7 @@ x = language C « int main () {
 } »
 »
 )";
-      const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
           {WHITESPACE, {0, 0, 0}}, //
           {WHITESPACE, {0, 0, 0}}, //

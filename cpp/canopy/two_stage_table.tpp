@@ -23,6 +23,6 @@ namespace silva::test {
     CHECK(tst[9] == "aa");
     CHECK(tst[10] == "cc");
     CHECK(tst[11] == "bb");
-    SILVA_EXPECT_REQUIRE(tst.validate());
+    SILVA_REQUIRE(tst.validate());
   }
 }

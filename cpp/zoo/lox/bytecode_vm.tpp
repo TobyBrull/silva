@@ -22,9 +22,9 @@ namespace silva::lox::test {
     tuple_t<parse_tree_ptr_t, unique_ptr_t<bytecode_chunk_t>>
     make_chunk(const string_view_t lox_code)
     {
-      const auto tp  = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
-      const auto ptp = SILVA_EXPECT_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
-      auto chunk     = SILVA_EXPECT_REQUIRE(compiler.compile(ptp->span()));
+      const auto tp  = SILVA_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
+      const auto ptp = SILVA_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
+      auto chunk     = SILVA_REQUIRE(compiler.compile(ptp->span()));
       return {ptp, std::move(chunk)};
     };
 
@@ -32,9 +32,9 @@ namespace silva::lox::test {
     {
       prepare();
       const auto [ptp, chunk] = make_chunk(lox_code);
-      INFO(SILVA_EXPECT_REQUIRE(ptp->span().to_string()));
-      INFO(SILVA_EXPECT_REQUIRE(chunk->to_string()));
-      SILVA_EXPECT_REQUIRE(vm.run(*chunk));
+      INFO(SILVA_REQUIRE(ptp->span().to_string()));
+      INFO(SILVA_REQUIRE(chunk->to_string()));
+      SILVA_REQUIRE(vm.run(*chunk));
       const auto result = print_buffer.content_str_fetch();
       INFO("result");
       INFO(result);
@@ -49,8 +49,8 @@ namespace silva::lox::test {
     {
       prepare();
       const auto [ptp, chunk] = make_chunk(lox_code);
-      INFO(SILVA_EXPECT_REQUIRE(ptp->span().to_string()));
-      INFO(SILVA_EXPECT_REQUIRE(chunk->to_string()));
+      INFO(SILVA_REQUIRE(ptp->span().to_string()));
+      INFO(SILVA_REQUIRE(chunk->to_string()));
       const auto result = vm.run(*chunk);
       REQUIRE(!result.has_value());
       const string_t err_msg = pretty_string(std::move(result).error());
@@ -82,7 +82,7 @@ CONSTANT 1 1
 CONSTANT 2 2
 CONSTANT 3 3
 )";
-    CHECK(SILVA_EXPECT_REQUIRE(chunk->to_string()) == expected.substr(1));
+    CHECK(SILVA_REQUIRE(chunk->to_string()) == expected.substr(1));
   }
 
   TEST_CASE("lox-bytecode-vm", "[lox][bytecode]")
@@ -113,7 +113,7 @@ CONSTANT 3 3
         }
         print fib(30);
       )");
-    SILVA_EXPECT_REQUIRE(th.vm.run(*chunk));
+    SILVA_REQUIRE(th.vm.run(*chunk));
     const auto end = time_point_t::now();
     fmt::println("FIBS TOOK {}\n", end - start);
   }

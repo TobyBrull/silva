@@ -41,9 +41,9 @@ namespace silva::seed::test {
   {
     syntax_ward_t sw;
     const auto spr       = standard_seed_interpreter(sw.ptr());
-    const auto seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_str}));
-    const auto seed_pt_1 = SILVA_EXPECT_REQUIRE(parse(seed_tt));
-    const auto seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(seed_tt, sw.name_id_of("Seed")));
+    const auto seed_tt   = SILVA_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_str}));
+    const auto seed_pt_1 = SILVA_REQUIRE(parse(seed_tt));
+    const auto seed_pt_2 = SILVA_REQUIRE(spr->apply(seed_tt, sw.name_id_of("Seed")));
     // fmt::print("|{}|\n", *seed_pt_1->span().to_string());
     // fmt::print("|{}|\n", *seed_pt_2->span().to_string());
     CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
@@ -83,10 +83,10 @@ namespace silva::seed::test {
     ]
   )'";
     syntax_ward_t sw;
-    const auto sf_seed_tt   = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", sf_text));
-    const auto sf_seed_pt_1 = SILVA_EXPECT_REQUIRE(parse(sf_seed_tt));
+    const auto sf_seed_tt   = SILVA_REQUIRE(tokenize(sw.ptr(), "", sf_text));
+    const auto sf_seed_pt_1 = SILVA_REQUIRE(parse(sf_seed_tt));
     const auto spr          = standard_seed_interpreter(sw.ptr());
-    const auto sf_seed_pt_2 = SILVA_EXPECT_REQUIRE(spr->apply(sf_seed_tt, sw.name_id_of("Seed")));
+    const auto sf_seed_pt_2 = SILVA_REQUIRE(spr->apply(sf_seed_tt, sw.name_id_of("Seed")));
     CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
     const std::string_view expected = R"(
@@ -142,13 +142,13 @@ namespace silva::seed::test {
             [2]_.Seed.Terminal                    number
 )";
 
-    const string_t pt_str_1 = SILVA_EXPECT_REQUIRE(sf_seed_pt_1->span().to_string());
-    const string_t pt_str_2 = SILVA_EXPECT_REQUIRE(sf_seed_pt_2->span().to_string());
+    const string_t pt_str_1 = SILVA_REQUIRE(sf_seed_pt_1->span().to_string());
+    const string_t pt_str_2 = SILVA_REQUIRE(sf_seed_pt_2->span().to_string());
     CHECK(pt_str_1 == expected.substr(1));
     CHECK(pt_str_2 == expected.substr(1));
 
     interpreter_t se(sw.ptr());
-    SILVA_EXPECT_REQUIRE(se.add(sf_seed_pt_1->span()));
+    SILVA_REQUIRE(se.add(sf_seed_pt_1->span()));
     REQUIRE(se.rule_exprs.size() == 4);
     using rfl::json::write;
     const name_id_t ni_sf       = sw.name_id_of("SimpleFern");
@@ -167,8 +167,8 @@ namespace silva::seed::test {
     CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(46)) == ni_sf);
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
-    const auto sf_tt       = SILVA_EXPECT_REQUIRE(tokenize(sw.ptr(), "", sf_code));
-    const auto sfpt        = SILVA_EXPECT_REQUIRE(se.apply(sf_tt, ni_sf));
+    const auto sf_tt       = SILVA_REQUIRE(tokenize(sw.ptr(), "", sf_code));
+    const auto sfpt        = SILVA_REQUIRE(se.apply(sf_tt, ni_sf));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.SimpleFern                                   [ 'abc' ... ; ]
@@ -184,7 +184,7 @@ namespace silva::seed::test {
   [2]_.SimpleFern.LabeledItem                     'jkl'
     [0]_.SimpleFern.Item                          'jkl'
 )";
-    const string_t result{SILVA_EXPECT_REQUIRE(sfpt->span().to_string())};
+    const string_t result{SILVA_REQUIRE(sfpt->span().to_string())};
     CHECK(result == expected_parse_tree.substr(1));
   }
 }
