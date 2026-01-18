@@ -83,6 +83,9 @@ namespace silva {
         }
         loc.byte_offset += ud.len;
       }
+      SILVA_EXPECT(!ccd.empty() && ccd.back().codepoint == U'\n',
+                   MINOR,
+                   "source-code expected to end with newline");
       n = ccd.size();
       ccd.push_back(categorized_codepoint_data_t{
           unicode::codepoint_data_t{

@@ -31,11 +31,17 @@ namespace silva::test {
   {
     SECTION("forbidden codepoint")
     {
-      const auto res = fragmentize("..", "zyẍ_\n");
-      REQUIRE(!res.has_value());
-      const auto err_msg = res.error().to_string_plain().as_string();
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", "zyẍ_\n"));
       CHECK_THAT(err_msg, ContainsSubstring("Forbidden codepoint"));
       CHECK_THAT(err_msg, ContainsSubstring("0x0308"));
+    }
+    SECTION("error")
+    {
+      {
+        const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", ""));
+        CHECK_THAT(err_msg, ContainsSubstring("source-code expected to end with newline"));
+      }
+      SILVA_EXPECT_REQUIRE(fragmentize("..", "\n"));
     }
     SECTION("basic")
     {
@@ -139,31 +145,60 @@ b    # Hi
       };
       CHECK(frag->fragments == expected_fragments);
     }
+    SECTION("line continuation")
+    {
+      const auto text = R"(
+def # Hi \
+  'abc#\
+xyz'
+  var⦚abc#
+     ⦚xyz
+  retval \
+y
+)";
+      const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));
+      const array_t<fragment_t> expected_fragments{
+          {WHITESPACE, {0, 0, 0}},  //
+          {IDENTIFIER, {1, 0, 1}},  // def
+          {WHITESPACE, {1, 3, 4}},  //
+          {COMMENT, {1, 4, 5}},     // '# Hi \'
+          {NEWLINE, {1, 10, 11}},   //
+          {INDENT, {2, 0, 12}},     //
+          {STRING, {2, 2, 14}},     // 'abc#xyz'
+          {NEWLINE, {3, 5, 25}},    //
+          {WHITESPACE, {4, 0, 26}}, //
+          {IDENTIFIER, {4, 2, 28}}, // var
+          {STRING, {4, 5, 31}},     // 'abc#\nxyz'
+          {NEWLINE, {5, 9, 46}},    //
+          {WHITESPACE, {6, 0, 47}}, //
+          {IDENTIFIER, {6, 2, 49}}, // retval
+          {WHITESPACE, {6, 8, 57}}, //
+          {IDENTIFIER, {7, 0, 60}}, // y
+          {NEWLINE, {7, 1, 61}},    //
+      };
+      // CHECK(frag->fragments == expected_fragments);
+    }
     SECTION("language")
     {
       const auto text = R"(
-def
-  id
-    id (
-b
-)
-  id
-
-
-var x = Python §def f(x, y):
-               §  return (x +
-               §    y)
-               §
-               §x = C § int main () {
-               §      §   return 42;
-               §      § }
+var x = Python ⎢def f(x, y):
+               ⎢ return (x +
+               ⎢    y)
+               ⎢
+               ⎢x = C ⎢int main () {
+               ⎢      ⎢  x = ⦚Hello
+               ⎢      ⎢      ⦚World ⎢ 42
+               ⎢      ⎢  return 42;
+               ⎢      ⎢}
 
 var x = Python «
 def f(x, y):
   return (x +
 y )
 
-x = language C « int main () { return 42; } »
+x = language C « int main () {
+  return 42;
+} »
 »
 )";
       const auto frag = SILVA_EXPECT_REQUIRE(fragmentize("..", text));

@@ -163,6 +163,14 @@ namespace silva {
     std::move(__silva_result).value();                                                       \
   })
 }
+#define SILVA_REQUIRE_ERROR(expression)                                   \
+  ({                                                                      \
+    auto __silva_result = (expression);                                   \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
+    REQUIRE(!__silva_result.has_value());                                 \
+    auto err_msg = __silva_result.error().to_string_plain().as_string();  \
+    std::move(err_msg);                                                   \
+  })
 
 // IMPLEMENTATION
 
