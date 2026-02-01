@@ -13,9 +13,9 @@ namespace silva::test {
     tree_event_t event = INVALID;
 
     friend auto operator<=>(const result_t&, const result_t&) = default;
-    friend std::ostream& operator<<(std::ostream& os, const result_t& self)
+    friend void pretty_write_impl(const result_t& x, byte_sink_t* byte_sink)
     {
-      return os << rfl::json::write(self) << '\n';
+      byte_sink->write_str(rfl::json::write(x));
     }
   };
 

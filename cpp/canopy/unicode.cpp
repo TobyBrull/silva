@@ -29,6 +29,11 @@ namespace silva::unicode {
     return retval;
   }
 
+  void pretty_write_impl(const codepoint_data_t& cd, byte_sink_t* byte_sink)
+  {
+    byte_sink->format("{}@{}:{}", int(cd.codepoint), cd.byte_offset, cd.len);
+  }
+
   expected_t<tuple_t<codepoint_t, index_t>> utf8_decode_one(const string_view_t buffer)
   {
     SILVA_EXPECT(buffer.size() >= 1, MINOR, "can't get codepoint from empty string");

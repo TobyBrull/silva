@@ -33,6 +33,15 @@ namespace silva {
   template<typename... Ts>
   void pretty_write_impl(const variant_t<Ts...>&, byte_sink_t*);
 
+  template<typename T>
+  void pretty_write_impl(const span_t<T>&, byte_sink_t*);
+
+  template<typename T>
+  void pretty_write_impl(const array_t<T>&, byte_sink_t*);
+
+  template<typename T, size_t N>
+  void pretty_write_impl(const array_fixed_t<T, N>&, byte_sink_t*);
+
   template<typename Enum>
     requires std::is_enum_v<Enum>
   void pretty_write_impl(const Enum& x, byte_sink_t*);
@@ -75,7 +84,7 @@ namespace silva {
   constexpr void pretty_write_t::operator()(const T& x, byte_sink_t* byte_sink) const
   {
     using silva::pretty_write_impl;
-    return pretty_write_impl(x, byte_sink);
+    pretty_write_impl(x, byte_sink);
   }
 
   template<typename T>
@@ -133,6 +142,29 @@ namespace silva {
   void pretty_write_impl(const variant_t<Ts...>& x, byte_sink_t* byte_sink)
   {
     std::visit([byte_sink](const auto& value) { pretty_write(value, byte_sink); }, x);
+  }
+
+  template<typename T>
+  void pretty_write_impl(const span_t<T>& x, byte_sink_t* byte_sink)
+  {
+    byte_sink->write_str("[ ");
+    for (const auto& elem: x) {
+      silva::pretty_write(elem, byte_sink);
+      byte_sink->write_str(" ");
+    }
+    byte_sink->write_str("]");
+  }
+
+  template<typename T>
+  void pretty_write_impl(const array_t<T>& x, byte_sink_t* byte_sink)
+  {
+    pretty_write_impl(span_t<const T>{x.data(), x.size()}, byte_sink);
+  }
+
+  template<typename T, size_t N>
+  void pretty_write_impl(const array_fixed_t<T, N>& x, byte_sink_t* byte_sink)
+  {
+    pretty_write_impl(span_t<const T>{x}, byte_sink);
   }
 
   template<typename Enum>

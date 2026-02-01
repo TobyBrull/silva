@@ -20,6 +20,7 @@ namespace silva::unicode {
     index_t len           = 0;
 
     friend auto operator<=>(const codepoint_data_t&, const codepoint_data_t&) = default;
+    friend void pretty_write_impl(const codepoint_data_t&, byte_sink_t*);
   };
 
   std::generator<expected_t<codepoint_data_t>> utf8_decode_generator(string_view_t);

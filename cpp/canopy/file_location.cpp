@@ -7,7 +7,12 @@ namespace silva {
       stream->format("EOF");
     }
     else {
-      stream->format("{}:{}", self.line_num + 1, self.column + 1);
+      if (1) {
+        stream->format("{}:{}", self.line_num + 1, self.column + 1);
+      }
+      else {
+        stream->format("[{},{},{}]", self.line_num, self.column, self.byte_offset);
+      }
     }
   }
 }

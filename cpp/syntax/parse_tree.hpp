@@ -13,6 +13,7 @@ namespace silva {
     index_t num_tokens() const { return token_end - token_begin; }
 
     friend auto operator<=>(const parse_tree_node_t&, const parse_tree_node_t&) = default;
+    friend void pretty_write_impl(const parse_tree_node_t&, byte_sink_t*);
   };
 
   struct parse_tree_t : public sprite_t {

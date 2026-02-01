@@ -19,6 +19,11 @@ namespace silva {
     }
   }
 
+  void pretty_write_impl(const parse_tree_node_t& ptn, byte_sink_t* byte_sink)
+  {
+    byte_sink->format("{}@{}:{}", ptn.rule_name, ptn.token_begin, ptn.token_end);
+  }
+
   expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset,
                                                     const parse_tree_printing_t printing) const
   {
