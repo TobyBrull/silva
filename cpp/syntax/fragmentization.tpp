@@ -29,19 +29,29 @@ namespace silva::test {
 
   TEST_CASE("fragmentization", "[fragmentization_t]")
   {
-    SECTION("forbidden codepoint")
+    SECTION("error: forbidden codepoint")
     {
       const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", "zyẍ_\n"));
       CHECK_THAT(err_msg, ContainsSubstring("Forbidden codepoint"));
       CHECK_THAT(err_msg, ContainsSubstring("0x0308"));
     }
-    SECTION("error")
+    SECTION("empty file")
     {
-      {
-        const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", ""));
-        CHECK_THAT(err_msg, ContainsSubstring("source-code expected to end with newline"));
-      }
-      SILVA_REQUIRE(fragmentize("..", "\n"));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", ""));
+      CHECK_THAT(err_msg, ContainsSubstring("source-code expected to end with newline"));
+      const auto frag = SILVA_REQUIRE(fragmentize("..", "\n"));
+      const array_t<fragment_t> expected_fragments{
+          {WHITESPACE, {0, 0, 0}},
+      };
+      CHECK(frag->fragments == expected_fragments);
+    }
+    SECTION("error: newline in string")
+    {
+      const auto text    = R"('abc#\
+xyz'
+)";
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      CHECK_THAT(err_msg, ContainsSubstring("unexpected escape sequence"));
     }
     SECTION("basic")
     {
@@ -149,11 +159,12 @@ b    # Hi
     {
       const auto text = R"(
 def # Hi \
-  'abc#\
-xyz'
+  'ab\'c#xyz'
   var⦚abc#
      ⦚xyz
   retval \
+y
+  retval\
 y
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
@@ -164,19 +175,24 @@ y
           {COMMENT, {1, 4, 5}},     // '# Hi \'
           {NEWLINE, {1, 10, 11}},   //
           {INDENT, {2, 0, 12}},     //
-          {STRING, {2, 2, 14}},     // 'abc#xyz'
-          {NEWLINE, {3, 5, 25}},    //
-          {WHITESPACE, {4, 0, 26}}, //
-          {IDENTIFIER, {4, 2, 28}}, // var
-          {STRING, {4, 5, 31}},     // 'abc#\nxyz'
-          {NEWLINE, {5, 9, 46}},    //
-          {WHITESPACE, {6, 0, 47}}, //
-          {IDENTIFIER, {6, 2, 49}}, // retval
-          {WHITESPACE, {6, 8, 57}}, //
-          {IDENTIFIER, {7, 0, 60}}, // y
-          {NEWLINE, {7, 1, 61}},    //
+          {STRING, {2, 2, 14}},     // 'ab\'c#xyz'
+          {NEWLINE, {2, 13, 25}},   //
+          {WHITESPACE, {3, 0, 26}}, //
+          {IDENTIFIER, {3, 2, 28}}, // var
+          {STRING, {3, 5, 31}},     // 'abc#\nxyz'
+          {WHITESPACE, {5, 0, 51}}, //
+          {IDENTIFIER, {5, 2, 53}}, // retval
+          {WHITESPACE, {5, 8, 59}}, //
+          {IDENTIFIER, {6, 0, 62}}, // y
+          {NEWLINE, {6, 1, 63}},    //
+          {WHITESPACE, {7, 0, 64}}, //
+          {IDENTIFIER, {7, 2, 66}}, // retval
+          {WHITESPACE, {7, 8, 72}}, //
+          {IDENTIFIER, {8, 0, 74}}, // y
+          {NEWLINE, {8, 1, 75}},    //
+          {DEDENT, {9, 0, 76}},     //
       };
-      // CHECK(frag->fragments == expected_fragments);
+      CHECK(frag->fragments == expected_fragments);
     }
     SECTION("language")
     {
@@ -187,7 +203,7 @@ var x = Python ⎢def f(x, y):
                ⎢
                ⎢x = C ⎢int main () {
                ⎢      ⎢  x = ⦚Hello
-               ⎢      ⎢      ⦚World ⎢ 42
+               ⎢      ⎢      ⦚World ⎢ 42 ⦚ zig
                ⎢      ⎢  return 42;
                ⎢      ⎢}
 

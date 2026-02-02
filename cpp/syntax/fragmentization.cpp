@@ -170,6 +170,17 @@ namespace silva {
             SILVA_EXPECT_FWD(recognize_comment());
             continue;
           }
+          if (ccd[i].codepoint == U'⦚') {
+            SILVA_EXPECT_FWD(recognize_multiline_string());
+            continue;
+          }
+          if (ccd[i].codepoint == U'\\' && i + 1 < n && ccd[i + 1].category == Newline) {
+            if (retval->fragments.empty() || retval->fragments.back().category != WHITESPACE) {
+              emit(i, WHITESPACE);
+            }
+            i += 2;
+            continue;
+          }
           if (!SILVA_EXPECT_FWD(try_recognize_string())) {
             emit(i++, OPERATOR);
           }
@@ -224,6 +235,50 @@ namespace silva {
       return {};
     }
 
+    void skip_to_end_of_line()
+    {
+      while (i < n && ccd[i].category != Newline) {
+        ++i;
+      }
+    }
+
+    template<index_t N>
+    static bool is_one_of(const unicode::codepoint_t cp,
+                          const array_fixed_t<unicode::codepoint_t, N> cps)
+    {
+      const auto it = std::ranges::find(cps, cp);
+      return (it != cps.end());
+    }
+
+    index_t find_next_non_space() const
+    {
+      index_t retval = i;
+      while (retval < n) {
+        if (ccd[retval].category != Space) {
+          return retval;
+        }
+        retval += 1;
+      }
+      return retval;
+    }
+
+    expected_t<void> recognize_multiline_string()
+    {
+      SILVA_EXPECT(ccd[i].codepoint == U'⦚', ASSERT);
+      emit(i, STRING);
+      while (true) {
+        skip_to_end_of_line();
+        SILVA_EXPECT(i < n, ASSERT);
+        SILVA_EXPECT(ccd[i].category == Newline, ASSERT);
+        ++i;
+        const index_t fi = find_next_non_space();
+        if (fi == n || ccd[fi].codepoint != U'⦚') {
+          break;
+        }
+      }
+      return {};
+    }
+
     expected_t<bool> try_recognize_string()
     {
       if (i < n && (ccd[i].codepoint == U'"' || ccd[i].codepoint == U'\'')) {
@@ -232,7 +287,16 @@ namespace silva {
         i++;
         while (i < n) {
           if (ccd[i].codepoint == U'\\') {
-            SILVA_EXPECT(i + 1 < n, MINOR, "expected character after '\\' at {}", ccd[i].location);
+            SILVA_EXPECT(i + 1 < n,
+                         MINOR,
+                         "expected character after '\\' in string at {}",
+                         ccd[i].location);
+            const static array_fixed_t<unicode::codepoint_t, 3> escape_seqs = {U'n', U'\'', U'\"'};
+            SILVA_EXPECT(is_one_of<3>(ccd[i + 1].codepoint, escape_seqs),
+                         MINOR,
+                         "unexpected escape sequence at {}, allowed escape sequences: {}",
+                         ccd[i].location,
+                         escape_seqs);
             i += 2;
           }
           else if (ccd[i].codepoint == delim) {
@@ -306,9 +370,7 @@ namespace silva {
     {
       SILVA_EXPECT(is_comment_start(i), ASSERT);
       emit(i, COMMENT);
-      while (i < n && ccd[i].category != Newline) {
-        ++i;
-      }
+      skip_to_end_of_line();
       return {};
     }
   };
