@@ -7,7 +7,6 @@ namespace silva::test {
 
   using enum codepoint_category_t;
   using enum fragment_category_t;
-  using fragment_t = fragmentization_t::fragment_t;
 
   TEST_CASE("fragmentization-data", "[fragmentization_t]")
   {
@@ -43,7 +42,7 @@ namespace silva::test {
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},
           {WHITESPACE, {0, 0, 0}},
-          {LANG_END, {1, 0, 1}},
+          {LANG_END, {0, 0, 0}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -69,7 +68,7 @@ xyz123_äß
           {IDENTIFIER, {2, 0, 2}},
           {NEWLINE, {2, 9, 13}},
           {WHITESPACE, {3, 0, 14}},
-          {LANG_END, {4, 0, 15}},
+          {LANG_END, {3, 0, 14}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -116,7 +115,7 @@ back
           {IDENTIFIER, {8, 0, 64}},  // back
           {NEWLINE, {8, 4, 68}},     //
           {WHITESPACE, {9, 0, 69}},  //
-          {LANG_END, {10, 0, 70}},   //
+          {LANG_END, {9, 0, 69}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -158,8 +157,8 @@ b    # Hi
           {DEDENT, {7, 0, 46}},      //
           {IDENTIFIER, {7, 4, 50}},  // id
           {NEWLINE, {7, 6, 52}},     //
-          {DEDENT, {8, 0, 53}},      //
-          {LANG_END, {8, 0, 53}},    //
+          {DEDENT, {7, 6, 52}},      //
+          {LANG_END, {7, 6, 52}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -199,8 +198,8 @@ y
           {WHITESPACE, {7, 8, 72}}, //
           {IDENTIFIER, {8, 0, 74}}, // y
           {NEWLINE, {8, 1, 75}},    //
-          {DEDENT, {9, 0, 76}},     //
-          {LANG_END, {9, 0, 76}},   //
+          {DEDENT, {8, 1, 75}},     //
+          {LANG_END, {8, 1, 75}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }

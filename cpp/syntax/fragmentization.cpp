@@ -24,91 +24,114 @@ namespace silva {
   {
     return ('a' <= cp && cp < 'z') || ('A' <= cp && cp < 'Z');
   }
+  constexpr bool is_real_fragment(const fragment_category_t fc)
+  {
+    return (fc != WHITESPACE && fc != COMMENT);
+  }
 
-  struct codepoint_wrap_t {
-    unicode::codepoint_t codepoint = 0;
-    codepoint_category_t category  = codepoint_category_t::Forbidden;
+  struct categorized_codepoint_data_t : public unicode::codepoint_data_t {
+    codepoint_category_t category = codepoint_category_t::Forbidden;
     file_location_t location;
 
-    friend void pretty_write_impl(const codepoint_wrap_t& x, byte_sink_t* byte_sink)
+    struct codepoint_wrap_t {
+      unicode::codepoint_t codepoint = 0;
+      codepoint_category_t category  = codepoint_category_t::Forbidden;
+      file_location_t location;
+
+      friend void pretty_write_impl(const codepoint_wrap_t& x, byte_sink_t* byte_sink)
+      {
+        byte_sink->format("codepoint[ {}, 0x{:04x}, {}] at ",
+                          unicode::utf8_encode_one(x.codepoint),
+                          uint32_t(x.codepoint),
+                          rfl::enum_to_string(x.category));
+        silva::pretty_write(x.location, byte_sink);
+      }
+    };
+
+    codepoint_wrap_t to_wrap() const
     {
-      byte_sink->format("codepoint[ {}, 0x{:04x}, {}] at ",
-                        unicode::utf8_encode_one(x.codepoint),
-                        uint32_t(x.codepoint),
-                        rfl::enum_to_string(x.category));
-      silva::pretty_write(x.location, byte_sink);
+      return codepoint_wrap_t{
+          .codepoint = codepoint,
+          .category  = category,
+          .location  = location,
+      };
     }
   };
+
+  expected_t<array_t<categorized_codepoint_data_t>>
+  categorize_codepoints(const string_t& source_code)
+  {
+    array_t<categorized_codepoint_data_t> retval;
+    file_location_t loc;
+    for (auto maybe_ud: unicode::utf8_decode_generator(source_code)) {
+      const unicode::codepoint_data_t ud = SILVA_EXPECT_FWD(std::move(maybe_ud));
+      const codepoint_category_t cc      = codepoint_category_table[ud.codepoint];
+      categorized_codepoint_data_t cc2{ud, cc, loc};
+      SILVA_EXPECT(cc != Forbidden, MINOR, "Forbidden {}", cc2.to_wrap());
+      retval.emplace_back(std::move(cc2));
+      if (ud.codepoint == U'\n') {
+        loc.line_num += 1;
+        loc.column = 0;
+      }
+      else {
+        loc.column += 1;
+      }
+      loc.byte_offset += ud.len;
+    }
+    SILVA_EXPECT(!retval.empty() && retval.back().codepoint == U'\n',
+                 MINOR,
+                 "source-code expected to end with newline");
+    return {std::move(retval)};
+  }
+
+  struct fragmentized_line_t {
+    array_t<fragment_t> fragments; // Always ends with newline
+  };
+  expected_t<array_t<fragmentized_line_t>>
+  fragmentize_lines(const array_t<categorized_codepoint_data_t>& ccd)
+  {
+    SILVA_EXPECT(ccd.size() >= 2, ASSERT);
+    const index_t n = ccd.size() - 1;
+    array_t<fragmentized_line_t> lines;
+    index_t i = 0;
+    while (i < n) {
+    }
+    return {std::move(lines)};
+  }
 
   struct fragmentizer_t {
     unique_ptr_t<fragmentization_t> retval = std::make_unique<fragmentization_t>();
 
-    fragmentizer_t(filesystem_path_t descriptive_path, string_t source_code)
+    expected_t<void> init(filesystem_path_t descriptive_path,
+                          string_t source_code,
+                          array_t<categorized_codepoint_data_t> orig_ccd)
     {
       retval->filepath    = std::move(descriptive_path);
       retval->source_code = std::move(source_code);
-    }
-
-    struct categorized_codepoint_data_t : public unicode::codepoint_data_t {
-      codepoint_category_t category = codepoint_category_t::Forbidden;
-      file_location_t location;
-
-      codepoint_wrap_t to_wrap() const
-      {
-        return codepoint_wrap_t{
-            .codepoint = codepoint,
-            .category  = category,
-            .location  = location,
-        };
-      }
-    };
-    array_t<categorized_codepoint_data_t> ccd;
-    index_t i = 0;
-    index_t n = 0;
-    expected_t<void> init()
-    {
-      file_location_t loc;
-      for (auto maybe_ud: unicode::utf8_decode_generator(retval->source_code)) {
-        const unicode::codepoint_data_t ud = SILVA_EXPECT_FWD(std::move(maybe_ud));
-        const codepoint_category_t cc      = codepoint_category_table[ud.codepoint];
-        categorized_codepoint_data_t cc2{ud, cc, loc};
-        SILVA_EXPECT(cc != Forbidden, MINOR, "Forbidden {}", cc2.to_wrap());
-        ccd.emplace_back(std::move(cc2));
-        if (ud.codepoint == U'\n') {
-          loc.line_num += 1;
-          loc.column = 0;
-        }
-        else {
-          loc.column += 1;
-        }
-        loc.byte_offset += ud.len;
-      }
-      SILVA_EXPECT(!ccd.empty() && ccd.back().codepoint == U'\n',
-                   MINOR,
-                   "source-code expected to end with newline");
+      ccd                 = std::move(orig_ccd);
+      SILVA_EXPECT(ccd.size() >= 1, ASSERT);
       n = ccd.size();
-      ccd.push_back(categorized_codepoint_data_t{
-          unicode::codepoint_data_t{
-              .codepoint   = U'\0',
-              .byte_offset = index_t(retval->source_code.size()),
-              .len         = 0,
-          },
-          Forbidden,
-          loc,
-      });
       return {};
     }
 
+    array_t<categorized_codepoint_data_t> ccd;
+    index_t i = 0;
+    index_t n = 0;
+
+    index_t last_real_fragment = -1;
     void emit(const index_t idx, const fragment_category_t fc)
     {
-      retval->fragments.push_back(fragmentization_t::fragment_t{
+      if (is_real_fragment(fc)) {
+        last_real_fragment = retval->fragments.size();
+      }
+      retval->fragments.push_back(fragment_t{
           .category = fc,
           .location = ccd[idx].location,
       });
     }
 
     struct language_data_t {
-      bool using_angle_quotation   = false;
+      bool uses_angle_quotes       = false;
       index_t multiline_lang_depth = 0;
 
       array_t<categorized_codepoint_data_t> parentheses;
@@ -116,6 +139,13 @@ namespace silva {
     };
 
     array_t<language_data_t> languages;
+
+    expected_t<void> run()
+    {
+      SILVA_EXPECT_FWD(run_language(false, 0));
+      SILVA_EXPECT(languages.empty(), MINOR);
+      return {};
+    }
 
     expected_t<bool> recognize_indent(const index_t idx, const index_t indent)
     {
@@ -141,12 +171,21 @@ namespace silva {
       return false;
     }
 
-    expected_t<void> run_language()
+    struct multiline_shape_t {
+      // "dirty" here means if there are "real"
+      bool multiline_lang_dirty    = false;
+      index_t multiline_lang_depth = 0;
+      bool multiline_str_dirty     = false;
+      index_t multiline_str_index  = -1;
+    };
+    expected_t<multiline_shape_t> find_multiline_shape() { return {}; };
+
+    expected_t<void> run_language(const bool uses_angle_quotes, const index_t multiline_lang_depth)
     {
       emit(i, LANG_BEGIN);
       languages.push_back(language_data_t{
-          .using_angle_quotation = false,
-          .multiline_lang_depth  = 0,
+          .uses_angle_quotes    = uses_angle_quotes,
+          .multiline_lang_depth = multiline_lang_depth,
       });
 
       SILVA_EXPECT_FWD(recognize_various_following_newline());
@@ -214,11 +253,11 @@ namespace silva {
                    MINOR,
                    "Unmatched parenthesis at {}",
                    languages.back().parentheses.back().location);
-      SILVA_EXPECT_FWD(recognize_indent(n, 0));
+      SILVA_EXPECT_FWD(recognize_indent(n - 1, 0));
 
       SILVA_EXPECT(!languages.empty(), ASSERT);
       languages.pop_back();
-      emit(i, LANG_END);
+      emit(n - 1, LANG_END);
 
       return {};
     }
@@ -405,14 +444,14 @@ namespace silva {
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filesystem_path_t descriptive_path,
                                                           string_t source_code)
   {
-    fragmentizer_t ff(std::move(descriptive_path), std::move(source_code));
-    SILVA_EXPECT_FWD(ff.init());
-    SILVA_EXPECT_FWD(ff.run_language());
-    SILVA_EXPECT(ff.languages.empty(), MINOR);
+    auto ccd = SILVA_EXPECT_FWD(categorize_codepoints(source_code));
+    fragmentizer_t ff;
+    SILVA_EXPECT_FWD(ff.init(std::move(descriptive_path), std::move(source_code), std::move(ccd)));
+    SILVA_EXPECT_FWD(ff.run());
     return std::move(ff.retval);
   }
 
-  void pretty_write_impl(const fragmentization_t::fragment_t& ff, byte_sink_t* stream)
+  void pretty_write_impl(const fragment_t& ff, byte_sink_t* stream)
   {
     stream->format("{} {}", silva::pretty_string(ff.category), silva::pretty_string(ff.location));
   }
