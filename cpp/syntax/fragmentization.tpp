@@ -41,7 +41,9 @@ namespace silva::test {
       CHECK_THAT(err_msg, ContainsSubstring("source-code expected to end with newline"));
       const auto frag = SILVA_REQUIRE(fragmentize("..", "\n"));
       const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}},
           {WHITESPACE, {0, 0, 0}},
+          {LANG_END, {1, 0, 1}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -62,10 +64,12 @@ xyz123_äß
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}},
           {WHITESPACE, {0, 0, 0}},
           {IDENTIFIER, {2, 0, 2}},
           {NEWLINE, {2, 9, 13}},
           {WHITESPACE, {3, 0, 14}},
+          {LANG_END, {4, 0, 15}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -84,6 +88,7 @@ back
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}},   //
           {WHITESPACE, {0, 0, 0}},   //
           {IDENTIFIER, {1, 0, 1}},   // def
           {NEWLINE, {1, 3, 4}},      //
@@ -111,6 +116,7 @@ back
           {IDENTIFIER, {8, 0, 64}},  // back
           {NEWLINE, {8, 4, 68}},     //
           {WHITESPACE, {9, 0, 69}},  //
+          {LANG_END, {10, 0, 70}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -127,6 +133,7 @@ b    # Hi
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}},   //
           {WHITESPACE, {0, 0, 0}},   //
           {IDENTIFIER, {1, 0, 1}},   // def
           {NEWLINE, {1, 3, 4}},      //
@@ -152,6 +159,7 @@ b    # Hi
           {IDENTIFIER, {7, 4, 50}},  // id
           {NEWLINE, {7, 6, 52}},     //
           {DEDENT, {8, 0, 53}},      //
+          {LANG_END, {8, 0, 53}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -160,8 +168,8 @@ b    # Hi
       const auto text = R"(
 def # Hi \
   'ab\'c#xyz'
-  var⦚abc#
-     ⦚xyz
+  var¶abc#
+     ¶xy¶z
   retval \
 y
   retval\
@@ -169,6 +177,7 @@ y
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}},  //
           {WHITESPACE, {0, 0, 0}},  //
           {IDENTIFIER, {1, 0, 1}},  // def
           {WHITESPACE, {1, 3, 4}},  //
@@ -179,7 +188,7 @@ y
           {NEWLINE, {2, 13, 25}},   //
           {WHITESPACE, {3, 0, 26}}, //
           {IDENTIFIER, {3, 2, 28}}, // var
-          {STRING, {3, 5, 31}},     // 'abc#\nxyz'
+          {STRING, {3, 5, 31}},     // 'abc#\nxy¶z'
           {WHITESPACE, {5, 0, 51}}, //
           {IDENTIFIER, {5, 2, 53}}, // retval
           {WHITESPACE, {5, 8, 59}}, //
@@ -191,36 +200,109 @@ y
           {IDENTIFIER, {8, 0, 74}}, // y
           {NEWLINE, {8, 1, 75}},    //
           {DEDENT, {9, 0, 76}},     //
+          {LANG_END, {9, 0, 76}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }
     SECTION("language")
     {
       const auto text = R"(
-var x = Python ⎢def f(x, y):
-               ⎢ return (x +
-               ⎢    y)
-               ⎢
-               ⎢x = C ⎢int main () {
-               ⎢      ⎢  x = ⦚Hello
-               ⎢      ⎢      ⦚World ⎢ 42 ⦚ zig
-               ⎢      ⎢  return 42;
-               ⎢      ⎢}
+Python ⎢def
+       ⎢  return (x +
+       ⎢ y)
 
-var x = Python «
+Python «
+def
+  return (
+x)
+»
+)";
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}},    //
+          {WHITESPACE, {0, 0, 0}},    //
+          {IDENTIFIER, {1, 0, 1}},    // Python
+          {WHITESPACE, {1, 6, 7}},    //
+          {LANG_BEGIN, {1, 7, 8}},    // ⎢
+          {IDENTIFIER, {1, 8, 11}},   // def
+          {NEWLINE, {1, 11, 14}},     //
+          {WHITESPACE, {2, 0, 15}},   //
+          {INDENT, {2, 8, 25}},       //
+          {IDENTIFIER, {2, 10, 27}},  // return
+          {WHITESPACE, {2, 16, 33}},  //
+          {PAREN_LEFT, {2, 17, 34}},  // (
+          {IDENTIFIER, {2, 18, 35}},  // x
+          {WHITESPACE, {2, 19, 36}},  //
+          {OPERATOR, {2, 20, 37}},    // +
+          {WHITESPACE, {2, 21, 38}},  //
+          {IDENTIFIER, {3, 9, 50}},   // y
+          {PAREN_RIGHT, {3, 10, 51}}, // )
+          {NEWLINE, {3, 11, 52}},     //
+          {DEDENT, {4, 0, 53}},       //
+          {LANG_END, {4, 0, 53}},     //
+          {NEWLINE, {4, 0, 53}},      //
+          {IDENTIFIER, {5, 0, 54}},   // Python
+          {WHITESPACE, {5, 6, 60}},   //
+          {LANG_BEGIN, {5, 7, 61}},   // «
+          {WHITESPACE, {5, 8, 63}},   //
+          {IDENTIFIER, {6, 0, 64}},   // def
+          {NEWLINE, {6, 3, 67}},      //
+          {INDENT, {7, 0, 68}},       //
+          {IDENTIFIER, {7, 2, 70}},   // return
+          {WHITESPACE, {7, 8, 76}},   //
+          {PAREN_LEFT, {7, 9, 77}},   // (
+          {WHITESPACE, {7, 10, 78}},  //
+          {IDENTIFIER, {8, 0, 79}},   // x
+          {PAREN_RIGHT, {8, 1, 80}},  // )
+          {NEWLINE, {8, 2, 81}},      //
+          {DEDENT, {9, 0, 82}},       //
+          {LANG_END, {9, 0, 82}},     // «
+          {NEWLINE, {9, 1, 84}},      //
+          {LANG_END, {10, 0, 85}},    //
+      };
+      // CHECK(frag->fragments == expected_fragments);
+    }
+    SECTION("complex")
+    {
+      const auto text = R"(
+Python ⎢def
+       ⎢  return (x +
+       ⎢ y)
+       ⎢
+       ⎢x = C ⎢int main () {
+       ⎢      ⎢  x = ¶Hello
+       ⎢      ⎢      ¶World ⎢ 42 ¶ zig
+       ⎢      ⎢  return 42;
+       ⎢      ⎢}
+
+Python «
 def f(x, y):
   return (x +
 y )
 
-x = language C « int main () {
+C « int main () {
   return 42;
 } »
 »
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {WHITESPACE, {0, 0, 0}}, //
-          {WHITESPACE, {0, 0, 0}}, //
+          {LANG_BEGIN, {0, 0, 0}},   //
+          {WHITESPACE, {0, 0, 0}},   //
+          {IDENTIFIER, {1, 0, 1}},   // Python
+          {WHITESPACE, {1, 6, 7}},   //
+          {LANG_BEGIN, {1, 7, 8}},   // ⎢
+          {IDENTIFIER, {1, 8, 9}},   // def
+          {NEWLINE, {1, 11, 12}},    //
+          {WHITESPACE, {2, 8, 20}},  //
+          {IDENTIFIER, {2, 10, 22}}, // return
+          {WHITESPACE, {2, 16, 28}}, //
+          {OPERATOR, {2, 17, 29}},   // (
+          {IDENTIFIER, {2, 18, 30}}, // x
+          {WHITESPACE, {2, 19, 31}}, //
+          {OPERATOR, {2, 20, 32}},   // +
+          {WHITESPACE, {2, 21, 33}}, //
+          {IDENTIFIER, {2, 21, 33}}, //
       };
       // CHECK(frag->fragments == expected_fragments);
     }

@@ -107,12 +107,20 @@ namespace silva {
       });
     }
 
-    array_t<categorized_codepoint_data_t> parentheses;
-    array_t<index_t> indents = {0};
+    struct language_data_t {
+      bool using_angle_quotation   = false;
+      index_t multiline_lang_depth = 0;
+
+      array_t<categorized_codepoint_data_t> parentheses;
+      array_t<index_t> indents = {0};
+    };
+
+    array_t<language_data_t> languages;
 
     expected_t<bool> recognize_indent(const index_t idx, const index_t indent)
     {
       SILVA_EXPECT(indent >= 0, ASSERT);
+      auto& indents = languages.back().indents;
       SILVA_EXPECT(!indents.empty(), ASSERT);
       if (indents.back() < indent) {
         emit(idx, INDENT);
@@ -133,12 +141,18 @@ namespace silva {
       return false;
     }
 
-    expected_t<void> run()
+    expected_t<void> run_language()
     {
+      emit(i, LANG_BEGIN);
+      languages.push_back(language_data_t{
+          .using_angle_quotation = false,
+          .multiline_lang_depth  = 0,
+      });
+
       SILVA_EXPECT_FWD(recognize_various_following_newline());
       while (i < n) {
         if (ccd[i].category == Newline) {
-          if (parentheses.empty()) {
+          if (languages.back().parentheses.empty()) {
             emit(i++, NEWLINE);
           }
           SILVA_EXPECT_FWD(recognize_various_following_newline());
@@ -150,13 +164,14 @@ namespace silva {
           }
         }
         else if (ccd[i].category == ParenthesisLeft) {
-          parentheses.push_back(ccd[i]);
+          languages.back().parentheses.push_back(ccd[i]);
           emit(i++, PAREN_LEFT);
         }
         else if (ccd[i].category == ParenthesisRight) {
           const auto expected_open_paren_it = opposite_parenthesis.find(ccd[i].codepoint);
           SILVA_EXPECT(expected_open_paren_it != opposite_parenthesis.end(), ASSERT);
           const unicode::codepoint_t expected_open_paren = expected_open_paren_it->second;
+          auto& parentheses                              = languages.back().parentheses;
           SILVA_EXPECT(!parentheses.empty() && parentheses.back().codepoint == expected_open_paren,
                        MINOR,
                        "Mismatching parentheses between {} and {}",
@@ -170,7 +185,7 @@ namespace silva {
             SILVA_EXPECT_FWD(recognize_comment());
             continue;
           }
-          if (ccd[i].codepoint == U'⦚') {
+          if (ccd[i].codepoint == U'¶') {
             SILVA_EXPECT_FWD(recognize_multiline_string());
             continue;
           }
@@ -195,11 +210,16 @@ namespace silva {
           SILVA_EXPECT(false, MINOR, "fragmentization doesn't allow {}", ccd[i].to_wrap());
         }
       }
-      SILVA_EXPECT(parentheses.empty(),
+      SILVA_EXPECT(languages.back().parentheses.empty(),
                    MINOR,
                    "Unmatched parenthesis at {}",
-                   parentheses.back().location);
+                   languages.back().parentheses.back().location);
       SILVA_EXPECT_FWD(recognize_indent(n, 0));
+
+      SILVA_EXPECT(!languages.empty(), ASSERT);
+      languages.pop_back();
+      emit(i, LANG_END);
+
       return {};
     }
 
@@ -264,7 +284,7 @@ namespace silva {
 
     expected_t<void> recognize_multiline_string()
     {
-      SILVA_EXPECT(ccd[i].codepoint == U'⦚', ASSERT);
+      SILVA_EXPECT(ccd[i].codepoint == U'¶', ASSERT);
       emit(i, STRING);
       while (true) {
         skip_to_end_of_line();
@@ -272,7 +292,7 @@ namespace silva {
         SILVA_EXPECT(ccd[i].category == Newline, ASSERT);
         ++i;
         const index_t fi = find_next_non_space();
-        if (fi == n || ccd[fi].codepoint != U'⦚') {
+        if (fi == n || ccd[fi].codepoint != U'¶') {
           break;
         }
       }
@@ -321,10 +341,12 @@ namespace silva {
 
     // Gobbles up all whitespace and comments after a newline. Leaves "i" at the first codepoint
     // that is not a whitespace, newline, or part of a comment.
-    expected_t<void> recognize_various_following_newline()
+    // Returns the number of multiline language starters.
+    expected_t<index_t> recognize_various_following_newline()
     {
-      index_t prev_i      = i;
-      index_t last_indent = 0;
+      index_t prev_i               = i;
+      index_t last_indent          = 0;
+      index_t multiline_lang_depth = 0;
       while (i < n) {
         if (is_comment_start(i)) {
           if (prev_i < i) {
@@ -341,11 +363,16 @@ namespace silva {
           last_indent = 0;
           ++i;
         }
+        else if (ccd[i].codepoint == U'⎢') {
+          last_indent = 0;
+          multiline_lang_depth += 1;
+          ++i;
+        }
         else {
           break;
         }
       }
-      if (i == n || !parentheses.empty()) {
+      if (i == n || !languages.back().parentheses.empty()) {
         if (prev_i < i) {
           emit(prev_i, WHITESPACE);
         }
@@ -380,7 +407,8 @@ namespace silva {
   {
     fragmentizer_t ff(std::move(descriptive_path), std::move(source_code));
     SILVA_EXPECT_FWD(ff.init());
-    SILVA_EXPECT_FWD(ff.run());
+    SILVA_EXPECT_FWD(ff.run_language());
+    SILVA_EXPECT(ff.languages.empty(), MINOR);
     return std::move(ff.retval);
   }
 

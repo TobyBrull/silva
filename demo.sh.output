@@ -1,3 +1,4 @@
+1:1      LANG_BEGIN                      []
 1:1      PAREN_LEFT  [                   [0x5b]
 1:2      WHITESPACE                      [0x0a 0x20 0x20]
 2:3      IDENTIFIER  none                [0x6e 0x6f 0x6e 0x65]
@@ -33,6 +34,7 @@
 10:4     WHITESPACE                      [0x0a]
 11:1     PAREN_RIGHT ]                   [0x5d]
 11:2     NEWLINE                         [0x0a]
+12:1     LANG_END                        []
 [  0]   1:1   [
 [  1]   2:3   none
 [  2]   3:3   true
