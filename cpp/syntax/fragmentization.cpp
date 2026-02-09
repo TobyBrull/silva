@@ -29,6 +29,14 @@ namespace silva {
     return (fc != WHITESPACE && fc != COMMENT);
   }
 
+  template<index_t N>
+  constexpr bool is_one_of(const unicode::codepoint_t cp,
+                           const array_fixed_t<unicode::codepoint_t, N> cps)
+  {
+    const auto it = std::ranges::find(cps, cp);
+    return (it != cps.end());
+  }
+
   struct categorized_codepoint_data_t : public unicode::codepoint_data_t {
     codepoint_category_t category = codepoint_category_t::Forbidden;
     file_location_t location;
@@ -87,17 +95,159 @@ namespace silva {
   struct fragmentized_line_t {
     array_t<fragment_t> fragments; // Always ends with newline
   };
-  expected_t<array_t<fragmentized_line_t>>
-  fragmentize_lines(const array_t<categorized_codepoint_data_t>& ccd)
-  {
-    SILVA_EXPECT(ccd.size() >= 2, ASSERT);
-    const index_t n = ccd.size() - 1;
+  struct line_fragmentizer_t {
+    const array_t<categorized_codepoint_data_t>& ccd;
+    const index_t n = ccd.size();
+
     array_t<fragmentized_line_t> lines;
+
     index_t i = 0;
-    while (i < n) {
+
+    expected_t<void> init()
+    {
+      SILVA_EXPECT(n >= 1 && ccd.back().category == Newline, ASSERT);
+      return {};
     }
-    return {std::move(lines)};
-  }
+
+    void emit(const index_t idx, const fragment_category_t fc)
+    {
+      lines.back().fragments.push_back(fragment_t{
+          .category = fc,
+          .location = ccd[idx].location,
+      });
+    };
+
+    expected_t<void> recognize_identifier()
+    {
+      SILVA_EXPECT(ccd[i].category == XID_Start, ASSERT);
+      emit(i, IDENTIFIER);
+      while (i < n && (ccd[i].category == XID_Start || ccd[i].category == XID_Continue)) {
+        ++i;
+      }
+      return {};
+    }
+
+    expected_t<void> recognize_number()
+    {
+      SILVA_EXPECT(is_ascii_digit(ccd[i].codepoint), ASSERT);
+      emit(i, NUMBER);
+      const auto is_number_cont = [](const unicode::codepoint_t cp) -> bool {
+        if (is_ascii_digit(cp)) {
+          return true;
+        }
+        if (cp == U'.' || cp == U'\'' || cp == '+' || cp == '-') {
+          return true;
+        }
+        if (is_ascii_alpha(cp)) {
+          return true;
+        }
+        return false;
+      };
+      while (i < n && is_number_cont(ccd[i].codepoint)) {
+        ++i;
+      }
+      return {};
+    }
+
+    void skip_to_end_of_line()
+    {
+      while (i < n && ccd[i].category != Newline) {
+        ++i;
+      }
+    }
+
+    expected_t<bool> try_recognize_string()
+    {
+      if (i < n && (ccd[i].codepoint == U'"' || ccd[i].codepoint == U'\'')) {
+        emit(i, STRING);
+        const unicode::codepoint_t delim = ccd[i].codepoint;
+        i++;
+        while (i < n) {
+          if (ccd[i].codepoint == U'\\') {
+            SILVA_EXPECT(i + 1 < n,
+                         MINOR,
+                         "expected character after '\\' in string at {}",
+                         ccd[i].location);
+            const static array_fixed_t<unicode::codepoint_t, 3> escape_seqs = {U'n', U'\'', U'\"'};
+            SILVA_EXPECT(is_one_of<3>(ccd[i + 1].codepoint, escape_seqs),
+                         MINOR,
+                         "unexpected escape sequence at {}, allowed escape sequences: {}",
+                         ccd[i].location,
+                         escape_seqs);
+            i += 2;
+          }
+          else if (ccd[i].codepoint == delim) {
+            i += 1;
+            break;
+          }
+          else {
+            i += 1;
+          }
+        }
+        return true;
+      }
+      return false;
+    }
+
+    expected_t<array_t<fragmentized_line_t>> run()
+    {
+      lines.emplace_back();
+      while (i < n) {
+        if (ccd[i].category == Newline) {
+          emit(i++, NEWLINE);
+          lines.emplace_back();
+        }
+        else if (ccd[i].category == Space) {
+          emit(i, WHITESPACE);
+          while (i < n && ccd[i].category == Space) {
+            ++i;
+          }
+        }
+        else if (ccd[i].category == ParenthesisLeft) {
+          emit(i++, PAREN_LEFT);
+        }
+        else if (ccd[i].category == ParenthesisRight) {
+          emit(i++, PAREN_RIGHT);
+        }
+        else if (ccd[i].category == Operator) {
+          if (ccd[i].codepoint == U'#') {
+            emit(i, COMMENT);
+            skip_to_end_of_line();
+            continue;
+          }
+          if (ccd[i].codepoint == U'¶') {
+            emit(i, STRING);
+            skip_to_end_of_line();
+            continue;
+          }
+          if (ccd[i].codepoint == U'\\' && i + 1 < n && ccd[i + 1].category == Newline) {
+            if (lines.back().fragments.empty() ||
+                lines.back().fragments.back().category != WHITESPACE) {
+              emit(i, WHITESPACE);
+            }
+            i += 2;
+            continue;
+          }
+          if (const bool is_string = SILVA_EXPECT_FWD(try_recognize_string())) {
+            continue;
+          }
+          emit(i++, OPERATOR);
+        }
+        else if (ccd[i].category == XID_Start) {
+          SILVA_EXPECT_FWD(recognize_identifier());
+        }
+        else if (is_ascii_digit(ccd[i].codepoint)) {
+          SILVA_EXPECT_FWD(recognize_number());
+        }
+        else {
+          SILVA_EXPECT(false, MINOR, "fragmentization doesn't allow {}", ccd[i].to_wrap());
+        }
+      }
+      SILVA_EXPECT(lines.back().fragments.empty(), ASSERT);
+      lines.pop_back();
+      return {std::move(lines)};
+    }
+  };
 
   struct fragmentizer_t {
     unique_ptr_t<fragmentization_t> retval = std::make_unique<fragmentization_t>();
@@ -301,14 +451,6 @@ namespace silva {
       }
     }
 
-    template<index_t N>
-    static bool is_one_of(const unicode::codepoint_t cp,
-                          const array_fixed_t<unicode::codepoint_t, N> cps)
-    {
-      const auto it = std::ranges::find(cps, cp);
-      return (it != cps.end());
-    }
-
     index_t find_next_non_space() const
     {
       index_t retval = i;
@@ -445,6 +587,10 @@ namespace silva {
                                                           string_t source_code)
   {
     auto ccd = SILVA_EXPECT_FWD(categorize_codepoints(source_code));
+    line_fragmentizer_t lf{.ccd = ccd};
+    SILVA_EXPECT_FWD(lf.init());
+    auto lines = SILVA_EXPECT_FWD(lf.run());
+
     fragmentizer_t ff;
     SILVA_EXPECT_FWD(ff.init(std::move(descriptive_path), std::move(source_code), std::move(ccd)));
     SILVA_EXPECT_FWD(ff.run());

@@ -33,8 +33,8 @@
 10:3     PAREN_RIGHT ]                   [0x5d]
 10:4     WHITESPACE                      [0x0a]
 11:1     PAREN_RIGHT ]                   [0x5d]
-11:2     NEWLINE                         [0x0a]
-12:1     LANG_END                        []
+11:2     NEWLINE                         []
+11:2     LANG_END                        [0x0a]
 [  0]   1:1   [
 [  1]   2:3   none
 [  2]   3:3   true
