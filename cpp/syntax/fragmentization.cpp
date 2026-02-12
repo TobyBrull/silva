@@ -292,8 +292,10 @@ namespace silva {
 
     expected_t<void> run()
     {
+      emit(0, LANG_BEGIN);
       SILVA_EXPECT_FWD(run_language(false, 0));
       SILVA_EXPECT(languages.empty(), MINOR);
+      emit(n - 1, LANG_END);
       return {};
     }
 
@@ -321,21 +323,14 @@ namespace silva {
       return false;
     }
 
-    struct multiline_shape_t {
-      // "dirty" here means if there are "real"
-      bool multiline_lang_dirty    = false;
-      index_t multiline_lang_depth = 0;
-      bool multiline_str_dirty     = false;
-      index_t multiline_str_index  = -1;
-    };
-    expected_t<multiline_shape_t> find_multiline_shape() { return {}; };
-
-    expected_t<void> run_language(const bool uses_angle_quotes, const index_t multiline_lang_depth)
+    expected_t<void> run_language(const bool uses_angle_quotes,
+                                  const index_t multiline_lang_depth_inc)
     {
-      emit(i, LANG_BEGIN);
+      const index_t prev_multiline_lang_depth =
+          languages.empty() ? 0 : languages.back().multiline_lang_depth;
       languages.push_back(language_data_t{
           .uses_angle_quotes    = uses_angle_quotes,
-          .multiline_lang_depth = multiline_lang_depth,
+          .multiline_lang_depth = prev_multiline_lang_depth + multiline_lang_depth_inc,
       });
 
       SILVA_EXPECT_FWD(recognize_various_following_newline());
@@ -353,21 +348,40 @@ namespace silva {
           }
         }
         else if (ccd[i].category == ParenthesisLeft) {
-          languages.back().parentheses.push_back(ccd[i]);
-          emit(i++, PAREN_LEFT);
+          if (ccd[i].codepoint == U'«') {
+            const index_t opening_i = i;
+            emit(i++, LANG_BEGIN);
+            SILVA_EXPECT_FWD(run_language(true, 0));
+            SILVA_EXPECT(i < n && ccd[i].codepoint == U'»',
+                         MINOR,
+                         "opening '«' at {} had no matching '»', expected at {}",
+                         ccd[opening_i].location,
+                         ccd[i].location);
+            emit(i++, LANG_END);
+          }
+          else {
+            languages.back().parentheses.push_back(ccd[i]);
+            emit(i++, PAREN_LEFT);
+          }
         }
         else if (ccd[i].category == ParenthesisRight) {
-          const auto expected_open_paren_it = opposite_parenthesis.find(ccd[i].codepoint);
-          SILVA_EXPECT(expected_open_paren_it != opposite_parenthesis.end(), ASSERT);
-          const unicode::codepoint_t expected_open_paren = expected_open_paren_it->second;
-          auto& parentheses                              = languages.back().parentheses;
-          SILVA_EXPECT(!parentheses.empty() && parentheses.back().codepoint == expected_open_paren,
-                       MINOR,
-                       "Mismatching parentheses between {} and {}",
-                       parentheses.back().location,
-                       ccd[i].location);
-          parentheses.pop_back();
-          emit(i++, PAREN_RIGHT);
+          if (ccd[i].codepoint == U'»') {
+            break;
+          }
+          else {
+            const auto expected_open_paren_it = opposite_parenthesis.find(ccd[i].codepoint);
+            SILVA_EXPECT(expected_open_paren_it != opposite_parenthesis.end(), ASSERT);
+            const unicode::codepoint_t expected_open_paren = expected_open_paren_it->second;
+            auto& parentheses                              = languages.back().parentheses;
+            SILVA_EXPECT(!parentheses.empty() &&
+                             parentheses.back().codepoint == expected_open_paren,
+                         MINOR,
+                         "Mismatching parentheses between {} and {}",
+                         parentheses.back().location,
+                         ccd[i].location);
+            parentheses.pop_back();
+            emit(i++, PAREN_RIGHT);
+          }
         }
         else if (ccd[i].category == Operator) {
           if (ccd[i].codepoint == U'#') {
@@ -407,7 +421,6 @@ namespace silva {
 
       SILVA_EXPECT(!languages.empty(), ASSERT);
       languages.pop_back();
-      emit(n - 1, LANG_END);
 
       return {};
     }
