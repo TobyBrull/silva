@@ -67,7 +67,6 @@ xyz123_äß
           {WHITESPACE, {0, 0, 0}},
           {IDENTIFIER, {2, 0, 2}},
           {NEWLINE, {2, 9, 13}},
-          {WHITESPACE, {3, 0, 14}},
           {LANG_END, {3, 0, 14}},
       };
       CHECK(frag->fragments == expected_fragments);
@@ -91,7 +90,7 @@ back
           {WHITESPACE, {0, 0, 0}},   //
           {IDENTIFIER, {1, 0, 1}},   // def
           {NEWLINE, {1, 3, 4}},      //
-          {INDENT, {2, 0, 5}},       //
+          {INDENT, {2, 2, 7}},       //
           {IDENTIFIER, {2, 2, 7}},   // test
           {WHITESPACE, {2, 6, 11}},  //
           {OPERATOR, {2, 7, 12}},    // <
@@ -101,20 +100,17 @@ back
           {OPERATOR, {2, 18, 23}},   // ⊙
           {STRING, {2, 19, 26}},     // 'abc'
           {NEWLINE, {2, 24, 31}},    //
-          {WHITESPACE, {3, 0, 32}},  //
           {STRING, {3, 2, 34}},      // "abc"
           {NEWLINE, {3, 7, 39}},     //
-          {INDENT, {4, 0, 40}},      //
+          {INDENT, {4, 4, 44}},      //
           {IDENTIFIER, {4, 4, 44}},  // deep
           {NEWLINE, {4, 8, 48}},     //
-          {WHITESPACE, {5, 0, 49}},  //
           {COMMENT, {6, 2, 53}},     // # Comment
           {WHITESPACE, {6, 11, 62}}, //
           {DEDENT, {8, 0, 64}},      //
           {DEDENT, {8, 0, 64}},      //
           {IDENTIFIER, {8, 0, 64}},  // back
           {NEWLINE, {8, 4, 68}},     //
-          {WHITESPACE, {9, 0, 69}},  //
           {LANG_END, {9, 0, 69}},    //
       };
       CHECK(frag->fragments == expected_fragments);
@@ -136,12 +132,12 @@ b    # Hi
           {WHITESPACE, {0, 0, 0}},   //
           {IDENTIFIER, {1, 0, 1}},   // def
           {NEWLINE, {1, 3, 4}},      //
-          {INDENT, {2, 0, 5}},       //
+          {INDENT, {2, 4, 9}},       //
           {IDENTIFIER, {2, 4, 9}},   // id
           {WHITESPACE, {2, 6, 11}},  //
           {COMMENT, {2, 7, 12}},     //
           {NEWLINE, {2, 11, 16}},    //
-          {INDENT, {3, 0, 17}},      //
+          {INDENT, {3, 8, 25}},      //
           {IDENTIFIER, {3, 8, 25}},  // id
           {WHITESPACE, {3, 10, 27}}, //
           {PAREN_LEFT, {3, 11, 28}}, // (
@@ -154,7 +150,7 @@ b    # Hi
           {WHITESPACE, {5, 3, 43}},  //
           {PAREN_RIGHT, {6, 0, 44}}, // )
           {NEWLINE, {6, 1, 45}},     //
-          {DEDENT, {7, 0, 46}},      //
+          {DEDENT, {7, 4, 50}},      //
           {IDENTIFIER, {7, 4, 50}},  // id
           {NEWLINE, {7, 6, 52}},     //
           {DEDENT, {7, 6, 52}},      //
@@ -182,10 +178,9 @@ y
           {WHITESPACE, {1, 3, 4}},  //
           {COMMENT, {1, 4, 5}},     // '# Hi \'
           {NEWLINE, {1, 10, 11}},   //
-          {INDENT, {2, 0, 12}},     //
+          {INDENT, {2, 2, 14}},     //
           {STRING, {2, 2, 14}},     // 'ab\'c#xyz'
           {NEWLINE, {2, 13, 25}},   //
-          {WHITESPACE, {3, 0, 26}}, //
           {IDENTIFIER, {3, 2, 28}}, // var
           {STRING, {3, 5, 31}},     // 'abc#\nxy¶z'
           {WHITESPACE, {5, 0, 51}}, //
@@ -193,7 +188,6 @@ y
           {WHITESPACE, {5, 8, 59}}, //
           {IDENTIFIER, {6, 0, 62}}, // y
           {NEWLINE, {6, 1, 63}},    //
-          {WHITESPACE, {7, 0, 64}}, //
           {IDENTIFIER, {7, 2, 66}}, // retval
           {WHITESPACE, {7, 8, 72}}, //
           {IDENTIFIER, {8, 0, 74}}, // y

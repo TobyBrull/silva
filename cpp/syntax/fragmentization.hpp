@@ -8,8 +8,10 @@
 namespace silva {
   enum class fragment_category_t {
     INVALID = 0,
+
     WHITESPACE,
     COMMENT,
+
     STRING,
     IDENTIFIER,
     NUMBER,
