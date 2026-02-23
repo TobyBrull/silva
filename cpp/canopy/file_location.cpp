@@ -11,7 +11,7 @@ namespace silva {
         stream->format("{}:{}", self.line_num + 1, self.column + 1);
       }
       else {
-        stream->format("[{},{},{}]", self.line_num, self.column, self.byte_offset);
+        stream->format("[{},{},{}]  ", self.line_num, self.column, self.byte_offset);
       }
     }
   }
