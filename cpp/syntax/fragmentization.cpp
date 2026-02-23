@@ -151,8 +151,9 @@ namespace silva {
     expected_t<void> run()
     {
       SILVA_EXPECT_FWD(emit(0, LANG_BEGIN));
-      SILVA_EXPECT_FWD(run_language(false, 0));
+      const newline_state_t up_ns = SILVA_EXPECT_FWD(run_language(false, 0));
       SILVA_EXPECT(languages.empty(), MINOR);
+      SILVA_EXPECT(up_ns == newline_state_t{}, MINOR);
       SILVA_EXPECT_FWD(emit(n - 1, LANG_END));
       return {};
     }
@@ -181,8 +182,52 @@ namespace silva {
       return false;
     }
 
-    expected_t<void> run_language(const bool uses_angle_quotes,
-                                  const index_t multiline_lang_depth_inc)
+    struct newline_state_t {
+      index_t multiline_lang_depth = 0;
+      index_t indent               = 0;
+      index_t prev_i               = 0;
+      bool is_empty                = false;
+      bool is_multiline_str        = false;
+
+      friend auto operator<=>(const newline_state_t&, const newline_state_t&) = default;
+    };
+    expected_t<newline_state_t> find_newline_state()
+    {
+      newline_state_t retval;
+      retval.prev_i   = i;
+      retval.is_empty = true;
+      while (i < n) {
+        if (ccd[i].category == Space) {
+          retval.indent += 1;
+          ++i;
+        }
+        else if (ccd[i].codepoint == U'⎢') {
+          if (retval.multiline_lang_depth == languages.back().multiline_lang_depth) {
+            retval.is_empty = false;
+            break;
+          }
+          retval.indent = 0;
+          retval.multiline_lang_depth += 1;
+          ++i;
+        }
+        else if (ccd[i].codepoint == U'¶') {
+          retval.is_multiline_str = true;
+          retval.is_empty         = false;
+          break;
+        }
+        else if (ccd[i].category == Newline || ccd[i].codepoint == U'#') {
+          break;
+        }
+        else {
+          retval.is_empty = false;
+          break;
+        }
+      }
+      return retval;
+    }
+
+    expected_t<newline_state_t> run_language(const bool uses_angle_quotes,
+                                             const index_t multiline_lang_depth_inc)
     {
       const index_t prev_multiline_lang_depth =
           languages.empty() ? 0 : languages.back().multiline_lang_depth;
@@ -191,11 +236,15 @@ namespace silva {
           .multiline_lang_depth = prev_multiline_lang_depth + multiline_lang_depth_inc,
       });
 
+      newline_state_t ns;
+
       while (i < n) {
         if (ccd[i].category == Newline) {
+          const index_t newline_i = i;
+          i += 1;
+          ns = SILVA_EXPECT_FWD(find_newline_state());
           if (languages.back().parentheses.empty()) {
-            SILVA_EXPECT_FWD(emit(i++, NEWLINE));
-            const newline_state_t ns = SILVA_EXPECT_FWD(find_newline_state());
+            SILVA_EXPECT_FWD(emit(newline_i, NEWLINE));
             if (ns.prev_i < i) {
               SILVA_EXPECT_FWD(emit(ns.prev_i, WHITESPACE));
             }
@@ -204,8 +253,12 @@ namespace silva {
             }
           }
           else {
-            SILVA_EXPECT_FWD(emit(i++, WHITESPACE));
+            SILVA_EXPECT_FWD(emit(newline_i, WHITESPACE));
           }
+          if (ns.multiline_lang_depth < languages.back().multiline_lang_depth) {
+            break;
+          }
+          ns = {};
         }
         else if (ccd[i].category == Space) {
           SILVA_EXPECT_FWD(emit(i, WHITESPACE));
@@ -217,12 +270,13 @@ namespace silva {
           if (ccd[i].codepoint == U'«') {
             const index_t opening_i = i;
             SILVA_EXPECT_FWD(emit(i++, LANG_BEGIN));
-            SILVA_EXPECT_FWD(run_language(true, 0));
+            const newline_state_t up_ns = SILVA_EXPECT_FWD(run_language(true, 0));
             SILVA_EXPECT(i < n && ccd[i].codepoint == U'»',
                          MINOR,
                          "opening '«' at {} had no matching '»', expected at {}",
                          ccd[opening_i].location,
                          ccd[i].location);
+            SILVA_EXPECT(up_ns == newline_state_t{}, MINOR);
             SILVA_EXPECT_FWD(emit(i++, LANG_END));
           }
           else {
@@ -250,6 +304,15 @@ namespace silva {
           }
         }
         else if (ccd[i].category == Operator) {
+          if (ccd[i].codepoint == U'⎢') {
+            SILVA_EXPECT_FWD(emit(i++, LANG_BEGIN));
+            const newline_state_t up_ns = SILVA_EXPECT_FWD(run_language(false, 1));
+            SILVA_EXPECT_FWD(emit(i, LANG_END));
+            if (up_ns.multiline_lang_depth < languages.back().multiline_lang_depth) {
+              break;
+            }
+            continue;
+          }
           if (ccd[i].codepoint == U'#') {
             SILVA_EXPECT_FWD(recognize_comment());
             continue;
@@ -283,12 +346,12 @@ namespace silva {
                    MINOR,
                    "Unmatched parenthesis at {}",
                    languages.back().parentheses.back().location);
-      SILVA_EXPECT_FWD(recognize_indent(n - 1, 0));
+      SILVA_EXPECT_FWD(recognize_indent(std::min(i, n - 1), 0));
 
       SILVA_EXPECT(!languages.empty(), ASSERT);
       languages.pop_back();
 
-      return {};
+      return ns;
     }
 
     expected_t<void> recognize_identifier()
@@ -388,44 +451,6 @@ namespace silva {
         return true;
       }
       return false;
-    }
-
-    struct newline_state_t {
-      index_t multiline_lang_depth = 0;
-      index_t indent               = 0;
-      index_t prev_i               = 0;
-      bool is_empty                = false;
-      bool is_multiline_str        = false;
-    };
-    expected_t<newline_state_t> find_newline_state()
-    {
-      newline_state_t retval;
-      retval.prev_i   = i;
-      retval.is_empty = true;
-      while (i < n) {
-        if (ccd[i].category == Space) {
-          retval.indent += 1;
-          ++i;
-        }
-        else if (ccd[i].codepoint == U'⎢') {
-          retval.indent = 0;
-          retval.multiline_lang_depth += 1;
-          ++i;
-        }
-        else if (ccd[i].codepoint == U'¶') {
-          retval.is_multiline_str = true;
-          retval.is_empty         = false;
-          break;
-        }
-        else if (ccd[i].category == Newline || ccd[i].codepoint == U'#') {
-          break;
-        }
-        else {
-          retval.is_empty = false;
-          break;
-        }
-      }
-      return retval;
     }
 
     bool is_comment_start(const index_t idx) { return (idx < n && ccd[idx].codepoint == U'#'); }

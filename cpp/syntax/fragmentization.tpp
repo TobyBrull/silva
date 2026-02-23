@@ -219,8 +219,7 @@ x)
           {LANG_BEGIN, {1, 7, 8}},    // ⎢
           {IDENTIFIER, {1, 8, 11}},   // def
           {NEWLINE, {1, 11, 14}},     //
-          {WHITESPACE, {2, 0, 15}},   //
-          {INDENT, {2, 8, 25}},       //
+          {INDENT, {2, 10, 27}},      //
           {IDENTIFIER, {2, 10, 27}},  // return
           {WHITESPACE, {2, 16, 33}},  //
           {PAREN_LEFT, {2, 17, 34}},  // (
@@ -240,7 +239,7 @@ x)
           {WHITESPACE, {5, 8, 63}},   //
           {IDENTIFIER, {6, 0, 64}},   // def
           {NEWLINE, {6, 3, 67}},      //
-          {INDENT, {7, 0, 68}},       //
+          {INDENT, {7, 2, 70}},       //
           {IDENTIFIER, {7, 2, 70}},   // return
           {WHITESPACE, {7, 8, 76}},   //
           {PAREN_LEFT, {7, 9, 77}},   // (
@@ -251,9 +250,9 @@ x)
           {DEDENT, {9, 0, 82}},       //
           {LANG_END, {9, 0, 82}},     // «
           {NEWLINE, {9, 1, 84}},      //
-          {LANG_END, {10, 0, 85}},    //
+          {LANG_END, {9, 1, 84}},     //
       };
-      // CHECK(frag->fragments == expected_fragments);
+      CHECK(frag->fragments == expected_fragments);
     }
     SECTION("complex")
     {
