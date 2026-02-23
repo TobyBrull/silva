@@ -330,18 +330,6 @@ namespace silva {
       }
     }
 
-    index_t find_next_non_space() const
-    {
-      index_t retval = i;
-      while (retval < n) {
-        if (ccd[retval].category != Space) {
-          return retval;
-        }
-        retval += 1;
-      }
-      return retval;
-    }
-
     expected_t<void> recognize_multiline_string()
     {
       SILVA_EXPECT(ccd[i].codepoint == U'¶', ASSERT);
@@ -351,8 +339,11 @@ namespace silva {
         SILVA_EXPECT(i < n, ASSERT);
         SILVA_EXPECT(ccd[i].category == Newline, ASSERT);
         ++i;
-        const index_t fi = find_next_non_space();
-        if (fi == n || ccd[fi].codepoint != U'¶') {
+        const newline_state_t ns = SILVA_EXPECT_FWD(find_newline_state());
+        if (!ns.is_multiline_str) {
+          if (ns.prev_i < i) {
+            SILVA_EXPECT_FWD(emit(ns.prev_i, WHITESPACE));
+          }
           break;
         }
       }
