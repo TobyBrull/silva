@@ -115,6 +115,20 @@ back
       };
       CHECK(frag->fragments == expected_fragments);
     }
+    SECTION("init indent")
+    {
+      const auto text = "  import\n";
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}}, //
+          {INDENT, {0, 2, 2}},     //
+          {IDENTIFIER, {0, 2, 2}}, // import
+          {NEWLINE, {0, 8, 8}},    //
+          {DEDENT, {0, 8, 8}},     //
+          {LANG_END, {0, 8, 8}},   //
+      };
+      CHECK(frag->fragments == expected_fragments);
+    }
     SECTION("parentheses")
     {
       const auto text = R"(
@@ -183,7 +197,7 @@ y
           {NEWLINE, {2, 13, 25}},   //
           {IDENTIFIER, {3, 2, 28}}, // var
           {STRING, {3, 5, 31}},     // 'abc#\nxy¶z'
-          {WHITESPACE, {5, 0, 51}}, //
+          {NEWLINE, {4, 10, 50}},   //
           {IDENTIFIER, {5, 2, 53}}, // retval
           {WHITESPACE, {5, 8, 59}}, //
           {IDENTIFIER, {6, 0, 62}}, // y
@@ -254,49 +268,56 @@ x)
       };
       CHECK(frag->fragments == expected_fragments);
     }
-    SECTION("complex")
+    SECTION("complex language 1")
     {
       const auto text = R"(
 Python ⎢def
-       ⎢  return (x +
-       ⎢ y)
        ⎢
-       ⎢x = C ⎢int main () {
-       ⎢      ⎢  x = ¶Hello
-       ⎢      ⎢      ¶World ⎢ 42 ¶ zig
-       ⎢      ⎢  return 42;
-       ⎢      ⎢}
-
-Python «
-def f(x, y):
-  return (x +
-y )
-
-C « int main () {
-  return 42;
-} »
-»
+       ⎢  ⎢ str ¶Hello
+       ⎢  ⎢     ¶World ⎢ 42 ¶ zig
+       ⎢
+       ⎢  ⎢int «
+       ⎢  ⎢    x »
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, {0, 0, 0}},   //
-          {WHITESPACE, {0, 0, 0}},   //
-          {IDENTIFIER, {1, 0, 1}},   // Python
-          {WHITESPACE, {1, 6, 7}},   //
-          {LANG_BEGIN, {1, 7, 8}},   // ⎢
-          {IDENTIFIER, {1, 8, 9}},   // def
-          {NEWLINE, {1, 11, 12}},    //
-          {WHITESPACE, {2, 8, 20}},  //
-          {IDENTIFIER, {2, 10, 22}}, // return
-          {WHITESPACE, {2, 16, 28}}, //
-          {OPERATOR, {2, 17, 29}},   // (
-          {IDENTIFIER, {2, 18, 30}}, // x
-          {WHITESPACE, {2, 19, 31}}, //
-          {OPERATOR, {2, 20, 32}},   // +
-          {WHITESPACE, {2, 21, 33}}, //
-          {IDENTIFIER, {2, 21, 33}}, //
+          {LANG_BEGIN, {0, 0, 0}},    //
+          {WHITESPACE, {0, 0, 0}},    //
+          {IDENTIFIER, {1, 0, 1}},    // Python
+          {WHITESPACE, {1, 6, 7}},    //
+          {LANG_BEGIN, {1, 7, 8}},    // ⎢
+          {IDENTIFIER, {1, 8, 11}},   // def
+          {NEWLINE, {1, 11, 14}},     //
+          {INDENT, {3, 10, 38}},      //
+          {LANG_BEGIN, {3, 10, 38}},  // ⎢
+          {INDENT, {3, 12, 42}},      //
+          {IDENTIFIER, {3, 12, 42}},  // str
+          {WHITESPACE, {3, 15, 45}},  //
+          {STRING, {3, 16, 46}},      // ¶Hello...
+          {NEWLINE, {4, 33, 95}},     //
+          {DEDENT, {5, 8, 106}},      //
+          {LANG_END, {5, 8, 106}},    //
+          {NEWLINE, {5, 8, 106}},     //
+          {LANG_BEGIN, {6, 10, 119}}, //
+          {IDENTIFIER, {6, 11, 122}}, // int
+          {WHITESPACE, {6, 14, 125}}, //
+          {LANG_BEGIN, {6, 15, 126}}, // «
+          {WHITESPACE, {6, 16, 128}}, //
+          {INDENT, {7, 15, 148}},     //
+          {IDENTIFIER, {7, 15, 148}}, // x
+          {WHITESPACE, {7, 16, 149}}, //
+          {NEWLINE, {7, 17, 150}},    //
+          {DEDENT, {7, 17, 150}},     //
+          {LANG_END, {7, 17, 150}},   // »
+          {NEWLINE, {7, 18, 152}},    //
+          {LANG_END, {7, 18, 152}},   //
+          {NEWLINE, {7, 18, 152}},    //
+          {DEDENT, {7, 18, 152}},     //
+          {LANG_END, {7, 18, 152}},   //
+          {NEWLINE, {7, 18, 152}},    //
+          {LANG_END, {7, 18, 152}},   //
       };
-      // CHECK(frag->fragments == expected_fragments);
+      CHECK(frag->fragments == expected_fragments);
     }
   }
 }

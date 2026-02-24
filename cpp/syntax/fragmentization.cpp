@@ -185,37 +185,38 @@ namespace silva {
     struct newline_state_t {
       index_t multiline_lang_depth = 0;
       index_t indent               = 0;
-      index_t prev_i               = 0;
+      index_t new_i                = 0;
       bool is_empty                = false;
       bool is_multiline_str        = false;
 
       friend auto operator<=>(const newline_state_t&, const newline_state_t&) = default;
     };
-    expected_t<newline_state_t> find_newline_state()
+    expected_t<newline_state_t> find_newline_state(const index_t break_multiline_lang_depth)
     {
       newline_state_t retval;
-      retval.prev_i   = i;
+      index_t loc_i   = i;
       retval.is_empty = true;
-      while (i < n) {
-        if (ccd[i].category == Space) {
+      while (loc_i < n) {
+        if (ccd[loc_i].category == Space) {
           retval.indent += 1;
-          ++i;
+          ++loc_i;
         }
-        else if (ccd[i].codepoint == U'⎢') {
-          if (retval.multiline_lang_depth == languages.back().multiline_lang_depth) {
+        else if (ccd[loc_i].codepoint == U'⎢') {
+          if (retval.multiline_lang_depth == break_multiline_lang_depth) {
             retval.is_empty = false;
             break;
           }
           retval.indent = 0;
           retval.multiline_lang_depth += 1;
-          ++i;
+          ++loc_i;
         }
-        else if (ccd[i].codepoint == U'¶') {
+        else if (ccd[loc_i].codepoint == U'¶') {
           retval.is_multiline_str = true;
           retval.is_empty         = false;
           break;
         }
-        else if (ccd[i].category == Newline || ccd[i].codepoint == U'#') {
+        else if (ccd[loc_i].category == Newline || ccd[loc_i].codepoint == U'#' ||
+                 ccd[loc_i].codepoint == U'»') {
           break;
         }
         else {
@@ -223,6 +224,7 @@ namespace silva {
           break;
         }
       }
+      retval.new_i = loc_i;
       return retval;
     }
 
@@ -236,27 +238,35 @@ namespace silva {
           .multiline_lang_depth = prev_multiline_lang_depth + multiline_lang_depth_inc,
       });
 
-      newline_state_t ns;
+      {
+        newline_state_t first_ns = SILVA_EXPECT_FWD(find_newline_state(0));
+        if (!first_ns.is_empty) {
+          SILVA_EXPECT_FWD(recognize_indent(first_ns.new_i, first_ns.indent));
+        }
+        i = first_ns.new_i;
+      }
 
+      newline_state_t ns;
       while (i < n) {
         if (ccd[i].category == Newline) {
           const index_t newline_i = i;
           i += 1;
-          ns = SILVA_EXPECT_FWD(find_newline_state());
-          if (languages.back().parentheses.empty()) {
-            SILVA_EXPECT_FWD(emit(newline_i, NEWLINE));
-            if (ns.prev_i < i) {
-              SILVA_EXPECT_FWD(emit(ns.prev_i, WHITESPACE));
-            }
-            if (!ns.is_empty) {
-              SILVA_EXPECT_FWD(recognize_indent(i, ns.indent));
-            }
-          }
-          else {
+          ns = SILVA_EXPECT_FWD(find_newline_state(languages.back().multiline_lang_depth));
+          if (!languages.back().parentheses.empty()) {
             SILVA_EXPECT_FWD(emit(newline_i, WHITESPACE));
+            i = ns.new_i;
+            continue;
           }
+          SILVA_EXPECT_FWD(emit(newline_i, NEWLINE));
+          if (i < ns.new_i) {
+            SILVA_EXPECT_FWD(emit(i, WHITESPACE));
+          }
+          i = ns.new_i;
           if (ns.multiline_lang_depth < languages.back().multiline_lang_depth) {
             break;
+          }
+          if (!ns.is_empty) {
+            SILVA_EXPECT_FWD(recognize_indent(ns.new_i, ns.indent));
           }
           ns = {};
         }
@@ -307,7 +317,7 @@ namespace silva {
           if (ccd[i].codepoint == U'⎢') {
             SILVA_EXPECT_FWD(emit(i++, LANG_BEGIN));
             const newline_state_t up_ns = SILVA_EXPECT_FWD(run_language(false, 1));
-            SILVA_EXPECT_FWD(emit(i, LANG_END));
+            SILVA_EXPECT_FWD(emit(std::min(i, n - 1), LANG_END));
             if (up_ns.multiline_lang_depth < languages.back().multiline_lang_depth) {
               break;
             }
@@ -346,7 +356,9 @@ namespace silva {
                    MINOR,
                    "Unmatched parenthesis at {}",
                    languages.back().parentheses.back().location);
-      SILVA_EXPECT_FWD(recognize_indent(std::min(i, n - 1), 0));
+      const index_t final_i = std::min(i, n - 1);
+      SILVA_EXPECT_FWD(emit(final_i, NEWLINE));
+      SILVA_EXPECT_FWD(recognize_indent(final_i, 0));
 
       SILVA_EXPECT(!languages.empty(), ASSERT);
       languages.pop_back();
@@ -402,13 +414,14 @@ namespace silva {
         SILVA_EXPECT(i < n, ASSERT);
         SILVA_EXPECT(ccd[i].category == Newline, ASSERT);
         ++i;
-        const newline_state_t ns = SILVA_EXPECT_FWD(find_newline_state());
-        if (!ns.is_multiline_str) {
-          if (ns.prev_i < i) {
-            SILVA_EXPECT_FWD(emit(ns.prev_i, WHITESPACE));
-          }
+        const newline_state_t ns =
+            SILVA_EXPECT_FWD(find_newline_state(languages.back().multiline_lang_depth));
+        if (ns.multiline_lang_depth != languages.back().multiline_lang_depth ||
+            !ns.is_multiline_str) {
+          --i;
           break;
         }
+        i = ns.new_i;
       }
       return {};
     }
