@@ -25,6 +25,8 @@ namespace silva {
     NEWLINE,
   };
 
+  constexpr bool is_fragment_category_real(fragment_category_t);
+
   struct fragment_t {
     fragment_category_t category = fragment_category_t::INVALID;
     file_location_t location;
@@ -46,4 +48,14 @@ namespace silva {
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize_load(filesystem_path_t);
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filesystem_path_t descriptive_path,
                                                           string_t source_code);
+}
+
+// IMPLEMENTATION
+
+namespace silva {
+  constexpr bool is_fragment_category_real(const fragment_category_t fc)
+  {
+    using enum fragment_category_t;
+    return (fc != WHITESPACE && fc != COMMENT);
+  }
 }

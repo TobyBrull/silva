@@ -24,10 +24,6 @@ namespace silva {
   {
     return ('a' <= cp && cp < 'z') || ('A' <= cp && cp < 'Z');
   }
-  constexpr bool is_real_fragment(const fragment_category_t fc)
-  {
-    return (fc != WHITESPACE && fc != COMMENT);
-  }
 
   template<index_t N>
   constexpr bool is_one_of(const unicode::codepoint_t cp,
@@ -128,7 +124,7 @@ namespace silva {
           return {};
         }
       }
-      if (is_real_fragment(fc)) {
+      if (is_fragment_category_real(fc)) {
         last_real_fragment = retval->fragments.size();
       }
       retval->fragments.push_back(fragment_t{
@@ -253,6 +249,11 @@ namespace silva {
           i += 1;
           ns = SILVA_EXPECT_FWD(find_newline_state(languages.back().multiline_lang_depth));
           if (!languages.back().parentheses.empty()) {
+            SILVA_EXPECT(languages.back().multiline_lang_depth == ns.multiline_lang_depth,
+                         MINOR,
+                         "Expected multi-line language to continue at {} due to parenthesis at {}",
+                         ccd[i].location,
+                         languages.back().parentheses.back().location);
             SILVA_EXPECT_FWD(emit(newline_i, WHITESPACE));
             i = ns.new_i;
             continue;
@@ -263,6 +264,11 @@ namespace silva {
           }
           i = ns.new_i;
           if (ns.multiline_lang_depth < languages.back().multiline_lang_depth) {
+            SILVA_EXPECT(languages.back().uses_angle_quotes == false,
+                         MINOR,
+                         "LANGUAGE started by '«' must be finished by '»' before outer multi-line "
+                         "language may be finished at {}",
+                         ccd[newline_i].location);
             break;
           }
           if (!ns.is_empty) {
@@ -296,6 +302,10 @@ namespace silva {
         }
         else if (ccd[i].category == ParenthesisRight) {
           if (ccd[i].codepoint == U'»') {
+            SILVA_EXPECT(languages.back().uses_angle_quotes,
+                         MINOR,
+                         "Unexpected '»' at {}",
+                         ccd[i].location);
             break;
           }
           else {
@@ -317,8 +327,16 @@ namespace silva {
           if (ccd[i].codepoint == U'⎢') {
             SILVA_EXPECT_FWD(emit(i++, LANG_BEGIN));
             const newline_state_t up_ns = SILVA_EXPECT_FWD(run_language(false, 1));
-            SILVA_EXPECT_FWD(emit(std::min(i, n - 1), LANG_END));
+            const index_t final_i       = std::min(i, n - 1);
+            SILVA_EXPECT_FWD(emit(final_i, LANG_END));
+            SILVA_EXPECT_FWD(emit(final_i, NEWLINE));
             if (up_ns.multiline_lang_depth < languages.back().multiline_lang_depth) {
+              SILVA_EXPECT(
+                  languages.back().uses_angle_quotes == false,
+                  MINOR,
+                  "LANGUAGE started by '«' must be finished by '»' before outer multi-line "
+                  "language may be finished at {}",
+                  ccd[final_i].location);
               break;
             }
             continue;
@@ -485,6 +503,10 @@ namespace silva {
     fragmentizer_t ff;
     SILVA_EXPECT_FWD(ff.init(std::move(descriptive_path), std::move(source_code), std::move(ccd)));
     SILVA_EXPECT_FWD(ff.run());
+    SILVA_EXPECT(ff.i == ff.n,
+                 MINOR,
+                 "Incomplete fragmentization; stopped at {}",
+                 ff.ccd[ff.i].location);
     return std::move(ff.retval);
   }
 

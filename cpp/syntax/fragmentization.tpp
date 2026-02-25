@@ -8,6 +8,18 @@ namespace silva::test {
   using enum codepoint_category_t;
   using enum fragment_category_t;
 
+  array_t<fragment_category_t> only_real_categories(const array_t<fragment_t>& x)
+  {
+    array_t<fragment_category_t> retval;
+    retval.reserve(x.size());
+    for (const auto& elem: x) {
+      if (is_fragment_category_real(elem.category)) {
+        retval.push_back(elem.category);
+      }
+    }
+    return retval;
+  }
+
   TEST_CASE("fragmentization-data", "[fragmentization_t]")
   {
     const unicode::table_t<codepoint_category_t>& cct = silva::codepoint_category_table;
@@ -33,6 +45,20 @@ namespace silva::test {
       const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", "zyẍ_\n"));
       CHECK_THAT(err_msg, ContainsSubstring("Forbidden codepoint"));
       CHECK_THAT(err_msg, ContainsSubstring("0x0308"));
+    }
+    SECTION("error: stray LANG_END")
+    {
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", "»\n"));
+      CHECK_THAT(err_msg, ContainsSubstring("Unexpected '»'"));
+    }
+    SECTION("error: non-matching parentheses")
+    {
+      const auto text    = R"(
+A ⎢ ( B
+)
+)";
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      CHECK_THAT(err_msg, ContainsSubstring("Expected multi-line language to continue"));
     }
     SECTION("empty file")
     {
@@ -211,6 +237,26 @@ y
       };
       CHECK(frag->fragments == expected_fragments);
     }
+    SECTION("two multi-line strings")
+    {
+      const auto text = R"(
+x¶ abc
+y¶ xyz
+)";
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}}, //
+          {WHITESPACE, {0, 0, 0}}, //
+          {IDENTIFIER, {1, 0, 1}}, // x
+          {STRING, {1, 1, 2}},     // 'abc'
+          {NEWLINE, {1, 6, 8}},    //
+          {IDENTIFIER, {2, 0, 9}}, // y
+          {STRING, {2, 1, 10}},    // 'xyz'
+          {NEWLINE, {2, 6, 16}},   //
+          {LANG_END, {2, 6, 16}},  //
+      };
+      CHECK(frag->fragments == expected_fragments);
+    }
     SECTION("language")
     {
       const auto text = R"(
@@ -318,6 +364,98 @@ Python ⎢def
           {LANG_END, {7, 18, 152}},   //
       };
       CHECK(frag->fragments == expected_fragments);
+    }
+    SECTION("complex language 2")
+    {
+      const auto text     = R"(
+A ⎢ B «
+  ⎢  C ⎢ D
+  ⎢    ⎢  E ¶ abc
+  ⎢    ⎢    ¶ xyz
+  ⎢    ⎢
+  ⎢  F »
+)";
+      const auto frag     = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag_cat = only_real_categories(frag->fragments);
+      const array_t<fragment_category_t> expected_fragment_categories{
+          LANG_BEGIN, //
+          IDENTIFIER, // A
+          LANG_BEGIN, //
+          INDENT,     //
+          IDENTIFIER, // B
+          LANG_BEGIN, //
+          INDENT,     //
+          IDENTIFIER, // C
+          LANG_BEGIN, //
+          INDENT,     //
+          IDENTIFIER, // D
+          NEWLINE,    //
+          INDENT,     //
+          IDENTIFIER, // E
+          STRING,     //
+          NEWLINE,    //
+          DEDENT,     //
+          DEDENT,     //
+          LANG_END,   //
+          NEWLINE,    //
+          IDENTIFIER, // F
+          NEWLINE,    //
+          DEDENT,     //
+          LANG_END,   //
+          NEWLINE,    //
+          DEDENT,     //
+          LANG_END,   //
+          NEWLINE,    //
+          LANG_END,   //
+      };
+      CHECK(frag_cat == expected_fragment_categories);
+    }
+    SECTION("complex language 3")
+    {
+      const auto text     = R"(
+A ⎢ B « C » D
+)";
+      const auto frag     = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag_cat = only_real_categories(frag->fragments);
+      const array_t<fragment_category_t> expected_fragment_categories{
+          LANG_BEGIN, //
+          IDENTIFIER, // A
+          LANG_BEGIN, //
+          INDENT,     //
+          IDENTIFIER, // B
+          LANG_BEGIN, // «
+          INDENT,     //
+          IDENTIFIER, // C
+          NEWLINE,    //
+          DEDENT,     //
+          LANG_END,   // »
+          IDENTIFIER, // D
+          NEWLINE,    //
+          DEDENT,     //
+          LANG_END,   //
+          NEWLINE,    //
+          LANG_END,   //
+      };
+      CHECK(frag_cat == expected_fragment_categories);
+    }
+    SECTION("error: unmatched language")
+    {
+      const auto text    = R"(
+A⎢B «
+ ⎢C⎢D
+»
+)";
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      CHECK_THAT(err_msg, ContainsSubstring("LANGUAGE started by '«' must be finished by '»'"));
+    }
+    SECTION("error: unmatched language")
+    {
+      const auto text    = R"(
+A⎢B «
+ ⎢C⎢D »
+)";
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      CHECK_THAT(err_msg, ContainsSubstring("Unexpected '»' at"));
     }
   }
 }
