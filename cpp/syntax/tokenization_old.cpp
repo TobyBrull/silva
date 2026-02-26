@@ -1,4 +1,4 @@
-#include "tokenization.hpp"
+#include "tokenization_old.hpp"
 
 #include "canopy/filesystem.hpp"
 
@@ -7,9 +7,9 @@
 namespace silva {
   using enum token_category_t;
 
-  tokenization_t tokenization_t::copy() const
+  tokenization_old_t tokenization_old_t::copy() const
   {
-    return tokenization_t{
+    return tokenization_old_t{
         .swp       = swp,
         .filepath  = filepath,
         .tokens    = tokens,
@@ -17,7 +17,7 @@ namespace silva {
     };
   }
 
-  const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
+  const token_info_t* tokenization_old_t::token_info_get(const index_t token_index) const
   {
     return &swp->token_infos[tokens[token_index]];
   }
@@ -78,18 +78,19 @@ namespace silva {
     stream->write_str(retval);
   }
 
-  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t swp, filesystem_path_t filepath)
+  expected_t<tokenization_old_ptr_t> tokenize_load(syntax_ward_ptr_t swp,
+                                                   filesystem_path_t filepath)
   {
-    string_t source_code  = SILVA_EXPECT_FWD(read_file(filepath));
-    tokenization_ptr_t tp = SILVA_EXPECT_FWD_PLAIN(
+    string_t source_code      = SILVA_EXPECT_FWD(read_file(filepath));
+    tokenization_old_ptr_t tp = SILVA_EXPECT_FWD_PLAIN(
         tokenize(std::move(swp), std::move(filepath), std::move(source_code)));
     return tp;
   }
 
-  expected_t<tokenization_ptr_t>
+  expected_t<tokenization_old_ptr_t>
   tokenize(syntax_ward_ptr_t swp, filesystem_path_t filepath, string_view_t source_code)
   {
-    auto retval      = std::make_unique<tokenization_t>();
+    auto retval      = std::make_unique<tokenization_old_t>();
     retval->filepath = std::move(filepath);
     retval->swp      = swp;
     file_location_t loc;
@@ -122,7 +123,7 @@ namespace silva {
     return swp->add(std::move(retval));
   }
 
-  void pretty_write_impl(const tokenization_t& self, byte_sink_t* stream)
+  void pretty_write_impl(const tokenization_old_t& self, byte_sink_t* stream)
   {
     for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
       const token_id_t tii         = self.tokens[token_index];

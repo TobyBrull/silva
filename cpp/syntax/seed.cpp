@@ -66,7 +66,7 @@ namespace silva::seed {
       name_id_t ni_nt_base      = swp->name_id_of(ni_nt, "Base");
       name_id_t ni_term         = swp->name_id_of(ni_seed, "Terminal");
 
-      seed_axe_parse_tree_nursery_t(tokenization_ptr_t tp) : parse_tree_nursery_t(tp) {}
+      seed_axe_parse_tree_nursery_t(tokenization_old_ptr_t tp) : parse_tree_nursery_t(tp) {}
 
       expected_t<parse_tree_node_t> terminal()
       {
@@ -241,7 +241,7 @@ namespace silva::seed {
     struct seed_parse_tree_nursery_t : public seed_axe_parse_tree_nursery_t {
       seed_axe_t seed_seed_axe;
 
-      seed_parse_tree_nursery_t(tokenization_ptr_t tp)
+      seed_parse_tree_nursery_t(tokenization_old_ptr_t tp)
         : seed_axe_parse_tree_nursery_t(tp), seed_seed_axe(create_seed_axe_expr(tp->swp))
       {
       }
@@ -460,7 +460,7 @@ namespace silva::seed {
     };
   }
 
-  expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> parse(tokenization_old_ptr_t tp)
   {
     impl::seed_parse_tree_nursery_t nursery(tp);
     SILVA_EXPECT_FWD(nursery.seed());

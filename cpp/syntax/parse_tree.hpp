@@ -2,7 +2,7 @@
 
 #include "canopy/tree.hpp"
 
-#include "tokenization.hpp"
+#include "tokenization_old.hpp"
 
 namespace silva {
   struct parse_tree_node_t : public tree_node_t {
@@ -17,7 +17,7 @@ namespace silva {
   };
 
   struct parse_tree_t : public sprite_t {
-    tokenization_ptr_t tp;
+    tokenization_old_ptr_t tp;
     array_t<parse_tree_node_t> nodes;
 
     auto span(this auto&&);
@@ -25,10 +25,10 @@ namespace silva {
   using parse_tree_ptr_t = ptr_t<const parse_tree_t>;
 
   struct parse_tree_span_t : public tree_span_t<const parse_tree_node_t> {
-    tokenization_ptr_t tp;
+    tokenization_old_ptr_t tp;
 
     parse_tree_span_t() = default;
-    parse_tree_span_t(const parse_tree_node_t* root, index_t stride, tokenization_ptr_t);
+    parse_tree_span_t(const parse_tree_node_t* root, index_t stride, tokenization_old_ptr_t);
     parse_tree_span_t(const parse_tree_t&);
 
     parse_tree_t copy() const;

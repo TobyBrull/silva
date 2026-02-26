@@ -12,7 +12,7 @@ using enum silva::seed::impl::assoc_t;
 namespace silva::seed::test {
   template<typename SeedAxeNursery>
   expected_t<parse_tree_ptr_t>
-  run_seed_axe(syntax_ward_t& sw, const seed_axe_t& seed_axe, tokenization_ptr_t tp)
+  run_seed_axe(syntax_ward_t& sw, const seed_axe_t& seed_axe, tokenization_old_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
     SeedAxeNursery nursery(seed_axe, std::move(tp));
@@ -58,7 +58,7 @@ namespace silva::seed::test {
       const name_id_t ni_atom = swp->name_id_of("Test", "Atom");
       const name_id_t ni_expr = swp->name_id_of("Expr");
 
-      test_nursery_t(const seed_axe_t& seed_axe, tokenization_ptr_t tp)
+      test_nursery_t(const seed_axe_t& seed_axe, tokenization_old_ptr_t tp)
         : parse_tree_nursery_t(tp), seed_axe(seed_axe)
       {
       }
@@ -407,7 +407,7 @@ namespace silva::seed::test {
       const name_id_t ni_arg  = swp->name_id_of("Test", "Arg");
       const name_id_t ni_args = swp->name_id_of("Test", "Args");
 
-      test_nursery_t(const seed_axe_t& seed_axe, tokenization_ptr_t tp)
+      test_nursery_t(const seed_axe_t& seed_axe, tokenization_old_ptr_t tp)
         : parse_tree_nursery_t(tp), seed_axe(seed_axe)
       {
       }

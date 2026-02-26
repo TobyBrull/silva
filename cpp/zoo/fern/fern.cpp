@@ -25,7 +25,7 @@ namespace silva::fern {
       name_id_t ni_label    = swp->name_id_of(ni_fern, "Label");
       name_id_t ni_value    = swp->name_id_of(ni_fern, "Value");
 
-      fern_parse_tree_nursery_t(tokenization_ptr_t tp) : parse_tree_nursery_t(tp) {}
+      fern_parse_tree_nursery_t(tokenization_old_ptr_t tp) : parse_tree_nursery_t(tp) {}
 
       expected_t<parse_tree_node_t> value()
       {
@@ -113,7 +113,7 @@ namespace silva::fern {
     };
   }
 
-  expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> parse(tokenization_old_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
     impl::fern_parse_tree_nursery_t nursery(tp);

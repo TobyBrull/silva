@@ -65,7 +65,7 @@ namespace silva {
 
   parse_tree_span_t::parse_tree_span_t(const parse_tree_node_t* root,
                                        index_t stride,
-                                       tokenization_ptr_t tp)
+                                       tokenization_old_ptr_t tp)
     : tree_span_t(root, stride), tp(std::move(tp))
   {
   }

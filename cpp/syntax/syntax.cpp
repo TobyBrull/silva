@@ -7,7 +7,7 @@
 namespace silva {
   parser_t as_parser(const seed::interpreter_t* si)
   {
-    return [si](const tokenization_ptr_t tp, const name_id_t ni) {
+    return [si](const tokenization_old_ptr_t tp, const name_id_t ni) {
       return si->apply(tp, ni);
     };
   }
