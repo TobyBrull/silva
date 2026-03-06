@@ -1,48 +1,76 @@
 None = ε
 
-tokenization_silva:
-  tok_string = string '\'\'' '\\\\'
-  tok_identifier = identifier any
-  tok_number = number any
-  tok_operator = operator any
-  tok_parens = parenthesis '()' '{}' '[]' '‹›'
-  tok_indent = indent
-  tok_dedent = dedent
-  tok_newline = newline except tok_parens
-  ignore comment '#'
-  language parenthesis '«»'
+tokenizer:
+  * whitespace is whitespace
+  * comments are comments
+  * numbers are numbers
+  * strings are strings
+  * use or do not use indent, dedent, and newline (or newline separate?)
+  * support prefixed identifiers (e.g., '@cached' or '`yes')
+  * support bespoke tokens for certain prefixes/postfixes ( 'tok_...' '..._t' )
+  * Wouldn't it be nice if « x++; » would the tokenzied in the C++ way?
+  * Would also be nice to support making things like 'free-form' identifiers
 
-tokenization_c:
-  tok_string = string '""'
-  tok_number = number any
-  tok_operator = operator '<=' '>=' '==' '!=' '<' '>' '!' '=' \
-                          '++' '--' '+=' '-=' '+' '-'
-  tok_parens = parenthesis '()' '{}' '[]'
-  ignore comment '/**/' '//'
-  ignore newline
-  ignore indent
-  ignore dedent
 
-tokenization_zig:
-  tok_builtin = identifier '@*' # Note: '@' not fragmented as identifier but still allowed here.
-  ignore newline
-  ignore indent
-  ignore dedent
+# IDENTIFIER
+# IDENTIFIER(lower-case)
+# IDENTIFIER(upper-case)
+# IDENTIFIER(camel-case)
+# IDENTIFIER(snake-case)
+# IDENTIFIER(kebab-case)
+# IDENTIFIER(kebab-case 'var-*')
+# IDENTIFIER['if' 'while' 'for']
 
-language Seed:
-  uses tokenization_silva with:
-    tok_name = identifier camel_case
-    tok_var_name = identifier snail_case 'var_*'
-    tok_func_name = identifier snail_case 'fun_*'
-    tok_token_name = identifier snail_case 'tok_*'
-    tok_tokenization_name = identifier snail_case 'tokenization_*'
+# OPERATOR
+# OPERATOR(concat '<=>!+-')
+# OPERATOR(single ';')
+# OPERATOR['++' '+=' '+']
 
-  ⊙ = ( Tokenization | Language | Rule ) *
+tokenizer default:
+  ignore WHITESPACE COMMENT
+  number = NUMBER
+  string = STRING
+  indent = INDENT
+  dedent = DEDENT
+  newline = NEWLINE
+  parens = PARENS
 
-  Tokenization =
-    ⊙ = tok_tokenization_name ':' tok_newline Body
-    Body = tok_indent ( Rule tok_newline ) * tok_dedent
-    Rule = ( 'ignore' | 'language' | tok_token_name '=' ) Pattern
+tokenizer free-form:
+  ignore WHITESPACE COMMENT
+  ignore INDENT DEDENT NEWLINE
+  number = NUMBER
+  string = STRING
+  parens = PARENS
+
+tokenizer c extends free-form:
+  identifier = IDENTIFIER
+  operator = OPERATOR['<=' '>=' '==' '!=' '<' '>' '!' '='
+                      '++' '--' '+=' '-=' '+' '-' ]
+
+tokenizer various extends free-form:
+  zig-builtin = '@' IDENTIFIER
+  scheme-symbol = '`' IDENTIFIER
+
+tokenizer seed extends default:
+  rule-name = IDENTIFIER(camel-case)
+  var-name = IDENTIFIER(kebab-case 'var-*')
+  func-name = IDENTIFIER(kebab-case 'fun-*')
+  token-name = IDENTIFIER(kebab-case)
+  option-name = IDENTIFIER(kebab-case)
+  fragment-category = IDENTIFIER(upper-case)
+
+
+language Seed uses tokenizer seed:
+
+  ⊙ = ( Tokenzier | Language | Rule ) *
+
+  Tokenzier =
+    ⊙ = 'tokenizer' token-name ':' newline Body
+    Body = indent ( Defn newline ) * dedent
+    Defn = IgnoreDefn | TokenDefn
+    IgnoreDefn = 'ignore' fragment-category *
+    TokenDefn = token-name '=' Pattern
+    Fragment = fragment-category ( '(' ( name |  ) * ')' | '[' string * ']' ) ?
     Pattern = tok_identifier ( tok_identifier | tok_string ) *
 
   Language =
@@ -52,7 +80,7 @@ language Seed:
   Rule =
     ⊙ = Nonterminal '=' ( 'axe' Axe | 'alias' Expr | Expr )
     Expr = axe Atom
-      Parens    = nest  atom_nest '(' ')'
+      Parens    = nest  atom_nest '(' ')' '[' ']'
       Prefix    = rtl   prefix 'not'
       Postfix   = ltr   postfix '?' '*' '+'
       Concat    = ltr   infix_flat concat
