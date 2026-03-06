@@ -12,17 +12,21 @@ namespace silva {
     WHITESPACE,
     COMMENT,
 
-    STRING,
-    IDENTIFIER,
     NUMBER,
-    OPERATOR,
-    PAREN_LEFT,
-    PAREN_RIGHT,
-    LANG_BEGIN,
-    LANG_END,
+    STRING,
+
     INDENT,
     DEDENT,
     NEWLINE,
+
+    IDENTIFIER,
+
+    OPERATOR,
+    PAREN_LEFT,
+    PAREN_RIGHT,
+
+    LANG_BEGIN,
+    LANG_END,
   };
 
   constexpr bool is_fragment_category_real(fragment_category_t);

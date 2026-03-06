@@ -386,11 +386,23 @@ namespace silva {
 
     expected_t<void> recognize_identifier()
     {
+      const index_t orig_i = i;
       SILVA_EXPECT(ccd[i].category == XID_Start, ASSERT);
       SILVA_EXPECT_FWD(emit(i, IDENTIFIER));
-      while (i < n && (ccd[i].category == XID_Start || ccd[i].category == XID_Continue)) {
+      constexpr static array_fixed_t<unicode::codepoint_t, 1> xid_additional_internal = {U'-'};
+      const auto is_xid_additional_internal = [](const unicode::codepoint_t cp) {
+        return is_one_of<1>(cp, xid_additional_internal);
+      };
+      while (i < n &&
+             (ccd[i].category == XID_Start || ccd[i].category == XID_Continue ||
+              is_one_of<1>(ccd[i].codepoint, xid_additional_internal))) {
         ++i;
       }
+      SILVA_EXPECT(!is_xid_additional_internal(ccd[i - 1].codepoint),
+                   MINOR,
+                   "Identifier at {} may not end with '{}'",
+                   ccd[orig_i].location,
+                   unicode::utf8_encode_one(ccd[i - 1].codepoint));
       return {};
     }
 
@@ -456,7 +468,9 @@ namespace silva {
                          MINOR,
                          "expected character after '\\' in string at {}",
                          ccd[i].location);
-            const static array_fixed_t<unicode::codepoint_t, 3> escape_seqs = {U'n', U'\'', U'\"'};
+            constexpr static array_fixed_t<unicode::codepoint_t, 3> escape_seqs = {U'n',
+                                                                                   U'\'',
+                                                                                   U'\"'};
             SILVA_EXPECT(is_one_of<3>(ccd[i + 1].codepoint, escape_seqs),
                          MINOR,
                          "unexpected escape sequence at {}, allowed escape sequences: {}",

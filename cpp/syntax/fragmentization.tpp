@@ -97,6 +97,34 @@ xyz123_äß
       };
       CHECK(frag->fragments == expected_fragments);
     }
+    SECTION("kebab identifier")
+    {
+      const auto text = "hello-world -++- hello/world\n";
+      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}},
+          {IDENTIFIER, {0, 0, 0}},
+          {WHITESPACE, {0, 11, 11}},
+          {OPERATOR, {0, 12, 12}},
+          {OPERATOR, {0, 13, 13}},
+          {OPERATOR, {0, 14, 14}},
+          {OPERATOR, {0, 15, 15}},
+          {WHITESPACE, {0, 16, 16}},
+          {IDENTIFIER, {0, 17, 17}},
+          {OPERATOR, {0, 22, 22}},
+          {IDENTIFIER, {0, 23, 23}},
+          {NEWLINE, {0, 28, 28}},
+          {LANG_END, {0, 28, 28}},
+      };
+      CHECK(frag->fragments == expected_fragments);
+    }
+    SECTION("error: kebab identifier")
+    {
+      const auto text    = "h-w h-w-\n";
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      CHECK_THAT(err_msg, ContainsSubstring("Identifier"));
+      CHECK_THAT(err_msg, ContainsSubstring("may not end with '-'"));
+    }
     SECTION("ident")
     {
       const auto text = R"(
