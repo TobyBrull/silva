@@ -22,7 +22,7 @@ namespace silva::seed {
     array_t<rule_t> rules;
   };
 
-  expected_t<tokenization_old_ptr_t>
+  expected_t<tokenization_ptr_t>
   tokenize(syntax_ward_ptr_t, const tokenizer_t&, const fragmentization_t&);
 }
 

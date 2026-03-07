@@ -318,7 +318,7 @@ namespace silva {
     byte_sink->write_str(x.swp->default_name_id_style().absolute(x.name_id));
   }
 
-  tokenization_old_ptr_t syntax_ward_t::add(unique_ptr_t<const tokenization_old_t> x)
+  tokenization_ptr_t syntax_ward_t::add(unique_ptr_t<const tokenization_t> x)
   {
     tokenizations.push_back(std::move(x));
     return tokenizations.back()->ptr();

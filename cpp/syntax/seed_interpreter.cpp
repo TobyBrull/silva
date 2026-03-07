@@ -10,7 +10,7 @@
 #include "parse_tree_nursery.hpp"
 #include "seed.hpp"
 #include "seed_axe.hpp"
-#include "tokenization_old.hpp"
+#include "tokenization.hpp"
 
 #include <utility>
 
@@ -23,7 +23,7 @@ namespace silva::seed {
     syntax_ward_ptr_t swp      = se->swp;
     const name_id_style_t& nis = swp->default_name_id_style();
 
-    const tokenization_old_t& s_tokenization;
+    const tokenization_t& s_tokenization;
     const array_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
     const name_id_t ni_seed         = swp->name_id_of("Seed");
@@ -36,7 +36,7 @@ namespace silva::seed {
     const name_id_t ni_nt           = swp->name_id_of(ni_seed, "Nonterminal");
     const name_id_t ni_term         = swp->name_id_of(ni_seed, "Terminal");
 
-    seed_engine_create_nursery_t(interpreter_t* se, const tokenization_old_t& s_tokenization)
+    seed_engine_create_nursery_t(interpreter_t* se, const tokenization_t& s_tokenization)
       : se(se), s_tokenization(s_tokenization)
     {
     }
@@ -220,8 +220,8 @@ namespace silva::seed {
       syntax_ward_ptr_t swp      = se->swp;
       const name_id_style_t& nis = swp->default_name_id_style();
 
-      const tokenization_old_t& t_tokenization = *tp;
-      const array_t<token_id_t>& t_tokens      = t_tokenization.tokens;
+      const tokenization_t& t_tokenization = *tp;
+      const array_t<token_id_t>& t_tokens  = t_tokenization.tokens;
 
       int rule_depth = 0;
 
@@ -263,7 +263,7 @@ namespace silva::seed {
       const name_id_t ni_term         = swp->name_id_of(ni_seed, "Terminal");
       const name_id_t ni_var          = swp->name_id_of(ni_seed, "Variable");
 
-      seed_engine_nursery_t(tokenization_old_ptr_t tp, const interpreter_t* root)
+      seed_engine_nursery_t(tokenization_ptr_t tp, const interpreter_t* root)
         : parse_tree_nursery_t(tp), se(root)
       {
       }
@@ -793,7 +793,7 @@ namespace silva::seed {
     };
   }
 
-  expected_t<parse_tree_ptr_t> interpreter_t::apply(tokenization_old_ptr_t tp,
+  expected_t<parse_tree_ptr_t> interpreter_t::apply(tokenization_ptr_t tp,
                                                     const name_id_t goal_rule_name) const
   {
     impl::seed_engine_nursery_t nursery(tp, this);

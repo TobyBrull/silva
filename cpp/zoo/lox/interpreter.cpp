@@ -2,7 +2,7 @@
 
 #include "builtins.hpp"
 #include "canopy/scope_exit.hpp"
-#include "syntax/tokenization_old.hpp"
+#include "syntax/tokenization.hpp"
 
 #include <cstdio>
 

@@ -45,6 +45,6 @@ namespace silva::seed {
 
     // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
     // "seed" parse-tree.
-    expected_t<parse_tree_ptr_t> apply(tokenization_old_ptr_t, name_id_t goal_rule_name) const;
+    expected_t<parse_tree_ptr_t> apply(tokenization_ptr_t, name_id_t goal_rule_name) const;
   };
 }

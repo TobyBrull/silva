@@ -34,9 +34,9 @@ namespace silva {
     const auto se = standard_seed_interpreter(sw.ptr());
     for (const auto& cmdline_arg: cmdline_args.subspan(1)) {
       const filesystem_path_t fsp{cmdline_arg};
-      const name_id_t ni_goal   = SILVA_EXPECT_FWD(infer_goal_rule_name(sw, fsp));
-      tokenization_old_ptr_t tt = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_arg));
-      parse_tree_ptr_t pt       = SILVA_EXPECT_FWD(se->apply(std::move(tt), ni_goal));
+      const name_id_t ni_goal = SILVA_EXPECT_FWD(infer_goal_rule_name(sw, fsp));
+      tokenization_ptr_t tt   = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_arg));
+      parse_tree_ptr_t pt     = SILVA_EXPECT_FWD(se->apply(std::move(tt), ni_goal));
       SILVA_EXPECT_FWD(se->callback_if(pt->span()));
       SILVA_EXPECT_FWD(apply_action(pt->span()));
     }

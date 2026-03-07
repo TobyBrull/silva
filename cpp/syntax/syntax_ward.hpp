@@ -50,10 +50,10 @@ namespace silva {
   struct token_id_wrap_t;
   struct name_id_wrap_t;
 
-  struct tokenization_old_t;
+  struct tokenization_t;
   struct parse_tree_t;
-  using tokenization_old_ptr_t = ptr_t<const tokenization_old_t>;
-  using parse_tree_ptr_t       = ptr_t<const parse_tree_t>;
+  using tokenization_ptr_t = ptr_t<const tokenization_t>;
+  using parse_tree_ptr_t   = ptr_t<const parse_tree_t>;
 
   struct syntax_ward_t : public menhir_t {
     array_t<token_info_t> token_infos;
@@ -62,7 +62,7 @@ namespace silva {
     array_t<name_info_t> name_infos;
     hash_map_t<name_info_t, name_id_t> name_lookup;
 
-    array_t<unique_ptr_t<const tokenization_old_t>> tokenizations;
+    array_t<unique_ptr_t<const tokenization_t>> tokenizations;
     array_t<unique_ptr_t<const parse_tree_t>> parse_trees;
 
     struct impl_t;
@@ -90,7 +90,7 @@ namespace silva {
     token_id_wrap_t token_id_wrap(token_id_t);
     name_id_wrap_t name_id_wrap(name_id_t);
 
-    tokenization_old_ptr_t add(unique_ptr_t<const tokenization_old_t>);
+    tokenization_ptr_t add(unique_ptr_t<const tokenization_t>);
     parse_tree_ptr_t add(unique_ptr_t<const parse_tree_t>);
   };
   using syntax_ward_ptr_t = ptr_t<syntax_ward_t>;

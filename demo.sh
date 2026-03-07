@@ -7,7 +7,7 @@ trap 'rm -f "$TEMPFILE"' EXIT
 
 # Simple parsing (including error message)
 ./build/cpp/silva_fragmentization silva/syntax/01-simple.fern
-./build/cpp/silva_tokenization_old silva/syntax/01-simple.fern
+./build/cpp/silva_tokenization silva/syntax/01-simple.fern
 ./build/cpp/silva_fern silva/syntax/01-simple.fern
 ./build/cpp/silva_fern silva/syntax/01-broken.fern 2>"$TEMPFILE" || true
 cat "$TEMPFILE"
