@@ -8,7 +8,7 @@
 #include "syntax/syntax_ward.hpp"
 
 namespace silva::fern {
-  using enum token_category_t;
+  using enum token_category_old_t;
   using enum error_level_t;
 
   namespace impl {

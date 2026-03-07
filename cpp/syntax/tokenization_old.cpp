@@ -5,7 +5,7 @@
 #include "syntax_ward.hpp"
 
 namespace silva {
-  using enum token_category_t;
+  using enum token_category_old_t;
 
   tokenization_old_t tokenization_old_t::copy() const
   {

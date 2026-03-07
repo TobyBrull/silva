@@ -6,7 +6,7 @@
 
 #include <cstdio>
 
-using enum silva::token_category_t;
+using enum silva::token_category_old_t;
 
 namespace silva::lox {
 

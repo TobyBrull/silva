@@ -30,6 +30,7 @@ namespace silva {
   struct token_info_t {
     token_category_old_t category_old = token_category_old_t::INVALID;
     string_t str;
+    token_id_t category = token_id_none;
 
     expected_t<string_view_t> string_as_plain_contained() const;
     expected_t<double> number_as_double() const;

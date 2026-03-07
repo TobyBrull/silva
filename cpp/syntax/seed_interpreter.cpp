@@ -15,7 +15,7 @@
 #include <utility>
 
 namespace silva::seed {
-  using enum token_category_t;
+  using enum token_category_old_t;
   using enum error_level_t;
 
   struct seed_engine_create_nursery_t {
@@ -99,8 +99,7 @@ namespace silva::seed {
         }
 
         if (expr_rule_name == ni_axe) {
-          se->seed_axes[curr_rule_name] =
-              SILVA_EXPECT_FWD(seed_axe_create(swp, curr_rule_name, pts_expr));
+          se->axes[curr_rule_name] = SILVA_EXPECT_FWD(axe_create(swp, curr_rule_name, pts_expr));
         }
         else {
           for (index_t i = 0; i < pts_expr.size(); ++i) {
@@ -726,18 +725,17 @@ namespace silva::seed {
 
       expected_t<node_and_error_t> handle_rule_axe(const name_id_t t_rule_name)
       {
-        const auto it = se->seed_axes.find(t_rule_name);
-        SILVA_EXPECT(it != se->seed_axes.end(), MAJOR);
+        const auto it = se->axes.find(t_rule_name);
+        SILVA_EXPECT(it != se->axes.end(), MAJOR);
         auto ss{stake()};
-        const seed_axe_t& seed_axe = it->second;
-        const seed_axe_t::parse_delegate_t::pack_t pack{
+        const axe_t& axe = it->second;
+        const axe_t::parse_delegate_t::pack_t pack{
             [&](const name_id_t rule_name) -> expected_t<parse_tree_node_t> {
               node_and_error_t result = SILVA_EXPECT_FWD(handle_rule(rule_name));
               return std::move(result).as_node();
             },
         };
-        ss.add_proto_node(
-            SILVA_EXPECT_PARSE_FWD(t_rule_name, seed_axe.apply(*this, pack.delegate)));
+        ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(t_rule_name, axe.apply(*this, pack.delegate)));
         return ss.commit();
       }
 

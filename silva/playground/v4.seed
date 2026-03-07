@@ -46,16 +46,21 @@ tokenizer free-form:
   string = STRING
   parens = PARENS
 
-tokenizer c extends free-form:
+tokenizer c:
+  tokenizer free-form
   identifier = IDENTIFIER
-  operator-id = ['<=' '>=' '==' '!=' '<' '>' '!' '='
-              '++' '--' '+=' '-=' '+' '-' ]
+  operator-id = [ '<=' '>=' '==' '!=' '<' '>' '!' '='
+                  '++' '--' '+=' '-=' ]
+  operator-id = '+'
+  operator-id = '-'
 
-tokenizer various extends free-form:
+tokenizer various:
   zig-builtin = '@' IDENTIFIER
   scheme-symbol = '`' IDENTIFIER
+  tokenizer free-form
 
-tokenizer seed extends default:
+tokenizer seed:
+  tokenizer default
   rule-name = IDENTIFIER(camel-case)
   var-name = IDENTIFIER(kebab-case 'var-*')
   func-name = IDENTIFIER(kebab-case 'fun-*')
@@ -75,7 +80,7 @@ language Seed uses tokenizer seed:
     IgnoreDefn = 'ignore' fragment-category *
     TokenDefn = token-name '=' Pattern
     Fragment = fragment-category ( '(' ( name |  ) * ')' | '[' string * ']' ) ?
-    Pattern = tok_identifier ( tok_identifier | tok_string ) *
+    Pattern = identifier ( identifier | string ) *
 
   Language =
     ⊙ = 'language' tok_name ':' tok_newline tok_indent ( TokenizationUsage Rule * ) tok_dedent

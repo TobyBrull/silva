@@ -6,7 +6,7 @@
 
 namespace silva {
 
-  using enum token_category_t;
+  using enum token_category_old_t;
 
   namespace impl {
     constexpr char whitespace_chars[] = {' '};

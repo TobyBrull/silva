@@ -37,9 +37,9 @@ namespace silva::seed::impl {
     }
   };
 
-  struct seed_axe_create_nursery_t {
+  struct axe_create_nursery_t {
     syntax_ward_ptr_t swp;
-    name_id_t seed_axe_name     = name_id_root;
+    name_id_t axe_name          = name_id_root;
     name_id_t atom_rule_name_id = name_id_root;
     const name_id_style_t& nis  = swp->default_name_id_style();
 
@@ -68,13 +68,13 @@ namespace silva::seed::impl {
     const name_id_t ni_nt_base     = swp->name_id_of(ni_nt, "Base");
     const name_id_t ni_term        = swp->name_id_of(ni_seed, "Terminal");
 
-    seed_axe_t retval{
+    axe_t retval{
         .swp  = swp,
-        .name = seed_axe_name,
+        .name = axe_name,
     };
 
-    seed_axe_create_nursery_t(syntax_ward_ptr_t swp, const name_id_t seed_axe_name)
-      : swp(swp), seed_axe_name(seed_axe_name)
+    axe_create_nursery_t(syntax_ward_ptr_t swp, const name_id_t axe_name)
+      : swp(swp), axe_name(axe_name)
     {
     }
 
@@ -251,7 +251,7 @@ namespace silva::seed::impl {
           .assoc       = assoc,
       };
 
-      const name_id_t full_name = swp->name_id(seed_axe_name, base_name);
+      const name_id_t full_name = swp->name_id(axe_name, base_name);
 
       const auto& get_next_not_concat =
           [&]() -> expected_t<tuple_t<token_id_t, parse_tree_span_t>> {
@@ -409,7 +409,7 @@ namespace silva::seed::impl {
         if (child_index == 0) {
           SILVA_EXPECT(pts_level[child_node_index].rule_name == ni_nt_base, BROKEN_SEED);
           base_name = SILVA_EXPECT_FWD(
-              nis.derive_base_name(seed_axe_name, pts_level.sub_tree_span_at(child_node_index)));
+              nis.derive_base_name(axe_name, pts_level.sub_tree_span_at(child_node_index)));
         }
         else if (child_index == 1) {
           const auto pts_assoc = pts_level.sub_tree_span_at(child_node_index);
@@ -452,7 +452,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT(it != end, MINOR, "{} should have at least one child", pts_axe);
       const auto pts_axe_nt = pts_axe.sub_tree_span_at(it.pos);
       SILVA_EXPECT(pts_axe_nt[0].rule_name == ni_nt, MINOR);
-      const name_id_t parent_scope = swp->name_infos[seed_axe_name].parent_name;
+      const name_id_t parent_scope = swp->name_infos[axe_name].parent_name;
       retval.atom_rule             = SILVA_EXPECT_FWD(nis.derive_name(parent_scope, pts_axe_nt));
       ++it;
 
@@ -468,18 +468,18 @@ namespace silva::seed::impl {
 }
 
 namespace silva::seed {
-  expected_t<seed_axe_t>
-  seed_axe_create(syntax_ward_ptr_t swp, const name_id_t seed_axe_name, const parse_tree_span_t pts)
+  expected_t<axe_t>
+  axe_create(syntax_ward_ptr_t swp, const name_id_t axe_name, const parse_tree_span_t pts)
   {
-    impl::seed_axe_create_nursery_t nursery(swp, seed_axe_name);
+    impl::axe_create_nursery_t nursery(swp, axe_name);
     SILVA_EXPECT_FWD(nursery.run(pts));
     return std::move(nursery.retval);
   }
 }
 
 namespace silva::seed::impl {
-  struct seed_axe_run_t {
-    const seed_axe_t& seed_axe;
+  struct axe_run_t {
+    const axe_t& axe;
     parse_tree_nursery_t& nursery;
     delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser;
 
@@ -534,7 +534,7 @@ namespace silva::seed::impl {
       ss.add_proto_node(SILVA_EXPECT_FWD(rule_parser(rule_name)));
       SILVA_EXPECT(ss.proto_node.num_children == 1,
                    MAJOR,
-                   "The atom function given to seed_axe_t must always parse a single child");
+                   "The atom function given to seed::axe_t must always parse a single child");
       const index_t tree_index = ss.orig_state.tree_size;
       parse_tree_node_t ptn    = ss.commit();
       term_node_t tn{ptn, tree_index};
@@ -548,7 +548,7 @@ namespace silva::seed::impl {
                 const token_id_t right_token,
                 const optional_t<name_id_t> nest_rule_name)
     {
-      const name_id_t used_rule_name = nest_rule_name.value_or(seed_axe.name);
+      const name_id_t used_rule_name = nest_rule_name.value_or(axe.name);
 
       auto ss = nursery.stake();
 
@@ -716,8 +716,8 @@ namespace silva::seed::impl {
 
     expected_t<void> hallucinate_concat()
     {
-      SILVA_EXPECT(seed_axe.concat_result.has_value(), ASSERT);
-      const auto& reg = seed_axe.concat_result.value();
+      SILVA_EXPECT(axe.concat_result.has_value(), ASSERT);
+      const auto& reg = axe.concat_result.value();
       SILVA_EXPECT_FWD(stack_pop(reg.precedence));
       oper_stack.push_back(oper_item_t{
           .oper       = std::get<infix_t>(reg.oper),
@@ -734,20 +734,20 @@ namespace silva::seed::impl {
       auto ss = nursery.stake();
 
       while (nursery.num_tokens_left() >= 1) {
-        const auto it = seed_axe.results.find(nursery.token_id_by());
-        if (it == seed_axe.results.end()) {
-          if (mode == INFIX_MODE && !seed_axe.concat_result.has_value()) {
+        const auto it = axe.results.find(nursery.token_id_by());
+        if (it == axe.results.end()) {
+          if (mode == INFIX_MODE && !axe.concat_result.has_value()) {
             break;
           }
           // Current token is not one of the known operators, so it has to be an atom or the end
           // of the expression
-          auto maybe_res = SILVA_EXPECT_FWD_IF(invoke_rule_parser(seed_axe.atom_rule), MAJOR);
+          auto maybe_res = SILVA_EXPECT_FWD_IF(invoke_rule_parser(axe.atom_rule), MAJOR);
           if (!maybe_res.has_value()) {
             break;
           }
           auto [ptn, tn] = std::move(maybe_res).value();
           ss.add_proto_node(ptn);
-          if (mode == INFIX_MODE && seed_axe.concat_result.has_value()) {
+          if (mode == INFIX_MODE && axe.concat_result.has_value()) {
             SILVA_EXPECT_FWD(hallucinate_concat());
           }
           if (mode == ATOM_MODE) {
@@ -758,11 +758,11 @@ namespace silva::seed::impl {
           }
         }
         else {
-          const seed_axe_result_t& pa_result = it->second;
+          const axe_result_t& pa_result = it->second;
           if (pa_result.is_right_bracket) {
             break;
           }
-          if (mode == INFIX_MODE && seed_axe.concat_result.has_value()) {
+          if (mode == INFIX_MODE && axe.concat_result.has_value()) {
             if (pa_result.prefix.has_value() && !pa_result.regular.has_value()) {
               SILVA_EXPECT_FWD(hallucinate_concat());
               continue;
@@ -774,7 +774,7 @@ namespace silva::seed::impl {
             }
           }
           if (mode == ATOM_MODE) {
-            SILVA_EXPECT_PARSE(seed_axe.name,
+            SILVA_EXPECT_PARSE(axe.name,
                                pa_result.prefix.has_value(),
                                "found non-prefix operator {} when expecting next atom",
                                swp->token_id_wrap(nursery.token_id_by()));
@@ -901,7 +901,7 @@ namespace silva::seed::impl {
                        "[{}] at the end of the expression",
                        token_location_by());
       SILVA_EXPECT(oper_stack.empty(), MINOR);
-      SILVA_EXPECT_PARSE(seed_axe.name, open_term_stack.size() > 0, "empty expression");
+      SILVA_EXPECT_PARSE(axe.name, open_term_stack.size() > 0, "empty expression");
       SILVA_EXPECT(open_term_stack.size() == 1, MINOR);
       SILVA_EXPECT(open_term_stack.front() + 1 == output_tree.size(), MINOR);
       return ss.commit();
@@ -940,7 +940,7 @@ namespace silva::seed::impl {
       {
         auto ss_rule = nursery.stake();
         ss_rule.create_node(name_id_root);
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(seed_axe.name, shunting_yard()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(axe.name, shunting_yard()));
 
         const auto& root_node          = output_tree.back();
         const index_t expr_token_begin = root_node.token_begin;
@@ -973,11 +973,11 @@ namespace silva::seed::impl {
 
 namespace silva::seed {
   expected_t<parse_tree_node_t>
-  seed_axe_t::apply(parse_tree_nursery_t& nursery,
-                    delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser) const
+  axe_t::apply(parse_tree_nursery_t& nursery,
+               delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser) const
   {
-    impl::seed_axe_run_t run{
-        .seed_axe    = *this,
+    impl::axe_run_t run{
+        .axe         = *this,
         .nursery     = nursery,
         .rule_parser = rule_parser,
     };

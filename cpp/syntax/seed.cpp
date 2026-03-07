@@ -5,10 +5,10 @@
 #include "canopy/expected.hpp"
 
 namespace silva::seed {
-  using enum token_category_t;
+  using enum token_category_old_t;
 
   namespace impl {
-    struct seed_axe_parse_tree_nursery_t : public parse_tree_nursery_t {
+    struct axe_parse_tree_nursery_t : public parse_tree_nursery_t {
       token_id_t ti_dot         = *swp->token_id(".");
       token_id_t ti_comma       = *swp->token_id(",");
       token_id_t ti_dash        = *swp->token_id("-");
@@ -66,7 +66,7 @@ namespace silva::seed {
       name_id_t ni_nt_base      = swp->name_id_of(ni_nt, "Base");
       name_id_t ni_term         = swp->name_id_of(ni_seed, "Terminal");
 
-      seed_axe_parse_tree_nursery_t(tokenization_old_ptr_t tp) : parse_tree_nursery_t(tp) {}
+      axe_parse_tree_nursery_t(tokenization_old_ptr_t tp) : parse_tree_nursery_t(tp) {}
 
       expected_t<parse_tree_node_t> terminal()
       {
@@ -216,7 +216,7 @@ namespace silva::seed {
     };
   }
 
-  seed_axe_t create_seed_axe_expr(syntax_ward_ptr_t swp)
+  axe_t create_axe_expr(syntax_ward_ptr_t swp)
   {
     const string_view_t axe_defn = [] -> string_view_t {
       const string_view_t start_str = "- Expr =/ ";
@@ -230,20 +230,20 @@ namespace silva::seed {
       return retval;
     }();
     auto tt = SILVA_EXPECT_ASSERT(tokenize(swp, "seed.axe", axe_defn));
-    impl::seed_axe_parse_tree_nursery_t nursery(tt);
+    impl::axe_parse_tree_nursery_t nursery(tt);
     SILVA_EXPECT_ASSERT(nursery.axe());
     parse_tree_ptr_t pt     = swp->add(std::move(nursery).finish());
     const name_id_t ni_expr = swp->name_id_of("Seed", "Expr");
-    auto retval             = SILVA_EXPECT_ASSERT(seed_axe_create(swp, ni_expr, pt->span()));
+    auto retval             = SILVA_EXPECT_ASSERT(axe_create(swp, ni_expr, pt->span()));
     return retval;
   }
 
   namespace impl {
-    struct seed_parse_tree_nursery_t : public seed_axe_parse_tree_nursery_t {
-      seed_axe_t seed_seed_axe;
+    struct seed_parse_tree_nursery_t : public axe_parse_tree_nursery_t {
+      axe_t axe;
 
       seed_parse_tree_nursery_t(tokenization_old_ptr_t tp)
-        : seed_axe_parse_tree_nursery_t(tp), seed_seed_axe(create_seed_axe_expr(tp->swp))
+        : axe_parse_tree_nursery_t(tp), axe(create_axe_expr(tp->swp))
       {
       }
 
@@ -400,9 +400,8 @@ namespace silva::seed {
       {
         auto ss = stake();
         SILVA_EXPECT_PARSE(ni_expr, num_tokens_left() >= 1, "no more tokens in input");
-        const auto dg =
-            seed_axe_t::parse_delegate_t::make<&seed_parse_tree_nursery_t::any_rule>(this);
-        ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_expr, seed_seed_axe.apply(*this, dg)));
+        const auto dg = axe_t::parse_delegate_t::make<&seed_parse_tree_nursery_t::any_rule>(this);
+        ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_expr, axe.apply(*this, dg)));
         return ss.commit();
       }
 

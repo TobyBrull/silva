@@ -13,7 +13,7 @@
 
 namespace silva::seed {
 
-  const string_view_t seed_axe_str = R"'(
+  const string_view_t axe_str = R"'(
     - Seed.Axe = [
       - x = p.Nonterminal '[' ( '-' Level ) * ']'
       - Level = p.Nonterminal.Base '=' Assoc Ops *
@@ -27,17 +27,16 @@ namespace silva::seed {
     ]
   )'";
 
-  struct seed_axe_t {
+  struct axe_t {
     syntax_ward_ptr_t swp;
     name_id_t name      = name_id_root;
     name_id_t atom_rule = name_id_root;
-    hash_map_t<token_id_t, impl::seed_axe_result_t> results;
+    hash_map_t<token_id_t, impl::axe_result_t> results;
     optional_t<impl::result_oper_t<impl::oper_regular_t>> concat_result;
 
     using parse_delegate_t = delegate_t<expected_t<parse_tree_node_t>(name_id_t)>;
     expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, parse_delegate_t) const;
   };
 
-  expected_t<seed_axe_t>
-  seed_axe_create(syntax_ward_ptr_t, name_id_t seed_axe_name, parse_tree_span_t);
+  expected_t<axe_t> axe_create(syntax_ward_ptr_t, name_id_t seed_axe_name, parse_tree_span_t);
 }

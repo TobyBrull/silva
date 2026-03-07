@@ -103,11 +103,11 @@ namespace silva::seed::impl {
     friend bool operator==(const result_oper_t<Oper>&, const result_oper_t<Oper>&) = default;
   };
 
-  struct seed_axe_result_t {
+  struct axe_result_t {
     optional_t<result_oper_t<oper_prefix_t>> prefix;
     optional_t<result_oper_t<oper_regular_t>> regular;
     bool is_right_bracket = false;
 
-    friend bool operator==(const seed_axe_result_t&, const seed_axe_result_t&) = default;
+    friend bool operator==(const axe_result_t&, const axe_result_t&) = default;
   };
 }
