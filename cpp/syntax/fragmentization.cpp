@@ -9,6 +9,8 @@ namespace silva {
   using enum codepoint_category_t;
   using enum fragment_category_t;
 
+  constexpr static array_fixed_t<unicode::codepoint_t, 1> xid_additional_internal = {U'-'};
+
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize_load(filesystem_path_t filepath)
   {
     string_t source_code = SILVA_EXPECT_FWD(read_file(filepath));
@@ -389,13 +391,12 @@ namespace silva {
       const index_t orig_i = i;
       SILVA_EXPECT(ccd[i].category == XID_Start, ASSERT);
       SILVA_EXPECT_FWD(emit(i, IDENTIFIER));
-      constexpr static array_fixed_t<unicode::codepoint_t, 1> xid_additional_internal = {U'-'};
       const auto is_xid_additional_internal = [](const unicode::codepoint_t cp) {
         return is_one_of<1>(cp, xid_additional_internal);
       };
       while (i < n &&
              (ccd[i].category == XID_Start || ccd[i].category == XID_Continue ||
-              is_one_of<1>(ccd[i].codepoint, xid_additional_internal))) {
+              is_xid_additional_internal(ccd[i].codepoint))) {
         ++i;
       }
       SILVA_EXPECT(!is_xid_additional_internal(ccd[i - 1].codepoint),
