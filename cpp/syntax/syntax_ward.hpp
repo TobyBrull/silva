@@ -3,17 +3,19 @@
 #include "canopy/expected.hpp"
 
 namespace silva {
-  enum class token_category_t {
+  enum class token_category_old_t {
     INVALID = 0,
-    IDENTIFIER,
-    OPERATOR,
-    STRING,
-    NUMBER,
     WHITESPACE,
     COMMENT,
+
+    NUMBER,
+    STRING,
+
+    IDENTIFIER,
+    OPERATOR,
   };
 
-  tuple_t<string_view_t, token_category_t> tokenize_one(const string_view_t text);
+  tuple_t<string_view_t, token_category_old_t> tokenize_one(const string_view_t text);
 
   // An index in the "token_infos" vector of "syntax_ward_t". Equality of two tokens is then
   // equivalent to the equality of their token_info_index_t.
@@ -26,7 +28,7 @@ namespace silva {
   constexpr inline name_id_t name_id_root   = 0;
 
   struct token_info_t {
-    token_category_t category = token_category_t::INVALID;
+    token_category_old_t category_old = token_category_old_t::INVALID;
     string_t str;
 
     expected_t<string_view_t> string_as_plain_contained() const;

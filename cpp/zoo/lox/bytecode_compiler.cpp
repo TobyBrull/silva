@@ -179,7 +179,7 @@ namespace silva::lox {
         SILVA_EXPECT_FWD(get_variable(pts, lexicon.ti_super));
         cfs().nursery.append_index_instr(pts, GET_SUPER, pts.tp->tokens[pts[0].token_begin + 2]);
       }
-      else if (tinfo->category == IDENTIFIER) {
+      else if (tinfo->category_old == IDENTIFIER) {
         SILVA_EXPECT_FWD(get_variable(pts, ti));
       }
       else {
@@ -305,12 +305,12 @@ namespace silva::lox {
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
           SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
           const token_id_t field_name = pts.tp->tokens[lr_pts[0].token_begin];
-          SILVA_EXPECT(swp->token_infos[field_name].category == IDENTIFIER, MINOR);
+          SILVA_EXPECT(swp->token_infos[field_name].category_old == IDENTIFIER, MINOR);
           cfs().nursery.append_index_instr(pts, SET_PROPERTY, field_name);
         }
         else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
-          SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
+          SILVA_EXPECT(swp->token_infos[ti].category_old == IDENTIFIER, MINOR);
           SILVA_EXPECT_FWD(set_variable(lhs_pts, ti));
         }
         else {

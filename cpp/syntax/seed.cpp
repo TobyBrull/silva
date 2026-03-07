@@ -74,7 +74,7 @@ namespace silva::seed {
         ss_rule.create_node(ni_term);
         if (num_tokens_left() >= 3 &&
             (token_id_by(0) == ti_identifier || token_id_by(0) == ti_operator) &&
-            token_id_by(1) == ti_regex && token_data_by(2)->category == STRING) {
+            token_id_by(1) == ti_regex && token_data_by(2)->category_old == STRING) {
           token_index += 3;
         }
         else if (num_tokens_left() >= 2 && token_id_by(0) == ti_keywords_of) {
@@ -84,7 +84,7 @@ namespace silva::seed {
         else {
           SILVA_EXPECT_PARSE(ni_term, num_tokens_left() >= 1, "no more tokens in input");
           SILVA_EXPECT_PARSE(ni_term,
-                             token_data_by()->category == STRING ||
+                             token_data_by()->category_old == STRING ||
                                  token_id_by() == ti_identifier || token_id_by() == ti_operator ||
                                  token_id_by() == ti_string || token_id_by() == ti_number ||
                                  token_id_by() == ti_any || token_id_by() == ti_eps ||
@@ -101,7 +101,7 @@ namespace silva::seed {
         auto ss_rule = stake();
         ss_rule.create_node(ni_nt_base);
         SILVA_EXPECT_PARSE(ni_nt_base, num_tokens_left() >= 1, "no more tokens in input");
-        const bool is_cap_id = token_data_by()->category == IDENTIFIER &&
+        const bool is_cap_id = token_data_by()->category_old == IDENTIFIER &&
             !token_data_by()->str.empty() && std::isupper(token_data_by()->str.front());
         const bool is_name_id =
             token_id_by() == ti_up || token_id_by() == ti_here || token_id_by() == ti_silva;
@@ -129,12 +129,13 @@ namespace silva::seed {
       {
         auto ss_rule = stake();
         ss_rule.create_node(ni_axe_op);
-        SILVA_EXPECT_PARSE(ni_axe_op,
-                           num_tokens_left() >= 1 &&
-                               (token_id_by() == ti_concat || token_data_by()->category == STRING),
-                           "expected {} or string, got {}",
-                           swp->token_id_wrap(ti_concat),
-                           swp->token_id_wrap(token_id_by()));
+        SILVA_EXPECT_PARSE(
+            ni_axe_op,
+            num_tokens_left() >= 1 &&
+                (token_id_by() == ti_concat || token_data_by()->category_old == STRING),
+            "expected {} or string, got {}",
+            swp->token_id_wrap(ti_concat),
+            swp->token_id_wrap(token_id_by()));
         token_index += 1;
         return ss_rule.commit();
       }
@@ -305,7 +306,7 @@ namespace silva::seed {
         SILVA_EXPECT_PARSE(ni_var, num_tokens_left() >= 1, "no more tokens in input");
         const auto& tstr = token_data_by()->str;
         SILVA_EXPECT_PARSE(ni_var,
-                           token_data_by()->category == IDENTIFIER && tstr.size() >= 3 &&
+                           token_data_by()->category_old == IDENTIFIER && tstr.size() >= 3 &&
                                std::islower(tstr.front()) && tstr.ends_with("_v"),
                            "unexpected {}",
                            swp->token_id_wrap(token_id_by()));
@@ -331,7 +332,7 @@ namespace silva::seed {
         SILVA_EXPECT_PARSE(ni_func_name, num_tokens_left() >= 1, "no more tokens in input");
         const auto& tstr = token_data_by()->str;
         SILVA_EXPECT_PARSE(ni_func_name,
-                           token_data_by()->category == IDENTIFIER && tstr.size() >= 3 &&
+                           token_data_by()->category_old == IDENTIFIER && tstr.size() >= 3 &&
                                std::islower(tstr.front()) && tstr.ends_with("_f"),
                            "unexpected {}",
                            swp->token_id_wrap(token_id_by()));

@@ -112,7 +112,7 @@ namespace silva {
 
   }
 
-  tuple_t<string_view_t, token_category_t> tokenize_one(const string_view_t text)
+  tuple_t<string_view_t, token_category_old_t> tokenize_one(const string_view_t text)
   {
     SILVA_ASSERT(!text.empty());
     const char c = text.front();
@@ -164,7 +164,7 @@ namespace silva {
 
   expected_t<string_view_t> token_info_t::string_as_plain_contained() const
   {
-    SILVA_EXPECT(category == STRING, MAJOR);
+    SILVA_EXPECT(category_old == STRING, MAJOR);
     SILVA_EXPECT(str.size() >= 2, MINOR);
     SILVA_EXPECT(str.front() == '\'' && str.back() == '\'', MINOR);
     for (index_t i = 1; i < str.size() - 1; ++i) {
@@ -175,7 +175,7 @@ namespace silva {
 
   expected_t<double> token_info_t::number_as_double() const
   {
-    SILVA_EXPECT(category == NUMBER, MAJOR);
+    SILVA_EXPECT(category_old == NUMBER, MAJOR);
     return convert_to<double>(str);
   }
 
@@ -222,7 +222,7 @@ namespace silva {
   expected_t<token_id_t> syntax_ward_t::token_id_in_string(const token_id_t ti)
   {
     const auto& token_info = token_infos[ti];
-    SILVA_EXPECT(token_info.category == STRING, MINOR, "{} not a string", token_id_wrap(ti));
+    SILVA_EXPECT(token_info.category_old == STRING, MINOR, "{} not a string", token_id_wrap(ti));
     const string_t str{SILVA_EXPECT_FWD(token_info.string_as_plain_contained(),
                                         "{} not a string containing a token",
                                         token_id_wrap(ti))};

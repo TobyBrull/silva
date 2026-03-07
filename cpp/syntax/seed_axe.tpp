@@ -68,8 +68,8 @@ namespace silva::seed::test {
         auto ss_rule = stake();
         ss_rule.create_node(ni_atom);
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
-        SILVA_EXPECT(token_data_by()->category == token_category_t::NUMBER ||
-                         token_data_by()->category == token_category_t::IDENTIFIER,
+        SILVA_EXPECT(token_data_by()->category_old == token_category_old_t::NUMBER ||
+                         token_data_by()->category_old == token_category_old_t::IDENTIFIER,
                      MINOR);
         token_index += 1;
         return ss_rule.commit();
@@ -417,14 +417,14 @@ namespace silva::seed::test {
         auto ss_rule = stake();
         ss_rule.create_node(ni_atom);
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
-        if (token_data_by()->category == token_category_t::NUMBER) {
+        if (token_data_by()->category_old == token_category_old_t::NUMBER) {
           SILVA_EXPECT(num_tokens_left() >= 2 &&
-                           token_data_by(1)->category == token_category_t::OPERATOR,
+                           token_data_by(1)->category_old == token_category_old_t::OPERATOR,
                        MINOR);
           token_index += 2;
         }
         else {
-          SILVA_EXPECT(token_data_by()->category == token_category_t::IDENTIFIER, MINOR);
+          SILVA_EXPECT(token_data_by()->category_old == token_category_old_t::IDENTIFIER, MINOR);
           token_index += 1;
         }
         return ss_rule.commit();
@@ -435,7 +435,7 @@ namespace silva::seed::test {
         auto ss_rule = stake();
         ss_rule.create_node(ni_arg);
         SILVA_EXPECT_PARSE(ni_arg,
-                           token_data_by()->category == token_category_t::STRING,
+                           token_data_by()->category_old == token_category_old_t::STRING,
                            "expected string");
         token_index += 1;
         return ss_rule.commit();

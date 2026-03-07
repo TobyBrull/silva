@@ -34,8 +34,9 @@ namespace silva::fern {
         SILVA_EXPECT_PARSE(ni_value,
                            num_tokens_left() >= 1 &&
                                (token_id_by() == ti_none || token_id_by() == ti_true ||
-                                token_id_by() == ti_false || token_data_by()->category == STRING ||
-                                token_data_by()->category == NUMBER),
+                                token_id_by() == ti_false ||
+                                token_data_by()->category_old == STRING ||
+                                token_data_by()->category_old == NUMBER),
                            "unexpected {}",
                            swp->token_id_wrap(token_id_by()));
         token_index += 1;
@@ -46,12 +47,12 @@ namespace silva::fern {
       {
         auto ss_rule = stake();
         ss_rule.create_node(ni_label);
-        SILVA_EXPECT_PARSE(
-            ni_label,
-            num_tokens_left() >= 1 &&
-                (token_data_by()->category == STRING || token_data_by()->category == IDENTIFIER),
-            "expected string or identifier, found {}",
-            swp->token_id_wrap(token_id_by()));
+        SILVA_EXPECT_PARSE(ni_label,
+                           num_tokens_left() >= 1 &&
+                               (token_data_by()->category_old == STRING ||
+                                token_data_by()->category_old == IDENTIFIER),
+                           "expected string or identifier, found {}",
+                           swp->token_id_wrap(token_id_by()));
         token_index += 1;
         return ss_rule.commit();
       }
@@ -421,11 +422,11 @@ namespace silva::fern {
             else if (token_id == ti_false) {
               retval.item.value = false;
             }
-            else if (token_data->category == STRING) {
+            else if (token_data->category_old == STRING) {
               retval.item.value =
                   string_t{SILVA_EXPECT_FWD(token_data->string_as_plain_contained(), MAJOR)};
             }
-            else if (token_data->category == NUMBER) {
+            else if (token_data->category_old == NUMBER) {
               retval.item.value = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
             }
             else {

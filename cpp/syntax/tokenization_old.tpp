@@ -8,7 +8,7 @@ namespace silva::test {
   TEST_CASE("tokenization", "[tokenization_t]")
   {
     syntax_ward_t sw;
-    using enum token_category_t;
+    using enum token_category_old_t;
     using info_t = token_info_t;
     {
       const auto result = SILVA_REQUIRE(tokenize(sw.ptr(), "unit.test", "Hello   123 .<>."));

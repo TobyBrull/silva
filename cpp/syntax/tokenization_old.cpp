@@ -112,8 +112,8 @@ namespace silva {
       }
       else {
         token_info_t ti{
-            .category = token_cat,
-            .str      = string_t{tokenized_str},
+            .category_old = token_cat,
+            .str          = string_t{tokenized_str},
         };
         const token_id_t tii = syntax_ward_get_token_id_from_info(*swp, std::move(ti));
         retval->tokens.push_back(tii);

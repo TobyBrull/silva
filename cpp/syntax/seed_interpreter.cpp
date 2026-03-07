@@ -90,7 +90,7 @@ namespace silva::seed {
             const index_t token_idx        = pts_expr[i].token_begin;
             const token_id_t token_id      = pts_expr.tp->tokens[token_idx];
             const token_info_t& token_info = swp->token_infos[token_id];
-            if (token_info.category == token_category_t::STRING) {
+            if (token_info.category_old == token_category_old_t::STRING) {
               const auto keyword              = SILVA_EXPECT_FWD(swp->token_id_in_string(token_id));
               se->string_to_keyword[token_id] = keyword;
               SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
@@ -388,13 +388,13 @@ namespace silva::seed {
           SILVA_EXPECT(s_node.num_children == 0, MAJOR, "expected Terminal node have no children");
           if (s_front_ti == ti_id) {
             SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category == IDENTIFIER,
+                               token_data_by()->category_old == IDENTIFIER,
                                "expected {}",
                                pts.token_range());
           }
           else if (s_front_ti == ti_op) {
             SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category == OPERATOR,
+                               token_data_by()->category_old == OPERATOR,
                                "expected {}",
                                pts.token_range());
           }
@@ -439,19 +439,23 @@ namespace silva::seed {
                        "Terminal nodes must have one or three tokens");
           if (s_front_ti == ti_id) {
             SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category == IDENTIFIER,
+                               token_data_by()->category_old == IDENTIFIER,
                                "expected identifier");
           }
           else if (s_front_ti == ti_op) {
             SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category == OPERATOR,
+                               token_data_by()->category_old == OPERATOR,
                                "expected operator");
           }
           else if (s_front_ti == ti_string) {
-            SILVA_EXPECT_PARSE(t_rule_name, token_data_by()->category == STRING, "expected string");
+            SILVA_EXPECT_PARSE(t_rule_name,
+                               token_data_by()->category_old == STRING,
+                               "expected string");
           }
           else if (s_front_ti == ti_number) {
-            SILVA_EXPECT_PARSE(t_rule_name, token_data_by()->category == NUMBER, "expected number");
+            SILVA_EXPECT_PARSE(t_rule_name,
+                               token_data_by()->category_old == NUMBER,
+                               "expected number");
           }
           else if (s_front_ti == ti_any) {
             ;

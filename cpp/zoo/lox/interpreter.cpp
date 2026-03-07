@@ -138,7 +138,7 @@ namespace silva::lox {
                          pts_curr);
           }
 
-          const bool is_identifier = tinfo->category == IDENTIFIER;
+          const bool is_identifier = tinfo->category_old == IDENTIFIER;
           const bool is_keyword =
               (ti == lexicon.ti_true || ti == lexicon.ti_false || ti == lexicon.ti_none);
           const name_id_t pr =
@@ -159,8 +159,8 @@ namespace silva::lox {
             }
           }
 
-          const bool is_number = tinfo->category == NUMBER;
-          const bool is_string = tinfo->category == STRING;
+          const bool is_number = tinfo->category_old == NUMBER;
+          const bool is_string = tinfo->category_old == STRING;
           if (is_keyword || is_number || is_string) {
             object_ref_t literal =
                 SILVA_EXPECT_FWD_AS(object_ref_from_literal(pts_ti, object_pool, lexicon), MAJOR);
@@ -377,7 +377,7 @@ namespace silva::lox {
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
           SILVA_EXPECT(lr_pts[0].rule_name == intp->lexicon.ni_expr_atom, MINOR);
           const token_id_t ti = pts.tp->tokens[lr_pts[0].token_begin];
-          SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
+          SILVA_EXPECT(swp->token_infos[ti].category_old == IDENTIFIER, MINOR);
 
           SILVA_EXPECT(ll_ref->holds_class_instance(), MINOR);
           auto& ci      = std::get<class_instance_t>(ll_ref->data);
@@ -385,7 +385,7 @@ namespace silva::lox {
         }
         else if (lhs_pts[0].rule_name == intp->lexicon.ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
-          SILVA_EXPECT(swp->token_infos[ti].category == IDENTIFIER, MINOR);
+          SILVA_EXPECT(swp->token_infos[ti].category_old == IDENTIFIER, MINOR);
           SILVA_EXPECT_FWD(scope.set(ti, rhs_ref), "{} assignment to undeclared variable", pts);
         }
         else {
@@ -436,7 +436,7 @@ namespace silva::lox {
                                 pts,
                                 swp->token_id_wrap(field_name));
       }
-      else if (tinfo->category == IDENTIFIER) {
+      else if (tinfo->category_old == IDENTIFIER) {
         object_ref_t* ptr = [&] {
           const auto it = intp->resolution.find(pts);
           if (it != intp->resolution.end()) {

@@ -153,7 +153,7 @@ namespace silva::seed::impl {
     {
       SILVA_EXPECT(pts_op[0].rule_name == ni_axe_op, BROKEN_SEED);
       const token_id_t axe_op = pts_op.first_token_id();
-      SILVA_EXPECT(swp->token_infos[axe_op].category == token_category_t::STRING ||
+      SILVA_EXPECT(swp->token_infos[axe_op].category_old == token_category_old_t::STRING ||
                        axe_op == ti_concat,
                    BROKEN_SEED);
       if (axe_op_type != ti_infix && axe_op_type != ti_infix_flat) {

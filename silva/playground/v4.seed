@@ -19,15 +19,16 @@ tokenizer:
 # IDENTIFIER(snake-case)
 # IDENTIFIER(kebab-case)
 # IDENTIFIER(kebab-case 'var-*')
-# IDENTIFIER['if' 'while' 'for']
+# ['if' 'while' 'for']
 
 # OPERATOR
 # OPERATOR(concat '<=>!+-')
-# OPERATOR(single ';')
-# OPERATOR['++' '+=' '+']
+# OPERATOR(single ';*&')
+# ['++' '+=' '+']
 
 tokenizer default:
-  ignore WHITESPACE COMMENT
+  ignore WHITESPACE
+  ignore COMMENT
   number = NUMBER
   string = STRING
   indent = INDENT
@@ -36,16 +37,19 @@ tokenizer default:
   parens = PARENS
 
 tokenizer free-form:
-  ignore WHITESPACE COMMENT
-  ignore INDENT DEDENT NEWLINE
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
   number = NUMBER
   string = STRING
   parens = PARENS
 
 tokenizer c extends free-form:
   identifier = IDENTIFIER
-  operator = OPERATOR['<=' '>=' '==' '!=' '<' '>' '!' '='
-                      '++' '--' '+=' '-=' '+' '-' ]
+  operator-id = ['<=' '>=' '==' '!=' '<' '>' '!' '='
+              '++' '--' '+=' '-=' '+' '-' ]
 
 tokenizer various extends free-form:
   zig-builtin = '@' IDENTIFIER
@@ -80,7 +84,7 @@ language Seed uses tokenizer seed:
   Rule =
     ⊙ = Nonterminal '=' ( 'axe' Axe | 'alias' Expr | Expr )
     Expr = axe Atom
-      Parens    = nest  atom_nest '(' ')' '[' ']'
+      Parens    = nest  atom_nest '(' ')'
       Prefix    = rtl   prefix 'not'
       Postfix   = ltr   postfix '?' '*' '+'
       Concat    = ltr   infix_flat concat
