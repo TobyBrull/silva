@@ -6,12 +6,30 @@
 
 #include "canopy/delegate.hpp"
 
-// * https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing
-
-// An mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard
-// algorithm.
-
 namespace silva::seed {
+
+  // An mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard
+  // algorithm or precedence climbing.
+  //
+  // * https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing
+  //
+  // You basically specify a number of operators, in the order of their desired precedence (from
+  // high precedence to low precedence), what type of operator they are (prefix, infx,
+  // left-to-right, right-to-left, nested, ...), and what an atom looks like. From this description
+  // an expression parser is then generated. For example,
+  //
+  // « number [
+  //   - Parens   = nest  atom_nest '(' ')'
+  //   - Prefix   = ltr   prefix '-'
+  //   - Product  = ltr   infix '*' '/'
+  //   - Addition = ltr   infix '+' '-'
+  // ] »
+  //
+  // can be used to parse
+  //
+  // « 1 + ( 2 + 3 ) * - 4 »
+  //
+  // in the normal, mathematical way.
 
   const string_view_t axe_str = R"'(
     - Seed.Axe = [
@@ -38,5 +56,5 @@ namespace silva::seed {
     expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, parse_delegate_t) const;
   };
 
-  expected_t<axe_t> axe_create(syntax_ward_ptr_t, name_id_t seed_axe_name, parse_tree_span_t);
+  expected_t<axe_t> axe_create(syntax_ward_ptr_t, name_id_t axe_name, parse_tree_span_t);
 }

@@ -13,12 +13,12 @@ tokenizer:
 
 
 # IDENTIFIER
+# IDENTIFIER(silva-case)
+# IDENTIFIER(snake-case)
+# IDENTIFIER(camel-case)
 # IDENTIFIER(lower-case)
 # IDENTIFIER(upper-case)
-# IDENTIFIER(camel-case)
-# IDENTIFIER(snake-case)
-# IDENTIFIER(kebab-case)
-# IDENTIFIER(kebab-case 'var-*')
+# IDENTIFIER(silva-case 'var-*')
 # ['if' 'while' 'for']
 
 # OPERATOR
@@ -56,6 +56,8 @@ tokenizer c:
 
 tokenizer various:
   zig-builtin = '@' IDENTIFIER
+  zig-builtin-concat = '@concat'
+  zig-builtin-concat = '@concat'
   scheme-symbol = '`' IDENTIFIER
   tokenizer free-form
 
@@ -68,9 +70,7 @@ tokenizer seed:
   option-name = IDENTIFIER(kebab-case)
   fragment-category = IDENTIFIER(upper-case)
 
-
-language Seed uses tokenizer seed:
-
+language seed:
   ⊙ = ( Tokenzier | Language | Rule ) *
 
   Tokenzier =
@@ -83,7 +83,7 @@ language Seed uses tokenizer seed:
     Pattern = identifier ( identifier | string ) *
 
   Language =
-    ⊙ = 'language' tok_name ':' tok_newline tok_indent ( TokenizationUsage Rule * ) tok_dedent
+    ⊙ = 'language' name ':' tok_newline tok_indent ( TokenizationUsage Rule * ) tok_dedent
     TokenizationUsage = 'uses' tok_tokenization_name 'with' ':' tok_newline Tokenization.Body
 
   Rule =
