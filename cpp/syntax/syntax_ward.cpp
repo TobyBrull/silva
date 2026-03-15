@@ -87,18 +87,20 @@ namespace silva {
       SILVA_ASSERT(rest.size() >= 1);
       index_t index = 1;
       while (index < rest.size()) {
-        if (rest[index] == '\'' && rest[index - 1] != '\\') {
-          index += 1;
-          break;
+        if (rest[index] == '\\') {
+          if (!(index + 1 < rest.size())) {
+            return {none};
+          }
+          index += 2;
         }
-        index += 1;
+        else if (rest[index] == '\'') {
+          return index + 1;
+        }
+        else {
+          index += 1;
+        }
       }
-      if (rest[index - 1] == '\'') {
-        return index;
-      }
-      else {
-        return {none};
-      }
+      return {none};
     }
 
     index_t find_comment_length(const string_view_t rest)
@@ -167,10 +169,32 @@ namespace silva {
     SILVA_EXPECT(category_old == STRING, MAJOR);
     SILVA_EXPECT(str.size() >= 2, MINOR);
     SILVA_EXPECT(str.front() == '\'' && str.back() == '\'', MINOR);
-    for (index_t i = 1; i < str.size() - 1; ++i) {
-      SILVA_EXPECT(str[i] != '\\' && str[i] != '\'', MINOR);
+    for (index_t i = 1; i < str.size() - 2; ++i) {
+      SILVA_EXPECT(str[i] != '\\', MINOR);
     }
     return string_view_t{str}.substr(1, str.size() - 2);
+  }
+
+  expected_t<string_t> token_info_t::contained_string() const
+  {
+    SILVA_EXPECT(category_old == STRING, MAJOR);
+    SILVA_EXPECT(str.size() >= 2, MINOR);
+    SILVA_EXPECT(str.front() == '\'' && str.back() == '\'', MINOR);
+    string_t retval;
+    retval.reserve(str.size() - 2);
+    index_t i = 1;
+    while (i < str.size() - 1) {
+      if (str[i] == '\\') {
+        SILVA_EXPECT(i + 1 < str.size() - 1, MINOR);
+        retval.push_back(str[i + 1]);
+        i += 2;
+      }
+      else {
+        retval.push_back(str[i]);
+        i += 1;
+      }
+    }
+    return {std::move(retval)};
   }
 
   expected_t<double> token_info_t::number_as_double() const
@@ -223,9 +247,9 @@ namespace silva {
   {
     const auto& token_info = token_infos[ti];
     SILVA_EXPECT(token_info.category_old == STRING, MINOR, "{} not a string", token_id_wrap(ti));
-    const string_t str{SILVA_EXPECT_FWD(token_info.string_as_plain_contained(),
-                                        "{} not a string containing a token",
-                                        token_id_wrap(ti))};
+    const string_t str = SILVA_EXPECT_FWD(token_info.contained_string(),
+                                          "{} not a string containing a token",
+                                          token_id_wrap(ti));
     return token_id(str);
   }
 

@@ -33,6 +33,7 @@ namespace silva {
     token_id_t category = token_id_none;
 
     expected_t<string_view_t> string_as_plain_contained() const;
+    expected_t<string_t> contained_string() const;
     expected_t<double> number_as_double() const;
 
     friend auto operator<=>(const token_info_t&, const token_info_t&) = default;

@@ -118,16 +118,16 @@ namespace silva::seed {
     ]
   )";
 
-  const string_view_t tokenizer_seed_str = R"'(
+  const string_view_t tokenizer_str = R"'(
     - Seed.Tokenzier = [
       - x = p.Nonterminal.Base '[' ( '-' Rule ) * ']'
       - Rule =  IncludeRule | IgnoreRule | TokenRule
       - IncludeRule = 'include' 'tokenizer' p.Nonterminal.Base
-      - IgnoreRule = 'ignore' Rule
-      - TokenRule = '=' Rule
-      - Rule = Atom * ( ':::' Atom + ) ?
+      - IgnoreRule = 'ignore' Defn
+      - TokenRule = '=' Defn
+      - Defn = Atom * ( ':::' Atom + ) ?
       - Atom = Matcher | string | List
-      - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string )?
+      - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
       - List = '[' Atom * ']'
       - FragName = identifier / '^[A-Z_]+$'
     ]
