@@ -46,7 +46,7 @@ ninja -C build/ && bash demo.sh > demo.sh.output && git status
 
 ```bash
 # C++
-find ./cpp -name "*pp" -type f | xargs clang-format -i
+find ./cpp -name "*pp" -type f | xargs clang-format -i && git status
 
 # CMake
 pip install cmake-format

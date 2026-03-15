@@ -29,10 +29,23 @@ namespace silva {
     LANG_END,
   };
 
+  enum class fragment_case_mask_t {
+    NONE                   = 0b0000000,
+    IDENTIFIER_SILVA_CASE  = 0b0000001, // 'hello-world'
+    IDENTIFIER_SNAKE_CASE  = 0b0000010, // 'hello_world'
+    IDENTIFIER_CAMEL_CASE  = 0b0000100, // 'helloWorld'
+    IDENTIFIER_PASCAL_CASE = 0b0001000, // 'HelloWorld'
+    IDENTIFIER_MACRO_CASE  = 0b0010000,
+    IDENTIFIER_UPPER_CASE  = 0b0100000, // EVERY character is upper-case, no '_' '-'
+    IDENTIFIER_LOWER_CASE  = 0b1000000, // EVERY character is lower-case, no '_' '-'
+    ANY                    = ~NONE,
+  };
+
   constexpr bool is_fragment_category_real(fragment_category_t);
 
   struct fragment_t {
-    fragment_category_t category = fragment_category_t::INVALID;
+    fragment_category_t category   = fragment_category_t::INVALID;
+    fragment_case_mask_t case_make = fragment_case_mask_t::NONE;
     file_location_t location;
 
     friend auto operator<=>(const fragment_t&, const fragment_t&) = default;
