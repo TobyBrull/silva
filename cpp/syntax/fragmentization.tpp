@@ -7,7 +7,6 @@ namespace silva::test {
 
   using enum codepoint_category_t;
   using enum fragment_category_t;
-  using enum fragment_case_mask_t;
 
   array_t<fragment_category_t> only_real_categories(const array_t<fragment_t>& x)
   {
@@ -67,9 +66,9 @@ A ⎢ ( B
       CHECK_THAT(err_msg, ContainsSubstring("source-code expected to end with newline"));
       const auto frag = SILVA_REQUIRE(fragmentize("..", "\n"));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}},
-          {WHITESPACE, NONE, {0, 0, 0}},
-          {LANG_END, NONE, {0, 0, 0}},
+          {LANG_BEGIN, {0, 0, 0}},
+          {WHITESPACE, {0, 0, 0}},
+          {LANG_END, {0, 0, 0}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -90,11 +89,11 @@ xyz123_äß
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}},
-          {WHITESPACE, NONE, {0, 0, 0}},
-          {IDENTIFIER, NONE, {2, 0, 2}},
-          {NEWLINE, NONE, {2, 9, 13}},
-          {LANG_END, NONE, {3, 0, 14}},
+          {LANG_BEGIN, {0, 0, 0}},
+          {WHITESPACE, {0, 0, 0}},
+          {IDENTIFIER, {2, 0, 2}},
+          {NEWLINE, {2, 9, 13}},
+          {LANG_END, {3, 0, 14}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -103,19 +102,19 @@ xyz123_äß
       const auto text = "hello-world -++- hello/world\n";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}},
-          {IDENTIFIER, NONE, {0, 0, 0}},
-          {WHITESPACE, NONE, {0, 11, 11}},
-          {OPERATOR, NONE, {0, 12, 12}},
-          {OPERATOR, NONE, {0, 13, 13}},
-          {OPERATOR, NONE, {0, 14, 14}},
-          {OPERATOR, NONE, {0, 15, 15}},
-          {WHITESPACE, NONE, {0, 16, 16}},
-          {IDENTIFIER, NONE, {0, 17, 17}},
-          {OPERATOR, NONE, {0, 22, 22}},
-          {IDENTIFIER, NONE, {0, 23, 23}},
-          {NEWLINE, NONE, {0, 28, 28}},
-          {LANG_END, NONE, {0, 28, 28}},
+          {LANG_BEGIN, {0, 0, 0}},
+          {IDENTIFIER, {0, 0, 0}},
+          {WHITESPACE, {0, 11, 11}},
+          {OPERATOR, {0, 12, 12}},
+          {OPERATOR, {0, 13, 13}},
+          {OPERATOR, {0, 14, 14}},
+          {OPERATOR, {0, 15, 15}},
+          {WHITESPACE, {0, 16, 16}},
+          {IDENTIFIER, {0, 17, 17}},
+          {OPERATOR, {0, 22, 22}},
+          {IDENTIFIER, {0, 23, 23}},
+          {NEWLINE, {0, 28, 28}},
+          {LANG_END, {0, 28, 28}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -141,32 +140,32 @@ back
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}},   //
-          {WHITESPACE, NONE, {0, 0, 0}},   //
-          {IDENTIFIER, NONE, {1, 0, 1}},   // def
-          {NEWLINE, NONE, {1, 3, 4}},      //
-          {INDENT, NONE, {2, 2, 7}},       //
-          {IDENTIFIER, NONE, {2, 2, 7}},   // test
-          {WHITESPACE, NONE, {2, 6, 11}},  //
-          {OPERATOR, NONE, {2, 7, 12}},    // <
-          {OPERATOR, NONE, {2, 8, 13}},    // >
-          {WHITESPACE, NONE, {2, 9, 14}},  //
-          {NUMBER, NONE, {2, 12, 17}},     // 0x0308
-          {OPERATOR, NONE, {2, 18, 23}},   // ⊙
-          {STRING, NONE, {2, 19, 26}},     // 'abc'
-          {NEWLINE, NONE, {2, 24, 31}},    //
-          {STRING, NONE, {3, 2, 34}},      // "abc"
-          {NEWLINE, NONE, {3, 7, 39}},     //
-          {INDENT, NONE, {4, 4, 44}},      //
-          {IDENTIFIER, NONE, {4, 4, 44}},  // deep
-          {NEWLINE, NONE, {4, 8, 48}},     //
-          {COMMENT, NONE, {6, 2, 53}},     // # Comment
-          {WHITESPACE, NONE, {6, 11, 62}}, //
-          {DEDENT, NONE, {8, 0, 64}},      //
-          {DEDENT, NONE, {8, 0, 64}},      //
-          {IDENTIFIER, NONE, {8, 0, 64}},  // back
-          {NEWLINE, NONE, {8, 4, 68}},     //
-          {LANG_END, NONE, {9, 0, 69}},    //
+          {LANG_BEGIN, {0, 0, 0}},   //
+          {WHITESPACE, {0, 0, 0}},   //
+          {IDENTIFIER, {1, 0, 1}},   // def
+          {NEWLINE, {1, 3, 4}},      //
+          {INDENT, {2, 2, 7}},       //
+          {IDENTIFIER, {2, 2, 7}},   // test
+          {WHITESPACE, {2, 6, 11}},  //
+          {OPERATOR, {2, 7, 12}},    // <
+          {OPERATOR, {2, 8, 13}},    // >
+          {WHITESPACE, {2, 9, 14}},  //
+          {NUMBER, {2, 12, 17}},     // 0x0308
+          {OPERATOR, {2, 18, 23}},   // ⊙
+          {STRING, {2, 19, 26}},     // 'abc'
+          {NEWLINE, {2, 24, 31}},    //
+          {STRING, {3, 2, 34}},      // "abc"
+          {NEWLINE, {3, 7, 39}},     //
+          {INDENT, {4, 4, 44}},      //
+          {IDENTIFIER, {4, 4, 44}},  // deep
+          {NEWLINE, {4, 8, 48}},     //
+          {COMMENT, {6, 2, 53}},     // # Comment
+          {WHITESPACE, {6, 11, 62}}, //
+          {DEDENT, {8, 0, 64}},      //
+          {DEDENT, {8, 0, 64}},      //
+          {IDENTIFIER, {8, 0, 64}},  // back
+          {NEWLINE, {8, 4, 68}},     //
+          {LANG_END, {9, 0, 69}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -175,12 +174,12 @@ back
       const auto text = "  import\n";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}}, //
-          {INDENT, NONE, {0, 2, 2}},     //
-          {IDENTIFIER, NONE, {0, 2, 2}}, // import
-          {NEWLINE, NONE, {0, 8, 8}},    //
-          {DEDENT, NONE, {0, 8, 8}},     //
-          {LANG_END, NONE, {0, 8, 8}},   //
+          {LANG_BEGIN, {0, 0, 0}}, //
+          {INDENT, {0, 2, 2}},     //
+          {IDENTIFIER, {0, 2, 2}}, // import
+          {NEWLINE, {0, 8, 8}},    //
+          {DEDENT, {0, 8, 8}},     //
+          {LANG_END, {0, 8, 8}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -197,33 +196,33 @@ b    # Hi
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}},   //
-          {WHITESPACE, NONE, {0, 0, 0}},   //
-          {IDENTIFIER, NONE, {1, 0, 1}},   // def
-          {NEWLINE, NONE, {1, 3, 4}},      //
-          {INDENT, NONE, {2, 4, 9}},       //
-          {IDENTIFIER, NONE, {2, 4, 9}},   // id
-          {WHITESPACE, NONE, {2, 6, 11}},  //
-          {COMMENT, NONE, {2, 7, 12}},     //
-          {NEWLINE, NONE, {2, 11, 16}},    //
-          {INDENT, NONE, {3, 8, 25}},      //
-          {IDENTIFIER, NONE, {3, 8, 25}},  // id
-          {WHITESPACE, NONE, {3, 10, 27}}, //
-          {PAREN_LEFT, NONE, {3, 11, 28}}, // (
-          {WHITESPACE, NONE, {3, 12, 29}}, //
-          {IDENTIFIER, NONE, {4, 0, 30}},  // b
-          {WHITESPACE, NONE, {4, 1, 31}},  //
-          {COMMENT, NONE, {4, 5, 35}},     // # Hi
-          {WHITESPACE, NONE, {4, 9, 39}},  //
-          {IDENTIFIER, NONE, {5, 2, 42}},  // c
-          {WHITESPACE, NONE, {5, 3, 43}},  //
-          {PAREN_RIGHT, NONE, {6, 0, 44}}, // )
-          {NEWLINE, NONE, {6, 1, 45}},     //
-          {DEDENT, NONE, {7, 4, 50}},      //
-          {IDENTIFIER, NONE, {7, 4, 50}},  // id
-          {NEWLINE, NONE, {7, 6, 52}},     //
-          {DEDENT, NONE, {7, 6, 52}},      //
-          {LANG_END, NONE, {7, 6, 52}},    //
+          {LANG_BEGIN, {0, 0, 0}},   //
+          {WHITESPACE, {0, 0, 0}},   //
+          {IDENTIFIER, {1, 0, 1}},   // def
+          {NEWLINE, {1, 3, 4}},      //
+          {INDENT, {2, 4, 9}},       //
+          {IDENTIFIER, {2, 4, 9}},   // id
+          {WHITESPACE, {2, 6, 11}},  //
+          {COMMENT, {2, 7, 12}},     //
+          {NEWLINE, {2, 11, 16}},    //
+          {INDENT, {3, 8, 25}},      //
+          {IDENTIFIER, {3, 8, 25}},  // id
+          {WHITESPACE, {3, 10, 27}}, //
+          {PAREN_LEFT, {3, 11, 28}}, // (
+          {WHITESPACE, {3, 12, 29}}, //
+          {IDENTIFIER, {4, 0, 30}},  // b
+          {WHITESPACE, {4, 1, 31}},  //
+          {COMMENT, {4, 5, 35}},     // # Hi
+          {WHITESPACE, {4, 9, 39}},  //
+          {IDENTIFIER, {5, 2, 42}},  // c
+          {WHITESPACE, {5, 3, 43}},  //
+          {PAREN_RIGHT, {6, 0, 44}}, // )
+          {NEWLINE, {6, 1, 45}},     //
+          {DEDENT, {7, 4, 50}},      //
+          {IDENTIFIER, {7, 4, 50}},  // id
+          {NEWLINE, {7, 6, 52}},     //
+          {DEDENT, {7, 6, 52}},      //
+          {LANG_END, {7, 6, 52}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -241,28 +240,28 @@ y
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}},  //
-          {WHITESPACE, NONE, {0, 0, 0}},  //
-          {IDENTIFIER, NONE, {1, 0, 1}},  // def
-          {WHITESPACE, NONE, {1, 3, 4}},  //
-          {COMMENT, NONE, {1, 4, 5}},     // '# Hi \'
-          {NEWLINE, NONE, {1, 10, 11}},   //
-          {INDENT, NONE, {2, 2, 14}},     //
-          {STRING, NONE, {2, 2, 14}},     // 'ab\'c#xyz'
-          {NEWLINE, NONE, {2, 13, 25}},   //
-          {IDENTIFIER, NONE, {3, 2, 28}}, // var
-          {STRING, NONE, {3, 5, 31}},     // 'abc#\nxy¶z'
-          {NEWLINE, NONE, {4, 10, 50}},   //
-          {IDENTIFIER, NONE, {5, 2, 53}}, // retval
-          {WHITESPACE, NONE, {5, 8, 59}}, //
-          {IDENTIFIER, NONE, {6, 0, 62}}, // y
-          {NEWLINE, NONE, {6, 1, 63}},    //
-          {IDENTIFIER, NONE, {7, 2, 66}}, // retval
-          {WHITESPACE, NONE, {7, 8, 72}}, //
-          {IDENTIFIER, NONE, {8, 0, 74}}, // y
-          {NEWLINE, NONE, {8, 1, 75}},    //
-          {DEDENT, NONE, {8, 1, 75}},     //
-          {LANG_END, NONE, {8, 1, 75}},   //
+          {LANG_BEGIN, {0, 0, 0}},  //
+          {WHITESPACE, {0, 0, 0}},  //
+          {IDENTIFIER, {1, 0, 1}},  // def
+          {WHITESPACE, {1, 3, 4}},  //
+          {COMMENT, {1, 4, 5}},     // '# Hi \'
+          {NEWLINE, {1, 10, 11}},   //
+          {INDENT, {2, 2, 14}},     //
+          {STRING, {2, 2, 14}},     // 'ab\'c#xyz'
+          {NEWLINE, {2, 13, 25}},   //
+          {IDENTIFIER, {3, 2, 28}}, // var
+          {STRING, {3, 5, 31}},     // 'abc#\nxy¶z'
+          {NEWLINE, {4, 10, 50}},   //
+          {IDENTIFIER, {5, 2, 53}}, // retval
+          {WHITESPACE, {5, 8, 59}}, //
+          {IDENTIFIER, {6, 0, 62}}, // y
+          {NEWLINE, {6, 1, 63}},    //
+          {IDENTIFIER, {7, 2, 66}}, // retval
+          {WHITESPACE, {7, 8, 72}}, //
+          {IDENTIFIER, {8, 0, 74}}, // y
+          {NEWLINE, {8, 1, 75}},    //
+          {DEDENT, {8, 1, 75}},     //
+          {LANG_END, {8, 1, 75}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -274,15 +273,15 @@ y¶ xyz
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}}, //
-          {WHITESPACE, NONE, {0, 0, 0}}, //
-          {IDENTIFIER, NONE, {1, 0, 1}}, // x
-          {STRING, NONE, {1, 1, 2}},     // 'abc'
-          {NEWLINE, NONE, {1, 6, 8}},    //
-          {IDENTIFIER, NONE, {2, 0, 9}}, // y
-          {STRING, NONE, {2, 1, 10}},    // 'xyz'
-          {NEWLINE, NONE, {2, 6, 16}},   //
-          {LANG_END, NONE, {2, 6, 16}},  //
+          {LANG_BEGIN, {0, 0, 0}}, //
+          {WHITESPACE, {0, 0, 0}}, //
+          {IDENTIFIER, {1, 0, 1}}, // x
+          {STRING, {1, 1, 2}},     // 'abc'
+          {NEWLINE, {1, 6, 8}},    //
+          {IDENTIFIER, {2, 0, 9}}, // y
+          {STRING, {2, 1, 10}},    // 'xyz'
+          {NEWLINE, {2, 6, 16}},   //
+          {LANG_END, {2, 6, 16}},  //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -301,45 +300,45 @@ x)
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}},    //
-          {WHITESPACE, NONE, {0, 0, 0}},    //
-          {IDENTIFIER, NONE, {1, 0, 1}},    // Python
-          {WHITESPACE, NONE, {1, 6, 7}},    //
-          {LANG_BEGIN, NONE, {1, 7, 8}},    // ⎢
-          {IDENTIFIER, NONE, {1, 8, 11}},   // def
-          {NEWLINE, NONE, {1, 11, 14}},     //
-          {INDENT, NONE, {2, 10, 27}},      //
-          {IDENTIFIER, NONE, {2, 10, 27}},  // return
-          {WHITESPACE, NONE, {2, 16, 33}},  //
-          {PAREN_LEFT, NONE, {2, 17, 34}},  // (
-          {IDENTIFIER, NONE, {2, 18, 35}},  // x
-          {WHITESPACE, NONE, {2, 19, 36}},  //
-          {OPERATOR, NONE, {2, 20, 37}},    // +
-          {WHITESPACE, NONE, {2, 21, 38}},  //
-          {IDENTIFIER, NONE, {3, 9, 50}},   // y
-          {PAREN_RIGHT, NONE, {3, 10, 51}}, // )
-          {NEWLINE, NONE, {3, 11, 52}},     //
-          {DEDENT, NONE, {4, 0, 53}},       //
-          {LANG_END, NONE, {4, 0, 53}},     //
-          {NEWLINE, NONE, {4, 0, 53}},      //
-          {IDENTIFIER, NONE, {5, 0, 54}},   // Python
-          {WHITESPACE, NONE, {5, 6, 60}},   //
-          {LANG_BEGIN, NONE, {5, 7, 61}},   // «
-          {WHITESPACE, NONE, {5, 8, 63}},   //
-          {IDENTIFIER, NONE, {6, 0, 64}},   // def
-          {NEWLINE, NONE, {6, 3, 67}},      //
-          {INDENT, NONE, {7, 2, 70}},       //
-          {IDENTIFIER, NONE, {7, 2, 70}},   // return
-          {WHITESPACE, NONE, {7, 8, 76}},   //
-          {PAREN_LEFT, NONE, {7, 9, 77}},   // (
-          {WHITESPACE, NONE, {7, 10, 78}},  //
-          {IDENTIFIER, NONE, {8, 0, 79}},   // x
-          {PAREN_RIGHT, NONE, {8, 1, 80}},  // )
-          {NEWLINE, NONE, {8, 2, 81}},      //
-          {DEDENT, NONE, {9, 0, 82}},       //
-          {LANG_END, NONE, {9, 0, 82}},     // «
-          {NEWLINE, NONE, {9, 1, 84}},      //
-          {LANG_END, NONE, {9, 1, 84}},     //
+          {LANG_BEGIN, {0, 0, 0}},    //
+          {WHITESPACE, {0, 0, 0}},    //
+          {IDENTIFIER, {1, 0, 1}},    // Python
+          {WHITESPACE, {1, 6, 7}},    //
+          {LANG_BEGIN, {1, 7, 8}},    // ⎢
+          {IDENTIFIER, {1, 8, 11}},   // def
+          {NEWLINE, {1, 11, 14}},     //
+          {INDENT, {2, 10, 27}},      //
+          {IDENTIFIER, {2, 10, 27}},  // return
+          {WHITESPACE, {2, 16, 33}},  //
+          {PAREN_LEFT, {2, 17, 34}},  // (
+          {IDENTIFIER, {2, 18, 35}},  // x
+          {WHITESPACE, {2, 19, 36}},  //
+          {OPERATOR, {2, 20, 37}},    // +
+          {WHITESPACE, {2, 21, 38}},  //
+          {IDENTIFIER, {3, 9, 50}},   // y
+          {PAREN_RIGHT, {3, 10, 51}}, // )
+          {NEWLINE, {3, 11, 52}},     //
+          {DEDENT, {4, 0, 53}},       //
+          {LANG_END, {4, 0, 53}},     //
+          {NEWLINE, {4, 0, 53}},      //
+          {IDENTIFIER, {5, 0, 54}},   // Python
+          {WHITESPACE, {5, 6, 60}},   //
+          {LANG_BEGIN, {5, 7, 61}},   // «
+          {WHITESPACE, {5, 8, 63}},   //
+          {IDENTIFIER, {6, 0, 64}},   // def
+          {NEWLINE, {6, 3, 67}},      //
+          {INDENT, {7, 2, 70}},       //
+          {IDENTIFIER, {7, 2, 70}},   // return
+          {WHITESPACE, {7, 8, 76}},   //
+          {PAREN_LEFT, {7, 9, 77}},   // (
+          {WHITESPACE, {7, 10, 78}},  //
+          {IDENTIFIER, {8, 0, 79}},   // x
+          {PAREN_RIGHT, {8, 1, 80}},  // )
+          {NEWLINE, {8, 2, 81}},      //
+          {DEDENT, {9, 0, 82}},       //
+          {LANG_END, {9, 0, 82}},     // «
+          {NEWLINE, {9, 1, 84}},      //
+          {LANG_END, {9, 1, 84}},     //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -356,41 +355,41 @@ Python ⎢def
 )";
       const auto frag = SILVA_REQUIRE(fragmentize("..", text));
       const array_t<fragment_t> expected_fragments{
-          {LANG_BEGIN, NONE, {0, 0, 0}},    //
-          {WHITESPACE, NONE, {0, 0, 0}},    //
-          {IDENTIFIER, NONE, {1, 0, 1}},    // Python
-          {WHITESPACE, NONE, {1, 6, 7}},    //
-          {LANG_BEGIN, NONE, {1, 7, 8}},    // ⎢
-          {IDENTIFIER, NONE, {1, 8, 11}},   // def
-          {NEWLINE, NONE, {1, 11, 14}},     //
-          {INDENT, NONE, {3, 10, 38}},      //
-          {LANG_BEGIN, NONE, {3, 10, 38}},  // ⎢
-          {INDENT, NONE, {3, 12, 42}},      //
-          {IDENTIFIER, NONE, {3, 12, 42}},  // str
-          {WHITESPACE, NONE, {3, 15, 45}},  //
-          {STRING, NONE, {3, 16, 46}},      // ¶Hello...
-          {NEWLINE, NONE, {4, 33, 95}},     //
-          {DEDENT, NONE, {5, 8, 106}},      //
-          {LANG_END, NONE, {5, 8, 106}},    //
-          {NEWLINE, NONE, {5, 8, 106}},     //
-          {LANG_BEGIN, NONE, {6, 10, 119}}, //
-          {IDENTIFIER, NONE, {6, 11, 122}}, // int
-          {WHITESPACE, NONE, {6, 14, 125}}, //
-          {LANG_BEGIN, NONE, {6, 15, 126}}, // «
-          {WHITESPACE, NONE, {6, 16, 128}}, //
-          {INDENT, NONE, {7, 15, 148}},     //
-          {IDENTIFIER, NONE, {7, 15, 148}}, // x
-          {WHITESPACE, NONE, {7, 16, 149}}, //
-          {NEWLINE, NONE, {7, 17, 150}},    //
-          {DEDENT, NONE, {7, 17, 150}},     //
-          {LANG_END, NONE, {7, 17, 150}},   // »
-          {NEWLINE, NONE, {7, 18, 152}},    //
-          {LANG_END, NONE, {7, 18, 152}},   //
-          {NEWLINE, NONE, {7, 18, 152}},    //
-          {DEDENT, NONE, {7, 18, 152}},     //
-          {LANG_END, NONE, {7, 18, 152}},   //
-          {NEWLINE, NONE, {7, 18, 152}},    //
-          {LANG_END, NONE, {7, 18, 152}},   //
+          {LANG_BEGIN, {0, 0, 0}},    //
+          {WHITESPACE, {0, 0, 0}},    //
+          {IDENTIFIER, {1, 0, 1}},    // Python
+          {WHITESPACE, {1, 6, 7}},    //
+          {LANG_BEGIN, {1, 7, 8}},    // ⎢
+          {IDENTIFIER, {1, 8, 11}},   // def
+          {NEWLINE, {1, 11, 14}},     //
+          {INDENT, {3, 10, 38}},      //
+          {LANG_BEGIN, {3, 10, 38}},  // ⎢
+          {INDENT, {3, 12, 42}},      //
+          {IDENTIFIER, {3, 12, 42}},  // str
+          {WHITESPACE, {3, 15, 45}},  //
+          {STRING, {3, 16, 46}},      // ¶Hello...
+          {NEWLINE, {4, 33, 95}},     //
+          {DEDENT, {5, 8, 106}},      //
+          {LANG_END, {5, 8, 106}},    //
+          {NEWLINE, {5, 8, 106}},     //
+          {LANG_BEGIN, {6, 10, 119}}, //
+          {IDENTIFIER, {6, 11, 122}}, // int
+          {WHITESPACE, {6, 14, 125}}, //
+          {LANG_BEGIN, {6, 15, 126}}, // «
+          {WHITESPACE, {6, 16, 128}}, //
+          {INDENT, {7, 15, 148}},     //
+          {IDENTIFIER, {7, 15, 148}}, // x
+          {WHITESPACE, {7, 16, 149}}, //
+          {NEWLINE, {7, 17, 150}},    //
+          {DEDENT, {7, 17, 150}},     //
+          {LANG_END, {7, 17, 150}},   // »
+          {NEWLINE, {7, 18, 152}},    //
+          {LANG_END, {7, 18, 152}},   //
+          {NEWLINE, {7, 18, 152}},    //
+          {DEDENT, {7, 18, 152}},     //
+          {LANG_END, {7, 18, 152}},   //
+          {NEWLINE, {7, 18, 152}},    //
+          {LANG_END, {7, 18, 152}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }

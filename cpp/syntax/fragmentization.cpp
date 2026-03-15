@@ -534,8 +534,8 @@ namespace silva {
   {
     const index_t n = self.fragments.size();
     for (index_t idx = 0; idx < n; ++idx) {
-      const auto& [cat, mask, loc] = self.fragments[idx];
-      const index_t start_index    = loc.byte_offset;
+      const auto& [cat, loc]    = self.fragments[idx];
+      const index_t start_index = loc.byte_offset;
       const index_t end_index =
           (idx + 1 < n) ? self.fragments[idx + 1].location.byte_offset : self.source_code.size();
       const string_view_t sv =
