@@ -11,20 +11,51 @@ tokenizer:
   * Wouldn't it be nice if « x++; » would the tokenzied in the C++ way?
   * Would also be nice to support making things like 'free-form' identifiers
 
+# some_token = IDENTIFIER
+# some_token = IDENTIFIER_SILVA_CASE
+# some_token = IDENTIFIER_SNAKE_CASE
+# some_token = IDENTIFIER_CAMEL_CASE
 
-# IDENTIFIER
-# IDENTIFIER(silva-case)
-# IDENTIFIER(snake-case)
-# IDENTIFIER(camel-case)
-# IDENTIFIER(lower-case)
-# IDENTIFIER(upper-case)
-# IDENTIFIER(silva-case 'var-*')
-# ['if' 'while' 'for']
+# '/' = starts with
+# '|' = is exactly equal
+# '\' = ends with
+# '/' and '\' really only make sense for IDENTIFIERs.
+# '|' also makes sense for OPERATORs.
 
-# OPERATOR
-# OPERATOR(concat '<=>!+-')
-# OPERATOR(single ';*&')
-# ['++' '+=' '+']
+# some_token = IDENTIFIER_SILVA_CASE/'var-'
+
+# some_token = '@concat'
+#         --> some_token = OPERATOR|'@' IDENTIFIER|'concat'
+
+# The the matchers after the ':::' operator can be repeated in any order an arbitrary number of
+# times. Any string after the ':::' must expand to exactly one fragment.
+
+# some_token = '@' ::: '@' IDENTIFIER
+#         --> matches '@deco' '@deco@py' '@@@'
+
+# A '[ ... ]' list results in the cartesian product of rules. It may only be used before ':::'.
+# Later lists expand first in terms of priority.
+
+# some_token = [ 'if' 'while' ] [ NUMBER OPERATOR ] :: WHITESPACE NUMBER
+#         --> some_token = IDENTIFIER|'if' NUMBER :: WHITESPACE NUMBER
+#         --> some_token = IDENTIFIER|'if' OPERATOR :: WHITESPACE NUMBER
+#         --> some_token = IDENTIFIER|'while' NUMBER :: WHITESPACE NUMBER
+#         --> some_token = IDENTIFIER|'while' OPERATOR :: WHITESPACE NUMBER
+#         --> matches 'if3 3 3' 'while+5'
+
+# some_token = [ ';' '*' '&' ]
+#         --> some_token = OPERATOR|';'
+#         --> some_token = OPERATOR|'*'
+#         --> some_token = OPERATOR|'&'
+
+# some_token = OPERATOR
+# some_token = ::: '<' '=' '>'
+#         --> some_token = [ '<' '=' '>' ] ::: '<' '=' '>'
+
+# some_token = ['++' '+=' '+']
+#         --> some_token = OPERATOR|'+' OPERATOR|'+'
+#         --> some_token = OPERATOR|'+' OPERATOR|'='
+#         --> some_token = OPERATOR|'+'
 
 tokenizer default:
   ignore WHITESPACE
@@ -51,6 +82,7 @@ tokenizer c:
   identifier = IDENTIFIER
   operator-id = [ '<=' '>=' '==' '!=' '<' '>' '!' '='
                   '++' '--' '+=' '-=' ]
+  operator-id = OPERATOR('<') OPERATOR('=')
   operator-id = '+'
   operator-id = '-'
 
