@@ -20,7 +20,7 @@ namespace silva::seed {
   //
   // Here is an example tokenizer:
   //  ⎢ignore NUMBER                            # ignore NUMBER fragments
-  //  ⎢include tokenzier FreeForm               # include the rules from another tokenizer, in order
+  //  ⎢include tokenizer FreeForm               # include the rules from another tokenizer, in order
   //  ⎢name = [ '$' '@' ] IDENTIFIER
   //  ⎢name = IDENTIFIER\'_t'
   //  ⎢rel-path = IDENTIFIER ::: '/' '.' IDENTIFIER
@@ -86,7 +86,33 @@ namespace silva::seed {
   //  ⎢op = '+' '=' '=' ::: IDENTIFIER '.'      # matches, e.g., +==  +==...  +==abc.def
   //  ⎢op = '+' '=' ::: IDENTIFIER '.'          # matches, e.g., +=   +=...   +=abc.def
 
-  const string_view_t seed_tokenizer_str = R"(
+  const string_view_t tokenizer_str = R"'(
+    - Seed.Tokenizer = [
+      - x = p.Nonterminal.Base '[' ( '-' Rule ) * ']'
+      - Rule =  IncludeRule | IgnoreRule | TokenRule
+      - IncludeRule = 'include' 'tokenizer' p.Nonterminal.Base
+      - IgnoreRule = 'ignore' Defn
+      - TokenRule = TokenName '=' Defn
+      - Defn = Atom * ( ':::' Atom + ) ?
+      - Atom = Matcher | string | List
+      - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
+      - List = '[' Atom * ']'
+      - TokenName = identifier / '^[a-z_]+$'
+      - FragName = identifier / '^[A-Z_]+$'
+    ]
+  )'";
+
+  struct tokenizer_t {
+    syntax_ward_ptr_t swp;
+    array_t<impl::rule_t> rules;
+
+    expected_t<tokenization_ptr_t> apply(syntax_ward_ptr_t, const fragmentization_t&) const;
+  };
+
+  expected_t<tokenizer_t>
+  tokenizer_create(syntax_ward_ptr_t, name_id_t tokenizer_name, parse_tree_span_t);
+
+  const string_view_t default_tokenizers_str = R"(
     - tokenizer = Default [
       - ignore WHITESPACE
       - ignore COMMENT
@@ -117,31 +143,6 @@ namespace silva::seed {
       - frag_name = IDENTIFIER_MACRO_CASE
     ]
   )";
-
-  const string_view_t tokenizer_str = R"'(
-    - Seed.Tokenzier = [
-      - x = p.Nonterminal.Base '[' ( '-' Rule ) * ']'
-      - Rule =  IncludeRule | IgnoreRule | TokenRule
-      - IncludeRule = 'include' 'tokenizer' p.Nonterminal.Base
-      - IgnoreRule = 'ignore' Defn
-      - TokenRule = '=' Defn
-      - Defn = Atom * ( ':::' Atom + ) ?
-      - Atom = Matcher | string | List
-      - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
-      - List = '[' Atom * ']'
-      - FragName = identifier / '^[A-Z_]+$'
-    ]
-  )'";
-
-  struct tokenizer_t {
-    syntax_ward_ptr_t swp;
-    array_t<impl::rule_t> rules;
-
-    expected_t<tokenization_ptr_t> apply(syntax_ward_ptr_t, const fragmentization_t&) const;
-  };
-
-  expected_t<tokenizer_t>
-  tokenizer_create(syntax_ward_ptr_t, name_id_t tokenizer_name, parse_tree_span_t);
 }
 
 // IMPLEMENTATION

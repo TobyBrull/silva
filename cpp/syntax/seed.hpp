@@ -69,6 +69,6 @@ namespace silva::seed {
   )'";
 
   // Invariant (pseudo-code):
-  //    standard_seed_engine()->apply(tokenization, "Seed") == seed_parse(tokenization)
+  //    standard_seed_engine()->apply(tokenization, "Seed") == seed::parse(tokenization)
   expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t);
 }

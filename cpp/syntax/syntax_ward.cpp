@@ -36,6 +36,7 @@ namespace silva {
         '+',
         '*',
         '/',
+        '\\',
         '%',
         // logical
         '&',

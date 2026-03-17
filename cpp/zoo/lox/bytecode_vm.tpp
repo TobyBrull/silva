@@ -68,7 +68,7 @@ namespace silva::lox::test {
     const auto [ptp, chunk]      = th.make_chunk("var hello = 'world' ; 1 + 2 * 3 ;");
     const string_view_t expected = R"(
    0 [1:13]              CONSTANT 0
-   5 [1:1]               DEFINE_GLOBAL 228 hello
+   5 [1:1]               DEFINE_GLOBAL 230 hello
   10 [1:23]              CONSTANT 1
   15 [1:27]              CONSTANT 2
   20 [1:31]              CONSTANT 3
