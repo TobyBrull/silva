@@ -23,12 +23,12 @@ namespace silva::seed {
   //  ⎢include tokenizer FreeForm               # include the rules from another tokenizer, in order
   //  ⎢name = [ '$' '@' ] IDENTIFIER
   //  ⎢name = IDENTIFIER\'_t'
-  //  ⎢rel-path = IDENTIFIER ::: '/' '.' IDENTIFIER
+  //  ⎢rel_path = IDENTIFIER ::: '/' '.' IDENTIFIER
   //  ⎢op = ::: '=' '+'
   //
   // This tokenizer would tokenize the code
   //  ⎢ $hello =+++= 42 array_t var/file.txt
-  // as the following sequence of tokens: "name op name rel-path", as explained in the
+  // as the following sequence of tokens: "name op name rel_path", as explained in the
   // following.
   //
   // The tokenization algorithm works as follows:

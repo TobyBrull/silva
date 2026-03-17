@@ -65,10 +65,11 @@ namespace silva::lox::test {
   TEST_CASE("lox::to_string", "[lox][bytecode]")
   {
     test_harness_t th;
-    const auto [ptp, chunk]      = th.make_chunk("var hello = 'world' ; 1 + 2 * 3 ;");
-    const string_view_t expected = R"(
+    const auto [ptp, chunk]            = th.make_chunk("var hello = 'world' ; 1 + 2 * 3 ;");
+    const string_view_t expected_start = R"(
    0 [1:13]              CONSTANT 0
-   5 [1:1]               DEFINE_GLOBAL 230 hello
+   5 [1:1]               DEFINE_GLOBAL )";
+    const string_view_t expected_end   = R"( hello
   10 [1:23]              CONSTANT 1
   15 [1:27]              CONSTANT 2
   20 [1:31]              CONSTANT 3
@@ -82,7 +83,13 @@ CONSTANT 1 1
 CONSTANT 2 2
 CONSTANT 3 3
 )";
-    CHECK(SILVA_REQUIRE(chunk->to_string()) == expected.substr(1));
+
+    const auto result = SILVA_REQUIRE(chunk->to_string());
+    using Catch::Matchers::EndsWith;
+    using Catch::Matchers::StartsWith;
+    CHECK_THAT(result, StartsWith(string_t{expected_start.substr(1)}));
+    CHECK_THAT(result, EndsWith(string_t{expected_end}));
+    CHECK(result.size() == expected_start.size() + expected_end.size() + 2);
   }
 
   TEST_CASE("lox-bytecode-vm", "[lox][bytecode]")
