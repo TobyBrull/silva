@@ -75,6 +75,20 @@ namespace silva {
     return parse_tree_span_t{&((*this)[pos]), stride, tp};
   }
 
+  index_t parse_tree_span_t::count_children_with(const name_id_t name_id) const
+  {
+    auto [it, end] = children_range();
+    index_t retval = 0;
+    while (it != end) {
+      const auto rn = (*this)[it.pos].rule_name;
+      if (rn == name_id) {
+        retval += 1;
+      }
+      ++it;
+    }
+    return retval;
+  }
+
   token_id_t parse_tree_span_t::first_token_id() const
   {
     return tp->tokens[(*this)[0].token_begin];
