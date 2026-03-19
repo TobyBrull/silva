@@ -88,13 +88,13 @@ namespace silva::seed {
 
   const string_view_t tokenizer_str = R"'(
     - Seed.Tokenizer = [
-      - x = p.Nonterminal.Base '[' ( '-' Rule ) * ']'
-      - Rule =  IncludeRule | IgnoreRule | TokenRule
+      - x = 'tokenizer' '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
       - IncludeRule = 'include' 'tokenizer' p.Nonterminal.Base
       - IgnoreRule = 'ignore' Defn
       - TokenRule = TokenName '=' Defn
-      - Defn = Atom * ( ':::' Atom + ) ?
-      - Atom = Matcher | string | List
+      - Defn = PrefixAtom * ( ':::' Atom + ) ?
+      - PrefixAtom = Atom | List
+      - Atom = Matcher | string
       - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
       - List = '[' Atom * ']'
       - TokenName = identifier / '^[a-z_]+$'
@@ -104,6 +104,8 @@ namespace silva::seed {
 
   struct tokenizer_t {
     syntax_ward_ptr_t swp;
+    name_id_t name = name_id_root;
+
     array_t<impl::rule_t> rules;
 
     expected_t<tokenization_ptr_t> apply(syntax_ward_ptr_t, const fragmentization_t&) const;
@@ -113,7 +115,7 @@ namespace silva::seed {
   tokenizer_create(syntax_ward_ptr_t, name_id_t tokenizer_name, parse_tree_span_t);
 
   const string_view_t default_tokenizers_str = R"(
-    - tokenizer = Default [
+    - Default = tokenizer [
       - ignore WHITESPACE
       - ignore COMMENT
       - indent = INDENT
@@ -123,7 +125,7 @@ namespace silva::seed {
       - string = STRING
       - language = LANGUAGE
     ]
-    - tokenizer = FreeForm [
+    - FreeForm = tokenizer [
       - ignore WHITESPACE
       - ignore COMMENT
       - ignore INDENT
@@ -133,7 +135,7 @@ namespace silva::seed {
       - string = STRING
       - language = LANGUAGE
     ]
-    - tokenizer = Seed [
+    - Seed = tokenizer [
       - tokenizer FreeFrom
       - operators = ::: PARENTHESES OPERATOR 'concat' but_then' 'x' 'p' '_'
       - rule_name = IDENTIFIER_PASCAL_CASE
