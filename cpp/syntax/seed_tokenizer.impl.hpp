@@ -18,8 +18,8 @@ namespace silva::seed::impl {
   struct matcher_t {
     fragment_category_t category = fragment_category_t::INVALID;
     case_mask_t case_mask        = case_mask_t::INVALID;
-    string_view_t prefix         = "";
-    string_view_t postfix        = "";
+    string_t prefix              = "";
+    string_t postfix             = "";
   };
 
   struct rule_t {

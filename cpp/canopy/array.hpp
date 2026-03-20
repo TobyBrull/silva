@@ -15,6 +15,9 @@ namespace silva {
     array_t(array_t&&)                 = default;
     array_t& operator=(array_t&&)      = default;
     ~array_t();
+
+    using ReflectionType = std::vector<T>;
+    const ReflectionType& reflection() const { return *this; }
   };
 
   template<typename T, index_t N>

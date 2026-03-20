@@ -25,6 +25,6 @@ namespace silva::seed::test {
     const auto se = standard_seed_interpreter(sw.ptr());
     const auto pt = SILVA_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Tokenizer")));
     const auto tz = SILVA_REQUIRE(tokenizer_create(sw.ptr(), sw.name_id_of("Testor"), pt->span()));
-    CHECK(tz.rules.size() == 5);
+    CHECK(tz.rules.size() == 7);
   }
 }
