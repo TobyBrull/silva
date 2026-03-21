@@ -9,6 +9,30 @@ using namespace silva;
 using namespace silva::seed::impl;
 
 namespace silva::seed::test {
+  TEST_CASE("case-mask")
+  {
+    using enum case_mask_t;
+    const auto c_silva  = std::to_underlying(SILVA_CASE);
+    const auto c_snake  = std::to_underlying(SNAKE_CASE);
+    const auto c_camel  = std::to_underlying(CAMEL_CASE);
+    const auto c_pascal = std::to_underlying(PASCAL_CASE);
+    const auto c_macro  = std::to_underlying(MACRO_CASE);
+    const auto c_upper  = std::to_underlying(UPPER_CASE);
+    const auto c_lower  = std::to_underlying(LOWER_CASE);
+
+    const auto run = [](const string_view_t sv) -> case_mask_t {
+      const auto retval = SILVA_REQUIRE(compute_case_mask(sv));
+      return retval;
+    };
+
+    CHECK(run("hello-world") == static_cast<case_mask_t>(c_silva));
+    CHECK(run("hello_world") == static_cast<case_mask_t>(c_snake));
+    CHECK(run("helloWorld") == static_cast<case_mask_t>(c_camel));
+    CHECK(run("HelloWorld") == static_cast<case_mask_t>(c_pascal));
+    CHECK(run("HELLO_WORLD") == static_cast<case_mask_t>(c_macro));
+    CHECK(run("HELLO") == static_cast<case_mask_t>(c_macro | c_pascal | c_upper));
+    CHECK(run("hello") == static_cast<case_mask_t>(c_silva | c_snake | c_camel | c_lower));
+  }
   TEST_CASE("seed-tokenizer")
   {
     syntax_ward_t sw;

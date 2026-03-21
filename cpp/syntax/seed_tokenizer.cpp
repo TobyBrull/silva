@@ -1,8 +1,91 @@
 #include "seed_tokenizer.hpp"
 
+using enum silva::fragment_category_t;
+
 namespace silva::seed::impl {
 
-  using enum fragment_category_t;
+  expected_t<case_mask_t> compute_case_mask(const string_view_t identifier)
+  {
+    using enum case_mask_t;
+    if (identifier.empty()) {
+      return EMPTY;
+    }
+    const auto [first_cp, next_idx] = SILVA_EXPECT_FWD(unicode::utf8_decode_one(identifier));
+
+    // TODO START: unicode, logic
+
+    // Return "false" for '-' and '_'
+    const auto is_lower = [&](const unicode::codepoint_t cp) {
+      return std::islower(cp);
+    };
+    const auto is_upper = [&](const unicode::codepoint_t cp) {
+      return std::isupper(cp);
+    };
+
+    // TODO END: unicode, logic
+
+    const auto is_lower_or_op = [&](const unicode::codepoint_t cp) {
+      return (cp == U'-') || (cp == U'_') || is_lower(cp);
+    };
+    const auto is_upper_or_op = [&](const unicode::codepoint_t cp) {
+      return (cp == U'-') || (cp == U'_') || is_upper(cp);
+    };
+    const bool has_hyphen     = identifier.contains('-');
+    const bool has_underscore = identifier.contains('_');
+
+    const bool are_all_lower       = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_lower));
+    const bool are_all_upper       = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_upper));
+    const bool are_all_lower_or_op = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_lower_or_op));
+    const bool are_all_upper_or_op = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_upper_or_op));
+
+    std::underlying_type_t<case_mask_t> retval = std::to_underlying(EMPTY);
+    if (!has_underscore && are_all_lower_or_op) {
+      retval |= std::to_underlying(SILVA_CASE);
+    }
+    if (!has_hyphen && are_all_lower_or_op) {
+      retval |= std::to_underlying(SNAKE_CASE);
+    }
+    if (!has_hyphen && !has_underscore && is_lower(first_cp)) {
+      retval |= std::to_underlying(CAMEL_CASE);
+    }
+    if (!has_hyphen && !has_underscore && is_upper(first_cp)) {
+      retval |= std::to_underlying(PASCAL_CASE);
+    }
+    if (!has_hyphen && are_all_upper_or_op) {
+      retval |= std::to_underlying(MACRO_CASE);
+    }
+    if (are_all_upper) {
+      retval |= std::to_underlying(UPPER_CASE);
+    }
+    if (are_all_lower) {
+      retval |= std::to_underlying(LOWER_CASE);
+    }
+    return static_cast<case_mask_t>(retval);
+  };
+
+  expected_t<bool> matcher_t::matches(index_t frag_idx, const fragmentization_t& fr) const
+  {
+    if (fr.fragments[frag_idx].category != category) {
+      return false;
+    }
+    const string_view_t frag_text = fr.get_fragment_text(frag_idx);
+    using enum case_mask_t;
+    if (category == IDENTIFIER) {
+      if (case_mask != ANY) {
+        const case_mask_t frag_cm = SILVA_EXPECT_FWD(compute_case_mask(frag_text));
+        if ((std::to_underlying(frag_cm) & std::to_underlying(case_mask)) == 0) {
+          return false;
+        }
+      }
+    }
+    if (!prefix.empty() && !frag_text.starts_with(prefix)) {
+      return false;
+    }
+    if (!postfix.empty() && !frag_text.ends_with(postfix)) {
+      return false;
+    }
+    return true;
+  }
 
   struct tokenizer_create_nursery_t {
     syntax_ward_ptr_t swp;
@@ -35,7 +118,6 @@ namespace silva::seed::impl {
     const token_id_t ti_IDENTIFIER_MACRO_CASE  = *swp->token_id("IDENTIFIER_MACRO_CASE");
     const token_id_t ti_IDENTIFIER_UPPER_CASE  = *swp->token_id("IDENTIFIER_UPPER_CASE");
     const token_id_t ti_IDENTIFIER_LOWER_CASE  = *swp->token_id("IDENTIFIER_LOWER_CASE");
-    const token_id_t ti_PARENTHESES            = *swp->token_id("PARENTHESES");
     const token_id_t ti_LANGUAGE               = *swp->token_id("LANGUAGE");
 
     const token_id_t ti_prefix  = *swp->token_id("/");
@@ -46,31 +128,31 @@ namespace silva::seed::impl {
     fragment_category_from_token_id(const token_id_t ti)
     {
       if (ti == ti_WHITESPACE) {
-        return {{WHITESPACE, case_mask_t::INVALID}};
+        return {{WHITESPACE, case_mask_t::EMPTY}};
       }
       else if (ti == ti_COMMENT) {
-        return {{COMMENT, case_mask_t::INVALID}};
+        return {{COMMENT, case_mask_t::EMPTY}};
       }
       else if (ti == ti_NUMBER) {
-        return {{NUMBER, case_mask_t::INVALID}};
+        return {{NUMBER, case_mask_t::EMPTY}};
       }
       else if (ti == ti_STRING) {
-        return {{STRING, case_mask_t::INVALID}};
+        return {{STRING, case_mask_t::EMPTY}};
       }
       else if (ti == ti_INDENT) {
-        return {{INDENT, case_mask_t::INVALID}};
+        return {{INDENT, case_mask_t::EMPTY}};
       }
       else if (ti == ti_DEDENT) {
-        return {{DEDENT, case_mask_t::INVALID}};
+        return {{DEDENT, case_mask_t::EMPTY}};
       }
       else if (ti == ti_NEWLINE) {
-        return {{NEWLINE, case_mask_t::INVALID}};
+        return {{NEWLINE, case_mask_t::EMPTY}};
       }
       else if (ti == ti_OPERATOR) {
-        return {{OPERATOR, case_mask_t::INVALID}};
+        return {{OPERATOR, case_mask_t::EMPTY}};
       }
       else if (ti == ti_IDENTIFIER) {
-        return {{IDENTIFIER, case_mask_t::INVALID}};
+        return {{IDENTIFIER, case_mask_t::ANY}};
       }
       else if (ti == ti_IDENTIFIER_SILVA_CASE) {
         return {{IDENTIFIER, case_mask_t::SILVA_CASE}};
@@ -93,11 +175,8 @@ namespace silva::seed::impl {
       else if (ti == ti_IDENTIFIER_LOWER_CASE) {
         return {{IDENTIFIER, case_mask_t::LOWER_CASE}};
       }
-      else if (ti == ti_PARENTHESES) {
-        return {{PAREN_LEFT, case_mask_t::INVALID}};
-      }
       else if (ti == ti_LANGUAGE) {
-        return {{LANG_BEGIN, case_mask_t::INVALID}};
+        return {{LANG_BEGIN, case_mask_t::EMPTY}};
       }
       else {
         SILVA_EXPECT(false, MINOR);
@@ -148,7 +227,8 @@ namespace silva::seed::impl {
         bool had_postfix    = false;
         while (t_idx < t_end) {
           SILVA_EXPECT(t_idx + 1 < t_end, BROKEN_SEED);
-          const auto& str = swp->token_infos[tokens[t_idx + 1]].str;
+          const string_t str =
+              SILVA_EXPECT_FWD(swp->token_infos[tokens[t_idx + 1]].contained_string());
           if (tokens[t_idx] == ti_prefix) {
             SILVA_EXPECT(!had_prefix, BROKEN_SEED);
             mm.prefix  = str;
@@ -311,10 +391,75 @@ namespace silva::seed::impl {
 }
 
 namespace silva::seed {
-  expected_t<tokenization_ptr_t> tokenizer_t::apply(syntax_ward_ptr_t,
-                                                    const fragmentization_t&) const
+  expected_t<tokenization_ptr_t> tokenizer_t::apply(syntax_ward_ptr_t swp,
+                                                    const fragmentization_t& fr) const
   {
-    return {};
+    auto retval      = std::make_unique<tokenization_t>();
+    retval->swp      = swp;
+    retval->filepath = fr.filepath;
+
+    const index_t n = fr.fragments.size();
+    SILVA_EXPECT(n >= 2, MINOR);
+    SILVA_EXPECT(fr.fragments.front().category == LANG_BEGIN, MINOR);
+    SILVA_EXPECT(fr.fragments.back().category == LANG_END, MINOR);
+
+    index_t frag_idx       = 1;
+    const index_t frag_end = n - 1;
+
+    while (frag_idx < frag_end) {
+      bool matched = false;
+      for (const impl::rule_t& rule: rules) {
+        index_t cursor = frag_idx;
+        bool prefix_ok = true;
+        for (const impl::matcher_t& pm: rule.prefix_matchers) {
+          if (cursor >= frag_end || !SILVA_EXPECT_FWD(pm.matches(cursor, fr))) {
+            prefix_ok = false;
+            break;
+          }
+          cursor = SILVA_EXPECT_FWD(fr.advance(cursor));
+        }
+        if (!prefix_ok) {
+          continue;
+        }
+
+        while (cursor < frag_end) {
+          bool any_match = false;
+          for (const impl::matcher_t& rm: rule.repeat_matchers) {
+            if (SILVA_EXPECT_FWD(rm.matches(cursor, fr))) {
+              cursor    = SILVA_EXPECT_FWD(fr.advance(cursor));
+              any_match = true;
+              break;
+            }
+          }
+          if (!any_match) {
+            break;
+          }
+        }
+
+        if (rule.token_name != token_id_none) {
+          const index_t token_text_start = fr.fragments[frag_idx].location.byte_offset;
+          const index_t token_text_end =
+              (cursor < n) ? fr.fragments[cursor].location.byte_offset : fr.source_code.size();
+          const string_view_t token_text =
+              string_view_t{fr.source_code}.substr(token_text_start,
+                                                   token_text_end - token_text_start);
+
+          const auto tid = SILVA_EXPECT_FWD(swp->token_id_force(token_text, rule.token_name));
+          retval->tokens.push_back(tid);
+          retval->locations.push_back(fr.fragments[frag_idx].location);
+        }
+
+        frag_idx = cursor;
+        matched  = true;
+        break;
+      }
+      SILVA_EXPECT(matched,
+                   MINOR,
+                   "no tokenizer rule matches at {}",
+                   fr.fragments[frag_idx].location);
+    }
+
+    return swp->add(std::move(retval));
   }
 
   expected_t<tokenizer_t>

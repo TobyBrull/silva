@@ -10,12 +10,12 @@ namespace silva::seed::impl {
     SNAKE_CASE  = 0b0000010, // 'hello_world'
     CAMEL_CASE  = 0b0000100, // 'helloWorld'
     PASCAL_CASE = 0b0001000, // 'HelloWorld'
-    MACRO_CASE  = 0b0010000,
+    MACRO_CASE  = 0b0010000, // 'HELLO_WORLD'
     UPPER_CASE  = 0b0100000, // EVERY character is upper-case, no '_' '-'
     LOWER_CASE  = 0b1000000, // EVERY character is lower-case, no '_' '-'
     ANY         = ~EMPTY,
   };
-  case_mask_t compute_case_mask(string_view_t);
+  expected_t<case_mask_t> compute_case_mask(string_view_t);
 
   struct matcher_t {
     fragment_category_t category = fragment_category_t::INVALID;
@@ -23,7 +23,7 @@ namespace silva::seed::impl {
     string_t prefix              = "";
     string_t postfix             = "";
 
-    bool matches(index_t fragment_idx, const fragmentization_t&) const;
+    expected_t<bool> matches(index_t fragment_idx, const fragmentization_t&) const;
   };
 
   struct rule_t {
