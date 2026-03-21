@@ -5,7 +5,7 @@
 
 namespace silva::seed::impl {
   enum class case_mask_t {
-    INVALID     = 0,
+    EMPTY       = 0,
     SILVA_CASE  = 0b0000001, // 'hello-world'
     SNAKE_CASE  = 0b0000010, // 'hello_world'
     CAMEL_CASE  = 0b0000100, // 'helloWorld'
@@ -13,13 +13,17 @@ namespace silva::seed::impl {
     MACRO_CASE  = 0b0010000,
     UPPER_CASE  = 0b0100000, // EVERY character is upper-case, no '_' '-'
     LOWER_CASE  = 0b1000000, // EVERY character is lower-case, no '_' '-'
+    ANY         = ~EMPTY,
   };
+  case_mask_t compute_case_mask(string_view_t);
 
   struct matcher_t {
     fragment_category_t category = fragment_category_t::INVALID;
-    case_mask_t case_mask        = case_mask_t::INVALID;
+    case_mask_t case_mask        = case_mask_t::ANY;
     string_t prefix              = "";
     string_t postfix             = "";
+
+    bool matches(index_t fragment_idx, const fragmentization_t&) const;
   };
 
   struct rule_t {

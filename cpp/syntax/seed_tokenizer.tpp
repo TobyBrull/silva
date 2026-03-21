@@ -14,6 +14,8 @@ namespace silva::seed::test {
     syntax_ward_t sw;
     const string_view_t test_tok = R"'( tokenizer [
       - ignore NUMBER
+      - ignore NEWLINE
+      - ignore WHITESPACE
     # - include tokenizer FreeForm
       - name = [ '$' '@' ] IDENTIFIER
       - name = IDENTIFIER\'_t'
@@ -25,6 +27,24 @@ namespace silva::seed::test {
     const auto se = standard_seed_interpreter(sw.ptr());
     const auto pt = SILVA_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Tokenizer")));
     const auto tz = SILVA_REQUIRE(tokenizer_create(sw.ptr(), sw.name_id_of("Testor"), pt->span()));
-    CHECK(tz.rules.size() == 7);
+    CHECK(tz.rules.size() == 9);
+
+    const string_view_t src = "$hello ==+++ 42 array_t var/file.txt\n";
+    const auto fr           = SILVA_REQUIRE(fragmentize("test.src", string_t{src}));
+    const auto tp           = SILVA_REQUIRE(tz.apply(sw.ptr(), *fr));
+
+    const auto ti_name     = SILVA_REQUIRE(sw.token_id("name"));
+    const auto ti_rel_path = SILVA_REQUIRE(sw.token_id("rel_path"));
+    const auto ti_op       = SILVA_REQUIRE(sw.token_id("op"));
+
+    REQUIRE(tp->tokens.size() == 4);
+    CHECK(sw.token_infos[tp->tokens[0]].str == "$hello");
+    CHECK(sw.token_infos[tp->tokens[0]].category == ti_name);
+    CHECK(sw.token_infos[tp->tokens[1]].str == "==+++");
+    CHECK(sw.token_infos[tp->tokens[1]].category == ti_op);
+    CHECK(sw.token_infos[tp->tokens[2]].str == "array_t");
+    CHECK(sw.token_infos[tp->tokens[2]].category == ti_name);
+    CHECK(sw.token_infos[tp->tokens[3]].str == "var/file.txt");
+    CHECK(sw.token_infos[tp->tokens[3]].category == ti_rel_path);
   }
 }
