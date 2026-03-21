@@ -90,8 +90,8 @@ namespace silva {
   tokenize(syntax_ward_ptr_t swp, filesystem_path_t filepath, string_view_t source_code)
   {
     auto retval      = std::make_unique<tokenization_t>();
-    retval->filepath = std::move(filepath);
     retval->swp      = swp;
+    retval->filepath = std::move(filepath);
     file_location_t loc;
     while (loc.byte_offset < source_code.size()) {
       const auto [tokenized_str, token_cat] = tokenize_one(source_code.substr(loc.byte_offset));

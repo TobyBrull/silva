@@ -73,6 +73,7 @@ namespace silva {
     ~syntax_ward_t();
 
     expected_t<token_id_t> token_id(string_view_t);
+    expected_t<token_id_t> token_id_force(string_view_t, token_id_t category);
     expected_t<token_id_t> token_id_in_string(token_id_t);
 
     name_id_t name_id(name_id_t parent_name, token_id_t base_name);

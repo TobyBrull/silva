@@ -244,6 +244,24 @@ namespace silva {
     }
   }
 
+  expected_t<token_id_t> syntax_ward_t::token_id_force(const string_view_t token_str,
+                                                       const token_id_t category)
+  {
+    const auto it = token_lookup.find(string_t{token_str});
+    if (it != token_lookup.end()) {
+      const auto tid = it->second;
+      SILVA_EXPECT(token_infos[tid].category == category, MAJOR);
+      return tid;
+    }
+    const token_id_t new_token_id = token_infos.size();
+    token_infos.push_back(token_info_t{
+        .str      = string_t{token_str},
+        .category = category,
+    });
+    token_lookup.emplace(string_t{token_str}, new_token_id);
+    return new_token_id;
+  }
+
   expected_t<token_id_t> syntax_ward_t::token_id_in_string(const token_id_t ti)
   {
     const auto& token_info = token_infos[ti];

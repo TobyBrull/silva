@@ -530,6 +530,15 @@ namespace silva {
     stream->format("{} {}", silva::pretty_string(ff.category), silva::pretty_string(ff.location));
   }
 
+  string_view_t fragmentization_t::get_fragment_text(const index_t frag_idx) const
+  {
+    const index_t start = fragments[frag_idx].location.byte_offset;
+    const index_t end   = (frag_idx + 1 < fragments.size())
+          ? fragments[frag_idx + 1].location.byte_offset
+          : source_code.size();
+    return string_view_t{source_code}.substr(start, end - start);
+  }
+
   void pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream)
   {
     const index_t n = self.fragments.size();

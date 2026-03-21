@@ -46,6 +46,8 @@ namespace silva {
 
     array_t<fragment_t> fragments;
 
+    string_view_t get_fragment_text(index_t fragment_idx) const;
+
     friend void pretty_write_impl(const fragmentization_t&, byte_sink_t*);
   };
 
