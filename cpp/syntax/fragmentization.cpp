@@ -539,6 +539,35 @@ namespace silva {
     return string_view_t{source_code}.substr(start, end - start);
   }
 
+  expected_t<index_t> fragmentization_t::advance_language(const index_t start) const
+  {
+    SILVA_EXPECT(fragments[start].category == LANG_BEGIN, MAJOR);
+    const index_t n = fragments.size();
+    index_t depth   = 1;
+    index_t idx     = start + 1;
+    while (idx < n && depth > 0) {
+      if (fragments[idx].category == LANG_BEGIN) {
+        depth++;
+      }
+      else if (fragments[idx].category == LANG_END) {
+        depth--;
+      }
+      idx++;
+    }
+    SILVA_EXPECT(depth == 0, MINOR, "non matching LANG_BEGIN/LANG_END fragments");
+    return idx;
+  }
+
+  expected_t<index_t> fragmentization_t::advance(const index_t start) const
+  {
+    if (fragments[start].category == LANG_BEGIN) {
+      return SILVA_EXPECT_FWD(advance_language(start));
+    }
+    else {
+      return start + 1;
+    }
+  }
+
   void pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream)
   {
     const index_t n = self.fragments.size();
