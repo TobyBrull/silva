@@ -299,7 +299,7 @@ namespace silva {
           }
           else {
             languages.back().parentheses.push_back(ccd[i]);
-            SILVA_EXPECT_FWD(emit(i++, PAREN_LEFT));
+            SILVA_EXPECT_FWD(emit(i++, OPERATOR));
           }
         }
         else if (ccd[i].category == ParenthesisRight) {
@@ -322,7 +322,7 @@ namespace silva {
                          parentheses.back().location,
                          ccd[i].location);
             parentheses.pop_back();
-            SILVA_EXPECT_FWD(emit(i++, PAREN_RIGHT));
+            SILVA_EXPECT_FWD(emit(i++, OPERATOR));
           }
         }
         else if (ccd[i].category == Operator) {

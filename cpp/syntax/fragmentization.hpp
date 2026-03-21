@@ -20,10 +20,7 @@ namespace silva {
     NEWLINE,
 
     IDENTIFIER,
-
     OPERATOR,
-    PAREN_LEFT,
-    PAREN_RIGHT,
 
     LANG_BEGIN,
     LANG_END,
