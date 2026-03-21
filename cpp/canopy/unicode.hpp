@@ -28,6 +28,11 @@ namespace silva::unicode {
   template<typename F>
   expected_t<void> utf8_decode_for_each(string_view_t, F);
 
+  template<typename Pred>
+  expected_t<bool> all_of(string_view_t, Pred);
+  template<typename Pred>
+  expected_t<bool> any_of(string_view_t, Pred);
+
   template<typename T>
   using table_t = two_stage_table_t<codepoint_t, T, 8>;
 }
@@ -45,4 +50,31 @@ namespace silva::unicode {
     }
     return {};
   }
+
+  template<typename Pred>
+  expected_t<bool> all_of(string_view_t s, Pred pred)
+  {
+    static_assert(std::invocable<Pred, codepoint_t>);
+    for (auto x: utf8_decode_generator(s)) {
+      const codepoint_data_t cd = SILVA_EXPECT_FWD_PLAIN(std::move(x));
+      if (!pred(cd.codepoint)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  template<typename Pred>
+  expected_t<bool> any_of(string_view_t s, Pred pred)
+  {
+    static_assert(std::invocable<Pred, codepoint_t>);
+    for (auto x: utf8_decode_generator(s)) {
+      const codepoint_data_t cd = SILVA_EXPECT_FWD_PLAIN(std::move(x));
+      if (pred(cd.codepoint)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
