@@ -30,7 +30,6 @@ namespace silva {
   struct token_info_t {
     token_category_old_t category_old = token_category_old_t::INVALID;
     string_t str;
-    token_id_t category = token_id_none;
 
     expected_t<string_view_t> string_as_plain_contained() const;
     expected_t<string_t> contained_string() const;
@@ -73,7 +72,7 @@ namespace silva {
     ~syntax_ward_t();
 
     expected_t<token_id_t> token_id(string_view_t);
-    expected_t<token_id_t> token_id_force(string_view_t, token_id_t category);
+    expected_t<token_id_t> token_id_new(string_view_t);
     expected_t<token_id_t> token_id_in_string(token_id_t);
 
     name_id_t name_id(name_id_t parent_name, token_id_t base_name);

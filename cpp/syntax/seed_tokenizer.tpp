@@ -64,15 +64,15 @@ namespace silva::seed::test {
     const auto ti_lang = SILVA_REQUIRE(sw.token_id("language"));
 
     REQUIRE(tp->tokens.size() == 6);
-    CHECK(sw.token_infos[tp->tokens[0]].str == "$hello");
-    CHECK(sw.token_infos[tp->tokens[0]].category == ti_name);
-    CHECK(sw.token_infos[tp->tokens[1]].str == "==+++");
-    CHECK(sw.token_infos[tp->tokens[1]].category == ti_op);
-    CHECK(sw.token_infos[tp->tokens[2]].str == "array_t");
-    CHECK(sw.token_infos[tp->tokens[2]].category == ti_name);
-    CHECK(sw.token_infos[tp->tokens[3]].str == "var/file.txt");
-    CHECK(sw.token_infos[tp->tokens[3]].category == ti_relp);
-    CHECK(sw.token_infos[tp->tokens[4]].category == ti_lang);
-    CHECK(sw.token_infos[tp->tokens[5]].category == ti_name);
+    CHECK(tp->tokens[0] == *sw.token_id("$hello"));
+    CHECK(tp->categories[0] == ti_name);
+    CHECK(tp->tokens[1] == *sw.token_id("==+++"));
+    CHECK(tp->categories[1] == ti_op);
+    CHECK(tp->tokens[2] == *sw.token_id("array_t"));
+    CHECK(tp->categories[2] == ti_name);
+    CHECK(tp->tokens[3] == *sw.token_id("var/file.txt"));
+    CHECK(tp->categories[3] == ti_relp);
+    CHECK(tp->categories[4] == ti_lang);
+    CHECK(tp->categories[5] == ti_name);
   }
 }

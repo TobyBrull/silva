@@ -10,6 +10,7 @@ namespace silva {
     filesystem_path_t filepath;
 
     array_t<token_id_t> tokens;
+    array_t<token_id_t> categories;
     array_t<file_location_t> locations;
 
     tokenization_t copy() const;

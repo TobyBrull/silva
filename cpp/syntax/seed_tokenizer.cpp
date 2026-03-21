@@ -444,8 +444,9 @@ namespace silva::seed {
               string_view_t{fr.source_code}.substr(token_text_start,
                                                    token_text_end - token_text_start);
 
-          const auto tid = SILVA_EXPECT_FWD(swp->token_id_force(token_text, rule.token_name));
+          const auto tid = SILVA_EXPECT_FWD(swp->token_id_new(token_text));
           retval->tokens.push_back(tid);
+          retval->categories.push_back(rule.token_name);
           retval->locations.push_back(fr.fragments[frag_idx].location);
         }
 
