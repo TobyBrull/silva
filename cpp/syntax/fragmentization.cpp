@@ -354,7 +354,7 @@ namespace silva {
             SILVA_EXPECT_FWD(emit(i++, OPERATOR));
           }
         }
-        else if (ccd[i].category == XID_Start) {
+        else if (is_xid_start_generalized(ccd[i].category)) {
           SILVA_EXPECT_FWD(recognize_identifier());
         }
         else if (is_ascii_digit(ccd[i].codepoint)) {
@@ -381,13 +381,13 @@ namespace silva {
     expected_t<void> recognize_identifier()
     {
       const index_t orig_i = i;
-      SILVA_EXPECT(ccd[i].category == XID_Start, ASSERT);
+      SILVA_EXPECT(is_xid_start_generalized(ccd[i].category), ASSERT);
       SILVA_EXPECT_FWD(emit(i, IDENTIFIER));
       const auto is_xid_additional_internal = [](const unicode::codepoint_t cp) {
         return is_one_of<1>(cp, xid_additional_internal);
       };
       while (i < n &&
-             (ccd[i].category == XID_Start || ccd[i].category == XID_Continue ||
+             (is_xid_continue_generalized(ccd[i].category) ||
               is_xid_additional_internal(ccd[i].codepoint))) {
         ++i;
       }

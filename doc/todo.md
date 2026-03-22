@@ -1,7 +1,6 @@
 # TODO
 
 * implement seed-interpreter.apply
-* Unicode capialization in seed-tokenizer
 
 * tokenization:
     * Support user-defined tokenization rules.

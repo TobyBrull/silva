@@ -457,6 +457,11 @@ def handle_generate(args):
     prop_comb = UnicodeProperty.combine(cleaned_props["XID_Start"], cleaned_props["XID_Continue"])
     assert "YesNo" not in prop_comb.value_set(), f'Expected XID_Start to be subset of XID_Continue'
 
+    gen_cat = cleaned_props["General_Category"]
+    prop_comb = UnicodeProperty.combine(gen_cat, cleaned_props["XID_Start"])
+    assert "LetterUppercaseNo" not in prop_comb.value_set()
+    assert "LetterLowercaseNo" not in prop_comb.value_set()
+
     prop_comb = UnicodeProperty.combine(cleaned_props["XID_Continue"], cleaned_props["Operator"])
     assert prop_comb.get_by_value("YesYes") == [
         str_to_codepoint(x)
@@ -486,6 +491,8 @@ def handle_generate(args):
     main_prop.ingest(cleaned_props["IsParenthesis"], "Right", "ParenthesisRight")
     main_prop.ingest(cleaned_props["XID_Continue"], "Yes", "XID_Continue")
     main_prop.ingest(cleaned_props["XID_Start"], "Yes", "XID_Start")
+    main_prop.ingest(cleaned_props["General_Category"], "LetterUppercase", "XID_Uppercase")
+    main_prop.ingest(cleaned_props["General_Category"], "LetterLowercase", "XID_Lowercase")
     main_prop.values[str_to_codepoint('_')] = "XID_Start"
     main_prop.ingest(cleaned_props["General_Category"], "Unassigned", "Forbidden")
     main_prop.ingest(cleaned_props["NFC_QuickCheck"], "No", "Forbidden")
@@ -493,7 +500,8 @@ def handle_generate(args):
     main_prop.values[str_to_codepoint(' ')] = "Space"
 
     assert main_prop.values[str_to_codepoint('_')] == "XID_Start"
-    assert main_prop.values[str_to_codepoint('a')] == "XID_Start"
+    assert main_prop.values[str_to_codepoint('a')] == "XID_Lowercase"
+    assert main_prop.values[str_to_codepoint('A')] == "XID_Uppercase"
     assert main_prop.values[str_to_codepoint('0')] == "XID_Continue"
     assert main_prop.values[str_to_codepoint('"')] == "Operator"
     assert main_prop.values[str_to_codepoint('*')] == "Operator"

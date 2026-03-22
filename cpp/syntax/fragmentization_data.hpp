@@ -13,7 +13,9 @@ namespace silva {
     ParenthesisLeft = 4,
     ParenthesisRight = 5,
     XID_Continue = 6,
-    XID_Start = 7,
+    XID_Uppercase = 7,
+    XID_Start = 8,
+    XID_Lowercase = 9,
   };
 
   extern unicode::table_t<codepoint_category_t> codepoint_category_table;

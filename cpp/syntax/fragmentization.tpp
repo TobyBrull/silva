@@ -34,8 +34,10 @@ namespace silva::test {
     CHECK(cct[U'«'] == ParenthesisLeft);
     CHECK(cct[U'»'] == ParenthesisRight);
     CHECK(cct[U'8'] == XID_Continue);
-    CHECK(cct[U'A'] == XID_Start);
+    CHECK(cct[U'A'] == XID_Uppercase);
+    CHECK(cct[U'a'] == XID_Lowercase);
     CHECK(cct[U'_'] == XID_Start);
+    CHECK(cct[U'-'] == Operator);
   }
 
   TEST_CASE("fragmentization", "[fragmentization_t]")

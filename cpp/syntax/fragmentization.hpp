@@ -7,6 +7,9 @@
 #include "syntax_farm.hpp"
 
 namespace silva {
+  constexpr bool is_xid_start_generalized(codepoint_category_t);
+  constexpr bool is_xid_continue_generalized(codepoint_category_t);
+
   enum class fragment_category_t {
     INVALID = 0,
 
@@ -68,6 +71,16 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+  constexpr bool is_xid_start_generalized(const codepoint_category_t cc)
+  {
+    using enum codepoint_category_t;
+    return cc == XID_Start || cc == XID_Lowercase || cc == XID_Uppercase;
+  }
+  constexpr bool is_xid_continue_generalized(const codepoint_category_t cc)
+  {
+    return is_xid_start_generalized(cc) || cc == codepoint_category_t::XID_Continue;
+  }
+
   constexpr bool is_fragment_category_real(const fragment_category_t fc)
   {
     using enum fragment_category_t;

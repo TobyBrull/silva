@@ -11,17 +11,15 @@ namespace silva::seed::impl {
     }
     const auto [first_cp, next_idx] = SILVA_EXPECT_FWD(unicode::utf8_decode_one(identifier));
 
-    // TODO START: unicode, logic
-
     // Return "false" for '-' and '_'
     const auto is_lower = [&](const unicode::codepoint_t cp) {
-      return std::islower(cp);
+      const codepoint_category_t cc = codepoint_category_table[cp];
+      return cc == codepoint_category_t::XID_Lowercase;
     };
     const auto is_upper = [&](const unicode::codepoint_t cp) {
-      return std::isupper(cp);
+      const codepoint_category_t cc = codepoint_category_table[cp];
+      return cc == codepoint_category_t::XID_Uppercase;
     };
-
-    // TODO END: unicode, logic
 
     const auto is_lower_or_op = [&](const unicode::codepoint_t cp) {
       return (cp == U'-') || (cp == U'_') || is_lower(cp);

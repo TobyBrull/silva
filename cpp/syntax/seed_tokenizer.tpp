@@ -25,12 +25,25 @@ namespace silva::seed::test {
     };
 
     CHECK(run("hello-world") == static_cast<case_mask_t>(c_silva));
+    CHECK(run("αλφα-βητα") == static_cast<case_mask_t>(c_silva));
+
     CHECK(run("hello_world") == static_cast<case_mask_t>(c_snake));
+    CHECK(run("αλφα_βητα") == static_cast<case_mask_t>(c_snake));
+
     CHECK(run("helloWorld") == static_cast<case_mask_t>(c_camel));
+    CHECK(run("αλφαΒητα") == static_cast<case_mask_t>(c_camel));
+
     CHECK(run("HelloWorld") == static_cast<case_mask_t>(c_pascal));
+    CHECK(run("ΑλφαΒητα") == static_cast<case_mask_t>(c_pascal));
+
     CHECK(run("HELLO_WORLD") == static_cast<case_mask_t>(c_macro));
+    CHECK(run("ΑΛΦΑ_ΒΗΤΑ") == static_cast<case_mask_t>(c_macro));
+
     CHECK(run("HELLO") == static_cast<case_mask_t>(c_macro | c_pascal | c_upper));
+    CHECK(run("ΑΛΦΑ") == static_cast<case_mask_t>(c_macro | c_pascal | c_upper));
+
     CHECK(run("hello") == static_cast<case_mask_t>(c_silva | c_snake | c_camel | c_lower));
+    CHECK(run("αλφα") == static_cast<case_mask_t>(c_silva | c_snake | c_camel | c_lower));
   }
   TEST_CASE("seed-tokenizer")
   {
