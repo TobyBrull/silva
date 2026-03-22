@@ -52,7 +52,7 @@ namespace silva::seed {
          - x = Name '(' Args ')'
          - Name = identifier / '^[a-z].*_f$'
          - Args = Arg ( ',' Arg ) *
-         - Arg => p.Expr | p.Variable
+         - Arg => p.Variable | p.Expr
       ]
       - Nonterminal = [
         - x = Base ( '.' Base ) *

@@ -363,7 +363,7 @@ namespace silva::seed {
         error_nursery_t error_nursery;
 
         {
-          auto result = expr();
+          auto result = variable();
           if (result) {
             ss.add_proto_node(*result);
             return ss.commit();
@@ -372,7 +372,7 @@ namespace silva::seed {
         }
 
         {
-          auto result = variable();
+          auto result = expr();
           if (result) {
             ss.add_proto_node(*result);
             return ss.commit();
