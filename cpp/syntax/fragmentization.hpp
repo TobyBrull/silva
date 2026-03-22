@@ -39,7 +39,7 @@ namespace silva {
   };
 
   struct fragmentization_t : public menhir_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
     filepath_t filepath;
     string_t source_code;
 

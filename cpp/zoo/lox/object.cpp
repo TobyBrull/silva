@@ -137,7 +137,7 @@ namespace silva::lox {
                  MINOR,
                  "{} could not turn literal into lox object {}",
                  pts,
-                 lexicon.swp->token_id_wrap(ti));
+                 lexicon.sfp->token_id_wrap(ti));
   }
 
   // object_t

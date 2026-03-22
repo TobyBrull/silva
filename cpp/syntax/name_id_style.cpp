@@ -4,26 +4,26 @@ namespace silva {
   string_t name_id_style_t::absolute(const name_id_t target_fni) const
   {
     if (target_fni == name_id_root) {
-      return swp->token_infos[root].str;
+      return sfp->token_infos[root].str;
     }
-    const name_info_t& fni = swp->name_infos[target_fni];
-    return absolute(fni.parent_name) + swp->token_infos[separator].str +
-        swp->token_infos[fni.base_name].str;
+    const name_info_t& fni = sfp->name_infos[target_fni];
+    return absolute(fni.parent_name) + sfp->token_infos[separator].str +
+        sfp->token_infos[fni.base_name].str;
   }
 
   string_t name_id_style_t::relative(const name_id_t current_fni, const name_id_t target_fni) const
   {
-    const name_id_t lca = swp->name_id_lca(current_fni, target_fni);
+    const name_id_t lca = sfp->name_id_lca(current_fni, target_fni);
 
     string_t first_part;
     {
       name_id_t curr = current_fni;
       while (curr != lca) {
         if (!first_part.empty()) {
-          first_part += swp->token_infos[separator].str;
+          first_part += sfp->token_infos[separator].str;
         }
-        first_part += swp->token_infos[parent].str;
-        curr = swp->name_infos[curr].parent_name;
+        first_part += sfp->token_infos[parent].str;
+        curr = sfp->name_infos[curr].parent_name;
       }
     }
 
@@ -32,18 +32,18 @@ namespace silva {
       name_id_t curr = target_fni;
       while (curr != lca) {
         if (!second_part.empty()) {
-          second_part = swp->token_infos[separator].str + second_part;
+          second_part = sfp->token_infos[separator].str + second_part;
         }
-        const name_info_t* fni = &swp->name_infos[curr];
-        second_part            = swp->token_infos[fni->base_name].str + second_part;
-        curr                   = swp->name_infos[curr].parent_name;
+        const name_info_t* fni = &sfp->name_infos[curr];
+        second_part            = sfp->token_infos[fni->base_name].str + second_part;
+        curr                   = sfp->name_infos[curr].parent_name;
       }
     }
     if (!first_part.empty() && !second_part.empty()) {
-      return first_part + swp->token_infos[separator].str + second_part;
+      return first_part + sfp->token_infos[separator].str + second_part;
     }
     else if (first_part.empty() && second_part.empty()) {
-      return swp->token_infos[current].str;
+      return sfp->token_infos[current].str;
     }
     else {
       return first_part + second_part;
@@ -71,7 +71,7 @@ namespace silva {
       return scope_name;
     }
     else {
-      return swp->name_id(scope_name, base_name);
+      return sfp->name_id(scope_name, base_name);
     }
     return retval;
   }
@@ -93,10 +93,10 @@ namespace silva {
         ;
       }
       else if (base == parent) {
-        retval = swp->name_infos[retval].parent_name;
+        retval = sfp->name_infos[retval].parent_name;
       }
       else {
-        retval = swp->name_id(retval, base);
+        retval = sfp->name_id(retval, base);
       }
     }
     return retval;

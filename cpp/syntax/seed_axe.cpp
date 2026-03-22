@@ -38,43 +38,43 @@ namespace silva::seed::impl {
   };
 
   struct axe_create_nursery_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
     name_id_t axe_name          = name_id_root;
     name_id_t atom_rule_name_id = name_id_root;
-    const name_id_style_t& nis  = swp->default_name_id_style();
+    const name_id_style_t& nis  = sfp->default_name_id_style();
 
-    const token_id_t ti_atom_nest    = *swp->token_id("atom_nest");
-    const token_id_t ti_atom_nest_t  = *swp->token_id("atom_nest_transparent");
-    const token_id_t ti_prefix       = *swp->token_id("prefix");
-    const token_id_t ti_prefix_nest  = *swp->token_id("prefix_nest");
-    const token_id_t ti_infix        = *swp->token_id("infix");
-    const token_id_t ti_infix_flat   = *swp->token_id("infix_flat");
-    const token_id_t ti_ternary      = *swp->token_id("ternary");
-    const token_id_t ti_postfix      = *swp->token_id("postfix");
-    const token_id_t ti_postfix_nest = *swp->token_id("postfix_nest");
-    const token_id_t ti_concat       = *swp->token_id("concat");
-    const token_id_t ti_nest         = *swp->token_id("nest");
-    const token_id_t ti_ltr          = *swp->token_id("ltr");
-    const token_id_t ti_rtl          = *swp->token_id("rtl");
+    const token_id_t ti_atom_nest    = *sfp->token_id("atom_nest");
+    const token_id_t ti_atom_nest_t  = *sfp->token_id("atom_nest_transparent");
+    const token_id_t ti_prefix       = *sfp->token_id("prefix");
+    const token_id_t ti_prefix_nest  = *sfp->token_id("prefix_nest");
+    const token_id_t ti_infix        = *sfp->token_id("infix");
+    const token_id_t ti_infix_flat   = *sfp->token_id("infix_flat");
+    const token_id_t ti_ternary      = *sfp->token_id("ternary");
+    const token_id_t ti_postfix      = *sfp->token_id("postfix");
+    const token_id_t ti_postfix_nest = *sfp->token_id("postfix_nest");
+    const token_id_t ti_concat       = *sfp->token_id("concat");
+    const token_id_t ti_nest         = *sfp->token_id("nest");
+    const token_id_t ti_ltr          = *sfp->token_id("ltr");
+    const token_id_t ti_rtl          = *sfp->token_id("rtl");
 
-    const name_id_t ni_seed        = swp->name_id_of("Seed");
-    const name_id_t ni_axe         = swp->name_id_of(ni_seed, "Axe");
-    const name_id_t ni_axe_level   = swp->name_id_of(ni_axe, "Level");
-    const name_id_t ni_axe_assoc   = swp->name_id_of(ni_axe, "Assoc");
-    const name_id_t ni_axe_ops     = swp->name_id_of(ni_axe, "Ops");
-    const name_id_t ni_axe_op_type = swp->name_id_of(ni_axe, "OpType");
-    const name_id_t ni_axe_op      = swp->name_id_of(ni_axe, "Op");
-    const name_id_t ni_nt          = swp->name_id_of(ni_seed, "Nonterminal");
-    const name_id_t ni_nt_base     = swp->name_id_of(ni_nt, "Base");
-    const name_id_t ni_term        = swp->name_id_of(ni_seed, "Terminal");
+    const name_id_t ni_seed        = sfp->name_id_of("Seed");
+    const name_id_t ni_axe         = sfp->name_id_of(ni_seed, "Axe");
+    const name_id_t ni_axe_level   = sfp->name_id_of(ni_axe, "Level");
+    const name_id_t ni_axe_assoc   = sfp->name_id_of(ni_axe, "Assoc");
+    const name_id_t ni_axe_ops     = sfp->name_id_of(ni_axe, "Ops");
+    const name_id_t ni_axe_op_type = sfp->name_id_of(ni_axe, "OpType");
+    const name_id_t ni_axe_op      = sfp->name_id_of(ni_axe, "Op");
+    const name_id_t ni_nt          = sfp->name_id_of(ni_seed, "Nonterminal");
+    const name_id_t ni_nt_base     = sfp->name_id_of(ni_nt, "Base");
+    const name_id_t ni_term        = sfp->name_id_of(ni_seed, "Terminal");
 
     axe_t retval{
-        .swp  = swp,
+        .sfp  = sfp,
         .name = axe_name,
     };
 
-    axe_create_nursery_t(syntax_farm_ptr_t swp, const name_id_t axe_name)
-      : swp(swp), axe_name(axe_name)
+    axe_create_nursery_t(syntax_farm_ptr_t sfp, const name_id_t axe_name)
+      : sfp(sfp), axe_name(axe_name)
     {
     }
 
@@ -91,16 +91,16 @@ namespace silva::seed::impl {
                      MINOR,
                      "{}: {} has been used as prefix-style operator before at {}",
                      pts,
-                     swp->token_id_wrap(token_id),
+                     sfp->token_id_wrap(token_id),
                      result.prefix.value().pts);
         SILVA_EXPECT(!result.is_right_bracket,
                      MINOR,
                      "{}: {} has been used as right-bracket operator before",
                      pts,
-                     swp->token_id_wrap(token_id));
+                     sfp->token_id_wrap(token_id));
         result.prefix = result_oper_t<oper_prefix_t>{
             .oper       = variant_get<oper_prefix_t>(oper),
-            .name       = retval.swp->name_id(level_name, token_id),
+            .name       = retval.sfp->name_id(level_name, token_id),
             .precedence = precedence,
             .pts        = pts,
         };
@@ -110,16 +110,16 @@ namespace silva::seed::impl {
                      MINOR,
                      "{}: {} has been used as regular-style operator before at {}",
                      pts,
-                     swp->token_id_wrap(token_id),
+                     sfp->token_id_wrap(token_id),
                      result.regular.value().pts);
         SILVA_EXPECT(!result.is_right_bracket,
                      MINOR,
                      "{}: {} has been used as right-bracket operator before",
                      pts,
-                     swp->token_id_wrap(token_id));
+                     sfp->token_id_wrap(token_id));
         result.regular = result_oper_t<oper_regular_t>{
             .oper       = variant_get<oper_regular_t>(oper),
-            .name       = retval.swp->name_id(level_name, token_id),
+            .name       = retval.sfp->name_id(level_name, token_id),
             .precedence = precedence,
             .pts        = pts,
         };
@@ -137,13 +137,13 @@ namespace silva::seed::impl {
                    MINOR,
                    "{}: {} has been used as prefix-style operator before at {}",
                    pts,
-                   swp->token_id_wrap(token_id),
+                   sfp->token_id_wrap(token_id),
                    result.prefix.value().pts);
       SILVA_EXPECT(!result.regular.has_value(),
                    MINOR,
                    "{}: {} has been used as right-bracket operator before at {}",
                    pts,
-                   swp->token_id_wrap(token_id),
+                   sfp->token_id_wrap(token_id),
                    result.regular.value().pts);
       result.is_right_bracket = true;
       return {};
@@ -153,7 +153,7 @@ namespace silva::seed::impl {
     {
       SILVA_EXPECT(pts_op[0].rule_name == ni_axe_op, BROKEN_SEED);
       const token_id_t axe_op = pts_op.first_token_id();
-      SILVA_EXPECT(swp->token_infos[axe_op].category_old == token_category_old_t::STRING ||
+      SILVA_EXPECT(sfp->token_infos[axe_op].category_old == token_category_old_t::STRING ||
                        axe_op == ti_concat,
                    BROKEN_SEED);
       if (axe_op_type != ti_infix && axe_op_type != ti_infix_flat) {
@@ -218,7 +218,7 @@ namespace silva::seed::impl {
                      "{} a 'nest' level only allows operators of type [ atom_nest "
                      "atom_nest_transparent ], not {}",
                      pts_ops,
-                     swp->token_id_wrap(axe_op_type));
+                     sfp->token_id_wrap(axe_op_type));
       }
       else {
         if (assoc == LEFT_TO_RIGHT) {
@@ -229,7 +229,7 @@ namespace silva::seed::impl {
                        "{} an 'ltr' level requires operators of type [ postfix postfix_nest_t "
                        "infix_t ternary_t ], not {}",
                        pts_ops,
-                       swp->token_id_wrap(axe_op_type));
+                       sfp->token_id_wrap(axe_op_type));
         }
         else if (assoc == RIGHT_TO_LEFT) {
           SILVA_EXPECT(axe_op_type == ti_prefix || axe_op_type == ti_prefix_nest ||
@@ -239,7 +239,7 @@ namespace silva::seed::impl {
                        "{} 'rtl' levels require operators of type [ prefix_t prefix_nest_t "
                        "infix_t ternary_t ], not {}",
                        pts_ops,
-                       swp->token_id_wrap(axe_op_type));
+                       sfp->token_id_wrap(axe_op_type));
         }
         else {
           SILVA_EXPECT(false, BROKEN_SEED);
@@ -251,7 +251,7 @@ namespace silva::seed::impl {
           .assoc       = assoc,
       };
 
-      const name_id_t full_name = swp->name_id(axe_name, base_name);
+      const name_id_t full_name = sfp->name_id(axe_name, base_name);
 
       const auto& get_next_not_concat =
           [&]() -> expected_t<tuple_t<token_id_t, parse_tree_span_t>> {
@@ -261,7 +261,7 @@ namespace silva::seed::impl {
         const token_id_t ti = pts_op.first_token_id();
         ++it;
         SILVA_EXPECT(ti != ti_concat, ASSERT);
-        const token_id_t retval = SILVA_EXPECT_FWD(swp->token_id_in_string(ti));
+        const token_id_t retval = SILVA_EXPECT_FWD(sfp->token_id_in_string(ti));
         return {{retval, pts_op}};
       };
 
@@ -275,7 +275,7 @@ namespace silva::seed::impl {
         if (ti == ti_concat) {
           return {{std::nullopt, pts_op}};
         }
-        const token_id_t retval = SILVA_EXPECT_FWD(swp->token_id_in_string(ti));
+        const token_id_t retval = SILVA_EXPECT_FWD(sfp->token_id_in_string(ti));
         return {{retval, pts_op}};
       };
 
@@ -344,7 +344,7 @@ namespace silva::seed::impl {
                          retval.concat_result.value().pts);
             retval.concat_result.emplace(result_oper_t<oper_regular_t>{
                 .oper       = op,
-                .name       = retval.swp->name_id(full_name, ti_op),
+                .name       = retval.sfp->name_id(full_name, ti_op),
                 .precedence = used_prec,
                 .pts        = pts_op,
             });
@@ -392,7 +392,7 @@ namespace silva::seed::impl {
           SILVA_EXPECT_FWD(register_right_op(ti_right, pts_right));
         }
         else {
-          SILVA_EXPECT(false, MAJOR, "Unexpected variant: {}", swp->token_id_wrap(axe_op_type));
+          SILVA_EXPECT(false, MAJOR, "Unexpected variant: {}", sfp->token_id_wrap(axe_op_type));
         }
       }
       return {};
@@ -452,7 +452,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT(it != end, MINOR, "{} should have at least one child", pts_axe);
       const auto pts_axe_nt = pts_axe.sub_tree_span_at(it.pos);
       SILVA_EXPECT(pts_axe_nt[0].rule_name == ni_nt, MINOR);
-      const name_id_t parent_scope = swp->name_infos[axe_name].parent_name;
+      const name_id_t parent_scope = sfp->name_infos[axe_name].parent_name;
       retval.atom_rule             = SILVA_EXPECT_FWD(nis.derive_name(parent_scope, pts_axe_nt));
       ++it;
 
@@ -469,9 +469,9 @@ namespace silva::seed::impl {
 
 namespace silva::seed {
   expected_t<axe_t>
-  axe_create(syntax_farm_ptr_t swp, const name_id_t axe_name, const parse_tree_span_t pts)
+  axe_create(syntax_farm_ptr_t sfp, const name_id_t axe_name, const parse_tree_span_t pts)
   {
-    impl::axe_create_nursery_t nursery(swp, axe_name);
+    impl::axe_create_nursery_t nursery(sfp, axe_name);
     SILVA_EXPECT_FWD(nursery.run(pts));
     return std::move(nursery.retval);
   }
@@ -483,7 +483,7 @@ namespace silva::seed::impl {
     parse_tree_nursery_t& nursery;
     delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser;
 
-    syntax_farm_ptr_t swp = nursery.swp;
+    syntax_farm_ptr_t sfp = nursery.sfp;
 
     token_location_t token_location_by(index_t token_index_offset = 0) const
     {
@@ -556,8 +556,8 @@ namespace silva::seed::impl {
       SILVA_EXPECT_PARSE(used_rule_name,
                          nursery.num_tokens_left() >= 1 && nursery.token_id_by() == left_token,
                          "expected {}, got {}",
-                         swp->token_id_wrap(left_token),
-                         swp->token_id_wrap(nursery.token_id_by()));
+                         sfp->token_id_wrap(left_token),
+                         sfp->token_id_wrap(nursery.token_id_by()));
       nursery.token_index += 1;
 
       const auto [ptn, tn] = SILVA_EXPECT_FWD(invoke_rule_parser(used_rule_name));
@@ -566,8 +566,8 @@ namespace silva::seed::impl {
       SILVA_EXPECT_PARSE(used_rule_name,
                          nursery.num_tokens_left() >= 1 && nursery.token_id_by() == right_token,
                          "expected {}, got {}",
-                         swp->token_id_wrap(right_token),
-                         swp->token_id_wrap(nursery.token_id_by()));
+                         sfp->token_id_wrap(right_token),
+                         sfp->token_id_wrap(nursery.token_id_by()));
       nursery.token_index += 1;
 
       open_term_stack.push_back(output_tree.size());
@@ -777,7 +777,7 @@ namespace silva::seed::impl {
             SILVA_EXPECT_PARSE(axe.name,
                                pa_result.prefix.has_value(),
                                "found non-prefix operator {} when expecting next atom",
-                               swp->token_id_wrap(nursery.token_id_by()));
+                               sfp->token_id_wrap(nursery.token_id_by()));
             const auto& res = pa_result.prefix.value();
             SILVA_EXPECT_FWD(stack_pop(res.precedence));
 

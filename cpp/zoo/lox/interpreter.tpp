@@ -13,8 +13,8 @@ namespace silva::lox::test {
 
     byte_sink_memory_t print_buffer;
 
-    test_interpreter_t(seed::interpreter_t* si, syntax_farm_ptr_t swp)
-      : interpreter_t(std::move(swp), nullptr), si(si)
+    test_interpreter_t(seed::interpreter_t* si, syntax_farm_ptr_t sfp)
+      : interpreter_t(std::move(sfp), nullptr), si(si)
     {
       print_stream = &print_buffer;
     }
@@ -25,9 +25,9 @@ namespace silva::lox::test {
     {
       prepare();
       INFO(expr_str);
-      auto tp = SILVA_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
+      auto tp = SILVA_REQUIRE(tokenize(lexicon.sfp, "test.lox", expr_str));
       INFO(pretty_string(*tp));
-      auto pt = SILVA_REQUIRE(si->apply(tp, lexicon.swp->name_id_of("Lox")));
+      auto pt = SILVA_REQUIRE(si->apply(tp, lexicon.sfp->name_id_of("Lox")));
       INFO(pretty_string(pt->span()));
       SILVA_REQUIRE(resolve(pt->span()));
       auto scope = scopes.root();
@@ -40,9 +40,9 @@ namespace silva::lox::test {
     {
       prepare();
       INFO(expr_str);
-      auto tp = SILVA_REQUIRE(tokenize(lexicon.swp, "test.lox", expr_str));
+      auto tp = SILVA_REQUIRE(tokenize(lexicon.sfp, "test.lox", expr_str));
       INFO(pretty_string(*tp));
-      auto pt = SILVA_REQUIRE(si->apply(tp, lexicon.swp->name_id_of("Lox")));
+      auto pt = SILVA_REQUIRE(si->apply(tp, lexicon.sfp->name_id_of("Lox")));
       INFO(pretty_string(pt->span()));
       SILVA_REQUIRE(resolve(pt->span()));
       auto scope        = scopes.root();
@@ -53,10 +53,10 @@ namespace silva::lox::test {
 
   TEST_CASE("lox-evaluate", "[lox]")
   {
-    syntax_farm_t sw;
-    auto si = standard_seed_interpreter(sw.ptr());
+    syntax_farm_t sf;
+    auto si = standard_seed_interpreter(sf.ptr());
     SILVA_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
-    test_interpreter_t lti{si.get(), sw.ptr()};
+    test_interpreter_t lti{si.get(), sf.ptr()};
 
     const auto ts = test_suite();
     for (const auto& chapter: ts) {

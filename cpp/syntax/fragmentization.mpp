@@ -11,8 +11,8 @@ namespace silva {
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     byte_sink_stdout_t _stdout;
-    syntax_farm_t sw;
-    const auto fragmentization = SILVA_EXPECT_FWD(fragmentize_load(sw.ptr(), cmdline_args[1]),
+    syntax_farm_t sf;
+    const auto fragmentization = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]),
                                                   "while fragmentizing {}",
                                                   cmdline_args[1]);
     pretty_write(*fragmentization, &_stdout);

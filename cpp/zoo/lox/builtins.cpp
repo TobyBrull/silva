@@ -12,11 +12,11 @@ namespace silva::lox {
   )'";
 
   expected_t<hash_map_t<token_id_t, object_ref_t>>
-  make_builtins(syntax_farm_ptr_t swp, const parser_t& parser, object_pool_t& object_pool)
+  make_builtins(syntax_farm_ptr_t sfp, const parser_t& parser, object_pool_t& object_pool)
   {
     const tokenization_ptr_t builtin_tt =
-        SILVA_EXPECT_FWD(tokenize(swp, "builtins.lox", builtins_lox_str));
-    const auto pts_builtin = SILVA_EXPECT_FWD(parser(builtin_tt, swp->name_id_of("Lox")))->span();
+        SILVA_EXPECT_FWD(tokenize(sfp, "builtins.lox", builtins_lox_str));
+    const auto pts_builtin = SILVA_EXPECT_FWD(parser(builtin_tt, sfp->name_id_of("Lox")))->span();
 
     struct builtin_decl_t {
       token_id_t name = token_id_none;
@@ -24,7 +24,7 @@ namespace silva::lox {
     };
     array_t<builtin_decl_t> builtin_decls{
         builtin_decl_t{
-            .name = swp->token_id("clock").value(),
+            .name = sfp->token_id("clock").value(),
             .impl = [](object_pool_t& object_pool,
                        const span_t<const object_ref_t> params) -> expected_t<object_ref_t> {
               SILVA_EXPECT(params.size() == 0, RUNTIME);
@@ -36,7 +36,7 @@ namespace silva::lox {
             },
         },
         builtin_decl_t{
-            .name = swp->token_id("getc").value(),
+            .name = sfp->token_id("getc").value(),
             .impl = [](object_pool_t& object_pool,
                        const span_t<const object_ref_t> params) -> expected_t<object_ref_t> {
               SILVA_EXPECT(params.size() == 0, RUNTIME);
@@ -45,8 +45,8 @@ namespace silva::lox {
             },
         },
         builtin_decl_t{
-            .name = swp->token_id("chr").value(),
-            .impl = [swp = swp, ti_ascii_code = swp->token_id("ascii_code").value()](
+            .name = sfp->token_id("chr").value(),
+            .impl = [sfp = sfp, ti_ascii_code = sfp->token_id("ascii_code").value()](
                         object_pool_t& object_pool,
                         const span_t<const object_ref_t> params) -> expected_t<object_ref_t> {
               SILVA_EXPECT(params.size() == 1, RUNTIME);
@@ -58,8 +58,8 @@ namespace silva::lox {
             },
         },
         builtin_decl_t{
-            .name = swp->token_id("exit").value(),
-            .impl = [swp = swp, ti_exit_code = swp->token_id("exit_code").value()](
+            .name = sfp->token_id("exit").value(),
+            .impl = [sfp = sfp, ti_exit_code = sfp->token_id("exit_code").value()](
                         object_pool_t& object_pool,
                         const span_t<const object_ref_t> params) -> expected_t<object_ref_t> {
               SILVA_EXPECT(params.size() == 1, RUNTIME);
@@ -70,8 +70,8 @@ namespace silva::lox {
             },
         },
         builtin_decl_t{
-            .name = swp->token_id("print_error").value(),
-            .impl = [swp = swp, ti_text = swp->token_id("text").value()](
+            .name = sfp->token_id("print_error").value(),
+            .impl = [sfp = sfp, ti_text = sfp->token_id("text").value()](
                         object_pool_t& object_pool,
                         const span_t<const object_ref_t> params) -> expected_t<object_ref_t> {
               SILVA_EXPECT(params.size() == 1, RUNTIME);
@@ -95,8 +95,8 @@ namespace silva::lox {
       SILVA_EXPECT(lox_name == builtin_decl.name,
                    ASSERT,
                    "expected function '{}', but found '{}'",
-                   swp->token_id_wrap(lox_name),
-                   swp->token_id_wrap(builtin_decl.name));
+                   sfp->token_id_wrap(lox_name),
+                   sfp->token_id_wrap(builtin_decl.name));
       function_builtin_t fb{{pts_function}, builtin_decl.impl};
       // fb.closure           = scopes.root();
       ++it;

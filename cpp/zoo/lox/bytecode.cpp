@@ -6,7 +6,7 @@ namespace silva::lox {
 
   using enum opcode_t;
 
-  bytecode_chunk_t::bytecode_chunk_t(syntax_farm_ptr_t swp) : swp(std::move(swp)) {}
+  bytecode_chunk_t::bytecode_chunk_t(syntax_farm_ptr_t sfp) : sfp(std::move(sfp)) {}
 
   parse_tree_span_t bytecode_chunk_t::origin_info_at_instr(const index_t ip) const
   {
@@ -97,8 +97,8 @@ namespace silva::lox {
       {
         SILVA_EXPECT(bc.size() >= 1 + sizeof(index_t), MINOR, "no operand for token-instruction");
         const auto ti = bit_cast_ptr<index_t>(&bc[1]);
-        SILVA_EXPECT(0 <= ti && ti < chunk->swp->token_infos.size(), MINOR);
-        const auto tinfo = chunk->swp->token_infos[ti];
+        SILVA_EXPECT(0 <= ti && ti < chunk->sfp->token_infos.size(), MINOR);
+        const auto tinfo = chunk->sfp->token_infos[ti];
         retval += fmt::format("{} {} {}", name, ti, tinfo.str);
         return 1 + sizeof(index_t);
       }

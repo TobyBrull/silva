@@ -10,18 +10,18 @@
 namespace silva::seed::test {
   TEST_CASE("name-id-style", "[name_id_style_t]")
   {
-    syntax_farm_t sw;
+    syntax_farm_t sf;
 
-    const name_id_t name1 = sw.name_id_of("std", "expr", "stmt");
-    const name_id_t name2 = sw.name_id_of("std", "expr");
-    const name_id_t name3 = sw.name_id_of("std", "ranges", "vector");
+    const name_id_t name1 = sf.name_id_of("std", "expr", "stmt");
+    const name_id_t name2 = sf.name_id_of("std", "expr");
+    const name_id_t name3 = sf.name_id_of("std", "ranges", "vector");
 
     const name_id_style_t ts{
-        .swp       = sw.ptr(),
-        .root      = *sw.token_id("cpp"),
-        .current   = *sw.token_id("this"),
-        .parent    = *sw.token_id("super"),
-        .separator = *sw.token_id("::"),
+        .sfp       = sf.ptr(),
+        .root      = *sf.token_id("cpp"),
+        .current   = *sf.token_id("this"),
+        .parent    = *sf.token_id("super"),
+        .separator = *sf.token_id("::"),
     };
     CHECK(ts.absolute(name1) == "cpp::std::expr::stmt");
     CHECK(ts.absolute(name2) == "cpp::std::expr");
@@ -39,36 +39,36 @@ namespace silva::seed::test {
 
   TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
-    syntax_farm_t sw;
-    const auto spr       = standard_seed_interpreter(sw.ptr());
-    const auto seed_tt   = SILVA_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_str}));
+    syntax_farm_t sf;
+    const auto spr       = standard_seed_interpreter(sf.ptr());
+    const auto seed_tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", string_t{seed_str}));
     const auto seed_pt_1 = SILVA_REQUIRE(parse(seed_tt));
-    const auto seed_pt_2 = SILVA_REQUIRE(spr->apply(seed_tt, sw.name_id_of("Seed")));
+    const auto seed_pt_2 = SILVA_REQUIRE(spr->apply(seed_tt, sf.name_id_of("Seed")));
     // fmt::print("|{}|\n", *seed_pt_1->span().to_string());
     // fmt::print("|{}|\n", *seed_pt_2->span().to_string());
     CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
 
-    CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Rule")] == hash_set_t<token_id_t>({}));
-    CHECK(spr->keyword_scopes[sw.name_id_of("Seed", "Axe")] ==
+    CHECK(spr->keyword_scopes[sf.name_id_of("Seed", "Rule")] == hash_set_t<token_id_t>({}));
+    CHECK(spr->keyword_scopes[sf.name_id_of("Seed", "Axe")] ==
           hash_set_t<token_id_t>({
-              *sw.token_id("["),
-              *sw.token_id("]"),
-              *sw.token_id("-"),
-              *sw.token_id("="),
-              *sw.token_id("nest"),
-              *sw.token_id("ltr"),
-              *sw.token_id("rtl"),
-              *sw.token_id("atom_nest"),
-              *sw.token_id("atom_nest_transparent"),
-              *sw.token_id("prefix"),
-              *sw.token_id("prefix_nest"),
-              *sw.token_id("infix"),
-              *sw.token_id("infix_flat"),
-              *sw.token_id("ternary"),
-              *sw.token_id("postfix"),
-              *sw.token_id("postfix_nest"),
-              *sw.token_id("concat"),
-              *sw.token_id("->"),
+              *sf.token_id("["),
+              *sf.token_id("]"),
+              *sf.token_id("-"),
+              *sf.token_id("="),
+              *sf.token_id("nest"),
+              *sf.token_id("ltr"),
+              *sf.token_id("rtl"),
+              *sf.token_id("atom_nest"),
+              *sf.token_id("atom_nest_transparent"),
+              *sf.token_id("prefix"),
+              *sf.token_id("prefix_nest"),
+              *sf.token_id("infix"),
+              *sf.token_id("infix_flat"),
+              *sf.token_id("ternary"),
+              *sf.token_id("postfix"),
+              *sf.token_id("postfix_nest"),
+              *sf.token_id("concat"),
+              *sf.token_id("->"),
           }));
   }
 
@@ -82,11 +82,11 @@ namespace silva::seed::test {
       - Item = x | string | number
     ]
   )'";
-    syntax_farm_t sw;
-    const auto sf_seed_tt   = SILVA_REQUIRE(tokenize(sw.ptr(), "", sf_text));
+    syntax_farm_t sf;
+    const auto sf_seed_tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", sf_text));
     const auto sf_seed_pt_1 = SILVA_REQUIRE(parse(sf_seed_tt));
-    const auto spr          = standard_seed_interpreter(sw.ptr());
-    const auto sf_seed_pt_2 = SILVA_REQUIRE(spr->apply(sf_seed_tt, sw.name_id_of("Seed")));
+    const auto spr          = standard_seed_interpreter(sf.ptr());
+    const auto sf_seed_pt_2 = SILVA_REQUIRE(spr->apply(sf_seed_tt, sf.name_id_of("Seed")));
     CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
     const std::string_view expected = R"(
@@ -147,14 +147,14 @@ namespace silva::seed::test {
     CHECK(pt_str_1 == expected.substr(1));
     CHECK(pt_str_2 == expected.substr(1));
 
-    interpreter_t se(sw.ptr());
+    interpreter_t se(sf.ptr());
     SILVA_REQUIRE(se.add(sf_seed_pt_1->span()));
     REQUIRE(se.rule_exprs.size() == 4);
     using rfl::json::write;
-    const name_id_t ni_sf       = sw.name_id_of("SimpleFern");
-    const name_id_t ni_li       = sw.name_id_of(ni_sf, "LabeledItem");
-    const name_id_t ni_l        = sw.name_id_of(ni_sf, "Label");
-    const name_id_t ni_i        = sw.name_id_of(ni_sf, "Item");
+    const name_id_t ni_sf       = sf.name_id_of("SimpleFern");
+    const name_id_t ni_li       = sf.name_id_of(ni_sf, "LabeledItem");
+    const name_id_t ni_l        = sf.name_id_of(ni_sf, "Label");
+    const name_id_t ni_i        = sf.name_id_of(ni_sf, "Item");
     const parse_tree_span_t pts = sf_seed_pt_1->span();
     CHECK(se.rule_exprs.at(ni_sf) == pts.sub_tree_span_at(8));
     CHECK(se.rule_exprs.at(ni_li) == pts.sub_tree_span_at(23));
@@ -167,7 +167,7 @@ namespace silva::seed::test {
     CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(46)) == ni_sf);
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
-    const auto sf_tt       = SILVA_REQUIRE(tokenize(sw.ptr(), "", sf_code));
+    const auto sf_tt       = SILVA_REQUIRE(tokenize(sf.ptr(), "", sf_code));
     const auto sfpt        = SILVA_REQUIRE(se.apply(sf_tt, ni_sf));
 
     const std::string_view expected_parse_tree = R"(

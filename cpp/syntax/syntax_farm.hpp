@@ -102,14 +102,14 @@ namespace silva {
   using syntax_farm_ptr_t = ptr_t<syntax_farm_t>;
 
   struct token_id_wrap_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
     token_id_t token_id = token_id_none;
 
     friend void pretty_write_impl(const token_id_wrap_t&, byte_sink_t*);
   };
 
   struct name_id_wrap_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
     name_id_t name_id = name_id_root;
 
     friend void pretty_write_impl(const name_id_wrap_t&, byte_sink_t*);

@@ -210,10 +210,10 @@ namespace silva {
   }
 
   struct syntax_farm_t::impl_t {
-    syntax_farm_ptr_t swp;
-    name_id_style_t default_nis{swp};
+    syntax_farm_ptr_t sfp;
+    name_id_style_t default_nis{sfp};
 
-    impl_t(syntax_farm_ptr_t swp) : swp(swp) {}
+    impl_t(syntax_farm_ptr_t sfp) : sfp(sfp) {}
   };
 
   syntax_farm_t::syntax_farm_t()
@@ -343,26 +343,26 @@ namespace silva {
   token_id_wrap_t syntax_farm_t::token_id_wrap(const token_id_t token_id)
   {
     return token_id_wrap_t{
-        .swp      = ptr(),
+        .sfp      = ptr(),
         .token_id = token_id,
     };
   }
   name_id_wrap_t syntax_farm_t::name_id_wrap(const name_id_t name_id)
   {
     return name_id_wrap_t{
-        .swp     = ptr(),
+        .sfp     = ptr(),
         .name_id = name_id,
     };
   }
 
   void pretty_write_impl(const token_id_wrap_t& x, byte_sink_t* byte_sink)
   {
-    byte_sink->format("token[ {} ]", x.swp->token_infos[x.token_id].str);
+    byte_sink->format("token[ {} ]", x.sfp->token_infos[x.token_id].str);
   }
 
   void pretty_write_impl(const name_id_wrap_t& x, byte_sink_t* byte_sink)
   {
-    byte_sink->write_str(x.swp->default_name_id_style().absolute(x.name_id));
+    byte_sink->write_str(x.sfp->default_name_id_style().absolute(x.name_id));
   }
 
   fragmentization_ptr_t syntax_farm_t::add(unique_ptr_t<const fragmentization_t> x)

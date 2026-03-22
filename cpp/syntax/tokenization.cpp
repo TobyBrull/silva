@@ -10,7 +10,7 @@ namespace silva {
   tokenization_t tokenization_t::copy() const
   {
     return tokenization_t{
-        .swp       = swp,
+        .sfp       = sfp,
         .filepath  = filepath,
         .tokens    = tokens,
         .locations = locations,
@@ -19,19 +19,19 @@ namespace silva {
 
   const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
   {
-    return &swp->token_infos[tokens[token_index]];
+    return &sfp->token_infos[tokens[token_index]];
   }
 
-  token_id_t syntax_farm_get_token_id_from_info(syntax_farm_t& sw, const token_info_t& token_info)
+  token_id_t syntax_farm_get_token_id_from_info(syntax_farm_t& sf, const token_info_t& token_info)
   {
-    const auto it = sw.token_lookup.find(token_info.str);
-    if (it != sw.token_lookup.end()) {
+    const auto it = sf.token_lookup.find(token_info.str);
+    if (it != sf.token_lookup.end()) {
       return it->second;
     }
     else {
-      const token_id_t new_token_id = sw.token_infos.size();
-      sw.token_infos.push_back(token_info);
-      sw.token_lookup.emplace(token_info.str, new_token_id);
+      const token_id_t new_token_id = sf.token_infos.size();
+      sf.token_infos.push_back(token_info);
+      sf.token_lookup.emplace(token_info.str, new_token_id);
       return new_token_id;
     }
   }
@@ -78,19 +78,19 @@ namespace silva {
     stream->write_str(retval);
   }
 
-  expected_t<tokenization_ptr_t> tokenize_load(syntax_farm_ptr_t swp, filepath_t filepath)
+  expected_t<tokenization_ptr_t> tokenize_load(syntax_farm_ptr_t sfp, filepath_t filepath)
   {
     string_t source_code  = SILVA_EXPECT_FWD(read_file(filepath));
     tokenization_ptr_t tp = SILVA_EXPECT_FWD_PLAIN(
-        tokenize(std::move(swp), std::move(filepath), std::move(source_code)));
+        tokenize(std::move(sfp), std::move(filepath), std::move(source_code)));
     return tp;
   }
 
   expected_t<tokenization_ptr_t>
-  tokenize(syntax_farm_ptr_t swp, filepath_t filepath, string_view_t source_code)
+  tokenize(syntax_farm_ptr_t sfp, filepath_t filepath, string_view_t source_code)
   {
     auto retval      = std::make_unique<tokenization_t>();
-    retval->swp      = swp;
+    retval->sfp      = sfp;
     retval->filepath = std::move(filepath);
     file_location_t loc;
     while (loc.byte_offset < source_code.size()) {
@@ -114,19 +114,19 @@ namespace silva {
             .category_old = token_cat,
             .str          = string_t{tokenized_str},
         };
-        const token_id_t tii = syntax_farm_get_token_id_from_info(*swp, std::move(ti));
+        const token_id_t tii = syntax_farm_get_token_id_from_info(*sfp, std::move(ti));
         retval->tokens.push_back(tii);
         retval->locations.push_back(old_loc);
       }
     }
-    return swp->add(std::move(retval));
+    return sfp->add(std::move(retval));
   }
 
   void pretty_write_impl(const tokenization_t& self, byte_sink_t* stream)
   {
     for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
       const token_id_t tii         = self.tokens[token_index];
-      const token_info_t* info     = &self.swp->token_infos[tii];
+      const token_info_t* info     = &self.sfp->token_infos[tii];
       const auto [line, column, _] = self.locations[token_index];
       stream->format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
     }

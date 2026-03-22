@@ -46,7 +46,7 @@ namespace silva::seed {
   )'";
 
   struct axe_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
     name_id_t name      = name_id_root;
     name_id_t atom_rule = name_id_root;
     hash_map_t<token_id_t, impl::axe_result_t> results;

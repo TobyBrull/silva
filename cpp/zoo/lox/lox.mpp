@@ -17,10 +17,10 @@ namespace silva::lox {
         SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("use-interpreter"), MAJOR).value_or(false);
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_farm_t sw;
-    auto si               = seed_interpreter(sw.ptr());
-    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
-    parse_tree_ptr_t pt   = SILVA_EXPECT_FWD(si->apply(tp, sw.name_id_of("Lox")),
+    syntax_farm_t sf;
+    auto si               = seed_interpreter(sf.ptr());
+    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sf.ptr(), cmdline_args[1]));
+    parse_tree_ptr_t pt   = SILVA_EXPECT_FWD(si->apply(tp, sf.name_id_of("Lox")),
                                            "error parsing Lox file {}",
                                            cmdline_args[1]);
 
@@ -34,7 +34,7 @@ namespace silva::lox {
     byte_sink_stdout_t _stdout;
 
     if (use_interpreter) {
-      interpreter_t li{sw.ptr(), &_stdout};
+      interpreter_t li{sf.ptr(), &_stdout};
       SILVA_EXPECT_FWD(li.load_builtins(as_parser(si.get())));
       SILVA_EXPECT_FWD(li.resolve(pt->span()));
       {
@@ -49,8 +49,8 @@ namespace silva::lox {
     }
     else {
       object_pool_t object_pool;
-      bytecode_compiler_t compiler = {sw.ptr(), &object_pool};
-      bytecode_vm_t vm{sw.ptr(), &object_pool, &_stdout};
+      bytecode_compiler_t compiler = {sf.ptr(), &object_pool};
+      bytecode_vm_t vm{sf.ptr(), &object_pool, &_stdout};
       SILVA_EXPECT_FWD(vm.load_builtins(as_parser(si.get())));
       auto chunk = SILVA_EXPECT_FWD(compiler.compile(pt->span()));
       SILVA_EXPECT_FWD(vm.run(*chunk));

@@ -8,7 +8,7 @@
 
 namespace silva::lox {
   struct bytecode_vm_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
     object_pool_t* object_pool = nullptr;
     array_t<object_ref_t> stack;
     array_t<object_ref_t> open_upvalues;

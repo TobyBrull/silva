@@ -11,18 +11,18 @@ namespace silva {
                MINOR,                                \
                "[{}] {}: " fmt_str,                  \
                token_location_by(),                  \
-               swp->name_id_wrap(name) __VA_OPT__(, ) __VA_ARGS__);
+               sfp->name_id_wrap(name) __VA_OPT__(, ) __VA_ARGS__);
 
 #define SILVA_EXPECT_PARSE_TOKEN_ID(name, token_id)                       \
   SILVA_EXPECT_PARSE(name,                                                \
                      num_tokens_left() >= 1 && token_id_by() == token_id, \
                      "expected {}, got {}",                               \
-                     swp->token_id_wrap(token_id),                        \
-                     swp->token_id_wrap(token_id_by()));                  \
+                     sfp->token_id_wrap(token_id),                        \
+                     sfp->token_id_wrap(token_id_by()));                  \
   token_index += 1;
 
 #define SILVA_EXPECT_PARSE_FWD(name, expr) \
-  SILVA_EXPECT_FWD(expr, "[{}] {}", token_location_by(), swp->name_id_wrap(name))
+  SILVA_EXPECT_FWD(expr, "[{}] {}", token_location_by(), sfp->name_id_wrap(name))
 
   struct parse_tree_nursery_state_t : public tree_nursery_state_t {
     index_t token_index = 0;
@@ -30,7 +30,7 @@ namespace silva {
 
   struct parse_tree_nursery_t
     : public tree_nursery_t<parse_tree_node_t, parse_tree_nursery_state_t, parse_tree_nursery_t> {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
     tokenization_ptr_t tp;
     index_t token_index = 0;
 

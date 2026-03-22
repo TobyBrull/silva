@@ -10,20 +10,20 @@
 
 namespace silva::lox::test {
   struct test_harness_t {
-    syntax_farm_t sw;
-    unique_ptr_t<seed::interpreter_t> si = seed_interpreter(sw.ptr());
+    syntax_farm_t sf;
+    unique_ptr_t<seed::interpreter_t> si = seed_interpreter(sf.ptr());
     object_pool_t object_pool;
-    bytecode_compiler_t compiler = {sw.ptr(), &object_pool};
+    bytecode_compiler_t compiler = {sf.ptr(), &object_pool};
     byte_sink_memory_t print_buffer;
-    bytecode_vm_t vm{sw.ptr(), &object_pool, &print_buffer};
+    bytecode_vm_t vm{sf.ptr(), &object_pool, &print_buffer};
 
     void prepare() { vm.reset(); }
 
     tuple_t<parse_tree_ptr_t, unique_ptr_t<bytecode_chunk_t>>
     make_chunk(const string_view_t lox_code)
     {
-      const auto tp  = SILVA_REQUIRE(tokenize(sw.ptr(), "test.lox", lox_code));
-      const auto ptp = SILVA_REQUIRE(si->apply(tp, sw.name_id_of("Lox")));
+      const auto tp  = SILVA_REQUIRE(tokenize(sf.ptr(), "test.lox", lox_code));
+      const auto ptp = SILVA_REQUIRE(si->apply(tp, sf.name_id_of("Lox")));
       auto chunk     = SILVA_REQUIRE(compiler.compile(ptp->span()));
       return {ptp, std::move(chunk)};
     };

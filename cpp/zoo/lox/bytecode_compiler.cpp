@@ -8,8 +8,8 @@ namespace silva::lox {
 
   using enum opcode_t;
 
-  bytecode_compiler_t::bytecode_compiler_t(syntax_farm_ptr_t swp, object_pool_t* object_pool)
-    : lexicon(std::move(swp)), object_pool(object_pool)
+  bytecode_compiler_t::bytecode_compiler_t(syntax_farm_ptr_t sfp, object_pool_t* object_pool)
+    : lexicon(std::move(sfp)), object_pool(object_pool)
   {
   }
 
@@ -17,7 +17,7 @@ namespace silva::lox {
     bytecode_compiler_t* compiler = nullptr;
 
     const lexicon_t& lexicon   = compiler->lexicon;
-    syntax_farm_ptr_t swp      = lexicon.swp;
+    syntax_farm_ptr_t sfp      = lexicon.sfp;
     object_pool_t& object_pool = *compiler->object_pool;
 
     struct func_scope_t {
@@ -39,7 +39,7 @@ namespace silva::lox {
       };
       array_t<upvalue_info_t> upvalue_infos;
 
-      func_scope_t(syntax_farm_ptr_t swp) : chunk{std::make_unique<bytecode_chunk_t>(swp)} {}
+      func_scope_t(syntax_farm_ptr_t sfp) : chunk{std::make_unique<bytecode_chunk_t>(sfp)} {}
     };
     array_t<func_scope_t> func_scopes;
 
@@ -75,7 +75,7 @@ namespace silva::lox {
       compile_run_t* compile_run = nullptr;
       func_scope_guard_t(compile_run_t* compile_run) : compile_run(compile_run)
       {
-        compile_run->func_scopes.push_back(func_scope_t{compile_run->swp});
+        compile_run->func_scopes.push_back(func_scope_t{compile_run->sfp});
       };
       ~func_scope_guard_t() { compile_run->func_scopes.pop_back(); }
     };
@@ -212,7 +212,7 @@ namespace silva::lox {
 
     expected_t<void> expr(const parse_tree_span_t pts)
     {
-      SILVA_EXPECT(swp->name_id_is_parent(lexicon.ni_expr, pts[0].rule_name), ASSERT);
+      SILVA_EXPECT(sfp->name_id_is_parent(lexicon.ni_expr, pts[0].rule_name), ASSERT);
       if (pts[0].rule_name == lexicon.ni_expr_atom) {
         return expr_atom(pts);
       }
@@ -305,12 +305,12 @@ namespace silva::lox {
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
           SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
           const token_id_t field_name = pts.tp->tokens[lr_pts[0].token_begin];
-          SILVA_EXPECT(swp->token_infos[field_name].category_old == IDENTIFIER, MINOR);
+          SILVA_EXPECT(sfp->token_infos[field_name].category_old == IDENTIFIER, MINOR);
           cfs().nursery.append_index_instr(pts, SET_PROPERTY, field_name);
         }
         else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
-          SILVA_EXPECT(swp->token_infos[ti].category_old == IDENTIFIER, MINOR);
+          SILVA_EXPECT(sfp->token_infos[ti].category_old == IDENTIFIER, MINOR);
           SILVA_EXPECT_FWD(set_variable(lhs_pts, ti));
         }
         else {
@@ -318,7 +318,7 @@ namespace silva::lox {
         }
       }
       else {
-        SILVA_EXPECT(false, ASSERT, "Not yet implemented: {}", swp->name_id_wrap(pts[0].rule_name));
+        SILVA_EXPECT(false, ASSERT, "Not yet implemented: {}", sfp->name_id_wrap(pts[0].rule_name));
       }
       return {};
     }
@@ -386,7 +386,7 @@ namespace silva::lox {
         cfs().nursery.append_simple_instr(pts, CLASS);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, swp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, sfp->name_id_wrap(rule_name));
       }
 
       if (func_scopes.size() == 1 && cfs().scope_depth == 0) {
@@ -530,7 +530,7 @@ namespace silva::lox {
         cfs().nursery.append_simple_instr(pts, POP);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown statement {}", pts, swp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "{} unknown statement {}", pts, sfp->name_id_wrap(rule_name));
       }
       return {};
     }
@@ -550,17 +550,17 @@ namespace silva::lox {
       else if (rule_name == lexicon.ni_decl) {
         return decl(pts.sub_tree_span_at(1));
       }
-      else if (swp->name_infos[rule_name].parent_name == lexicon.ni_decl) {
+      else if (sfp->name_infos[rule_name].parent_name == lexicon.ni_decl) {
         return decl(pts);
       }
       else if (rule_name == lexicon.ni_stmt) {
         return stmt(pts.sub_tree_span_at(1));
       }
-      else if (swp->name_infos[rule_name].parent_name == lexicon.ni_stmt) {
+      else if (sfp->name_infos[rule_name].parent_name == lexicon.ni_stmt) {
         return stmt(pts);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown rule {}", pts, swp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "{} unknown rule {}", pts, sfp->name_id_wrap(rule_name));
       }
       return {};
     }

@@ -45,7 +45,7 @@ namespace silva::lox {
   };
 
   struct bytecode_chunk_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
 
     array_t<byte_t> bytecode;
 

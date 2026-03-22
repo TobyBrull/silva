@@ -6,10 +6,10 @@ namespace silva::lox {
 
   using enum opcode_t;
 
-  bytecode_vm_t::bytecode_vm_t(syntax_farm_ptr_t swp,
+  bytecode_vm_t::bytecode_vm_t(syntax_farm_ptr_t sfp,
                                object_pool_t* object_pool,
                                byte_sink_t* print_target)
-    : swp(swp), object_pool(object_pool), print_target(print_target)
+    : sfp(sfp), object_pool(object_pool), print_target(print_target)
   {
   }
 
@@ -29,7 +29,7 @@ namespace silva::lox {
 
   expected_t<void> bytecode_vm_t::load_builtins(const parser_t& parser)
   {
-    auto builtins = SILVA_EXPECT_FWD(make_builtins(swp, parser, *object_pool));
+    auto builtins = SILVA_EXPECT_FWD(make_builtins(sfp, parser, *object_pool));
     for (auto& [name, builtin]: builtins) {
       globals[name] = std::move(builtin);
     }
@@ -51,8 +51,8 @@ namespace silva::lox {
   struct runner_t {
     bytecode_vm_t& vm;
 
-    token_id_t ti_super = vm.swp->token_id("super").value();
-    token_id_t ti_init  = vm.swp->token_id("init").value();
+    token_id_t ti_super = vm.sfp->token_id("super").value();
+    token_id_t ti_init  = vm.sfp->token_id("init").value();
 
     index_t curr_index_in_instr(const index_t offset = 0)
     {
@@ -150,7 +150,7 @@ namespace silva::lox {
                    RUNTIME,
                    "{} couldn't find global variable {}",
                    curr_info_at_instr(),
-                   vm.swp->token_id_wrap(ti));
+                   vm.sfp->token_id_wrap(ti));
       vm.stack.push_back(it->second);
       curr_ip() += 1 + sizeof(index_t);
       return {};
@@ -177,7 +177,7 @@ namespace silva::lox {
                    RUNTIME,
                    "bytecode instruction SET_GLOBAL tried to assign to global variable {} which "
                    "was not previously defined",
-                   vm.swp->token_id_wrap(ti));
+                   vm.sfp->token_id_wrap(ti));
       it->second = vm.stack.back();
       curr_ip() += 1 + sizeof(index_t);
       return {};
@@ -189,7 +189,7 @@ namespace silva::lox {
       SILVA_EXPECT(it != cc.methods.end(),
                    RUNTIME,
                    "could not find field {}",
-                   vm.swp->token_id_wrap(field_name));
+                   vm.sfp->token_id_wrap(field_name));
       bound_method_t bm{.receiver = class_instance, .method = it->second};
       vm.stack.push_back(vm.object_pool->make(std::move(bm)));
       return {};

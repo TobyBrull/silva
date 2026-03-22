@@ -108,7 +108,7 @@ namespace silva::seed {
   };
 
   struct tokenizer_farm_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
 
     hash_map_t<token_id_t, tokenizer_t> tokenizers;
 

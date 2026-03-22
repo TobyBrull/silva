@@ -8,7 +8,7 @@
 namespace silva::seed {
   // Driver for a program in the Seed language.
   struct interpreter_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
 
     tokenizer_farm_t tokenizer_farm;
 

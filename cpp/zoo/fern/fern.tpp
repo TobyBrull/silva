@@ -19,11 +19,11 @@ namespace silva::fern::test {
     3
   ]
 ])";
-    syntax_farm_t sw;
-    const auto tt   = SILVA_REQUIRE(tokenize(sw.ptr(), "", fern_text));
+    syntax_farm_t sf;
+    const auto tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", fern_text));
     const auto pt_1 = SILVA_REQUIRE(parse(tt));
-    const auto fpr  = standard_seed_interpreter(sw.ptr());
-    const auto pt_2 = SILVA_REQUIRE(fpr->apply(tt, sw.name_id_of("Fern")));
+    const auto fpr  = standard_seed_interpreter(sf.ptr());
+    const auto pt_2 = SILVA_REQUIRE(fpr->apply(tt, sf.name_id_of("Fern")));
     CHECK(pt_1->nodes == pt_2->nodes);
     const fern_t fern       = SILVA_REQUIRE(create(pt_1.get()));
     const string_t pt_str_1 = SILVA_REQUIRE(to_string(pt_1.get()));

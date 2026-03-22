@@ -87,40 +87,40 @@ namespace silva::seed::impl {
   }
 
   struct tokenizer_create_nursery_t {
-    syntax_farm_ptr_t swp;
+    syntax_farm_ptr_t sfp;
     token_id_t tokenizer_name = token_id_none;
 
-    const name_id_t ni_seed        = swp->name_id_of("Seed");
-    const name_id_t ni_nt          = swp->name_id_of(ni_seed, "Nonterminal");
-    const name_id_t ni_tok         = swp->name_id_of(ni_seed, "Tokenizer");
-    const name_id_t ni_inc_rule    = swp->name_id_of(ni_tok, "IncludeRule");
-    const name_id_t ni_ign_rule    = swp->name_id_of(ni_tok, "IgnoreRule");
-    const name_id_t ni_tok_rule    = swp->name_id_of(ni_tok, "TokenRule");
-    const name_id_t ni_prefix_atom = swp->name_id_of(ni_tok, "PrefixAtom");
-    const name_id_t ni_atom        = swp->name_id_of(ni_tok, "Atom");
-    const name_id_t ni_list        = swp->name_id_of(ni_tok, "List");
-    const name_id_t ni_matcher     = swp->name_id_of(ni_tok, "Matcher");
+    const name_id_t ni_seed        = sfp->name_id_of("Seed");
+    const name_id_t ni_nt          = sfp->name_id_of(ni_seed, "Nonterminal");
+    const name_id_t ni_tok         = sfp->name_id_of(ni_seed, "Tokenizer");
+    const name_id_t ni_inc_rule    = sfp->name_id_of(ni_tok, "IncludeRule");
+    const name_id_t ni_ign_rule    = sfp->name_id_of(ni_tok, "IgnoreRule");
+    const name_id_t ni_tok_rule    = sfp->name_id_of(ni_tok, "TokenRule");
+    const name_id_t ni_prefix_atom = sfp->name_id_of(ni_tok, "PrefixAtom");
+    const name_id_t ni_atom        = sfp->name_id_of(ni_tok, "Atom");
+    const name_id_t ni_list        = sfp->name_id_of(ni_tok, "List");
+    const name_id_t ni_matcher     = sfp->name_id_of(ni_tok, "Matcher");
 
-    const token_id_t ti_WHITESPACE             = *swp->token_id("WHITESPACE");
-    const token_id_t ti_COMMENT                = *swp->token_id("COMMENT");
-    const token_id_t ti_NUMBER                 = *swp->token_id("NUMBER");
-    const token_id_t ti_STRING                 = *swp->token_id("STRING");
-    const token_id_t ti_INDENT                 = *swp->token_id("INDENT");
-    const token_id_t ti_DEDENT                 = *swp->token_id("DEDENT");
-    const token_id_t ti_NEWLINE                = *swp->token_id("NEWLINE");
-    const token_id_t ti_OPERATOR               = *swp->token_id("OPERATOR");
-    const token_id_t ti_IDENTIFIER             = *swp->token_id("IDENTIFIER");
-    const token_id_t ti_IDENTIFIER_SILVA_CASE  = *swp->token_id("IDENTIFIER_SILVA_CASE");
-    const token_id_t ti_IDENTIFIER_SNAKE_CASE  = *swp->token_id("IDENTIFIER_SNAKE_CASE");
-    const token_id_t ti_IDENTIFIER_CAMEL_CASE  = *swp->token_id("IDENTIFIER_CAMEL_CASE");
-    const token_id_t ti_IDENTIFIER_PASCAL_CASE = *swp->token_id("IDENTIFIER_PASCAL_CASE");
-    const token_id_t ti_IDENTIFIER_MACRO_CASE  = *swp->token_id("IDENTIFIER_MACRO_CASE");
-    const token_id_t ti_IDENTIFIER_UPPER_CASE  = *swp->token_id("IDENTIFIER_UPPER_CASE");
-    const token_id_t ti_IDENTIFIER_LOWER_CASE  = *swp->token_id("IDENTIFIER_LOWER_CASE");
+    const token_id_t ti_WHITESPACE             = *sfp->token_id("WHITESPACE");
+    const token_id_t ti_COMMENT                = *sfp->token_id("COMMENT");
+    const token_id_t ti_NUMBER                 = *sfp->token_id("NUMBER");
+    const token_id_t ti_STRING                 = *sfp->token_id("STRING");
+    const token_id_t ti_INDENT                 = *sfp->token_id("INDENT");
+    const token_id_t ti_DEDENT                 = *sfp->token_id("DEDENT");
+    const token_id_t ti_NEWLINE                = *sfp->token_id("NEWLINE");
+    const token_id_t ti_OPERATOR               = *sfp->token_id("OPERATOR");
+    const token_id_t ti_IDENTIFIER             = *sfp->token_id("IDENTIFIER");
+    const token_id_t ti_IDENTIFIER_SILVA_CASE  = *sfp->token_id("IDENTIFIER_SILVA_CASE");
+    const token_id_t ti_IDENTIFIER_SNAKE_CASE  = *sfp->token_id("IDENTIFIER_SNAKE_CASE");
+    const token_id_t ti_IDENTIFIER_CAMEL_CASE  = *sfp->token_id("IDENTIFIER_CAMEL_CASE");
+    const token_id_t ti_IDENTIFIER_PASCAL_CASE = *sfp->token_id("IDENTIFIER_PASCAL_CASE");
+    const token_id_t ti_IDENTIFIER_MACRO_CASE  = *sfp->token_id("IDENTIFIER_MACRO_CASE");
+    const token_id_t ti_IDENTIFIER_UPPER_CASE  = *sfp->token_id("IDENTIFIER_UPPER_CASE");
+    const token_id_t ti_IDENTIFIER_LOWER_CASE  = *sfp->token_id("IDENTIFIER_LOWER_CASE");
 
-    const token_id_t ti_prefix  = *swp->token_id("/");
-    const token_id_t ti_postfix = *swp->token_id("\\");
-    const token_id_t ti_exact   = *swp->token_id("|");
+    const token_id_t ti_prefix  = *sfp->token_id("/");
+    const token_id_t ti_postfix = *sfp->token_id("\\");
+    const token_id_t ti_exact   = *sfp->token_id("|");
 
     expected_t<tuple_t<fragment_category_t, case_mask_t>>
     fragment_category_from_token_id(const token_id_t ti)
@@ -183,7 +183,7 @@ namespace silva::seed::impl {
       array_t<matcher_t> matchers;
       if (pts_atom[0].num_children == 0) {
         const token_id_t tid       = pts_atom.first_token_id();
-        const token_info_t& ti     = swp->token_infos[tid];
+        const token_info_t& ti     = sfp->token_infos[tid];
         const string_t atom_str    = SILVA_EXPECT_FWD(ti.contained_string());
         const string_t atom_str_nl = atom_str + "\n";
         const auto fp              = SILVA_EXPECT_FWD(fragmentize("", std::move(atom_str_nl)));
@@ -223,7 +223,7 @@ namespace silva::seed::impl {
         while (t_idx < t_end) {
           SILVA_EXPECT(t_idx + 1 < t_end, BROKEN_SEED);
           const string_t str =
-              SILVA_EXPECT_FWD(swp->token_infos[tokens[t_idx + 1]].contained_string());
+              SILVA_EXPECT_FWD(sfp->token_infos[tokens[t_idx + 1]].contained_string());
           if (tokens[t_idx] == ti_prefix) {
             SILVA_EXPECT(!had_prefix, BROKEN_SEED);
             mm.prefix  = str;
@@ -384,13 +384,13 @@ namespace silva::seed::impl {
 }
 
 namespace silva::seed {
-  tokenizer_farm_t::tokenizer_farm_t(syntax_farm_ptr_t swp) : swp(swp) {}
+  tokenizer_farm_t::tokenizer_farm_t(syntax_farm_ptr_t sfp) : sfp(sfp) {}
 
   expected_t<void> tokenizer_farm_t::add(const token_id_t tokenizer_name, parse_tree_span_t pts)
   {
-    SILVA_EXPECT(pts.tp->swp == swp, MAJOR);
+    SILVA_EXPECT(pts.tp->sfp == sfp, MAJOR);
     SILVA_EXPECT(!tokenizers.contains(tokenizer_name), MINOR);
-    impl::tokenizer_create_nursery_t nursery(swp, tokenizer_name);
+    impl::tokenizer_create_nursery_t nursery(sfp, tokenizer_name);
     SILVA_EXPECT_FWD(nursery.run(pts));
     const auto [it, inserted] = tokenizers.emplace(tokenizer_name, std::move(nursery.retval));
     SILVA_EXPECT(inserted, ASSERT);
@@ -410,13 +410,13 @@ namespace silva::seed {
       SILVA_EXPECT(it != tokenizers.end(),
                    MINOR,
                    "could not find tokenizer {}",
-                   swp->token_id_wrap(tokenizer_name));
+                   sfp->token_id_wrap(tokenizer_name));
       const auto& tt = it->second;
       for (const auto& rule: tt.rules) {
         if (rule.prefix_matchers.empty()) {
           SILVA_EXPECT_FWD(self(rule.token_name),
                            "when processing rules of tokenizer {}",
-                           swp->token_id_wrap(tokenizer_name));
+                           sfp->token_id_wrap(tokenizer_name));
         }
         else {
           rules.push_back(rule);
@@ -438,13 +438,13 @@ namespace silva::seed {
   expected_t<tokenization_ptr_t> tokenizer_farm_t::apply(fragmentization_ptr_t fp,
                                                          const token_id_t tokenizer_name)
   {
-    SILVA_EXPECT(fp->swp == swp, MAJOR);
+    SILVA_EXPECT(fp->sfp == sfp, MAJOR);
 
     SILVA_EXPECT_FWD(cache_tokenizer(tokenizer_name));
     const auto& rules = cached_tokenizers.at(tokenizer_name).rules;
 
     auto retval      = std::make_unique<tokenization_t>();
-    retval->swp      = swp;
+    retval->sfp      = sfp;
     retval->filepath = fp->filepath;
 
     const index_t n = fp->fragments.size();
@@ -511,7 +511,7 @@ namespace silva::seed {
               string_view_t{fp->source_code}.substr(token_text_start,
                                                     token_text_end - token_text_start);
 
-          const auto tid = SILVA_EXPECT_FWD(swp->token_id_new(token_text));
+          const auto tid = SILVA_EXPECT_FWD(sfp->token_id_new(token_text));
           retval->tokens.push_back(tid);
           retval->categories.push_back(rule.token_name);
           retval->locations.push_back(fp->fragments[frag_idx].location);
@@ -527,6 +527,6 @@ namespace silva::seed {
                    fp->fragments[frag_idx].location);
     }
 
-    return swp->add(std::move(retval));
+    return sfp->add(std::move(retval));
   }
 }
