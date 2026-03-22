@@ -102,16 +102,27 @@ namespace silva::seed {
   )'";
 
   struct tokenizer_t {
-    syntax_ward_ptr_t swp;
-    name_id_t name = name_id_root;
+    token_id_t name = token_id_none;
 
     array_t<impl::rule_t> rules;
-
-    expected_t<tokenization_ptr_t> apply(fragmentization_ptr_t) const;
   };
 
-  expected_t<tokenizer_t>
-  tokenizer_create(syntax_ward_ptr_t, name_id_t tokenizer_name, parse_tree_span_t);
+  struct tokenizer_farm_t {
+    syntax_ward_ptr_t swp;
+
+    hash_map_t<token_id_t, tokenizer_t> tokenizers;
+
+    // Any tokenizer in this map has on "include" rules.
+    hash_map_t<token_id_t, tokenizer_t> cached_tokenizers;
+
+    tokenizer_farm_t(syntax_ward_ptr_t);
+
+    expected_t<void> add(token_id_t tokenizer_name, parse_tree_span_t);
+
+    expected_t<void> cache_tokenizer(token_id_t tokenizer_name);
+
+    expected_t<tokenization_ptr_t> apply(fragmentization_ptr_t, token_id_t);
+  };
 
   const string_view_t default_tokenizers_str = R"(
     - Default = tokenizer [

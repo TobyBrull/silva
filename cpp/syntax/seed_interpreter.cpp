@@ -150,7 +150,7 @@ namespace silva::seed {
     }
   };
 
-  interpreter_t::interpreter_t(syntax_ward_ptr_t swp) : swp(swp) {}
+  interpreter_t::interpreter_t(syntax_ward_ptr_t swp) : swp(swp), tokenizer_farm(swp) {}
 
   expected_t<void> interpreter_t::callback_if(const parse_tree_span_t& pts) const
   {

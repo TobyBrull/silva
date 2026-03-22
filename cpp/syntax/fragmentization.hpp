@@ -55,8 +55,8 @@ namespace silva {
 
   struct fragment_span_t {
     fragmentization_ptr_t fp;
-    index_t offset = 0;
-    index_t size   = 0;
+    index_t begin = 0;
+    index_t end   = 0;
   };
 
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filepath_t, string_t source_code);

@@ -26,8 +26,9 @@ namespace silva::seed::impl {
     expected_t<bool> matches(index_t fragment_idx, const fragmentization_t&) const;
   };
 
+  // If token_name == token_id_none, this is an 'ignore' rule.
+  // If prefix_matchers and repeat_matchers are empty, this is an include rule.
   struct rule_t {
-    // token_id_none means an 'ignore' rule.
     token_id_t token_name = token_id_none;
 
     array_t<matcher_t> prefix_matchers;

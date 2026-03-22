@@ -3,7 +3,6 @@
 using enum silva::fragment_category_t;
 
 namespace silva::seed::impl {
-
   expected_t<case_mask_t> compute_case_mask(const string_view_t identifier)
   {
     using enum case_mask_t;
@@ -89,7 +88,7 @@ namespace silva::seed::impl {
 
   struct tokenizer_create_nursery_t {
     syntax_ward_ptr_t swp;
-    name_id_t tokenizer_name = name_id_root;
+    token_id_t tokenizer_name = token_id_none;
 
     const name_id_t ni_seed        = swp->name_id_of("Seed");
     const name_id_t ni_nt          = swp->name_id_of(ni_seed, "Nonterminal");
@@ -326,10 +325,9 @@ namespace silva::seed::impl {
 
     expected_t<void> include_rule(const parse_tree_span_t pts_rule)
     {
-      retval.rules.emplace_back();
-      SILVA_EXPECT(pts_rule[0].num_children == 1, BROKEN_SEED);
-      const token_id_t included_tokenzier_name = pts_rule.first_token_id();
-      // TODO: include named tokenizer
+      const auto [c1]                    = SILVA_EXPECT_FWD(pts_rule.get_children<1>());
+      const token_id_t included_tok_name = pts_rule.sub_tree_span_at(c1).first_token_id();
+      retval.rules.push_back(rule_t{.token_name = included_tok_name});
       return {};
     }
 
@@ -380,17 +378,73 @@ namespace silva::seed::impl {
     }
 
     tokenizer_t retval{
-        .swp  = swp,
         .name = tokenizer_name,
     };
   };
 }
 
 namespace silva::seed {
-  expected_t<tokenization_ptr_t> tokenizer_t::apply(fragmentization_ptr_t fp) const
+  tokenizer_farm_t::tokenizer_farm_t(syntax_ward_ptr_t swp) : swp(swp) {}
+
+  expected_t<void> tokenizer_farm_t::add(const token_id_t tokenizer_name, parse_tree_span_t pts)
   {
+    SILVA_EXPECT(pts.tp->swp == swp, MAJOR);
+    SILVA_EXPECT(!tokenizers.contains(tokenizer_name), MINOR);
+    impl::tokenizer_create_nursery_t nursery(swp, tokenizer_name);
+    SILVA_EXPECT_FWD(nursery.run(pts));
+    const auto [it, inserted] = tokenizers.emplace(tokenizer_name, std::move(nursery.retval));
+    SILVA_EXPECT(inserted, ASSERT);
+    return {};
+  }
+
+  expected_t<void> tokenizer_farm_t::cache_tokenizer(const token_id_t tokenizer_name)
+  {
+    if (cached_tokenizers.contains(tokenizer_name)) {
+      return {};
+    }
+
+    array_t<impl::rule_t> rules;
+    const auto insert_rules = [&](this const auto& self,
+                                  const token_id_t tokenizer_name) -> expected_t<void> {
+      const auto it = tokenizers.find(tokenizer_name);
+      SILVA_EXPECT(it != tokenizers.end(),
+                   MINOR,
+                   "could not find tokenizer {}",
+                   swp->token_id_wrap(tokenizer_name));
+      const auto& tt = it->second;
+      for (const auto& rule: tt.rules) {
+        if (rule.prefix_matchers.empty()) {
+          SILVA_EXPECT_FWD(self(rule.token_name),
+                           "when processing rules of tokenizer {}",
+                           swp->token_id_wrap(tokenizer_name));
+        }
+        else {
+          rules.push_back(rule);
+        }
+      }
+      return {};
+    };
+    SILVA_EXPECT_FWD(insert_rules(tokenizer_name));
+
+    const auto [it, inserted] = cached_tokenizers.emplace(tokenizer_name,
+                                                          tokenizer_t{
+                                                              .name  = tokenizer_name,
+                                                              .rules = std::move(rules),
+                                                          });
+    SILVA_EXPECT(inserted, ASSERT);
+    return {};
+  }
+
+  expected_t<tokenization_ptr_t> tokenizer_farm_t::apply(fragmentization_ptr_t fp,
+                                                         const token_id_t tokenizer_name)
+  {
+    SILVA_EXPECT(fp->swp == swp, MAJOR);
+
+    SILVA_EXPECT_FWD(cache_tokenizer(tokenizer_name));
+    const auto& rules = cached_tokenizers.at(tokenizer_name).rules;
+
     auto retval      = std::make_unique<tokenization_t>();
-    retval->swp      = fp->swp;
+    retval->swp      = swp;
     retval->filepath = fp->filepath;
 
     const index_t n = fp->fragments.size();
@@ -409,18 +463,20 @@ namespace silva::seed {
 
         const index_t language_idx = retval->languages.size();
         retval->languages.push_back(fragment_span_t{
-            .fp     = fp,
-            .offset = frag_idx,
-            .size   = frag_idx - old_frag_idx,
+            .fp    = fp,
+            .begin = old_frag_idx,
+            .end   = frag_idx,
         });
         retval->tokens.push_back(language_idx);
         retval->categories.push_back(token_id_language);
         retval->locations.push_back(fp->fragments[old_frag_idx].location);
         continue;
       }
+
       bool matched = false;
       for (const impl::rule_t& rule: rules) {
         index_t cursor = frag_idx;
+
         bool prefix_ok = true;
         for (const impl::matcher_t& pm: rule.prefix_matchers) {
           if (cursor >= frag_end || !SILVA_EXPECT_FWD(pm.matches(cursor, *fp))) {
@@ -472,13 +528,5 @@ namespace silva::seed {
     }
 
     return swp->add(std::move(retval));
-  }
-
-  expected_t<tokenizer_t>
-  tokenizer_create(syntax_ward_ptr_t swp, const name_id_t tokenizer_name, parse_tree_span_t pts)
-  {
-    impl::tokenizer_create_nursery_t nursery(swp, tokenizer_name);
-    SILVA_EXPECT_FWD(nursery.run(pts));
-    return std::move(nursery.retval);
   }
 }

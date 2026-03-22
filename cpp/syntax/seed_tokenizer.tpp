@@ -1,7 +1,6 @@
 #include "seed_tokenizer.hpp"
 
 #include "syntax.hpp"
-#include "syntax/parse_tree_nursery.hpp"
 
 #include <catch2/catch_all.hpp>
 
@@ -36,31 +35,50 @@ namespace silva::seed::test {
   TEST_CASE("seed-tokenizer")
   {
     syntax_ward_t sw;
+    const auto se = standard_seed_interpreter(sw.ptr());
+
+    const auto ti_lang     = *sw.token_id("language");
+    const auto ti_string   = *sw.token_id("string");
+    const auto ti_freeform = *sw.token_id("FreeForm");
+    const auto ti_testor   = *sw.token_id("Testor");
+    const auto ti_name     = *sw.token_id("name");
+    const auto ti_relp     = *sw.token_id("rel_path");
+    const auto ti_op       = *sw.token_id("op");
+
+    tokenizer_farm_t tokenizer_farm(sw.ptr());
+    const auto load_tokenizer = [&](const token_id_t name, const string_view_t tokenizer_code) {
+      const auto tt0 = SILVA_REQUIRE(tokenize(sw.ptr(), "", tokenizer_code));
+      const auto pt0 = SILVA_REQUIRE(se->apply(tt0, sw.name_id_of("Seed", "Tokenizer")));
+      SILVA_REQUIRE(tokenizer_farm.add(name, pt0->span()));
+    };
+
     const string_view_t test_tok = R"'( tokenizer [
       - ignore NUMBER
-      - ignore NEWLINE
-      - ignore WHITESPACE
-    # - include tokenizer FreeForm
+      - include tokenizer FreeForm
       - name = [ '$' '@' ] IDENTIFIER
       - name = IDENTIFIER\'_t'
       - rel_path = IDENTIFIER ::: '/' '.' IDENTIFIER
       - op = ::: '=' '+'
     ] )'";
+    load_tokenizer(ti_testor, test_tok);
 
-    const auto tt = SILVA_REQUIRE(tokenize(sw.ptr(), "test.tok", test_tok));
-    const auto se = standard_seed_interpreter(sw.ptr());
-    const auto pt = SILVA_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Tokenizer")));
-    const auto tz = SILVA_REQUIRE(tokenizer_create(sw.ptr(), sw.name_id_of("Testor"), pt->span()));
-    CHECK(tz.rules.size() == 9);
+    const string_view_t free_form_tok = R"'( tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - number = NUMBER
+      - string = STRING
+    ] )'";
+    load_tokenizer(ti_freeform, free_form_tok);
+
+    CHECK(tokenizer_farm.tokenizers.at(ti_freeform).rules.size() == 7);
+    CHECK(tokenizer_farm.tokenizers.at(ti_testor).rules.size() == 8);
 
     const string_view_t src = "$hello ==+++ 42 array_t var/file.txt « a « c » « d » b » 1 @abc\n";
     const auto fr           = SILVA_REQUIRE(fragmentize(sw.ptr(), "test.src", string_t{src}));
-    const auto tp           = SILVA_REQUIRE(tz.apply(fr));
-
-    const auto ti_name = SILVA_REQUIRE(sw.token_id("name"));
-    const auto ti_relp = SILVA_REQUIRE(sw.token_id("rel_path"));
-    const auto ti_op   = SILVA_REQUIRE(sw.token_id("op"));
-    const auto ti_lang = SILVA_REQUIRE(sw.token_id("language"));
+    const auto tp           = SILVA_REQUIRE(tokenizer_farm.apply(fr, ti_testor));
 
     REQUIRE(tp->tokens.size() == 6);
     CHECK(tp->tokens[0] == *sw.token_id("$hello"));

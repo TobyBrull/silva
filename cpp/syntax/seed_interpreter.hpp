@@ -10,7 +10,7 @@ namespace silva::seed {
   struct interpreter_t {
     syntax_ward_ptr_t swp;
 
-    hash_map_t<token_id_t, tokenizer_t> tokenizers;
+    tokenizer_farm_t tokenizer_farm;
 
     // For each rule name, gives the node-index of the expression describing that rule.
     hash_map_t<name_id_t, parse_tree_span_t> rule_exprs;
