@@ -1,6 +1,7 @@
 #pragma once
 
 #include "seed_axe.hpp"
+#include "seed_tokenizer.hpp"
 
 #include <regex>
 
@@ -8,6 +9,8 @@ namespace silva::seed {
   // Driver for a program in the Seed language.
   struct interpreter_t {
     syntax_ward_ptr_t swp;
+
+    hash_map_t<token_id_t, tokenizer_t> tokenizers;
 
     // For each rule name, gives the node-index of the expression describing that rule.
     hash_map_t<name_id_t, parse_tree_span_t> rule_exprs;
@@ -41,10 +44,11 @@ namespace silva::seed {
     expected_t<void> add(parse_tree_span_t);
     expected_t<void> add_copy(const parse_tree_span_t&);
 
-    expected_t<parse_tree_ptr_t> add_complete_file(filesystem_path_t filepath, string_view_t text);
+    expected_t<parse_tree_ptr_t> add_complete_file(filepath_t filepath, string_view_t text);
 
-    // Returns a parse-tree of the given "sprout_tokens" according to the language defined by the
-    // "seed" parse-tree.
+    expected_t<parse_tree_ptr_t>
+    apply(fragmentization_ptr_t, token_id_t tokenizer_id, name_id_t goal_rule_name) const;
+
     expected_t<parse_tree_ptr_t> apply(tokenization_ptr_t, name_id_t goal_rule_name) const;
   };
 }

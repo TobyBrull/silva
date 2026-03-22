@@ -2,13 +2,19 @@
 
 #include "canopy/file_location.hpp"
 
-#include "syntax_ward.hpp"
+#include "fragmentization.hpp"
 
 namespace silva {
   struct tokenization_t : public menhir_t {
     syntax_ward_ptr_t swp;
-    filesystem_path_t filepath;
+    filepath_t filepath;
 
+    fragmentization_ptr_t fp;
+
+    array_t<fragment_span_t> languages;
+
+    // For tokens that are a "language", the corresponding entry in "categories" will be "language"
+    // and the corresponding entry in "tokens" will be the index in the "languages" array.
     array_t<token_id_t> tokens;
     array_t<token_id_t> categories;
     array_t<file_location_t> locations;
@@ -36,10 +42,8 @@ namespace silva {
     friend void pretty_write_impl(const token_range_t&, byte_sink_t*);
   };
 
-  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t, filesystem_path_t);
-  expected_t<tokenization_ptr_t> tokenize(syntax_ward_ptr_t syntax_ward_ptr,
-                                          filesystem_path_t descriptive_path,
-                                          string_view_t source_code);
+  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t, filepath_t);
+  expected_t<tokenization_ptr_t> tokenize(syntax_ward_ptr_t, filepath_t, string_view_t source_code);
 }
 
 // IMPLEMENTATION

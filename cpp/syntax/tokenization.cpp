@@ -78,7 +78,7 @@ namespace silva {
     stream->write_str(retval);
   }
 
-  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t swp, filesystem_path_t filepath)
+  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t swp, filepath_t filepath)
   {
     string_t source_code  = SILVA_EXPECT_FWD(read_file(filepath));
     tokenization_ptr_t tp = SILVA_EXPECT_FWD_PLAIN(
@@ -87,7 +87,7 @@ namespace silva {
   }
 
   expected_t<tokenization_ptr_t>
-  tokenize(syntax_ward_ptr_t swp, filesystem_path_t filepath, string_view_t source_code)
+  tokenize(syntax_ward_ptr_t swp, filepath_t filepath, string_view_t source_code)
   {
     auto retval      = std::make_unique<tokenization_t>();
     retval->swp      = swp;

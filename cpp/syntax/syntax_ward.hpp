@@ -24,8 +24,9 @@ namespace silva {
   // Index in "name_infos".
   using name_id_t = index_t;
 
-  constexpr inline token_id_t token_id_none = 0;
-  constexpr inline name_id_t name_id_root   = 0;
+  constexpr inline token_id_t token_id_none     = 0;
+  constexpr inline token_id_t token_id_language = 1;
+  constexpr inline name_id_t name_id_root       = 0;
 
   struct token_info_t {
     token_category_old_t category_old = token_category_old_t::INVALID;
@@ -50,10 +51,12 @@ namespace silva {
   struct token_id_wrap_t;
   struct name_id_wrap_t;
 
+  struct fragmentization_t;
   struct tokenization_t;
   struct parse_tree_t;
-  using tokenization_ptr_t = ptr_t<const tokenization_t>;
-  using parse_tree_ptr_t   = ptr_t<const parse_tree_t>;
+  using fragmentization_ptr_t = ptr_t<const fragmentization_t>;
+  using tokenization_ptr_t    = ptr_t<const tokenization_t>;
+  using parse_tree_ptr_t      = ptr_t<const parse_tree_t>;
 
   struct syntax_ward_t : public menhir_t {
     array_t<token_info_t> token_infos;
@@ -62,6 +65,7 @@ namespace silva {
     array_t<name_info_t> name_infos;
     hash_map_t<name_info_t, name_id_t> name_lookup;
 
+    array_t<unique_ptr_t<const fragmentization_t>> fragmentizations;
     array_t<unique_ptr_t<const tokenization_t>> tokenizations;
     array_t<unique_ptr_t<const parse_tree_t>> parse_trees;
 
@@ -91,6 +95,7 @@ namespace silva {
     token_id_wrap_t token_id_wrap(token_id_t);
     name_id_wrap_t name_id_wrap(name_id_t);
 
+    fragmentization_ptr_t add(unique_ptr_t<const fragmentization_t>);
     tokenization_ptr_t add(unique_ptr_t<const tokenization_t>);
     parse_tree_ptr_t add(unique_ptr_t<const parse_tree_t>);
   };

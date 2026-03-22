@@ -11,13 +11,6 @@ namespace silva {
 
   constexpr static array_fixed_t<unicode::codepoint_t, 1> xid_additional_internal = {U'-'};
 
-  expected_t<unique_ptr_t<fragmentization_t>> fragmentize_load(filesystem_path_t filepath)
-  {
-    string_t source_code = SILVA_EXPECT_FWD(read_file(filepath));
-    auto retval = SILVA_EXPECT_FWD_PLAIN(fragmentize(std::move(filepath), std::move(source_code)));
-    return retval;
-  }
-
   constexpr bool is_ascii_digit(const unicode::codepoint_t cp)
   {
     return '0' <= cp && cp < '9';
@@ -93,11 +86,10 @@ namespace silva {
   struct fragmentizer_t {
     unique_ptr_t<fragmentization_t> retval = std::make_unique<fragmentization_t>();
 
-    expected_t<void> init(filesystem_path_t descriptive_path,
-                          string_t source_code,
-                          array_t<categorized_codepoint_data_t> orig_ccd)
+    expected_t<void>
+    init(filepath_t filepath, string_t source_code, array_t<categorized_codepoint_data_t> orig_ccd)
     {
-      retval->filepath    = std::move(descriptive_path);
+      retval->filepath    = std::move(filepath);
       retval->source_code = std::move(source_code);
       ccd                 = std::move(orig_ccd);
       SILVA_EXPECT(ccd.size() >= 1, ASSERT);
@@ -511,18 +503,33 @@ namespace silva {
     }
   };
 
-  expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filesystem_path_t descriptive_path,
-                                                          string_t source_code)
+  expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filepath_t filepath, string_t source_code)
   {
     auto ccd = SILVA_EXPECT_FWD(categorize_codepoints(source_code));
     fragmentizer_t ff;
-    SILVA_EXPECT_FWD(ff.init(std::move(descriptive_path), std::move(source_code), std::move(ccd)));
+    SILVA_EXPECT_FWD(ff.init(std::move(filepath), std::move(source_code), std::move(ccd)));
     SILVA_EXPECT_FWD(ff.run());
     SILVA_EXPECT(ff.i == ff.n,
                  MINOR,
                  "Incomplete fragmentization; stopped at {}",
                  ff.ccd[ff.i].location);
     return std::move(ff.retval);
+  }
+
+  expected_t<fragmentization_ptr_t>
+  fragmentize(syntax_ward_ptr_t swp, filepath_t filepath, string_t source_code)
+  {
+    auto retval = SILVA_EXPECT_FWD(fragmentize(std::move(filepath), std::move(source_code)));
+    retval->swp = swp;
+    return swp->add(std::move(retval));
+  }
+
+  expected_t<fragmentization_ptr_t> fragmentize_load(syntax_ward_ptr_t swp, filepath_t filepath)
+  {
+    string_t source_code     = SILVA_EXPECT_FWD(read_file(filepath));
+    fragmentization_ptr_t fp = SILVA_EXPECT_FWD_PLAIN(
+        fragmentize(std::move(swp), std::move(filepath), std::move(source_code)));
+    return fp;
   }
 
   void pretty_write_impl(const fragment_t& ff, byte_sink_t* stream)
@@ -556,16 +563,6 @@ namespace silva {
     }
     SILVA_EXPECT(depth == 0, MINOR, "non matching LANG_BEGIN/LANG_END fragments");
     return idx;
-  }
-
-  expected_t<index_t> fragmentization_t::advance(const index_t start) const
-  {
-    if (fragments[start].category == LANG_BEGIN) {
-      return SILVA_EXPECT_FWD(advance_language(start));
-    }
-    else {
-      return start + 1;
-    }
   }
 
   void pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream)

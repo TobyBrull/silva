@@ -118,7 +118,6 @@ namespace silva::seed::impl {
     const token_id_t ti_IDENTIFIER_MACRO_CASE  = *swp->token_id("IDENTIFIER_MACRO_CASE");
     const token_id_t ti_IDENTIFIER_UPPER_CASE  = *swp->token_id("IDENTIFIER_UPPER_CASE");
     const token_id_t ti_IDENTIFIER_LOWER_CASE  = *swp->token_id("IDENTIFIER_LOWER_CASE");
-    const token_id_t ti_LANGUAGE               = *swp->token_id("LANGUAGE");
 
     const token_id_t ti_prefix  = *swp->token_id("/");
     const token_id_t ti_postfix = *swp->token_id("\\");
@@ -174,9 +173,6 @@ namespace silva::seed::impl {
       }
       else if (ti == ti_IDENTIFIER_LOWER_CASE) {
         return {{IDENTIFIER, case_mask_t::LOWER_CASE}};
-      }
-      else if (ti == ti_LANGUAGE) {
-        return {{LANG_BEGIN, case_mask_t::EMPTY}};
       }
       else {
         SILVA_EXPECT(false, MINOR);
@@ -391,32 +387,47 @@ namespace silva::seed::impl {
 }
 
 namespace silva::seed {
-  expected_t<tokenization_ptr_t> tokenizer_t::apply(syntax_ward_ptr_t swp,
-                                                    const fragmentization_t& fr) const
+  expected_t<tokenization_ptr_t> tokenizer_t::apply(fragmentization_ptr_t fp) const
   {
     auto retval      = std::make_unique<tokenization_t>();
-    retval->swp      = swp;
-    retval->filepath = fr.filepath;
+    retval->swp      = fp->swp;
+    retval->filepath = fp->filepath;
 
-    const index_t n = fr.fragments.size();
+    const index_t n = fp->fragments.size();
     SILVA_EXPECT(n >= 2, MINOR);
-    SILVA_EXPECT(fr.fragments.front().category == LANG_BEGIN, MINOR);
-    SILVA_EXPECT(fr.fragments.back().category == LANG_END, MINOR);
+    SILVA_EXPECT(fp->fragments.front().category == LANG_BEGIN, MINOR);
+    SILVA_EXPECT(fp->fragments.back().category == LANG_END, MINOR);
 
     index_t frag_idx       = 1;
     const index_t frag_end = n - 1;
 
     while (frag_idx < frag_end) {
+      if (fp->fragments[frag_idx].category == LANG_BEGIN) {
+        const index_t old_frag_idx = frag_idx;
+
+        frag_idx = SILVA_EXPECT_FWD(fp->advance_language(frag_idx));
+
+        const index_t language_idx = retval->languages.size();
+        retval->languages.push_back(fragment_span_t{
+            .fp     = fp,
+            .offset = frag_idx,
+            .size   = frag_idx - old_frag_idx,
+        });
+        retval->tokens.push_back(language_idx);
+        retval->categories.push_back(token_id_language);
+        retval->locations.push_back(fp->fragments[old_frag_idx].location);
+        continue;
+      }
       bool matched = false;
       for (const impl::rule_t& rule: rules) {
         index_t cursor = frag_idx;
         bool prefix_ok = true;
         for (const impl::matcher_t& pm: rule.prefix_matchers) {
-          if (cursor >= frag_end || !SILVA_EXPECT_FWD(pm.matches(cursor, fr))) {
+          if (cursor >= frag_end || !SILVA_EXPECT_FWD(pm.matches(cursor, *fp))) {
             prefix_ok = false;
             break;
           }
-          cursor = SILVA_EXPECT_FWD(fr.advance(cursor));
+          ++cursor;
         }
         if (!prefix_ok) {
           continue;
@@ -425,8 +436,8 @@ namespace silva::seed {
         while (cursor < frag_end) {
           bool any_match = false;
           for (const impl::matcher_t& rm: rule.repeat_matchers) {
-            if (SILVA_EXPECT_FWD(rm.matches(cursor, fr))) {
-              cursor    = SILVA_EXPECT_FWD(fr.advance(cursor));
+            if (SILVA_EXPECT_FWD(rm.matches(cursor, *fp))) {
+              ++cursor;
               any_match = true;
               break;
             }
@@ -437,17 +448,17 @@ namespace silva::seed {
         }
 
         if (rule.token_name != token_id_none) {
-          const index_t token_text_start = fr.fragments[frag_idx].location.byte_offset;
+          const index_t token_text_start = fp->fragments[frag_idx].location.byte_offset;
           const index_t token_text_end =
-              (cursor < n) ? fr.fragments[cursor].location.byte_offset : fr.source_code.size();
+              (cursor < n) ? fp->fragments[cursor].location.byte_offset : fp->source_code.size();
           const string_view_t token_text =
-              string_view_t{fr.source_code}.substr(token_text_start,
-                                                   token_text_end - token_text_start);
+              string_view_t{fp->source_code}.substr(token_text_start,
+                                                    token_text_end - token_text_start);
 
           const auto tid = SILVA_EXPECT_FWD(swp->token_id_new(token_text));
           retval->tokens.push_back(tid);
           retval->categories.push_back(rule.token_name);
-          retval->locations.push_back(fr.fragments[frag_idx].location);
+          retval->locations.push_back(fp->fragments[frag_idx].location);
         }
 
         frag_idx = cursor;
@@ -457,7 +468,7 @@ namespace silva::seed {
       SILVA_EXPECT(matched,
                    MINOR,
                    "no tokenizer rule matches at {}",
-                   fr.fragments[frag_idx].location);
+                   fp->fragments[frag_idx].location);
     }
 
     return swp->add(std::move(retval));

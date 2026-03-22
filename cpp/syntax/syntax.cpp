@@ -13,7 +13,7 @@ namespace silva {
     };
   }
 
-  expected_t<name_id_t> infer_goal_rule_name(syntax_ward_t& sw, const filesystem_path_t& fsp)
+  expected_t<name_id_t> infer_goal_rule_name(syntax_ward_t& sw, const filepath_t& fsp)
   {
     const string_t ext = fsp.extension().string();
     SILVA_EXPECT(ext.size() >= 2 && ext.front() == '.',

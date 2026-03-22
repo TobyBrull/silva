@@ -17,7 +17,7 @@ namespace silva {
     ]
   )'";
 
-  expected_t<name_id_t> infer_goal_rule_name(syntax_ward_t&, const filesystem_path_t&);
+  expected_t<name_id_t> infer_goal_rule_name(syntax_ward_t&, const filepath_t&);
 
   unique_ptr_t<seed::interpreter_t> standard_seed_interpreter(syntax_ward_ptr_t);
 }

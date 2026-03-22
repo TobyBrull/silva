@@ -58,7 +58,6 @@ namespace silva::seed {
   //  ⎢IDENTIFIER_UPPER_CASE          # matches, e.g., SILVA HELLOWORLD
   //  ⎢IDENTIFIER_LOWER_CASE          # matches, e.g., silva helloworld
   //  ⎢IDENTIFIER                     # matches any identifier, e.g., any of the above examples
-  //  ⎢LANGUAGE
   //
   // Each matcher may be amended by a required prefix (operator /), a required postfix (operator \),
   // or a required exact string (operator |). This mostly makes sense for operators and identifiers.
@@ -108,7 +107,7 @@ namespace silva::seed {
 
     array_t<impl::rule_t> rules;
 
-    expected_t<tokenization_ptr_t> apply(syntax_ward_ptr_t, const fragmentization_t&) const;
+    expected_t<tokenization_ptr_t> apply(fragmentization_ptr_t) const;
   };
 
   expected_t<tokenizer_t>
@@ -123,7 +122,6 @@ namespace silva::seed {
       - newline = NEWLINE
       - number = NUMBER
       - string = STRING
-      - language = LANGUAGE
     ]
     - FreeForm = tokenizer [
       - ignore WHITESPACE
@@ -133,7 +131,6 @@ namespace silva::seed {
       - ignore NEWLINE
       - number = NUMBER
       - string = STRING
-      - language = LANGUAGE
     ]
     - Seed = tokenizer [
       - tokenizer FreeFrom

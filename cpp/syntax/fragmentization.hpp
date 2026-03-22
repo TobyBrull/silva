@@ -4,6 +4,7 @@
 #include "canopy/file_location.hpp"
 
 #include "fragmentization_data.hpp"
+#include "syntax_ward.hpp"
 
 namespace silva {
   enum class fragment_category_t {
@@ -38,7 +39,8 @@ namespace silva {
   };
 
   struct fragmentization_t : public menhir_t {
-    filesystem_path_t filepath;
+    syntax_ward_ptr_t swp;
+    filepath_t filepath;
     string_t source_code;
 
     array_t<fragment_t> fragments;
@@ -46,14 +48,21 @@ namespace silva {
     string_view_t get_fragment_text(index_t fragment_idx) const;
 
     expected_t<index_t> advance_language(const index_t start) const;
-    expected_t<index_t> advance(const index_t start) const;
 
     friend void pretty_write_impl(const fragmentization_t&, byte_sink_t*);
   };
+  using fragmentization_ptr_t = ptr_t<const fragmentization_t>;
 
-  expected_t<unique_ptr_t<fragmentization_t>> fragmentize_load(filesystem_path_t);
-  expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filesystem_path_t descriptive_path,
-                                                          string_t source_code);
+  struct fragment_span_t {
+    fragmentization_ptr_t fp;
+    index_t offset = 0;
+    index_t size   = 0;
+  };
+
+  expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filepath_t, string_t source_code);
+  expected_t<fragmentization_ptr_t>
+  fragmentize(syntax_ward_ptr_t, filepath_t, string_t source_code);
+  expected_t<fragmentization_ptr_t> fragmentize_load(syntax_ward_ptr_t, filepath_t);
 }
 
 // IMPLEMENTATION

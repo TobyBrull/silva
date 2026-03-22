@@ -45,18 +45,17 @@ namespace silva::seed::test {
       - name = IDENTIFIER\'_t'
       - rel_path = IDENTIFIER ::: '/' '.' IDENTIFIER
       - op = ::: '=' '+'
-      - language = LANGUAGE
     ] )'";
 
     const auto tt = SILVA_REQUIRE(tokenize(sw.ptr(), "test.tok", test_tok));
     const auto se = standard_seed_interpreter(sw.ptr());
     const auto pt = SILVA_REQUIRE(se->apply(tt, sw.name_id_of("Seed", "Tokenizer")));
     const auto tz = SILVA_REQUIRE(tokenizer_create(sw.ptr(), sw.name_id_of("Testor"), pt->span()));
-    CHECK(tz.rules.size() == 10);
+    CHECK(tz.rules.size() == 9);
 
     const string_view_t src = "$hello ==+++ 42 array_t var/file.txt « a « c » « d » b » 1 @abc\n";
-    const auto fr           = SILVA_REQUIRE(fragmentize("test.src", string_t{src}));
-    const auto tp           = SILVA_REQUIRE(tz.apply(sw.ptr(), *fr));
+    const auto fr           = SILVA_REQUIRE(fragmentize(sw.ptr(), "test.src", string_t{src}));
+    const auto tp           = SILVA_REQUIRE(tz.apply(fr));
 
     const auto ti_name = SILVA_REQUIRE(sw.token_id("name"));
     const auto ti_relp = SILVA_REQUIRE(sw.token_id("rel_path"));

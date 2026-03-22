@@ -39,7 +39,7 @@ namespace silva {
   template<typename... Ts>
   using tuple_t = std::tuple<Ts...>;
 
-  using filesystem_path_t = std::filesystem::path;
+  using filepath_t = std::filesystem::path;
 
   template<typename T>
   using function_t = std::function<T>;

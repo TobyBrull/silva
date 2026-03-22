@@ -220,6 +220,13 @@ namespace silva {
   {
     token_infos.emplace_back();
     token_lookup[""] = token_id_none;
+
+    token_infos.emplace_back(token_info_t{
+        .category_old = IDENTIFIER,
+        .str          = "language",
+    });
+    token_lookup["language"] = token_id_language;
+
     const name_info_t fni{0, 0};
     name_infos.emplace_back(fni);
     name_lookup.emplace(fni, 0);
@@ -358,12 +365,16 @@ namespace silva {
     byte_sink->write_str(x.swp->default_name_id_style().absolute(x.name_id));
   }
 
+  fragmentization_ptr_t syntax_ward_t::add(unique_ptr_t<const fragmentization_t> x)
+  {
+    fragmentizations.push_back(std::move(x));
+    return fragmentizations.back()->ptr();
+  }
   tokenization_ptr_t syntax_ward_t::add(unique_ptr_t<const tokenization_t> x)
   {
     tokenizations.push_back(std::move(x));
     return tokenizations.back()->ptr();
   }
-
   parse_tree_ptr_t syntax_ward_t::add(unique_ptr_t<const parse_tree_t> x)
   {
     parse_trees.push_back(std::move(x));

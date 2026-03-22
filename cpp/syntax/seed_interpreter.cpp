@@ -175,7 +175,7 @@ namespace silva::seed {
     return add(stps->span());
   }
 
-  expected_t<parse_tree_ptr_t> interpreter_t::add_complete_file(filesystem_path_t filepath,
+  expected_t<parse_tree_ptr_t> interpreter_t::add_complete_file(filepath_t filepath,
                                                                 string_view_t text)
   {
     auto tt  = SILVA_EXPECT_FWD(tokenize(swp, std::move(filepath), std::move(text)));
