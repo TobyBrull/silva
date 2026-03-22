@@ -1,5 +1,7 @@
 #include "seed_interpreter.hpp"
 
+#include "syntax.hpp"
+
 #include <catch2/catch_all.hpp>
 
 namespace silva::seed::test {
@@ -117,6 +119,48 @@ namespace silva::seed::test {
 )";
     const string_t frog_pt_str{SILVA_REQUIRE(frog_pt->span().to_string())};
     CHECK(frog_pt_str == expected.substr(1));
+  }
+
+  TEST_CASE("apply-fragmentization", "[seed::interpreter_t][temp]")
+  {
+    syntax_farm_t sf;
+    auto se = standard_seed_interpreter(sf.ptr());
+
+    const auto ti_testor           = *sf.token_id("Testor");
+    const string_view_t testor_tok = R"'( tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - name = IDENTIFIER
+      - op = OPERATOR
+    ] )'";
+    const auto tok_tt              = SILVA_REQUIRE(tokenize(sf.ptr(), "", testor_tok));
+    const auto tok_pt = SILVA_REQUIRE(se->apply(tok_tt, sf.name_id_of("Seed", "Tokenizer")));
+    SILVA_REQUIRE(se->tokenizer_farm.add(ti_testor, tok_pt->span()));
+
+    const string_view_t testor_grammar = R"'(
+      - Testor = [
+        - x = Assign *
+        - Assign = name '=' name op name
+      ]
+    )'";
+    SILVA_REQUIRE(se->add_complete_file("testor.seed", testor_grammar));
+
+    const string_view_t src = "x = a + b\ny = c * d\n";
+    const auto fp           = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.src", string_t{src}));
+    CHECK(fp->fragments.size() == 22);
+    const auto pt = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Testor")));
+    CHECK(pt->tp->tokens.size() == 10);
+
+    const string_view_t expected = R"(
+[0]_.Testor                                       x = ... * d
+  [0]_.Testor.Assign                              x = a + b
+  [1]_.Testor.Assign                              y = c * d
+)";
+    const string_t result        = SILVA_REQUIRE(pt->span().to_string());
+    CHECK(result == expected.substr(1));
   }
 
   TEST_CASE("multiple-texts", "[seed::interpreter_t]")
