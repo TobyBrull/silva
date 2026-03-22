@@ -65,8 +65,24 @@ namespace silva::seed {
       name_id_t ni_nt           = sfp->name_id_of(ni_seed, "Nonterminal");
       name_id_t ni_nt_base      = sfp->name_id_of(ni_nt, "Base");
       name_id_t ni_term         = sfp->name_id_of(ni_seed, "Terminal");
+      name_id_t ni_tok_cat      = sfp->name_id_of(ni_seed, "TokenCategory");
 
       axe_parse_tree_nursery_t(tokenization_ptr_t tp) : parse_tree_nursery_t(tp) {}
+
+      expected_t<parse_tree_node_t> token_category()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_tok_cat);
+        SILVA_EXPECT_PARSE(ni_tok_cat, num_tokens_left() >= 1, "no more tokens in input");
+        const auto& tstr = token_data_by()->str;
+        SILVA_EXPECT_PARSE(ni_tok_cat,
+                           token_data_by()->category_old == IDENTIFIER && !tstr.empty() &&
+                               std::islower(tstr.front()),
+                           "unexpected {}",
+                           sfp->token_id_wrap(token_id_by()));
+        token_index += 1;
+        return ss_rule.commit();
+      }
 
       expected_t<parse_tree_node_t> terminal()
       {
@@ -83,15 +99,15 @@ namespace silva::seed {
         }
         else {
           SILVA_EXPECT_PARSE(ni_term, num_tokens_left() >= 1, "no more tokens in input");
-          SILVA_EXPECT_PARSE(ni_term,
-                             token_data_by()->category_old == STRING ||
-                                 token_id_by() == ti_identifier || token_id_by() == ti_operator ||
-                                 token_id_by() == ti_string || token_id_by() == ti_number ||
-                                 token_id_by() == ti_any || token_id_by() == ti_eps ||
-                                 token_id_by() == ti_eof,
-                             "unexpected {}",
-                             sfp->token_id_wrap(token_id_by()));
-          token_index += 1;
+          if (token_data_by()->category_old == STRING || token_id_by() == ti_identifier ||
+              token_id_by() == ti_operator || token_id_by() == ti_string ||
+              token_id_by() == ti_number || token_id_by() == ti_any || token_id_by() == ti_eps ||
+              token_id_by() == ti_eof) {
+            token_index += 1;
+          }
+          else {
+            ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_term, token_category()));
+          }
         }
         return ss_rule.commit();
       }
@@ -275,7 +291,7 @@ namespace silva::seed {
         }
 
         {
-          auto result = terminal();
+          auto result = function();
           if (result) {
             ss.add_proto_node(*result);
             return ss.commit();
@@ -284,7 +300,7 @@ namespace silva::seed {
         }
 
         {
-          auto result = function();
+          auto result = terminal();
           if (result) {
             ss.add_proto_node(*result);
             return ss.commit();

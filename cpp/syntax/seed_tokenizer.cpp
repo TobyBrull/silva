@@ -465,7 +465,7 @@ namespace silva::seed {
             .begin = old_frag_idx,
             .end   = frag_idx,
         });
-        retval->tokens.push_back(language_idx);
+        retval->tokens.push_back(-language_idx);
         retval->categories.push_back(token_id_language);
         retval->locations.push_back(fp->fragments[old_frag_idx].location);
         continue;

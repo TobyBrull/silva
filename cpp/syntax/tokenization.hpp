@@ -14,7 +14,8 @@ namespace silva {
     array_t<fragment_span_t> languages;
 
     // For tokens that are a "language", the corresponding entry in "categories" will be "language"
-    // and the corresponding entry in "tokens" will be the index in the "languages" array.
+    // and the corresponding entry in "tokens" will be the negative of its index in the "languages"
+    // array.
     array_t<token_id_t> tokens;
     array_t<token_id_t> categories;
     array_t<file_location_t> locations;

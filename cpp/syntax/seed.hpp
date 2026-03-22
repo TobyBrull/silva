@@ -45,7 +45,7 @@ namespace silva::seed {
         - And       = ltr   infix_flat 'but_then'
         - Or        = ltr   infix_flat '|'
       ]
-      - Atom => NonterminalMaybeVar | Terminal | Function
+      - Atom => NonterminalMaybeVar | Function | Terminal
       - NonterminalMaybeVar = Nonterminal ( '->' Variable ) ?
       - Variable = identifier / '^[a-z].*_v$'
       - Function = [
@@ -64,6 +64,8 @@ namespace silva::seed {
                  | 'keywords_of' Nonterminal
                  | 'string' | 'number'
                  | 'any' | 'epsilon' | 'end_of_file'
+                 | TokenCategory
+      - TokenCategory = identifier / '^[a-z]'
     ]
     - None = epsilon
   )'";

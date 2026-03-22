@@ -1,6 +1,6 @@
 # TODO
 
-* implement seed-interpreter.apply
+* use unicode.is-lower() in seed.cpp
 
 * tokenization:
     * Support user-defined tokenization rules.
