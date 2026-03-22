@@ -41,13 +41,12 @@ namespace silva::seed {
     interpreter_t(syntax_farm_ptr_t);
 
     // The given parse_tree_span_t should be part of one of the "seed_parse_trees".
-    expected_t<void> add(parse_tree_span_t);
-    expected_t<void> add_copy(const parse_tree_span_t&);
+    expected_t<void> add(parse_tree_span_t pts_seed);
+    expected_t<void> add_copy(const parse_tree_span_t& pts_seed);
 
-    expected_t<parse_tree_ptr_t> add_complete_file(filepath_t filepath, string_view_t text);
+    expected_t<parse_tree_ptr_t> add_complete_file(filepath_t seed_filepath, string_view_t text);
 
-    expected_t<parse_tree_ptr_t>
-    apply(fragmentization_ptr_t, token_id_t tokenizer_id, name_id_t goal_rule_name) const;
+    expected_t<parse_tree_ptr_t> apply(fragmentization_ptr_t, name_id_t goal_rule_name);
 
     expected_t<parse_tree_ptr_t> apply(tokenization_ptr_t, name_id_t goal_rule_name) const;
   };
