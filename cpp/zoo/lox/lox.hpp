@@ -57,10 +57,10 @@ namespace silva::lox {
     ]
   )'";
 
-  unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_ward_ptr_t);
+  unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);
 
   struct lexicon_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
 
     token_id_t ti_true  = swp->token_id("true").value();
     token_id_t ti_false = swp->token_id("false").value();

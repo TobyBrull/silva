@@ -8,7 +8,7 @@ namespace silva::lox {
 
   using enum opcode_t;
 
-  bytecode_compiler_t::bytecode_compiler_t(syntax_ward_ptr_t swp, object_pool_t* object_pool)
+  bytecode_compiler_t::bytecode_compiler_t(syntax_farm_ptr_t swp, object_pool_t* object_pool)
     : lexicon(std::move(swp)), object_pool(object_pool)
   {
   }
@@ -17,7 +17,7 @@ namespace silva::lox {
     bytecode_compiler_t* compiler = nullptr;
 
     const lexicon_t& lexicon   = compiler->lexicon;
-    syntax_ward_ptr_t swp      = lexicon.swp;
+    syntax_farm_ptr_t swp      = lexicon.swp;
     object_pool_t& object_pool = *compiler->object_pool;
 
     struct func_scope_t {
@@ -39,7 +39,7 @@ namespace silva::lox {
       };
       array_t<upvalue_info_t> upvalue_infos;
 
-      func_scope_t(syntax_ward_ptr_t swp) : chunk{std::make_unique<bytecode_chunk_t>(swp)} {}
+      func_scope_t(syntax_farm_ptr_t swp) : chunk{std::make_unique<bytecode_chunk_t>(swp)} {}
     };
     array_t<func_scope_t> func_scopes;
 

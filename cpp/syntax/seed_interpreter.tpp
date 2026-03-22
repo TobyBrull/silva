@@ -17,7 +17,7 @@ namespace silva::seed::test {
       ]
     ]
   )'";
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     interpreter_t se(sw.ptr());
     auto ptp = SILVA_REQUIRE(se.add_complete_file("frog.seed", frog_seed));
     const string_view_t expected_seed_pt = R"(
@@ -132,7 +132,7 @@ namespace silva::seed::test {
       - x = 'x' 'y' 'z' _.Foo ?
     ]
   )'";
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     interpreter_t se(sw.ptr());
     SILVA_REQUIRE(se.add_complete_file("text1.seed", text1_seed));
     SILVA_REQUIRE(se.add_complete_file("text2.seed", text2_seed));

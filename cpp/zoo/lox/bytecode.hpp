@@ -45,7 +45,7 @@ namespace silva::lox {
   };
 
   struct bytecode_chunk_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
 
     array_t<byte_t> bytecode;
 
@@ -55,7 +55,7 @@ namespace silva::lox {
     flatmap_t<index_t, parse_tree_span_t> origin_info;
     parse_tree_span_t origin_info_at_instr(index_t) const;
 
-    bytecode_chunk_t(syntax_ward_ptr_t);
+    bytecode_chunk_t(syntax_farm_ptr_t);
 
     expected_t<string_t> to_string(index_t level = 0) const;
     expected_t<index_t> to_string_at(string_t&, index_t) const;

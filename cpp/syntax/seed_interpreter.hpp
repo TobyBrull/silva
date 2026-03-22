@@ -8,7 +8,7 @@
 namespace silva::seed {
   // Driver for a program in the Seed language.
   struct interpreter_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
 
     tokenizer_farm_t tokenizer_farm;
 
@@ -38,7 +38,7 @@ namespace silva::seed {
     hash_map_t<name_id_t, callback_t> parse_callbacks;
     expected_t<void> callback_if(const parse_tree_span_t&) const;
 
-    interpreter_t(syntax_ward_ptr_t);
+    interpreter_t(syntax_farm_ptr_t);
 
     // The given parse_tree_span_t should be part of one of the "seed_parse_trees".
     expected_t<void> add(parse_tree_span_t);

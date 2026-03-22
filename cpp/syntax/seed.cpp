@@ -216,7 +216,7 @@ namespace silva::seed {
     };
   }
 
-  axe_t create_axe_expr(syntax_ward_ptr_t swp)
+  axe_t create_axe_expr(syntax_farm_ptr_t swp)
   {
     const string_view_t axe_defn = [] -> string_view_t {
       const string_view_t start_str = "- Expr =/ ";

@@ -18,7 +18,7 @@ namespace silva::fern {
         SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("seed-engine"), MAJOR).value_or(true);
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]));
     parse_tree_ptr_t ptp;
     if (arg_seed_eng) {

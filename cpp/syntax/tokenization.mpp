@@ -2,7 +2,7 @@
 
 #include "canopy/byte_sink.hpp"
 #include "canopy/main.hpp"
-#include "syntax_ward.hpp"
+#include "syntax_farm.hpp"
 
 #include <fmt/format.h>
 
@@ -13,7 +13,7 @@ namespace silva {
     SILVA_EXPECT(2 == m, MINOR, "Usage: ... <file>");
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     byte_sink_stdout_t _stdout;
     const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sw.ptr(), cmdline_args[1]),
                                                "while tokenizing {}",

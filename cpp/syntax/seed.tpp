@@ -10,7 +10,7 @@
 namespace silva::seed::test {
   TEST_CASE("name-id-style", "[name_id_style_t]")
   {
-    syntax_ward_t sw;
+    syntax_farm_t sw;
 
     const name_id_t name1 = sw.name_id_of("std", "expr", "stmt");
     const name_id_t name2 = sw.name_id_of("std", "expr");
@@ -39,7 +39,7 @@ namespace silva::seed::test {
 
   TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     const auto spr       = standard_seed_interpreter(sw.ptr());
     const auto seed_tt   = SILVA_REQUIRE(tokenize(sw.ptr(), "", string_t{seed_str}));
     const auto seed_pt_1 = SILVA_REQUIRE(parse(seed_tt));
@@ -82,7 +82,7 @@ namespace silva::seed::test {
       - Item = x | string | number
     ]
   )'";
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     const auto sf_seed_tt   = SILVA_REQUIRE(tokenize(sw.ptr(), "", sf_text));
     const auto sf_seed_pt_1 = SILVA_REQUIRE(parse(sf_seed_tt));
     const auto spr          = standard_seed_interpreter(sw.ptr());

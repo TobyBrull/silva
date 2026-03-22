@@ -6,7 +6,7 @@
 
 namespace silva {
   struct tokenization_t : public menhir_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     filepath_t filepath;
 
     fragmentization_ptr_t fp;
@@ -42,8 +42,8 @@ namespace silva {
     friend void pretty_write_impl(const token_range_t&, byte_sink_t*);
   };
 
-  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t, filepath_t);
-  expected_t<tokenization_ptr_t> tokenize(syntax_ward_ptr_t, filepath_t, string_view_t source_code);
+  expected_t<tokenization_ptr_t> tokenize_load(syntax_farm_ptr_t, filepath_t);
+  expected_t<tokenization_ptr_t> tokenize(syntax_farm_ptr_t, filepath_t, string_view_t source_code);
 }
 
 // IMPLEMENTATION

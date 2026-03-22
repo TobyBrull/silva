@@ -34,7 +34,7 @@ namespace silva::seed::test {
   }
   TEST_CASE("seed-tokenizer")
   {
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     const auto se = standard_seed_interpreter(sw.ptr());
 
     const auto ti_lang     = *sw.token_id("language");

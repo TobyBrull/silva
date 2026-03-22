@@ -10,7 +10,7 @@
 
 namespace silva::lox::test {
   struct test_harness_t {
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     unique_ptr_t<seed::interpreter_t> si = seed_interpreter(sw.ptr());
     object_pool_t object_pool;
     bytecode_compiler_t compiler = {sw.ptr(), &object_pool};

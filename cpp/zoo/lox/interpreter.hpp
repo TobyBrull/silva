@@ -21,7 +21,7 @@ namespace silva::lox {
     hash_map_t<parse_tree_span_t, object_ref_t> literals;
     hash_map_t<parse_tree_span_t, index_t> resolution;
 
-    interpreter_t(syntax_ward_ptr_t, byte_sink_t*);
+    interpreter_t(syntax_farm_ptr_t, byte_sink_t*);
     ~interpreter_t();
 
     // The parser needs to be able to parse Lox.

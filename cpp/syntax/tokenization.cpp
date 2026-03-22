@@ -2,7 +2,7 @@
 
 #include "canopy/filesystem.hpp"
 
-#include "syntax_ward.hpp"
+#include "syntax_farm.hpp"
 
 namespace silva {
   using enum token_category_old_t;
@@ -22,7 +22,7 @@ namespace silva {
     return &swp->token_infos[tokens[token_index]];
   }
 
-  token_id_t syntax_ward_get_token_id_from_info(syntax_ward_t& sw, const token_info_t& token_info)
+  token_id_t syntax_farm_get_token_id_from_info(syntax_farm_t& sw, const token_info_t& token_info)
   {
     const auto it = sw.token_lookup.find(token_info.str);
     if (it != sw.token_lookup.end()) {
@@ -78,7 +78,7 @@ namespace silva {
     stream->write_str(retval);
   }
 
-  expected_t<tokenization_ptr_t> tokenize_load(syntax_ward_ptr_t swp, filepath_t filepath)
+  expected_t<tokenization_ptr_t> tokenize_load(syntax_farm_ptr_t swp, filepath_t filepath)
   {
     string_t source_code  = SILVA_EXPECT_FWD(read_file(filepath));
     tokenization_ptr_t tp = SILVA_EXPECT_FWD_PLAIN(
@@ -87,7 +87,7 @@ namespace silva {
   }
 
   expected_t<tokenization_ptr_t>
-  tokenize(syntax_ward_ptr_t swp, filepath_t filepath, string_view_t source_code)
+  tokenize(syntax_farm_ptr_t swp, filepath_t filepath, string_view_t source_code)
   {
     auto retval      = std::make_unique<tokenization_t>();
     retval->swp      = swp;
@@ -114,7 +114,7 @@ namespace silva {
             .category_old = token_cat,
             .str          = string_t{tokenized_str},
         };
-        const token_id_t tii = syntax_ward_get_token_id_from_info(*swp, std::move(ti));
+        const token_id_t tii = syntax_farm_get_token_id_from_info(*swp, std::move(ti));
         retval->tokens.push_back(tii);
         retval->locations.push_back(old_loc);
       }

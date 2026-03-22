@@ -4,7 +4,7 @@
 
 #include "fragmentization.hpp"
 #include "syntax/parse_tree.hpp"
-#include "syntax_ward.hpp"
+#include "syntax_farm.hpp"
 
 namespace silva::seed {
 
@@ -108,14 +108,14 @@ namespace silva::seed {
   };
 
   struct tokenizer_farm_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
 
     hash_map_t<token_id_t, tokenizer_t> tokenizers;
 
     // Any tokenizer in this map has on "include" rules.
     hash_map_t<token_id_t, tokenizer_t> cached_tokenizers;
 
-    tokenizer_farm_t(syntax_ward_ptr_t);
+    tokenizer_farm_t(syntax_farm_ptr_t);
 
     expected_t<void> add(token_id_t tokenizer_name, parse_tree_span_t);
 

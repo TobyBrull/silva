@@ -6,7 +6,7 @@ namespace silva::lox {
 
   using enum opcode_t;
 
-  bytecode_vm_t::bytecode_vm_t(syntax_ward_ptr_t swp,
+  bytecode_vm_t::bytecode_vm_t(syntax_farm_ptr_t swp,
                                object_pool_t* object_pool,
                                byte_sink_t* print_target)
     : swp(swp), object_pool(object_pool), print_target(print_target)

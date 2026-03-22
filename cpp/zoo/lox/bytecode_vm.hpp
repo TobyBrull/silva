@@ -8,7 +8,7 @@
 
 namespace silva::lox {
   struct bytecode_vm_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     object_pool_t* object_pool = nullptr;
     array_t<object_ref_t> stack;
     array_t<object_ref_t> open_upvalues;
@@ -27,7 +27,7 @@ namespace silva::lox {
 
     byte_sink_t* print_target = nullptr;
 
-    bytecode_vm_t(syntax_ward_ptr_t, object_pool_t*, byte_sink_t*);
+    bytecode_vm_t(syntax_farm_ptr_t, object_pool_t*, byte_sink_t*);
 
     // The parser needs to be able to parse Lox.
     expected_t<void> load_builtins(const parser_t&);

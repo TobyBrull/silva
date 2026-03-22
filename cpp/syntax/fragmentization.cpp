@@ -517,14 +517,14 @@ namespace silva {
   }
 
   expected_t<fragmentization_ptr_t>
-  fragmentize(syntax_ward_ptr_t swp, filepath_t filepath, string_t source_code)
+  fragmentize(syntax_farm_ptr_t swp, filepath_t filepath, string_t source_code)
   {
     auto retval = SILVA_EXPECT_FWD(fragmentize(std::move(filepath), std::move(source_code)));
     retval->swp = swp;
     return swp->add(std::move(retval));
   }
 
-  expected_t<fragmentization_ptr_t> fragmentize_load(syntax_ward_ptr_t swp, filepath_t filepath)
+  expected_t<fragmentization_ptr_t> fragmentize_load(syntax_farm_ptr_t swp, filepath_t filepath)
   {
     string_t source_code     = SILVA_EXPECT_FWD(read_file(filepath));
     fragmentization_ptr_t fp = SILVA_EXPECT_FWD_PLAIN(

@@ -8,7 +8,7 @@ namespace silva::lox {
     lexicon_t lexicon;
     object_pool_t* object_pool = nullptr;
 
-    bytecode_compiler_t(syntax_ward_ptr_t, object_pool_t*);
+    bytecode_compiler_t(syntax_farm_ptr_t, object_pool_t*);
 
     expected_t<unique_ptr_t<bytecode_chunk_t>> compile(parse_tree_span_t);
   };

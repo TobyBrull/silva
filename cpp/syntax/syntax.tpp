@@ -11,7 +11,7 @@ namespace silva::test {
     - Mult = Primary ( '*' Mult ) *
     - Primary = '(' Expr ')' | number
   )'";
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     seed::interpreter_t si(sw.ptr());
     SILVA_REQUIRE(si.add_complete_file("expr.seed", expr_seed_text));
 
@@ -48,7 +48,7 @@ namespace silva::test {
     ]
     - Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
   )'";
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     seed::interpreter_t si(sw.ptr());
     SILVA_REQUIRE(si.add_complete_file("expr.seed", expr_seed_text));
 

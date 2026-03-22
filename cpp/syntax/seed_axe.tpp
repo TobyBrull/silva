@@ -11,7 +11,7 @@ using enum silva::seed::impl::assoc_t;
 
 namespace silva::seed::test {
   template<typename SeedAxeNursery>
-  expected_t<parse_tree_ptr_t> run_axe(syntax_ward_t& sw, const axe_t& axe, tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t> run_axe(syntax_farm_t& sw, const axe_t& axe, tokenization_ptr_t tp)
   {
     const index_t n = tp->tokens.size();
     SeedAxeNursery nursery(axe, std::move(tp));
@@ -23,7 +23,7 @@ namespace silva::seed::test {
   }
 
   template<typename SeedAxeNursery>
-  void test_axe(syntax_ward_ptr_t swp,
+  void test_axe(syntax_farm_ptr_t swp,
                 const axe_t& pa,
                 const string_view_t text,
                 const optional_t<string_view_t> expected_str)
@@ -93,7 +93,7 @@ namespace silva::seed::test {
       }
     };
 
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     const string_view_t test_axe = R"'( _.Test.Atom [
         - Nst   = nest  atom_nest '(' ')'
         - Dot   = rtl   infix '.'
@@ -489,7 +489,7 @@ namespace silva::seed::test {
       }
     };
 
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     const string_view_t test_axe = R"'( _.Test.Atom [
         - Nst     = nest  atom_nest_transparent '<<' '>>'
         - Prf_hi  = rtl   prefix_nest '(' ')'

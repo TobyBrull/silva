@@ -13,7 +13,7 @@ namespace silva::lox::test {
 
     byte_sink_memory_t print_buffer;
 
-    test_interpreter_t(seed::interpreter_t* si, syntax_ward_ptr_t swp)
+    test_interpreter_t(seed::interpreter_t* si, syntax_farm_ptr_t swp)
       : interpreter_t(std::move(swp), nullptr), si(si)
     {
       print_stream = &print_buffer;
@@ -53,7 +53,7 @@ namespace silva::lox::test {
 
   TEST_CASE("lox-evaluate", "[lox]")
   {
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     auto si = standard_seed_interpreter(sw.ptr());
     SILVA_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
     test_interpreter_t lti{si.get(), sw.ptr()};

@@ -87,7 +87,7 @@ namespace silva::seed::impl {
   }
 
   struct tokenizer_create_nursery_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     token_id_t tokenizer_name = token_id_none;
 
     const name_id_t ni_seed        = swp->name_id_of("Seed");
@@ -384,7 +384,7 @@ namespace silva::seed::impl {
 }
 
 namespace silva::seed {
-  tokenizer_farm_t::tokenizer_farm_t(syntax_ward_ptr_t swp) : swp(swp) {}
+  tokenizer_farm_t::tokenizer_farm_t(syntax_farm_ptr_t swp) : swp(swp) {}
 
   expected_t<void> tokenizer_farm_t::add(const token_id_t tokenizer_name, parse_tree_span_t pts)
   {

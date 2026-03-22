@@ -12,7 +12,7 @@ namespace silva::lox {
   )'";
 
   expected_t<hash_map_t<token_id_t, object_ref_t>>
-  make_builtins(syntax_ward_ptr_t swp, const parser_t& parser, object_pool_t& object_pool)
+  make_builtins(syntax_farm_ptr_t swp, const parser_t& parser, object_pool_t& object_pool)
   {
     const tokenization_ptr_t builtin_tt =
         SILVA_EXPECT_FWD(tokenize(swp, "builtins.lox", builtins_lox_str));

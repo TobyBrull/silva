@@ -4,7 +4,7 @@
 
 namespace silva {
   struct name_id_style_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     token_id_t root      = *swp->token_id("_");
     token_id_t current   = *swp->token_id("x");
     token_id_t parent    = *swp->token_id("p");

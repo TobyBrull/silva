@@ -1,13 +1,13 @@
 #include "tokenization.hpp"
 
-#include "syntax_ward.hpp"
+#include "syntax_farm.hpp"
 
 #include <catch2/catch_all.hpp>
 
 namespace silva::test {
   TEST_CASE("tokenization", "[tokenization_t]")
   {
-    syntax_ward_t sw;
+    syntax_farm_t sw;
     using enum token_category_old_t;
     using info_t = token_info_t;
     {

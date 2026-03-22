@@ -10,7 +10,7 @@ using enum silva::token_category_old_t;
 
 namespace silva::lox {
 
-  interpreter_t::interpreter_t(syntax_ward_ptr_t swp, byte_sink_t* byte_sink)
+  interpreter_t::interpreter_t(syntax_farm_ptr_t swp, byte_sink_t* byte_sink)
     : lexicon(std::move(swp)), print_stream(byte_sink)
   {
   }
@@ -185,7 +185,7 @@ namespace silva::lox {
 
   struct evaluation_t {
     interpreter_t* intp        = nullptr;
-    syntax_ward_ptr_t swp      = intp->lexicon.swp;
+    syntax_farm_ptr_t swp      = intp->lexicon.swp;
     const name_id_style_t& nis = swp->default_name_id_style();
     scope_ptr_t scope;
 
@@ -489,7 +489,7 @@ namespace silva::lox {
 
   struct execution_t {
     interpreter_t* intp   = nullptr;
-    syntax_ward_ptr_t swp = intp->lexicon.swp;
+    syntax_farm_ptr_t swp = intp->lexicon.swp;
 
     expected_t<return_t<object_ref_t>> decl(const parse_tree_span_t pts, scope_ptr_t& scope)
     {

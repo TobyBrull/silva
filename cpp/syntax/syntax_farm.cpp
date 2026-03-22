@@ -1,4 +1,4 @@
-#include "syntax_ward.hpp"
+#include "syntax_farm.hpp"
 
 #include "canopy/string_convert.hpp"
 #include "name_id_style.hpp"
@@ -209,14 +209,14 @@ namespace silva {
     return hash(tuple_t<name_id_t, token_id_t>{x.parent_name, x.base_name});
   }
 
-  struct syntax_ward_t::impl_t {
-    syntax_ward_ptr_t swp;
+  struct syntax_farm_t::impl_t {
+    syntax_farm_ptr_t swp;
     name_id_style_t default_nis{swp};
 
-    impl_t(syntax_ward_ptr_t swp) : swp(swp) {}
+    impl_t(syntax_farm_ptr_t swp) : swp(swp) {}
   };
 
-  syntax_ward_t::syntax_ward_t()
+  syntax_farm_t::syntax_farm_t()
   {
     token_infos.emplace_back();
     token_lookup[""] = token_id_none;
@@ -233,9 +233,9 @@ namespace silva {
     impl = std::make_unique<impl_t>(ptr());
   }
 
-  syntax_ward_t::~syntax_ward_t() = default;
+  syntax_farm_t::~syntax_farm_t() = default;
 
-  expected_t<token_id_t> syntax_ward_t::token_id(const string_view_t token_str)
+  expected_t<token_id_t> syntax_farm_t::token_id(const string_view_t token_str)
   {
     const auto it = token_lookup.find(string_t{token_str});
     if (it != token_lookup.end()) {
@@ -251,7 +251,7 @@ namespace silva {
     }
   }
 
-  expected_t<token_id_t> syntax_ward_t::token_id_new(const string_view_t token_str)
+  expected_t<token_id_t> syntax_farm_t::token_id_new(const string_view_t token_str)
   {
     const auto it = token_lookup.find(string_t{token_str});
     if (it != token_lookup.end()) {
@@ -266,7 +266,7 @@ namespace silva {
     return new_token_id;
   }
 
-  expected_t<token_id_t> syntax_ward_t::token_id_in_string(const token_id_t ti)
+  expected_t<token_id_t> syntax_farm_t::token_id_in_string(const token_id_t ti)
   {
     const auto& token_info = token_infos[ti];
     SILVA_EXPECT(token_info.category_old == STRING, MINOR, "{} not a string", token_id_wrap(ti));
@@ -276,7 +276,7 @@ namespace silva {
     return token_id(str);
   }
 
-  name_id_t syntax_ward_t::name_id(const name_id_t parent_name, const token_id_t base_name)
+  name_id_t syntax_farm_t::name_id(const name_id_t parent_name, const token_id_t base_name)
   {
     const name_info_t fni{parent_name, base_name};
     const auto [it, inserted] = name_lookup.emplace(fni, name_infos.size());
@@ -286,7 +286,7 @@ namespace silva {
     return it->second;
   }
 
-  name_id_t syntax_ward_t::name_id_span(const name_id_t parent_name,
+  name_id_t syntax_farm_t::name_id_span(const name_id_t parent_name,
                                         const span_t<const token_id_t> token_ids)
   {
     name_id_t retval = parent_name;
@@ -296,7 +296,7 @@ namespace silva {
     return retval;
   }
 
-  bool syntax_ward_t::name_id_is_parent(const name_id_t parent_name, token_id_t child_name) const
+  bool syntax_farm_t::name_id_is_parent(const name_id_t parent_name, token_id_t child_name) const
   {
     while (true) {
       if (child_name == parent_name) {
@@ -309,7 +309,7 @@ namespace silva {
     }
   }
 
-  name_id_t syntax_ward_t::name_id_lca(const name_id_t lhs, const name_id_t rhs) const
+  name_id_t syntax_farm_t::name_id_lca(const name_id_t lhs, const name_id_t rhs) const
   {
     // TODO: O(1) time, O(n) memory ?
     const auto ni_path = [this](name_id_t x) {
@@ -335,19 +335,19 @@ namespace silva {
     return lhs_path[common];
   }
 
-  const name_id_style_t& syntax_ward_t::default_name_id_style() const
+  const name_id_style_t& syntax_farm_t::default_name_id_style() const
   {
     return impl->default_nis;
   }
 
-  token_id_wrap_t syntax_ward_t::token_id_wrap(const token_id_t token_id)
+  token_id_wrap_t syntax_farm_t::token_id_wrap(const token_id_t token_id)
   {
     return token_id_wrap_t{
         .swp      = ptr(),
         .token_id = token_id,
     };
   }
-  name_id_wrap_t syntax_ward_t::name_id_wrap(const name_id_t name_id)
+  name_id_wrap_t syntax_farm_t::name_id_wrap(const name_id_t name_id)
   {
     return name_id_wrap_t{
         .swp     = ptr(),
@@ -365,17 +365,17 @@ namespace silva {
     byte_sink->write_str(x.swp->default_name_id_style().absolute(x.name_id));
   }
 
-  fragmentization_ptr_t syntax_ward_t::add(unique_ptr_t<const fragmentization_t> x)
+  fragmentization_ptr_t syntax_farm_t::add(unique_ptr_t<const fragmentization_t> x)
   {
     fragmentizations.push_back(std::move(x));
     return fragmentizations.back()->ptr();
   }
-  tokenization_ptr_t syntax_ward_t::add(unique_ptr_t<const tokenization_t> x)
+  tokenization_ptr_t syntax_farm_t::add(unique_ptr_t<const tokenization_t> x)
   {
     tokenizations.push_back(std::move(x));
     return tokenizations.back()->ptr();
   }
-  parse_tree_ptr_t syntax_ward_t::add(unique_ptr_t<const parse_tree_t> x)
+  parse_tree_ptr_t syntax_farm_t::add(unique_ptr_t<const parse_tree_t> x)
   {
     parse_trees.push_back(std::move(x));
     return parse_trees.back()->ptr();

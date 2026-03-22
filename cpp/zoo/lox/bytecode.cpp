@@ -6,7 +6,7 @@ namespace silva::lox {
 
   using enum opcode_t;
 
-  bytecode_chunk_t::bytecode_chunk_t(syntax_ward_ptr_t swp) : swp(std::move(swp)) {}
+  bytecode_chunk_t::bytecode_chunk_t(syntax_farm_ptr_t swp) : swp(std::move(swp)) {}
 
   parse_tree_span_t bytecode_chunk_t::origin_info_at_instr(const index_t ip) const
   {

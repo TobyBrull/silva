@@ -46,7 +46,7 @@ namespace silva::seed {
   )'";
 
   struct axe_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     name_id_t name      = name_id_root;
     name_id_t atom_rule = name_id_root;
     hash_map_t<token_id_t, impl::axe_result_t> results;
@@ -56,5 +56,5 @@ namespace silva::seed {
     expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, parse_delegate_t) const;
   };
 
-  expected_t<axe_t> axe_create(syntax_ward_ptr_t, name_id_t axe_name, parse_tree_span_t);
+  expected_t<axe_t> axe_create(syntax_farm_ptr_t, name_id_t axe_name, parse_tree_span_t);
 }

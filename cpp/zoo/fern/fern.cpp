@@ -5,7 +5,7 @@
 #include "canopy/string_convert.hpp"
 
 #include "syntax/parse_tree_nursery.hpp"
-#include "syntax/syntax_ward.hpp"
+#include "syntax/syntax_farm.hpp"
 
 namespace silva::fern {
   using enum token_category_old_t;
@@ -129,7 +129,7 @@ namespace silva::fern {
 
   expected_t<string_t> to_string(const parse_tree_t* pt, const index_t start_node)
   {
-    syntax_ward_ptr_t swp       = pt->tp->swp;
+    syntax_farm_ptr_t swp       = pt->tp->swp;
     const name_id_t ni_fern     = swp->name_id_of("Fern");
     const name_id_t ni_lbl_item = swp->name_id_of(ni_fern, "LabeledItem");
     const name_id_t ni_label    = swp->name_id_of(ni_fern, "Label");
@@ -183,7 +183,7 @@ namespace silva::fern {
 
   expected_t<string_t> to_graphviz(const parse_tree_t* pt, const index_t start_node)
   {
-    syntax_ward_ptr_t swp       = pt->tp->swp;
+    syntax_farm_ptr_t swp       = pt->tp->swp;
     const name_id_t ni_fern     = swp->name_id_of("Fern");
     const name_id_t ni_lbl_item = swp->name_id_of(ni_fern, "LabeledItem");
     const name_id_t ni_label    = swp->name_id_of(ni_fern, "Label");
@@ -381,7 +381,7 @@ namespace silva::fern {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
-      syntax_ward_ptr_t swp          = parse_tree->tp->swp;
+      syntax_farm_ptr_t swp          = parse_tree->tp->swp;
 
       token_id_t ti_none  = *swp->token_id("none");
       token_id_t ti_true  = *swp->token_id("true");

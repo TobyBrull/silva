@@ -30,7 +30,7 @@ namespace silva {
 
   struct parse_tree_nursery_t
     : public tree_nursery_t<parse_tree_node_t, parse_tree_nursery_state_t, parse_tree_nursery_t> {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     tokenization_ptr_t tp;
     index_t token_index = 0;
 

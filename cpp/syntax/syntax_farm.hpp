@@ -17,7 +17,7 @@ namespace silva {
 
   tuple_t<string_view_t, token_category_old_t> tokenize_one(const string_view_t text);
 
-  // An index in the "token_infos" vector of "syntax_ward_t". Equality of two tokens is then
+  // An index in the "token_infos" vector of "syntax_farm_t". Equality of two tokens is then
   // equivalent to the equality of their token_info_index_t.
   using token_id_t = index_t;
 
@@ -58,7 +58,7 @@ namespace silva {
   using tokenization_ptr_t    = ptr_t<const tokenization_t>;
   using parse_tree_ptr_t      = ptr_t<const parse_tree_t>;
 
-  struct syntax_ward_t : public menhir_t {
+  struct syntax_farm_t : public menhir_t {
     array_t<token_info_t> token_infos;
     hash_map_t<string_t, token_id_t> token_lookup;
 
@@ -72,8 +72,8 @@ namespace silva {
     struct impl_t;
     unique_ptr_t<impl_t> impl;
 
-    syntax_ward_t();
-    ~syntax_ward_t();
+    syntax_farm_t();
+    ~syntax_farm_t();
 
     expected_t<token_id_t> token_id(string_view_t);
     expected_t<token_id_t> token_id_new(string_view_t);
@@ -99,17 +99,17 @@ namespace silva {
     tokenization_ptr_t add(unique_ptr_t<const tokenization_t>);
     parse_tree_ptr_t add(unique_ptr_t<const parse_tree_t>);
   };
-  using syntax_ward_ptr_t = ptr_t<syntax_ward_t>;
+  using syntax_farm_ptr_t = ptr_t<syntax_farm_t>;
 
   struct token_id_wrap_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     token_id_t token_id = token_id_none;
 
     friend void pretty_write_impl(const token_id_wrap_t&, byte_sink_t*);
   };
 
   struct name_id_wrap_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     name_id_t name_id = name_id_root;
 
     friend void pretty_write_impl(const name_id_wrap_t&, byte_sink_t*);
@@ -120,7 +120,7 @@ namespace silva {
 
 namespace silva {
   template<typename... Ts>
-  name_id_t syntax_ward_t::name_id_of(Ts&&... xs)
+  name_id_t syntax_farm_t::name_id_of(Ts&&... xs)
   {
     array_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
@@ -128,7 +128,7 @@ namespace silva {
   }
 
   template<typename... Ts>
-  name_id_t syntax_ward_t::name_id_of(name_id_t parent_name, Ts&&... xs)
+  name_id_t syntax_farm_t::name_id_of(name_id_t parent_name, Ts&&... xs)
   {
     array_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);

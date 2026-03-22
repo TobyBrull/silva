@@ -1,7 +1,7 @@
 #pragma once
 
 #include "parse_tree.hpp"
-#include "syntax_ward.hpp"
+#include "syntax_farm.hpp"
 
 #include "canopy/types.hpp"
 

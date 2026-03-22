@@ -38,7 +38,7 @@ namespace silva::seed::impl {
   };
 
   struct axe_create_nursery_t {
-    syntax_ward_ptr_t swp;
+    syntax_farm_ptr_t swp;
     name_id_t axe_name          = name_id_root;
     name_id_t atom_rule_name_id = name_id_root;
     const name_id_style_t& nis  = swp->default_name_id_style();
@@ -73,7 +73,7 @@ namespace silva::seed::impl {
         .name = axe_name,
     };
 
-    axe_create_nursery_t(syntax_ward_ptr_t swp, const name_id_t axe_name)
+    axe_create_nursery_t(syntax_farm_ptr_t swp, const name_id_t axe_name)
       : swp(swp), axe_name(axe_name)
     {
     }
@@ -469,7 +469,7 @@ namespace silva::seed::impl {
 
 namespace silva::seed {
   expected_t<axe_t>
-  axe_create(syntax_ward_ptr_t swp, const name_id_t axe_name, const parse_tree_span_t pts)
+  axe_create(syntax_farm_ptr_t swp, const name_id_t axe_name, const parse_tree_span_t pts)
   {
     impl::axe_create_nursery_t nursery(swp, axe_name);
     SILVA_EXPECT_FWD(nursery.run(pts));
@@ -483,7 +483,7 @@ namespace silva::seed::impl {
     parse_tree_nursery_t& nursery;
     delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser;
 
-    syntax_ward_ptr_t swp = nursery.swp;
+    syntax_farm_ptr_t swp = nursery.swp;
 
     token_location_t token_location_by(index_t token_index_offset = 0) const
     {

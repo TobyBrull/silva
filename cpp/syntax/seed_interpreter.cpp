@@ -20,7 +20,7 @@ namespace silva::seed {
 
   struct seed_engine_create_nursery_t {
     interpreter_t* se          = nullptr;
-    syntax_ward_ptr_t swp      = se->swp;
+    syntax_farm_ptr_t swp      = se->swp;
     const name_id_style_t& nis = swp->default_name_id_style();
 
     const tokenization_t& s_tokenization;
@@ -150,7 +150,7 @@ namespace silva::seed {
     }
   };
 
-  interpreter_t::interpreter_t(syntax_ward_ptr_t swp) : swp(swp), tokenizer_farm(swp) {}
+  interpreter_t::interpreter_t(syntax_farm_ptr_t swp) : swp(swp), tokenizer_farm(swp) {}
 
   expected_t<void> interpreter_t::callback_if(const parse_tree_span_t& pts) const
   {
@@ -195,7 +195,7 @@ namespace silva::seed {
       bool success = false;
     };
     struct seed_exec_trace_t : public exec_trace_t<seed_exec_trace_data_t> {
-      syntax_ward_ptr_t swp;
+      syntax_farm_ptr_t swp;
 
       expected_t<string_t> as_tree_to_string() &&
       {
@@ -217,7 +217,7 @@ namespace silva::seed {
 
     struct seed_engine_nursery_t : public parse_tree_nursery_t {
       const interpreter_t* se    = nullptr;
-      syntax_ward_ptr_t swp      = se->swp;
+      syntax_farm_ptr_t swp      = se->swp;
       const name_id_style_t& nis = swp->default_name_id_style();
 
       const tokenization_t& t_tokenization = *tp;
@@ -272,7 +272,7 @@ namespace silva::seed {
       {
         SILVA_EXPECT(swp == t_tokenization.swp,
                      MAJOR,
-                     "Seed and target parse-trees/tokenizations must be in same syntax_ward_t");
+                     "Seed and target parse-trees/tokenizations must be in same syntax_farm_t");
         return {};
       }
 

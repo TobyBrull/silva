@@ -2,7 +2,7 @@
 
 ## Topological Order of Dependency Graph
 
-* [syntax_ward.hpp](syntax_ward.hpp)
+* [syntax_farm.hpp](syntax_farm.hpp)
 * [tokenization.hpp](tokenization.hpp)
 * [parse_tree.hpp](parse_tree.hpp)
 * [name_id_style.hpp](name_id_style.hpp)
@@ -15,11 +15,11 @@
 
 ```mermaid
 classDiagram
-    syntax_ward_t *-- "many" tokenization_t
-    syntax_ward_t *-- "many" parse_tree_t
-    syntax_ward_t <-- tokenization_t
+    syntax_farm_t *-- "many" tokenization_t
+    syntax_farm_t *-- "many" parse_tree_t
+    syntax_farm_t <-- tokenization_t
     tokenization_t <-- parse_tree_t
     parse_tree_t <-- parse_tree_span_t
     seed_interpreter_t *-- "many" parse_tree_span_t
-    syntax_ward_t <-- seed_interpreter_t
+    syntax_farm_t <-- seed_interpreter_t
 ```
