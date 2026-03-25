@@ -13,8 +13,8 @@ namespace silva::seed {
       token_id_t ti_comma       = *sfp->token_id(",");
       token_id_t ti_dash        = *sfp->token_id("-");
       token_id_t ti_equal       = *sfp->token_id("=");
-      token_id_t ti_axe         = *sfp->token_id("=/");
-      token_id_t ti_alias       = *sfp->token_id("=>");
+      token_id_t ti_axe         = *sfp->token_id("axe");
+      token_id_t ti_alias       = *sfp->token_id("alias");
       token_id_t ti_right_arrow = *sfp->token_id("->");
       token_id_t ti_brack_open  = *sfp->token_id("[");
       token_id_t ti_brack_close = *sfp->token_id("]");
@@ -47,7 +47,7 @@ namespace silva::seed {
 
       name_id_t ni_seed         = sfp->name_id_of("Seed");
       name_id_t ni_rule         = sfp->name_id_of(ni_seed, "Rule");
-      name_id_t ni_expr_or_a    = sfp->name_id_of(ni_seed, "ExprOrAlias");
+      name_id_t ni_alias        = sfp->name_id_of(ni_seed, "Alias");
       name_id_t ni_expr         = sfp->name_id_of(ni_seed, "Expr");
       name_id_t ni_atom         = sfp->name_id_of(ni_seed, "Atom");
       name_id_t ni_var          = sfp->name_id_of(ni_seed, "Variable");
@@ -235,7 +235,7 @@ namespace silva::seed {
   axe_t create_axe_expr(syntax_farm_ptr_t sfp)
   {
     const string_view_t axe_defn = [] -> string_view_t {
-      const string_view_t start_str = "- Expr =/ ";
+      const string_view_t start_str = "- Expr = axe ";
       const size_t fi_begin         = seed_str.find(start_str);
       SILVA_ASSERT(fi_begin != string_view_t::npos);
       const string_view_t axe_defn_str_with_rest = seed_str.substr(fi_begin + start_str.size());
@@ -412,6 +412,14 @@ namespace silva::seed {
         }
       }
 
+      expected_t<parse_tree_node_t> alias()
+      {
+        auto ss_rule = stake();
+        ss_rule.create_node(ni_alias);
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_alias, expr()));
+        return ss_rule.commit();
+      }
+
       expected_t<parse_tree_node_t> expr()
       {
         auto ss = stake();
@@ -421,44 +429,30 @@ namespace silva::seed {
         return ss.commit();
       }
 
-      expected_t<parse_tree_node_t> expr_or_alias()
-      {
-        auto ss_rule = stake();
-        ss_rule.create_node(ni_expr_or_a);
-        SILVA_EXPECT_PARSE(ni_expr_or_a, num_tokens_left() >= 1, "no more tokens in input");
-        const token_id_t op_ti = token_id_by();
-        SILVA_EXPECT_PARSE(ni_expr_or_a,
-                           op_ti == ti_equal || op_ti == ti_alias,
-                           "expected one of [ = => ], got {}",
-                           sfp->token_id_wrap(op_ti));
-        token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_expr_or_a, expr()));
-        return ss_rule.commit();
-      }
-
       expected_t<parse_tree_node_t> rule()
       {
         auto ss_rule = stake();
         ss_rule.create_node(ni_rule);
         const index_t orig_token_index = token_index;
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_rule, nonterminal()));
-        SILVA_EXPECT_PARSE(ni_rule, num_tokens_left() >= 1, "no more tokens in input");
+        SILVA_EXPECT_PARSE(ni_rule, num_tokens_left() >= 2, "not enough tokens in input");
+        SILVA_EXPECT_PARSE_TOKEN_ID(ni_rule, ti_equal);
         const token_id_t op_ti = token_id_by();
-        SILVA_EXPECT_PARSE(ni_rule,
-                           op_ti == ti_equal || op_ti == ti_alias || op_ti == ti_axe,
-                           "expected one of [ = => =/ ], got {}",
-                           sfp->token_id_wrap(token_id_by()));
-        if (op_ti == ti_equal && num_tokens_left() >= 2 && token_id_by(1) == ti_brack_open) {
-          token_index += 2;
+        if (op_ti == ti_brack_open) {
+          token_index += 1;
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_rule, seed()));
           SILVA_EXPECT_PARSE_TOKEN_ID(ni_rule, ti_brack_close)
         }
-        else if (op_ti == ti_equal || op_ti == ti_alias) {
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_rule, expr_or_alias()));
+        else if (op_ti == ti_alias) {
+          token_index += 1;
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_rule, alias()));
         }
         else if (op_ti == ti_axe) {
           token_index += 1;
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_rule, axe()));
+        }
+        else {
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_rule, expr()));
         }
         return ss_rule.commit();
       }

@@ -40,7 +40,7 @@ namespace silva::test {
   TEST_CASE("seed-axe-recursion", "")
   {
     const string_view_t expr_seed_text = R"'(
-    - Expr =/ Atom [
+    - Expr = axe Atom [
       - Parens  = nest  atom_nest '(' ')'
       - Mult    = ltr   infix '*'
       - Add     = ltr   infix '+'

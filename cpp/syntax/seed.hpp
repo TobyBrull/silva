@@ -8,7 +8,7 @@ namespace silva::seed {
   // The actual algorithm to do this is implemented in "seed::interpreter_t".
   //
   // The language is akin to BNF. The resulting parsing algorithm is essentially a PEG but with one
-  // caveat.
+  // caveat, which is called the "prefix-rule".
   //
   //  * The quite readable original paper by Bryan Ford "Parsing Expression Grammars: A
   //    Recognition-Based Syntactic Foundation"
@@ -17,9 +17,9 @@ namespace silva::seed {
   //  * Guido van Rossum's "PEG Parsing Series"
   //    https://medium.com/@gvanrossum_83706/peg-parsing-series-de5d41b2ed60
   //
-  // This caveat we call the "prefix-rule" here. The prefix-rule says that in every concatenated
-  // expression, if all leading literals are matched, then the whole concatenated expression has to
-  // match; otherwise, the entire parse algorithm results in failure. For example, if the rule
+  // The prefix-rule says that in every concatenated expression, if all leading literals are
+  // matched, then the whole concatenated expression has to match; otherwise, the entire parse
+  // algorithm results in failure. For example, if the rule
   //
   // « - ConstFunc = 'static' 'func' identifier | 'static' identifier number »
   //
@@ -28,16 +28,16 @@ namespace silva::seed {
   // « static func 2 »
   //
   // this will result in a parse error even though the second alternative would be a match. This is
-  // because, all leading literals (the "prefix") in the first alternative (of which there are two:
+  // because all leading literals (the "prefix") in the first alternative (of which there are two:
   // 'static' and 'func') are already matched. So at that point, the parsing algorithm commits to
   // the first alternative and aborts the parse if the whole expression does not match.
 
   const string_view_t seed_str = R"'(
     - Seed = [
       - x = ( '-' Rule ) *
-      - Rule = Nonterminal ( '=' '[' x ']' | ExprOrAlias | '=/' Axe )
-      - ExprOrAlias = ( '=' | '=>' ) Expr
-      - Expr =/ Atom [
+      - Rule = Nonterminal '=' ( '[' x ']' | 'alias' Alias | 'axe' Axe | Expr )
+      - Alias = Expr
+      - Expr = axe Atom [
         - Parens    = nest  atom_nest '(' ')'
         - Prefix    = rtl   prefix 'not'
         - Postfix   = ltr   postfix '?' '*' '+'
@@ -45,14 +45,14 @@ namespace silva::seed {
         - And       = ltr   infix_flat 'but_then'
         - Or        = ltr   infix_flat '|'
       ]
-      - Atom => NonterminalMaybeVar | Function | Terminal
+      - Atom = alias NonterminalMaybeVar | Function | Terminal
       - NonterminalMaybeVar = Nonterminal ( '->' Variable ) ?
       - Variable = identifier / '^[a-z].*_v$'
       - Function = [
          - x = Name '(' Args ')'
          - Name = identifier / '^[a-z].*_f$'
          - Args = Arg ( ',' Arg ) *
-         - Arg => p.Variable | p.Expr
+         - Arg = alias p.Variable | p.Expr
       ]
       - Nonterminal = [
         - x = Base ( '.' Base ) *

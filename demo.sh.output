@@ -141,12 +141,11 @@ seed::interpreter_t::apply(_.Fern) failed to parse
       [0]_.Seed.Rule                              AsBs = ... 'b' *
         [0]_.Seed.Nonterminal                     AsBs
           [0]_.Seed.Nonterminal.Base              AsBs
-        [1]_.Seed.ExprOrAlias                     = 'a' * 'b' *
-          [0]_.Seed.Expr.Concat.concat            'a' * 'b' *
-            [0]_.Seed.Expr.Postfix.*              'a' *
-              [0]_.Seed.Terminal                  'a'
-            [1]_.Seed.Expr.Postfix.*              'b' *
-              [0]_.Seed.Terminal                  'b'
+        [1]_.Seed.Expr.Concat.concat              'a' * 'b' *
+          [0]_.Seed.Expr.Postfix.*                'a' *
+            [0]_.Seed.Terminal                    'a'
+          [1]_.Seed.Expr.Postfix.*                'b' *
+            [0]_.Seed.Terminal                    'b'
   [1]_.Silva.Section                              <$ AsBs ... b $>
     [0]_.Seed.Nonterminal                         AsBs
       [0]_.Seed.Nonterminal.Base                  AsBs
@@ -162,15 +161,14 @@ seed::interpreter_t::apply(_.Fern) failed to parse
           [0]_.Seed.Rule                          x = ... ) *
             [0]_.Seed.Nonterminal                 x
               [0]_.Seed.Nonterminal.Base          x
-            [1]_.Seed.ExprOrAlias                 = ( ... ) *
-              [0]_.Seed.Expr.Postfix.*            ( Expr ';' ) *
-                [0]_.Seed.Expr.Parens.(           ( Expr ';' )
-                  [0]_.Seed.Expr.Concat.concat    Expr ';'
-                    [0]_.Seed.NonterminalMaybeVar Expr
-                      [0]_.Seed.Nonterminal       Expr
-                        [0]_.Seed.Nonterminal.Base Expr
-                    [1]_.Seed.Terminal            ';'
-          [1]_.Seed.Rule                          Expr =/ ... ',' ]
+            [1]_.Seed.Expr.Postfix.*              ( Expr ';' ) *
+              [0]_.Seed.Expr.Parens.(             ( Expr ';' )
+                [0]_.Seed.Expr.Concat.concat      Expr ';'
+                  [0]_.Seed.NonterminalMaybeVar   Expr
+                    [0]_.Seed.Nonterminal         Expr
+                      [0]_.Seed.Nonterminal.Base  Expr
+                  [1]_.Seed.Terminal              ';'
+          [1]_.Seed.Rule                          Expr = ... ',' ]
             [0]_.Seed.Nonterminal                 Expr
               [0]_.Seed.Nonterminal.Base          Expr
             [1]_.Seed.Axe                         Atom [ ... ',' ]
@@ -333,11 +331,10 @@ seed::interpreter_t::apply(_.Fern) failed to parse
           [2]_.Seed.Rule                          Atom = ... | identifier
             [0]_.Seed.Nonterminal                 Atom
               [0]_.Seed.Nonterminal.Base          Atom
-            [1]_.Seed.ExprOrAlias                 = number ... | identifier
-              [0]_.Seed.Expr.Or.|                 number | string | identifier
-                [0]_.Seed.Terminal                number
-                [1]_.Seed.Terminal                string
-                [2]_.Seed.Terminal                identifier
+            [1]_.Seed.Expr.Or.|                   number | string | identifier
+              [0]_.Seed.Terminal                  number
+              [1]_.Seed.Terminal                  string
+              [2]_.Seed.Terminal                  identifier
   [3]_.Silva.Section                              <$ CppStmts ... ; $>
     [0]_.Seed.Nonterminal                         CppStmts
       [0]_.Seed.Nonterminal.Base                  CppStmts
@@ -418,26 +415,23 @@ seed::interpreter_t::apply(_.Fern) failed to parse
       [0]_.Seed.Rule                              x = As Bs
         [0]_.Seed.Nonterminal                     x
           [0]_.Seed.Nonterminal.Base              x
-        [1]_.Seed.ExprOrAlias                     = As Bs
-          [0]_.Seed.Expr.Concat.concat            As Bs
-            [0]_.Seed.NonterminalMaybeVar         As
-              [0]_.Seed.Nonterminal               As
-                [0]_.Seed.Nonterminal.Base        As
-            [1]_.Seed.NonterminalMaybeVar         Bs
-              [0]_.Seed.Nonterminal               Bs
-                [0]_.Seed.Nonterminal.Base        Bs
+        [1]_.Seed.Expr.Concat.concat              As Bs
+          [0]_.Seed.NonterminalMaybeVar           As
+            [0]_.Seed.Nonterminal                 As
+              [0]_.Seed.Nonterminal.Base          As
+          [1]_.Seed.NonterminalMaybeVar           Bs
+            [0]_.Seed.Nonterminal                 Bs
+              [0]_.Seed.Nonterminal.Base          Bs
       [1]_.Seed.Rule                              As = 'a' *
         [0]_.Seed.Nonterminal                     As
           [0]_.Seed.Nonterminal.Base              As
-        [1]_.Seed.ExprOrAlias                     = 'a' *
-          [0]_.Seed.Expr.Postfix.*                'a' *
-            [0]_.Seed.Terminal                    'a'
+        [1]_.Seed.Expr.Postfix.*                  'a' *
+          [0]_.Seed.Terminal                      'a'
       [2]_.Seed.Rule                              Bs = 'b' *
         [0]_.Seed.Nonterminal                     Bs
           [0]_.Seed.Nonterminal.Base              Bs
-        [1]_.Seed.ExprOrAlias                     = 'b' *
-          [0]_.Seed.Expr.Postfix.*                'b' *
-            [0]_.Seed.Terminal                    'b'
+        [1]_.Seed.Expr.Postfix.*                  'b' *
+          [0]_.Seed.Terminal                      'b'
 
 [0]_.Somelang                                     a a ... b b
   [0]_.Somelang.As                                a a a a
@@ -455,22 +449,21 @@ seed::interpreter_t::apply(_.Fern) failed to parse
           [0]_.Seed.Rule                          x = ... ) *
             [0]_.Seed.Nonterminal                 x
               [0]_.Seed.Nonterminal.Base          x
-            [1]_.Seed.ExprOrAlias                 = ( ... ) *
-              [0]_.Seed.Expr.Postfix.*            ( Type ... ) *
-                [0]_.Seed.Expr.Parens.(           ( Type ... Defn )
-                  [0]_.Seed.Expr.Or.|             Type . ... . Defn
-                    [0]_.Seed.NonterminalMaybeVar Type . Defn
-                      [0]_.Seed.Nonterminal       Type . Defn
-                        [0]_.Seed.Nonterminal.Base Type
-                        [1]_.Seed.Nonterminal.Base Defn
-                    [1]_.Seed.NonterminalMaybeVar Func . Defn
-                      [0]_.Seed.Nonterminal       Func . Defn
-                        [0]_.Seed.Nonterminal.Base Func
-                        [1]_.Seed.Nonterminal.Base Defn
-                    [2]_.Seed.NonterminalMaybeVar Variable . Defn
-                      [0]_.Seed.Nonterminal       Variable . Defn
-                        [0]_.Seed.Nonterminal.Base Variable
-                        [1]_.Seed.Nonterminal.Base Defn
+            [1]_.Seed.Expr.Postfix.*              ( Type ... ) *
+              [0]_.Seed.Expr.Parens.(             ( Type ... Defn )
+                [0]_.Seed.Expr.Or.|               Type . ... . Defn
+                  [0]_.Seed.NonterminalMaybeVar   Type . Defn
+                    [0]_.Seed.Nonterminal         Type . Defn
+                      [0]_.Seed.Nonterminal.Base  Type
+                      [1]_.Seed.Nonterminal.Base  Defn
+                  [1]_.Seed.NonterminalMaybeVar   Func . Defn
+                    [0]_.Seed.Nonterminal         Func . Defn
+                      [0]_.Seed.Nonterminal.Base  Func
+                      [1]_.Seed.Nonterminal.Base  Defn
+                  [2]_.Seed.NonterminalMaybeVar   Variable . Defn
+                    [0]_.Seed.Nonterminal         Variable . Defn
+                      [0]_.Seed.Nonterminal.Base  Variable
+                      [1]_.Seed.Nonterminal.Base  Defn
           [1]_.Seed.Rule                          Type = ... ] ]
             [0]_.Seed.Nonterminal                 Type
               [0]_.Seed.Nonterminal.Base          Type
@@ -478,31 +471,28 @@ seed::interpreter_t::apply(_.Fern) failed to parse
               [0]_.Seed.Rule                      x = Name | Struct
                 [0]_.Seed.Nonterminal             x
                   [0]_.Seed.Nonterminal.Base      x
-                [1]_.Seed.ExprOrAlias             = Name | Struct
-                  [0]_.Seed.Expr.Or.|             Name | Struct
-                    [0]_.Seed.NonterminalMaybeVar Name
-                      [0]_.Seed.Nonterminal       Name
-                        [0]_.Seed.Nonterminal.Base Name
-                    [1]_.Seed.NonterminalMaybeVar Struct
-                      [0]_.Seed.Nonterminal       Struct
-                        [0]_.Seed.Nonterminal.Base Struct
+                [1]_.Seed.Expr.Or.|               Name | Struct
+                  [0]_.Seed.NonterminalMaybeVar   Name
+                    [0]_.Seed.Nonterminal         Name
+                      [0]_.Seed.Nonterminal.Base  Name
+                  [1]_.Seed.NonterminalMaybeVar   Struct
+                    [0]_.Seed.Nonterminal         Struct
+                      [0]_.Seed.Nonterminal.Base  Struct
               [1]_.Seed.Rule                      Name = identifier / '_t$'
                 [0]_.Seed.Nonterminal             Name
                   [0]_.Seed.Nonterminal.Base      Name
-                [1]_.Seed.ExprOrAlias             = identifier / '_t$'
-                  [0]_.Seed.Terminal              identifier / '_t$'
+                [1]_.Seed.Terminal                identifier / '_t$'
               [2]_.Seed.Rule                      Defn = Name '=' x
                 [0]_.Seed.Nonterminal             Defn
                   [0]_.Seed.Nonterminal.Base      Defn
-                [1]_.Seed.ExprOrAlias             = Name '=' x
-                  [0]_.Seed.Expr.Concat.concat    Name '=' x
-                    [0]_.Seed.NonterminalMaybeVar Name
-                      [0]_.Seed.Nonterminal       Name
-                        [0]_.Seed.Nonterminal.Base Name
-                    [1]_.Seed.Terminal            '='
-                    [2]_.Seed.NonterminalMaybeVar x
-                      [0]_.Seed.Nonterminal       x
-                        [0]_.Seed.Nonterminal.Base x
+                [1]_.Seed.Expr.Concat.concat      Name '=' x
+                  [0]_.Seed.NonterminalMaybeVar   Name
+                    [0]_.Seed.Nonterminal         Name
+                      [0]_.Seed.Nonterminal.Base  Name
+                  [1]_.Seed.Terminal              '='
+                  [2]_.Seed.NonterminalMaybeVar   x
+                    [0]_.Seed.Nonterminal         x
+                      [0]_.Seed.Nonterminal.Base  x
               [3]_.Seed.Rule                      Struct = ... ] ]
                 [0]_.Seed.Nonterminal             Struct
                   [0]_.Seed.Nonterminal.Base      Struct
@@ -510,14 +500,13 @@ seed::interpreter_t::apply(_.Fern) failed to parse
                   [0]_.Seed.Rule                  x = ... * ']'
                     [0]_.Seed.Nonterminal         x
                       [0]_.Seed.Nonterminal.Base  x
-                    [1]_.Seed.ExprOrAlias         = '[' Member * ']'
-                      [0]_.Seed.Expr.Concat.concat '[' Member * ']'
-                        [0]_.Seed.Terminal        '['
-                        [1]_.Seed.Expr.Postfix.*  Member *
-                          [0]_.Seed.NonterminalMaybeVar Member
-                            [0]_.Seed.Nonterminal Member
-                              [0]_.Seed.Nonterminal.Base Member
-                        [2]_.Seed.Terminal        ']'
+                    [1]_.Seed.Expr.Concat.concat  '[' Member * ']'
+                      [0]_.Seed.Terminal          '['
+                      [1]_.Seed.Expr.Postfix.*    Member *
+                        [0]_.Seed.NonterminalMaybeVar Member
+                          [0]_.Seed.Nonterminal   Member
+                            [0]_.Seed.Nonterminal.Base Member
+                      [2]_.Seed.Terminal          ']'
                   [1]_.Seed.Rule                  Member = ... identifier ]
                     [0]_.Seed.Nonterminal         Member
                       [0]_.Seed.Nonterminal.Base  Member
@@ -525,46 +514,42 @@ seed::interpreter_t::apply(_.Fern) failed to parse
                       [0]_.Seed.Rule              x = ... ? ';'
                         [0]_.Seed.Nonterminal     x
                           [0]_.Seed.Nonterminal.Base x
-                        [1]_.Seed.ExprOrAlias     = p ... ? ';'
-                          [0]_.Seed.Expr.Concat.concat p . ... ? ';'
-                            [0]_.Seed.NonterminalMaybeVar p . p
-                              [0]_.Seed.Nonterminal p . p
-                                [0]_.Seed.Nonterminal.Base p
-                                [1]_.Seed.Nonterminal.Base p
-                            [1]_.Seed.Expr.Postfix.? Label ?
-                              [0]_.Seed.NonterminalMaybeVar Label
-                                [0]_.Seed.Nonterminal Label
-                                  [0]_.Seed.Nonterminal.Base Label
-                            [2]_.Seed.Expr.Postfix.? Init ?
-                              [0]_.Seed.NonterminalMaybeVar Init
-                                [0]_.Seed.Nonterminal Init
-                                  [0]_.Seed.Nonterminal.Base Init
-                            [3]_.Seed.Terminal    ';'
+                        [1]_.Seed.Expr.Concat.concat p . ... ? ';'
+                          [0]_.Seed.NonterminalMaybeVar p . p
+                            [0]_.Seed.Nonterminal p . p
+                              [0]_.Seed.Nonterminal.Base p
+                              [1]_.Seed.Nonterminal.Base p
+                          [1]_.Seed.Expr.Postfix.? Label ?
+                            [0]_.Seed.NonterminalMaybeVar Label
+                              [0]_.Seed.Nonterminal Label
+                                [0]_.Seed.Nonterminal.Base Label
+                          [2]_.Seed.Expr.Postfix.? Init ?
+                            [0]_.Seed.NonterminalMaybeVar Init
+                              [0]_.Seed.Nonterminal Init
+                                [0]_.Seed.Nonterminal.Base Init
+                          [3]_.Seed.Terminal      ';'
                       [1]_.Seed.Rule              Label = ':' Name
                         [0]_.Seed.Nonterminal     Label
                           [0]_.Seed.Nonterminal.Base Label
-                        [1]_.Seed.ExprOrAlias     = ':' Name
-                          [0]_.Seed.Expr.Concat.concat ':' Name
-                            [0]_.Seed.Terminal    ':'
-                            [1]_.Seed.NonterminalMaybeVar Name
-                              [0]_.Seed.Nonterminal Name
-                                [0]_.Seed.Nonterminal.Base Name
+                        [1]_.Seed.Expr.Concat.concat ':' Name
+                          [0]_.Seed.Terminal      ':'
+                          [1]_.Seed.NonterminalMaybeVar Name
+                            [0]_.Seed.Nonterminal Name
+                              [0]_.Seed.Nonterminal.Base Name
                       [2]_.Seed.Rule              Init = ... . Expr
                         [0]_.Seed.Nonterminal     Init
                           [0]_.Seed.Nonterminal.Base Init
-                        [1]_.Seed.ExprOrAlias     = '=' ... . Expr
-                          [0]_.Seed.Expr.Concat.concat '=' _ ... . Expr
-                            [0]_.Seed.Terminal    '='
-                            [1]_.Seed.NonterminalMaybeVar _ . Soil . Expr
-                              [0]_.Seed.Nonterminal _ . Soil . Expr
-                                [0]_.Seed.Nonterminal.Base _
-                                [1]_.Seed.Nonterminal.Base Soil
-                                [2]_.Seed.Nonterminal.Base Expr
+                        [1]_.Seed.Expr.Concat.concat '=' _ ... . Expr
+                          [0]_.Seed.Terminal      '='
+                          [1]_.Seed.NonterminalMaybeVar _ . Soil . Expr
+                            [0]_.Seed.Nonterminal _ . Soil . Expr
+                              [0]_.Seed.Nonterminal.Base _
+                              [1]_.Seed.Nonterminal.Base Soil
+                              [2]_.Seed.Nonterminal.Base Expr
                       [3]_.Seed.Rule              Name = identifier
                         [0]_.Seed.Nonterminal     Name
                           [0]_.Seed.Nonterminal.Base Name
-                        [1]_.Seed.ExprOrAlias     = identifier
-                          [0]_.Seed.Terminal      identifier
+                        [1]_.Seed.Terminal        identifier
           [2]_.Seed.Rule                          Expr = ... ] ]
             [0]_.Seed.Nonterminal                 Expr
               [0]_.Seed.Nonterminal.Base          Expr
@@ -572,20 +557,18 @@ seed::interpreter_t::apply(_.Fern) failed to parse
               [0]_.Seed.Rule                      x = Axe
                 [0]_.Seed.Nonterminal             x
                   [0]_.Seed.Nonterminal.Base      x
-                [1]_.Seed.ExprOrAlias             = Axe
-                  [0]_.Seed.NonterminalMaybeVar   Axe
-                    [0]_.Seed.Nonterminal         Axe
-                      [0]_.Seed.Nonterminal.Base  Axe
+                [1]_.Seed.NonterminalMaybeVar     Axe
+                  [0]_.Seed.Nonterminal           Axe
+                    [0]_.Seed.Nonterminal.Base    Axe
               [1]_.Seed.Rule                      Maybe = x | epsilon
                 [0]_.Seed.Nonterminal             Maybe
                   [0]_.Seed.Nonterminal.Base      Maybe
-                [1]_.Seed.ExprOrAlias             = x | epsilon
-                  [0]_.Seed.Expr.Or.|             x | epsilon
-                    [0]_.Seed.NonterminalMaybeVar x
-                      [0]_.Seed.Nonterminal       x
-                        [0]_.Seed.Nonterminal.Base x
-                    [1]_.Seed.Terminal            epsilon
-              [2]_.Seed.Rule                      Axe =/ ... '*=' ]
+                [1]_.Seed.Expr.Or.|               x | epsilon
+                  [0]_.Seed.NonterminalMaybeVar   x
+                    [0]_.Seed.Nonterminal         x
+                      [0]_.Seed.Nonterminal.Base  x
+                  [1]_.Seed.Terminal              epsilon
+              [2]_.Seed.Rule                      Axe = ... '*=' ]
                 [0]_.Seed.Nonterminal             Axe
                   [0]_.Seed.Nonterminal.Base      Axe
                 [1]_.Seed.Axe                     Atom [ ... '*=' ]
@@ -665,28 +648,27 @@ seed::interpreter_t::apply(_.Fern) failed to parse
               [3]_.Seed.Rule                      Atom = ... | 'none'
                 [0]_.Seed.Nonterminal             Atom
                   [0]_.Seed.Nonterminal.Base      Atom
-                [1]_.Seed.ExprOrAlias             = Struct ... | 'none'
-                  [0]_.Seed.Expr.Or.|             Struct | ... | 'none'
-                    [0]_.Seed.NonterminalMaybeVar Struct
-                      [0]_.Seed.Nonterminal       Struct
-                        [0]_.Seed.Nonterminal.Base Struct
-                    [1]_.Seed.NonterminalMaybeVar _ . Silva . Section
-                      [0]_.Seed.Nonterminal       _ . Silva . Section
-                        [0]_.Seed.Nonterminal.Base _
-                        [1]_.Seed.Nonterminal.Base Silva
-                        [2]_.Seed.Nonterminal.Base Section
-                    [2]_.Seed.Expr.And.but_then   not keywords_of ... but_then identifier
-                      [0]_.Seed.Expr.Prefix.not   not keywords_of _ . Soil
-                        [0]_.Seed.Terminal        keywords_of _ . Soil
-                          [0]_.Seed.Nonterminal   _ . Soil
-                            [0]_.Seed.Nonterminal.Base _
-                            [1]_.Seed.Nonterminal.Base Soil
-                      [1]_.Seed.Terminal          identifier
-                    [3]_.Seed.Terminal            string
-                    [4]_.Seed.Terminal            number
-                    [5]_.Seed.Terminal            'true'
-                    [6]_.Seed.Terminal            'false'
-                    [7]_.Seed.Terminal            'none'
+                [1]_.Seed.Expr.Or.|               Struct | ... | 'none'
+                  [0]_.Seed.NonterminalMaybeVar   Struct
+                    [0]_.Seed.Nonterminal         Struct
+                      [0]_.Seed.Nonterminal.Base  Struct
+                  [1]_.Seed.NonterminalMaybeVar   _ . Silva . Section
+                    [0]_.Seed.Nonterminal         _ . Silva . Section
+                      [0]_.Seed.Nonterminal.Base  _
+                      [1]_.Seed.Nonterminal.Base  Silva
+                      [2]_.Seed.Nonterminal.Base  Section
+                  [2]_.Seed.Expr.And.but_then     not keywords_of ... but_then identifier
+                    [0]_.Seed.Expr.Prefix.not     not keywords_of _ . Soil
+                      [0]_.Seed.Terminal          keywords_of _ . Soil
+                        [0]_.Seed.Nonterminal     _ . Soil
+                          [0]_.Seed.Nonterminal.Base _
+                          [1]_.Seed.Nonterminal.Base Soil
+                    [1]_.Seed.Terminal            identifier
+                  [3]_.Seed.Terminal              string
+                  [4]_.Seed.Terminal              number
+                  [5]_.Seed.Terminal              'true'
+                  [6]_.Seed.Terminal              'false'
+                  [7]_.Seed.Terminal              'none'
               [4]_.Seed.Rule                      Struct = ... ) ]
                 [0]_.Seed.Nonterminal             Struct
                   [0]_.Seed.Nonterminal.Base      Struct
@@ -694,37 +676,35 @@ seed::interpreter_t::apply(_.Fern) failed to parse
                   [0]_.Seed.Rule                  x = ... * ']'
                     [0]_.Seed.Nonterminal         x
                       [0]_.Seed.Nonterminal.Base  x
-                    [1]_.Seed.ExprOrAlias         = '[' LabeledItem * ']'
-                      [0]_.Seed.Expr.Concat.concat '[' LabeledItem * ']'
-                        [0]_.Seed.Terminal        '['
-                        [1]_.Seed.Expr.Postfix.*  LabeledItem *
-                          [0]_.Seed.NonterminalMaybeVar LabeledItem
-                            [0]_.Seed.Nonterminal LabeledItem
-                              [0]_.Seed.Nonterminal.Base LabeledItem
-                        [2]_.Seed.Terminal        ']'
+                    [1]_.Seed.Expr.Concat.concat  '[' LabeledItem * ']'
+                      [0]_.Seed.Terminal          '['
+                      [1]_.Seed.Expr.Postfix.*    LabeledItem *
+                        [0]_.Seed.NonterminalMaybeVar LabeledItem
+                          [0]_.Seed.Nonterminal   LabeledItem
+                            [0]_.Seed.Nonterminal.Base LabeledItem
+                      [2]_.Seed.Terminal          ']'
                   [1]_.Seed.Rule                  LabeledItem = ... p )
                     [0]_.Seed.Nonterminal         LabeledItem
                       [0]_.Seed.Nonterminal.Base  LabeledItem
-                    [1]_.Seed.ExprOrAlias         = ( ... p )
-                      [0]_.Seed.Expr.Concat.concat ( _ ... p )
-                        [0]_.Seed.Expr.Postfix.?  ( _ ... ) ?
-                          [0]_.Seed.Expr.Parens.( ( _ ... ':' )
-                            [0]_.Seed.Expr.Concat.concat _ . ... Name ':'
-                              [0]_.Seed.NonterminalMaybeVar _ . ... . Name
-                                [0]_.Seed.Nonterminal _ . ... . Name
-                                  [0]_.Seed.Nonterminal.Base _
-                                  [1]_.Seed.Nonterminal.Base Soil
-                                  [2]_.Seed.Nonterminal.Base Variable
-                                  [3]_.Seed.Nonterminal.Base Name
-                              [1]_.Seed.Terminal  ':'
-                        [1]_.Seed.Expr.Parens.(   ( x | p )
-                          [0]_.Seed.Expr.Or.|     x | p
-                            [0]_.Seed.NonterminalMaybeVar x
-                              [0]_.Seed.Nonterminal x
-                                [0]_.Seed.Nonterminal.Base x
-                            [1]_.Seed.NonterminalMaybeVar p
-                              [0]_.Seed.Nonterminal p
-                                [0]_.Seed.Nonterminal.Base p
+                    [1]_.Seed.Expr.Concat.concat  ( _ ... p )
+                      [0]_.Seed.Expr.Postfix.?    ( _ ... ) ?
+                        [0]_.Seed.Expr.Parens.(   ( _ ... ':' )
+                          [0]_.Seed.Expr.Concat.concat _ . ... Name ':'
+                            [0]_.Seed.NonterminalMaybeVar _ . ... . Name
+                              [0]_.Seed.Nonterminal _ . ... . Name
+                                [0]_.Seed.Nonterminal.Base _
+                                [1]_.Seed.Nonterminal.Base Soil
+                                [2]_.Seed.Nonterminal.Base Variable
+                                [3]_.Seed.Nonterminal.Base Name
+                            [1]_.Seed.Terminal    ':'
+                      [1]_.Seed.Expr.Parens.(     ( x | p )
+                        [0]_.Seed.Expr.Or.|       x | p
+                          [0]_.Seed.NonterminalMaybeVar x
+                            [0]_.Seed.Nonterminal x
+                              [0]_.Seed.Nonterminal.Base x
+                          [1]_.Seed.NonterminalMaybeVar p
+                            [0]_.Seed.Nonterminal p
+                              [0]_.Seed.Nonterminal.Base p
           [3]_.Seed.Rule                          Func = ... ] ]
             [0]_.Seed.Nonterminal                 Func
               [0]_.Seed.Nonterminal.Base          Func
@@ -732,58 +712,53 @@ seed::interpreter_t::apply(_.Fern) failed to parse
               [0]_.Seed.Rule                      x = Name
                 [0]_.Seed.Nonterminal             x
                   [0]_.Seed.Nonterminal.Base      x
-                [1]_.Seed.ExprOrAlias             = Name
-                  [0]_.Seed.NonterminalMaybeVar   Name
-                    [0]_.Seed.Nonterminal         Name
-                      [0]_.Seed.Nonterminal.Base  Name
+                [1]_.Seed.NonterminalMaybeVar     Name
+                  [0]_.Seed.Nonterminal           Name
+                    [0]_.Seed.Nonterminal.Base    Name
               [1]_.Seed.Rule                      Name = identifier / '_f$'
                 [0]_.Seed.Nonterminal             Name
                   [0]_.Seed.Nonterminal.Base      Name
-                [1]_.Seed.ExprOrAlias             = identifier / '_f$'
-                  [0]_.Seed.Terminal              identifier / '_f$'
+                [1]_.Seed.Terminal                identifier / '_f$'
               [2]_.Seed.Rule                      Defn = ... Signature Body
                 [0]_.Seed.Nonterminal             Defn
                   [0]_.Seed.Nonterminal.Base      Defn
-                [1]_.Seed.ExprOrAlias             = Name '=' Signature Body
-                  [0]_.Seed.Expr.Concat.concat    Name '=' Signature Body
-                    [0]_.Seed.NonterminalMaybeVar Name
-                      [0]_.Seed.Nonterminal       Name
-                        [0]_.Seed.Nonterminal.Base Name
-                    [1]_.Seed.Terminal            '='
-                    [2]_.Seed.NonterminalMaybeVar Signature
-                      [0]_.Seed.Nonterminal       Signature
-                        [0]_.Seed.Nonterminal.Base Signature
-                    [3]_.Seed.NonterminalMaybeVar Body
-                      [0]_.Seed.Nonterminal       Body
-                        [0]_.Seed.Nonterminal.Base Body
+                [1]_.Seed.Expr.Concat.concat      Name '=' Signature Body
+                  [0]_.Seed.NonterminalMaybeVar   Name
+                    [0]_.Seed.Nonterminal         Name
+                      [0]_.Seed.Nonterminal.Base  Name
+                  [1]_.Seed.Terminal              '='
+                  [2]_.Seed.NonterminalMaybeVar   Signature
+                    [0]_.Seed.Nonterminal         Signature
+                      [0]_.Seed.Nonterminal.Base  Signature
+                  [3]_.Seed.NonterminalMaybeVar   Body
+                    [0]_.Seed.Nonterminal         Body
+                      [0]_.Seed.Nonterminal.Base  Body
               [3]_.Seed.Rule                      Signature = ... ) ?
                 [0]_.Seed.Nonterminal             Signature
                   [0]_.Seed.Nonterminal.Base      Signature
-                [1]_.Seed.ExprOrAlias             = p ... ) ?
-                  [0]_.Seed.Expr.Concat.concat    p . ... ) ?
-                    [0]_.Seed.NonterminalMaybeVar p . Type
-                      [0]_.Seed.Nonterminal       p . Type
-                        [0]_.Seed.Nonterminal.Base p
-                        [1]_.Seed.Nonterminal.Base Type
-                    [1]_.Seed.Expr.Postfix.?      ( '->' ... ) ?
-                      [0]_.Seed.Expr.Parens.(     ( '->' ... Type )
-                        [0]_.Seed.Expr.Concat.concat '->' p . Type
-                          [0]_.Seed.Terminal      '->'
-                          [1]_.Seed.NonterminalMaybeVar p . Type
-                            [0]_.Seed.Nonterminal p . Type
-                              [0]_.Seed.Nonterminal.Base p
-                              [1]_.Seed.Nonterminal.Base Type
+                [1]_.Seed.Expr.Concat.concat      p . ... ) ?
+                  [0]_.Seed.NonterminalMaybeVar   p . Type
+                    [0]_.Seed.Nonterminal         p . Type
+                      [0]_.Seed.Nonterminal.Base  p
+                      [1]_.Seed.Nonterminal.Base  Type
+                  [1]_.Seed.Expr.Postfix.?        ( '->' ... ) ?
+                    [0]_.Seed.Expr.Parens.(       ( '->' ... Type )
+                      [0]_.Seed.Expr.Concat.concat '->' p . Type
+                        [0]_.Seed.Terminal        '->'
+                        [1]_.Seed.NonterminalMaybeVar p . Type
+                          [0]_.Seed.Nonterminal   p . Type
+                            [0]_.Seed.Nonterminal.Base p
+                            [1]_.Seed.Nonterminal.Base Type
               [4]_.Seed.Rule                      Body = ... * '}'
                 [0]_.Seed.Nonterminal             Body
                   [0]_.Seed.Nonterminal.Base      Body
-                [1]_.Seed.ExprOrAlias             = '{' Stmt * '}'
-                  [0]_.Seed.Expr.Concat.concat    '{' Stmt * '}'
-                    [0]_.Seed.Terminal            '{'
-                    [1]_.Seed.Expr.Postfix.*      Stmt *
-                      [0]_.Seed.NonterminalMaybeVar Stmt
-                        [0]_.Seed.Nonterminal     Stmt
-                          [0]_.Seed.Nonterminal.Base Stmt
-                    [2]_.Seed.Terminal            '}'
+                [1]_.Seed.Expr.Concat.concat      '{' Stmt * '}'
+                  [0]_.Seed.Terminal              '{'
+                  [1]_.Seed.Expr.Postfix.*        Stmt *
+                    [0]_.Seed.NonterminalMaybeVar Stmt
+                      [0]_.Seed.Nonterminal       Stmt
+                        [0]_.Seed.Nonterminal.Base Stmt
+                  [2]_.Seed.Terminal              '}'
               [5]_.Seed.Rule                      Stmt = ... Body ]
                 [0]_.Seed.Nonterminal             Stmt
                   [0]_.Seed.Nonterminal.Base      Stmt
@@ -791,21 +766,20 @@ seed::interpreter_t::apply(_.Fern) failed to parse
                   [0]_.Seed.Rule                  x = ... Expr ';'
                     [0]_.Seed.Nonterminal         x
                       [0]_.Seed.Nonterminal.Base  x
-                    [1]_.Seed.ExprOrAlias         = If ... Expr ';'
-                      [0]_.Seed.Expr.Or.|         If | ... Expr ';'
-                        [0]_.Seed.NonterminalMaybeVar If
-                          [0]_.Seed.Nonterminal   If
-                            [0]_.Seed.Nonterminal.Base If
-                        [1]_.Seed.NonterminalMaybeVar For
-                          [0]_.Seed.Nonterminal   For
-                            [0]_.Seed.Nonterminal.Base For
-                        [2]_.Seed.Expr.Concat.concat _ . ... Expr ';'
-                          [0]_.Seed.NonterminalMaybeVar _ . Soil . Expr
-                            [0]_.Seed.Nonterminal _ . Soil . Expr
-                              [0]_.Seed.Nonterminal.Base _
-                              [1]_.Seed.Nonterminal.Base Soil
-                              [2]_.Seed.Nonterminal.Base Expr
-                          [1]_.Seed.Terminal      ';'
+                    [1]_.Seed.Expr.Or.|           If | ... Expr ';'
+                      [0]_.Seed.NonterminalMaybeVar If
+                        [0]_.Seed.Nonterminal     If
+                          [0]_.Seed.Nonterminal.Base If
+                      [1]_.Seed.NonterminalMaybeVar For
+                        [0]_.Seed.Nonterminal     For
+                          [0]_.Seed.Nonterminal.Base For
+                      [2]_.Seed.Expr.Concat.concat _ . ... Expr ';'
+                        [0]_.Seed.NonterminalMaybeVar _ . Soil . Expr
+                          [0]_.Seed.Nonterminal   _ . Soil . Expr
+                            [0]_.Seed.Nonterminal.Base _
+                            [1]_.Seed.Nonterminal.Base Soil
+                            [2]_.Seed.Nonterminal.Base Expr
+                        [1]_.Seed.Terminal        ';'
                   [1]_.Seed.Rule                  If = ... Body ]
                     [0]_.Seed.Nonterminal         If
                       [0]_.Seed.Nonterminal.Base  If
@@ -813,73 +787,70 @@ seed::interpreter_t::apply(_.Fern) failed to parse
                       [0]_.Seed.Rule              x = ... ) ?
                         [0]_.Seed.Nonterminal     x
                           [0]_.Seed.Nonterminal.Base x
-                        [1]_.Seed.ExprOrAlias     = 'if' ... ) ?
-                          [0]_.Seed.Expr.Concat.concat 'if' Branch ... ) ?
-                            [0]_.Seed.Terminal    'if'
-                            [1]_.Seed.NonterminalMaybeVar Branch
-                              [0]_.Seed.Nonterminal Branch
-                                [0]_.Seed.Nonterminal.Base Branch
-                            [2]_.Seed.Expr.Postfix.* ( 'elif' Branch ) *
-                              [0]_.Seed.Expr.Parens.( ( 'elif' Branch )
-                                [0]_.Seed.Expr.Concat.concat 'elif' Branch
-                                  [0]_.Seed.Terminal 'elif'
-                                  [1]_.Seed.NonterminalMaybeVar Branch
-                                    [0]_.Seed.Nonterminal Branch
-                                      [0]_.Seed.Nonterminal.Base Branch
-                            [3]_.Seed.Expr.Postfix.? ( 'else' ... ) ?
-                              [0]_.Seed.Expr.Parens.( ( 'else' ... Body )
-                                [0]_.Seed.Expr.Concat.concat 'else' p ... . Body
-                                  [0]_.Seed.Terminal 'else'
-                                  [1]_.Seed.NonterminalMaybeVar p . p . Body
-                                    [0]_.Seed.Nonterminal p . p . Body
-                                      [0]_.Seed.Nonterminal.Base p
-                                      [1]_.Seed.Nonterminal.Base p
-                                      [2]_.Seed.Nonterminal.Base Body
+                        [1]_.Seed.Expr.Concat.concat 'if' Branch ... ) ?
+                          [0]_.Seed.Terminal      'if'
+                          [1]_.Seed.NonterminalMaybeVar Branch
+                            [0]_.Seed.Nonterminal Branch
+                              [0]_.Seed.Nonterminal.Base Branch
+                          [2]_.Seed.Expr.Postfix.* ( 'elif' Branch ) *
+                            [0]_.Seed.Expr.Parens.( ( 'elif' Branch )
+                              [0]_.Seed.Expr.Concat.concat 'elif' Branch
+                                [0]_.Seed.Terminal 'elif'
+                                [1]_.Seed.NonterminalMaybeVar Branch
+                                  [0]_.Seed.Nonterminal Branch
+                                    [0]_.Seed.Nonterminal.Base Branch
+                          [3]_.Seed.Expr.Postfix.? ( 'else' ... ) ?
+                            [0]_.Seed.Expr.Parens.( ( 'else' ... Body )
+                              [0]_.Seed.Expr.Concat.concat 'else' p ... . Body
+                                [0]_.Seed.Terminal 'else'
+                                [1]_.Seed.NonterminalMaybeVar p . p . Body
+                                  [0]_.Seed.Nonterminal p . p . Body
+                                    [0]_.Seed.Nonterminal.Base p
+                                    [1]_.Seed.Nonterminal.Base p
+                                    [2]_.Seed.Nonterminal.Base Body
                       [1]_.Seed.Rule              Branch = ... . Body
                         [0]_.Seed.Nonterminal     Branch
                           [0]_.Seed.Nonterminal.Base Branch
-                        [1]_.Seed.ExprOrAlias     = _ ... . Body
-                          [0]_.Seed.Expr.Concat.concat _ . ... . Body
-                            [0]_.Seed.NonterminalMaybeVar _ . Soil . Expr
-                              [0]_.Seed.Nonterminal _ . Soil . Expr
-                                [0]_.Seed.Nonterminal.Base _
-                                [1]_.Seed.Nonterminal.Base Soil
-                                [2]_.Seed.Nonterminal.Base Expr
-                            [1]_.Seed.NonterminalMaybeVar p . p . Body
-                              [0]_.Seed.Nonterminal p . p . Body
-                                [0]_.Seed.Nonterminal.Base p
-                                [1]_.Seed.Nonterminal.Base p
-                                [2]_.Seed.Nonterminal.Base Body
+                        [1]_.Seed.Expr.Concat.concat _ . ... . Body
+                          [0]_.Seed.NonterminalMaybeVar _ . Soil . Expr
+                            [0]_.Seed.Nonterminal _ . Soil . Expr
+                              [0]_.Seed.Nonterminal.Base _
+                              [1]_.Seed.Nonterminal.Base Soil
+                              [2]_.Seed.Nonterminal.Base Expr
+                          [1]_.Seed.NonterminalMaybeVar p . p . Body
+                            [0]_.Seed.Nonterminal p . p . Body
+                              [0]_.Seed.Nonterminal.Base p
+                              [1]_.Seed.Nonterminal.Base p
+                              [2]_.Seed.Nonterminal.Base Body
                   [2]_.Seed.Rule                  For = ... . Body
                     [0]_.Seed.Nonterminal         For
                       [0]_.Seed.Nonterminal.Base  For
-                    [1]_.Seed.ExprOrAlias         = 'for' ... . Body
-                      [0]_.Seed.Expr.Concat.concat 'for' _ ... . Body
-                        [0]_.Seed.Terminal        'for'
-                        [1]_.Seed.NonterminalMaybeVar _ . ... . Maybe
-                          [0]_.Seed.Nonterminal   _ . ... . Maybe
-                            [0]_.Seed.Nonterminal.Base _
-                            [1]_.Seed.Nonterminal.Base Soil
-                            [2]_.Seed.Nonterminal.Base Expr
-                            [3]_.Seed.Nonterminal.Base Maybe
-                        [2]_.Seed.Terminal        ';'
-                        [3]_.Seed.NonterminalMaybeVar _ . ... . Maybe
-                          [0]_.Seed.Nonterminal   _ . ... . Maybe
-                            [0]_.Seed.Nonterminal.Base _
-                            [1]_.Seed.Nonterminal.Base Soil
-                            [2]_.Seed.Nonterminal.Base Expr
-                            [3]_.Seed.Nonterminal.Base Maybe
-                        [4]_.Seed.Terminal        ';'
-                        [5]_.Seed.NonterminalMaybeVar _ . ... . Maybe
-                          [0]_.Seed.Nonterminal   _ . ... . Maybe
-                            [0]_.Seed.Nonterminal.Base _
-                            [1]_.Seed.Nonterminal.Base Soil
-                            [2]_.Seed.Nonterminal.Base Expr
-                            [3]_.Seed.Nonterminal.Base Maybe
-                        [6]_.Seed.NonterminalMaybeVar p . Body
-                          [0]_.Seed.Nonterminal   p . Body
-                            [0]_.Seed.Nonterminal.Base p
-                            [1]_.Seed.Nonterminal.Base Body
+                    [1]_.Seed.Expr.Concat.concat  'for' _ ... . Body
+                      [0]_.Seed.Terminal          'for'
+                      [1]_.Seed.NonterminalMaybeVar _ . ... . Maybe
+                        [0]_.Seed.Nonterminal     _ . ... . Maybe
+                          [0]_.Seed.Nonterminal.Base _
+                          [1]_.Seed.Nonterminal.Base Soil
+                          [2]_.Seed.Nonterminal.Base Expr
+                          [3]_.Seed.Nonterminal.Base Maybe
+                      [2]_.Seed.Terminal          ';'
+                      [3]_.Seed.NonterminalMaybeVar _ . ... . Maybe
+                        [0]_.Seed.Nonterminal     _ . ... . Maybe
+                          [0]_.Seed.Nonterminal.Base _
+                          [1]_.Seed.Nonterminal.Base Soil
+                          [2]_.Seed.Nonterminal.Base Expr
+                          [3]_.Seed.Nonterminal.Base Maybe
+                      [4]_.Seed.Terminal          ';'
+                      [5]_.Seed.NonterminalMaybeVar _ . ... . Maybe
+                        [0]_.Seed.Nonterminal     _ . ... . Maybe
+                          [0]_.Seed.Nonterminal.Base _
+                          [1]_.Seed.Nonterminal.Base Soil
+                          [2]_.Seed.Nonterminal.Base Expr
+                          [3]_.Seed.Nonterminal.Base Maybe
+                      [6]_.Seed.NonterminalMaybeVar p . Body
+                        [0]_.Seed.Nonterminal     p . Body
+                          [0]_.Seed.Nonterminal.Base p
+                          [1]_.Seed.Nonterminal.Base Body
           [4]_.Seed.Rule                          Variable = ... Expr ]
             [0]_.Seed.Nonterminal                 Variable
               [0]_.Seed.Nonterminal.Base          Variable
@@ -887,34 +858,32 @@ seed::interpreter_t::apply(_.Fern) failed to parse
               [0]_.Seed.Rule                      Name = ... but_then identifier
                 [0]_.Seed.Nonterminal             Name
                   [0]_.Seed.Nonterminal.Base      Name
-                [1]_.Seed.ExprOrAlias             = not ... but_then identifier
-                  [0]_.Seed.Expr.And.but_then     not p ... but_then identifier
-                    [0]_.Seed.Expr.Prefix.not     not p ... . Name
-                      [0]_.Seed.NonterminalMaybeVar p . Type . Name
-                        [0]_.Seed.Nonterminal     p . Type . Name
-                          [0]_.Seed.Nonterminal.Base p
-                          [1]_.Seed.Nonterminal.Base Type
-                          [2]_.Seed.Nonterminal.Base Name
-                    [1]_.Seed.Expr.Prefix.not     not p ... . Name
-                      [0]_.Seed.NonterminalMaybeVar p . Func . Name
-                        [0]_.Seed.Nonterminal     p . Func . Name
-                          [0]_.Seed.Nonterminal.Base p
-                          [1]_.Seed.Nonterminal.Base Func
-                          [2]_.Seed.Nonterminal.Base Name
-                    [2]_.Seed.Terminal            identifier
+                [1]_.Seed.Expr.And.but_then       not p ... but_then identifier
+                  [0]_.Seed.Expr.Prefix.not       not p ... . Name
+                    [0]_.Seed.NonterminalMaybeVar p . Type . Name
+                      [0]_.Seed.Nonterminal       p . Type . Name
+                        [0]_.Seed.Nonterminal.Base p
+                        [1]_.Seed.Nonterminal.Base Type
+                        [2]_.Seed.Nonterminal.Base Name
+                  [1]_.Seed.Expr.Prefix.not       not p ... . Name
+                    [0]_.Seed.NonterminalMaybeVar p . Func . Name
+                      [0]_.Seed.Nonterminal       p . Func . Name
+                        [0]_.Seed.Nonterminal.Base p
+                        [1]_.Seed.Nonterminal.Base Func
+                        [2]_.Seed.Nonterminal.Base Name
+                  [2]_.Seed.Terminal              identifier
               [1]_.Seed.Rule                      Defn = ... . Expr
                 [0]_.Seed.Nonterminal             Defn
                   [0]_.Seed.Nonterminal.Base      Defn
-                [1]_.Seed.ExprOrAlias             = Name ... . Expr
-                  [0]_.Seed.Expr.Concat.concat    Name '=' p . Expr
-                    [0]_.Seed.NonterminalMaybeVar Name
-                      [0]_.Seed.Nonterminal       Name
-                        [0]_.Seed.Nonterminal.Base Name
-                    [1]_.Seed.Terminal            '='
-                    [2]_.Seed.NonterminalMaybeVar p . Expr
-                      [0]_.Seed.Nonterminal       p . Expr
-                        [0]_.Seed.Nonterminal.Base p
-                        [1]_.Seed.Nonterminal.Base Expr
+                [1]_.Seed.Expr.Concat.concat      Name '=' p . Expr
+                  [0]_.Seed.NonterminalMaybeVar   Name
+                    [0]_.Seed.Nonterminal         Name
+                      [0]_.Seed.Nonterminal.Base  Name
+                  [1]_.Seed.Terminal              '='
+                  [2]_.Seed.NonterminalMaybeVar   p . Expr
+                    [0]_.Seed.Nonterminal         p . Expr
+                      [0]_.Seed.Nonterminal.Base  p
+                      [1]_.Seed.Nonterminal.Base  Expr
 
 [0]_.Silva                                        <$ Soil ... } $>
   [0]_.Silva.Section                              <$ Soil ... } $>
@@ -1117,9 +1086,8 @@ seed::interpreter_t::apply(_.Fern) failed to parse
                       [0]_.Seed.Rule              SomeRule = identifier *
                         [0]_.Seed.Nonterminal     SomeRule
                           [0]_.Seed.Nonterminal.Base SomeRule
-                        [1]_.Seed.ExprOrAlias     = identifier *
-                          [0]_.Seed.Expr.Postfix.* identifier *
-                            [0]_.Seed.Terminal    identifier
+                        [1]_.Seed.Expr.Postfix.*  identifier *
+                          [0]_.Seed.Terminal      identifier
                 [1]_.Soil.Expr.Atom               print_f
           [6]_.Soil.Func.Stmt                     if p1 ... ; }
             [0]_.Soil.Func.Stmt.If                if p1 ... ; }

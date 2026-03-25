@@ -7,7 +7,7 @@ $>
 <$ Seed
 - CppStmts = [
   - x = ( Expr ';' ) *
-  - Expr =/ Atom [
+  - Expr = axe Atom [
       - Parens      = nest  atom_nest '(' ')'
       - Namespace   = rtl   infix '::' prefix '::'
       - Postfix     = ltr   postfix '++' '--'

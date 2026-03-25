@@ -19,7 +19,7 @@
   - Expr = [
     - x = Axe
     - Maybe = x | epsilon
-    - Axe =/ Atom [
+    - Axe = axe Atom [
       - Parens    = nest atom_nest '(' ')'
       - Member    = ltr infix '.'
       - CallPost  = ltr postfix_nest '(' ')'

@@ -32,7 +32,7 @@ namespace silva::lox {
         - ExprStmt = p.Expr ';'
       ]
       - Expr = [
-        - x =/ x.Expr.Atom [
+        - x = axe x.Expr.Atom [
           - Primary     = nest atom_nest '(' ')'
           - Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
           - Unary       = rtl prefix '!' '-'
