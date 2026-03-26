@@ -2,6 +2,7 @@
 
 #include "cactus.hpp"
 #include "lox.hpp"
+#include "lox.lexicon.hpp"
 #include "object_pool.hpp"
 
 #include "canopy/expected.hpp"

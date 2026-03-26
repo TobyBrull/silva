@@ -139,7 +139,10 @@ namespace silva::seed {
     }
   };
 
-  interpreter_t::interpreter_t(syntax_farm_ptr_t sfp) : sfp(sfp), tokenizer_farm(sfp) {}
+  interpreter_t::interpreter_t(syntax_farm_ptr_t sfp)
+    : sfp(sfp), bootstrap_interpreter(sfp), tokenizer_farm(sfp)
+  {
+  }
 
   expected_t<void> interpreter_t::callback_if(const parse_tree_span_t& pts) const
   {
@@ -168,7 +171,7 @@ namespace silva::seed {
                                                                 string_view_t text)
   {
     auto tt  = SILVA_EXPECT_FWD(tokenize(sfp, std::move(filepath), std::move(text)));
-    auto ptp = SILVA_EXPECT_FWD(seed::parse(std::move(tt)));
+    auto ptp = SILVA_EXPECT_FWD(bootstrap_interpreter.parse(std::move(tt)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
     SILVA_EXPECT_FWD(add(ptp->span()));
     return ptp;

@@ -42,7 +42,7 @@ namespace silva::seed::test {
     syntax_farm_t sf;
     const auto spr       = standard_seed_interpreter(sf.ptr());
     const auto seed_tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", string_t{seed_str}));
-    const auto seed_pt_1 = SILVA_REQUIRE(parse(seed_tt));
+    const auto seed_pt_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(seed_tt));
     const auto seed_pt_2 = SILVA_REQUIRE(spr->apply(seed_tt, sf.name_id_of("Seed")));
     // fmt::print("|{}|\n", *seed_pt_1->span().to_string());
     // fmt::print("|{}|\n", *seed_pt_2->span().to_string());
@@ -84,7 +84,7 @@ namespace silva::seed::test {
   )'";
     syntax_farm_t sf;
     const auto sf_seed_tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", sf_text));
-    const auto sf_seed_pt_1 = SILVA_REQUIRE(parse(sf_seed_tt));
+    const auto sf_seed_pt_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(sf_seed_tt));
     const auto spr          = standard_seed_interpreter(sf.ptr());
     const auto sf_seed_pt_2 = SILVA_REQUIRE(spr->apply(sf_seed_tt, sf.name_id_of("Seed")));
     CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);

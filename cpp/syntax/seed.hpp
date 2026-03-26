@@ -70,7 +70,22 @@ namespace silva::seed {
     - None = epsilon
   )'";
 
+  // Handcrafted Seed parser for bootstrapping purposes.
+  //
+  // Unlike silva::seed::interpreter_t, this bootstrap-interpreter can only parse Seed programs.
+  //
   // Invariant (pseudo-code):
   //    standard_seed_engine()->apply(tokenization, "Seed") == seed::parse(tokenization)
-  expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t);
+  //
+  struct bootstrap_interpreter_t {
+    struct impl_t;
+    unique_ptr_t<impl_t> impl;
+
+    bootstrap_interpreter_t(syntax_farm_ptr_t);
+    ~bootstrap_interpreter_t();
+
+    expected_t<parse_tree_ptr_t> parse(fragmentization_ptr_t);
+
+    expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t);
+  };
 }
