@@ -90,13 +90,12 @@ namespace silva::seed {
       - x = 'tokenizer' '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
       - IncludeRule = 'include' 'tokenizer' p.Nonterminal.Base
       - IgnoreRule = 'ignore' Defn
-      - TokenRule = TokenCategory '=' Defn
-      - Defn = PrefixAtom * ( ':::' Atom + ) ?
-      - PrefixAtom = Atom | List
-      - Atom = Matcher | string
+      - TokenRule = p.TokenCategory '=' Defn
+      - Defn = PrefixItem * ( ':::' Item + ) ?
+      - PrefixItem = Item | List
+      - Item = Matcher | string
       - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
-      - List = '[' Atom * ']'
-      - TokenCategory = identifier / '^[a-z_]+$'
+      - List = '[' Item * ']'
       - FragName = identifier / '^[A-Z_]+$'
     ]
   )'";

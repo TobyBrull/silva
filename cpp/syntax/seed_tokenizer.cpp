@@ -94,8 +94,8 @@ namespace silva::seed::impl {
     const name_id_t ni_inc_rule    = sfp->name_id_of(ni_tok, "IncludeRule");
     const name_id_t ni_ign_rule    = sfp->name_id_of(ni_tok, "IgnoreRule");
     const name_id_t ni_tok_rule    = sfp->name_id_of(ni_tok, "TokenRule");
-    const name_id_t ni_prefix_atom = sfp->name_id_of(ni_tok, "PrefixAtom");
-    const name_id_t ni_atom        = sfp->name_id_of(ni_tok, "Atom");
+    const name_id_t ni_prefix_item = sfp->name_id_of(ni_tok, "PrefixItem");
+    const name_id_t ni_item        = sfp->name_id_of(ni_tok, "Item");
     const name_id_t ni_list        = sfp->name_id_of(ni_tok, "List");
     const name_id_t ni_matcher     = sfp->name_id_of(ni_tok, "Matcher");
 
@@ -176,15 +176,15 @@ namespace silva::seed::impl {
       }
     }
 
-    expected_t<array_t<matcher_t>> atom(const parse_tree_span_t pts_atom)
+    expected_t<array_t<matcher_t>> item(const parse_tree_span_t pts_item)
     {
       array_t<matcher_t> matchers;
-      if (pts_atom[0].num_children == 0) {
-        const token_id_t tid       = pts_atom.first_token_id();
+      if (pts_item[0].num_children == 0) {
+        const token_id_t tid       = pts_item.first_token_id();
         const token_info_t& ti     = sfp->token_infos[tid];
-        const string_t atom_str    = SILVA_EXPECT_FWD(ti.contained_string());
-        const string_t atom_str_nl = atom_str + "\n";
-        const auto fp              = SILVA_EXPECT_FWD(fragmentize("", std::move(atom_str_nl)));
+        const string_t item_str    = SILVA_EXPECT_FWD(ti.contained_string());
+        const string_t item_str_nl = item_str + "\n";
+        const auto fp              = SILVA_EXPECT_FWD(fragmentize("", std::move(item_str_nl)));
         const auto& frags          = fp->fragments;
         SILVA_EXPECT(frags.size() > 3, MINOR, "empty string not supported in tokenizer");
         SILVA_EXPECT(frags[0].category == LANG_BEGIN, MINOR);
@@ -193,7 +193,7 @@ namespace silva::seed::impl {
         for (index_t i = 1; i < frags.size() - 2; ++i) {
           const index_t frag_start = frags[i].location.byte_offset;
           const index_t frag_end   = frags[i + 1].location.byte_offset;
-          const string_t exact     = atom_str_nl.substr(frag_start, frag_end - frag_start);
+          const string_t exact     = item_str_nl.substr(frag_start, frag_end - frag_start);
           matchers.push_back(matcher_t{
               .category = frags[i].category,
               .prefix   = exact,
@@ -202,8 +202,8 @@ namespace silva::seed::impl {
         }
       }
       else {
-        const auto [c1]               = SILVA_EXPECT_FWD(pts_atom.get_children<1>());
-        const parse_tree_span_t pts_m = pts_atom.sub_tree_span_at(c1);
+        const auto [c1]               = SILVA_EXPECT_FWD(pts_item.get_children<1>());
+        const parse_tree_span_t pts_m = pts_item.sub_tree_span_at(c1);
         SILVA_EXPECT(pts_m[0].rule_name == ni_matcher, BROKEN_SEED);
         const token_id_t frag_name = pts_m.first_token_id();
         const auto [cat, cm]       = SILVA_EXPECT_FWD(fragment_category_from_token_id(frag_name));
@@ -250,12 +250,12 @@ namespace silva::seed::impl {
       return {std::move(matchers)};
     }
 
-    expected_t<array_t<array_t<matcher_t>>> prefix_atom(const parse_tree_span_t pts_pa)
+    expected_t<array_t<array_t<matcher_t>>> prefix_item(const parse_tree_span_t pts_pa)
     {
       array_t<array_t<matcher_t>> alternatives;
       const auto [c1] = SILVA_EXPECT_FWD(pts_pa.get_children<1>());
-      if (pts_pa[c1].rule_name == ni_atom) {
-        auto matchers = SILVA_EXPECT_FWD(atom(pts_pa.sub_tree_span_at(c1)));
+      if (pts_pa[c1].rule_name == ni_item) {
+        auto matchers = SILVA_EXPECT_FWD(item(pts_pa.sub_tree_span_at(c1)));
         alternatives.push_back(std::move(matchers));
       }
       else {
@@ -263,9 +263,9 @@ namespace silva::seed::impl {
         const auto pts_list = pts_pa.sub_tree_span_at(c1);
         auto [it, end]      = pts_list.children_range();
         while (it != end) {
-          const auto pts_atom_child = pts_list.sub_tree_span_at(it.pos);
-          SILVA_EXPECT(pts_atom_child[0].rule_name == ni_atom, BROKEN_SEED);
-          auto matchers = SILVA_EXPECT_FWD(atom(pts_atom_child));
+          const auto pts_item_child = pts_list.sub_tree_span_at(it.pos);
+          SILVA_EXPECT(pts_item_child[0].rule_name == ni_item, BROKEN_SEED);
+          auto matchers = SILVA_EXPECT_FWD(item(pts_item_child));
           alternatives.push_back(std::move(matchers));
           ++it;
         }
@@ -279,11 +279,11 @@ namespace silva::seed::impl {
       array_t<matcher_t> repeat_matchers;
       retval.emplace_back();
       auto [it, end]           = pts_defn.children_range();
-      index_t num_prefix_atoms = 0;
+      index_t num_prefix_items = 0;
       while (it != end) {
         const auto pts_child = pts_defn.sub_tree_span_at(it.pos);
-        if (pts_child[0].rule_name == ni_prefix_atom) {
-          auto alternatives = SILVA_EXPECT_FWD(prefix_atom(pts_child));
+        if (pts_child[0].rule_name == ni_prefix_item) {
+          auto alternatives = SILVA_EXPECT_FWD(prefix_item(pts_child));
           array_t<impl::rule_t> new_retval;
           for (auto& existing_rule: retval) {
             for (auto& alt: alternatives) {
@@ -295,10 +295,10 @@ namespace silva::seed::impl {
             }
           }
           retval = std::move(new_retval);
-          num_prefix_atoms += 1;
+          num_prefix_items += 1;
         }
-        else if (pts_child[0].rule_name == ni_atom) {
-          array_t<matcher_t> matchers = SILVA_EXPECT_FWD(atom(pts_child));
+        else if (pts_child[0].rule_name == ni_item) {
+          array_t<matcher_t> matchers = SILVA_EXPECT_FWD(item(pts_child));
           SILVA_EXPECT(matchers.size() == 1,
                        BROKEN_SEED,
                        "strings in repeat-matchers must fragmentize to exactly one fragment");
@@ -309,7 +309,7 @@ namespace silva::seed::impl {
         }
         ++it;
       }
-      if (num_prefix_atoms == 0) {
+      if (num_prefix_items == 0) {
         retval.clear();
         for (const auto& rm: repeat_matchers) {
           retval.push_back(rule_t{.prefix_matchers = {rm}});
