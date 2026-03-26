@@ -8,10 +8,10 @@
 using enum silva::token_category_old_t;
 
 namespace silva::seed::impl {
-  struct axe_parse_tree_nursery_t : public parse_tree_nursery_t {
+  struct base_parse_tree_nursery_t : public parse_tree_nursery_t {
     lexicon_t& lexicon;
 
-    axe_parse_tree_nursery_t(tokenization_ptr_t tp, lexicon_t& lexicon)
+    base_parse_tree_nursery_t(tokenization_ptr_t tp, lexicon_t& lexicon)
       : parse_tree_nursery_t(tp), lexicon(lexicon)
     {
     }
@@ -192,7 +192,7 @@ namespace silva::seed::impl {
       return retval;
     }();
     auto tt = SILVA_EXPECT_ASSERT(tokenize(sfp, "seed.axe", axe_defn));
-    impl::axe_parse_tree_nursery_t nursery(tt, lexicon);
+    impl::base_parse_tree_nursery_t nursery(tt, lexicon);
     SILVA_EXPECT_ASSERT(nursery.axe());
     parse_tree_ptr_t pt     = sfp->add(std::move(nursery).finish());
     const name_id_t ni_expr = sfp->name_id_of("Seed", "Expr");
@@ -200,11 +200,11 @@ namespace silva::seed::impl {
     return retval;
   }
 
-  struct seed_parse_tree_nursery_t : public axe_parse_tree_nursery_t {
+  struct seed_parse_tree_nursery_t : public base_parse_tree_nursery_t {
     axe_t& the_axe;
 
     seed_parse_tree_nursery_t(tokenization_ptr_t tp, lexicon_t& lexicon, axe_t& the_axe)
-      : axe_parse_tree_nursery_t(tp, lexicon), the_axe(the_axe)
+      : base_parse_tree_nursery_t(tp, lexicon), the_axe(the_axe)
     {
     }
 
