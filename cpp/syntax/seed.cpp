@@ -37,7 +37,7 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_term);
       if (num_tokens_left() >= 3 &&
           (token_id_by(0) == lexicon.ti_identifier || token_id_by(0) == lexicon.ti_operator) &&
-          token_id_by(1) == lexicon.ti_regex && token_data_by(2)->category_old == STRING) {
+          token_id_by(1) == lexicon.ti_slash && token_data_by(2)->category_old == STRING) {
         token_index += 3;
       }
       else if (num_tokens_left() >= 2 && token_id_by(0) == lexicon.ti_keywords_of) {
@@ -174,6 +174,185 @@ namespace silva::seed::impl {
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe, axe_level()));
       }
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_axe, lexicon.ti_brack_close);
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_frag_name()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_frag_name);
+      SILVA_EXPECT_PARSE(lexicon.ni_tok_frag_name,
+                         num_tokens_left() >= 1,
+                         "no more tokens in input");
+      const auto& tstr = token_data_by()->str;
+      bool is_frag     = token_data_by()->category_old == IDENTIFIER && !tstr.empty();
+      if (is_frag) {
+        for (char c: tstr) {
+          if (!std::isupper(static_cast<unsigned char>(c)) && c != '_') {
+            is_frag = false;
+            break;
+          }
+        }
+      }
+      SILVA_EXPECT_PARSE(lexicon.ni_tok_frag_name,
+                         is_frag,
+                         "unexpected {}",
+                         sfp->token_id_wrap(token_id_by()));
+      token_index += 1;
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_matcher()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_matcher);
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_matcher, tokenizer_frag_name()));
+      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_slash &&
+          token_data_by(1)->category_old == STRING) {
+        token_index += 2;
+      }
+      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_backslash &&
+          token_data_by(1)->category_old == STRING) {
+        token_index += 2;
+      }
+      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_pipe &&
+          token_data_by(1)->category_old == STRING) {
+        token_index += 2;
+      }
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_item()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_item);
+      SILVA_EXPECT_PARSE(lexicon.ni_tok_item, num_tokens_left() >= 1, "no more tokens in input");
+      if (token_data_by()->category_old == STRING) {
+        token_index += 1;
+      }
+      else {
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_item, tokenizer_matcher()));
+      }
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_list()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_list);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_list, lexicon.ti_brack_open);
+      while (auto result = tokenizer_item()) {
+        ss_rule.add_proto_node(*result);
+      }
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_list, lexicon.ti_brack_close);
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_prefix_item()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_prefix_item);
+      SILVA_EXPECT_PARSE(lexicon.ni_tok_prefix_item,
+                         num_tokens_left() >= 1,
+                         "no more tokens in input");
+      if (token_id_by() == lexicon.ti_brack_open) {
+        ss_rule.add_proto_node(
+            SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_prefix_item, tokenizer_list()));
+      }
+      else {
+        ss_rule.add_proto_node(
+            SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_prefix_item, tokenizer_item()));
+      }
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_defn()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_defn);
+      while (auto result = tokenizer_prefix_item()) {
+        ss_rule.add_proto_node(*result);
+      }
+      if (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_triple_colon) {
+        token_index += 1;
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_defn, tokenizer_item()));
+        while (auto result = tokenizer_item()) {
+          ss_rule.add_proto_node(*result);
+        }
+      }
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_include_rule()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_inc_rule);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_inc_rule, lexicon.ti_include);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_inc_rule, lexicon.ti_tokenizer);
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_inc_rule, nonterminal_base()));
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_ignore_rule()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_ign_rule);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_ign_rule, lexicon.ti_ignore);
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_ign_rule, tokenizer_defn()));
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer_token_rule()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok_tok_rule);
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_tok_rule, token_category()));
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_tok_rule, lexicon.ti_equal);
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_tok_rule, tokenizer_defn()));
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> tokenizer()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_tok);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok, lexicon.ti_tokenizer);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok, lexicon.ti_brack_open);
+      while (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_dash) {
+        token_index += 1;
+        const index_t orig_token_index = token_index;
+        error_nursery_t error_nursery;
+        {
+          auto result = tokenizer_include_rule();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+        {
+          auto result = tokenizer_ignore_rule();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+        {
+          auto result = tokenizer_token_rule();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+        return std::unexpected(std::move(error_nursery)
+                                   .finish_short(error_level_t::MINOR,
+                                                 "[{}] {}",
+                                                 token_location_at(orig_token_index),
+                                                 sfp->name_id_wrap(lexicon.ni_tok)));
+      }
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok, lexicon.ti_brack_close);
       return ss_rule.commit();
     }
   };

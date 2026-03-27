@@ -92,10 +92,10 @@ namespace silva::seed {
       - IgnoreRule = 'ignore' Defn
       - TokenRule = p.TokenCategory '=' Defn
       - Defn = PrefixItem * ( ':::' Item + ) ?
-      - PrefixItem = Item | List
-      - Item = Matcher | string
-      - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
+      - PrefixItem = List | Item
       - List = '[' Item * ']'
+      - Item = string | Matcher
+      - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
       - FragName = identifier / '^[A-Z_]+$'
     ]
   )'";
