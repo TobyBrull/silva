@@ -30,7 +30,7 @@ namespace silva {
     auto retval = std::make_unique<seed::interpreter_t>(sfp);
     SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed::seed_str));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("axe.seed", seed::axe_str));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("tokenizer.seed", seed::tokenizer_str));
+    SILVA_EXPECT_ASSERT(retval->add_complete_file("tokenizer.seed", seed::seed_tokenizer_str));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern::seed_str));
     SILVA_EXPECT_ASSERT(retval->add_complete_file("silva.seed", seed_str));
     retval->parse_callbacks[sfp->name_id_of("Seed")] =

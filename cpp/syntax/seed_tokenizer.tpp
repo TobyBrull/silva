@@ -58,11 +58,11 @@ namespace silva::seed::test {
     const auto ti_relp     = *sf.token_id("rel_path");
     const auto ti_op       = *sf.token_id("op");
 
-    tokenizer_farm_t tokenizer_farm(sf.ptr());
+    tokenizer_farm_t tf(sf.ptr());
     const auto load_tokenizer = [&](const token_id_t name, const string_view_t tokenizer_code) {
       const auto tt0 = SILVA_REQUIRE(tokenize(sf.ptr(), "", tokenizer_code));
       const auto pt0 = SILVA_REQUIRE(se->apply(tt0, sf.name_id_of("Seed", "Tokenizer")));
-      SILVA_REQUIRE(tokenizer_farm.add(name, pt0->span()));
+      SILVA_REQUIRE(tf.add(name, pt0->span()));
     };
 
     const string_view_t test_tok = R"'( [
@@ -86,12 +86,12 @@ namespace silva::seed::test {
     ] )'";
     load_tokenizer(ti_freeform, free_form_tok);
 
-    CHECK(tokenizer_farm.tokenizers.at(ti_freeform).rules.size() == 7);
-    CHECK(tokenizer_farm.tokenizers.at(ti_testor).rules.size() == 8);
+    CHECK(tf.tokenizers.at(ti_freeform).rules.size() == 7);
+    CHECK(tf.tokenizers.at(ti_testor).rules.size() == 8);
 
     const string_view_t src = "$hello ==+++ 42 array_t var/file.txt « a « c » « d » b » 1 @abc\n";
     const auto fr           = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.src", string_t{src}));
-    const auto tp           = SILVA_REQUIRE(tokenizer_farm.apply(fr, ti_testor));
+    const auto tp           = SILVA_REQUIRE(tf.apply(fr, ti_testor));
 
     REQUIRE(tp->tokens.size() == 6);
     CHECK(tp->tokens[0] == *sf.token_id("$hello"));
@@ -104,5 +104,10 @@ namespace silva::seed::test {
     CHECK(tp->categories[3] == ti_relp);
     CHECK(tp->categories[4] == ti_lang);
     CHECK(tp->categories[5] == ti_name);
+  }
+  TEST_CASE("bootstrap-seed-tokenizer")
+  {
+    syntax_farm_t sf;
+    tokenizer_farm_t tf = make_bootstrap_tokenizer_farm(sf.ptr());
   }
 }

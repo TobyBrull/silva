@@ -1,8 +1,8 @@
 #pragma once
 
-#include "canopy/tree_nursery.hpp"
-
 #include "parse_tree.hpp"
+
+#include "canopy/tree_nursery.hpp"
 
 namespace silva {
 

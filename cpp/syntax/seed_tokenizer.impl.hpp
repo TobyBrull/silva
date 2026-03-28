@@ -1,7 +1,6 @@
 #pragma once
 
 #include "syntax/fragmentization.hpp"
-#include "syntax/parse_tree.hpp"
 
 namespace silva::seed::impl {
   enum class case_mask_t {
@@ -24,6 +23,8 @@ namespace silva::seed::impl {
     string_t postfix             = "";
 
     expected_t<bool> matches(index_t fragment_idx, const fragmentization_t&) const;
+
+    friend auto operator<=>(const matcher_t&, const matcher_t&) = default;
   };
 
   // If token_name == token_id_none, this is an 'ignore' rule.
@@ -33,10 +34,7 @@ namespace silva::seed::impl {
 
     array_t<matcher_t> prefix_matchers;
     array_t<matcher_t> repeat_matchers;
+
+    friend auto operator<=>(const rule_t&, const rule_t&) = default;
   };
-}
-
-// IMPLEMENTATION
-
-namespace silva::seed::impl {
 }

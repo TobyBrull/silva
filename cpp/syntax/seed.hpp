@@ -2,7 +2,7 @@
 
 #include "seed.lexicon.hpp"
 
-#include "syntax/parse_tree.hpp"
+#include "parse_tree.hpp"
 
 namespace silva::seed {
 
@@ -35,34 +35,6 @@ namespace silva::seed {
   // the first alternative and aborts the parse if the whole expression does not match.
 
   const string_view_t seed_str = R"'(
-    - Default = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - indent = INDENT
-      - dedent = DEDENT
-      - newline = NEWLINE
-      - number = NUMBER
-      - string = STRING
-    ]
-    - FreeForm = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
-    ]
-    - Seed = tokenizer [
-      - include tokenizer FreeFrom
-      - operators = ::: PARENTHESES OPERATOR 'concat' 'but_then' 'x' 'p' '_'
-      - rule_name = IDENTIFIER_PASCAL_CASE
-      - var_name = IDENTIFIER_SNAKE_CASE\'_v'
-      - func_name = IDENTIFIER_SNAKE_CASE\'_f'
-      - token_category_name = IDENTIFIER_SNAKE_CASE
-      - frag_name = IDENTIFIER_MACRO_CASE
-    ]
-
     - Seed = [
       - x = ( '-' Rule ) *
       - Rule = Nonterminal '=' ( '[' x ']'

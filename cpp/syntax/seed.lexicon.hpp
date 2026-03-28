@@ -53,6 +53,16 @@ namespace silva::seed {
     const token_id_t ti_star         = *sfp->token_id("*");
     const token_id_t ti_plus         = *sfp->token_id("+");
 
+    const token_id_t ti_indent         = *sfp->token_id("indent");
+    const token_id_t ti_dedent         = *sfp->token_id("dedent");
+    const token_id_t ti_newline        = *sfp->token_id("newline");
+    const token_id_t ti_operators      = *sfp->token_id("operators");
+    const token_id_t ti_rule_name      = *sfp->token_id("rule_name");
+    const token_id_t ti_var_name       = *sfp->token_id("var_name");
+    const token_id_t ti_func_name      = *sfp->token_id("func_name");
+    const token_id_t ti_token_cat_name = *sfp->token_id("token_category_name");
+    const token_id_t ti_frag_name      = *sfp->token_id("frag_name");
+
     const token_id_t ti_WHITESPACE             = *sfp->token_id("WHITESPACE");
     const token_id_t ti_COMMENT                = *sfp->token_id("COMMENT");
     const token_id_t ti_NUMBER                 = *sfp->token_id("NUMBER");
@@ -61,6 +71,7 @@ namespace silva::seed {
     const token_id_t ti_DEDENT                 = *sfp->token_id("DEDENT");
     const token_id_t ti_NEWLINE                = *sfp->token_id("NEWLINE");
     const token_id_t ti_OPERATOR               = *sfp->token_id("OPERATOR");
+    const token_id_t ti_PARENTHESIS            = *sfp->token_id("PARENTHESIS");
     const token_id_t ti_IDENTIFIER             = *sfp->token_id("IDENTIFIER");
     const token_id_t ti_IDENTIFIER_SILVA_CASE  = *sfp->token_id("IDENTIFIER_SILVA_CASE");
     const token_id_t ti_IDENTIFIER_SNAKE_CASE  = *sfp->token_id("IDENTIFIER_SNAKE_CASE");

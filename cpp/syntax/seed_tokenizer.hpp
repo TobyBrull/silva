@@ -3,7 +3,7 @@
 #include "seed_tokenizer.impl.hpp"
 
 #include "fragmentization.hpp"
-#include "syntax/parse_tree.hpp"
+#include "parse_tree.hpp"
 #include "syntax_farm.hpp"
 
 namespace silva::seed {
@@ -85,7 +85,7 @@ namespace silva::seed {
   //  ⎢op = '+' '=' '=' ::: IDENTIFIER '.'      # matches, e.g., +==  +==...  +==abc.def
   //  ⎢op = '+' '=' ::: IDENTIFIER '.'          # matches, e.g., +=   +=...   +=abc.def
 
-  const string_view_t tokenizer_str = R"'(
+  const string_view_t seed_tokenizer_str = R"'(
     - Seed.Tokenizer = [
       - x = '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
       - IncludeRule = 'include' 'tokenizer' p.Nonterminal.Base
@@ -104,6 +104,8 @@ namespace silva::seed {
     token_id_t name = token_id_none;
 
     array_t<impl::rule_t> rules;
+
+    friend auto operator<=>(const tokenizer_t&, const tokenizer_t&) = default;
   };
 
   struct tokenizer_farm_t {
@@ -121,7 +123,42 @@ namespace silva::seed {
     expected_t<void> cache_tokenizer(token_id_t tokenizer_name);
 
     expected_t<tokenization_ptr_t> apply(fragmentization_ptr_t, token_id_t);
+
+    friend bool operator==(const tokenizer_farm_t&, const tokenizer_farm_t&) = default;
   };
+
+  const string_view_t bootstrap_tokenizers_str = R"'(
+    - Default = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - indent = INDENT
+      - dedent = DEDENT
+      - newline = NEWLINE
+      - number = NUMBER
+      - string = STRING
+    ]
+    - FreeForm = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - number = NUMBER
+      - string = STRING
+    ]
+    - Seed = tokenizer [
+      - include tokenizer FreeFrom
+      - operators = [ PARENTHESIS 'concat' 'but_then' 'x' 'p' '_' ]
+      - operators = ::: OPERATOR
+      - rule_name = IDENTIFIER_PASCAL_CASE
+      - var_name = IDENTIFIER_SNAKE_CASE\'_v'
+      - func_name = IDENTIFIER_SNAKE_CASE\'_f'
+      - token_category_name = IDENTIFIER_SNAKE_CASE
+      - frag_name = IDENTIFIER_MACRO_CASE
+    ]
+  )'";
+
+  tokenizer_farm_t make_bootstrap_tokenizer_farm(syntax_farm_ptr_t);
 }
 
 // IMPLEMENTATION

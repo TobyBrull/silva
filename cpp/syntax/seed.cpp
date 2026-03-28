@@ -379,15 +379,6 @@ namespace silva::seed::impl {
     return retval;
   }
 
-  tokenizer_farm_t make_seed_tokenizer_farm(syntax_farm_ptr_t sfp, const lexicon_t& lexicon)
-  {
-    tokenizer_farm_t retval(sfp);
-    const auto tr_default   = find_subsection("- Default = tokenizer ", seed_str);
-    const auto tr_free_form = find_subsection("- FreeForm = tokenizer ", seed_str);
-    const auto tr_seed      = find_subsection("- Seed = tokenizer ", seed_str);
-    return retval;
-  }
-
   struct seed_parse_tree_nursery_t : public base_parse_tree_nursery_t {
     axe_t& seed_expr_axe;
 
@@ -610,9 +601,15 @@ namespace silva::seed::impl {
 namespace silva::seed {
   struct bootstrap_interpreter_t::impl_t {
     syntax_farm_ptr_t sfp;
-    lexicon_t lexicon{sfp};
-    axe_t seed_expr_axe             = impl::make_seed_expr_axe(sfp, lexicon);
-    tokenizer_farm_t tokenizer_farm = impl::make_seed_tokenizer_farm(sfp, lexicon);
+    lexicon_t lexicon;
+    axe_t seed_expr_axe;
+    tokenizer_farm_t tokenizer_farm;
+
+    impl_t(syntax_farm_ptr_t sfp) : sfp(sfp), lexicon(sfp), tokenizer_farm(sfp)
+    {
+      seed_expr_axe  = impl::make_seed_expr_axe(sfp, lexicon);
+      tokenizer_farm = make_bootstrap_tokenizer_farm(sfp);
+    }
 
     expected_t<parse_tree_ptr_t> parse(fragmentization_ptr_t fp)
     {
