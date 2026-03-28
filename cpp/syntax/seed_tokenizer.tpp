@@ -65,7 +65,7 @@ namespace silva::seed::test {
       SILVA_REQUIRE(tokenizer_farm.add(name, pt0->span()));
     };
 
-    const string_view_t test_tok = R"'( tokenizer [
+    const string_view_t test_tok = R"'( [
       - ignore NUMBER
       - include tokenizer FreeForm
       - name = [ '$' '@' ] IDENTIFIER
@@ -75,7 +75,7 @@ namespace silva::seed::test {
     ] )'";
     load_tokenizer(ti_testor, test_tok);
 
-    const string_view_t free_form_tok = R"'( tokenizer [
+    const string_view_t free_form_tok = R"'( [
       - ignore WHITESPACE
       - ignore COMMENT
       - ignore INDENT

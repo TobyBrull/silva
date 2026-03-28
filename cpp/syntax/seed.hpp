@@ -1,5 +1,7 @@
 #pragma once
 
+#include "seed.lexicon.hpp"
+
 #include "syntax/parse_tree.hpp"
 
 namespace silva::seed {
@@ -33,9 +35,41 @@ namespace silva::seed {
   // the first alternative and aborts the parse if the whole expression does not match.
 
   const string_view_t seed_str = R"'(
+    - Default = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - indent = INDENT
+      - dedent = DEDENT
+      - newline = NEWLINE
+      - number = NUMBER
+      - string = STRING
+    ]
+    - FreeForm = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - number = NUMBER
+      - string = STRING
+    ]
+    - Seed = tokenizer [
+      - include tokenizer FreeFrom
+      - operators = ::: PARENTHESES OPERATOR 'concat' 'but_then' 'x' 'p' '_'
+      - rule_name = IDENTIFIER_PASCAL_CASE
+      - var_name = IDENTIFIER_SNAKE_CASE\'_v'
+      - func_name = IDENTIFIER_SNAKE_CASE\'_f'
+      - token_category_name = IDENTIFIER_SNAKE_CASE
+      - frag_name = IDENTIFIER_MACRO_CASE
+    ]
+
     - Seed = [
       - x = ( '-' Rule ) *
-      - Rule = Nonterminal '=' ( '[' x ']' | 'alias' Alias | 'axe' Axe | Expr )
+      - Rule = Nonterminal '=' ( '[' x ']'
+                               | 'tokenizer' Tokenizer
+                               | 'axe' Axe
+                               | 'alias' Alias
+                               | Expr )
       - Alias = Expr
       - Expr = axe Atom [
         - Parens    = nest  atom_nest '(' ')'
@@ -83,6 +117,8 @@ namespace silva::seed {
 
     bootstrap_interpreter_t(syntax_farm_ptr_t);
     ~bootstrap_interpreter_t();
+
+    const lexicon_t& lexicon() const;
 
     expected_t<parse_tree_ptr_t> parse(fragmentization_ptr_t);
 

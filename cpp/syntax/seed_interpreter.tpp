@@ -122,7 +122,7 @@ namespace silva::seed::test {
     auto se = standard_seed_interpreter(sf.ptr());
 
     const auto ti_testor           = *sf.token_id("Testor");
-    const string_view_t testor_tok = R"'( tokenizer [
+    const string_view_t testor_tok = R"'( [
       - ignore WHITESPACE
       - ignore COMMENT
       - ignore INDENT

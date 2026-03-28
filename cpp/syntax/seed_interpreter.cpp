@@ -14,26 +14,21 @@
 
 #include <utility>
 
-namespace silva::seed {
-  using enum token_category_old_t;
-  using enum error_level_t;
+using enum silva::token_category_old_t;
+using enum silva::error_level_t;
 
-  struct seed_engine_create_nursery_t {
-    interpreter_t* se          = nullptr;
-    syntax_farm_ptr_t sfp      = se->sfp;
+namespace silva::seed::impl {
+  struct interpreter_adder_t {
+    interpreter_t* se     = nullptr;
+    syntax_farm_ptr_t sfp = se->sfp;
+    const lexicon_t& lexicon;
     const name_id_style_t& nis = sfp->default_name_id_style();
 
     const tokenization_t& s_tokenization;
     const array_t<token_id_t>& s_tokens = s_tokenization.tokens;
 
-    const name_id_t ni_seed = sfp->name_id_of("Seed");
-    const name_id_t ni_rule = sfp->name_id_of(ni_seed, "Rule");
-    const name_id_t ni_axe  = sfp->name_id_of(ni_seed, "Axe");
-    const name_id_t ni_nt   = sfp->name_id_of(ni_seed, "Nonterminal");
-    const name_id_t ni_term = sfp->name_id_of(ni_seed, "Terminal");
-
-    seed_engine_create_nursery_t(interpreter_t* se, const tokenization_t& s_tokenization)
-      : se(se), s_tokenization(s_tokenization)
+    interpreter_adder_t(interpreter_t* se, const tokenization_t& s_tokenization)
+      : se(se), lexicon(se->bootstrap_interpreter.lexicon()), s_tokenization(s_tokenization)
     {
     }
 
@@ -51,19 +46,22 @@ namespace silva::seed {
 
     expected_t<void> handle_rule(const name_id_t scope_name, const parse_tree_span_t pts_rule)
     {
-      SILVA_EXPECT(pts_rule[0].rule_name == ni_rule, MINOR, "expected Rule");
+      SILVA_EXPECT(pts_rule[0].rule_name == lexicon.ni_rule, MINOR, "expected Rule");
       const auto cc = SILVA_EXPECT_FWD(pts_rule.get_children<2>());
-      SILVA_EXPECT(pts_rule[cc[0]].rule_name == ni_nt,
+      SILVA_EXPECT(pts_rule[cc[0]].rule_name == lexicon.ni_nt,
                    MINOR,
                    "first child of {} must be {}",
-                   sfp->name_id_wrap(ni_rule),
-                   sfp->name_id_wrap(ni_nt));
+                   sfp->name_id_wrap(lexicon.ni_rule),
+                   sfp->name_id_wrap(lexicon.ni_nt));
       const auto pts_0               = pts_rule.sub_tree_span_at(cc[0]);
       const auto pts_1               = pts_rule.sub_tree_span_at(cc[1]);
       const name_id_t curr_rule_name = SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_0));
       const index_t expr_rule_name   = pts_1[0].rule_name;
-      if (expr_rule_name == ni_seed) {
+      if (expr_rule_name == lexicon.ni_seed) {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, pts_1));
+      }
+      else if (expr_rule_name == lexicon.ni_tok) {
+        SILVA_EXPECT_FWD(handle_tokenizer(curr_rule_name, pts_1));
       }
       else {
         const auto [it, inserted] = se->rule_exprs.emplace(curr_rule_name, pts_1);
@@ -75,7 +73,7 @@ namespace silva::seed {
                      it->second);
 
         for (index_t i = 0; i < pts_1.size(); ++i) {
-          if (pts_1[i].rule_name == ni_term) {
+          if (pts_1[i].rule_name == lexicon.ni_term) {
             const index_t token_idx        = pts_1[i].token_begin;
             const token_id_t token_id      = pts_1.tp->tokens[token_idx];
             const token_info_t& token_info = sfp->token_infos[token_id];
@@ -87,12 +85,12 @@ namespace silva::seed {
           }
         }
 
-        if (expr_rule_name == ni_axe) {
+        if (expr_rule_name == lexicon.ni_axe) {
           se->axes[curr_rule_name] = SILVA_EXPECT_FWD(axe_create(sfp, curr_rule_name, pts_1));
         }
         else {
           for (index_t i = 0; i < pts_1.size(); ++i) {
-            if (pts_1[i].rule_name == ni_nt) {
+            if (pts_1[i].rule_name == lexicon.ni_nt) {
               const name_id_t nt_name =
                   SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_1.sub_tree_span_at(i)));
               const auto [it, inserted] =
@@ -105,9 +103,14 @@ namespace silva::seed {
       return {};
     }
 
+    expected_t<void> handle_tokenizer(const name_id_t scope_name, const parse_tree_span_t pts_seed)
+    {
+      return {};
+    }
+
     expected_t<void> handle_seed(const name_id_t scope_name, const parse_tree_span_t pts_seed)
     {
-      SILVA_EXPECT(pts_seed.size() != 0 && pts_seed[0].rule_name == ni_seed,
+      SILVA_EXPECT(pts_seed.size() != 0 && pts_seed[0].rule_name == lexicon.ni_seed,
                    MINOR,
                    "Seed parse_tree should start with Seed node");
 
@@ -124,7 +127,7 @@ namespace silva::seed {
       // Pre-compile hashmap_t of "regexes".
       for (index_t node_index = 0; node_index < pts.size(); ++node_index) {
         const auto& s_node = pts[node_index];
-        if (s_node.rule_name == ni_term && s_node.num_tokens() == 3) {
+        if (s_node.rule_name == lexicon.ni_term && s_node.num_tokens() == 3) {
           const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
           if (auto& regex = se->regexes[regex_token_id]; !regex.has_value()) {
             const auto& regex_td = s_tokenization.token_info_get(s_node.token_begin + 2);
@@ -139,6 +142,583 @@ namespace silva::seed {
     }
   };
 
+  struct seed_exec_trace_data_t {
+    name_id_t rule_name = name_id_root;
+    token_location_t token_pos;
+    bool success = false;
+  };
+
+  struct seed_exec_trace_t : public exec_trace_t<seed_exec_trace_data_t> {
+    syntax_farm_ptr_t sfp;
+
+    expected_t<string_t> as_tree_to_string() &&
+    {
+      const auto& nis = sfp->default_name_id_style();
+      auto ett        = SILVA_EXPECT_FWD(std::move(*this).as_tree());
+      tree_span_t ets{ett};
+      string_t retval = SILVA_EXPECT_FWD(ets.to_string([&](string_t& curr_line, const auto& path) {
+        const auto& data = ets[path.back().node_index].item.data;
+        curr_line += nis.absolute(data.rule_name);
+        string_pad(curr_line, 55);
+        curr_line += fmt::format("{}", data.success);
+        string_pad(curr_line, 65);
+        curr_line += pretty_string(data.token_pos);
+      }));
+      return {std::move(retval)};
+    }
+  };
+
+  // Maps variable name to the index in the parsed tree that it refers to.
+  using var_map_t = hash_map_t<token_id_t, index_t>;
+
+  struct interpreter_apply_nursery_t : public parse_tree_nursery_t {
+    const interpreter_t* se = nullptr;
+    syntax_farm_ptr_t sfp   = se->sfp;
+    const lexicon_t& lexicon;
+    const name_id_style_t& nis = sfp->default_name_id_style();
+
+    const tokenization_t& t_tokenization = *tp;
+    const array_t<token_id_t>& t_tokens  = t_tokenization.tokens;
+
+    int rule_depth = 0;
+
+    seed_exec_trace_t exec_trace{.sfp = sfp};
+
+    interpreter_apply_nursery_t(tokenization_ptr_t tp,
+                                const lexicon_t& lexicon,
+                                const interpreter_t* root)
+      : parse_tree_nursery_t(tp), lexicon(lexicon), se(root)
+    {
+    }
+
+    expected_t<void> check()
+    {
+      SILVA_EXPECT(sfp == t_tokenization.sfp,
+                   MAJOR,
+                   "Seed and target parse-trees/tokenizations must be in same syntax_farm_t");
+      return {};
+    }
+
+    struct node_and_error_t {
+      parse_tree_node_t node;
+      error_t last_error;
+
+      node_and_error_t() = default;
+      node_and_error_t(parse_tree_node_t node) : node(node) {}
+      node_and_error_t(parse_tree_node_t node, error_t last_error)
+        : node(node), last_error(std::move(last_error))
+      {
+      }
+
+      parse_tree_node_t as_node() &&
+      {
+        last_error.clear();
+        return std::move(node);
+      }
+    };
+
+    expected_t<node_and_error_t> parse_f(const span_t<const parse_tree_span_t> params)
+    {
+      SILVA_EXPECT(params.size() == 2, MAJOR, "expected two arguments, got {}", params.size());
+      auto pts_scope = params[0];
+      if (pts_scope[0].rule_name == lexicon.ni_nt_maybe_var) {
+        pts_scope = pts_scope.sub_tree_span_at(1);
+      }
+      const auto pts_rel = params[1];
+      SILVA_EXPECT(pts_scope[0].rule_name == lexicon.ni_nt && pts_rel[0].rule_name == lexicon.ni_nt,
+                   MAJOR,
+                   "expected nonterminals, got {} and {}",
+                   sfp->name_id_wrap(pts_scope[0].rule_name),
+                   sfp->name_id_wrap(pts_rel[0].rule_name));
+
+      const name_id_t scope_name =
+          SILVA_EXPECT_FWD_AS(nis.derive_name(name_id_root, pts_scope), MAJOR);
+      const name_id_t t_rule_name = SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_rel));
+      return handle_rule(t_rule_name);
+    }
+    expected_t<node_and_error_t> parse_and_callback_f(const span_t<const parse_tree_span_t> params)
+    {
+      const index_t orig_token_index = token_index;
+      const index_t curr_num_nodes   = tree.size();
+      node_and_error_t nae           = SILVA_EXPECT_FWD(parse_f(params));
+      if (tree.size() > curr_num_nodes) {
+        const parse_tree_span_t parsed_pts{&tree[curr_num_nodes], 1, tp};
+        auto cb_exp = se->callback_if(parsed_pts);
+        if (!cb_exp.has_value()) {
+          error_nursery_t error_nursery;
+          if (!nae.last_error.is_empty()) {
+            error_nursery.add_child_error(std::move(nae.last_error));
+          }
+          error_nursery.add_child_error(std::move(cb_exp).error());
+          return std::unexpected(std::move(error_nursery)
+                                     .finish(MINOR,
+                                             "[{}] error running callback for {}",
+                                             token_location_at(orig_token_index),
+                                             sfp->name_id_wrap(nae.node.rule_name)));
+        }
+      }
+      return nae;
+    }
+    expected_t<node_and_error_t> print_f(const span_t<const parse_tree_span_t> params)
+    {
+      for (const auto& pts: params) {
+        fmt::print("{}\n", pretty_string(pts));
+      }
+      auto ss = stake();
+      return ss.commit();
+    }
+    using func_t       = delegate_t<expected_t<node_and_error_t>(span_t<const parse_tree_span_t>)>;
+    using func_table_t = hash_map_t<token_id_t, func_t>;
+    func_table_t func_table = {
+        {
+            *sfp->token_id("parse_f"),
+            func_t::make<&interpreter_apply_nursery_t::parse_f>(this),
+        },
+        {
+            *sfp->token_id("parse_and_callback_f"),
+            func_t::make<&interpreter_apply_nursery_t::parse_and_callback_f>(this),
+        },
+        {
+            *sfp->token_id("print_f"),
+            func_t::make<&interpreter_apply_nursery_t::print_f>(this),
+        },
+    };
+
+    expected_t<node_and_error_t> s_terminal(const parse_tree_span_t pts,
+                                            const name_id_t t_rule_name)
+    {
+      auto ss            = stake();
+      const auto& s_node = pts[0];
+      SILVA_EXPECT(s_node.rule_name == lexicon.ni_term, MAJOR);
+      const token_id_t s_front_ti = pts.tp->tokens[s_node.token_begin];
+      if (s_front_ti == lexicon.ti_eps) {
+        return ss.commit();
+      }
+      if (s_front_ti == lexicon.ti_eof) {
+        SILVA_EXPECT_PARSE(t_rule_name,
+                           num_tokens_left() == 0,
+                           "expected {}",
+                           sfp->token_id_wrap(lexicon.ti_eof));
+        return ss.commit();
+      }
+      SILVA_EXPECT_PARSE(t_rule_name,
+                         num_tokens_left() > 0,
+                         "Reached end of token-stream when looking for {}",
+                         pts.tp->token_info_get(s_node.token_begin)->str);
+      if ((s_front_ti == lexicon.ti_identifier || s_front_ti == lexicon.ti_operator) &&
+          s_node.num_tokens() == 3) {
+        SILVA_EXPECT(s_node.num_children == 0, MAJOR, "expected Terminal node have no children");
+        if (s_front_ti == lexicon.ti_identifier) {
+          SILVA_EXPECT_PARSE(t_rule_name,
+                             token_data_by()->category_old == IDENTIFIER,
+                             "expected {}",
+                             pts.token_range());
+        }
+        else if (s_front_ti == lexicon.ti_operator) {
+          SILVA_EXPECT_PARSE(t_rule_name,
+                             token_data_by()->category_old == OPERATOR,
+                             "expected {}",
+                             pts.token_range());
+        }
+        else {
+          SILVA_EXPECT(false, MAJOR, "Only 'identifier' and 'operator' may have regexes");
+        }
+        const token_id_t regex_token_id = pts.tp->tokens[s_node.token_begin + 2];
+        const auto it                   = se->regexes.find(regex_token_id);
+        SILVA_EXPECT(it != se->regexes.end() && it->second.has_value(), MAJOR);
+        const std::regex& re          = it->second.value();
+        const string_view_t token_str = token_data_by()->str;
+        const bool is_match           = std::regex_search(token_str.begin(), token_str.end(), re);
+        SILVA_EXPECT_PARSE(t_rule_name,
+                           is_match,
+                           "{} does not match regex {}",
+                           sfp->token_id_wrap(token_id_by()),
+                           sfp->token_infos[regex_token_id].str);
+      }
+      else if (s_front_ti == lexicon.ti_keywords_of) {
+        const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
+        const auto pts_nt   = pts.sub_tree_span_at(children[0]);
+        const auto it       = se->nonterminal_rules.find(pts_nt);
+        SILVA_EXPECT(it != se->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
+        const name_id_t keyword_scope = it->second;
+        const auto it2                = se->keyword_scopes.find(keyword_scope);
+        SILVA_EXPECT(it2 != se->keyword_scopes.end(),
+                     MAJOR,
+                     "keywords_of {}: no such nonterminal",
+                     sfp->name_id_wrap(keyword_scope));
+        const hash_set_t<token_id_t>& keywords = it2->second;
+        SILVA_EXPECT(keywords.contains(token_id_by()),
+                     MINOR,
+                     "{} '{}' not in keywords_of {}",
+                     token_location_by(),
+                     sfp->token_id_wrap(token_id_by()),
+                     sfp->name_id_wrap(keyword_scope));
+      }
+      else if (s_node.num_children == 1) {
+        const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
+        const auto pts_cat  = pts.sub_tree_span_at(children[0]);
+        SILVA_EXPECT(pts_cat[0].rule_name == lexicon.ni_tok_cat, MAJOR, "expected TokenCategory");
+        const token_id_t cat_token = pts_cat.tp->tokens[pts_cat[0].token_begin];
+        SILVA_EXPECT_PARSE(t_rule_name,
+                           tp->categories[token_index] == cat_token,
+                           "expected token with category {}",
+                           sfp->token_id_wrap(cat_token));
+      }
+      else {
+        SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
+        SILVA_EXPECT(s_node.num_tokens() == 1,
+                     MAJOR,
+                     "Terminal nodes must have one or three tokens");
+        if (s_front_ti == lexicon.ti_identifier) {
+          SILVA_EXPECT_PARSE(t_rule_name,
+                             token_data_by()->category_old == IDENTIFIER,
+                             "expected identifier");
+        }
+        else if (s_front_ti == lexicon.ti_operator) {
+          SILVA_EXPECT_PARSE(t_rule_name,
+                             token_data_by()->category_old == OPERATOR,
+                             "expected operator");
+        }
+        else if (s_front_ti == lexicon.ti_string) {
+          SILVA_EXPECT_PARSE(t_rule_name,
+                             token_data_by()->category_old == STRING,
+                             "expected string");
+        }
+        else if (s_front_ti == lexicon.ti_number) {
+          SILVA_EXPECT_PARSE(t_rule_name,
+                             token_data_by()->category_old == NUMBER,
+                             "expected number");
+        }
+        else if (s_front_ti == lexicon.ti_any) {
+          ;
+        }
+        else {
+          const index_t s_token_id = pts.tp->tokens[s_node.token_begin];
+          const auto it            = se->string_to_keyword.find(s_token_id);
+          SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
+          const token_id_t t_expected_ti = it->second;
+          SILVA_EXPECT_PARSE(t_rule_name,
+                             token_id_by() == t_expected_ti,
+                             "expected {}",
+                             sfp->token_id_wrap(t_expected_ti));
+        }
+      }
+      token_index += 1;
+      return ss.commit();
+    }
+
+    expected_t<node_and_error_t>
+    s_expr_prefix(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
+    {
+      {
+        auto ss             = stake();
+        const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
+        auto result =
+            SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map),
+                                MAJOR);
+        SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
+      }
+      auto ss = stake();
+      return ss.commit();
+    }
+
+    expected_t<pair_t<index_t, index_t>> get_min_max_repeat(const token_id_t op_ti)
+    {
+      index_t min_repeat = 0;
+      index_t max_repeat = std::numeric_limits<index_t>::max();
+      SILVA_EXPECT(op_ti == lexicon.ti_qmark || op_ti == lexicon.ti_star ||
+                       op_ti == lexicon.ti_plus,
+                   MAJOR);
+      if (op_ti == lexicon.ti_qmark) {
+        max_repeat = 1;
+      }
+      else if (op_ti == lexicon.ti_star) {
+        ;
+      }
+      else if (op_ti == lexicon.ti_plus) {
+        min_repeat = 1;
+      }
+      return {pair_t{min_repeat, max_repeat}};
+    }
+
+    expected_t<node_and_error_t>
+    s_expr_postfix(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
+    {
+      auto ss                             = stake();
+      const auto children                 = SILVA_EXPECT_FWD(pts.get_children<1>());
+      const token_id_t op_ti              = sfp->name_infos[pts[0].rule_name].base_name;
+      const auto [min_repeat, max_repeat] = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
+      index_t repeat_count                = 0;
+      error_t last_error;
+      while (repeat_count < max_repeat) {
+        auto result =
+            SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map),
+                                MAJOR);
+        if (result.has_value()) {
+          ss.add_proto_node(std::move(*result).as_node());
+          repeat_count += 1;
+        }
+        else {
+          last_error = std::move(result).error();
+          break;
+        }
+      }
+      if (repeat_count < min_repeat) {
+        array_small_t<error_t, 1> maybe_child_error;
+        if (!last_error.is_empty()) {
+          maybe_child_error.emplace_back(std::move(last_error));
+        }
+        return std::unexpected(make_error(MINOR,
+                                          maybe_child_error,
+                                          "min-repeat (={}) not reached, only found {}",
+                                          min_repeat,
+                                          repeat_count));
+      }
+      return node_and_error_t{ss.commit(), std::move(last_error)};
+    }
+
+    expected_t<node_and_error_t>
+    s_expr_concat(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
+    {
+      const index_t orig_token_index = token_index;
+      auto ss                        = stake();
+      error_nursery_t error_nursery;
+
+      // Could do this bit ahead of time and store a map in the interpreter_t.
+      index_t lead_terminals = 0;
+      for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
+        const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
+        if (sub_pts[0].rule_name == lexicon.ni_term) {
+          lead_terminals += 1;
+        }
+        else {
+          break;
+        }
+      }
+
+      for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
+        const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
+        auto result        = s_expr(sub_pts, t_rule_name, var_map);
+        if (result.has_value()) {
+          if (!result->last_error.is_empty()) {
+            error_nursery.add_child_error(std::move(result->last_error));
+          }
+          ss.add_proto_node(std::move(result->node));
+        }
+        else {
+          error_level_t error_level = result.error().level;
+          if (lead_terminals >= 1 && child_index >= lead_terminals) {
+            error_level = std::max(error_level, MAJOR);
+          }
+          error_nursery.add_child_error(std::move(result).error());
+          return std::unexpected(std::move(error_nursery)
+                                     .finish(error_level,
+                                             "[{}] {}: expected sequence[ {} ]",
+                                             token_location_at(orig_token_index),
+                                             sfp->name_id_wrap(t_rule_name),
+                                             pts.token_range()));
+        }
+      }
+      return ss.commit();
+    }
+
+    expected_t<node_and_error_t>
+    s_expr_and(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
+    {
+      optional_t<stake_t> ss;
+      for (const auto [child_node_index, child_index]: pts.children_range()) {
+        ss.emplace(stake());
+        auto result =
+            SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(child_node_index), t_rule_name, var_map));
+        ss->add_proto_node(std::move(result).as_node());
+      }
+      SILVA_EXPECT(ss.has_value(), MAJOR);
+      return ss->commit();
+    }
+
+    expected_t<node_and_error_t>
+    s_expr_or(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
+    {
+      const index_t orig_token_index = token_index;
+      error_nursery_t error_nursery;
+      optional_t<parse_tree_node_t> retval;
+      error_level_t error_level = MINOR;
+      for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
+        auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name, var_map);
+        if (result.has_value()) {
+          retval = std::move(*result).as_node();
+          break;
+        }
+        else {
+          error_level = result.error().level;
+          error_nursery.add_child_error(std::move(result).error());
+          if (error_level >= MAJOR) {
+            break;
+          }
+        }
+      }
+      if (retval.has_value()) {
+        return std::move(retval).value();
+      }
+      return std::unexpected(std::move(error_nursery)
+                                 .finish(error_level,
+                                         "[{}] {}: expected alternation[ {} ]",
+                                         token_location_at(orig_token_index),
+                                         sfp->name_id_wrap(t_rule_name),
+                                         pts.token_range()));
+    }
+
+    expected_t<node_and_error_t> s_nonterminal_maybe_var(const parse_tree_span_t pts,
+                                                         const name_id_t t_rule_name,
+                                                         var_map_t& var_map)
+    {
+      SILVA_EXPECT(pts[0].num_children == 1 || pts[0].num_children == 2,
+                   MAJOR,
+                   "{} expected one or two children",
+                   pts);
+      auto [it, end]   = pts.children_range();
+      const auto nt_it = se->nonterminal_rules.find(pts.sub_tree_span_at(it.pos));
+      ++it;
+      SILVA_EXPECT(nt_it != se->nonterminal_rules.end(),
+                   MAJOR,
+                   "{} couldn't lookup nonterminal",
+                   pts);
+      const name_id_t next_t_rule_name = nt_it->second;
+      const index_t parsed_tree_index  = tree.size();
+      expected_t<node_and_error_t> retval =
+          SILVA_EXPECT_FWD_IF(handle_rule(next_t_rule_name), MAJOR);
+      if (it != end) {
+        const auto pts_var = pts.sub_tree_span_at(it.pos);
+        const auto var_ti  = pts_var.first_token_id();
+        var_map[var_ti]    = parsed_tree_index;
+      }
+      return retval;
+    }
+
+    expected_t<node_and_error_t>
+    s_func(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
+    {
+      const auto children      = SILVA_EXPECT_FWD(pts.get_children<2>());
+      const token_id_t func_ti = pts.sub_tree_span_at(children[0]).first_token_id();
+      const auto f_it          = func_table.find(func_ti);
+      SILVA_EXPECT(f_it != func_table.end(), MAJOR);
+      const auto& func = f_it->second;
+
+      const auto pts_args = pts.sub_tree_span_at(children[1]);
+      array_t<parse_tree_span_t> args;
+      for (const auto [child_node_index, child_index]: pts_args.children_range()) {
+        const auto pts_arg = pts_args.sub_tree_span_at(child_node_index);
+        if (pts_arg[0].rule_name == lexicon.ni_var) {
+          const token_id_t given_var = pts_arg.first_token_id();
+          const auto v_it            = var_map.find(given_var);
+          SILVA_EXPECT(v_it != var_map.end(), MAJOR);
+          args.push_back(parse_tree_span_t{&tree[v_it->second], 1, tp});
+        }
+        else {
+          args.push_back(pts_arg);
+        }
+      }
+      return func(args);
+    }
+
+    expected_t<node_and_error_t>
+    s_expr(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
+    {
+      const name_id_t s_rule_name = pts[0].rule_name;
+      if (sfp->name_id_is_parent(lexicon.ni_expr_parens, s_rule_name)) {
+        const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
+        return s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map);
+      }
+      else if (sfp->name_id_is_parent(lexicon.ni_expr_prefix, s_rule_name)) {
+        return s_expr_prefix(pts, t_rule_name, var_map);
+      }
+      else if (sfp->name_id_is_parent(lexicon.ni_expr_postfix, s_rule_name)) {
+        return s_expr_postfix(pts, t_rule_name, var_map);
+      }
+      else if (sfp->name_id_is_parent(lexicon.ni_expr_concat, s_rule_name)) {
+        return s_expr_concat(pts, t_rule_name, var_map);
+      }
+      else if (sfp->name_id_is_parent(lexicon.ni_expr_and, s_rule_name)) {
+        return s_expr_and(pts, t_rule_name, var_map);
+      }
+      else if (sfp->name_id_is_parent(lexicon.ni_expr_or, s_rule_name)) {
+        return s_expr_or(pts, t_rule_name, var_map);
+      }
+      else if (s_rule_name == lexicon.ni_term) {
+        return s_terminal(pts, t_rule_name);
+      }
+      else if (s_rule_name == lexicon.ni_nt_maybe_var) {
+        return s_nonterminal_maybe_var(pts, t_rule_name, var_map);
+      }
+      else if (s_rule_name == lexicon.ni_func) {
+        return s_func(pts, t_rule_name, var_map);
+      }
+      else {
+        SILVA_EXPECT(false, MAJOR, "unknown seed expression {}", pts);
+      }
+    }
+
+    expected_t<node_and_error_t> handle_rule_axe(const name_id_t t_rule_name)
+    {
+      const auto it = se->axes.find(t_rule_name);
+      SILVA_EXPECT(it != se->axes.end(), MAJOR);
+      auto ss{stake()};
+      const axe_t& axe = it->second;
+      const axe_t::parse_delegate_t::pack_t pack{
+          [&](const name_id_t rule_name) -> expected_t<parse_tree_node_t> {
+            node_and_error_t result = SILVA_EXPECT_FWD(handle_rule(rule_name));
+            return std::move(result).as_node();
+          },
+      };
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(t_rule_name, axe.apply(*this, pack.delegate)));
+      return ss.commit();
+    }
+
+    expected_t<node_and_error_t> handle_rule(const name_id_t t_rule_name)
+    {
+      auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name, token_location_by());
+      rule_depth += 1;
+      scope_exit_t scope_exit([this] { rule_depth -= 1; });
+      SILVA_EXPECT(rule_depth <= 100,
+                   FATAL,
+                   "Stack is getting too deep. Infinite recursion in grammar?");
+      const index_t orig_token_index = token_index;
+      const auto it{se->rule_exprs.find(t_rule_name)};
+      SILVA_EXPECT(it != se->rule_exprs.end(),
+                   MAJOR,
+                   "Unknown rule: {}",
+                   nis.absolute(t_rule_name));
+      const parse_tree_span_t s_pts = it->second;
+      const name_id_t s_expr_name   = s_pts[0].rule_name;
+      node_and_error_t retval;
+      if (s_expr_name == lexicon.ni_axe) {
+        retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name));
+      }
+      else {
+        var_map_t var_map;
+        if (s_expr_name == lexicon.ni_alias) {
+          const auto cc       = SILVA_EXPECT_FWD(s_pts.get_children<1>());
+          const auto expr_pts = s_pts.sub_tree_span_at(cc[0]);
+          auto ss             = stake();
+          auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(expr_pts, t_rule_name, var_map));
+          ss.add_proto_node(std::move(result.node));
+          retval = node_and_error_t{ss.commit(), std::move(result.last_error)};
+        }
+        else {
+          auto ss_rule = stake();
+          ss_rule.create_node(t_rule_name);
+          auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(s_pts, t_rule_name, var_map));
+          ss_rule.add_proto_node(std::move(result.node));
+          retval = node_and_error_t{ss_rule.commit(), std::move(result.last_error)};
+        }
+      }
+      ets->success = true;
+      return retval;
+    }
+  };
+}
+
+namespace silva::seed {
   interpreter_t::interpreter_t(syntax_farm_ptr_t sfp)
     : sfp(sfp), bootstrap_interpreter(sfp), tokenizer_farm(sfp)
   {
@@ -156,8 +736,8 @@ namespace silva::seed {
 
   expected_t<void> interpreter_t::add(parse_tree_span_t stps)
   {
-    seed_engine_create_nursery_t nursery(this, *stps.tp);
-    SILVA_EXPECT_FWD(nursery.handle_all(stps));
+    impl::interpreter_adder_t adder(this, *stps.tp);
+    SILVA_EXPECT_FWD(adder.handle_all(stps));
     return {};
   }
 
@@ -177,615 +757,10 @@ namespace silva::seed {
     return ptp;
   }
 
-  // Maps variable name to the index in the parsed tree that it refers to.
-  using var_map_t = hash_map_t<token_id_t, index_t>;
-
-  namespace impl {
-    struct seed_exec_trace_data_t {
-      name_id_t rule_name = name_id_root;
-      token_location_t token_pos;
-      bool success = false;
-    };
-    struct seed_exec_trace_t : public exec_trace_t<seed_exec_trace_data_t> {
-      syntax_farm_ptr_t sfp;
-
-      expected_t<string_t> as_tree_to_string() &&
-      {
-        const auto& nis = sfp->default_name_id_style();
-        auto ett        = SILVA_EXPECT_FWD(std::move(*this).as_tree());
-        tree_span_t ets{ett};
-        string_t retval =
-            SILVA_EXPECT_FWD(ets.to_string([&](string_t& curr_line, const auto& path) {
-              const auto& data = ets[path.back().node_index].item.data;
-              curr_line += nis.absolute(data.rule_name);
-              string_pad(curr_line, 55);
-              curr_line += fmt::format("{}", data.success);
-              string_pad(curr_line, 65);
-              curr_line += pretty_string(data.token_pos);
-            }));
-        return {std::move(retval)};
-      }
-    };
-
-    struct seed_engine_nursery_t : public parse_tree_nursery_t {
-      const interpreter_t* se    = nullptr;
-      syntax_farm_ptr_t sfp      = se->sfp;
-      const name_id_style_t& nis = sfp->default_name_id_style();
-
-      const tokenization_t& t_tokenization = *tp;
-      const array_t<token_id_t>& t_tokens  = t_tokenization.tokens;
-
-      int rule_depth = 0;
-
-      seed_exec_trace_t exec_trace{.sfp = sfp};
-
-      const token_id_t ti_id          = *sfp->token_id("identifier");
-      const token_id_t ti_op          = *sfp->token_id("operator");
-      const token_id_t ti_string      = *sfp->token_id("string");
-      const token_id_t ti_number      = *sfp->token_id("number");
-      const token_id_t ti_any         = *sfp->token_id("any");
-      const token_id_t ti_eps         = *sfp->token_id("epsilon");
-      const token_id_t ti_eof         = *sfp->token_id("end_of_file");
-      const token_id_t ti_keywords_of = *sfp->token_id("keywords_of");
-      const token_id_t ti_ques        = *sfp->token_id("?");
-      const token_id_t ti_star        = *sfp->token_id("*");
-      const token_id_t ti_plus        = *sfp->token_id("+");
-
-      const name_id_t ni_seed         = sfp->name_id_of("Seed");
-      const name_id_t ni_rule         = sfp->name_id_of(ni_seed, "Rule");
-      const name_id_t ni_expr         = sfp->name_id_of(ni_seed, "Expr");
-      const name_id_t ni_alias        = sfp->name_id_of(ni_seed, "Alias");
-      const name_id_t ni_expr_parens  = sfp->name_id_of(ni_expr, "Parens");
-      const name_id_t ni_expr_prefix  = sfp->name_id_of(ni_expr, "Prefix");
-      const name_id_t ni_expr_postfix = sfp->name_id_of(ni_expr, "Postfix");
-      const name_id_t ni_expr_concat  = sfp->name_id_of(ni_expr, "Concat");
-      const name_id_t ni_expr_or      = sfp->name_id_of(ni_expr, "Or");
-      const name_id_t ni_expr_and     = sfp->name_id_of(ni_expr, "And");
-      const name_id_t ni_atom         = sfp->name_id_of(ni_seed, "Atom");
-      const name_id_t ni_axe          = sfp->name_id_of(ni_seed, "Axe");
-      const name_id_t ni_nt_maybe_var = sfp->name_id_of(ni_seed, "NonterminalMaybeVar");
-      const name_id_t ni_func         = sfp->name_id_of(ni_seed, "Function");
-      const name_id_t ni_func_arg     = sfp->name_id_of(ni_func, "Arg");
-      const name_id_t ni_nt           = sfp->name_id_of(ni_seed, "Nonterminal");
-      const name_id_t ni_term         = sfp->name_id_of(ni_seed, "Terminal");
-      const name_id_t ni_tok_cat      = sfp->name_id_of(ni_seed, "TokenCategory");
-      const name_id_t ni_var          = sfp->name_id_of(ni_seed, "Variable");
-
-      seed_engine_nursery_t(tokenization_ptr_t tp, const interpreter_t* root)
-        : parse_tree_nursery_t(tp), se(root)
-      {
-      }
-
-      expected_t<void> check()
-      {
-        SILVA_EXPECT(sfp == t_tokenization.sfp,
-                     MAJOR,
-                     "Seed and target parse-trees/tokenizations must be in same syntax_farm_t");
-        return {};
-      }
-
-      struct node_and_error_t {
-        parse_tree_node_t node;
-        error_t last_error;
-
-        node_and_error_t() = default;
-        node_and_error_t(parse_tree_node_t node) : node(node) {}
-        node_and_error_t(parse_tree_node_t node, error_t last_error)
-          : node(node), last_error(std::move(last_error))
-        {
-        }
-
-        parse_tree_node_t as_node() &&
-        {
-          last_error.clear();
-          return std::move(node);
-        }
-      };
-
-      expected_t<node_and_error_t> parse_f(const span_t<const parse_tree_span_t> params)
-      {
-        SILVA_EXPECT(params.size() == 2, MAJOR, "expected two arguments, got {}", params.size());
-        auto pts_scope = params[0];
-        if (pts_scope[0].rule_name == ni_nt_maybe_var) {
-          pts_scope = pts_scope.sub_tree_span_at(1);
-        }
-        const auto pts_rel = params[1];
-        SILVA_EXPECT(pts_scope[0].rule_name == ni_nt && pts_rel[0].rule_name == ni_nt,
-                     MAJOR,
-                     "expected nonterminals, got {} and {}",
-                     sfp->name_id_wrap(pts_scope[0].rule_name),
-                     sfp->name_id_wrap(pts_rel[0].rule_name));
-
-        const name_id_t scope_name =
-            SILVA_EXPECT_FWD_AS(nis.derive_name(name_id_root, pts_scope), MAJOR);
-        const name_id_t t_rule_name = SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_rel));
-        return handle_rule(t_rule_name);
-      }
-      expected_t<node_and_error_t>
-      parse_and_callback_f(const span_t<const parse_tree_span_t> params)
-      {
-        const index_t orig_token_index = token_index;
-        const index_t curr_num_nodes   = tree.size();
-        node_and_error_t nae           = SILVA_EXPECT_FWD(parse_f(params));
-        if (tree.size() > curr_num_nodes) {
-          const parse_tree_span_t parsed_pts{&tree[curr_num_nodes], 1, tp};
-          auto cb_exp = se->callback_if(parsed_pts);
-          if (!cb_exp.has_value()) {
-            error_nursery_t error_nursery;
-            if (!nae.last_error.is_empty()) {
-              error_nursery.add_child_error(std::move(nae.last_error));
-            }
-            error_nursery.add_child_error(std::move(cb_exp).error());
-            return std::unexpected(std::move(error_nursery)
-                                       .finish(MINOR,
-                                               "[{}] error running callback for {}",
-                                               token_location_at(orig_token_index),
-                                               sfp->name_id_wrap(nae.node.rule_name)));
-          }
-        }
-        return nae;
-      }
-      expected_t<node_and_error_t> print_f(const span_t<const parse_tree_span_t> params)
-      {
-        for (const auto& pts: params) {
-          fmt::print("{}\n", pretty_string(pts));
-        }
-        auto ss = stake();
-        return ss.commit();
-      }
-      using func_t = delegate_t<expected_t<node_and_error_t>(span_t<const parse_tree_span_t>)>;
-      using func_table_t      = hash_map_t<token_id_t, func_t>;
-      func_table_t func_table = {
-          {
-              *sfp->token_id("parse_f"),
-              func_t::make<&seed_engine_nursery_t::parse_f>(this),
-          },
-          {
-              *sfp->token_id("parse_and_callback_f"),
-              func_t::make<&seed_engine_nursery_t::parse_and_callback_f>(this),
-          },
-          {
-              *sfp->token_id("print_f"),
-              func_t::make<&seed_engine_nursery_t::print_f>(this),
-          },
-      };
-
-      expected_t<node_and_error_t> s_terminal(const parse_tree_span_t pts,
-                                              const name_id_t t_rule_name)
-      {
-        auto ss            = stake();
-        const auto& s_node = pts[0];
-        SILVA_EXPECT(s_node.rule_name == ni_term, MAJOR);
-        const token_id_t s_front_ti = pts.tp->tokens[s_node.token_begin];
-        if (s_front_ti == ti_eps) {
-          return ss.commit();
-        }
-        if (s_front_ti == ti_eof) {
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             num_tokens_left() == 0,
-                             "expected {}",
-                             sfp->token_id_wrap(ti_eof));
-          return ss.commit();
-        }
-        SILVA_EXPECT_PARSE(t_rule_name,
-                           num_tokens_left() > 0,
-                           "Reached end of token-stream when looking for {}",
-                           pts.tp->token_info_get(s_node.token_begin)->str);
-        if ((s_front_ti == ti_id || s_front_ti == ti_op) && s_node.num_tokens() == 3) {
-          SILVA_EXPECT(s_node.num_children == 0, MAJOR, "expected Terminal node have no children");
-          if (s_front_ti == ti_id) {
-            SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category_old == IDENTIFIER,
-                               "expected {}",
-                               pts.token_range());
-          }
-          else if (s_front_ti == ti_op) {
-            SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category_old == OPERATOR,
-                               "expected {}",
-                               pts.token_range());
-          }
-          else {
-            SILVA_EXPECT(false, MAJOR, "Only 'identifier' and 'operator' may have regexes");
-          }
-          const token_id_t regex_token_id = pts.tp->tokens[s_node.token_begin + 2];
-          const auto it                   = se->regexes.find(regex_token_id);
-          SILVA_EXPECT(it != se->regexes.end() && it->second.has_value(), MAJOR);
-          const std::regex& re          = it->second.value();
-          const string_view_t token_str = token_data_by()->str;
-          const bool is_match           = std::regex_search(token_str.begin(), token_str.end(), re);
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             is_match,
-                             "{} does not match regex {}",
-                             sfp->token_id_wrap(token_id_by()),
-                             sfp->token_infos[regex_token_id].str);
-        }
-        else if (s_front_ti == ti_keywords_of) {
-          const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
-          const auto pts_nt   = pts.sub_tree_span_at(children[0]);
-          const auto it       = se->nonterminal_rules.find(pts_nt);
-          SILVA_EXPECT(it != se->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
-          const name_id_t keyword_scope = it->second;
-          const auto it2                = se->keyword_scopes.find(keyword_scope);
-          SILVA_EXPECT(it2 != se->keyword_scopes.end(),
-                       MAJOR,
-                       "keywords_of {}: no such nonterminal",
-                       sfp->name_id_wrap(keyword_scope));
-          const hash_set_t<token_id_t>& keywords = it2->second;
-          SILVA_EXPECT(keywords.contains(token_id_by()),
-                       MINOR,
-                       "{} '{}' not in keywords_of {}",
-                       token_location_by(),
-                       sfp->token_id_wrap(token_id_by()),
-                       sfp->name_id_wrap(keyword_scope));
-        }
-        else if (s_node.num_children == 1) {
-          const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
-          const auto pts_cat  = pts.sub_tree_span_at(children[0]);
-          SILVA_EXPECT(pts_cat[0].rule_name == ni_tok_cat, MAJOR, "expected TokenCategory");
-          const token_id_t cat_token = pts_cat.tp->tokens[pts_cat[0].token_begin];
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             tp->categories[token_index] == cat_token,
-                             "expected token with category {}",
-                             sfp->token_id_wrap(cat_token));
-        }
-        else {
-          SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
-          SILVA_EXPECT(s_node.num_tokens() == 1,
-                       MAJOR,
-                       "Terminal nodes must have one or three tokens");
-          if (s_front_ti == ti_id) {
-            SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category_old == IDENTIFIER,
-                               "expected identifier");
-          }
-          else if (s_front_ti == ti_op) {
-            SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category_old == OPERATOR,
-                               "expected operator");
-          }
-          else if (s_front_ti == ti_string) {
-            SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category_old == STRING,
-                               "expected string");
-          }
-          else if (s_front_ti == ti_number) {
-            SILVA_EXPECT_PARSE(t_rule_name,
-                               token_data_by()->category_old == NUMBER,
-                               "expected number");
-          }
-          else if (s_front_ti == ti_any) {
-            ;
-          }
-          else {
-            const index_t s_token_id = pts.tp->tokens[s_node.token_begin];
-            const auto it            = se->string_to_keyword.find(s_token_id);
-            SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
-            const token_id_t t_expected_ti = it->second;
-            SILVA_EXPECT_PARSE(t_rule_name,
-                               token_id_by() == t_expected_ti,
-                               "expected {}",
-                               sfp->token_id_wrap(t_expected_ti));
-          }
-        }
-        token_index += 1;
-        return ss.commit();
-      }
-
-      expected_t<node_and_error_t>
-      s_expr_prefix(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
-      {
-        {
-          auto ss             = stake();
-          const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
-          auto result =
-              SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map),
-                                  MAJOR);
-          SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
-        }
-        auto ss = stake();
-        return ss.commit();
-      }
-
-      expected_t<pair_t<index_t, index_t>> get_min_max_repeat(const token_id_t op_ti)
-      {
-        index_t min_repeat = 0;
-        index_t max_repeat = std::numeric_limits<index_t>::max();
-        SILVA_EXPECT(op_ti == ti_ques || op_ti == ti_star || op_ti == ti_plus, MAJOR);
-        if (op_ti == ti_ques) {
-          max_repeat = 1;
-        }
-        else if (op_ti == ti_star) {
-          ;
-        }
-        else if (op_ti == ti_plus) {
-          min_repeat = 1;
-        }
-        return {pair_t{min_repeat, max_repeat}};
-      }
-
-      expected_t<node_and_error_t>
-      s_expr_postfix(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
-      {
-        auto ss                             = stake();
-        const auto children                 = SILVA_EXPECT_FWD(pts.get_children<1>());
-        const token_id_t op_ti              = sfp->name_infos[pts[0].rule_name].base_name;
-        const auto [min_repeat, max_repeat] = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
-        index_t repeat_count                = 0;
-        error_t last_error;
-        while (repeat_count < max_repeat) {
-          auto result =
-              SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map),
-                                  MAJOR);
-          if (result.has_value()) {
-            ss.add_proto_node(std::move(*result).as_node());
-            repeat_count += 1;
-          }
-          else {
-            last_error = std::move(result).error();
-            break;
-          }
-        }
-        if (repeat_count < min_repeat) {
-          array_small_t<error_t, 1> maybe_child_error;
-          if (!last_error.is_empty()) {
-            maybe_child_error.emplace_back(std::move(last_error));
-          }
-          return std::unexpected(make_error(MINOR,
-                                            maybe_child_error,
-                                            "min-repeat (={}) not reached, only found {}",
-                                            min_repeat,
-                                            repeat_count));
-        }
-        return node_and_error_t{ss.commit(), std::move(last_error)};
-      }
-
-      expected_t<node_and_error_t>
-      s_expr_concat(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
-      {
-        const index_t orig_token_index = token_index;
-        auto ss                        = stake();
-        error_nursery_t error_nursery;
-
-        // Could do this bit ahead of time and store a map in the interpreter_t.
-        index_t lead_terminals = 0;
-        for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-          const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
-          if (sub_pts[0].rule_name == ni_term) {
-            lead_terminals += 1;
-          }
-          else {
-            break;
-          }
-        }
-
-        for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-          const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
-          auto result        = s_expr(sub_pts, t_rule_name, var_map);
-          if (result.has_value()) {
-            if (!result->last_error.is_empty()) {
-              error_nursery.add_child_error(std::move(result->last_error));
-            }
-            ss.add_proto_node(std::move(result->node));
-          }
-          else {
-            error_level_t error_level = result.error().level;
-            if (lead_terminals >= 1 && child_index >= lead_terminals) {
-              error_level = std::max(error_level, MAJOR);
-            }
-            error_nursery.add_child_error(std::move(result).error());
-            return std::unexpected(std::move(error_nursery)
-                                       .finish(error_level,
-                                               "[{}] {}: expected sequence[ {} ]",
-                                               token_location_at(orig_token_index),
-                                               sfp->name_id_wrap(t_rule_name),
-                                               pts.token_range()));
-          }
-        }
-        return ss.commit();
-      }
-
-      expected_t<node_and_error_t>
-      s_expr_and(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
-      {
-        optional_t<stake_t> ss;
-        for (const auto [child_node_index, child_index]: pts.children_range()) {
-          ss.emplace(stake());
-          auto result = SILVA_EXPECT_FWD(
-              s_expr(pts.sub_tree_span_at(child_node_index), t_rule_name, var_map));
-          ss->add_proto_node(std::move(result).as_node());
-        }
-        SILVA_EXPECT(ss.has_value(), MAJOR);
-        return ss->commit();
-      }
-
-      expected_t<node_and_error_t>
-      s_expr_or(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
-      {
-        const index_t orig_token_index = token_index;
-        error_nursery_t error_nursery;
-        optional_t<parse_tree_node_t> retval;
-        error_level_t error_level = MINOR;
-        for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-          auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name, var_map);
-          if (result.has_value()) {
-            retval = std::move(*result).as_node();
-            break;
-          }
-          else {
-            error_level = result.error().level;
-            error_nursery.add_child_error(std::move(result).error());
-            if (error_level >= MAJOR) {
-              break;
-            }
-          }
-        }
-        if (retval.has_value()) {
-          return std::move(retval).value();
-        }
-        return std::unexpected(std::move(error_nursery)
-                                   .finish(error_level,
-                                           "[{}] {}: expected alternation[ {} ]",
-                                           token_location_at(orig_token_index),
-                                           sfp->name_id_wrap(t_rule_name),
-                                           pts.token_range()));
-      }
-
-      expected_t<node_and_error_t> s_nonterminal_maybe_var(const parse_tree_span_t pts,
-                                                           const name_id_t t_rule_name,
-                                                           var_map_t& var_map)
-      {
-        SILVA_EXPECT(pts[0].num_children == 1 || pts[0].num_children == 2,
-                     MAJOR,
-                     "{} expected one or two children",
-                     pts);
-        auto [it, end]   = pts.children_range();
-        const auto nt_it = se->nonterminal_rules.find(pts.sub_tree_span_at(it.pos));
-        ++it;
-        SILVA_EXPECT(nt_it != se->nonterminal_rules.end(),
-                     MAJOR,
-                     "{} couldn't lookup nonterminal",
-                     pts);
-        const name_id_t next_t_rule_name = nt_it->second;
-        const index_t parsed_tree_index  = tree.size();
-        expected_t<node_and_error_t> retval =
-            SILVA_EXPECT_FWD_IF(handle_rule(next_t_rule_name), MAJOR);
-        if (it != end) {
-          const auto pts_var = pts.sub_tree_span_at(it.pos);
-          const auto var_ti  = pts_var.first_token_id();
-          var_map[var_ti]    = parsed_tree_index;
-        }
-        return retval;
-      }
-
-      expected_t<node_and_error_t>
-      s_func(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
-      {
-        const auto children      = SILVA_EXPECT_FWD(pts.get_children<2>());
-        const token_id_t func_ti = pts.sub_tree_span_at(children[0]).first_token_id();
-        const auto f_it          = func_table.find(func_ti);
-        SILVA_EXPECT(f_it != func_table.end(), MAJOR);
-        const auto& func = f_it->second;
-
-        const auto pts_args = pts.sub_tree_span_at(children[1]);
-        array_t<parse_tree_span_t> args;
-        for (const auto [child_node_index, child_index]: pts_args.children_range()) {
-          const auto pts_arg = pts_args.sub_tree_span_at(child_node_index);
-          if (pts_arg[0].rule_name == ni_var) {
-            const token_id_t given_var = pts_arg.first_token_id();
-            const auto v_it            = var_map.find(given_var);
-            SILVA_EXPECT(v_it != var_map.end(), MAJOR);
-            args.push_back(parse_tree_span_t{&tree[v_it->second], 1, tp});
-          }
-          else {
-            args.push_back(pts_arg);
-          }
-        }
-        return func(args);
-      }
-
-      expected_t<node_and_error_t>
-      s_expr(const parse_tree_span_t pts, const name_id_t t_rule_name, var_map_t& var_map)
-      {
-        const name_id_t s_rule_name = pts[0].rule_name;
-        if (sfp->name_id_is_parent(ni_expr_parens, s_rule_name)) {
-          const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
-          return s_expr(pts.sub_tree_span_at(children[0]), t_rule_name, var_map);
-        }
-        else if (sfp->name_id_is_parent(ni_expr_prefix, s_rule_name)) {
-          return s_expr_prefix(pts, t_rule_name, var_map);
-        }
-        else if (sfp->name_id_is_parent(ni_expr_postfix, s_rule_name)) {
-          return s_expr_postfix(pts, t_rule_name, var_map);
-        }
-        else if (sfp->name_id_is_parent(ni_expr_concat, s_rule_name)) {
-          return s_expr_concat(pts, t_rule_name, var_map);
-        }
-        else if (sfp->name_id_is_parent(ni_expr_and, s_rule_name)) {
-          return s_expr_and(pts, t_rule_name, var_map);
-        }
-        else if (sfp->name_id_is_parent(ni_expr_or, s_rule_name)) {
-          return s_expr_or(pts, t_rule_name, var_map);
-        }
-        else if (s_rule_name == ni_term) {
-          return s_terminal(pts, t_rule_name);
-        }
-        else if (s_rule_name == ni_nt_maybe_var) {
-          return s_nonterminal_maybe_var(pts, t_rule_name, var_map);
-        }
-        else if (s_rule_name == ni_func) {
-          return s_func(pts, t_rule_name, var_map);
-        }
-        else {
-          SILVA_EXPECT(false, MAJOR, "unknown seed expression {}", pts);
-        }
-      }
-
-      expected_t<node_and_error_t> handle_rule_axe(const name_id_t t_rule_name)
-      {
-        const auto it = se->axes.find(t_rule_name);
-        SILVA_EXPECT(it != se->axes.end(), MAJOR);
-        auto ss{stake()};
-        const axe_t& axe = it->second;
-        const axe_t::parse_delegate_t::pack_t pack{
-            [&](const name_id_t rule_name) -> expected_t<parse_tree_node_t> {
-              node_and_error_t result = SILVA_EXPECT_FWD(handle_rule(rule_name));
-              return std::move(result).as_node();
-            },
-        };
-        ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(t_rule_name, axe.apply(*this, pack.delegate)));
-        return ss.commit();
-      }
-
-      expected_t<node_and_error_t> handle_rule(const name_id_t t_rule_name)
-      {
-        auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name, token_location_by());
-        rule_depth += 1;
-        scope_exit_t scope_exit([this] { rule_depth -= 1; });
-        SILVA_EXPECT(rule_depth <= 100,
-                     FATAL,
-                     "Stack is getting too deep. Infinite recursion in grammar?");
-        const index_t orig_token_index = token_index;
-        const auto it{se->rule_exprs.find(t_rule_name)};
-        SILVA_EXPECT(it != se->rule_exprs.end(),
-                     MAJOR,
-                     "Unknown rule: {}",
-                     nis.absolute(t_rule_name));
-        const parse_tree_span_t s_pts = it->second;
-        const name_id_t s_expr_name   = s_pts[0].rule_name;
-        node_and_error_t retval;
-        if (s_expr_name == ni_axe) {
-          retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name));
-        }
-        else {
-          var_map_t var_map;
-          if (s_expr_name == ni_alias) {
-            const auto cc       = SILVA_EXPECT_FWD(s_pts.get_children<1>());
-            const auto expr_pts = s_pts.sub_tree_span_at(cc[0]);
-            auto ss             = stake();
-            auto result =
-                SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(expr_pts, t_rule_name, var_map));
-            ss.add_proto_node(std::move(result.node));
-            retval = node_and_error_t{ss.commit(), std::move(result.last_error)};
-          }
-          else {
-            auto ss_rule = stake();
-            ss_rule.create_node(t_rule_name);
-            auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(s_pts, t_rule_name, var_map));
-            ss_rule.add_proto_node(std::move(result.node));
-            retval = node_and_error_t{ss_rule.commit(), std::move(result.last_error)};
-          }
-        }
-        ets->success = true;
-        return retval;
-      }
-    };
-  }
-
   expected_t<parse_tree_ptr_t> interpreter_t::apply(tokenization_ptr_t tp,
                                                     const name_id_t goal_rule_name) const
   {
-    impl::seed_engine_nursery_t nursery(tp, this);
+    impl::interpreter_apply_nursery_t nursery(tp, bootstrap_interpreter.lexicon(), this);
     SILVA_EXPECT_FWD(nursery.check());
     auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name),
                                 "seed::interpreter_t::apply({}) failed to parse",

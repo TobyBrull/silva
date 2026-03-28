@@ -1,5 +1,7 @@
 #include "seed_tokenizer.hpp"
 
+#include "seed.lexicon.hpp"
+
 using enum silva::fragment_category_t;
 
 namespace silva::seed::impl {
@@ -86,89 +88,65 @@ namespace silva::seed::impl {
 
   struct tokenizer_create_nursery_t {
     syntax_farm_ptr_t sfp;
+    const lexicon_t& lexicon;
     token_id_t tokenizer_name = token_id_none;
 
-    const name_id_t ni_seed        = sfp->name_id_of("Seed");
-    const name_id_t ni_nt          = sfp->name_id_of(ni_seed, "Nonterminal");
-    const name_id_t ni_tok         = sfp->name_id_of(ni_seed, "Tokenizer");
-    const name_id_t ni_inc_rule    = sfp->name_id_of(ni_tok, "IncludeRule");
-    const name_id_t ni_ign_rule    = sfp->name_id_of(ni_tok, "IgnoreRule");
-    const name_id_t ni_tok_rule    = sfp->name_id_of(ni_tok, "TokenRule");
-    const name_id_t ni_prefix_item = sfp->name_id_of(ni_tok, "PrefixItem");
-    const name_id_t ni_item        = sfp->name_id_of(ni_tok, "Item");
-    const name_id_t ni_list        = sfp->name_id_of(ni_tok, "List");
-    const name_id_t ni_matcher     = sfp->name_id_of(ni_tok, "Matcher");
-
-    const token_id_t ti_WHITESPACE             = *sfp->token_id("WHITESPACE");
-    const token_id_t ti_COMMENT                = *sfp->token_id("COMMENT");
-    const token_id_t ti_NUMBER                 = *sfp->token_id("NUMBER");
-    const token_id_t ti_STRING                 = *sfp->token_id("STRING");
-    const token_id_t ti_INDENT                 = *sfp->token_id("INDENT");
-    const token_id_t ti_DEDENT                 = *sfp->token_id("DEDENT");
-    const token_id_t ti_NEWLINE                = *sfp->token_id("NEWLINE");
-    const token_id_t ti_OPERATOR               = *sfp->token_id("OPERATOR");
-    const token_id_t ti_IDENTIFIER             = *sfp->token_id("IDENTIFIER");
-    const token_id_t ti_IDENTIFIER_SILVA_CASE  = *sfp->token_id("IDENTIFIER_SILVA_CASE");
-    const token_id_t ti_IDENTIFIER_SNAKE_CASE  = *sfp->token_id("IDENTIFIER_SNAKE_CASE");
-    const token_id_t ti_IDENTIFIER_CAMEL_CASE  = *sfp->token_id("IDENTIFIER_CAMEL_CASE");
-    const token_id_t ti_IDENTIFIER_PASCAL_CASE = *sfp->token_id("IDENTIFIER_PASCAL_CASE");
-    const token_id_t ti_IDENTIFIER_MACRO_CASE  = *sfp->token_id("IDENTIFIER_MACRO_CASE");
-    const token_id_t ti_IDENTIFIER_UPPER_CASE  = *sfp->token_id("IDENTIFIER_UPPER_CASE");
-    const token_id_t ti_IDENTIFIER_LOWER_CASE  = *sfp->token_id("IDENTIFIER_LOWER_CASE");
-
-    const token_id_t ti_prefix  = *sfp->token_id("/");
-    const token_id_t ti_postfix = *sfp->token_id("\\");
-    const token_id_t ti_exact   = *sfp->token_id("|");
+    tokenizer_create_nursery_t(syntax_farm_ptr_t sfp,
+                               const lexicon_t& lexicon,
+                               const token_id_t tokenizer_name)
+      : sfp(sfp), lexicon(lexicon), tokenizer_name(tokenizer_name)
+    {
+    }
 
     expected_t<tuple_t<fragment_category_t, case_mask_t>>
     fragment_category_from_token_id(const token_id_t ti)
     {
-      if (ti == ti_WHITESPACE) {
+      if (ti == lexicon.ti_WHITESPACE) {
         return {{WHITESPACE, case_mask_t::EMPTY}};
       }
-      else if (ti == ti_COMMENT) {
+      else if (ti == lexicon.ti_COMMENT) {
         return {{COMMENT, case_mask_t::EMPTY}};
       }
-      else if (ti == ti_NUMBER) {
+      else if (ti == lexicon.ti_NUMBER) {
         return {{NUMBER, case_mask_t::EMPTY}};
       }
-      else if (ti == ti_STRING) {
+      else if (ti == lexicon.ti_STRING) {
         return {{STRING, case_mask_t::EMPTY}};
       }
-      else if (ti == ti_INDENT) {
+      else if (ti == lexicon.ti_INDENT) {
         return {{INDENT, case_mask_t::EMPTY}};
       }
-      else if (ti == ti_DEDENT) {
+      else if (ti == lexicon.ti_DEDENT) {
         return {{DEDENT, case_mask_t::EMPTY}};
       }
-      else if (ti == ti_NEWLINE) {
+      else if (ti == lexicon.ti_NEWLINE) {
         return {{NEWLINE, case_mask_t::EMPTY}};
       }
-      else if (ti == ti_OPERATOR) {
+      else if (ti == lexicon.ti_OPERATOR) {
         return {{OPERATOR, case_mask_t::EMPTY}};
       }
-      else if (ti == ti_IDENTIFIER) {
+      else if (ti == lexicon.ti_IDENTIFIER) {
         return {{IDENTIFIER, case_mask_t::ANY}};
       }
-      else if (ti == ti_IDENTIFIER_SILVA_CASE) {
+      else if (ti == lexicon.ti_IDENTIFIER_SILVA_CASE) {
         return {{IDENTIFIER, case_mask_t::SILVA_CASE}};
       }
-      else if (ti == ti_IDENTIFIER_SNAKE_CASE) {
+      else if (ti == lexicon.ti_IDENTIFIER_SNAKE_CASE) {
         return {{IDENTIFIER, case_mask_t::SNAKE_CASE}};
       }
-      else if (ti == ti_IDENTIFIER_CAMEL_CASE) {
+      else if (ti == lexicon.ti_IDENTIFIER_CAMEL_CASE) {
         return {{IDENTIFIER, case_mask_t::CAMEL_CASE}};
       }
-      else if (ti == ti_IDENTIFIER_PASCAL_CASE) {
+      else if (ti == lexicon.ti_IDENTIFIER_PASCAL_CASE) {
         return {{IDENTIFIER, case_mask_t::PASCAL_CASE}};
       }
-      else if (ti == ti_IDENTIFIER_MACRO_CASE) {
+      else if (ti == lexicon.ti_IDENTIFIER_MACRO_CASE) {
         return {{IDENTIFIER, case_mask_t::MACRO_CASE}};
       }
-      else if (ti == ti_IDENTIFIER_UPPER_CASE) {
+      else if (ti == lexicon.ti_IDENTIFIER_UPPER_CASE) {
         return {{IDENTIFIER, case_mask_t::UPPER_CASE}};
       }
-      else if (ti == ti_IDENTIFIER_LOWER_CASE) {
+      else if (ti == lexicon.ti_IDENTIFIER_LOWER_CASE) {
         return {{IDENTIFIER, case_mask_t::LOWER_CASE}};
       }
       else {
@@ -204,7 +182,7 @@ namespace silva::seed::impl {
       else {
         const auto [c1]               = SILVA_EXPECT_FWD(pts_item.get_children<1>());
         const parse_tree_span_t pts_m = pts_item.sub_tree_span_at(c1);
-        SILVA_EXPECT(pts_m[0].rule_name == ni_matcher, BROKEN_SEED);
+        SILVA_EXPECT(pts_m[0].rule_name == lexicon.ni_tok_matcher, BROKEN_SEED);
         const token_id_t frag_name = pts_m.first_token_id();
         const auto [cat, cm]       = SILVA_EXPECT_FWD(fragment_category_from_token_id(frag_name));
 
@@ -222,17 +200,17 @@ namespace silva::seed::impl {
           SILVA_EXPECT(t_idx + 1 < t_end, BROKEN_SEED);
           const string_t str =
               SILVA_EXPECT_FWD(sfp->token_infos[tokens[t_idx + 1]].contained_string());
-          if (tokens[t_idx] == ti_prefix) {
+          if (tokens[t_idx] == lexicon.ti_slash) {
             SILVA_EXPECT(!had_prefix, BROKEN_SEED);
             mm.prefix  = str;
             had_prefix = true;
           }
-          else if (tokens[t_idx] == ti_postfix) {
+          else if (tokens[t_idx] == lexicon.ti_backslash) {
             SILVA_EXPECT(!had_postfix, BROKEN_SEED);
             mm.postfix  = str;
             had_postfix = true;
           }
-          else if (tokens[t_idx] == ti_exact) {
+          else if (tokens[t_idx] == lexicon.ti_pipe) {
             SILVA_EXPECT(!had_prefix, BROKEN_SEED);
             SILVA_EXPECT(!had_postfix, BROKEN_SEED);
             mm.prefix   = str;
@@ -254,17 +232,17 @@ namespace silva::seed::impl {
     {
       array_t<array_t<matcher_t>> alternatives;
       const auto [c1] = SILVA_EXPECT_FWD(pts_pa.get_children<1>());
-      if (pts_pa[c1].rule_name == ni_item) {
+      if (pts_pa[c1].rule_name == lexicon.ni_tok_item) {
         auto matchers = SILVA_EXPECT_FWD(item(pts_pa.sub_tree_span_at(c1)));
         alternatives.push_back(std::move(matchers));
       }
       else {
-        SILVA_EXPECT(pts_pa[c1].rule_name == ni_list, BROKEN_SEED);
+        SILVA_EXPECT(pts_pa[c1].rule_name == lexicon.ni_tok_list, BROKEN_SEED);
         const auto pts_list = pts_pa.sub_tree_span_at(c1);
         auto [it, end]      = pts_list.children_range();
         while (it != end) {
           const auto pts_item_child = pts_list.sub_tree_span_at(it.pos);
-          SILVA_EXPECT(pts_item_child[0].rule_name == ni_item, BROKEN_SEED);
+          SILVA_EXPECT(pts_item_child[0].rule_name == lexicon.ni_tok_item, BROKEN_SEED);
           auto matchers = SILVA_EXPECT_FWD(item(pts_item_child));
           alternatives.push_back(std::move(matchers));
           ++it;
@@ -282,7 +260,7 @@ namespace silva::seed::impl {
       index_t num_prefix_items = 0;
       while (it != end) {
         const auto pts_child = pts_defn.sub_tree_span_at(it.pos);
-        if (pts_child[0].rule_name == ni_prefix_item) {
+        if (pts_child[0].rule_name == lexicon.ni_tok_prefix_item) {
           auto alternatives = SILVA_EXPECT_FWD(prefix_item(pts_child));
           array_t<impl::rule_t> new_retval;
           for (auto& existing_rule: retval) {
@@ -297,7 +275,7 @@ namespace silva::seed::impl {
           retval = std::move(new_retval);
           num_prefix_items += 1;
         }
-        else if (pts_child[0].rule_name == ni_item) {
+        else if (pts_child[0].rule_name == lexicon.ni_tok_item) {
           array_t<matcher_t> matchers = SILVA_EXPECT_FWD(item(pts_child));
           SILVA_EXPECT(matchers.size() == 1,
                        BROKEN_SEED,
@@ -358,13 +336,13 @@ namespace silva::seed::impl {
       auto [it, end] = pts_tokenizer.children_range();
       while (it != end) {
         const auto pts_rule = pts_tokenizer.sub_tree_span_at(it.pos);
-        if (pts_rule[0].rule_name == ni_inc_rule) {
+        if (pts_rule[0].rule_name == lexicon.ni_tok_inc_rule) {
           SILVA_EXPECT_FWD(include_rule(pts_rule));
         }
-        else if (pts_rule[0].rule_name == ni_ign_rule) {
+        else if (pts_rule[0].rule_name == lexicon.ni_tok_ign_rule) {
           SILVA_EXPECT_FWD(ignore_rule(pts_rule));
         }
-        else if (pts_rule[0].rule_name == ni_tok_rule) {
+        else if (pts_rule[0].rule_name == lexicon.ni_tok_tok_rule) {
           SILVA_EXPECT_FWD(token_rule(pts_rule));
         }
         else {
@@ -388,7 +366,8 @@ namespace silva::seed {
   {
     SILVA_EXPECT(pts.tp->sfp == sfp, MAJOR);
     SILVA_EXPECT(!tokenizers.contains(tokenizer_name), MINOR);
-    impl::tokenizer_create_nursery_t nursery(sfp, tokenizer_name);
+    lexicon_t lexicon(sfp);
+    impl::tokenizer_create_nursery_t nursery(sfp, lexicon, tokenizer_name);
     SILVA_EXPECT_FWD(nursery.run(pts));
     const auto [it, inserted] = tokenizers.emplace(tokenizer_name, std::move(nursery.retval));
     SILVA_EXPECT(inserted, ASSERT);

@@ -87,7 +87,7 @@ namespace silva::seed {
 
   const string_view_t tokenizer_str = R"'(
     - Seed.Tokenizer = [
-      - x = 'tokenizer' '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
+      - x = '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
       - IncludeRule = 'include' 'tokenizer' p.Nonterminal.Base
       - IgnoreRule = 'ignore' Defn
       - TokenRule = p.TokenCategory '=' Defn
@@ -122,36 +122,6 @@ namespace silva::seed {
 
     expected_t<tokenization_ptr_t> apply(fragmentization_ptr_t, token_id_t);
   };
-
-  const string_view_t default_tokenizers_str = R"(
-    - Default = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - indent = INDENT
-      - dedent = DEDENT
-      - newline = NEWLINE
-      - number = NUMBER
-      - string = STRING
-    ]
-    - FreeForm = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
-    ]
-    - Seed = tokenizer [
-      - tokenizer FreeFrom
-      - operators = ::: PARENTHESES OPERATOR 'concat' but_then' 'x' 'p' '_'
-      - rule_name = IDENTIFIER_PASCAL_CASE
-      - var_name = IDENTIFIER_SNAKE_CASE\'_v'
-      - func_name = IDENTIFIER_SNAKE_CASE\'_f'
-      - token_category_name = IDENTIFIER_SNAKE_CASE
-      - frag_name = IDENTIFIER_MACRO_CASE
-    ]
-  )";
 }
 
 // IMPLEMENTATION

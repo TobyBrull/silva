@@ -1,7 +1,7 @@
 #include "seed.hpp"
-#include "seed.lexicon.hpp"
 
 #include "seed_axe.hpp"
+#include "seed_tokenizer.hpp"
 
 #include "canopy/expected.hpp"
 
@@ -9,9 +9,9 @@ using enum silva::token_category_old_t;
 
 namespace silva::seed::impl {
   struct base_parse_tree_nursery_t : public parse_tree_nursery_t {
-    lexicon_t& lexicon;
+    const lexicon_t& lexicon;
 
-    base_parse_tree_nursery_t(tokenization_ptr_t tp, lexicon_t& lexicon)
+    base_parse_tree_nursery_t(tokenization_ptr_t tp, const lexicon_t& lexicon)
       : parse_tree_nursery_t(tp), lexicon(lexicon)
     {
     }
@@ -316,7 +316,6 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_tok);
-      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok, lexicon.ti_tokenizer);
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok, lexicon.ti_brack_open);
       while (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_dash) {
         token_index += 1;
@@ -357,21 +356,22 @@ namespace silva::seed::impl {
     }
   };
 
-  axe_t create_axe_expr(syntax_farm_ptr_t sfp, lexicon_t& lexicon)
+  string_view_t find_subsection(string_view_t needle, string_view_t haystack)
   {
-    const string_view_t axe_defn = [] -> string_view_t {
-      const string_view_t start_str = "- Expr = axe ";
-      const size_t fi_begin         = seed_str.find(start_str);
-      SILVA_ASSERT(fi_begin != string_view_t::npos);
-      const string_view_t axe_defn_str_with_rest = seed_str.substr(fi_begin + start_str.size());
-      const size_t fi_end                        = axe_defn_str_with_rest.find(']');
-      SILVA_ASSERT(fi_end != string_view_t::npos);
-      const string_view_t retval = axe_defn_str_with_rest.substr(0, fi_end + 1);
-      // fmt::print("\n\n|{}|\n\n", retval);
-      return retval;
-    }();
-    auto tt = SILVA_EXPECT_ASSERT(tokenize(sfp, "seed.axe", axe_defn));
-    impl::base_parse_tree_nursery_t nursery(tt, lexicon);
+    const size_t pos = haystack.find(needle);
+    SILVA_ASSERT(pos != string_view_t::npos);
+    const string_view_t rest = seed_str.substr(pos + needle.size());
+    const size_t pos2        = rest.find(']');
+    SILVA_ASSERT(pos2 != string_view_t::npos);
+    const string_view_t retval = rest.substr(0, pos2 + 1);
+    return retval;
+  }
+
+  axe_t make_seed_expr_axe(syntax_farm_ptr_t sfp, const lexicon_t& lexicon)
+  {
+    const auto axe_defn = find_subsection("- Expr = axe ", seed_str);
+    const auto axe_toks = SILVA_EXPECT_ASSERT(tokenize(sfp, "seed.axe", axe_defn));
+    impl::base_parse_tree_nursery_t nursery(axe_toks, lexicon);
     SILVA_EXPECT_ASSERT(nursery.axe());
     parse_tree_ptr_t pt     = sfp->add(std::move(nursery).finish());
     const name_id_t ni_expr = sfp->name_id_of("Seed", "Expr");
@@ -379,11 +379,20 @@ namespace silva::seed::impl {
     return retval;
   }
 
-  struct seed_parse_tree_nursery_t : public base_parse_tree_nursery_t {
-    axe_t& the_axe;
+  tokenizer_farm_t make_seed_tokenizer_farm(syntax_farm_ptr_t sfp, const lexicon_t& lexicon)
+  {
+    tokenizer_farm_t retval(sfp);
+    const auto tr_default   = find_subsection("- Default = tokenizer ", seed_str);
+    const auto tr_free_form = find_subsection("- FreeForm = tokenizer ", seed_str);
+    const auto tr_seed      = find_subsection("- Seed = tokenizer ", seed_str);
+    return retval;
+  }
 
-    seed_parse_tree_nursery_t(tokenization_ptr_t tp, lexicon_t& lexicon, axe_t& the_axe)
-      : base_parse_tree_nursery_t(tp, lexicon), the_axe(the_axe)
+  struct seed_parse_tree_nursery_t : public base_parse_tree_nursery_t {
+    axe_t& seed_expr_axe;
+
+    seed_parse_tree_nursery_t(tokenization_ptr_t tp, const lexicon_t& lexicon, axe_t& seed_expr_axe)
+      : base_parse_tree_nursery_t(tp, lexicon), seed_expr_axe(seed_expr_axe)
     {
     }
 
@@ -549,7 +558,7 @@ namespace silva::seed::impl {
       auto ss = stake();
       SILVA_EXPECT_PARSE(lexicon.ni_expr, num_tokens_left() >= 1, "no more tokens in input");
       const auto dg = axe_t::parse_delegate_t::make<&seed_parse_tree_nursery_t::any_rule>(this);
-      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_expr, the_axe.apply(*this, dg)));
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_expr, seed_expr_axe.apply(*this, dg)));
       return ss.commit();
     }
 
@@ -566,6 +575,10 @@ namespace silva::seed::impl {
         token_index += 1;
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, seed()));
         SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_rule, lexicon.ti_brack_close)
+      }
+      else if (op_ti == lexicon.ti_tokenizer) {
+        token_index += 1;
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, tokenizer()));
       }
       else if (op_ti == lexicon.ti_alias) {
         token_index += 1;
@@ -598,7 +611,8 @@ namespace silva::seed {
   struct bootstrap_interpreter_t::impl_t {
     syntax_farm_ptr_t sfp;
     lexicon_t lexicon{sfp};
-    axe_t the_axe = impl::create_axe_expr(sfp, lexicon);
+    axe_t seed_expr_axe             = impl::make_seed_expr_axe(sfp, lexicon);
+    tokenizer_farm_t tokenizer_farm = impl::make_seed_tokenizer_farm(sfp, lexicon);
 
     expected_t<parse_tree_ptr_t> parse(fragmentization_ptr_t fp)
     {
@@ -608,7 +622,7 @@ namespace silva::seed {
 
     expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)
     {
-      impl::seed_parse_tree_nursery_t nursery(tp, lexicon, the_axe);
+      impl::seed_parse_tree_nursery_t nursery(tp, lexicon, seed_expr_axe);
       SILVA_EXPECT_FWD(nursery.seed());
       return tp->sfp->add(std::move(nursery).finish());
     }
@@ -620,6 +634,11 @@ namespace silva::seed {
   }
 
   bootstrap_interpreter_t::~bootstrap_interpreter_t() = default;
+
+  const lexicon_t& bootstrap_interpreter_t::lexicon() const
+  {
+    return impl->lexicon;
+  }
 
   expected_t<parse_tree_ptr_t> bootstrap_interpreter_t::parse(fragmentization_ptr_t fp)
   {
