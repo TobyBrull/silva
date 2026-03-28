@@ -98,7 +98,7 @@ namespace silva::seed {
       - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
       - FragName = identifier / '^[A-Z_]+$'
     ]
-  )'";
+)'";
 
   struct tokenizer_t {
     array_t<impl::rule_t> rules;
@@ -158,7 +158,7 @@ namespace silva::seed {
       - token_category_name = IDENTIFIER_SNAKE_CASE
       - frag_name = IDENTIFIER_MACRO_CASE
     ]
-  )'";
+)'";
 
   tokenizer_farm_t make_bootstrap_tokenizer_farm(syntax_farm_ptr_t);
 }

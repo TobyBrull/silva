@@ -75,7 +75,7 @@ namespace silva::seed {
       - TokenCategory = identifier / '^[a-z]'
     ]
     - None = epsilon
-  )'";
+)'";
 
   // Handcrafted Seed parser for bootstrapping purposes.
   //

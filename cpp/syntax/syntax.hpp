@@ -15,7 +15,7 @@ namespace silva {
         parse_and_callback_f(_, nt_v)
       '$>'
     ]
-  )'";
+)'";
 
   expected_t<name_id_t> infer_goal_rule_name(syntax_farm_t&, const filepath_t&);
 

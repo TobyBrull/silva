@@ -27,16 +27,23 @@ namespace silva {
 
   unique_ptr_t<seed::interpreter_t> standard_seed_interpreter(syntax_farm_ptr_t sfp)
   {
+    array_t<tuple_t<filepath_t, string_t>> sources = {
+        {"seed.seed", string_t{seed::seed_str}},
+        {"axe.seed", string_t{seed::axe_str}},
+        {"tokenizer.seed", string_t{seed::seed_tokenizer_str}},
+        {"tokenizers.seed", string_t{seed::bootstrap_tokenizers_str}},
+        {"fern.seed", string_t{fern::seed_str}},
+        {"silva.seed", string_t{seed_str}},
+    };
+
     auto retval = std::make_unique<seed::interpreter_t>(sfp);
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("seed.seed", seed::seed_str));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("axe.seed", seed::axe_str));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("tokenizer.seed", seed::seed_tokenizer_str));
-    SILVA_EXPECT_ASSERT(
-        retval->add_complete_file("tokenizers.seed", seed::bootstrap_tokenizers_str));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("fern.seed", fern::seed_str));
-    SILVA_EXPECT_ASSERT(retval->add_complete_file("silva.seed", seed_str));
-    retval->parse_callbacks[sfp->name_id_of("Seed")] =
-        seed::interpreter_t::callback_t::make<&seed::interpreter_t::add_copy>(retval.get());
+    for (const auto& [fp, txt]: sources) {
+      SILVA_EXPECT_ASSERT(retval->add_seed_text(fp, txt));
+    }
+
+    using callback_t = seed::interpreter_t::callback_t;
+    auto callback    = callback_t::make<&seed::interpreter_t::add_seed_copy>(retval.get());
+    retval->parse_callbacks[sfp->name_id_of("Seed")] = callback;
     return retval;
   }
 }

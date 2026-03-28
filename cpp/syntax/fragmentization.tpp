@@ -44,13 +44,13 @@ namespace silva::test {
   {
     SECTION("error: forbidden codepoint")
     {
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", "zyẍ_\n"));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", "zyẍ_\n"));
       CHECK_THAT(err_msg, ContainsSubstring("Forbidden codepoint"));
       CHECK_THAT(err_msg, ContainsSubstring("0x0308"));
     }
     SECTION("error: stray LANG_END")
     {
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", "»\n"));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", "»\n"));
       CHECK_THAT(err_msg, ContainsSubstring("Unexpected '»'"));
     }
     SECTION("error: non-matching parentheses")
@@ -59,14 +59,14 @@ namespace silva::test {
 A ⎢ ( B
 )
 )";
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", text));
       CHECK_THAT(err_msg, ContainsSubstring("Expected multi-line language to continue"));
     }
     SECTION("empty file")
     {
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", ""));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", ""));
       CHECK_THAT(err_msg, ContainsSubstring("source-code expected to end with newline"));
-      const auto frag = SILVA_REQUIRE(fragmentize("..", "\n"));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", "\n"));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},
           {WHITESPACE, {0, 0, 0}},
@@ -79,7 +79,7 @@ A ⎢ ( B
       const auto text    = R"('abc#\
 xyz'
 )";
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", text));
       CHECK_THAT(err_msg, ContainsSubstring("unexpected escape sequence"));
     }
     SECTION("basic")
@@ -89,7 +89,7 @@ xyz'
 xyz123_äß
 
 )";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},
           {WHITESPACE, {0, 0, 0}},
@@ -102,7 +102,7 @@ xyz123_äß
     SECTION("kebab identifier")
     {
       const auto text = "hello-world -++- hello/world\n";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},
           {IDENTIFIER, {0, 0, 0}},
@@ -123,7 +123,7 @@ xyz123_äß
     SECTION("error: kebab identifier")
     {
       const auto text    = "h-w h-w-\n";
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", text));
       CHECK_THAT(err_msg, ContainsSubstring("Identifier"));
       CHECK_THAT(err_msg, ContainsSubstring("may not end with '-'"));
     }
@@ -140,7 +140,7 @@ def
 back
 
 )";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},   //
           {WHITESPACE, {0, 0, 0}},   //
@@ -174,7 +174,7 @@ back
     SECTION("init indent")
     {
       const auto text = "  import\n";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}}, //
           {INDENT, {0, 2, 2}},     //
@@ -196,7 +196,7 @@ b    # Hi
 )
     id
 )";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},    //
           {WHITESPACE, {0, 0, 0}},    //
@@ -240,7 +240,7 @@ y
   retval\
 y
 )";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},  //
           {WHITESPACE, {0, 0, 0}},  //
@@ -273,7 +273,7 @@ y
 x¶ abc
 y¶ xyz
 )";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}}, //
           {WHITESPACE, {0, 0, 0}}, //
@@ -300,7 +300,7 @@ def
 x)
 »
 )";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},    //
           {WHITESPACE, {0, 0, 0}},    //
@@ -355,7 +355,7 @@ Python ⎢def
        ⎢  ⎢int «
        ⎢  ⎢    x »
 )";
-      const auto frag = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},    //
           {WHITESPACE, {0, 0, 0}},    //
@@ -405,7 +405,7 @@ A ⎢ B «
   ⎢    ⎢
   ⎢  F »
 )";
-      const auto frag     = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag     = SILVA_REQUIRE(fragmentize_unique("..", text));
       const auto frag_cat = only_real_categories(frag->fragments);
       const array_t<fragment_category_t> expected_fragment_categories{
           LANG_BEGIN, //
@@ -445,7 +445,7 @@ A ⎢ B «
       const auto text     = R"(
 A ⎢ B « C » D
 )";
-      const auto frag     = SILVA_REQUIRE(fragmentize("..", text));
+      const auto frag     = SILVA_REQUIRE(fragmentize_unique("..", text));
       const auto frag_cat = only_real_categories(frag->fragments);
       const array_t<fragment_category_t> expected_fragment_categories{
           LANG_BEGIN, //
@@ -475,7 +475,7 @@ A⎢B «
  ⎢C⎢D
 »
 )";
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", text));
       CHECK_THAT(err_msg, ContainsSubstring("LANGUAGE started by '«' must be finished by '»'"));
     }
     SECTION("error: unmatched language")
@@ -484,7 +484,7 @@ A⎢B «
 A⎢B «
  ⎢C⎢D »
 )";
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize("..", text));
+      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", text));
       CHECK_THAT(err_msg, ContainsSubstring("Unexpected '»' at"));
     }
   }

@@ -55,7 +55,7 @@ namespace silva::lox::test {
   {
     syntax_farm_t sf;
     auto si = standard_seed_interpreter(sf.ptr());
-    SILVA_REQUIRE(si->add_complete_file("lox.seed", lox::seed_str));
+    SILVA_REQUIRE(si->add_seed_text("lox.seed", string_t{lox::seed_str}));
     test_interpreter_t lti{si.get(), sf.ptr()};
 
     const auto ts = test_suite();

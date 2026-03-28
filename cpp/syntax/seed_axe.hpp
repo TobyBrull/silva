@@ -43,7 +43,7 @@ namespace silva::seed {
                | 'postfix' | 'postfix_nest'
       - Op = string | 'concat'
     ]
-  )'";
+)'";
 
   struct axe_t {
     syntax_farm_ptr_t sfp;

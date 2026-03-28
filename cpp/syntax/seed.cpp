@@ -615,6 +615,10 @@ namespace silva::seed {
     {
       impl::seed_parse_tree_nursery_t nursery(tp, lexicon, seed_expr_axe);
       SILVA_EXPECT_FWD(nursery.seed());
+      SILVA_EXPECT(nursery.token_index == tp->tokens.size(),
+                   MINOR,
+                   "could not parse entire text; stopped at {}",
+                   nursery.token_location_by());
       return tp->sfp->add(std::move(nursery).finish());
     }
 

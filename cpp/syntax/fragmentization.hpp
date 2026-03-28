@@ -67,7 +67,7 @@ namespace silva {
     fragment_span_t(fragmentization_ptr_t, index_t begin, index_t end);
   };
 
-  expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filepath_t, string_t source_code);
+  expected_t<unique_ptr_t<fragmentization_t>> fragmentize_unique(filepath_t, string_t source_code);
   expected_t<fragmentization_ptr_t>
   fragmentize(syntax_farm_ptr_t, filepath_t, string_t source_code);
   expected_t<fragmentization_ptr_t> fragmentize_load(syntax_farm_ptr_t, filepath_t);

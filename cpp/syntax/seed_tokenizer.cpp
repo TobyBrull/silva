@@ -189,8 +189,8 @@ namespace silva::seed::impl {
         const token_info_t& ti     = sfp->token_infos[tid];
         const string_t item_str    = SILVA_EXPECT_FWD(ti.contained_string());
         const string_t item_str_nl = item_str + "\n";
-        const auto fp              = SILVA_EXPECT_FWD(fragmentize("", std::move(item_str_nl)));
-        const auto& frags          = fp->fragments;
+        const auto fp     = SILVA_EXPECT_FWD(fragmentize_unique("", std::move(item_str_nl)));
+        const auto& frags = fp->fragments;
         SILVA_EXPECT(frags.size() > 3, MINOR, "empty string not supported in tokenizer");
         SILVA_EXPECT(frags[0].category == LANG_BEGIN, MINOR);
         SILVA_EXPECT(frags[frags.size() - 1].category == LANG_END, MINOR);

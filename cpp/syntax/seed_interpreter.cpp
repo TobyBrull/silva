@@ -742,27 +742,36 @@ namespace silva::seed {
     return {};
   }
 
-  expected_t<void> interpreter_t::add(parse_tree_span_t stps)
+  expected_t<void> interpreter_t::add_seed(parse_tree_span_t stps)
   {
     impl::interpreter_adder_t adder(this, *stps.tp);
     SILVA_EXPECT_FWD(adder.handle_all(stps));
     return {};
   }
 
-  expected_t<void> interpreter_t::add_copy(const parse_tree_span_t& stps_ref)
+  expected_t<void> interpreter_t::add_seed_copy(const parse_tree_span_t& stps_ref)
   {
     parse_tree_ptr_t stps = sfp->add(std::make_unique<parse_tree_t>(stps_ref.copy()));
-    return add(stps->span());
+    return add_seed(stps->span());
   }
 
-  expected_t<parse_tree_ptr_t> interpreter_t::add_complete_file(filepath_t filepath,
-                                                                string_view_t text)
+  expected_t<parse_tree_ptr_t> interpreter_t::add_seed(fragment_span_t fs)
+  {
+    auto ptp = SILVA_EXPECT_FWD(bootstrap_interpreter.parse(std::move(fs)));
+    SILVA_EXPECT_FWD(add_seed(ptp->span()));
+    return ptp;
+  }
+
+  expected_t<parse_tree_ptr_t> interpreter_t::add_seed_text(filepath_t filepath, string_t text)
   {
     auto tt  = SILVA_EXPECT_FWD(tokenize(sfp, std::move(filepath), std::move(text)));
     auto ptp = SILVA_EXPECT_FWD(bootstrap_interpreter.parse(std::move(tt)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
-    SILVA_EXPECT_FWD(add(ptp->span()));
+    SILVA_EXPECT_FWD(add_seed(ptp->span()));
     return ptp;
+
+    auto fp = SILVA_EXPECT_FWD(fragmentize(sfp, std::move(filepath), std::move(text)));
+    return add_seed(std::move(fp));
   }
 
   expected_t<parse_tree_ptr_t> interpreter_t::apply(tokenization_ptr_t tp,

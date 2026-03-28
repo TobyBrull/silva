@@ -144,7 +144,7 @@ namespace silva::seed::test {
     CHECK(pt_str_2 == expected.substr(1));
 
     interpreter_t se(sf.ptr());
-    SILVA_REQUIRE(se.add(sf_seed_pt_1->span()));
+    SILVA_REQUIRE(se.add_seed(sf_seed_pt_1->span()));
     REQUIRE(se.rule_exprs.size() == 4);
     using rfl::json::write;
     const name_id_t ni_sf       = sf.name_id_of("SimpleFern");

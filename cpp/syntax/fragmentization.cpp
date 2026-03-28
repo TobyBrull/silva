@@ -510,7 +510,8 @@ namespace silva {
   {
   }
 
-  expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filepath_t filepath, string_t source_code)
+  expected_t<unique_ptr_t<fragmentization_t>> fragmentize_unique(filepath_t filepath,
+                                                                 string_t source_code)
   {
     auto ccd = SILVA_EXPECT_FWD(categorize_codepoints(source_code));
     fragmentizer_t ff;
@@ -526,7 +527,7 @@ namespace silva {
   expected_t<fragmentization_ptr_t>
   fragmentize(syntax_farm_ptr_t sfp, filepath_t filepath, string_t source_code)
   {
-    auto retval = SILVA_EXPECT_FWD(fragmentize(std::move(filepath), std::move(source_code)));
+    auto retval = SILVA_EXPECT_FWD(fragmentize_unique(std::move(filepath), std::move(source_code)));
     retval->sfp = sfp;
     return sfp->add(std::move(retval));
   }

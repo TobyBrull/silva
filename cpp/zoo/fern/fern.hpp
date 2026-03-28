@@ -10,7 +10,7 @@ namespace silva::fern {
       - Label = string | identifier
       - Value = 'none' | 'true' | 'false' | string | number
     ]
-  )'";
+)'";
 
   // Invariant:
   //    standard_seed_engine()->apply(tokenization, "Fern") == fern::parse(tokenization)
