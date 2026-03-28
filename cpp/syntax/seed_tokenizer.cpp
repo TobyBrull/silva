@@ -416,9 +416,10 @@ namespace silva::seed {
     return {};
   }
 
-  expected_t<tokenization_ptr_t> tokenizer_farm_t::apply(fragmentization_ptr_t fp,
+  expected_t<tokenization_ptr_t> tokenizer_farm_t::apply(fragment_span_t fs,
                                                          const token_id_t tokenizer_name)
   {
+    fragmentization_ptr_t fp = fs.fp;
     SILVA_EXPECT(fp->sfp == sfp, MAJOR);
 
     SILVA_EXPECT_FWD(cache_tokenizer(tokenizer_name));
@@ -443,11 +444,7 @@ namespace silva::seed {
         frag_idx = SILVA_EXPECT_FWD(fp->advance_language(frag_idx));
 
         const index_t language_idx = retval->languages.size();
-        retval->languages.push_back(fragment_span_t{
-            .fp    = fp,
-            .begin = old_frag_idx,
-            .end   = frag_idx,
-        });
+        retval->languages.push_back(fragment_span_t{fp, old_frag_idx, frag_idx});
         retval->tokens.push_back(-language_idx);
         retval->categories.push_back(token_id_language);
         retval->locations.push_back(fp->fragments[old_frag_idx].location);

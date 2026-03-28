@@ -782,7 +782,7 @@ namespace silva::seed {
     return tp->sfp->add(std::move(nursery).finish());
   }
 
-  expected_t<parse_tree_ptr_t> interpreter_t::apply(fragmentization_ptr_t fp,
+  expected_t<parse_tree_ptr_t> interpreter_t::apply(fragment_span_t fs,
                                                     const name_id_t goal_rule_name)
   {
     name_id_t curr = goal_rule_name;
@@ -791,7 +791,7 @@ namespace silva::seed {
     }
     const token_id_t tokenizer_name = sfp->name_infos[curr].base_name;
 
-    auto tp = SILVA_EXPECT_FWD(tokenizer_farm.apply(fp, tokenizer_name));
+    auto tp = SILVA_EXPECT_FWD(tokenizer_farm.apply(fs, tokenizer_name));
     return apply(std::move(tp), goal_rule_name);
   }
 }

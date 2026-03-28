@@ -48,7 +48,7 @@ namespace silva::seed {
 
     expected_t<parse_tree_ptr_t> add_complete_file(filepath_t seed_filepath, string_view_t text);
 
-    expected_t<parse_tree_ptr_t> apply(fragmentization_ptr_t, name_id_t goal_rule_name);
+    expected_t<parse_tree_ptr_t> apply(fragment_span_t, name_id_t goal_rule_name);
 
     expected_t<parse_tree_ptr_t> apply(tokenization_ptr_t, name_id_t goal_rule_name) const;
   };

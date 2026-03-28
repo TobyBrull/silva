@@ -611,7 +611,7 @@ namespace silva::seed {
       tokenizer_farm = make_bootstrap_tokenizer_farm(sfp);
     }
 
-    expected_t<parse_tree_ptr_t> parse(fragmentization_ptr_t fp)
+    expected_t<parse_tree_ptr_t> parse(fragment_span_t fs)
     {
       ;
       return {};
@@ -637,9 +637,9 @@ namespace silva::seed {
     return impl->lexicon;
   }
 
-  expected_t<parse_tree_ptr_t> bootstrap_interpreter_t::parse(fragmentization_ptr_t fp)
+  expected_t<parse_tree_ptr_t> bootstrap_interpreter_t::parse(fragment_span_t fs)
   {
-    return impl->parse(std::move(fp));
+    return impl->parse(std::move(fs));
   }
 
   expected_t<parse_tree_ptr_t> bootstrap_interpreter_t::parse(tokenization_ptr_t tp)

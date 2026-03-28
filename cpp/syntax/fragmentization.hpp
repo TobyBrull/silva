@@ -61,6 +61,10 @@ namespace silva {
     fragmentization_ptr_t fp;
     index_t begin = 0;
     index_t end   = 0;
+
+    fragment_span_t() = default;
+    fragment_span_t(fragmentization_ptr_t);
+    fragment_span_t(fragmentization_ptr_t, index_t begin, index_t end);
   };
 
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filepath_t, string_t source_code);

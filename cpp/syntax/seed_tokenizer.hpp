@@ -122,7 +122,7 @@ namespace silva::seed {
 
     expected_t<void> cache_tokenizer(token_id_t tokenizer_name);
 
-    expected_t<tokenization_ptr_t> apply(fragmentization_ptr_t, token_id_t);
+    expected_t<tokenization_ptr_t> apply(fragment_span_t, token_id_t);
 
     friend bool operator==(const tokenizer_farm_t&, const tokenizer_farm_t&) = default;
   };

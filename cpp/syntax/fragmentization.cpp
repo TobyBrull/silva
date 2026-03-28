@@ -503,6 +503,13 @@ namespace silva {
     }
   };
 
+  fragment_span_t::fragment_span_t(fragmentization_ptr_t fp) : fp(fp), end(fp->fragments.size()) {}
+
+  fragment_span_t::fragment_span_t(fragmentization_ptr_t fp, const index_t begin, const index_t end)
+    : fp(fp), begin(begin), end(end)
+  {
+  }
+
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize(filepath_t filepath, string_t source_code)
   {
     auto ccd = SILVA_EXPECT_FWD(categorize_codepoints(source_code));
