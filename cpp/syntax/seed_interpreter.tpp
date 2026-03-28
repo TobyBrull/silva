@@ -138,7 +138,6 @@ namespace silva::seed::test {
       ]
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_lang}));
-    return;
 
     const string_view_t src = "x = a + b\ny = c * d\n";
 
