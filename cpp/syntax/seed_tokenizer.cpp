@@ -87,6 +87,29 @@ namespace silva::seed::impl {
     return true;
   }
 
+  void pretty_write_impl(const matcher_t& matcher, byte_sink_t* bs)
+  {
+    silva::pretty_write(matcher.category, bs);
+    bs->write_str(" ");
+    silva::pretty_write(std::to_underlying(matcher.case_mask), bs);
+    bs->write_str(" ");
+    silva::pretty_write(matcher.prefix, bs);
+    bs->write_str(" ");
+    silva::pretty_write(matcher.postfix, bs);
+  }
+  void pretty_write_impl(const rule_t& rule, byte_sink_t* bs)
+  {
+    silva::pretty_write(rule.token_name, bs);
+    bs->write_str(" = ");
+    for (const auto& x: rule.prefix_matchers) {
+      silva::pretty_write(x, bs);
+    }
+    bs->write_str(" ::: ");
+    for (const auto& x: rule.repeat_matchers) {
+      silva::pretty_write(x, bs);
+    }
+  }
+
   struct tokenizer_create_nursery_t {
     syntax_farm_ptr_t sfp;
     const lexicon_t& lexicon;
@@ -103,31 +126,31 @@ namespace silva::seed::impl {
     fragment_category_from_token_id(const token_id_t ti)
     {
       if (ti == lexicon.ti_WHITESPACE) {
-        return {{WHITESPACE, case_mask_t::EMPTY}};
+        return {{WHITESPACE, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_COMMENT) {
-        return {{COMMENT, case_mask_t::EMPTY}};
+        return {{COMMENT, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_NUMBER) {
-        return {{NUMBER, case_mask_t::EMPTY}};
+        return {{NUMBER, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_STRING) {
-        return {{STRING, case_mask_t::EMPTY}};
+        return {{STRING, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_INDENT) {
-        return {{INDENT, case_mask_t::EMPTY}};
+        return {{INDENT, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_DEDENT) {
-        return {{DEDENT, case_mask_t::EMPTY}};
+        return {{DEDENT, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_NEWLINE) {
-        return {{NEWLINE, case_mask_t::EMPTY}};
+        return {{NEWLINE, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_PARENTHESIS) {
         return {{PARENTHESIS, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_OPERATOR) {
-        return {{OPERATOR, case_mask_t::EMPTY}};
+        return {{OPERATOR, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_IDENTIFIER) {
         return {{IDENTIFIER, case_mask_t::ANY}};
@@ -357,13 +380,31 @@ namespace silva::seed::impl {
       return {};
     }
 
-    tokenizer_t retval{
-        .name = tokenizer_name,
-    };
+    tokenizer_t retval;
   };
 }
 
 namespace silva::seed {
+  void pretty_write_impl(const tokenizer_t& tokenizer, byte_sink_t* bs)
+  {
+    bs->write_str("tokenizer [\n");
+    for (const auto& rule: tokenizer.rules) {
+      bs->write_str("  ");
+      silva::pretty_write(rule, bs);
+      bs->write_str("\n");
+    }
+    bs->write_str("]\n");
+  }
+  void pretty_write_impl(const tokenizer_farm_t& tf, byte_sink_t* bs)
+  {
+    for (const auto& [ti, tt]: tf.tokenizers) {
+      silva::pretty_write(ti, bs);
+      bs->write_str(" = ");
+      silva::pretty_write(tt, bs);
+      bs->write_str("\n");
+    }
+  }
+
   tokenizer_farm_t::tokenizer_farm_t(syntax_farm_ptr_t sfp) : sfp(sfp) {}
 
   expected_t<void> tokenizer_farm_t::add(const token_id_t tokenizer_name, parse_tree_span_t pts)
@@ -409,7 +450,6 @@ namespace silva::seed {
 
     const auto [it, inserted] = cached_tokenizers.emplace(tokenizer_name,
                                                           tokenizer_t{
-                                                              .name  = tokenizer_name,
                                                               .rules = std::move(rules),
                                                           });
     SILVA_EXPECT(inserted, ASSERT);
@@ -540,10 +580,9 @@ namespace silva::seed {
 
     {
       tokenizer_t tok;
-      tok.name  = lexicon.ti_r_default;
       tok.rules = {
-          rule_t{.token_name = lexicon.ti_ignore, .prefix_matchers = {m_whitespace}},
-          rule_t{.token_name = lexicon.ti_ignore, .prefix_matchers = {m_comment}},
+          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_whitespace}},
+          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_comment}},
           rule_t{.token_name = lexicon.ti_indent, .prefix_matchers = {m_indent}},
           rule_t{.token_name = lexicon.ti_dedent, .prefix_matchers = {m_dedent}},
           rule_t{.token_name = lexicon.ti_newline, .prefix_matchers = {m_newline}},
@@ -555,7 +594,6 @@ namespace silva::seed {
 
     {
       tokenizer_t tok;
-      tok.name  = lexicon.ti_r_freeform;
       tok.rules = {
           rule_t{.token_name = ti_ignore, .prefix_matchers = {m_whitespace}},
           rule_t{.token_name = ti_ignore, .prefix_matchers = {m_comment}},
@@ -580,7 +618,6 @@ namespace silva::seed {
       };
 
       tokenizer_t tok;
-      tok.name  = lexicon.ti_r_seed;
       tok.rules = {
           rule_t{.token_name = lexicon.ti_r_freeform},
           rule_t{.token_name = lexicon.ti_operators, .prefix_matchers = {m_paren}},

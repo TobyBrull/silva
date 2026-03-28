@@ -25,6 +25,8 @@ namespace silva::seed::impl {
     expected_t<bool> matches(index_t fragment_idx, const fragmentization_t&) const;
 
     friend auto operator<=>(const matcher_t&, const matcher_t&) = default;
+
+    friend void pretty_write_impl(const matcher_t&, byte_sink_t*);
   };
 
   // If token_name == token_id_none, this is an 'ignore' rule.
@@ -36,5 +38,7 @@ namespace silva::seed::impl {
     array_t<matcher_t> repeat_matchers;
 
     friend auto operator<=>(const rule_t&, const rule_t&) = default;
+
+    friend void pretty_write_impl(const rule_t&, byte_sink_t*);
   };
 }

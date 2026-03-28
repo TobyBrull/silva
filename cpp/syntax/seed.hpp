@@ -81,7 +81,7 @@ namespace silva::seed {
   // Unlike silva::seed::interpreter_t, this bootstrap-interpreter can only parse Seed programs.
   //
   // Invariant (pseudo-code):
-  //    standard_seed_engine()->apply(tokenization, "Seed") == seed::parse(tokenization)
+  //    standard_seed_engine()->apply(x, "Seed") == bootstrap_interpreter_t{}.parse(x)
   //
   struct bootstrap_interpreter_t {
     struct impl_t;

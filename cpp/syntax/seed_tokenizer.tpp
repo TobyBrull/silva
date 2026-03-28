@@ -109,5 +109,7 @@ namespace silva::seed::test {
   {
     syntax_farm_t sf;
     tokenizer_farm_t tf = make_bootstrap_tokenizer_farm(sf.ptr());
+    auto se             = standard_seed_interpreter(sf.ptr());
+    CHECK(tf == se->tokenizer_farm);
   }
 }

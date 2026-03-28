@@ -367,7 +367,7 @@ namespace silva::seed::impl {
     return retval;
   }
 
-  axe_t make_seed_expr_axe(syntax_farm_ptr_t sfp, const lexicon_t& lexicon)
+  axe_t make_bootstrap_seed_expr_axe(syntax_farm_ptr_t sfp, const lexicon_t& lexicon)
   {
     const auto axe_defn = find_subsection("- Expr = axe ", seed_str);
     const auto axe_toks = SILVA_EXPECT_ASSERT(tokenize(sfp, "seed.axe", axe_defn));
@@ -607,14 +607,14 @@ namespace silva::seed {
 
     impl_t(syntax_farm_ptr_t sfp) : sfp(sfp), lexicon(sfp), tokenizer_farm(sfp)
     {
-      seed_expr_axe  = impl::make_seed_expr_axe(sfp, lexicon);
+      seed_expr_axe  = impl::make_bootstrap_seed_expr_axe(sfp, lexicon);
       tokenizer_farm = make_bootstrap_tokenizer_farm(sfp);
     }
 
     expected_t<parse_tree_ptr_t> parse(fragment_span_t fs)
     {
-      ;
-      return {};
+      tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenizer_farm.apply(fs, lexicon.ti_r_seed));
+      return parse(std::move(tp));
     }
 
     expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)

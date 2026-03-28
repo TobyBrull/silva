@@ -101,11 +101,11 @@ namespace silva::seed {
   )'";
 
   struct tokenizer_t {
-    token_id_t name = token_id_none;
-
     array_t<impl::rule_t> rules;
 
     friend auto operator<=>(const tokenizer_t&, const tokenizer_t&) = default;
+
+    friend void pretty_write_impl(const tokenizer_t&, byte_sink_t*);
   };
 
   struct tokenizer_farm_t {
@@ -125,6 +125,8 @@ namespace silva::seed {
     expected_t<tokenization_ptr_t> apply(fragment_span_t, token_id_t);
 
     friend bool operator==(const tokenizer_farm_t&, const tokenizer_farm_t&) = default;
+
+    friend void pretty_write_impl(const tokenizer_farm_t&, byte_sink_t*);
   };
 
   const string_view_t bootstrap_tokenizers_str = R"'(
@@ -147,7 +149,7 @@ namespace silva::seed {
       - string = STRING
     ]
     - Seed = tokenizer [
-      - include tokenizer FreeFrom
+      - include tokenizer FreeForm
       - operators = [ PARENTHESIS 'concat' 'but_then' 'x' 'p' '_' ]
       - operators = ::: OPERATOR
       - rule_name = IDENTIFIER_PASCAL_CASE
@@ -159,9 +161,4 @@ namespace silva::seed {
   )'";
 
   tokenizer_farm_t make_bootstrap_tokenizer_farm(syntax_farm_ptr_t);
-}
-
-// IMPLEMENTATION
-
-namespace silva::seed {
 }

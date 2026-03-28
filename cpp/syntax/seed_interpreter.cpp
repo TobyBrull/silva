@@ -103,8 +103,16 @@ namespace silva::seed::impl {
       return {};
     }
 
-    expected_t<void> handle_tokenizer(const name_id_t scope_name, const parse_tree_span_t pts_seed)
+    expected_t<void> handle_tokenizer(const name_id_t scope_name,
+                                      const parse_tree_span_t pts_seed_tok)
     {
+      const auto& ni = sfp->name_infos[scope_name];
+      SILVA_EXPECT(ni.parent_name == name_id_root,
+                   MINOR,
+                   "{} 'tokenizer' rule may only be for top-level names, not {}",
+                   pts_seed_tok,
+                   sfp->name_id_wrap(scope_name));
+      SILVA_EXPECT_FWD(se->tokenizer_farm.add(ni.base_name, pts_seed_tok));
       return {};
     }
 
