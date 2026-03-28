@@ -23,8 +23,9 @@ namespace silva {
     DEDENT,
     NEWLINE,
 
-    IDENTIFIER,
+    PARENTHESIS,
     OPERATOR,
+    IDENTIFIER,
 
     LANG_BEGIN,
     LANG_END,
