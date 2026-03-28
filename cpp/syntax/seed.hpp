@@ -1,6 +1,7 @@
 #pragma once
 
 #include "seed.lexicon.hpp"
+#include "seed_tokenizer.hpp"
 
 #include "parse_tree.hpp"
 
@@ -91,9 +92,9 @@ namespace silva::seed {
     ~bootstrap_interpreter_t();
 
     const lexicon_t& lexicon() const;
-
-    expected_t<parse_tree_ptr_t> parse(fragment_span_t);
+    const tokenizer_farm_t& tokenizer_farm() const;
 
     expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t);
+    expected_t<parse_tree_ptr_t> parse(fragment_span_t);
   };
 }

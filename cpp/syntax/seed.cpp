@@ -611,17 +611,17 @@ namespace silva::seed {
       tokenizer_farm = make_bootstrap_tokenizer_farm(sfp);
     }
 
-    expected_t<parse_tree_ptr_t> parse(fragment_span_t fs)
-    {
-      tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenizer_farm.apply(fs, lexicon.ti_r_seed));
-      return parse(std::move(tp));
-    }
-
     expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)
     {
       impl::seed_parse_tree_nursery_t nursery(tp, lexicon, seed_expr_axe);
       SILVA_EXPECT_FWD(nursery.seed());
       return tp->sfp->add(std::move(nursery).finish());
+    }
+
+    expected_t<parse_tree_ptr_t> parse(fragment_span_t fs)
+    {
+      tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenizer_farm.apply(fs, lexicon.ti_r_seed));
+      return parse(std::move(tp));
     }
   };
 
@@ -636,14 +636,18 @@ namespace silva::seed {
   {
     return impl->lexicon;
   }
-
-  expected_t<parse_tree_ptr_t> bootstrap_interpreter_t::parse(fragment_span_t fs)
+  const tokenizer_farm_t& bootstrap_interpreter_t::tokenizer_farm() const
   {
-    return impl->parse(std::move(fs));
+    return impl->tokenizer_farm;
   }
 
   expected_t<parse_tree_ptr_t> bootstrap_interpreter_t::parse(tokenization_ptr_t tp)
   {
     return impl->parse(std::move(tp));
+  }
+
+  expected_t<parse_tree_ptr_t> bootstrap_interpreter_t::parse(fragment_span_t fs)
+  {
+    return impl->parse(std::move(fs));
   }
 }
