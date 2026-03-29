@@ -3,10 +3,9 @@
 #include "seed_interpreter.hpp"
 
 namespace silva {
-  // TODO: replace with fragment_span_t
-  using parser_t = silva::function_t<expected_t<parse_tree_ptr_t>(tokenization_ptr_t, name_id_t)>;
+  using parser_t = silva::function_t<expected_t<parse_tree_ptr_t>(fragment_span_t, name_id_t)>;
 
-  parser_t as_parser(const seed::interpreter_t*);
+  parser_t as_parser(seed::interpreter_t*);
 
   const string_view_t seed_str = R"'(
     - Silva = [

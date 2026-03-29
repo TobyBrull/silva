@@ -6,10 +6,10 @@
 #include "zoo/fern/fern.hpp"
 
 namespace silva {
-  parser_t as_parser(const seed::interpreter_t* si)
+  parser_t as_parser(seed::interpreter_t* si)
   {
-    return [si](const tokenization_ptr_t tp, const name_id_t ni) {
-      return si->apply(tp, ni);
+    return [si](fragment_span_t fs, const name_id_t ni) {
+      return si->apply(std::move(fs), ni);
     };
   }
 

@@ -3,14 +3,6 @@
 #include <chrono>
 
 namespace silva::lox {
-  constexpr string_view_t builtins_lox_str = R"'(
-    fun clock() {}
-    fun getc() {}
-    fun chr(ascii_code) {}
-    fun exit(exit_code) {}
-    fun print_error(text) {}
-  )'";
-
   expected_t<hash_map_t<token_id_t, object_ref_t>>
   make_builtins(syntax_farm_ptr_t sfp, const parser_t& parser, object_pool_t& object_pool)
   {
@@ -82,29 +74,33 @@ namespace silva::lox {
 
     hash_map_t<token_id_t, object_ref_t> retval;
 
-    // TODO: re-enable once syntax.hpp TODO adressed.
+    const string_t builtins_lox_str = R"'(
+    fun clock() {}
+    fun getc() {}
+    fun chr(ascii_code) {}
+    fun exit(exit_code) {}
+    fun print_error(text) {}
+)'";
 
-    // const tokenization_ptr_t builtin_tt =
-    //     SILVA_EXPECT_FWD(tokenize(sfp, "builtins.lox", builtins_lox_str));
-    // const auto pts_builtin = SILVA_EXPECT_FWD(parser(builtin_tt,
-    // sfp->name_id_of("Lox")))->span();
-    //
-    // auto [it, end] = pts_builtin.children_range();
-    // for (const builtin_decl_t& builtin_decl: builtin_decls) {
-    //   SILVA_EXPECT(it != end, ASSERT);
-    //   const auto pts_function =
-    //       pts_builtin.sub_tree_span_at(it.pos).sub_tree_span_at(1).sub_tree_span_at(1);
-    //   const token_id_t lox_name = pts_function.tp->tokens[pts_function[0].token_begin];
-    //   SILVA_EXPECT(lox_name == builtin_decl.name,
-    //                ASSERT,
-    //                "expected function '{}', but found '{}'",
-    //                sfp->token_id_wrap(lox_name),
-    //                sfp->token_id_wrap(builtin_decl.name));
-    //   function_builtin_t fb{{pts_function}, builtin_decl.impl};
-    //   // fb.closure           = scopes.root();
-    //   ++it;
-    //   retval[lox_name] = object_pool.make(std::move(fb));
-    // }
+    const auto fp          = SILVA_EXPECT_FWD(fragmentize(sfp, "builtins.lox", builtins_lox_str));
+    const auto pts_builtin = SILVA_EXPECT_FWD(parser(fp, sfp->name_id_of("Lox")))->span();
+
+    auto [it, end] = pts_builtin.children_range();
+    for (const builtin_decl_t& builtin_decl: builtin_decls) {
+      SILVA_EXPECT(it != end, ASSERT);
+      const auto pts_function =
+          pts_builtin.sub_tree_span_at(it.pos).sub_tree_span_at(1).sub_tree_span_at(1);
+      const token_id_t lox_name = pts_function.tp->tokens[pts_function[0].token_begin];
+      SILVA_EXPECT(lox_name == builtin_decl.name,
+                   ASSERT,
+                   "expected function '{}', but found '{}'",
+                   sfp->token_id_wrap(lox_name),
+                   sfp->token_id_wrap(builtin_decl.name));
+      function_builtin_t fb{{pts_function}, builtin_decl.impl};
+      // fb.closure           = scopes.root();
+      ++it;
+      retval[lox_name] = object_pool.make(std::move(fb));
+    }
 
     return retval;
   }
