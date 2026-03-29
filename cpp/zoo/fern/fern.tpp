@@ -22,10 +22,9 @@ namespace silva::fern::test {
 )";
 
     syntax_farm_t sf;
-    const auto se = standard_seed_interpreter(sf.ptr());
-    const auto tt =
-        SILVA_REQUIRE(se->tokenizer_farm.apply_text("", fern_text, sf.token_id("Fern")));
-    const auto pt     = SILVA_REQUIRE(se->apply(tt, sf.name_id_of("Fern")));
+    const auto se     = standard_seed_interpreter(sf.ptr());
+    const auto fp     = SILVA_REQUIRE(fragmentize(sf.ptr(), "", fern_text));
+    const auto pt     = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Fern")));
     const fern_t fern = SILVA_REQUIRE(create(pt.get()));
     CHECK(fern.to_string() == fern_text);
 

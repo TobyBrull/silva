@@ -113,9 +113,8 @@ namespace silva::seed::test {
       ]
 )'";
 
-    auto tt = SILVA_REQUIRE(
-        se->tokenizer_farm.apply_text("test.seed-axe", string_t{test_axe}, sf.token_id("Seed")));
-    const auto pt = SILVA_REQUIRE(se->apply(tt, sf.name_id_of("Seed", "Axe")));
+    auto fp       = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.seed-axe", string_t{test_axe}));
+    const auto pt = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Seed", "Axe")));
     const auto sa = SILVA_REQUIRE(axe_create(sf.ptr(), sf.name_id_of("Expr"), pt->span()));
     CHECK(!sa.concat_result.has_value());
     CHECK(sa.results.size() == 15);
@@ -510,9 +509,8 @@ namespace silva::seed::test {
       ]
 )'";
 
-    const auto tt = SILVA_REQUIRE(
-        se->tokenizer_farm.apply_text("test.seed-axe", string_t{test_axe}, sf.token_id("Seed")));
-    const auto pt = SILVA_REQUIRE(se->apply(tt, sf.name_id_of("Seed", "Axe")));
+    const auto fp = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.seed-axe", string_t{test_axe}));
+    const auto pt = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Seed", "Axe")));
     const auto sa = SILVA_REQUIRE(axe_create(sf.ptr(), sf.name_id_of("Expr"), pt->span()));
     CHECK(sa.concat_result.has_value());
     CHECK(sa.results.size() == 13);

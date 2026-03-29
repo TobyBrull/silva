@@ -60,10 +60,9 @@ namespace silva::seed::test {
 
     tokenizer_farm_t tf(sf.ptr());
     const auto load_tokenizer = [&](const token_id_t name, const string_view_t tokenizer_code) {
-      const auto tt0 = SILVA_REQUIRE(
-          se->tokenizer_farm.apply_text("", string_t{tokenizer_code}, sf.token_id("Seed")));
-      const auto pt0 = SILVA_REQUIRE(se->apply(tt0, sf.name_id_of("Seed", "Tokenizer")));
-      SILVA_REQUIRE(tf.add(name, pt0->span()));
+      const auto fp  = SILVA_REQUIRE(fragmentize(sf.ptr(), "", string_t{tokenizer_code}));
+      const auto pts = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Seed", "Tokenizer")));
+      SILVA_REQUIRE(tf.add(name, pts->span()));
     };
 
     const string_view_t test_tok = R"'( [
