@@ -170,9 +170,16 @@ namespace silva::fern {
           const auto& node = pts[child_node_index];
           if (labeled_item.num_children == 2 && child_index == 0) {
             SILVA_EXPECT(node.rule_name == ni_label, MINOR);
-            retval.label = string_t{SILVA_EXPECT_FWD(
-                parse_tree->tp->token_info_get(node.token_begin)->string_as_plain_contained(),
-                MAJOR)};
+            const token_id_t tcat     = parse_tree->tp->categories[node.token_begin];
+            const token_info_t* tinfo = parse_tree->tp->token_info_get(node.token_begin);
+            if (tcat == ti_string) {
+              retval.label = string_t{SILVA_EXPECT_FWD(
+                  parse_tree->tp->token_info_get(node.token_begin)->string_as_plain_contained(),
+                  MAJOR)};
+            }
+            else {
+              retval.label = tinfo->str;
+            }
           }
           else if (node.rule_name == ni_fern) {
             fern_t sub_fern   = SILVA_EXPECT_FWD(fern(pts.sub_tree_span_at(child_node_index)));

@@ -13,7 +13,7 @@ namespace silva::fern {
     SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
 
     const auto arg_process =
-        SILVA_EXPECT_FWD_IF(var_context_get("process"), MAJOR).value_or("direct/string");
+        SILVA_EXPECT_FWD_IF(var_context_get("process"), MAJOR).value_or("fern_t/string");
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
 

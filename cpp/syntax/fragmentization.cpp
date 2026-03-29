@@ -13,7 +13,7 @@ namespace silva {
 
   constexpr bool is_ascii_digit(const unicode::codepoint_t cp)
   {
-    return '0' <= cp && cp < '9';
+    return '0' <= cp && cp <= '9';
   }
   constexpr bool is_ascii_alpha(const unicode::codepoint_t cp)
   {
