@@ -6,12 +6,16 @@ namespace silva::lox {
   struct lexicon_t {
     syntax_farm_ptr_t sfp;
 
-    token_id_t ti_true  = sfp->token_id("true").value();
-    token_id_t ti_false = sfp->token_id("false").value();
-    token_id_t ti_none  = sfp->token_id("none").value();
-    token_id_t ti_this  = sfp->token_id("this").value();
-    token_id_t ti_super = sfp->token_id("super").value();
-    token_id_t ti_init  = sfp->token_id("init").value();
+    token_id_t ti_true  = sfp->token_id("true");
+    token_id_t ti_false = sfp->token_id("false");
+    token_id_t ti_none  = sfp->token_id("none");
+    token_id_t ti_this  = sfp->token_id("this");
+    token_id_t ti_super = sfp->token_id("super");
+    token_id_t ti_init  = sfp->token_id("init");
+
+    token_id_t ti_identifier = sfp->token_id("identifier");
+    token_id_t ti_number     = sfp->token_id("number");
+    token_id_t ti_string     = sfp->token_id("string");
 
     name_id_t ni_none           = sfp->name_id_of("None");
     name_id_t ni_lox            = sfp->name_id_of("Lox");

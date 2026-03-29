@@ -7,67 +7,67 @@ namespace silva::lox {
     {
       retval.push_back(test_chapter_t{.name = "basic"});
       auto& rv = retval.back().test_cases;
-      rv.push_back(test_case_t{" print 42.0 ; print 12.0 ; ", "42\n12\n"});
-      rv.push_back(test_case_t{" print - 42.0 ; ", "-42\n"});
-      rv.push_back(test_case_t{" print 1 + 2 * 3 + 4 ; ", "11\n"});
-      rv.push_back(test_case_t{" print ! true ; ", "false\n"});
-      rv.push_back(test_case_t{" print ! ( 1 + 2 == 3 ) ; ", "false\n"});
-      rv.push_back(test_case_t{" print 1 + 2 != 4 ; ", "true\n"});
-      rv.push_back(test_case_t{" print 1 + 2 <= 2 ; ", "false\n"});
-      rv.push_back(test_case_t{" print 1 + 2 <= 3 ; ", "true\n"});
-      rv.push_back(test_case_t{" print 1 + 2 <= 4 ; ", "true\n"});
-      rv.push_back(test_case_t{" print 'hello' + ' world' ; ", "hello world\n"});
-      rv.push_back(test_case_t{" print ! ( 5 - 4 > 3 * 2 == ! none ) ; ", "true\n"});
+      rv.push_back(test_case_t{" print 42.0 ; print 12.0 ; \n", "42\n12\n"});
+      rv.push_back(test_case_t{" print - 42.0 ; \n", "-42\n"});
+      rv.push_back(test_case_t{" print 1 + 2 * 3 + 4 ; \n", "11\n"});
+      rv.push_back(test_case_t{" print ! true ; \n", "false\n"});
+      rv.push_back(test_case_t{" print ! ( 1 + 2 == 3 ) ; \n", "false\n"});
+      rv.push_back(test_case_t{" print 1 + 2 != 4 ; \n", "true\n"});
+      rv.push_back(test_case_t{" print 1 + 2 <= 2 ; \n", "false\n"});
+      rv.push_back(test_case_t{" print 1 + 2 <= 3 ; \n", "true\n"});
+      rv.push_back(test_case_t{" print 1 + 2 <= 4 ; \n", "true\n"});
+      rv.push_back(test_case_t{" print 'hello' + ' world' ; \n", "hello world\n"});
+      rv.push_back(test_case_t{" print ! ( 5 - 4 > 3 * 2 == ! none ) ; \n", "true\n"});
 
-      rv.push_back(test_case_t{"print ! 42 ;", "false\n"});
-      rv.push_back(test_case_t{"print ! false ;", "true\n"});
-      rv.push_back(test_case_t{"print ! true ;", "false\n"});
-      rv.push_back(test_case_t{"print ! ! none ;", "false\n"});
-      rv.push_back(test_case_t{R"(print ! '' ;)", "false\n"});
-      rv.push_back(test_case_t{"print - 42 ;", "-42\n"});
-      rv.push_back(test_case_t{"print 1 + 2 * 3 - 4 / 2 ;", "5\n"});
-      rv.push_back(test_case_t{"print '1' + '2' ;", "12\n"});
-      rv.push_back(test_case_t{"print '1' + 2 ;", test_error_t{{"type error"}}});
-      rv.push_back(test_case_t{"print '1' * '2' ;", test_error_t{{"type error"}}});
-      rv.push_back(test_case_t{"print 1 < 3 ;", "true\n"});
-      rv.push_back(test_case_t{"print 3 < 3 ;", "false\n"});
-      rv.push_back(test_case_t{"print 1 <= 3 ;", "true\n"});
-      rv.push_back(test_case_t{"print 3 <= 3 ;", "true\n"});
-      rv.push_back(test_case_t{"print 4 <= 3 ;", "false\n"});
-      rv.push_back(test_case_t{"print 3 > 1 ;", "true\n"});
-      rv.push_back(test_case_t{"print 3 > 3 ;", "false\n"});
-      rv.push_back(test_case_t{"print 3 >= 1 ;", "true\n"});
-      rv.push_back(test_case_t{"print 3 >= 3 ;", "true\n"});
-      rv.push_back(test_case_t{"print 3 >= 4 ;", "false\n"});
-      rv.push_back(test_case_t{"print 3 == 3 ;", "true\n"});
-      rv.push_back(test_case_t{"print 3 == '3' ;", "false\n"});
-      rv.push_back(test_case_t{"print 3 != '3' ;", "true\n"});
-      rv.push_back(test_case_t{"print true and true ;", "true\n"});
-      rv.push_back(test_case_t{"print false and true ;", "false\n"});
-      rv.push_back(test_case_t{"print true and false ;", "false\n"});
-      rv.push_back(test_case_t{"print false and false ;", "false\n"});
-      rv.push_back(test_case_t{"print true or true ;", "true\n"});
-      rv.push_back(test_case_t{"print false or true ;", "true\n"});
-      rv.push_back(test_case_t{"print true or false ;", "true\n"});
-      rv.push_back(test_case_t{"print false or false ;", "false\n"});
+      rv.push_back(test_case_t{"print ! 42 ;\n", "false\n"});
+      rv.push_back(test_case_t{"print ! false ;\n", "true\n"});
+      rv.push_back(test_case_t{"print ! true ;\n", "false\n"});
+      rv.push_back(test_case_t{"print ! ! none ;\n", "false\n"});
+      rv.push_back(test_case_t{"print ! '' ;\n", "false\n"});
+      rv.push_back(test_case_t{"print - 42 ;\n", "-42\n"});
+      rv.push_back(test_case_t{"print 1 + 2 * 3 - 4 / 2 ;\n", "5\n"});
+      rv.push_back(test_case_t{"print '1' + '2' ;\n", "12\n"});
+      rv.push_back(test_case_t{"print '1' + 2 ;\n", test_error_t{{"type error"}}});
+      rv.push_back(test_case_t{"print '1' * '2' ;\n", test_error_t{{"type error"}}});
+      rv.push_back(test_case_t{"print 1 < 3 ;\n", "true\n"});
+      rv.push_back(test_case_t{"print 3 < 3 ;\n", "false\n"});
+      rv.push_back(test_case_t{"print 1 <= 3 ;\n", "true\n"});
+      rv.push_back(test_case_t{"print 3 <= 3 ;\n", "true\n"});
+      rv.push_back(test_case_t{"print 4 <= 3 ;\n", "false\n"});
+      rv.push_back(test_case_t{"print 3 > 1 ;\n", "true\n"});
+      rv.push_back(test_case_t{"print 3 > 3 ;\n", "false\n"});
+      rv.push_back(test_case_t{"print 3 >= 1 ;\n", "true\n"});
+      rv.push_back(test_case_t{"print 3 >= 3 ;\n", "true\n"});
+      rv.push_back(test_case_t{"print 3 >= 4 ;\n", "false\n"});
+      rv.push_back(test_case_t{"print 3 == 3 ;\n", "true\n"});
+      rv.push_back(test_case_t{"print 3 == '3' ;\n", "false\n"});
+      rv.push_back(test_case_t{"print 3 != '3' ;\n", "true\n"});
+      rv.push_back(test_case_t{"print true and true ;\n", "true\n"});
+      rv.push_back(test_case_t{"print false and true ;\n", "false\n"});
+      rv.push_back(test_case_t{"print true and false ;\n", "false\n"});
+      rv.push_back(test_case_t{"print false and false ;\n", "false\n"});
+      rv.push_back(test_case_t{"print true or true ;\n", "true\n"});
+      rv.push_back(test_case_t{"print false or true ;\n", "true\n"});
+      rv.push_back(test_case_t{"print true or false ;\n", "true\n"});
+      rv.push_back(test_case_t{"print false or false ;\n", "false\n"});
 
-      rv.push_back(test_case_t{" var abc = 42 ; print 100 + abc ;", "142\n"});
-      rv.push_back(test_case_t{" var a = 3 ; var b = 5 ; a = 10 + b * a ; print a ;", "25\n"});
+      rv.push_back(test_case_t{" var abc = 42 ; print 100 + abc ;\n", "142\n"});
+      rv.push_back(test_case_t{" var a = 3 ; var b = 5 ; a = 10 + b * a ; print a ;\n", "25\n"});
       rv.push_back(test_case_t{
-          " var a = 10 ; { print a ; var a = 20 ; var b = 30 ; print a ; print b ; } print a ; ",
+          " var a = 10 ; { print a ; var a = 20 ; var b = 30 ; print a ; print b ; } print a ; \n",
           "10\n20\n30\n10\n"});
-      rv.push_back(
-          test_case_t{" var a; if ( 1 + 2 < 4 ) { a = 'true' ; } else { a = 'false' ; } print a ; ",
-                      "true\n"});
-      rv.push_back(
-          test_case_t{" var a; if ( 1 + 2 > 4 ) { a = 'true' ; } else { a = 'false' ; } print a ; ",
-                      "false\n"});
-      rv.push_back(test_case_t{" var a; if ( 1 + 2 < 4 ) { a = 'true' ; } print a ; ", "true\n"});
-      rv.push_back(test_case_t{" var a; if ( 1 + 2 > 4 ) { a = 'true' ; } print a ; ", "none\n"});
-      rv.push_back(test_case_t{" var a = ( 1 + 2 > 4 ) or 'test' ; print a ; ", "test\n"});
-      rv.push_back(test_case_t{" var a = ( 1 + 2 < 4 ) or 'test' ; print a ; ", "true\n"});
-      rv.push_back(test_case_t{" var a = ( 1 + 2 > 4 ) and 'test' ; print a ; ", "false\n"});
-      rv.push_back(test_case_t{" var a = ( 1 + 2 < 4 ) and 'test' ; print a ; ", "test\n"});
+      rv.push_back(test_case_t{
+          " var a; if ( 1 + 2 < 4 ) { a = 'true' ; } else { a = 'false' ; } print a ; \n",
+          "true\n"});
+      rv.push_back(test_case_t{
+          " var a; if ( 1 + 2 > 4 ) { a = 'true' ; } else { a = 'false' ; } print a ; \n",
+          "false\n"});
+      rv.push_back(test_case_t{" var a; if ( 1 + 2 < 4 ) { a = 'true' ; } print a ; \n", "true\n"});
+      rv.push_back(test_case_t{" var a; if ( 1 + 2 > 4 ) { a = 'true' ; } print a ; \n", "none\n"});
+      rv.push_back(test_case_t{" var a = ( 1 + 2 > 4 ) or 'test' ; print a ; \n", "test\n"});
+      rv.push_back(test_case_t{" var a = ( 1 + 2 < 4 ) or 'test' ; print a ; \n", "true\n"});
+      rv.push_back(test_case_t{" var a = ( 1 + 2 > 4 ) and 'test' ; print a ; \n", "false\n"});
+      rv.push_back(test_case_t{" var a = ( 1 + 2 < 4 ) and 'test' ; print a ; \n", "test\n"});
       rv.push_back(test_case_t{
           R"(
         var sum = 0 ;
@@ -81,12 +81,12 @@ namespace silva::lox {
           sum = sum + i ;
         }
         print sum ;
-      )",
+)",
           "6\n45\n"});
-      rv.push_back(test_case_t{"print true or 'short-circuit-1';", "true\n"});
-      rv.push_back(test_case_t{"print false or 'short-circuit-2';", "short-circuit-2\n"});
-      rv.push_back(test_case_t{"print true and 'short-circuit-3';", "short-circuit-3\n"});
-      rv.push_back(test_case_t{"print false and 'short-circuit-4';", "false\n"});
+      rv.push_back(test_case_t{"print true or 'short-circuit-1';\n", "true\n"});
+      rv.push_back(test_case_t{"print false or 'short-circuit-2';\n", "short-circuit-2\n"});
+      rv.push_back(test_case_t{"print true and 'short-circuit-3';\n", "short-circuit-3\n"});
+      rv.push_back(test_case_t{"print false and 'short-circuit-4';\n", "false\n"});
     }
     {
       retval.push_back(test_chapter_t{.name = "functions"});
@@ -98,7 +98,7 @@ namespace silva::lox {
           return;
         }
         sayHi('Dear', 'Reader');
-        )",
+)",
           "Hi, Dear Reader!\n"});
       rv.push_back(test_case_t{
           R"(
@@ -120,7 +120,7 @@ namespace silva::lox {
           return x;
         }
         print bar(i);
-      )",
+)",
           "520\n5200\n52\n"});
       rv.push_back(test_case_t{
           R"(
@@ -131,7 +131,7 @@ namespace silva::lox {
         for ( var i = 1; i <= 6 ; i = i + 1 ) {
           print fib(i);
         }
-      )",
+)",
           "1\n1\n2\n3\n5\n8\n"});
       rv.push_back(test_case_t{
           R"(
@@ -148,7 +148,7 @@ namespace silva::lox {
           print a;
         }
         print a;
-      )",
+)",
           "global\nglobal\nblock\nglobal\n"});
       rv.push_back(test_case_t{
           R"(
@@ -160,7 +160,7 @@ namespace silva::lox {
         var outer = 42;
         print foo(outer);
         print outer;
-    )",
+)",
           "42\n42\n",
       });
     }
@@ -181,7 +181,7 @@ namespace silva::lox {
         counter();
         counter();
         counter();
-      )",
+)",
           "1\n2\n3\n",
       });
       rv.push_back(test_case_t{
@@ -201,7 +201,7 @@ namespace silva::lox {
         }
         var rv = aaa();
         rv();
-      )",
+)",
           "22\n11\n",
       });
       rv.push_back(test_case_t{
@@ -224,7 +224,7 @@ namespace silva::lox {
         }
         var rv = aaa();
         rv();
-      )",
+)",
           "42\n123\n",
       });
       rv.push_back(test_case_t{
@@ -252,7 +252,7 @@ namespace silva::lox {
         }
         var rv = aaa();
         rv();
-      )",
+)",
           "123\n42\n123\n43\n123\n123\n",
       });
       rv.push_back(test_case_t{
@@ -266,7 +266,7 @@ namespace silva::lox {
           inner();
         }
         outer();
-      )",
+)",
           "outer\n",
       });
       rv.push_back(test_case_t{
@@ -286,7 +286,7 @@ namespace silva::lox {
         var mid = outer();
         var in = mid();
         in();
-    )",
+)",
           "return from outer\ncreate inner closure\nvalue\n",
       });
       rv.push_back(test_case_t{
@@ -304,7 +304,7 @@ namespace silva::lox {
         globalGet();
         globalSet();
         globalGet();
-    )",
+)",
           "initial\nupdated\n",
       });
       rv.push_back(test_case_t{
@@ -325,7 +325,7 @@ namespace silva::lox {
         c2();
         c2();
         c1();
-    )",
+)",
           "1\n2\n3\n1\n2\n4\n",
       });
     }
@@ -337,7 +337,7 @@ namespace silva::lox {
         class Toast {}
         var toast = Toast();
         print toast.jam = 'grape';
-    )",
+)",
           "grape\n",
       });
       rv.push_back(test_case_t{
@@ -347,7 +347,7 @@ namespace silva::lox {
         pair.first = 1;
         pair.second = 2;
         print pair.first + pair.second;
-    )",
+)",
           "3\n",
       });
       rv.push_back(test_case_t{
@@ -364,7 +364,7 @@ namespace silva::lox {
         foo.bar('aa', 'bb');
         var bound_method = foo.baz;
         bound_method('cc');
-    )",
+)",
           "bar with aa and bb\nbaz with cc\n",
       });
       rv.push_back(test_case_t{
@@ -378,7 +378,7 @@ namespace silva::lox {
         jane.name = 'Jane';
         var method = jane.sayName;
         method();
-    )",
+)",
           "Jane\n",
       });
       rv.push_back(test_case_t{
@@ -392,7 +392,7 @@ namespace silva::lox {
           }
         }
         Person('Jane').sayName();
-    )",
+)",
           "I am Jane\n",
       });
       rv.push_back(test_case_t{
@@ -408,7 +408,7 @@ namespace silva::lox {
         var c = C();
         c.foo();
         c.bar();
-    )",
+)",
           "B foo\nA bar\n",
       });
       rv.push_back(test_case_t{
@@ -424,7 +424,7 @@ namespace silva::lox {
         var c = C();
         c.method();
         c.test();
-    )",
+)",
           "B method\nA method\n",
       });
       rv.push_back(test_case_t{
@@ -447,7 +447,7 @@ namespace silva::lox {
         }
         var f = F();
         f.method();
-    )",
+)",
           "foo D\n",
       });
       rv.push_back(test_case_t{
@@ -466,7 +466,7 @@ namespace silva::lox {
         }
         var callback = Thing().getCallback();
         callback();
-    )",
+)",
           "init()\nstart\n",
       });
       rv.push_back(test_case_t{
@@ -491,7 +491,7 @@ namespace silva::lox {
         inc.inc();
         inc.inc();
         print inc.value.value;
-    )",
+)",
           "20\n",
       });
       rv.push_back(test_case_t{
@@ -514,7 +514,7 @@ namespace silva::lox {
         var dog = Dog();
         cat.makeSound();
         dog.makeSound();
-    )",
+)",
           "...\nmeow\n...\n",
       });
       rv.push_back(test_case_t{
@@ -538,7 +538,7 @@ namespace silva::lox {
         var c = C();
         c.value = 'ccc';
         c.test();
-    )",
+)",
           "in test(): ccc\nA method: ccc\n",
       });
       rv.push_back(test_case_t{
@@ -549,14 +549,14 @@ namespace silva::lox {
         var f2 = Foo();
         print f1 == f2;
         print f1 == f1;
-    )",
+)",
           "false\ntrue\n",
       });
     }
     {
       retval.push_back(test_chapter_t{.name = "errors"});
       auto& rv = retval.back().test_cases;
-      rv.push_back(test_case_t{" return 1 + ( 42 + 'world' ) ; ",
+      rv.push_back(test_case_t{" return 1 + ( 42 + 'world' ) ; \n",
                                test_error_t{{
                                    "type error evaluating expression",
                                    "while executing instruction",

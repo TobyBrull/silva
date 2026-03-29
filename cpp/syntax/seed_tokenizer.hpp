@@ -90,13 +90,12 @@ namespace silva::seed {
       - x = '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
       - IncludeRule = 'include' 'tokenizer' p.Nonterminal.Base
       - IgnoreRule = 'ignore' Defn
-      - TokenRule = p.TokenCategory '=' Defn
+      - TokenRule = token_category_name '=' Defn
       - Defn = PrefixItem * ( ':::' Item + ) ?
       - PrefixItem = List | Item
       - List = '[' Item * ']'
       - Item = string | Matcher
-      - Matcher = FragName ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
-      - FragName = identifier / '^[A-Z_]+$'
+      - Matcher = frag_name ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
     ]
 )'";
 
@@ -123,6 +122,7 @@ namespace silva::seed {
     expected_t<void> cache_tokenizer(token_id_t tokenizer_name);
 
     expected_t<tokenization_ptr_t> apply(fragment_span_t, token_id_t);
+    expected_t<tokenization_ptr_t> apply_text(filepath_t, string_t, token_id_t);
 
     friend bool operator==(const tokenizer_farm_t&, const tokenizer_farm_t&) = default;
 
@@ -147,16 +147,6 @@ namespace silva::seed {
       - ignore NEWLINE
       - number = NUMBER
       - string = STRING
-    ]
-    - Seed = tokenizer [
-      - include tokenizer FreeForm
-      - operators = [ PARENTHESIS 'concat' 'but_then' 'x' 'p' '_' ]
-      - operators = ::: OPERATOR
-      - rule_name = IDENTIFIER_PASCAL_CASE
-      - var_name = IDENTIFIER_SNAKE_CASE\'_v'
-      - func_name = IDENTIFIER_SNAKE_CASE\'_f'
-      - token_category_name = IDENTIFIER_SNAKE_CASE
-      - frag_name = IDENTIFIER_MACRO_CASE
     ]
 )'";
 

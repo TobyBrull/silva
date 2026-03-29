@@ -7,7 +7,7 @@ namespace silva {
   expected_t<void> fragmentization_main(const span_t<string_view_t> cmdline_args)
   {
     const index_t m = cmdline_args.size();
-    SILVA_EXPECT(2 == m, MINOR, "Usage: ... <file>");
+    SILVA_EXPECT(m == 2, MINOR, "Usage: ... <file>");
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     byte_sink_stdout_t _stdout;

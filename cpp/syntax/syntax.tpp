@@ -6,18 +6,29 @@ namespace silva::test {
   TEST_CASE("operator-precedence", "")
   {
     const string_view_t expr_seed_text = R"'(
+    - Expr = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - number = NUMBER
+      - string = STRING
+      - operator = PARENTHESIS
+      - operator = ::: OPERATOR
+    ]
     - Expr = Add
     - Add = Mult ( '+' Add ) *
     - Mult = Primary ( '*' Mult ) *
     - Primary = '(' Expr ')' | number
-  )'";
+)'";
     syntax_farm_t sf;
     seed::interpreter_t si(sf.ptr());
     SILVA_REQUIRE(si.add_seed_text("expr.seed", string_t{expr_seed_text}));
 
-    const string_view_t expr_text = R"( 5 + 4 * 2 + 1 )";
-    const auto expr_tt            = SILVA_REQUIRE(tokenize(sf.ptr(), "", expr_text));
-    const auto expr_pt            = SILVA_REQUIRE(si.apply(expr_tt, sf.name_id_of("Expr")));
+    const string_t expr_text = " 5 + 4 * 2 + 1\n";
+
+    const auto expr_pt = SILVA_REQUIRE(si.apply_text("", expr_text, sf.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.Expr                                         5 + ... + 1
@@ -40,6 +51,18 @@ namespace silva::test {
   TEST_CASE("seed-axe-recursion", "")
   {
     const string_view_t expr_seed_text = R"'(
+    - Expr = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - number = NUMBER
+      - string = STRING
+      - identifier = IDENTIFIER
+      - operator = PARENTHESIS
+      - operator = ::: OPERATOR
+    ]
     - Expr = axe Atom [
       - Parens  = nest  atom_nest '(' ')'
       - Mult    = ltr   infix '*'
@@ -47,16 +70,16 @@ namespace silva::test {
       - Comp    = ltr   infix '<'
     ]
     - Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
-  )'";
+)'";
     syntax_farm_t sf;
     seed::interpreter_t si(sf.ptr());
     SILVA_REQUIRE(si.add_seed_text("expr.seed", string_t{expr_seed_text}));
 
-    const string_view_t expr_text = R"(
+    const string_t expr_text = R"(
     ( 5 + if a < 3 then b + 10 else c * 20 ) + 100
-  )";
-    const auto expr_tt            = SILVA_REQUIRE(tokenize(sf.ptr(), "", expr_text));
-    const auto expr_pt            = SILVA_REQUIRE(si.apply(expr_tt, sf.name_id_of("Expr")));
+)";
+
+    const auto expr_pt = SILVA_REQUIRE(si.apply_text("", expr_text, sf.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.Expr.Add.+                                   ( 5 ... + 100

@@ -99,7 +99,7 @@ namespace silva::seed::impl {
   }
   void pretty_write_impl(const rule_t& rule, byte_sink_t* bs)
   {
-    silva::pretty_write(rule.token_name, bs);
+    silva::pretty_write(rule.token_category_name, bs);
     bs->write_str(" = ");
     for (const auto& x: rule.prefix_matchers) {
       silva::pretty_write(x, bs);
@@ -330,7 +330,7 @@ namespace silva::seed::impl {
     {
       const auto [c1]                    = SILVA_EXPECT_FWD(pts_rule.get_children<1>());
       const token_id_t included_tok_name = pts_rule.sub_tree_span_at(c1).first_token_id();
-      retval.rules.push_back(rule_t{.token_name = included_tok_name});
+      retval.rules.push_back(rule_t{.token_category_name = included_tok_name});
       return {};
     }
 
@@ -346,11 +346,11 @@ namespace silva::seed::impl {
 
     expected_t<void> token_rule(const parse_tree_span_t pts_rule)
     {
-      const auto [c1, c2] = SILVA_EXPECT_FWD(pts_rule.get_children<2>());
-      const token_id_t tn = pts_rule.sub_tree_span_at(c1).first_token_id();
-      auto new_rules      = SILVA_EXPECT_FWD(defn(pts_rule.sub_tree_span_at(c2)));
+      const auto [c1]      = SILVA_EXPECT_FWD(pts_rule.get_children<1>());
+      const token_id_t tcn = pts_rule.first_token_id();
+      auto new_rules       = SILVA_EXPECT_FWD(defn(pts_rule.sub_tree_span_at(c1)));
       for (auto& new_rule: new_rules) {
-        new_rule.token_name = tn;
+        new_rule.token_category_name = tcn;
       }
       retval.rules.insert(retval.rules.end(),
                           std::make_move_iterator(new_rules.begin()),
@@ -436,7 +436,7 @@ namespace silva::seed {
       const auto& tt = it->second;
       for (const auto& rule: tt.rules) {
         if (rule.prefix_matchers.empty()) {
-          SILVA_EXPECT_FWD(self(rule.token_name),
+          SILVA_EXPECT_FWD(self(rule.token_category_name),
                            "when processing rules of tokenizer {}",
                            sfp->token_id_wrap(tokenizer_name));
         }
@@ -521,7 +521,7 @@ namespace silva::seed {
           }
         }
 
-        if (rule.token_name != token_id_none) {
+        if (rule.token_category_name != token_id_none) {
           const index_t token_text_start = fp->fragments[frag_idx].location.byte_offset;
           const index_t token_text_end =
               (cursor < n) ? fp->fragments[cursor].location.byte_offset : fp->source_code.size();
@@ -529,9 +529,9 @@ namespace silva::seed {
               string_view_t{fp->source_code}.substr(token_text_start,
                                                     token_text_end - token_text_start);
 
-          const auto tid = SILVA_EXPECT_FWD(sfp->token_id_new(token_text));
+          const auto tid = sfp->token_id(token_text);
           retval->tokens.push_back(tid);
-          retval->categories.push_back(rule.token_name);
+          retval->categories.push_back(rule.token_category_name);
           retval->locations.push_back(fp->fragments[frag_idx].location);
         }
 
@@ -546,6 +546,13 @@ namespace silva::seed {
     }
 
     return sfp->add(std::move(retval));
+  }
+
+  expected_t<tokenization_ptr_t>
+  tokenizer_farm_t::apply_text(filepath_t filepath, string_t text, const token_id_t tokenizer_name)
+  {
+    auto fp = SILVA_EXPECT_FWD(fragmentize(sfp, std::move(filepath), std::move(text)));
+    return apply(fp, tokenizer_name);
   }
 
   tokenizer_farm_t make_bootstrap_tokenizer_farm(syntax_farm_ptr_t sfp)
@@ -567,6 +574,7 @@ namespace silva::seed {
     const matcher_t m_string     = {.category = STRING};
     const matcher_t m_operator   = {.category = OPERATOR};
     const matcher_t m_paren      = {.category = PARENTHESIS};
+    const matcher_t m_id         = {.category = IDENTIFIER};
     const matcher_t m_id_pascal  = {.category = IDENTIFIER, .case_mask = PASCAL_CASE};
     const matcher_t m_id_snake   = {.category = IDENTIFIER, .case_mask = SNAKE_CASE};
     const matcher_t m_id_macro   = {.category = IDENTIFIER, .case_mask = MACRO_CASE};
@@ -581,31 +589,29 @@ namespace silva::seed {
     {
       tokenizer_t tok;
       tok.rules = {
-          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_whitespace}},
-          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_comment}},
-          rule_t{.token_name = lexicon.ti_indent, .prefix_matchers = {m_indent}},
-          rule_t{.token_name = lexicon.ti_dedent, .prefix_matchers = {m_dedent}},
-          rule_t{.token_name = lexicon.ti_newline, .prefix_matchers = {m_newline}},
-          rule_t{.token_name = lexicon.ti_number, .prefix_matchers = {m_number}},
-          rule_t{.token_name = lexicon.ti_string, .prefix_matchers = {m_string}},
+          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_whitespace}},
+          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_comment}},
+          rule_t{.token_category_name = lexicon.ti_indent, .prefix_matchers = {m_indent}},
+          rule_t{.token_category_name = lexicon.ti_dedent, .prefix_matchers = {m_dedent}},
+          rule_t{.token_category_name = lexicon.ti_newline, .prefix_matchers = {m_newline}},
+          rule_t{.token_category_name = lexicon.ti_number, .prefix_matchers = {m_number}},
+          rule_t{.token_category_name = lexicon.ti_string, .prefix_matchers = {m_string}},
       };
       retval.tokenizers.emplace(lexicon.ti_r_default, std::move(tok));
     }
-
     {
       tokenizer_t tok;
       tok.rules = {
-          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_whitespace}},
-          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_comment}},
-          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_indent}},
-          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_dedent}},
-          rule_t{.token_name = ti_ignore, .prefix_matchers = {m_newline}},
-          rule_t{.token_name = lexicon.ti_number, .prefix_matchers = {m_number}},
-          rule_t{.token_name = lexicon.ti_string, .prefix_matchers = {m_string}},
+          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_whitespace}},
+          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_comment}},
+          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_indent}},
+          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_dedent}},
+          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_newline}},
+          rule_t{.token_category_name = lexicon.ti_number, .prefix_matchers = {m_number}},
+          rule_t{.token_category_name = lexicon.ti_string, .prefix_matchers = {m_string}},
       };
       retval.tokenizers.emplace(lexicon.ti_r_freeform, std::move(tok));
     }
-
     {
       const array_t<matcher_t> op_repeat = {
           m_operator,
@@ -619,34 +625,41 @@ namespace silva::seed {
 
       tokenizer_t tok;
       tok.rules = {
-          rule_t{.token_name = lexicon.ti_r_freeform},
-          rule_t{.token_name = lexicon.ti_operators, .prefix_matchers = {m_paren}},
-          rule_t{.token_name = lexicon.ti_operators, .prefix_matchers = {m_concat}},
-          rule_t{.token_name = lexicon.ti_operators, .prefix_matchers = {m_but_then}},
-          rule_t{.token_name = lexicon.ti_operators, .prefix_matchers = {m_x}},
-          rule_t{.token_name = lexicon.ti_operators, .prefix_matchers = {m_p}},
-          rule_t{.token_name = lexicon.ti_operators, .prefix_matchers = {m_uscore}},
+          rule_t{.token_category_name = lexicon.ti_r_freeform},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_paren}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_concat}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_but_then}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_x}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_p}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_uscore}},
           rule_t{
-              .token_name      = lexicon.ti_operators,
-              .prefix_matchers = {m_operator},
-              .repeat_matchers = {m_operator},
+              .token_category_name = lexicon.ti_operator,
+              .prefix_matchers     = {m_operator},
+              .repeat_matchers     = {m_operator},
           },
-          rule_t{
-              .token_name      = lexicon.ti_rule_name,
-              .prefix_matchers = {m_id_pascal},
-          },
-          rule_t{.token_name      = lexicon.ti_var_name,
-                 .prefix_matchers = {{.category  = IDENTIFIER,
-                                      .case_mask = SNAKE_CASE,
-                                      .postfix   = "_v"}}},
-          rule_t{.token_name      = lexicon.ti_func_name,
-                 .prefix_matchers = {{.category  = IDENTIFIER,
-                                      .case_mask = SNAKE_CASE,
-                                      .postfix   = "_f"}}},
-          rule_t{.token_name = lexicon.ti_token_cat_name, .prefix_matchers = {m_id_snake}},
-          rule_t{.token_name = lexicon.ti_frag_name, .prefix_matchers = {m_id_macro}},
+          rule_t{.token_category_name = lexicon.ti_frag_name, .prefix_matchers = {m_id_macro}},
+          rule_t{.token_category_name = lexicon.ti_rule_name, .prefix_matchers = {m_id_pascal}},
+          rule_t{.token_category_name = lexicon.ti_var_name,
+                 .prefix_matchers     = {{.category  = IDENTIFIER,
+                                          .case_mask = SNAKE_CASE,
+                                          .postfix   = "_v"}}},
+          rule_t{.token_category_name = lexicon.ti_func_name,
+                 .prefix_matchers     = {{.category  = IDENTIFIER,
+                                          .case_mask = SNAKE_CASE,
+                                          .postfix   = "_f"}}},
+          rule_t{.token_category_name = lexicon.ti_token_cat_name, .prefix_matchers = {m_id_snake}},
       };
       retval.tokenizers.emplace(lexicon.ti_r_seed, std::move(tok));
+    }
+    {
+      tokenizer_t tok;
+      tok.rules = {
+          rule_t{.token_category_name = lexicon.ti_r_freeform},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_operator}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_paren}},
+          rule_t{.token_category_name = lexicon.ti_identifier, .prefix_matchers = {m_id}},
+      };
+      retval.tokenizers.emplace(lexicon.ti_r_fern, std::move(tok));
     }
 
     return {std::move(retval)};

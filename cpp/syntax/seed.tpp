@@ -3,8 +3,6 @@
 #include "name_id_style.hpp"
 #include "syntax.hpp"
 
-#include "rfl/json/write.hpp"
-
 #include <catch2/catch_all.hpp>
 
 namespace silva::seed::test {
@@ -18,10 +16,10 @@ namespace silva::seed::test {
 
     const name_id_style_t ts{
         .sfp       = sf.ptr(),
-        .root      = *sf.token_id("cpp"),
-        .current   = *sf.token_id("this"),
-        .parent    = *sf.token_id("super"),
-        .separator = *sf.token_id("::"),
+        .root      = sf.token_id("cpp"),
+        .current   = sf.token_id("this"),
+        .parent    = sf.token_id("super"),
+        .separator = sf.token_id("::"),
     };
     CHECK(ts.absolute(name1) == "cpp::std::expr::stmt");
     CHECK(ts.absolute(name2) == "cpp::std::expr");
@@ -40,58 +38,119 @@ namespace silva::seed::test {
   TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
     syntax_farm_t sf;
-    const auto spr       = standard_seed_interpreter(sf.ptr());
-    const auto seed_tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", string_t{seed_str}));
-    const auto seed_pt_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(seed_tt));
-    const auto seed_pt_2 = SILVA_REQUIRE(spr->apply(seed_tt, sf.name_id_of("Seed")));
-    // fmt::print("|{}|\n", *seed_pt_1->span().to_string());
-    // fmt::print("|{}|\n", *seed_pt_2->span().to_string());
-    CHECK(seed_pt_1->nodes == seed_pt_2->nodes);
-
+    const auto spr   = standard_seed_interpreter(sf.ptr());
+    const auto fp    = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", string_t{seed_str}));
+    const auto pts_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(fp));
+    const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
+    CHECK(pts_1->nodes == pts_2->nodes);
     CHECK(spr->keyword_scopes[sf.name_id_of("Seed", "Rule")] == hash_set_t<token_id_t>({}));
     CHECK(spr->keyword_scopes[sf.name_id_of("Seed", "Axe")] ==
           hash_set_t<token_id_t>({
-              *sf.token_id("["),
-              *sf.token_id("]"),
-              *sf.token_id("-"),
-              *sf.token_id("="),
-              *sf.token_id("nest"),
-              *sf.token_id("ltr"),
-              *sf.token_id("rtl"),
-              *sf.token_id("atom_nest"),
-              *sf.token_id("atom_nest_transparent"),
-              *sf.token_id("prefix"),
-              *sf.token_id("prefix_nest"),
-              *sf.token_id("infix"),
-              *sf.token_id("infix_flat"),
-              *sf.token_id("ternary"),
-              *sf.token_id("postfix"),
-              *sf.token_id("postfix_nest"),
-              *sf.token_id("concat"),
-              *sf.token_id("->"),
+              sf.token_id("["),
+              sf.token_id("]"),
+              sf.token_id("-"),
+              sf.token_id("="),
+              sf.token_id("nest"),
+              sf.token_id("ltr"),
+              sf.token_id("rtl"),
+              sf.token_id("atom_nest"),
+              sf.token_id("atom_nest_transparent"),
+              sf.token_id("prefix"),
+              sf.token_id("prefix_nest"),
+              sf.token_id("infix"),
+              sf.token_id("infix_flat"),
+              sf.token_id("ternary"),
+              sf.token_id("postfix"),
+              sf.token_id("postfix_nest"),
+              sf.token_id("concat"),
+              sf.token_id("->"),
           }));
   }
 
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
+    - SimpleFern = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - number = NUMBER
+      - string = STRING
+      - operator = PARENTHESIS
+      - operator = ::: OPERATOR
+      - identifier = IDENTIFIER
+    ]
     - SimpleFern = [
       - x = '[' ( LabeledItem ';' ? ) * ']'
       - LabeledItem = ( Label ':' )? Item
       - Label = string
       - Item = x | string | number
     ]
-  )'";
+)'";
     syntax_farm_t sf;
-    const auto sf_seed_tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", sf_text));
-    const auto sf_seed_pt_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(sf_seed_tt));
-    const auto spr          = standard_seed_interpreter(sf.ptr());
-    const auto sf_seed_pt_2 = SILVA_REQUIRE(spr->apply(sf_seed_tt, sf.name_id_of("Seed")));
-    CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
-
+    const auto spr   = standard_seed_interpreter(sf.ptr());
+    const auto fp    = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.seed", string_t{sf_text}));
+    const auto pts_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(fp));
+    const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
+    CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
 [0]_.Seed                                         - SimpleFern ... number ]
-  [0]_.Seed.Rule                                  SimpleFern = ... number ]
+  [0]_.Seed.Rule                                  SimpleFern = ... IDENTIFIER ]
+    [0]_.Seed.Nonterminal                         SimpleFern
+      [0]_.Seed.Nonterminal.Base                  SimpleFern
+    [1]_.Seed.Tokenizer                           [ - ... IDENTIFIER ]
+      [0]_.Seed.Tokenizer.IgnoreRule              ignore WHITESPACE
+        [0]_.Seed.Tokenizer.Defn                  WHITESPACE
+          [0]_.Seed.Tokenizer.PrefixItem          WHITESPACE
+            [0]_.Seed.Tokenizer.Item              WHITESPACE
+              [0]_.Seed.Tokenizer.Matcher         WHITESPACE
+      [1]_.Seed.Tokenizer.IgnoreRule              ignore COMMENT
+        [0]_.Seed.Tokenizer.Defn                  COMMENT
+          [0]_.Seed.Tokenizer.PrefixItem          COMMENT
+            [0]_.Seed.Tokenizer.Item              COMMENT
+              [0]_.Seed.Tokenizer.Matcher         COMMENT
+      [2]_.Seed.Tokenizer.IgnoreRule              ignore INDENT
+        [0]_.Seed.Tokenizer.Defn                  INDENT
+          [0]_.Seed.Tokenizer.PrefixItem          INDENT
+            [0]_.Seed.Tokenizer.Item              INDENT
+              [0]_.Seed.Tokenizer.Matcher         INDENT
+      [3]_.Seed.Tokenizer.IgnoreRule              ignore DEDENT
+        [0]_.Seed.Tokenizer.Defn                  DEDENT
+          [0]_.Seed.Tokenizer.PrefixItem          DEDENT
+            [0]_.Seed.Tokenizer.Item              DEDENT
+              [0]_.Seed.Tokenizer.Matcher         DEDENT
+      [4]_.Seed.Tokenizer.IgnoreRule              ignore NEWLINE
+        [0]_.Seed.Tokenizer.Defn                  NEWLINE
+          [0]_.Seed.Tokenizer.PrefixItem          NEWLINE
+            [0]_.Seed.Tokenizer.Item              NEWLINE
+              [0]_.Seed.Tokenizer.Matcher         NEWLINE
+      [5]_.Seed.Tokenizer.TokenRule               number = NUMBER
+        [0]_.Seed.Tokenizer.Defn                  NUMBER
+          [0]_.Seed.Tokenizer.PrefixItem          NUMBER
+            [0]_.Seed.Tokenizer.Item              NUMBER
+              [0]_.Seed.Tokenizer.Matcher         NUMBER
+      [6]_.Seed.Tokenizer.TokenRule               string = STRING
+        [0]_.Seed.Tokenizer.Defn                  STRING
+          [0]_.Seed.Tokenizer.PrefixItem          STRING
+            [0]_.Seed.Tokenizer.Item              STRING
+              [0]_.Seed.Tokenizer.Matcher         STRING
+      [7]_.Seed.Tokenizer.TokenRule               operator = PARENTHESIS
+        [0]_.Seed.Tokenizer.Defn                  PARENTHESIS
+          [0]_.Seed.Tokenizer.PrefixItem          PARENTHESIS
+            [0]_.Seed.Tokenizer.Item              PARENTHESIS
+              [0]_.Seed.Tokenizer.Matcher         PARENTHESIS
+      [8]_.Seed.Tokenizer.TokenRule               operator = ::: OPERATOR
+        [0]_.Seed.Tokenizer.Defn                  ::: OPERATOR
+          [0]_.Seed.Tokenizer.Item                OPERATOR
+            [0]_.Seed.Tokenizer.Matcher           OPERATOR
+      [9]_.Seed.Tokenizer.TokenRule               identifier = IDENTIFIER
+        [0]_.Seed.Tokenizer.Defn                  IDENTIFIER
+          [0]_.Seed.Tokenizer.PrefixItem          IDENTIFIER
+            [0]_.Seed.Tokenizer.Item              IDENTIFIER
+              [0]_.Seed.Tokenizer.Matcher         IDENTIFIER
+  [1]_.Seed.Rule                                  SimpleFern = ... number ]
     [0]_.Seed.Nonterminal                         SimpleFern
       [0]_.Seed.Nonterminal.Base                  SimpleFern
     [1]_.Seed                                     - x ... | number
@@ -138,35 +197,18 @@ namespace silva::seed::test {
           [2]_.Seed.Terminal                      number
 )";
 
-    const string_t pt_str_1 = SILVA_REQUIRE(sf_seed_pt_1->span().to_string());
-    const string_t pt_str_2 = SILVA_REQUIRE(sf_seed_pt_2->span().to_string());
-    CHECK(pt_str_1 == expected.substr(1));
-    CHECK(pt_str_2 == expected.substr(1));
+    const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string());
+    const string_t pts_2_str = SILVA_REQUIRE(pts_2->span().to_string());
+    CHECK(pts_1_str == expected.substr(1));
+    CHECK(pts_2_str == expected.substr(1));
 
-    interpreter_t se(sf.ptr());
-    SILVA_REQUIRE(se.add_seed(sf_seed_pt_1->span()));
-    REQUIRE(se.rule_exprs.size() == 4);
-    using rfl::json::write;
-    const name_id_t ni_sf       = sf.name_id_of("SimpleFern");
-    const name_id_t ni_li       = sf.name_id_of(ni_sf, "LabeledItem");
-    const name_id_t ni_l        = sf.name_id_of(ni_sf, "Label");
-    const name_id_t ni_i        = sf.name_id_of(ni_sf, "Item");
-    const parse_tree_span_t pts = sf_seed_pt_1->span();
-    CHECK(se.rule_exprs.at(ni_sf) == pts.sub_tree_span_at(8));
-    CHECK(se.rule_exprs.at(ni_li) == pts.sub_tree_span_at(22));
-    CHECK(se.rule_exprs.at(ni_l) == pts.sub_tree_span_at(36));
-    CHECK(se.rule_exprs.at(ni_i) == pts.sub_tree_span_at(40));
-    REQUIRE(se.nonterminal_rules.size() == 4);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(14)) == ni_li);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(27)) == ni_l);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(31)) == ni_i);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(42)) == ni_sf);
-
-    const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
-    const auto sf_tt       = SILVA_REQUIRE(tokenize(sf.ptr(), "", sf_code));
-    const auto sfpt        = SILVA_REQUIRE(se.apply(sf_tt, ni_sf));
-
-    const std::string_view expected_parse_tree = R"(
+    {
+      interpreter_t se(sf.ptr());
+      SILVA_REQUIRE(se.add_seed(pts_1->span()));
+      const string_t sf_code = " [ 'abc' ; [ 'def' 123 ] 'jkl' ;]\n";
+      const auto fp          = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", sf_code));
+      const auto sfpt        = SILVA_REQUIRE(se.apply(fp, sf.name_id_of("SimpleFern")));
+      const std::string_view expected_parse_tree = R"(
 [0]_.SimpleFern                                   [ 'abc' ... ; ]
   [0]_.SimpleFern.LabeledItem                     'abc'
     [0]_.SimpleFern.Item                          'abc'
@@ -180,7 +222,8 @@ namespace silva::seed::test {
   [2]_.SimpleFern.LabeledItem                     'jkl'
     [0]_.SimpleFern.Item                          'jkl'
 )";
-    const string_t result{SILVA_REQUIRE(sfpt->span().to_string())};
-    CHECK(result == expected_parse_tree.substr(1));
+      const string_t result{SILVA_REQUIRE(sfpt->span().to_string())};
+      CHECK(result == expected_parse_tree.substr(1));
+    }
   }
 }
