@@ -73,7 +73,8 @@ namespace silva::seed::test {
       - name = IDENTIFIER\'_t'
       - rel_path = IDENTIFIER ::: '/' '.' IDENTIFIER
       - op = ::: '=' '+'
-    ] )'";
+    ]
+)'";
     load_tokenizer(ti_testor, test_tok);
 
     const string_view_t free_form_tok = R"'( [
@@ -84,7 +85,8 @@ namespace silva::seed::test {
       - ignore NEWLINE
       - number = NUMBER
       - string = STRING
-    ] )'";
+    ]
+)'";
     load_tokenizer(ti_freeform, free_form_tok);
 
     CHECK(tf.tokenizers.at(ti_freeform).rules.size() == 7);

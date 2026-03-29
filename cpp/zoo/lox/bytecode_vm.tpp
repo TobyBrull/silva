@@ -23,7 +23,7 @@ namespace silva::lox::test {
     make_chunk(const string_view_t lox_code)
     {
       const auto ptp =
-          SILVA_REQUIRE(si->apply_text("text.lox", string_t{lox_code}, sf.name_id_of("Lox")));
+          SILVA_REQUIRE(si->apply_text("test.lox", string_t{lox_code}, sf.name_id_of("Lox")));
       auto chunk = SILVA_REQUIRE(compiler.compile(ptp->span()));
       return {ptp, std::move(chunk)};
     };
@@ -65,7 +65,7 @@ namespace silva::lox::test {
   TEST_CASE("lox::to_string", "[lox][bytecode]")
   {
     test_harness_t th;
-    const auto [ptp, chunk]            = th.make_chunk("var hello = 'world' ; 1 + 2 * 3 ;");
+    const auto [ptp, chunk]            = th.make_chunk("var hello = 'world' ; 1 + 2 * 3 ;\n");
     const string_view_t expected_start = R"(
    0 [1:13]              CONSTANT 0
    5 [1:1]               DEFINE_GLOBAL )";

@@ -27,10 +27,19 @@ namespace silva::test {
     const string_view_t src = "x = a + b\ny = c * d\n";
 
     const auto fp = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.seed", string_t{src}));
-    const auto tp = SILVA_REQUIRE(se->tokenizer_farm.apply(fp, sf.name_id_of("Testor")));
+    const auto tp = SILVA_REQUIRE(se->tokenizer_farm.apply(fp, sf.token_id("Testor")));
 
     const string_view_t expected = R"'(
-    TODO
+[  0]   1:1   cat=name                 x
+[  1]   1:3   cat=op                   =
+[  2]   1:5   cat=name                 a
+[  3]   1:7   cat=op                   +
+[  4]   1:9   cat=name                 b
+[  5]   2:1   cat=name                 y
+[  6]   2:3   cat=op                   =
+[  7]   2:5   cat=name                 c
+[  8]   2:7   cat=op                   *
+[  9]   2:9   cat=name                 d
 )'";
 
     const auto result_str = pretty_string(*tp);

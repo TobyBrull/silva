@@ -574,6 +574,7 @@ namespace silva::seed {
     const matcher_t m_string     = {.category = STRING};
     const matcher_t m_operator   = {.category = OPERATOR};
     const matcher_t m_paren      = {.category = PARENTHESIS};
+    const matcher_t m_id         = {.category = IDENTIFIER};
     const matcher_t m_id_pascal  = {.category = IDENTIFIER, .case_mask = PASCAL_CASE};
     const matcher_t m_id_snake   = {.category = IDENTIFIER, .case_mask = SNAKE_CASE};
     const matcher_t m_id_macro   = {.category = IDENTIFIER, .case_mask = MACRO_CASE};
@@ -598,7 +599,6 @@ namespace silva::seed {
       };
       retval.tokenizers.emplace(lexicon.ti_r_default, std::move(tok));
     }
-
     {
       tokenizer_t tok;
       tok.rules = {
@@ -612,7 +612,6 @@ namespace silva::seed {
       };
       retval.tokenizers.emplace(lexicon.ti_r_freeform, std::move(tok));
     }
-
     {
       const array_t<matcher_t> op_repeat = {
           m_operator,
@@ -651,6 +650,16 @@ namespace silva::seed {
           rule_t{.token_category_name = lexicon.ti_token_cat_name, .prefix_matchers = {m_id_snake}},
       };
       retval.tokenizers.emplace(lexicon.ti_r_seed, std::move(tok));
+    }
+    {
+      tokenizer_t tok;
+      tok.rules = {
+          rule_t{.token_category_name = lexicon.ti_r_freeform},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_operator}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_paren}},
+          rule_t{.token_category_name = lexicon.ti_identifier, .prefix_matchers = {m_id}},
+      };
+      retval.tokenizers.emplace(lexicon.ti_r_fern, std::move(tok));
     }
 
     return {std::move(retval)};

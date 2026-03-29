@@ -84,6 +84,7 @@ namespace silva::seed {
     const token_id_t ti_r_default  = sfp->token_id("Default");
     const token_id_t ti_r_freeform = sfp->token_id("FreeForm");
     const token_id_t ti_r_seed     = sfp->token_id("Seed");
+    const token_id_t ti_r_fern     = sfp->token_id("Fern");
 
     const name_id_t ni_seed         = sfp->name_id_of("Seed");
     const name_id_t ni_rule         = sfp->name_id_of(ni_seed, "Rule");

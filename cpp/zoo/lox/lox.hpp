@@ -6,6 +6,12 @@
 
 namespace silva::lox {
   const string_view_t seed_str = R"'(
+    - Lox = tokenizer [
+      - include tokenizer FreeForm
+      - identifier = IDENTIFIER
+      - operator = PARENTHESIS
+      - operator = ::: OPERATOR
+    ]
     - Lox = [
       - x = ( Decl | Stmt ) *
       - Decl = [
@@ -55,7 +61,7 @@ namespace silva::lox {
         - Parameter = identifier
       ]
     ]
-  )'";
+)'";
 
   unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);
 }

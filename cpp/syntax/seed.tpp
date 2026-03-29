@@ -98,7 +98,23 @@ namespace silva::seed::test {
 
     const std::string_view expected = R"(
 [0]_.Seed                                         - SimpleFern ... number ]
-  [0]_.Seed.Rule                                  SimpleFern = ... number ]
+  [0]_.Seed.Rule                                  SimpleFern = ... IDENTIFIER ]
+    [0]_.Seed.Nonterminal                         SimpleFern
+      [0]_.Seed.Nonterminal.Base                  SimpleFern
+    [1]_.Seed.Tokenizer                           [ - ... IDENTIFIER ]
+      [0]_.Seed.Tokenizer.IncludeRule             include tokenizer FreeForm
+        [0]_.Seed.Nonterminal.Base                FreeForm
+      [1]_.Seed.Tokenizer.TokenRule               operator = OPERATOR
+        [0]_.Seed.Tokenizer.Defn                  OPERATOR
+          [0]_.Seed.Tokenizer.PrefixItem          OPERATOR
+            [0]_.Seed.Tokenizer.Item              OPERATOR
+              [0]_.Seed.Tokenizer.Matcher         OPERATOR
+      [2]_.Seed.Tokenizer.TokenRule               identifier = IDENTIFIER
+        [0]_.Seed.Tokenizer.Defn                  IDENTIFIER
+          [0]_.Seed.Tokenizer.PrefixItem          IDENTIFIER
+            [0]_.Seed.Tokenizer.Item              IDENTIFIER
+              [0]_.Seed.Tokenizer.Matcher         IDENTIFIER
+  [1]_.Seed.Rule                                  SimpleFern = ... number ]
     [0]_.Seed.Nonterminal                         SimpleFern
       [0]_.Seed.Nonterminal.Base                  SimpleFern
     [1]_.Seed                                     - x ... | number
@@ -153,7 +169,7 @@ namespace silva::seed::test {
     interpreter_t se(sf.ptr());
     SILVA_REQUIRE(se.add_seed(sf_seed_pt_1->span()));
 
-    const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
+    const string_t sf_code = " [ 'abc' ; [ 'def' 123 ] 'jkl' ;]\n";
     const auto sf_tt       = SILVA_REQUIRE(
         spr->tokenizer_farm.apply_text("sf.code", string_t{sf_code}, sf.token_id("Seed")));
     const auto sfpt = SILVA_REQUIRE(se.apply(sf_tt, sf.name_id_of("SimpleFern")));
