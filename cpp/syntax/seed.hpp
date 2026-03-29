@@ -97,7 +97,6 @@ namespace silva::seed {
     const lexicon_t& lexicon() const;
     const tokenizer_farm_t& tokenizer_farm() const;
 
-    expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t);
     expected_t<parse_tree_ptr_t> parse(fragment_span_t);
   };
 }
