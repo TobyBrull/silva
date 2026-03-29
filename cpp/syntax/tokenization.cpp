@@ -82,12 +82,12 @@ namespace silva {
       const token_info_t* tii_info = &self.sfp->token_infos[tii];
       const token_info_t* tic_info = &self.sfp->token_infos[tic];
       const auto [line, column, _] = self.locations[token_index];
-      stream->format("[{:3}] {:3}:{:<3} {} {}\n",
+      stream->format("[{:3}] {:3}:{:<3} cat={:20} {}\n",
                      token_index,
                      line + 1,
                      column + 1,
-                     tii_info->str,
-                     tic_info->str);
+                     tic_info->str,
+                     tii_info->str);
     }
   }
 }

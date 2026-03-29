@@ -40,11 +40,11 @@ namespace silva::seed {
       - include tokenizer FreeForm
       - operators = [ PARENTHESIS 'concat' 'but_then' 'x' 'p' '_' ]
       - operators = ::: OPERATOR
+      - frag_name = IDENTIFIER_MACRO_CASE
       - rule_name = IDENTIFIER_PASCAL_CASE
       - var_name = IDENTIFIER_SNAKE_CASE\'_v'
       - func_name = IDENTIFIER_SNAKE_CASE\'_f'
       - token_category_name = IDENTIFIER_SNAKE_CASE
-      - frag_name = IDENTIFIER_MACRO_CASE
     ]
     - Seed = [
       - x = ( '-' Rule ) *

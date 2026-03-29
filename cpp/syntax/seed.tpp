@@ -87,7 +87,7 @@ namespace silva::seed::test {
       - Label = string
       - Item = x | string | number
     ]
-  )'";
+)'";
     syntax_farm_t sf;
     const auto spr        = standard_seed_interpreter(sf.ptr());
     const auto sf_seed_tt = SILVA_REQUIRE(

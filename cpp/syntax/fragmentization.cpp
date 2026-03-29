@@ -461,10 +461,11 @@ namespace silva {
                          MINOR,
                          "expected character after '\\' in string at {}",
                          ccd[i].location);
-            constexpr static array_fixed_t<unicode::codepoint_t, 3> escape_seqs = {U'n',
+            constexpr static array_fixed_t<unicode::codepoint_t, 4> escape_seqs = {U'n',
                                                                                    U'\'',
+                                                                                   U'\\',
                                                                                    U'\"'};
-            SILVA_EXPECT(is_one_of<3>(ccd[i + 1].codepoint, escape_seqs),
+            SILVA_EXPECT(is_one_of<4>(ccd[i + 1].codepoint, escape_seqs),
                          MINOR,
                          "unexpected escape sequence at {}, allowed escape sequences: {}",
                          ccd[i].location,
@@ -515,8 +516,8 @@ namespace silva {
   {
     auto ccd = SILVA_EXPECT_FWD(categorize_codepoints(source_code));
     fragmentizer_t ff;
-    SILVA_EXPECT_FWD(ff.init(std::move(filepath), std::move(source_code), std::move(ccd)));
-    SILVA_EXPECT_FWD(ff.run());
+    SILVA_EXPECT_FWD(ff.init(filepath, std::move(source_code), std::move(ccd)));
+    SILVA_EXPECT_FWD(ff.run(), "while fragmentizing {}", filepath);
     SILVA_EXPECT(ff.i == ff.n,
                  MINOR,
                  "Incomplete fragmentization; stopped at {}",

@@ -27,7 +27,7 @@ namespace silva::seed::impl {
         SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
         SILVA_EXPECT_PARSE(lexicon.ni_term,
                            token_category_by() == lexicon.ti_string ||
-                               token_id_by() == lexicon.ti_token_cat_name ||
+                               token_category_by() == lexicon.ti_token_cat_name ||
                                token_id_by() == lexicon.ti_any || token_id_by() == lexicon.ti_eps ||
                                token_id_by() == lexicon.ti_eof,
                            "unexpected {}",
@@ -256,7 +256,7 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_tok_tok_rule);
-      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_tok_rule, lexicon.ti_string);
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_tok_rule, lexicon.ti_token_cat_name);
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_tok_rule, lexicon.ti_equal);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_tok_rule, tokenizer_defn()));
       return ss_rule.commit();
@@ -311,9 +311,9 @@ namespace silva::seed::impl {
     const size_t pos = haystack.find(needle);
     SILVA_ASSERT(pos != string_view_t::npos);
     const string_view_t rest = seed_str.substr(pos + needle.size());
-    const size_t pos2        = rest.find(']');
+    const size_t pos2        = rest.find("]\n");
     SILVA_ASSERT(pos2 != string_view_t::npos);
-    const string_view_t retval = rest.substr(0, pos2 + 1);
+    const string_view_t retval = rest.substr(0, pos2 + 2);
     return retval;
   }
 
@@ -414,7 +414,7 @@ namespace silva::seed::impl {
         token_index += 1;
       }
       else {
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, function_args()));
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, expr()));
       }
       return ss_rule.commit();
     }
@@ -426,7 +426,7 @@ namespace silva::seed::impl {
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func_args, function_arg()));
       while (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_comma) {
         token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func_args, function_arg()));
+        ss_rule.add_proto_node(SILVA_EXPECT_FWD(function_arg(), MAJOR));
       }
       return ss_rule.commit();
     }
