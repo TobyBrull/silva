@@ -21,13 +21,11 @@ namespace silva::lox::test {
 
     void prepare() { scopes.root().remove_all_definitions(); }
 
-    void test_success(const string_view_t expr_str, const string_view_t expected)
+    void test_success(const string_t expr_str, const string_view_t expected)
     {
       prepare();
       INFO(expr_str);
-      auto tp = SILVA_REQUIRE(tokenize(lexicon.sfp, "test.lox", expr_str));
-      INFO(pretty_string(*tp));
-      auto pt = SILVA_REQUIRE(si->apply(tp, lexicon.sfp->name_id_of("Lox")));
+      auto pt = SILVA_REQUIRE(si->apply_text("text.lox", std::move(expr_str), lexicon.ni_lox));
       INFO(pretty_string(pt->span()));
       SILVA_REQUIRE(resolve(pt->span()));
       auto scope = scopes.root();
@@ -36,13 +34,11 @@ namespace silva::lox::test {
       CHECK(result == expected);
     };
 
-    void test_runtime_error(const string_view_t expr_str)
+    void test_runtime_error(string_t expr_str)
     {
       prepare();
       INFO(expr_str);
-      auto tp = SILVA_REQUIRE(tokenize(lexicon.sfp, "test.lox", expr_str));
-      INFO(pretty_string(*tp));
-      auto pt = SILVA_REQUIRE(si->apply(tp, lexicon.sfp->name_id_of("Lox")));
+      auto pt = SILVA_REQUIRE(si->apply_text("text.lox", std::move(expr_str), lexicon.ni_lox));
       INFO(pretty_string(pt->span()));
       SILVA_REQUIRE(resolve(pt->span()));
       auto scope        = scopes.root();
@@ -62,10 +58,11 @@ namespace silva::lox::test {
     for (const auto& chapter: ts) {
       for (const auto& test_case: chapter.test_cases) {
         if (test_case.is_success_expected()) {
-          lti.test_success(test_case.lox_code, std::get<string_view_t>(test_case.expected));
+          lti.test_success(string_t{test_case.lox_code},
+                           std::get<string_view_t>(test_case.expected));
         }
         else {
-          lti.test_runtime_error(test_case.lox_code);
+          lti.test_runtime_error(string_t{test_case.lox_code});
         }
       }
     }

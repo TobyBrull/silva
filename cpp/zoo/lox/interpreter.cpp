@@ -6,8 +6,6 @@
 
 #include <cstdio>
 
-using enum silva::token_category_old_t;
-
 namespace silva::lox {
 
   interpreter_t::interpreter_t(syntax_farm_ptr_t sfp, byte_sink_t* byte_sink)
@@ -127,6 +125,7 @@ namespace silva::lox {
       else if (pts_curr[0].rule_name == lexicon.ni_expr_atom) {
         if (is_on_entry(event)) {
           const token_id_t ti = pts.tp->tokens[pts_curr[0].token_begin];
+          const token_id_t tc = pts.tp->categories[pts_curr[0].token_begin];
           const auto* tinfo   = pts.tp->token_info_get(pts_curr[0].token_begin);
           const auto pts_ti   = pts.sub_tree_span_at(path.back().node_index);
 
@@ -138,7 +137,7 @@ namespace silva::lox {
                          pts_curr);
           }
 
-          const bool is_identifier = tinfo->category_old == IDENTIFIER;
+          const bool is_identifier = (tc == lexicon.ti_identifier);
           const bool is_keyword =
               (ti == lexicon.ti_true || ti == lexicon.ti_false || ti == lexicon.ti_none);
           const name_id_t pr =
@@ -159,8 +158,8 @@ namespace silva::lox {
             }
           }
 
-          const bool is_number = tinfo->category_old == NUMBER;
-          const bool is_string = tinfo->category_old == STRING;
+          const bool is_number = (tc == lexicon.ti_number);
+          const bool is_string = (tc == lexicon.ti_string);
           if (is_keyword || is_number || is_string) {
             object_ref_t literal =
                 SILVA_EXPECT_FWD_AS(object_ref_from_literal(pts_ti, object_pool, lexicon), MAJOR);
@@ -185,7 +184,8 @@ namespace silva::lox {
 
   struct evaluation_t {
     interpreter_t* intp        = nullptr;
-    syntax_farm_ptr_t sfp      = intp->lexicon.sfp;
+    lexicon_t& lexicon         = intp->lexicon;
+    syntax_farm_ptr_t sfp      = lexicon.sfp;
     const name_id_style_t& nis = sfp->default_name_id_style();
     scope_ptr_t scope;
 
@@ -272,19 +272,19 @@ namespace silva::lox {
       const name_id_t rn = pts[0].rule_name;
       if (false) {
       }
-      UNARY(intp->lexicon.ni_expr_u_exc, neg)
-      UNARY(intp->lexicon.ni_expr_u_sub, inv)
-      BINARY(intp->lexicon.ni_expr_b_mul, mul)
-      BINARY(intp->lexicon.ni_expr_b_div, div)
-      BINARY(intp->lexicon.ni_expr_b_add, add)
-      BINARY(intp->lexicon.ni_expr_b_sub, sub)
-      BINARY(intp->lexicon.ni_expr_b_lt, lt)
-      BINARY(intp->lexicon.ni_expr_b_gt, gt)
-      BINARY(intp->lexicon.ni_expr_b_lte, lte)
-      BINARY(intp->lexicon.ni_expr_b_gte, gte)
-      BINARY(intp->lexicon.ni_expr_b_eq, eq)
-      BINARY(intp->lexicon.ni_expr_b_neq, neq)
-      else if (rn == intp->lexicon.ni_expr_b_and)
+      UNARY(lexicon.ni_expr_u_exc, neg)
+      UNARY(lexicon.ni_expr_u_sub, inv)
+      BINARY(lexicon.ni_expr_b_mul, mul)
+      BINARY(lexicon.ni_expr_b_div, div)
+      BINARY(lexicon.ni_expr_b_add, add)
+      BINARY(lexicon.ni_expr_b_sub, sub)
+      BINARY(lexicon.ni_expr_b_lt, lt)
+      BINARY(lexicon.ni_expr_b_gt, gt)
+      BINARY(lexicon.ni_expr_b_lte, lte)
+      BINARY(lexicon.ni_expr_b_gte, gte)
+      BINARY(lexicon.ni_expr_b_eq, eq)
+      BINARY(lexicon.ni_expr_b_neq, neq)
+      else if (rn == lexicon.ni_expr_b_and)
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),
@@ -298,7 +298,7 @@ namespace silva::lox {
                                         pts);
         return rhs_res;
       }
-      else if (rn == intp->lexicon.ni_expr_b_or)
+      else if (rn == lexicon.ni_expr_b_or)
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),
@@ -312,7 +312,7 @@ namespace silva::lox {
                                         pts);
         return rhs_res;
       }
-      else if (rn == intp->lexicon.ni_expr_call)
+      else if (rn == lexicon.ni_expr_call)
       {
         const auto [fun_idx, args_idx] = SILVA_EXPECT_FWD(pts.get_children<2>());
         auto callee = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(fun_idx)),
@@ -329,19 +329,16 @@ namespace silva::lox {
         else if (callee->holds_class()) {
           class_t& cc         = std::get<class_t>(callee->data);
           object_ref_t retval = intp->object_pool.make(class_instance_t{._class = callee});
-          if (const auto it = cc.methods.find(intp->lexicon.ti_init); it != cc.methods.end()) {
-            object_ref_t init_fun_ref = SILVA_EXPECT_FWD(member_bind(retval,
-                                                                     {},
-                                                                     intp->lexicon.ti_init,
-                                                                     intp->object_pool,
-                                                                     intp->lexicon.ti_this));
+          if (const auto it = cc.methods.find(lexicon.ti_init); it != cc.methods.end()) {
+            object_ref_t init_fun_ref = SILVA_EXPECT_FWD(
+                member_bind(retval, {}, lexicon.ti_init, intp->object_pool, lexicon.ti_this));
             SILVA_EXPECT(init_fun_ref->holds_function(), MINOR);
             SILVA_EXPECT_FWD(call_function(init_fun_ref, pts_args));
           }
           return retval;
         }
       }
-      else if (rn == intp->lexicon.ni_expr_member)
+      else if (rn == lexicon.ni_expr_member)
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         auto lhs_ref =
@@ -349,43 +346,44 @@ namespace silva::lox {
                              "{} error evaluating left-hand-side of member-access operator",
                              pts);
         const auto pts_rhs = pts.sub_tree_span_at(rhs);
-        SILVA_EXPECT(pts_rhs[0].rule_name == intp->lexicon.ni_expr_atom,
+        SILVA_EXPECT(pts_rhs[0].rule_name == lexicon.ni_expr_atom,
                      MAJOR,
                      "{} right-hand-side of member-access operator must be plain identifier",
                      pts_rhs);
         const token_id_t field_name = pts.tp->tokens[pts_rhs[0].token_begin];
-        return SILVA_EXPECT_FWD(
-            member_get(lhs_ref, field_name, intp->object_pool, intp->lexicon.ti_this),
-            "{} could not find {} in {}",
-            pts,
-            sfp->token_id_wrap(field_name),
-            pretty_string(lhs_ref));
+        return SILVA_EXPECT_FWD(member_get(lhs_ref, field_name, intp->object_pool, lexicon.ti_this),
+                                "{} could not find {} in {}",
+                                pts,
+                                sfp->token_id_wrap(field_name),
+                                pretty_string(lhs_ref));
       }
-      else if (rn == intp->lexicon.ni_expr_b_assign)
+      else if (rn == lexicon.ni_expr_b_assign)
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         auto rhs_ref          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)),
                                         "{} error evaluating right-hand-side of assignment",
                                         pts);
         auto lhs_pts          = pts.sub_tree_span_at(lhs);
-        if (lhs_pts[0].rule_name == intp->lexicon.ni_expr_member) {
+        if (lhs_pts[0].rule_name == lexicon.ni_expr_member) {
           const auto [ll, lr] = SILVA_EXPECT_FWD(lhs_pts.get_children<2>());
           auto ll_ref         = SILVA_EXPECT_FWD(expr_or_atom(lhs_pts.sub_tree_span_at(ll)),
                                          "{} error evaluating part of left-hand-side of assignment",
                                          lhs_pts);
 
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
-          SILVA_EXPECT(lr_pts[0].rule_name == intp->lexicon.ni_expr_atom, MINOR);
+          SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
           const token_id_t ti = pts.tp->tokens[lr_pts[0].token_begin];
-          SILVA_EXPECT(sfp->token_infos[ti].category_old == IDENTIFIER, MINOR);
+          const token_id_t tc = pts.tp->categories[lr_pts[0].token_begin];
+          SILVA_EXPECT(tc == lexicon.ti_identifier, MINOR);
 
           SILVA_EXPECT(ll_ref->holds_class_instance(), MINOR);
           auto& ci      = std::get<class_instance_t>(ll_ref->data);
           ci.fields[ti] = rhs_ref;
         }
-        else if (lhs_pts[0].rule_name == intp->lexicon.ni_expr_atom) {
+        else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
-          SILVA_EXPECT(sfp->token_infos[ti].category_old == IDENTIFIER, MINOR);
+          const token_id_t tc = pts.tp->categories[lhs_pts[0].token_begin];
+          SILVA_EXPECT(tc == lexicon.ti_identifier, MINOR);
           SILVA_EXPECT_FWD(scope.set(ti, rhs_ref), "{} assignment to undeclared variable", pts);
         }
         else {
@@ -393,7 +391,7 @@ namespace silva::lox {
         }
         return rhs_ref;
       }
-      else if (rn == intp->lexicon.ni_expr_primary)
+      else if (rn == lexicon.ni_expr_primary)
       {
         return expr_or_atom(pts.sub_tree_span_at(1));
       }
@@ -416,27 +414,25 @@ namespace silva::lox {
         return it->second;
       }
       const token_id_t ti       = pts.tp->tokens[pts[0].token_begin];
+      const token_id_t tc       = pts.tp->categories[pts[0].token_begin];
       const token_info_t* tinfo = pts.tp->token_info_get(pts[0].token_begin);
-      if (ti == intp->lexicon.ti_super) {
+      if (ti == lexicon.ti_super) {
         SILVA_EXPECT(pts[0].token_end - pts[0].token_begin == 3, MAJOR);
         const auto it = intp->resolution.find(pts);
         SILVA_EXPECT(it != intp->resolution.end(), MAJOR, "{} could not resolve", pts);
         const index_t dist    = it->second;
-        const auto* super_ptr = scope.get_at(intp->lexicon.ti_super, dist);
+        const auto* super_ptr = scope.get_at(lexicon.ti_super, dist);
         SILVA_EXPECT(super_ptr != nullptr, MAJOR);
-        const auto* this_ptr = scope.get_at(intp->lexicon.ti_this, dist - 1);
+        const auto* this_ptr = scope.get_at(lexicon.ti_this, dist - 1);
         SILVA_EXPECT(this_ptr != nullptr, MAJOR);
         const token_id_t field_name = pts.tp->tokens[pts[0].token_begin + 2];
-        return SILVA_EXPECT_FWD(member_bind(*this_ptr,
-                                            *super_ptr,
-                                            field_name,
-                                            intp->object_pool,
-                                            intp->lexicon.ti_this),
-                                "{} could not find method {} in superclass",
-                                pts,
-                                sfp->token_id_wrap(field_name));
+        return SILVA_EXPECT_FWD(
+            member_bind(*this_ptr, *super_ptr, field_name, intp->object_pool, lexicon.ti_this),
+            "{} could not find method {} in superclass",
+            pts,
+            sfp->token_id_wrap(field_name));
       }
-      else if (tinfo->category_old == IDENTIFIER) {
+      else if (tc == lexicon.ti_identifier) {
         object_ref_t* ptr = [&] {
           const auto it = intp->resolution.find(pts);
           if (it != intp->resolution.end()) {
@@ -465,10 +461,10 @@ namespace silva::lox {
     {
       SILVA_EXPECT(pts.size() > 0, MAJOR);
       const name_id_t rule_name = pts[0].rule_name;
-      if (rule_name == intp->lexicon.ni_expr_atom) {
+      if (rule_name == lexicon.ni_expr_atom) {
         return atom(pts);
       }
-      else if (sfp->name_id_is_parent(intp->lexicon.ni_expr, rule_name)) {
+      else if (sfp->name_id_is_parent(lexicon.ni_expr, rule_name)) {
         return expr(pts);
       }
       else {
@@ -489,12 +485,13 @@ namespace silva::lox {
 
   struct execution_t {
     interpreter_t* intp   = nullptr;
-    syntax_farm_ptr_t sfp = intp->lexicon.sfp;
+    lexicon_t& lexicon    = intp->lexicon;
+    syntax_farm_ptr_t sfp = lexicon.sfp;
 
     expected_t<return_t<object_ref_t>> decl(const parse_tree_span_t pts, scope_ptr_t& scope)
     {
       const name_id_t rule_name = pts[0].rule_name;
-      if (rule_name == intp->lexicon.ni_decl_var) {
+      if (rule_name == lexicon.ni_decl_var) {
         const token_id_t var_name = pts.tp->tokens[pts[0].token_begin + 1];
         const auto children       = SILVA_EXPECT_FWD(pts.get_children_up_to<1>());
         object_ref_t initializer  = intp->object_pool.make(none);
@@ -508,7 +505,7 @@ namespace silva::lox {
                          pts,
                          sfp->token_id_wrap(var_name));
       }
-      else if (rule_name == intp->lexicon.ni_decl_fun) {
+      else if (rule_name == lexicon.ni_decl_fun) {
         const token_id_t fun_name = pts.tp->tokens[pts[0].token_begin + 1];
         SILVA_EXPECT(pts[0].num_children == 1, MAJOR);
         const auto func_pts = pts.sub_tree_span_at(1);
@@ -516,12 +513,12 @@ namespace silva::lox {
         ff.closure = scope;
         SILVA_EXPECT_FWD(scope.define(fun_name, intp->object_pool.make(std::move(ff))));
       }
-      else if (rule_name == intp->lexicon.ni_decl_class) {
+      else if (rule_name == lexicon.ni_decl_class) {
         const token_id_t class_name = pts.tp->tokens[pts[0].token_begin + 1];
         auto [it, end]              = pts.children_range();
         SILVA_EXPECT(it != end, MAJOR);
         const auto pts_super = pts.sub_tree_span_at(it.pos);
-        SILVA_EXPECT(pts_super[0].rule_name == intp->lexicon.ni_decl_class_s, MAJOR);
+        SILVA_EXPECT(pts_super[0].rule_name == lexicon.ni_decl_class_s, MAJOR);
         class_t cc;
         scope_ptr_t used_scope = scope;
         if (pts_super[0].token_begin < pts_super[0].token_end) {
@@ -539,13 +536,13 @@ namespace silva::lox {
                        *p_superclass);
           cc.superclass = *p_superclass;
           used_scope    = scope.make_child_arm();
-          SILVA_EXPECT_FWD(used_scope.define(intp->lexicon.ti_super, cc.superclass));
+          SILVA_EXPECT_FWD(used_scope.define(lexicon.ti_super, cc.superclass));
         }
         cc.pts = pts;
         ++it;
         while (it != end) {
           const auto pts_method = pts.sub_tree_span_at(it.pos);
-          SILVA_EXPECT(pts_method[0].rule_name == intp->lexicon.ni_function, MAJOR);
+          SILVA_EXPECT(pts_method[0].rule_name == lexicon.ni_function, MAJOR);
           const token_id_t method_name = pts.tp->tokens[pts_method[0].token_begin];
           function_t ff{pts_method};
           ff.closure              = used_scope;
@@ -563,13 +560,13 @@ namespace silva::lox {
     expected_t<return_t<object_ref_t>> stmt(const parse_tree_span_t pts, scope_ptr_t& scope)
     {
       const name_id_t rule_name = pts[0].rule_name;
-      if (rule_name == intp->lexicon.ni_stmt_print) {
+      if (rule_name == lexicon.ni_stmt_print) {
         object_ref_t value = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                                               "{} error evaluating argument to 'print'",
                                               pts);
         intp->print_stream->format("{}\n", pretty_string(std::move(value)));
       }
-      else if (rule_name == intp->lexicon.ni_stmt_if) {
+      else if (rule_name == lexicon.ni_stmt_if) {
         auto [it, end] = pts.children_range();
         SILVA_EXPECT(it != end, MAJOR);
         pts.sub_tree_span_at(it.pos);
@@ -594,7 +591,7 @@ namespace silva::lox {
           }
         }
       }
-      else if (rule_name == intp->lexicon.ni_stmt_for) {
+      else if (rule_name == lexicon.ni_stmt_for) {
         const auto [init_idx, cond_idx, inc_idx, body_idx] =
             SILVA_EXPECT_FWD(pts.get_children<4>());
         auto res = SILVA_EXPECT_FWD(intp->execute(pts.sub_tree_span_at(init_idx), scope),
@@ -616,7 +613,7 @@ namespace silva::lox {
                            pts);
         }
       }
-      else if (rule_name == intp->lexicon.ni_stmt_while) {
+      else if (rule_name == lexicon.ni_stmt_while) {
         const auto [cond_idx, body_idx] = SILVA_EXPECT_FWD(pts.get_children<2>());
         while (true) {
           const auto cond = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(cond_idx), scope),
@@ -631,7 +628,7 @@ namespace silva::lox {
           }
         }
       }
-      else if (rule_name == intp->lexicon.ni_stmt_return) {
+      else if (rule_name == lexicon.ni_stmt_return) {
         if (pts[0].num_children == 1) {
           auto res = SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                                       "{} error evaluating expression of return statement",
@@ -642,7 +639,7 @@ namespace silva::lox {
           return return_t<object_ref_t>{intp->object_pool.make(none)};
         }
       }
-      else if (rule_name == intp->lexicon.ni_stmt_block) {
+      else if (rule_name == lexicon.ni_stmt_block) {
         auto old_scope = scope;
         scope_exit_t scope_exit([&] { scope = old_scope; });
         scope = scope.make_child_arm();
@@ -653,7 +650,7 @@ namespace silva::lox {
           }
         }
       }
-      else if (rule_name == intp->lexicon.ni_stmt_expr) {
+      else if (rule_name == lexicon.ni_stmt_expr) {
         SILVA_EXPECT_FWD(intp->evaluate(pts.sub_tree_span_at(1), scope),
                          "{} error evaluating expression statement",
                          pts);
@@ -668,24 +665,24 @@ namespace silva::lox {
     {
       SILVA_EXPECT(pts.size() > 0, MAJOR);
       const name_id_t rule_name = pts[0].rule_name;
-      if (rule_name == intp->lexicon.ni_none) {
+      if (rule_name == lexicon.ni_none) {
         ;
       }
-      else if (rule_name == intp->lexicon.ni_lox) {
+      else if (rule_name == lexicon.ni_lox) {
         for (const auto [node_idx, child_idx]: pts.children_range()) {
           auto res = SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx), scope));
         }
       }
-      else if (rule_name == intp->lexicon.ni_decl) {
+      else if (rule_name == lexicon.ni_decl) {
         return decl(pts.sub_tree_span_at(1), scope);
       }
-      else if (sfp->name_infos[rule_name].parent_name == intp->lexicon.ni_decl) {
+      else if (sfp->name_infos[rule_name].parent_name == lexicon.ni_decl) {
         return decl(pts, scope);
       }
-      else if (rule_name == intp->lexicon.ni_stmt) {
+      else if (rule_name == lexicon.ni_stmt) {
         return stmt(pts.sub_tree_span_at(1), scope);
       }
-      else if (sfp->name_infos[rule_name].parent_name == intp->lexicon.ni_stmt) {
+      else if (sfp->name_infos[rule_name].parent_name == lexicon.ni_stmt) {
         return stmt(pts, scope);
       }
       else {

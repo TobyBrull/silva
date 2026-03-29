@@ -14,7 +14,6 @@
 
 #include <utility>
 
-using enum silva::token_category_old_t;
 using enum silva::error_level_t;
 
 namespace silva::seed::impl {
@@ -76,8 +75,9 @@ namespace silva::seed::impl {
           if (pts_1[i].rule_name == lexicon.ni_term) {
             const index_t token_idx        = pts_1[i].token_begin;
             const token_id_t token_id      = pts_1.tp->tokens[token_idx];
+            const token_id_t token_cat     = pts_1.tp->categories[token_idx];
             const token_info_t& token_info = sfp->token_infos[token_id];
-            if (token_info.category_old == token_category_old_t::STRING) {
+            if (token_cat == lexicon.ti_string) {
               const auto keyword              = SILVA_EXPECT_FWD(sfp->token_id_in_string(token_id));
               se->string_to_keyword[token_id] = keyword;
               SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
@@ -279,15 +279,15 @@ namespace silva::seed::impl {
     using func_table_t = hash_map_t<token_id_t, func_t>;
     func_table_t func_table = {
         {
-            *sfp->token_id("parse_f"),
+            sfp->token_id("parse_f"),
             func_t::make<&interpreter_apply_nursery_t::parse_f>(this),
         },
         {
-            *sfp->token_id("parse_and_callback_f"),
+            sfp->token_id("parse_and_callback_f"),
             func_t::make<&interpreter_apply_nursery_t::parse_and_callback_f>(this),
         },
         {
-            *sfp->token_id("print_f"),
+            sfp->token_id("print_f"),
             func_t::make<&interpreter_apply_nursery_t::print_f>(this),
         },
     };
@@ -298,7 +298,8 @@ namespace silva::seed::impl {
       auto ss            = stake();
       const auto& s_node = pts[0];
       SILVA_EXPECT(s_node.rule_name == lexicon.ni_term, MAJOR);
-      const token_id_t s_front_ti = pts.tp->tokens[s_node.token_begin];
+      const token_id_t s_front_ti  = pts.tp->tokens[s_node.token_begin];
+      const token_id_t s_front_cat = pts.tp->categories[s_node.token_begin];
       if (s_front_ti == lexicon.ti_eps) {
         return ss.commit();
       }
@@ -313,37 +314,7 @@ namespace silva::seed::impl {
                          num_tokens_left() > 0,
                          "Reached end of token-stream when looking for {}",
                          pts.tp->token_info_get(s_node.token_begin)->str);
-      if ((s_front_ti == lexicon.ti_identifier || s_front_ti == lexicon.ti_operator) &&
-          s_node.num_tokens() == 3) {
-        SILVA_EXPECT(s_node.num_children == 0, MAJOR, "expected Terminal node have no children");
-        if (s_front_ti == lexicon.ti_identifier) {
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             token_data_by()->category_old == IDENTIFIER,
-                             "expected {}",
-                             pts.token_range());
-        }
-        else if (s_front_ti == lexicon.ti_operator) {
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             token_data_by()->category_old == OPERATOR,
-                             "expected {}",
-                             pts.token_range());
-        }
-        else {
-          SILVA_EXPECT(false, MAJOR, "Only 'identifier' and 'operator' may have regexes");
-        }
-        const token_id_t regex_token_id = pts.tp->tokens[s_node.token_begin + 2];
-        const auto it                   = se->regexes.find(regex_token_id);
-        SILVA_EXPECT(it != se->regexes.end() && it->second.has_value(), MAJOR);
-        const std::regex& re          = it->second.value();
-        const string_view_t token_str = token_data_by()->str;
-        const bool is_match           = std::regex_search(token_str.begin(), token_str.end(), re);
-        SILVA_EXPECT_PARSE(t_rule_name,
-                           is_match,
-                           "{} does not match regex {}",
-                           sfp->token_id_wrap(token_id_by()),
-                           sfp->token_infos[regex_token_id].str);
-      }
-      else if (s_front_ti == lexicon.ti_keywords_of) {
+      if (s_front_ti == lexicon.ti_keywords_of) {
         const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
         const auto pts_nt   = pts.sub_tree_span_at(children[0]);
         const auto it       = se->nonterminal_rules.find(pts_nt);
@@ -362,6 +333,25 @@ namespace silva::seed::impl {
                      sfp->token_id_wrap(token_id_by()),
                      sfp->name_id_wrap(keyword_scope));
       }
+      else if (s_front_ti == lexicon.ti_any) {
+        ;
+      }
+      else if (s_front_cat == lexicon.ti_string) {
+        const auto it = se->string_to_keyword.find(s_front_ti);
+        SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
+        const token_id_t t_expected_ti = it->second;
+        SILVA_EXPECT_PARSE(t_rule_name,
+                           token_id_by() == t_expected_ti,
+                           "expected {}",
+                           sfp->token_id_wrap(t_expected_ti));
+      }
+      else if (s_front_cat == lexicon.ti_token_cat_name) {
+        SILVA_EXPECT(token_category_by() == s_front_ti,
+                     MINOR,
+                     "expected token of category {}; got {}",
+                     sfp->token_id_wrap(s_front_ti),
+                     sfp->token_id_wrap(token_category_by()));
+      }
       else if (s_node.num_children == 1) {
         const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
         const auto pts_cat  = pts.sub_tree_span_at(children[0]);
@@ -373,43 +363,7 @@ namespace silva::seed::impl {
                            sfp->token_id_wrap(cat_token));
       }
       else {
-        SILVA_EXPECT(s_node.num_children == 0, MAJOR, "Expected Terminal node have no children");
-        SILVA_EXPECT(s_node.num_tokens() == 1,
-                     MAJOR,
-                     "Terminal nodes must have one or three tokens");
-        if (s_front_ti == lexicon.ti_identifier) {
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             token_data_by()->category_old == IDENTIFIER,
-                             "expected identifier");
-        }
-        else if (s_front_ti == lexicon.ti_operator) {
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             token_data_by()->category_old == OPERATOR,
-                             "expected operator");
-        }
-        else if (s_front_ti == lexicon.ti_string) {
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             token_data_by()->category_old == STRING,
-                             "expected string");
-        }
-        else if (s_front_ti == lexicon.ti_number) {
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             token_data_by()->category_old == NUMBER,
-                             "expected number");
-        }
-        else if (s_front_ti == lexicon.ti_any) {
-          ;
-        }
-        else {
-          const index_t s_token_id = pts.tp->tokens[s_node.token_begin];
-          const auto it            = se->string_to_keyword.find(s_token_id);
-          SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
-          const token_id_t t_expected_ti = it->second;
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             token_id_by() == t_expected_ti,
-                             "expected {}",
-                             sfp->token_id_wrap(t_expected_ti));
-        }
+        SILVA_EXPECT(false, BROKEN_SEED);
       }
       token_index += 1;
       return ss.commit();
@@ -764,8 +718,8 @@ namespace silva::seed {
 
   expected_t<parse_tree_ptr_t> interpreter_t::add_seed_text(filepath_t filepath, string_t text)
   {
-    auto tt  = SILVA_EXPECT_FWD(tokenize(sfp, std::move(filepath), std::move(text)));
-    auto ptp = SILVA_EXPECT_FWD(bootstrap_interpreter.parse(std::move(tt)));
+    auto ff  = SILVA_EXPECT_FWD(fragmentize(sfp, std::move(filepath), std::move(text)));
+    auto ptp = SILVA_EXPECT_FWD(bootstrap_interpreter.parse(std::move(ff)));
     // fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
     SILVA_EXPECT_FWD(add_seed(ptp->span()));
     return ptp;
@@ -810,5 +764,12 @@ namespace silva::seed {
 
     auto tp = SILVA_EXPECT_FWD(tokenizer_farm.apply(fs, tokenizer_name));
     return apply(std::move(tp), goal_rule_name);
+  }
+
+  expected_t<parse_tree_ptr_t>
+  interpreter_t::apply_text(filepath_t filepath, string_t text, name_id_t goal_rule_name)
+  {
+    auto ff = SILVA_EXPECT_FWD(fragmentize(sfp, std::move(filepath), std::move(text)));
+    return apply(std::move(ff), goal_rule_name);
   }
 }

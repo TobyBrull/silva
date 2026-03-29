@@ -1,11 +1,10 @@
 #include "seed.hpp"
 
+#include "fragmentization.hpp"
 #include "seed_axe.hpp"
 #include "seed_tokenizer.hpp"
 
 #include "canopy/expected.hpp"
-
-using enum silva::token_category_old_t;
 
 namespace silva::seed::impl {
   struct base_parse_tree_nursery_t : public parse_tree_nursery_t {
@@ -16,45 +15,24 @@ namespace silva::seed::impl {
     {
     }
 
-    expected_t<parse_tree_node_t> token_category()
-    {
-      auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_tok_cat);
-      SILVA_EXPECT_PARSE(lexicon.ni_tok_cat, num_tokens_left() >= 1, "no more tokens in input");
-      const auto& tstr = token_data_by()->str;
-      SILVA_EXPECT_PARSE(lexicon.ni_tok_cat,
-                         token_data_by()->category_old == IDENTIFIER && !tstr.empty() &&
-                             std::islower(tstr.front()),
-                         "unexpected {}",
-                         sfp->token_id_wrap(token_id_by()));
-      token_index += 1;
-      return ss_rule.commit();
-    }
-
     expected_t<parse_tree_node_t> terminal()
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_term);
-      if (num_tokens_left() >= 3 &&
-          (token_id_by(0) == lexicon.ti_identifier || token_id_by(0) == lexicon.ti_operator) &&
-          token_id_by(1) == lexicon.ti_slash && token_data_by(2)->category_old == STRING) {
-        token_index += 3;
-      }
-      else if (num_tokens_left() >= 2 && token_id_by(0) == lexicon.ti_keywords_of) {
+      if (num_tokens_left() >= 2 && token_id_by(0) == lexicon.ti_keywords_of) {
         token_index += 1;
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_term, nonterminal()));
       }
       else {
-        SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no more tokens in input");
-        if (token_data_by()->category_old == STRING || token_id_by() == lexicon.ti_identifier ||
-            token_id_by() == lexicon.ti_operator || token_id_by() == lexicon.ti_string ||
-            token_id_by() == lexicon.ti_number || token_id_by() == lexicon.ti_any ||
-            token_id_by() == lexicon.ti_eps || token_id_by() == lexicon.ti_eof) {
-          token_index += 1;
-        }
-        else {
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_term, token_category()));
-        }
+        SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
+        SILVA_EXPECT_PARSE(lexicon.ni_term,
+                           token_category_by() == lexicon.ti_string ||
+                               token_id_by() == lexicon.ti_token_cat_name ||
+                               token_id_by() == lexicon.ti_any || token_id_by() == lexicon.ti_eps ||
+                               token_id_by() == lexicon.ti_eof,
+                           "unexpected {}",
+                           sfp->token_id_wrap(token_id_by()));
+        token_index += 1;
       }
       return ss_rule.commit();
     }
@@ -63,13 +41,11 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_nt_base);
-      SILVA_EXPECT_PARSE(lexicon.ni_nt_base, num_tokens_left() >= 1, "no more tokens in input");
-      const bool is_cap_id = token_data_by()->category_old == IDENTIFIER &&
-          !token_data_by()->str.empty() && std::isupper(token_data_by()->str.front());
-      const bool is_name_id = token_id_by() == lexicon.ti_up || token_id_by() == lexicon.ti_here ||
-          token_id_by() == lexicon.ti_silva;
+      SILVA_EXPECT_PARSE(lexicon.ni_nt_base, num_tokens_left() >= 1, "no tokens left");
       SILVA_EXPECT_PARSE(lexicon.ni_nt_base,
-                         is_cap_id || is_name_id,
+                         token_id_by() == lexicon.ti_up || token_id_by() == lexicon.ti_here ||
+                             token_id_by() == lexicon.ti_silva ||
+                             token_category_by() == lexicon.ti_rule_name,
                          "unexpected {}",
                          sfp->token_id_wrap(token_id_by()));
       token_index += 1;
@@ -92,13 +68,13 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_axe_op);
-      SILVA_EXPECT_PARSE(
-          lexicon.ni_axe_op,
-          num_tokens_left() >= 1 &&
-              (token_id_by() == lexicon.ti_concat || token_data_by()->category_old == STRING),
-          "expected {} or string, got {}",
-          sfp->token_id_wrap(lexicon.ti_concat),
-          sfp->token_id_wrap(token_id_by()));
+      SILVA_EXPECT_PARSE(lexicon.ni_axe_op, num_tokens_left() >= 1, "no tokens left");
+      SILVA_EXPECT_PARSE(lexicon.ni_axe_op,
+                         token_category_by() == lexicon.ti_string ||
+                             token_id_by() == lexicon.ti_concat,
+                         "expected {} or string, got {}",
+                         sfp->token_id_wrap(lexicon.ti_concat),
+                         sfp->token_id_wrap(token_id_by()));
       token_index += 1;
       return ss_rule.commit();
     }
@@ -107,13 +83,13 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_axe_op_type);
+      SILVA_EXPECT_PARSE(lexicon.ni_axe_op_type, num_tokens_left() >= 1, "no tokens left");
       SILVA_EXPECT_PARSE(
           lexicon.ni_axe_op_type,
-          num_tokens_left() >= 1 &&
-              (token_id_by() == lexicon.ti_atom_nest || token_id_by() == lexicon.ti_prefix ||
-               token_id_by() == lexicon.ti_prefix_n || token_id_by() == lexicon.ti_infix ||
-               token_id_by() == lexicon.ti_infix_flat || token_id_by() == lexicon.ti_ternary ||
-               token_id_by() == lexicon.ti_postfix || token_id_by() == lexicon.ti_postfix_n),
+          token_id_by() == lexicon.ti_atom_nest || token_id_by() == lexicon.ti_prefix ||
+              token_id_by() == lexicon.ti_prefix_n || token_id_by() == lexicon.ti_infix ||
+              token_id_by() == lexicon.ti_infix_flat || token_id_by() == lexicon.ti_ternary ||
+              token_id_by() == lexicon.ti_postfix || token_id_by() == lexicon.ti_postfix_n,
           "expected one of [ atom_nest prefix prefix_nest infix infix_flat ternary "
           "postfix postfix_nest ], got {}",
           sfp->token_id_wrap(token_id_by()));
@@ -177,46 +153,22 @@ namespace silva::seed::impl {
       return ss_rule.commit();
     }
 
-    expected_t<parse_tree_node_t> tokenizer_frag_name()
-    {
-      auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_tok_frag_name);
-      SILVA_EXPECT_PARSE(lexicon.ni_tok_frag_name,
-                         num_tokens_left() >= 1,
-                         "no more tokens in input");
-      const auto& tstr = token_data_by()->str;
-      bool is_frag     = token_data_by()->category_old == IDENTIFIER && !tstr.empty();
-      if (is_frag) {
-        for (char c: tstr) {
-          if (!std::isupper(static_cast<unsigned char>(c)) && c != '_') {
-            is_frag = false;
-            break;
-          }
-        }
-      }
-      SILVA_EXPECT_PARSE(lexicon.ni_tok_frag_name,
-                         is_frag,
-                         "unexpected {}",
-                         sfp->token_id_wrap(token_id_by()));
-      token_index += 1;
-      return ss_rule.commit();
-    }
-
     expected_t<parse_tree_node_t> tokenizer_matcher()
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_tok_matcher);
-      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_matcher, tokenizer_frag_name()));
+      SILVA_EXPECT_PARSE(lexicon.ni_tok_matcher, num_tokens_left() >= 1, "no tokens left");
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_matcher, lexicon.ti_frag_name);
       if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_slash &&
-          token_data_by(1)->category_old == STRING) {
+          token_category_by(1) == lexicon.ti_string) {
         token_index += 2;
       }
       if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_backslash &&
-          token_data_by(1)->category_old == STRING) {
+          token_category_by(1) == lexicon.ti_string) {
         token_index += 2;
       }
       if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_pipe &&
-          token_data_by(1)->category_old == STRING) {
+          token_category_by(1) == lexicon.ti_string) {
         token_index += 2;
       }
       return ss_rule.commit();
@@ -227,7 +179,7 @@ namespace silva::seed::impl {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_tok_item);
       SILVA_EXPECT_PARSE(lexicon.ni_tok_item, num_tokens_left() >= 1, "no more tokens in input");
-      if (token_data_by()->category_old == STRING) {
+      if (token_category_by() == lexicon.ti_string) {
         token_index += 1;
       }
       else {
@@ -252,9 +204,7 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_tok_prefix_item);
-      SILVA_EXPECT_PARSE(lexicon.ni_tok_prefix_item,
-                         num_tokens_left() >= 1,
-                         "no more tokens in input");
+      SILVA_EXPECT_PARSE(lexicon.ni_tok_prefix_item, num_tokens_left() >= 1, "no tokens left");
       if (token_id_by() == lexicon.ti_brack_open) {
         ss_rule.add_proto_node(
             SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_prefix_item, tokenizer_list()));
@@ -306,7 +256,7 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_tok_tok_rule);
-      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_tok_rule, token_category()));
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_tok_rule, lexicon.ti_string);
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_tok_rule, lexicon.ti_equal);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_tok_rule, tokenizer_defn()));
       return ss_rule.commit();
@@ -367,11 +317,14 @@ namespace silva::seed::impl {
     return retval;
   }
 
-  axe_t make_bootstrap_seed_expr_axe(syntax_farm_ptr_t sfp, const lexicon_t& lexicon)
+  axe_t make_bootstrap_seed_expr_axe(syntax_farm_ptr_t sfp,
+                                     const lexicon_t& lexicon,
+                                     tokenizer_farm_t& tf)
   {
-    const auto axe_defn = find_subsection("- Expr = axe ", seed_str);
-    const auto axe_toks = SILVA_EXPECT_ASSERT(tokenize(sfp, "seed.axe", axe_defn));
-    impl::base_parse_tree_nursery_t nursery(axe_toks, lexicon);
+    const auto axe_text = find_subsection("- Expr = axe ", seed_str);
+    const auto axe_frag = SILVA_EXPECT_ASSERT(fragmentize(sfp, "seed.axe", string_t{axe_text}));
+    const auto axe_tok  = SILVA_EXPECT_ASSERT(tf.apply(axe_frag, lexicon.ti_r_seed));
+    impl::base_parse_tree_nursery_t nursery(axe_tok, lexicon);
     SILVA_EXPECT_ASSERT(nursery.axe());
     parse_tree_ptr_t pt     = sfp->add(std::move(nursery).finish());
     const name_id_t ni_expr = sfp->name_id_of("Seed", "Expr");
@@ -392,9 +345,9 @@ namespace silva::seed::impl {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_nt_maybe_var);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, nonterminal()));
-      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_right_arrow) {
-        token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, variable()));
+      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_right_arrow &&
+          token_category_by(1) == lexicon.ti_var_name) {
+        token_index += 2;
       }
       return ss_rule.commit();
     }
@@ -439,76 +392,31 @@ namespace silva::seed::impl {
                                                sfp->name_id_wrap(lexicon.ni_atom)));
     }
 
-    expected_t<parse_tree_node_t> variable()
-    {
-      auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_var);
-      SILVA_EXPECT_PARSE(lexicon.ni_var, num_tokens_left() >= 1, "no more tokens in input");
-      const auto& tstr = token_data_by()->str;
-      SILVA_EXPECT_PARSE(lexicon.ni_var,
-                         token_data_by()->category_old == IDENTIFIER && tstr.size() >= 3 &&
-                             std::islower(tstr.front()) && tstr.ends_with("_v"),
-                         "unexpected {}",
-                         sfp->token_id_wrap(token_id_by()));
-      token_index += 1;
-      return ss_rule.commit();
-    }
-
     expected_t<parse_tree_node_t> function()
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_func);
-      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, function_name()));
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_func, lexicon.ti_func_name);
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_func, lexicon.ti_paren_open);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, function_args()));
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_func, lexicon.ti_paren_close);
       return ss_rule.commit();
     }
 
-    expected_t<parse_tree_node_t> function_name()
-    {
-      auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_func_name);
-      SILVA_EXPECT_PARSE(lexicon.ni_func_name, num_tokens_left() >= 1, "no more tokens in input");
-      const auto& tstr = token_data_by()->str;
-      SILVA_EXPECT_PARSE(lexicon.ni_func_name,
-                         token_data_by()->category_old == IDENTIFIER && tstr.size() >= 3 &&
-                             std::islower(tstr.front()) && tstr.ends_with("_f"),
-                         "unexpected {}",
-                         sfp->token_id_wrap(token_id_by()));
-      token_index += 1;
-      return ss_rule.commit();
-    }
-
     expected_t<parse_tree_node_t> function_arg()
     {
-      auto ss                        = stake();
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_func_arg);
       const index_t orig_token_index = token_index;
       error_nursery_t error_nursery;
-
-      {
-        auto result = variable();
-        if (result) {
-          ss.add_proto_node(*result);
-          return ss.commit();
-        }
-        error_nursery.add_child_error(std::move(result).error());
+      SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
+      if (token_category_by() == lexicon.ti_var_name) {
+        token_index += 1;
       }
-
-      {
-        auto result = expr();
-        if (result) {
-          ss.add_proto_node(*result);
-          return ss.commit();
-        }
-        error_nursery.add_child_error(std::move(result).error());
+      else {
+        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, function_args()));
       }
-
-      return std::unexpected(std::move(error_nursery)
-                                 .finish_short(error_level_t::MINOR,
-                                               "[{}] {}",
-                                               token_location_at(orig_token_index),
-                                               sfp->name_id_wrap(lexicon.ni_func_arg)));
+      return ss_rule.commit();
     }
 
     expected_t<parse_tree_node_t> function_args()
@@ -607,8 +515,8 @@ namespace silva::seed {
 
     impl_t(syntax_farm_ptr_t sfp) : sfp(sfp), lexicon(sfp), tokenizer_farm(sfp)
     {
-      seed_expr_axe  = impl::make_bootstrap_seed_expr_axe(sfp, lexicon);
       tokenizer_farm = make_bootstrap_tokenizer_farm(sfp);
+      seed_expr_axe  = impl::make_bootstrap_seed_expr_axe(sfp, lexicon, tokenizer_farm);
     }
 
     expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)

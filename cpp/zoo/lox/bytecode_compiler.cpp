@@ -2,8 +2,6 @@
 
 #include "zoo/lox/object.hpp"
 
-using enum silva::token_category_old_t;
-
 namespace silva::lox {
 
   using enum opcode_t;
@@ -163,6 +161,7 @@ namespace silva::lox {
     expected_t<void> expr_atom(const parse_tree_span_t pts)
     {
       const auto ti             = pts.tp->tokens[pts[0].token_begin];
+      const auto tc             = pts.tp->categories[pts[0].token_begin];
       const token_info_t* tinfo = pts.tp->token_info_get(pts[0].token_begin);
       if (ti == lexicon.ti_none) {
         cfs().nursery.append_simple_instr(pts, NIL);
@@ -179,7 +178,7 @@ namespace silva::lox {
         SILVA_EXPECT_FWD(get_variable(pts, lexicon.ti_super));
         cfs().nursery.append_index_instr(pts, GET_SUPER, pts.tp->tokens[pts[0].token_begin + 2]);
       }
-      else if (tinfo->category_old == IDENTIFIER) {
+      else if (tc == lexicon.ti_identifier) {
         SILVA_EXPECT_FWD(get_variable(pts, ti));
       }
       else {
@@ -304,13 +303,15 @@ namespace silva::lox {
           SILVA_EXPECT_FWD(expr(lhs_pts.sub_tree_span_at(ll)));
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
           SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
-          const token_id_t field_name = pts.tp->tokens[lr_pts[0].token_begin];
-          SILVA_EXPECT(sfp->token_infos[field_name].category_old == IDENTIFIER, MINOR);
-          cfs().nursery.append_index_instr(pts, SET_PROPERTY, field_name);
+          const token_id_t ti = pts.tp->tokens[lr_pts[0].token_begin];
+          const token_id_t tc = pts.tp->categories[lr_pts[0].token_begin];
+          SILVA_EXPECT(tc == lexicon.ti_identifier, MINOR);
+          cfs().nursery.append_index_instr(pts, SET_PROPERTY, ti);
         }
         else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const token_id_t ti = pts.tp->tokens[lhs_pts[0].token_begin];
-          SILVA_EXPECT(sfp->token_infos[ti].category_old == IDENTIFIER, MINOR);
+          const token_id_t tc = pts.tp->categories[lhs_pts[0].token_begin];
+          SILVA_EXPECT(tc == lexicon.ti_identifier, MINOR);
           SILVA_EXPECT_FWD(set_variable(lhs_pts, ti));
         }
         else {

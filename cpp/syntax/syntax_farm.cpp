@@ -6,11 +6,8 @@
 
 namespace silva {
 
-  using enum token_category_old_t;
-
   expected_t<string_view_t> token_info_t::string_as_plain_contained() const
   {
-    SILVA_EXPECT(category_old == STRING, MAJOR);
     SILVA_EXPECT(str.size() >= 2, MINOR);
     SILVA_EXPECT(str.front() == '\'' && str.back() == '\'', MINOR);
     for (index_t i = 1; i < str.size() - 2; ++i) {
@@ -21,7 +18,6 @@ namespace silva {
 
   expected_t<string_t> token_info_t::contained_string() const
   {
-    SILVA_EXPECT(category_old == STRING, MAJOR);
     SILVA_EXPECT(str.size() >= 2, MINOR);
     SILVA_EXPECT(str.front() == '\'' && str.back() == '\'', MINOR);
     string_t retval;
@@ -43,7 +39,6 @@ namespace silva {
 
   expected_t<double> token_info_t::number_as_double() const
   {
-    SILVA_EXPECT(category_old == NUMBER, MAJOR);
     return convert_to<double>(str);
   }
 
@@ -64,10 +59,7 @@ namespace silva {
     token_infos.emplace_back();
     token_lookup[""] = token_id_none;
 
-    token_infos.emplace_back(token_info_t{
-        .category_old = IDENTIFIER,
-        .str          = "language",
-    });
+    token_infos.emplace_back(token_info_t{.str = "language"});
     token_lookup["language"] = token_id_language;
 
     const name_info_t fni{0, 0};
@@ -78,42 +70,24 @@ namespace silva {
 
   syntax_farm_t::~syntax_farm_t() = default;
 
-  expected_t<token_id_t> syntax_farm_t::token_id(const string_view_t token_str)
+  token_id_t syntax_farm_t::token_id(const string_view_t token_str)
   {
     const auto it = token_lookup.find(string_t{token_str});
     if (it != token_lookup.end()) {
       return it->second;
     }
     else {
-      const auto [tokenized_str, token_cat] = tokenize_one(token_str);
-      SILVA_EXPECT(tokenized_str.size() == token_str.size(), MINOR);
       const token_id_t new_token_id = token_infos.size();
-      token_infos.push_back(token_info_t{token_cat, string_t{tokenized_str}});
-      token_lookup.emplace(tokenized_str, new_token_id);
+      token_infos.push_back(token_info_t{string_t{token_str}});
+      token_lookup.emplace(token_str, new_token_id);
       return new_token_id;
     }
-  }
-
-  expected_t<token_id_t> syntax_farm_t::token_id_new(const string_view_t token_str)
-  {
-    const auto it = token_lookup.find(string_t{token_str});
-    if (it != token_lookup.end()) {
-      return it->second;
-    }
-    const token_id_t new_token_id = token_infos.size();
-    token_infos.push_back(token_info_t{
-        .category_old = INVALID,
-        .str          = string_t{token_str},
-    });
-    token_lookup.emplace(string_t{token_str}, new_token_id);
-    return new_token_id;
   }
 
   expected_t<token_id_t> syntax_farm_t::token_id_in_string(const token_id_t ti)
   {
     const auto& token_info = token_infos[ti];
-    SILVA_EXPECT(token_info.category_old == STRING, MINOR, "{} not a string", token_id_wrap(ti));
-    const string_t str = SILVA_EXPECT_FWD(token_info.contained_string(),
+    const string_t str     = SILVA_EXPECT_FWD(token_info.contained_string(),
                                           "{} not a string containing a token",
                                           token_id_wrap(ti));
     return token_id(str);

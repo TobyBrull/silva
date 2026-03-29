@@ -85,15 +85,14 @@ namespace silva::seed::test {
     const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
-    const string_view_t frog_source_code = R"'(
+    const string_t frog_text = R"'(
     keyword1 a b c
     keyword2 d e
     keyword1 f
     keyword3 g h i
   )'";
-    const auto frog_tt                   = SILVA_REQUIRE(tokenize(sf.ptr(), "", frog_source_code));
-    const auto frog_pt                   = SILVA_REQUIRE(se.apply(frog_tt, sf.name_id_of("Frog")));
-    const string_view_t expected         = R"(
+    const auto frog_pt       = SILVA_REQUIRE(se.apply_text("", frog_text, sf.name_id_of("Frog")));
+    const string_view_t expected = R"(
 [0]_.Frog                                         keyword1 a ... h i
   [0]_.Frog.Rule                                  keyword1 a b c
     [0]_.Frog.Expr                                a b c
@@ -158,6 +157,8 @@ namespace silva::seed::test {
   TEST_CASE("multiple-texts", "[seed::interpreter_t]")
   {
     const string_view_t text1_seed = R"'(
+    - Foo = tokenizer [
+    ]
     - Foo = [
       - x = 'a' 'b' 'c' _.Bar ?
     ]
@@ -173,11 +174,12 @@ namespace silva::seed::test {
     SILVA_REQUIRE(se.add_seed_text("text1.seed", string_t{text1_seed}));
     SILVA_REQUIRE(se.add_seed_text("text2.seed", string_t{text2_seed}));
 
-    const string_view_t code     = R"'(
+    const string_t text = R"'(
     a b c x y z a b c
 )'";
-    auto tt                      = SILVA_REQUIRE(tokenize(sf.ptr(), "", code));
-    auto pt                      = SILVA_REQUIRE(se.apply(tt, sf.name_id_of("Foo")));
+
+    auto pt = SILVA_REQUIRE(se.apply_text("", text, sf.name_id_of("Foo")));
+
     const string_view_t expected = R"(
 [0]_.Foo                                          a b ... b c
   [0]_.Bar                                        x y ... b c

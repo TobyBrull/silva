@@ -61,8 +61,8 @@ namespace silva {
     syntax_farm_t();
     ~syntax_farm_t();
 
-    expected_t<token_id_t> token_id(string_view_t);
-    expected_t<token_id_t> token_id_new(string_view_t);
+    token_id_t token_id(string_view_t);
+
     expected_t<token_id_t> token_id_in_string(token_id_t);
 
     name_id_t name_id(name_id_t parent_name, token_id_t base_name);
@@ -109,7 +109,7 @@ namespace silva {
   name_id_t syntax_farm_t::name_id_of(Ts&&... xs)
   {
     array_t<token_id_t> vec;
-    ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
+    ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
     return name_id_span(name_id_root, vec);
   }
 
@@ -117,7 +117,7 @@ namespace silva {
   name_id_t syntax_farm_t::name_id_of(name_id_t parent_name, Ts&&... xs)
   {
     array_t<token_id_t> vec;
-    ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
+    ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
     return name_id_span(parent_name, vec);
   }
 }

@@ -18,9 +18,9 @@ namespace silva::lox {
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_farm_t sf;
-    auto si               = seed_interpreter(sf.ptr());
-    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sf.ptr(), cmdline_args[1]));
-    parse_tree_ptr_t pt   = SILVA_EXPECT_FWD(si->apply(tp, sf.name_id_of("Lox")),
+    auto si                  = seed_interpreter(sf.ptr());
+    fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]));
+    parse_tree_ptr_t pt      = SILVA_EXPECT_FWD(si->apply(fp, sf.name_id_of("Lox")),
                                            "error parsing Lox file {}",
                                            cmdline_args[1]);
 

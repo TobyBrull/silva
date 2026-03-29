@@ -36,6 +36,16 @@ namespace silva::seed {
   // the first alternative and aborts the parse if the whole expression does not match.
 
   const string_view_t seed_str = R"'(
+    - Seed = tokenizer [
+      - include tokenizer FreeForm
+      - operators = [ PARENTHESIS 'concat' 'but_then' 'x' 'p' '_' ]
+      - operators = ::: OPERATOR
+      - rule_name = IDENTIFIER_PASCAL_CASE
+      - var_name = IDENTIFIER_SNAKE_CASE\'_v'
+      - func_name = IDENTIFIER_SNAKE_CASE\'_f'
+      - token_category_name = IDENTIFIER_SNAKE_CASE
+      - frag_name = IDENTIFIER_MACRO_CASE
+    ]
     - Seed = [
       - x = ( '-' Rule ) *
       - Rule = Nonterminal '=' ( '[' x ']'
@@ -53,26 +63,19 @@ namespace silva::seed {
         - Or        = ltr   infix_flat '|'
       ]
       - Atom = alias NonterminalMaybeVar | Function | Terminal
-      - NonterminalMaybeVar = Nonterminal ( '->' Variable ) ?
-      - Variable = identifier / '^[a-z].*_v$'
+      - NonterminalMaybeVar = Nonterminal ( '->' var_name ) ?
       - Function = [
-         - x = Name '(' Args ')'
-         - Name = identifier / '^[a-z].*_f$'
+         - x = func_name '(' Args ')'
          - Args = Arg ( ',' Arg ) *
-         - Arg = alias p.Variable | p.Expr
+         - Arg = var_name | p.Expr
       ]
       - Nonterminal = [
         - x = Base ( '.' Base ) *
-        - Base = '_' | 'x' | 'p' | identifier / '^[A-Z]'
+        - Base = '_' | 'x' | 'p' | rule_name
       ]
-      - Terminal = string
-                 | 'identifier' ( '/' string ) ?
-                 | 'operator' ( '/' string ) ?
+      - Terminal = string | token_category_name
                  | 'keywords_of' Nonterminal
-                 | 'string' | 'number'
                  | 'any' | 'epsilon' | 'end_of_file'
-                 | TokenCategory
-      - TokenCategory = identifier / '^[a-z]'
     ]
     - None = epsilon
 )'";

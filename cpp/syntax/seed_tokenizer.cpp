@@ -529,7 +529,7 @@ namespace silva::seed {
               string_view_t{fp->source_code}.substr(token_text_start,
                                                     token_text_end - token_text_start);
 
-          const auto tid = SILVA_EXPECT_FWD(sfp->token_id_new(token_text));
+          const auto tid = sfp->token_id(token_text);
           retval->tokens.push_back(tid);
           retval->categories.push_back(rule.token_name);
           retval->locations.push_back(fp->fragments[frag_idx].location);
@@ -546,6 +546,13 @@ namespace silva::seed {
     }
 
     return sfp->add(std::move(retval));
+  }
+
+  expected_t<tokenization_ptr_t>
+  tokenizer_farm_t::apply_text(filepath_t filepath, string_t text, const token_id_t tokenizer_name)
+  {
+    auto fp = SILVA_EXPECT_FWD(fragmentize(sfp, std::move(filepath), std::move(text)));
+    return apply(fp, tokenizer_name);
   }
 
   tokenizer_farm_t make_bootstrap_tokenizer_farm(syntax_farm_ptr_t sfp)

@@ -38,6 +38,7 @@ namespace silva {
     index_t count_children_with(name_id_t) const;
 
     token_id_t first_token_id() const;
+    token_id_t first_token_category() const;
 
     token_range_t token_range() const;
     token_location_t token_location() const;

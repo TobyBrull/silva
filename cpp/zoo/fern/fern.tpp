@@ -7,7 +7,7 @@
 namespace silva::fern::test {
   TEST_CASE("fern", "[fern]")
   {
-    const string_view_t fern_text = R"([
+    const string_t fern_text = R"([
   none
   true
   'test' : 'Hello'
@@ -19,18 +19,18 @@ namespace silva::fern::test {
     3
   ]
 ])";
+
     syntax_farm_t sf;
-    const auto tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", fern_text));
-    const auto pt_1 = SILVA_REQUIRE(parse(tt));
-    const auto fpr  = standard_seed_interpreter(sf.ptr());
-    const auto pt_2 = SILVA_REQUIRE(fpr->apply(tt, sf.name_id_of("Fern")));
-    CHECK(pt_1->nodes == pt_2->nodes);
-    const fern_t fern       = SILVA_REQUIRE(create(pt_1.get()));
-    const string_t pt_str_1 = SILVA_REQUIRE(to_string(pt_1.get()));
-    CHECK(pt_str_1 == fern_text);
+    const auto se = standard_seed_interpreter(sf.ptr());
+    const auto tt =
+        SILVA_REQUIRE(se->tokenizer_farm.apply_text("", fern_text, sf.token_id("Fern")));
+    const auto pt         = SILVA_REQUIRE(se->apply(tt, sf.name_id_of("Fern")));
+    const fern_t fern     = SILVA_REQUIRE(create(pt.get()));
+    const string_t pt_str = SILVA_REQUIRE(to_string(pt.get()));
+    CHECK(pt_str == fern_text);
     CHECK(fern.to_string() == fern_text);
-    const string_t gv_str_1 = SILVA_REQUIRE(to_graphviz(pt_1.get()));
-    CHECK(fern.to_graphviz() == gv_str_1);
+    const string_t gv_str = SILVA_REQUIRE(to_graphviz(pt.get()));
+    CHECK(fern.to_graphviz() == gv_str);
 
     const string_view_t expected_parse_tree_str = R"(
 [0]_.Fern                                         [ none ... ] ]
@@ -56,7 +56,7 @@ namespace silva::fern::test {
         [0]_.Fern.Value                           3
 )";
 
-    const string_t result_str = SILVA_REQUIRE(pt_1->span().to_string());
+    const string_t result_str = SILVA_REQUIRE(pt->span().to_string());
     CHECK(result_str == expected_parse_tree_str.substr(1));
 
     const string_view_t expected_parse_tree_str_graphviz = R"(
@@ -103,7 +103,8 @@ digraph parse_tree {
   "/5/0/2/" -> "/5/0/2/0/"
   "/5/0/2/0/" [label="[0]_.Fern.Value\n3"]
 })";
-    const string_t result_graphviz = SILVA_REQUIRE(pt_1->span().to_graphviz());
+
+    const string_t result_graphviz = SILVA_REQUIRE(pt->span().to_graphviz());
     CHECK(result_graphviz == expected_parse_tree_str_graphviz.substr(1));
   }
 }

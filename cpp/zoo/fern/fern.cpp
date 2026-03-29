@@ -8,124 +8,6 @@
 #include "syntax/syntax_farm.hpp"
 
 namespace silva::fern {
-  using enum token_category_old_t;
-  using enum error_level_t;
-
-  namespace impl {
-    struct fern_parse_tree_nursery_t : public parse_tree_nursery_t {
-      token_id_t ti_brkt_open  = *sfp->token_id("[");
-      token_id_t ti_brkt_close = *sfp->token_id("]");
-      token_id_t ti_colon      = *sfp->token_id(":");
-      token_id_t ti_none       = *sfp->token_id("none");
-      token_id_t ti_true       = *sfp->token_id("true");
-      token_id_t ti_false      = *sfp->token_id("false");
-
-      name_id_t ni_fern     = sfp->name_id_of("Fern");
-      name_id_t ni_lbl_item = sfp->name_id_of(ni_fern, "LabeledItem");
-      name_id_t ni_label    = sfp->name_id_of(ni_fern, "Label");
-      name_id_t ni_value    = sfp->name_id_of(ni_fern, "Value");
-
-      fern_parse_tree_nursery_t(tokenization_ptr_t tp) : parse_tree_nursery_t(tp) {}
-
-      expected_t<parse_tree_node_t> value()
-      {
-        auto ss_rule = stake();
-        ss_rule.create_node(ni_value);
-        SILVA_EXPECT_PARSE(ni_value,
-                           num_tokens_left() >= 1 &&
-                               (token_id_by() == ti_none || token_id_by() == ti_true ||
-                                token_id_by() == ti_false ||
-                                token_data_by()->category_old == STRING ||
-                                token_data_by()->category_old == NUMBER),
-                           "unexpected {}",
-                           sfp->token_id_wrap(token_id_by()));
-        token_index += 1;
-        return ss_rule.commit();
-      }
-
-      expected_t<parse_tree_node_t> label()
-      {
-        auto ss_rule = stake();
-        ss_rule.create_node(ni_label);
-        SILVA_EXPECT_PARSE(ni_label,
-                           num_tokens_left() >= 1 &&
-                               (token_data_by()->category_old == STRING ||
-                                token_data_by()->category_old == IDENTIFIER),
-                           "expected string or identifier, found {}",
-                           sfp->token_id_wrap(token_id_by()));
-        token_index += 1;
-        return ss_rule.commit();
-      }
-
-      expected_t<parse_tree_node_t> labeled_item()
-      {
-        auto ss_rule = stake();
-        ss_rule.create_node(ni_lbl_item);
-
-        if (num_tokens_left() >= 2 && token_id_by(1) == ti_colon) {
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_lbl_item, label()));
-          token_index += 1;
-        }
-
-        error_nursery_t error_nursery;
-
-        if (auto result = fern(); result) {
-          ss_rule.add_proto_node(*result);
-          return ss_rule.commit();
-        }
-        else {
-          error_nursery.add_child_error(std::move(result).error());
-        }
-
-        if (auto result = value(); result) {
-          ss_rule.add_proto_node(*result);
-          return ss_rule.commit();
-        }
-        else {
-          error_nursery.add_child_error(std::move(result).error());
-        }
-
-        return std::unexpected(std::move(error_nursery)
-                                   .finish(MINOR,
-                                           "[{}] {}",
-                                           token_location_at(ss_rule.orig_state.token_index),
-                                           sfp->name_id_wrap(ni_lbl_item)));
-      }
-
-      expected_t<parse_tree_node_t> fern()
-      {
-        auto ss_rule = stake();
-        ss_rule.create_node(ni_fern);
-        SILVA_EXPECT_PARSE(ni_fern,
-                           num_tokens_left() >= 1 && token_id_by() == ti_brkt_open,
-                           "expected {}",
-                           sfp->token_id_wrap(ti_brkt_open));
-        token_index += 1;
-        while (num_tokens_left() >= 1 && token_id_by() != ti_brkt_close) {
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(ni_fern, labeled_item()));
-        }
-        SILVA_EXPECT_PARSE(ni_fern,
-                           num_tokens_left() >= 1 && token_id_by() == ti_brkt_close,
-                           "expected {}",
-                           sfp->token_id_wrap(ti_brkt_close));
-        token_index += 1;
-        return ss_rule.commit();
-      }
-    };
-  }
-
-  expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t tp)
-  {
-    const index_t n = tp->tokens.size();
-    impl::fern_parse_tree_nursery_t nursery(tp);
-    const parse_tree_node_t ptn = SILVA_EXPECT_FWD(nursery.fern());
-    SILVA_EXPECT(ptn.num_children == 1, ASSERT);
-    SILVA_EXPECT(ptn.subtree_size == nursery.tree.size(), ASSERT);
-    SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
-    return tp->sfp->add(std::move(nursery).finish());
-  }
-
-  // Fern parse_tree output functions /////////////////////////////////////////////////////////////
 
   expected_t<string_t> to_string(const parse_tree_t* pt, const index_t start_node)
   {
@@ -383,9 +265,12 @@ namespace silva::fern {
       const parse_tree_t* parse_tree = nullptr;
       syntax_farm_ptr_t sfp          = parse_tree->tp->sfp;
 
-      token_id_t ti_none  = *sfp->token_id("none");
-      token_id_t ti_true  = *sfp->token_id("true");
-      token_id_t ti_false = *sfp->token_id("false");
+      token_id_t ti_none  = sfp->token_id("none");
+      token_id_t ti_true  = sfp->token_id("true");
+      token_id_t ti_false = sfp->token_id("false");
+
+      token_id_t ti_number = sfp->token_id("number");
+      token_id_t ti_string = sfp->token_id("string");
 
       name_id_t ni_fern     = sfp->name_id_of("Fern");
       name_id_t ni_lbl_item = sfp->name_id_of(ni_fern, "LabeledItem");
@@ -411,8 +296,9 @@ namespace silva::fern {
           }
           else if (node.rule_name == ni_value) {
             SILVA_EXPECT(node.num_children == 0, MINOR, "Value node must have zero children");
-            const token_id_t token_id = parse_tree->tp->tokens[node.token_begin];
-            const auto* token_data    = parse_tree->tp->token_info_get(node.token_begin);
+            const token_id_t token_id  = parse_tree->tp->tokens[node.token_begin];
+            const token_id_t token_cat = parse_tree->tp->categories[node.token_begin];
+            const auto* token_data     = parse_tree->tp->token_info_get(node.token_begin);
             if (token_id == ti_none) {
               retval.item.value = none;
             }
@@ -422,11 +308,11 @@ namespace silva::fern {
             else if (token_id == ti_false) {
               retval.item.value = false;
             }
-            else if (token_data->category_old == STRING) {
+            else if (token_cat == ti_string) {
               retval.item.value =
                   string_t{SILVA_EXPECT_FWD(token_data->string_as_plain_contained(), MAJOR)};
             }
-            else if (token_data->category_old == NUMBER) {
+            else if (token_cat == ti_number) {
               retval.item.value = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
             }
             else {

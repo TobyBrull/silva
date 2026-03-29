@@ -18,10 +18,10 @@ namespace silva::seed::test {
 
     const name_id_style_t ts{
         .sfp       = sf.ptr(),
-        .root      = *sf.token_id("cpp"),
-        .current   = *sf.token_id("this"),
-        .parent    = *sf.token_id("super"),
-        .separator = *sf.token_id("::"),
+        .root      = sf.token_id("cpp"),
+        .current   = sf.token_id("this"),
+        .parent    = sf.token_id("super"),
+        .separator = sf.token_id("::"),
     };
     CHECK(ts.absolute(name1) == "cpp::std::expr::stmt");
     CHECK(ts.absolute(name2) == "cpp::std::expr");
@@ -40,8 +40,9 @@ namespace silva::seed::test {
   TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
     syntax_farm_t sf;
-    const auto spr       = standard_seed_interpreter(sf.ptr());
-    const auto seed_tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", string_t{seed_str}));
+    const auto spr     = standard_seed_interpreter(sf.ptr());
+    const auto seed_tt = SILVA_REQUIRE(
+        spr->tokenizer_farm.apply_text("test1.seed", string_t{seed_str}, sf.token_id("Seed")));
     const auto seed_pt_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(seed_tt));
     const auto seed_pt_2 = SILVA_REQUIRE(spr->apply(seed_tt, sf.name_id_of("Seed")));
     // fmt::print("|{}|\n", *seed_pt_1->span().to_string());
@@ -51,30 +52,35 @@ namespace silva::seed::test {
     CHECK(spr->keyword_scopes[sf.name_id_of("Seed", "Rule")] == hash_set_t<token_id_t>({}));
     CHECK(spr->keyword_scopes[sf.name_id_of("Seed", "Axe")] ==
           hash_set_t<token_id_t>({
-              *sf.token_id("["),
-              *sf.token_id("]"),
-              *sf.token_id("-"),
-              *sf.token_id("="),
-              *sf.token_id("nest"),
-              *sf.token_id("ltr"),
-              *sf.token_id("rtl"),
-              *sf.token_id("atom_nest"),
-              *sf.token_id("atom_nest_transparent"),
-              *sf.token_id("prefix"),
-              *sf.token_id("prefix_nest"),
-              *sf.token_id("infix"),
-              *sf.token_id("infix_flat"),
-              *sf.token_id("ternary"),
-              *sf.token_id("postfix"),
-              *sf.token_id("postfix_nest"),
-              *sf.token_id("concat"),
-              *sf.token_id("->"),
+              sf.token_id("["),
+              sf.token_id("]"),
+              sf.token_id("-"),
+              sf.token_id("="),
+              sf.token_id("nest"),
+              sf.token_id("ltr"),
+              sf.token_id("rtl"),
+              sf.token_id("atom_nest"),
+              sf.token_id("atom_nest_transparent"),
+              sf.token_id("prefix"),
+              sf.token_id("prefix_nest"),
+              sf.token_id("infix"),
+              sf.token_id("infix_flat"),
+              sf.token_id("ternary"),
+              sf.token_id("postfix"),
+              sf.token_id("postfix_nest"),
+              sf.token_id("concat"),
+              sf.token_id("->"),
           }));
   }
 
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
+    - SimpleFern = tokenizer [
+      - include tokenizer FreeForm
+      - operator = OPERATOR
+      - identifier = IDENTIFIER
+    ]
     - SimpleFern = [
       - x = '[' ( LabeledItem ';' ? ) * ']'
       - LabeledItem = ( Label ':' )? Item
@@ -83,9 +89,10 @@ namespace silva::seed::test {
     ]
   )'";
     syntax_farm_t sf;
-    const auto sf_seed_tt   = SILVA_REQUIRE(tokenize(sf.ptr(), "", sf_text));
+    const auto spr        = standard_seed_interpreter(sf.ptr());
+    const auto sf_seed_tt = SILVA_REQUIRE(
+        spr->tokenizer_farm.apply_text("simple-fern.seed", string_t{sf_text}, sf.token_id("Seed")));
     const auto sf_seed_pt_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(sf_seed_tt));
-    const auto spr          = standard_seed_interpreter(sf.ptr());
     const auto sf_seed_pt_2 = SILVA_REQUIRE(spr->apply(sf_seed_tt, sf.name_id_of("Seed")));
     CHECK(sf_seed_pt_1->nodes == sf_seed_pt_2->nodes);
 
@@ -163,8 +170,9 @@ namespace silva::seed::test {
     CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(42)) == ni_sf);
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
-    const auto sf_tt       = SILVA_REQUIRE(tokenize(sf.ptr(), "", sf_code));
-    const auto sfpt        = SILVA_REQUIRE(se.apply(sf_tt, ni_sf));
+    const auto sf_tt       = SILVA_REQUIRE(
+        spr->tokenizer_farm.apply_text("sf.code", string_t{sf_code}, sf.token_id("Seed")));
+    const auto sfpt = SILVA_REQUIRE(se.apply(sf_tt, ni_sf));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.SimpleFern                                   [ 'abc' ... ; ]

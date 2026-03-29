@@ -17,7 +17,7 @@ namespace silva {
     byte_sink_stdout_t _stdout;
     syntax_farm_t sf;
 
-    const token_id_t tokenizer_name = SILVA_EXPECT_FWD(sf.token_id(cmdline_args[2]));
+    const token_id_t tokenizer_name = sf.token_id(cmdline_args[2]);
 
     const auto fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]),
                                      "while fragmentizing {}",

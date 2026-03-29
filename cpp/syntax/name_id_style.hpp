@@ -5,10 +5,10 @@
 namespace silva {
   struct name_id_style_t {
     syntax_farm_ptr_t sfp;
-    token_id_t root      = *sfp->token_id("_");
-    token_id_t current   = *sfp->token_id("x");
-    token_id_t parent    = *sfp->token_id("p");
-    token_id_t separator = *sfp->token_id(".");
+    token_id_t root      = sfp->token_id("_");
+    token_id_t current   = sfp->token_id("x");
+    token_id_t parent    = sfp->token_id("p");
+    token_id_t separator = sfp->token_id(".");
 
     name_id_t ni_nonterminal      = sfp->name_id_of("Seed", "Nonterminal");
     name_id_t ni_nonterminal_base = sfp->name_id_of("Seed", "Nonterminal", "Base");

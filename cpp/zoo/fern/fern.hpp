@@ -4,6 +4,11 @@
 
 namespace silva::fern {
   const string_view_t seed_str = R"'(
+    - Fern = tokenizer [
+      - include tokenizer FreeForm
+      - operator = OPERATOR
+      - identifier = IDENTIFIER
+    ]
     - Fern = [
       - x = '[' LabeledItem * ']'
       - LabeledItem = ( Label ':' ) ? ( x | Value )
@@ -11,10 +16,6 @@ namespace silva::fern {
       - Value = 'none' | 'true' | 'false' | string | number
     ]
 )'";
-
-  // Invariant:
-  //    standard_seed_engine()->apply(tokenization, "Fern") == fern::parse(tokenization)
-  expected_t<parse_tree_ptr_t> parse(tokenization_ptr_t);
 
   // Fern parse_tree output functions
   expected_t<string_t> to_string(const parse_tree_t*, index_t start_node = 0);

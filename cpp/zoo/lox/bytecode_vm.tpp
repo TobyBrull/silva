@@ -22,9 +22,9 @@ namespace silva::lox::test {
     tuple_t<parse_tree_ptr_t, unique_ptr_t<bytecode_chunk_t>>
     make_chunk(const string_view_t lox_code)
     {
-      const auto tp  = SILVA_REQUIRE(tokenize(sf.ptr(), "test.lox", lox_code));
-      const auto ptp = SILVA_REQUIRE(si->apply(tp, sf.name_id_of("Lox")));
-      auto chunk     = SILVA_REQUIRE(compiler.compile(ptp->span()));
+      const auto ptp =
+          SILVA_REQUIRE(si->apply_text("text.lox", string_t{lox_code}, sf.name_id_of("Lox")));
+      auto chunk = SILVA_REQUIRE(compiler.compile(ptp->span()));
       return {ptp, std::move(chunk)};
     };
 
