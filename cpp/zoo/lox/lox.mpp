@@ -11,7 +11,7 @@ namespace silva::lox {
   expected_t<void> main(const span_t<string_view_t> cmdline_args)
   {
     const index_t m = cmdline_args.size();
-    SILVA_EXPECT(2 == m, MINOR, "Usage: ... <lox-file>");
+    SILVA_EXPECT(m == 2, MINOR, "Usage: ... <lox-file>");
 
     const bool use_interpreter =
         SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("use-interpreter"), MAJOR).value_or(false);

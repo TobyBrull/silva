@@ -1,8 +1,9 @@
+#include "syntax.hpp"
+#include "syntax_farm.hpp"
 #include "tokenization.hpp"
 
 #include "canopy/byte_sink.hpp"
 #include "canopy/main.hpp"
-#include "syntax_farm.hpp"
 
 #include <fmt/format.h>
 
@@ -10,12 +11,20 @@ namespace silva {
   expected_t<void> tokenization_main(const span_t<string_view_t> cmdline_args)
   {
     const index_t m = cmdline_args.size();
-    SILVA_EXPECT(2 == m, MINOR, "Usage: ... <file>");
+    SILVA_EXPECT(m == 3, MINOR, "Usage: ... <file> <tokenizer>");
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
-    syntax_farm_t sf;
     byte_sink_stdout_t _stdout;
-    const auto tokenization = SILVA_EXPECT_FWD(tokenize_load(sf.ptr(), cmdline_args[1]),
+    syntax_farm_t sf;
+
+    const token_id_t tokenizer_name = SILVA_EXPECT_FWD(sf.token_id(cmdline_args[2]));
+
+    const auto fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]),
+                                     "while fragmentizing {}",
+                                     cmdline_args[1]);
+
+    const auto se           = standard_seed_interpreter(sf.ptr());
+    const auto tokenization = SILVA_EXPECT_FWD(se->tokenizer_farm.apply(fp, tokenizer_name),
                                                "while tokenizing {}",
                                                cmdline_args[1]);
     pretty_write(*tokenization, &_stdout);
