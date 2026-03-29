@@ -517,13 +517,13 @@ namespace silva::seed::test {
     CHECK(sa.concat_result.has_value());
     CHECK(sa.results.size() == 13);
 
-    test::test_axe<test_nursery_t>(*se, sa, "x\n", R"(
-[0]_.Test.Atom                                    x
+    test::test_axe<test_nursery_t>(*se, sa, "a\n", R"(
+[0]_.Test.Atom                                    a
 )");
-    test::test_axe<test_nursery_t>(*se, sa, "x y z\n", R"(
-[0]_.Expr.Cat.concat                              x y z
-  [0]_.Expr.Cat.concat                            x y
-    [0]_.Test.Atom                                x
+    test::test_axe<test_nursery_t>(*se, sa, "a y z\n", R"(
+[0]_.Expr.Cat.concat                              a y z
+  [0]_.Expr.Cat.concat                            a y
+    [0]_.Test.Atom                                a
     [1]_.Test.Atom                                y
   [1]_.Test.Atom                                  z
 )");
@@ -546,9 +546,9 @@ namespace silva::seed::test {
     [2]_.Test.Arg                                 'baz'
   [1]_.Test.Atom                                  a
 )");
-    test::test_axe<test_nursery_t>(*se, sa, "x * <: 'foo' , 'bar' , 'baz' :> a\n", R"(
-[0]_.Expr.Mul.*                                   x * ... :> a
-  [0]_.Test.Atom                                  x
+    test::test_axe<test_nursery_t>(*se, sa, "a * <: 'foo' , 'bar' , 'baz' :> a\n", R"(
+[0]_.Expr.Mul.*                                   a * ... :> a
+  [0]_.Test.Atom                                  a
   [1]_.Expr.PrfLo.<:                              <: 'foo' ... :> a
     [0]_.Test.Args                                'foo' , 'bar' , 'baz'
       [0]_.Test.Arg                               'foo'
@@ -577,12 +577,12 @@ namespace silva::seed::test {
     [1]_.Test.Atom                                c
 )");
     test::test_axe<test_nursery_t>(*se, sa, "<< a { b } >> c\n", {none});
-    test::test_axe<test_nursery_t>(*se, sa, "x 1 x z\n", {none});
-    test::test_axe<test_nursery_t>(*se, sa, "x 1 { z\n", R"(
-[0]_.Expr.Cat.concat                              x 1 { z
-  [0]_.Expr.Cat.concat                            x 1 {
-    [0]_.Test.Atom                                x
-    [1]_.Test.Atom                                1 {
+    test::test_axe<test_nursery_t>(*se, sa, "a 1 a z\n", {none});
+    test::test_axe<test_nursery_t>(*se, sa, "a 1 + z\n", R"(
+[0]_.Expr.Cat.concat                              a 1 + z
+  [0]_.Expr.Cat.concat                            a 1 +
+    [0]_.Test.Atom                                a
+    [1]_.Test.Atom                                1 +
   [1]_.Test.Atom                                  z
 )");
     test::test_axe<test_nursery_t>(*se, sa, "a + b + c\n", R"(

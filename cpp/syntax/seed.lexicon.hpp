@@ -56,7 +56,6 @@ namespace silva::seed {
     const token_id_t ti_indent         = sfp->token_id("indent");
     const token_id_t ti_dedent         = sfp->token_id("dedent");
     const token_id_t ti_newline        = sfp->token_id("newline");
-    const token_id_t ti_operators      = sfp->token_id("operators");
     const token_id_t ti_rule_name      = sfp->token_id("rule_name");
     const token_id_t ti_var_name       = sfp->token_id("var_name");
     const token_id_t ti_func_name      = sfp->token_id("func_name");

@@ -626,14 +626,14 @@ namespace silva::seed {
       tokenizer_t tok;
       tok.rules = {
           rule_t{.token_category_name = lexicon.ti_r_freeform},
-          rule_t{.token_category_name = lexicon.ti_operators, .prefix_matchers = {m_paren}},
-          rule_t{.token_category_name = lexicon.ti_operators, .prefix_matchers = {m_concat}},
-          rule_t{.token_category_name = lexicon.ti_operators, .prefix_matchers = {m_but_then}},
-          rule_t{.token_category_name = lexicon.ti_operators, .prefix_matchers = {m_x}},
-          rule_t{.token_category_name = lexicon.ti_operators, .prefix_matchers = {m_p}},
-          rule_t{.token_category_name = lexicon.ti_operators, .prefix_matchers = {m_uscore}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_paren}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_concat}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_but_then}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_x}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_p}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_uscore}},
           rule_t{
-              .token_category_name = lexicon.ti_operators,
+              .token_category_name = lexicon.ti_operator,
               .prefix_matchers     = {m_operator},
               .repeat_matchers     = {m_operator},
           },
