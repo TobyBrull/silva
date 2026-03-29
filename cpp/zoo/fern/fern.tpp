@@ -18,19 +18,16 @@ namespace silva::fern::test {
     'two' : 2
     3
   ]
-])";
+]
+)";
 
     syntax_farm_t sf;
     const auto se = standard_seed_interpreter(sf.ptr());
     const auto tt =
         SILVA_REQUIRE(se->tokenizer_farm.apply_text("", fern_text, sf.token_id("Fern")));
-    const auto pt         = SILVA_REQUIRE(se->apply(tt, sf.name_id_of("Fern")));
-    const fern_t fern     = SILVA_REQUIRE(create(pt.get()));
-    const string_t pt_str = SILVA_REQUIRE(to_string(pt.get()));
-    CHECK(pt_str == fern_text);
+    const auto pt     = SILVA_REQUIRE(se->apply(tt, sf.name_id_of("Fern")));
+    const fern_t fern = SILVA_REQUIRE(create(pt.get()));
     CHECK(fern.to_string() == fern_text);
-    const string_t gv_str = SILVA_REQUIRE(to_graphviz(pt.get()));
-    CHECK(fern.to_graphviz() == gv_str);
 
     const string_view_t expected_parse_tree_str = R"(
 [0]_.Fern                                         [ none ... ] ]

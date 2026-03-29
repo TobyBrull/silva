@@ -6,7 +6,7 @@ namespace silva::fern {
   const string_view_t seed_str = R"'(
     - Fern = tokenizer [
       - include tokenizer FreeForm
-      - operator = OPERATOR
+      - operator = [ OPERATOR PARENTHESIS ]
       - identifier = IDENTIFIER
     ]
     - Fern = [
@@ -16,10 +16,6 @@ namespace silva::fern {
       - Value = 'none' | 'true' | 'false' | string | number
     ]
 )'";
-
-  // Fern parse_tree output functions
-  expected_t<string_t> to_string(const parse_tree_t*, index_t start_node = 0);
-  expected_t<string_t> to_graphviz(const parse_tree_t*, index_t start_node = 0);
 
   // Object-oriented interface
   struct fern_t;

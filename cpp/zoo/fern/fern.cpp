@@ -9,122 +9,6 @@
 
 namespace silva::fern {
 
-  expected_t<string_t> to_string(const parse_tree_t* pt, const index_t start_node)
-  {
-    syntax_farm_ptr_t sfp       = pt->tp->sfp;
-    const name_id_t ni_fern     = sfp->name_id_of("Fern");
-    const name_id_t ni_lbl_item = sfp->name_id_of(ni_fern, "LabeledItem");
-    const name_id_t ni_label    = sfp->name_id_of(ni_fern, "Label");
-    const name_id_t ni_value    = sfp->name_id_of(ni_fern, "Value");
-
-    SILVA_EXPECT(pt->nodes[start_node].rule_name == ni_fern, ASSERT);
-    string_t retval;
-    int depth{0};
-    const auto retval_newline = [&retval, &depth]() {
-      retval += '\n';
-      for (int i = 0; i < depth * 2; ++i) {
-        retval += ' ';
-      }
-    };
-    auto result = pt->span()
-                      .sub_tree_span_at(start_node)
-                      .visit_subtree([&](const span_t<const tree_branch_t> path,
-                                         const tree_event_t event) -> expected_t<bool> {
-                        SILVA_EXPECT(!path.empty(), ASSERT);
-                        const auto& node = pt->nodes[path.back().node_index];
-                        if (node.rule_name == ni_fern) {
-                          if (is_on_entry(event)) {
-                            retval += '[';
-                            depth += 1;
-                          }
-                          if (is_on_exit(event)) {
-                            depth -= 1;
-                            if (0 < node.num_children) {
-                              retval_newline();
-                            }
-                            retval += ']';
-                          }
-                        }
-                        else if (node.rule_name == ni_lbl_item) {
-                          if (is_on_entry(event)) {
-                            retval_newline();
-                          }
-                        }
-                        else if (node.rule_name == ni_label) {
-                          retval += pt->tp->token_info_get(node.token_begin)->str;
-                          retval += " : ";
-                        }
-                        else if (node.rule_name == ni_value) {
-                          retval += pt->tp->token_info_get(node.token_begin)->str;
-                        }
-                        return true;
-                      });
-    SILVA_EXPECT_FWD(std::move(result));
-    return retval;
-  }
-
-  expected_t<string_t> to_graphviz(const parse_tree_t* pt, const index_t start_node)
-  {
-    syntax_farm_ptr_t sfp       = pt->tp->sfp;
-    const name_id_t ni_fern     = sfp->name_id_of("Fern");
-    const name_id_t ni_lbl_item = sfp->name_id_of(ni_fern, "LabeledItem");
-    const name_id_t ni_label    = sfp->name_id_of(ni_fern, "Label");
-    const name_id_t ni_value    = sfp->name_id_of(ni_fern, "Value");
-
-    SILVA_EXPECT(pt->nodes[start_node].rule_name == ni_fern, ASSERT);
-    string_t retval    = "digraph Fern {\n";
-    string_t curr_path = "/";
-    optional_t<string_view_t> last_label_str;
-    auto result =
-        pt->span()
-            .sub_tree_span_at(start_node)
-            .visit_subtree([&](const span_t<const tree_branch_t> path,
-                               const tree_event_t event) -> expected_t<bool> {
-              SILVA_EXPECT(!path.empty(), ASSERT);
-              const auto& node = pt->nodes[path.back().node_index];
-              if (node.rule_name == ni_lbl_item) {
-                if (is_on_entry(event)) {
-                  string_t prev_path = curr_path;
-                  curr_path += fmt::format("{}/", path.back().child_index);
-                  retval += fmt::format("  \"{}\" -> \"{}\"\n", prev_path, curr_path);
-                }
-                if (is_on_exit(event)) {
-                  curr_path.pop_back();
-                  while (curr_path.back() != '/') {
-                    curr_path.pop_back();
-                  }
-                  last_label_str = none;
-                }
-              }
-              else if (node.rule_name == ni_label) {
-                last_label_str = pt->tp->token_info_get(node.token_begin)->str;
-              }
-              else if (node.rule_name == ni_value) {
-                if (last_label_str.has_value()) {
-                  retval +=
-                      fmt::format("  \"{}\" [label=\"{}\\n[{}]\\n{}\"]\n",
-                                  curr_path,
-                                  curr_path,
-                                  string_escaped(last_label_str.value()),
-                                  string_escaped(pt->tp->token_info_get(node.token_begin)->str));
-                }
-                else {
-                  retval +=
-                      fmt::format("  \"{}\" [label=\"{}\\n{}\"]\n",
-                                  curr_path,
-                                  curr_path,
-                                  string_escaped(pt->tp->token_info_get(node.token_begin)->str));
-                }
-              }
-              return true;
-            });
-    SILVA_EXPECT_FWD(std::move(result));
-    retval += "}";
-    return retval;
-  }
-
-  // Object-oriented interface /////////////////////////////////////////////////////////////////////
-
   fern_item_t::fern_item_t() : value(none) {}
 
   void fern_t::push_back(fern_labeled_item_t&& li)
@@ -139,10 +23,10 @@ namespace silva::fern {
   struct to_str_visitor {
     int indent = 0;
 
-    string_t operator()(none_t) { return "none"; }
-    string_t operator()(const bool arg) { return arg ? "true" : "false"; }
-    string_t operator()(const string_t& arg) { return fmt::format("'{}'", arg); }
-    string_t operator()(const double arg) { return fmt::format("{}", arg); }
+    string_t operator()(none_t) { return "none\n"; }
+    string_t operator()(const bool arg) { return arg ? "true\n" : "false\n"; }
+    string_t operator()(const string_t& arg) { return fmt::format("'{}'\n", arg); }
+    string_t operator()(const double arg) { return fmt::format("{}\n", arg); }
     string_t operator()(const unique_ptr_t<fern_t>& arg) { return arg->to_string(indent + 2); }
   };
 
@@ -151,7 +35,7 @@ namespace silva::fern {
     const index_t n = items.size();
     string_t retval;
     if (items.empty()) {
-      return "[]";
+      return "[]\n";
     }
     else {
       array_t<optional_t<string_view_t>> used_labels;
@@ -159,15 +43,15 @@ namespace silva::fern {
       for (const auto& [k, v]: labels) {
         used_labels[v] = k;
       }
-      retval += '[';
+      retval += "[\n";
       for (index_t i = 0; i < n; ++i) {
-        retval += fmt::format("\n{:{}}", "", indent + 2);
+        retval += fmt::format("{:{}}", "", indent + 2);
         if (used_labels[i].has_value()) {
           retval += fmt::format("'{}' : ", used_labels[i].value());
         }
         retval += std::visit(to_str_visitor{indent}, items[i].value);
       }
-      retval += fmt::format("\n{:{}}]", "", indent);
+      retval += fmt::format("{:{}}]\n", "", indent);
     }
     return retval;
   }

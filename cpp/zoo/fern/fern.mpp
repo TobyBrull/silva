@@ -43,21 +43,6 @@ namespace silva::fern {
         SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
       }
     }
-    else if (arg_process.starts_with("direct/")) {
-      const auto rest = arg_process.substr(7);
-      if (rest == "string") {
-        fmt::print("{}\n", SILVA_EXPECT_FWD(to_string(ptp.get())));
-      }
-      else if (rest == "graphviz") {
-        fmt::print("{}\n", SILVA_EXPECT_FWD(to_graphviz(ptp.get())));
-      }
-      else if (rest == "graphviz_show") {
-        graphviz_show_sync(SILVA_EXPECT_FWD(to_graphviz(ptp.get())));
-      }
-      else {
-        SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
-      }
-    }
     else if (arg_process.starts_with("parse_tree/")) {
       const auto rest = arg_process.substr(11);
       if (rest == "string") {
