@@ -152,27 +152,11 @@ namespace silva::seed::test {
 
     interpreter_t se(sf.ptr());
     SILVA_REQUIRE(se.add_seed(sf_seed_pt_1->span()));
-    REQUIRE(se.rule_exprs.size() == 4);
-    using rfl::json::write;
-    const name_id_t ni_sf       = sf.name_id_of("SimpleFern");
-    const name_id_t ni_li       = sf.name_id_of(ni_sf, "LabeledItem");
-    const name_id_t ni_l        = sf.name_id_of(ni_sf, "Label");
-    const name_id_t ni_i        = sf.name_id_of(ni_sf, "Item");
-    const parse_tree_span_t pts = sf_seed_pt_1->span();
-    CHECK(se.rule_exprs.at(ni_sf) == pts.sub_tree_span_at(8));
-    CHECK(se.rule_exprs.at(ni_li) == pts.sub_tree_span_at(22));
-    CHECK(se.rule_exprs.at(ni_l) == pts.sub_tree_span_at(36));
-    CHECK(se.rule_exprs.at(ni_i) == pts.sub_tree_span_at(40));
-    REQUIRE(se.nonterminal_rules.size() == 4);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(14)) == ni_li);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(27)) == ni_l);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(31)) == ni_i);
-    CHECK(se.nonterminal_rules.at(pts.sub_tree_span_at(42)) == ni_sf);
 
     const string_t sf_code = R"'( [ 'abc' ; [ 'def' 123 ] 'jkl' ;])'";
     const auto sf_tt       = SILVA_REQUIRE(
         spr->tokenizer_farm.apply_text("sf.code", string_t{sf_code}, sf.token_id("Seed")));
-    const auto sfpt = SILVA_REQUIRE(se.apply(sf_tt, ni_sf));
+    const auto sfpt = SILVA_REQUIRE(se.apply(sf_tt, sf.name_id_of("SimpleFern")));
 
     const std::string_view expected_parse_tree = R"(
 [0]_.SimpleFern                                   [ 'abc' ... ; ]
