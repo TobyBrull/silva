@@ -407,8 +407,6 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_func_arg);
-      const index_t orig_token_index = token_index;
-      error_nursery_t error_nursery;
       SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
       if (token_category_by() == lexicon.ti_var_name) {
         token_index += 1;
