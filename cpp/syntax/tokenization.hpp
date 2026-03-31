@@ -9,7 +9,7 @@ namespace silva {
     syntax_farm_ptr_t sfp;
     filepath_t filepath;
 
-    fragmentization_ptr_t fp;
+    fragment_span_t fs;
 
     array_t<fragment_span_t> languages;
 

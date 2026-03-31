@@ -130,7 +130,7 @@ namespace silva::seed {
   };
 
   const string_view_t bootstrap_tokenizers_str = R"'(
-    - Default = tokenizer [
+    - OffSide = tokenizer [
       - ignore WHITESPACE
       - ignore COMMENT
       - indent = INDENT

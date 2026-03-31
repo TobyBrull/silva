@@ -468,6 +468,7 @@ namespace silva::seed {
     auto retval      = std::make_unique<tokenization_t>();
     retval->sfp      = sfp;
     retval->filepath = fp->filepath;
+    retval->fs       = fs;
 
     const index_t n = fp->fragments.size();
     SILVA_EXPECT(n >= 2, MINOR);
@@ -597,7 +598,7 @@ namespace silva::seed {
           rule_t{.token_category_name = lexicon.ti_number, .prefix_matchers = {m_number}},
           rule_t{.token_category_name = lexicon.ti_string, .prefix_matchers = {m_string}},
       };
-      retval.tokenizers.emplace(lexicon.ti_r_default, std::move(tok));
+      retval.tokenizers.emplace(lexicon.ti_r_offside, std::move(tok));
     }
     {
       tokenizer_t tok;
