@@ -1,6 +1,7 @@
 #include "seed_axe.hpp"
 
 #include "name_id_style.hpp"
+#include "seed.lexicon.hpp"
 
 #include "canopy/variant.hpp"
 
@@ -42,20 +43,21 @@ namespace silva::seed::impl {
     name_id_t axe_name          = name_id_root;
     name_id_t atom_rule_name_id = name_id_root;
     const name_id_style_t& nis  = sfp->default_name_id_style();
+    const lexicon_t& lexicon;
 
-    const token_id_t ti_atom_nest    = *sfp->token_id("atom_nest");
-    const token_id_t ti_atom_nest_t  = *sfp->token_id("atom_nest_transparent");
-    const token_id_t ti_prefix       = *sfp->token_id("prefix");
-    const token_id_t ti_prefix_nest  = *sfp->token_id("prefix_nest");
-    const token_id_t ti_infix        = *sfp->token_id("infix");
-    const token_id_t ti_infix_flat   = *sfp->token_id("infix_flat");
-    const token_id_t ti_ternary      = *sfp->token_id("ternary");
-    const token_id_t ti_postfix      = *sfp->token_id("postfix");
-    const token_id_t ti_postfix_nest = *sfp->token_id("postfix_nest");
-    const token_id_t ti_concat       = *sfp->token_id("concat");
-    const token_id_t ti_nest         = *sfp->token_id("nest");
-    const token_id_t ti_ltr          = *sfp->token_id("ltr");
-    const token_id_t ti_rtl          = *sfp->token_id("rtl");
+    const token_id_t ti_atom_nest    = sfp->token_id("atom_nest");
+    const token_id_t ti_atom_nest_t  = sfp->token_id("atom_nest_transparent");
+    const token_id_t ti_prefix       = sfp->token_id("prefix");
+    const token_id_t ti_prefix_nest  = sfp->token_id("prefix_nest");
+    const token_id_t ti_infix        = sfp->token_id("infix");
+    const token_id_t ti_infix_flat   = sfp->token_id("infix_flat");
+    const token_id_t ti_ternary      = sfp->token_id("ternary");
+    const token_id_t ti_postfix      = sfp->token_id("postfix");
+    const token_id_t ti_postfix_nest = sfp->token_id("postfix_nest");
+    const token_id_t ti_concat       = sfp->token_id("concat");
+    const token_id_t ti_nest         = sfp->token_id("nest");
+    const token_id_t ti_ltr          = sfp->token_id("ltr");
+    const token_id_t ti_rtl          = sfp->token_id("rtl");
 
     const name_id_t ni_seed        = sfp->name_id_of("Seed");
     const name_id_t ni_axe         = sfp->name_id_of(ni_seed, "Axe");
@@ -73,8 +75,8 @@ namespace silva::seed::impl {
         .name = axe_name,
     };
 
-    axe_create_nursery_t(syntax_farm_ptr_t sfp, const name_id_t axe_name)
-      : sfp(sfp), axe_name(axe_name)
+    axe_create_nursery_t(syntax_farm_ptr_t sfp, const name_id_t axe_name, const lexicon_t& lexicon)
+      : sfp(sfp), axe_name(axe_name), lexicon(lexicon)
     {
     }
 
@@ -152,13 +154,12 @@ namespace silva::seed::impl {
     expected_t<void> op(const token_id_t axe_op_type, const parse_tree_span_t pts_op)
     {
       SILVA_EXPECT(pts_op[0].rule_name == ni_axe_op, BROKEN_SEED);
-      const token_id_t axe_op = pts_op.first_token_id();
-      SILVA_EXPECT(sfp->token_infos[axe_op].category_old == token_category_old_t::STRING ||
-                       axe_op == ti_concat,
-                   BROKEN_SEED);
+      const token_id_t axe_op  = pts_op.first_token_id();
+      const token_id_t axe_cat = pts_op.first_token_category();
+      SILVA_EXPECT(axe_cat == lexicon.ti_string || axe_op == lexicon.ti_concat, BROKEN_SEED);
       if (axe_op_type != ti_infix && axe_op_type != ti_infix_flat) {
         SILVA_EXPECT(
-            axe_op != ti_concat,
+            axe_op != lexicon.ti_concat,
             MINOR,
             "{} the 'concat' token may only be used with 'infix' or 'infix_flat' operations.",
             pts_op);
@@ -471,7 +472,8 @@ namespace silva::seed {
   expected_t<axe_t>
   axe_create(syntax_farm_ptr_t sfp, const name_id_t axe_name, const parse_tree_span_t pts)
   {
-    impl::axe_create_nursery_t nursery(sfp, axe_name);
+    lexicon_t lexicon(sfp);
+    impl::axe_create_nursery_t nursery(sfp, axe_name, lexicon);
     SILVA_EXPECT_FWD(nursery.run(pts));
     return std::move(nursery.retval);
   }

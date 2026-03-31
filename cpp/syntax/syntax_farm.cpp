@@ -6,170 +6,13 @@
 
 namespace silva {
 
-  using enum token_category_old_t;
-
-  namespace impl {
-    constexpr char whitespace_chars[] = {' '};
-    constexpr char identifier_chars[] = {'_'};
-    constexpr char oplet_chars[]      = {
-        // parentheses
-        '[',
-        ']',
-        '(',
-        ')',
-        '{',
-        '}',
-        // other
-        '~',
-    };
-    constexpr char operator_chars[] = {
-        // punctuation
-        ',',
-        '.',
-        ':',
-        // comparison
-        '<',
-        '>',
-        '=',
-        // arithmetic
-        '-',
-        '+',
-        '*',
-        '/',
-        '\\',
-        '%',
-        // logical
-        '&',
-        '|',
-        // other
-        '^',
-        '@',
-        '!',
-        '?',
-        ';',
-        '$',
-        '`',
-    };
-    constexpr char number_chars[] = {'.', '`', 'e'};
-
-    template<index_t Size>
-    constexpr bool is_one_of(const char c, const char (&char_array)[Size])
-    {
-      for (index_t i = 0; i < Size; ++i) {
-        if (c == char_array[i]) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    template<typename Predicate>
-    index_t find_token_length(const string_view_t rest, Predicate predicate)
-    {
-      SILVA_ASSERT(rest.size() >= 1);
-      index_t index = 1;
-      while (index < rest.size()) {
-        const char x = rest[index];
-        if (!predicate(x)) {
-          break;
-        }
-        index += 1;
-      }
-      return index;
-    }
-
-    index_t find_whitespace_length(const string_view_t rest)
-    {
-      return find_token_length(rest, [](const char x) { return is_one_of(x, whitespace_chars); });
-    }
-
-    optional_t<index_t> find_string_length(const string_view_t rest)
-    {
-      SILVA_ASSERT(rest.size() >= 1);
-      index_t index = 1;
-      while (index < rest.size()) {
-        if (rest[index] == '\\') {
-          if (!(index + 1 < rest.size())) {
-            return {none};
-          }
-          index += 2;
-        }
-        else if (rest[index] == '\'') {
-          return index + 1;
-        }
-        else {
-          index += 1;
-        }
-      }
-      return {none};
-    }
-
-    index_t find_comment_length(const string_view_t rest)
-    {
-      index_t index = 1;
-      while (index < rest.size() && rest[index] != '\n') {
-        index += 1;
-      }
-      return index;
-    }
-
-  }
-
-  tuple_t<string_view_t, token_category_old_t> tokenize_one(const string_view_t text)
-  {
-    SILVA_ASSERT(!text.empty());
-    const char c = text.front();
-    if (impl::is_one_of(c, impl::whitespace_chars)) {
-      const index_t len = impl::find_whitespace_length(text);
-      return {text.substr(0, len), WHITESPACE};
-    }
-    else if (std::isalpha(c) || impl::is_one_of(c, impl::identifier_chars)) {
-      const index_t len = impl::find_token_length(text, [](const char x) {
-        return std::isalnum(x) || impl::is_one_of(x, impl::identifier_chars);
-      });
-      return {text.substr(0, len), IDENTIFIER};
-    }
-    else if (impl::is_one_of(c, impl::oplet_chars)) {
-      return {text.substr(0, 1), OPERATOR};
-    }
-    else if (impl::is_one_of(c, impl::operator_chars)) {
-      const index_t len = impl::find_token_length(text, [](const char x) {
-        return impl::is_one_of(x, impl::operator_chars);
-      });
-      return {text.substr(0, len), OPERATOR};
-    }
-    else if (c == '\'') {
-      const std::optional<index_t> maybe_length = impl::find_string_length(text);
-      if (maybe_length.has_value()) {
-        return {text.substr(0, maybe_length.value()), STRING};
-      }
-      else {
-        return {text, INVALID};
-      }
-    }
-    else if (c == '#') {
-      const index_t len = impl::find_comment_length(text);
-      return {text.substr(0, len), COMMENT};
-    }
-    else if (std::isdigit(c)) {
-      const index_t len = impl::find_token_length(text, [](const char x) {
-        return std::isdigit(x) || impl::is_one_of(x, impl::number_chars);
-      });
-      return {text.substr(0, len), NUMBER};
-    }
-    else if (c == '\n') {
-      return {text.substr(0, 1), WHITESPACE};
-    }
-    else {
-      return {text.substr(0, 1), INVALID};
-    }
-  }
-
   expected_t<string_view_t> token_info_t::string_as_plain_contained() const
   {
-    SILVA_EXPECT(category_old == STRING, MAJOR);
     SILVA_EXPECT(str.size() >= 2, MINOR);
-    SILVA_EXPECT(str.front() == '\'' && str.back() == '\'', MINOR);
+    SILVA_EXPECT(str.front() == '\'' && str.back() == '\'',
+                 MINOR,
+                 "token must start and end with quotation marks, but got [{}]",
+                 str);
     for (index_t i = 1; i < str.size() - 2; ++i) {
       SILVA_EXPECT(str[i] != '\\', MINOR);
     }
@@ -178,7 +21,6 @@ namespace silva {
 
   expected_t<string_t> token_info_t::contained_string() const
   {
-    SILVA_EXPECT(category_old == STRING, MAJOR);
     SILVA_EXPECT(str.size() >= 2, MINOR);
     SILVA_EXPECT(str.front() == '\'' && str.back() == '\'', MINOR);
     string_t retval;
@@ -200,7 +42,6 @@ namespace silva {
 
   expected_t<double> token_info_t::number_as_double() const
   {
-    SILVA_EXPECT(category_old == NUMBER, MAJOR);
     return convert_to<double>(str);
   }
 
@@ -221,10 +62,7 @@ namespace silva {
     token_infos.emplace_back();
     token_lookup[""] = token_id_none;
 
-    token_infos.emplace_back(token_info_t{
-        .category_old = IDENTIFIER,
-        .str          = "language",
-    });
+    token_infos.emplace_back(token_info_t{.str = "language"});
     token_lookup["language"] = token_id_language;
 
     const name_info_t fni{0, 0};
@@ -235,42 +73,24 @@ namespace silva {
 
   syntax_farm_t::~syntax_farm_t() = default;
 
-  expected_t<token_id_t> syntax_farm_t::token_id(const string_view_t token_str)
+  token_id_t syntax_farm_t::token_id(const string_view_t token_str)
   {
     const auto it = token_lookup.find(string_t{token_str});
     if (it != token_lookup.end()) {
       return it->second;
     }
     else {
-      const auto [tokenized_str, token_cat] = tokenize_one(token_str);
-      SILVA_EXPECT(tokenized_str.size() == token_str.size(), MINOR);
       const token_id_t new_token_id = token_infos.size();
-      token_infos.push_back(token_info_t{token_cat, string_t{tokenized_str}});
-      token_lookup.emplace(tokenized_str, new_token_id);
+      token_infos.push_back(token_info_t{string_t{token_str}});
+      token_lookup.emplace(token_str, new_token_id);
       return new_token_id;
     }
-  }
-
-  expected_t<token_id_t> syntax_farm_t::token_id_new(const string_view_t token_str)
-  {
-    const auto it = token_lookup.find(string_t{token_str});
-    if (it != token_lookup.end()) {
-      return it->second;
-    }
-    const token_id_t new_token_id = token_infos.size();
-    token_infos.push_back(token_info_t{
-        .category_old = INVALID,
-        .str          = string_t{token_str},
-    });
-    token_lookup.emplace(string_t{token_str}, new_token_id);
-    return new_token_id;
   }
 
   expected_t<token_id_t> syntax_farm_t::token_id_in_string(const token_id_t ti)
   {
     const auto& token_info = token_infos[ti];
-    SILVA_EXPECT(token_info.category_old == STRING, MINOR, "{} not a string", token_id_wrap(ti));
-    const string_t str = SILVA_EXPECT_FWD(token_info.contained_string(),
+    const string_t str     = SILVA_EXPECT_FWD(token_info.contained_string(),
                                           "{} not a string containing a token",
                                           token_id_wrap(ti));
     return token_id(str);

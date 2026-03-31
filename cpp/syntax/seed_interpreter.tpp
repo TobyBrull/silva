@@ -9,6 +9,16 @@ namespace silva::seed::test {
   TEST_CASE("not-but_then-keywords", "[seed::interpreter_t][seed]")
   {
     const string_view_t frog_seed = R"'(
+    - Frog = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - number = NUMBER
+      - string = STRING
+      - identifier = IDENTIFIER
+    ]
     - Frog = [
       - x = Rule *
       - Rule = RuleName Expr
@@ -19,13 +29,57 @@ namespace silva::seed::test {
         - x = 'keyword1' | 'keyword2' | 'keyword3'
       ]
     ]
-  )'";
+)'";
     syntax_farm_t sf;
     interpreter_t se(sf.ptr());
     auto ptp = SILVA_REQUIRE(se.add_seed_text("frog.seed", string_t{frog_seed}));
     const string_view_t expected_seed_pt = R"(
 [0]_.Seed                                         - Frog ... ] ]
-  [0]_.Seed.Rule                                  Frog = ... ] ]
+  [0]_.Seed.Rule                                  Frog = ... IDENTIFIER ]
+    [0]_.Seed.Nonterminal                         Frog
+      [0]_.Seed.Nonterminal.Base                  Frog
+    [1]_.Seed.Tokenizer                           [ - ... IDENTIFIER ]
+      [0]_.Seed.Tokenizer.IgnoreRule              ignore WHITESPACE
+        [0]_.Seed.Tokenizer.Defn                  WHITESPACE
+          [0]_.Seed.Tokenizer.PrefixItem          WHITESPACE
+            [0]_.Seed.Tokenizer.Item              WHITESPACE
+              [0]_.Seed.Tokenizer.Matcher         WHITESPACE
+      [1]_.Seed.Tokenizer.IgnoreRule              ignore COMMENT
+        [0]_.Seed.Tokenizer.Defn                  COMMENT
+          [0]_.Seed.Tokenizer.PrefixItem          COMMENT
+            [0]_.Seed.Tokenizer.Item              COMMENT
+              [0]_.Seed.Tokenizer.Matcher         COMMENT
+      [2]_.Seed.Tokenizer.IgnoreRule              ignore INDENT
+        [0]_.Seed.Tokenizer.Defn                  INDENT
+          [0]_.Seed.Tokenizer.PrefixItem          INDENT
+            [0]_.Seed.Tokenizer.Item              INDENT
+              [0]_.Seed.Tokenizer.Matcher         INDENT
+      [3]_.Seed.Tokenizer.IgnoreRule              ignore DEDENT
+        [0]_.Seed.Tokenizer.Defn                  DEDENT
+          [0]_.Seed.Tokenizer.PrefixItem          DEDENT
+            [0]_.Seed.Tokenizer.Item              DEDENT
+              [0]_.Seed.Tokenizer.Matcher         DEDENT
+      [4]_.Seed.Tokenizer.IgnoreRule              ignore NEWLINE
+        [0]_.Seed.Tokenizer.Defn                  NEWLINE
+          [0]_.Seed.Tokenizer.PrefixItem          NEWLINE
+            [0]_.Seed.Tokenizer.Item              NEWLINE
+              [0]_.Seed.Tokenizer.Matcher         NEWLINE
+      [5]_.Seed.Tokenizer.TokenRule               number = NUMBER
+        [0]_.Seed.Tokenizer.Defn                  NUMBER
+          [0]_.Seed.Tokenizer.PrefixItem          NUMBER
+            [0]_.Seed.Tokenizer.Item              NUMBER
+              [0]_.Seed.Tokenizer.Matcher         NUMBER
+      [6]_.Seed.Tokenizer.TokenRule               string = STRING
+        [0]_.Seed.Tokenizer.Defn                  STRING
+          [0]_.Seed.Tokenizer.PrefixItem          STRING
+            [0]_.Seed.Tokenizer.Item              STRING
+              [0]_.Seed.Tokenizer.Matcher         STRING
+      [7]_.Seed.Tokenizer.TokenRule               identifier = IDENTIFIER
+        [0]_.Seed.Tokenizer.Defn                  IDENTIFIER
+          [0]_.Seed.Tokenizer.PrefixItem          IDENTIFIER
+            [0]_.Seed.Tokenizer.Item              IDENTIFIER
+              [0]_.Seed.Tokenizer.Matcher         IDENTIFIER
+  [1]_.Seed.Rule                                  Frog = ... ] ]
     [0]_.Seed.Nonterminal                         Frog
       [0]_.Seed.Nonterminal.Base                  Frog
     [1]_.Seed                                     - x ... 'keyword3' ]
@@ -85,15 +139,14 @@ namespace silva::seed::test {
     const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
-    const string_view_t frog_source_code = R"'(
+    const string_t frog_text = R"'(
     keyword1 a b c
     keyword2 d e
     keyword1 f
     keyword3 g h i
-  )'";
-    const auto frog_tt                   = SILVA_REQUIRE(tokenize(sf.ptr(), "", frog_source_code));
-    const auto frog_pt                   = SILVA_REQUIRE(se.apply(frog_tt, sf.name_id_of("Frog")));
-    const string_view_t expected         = R"(
+)'";
+    const auto frog_pt       = SILVA_REQUIRE(se.apply_text("", frog_text, sf.name_id_of("Frog")));
+    const string_view_t expected = R"(
 [0]_.Frog                                         keyword1 a ... h i
   [0]_.Frog.Rule                                  keyword1 a b c
     [0]_.Frog.Expr                                a b c
@@ -158,6 +211,16 @@ namespace silva::seed::test {
   TEST_CASE("multiple-texts", "[seed::interpreter_t]")
   {
     const string_view_t text1_seed = R"'(
+    - Foo = tokenizer [
+      - ignore WHITESPACE
+      - ignore COMMENT
+      - ignore INDENT
+      - ignore DEDENT
+      - ignore NEWLINE
+      - number = NUMBER
+      - string = STRING
+      - identifier = IDENTIFIER
+    ]
     - Foo = [
       - x = 'a' 'b' 'c' _.Bar ?
     ]
@@ -173,11 +236,12 @@ namespace silva::seed::test {
     SILVA_REQUIRE(se.add_seed_text("text1.seed", string_t{text1_seed}));
     SILVA_REQUIRE(se.add_seed_text("text2.seed", string_t{text2_seed}));
 
-    const string_view_t code     = R"'(
+    const string_t text = R"'(
     a b c x y z a b c
 )'";
-    auto tt                      = SILVA_REQUIRE(tokenize(sf.ptr(), "", code));
-    auto pt                      = SILVA_REQUIRE(se.apply(tt, sf.name_id_of("Foo")));
+
+    auto pt = SILVA_REQUIRE(se.apply_text("", text, sf.name_id_of("Foo")));
+
     const string_view_t expected = R"(
 [0]_.Foo                                          a b ... b c
   [0]_.Bar                                        x y ... b c

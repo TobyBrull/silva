@@ -112,9 +112,9 @@ namespace silva::lox {
                                                    object_pool_t& object_pool,
                                                    const lexicon_t& lexicon)
   {
-    using enum token_category_old_t;
     SILVA_EXPECT(pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
     const auto ti    = pts.tp->tokens[pts[0].token_begin];
+    const auto tc    = pts.tp->categories[pts[0].token_begin];
     const auto tinfo = pts.tp->token_info_get(pts[0].token_begin);
     if (ti == lexicon.ti_none) {
       return object_pool.make(none);
@@ -125,11 +125,11 @@ namespace silva::lox {
     else if (ti == lexicon.ti_false) {
       return object_pool.make(false);
     }
-    else if (tinfo->category_old == STRING) {
+    else if (tc == lexicon.ti_string) {
       const auto sov = SILVA_EXPECT_FWD(tinfo->string_as_plain_contained());
       return object_pool.make(string_t{sov});
     }
-    else if (tinfo->category_old == NUMBER) {
+    else if (tc == lexicon.ti_number) {
       const auto dd = SILVA_EXPECT_FWD(tinfo->number_as_double());
       return object_pool.make(double{dd});
     }

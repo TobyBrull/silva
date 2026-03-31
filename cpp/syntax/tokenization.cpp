@@ -1,12 +1,8 @@
 #include "tokenization.hpp"
 
-#include "canopy/filesystem.hpp"
-
 #include "syntax_farm.hpp"
 
 namespace silva {
-  using enum token_category_old_t;
-
   tokenization_t tokenization_t::copy() const
   {
     return tokenization_t{
@@ -78,57 +74,20 @@ namespace silva {
     stream->write_str(retval);
   }
 
-  expected_t<tokenization_ptr_t> tokenize_load(syntax_farm_ptr_t sfp, filepath_t filepath)
-  {
-    string_t source_code  = SILVA_EXPECT_FWD(read_file(filepath));
-    tokenization_ptr_t tp = SILVA_EXPECT_FWD_PLAIN(
-        tokenize(std::move(sfp), std::move(filepath), std::move(source_code)));
-    return tp;
-  }
-
-  expected_t<tokenization_ptr_t>
-  tokenize(syntax_farm_ptr_t sfp, filepath_t filepath, string_view_t source_code)
-  {
-    auto retval      = std::make_unique<tokenization_t>();
-    retval->sfp      = sfp;
-    retval->filepath = std::move(filepath);
-    file_location_t loc;
-    while (loc.byte_offset < source_code.size()) {
-      const auto [tokenized_str, token_cat] = tokenize_one(source_code.substr(loc.byte_offset));
-      SILVA_EXPECT(token_cat != INVALID,
-                   MINOR,
-                   "token {} at [{}] is invalid",
-                   string_t{tokenized_str},
-                   loc);
-      loc.byte_offset += tokenized_str.size();
-      const auto old_loc = loc;
-      loc.column += tokenized_str.size();
-      if (token_cat == WHITESPACE || token_cat == COMMENT) {
-        if (tokenized_str == "\n") {
-          loc.line_num += 1;
-          loc.column = 0;
-        }
-      }
-      else {
-        token_info_t ti{
-            .category_old = token_cat,
-            .str          = string_t{tokenized_str},
-        };
-        const token_id_t tii = syntax_farm_get_token_id_from_info(*sfp, std::move(ti));
-        retval->tokens.push_back(tii);
-        retval->locations.push_back(old_loc);
-      }
-    }
-    return sfp->add(std::move(retval));
-  }
-
   void pretty_write_impl(const tokenization_t& self, byte_sink_t* stream)
   {
     for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
       const token_id_t tii         = self.tokens[token_index];
-      const token_info_t* info     = &self.sfp->token_infos[tii];
+      const token_id_t tic         = self.categories[token_index];
+      const token_info_t* tii_info = &self.sfp->token_infos[tii];
+      const token_info_t* tic_info = &self.sfp->token_infos[tic];
       const auto [line, column, _] = self.locations[token_index];
-      stream->format("[{:3}] {:3}:{:<3} {}\n", token_index, line + 1, column + 1, info->str);
+      stream->format("[{:3}] {:3}:{:<3} cat={:20} {}\n",
+                     token_index,
+                     line + 1,
+                     column + 1,
+                     tic_info->str,
+                     tii_info->str);
     }
   }
 }

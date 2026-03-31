@@ -51,8 +51,8 @@ namespace silva::lox {
   struct runner_t {
     bytecode_vm_t& vm;
 
-    token_id_t ti_super = vm.sfp->token_id("super").value();
-    token_id_t ti_init  = vm.sfp->token_id("init").value();
+    token_id_t ti_super = vm.sfp->token_id("super");
+    token_id_t ti_init  = vm.sfp->token_id("init");
 
     index_t curr_index_in_instr(const index_t offset = 0)
     {

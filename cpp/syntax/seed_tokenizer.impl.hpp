@@ -32,7 +32,7 @@ namespace silva::seed::impl {
   // If token_name == token_id_none, this is an 'ignore' rule.
   // If prefix_matchers and repeat_matchers are empty, this is an include rule.
   struct rule_t {
-    token_id_t token_name = token_id_none;
+    token_id_t token_category_name = token_id_none;
 
     array_t<matcher_t> prefix_matchers;
     array_t<matcher_t> repeat_matchers;

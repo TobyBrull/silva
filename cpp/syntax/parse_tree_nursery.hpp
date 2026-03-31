@@ -21,6 +21,14 @@ namespace silva {
                      sfp->token_id_wrap(token_id_by()));                  \
   token_index += 1;
 
+#define SILVA_EXPECT_PARSE_TOKEN_CATEGORY(name, token_cat)                       \
+  SILVA_EXPECT_PARSE(name,                                                       \
+                     num_tokens_left() >= 1 && token_category_by() == token_cat, \
+                     "expected category {}, got {}",                             \
+                     sfp->token_id_wrap(token_cat),                              \
+                     sfp->token_id_wrap(token_category_by()));                   \
+  token_index += 1;
+
 #define SILVA_EXPECT_PARSE_FWD(name, expr) \
   SILVA_EXPECT_FWD(expr, "[{}] {}", token_location_by(), sfp->name_id_wrap(name))
 
@@ -49,6 +57,7 @@ namespace silva {
 
     const index_t num_tokens_left() const;
     const token_id_t token_id_by(index_t token_index_offset = 0) const;
+    const token_id_t token_category_by(index_t token_index_offset = 0) const;
     const token_info_t* token_data_by(index_t token_index_offset = 0) const;
     token_location_t token_location_by(index_t token_index_offset = 0) const;
     token_location_t token_location_at(index_t token_index) const;

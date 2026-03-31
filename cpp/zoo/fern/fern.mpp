@@ -13,21 +13,16 @@ namespace silva::fern {
     SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
 
     const auto arg_process =
-        SILVA_EXPECT_FWD_IF(var_context_get("process"), MAJOR).value_or("direct/string");
-    const bool arg_seed_eng =
-        SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("seed-engine"), MAJOR).value_or(true);
+        SILVA_EXPECT_FWD_IF(var_context_get("process"), MAJOR).value_or("fern_t/string");
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
+
     syntax_farm_t sf;
-    tokenization_ptr_t tp = SILVA_EXPECT_FWD(tokenize_load(sf.ptr(), cmdline_args[1]));
+    const auto se = standard_seed_interpreter(sf.ptr());
+
+    fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]));
     parse_tree_ptr_t ptp;
-    if (arg_seed_eng) {
-      const auto fse{standard_seed_interpreter(sf.ptr())};
-      ptp = SILVA_EXPECT_FWD_PLAIN(fse->apply(tp, sf.name_id_of("Fern")));
-    }
-    else {
-      ptp = SILVA_EXPECT_FWD_PLAIN(parse(tp));
-    }
+    ptp = SILVA_EXPECT_FWD_PLAIN(se->apply(fp, sf.name_id_of("Fern")));
 
     if (arg_process == "none") {
       ;
@@ -43,21 +38,6 @@ namespace silva::fern {
       }
       else if (rest == "graphviz_show") {
         graphviz_show_sync(fern.to_graphviz());
-      }
-      else {
-        SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
-      }
-    }
-    else if (arg_process.starts_with("direct/")) {
-      const auto rest = arg_process.substr(7);
-      if (rest == "string") {
-        fmt::print("{}\n", SILVA_EXPECT_FWD(to_string(ptp.get())));
-      }
-      else if (rest == "graphviz") {
-        fmt::print("{}\n", SILVA_EXPECT_FWD(to_graphviz(ptp.get())));
-      }
-      else if (rest == "graphviz_show") {
-        graphviz_show_sync(SILVA_EXPECT_FWD(to_graphviz(ptp.get())));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);

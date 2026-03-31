@@ -3,19 +3,6 @@
 #include "canopy/expected.hpp"
 
 namespace silva {
-  enum class token_category_old_t {
-    INVALID = 0,
-    WHITESPACE,
-    COMMENT,
-
-    NUMBER,
-    STRING,
-
-    IDENTIFIER,
-    OPERATOR,
-  };
-
-  tuple_t<string_view_t, token_category_old_t> tokenize_one(const string_view_t text);
 
   // An index in the "token_infos" vector of "syntax_farm_t". Equality of two tokens is then
   // equivalent to the equality of their token_info_index_t.
@@ -29,7 +16,6 @@ namespace silva {
   constexpr inline name_id_t name_id_root       = 0;
 
   struct token_info_t {
-    token_category_old_t category_old = token_category_old_t::INVALID;
     string_t str;
 
     expected_t<string_view_t> string_as_plain_contained() const;
@@ -75,8 +61,8 @@ namespace silva {
     syntax_farm_t();
     ~syntax_farm_t();
 
-    expected_t<token_id_t> token_id(string_view_t);
-    expected_t<token_id_t> token_id_new(string_view_t);
+    token_id_t token_id(string_view_t);
+
     expected_t<token_id_t> token_id_in_string(token_id_t);
 
     name_id_t name_id(name_id_t parent_name, token_id_t base_name);
@@ -123,7 +109,7 @@ namespace silva {
   name_id_t syntax_farm_t::name_id_of(Ts&&... xs)
   {
     array_t<token_id_t> vec;
-    ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
+    ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
     return name_id_span(name_id_root, vec);
   }
 
@@ -131,7 +117,7 @@ namespace silva {
   name_id_t syntax_farm_t::name_id_of(name_id_t parent_name, Ts&&... xs)
   {
     array_t<token_id_t> vec;
-    ((vec.push_back(token_id(std::forward<Ts>(xs)).value())), ...);
+    ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
     return name_id_span(parent_name, vec);
   }
 }
