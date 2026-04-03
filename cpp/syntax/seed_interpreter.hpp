@@ -22,9 +22,6 @@ namespace silva::seed {
     // encountered.
     hash_map_t<parse_tree_span_t, name_id_t> nonterminal_rules;
 
-    // Maps the token-id's that correspond to regexes to the compiled version of that regex.
-    hash_map_t<token_id_t, optional_t<std::regex>> regexes;
-
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
     hash_map_t<name_id_t, axe_t> axes;
 

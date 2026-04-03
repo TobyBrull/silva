@@ -14,11 +14,10 @@ cat "$TEMPFILE"
 ./build/cpp/silva_syntax silva/syntax/01-simplest.fern
 SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --action=none
 
-# TODO
-# # Parsing user-defined languages
-# ./build/cpp/silva_syntax silva/syntax/02-example.silva
-# ./build/cpp/silva_syntax silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
-# ./build/cpp/silva_syntax silva/soil/soil.silva silva/soil/example.silva
+# Parsing user-defined languages
+./build/cpp/silva_syntax silva/syntax/02-example.silva
+./build/cpp/silva_syntax silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
+./build/cpp/silva_syntax silva/soil/soil.silva silva/soil/example.silva
 
 # Lox
 ./build/cpp/silva_lox cpp/zoo/lox/lox.lox --use-interpreter=true < cpp/zoo/lox/example.lox

@@ -126,7 +126,6 @@ namespace silva::lox {
         if (is_on_entry(event)) {
           const token_id_t ti = pts.tp->tokens[pts_curr[0].token_begin];
           const token_id_t tc = pts.tp->categories[pts_curr[0].token_begin];
-          const auto* tinfo   = pts.tp->token_info_get(pts_curr[0].token_begin);
           const auto pts_ti   = pts.sub_tree_span_at(path.back().node_index);
 
           const bool is_super = (ti == lexicon.ti_super);
@@ -413,9 +412,8 @@ namespace silva::lox {
       if (const auto it = intp->literals.find(pts); it != intp->literals.end()) {
         return it->second;
       }
-      const token_id_t ti       = pts.tp->tokens[pts[0].token_begin];
-      const token_id_t tc       = pts.tp->categories[pts[0].token_begin];
-      const token_info_t* tinfo = pts.tp->token_info_get(pts[0].token_begin);
+      const token_id_t ti = pts.tp->tokens[pts[0].token_begin];
+      const token_id_t tc = pts.tp->categories[pts[0].token_begin];
       if (ti == lexicon.ti_super) {
         SILVA_EXPECT(pts[0].token_end - pts[0].token_begin == 3, MAJOR);
         const auto it = intp->resolution.find(pts);

@@ -126,10 +126,12 @@ namespace silva::lox {
       return object_pool.make(false);
     }
     else if (tc == lexicon.ti_string) {
+      SILVA_EXPECT(tinfo != nullptr, MAJOR);
       const auto sov = SILVA_EXPECT_FWD(tinfo->string_as_plain_contained());
       return object_pool.make(string_t{sov});
     }
     else if (tc == lexicon.ti_number) {
+      SILVA_EXPECT(tinfo != nullptr, MAJOR);
       const auto dd = SILVA_EXPECT_FWD(tinfo->number_as_double());
       return object_pool.make(double{dd});
     }

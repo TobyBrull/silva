@@ -37,14 +37,12 @@ namespace silva::seed {
 
   const string_view_t seed_str = R"'(
     - Seed = tokenizer [
-      - include tokenizer FreeForm
-      - operator = [ PARENTHESIS 'concat' 'but_then' 'x' 'p' '_' ]
-      - operator = ::: OPERATOR
       - frag_name = IDENTIFIER_MACRO_CASE
       - rule_name = IDENTIFIER_PASCAL_CASE
       - var_name = IDENTIFIER_SNAKE_CASE\'_v'
       - func_name = IDENTIFIER_SNAKE_CASE\'_f'
       - token_category_name = IDENTIFIER_SNAKE_CASE
+      - include tokenizer FreeForm
     ]
     - Seed = [
       - x = ( '-' Rule ) *

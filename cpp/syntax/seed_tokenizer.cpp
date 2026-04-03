@@ -592,52 +592,41 @@ namespace silva::seed {
       tok.rules = {
           rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_whitespace}},
           rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_comment}},
+          rule_t{.token_category_name = lexicon.ti_number, .prefix_matchers = {m_number}},
+          rule_t{.token_category_name = lexicon.ti_string, .prefix_matchers = {m_string}},
+          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_paren}},
+          rule_t{
+              .token_category_name = lexicon.ti_operator,
+              .prefix_matchers     = {m_operator},
+              .repeat_matchers     = {m_operator},
+          },
+          rule_t{.token_category_name = lexicon.ti_identifier, .prefix_matchers = {m_id}},
+      };
+      retval.tokenizers.emplace(lexicon.ti_r_defaults, std::move(tok));
+    }
+    {
+      tokenizer_t tok;
+      tok.rules = {
           rule_t{.token_category_name = lexicon.ti_indent, .prefix_matchers = {m_indent}},
           rule_t{.token_category_name = lexicon.ti_dedent, .prefix_matchers = {m_dedent}},
           rule_t{.token_category_name = lexicon.ti_newline, .prefix_matchers = {m_newline}},
-          rule_t{.token_category_name = lexicon.ti_number, .prefix_matchers = {m_number}},
-          rule_t{.token_category_name = lexicon.ti_string, .prefix_matchers = {m_string}},
+          rule_t{.token_category_name = lexicon.ti_r_defaults},
       };
       retval.tokenizers.emplace(lexicon.ti_r_offside, std::move(tok));
     }
     {
       tokenizer_t tok;
       tok.rules = {
-          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_whitespace}},
-          rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_comment}},
           rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_indent}},
           rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_dedent}},
           rule_t{.token_category_name = ti_ignore, .prefix_matchers = {m_newline}},
-          rule_t{.token_category_name = lexicon.ti_number, .prefix_matchers = {m_number}},
-          rule_t{.token_category_name = lexicon.ti_string, .prefix_matchers = {m_string}},
+          rule_t{.token_category_name = lexicon.ti_r_defaults},
       };
       retval.tokenizers.emplace(lexicon.ti_r_freeform, std::move(tok));
     }
     {
-      const array_t<matcher_t> op_repeat = {
-          m_operator,
-          m_operator,
-          m_concat,
-          m_but_then,
-          m_x,
-          m_p,
-          m_uscore,
-      };
-
       tokenizer_t tok;
       tok.rules = {
-          rule_t{.token_category_name = lexicon.ti_r_freeform},
-          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_paren}},
-          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_concat}},
-          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_but_then}},
-          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_x}},
-          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_p}},
-          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_uscore}},
-          rule_t{
-              .token_category_name = lexicon.ti_operator,
-              .prefix_matchers     = {m_operator},
-              .repeat_matchers     = {m_operator},
-          },
           rule_t{.token_category_name = lexicon.ti_frag_name, .prefix_matchers = {m_id_macro}},
           rule_t{.token_category_name = lexicon.ti_rule_name, .prefix_matchers = {m_id_pascal}},
           rule_t{.token_category_name = lexicon.ti_var_name,
@@ -649,6 +638,7 @@ namespace silva::seed {
                                           .case_mask = SNAKE_CASE,
                                           .postfix   = "_f"}}},
           rule_t{.token_category_name = lexicon.ti_token_cat_name, .prefix_matchers = {m_id_snake}},
+          rule_t{.token_category_name = lexicon.ti_r_freeform},
       };
       retval.tokenizers.emplace(lexicon.ti_r_seed, std::move(tok));
     }
@@ -656,9 +646,6 @@ namespace silva::seed {
       tokenizer_t tok;
       tok.rules = {
           rule_t{.token_category_name = lexicon.ti_r_freeform},
-          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_operator}},
-          rule_t{.token_category_name = lexicon.ti_operator, .prefix_matchers = {m_paren}},
-          rule_t{.token_category_name = lexicon.ti_identifier, .prefix_matchers = {m_id}},
       };
       retval.tokenizers.emplace(lexicon.ti_r_fern, std::move(tok));
     }

@@ -131,21 +131,6 @@ namespace silva::seed::impl {
     expected_t<void> handle_all(const parse_tree_span_t pts)
     {
       SILVA_EXPECT_FWD(handle_seed(name_id_root, pts));
-
-      // Pre-compile hashmap_t of "regexes".
-      for (index_t node_index = 0; node_index < pts.size(); ++node_index) {
-        const auto& s_node = pts[node_index];
-        if (s_node.rule_name == lexicon.ni_term && s_node.num_tokens() == 3) {
-          const token_id_t regex_token_id = s_tokens[s_node.token_begin + 2];
-          if (auto& regex = se->regexes[regex_token_id]; !regex.has_value()) {
-            const auto& regex_td = s_tokenization.token_info_get(s_node.token_begin + 2);
-            const string_t regex_str{
-                SILVA_EXPECT_FWD(regex_td->string_as_plain_contained(), MAJOR)};
-            regex = std::regex(regex_str);
-          }
-        }
-      }
-
       return {};
     }
   };
@@ -313,7 +298,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT_PARSE(t_rule_name,
                          num_tokens_left() > 0,
                          "Reached end of token-stream when looking for {}",
-                         pts.tp->token_info_get(s_node.token_begin)->str);
+                         sfp->token_id_wrap(s_front_ti));
       if (s_front_ti == lexicon.ti_keywords_of) {
         const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
         const auto pts_nt   = pts.sub_tree_span_at(children[0]);

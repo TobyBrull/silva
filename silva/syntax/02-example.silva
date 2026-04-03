@@ -1,10 +1,12 @@
-<$ Seed
+Seed «
+- AsBs = tokenizer [
+]
 - AsBs = 'a' * 'b' *
-$>
+»
 
-<$ AsBs a a a b b $>
+AsBs « a a a b b »
 
-<$ Seed
+Seed «
 - CppStmts = [
   - x = ( Expr ';' ) *
   - Expr = axe Atom [
@@ -34,17 +36,17 @@ $>
     ]
   - Atom = number | string | identifier
 ]
-$>
+»
 
-<$ CppStmts
+CppStmts «
 1 + 2 * 3 + 4 * 5 ;
 a[1] = std::sin(3.14) ;
 1 | 0 <= x * 10 <= 2 + 3 ;
 std::get(x) = ::std::get(x) ;
 ++ x ++ ;
-$>
+»
 
-<$ Fern
+Fern «
 [
   none
   true
@@ -56,4 +58,4 @@ $>
     'two' : 2.0
   ]
 ]
-$>
+»

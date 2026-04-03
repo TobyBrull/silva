@@ -15,7 +15,14 @@ namespace silva {
 
   const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
   {
-    return &sfp->token_infos[tokens[token_index]];
+    const token_id_t ti = tokens[token_index];
+    const token_id_t tc = categories[token_index];
+    if (ti > token_id_none) {
+      return &sfp->token_infos[ti];
+    }
+    else {
+      return &sfp->token_infos[tc];
+    }
   }
 
   token_id_t syntax_farm_get_token_id_from_info(syntax_farm_t& sf, const token_info_t& token_info)

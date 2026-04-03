@@ -189,7 +189,7 @@ namespace silva::fern {
             SILVA_EXPECT(node.num_children == 0, MINOR, "Value node must have zero children");
             const token_id_t token_id  = parse_tree->tp->tokens[node.token_begin];
             const token_id_t token_cat = parse_tree->tp->categories[node.token_begin];
-            const auto* token_data     = parse_tree->tp->token_info_get(node.token_begin);
+            const auto* tinfo          = parse_tree->tp->token_info_get(node.token_begin);
             if (token_id == ti_none) {
               retval.item.value = none;
             }
@@ -200,14 +200,16 @@ namespace silva::fern {
               retval.item.value = false;
             }
             else if (token_cat == ti_string) {
+              SILVA_EXPECT(tinfo != nullptr, MAJOR);
               retval.item.value =
-                  string_t{SILVA_EXPECT_FWD(token_data->string_as_plain_contained(), MAJOR)};
+                  string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
             }
             else if (token_cat == ti_number) {
-              retval.item.value = SILVA_EXPECT_FWD(token_data->number_as_double(), MAJOR);
+              SILVA_EXPECT(tinfo != nullptr, MAJOR);
+              retval.item.value = SILVA_EXPECT_FWD(tinfo->number_as_double(), MAJOR);
             }
             else {
-              SILVA_EXPECT(false, MINOR, "Unknown item '{}'", token_data->str);
+              SILVA_EXPECT(false, MINOR, "Unknown item '{}'", tinfo->str);
             }
           }
         }

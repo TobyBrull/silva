@@ -8,12 +8,13 @@ namespace silva {
   parser_t as_parser(seed::interpreter_t*);
 
   const string_view_t seed_str = R"'(
+    - Silva = tokenizer [
+      - language_name = IDENTIFIER
+      - include tokenizer FreeForm
+    ]
     - Silva = [
       - x = Section * end_of_file
-      - Section = '<$'
-        _.Seed.Nonterminal -> nt_v
-        parse_and_callback_f(_, nt_v)
-      '$>'
+      - Section = language_name language
     ]
 )'";
 

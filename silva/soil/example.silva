@@ -1,4 +1,4 @@
-<$ Soil
+Soil «
 
 name_t = str_t
 age_t = i32_t
@@ -43,5 +43,4 @@ example_f = [] {
     sum += i;
   }
 }
-
-$>
+»

@@ -130,23 +130,26 @@ namespace silva::seed {
   };
 
   const string_view_t bootstrap_tokenizers_str = R"'(
-    - OffSide = tokenizer [
+    - Defaults = tokenizer [
       - ignore WHITESPACE
       - ignore COMMENT
+      - number = NUMBER
+      - string = STRING
+      - operator = PARENTHESIS
+      - operator = ::: OPERATOR
+      - identifier = IDENTIFIER
+    ]
+    - OffSide = tokenizer [
       - indent = INDENT
       - dedent = DEDENT
       - newline = NEWLINE
-      - number = NUMBER
-      - string = STRING
+      - include tokenizer Defaults
     ]
     - FreeForm = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
       - ignore INDENT
       - ignore DEDENT
       - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
+      - include tokenizer Defaults
     ]
 )'";
 

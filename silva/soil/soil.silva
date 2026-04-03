@@ -1,5 +1,7 @@
-<$ Seed
-
+Seed «
+- Soil = tokenizer [
+  - include tokenizer FreeForm
+]
 - Soil = [
   - x = ( Type.Defn | Func.Defn | Variable.Defn ) *
   - Type = [
@@ -60,4 +62,4 @@
   ]
 ]
 
-$>
+»

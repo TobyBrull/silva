@@ -6,8 +6,6 @@ namespace silva::fern {
   const string_view_t seed_str = R"'(
     - Fern = tokenizer [
       - include tokenizer FreeForm
-      - operator = [ OPERATOR PARENTHESIS ]
-      - identifier = IDENTIFIER
     ]
     - Fern = [
       - x = '[' LabeledItem * ']'
