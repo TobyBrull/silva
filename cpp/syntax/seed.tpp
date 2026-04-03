@@ -162,9 +162,8 @@ namespace silva::seed::test {
           [1]_.Seed.Expr.Postfix.*                ( LabeledItem ... ) *
             [0]_.Seed.Expr.Parens.(               ( LabeledItem ';' ? )
               [0]_.Seed.Expr.Concat.concat        LabeledItem ';' ?
-                [0]_.Seed.NonterminalMaybeVar     LabeledItem
-                  [0]_.Seed.Nonterminal           LabeledItem
-                    [0]_.Seed.Nonterminal.Base    LabeledItem
+                [0]_.Seed.Nonterminal             LabeledItem
+                  [0]_.Seed.Nonterminal.Base      LabeledItem
                 [1]_.Seed.Expr.Postfix.?          ';' ?
                   [0]_.Seed.Terminal              ';'
           [2]_.Seed.Terminal                      ']'
@@ -175,13 +174,11 @@ namespace silva::seed::test {
           [0]_.Seed.Expr.Postfix.?                ( Label ':' ) ?
             [0]_.Seed.Expr.Parens.(               ( Label ':' )
               [0]_.Seed.Expr.Concat.concat        Label ':'
-                [0]_.Seed.NonterminalMaybeVar     Label
-                  [0]_.Seed.Nonterminal           Label
-                    [0]_.Seed.Nonterminal.Base    Label
+                [0]_.Seed.Nonterminal             Label
+                  [0]_.Seed.Nonterminal.Base      Label
                 [1]_.Seed.Terminal                ':'
-          [1]_.Seed.NonterminalMaybeVar           Item
-            [0]_.Seed.Nonterminal                 Item
-              [0]_.Seed.Nonterminal.Base          Item
+          [1]_.Seed.Nonterminal                   Item
+            [0]_.Seed.Nonterminal.Base            Item
       [2]_.Seed.Rule                              Label = string
         [0]_.Seed.Nonterminal                     Label
           [0]_.Seed.Nonterminal.Base              Label
@@ -190,9 +187,8 @@ namespace silva::seed::test {
         [0]_.Seed.Nonterminal                     Item
           [0]_.Seed.Nonterminal.Base              Item
         [1]_.Seed.Expr.Or.|                       x | string | number
-          [0]_.Seed.NonterminalMaybeVar           x
-            [0]_.Seed.Nonterminal                 x
-              [0]_.Seed.Nonterminal.Base          x
+          [0]_.Seed.Nonterminal                   x
+            [0]_.Seed.Nonterminal.Base            x
           [1]_.Seed.Terminal                      string
           [2]_.Seed.Terminal                      number
 )";

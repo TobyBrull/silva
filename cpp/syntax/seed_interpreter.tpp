@@ -87,19 +87,16 @@ namespace silva::seed::test {
         [0]_.Seed.Nonterminal                     x
           [0]_.Seed.Nonterminal.Base              x
         [1]_.Seed.Expr.Postfix.*                  Rule *
-          [0]_.Seed.NonterminalMaybeVar           Rule
-            [0]_.Seed.Nonterminal                 Rule
-              [0]_.Seed.Nonterminal.Base          Rule
+          [0]_.Seed.Nonterminal                   Rule
+            [0]_.Seed.Nonterminal.Base            Rule
       [1]_.Seed.Rule                              Rule = RuleName Expr
         [0]_.Seed.Nonterminal                     Rule
           [0]_.Seed.Nonterminal.Base              Rule
         [1]_.Seed.Expr.Concat.concat              RuleName Expr
-          [0]_.Seed.NonterminalMaybeVar           RuleName
-            [0]_.Seed.Nonterminal                 RuleName
-              [0]_.Seed.Nonterminal.Base          RuleName
-          [1]_.Seed.NonterminalMaybeVar           Expr
-            [0]_.Seed.Nonterminal                 Expr
-              [0]_.Seed.Nonterminal.Base          Expr
+          [0]_.Seed.Nonterminal                   RuleName
+            [0]_.Seed.Nonterminal.Base            RuleName
+          [1]_.Seed.Nonterminal                   Expr
+            [0]_.Seed.Nonterminal.Base            Expr
       [2]_.Seed.Rule                              RuleName = ... . Keyword
         [0]_.Seed.Nonterminal                     RuleName
           [0]_.Seed.Nonterminal.Base              RuleName
@@ -112,9 +109,8 @@ namespace silva::seed::test {
         [0]_.Seed.Nonterminal                     Expr
           [0]_.Seed.Nonterminal.Base              Expr
         [1]_.Seed.Expr.Postfix.+                  Primary +
-          [0]_.Seed.NonterminalMaybeVar           Primary
-            [0]_.Seed.Nonterminal                 Primary
-              [0]_.Seed.Nonterminal.Base          Primary
+          [0]_.Seed.Nonterminal                   Primary
+            [0]_.Seed.Nonterminal.Base            Primary
       [4]_.Seed.Rule                              Primary = ... but_then identifier
         [0]_.Seed.Nonterminal                     Primary
           [0]_.Seed.Nonterminal.Base              Primary

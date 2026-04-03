@@ -340,18 +340,6 @@ namespace silva::seed::impl {
     {
     }
 
-    expected_t<parse_tree_node_t> nonterminal_maybe_var()
-    {
-      auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_nt_maybe_var);
-      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, nonterminal()));
-      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_right_arrow &&
-          token_category_by(1) == lexicon.ti_var_name) {
-        token_index += 2;
-      }
-      return ss_rule.commit();
-    }
-
     expected_t<parse_tree_node_t> atom()
     {
       auto ss                        = stake();
@@ -359,7 +347,7 @@ namespace silva::seed::impl {
       error_nursery_t error_nursery;
 
       {
-        auto result = nonterminal_maybe_var();
+        auto result = nonterminal();
         if (result) {
           ss.add_proto_node(*result);
           return ss.commit();
@@ -408,12 +396,7 @@ namespace silva::seed::impl {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_func_arg);
       SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
-      if (token_category_by() == lexicon.ti_var_name) {
-        token_index += 1;
-      }
-      else {
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, expr()));
-      }
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, expr()));
       return ss_rule.commit();
     }
 

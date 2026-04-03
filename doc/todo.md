@@ -3,6 +3,7 @@
 * make example with nested languages work again
 * revamp Seed according to seed.v4
 * use unicode.is-lower() in seed.cpp
+* remove name_id_style?
 
 * remove tokenization again, rename fragmentization to tokenization, and add support for sequences
 of fragments/tokens that have no whitespace in between.

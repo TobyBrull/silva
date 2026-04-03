@@ -57,7 +57,6 @@ namespace silva::seed {
     const token_id_t ti_dedent         = sfp->token_id("dedent");
     const token_id_t ti_newline        = sfp->token_id("newline");
     const token_id_t ti_rule_name      = sfp->token_id("rule_name");
-    const token_id_t ti_var_name       = sfp->token_id("var_name");
     const token_id_t ti_func_name      = sfp->token_id("func_name");
     const token_id_t ti_token_cat_name = sfp->token_id("token_category_name");
     const token_id_t ti_frag_name      = sfp->token_id("frag_name");
@@ -86,15 +85,13 @@ namespace silva::seed {
     const token_id_t ti_r_seed     = sfp->token_id("Seed");
     const token_id_t ti_r_fern     = sfp->token_id("Fern");
 
-    const name_id_t ni_seed         = sfp->name_id_of("Seed");
-    const name_id_t ni_rule         = sfp->name_id_of(ni_seed, "Rule");
-    const name_id_t ni_alias        = sfp->name_id_of(ni_seed, "Alias");
-    const name_id_t ni_expr         = sfp->name_id_of(ni_seed, "Expr");
-    const name_id_t ni_atom         = sfp->name_id_of(ni_seed, "Atom");
-    const name_id_t ni_var          = sfp->name_id_of(ni_seed, "Variable");
-    const name_id_t ni_nt_maybe_var = sfp->name_id_of(ni_seed, "NonterminalMaybeVar");
-    const name_id_t ni_term         = sfp->name_id_of(ni_seed, "Terminal");
-    const name_id_t ni_tok_cat      = sfp->name_id_of(ni_seed, "TokenCategory");
+    const name_id_t ni_seed    = sfp->name_id_of("Seed");
+    const name_id_t ni_rule    = sfp->name_id_of(ni_seed, "Rule");
+    const name_id_t ni_alias   = sfp->name_id_of(ni_seed, "Alias");
+    const name_id_t ni_expr    = sfp->name_id_of(ni_seed, "Expr");
+    const name_id_t ni_atom    = sfp->name_id_of(ni_seed, "Atom");
+    const name_id_t ni_term    = sfp->name_id_of(ni_seed, "Terminal");
+    const name_id_t ni_tok_cat = sfp->name_id_of(ni_seed, "TokenCategory");
 
     const name_id_t ni_expr_parens  = sfp->name_id_of(ni_expr, "Parens");
     const name_id_t ni_expr_prefix  = sfp->name_id_of(ni_expr, "Prefix");

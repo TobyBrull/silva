@@ -39,7 +39,6 @@ namespace silva::seed {
     - Seed = tokenizer [
       - frag_name = IDENTIFIER_MACRO_CASE
       - rule_name = IDENTIFIER_PASCAL_CASE
-      - var_name = IDENTIFIER_SNAKE_CASE\'_v'
       - func_name = IDENTIFIER_SNAKE_CASE\'_f'
       - token_category_name = IDENTIFIER_SNAKE_CASE
       - include tokenizer FreeForm
@@ -60,12 +59,11 @@ namespace silva::seed {
         - And       = ltr   infix_flat 'but_then'
         - Or        = ltr   infix_flat '|'
       ]
-      - Atom = alias NonterminalMaybeVar | Function | Terminal
-      - NonterminalMaybeVar = Nonterminal ( '->' var_name ) ?
+      - Atom = alias Nonterminal | Function | Terminal
       - Function = [
          - x = func_name '(' Args ')'
          - Args = Arg ( ',' Arg ) *
-         - Arg = var_name | p.Expr
+         - Arg = p.Expr
       ]
       - Nonterminal = [
         - x = Base ( '.' Base ) *
