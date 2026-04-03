@@ -345,7 +345,6 @@ namespace silva::seed::impl {
       auto ss                        = stake();
       const index_t orig_token_index = token_index;
       error_nursery_t error_nursery;
-
       {
         auto result = nonterminal();
         if (result) {
@@ -354,16 +353,6 @@ namespace silva::seed::impl {
         }
         error_nursery.add_child_error(std::move(result).error());
       }
-
-      {
-        auto result = function();
-        if (result) {
-          ss.add_proto_node(*result);
-          return ss.commit();
-        }
-        error_nursery.add_child_error(std::move(result).error());
-      }
-
       {
         auto result = terminal();
         if (result) {
@@ -372,44 +361,11 @@ namespace silva::seed::impl {
         }
         error_nursery.add_child_error(std::move(result).error());
       }
-
       return std::unexpected(std::move(error_nursery)
                                  .finish_short(error_level_t::MINOR,
                                                "[{}] {}",
                                                token_location_at(orig_token_index),
                                                sfp->name_id_wrap(lexicon.ni_atom)));
-    }
-
-    expected_t<parse_tree_node_t> function()
-    {
-      auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_func);
-      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_func, lexicon.ti_func_name);
-      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_func, lexicon.ti_paren_open);
-      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, function_args()));
-      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_func, lexicon.ti_paren_close);
-      return ss_rule.commit();
-    }
-
-    expected_t<parse_tree_node_t> function_arg()
-    {
-      auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_func_arg);
-      SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
-      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func, expr()));
-      return ss_rule.commit();
-    }
-
-    expected_t<parse_tree_node_t> function_args()
-    {
-      auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_func_args);
-      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_func_args, function_arg()));
-      while (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_comma) {
-        token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_FWD(function_arg(), MAJOR));
-      }
-      return ss_rule.commit();
     }
 
     expected_t<parse_tree_node_t> any_rule(const name_id_t rule_name)

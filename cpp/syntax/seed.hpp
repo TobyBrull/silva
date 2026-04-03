@@ -39,7 +39,6 @@ namespace silva::seed {
     - Seed = tokenizer [
       - frag_name = IDENTIFIER_MACRO_CASE
       - rule_name = IDENTIFIER_PASCAL_CASE
-      - func_name = IDENTIFIER_SNAKE_CASE\'_f'
       - token_category_name = IDENTIFIER_SNAKE_CASE
       - include tokenizer FreeForm
     ]
@@ -59,12 +58,7 @@ namespace silva::seed {
         - And       = ltr   infix_flat 'but_then'
         - Or        = ltr   infix_flat '|'
       ]
-      - Atom = alias Nonterminal | Function | Terminal
-      - Function = [
-         - x = func_name '(' Args ')'
-         - Args = Arg ( ',' Arg ) *
-         - Arg = p.Expr
-      ]
+      - Atom = alias Nonterminal | Terminal
       - Nonterminal = [
         - x = Base ( '.' Base ) *
         - Base = '_' | 'x' | 'p' | rule_name

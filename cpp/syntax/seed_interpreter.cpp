@@ -207,70 +207,6 @@ namespace silva::seed::impl {
       }
     };
 
-    expected_t<node_and_error_t> parse_f(const span_t<const parse_tree_span_t> params)
-    {
-      SILVA_EXPECT(params.size() == 2, MAJOR, "expected two arguments, got {}", params.size());
-      auto pts_scope     = params[0];
-      const auto pts_rel = params[1];
-      SILVA_EXPECT(pts_scope[0].rule_name == lexicon.ni_nt && pts_rel[0].rule_name == lexicon.ni_nt,
-                   MAJOR,
-                   "expected nonterminals, got {} and {}",
-                   sfp->name_id_wrap(pts_scope[0].rule_name),
-                   sfp->name_id_wrap(pts_rel[0].rule_name));
-
-      const name_id_t scope_name =
-          SILVA_EXPECT_FWD_AS(nis.derive_name(name_id_root, pts_scope), MAJOR);
-      const name_id_t t_rule_name = SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_rel));
-      return handle_rule(t_rule_name);
-    }
-    expected_t<node_and_error_t> parse_and_callback_f(const span_t<const parse_tree_span_t> params)
-    {
-      const index_t orig_token_index = token_index;
-      const index_t curr_num_nodes   = tree.size();
-      node_and_error_t nae           = SILVA_EXPECT_FWD(parse_f(params));
-      if (tree.size() > curr_num_nodes) {
-        const parse_tree_span_t parsed_pts{&tree[curr_num_nodes], 1, tp};
-        auto cb_exp = se->callback_if(parsed_pts);
-        if (!cb_exp.has_value()) {
-          error_nursery_t error_nursery;
-          if (!nae.last_error.is_empty()) {
-            error_nursery.add_child_error(std::move(nae.last_error));
-          }
-          error_nursery.add_child_error(std::move(cb_exp).error());
-          return std::unexpected(std::move(error_nursery)
-                                     .finish(MINOR,
-                                             "[{}] error running callback for {}",
-                                             token_location_at(orig_token_index),
-                                             sfp->name_id_wrap(nae.node.rule_name)));
-        }
-      }
-      return nae;
-    }
-    expected_t<node_and_error_t> print_f(const span_t<const parse_tree_span_t> params)
-    {
-      for (const auto& pts: params) {
-        fmt::print("{}\n", pretty_string(pts));
-      }
-      auto ss = stake();
-      return ss.commit();
-    }
-    using func_t       = delegate_t<expected_t<node_and_error_t>(span_t<const parse_tree_span_t>)>;
-    using func_table_t = hash_map_t<token_id_t, func_t>;
-    func_table_t func_table = {
-        {
-            sfp->token_id("parse_f"),
-            func_t::make<&interpreter_apply_nursery_t::parse_f>(this),
-        },
-        {
-            sfp->token_id("parse_and_callback_f"),
-            func_t::make<&interpreter_apply_nursery_t::parse_and_callback_f>(this),
-        },
-        {
-            sfp->token_id("print_f"),
-            func_t::make<&interpreter_apply_nursery_t::print_f>(this),
-        },
-    };
-
     expected_t<node_and_error_t> s_terminal(const parse_tree_span_t pts,
                                             const name_id_t t_rule_name)
     {
@@ -517,23 +453,6 @@ namespace silva::seed::impl {
       return SILVA_EXPECT_FWD_IF(handle_rule(next_t_rule_name), MAJOR);
     }
 
-    expected_t<node_and_error_t> s_func(const parse_tree_span_t pts, const name_id_t t_rule_name)
-    {
-      const auto children      = SILVA_EXPECT_FWD(pts.get_children<2>());
-      const token_id_t func_ti = pts.sub_tree_span_at(children[0]).first_token_id();
-      const auto f_it          = func_table.find(func_ti);
-      SILVA_EXPECT(f_it != func_table.end(), MAJOR);
-      const auto& func = f_it->second;
-
-      const auto pts_args = pts.sub_tree_span_at(children[1]);
-      array_t<parse_tree_span_t> args;
-      for (const auto [child_node_index, child_index]: pts_args.children_range()) {
-        const auto pts_arg = pts_args.sub_tree_span_at(child_node_index);
-        args.push_back(pts_arg);
-      }
-      return func(args);
-    }
-
     expected_t<node_and_error_t> s_expr(const parse_tree_span_t pts, const name_id_t t_rule_name)
     {
       const name_id_t s_rule_name = pts[0].rule_name;
@@ -561,9 +480,6 @@ namespace silva::seed::impl {
       }
       else if (s_rule_name == lexicon.ni_nt) {
         return s_nonterminal(pts, t_rule_name);
-      }
-      else if (s_rule_name == lexicon.ni_func) {
-        return s_func(pts, t_rule_name);
       }
       else {
         SILVA_EXPECT(false, MAJOR, "unknown seed expression {}", pts);

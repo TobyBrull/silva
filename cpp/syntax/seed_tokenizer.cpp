@@ -630,10 +630,6 @@ namespace silva::seed {
       tok.rules = {
           rule_t{.token_category_name = lexicon.ti_frag_name, .prefix_matchers = {m_id_macro}},
           rule_t{.token_category_name = lexicon.ti_rule_name, .prefix_matchers = {m_id_pascal}},
-          rule_t{.token_category_name = lexicon.ti_func_name,
-                 .prefix_matchers     = {{.category  = IDENTIFIER,
-                                          .case_mask = SNAKE_CASE,
-                                          .postfix   = "_f"}}},
           rule_t{.token_category_name = lexicon.ti_token_cat_name, .prefix_matchers = {m_id_snake}},
           rule_t{.token_category_name = lexicon.ti_r_freeform},
       };

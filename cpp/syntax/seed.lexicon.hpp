@@ -57,7 +57,6 @@ namespace silva::seed {
     const token_id_t ti_dedent         = sfp->token_id("dedent");
     const token_id_t ti_newline        = sfp->token_id("newline");
     const token_id_t ti_rule_name      = sfp->token_id("rule_name");
-    const token_id_t ti_func_name      = sfp->token_id("func_name");
     const token_id_t ti_token_cat_name = sfp->token_id("token_category_name");
     const token_id_t ti_frag_name      = sfp->token_id("frag_name");
 
@@ -102,11 +101,6 @@ namespace silva::seed {
 
     const name_id_t ni_nt      = sfp->name_id_of(ni_seed, "Nonterminal");
     const name_id_t ni_nt_base = sfp->name_id_of(ni_nt, "Base");
-
-    const name_id_t ni_func      = sfp->name_id_of(ni_seed, "Function");
-    const name_id_t ni_func_name = sfp->name_id_of(ni_func, "Name");
-    const name_id_t ni_func_arg  = sfp->name_id_of(ni_func, "Arg");
-    const name_id_t ni_func_args = sfp->name_id_of(ni_func, "Args");
 
     const name_id_t ni_axe         = sfp->name_id_of(ni_seed, "Axe");
     const name_id_t ni_axe_level   = sfp->name_id_of(ni_axe, "Level");
