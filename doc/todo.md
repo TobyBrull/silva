@@ -1,22 +1,18 @@
 # TODO
 
-* make example with nested languages work again
-* revamp Seed according to seed.v4
-* use unicode.is-lower() in seed.cpp
 * remove name_id_style?
+* make nested naming simpler; as in C++; remove 'x' 'p' '_'
 
-* remove tokenization again, rename fragmentization to tokenization, and add support for sequences
-of fragments/tokens that have no whitespace in between.
+* revamp Seed according to seed.v4
+
+* make example with nested languages work again
 
 * tokenization:
-    * Support user-defined tokenization rules.
-        * Parse "real" Lox
-    * Allow for python-style indenting (i.e., such that indentation generates it generated tokens in the tokenization)?
-    * Tokenize all of Python
-        * string interpolation
-    * After errors, parsing should be resu
-    * Tokenize zig multi-line strings
-    * UTF-8 (for mathematical symbols as used in Lean)
+    * Parse "real" Lox
+    * Parse Python
+    * Parse C
+    * Python style string interpolation
+    * After errors, parsing should be resume (for error handling in IDEs)
 
 * Lox:
     * Unify: object_pool_t, cactus_t?
@@ -33,29 +29,9 @@ of fragments/tokens that have no whitespace in between.
 ## Long Term
 
 * Seed
-    * add `joined_f(',', Base)`
-    * add `- Nonterminal = name_f('.', '_' | 'x' | 'p' | identifier / '^[A-Z]')`
-    * add `- Arg = p.Expr | Variable | '<$' p.Nonterminal -> nt_v nonterminal_f(_, nt_v) '$>'`
-    * add Seed functions/templates/macros?
-        * e.g.> - func name_id(root_term, curr_term, parent_term, separator_term, token_nt) = [
-                    - x = Base ( separator_terminal Base ) *
-                    - Base = root_term | curr_term | parent_term | token_nt
-                  ]
-        * e.g.> - SeedNonterminal = name_id('_', 'x', 'p', '.')
-        * e.g.> - Expr = axe_f(Atom, [
-                    - Prefix = rtl prefix 'not'
-                    - Postfix = ltr postfix '?' '*'
-                  ])
-        * e.g.> - Impl = 'impl' ':' _.Seed.Nonterminal -> nt_v print_f(nt_v) resolve_f(_, nt_v)
-        * e.g.> - Args = joined_f(',', p.Expr)
-        * e.g.> - Expr = parse_axe_f(Atom, <$ Axe [
-                  - Parens    = nest  atom_nest '(' ')'
-                  - Prefix    = rtl   prefix 'not'
-                  - Postfix   = ltr   postfix '?' '*' '+'
-                  - Concat    = ltr   infix_flat concat
-                  - And       = ltr   infix_flat 'but_then'
-                  - Or        = ltr   infix_flat '|'
-                  ] $> )
+    * function
+        * allow uses to write typical parse functions in silva directly
+        * add `joined_f(',', Base)`?
     * add Seed Axe derivation (sub-Axe, super-Axe) mechanism?
     * translate Seed program into IR:
         * check Seed program during translation
