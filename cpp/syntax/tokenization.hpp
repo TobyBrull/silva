@@ -11,14 +11,17 @@ namespace silva {
 
     fragment_span_t fs;
 
-    array_t<fragment_span_t> languages;
-
-    // For tokens that are a "language", the corresponding entry in "categories" will be "language"
-    // and the corresponding entry in "tokens" will be the negative of its index in the "languages"
-    // array.
+    // For tokens that are a "language", the corresponding entry in "tokens" and in "categories"
+    // will both be "token_id_language".
     array_t<token_id_t> tokens;
     array_t<token_id_t> categories;
     array_t<file_location_t> locations;
+
+    // Maps the *index* of an entry in "tokens" and "categories" that contains "token_id_language"
+    // to the corresponding range of fragments.
+    hash_map_t<index_t, fragment_span_t> languages;
+
+    index_t size() const;
 
     tokenization_t copy() const;
 

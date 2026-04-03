@@ -3,6 +3,11 @@
 #include "syntax_farm.hpp"
 
 namespace silva {
+  index_t tokenization_t::size() const
+  {
+    return tokens.size();
+  }
+
   tokenization_t tokenization_t::copy() const
   {
     return tokenization_t{
@@ -16,13 +21,7 @@ namespace silva {
   const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
   {
     const token_id_t ti = tokens[token_index];
-    const token_id_t tc = categories[token_index];
-    if (ti > token_id_none) {
-      return &sfp->token_infos[ti];
-    }
-    else {
-      return &sfp->token_infos[tc];
-    }
+    return &sfp->token_infos[ti];
   }
 
   token_id_t syntax_farm_get_token_id_from_info(syntax_farm_t& sf, const token_info_t& token_info)
@@ -83,7 +82,7 @@ namespace silva {
 
   void pretty_write_impl(const tokenization_t& self, byte_sink_t* stream)
   {
-    for (index_t token_index = 0; token_index < self.tokens.size(); ++token_index) {
+    for (index_t token_index = 0; token_index < self.size(); ++token_index) {
       const token_id_t tii         = self.tokens[token_index];
       const token_id_t tic         = self.categories[token_index];
       const token_info_t* tii_info = &self.sfp->token_infos[tii];

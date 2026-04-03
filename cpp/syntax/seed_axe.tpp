@@ -13,7 +13,7 @@ namespace silva::seed::test {
   template<typename SeedAxeNursery>
   expected_t<parse_tree_ptr_t> run_axe(syntax_farm_t& sf, const axe_t& axe, tokenization_ptr_t tp)
   {
-    const index_t n = tp->tokens.size();
+    const index_t n = tp->size();
     lexicon_t lexicon(sf.ptr());
     SeedAxeNursery nursery(axe, std::move(tp), lexicon);
     const parse_tree_node_t sub = SILVA_EXPECT_FWD(nursery.expression());

@@ -95,7 +95,7 @@ namespace silva::seed::test {
     const auto fr           = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.src", string_t{src}));
     const auto tp           = SILVA_REQUIRE(tf.apply(fr, ti_testor));
 
-    REQUIRE(tp->tokens.size() == 6);
+    REQUIRE(tp->size() == 6);
     CHECK(tp->tokens[0] == sf.token_id("$hello"));
     CHECK(tp->categories[0] == ti_name);
     CHECK(tp->tokens[1] == sf.token_id("==+++"));

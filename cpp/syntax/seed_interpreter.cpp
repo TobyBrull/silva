@@ -73,11 +73,11 @@ namespace silva::seed::impl {
 
         for (index_t i = 0; i < pts_1.size(); ++i) {
           if (pts_1[i].rule_name == lexicon.ni_term) {
-            const index_t token_idx        = pts_1[i].token_begin;
-            const token_id_t token_id      = pts_1.tp->tokens[token_idx];
-            const token_id_t token_cat     = pts_1.tp->categories[token_idx];
-            const token_info_t& token_info = sfp->token_infos[token_id];
+            const index_t token_idx    = pts_1[i].token_begin;
+            const token_id_t token_cat = pts_1.tp->categories[token_idx];
             if (token_cat == lexicon.ti_string) {
+              const token_id_t token_id       = pts_1.tp->tokens[token_idx];
+              const token_info_t& token_info  = sfp->token_infos[token_id];
               const auto keyword              = SILVA_EXPECT_FWD(sfp->token_id_in_string(token_id));
               se->string_to_keyword[token_id] = keyword;
               SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
@@ -728,7 +728,7 @@ namespace silva::seed {
     auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name),
                                 "seed::interpreter_t::apply({}) failed to parse",
                                 tp->sfp->name_id_wrap(goal_rule_name));
-    if (ptn.node.token_begin != 0 || ptn.node.token_end != tp->tokens.size()) {
+    if (ptn.node.token_begin != 0 || ptn.node.token_end != tp->size()) {
       SILVA_EXPECT(!ptn.last_error.is_empty(),
                    MAJOR,
                    "could not parse entire tokenization of {}",

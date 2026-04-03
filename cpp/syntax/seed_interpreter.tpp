@@ -197,7 +197,7 @@ namespace silva::seed::test {
     const auto fp = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.src", string_t{src}));
     CHECK(fp->fragments.size() == 22);
     const auto pt = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Testor")));
-    CHECK(pt->tp->tokens.size() == 10);
+    CHECK(pt->tp->size() == 10);
 
     const string_view_t expected = R"(
 [0]_.Testor                                       x = ... * d

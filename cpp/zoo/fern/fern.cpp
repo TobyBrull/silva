@@ -200,12 +200,10 @@ namespace silva::fern {
               retval.item.value = false;
             }
             else if (token_cat == ti_string) {
-              SILVA_EXPECT(tinfo != nullptr, MAJOR);
               retval.item.value =
                   string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
             }
             else if (token_cat == ti_number) {
-              SILVA_EXPECT(tinfo != nullptr, MAJOR);
               retval.item.value = SILVA_EXPECT_FWD(tinfo->number_as_double(), MAJOR);
             }
             else {

@@ -485,8 +485,9 @@ namespace silva::seed {
         frag_idx = SILVA_EXPECT_FWD(fp->advance_language(frag_idx));
 
         const index_t language_idx = retval->languages.size();
-        retval->languages.push_back(fragment_span_t{fp, old_frag_idx, frag_idx});
-        retval->tokens.push_back(-language_idx);
+        const index_t token_idx    = retval->size();
+        retval->languages.emplace(token_idx, fragment_span_t{fp, old_frag_idx, frag_idx});
+        retval->tokens.push_back(token_id_language);
         retval->categories.push_back(token_id_language);
         retval->locations.push_back(fp->fragments[old_frag_idx].location);
         continue;

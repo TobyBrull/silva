@@ -55,7 +55,7 @@ namespace silva {
 
   const index_t parse_tree_nursery_t::num_tokens_left() const
   {
-    return tp->tokens.size() - token_index;
+    return tp->size() - token_index;
   }
 
   const token_id_t parse_tree_nursery_t::token_id_by(const index_t token_index_offset) const
