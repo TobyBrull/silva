@@ -1,14 +1,16 @@
 #pragma once
 
-#include "syntax/parse_tree.hpp"
+#include "syntax_farm.hpp"
 
 namespace silva::seed {
-  struct lexicon_t {
-    syntax_farm_ptr_t sfp;
+  struct lexicon_t : public silva::lexicon_t {
+    lexicon_t(syntax_farm_ptr_t sfp) : silva::lexicon_t(sfp)
+    {
+      language_name = sfp->token_id("Seed");
+      here_name     = sfp->token_id("⊙");
+      name_sep      = sfp->token_id(".");
+    }
 
-    lexicon_t(syntax_farm_ptr_t sfp) : sfp(sfp) {}
-
-    const token_id_t ti_dot          = sfp->token_id(".");
     const token_id_t ti_comma        = sfp->token_id(",");
     const token_id_t ti_dash         = sfp->token_id("-");
     const token_id_t ti_equal        = sfp->token_id("=");
@@ -21,7 +23,6 @@ namespace silva::seed {
     const token_id_t ti_paren_close  = sfp->token_id(")");
     const token_id_t ti_identifier   = sfp->token_id("identifier");
     const token_id_t ti_slash        = sfp->token_id("/");
-    const token_id_t ti_here         = sfp->token_id("⊙");
     const token_id_t ti_operator     = sfp->token_id("operator");
     const token_id_t ti_string       = sfp->token_id("string");
     const token_id_t ti_number       = sfp->token_id("number");

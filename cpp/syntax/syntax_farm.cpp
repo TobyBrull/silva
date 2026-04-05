@@ -175,6 +175,10 @@ namespace silva {
     };
   }
 
+  lexicon_t::lexicon_t(syntax_farm_ptr_t sfp) : sfp(std::move(sfp)) {}
+
+  lexicon_t::~lexicon_t() = default;
+
   void pretty_write_impl(const token_id_wrap_t& x, byte_sink_t* byte_sink)
   {
     byte_sink->format("token[ {} ]", x.sfp->token_infos[x.token_id].str);

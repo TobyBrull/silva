@@ -43,7 +43,7 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_nt_base);
       SILVA_EXPECT_PARSE(lexicon.ni_nt_base, num_tokens_left() >= 1, "no tokens left");
       SILVA_EXPECT_PARSE(lexicon.ni_nt_base,
-                         token_id_by() == lexicon.ti_here ||
+                         token_id_by() == lexicon.here_name ||
                              token_category_by() == lexicon.ti_rule_name,
                          "unexpected {}",
                          sfp->token_id_wrap(token_id_by()));
@@ -55,11 +55,11 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_nt);
-      if (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_dot) {
+      if (num_tokens_left() >= 1 && token_id_by() == lexicon.name_sep) {
         token_index += 1;
       }
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_nt, nonterminal_base()));
-      while (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_dot) {
+      while (num_tokens_left() >= 2 && token_id_by() == lexicon.name_sep) {
         token_index += 1;
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_nt, nonterminal_base()));
       }

@@ -1,10 +1,7 @@
 #include "fern.hpp"
 
-#include "canopy/error.hpp"
 #include "canopy/expected.hpp"
-#include "canopy/string_convert.hpp"
 
-#include "syntax/parse_tree_nursery.hpp"
 #include "syntax/syntax_farm.hpp"
 
 namespace silva::fern {
@@ -144,35 +141,43 @@ namespace silva::fern {
     return retval;
   }
 
+  struct lexicon_t : public silva::lexicon_t {
+    lexicon_t(syntax_farm_ptr_t sfp) : silva::lexicon_t(sfp)
+    {
+      language_name = sfp->token_id("Fern");
+    }
+
+    const token_id_t ti_none  = sfp->token_id("none");
+    const token_id_t ti_true  = sfp->token_id("true");
+    const token_id_t ti_false = sfp->token_id("false");
+
+    const token_id_t ti_number = sfp->token_id("number");
+    const token_id_t ti_string = sfp->token_id("string");
+
+    const name_id_t ni_fern     = sfp->name_id_of("Fern");
+    const name_id_t ni_lbl_item = sfp->name_id_of(ni_fern, "LabeledItem");
+    const name_id_t ni_label    = sfp->name_id_of(ni_fern, "Label");
+    const name_id_t ni_value    = sfp->name_id_of(ni_fern, "Value");
+  };
+
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
       syntax_farm_ptr_t sfp          = parse_tree->tp->sfp;
-
-      token_id_t ti_none  = sfp->token_id("none");
-      token_id_t ti_true  = sfp->token_id("true");
-      token_id_t ti_false = sfp->token_id("false");
-
-      token_id_t ti_number = sfp->token_id("number");
-      token_id_t ti_string = sfp->token_id("string");
-
-      name_id_t ni_fern     = sfp->name_id_of("Fern");
-      name_id_t ni_lbl_item = sfp->name_id_of(ni_fern, "LabeledItem");
-      name_id_t ni_label    = sfp->name_id_of(ni_fern, "Label");
-      name_id_t ni_value    = sfp->name_id_of(ni_fern, "Value");
+      const lexicon_t& lexicon       = sfp->get_lexicon<lexicon_t>();
 
       expected_t<fern_labeled_item_t> labeled_item(const parse_tree_span_t pts)
       {
         const auto& labeled_item = pts[0];
-        SILVA_EXPECT(labeled_item.rule_name == ni_lbl_item, MINOR);
+        SILVA_EXPECT(labeled_item.rule_name == lexicon.ni_lbl_item, MINOR);
         fern_labeled_item_t retval;
         for (const auto [child_node_index, child_index]: pts.children_range()) {
           const auto& node = pts[child_node_index];
           if (labeled_item.num_children == 2 && child_index == 0) {
-            SILVA_EXPECT(node.rule_name == ni_label, MINOR);
+            SILVA_EXPECT(node.rule_name == lexicon.ni_label, MINOR);
             const token_id_t tcat     = parse_tree->tp->categories[node.token_begin];
             const token_info_t* tinfo = parse_tree->tp->token_info_get(node.token_begin);
-            if (tcat == ti_string) {
+            if (tcat == lexicon.ti_string) {
               retval.label = string_t{SILVA_EXPECT_FWD(
                   parse_tree->tp->token_info_get(node.token_begin)->string_as_plain_contained(),
                   MAJOR)};
@@ -181,29 +186,29 @@ namespace silva::fern {
               retval.label = tinfo->str;
             }
           }
-          else if (node.rule_name == ni_fern) {
+          else if (node.rule_name == lexicon.ni_fern) {
             fern_t sub_fern   = SILVA_EXPECT_FWD(fern(pts.sub_tree_span_at(child_node_index)));
             retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
           }
-          else if (node.rule_name == ni_value) {
+          else if (node.rule_name == lexicon.ni_value) {
             SILVA_EXPECT(node.num_children == 0, MINOR, "Value node must have zero children");
             const token_id_t token_id  = parse_tree->tp->tokens[node.token_begin];
             const token_id_t token_cat = parse_tree->tp->categories[node.token_begin];
             const auto* tinfo          = parse_tree->tp->token_info_get(node.token_begin);
-            if (token_id == ti_none) {
+            if (token_id == lexicon.ti_none) {
               retval.item.value = none;
             }
-            else if (token_id == ti_true) {
+            else if (token_id == lexicon.ti_true) {
               retval.item.value = true;
             }
-            else if (token_id == ti_false) {
+            else if (token_id == lexicon.ti_false) {
               retval.item.value = false;
             }
-            else if (token_cat == ti_string) {
+            else if (token_cat == lexicon.ti_string) {
               retval.item.value =
                   string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
             }
-            else if (token_cat == ti_number) {
+            else if (token_cat == lexicon.ti_number) {
               retval.item.value = SILVA_EXPECT_FWD(tinfo->number_as_double(), MAJOR);
             }
             else {
@@ -216,7 +221,7 @@ namespace silva::fern {
 
       expected_t<fern_t> fern(const parse_tree_span_t pts)
       {
-        SILVA_EXPECT(pts[0].rule_name == ni_fern, MINOR);
+        SILVA_EXPECT(pts[0].rule_name == lexicon.ni_fern, MINOR);
         fern_t retval;
         for (const auto [child_node_index, child_index]: pts.children_range()) {
           fern_labeled_item_t li =

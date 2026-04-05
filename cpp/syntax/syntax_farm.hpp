@@ -1,5 +1,6 @@
 #pragma once
 
+#include "canopy/assert.hpp"
 #include "canopy/expected.hpp"
 
 namespace silva {
@@ -44,12 +45,16 @@ namespace silva {
   using tokenization_ptr_t    = ptr_t<const tokenization_t>;
   using parse_tree_ptr_t      = ptr_t<const parse_tree_t>;
 
+  struct lexicon_t;
+
   struct syntax_farm_t : public menhir_t {
     array_t<token_info_t> token_infos;
     hash_map_t<string_t, token_id_t> token_lookup;
 
     array_t<name_info_t> name_infos;
     hash_map_t<name_info_t, name_id_t> name_lookup;
+
+    hash_map_t<std::type_index, unique_ptr_t<const lexicon_t>> lexicons;
 
     array_t<unique_ptr_t<const fragmentization_t>> fragmentizations;
     array_t<unique_ptr_t<const tokenization_t>> tokenizations;
@@ -81,11 +86,26 @@ namespace silva {
     token_id_wrap_t token_id_wrap(token_id_t);
     name_id_wrap_t name_id_wrap(name_id_t);
 
+    template<typename LexiconType>
+    const LexiconType& get_lexicon();
+
     fragmentization_ptr_t add(unique_ptr_t<const fragmentization_t>);
     tokenization_ptr_t add(unique_ptr_t<const tokenization_t>);
     parse_tree_ptr_t add(unique_ptr_t<const parse_tree_t>);
   };
   using syntax_farm_ptr_t = ptr_t<syntax_farm_t>;
+
+  struct lexicon_t : public menhir_t {
+    syntax_farm_ptr_t sfp;
+    token_id_t language_name = token_id_none;
+
+    token_id_t here_name = token_id_none;
+    token_id_t name_sep  = token_id_none;
+
+    lexicon_t(syntax_farm_ptr_t);
+
+    virtual ~lexicon_t();
+  };
 
   struct token_id_wrap_t {
     syntax_farm_ptr_t sfp;
@@ -105,6 +125,24 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+  template<typename LexiconType>
+  const LexiconType& syntax_farm_t::get_lexicon()
+  {
+    static_assert(std::derived_from<LexiconType, lexicon_t>);
+    const std::type_index type_idx = typeid(LexiconType);
+    const auto it                  = lexicons.find(type_idx);
+    if (it != lexicons.end()) {
+      return dynamic_cast<const LexiconType&>(*it->second);
+    }
+    else {
+      auto ll               = std::make_unique<LexiconType>(ptr());
+      const LexiconType* lp = ll.get();
+      auto [it, inserted]   = lexicons.emplace(type_idx, std::move(ll));
+      SILVA_ASSERT(inserted);
+      return *lp;
+    }
+  }
+
   template<typename... Ts>
   name_id_t syntax_farm_t::name_id_of(Ts&&... xs)
   {
