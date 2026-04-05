@@ -1,7 +1,13 @@
 # TODO
 
-* remove name_id_style?
-* make nested naming simpler; as in C++; remove 'x' 'p' '_'
+* remove name_id_style
+    * make dots (or more generally: seperator) part of name_id_t
+        * if a name starts with '.', it's considered absolute; otherwise, relative
+    * add a name resolution step to seed-interpreter, or just name it "compile"
+        * or maybe add a seed-interpreter factory?
+        * it should support sealing certain parts of the 
+    * make nested naming simpler; as in C++
+    * probably need to keep something like 'x', but make it '⊙'
 
 * revamp Seed according to seed.v4
 

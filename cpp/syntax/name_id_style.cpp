@@ -1,53 +1,14 @@
 #include "name_id_style.hpp"
 
 namespace silva {
-  string_t name_id_style_t::absolute(const name_id_t target_fni) const
+  string_t name_id_style_t::absolute(const name_id_t tgt) const
   {
-    if (target_fni == name_id_root) {
-      return sfp->token_infos[root].str;
+    if (tgt == name_id_root) {
+      return "";
     }
-    const name_info_t& fni = sfp->name_infos[target_fni];
+    const name_info_t& fni = sfp->name_infos[tgt];
     return absolute(fni.parent_name) + sfp->token_infos[separator].str +
         sfp->token_infos[fni.base_name].str;
-  }
-
-  string_t name_id_style_t::relative(const name_id_t current_fni, const name_id_t target_fni) const
-  {
-    const name_id_t lca = sfp->name_id_lca(current_fni, target_fni);
-
-    string_t first_part;
-    {
-      name_id_t curr = current_fni;
-      while (curr != lca) {
-        if (!first_part.empty()) {
-          first_part += sfp->token_infos[separator].str;
-        }
-        first_part += sfp->token_infos[parent].str;
-        curr = sfp->name_infos[curr].parent_name;
-      }
-    }
-
-    string_t second_part;
-    {
-      name_id_t curr = target_fni;
-      while (curr != lca) {
-        if (!second_part.empty()) {
-          second_part = sfp->token_infos[separator].str + second_part;
-        }
-        const name_info_t* fni = &sfp->name_infos[curr];
-        second_part            = sfp->token_infos[fni->base_name].str + second_part;
-        curr                   = sfp->name_infos[curr].parent_name;
-      }
-    }
-    if (!first_part.empty() && !second_part.empty()) {
-      return first_part + sfp->token_infos[separator].str + second_part;
-    }
-    else if (first_part.empty() && second_part.empty()) {
-      return sfp->token_infos[current].str;
-    }
-    else {
-      return first_part + second_part;
-    }
   }
 
   expected_t<token_id_t> name_id_style_t::derive_base_name(const name_id_t scope_name,
@@ -79,21 +40,18 @@ namespace silva {
   expected_t<name_id_t> name_id_style_t::derive_name(const name_id_t scope_name,
                                                      const parse_tree_span_t pts_nt) const
   {
-    name_id_t retval = scope_name;
+    const auto& tokens = pts_nt.tp->tokens;
+    name_id_t retval   = scope_name;
     SILVA_EXPECT(pts_nt[0].rule_name == ni_nonterminal, MINOR, "expected Nonterminal");
+    if (tokens[pts_nt[0].token_begin] == separator) {
+      retval = name_id_root;
+    }
     for (const auto [child_node_index, child_index]: pts_nt.children_range()) {
       const auto& s_node = pts_nt[child_node_index];
       SILVA_EXPECT(s_node.rule_name == ni_nonterminal_base, MINOR, "expected Nonterminal.Base");
-      const token_id_t base = pts_nt.tp->tokens[s_node.token_begin];
-      if (base == root) {
-        SILVA_EXPECT(child_index == 0, MINOR, "Root node may only appear as first element");
-        retval = name_id_root;
-      }
-      else if (base == current) {
+      const token_id_t base = tokens[s_node.token_begin];
+      if (base == current) {
         ;
-      }
-      else if (base == parent) {
-        retval = sfp->name_infos[retval].parent_name;
       }
       else {
         retval = sfp->name_id(retval, base);
@@ -101,4 +59,5 @@ namespace silva {
     }
     return retval;
   }
+
 }

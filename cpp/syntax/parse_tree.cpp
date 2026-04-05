@@ -24,25 +24,12 @@ namespace silva {
     byte_sink->format("{}@{}:{}", ptn.rule_name, ptn.token_begin, ptn.token_end);
   }
 
-  expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset,
-                                                    const parse_tree_printing_t printing) const
+  expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset) const
   {
     const name_id_style_t& nis = tp->sfp->default_name_id_style();
     return tree_span_t::to_string([&](string_t& curr_line, auto& path) {
       const auto pts = this->sub_tree_span_at(path.back().node_index);
-      using enum parse_tree_printing_t;
-      if (printing == ABSOLUTE) {
-        curr_line += nis.absolute(pts[0].rule_name);
-      }
-      else {
-        if (path.size() >= 2) {
-          name_id_t from = (*this)[path[path.size() - 2].node_index].rule_name;
-          curr_line += nis.relative(from, pts[0].rule_name);
-        }
-        else {
-          curr_line += nis.absolute(pts[0].rule_name);
-        }
-      }
+      curr_line += nis.absolute(pts[0].rule_name);
       string_pad(curr_line, token_offset);
       curr_line += silva::pretty_string(pts.token_range());
     });

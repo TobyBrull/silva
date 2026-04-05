@@ -68,118 +68,118 @@
 ERROR (MAJOR):
   ┌─expected token of category token[ string ]; got token[ operator ]
   ├─expected token of category token[ identifier ]; got token[ operator ]
-  [01-broken.fern:9:3] _.Fern.Label: expected alternation[ string | identifier ]
-  [01-broken.fern:9:3] _.Fern.Label
-┌─[01-broken.fern:9:3] _.Fern.LabeledItem: expected sequence[ Label ':' ]
-│     [01-broken.fern:11:5] _.Fern.LabeledItem: expected token[ : ]
-│   ┌─[01-broken.fern:10:5] _.Fern.LabeledItem: expected sequence[ Label ':' ]
-│   │   [01-broken.fern:10:5] _.Fern: expected token[ [ ]
-│   │   [01-broken.fern:10:5] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
-│   │ ┌─[01-broken.fern:10:5] _.Fern
-│   │ │ ┌─[01-broken.fern:10:5] _.Fern.Value: expected token[ none ]
-│   │ │ ├─[01-broken.fern:10:5] _.Fern.Value: expected token[ true ]
-│   │ │ ├─[01-broken.fern:10:5] _.Fern.Value: expected token[ false ]
+  [01-broken.fern:9:3] .Fern.Label: expected alternation[ string | identifier ]
+  [01-broken.fern:9:3] .Fern.Label
+┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ Label ':' ]
+│     [01-broken.fern:11:5] .Fern.LabeledItem: expected token[ : ]
+│   ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ Label ':' ]
+│   │   [01-broken.fern:10:5] .Fern: expected token[ [ ]
+│   │   [01-broken.fern:10:5] .Fern: expected sequence[ '[' LabeledItem * ']' ]
+│   │ ┌─[01-broken.fern:10:5] .Fern
+│   │ │ ┌─[01-broken.fern:10:5] .Fern.Value: expected token[ none ]
+│   │ │ ├─[01-broken.fern:10:5] .Fern.Value: expected token[ true ]
+│   │ │ ├─[01-broken.fern:10:5] .Fern.Value: expected token[ false ]
 │   │ │ ├─expected token of category token[ string ]; got token[ identifier ]
 │   │ │ ├─expected token of category token[ number ]; got token[ identifier ]
-│   │ │ [01-broken.fern:10:5] _.Fern.Value: expected alternation[ 'none' | ... | number ]
-│   │ ├─[01-broken.fern:10:5] _.Fern.Value
-│   ├─[01-broken.fern:10:5] _.Fern.LabeledItem: expected alternation[ x | Value ]
-│   [01-broken.fern:10:5] _.Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
-│ ┌─[01-broken.fern:10:5] _.Fern.LabeledItem
-│ ├─[01-broken.fern:10:5] _.Fern: expected token[ ] ]
-│ [01-broken.fern:9:3] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
-│ [01-broken.fern:9:3] _.Fern
-├─[01-broken.fern:9:3] _.Fern.LabeledItem: expected alternation[ x | Value ]
-[01-broken.fern:9:3] _.Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
-[01-broken.fern:9:3] _.Fern.LabeledItem
-[01-broken.fern:1:1] _.Fern: expected sequence[ '[' LabeledItem * ']' ]
-[01-broken.fern:1:1] _.Fern
-seed::interpreter_t::apply(_.Fern) failed to parse
+│   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ 'none' | ... | number ]
+│   │ ├─[01-broken.fern:10:5] .Fern.Value
+│   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ x | Value ]
+│   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
+│ ┌─[01-broken.fern:10:5] .Fern.LabeledItem
+│ ├─[01-broken.fern:10:5] .Fern: expected token[ ] ]
+│ [01-broken.fern:9:3] .Fern: expected sequence[ '[' LabeledItem * ']' ]
+│ [01-broken.fern:9:3] .Fern
+├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ x | Value ]
+[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
+[01-broken.fern:9:3] .Fern.LabeledItem
+[01-broken.fern:1:1] .Fern: expected sequence[ '[' LabeledItem * ']' ]
+[01-broken.fern:1:1] .Fern
+seed::interpreter_t::apply(.Fern) failed to parse
 
-[0]_.Fern                                         [ none ... ] ]
-  [0]_.Fern.LabeledItem                           none
-    [0]_.Fern.Value                               none
-  [1]_.Fern.LabeledItem                           [ ]
-    [0]_.Fern                                     [ ]
-  [2]_.Fern.LabeledItem                           [ none ]
-    [0]_.Fern                                     [ none ]
-      [0]_.Fern.LabeledItem                       none
-        [0]_.Fern.Value                           none
+[0].Fern                                          [ none ... ] ]
+  [0].Fern.LabeledItem                            none
+    [0].Fern.Value                                none
+  [1].Fern.LabeledItem                            [ ]
+    [0].Fern                                      [ ]
+  [2].Fern.LabeledItem                            [ none ]
+    [0].Fern                                      [ none ]
+      [0].Fern.LabeledItem                        none
+        [0].Fern.Value                            none
 
-[0]_                                                   false     unknown token-location
-  [0]_.Fern                                            true      01-simplest.fern:1:1
-    [0]_.Fern.LabeledItem                              true      01-simplest.fern:2:3
-      [0]_.Fern.Label                                  true      01-simplest.fern:2:3
-      [1]_.Fern                                        false     01-simplest.fern:2:3
-      [2]_.Fern.Value                                  true      01-simplest.fern:2:3
-    [1]_.Fern.LabeledItem                              true      01-simplest.fern:3:3
-      [0]_.Fern.Label                                  false     01-simplest.fern:3:3
-      [1]_.Fern                                        true      01-simplest.fern:3:3
-        [0]_.Fern.LabeledItem                          false     01-simplest.fern:3:4
-          [0]_.Fern.Label                              false     01-simplest.fern:3:4
-          [1]_.Fern                                    false     01-simplest.fern:3:4
-          [2]_.Fern.Value                              false     01-simplest.fern:3:4
-    [2]_.Fern.LabeledItem                              true      01-simplest.fern:4:3
-      [0]_.Fern.Label                                  false     01-simplest.fern:4:3
-      [1]_.Fern                                        true      01-simplest.fern:4:3
-        [0]_.Fern.LabeledItem                          true      01-simplest.fern:5:5
-          [0]_.Fern.Label                              true      01-simplest.fern:5:5
-          [1]_.Fern                                    false     01-simplest.fern:5:5
-          [2]_.Fern.Value                              true      01-simplest.fern:5:5
-        [1]_.Fern.LabeledItem                          false     01-simplest.fern:6:3
-          [0]_.Fern.Label                              false     01-simplest.fern:6:3
-          [1]_.Fern                                    false     01-simplest.fern:6:3
-          [2]_.Fern.Value                              false     01-simplest.fern:6:3
-    [3]_.Fern.LabeledItem                              false     01-simplest.fern:7:1
-      [0]_.Fern.Label                                  false     01-simplest.fern:7:1
-      [1]_.Fern                                        false     01-simplest.fern:7:1
-      [2]_.Fern.Value                                  false     01-simplest.fern:7:1
-[0]_.Silva                                        Seed language ... Fern language
-  [0]_.Silva.Section                              Seed language
-  [1]_.Silva.Section                              AsBs language
-  [2]_.Silva.Section                              Seed language
-  [3]_.Silva.Section                              CppStmts language
-  [4]_.Silva.Section                              Fern language
+[0]                                                    false     unknown token-location
+  [0].Fern                                             true      01-simplest.fern:1:1
+    [0].Fern.LabeledItem                               true      01-simplest.fern:2:3
+      [0].Fern.Label                                   true      01-simplest.fern:2:3
+      [1].Fern                                         false     01-simplest.fern:2:3
+      [2].Fern.Value                                   true      01-simplest.fern:2:3
+    [1].Fern.LabeledItem                               true      01-simplest.fern:3:3
+      [0].Fern.Label                                   false     01-simplest.fern:3:3
+      [1].Fern                                         true      01-simplest.fern:3:3
+        [0].Fern.LabeledItem                           false     01-simplest.fern:3:4
+          [0].Fern.Label                               false     01-simplest.fern:3:4
+          [1].Fern                                     false     01-simplest.fern:3:4
+          [2].Fern.Value                               false     01-simplest.fern:3:4
+    [2].Fern.LabeledItem                               true      01-simplest.fern:4:3
+      [0].Fern.Label                                   false     01-simplest.fern:4:3
+      [1].Fern                                         true      01-simplest.fern:4:3
+        [0].Fern.LabeledItem                           true      01-simplest.fern:5:5
+          [0].Fern.Label                               true      01-simplest.fern:5:5
+          [1].Fern                                     false     01-simplest.fern:5:5
+          [2].Fern.Value                               true      01-simplest.fern:5:5
+        [1].Fern.LabeledItem                           false     01-simplest.fern:6:3
+          [0].Fern.Label                               false     01-simplest.fern:6:3
+          [1].Fern                                     false     01-simplest.fern:6:3
+          [2].Fern.Value                               false     01-simplest.fern:6:3
+    [3].Fern.LabeledItem                               false     01-simplest.fern:7:1
+      [0].Fern.Label                                   false     01-simplest.fern:7:1
+      [1].Fern                                         false     01-simplest.fern:7:1
+      [2].Fern.Value                                   false     01-simplest.fern:7:1
+[0].Silva                                         Seed language ... Fern language
+  [0].Silva.Section                               Seed language
+  [1].Silva.Section                               AsBs language
+  [2].Silva.Section                               Seed language
+  [3].Silva.Section                               CppStmts language
+  [4].Silva.Section                               Fern language
 
-[0]_.Seed                                         - Somelang ... * ]
-  [0]_.Seed.Rule                                  Somelang = ... FreeForm ]
-    [0]_.Seed.Nonterminal                         Somelang
-      [0]_.Seed.Nonterminal.Base                  Somelang
-    [1]_.Seed.Tokenizer                           [ - ... FreeForm ]
-      [0]_.Seed.Tokenizer.IncludeRule             include tokenizer FreeForm
-        [0]_.Seed.Nonterminal.Base                FreeForm
-  [1]_.Seed.Rule                                  Somelang = ... * ]
-    [0]_.Seed.Nonterminal                         Somelang
-      [0]_.Seed.Nonterminal.Base                  Somelang
-    [1]_.Seed                                     - x ... 'b' *
-      [0]_.Seed.Rule                              x = As Bs
-        [0]_.Seed.Nonterminal                     x
-          [0]_.Seed.Nonterminal.Base              x
-        [1]_.Seed.Expr.Concat.concat              As Bs
-          [0]_.Seed.Nonterminal                   As
-            [0]_.Seed.Nonterminal.Base            As
-          [1]_.Seed.Nonterminal                   Bs
-            [0]_.Seed.Nonterminal.Base            Bs
-      [1]_.Seed.Rule                              As = 'a' *
-        [0]_.Seed.Nonterminal                     As
-          [0]_.Seed.Nonterminal.Base              As
-        [1]_.Seed.Expr.Postfix.*                  'a' *
-          [0]_.Seed.Terminal                      'a'
-      [2]_.Seed.Rule                              Bs = 'b' *
-        [0]_.Seed.Nonterminal                     Bs
-          [0]_.Seed.Nonterminal.Base              Bs
-        [1]_.Seed.Expr.Postfix.*                  'b' *
-          [0]_.Seed.Terminal                      'b'
+[0].Seed                                          - Somelang ... * ]
+  [0].Seed.Rule                                   Somelang = ... FreeForm ]
+    [0].Seed.Nonterminal                          Somelang
+      [0].Seed.Nonterminal.Base                   Somelang
+    [1].Seed.Tokenizer                            [ - ... FreeForm ]
+      [0].Seed.Tokenizer.IncludeRule              include tokenizer FreeForm
+        [0].Seed.Nonterminal.Base                 FreeForm
+  [1].Seed.Rule                                   Somelang = ... * ]
+    [0].Seed.Nonterminal                          Somelang
+      [0].Seed.Nonterminal.Base                   Somelang
+    [1].Seed                                      - x ... 'b' *
+      [0].Seed.Rule                               x = As Bs
+        [0].Seed.Nonterminal                      x
+          [0].Seed.Nonterminal.Base               x
+        [1].Seed.Expr.Concat.concat               As Bs
+          [0].Seed.Nonterminal                    As
+            [0].Seed.Nonterminal.Base             As
+          [1].Seed.Nonterminal                    Bs
+            [0].Seed.Nonterminal.Base             Bs
+      [1].Seed.Rule                               As = 'a' *
+        [0].Seed.Nonterminal                      As
+          [0].Seed.Nonterminal.Base               As
+        [1].Seed.Expr.Postfix.*                   'a' *
+          [0].Seed.Terminal                       'a'
+      [2].Seed.Rule                               Bs = 'b' *
+        [0].Seed.Nonterminal                      Bs
+          [0].Seed.Nonterminal.Base               Bs
+        [1].Seed.Expr.Postfix.*                   'b' *
+          [0].Seed.Terminal                       'b'
 
-[0]_.Somelang                                     a a ... b b
-  [0]_.Somelang.As                                a a a a
-  [1]_.Somelang.Bs                                b b b
+[0].Somelang                                      a a ... b b
+  [0].Somelang.As                                 a a a a
+  [1].Somelang.Bs                                 b b b
 
-[0]_.Silva                                        Seed language
-  [0]_.Silva.Section                              Seed language
+[0].Silva                                         Seed language
+  [0].Silva.Section                               Seed language
 
-[0]_.Silva                                        Soil language
-  [0]_.Silva.Section                              Soil language
+[0].Silva                                         Soil language
+  [0].Silva.Section                               Soil language
 
 1
 2

@@ -5,9 +5,7 @@
 namespace silva {
   struct name_id_style_t {
     syntax_farm_ptr_t sfp;
-    token_id_t root      = sfp->token_id("_");
     token_id_t current   = sfp->token_id("x");
-    token_id_t parent    = sfp->token_id("p");
     token_id_t separator = sfp->token_id(".");
 
     name_id_t ni_nonterminal      = sfp->name_id_of("Seed", "Nonterminal");
@@ -16,7 +14,6 @@ namespace silva {
     name_id_t from_token_span(name_id_t current, span_t<const token_id_t>) const;
 
     string_t absolute(name_id_t) const;
-    string_t relative(name_id_t current, name_id_t) const;
     string_t readable(name_id_t current, name_id_t) const;
 
     expected_t<token_id_t> derive_base_name(const name_id_t scope_name,
@@ -26,6 +23,17 @@ namespace silva {
                                                const parse_tree_span_t pts_nonterminal_base) const;
 
     expected_t<name_id_t> derive_name(const name_id_t scope_name,
-                                      const parse_tree_span_t pts_nonterminal) const;
+                                      const parse_tree_span_t pts_nt) const;
+
+    template<typename Lookup, typename F>
+    expected_t<void> for_each_possible_name(const name_id_t scope_name,
+                                            const parse_tree_span_t pts_nonterminal,
+                                            Lookup,
+                                            F) const;
   };
+}
+
+// IMPLEMENTATION
+
+namespace silva {
 }

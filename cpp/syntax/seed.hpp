@@ -60,8 +60,8 @@ namespace silva::seed {
       ]
       - Atom = alias Nonterminal | Terminal
       - Nonterminal = [
-        - x = Base ( '.' Base ) *
-        - Base = '_' | 'x' | 'p' | rule_name
+        - x = '.' ? Base ( '.' Base ) *
+        - Base = 'x' | rule_name
       ]
       - Terminal = string | token_category_name
                  | 'keywords_of' Nonterminal
