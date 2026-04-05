@@ -407,15 +407,14 @@ namespace silva::seed::impl {
       token_id_t base_name = token_id_none;
       assoc_t assoc        = INVALID;
       for (const auto [child_node_index, child_index]: pts_level.children_range()) {
+        const auto pts_child = pts_level.sub_tree_span_at(child_node_index);
         if (child_index == 0) {
-          SILVA_EXPECT(pts_level[child_node_index].rule_name == ni_nt_base, BROKEN_SEED);
-          base_name = SILVA_EXPECT_FWD(
-              nis.derive_base_name(axe_name, pts_level.sub_tree_span_at(child_node_index)));
+          SILVA_EXPECT(pts_child[0].rule_name == ni_nt_base, BROKEN_SEED);
+          base_name = pts_child.first_token_id();
         }
         else if (child_index == 1) {
-          const auto pts_assoc = pts_level.sub_tree_span_at(child_node_index);
-          SILVA_EXPECT(pts_assoc[0].rule_name == ni_axe_assoc, BROKEN_SEED);
-          const token_id_t ti_assoc = pts_assoc.first_token_id();
+          SILVA_EXPECT(pts_child[0].rule_name == ni_axe_assoc, BROKEN_SEED);
+          const token_id_t ti_assoc = pts_child.first_token_id();
           if (ti_assoc == ti_nest) {
             assoc = NEST;
           }
