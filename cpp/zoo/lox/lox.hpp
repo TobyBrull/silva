@@ -13,32 +13,32 @@ namespace silva::lox {
       - operator = ::: OPERATOR
     ]
     - Lox = [
-      - x = ( Decl | Stmt ) *
+      - ⊙ = ( Decl | Stmt ) *
       - Decl = [
-        - x = Var | Fun | Class
+        - ⊙ = Var | Fun | Class
         - Var = 'var' identifier ( '=' .Lox.Expr ) ? ';'
         - Fun = 'fun' .Lox.Function
         - Class = [
-          - x = 'class' identifier Super '{' .Lox.Function * '}'
+          - ⊙ = 'class' identifier Super '{' .Lox.Function * '}'
           - Super = ( '<' identifier ) ?
         ]
       ]
       - Stmt = [
-        - x = Print | If | For | While | Return | Block | ExprStmt
+        - ⊙ = Print | If | For | While | Return | Block | ExprStmt
         - Print = 'print' .Lox.Expr ';'
-        - If = 'if' '(' .Lox.Expr ')' x ( 'else' x ) ?
+        - If = 'if' '(' .Lox.Expr ')' ⊙ ( 'else' ⊙ ) ?
         - For = 'for' '('
                 ( .Lox.Decl.Var | ExprStmt | .None ';' )
                 ( .Lox.Expr | .None ) ';'
                 ( .Lox.Expr  | .None )
-              ')' x
-        - While = 'while' '(' .Lox.Expr ')' x
+              ')' ⊙
+        - While = 'while' '(' .Lox.Expr ')' ⊙
         - Return = 'return' .Lox.Expr ? ';'
-        - Block = '{' ( .Lox.Decl | x ) * '}'
+        - Block = '{' ( .Lox.Decl | ⊙ ) * '}'
         - ExprStmt = .Lox.Expr ';'
       ]
       - Expr = [
-        - x = axe x.Expr.Atom [
+        - ⊙ = axe Expr.Atom [
           - Primary     = nest atom_nest '(' ')'
           - Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
           - Unary       = rtl prefix '!' '-'
@@ -53,10 +53,10 @@ namespace silva::lox {
         - Atom = 'true' | 'false' | 'none' | 'this'
                | number | string
                | 'super' '.' identifier | identifier
-        - Arguments = ( x ( ',' x ) * ) ?
+        - Arguments = ( ⊙ ( ',' ⊙ ) * ) ?
       ]
       - Function = [
-        - x = identifier '(' Parameters ')' .Lox.Stmt.Block
+        - ⊙ = identifier '(' Parameters ')' .Lox.Stmt.Block
         - Parameters = ( Parameter ( ',' Parameter ) * ) ?
         - Parameter = identifier
       ]

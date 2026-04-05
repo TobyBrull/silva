@@ -20,13 +20,13 @@ namespace silva::seed::test {
       - identifier = IDENTIFIER
     ]
     - Frog = [
-      - x = Rule *
+      - ⊙ = Rule *
       - Rule = RuleName Expr
-      - RuleName = alias keywords_of x.Keyword
+      - RuleName = alias keywords_of Keyword
       - Expr = Primary +
       - Primary = not keywords_of Keyword but_then identifier
       - Keyword = [
-        - x = 'keyword1' | 'keyword2' | 'keyword3'
+        - ⊙ = 'keyword1' | 'keyword2' | 'keyword3'
       ]
     ]
 )'";
@@ -82,10 +82,10 @@ namespace silva::seed::test {
   [1].Seed.Rule                                   Frog = ... ] ]
     [0].Seed.Nonterminal                          Frog
       [0].Seed.Nonterminal.Base                   Frog
-    [1].Seed                                      - x ... 'keyword3' ]
-      [0].Seed.Rule                               x = Rule *
-        [0].Seed.Nonterminal                      x
-          [0].Seed.Nonterminal.Base               x
+    [1].Seed                                      - ⊙ ... 'keyword3' ]
+      [0].Seed.Rule                               ⊙ = Rule *
+        [0].Seed.Nonterminal                      ⊙
+          [0].Seed.Nonterminal.Base               ⊙
         [1].Seed.Expr.Postfix.*                   Rule *
           [0].Seed.Nonterminal                    Rule
             [0].Seed.Nonterminal.Base             Rule
@@ -97,14 +97,13 @@ namespace silva::seed::test {
             [0].Seed.Nonterminal.Base             RuleName
           [1].Seed.Nonterminal                    Expr
             [0].Seed.Nonterminal.Base             Expr
-      [2].Seed.Rule                               RuleName = ... . Keyword
+      [2].Seed.Rule                               RuleName = alias keywords_of Keyword
         [0].Seed.Nonterminal                      RuleName
           [0].Seed.Nonterminal.Base               RuleName
-        [1].Seed.Alias                            keywords_of x . Keyword
-          [0].Seed.Terminal                       keywords_of x . Keyword
-            [0].Seed.Nonterminal                  x . Keyword
-              [0].Seed.Nonterminal.Base           x
-              [1].Seed.Nonterminal.Base           Keyword
+        [1].Seed.Alias                            keywords_of Keyword
+          [0].Seed.Terminal                       keywords_of Keyword
+            [0].Seed.Nonterminal                  Keyword
+              [0].Seed.Nonterminal.Base           Keyword
       [3].Seed.Rule                               Expr = Primary +
         [0].Seed.Nonterminal                      Expr
           [0].Seed.Nonterminal.Base               Expr
@@ -123,10 +122,10 @@ namespace silva::seed::test {
       [5].Seed.Rule                               Keyword = ... 'keyword3' ]
         [0].Seed.Nonterminal                      Keyword
           [0].Seed.Nonterminal.Base               Keyword
-        [1].Seed                                  - x ... | 'keyword3'
-          [0].Seed.Rule                           x = ... | 'keyword3'
-            [0].Seed.Nonterminal                  x
-              [0].Seed.Nonterminal.Base           x
+        [1].Seed                                  - ⊙ ... | 'keyword3'
+          [0].Seed.Rule                           ⊙ = ... | 'keyword3'
+            [0].Seed.Nonterminal                  ⊙
+              [0].Seed.Nonterminal.Base           ⊙
             [1].Seed.Expr.Or.|                    'keyword1' | 'keyword2' | 'keyword3'
               [0].Seed.Terminal                   'keyword1'
               [1].Seed.Terminal                   'keyword2'
@@ -182,7 +181,7 @@ namespace silva::seed::test {
         - op = OPERATOR
       ]
       - Testor = [
-        - x = Assign *
+        - ⊙ = Assign *
         - Assign = name '=' name op name
       ]
 )'";
@@ -218,13 +217,13 @@ namespace silva::seed::test {
       - identifier = IDENTIFIER
     ]
     - Foo = [
-      - x = 'a' 'b' 'c' .Bar ?
+      - ⊙ = 'a' 'b' 'c' .Bar ?
     ]
 )'";
     const string_view_t text2_seed = R"'(
     - Bar = [
       - Blub = 'u' 'v' 'w'
-      - x = 'x' 'y' 'z' .Foo ?
+      - ⊙ = 'x' 'y' 'z' .Foo ?
     ]
 )'";
     syntax_farm_t sf;

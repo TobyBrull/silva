@@ -87,7 +87,7 @@ namespace silva::seed {
 
   const string_view_t seed_tokenizer_str = R"'(
     - Seed.Tokenizer = [
-      - x = '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
+      - ⊙ = '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
       - IncludeRule = 'include' 'tokenizer' .Seed.Nonterminal.Base
       - IgnoreRule = 'ignore' Defn
       - TokenRule = token_category_name '=' Defn

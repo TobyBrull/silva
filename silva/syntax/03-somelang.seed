@@ -2,7 +2,7 @@
   - include tokenizer FreeForm
 ]
 - Somelang = [
-  - x = As Bs
+  - ⊙ = As Bs
   - As = 'a' *
   - Bs = 'b' *
 ]

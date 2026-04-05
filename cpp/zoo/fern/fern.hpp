@@ -8,8 +8,8 @@ namespace silva::fern {
       - include tokenizer FreeForm
     ]
     - Fern = [
-      - x = '[' LabeledItem * ']'
-      - LabeledItem = ( Label ':' ) ? ( x | Value )
+      - ⊙ = '[' LabeledItem * ']'
+      - LabeledItem = ( Label ':' ) ? ( ⊙ | Value )
       - Label = string | identifier
       - Value = 'none' | 'true' | 'false' | string | number
     ]

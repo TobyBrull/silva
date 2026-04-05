@@ -40,11 +40,12 @@ namespace silva::seed {
       - frag_name = IDENTIFIER_MACRO_CASE
       - rule_name = IDENTIFIER_PASCAL_CASE
       - token_category_name = IDENTIFIER_SNAKE_CASE
+      - operator = [ '⊙' ]
       - include tokenizer FreeForm
     ]
     - Seed = [
-      - x = ( '-' Rule ) *
-      - Rule = Nonterminal '=' ( '[' x ']'
+      - ⊙ = ( '-' Rule ) *
+      - Rule = Nonterminal '=' ( '[' ⊙ ']'
                                | 'tokenizer' Tokenizer
                                | 'axe' Axe
                                | 'alias' Alias
@@ -60,8 +61,8 @@ namespace silva::seed {
       ]
       - Atom = alias Nonterminal | Terminal
       - Nonterminal = [
-        - x = '.' ? Base ( '.' Base ) *
-        - Base = 'x' | rule_name
+        - ⊙ = '.' ? Base ( '.' Base ) *
+        - Base = '⊙' | rule_name
       ]
       - Terminal = string | token_category_name
                  | 'keywords_of' Nonterminal

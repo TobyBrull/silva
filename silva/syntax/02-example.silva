@@ -8,7 +8,7 @@ AsBs « a a a b b »
 
 Seed «
 - CppStmts = [
-  - x = ( Expr ';' ) *
+  - ⊙ = ( Expr ';' ) *
   - Expr = axe Atom [
       - Parens      = nest  atom_nest '(' ')'
       - Namespace   = rtl   infix '::' prefix '::'

@@ -13,7 +13,7 @@ namespace silva {
       - include tokenizer FreeForm
     ]
     - Silva = [
-      - x = Section * end_of_file
+      - ⊙ = Section * end_of_file
       - Section = language_name language
     ]
 )'";

@@ -631,6 +631,12 @@ namespace silva::seed {
           rule_t{.token_category_name = lexicon.ti_frag_name, .prefix_matchers = {m_id_macro}},
           rule_t{.token_category_name = lexicon.ti_rule_name, .prefix_matchers = {m_id_pascal}},
           rule_t{.token_category_name = lexicon.ti_token_cat_name, .prefix_matchers = {m_id_snake}},
+          rule_t{.token_category_name = lexicon.ti_operator,
+                 .prefix_matchers     = {matcher_t{
+                         .category = OPERATOR,
+                         .prefix   = "⊙",
+                         .postfix  = "⊙",
+                 }}},
           rule_t{.token_category_name = lexicon.ti_r_freeform},
       };
       retval.tokenizers.emplace(lexicon.ti_r_seed, std::move(tok));
