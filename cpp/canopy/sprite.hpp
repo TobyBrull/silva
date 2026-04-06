@@ -68,6 +68,16 @@ namespace silva {
     ptr_t& operator=(ptr_t&&);
     ptr_t& operator=(const ptr_t&);
 
+    // clang-format off
+    template<typename U> requires std::derived_from<U, T> ptr_t(ptr_t<U>&&);
+    template<typename U> requires std::derived_from<U, T> ptr_t(const ptr_t<U>&);
+    template<typename U> requires std::derived_from<U, T> ptr_t& operator=(ptr_t<U>&&);
+    template<typename U> requires std::derived_from<U, T> ptr_t& operator=(const ptr_t<U>&);
+
+    template<typename U> requires std::derived_from<U, T> void assign(ptr_t<U>&&);
+    template<typename U> requires std::derived_from<U, T> void assign(const ptr_t<U>&);
+    // clang-format on
+
     operator ptr_t<const T>() const { return ptr_t<const T>(ptr); }
 
     bool is_nullptr() const;
@@ -128,42 +138,102 @@ namespace silva {
   template<typename T>
   ptr_t<T>::~ptr_t()
   {
-#ifndef SILVA_OPTIMIZED_BUILD
-    if (ptr != nullptr) {
-      ptr->ptr_count -= 1;
-    }
-#endif
+    clear();
   }
 
   template<typename T>
-  ptr_t<T>::ptr_t(ptr_t&& other) : ptr(std::exchange(other.ptr, nullptr))
+  ptr_t<T>::ptr_t(ptr_t&& other)
   {
+    assign(std::move(other));
   }
 
   template<typename T>
-  ptr_t<T>::ptr_t(const ptr_t& other) : ptr(other.ptr)
+  ptr_t<T>::ptr_t(const ptr_t& other)
   {
-#ifndef SILVA_OPTIMIZED_BUILD
-    if (ptr) {
-      ptr->ptr_count += 1;
-    }
-#endif
+    assign(other);
   }
 
   template<typename T>
   ptr_t<T>& ptr_t<T>::operator=(ptr_t&& other)
   {
-    if (this != &other) {
-      clear();
-      ptr = std::exchange(other.ptr, nullptr);
-    }
+    assign(std::move(other));
     return *this;
   }
 
   template<typename T>
   ptr_t<T>& ptr_t<T>::operator=(const ptr_t& other)
   {
-    if (this != &other) {
+    assign(other);
+    return *this;
+  }
+
+  template<typename T>
+  template<typename U>
+    requires std::derived_from<U, T>
+  ptr_t<T>::ptr_t(ptr_t<U>&& other)
+  {
+    assign(std::move(other));
+  }
+
+  template<typename T>
+  template<typename U>
+    requires std::derived_from<U, T>
+  ptr_t<T>::ptr_t(const ptr_t<U>& other)
+  {
+    assign(other);
+  }
+
+  template<typename T>
+  template<typename U>
+    requires std::derived_from<U, T>
+  ptr_t<T>& ptr_t<T>::operator=(ptr_t<U>&& other)
+  {
+    assign(std::move(other));
+    return *this;
+  }
+
+  template<typename T>
+  template<typename U>
+    requires std::derived_from<U, T>
+  ptr_t<T>& ptr_t<T>::operator=(const ptr_t<U>& other)
+  {
+    assign(other);
+    return *this;
+  }
+
+  template<typename T>
+  template<typename U>
+    requires std::derived_from<U, T>
+  void ptr_t<T>::assign(ptr_t<U>&& other)
+  {
+    const bool is_self_assignment = [&] {
+      if constexpr (!std::same_as<T, U>) {
+        return false;
+      }
+      else {
+        return this == &other;
+      }
+    }();
+    if (!is_self_assignment) {
+      clear();
+      ptr = std::exchange(other.ptr, nullptr);
+    }
+  }
+
+  template<typename T>
+  template<typename U>
+    requires std::derived_from<U, T>
+  void ptr_t<T>::assign(const ptr_t<U>& other)
+  {
+    const bool is_self_assignment = [&] {
+      if constexpr (!std::same_as<T, U>) {
+        return false;
+      }
+      else {
+        return this == &other;
+      }
+    }();
+    if (!is_self_assignment) {
       clear();
       ptr = other.ptr;
 #ifndef SILVA_OPTIMIZED_BUILD
@@ -172,7 +242,6 @@ namespace silva {
       }
 #endif
     }
-    return *this;
   }
 
   template<typename T>
