@@ -32,7 +32,7 @@ namespace silva::lox::test {
     {
       prepare();
       const auto [ptp, chunk] = make_chunk(lox_code);
-      INFO(SILVA_REQUIRE(ptp->span().to_string()));
+      INFO(SILVA_REQUIRE(ptp->span().to_string(sf.get_lexicon<lexicon_t>())));
       INFO(SILVA_REQUIRE(chunk->to_string()));
       SILVA_REQUIRE(vm.run(*chunk));
       const auto result = print_buffer.content_str_fetch();
@@ -49,7 +49,7 @@ namespace silva::lox::test {
     {
       prepare();
       const auto [ptp, chunk] = make_chunk(lox_code);
-      INFO(SILVA_REQUIRE(ptp->span().to_string()));
+      INFO(SILVA_REQUIRE(ptp->span().to_string(sf.get_lexicon<lexicon_t>())));
       INFO(SILVA_REQUIRE(chunk->to_string()));
       const auto result = vm.run(*chunk);
       REQUIRE(!result.has_value());

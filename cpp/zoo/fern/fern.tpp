@@ -52,7 +52,7 @@ namespace silva::fern::test {
         [0].Fern.Value                            3
 )";
 
-    const string_t result_str = SILVA_REQUIRE(pt->span().to_string());
+    const string_t result_str = SILVA_REQUIRE(pt->span().to_string(sf.get_lexicon<lexicon_t>()));
     CHECK(result_str == expected_parse_tree_str.substr(1));
 
     const string_view_t expected_parse_tree_str_graphviz = R"(
@@ -100,7 +100,8 @@ digraph parse_tree {
   "/5/0/2/0/" [label="[0].Fern.Value\n3"]
 })";
 
-    const string_t result_graphviz = SILVA_REQUIRE(pt->span().to_graphviz());
+    const string_t result_graphviz =
+        SILVA_REQUIRE(pt->span().to_graphviz(sf.get_lexicon<lexicon_t>()));
     CHECK(result_graphviz == expected_parse_tree_str_graphviz.substr(1));
   }
 }

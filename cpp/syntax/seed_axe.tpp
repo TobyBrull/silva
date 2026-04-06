@@ -13,8 +13,8 @@ namespace silva::seed::test {
   template<typename SeedAxeNursery>
   expected_t<parse_tree_ptr_t> run_axe(syntax_farm_t& sf, const axe_t& axe, tokenization_ptr_t tp)
   {
-    const index_t n = tp->size();
-    lexicon_t lexicon(sf.ptr());
+    const index_t n     = tp->size();
+    const auto& lexicon = sf.get_lexicon<lexicon_t>();
     SeedAxeNursery nursery(axe, std::move(tp), lexicon);
     const parse_tree_node_t sub = SILVA_EXPECT_FWD(nursery.expression());
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
@@ -36,7 +36,7 @@ namespace silva::seed::test {
     optional_t<string_t> result_str;
     if (maybe_result_pt.has_value()) {
       auto result_pt = std::move(maybe_result_pt).value();
-      result_str     = SILVA_REQUIRE(result_pt->span().to_string());
+      result_str     = SILVA_REQUIRE(result_pt->span().to_string(si.sfp->get_lexicon<lexicon_t>()));
       UNSCOPED_INFO(result_str.value());
     }
     else {
@@ -84,7 +84,7 @@ namespace silva::seed::test {
           return expression();
         }
         else {
-          SILVA_EXPECT(false, MAJOR, "unexpected rule {}", sfp->name_id_wrap(rule_name));
+          SILVA_EXPECT(false, MAJOR, "unexpected rule {}", lexicon.name_id_wrap(rule_name));
         }
       }
 
@@ -504,7 +504,7 @@ namespace silva::seed::test {
           return args();
         }
         else {
-          SILVA_EXPECT(false, MAJOR, "unexpected rule {}", sfp->name_id_wrap(rule_name));
+          SILVA_EXPECT(false, MAJOR, "unexpected rule {}", lexicon.name_id_wrap(rule_name));
         }
       }
 

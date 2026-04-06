@@ -11,7 +11,7 @@ namespace silva {
                MINOR,                                \
                "[{}] {}: " fmt_str,                  \
                token_location_by(),                  \
-               sfp->name_id_wrap(name) __VA_OPT__(, ) __VA_ARGS__);
+               lexicon.name_id_wrap(name) __VA_OPT__(, ) __VA_ARGS__);
 
 #define SILVA_EXPECT_PARSE_TOKEN_ID(name, token_id)                       \
   SILVA_EXPECT_PARSE(name,                                                \
@@ -30,7 +30,7 @@ namespace silva {
   token_index += 1;
 
 #define SILVA_EXPECT_PARSE_FWD(name, expr) \
-  SILVA_EXPECT_FWD(expr, "[{}] {}", token_location_by(), sfp->name_id_wrap(name))
+  SILVA_EXPECT_FWD(expr, "[{}] {}", token_location_by(), lexicon.name_id_wrap(name))
 
   struct parse_tree_nursery_state_t : public tree_nursery_state_t {
     index_t token_index = 0;

@@ -58,4 +58,5 @@ namespace silva::lox {
     name_id_t ni_function       = sfp->name_id_of(ni_lox, "Function");
     name_id_t ni_function_param = sfp->name_id_of(ni_function, "Parameter");
   };
+  using lexicon_ptr_t = ptr_t<const lexicon_t>;
 }

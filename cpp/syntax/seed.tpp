@@ -1,29 +1,10 @@
 #include "seed.hpp"
 
-#include "name_id_style.hpp"
 #include "syntax.hpp"
 
 #include <catch2/catch_all.hpp>
 
 namespace silva::seed::test {
-  TEST_CASE("name-id-style", "[name_id_style_t]")
-  {
-    syntax_farm_t sf;
-
-    const name_id_t name1 = sf.name_id_of("std", "expr", "stmt");
-    const name_id_t name2 = sf.name_id_of("std", "expr");
-    const name_id_t name3 = sf.name_id_of("std", "ranges", "vector");
-
-    const name_id_style_t ts{
-        .sfp       = sf.ptr(),
-        .current   = sf.token_id("this"),
-        .separator = sf.token_id("::"),
-    };
-    CHECK(ts.absolute(name1) == "::std::expr::stmt");
-    CHECK(ts.absolute(name2) == "::std::expr");
-    CHECK(ts.absolute(name3) == "::std::ranges::vector");
-  }
-
   TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
     syntax_farm_t sf;
@@ -182,8 +163,8 @@ namespace silva::seed::test {
           [2].Seed.Terminal                       number
 )";
 
-    const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string());
-    const string_t pts_2_str = SILVA_REQUIRE(pts_2->span().to_string());
+    const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string(sf.get_lexicon<lexicon_t>()));
+    const string_t pts_2_str = SILVA_REQUIRE(pts_2->span().to_string(sf.get_lexicon<lexicon_t>()));
     CHECK(pts_1_str == expected.substr(1));
     CHECK(pts_2_str == expected.substr(1));
 
@@ -207,7 +188,7 @@ namespace silva::seed::test {
   [2].SimpleFern.LabeledItem                      'jkl'
     [0].SimpleFern.Item                           'jkl'
 )";
-      const string_t result{SILVA_REQUIRE(sfpt->span().to_string())};
+      const string_t result{SILVA_REQUIRE(sfpt->span().to_string(sf.get_lexicon<lexicon_t>()))};
       CHECK(result == expected_parse_tree.substr(1));
     }
   }

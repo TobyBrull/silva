@@ -301,7 +301,7 @@ namespace silva::seed::impl {
                                    .finish_short(error_level_t::MINOR,
                                                  "[{}] {}",
                                                  token_location_at(orig_token_index),
-                                                 sfp->name_id_wrap(lexicon.ni_tok)));
+                                                 lexicon.name_id_wrap(lexicon.ni_tok)));
       }
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok, lexicon.ti_brack_close);
       return ss_rule.commit();
@@ -367,7 +367,7 @@ namespace silva::seed::impl {
                                  .finish_short(error_level_t::MINOR,
                                                "[{}] {}",
                                                token_location_at(orig_token_index),
-                                               sfp->name_id_wrap(lexicon.ni_atom)));
+                                               lexicon.name_id_wrap(lexicon.ni_atom)));
     }
 
     expected_t<parse_tree_node_t> any_rule(const name_id_t rule_name)
@@ -379,7 +379,7 @@ namespace silva::seed::impl {
         return expr();
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "unexpected rule {}", sfp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "unexpected rule {}", lexicon.name_id_wrap(rule_name));
       }
     }
 
