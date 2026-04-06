@@ -44,7 +44,8 @@ namespace silva::test {
         [0].Mult                                  1
           [0].Primary                             1
 )";
-    const string_t result{SILVA_REQUIRE(expr_pt->span().to_string())};
+    const string_t result{
+        SILVA_REQUIRE(expr_pt->span().to_string(sf.get_lexicon<seed::lexicon_t>()))};
     CHECK(result == expected_parse_tree.substr(1));
   }
 
@@ -98,7 +99,8 @@ namespace silva::test {
           [1].Atom                                20
   [1].Atom                                        100
 )";
-    const string_t result{SILVA_REQUIRE(expr_pt->span().to_string())};
+    const string_t result{
+        SILVA_REQUIRE(expr_pt->span().to_string(sf.get_lexicon<seed::lexicon_t>()))};
     CHECK(result == expected_parse_tree.substr(1));
   }
 }

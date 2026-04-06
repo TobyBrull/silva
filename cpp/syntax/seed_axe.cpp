@@ -1,7 +1,6 @@
 #include "seed_axe.hpp"
 
 #include "name_id_style.hpp"
-#include "seed.lexicon.hpp"
 
 #include "canopy/variant.hpp"
 
@@ -43,7 +42,7 @@ namespace silva::seed::impl {
     name_id_t axe_name          = name_id_root;
     name_id_t atom_rule_name_id = name_id_root;
     const name_id_style_t& nis  = sfp->default_name_id_style();
-    const lexicon_t& lexicon;
+    const lexicon_t& lexicon    = sfp->get_lexicon<lexicon_t>();
 
     const token_id_t ti_atom_nest    = sfp->token_id("atom_nest");
     const token_id_t ti_atom_nest_t  = sfp->token_id("atom_nest_transparent");
@@ -71,12 +70,12 @@ namespace silva::seed::impl {
     const name_id_t ni_term        = sfp->name_id_of(ni_seed, "Terminal");
 
     axe_t retval{
-        .sfp  = sfp,
+        .lp   = sfp->get_lexicon<lexicon_t>().ptr(),
         .name = axe_name,
     };
 
-    axe_create_nursery_t(syntax_farm_ptr_t sfp, const name_id_t axe_name, const lexicon_t& lexicon)
-      : sfp(sfp), axe_name(axe_name), lexicon(lexicon)
+    axe_create_nursery_t(syntax_farm_ptr_t sfp, const name_id_t axe_name)
+      : sfp(sfp), axe_name(axe_name)
     {
     }
 
@@ -102,7 +101,7 @@ namespace silva::seed::impl {
                      sfp->token_id_wrap(token_id));
         result.prefix = result_oper_t<oper_prefix_t>{
             .oper       = variant_get<oper_prefix_t>(oper),
-            .name       = retval.sfp->name_id(level_name, token_id),
+            .name       = sfp->name_id(level_name, token_id),
             .precedence = precedence,
             .pts        = pts,
         };
@@ -121,7 +120,7 @@ namespace silva::seed::impl {
                      sfp->token_id_wrap(token_id));
         result.regular = result_oper_t<oper_regular_t>{
             .oper       = variant_get<oper_regular_t>(oper),
-            .name       = retval.sfp->name_id(level_name, token_id),
+            .name       = sfp->name_id(level_name, token_id),
             .precedence = precedence,
             .pts        = pts,
         };
@@ -345,7 +344,7 @@ namespace silva::seed::impl {
                          retval.concat_result.value().pts);
             retval.concat_result.emplace(result_oper_t<oper_regular_t>{
                 .oper       = op,
-                .name       = retval.sfp->name_id(full_name, ti_op),
+                .name       = sfp->name_id(full_name, ti_op),
                 .precedence = used_prec,
                 .pts        = pts_op,
             });
@@ -471,8 +470,7 @@ namespace silva::seed {
   expected_t<axe_t>
   axe_create(syntax_farm_ptr_t sfp, const name_id_t axe_name, const parse_tree_span_t pts)
   {
-    lexicon_t lexicon(sfp);
-    impl::axe_create_nursery_t nursery(sfp, axe_name, lexicon);
+    impl::axe_create_nursery_t nursery(sfp, axe_name);
     SILVA_EXPECT_FWD(nursery.run(pts));
     return std::move(nursery.retval);
   }
@@ -482,6 +480,7 @@ namespace silva::seed::impl {
   struct axe_run_t {
     const axe_t& axe;
     parse_tree_nursery_t& nursery;
+    const lexicon_t& lexicon = *axe.lp;
     delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser;
 
     syntax_farm_ptr_t sfp = nursery.sfp;

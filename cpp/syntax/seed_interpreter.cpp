@@ -50,8 +50,8 @@ namespace silva::seed::impl {
       SILVA_EXPECT(pts_rule[cc[0]].rule_name == lexicon.ni_nt,
                    MINOR,
                    "first child of {} must be {}",
-                   sfp->name_id_wrap(lexicon.ni_rule),
-                   sfp->name_id_wrap(lexicon.ni_nt));
+                   lexicon.name_id_wrap(lexicon.ni_rule),
+                   lexicon.name_id_wrap(lexicon.ni_nt));
       const auto pts_0               = pts_rule.sub_tree_span_at(cc[0]);
       const auto pts_1               = pts_rule.sub_tree_span_at(cc[1]);
       const name_id_t curr_rule_name = SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_0));
@@ -68,7 +68,7 @@ namespace silva::seed::impl {
                      MINOR,
                      "{} rule {} defined again, previously defined at {}",
                      pts_rule,
-                     sfp->name_id_wrap(curr_rule_name),
+                     lexicon.name_id_wrap(curr_rule_name),
                      it->second);
 
         for (index_t i = 0; i < pts_1.size(); ++i) {
@@ -111,7 +111,7 @@ namespace silva::seed::impl {
                    MINOR,
                    "{} 'tokenizer' rule may only be for top-level names, not {}",
                    pts_seed_tok,
-                   sfp->name_id_wrap(scope_name));
+                   lexicon.name_id_wrap(scope_name));
       SILVA_EXPECT_FWD(se->tokenizer_farm.add(ni.base_name, pts_seed_tok));
       return {};
     }
@@ -143,15 +143,15 @@ namespace silva::seed::impl {
 
   struct seed_exec_trace_t : public exec_trace_t<seed_exec_trace_data_t> {
     syntax_farm_ptr_t sfp;
+    const lexicon_t& lexicon;
 
     expected_t<string_t> as_tree_to_string() &&
     {
-      const auto& nis = sfp->default_name_id_style();
-      auto ett        = SILVA_EXPECT_FWD(std::move(*this).as_tree());
+      auto ett = SILVA_EXPECT_FWD(std::move(*this).as_tree());
       tree_span_t ets{ett};
       string_t retval = SILVA_EXPECT_FWD(ets.to_string([&](string_t& curr_line, const auto& path) {
         const auto& data = ets[path.back().node_index].item.data;
-        curr_line += nis.absolute(data.rule_name);
+        curr_line += lexicon.name_id_str(data.rule_name);
         string_pad(curr_line, 55);
         curr_line += fmt::format("{}", data.success);
         string_pad(curr_line, 65);
@@ -172,7 +172,7 @@ namespace silva::seed::impl {
 
     int rule_depth = 0;
 
-    seed_exec_trace_t exec_trace{.sfp = sfp};
+    seed_exec_trace_t exec_trace{.sfp = sfp, .lexicon = lexicon};
 
     interpreter_apply_nursery_t(tokenization_ptr_t tp,
                                 const lexicon_t& lexicon,
@@ -239,14 +239,14 @@ namespace silva::seed::impl {
         SILVA_EXPECT(it2 != se->keyword_scopes.end(),
                      MAJOR,
                      "keywords_of {}: no such nonterminal",
-                     sfp->name_id_wrap(keyword_scope));
+                     lexicon.name_id_wrap(keyword_scope));
         const hash_set_t<token_id_t>& keywords = it2->second;
         SILVA_EXPECT(keywords.contains(token_id_by()),
                      MINOR,
                      "{} '{}' not in keywords_of {}",
                      token_location_by(),
                      sfp->token_id_wrap(token_id_by()),
-                     sfp->name_id_wrap(keyword_scope));
+                     lexicon.name_id_wrap(keyword_scope));
       }
       else if (s_front_ti == lexicon.ti_any) {
         ;
@@ -390,7 +390,7 @@ namespace silva::seed::impl {
                                      .finish(error_level,
                                              "[{}] {}: expected sequence[ {} ]",
                                              token_location_at(orig_token_index),
-                                             sfp->name_id_wrap(t_rule_name),
+                                             lexicon.name_id_wrap(t_rule_name),
                                              pts.token_range()));
         }
       }
@@ -437,7 +437,7 @@ namespace silva::seed::impl {
                                  .finish(error_level,
                                          "[{}] {}: expected alternation[ {} ]",
                                          token_location_at(orig_token_index),
-                                         sfp->name_id_wrap(t_rule_name),
+                                         lexicon.name_id_wrap(t_rule_name),
                                          pts.token_range()));
     }
 
@@ -515,7 +515,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT(it != se->rule_exprs.end(),
                    MAJOR,
                    "Unknown rule: {}",
-                   nis.absolute(t_rule_name));
+                   lexicon.name_id_str(t_rule_name));
       const parse_tree_span_t s_pts = it->second;
       const name_id_t s_expr_name   = s_pts[0].rule_name;
       node_and_error_t retval;
@@ -607,7 +607,7 @@ namespace silva::seed {
     SILVA_EXPECT_FWD(nursery.check());
     auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name),
                                 "seed::interpreter_t::apply({}) failed to parse",
-                                tp->sfp->name_id_wrap(goal_rule_name));
+                                nursery.lexicon.name_id_wrap(goal_rule_name));
     if (ptn.node.token_begin != 0 || ptn.node.token_end != tp->size()) {
       SILVA_EXPECT(!ptn.last_error.is_empty(),
                    MAJOR,

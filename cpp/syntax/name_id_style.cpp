@@ -1,16 +1,6 @@
 #include "name_id_style.hpp"
 
 namespace silva {
-  string_t name_id_style_t::absolute(const name_id_t tgt) const
-  {
-    if (tgt == name_id_root) {
-      return "";
-    }
-    const name_info_t& fni = sfp->name_infos[tgt];
-    return absolute(fni.parent_name) + sfp->token_infos[separator].str +
-        sfp->token_infos[fni.base_name].str;
-  }
-
   expected_t<name_id_t> name_id_style_t::derive_name(const name_id_t scope_name,
                                                      const parse_tree_span_t pts_nt) const
   {

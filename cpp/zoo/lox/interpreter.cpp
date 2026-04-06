@@ -399,7 +399,7 @@ namespace silva::lox {
         SILVA_EXPECT(false,
                      MAJOR,
                      "can't evaluate expression {}",
-                     sfp->name_id_wrap(pts[0].rule_name));
+                     lexicon.name_id_wrap(pts[0].rule_name));
       }
 
 #undef BINARY
@@ -451,7 +451,7 @@ namespace silva::lox {
                      MAJOR,
                      "token {} is not a {}",
                      sfp->token_id_wrap(ti),
-                     sfp->name_id_wrap(pts[0].rule_name));
+                     lexicon.name_id_wrap(pts[0].rule_name));
       }
     }
 
@@ -466,7 +466,7 @@ namespace silva::lox {
         return expr(pts);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "can't evaluate {}", sfp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "can't evaluate {}", lexicon.name_id_wrap(rule_name));
       }
       return intp->object_pool.make(none);
     }
@@ -550,7 +550,11 @@ namespace silva::lox {
         SILVA_EXPECT_FWD(scope.define(class_name, intp->object_pool.make(std::move(cc))));
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, sfp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false,
+                     MAJOR,
+                     "{} unknown declaration {}",
+                     pts,
+                     lexicon.name_id_wrap(rule_name));
       }
       return {std::nullopt};
     }
@@ -654,7 +658,7 @@ namespace silva::lox {
                          pts);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown statement {}", pts, sfp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "{} unknown statement {}", pts, lexicon.name_id_wrap(rule_name));
       }
       return {std::nullopt};
     }
@@ -684,7 +688,7 @@ namespace silva::lox {
         return stmt(pts, scope);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown rule {}", pts, sfp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "{} unknown rule {}", pts, lexicon.name_id_wrap(rule_name));
       }
       return {std::nullopt};
     }

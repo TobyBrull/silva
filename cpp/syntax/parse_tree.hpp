@@ -25,6 +25,7 @@ namespace silva {
   using parse_tree_ptr_t = ptr_t<const parse_tree_t>;
 
   struct parse_tree_span_t : public tree_span_t<const parse_tree_node_t> {
+    // TODO: replace with "parse_tree_ptr_t & lexicon_ptr_t"
     tokenization_ptr_t tp;
 
     parse_tree_span_t() = default;
@@ -45,8 +46,9 @@ namespace silva {
 
     friend void pretty_write_impl(const parse_tree_span_t&, byte_sink_t*);
 
-    expected_t<string_t> to_string(index_t token_offset = 50) const;
-    expected_t<string_t> to_graphviz() const;
+    expected_t<string_t> to_string(const lexicon_t&, index_t token_offset = 50) const;
+
+    expected_t<string_t> to_graphviz(const lexicon_t&) const;
 
     friend bool operator==(const parse_tree_span_t&, const parse_tree_span_t&) = default;
   };

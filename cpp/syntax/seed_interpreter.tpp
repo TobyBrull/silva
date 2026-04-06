@@ -131,7 +131,7 @@ namespace silva::seed::test {
               [1].Seed.Terminal                   'keyword2'
               [2].Seed.Terminal                   'keyword3'
 )";
-    const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};
+    const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string(sf.get_lexicon<lexicon_t>()))};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));
 
     const string_t frog_text = R"'(
@@ -161,7 +161,8 @@ namespace silva::seed::test {
       [1].Frog.Primary                            h
       [2].Frog.Primary                            i
 )";
-    const string_t frog_pt_str{SILVA_REQUIRE(frog_pt->span().to_string())};
+    const string_t frog_pt_str{
+        SILVA_REQUIRE(frog_pt->span().to_string(sf.get_lexicon<lexicon_t>()))};
     CHECK(frog_pt_str == expected.substr(1));
   }
 
@@ -199,7 +200,7 @@ namespace silva::seed::test {
   [0].Testor.Assign                               x = a + b
   [1].Testor.Assign                               y = c * d
 )";
-    const string_t result        = SILVA_REQUIRE(pt->span().to_string());
+    const string_t result        = SILVA_REQUIRE(pt->span().to_string(sf.get_lexicon<lexicon_t>()));
     CHECK(result == expected.substr(1));
   }
 
@@ -242,7 +243,7 @@ namespace silva::seed::test {
   [0].Bar                                         x y ... b c
     [0].Foo                                       a b c
 )";
-    const string_t result_str{SILVA_REQUIRE(pt->span().to_string())};
+    const string_t result_str{SILVA_REQUIRE(pt->span().to_string(sf.get_lexicon<lexicon_t>()))};
     CHECK(result_str == expected.substr(1));
   }
 }

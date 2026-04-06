@@ -319,7 +319,10 @@ namespace silva::lox {
         }
       }
       else {
-        SILVA_EXPECT(false, ASSERT, "Not yet implemented: {}", sfp->name_id_wrap(pts[0].rule_name));
+        SILVA_EXPECT(false,
+                     ASSERT,
+                     "Not yet implemented: {}",
+                     lexicon.name_id_wrap(pts[0].rule_name));
       }
       return {};
     }
@@ -387,7 +390,11 @@ namespace silva::lox {
         cfs().nursery.append_simple_instr(pts, CLASS);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown declaration {}", pts, sfp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false,
+                     MAJOR,
+                     "{} unknown declaration {}",
+                     pts,
+                     lexicon.name_id_wrap(rule_name));
       }
 
       if (func_scopes.size() == 1 && cfs().scope_depth == 0) {
@@ -531,7 +538,7 @@ namespace silva::lox {
         cfs().nursery.append_simple_instr(pts, POP);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown statement {}", pts, sfp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "{} unknown statement {}", pts, lexicon.name_id_wrap(rule_name));
       }
       return {};
     }
@@ -561,7 +568,7 @@ namespace silva::lox {
         return stmt(pts);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "{} unknown rule {}", pts, sfp->name_id_wrap(rule_name));
+        SILVA_EXPECT(false, MAJOR, "{} unknown rule {}", pts, lexicon.name_id_wrap(rule_name));
       }
       return {};
     }

@@ -7,8 +7,6 @@ namespace silva::seed {
     lexicon_t(syntax_farm_ptr_t sfp) : silva::lexicon_t(sfp)
     {
       language_name = sfp->token_id("Seed");
-      here_name     = sfp->token_id("⊙");
-      name_sep      = sfp->token_id(".");
     }
 
     const token_id_t ti_comma        = sfp->token_id(",");
@@ -118,4 +116,5 @@ namespace silva::seed {
     const name_id_t ni_tok_matcher     = sfp->name_id_of(ni_tok, "Matcher");
     const name_id_t ni_tok_list        = sfp->name_id_of(ni_tok, "List");
   };
+  using lexicon_ptr_t = ptr_t<const lexicon_t>;
 }

@@ -13,8 +13,6 @@ namespace silva {
 
     name_id_t from_token_span(name_id_t current, span_t<const token_id_t>) const;
 
-    string_t absolute(name_id_t) const;
-
     expected_t<name_id_t> derive_name(const name_id_t scope_name,
                                       const parse_tree_span_t pts_nt) const;
 

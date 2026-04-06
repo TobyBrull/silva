@@ -24,23 +24,24 @@ namespace silva {
     byte_sink->format("{}@{}:{}", ptn.rule_name, ptn.token_begin, ptn.token_end);
   }
 
-  expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset) const
+  expected_t<string_t> parse_tree_span_t::to_string(const lexicon_t& ll,
+                                                    const index_t token_offset) const
   {
     const name_id_style_t& nis = tp->sfp->default_name_id_style();
     return tree_span_t::to_string([&](string_t& curr_line, auto& path) {
       const auto pts = this->sub_tree_span_at(path.back().node_index);
-      curr_line += nis.absolute(pts[0].rule_name);
+      curr_line += ll.name_id_str(pts[0].rule_name);
       string_pad(curr_line, token_offset);
       curr_line += silva::pretty_string(pts.token_range());
     });
   }
 
-  expected_t<string_t> parse_tree_span_t::to_graphviz() const
+  expected_t<string_t> parse_tree_span_t::to_graphviz(const lexicon_t& ll) const
   {
     const name_id_style_t& nis = tp->sfp->default_name_id_style();
     return tree_span_t::to_graphviz([&](auto& node) {
       return fmt::format("{}\\n{}",
-                         nis.absolute(node.rule_name),
+                         ll.name_id_str(node.rule_name),
                          string_escaped(tp->token_info_get(node.token_begin)->str));
     });
   }
