@@ -220,7 +220,7 @@ namespace silva::seed::impl {
 
         index_t t_idx       = pts_m[0].token_begin + 1;
         const index_t t_end = pts_m[0].token_end;
-        const auto& tokens  = pts_m.tp->tokens;
+        const auto& tokens  = pts_m.ptp->tp->tokens;
         bool had_prefix     = false;
         bool had_postfix    = false;
         while (t_idx < t_end) {
@@ -409,7 +409,7 @@ namespace silva::seed {
 
   expected_t<void> tokenizer_farm_t::add(const token_id_t tokenizer_name, parse_tree_span_t pts)
   {
-    SILVA_EXPECT(pts.tp->sfp == sfp, MAJOR);
+    SILVA_EXPECT(pts.ptp->tp->sfp == sfp, MAJOR);
     SILVA_EXPECT(!tokenizers.contains(tokenizer_name), MINOR);
     lexicon_t lexicon(sfp);
     impl::tokenizer_create_nursery_t nursery(sfp, lexicon, tokenizer_name);

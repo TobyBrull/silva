@@ -90,7 +90,7 @@ namespace silva::lox {
       SILVA_EXPECT(it != end, ASSERT);
       const auto pts_function =
           pts_builtin.sub_tree_span_at(it.pos).sub_tree_span_at(1).sub_tree_span_at(1);
-      const token_id_t lox_name = pts_function.tp->tokens[pts_function[0].token_begin];
+      const token_id_t lox_name = pts_function.ptp->tp->tokens[pts_function[0].token_begin];
       SILVA_EXPECT(lox_name == builtin_decl.name,
                    ASSERT,
                    "expected function '{}', but found '{}'",

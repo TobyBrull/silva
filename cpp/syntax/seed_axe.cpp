@@ -951,9 +951,11 @@ namespace silva::seed::impl {
         ss_rule.commit();
       }
 
-      const parse_tree_t leaf_terms_tree = parse_tree_span_t{nursery.tree.data(), 1, nursery.tp}
-                                               .sub_tree_span_at(ss.orig_state.tree_size)
-                                               .copy();
+      parse_tree_t temp_tree{.tp = nursery.tp, .nodes = std::move(nursery.tree)};
+      const parse_tree_t leaf_terms_tree =
+          temp_tree.span().sub_tree_span_at(ss.orig_state.tree_size).copy();
+      nursery.tree = std::move(temp_tree.nodes);
+
       for (auto& atn: output_tree) {
         if (atn.tree_index.has_value()) {
           atn.tree_index.value() -= ss.orig_state.tree_size;

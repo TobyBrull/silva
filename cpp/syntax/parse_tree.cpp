@@ -9,7 +9,7 @@ namespace silva {
 
   void pretty_write_impl(const parse_tree_span_t& pts, byte_sink_t* stream)
   {
-    if (pts.tp.is_nullptr()) {
+    if (pts.ptp.is_nullptr()) {
       stream->write_str("unknown parse_tree_span");
     }
     else {
@@ -27,7 +27,7 @@ namespace silva {
   expected_t<string_t> parse_tree_span_t::to_string(const lexicon_t& ll,
                                                     const index_t token_offset) const
   {
-    const name_id_style_t& nis = tp->sfp->default_name_id_style();
+    const name_id_style_t& nis = ptp->tp->sfp->default_name_id_style();
     return tree_span_t::to_string([&](string_t& curr_line, auto& path) {
       const auto pts = this->sub_tree_span_at(path.back().node_index);
       curr_line += ll.name_id_str(pts[0].rule_name);
@@ -38,29 +38,29 @@ namespace silva {
 
   expected_t<string_t> parse_tree_span_t::to_graphviz(const lexicon_t& ll) const
   {
-    const name_id_style_t& nis = tp->sfp->default_name_id_style();
+    const name_id_style_t& nis = ptp->tp->sfp->default_name_id_style();
     return tree_span_t::to_graphviz([&](auto& node) {
       return fmt::format("{}\\n{}",
                          ll.name_id_str(node.rule_name),
-                         string_escaped(tp->token_info_get(node.token_begin)->str));
+                         string_escaped(ptp->tp->token_info_get(node.token_begin)->str));
     });
   }
 
   parse_tree_span_t::parse_tree_span_t(const parse_tree_t& other)
-    : tree_span_t(other.nodes), tp(other.tp)
+    : tree_span_t(other.nodes), ptp(other.ptr())
   {
   }
 
   parse_tree_span_t::parse_tree_span_t(const parse_tree_node_t* root,
                                        index_t stride,
-                                       tokenization_ptr_t tp)
-    : tree_span_t(root, stride), tp(std::move(tp))
+                                       parse_tree_ptr_t ptp)
+    : tree_span_t(root, stride), ptp(std::move(ptp))
   {
   }
 
   parse_tree_span_t parse_tree_span_t::sub_tree_span_at(const index_t pos) const
   {
-    return parse_tree_span_t{&((*this)[pos]), stride, tp};
+    return parse_tree_span_t{&((*this)[pos]), stride, ptp};
   }
 
   index_t parse_tree_span_t::count_children_with(const name_id_t name_id) const
@@ -79,17 +79,17 @@ namespace silva {
 
   token_id_t parse_tree_span_t::first_token_id() const
   {
-    return tp->tokens[(*this)[0].token_begin];
+    return ptp->tp->tokens[(*this)[0].token_begin];
   }
   token_id_t parse_tree_span_t::first_token_category() const
   {
-    return tp->categories[(*this)[0].token_begin];
+    return ptp->tp->categories[(*this)[0].token_begin];
   }
 
   token_range_t parse_tree_span_t::token_range() const
   {
     return token_range_t{
-        .tp          = tp,
+        .tp          = ptp->tp,
         .token_begin = (*this)[0].token_begin,
         .token_end   = (*this)[0].token_end,
     };
@@ -98,7 +98,7 @@ namespace silva {
   token_location_t parse_tree_span_t::token_location() const
   {
     return token_location_t{
-        .tp          = tp,
+        .tp          = ptp->tp,
         .token_index = (*this)[0].token_begin,
     };
   }
@@ -111,7 +111,7 @@ namespace silva {
       nodes.push_back((*this)[i]);
     }
     return parse_tree_t{
-        .tp    = tp,
+        .tp    = ptp->tp,
         .nodes = std::move(nodes),
     };
   }
