@@ -44,7 +44,7 @@ namespace silva {
   unique_ptr_t<parse_tree_t> parse_tree_nursery_t::finish() &&
   {
     return std::make_unique<parse_tree_t>(parse_tree_t{
-        .tp    = tp,
+        .tp    = std::move(tp),
         .nodes = std::move(tree),
     });
   }

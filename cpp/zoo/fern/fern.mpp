@@ -46,13 +46,13 @@ namespace silva::fern {
     else if (arg_process.starts_with("parse_tree/")) {
       const auto rest = arg_process.substr(11);
       if (rest == "string") {
-        fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string(sf.get_lexicon<lexicon_t>())));
+        fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
       }
       else if (rest == "graphviz") {
-        fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_graphviz(sf.get_lexicon<lexicon_t>())));
+        fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_graphviz()));
       }
       else if (rest == "graphviz_show") {
-        graphviz_show_sync(SILVA_EXPECT_FWD(ptp->span().to_graphviz(sf.get_lexicon<lexicon_t>())));
+        graphviz_show_sync(SILVA_EXPECT_FWD(ptp->span().to_graphviz()));
       }
       else {
         SILVA_EXPECT(false, MAJOR, "process={} is invalid", arg_process);
