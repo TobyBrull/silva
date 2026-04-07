@@ -8,7 +8,6 @@
 * [tokenization.hpp](tokenization.hpp)
 * [parse_tree.hpp](parse_tree.hpp)
 * [parse_tree_nursery.hpp](parse_tree_nursery.hpp)
-* [name_id_style.hpp](name_id_style.hpp)
 * [seed_tokenizer.hpp](seed_tokenizer.hpp)
 * [seed_axe.hpp](seed_axe.hpp)
 * [seed.hpp](seed.hpp)

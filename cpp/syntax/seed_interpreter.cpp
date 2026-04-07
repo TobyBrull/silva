@@ -5,7 +5,6 @@
 #include "canopy/expected.hpp"
 #include "canopy/scope_exit.hpp"
 #include "canopy/var_context.hpp"
-#include "name_id_style.hpp"
 #include "parse_tree.hpp"
 #include "parse_tree_nursery.hpp"
 #include "seed.hpp"
@@ -21,7 +20,6 @@ namespace silva::seed::impl {
     interpreter_t* se     = nullptr;
     syntax_farm_ptr_t sfp = se->sfp;
     const lexicon_t& lexicon;
-    const name_id_style_t& nis = sfp->default_name_id_style();
 
     const tokenization_ptr_t tp;
 
@@ -53,7 +51,7 @@ namespace silva::seed::impl {
                    lexicon.name_id_wrap(lexicon.ni_nt));
       const auto pts_0               = pts_rule.sub_tree_span_at(cc[0]);
       const auto pts_1               = pts_rule.sub_tree_span_at(cc[1]);
-      const name_id_t curr_rule_name = SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_0));
+      const name_id_t curr_rule_name = SILVA_EXPECT_FWD(derive_name(lexicon, scope_name, pts_0));
       const index_t expr_rule_name   = pts_1[0].rule_name;
       if (expr_rule_name == lexicon.ni_seed) {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, pts_1));
@@ -91,7 +89,7 @@ namespace silva::seed::impl {
           for (index_t i = 0; i < pts_1.size(); ++i) {
             if (pts_1[i].rule_name == lexicon.ni_nt) {
               const name_id_t nt_name =
-                  SILVA_EXPECT_FWD(nis.derive_name(scope_name, pts_1.sub_tree_span_at(i)));
+                  SILVA_EXPECT_FWD(derive_name(lexicon, scope_name, pts_1.sub_tree_span_at(i)));
               const auto [it, inserted] =
                   se->nonterminal_rules.emplace(pts_1.sub_tree_span_at(i), nt_name);
               SILVA_EXPECT(inserted, MAJOR);
@@ -164,7 +162,6 @@ namespace silva::seed::impl {
     const interpreter_t* se = nullptr;
     syntax_farm_ptr_t sfp   = se->sfp;
     const lexicon_t& lexicon;
-    const name_id_style_t& nis = sfp->default_name_id_style();
 
     int rule_depth = 0;
 

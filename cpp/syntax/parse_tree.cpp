@@ -2,7 +2,6 @@
 
 #include "canopy/string_convert.hpp"
 #include "canopy/tree.hpp"
-#include "name_id_style.hpp"
 
 #include "seed.lexicon.hpp"
 
