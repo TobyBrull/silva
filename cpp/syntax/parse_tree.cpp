@@ -16,7 +16,7 @@ namespace silva {
     else {
       stream->format("[{}] parse_tree_span[ {} ]",
                      pretty_string(pts.token_location()),
-                     pretty_string(pts.token_range()));
+                     pretty_string(pts.token_span()));
     }
   }
 
@@ -32,7 +32,7 @@ namespace silva {
       const auto pts = this->sub_tree_span_at(path.back().node_index);
       curr_line += lexicon.name_id_str(pts[0].rule_name);
       string_pad(curr_line, token_offset);
-      curr_line += silva::pretty_string(pts.token_range());
+      curr_line += silva::pretty_string(pts.token_span());
     });
   }
 
@@ -86,9 +86,9 @@ namespace silva {
     return ptp->tp->categories[(*this)[0].token_begin];
   }
 
-  token_range_t parse_tree_span_t::token_range() const
+  token_span_t parse_tree_span_t::token_span() const
   {
-    return token_range_t{
+    return token_span_t{
         .tp          = ptp->tp,
         .token_begin = (*this)[0].token_begin,
         .token_end   = (*this)[0].token_end,

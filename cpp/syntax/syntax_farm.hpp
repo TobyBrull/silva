@@ -43,6 +43,9 @@ namespace silva {
   using fragmentization_ptr_t = ptr_t<const fragmentization_t>;
   using tokenization_ptr_t    = ptr_t<const tokenization_t>;
   using parse_tree_ptr_t      = ptr_t<const parse_tree_t>;
+  struct fragment_span_t;
+  struct token_span_t;
+  struct parse_tree_span_t;
 
   struct lexicon_t;
 
@@ -102,6 +105,8 @@ namespace silva {
     name_id_wrap_t name_id_wrap(name_id_t) const;
 
     string_t name_id_str(name_id_t) const;
+
+    expected_t<name_id_t> name_id(const name_id_t scope_name, const token_span_t&) const;
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
 

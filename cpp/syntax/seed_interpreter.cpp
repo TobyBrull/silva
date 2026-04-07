@@ -49,10 +49,11 @@ namespace silva::seed::impl {
                    "first child of {} must be {}",
                    lexicon.name_id_wrap(lexicon.ni_rule),
                    lexicon.name_id_wrap(lexicon.ni_nt));
-      const auto pts_0               = pts_rule.sub_tree_span_at(cc[0]);
-      const auto pts_1               = pts_rule.sub_tree_span_at(cc[1]);
-      const name_id_t curr_rule_name = SILVA_EXPECT_FWD(derive_name(lexicon, scope_name, pts_0));
-      const index_t expr_rule_name   = pts_1[0].rule_name;
+      const auto pts_0 = pts_rule.sub_tree_span_at(cc[0]);
+      const auto pts_1 = pts_rule.sub_tree_span_at(cc[1]);
+      const name_id_t curr_rule_name =
+          SILVA_EXPECT_FWD(lexicon.name_id(scope_name, pts_0.token_span()));
+      const index_t expr_rule_name = pts_1[0].rule_name;
       if (expr_rule_name == lexicon.ni_seed) {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, pts_1));
       }
@@ -88,8 +89,8 @@ namespace silva::seed::impl {
         else {
           for (index_t i = 0; i < pts_1.size(); ++i) {
             if (pts_1[i].rule_name == lexicon.ni_nt) {
-              const name_id_t nt_name =
-                  SILVA_EXPECT_FWD(derive_name(lexicon, scope_name, pts_1.sub_tree_span_at(i)));
+              const name_id_t nt_name = SILVA_EXPECT_FWD(
+                  lexicon.name_id(scope_name, pts_1.sub_tree_span_at(i).token_span()));
               const auto [it, inserted] =
                   se->nonterminal_rules.emplace(pts_1.sub_tree_span_at(i), nt_name);
               SILVA_EXPECT(inserted, MAJOR);
@@ -384,7 +385,7 @@ namespace silva::seed::impl {
                                              "[{}] {}: expected sequence[ {} ]",
                                              token_location_at(orig_token_index),
                                              lexicon.name_id_wrap(t_rule_name),
-                                             pts.token_range()));
+                                             pts.token_span()));
         }
       }
       return ss.commit();
@@ -431,7 +432,7 @@ namespace silva::seed::impl {
                                          "[{}] {}: expected alternation[ {} ]",
                                          token_location_at(orig_token_index),
                                          lexicon.name_id_wrap(t_rule_name),
-                                         pts.token_range()));
+                                         pts.token_span()));
     }
 
     expected_t<node_and_error_t> s_nonterminal(const parse_tree_span_t pts,

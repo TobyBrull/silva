@@ -165,6 +165,7 @@ namespace silva {
         .name_id = name_id,
     };
   }
+
   string_t lexicon_t::name_id_str(const name_id_t name_id) const
   {
     if (name_id == name_id_root) {
@@ -173,6 +174,35 @@ namespace silva {
     const name_info_t& ni = sfp->name_infos[name_id];
     return name_id_str(ni.parent_name) + sfp->token_infos[name_sep].str +
         sfp->token_infos[ni.base_name].str;
+  }
+
+  expected_t<name_id_t> lexicon_t::name_id(const name_id_t scope_name, const token_span_t& ts) const
+  {
+    name_id_t retval = scope_name;
+    SILVA_EXPECT(ts.size() > 0, MINOR);
+    const auto& tt    = ts.tp->tokens;
+    index_t idx       = ts.token_begin;
+    const index_t end = ts.token_end;
+    if (tt[idx] == name_sep) {
+      retval = name_id_root;
+      idx += 1;
+    }
+    while (idx < end) {
+      const token_id_t base = tt[idx];
+      SILVA_EXPECT(base != name_sep, MINOR);
+      if (base == here_name) {
+        ;
+      }
+      else {
+        retval = sfp->name_id(retval, base);
+      }
+      idx += 1;
+      if (idx < end) {
+        SILVA_EXPECT(tt[idx] == name_sep, MINOR);
+        idx += 1;
+      }
+    }
+    return retval;
   }
 
   void pretty_write_impl(const token_id_wrap_t& x, byte_sink_t* byte_sink)

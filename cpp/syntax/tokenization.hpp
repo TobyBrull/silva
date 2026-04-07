@@ -38,12 +38,14 @@ namespace silva {
     friend void pretty_write_impl(const token_location_t&, byte_sink_t*);
   };
 
-  struct token_range_t {
+  struct token_span_t {
     tokenization_ptr_t tp;
     index_t token_begin = 0;
     index_t token_end   = 0;
 
-    friend void pretty_write_impl(const token_range_t&, byte_sink_t*);
+    index_t size() const;
+
+    friend void pretty_write_impl(const token_span_t&, byte_sink_t*);
   };
 }
 

@@ -56,7 +56,12 @@ namespace silva {
     silva::pretty_write(loc, stream);
   }
 
-  void pretty_write_impl(const token_range_t& self, byte_sink_t* stream)
+  index_t token_span_t::size() const
+  {
+    return token_end - token_begin;
+  }
+
+  void pretty_write_impl(const token_span_t& self, byte_sink_t* stream)
   {
     constexpr index_t max_num_tokens = 5;
     string_t retval;
