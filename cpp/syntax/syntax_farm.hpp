@@ -139,7 +139,7 @@ namespace silva {
       return dynamic_cast<const LexiconType&>(*it->second);
     }
     else {
-      auto ll               = std::make_unique<LexiconType>(ptr());
+      std::unique_ptr<LexiconType> ll(new LexiconType(ptr()));
       const LexiconType* lp = ll.get();
       auto [it, inserted]   = lexicons.emplace(type_idx, std::move(ll));
       SILVA_ASSERT(inserted);

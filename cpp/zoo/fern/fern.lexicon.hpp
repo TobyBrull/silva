@@ -4,11 +4,14 @@
 
 namespace silva::fern {
   struct lexicon_t : public silva::lexicon_t {
+   private:
     lexicon_t(syntax_farm_ptr_t sfp) : silva::lexicon_t(sfp)
     {
       language_name = sfp->token_id("Fern");
     }
+    friend struct silva::syntax_farm_t;
 
+   public:
     const token_id_t ti_none  = sfp->token_id("none");
     const token_id_t ti_true  = sfp->token_id("true");
     const token_id_t ti_false = sfp->token_id("false");

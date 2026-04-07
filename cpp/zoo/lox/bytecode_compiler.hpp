@@ -5,7 +5,7 @@
 
 namespace silva::lox {
   struct bytecode_compiler_t {
-    lexicon_t lexicon;
+    lexicon_ptr_t lexicon;
     object_pool_t* object_pool = nullptr;
 
     bytecode_compiler_t(syntax_farm_ptr_t, object_pool_t*);

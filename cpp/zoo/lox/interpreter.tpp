@@ -25,7 +25,7 @@ namespace silva::lox::test {
     {
       prepare();
       INFO(expr_str);
-      auto pt = SILVA_REQUIRE(si->apply_text("text.lox", std::move(expr_str), lexicon.ni_lox));
+      auto pt = SILVA_REQUIRE(si->apply_text("text.lox", std::move(expr_str), lexicon->ni_lox));
       INFO(pretty_string(pt->span()));
       SILVA_REQUIRE(resolve(pt->span()));
       auto scope = scopes.root();
@@ -38,7 +38,7 @@ namespace silva::lox::test {
     {
       prepare();
       INFO(expr_str);
-      auto pt = SILVA_REQUIRE(si->apply_text("text.lox", std::move(expr_str), lexicon.ni_lox));
+      auto pt = SILVA_REQUIRE(si->apply_text("text.lox", std::move(expr_str), lexicon->ni_lox));
       INFO(pretty_string(pt->span()));
       SILVA_REQUIRE(resolve(pt->span()));
       auto scope        = scopes.root();

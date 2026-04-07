@@ -7,14 +7,14 @@ namespace silva::lox {
   using enum opcode_t;
 
   bytecode_compiler_t::bytecode_compiler_t(syntax_farm_ptr_t sfp, object_pool_t* object_pool)
-    : lexicon(std::move(sfp)), object_pool(object_pool)
+    : lexicon(sfp->get_lexicon<lexicon_t>().ptr()), object_pool(object_pool)
   {
   }
 
   struct compile_run_t {
     bytecode_compiler_t* compiler = nullptr;
 
-    const lexicon_t& lexicon   = compiler->lexicon;
+    const lexicon_t& lexicon   = *compiler->lexicon;
     syntax_farm_ptr_t sfp      = lexicon.sfp;
     object_pool_t& object_pool = *compiler->object_pool;
 

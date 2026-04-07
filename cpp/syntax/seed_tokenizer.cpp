@@ -112,13 +112,11 @@ namespace silva::seed::impl {
 
   struct tokenizer_create_nursery_t {
     syntax_farm_ptr_t sfp;
-    const lexicon_t& lexicon;
+    const lexicon_t& lexicon  = sfp->get_lexicon<lexicon_t>();
     token_id_t tokenizer_name = token_id_none;
 
-    tokenizer_create_nursery_t(syntax_farm_ptr_t sfp,
-                               const lexicon_t& lexicon,
-                               const token_id_t tokenizer_name)
-      : sfp(sfp), lexicon(lexicon), tokenizer_name(tokenizer_name)
+    tokenizer_create_nursery_t(syntax_farm_ptr_t sfp, const token_id_t tokenizer_name)
+      : sfp(sfp), tokenizer_name(tokenizer_name)
     {
     }
 
@@ -411,8 +409,7 @@ namespace silva::seed {
   {
     SILVA_EXPECT(pts.ptp->tp->sfp == sfp, MAJOR);
     SILVA_EXPECT(!tokenizers.contains(tokenizer_name), MINOR);
-    lexicon_t lexicon(sfp);
-    impl::tokenizer_create_nursery_t nursery(sfp, lexicon, tokenizer_name);
+    impl::tokenizer_create_nursery_t nursery(sfp, tokenizer_name);
     SILVA_EXPECT_FWD(nursery.run(pts));
     const auto [it, inserted] = tokenizers.emplace(tokenizer_name, std::move(nursery.retval));
     SILVA_EXPECT(inserted, ASSERT);
@@ -562,7 +559,6 @@ namespace silva::seed {
     using impl::matcher_t;
     using impl::rule_t;
 
-    lexicon_t lexicon(sfp);
     tokenizer_farm_t retval(sfp);
 
     const token_id_t ti_ignore = token_id_none;
@@ -588,6 +584,7 @@ namespace silva::seed {
     const matcher_t m_p        = {.category = IDENTIFIER, .prefix = "p", .postfix = "p"};
     const matcher_t m_uscore   = {.category = IDENTIFIER, .prefix = "_", .postfix = "_"};
 
+    const lexicon_t& lexicon = sfp->get_lexicon<lexicon_t>();
     {
       tokenizer_t tok;
       tok.rules = {
