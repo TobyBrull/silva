@@ -448,11 +448,12 @@ namespace silva::seed::impl {
 namespace silva::seed {
   struct bootstrap_interpreter_t::impl_t {
     syntax_farm_ptr_t sfp;
-    lexicon_t lexicon;
+    const lexicon_t& lexicon;
     axe_t seed_expr_axe;
     tokenizer_farm_t tokenizer_farm;
 
-    impl_t(syntax_farm_ptr_t sfp) : sfp(sfp), lexicon(sfp), tokenizer_farm(sfp)
+    impl_t(syntax_farm_ptr_t sfp)
+      : sfp(sfp), lexicon(sfp->get_lexicon<lexicon_t>()), tokenizer_farm(sfp)
     {
       tokenizer_farm = make_bootstrap_tokenizer_farm(sfp);
       seed_expr_axe  = impl::make_bootstrap_seed_expr_axe(sfp, lexicon, tokenizer_farm);

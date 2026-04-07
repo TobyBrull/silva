@@ -11,7 +11,7 @@ namespace silva::lox {
   using return_t = optional_t<T>;
 
   struct interpreter_t : public menhir_t {
-    lexicon_t lexicon;
+    lexicon_ptr_t lexicon;
     object_pool_t object_pool;
 
     byte_sink_t* print_stream = nullptr;
