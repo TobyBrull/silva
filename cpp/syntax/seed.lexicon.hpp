@@ -34,6 +34,7 @@ namespace silva::seed {
     const token_id_t ti_ltr          = sfp->token_id("ltr");
     const token_id_t ti_rtl          = sfp->token_id("rtl");
     const token_id_t ti_atom_nest    = sfp->token_id("atom_nest");
+    const token_id_t ti_atom_nest_t  = sfp->token_id("atom_nest_transparent");
     const token_id_t ti_postfix      = sfp->token_id("postfix");
     const token_id_t ti_postfix_n    = sfp->token_id("postfix_nest");
     const token_id_t ti_infix        = sfp->token_id("infix");

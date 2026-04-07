@@ -1,11 +1,9 @@
 # TODO
 
-* use lexicon in seed_axe.cpp
-* fix TODO in parse_tree.hpp & clean up syntax.mpp
-* remove name_id_style; make nested naming simpler; as in C++
+* make nested naming simpler; as in C++
     * add a name resolution step to seed-interpreter, or just name it "compile"
         * or maybe add a seed-interpreter factory?
-        * it should support sealing certain parts of the 
+        * it should support sealing certain parts of the rule tree (maybe per language?)
 
 * revamp Seed according to seed.v4
 
