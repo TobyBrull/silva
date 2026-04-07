@@ -26,10 +26,10 @@ namespace silva {
 
   struct parse_tree_span_t : public tree_span_t<const parse_tree_node_t> {
     // TODO: replace with "parse_tree_ptr_t & lexicon_ptr_t"
-    tokenization_ptr_t tp;
+    parse_tree_ptr_t ptp;
 
     parse_tree_span_t() = default;
-    parse_tree_span_t(const parse_tree_node_t* root, index_t stride, tokenization_ptr_t);
+    parse_tree_span_t(const parse_tree_node_t* root, index_t stride, parse_tree_ptr_t);
     parse_tree_span_t(const parse_tree_t&);
 
     parse_tree_t copy() const;

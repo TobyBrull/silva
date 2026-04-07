@@ -23,11 +23,10 @@ namespace silva::seed::impl {
     const lexicon_t& lexicon;
     const name_id_style_t& nis = sfp->default_name_id_style();
 
-    const tokenization_t& s_tokenization;
-    const array_t<token_id_t>& s_tokens = s_tokenization.tokens;
+    const tokenization_ptr_t tp;
 
-    interpreter_adder_t(interpreter_t* se, const tokenization_t& s_tokenization)
-      : se(se), lexicon(se->bootstrap_interpreter.lexicon()), s_tokenization(s_tokenization)
+    interpreter_adder_t(interpreter_t* se, const parse_tree_span_t& pts)
+      : se(se), lexicon(se->bootstrap_interpreter.lexicon()), tp(pts.ptp->tp)
     {
     }
 
@@ -74,9 +73,9 @@ namespace silva::seed::impl {
         for (index_t i = 0; i < pts_1.size(); ++i) {
           if (pts_1[i].rule_name == lexicon.ni_term) {
             const index_t token_idx    = pts_1[i].token_begin;
-            const token_id_t token_cat = pts_1.tp->categories[token_idx];
+            const token_id_t token_cat = tp->categories[token_idx];
             if (token_cat == lexicon.ti_string) {
-              const token_id_t token_id       = pts_1.tp->tokens[token_idx];
+              const token_id_t token_id       = tp->tokens[token_idx];
               const token_info_t& token_info  = sfp->token_infos[token_id];
               const auto keyword              = SILVA_EXPECT_FWD(sfp->token_id_in_string(token_id));
               se->string_to_keyword[token_id] = keyword;
@@ -167,9 +166,6 @@ namespace silva::seed::impl {
     const lexicon_t& lexicon;
     const name_id_style_t& nis = sfp->default_name_id_style();
 
-    const tokenization_t& t_tokenization = *tp;
-    const array_t<token_id_t>& t_tokens  = t_tokenization.tokens;
-
     int rule_depth = 0;
 
     seed_exec_trace_t exec_trace{.sfp = sfp, .lexicon = lexicon};
@@ -183,7 +179,7 @@ namespace silva::seed::impl {
 
     expected_t<void> check()
     {
-      SILVA_EXPECT(sfp == t_tokenization.sfp,
+      SILVA_EXPECT(sfp == tp->sfp,
                    MAJOR,
                    "Seed and target parse-trees/tokenizations must be in same syntax_farm_t");
       return {};
@@ -213,8 +209,8 @@ namespace silva::seed::impl {
       auto ss            = stake();
       const auto& s_node = pts[0];
       SILVA_EXPECT(s_node.rule_name == lexicon.ni_term, MAJOR);
-      const token_id_t s_front_ti  = pts.tp->tokens[s_node.token_begin];
-      const token_id_t s_front_cat = pts.tp->categories[s_node.token_begin];
+      const token_id_t s_front_ti  = pts.ptp->tp->tokens[s_node.token_begin];
+      const token_id_t s_front_cat = pts.ptp->tp->categories[s_node.token_begin];
       if (s_front_ti == lexicon.ti_eps) {
         return ss.commit();
       }
@@ -271,7 +267,7 @@ namespace silva::seed::impl {
         const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
         const auto pts_cat  = pts.sub_tree_span_at(children[0]);
         SILVA_EXPECT(pts_cat[0].rule_name == lexicon.ni_tok_cat, MAJOR, "expected TokenCategory");
-        const token_id_t cat_token = pts_cat.tp->tokens[pts_cat[0].token_begin];
+        const token_id_t cat_token = pts_cat.ptp->tp->tokens[pts_cat[0].token_begin];
         SILVA_EXPECT_PARSE(t_rule_name,
                            tp->categories[token_index] == cat_token,
                            "expected token with category {}",
@@ -561,10 +557,10 @@ namespace silva::seed {
     return {};
   }
 
-  expected_t<void> interpreter_t::add_seed(parse_tree_span_t stps)
+  expected_t<void> interpreter_t::add_seed(parse_tree_span_t pts)
   {
-    impl::interpreter_adder_t adder(this, *stps.tp);
-    SILVA_EXPECT_FWD(adder.handle_all(stps));
+    impl::interpreter_adder_t adder(this, pts);
+    SILVA_EXPECT_FWD(adder.handle_all(pts));
     return {};
   }
 

@@ -4,7 +4,7 @@ namespace silva {
   expected_t<name_id_t> name_id_style_t::derive_name(const name_id_t scope_name,
                                                      const parse_tree_span_t pts_nt) const
   {
-    const auto& tokens = pts_nt.tp->tokens;
+    const auto& tokens = pts_nt.ptp->tp->tokens;
     name_id_t retval   = scope_name;
     SILVA_EXPECT(pts_nt[0].rule_name == ni_nonterminal, MINOR, "expected Nonterminal");
     if (tokens[pts_nt[0].token_begin] == separator) {

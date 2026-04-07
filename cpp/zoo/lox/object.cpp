@@ -113,9 +113,9 @@ namespace silva::lox {
                                                    const lexicon_t& lexicon)
   {
     SILVA_EXPECT(pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
-    const auto ti    = pts.tp->tokens[pts[0].token_begin];
-    const auto tc    = pts.tp->categories[pts[0].token_begin];
-    const auto tinfo = pts.tp->token_info_get(pts[0].token_begin);
+    const auto ti    = pts.ptp->tp->tokens[pts[0].token_begin];
+    const auto tc    = pts.ptp->tp->categories[pts[0].token_begin];
+    const auto tinfo = pts.ptp->tp->token_info_get(pts[0].token_begin);
     if (ti == lexicon.ti_none) {
       return object_pool.make(none);
     }
