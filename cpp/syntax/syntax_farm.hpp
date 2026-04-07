@@ -34,7 +34,6 @@ namespace silva {
     friend hash_value_t hash_impl(const name_info_t& x);
   };
 
-  struct name_id_style_t;
   struct token_id_wrap_t;
   struct name_id_wrap_t;
 
@@ -60,9 +59,6 @@ namespace silva {
     array_t<unique_ptr_t<const tokenization_t>> tokenizations;
     array_t<unique_ptr_t<const parse_tree_t>> parse_trees;
 
-    struct impl_t;
-    unique_ptr_t<impl_t> impl;
-
     syntax_farm_t();
     ~syntax_farm_t();
 
@@ -80,8 +76,6 @@ namespace silva {
     name_id_t name_id_of(Ts&&... xs);
     template<typename... Ts>
     name_id_t name_id_of(name_id_t parent_name, Ts&&... xs);
-
-    const name_id_style_t& default_name_id_style() const;
 
     token_id_wrap_t token_id_wrap(token_id_t);
 

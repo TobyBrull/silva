@@ -182,10 +182,9 @@ namespace silva::lox {
   }
 
   struct evaluation_t {
-    interpreter_t* intp        = nullptr;
-    const lexicon_t& lexicon   = *(intp->lexicon);
-    syntax_farm_ptr_t sfp      = lexicon.sfp;
-    const name_id_style_t& nis = sfp->default_name_id_style();
+    interpreter_t* intp      = nullptr;
+    const lexicon_t& lexicon = *(intp->lexicon);
+    syntax_farm_ptr_t sfp    = lexicon.sfp;
     scope_ptr_t scope;
 
     expected_t<object_ref_t> call_function(object_ref_t callee, const parse_tree_span_t pts_args)

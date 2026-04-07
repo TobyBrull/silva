@@ -1,7 +1,6 @@
 #include "syntax_farm.hpp"
 
 #include "canopy/string_convert.hpp"
-#include "name_id_style.hpp"
 #include "parse_tree.hpp"
 
 namespace silva {
@@ -50,13 +49,6 @@ namespace silva {
     return hash(tuple_t<name_id_t, token_id_t>{x.parent_name, x.base_name});
   }
 
-  struct syntax_farm_t::impl_t {
-    syntax_farm_ptr_t sfp;
-    name_id_style_t default_nis{sfp};
-
-    impl_t(syntax_farm_ptr_t sfp) : sfp(sfp) {}
-  };
-
   syntax_farm_t::syntax_farm_t()
   {
     token_infos.emplace_back();
@@ -68,7 +60,6 @@ namespace silva {
     const name_info_t fni{0, 0};
     name_infos.emplace_back(fni);
     name_lookup.emplace(fni, 0);
-    impl = std::make_unique<impl_t>(ptr());
   }
 
   syntax_farm_t::~syntax_farm_t() = default;
@@ -153,11 +144,6 @@ namespace silva {
     }
     SILVA_ASSERT(lhs_path[common] == rhs_path[common]);
     return lhs_path[common];
-  }
-
-  const name_id_style_t& syntax_farm_t::default_name_id_style() const
-  {
-    return impl->default_nis;
   }
 
   token_id_wrap_t syntax_farm_t::token_id_wrap(const token_id_t token_id)

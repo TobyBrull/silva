@@ -6,6 +6,9 @@
 #include "canopy/types.hpp"
 
 namespace silva::seed::impl {
+  expected_t<name_id_t>
+  derive_name(const lexicon_t&, const name_id_t scope_name, const parse_tree_span_t pts_nt);
+
   enum class assoc_t {
     INVALID,
     NEST,

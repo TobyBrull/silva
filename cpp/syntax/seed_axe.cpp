@@ -1,13 +1,34 @@
 #include "seed_axe.hpp"
 
-#include "name_id_style.hpp"
-
 #include "canopy/variant.hpp"
 
 #include <ranges>
 #include <variant>
 
 namespace silva::seed::impl {
+  expected_t<name_id_t>
+  derive_name(const lexicon_t& lexicon, const name_id_t scope_name, const parse_tree_span_t pts_nt)
+  {
+    const auto& tokens = pts_nt.ptp->tp->tokens;
+    name_id_t retval   = scope_name;
+    SILVA_EXPECT(pts_nt[0].rule_name == lexicon.ni_nt, MINOR, "expected Nonterminal");
+    if (tokens[pts_nt[0].token_begin] == lexicon.name_sep) {
+      retval = name_id_root;
+    }
+    for (const auto [child_node_index, child_index]: pts_nt.children_range()) {
+      const auto& s_node = pts_nt[child_node_index];
+      SILVA_EXPECT(s_node.rule_name == lexicon.ni_nt_base, MINOR, "expected Nonterminal.Base");
+      const token_id_t base = tokens[s_node.token_begin];
+      if (base == lexicon.here_name) {
+        ;
+      }
+      else {
+        retval = lexicon.sfp->name_id(retval, base);
+      }
+    }
+    return retval;
+  }
+
   using enum assoc_t;
 
   constexpr static inline precedence_t precedence_max{
@@ -41,7 +62,6 @@ namespace silva::seed::impl {
     syntax_farm_ptr_t sfp;
     name_id_t axe_name          = name_id_root;
     name_id_t atom_rule_name_id = name_id_root;
-    const name_id_style_t& nis  = sfp->default_name_id_style();
     const lexicon_t& lexicon    = sfp->get_lexicon<lexicon_t>();
 
     const token_id_t ti_atom_nest    = sfp->token_id("atom_nest");
@@ -189,7 +209,7 @@ namespace silva::seed::impl {
       if (it != end) {
         const auto pts_nt = pts_ops.sub_tree_span_at(it.pos);
         if (pts_nt[0].rule_name == ni_nt) {
-          nest_rule_name = SILVA_EXPECT_FWD(nis.derive_name(retval.name, pts_nt));
+          nest_rule_name = SILVA_EXPECT_FWD(derive_name(lexicon, retval.name, pts_nt));
           ++it;
         }
       }
@@ -452,7 +472,7 @@ namespace silva::seed::impl {
       const auto pts_axe_nt = pts_axe.sub_tree_span_at(it.pos);
       SILVA_EXPECT(pts_axe_nt[0].rule_name == ni_nt, MINOR);
       const name_id_t parent_scope = sfp->name_infos[axe_name].parent_name;
-      retval.atom_rule             = SILVA_EXPECT_FWD(nis.derive_name(parent_scope, pts_axe_nt));
+      retval.atom_rule = SILVA_EXPECT_FWD(derive_name(lexicon, parent_scope, pts_axe_nt));
       ++it;
 
       index_t curr_level = pts_axe[0].num_children;
