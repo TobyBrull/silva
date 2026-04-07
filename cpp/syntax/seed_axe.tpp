@@ -36,7 +36,7 @@ namespace silva::seed::test {
     optional_t<string_t> result_str;
     if (maybe_result_pt.has_value()) {
       auto result_pt = std::move(maybe_result_pt).value();
-      result_str     = SILVA_REQUIRE(result_pt->span().to_string(si.sfp->get_lexicon<lexicon_t>()));
+      result_str     = SILVA_REQUIRE(result_pt->span().to_string());
       UNSCOPED_INFO(result_str.value());
     }
     else {

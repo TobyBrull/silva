@@ -5,7 +5,7 @@
 #include "canopy/var_context.hpp"
 
 namespace silva {
-  expected_t<void> apply_action(const parse_tree_span_t pts, const lexicon_t& lexicon)
+  expected_t<void> apply_action(const parse_tree_span_t pts)
   {
     const auto action =
         SILVA_EXPECT_FWD_IF(var_context_get("action"), MAJOR).value_or("print-parse-tree");
@@ -13,13 +13,13 @@ namespace silva {
       ;
     }
     else if (action == "print-parse-tree") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_string(lexicon)));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_string()));
     }
     else if (action == "print-graph") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_graphviz(lexicon)));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_graphviz()));
     }
     else if (action == "show-graph") {
-      graphviz_show_sync(SILVA_EXPECT_FWD(pts.to_graphviz(lexicon)));
+      graphviz_show_sync(SILVA_EXPECT_FWD(pts.to_graphviz()));
     }
     else {
       SILVA_EXPECT(false, MAJOR, "Unknown action '{}'", string_t{action});
@@ -38,7 +38,7 @@ namespace silva {
       fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_arg));
       parse_tree_ptr_t pt      = SILVA_EXPECT_FWD(se->apply(std::move(fp), ni_goal));
       SILVA_EXPECT_FWD(se->callback_if(pt->span()));
-      SILVA_EXPECT_FWD(apply_action(pt->span(), sf.get_lexicon<seed::lexicon_t>()));
+      SILVA_EXPECT_FWD(apply_action(pt->span()));
     }
     return {};
   }

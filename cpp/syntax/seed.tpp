@@ -163,8 +163,8 @@ namespace silva::seed::test {
           [2].Seed.Terminal                       number
 )";
 
-    const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string(sf.get_lexicon<lexicon_t>()));
-    const string_t pts_2_str = SILVA_REQUIRE(pts_2->span().to_string(sf.get_lexicon<lexicon_t>()));
+    const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string());
+    const string_t pts_2_str = SILVA_REQUIRE(pts_2->span().to_string());
     CHECK(pts_1_str == expected.substr(1));
     CHECK(pts_2_str == expected.substr(1));
 
@@ -188,7 +188,7 @@ namespace silva::seed::test {
   [2].SimpleFern.LabeledItem                      'jkl'
     [0].SimpleFern.Item                           'jkl'
 )";
-      const string_t result{SILVA_REQUIRE(sfpt->span().to_string(sf.get_lexicon<lexicon_t>()))};
+      const string_t result{SILVA_REQUIRE(sfpt->span().to_string())};
       CHECK(result == expected_parse_tree.substr(1));
     }
   }
