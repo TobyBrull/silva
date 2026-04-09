@@ -545,16 +545,6 @@ namespace silva::seed {
   {
   }
 
-  expected_t<void> interpreter_t::callback_if(const parse_tree_span_t& pts) const
-  {
-    const auto it = parse_callbacks.find(pts[0].rule_name);
-    if (it != parse_callbacks.end()) {
-      const auto& cb = it->second;
-      SILVA_EXPECT_FWD(cb(pts));
-    }
-    return {};
-  }
-
   expected_t<void> interpreter_t::add_seed(parse_tree_span_t pts)
   {
     impl::interpreter_adder_t adder(this, pts);

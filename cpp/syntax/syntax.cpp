@@ -41,9 +41,6 @@ namespace silva {
       SILVA_EXPECT_ASSERT(retval->add_seed_text(fp, txt));
     }
 
-    using callback_t = seed::interpreter_t::callback_t;
-    auto callback    = callback_t::make<&seed::interpreter_t::add_seed_copy>(retval.get());
-    retval->parse_callbacks[sfp->name_id_of("Seed")] = callback;
     return retval;
   }
 }

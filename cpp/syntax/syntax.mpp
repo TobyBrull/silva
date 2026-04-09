@@ -37,7 +37,10 @@ namespace silva {
       const name_id_t ni_goal  = SILVA_EXPECT_FWD(infer_goal_rule_name(sf, fsp));
       fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_arg));
       parse_tree_ptr_t pt      = SILVA_EXPECT_FWD(se->apply(std::move(fp), ni_goal));
-      SILVA_EXPECT_FWD(se->callback_if(pt->span()));
+      parse_tree_span_t pts    = pt->span();
+      if (pts[0].rule_name == sf.get_lexicon<seed::lexicon_t>().ni_seed) {
+        SILVA_EXPECT_FWD(se->add_seed_copy(pts));
+      }
       SILVA_EXPECT_FWD(apply_action(pt->span()));
     }
     return {};

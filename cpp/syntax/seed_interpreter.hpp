@@ -4,8 +4,6 @@
 #include "seed_axe.hpp"
 #include "seed_tokenizer.hpp"
 
-#include <regex>
-
 namespace silva::seed {
   // Driver for a program in the Seed language.
   struct interpreter_t {
@@ -31,11 +29,6 @@ namespace silva::seed {
     // Maps a token of the form ['keyword'] (i.e., of category: string) to a token of the form
     // [keyword] (i.e., of category: identifier or operator).
     hash_map_t<token_id_t, token_id_t> string_to_keyword;
-
-    // Callbacks triggered by Seed function "parse_and_callback_f".
-    using callback_t = delegate_t<expected_t<void>(const parse_tree_span_t&)>;
-    hash_map_t<name_id_t, callback_t> parse_callbacks;
-    expected_t<void> callback_if(const parse_tree_span_t&) const;
 
     interpreter_t(syntax_farm_ptr_t);
 
