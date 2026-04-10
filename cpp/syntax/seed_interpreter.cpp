@@ -62,10 +62,10 @@ namespace silva::seed::impl {
             const index_t token_idx    = pts_1[i].token_begin;
             const token_id_t token_cat = tp->categories[token_idx];
             if (token_cat == lexicon.ti_string) {
-              const token_id_t token_id       = tp->tokens[token_idx];
-              const token_info_t& token_info  = sfp->token_infos[token_id];
-              const auto keyword              = SILVA_EXPECT_FWD(sfp->token_id_in_string(token_id));
-              se->string_to_keyword[token_id] = keyword;
+              const token_id_t token_id      = tp->tokens[token_idx];
+              const token_info_t& token_info = sfp->token_infos[token_id];
+              const auto ti                  = SILVA_EXPECT_FWD(sfp->token_id_in_string(token_id));
+              se->string_to_token[token_id]  = ti;
             }
           }
         }
@@ -214,8 +214,11 @@ namespace silva::seed::impl {
         ;
       }
       else if (s_front_cat == lexicon.ti_string) {
-        const auto it = se->string_to_keyword.find(s_front_ti);
-        SILVA_EXPECT(it != se->string_to_keyword.end(), MAJOR, "Couldn't find keyword");
+        const auto it = se->string_to_token.find(s_front_ti);
+        SILVA_EXPECT(it != se->string_to_token.end(),
+                     MAJOR,
+                     "Couldn't find token for {}",
+                     sfp->token_id_wrap(s_front_ti));
         const token_id_t t_expected_ti = it->second;
         SILVA_EXPECT_PARSE(t_rule_name,
                            token_id_by() == t_expected_ti,
