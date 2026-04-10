@@ -23,9 +23,6 @@ namespace silva::seed {
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
     hash_map_t<name_id_t, axe_t> axes;
 
-    // Maps the scope/rule-name to the set of keywords associated with it.
-    hash_map_t<name_id_t, hash_set_t<token_id_t>> keyword_scopes;
-
     // Maps a token of the form ['keyword'] (i.e., of category: string) to a token of the form
     // [keyword] (i.e., of category: identifier or operator).
     hash_map_t<token_id_t, token_id_t> string_to_keyword;

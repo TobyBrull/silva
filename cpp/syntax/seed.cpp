@@ -19,21 +19,15 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_term);
-      if (num_tokens_left() >= 2 && token_id_by(0) == lexicon.ti_keywords_of) {
-        token_index += 1;
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_term, nonterminal()));
-      }
-      else {
-        SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
-        SILVA_EXPECT_PARSE(lexicon.ni_term,
-                           token_category_by() == lexicon.ti_string ||
-                               token_category_by() == lexicon.ti_token_cat_name ||
-                               token_id_by() == lexicon.ti_any || token_id_by() == lexicon.ti_eps ||
-                               token_id_by() == lexicon.ti_eof,
-                           "unexpected {}",
-                           sfp->token_id_wrap(token_id_by()));
-        token_index += 1;
-      }
+      SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
+      SILVA_EXPECT_PARSE(lexicon.ni_term,
+                         token_category_by() == lexicon.ti_string ||
+                             token_category_by() == lexicon.ti_token_cat_name ||
+                             token_id_by() == lexicon.ti_any || token_id_by() == lexicon.ti_eps ||
+                             token_id_by() == lexicon.ti_eof,
+                         "unexpected {}",
+                         sfp->token_id_wrap(token_id_by()));
+      token_index += 1;
       return ss_rule.commit();
     }
 

@@ -6,7 +6,7 @@
 #include <catch2/catch_all.hpp>
 
 namespace silva::seed::test {
-  TEST_CASE("not-but_then-keywords", "[seed-interpreter][seed]")
+  TEST_CASE("not-but_then", "[seed-interpreter][seed]")
   {
     const string_view_t frog_seed = R"'(
     - Frog = tokenizer [
@@ -22,9 +22,9 @@ namespace silva::seed::test {
     - Frog = [
       - ⊙ = Rule *
       - Rule = RuleName Expr
-      - RuleName = alias keywords_of Keyword
+      - RuleName = alias Keyword
       - Expr = Primary +
-      - Primary = not keywords_of Keyword but_then identifier
+      - Primary = not Keyword but_then identifier
       - Keyword = [
         - ⊙ = 'keyword1' | 'keyword2' | 'keyword3'
       ]
@@ -97,13 +97,12 @@ namespace silva::seed::test {
             [0].Seed.Nonterminal.Base             RuleName
           [1].Seed.Nonterminal                    Expr
             [0].Seed.Nonterminal.Base             Expr
-      [2].Seed.Rule                               RuleName = alias keywords_of Keyword
+      [2].Seed.Rule                               RuleName = alias Keyword
         [0].Seed.Nonterminal                      RuleName
           [0].Seed.Nonterminal.Base               RuleName
-        [1].Seed.Alias                            keywords_of Keyword
-          [0].Seed.Terminal                       keywords_of Keyword
-            [0].Seed.Nonterminal                  Keyword
-              [0].Seed.Nonterminal.Base           Keyword
+        [1].Seed.Alias                            Keyword
+          [0].Seed.Nonterminal                    Keyword
+            [0].Seed.Nonterminal.Base             Keyword
       [3].Seed.Rule                               Expr = Primary +
         [0].Seed.Nonterminal                      Expr
           [0].Seed.Nonterminal.Base               Expr
@@ -113,11 +112,10 @@ namespace silva::seed::test {
       [4].Seed.Rule                               Primary = ... but_then identifier
         [0].Seed.Nonterminal                      Primary
           [0].Seed.Nonterminal.Base               Primary
-        [1].Seed.Expr.And.but_then                not keywords_of Keyword but_then identifier
-          [0].Seed.Expr.Prefix.not                not keywords_of Keyword
-            [0].Seed.Terminal                     keywords_of Keyword
-              [0].Seed.Nonterminal                Keyword
-                [0].Seed.Nonterminal.Base         Keyword
+        [1].Seed.Expr.And.but_then                not Keyword but_then identifier
+          [0].Seed.Expr.Prefix.not                not Keyword
+            [0].Seed.Nonterminal                  Keyword
+              [0].Seed.Nonterminal.Base           Keyword
           [1].Seed.Terminal                       identifier
       [5].Seed.Rule                               Keyword = ... 'keyword3' ]
         [0].Seed.Nonterminal                      Keyword
@@ -144,19 +142,23 @@ namespace silva::seed::test {
     const string_view_t expected = R"(
 [0].Frog                                          keyword1 a ... h i
   [0].Frog.Rule                                   keyword1 a b c
-    [0].Frog.Expr                                 a b c
+    [0].Frog.Keyword                              keyword1
+    [1].Frog.Expr                                 a b c
       [0].Frog.Primary                            a
       [1].Frog.Primary                            b
       [2].Frog.Primary                            c
   [1].Frog.Rule                                   keyword2 d e
-    [0].Frog.Expr                                 d e
+    [0].Frog.Keyword                              keyword2
+    [1].Frog.Expr                                 d e
       [0].Frog.Primary                            d
       [1].Frog.Primary                            e
   [2].Frog.Rule                                   keyword1 f
-    [0].Frog.Expr                                 f
+    [0].Frog.Keyword                              keyword1
+    [1].Frog.Expr                                 f
       [0].Frog.Primary                            f
   [3].Frog.Rule                                   keyword3 g h i
-    [0].Frog.Expr                                 g h i
+    [0].Frog.Keyword                              keyword3
+    [1].Frog.Expr                                 g h i
       [0].Frog.Primary                            g
       [1].Frog.Primary                            h
       [2].Frog.Primary                            i

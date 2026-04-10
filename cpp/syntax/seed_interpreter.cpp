@@ -28,18 +28,6 @@ namespace silva::seed::impl {
     {
     }
 
-    expected_t<void> recognize_keyword(name_id_t rule_name, const token_id_t keyword)
-    {
-      while (true) {
-        se->keyword_scopes[rule_name].insert(keyword);
-        if (rule_name == name_id_root) {
-          break;
-        }
-        rule_name = sfp->name_infos[rule_name].parent_name;
-      }
-      return {};
-    }
-
     expected_t<void> handle_rule(const name_id_t scope_name, const parse_tree_span_t pts_rule)
     {
       SILVA_EXPECT(pts_rule[0].rule_name == lexicon.ni_rule, MINOR, "expected Rule");
@@ -78,7 +66,6 @@ namespace silva::seed::impl {
               const token_info_t& token_info  = sfp->token_infos[token_id];
               const auto keyword              = SILVA_EXPECT_FWD(sfp->token_id_in_string(token_id));
               se->string_to_keyword[token_id] = keyword;
-              SILVA_EXPECT_FWD(recognize_keyword(scope_name, keyword));
             }
           }
         }
@@ -223,26 +210,7 @@ namespace silva::seed::impl {
                          num_tokens_left() > 0,
                          "Reached end of token-stream when looking for {}",
                          sfp->token_id_wrap(s_front_ti));
-      if (s_front_ti == lexicon.ti_keywords_of) {
-        const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
-        const auto pts_nt   = pts.sub_tree_span_at(children[0]);
-        const auto it       = se->nonterminal_rules.find(pts_nt);
-        SILVA_EXPECT(it != se->nonterminal_rules.end(), MAJOR, "Couldn't lookup nonterminal");
-        const name_id_t keyword_scope = it->second;
-        const auto it2                = se->keyword_scopes.find(keyword_scope);
-        SILVA_EXPECT(it2 != se->keyword_scopes.end(),
-                     MAJOR,
-                     "keywords_of {}: no such nonterminal",
-                     lexicon.name_id_wrap(keyword_scope));
-        const hash_set_t<token_id_t>& keywords = it2->second;
-        SILVA_EXPECT(keywords.contains(token_id_by()),
-                     MINOR,
-                     "{} '{}' not in keywords_of {}",
-                     token_location_by(),
-                     sfp->token_id_wrap(token_id_by()),
-                     lexicon.name_id_wrap(keyword_scope));
-      }
-      else if (s_front_ti == lexicon.ti_any) {
+      if (s_front_ti == lexicon.ti_any) {
         ;
       }
       else if (s_front_cat == lexicon.ti_string) {

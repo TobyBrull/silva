@@ -65,7 +65,6 @@ namespace silva::seed {
         - Base = '⊙' | rule_name
       ]
       - Terminal = string | token_category_name
-                 | 'keywords_of' Nonterminal
                  | 'any' | 'epsilon' | 'end_of_file'
     ]
     - None = epsilon

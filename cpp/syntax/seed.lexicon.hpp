@@ -43,7 +43,6 @@ namespace silva::seed {
     const token_id_t ti_prefix       = sfp->token_id("prefix");
     const token_id_t ti_prefix_n     = sfp->token_id("prefix_nest");
     const token_id_t ti_concat       = sfp->token_id("concat");
-    const token_id_t ti_keywords_of  = sfp->token_id("keywords_of");
     const token_id_t ti_tokenizer    = sfp->token_id("tokenizer");
     const token_id_t ti_include      = sfp->token_id("include");
     const token_id_t ti_ignore       = sfp->token_id("ignore");

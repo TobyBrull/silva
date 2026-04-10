@@ -13,28 +13,6 @@ namespace silva::seed::test {
     const auto pts_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(fp));
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
-    CHECK(spr->keyword_scopes[sf.name_id_of("Seed", "Rule")] == hash_set_t<token_id_t>({}));
-    CHECK(spr->keyword_scopes[sf.name_id_of("Seed", "Axe")] ==
-          hash_set_t<token_id_t>({
-              sf.token_id("["),
-              sf.token_id("]"),
-              sf.token_id("-"),
-              sf.token_id("="),
-              sf.token_id("nest"),
-              sf.token_id("ltr"),
-              sf.token_id("rtl"),
-              sf.token_id("atom_nest"),
-              sf.token_id("atom_nest_transparent"),
-              sf.token_id("prefix"),
-              sf.token_id("prefix_nest"),
-              sf.token_id("infix"),
-              sf.token_id("infix_flat"),
-              sf.token_id("ternary"),
-              sf.token_id("postfix"),
-              sf.token_id("postfix_nest"),
-              sf.token_id("concat"),
-              sf.token_id("->"),
-          }));
   }
 
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
