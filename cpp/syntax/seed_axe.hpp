@@ -48,8 +48,8 @@ namespace silva::seed {
 
   struct axe_t {
     lexicon_ptr_t lp;
-    name_id_t name      = name_id_root;
-    name_id_t atom_rule = name_id_root;
+    name_id_t name      = name_id_none;
+    name_id_t atom_rule = name_id_none;
     hash_map_t<token_id_t, impl::axe_result_t> results;
     optional_t<impl::result_oper_t<impl::oper_regular_t>> concat_result;
 

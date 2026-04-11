@@ -37,8 +37,8 @@ namespace silva::seed::impl {
 
   struct axe_create_nursery_t {
     syntax_farm_ptr_t sfp;
-    name_id_t axe_name          = name_id_root;
-    name_id_t atom_rule_name_id = name_id_root;
+    name_id_t axe_name          = name_id_none;
+    name_id_t atom_rule_name_id = name_id_none;
     const lexicon_t& lexicon    = sfp->get_lexicon<lexicon_t>();
 
     axe_t retval{
@@ -549,7 +549,7 @@ namespace silva::seed::impl {
 
     struct consistent_range_t {
       index_t num_atoms          = 0;
-      name_id_t joint_level_name = name_id_root;
+      name_id_t joint_level_name = name_id_none;
       index_t token_begin        = 0;
       index_t token_end          = 0;
     };
@@ -911,7 +911,7 @@ namespace silva::seed::impl {
       auto ss = nursery.stake();
       {
         auto ss_rule = nursery.stake();
-        ss_rule.create_node(name_id_root);
+        ss_rule.create_node(name_id_none);
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(axe.name, shunting_yard()));
 
         const auto& root_node          = output_tree.back();

@@ -90,7 +90,7 @@ namespace silva::seed::impl {
                                       const parse_tree_span_t pts_seed_tok)
     {
       const auto& ni = sfp->name_infos[scope_name];
-      SILVA_EXPECT(ni.parent_name == name_id_root,
+      SILVA_EXPECT(ni.parent_name == name_id_none,
                    MINOR,
                    "{} 'tokenizer' rule may only be for top-level names, not {}",
                    pts_seed_tok,
@@ -113,13 +113,13 @@ namespace silva::seed::impl {
 
     expected_t<void> handle_all(const parse_tree_span_t pts)
     {
-      SILVA_EXPECT_FWD(handle_seed(name_id_root, pts));
+      SILVA_EXPECT_FWD(handle_seed(name_id_none, pts));
       return {};
     }
   };
 
   struct seed_exec_trace_data_t {
-    name_id_t rule_name = name_id_root;
+    name_id_t rule_name = name_id_none;
     token_location_t token_pos;
     bool success = false;
   };
@@ -559,11 +559,9 @@ namespace silva::seed {
         if (pts_rule[path.back().node_index].rule_name != lexicon.ni_nt) {
           return true;
         }
-        const auto pts_nt             = pts_rule.sub_tree_span_at(path.back().node_index);
-        const name_id_t resolved_name = SILVA_EXPECT_FWD(
-            lexicon.name_id_lookup(rule_name, pts_nt.token_span(), [&](const name_id_t x) {
-              return rule_exprs.contains(x);
-            }));
+        const auto pts_nt = pts_rule.sub_tree_span_at(path.back().node_index);
+        const name_id_t resolved_name =
+            SILVA_EXPECT_FWD(lexicon.name_id_lookup(rule_name, pts_nt.token_span(), rule_exprs));
         const auto [it, inserted] = resolved_names.emplace(pts_nt, resolved_name);
         SILVA_EXPECT(inserted, ASSERT);
         return true;
@@ -582,7 +580,7 @@ namespace silva::seed {
     }
 
     name_id_t curr = goal_rule_name;
-    while (sfp->name_infos[curr].parent_name != name_id_root) {
+    while (sfp->name_infos[curr].parent_name != name_id_none) {
       curr = sfp->name_infos[curr].parent_name;
     }
     const token_id_t tokenizer_name = sfp->name_infos[curr].base_name;

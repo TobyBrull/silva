@@ -140,7 +140,7 @@ namespace silva::lox {
           const bool is_keyword =
               (ti == lexicon->ti_true || ti == lexicon->ti_false || ti == lexicon->ti_none);
           const name_id_t pr =
-              (path.size() >= 2) ? pts[path[path.size() - 2].node_index].rule_name : name_id_root;
+              (path.size() >= 2) ? pts[path[path.size() - 2].node_index].rule_name : name_id_none;
           const bool is_member_access =
               (pr == lexicon->ni_expr_member && path.back().child_index == 1);
           const bool is_func_callee = (pr == lexicon->ni_expr_call && path.back().child_index == 0);

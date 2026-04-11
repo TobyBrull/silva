@@ -113,7 +113,7 @@ namespace silva {
       if (child_name == parent_name) {
         return true;
       }
-      if (child_name == name_id_root) {
+      if (child_name == name_id_none) {
         return false;
       }
       child_name = name_infos[child_name].parent_name;
@@ -127,7 +127,7 @@ namespace silva {
       array_t<name_id_t> retval;
       while (true) {
         retval.push_back(x);
-        if (x == name_id_root) {
+        if (x == name_id_none) {
           break;
         }
         x = name_infos[x].parent_name;
@@ -168,7 +168,7 @@ namespace silva {
 
   string_t lexicon_t::name_id_str(const name_id_t name_id) const
   {
-    if (name_id == name_id_root) {
+    if (name_id == name_id_none) {
       return "";
     }
     const name_info_t& ni = sfp->name_infos[name_id];
@@ -183,7 +183,7 @@ namespace silva {
     SILVA_EXPECT(!ts.empty(), MINOR);
     index_t idx = 0;
     if (ts.front() == name_sep) {
-      retval = name_id_root;
+      retval = name_id_none;
       idx += 1;
     }
     while (idx < ts.size()) {

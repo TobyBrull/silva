@@ -14,7 +14,18 @@ namespace silva {
 
   constexpr inline token_id_t token_id_none     = 0;
   constexpr inline token_id_t token_id_language = 1;
-  constexpr inline name_id_t name_id_root       = 0;
+  constexpr inline name_id_t name_id_none       = 0;
+  constexpr inline name_id_t name_id_root_abs   = 1;
+  constexpr inline name_id_t name_id_leave_abs  = 2;
+  constexpr inline name_id_t name_id_leave_rel  = 3;
+
+  struct name_abs_t {
+    name_id_t id = name_id_none;
+  };
+
+  struct name_t {
+    name_id_t id = name_id_none;
+  };
 
   struct token_info_t {
     string_t str;
@@ -27,7 +38,7 @@ namespace silva {
   };
 
   struct name_info_t {
-    name_id_t parent_name = name_id_root;
+    name_id_t parent_name = name_id_none;
     token_id_t base_name  = token_id_none;
 
     friend auto operator<=>(const name_info_t&, const name_info_t&) = default;
@@ -48,6 +59,11 @@ namespace silva {
   struct parse_tree_span_t;
 
   struct lexicon_t;
+
+  template<typename T>
+  concept Namespace = requires(const T& ns) {
+    { ns.contains(name_id_t{}) } -> std::same_as<bool>;
+  };
 
   struct syntax_farm_t : public menhir_t {
     array_t<token_info_t> token_infos;
@@ -108,10 +124,9 @@ namespace silva {
     expected_t<name_id_t> name_id_definition(const name_id_t scope_name,
                                              span_t<const token_id_t>) const;
 
-    template<typename ExistsFunc>
-      requires std::invocable<ExistsFunc, name_id_t>
+    template<Namespace Ns>
     expected_t<name_id_t>
-    name_id_lookup(const name_id_t scope_name, span_t<const token_id_t>, ExistsFunc) const;
+    name_id_lookup(const name_id_t scope_name, span_t<const token_id_t>, const Ns&) const;
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
 
@@ -124,7 +139,7 @@ namespace silva {
 
   struct name_id_wrap_t {
     lexicon_ptr_t lp;
-    name_id_t name_id = name_id_root;
+    name_id_t name_id = name_id_none;
 
     friend void pretty_write_impl(const name_id_wrap_t&, byte_sink_t*);
   };
@@ -156,7 +171,7 @@ namespace silva {
   {
     array_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
-    return name_id_span(name_id_root, vec);
+    return name_id_span(name_id_none, vec);
   }
 
   template<typename... Ts>
@@ -167,11 +182,10 @@ namespace silva {
     return name_id_span(parent_name, vec);
   }
 
-  template<typename ExistsFunc>
-    requires std::invocable<ExistsFunc, name_id_t>
+  template<Namespace Ns>
   expected_t<name_id_t> lexicon_t::name_id_lookup(const name_id_t scope_name,
                                                   const span_t<const token_id_t> ts,
-                                                  ExistsFunc exists_func) const
+                                                  const Ns& ns) const
   {
     SILVA_EXPECT(!ts.empty(), MINOR);
     index_t idx = 0;
@@ -182,12 +196,12 @@ namespace silva {
     error_nursery_t error_nursery;
     while (true) {
       const name_id_t curr_name = SILVA_EXPECT_FWD(name_id_definition(curr_scope, ts));
-      if (exists_func(curr_name)) {
+      if (ns.contains(curr_name)) {
         return curr_name;
       }
       error_nursery.add_child_error(
           make_error(error_level_t::MINOR, {}, "could not find {}", name_id_wrap(curr_name)));
-      if (curr_scope == name_id_root) {
+      if (curr_scope == name_id_none) {
         break;
       }
       curr_scope = sfp->name_infos[curr_scope].parent_name;
