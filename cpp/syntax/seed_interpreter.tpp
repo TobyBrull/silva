@@ -37,7 +37,6 @@ namespace silva::seed::test {
 [0].Seed                                          - Frog ... ] ]
   [0].Seed.Rule                                   Frog = ... IDENTIFIER ]
     [0].Seed.Nonterminal                          Frog
-      [0].Seed.Nonterminal.Base                   Frog
     [1].Seed.Tokenizer                            [ - ... IDENTIFIER ]
       [0].Seed.Tokenizer.IgnoreRule               ignore WHITESPACE
         [0].Seed.Tokenizer.Defn                   WHITESPACE
@@ -81,50 +80,34 @@ namespace silva::seed::test {
               [0].Seed.Tokenizer.Matcher          IDENTIFIER
   [1].Seed.Rule                                   Frog = ... ] ]
     [0].Seed.Nonterminal                          Frog
-      [0].Seed.Nonterminal.Base                   Frog
     [1].Seed                                      - ⊙ ... 'keyword3' ]
       [0].Seed.Rule                               ⊙ = Rule *
-        [0].Seed.Nonterminal                      ⊙
-          [0].Seed.Nonterminal.Base               ⊙
-        [1].Seed.Expr.Postfix.*                   Rule *
+        [0].Seed.Expr.Postfix.*                   Rule *
           [0].Seed.Nonterminal                    Rule
-            [0].Seed.Nonterminal.Base             Rule
       [1].Seed.Rule                               Rule = RuleName Expr
         [0].Seed.Nonterminal                      Rule
-          [0].Seed.Nonterminal.Base               Rule
         [1].Seed.Expr.Concat.concat               RuleName Expr
           [0].Seed.Nonterminal                    RuleName
-            [0].Seed.Nonterminal.Base             RuleName
           [1].Seed.Nonterminal                    Expr
-            [0].Seed.Nonterminal.Base             Expr
       [2].Seed.Rule                               RuleName = alias Keyword
         [0].Seed.Nonterminal                      RuleName
-          [0].Seed.Nonterminal.Base               RuleName
         [1].Seed.Alias                            Keyword
           [0].Seed.Nonterminal                    Keyword
-            [0].Seed.Nonterminal.Base             Keyword
       [3].Seed.Rule                               Expr = Primary +
         [0].Seed.Nonterminal                      Expr
-          [0].Seed.Nonterminal.Base               Expr
         [1].Seed.Expr.Postfix.+                   Primary +
           [0].Seed.Nonterminal                    Primary
-            [0].Seed.Nonterminal.Base             Primary
       [4].Seed.Rule                               Primary = ... but_then identifier
         [0].Seed.Nonterminal                      Primary
-          [0].Seed.Nonterminal.Base               Primary
         [1].Seed.Expr.And.but_then                not Keyword but_then identifier
           [0].Seed.Expr.Prefix.not                not Keyword
             [0].Seed.Nonterminal                  Keyword
-              [0].Seed.Nonterminal.Base           Keyword
           [1].Seed.Terminal                       identifier
       [5].Seed.Rule                               Keyword = ... 'keyword3' ]
         [0].Seed.Nonterminal                      Keyword
-          [0].Seed.Nonterminal.Base               Keyword
         [1].Seed                                  - ⊙ ... | 'keyword3'
           [0].Seed.Rule                           ⊙ = ... | 'keyword3'
-            [0].Seed.Nonterminal                  ⊙
-              [0].Seed.Nonterminal.Base           ⊙
-            [1].Seed.Expr.Or.|                    'keyword1' | 'keyword2' | 'keyword3'
+            [0].Seed.Expr.Or.|                    'keyword1' | 'keyword2' | 'keyword3'
               [0].Seed.Terminal                   'keyword1'
               [1].Seed.Terminal                   'keyword2'
               [2].Seed.Terminal                   'keyword3'

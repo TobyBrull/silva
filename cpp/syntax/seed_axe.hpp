@@ -35,7 +35,7 @@ namespace silva::seed {
   const string_view_t axe_str = R"'(
     - Seed.Axe = [
       - ⊙ = Seed.Nonterminal '[' ( '-' Level ) * ']'
-      - Level = Seed.Nonterminal.Base '=' Assoc Ops *
+      - Level = rule_name '=' Assoc Ops *
       - Assoc = 'nest' | 'ltr' | 'rtl'
       - Ops = OpType ( '->' Seed.Nonterminal ) ? Op *
       - OpType = 'atom_nest' | 'atom_nest_transparent'

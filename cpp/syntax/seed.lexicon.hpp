@@ -12,6 +12,7 @@ namespace silva::seed {
     friend struct silva::syntax_farm_t;
 
    public:
+    const token_id_t here_name       = sfp->token_id("⊙");
     const token_id_t ti_comma        = sfp->token_id(",");
     const token_id_t ti_dash         = sfp->token_id("-");
     const token_id_t ti_equal        = sfp->token_id("=");
@@ -99,8 +100,7 @@ namespace silva::seed {
     const name_id_t ni_expr_or      = sfp->name_id_of(ni_expr, "Or");
     const name_id_t ni_expr_and     = sfp->name_id_of(ni_expr, "And");
 
-    const name_id_t ni_nt      = sfp->name_id_of(ni_seed, "Nonterminal");
-    const name_id_t ni_nt_base = sfp->name_id_of(ni_nt, "Base");
+    const name_id_t ni_nt = sfp->name_id_of(ni_seed, "Nonterminal");
 
     const name_id_t ni_axe         = sfp->name_id_of(ni_seed, "Axe");
     const name_id_t ni_axe_level   = sfp->name_id_of(ni_axe, "Level");

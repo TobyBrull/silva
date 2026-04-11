@@ -95,8 +95,7 @@ namespace silva {
     syntax_farm_ptr_t sfp;
     token_id_t language_name = token_id_none;
 
-    token_id_t here_name = sfp->token_id("⊙");
-    token_id_t name_sep  = sfp->token_id(".");
+    token_id_t name_sep = sfp->token_id(".");
 
     lexicon_t(syntax_farm_ptr_t);
 

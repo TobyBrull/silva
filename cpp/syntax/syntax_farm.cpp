@@ -189,12 +189,7 @@ namespace silva {
     while (idx < ts.size()) {
       const token_id_t base = ts[idx];
       SILVA_EXPECT(base != name_sep, MINOR);
-      if (base == here_name) {
-        ;
-      }
-      else {
-        retval = sfp->name_id(retval, base);
-      }
+      retval = sfp->name_id(retval, base);
       idx += 1;
       if (idx < ts.size()) {
         SILVA_EXPECT(ts[idx] == name_sep, MINOR);

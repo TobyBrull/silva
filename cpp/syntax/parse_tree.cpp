@@ -77,13 +77,22 @@ namespace silva {
     return retval;
   }
 
-  token_id_t parse_tree_span_t::first_token_id() const
+  token_id_t parse_tree_span_t::front_token_id() const
   {
     return ptp->tp->tokens[(*this)[0].token_begin];
   }
-  token_id_t parse_tree_span_t::first_token_category() const
+  token_id_t parse_tree_span_t::front_token_category() const
   {
     return ptp->tp->categories[(*this)[0].token_begin];
+  }
+
+  token_id_t parse_tree_span_t::back_token_id() const
+  {
+    return ptp->tp->tokens[(*this)[0].token_end - 1];
+  }
+  token_id_t parse_tree_span_t::back_token_category() const
+  {
+    return ptp->tp->categories[(*this)[0].token_end - 1];
   }
 
   token_span_t parse_tree_span_t::token_span() const

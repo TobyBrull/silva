@@ -1,12 +1,7 @@
 # TODO
 
-* make nested naming simpler; as in C++
-    * add a name resolution step to seed-interpreter, or just name it "compile"
-        * or maybe add a seed-interpreter factory?
-        * it should support sealing certain parts of the rule tree (maybe per language?)
-
+* make front_token_id/... return expected_t
 * make relative names also work for axe atoms (lox: Expr.Atom -> Atom)
-* Error if ⊙ is used in rule
 
 * revamp Seed according to seed.v4
 

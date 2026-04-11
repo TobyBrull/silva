@@ -47,7 +47,6 @@ namespace silva::seed::test {
 [0].Seed                                          - SimpleFern ... number ]
   [0].Seed.Rule                                   SimpleFern = ... IDENTIFIER ]
     [0].Seed.Nonterminal                          SimpleFern
-      [0].Seed.Nonterminal.Base                   SimpleFern
     [1].Seed.Tokenizer                            [ - ... IDENTIFIER ]
       [0].Seed.Tokenizer.IgnoreRule               ignore WHITESPACE
         [0].Seed.Tokenizer.Defn                   WHITESPACE
@@ -100,43 +99,33 @@ namespace silva::seed::test {
               [0].Seed.Tokenizer.Matcher          IDENTIFIER
   [1].Seed.Rule                                   SimpleFern = ... number ]
     [0].Seed.Nonterminal                          SimpleFern
-      [0].Seed.Nonterminal.Base                   SimpleFern
     [1].Seed                                      - ⊙ ... | number
       [0].Seed.Rule                               ⊙ = ... * ']'
-        [0].Seed.Nonterminal                      ⊙
-          [0].Seed.Nonterminal.Base               ⊙
-        [1].Seed.Expr.Concat.concat               '[' ( ... * ']'
+        [0].Seed.Expr.Concat.concat               '[' ( ... * ']'
           [0].Seed.Terminal                       '['
           [1].Seed.Expr.Postfix.*                 ( LabeledItem ... ) *
             [0].Seed.Expr.Parens.(                ( LabeledItem ';' ? )
               [0].Seed.Expr.Concat.concat         LabeledItem ';' ?
                 [0].Seed.Nonterminal              LabeledItem
-                  [0].Seed.Nonterminal.Base       LabeledItem
                 [1].Seed.Expr.Postfix.?           ';' ?
                   [0].Seed.Terminal               ';'
           [2].Seed.Terminal                       ']'
       [1].Seed.Rule                               LabeledItem = ... ? Item
         [0].Seed.Nonterminal                      LabeledItem
-          [0].Seed.Nonterminal.Base               LabeledItem
         [1].Seed.Expr.Concat.concat               ( Label ... ? Item
           [0].Seed.Expr.Postfix.?                 ( Label ':' ) ?
             [0].Seed.Expr.Parens.(                ( Label ':' )
               [0].Seed.Expr.Concat.concat         Label ':'
                 [0].Seed.Nonterminal              Label
-                  [0].Seed.Nonterminal.Base       Label
                 [1].Seed.Terminal                 ':'
           [1].Seed.Nonterminal                    Item
-            [0].Seed.Nonterminal.Base             Item
       [2].Seed.Rule                               Label = string
         [0].Seed.Nonterminal                      Label
-          [0].Seed.Nonterminal.Base               Label
         [1].Seed.Terminal                         string
       [3].Seed.Rule                               Item = ... | number
         [0].Seed.Nonterminal                      Item
-          [0].Seed.Nonterminal.Base               Item
         [1].Seed.Expr.Or.|                        SimpleFern | string | number
           [0].Seed.Nonterminal                    SimpleFern
-            [0].Seed.Nonterminal.Base             SimpleFern
           [1].Seed.Terminal                       string
           [2].Seed.Terminal                       number
 )";

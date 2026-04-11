@@ -144,30 +144,21 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [0].Seed                                          - Somelang ... * ]
   [0].Seed.Rule                                   Somelang = ... FreeForm ]
     [0].Seed.Nonterminal                          Somelang
-      [0].Seed.Nonterminal.Base                   Somelang
     [1].Seed.Tokenizer                            [ - ... FreeForm ]
       [0].Seed.Tokenizer.IncludeRule              include tokenizer FreeForm
-        [0].Seed.Nonterminal.Base                 FreeForm
   [1].Seed.Rule                                   Somelang = ... * ]
     [0].Seed.Nonterminal                          Somelang
-      [0].Seed.Nonterminal.Base                   Somelang
     [1].Seed                                      - ⊙ ... 'b' *
       [0].Seed.Rule                               ⊙ = As Bs
-        [0].Seed.Nonterminal                      ⊙
-          [0].Seed.Nonterminal.Base               ⊙
-        [1].Seed.Expr.Concat.concat               As Bs
+        [0].Seed.Expr.Concat.concat               As Bs
           [0].Seed.Nonterminal                    As
-            [0].Seed.Nonterminal.Base             As
           [1].Seed.Nonterminal                    Bs
-            [0].Seed.Nonterminal.Base             Bs
       [1].Seed.Rule                               As = 'a' *
         [0].Seed.Nonterminal                      As
-          [0].Seed.Nonterminal.Base               As
         [1].Seed.Expr.Postfix.*                   'a' *
           [0].Seed.Terminal                       'a'
       [2].Seed.Rule                               Bs = 'b' *
         [0].Seed.Nonterminal                      Bs
-          [0].Seed.Nonterminal.Base               Bs
         [1].Seed.Expr.Postfix.*                   'b' *
           [0].Seed.Terminal                       'b'
 

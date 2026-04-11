@@ -40,16 +40,15 @@ namespace silva::seed {
       - frag_name = IDENTIFIER_MACRO_CASE
       - rule_name = IDENTIFIER_PASCAL_CASE
       - token_category_name = IDENTIFIER_SNAKE_CASE
-      - operator = [ '⊙' ]
       - include tokenizer FreeForm
     ]
     - Seed = [
       - ⊙ = ( '-' Rule ) *
-      - Rule = Nonterminal '=' ( '[' Seed ']'
-                               | 'tokenizer' Tokenizer
-                               | 'axe' Axe
-                               | 'alias' Alias
-                               | Expr )
+      - Rule = ( '⊙' | Nonterminal ) '=' ( '[' Seed ']'
+                                         | 'tokenizer' Tokenizer
+                                         | 'axe' Axe
+                                         | 'alias' Alias
+                                         | Expr )
       - Alias = Expr
       - Expr = axe Atom [
         - Parens    = nest  atom_nest '(' ')'
@@ -60,10 +59,7 @@ namespace silva::seed {
         - Or        = ltr   infix_flat '|'
       ]
       - Atom = alias Nonterminal | Terminal
-      - Nonterminal = [
-        - ⊙ = '.' ? Base ( '.' Base ) *
-        - Base = '⊙' | rule_name
-      ]
+      - Nonterminal = '.' ? rule_name ( '.' rule_name ) *
       - Terminal = string | token_category_name
                  | 'any' | 'epsilon' | 'end_of_file'
     ]
