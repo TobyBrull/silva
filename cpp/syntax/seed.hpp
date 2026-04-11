@@ -45,7 +45,7 @@ namespace silva::seed {
     ]
     - Seed = [
       - ⊙ = ( '-' Rule ) *
-      - Rule = Nonterminal '=' ( '[' ⊙ ']'
+      - Rule = Nonterminal '=' ( '[' Seed ']'
                                | 'tokenizer' Tokenizer
                                | 'axe' Axe
                                | 'alias' Alias

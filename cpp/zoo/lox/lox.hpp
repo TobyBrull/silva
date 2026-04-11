@@ -16,26 +16,26 @@ namespace silva::lox {
       - ⊙ = ( Decl | Stmt ) *
       - Decl = [
         - ⊙ = Var | Fun | Class
-        - Var = 'var' identifier ( '=' .Lox.Expr ) ? ';'
-        - Fun = 'fun' .Lox.Function
+        - Var = 'var' identifier ( '=' Expr ) ? ';'
+        - Fun = 'fun' Function
         - Class = [
-          - ⊙ = 'class' identifier Super '{' .Lox.Function * '}'
+          - ⊙ = 'class' identifier Super '{' Function * '}'
           - Super = ( '<' identifier ) ?
         ]
       ]
       - Stmt = [
         - ⊙ = Print | If | For | While | Return | Block | ExprStmt
-        - Print = 'print' .Lox.Expr ';'
-        - If = 'if' '(' .Lox.Expr ')' ⊙ ( 'else' ⊙ ) ?
+        - Print = 'print' Expr ';'
+        - If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
         - For = 'for' '('
-                ( .Lox.Decl.Var | ExprStmt | .None ';' )
-                ( .Lox.Expr | .None ) ';'
-                ( .Lox.Expr  | .None )
-              ')' ⊙
-        - While = 'while' '(' .Lox.Expr ')' ⊙
-        - Return = 'return' .Lox.Expr ? ';'
-        - Block = '{' ( .Lox.Decl | ⊙ ) * '}'
-        - ExprStmt = .Lox.Expr ';'
+                ( Decl.Var | ExprStmt | None ';' )
+                ( Expr | None ) ';'
+                ( Expr | None )
+              ')' Stmt
+        - While = 'while' '(' Expr ')' Stmt
+        - Return = 'return' Expr ? ';'
+        - Block = '{' ( Decl | Stmt ) * '}'
+        - ExprStmt = Expr ';'
       ]
       - Expr = [
         - ⊙ = axe Expr.Atom [
@@ -53,10 +53,10 @@ namespace silva::lox {
         - Atom = 'true' | 'false' | 'none' | 'this'
                | number | string
                | 'super' '.' identifier | identifier
-        - Arguments = ( ⊙ ( ',' ⊙ ) * ) ?
+        - Arguments = ( Expr ( ',' Expr ) * ) ?
       ]
       - Function = [
-        - ⊙ = identifier '(' Parameters ')' .Lox.Stmt.Block
+        - ⊙ = identifier '(' Parameters ')' Stmt.Block
         - Parameters = ( Parameter ( ',' Parameter ) * ) ?
         - Parameter = identifier
       ]

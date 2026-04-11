@@ -219,13 +219,13 @@ namespace silva::seed::test {
       - identifier = IDENTIFIER
     ]
     - Foo = [
-      - ⊙ = 'a' 'b' 'c' .Bar ?
+      - ⊙ = 'a' 'b' 'c' Bar ?
     ]
 )'";
     const string_view_t text2_seed = R"'(
     - Bar = [
       - Blub = 'u' 'v' 'w'
-      - ⊙ = 'x' 'y' 'z' .Foo ?
+      - ⊙ = 'x' 'y' 'z' Foo ?
     ]
 )'";
     syntax_farm_t sf;

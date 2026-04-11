@@ -161,7 +161,8 @@ namespace silva::seed::impl {
       if (it != end) {
         const auto pts_nt = pts_ops.sub_tree_span_at(it.pos);
         if (pts_nt[0].rule_name == lexicon.ni_nt) {
-          nest_rule_name = SILVA_EXPECT_FWD(lexicon.name_id(retval.name, pts_nt.token_span()));
+          nest_rule_name =
+              SILVA_EXPECT_FWD(lexicon.name_id_definition(retval.name, pts_nt.token_span()));
           ++it;
         }
       }
@@ -426,7 +427,8 @@ namespace silva::seed::impl {
       const auto pts_axe_nt = pts_axe.sub_tree_span_at(it.pos);
       SILVA_EXPECT(pts_axe_nt[0].rule_name == lexicon.ni_nt, MINOR);
       const name_id_t parent_scope = sfp->name_infos[axe_name].parent_name;
-      retval.atom_rule = SILVA_EXPECT_FWD(lexicon.name_id(parent_scope, pts_axe_nt.token_span()));
+      retval.atom_rule =
+          SILVA_EXPECT_FWD(lexicon.name_id_definition(parent_scope, pts_axe_nt.token_span()));
       ++it;
 
       index_t curr_level = pts_axe[0].num_children;

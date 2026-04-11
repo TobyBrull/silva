@@ -176,19 +176,18 @@ namespace silva {
         sfp->token_infos[ni.base_name].str;
   }
 
-  expected_t<name_id_t> lexicon_t::name_id(const name_id_t scope_name, const token_span_t& ts) const
+  expected_t<name_id_t> lexicon_t::name_id_definition(const name_id_t scope_name,
+                                                      span_t<const token_id_t> ts) const
   {
     name_id_t retval = scope_name;
-    SILVA_EXPECT(ts.size() > 0, MINOR);
-    const auto& tt    = ts.tp->tokens;
-    index_t idx       = ts.begin;
-    const index_t end = ts.end;
-    if (tt[idx] == name_sep) {
+    SILVA_EXPECT(!ts.empty(), MINOR);
+    index_t idx = 0;
+    if (ts.front() == name_sep) {
       retval = name_id_root;
       idx += 1;
     }
-    while (idx < end) {
-      const token_id_t base = tt[idx];
+    while (idx < ts.size()) {
+      const token_id_t base = ts[idx];
       SILVA_EXPECT(base != name_sep, MINOR);
       if (base == here_name) {
         ;
@@ -197,8 +196,8 @@ namespace silva {
         retval = sfp->name_id(retval, base);
       }
       idx += 1;
-      if (idx < end) {
-        SILVA_EXPECT(tt[idx] == name_sep, MINOR);
+      if (idx < ts.size()) {
+        SILVA_EXPECT(ts[idx] == name_sep, MINOR);
         idx += 1;
       }
     }

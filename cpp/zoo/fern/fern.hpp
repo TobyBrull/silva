@@ -9,7 +9,7 @@ namespace silva::fern {
     ]
     - Fern = [
       - ⊙ = '[' LabeledItem * ']'
-      - LabeledItem = ( Label ':' ) ? ( ⊙ | Value )
+      - LabeledItem = ( Label ':' ) ? ( Fern | Value )
       - Label = string | identifier
       - Value = 'none' | 'true' | 'false' | string | number
     ]

@@ -15,17 +15,17 @@ namespace silva::seed {
     // For each rule name, gives the node-index of the expression describing that rule.
     hash_map_t<name_id_t, parse_tree_span_t> rule_exprs;
 
-    // For each node-index that is a "_.Seed.Nonterminal", gives the full name of the rule that this
-    // nonterminal references, taking into account the relative scope in which the rule was
-    // encountered.
-    hash_map_t<parse_tree_span_t, name_id_t> nonterminal_rules;
-
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
     hash_map_t<name_id_t, axe_t> axes;
 
     // Maps a token of the form ['word'] (i.e., of category: string) to a token of the form [word]
     // (i.e., of category: identifier or operator).
     hash_map_t<token_id_t, token_id_t> string_to_token;
+
+    // For each node-index that is a "_.Seed.Nonterminal", gives the full name of the rule that this
+    // nonterminal references, taking into account the relative scope in which the rule was
+    // encountered.
+    hash_map_t<parse_tree_span_t, name_id_t> resolved_names;
 
     interpreter_t(syntax_farm_ptr_t);
 

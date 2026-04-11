@@ -40,7 +40,7 @@ namespace silva::seed::impl {
       const auto pts_0 = pts_rule.sub_tree_span_at(cc[0]);
       const auto pts_1 = pts_rule.sub_tree_span_at(cc[1]);
       const name_id_t curr_rule_name =
-          SILVA_EXPECT_FWD(lexicon.name_id(scope_name, pts_0.token_span()));
+          SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_0.token_span()));
       const index_t expr_rule_name = pts_1[0].rule_name;
       if (expr_rule_name == lexicon.ni_seed) {
         SILVA_EXPECT_FWD(handle_seed(curr_rule_name, pts_1));
@@ -72,17 +72,6 @@ namespace silva::seed::impl {
 
         if (expr_rule_name == lexicon.ni_axe) {
           se->axes[curr_rule_name] = SILVA_EXPECT_FWD(axe_create(sfp, curr_rule_name, pts_1));
-        }
-        else {
-          for (index_t i = 0; i < pts_1.size(); ++i) {
-            if (pts_1[i].rule_name == lexicon.ni_nt) {
-              const name_id_t nt_name = SILVA_EXPECT_FWD(
-                  lexicon.name_id(scope_name, pts_1.sub_tree_span_at(i).token_span()));
-              const auto [it, inserted] =
-                  se->nonterminal_rules.emplace(pts_1.sub_tree_span_at(i), nt_name);
-              SILVA_EXPECT(inserted, MAJOR);
-            }
-          }
         }
       }
       return {};
@@ -409,11 +398,8 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> s_nonterminal(const parse_tree_span_t pts,
                                                const name_id_t t_rule_name)
     {
-      const auto nt_it = se->nonterminal_rules.find(pts);
-      SILVA_EXPECT(nt_it != se->nonterminal_rules.end(),
-                   MAJOR,
-                   "{} couldn't lookup nonterminal",
-                   pts);
+      const auto nt_it = se->resolved_names.find(pts);
+      SILVA_EXPECT(nt_it != se->resolved_names.end(), MAJOR, "{} couldn't lookup nonterminal", pts);
       const name_id_t next_t_rule_name = nt_it->second;
       return SILVA_EXPECT_FWD_IF(handle_rule(next_t_rule_name), MAJOR);
     }
@@ -520,6 +506,9 @@ namespace silva::seed {
   {
     impl::interpreter_adder_t adder(this, pts);
     SILVA_EXPECT_FWD(adder.handle_all(pts));
+
+    resolved_names.clear();
+
     return {};
   }
 
@@ -548,9 +537,40 @@ namespace silva::seed {
     return add_seed(std::move(fp));
   }
 
+  expected_t<void> resolve_names(interpreter_t* interpreter)
+  {
+    const lexicon_t& lexicon = interpreter->bootstrap_interpreter.lexicon();
+    for (const auto& [rule_name, pts_rule]: interpreter->rule_exprs) {
+      SILVA_EXPECT_FWD(pts_rule.visit_subtree([&](const span_t<const tree_branch_t> path,
+                                                  const tree_event_t event) -> expected_t<bool> {
+        if (!is_on_entry(event)) {
+          return true;
+        }
+        if (pts_rule[path.back().node_index].rule_name != lexicon.ni_nt) {
+          return true;
+        }
+        const auto pts_nt             = pts_rule.sub_tree_span_at(path.back().node_index);
+        const name_id_t resolved_name = SILVA_EXPECT_FWD(
+            lexicon.name_id_lookup(rule_name, pts_nt.token_span(), [&](const name_id_t x) {
+              return interpreter->rule_exprs.contains(x);
+            }));
+        const auto [it, inserted] = interpreter->resolved_names.emplace(pts_nt, resolved_name);
+        SILVA_EXPECT(inserted, ASSERT);
+        return true;
+      }),
+                       "during name-resolution for rule {}",
+                       lexicon.name_id_wrap(rule_name));
+    }
+    return {};
+  }
+
   expected_t<parse_tree_ptr_t> interpreter_t::apply(fragment_span_t fs,
                                                     const name_id_t goal_rule_name)
   {
+    if (resolved_names.empty()) {
+      SILVA_EXPECT_FWD(resolve_names(this));
+    }
+
     name_id_t curr = goal_rule_name;
     while (sfp->name_infos[curr].parent_name != name_id_root) {
       curr = sfp->name_infos[curr].parent_name;

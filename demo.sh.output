@@ -83,13 +83,13 @@ ERROR (MAJOR):
 │   │ │ ├─expected token of category token[ number ]; got token[ identifier ]
 │   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ 'none' | ... | number ]
 │   │ ├─[01-broken.fern:10:5] .Fern.Value
-│   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ ⊙ | Value ]
+│   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern | Value ]
 │   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
 │ ┌─[01-broken.fern:10:5] .Fern.LabeledItem
 │ ├─[01-broken.fern:10:5] .Fern: expected token[ ] ]
 │ [01-broken.fern:9:3] .Fern: expected sequence[ '[' LabeledItem * ']' ]
 │ [01-broken.fern:9:3] .Fern
-├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ ⊙ | Value ]
+├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern | Value ]
 [01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
 [01-broken.fern:9:3] .Fern.LabeledItem
 [01-broken.fern:1:1] .Fern: expected sequence[ '[' LabeledItem * ']' ]

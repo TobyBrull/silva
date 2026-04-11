@@ -34,7 +34,7 @@ namespace silva::seed::test {
       - ⊙ = '[' ( LabeledItem ';' ? ) * ']'
       - LabeledItem = ( Label ':' )? Item
       - Label = string
-      - Item = ⊙ | string | number
+      - Item = SimpleFern | string | number
     ]
 )'";
     syntax_farm_t sf;
@@ -134,9 +134,9 @@ namespace silva::seed::test {
       [3].Seed.Rule                               Item = ... | number
         [0].Seed.Nonterminal                      Item
           [0].Seed.Nonterminal.Base               Item
-        [1].Seed.Expr.Or.|                        ⊙ | string | number
-          [0].Seed.Nonterminal                    ⊙
-            [0].Seed.Nonterminal.Base             ⊙
+        [1].Seed.Expr.Or.|                        SimpleFern | string | number
+          [0].Seed.Nonterminal                    SimpleFern
+            [0].Seed.Nonterminal.Base             SimpleFern
           [1].Seed.Terminal                       string
           [2].Seed.Terminal                       number
 )";
