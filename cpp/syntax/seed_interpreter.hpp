@@ -34,6 +34,8 @@ namespace silva::seed {
     expected_t<parse_tree_ptr_t> add_seed(fragment_span_t);
     expected_t<parse_tree_ptr_t> add_seed_text(filepath_t, string_t);
 
+    expected_t<void> resolve_names();
+
     expected_t<parse_tree_ptr_t> apply(fragment_span_t, name_id_t goal_rule_name);
     expected_t<parse_tree_ptr_t> apply_text(filepath_t, string_t, name_id_t goal_rule_name);
   };

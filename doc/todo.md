@@ -1,8 +1,12 @@
 # TODO
 
-* make relative names also work for axe atoms (lox: Expr.Atom -> Atom)
-
 * revamp Seed according to seed.v4
+
+* make relative names also work for axe atoms (lox: Expr.Atom -> Atom)
+* should relative names be part of syntax-farm (or name-farm)?
+    * struct name_t{...}; // can be relative or absolute, encoded in reverse order
+    * struct name_literal_t{...}; // current token_span_t
+    * struct name_resolved_t{...}; // current name_id_t
 
 * make example with nested languages work again
 
