@@ -511,6 +511,11 @@ namespace silva {
   {
   }
 
+  fragment_span_t::operator span_t<const fragment_t>()
+  {
+    return span_t<const fragment_t>(fp->fragments.data() + begin, end - begin);
+  }
+
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize_unique(filepath_t filepath,
                                                                  string_t source_code)
   {

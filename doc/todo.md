@@ -5,6 +5,9 @@
         * or maybe add a seed-interpreter factory?
         * it should support sealing certain parts of the rule tree (maybe per language?)
 
+* make relative names also work for axe atoms (lox: Expr.Atom -> Atom)
+* Error if ⊙ is used in rule
+
 * revamp Seed according to seed.v4
 
 * make example with nested languages work again

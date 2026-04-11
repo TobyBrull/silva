@@ -58,7 +58,12 @@ namespace silva {
 
   index_t token_span_t::size() const
   {
-    return token_end - token_begin;
+    return end - begin;
+  }
+
+  token_span_t::operator span_t<const token_id_t>()
+  {
+    return span_t<const token_id_t>(tp->tokens.data() + begin, end - begin);
   }
 
   void pretty_write_impl(const token_span_t& self, byte_sink_t* stream)
@@ -73,14 +78,14 @@ namespace silva {
         }
       }
     };
-    const index_t num_tokens = self.token_end - self.token_begin;
+    const index_t num_tokens = self.end - self.begin;
     if (num_tokens <= max_num_tokens) {
-      print_tokens(self.token_begin, self.token_end);
+      print_tokens(self.begin, self.end);
     }
     else {
-      print_tokens(self.token_begin, self.token_begin + max_num_tokens / 2);
+      print_tokens(self.begin, self.begin + max_num_tokens / 2);
       retval += " ... ";
-      print_tokens(self.token_end - max_num_tokens / 2, self.token_end);
+      print_tokens(self.end - max_num_tokens / 2, self.end);
     }
     stream->write_str(retval);
   }

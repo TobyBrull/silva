@@ -89,9 +89,9 @@ namespace silva {
   token_span_t parse_tree_span_t::token_span() const
   {
     return token_span_t{
-        .tp          = ptp->tp,
-        .token_begin = (*this)[0].token_begin,
-        .token_end   = (*this)[0].token_end,
+        .tp    = ptp->tp,
+        .begin = (*this)[0].token_begin,
+        .end   = (*this)[0].token_end,
     };
   }
 

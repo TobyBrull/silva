@@ -181,8 +181,8 @@ namespace silva {
     name_id_t retval = scope_name;
     SILVA_EXPECT(ts.size() > 0, MINOR);
     const auto& tt    = ts.tp->tokens;
-    index_t idx       = ts.token_begin;
-    const index_t end = ts.token_end;
+    index_t idx       = ts.begin;
+    const index_t end = ts.end;
     if (tt[idx] == name_sep) {
       retval = name_id_root;
       idx += 1;

@@ -40,10 +40,12 @@ namespace silva {
 
   struct token_span_t {
     tokenization_ptr_t tp;
-    index_t token_begin = 0;
-    index_t token_end   = 0;
+    index_t begin = 0;
+    index_t end   = 0;
 
     index_t size() const;
+
+    operator span_t<const token_id_t>();
 
     friend void pretty_write_impl(const token_span_t&, byte_sink_t*);
   };
