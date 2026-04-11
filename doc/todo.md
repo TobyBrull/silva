@@ -1,6 +1,5 @@
 # TODO
 
-* make front_token_id/... return expected_t
 * make relative names also work for axe atoms (lox: Expr.Atom -> Atom)
 
 * revamp Seed according to seed.v4

@@ -183,7 +183,7 @@ namespace silva::seed::impl {
     {
       array_t<matcher_t> matchers;
       if (pts_item[0].num_children == 0) {
-        const token_id_t tid       = pts_item.front_token_id();
+        const token_id_t tid       = SILVA_EXPECT_FWD(pts_item.front_token_id());
         const token_info_t& ti     = sfp->token_infos[tid];
         const string_t item_str    = SILVA_EXPECT_FWD(ti.contained_string());
         const string_t item_str_nl = item_str + "\n";
@@ -208,7 +208,7 @@ namespace silva::seed::impl {
         const auto [c1]               = SILVA_EXPECT_FWD(pts_item.get_children<1>());
         const parse_tree_span_t pts_m = pts_item.sub_tree_span_at(c1);
         SILVA_EXPECT(pts_m[0].rule_name == lexicon.ni_tok_matcher, BROKEN_SEED);
-        const token_id_t frag_name = pts_m.front_token_id();
+        const token_id_t frag_name = SILVA_EXPECT_FWD(pts_m.front_token_id());
         const auto [cat, cm]       = SILVA_EXPECT_FWD(fragment_category_from_token_id(frag_name));
 
         matcher_t mm{
@@ -326,7 +326,8 @@ namespace silva::seed::impl {
 
     expected_t<void> include_rule(const parse_tree_span_t pts_rule)
     {
-      retval.rules.push_back(rule_t{.token_category_name = pts_rule.back_token_id()});
+      const token_id_t tcn = SILVA_EXPECT_FWD(pts_rule.back_token_id());
+      retval.rules.push_back(rule_t{.token_category_name = tcn});
       return {};
     }
 
@@ -343,7 +344,7 @@ namespace silva::seed::impl {
     expected_t<void> token_rule(const parse_tree_span_t pts_rule)
     {
       const auto [c1]      = SILVA_EXPECT_FWD(pts_rule.get_children<1>());
-      const token_id_t tcn = pts_rule.front_token_id();
+      const token_id_t tcn = SILVA_EXPECT_FWD(pts_rule.front_token_id());
       auto new_rules       = SILVA_EXPECT_FWD(defn(pts_rule.sub_tree_span_at(c1)));
       for (auto& new_rule: new_rules) {
         new_rule.token_category_name = tcn;
