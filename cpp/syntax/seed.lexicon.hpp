@@ -29,7 +29,7 @@ namespace silva::seed {
     const token_id_t ti_string       = sfp->token_id("string");
     const token_id_t ti_number       = sfp->token_id("number");
     const token_id_t ti_any          = sfp->token_id("any");
-    const token_id_t ti_eps          = sfp->token_id("epsilon");
+    const token_id_t ti_eps          = sfp->token_id("ε");
     const token_id_t ti_eof          = sfp->token_id("end_of_file");
     const token_id_t ti_nest         = sfp->token_id("nest");
     const token_id_t ti_ltr          = sfp->token_id("ltr");

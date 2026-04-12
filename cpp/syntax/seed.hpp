@@ -60,9 +60,9 @@ Seed =
   Atom = alias Nonterminal | Terminal
   Nonterminal = '.' ? rule_name ( '.' rule_name ) *
   Terminal = ( string | token_category_name
-             | 'any' | 'epsilon' | 'end_of_file' )
+             | 'any' | 'ε' | 'end_of_file' )
 
-None = epsilon
+None = ε
 )'";
 
   // Handcrafted Seed parser for bootstrapping purposes.
