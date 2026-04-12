@@ -86,17 +86,16 @@ namespace silva::seed {
   //  ⎢op = '+' '=' ::: IDENTIFIER '.'          # matches, e.g., +=   +=...   +=abc.def
 
   const string_view_t seed_tokenizer_str = R"'(
-    - Seed.Tokenizer = [
-      - ⊙ = '[' ( '-' ( IncludeRule | IgnoreRule | TokenRule ) ) * ']'
-      - IncludeRule = 'include' 'tokenizer' rule_name
-      - IgnoreRule = 'ignore' Defn
-      - TokenRule = token_category_name '=' Defn
-      - Defn = PrefixItem * ( ':::' Item + ) ?
-      - PrefixItem = List | Item
-      - List = '[' Item * ']'
-      - Item = string | Matcher
-      - Matcher = frag_name ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
-    ]
+Seed.Tokenizer =
+  ⊙ = indent ( ( IncludeRule | IgnoreRule | TokenRule ) newline ) * dedent
+  IncludeRule = 'include' 'tokenizer' rule_name
+  IgnoreRule = 'ignore' Defn
+  TokenRule = token_category_name '=' Defn
+  Defn = PrefixItem * ( ':::' Item + ) ?
+  PrefixItem = List | Item
+  List = '[' Item * ']'
+  Item = string | Matcher
+  Matcher = frag_name ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
 )'";
 
   struct tokenizer_t {
@@ -130,27 +129,26 @@ namespace silva::seed {
   };
 
   const string_view_t bootstrap_tokenizers_str = R"'(
-    - Defaults = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - number = NUMBER
-      - string = STRING
-      - operator = PARENTHESIS
-      - operator = ::: OPERATOR
-      - identifier = IDENTIFIER
-    ]
-    - OffSide = tokenizer [
-      - indent = INDENT
-      - dedent = DEDENT
-      - newline = NEWLINE
-      - include tokenizer Defaults
-    ]
-    - FreeForm = tokenizer [
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - include tokenizer Defaults
-    ]
+Defaults = tokenizer
+  ignore WHITESPACE
+  ignore COMMENT
+  number = NUMBER
+  string = STRING
+  operator = PARENTHESIS
+  operator = ::: OPERATOR
+  identifier = IDENTIFIER
+
+OffSide = tokenizer
+  indent = INDENT
+  dedent = DEDENT
+  newline = NEWLINE
+  include tokenizer Defaults
+
+FreeForm = tokenizer
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  include tokenizer Defaults
 )'";
 
   tokenizer_farm_t make_bootstrap_tokenizer_farm(syntax_farm_ptr_t);

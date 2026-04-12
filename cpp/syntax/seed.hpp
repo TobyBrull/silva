@@ -36,34 +36,33 @@ namespace silva::seed {
   // the first alternative and aborts the parse if the whole expression does not match.
 
   const string_view_t seed_str = R"'(
-    - Seed = tokenizer [
-      - frag_name = IDENTIFIER_MACRO_CASE
-      - rule_name = IDENTIFIER_PASCAL_CASE
-      - token_category_name = IDENTIFIER_SNAKE_CASE
-      - include tokenizer FreeForm
-    ]
-    - Seed = [
-      - ⊙ = ( '-' Rule ) *
-      - Rule = ( '⊙' | Nonterminal ) '=' ( '[' Seed ']'
-                                         | 'tokenizer' Tokenizer
-                                         | 'axe' Axe
-                                         | 'alias' Alias
-                                         | Expr )
-      - Alias = Expr
-      - Expr = axe Atom [
-        - Parens    = nest  atom_nest '(' ')'
-        - Prefix    = rtl   prefix 'not'
-        - Postfix   = ltr   postfix '?' '*' '+'
-        - Concat    = ltr   infix_flat concat
-        - And       = ltr   infix_flat 'but_then'
-        - Or        = ltr   infix_flat '|'
-      ]
-      - Atom = alias Nonterminal | Terminal
-      - Nonterminal = '.' ? rule_name ( '.' rule_name ) *
-      - Terminal = string | token_category_name
-                 | 'any' | 'epsilon' | 'end_of_file'
-    ]
-    - None = epsilon
+Seed = tokenizer
+  frag_name = IDENTIFIER_MACRO_CASE
+  rule_name = IDENTIFIER_PASCAL_CASE
+  token_category_name = IDENTIFIER_SNAKE_CASE
+  include tokenizer OffSide
+
+Seed =
+  ⊙ = Rule *
+  Rule = ( '⊙' | Nonterminal ) '=' ( newline indent Seed dedent
+                                   | 'tokenizer' newline Tokenizer
+                                   | 'axe' Axe
+                                   | 'alias' Alias newline
+                                   | Expr newline )
+  Alias = Expr
+  Expr = axe Atom
+    Parens    = nest  atom_nest '(' ')'
+    Prefix    = rtl   prefix 'not'
+    Postfix   = ltr   postfix '?' '*' '+'
+    Concat    = ltr   infix_flat concat
+    And       = ltr   infix_flat 'but_then'
+    Or        = ltr   infix_flat '|'
+  Atom = alias Nonterminal | Terminal
+  Nonterminal = '.' ? rule_name ( '.' rule_name ) *
+  Terminal = ( string | token_category_name
+             | 'any' | 'epsilon' | 'end_of_file' )
+
+None = epsilon
 )'";
 
   // Handcrafted Seed parser for bootstrapping purposes.

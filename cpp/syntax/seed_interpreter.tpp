@@ -9,35 +9,32 @@ namespace silva::seed::test {
   TEST_CASE("not-but_then", "[seed-interpreter][seed]")
   {
     const string_view_t frog_seed = R"'(
-    - Frog = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
-      - identifier = IDENTIFIER
-    ]
-    - Frog = [
-      - ⊙ = Rule *
-      - Rule = RuleName Expr
-      - RuleName = alias Keyword
-      - Expr = Primary +
-      - Primary = not Keyword but_then identifier
-      - Keyword = [
-        - ⊙ = 'keyword1' | 'keyword2' | 'keyword3'
-      ]
-    ]
+Frog = tokenizer
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  number = NUMBER
+  string = STRING
+  identifier = IDENTIFIER
+Frog =
+  ⊙ = Rule *
+  Rule = RuleName Expr
+  RuleName = alias Keyword
+  Expr = Primary +
+  Primary = not Keyword but_then identifier
+  Keyword =
+    ⊙ = 'keyword1' | 'keyword2' | 'keyword3'
 )'";
     syntax_farm_t sf;
     interpreter_t se(sf.ptr());
     auto ptp = SILVA_REQUIRE(se.add_seed_text("frog.seed", string_t{frog_seed}));
     const string_view_t expected_seed_pt = R"(
-[0].Seed                                          - Frog ... ] ]
-  [0].Seed.Rule                                   Frog = ... IDENTIFIER ]
+[0].Seed                                          Frog = ... <ws> <ws>
+  [0].Seed.Rule                                   Frog = ... <ws> <ws>
     [0].Seed.Nonterminal                          Frog
-    [1].Seed.Tokenizer                            [ - ... IDENTIFIER ]
+    [1].Seed.Tokenizer                            <ws> ignore ... <ws> <ws>
       [0].Seed.Tokenizer.IgnoreRule               ignore WHITESPACE
         [0].Seed.Tokenizer.Defn                   WHITESPACE
           [0].Seed.Tokenizer.PrefixItem           WHITESPACE
@@ -78,35 +75,35 @@ namespace silva::seed::test {
           [0].Seed.Tokenizer.PrefixItem           IDENTIFIER
             [0].Seed.Tokenizer.Item               IDENTIFIER
               [0].Seed.Tokenizer.Matcher          IDENTIFIER
-  [1].Seed.Rule                                   Frog = ... ] ]
+  [1].Seed.Rule                                   Frog = ... <ws> <ws>
     [0].Seed.Nonterminal                          Frog
-    [1].Seed                                      - ⊙ ... 'keyword3' ]
-      [0].Seed.Rule                               ⊙ = Rule *
+    [1].Seed                                      ⊙ = ... <ws> <ws>
+      [0].Seed.Rule                               ⊙ = Rule * <ws>
         [0].Seed.Expr.Postfix.*                   Rule *
           [0].Seed.Nonterminal                    Rule
-      [1].Seed.Rule                               Rule = RuleName Expr
+      [1].Seed.Rule                               Rule = RuleName Expr <ws>
         [0].Seed.Nonterminal                      Rule
         [1].Seed.Expr.Concat.concat               RuleName Expr
           [0].Seed.Nonterminal                    RuleName
           [1].Seed.Nonterminal                    Expr
-      [2].Seed.Rule                               RuleName = alias Keyword
+      [2].Seed.Rule                               RuleName = alias Keyword <ws>
         [0].Seed.Nonterminal                      RuleName
         [1].Seed.Alias                            Keyword
           [0].Seed.Nonterminal                    Keyword
-      [3].Seed.Rule                               Expr = Primary +
+      [3].Seed.Rule                               Expr = Primary + <ws>
         [0].Seed.Nonterminal                      Expr
         [1].Seed.Expr.Postfix.+                   Primary +
           [0].Seed.Nonterminal                    Primary
-      [4].Seed.Rule                               Primary = ... but_then identifier
+      [4].Seed.Rule                               Primary = ... identifier <ws>
         [0].Seed.Nonterminal                      Primary
         [1].Seed.Expr.And.but_then                not Keyword but_then identifier
           [0].Seed.Expr.Prefix.not                not Keyword
             [0].Seed.Nonterminal                  Keyword
           [1].Seed.Terminal                       identifier
-      [5].Seed.Rule                               Keyword = ... 'keyword3' ]
+      [5].Seed.Rule                               Keyword = ... <ws> <ws>
         [0].Seed.Nonterminal                      Keyword
-        [1].Seed                                  - ⊙ ... | 'keyword3'
-          [0].Seed.Rule                           ⊙ = ... | 'keyword3'
+        [1].Seed                                  ⊙ = ... 'keyword3' <ws>
+          [0].Seed.Rule                           ⊙ = ... 'keyword3' <ws>
             [0].Seed.Expr.Or.|                    'keyword1' | 'keyword2' | 'keyword3'
               [0].Seed.Terminal                   'keyword1'
               [1].Seed.Terminal                   'keyword2'
@@ -156,19 +153,17 @@ namespace silva::seed::test {
     auto se = standard_seed_interpreter(sf.ptr());
 
     const string_view_t testor_lang = R"'(
-      - Testor = tokenizer [
-        - ignore WHITESPACE
-        - ignore COMMENT
-        - ignore INDENT
-        - ignore DEDENT
-        - ignore NEWLINE
-        - name = IDENTIFIER
-        - op = OPERATOR
-      ]
-      - Testor = [
-        - ⊙ = Assign *
-        - Assign = name '=' name op name
-      ]
+Testor = tokenizer
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  name = IDENTIFIER
+  op = OPERATOR
+Testor =
+  ⊙ = Assign *
+  Assign = name '=' name op name
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_lang}));
 
@@ -191,25 +186,22 @@ namespace silva::seed::test {
   TEST_CASE("multiple-texts", "[seed-interpreter]")
   {
     const string_view_t text1_seed = R"'(
-    - Foo = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
-      - identifier = IDENTIFIER
-    ]
-    - Foo = [
-      - ⊙ = 'a' 'b' 'c' Bar ?
-    ]
+Foo = tokenizer
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  number = NUMBER
+  string = STRING
+  identifier = IDENTIFIER
+Foo =
+  ⊙ = 'a' 'b' 'c' Bar ?
 )'";
     const string_view_t text2_seed = R"'(
-    - Bar = [
-      - Blub = 'u' 'v' 'w'
-      - ⊙ = 'x' 'y' 'z' Foo ?
-    ]
+Bar =
+  Blub = 'u' 'v' 'w'
+  ⊙ = 'x' 'y' 'z' Foo ?
 )'";
     syntax_farm_t sf;
     interpreter_t se(sf.ptr());

@@ -1,8 +1,6 @@
-- Somelang = tokenizer [
-  - include tokenizer FreeForm
-]
-- Somelang = [
-  - ⊙ = As Bs
-  - As = 'a' *
-  - Bs = 'b' *
-]
+Somelang = tokenizer
+  include tokenizer FreeForm
+Somelang =
+  ⊙ = As Bs
+  As = 'a' *
+  Bs = 'b' *

@@ -6,21 +6,20 @@ namespace silva::test {
   TEST_CASE("operator-precedence", "")
   {
     const string_view_t expr_seed_text = R"'(
-    - Expr = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
-      - operator = PARENTHESIS
-      - operator = ::: OPERATOR
-    ]
-    - Expr = Add
-    - Add = Mult ( '+' Add ) *
-    - Mult = Primary ( '*' Mult ) *
-    - Primary = '(' Expr ')' | number
+Expr = tokenizer
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  number = NUMBER
+  string = STRING
+  operator = PARENTHESIS
+  operator = ::: OPERATOR
+Expr = Add
+Add = Mult ( '+' Add ) *
+Mult = Primary ( '*' Mult ) *
+Primary = '(' Expr ')' | number
 )'";
     syntax_farm_t sf;
     seed::interpreter_t si(sf.ptr());
@@ -51,25 +50,23 @@ namespace silva::test {
   TEST_CASE("seed-axe-recursion", "")
   {
     const string_view_t expr_seed_text = R"'(
-    - Expr = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
-      - identifier = IDENTIFIER
-      - operator = PARENTHESIS
-      - operator = ::: OPERATOR
-    ]
-    - Expr = axe Atom [
-      - Parens  = nest  atom_nest '(' ')'
-      - Mult    = ltr   infix '*'
-      - Add     = ltr   infix '+'
-      - Comp    = ltr   infix '<'
-    ]
-    - Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
+Expr = tokenizer
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  number = NUMBER
+  string = STRING
+  identifier = IDENTIFIER
+  operator = PARENTHESIS
+  operator = ::: OPERATOR
+Expr = axe Atom
+  Parens  = nest  atom_nest '(' ')'
+  Mult    = ltr   infix '*'
+  Add     = ltr   infix '+'
+  Comp    = ltr   infix '<'
+Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
 )'";
     syntax_farm_t sf;
     seed::interpreter_t si(sf.ptr());

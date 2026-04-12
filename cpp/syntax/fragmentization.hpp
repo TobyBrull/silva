@@ -32,6 +32,7 @@ namespace silva {
   };
 
   constexpr bool is_fragment_category_real(fragment_category_t);
+  constexpr bool is_fragment_category_visible(fragment_category_t);
 
   struct fragment_t {
     fragment_category_t category = fragment_category_t::INVALID;
@@ -92,5 +93,10 @@ namespace silva {
   {
     using enum fragment_category_t;
     return (fc != WHITESPACE && fc != COMMENT);
+  }
+  constexpr bool is_fragment_category_visible(fragment_category_t fc)
+  {
+    using enum fragment_category_t;
+    return (fc != WHITESPACE && fc != COMMENT && fc != INDENT && fc != DEDENT && fc != NEWLINE);
   }
 }

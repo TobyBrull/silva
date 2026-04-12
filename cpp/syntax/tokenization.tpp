@@ -12,15 +12,14 @@ namespace silva::test {
     auto se = standard_seed_interpreter(sf.ptr());
 
     const string_view_t test_text = R"'(
-      - Testor = tokenizer [
-        - ignore WHITESPACE
-        - ignore COMMENT
-        - ignore INDENT
-        - ignore DEDENT
-        - ignore NEWLINE
-        - name = IDENTIFIER
-        - op = OPERATOR
-      ]
+Testor = tokenizer
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  name = IDENTIFIER
+  op = OPERATOR
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{test_text}));
 

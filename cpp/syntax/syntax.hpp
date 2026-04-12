@@ -8,14 +8,12 @@ namespace silva {
   parser_t as_parser(seed::interpreter_t*);
 
   const string_view_t seed_str = R"'(
-    - Silva = tokenizer [
-      - language_name = IDENTIFIER
-      - include tokenizer FreeForm
-    ]
-    - Silva = [
-      - ⊙ = Section * end_of_file
-      - Section = language_name language
-    ]
+Silva = tokenizer
+  language_name = IDENTIFIER
+  include tokenizer FreeForm
+Silva =
+  ⊙ = Section * end_of_file
+  Section = language_name language
 )'";
 
   expected_t<name_id_t> infer_goal_rule_name(syntax_farm_t&, const filepath_t&);

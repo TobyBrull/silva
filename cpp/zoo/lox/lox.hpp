@@ -6,61 +6,53 @@
 
 namespace silva::lox {
   const string_view_t seed_str = R"'(
-    - Lox = tokenizer [
-      - include tokenizer FreeForm
-      - identifier = IDENTIFIER
-      - operator = PARENTHESIS
-      - operator = ::: OPERATOR
-    ]
-    - Lox = [
-      - ⊙ = ( Decl | Stmt ) *
-      - Decl = [
-        - ⊙ = Var | Fun | Class
-        - Var = 'var' identifier ( '=' Expr ) ? ';'
-        - Fun = 'fun' Function
-        - Class = [
-          - ⊙ = 'class' identifier Super '{' Function * '}'
-          - Super = ( '<' identifier ) ?
-        ]
-      ]
-      - Stmt = [
-        - ⊙ = Print | If | For | While | Return | Block | ExprStmt
-        - Print = 'print' Expr ';'
-        - If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
-        - For = 'for' '('
-                ( Decl.Var | ExprStmt | None ';' )
-                ( Expr | None ) ';'
-                ( Expr | None )
-              ')' Stmt
-        - While = 'while' '(' Expr ')' Stmt
-        - Return = 'return' Expr ? ';'
-        - Block = '{' ( Decl | Stmt ) * '}'
-        - ExprStmt = Expr ';'
-      ]
-      - Expr = [
-        - ⊙ = axe Expr.Atom [
-          - Primary     = nest atom_nest '(' ')'
-          - Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
-          - Unary       = rtl prefix '!' '-'
-          - Factor      = ltr infix '*' '/'
-          - Term        = ltr infix '+' '-'
-          - Comparison  = ltr infix '<' '>' '<=' '>='
-          - Equality    = ltr infix '==' '!='
-          - LogicAnd    = ltr infix 'and'
-          - LogicOr     = ltr infix 'or'
-          - Assign      = ltr infix '='
-        ]
-        - Atom = 'true' | 'false' | 'none' | 'this'
-               | number | string
-               | 'super' '.' identifier | identifier
-        - Arguments = ( Expr ( ',' Expr ) * ) ?
-      ]
-      - Function = [
-        - ⊙ = identifier '(' Parameters ')' Stmt.Block
-        - Parameters = ( Parameter ( ',' Parameter ) * ) ?
-        - Parameter = identifier
-      ]
-    ]
+Lox = tokenizer
+  include tokenizer FreeForm
+  identifier = IDENTIFIER
+  operator = PARENTHESIS
+  operator = ::: OPERATOR
+Lox =
+  ⊙ = ( Decl | Stmt ) *
+  Decl =
+    ⊙ = Var | Fun | Class
+    Var = 'var' identifier ( '=' Expr ) ? ';'
+    Fun = 'fun' Function
+    Class =
+      ⊙ = 'class' identifier Super '{' Function * '}'
+      Super = ( '<' identifier ) ?
+  Stmt =
+    ⊙ = Print | If | For | While | Return | Block | ExprStmt
+    Print = 'print' Expr ';'
+    If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
+    For = ( 'for' '('
+            ( Decl.Var | ExprStmt | None ';' )
+            ( Expr | None ) ';'
+            ( Expr | None )
+            ')' Stmt )
+    While = 'while' '(' Expr ')' Stmt
+    Return = 'return' Expr ? ';'
+    Block = '{' ( Decl | Stmt ) * '}'
+    ExprStmt = Expr ';'
+  Expr =
+    ⊙ = axe Expr.Atom
+      Primary     = nest atom_nest '(' ')'
+      Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
+      Unary       = rtl prefix '!' '-'
+      Factor      = ltr infix '*' '/'
+      Term        = ltr infix '+' '-'
+      Comparison  = ltr infix '<' '>' '<=' '>='
+      Equality    = ltr infix '==' '!='
+      LogicAnd    = ltr infix 'and'
+      LogicOr     = ltr infix 'or'
+      Assign      = ltr infix '='
+    Atom = ( 'true' | 'false' | 'none' | 'this'
+           | number | string
+           | 'super' '.' identifier | identifier )
+    Arguments = ( Expr ( ',' Expr ) * ) ?
+  Function =
+    ⊙ = identifier '(' Parameters ')' Stmt.Block
+    Parameters = ( Parameter ( ',' Parameter ) * ) ?
+    Parameter = identifier
 )'";
 
   unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);

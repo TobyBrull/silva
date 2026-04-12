@@ -33,17 +33,16 @@ namespace silva::seed {
   // in the normal, mathematical way.
 
   const string_view_t axe_str = R"'(
-    - Seed.Axe = [
-      - ⊙ = Seed.Nonterminal '[' ( '-' Level ) * ']'
-      - Level = rule_name '=' Assoc Ops *
-      - Assoc = 'nest' | 'ltr' | 'rtl'
-      - Ops = OpType ( '->' Seed.Nonterminal ) ? Op *
-      - OpType = 'atom_nest' | 'atom_nest_transparent'
-               | 'prefix' | 'prefix_nest'
-               | 'infix' | 'infix_flat' | 'ternary'
-               | 'postfix' | 'postfix_nest'
-      - Op = string | 'concat'
-    ]
+Seed.Axe =
+  ⊙ = Seed.Nonterminal newline indent ( Level newline ) * dedent
+  Level = rule_name '=' Assoc Ops *
+  Assoc = 'nest' | 'ltr' | 'rtl'
+  Ops = OpType ( '->' Seed.Nonterminal ) ? Op *
+  OpType = ( 'atom_nest' | 'atom_nest_transparent'
+           | 'prefix' | 'prefix_nest'
+           | 'infix' | 'infix_flat' | 'ternary'
+           | 'postfix' | 'postfix_nest' )
+  Op = string | 'concat'
 )'";
 
   struct axe_t {

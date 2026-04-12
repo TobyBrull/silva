@@ -31,7 +31,7 @@ namespace silva::seed::test {
   {
     INFO(text);
     auto tt =
-        SILVA_REQUIRE(si.tokenizer_farm.apply_text("", string_t{text}, si.sfp->token_id("Seed")));
+        SILVA_REQUIRE(si.tokenizer_farm.apply_text("", string_t{text}, si.sfp->token_id("Fern")));
     auto maybe_result_pt = run_axe<SeedAxeNursery>(*si.sfp, pa, std::move(tt));
     optional_t<string_t> result_str;
     if (maybe_result_pt.has_value()) {
@@ -69,7 +69,7 @@ namespace silva::seed::test {
         ss_rule.create_node(ni_atom);
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
         SILVA_EXPECT(token_category_by() == lexicon.ti_number ||
-                         token_category_by() == lexicon.ti_token_cat_name,
+                         token_category_by() == lexicon.ti_identifier,
                      MINOR);
         token_index += 1;
         return ss_rule.commit();
@@ -98,19 +98,18 @@ namespace silva::seed::test {
     syntax_farm_t sf;
     const auto se = standard_seed_interpreter(sf.ptr());
 
-    const string_view_t test_axe = R"'( .Test.Atom [
-        - Nst   = nest  atom_nest '(' ')'
-        - Dot   = rtl   infix '.'
-        - Sub   = ltr   postfix_nest '[' ']'
-        - Dol   = ltr   postfix '$'
-        - Exc   = ltr   postfix '!'
-        - Til   = rtl   prefix '~'
-        - Prf   = rtl   prefix '+' '-'
-        - Mul   = ltr   infix '*' '/'
-        - Add   = ltr   infix '+' '-'
-        - Ter   = rtl   ternary '?' ':'
-        - Eqa   = rtl   infix '='
-      ]
+    const string_view_t test_axe = R"'(.Test.Atom
+  Nst   = nest  atom_nest '(' ')'
+  Dot   = rtl   infix '.'
+  Sub   = ltr   postfix_nest '[' ']'
+  Dol   = ltr   postfix '$'
+  Exc   = ltr   postfix '!'
+  Til   = rtl   prefix '~'
+  Prf   = rtl   prefix '+' '-'
+  Mul   = ltr   infix '*' '/'
+  Add   = ltr   infix '+' '-'
+  Ter   = rtl   ternary '?' ':'
+  Eqa   = rtl   infix '='
 )'";
 
     auto fp       = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.seed-axe", string_t{test_axe}));
@@ -448,7 +447,7 @@ namespace silva::seed::test {
           token_index += 2;
         }
         else {
-          SILVA_EXPECT(token_category_by() == lexicon.ti_token_cat_name ||
+          SILVA_EXPECT(token_category_by() == lexicon.ti_identifier ||
                            token_category_by() == lexicon.ti_operator,
                        MINOR);
           token_index += 1;
@@ -518,16 +517,14 @@ namespace silva::seed::test {
     syntax_farm_t sf;
     const auto se = standard_seed_interpreter(sf.ptr());
 
-    const string_view_t test_axe = R"'( .Test.Atom [
-        - Nst     = nest  atom_nest_transparent '<<' '>>'
-        - PrfHi   = rtl   prefix_nest '(' ')'
-        - Cat     = ltr   infix concat
-        - PrfLo   = rtl   prefix_nest '{' '}'
-                          prefix_nest -> .Test.Args '<:' ':>'
-        - Mul     = ltr   infix '*'
-        - Add     = ltr   infix_flat '+' infix '-'
-        - Assign  = rtl   infix_flat '=' infix '%'
-      ]
+    const string_view_t test_axe = R"'(.Test.Atom
+  Nst     = nest  atom_nest_transparent '<<' '>>'
+  PrfHi   = rtl   prefix_nest '(' ')'
+  Cat     = ltr   infix concat
+  PrfLo   = rtl   prefix_nest '{' '}' prefix_nest -> .Test.Args '<:' ':>'
+  Mul     = ltr   infix '*'
+  Add     = ltr   infix_flat '+' infix '-'
+  Assign  = rtl   infix_flat '=' infix '%'
 )'";
 
     const auto fp = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.seed-axe", string_t{test_axe}));

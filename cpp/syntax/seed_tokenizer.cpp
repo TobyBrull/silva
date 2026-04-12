@@ -520,14 +520,26 @@ namespace silva::seed {
         }
 
         if (rule.token_category_name != token_id_none) {
-          const index_t token_text_start = fp->fragments[frag_idx].location.byte_offset;
-          const index_t token_text_end =
-              (cursor < n) ? fp->fragments[cursor].location.byte_offset : fp->source_code.size();
-          const string_view_t token_text =
-              string_view_t{fp->source_code}.substr(token_text_start,
-                                                    token_text_end - token_text_start);
+          const span_t<const fragment_t> token_frags =
+              span_t{fp->fragments}.subspan(frag_idx, cursor - frag_idx);
+          const bool is_visible_token =
+              std::ranges::any_of(token_frags,
+                                  is_fragment_category_visible,
+                                  [](const fragment_t& x) { return x.category; });
+          token_id_t tid = token_id_none;
+          if (is_visible_token) {
+            const index_t token_text_start = fp->fragments[frag_idx].location.byte_offset;
+            const index_t token_text_end =
+                (cursor < n) ? fp->fragments[cursor].location.byte_offset : fp->source_code.size();
+            const string_view_t token_text =
+                string_view_t{fp->source_code}.substr(token_text_start,
+                                                      token_text_end - token_text_start);
+            tid = sfp->token_id(token_text);
+          }
+          else {
+            tid = sfp->token_id("<ws>");
+          }
 
-          const auto tid = sfp->token_id(token_text);
           retval->tokens.push_back(tid);
           retval->categories.push_back(rule.token_category_name);
           retval->locations.push_back(fp->fragments[frag_idx].location);
@@ -627,7 +639,7 @@ namespace silva::seed {
           rule_t{.token_category_name = lexicon.ti_frag_name, .prefix_matchers = {m_id_macro}},
           rule_t{.token_category_name = lexicon.ti_rule_name, .prefix_matchers = {m_id_pascal}},
           rule_t{.token_category_name = lexicon.ti_token_cat_name, .prefix_matchers = {m_id_snake}},
-          rule_t{.token_category_name = lexicon.ti_r_freeform},
+          rule_t{.token_category_name = lexicon.ti_r_offside},
       };
       retval.tokenizers.emplace(lexicon.ti_r_seed, std::move(tok));
     }

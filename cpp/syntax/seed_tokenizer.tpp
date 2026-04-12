@@ -65,26 +65,24 @@ namespace silva::seed::test {
       SILVA_REQUIRE(tf.add(name, pts->span()));
     };
 
-    const string_view_t test_tok = R"'( [
-      - ignore NUMBER
-      - include tokenizer FreeForm
-      - name = [ '$' '@' ] IDENTIFIER
-      - name = IDENTIFIER\'_t'
-      - rel_path = IDENTIFIER ::: '/' '.' IDENTIFIER
-      - op = ::: '=' '+'
-    ]
+    const string_view_t test_tok = R"'(
+  ignore NUMBER
+  include tokenizer FreeForm
+  name = [ '$' '@' ] IDENTIFIER
+  name = IDENTIFIER\'_t'
+  rel_path = IDENTIFIER ::: '/' '.' IDENTIFIER
+  op = ::: '=' '+'
 )'";
     load_tokenizer(ti_testor, test_tok);
 
-    const string_view_t free_form_tok = R"'( [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
-    ]
+    const string_view_t free_form_tok = R"'(
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  number = NUMBER
+  string = STRING
 )'";
     load_tokenizer(ti_freeform, free_form_tok);
 

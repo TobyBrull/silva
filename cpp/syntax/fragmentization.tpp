@@ -468,6 +468,35 @@ A ⎢ B « C » D
       };
       CHECK(frag_cat == expected_fragment_categories);
     }
+    SECTION("simple-indent")
+    {
+      const auto text     = R"(
+def
+  abc
+
+def
+  xyz
+)";
+      const auto frag     = SILVA_REQUIRE(fragmentize_unique("..", text));
+      const auto frag_cat = only_real_categories(frag->fragments);
+      const array_t<fragment_category_t> expected_fragment_categories{
+          LANG_BEGIN, //
+          IDENTIFIER, // def
+          NEWLINE,    //
+          INDENT,     //
+          IDENTIFIER, // abc
+          NEWLINE,    //
+          DEDENT,     //
+          IDENTIFIER, // def
+          NEWLINE,    //
+          INDENT,     //
+          IDENTIFIER, // xyz
+          NEWLINE,    //
+          DEDENT,     //
+          LANG_END,   //
+      };
+      CHECK(frag_cat == expected_fragment_categories);
+    }
     SECTION("error: unmatched language")
     {
       const auto text    = R"(

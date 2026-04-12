@@ -18,24 +18,22 @@ namespace silva::seed::test {
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
-    - SimpleFern = tokenizer [
-      - ignore WHITESPACE
-      - ignore COMMENT
-      - ignore INDENT
-      - ignore DEDENT
-      - ignore NEWLINE
-      - number = NUMBER
-      - string = STRING
-      - operator = PARENTHESIS
-      - operator = ::: OPERATOR
-      - identifier = IDENTIFIER
-    ]
-    - SimpleFern = [
-      - ⊙ = '[' ( LabeledItem ';' ? ) * ']'
-      - LabeledItem = ( Label ':' )? Item
-      - Label = string
-      - Item = SimpleFern | string | number
-    ]
+SimpleFern = tokenizer
+  ignore WHITESPACE
+  ignore COMMENT
+  ignore INDENT
+  ignore DEDENT
+  ignore NEWLINE
+  number = NUMBER
+  string = STRING
+  operator = PARENTHESIS
+  operator = ::: OPERATOR
+  identifier = IDENTIFIER
+SimpleFern =
+  ⊙ = '[' ( LabeledItem ';' ? ) * ']'
+  LabeledItem = ( Label ':' )? Item
+  Label = string
+  Item = SimpleFern | string | number
 )'";
     syntax_farm_t sf;
     const auto spr   = standard_seed_interpreter(sf.ptr());
@@ -44,10 +42,10 @@ namespace silva::seed::test {
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
-[0].Seed                                          - SimpleFern ... number ]
-  [0].Seed.Rule                                   SimpleFern = ... IDENTIFIER ]
+[0].Seed                                          SimpleFern = ... <ws> <ws>
+  [0].Seed.Rule                                   SimpleFern = ... <ws> <ws>
     [0].Seed.Nonterminal                          SimpleFern
-    [1].Seed.Tokenizer                            [ - ... IDENTIFIER ]
+    [1].Seed.Tokenizer                            <ws> ignore ... <ws> <ws>
       [0].Seed.Tokenizer.IgnoreRule               ignore WHITESPACE
         [0].Seed.Tokenizer.Defn                   WHITESPACE
           [0].Seed.Tokenizer.PrefixItem           WHITESPACE
@@ -97,10 +95,10 @@ namespace silva::seed::test {
           [0].Seed.Tokenizer.PrefixItem           IDENTIFIER
             [0].Seed.Tokenizer.Item               IDENTIFIER
               [0].Seed.Tokenizer.Matcher          IDENTIFIER
-  [1].Seed.Rule                                   SimpleFern = ... number ]
+  [1].Seed.Rule                                   SimpleFern = ... <ws> <ws>
     [0].Seed.Nonterminal                          SimpleFern
-    [1].Seed                                      - ⊙ ... | number
-      [0].Seed.Rule                               ⊙ = ... * ']'
+    [1].Seed                                      ⊙ = ... number <ws>
+      [0].Seed.Rule                               ⊙ = ... ']' <ws>
         [0].Seed.Expr.Concat.concat               '[' ( ... * ']'
           [0].Seed.Terminal                       '['
           [1].Seed.Expr.Postfix.*                 ( LabeledItem ... ) *
@@ -110,7 +108,7 @@ namespace silva::seed::test {
                 [1].Seed.Expr.Postfix.?           ';' ?
                   [0].Seed.Terminal               ';'
           [2].Seed.Terminal                       ']'
-      [1].Seed.Rule                               LabeledItem = ... ? Item
+      [1].Seed.Rule                               LabeledItem = ... Item <ws>
         [0].Seed.Nonterminal                      LabeledItem
         [1].Seed.Expr.Concat.concat               ( Label ... ? Item
           [0].Seed.Expr.Postfix.?                 ( Label ':' ) ?
@@ -119,10 +117,10 @@ namespace silva::seed::test {
                 [0].Seed.Nonterminal              Label
                 [1].Seed.Terminal                 ':'
           [1].Seed.Nonterminal                    Item
-      [2].Seed.Rule                               Label = string
+      [2].Seed.Rule                               Label = string <ws>
         [0].Seed.Nonterminal                      Label
         [1].Seed.Terminal                         string
-      [3].Seed.Rule                               Item = ... | number
+      [3].Seed.Rule                               Item = ... number <ws>
         [0].Seed.Nonterminal                      Item
         [1].Seed.Expr.Or.|                        SimpleFern | string | number
           [0].Seed.Nonterminal                    SimpleFern

@@ -4,15 +4,13 @@
 
 namespace silva::fern {
   const string_view_t seed_str = R"'(
-    - Fern = tokenizer [
-      - include tokenizer FreeForm
-    ]
-    - Fern = [
-      - ⊙ = '[' LabeledItem * ']'
-      - LabeledItem = ( Label ':' ) ? ( Fern | Value )
-      - Label = string | identifier
-      - Value = 'none' | 'true' | 'false' | string | number
-    ]
+Fern = tokenizer
+  include tokenizer FreeForm
+Fern =
+  ⊙ = '[' LabeledItem * ']'
+  LabeledItem = ( Label ':' ) ? ( Fern | Value )
+  Label = string | identifier
+  Value = 'none' | 'true' | 'false' | string | number
 )'";
 
   // Object-oriented interface
