@@ -8,9 +8,6 @@ namespace silva::lox {
   const string_view_t seed_str = R"'(
 tokenizer Lox:
   include tokenizer FreeForm
-  identifier = IDENTIFIER
-  operator = PARENTHESIS
-  operator = ::: OPERATOR
 
 Lox =
   ⊙ = ( Decl | Stmt ) *
