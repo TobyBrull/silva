@@ -36,16 +36,15 @@ namespace silva::seed {
   // the first alternative and aborts the parse if the whole expression does not match.
 
   const string_view_t seed_str = R"'(
-Seed = tokenizer
+tokenizer Seed:
   frag_name = IDENTIFIER_MACRO_CASE
   rule_name = IDENTIFIER_PASCAL_CASE
   token_category_name = IDENTIFIER_SNAKE_CASE
   include tokenizer OffSide
 
 Seed =
-  ⊙ = Rule *
-  Rule = ( '⊙' | Nonterminal ) '=' ( newline indent Seed dedent
-                                   | 'tokenizer' newline Tokenizer
+  ⊙ = ( Tokenizer | Rule ) *
+  Rule = ( '⊙' | Nonterminal ) '=' ( newline indent Rule * dedent
                                    | 'axe' Axe
                                    | 'alias' Alias newline
                                    | Expr newline )

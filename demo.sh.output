@@ -141,26 +141,23 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [3].Silva.Section                               CppStmts language
   [4].Silva.Section                               Fern language
 
-[0].Seed                                          Somelang = ... <ws> <ws>
-  [0].Seed.Rule                                   Somelang = ... <ws> <ws>
-    [0].Seed.Nonterminal                          Somelang
-    [1].Seed.Tokenizer                            <ws> include ... <ws> <ws>
-      [0].Seed.Tokenizer.IncludeRule              include tokenizer FreeForm
+[0].Seed                                          tokenizer Somelang ... <ws> <ws>
+  [0].Seed.Tokenizer                              tokenizer Somelang ... <ws> <ws>
+    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
   [1].Seed.Rule                                   Somelang = ... <ws> <ws>
     [0].Seed.Nonterminal                          Somelang
-    [1].Seed                                      ⊙ = ... * <ws>
-      [0].Seed.Rule                               ⊙ = As Bs <ws>
-        [0].Seed.Expr.Concat.concat               As Bs
-          [0].Seed.Nonterminal                    As
-          [1].Seed.Nonterminal                    Bs
-      [1].Seed.Rule                               As = 'a' * <ws>
+    [1].Seed.Rule                                 ⊙ = As Bs <ws>
+      [0].Seed.Expr.Concat.concat                 As Bs
         [0].Seed.Nonterminal                      As
-        [1].Seed.Expr.Postfix.*                   'a' *
-          [0].Seed.Terminal                       'a'
-      [2].Seed.Rule                               Bs = 'b' * <ws>
-        [0].Seed.Nonterminal                      Bs
-        [1].Seed.Expr.Postfix.*                   'b' *
-          [0].Seed.Terminal                       'b'
+        [1].Seed.Nonterminal                      Bs
+    [2].Seed.Rule                                 As = 'a' * <ws>
+      [0].Seed.Nonterminal                        As
+      [1].Seed.Expr.Postfix.*                     'a' *
+        [0].Seed.Terminal                         'a'
+    [3].Seed.Rule                                 Bs = 'b' * <ws>
+      [0].Seed.Nonterminal                        Bs
+      [1].Seed.Expr.Postfix.*                     'b' *
+        [0].Seed.Terminal                         'b'
 
 [0].Somelang                                      a a ... b b
   [0].Somelang.As                                 a a a a

@@ -47,6 +47,7 @@ namespace silva::seed {
     const token_id_t ti_tokenizer    = sfp->token_id("tokenizer");
     const token_id_t ti_include      = sfp->token_id("include");
     const token_id_t ti_ignore       = sfp->token_id("ignore");
+    const token_id_t ti_colon        = sfp->token_id(":");
     const token_id_t ti_triple_colon = sfp->token_id(":::");
     const token_id_t ti_backslash    = sfp->token_id("\\");
     const token_id_t ti_pipe         = sfp->token_id("|");

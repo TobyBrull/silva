@@ -87,7 +87,7 @@ namespace silva::seed {
 
   const string_view_t seed_tokenizer_str = R"'(
 Seed.Tokenizer =
-  ⊙ = indent ( ( IncludeRule | IgnoreRule | TokenRule ) newline ) * dedent
+  ⊙ = 'tokenizer' rule_name ':' newline indent ( ( IncludeRule | IgnoreRule | TokenRule ) newline ) * dedent
   IncludeRule = 'include' 'tokenizer' rule_name
   IgnoreRule = 'ignore' Defn
   TokenRule = token_category_name '=' Defn
@@ -116,7 +116,7 @@ Seed.Tokenizer =
 
     tokenizer_farm_t(syntax_farm_ptr_t);
 
-    expected_t<void> add(token_id_t tokenizer_name, parse_tree_span_t);
+    expected_t<void> add(parse_tree_span_t);
 
     expected_t<void> cache_tokenizer(token_id_t tokenizer_name);
 
@@ -129,7 +129,7 @@ Seed.Tokenizer =
   };
 
   const string_view_t bootstrap_tokenizers_str = R"'(
-Defaults = tokenizer
+tokenizer Defaults:
   ignore WHITESPACE
   ignore COMMENT
   number = NUMBER
@@ -138,13 +138,13 @@ Defaults = tokenizer
   operator = ::: OPERATOR
   identifier = IDENTIFIER
 
-OffSide = tokenizer
+tokenizer OffSide:
   indent = INDENT
   dedent = DEDENT
   newline = NEWLINE
   include tokenizer Defaults
 
-FreeForm = tokenizer
+tokenizer FreeForm:
   ignore INDENT
   ignore DEDENT
   ignore NEWLINE

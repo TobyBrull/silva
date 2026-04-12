@@ -404,9 +404,10 @@ namespace silva::seed {
 
   tokenizer_farm_t::tokenizer_farm_t(syntax_farm_ptr_t sfp) : sfp(sfp) {}
 
-  expected_t<void> tokenizer_farm_t::add(const token_id_t tokenizer_name, parse_tree_span_t pts)
+  expected_t<void> tokenizer_farm_t::add(parse_tree_span_t pts)
   {
     SILVA_EXPECT(pts.ptp->tp->sfp == sfp, MAJOR);
+    const token_id_t tokenizer_name = SILVA_EXPECT_FWD(pts.at_token_id(1));
     SILVA_EXPECT(!tokenizers.contains(tokenizer_name), MINOR);
     impl::tokenizer_create_nursery_t nursery(sfp, tokenizer_name);
     SILVA_EXPECT_FWD(nursery.run(pts));

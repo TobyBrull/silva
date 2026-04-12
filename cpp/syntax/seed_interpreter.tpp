@@ -9,7 +9,7 @@ namespace silva::seed::test {
   TEST_CASE("not-but_then", "[seed-interpreter][seed]")
   {
     const string_view_t frog_seed = R"'(
-Frog = tokenizer
+tokenizer Frog:
   ignore WHITESPACE
   ignore COMMENT
   ignore INDENT
@@ -18,6 +18,7 @@ Frog = tokenizer
   number = NUMBER
   string = STRING
   identifier = IDENTIFIER
+
 Frog =
   ⊙ = Rule *
   Rule = RuleName Expr
@@ -31,83 +32,79 @@ Frog =
     interpreter_t se(sf.ptr());
     auto ptp = SILVA_REQUIRE(se.add_seed_text("frog.seed", string_t{frog_seed}));
     const string_view_t expected_seed_pt = R"(
-[0].Seed                                          Frog = ... <ws> <ws>
-  [0].Seed.Rule                                   Frog = ... <ws> <ws>
-    [0].Seed.Nonterminal                          Frog
-    [1].Seed.Tokenizer                            <ws> ignore ... <ws> <ws>
-      [0].Seed.Tokenizer.IgnoreRule               ignore WHITESPACE
-        [0].Seed.Tokenizer.Defn                   WHITESPACE
-          [0].Seed.Tokenizer.PrefixItem           WHITESPACE
-            [0].Seed.Tokenizer.Item               WHITESPACE
-              [0].Seed.Tokenizer.Matcher          WHITESPACE
-      [1].Seed.Tokenizer.IgnoreRule               ignore COMMENT
-        [0].Seed.Tokenizer.Defn                   COMMENT
-          [0].Seed.Tokenizer.PrefixItem           COMMENT
-            [0].Seed.Tokenizer.Item               COMMENT
-              [0].Seed.Tokenizer.Matcher          COMMENT
-      [2].Seed.Tokenizer.IgnoreRule               ignore INDENT
-        [0].Seed.Tokenizer.Defn                   INDENT
-          [0].Seed.Tokenizer.PrefixItem           INDENT
-            [0].Seed.Tokenizer.Item               INDENT
-              [0].Seed.Tokenizer.Matcher          INDENT
-      [3].Seed.Tokenizer.IgnoreRule               ignore DEDENT
-        [0].Seed.Tokenizer.Defn                   DEDENT
-          [0].Seed.Tokenizer.PrefixItem           DEDENT
-            [0].Seed.Tokenizer.Item               DEDENT
-              [0].Seed.Tokenizer.Matcher          DEDENT
-      [4].Seed.Tokenizer.IgnoreRule               ignore NEWLINE
-        [0].Seed.Tokenizer.Defn                   NEWLINE
-          [0].Seed.Tokenizer.PrefixItem           NEWLINE
-            [0].Seed.Tokenizer.Item               NEWLINE
-              [0].Seed.Tokenizer.Matcher          NEWLINE
-      [5].Seed.Tokenizer.TokenRule                number = NUMBER
-        [0].Seed.Tokenizer.Defn                   NUMBER
-          [0].Seed.Tokenizer.PrefixItem           NUMBER
-            [0].Seed.Tokenizer.Item               NUMBER
-              [0].Seed.Tokenizer.Matcher          NUMBER
-      [6].Seed.Tokenizer.TokenRule                string = STRING
-        [0].Seed.Tokenizer.Defn                   STRING
-          [0].Seed.Tokenizer.PrefixItem           STRING
-            [0].Seed.Tokenizer.Item               STRING
-              [0].Seed.Tokenizer.Matcher          STRING
-      [7].Seed.Tokenizer.TokenRule                identifier = IDENTIFIER
-        [0].Seed.Tokenizer.Defn                   IDENTIFIER
-          [0].Seed.Tokenizer.PrefixItem           IDENTIFIER
-            [0].Seed.Tokenizer.Item               IDENTIFIER
-              [0].Seed.Tokenizer.Matcher          IDENTIFIER
+[0].Seed                                          tokenizer Frog ... <ws> <ws>
+  [0].Seed.Tokenizer                              tokenizer Frog ... <ws> <ws>
+    [0].Seed.Tokenizer.IgnoreRule                 ignore WHITESPACE
+      [0].Seed.Tokenizer.Defn                     WHITESPACE
+        [0].Seed.Tokenizer.PrefixItem             WHITESPACE
+          [0].Seed.Tokenizer.Item                 WHITESPACE
+            [0].Seed.Tokenizer.Matcher            WHITESPACE
+    [1].Seed.Tokenizer.IgnoreRule                 ignore COMMENT
+      [0].Seed.Tokenizer.Defn                     COMMENT
+        [0].Seed.Tokenizer.PrefixItem             COMMENT
+          [0].Seed.Tokenizer.Item                 COMMENT
+            [0].Seed.Tokenizer.Matcher            COMMENT
+    [2].Seed.Tokenizer.IgnoreRule                 ignore INDENT
+      [0].Seed.Tokenizer.Defn                     INDENT
+        [0].Seed.Tokenizer.PrefixItem             INDENT
+          [0].Seed.Tokenizer.Item                 INDENT
+            [0].Seed.Tokenizer.Matcher            INDENT
+    [3].Seed.Tokenizer.IgnoreRule                 ignore DEDENT
+      [0].Seed.Tokenizer.Defn                     DEDENT
+        [0].Seed.Tokenizer.PrefixItem             DEDENT
+          [0].Seed.Tokenizer.Item                 DEDENT
+            [0].Seed.Tokenizer.Matcher            DEDENT
+    [4].Seed.Tokenizer.IgnoreRule                 ignore NEWLINE
+      [0].Seed.Tokenizer.Defn                     NEWLINE
+        [0].Seed.Tokenizer.PrefixItem             NEWLINE
+          [0].Seed.Tokenizer.Item                 NEWLINE
+            [0].Seed.Tokenizer.Matcher            NEWLINE
+    [5].Seed.Tokenizer.TokenRule                  number = NUMBER
+      [0].Seed.Tokenizer.Defn                     NUMBER
+        [0].Seed.Tokenizer.PrefixItem             NUMBER
+          [0].Seed.Tokenizer.Item                 NUMBER
+            [0].Seed.Tokenizer.Matcher            NUMBER
+    [6].Seed.Tokenizer.TokenRule                  string = STRING
+      [0].Seed.Tokenizer.Defn                     STRING
+        [0].Seed.Tokenizer.PrefixItem             STRING
+          [0].Seed.Tokenizer.Item                 STRING
+            [0].Seed.Tokenizer.Matcher            STRING
+    [7].Seed.Tokenizer.TokenRule                  identifier = IDENTIFIER
+      [0].Seed.Tokenizer.Defn                     IDENTIFIER
+        [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
+          [0].Seed.Tokenizer.Item                 IDENTIFIER
+            [0].Seed.Tokenizer.Matcher            IDENTIFIER
   [1].Seed.Rule                                   Frog = ... <ws> <ws>
     [0].Seed.Nonterminal                          Frog
-    [1].Seed                                      ⊙ = ... <ws> <ws>
-      [0].Seed.Rule                               ⊙ = Rule * <ws>
-        [0].Seed.Expr.Postfix.*                   Rule *
-          [0].Seed.Nonterminal                    Rule
-      [1].Seed.Rule                               Rule = RuleName Expr <ws>
+    [1].Seed.Rule                                 ⊙ = Rule * <ws>
+      [0].Seed.Expr.Postfix.*                     Rule *
         [0].Seed.Nonterminal                      Rule
-        [1].Seed.Expr.Concat.concat               RuleName Expr
-          [0].Seed.Nonterminal                    RuleName
-          [1].Seed.Nonterminal                    Expr
-      [2].Seed.Rule                               RuleName = alias Keyword <ws>
+    [2].Seed.Rule                                 Rule = RuleName Expr <ws>
+      [0].Seed.Nonterminal                        Rule
+      [1].Seed.Expr.Concat.concat                 RuleName Expr
         [0].Seed.Nonterminal                      RuleName
-        [1].Seed.Alias                            Keyword
-          [0].Seed.Nonterminal                    Keyword
-      [3].Seed.Rule                               Expr = Primary + <ws>
-        [0].Seed.Nonterminal                      Expr
-        [1].Seed.Expr.Postfix.+                   Primary +
-          [0].Seed.Nonterminal                    Primary
-      [4].Seed.Rule                               Primary = ... identifier <ws>
-        [0].Seed.Nonterminal                      Primary
-        [1].Seed.Expr.And.but_then                not Keyword but_then identifier
-          [0].Seed.Expr.Prefix.not                not Keyword
-            [0].Seed.Nonterminal                  Keyword
-          [1].Seed.Terminal                       identifier
-      [5].Seed.Rule                               Keyword = ... <ws> <ws>
+        [1].Seed.Nonterminal                      Expr
+    [3].Seed.Rule                                 RuleName = alias Keyword <ws>
+      [0].Seed.Nonterminal                        RuleName
+      [1].Seed.Alias                              Keyword
         [0].Seed.Nonterminal                      Keyword
-        [1].Seed                                  ⊙ = ... 'keyword3' <ws>
-          [0].Seed.Rule                           ⊙ = ... 'keyword3' <ws>
-            [0].Seed.Expr.Or.|                    'keyword1' | 'keyword2' | 'keyword3'
-              [0].Seed.Terminal                   'keyword1'
-              [1].Seed.Terminal                   'keyword2'
-              [2].Seed.Terminal                   'keyword3'
+    [4].Seed.Rule                                 Expr = Primary + <ws>
+      [0].Seed.Nonterminal                        Expr
+      [1].Seed.Expr.Postfix.+                     Primary +
+        [0].Seed.Nonterminal                      Primary
+    [5].Seed.Rule                                 Primary = ... identifier <ws>
+      [0].Seed.Nonterminal                        Primary
+      [1].Seed.Expr.And.but_then                  not Keyword but_then identifier
+        [0].Seed.Expr.Prefix.not                  not Keyword
+          [0].Seed.Nonterminal                    Keyword
+        [1].Seed.Terminal                         identifier
+    [6].Seed.Rule                                 Keyword = ... <ws> <ws>
+      [0].Seed.Nonterminal                        Keyword
+      [1].Seed.Rule                               ⊙ = ... 'keyword3' <ws>
+        [0].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
+          [0].Seed.Terminal                       'keyword1'
+          [1].Seed.Terminal                       'keyword2'
+          [2].Seed.Terminal                       'keyword3'
 )";
     const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));
@@ -153,7 +150,7 @@ Frog =
     auto se = standard_seed_interpreter(sf.ptr());
 
     const string_view_t testor_lang = R"'(
-Testor = tokenizer
+tokenizer Testor:
   ignore WHITESPACE
   ignore COMMENT
   ignore INDENT
@@ -161,6 +158,7 @@ Testor = tokenizer
   ignore NEWLINE
   name = IDENTIFIER
   op = OPERATOR
+
 Testor =
   ⊙ = Assign *
   Assign = name '=' name op name
@@ -186,7 +184,7 @@ Testor =
   TEST_CASE("multiple-texts", "[seed-interpreter]")
   {
     const string_view_t text1_seed = R"'(
-Foo = tokenizer
+tokenizer Foo:
   ignore WHITESPACE
   ignore COMMENT
   ignore INDENT
@@ -195,6 +193,7 @@ Foo = tokenizer
   number = NUMBER
   string = STRING
   identifier = IDENTIFIER
+
 Foo =
   ⊙ = 'a' 'b' 'c' Bar ?
 )'";

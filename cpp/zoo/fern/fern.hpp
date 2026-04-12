@@ -4,8 +4,9 @@
 
 namespace silva::fern {
   const string_view_t seed_str = R"'(
-Fern = tokenizer
+tokenizer Fern:
   include tokenizer FreeForm
+
 Fern =
   ⊙ = '[' LabeledItem * ']'
   LabeledItem = ( Label ':' ) ? ( Fern | Value )

@@ -18,7 +18,7 @@ namespace silva::seed::test {
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
-SimpleFern = tokenizer
+tokenizer SimpleFern:
   ignore WHITESPACE
   ignore COMMENT
   ignore INDENT
@@ -29,6 +29,7 @@ SimpleFern = tokenizer
   operator = PARENTHESIS
   operator = ::: OPERATOR
   identifier = IDENTIFIER
+
 SimpleFern =
   ⊙ = '[' ( LabeledItem ';' ? ) * ']'
   LabeledItem = ( Label ':' )? Item
@@ -42,90 +43,87 @@ SimpleFern =
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
-[0].Seed                                          SimpleFern = ... <ws> <ws>
-  [0].Seed.Rule                                   SimpleFern = ... <ws> <ws>
-    [0].Seed.Nonterminal                          SimpleFern
-    [1].Seed.Tokenizer                            <ws> ignore ... <ws> <ws>
-      [0].Seed.Tokenizer.IgnoreRule               ignore WHITESPACE
-        [0].Seed.Tokenizer.Defn                   WHITESPACE
-          [0].Seed.Tokenizer.PrefixItem           WHITESPACE
-            [0].Seed.Tokenizer.Item               WHITESPACE
-              [0].Seed.Tokenizer.Matcher          WHITESPACE
-      [1].Seed.Tokenizer.IgnoreRule               ignore COMMENT
-        [0].Seed.Tokenizer.Defn                   COMMENT
-          [0].Seed.Tokenizer.PrefixItem           COMMENT
-            [0].Seed.Tokenizer.Item               COMMENT
-              [0].Seed.Tokenizer.Matcher          COMMENT
-      [2].Seed.Tokenizer.IgnoreRule               ignore INDENT
-        [0].Seed.Tokenizer.Defn                   INDENT
-          [0].Seed.Tokenizer.PrefixItem           INDENT
-            [0].Seed.Tokenizer.Item               INDENT
-              [0].Seed.Tokenizer.Matcher          INDENT
-      [3].Seed.Tokenizer.IgnoreRule               ignore DEDENT
-        [0].Seed.Tokenizer.Defn                   DEDENT
-          [0].Seed.Tokenizer.PrefixItem           DEDENT
-            [0].Seed.Tokenizer.Item               DEDENT
-              [0].Seed.Tokenizer.Matcher          DEDENT
-      [4].Seed.Tokenizer.IgnoreRule               ignore NEWLINE
-        [0].Seed.Tokenizer.Defn                   NEWLINE
-          [0].Seed.Tokenizer.PrefixItem           NEWLINE
-            [0].Seed.Tokenizer.Item               NEWLINE
-              [0].Seed.Tokenizer.Matcher          NEWLINE
-      [5].Seed.Tokenizer.TokenRule                number = NUMBER
-        [0].Seed.Tokenizer.Defn                   NUMBER
-          [0].Seed.Tokenizer.PrefixItem           NUMBER
-            [0].Seed.Tokenizer.Item               NUMBER
-              [0].Seed.Tokenizer.Matcher          NUMBER
-      [6].Seed.Tokenizer.TokenRule                string = STRING
-        [0].Seed.Tokenizer.Defn                   STRING
-          [0].Seed.Tokenizer.PrefixItem           STRING
-            [0].Seed.Tokenizer.Item               STRING
-              [0].Seed.Tokenizer.Matcher          STRING
-      [7].Seed.Tokenizer.TokenRule                operator = PARENTHESIS
-        [0].Seed.Tokenizer.Defn                   PARENTHESIS
-          [0].Seed.Tokenizer.PrefixItem           PARENTHESIS
-            [0].Seed.Tokenizer.Item               PARENTHESIS
-              [0].Seed.Tokenizer.Matcher          PARENTHESIS
-      [8].Seed.Tokenizer.TokenRule                operator = ::: OPERATOR
-        [0].Seed.Tokenizer.Defn                   ::: OPERATOR
-          [0].Seed.Tokenizer.Item                 OPERATOR
-            [0].Seed.Tokenizer.Matcher            OPERATOR
-      [9].Seed.Tokenizer.TokenRule                identifier = IDENTIFIER
-        [0].Seed.Tokenizer.Defn                   IDENTIFIER
-          [0].Seed.Tokenizer.PrefixItem           IDENTIFIER
-            [0].Seed.Tokenizer.Item               IDENTIFIER
-              [0].Seed.Tokenizer.Matcher          IDENTIFIER
+[0].Seed                                          tokenizer SimpleFern ... <ws> <ws>
+  [0].Seed.Tokenizer                              tokenizer SimpleFern ... <ws> <ws>
+    [0].Seed.Tokenizer.IgnoreRule                 ignore WHITESPACE
+      [0].Seed.Tokenizer.Defn                     WHITESPACE
+        [0].Seed.Tokenizer.PrefixItem             WHITESPACE
+          [0].Seed.Tokenizer.Item                 WHITESPACE
+            [0].Seed.Tokenizer.Matcher            WHITESPACE
+    [1].Seed.Tokenizer.IgnoreRule                 ignore COMMENT
+      [0].Seed.Tokenizer.Defn                     COMMENT
+        [0].Seed.Tokenizer.PrefixItem             COMMENT
+          [0].Seed.Tokenizer.Item                 COMMENT
+            [0].Seed.Tokenizer.Matcher            COMMENT
+    [2].Seed.Tokenizer.IgnoreRule                 ignore INDENT
+      [0].Seed.Tokenizer.Defn                     INDENT
+        [0].Seed.Tokenizer.PrefixItem             INDENT
+          [0].Seed.Tokenizer.Item                 INDENT
+            [0].Seed.Tokenizer.Matcher            INDENT
+    [3].Seed.Tokenizer.IgnoreRule                 ignore DEDENT
+      [0].Seed.Tokenizer.Defn                     DEDENT
+        [0].Seed.Tokenizer.PrefixItem             DEDENT
+          [0].Seed.Tokenizer.Item                 DEDENT
+            [0].Seed.Tokenizer.Matcher            DEDENT
+    [4].Seed.Tokenizer.IgnoreRule                 ignore NEWLINE
+      [0].Seed.Tokenizer.Defn                     NEWLINE
+        [0].Seed.Tokenizer.PrefixItem             NEWLINE
+          [0].Seed.Tokenizer.Item                 NEWLINE
+            [0].Seed.Tokenizer.Matcher            NEWLINE
+    [5].Seed.Tokenizer.TokenRule                  number = NUMBER
+      [0].Seed.Tokenizer.Defn                     NUMBER
+        [0].Seed.Tokenizer.PrefixItem             NUMBER
+          [0].Seed.Tokenizer.Item                 NUMBER
+            [0].Seed.Tokenizer.Matcher            NUMBER
+    [6].Seed.Tokenizer.TokenRule                  string = STRING
+      [0].Seed.Tokenizer.Defn                     STRING
+        [0].Seed.Tokenizer.PrefixItem             STRING
+          [0].Seed.Tokenizer.Item                 STRING
+            [0].Seed.Tokenizer.Matcher            STRING
+    [7].Seed.Tokenizer.TokenRule                  operator = PARENTHESIS
+      [0].Seed.Tokenizer.Defn                     PARENTHESIS
+        [0].Seed.Tokenizer.PrefixItem             PARENTHESIS
+          [0].Seed.Tokenizer.Item                 PARENTHESIS
+            [0].Seed.Tokenizer.Matcher            PARENTHESIS
+    [8].Seed.Tokenizer.TokenRule                  operator = ::: OPERATOR
+      [0].Seed.Tokenizer.Defn                     ::: OPERATOR
+        [0].Seed.Tokenizer.Item                   OPERATOR
+          [0].Seed.Tokenizer.Matcher              OPERATOR
+    [9].Seed.Tokenizer.TokenRule                  identifier = IDENTIFIER
+      [0].Seed.Tokenizer.Defn                     IDENTIFIER
+        [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
+          [0].Seed.Tokenizer.Item                 IDENTIFIER
+            [0].Seed.Tokenizer.Matcher            IDENTIFIER
   [1].Seed.Rule                                   SimpleFern = ... <ws> <ws>
     [0].Seed.Nonterminal                          SimpleFern
-    [1].Seed                                      ⊙ = ... number <ws>
-      [0].Seed.Rule                               ⊙ = ... ']' <ws>
-        [0].Seed.Expr.Concat.concat               '[' ( ... * ']'
-          [0].Seed.Terminal                       '['
-          [1].Seed.Expr.Postfix.*                 ( LabeledItem ... ) *
-            [0].Seed.Expr.Parens.(                ( LabeledItem ';' ? )
-              [0].Seed.Expr.Concat.concat         LabeledItem ';' ?
-                [0].Seed.Nonterminal              LabeledItem
-                [1].Seed.Expr.Postfix.?           ';' ?
-                  [0].Seed.Terminal               ';'
-          [2].Seed.Terminal                       ']'
-      [1].Seed.Rule                               LabeledItem = ... Item <ws>
-        [0].Seed.Nonterminal                      LabeledItem
-        [1].Seed.Expr.Concat.concat               ( Label ... ? Item
-          [0].Seed.Expr.Postfix.?                 ( Label ':' ) ?
-            [0].Seed.Expr.Parens.(                ( Label ':' )
-              [0].Seed.Expr.Concat.concat         Label ':'
-                [0].Seed.Nonterminal              Label
-                [1].Seed.Terminal                 ':'
-          [1].Seed.Nonterminal                    Item
-      [2].Seed.Rule                               Label = string <ws>
-        [0].Seed.Nonterminal                      Label
+    [1].Seed.Rule                                 ⊙ = ... ']' <ws>
+      [0].Seed.Expr.Concat.concat                 '[' ( ... * ']'
+        [0].Seed.Terminal                         '['
+        [1].Seed.Expr.Postfix.*                   ( LabeledItem ... ) *
+          [0].Seed.Expr.Parens.(                  ( LabeledItem ';' ? )
+            [0].Seed.Expr.Concat.concat           LabeledItem ';' ?
+              [0].Seed.Nonterminal                LabeledItem
+              [1].Seed.Expr.Postfix.?             ';' ?
+                [0].Seed.Terminal                 ';'
+        [2].Seed.Terminal                         ']'
+    [2].Seed.Rule                                 LabeledItem = ... Item <ws>
+      [0].Seed.Nonterminal                        LabeledItem
+      [1].Seed.Expr.Concat.concat                 ( Label ... ? Item
+        [0].Seed.Expr.Postfix.?                   ( Label ':' ) ?
+          [0].Seed.Expr.Parens.(                  ( Label ':' )
+            [0].Seed.Expr.Concat.concat           Label ':'
+              [0].Seed.Nonterminal                Label
+              [1].Seed.Terminal                   ':'
+        [1].Seed.Nonterminal                      Item
+    [3].Seed.Rule                                 Label = string <ws>
+      [0].Seed.Nonterminal                        Label
+      [1].Seed.Terminal                           string
+    [4].Seed.Rule                                 Item = ... number <ws>
+      [0].Seed.Nonterminal                        Item
+      [1].Seed.Expr.Or.|                          SimpleFern | string | number
+        [0].Seed.Nonterminal                      SimpleFern
         [1].Seed.Terminal                         string
-      [3].Seed.Rule                               Item = ... number <ws>
-        [0].Seed.Nonterminal                      Item
-        [1].Seed.Expr.Or.|                        SimpleFern | string | number
-          [0].Seed.Nonterminal                    SimpleFern
-          [1].Seed.Terminal                       string
-          [2].Seed.Terminal                       number
+        [2].Seed.Terminal                         number
 )";
 
     const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string());

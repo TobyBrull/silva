@@ -6,7 +6,7 @@ namespace silva::test {
   TEST_CASE("operator-precedence", "")
   {
     const string_view_t expr_seed_text = R"'(
-Expr = tokenizer
+tokenizer Expr:
   ignore WHITESPACE
   ignore COMMENT
   ignore INDENT
@@ -16,6 +16,7 @@ Expr = tokenizer
   string = STRING
   operator = PARENTHESIS
   operator = ::: OPERATOR
+
 Expr = Add
 Add = Mult ( '+' Add ) *
 Mult = Primary ( '*' Mult ) *
@@ -50,7 +51,7 @@ Primary = '(' Expr ')' | number
   TEST_CASE("seed-axe-recursion", "")
   {
     const string_view_t expr_seed_text = R"'(
-Expr = tokenizer
+tokenizer Expr:
   ignore WHITESPACE
   ignore COMMENT
   ignore INDENT
@@ -61,6 +62,7 @@ Expr = tokenizer
   identifier = IDENTIFIER
   operator = PARENTHESIS
   operator = ::: OPERATOR
+
 Expr = axe Atom
   Parens  = nest  atom_nest '(' ')'
   Mult    = ltr   infix '*'

@@ -249,6 +249,10 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_tok);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok, lexicon.ti_tokenizer);
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok, lexicon.ti_rule_name);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok, lexicon.ti_colon);
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok, lexicon.ti_newline);
       SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok, lexicon.ti_indent);
       while (num_tokens_left() >= 1 && token_category_by() != lexicon.ti_dedent) {
         const index_t orig_token_index = token_index;
@@ -402,13 +406,10 @@ namespace silva::seed::impl {
       if (num_tokens_left() >= 1 && token_category_by() == lexicon.ti_newline) {
         token_index += 1;
         SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_rule, lexicon.ti_indent);
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, seed()));
+        while (num_tokens_left() >= 1 && token_category_by() != lexicon.ti_dedent) {
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, rule()));
+        }
         SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_rule, lexicon.ti_dedent);
-      }
-      else if (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_tokenizer) {
-        token_index += 1;
-        SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_rule, lexicon.ti_newline);
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, tokenizer()));
       }
       else if (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_axe) {
         token_index += 1;
@@ -431,7 +432,12 @@ namespace silva::seed::impl {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_seed);
       while (num_tokens_left() >= 1 && token_category_by() != lexicon.ti_dedent) {
-        ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_seed, rule()));
+        if (token_id_by() == lexicon.ti_tokenizer) {
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_seed, tokenizer()));
+        }
+        else {
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_seed, rule()));
+        }
       }
       return ss_rule.commit();
     }

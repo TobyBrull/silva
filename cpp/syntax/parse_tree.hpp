@@ -39,6 +39,8 @@ namespace silva {
 
     expected_t<token_id_t> front_token_id() const;
     expected_t<token_id_t> front_token_category() const;
+    expected_t<token_id_t> at_token_id(index_t) const;
+    expected_t<token_id_t> at_token_category(index_t) const;
     expected_t<token_id_t> back_token_id() const;
     expected_t<token_id_t> back_token_category() const;
 

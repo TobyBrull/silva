@@ -90,6 +90,19 @@ namespace silva {
     return ptp->tp->categories[root.token_begin];
   }
 
+  expected_t<token_id_t> parse_tree_span_t::at_token_id(const index_t idx) const
+  {
+    const auto& root = (*this)[0];
+    SILVA_EXPECT(idx < root.token_end - root.token_begin, MINOR);
+    return ptp->tp->tokens[root.token_begin + idx];
+  }
+  expected_t<token_id_t> parse_tree_span_t::at_token_category(const index_t idx) const
+  {
+    const auto& root = (*this)[0];
+    SILVA_EXPECT(idx < root.token_end - root.token_begin, MINOR);
+    return ptp->tp->categories[root.token_begin + idx];
+  }
+
   expected_t<token_id_t> parse_tree_span_t::back_token_id() const
   {
     const auto& root = (*this)[0];

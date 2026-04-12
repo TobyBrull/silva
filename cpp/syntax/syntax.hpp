@@ -8,9 +8,10 @@ namespace silva {
   parser_t as_parser(seed::interpreter_t*);
 
   const string_view_t seed_str = R"'(
-Silva = tokenizer
+tokenizer Silva:
   language_name = IDENTIFIER
   include tokenizer FreeForm
+
 Silva =
   ⊙ = Section * end_of_file
   Section = language_name language

@@ -12,7 +12,7 @@ namespace silva::test {
     auto se = standard_seed_interpreter(sf.ptr());
 
     const string_view_t test_text = R"'(
-Testor = tokenizer
+tokenizer Testor:
   ignore WHITESPACE
   ignore COMMENT
   ignore INDENT

@@ -59,13 +59,14 @@ namespace silva::seed::test {
     const auto ti_op       = sf.token_id("op");
 
     tokenizer_farm_t tf(sf.ptr());
-    const auto load_tokenizer = [&](const token_id_t name, const string_view_t tokenizer_code) {
+    const auto load_tokenizer = [&](const string_view_t tokenizer_code) {
       const auto fp  = SILVA_REQUIRE(fragmentize(sf.ptr(), "", string_t{tokenizer_code}));
       const auto pts = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Seed", "Tokenizer")));
-      SILVA_REQUIRE(tf.add(name, pts->span()));
+      SILVA_REQUIRE(tf.add(pts->span()));
     };
 
     const string_view_t test_tok = R"'(
+tokenizer Testor:
   ignore NUMBER
   include tokenizer FreeForm
   name = [ '$' '@' ] IDENTIFIER
@@ -73,9 +74,10 @@ namespace silva::seed::test {
   rel_path = IDENTIFIER ::: '/' '.' IDENTIFIER
   op = ::: '=' '+'
 )'";
-    load_tokenizer(ti_testor, test_tok);
+    load_tokenizer(test_tok);
 
     const string_view_t free_form_tok = R"'(
+tokenizer FreeForm:
   ignore WHITESPACE
   ignore COMMENT
   ignore INDENT
@@ -84,7 +86,7 @@ namespace silva::seed::test {
   number = NUMBER
   string = STRING
 )'";
-    load_tokenizer(ti_freeform, free_form_tok);
+    load_tokenizer(free_form_tok);
 
     CHECK(tf.tokenizers.at(ti_freeform).rules.size() == 7);
     CHECK(tf.tokenizers.at(ti_testor).rules.size() == 8);
