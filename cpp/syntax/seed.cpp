@@ -395,7 +395,7 @@ namespace silva::seed::impl {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_rule);
       const index_t orig_token_index = token_index;
-      if (num_tokens_left() >= 1 && token_id_by() == lexicon.here_name) {
+      if (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_here) {
         token_index += 1;
       }
       else {

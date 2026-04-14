@@ -1,22 +1,25 @@
 Seed «
-Soil = tokenizer
+tokenizer Soil:
+  type_name = IDENTIFIER_SNAKE_CASE\'_t'
+  func_name = IDENTIFIER_SNAKE_CASE\'_f'
   include tokenizer FreeForm
+
 Soil =
-  x = ( Type.Defn | Func.Defn | Variable.Defn ) *
+  ⊙ = ( Type.Defn | Func.Defn | Variable.Defn ) *
   Type =
-    x = Name | Struct
-    Name = identifier / '_t$'
-    Defn = Name '=' x
+    ⊙ = Name | Struct
+    Name = type_name
+    Defn = Name '=' Type
     Struct =
-      x = '[' Member * ']'
+      ⊙ = '[' Member * ']'
       Member =
-        x = p.p Label ? Init ? ';'
+        ⊙ = Type Label ? Init ? ';'
         Label = ':' Name
-        Init = '=' _.Soil.Expr
+        Init = '=' Expr
         Name = identifier
   Expr =
-    x = Axe
-    Maybe = x | ε
+    ⊙ = Axe
+    Maybe = Expr | ε
     Axe = axe Atom
       Parens    = nest atom_nest '(' ')'
       Member    = ltr infix '.'
@@ -28,26 +31,26 @@ Soil =
       Comp      = ltr infix '==' '<=' '<' '>' '>='
       Logic     = ltr infix 'and' 'or'
       Assign    = ltr infix '=' '+=' '*='
-    Atom = ( Struct | _.Silva.Section
-           | not keywords_of _.Soil but_then identifier | string | number
+    Atom = ( Struct | language
+           | type_name | func_name | identifier
+           | string | number
            | 'true' | 'false' | 'none' )
     Struct =
-      x = '[' LabeledItem * ']'
-      LabeledItem = ( _.Soil.Variable.Name ':' ) ? ( x | p )
+      ⊙ = '[' LabeledItem * ']'
+      LabeledItem = ( Variable.Name ':' ) ? ( Struct | Expr )
   Func =
-    x = Name
-    Name = identifier / '_f$'
+    ⊙ = Name
+    Name = func_name
     Defn = Name '=' Signature Body
-    Signature = p.Type ( '->' p.Type ) ?
+    Signature = Type ( '->' Type ) ?
     Body = '{' Stmt * '}'
     Stmt =
-      x = If | For | _.Soil.Expr ';'
+      ⊙ = If | For | Expr ';'
       If =
-        x = 'if' Branch ( 'elif' Branch ) * ( 'else' p.p.Body ) ?
-        Branch = _.Soil.Expr p.p.Body
-      For = 'for' _.Soil.Expr.Maybe ';' _.Soil.Expr.Maybe ';' _.Soil.Expr.Maybe p.Body
+        ⊙ = 'if' Branch ( 'elif' Branch ) * ( 'else' Body ) ?
+        Branch = Expr Body
+      For = 'for' Expr.Maybe ';' Expr.Maybe ';' Expr.Maybe Body
   Variable =
-    Name = not p.Type.Name but_then not p.Func.Name but_then identifier
-    Defn = Name '=' p.Expr
-
+    Name = not Type.Name but_then not Func.Name but_then identifier
+    Defn = Name '=' Expr
 »

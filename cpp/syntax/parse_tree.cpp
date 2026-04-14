@@ -77,43 +77,62 @@ namespace silva {
     return retval;
   }
 
-  expected_t<token_id_t> parse_tree_span_t::front_token_id() const
+  index_t parse_tree_span_t::token_size() const
   {
     const auto& root = (*this)[0];
-    SILVA_EXPECT(root.token_begin < root.token_end, MINOR);
-    return ptp->tp->tokens[root.token_begin];
+    return root.token_end - root.token_begin;
+  }
+
+  expected_t<token_id_t> parse_tree_span_t::front_token_id() const
+  {
+    SILVA_EXPECT(token_size() > 0, MINOR);
+    return at_token_id(0);
   }
   expected_t<token_id_t> parse_tree_span_t::front_token_category() const
   {
-    const auto& root = (*this)[0];
-    SILVA_EXPECT(root.token_begin < root.token_end, MINOR);
-    return ptp->tp->categories[root.token_begin];
+    SILVA_EXPECT(token_size() > 0, MINOR);
+    return at_token_category(0);
+  }
+  expected_t<fragment_span_t> parse_tree_span_t::front_language() const
+  {
+    SILVA_EXPECT(token_size() > 0, MINOR);
+    return at_language(0);
   }
 
   expected_t<token_id_t> parse_tree_span_t::at_token_id(const index_t idx) const
   {
-    const auto& root = (*this)[0];
-    SILVA_EXPECT(idx < root.token_end - root.token_begin, MINOR);
-    return ptp->tp->tokens[root.token_begin + idx];
+    SILVA_EXPECT(idx < token_size(), MINOR);
+    return ptp->tp->tokens[(*this)[0].token_begin + idx];
   }
   expected_t<token_id_t> parse_tree_span_t::at_token_category(const index_t idx) const
   {
-    const auto& root = (*this)[0];
-    SILVA_EXPECT(idx < root.token_end - root.token_begin, MINOR);
-    return ptp->tp->categories[root.token_begin + idx];
+    SILVA_EXPECT(idx < token_size(), MINOR);
+    return ptp->tp->categories[(*this)[0].token_begin + idx];
+  }
+  expected_t<fragment_span_t> parse_tree_span_t::at_language(const index_t idx) const
+  {
+    SILVA_EXPECT(idx < token_size(), MINOR);
+    const auto& root         = (*this)[0];
+    const tokenization_t& tp = *(ptp->tp);
+    const auto it            = tp.languages.find(root.token_begin + idx);
+    SILVA_EXPECT(it != tp.languages.end(), MINOR);
+    return it->second;
   }
 
   expected_t<token_id_t> parse_tree_span_t::back_token_id() const
   {
-    const auto& root = (*this)[0];
-    SILVA_EXPECT(root.token_begin < root.token_end, MINOR);
-    return ptp->tp->tokens[root.token_end - 1];
+    SILVA_EXPECT(token_size() > 0, MINOR);
+    return at_token_id(token_size() - 1);
   }
   expected_t<token_id_t> parse_tree_span_t::back_token_category() const
   {
-    const auto& root = (*this)[0];
-    SILVA_EXPECT(root.token_begin < root.token_end, MINOR);
-    return ptp->tp->categories[root.token_end - 1];
+    SILVA_EXPECT(token_size() > 0, MINOR);
+    return at_token_category(token_size() - 1);
+  }
+  expected_t<fragment_span_t> parse_tree_span_t::back_language() const
+  {
+    SILVA_EXPECT(token_size() > 0, MINOR);
+    return at_language(token_size() - 1);
   }
 
   token_span_t parse_tree_span_t::token_span() const

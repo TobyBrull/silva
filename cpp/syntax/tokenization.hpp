@@ -18,7 +18,7 @@ namespace silva {
     array_t<file_location_t> locations;
 
     // Maps the *index* of an entry in "tokens" and "categories" that contains "token_id_language"
-    // to the corresponding range of fragments.
+    // to the corresponding range of fragments (including the LANG_BEGIN and LANG_END fragments).
     hash_map_t<index_t, fragment_span_t> languages;
 
     index_t size() const;

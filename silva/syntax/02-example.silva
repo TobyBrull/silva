@@ -1,12 +1,16 @@
 Seed «
-AsBs = tokenizer
+tokenizer AsBs:
   include tokenizer FreeForm
+
 AsBs = 'a' * 'b' *
 »
 
 AsBs « a a a b b »
 
 Seed «
+tokenizer CppStmts:
+  include tokenizer FreeForm
+
 CppStmts =
   ⊙ = ( Expr ';' ) *
   Expr = axe Atom

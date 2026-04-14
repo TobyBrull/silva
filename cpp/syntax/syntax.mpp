@@ -5,8 +5,12 @@
 #include "canopy/var_context.hpp"
 
 namespace silva {
-  expected_t<void> apply_action(const parse_tree_span_t pts)
+  expected_t<void> apply_action(seed::interpreter_t& si, const parse_tree_span_t pts)
   {
+    if (pts[0].rule_name == si.sfp->get_lexicon<seed::lexicon_t>().ni_seed) {
+      SILVA_EXPECT_FWD(si.add_seed_copy(pts));
+    }
+
     const auto action =
         SILVA_EXPECT_FWD_IF(var_context_get("action"), MAJOR).value_or("print-parse-tree");
     if (action == "none") {
@@ -27,21 +31,49 @@ namespace silva {
     return {};
   }
 
+  expected_t<name_id_t> language_rule(syntax_farm_t& sf, const token_id_t language_name)
+  {
+    string_t lang_name = sf.token_infos[language_name].str;
+    SILVA_EXPECT(!lang_name.empty(), MINOR);
+    lang_name[0] = std::toupper(lang_name[0]);
+    return sf.name_id_of(lang_name);
+  }
+
   expected_t<void> syntax_main(const span_t<string_view_t> cmdline_args)
   {
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_farm_t sf;
-    const auto se = standard_seed_interpreter(sf.ptr());
+    const name_id_t ni_silva = sf.name_id_of("Silva");
+    const auto si            = standard_seed_interpreter(sf.ptr());
     for (const auto& cmdline_arg: cmdline_args.subspan(1)) {
       const filepath_t fsp{cmdline_arg};
-      const name_id_t ni_goal  = SILVA_EXPECT_FWD(infer_goal_rule_name(sf, fsp));
+
+      const string_t ext = fsp.extension().string();
+      SILVA_EXPECT(ext.size() >= 2 && ext.front() == '.',
+                   MAJOR,
+                   "Filename {} did not have an extension",
+                   fsp.string());
+      const token_id_t lang_name = sf.token_id(ext.substr(1));
+      const name_id_t lang_rule  = SILVA_EXPECT_FWD(language_rule(sf, lang_name));
+
       fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_arg));
-      parse_tree_ptr_t pt      = SILVA_EXPECT_FWD(se->apply(std::move(fp), ni_goal));
-      parse_tree_span_t pts    = pt->span();
-      if (pts[0].rule_name == sf.get_lexicon<seed::lexicon_t>().ni_seed) {
-        SILVA_EXPECT_FWD(se->add_seed_copy(pts));
+
+      parse_tree_ptr_t pt   = SILVA_EXPECT_FWD(si->apply(std::move(fp), lang_rule));
+      parse_tree_span_t pts = pt->span();
+      SILVA_EXPECT_FWD(apply_action(*si, pts));
+
+      if (pts[0].rule_name == ni_silva) {
+        for (const auto [node_idx, child_idx]: pts.children_range()) {
+          const auto pts_node            = pts.sub_tree_span_at(node_idx);
+          const token_id_t sub_lang_name = SILVA_EXPECT_FWD(pts_node.front_token_id());
+          const name_id_t sub_lang_rule  = SILVA_EXPECT_FWD(language_rule(sf, sub_lang_name));
+          const fragment_span_t sub_fs   = SILVA_EXPECT_FWD(pts_node.back_language());
+
+          parse_tree_ptr_t sub_pt   = SILVA_EXPECT_FWD(si->apply(std::move(sub_fs), sub_lang_rule));
+          parse_tree_span_t sub_pts = sub_pt->span();
+          SILVA_EXPECT_FWD(apply_action(*si, sub_pts));
+        }
       }
-      SILVA_EXPECT_FWD(apply_action(pt->span()));
     }
     return {};
   }

@@ -33,20 +33,20 @@ namespace silva::seed::impl {
       SILVA_EXPECT(pts_rule[0].rule_name == lexicon.ni_rule, MINOR, "expected Rule");
 
       auto [it, end] = pts_rule.children_range();
-      SILVA_EXPECT(it != end, MINOR, "Rule must have at least one child");
+      SILVA_EXPECT(it != end, MINOR, "{} rule must have at least one child", pts_rule);
 
       name_id_t curr_rule_name;
-      if (pts_rule[it.pos].rule_name == lexicon.ni_nt) {
+      if (SILVA_EXPECT_FWD(pts_rule.front_token_id()) == lexicon.ti_here) {
+        curr_rule_name = scope_name;
+      }
+      else {
         const auto pts_nt = pts_rule.sub_tree_span_at(it.pos);
         curr_rule_name =
             SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
         ++it;
       }
-      else {
-        curr_rule_name = scope_name;
-      }
 
-      SILVA_EXPECT(it != end, MINOR, "Rule must have right-hand side");
+      SILVA_EXPECT(it != end, MINOR, "{} rule must have right-hand side", pts_rule);
       const auto pts_rhs_0 = pts_rule.sub_tree_span_at(it.pos);
 
       if (pts_rhs_0[0].rule_name == lexicon.ni_rule) {
@@ -57,7 +57,7 @@ namespace silva::seed::impl {
       }
       else {
         ++it;
-        SILVA_EXPECT(it == end, MINOR, "Rule had too many children");
+        SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
         const auto [emplace_it, inserted] = se->rule_exprs.emplace(curr_rule_name, pts_rhs_0);
         SILVA_EXPECT(inserted,
                      MINOR,

@@ -23,7 +23,7 @@ example_f = [] {
   p2 = person_t :: [ [ 'Alice' 'Allison' ] 30 ];
   ['{} is-adult = {}' p1 is_adult_f(p1)] | log_f;
   vector_f(person_t) :: [ p1 p2 ] | std.filter_m(arg.age <= 40) | log_f;
-  <$ Seed - SomeRule = identifier * $> | print_f;
+  « some sub language » | print_f;
 
   if p1.name.first | size_f > 10 {
     'This name is long' | log_f;

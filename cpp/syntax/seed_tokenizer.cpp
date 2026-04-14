@@ -23,26 +23,29 @@ namespace silva::seed::impl {
       const codepoint_category_t cc = codepoint_category_table[cp];
       return cc == codepoint_category_t::XID_Uppercase;
     };
-
-    const auto is_lower_or_op = [&](const unicode::codepoint_t cp) {
-      return (cp == U'-') || (cp == U'_') || is_lower(cp);
+    const auto is_digit = [](const unicode::codepoint_t cp) {
+      return U'0' <= cp && cp <= U'9';
     };
-    const auto is_upper_or_op = [&](const unicode::codepoint_t cp) {
-      return (cp == U'-') || (cp == U'_') || is_upper(cp);
+
+    const auto is_lower_ish = [&](const unicode::codepoint_t cp) {
+      return (cp == U'-') || (cp == U'_') || is_digit(cp) || is_lower(cp);
+    };
+    const auto is_upper_ish = [&](const unicode::codepoint_t cp) {
+      return (cp == U'-') || (cp == U'_') || is_digit(cp) || is_upper(cp);
     };
     const bool has_hyphen     = identifier.contains('-');
     const bool has_underscore = identifier.contains('_');
 
-    const bool are_all_lower       = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_lower));
-    const bool are_all_upper       = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_upper));
-    const bool are_all_lower_or_op = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_lower_or_op));
-    const bool are_all_upper_or_op = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_upper_or_op));
+    const bool are_all_lower        = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_lower));
+    const bool are_all_upper        = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_upper));
+    const bool are_all_lower_or_ish = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_lower_ish));
+    const bool are_all_upper_or_ish = SILVA_EXPECT_FWD(unicode::all_of(identifier, is_upper_ish));
 
     std::underlying_type_t<case_mask_t> retval = std::to_underlying(EMPTY);
-    if (!has_underscore && are_all_lower_or_op) {
+    if (!has_underscore && are_all_lower_or_ish) {
       retval |= std::to_underlying(SILVA_CASE);
     }
-    if (!has_hyphen && are_all_lower_or_op) {
+    if (!has_hyphen && are_all_lower_or_ish) {
       retval |= std::to_underlying(SNAKE_CASE);
     }
     if (!has_hyphen && !has_underscore && is_lower(first_cp)) {
@@ -51,7 +54,7 @@ namespace silva::seed::impl {
     if (!has_hyphen && !has_underscore && is_upper(first_cp)) {
       retval |= std::to_underlying(PASCAL_CASE);
     }
-    if (!has_hyphen && are_all_upper_or_op) {
+    if (!has_hyphen && are_all_upper_or_ish) {
       retval |= std::to_underlying(MACRO_CASE);
     }
     if (are_all_upper) {
@@ -472,8 +475,8 @@ namespace silva::seed {
     SILVA_EXPECT(fp->fragments.front().category == LANG_BEGIN, MINOR);
     SILVA_EXPECT(fp->fragments.back().category == LANG_END, MINOR);
 
-    index_t frag_idx       = 1;
-    const index_t frag_end = n - 1;
+    index_t frag_idx       = fs.begin + 1;
+    const index_t frag_end = fs.end - 1;
 
     while (frag_idx < frag_end) {
       if (fp->fragments[frag_idx].category == LANG_BEGIN) {
