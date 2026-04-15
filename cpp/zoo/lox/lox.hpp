@@ -43,7 +43,7 @@ Lox =
       LogicAnd    = ltr infix 'and'
       LogicOr     = ltr infix 'or'
       Assign      = ltr infix '='
-    Atom = ( 'true' | 'false' | 'none' | 'this'
+    Atom = ( 'true' | 'false' | 'nil' | 'this'
            | number | string
            | 'super' '.' identifier | identifier )
     Arguments = ( Expr ( ',' Expr ) * ) ?

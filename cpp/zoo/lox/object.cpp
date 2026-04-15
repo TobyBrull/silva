@@ -116,7 +116,7 @@ namespace silva::lox {
     const auto ti    = pts.ptp->tp->tokens[pts[0].token_begin];
     const auto tc    = pts.ptp->tp->categories[pts[0].token_begin];
     const auto tinfo = pts.ptp->tp->token_info_get(pts[0].token_begin);
-    if (ti == lexicon.ti_none) {
+    if (ti == lexicon.ti_nil) {
       return object_pool.make(none);
     }
     else if (ti == lexicon.ti_true) {
@@ -300,7 +300,7 @@ namespace silva::lox {
   struct object_pretty_write_impl_visitor_t {
     byte_sink_t* byte_sink = nullptr;
 
-    void operator()(const none_t& x) const { byte_sink->write_str("none"); }
+    void operator()(const none_t& x) const { byte_sink->write_str("nil"); }
     void operator()(const bool& x) const
     {
       if (x) {

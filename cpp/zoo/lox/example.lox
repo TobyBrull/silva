@@ -15,10 +15,10 @@ counter();
 # Classes
 class Person {
   sayName() {
-    print 'Mr ' + this.name;
+    print "Mr " + this.name;
   }
 }
 var jane = Person();
-jane.name = 'Jane';
+jane.name = "Jane";
 var method = jane.sayName;
 jane.sayName();

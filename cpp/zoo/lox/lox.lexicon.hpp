@@ -14,7 +14,7 @@ namespace silva::lox {
    public:
     token_id_t ti_true  = sfp->token_id("true");
     token_id_t ti_false = sfp->token_id("false");
-    token_id_t ti_none  = sfp->token_id("none");
+    token_id_t ti_nil   = sfp->token_id("nil");
     token_id_t ti_this  = sfp->token_id("this");
     token_id_t ti_super = sfp->token_id("super");
     token_id_t ti_init  = sfp->token_id("init");

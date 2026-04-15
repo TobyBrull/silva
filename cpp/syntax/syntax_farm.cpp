@@ -8,7 +8,8 @@ namespace silva {
   expected_t<string_view_t> token_info_t::string_as_plain_contained() const
   {
     SILVA_EXPECT(str.size() >= 2, MINOR);
-    SILVA_EXPECT(str.front() == '\'' && str.back() == '\'',
+    SILVA_EXPECT((str.front() == '\'' && str.back() == '\'') ||
+                     (str.front() == '"' && str.back() == '"'),
                  MINOR,
                  "token must start and end with quotation marks, but got [{}]",
                  str);
@@ -21,7 +22,9 @@ namespace silva {
   expected_t<string_t> token_info_t::contained_string() const
   {
     SILVA_EXPECT(str.size() >= 2, MINOR);
-    SILVA_EXPECT(str.front() == '\'' && str.back() == '\'', MINOR);
+    SILVA_EXPECT((str.front() == '\'' && str.back() == '\'') ||
+                     (str.front() == '"' && str.back() == '"'),
+                 MINOR);
     string_t retval;
     retval.reserve(str.size() - 2);
     index_t i = 1;

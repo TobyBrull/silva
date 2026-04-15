@@ -163,7 +163,7 @@ namespace silva::lox {
       const auto ti             = pts.ptp->tp->tokens[pts[0].token_begin];
       const auto tc             = pts.ptp->tp->categories[pts[0].token_begin];
       const token_info_t* tinfo = pts.ptp->tp->token_info_get(pts[0].token_begin);
-      if (ti == lexicon.ti_none) {
+      if (ti == lexicon.ti_nil) {
         cfs().nursery.append_simple_instr(pts, NIL);
       }
       else if (ti == lexicon.ti_true) {

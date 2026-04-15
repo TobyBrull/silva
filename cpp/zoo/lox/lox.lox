@@ -89,75 +89,75 @@ class Token {
 # Convert a token type constant back to the source string that the
 # token represents.
 fun tokenTypeStr(type) {
-  if (type == LEFT_PAREN) return '(';
-  if (type == RIGHT_PAREN) return ')';
-  if (type == LEFT_BRACE) return '{';
-  if (type == RIGHT_BRACE) return '}';
-  if (type == COMMA) return ',';
-  if (type == DOT) return '.';
-  if (type == MINUS) return '-';
-  if (type == PLUS) return '+';
-  if (type == SEMICOLON) return ';';
-  if (type == SLASH) return '/';
-  if (type == HASH) return '#';
-  if (type == STAR) return '*';
-  if (type == BANG) return '!';
-  if (type == EQUAL) return '=';
-  if (type == GREATER) return '>';
-  if (type == LESS) return '<';
+  if (type == LEFT_PAREN) return "(";
+  if (type == RIGHT_PAREN) return ")";
+  if (type == LEFT_BRACE) return "{";
+  if (type == RIGHT_BRACE) return "}";
+  if (type == COMMA) return ",";
+  if (type == DOT) return ".";
+  if (type == MINUS) return "-";
+  if (type == PLUS) return "+";
+  if (type == SEMICOLON) return ";";
+  if (type == SLASH) return "/";
+  if (type == HASH) return "#";
+  if (type == STAR) return "*";
+  if (type == BANG) return "!";
+  if (type == EQUAL) return "=";
+  if (type == GREATER) return ">";
+  if (type == LESS) return "<";
 
-  if (type == BANG_EQUAL) return '!=';
-  if (type == EQUAL_EQUAL) return '==';
-  if (type == GREATER_EQUAL) return '>=';
-  if (type == LESS_EQUAL) return '<=';
+  if (type == BANG_EQUAL) return "!=";
+  if (type == EQUAL_EQUAL) return "==";
+  if (type == GREATER_EQUAL) return ">=";
+  if (type == LESS_EQUAL) return "<=";
 
-  if (type == IDENTIFIER) return '<identifier>';
-  if (type == STRING) return '<string>';
-  if (type == NUMBER) return '<number>';
+  if (type == IDENTIFIER) return "<identifier>";
+  if (type == STRING) return "<string>";
+  if (type == NUMBER) return "<number>";
 
-  if (type == AND) return 'and';
-  if (type == CLASS) return 'class';
-  if (type == ELSE) return 'else';
-  if (type == FALSE) return 'false';
-  if (type == FUN) return 'fun';
-  if (type == FOR) return 'for';
-  if (type == IF) return 'if';
-  if (type == NIL) return 'none';
-  if (type == OR) return 'or';
-  if (type == PRINT) return 'print';
-  if (type == RETURN) return 'return';
-  if (type == SUPER) return 'super';
-  if (type == THIS) return 'this';
-  if (type == TRUE) return 'true';
-  if (type == VAR) return 'var';
-  if (type == WHILE) return 'while';
+  if (type == AND) return "and";
+  if (type == CLASS) return "class";
+  if (type == ELSE) return "else";
+  if (type == FALSE) return "false";
+  if (type == FUN) return "fun";
+  if (type == FOR) return "for";
+  if (type == IF) return "if";
+  if (type == NIL) return "nil";
+  if (type == OR) return "or";
+  if (type == PRINT) return "print";
+  if (type == RETURN) return "return";
+  if (type == SUPER) return "super";
+  if (type == THIS) return "this";
+  if (type == TRUE) return "true";
+  if (type == VAR) return "var";
+  if (type == WHILE) return "while";
 
-  if (type == EOF) return '<eof>';
-  if (type == INVALID) return '<invalid>';
+  if (type == EOF) return "<eof>";
+  if (type == INVALID) return "<invalid>";
 
-  return '<unknown>';
+  return nil;
 }
 
-# Convert a keyword string to its token type constant, or return none
+# Convert a keyword string to its token type constant, or return nil
 # if it's not a keyword.
 fun keywordType(name) {
-  if (name == 'and') return AND;
-  if (name == 'class') return CLASS;
-  if (name == 'else') return ELSE;
-  if (name == 'false') return FALSE;
-  if (name == 'fun') return FUN;
-  if (name == 'for') return FOR;
-  if (name == 'if') return IF;
-  if (name == 'none') return NIL;
-  if (name == 'or') return OR;
-  if (name == 'print') return PRINT;
-  if (name == 'return') return RETURN;
-  if (name == 'super') return SUPER;
-  if (name == 'this') return THIS;
-  if (name == 'true') return TRUE;
-  if (name == 'var') return VAR;
-  if (name == 'while') return WHILE;
-  return none;
+  if (name == "and") return AND;
+  if (name == "class") return CLASS;
+  if (name == "else") return ELSE;
+  if (name == "false") return FALSE;
+  if (name == "fun") return FUN;
+  if (name == "for") return FOR;
+  if (name == "if") return IF;
+  if (name == "nil") return NIL;
+  if (name == "or") return OR;
+  if (name == "print") return PRINT;
+  if (name == "return") return RETURN;
+  if (name == "super") return SUPER;
+  if (name == "this") return THIS;
+  if (name == "true") return TRUE;
+  if (name == "var") return VAR;
+  if (name == "while") return WHILE;
+  return nil;
 }
 
 fun isNameStart(ch) {
@@ -173,7 +173,7 @@ fun isDigit(ch) {
 class Scanner {
   init() {
     this.line = 1;
-    this.buffered = none;
+    this.buffered = nil;
     this.ch = -1;
     this.advance();
   }
@@ -185,52 +185,52 @@ class Scanner {
   }
 
   next() {
-    # Support a one-character buffer for '123.' use case to mimic Lox
-    if (this.buffered != none) {
+    # Support a one-character buffer for "123." use case to mimic Lox
+    if (this.buffered != nil) {
       var buffered = this.buffered;
-      this.buffered = none;
+      this.buffered = nil;
       return buffered;
     }
 
     while (this.ch >= 0) {
       var ch = this.advance();
-      if (ch == LEFT_PAREN) return Token(LEFT_PAREN, none, this.line);
-      else if (ch == RIGHT_PAREN) return Token(RIGHT_PAREN, none, this.line);
-      else if (ch == LEFT_BRACE) return Token(LEFT_BRACE, none, this.line);
-      else if (ch == RIGHT_BRACE) return Token(RIGHT_BRACE, none, this.line);
-      else if (ch == COMMA) return Token(COMMA, none, this.line);
-      else if (ch == DOT) return Token(DOT, none, this.line);
-      else if (ch == MINUS) return Token(MINUS, none, this.line);
-      else if (ch == PLUS) return Token(PLUS, none, this.line);
-      else if (ch == SEMICOLON) return Token(SEMICOLON, none, this.line);
-      else if (ch == STAR) return Token(STAR, none, this.line);
+      if (ch == LEFT_PAREN) return Token(LEFT_PAREN, nil, this.line);
+      else if (ch == RIGHT_PAREN) return Token(RIGHT_PAREN, nil, this.line);
+      else if (ch == LEFT_BRACE) return Token(LEFT_BRACE, nil, this.line);
+      else if (ch == RIGHT_BRACE) return Token(RIGHT_BRACE, nil, this.line);
+      else if (ch == COMMA) return Token(COMMA, nil, this.line);
+      else if (ch == DOT) return Token(DOT, nil, this.line);
+      else if (ch == MINUS) return Token(MINUS, nil, this.line);
+      else if (ch == PLUS) return Token(PLUS, nil, this.line);
+      else if (ch == SEMICOLON) return Token(SEMICOLON, nil, this.line);
+      else if (ch == STAR) return Token(STAR, nil, this.line);
       else if (ch == BANG) {
         if (this.ch == EQUAL) {
           this.advance();
-          return Token(BANG_EQUAL, none, this.line);
+          return Token(BANG_EQUAL, nil, this.line);
         }
-        return Token(BANG, none, this.line);
+        return Token(BANG, nil, this.line);
       }
       else if (ch == EQUAL) {
         if (this.ch == EQUAL) {
           this.advance();
-          return Token(EQUAL_EQUAL, none, this.line);
+          return Token(EQUAL_EQUAL, nil, this.line);
         }
-        return Token(EQUAL, none, this.line);
+        return Token(EQUAL, nil, this.line);
       }
       else if (ch == LESS) {
         if (this.ch == EQUAL) {
           this.advance();
-          return Token(LESS_EQUAL, none, this.line);
+          return Token(LESS_EQUAL, nil, this.line);
         }
-        return Token(LESS, none, this.line);
+        return Token(LESS, nil, this.line);
       }
       else if (ch == GREATER) {
         if (this.ch == EQUAL) {
           this.advance();
-          return Token(GREATER_EQUAL, none, this.line);
+          return Token(GREATER_EQUAL, nil, this.line);
         }
-        return Token(GREATER, none, this.line);
+        return Token(GREATER, nil, this.line);
       }
       else if (ch == SLASH) {
         return Token(SLASH, none, this.line);
@@ -253,11 +253,11 @@ class Scanner {
         # Newline
         this.line = this.line + 1;  
       }
-      else if (ch == 39) {
+      else if (ch == 34) {
         # Strings (start and end with double quote)
         var line = this.line;
-        var value = '';
-        while (this.ch >= 0 and this.ch != 39) {
+        var value = "";
+        while (this.ch >= 0 and this.ch != 34) {
           if (this.ch == 10) {
             this.line = this.line + 1;
           }
@@ -265,7 +265,7 @@ class Scanner {
           this.advance();
         }
         if (this.ch < 0) {
-          return Token(INVALID, 'Unterminated string.', this.line);
+          return Token(INVALID, "Unterminated string.", this.line);
         }
         this.advance();
         return Token(STRING, value, line);
@@ -281,7 +281,7 @@ class Scanner {
         if (this.ch == DOT) {
           this.advance();
           if (!isDigit(this.ch)) {
-            this.buffered = Token(DOT, none, this.line);
+            this.buffered = Token(DOT, nil, this.line);
             return Token(NUMBER, num, this.line);
           }
           var numerator = 0;
@@ -303,16 +303,16 @@ class Scanner {
           this.advance();
         }
         var keyword = keywordType(name);
-        if (keyword != none) {
-          return Token(keyword, none, this.line);
+        if (keyword != nil) {
+          return Token(keyword, nil, this.line);
         }
         return Token(IDENTIFIER, name, this.line);
       }
       else {
-        return Token(INVALID, 'Unexpected character: ' + chr(ch), this.line);
+        return Token(INVALID, "Unexpected character.", this.line);
       }
     }
-    return Token(EOF, none, this.line);
+    return Token(EOF, nil, this.line);
   }
 }
 
@@ -326,10 +326,10 @@ fun testScanner() {
       done = true;
     } else if (token.type == INVALID) {
       done = true;
-      print token.value + ' on line:';
+      print token.value + " on line:";
       print token.line;
     } else {
-      if (token.value != none) {
+      if (token.value != nil) {
         print tokenTypeStr(token.type);
         print token.value;
       } else {
@@ -349,22 +349,22 @@ fun testScanner() {
 class ListNode {
   init(value) {
     this.value = value;
-    this.next = none;
-    this.previous = none;
+    this.next = nil;
+    this.previous = nil;
   }
 }
 
 class List {
   init() {
-    this.head = none;
-    this.tail = none;
+    this.head = nil;
+    this.tail = nil;
     this._length = 0;
   }
 
   # Append value to the end of the list.
   append(value) {
     var node = ListNode(value);
-    if (this.head == none) {
+    if (this.head == nil) {
       this.head = node;
       this.tail = node;
     } else {
@@ -379,16 +379,16 @@ class List {
   # Pop the last value off the list and return it. Do nothing if
   # list if empty;
   pop() {
-    if (this.tail == none) {
+    if (this.tail == nil) {
       return;
     }
     var node = this.tail;
     var previous = node.previous;
     this.tail = previous;
-    if (previous != none) {
-      previous.next = none;
+    if (previous != nil) {
+      previous.next = nil;
     } else {
-      this.head = none;
+      this.head = nil;
     }
     this._length = this._length - 1;
     return node.value;
@@ -398,7 +398,7 @@ class List {
   # appended to last. If f returns a truthy value, stop iterating.
   foreach(f) {
     var node = this.head;
-    while (node != none) {
+    while (node != nil) {
       if (f(node.value)) {
         return;
       }
@@ -411,14 +411,14 @@ class List {
   get(n) {
     var node = this.head;
     var i = 0;
-    while (node != none) {
+    while (node != nil) {
       if (i == n) {
         return node.value;
       }
       node = node.next;
       i = i + 1;
     }
-    return none;
+    return nil;
   }
 
   # Return the length of the list. The length is tracked as the list
@@ -427,12 +427,12 @@ class List {
     return this._length;
   }
 
-  # Return the last element, or none if list if empty.
+  # Return the last element, or nil if list if empty.
   last() {
-    if (this.tail != none) {
+    if (this.tail != nil) {
       return this.tail.value;
     }
-    return none;
+    return nil;
   }
 }
 
@@ -453,7 +453,7 @@ class Map {
     this.items = List();
   }
 
-  # Look for given key in map, return MapItem or none.
+  # Look for given key in map, return MapItem or nil.
   find(key) {
     var found;
     fun findItem(item) {
@@ -468,20 +468,20 @@ class Map {
     return found;
   }
 
-  # Look for given key in map, return value or none.
+  # Look for given key in map, return value or nil.
   get(key) {
     var item = this.find(key);
-    if (item != none) {
+    if (item != nil) {
       return item.value;
     }
-    return none;
+    return nil;
   }
 
   # Set given key to value in map. Overwrite if an item with the
   # given key already exists.
   set(key, value) {
     var item = this.find(key);
-    if (item != none) {
+    if (item != nil) {
       item.value = value;
     } else {
       this.items.append(MapItem(key, value));
@@ -509,13 +509,13 @@ class Environment {
   # environments. Exit with runtime error if name not found.
   get(name) {
     var item = this.values.find(name);
-    if (item != none) {
+    if (item != nil) {
       return item.value;
     }
-    if (this.enclosing != none) {
+    if (this.enclosing != nil) {
       return this.enclosing.get(name);
     }
-    runtimeError('Undefined variable ' + name + '.');
+    runtimeError("Undefined variable '" + name + "'.");
   }
 
   # Assign an already-defined name in environment to value, also
@@ -523,15 +523,15 @@ class Environment {
   # name not found.
   assign(name, value) {
     var item = this.values.find(name);
-    if (item != none) {
+    if (item != nil) {
       item.value = value;
       return;
     }
-    if (this.enclosing != none) {
+    if (this.enclosing != nil) {
       this.enclosing.assign(name, value);
       return;
     }
-    runtimeError('Undefined variable ' + name + '.');
+    runtimeError("Undefined variable '" + name + "'.");
   }
 
   # Define a name in this environment and set to value.
@@ -561,9 +561,9 @@ class Environment {
 # for pretty-printing the AST (disabled by default) and for showing
 # things like line numbers in error messages.
 fun numberStr(num) {
-  var s = '';
+  var s = "";
   if (num < 0) {
-    s = '-';
+    s = "-";
     num = -num;
   }
   var mult = 1;
@@ -583,7 +583,7 @@ fun numberStr(num) {
     # Fractional part: only handles a fixed number of decimal
     # places right now (3), but this is only used for pretty-printing
     # the syntax tree and error messages, so that's probably fine.
-    s = s + '.';
+    s = s + ".";
     num = num + 0.0005;
     for (var places = 0; places < 3; places = places + 1) {
       num = num * 10;
@@ -607,13 +607,13 @@ fun numberStr(num) {
 
 class Assign {
   init(name, value) {
-    this.type = 'Assign';
+    this.type = "Assign";
     this.name = name;
     this.value = value;
   }
 
   str() {
-    return this.name + ' = ' + this.value.str();
+    return this.name + " = " + this.value.str();
   }
 
   resolve(resolver) {
@@ -624,7 +624,7 @@ class Assign {
   evaluate(interpreter) {
     var value = this.value.evaluate(interpreter);
     var distance = interpreter.locals.get(this);
-    if (distance != none) {
+    if (distance != nil) {
       interpreter.environment.assignAt(distance, this.name, value);
     } else {
       interpreter.globals.assign(this.name, value);
@@ -635,7 +635,7 @@ class Assign {
 
 class Binary {
   init(left, operator, right) {
-    this.type = 'Binary';
+    this.type = "Binary";
     this.left = left;
     this.operator = operator;
     this.right = right;
@@ -647,8 +647,8 @@ class Binary {
   }
 
   str() {
-    return '(' + this.left.str() + ' ' + tokenTypeStr(this.operator) +
-           ' ' + this.right.str() + ')';
+    return "(" + this.left.str() + " " + tokenTypeStr(this.operator) +
+           " " + this.right.str() + ")";
   }
 
   evaluate(interpreter) {
@@ -664,29 +664,29 @@ class Binary {
     if (this.operator == GREATER_EQUAL) return left >= right;
     if (this.operator == LESS) return left < right;
     if (this.operator == LESS_EQUAL) return left <= right;
-    return none; # Unreachable
+    return nil; # Unreachable
   }
 }
 
 class Call {
   init(callee, arguments) {
-    this.type = 'Call';
+    this.type = "Call";
     this.callee = callee;
     this.arguments = arguments;
   }
 
   str() {
-    var s = this.callee.str() + '(';
+    var s = this.callee.str() + "(";
     var addComma = false;
     fun addArgument(argument) {
       if (addComma) {
-        s = s + ', ';
+        s = s + ", ";
       }
       addComma = true;
       s = s + argument.str();
     }
     this.arguments.foreach(addArgument);
-    s = s + ')';
+    s = s + ")";
     return s;
   }
 
@@ -706,8 +706,8 @@ class Call {
     }
     this.arguments.foreach(addArgument);
     if (arguments.length() != callee.arity()) {
-      runtimeError('Expected ' + numberStr(callee.arity()) +
-                   ' arguments but got ' + numberStr(arguments.length()) + '.');
+      runtimeError("Expected " + numberStr(callee.arity()) +
+                   " arguments but got " + numberStr(arguments.length()) + ".");
     }
     return callee.call(interpreter, arguments);
   }
@@ -715,13 +715,13 @@ class Call {
 
 class Get {
   init(object, name) {
-    this.type = 'Get';
+    this.type = "Get";
     this.object = object;
     this.name = name;
   }
   
   str() {
-    return this.object.str() + '.' + this.name;
+    return this.object.str() + "." + this.name;
   }
 
   resolve(resolver) {
@@ -736,12 +736,12 @@ class Get {
 
 class Grouping {
   init(expr) {
-    this.type = 'Grouping';
+    this.type = "Grouping";
     this.expr = expr;
   }
 
   str() {
-    return '(' + this.expr.str() + ')';
+    return "(" + this.expr.str() + ")";
   }
 
   resolve(resolver) {
@@ -755,29 +755,29 @@ class Grouping {
 
 class Literal {
   init(kind, value) {
-    this.type = 'Literal';
+    this.type = "Literal";
     this.kind = kind;
     this.value = value;
   }
 
   str() {
-    if (this.kind == 'boolean') {
+    if (this.kind == "boolean") {
       if (this.value) {
-        return 'true';
+        return "true";
       } else {
-        return 'false';
+        return "false";
       }
     }
-    if (this.kind == 'none') {
-      return 'none';
+    if (this.kind == "nil") {
+      return "nil";
     }
-    if (this.kind == 'number') {
+    if (this.kind == "number") {
       return numberStr(this.value);
     }
-    if (this.kind == 'string') {
-      return chr(39) + this.value + chr(39);
+    if (this.kind == "string") {
+      return chr(34) + this.value + chr(34);
     }
-    return '<unexpected kind>';
+    return "<unexpected kind>";
   }
 
   resolve(resolver) {
@@ -790,15 +790,15 @@ class Literal {
 
 class Logical {
   init(left, operator, right) {
-    this.type = 'Logical';
+    this.type = "Logical";
     this.left = left;
     this.operator = operator;
     this.right = right;
   }
 
   str() {
-    return '(' + this.left.str() + ' ' + tokenTypeStr(this.operator) +
-           ' ' + this.right.str() + ')';
+    return "(" + this.left.str() + " " + tokenTypeStr(this.operator) +
+           " " + this.right.str() + ")";
   }
 
   resolve(resolver) {
@@ -818,14 +818,14 @@ class Logical {
 
 class Set {
   init(object, name, value) {
-    this.type = 'Set';
+    this.type = "Set";
     this.object = object;
     this.name = name;
     this.value = value;
   }
 
   str() {
-    return this.object.str() + '.' + this.name + ' = ' + this.value.str();
+    return this.object.str() + "." + this.name + " = " + this.value.str();
   }
 
   resolve(resolver) {
@@ -843,25 +843,25 @@ class Set {
 
 class Super {
   init(method) {
-    this.type = 'Super';
+    this.type = "Super";
     this.method = method;
   }
 
   str() {
-    return 'super.' + this.method;
+    return "super." + this.method;
   }
 
   resolve(resolver) {
-    resolver.resolveVar(this, 'super');
+    resolver.resolveVar(this, "super");
   }
 
   evaluate(interpreter) {
     var distance = interpreter.locals.get(this);
-    var superclass = interpreter.environment.getAt(distance, 'super');
-    var object = interpreter.environment.getAt(distance - 1, 'this');
+    var superclass = interpreter.environment.getAt(distance, "super");
+    var object = interpreter.environment.getAt(distance - 1, "this");
     var method = superclass.findMethod(object, this.method);
-    if (method == none) {
-      runtimeError('Undefined property ' + this.method + '.');
+    if (method == nil) {
+      runtimeError("Undefined property '" + this.method + "'.");
     }
     return method;
   }
@@ -869,25 +869,25 @@ class Super {
 
 class This {
   init() {
-    this.type = 'This';
+    this.type = "This";
   }
 
   str() {
-    return 'this';
+    return "this";
   }
 
   resolve(resolver) {
-    resolver.resolveVar(this, 'this');
+    resolver.resolveVar(this, "this");
   }
 
   evaluate(interpreter) {
-    return interpreter.lookupVariable('this', this);
+    return interpreter.lookupVariable("this", this);
   }
 }
 
 class Unary {
   init(operator, right) {
-    this.type = 'Unary';
+    this.type = "Unary";
     this.operator = operator;
     this.right = right;
   }
@@ -909,7 +909,7 @@ class Unary {
 
 class Variable {
   init(name) {
-    this.type = 'Variable';
+    this.type = "Variable";
     this.name = name;
   }
 
@@ -919,7 +919,7 @@ class Variable {
 
   resolve(resolver) {
     if (resolver.scopes.length() != 0 and resolver.scopes.last().get(this.name) == false) {
-      resolver.error('Error at ' + this.name + ': Cannot read local variable in its own initializer.');
+      resolver.error("Error at '" + this.name + "': Cannot read local variable in its own initializer.");
     }
     resolver.resolveVar(this, this.name);
   }
@@ -933,12 +933,12 @@ class Variable {
 
 class Program {
   init(statements) {
-    this.type = 'Program';
+    this.type = "Program";
     this.statements = statements;
   }
 
   str() {
-    var s = '';
+    var s = "";
     fun format(statement) {
       s = s + statement.str();
     }
@@ -965,25 +965,25 @@ var indent = 0;
 
 class Block {
   init(statements) {
-    this.type = 'Block';
+    this.type = "Block";
     this.statements = statements;
   }
 
   str() {
-    var s = '{' + chr(10);
+    var s = "{" + chr(10);
     indent = indent + 1;
     fun format(statement) {
       for (var i = 0; i < indent; i = i + 1) {
-        s = s + '  ';
+        s = s + "  ";
       }
       s = s + statement.str();
     }
     this.statements.foreach(format);
     indent = indent - 1;
     for (var i = 0; i < indent; i = i + 1) {
-      s = s + '  ';
+      s = s + "  ";
     }
-    s = s + '}' + chr(10);
+    s = s + "}" + chr(10);
     return s;
   }
 
@@ -1003,16 +1003,16 @@ class Block {
 
 class Class {
   init(name, superclass, methods) {
-    this.type = 'Class';
+    this.type = "Class";
     this.name = name;
     this.superclass = superclass;
     this.methods = methods;
   }
 
   str() {
-    var s = 'class ' + this.name + ' ';
-    if (this.superclass != none) {
-      s = s + '< ' + this.superclass.name + ' ';
+    var s = "class " + this.name + " ";
+    if (this.superclass != nil) {
+      s = s + "< " + this.superclass.name + " ";
     }
     s = s + Block(this.methods).str(); # Reuse Block.str()
     return s;
@@ -1020,16 +1020,16 @@ class Class {
 
   resolve(resolver) {
     resolver.declare(this.name);
-    if (this.superclass != none) {
+    if (this.superclass != nil) {
       this.superclass.resolve(resolver);
     }
     resolver.define(this.name);
-    if (this.superclass != none) {
+    if (this.superclass != nil) {
       resolver.beginScope();
-      resolver.scopes.last().set('super', true);
+      resolver.scopes.last().set("super", true);
     }
     resolver.beginScope();
-    resolver.scopes.last().set('this', true);
+    resolver.scopes.last().set("this", true);
 
     fun resolveMethod(method) {
       resolver.resolveFunction(method);
@@ -1037,35 +1037,35 @@ class Class {
     this.methods.foreach(resolveMethod);
 
     resolver.endScope();
-    if (this.superclass != none) {
+    if (this.superclass != nil) {
       resolver.endScope();
     }
   }
 
   execute(interpreter) {
     var superclass;
-    if (this.superclass != none) {
+    if (this.superclass != nil) {
       superclass = this.superclass.evaluate(interpreter);
       # The following will cause a runtime error if the superclass
       # is not a class
       superclass.findMethod;
     }
-    interpreter.environment.define(this.name, none);
-    if (this.superclass != none) {
+    interpreter.environment.define(this.name, nil);
+    if (this.superclass != nil) {
       interpreter.environment = Environment(interpreter.environment);
-      interpreter.environment.define('super', superclass);
+      interpreter.environment.define("super", superclass);
     }
 
     var methods = Map();
     fun addMethod(method) {
       var function = LoxFunction(method, interpreter.environment,
-                                 method.name == 'init');
+                                 method.name == "init");
       methods.set(method.name, function);
     }
     this.methods.foreach(addMethod);
 
     var klass = LoxClass(this.name, superclass, methods);
-    if (this.superclass != none) {
+    if (this.superclass != nil) {
       interpreter.environment = interpreter.environment.enclosing;
     }
     interpreter.environment.assign(this.name, klass);
@@ -1074,12 +1074,12 @@ class Class {
 
 class Expression {
   init(expression) {
-    this.type = 'Expression';
+    this.type = "Expression";
     this.expression = expression;
   }
 
   str() {
-    return this.expression.str() + ';' + chr(10);
+    return this.expression.str() + ";" + chr(10);
   }
 
   resolve(resolver) {
@@ -1093,24 +1093,24 @@ class Expression {
 
 class Function {
   init(name, params, body) {
-    this.type = 'Function';
+    this.type = "Function";
     this.name = name;
     this.params = params;
     this.body = body;
   }
 
   str() {
-    var s = 'fun ' + this.name + '(';
+    var s = "fun " + this.name + "(";
     var addComma = false;
     fun addParam(param) {
       if (addComma) {
-        s = s + ', ';
+        s = s + ", ";
       }
       addComma = true;
       s = s + param;
     }
     this.params.foreach(addParam);
-    s = s + ') ';
+    s = s + ") ";
     s = s + Block(this.body).str();
     return s;
   }
@@ -1129,19 +1129,19 @@ class Function {
 
 class If {
   init(condition, thenBranch, elseBranch) {
-    this.type = 'If';
+    this.type = "If";
     this.condition = condition;
     this.thenBranch = thenBranch;
     this.elseBranch = elseBranch;
   }
 
   str() {
-    var s = 'if (' + this.condition.str() + ') ' + this.thenBranch.str();
-    if (this.elseBranch != none) {
+    var s = "if (" + this.condition.str() + ") " + this.thenBranch.str();
+    if (this.elseBranch != nil) {
       for (var i = 0; i < indent; i = i + 1) {
-        s = s + '  ';
+        s = s + "  ";
       }
-      s = s + 'else ' + this.elseBranch.str();
+      s = s + "else " + this.elseBranch.str();
     }
     return s;
   }
@@ -1149,7 +1149,7 @@ class If {
   resolve(resolver) {
     this.condition.resolve(resolver);
     this.thenBranch.resolve(resolver);
-    if (this.elseBranch != none) {
+    if (this.elseBranch != nil) {
       this.elseBranch.resolve(resolver);
     }
   }
@@ -1157,7 +1157,7 @@ class If {
   execute(interpreter) {
     if (this.condition.evaluate(interpreter)) {
       return this.thenBranch.execute(interpreter);
-    } else if (this.elseBranch != none) {
+    } else if (this.elseBranch != nil) {
       return this.elseBranch.execute(interpreter);
     }
   }
@@ -1165,12 +1165,12 @@ class If {
 
 class Print {
   init(expression) {
-    this.type = 'Print';
+    this.type = "Print";
     this.expression = expression;
   }
 
   str() {
-    return 'print ' + this.expression.str() + ';' + chr(10);
+    return "print " + this.expression.str() + ";" + chr(10);
   }
 
   resolve(resolver) {
@@ -1190,27 +1190,27 @@ class ReturnValue {
 
 class Return {
   init(value) {
-    this.type = 'Return';
+    this.type = "Return";
     this.value = value;
   }
 
   str() {
-    if (this.value != none) {
-      return 'return ' + this.value.str() + ';' + chr(10);
+    if (this.value != nil) {
+      return "return " + this.value.str() + ";" + chr(10);
     } else {
-      return 'return;' + chr(10);
+      return "return;" + chr(10);
     }
   }
 
   resolve(resolver) {
-    if (this.value != none) {
+    if (this.value != nil) {
       this.value.resolve(resolver);
     }
   }
 
   execute(interpreter) {
     var value;
-    if (this.value != none) {
+    if (this.value != nil) {
       value = this.value.evaluate(interpreter);
     }
     return ReturnValue(value);
@@ -1219,23 +1219,23 @@ class Return {
 
 class Var {
   init(name, initializer) {
-    this.type = 'Var';
+    this.type = "Var";
     this.name = name;
     this.initializer = initializer;
   }
 
   str() {
-    var s = 'var ' + this.name;
-    if (this.initializer != none) {
-      s = s + ' = ' + this.initializer.str();
+    var s = "var " + this.name;
+    if (this.initializer != nil) {
+      s = s + " = " + this.initializer.str();
     }
-    s = s + ';' + chr(10);
+    s = s + ";" + chr(10);
     return s;
   }
 
   resolve(resolver) {
     resolver.declare(this.name);
-    if (this.initializer != none) {
+    if (this.initializer != nil) {
       this.initializer.resolve(resolver);
     }
     resolver.define(this.name);
@@ -1243,7 +1243,7 @@ class Var {
 
   execute(interpreter) {
     var value;
-    if (this.initializer != none) {
+    if (this.initializer != nil) {
       value = this.initializer.evaluate(interpreter);
     }
     interpreter.environment.define(this.name, value);
@@ -1252,13 +1252,13 @@ class Var {
 
 class While {
   init(condition, body) {
-    this.type = 'While';
+    this.type = "While";
     this.condition = condition;
     this.body = body;
   }
 
   str() {
-    return 'while (' + this.condition.str() + ') ' + this.body.str();
+    return "while (" + this.condition.str() + ") " + this.body.str();
   }
 
   resolve(resolver) {
@@ -1288,7 +1288,7 @@ class LoxFunction {
 
   bind(instance) {
     var environment = Environment(this.closure);
-    environment.define('this', instance);
+    environment.define("this", instance);
     return LoxFunction(this.declaration, environment, this.isInitializer);
   }
 
@@ -1307,12 +1307,12 @@ class LoxFunction {
 
     var ret = interpreter.executeBlock(this.declaration.body, environment);
     if (this.isInitializer) {
-      return this.closure.get('this');
+      return this.closure.get("this");
     }
     if (ret) {
       return ret.value;
     }
-    return none;
+    return nil;
   }
 }
 
@@ -1324,14 +1324,14 @@ class LoxInstance {
 
   get(name) {
     var field = this.fields.find(name);
-    if (field != none) {
+    if (field != nil) {
       return field.value;
     }
     var method = this.klass.findMethod(this, name);
-    if (method != none) {
+    if (method != nil) {
       return method;
     }
-    runtimeError('Undefined property ' + name + '.');
+    runtimeError("Undefined property '" + name + "'.");
   }
 
   set(name, value) {
@@ -1348,27 +1348,27 @@ class LoxClass {
 
   findMethod(instance, name) {
     var method = this.methods.find(name);
-    if (method != none) {
+    if (method != nil) {
       return method.value.bind(instance);
     }
-    if (this.superclass != none) {
+    if (this.superclass != nil) {
       return this.superclass.findMethod(instance, name);
     }
-    return none;
+    return nil;
   }
 
   call(interpreter, arguments) {
     var instance = LoxInstance(this);
-    var initializer = this.methods.find('init');
-    if (initializer != none) {
+    var initializer = this.methods.find("init");
+    if (initializer != nil) {
       initializer.value.bind(instance).call(interpreter, arguments);
     }
     return instance;
   }
 
   arity() {
-    var initializer = this.methods.find('init');
-    if (initializer != none) {
+    var initializer = this.methods.find("init");
+    if (initializer != nil) {
       return initializer.value.arity();
     }
     return 0;
@@ -1410,7 +1410,8 @@ class Parser {
   init() {
     this.functionDepth = 0;
     this.classDepth = 0;
-    this.token = none;
+    this.token = nil;
+    this.inInitializer = false;
     this.scanner = Scanner();
     this.next();
   }
@@ -1426,17 +1427,17 @@ class Parser {
   error(token, message) {
     var at;
     if (token.type == INVALID) {
-      at = 'Error: ';
+      at = "Error: ";
     } else if (token.type == EOF) {
-      at = 'Error at end: ';
+      at = "Error at end: ";
     } else if (token.type == IDENTIFIER) {
-      at = 'Error at ' + token.value + ': ';
+      at = "Error at '" + token.value + "': ";
     } else if (token.type == NUMBER) {
-      at = 'Error at ' + numberStr(token.value) + ': ';
+      at = "Error at '" + numberStr(token.value) + "': ";
     } else {
-      at = 'Error at ' + tokenTypeStr(token.type) + ': ';
+      at = "Error at '" + tokenTypeStr(token.type) + "': ";
     }
-    print_error('[line ' + numberStr(this.token.line) + '] ' + at + message);
+    print_error("[line " + numberStr(this.token.line) + "] " + at + message);
     exit(65);
   }
 
@@ -1446,7 +1447,7 @@ class Parser {
       this.next();
       return previous;
     }
-    return none;
+    return nil;
   }
 
   consume(type, message) {
@@ -1471,27 +1472,27 @@ class Parser {
 
   declaration() {
     if (this.match(CLASS)) return this.classDeclaration();
-    if (this.match(FUN)) return this.function('function');
+    if (this.match(FUN)) return this.function("function");
     if (this.match(VAR)) return this.varDeclaration();
     return this.statement();
   }
 
   classDeclaration() {
-    var name = this.consume(IDENTIFIER, 'Expect class name.');
+    var name = this.consume(IDENTIFIER, "Expect class name.");
     var superclass;
     if (this.match(LESS)) {
-      var superName = this.consume(IDENTIFIER, 'Expect superclass name.');
+      var superName = this.consume(IDENTIFIER, "Expect superclass name.");
       superclass = Variable(superName.value);
     }
 
     this.classDepth = this.classDepth + 1;
-    this.hasSuperClass = superclass != none;
-    this.consume(LEFT_BRACE, 'Expect "{" before class body.');
+    this.hasSuperClass = superclass != nil;
+    this.consume(LEFT_BRACE, "Expect '{' before class body.");
     var methods = List();
     while (this.token.type != EOF and this.token.type != RIGHT_BRACE) {
-      methods.append(this.function('method'));
+      methods.append(this.function("method"));
     }
-    this.consume(RIGHT_BRACE, 'Expect "}" after class body.');
+    this.consume(RIGHT_BRACE, "Expect '}' after class body.");
     this.classDepth = this.classDepth - 1;
     this.hasSuperClass = false;
 
@@ -1509,7 +1510,7 @@ class Parser {
   }
 
   forStatement() {
-    this.consume(LEFT_PAREN, 'Expect "(" after "for".');
+    this.consume(LEFT_PAREN, "Expect '(' after 'for'.");
 
     var initializer;
     if (this.match(SEMICOLON)) {
@@ -1524,18 +1525,18 @@ class Parser {
     if (this.token.type != SEMICOLON) {
       condition = this.expression();
     }
-    this.consume(SEMICOLON, 'Expect ";" after loop condition.');
+    this.consume(SEMICOLON, "Expect ';' after loop condition.");
 
     var increment;
     if (this.token.type != RIGHT_PAREN) {
       increment = Expression(this.expression());
     }
-    this.consume(RIGHT_PAREN, 'Expect ")" after for clauses.');
+    this.consume(RIGHT_PAREN, "Expect ')' after for clauses.");
 
     var body = this.statement();
 
     # Desugar increment
-    if (increment != none) {
+    if (increment != nil) {
       var statements = List();
       statements.append(body);
       statements.append(increment);
@@ -1543,13 +1544,13 @@ class Parser {
     }
 
     # Desugar condition
-    if (condition == none) {
-      condition = Literal('boolean', true);
+    if (condition == nil) {
+      condition = Literal("boolean", true);
     }
     body = While(condition, body);
 
     # Desugar initializer
-    if (initializer != none) {
+    if (initializer != nil) {
       var statements = List();
       statements.append(initializer);
       statements.append(body);
@@ -1560,9 +1561,9 @@ class Parser {
   }
 
   ifStatement() {
-    this.consume(LEFT_PAREN, 'Expect "(" after "if".');
+    this.consume(LEFT_PAREN, "Expect '(' after 'if'.");
     var condition = this.expression();
-    this.consume(RIGHT_PAREN, 'Expect ")" after if condition.');
+    this.consume(RIGHT_PAREN, "Expect ')' after if condition.");
     var thenBranch = this.statement();
     var elseBranch;
     if (this.match(ELSE)) {
@@ -1573,73 +1574,74 @@ class Parser {
 
   printStatement() {
     var value = this.expression();
-    this.consume(SEMICOLON, 'Expect ";" after value.');
+    this.consume(SEMICOLON, "Expect ';' after value.");
     return Print(value);
   }
 
   returnStatement() {
     if (this.functionDepth <= 0) {
-      this.error(this.previous, 'Cannot return from top-level code.');
+      this.error(this.previous, "Cannot return from top-level code.");
     }
     var value;
     if (this.token.type != SEMICOLON) {
       if (this.inInitializer) {
-        this.error(this.previous, 'Cannot return a value from an initializer.');
+        this.error(this.previous, "Cannot return a value from an initializer.");
       }
       value = this.expression();
     }
-    this.consume(SEMICOLON, 'Expect ";" after return value.');
+    this.consume(SEMICOLON, "Expect ';' after return value.");
     return Return(value);
   }
 
   varDeclaration() {
-    var name = this.consume(IDENTIFIER, 'Expect variable name.');
+    var name = this.consume(IDENTIFIER, "Expect variable name.");
     var initializer;
     if (this.match(EQUAL)) {
       initializer = this.expression();
     }
-    this.consume(SEMICOLON, 'Expect ";" after variable declaration.');
+    this.consume(SEMICOLON, "Expect ';' after variable declaration.");
     return Var(name.value, initializer);
   }
 
   whileStatement() {
-    this.consume(LEFT_PAREN, 'Expect "(" after "while".');
+    this.consume(LEFT_PAREN, "Expect '(' after 'while'.");
     var condition = this.expression();
-    this.consume(RIGHT_PAREN, 'Expect ")" after condition.');
+    this.consume(RIGHT_PAREN, "Expect ')' after condition.");
     var body = this.statement();
     return While(condition, body);
   }
 
   expressionStatement() {
     var expr = this.expression();
-    this.consume(SEMICOLON, 'Expect ";" after expression.');
+    this.consume(SEMICOLON, "Expect ';' after expression.");
     return Expression(expr);
   }
 
   function(kind) {
-    var name = this.consume(IDENTIFIER, 'Expect ' + kind + ' name.');
-    this.consume(LEFT_PAREN, 'Expect "(" after ' + kind + ' name.');
+    var name = this.consume(IDENTIFIER, "Expect " + kind + " name.");
+    this.consume(LEFT_PAREN, "Expect '(' after " + kind + " name.");
     var parameters = List();
     var n = 0;
     while (this.token.type != RIGHT_PAREN) {
       if (n > 0) {
-        this.consume(COMMA, 'Expect ")" after parameters.');
+        this.consume(COMMA, "Expect ')' after parameters.");
       }
       if (n >= 8) {
-        this.error(this.token, 'Cannot have more than 8 parameters.');
+        this.error(this.token, "Cannot have more than 8 parameters.");
       }
-      var paramName = this.consume(IDENTIFIER, 'Expect parameter name.');
+      var paramName = this.consume(IDENTIFIER, "Expect parameter name.");
       parameters.append(paramName.value);
       n = n + 1;
     }
-    this.consume(RIGHT_PAREN, 'Expect ")" after parameters.');
-    this.consume(LEFT_BRACE, 'Expect "{" before ' + kind + ' body.');
+    this.consume(RIGHT_PAREN, "Expect ')' after parameters.");
+    this.consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
 
     this.functionDepth = this.functionDepth + 1;
-    this.inInitializer = kind == 'method' and name.value == 'init';
+    var inInit = this.inInitializer;
+    this.inInitializer = kind == "method" and name.value == "init";
     var body = this.block();
     this.functionDepth = this.functionDepth - 1;
-    this.inInitializer = false;
+    this.inInitializer = inInit;
 
     return Function(name.value, parameters, body);
   }
@@ -1649,7 +1651,7 @@ class Parser {
     while (this.token.type != EOF and this.token.type != RIGHT_BRACE) {
       statements.append(this.declaration());
     }
-    this.consume(RIGHT_BRACE, 'Expect "}" after block.');
+    this.consume(RIGHT_BRACE, "Expect '}' after block.");
     return statements;
   }
 
@@ -1658,13 +1660,13 @@ class Parser {
     if (this.match(EQUAL)) {
       var equals = this.previous;
       var value = this.assignment();
-      if (expr.type == 'Variable') {
+      if (expr.type == "Variable") {
         return Assign(expr.name, value);
       }
-      if (expr.type == 'Get') {
+      if (expr.type == "Get") {
         return Set(expr.object, expr.name, value);
       }
-      this.error(equals, 'Invalid assignment target.');
+      this.error(equals, "Invalid assignment target.");
     }
     return expr;
   }
@@ -1751,18 +1753,18 @@ class Parser {
         var n = 0;
         while (this.token.type != RIGHT_PAREN) {
           if (n > 0) {
-            this.consume(COMMA, 'Expect ")" after arguments.');
+            this.consume(COMMA, "Expect ')' after arguments.");
           }
           if (n >= 8) {
-            this.error(this.token, 'Cannot have more than 8 arguments.');
+            this.error(this.token, "Cannot have more than 8 arguments.");
           }
           arguments.append(this.expression());
           n = n + 1;
         }
-        this.consume(RIGHT_PAREN, 'Expect ")" after arguments.');
+        this.consume(RIGHT_PAREN, "Expect ')' after arguments.");
         expr = Call(expr, arguments);
       } else if (this.match(DOT)) {
-        var name = this.consume(IDENTIFIER, 'Expect property name after ".".');
+        var name = this.consume(IDENTIFIER, "Expect property name after '.'.");
         expr = Get(expr, name.value);
       } else {
         loop = false;
@@ -1772,31 +1774,31 @@ class Parser {
   }
 
   primary() {
-    if (this.match(FALSE)) return Literal('boolean', false);
-    if (this.match(TRUE)) return Literal('boolean', true);
-    if (this.match(NIL)) return Literal('none', none);
+    if (this.match(FALSE)) return Literal("boolean", false);
+    if (this.match(TRUE)) return Literal("boolean", true);
+    if (this.match(NIL)) return Literal("nil", nil);
     var number = this.match(NUMBER);
     if (number) {
-      return Literal('number', number.value);
+      return Literal("number", number.value);
     }
     var string = this.match(STRING);
     if (string) {
-      return Literal('string', string.value);
+      return Literal("string", string.value);
     }
     if (this.match(SUPER)) {
       if (this.classDepth <= 0) {
-        this.error(this.previous, 'Cannot use "super" outside of a class.');
+        this.error(this.previous, "Cannot use 'super' outside of a class.");
       }
       if (!this.hasSuperClass) {
-        this.error(this.previous, 'Cannot use "super" in a class with no superclass.');
+        this.error(this.previous, "Cannot use 'super' in a class with no superclass.");
       }
-      this.consume(DOT, 'Expect "." after "super".');
-      var method = this.consume(IDENTIFIER, 'Expect superclass method name.');
+      this.consume(DOT, "Expect '.' after 'super'.");
+      var method = this.consume(IDENTIFIER, "Expect superclass method name.");
       return Super(method.value);
     }
     if (this.match(THIS)) {
       if (this.classDepth <= 0) {
-        this.error(this.previous, 'Cannot use "this" outside of a class.');
+        this.error(this.previous, "Cannot use 'this' outside of a class.");
       }
       return This();
     }
@@ -1806,10 +1808,10 @@ class Parser {
     }
     if (this.match(LEFT_PAREN)) {
       var expr = this.expression();
-      this.consume(RIGHT_PAREN, 'Expect ")" after expression.');
+      this.consume(RIGHT_PAREN, "Expect ')' after expression.");
       return Grouping(expr);
     }
-    this.error(this.token, 'Expect expression.');
+    this.error(this.token, "Expect expression.");
   }
 }
 
@@ -1824,7 +1826,7 @@ class Resolver {
   }
 
   error(message) {
-    print_error('[line 1] ' + message); # This is hack for tests (it's not always line 1)
+    print_error("[line 1] " + message); # This is hack for tests (it's not always line 1)
     exit(65);
   }
 
@@ -1840,7 +1842,7 @@ class Resolver {
     }
     function.params.foreach(declareParam);
     fun resolveStatement(statement) {
-      statement.resolve(this);
+      statement.resolve(resolver);
     }
     function.body.foreach(resolveStatement);
     this.endScope();
@@ -1860,7 +1862,7 @@ class Resolver {
     }
     var scope = this.scopes.last();
     if (scope.find(name)) {
-      this.error('Error at ' + name + ': Variable with this name already declared in this scope.');
+      this.error("Error at '" + name + "': Variable with this name already declared in this scope.");
     }
     scope.set(name, false);
   }
@@ -1889,16 +1891,16 @@ class Resolver {
 class Interpreter {
   init(program) {
     this.program = program;
-    this.globals = Environment(none);
+    this.globals = Environment(nil);
     this.environment = this.globals;
     this.locals = Map();
 
     # Define built-in functions
-    this.globals.define('clock', Builtin0(clock));
-    this.globals.define('getc', Builtin0(getc));
-    this.globals.define('chr', Builtin1(chr));
-    this.globals.define('exit', Builtin1(exit));
-    this.globals.define('print_error', Builtin1(print_error));
+    this.globals.define("clock", Builtin0(clock));
+    this.globals.define("getc", Builtin0(getc));
+    this.globals.define("chr", Builtin1(chr));
+    this.globals.define("exit", Builtin1(exit));
+    this.globals.define("print_error", Builtin1(print_error));
   }
 
   interpret() {
@@ -1912,7 +1914,7 @@ class Interpreter {
     fun executeStatement(statement) {
       ret = statement.execute(this);
       if (ret) {
-        # Stop early if there was 'return' statement
+        # Stop early if there was "return" statement
         return true;
       }
       return false;
@@ -1928,7 +1930,7 @@ class Interpreter {
 
   lookupVariable(name, expr) {
     var distance = this.locals.get(expr);
-    if (distance != none) {
+    if (distance != nil) {
       return this.environment.getAt(distance, name);
     } else {
       return this.globals.get(name);
@@ -1938,7 +1940,7 @@ class Interpreter {
 
 fun runtimeError(message) {
   print_error(message);
-  print_error('[line 1]'); # This is hack for tests (it's not always line 1)
+  print_error("[line 1]"); # This is hack for tests (it's not always line 1)
   exit(70);
 }
 
@@ -1947,7 +1949,7 @@ var program = parser.parse();
 
 # Uncomment these two lines to pretty-print the parsed syntax tree
 # print program.str();
-# print '-----';
+# print "-----";
 
 var interpreter = Interpreter(program);
 var resolver = Resolver(program, interpreter);

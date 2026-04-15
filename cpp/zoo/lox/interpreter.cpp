@@ -138,7 +138,7 @@ namespace silva::lox {
 
           const bool is_identifier = (tc == lexicon->ti_identifier);
           const bool is_keyword =
-              (ti == lexicon->ti_true || ti == lexicon->ti_false || ti == lexicon->ti_none);
+              (ti == lexicon->ti_true || ti == lexicon->ti_false || ti == lexicon->ti_nil);
           const name_id_t pr =
               (path.size() >= 2) ? pts[path[path.size() - 2].node_index].rule_name : name_id_none;
           const bool is_member_access =

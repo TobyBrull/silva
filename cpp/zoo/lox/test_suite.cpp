@@ -17,12 +17,12 @@ namespace silva::lox {
       rv.push_back(test_case_t{" print 1 + 2 <= 3 ; \n", "true\n"});
       rv.push_back(test_case_t{" print 1 + 2 <= 4 ; \n", "true\n"});
       rv.push_back(test_case_t{" print 'hello' + ' world' ; \n", "hello world\n"});
-      rv.push_back(test_case_t{" print ! ( 5 - 4 > 3 * 2 == ! none ) ; \n", "true\n"});
+      rv.push_back(test_case_t{" print ! ( 5 - 4 > 3 * 2 == ! nil ) ; \n", "true\n"});
 
       rv.push_back(test_case_t{"print ! 42 ;\n", "false\n"});
       rv.push_back(test_case_t{"print ! false ;\n", "true\n"});
       rv.push_back(test_case_t{"print ! true ;\n", "false\n"});
-      rv.push_back(test_case_t{"print ! ! none ;\n", "false\n"});
+      rv.push_back(test_case_t{"print ! ! nil ;\n", "false\n"});
       rv.push_back(test_case_t{"print ! '' ;\n", "false\n"});
       rv.push_back(test_case_t{"print - 42 ;\n", "-42\n"});
       rv.push_back(test_case_t{"print 1 + 2 * 3 - 4 / 2 ;\n", "5\n"});
@@ -63,7 +63,7 @@ namespace silva::lox {
           " var a; if ( 1 + 2 > 4 ) { a = 'true' ; } else { a = 'false' ; } print a ; \n",
           "false\n"});
       rv.push_back(test_case_t{" var a; if ( 1 + 2 < 4 ) { a = 'true' ; } print a ; \n", "true\n"});
-      rv.push_back(test_case_t{" var a; if ( 1 + 2 > 4 ) { a = 'true' ; } print a ; \n", "none\n"});
+      rv.push_back(test_case_t{" var a; if ( 1 + 2 > 4 ) { a = 'true' ; } print a ; \n", "nil\n"});
       rv.push_back(test_case_t{" var a = ( 1 + 2 > 4 ) or 'test' ; print a ; \n", "test\n"});
       rv.push_back(test_case_t{" var a = ( 1 + 2 < 4 ) or 'test' ; print a ; \n", "true\n"});
       rv.push_back(test_case_t{" var a = ( 1 + 2 > 4 ) and 'test' ; print a ; \n", "false\n"});

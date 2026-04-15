@@ -10,7 +10,6 @@
     * struct name_resolved_t{...}; // current name_id_t
 
 * tokenization:
-    * Parse "real" Lox
     * Parse Python
     * Parse C
     * Python style string interpolation
