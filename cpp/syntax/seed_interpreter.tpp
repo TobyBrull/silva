@@ -19,13 +19,13 @@ tokenizer Frog:
   string = STRING
   identifier = IDENTIFIER
 
-Frog =
+Frog:
   ⊙ = Rule *
   Rule = RuleName Expr
   RuleName = alias Keyword
   Expr = Primary +
   Primary = not Keyword but_then identifier
-  Keyword =
+  Keyword:
     ⊙ = 'keyword1' | 'keyword2' | 'keyword3'
 )'";
     syntax_farm_t sf;
@@ -74,7 +74,7 @@ Frog =
         [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
           [0].Seed.Tokenizer.Item                 IDENTIFIER
             [0].Seed.Tokenizer.Matcher            IDENTIFIER
-  [1].Seed.Rule                                   Frog = ... <ws> <ws>
+  [1].Seed.Scope                                  Frog : ... <ws> <ws>
     [0].Seed.Nonterminal                          Frog
     [1].Seed.Rule                                 ⊙ = Rule * <ws>
       [0].Seed.Expr.Postfix.*                     Rule *
@@ -98,7 +98,7 @@ Frog =
         [0].Seed.Expr.Prefix.not                  not Keyword
           [0].Seed.Nonterminal                    Keyword
         [1].Seed.Terminal                         identifier
-    [6].Seed.Rule                                 Keyword = ... <ws> <ws>
+    [6].Seed.Scope                                Keyword : ... <ws> <ws>
       [0].Seed.Nonterminal                        Keyword
       [1].Seed.Rule                               ⊙ = ... 'keyword3' <ws>
         [0].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
@@ -159,7 +159,7 @@ tokenizer Testor:
   name = IDENTIFIER
   op = OPERATOR
 
-Testor =
+Testor:
   ⊙ = Assign *
   Assign = name '=' name op name
 )'";
@@ -194,13 +194,13 @@ tokenizer Foo:
   string = STRING
   identifier = IDENTIFIER
 
-Foo =
+Foo:
   ⊙ = 'a' 'b' 'c' Bar ?
 )'";
     const string_view_t text2_seed = R"'(
-Bar =
-  Blub = 'u' 'v' 'w'
+Bar:
   ⊙ = 'x' 'y' 'z' Foo ?
+  Blub = 'u' 'v' 'w'
 )'";
     syntax_farm_t sf;
     interpreter_t se(sf.ptr());

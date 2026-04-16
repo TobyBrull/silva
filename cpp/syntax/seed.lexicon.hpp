@@ -87,6 +87,7 @@ namespace silva::seed {
     const token_id_t ti_r_fern     = sfp->token_id("Fern");
 
     const name_id_t ni_seed    = sfp->name_id_of("Seed");
+    const name_id_t ni_scope   = sfp->name_id_of(ni_seed, "Scope");
     const name_id_t ni_rule    = sfp->name_id_of(ni_seed, "Rule");
     const name_id_t ni_alias   = sfp->name_id_of(ni_seed, "Alias");
     const name_id_t ni_expr    = sfp->name_id_of(ni_seed, "Expr");

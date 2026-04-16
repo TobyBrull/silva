@@ -390,6 +390,43 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
+    expected_t<parse_tree_node_t> scope()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_scope);
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, nonterminal()));
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_scope, lexicon.ti_colon);
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_scope, lexicon.ti_newline);
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_scope, lexicon.ti_indent);
+      while (num_tokens_left() >= 1 && token_category_by() != lexicon.ti_dedent) {
+        const index_t orig_token_index = token_index;
+        error_nursery_t error_nursery;
+        {
+          auto result = scope();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+        {
+          auto result = rule();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+        return std::unexpected(std::move(error_nursery)
+                                   .finish_short(error_level_t::MINOR,
+                                                 "[{}] {}",
+                                                 token_location_at(orig_token_index),
+                                                 lexicon.name_id_wrap(lexicon.ni_scope)));
+      }
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_scope, lexicon.ti_dedent);
+      return ss_rule.commit();
+    }
+
     expected_t<parse_tree_node_t> rule()
     {
       auto ss_rule = stake();
@@ -403,15 +440,7 @@ namespace silva::seed::impl {
       }
       SILVA_EXPECT_PARSE(lexicon.ni_rule, num_tokens_left() >= 2, "not enough tokens in input");
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_rule, lexicon.ti_equal);
-      if (num_tokens_left() >= 1 && token_category_by() == lexicon.ti_newline) {
-        token_index += 1;
-        SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_rule, lexicon.ti_indent);
-        while (num_tokens_left() >= 1 && token_category_by() != lexicon.ti_dedent) {
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, rule()));
-        }
-        SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_rule, lexicon.ti_dedent);
-      }
-      else if (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_axe) {
+      if (num_tokens_left() >= 1 && token_id_by() == lexicon.ti_axe) {
         token_index += 1;
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, axe()));
       }
@@ -432,12 +461,37 @@ namespace silva::seed::impl {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_seed);
       while (num_tokens_left() >= 1 && token_category_by() != lexicon.ti_dedent) {
-        if (token_id_by() == lexicon.ti_tokenizer) {
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_seed, tokenizer()));
+        const index_t orig_token_index = token_index;
+        error_nursery_t error_nursery;
+        {
+          auto result = tokenizer();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
         }
-        else {
-          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_seed, rule()));
+        {
+          auto result = scope();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
         }
+        {
+          auto result = rule();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+        return std::unexpected(std::move(error_nursery)
+                                   .finish_short(error_level_t::MINOR,
+                                                 "[{}] {}",
+                                                 token_location_at(orig_token_index),
+                                                 lexicon.name_id_wrap(lexicon.ni_seed)));
       }
       return ss_rule.commit();
     }

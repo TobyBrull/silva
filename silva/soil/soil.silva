@@ -4,20 +4,20 @@ tokenizer Soil:
   func_name = IDENTIFIER_SNAKE_CASE\'_f'
   include tokenizer FreeForm
 
-Soil =
+Soil:
   ⊙ = ( Type.Defn | Func.Defn | Variable.Defn ) *
-  Type =
+  Type:
     ⊙ = Name | Struct
     Name = type_name
     Defn = Name '=' Type
-    Struct =
+    Struct:
       ⊙ = '[' Member * ']'
-      Member =
+      Member:
         ⊙ = Type Label ? Init ? ';'
         Label = ':' Name
         Init = '=' Expr
         Name = identifier
-  Expr =
+  Expr:
     ⊙ = Axe
     Maybe = Expr | ε
     Axe = axe Atom
@@ -35,22 +35,22 @@ Soil =
            | type_name | func_name | identifier
            | string | number
            | 'true' | 'false' | 'none' )
-    Struct =
+    Struct:
       ⊙ = '[' LabeledItem * ']'
       LabeledItem = ( Variable.Name ':' ) ? ( Struct | Expr )
-  Func =
+  Func:
     ⊙ = Name
     Name = func_name
     Defn = Name '=' Signature Body
     Signature = Type ( '->' Type ) ?
     Body = '{' Stmt * '}'
-    Stmt =
+    Stmt:
       ⊙ = If | For | Expr ';'
-      If =
+      If:
         ⊙ = 'if' Branch ( 'elif' Branch ) * ( 'else' Body ) ?
         Branch = Expr Body
       For = 'for' Expr.Maybe ';' Expr.Maybe ';' Expr.Maybe Body
-  Variable =
+  Variable:
     Name = not Type.Name but_then not Func.Name but_then identifier
     Defn = Name '=' Expr
 »

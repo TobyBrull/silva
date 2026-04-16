@@ -9,16 +9,16 @@ namespace silva::lox {
 tokenizer Lox:
   include tokenizer FreeForm
 
-Lox =
+Lox:
   ⊙ = ( Decl | Stmt ) *
-  Decl =
+  Decl:
     ⊙ = Var | Fun | Class
     Var = 'var' identifier ( '=' Expr ) ? ';'
     Fun = 'fun' Function
-    Class =
+    Class:
       ⊙ = 'class' identifier Super '{' Function * '}'
       Super = ( '<' identifier ) ?
-  Stmt =
+  Stmt:
     ⊙ = Print | If | For | While | Return | Block | ExprStmt
     Print = 'print' Expr ';'
     If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
@@ -31,7 +31,7 @@ Lox =
     Return = 'return' Expr ? ';'
     Block = '{' ( Decl | Stmt ) * '}'
     ExprStmt = Expr ';'
-  Expr =
+  Expr:
     ⊙ = axe Expr.Atom
       Primary     = nest atom_nest '(' ')'
       Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
@@ -47,7 +47,7 @@ Lox =
            | number | string
            | 'super' '.' identifier | identifier )
     Arguments = ( Expr ( ',' Expr ) * ) ?
-  Function =
+  Function:
     ⊙ = identifier '(' Parameters ')' Stmt.Block
     Parameters = ( Parameter ( ',' Parameter ) * ) ?
     Parameter = identifier

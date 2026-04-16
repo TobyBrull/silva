@@ -30,7 +30,7 @@ tokenizer SimpleFern:
   operator = ::: OPERATOR
   identifier = IDENTIFIER
 
-SimpleFern =
+SimpleFern:
   ⊙ = '[' ( LabeledItem ';' ? ) * ']'
   LabeledItem = ( Label ':' )? Item
   Label = string
@@ -94,7 +94,7 @@ SimpleFern =
         [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
           [0].Seed.Tokenizer.Item                 IDENTIFIER
             [0].Seed.Tokenizer.Matcher            IDENTIFIER
-  [1].Seed.Rule                                   SimpleFern = ... <ws> <ws>
+  [1].Seed.Scope                                  SimpleFern : ... <ws> <ws>
     [0].Seed.Nonterminal                          SimpleFern
     [1].Seed.Rule                                 ⊙ = ... ']' <ws>
       [0].Seed.Expr.Concat.concat                 '[' ( ... * ']'

@@ -11,7 +11,7 @@ Seed «
 tokenizer CppStmts:
   include tokenizer FreeForm
 
-CppStmts =
+CppStmts:
   ⊙ = ( Expr ';' ) *
   Expr = axe Atom
     Parens      = nest  atom_nest '(' ')'

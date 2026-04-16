@@ -28,7 +28,9 @@ namespace silva::seed::impl {
     {
     }
 
-    expected_t<void> handle_rule(const name_id_t scope_name, const parse_tree_span_t pts_rule)
+    expected_t<void> handle_rule(const name_id_t scope_name,
+                                 const parse_tree_span_t pts_rule,
+                                 const bool is_first_in_scope)
     {
       SILVA_EXPECT(pts_rule[0].rule_name == lexicon.ni_rule, MINOR, "expected Rule");
 
@@ -37,6 +39,10 @@ namespace silva::seed::impl {
 
       name_id_t curr_rule_name;
       if (SILVA_EXPECT_FWD(pts_rule.front_token_id()) == lexicon.ti_here) {
+        SILVA_EXPECT(is_first_in_scope,
+                     MINOR,
+                     "{} rule starting with '⊙' is only allowed as the first rule in a scope",
+                     pts_rule);
         curr_rule_name = scope_name;
       }
       else {
@@ -49,40 +55,33 @@ namespace silva::seed::impl {
       SILVA_EXPECT(it != end, MINOR, "{} rule must have right-hand side", pts_rule);
       const auto pts_rhs_0 = pts_rule.sub_tree_span_at(it.pos);
 
-      if (pts_rhs_0[0].rule_name == lexicon.ni_rule) {
-        while (it != end) {
-          SILVA_EXPECT_FWD(handle_rule(curr_rule_name, pts_rule.sub_tree_span_at(it.pos)));
-          ++it;
-        }
-      }
-      else {
-        ++it;
-        SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
-        const auto [emplace_it, inserted] = se->rule_exprs.emplace(curr_rule_name, pts_rhs_0);
-        SILVA_EXPECT(inserted,
-                     MINOR,
-                     "{} rule {} defined again, previously defined at {}",
-                     pts_rule,
-                     lexicon.name_id_wrap(curr_rule_name),
-                     emplace_it->second);
+      ++it;
+      SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
+      const auto [emplace_it, inserted] = se->rule_exprs.emplace(curr_rule_name, pts_rhs_0);
+      SILVA_EXPECT(inserted,
+                   MINOR,
+                   "{} rule {} defined again, previously defined at {}",
+                   pts_rule,
+                   lexicon.name_id_wrap(curr_rule_name),
+                   emplace_it->second);
 
-        for (index_t i = 0; i < pts_rhs_0.size(); ++i) {
-          if (pts_rhs_0[i].rule_name == lexicon.ni_term) {
-            const index_t token_idx    = pts_rhs_0[i].token_begin;
-            const token_id_t token_cat = tp->categories[token_idx];
-            if (token_cat == lexicon.ti_string) {
-              const token_id_t token_id     = tp->tokens[token_idx];
-              const auto ti                 = SILVA_EXPECT_FWD(sfp->token_id_in_string(token_id));
-              se->string_to_token[token_id] = ti;
-            }
+      for (index_t i = 0; i < pts_rhs_0.size(); ++i) {
+        if (pts_rhs_0[i].rule_name == lexicon.ni_term) {
+          const index_t token_idx    = pts_rhs_0[i].token_begin;
+          const token_id_t token_cat = tp->categories[token_idx];
+          if (token_cat == lexicon.ti_string) {
+            const token_id_t token_id     = tp->tokens[token_idx];
+            const auto ti                 = SILVA_EXPECT_FWD(sfp->token_id_in_string(token_id));
+            se->string_to_token[token_id] = ti;
           }
         }
-
-        const name_id_t expr_rule_name = pts_rhs_0[0].rule_name;
-        if (expr_rule_name == lexicon.ni_axe) {
-          se->axes[curr_rule_name] = SILVA_EXPECT_FWD(axe_create(sfp, curr_rule_name, pts_rhs_0));
-        }
       }
+
+      const name_id_t expr_rule_name = pts_rhs_0[0].rule_name;
+      if (expr_rule_name == lexicon.ni_axe) {
+        se->axes[curr_rule_name] = SILVA_EXPECT_FWD(axe_create(sfp, curr_rule_name, pts_rhs_0));
+      }
+
       return {};
     }
 
@@ -90,6 +89,37 @@ namespace silva::seed::impl {
     {
       SILVA_EXPECT(pts_tok[0].rule_name == lexicon.ni_tok, MINOR, "expected Tokenizer");
       SILVA_EXPECT_FWD(se->tokenizer_farm.add(pts_tok));
+      return {};
+    }
+
+    expected_t<void> handle_scope(const name_id_t scope_name, const parse_tree_span_t pts_scope)
+    {
+      SILVA_EXPECT(pts_scope[0].rule_name == lexicon.ni_scope, MINOR, "expected Scope");
+
+      auto [it, end] = pts_scope.children_range();
+      SILVA_EXPECT(it != end, MINOR, "{} scope must have at least one child", pts_scope);
+
+      const auto pts_nt = pts_scope.sub_tree_span_at(it.pos);
+      const name_id_t curr_scope_name =
+          SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
+      ++it;
+      SILVA_EXPECT(it != end,
+                   MINOR,
+                   "{} scope must have at least one sub-rule or sub-scope",
+                   pts_scope);
+
+      bool is_first_in_scope = true;
+      while (it != end) {
+        const auto pts_child = pts_scope.sub_tree_span_at(it.pos);
+        if (pts_child[0].rule_name == lexicon.ni_scope) {
+          SILVA_EXPECT_FWD(handle_scope(curr_scope_name, pts_child));
+        }
+        else {
+          SILVA_EXPECT_FWD(handle_rule(curr_scope_name, pts_child, is_first_in_scope));
+        }
+        is_first_in_scope = false;
+        ++it;
+      }
       return {};
     }
 
@@ -104,8 +134,11 @@ namespace silva::seed::impl {
         if (pts_child[0].rule_name == lexicon.ni_tok) {
           SILVA_EXPECT_FWD(handle_tokenizer(pts_child));
         }
+        else if (pts_child[0].rule_name == lexicon.ni_scope) {
+          SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
+        }
         else {
-          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child));
+          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, false));
         }
       }
       return {};

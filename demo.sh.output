@@ -157,7 +157,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [0].Seed                                          tokenizer CppStmts ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer CppStmts ... <ws> <ws>
     [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
-  [1].Seed.Rule                                   CppStmts = ... <ws> <ws>
+  [1].Seed.Scope                                  CppStmts : ... <ws> <ws>
     [0].Seed.Nonterminal                          CppStmts
     [1].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Postfix.*                     ( Expr ';' ) *
@@ -382,7 +382,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [0].Seed                                          tokenizer Somelang ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer Somelang ... <ws> <ws>
     [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
-  [1].Seed.Rule                                   Somelang = ... <ws> <ws>
+  [1].Seed.Scope                                  Somelang : ... <ws> <ws>
     [0].Seed.Nonterminal                          Somelang
     [1].Seed.Rule                                 ⊙ = As Bs <ws>
       [0].Seed.Expr.Concat.concat                 As Bs
@@ -417,7 +417,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].Seed.Tokenizer.Item                 IDENTIFIER_SNAKE_CASE \ '_f'
             [0].Seed.Tokenizer.Matcher            IDENTIFIER_SNAKE_CASE \ '_f'
     [2].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
-  [1].Seed.Rule                                   Soil = ... <ws> <ws>
+  [1].Seed.Scope                                  Soil : ... <ws> <ws>
     [0].Seed.Nonterminal                          Soil
     [1].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Postfix.*                     ( Type ... ) *
@@ -426,7 +426,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].Seed.Nonterminal                  Type . Defn
             [1].Seed.Nonterminal                  Func . Defn
             [2].Seed.Nonterminal                  Variable . Defn
-    [2].Seed.Rule                                 Type = ... <ws> <ws>
+    [2].Seed.Scope                                Type : ... <ws> <ws>
       [0].Seed.Nonterminal                        Type
       [1].Seed.Rule                               ⊙ = ... Struct <ws>
         [0].Seed.Expr.Or.|                        Name | Struct
@@ -441,7 +441,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].Seed.Nonterminal                    Name
           [1].Seed.Terminal                       '='
           [2].Seed.Nonterminal                    Type
-      [4].Seed.Rule                               Struct = ... <ws> <ws>
+      [4].Seed.Scope                              Struct : ... <ws> <ws>
         [0].Seed.Nonterminal                      Struct
         [1].Seed.Rule                             ⊙ = ... ']' <ws>
           [0].Seed.Expr.Concat.concat             '[' Member * ']'
@@ -449,7 +449,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].Seed.Expr.Postfix.*               Member *
               [0].Seed.Nonterminal                Member
             [2].Seed.Terminal                     ']'
-        [2].Seed.Rule                             Member = ... <ws> <ws>
+        [2].Seed.Scope                            Member : ... <ws> <ws>
           [0].Seed.Nonterminal                    Member
           [1].Seed.Rule                           ⊙ = ... ';' <ws>
             [0].Seed.Expr.Concat.concat           Type Label ... ? ';'
@@ -472,7 +472,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [4].Seed.Rule                           Name = identifier <ws>
             [0].Seed.Nonterminal                  Name
             [1].Seed.Terminal                     identifier
-    [3].Seed.Rule                                 Expr = ... <ws> <ws>
+    [3].Seed.Scope                                Expr : ... <ws> <ws>
       [0].Seed.Nonterminal                        Expr
       [1].Seed.Rule                               ⊙ = Axe <ws>
         [0].Seed.Nonterminal                      Axe
@@ -560,7 +560,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [7].Seed.Terminal                     'true'
             [8].Seed.Terminal                     'false'
             [9].Seed.Terminal                     'none'
-      [5].Seed.Rule                               Struct = ... <ws> <ws>
+      [5].Seed.Scope                              Struct : ... <ws> <ws>
         [0].Seed.Nonterminal                      Struct
         [1].Seed.Rule                             ⊙ = ... ']' <ws>
           [0].Seed.Expr.Concat.concat             '[' LabeledItem * ']'
@@ -580,7 +580,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Seed.Expr.Or.|                  Struct | Expr
                 [0].Seed.Nonterminal              Struct
                 [1].Seed.Nonterminal              Expr
-    [4].Seed.Rule                                 Func = ... <ws> <ws>
+    [4].Seed.Scope                                Func : ... <ws> <ws>
       [0].Seed.Nonterminal                        Func
       [1].Seed.Rule                               ⊙ = Name <ws>
         [0].Seed.Nonterminal                      Name
@@ -610,7 +610,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [1].Seed.Expr.Postfix.*                 Stmt *
             [0].Seed.Nonterminal                  Stmt
           [2].Seed.Terminal                       '}'
-      [6].Seed.Rule                               Stmt = ... <ws> <ws>
+      [6].Seed.Scope                              Stmt : ... <ws> <ws>
         [0].Seed.Nonterminal                      Stmt
         [1].Seed.Rule                             ⊙ = ... ';' <ws>
           [0].Seed.Expr.Or.|                      If | ... Expr ';'
@@ -619,7 +619,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [2].Seed.Expr.Concat.concat           Expr ';'
               [0].Seed.Nonterminal                Expr
               [1].Seed.Terminal                   ';'
-        [2].Seed.Rule                             If = ... <ws> <ws>
+        [2].Seed.Scope                            If : ... <ws> <ws>
           [0].Seed.Nonterminal                    If
           [1].Seed.Rule                           ⊙ = ... ? <ws>
             [0].Seed.Expr.Concat.concat           'if' Branch ... ) ?
@@ -650,7 +650,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [4].Seed.Terminal                     ';'
             [5].Seed.Nonterminal                  Expr . Maybe
             [6].Seed.Nonterminal                  Body
-    [5].Seed.Rule                                 Variable = ... <ws> <ws>
+    [5].Seed.Scope                                Variable : ... <ws> <ws>
       [0].Seed.Nonterminal                        Variable
       [1].Seed.Rule                               Name = ... identifier <ws>
         [0].Seed.Nonterminal                      Name

@@ -86,7 +86,7 @@ namespace silva::seed {
   //  ⎢op = '+' '=' ::: IDENTIFIER '.'          # matches, e.g., +=   +=...   +=abc.def
 
   const string_view_t seed_tokenizer_str = R"'(
-Seed.Tokenizer =
+Seed.Tokenizer:
   ⊙ = 'tokenizer' rule_name ':' newline indent ( ( IncludeRule | IgnoreRule | TokenRule ) newline ) * dedent
   IncludeRule = 'include' 'tokenizer' rule_name
   IgnoreRule = 'ignore' Defn

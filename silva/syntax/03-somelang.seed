@@ -1,7 +1,7 @@
 tokenizer Somelang:
   include tokenizer FreeForm
 
-Somelang =
+Somelang:
   ⊙ = As Bs
   As = 'a' *
   Bs = 'b' *

@@ -42,10 +42,10 @@ tokenizer Seed:
   token_category_name = IDENTIFIER_SNAKE_CASE
   include tokenizer OffSide
 
-Seed =
-  ⊙ = ( Tokenizer | Rule ) *
-  Rule = ( '⊙' | Nonterminal ) '=' ( newline indent Rule * dedent
-                                   | 'axe' Axe
+Seed:
+  ⊙ = ( Tokenizer | Scope | Rule ) *
+  Scope = Nonterminal ':' newline indent ( Scope | Rule ) * dedent
+  Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe
                                    | 'alias' Alias newline
                                    | Expr newline )
   Alias = Expr

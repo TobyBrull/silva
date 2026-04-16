@@ -1,7 +1,7 @@
 # TODO
 
 * revamp Seed according to seed.v4
-    * replace ⊙ with nothing?
+    * add 'language' keyword?
     * make relative names also work for axe atoms (lox: Expr.Atom -> Atom)
 
 * should relative names be part of syntax-farm (or name-farm)?
