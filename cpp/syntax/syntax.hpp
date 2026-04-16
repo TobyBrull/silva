@@ -12,7 +12,7 @@ tokenizer Silva:
   language_name = IDENTIFIER_PASCAL_CASE
   include tokenizer FreeForm
 
-Silva:
+language Silva:
   ⊙ = Section * end_of_file
   Section = language_name language
 )'";

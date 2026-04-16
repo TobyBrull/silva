@@ -141,31 +141,30 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [3].Silva.Section                               CppStmts language
   [4].Silva.Section                               Fern language
 
-[0].Seed                                          tokenizer AsBs ... * <ws>
+[0].Seed                                          tokenizer AsBs ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer AsBs ... <ws> <ws>
     [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
-  [1].Seed.Rule                                   AsBs = ... * <ws>
-    [0].Seed.Nonterminal                          AsBs
-    [1].Seed.Expr.Concat.concat                   'a' * 'b' *
-      [0].Seed.Expr.Postfix.*                     'a' *
-        [0].Seed.Terminal                         'a'
-      [1].Seed.Expr.Postfix.*                     'b' *
-        [0].Seed.Terminal                         'b'
+  [1].Seed.Language                               language AsBs ... <ws> <ws>
+    [0].Seed.Rule                                 ⊙ = ... * <ws>
+      [0].Seed.Expr.Concat.concat                 'a' * 'b' *
+        [0].Seed.Expr.Postfix.*                   'a' *
+          [0].Seed.Terminal                       'a'
+        [1].Seed.Expr.Postfix.*                   'b' *
+          [0].Seed.Terminal                       'b'
 
 [0].AsBs                                          a a a b b
 
 [0].Seed                                          tokenizer CppStmts ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer CppStmts ... <ws> <ws>
     [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
-  [1].Seed.Scope                                  CppStmts : ... <ws> <ws>
-    [0].Seed.Nonterminal                          CppStmts
-    [1].Seed.Rule                                 ⊙ = ... * <ws>
+  [1].Seed.Language                               language CppStmts ... <ws> <ws>
+    [0].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Postfix.*                     ( Expr ';' ) *
         [0].Seed.Expr.Parens.(                    ( Expr ';' )
           [0].Seed.Expr.Concat.concat             Expr ';'
             [0].Seed.Nonterminal                  Expr
             [1].Seed.Terminal                     ';'
-    [2].Seed.Rule                                 Expr = ... <ws> <ws>
+    [1].Seed.Rule                                 Expr = ... <ws> <ws>
       [0].Seed.Nonterminal                        Expr
       [1].Seed.Axe                                Atom <ws> ... <ws> <ws>
         [0].Seed.Nonterminal                      Atom
@@ -305,7 +304,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [1].Seed.Axe.Ops                        infix ','
             [0].Seed.Axe.OpType                   infix
             [1].Seed.Axe.Op                       ','
-    [3].Seed.Rule                                 Atom = ... identifier <ws>
+    [2].Seed.Rule                                 Atom = ... identifier <ws>
       [0].Seed.Nonterminal                        Atom
       [1].Seed.Expr.Or.|                          number | string | identifier
         [0].Seed.Terminal                         number
@@ -382,17 +381,16 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [0].Seed                                          tokenizer Somelang ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer Somelang ... <ws> <ws>
     [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
-  [1].Seed.Scope                                  Somelang : ... <ws> <ws>
-    [0].Seed.Nonterminal                          Somelang
-    [1].Seed.Rule                                 ⊙ = As Bs <ws>
+  [1].Seed.Language                               language Somelang ... <ws> <ws>
+    [0].Seed.Rule                                 ⊙ = As Bs <ws>
       [0].Seed.Expr.Concat.concat                 As Bs
         [0].Seed.Nonterminal                      As
         [1].Seed.Nonterminal                      Bs
-    [2].Seed.Rule                                 As = 'a' * <ws>
+    [1].Seed.Rule                                 As = 'a' * <ws>
       [0].Seed.Nonterminal                        As
       [1].Seed.Expr.Postfix.*                     'a' *
         [0].Seed.Terminal                         'a'
-    [3].Seed.Rule                                 Bs = 'b' * <ws>
+    [2].Seed.Rule                                 Bs = 'b' * <ws>
       [0].Seed.Nonterminal                        Bs
       [1].Seed.Expr.Postfix.*                     'b' *
         [0].Seed.Terminal                         'b'
@@ -417,16 +415,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].Seed.Tokenizer.Item                 IDENTIFIER_SNAKE_CASE \ '_f'
             [0].Seed.Tokenizer.Matcher            IDENTIFIER_SNAKE_CASE \ '_f'
     [2].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
-  [1].Seed.Scope                                  Soil : ... <ws> <ws>
-    [0].Seed.Nonterminal                          Soil
-    [1].Seed.Rule                                 ⊙ = ... * <ws>
+  [1].Seed.Language                               language Soil ... <ws> <ws>
+    [0].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Postfix.*                     ( Type ... ) *
         [0].Seed.Expr.Parens.(                    ( Type ... Defn )
           [0].Seed.Expr.Or.|                      Type . ... . Defn
             [0].Seed.Nonterminal                  Type . Defn
             [1].Seed.Nonterminal                  Func . Defn
             [2].Seed.Nonterminal                  Variable . Defn
-    [2].Seed.Scope                                Type : ... <ws> <ws>
+    [1].Seed.Scope                                Type : ... <ws> <ws>
       [0].Seed.Nonterminal                        Type
       [1].Seed.Rule                               ⊙ = ... Struct <ws>
         [0].Seed.Expr.Or.|                        Name | Struct
@@ -472,7 +469,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [4].Seed.Rule                           Name = identifier <ws>
             [0].Seed.Nonterminal                  Name
             [1].Seed.Terminal                     identifier
-    [3].Seed.Scope                                Expr : ... <ws> <ws>
+    [2].Seed.Scope                                Expr : ... <ws> <ws>
       [0].Seed.Nonterminal                        Expr
       [1].Seed.Rule                               ⊙ = Axe <ws>
         [0].Seed.Nonterminal                      Axe
@@ -580,7 +577,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Seed.Expr.Or.|                  Struct | Expr
                 [0].Seed.Nonterminal              Struct
                 [1].Seed.Nonterminal              Expr
-    [4].Seed.Scope                                Func : ... <ws> <ws>
+    [3].Seed.Scope                                Func : ... <ws> <ws>
       [0].Seed.Nonterminal                        Func
       [1].Seed.Rule                               ⊙ = Name <ws>
         [0].Seed.Nonterminal                      Name
@@ -650,7 +647,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [4].Seed.Terminal                     ';'
             [5].Seed.Nonterminal                  Expr . Maybe
             [6].Seed.Nonterminal                  Body
-    [5].Seed.Scope                                Variable : ... <ws> <ws>
+    [4].Seed.Scope                                Variable : ... <ws> <ws>
       [0].Seed.Nonterminal                        Variable
       [1].Seed.Rule                               Name = ... identifier <ws>
         [0].Seed.Nonterminal                      Name

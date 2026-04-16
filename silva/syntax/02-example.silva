@@ -2,7 +2,8 @@ Seed «
 tokenizer AsBs:
   include tokenizer FreeForm
 
-AsBs = 'a' * 'b' *
+language AsBs:
+  ⊙ = 'a' * 'b' *
 »
 
 AsBs « a a a b b »
@@ -11,7 +12,7 @@ Seed «
 tokenizer CppStmts:
   include tokenizer FreeForm
 
-CppStmts:
+language CppStmts:
   ⊙ = ( Expr ';' ) *
   Expr = axe Atom
     Parens      = nest  atom_nest '(' ')'

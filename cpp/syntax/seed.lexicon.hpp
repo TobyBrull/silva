@@ -45,6 +45,7 @@ namespace silva::seed {
     const token_id_t ti_prefix_n     = sfp->token_id("prefix_nest");
     const token_id_t ti_concat       = sfp->token_id("concat");
     const token_id_t ti_tokenizer    = sfp->token_id("tokenizer");
+    const token_id_t ti_language     = sfp->token_id("language");
     const token_id_t ti_include      = sfp->token_id("include");
     const token_id_t ti_ignore       = sfp->token_id("ignore");
     const token_id_t ti_colon        = sfp->token_id(":");
@@ -86,14 +87,15 @@ namespace silva::seed {
     const token_id_t ti_r_seed     = sfp->token_id("Seed");
     const token_id_t ti_r_fern     = sfp->token_id("Fern");
 
-    const name_id_t ni_seed    = sfp->name_id_of("Seed");
-    const name_id_t ni_scope   = sfp->name_id_of(ni_seed, "Scope");
-    const name_id_t ni_rule    = sfp->name_id_of(ni_seed, "Rule");
-    const name_id_t ni_alias   = sfp->name_id_of(ni_seed, "Alias");
-    const name_id_t ni_expr    = sfp->name_id_of(ni_seed, "Expr");
-    const name_id_t ni_atom    = sfp->name_id_of(ni_seed, "Atom");
-    const name_id_t ni_term    = sfp->name_id_of(ni_seed, "Terminal");
-    const name_id_t ni_tok_cat = sfp->name_id_of(ni_seed, "TokenCategory");
+    const name_id_t ni_seed     = sfp->name_id_of("Seed");
+    const name_id_t ni_language = sfp->name_id_of(ni_seed, "Language");
+    const name_id_t ni_scope    = sfp->name_id_of(ni_seed, "Scope");
+    const name_id_t ni_rule     = sfp->name_id_of(ni_seed, "Rule");
+    const name_id_t ni_alias    = sfp->name_id_of(ni_seed, "Alias");
+    const name_id_t ni_expr     = sfp->name_id_of(ni_seed, "Expr");
+    const name_id_t ni_atom     = sfp->name_id_of(ni_seed, "Atom");
+    const name_id_t ni_term     = sfp->name_id_of(ni_seed, "Terminal");
+    const name_id_t ni_tok_cat  = sfp->name_id_of(ni_seed, "TokenCategory");
 
     const name_id_t ni_expr_parens  = sfp->name_id_of(ni_expr, "Parens");
     const name_id_t ni_expr_prefix  = sfp->name_id_of(ni_expr, "Prefix");

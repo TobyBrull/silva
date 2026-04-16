@@ -17,7 +17,8 @@ tokenizer Expr:
   operator = PARENTHESIS
   operator = ::: OPERATOR
 
-Expr = Add
+language Expr:
+  ⊙ = Add
 Add = Mult ( '+' Add ) *
 Mult = Primary ( '*' Mult ) *
 Primary = '(' Expr ')' | number
@@ -63,11 +64,12 @@ tokenizer Expr:
   operator = PARENTHESIS
   operator = ::: OPERATOR
 
-Expr = axe Atom
-  Parens  = nest  atom_nest '(' ')'
-  Mult    = ltr   infix '*'
-  Add     = ltr   infix '+'
-  Comp    = ltr   infix '<'
+language Expr:
+  ⊙ = axe Atom
+    Parens  = nest  atom_nest '(' ')'
+    Mult    = ltr   infix '*'
+    Add     = ltr   infix '+'
+    Comp    = ltr   infix '<'
 Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
 )'";
     syntax_farm_t sf;

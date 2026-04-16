@@ -19,7 +19,7 @@ tokenizer Frog:
   string = STRING
   identifier = IDENTIFIER
 
-Frog:
+language Frog:
   ⊙ = Rule *
   Rule = RuleName Expr
   RuleName = alias Keyword
@@ -74,31 +74,30 @@ Frog:
         [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
           [0].Seed.Tokenizer.Item                 IDENTIFIER
             [0].Seed.Tokenizer.Matcher            IDENTIFIER
-  [1].Seed.Scope                                  Frog : ... <ws> <ws>
-    [0].Seed.Nonterminal                          Frog
-    [1].Seed.Rule                                 ⊙ = Rule * <ws>
+  [1].Seed.Language                               language Frog ... <ws> <ws>
+    [0].Seed.Rule                                 ⊙ = Rule * <ws>
       [0].Seed.Expr.Postfix.*                     Rule *
         [0].Seed.Nonterminal                      Rule
-    [2].Seed.Rule                                 Rule = RuleName Expr <ws>
+    [1].Seed.Rule                                 Rule = RuleName Expr <ws>
       [0].Seed.Nonterminal                        Rule
       [1].Seed.Expr.Concat.concat                 RuleName Expr
         [0].Seed.Nonterminal                      RuleName
         [1].Seed.Nonterminal                      Expr
-    [3].Seed.Rule                                 RuleName = alias Keyword <ws>
+    [2].Seed.Rule                                 RuleName = alias Keyword <ws>
       [0].Seed.Nonterminal                        RuleName
       [1].Seed.Alias                              Keyword
         [0].Seed.Nonterminal                      Keyword
-    [4].Seed.Rule                                 Expr = Primary + <ws>
+    [3].Seed.Rule                                 Expr = Primary + <ws>
       [0].Seed.Nonterminal                        Expr
       [1].Seed.Expr.Postfix.+                     Primary +
         [0].Seed.Nonterminal                      Primary
-    [5].Seed.Rule                                 Primary = ... identifier <ws>
+    [4].Seed.Rule                                 Primary = ... identifier <ws>
       [0].Seed.Nonterminal                        Primary
       [1].Seed.Expr.And.but_then                  not Keyword but_then identifier
         [0].Seed.Expr.Prefix.not                  not Keyword
           [0].Seed.Nonterminal                    Keyword
         [1].Seed.Terminal                         identifier
-    [6].Seed.Scope                                Keyword : ... <ws> <ws>
+    [5].Seed.Scope                                Keyword : ... <ws> <ws>
       [0].Seed.Nonterminal                        Keyword
       [1].Seed.Rule                               ⊙ = ... 'keyword3' <ws>
         [0].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
@@ -159,7 +158,7 @@ tokenizer Testor:
   name = IDENTIFIER
   op = OPERATOR
 
-Testor:
+language Testor:
   ⊙ = Assign *
   Assign = name '=' name op name
 )'";
@@ -194,7 +193,7 @@ tokenizer Foo:
   string = STRING
   identifier = IDENTIFIER
 
-Foo:
+language Foo:
   ⊙ = 'a' 'b' 'c' Bar ?
 )'";
     const string_view_t text2_seed = R"'(

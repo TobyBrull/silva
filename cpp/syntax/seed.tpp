@@ -30,7 +30,7 @@ tokenizer SimpleFern:
   operator = ::: OPERATOR
   identifier = IDENTIFIER
 
-SimpleFern:
+language SimpleFern:
   ⊙ = '[' ( LabeledItem ';' ? ) * ']'
   LabeledItem = ( Label ':' )? Item
   Label = string
@@ -94,9 +94,8 @@ SimpleFern:
         [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
           [0].Seed.Tokenizer.Item                 IDENTIFIER
             [0].Seed.Tokenizer.Matcher            IDENTIFIER
-  [1].Seed.Scope                                  SimpleFern : ... <ws> <ws>
-    [0].Seed.Nonterminal                          SimpleFern
-    [1].Seed.Rule                                 ⊙ = ... ']' <ws>
+  [1].Seed.Language                               language SimpleFern ... <ws> <ws>
+    [0].Seed.Rule                                 ⊙ = ... ']' <ws>
       [0].Seed.Expr.Concat.concat                 '[' ( ... * ']'
         [0].Seed.Terminal                         '['
         [1].Seed.Expr.Postfix.*                   ( LabeledItem ... ) *
@@ -106,7 +105,7 @@ SimpleFern:
               [1].Seed.Expr.Postfix.?             ';' ?
                 [0].Seed.Terminal                 ';'
         [2].Seed.Terminal                         ']'
-    [2].Seed.Rule                                 LabeledItem = ... Item <ws>
+    [1].Seed.Rule                                 LabeledItem = ... Item <ws>
       [0].Seed.Nonterminal                        LabeledItem
       [1].Seed.Expr.Concat.concat                 ( Label ... ? Item
         [0].Seed.Expr.Postfix.?                   ( Label ':' ) ?
@@ -115,10 +114,10 @@ SimpleFern:
               [0].Seed.Nonterminal                Label
               [1].Seed.Terminal                   ':'
         [1].Seed.Nonterminal                      Item
-    [3].Seed.Rule                                 Label = string <ws>
+    [2].Seed.Rule                                 Label = string <ws>
       [0].Seed.Nonterminal                        Label
       [1].Seed.Terminal                           string
-    [4].Seed.Rule                                 Item = ... number <ws>
+    [3].Seed.Rule                                 Item = ... number <ws>
       [0].Seed.Nonterminal                        Item
       [1].Seed.Expr.Or.|                          SimpleFern | string | number
         [0].Seed.Nonterminal                      SimpleFern

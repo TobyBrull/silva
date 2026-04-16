@@ -390,12 +390,9 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
-    expected_t<parse_tree_node_t> scope()
+    expected_t<parse_tree_node_t> scope_impl()
     {
       auto ss_rule = stake();
-      ss_rule.create_node(lexicon.ni_scope);
-      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, nonterminal()));
-      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_scope, lexicon.ti_colon);
       SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_scope, lexicon.ti_newline);
       SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_scope, lexicon.ti_indent);
       while (num_tokens_left() >= 1 && token_category_by() != lexicon.ti_dedent) {
@@ -424,6 +421,27 @@ namespace silva::seed::impl {
                                                  lexicon.name_id_wrap(lexicon.ni_scope)));
       }
       SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_scope, lexicon.ti_dedent);
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> scope()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_scope);
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, nonterminal()));
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_scope, lexicon.ti_colon);
+      ss_rule.add_proto_node(SILVA_EXPECT_FWD(scope_impl()));
+      return ss_rule.commit();
+    }
+
+    expected_t<parse_tree_node_t> language()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_language);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_language, lexicon.ti_language);
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_language, lexicon.ti_rule_name);
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_language, lexicon.ti_colon);
+      ss_rule.add_proto_node(SILVA_EXPECT_FWD(scope_impl()));
       return ss_rule.commit();
     }
 
@@ -465,6 +483,14 @@ namespace silva::seed::impl {
         error_nursery_t error_nursery;
         {
           auto result = tokenizer();
+          if (result) {
+            ss_rule.add_proto_node(*result);
+            continue;
+          }
+          error_nursery.add_child_error(std::move(result).error());
+        }
+        {
+          auto result = language();
           if (result) {
             ss_rule.add_proto_node(*result);
             continue;

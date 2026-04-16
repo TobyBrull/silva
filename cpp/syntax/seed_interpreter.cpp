@@ -92,6 +92,27 @@ namespace silva::seed::impl {
       return {};
     }
 
+    template<typename Iter>
+    expected_t<void> handle_scope_impl(const name_id_t scope_name,
+                                       const parse_tree_span_t pts_scope,
+                                       Iter it,
+                                       const Iter end)
+    {
+      bool is_first_in_scope = true;
+      while (it != end) {
+        const auto pts_child = pts_scope.sub_tree_span_at(it.pos);
+        if (pts_child[0].rule_name == lexicon.ni_scope) {
+          SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
+        }
+        else {
+          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, is_first_in_scope));
+        }
+        is_first_in_scope = false;
+        ++it;
+      }
+      return {};
+    }
+
     expected_t<void> handle_scope(const name_id_t scope_name, const parse_tree_span_t pts_scope)
     {
       SILVA_EXPECT(pts_scope[0].rule_name == lexicon.ni_scope, MINOR, "expected Scope");
@@ -107,19 +128,25 @@ namespace silva::seed::impl {
                    MINOR,
                    "{} scope must have at least one sub-rule or sub-scope",
                    pts_scope);
+      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_scope, it, end));
+      return {};
+    }
 
-      bool is_first_in_scope = true;
-      while (it != end) {
-        const auto pts_child = pts_scope.sub_tree_span_at(it.pos);
-        if (pts_child[0].rule_name == lexicon.ni_scope) {
-          SILVA_EXPECT_FWD(handle_scope(curr_scope_name, pts_child));
-        }
-        else {
-          SILVA_EXPECT_FWD(handle_rule(curr_scope_name, pts_child, is_first_in_scope));
-        }
-        is_first_in_scope = false;
-        ++it;
-      }
+    expected_t<void> handle_language(const name_id_t scope_name,
+                                     const parse_tree_span_t pts_language)
+    {
+      SILVA_EXPECT(pts_language[0].rule_name == lexicon.ni_language, MINOR, "expected Language");
+      const token_id_t lang_id       = SILVA_EXPECT_FWD(pts_language.at_token_id(1));
+      const auto [lang_it, inserted] = se->languages.emplace(lang_id, pts_language);
+      SILVA_EXPECT(inserted,
+                   MINOR,
+                   "Language {} already defined at {}; defined again at {}",
+                   sfp->token_id_wrap(lang_id),
+                   lang_it->second,
+                   pts_language);
+      auto [it, end]                  = pts_language.children_range();
+      const name_id_t curr_scope_name = sfp->name_id(scope_name, lang_id);
+      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_language, it, end));
       return {};
     }
 
@@ -133,6 +160,9 @@ namespace silva::seed::impl {
         const auto pts_child = pts_seed.sub_tree_span_at(node_index);
         if (pts_child[0].rule_name == lexicon.ni_tok) {
           SILVA_EXPECT_FWD(handle_tokenizer(pts_child));
+        }
+        else if (pts_child[0].rule_name == lexicon.ni_language) {
+          SILVA_EXPECT_FWD(handle_language(scope_name, pts_child));
         }
         else if (pts_child[0].rule_name == lexicon.ni_scope) {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
@@ -548,9 +578,7 @@ namespace silva::seed {
   {
     impl::interpreter_adder_t adder(this, pts);
     SILVA_EXPECT_FWD(adder.handle_all(pts));
-
-    resolved_names.clear();
-
+    is_prepared = false;
     return {};
   }
 
@@ -579,7 +607,7 @@ namespace silva::seed {
     return add_seed(std::move(fp));
   }
 
-  expected_t<void> interpreter_t::resolve_names()
+  expected_t<void> interpreter_t::prepare()
   {
     resolved_names.clear();
     const lexicon_t& lexicon = bootstrap_interpreter.lexicon();
@@ -602,23 +630,38 @@ namespace silva::seed {
                        "during name-resolution for rule {}",
                        lexicon.name_id_wrap(rule_name));
     }
+
+    for (const auto& [lang_id, lang_pts]: languages) {
+      SILVA_EXPECT(tokenizer_farm.tokenizers.contains(lang_id),
+                   MINOR,
+                   "language {} defined at {} doesn't have a tokenizer",
+                   sfp->token_id_wrap(lang_id),
+                   lang_pts);
+    }
+
+    is_prepared = true;
     return {};
   }
 
   expected_t<parse_tree_ptr_t> interpreter_t::apply(fragment_span_t fs,
                                                     const name_id_t goal_rule_name)
   {
-    if (resolved_names.empty()) {
-      SILVA_EXPECT_FWD(resolve_names());
+    if (!is_prepared) {
+      SILVA_EXPECT_FWD(prepare());
     }
 
     name_id_t curr = goal_rule_name;
     while (sfp->name_infos[curr].parent_name != name_id_none) {
       curr = sfp->name_infos[curr].parent_name;
     }
-    const token_id_t tokenizer_name = sfp->name_infos[curr].base_name;
+    const token_id_t lang_name = sfp->name_infos[curr].base_name;
 
-    auto tp = SILVA_EXPECT_FWD(tokenizer_farm.apply(fs, tokenizer_name));
+    SILVA_EXPECT(languages.contains(lang_name),
+                 MINOR,
+                 "unknown language {}",
+                 sfp->token_id_wrap(lang_name));
+
+    auto tp = SILVA_EXPECT_FWD(tokenizer_farm.apply(fs, lang_name));
     impl::interpreter_apply_nursery_t nursery(tp, bootstrap_interpreter.lexicon(), this);
     SILVA_EXPECT_FWD(nursery.check());
     auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name),

@@ -42,9 +42,11 @@ tokenizer Seed:
   token_category_name = IDENTIFIER_SNAKE_CASE
   include tokenizer OffSide
 
-Seed:
-  ⊙ = ( Tokenizer | Scope | Rule ) *
-  Scope = Nonterminal ':' newline indent ( Scope | Rule ) * dedent
+language Seed:
+  ⊙ = ( Tokenizer | Language | Scope | Rule ) *
+  Language = 'language' rule_name ':' ScopeImpl
+  Scope = Nonterminal ':' ScopeImpl
+  ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
   Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe
                                    | 'alias' Alias newline
                                    | Expr newline )

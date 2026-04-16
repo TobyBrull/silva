@@ -4,7 +4,7 @@ tokenizer Soil:
   func_name = IDENTIFIER_SNAKE_CASE\'_f'
   include tokenizer FreeForm
 
-Soil:
+language Soil:
   ⊙ = ( Type.Defn | Func.Defn | Variable.Defn ) *
   Type:
     ⊙ = Name | Struct

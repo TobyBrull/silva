@@ -7,7 +7,7 @@ namespace silva::fern {
 tokenizer Fern:
   include tokenizer FreeForm
 
-Fern:
+language Fern:
   ⊙ = '[' LabeledItem * ']'
   LabeledItem = ( Label ':' ) ? ( Fern | Value )
   Label = string | identifier

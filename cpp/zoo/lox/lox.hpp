@@ -9,7 +9,7 @@ namespace silva::lox {
 tokenizer Lox:
   include tokenizer FreeForm
 
-Lox:
+language Lox:
   ⊙ = ( Decl | Stmt ) *
   Decl:
     ⊙ = Var | Fun | Class
