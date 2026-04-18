@@ -47,14 +47,66 @@ Seed.Axe:
 
   struct axe_t {
     lexicon_ptr_t lp;
-    name_id_t name      = name_id_none;
-    name_id_t atom_rule = name_id_none;
+    name_id_t name = name_id_none;
+    name_id_ref_t atom_rule;
     hash_map_t<token_id_t, impl::axe_result_t> results;
     optional_t<impl::result_oper_t<impl::oper_regular_t>> concat_result;
+
+    void compile_reset();
+    template<Namespace Ns>
+    expected_t<void> compile(const lexicon_t&, const Ns&);
 
     using parse_delegate_t = delegate_t<expected_t<parse_tree_node_t>(name_id_t)>;
     expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, parse_delegate_t) const;
   };
 
   expected_t<axe_t> axe_create(syntax_farm_ptr_t, name_id_t axe_name, parse_tree_span_t);
+}
+
+// IMPLEMENTATION
+
+namespace silva::seed {
+  namespace impl {
+    template<typename Oper, typename F>
+    expected_t<void> for_each_name_id_ref(result_oper_t<Oper>& oo, F f)
+    {
+      const auto visitor = [&]<typename InnerOper>(InnerOper& inner_oper) -> expected_t<void> {
+        if constexpr (std::same_as<InnerOper, prefix_nest_t> ||
+                      std::same_as<InnerOper, atom_nest_t> || std::same_as<InnerOper, ternary_t> ||
+                      std::same_as<InnerOper, postfix_nest_t>) {
+          if (inner_oper.nest_rule_name.has_value()) {
+            SILVA_EXPECT_FWD(f(inner_oper.nest_rule_name.value()));
+          }
+        }
+        return {};
+      };
+      return std::visit(visitor, oo.oper);
+    }
+
+    template<typename F>
+    expected_t<void> for_each_name_id_ref(axe_t& aa, F f)
+    {
+      if (aa.concat_result.has_value()) {
+        SILVA_EXPECT_FWD(for_each_name_id_ref(aa.concat_result.value(), f));
+      }
+      for (auto& [tid, res]: aa.results) {
+        if (res.prefix.has_value()) {
+          SILVA_EXPECT_FWD(for_each_name_id_ref(res.prefix.value(), f));
+        }
+        if (res.regular.has_value()) {
+          SILVA_EXPECT_FWD(for_each_name_id_ref(res.regular.value(), f));
+        }
+      }
+      return {};
+    }
+  }
+
+  template<Namespace Ns>
+  expected_t<void> axe_t::compile(const lexicon_t& lexicon, const Ns& ns)
+  {
+    SILVA_EXPECT_FWD(atom_rule.resolve(name, lexicon, ns));
+    return impl::for_each_name_id_ref(*this, [&](name_id_ref_t& nir) -> expected_t<void> {
+      return nir.resolve(name, lexicon, ns);
+    });
+  }
 }

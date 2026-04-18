@@ -318,9 +318,13 @@ namespace silva::seed::impl {
     const auto axe_tok  = SILVA_EXPECT_ASSERT(tf.apply(axe_frag, lexicon.ti_r_seed));
     impl::base_parse_tree_nursery_t nursery(axe_tok, lexicon);
     SILVA_EXPECT_ASSERT(nursery.axe());
-    parse_tree_ptr_t pt     = sfp->add(std::move(nursery).finish());
-    const name_id_t ni_expr = sfp->name_id_of("Seed", "Expr");
-    auto retval             = SILVA_EXPECT_ASSERT(axe_create(sfp, ni_expr, pt->span()));
+    parse_tree_ptr_t pt = sfp->add(std::move(nursery).finish());
+    auto retval         = SILVA_EXPECT_ASSERT(axe_create(sfp, lexicon.ni_expr, pt->span()));
+    {
+      hash_set_t<name_id_t> atom_set;
+      atom_set.insert(lexicon.ni_atom);
+      SILVA_ASSERT(retval.compile(lexicon, atom_set));
+    }
     return retval;
   }
 

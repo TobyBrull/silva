@@ -59,6 +59,23 @@ namespace silva {
 
     friend bool operator==(const parse_tree_span_t&, const parse_tree_span_t&) = default;
   };
+
+  struct name_id_ref_t {
+    parse_tree_span_t pts;
+
+    name_id_ref_t() = default;
+    name_id_ref_t(parse_tree_span_t);
+
+    void resolve_clear() const;
+    template<Namespace Ns>
+    expected_t<void> resolve(const name_id_t scope_name, const lexicon_t&, const Ns&) const;
+
+    // Derived data; ignored for equality and hashing.
+    mutable name_id_t resolved_name = name_id_none;
+
+    friend bool operator==(const name_id_ref_t& lhs, const name_id_ref_t& rhs);
+    friend hash_value_t hash_impl(const name_id_ref_t& x);
+  };
 }
 
 // IMPLEMENTATION
@@ -67,5 +84,13 @@ namespace silva {
   inline auto parse_tree_t::span(this auto&& self)
   {
     return parse_tree_span_t{self};
+  }
+
+  template<Namespace Ns>
+  expected_t<void>
+  name_id_ref_t::resolve(const name_id_t scope_name, const lexicon_t& lexicon, const Ns& ns) const
+  {
+    resolved_name = SILVA_EXPECT_FWD(lexicon.name_id_lookup(scope_name, pts.token_span(), ns));
+    return {};
   }
 }

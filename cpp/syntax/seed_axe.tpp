@@ -98,7 +98,7 @@ namespace silva::seed::test {
     syntax_farm_t sf;
     const auto se = standard_seed_interpreter(sf.ptr());
 
-    const string_view_t test_axe = R"'(.Test.Atom
+    const string_view_t test_axe = R"'(Test.Atom
   Nst   = nest  atom_nest '(' ')'
   Dot   = rtl   infix '.'
   Sub   = ltr   postfix_nest '[' ']'
@@ -114,7 +114,12 @@ namespace silva::seed::test {
 
     auto fp       = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.seed-axe", string_t{test_axe}));
     const auto pt = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Seed", "Axe")));
-    const auto sa = SILVA_REQUIRE(axe_create(sf.ptr(), sf.name_id_of("Expr"), pt->span()));
+    auto sa       = SILVA_REQUIRE(axe_create(sf.ptr(), sf.name_id_of("Expr"), pt->span()));
+    {
+      hash_set_t<name_id_t> ns;
+      ns.insert(sf.name_id_of("Test", "Atom"));
+      SILVA_REQUIRE(sa.compile(sf.get_lexicon<lexicon_t>(), ns));
+    }
     CHECK(!sa.concat_result.has_value());
     CHECK(sa.results.size() == 15);
     {
@@ -517,11 +522,11 @@ namespace silva::seed::test {
     syntax_farm_t sf;
     const auto se = standard_seed_interpreter(sf.ptr());
 
-    const string_view_t test_axe = R"'(.Test.Atom
+    const string_view_t test_axe = R"'(Test.Atom
   Nst     = nest  atom_nest_transparent '<<' '>>'
   PrfHi   = rtl   prefix_nest '(' ')'
   Cat     = ltr   infix concat
-  PrfLo   = rtl   prefix_nest '{' '}' prefix_nest -> .Test.Args '<:' ':>'
+  PrfLo   = rtl   prefix_nest '{' '}' prefix_nest -> Test.Args '<:' ':>'
   Mul     = ltr   infix '*'
   Add     = ltr   infix_flat '+' infix '-'
   Assign  = rtl   infix_flat '=' infix '%'
@@ -529,7 +534,13 @@ namespace silva::seed::test {
 
     const auto fp = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.seed-axe", string_t{test_axe}));
     const auto pt = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Seed", "Axe")));
-    const auto sa = SILVA_REQUIRE(axe_create(sf.ptr(), sf.name_id_of("Expr"), pt->span()));
+    auto sa       = SILVA_REQUIRE(axe_create(sf.ptr(), sf.name_id_of("Expr"), pt->span()));
+    {
+      hash_set_t<name_id_t> ns;
+      ns.insert(sf.name_id_of("Test", "Atom"));
+      ns.insert(sf.name_id_of("Test", "Args"));
+      SILVA_REQUIRE(sa.compile(sf.get_lexicon<lexicon_t>(), ns));
+    }
     CHECK(sa.concat_result.has_value());
     CHECK(sa.results.size() == 13);
 

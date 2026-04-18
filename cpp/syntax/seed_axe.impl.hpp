@@ -25,9 +25,9 @@ namespace silva::seed::impl {
     token_id_t left_bracket{0};
     token_id_t right_bracket{0};
 
-    optional_t<name_id_t> nest_rule_name;
+    optional_t<name_id_ref_t> nest_rule_name;
 
-    friend auto operator<=>(const prefix_nest_t&, const prefix_nest_t&) = default;
+    friend bool operator==(const prefix_nest_t&, const prefix_nest_t&) = default;
   };
 
   struct atom_nest_t {
@@ -35,11 +35,11 @@ namespace silva::seed::impl {
     token_id_t left_bracket{0};
     token_id_t right_bracket{0};
 
-    optional_t<name_id_t> nest_rule_name;
+    optional_t<name_id_ref_t> nest_rule_name;
 
     bool creates_node = true;
 
-    friend auto operator<=>(const atom_nest_t&, const atom_nest_t&) = default;
+    friend bool operator==(const atom_nest_t&, const atom_nest_t&) = default;
   };
 
   struct infix_t {
@@ -56,9 +56,9 @@ namespace silva::seed::impl {
     token_id_t first{0};
     token_id_t second{0};
 
-    optional_t<name_id_t> nest_rule_name;
+    optional_t<name_id_ref_t> nest_rule_name;
 
-    friend auto operator<=>(const ternary_t&, const ternary_t&) = default;
+    friend bool operator==(const ternary_t&, const ternary_t&) = default;
   };
 
   struct postfix_t {
@@ -73,9 +73,9 @@ namespace silva::seed::impl {
     token_id_t left_bracket{0};
     token_id_t right_bracket{0};
 
-    optional_t<name_id_t> nest_rule_name;
+    optional_t<name_id_ref_t> nest_rule_name;
 
-    friend auto operator<=>(const postfix_nest_t&, const postfix_nest_t&) = default;
+    friend bool operator==(const postfix_nest_t&, const postfix_nest_t&) = default;
   };
 
   using oper_prefix_t  = variant_t<prefix_t, prefix_nest_t, atom_nest_t>;
@@ -96,7 +96,7 @@ namespace silva::seed::impl {
   template<typename Oper>
   struct result_oper_t {
     Oper oper;
-    name_id_t name = 0;
+    name_id_t name = name_id_none;
     precedence_t precedence;
     parse_tree_span_t pts;
 

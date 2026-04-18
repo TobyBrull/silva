@@ -32,7 +32,7 @@ language Lox:
     Block = '{' ( Decl | Stmt ) * '}'
     ExprStmt = Expr ';'
   Expr:
-    ⊙ = axe Expr.Atom
+    ⊙ = axe Atom
       Primary     = nest atom_nest '(' ')'
       Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
       Unary       = rtl prefix '!' '-'

@@ -164,4 +164,21 @@ namespace silva {
         .nodes = std::move(nodes),
     };
   }
+
+  name_id_ref_t::name_id_ref_t(parse_tree_span_t pts) : pts(std::move(pts)) {}
+
+  void name_id_ref_t::resolve_clear() const
+  {
+    resolved_name = name_id_none;
+  }
+
+  bool operator==(const name_id_ref_t& lhs, const name_id_ref_t& rhs)
+  {
+    return lhs.pts == rhs.pts;
+  }
+
+  hash_value_t hash_impl(const name_id_ref_t& x)
+  {
+    return hash_impl(x.pts);
+  }
 }

@@ -37,9 +37,8 @@ namespace silva::seed::impl {
 
   struct axe_create_nursery_t {
     syntax_farm_ptr_t sfp;
-    name_id_t axe_name          = name_id_none;
-    name_id_t atom_rule_name_id = name_id_none;
-    const lexicon_t& lexicon    = sfp->get_lexicon<lexicon_t>();
+    name_id_t axe_name       = name_id_none;
+    const lexicon_t& lexicon = sfp->get_lexicon<lexicon_t>();
 
     axe_t retval{
         .lp   = sfp->get_lexicon<lexicon_t>().ptr(),
@@ -158,11 +157,11 @@ namespace silva::seed::impl {
       ++it;
 
       optional_t<index_t> nest_rule_name;
+      optional_t<parse_tree_span_t> pts_nt;
       if (it != end) {
-        const auto pts_nt = pts_ops.sub_tree_span_at(it.pos);
-        if (pts_nt[0].rule_name == lexicon.ni_nt) {
-          nest_rule_name =
-              SILVA_EXPECT_FWD(lexicon.name_id_definition(retval.name, pts_nt.token_span()));
+        const auto curr_pts = pts_ops.sub_tree_span_at(it.pos);
+        if (curr_pts[0].rule_name == lexicon.ni_nt) {
+          pts_nt = curr_pts;
           ++it;
         }
       }
@@ -264,7 +263,7 @@ namespace silva::seed::impl {
                                        atom_nest_t{
                                            .left_bracket   = ti_left,
                                            .right_bracket  = ti_right,
-                                           .nest_rule_name = nest_rule_name,
+                                           .nest_rule_name = pts_nt,
                                            .creates_node = (axe_op_type != lexicon.ti_atom_nest_t),
                                        },
                                        full_name,
@@ -289,7 +288,7 @@ namespace silva::seed::impl {
                                        prefix_nest_t{
                                            .left_bracket   = ti_left,
                                            .right_bracket  = ti_right,
-                                           .nest_rule_name = nest_rule_name,
+                                           .nest_rule_name = pts_nt,
                                        },
                                        full_name,
                                        precedence,
@@ -335,7 +334,7 @@ namespace silva::seed::impl {
                                        ternary_t{
                                            .first          = ti_first,
                                            .second         = ti_second,
-                                           .nest_rule_name = nest_rule_name,
+                                           .nest_rule_name = pts_nt,
                                        },
                                        full_name,
                                        precedence,
@@ -359,7 +358,7 @@ namespace silva::seed::impl {
                                        postfix_nest_t{
                                            .left_bracket   = ti_left,
                                            .right_bracket  = ti_right,
-                                           .nest_rule_name = nest_rule_name,
+                                           .nest_rule_name = pts_nt,
                                        },
                                        full_name,
                                        precedence,
@@ -422,9 +421,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT(it != end, MINOR, "{} should have at least one child", pts_axe);
       const auto pts_axe_nt = pts_axe.sub_tree_span_at(it.pos);
       SILVA_EXPECT(pts_axe_nt[0].rule_name == lexicon.ni_nt, MINOR);
-      const name_id_t parent_scope = sfp->name_infos[axe_name].parent_name;
-      retval.atom_rule =
-          SILVA_EXPECT_FWD(lexicon.name_id_definition(parent_scope, pts_axe_nt.token_span()));
+      retval.atom_rule = pts_axe_nt;
       ++it;
 
       index_t curr_level = pts_axe[0].num_children;
@@ -502,6 +499,7 @@ namespace silva::seed::impl {
     expected_t<tuple_t<parse_tree_node_t, term_node_t>>
     invoke_rule_parser(const name_id_t rule_name)
     {
+      SILVA_EXPECT(rule_name > name_id_none, MAJOR, "trying to invoke empty rule");
       auto ss = nursery.stake();
       ss.add_proto_node(SILVA_EXPECT_FWD(rule_parser(rule_name)));
       SILVA_EXPECT(ss.proto_node.num_children == 1,
@@ -518,9 +516,12 @@ namespace silva::seed::impl {
     expected_t<tuple_t<index_t, index_t, parse_tree_node_t>>
     handle_nest(const token_id_t left_token,
                 const token_id_t right_token,
-                const optional_t<name_id_t> nest_rule_name)
+                const optional_t<name_id_ref_t>& nest_rule)
     {
-      const name_id_t used_rule_name = nest_rule_name.value_or(axe.name);
+      const name_id_t used_rule_name =
+          nest_rule
+              .transform([](const name_id_ref_t& nir) -> name_id_t { return nir.resolved_name; })
+              .value_or(axe.name);
 
       auto ss = nursery.stake();
 
@@ -713,7 +714,8 @@ namespace silva::seed::impl {
           }
           // Current token is not one of the known operators, so it has to be an atom or the end
           // of the expression
-          auto maybe_res = SILVA_EXPECT_FWD_IF(invoke_rule_parser(axe.atom_rule), MAJOR);
+          auto maybe_res =
+              SILVA_EXPECT_FWD_IF(invoke_rule_parser(axe.atom_rule.resolved_name), MAJOR);
           if (!maybe_res.has_value()) {
             break;
           }
@@ -946,6 +948,16 @@ namespace silva::seed::impl {
 }
 
 namespace silva::seed {
+  void axe_t::compile_reset()
+  {
+    atom_rule.resolve_clear();
+    auto res = impl::for_each_name_id_ref(*this, [&](name_id_ref_t& nir) -> expected_t<void> {
+      nir.resolve_clear();
+      return {};
+    });
+    SILVA_ASSERT(res.has_value());
+  }
+
   expected_t<parse_tree_node_t>
   axe_t::apply(parse_tree_nursery_t& nursery,
                delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser) const

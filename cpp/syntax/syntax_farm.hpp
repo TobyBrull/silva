@@ -190,27 +190,34 @@ namespace silva {
     SILVA_EXPECT(!ts.empty(), MINOR);
     index_t idx = 0;
     if (ts.front() == name_sep) {
-      return name_id_definition(scope_name, ts);
+      const name_id_t abs_name = SILVA_EXPECT_FWD(name_id_definition(scope_name, ts));
+      SILVA_EXPECT(ns.contains(abs_name),
+                   MINOR,
+                   "absolute name {} does not exist",
+                   name_id_wrap(abs_name));
+      return abs_name;
     }
-    name_id_t curr_scope = scope_name;
-    error_nursery_t error_nursery;
-    while (true) {
-      const name_id_t curr_name = SILVA_EXPECT_FWD(name_id_definition(curr_scope, ts));
-      if (ns.contains(curr_name)) {
-        return curr_name;
+    else {
+      name_id_t curr_scope = scope_name;
+      error_nursery_t error_nursery;
+      while (true) {
+        const name_id_t curr_name = SILVA_EXPECT_FWD(name_id_definition(curr_scope, ts));
+        if (ns.contains(curr_name)) {
+          return curr_name;
+        }
+        error_nursery.add_child_error(
+            make_error(error_level_t::MINOR, {}, "could not find {}", name_id_wrap(curr_name)));
+        if (curr_scope == name_id_none) {
+          break;
+        }
+        curr_scope = sfp->name_infos[curr_scope].parent_name;
       }
-      error_nursery.add_child_error(
-          make_error(error_level_t::MINOR, {}, "could not find {}", name_id_wrap(curr_name)));
-      if (curr_scope == name_id_none) {
-        break;
-      }
-      curr_scope = sfp->name_infos[curr_scope].parent_name;
+      return std::unexpected(std::move(error_nursery)
+                                 .finish(error_level_t::MINOR,
+                                         "unable to lookup name in scope {}: {}...{}",
+                                         name_id_wrap(scope_name),
+                                         sfp->token_id_wrap(ts.front()),
+                                         sfp->token_id_wrap(ts.back())));
     }
-    return std::unexpected(std::move(error_nursery)
-                               .finish(error_level_t::MINOR,
-                                       "unable to lookup name in scope {}: {}...{}",
-                                       name_id_wrap(scope_name),
-                                       sfp->token_id_wrap(ts.front()),
-                                       sfp->token_id_wrap(ts.back())));
   }
 }
