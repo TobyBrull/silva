@@ -12,6 +12,8 @@ namespace silva {
   using hash_value_t = std::size_t;
 
   struct hash_t : public customization_point_t<hash_value_t(const void*)> {
+    using is_transparent = void;
+
     template<typename T>
     constexpr hash_value_t operator()(const T& x) const;
   };
