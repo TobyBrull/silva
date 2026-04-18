@@ -19,8 +19,9 @@ namespace silva {
   };
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   struct tree_span_t {
+    static_assert(std::derived_from<NodeData, tree_node_t>);
+
     NodeData* root = nullptr;
     index_t stride = 0;
 
@@ -114,46 +115,39 @@ namespace silva {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   tree_span_t<NodeData>::tree_span_t(NodeData* root, index_t stride) : root{root}, stride{stride}
   {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   tree_span_t<NodeData>::tree_span_t(span_t<NodeData> vec) : root{vec.data()}, stride{1}
   {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   tree_span_t<NodeData>::tree_span_t(array_t<NodeData>& vec) : root{vec.data()}, stride{1}
   {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   index_t tree_span_t<NodeData>::size() const
   {
     return root->subtree_size;
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   auto& tree_span_t<NodeData>::operator[](this auto&& self, const index_t i)
   {
     return *(self.root + self.stride * i);
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   tree_span_t<NodeData> tree_span_t<NodeData>::sub_tree_span_at(const index_t pos) const
   {
     return {&((*this)[pos]), stride};
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   auto tree_span_t<NodeData>::children_range(this auto&& self)
   {
     static_assert(std::input_or_output_iterator<tree_span_child_iter_t<NodeData>>);
@@ -172,7 +166,6 @@ namespace silva {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   template<typename Visitor>
     requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
   expected_t<void> tree_span_t<NodeData>::visit_subtree(Visitor visitor) const
@@ -237,7 +230,6 @@ namespace silva {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   array_t<index_t> tree_span_t<NodeData>::get_children_dyn() const
   {
     const auto& node = (*this)[0];
@@ -250,7 +242,6 @@ namespace silva {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   template<index_t N>
   expected_t<array_fixed_t<index_t, N>> tree_span_t<NodeData>::get_children() const
   {
@@ -268,7 +259,6 @@ namespace silva {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   template<index_t N>
   expected_t<array_small_t<index_t, N>> tree_span_t<NodeData>::get_children_up_to() const
   {
@@ -282,14 +272,12 @@ namespace silva {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   hash_value_t hash_impl(const tree_span_t<NodeData>& x)
   {
     return hash(tuple_t<NodeData*, index_t>{x.root, x.stride});
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   template<typename NodeDataFunc>
   expected_t<string_t> tree_span_t<NodeData>::to_string(NodeDataFunc node_data_func) const
   {
@@ -313,7 +301,6 @@ namespace silva {
   }
 
   template<typename NodeData>
-    requires std::derived_from<NodeData, tree_node_t>
   template<typename NodeDataFunc>
   expected_t<string_t> tree_span_t<NodeData>::to_graphviz(NodeDataFunc node_data_func) const
   {

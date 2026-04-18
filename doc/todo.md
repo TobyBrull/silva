@@ -1,11 +1,5 @@
 # TODO
 
-* keep resolved_names set stable and just update the resolved name?
-
-* Rethink if hashing parse_tree_spans is a good idea
-
-* check that not using error-t gives clear error
-
 * tokenization:
     * Parse Python
     * Parse C
