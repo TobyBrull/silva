@@ -48,17 +48,18 @@ language Seed:
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
   Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe
-                                   | 'alias' Alias newline
+                                   | 'alias' Expr.Alias newline
                                    | Expr newline )
-  Alias = Expr
-  Expr = axe Atom
-    Parens    = nest  atom_nest '(' ')'
-    Prefix    = rtl   prefix 'not'
-    Postfix   = ltr   postfix '?' '*' '+'
-    Concat    = ltr   infix_flat concat
-    And       = ltr   infix_flat 'but_then'
-    Or        = ltr   infix_flat '|'
-  Atom = alias Nonterminal | Terminal
+  Expr:
+    ⊙ = axe Atom
+      Parens    = nest  atom_nest '(' ')'
+      Prefix    = rtl   prefix 'not'
+      Postfix   = ltr   postfix '?' '*' '+'
+      Concat    = ltr   infix_flat concat
+      And       = ltr   infix_flat 'but_then'
+      Or        = ltr   infix_flat '|'
+    Atom = alias Nonterminal | Terminal
+    Alias = Expr
   Nonterminal = '.' ? rule_name ( '.' rule_name ) *
   Terminal = ( string | token_category_name
              | 'any' | 'ε' | 'end_of_file' )

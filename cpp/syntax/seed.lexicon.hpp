@@ -91,9 +91,9 @@ namespace silva::seed {
     const name_id_t ni_language = sfp->name_id_of(ni_seed, "Language");
     const name_id_t ni_scope    = sfp->name_id_of(ni_seed, "Scope");
     const name_id_t ni_rule     = sfp->name_id_of(ni_seed, "Rule");
-    const name_id_t ni_alias    = sfp->name_id_of(ni_seed, "Alias");
     const name_id_t ni_expr     = sfp->name_id_of(ni_seed, "Expr");
-    const name_id_t ni_atom     = sfp->name_id_of(ni_seed, "Atom");
+    const name_id_t ni_atom     = sfp->name_id_of(ni_expr, "Atom");
+    const name_id_t ni_alias    = sfp->name_id_of(ni_expr, "Alias");
     const name_id_t ni_term     = sfp->name_id_of(ni_seed, "Terminal");
     const name_id_t ni_tok_cat  = sfp->name_id_of(ni_seed, "TokenCategory");
 

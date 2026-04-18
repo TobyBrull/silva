@@ -164,198 +164,199 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].Seed.Expr.Concat.concat             Expr ';'
             [0].Seed.Nonterminal                  Expr
             [1].Seed.Terminal                     ';'
-    [1].Seed.Rule                                 Expr = ... <ws> <ws>
+    [1].Seed.Scope                                Expr : ... <ws> <ws>
       [0].Seed.Nonterminal                        Expr
-      [1].Seed.Axe                                Atom <ws> ... <ws> <ws>
+      [1].Seed.Rule                               ⊙ = ... <ws> <ws>
+        [0].Seed.Axe                              Atom <ws> ... <ws> <ws>
+          [0].Seed.Nonterminal                    Atom
+          [1].Seed.Axe.Level                      Parens = ... '(' ')'
+            [0].Seed.Axe.Assoc                    nest
+            [1].Seed.Axe.Ops                      atom_nest '(' ')'
+              [0].Seed.Axe.OpType                 atom_nest
+              [1].Seed.Axe.Op                     '('
+              [2].Seed.Axe.Op                     ')'
+          [2].Seed.Axe.Level                      Namespace = ... prefix '::'
+            [0].Seed.Axe.Assoc                    rtl
+            [1].Seed.Axe.Ops                      infix '::'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '::'
+            [2].Seed.Axe.Ops                      prefix '::'
+              [0].Seed.Axe.OpType                 prefix
+              [1].Seed.Axe.Op                     '::'
+          [3].Seed.Axe.Level                      Postfix = ... '.' '->'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      postfix '++' '--'
+              [0].Seed.Axe.OpType                 postfix
+              [1].Seed.Axe.Op                     '++'
+              [2].Seed.Axe.Op                     '--'
+            [2].Seed.Axe.Ops                      postfix_nest '(' ')' '[' ']'
+              [0].Seed.Axe.OpType                 postfix_nest
+              [1].Seed.Axe.Op                     '('
+              [2].Seed.Axe.Op                     ')'
+              [3].Seed.Axe.Op                     '['
+              [4].Seed.Axe.Op                     ']'
+            [3].Seed.Axe.Ops                      infix '.' '->'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '.'
+              [2].Seed.Axe.Op                     '->'
+          [4].Seed.Axe.Level                      Prefix = ... '<.' '.>'
+            [0].Seed.Axe.Assoc                    rtl
+            [1].Seed.Axe.Ops                      prefix '++' ... 'sizeof' 'new'
+              [0].Seed.Axe.OpType                 prefix
+              [1].Seed.Axe.Op                     '++'
+              [2].Seed.Axe.Op                     '--'
+              [3].Seed.Axe.Op                     '+'
+              [4].Seed.Axe.Op                     '-'
+              [5].Seed.Axe.Op                     '!'
+              [6].Seed.Axe.Op                     '~'
+              [7].Seed.Axe.Op                     '*'
+              [8].Seed.Axe.Op                     '&'
+              [9].Seed.Axe.Op                     'sizeof'
+              [10].Seed.Axe.Op                    'new'
+            [2].Seed.Axe.Ops                      prefix_nest '<.' '.>'
+              [0].Seed.Axe.OpType                 prefix_nest
+              [1].Seed.Axe.Op                     '<.'
+              [2].Seed.Axe.Op                     '.>'
+          [5].Seed.Axe.Level                      Member = ... '.*' '->*'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '.*' '->*'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '.*'
+              [2].Seed.Axe.Op                     '->*'
+          [6].Seed.Axe.Level                      Multiply = ... '/' '%'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '*' '/' '%'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '*'
+              [2].Seed.Axe.Op                     '/'
+              [3].Seed.Axe.Op                     '%'
+          [7].Seed.Axe.Level                      Addition = ... '+' '-'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '+' '-'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '+'
+              [2].Seed.Axe.Op                     '-'
+          [8].Seed.Axe.Level                      Bitshift = ... '<<' '>>'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '<<' '>>'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '<<'
+              [2].Seed.Axe.Op                     '>>'
+          [9].Seed.Axe.Level                      Spaceship = ltr infix '<=>'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '<=>'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '<=>'
+          [10].Seed.Axe.Level                     Comparison = ... '>' '>='
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '<' '<=' '>' '>='
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '<'
+              [2].Seed.Axe.Op                     '<='
+              [3].Seed.Axe.Op                     '>'
+              [4].Seed.Axe.Op                     '>='
+          [11].Seed.Axe.Level                     Equality = ... '==' '!='
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '==' '!='
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '=='
+              [2].Seed.Axe.Op                     '!='
+          [12].Seed.Axe.Level                     BitAnd = ltr infix '&'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '&'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '&'
+          [13].Seed.Axe.Level                     BitXor = ltr infix '^'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '^'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '^'
+          [14].Seed.Axe.Level                     BitOr = ltr infix '|'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '|'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '|'
+          [15].Seed.Axe.Level                     LogicalAnd = ltr infix '&&'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '&&'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '&&'
+          [16].Seed.Axe.Level                     LogicalOr = ltr infix '||'
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix '||'
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '||'
+          [17].Seed.Axe.Level                     Assignment = ... '?' ':'
+            [0].Seed.Axe.Assoc                    rtl
+            [1].Seed.Axe.Ops                      infix '=' '+=' '-='
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     '='
+              [2].Seed.Axe.Op                     '+='
+              [3].Seed.Axe.Op                     '-='
+            [2].Seed.Axe.Ops                      prefix 'throw'
+              [0].Seed.Axe.OpType                 prefix
+              [1].Seed.Axe.Op                     'throw'
+            [3].Seed.Axe.Ops                      ternary '?' ':'
+              [0].Seed.Axe.OpType                 ternary
+              [1].Seed.Axe.Op                     '?'
+              [2].Seed.Axe.Op                     ':'
+          [18].Seed.Axe.Level                     Comma = ltr infix ','
+            [0].Seed.Axe.Assoc                    ltr
+            [1].Seed.Axe.Ops                      infix ','
+              [0].Seed.Axe.OpType                 infix
+              [1].Seed.Axe.Op                     ','
+      [2].Seed.Rule                               Atom = ... identifier <ws>
         [0].Seed.Nonterminal                      Atom
-        [1].Seed.Axe.Level                        Parens = ... '(' ')'
-          [0].Seed.Axe.Assoc                      nest
-          [1].Seed.Axe.Ops                        atom_nest '(' ')'
-            [0].Seed.Axe.OpType                   atom_nest
-            [1].Seed.Axe.Op                       '('
-            [2].Seed.Axe.Op                       ')'
-        [2].Seed.Axe.Level                        Namespace = ... prefix '::'
-          [0].Seed.Axe.Assoc                      rtl
-          [1].Seed.Axe.Ops                        infix '::'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '::'
-          [2].Seed.Axe.Ops                        prefix '::'
-            [0].Seed.Axe.OpType                   prefix
-            [1].Seed.Axe.Op                       '::'
-        [3].Seed.Axe.Level                        Postfix = ... '.' '->'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        postfix '++' '--'
-            [0].Seed.Axe.OpType                   postfix
-            [1].Seed.Axe.Op                       '++'
-            [2].Seed.Axe.Op                       '--'
-          [2].Seed.Axe.Ops                        postfix_nest '(' ')' '[' ']'
-            [0].Seed.Axe.OpType                   postfix_nest
-            [1].Seed.Axe.Op                       '('
-            [2].Seed.Axe.Op                       ')'
-            [3].Seed.Axe.Op                       '['
-            [4].Seed.Axe.Op                       ']'
-          [3].Seed.Axe.Ops                        infix '.' '->'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '.'
-            [2].Seed.Axe.Op                       '->'
-        [4].Seed.Axe.Level                        Prefix = ... '<.' '.>'
-          [0].Seed.Axe.Assoc                      rtl
-          [1].Seed.Axe.Ops                        prefix '++' ... 'sizeof' 'new'
-            [0].Seed.Axe.OpType                   prefix
-            [1].Seed.Axe.Op                       '++'
-            [2].Seed.Axe.Op                       '--'
-            [3].Seed.Axe.Op                       '+'
-            [4].Seed.Axe.Op                       '-'
-            [5].Seed.Axe.Op                       '!'
-            [6].Seed.Axe.Op                       '~'
-            [7].Seed.Axe.Op                       '*'
-            [8].Seed.Axe.Op                       '&'
-            [9].Seed.Axe.Op                       'sizeof'
-            [10].Seed.Axe.Op                      'new'
-          [2].Seed.Axe.Ops                        prefix_nest '<.' '.>'
-            [0].Seed.Axe.OpType                   prefix_nest
-            [1].Seed.Axe.Op                       '<.'
-            [2].Seed.Axe.Op                       '.>'
-        [5].Seed.Axe.Level                        Member = ... '.*' '->*'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '.*' '->*'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '.*'
-            [2].Seed.Axe.Op                       '->*'
-        [6].Seed.Axe.Level                        Multiply = ... '/' '%'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '*' '/' '%'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '*'
-            [2].Seed.Axe.Op                       '/'
-            [3].Seed.Axe.Op                       '%'
-        [7].Seed.Axe.Level                        Addition = ... '+' '-'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '+' '-'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '+'
-            [2].Seed.Axe.Op                       '-'
-        [8].Seed.Axe.Level                        Bitshift = ... '<<' '>>'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '<<' '>>'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '<<'
-            [2].Seed.Axe.Op                       '>>'
-        [9].Seed.Axe.Level                        Spaceship = ltr infix '<=>'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '<=>'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '<=>'
-        [10].Seed.Axe.Level                       Comparison = ... '>' '>='
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '<' '<=' '>' '>='
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '<'
-            [2].Seed.Axe.Op                       '<='
-            [3].Seed.Axe.Op                       '>'
-            [4].Seed.Axe.Op                       '>='
-        [11].Seed.Axe.Level                       Equality = ... '==' '!='
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '==' '!='
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '=='
-            [2].Seed.Axe.Op                       '!='
-        [12].Seed.Axe.Level                       BitAnd = ltr infix '&'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '&'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '&'
-        [13].Seed.Axe.Level                       BitXor = ltr infix '^'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '^'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '^'
-        [14].Seed.Axe.Level                       BitOr = ltr infix '|'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '|'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '|'
-        [15].Seed.Axe.Level                       LogicalAnd = ltr infix '&&'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '&&'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '&&'
-        [16].Seed.Axe.Level                       LogicalOr = ltr infix '||'
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix '||'
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '||'
-        [17].Seed.Axe.Level                       Assignment = ... '?' ':'
-          [0].Seed.Axe.Assoc                      rtl
-          [1].Seed.Axe.Ops                        infix '=' '+=' '-='
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       '='
-            [2].Seed.Axe.Op                       '+='
-            [3].Seed.Axe.Op                       '-='
-          [2].Seed.Axe.Ops                        prefix 'throw'
-            [0].Seed.Axe.OpType                   prefix
-            [1].Seed.Axe.Op                       'throw'
-          [3].Seed.Axe.Ops                        ternary '?' ':'
-            [0].Seed.Axe.OpType                   ternary
-            [1].Seed.Axe.Op                       '?'
-            [2].Seed.Axe.Op                       ':'
-        [18].Seed.Axe.Level                       Comma = ltr infix ','
-          [0].Seed.Axe.Assoc                      ltr
-          [1].Seed.Axe.Ops                        infix ','
-            [0].Seed.Axe.OpType                   infix
-            [1].Seed.Axe.Op                       ','
-    [2].Seed.Rule                                 Atom = ... identifier <ws>
-      [0].Seed.Nonterminal                        Atom
-      [1].Seed.Expr.Or.|                          number | string | identifier
-        [0].Seed.Terminal                         number
-        [1].Seed.Terminal                         string
-        [2].Seed.Terminal                         identifier
+        [1].Seed.Expr.Or.|                        number | string | identifier
+          [0].Seed.Terminal                       number
+          [1].Seed.Terminal                       string
+          [2].Seed.Terminal                       identifier
 
 [0].CppStmts                                      1 + ... ++ ;
   [0].CppStmts.Expr.Addition.+                    1 + ... * 5
     [0].CppStmts.Expr.Addition.+                  1 + 2 * 3
-      [0].CppStmts.Atom                           1
+      [0].CppStmts.Expr.Atom                      1
       [1].CppStmts.Expr.Multiply.*                2 * 3
-        [0].CppStmts.Atom                         2
-        [1].CppStmts.Atom                         3
+        [0].CppStmts.Expr.Atom                    2
+        [1].CppStmts.Expr.Atom                    3
     [1].CppStmts.Expr.Multiply.*                  4 * 5
-      [0].CppStmts.Atom                           4
-      [1].CppStmts.Atom                           5
+      [0].CppStmts.Expr.Atom                      4
+      [1].CppStmts.Expr.Atom                      5
   [1].CppStmts.Expr.Assignment.=                  a [ ... 3.14 )
     [0].CppStmts.Expr.Postfix.[                   a [ 1 ]
-      [0].CppStmts.Atom                           a
-      [1].CppStmts.Atom                           1
+      [0].CppStmts.Expr.Atom                      a
+      [1].CppStmts.Expr.Atom                      1
     [1].CppStmts.Expr.Postfix.(                   std :: ... 3.14 )
       [0].CppStmts.Expr.Namespace.::              std :: sin
-        [0].CppStmts.Atom                         std
-        [1].CppStmts.Atom                         sin
-      [1].CppStmts.Atom                           3.14
+        [0].CppStmts.Expr.Atom                    std
+        [1].CppStmts.Expr.Atom                    sin
+      [1].CppStmts.Expr.Atom                      3.14
   [2].CppStmts.Expr.BitOr.|                       1 | ... + 3
-    [0].CppStmts.Atom                             1
+    [0].CppStmts.Expr.Atom                        1
     [1].CppStmts.Expr.Comparison.<=               0 <= ... + 3
       [0].CppStmts.Expr.Comparison.<=             0 <= x * 10
-        [0].CppStmts.Atom                         0
+        [0].CppStmts.Expr.Atom                    0
         [1].CppStmts.Expr.Multiply.*              x * 10
-          [0].CppStmts.Atom                       x
-          [1].CppStmts.Atom                       10
+          [0].CppStmts.Expr.Atom                  x
+          [1].CppStmts.Expr.Atom                  10
       [1].CppStmts.Expr.Addition.+                2 + 3
-        [0].CppStmts.Atom                         2
-        [1].CppStmts.Atom                         3
+        [0].CppStmts.Expr.Atom                    2
+        [1].CppStmts.Expr.Atom                    3
   [3].CppStmts.Expr.Assignment.=                  std :: ... x )
     [0].CppStmts.Expr.Postfix.(                   std :: ... x )
       [0].CppStmts.Expr.Namespace.::              std :: get
-        [0].CppStmts.Atom                         std
-        [1].CppStmts.Atom                         get
-      [1].CppStmts.Atom                           x
+        [0].CppStmts.Expr.Atom                    std
+        [1].CppStmts.Expr.Atom                    get
+      [1].CppStmts.Expr.Atom                      x
     [1].CppStmts.Expr.Postfix.(                   :: std ... x )
       [0].CppStmts.Expr.Namespace.::              :: std :: get
         [0].CppStmts.Expr.Namespace.::            std :: get
-          [0].CppStmts.Atom                       std
-          [1].CppStmts.Atom                       get
-      [1].CppStmts.Atom                           x
+          [0].CppStmts.Expr.Atom                  std
+          [1].CppStmts.Expr.Atom                  get
+      [1].CppStmts.Expr.Atom                      x
   [4].CppStmts.Expr.Prefix.++                     ++ x ++
     [0].CppStmts.Expr.Postfix.++                  x ++
-      [0].CppStmts.Atom                           x
+      [0].CppStmts.Expr.Atom                      x
 
 [0].Fern                                          [ none ... ] ]
   [0].Fern.LabeledItem                            none

@@ -1,7 +1,5 @@
 # TODO
 
-* Make all Atoms sub of Expr
-
 * keep resolved_names set stable and just update the resolved name?
 
 * Rethink if hashing parse_tree_spans is a good idea

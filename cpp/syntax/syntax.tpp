@@ -70,7 +70,7 @@ language Expr:
     Mult    = ltr   infix '*'
     Add     = ltr   infix '+'
     Comp    = ltr   infix '<'
-Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
+  Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
 )'";
     syntax_farm_t sf;
     seed::interpreter_t si(sf.ptr());
@@ -86,18 +86,18 @@ Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
 [0].Expr.Add.+                                    ( 5 ... + 100
   [0].Expr.Parens.(                               ( 5 ... 20 )
     [0].Expr.Add.+                                5 + ... * 20
-      [0].Atom                                    5
-      [1].Atom                                    if a ... * 20
+      [0].Expr.Atom                               5
+      [1].Expr.Atom                               if a ... * 20
         [0].Expr.Comp.<                           a < 3
-          [0].Atom                                a
-          [1].Atom                                3
+          [0].Expr.Atom                           a
+          [1].Expr.Atom                           3
         [1].Expr.Add.+                            b + 10
-          [0].Atom                                b
-          [1].Atom                                10
+          [0].Expr.Atom                           b
+          [1].Expr.Atom                           10
         [2].Expr.Mult.*                           c * 20
-          [0].Atom                                c
-          [1].Atom                                20
-  [1].Atom                                        100
+          [0].Expr.Atom                           c
+          [1].Expr.Atom                           20
+  [1].Expr.Atom                                   100
 )";
     const string_t result{SILVA_REQUIRE(expr_pt->span().to_string())};
     CHECK(result == expected_parse_tree.substr(1));

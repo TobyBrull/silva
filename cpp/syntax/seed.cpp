@@ -313,7 +313,7 @@ namespace silva::seed::impl {
                                      const lexicon_t& lexicon,
                                      tokenizer_farm_t& tf)
   {
-    const auto axe_text = find_subsection(seed_str, "Expr = axe ", "  Atom = alias");
+    const auto axe_text = find_subsection(seed_str, "⊙ = axe ", "    Atom = alias");
     const auto axe_frag = SILVA_EXPECT_ASSERT(fragmentize(sfp, "seed.axe", string_t{axe_text}));
     const auto axe_tok  = SILVA_EXPECT_ASSERT(tf.apply(axe_frag, lexicon.ti_r_seed));
     impl::base_parse_tree_nursery_t nursery(axe_tok, lexicon);

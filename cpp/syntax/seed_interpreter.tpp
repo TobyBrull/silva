@@ -85,7 +85,7 @@ language Frog:
         [1].Seed.Nonterminal                      Expr
     [2].Seed.Rule                                 RuleName = alias Keyword <ws>
       [0].Seed.Nonterminal                        RuleName
-      [1].Seed.Alias                              Keyword
+      [1].Seed.Expr.Alias                         Keyword
         [0].Seed.Nonterminal                      Keyword
     [3].Seed.Rule                                 Expr = Primary + <ws>
       [0].Seed.Nonterminal                        Expr
