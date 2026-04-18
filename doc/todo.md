@@ -4,8 +4,7 @@
 
 * Rethink if hashing parse_tree_spans is a good idea
 
-* put function call into default SILVA_EXPECT_FWD
-    * check that not using error-t gives clear error
+* check that not using error-t gives clear error
 
 * tokenization:
     * Parse Python

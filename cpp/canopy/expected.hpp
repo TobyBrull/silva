@@ -36,14 +36,17 @@ namespace silva {
 //  - SILVA_EXPECT(0 < x, MINOR, "x too small");
 //  - SILVA_EXPECT(0 < x, MINOR, "x (={}) must be positive", x);
 //
-#define SILVA_EXPECT_IMPL(return_stmt, condition, error_level, ...)                               \
-  do {                                                                                            \
-    using enum error_level_t;                                                                     \
-    static_assert(error_level_is_primary(error_level));                                           \
-    if (!(condition)) {                                                                           \
-      return_stmt std::unexpected(                                                                \
-          silva::impl::silva_expect(__FILE__, __LINE__, error_level __VA_OPT__(, ) __VA_ARGS__)); \
-    }                                                                                             \
+#define SILVA_EXPECT_IMPL(return_stmt, condition, error_level, ...)                   \
+  do {                                                                                \
+    using enum error_level_t;                                                         \
+    static_assert(error_level_is_primary(error_level));                               \
+    if (!(condition)) {                                                               \
+      return_stmt std::unexpected(silva::impl::silva_expect(__FILE__,                 \
+                                                            __LINE__,                 \
+                                                            error_level,              \
+                                                            #condition __VA_OPT__(, ) \
+                                                                __VA_ARGS__));        \
+    }                                                                                 \
   } while (false)
 #define SILVA_EXPECT(...) SILVA_EXPECT_IMPL(return, __VA_ARGS__)
 
@@ -61,21 +64,22 @@ namespace silva {
 //  - SILVA_EXPECT_FWD(foo(x), MAJOR)
 //  - SILVA_EXPECT_FWD(foo(x), MAJOR, "foo failed for x={}", x);
 //
-#define SILVA_EXPECT_FWD_IMPL(return_stmt, expression, ...)               \
-  ({                                                                      \
-    auto __silva_result = (expression);                                   \
-    static_assert(silva::is_expected_t<decltype(__silva_result)>::value); \
-    if (!__silva_result.has_value()) {                                    \
-      if constexpr (expected_traits.materialize_fwd) {                    \
-        __silva_result.error().materialize();                             \
-      }                                                                   \
-      using enum error_level_t;                                           \
-      return_stmt std::unexpected(silva::impl::silva_expect_fwd(          \
-          __FILE__,                                                       \
-          __LINE__,                                                       \
-          std::move(__silva_result).error() __VA_OPT__(, ) __VA_ARGS__)); \
-    }                                                                     \
-    std::move(__silva_result).value();                                    \
+#define SILVA_EXPECT_FWD_IMPL(return_stmt, expression, ...)                                        \
+  ({                                                                                               \
+    auto __silva_result = (expression);                                                            \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                          \
+    if (!__silva_result.has_value()) {                                                             \
+      if constexpr (expected_traits.materialize_fwd) {                                             \
+        __silva_result.error().materialize();                                                      \
+      }                                                                                            \
+      using enum error_level_t;                                                                    \
+      return_stmt std::unexpected(silva::impl::silva_expect_fwd(__FILE__,                          \
+                                                                __LINE__,                          \
+                                                                std::move(__silva_result).error(), \
+                                                                #expression __VA_OPT__(, )         \
+                                                                    __VA_ARGS__));                 \
+    }                                                                                              \
+    std::move(__silva_result).value();                                                             \
   })
 #define SILVA_EXPECT_FWD(...) SILVA_EXPECT_FWD_IMPL(return, __VA_ARGS__)
 
@@ -189,19 +193,39 @@ namespace silva {
 }
 
 namespace silva::impl {
-  inline error_t silva_expect(char const* file, const long line, const error_level_t error_level)
+  constexpr index_t max_expr_str_len = 30;
+
+  inline error_t silva_expect(char const* file,
+                              const long line,
+                              const error_level_t error_level,
+                              char const* expr_str)
   {
-    return make_error(error_level,
-                      {},
-                      "unexpected condition in [{}:{}]",
-                      string_view_t{file},
-                      line);
+    const string_view_t expr_sv{expr_str};
+    if (expr_sv.size() > max_expr_str_len) {
+      return make_error(error_level,
+                        {},
+                        "unexpected [{}...] at [{}:{}]",
+                        expr_sv.substr(0, max_expr_str_len),
+                        string_view_t{file},
+                        line);
+    }
+    else {
+      return make_error(error_level,
+                        {},
+                        "unexpected [{}] at [{}:{}]",
+                        expr_sv,
+                        string_view_t{file},
+                        line);
+    }
   }
 
   template<typename... Args>
     requires(sizeof...(Args) >= 1)
-  error_t
-  silva_expect(char const* file, const long line, const error_level_t error_level, Args&&... args)
+  error_t silva_expect(char const* file,
+                       const long line,
+                       const error_level_t error_level,
+                       char const* expr_str,
+                       Args&&... args)
   {
     return make_error(error_level, {}, std::forward<Args>(args)...);
   }
@@ -210,6 +234,7 @@ namespace silva::impl {
   error_t silva_expect_fwd(char const* file,
                            const long line,
                            error_t error,
+                           char const* expr_str,
                            const error_level_t error_level,
                            Args&&... args)
   {
@@ -219,21 +244,38 @@ namespace silva::impl {
       error = make_error(new_error_level, error_array, std::forward<Args>(args)...);
     }
     else {
-      error = make_error(new_error_level,
-                         error_array,
-                         "unexpected forward at [{}:{}]",
-                         string_view_t{file},
-                         line);
+      const string_view_t expr_sv{expr_str};
+      if (expr_sv.size() > max_expr_str_len) {
+        error = make_error(new_error_level,
+                           error_array,
+                           "while calling [{}...] at [{}:{}]",
+                           expr_sv.substr(0, max_expr_str_len),
+                           string_view_t{file},
+                           line);
+      }
+      else {
+        error = make_error(new_error_level,
+                           error_array,
+                           "while calling [{}] at [{}:{}]",
+                           expr_sv,
+                           string_view_t{file},
+                           line);
+      }
     }
     return std::move(error);
   }
 
   template<typename... Args>
-  error_t silva_expect_fwd(char const* file, const long line, error_t error, Args&&... args)
+  error_t silva_expect_fwd(char const* file,
+                           const long line,
+                           error_t error,
+                           char const* expr_str,
+                           Args&&... args)
   {
     return silva_expect_fwd(file,
                             line,
                             std::move(error),
+                            expr_str,
                             error_level_t::NO_ERROR,
                             std::forward<Args>(args)...);
   }
