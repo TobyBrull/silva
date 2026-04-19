@@ -1,0 +1,27 @@
+#include "cedar.hpp"
+
+#include "syntax/syntax_farm.hpp"
+
+#include "canopy/main.hpp"
+
+namespace silva::cedar {
+  expected_t<void> main(const span_t<string_view_t> cmdline_args)
+  {
+    const index_t m = cmdline_args.size();
+    SILVA_EXPECT(m == 2, MINOR, "Usage: ... <c-file>");
+
+    constexpr expected_traits_t expected_traits{.materialize_fwd = true};
+    syntax_farm_t sf;
+    auto si                  = seed_interpreter(sf.ptr());
+    fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]));
+    parse_tree_ptr_t pt      = SILVA_EXPECT_FWD(si->apply(fp, sf.name_id_of("C")),
+                                           "error parsing C file {}",
+                                           cmdline_args[1]);
+
+    const string_t pts = SILVA_EXPECT_FWD(pt->span().to_string());
+    fmt::print("{}\n", pts);
+
+    return {};
+  }
+}
+SILVA_MAIN(silva::cedar::main);
