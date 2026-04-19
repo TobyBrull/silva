@@ -962,3 +962,190 @@ Mr Jane
 2
 3
 Mr Jane
+[0].Cedar                                         typedef void ... ; }
+  [0].Cedar.External                              typedef void FILE ;
+    [0].Cedar.Decl                                typedef void FILE ;
+      [0].Cedar.TypeSpecs                         typedef void
+        [0].Cedar.NonTypeSpec                     typedef
+          [0].Cedar.StorageClass                  typedef
+        [1].Cedar.TypeCore                        void
+          [0].Cedar.KeywordType                   void
+            [0].Cedar.BasicType                   void
+      [1].Cedar.InitDeclList                      FILE
+        [0].Cedar.InitDecl                        FILE
+          [0].Cedar.Declarator                    FILE
+            [0].Cedar.DirectDeclarator            FILE
+              [0].Cedar.DDStart                   FILE
+                [0].Cedar.IdentDD                 FILE
+          [1].Cedar.PostDecl                      
+      [2].Cedar.PostDecl                          
+  [1].Cedar.External                              extern FILE * stdout ;
+    [0].Cedar.Decl                                extern FILE * stdout ;
+      [0].Cedar.TypeSpecs                         extern FILE
+        [0].Cedar.NonTypeSpec                     extern
+          [0].Cedar.StorageClass                  extern
+        [1].Cedar.TypeCore                        FILE
+          [0].Cedar.TypedefName                   FILE
+      [1].Cedar.InitDeclList                      * stdout
+        [0].Cedar.InitDecl                        * stdout
+          [0].Cedar.Declarator                    * stdout
+            [0].Cedar.Pointer                     *
+            [1].Cedar.DirectDeclarator            stdout
+              [0].Cedar.DDStart                   stdout
+                [0].Cedar.IdentDD                 stdout
+          [1].Cedar.PostDecl                      
+      [2].Cedar.PostDecl                          
+  [2].Cedar.External                              extern int ... ) ;
+    [0].Cedar.Decl                                extern int ... ) ;
+      [0].Cedar.TypeSpecs                         extern int
+        [0].Cedar.NonTypeSpec                     extern
+          [0].Cedar.StorageClass                  extern
+        [1].Cedar.TypeCore                        int
+          [0].Cedar.KeywordType                   int
+            [0].Cedar.BasicType                   int
+      [1].Cedar.InitDeclList                      fprintf ( ... ... )
+        [0].Cedar.InitDecl                        fprintf ( ... ... )
+          [0].Cedar.Declarator                    fprintf ( ... ... )
+            [0].Cedar.DirectDeclarator            fprintf ( ... ... )
+              [0].Cedar.DDStart                   fprintf
+                [0].Cedar.IdentDD                 fprintf
+              [1].Cedar.DDSuffix                  ( FILE ... ... )
+                [0].Cedar.FuncSuffix              ( FILE ... ... )
+                  [0].Cedar.ParamList             FILE * ... , ...
+                    [0].Cedar.ParamOrDots         FILE * __restrict __stream
+                      [0].Cedar.ParamDecl         FILE * __restrict __stream
+                        [0].Cedar.TypeSpecs       FILE
+                          [0].Cedar.TypeCore      FILE
+                            [0].Cedar.TypedefName FILE
+                        [1].Cedar.Declarator      * __restrict __stream
+                          [0].Cedar.Pointer       * __restrict
+                            [0].Cedar.NonTypeSpec __restrict
+                              [0].Cedar.TypeQual  __restrict
+                          [1].Cedar.DirectDeclarator __stream
+                            [0].Cedar.DDStart     __stream
+                              [0].Cedar.IdentDD   __stream
+                    [1].Cedar.ParamOrDots         const char * __restrict __format
+                      [0].Cedar.ParamDecl         const char * __restrict __format
+                        [0].Cedar.TypeSpecs       const char
+                          [0].Cedar.NonTypeSpec   const
+                            [0].Cedar.TypeQual    const
+                          [1].Cedar.TypeCore      char
+                            [0].Cedar.KeywordType char
+                              [0].Cedar.BasicType char
+                        [1].Cedar.Declarator      * __restrict __format
+                          [0].Cedar.Pointer       * __restrict
+                            [0].Cedar.NonTypeSpec __restrict
+                              [0].Cedar.TypeQual  __restrict
+                          [1].Cedar.DirectDeclarator __format
+                            [0].Cedar.DDStart     __format
+                              [0].Cedar.IdentDD   __format
+                    [2].Cedar.ParamOrDots         ...
+                      [0].Cedar.Ellipsis          ...
+          [1].Cedar.PostDecl                      
+      [2].Cedar.PostDecl                          
+  [3].Cedar.External                              int main ... ; }
+    [0].Cedar.FuncDef                             int main ... ; }
+      [0].Cedar.TypeSpecs                         int
+        [0].Cedar.TypeCore                        int
+          [0].Cedar.KeywordType                   int
+            [0].Cedar.BasicType                   int
+      [1].Cedar.Declarator                        main ( ... ] )
+        [0].Cedar.DirectDeclarator                main ( ... ] )
+          [0].Cedar.DDStart                       main
+            [0].Cedar.IdentDD                     main
+          [1].Cedar.DDSuffix                      ( int ... ] )
+            [0].Cedar.FuncSuffix                  ( int ... ] )
+              [0].Cedar.ParamList                 int argc ... [ ]
+                [0].Cedar.ParamOrDots             int argc
+                  [0].Cedar.ParamDecl             int argc
+                    [0].Cedar.TypeSpecs           int
+                      [0].Cedar.TypeCore          int
+                        [0].Cedar.KeywordType     int
+                          [0].Cedar.BasicType     int
+                    [1].Cedar.Declarator          argc
+                      [0].Cedar.DirectDeclarator  argc
+                        [0].Cedar.DDStart         argc
+                          [0].Cedar.IdentDD       argc
+                [1].Cedar.ParamOrDots             char * argv [ ]
+                  [0].Cedar.ParamDecl             char * argv [ ]
+                    [0].Cedar.TypeSpecs           char
+                      [0].Cedar.TypeCore          char
+                        [0].Cedar.KeywordType     char
+                          [0].Cedar.BasicType     char
+                    [1].Cedar.Declarator          * argv [ ]
+                      [0].Cedar.Pointer           *
+                      [1].Cedar.DirectDeclarator  argv [ ]
+                        [0].Cedar.DDStart         argv
+                          [0].Cedar.IdentDD       argv
+                        [1].Cedar.DDSuffix        [ ]
+                          [0].Cedar.ArraySuffix   [ ]
+      [2].Cedar.PostDecl                          
+      [3].Cedar.Compound                          { for ... ; }
+        [0].Cedar.BlockItem                       for ( ... ; }
+          [0].Cedar.Stmt                          for ( ... ; }
+            [0].Cedar.For                         for ( ... ; }
+              [0].Cedar.ForInit                   int i = 0 ;
+                [0].Cedar.Decl                    int i = 0 ;
+                  [0].Cedar.TypeSpecs             int
+                    [0].Cedar.TypeCore            int
+                      [0].Cedar.KeywordType       int
+                        [0].Cedar.BasicType       int
+                  [1].Cedar.InitDeclList          i = 0
+                    [0].Cedar.InitDecl            i = 0
+                      [0].Cedar.Declarator        i
+                        [0].Cedar.DirectDeclarator i
+                          [0].Cedar.DDStart       i
+                            [0].Cedar.IdentDD     i
+                      [1].Cedar.PostDecl          
+                      [2].Cedar.Initializer       0
+                        [0].Cedar.Expr.Atom       0
+                          [0].Cedar.Expr.AtomBase 0
+                            [0].Cedar.Expr.Literal 0
+                  [2].Cedar.PostDecl              
+              [1].Cedar.Expr.Rel.<                i < argc
+                [0].Cedar.Expr.Atom               i
+                  [0].Cedar.Expr.AtomBase         i
+                    [0].Cedar.Expr.Ident          i
+                [1].Cedar.Expr.Atom               argc
+                  [0].Cedar.Expr.AtomBase         argc
+                    [0].Cedar.Expr.Ident          argc
+              [2].Cedar.Expr.Atom                 i ++
+                [0].Cedar.Expr.AtomBase           i
+                  [0].Cedar.Expr.Ident            i
+                [1].Cedar.Expr.Suffix             ++
+                  [0].Cedar.Expr.PostIncDec       ++
+              [3].Cedar.Stmt                      { fprintf ... ; }
+                [0].Cedar.Compound                { fprintf ... ; }
+                  [0].Cedar.BlockItem             fprintf ( ... ) ;
+                    [0].Cedar.Stmt                fprintf ( ... ) ;
+                      [0].Cedar.ExprStmt          fprintf ( ... ) ;
+                        [0].Cedar.Expr.Atom       fprintf ( ... ] )
+                          [0].Cedar.Expr.AtomBase fprintf
+                            [0].Cedar.Expr.Ident  fprintf
+                          [1].Cedar.Expr.Suffix   ( stdout ... ] )
+                            [0].Cedar.Expr.Call   ( stdout ... ] )
+                              [0].Cedar.Expr.ArgList stdout , ... i ]
+                                [0].Cedar.Expr.Atom stdout
+                                  [0].Cedar.Expr.AtomBase stdout
+                                    [0].Cedar.Expr.Ident stdout
+                                [1].Cedar.Expr.Atom "[%d] = %s\n"
+                                  [0].Cedar.Expr.AtomBase "[%d] = %s\n"
+                                    [0].Cedar.Expr.Literal "[%d] = %s\n"
+                                [2].Cedar.Expr.Atom i
+                                  [0].Cedar.Expr.AtomBase i
+                                    [0].Cedar.Expr.Ident i
+                                [3].Cedar.Expr.Atom argv [ i ]
+                                  [0].Cedar.Expr.AtomBase argv
+                                    [0].Cedar.Expr.Ident argv
+                                  [1].Cedar.Expr.Suffix [ i ]
+                                    [0].Cedar.Expr.Index [ i ]
+                                      [0].Cedar.Expr.Atom i
+                                        [0].Cedar.Expr.AtomBase i
+                                          [0].Cedar.Expr.Ident i
+        [1].Cedar.BlockItem                       return 0 ;
+          [0].Cedar.Stmt                          return 0 ;
+            [0].Cedar.Return                      return 0 ;
+              [0].Cedar.Expr.Atom                 0
+                [0].Cedar.Expr.AtomBase           0
+                  [0].Cedar.Expr.Literal          0
+

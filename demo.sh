@@ -22,3 +22,6 @@ SEED_EXEC_TRACE=true ./build/cpp/silva_syntax silva/syntax/01-simplest.fern --ac
 # Lox
 ./build/cpp/silva_lox cpp/zoo/lox/lox.lox --use-interpreter=true < cpp/zoo/lox/example.lox
 ./build/cpp/silva_lox cpp/zoo/lox/lox.lox --use-interpreter=false < cpp/zoo/lox/example.lox
+
+# Cedar
+./build/cpp/silva_cedar cpp/zoo/cedar/cat.cedar
