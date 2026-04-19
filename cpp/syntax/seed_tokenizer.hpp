@@ -87,10 +87,10 @@ namespace silva::seed {
 
   const string_view_t seed_tokenizer_str = R"'(
 Seed.Tokenizer:
-  ⊙ = 'tokenizer' rule_name ':' newline indent ( ( IncludeRule | IgnoreRule | TokenRule ) newline ) * dedent
-  IncludeRule = 'include' 'tokenizer' rule_name
-  IgnoreRule = 'ignore' Defn
-  TokenRule = token_category_name '=' Defn
+  ⊙ = 'tokenizer' rule_name ':' newline indent ( IncludeRule | IgnoreRule | TokenRule ) * dedent
+  IncludeRule = 'include' 'tokenizer' rule_name newline
+  IgnoreRule = 'ignore' Defn newline
+  TokenRule = token_category_name '=' Defn newline
   Defn = PrefixItem * ( ':::' Item + ) ?
   PrefixItem = List | Item
   List = '[' Item * ']'

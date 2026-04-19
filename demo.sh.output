@@ -143,7 +143,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Seed                                          tokenizer AsBs ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer AsBs ... <ws> <ws>
-    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
+    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm <ws>
   [1].Seed.Language                               language AsBs ... <ws> <ws>
     [0].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Concat.concat                 'a' * 'b' *
@@ -156,7 +156,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Seed                                          tokenizer CppStmts ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer CppStmts ... <ws> <ws>
-    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
+    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm <ws>
   [1].Seed.Language                               language CppStmts ... <ws> <ws>
     [0].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Postfix.*                     ( Expr ';' ) *
@@ -381,7 +381,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Seed                                          tokenizer Somelang ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer Somelang ... <ws> <ws>
-    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
+    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm <ws>
   [1].Seed.Language                               language Somelang ... <ws> <ws>
     [0].Seed.Rule                                 ⊙ = As Bs <ws>
       [0].Seed.Expr.Concat.concat                 As Bs
@@ -405,17 +405,17 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Seed                                          tokenizer Soil ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer Soil ... <ws> <ws>
-    [0].Seed.Tokenizer.TokenRule                  type_name = IDENTIFIER_SNAKE_CASE \ '_t'
+    [0].Seed.Tokenizer.TokenRule                  type_name = ... '_t' <ws>
       [0].Seed.Tokenizer.Defn                     IDENTIFIER_SNAKE_CASE \ '_t'
         [0].Seed.Tokenizer.PrefixItem             IDENTIFIER_SNAKE_CASE \ '_t'
           [0].Seed.Tokenizer.Item                 IDENTIFIER_SNAKE_CASE \ '_t'
             [0].Seed.Tokenizer.Matcher            IDENTIFIER_SNAKE_CASE \ '_t'
-    [1].Seed.Tokenizer.TokenRule                  func_name = IDENTIFIER_SNAKE_CASE \ '_f'
+    [1].Seed.Tokenizer.TokenRule                  func_name = ... '_f' <ws>
       [0].Seed.Tokenizer.Defn                     IDENTIFIER_SNAKE_CASE \ '_f'
         [0].Seed.Tokenizer.PrefixItem             IDENTIFIER_SNAKE_CASE \ '_f'
           [0].Seed.Tokenizer.Item                 IDENTIFIER_SNAKE_CASE \ '_f'
             [0].Seed.Tokenizer.Matcher            IDENTIFIER_SNAKE_CASE \ '_f'
-    [2].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm
+    [2].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm <ws>
   [1].Seed.Language                               language Soil ... <ws> <ws>
     [0].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Postfix.*                     ( Type ... ) *

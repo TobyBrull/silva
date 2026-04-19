@@ -329,7 +329,7 @@ namespace silva::seed::impl {
 
     expected_t<void> include_rule(const parse_tree_span_t pts_rule)
     {
-      const token_id_t tcn = SILVA_EXPECT_FWD(pts_rule.back_token_id());
+      const token_id_t tcn = SILVA_EXPECT_FWD(pts_rule.at_token_id(2));
       retval.rules.push_back(rule_t{.token_category_name = tcn});
       return {};
     }

@@ -223,6 +223,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_inc_rule, lexicon.ti_include);
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_inc_rule, lexicon.ti_tokenizer);
       SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_inc_rule, lexicon.ti_rule_name);
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_inc_rule, lexicon.ti_newline);
       return ss_rule.commit();
     }
 
@@ -232,6 +233,7 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_tok_ign_rule);
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_ign_rule, lexicon.ti_ignore);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_ign_rule, tokenizer_defn()));
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_ign_rule, lexicon.ti_newline);
       return ss_rule.commit();
     }
 
@@ -242,6 +244,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_tok_rule, lexicon.ti_token_cat_name);
       SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_tok_tok_rule, lexicon.ti_equal);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_tok_tok_rule, tokenizer_defn()));
+      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_tok_rule, lexicon.ti_newline);
       return ss_rule.commit();
     }
 
@@ -261,7 +264,6 @@ namespace silva::seed::impl {
           auto result = tokenizer_include_rule();
           if (result) {
             ss_rule.add_proto_node(*result);
-            SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok, lexicon.ti_newline);
             continue;
           }
           error_nursery.add_child_error(std::move(result).error());
@@ -270,7 +272,6 @@ namespace silva::seed::impl {
           auto result = tokenizer_ignore_rule();
           if (result) {
             ss_rule.add_proto_node(*result);
-            SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok, lexicon.ti_newline);
             continue;
           }
           error_nursery.add_child_error(std::move(result).error());
@@ -279,7 +280,6 @@ namespace silva::seed::impl {
           auto result = tokenizer_token_rule();
           if (result) {
             ss_rule.add_proto_node(*result);
-            SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok, lexicon.ti_newline);
             continue;
           }
           error_nursery.add_child_error(std::move(result).error());

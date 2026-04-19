@@ -45,51 +45,51 @@ language SimpleFern:
     const std::string_view expected = R"(
 [0].Seed                                          tokenizer SimpleFern ... <ws> <ws>
   [0].Seed.Tokenizer                              tokenizer SimpleFern ... <ws> <ws>
-    [0].Seed.Tokenizer.IgnoreRule                 ignore WHITESPACE
+    [0].Seed.Tokenizer.IgnoreRule                 ignore WHITESPACE <ws>
       [0].Seed.Tokenizer.Defn                     WHITESPACE
         [0].Seed.Tokenizer.PrefixItem             WHITESPACE
           [0].Seed.Tokenizer.Item                 WHITESPACE
             [0].Seed.Tokenizer.Matcher            WHITESPACE
-    [1].Seed.Tokenizer.IgnoreRule                 ignore COMMENT
+    [1].Seed.Tokenizer.IgnoreRule                 ignore COMMENT <ws>
       [0].Seed.Tokenizer.Defn                     COMMENT
         [0].Seed.Tokenizer.PrefixItem             COMMENT
           [0].Seed.Tokenizer.Item                 COMMENT
             [0].Seed.Tokenizer.Matcher            COMMENT
-    [2].Seed.Tokenizer.IgnoreRule                 ignore INDENT
+    [2].Seed.Tokenizer.IgnoreRule                 ignore INDENT <ws>
       [0].Seed.Tokenizer.Defn                     INDENT
         [0].Seed.Tokenizer.PrefixItem             INDENT
           [0].Seed.Tokenizer.Item                 INDENT
             [0].Seed.Tokenizer.Matcher            INDENT
-    [3].Seed.Tokenizer.IgnoreRule                 ignore DEDENT
+    [3].Seed.Tokenizer.IgnoreRule                 ignore DEDENT <ws>
       [0].Seed.Tokenizer.Defn                     DEDENT
         [0].Seed.Tokenizer.PrefixItem             DEDENT
           [0].Seed.Tokenizer.Item                 DEDENT
             [0].Seed.Tokenizer.Matcher            DEDENT
-    [4].Seed.Tokenizer.IgnoreRule                 ignore NEWLINE
+    [4].Seed.Tokenizer.IgnoreRule                 ignore NEWLINE <ws>
       [0].Seed.Tokenizer.Defn                     NEWLINE
         [0].Seed.Tokenizer.PrefixItem             NEWLINE
           [0].Seed.Tokenizer.Item                 NEWLINE
             [0].Seed.Tokenizer.Matcher            NEWLINE
-    [5].Seed.Tokenizer.TokenRule                  number = NUMBER
+    [5].Seed.Tokenizer.TokenRule                  number = NUMBER <ws>
       [0].Seed.Tokenizer.Defn                     NUMBER
         [0].Seed.Tokenizer.PrefixItem             NUMBER
           [0].Seed.Tokenizer.Item                 NUMBER
             [0].Seed.Tokenizer.Matcher            NUMBER
-    [6].Seed.Tokenizer.TokenRule                  string = STRING
+    [6].Seed.Tokenizer.TokenRule                  string = STRING <ws>
       [0].Seed.Tokenizer.Defn                     STRING
         [0].Seed.Tokenizer.PrefixItem             STRING
           [0].Seed.Tokenizer.Item                 STRING
             [0].Seed.Tokenizer.Matcher            STRING
-    [7].Seed.Tokenizer.TokenRule                  operator = PARENTHESIS
+    [7].Seed.Tokenizer.TokenRule                  operator = PARENTHESIS <ws>
       [0].Seed.Tokenizer.Defn                     PARENTHESIS
         [0].Seed.Tokenizer.PrefixItem             PARENTHESIS
           [0].Seed.Tokenizer.Item                 PARENTHESIS
             [0].Seed.Tokenizer.Matcher            PARENTHESIS
-    [8].Seed.Tokenizer.TokenRule                  operator = ::: OPERATOR
+    [8].Seed.Tokenizer.TokenRule                  operator = ::: OPERATOR <ws>
       [0].Seed.Tokenizer.Defn                     ::: OPERATOR
         [0].Seed.Tokenizer.Item                   OPERATOR
           [0].Seed.Tokenizer.Matcher              OPERATOR
-    [9].Seed.Tokenizer.TokenRule                  identifier = IDENTIFIER
+    [9].Seed.Tokenizer.TokenRule                  identifier = IDENTIFIER <ws>
       [0].Seed.Tokenizer.Defn                     IDENTIFIER
         [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
           [0].Seed.Tokenizer.Item                 IDENTIFIER
