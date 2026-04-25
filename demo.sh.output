@@ -1058,12 +1058,10 @@ Mr Jane
                   [0].Cedar.Expr.Postfix.(        fprintf ( ... ] )
                     [0].Cedar.Expr.Atom           fprintf
                     [1].Cedar.Expr.Comma.,        stdout , ... i ]
-                      [0].Cedar.Expr.Comma.,      stdout , "[%d] = %s\n" , i
-                        [0].Cedar.Expr.Comma.,    stdout , "[%d] = %s\n"
-                          [0].Cedar.Expr.Atom     stdout
-                          [1].Cedar.Expr.Atom     "[%d] = %s\n"
-                        [1].Cedar.Expr.Atom       i
-                      [1].Cedar.Expr.Postfix.[    argv [ i ]
+                      [0].Cedar.Expr.Atom         stdout
+                      [1].Cedar.Expr.Atom         "[%d] = %s\n"
+                      [2].Cedar.Expr.Atom         i
+                      [3].Cedar.Expr.Postfix.[    argv [ i ]
                         [0].Cedar.Expr.Atom       argv
                         [1].Cedar.Expr.Atom       i
       [1].Cedar.Stmt                              return 0 ;

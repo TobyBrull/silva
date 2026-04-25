@@ -116,7 +116,7 @@ language Cedar:
       LogOr   = ltr  infix '||'
       Tern    = rtl  ternary '?' ':'
       Assign  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
-      Comma   = ltr  infix ','
+      Comma   = ltr  infix_flat ','
     Atom = number | string + | identifier
     Const = Expr # not allowed to be Expr.Comma or Expr.Assign
 )'";
