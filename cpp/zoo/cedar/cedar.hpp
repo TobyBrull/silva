@@ -10,7 +10,7 @@ namespace silva::cedar {
   //
   const string_view_t seed_str = R"'(
 tokenizer Cedar:
-  operator = [ '*' '++' '+=' '--' '-=' '...' ]
+  operator = [ ';' '*' '~' '++' '+=' '+' '--' '-=' '-' '!=' '!' '...' ]
   include tokenizer FreeForm
 
 language Cedar:
@@ -101,7 +101,7 @@ language Cedar:
     ⊙ = axe Atom
       Parens  = nest atom_nest '(' ')'
       Postfix = ltr  postfix '++' '--' \
-                     postfix_nest '(' ')' '[' ']' \
+                     postfix_nest -> ExprOrNone '(' ')' '[' ']' \
                      infix '.' '->'
       Prefix  = rtl  prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' '_Alignof'
       Mult    = ltr  infix '*' '/' '%'
@@ -117,7 +117,8 @@ language Cedar:
       Tern    = rtl  ternary '?' ':'
       Assign  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
       Comma   = ltr  infix_flat ','
-    Atom = number | string + | identifier
+    Atom       = number | string + | identifier
+    ExprOrNone = Expr | None
     Const = Expr # not allowed to be Expr.Comma or Expr.Assign
 )'";
 
