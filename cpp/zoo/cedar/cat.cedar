@@ -1,6 +1,6 @@
 typedef void FILE;
 extern FILE* stdout;
-extern int fprintf(FILE* __restrict __stream, const char* __restrict __format, ...);
+extern int fprintf(FILE* stream, const char* format, ...);
 
 int
 main(int argc, char* argv[])
