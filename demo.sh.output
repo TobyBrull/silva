@@ -967,85 +967,84 @@ Mr Jane
     [0].Cedar.Decl.Specifiers                     typedef
       [0].Cedar.Decl.StorageClassSpecifier        typedef
     [1].Cedar.Type.Specifier                      void
-    [2].Cedar.InitDeclarator                      FILE
-      [0].Cedar.Declarator                        FILE
-        [0].Cedar.DirectDeclarator                FILE
+    [2].Cedar.Decl.InitDeclarator                 FILE
+      [0].Cedar.Decl.Declarator                   FILE
+        [0].Cedar.Decl.DirectDeclarator           FILE
   [1].Cedar.Decl                                  extern FILE * stdout ;
     [0].Cedar.Decl.Specifiers                     extern
       [0].Cedar.Decl.StorageClassSpecifier        extern
     [1].Cedar.Type.Specifier                      FILE
-      [0].Cedar.TypedefName                       FILE
-    [2].Cedar.InitDeclarator                      * stdout
-      [0].Cedar.Declarator                        * stdout
-        [0].Cedar.Pointer                         *
-        [1].Cedar.DirectDeclarator                stdout
+      [0].Cedar.Type.TypedefName                  FILE
+    [2].Cedar.Decl.InitDeclarator                 * stdout
+      [0].Cedar.Decl.Declarator                   * stdout
+        [0].Cedar.Decl.Pointer                    *
+        [1].Cedar.Decl.DirectDeclarator           stdout
   [2].Cedar.Decl                                  extern int ... ) ;
     [0].Cedar.Decl.Specifiers                     extern
       [0].Cedar.Decl.StorageClassSpecifier        extern
     [1].Cedar.Type.Specifier                      int
-    [2].Cedar.InitDeclarator                      fprintf ( ... ... )
-      [0].Cedar.Declarator                        fprintf ( ... ... )
-        [0].Cedar.DirectDeclarator                fprintf ( ... ... )
-          [0].Cedar.DirectDeclaratorExt           ( FILE ... ... )
-            [0].Cedar.ParameterList               FILE * ... , ...
-              [0].Cedar.ParameterDeclaration      FILE * stream
+    [2].Cedar.Decl.InitDeclarator                 fprintf ( ... ... )
+      [0].Cedar.Decl.Declarator                   fprintf ( ... ... )
+        [0].Cedar.Decl.DirectDeclarator           fprintf ( ... ... )
+          [0].Cedar.Decl.DirectDeclaratorExt      ( FILE ... ... )
+            [0].Cedar.Decl.ParameterList          FILE * ... , ...
+              [0].Cedar.Decl.ParameterDeclaration FILE * stream
                 [0].Cedar.Decl.Specifiers         
                 [1].Cedar.Type.Specifier          FILE
-                  [0].Cedar.TypedefName           FILE
-                [2].Cedar.TypeName                *
-                  [0].Cedar.SpecifierQualifierList 
-                  [1].Cedar.AbstractDeclarator    *
-                    [0].Cedar.Pointer             *
-                [3].Cedar.Declarator              stream
-                  [0].Cedar.DirectDeclarator      stream
-              [1].Cedar.ParameterDeclaration      const char * format
+                  [0].Cedar.Type.TypedefName      FILE
+                [2].Cedar.Type.Name               *
+                  [0].Cedar.Type.SpecifierQualifierList 
+                  [1].Cedar.Decl.AbstractDeclarator *
+                    [0].Cedar.Decl.Pointer        *
+                [3].Cedar.Decl.Declarator         stream
+                  [0].Cedar.Decl.DirectDeclarator stream
+              [1].Cedar.Decl.ParameterDeclaration const char * format
                 [0].Cedar.Decl.Specifiers         const
                   [0].Cedar.Type.Qualifier        const
                 [1].Cedar.Type.Specifier          char
-                [2].Cedar.TypeName                *
-                  [0].Cedar.SpecifierQualifierList 
-                  [1].Cedar.AbstractDeclarator    *
-                    [0].Cedar.Pointer             *
-                [3].Cedar.Declarator              format
-                  [0].Cedar.DirectDeclarator      format
-              [2].Cedar.ParameterDeclaration      ...
+                [2].Cedar.Type.Name               *
+                  [0].Cedar.Type.SpecifierQualifierList 
+                  [1].Cedar.Decl.AbstractDeclarator *
+                    [0].Cedar.Decl.Pointer        *
+                [3].Cedar.Decl.Declarator         format
+                  [0].Cedar.Decl.DirectDeclarator format
+              [2].Cedar.Decl.ParameterDeclaration ...
   [3].Cedar.Decl                                  int main ... ; }
     [0].Cedar.Decl.Specifiers                     
     [1].Cedar.Type.Specifier                      int
-    [2].Cedar.InitDeclarator                      main ( ... ] )
-      [0].Cedar.Declarator                        main ( ... ] )
-        [0].Cedar.DirectDeclarator                main ( ... ] )
-          [0].Cedar.DirectDeclaratorExt           ( int ... ] )
-            [0].Cedar.ParameterList               int argc ... [ ]
-              [0].Cedar.ParameterDeclaration      int argc
+    [2].Cedar.Decl.InitDeclarator                 main ( ... ] )
+      [0].Cedar.Decl.Declarator                   main ( ... ] )
+        [0].Cedar.Decl.DirectDeclarator           main ( ... ] )
+          [0].Cedar.Decl.DirectDeclaratorExt      ( int ... ] )
+            [0].Cedar.Decl.ParameterList          int argc ... [ ]
+              [0].Cedar.Decl.ParameterDeclaration int argc
                 [0].Cedar.Decl.Specifiers         
                 [1].Cedar.Type.Specifier          int
-                [2].Cedar.TypeName                argc
-                  [0].Cedar.SpecifierQualifierList argc
+                [2].Cedar.Type.Name               argc
+                  [0].Cedar.Type.SpecifierQualifierList argc
                     [0].Cedar.Type.Specifier      argc
-                      [0].Cedar.TypedefName       argc
-              [1].Cedar.ParameterDeclaration      char * argv [ ]
+                      [0].Cedar.Type.TypedefName  argc
+              [1].Cedar.Decl.ParameterDeclaration char * argv [ ]
                 [0].Cedar.Decl.Specifiers         
                 [1].Cedar.Type.Specifier          char
-                [2].Cedar.TypeName                *
-                  [0].Cedar.SpecifierQualifierList 
-                  [1].Cedar.AbstractDeclarator    *
-                    [0].Cedar.Pointer             *
-                [3].Cedar.Declarator              argv [ ]
-                  [0].Cedar.DirectDeclarator      argv [ ]
-                    [0].Cedar.DirectDeclaratorExt [ ]
+                [2].Cedar.Type.Name               *
+                  [0].Cedar.Type.SpecifierQualifierList 
+                  [1].Cedar.Decl.AbstractDeclarator *
+                    [0].Cedar.Decl.Pointer        *
+                [3].Cedar.Decl.Declarator         argv [ ]
+                  [0].Cedar.Decl.DirectDeclarator argv [ ]
+                    [0].Cedar.Decl.DirectDeclaratorExt [ ]
     [3].Cedar.Stmt.Compound                       { for ... ; }
       [0].Cedar.Stmt                              for ( ... ; }
         [0].Cedar.Stmt.For                        for ( ... ; }
-          [0].Cedar.Stmt.ForInit                  int i = 0 ;
-            [0].Cedar.Decl                        int i = 0 ;
-              [0].Cedar.Decl.Specifiers           
-              [1].Cedar.Type.Specifier            int
-              [2].Cedar.InitDeclarator            i = 0
-                [0].Cedar.Declarator              i
-                  [0].Cedar.DirectDeclarator      i
-                [1].Cedar.Initializer             0
-                  [0].Cedar.Expr.Atom             0
+          [0].Cedar.Decl                          int i = 0 ;
+            [0].Cedar.Decl.Specifiers             
+            [1].Cedar.Type.Specifier              int
+            [2].Cedar.Decl.InitDeclarator         i = 0
+              [0].Cedar.Decl.Declarator           i
+                [0].Cedar.Decl.DirectDeclarator   i
+              [1].Cedar.Decl.Initializer          0
+                [0].Cedar.Expr.Atom               0
           [1].Cedar.Expr.Rel.<                    i < argc
             [0].Cedar.Expr.Atom                   i
             [1].Cedar.Expr.Atom                   argc
