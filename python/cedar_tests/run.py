@@ -68,19 +68,23 @@ def cmd_setup(args: argparse.Namespace) -> int:
 
 # run-tests
 
+
 def cmd_run_tests(args: argparse.Namespace) -> int:
     assert args.cedar_tests_dir.exists(), f'no directory: {args.cedar_tests_dir}'
     cedar_files = sorted(args.cedar_tests_dir.glob(CHAPTER_GLOB_CEDAR))
     print(len(cedar_files))
     assert len(cedar_files) >= 1
+    count = 0
     for cedar_file in cedar_files:
         cmd = [str(args.silva_cedar), str(cedar_file)]
         result = subprocess.run(cmd)
         print(' '.join(cmd))
         if result.returncode != 0:
-            if not args.continue_on_error:
-                print("Failed!")
-                return 1
+            print(f"Failed after {count} out of {len(cedar_files)}!")
+            return 1
+        else:
+            count += 1
+
     return 0
 
 
@@ -98,7 +102,6 @@ def parse_args() -> argparse.Namespace:
 
     p_run_tests = subparsers.add_parser("run-tests")
     p_run_tests.add_argument("--cedar-tests-dir", type=Path, default=CEDAR_TESTS_DIR_DEFAULT)
-    p_run_tests.add_argument("--continue-on-error", action="store_true")
     p_run_tests.add_argument("--silva-cedar", type=Path, default=SILVA_CEDAR_DEFAULT)
     p_run_tests.set_defaults(func=cmd_run_tests)
 

@@ -120,13 +120,6 @@ xyz123_äß
       };
       CHECK(frag->fragments == expected_fragments);
     }
-    SECTION("error: kebab identifier")
-    {
-      const auto text    = "h-w h-w-\n";
-      const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", text));
-      CHECK_THAT(err_msg, ContainsSubstring("Identifier"));
-      CHECK_THAT(err_msg, ContainsSubstring("may not end with '-'"));
-    }
     SECTION("ident")
     {
       const auto text = R"(

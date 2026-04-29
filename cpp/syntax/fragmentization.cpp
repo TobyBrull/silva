@@ -391,6 +391,9 @@ namespace silva {
               is_xid_additional_internal(ccd[i].codepoint))) {
         ++i;
       }
+      while (orig_i < i && is_xid_additional_internal(ccd[i - 1].codepoint)) {
+        --i;
+      }
       SILVA_EXPECT(!is_xid_additional_internal(ccd[i - 1].codepoint),
                    MINOR,
                    "Identifier at {} may not end with '{}'",

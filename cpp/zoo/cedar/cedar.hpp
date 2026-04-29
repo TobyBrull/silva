@@ -10,7 +10,7 @@ namespace silva::cedar {
   //
   const string_view_t seed_str = R"'(
 tokenizer Cedar:
-  operator = [ ';' '*=' '*' '/=' '/' '~' '++' '+=' '+' '--' '-=' '-' '!=' '!' '...' ]
+  operator = [ ';' ':' '*=' '*' '/=' '/' '~' '++' '+=' '+' '--' '-=' '-' '!=' '!' '...' ]
   include tokenizer FreeForm
 
 language Cedar:
