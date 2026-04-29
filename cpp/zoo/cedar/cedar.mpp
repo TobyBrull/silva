@@ -15,7 +15,7 @@ namespace silva::cedar {
     auto si                  = seed_interpreter(sf.ptr());
     fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]));
     parse_tree_ptr_t pt      = SILVA_EXPECT_FWD(si->apply(fp, sf.name_id_of("Cedar")),
-                                           "error parsing C file {}",
+                                           "error parsing Cedar file {}",
                                            cmdline_args[1]);
 
     const string_t pts = SILVA_EXPECT_FWD(pt->span().to_string());
