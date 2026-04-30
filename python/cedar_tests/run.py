@@ -8,7 +8,8 @@ from pathlib import Path
 
 import tqdm
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT_ABS = Path(__file__).resolve().parents[2]
+REPO_ROOT = REPO_ROOT_ABS.relative_to(Path.cwd())
 WACCT_REPO_URL = "https://github.com/nlsandler/writing-a-c-compiler-tests.git"
 WACCT_REPO_LOCAL_DIR_DEFAULT = REPO_ROOT / "var" / "wacct"
 CEDAR_TESTS_DIR_DEFAULT = REPO_ROOT / "var" / "cedar-tests"
@@ -16,7 +17,6 @@ SILVA_CEDAR_DEFAULT = REPO_ROOT / "build" / "cpp" / "silva_cedar"
 
 CHAPTER_GLOB_C = "chapter_*/valid/**/*.c"
 CHAPTER_GLOB_CEDAR = "**/*.cedar"
-
 
 # setup
 
@@ -69,23 +69,25 @@ def cmd_setup(args: argparse.Namespace) -> int:
 # run-tests
 
 
-def cmd_run_tests(args: argparse.Namespace) -> int:
+def cmd_run_tests(args: argparse.Namespace):
     assert args.cedar_tests_dir.exists(), f'no directory: {args.cedar_tests_dir}'
     cedar_files = sorted(args.cedar_tests_dir.glob(CHAPTER_GLOB_CEDAR))
-    print(len(cedar_files))
     assert len(cedar_files) >= 1
+    failed_tests = []
+    status = tqdm.tqdm(bar_format='{desc}', position=0)
+    errors = tqdm.tqdm(bar_format='{desc}', position=1)
+    progress = tqdm.tqdm(cedar_files, position=2)
     count = 0
-    for cedar_file in cedar_files:
+    for cedar_file in progress:
+        count += 1
         cmd = [str(args.silva_cedar), str(cedar_file)]
-        result = subprocess.run(cmd)
-        print(' '.join(cmd))
+        status.set_description_str(' '.join(cmd))
+        result = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if result.returncode != 0:
-            print(f"Failed after {count} out of {len(cedar_files)}!")
-            return 1
-        else:
-            count += 1
-
-    return 0
+            failed_tests.append(cedar_file)
+        errors.set_description_str(
+            f"Failed {len(failed_tests)} out of {count} ({len(failed_tests) / count * 100.0:.2f}%)"
+        )
 
 
 # main
