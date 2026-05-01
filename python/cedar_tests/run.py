@@ -81,13 +81,21 @@ def cmd_run_tests(args: argparse.Namespace):
     for cedar_file in progress:
         count += 1
         cmd = [str(args.silva_cedar), str(cedar_file)]
-        status.set_description_str(' '.join(cmd))
+        status.set_description_str(str(cedar_file))
         result = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if result.returncode != 0:
             failed_tests.append(cedar_file)
         errors.set_description_str(
             f"Failed {len(failed_tests)} out of {count} ({len(failed_tests) / count * 100.0:.2f}%)"
         )
+        if args.max_count is not None and count >= args.max_count:
+            break
+
+    if failed_tests:
+        print("FAILED TESTS:")
+        for ft in failed_tests:
+            print(ft)
+        sys.exit(1)
 
 
 # main
@@ -105,6 +113,7 @@ def parse_args() -> argparse.Namespace:
     p_run_tests = subparsers.add_parser("run-tests")
     p_run_tests.add_argument("--cedar-tests-dir", type=Path, default=CEDAR_TESTS_DIR_DEFAULT)
     p_run_tests.add_argument("--silva-cedar", type=Path, default=SILVA_CEDAR_DEFAULT)
+    p_run_tests.add_argument("--max-count", type=int)
     p_run_tests.set_defaults(func=cmd_run_tests)
 
     return parser.parse_args()
