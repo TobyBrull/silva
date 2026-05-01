@@ -18,7 +18,7 @@ tokenizer Cedar:
 language Cedar:
   ⊙ = Decl *
   Decl:
-    ⊙ = Decl.Specifiers Type.Specifier InitDeclarator ( ';' | Stmt.Compound ) \
+    ⊙ = Decl.Specifiers Type.Specifier InitDeclarator ? ( ';' | Stmt.Compound ) \
       | StaticAssert
     Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier ) *
     StorageClassSpecifier = ( 'typedef' | 'extern' | 'static' | '_Thread_local' | 'auto' | 'register' )
@@ -26,7 +26,7 @@ language Cedar:
     AlignmentSpecifier = ( '_Alignas' | 'alignas' ) '(' ( Type.Name | Expr.Const ) ')'
     StaticAssert = '_Static_assert' '(' Expr.Const ',' string ')' ';'
 
-    Struct = Type.SpecifierQualifierList StructDeclaratorList ? | Decl.StaticAssert
+    Struct = Type.SpecifierQualifierList StructDeclaratorList ? ';' | Decl.StaticAssert
     StructDeclaratorList = StructDeclarator ( ',' StructDeclarator ) *
     StructDeclarator = Declarator ( ':' Expr.Const ) ? | ':' Expr.Const
     InitDeclarator = Declarator ( '=' Initializer ) ?
