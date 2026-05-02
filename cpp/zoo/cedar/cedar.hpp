@@ -16,45 +16,46 @@ tokenizer Cedar:
   include tokenizer FreeForm
 
 language Cedar:
-  ⊙ = Decl *
-  Decl:
-    ⊙ = Decl.Specifiers Type.Specifier InitDeclarator ? ( ';' | Stmt.Compound ) \
+  ⊙ = Declaration *
+  Declaration:
+    ⊙ = Specifiers Init ? ( ';' | Stmt.Compound ) \
       | StaticAssert
-    Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier ) *
+    Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier ) * Type.Specifier
     StorageClassSpecifier = ( 'typedef' | 'extern' | 'static' | '_Thread_local' | 'auto' | 'register' )
     FunctionSpecifier = 'inline' | '_Noreturn'
     AlignmentSpecifier = ( '_Alignas' | 'alignas' ) '(' ( Type.Name | Expr.Const ) ')'
     StaticAssert = '_Static_assert' '(' Expr.Const ',' string ')' ';'
 
-    Struct = Type.SpecifierQualifierList StructDeclaratorList ? ';' | Decl.StaticAssert
-    StructDeclaratorList = StructDeclarator ( ',' StructDeclarator ) *
-    StructDeclarator = Declarator ( ':' Expr.Const ) ? | ':' Expr.Const
-    InitDeclarator = Declarator ( '=' Initializer ) ?
-    Declarator = Pointer ? DirectDeclarator
-    AbstractDeclarator = Pointer DirectAbstractDeclarator ? | DirectAbstractDeclarator
-    DirectAbstractDeclarator = ( '(' AbstractDeclarator ')' | DirectAbstractDeclaratorExt ) DirectAbstractDeclaratorExt *
-    DirectAbstractDeclaratorExt = CommonDeclaratorExt
-    Pointer = '*' Type.Qualifier * Pointer ?
-    DirectDeclarator = ( identifier | '(' Declarator ')' ) DirectDeclaratorExt *
-    DirectDeclaratorExt = ( CommonDeclaratorExt
-                          | '(' IdentifierList ')'
-                          )
-    CommonDeclaratorExt = alias ( '[' ']'
-                                | '(' ParameterList ? ')'
-                                )
     ParameterList = ParameterDeclaration ( ',' ParameterDeclaration ) *
-    ParameterDeclaration = Decl.Specifiers Type.Specifier Type.Name ( Declarator | AbstractDeclarator ) ? | '...'
+    ParameterDeclaration = Specifiers ( Declarator | Declarator.Abstract ) ? | '...'
     IdentifierList = identifier ( ',' identifier ) *
 
-    Initializer = '{' InitializerList ',' ? '}' | Expr
-    InitializerList = Designation ? Initializer ( ',' Designation ? Initializer ) *
     Designation = Designator + '='
     Designator = '.' identifier | '[' Expr.Const ']'
 
+    Init = Declarator ( '=' Initializer ) ?
+    Initializer = '{' InitializerList ',' ? '}' | Expr
+    InitializerList = Designation ? Initializer ( ',' Designation ? Initializer ) *
+
+  Declarator:
+    ⊙ = Pointer ? Direct
+    Abstract = Pointer DirectAbstract ? | DirectAbstract
+    DirectAbstract = ( '(' Abstract ')' | DirectAbstractExt ) DirectAbstractExt *
+    DirectAbstractExt = CommonExt
+    Pointer = '*' Type.Qualifier * Pointer ?
+    Direct = ( identifier | '(' Declarator ')' ) DirectExt *
+    DirectExt = ( CommonExt | '(' Declaration.IdentifierList ')' )
+    CommonExt = alias ( '[' Type.Qualifier * Expr ? ']'
+                      | '(' Declaration.ParameterList ? ')'
+                      )
+
+
   Type:
-    Specifier = ( 'void' | 'char' | 'short' | 'int' | 'long'
-                | 'float' | 'double' | 'signed' | 'unsigned'
-                | '_Bool' | '_Complex' | '_Imaginary'
+    IntSpecifier = ( 'signed' | 'unsigned' ) ? ( 'char' | 'short' | 'int' | 'long' )
+    BuiltinSpecifier = 'float' | 'double' | '_Bool' | '_Complex' | '_Imaginary'
+    Specifier = ( 'void'
+                | IntSpecifier
+                | BuiltinSpecifier
                 | AtomicTypeSpecifier
                 | StructOrUnionSpecifier
                 | EnumSpecifier
@@ -62,16 +63,19 @@ language Cedar:
                 )
     TypedefName = identifier # TODO: should only match identifiers that have previously been typedef'ed.
     Qualifier = ( 'const' | 'volatile' | 'restrict' | '_Atomic' )
-    SpecifierQualifierList = ( Type.Specifier | Type.Qualifier ) *
+    SpecifierQualifierList = Type.Qualifier * Type.Specifier
 
     EnumSpecifier = 'enum' identifier ? '{' Enumerator ( ',' Enumerator ) * ',' ? '}'
     Enumerator = EnumerationConstant ( '=' Expr.Const ) ?
-    Name = SpecifierQualifierList Decl.AbstractDeclarator ?
+    Name = SpecifierQualifierList Declarator.Abstract ?
 
     EnumerationConstant = identifier
 
     AtomicTypeSpecifier = '_Atomic' '(' Name ')'
-    StructOrUnionSpecifier = ( 'struct' | 'union' ) identifier ? ( '{' Decl.Struct * '}' ) ?
+    StructOrUnionSpecifier = ( 'struct' | 'union' ) identifier ? ( '{' StructMemberDecl * '}' ) ?
+    StructMemberDecl = Type.SpecifierQualifierList StructMemberDeclaratorList ? ';' | Declaration.StaticAssert
+    StructMemberDeclaratorList = StructMemberDeclarator ( ',' StructMemberDeclarator ) *
+    StructMemberDeclarator = Declarator ( ':' Expr.Const ) ? | ':' Expr.Const
 
   Stmt:
     ⊙ = ( Label | Case | Default
@@ -84,13 +88,13 @@ language Cedar:
     Label = identifier ':' Stmt
     Case = 'case' Expr.Const ':' Stmt
     Default = 'default' ':' Stmt
-    Compound = '{' ( Stmt | Decl ) * '}'
+    Compound = '{' ( Stmt | Declaration ) * '}'
     ExprStmt = Expr ? ';'
     If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
     Switch = 'switch' '(' Expr ')' Stmt
     While = 'while' '(' Expr ')' Stmt
     DoWhile = 'do' Stmt 'while' '(' Expr ')' ';'
-    For = 'for' '(' ( Decl | ExprStmt ) Expr ? ';' Expr ? ')' Stmt
+    For = 'for' '(' ( Declaration | ExprStmt ) Expr ? ';' Expr ? ')' Stmt
     Goto = 'goto' identifier ';'
     Continue = 'continue' ';'
     Break = 'break' ';'
