@@ -51,7 +51,7 @@ language Cedar:
 
 
   Type:
-    IntSpecifier = ( 'signed' | 'unsigned' ) ? ( 'char' | 'short' | 'int' | 'long' )
+    IntSpecifier = ( 'signed' | 'unsigned' | 'short' | 'long' | 'char' | 'int' ) +
     BuiltinSpecifier = 'float' | 'double' | '_Bool' | '_Complex' | '_Imaginary'
     Specifier = ( 'void'
                 | IntSpecifier

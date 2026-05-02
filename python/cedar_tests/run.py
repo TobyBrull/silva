@@ -71,8 +71,15 @@ def cmd_setup(args: argparse.Namespace) -> int:
 
 def cmd_run_tests(args: argparse.Namespace):
     assert args.cedar_tests_dir.exists(), f'no directory: {args.cedar_tests_dir}'
-    cedar_files = sorted(args.cedar_tests_dir.glob(CHAPTER_GLOB_CEDAR))
+
+    if args.input_file_list:
+        cedar_files = args.input_file_list.read_text().split('\n')
+    else:
+        cedar_files = sorted(args.cedar_tests_dir.glob(CHAPTER_GLOB_CEDAR))
     assert len(cedar_files) >= 1
+    if args.max_count:
+        cedar_files = cedar_files[:args.max_count]
+
     failed_tests = []
     status = tqdm.tqdm(bar_format='{desc}', position=0)
     errors = tqdm.tqdm(bar_format='{desc}', position=1)
@@ -88,14 +95,11 @@ def cmd_run_tests(args: argparse.Namespace):
         errors.set_description_str(
             f"Failed {len(failed_tests)} out of {count} ({len(failed_tests) / count * 100.0:.2f}%)"
         )
-        if args.max_count is not None and count >= args.max_count:
-            break
 
     if failed_tests:
-        print("FAILED TESTS:")
-        for ft in failed_tests:
-            print(ft)
-        sys.exit(1)
+        if args.output_file_list:
+            args.output_file_list.write_text('\n'.join((str(x) for x in failed_tests)))
+        return 1
 
 
 # main
@@ -114,6 +118,8 @@ def parse_args() -> argparse.Namespace:
     p_run_tests.add_argument("--cedar-tests-dir", type=Path, default=CEDAR_TESTS_DIR_DEFAULT)
     p_run_tests.add_argument("--silva-cedar", type=Path, default=SILVA_CEDAR_DEFAULT)
     p_run_tests.add_argument("--max-count", type=int)
+    p_run_tests.add_argument("--input-file-list", type=Path)
+    p_run_tests.add_argument("--output-file-list", type=Path)
     p_run_tests.set_defaults(func=cmd_run_tests)
 
     return parser.parse_args()
