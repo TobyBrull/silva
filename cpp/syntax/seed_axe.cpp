@@ -521,14 +521,10 @@ namespace silva::seed::impl {
                 const token_id_t right_token,
                 const optional_t<name_id_ref_t>& nest_rule)
     {
-      const name_id_t used_rule_name =
-          nest_rule
-              .transform([](const name_id_ref_t& nir) -> name_id_t { return nir.resolved_name; })
-              .value_or(axe.name);
-
       auto ss = nursery.stake();
 
-      const index_t token_begin = nursery.token_index;
+      const index_t token_begin      = nursery.token_index;
+      const name_id_t used_rule_name = nest_rule ? *nest_rule : axe.name;
       SILVA_EXPECT_PARSE(used_rule_name,
                          nursery.num_tokens_left() >= 1 && nursery.token_id_by() == left_token,
                          "expected {}, got {}",
@@ -711,47 +707,28 @@ namespace silva::seed::impl {
 
       while (nursery.num_tokens_left() >= 1) {
         const auto it = axe.results.find(nursery.token_id_by());
-        if (it == axe.results.end()) {
-          if (mode == INFIX_MODE && !axe.concat_result.has_value()) {
-            break;
-          }
-          auto maybe_res = SILVA_EXPECT_FWD_IF(MAJOR, invoke_rule_parser(axe.atom_rule));
-          if (!maybe_res.has_value()) {
-            break;
-          }
-          auto [ptn, tn] = std::move(maybe_res).value();
-          ss.add_proto_node(ptn);
-          if (mode == INFIX_MODE && axe.concat_result.has_value()) {
-            SILVA_EXPECT_FWD(hallucinate_concat());
-          }
-          SILVA_EXPECT(mode == ATOM_MODE, ASSERT);
-          open_term_stack.push_back(output_tree.size());
-          output_tree.push_back(tn);
-          mode = INFIX_MODE;
-          continue;
-        }
-        else {
-          const axe_result_t& pa_result = it->second;
-          if (pa_result.is_right_bracket) {
+        if (it != axe.results.end()) {
+          const axe_result_t& axe_result = it->second;
+          if (axe_result.is_right_bracket) {
             break;
           }
           if (mode == INFIX_MODE && axe.concat_result.has_value()) {
-            if (pa_result.prefix.has_value() && !pa_result.regular.has_value()) {
+            if (axe_result.prefix.has_value() && !axe_result.regular.has_value()) {
               SILVA_EXPECT_FWD(hallucinate_concat());
               continue;
             }
-            if (pa_result.prefix.has_value() &&
-                variant_holds_t<atom_nest_t>{}(pa_result.prefix.value().oper)) {
+            if (axe_result.prefix.has_value() &&
+                variant_holds_t<atom_nest_t>{}(axe_result.prefix.value().oper)) {
               SILVA_EXPECT_FWD(hallucinate_concat());
               continue;
             }
           }
           if (mode == ATOM_MODE) {
             SILVA_EXPECT_PARSE(axe.name,
-                               pa_result.prefix.has_value(),
+                               axe_result.prefix.has_value(),
                                "found non-prefix operator {} when expecting next atom",
                                sfp->token_id_wrap(nursery.token_id_by()));
-            const auto& res = pa_result.prefix.value();
+            const auto& res = axe_result.prefix.value();
             SILVA_EXPECT_FWD(stack_pop(res.precedence));
 
             if (const auto* x = std::get_if<atom_nest_t>(&res.oper)) {
@@ -810,8 +787,8 @@ namespace silva::seed::impl {
             }
           }
           else {
-            SILVA_EXPECT(pa_result.regular.has_value(), MINOR);
-            const auto& res = pa_result.regular.value();
+            SILVA_EXPECT(axe_result.regular.has_value(), MINOR);
+            const auto& res = axe_result.regular.value();
             SILVA_EXPECT_FWD(stack_pop(res.precedence));
 
             if (const auto* x = std::get_if<postfix_t>(&res.oper)) {
@@ -867,6 +844,25 @@ namespace silva::seed::impl {
               continue;
             }
           }
+        }
+        else {
+          if (mode == INFIX_MODE && !axe.concat_result.has_value()) {
+            break;
+          }
+          auto maybe_res = SILVA_EXPECT_FWD_IF(MAJOR, invoke_rule_parser(axe.atom_rule));
+          if (!maybe_res.has_value()) {
+            break;
+          }
+          auto [ptn, tn] = std::move(maybe_res).value();
+          ss.add_proto_node(ptn);
+          if (mode == INFIX_MODE && axe.concat_result.has_value()) {
+            SILVA_EXPECT_FWD(hallucinate_concat());
+          }
+          SILVA_EXPECT(mode == ATOM_MODE, ASSERT);
+          open_term_stack.push_back(output_tree.size());
+          output_tree.push_back(tn);
+          mode = INFIX_MODE;
+          continue;
         }
         SILVA_EXPECT(false, ASSERT);
       }
