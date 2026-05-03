@@ -68,12 +68,12 @@ namespace silva::seed::impl {
       SILVA_EXPECT_PARSE(lexicon.ni_axe_op_type, num_tokens_left() >= 1, "no tokens left");
       SILVA_EXPECT_PARSE(
           lexicon.ni_axe_op_type,
-          token_id_by() == lexicon.ti_atom_nest || token_id_by() == lexicon.ti_prefix ||
-              token_id_by() == lexicon.ti_prefix_n || token_id_by() == lexicon.ti_infix ||
-              token_id_by() == lexicon.ti_infix_flat || token_id_by() == lexicon.ti_ternary ||
-              token_id_by() == lexicon.ti_postfix || token_id_by() == lexicon.ti_postfix_n,
-          "expected one of [ atom_nest prefix prefix_nest infix infix_flat ternary "
-          "postfix postfix_nest ], got {}",
+          token_id_by() == lexicon.ti_prefix || token_id_by() == lexicon.ti_prefix_n ||
+              token_id_by() == lexicon.ti_infix || token_id_by() == lexicon.ti_infix_flat ||
+              token_id_by() == lexicon.ti_ternary || token_id_by() == lexicon.ti_postfix ||
+              token_id_by() == lexicon.ti_postfix_n,
+          "expected one of [ prefix prefix_nest infix infix_flat ternary postfix postfix_nest ], "
+          "got {}",
           sfp->token_id_wrap(token_id_by()));
       token_index += 1;
       return ss_rule.commit();
@@ -100,8 +100,7 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_axe_assoc);
       SILVA_EXPECT_PARSE(lexicon.ni_axe_assoc,
                          num_tokens_left() >= 1 &&
-                             (token_id_by() == lexicon.ti_nest || token_id_by() == lexicon.ti_ltr ||
-                              token_id_by() == lexicon.ti_rtl),
+                             (token_id_by() == lexicon.ti_ltr || token_id_by() == lexicon.ti_rtl),
                          "expected one of [ nest ltr rtl ], got {}",
                          sfp->token_id_wrap(token_id_by()));
       token_index += 1;
@@ -336,6 +335,15 @@ namespace silva::seed::impl {
     {
     }
 
+    expected_t<parse_tree_node_t> expr_parens()
+    {
+      auto ss = stake();
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_atom, lexicon.ti_paren_open);
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, expr()));
+      SILVA_EXPECT_PARSE_TOKEN_ID(lexicon.ni_atom, lexicon.ti_paren_close);
+      return ss.commit();
+    }
+
     expected_t<parse_tree_node_t> atom()
     {
       auto ss                        = stake();
@@ -351,6 +359,14 @@ namespace silva::seed::impl {
       }
       {
         auto result = terminal();
+        if (result) {
+          ss.add_proto_node(*result);
+          return ss.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      {
+        auto result = expr_parens();
         if (result) {
           ss.add_proto_node(*result);
           return ss.commit();

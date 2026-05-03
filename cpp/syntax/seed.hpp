@@ -52,13 +52,12 @@ language Seed:
                                    | Expr newline )
   Expr:
     ⊙ = axe Atom
-      Parens    = nest  atom_nest '(' ')'
       Prefix    = rtl   prefix 'not'
       Postfix   = ltr   postfix '?' '*' '+'
       Concat    = ltr   infix_flat concat
       And       = ltr   infix_flat 'but_then'
       Or        = ltr   infix_flat '|'
-    Atom = alias Nonterminal | Terminal
+    Atom = alias Nonterminal | Terminal | '(' Expr ')'
     Alias = Expr
   Nonterminal = '.' ? rule_name ( '.' rule_name ) *
   Terminal = ( string | token_category_name

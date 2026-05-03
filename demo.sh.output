@@ -160,22 +160,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [1].Seed.Language                               language CppStmts ... <ws> <ws>
     [0].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Postfix.*                     ( Expr ';' ) *
-        [0].Seed.Expr.Parens.(                    ( Expr ';' )
-          [0].Seed.Expr.Concat.concat             Expr ';'
-            [0].Seed.Nonterminal                  Expr
-            [1].Seed.Terminal                     ';'
+        [0].Seed.Expr.Concat.concat               Expr ';'
+          [0].Seed.Nonterminal                    Expr
+          [1].Seed.Terminal                       ';'
     [1].Seed.Scope                                Expr : ... <ws> <ws>
       [0].Seed.Nonterminal                        Expr
       [1].Seed.Rule                               ⊙ = ... <ws> <ws>
         [0].Seed.Axe                              Atom <ws> ... <ws> <ws>
           [0].Seed.Nonterminal                    Atom
-          [1].Seed.Axe.Level                      Parens = ... '(' ')'
-            [0].Seed.Axe.Assoc                    nest
-            [1].Seed.Axe.Ops                      atom_nest '(' ')'
-              [0].Seed.Axe.OpType                 atom_nest
-              [1].Seed.Axe.Op                     '('
-              [2].Seed.Axe.Op                     ')'
-          [2].Seed.Axe.Level                      Namespace = ... prefix '::'
+          [1].Seed.Axe.Level                      Namespace = ... prefix '::'
             [0].Seed.Axe.Assoc                    rtl
             [1].Seed.Axe.Ops                      infix '::'
               [0].Seed.Axe.OpType                 infix
@@ -183,7 +176,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [2].Seed.Axe.Ops                      prefix '::'
               [0].Seed.Axe.OpType                 prefix
               [1].Seed.Axe.Op                     '::'
-          [3].Seed.Axe.Level                      Postfix = ... '.' '->'
+          [2].Seed.Axe.Level                      Postfix = ... '.' '->'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      postfix '++' '--'
               [0].Seed.Axe.OpType                 postfix
@@ -199,7 +192,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.'
               [2].Seed.Axe.Op                     '->'
-          [4].Seed.Axe.Level                      Prefix = ... '<.' '.>'
+          [3].Seed.Axe.Level                      Prefix = ... '(' ')'
             [0].Seed.Axe.Assoc                    rtl
             [1].Seed.Axe.Ops                      prefix '++' ... 'sizeof' 'new'
               [0].Seed.Axe.OpType                 prefix
@@ -213,41 +206,42 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [8].Seed.Axe.Op                     '&'
               [9].Seed.Axe.Op                     'sizeof'
               [10].Seed.Axe.Op                    'new'
-            [2].Seed.Axe.Ops                      prefix_nest '<.' '.>'
+            [2].Seed.Axe.Ops                      prefix_nest -> Type '(' ')'
               [0].Seed.Axe.OpType                 prefix_nest
-              [1].Seed.Axe.Op                     '<.'
-              [2].Seed.Axe.Op                     '.>'
-          [5].Seed.Axe.Level                      Member = ... '.*' '->*'
+              [1].Seed.Nonterminal                Type
+              [2].Seed.Axe.Op                     '('
+              [3].Seed.Axe.Op                     ')'
+          [4].Seed.Axe.Level                      Member = ... '.*' '->*'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '.*' '->*'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.*'
               [2].Seed.Axe.Op                     '->*'
-          [6].Seed.Axe.Level                      Multiply = ... '/' '%'
+          [5].Seed.Axe.Level                      Multiply = ... '/' '%'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '*' '/' '%'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '*'
               [2].Seed.Axe.Op                     '/'
               [3].Seed.Axe.Op                     '%'
-          [7].Seed.Axe.Level                      Addition = ... '+' '-'
+          [6].Seed.Axe.Level                      Addition = ... '+' '-'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '+' '-'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '+'
               [2].Seed.Axe.Op                     '-'
-          [8].Seed.Axe.Level                      Bitshift = ... '<<' '>>'
+          [7].Seed.Axe.Level                      Bitshift = ... '<<' '>>'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '<<' '>>'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '<<'
               [2].Seed.Axe.Op                     '>>'
-          [9].Seed.Axe.Level                      Spaceship = ltr infix '<=>'
+          [8].Seed.Axe.Level                      Spaceship = ltr infix '<=>'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '<=>'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '<=>'
-          [10].Seed.Axe.Level                     Comparison = ... '>' '>='
+          [9].Seed.Axe.Level                      Comparison = ... '>' '>='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '<' '<=' '>' '>='
               [0].Seed.Axe.OpType                 infix
@@ -255,38 +249,38 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [2].Seed.Axe.Op                     '<='
               [3].Seed.Axe.Op                     '>'
               [4].Seed.Axe.Op                     '>='
-          [11].Seed.Axe.Level                     Equality = ... '==' '!='
+          [10].Seed.Axe.Level                     Equality = ... '==' '!='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '==' '!='
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '=='
               [2].Seed.Axe.Op                     '!='
-          [12].Seed.Axe.Level                     BitAnd = ltr infix '&'
+          [11].Seed.Axe.Level                     BitAnd = ltr infix '&'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '&'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '&'
-          [13].Seed.Axe.Level                     BitXor = ltr infix '^'
+          [12].Seed.Axe.Level                     BitXor = ltr infix '^'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '^'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '^'
-          [14].Seed.Axe.Level                     BitOr = ltr infix '|'
+          [13].Seed.Axe.Level                     BitOr = ltr infix '|'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '|'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '|'
-          [15].Seed.Axe.Level                     LogicalAnd = ltr infix '&&'
+          [14].Seed.Axe.Level                     LogicalAnd = ltr infix '&&'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '&&'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '&&'
-          [16].Seed.Axe.Level                     LogicalOr = ltr infix '||'
+          [15].Seed.Axe.Level                     LogicalOr = ltr infix '||'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '||'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '||'
-          [17].Seed.Axe.Level                     Assignment = ... '?' ':'
+          [16].Seed.Axe.Level                     Assignment = ... '?' ':'
             [0].Seed.Axe.Assoc                    rtl
             [1].Seed.Axe.Ops                      infix '=' '+=' '-='
               [0].Seed.Axe.OpType                 infix
@@ -300,19 +294,26 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Seed.Axe.OpType                 ternary
               [1].Seed.Axe.Op                     '?'
               [2].Seed.Axe.Op                     ':'
-          [18].Seed.Axe.Level                     Comma = ltr infix ','
+          [17].Seed.Axe.Level                     Comma = ltr infix ','
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix ','
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     ','
-      [2].Seed.Rule                               Atom = ... identifier <ws>
+      [2].Seed.Rule                               Atom = ... ')' <ws>
         [0].Seed.Nonterminal                      Atom
-        [1].Seed.Expr.Or.|                        number | string | identifier
+        [1].Seed.Expr.Or.|                        number | ... Expr ')'
           [0].Seed.Terminal                       number
           [1].Seed.Terminal                       string
           [2].Seed.Terminal                       identifier
+          [3].Seed.Expr.Concat.concat             '(' Expr ')'
+            [0].Seed.Terminal                     '('
+            [1].Seed.Nonterminal                  Expr
+            [2].Seed.Terminal                     ')'
+      [3].Seed.Rule                               Type = identifier <ws>
+        [0].Seed.Nonterminal                      Type
+        [1].Seed.Terminal                         identifier
 
-[0].CppStmts                                      1 + ... ++ ;
+[0].CppStmts                                      1 + ... b ;
   [0].CppStmts.Expr.Addition.+                    1 + ... * 5
     [0].CppStmts.Expr.Addition.+                  1 + 2 * 3
       [0].CppStmts.Expr.Atom                      1
@@ -357,6 +358,11 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [4].CppStmts.Expr.Prefix.++                     ++ x ++
     [0].CppStmts.Expr.Postfix.++                  x ++
       [0].CppStmts.Expr.Atom                      x
+  [5].CppStmts.Expr.Addition.+                    a + ... ) b
+    [0].CppStmts.Expr.Atom                        a
+    [1].CppStmts.Expr.Prefix.(                    ( int ) b
+      [0].CppStmts.Expr.Type                      int
+      [1].CppStmts.Expr.Atom                      b
 
 [0].Fern                                          [ none ... ] ]
   [0].Fern.LabeledItem                            none
@@ -419,11 +425,10 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [1].Seed.Language                               language Soil ... <ws> <ws>
     [0].Seed.Rule                                 ⊙ = ... * <ws>
       [0].Seed.Expr.Postfix.*                     ( Type ... ) *
-        [0].Seed.Expr.Parens.(                    ( Type ... Defn )
-          [0].Seed.Expr.Or.|                      Type . ... . Defn
-            [0].Seed.Nonterminal                  Type . Defn
-            [1].Seed.Nonterminal                  Func . Defn
-            [2].Seed.Nonterminal                  Variable . Defn
+        [0].Seed.Expr.Or.|                        Type . ... . Defn
+          [0].Seed.Nonterminal                    Type . Defn
+          [1].Seed.Nonterminal                    Func . Defn
+          [2].Seed.Nonterminal                    Variable . Defn
     [1].Seed.Scope                                Type : ... <ws> <ws>
       [0].Seed.Nonterminal                        Type
       [1].Seed.Rule                               ⊙ = ... Struct <ws>
@@ -483,46 +488,40 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.Nonterminal                      Axe
         [1].Seed.Axe                              Atom <ws> ... <ws> <ws>
           [0].Seed.Nonterminal                    Atom
-          [1].Seed.Axe.Level                      Parens = ... '(' ')'
-            [0].Seed.Axe.Assoc                    nest
-            [1].Seed.Axe.Ops                      atom_nest '(' ')'
-              [0].Seed.Axe.OpType                 atom_nest
-              [1].Seed.Axe.Op                     '('
-              [2].Seed.Axe.Op                     ')'
-          [2].Seed.Axe.Level                      Member = ltr infix '.'
+          [1].Seed.Axe.Level                      Member = ltr infix '.'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '.'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.'
-          [3].Seed.Axe.Level                      CallPost = ... '(' ')'
+          [2].Seed.Axe.Level                      CallPost = ... '(' ')'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      postfix_nest '(' ')'
               [0].Seed.Axe.OpType                 postfix_nest
               [1].Seed.Axe.Op                     '('
               [2].Seed.Axe.Op                     ')'
-          [4].Seed.Axe.Level                      Typing = ltr infix '::'
+          [3].Seed.Axe.Level                      Typing = ltr infix '::'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '::'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '::'
-          [5].Seed.Axe.Level                      CallPipe = ltr infix '|'
+          [4].Seed.Axe.Level                      CallPipe = ltr infix '|'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '|'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '|'
-          [6].Seed.Axe.Level                      Mul = ... '*' '//'
+          [5].Seed.Axe.Level                      Mul = ... '*' '//'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '*' '//'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '*'
               [2].Seed.Axe.Op                     '//'
-          [7].Seed.Axe.Level                      Add = ... '+' '-'
+          [6].Seed.Axe.Level                      Add = ... '+' '-'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '+' '-'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '+'
               [2].Seed.Axe.Op                     '-'
-          [8].Seed.Axe.Level                      Comp = ... '>' '>='
+          [7].Seed.Axe.Level                      Comp = ... '>' '>='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '==' ... '>' '>='
               [0].Seed.Axe.OpType                 infix
@@ -531,13 +530,13 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [3].Seed.Axe.Op                     '<'
               [4].Seed.Axe.Op                     '>'
               [5].Seed.Axe.Op                     '>='
-          [9].Seed.Axe.Level                      Logic = ... 'and' 'or'
+          [8].Seed.Axe.Level                      Logic = ... 'and' 'or'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix 'and' 'or'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     'and'
               [2].Seed.Axe.Op                     'or'
-          [10].Seed.Axe.Level                     Assign = ... '+=' '*='
+          [9].Seed.Axe.Level                      Assign = ... '+=' '*='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '=' '+=' '*='
               [0].Seed.Axe.OpType                 infix
@@ -546,18 +545,21 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [3].Seed.Axe.Op                     '*='
       [4].Seed.Rule                               Atom = ... ) <ws>
         [0].Seed.Nonterminal                      Atom
-        [1].Seed.Expr.Parens.(                    ( Struct ... 'none' )
-          [0].Seed.Expr.Or.|                      Struct | ... | 'none'
-            [0].Seed.Nonterminal                  Struct
-            [1].Seed.Terminal                     language
-            [2].Seed.Terminal                     type_name
-            [3].Seed.Terminal                     func_name
-            [4].Seed.Terminal                     identifier
-            [5].Seed.Terminal                     string
-            [6].Seed.Terminal                     number
-            [7].Seed.Terminal                     'true'
-            [8].Seed.Terminal                     'false'
-            [9].Seed.Terminal                     'none'
+        [1].Seed.Expr.Or.|                        Struct | ... Expr ')'
+          [0].Seed.Nonterminal                    Struct
+          [1].Seed.Terminal                       language
+          [2].Seed.Terminal                       type_name
+          [3].Seed.Terminal                       func_name
+          [4].Seed.Terminal                       identifier
+          [5].Seed.Terminal                       string
+          [6].Seed.Terminal                       number
+          [7].Seed.Terminal                       'true'
+          [8].Seed.Terminal                       'false'
+          [9].Seed.Terminal                       'none'
+          [10].Seed.Expr.Concat.concat            '(' Expr ')'
+            [0].Seed.Terminal                     '('
+            [1].Seed.Nonterminal                  Expr
+            [2].Seed.Terminal                     ')'
       [5].Seed.Scope                              Struct : ... <ws> <ws>
         [0].Seed.Nonterminal                      Struct
         [1].Seed.Rule                             ⊙ = ... ']' <ws>
@@ -570,14 +572,12 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].Seed.Nonterminal                    LabeledItem
           [1].Seed.Expr.Concat.concat             ( Variable ... Expr )
             [0].Seed.Expr.Postfix.?               ( Variable ... ) ?
-              [0].Seed.Expr.Parens.(              ( Variable ... ':' )
-                [0].Seed.Expr.Concat.concat       Variable . Name ':'
-                  [0].Seed.Nonterminal            Variable . Name
-                  [1].Seed.Terminal               ':'
-            [1].Seed.Expr.Parens.(                ( Struct | Expr )
-              [0].Seed.Expr.Or.|                  Struct | Expr
-                [0].Seed.Nonterminal              Struct
-                [1].Seed.Nonterminal              Expr
+              [0].Seed.Expr.Concat.concat         Variable . Name ':'
+                [0].Seed.Nonterminal              Variable . Name
+                [1].Seed.Terminal                 ':'
+            [1].Seed.Expr.Or.|                    Struct | Expr
+              [0].Seed.Nonterminal                Struct
+              [1].Seed.Nonterminal                Expr
     [3].Seed.Scope                                Func : ... <ws> <ws>
       [0].Seed.Nonterminal                        Func
       [1].Seed.Rule                               ⊙ = Name <ws>
@@ -597,10 +597,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].Seed.Expr.Concat.concat               Type ( ... ) ?
           [0].Seed.Nonterminal                    Type
           [1].Seed.Expr.Postfix.?                 ( '->' Type ) ?
-            [0].Seed.Expr.Parens.(                ( '->' Type )
-              [0].Seed.Expr.Concat.concat         '->' Type
-                [0].Seed.Terminal                 '->'
-                [1].Seed.Nonterminal              Type
+            [0].Seed.Expr.Concat.concat           '->' Type
+              [0].Seed.Terminal                   '->'
+              [1].Seed.Nonterminal                Type
       [5].Seed.Rule                               Body = ... '}' <ws>
         [0].Seed.Nonterminal                      Body
         [1].Seed.Expr.Concat.concat               '{' Stmt * '}'
@@ -624,15 +623,13 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Seed.Terminal                   'if'
               [1].Seed.Nonterminal                Branch
               [2].Seed.Expr.Postfix.*             ( 'elif' Branch ) *
-                [0].Seed.Expr.Parens.(            ( 'elif' Branch )
-                  [0].Seed.Expr.Concat.concat     'elif' Branch
-                    [0].Seed.Terminal             'elif'
-                    [1].Seed.Nonterminal          Branch
+                [0].Seed.Expr.Concat.concat       'elif' Branch
+                  [0].Seed.Terminal               'elif'
+                  [1].Seed.Nonterminal            Branch
               [3].Seed.Expr.Postfix.?             ( 'else' Body ) ?
-                [0].Seed.Expr.Parens.(            ( 'else' Body )
-                  [0].Seed.Expr.Concat.concat     'else' Body
-                    [0].Seed.Terminal             'else'
-                    [1].Seed.Nonterminal          Body
+                [0].Seed.Expr.Concat.concat       'else' Body
+                  [0].Seed.Terminal               'else'
+                  [1].Seed.Nonterminal            Body
           [2].Seed.Rule                           Branch = Expr Body <ws>
             [0].Seed.Nonterminal                  Branch
             [1].Seed.Expr.Concat.concat           Expr Body
@@ -962,24 +959,16 @@ Mr Jane
 2
 3
 Mr Jane
-[0].Cedar                                         typedef void ... ; }
-  [0].Cedar.Declaration                           typedef void FILE ;
-    [0].Cedar.Declaration.Specifiers              typedef void
-      [0].Cedar.Declaration.StorageClassSpecifier typedef
-      [1].Cedar.Type.Specifier                    void
-    [1].Cedar.Declaration.Init                    FILE
-      [0].Cedar.Declarator                        FILE
-        [0].Cedar.Declarator.Direct               FILE
-  [1].Cedar.Declaration                           extern FILE * stdout ;
-    [0].Cedar.Declaration.Specifiers              extern FILE
+[0].Cedar                                         extern void ... ; }
+  [0].Cedar.Declaration                           extern void * stdout ;
+    [0].Cedar.Declaration.Specifiers              extern void
       [0].Cedar.Declaration.StorageClassSpecifier extern
-      [1].Cedar.Type.Specifier                    FILE
-        [0].Cedar.Type.TypedefName                FILE
+      [1].Cedar.Type.Specifier                    void
     [1].Cedar.Declaration.Init                    * stdout
       [0].Cedar.Declarator                        * stdout
         [0].Cedar.Declarator.Pointer              *
         [1].Cedar.Declarator.Direct               stdout
-  [2].Cedar.Declaration                           extern int ... ) ;
+  [1].Cedar.Declaration                           extern int ... ) ;
     [0].Cedar.Declaration.Specifiers              extern int
       [0].Cedar.Declaration.StorageClassSpecifier extern
       [1].Cedar.Type.Specifier                    int
@@ -987,12 +976,11 @@ Mr Jane
     [1].Cedar.Declaration.Init                    fprintf ( ... ... )
       [0].Cedar.Declarator                        fprintf ( ... ... )
         [0].Cedar.Declarator.Direct               fprintf ( ... ... )
-          [0].Cedar.Declarator.DirectExt          ( FILE ... ... )
-            [0].Cedar.Declaration.ParameterList   FILE * ... , ...
-              [0].Cedar.Declaration.ParameterDeclaration FILE * stream
-                [0].Cedar.Declaration.Specifiers  FILE
-                  [0].Cedar.Type.Specifier        FILE
-                    [0].Cedar.Type.TypedefName    FILE
+          [0].Cedar.Declarator.DirectExt          ( void ... ... )
+            [0].Cedar.Declaration.ParameterList   void * ... , ...
+              [0].Cedar.Declaration.ParameterDeclaration void * stream
+                [0].Cedar.Declaration.Specifiers  void
+                  [0].Cedar.Type.Specifier        void
                 [1].Cedar.Declarator              * stream
                   [0].Cedar.Declarator.Pointer    *
                   [1].Cedar.Declarator.Direct     stream
@@ -1005,7 +993,7 @@ Mr Jane
                   [0].Cedar.Declarator.Pointer    *
                   [1].Cedar.Declarator.Direct     format
               [2].Cedar.Declaration.ParameterDeclaration ...
-  [3].Cedar.Declaration                           int main ... ; }
+  [2].Cedar.Declaration                           int main ... ; }
     [0].Cedar.Declaration.Specifiers              int
       [0].Cedar.Type.Specifier                    int
         [0].Cedar.Type.IntSpecifier               int

@@ -21,7 +21,6 @@ language Soil:
     ⊙ = Axe
     Maybe = Expr | ε
     Axe = axe Atom
-      Parens    = nest atom_nest '(' ')'
       Member    = ltr infix '.'
       CallPost  = ltr postfix_nest '(' ')'
       Typing    = ltr infix '::'
@@ -34,7 +33,8 @@ language Soil:
     Atom = ( Struct | language
            | type_name | func_name | identifier
            | string | number
-           | 'true' | 'false' | 'none' )
+           | 'true' | 'false' | 'none'
+           | '(' Expr ')' )
     Struct:
       ⊙ = '[' LabeledItem * ']'
       LabeledItem = ( Variable.Name ':' ) ? ( Struct | Expr )

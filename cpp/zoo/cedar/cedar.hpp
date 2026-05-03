@@ -59,7 +59,7 @@ language Cedar:
                 | AtomicTypeSpecifier
                 | StructOrUnionSpecifier
                 | EnumSpecifier
-                | TypedefName
+#                | TypedefName
                 )
     TypedefName = identifier # TODO: should only match identifiers that have previously been typedef'ed.
     Qualifier = ( 'const' | 'volatile' | 'restrict' | '_Atomic' )
@@ -102,11 +102,11 @@ language Cedar:
 
   Expr:
     ⊙ = axe Atom
-      Parens  = nest atom_nest '(' ')'
       Postfix = ltr  postfix '++' '--' \
                      postfix_nest -> ExprOrNone '(' ')' '[' ']' \
                      infix '.' '->'
-      Prefix  = rtl  prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' '_Alignof'
+      Prefix  = rtl  prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' '_Alignof' \
+                     prefix_nest -> Type.Name '(' ')'
       Mult    = ltr  infix '*' '/' '%'
       Add     = ltr  infix '+' '-'
       Shift   = ltr  infix '<<' '>>'
@@ -120,7 +120,7 @@ language Cedar:
       Tern    = rtl  ternary '?' ':'
       Assign  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
       Comma   = ltr  infix_flat ','
-    Atom = number | string + | identifier
+    Atom = number | string + | identifier | '(' Expr ')'
     ExprOrNone = Expr | None
     Const = Expr # not allowed to be Expr.Comma or Expr.Assign
 )'";

@@ -20,7 +20,6 @@ namespace silva::seed {
   // an expression parser is then generated. For example,
   //
   // « number [
-  //   - Parens   = nest  atom_nest '(' ')'
   //   - Prefix   = ltr   prefix '-'
   //   - Product  = ltr   infix '*' '/'
   //   - Addition = ltr   infix '+' '-'
@@ -28,7 +27,7 @@ namespace silva::seed {
   //
   // can be used to parse
   //
-  // « 1 + ( 2 + 3 ) * - 4 »
+  // « 1 + 2 * 3 + - 4 »
   //
   // in the normal, mathematical way.
 
@@ -36,10 +35,9 @@ namespace silva::seed {
 Seed.Axe:
   ⊙ = Seed.Nonterminal newline indent ( Level newline ) * dedent
   Level = rule_name '=' Assoc Ops *
-  Assoc = 'nest' | 'ltr' | 'rtl'
+  Assoc = 'ltr' | 'rtl'
   Ops = OpType ( '->' Seed.Nonterminal ) ? Op *
-  OpType = ( 'atom_nest' | 'atom_nest_transparent'
-           | 'prefix' | 'prefix_nest'
+  OpType = ( 'prefix' | 'prefix_nest'
            | 'infix' | 'infix_flat' | 'ternary'
            | 'postfix' | 'postfix_nest' )
   Op = string | 'concat'
@@ -72,7 +70,7 @@ namespace silva::seed {
     {
       const auto visitor = [&]<typename InnerOper>(InnerOper& inner_oper) -> expected_t<void> {
         if constexpr (std::same_as<InnerOper, prefix_nest_t> ||
-                      std::same_as<InnerOper, atom_nest_t> || std::same_as<InnerOper, ternary_t> ||
+                      std::same_as<InnerOper, ternary_t> ||
                       std::same_as<InnerOper, postfix_nest_t>) {
           if (inner_oper.nest_rule_name.has_value()) {
             SILVA_EXPECT_FWD(f(inner_oper.nest_rule_name.value()));

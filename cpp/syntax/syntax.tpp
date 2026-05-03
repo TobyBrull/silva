@@ -66,11 +66,10 @@ tokenizer Expr:
 
 language Expr:
   ⊙ = axe Atom
-    Parens  = nest  atom_nest '(' ')'
     Mult    = ltr   infix '*'
     Add     = ltr   infix '+'
     Comp    = ltr   infix '<'
-  Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier
+  Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier | '(' Expr ')'
 )'";
     syntax_farm_t sf;
     seed::interpreter_t si(sf.ptr());
@@ -84,7 +83,7 @@ language Expr:
 
     const std::string_view expected_parse_tree = R"(
 [0].Expr.Add.+                                    ( 5 ... + 100
-  [0].Expr.Parens.(                               ( 5 ... 20 )
+  [0].Expr.Atom                                   ( 5 ... 20 )
     [0].Expr.Add.+                                5 + ... * 20
       [0].Expr.Atom                               5
       [1].Expr.Atom                               if a ... * 20

@@ -7,17 +7,17 @@ namespace silva::lox {
     {
       retval.push_back(test_chapter_t{.name = "basic"});
       auto& rv = retval.back().test_cases;
-      rv.push_back(test_case_t{" print 42.0 ; print 12.0 ; \n", "42\n12\n"});
-      rv.push_back(test_case_t{" print - 42.0 ; \n", "-42\n"});
-      rv.push_back(test_case_t{" print 1 + 2 * 3 + 4 ; \n", "11\n"});
-      rv.push_back(test_case_t{" print ! true ; \n", "false\n"});
-      rv.push_back(test_case_t{" print ! ( 1 + 2 == 3 ) ; \n", "false\n"});
-      rv.push_back(test_case_t{" print 1 + 2 != 4 ; \n", "true\n"});
-      rv.push_back(test_case_t{" print 1 + 2 <= 2 ; \n", "false\n"});
-      rv.push_back(test_case_t{" print 1 + 2 <= 3 ; \n", "true\n"});
-      rv.push_back(test_case_t{" print 1 + 2 <= 4 ; \n", "true\n"});
-      rv.push_back(test_case_t{" print 'hello' + ' world' ; \n", "hello world\n"});
-      rv.push_back(test_case_t{" print ! ( 5 - 4 > 3 * 2 == ! nil ) ; \n", "true\n"});
+      rv.push_back(test_case_t{"print 42.0 ; print 12.0 ; \n", "42\n12\n"});
+      rv.push_back(test_case_t{"print - 42.0 ; \n", "-42\n"});
+      rv.push_back(test_case_t{"print 1 + 2 * 3 + 4 ; \n", "11\n"});
+      rv.push_back(test_case_t{"print ! true ; \n", "false\n"});
+      rv.push_back(test_case_t{"print ! ( 1 + 2 == 3 ) ; \n", "false\n"});
+      rv.push_back(test_case_t{"print 1 + 2 != 4 ; \n", "true\n"});
+      rv.push_back(test_case_t{"print 1 + 2 <= 2 ; \n", "false\n"});
+      rv.push_back(test_case_t{"print 1 + 2 <= 3 ; \n", "true\n"});
+      rv.push_back(test_case_t{"print 1 + 2 <= 4 ; \n", "true\n"});
+      rv.push_back(test_case_t{"print 'hello' + ' world' ; \n", "hello world\n"});
+      rv.push_back(test_case_t{"print ! ( 5 - 4 > 3 * 2 == ! nil ) ; \n", "true\n"});
 
       rv.push_back(test_case_t{"print ! 42 ;\n", "false\n"});
       rv.push_back(test_case_t{"print ! false ;\n", "true\n"});

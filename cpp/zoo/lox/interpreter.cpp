@@ -389,10 +389,6 @@ namespace silva::lox {
         }
         return rhs_ref;
       }
-      else if (rn == lexicon.ni_expr_primary)
-      {
-        return expr_or_atom(pts.sub_tree_span_at(1));
-      }
       else
       {
         SILVA_EXPECT(false,
@@ -408,6 +404,10 @@ namespace silva::lox {
 
     expected_t<object_ref_t> atom(const parse_tree_span_t pts)
     {
+      SILVA_EXPECT(pts.size() > 0 && pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
+      if (pts[0].num_children == 1 && sfp->name_id_is_parent(lexicon.ni_expr, pts[1].rule_name)) {
+        return expr(pts.sub_tree_span_at(1));
+      }
       if (const auto it = intp->literals.find(pts); it != intp->literals.end()) {
         return it->second;
       }

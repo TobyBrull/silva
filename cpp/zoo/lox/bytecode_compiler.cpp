@@ -160,6 +160,10 @@ namespace silva::lox {
 
     expected_t<void> expr_atom(const parse_tree_span_t pts)
     {
+      SILVA_EXPECT(pts.size() > 0 && pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
+      if (pts[0].num_children == 1 && sfp->name_id_is_parent(lexicon.ni_expr, pts[1].rule_name)) {
+        return expr(pts.sub_tree_span_at(1));
+      }
       const auto ti             = pts.ptp->tp->tokens[pts[0].token_begin];
       const auto tc             = pts.ptp->tp->categories[pts[0].token_begin];
       const token_info_t* tinfo = pts.ptp->tp->token_info_get(pts[0].token_begin);
@@ -216,9 +220,6 @@ namespace silva::lox {
       SILVA_EXPECT(sfp->name_id_is_parent(lexicon.ni_expr, pts[0].rule_name), ASSERT);
       if (pts[0].rule_name == lexicon.ni_expr_atom) {
         return expr_atom(pts);
-      }
-      else if (pts[0].rule_name == lexicon.ni_expr_primary) {
-        return expr(pts.sub_tree_span_at(1));
       }
       else if (pts[0].rule_name == lexicon.ni_expr_u_exc) {
         return expr_unary(pts, NOT);

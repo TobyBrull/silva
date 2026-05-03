@@ -16,13 +16,12 @@ language CppStmts:
   ⊙ = ( Expr ';' ) *
   Expr:
     ⊙ = axe Atom
-      Parens      = nest  atom_nest '(' ')'
       Namespace   = rtl   infix '::' prefix '::'
       Postfix     = ltr   postfix '++' '--' \
                           postfix_nest '(' ')' '[' ']' \
                           infix '.' '->'
       Prefix      = rtl   prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' 'new' \
-                          prefix_nest '<.' '.>'
+                          prefix_nest -> Type '(' ')'
       Member      = ltr   infix '.*' '->*'
       Multiply    = ltr   infix '*' '/' '%'
       Addition    = ltr   infix '+' '-'
@@ -39,7 +38,8 @@ language CppStmts:
                           prefix 'throw' \
                           ternary '?' ':'
       Comma       = ltr   infix ','
-    Atom = number | string | identifier
+    Atom = number | string | identifier | '(' Expr ')'
+    Type = identifier
 »
 
 CppStmts «
@@ -48,6 +48,7 @@ a[1] = std::sin(3.14) ;
 1 | 0 <= x * 10 <= 2 + 3 ;
 std::get(x) = ::std::get(x) ;
 ++ x ++ ;
+a + (int) b ;
 »
 
 Fern «

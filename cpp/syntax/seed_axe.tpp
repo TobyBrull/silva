@@ -68,10 +68,15 @@ namespace silva::seed::test {
         auto ss_rule = stake();
         ss_rule.create_node(ni_atom);
         SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
-        SILVA_EXPECT(token_category_by() == lexicon.ti_number ||
-                         token_category_by() == lexicon.ti_identifier,
-                     MINOR);
-        token_index += 1;
+        if (token_category_by() == lexicon.ti_number ||
+            token_category_by() == lexicon.ti_identifier) {
+          token_index += 1;
+        }
+        else {
+          SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, lexicon.ti_paren_open);
+          ss_rule.add_proto_node(SILVA_EXPECT_FWD(expression()));
+          SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, lexicon.ti_paren_close);
+        }
         return ss_rule.commit();
       }
 
@@ -99,7 +104,6 @@ namespace silva::seed::test {
     const auto se = standard_seed_interpreter(sf.ptr());
 
     const string_view_t test_axe = R"'(Test.Atom
-  Nst   = nest  atom_nest '(' ')'
   Dot   = rtl   infix '.'
   Sub   = ltr   postfix_nest '[' ']'
   Dol   = ltr   postfix '$'
@@ -121,7 +125,7 @@ namespace silva::seed::test {
       SILVA_REQUIRE(sa.compile(sf.get_lexicon<lexicon_t>(), ns));
     }
     CHECK(!sa.concat_result.has_value());
-    CHECK(sa.results.size() == 15);
+    CHECK(sa.results.size() == 13);
     {
       const axe_result_t rr = sa.results.at(sf.token_id("="));
       const axe_result_t expected{
@@ -200,30 +204,6 @@ namespace silva::seed::test {
                   .pts        = rr.regular->pts,
               },
           .is_right_bracket = false,
-      };
-      CHECK(rr == expected);
-    }
-    {
-      const axe_result_t rr = sa.results.at(sf.token_id("("));
-      const axe_result_t expected{
-          .prefix =
-              result_oper_t<oper_prefix_t>{
-                  .oper       = atom_nest_t{sf.token_id("("), sf.token_id(")")},
-                  .name       = sf.name_id_of("Expr", "Nst", "("),
-                  .precedence = precedence_t{.level_index = 11, .assoc = NEST},
-                  .pts        = rr.prefix->pts,
-              },
-          .regular          = {none},
-          .is_right_bracket = false,
-      };
-      CHECK(rr == expected);
-    }
-    {
-      const axe_result_t rr = sa.results.at(sf.token_id(")"));
-      const axe_result_t expected{
-          .prefix           = {none},
-          .regular          = {none},
-          .is_right_bracket = true,
       };
       CHECK(rr == expected);
     }
@@ -327,15 +307,15 @@ namespace silva::seed::test {
 )");
     test::test_axe<test_nursery_t>(*se, sa, "~ + 2\n", {none});
     test::test_axe<test_nursery_t>(*se, sa, "( ( 0 ) )\n", R"(
-[0].Expr.Nst.(                                    ( ( 0 ) )
-  [0].Expr.Nst.(                                  ( 0 )
+[0].Test.Atom                                     ( ( 0 ) )
+  [0].Test.Atom                                   ( 0 )
     [0].Test.Atom                                 0
 )");
     test::test_axe<test_nursery_t>(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
 [0].Expr.Mul.*                                    1 * ... * 4
   [0].Expr.Mul.*                                  1 * ... 3 )
     [0].Test.Atom                                 1
-    [1].Expr.Nst.(                                ( 2 + 3 )
+    [1].Test.Atom                                 ( 2 + 3 )
       [0].Expr.Add.+                              2 + 3
         [0].Test.Atom                             2
         [1].Test.Atom                             3
@@ -345,7 +325,7 @@ namespace silva::seed::test {
 [0].Expr.Mul.*                                    1 * ... * 4
   [0].Expr.Mul.*                                  1 * ... 3 )
     [0].Test.Atom                                 1
-    [1].Expr.Nst.(                                ( 2 + 3 )
+    [1].Test.Atom                                 ( 2 + 3 )
       [0].Expr.Add.+                              2 + 3
         [0].Test.Atom                             2
         [1].Test.Atom                             3
@@ -429,7 +409,8 @@ namespace silva::seed::test {
       const axe_t& axe;
       const lexicon_t& lexicon;
 
-      const token_id_t ti_comma = sfp->token_id(",");
+      const token_id_t ti_shift_l = sfp->token_id("<<");
+      const token_id_t ti_shift_r = sfp->token_id(">>");
 
       const name_id_t ni_expr = sfp->name_id_of("Expr");
       const name_id_t ni_atom = sfp->name_id_of("Test", "Atom");
@@ -451,9 +432,14 @@ namespace silva::seed::test {
                        MINOR);
           token_index += 2;
         }
+        else if (token_id_by() == ti_shift_l) {
+          SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, ti_shift_l);
+          ss_rule.add_proto_node(SILVA_EXPECT_FWD(expression()));
+          SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, ti_shift_r);
+        }
         else {
           SILVA_EXPECT(token_category_by() == lexicon.ti_identifier ||
-                           token_category_by() == lexicon.ti_operator,
+                           token_id_by() == lexicon.ti_comma,
                        MINOR);
           token_index += 1;
         }
@@ -476,7 +462,7 @@ namespace silva::seed::test {
         bool first = true;
         while (num_tokens_left() >= 1) {
           if (!first) {
-            if (token_id_by() == ti_comma) {
+            if (token_id_by() == lexicon.ti_comma) {
               token_index += 1;
               ss_rule.add_proto_node(SILVA_EXPECT_FWD(arg()));
             }
@@ -523,7 +509,6 @@ namespace silva::seed::test {
     const auto se = standard_seed_interpreter(sf.ptr());
 
     const string_view_t test_axe = R"'(Test.Atom
-  Nst     = nest  atom_nest_transparent '<<' '>>'
   PrfHi   = rtl   prefix_nest '(' ')'
   Cat     = ltr   infix concat
   PrfLo   = rtl   prefix_nest '{' '}' prefix_nest -> Test.Args '<:' ':>'
@@ -542,7 +527,7 @@ namespace silva::seed::test {
       SILVA_REQUIRE(sa.compile(sf.get_lexicon<lexicon_t>(), ns));
     }
     CHECK(sa.concat_result.has_value());
-    CHECK(sa.results.size() == 13);
+    CHECK(sa.results.size() == 11);
 
     test::test_axe<test_nursery_t>(*se, sa, "a\n", R"(
 [0].Test.Atom                                     a
@@ -599,9 +584,10 @@ namespace silva::seed::test {
     test::test_axe<test_nursery_t>(*se, sa, "a << { b } c >>\n", R"(
 [0].Expr.Cat.concat                               a << ... c >>
   [0].Test.Atom                                   a
-  [1].Expr.PrfLo.{                                { b } c
-    [0].Test.Atom                                 b
-    [1].Test.Atom                                 c
+  [1].Test.Atom                                   << { ... c >>
+    [0].Expr.PrfLo.{                              { b } c
+      [0].Test.Atom                               b
+      [1].Test.Atom                               c
 )");
     test::test_axe<test_nursery_t>(*se, sa, "<< a { b } >> c\n", {none});
     test::test_axe<test_nursery_t>(*se, sa, "a 1 a z\n", {none});

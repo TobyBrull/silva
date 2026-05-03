@@ -99,20 +99,18 @@ language SimpleFern:
       [0].Seed.Expr.Concat.concat                 '[' ( ... * ']'
         [0].Seed.Terminal                         '['
         [1].Seed.Expr.Postfix.*                   ( LabeledItem ... ) *
-          [0].Seed.Expr.Parens.(                  ( LabeledItem ';' ? )
-            [0].Seed.Expr.Concat.concat           LabeledItem ';' ?
-              [0].Seed.Nonterminal                LabeledItem
-              [1].Seed.Expr.Postfix.?             ';' ?
-                [0].Seed.Terminal                 ';'
+          [0].Seed.Expr.Concat.concat             LabeledItem ';' ?
+            [0].Seed.Nonterminal                  LabeledItem
+            [1].Seed.Expr.Postfix.?               ';' ?
+              [0].Seed.Terminal                   ';'
         [2].Seed.Terminal                         ']'
     [1].Seed.Rule                                 LabeledItem = ... Item <ws>
       [0].Seed.Nonterminal                        LabeledItem
       [1].Seed.Expr.Concat.concat                 ( Label ... ? Item
         [0].Seed.Expr.Postfix.?                   ( Label ':' ) ?
-          [0].Seed.Expr.Parens.(                  ( Label ':' )
-            [0].Seed.Expr.Concat.concat           Label ':'
-              [0].Seed.Nonterminal                Label
-              [1].Seed.Terminal                   ':'
+          [0].Seed.Expr.Concat.concat             Label ':'
+            [0].Seed.Nonterminal                  Label
+            [1].Seed.Terminal                     ':'
         [1].Seed.Nonterminal                      Item
     [2].Seed.Rule                                 Label = string <ws>
       [0].Seed.Nonterminal                        Label

@@ -31,11 +31,8 @@ namespace silva::seed {
     const token_id_t ti_any          = sfp->token_id("any");
     const token_id_t ti_eps          = sfp->token_id("ε");
     const token_id_t ti_eof          = sfp->token_id("end_of_file");
-    const token_id_t ti_nest         = sfp->token_id("nest");
     const token_id_t ti_ltr          = sfp->token_id("ltr");
     const token_id_t ti_rtl          = sfp->token_id("rtl");
-    const token_id_t ti_atom_nest    = sfp->token_id("atom_nest");
-    const token_id_t ti_atom_nest_t  = sfp->token_id("atom_nest_transparent");
     const token_id_t ti_postfix      = sfp->token_id("postfix");
     const token_id_t ti_postfix_n    = sfp->token_id("postfix_nest");
     const token_id_t ti_infix        = sfp->token_id("infix");
@@ -97,7 +94,6 @@ namespace silva::seed {
     const name_id_t ni_term     = sfp->name_id_of(ni_seed, "Terminal");
     const name_id_t ni_tok_cat  = sfp->name_id_of(ni_seed, "TokenCategory");
 
-    const name_id_t ni_expr_parens  = sfp->name_id_of(ni_expr, "Parens");
     const name_id_t ni_expr_prefix  = sfp->name_id_of(ni_expr, "Prefix");
     const name_id_t ni_expr_postfix = sfp->name_id_of(ni_expr, "Postfix");
     const name_id_t ni_expr_concat  = sfp->name_id_of(ni_expr, "Concat");

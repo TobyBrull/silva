@@ -33,7 +33,6 @@ language Lox:
     ExprStmt = Expr ';'
   Expr:
     ⊙ = axe Atom
-      Primary     = nest atom_nest '(' ')'
       Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
       Unary       = rtl prefix '!' '-'
       Factor      = ltr infix '*' '/'
@@ -45,7 +44,8 @@ language Lox:
       Assign      = ltr infix '='
     Atom = ( 'true' | 'false' | 'nil' | 'this'
            | number | string
-           | 'super' '.' identifier | identifier )
+           | 'super' '.' identifier | identifier
+           | '(' Expr ')' )
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
     ⊙ = identifier '(' Parameters ')' Stmt.Block

@@ -479,11 +479,7 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> s_expr(const parse_tree_span_t pts, const name_id_t t_rule_name)
     {
       const name_id_t s_rule_name = pts[0].rule_name;
-      if (sfp->name_id_is_parent(lexicon.ni_expr_parens, s_rule_name)) {
-        const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
-        return s_expr(pts.sub_tree_span_at(children[0]), t_rule_name);
-      }
-      else if (sfp->name_id_is_parent(lexicon.ni_expr_prefix, s_rule_name)) {
+      if (sfp->name_id_is_parent(lexicon.ni_expr_prefix, s_rule_name)) {
         return s_expr_prefix(pts, t_rule_name);
       }
       else if (sfp->name_id_is_parent(lexicon.ni_expr_postfix, s_rule_name)) {
