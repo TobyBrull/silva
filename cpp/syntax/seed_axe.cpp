@@ -715,8 +715,7 @@ namespace silva::seed::impl {
           if (mode == INFIX_MODE && !axe.concat_result.has_value()) {
             break;
           }
-          auto maybe_res =
-              SILVA_EXPECT_FWD_IF(MAJOR, invoke_rule_parser(axe.atom_rule.resolved_name));
+          auto maybe_res = SILVA_EXPECT_FWD_IF(MAJOR, invoke_rule_parser(axe.atom_rule));
           if (!maybe_res.has_value()) {
             break;
           }

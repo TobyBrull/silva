@@ -72,6 +72,7 @@ namespace silva {
 
     // Derived data; ignored for equality and hashing.
     mutable name_id_t resolved_name = name_id_none;
+    operator name_id_t() const { return resolved_name; }
 
     friend bool operator==(const name_id_ref_t& lhs, const name_id_ref_t& rhs);
     friend hash_value_t hash_impl(const name_id_ref_t& x);
