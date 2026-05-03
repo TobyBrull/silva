@@ -47,6 +47,7 @@ namespace silva {
     void on_get_state(parse_tree_nursery_state_t&) const;
     void on_set_state(const parse_tree_nursery_state_t&);
 
+    void on_stake_ctor(parse_tree_node_t& proto_node) const;
     void on_stake_create_node(parse_tree_node_t& proto_node, name_id_t) const;
     void on_stake_add_proto_node(parse_tree_node_t& proto_node,
                                  const parse_tree_node_t& other) const;

@@ -14,12 +14,16 @@ namespace silva {
     token_index = s.token_index;
   }
 
+  void parse_tree_nursery_t::on_stake_ctor(parse_tree_node_t& proto_node) const
+  {
+    proto_node.token_begin = token_index;
+    proto_node.token_end   = token_index + 1;
+  }
+
   void parse_tree_nursery_t::on_stake_create_node(parse_tree_node_t& proto_node,
                                                   const name_id_t rule_name) const
   {
-    proto_node.rule_name   = rule_name;
-    proto_node.token_begin = token_index;
-    proto_node.token_end   = token_index + 1;
+    proto_node.rule_name = rule_name;
   }
 
   void parse_tree_nursery_t::on_stake_add_proto_node(parse_tree_node_t& proto_node,

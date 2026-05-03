@@ -97,6 +97,9 @@ namespace silva {
     : nursery(nursery), orig_state(nursery->get_state())
   {
     proto_node.subtree_size = 0;
+    if constexpr (requires(Derived d) { d.on_stake_ctor(proto_node); }) {
+      nursery->on_stake_ctor(proto_node);
+    }
   }
 
   template<typename NodeType, typename StateType, typename Derived>
