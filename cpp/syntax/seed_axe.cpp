@@ -462,7 +462,10 @@ namespace silva::seed::impl {
     // internal state associated with a run
 
     enum class mode_t {
+      // next token expected to be an atom
       ATOM_MODE,
+
+      // next token expected to be an infix operator
       INFIX_MODE,
     };
     using enum mode_t;
@@ -724,12 +727,11 @@ namespace silva::seed::impl {
           if (mode == INFIX_MODE && axe.concat_result.has_value()) {
             SILVA_EXPECT_FWD(hallucinate_concat());
           }
-          if (mode == ATOM_MODE) {
-            open_term_stack.push_back(output_tree.size());
-            output_tree.push_back(tn);
-            mode = INFIX_MODE;
-            continue;
-          }
+          SILVA_EXPECT(mode == ATOM_MODE, ASSERT);
+          open_term_stack.push_back(output_tree.size());
+          output_tree.push_back(tn);
+          mode = INFIX_MODE;
+          continue;
         }
         else {
           const axe_result_t& pa_result = it->second;
