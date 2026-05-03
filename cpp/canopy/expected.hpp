@@ -124,9 +124,9 @@ namespace silva {
 // represented by this macro evaluates to the result of "expression".
 //
 // Usage:
-//  - SILVA_EXPECT_FWD_IF(foo(x), MAJOR)
+//  - SILVA_EXPECT_FWD_IF(MAJOR, foo(x))
 //
-#define SILVA_EXPECT_FWD_IF(expression, error_level)                                    \
+#define SILVA_EXPECT_FWD_IF(error_level, expression)                                    \
   ({                                                                                    \
     auto __silva_result = (expression);                                                 \
     using enum error_level_t;                                                           \

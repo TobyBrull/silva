@@ -317,7 +317,7 @@ namespace silva::seed::impl {
         auto ss             = stake();
         const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
         auto result =
-            SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0]), t_rule_name), MAJOR);
+            SILVA_EXPECT_FWD_IF(MAJOR, s_expr(pts.sub_tree_span_at(children[0]), t_rule_name));
         SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
       }
       auto ss = stake();
@@ -354,7 +354,7 @@ namespace silva::seed::impl {
       error_t last_error;
       while (repeat_count < max_repeat) {
         auto result =
-            SILVA_EXPECT_FWD_IF(s_expr(pts.sub_tree_span_at(children[0]), t_rule_name), MAJOR);
+            SILVA_EXPECT_FWD_IF(MAJOR, s_expr(pts.sub_tree_span_at(children[0]), t_rule_name));
         if (result.has_value()) {
           ss.add_proto_node(std::move(*result).as_node());
           repeat_count += 1;
@@ -473,7 +473,7 @@ namespace silva::seed::impl {
       const auto nt_it = se->resolved_names.find(pts);
       SILVA_EXPECT(nt_it != se->resolved_names.end(), MAJOR, "{} couldn't lookup nonterminal", pts);
       const name_id_t next_t_rule_name = nt_it->resolved_name;
-      return SILVA_EXPECT_FWD_IF(handle_rule(next_t_rule_name), MAJOR);
+      return SILVA_EXPECT_FWD_IF(MAJOR, handle_rule(next_t_rule_name));
     }
 
     expected_t<node_and_error_t> s_expr(const parse_tree_span_t pts, const name_id_t t_rule_name)
@@ -691,7 +691,7 @@ namespace silva::seed {
     SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
 
-    if (SILVA_EXPECT_FWD_IF(var_context_get_as<bool>("SEED_EXEC_TRACE"), MAJOR).value_or(false)) {
+    if (SILVA_EXPECT_FWD_IF(MAJOR, var_context_get_as<bool>("SEED_EXEC_TRACE")).value_or(false)) {
       fmt::print("{}", SILVA_EXPECT_FWD(std::move(nursery.exec_trace).as_tree_to_string()));
     }
 

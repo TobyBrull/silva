@@ -715,10 +715,8 @@ namespace silva::seed::impl {
           if (mode == INFIX_MODE && !axe.concat_result.has_value()) {
             break;
           }
-          // Current token is not one of the known operators, so it has to be an atom or the end
-          // of the expression
           auto maybe_res =
-              SILVA_EXPECT_FWD_IF(invoke_rule_parser(axe.atom_rule.resolved_name), MAJOR);
+              SILVA_EXPECT_FWD_IF(MAJOR, invoke_rule_parser(axe.atom_rule.resolved_name));
           if (!maybe_res.has_value()) {
             break;
           }
