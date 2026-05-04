@@ -13,6 +13,14 @@ tokenizer Cedar:
   operator = [ '...' '.' ';' ':' '*=' '*' '/=' '/' '%=' '%' '~' '++' '+=' '+' '--' '-=' '->' '-'
                '!=' '!' '==' '=' '<<=' '<<' '<=' '<' '>>=' '>>' '>=' '>'
                '&&' '&=' '&' '||' '|=' '|' '^=' '^' '?' ',' ]
+  keyword = [ 'auto' 'break' 'case' 'char' 'const' 'continue' 'default' 'do'
+              'double' 'else' 'enum' 'extern' 'float' 'for' 'goto' 'if'
+              'inline' 'int' 'long' 'register' 'restrict' 'return' 'short'
+              'signed' 'sizeof' 'static' 'struct' 'switch' 'typedef' 'union'
+              'unsigned' 'void' 'volatile' 'while'
+              '_Alignas' '_Alignof' '_Atomic' '_Bool' '_Complex'
+              '_Imaginary' '_Noreturn' '_Static_assert' '_Thread_local'
+              'alignas' ]
   include tokenizer FreeForm
 
 language Cedar:
@@ -78,27 +86,27 @@ language Cedar:
     StructMemberDeclarator = Declarator ( ':' Expr.Const ) ? | ':' Expr.Const
 
   Stmt:
-    ⊙ = ( Label | Case | Default
-        | Compound
-        | ExprStmt
-        | If | Switch
+    ⊙ = ( Compound
+        | If | Switch | Case | Default
         | While | DoWhile | For
-        | Goto | Continue | Break | Return
+        | Continue | Break | Return
+        | Goto | Label
+        | ExprStmt
         )
-    Label = identifier ':' Stmt
-    Case = 'case' Expr.Const ':' Stmt
-    Default = 'default' ':' Stmt
     Compound = '{' ( Stmt | Declaration ) * '}'
-    ExprStmt = Expr ? ';'
     If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
     Switch = 'switch' '(' Expr ')' Stmt
+    Case = 'case' Expr.Const ':' Stmt
+    Default = 'default' ':' Stmt
     While = 'while' '(' Expr ')' Stmt
     DoWhile = 'do' Stmt 'while' '(' Expr ')' ';'
     For = 'for' '(' ( Declaration | ExprStmt ) Expr ? ';' Expr ? ')' Stmt
-    Goto = 'goto' identifier ';'
     Continue = 'continue' ';'
     Break = 'break' ';'
     Return = 'return' Expr ? ';'
+    Label = identifier ':' Stmt
+    Goto = 'goto' identifier ';'
+    ExprStmt = Expr ? ';'
 
   Expr:
     ⊙ = axe Atom
