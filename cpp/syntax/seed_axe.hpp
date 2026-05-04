@@ -50,12 +50,14 @@ Seed.Axe:
     hash_map_t<token_id_t, impl::axe_result_t> results;
     optional_t<impl::result_oper_t<impl::oper_regular_t>> concat_result;
 
+    hash_map_t<name_id_t, impl::level_index_t> level_map;
+
     void compile_reset();
     template<Namespace Ns>
     expected_t<void> compile(const lexicon_t&, const Ns&);
 
     using parse_delegate_t = delegate_t<expected_t<parse_tree_node_t>(name_id_t)>;
-    expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, parse_delegate_t) const;
+    expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, name_id_t, parse_delegate_t) const;
   };
 
   expected_t<axe_t> axe_create(syntax_farm_ptr_t, name_id_t axe_name, parse_tree_span_t);

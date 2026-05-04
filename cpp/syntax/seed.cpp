@@ -406,7 +406,8 @@ namespace silva::seed::impl {
       auto ss = stake();
       SILVA_EXPECT_PARSE(lexicon.ni_expr, num_tokens_left() >= 1, "no more tokens in input");
       const auto dg = axe_t::parse_delegate_t::make<&seed_parse_tree_nursery_t::any_rule>(this);
-      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_expr, seed_expr_axe.apply(*this, dg)));
+      ss.add_proto_node(
+          SILVA_EXPECT_PARSE_FWD(lexicon.ni_expr, seed_expr_axe.apply(*this, lexicon.ni_expr, dg)));
       return ss.commit();
     }
 

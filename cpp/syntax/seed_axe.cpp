@@ -137,8 +137,8 @@ namespace silva::seed::impl {
       return {};
     }
 
-    expected_t<void> ops(const index_t level_index,
-                         const token_id_t base_name,
+    expected_t<void> ops(const level_index_t level_index,
+                         const name_id_t full_name,
                          const assoc_t assoc,
                          const parse_tree_span_t pts_ops)
     {
@@ -210,8 +210,6 @@ namespace silva::seed::impl {
           .level_index = level_index,
           .assoc       = assoc,
       };
-
-      const name_id_t full_name = sfp->name_id(axe_name, base_name);
 
       const auto& get_next_not_concat =
           [&]() -> expected_t<tuple_t<token_id_t, parse_tree_span_t>> {
@@ -343,11 +341,21 @@ namespace silva::seed::impl {
       return {};
     }
 
-    expected_t<void> level(const index_t level_index, const parse_tree_span_t pts_level)
+    expected_t<void> add_to_level_map(const name_id_t full_name, const level_index_t level_index)
+    {
+      const auto [it, inserted] = retval.level_map.emplace(full_name, level_index);
+      SILVA_EXPECT(inserted, MINOR, "duplicate level name {}", lexicon.name_id_wrap(full_name));
+      return {};
+    }
+
+    expected_t<void> level(const level_index_t level_index, const parse_tree_span_t pts_level)
     {
       SILVA_EXPECT(pts_level[0].rule_name == lexicon.ni_axe_level, BROKEN_SEED);
-      token_id_t base_name = SILVA_EXPECT_FWD(pts_level.front_token_id());
-      assoc_t assoc        = INVALID;
+      const token_id_t base_name = SILVA_EXPECT_FWD(pts_level.front_token_id());
+      const name_id_t full_name  = sfp->name_id(axe_name, base_name);
+      SILVA_EXPECT_FWD(add_to_level_map(full_name, level_index));
+
+      assoc_t assoc = INVALID;
       for (const auto [child_node_index, child_index]: pts_level.children_range()) {
         const auto pts_child = pts_level.sub_tree_span_at(child_node_index);
         if (child_index == 0) {
@@ -365,7 +373,7 @@ namespace silva::seed::impl {
         }
         else {
           const auto pts_ops = pts_level.sub_tree_span_at(child_node_index);
-          SILVA_EXPECT_FWD(ops(level_index, base_name, assoc, pts_ops));
+          SILVA_EXPECT_FWD(ops(level_index, full_name, assoc, pts_ops));
         }
       }
       return {};
@@ -380,12 +388,14 @@ namespace silva::seed::impl {
       retval.atom_rule = pts_axe_nt;
       ++it;
 
-      index_t curr_level = pts_axe[0].num_children;
+      level_index_t curr_level = pts_axe[0].num_children;
       while (it != end) {
         curr_level -= 1;
         SILVA_EXPECT_FWD(level(curr_level, pts_axe.sub_tree_span_at(it.pos)));
         ++it;
       }
+      SILVA_EXPECT_FWD(add_to_level_map(axe_name, curr_level));
+      SILVA_EXPECT(curr_level == 1, ASSERT);
       return {};
     }
   };
@@ -407,6 +417,7 @@ namespace silva::seed::impl {
     parse_tree_nursery_t& nursery;
     const lexicon_t& lexicon = *axe.lp;
     delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser;
+    level_index_t min_prec_level = {};
 
     syntax_farm_ptr_t sfp = nursery.sfp;
 
@@ -677,6 +688,9 @@ namespace silva::seed::impl {
 
           if (mode == ATOM_MODE && axe_result.prefix.has_value()) {
             const auto& prefix_result = axe_result.prefix.value();
+            if (prefix_result.precedence.level_index < min_prec_level) {
+              break;
+            }
             SILVA_EXPECT_FWD(stack_pop(prefix_result.precedence));
 
             if (const auto* x = std::get_if<prefix_t>(&prefix_result.oper)) {
@@ -711,22 +725,25 @@ namespace silva::seed::impl {
             }
           }
           else if (mode == INFIX_MODE && axe_result.regular.has_value()) {
-            const auto& res = axe_result.regular.value();
-            SILVA_EXPECT_FWD(stack_pop(res.precedence));
+            const auto& regular_result = axe_result.regular.value();
+            if (regular_result.precedence.level_index < min_prec_level) {
+              break;
+            }
+            SILVA_EXPECT_FWD(stack_pop(regular_result.precedence));
 
-            if (const auto* x = std::get_if<postfix_t>(&res.oper)) {
+            if (const auto* x = std::get_if<postfix_t>(&regular_result.oper)) {
               oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = postfix_t::arity,
-                  .level_name            = res.name,
-                  .precedence            = res.precedence,
+                  .level_name            = regular_result.name,
+                  .precedence            = regular_result.precedence,
                   .covered_token_indexes = {nursery.token_index},
                   .max_token_index       = nursery.token_index + 1,
               });
               nursery.token_index += 1;
               continue;
             }
-            else if (const auto* x = std::get_if<postfix_nest_t>(&res.oper)) {
+            else if (const auto* x = std::get_if<postfix_nest_t>(&regular_result.oper)) {
               auto nest_res = SILVA_EXPECT_FWD_IF(
                   MAJOR,
                   handle_nest(x->left_bracket, x->right_bracket, x->nest_rule_name));
@@ -736,27 +753,27 @@ namespace silva::seed::impl {
                 oper_stack.push_back(oper_item_t{
                     .oper                  = *x,
                     .arity                 = postfix_nest_t::arity,
-                    .level_name            = res.name,
-                    .precedence            = res.precedence,
+                    .level_name            = regular_result.name,
+                    .precedence            = regular_result.precedence,
                     .covered_token_indexes = {token_begin, token_end - 1},
                     .max_token_index       = nursery.token_index,
                 });
                 continue;
               }
             }
-            else if (const auto* x = std::get_if<infix_t>(&res.oper)) {
+            else if (const auto* x = std::get_if<infix_t>(&regular_result.oper)) {
               oper_stack.push_back(oper_item_t{
                   .oper                  = *x,
                   .arity                 = infix_t::arity,
-                  .level_name            = res.name,
-                  .precedence            = res.precedence,
+                  .level_name            = regular_result.name,
+                  .precedence            = regular_result.precedence,
                   .covered_token_indexes = {nursery.token_index},
               });
               nursery.token_index += 1;
               mode = ATOM_MODE;
               continue;
             }
-            else if (const auto* x = std::get_if<ternary_t>(&res.oper)) {
+            else if (const auto* x = std::get_if<ternary_t>(&regular_result.oper)) {
               auto nest_res =
                   SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->first, x->second, x->nest_rule_name));
               if (nest_res.has_value()) {
@@ -765,8 +782,8 @@ namespace silva::seed::impl {
                 oper_stack.push_back(oper_item_t{
                     .oper                  = *x,
                     .arity                 = ternary_t::arity,
-                    .level_name            = res.name,
-                    .precedence            = res.precedence,
+                    .level_name            = regular_result.name,
+                    .precedence            = regular_result.precedence,
                     .covered_token_indexes = {token_begin, token_end - 1},
                 });
                 mode = ATOM_MODE;
@@ -883,12 +900,20 @@ namespace silva::seed {
 
   expected_t<parse_tree_node_t>
   axe_t::apply(parse_tree_nursery_t& nursery,
+               const name_id_t rule_name,
                delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser) const
   {
+    const auto level_it = level_map.find(rule_name);
+    SILVA_EXPECT(level_it != level_map.end(),
+                 MINOR,
+                 "unknown rule-name {}",
+                 lp->name_id_wrap(rule_name));
+    const impl::level_index_t min_prec_level = level_it->second;
     impl::axe_run_t run{
-        .axe         = *this,
-        .nursery     = nursery,
-        .rule_parser = rule_parser,
+        .axe            = *this,
+        .nursery        = nursery,
+        .rule_parser    = rule_parser,
+        .min_prec_level = min_prec_level,
     };
     const index_t orig_token_index = nursery.token_index;
     const index_t created_node     = SILVA_EXPECT_FWD(run.run(),

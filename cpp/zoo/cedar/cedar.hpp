@@ -31,18 +31,18 @@ language Cedar:
     Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier ) * Type.Specifier
     StorageClassSpecifier = ( 'typedef' | 'extern' | 'static' | '_Thread_local' | 'auto' | 'register' )
     FunctionSpecifier = 'inline' | '_Noreturn'
-    AlignmentSpecifier = ( '_Alignas' | 'alignas' ) '(' ( Type.Name | Expr.Const ) ')'
-    StaticAssert = '_Static_assert' '(' Expr.Const ',' string ')' ';'
+    AlignmentSpecifier = ( '_Alignas' | 'alignas' ) '(' ( Type.Name | Expr.Conditional ) ')'
+    StaticAssert = '_Static_assert' '(' Expr.Conditional ',' string ')' ';'
 
     ParameterList = ParameterDeclaration ( ',' ParameterDeclaration ) *
     ParameterDeclaration = Specifiers ( Declarator | Declarator.Abstract ) ? | '...'
     IdentifierList = identifier ( ',' identifier ) *
 
     Designation = Designator + '='
-    Designator = '.' identifier | '[' Expr.Const ']'
+    Designator = '.' identifier | '[' Expr.Conditional ']'
 
     Init = Declarator ( '=' Initializer ) ?
-    Initializer = '{' InitializerList ',' ? '}' | Expr
+    Initializer = '{' InitializerList ',' ? '}' | Expr.Assignment
     InitializerList = Designation ? Initializer ( ',' Designation ? Initializer ) *
 
   Declarator:
@@ -74,7 +74,7 @@ language Cedar:
     SpecifierQualifierList = Type.Qualifier * Type.Specifier
 
     EnumSpecifier = 'enum' identifier ? '{' Enumerator ( ',' Enumerator ) * ',' ? '}'
-    Enumerator = EnumerationConstant ( '=' Expr.Const ) ?
+    Enumerator = EnumerationConstant ( '=' Expr.Conditional ) ?
     Name = SpecifierQualifierList Declarator.Abstract ?
 
     EnumerationConstant = identifier
@@ -83,7 +83,7 @@ language Cedar:
     StructOrUnionSpecifier = ( 'struct' | 'union' ) identifier ? ( '{' StructMemberDecl * '}' ) ?
     StructMemberDecl = Type.SpecifierQualifierList StructMemberDeclaratorList ? ';' | Declaration.StaticAssert
     StructMemberDeclaratorList = StructMemberDeclarator ( ',' StructMemberDeclarator ) *
-    StructMemberDeclarator = Declarator ( ':' Expr.Const ) ? | ':' Expr.Const
+    StructMemberDeclarator = Declarator ( ':' Expr.Conditional ) ? | ':' Expr.Conditional
 
   Stmt:
     ⊙ = ( Compound
@@ -96,7 +96,7 @@ language Cedar:
     Compound = '{' ( Stmt | Declaration ) * '}'
     If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
     Switch = 'switch' '(' Expr ')' Stmt
-    Case = 'case' Expr.Const ':' Stmt
+    Case = 'case' Expr.Conditional ':' Stmt
     Default = 'default' ':' Stmt
     While = 'while' '(' Expr ')' Stmt
     DoWhile = 'do' Stmt 'while' '(' Expr ')' ';'
@@ -110,27 +110,26 @@ language Cedar:
 
   Expr:
     ⊙ = axe Atom
-      Postfix = ltr  postfix '++' '--' \
-                     postfix_nest -> ExprOrNone '(' ')' '[' ']' \
-                     infix '.' '->'
-      Prefix  = rtl  prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' '_Alignof' \
-                     prefix_nest -> Type.Name '(' ')'
-      Mult    = ltr  infix '*' '/' '%'
-      Add     = ltr  infix '+' '-'
-      Shift   = ltr  infix '<<' '>>'
-      Rel     = ltr  infix '<' '>' '<=' '>='
-      Eq      = ltr  infix '==' '!='
-      BitAnd  = ltr  infix '&'
-      BitXor  = ltr  infix '^'
-      BitOr   = ltr  infix '|'
-      LogAnd  = ltr  infix '&&'
-      LogOr   = ltr  infix '||'
-      Tern    = rtl  ternary '?' ':'
-      Assign  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
-      Comma   = ltr  infix_flat ','
+      Postfix     = ltr  postfix '++' '--' \
+                         postfix_nest -> ExprOrNone '(' ')' '[' ']' \
+                         infix '.' '->'
+      Prefix      = rtl  prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' '_Alignof' \
+                         prefix_nest -> Type.Name '(' ')'
+      Mult        = ltr  infix '*' '/' '%'
+      Add         = ltr  infix '+' '-'
+      Shift       = ltr  infix '<<' '>>'
+      Rel         = ltr  infix '<' '>' '<=' '>='
+      Eq          = ltr  infix '==' '!='
+      BitAnd      = ltr  infix '&'
+      BitXor      = ltr  infix '^'
+      BitOr       = ltr  infix '|'
+      LogAnd      = ltr  infix '&&'
+      LogOr       = ltr  infix '||'
+      Conditional = rtl  ternary '?' ':'
+      Assignment  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
+      Comma       = ltr  infix_flat ','
     Atom = number | string + | identifier | '(' Expr ')'
     ExprOrNone = Expr | None
-    Const = Expr # not allowed to be Expr.Comma or Expr.Assign
 )'";
 
   unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);

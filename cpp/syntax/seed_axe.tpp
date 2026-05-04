@@ -96,7 +96,7 @@ namespace silva::seed::test {
       expected_t<parse_tree_node_t> expression()
       {
         const auto dg = axe_t::parse_delegate_t::make<&test_nursery_t::any_rule>(this);
-        return axe.apply(*this, dg);
+        return axe.apply(*this, ni_expr, dg);
       }
     };
 
@@ -412,10 +412,11 @@ namespace silva::seed::test {
       const token_id_t ti_shift_l = sfp->token_id("<<");
       const token_id_t ti_shift_r = sfp->token_id(">>");
 
-      const name_id_t ni_expr = sfp->name_id_of("Expr");
-      const name_id_t ni_atom = sfp->name_id_of("Test", "Atom");
-      const name_id_t ni_arg  = sfp->name_id_of("Test", "Arg");
-      const name_id_t ni_args = sfp->name_id_of("Test", "Args");
+      const name_id_t ni_expr       = sfp->name_id_of("Expr");
+      const name_id_t ni_expr_prflo = sfp->name_id_of("Expr", "PrfLo");
+      const name_id_t ni_atom       = sfp->name_id_of("Test", "Atom");
+      const name_id_t ni_arg        = sfp->name_id_of("Test", "Arg");
+      const name_id_t ni_args       = sfp->name_id_of("Test", "Args");
 
       test_nursery_t(const axe_t& axe, tokenization_ptr_t tp, const lexicon_t& lexicon)
         : parse_tree_nursery_t(tp), axe(axe), lexicon(lexicon)
@@ -434,7 +435,7 @@ namespace silva::seed::test {
         }
         else if (token_id_by() == ti_shift_l) {
           SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, ti_shift_l);
-          ss_rule.add_proto_node(SILVA_EXPECT_FWD(expression()));
+          ss_rule.add_proto_node(SILVA_EXPECT_FWD(expression(ni_expr_prflo)));
           SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, ti_shift_r);
         }
         else {
@@ -487,8 +488,8 @@ namespace silva::seed::test {
         if (rule_name == ni_atom) {
           return atom();
         }
-        else if (rule_name == ni_expr) {
-          return expression();
+        else if (sfp->name_id_is_parent(ni_expr, rule_name)) {
+          return expression(rule_name);
         }
         else if (rule_name == ni_args) {
           return args();
@@ -498,10 +499,10 @@ namespace silva::seed::test {
         }
       }
 
-      expected_t<parse_tree_node_t> expression()
+      expected_t<parse_tree_node_t> expression(const optional_t<name_id_t> rule_name = {})
       {
         const auto dg = axe_t::parse_delegate_t::make<&test_nursery_t::any_rule>(this);
-        return axe.apply(*this, dg);
+        return axe.apply(*this, rule_name.value_or(ni_expr), dg);
       }
     };
 
@@ -589,6 +590,7 @@ namespace silva::seed::test {
       [0].Test.Atom                               b
       [1].Test.Atom                               c
 )");
+    test::test_axe<test_nursery_t>(*se, sa, "a << b * c >>\n", {none});
     test::test_axe<test_nursery_t>(*se, sa, "<< a { b } >> c\n", {none});
     test::test_axe<test_nursery_t>(*se, sa, "a 1 a z\n", {none});
     test::test_axe<test_nursery_t>(*se, sa, "a 1 + z\n", R"(
