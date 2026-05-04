@@ -1028,7 +1028,7 @@ Mr Jane
                 [0].Cedar.Declarator.Direct       i
               [1].Cedar.Declaration.Initializer   0
                 [0].Cedar.Expr.Atom               0
-          [1].Cedar.Expr.Rel.<                    i < argc
+          [1].Cedar.Expr.Relational.<             i < argc
             [0].Cedar.Expr.Atom                   i
             [1].Cedar.Expr.Atom                   argc
           [2].Cedar.Expr.Postfix.++               i ++

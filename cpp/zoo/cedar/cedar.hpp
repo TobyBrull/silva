@@ -113,22 +113,24 @@ language Cedar:
       Postfix     = ltr  postfix '++' '--' \
                          postfix_nest -> ExprOrNone '(' ')' '[' ']' \
                          infix '.' '->'
-      Prefix      = rtl  prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' '_Alignof' \
+      Unary       = rtl  prefix '++' '--' '+' '-' '!' '~' '*' '&' \
                          prefix_nest -> Type.Name '(' ')'
       Mult        = ltr  infix '*' '/' '%'
       Add         = ltr  infix '+' '-'
       Shift       = ltr  infix '<<' '>>'
-      Rel         = ltr  infix '<' '>' '<=' '>='
-      Eq          = ltr  infix '==' '!='
-      BitAnd      = ltr  infix '&'
-      BitXor      = ltr  infix '^'
-      BitOr       = ltr  infix '|'
-      LogAnd      = ltr  infix '&&'
-      LogOr       = ltr  infix '||'
+      Relational  = ltr  infix '<' '>' '<=' '>='
+      Equality    = ltr  infix '==' '!='
+      BitwiseAnd  = ltr  infix '&'
+      BitwiseXor  = ltr  infix '^'
+      BitwiseOr   = ltr  infix '|'
+      LogicalAnd  = ltr  infix '&&'
+      LogicalOr   = ltr  infix '||'
       Conditional = rtl  ternary '?' ':'
       Assignment  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
       Comma       = ltr  infix_flat ','
-    Atom = number | string + | identifier | '(' Expr ')'
+    Atom = number | string + | identifier | '(' Expr ')' | Sizeof | Alignof
+    Sizeof = 'sizeof' ( Expr.Unary | '(' Type.Name ')' )
+    Alignof = '_Alignof' '(' Type.Name ')'
     ExprOrNone = Expr | None
 )'";
 
