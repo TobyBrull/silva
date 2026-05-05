@@ -21,6 +21,7 @@ namespace silva::seed::impl {
     case_mask_t case_mask        = case_mask_t::ANY;
     string_t prefix              = "";
     string_t postfix             = "";
+    string_t exact               = "";
 
     expected_t<bool> matches(index_t fragment_idx, const fragmentization_t&) const;
 

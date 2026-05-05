@@ -87,6 +87,9 @@ namespace silva::seed::impl {
     if (!postfix.empty() && !frag_text.ends_with(postfix)) {
       return false;
     }
+    if (!exact.empty() && frag_text != exact) {
+      return false;
+    }
     return true;
   }
 
@@ -99,6 +102,8 @@ namespace silva::seed::impl {
     silva::pretty_write(matcher.prefix, bs);
     bs->write_str(" ");
     silva::pretty_write(matcher.postfix, bs);
+    bs->write_str(" ");
+    silva::pretty_write(matcher.exact, bs);
   }
   void pretty_write_impl(const rule_t& rule, byte_sink_t* bs)
   {
@@ -202,8 +207,7 @@ namespace silva::seed::impl {
           const string_t exact     = item_str_nl.substr(frag_start, frag_end - frag_start);
           matchers.push_back(matcher_t{
               .category = frags[i].category,
-              .prefix   = exact,
-              .postfix  = exact,
+              .exact    = exact,
           });
         }
       }
@@ -241,8 +245,7 @@ namespace silva::seed::impl {
           else if (tokens[t_idx] == lexicon.ti_pipe) {
             SILVA_EXPECT(!had_prefix, BROKEN_SEED);
             SILVA_EXPECT(!had_postfix, BROKEN_SEED);
-            mm.prefix   = str;
-            mm.postfix  = str;
+            mm.exact    = str;
             had_prefix  = true;
             had_postfix = true;
           }
@@ -591,13 +594,11 @@ namespace silva::seed {
     const matcher_t m_id_pascal  = {.category = IDENTIFIER, .case_mask = PASCAL_CASE};
     const matcher_t m_id_snake   = {.category = IDENTIFIER, .case_mask = SNAKE_CASE};
     const matcher_t m_id_macro   = {.category = IDENTIFIER, .case_mask = MACRO_CASE};
-    const matcher_t m_concat   = {.category = IDENTIFIER, .prefix = "concat", .postfix = "concat"};
-    const matcher_t m_but_then = {.category = IDENTIFIER,
-                                  .prefix   = "but_then",
-                                  .postfix  = "but_then"};
-    const matcher_t m_x        = {.category = IDENTIFIER, .prefix = "x", .postfix = "x"};
-    const matcher_t m_p        = {.category = IDENTIFIER, .prefix = "p", .postfix = "p"};
-    const matcher_t m_uscore   = {.category = IDENTIFIER, .prefix = "_", .postfix = "_"};
+    const matcher_t m_concat     = {.category = IDENTIFIER, .exact = "concat"};
+    const matcher_t m_but_then   = {.category = IDENTIFIER, .exact = "but_then"};
+    const matcher_t m_x          = {.category = IDENTIFIER, .exact = "x"};
+    const matcher_t m_p          = {.category = IDENTIFIER, .exact = "p"};
+    const matcher_t m_uscore     = {.category = IDENTIFIER, .exact = "_"};
 
     const lexicon_t& lexicon = sfp->get_lexicon<lexicon_t>();
     {

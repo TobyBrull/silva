@@ -52,6 +52,8 @@ namespace silva::seed::test {
 
     const auto ti_lang     = sf.token_id("language");
     const auto ti_string   = sf.token_id("string");
+    const auto ti_silly    = sf.token_id("silly");
+    const auto ti_sane     = sf.token_id("sane");
     const auto ti_freeform = sf.token_id("FreeForm");
     const auto ti_testor   = sf.token_id("Testor");
     const auto ti_name     = sf.token_id("name");
@@ -68,6 +70,8 @@ namespace silva::seed::test {
     const string_view_t test_tok = R"'(
 tokenizer Testor:
   ignore NUMBER
+  sane = IDENTIFIER|'char'
+  silly = IDENTIFIER/'char'\'char'
   include tokenizer FreeForm
   name = [ '$' '@' ] IDENTIFIER
   name = IDENTIFIER\'_t'
@@ -89,13 +93,14 @@ tokenizer FreeForm:
     load_tokenizer(free_form_tok);
 
     CHECK(tf.tokenizers.at(ti_freeform).rules.size() == 7);
-    CHECK(tf.tokenizers.at(ti_testor).rules.size() == 8);
+    CHECK(tf.tokenizers.at(ti_testor).rules.size() == 10);
 
-    const string_view_t src = "$hello ==+++ 42 array_t var/file.txt « a « c » « d » b » 1 @abc\n";
-    const auto fr           = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.src", string_t{src}));
-    const auto tp           = SILVA_REQUIRE(tf.apply(fr, ti_testor));
+    const string_view_t src =
+        "$hello ==+++ 42 array_t var/file.txt « a « c » « d » b » 1 @abc char_to_uchar char\n";
+    const auto fr = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.src", string_t{src}));
+    const auto tp = SILVA_REQUIRE(tf.apply(fr, ti_testor));
 
-    REQUIRE(tp->size() == 6);
+    REQUIRE(tp->size() == 8);
     CHECK(tp->tokens[0] == sf.token_id("$hello"));
     CHECK(tp->categories[0] == ti_name);
     CHECK(tp->tokens[1] == sf.token_id("==+++"));
@@ -106,6 +111,8 @@ tokenizer FreeForm:
     CHECK(tp->categories[3] == ti_relp);
     CHECK(tp->categories[4] == ti_lang);
     CHECK(tp->categories[5] == ti_name);
+    CHECK(tp->categories[6] == ti_silly);
+    CHECK(tp->categories[7] == ti_sane);
   }
   TEST_CASE("bootstrap-seed-tokenizer")
   {
