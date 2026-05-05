@@ -95,7 +95,7 @@ Seed.Tokenizer:
   PrefixItem = List | Item
   List = '[' Item * ']'
   Item = string | Matcher
-  Matcher = frag_name ( '/' string ) ? ( '\\' string ) ? ( '|' string ) ?
+  Matcher = frag_name ( ( '/' | '\\' | '|' ) string ) *
 )'";
 
   struct tokenizer_t {

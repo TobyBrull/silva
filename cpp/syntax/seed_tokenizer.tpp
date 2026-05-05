@@ -71,7 +71,7 @@ namespace silva::seed::test {
 tokenizer Testor:
   ignore NUMBER
   sane = IDENTIFIER|'char'
-  silly = IDENTIFIER/'char'\'char'
+  silly = IDENTIFIER\'char'/'char'
   include tokenizer FreeForm
   name = [ '$' '@' ] IDENTIFIER
   name = IDENTIFIER\'_t'

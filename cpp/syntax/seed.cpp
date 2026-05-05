@@ -141,16 +141,10 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_tok_matcher);
       SILVA_EXPECT_PARSE(lexicon.ni_tok_matcher, num_tokens_left() >= 1, "no tokens left");
       SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_tok_matcher, lexicon.ti_frag_name);
-      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_slash &&
-          token_category_by(1) == lexicon.ti_string) {
-        token_index += 2;
-      }
-      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_backslash &&
-          token_category_by(1) == lexicon.ti_string) {
-        token_index += 2;
-      }
-      if (num_tokens_left() >= 2 && token_id_by() == lexicon.ti_pipe &&
-          token_category_by(1) == lexicon.ti_string) {
+      while (num_tokens_left() >= 2 &&
+             (token_id_by() == lexicon.ti_slash || token_id_by() == lexicon.ti_backslash ||
+              token_id_by() == lexicon.ti_pipe) &&
+             token_category_by(1) == lexicon.ti_string) {
         token_index += 2;
       }
       return ss_rule.commit();
