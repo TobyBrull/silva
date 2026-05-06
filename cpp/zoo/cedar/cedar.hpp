@@ -43,7 +43,7 @@ language Cedar:
 
     Init = Declarator ( '=' Initializer ) ?
     Initializer = '{' InitializerList ',' ? '}' | Expr.Assignment
-    InitializerList = Designation ? Initializer ( ',' Designation ? Initializer ) *
+    InitializerList = Designation ? Initializer ( ε ',' Designation ? Initializer ) *
 
   Declarator:
     ⊙ = Pointer ? Direct

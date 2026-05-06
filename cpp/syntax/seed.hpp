@@ -34,6 +34,17 @@ namespace silva::seed {
   // because all leading literals (the "prefix") in the first alternative (of which there are two:
   // 'static' and 'func') are already matched. So at that point, the parsing algorithm commits to
   // the first alternative and aborts the parse if the whole expression does not match.
+  //
+  // To disable the prefix rule for a concatenated expression, use the epsilon production. So, the
+  // rule
+  //
+  // « - ConstFunc = ε 'static' 'func' identifier | 'static' identifier number »
+  //
+  // parses
+  //
+  // « static func 2 »
+  //
+  // just fine.
 
   const string_view_t seed_str = R"'(
 tokenizer Seed:

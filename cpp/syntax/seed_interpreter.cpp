@@ -403,11 +403,12 @@ namespace silva::seed::impl {
       auto ss                        = stake();
       error_nursery_t error_nursery;
 
-      // Could do this bit ahead of time and store a map in the interpreter_t.
+      // Should do this bit ahead of time and store a map in the interpreter_t.
       index_t lead_terminals = 0;
       for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
         const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
-        if (sub_pts[0].rule_name == lexicon.ni_term) {
+        if (sub_pts[0].rule_name == lexicon.ni_term &&
+            sub_pts.front_token_category() == lexicon.ti_string) {
           lead_terminals += 1;
         }
         else {
