@@ -32,7 +32,6 @@ language Cedar:
 
     ParameterList = ParameterDeclaration ( ',' ParameterDeclaration ) *
     ParameterDeclaration = Specifiers ( Declarator | Declarator.Abstract ) ? | '...'
-    IdentifierList = identifier ( ',' identifier ) *
 
     Init = Declarator ( '=' Initializer ) ?
     Initializer = '{' InitializerList ',' ? '}' | Expr.Assignment
@@ -45,11 +44,8 @@ language Cedar:
     DirectAbstractExt = CommonExt
     Pointer = '*' Type.Qualifier * Pointer ?
     Direct = ( identifier | '(' Declarator ')' ) DirectExt *
-    DirectExt = ( CommonExt | '(' Declaration.IdentifierList ')' )
-    CommonExt = alias ( '[' Type.Qualifier * Expr ? ']'
-                      | '(' Declaration.ParameterList ? ')'
-                      )
-
+    DirectExt = CommonExt
+    CommonExt = alias ( '[' Expr.Conditional ? ']' | '(' Declaration.ParameterList ? ')' )
 
   Type:
     IntSpecifier = ( 'signed' | 'unsigned' | 'short' | 'long' | 'char' | 'int' ) +
