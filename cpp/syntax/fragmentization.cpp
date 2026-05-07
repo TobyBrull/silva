@@ -464,12 +464,21 @@ namespace silva {
                          MINOR,
                          "expected character after '\\' in string at {}",
                          ccd[i].location);
-            constexpr static array_fixed_t<unicode::codepoint_t, 5> escape_seqs = {U'n',
-                                                                                   U't',
-                                                                                   U'\'',
-                                                                                   U'\\',
-                                                                                   U'\"'};
-            SILVA_EXPECT(is_one_of<5>(ccd[i + 1].codepoint, escape_seqs),
+            constexpr static array_fixed_t<unicode::codepoint_t, 12> escape_seqs = {
+                U'a',
+                U'b',
+                U'e',
+                U'f',
+                U'n',
+                U'r',
+                U't',
+                U'v',
+                U'\\',
+                U'\'',
+                U'"',
+                U'?',
+            };
+            SILVA_EXPECT(is_one_of<12>(ccd[i + 1].codepoint, escape_seqs),
                          MINOR,
                          "unexpected escape sequence at {}, allowed escape sequences: {}",
                          ccd[i].location,
