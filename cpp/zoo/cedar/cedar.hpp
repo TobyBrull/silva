@@ -40,12 +40,10 @@ language Cedar:
   Declarator:
     ⊙ = Pointer ? Direct
     Abstract = Pointer DirectAbstract ? | DirectAbstract
-    DirectAbstract = ( '(' Abstract ')' | DirectAbstractExt ) DirectAbstractExt *
-    DirectAbstractExt = CommonExt
+    DirectAbstract = ( '(' Abstract ')' | Extension ) Extension *
     Pointer = '*' Type.Qualifier * Pointer ?
-    Direct = ( identifier | '(' Declarator ')' ) DirectExt *
-    DirectExt = CommonExt
-    CommonExt = alias ( '[' Expr.Conditional ? ']' | '(' Declaration.ParameterList ? ')' )
+    Direct = ( identifier | '(' Declarator ')' ) Extension *
+    Extension = alias ( '[' Expr.Conditional ? ']' | '(' Declaration.ParameterList ? ')' )
 
   Type:
     IntSpecifier = ( 'signed' | 'unsigned' | 'short' | 'long' | 'char' | 'int' ) +
