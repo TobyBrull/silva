@@ -13,37 +13,30 @@ tokenizer Cedar:
   operator = [ '...' '.' ';' ':' '*=' '*' '/=' '/' '%=' '%' '~' '++' '+=' '+' '--' '-=' '->' '-'
                '!=' '!' '==' '=' '<<=' '<<' '<=' '<' '>>=' '>>' '>=' '>'
                '&&' '&=' '&' '||' '|=' '|' '^=' '^' '?' ',' ]
-  keyword = [ 'auto' 'break' 'case' 'char' 'const' 'continue' 'default' 'do'
+  keyword = [ 'break' 'case' 'char' 'const' 'continue' 'default' 'do'
               'double' 'else' 'enum' 'extern' 'float' 'for' 'goto' 'if'
-              'inline' 'int' 'long' 'register' 'restrict' 'return' 'short'
+              'inline' 'int' 'long' 'restrict' 'return' 'short'
               'signed' 'sizeof' 'static' 'struct' 'switch' 'typedef' 'union'
-              'unsigned' 'void' 'volatile' 'while'
-              '_Alignas' '_Alignof' '_Atomic' '_Bool' '_Complex'
-              '_Imaginary' '_Noreturn' '_Static_assert' '_Thread_local'
-              'alignas' ]
+              'unsigned' 'void' 'volatile' 'while' '_Alignof' '_Atomic'
+              '_Thread_local' 'alignas' ]
   include tokenizer FreeForm
 
 language Cedar:
   ⊙ = Declaration *
   Declaration:
-    ⊙ = Specifiers Init ? ( ';' | Stmt.Compound ) \
-      | StaticAssert
+    ⊙ = Specifiers Init ? ( ';' | Stmt.Compound )
     Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier ) * Type.Specifier
-    StorageClassSpecifier = ( 'typedef' | 'extern' | 'static' | '_Thread_local' | 'auto' | 'register' )
-    FunctionSpecifier = 'inline' | '_Noreturn'
-    AlignmentSpecifier = ( '_Alignas' | 'alignas' ) '(' ( Type.Name | Expr.Conditional ) ')'
-    StaticAssert = '_Static_assert' '(' Expr.Conditional ',' string ')' ';'
+    StorageClassSpecifier = ( 'typedef' | 'extern' | 'static' | '_Thread_local' )
+    FunctionSpecifier = 'inline'
+    AlignmentSpecifier = 'alignas' '(' ( Type.Name | Expr.Conditional ) ')'
 
     ParameterList = ParameterDeclaration ( ',' ParameterDeclaration ) *
     ParameterDeclaration = Specifiers ( Declarator | Declarator.Abstract ) ? | '...'
     IdentifierList = identifier ( ',' identifier ) *
 
-    Designation = Designator + '='
-    Designator = '.' identifier | '[' Expr.Conditional ']'
-
     Init = Declarator ( '=' Initializer ) ?
     Initializer = '{' InitializerList ',' ? '}' | Expr.Assignment
-    InitializerList = Designation ? Initializer ( ε ',' Designation ? Initializer ) *
+    InitializerList = Initializer ( ε ',' Initializer ) *
 
   Declarator:
     ⊙ = Pointer ? Direct
@@ -60,10 +53,10 @@ language Cedar:
 
   Type:
     IntSpecifier = ( 'signed' | 'unsigned' | 'short' | 'long' | 'char' | 'int' ) +
-    BuiltinSpecifier = 'float' | 'double' | '_Bool' | '_Complex' | '_Imaginary'
+    FloatSpecifier = 'float' | 'double'
     Specifier = ( 'void'
                 | IntSpecifier
-                | BuiltinSpecifier
+                | FloatSpecifier
                 | AtomicTypeSpecifier
                 | StructSpecifier
                 | EnumSpecifier
@@ -78,7 +71,7 @@ language Cedar:
     Name = SpecifierQualifierList Declarator.Abstract ?
     AtomicTypeSpecifier = '_Atomic' '(' Name ')'
     StructSpecifier = ( 'struct' | 'union' ) identifier ? ( '{' StructMemberSpecifier * '}' ) ?
-    StructMemberSpecifier = SpecifierQualifierList Declarator ? ';' | Declaration.StaticAssert
+    StructMemberSpecifier = SpecifierQualifierList Declarator ? ';'
 
     EnumSpecifier = 'enum' identifier ? '{' Enumerator ( ',' Enumerator ) * ',' ? '}'
     Enumerator = identifier ( '=' Expr.Conditional ) ?
