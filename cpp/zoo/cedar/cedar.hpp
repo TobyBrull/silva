@@ -65,25 +65,23 @@ language Cedar:
                 | IntSpecifier
                 | BuiltinSpecifier
                 | AtomicTypeSpecifier
-                | StructOrUnionSpecifier
+                | StructSpecifier
                 | EnumSpecifier
-#                | TypedefName
+                | TypedefName
                 )
-    TypedefName = identifier # TODO: should only match identifiers that have previously been typedef'ed.
+
+    # TODO: should only match identifiers that have previously been typedef'ed.
+    TypedefName = not any
+
     Qualifier = ( 'const' | 'volatile' | 'restrict' | '_Atomic' )
-    SpecifierQualifierList = Type.Qualifier * Type.Specifier
+    SpecifierQualifierList = Qualifier * Specifier
+    Name = SpecifierQualifierList Declarator.Abstract ?
+    AtomicTypeSpecifier = '_Atomic' '(' Name ')'
+    StructSpecifier = ( 'struct' | 'union' ) identifier ? ( '{' StructMemberSpecifier * '}' ) ?
+    StructMemberSpecifier = SpecifierQualifierList Declarator ? ';' | Declaration.StaticAssert
 
     EnumSpecifier = 'enum' identifier ? '{' Enumerator ( ',' Enumerator ) * ',' ? '}'
-    Enumerator = EnumerationConstant ( '=' Expr.Conditional ) ?
-    Name = SpecifierQualifierList Declarator.Abstract ?
-
-    EnumerationConstant = identifier
-
-    AtomicTypeSpecifier = '_Atomic' '(' Name ')'
-    StructOrUnionSpecifier = ( 'struct' | 'union' ) identifier ? ( '{' StructMemberDecl * '}' ) ?
-    StructMemberDecl = Type.SpecifierQualifierList StructMemberDeclaratorList ? ';' | Declaration.StaticAssert
-    StructMemberDeclaratorList = StructMemberDeclarator ( ',' StructMemberDeclarator ) *
-    StructMemberDeclarator = Declarator ( ':' Expr.Conditional ) ? | ':' Expr.Conditional
+    Enumerator = identifier ( '=' Expr.Conditional ) ?
 
   Stmt:
     ⊙ = ( Compound
