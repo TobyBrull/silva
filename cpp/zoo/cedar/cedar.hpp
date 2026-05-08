@@ -6,7 +6,8 @@
 
 namespace silva::cedar {
 
-  // Translation of https://www.quut.com/c/ANSI-C-grammar-y.html.
+  // Adoption of a subset of Annex A from the C standard, e.g.,
+  // https://port70.net/~nsz/c/c11/n1570.html#A
   //
   const string_view_t seed_str = R"'(
 tokenizer Cedar:
@@ -41,8 +42,8 @@ language Cedar:
     ⊙ = Pointer ? Direct
     Abstract = Pointer DirectAbstract ? | DirectAbstract
     DirectAbstract = ( '(' Abstract ')' | Extension ) Extension *
-    Pointer = '*' Type.Qualifier * Pointer ?
     Direct = ( identifier | '(' Declarator ')' ) Extension *
+    Pointer = '*' Type.Qualifier * Pointer ?
     Extension = alias ( '[' Expr.Conditional ? ']' | '(' Declaration.ParameterList ? ')' )
 
   Type:
