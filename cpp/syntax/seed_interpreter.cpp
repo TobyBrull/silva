@@ -285,14 +285,18 @@ namespace silva::seed::impl {
                            sfp->token_id_wrap(lexicon.ti_eof));
         return ss.commit();
       }
+      if (s_front_ti == lexicon.ti_any) {
+        // "any" matches end-of-file
+        if (num_tokens_left() > 0) {
+          token_index += 1;
+        }
+        return ss.commit();
+      }
       SILVA_EXPECT_PARSE(t_rule_name,
                          num_tokens_left() > 0,
                          "Reached end of token-stream when looking for {}",
                          sfp->token_id_wrap(s_front_ti));
-      if (s_front_ti == lexicon.ti_any) {
-        ;
-      }
-      else if (s_front_cat == lexicon.ti_string) {
+      if (s_front_cat == lexicon.ti_string) {
         const auto it = se->string_to_token.find(s_front_ti);
         SILVA_EXPECT(it != se->string_to_token.end(),
                      MAJOR,

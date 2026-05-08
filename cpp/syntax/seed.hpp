@@ -45,6 +45,9 @@ namespace silva::seed {
   // « static func 2 »
   //
   // just fine.
+  //
+  // Other remarks:
+  //  * "any" matches any token and also end-of-file.
 
   const string_view_t seed_str = R"'(
 tokenizer Seed:

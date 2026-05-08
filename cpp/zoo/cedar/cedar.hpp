@@ -25,8 +25,8 @@ language Cedar:
   ⊙ = Declaration *
   Declaration:
     ⊙ = Specifiers Init ? ( ';' | Stmt.Compound )
-    Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier ) * Type.Specifier
-    StorageClassSpecifier = ( 'typedef' | 'extern' | 'static' | '_Thread_local' )
+    Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier | Type.Specifier ) +
+    StorageClassSpecifier = 'typedef' | 'extern' | 'static' | '_Thread_local'
     FunctionSpecifier = 'inline'
     AlignmentSpecifier = 'alignas' '(' ( Type.Name | Expr.Conditional ) ')'
 
@@ -61,7 +61,7 @@ language Cedar:
     TypedefName = not any
 
     Qualifier = ( 'const' | 'volatile' | 'restrict' | '_Atomic' )
-    SpecifierQualifierList = Qualifier * Specifier
+    SpecifierQualifierList = ( Qualifier | Specifier ) +
     Name = SpecifierQualifierList Declarator.Abstract ?
     AtomicTypeSpecifier = '_Atomic' '(' Name ')'
     StructSpecifier = ( 'struct' | 'union' ) identifier ? ( '{' StructMemberSpecifier * '}' ) ?
