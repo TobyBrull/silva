@@ -12,9 +12,6 @@ namespace silva::fern {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
 
-    const auto arg_process =
-        SILVA_EXPECT_FWD_IF(MAJOR, env_context_get("process")).value_or("fern_t/string");
-
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
 
     syntax_farm_t sf;
@@ -24,6 +21,7 @@ namespace silva::fern {
     parse_tree_ptr_t ptp;
     ptp = SILVA_EXPECT_FWD_PLAIN(se->apply(fp, sf.name_id_of("Fern")));
 
+    const string_view_t arg_process = SILVA_ENV_CONTEXT("process", "fern_t/string");
     if (arg_process == "none") {
       ;
     }

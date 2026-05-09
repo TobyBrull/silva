@@ -13,9 +13,6 @@ namespace silva::lox {
     const index_t m = cmdline_args.size();
     SILVA_EXPECT(m == 2, MINOR, "Usage: ... <lox-file>");
 
-    const bool use_interpreter =
-        SILVA_EXPECT_FWD_IF(MAJOR, env_context_get_as<bool>("use-interpreter")).value_or(false);
-
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_farm_t sf;
     auto si                  = seed_interpreter(sf.ptr());
@@ -24,8 +21,7 @@ namespace silva::lox {
                                            "error parsing Lox file {}",
                                            cmdline_args[1]);
 
-    const bool verbose =
-        SILVA_EXPECT_FWD_IF(MAJOR, env_context_get_as<bool>("VERBOSE")).value_or(false);
+    const bool verbose = SILVA_ENV_CONTEXT_AS("verbose", bool, false);
     if (verbose) {
       const string_t pts = SILVA_EXPECT_FWD(pt->span().to_string());
       fmt::print("{}\n", pts);
@@ -33,6 +29,7 @@ namespace silva::lox {
 
     byte_sink_stdout_t _stdout;
 
+    const bool use_interpreter = SILVA_ENV_CONTEXT_AS("use-interpreter", bool, false);
     if (use_interpreter) {
       interpreter_t li{sf.ptr(), &_stdout};
       SILVA_EXPECT_FWD(li.load_builtins(as_parser(si.get())));

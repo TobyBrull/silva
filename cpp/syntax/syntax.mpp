@@ -11,8 +11,7 @@ namespace silva {
       SILVA_EXPECT_FWD(si.add_seed_copy(pts));
     }
 
-    const auto action =
-        SILVA_EXPECT_FWD_IF(MAJOR, env_context_get("action")).value_or("print-parse-tree");
+    const auto action = SILVA_ENV_CONTEXT("action", "print-parse-tree");
     if (action == "none") {
       ;
     }

@@ -28,6 +28,12 @@ namespace silva {
   //  - MAJOR: From-string conversion failed.
   template<typename T>
   expected_t<T> env_context_get_as(string_view_t name);
+
+#define SILVA_ENV_CONTEXT(name, _default) \
+  SILVA_EXPECT_FWD_IF(MAJOR, env_context_get(name)).value_or(_default);
+
+#define SILVA_ENV_CONTEXT_AS(name, type, _default) \
+  SILVA_EXPECT_FWD_IF(MAJOR, env_context_get_as<type>(name)).value_or(_default);
 }
 
 // IMPLEMENTATION

@@ -38,8 +38,8 @@ namespace silva {
 //
 #define SILVA_EXPECT_IMPL(return_stmt, condition, error_level, ...)                   \
   do {                                                                                \
-    using enum error_level_t;                                                         \
-    static_assert(error_level_is_primary(error_level));                               \
+    using enum silva::error_level_t;                                                  \
+    static_assert(silva::error_level_is_primary(error_level));                        \
     if (!(condition)) {                                                               \
       return_stmt std::unexpected(silva::impl::silva_expect(__FILE__,                 \
                                                             __LINE__,                 \
