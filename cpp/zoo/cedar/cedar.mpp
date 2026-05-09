@@ -18,7 +18,7 @@ namespace silva::cedar {
                                            "error parsing Cedar file {}",
                                            cmdline_args[1]);
 
-    const string_t pts = SILVA_EXPECT_FWD(pt->span().to_string());
+    const string_t pts = SILVA_EXPECT_FWD(pt->span().to_string(100));
     fmt::print("{}\n", pts);
 
     return {};

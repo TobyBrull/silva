@@ -1,4 +1,4 @@
-#include "var_context.hpp"
+#include "env_context.hpp"
 
 #include "assert.hpp"
 
@@ -19,14 +19,14 @@ namespace silva {
     }
   }
 
-  void var_context_fill_environ(var_context_t* var_context)
+  void env_context_fill_environ(env_context_t* var_context)
   {
     for (char** p_entry = environ; *p_entry != nullptr; ++p_entry) {
       impl::try_parse_variable(var_context->variables, *p_entry);
     }
   }
 
-  void var_context_fill_cmdline(var_context_t* var_context, const int argc, char* argv[])
+  void env_context_fill_cmdline(env_context_t* var_context, const int argc, char* argv[])
   {
     for (int i = 1; i < argc; ++i) {
       const string_view_t arg_str{argv[i]};
@@ -36,9 +36,9 @@ namespace silva {
     }
   }
 
-  expected_t<string_view_t> var_context_get(const string_view_t name)
+  expected_t<string_view_t> env_context_get(const string_view_t name)
   {
-    auto curr = var_context_t::get();
+    auto curr = env_context_t::get();
     while (!curr.is_nullptr()) {
       const auto it = curr->variables.find(string_or_view_t{name});
       if (it != curr->variables.end()) {

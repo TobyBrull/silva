@@ -1,8 +1,8 @@
 #include "syntax.hpp"
 
+#include "canopy/env_context.hpp"
 #include "canopy/filesystem.hpp"
 #include "canopy/main.hpp"
-#include "canopy/var_context.hpp"
 
 namespace silva {
   expected_t<void> apply_action(seed::interpreter_t& si, const parse_tree_span_t pts)
@@ -12,7 +12,7 @@ namespace silva {
     }
 
     const auto action =
-        SILVA_EXPECT_FWD_IF(MAJOR, var_context_get("action")).value_or("print-parse-tree");
+        SILVA_EXPECT_FWD_IF(MAJOR, env_context_get("action")).value_or("print-parse-tree");
     if (action == "none") {
       ;
     }

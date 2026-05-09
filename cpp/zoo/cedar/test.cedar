@@ -9,3 +9,6 @@ main(int argc, char* argv[])
   }
   return 0;
 }
+
+int test_1(int*, int *i);
+int test_2(int (*(*foo)(const void *))[3]);

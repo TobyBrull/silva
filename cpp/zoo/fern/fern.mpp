@@ -1,8 +1,8 @@
 #include "fern.hpp"
 
+#include "canopy/env_context.hpp"
 #include "canopy/filesystem.hpp"
 #include "canopy/main.hpp"
-#include "canopy/var_context.hpp"
 
 #include "syntax/syntax.hpp"
 
@@ -13,7 +13,7 @@ namespace silva::fern {
     SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <fern-file> [...keyword args...]");
 
     const auto arg_process =
-        SILVA_EXPECT_FWD_IF(MAJOR, var_context_get("process")).value_or("fern_t/string");
+        SILVA_EXPECT_FWD_IF(MAJOR, env_context_get("process")).value_or("fern_t/string");
 
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
 

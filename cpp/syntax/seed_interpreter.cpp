@@ -1,10 +1,10 @@
 #include "seed_interpreter.hpp"
 
 #include "canopy/array_small.hpp"
+#include "canopy/env_context.hpp"
 #include "canopy/exec_trace.hpp"
 #include "canopy/expected.hpp"
 #include "canopy/scope_exit.hpp"
-#include "canopy/var_context.hpp"
 #include "parse_tree.hpp"
 #include "parse_tree_nursery.hpp"
 #include "seed.hpp"
@@ -718,7 +718,7 @@ namespace silva::seed {
     SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
 
-    if (SILVA_EXPECT_FWD_IF(MAJOR, var_context_get_as<bool>("SEED_EXEC_TRACE")).value_or(false)) {
+    if (SILVA_EXPECT_FWD_IF(MAJOR, env_context_get_as<bool>("SEED_EXEC_TRACE")).value_or(false)) {
       fmt::print("{}", SILVA_EXPECT_FWD(std::move(nursery.exec_trace).as_tree_to_string()));
     }
 
