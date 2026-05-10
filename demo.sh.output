@@ -959,60 +959,63 @@ Mr Jane
 2
 3
 Mr Jane
-[0].Cedar                                                                                           extern void ... ) ;
+[0].Cedar                                                                                           extern void ... test_8 ;
   [0].Cedar.Declaration                                                                             extern void * stdout ;
     [0].Cedar.Declaration.Specifiers                                                                extern void
       [0].Cedar.Declaration.StorageClassSpecifier                                                   extern
       [1].Cedar.Type.Specifier                                                                      void
     [1].Cedar.Declaration.Init                                                                      * stdout
-      [0].Cedar.Declarator                                                                          * stdout
-        [0].Cedar.Declarator.Pointer                                                                *
-        [1].Cedar.Declarator.Direct                                                                 stdout
+      [0].Cedar.Type.Declarator                                                                     * stdout
+        [0].Cedar.Type.Declarator.Pointer                                                           *
+        [1].Cedar.Type.Declarator.Direct                                                            stdout
   [1].Cedar.Declaration                                                                             extern int ... ) ;
     [0].Cedar.Declaration.Specifiers                                                                extern int
       [0].Cedar.Declaration.StorageClassSpecifier                                                   extern
       [1].Cedar.Type.Specifier                                                                      int
         [0].Cedar.Type.IntSpecifier                                                                 int
     [1].Cedar.Declaration.Init                                                                      fprintf ( ... ... )
-      [0].Cedar.Declarator                                                                          fprintf ( ... ... )
-        [0].Cedar.Declarator.Direct                                                                 fprintf ( ... ... )
-          [0].Cedar.Declaration.ParameterList                                                       void * ... , ...
-            [0].Cedar.Declaration.ParameterDeclaration                                              void * stream
-              [0].Cedar.Declaration.Specifiers                                                      void
-                [0].Cedar.Type.Specifier                                                            void
-              [1].Cedar.Declarator                                                                  * stream
-                [0].Cedar.Declarator.Pointer                                                        *
-                [1].Cedar.Declarator.Direct                                                         stream
-            [1].Cedar.Declaration.ParameterDeclaration                                              const char * format
-              [0].Cedar.Declaration.Specifiers                                                      const char
-                [0].Cedar.Type.Qualifier                                                            const
-                [1].Cedar.Type.Specifier                                                            char
-                  [0].Cedar.Type.IntSpecifier                                                       char
-              [1].Cedar.Declarator                                                                  * format
-                [0].Cedar.Declarator.Pointer                                                        *
-                [1].Cedar.Declarator.Direct                                                         format
-            [2].Cedar.Declaration.ParameterDeclaration                                              ...
+      [0].Cedar.Type.Declarator                                                                     fprintf ( ... ... )
+        [0].Cedar.Type.Declarator.Direct                                                            fprintf ( ... ... )
+          [0].Cedar.Type.Declarator.Suffix                                                          ( void ... ... )
+            [0].Cedar.Declaration.ParameterList                                                     void * ... , ...
+              [0].Cedar.Declaration.ParameterDeclaration                                            void * stream
+                [0].Cedar.Declaration.Specifiers                                                    void
+                  [0].Cedar.Type.Specifier                                                          void
+                [1].Cedar.Type.Declarator                                                           * stream
+                  [0].Cedar.Type.Declarator.Pointer                                                 *
+                  [1].Cedar.Type.Declarator.Direct                                                  stream
+              [1].Cedar.Declaration.ParameterDeclaration                                            const char * format
+                [0].Cedar.Declaration.Specifiers                                                    const char
+                  [0].Cedar.Type.Qualifier                                                          const
+                  [1].Cedar.Type.Specifier                                                          char
+                    [0].Cedar.Type.IntSpecifier                                                     char
+                [1].Cedar.Type.Declarator                                                           * format
+                  [0].Cedar.Type.Declarator.Pointer                                                 *
+                  [1].Cedar.Type.Declarator.Direct                                                  format
+              [2].Cedar.Declaration.ParameterDeclaration                                            ...
   [2].Cedar.Declaration                                                                             int main ... ; }
     [0].Cedar.Declaration.Specifiers                                                                int
       [0].Cedar.Type.Specifier                                                                      int
         [0].Cedar.Type.IntSpecifier                                                                 int
     [1].Cedar.Declaration.Init                                                                      main ( ... ] )
-      [0].Cedar.Declarator                                                                          main ( ... ] )
-        [0].Cedar.Declarator.Direct                                                                 main ( ... ] )
-          [0].Cedar.Declaration.ParameterList                                                       int argc ... [ ]
-            [0].Cedar.Declaration.ParameterDeclaration                                              int argc
-              [0].Cedar.Declaration.Specifiers                                                      int
-                [0].Cedar.Type.Specifier                                                            int
-                  [0].Cedar.Type.IntSpecifier                                                       int
-              [1].Cedar.Declarator                                                                  argc
-                [0].Cedar.Declarator.Direct                                                         argc
-            [1].Cedar.Declaration.ParameterDeclaration                                              char * argv [ ]
-              [0].Cedar.Declaration.Specifiers                                                      char
-                [0].Cedar.Type.Specifier                                                            char
-                  [0].Cedar.Type.IntSpecifier                                                       char
-              [1].Cedar.Declarator                                                                  * argv [ ]
-                [0].Cedar.Declarator.Pointer                                                        *
-                [1].Cedar.Declarator.Direct                                                         argv [ ]
+      [0].Cedar.Type.Declarator                                                                     main ( ... ] )
+        [0].Cedar.Type.Declarator.Direct                                                            main ( ... ] )
+          [0].Cedar.Type.Declarator.Suffix                                                          ( int ... ] )
+            [0].Cedar.Declaration.ParameterList                                                     int argc ... [ ]
+              [0].Cedar.Declaration.ParameterDeclaration                                            int argc
+                [0].Cedar.Declaration.Specifiers                                                    int
+                  [0].Cedar.Type.Specifier                                                          int
+                    [0].Cedar.Type.IntSpecifier                                                     int
+                [1].Cedar.Type.Declarator                                                           argc
+                  [0].Cedar.Type.Declarator.Direct                                                  argc
+              [1].Cedar.Declaration.ParameterDeclaration                                            char * argv [ ]
+                [0].Cedar.Declaration.Specifiers                                                    char
+                  [0].Cedar.Type.Specifier                                                          char
+                    [0].Cedar.Type.IntSpecifier                                                     char
+                [1].Cedar.Type.Declarator                                                           * argv [ ]
+                  [0].Cedar.Type.Declarator.Pointer                                                 *
+                  [1].Cedar.Type.Declarator.Direct                                                  argv [ ]
+                    [0].Cedar.Type.Declarator.Suffix                                                [ ]
     [2].Cedar.Stmt.Compound                                                                         { for ... ; }
       [0].Cedar.Stmt                                                                                for ( ... ; }
         [0].Cedar.Stmt.For                                                                          for ( ... ; }
@@ -1021,8 +1024,8 @@ Mr Jane
               [0].Cedar.Type.Specifier                                                              int
                 [0].Cedar.Type.IntSpecifier                                                         int
             [1].Cedar.Declaration.Init                                                              i = 0
-              [0].Cedar.Declarator                                                                  i
-                [0].Cedar.Declarator.Direct                                                         i
+              [0].Cedar.Type.Declarator                                                             i
+                [0].Cedar.Type.Declarator.Direct                                                    i
               [1].Cedar.Declaration.Initializer                                                     0
                 [0].Cedar.Expr.Atom                                                                 0
           [1].Cedar.Expr.Relational.<                                                               i < argc
@@ -1053,48 +1056,151 @@ Mr Jane
       [0].Cedar.Type.Specifier                                                                      int
         [0].Cedar.Type.IntSpecifier                                                                 int
     [1].Cedar.Declaration.Init                                                                      test_1 ( ... i )
-      [0].Cedar.Declarator                                                                          test_1 ( ... i )
-        [0].Cedar.Declarator.Direct                                                                 test_1 ( ... i )
-          [0].Cedar.Declaration.ParameterList                                                       int * ... * i
-            [0].Cedar.Declaration.ParameterDeclaration                                              int *
-              [0].Cedar.Declaration.Specifiers                                                      int
-                [0].Cedar.Type.Specifier                                                            int
-                  [0].Cedar.Type.IntSpecifier                                                       int
-              [1].Cedar.Declarator.Abstract                                                         *
-                [0].Cedar.Declarator.Pointer                                                        *
-            [1].Cedar.Declaration.ParameterDeclaration                                              int * i
-              [0].Cedar.Declaration.Specifiers                                                      int
-                [0].Cedar.Type.Specifier                                                            int
-                  [0].Cedar.Type.IntSpecifier                                                       int
-              [1].Cedar.Declarator                                                                  * i
-                [0].Cedar.Declarator.Pointer                                                        *
-                [1].Cedar.Declarator.Direct                                                         i
+      [0].Cedar.Type.Declarator                                                                     test_1 ( ... i )
+        [0].Cedar.Type.Declarator.Direct                                                            test_1 ( ... i )
+          [0].Cedar.Type.Declarator.Suffix                                                          ( int ... i )
+            [0].Cedar.Declaration.ParameterList                                                     int * ... * i
+              [0].Cedar.Declaration.ParameterDeclaration                                            int *
+                [0].Cedar.Declaration.Specifiers                                                    int
+                  [0].Cedar.Type.Specifier                                                          int
+                    [0].Cedar.Type.IntSpecifier                                                     int
+                [1].Cedar.Type.Declarator.Abstract                                                  *
+                  [0].Cedar.Type.Declarator.Pointer                                                 *
+                  [1].Cedar.Type.Declarator.DirectAbstract                                          
+              [1].Cedar.Declaration.ParameterDeclaration                                            int * i
+                [0].Cedar.Declaration.Specifiers                                                    int
+                  [0].Cedar.Type.Specifier                                                          int
+                    [0].Cedar.Type.IntSpecifier                                                     int
+                [1].Cedar.Type.Declarator                                                           * i
+                  [0].Cedar.Type.Declarator.Pointer                                                 *
+                  [1].Cedar.Type.Declarator.Direct                                                  i
   [4].Cedar.Declaration                                                                             int test_2 ... ) ;
     [0].Cedar.Declaration.Specifiers                                                                int
       [0].Cedar.Type.Specifier                                                                      int
         [0].Cedar.Type.IntSpecifier                                                                 int
     [1].Cedar.Declaration.Init                                                                      test_2 ( ... ] )
-      [0].Cedar.Declarator                                                                          test_2 ( ... ] )
-        [0].Cedar.Declarator.Direct                                                                 test_2 ( ... ] )
-          [0].Cedar.Declaration.ParameterList                                                       int ( ... 3 ]
-            [0].Cedar.Declaration.ParameterDeclaration                                              int ( ... 3 ]
-              [0].Cedar.Declaration.Specifiers                                                      int
-                [0].Cedar.Type.Specifier                                                            int
-                  [0].Cedar.Type.IntSpecifier                                                       int
-              [1].Cedar.Declarator                                                                  ( * ... 3 ]
-                [0].Cedar.Declarator.Direct                                                         ( * ... 3 ]
-                  [0].Cedar.Declarator                                                              * ( ... * )
-                    [0].Cedar.Declarator.Pointer                                                    *
-                    [1].Cedar.Declarator.Direct                                                     ( * ... * )
-                      [0].Cedar.Declarator                                                          * foo
-                        [0].Cedar.Declarator.Pointer                                                *
-                        [1].Cedar.Declarator.Direct                                                 foo
-                      [1].Cedar.Declaration.ParameterList                                           const void *
-                        [0].Cedar.Declaration.ParameterDeclaration                                  const void *
-                          [0].Cedar.Declaration.Specifiers                                          const void
-                            [0].Cedar.Type.Qualifier                                                const
-                            [1].Cedar.Type.Specifier                                                void
-                          [1].Cedar.Declarator.Abstract                                             *
-                            [0].Cedar.Declarator.Pointer                                            *
-                  [1].Cedar.Expr.Atom                                                               3
+      [0].Cedar.Type.Declarator                                                                     test_2 ( ... ] )
+        [0].Cedar.Type.Declarator.Direct                                                            test_2 ( ... ] )
+          [0].Cedar.Type.Declarator.Suffix                                                          ( int ... ] )
+            [0].Cedar.Declaration.ParameterList                                                     int ( ... 3 ]
+              [0].Cedar.Declaration.ParameterDeclaration                                            int ( ... 3 ]
+                [0].Cedar.Declaration.Specifiers                                                    int
+                  [0].Cedar.Type.Specifier                                                          int
+                    [0].Cedar.Type.IntSpecifier                                                     int
+                [1].Cedar.Type.Declarator                                                           ( * ... 3 ]
+                  [0].Cedar.Type.Declarator.Direct                                                  ( * ... 3 ]
+                    [0].Cedar.Type.Declarator                                                       * ( ... * )
+                      [0].Cedar.Type.Declarator.Pointer                                             *
+                      [1].Cedar.Type.Declarator.Direct                                              ( * ... * )
+                        [0].Cedar.Type.Declarator                                                   * foo
+                          [0].Cedar.Type.Declarator.Pointer                                         *
+                          [1].Cedar.Type.Declarator.Direct                                          foo
+                        [1].Cedar.Type.Declarator.Suffix                                            ( const void * )
+                          [0].Cedar.Declaration.ParameterList                                       const void *
+                            [0].Cedar.Declaration.ParameterDeclaration                              const void *
+                              [0].Cedar.Declaration.Specifiers                                      const void
+                                [0].Cedar.Type.Qualifier                                            const
+                                [1].Cedar.Type.Specifier                                            void
+                              [1].Cedar.Type.Declarator.Abstract                                    *
+                                [0].Cedar.Type.Declarator.Pointer                                   *
+                                [1].Cedar.Type.Declarator.DirectAbstract                            
+                    [1].Cedar.Type.Declarator.Suffix                                                [ 3 ]
+                      [0].Cedar.Expr.Atom                                                           3
+  [5].Cedar.Declaration                                                                             void * ... ] ;
+    [0].Cedar.Declaration.Specifiers                                                                void
+      [0].Cedar.Type.Specifier                                                                      void
+    [1].Cedar.Declaration.Init                                                                      * ( ... 123 ]
+      [0].Cedar.Type.Declarator                                                                     * ( ... 123 ]
+        [0].Cedar.Type.Declarator.Pointer                                                           *
+        [1].Cedar.Type.Declarator.Direct                                                            ( * ... 123 ]
+          [0].Cedar.Type.Declarator                                                                 * ( ... ] )
+            [0].Cedar.Type.Declarator.Pointer                                                       *
+            [1].Cedar.Type.Declarator.Direct                                                        ( * ... ] )
+              [0].Cedar.Type.Declarator                                                             * test_3 [ 2 ]
+                [0].Cedar.Type.Declarator.Pointer                                                   *
+                [1].Cedar.Type.Declarator.Direct                                                    test_3 [ 2 ]
+                  [0].Cedar.Type.Declarator.Suffix                                                  [ 2 ]
+                    [0].Cedar.Expr.Atom                                                             2
+              [1].Cedar.Type.Declarator.Suffix                                                      ( int ... ] )
+                [0].Cedar.Declaration.ParameterList                                                 int , ... [ ]
+                  [0].Cedar.Declaration.ParameterDeclaration                                        int
+                    [0].Cedar.Declaration.Specifiers                                                int
+                      [0].Cedar.Type.Specifier                                                      int
+                        [0].Cedar.Type.IntSpecifier                                                 int
+                    [1].Cedar.Type.Declarator.Abstract                                              
+                      [0].Cedar.Type.Declarator.DirectAbstract                                      
+                  [1].Cedar.Declaration.ParameterDeclaration                                        void * [ ]
+                    [0].Cedar.Declaration.Specifiers                                                void
+                      [0].Cedar.Type.Specifier                                                      void
+                    [1].Cedar.Type.Declarator.Abstract                                              * [ ]
+                      [0].Cedar.Type.Declarator.Pointer                                             *
+                      [1].Cedar.Type.Declarator.DirectAbstract                                      [ ]
+                        [0].Cedar.Type.Declarator.Suffix                                            [ ]
+          [1].Cedar.Type.Declarator.Suffix                                                          [ 123 ]
+            [0].Cedar.Expr.Atom                                                                     123
+  [6].Cedar.Declaration                                                                             int ( ... ] ;
+    [0].Cedar.Declaration.Specifiers                                                                int
+      [0].Cedar.Type.Specifier                                                                      int
+        [0].Cedar.Type.IntSpecifier                                                                 int
+    [1].Cedar.Declaration.Init                                                                      ( * ... 3 ]
+      [0].Cedar.Type.Declarator                                                                     ( * ... 3 ]
+        [0].Cedar.Type.Declarator.Direct                                                            ( * ... 3 ]
+          [0].Cedar.Type.Declarator                                                                 * ( ... ( )
+            [0].Cedar.Type.Declarator.Pointer                                                       *
+            [1].Cedar.Type.Declarator.Direct                                                        ( * ... ( )
+              [0].Cedar.Type.Declarator                                                             * test_4
+                [0].Cedar.Type.Declarator.Pointer                                                   *
+                [1].Cedar.Type.Declarator.Direct                                                    test_4
+              [1].Cedar.Type.Declarator.Suffix                                                      ( )
+          [1].Cedar.Type.Declarator.Suffix                                                          [ 3 ]
+            [0].Cedar.Expr.Atom                                                                     3
+  [7].Cedar.Declaration                                                                             char * ... ] ;
+    [0].Cedar.Declaration.Specifiers                                                                char
+      [0].Cedar.Type.Specifier                                                                      char
+        [0].Cedar.Type.IntSpecifier                                                                 char
+    [1].Cedar.Declaration.Init                                                                      * ( ... [ ]
+      [0].Cedar.Type.Declarator                                                                     * ( ... [ ]
+        [0].Cedar.Type.Declarator.Pointer                                                           *
+        [1].Cedar.Type.Declarator.Direct                                                            ( * ... [ ]
+          [0].Cedar.Type.Declarator                                                                 * ( ... ( )
+            [0].Cedar.Type.Declarator.Pointer                                                       *
+            [1].Cedar.Type.Declarator.Direct                                                        ( * ... ( )
+              [0].Cedar.Type.Declarator                                                             * * ... 8 ]
+                [0].Cedar.Type.Declarator.Pointer                                                   * *
+                  [0].Cedar.Type.Declarator.Pointer                                                 *
+                [1].Cedar.Type.Declarator.Direct                                                    test_5 [ ... 8 ]
+                  [0].Cedar.Type.Declarator.Suffix                                                  [ ]
+                  [1].Cedar.Type.Declarator.Suffix                                                  [ 8 ]
+                    [0].Cedar.Expr.Atom                                                             8
+              [1].Cedar.Type.Declarator.Suffix                                                      ( )
+          [1].Cedar.Type.Declarator.Suffix                                                          [ ]
+  [8].Cedar.Declaration                                                                             int * ... ) ;
+    [0].Cedar.Declaration.Specifiers                                                                int
+      [0].Cedar.Type.Specifier                                                                      int
+        [0].Cedar.Type.IntSpecifier                                                                 int
+    [1].Cedar.Declaration.Init                                                                      * test_6 ( )
+      [0].Cedar.Type.Declarator                                                                     * test_6 ( )
+        [0].Cedar.Type.Declarator.Pointer                                                           *
+        [1].Cedar.Type.Declarator.Direct                                                            test_6 ( )
+          [0].Cedar.Type.Declarator.Suffix                                                          ( )
+  [9].Cedar.Declaration                                                                             int ( ... ) ;
+    [0].Cedar.Declaration.Specifiers                                                                int
+      [0].Cedar.Type.Specifier                                                                      int
+        [0].Cedar.Type.IntSpecifier                                                                 int
+    [1].Cedar.Declaration.Init                                                                      ( * ... ( )
+      [0].Cedar.Type.Declarator                                                                     ( * ... ( )
+        [0].Cedar.Type.Declarator.Direct                                                            ( * ... ( )
+          [0].Cedar.Type.Declarator                                                                 * test_7
+            [0].Cedar.Type.Declarator.Pointer                                                       *
+            [1].Cedar.Type.Declarator.Direct                                                        test_7
+          [1].Cedar.Type.Declarator.Suffix                                                          ( )
+  [10].Cedar.Declaration                                                                            char * * test_8 ;
+    [0].Cedar.Declaration.Specifiers                                                                char
+      [0].Cedar.Type.Specifier                                                                      char
+        [0].Cedar.Type.IntSpecifier                                                                 char
+    [1].Cedar.Declaration.Init                                                                      * * test_8
+      [0].Cedar.Type.Declarator                                                                     * * test_8
+        [0].Cedar.Type.Declarator.Pointer                                                           * *
+          [0].Cedar.Type.Declarator.Pointer                                                         *
+        [1].Cedar.Type.Declarator.Direct                                                            test_8
 

@@ -32,19 +32,11 @@ language Cedar:
     AlignmentSpecifier = 'alignas' '(' ( Type.Name | Expr.Conditional ) ')'
 
     ParameterList = ParameterDeclaration ( ',' ParameterDeclaration ) *
-    ParameterDeclaration = Specifiers ( Declarator | Declarator.Abstract ) ? | '...'
+    ParameterDeclaration = Specifiers ( Type.Declarator | Type.Declarator.Abstract ) ? | '...'
 
-    Init = Declarator ( '=' Initializer ) ?
+    Init = Type.Declarator ( '=' Initializer ) ?
     Initializer = '{' InitializerList ',' ? '}' | Expr.Assignment
     InitializerList = Initializer ( ε ',' Initializer ) *
-
-  Declarator:
-    ⊙ = Pointer ? Direct
-    Abstract = Pointer DirectAbstract ? | DirectAbstract
-    DirectAbstract = ( '(' Abstract ')' | Extension ) Extension *
-    Direct = ( identifier | '(' Declarator ')' ) Extension *
-    Pointer = '*' Type.Qualifier * Pointer ?
-    Extension = alias ( '[' Expr.Conditional ? ']' | '(' Declaration.ParameterList ? ')' )
 
   Type:
     IntSpecifier = ( 'signed' | 'unsigned' | 'short' | 'long' | 'char' | 'int' ) +
@@ -70,6 +62,14 @@ language Cedar:
 
     EnumSpecifier = 'enum' identifier ? '{' Enumerator ( ',' Enumerator ) * ',' ? '}'
     Enumerator = identifier ( '=' Expr.Conditional ) ?
+
+    Declarator:
+      ⊙ = Pointer ? Direct
+      Direct = ( identifier | '(' Declarator ')' ) Suffix *
+      Abstract = Pointer DirectAbstract ? | DirectAbstract
+      DirectAbstract = ( ε '(' Abstract ')' ) ? Suffix *
+      Pointer = '*' Type.Qualifier * Pointer ?
+      Suffix = '(' Declaration.ParameterList ? ')' | '[' Expr.Conditional ? ']'
 
   Stmt:
     ⊙ = ( Compound
