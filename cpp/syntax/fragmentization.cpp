@@ -298,7 +298,7 @@ namespace silva {
           if (ccd[i].codepoint == U'»') {
             SILVA_EXPECT(languages.back().uses_angle_quotes,
                          MINOR,
-                         "Unexpected '»' at {}",
+                         "unexpected '»' at {}",
                          ccd[i].location);
             break;
           }
@@ -307,10 +307,13 @@ namespace silva {
             SILVA_EXPECT(expected_open_paren_it != opposite_parenthesis.end(), ASSERT);
             const unicode::codepoint_t expected_open_paren = expected_open_paren_it->second;
             auto& parentheses                              = languages.back().parentheses;
-            SILVA_EXPECT(!parentheses.empty() &&
-                             parentheses.back().codepoint == expected_open_paren,
+            SILVA_EXPECT(!parentheses.empty(),
                          MINOR,
-                         "Mismatching parentheses between {} and {}",
+                         "closing parenthesis without matching opening parenthesis at {}",
+                         ccd[i].location);
+            SILVA_EXPECT(parentheses.back().codepoint == expected_open_paren,
+                         MINOR,
+                         "mismatching parentheses between {} and {}",
                          parentheses.back().location,
                          ccd[i].location);
             parentheses.pop_back();

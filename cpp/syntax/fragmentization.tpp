@@ -51,7 +51,7 @@ namespace silva::test {
     SECTION("error: stray LANG_END")
     {
       const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", "»\n"));
-      CHECK_THAT(err_msg, ContainsSubstring("Unexpected '»'"));
+      CHECK_THAT(err_msg, ContainsSubstring("unexpected '»'"));
     }
     SECTION("error: non-matching parentheses")
     {
@@ -507,7 +507,7 @@ A⎢B «
  ⎢C⎢D »
 )";
       const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", text));
-      CHECK_THAT(err_msg, ContainsSubstring("Unexpected '»' at"));
+      CHECK_THAT(err_msg, ContainsSubstring("unexpected '»' at"));
     }
   }
 }
