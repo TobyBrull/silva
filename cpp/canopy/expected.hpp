@@ -79,7 +79,7 @@ namespace silva {
                                                                 #expression __VA_OPT__(, )         \
                                                                     __VA_ARGS__));                 \
     }                                                                                              \
-    std::move(__silva_result).value();                                                             \
+    *std::move(__silva_result);                                                                    \
   })
 #define SILVA_EXPECT_FWD(...) SILVA_EXPECT_FWD_IMPL(return, __VA_ARGS__)
 
@@ -93,7 +93,7 @@ namespace silva {
       }                                                                   \
       return std::unexpected(std::move(__silva_result).error());          \
     }                                                                     \
-    std::move(__silva_result).value();                                    \
+    *std::move(__silva_result);                                           \
   })
 
 // Semantics:
@@ -113,7 +113,7 @@ namespace silva {
       }                                                                   \
       return std::unexpected(std::move(error));                           \
     }                                                                     \
-    std::move(__silva_result).value();                                    \
+    *std::move(__silva_result);                                           \
   })
 
 // Semantics:
@@ -146,7 +146,7 @@ namespace silva {
     auto result = (x);                                                                         \
     static_assert(is_expected_t<decltype(result)>::value);                                     \
     SILVA_ASSERT(result.has_value(), "Unexpected:\n{}", silva::pretty_string(result.error())); \
-    std::move(result).value();                                                                 \
+    *std::move(result);                                                                        \
   })
 
 // Semantics:
@@ -164,7 +164,7 @@ namespace silva {
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                    \
     INFO((!__silva_result.has_value() ? silva::pretty_string(__silva_result.error()) : "")); \
     REQUIRE(__silva_result);                                                                 \
-    std::move(__silva_result).value();                                                       \
+    *std::move(__silva_result);                                                              \
   })
 }
 #define SILVA_REQUIRE_ERROR(expression)                                   \

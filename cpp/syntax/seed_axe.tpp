@@ -35,7 +35,7 @@ namespace silva::seed::test {
     auto maybe_result_pt = run_axe<SeedAxeNursery>(*si.sfp, pa, std::move(tt));
     optional_t<string_t> result_str;
     if (maybe_result_pt.has_value()) {
-      auto result_pt = std::move(maybe_result_pt).value();
+      auto result_pt = *std::move(maybe_result_pt);
       result_str     = SILVA_REQUIRE(result_pt->span().to_string());
       UNSCOPED_INFO(result_str.value());
     }
@@ -476,7 +476,7 @@ namespace silva::seed::test {
             if (!res.has_value()) {
               break;
             }
-            ss_rule.add_proto_node(std::move(res).value());
+            ss_rule.add_proto_node(*std::move(res));
           }
           first = false;
         }

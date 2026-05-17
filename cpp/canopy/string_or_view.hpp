@@ -23,7 +23,7 @@ namespace silva {
     friend hash_value_t hash_impl(const string_or_view_t& x) { return hash(x.as_string_view()); }
   };
 
-  inline string_or_view_t operator"" _sov(const char* str, size_t)
+  inline string_or_view_t operator""_sov(const char* str, size_t)
   {
     return string_or_view_t{string_view_t{str}};
   }

@@ -24,7 +24,8 @@ namespace silva {
   {
     using Derived = std::remove_cvref_t<decltype(self)>;
     static_assert(std::is_empty_v<Derived>);
-    static_assert(std::is_trivial_v<Derived>);
+    static_assert(std::is_trivially_default_constructible_v<Derived>);
+    static_assert(std::is_trivially_copyable_v<Derived>);
     return []<typename... Args>(const void* ptr, Args&&... args) {
       return Derived{}(*static_cast<const T*>(ptr), std::forward<Args>(args)...);
     };

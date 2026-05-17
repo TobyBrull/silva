@@ -41,8 +41,8 @@ namespace silva::test {
     });
     CHECK(av.size() == 3);
     CHECK(av.apply(i1, pretty_string) == "Hello");
-    CHECK(av.apply(i6, pretty_string) == "[42 1.500000]");
-    CHECK(av.apply(i7, pretty_string) == "[123 2.500000]");
+    CHECK(av.apply(i6, pretty_string) == "[42 1.5]");
+    CHECK(av.apply(i7, pretty_string) == "[123 2.5]");
     const auto i8 = av.push_back("World");
     CHECK(av.apply(i8, pretty_string) == "World");
   }

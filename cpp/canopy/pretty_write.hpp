@@ -112,7 +112,16 @@ namespace silva {
     requires std::is_arithmetic_v<T>
   void pretty_write_impl(const T& x, byte_sink_t* byte_sink)
   {
-    byte_sink->write_str(std::to_string(x));
+    std::string val = std::to_string(x);
+    if (val.contains('.')) {
+      while (val.size() >= 2 && val.back() == '0') {
+        val.pop_back();
+      }
+      if (val.size() >= 2 && val.back() == '.') {
+        val.pop_back();
+      }
+    }
+    byte_sink->write_str(val);
   }
 
   template<typename T, typename U>

@@ -626,7 +626,7 @@ namespace silva::seed::impl {
           }
         }
         const span_t<const oper_item_t> ois{&oper_stack[oper_stack_begin],
-                                            &oper_stack[oper_stack_end]};
+                                            static_cast<size_t>(oper_stack_end - oper_stack_begin)};
         const consistent_range_t cr =
             SILVA_EXPECT_PARSE_FWD(oper_stack[oper_stack_begin].level_name, consistent_range(ois));
         oper_stack.resize(oper_stack.size() - ois.size());
@@ -801,7 +801,7 @@ namespace silva::seed::impl {
         if (!maybe_res.has_value()) {
           break;
         }
-        auto [ptn, tn] = std::move(maybe_res).value();
+        auto [ptn, tn] = *std::move(maybe_res);
         ss.add_proto_node(ptn);
         if (mode == INFIX_MODE && axe.concat_result.has_value()) {
           SILVA_EXPECT_FWD(hallucinate_concat());
@@ -917,8 +917,8 @@ namespace silva::seed {
     };
     const index_t orig_token_index = nursery.token_index;
     const index_t created_node     = SILVA_EXPECT_FWD(run.run(),
-                                                  "[{}] when parsing expression starting here",
-                                                  nursery.token_location_at(orig_token_index));
+                                                      "[{}] when parsing expression starting here",
+                                                      nursery.token_location_at(orig_token_index));
     auto& rv_nodes                 = nursery.tree;
     parse_tree_node_t retval;
     retval.num_children = 1;

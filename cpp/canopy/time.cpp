@@ -214,13 +214,13 @@ namespace silva {
     return os << tp.to_string_default();
   }
 
-  time_point_t operator"" _time_point(const char* str, std::size_t size)
+  time_point_t operator""_time_point(const char* str, std::size_t size)
   {
     const string_view_t sv{str, size};
     return SILVA_EXPECT_ASSERT(time_point_t::from_string_default(sv));
   }
 
-  time_span_t operator"" _time_span(const char* str, std::size_t size)
+  time_span_t operator""_time_span(const char* str, std::size_t size)
   {
     const string_view_t sv{str, size};
     return SILVA_EXPECT_ASSERT(time_span_t::from_string_default(sv));

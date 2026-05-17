@@ -241,7 +241,7 @@ namespace silva::lox {
   }
 
 #define BINARY_DOUBLE(return_type, op)                                             \
-  expected_t<return_type> operator op(const object_t & lhs, const object_t & rhs)  \
+  expected_t<return_type> operator op(const object_t& lhs, const object_t& rhs)    \
   {                                                                                \
     if (lhs.holds_double() && rhs.holds_double()) {                                \
       return std::get<const double>(lhs.data) op std::get<const double>(rhs.data); \
@@ -310,17 +310,7 @@ namespace silva::lox {
         byte_sink->write_str("false");
       }
     }
-    void operator()(const double& x) const
-    {
-      auto retval = std::to_string(x);
-      while (retval.size() >= 2 && retval.back() == '0') {
-        retval.pop_back();
-      }
-      if (retval.size() >= 2 && retval.back() == '.') {
-        retval.pop_back();
-      }
-      byte_sink->write_str(retval);
-    }
+    void operator()(const double& x) const { silva::pretty_write(x, byte_sink); }
     void operator()(const string_t& x) const { byte_sink->write_str(x); }
     void operator()(const function_t& x) const
     {

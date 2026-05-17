@@ -46,8 +46,8 @@ namespace silva {
     friend std::ostream& operator<<(std::ostream&, const time_point_t&);
   };
 
-  time_point_t operator"" _time_point(const char* str, std::size_t);
-  time_span_t operator"" _time_span(const char* str, std::size_t);
+  time_point_t operator""_time_point(const char* str, std::size_t);
+  time_span_t operator""_time_span(const char* str, std::size_t);
 
   constexpr static inline time_point_t time_point_none = {};
 
