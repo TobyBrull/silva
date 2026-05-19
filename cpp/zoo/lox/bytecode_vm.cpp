@@ -350,8 +350,15 @@ namespace silva::lox {
         vm.stack[sp]    = bbm.receiver;
       }
       else if (to_call->holds_function_builtin()) {
-        auto& fb = std::get<function_builtin_t>(to_call->data);
-        const span_t<const object_ref_t> args{&vm.stack[sp + 1], size_t(num_args)};
+        auto& fb        = std::get<function_builtin_t>(to_call->data);
+        const auto args = [&]() -> span_t<const object_ref_t> {
+          if (num_args == 0) {
+            return {};
+          }
+          else {
+            return {&vm.stack[sp + 1], size_t(num_args)};
+          }
+        }();
         vm.stack[sp] = SILVA_EXPECT_FWD(fb.impl(*vm.object_pool, args));
         vm.stack.resize(sp + 1);
       }
@@ -378,8 +385,14 @@ namespace silva::lox {
       }
       return {};
     }
-    expected_t<void> _invoke() { SILVA_EXPECT(false, ASSERT); }
-    expected_t<void> _super_invoke() { SILVA_EXPECT(false, ASSERT); }
+    expected_t<void> _invoke()
+    {
+      SILVA_EXPECT(false, ASSERT);
+    }
+    expected_t<void> _super_invoke()
+    {
+      SILVA_EXPECT(false, ASSERT);
+    }
 
     expected_t<closure_t*> _get_curr_closure()
     {
