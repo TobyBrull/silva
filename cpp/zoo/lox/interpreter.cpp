@@ -249,8 +249,8 @@ namespace silva::lox {
   {                                                                                        \
     const auto [node_idx] = SILVA_EXPECT_FWD(pts.get_children<1>());                       \
     auto res              = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(node_idx)), \
-                                "{} error evaluating unary operand",          \
-                                pts);                                         \
+                                             "{} error evaluating unary operand",          \
+                                             pts);                                         \
     return op_func(intp->object_pool, std::move(res));                                     \
   }
 
@@ -259,11 +259,11 @@ namespace silva::lox {
   {                                                                                   \
     const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());                  \
     auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)), \
-                                    "{} error evaluating left-hand-side",    \
-                                    pts);                                    \
+                                             "{} error evaluating left-hand-side",    \
+                                             pts);                                    \
     auto rhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)), \
-                                    "{} error evaluating right-hand-side",   \
-                                    pts);                                    \
+                                             "{} error evaluating right-hand-side",   \
+                                             pts);                                    \
     return op_func(intp->object_pool, std::move(lhs_res), std::move(rhs_res));        \
   }
 
@@ -286,8 +286,8 @@ namespace silva::lox {
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),
-                                        "{} error evaluating left-hand-side",
-                                        pts);
+                                                 "{} error evaluating left-hand-side",
+                                                 pts);
         if (!lhs_res->is_truthy()) {
           return lhs_res;
         }
@@ -300,8 +300,8 @@ namespace silva::lox {
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
         auto lhs_res          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(lhs)),
-                                        "{} error evaluating left-hand-side",
-                                        pts);
+                                                 "{} error evaluating left-hand-side",
+                                                 pts);
         if (lhs_res->is_truthy()) {
           return lhs_res;
         }
@@ -358,13 +358,13 @@ namespace silva::lox {
       else if (rn == lexicon.ni_expr_b_assign)
       {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
-        auto rhs_ref          = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)),
+        auto rhs_ref = SILVA_EXPECT_FWD(expr_or_atom(pts.sub_tree_span_at(rhs)),
                                         "{} error evaluating right-hand-side of assignment",
                                         pts);
-        auto lhs_pts          = pts.sub_tree_span_at(lhs);
+        auto lhs_pts = pts.sub_tree_span_at(lhs);
         if (lhs_pts[0].rule_name == lexicon.ni_expr_member) {
           const auto [ll, lr] = SILVA_EXPECT_FWD(lhs_pts.get_children<2>());
-          auto ll_ref         = SILVA_EXPECT_FWD(expr_or_atom(lhs_pts.sub_tree_span_at(ll)),
+          auto ll_ref = SILVA_EXPECT_FWD(expr_or_atom(lhs_pts.sub_tree_span_at(ll)),
                                          "{} error evaluating part of left-hand-side of assignment",
                                          lhs_pts);
 

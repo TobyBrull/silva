@@ -571,8 +571,8 @@ namespace silva {
   {
     const index_t start = fragments[frag_idx].location.byte_offset;
     const index_t end   = (frag_idx + 1 < fragments.size())
-          ? fragments[frag_idx + 1].location.byte_offset
-          : source_code.size();
+        ? fragments[frag_idx + 1].location.byte_offset
+        : source_code.size();
     return string_view_t{source_code}.substr(start, end - start);
   }
 

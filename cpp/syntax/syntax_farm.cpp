@@ -85,8 +85,8 @@ namespace silva {
   {
     const auto& token_info = token_infos[ti];
     const string_t str     = SILVA_EXPECT_FWD(token_info.contained_string(),
-                                          "{} not a string containing a token",
-                                          token_id_wrap(ti));
+                                              "{} not a string containing a token",
+                                              token_id_wrap(ti));
     return token_id(str);
   }
 
