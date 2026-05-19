@@ -21,7 +21,11 @@ namespace silva {
     void free(index_t);
     friend class object_ref_t<T>;
 
+    bool in_dtor = false;
+
    public:
+    ~object_pool_t();
+
     template<typename... Args>
     object_ref_t<T> make(Args&&...);
 
@@ -77,6 +81,12 @@ namespace silva {
 namespace silva {
 
   // object_pool_t
+
+  template<typename T>
+  object_pool_t<T>::~object_pool_t()
+  {
+    in_dtor = true;
+  }
 
   template<typename T>
   void object_pool_t<T>::free(const index_t idx)
@@ -180,7 +190,7 @@ namespace silva {
   template<typename T>
   void object_ref_t<T>::clear()
   {
-    if (!pool.is_nullptr()) {
+    if (!pool.is_nullptr() && !pool->in_dtor) {
       pool->object_datas[idx].ref_count -= 1;
       if (pool->object_datas[idx].ref_count == 0) {
         pool->free(idx);
