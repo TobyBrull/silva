@@ -21,30 +21,24 @@ This is implemented in the class
 `silva::seed::interpreter_t` ([seed_interpreter.hpp](cpp/syntax/seed_interpreter.hpp)).
 
 
-## Building and Running
-
-A recent C++ compiler is required. Clang 19 works for me.
+## Testing
 
 ```bash
-conda create --name silva-clang
-conda install --name silva-clang --channel conda-forge \
-    cmake ccache catch2=3 fmt boost llvm=19 lldb=19 llvm-tools=19 clang=19 \
-    clangxx=19 clang-tools=19 compiler-rt=19 compiler-rt_linux-64=19
-eval "$(conda shell.bash hook)"
-conda activate silva-clang
+pixi run test-all && echo "ALL TESTS SUCCEEDED!"
+```
 
-rm -rf build/
-CMAKE_ARGS=("-S" "." "-G" "Ninja" "-DCMAKE_CXX_COMPILER=clang++")
-cmake "${CMAKE_ARGS[@]}" -B build/ -DCMAKE_BUILD_TYPE=Debug
-cmake "${CMAKE_ARGS[@]}" -B build/ -DCMAKE_BUILD_TYPE=Release
-cmake "${CMAKE_ARGS[@]}" -B build/ -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_TRACY=On
-ninja -C build/ && time ./build/cpp/silva_test
-ninja -C build/ && bash demo.sh > demo.sh.output && git status
 
-# Formatting C++
-find ./cpp -name "*pp" -type f | xargs clang-format -i && git status
+## Development
 
-# Formatting CMake
-pip install cmake-format
-find . \( -name "*.cmake" -o -name "CMakeLists.txt" \) -not -path "./.*" -not -path "./build*" | xargs cmake-format -i
+```bash
+pixi run format
+
+eval "$( pixi shell-hook )"
+PRESET=debug
+PRESET=release
+PRESET=tracy
+cmake --preset "${PRESET}"
+BUILD_DIR="build.default.${PRESET}/"
+ninja -C "${BUILD_DIR}" && time "${BUILD_DIR}/cpp/silva_test"
+ninja -C "${BUILD_DIR}" && bash task_demo.sh "${BUILD_DIR}" > task_demo.sh.output && git status
 ```

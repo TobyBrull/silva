@@ -1,0 +1,42 @@
+{
+  "version": 8,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 30,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build.$env{PIXI_ENVIRONMENT_NAME}.${presetName}",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "$env{SILVA_C_COMPILER}",
+        "CMAKE_CXX_COMPILER": "$env{SILVA_CXX_COMPILER}"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "tracy",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "USE_TRACY": "On"
+      }
+    }
+  ]
+}

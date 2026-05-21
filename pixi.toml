@@ -1,0 +1,60 @@
+[workspace]
+authors = ["Toby Brull"]
+channels = ["conda-forge"]
+name = "silva"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[feature.gcc-15.dependencies]
+gxx = ">=15.2.0,<15.3"
+[feature.gcc-15.activation.env]
+SILVA_CXX_COMPILER = "g++"
+SILVA_C_COMPILER = "gcc"
+
+[feature.clang-22.dependencies]
+clangxx = ">=22.1.5,<23"
+clang-tools = "*"
+[feature.clang-22.activation.env]
+SILVA_CXX_COMPILER = "clang++"
+SILVA_C_COMPILER = "clang"
+
+[feature.build.dependencies]
+cmake = ">=4.3.2,<5"
+ninja = ">=1.13.2,<2"
+ccache = ">=4.13.6,<5"
+fmt = ">=12.1.0,<13"
+catch2 = ">=3.15.0,<4"
+
+[feature.dev.dependencies]
+cmake-language-server = ">=0.1.11,<0.2"
+taplo = ">=0.10.0,<0.11"
+llvm = "*"
+lldb = "*"
+llvm-tools = "*"
+cmake-format = "*"
+
+[environments]
+gcc-15-build = ["gcc-15", "build"]
+clang-22-build = ["clang-22", "build"]
+default = ["clang-22", "build", "dev"]
+
+[tasks.test]
+args = [{ "arg" = "preset", "default" = "debug" }]
+cmd = "bash task_test.sh {{ preset }}"
+
+[tasks.format-check]
+cmd = "bash task_format_check.sh"
+
+[tasks.format]
+cmd = "bash task_format.sh"
+
+[tasks.test-all]
+depends-on = [
+  { task = "format-check", environment = "default" },
+  { task = "test", environment = "gcc-15-build", args = ["debug"] },
+  { task = "test", environment = "gcc-15-build", args = ["release"] },
+  { task = "test", environment = "gcc-15-build", args = ["tracy"] },
+  { task = "test", environment = "clang-22-build", args = ["debug"] },
+  { task = "test", environment = "clang-22-build", args = ["release"] },
+  { task = "test", environment = "clang-22-build", args = ["tracy"] },
+]
