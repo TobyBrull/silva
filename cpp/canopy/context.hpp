@@ -36,7 +36,7 @@ namespace silva {
   T* context_t<T>::init_current()
   {
     static_assert(requires {
-      std::derived_from<T, context_t<T>>;
+      requires std::derived_from<T, context_t<T>>;
       { T::context_use_default } -> std::convertible_to<bool>;
       { T::context_mutable_get } -> std::convertible_to<bool>;
     });

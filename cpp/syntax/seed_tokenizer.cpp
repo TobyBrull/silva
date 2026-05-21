@@ -422,6 +422,31 @@ namespace silva::seed {
     return {};
   }
 
+  namespace impl {
+    expected_t<void> insert_rules(const tokenizer_farm_t* this_,
+                                  array_t<impl::rule_t>& rules,
+                                  const token_id_t tokenizer_name)
+    {
+      const auto it = this_->tokenizers.find(tokenizer_name);
+      SILVA_EXPECT(it != this_->tokenizers.end(),
+                   MINOR,
+                   "could not find tokenizer {}",
+                   this_->sfp->token_id_wrap(tokenizer_name));
+      const auto& tt = it->second;
+      for (const auto& rule: tt.rules) {
+        if (rule.prefix_matchers.empty()) {
+          SILVA_EXPECT_FWD(insert_rules(this_, rules, rule.token_category_name),
+                           "when processing rules of tokenizer {}",
+                           this_->sfp->token_id_wrap(tokenizer_name));
+        }
+        else {
+          rules.push_back(rule);
+        }
+      }
+      return {};
+    }
+  }
+
   expected_t<void> tokenizer_farm_t::cache_tokenizer(const token_id_t tokenizer_name)
   {
     if (cached_tokenizers.contains(tokenizer_name)) {
@@ -429,27 +454,7 @@ namespace silva::seed {
     }
 
     array_t<impl::rule_t> rules;
-    const auto insert_rules = [&](this const auto& self,
-                                  const token_id_t tokenizer_name) -> expected_t<void> {
-      const auto it = tokenizers.find(tokenizer_name);
-      SILVA_EXPECT(it != tokenizers.end(),
-                   MINOR,
-                   "could not find tokenizer {}",
-                   sfp->token_id_wrap(tokenizer_name));
-      const auto& tt = it->second;
-      for (const auto& rule: tt.rules) {
-        if (rule.prefix_matchers.empty()) {
-          SILVA_EXPECT_FWD(self(rule.token_category_name),
-                           "when processing rules of tokenizer {}",
-                           sfp->token_id_wrap(tokenizer_name));
-        }
-        else {
-          rules.push_back(rule);
-        }
-      }
-      return {};
-    };
-    SILVA_EXPECT_FWD(insert_rules(tokenizer_name));
+    SILVA_EXPECT_FWD(impl::insert_rules(this, rules, tokenizer_name));
 
     const auto [it, inserted] = cached_tokenizers.emplace(tokenizer_name,
                                                           tokenizer_t{
