@@ -3,10 +3,11 @@ name: Testing
 on:
   push:
     branches: [master]
+  workflow_dispatch: {}
 
 jobs:
   testing:
-    name: Check intra-doc links
+    name: Testing
     runs-on: ubuntu-latest
     steps:
       - uses: prefix-dev/setup-pixi@v0.9.6
