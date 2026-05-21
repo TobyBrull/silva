@@ -1,3 +1,5 @@
+option(USE_TRACY "Build using tracy" OFF)
+
 if(USE_TRACY)
   include(FetchContent)
   FetchContent_Declare(
