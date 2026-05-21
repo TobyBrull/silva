@@ -10,7 +10,10 @@ jobs:
     name: Testing
     runs-on: ubuntu-latest
     steps:
-      - uses: prefix-dev/setup-pixi@v0.9.4
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.4
         with:
           pixi-version: v0.69.0
           cache: false
