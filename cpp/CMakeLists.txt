@@ -36,6 +36,12 @@ foreach(main_file ${SILVA_MAIN_FILES})
   endif()
   add_executable("${executable_name}" "${main_file}")
   target_link_libraries("${executable_name}" silvalib)
+  install(
+    TARGETS "${executable_name}"
+    EXPORT ${executable_name}Targets
+    LIBRARY DESTINATION "lib"
+    ARCHIVE DESTINATION "lib"
+    RUNTIME DESTINATION "bin")
 endforeach()
 
 # Tests

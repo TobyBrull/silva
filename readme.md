@@ -45,3 +45,10 @@ cmake --preset "${PRESET}"
 ninja -C "${BUILD_DIR}" && time "${BUILD_DIR}/cpp/silva_test"
 ninja -C "${BUILD_DIR}" && bash task_demo.sh "${BUILD_DIR}" > task_demo.sh.output && git status task_demo.sh.output
 ```
+
+
+## Release
+
+```bash
+pixi publish --target-dir=var/
+```
