@@ -17,4 +17,4 @@ jobs:
           cache: false
           auth-host: prefix.dev
           auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
-      - run: pixi publish --target-channel https://prefix.dev/channels/silva-forge
+      - run: pixi publish --target-channel https://prefix.dev/channels/silva-forge --force
