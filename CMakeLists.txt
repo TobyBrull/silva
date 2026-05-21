@@ -26,6 +26,9 @@ include(cmake/tracy.cmake)
 include(cmake/fmtlib.cmake)
 include(cmake/catch2.cmake)
 
+include(CTest)
+include(Catch)
+
 add_subdirectory(.thirdparty/reflect-cpp)
 add_subdirectory(.thirdparty/date-3.0.4)
 
