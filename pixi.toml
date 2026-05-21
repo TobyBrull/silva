@@ -67,8 +67,10 @@ version = "0.1.0"
 [package.build]
 backend = { name = "pixi-build-cmake", version = "*" }
 
-[package.build-dependencies]
+[package.host-dependencies]
 fmt = ">=12.1.0,<13"
+
+[package.build-dependencies]
 catch2 = ">=3.15.0,<4"
 
 [package.build.config]
