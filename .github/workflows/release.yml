@@ -1,13 +1,11 @@
-name: Testing
+name: Release
 
 on:
-  push:
-    branches: [master]
   workflow_dispatch: {}
 
 jobs:
   testing:
-    name: Testing
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,5 +17,4 @@ jobs:
           cache: false
           auth-host: prefix.dev
           auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
-      - run: mkdir var/
-      - run: pixi run test-all
+      - run: pixi publish --target-channel https://prefix.dev/channels/silva-forge
