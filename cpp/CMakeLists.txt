@@ -25,6 +25,11 @@ target_include_directories(silvalib PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(silvalib PUBLIC fmt::fmt reflect-cpp hh-date)
 target_link_libraries(silvalib PUBLIC TracyClient)
 
+install(
+  TARGETS "silvalib"
+  EXPORT SilvaLibTargets
+  LIBRARY DESTINATION "lib")
+
 # Command-line tools
 
 foreach(main_file ${SILVA_MAIN_FILES})
@@ -36,12 +41,7 @@ foreach(main_file ${SILVA_MAIN_FILES})
   endif()
   add_executable("${executable_name}" "${main_file}")
   target_link_libraries("${executable_name}" silvalib)
-  install(
-    TARGETS "${executable_name}"
-    EXPORT ${executable_name}Targets
-    LIBRARY DESTINATION "lib"
-    ARCHIVE DESTINATION "lib"
-    RUNTIME DESTINATION "bin")
+  install(TARGETS "${executable_name}" RUNTIME DESTINATION "bin")
 endforeach()
 
 # Tests
