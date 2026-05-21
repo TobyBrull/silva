@@ -64,7 +64,7 @@ namespace silva {
 //  - SILVA_EXPECT_FWD(foo(x), MAJOR)
 //  - SILVA_EXPECT_FWD(foo(x), MAJOR, "foo failed for x={}", x);
 //
-#define SILVA_EXPECT_FWD_IMPL(return_stmt, expression, ...)                                        \
+#define SILVA_EXPECT_FWD_IMPL(return_stmt, return_stmt_2, expression, ...)                         \
   ({                                                                                               \
     auto __silva_result = (expression);                                                            \
     static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                          \
@@ -78,10 +78,11 @@ namespace silva {
                                                                 std::move(__silva_result).error(), \
                                                                 #expression __VA_OPT__(, )         \
                                                                     __VA_ARGS__));                 \
+      return_stmt_2;                                                                               \
     }                                                                                              \
     *std::move(__silva_result);                                                                    \
   })
-#define SILVA_EXPECT_FWD(...) SILVA_EXPECT_FWD_IMPL(return, __VA_ARGS__)
+#define SILVA_EXPECT_FWD(...) SILVA_EXPECT_FWD_IMPL(return, , __VA_ARGS__)
 
 #define SILVA_EXPECT_FWD_PLAIN(expression)                                \
   ({                                                                      \

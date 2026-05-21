@@ -94,10 +94,26 @@ namespace silva::unicode {
   {
     index_t pos = 0;
     while (pos < s.size()) {
-      const auto [codepoint, len] = SILVA_EXPECT_FWD_IMPL(co_yield,
-                                                          utf8_decode_one(s.substr(pos)),
-                                                          "unable to decode codepoint at {}",
-                                                          pos);
+      // TODO: Replace this code with macro once GCC bug fixed
+
+      expected_t<tuple_t<codepoint_t, index_t>> result = utf8_decode_one(s.substr(pos));
+      if (!result.has_value()) {
+        co_yield std::unexpected(silva::impl::silva_expect_fwd(__FILE__,
+                                                               __LINE__,
+                                                               std::move(result).error(),
+                                                               "utf8_decode_one(s.substr(pos))",
+                                                               "unable to decode codepoint at {}",
+                                                               pos));
+        co_return;
+      }
+      const auto [codepoint, len] = *std::move(result);
+
+      // const auto [codepoint, len] = SILVA_EXPECT_FWD_IMPL(co_yield,
+      //                                                     co_return,
+      //                                                     utf8_decode_one(s.substr(pos)),
+      //                                                     "unable to decode codepoint at {}",
+      //                                                     pos);
+
       const codepoint_data_t cd{
           .codepoint   = codepoint,
           .byte_offset = pos,
