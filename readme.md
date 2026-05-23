@@ -39,6 +39,7 @@ PRESET=debug
 PRESET=release
 PRESET=tracy
 BUILD_DIR="build.default.${PRESET}/"
+ln -sfn "${BUILD_DIR}" build
 
 rm -rf "${BUILD_DIR}"
 cmake --preset "${PRESET}"
