@@ -538,7 +538,7 @@ namespace silva {
     auto ccd = SILVA_EXPECT_FWD(categorize_codepoints(source_code));
     fragmentizer_t ff;
     SILVA_EXPECT_FWD(ff.init(filepath, std::move(source_code), std::move(ccd)));
-    SILVA_EXPECT_FWD(ff.run(), "while fragmentizing {}", filepath);
+    SILVA_EXPECT_FWD(ff.run(), "while fragmentizing [{}]", filepath);
     SILVA_EXPECT(ff.i == ff.n,
                  MINOR,
                  "Incomplete fragmentization; stopped at {}",
