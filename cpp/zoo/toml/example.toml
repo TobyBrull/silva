@@ -1,0 +1,179 @@
+# ==============================================================================
+# GLOBAL / TOP-LEVEL KEYS & SYNTAX VARIATIONS
+# ==============================================================================
+
+# 1. Key Types
+bare_key = "Alphanumeric, underscores, and dashes allowed"
+bare-key-dash = "Dashes are completely legal"
+bare_key_123 = "Numbers are allowed"
+
+"quoted key" = "Allows spaces and special characters"
+'literal key' = "No escaping processed inside the key name"
+"" = "Empty string keys are explicitly valid"
+
+# 2. Dotted Keys (Implicitly creates the 'physical.property' table)
+physical.property.color = "blue"
+physical.property.shape = "round"
+
+# ==============================================================================
+# DATA TYPE: STRINGS
+# ==============================================================================
+[strings]
+
+# Basic String (Escaped characters)
+basic = "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
+escaped = "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
+
+# ==============================================================================
+# DATA TYPE: INTEGERS
+# ==============================================================================
+[integers]
+positive = +99
+negative = -17
+zero = 0
+zero_plus = +0
+zero_minus = -0
+
+# Underscores for legibility (Visual separators only)
+# Hexadecimal, Octal, and Binary representations
+hexadecimal = 0xDEADBEEF
+hex_lowercase = 0xdeadbeef
+octal = 0o755
+binary = 0b11010010
+
+# ==============================================================================
+# DATA TYPE: FLOATS
+# ==============================================================================
+[floats]
+normal = +3.14159
+negative = -0.01
+fractional_zero = 5.0
+
+# Exponents
+exponent_large = 5e+22
+exponent_small = 1e-14
+exponent_mixed = -6.23e-4
+
+# Special floating point numbers (Always lowercase)
+infinity = inf
+positive_infinity = +inf
+negative_infinity = -inf
+not_a_number = nan
+positive_not_a_number = +nan
+negative_not_a_number = -nan
+
+# ==============================================================================
+# DATA TYPE: BOOLEANS
+# ==============================================================================
+[booleans]
+true_value = true
+false_value = false
+
+# ==============================================================================
+# DATA TYPE: DATETIME (RFC 3339 Compliance)
+# ==============================================================================
+[datetimes]
+# Offset Date-Time (Fully qualified timestamps)
+#offset_utc = 1979-05-27T07:32:00Z
+#offset_numeric = 1979-05-27T00:32:00-07:00
+#offset_with_ms = 1979-05-27T00:32:00.999999-07:00
+#offset_space_separator = 1979-05-27 07:32:00Z
+
+# Local Date-Time (Omits the timezone offset)
+#local_date_time = 1979-05-27T07:32:00
+#local_date_time_ms = 1979-05-27T07:32:00.999999
+#
+## Local Date (Omits time entirely)
+#local_date = 1979-05-27
+#
+## Local Time (Omits date entirely)
+#local_time = 07:32:00
+#local_time_ms = 00:32:00.999999
+
+# ==============================================================================
+# DATA TYPE: ARRAYS
+# ==============================================================================
+[arrays]
+integers = [1, 2, 3]
+strings = ["red", "yellow", "green"]
+nested_arrays = [[1, 2], [3, 4, 5]]
+
+# Multiline arrays with trailing commas and comments
+multiline_and_mixed_whitespace = [
+  "allowed",
+  "across",
+  "multiple",
+  "lines",    # Whitespace and comments are fine
+]
+
+# Heterogeneous Arrays (Explicitly valid starting in TOML v1.0.0)
+mixed_types = [1, 2, "three", ["four", 5], 6.0, 1979-05-27]
+
+# ==============================================================================
+# DATA TYPE: INLINE TABLES
+# ==============================================================================
+[inline_tables]
+# Compact key-value layout enclosed in curly braces
+basic = { first = "Tom", last = "Preston-Werner" }
+point = { x = 1, y = 2, z = 3 }
+
+# Nested architectures inside an inline table
+nested = { identity = { id = 42, role = "admin" }, active = true }
+
+# Empty inline table
+empty = {}
+
+# ==============================================================================
+# EXPLICIT TABLES
+# ==============================================================================
+[explicit_table_1]
+key_a = "Value inside explicit_table_1"
+
+[explicit_table_1.nested_child]
+key_b = "Value inside nested_child"
+
+# Empty explicit table is legal
+[explicit_table_2]
+
+# Dotted-key notation within an explicit table section header
+[explicit_table_3.sub_table.deep_table]
+final_key = "Resolves deep nesting paths cleanly"
+
+# ==============================================================================
+# ARRAY OF TABLES (AOT)
+# ==============================================================================
+
+# Element 0 of the 'products' array
+[[products]]
+name = "Hammer"
+sku = 738594937
+
+# Element 1 of the 'products' array (Empty structures are allowed)
+[[products]]
+
+# Element 2 of the 'products' array (Includes a sub-table layout)
+[[products]]
+name = "Nail"
+sku = 284758393
+
+[[products.categories]]
+name = "Fasteners"
+
+# Completely nested array of tables structure
+[[fruit]]
+name = "apple"
+
+[fruit.physical]
+color = "red"
+
+[[fruit.varieties]]
+name = "gala"
+
+[[fruit.varieties]]
+name = "fuji"
+
+[[fruit]]
+name = "banana"
+
+[[fruit.varieties]]
+name = "cavendish"

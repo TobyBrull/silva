@@ -1,0 +1,28 @@
+#include "toml.hpp"
+
+#include "canopy/main.hpp"
+
+#include "syntax/syntax.hpp"
+
+namespace silva::toml {
+  expected_t<void> main(const span_t<string_view_t> cmdline_args)
+  {
+    const index_t m = cmdline_args.size();
+    SILVA_EXPECT(2 <= m, MINOR, "Usage: ... <toml-file> [...keyword args...]");
+
+    constexpr expected_traits_t expected_traits{.materialize_fwd = true};
+
+    syntax_farm_t sf;
+    const auto se = standard_seed_interpreter(sf.ptr());
+    SILVA_EXPECT_FWD(se->add_seed_text("toml.seed", string_t{toml::seed_str}));
+
+    fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]));
+    parse_tree_ptr_t ptp;
+    ptp = SILVA_EXPECT_FWD_PLAIN(se->apply(fp, sf.name_id_of("Toml")));
+
+    fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
+
+    return {};
+  }
+}
+SILVA_MAIN(silva::toml::main);
