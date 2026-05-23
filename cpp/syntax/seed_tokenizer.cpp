@@ -195,7 +195,12 @@ namespace silva::seed::impl {
         const token_info_t& ti     = sfp->token_infos[tid];
         const string_t item_str    = SILVA_EXPECT_FWD(ti.contained_string());
         const string_t item_str_nl = item_str + "\n";
-        const auto fp     = SILVA_EXPECT_FWD(fragmentize_unique("", std::move(item_str_nl)));
+        const auto fp =
+            SILVA_EXPECT_FWD(fragmentize_unique("", item_str_nl),
+                             MINOR,
+                             "unable to fragmentize [{}] at {}",
+                             sfp->token_id_wrap(SILVA_EXPECT_FWD(pts_item.front_token_id())),
+                             SILVA_EXPECT_FWD(pts_item.front_token_location()));
         const auto& frags = fp->fragments;
         SILVA_EXPECT(frags.size() > 3, MINOR, "empty string not supported in tokenizer");
         SILVA_EXPECT(frags[0].category == LANG_BEGIN, MINOR);
