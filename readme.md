@@ -45,6 +45,7 @@ rm -rf "${BUILD_DIR}"
 cmake --preset "${PRESET}"
 ninja -C "${BUILD_DIR}" && time "${BUILD_DIR}/cpp/silva_test"
 bash task_format_check.sh && echo "ALL FORMATTING OKAY!"
+bash task_format.sh
 bash task_test.sh "${PRESET}" && echo "ALL TESTS SUCCEEDED!"
 ```
 
