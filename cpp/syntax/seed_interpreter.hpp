@@ -12,8 +12,12 @@ namespace silva::seed {
 
     tokenizer_farm_t tokenizer_farm;
 
-    // For each rule name, gives the node-index of the expression describing that rule.
-    hash_map_t<name_id_t, parse_tree_span_t> rule_exprs;
+    struct rule_expr_data_t {
+      parse_tree_span_t expr;
+      bool is_alias         = false;
+      bool is_no_whitespace = false;
+    };
+    hash_map_t<name_id_t, rule_expr_data_t> rule_exprs;
 
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
     hash_map_t<name_id_t, axe_t> axes;

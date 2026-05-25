@@ -44,7 +44,8 @@ ln -sfn "${BUILD_DIR}" build
 rm -rf "${BUILD_DIR}"
 cmake --preset "${PRESET}"
 ninja -C "${BUILD_DIR}" && time "${BUILD_DIR}/cpp/silva_test"
-ninja -C "${BUILD_DIR}" && bash task_demo.sh "${BUILD_DIR}" > task_demo.sh.output && git status task_demo.sh.output
+bash task_format_check.sh && echo "ALL FORMATTING OKAY!"
+bash task_test.sh "${PRESET}" && echo "ALL TESTS SUCCEEDED!"
 ```
 
 

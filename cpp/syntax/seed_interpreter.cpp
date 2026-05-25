@@ -28,15 +28,22 @@ namespace silva::seed::impl {
     {
     }
 
-    expected_t<void> register_rule(const name_id_t rule_name, const parse_tree_span_t& pts)
+    expected_t<void> register_rule(const name_id_t rule_name,
+                                   const parse_tree_span_t& pts,
+                                   const bool is_alias         = false,
+                                   const bool is_no_whitespace = false)
     {
-      const auto [emplace_it, inserted] = se->rule_exprs.emplace(rule_name, pts);
+      const auto [emplace_it, inserted] = se->rule_exprs.emplace(
+          rule_name,
+          interpreter_t::rule_expr_data_t{.expr             = pts,
+                                          .is_alias         = is_alias,
+                                          .is_no_whitespace = is_no_whitespace});
       SILVA_EXPECT(inserted,
                    MINOR,
                    "{} rule {} defined again, previously defined at {}",
                    pts,
                    lexicon.name_id_wrap(rule_name),
-                   emplace_it->second);
+                   emplace_it->second.expr);
       return {};
     }
 
@@ -64,12 +71,33 @@ namespace silva::seed::impl {
         ++it;
       }
 
+      bool is_alias         = false;
+      bool is_no_whitespace = false;
+      while (it != end && pts_rule[it.pos].rule_name == lexicon.ni_qualifier) {
+        const auto pts_qual    = pts_rule.sub_tree_span_at(it.pos);
+        const token_id_t q_tok = SILVA_EXPECT_FWD(pts_qual.front_token_id());
+        if (q_tok == lexicon.ti_alias) {
+          is_alias = true;
+        }
+        else if (q_tok == lexicon.ti_no_whitespace) {
+          is_no_whitespace = true;
+        }
+        else {
+          SILVA_EXPECT(false,
+                       MINOR,
+                       "{} unknown qualifier {}",
+                       pts_qual,
+                       sfp->token_id_wrap(q_tok));
+        }
+        ++it;
+      }
+
       SILVA_EXPECT(it != end, MINOR, "{} rule must have right-hand side", pts_rule);
       const auto pts_rhs_0 = pts_rule.sub_tree_span_at(it.pos);
 
       ++it;
       SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
-      SILVA_EXPECT_FWD(register_rule(curr_rule_name, pts_rhs_0));
+      SILVA_EXPECT_FWD(register_rule(curr_rule_name, pts_rhs_0, is_alias, is_no_whitespace));
 
       for (index_t i = 0; i < pts_rhs_0.size(); ++i) {
         if (pts_rhs_0[i].rule_name == lexicon.ni_term) {
@@ -231,6 +259,18 @@ namespace silva::seed::impl {
     const lexicon_t& lexicon;
 
     int rule_depth = 0;
+
+    bool no_whitespace = false;
+    struct no_whitespace_scope_t {
+      interpreter_apply_nursery_t& self;
+      bool prev_value;
+      no_whitespace_scope_t(interpreter_apply_nursery_t& self_, const bool new_value)
+        : self(self_), prev_value(self_.no_whitespace)
+      {
+        self.no_whitespace = new_value;
+      }
+      ~no_whitespace_scope_t() { self.no_whitespace = prev_value; }
+    };
 
     seed_exec_trace_t exec_trace{.sfp = sfp, .lexicon = lexicon};
 
@@ -560,8 +600,10 @@ namespace silva::seed::impl {
                    MAJOR,
                    "Unknown rule: {}",
                    lexicon.name_id_str(t_rule_name));
-      const parse_tree_span_t s_pts = it->second;
-      const name_id_t s_expr_name   = s_pts[0].rule_name;
+      const interpreter_t::rule_expr_data_t& rule_data = it->second;
+      const parse_tree_span_t& s_pts                   = rule_data.expr;
+      const name_id_t s_expr_name                      = s_pts[0].rule_name;
+      no_whitespace_scope_t nws_scope(*this, rule_data.is_no_whitespace);
       node_and_error_t retval;
       if (s_expr_name == lexicon.ni_axe) {
         retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name, t_rule_name));
@@ -570,20 +612,14 @@ namespace silva::seed::impl {
         const name_id_t axe_name = sfp->name_infos[t_rule_name].parent_name;
         retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(axe_name, t_rule_name));
       }
-      else if (s_expr_name == lexicon.ni_alias) {
-        const auto cc       = SILVA_EXPECT_FWD(s_pts.get_children<1>());
-        const auto expr_pts = s_pts.sub_tree_span_at(cc[0]);
-        auto ss             = stake();
-        auto result         = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(expr_pts, t_rule_name));
+      else {
+        auto ss = stake();
+        if (!rule_data.is_alias) {
+          ss.create_node(t_rule_name);
+        }
+        auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(s_pts, t_rule_name));
         ss.add_proto_node(std::move(result.node));
         retval = node_and_error_t{ss.commit(), std::move(result.last_error)};
-      }
-      else {
-        auto ss_rule = stake();
-        ss_rule.create_node(t_rule_name);
-        auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(s_pts, t_rule_name));
-        ss_rule.add_proto_node(std::move(result.node));
-        retval = node_and_error_t{ss_rule.commit(), std::move(result.last_error)};
       }
       ets->success = true;
       return retval;
@@ -644,7 +680,8 @@ namespace silva::seed {
     compile_reset();
 
     const lexicon_t& lexicon = bootstrap_interpreter.lexicon();
-    for (const auto& [rule_name, pts_rule]: rule_exprs) {
+    for (const auto& [rule_name, rule_data]: rule_exprs) {
+      const parse_tree_span_t& pts_rule = rule_data.expr;
       if (pts_rule[0].rule_name == lexicon.ni_axe_level) {
         // These parse-trees are already handled by the enclosing axe.
         continue;

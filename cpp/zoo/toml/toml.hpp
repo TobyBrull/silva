@@ -16,7 +16,7 @@ language Toml:
   Array = '[' ( Val ( ε ',' Val ) * ',' ? ) ? ']'
   Table = ArrayTable | StdTable
   StdTable = '[' Key ']'
-  ArrayTable = ε '[' '[' Key ']' ']'
+  ArrayTable = no_whitespace ε '[' '[' Key ']' ']'
   InlineTable = '{' ( Keyval ( ',' Keyval ) * ',' ? ) ? '}'
   Number = ( '-' | '+' ) ? ( number | 'inf' | 'nan' )
 

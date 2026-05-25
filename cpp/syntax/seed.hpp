@@ -61,9 +61,8 @@ language Seed:
   Language = 'language' rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
-  Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe
-                                   | 'alias' Expr.Alias newline
-                                   | Expr newline )
+  Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe | Qualifier * Expr newline )
+  Qualifier = 'alias' | 'no_whitespace'
   Expr:
     ⊙ = axe Atom
       Prefix    = rtl   prefix 'not'
