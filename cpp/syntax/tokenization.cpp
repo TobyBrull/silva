@@ -8,19 +8,21 @@ namespace silva {
     return tokens.size();
   }
 
-  tokenization_t tokenization_t::copy() const
+  file_location_t tokenization_t::location_at(const index_t idx) const
   {
-    return tokenization_t{
-        .sfp       = sfp,
-        .filepath  = filepath,
-        .tokens    = tokens,
-        .locations = locations,
-    };
+    if (idx < size()) {
+      const index_t frag_idx = tokens[idx].frag_idx_begin;
+      const auto& fragments  = fs.fp->fragments;
+      if (frag_idx < fragments.size()) {
+        return fragments[frag_idx].location;
+      }
+    }
+    return file_location_eof;
   }
 
   const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
   {
-    const token_id_t ti = tokens[token_index];
+    const token_id_t ti = tokens[token_index].token_id;
     return &sfp->token_infos[ti];
   }
 
@@ -45,15 +47,7 @@ namespace silva {
       return;
     }
     stream->format("{}:", self.tp->filepath.filename().string());
-    const file_location_t loc = [&] {
-      if (self.token_index < self.tp->locations.size()) {
-        return self.tp->locations[self.token_index];
-      }
-      else {
-        return file_location_eof;
-      }
-    }();
-    silva::pretty_write(loc, stream);
+    silva::pretty_write(self.tp->location_at(self.token_index), stream);
   }
 
   index_t token_span_t::size() const
@@ -61,9 +55,9 @@ namespace silva {
     return end - begin;
   }
 
-  token_span_t::operator span_t<const token_id_t>()
+  token_span_t::operator span_t<const token_t>() const
   {
-    return span_t<const token_id_t>(tp->tokens.data() + begin, end - begin);
+    return span_t<const token_t>(tp->tokens.data() + begin, end - begin);
   }
 
   void pretty_write_impl(const token_span_t& self, byte_sink_t* stream)
@@ -93,11 +87,10 @@ namespace silva {
   void pretty_write_impl(const tokenization_t& self, byte_sink_t* stream)
   {
     for (index_t token_index = 0; token_index < self.size(); ++token_index) {
-      const token_id_t tii         = self.tokens[token_index];
-      const token_id_t tic         = self.categories[token_index];
-      const token_info_t* tii_info = &self.sfp->token_infos[tii];
-      const token_info_t* tic_info = &self.sfp->token_infos[tic];
-      const auto [line, column, _] = self.locations[token_index];
+      const token_t& token         = self.tokens[token_index];
+      const token_info_t* tii_info = &self.sfp->token_infos[token.token_id];
+      const token_info_t* tic_info = &self.sfp->token_infos[token.category_id];
+      const auto [line, column, _] = self.location_at(token_index);
       stream->format("[{:3}] {:3}:{:<3} cat={:20} {}\n",
                      token_index,
                      line + 1,

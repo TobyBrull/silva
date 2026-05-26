@@ -1,6 +1,7 @@
+#include "tokenization.hpp"
+
 #include "syntax.hpp"
 #include "syntax_farm.hpp"
-#include "tokenization.hpp"
 
 #include "canopy/byte_sink.hpp"
 #include "canopy/main.hpp"
@@ -23,10 +24,11 @@ namespace silva {
                                      "while fragmentizing {}",
                                      cmdline_args[1]);
 
-    const auto se           = standard_seed_interpreter(sf.ptr());
-    const auto tokenization = SILVA_EXPECT_FWD(se->tokenizer_farm.apply(fp, tokenizer_name),
-                                               "while tokenizing {}",
-                                               cmdline_args[1]);
+    const auto se = standard_seed_interpreter(sf.ptr());
+    const tokenization_ptr_t tokenization =
+        SILVA_EXPECT_FWD(se->tokenizer_farm.apply(fp, tokenizer_name),
+                         "while tokenizing {}",
+                         cmdline_args[1]);
     pretty_write(*tokenization, &_stdout);
     return {};
   }

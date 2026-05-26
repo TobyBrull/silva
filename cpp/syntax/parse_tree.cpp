@@ -107,21 +107,21 @@ namespace silva {
   expected_t<token_id_t> parse_tree_span_t::at_token_id(const index_t idx) const
   {
     SILVA_EXPECT(idx < token_size(), MINOR);
-    return ptp->tp->tokens[(*this)[0].token_begin + idx];
+    return ptp->tp->tokens[(*this)[0].token_begin + idx].token_id;
   }
   expected_t<token_id_t> parse_tree_span_t::at_token_category(const index_t idx) const
   {
     SILVA_EXPECT(idx < token_size(), MINOR);
-    return ptp->tp->categories[(*this)[0].token_begin + idx];
+    return ptp->tp->tokens[(*this)[0].token_begin + idx].category_id;
   }
   expected_t<fragment_span_t> parse_tree_span_t::at_language(const index_t idx) const
   {
     SILVA_EXPECT(idx < token_size(), MINOR);
     const auto& root         = (*this)[0];
     const tokenization_t& tp = *(ptp->tp);
-    const auto it            = tp.languages.find(root.token_begin + idx);
-    SILVA_EXPECT(it != tp.languages.end(), MINOR);
-    return it->second;
+    const auto& token        = tp.tokens[root.token_begin + idx];
+    SILVA_EXPECT(token.is_language(), MINOR);
+    return fragment_span_t{tp.fs.fp, token.frag_idx_begin, token.frag_idx_end};
   }
   expected_t<token_location_t> parse_tree_span_t::at_token_location(const index_t idx) const
   {

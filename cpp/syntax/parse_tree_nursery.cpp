@@ -64,11 +64,11 @@ namespace silva {
 
   const token_id_t parse_tree_nursery_t::token_id_by(const index_t token_index_offset) const
   {
-    return tp->tokens[token_index + token_index_offset];
+    return tp->tokens[token_index + token_index_offset].token_id;
   }
   const token_id_t parse_tree_nursery_t::token_category_by(const index_t token_index_offset) const
   {
-    return tp->categories[token_index + token_index_offset];
+    return tp->tokens[token_index + token_index_offset].category_id;
   }
 
   const token_info_t* parse_tree_nursery_t::token_data_by(const index_t token_index_offset) const

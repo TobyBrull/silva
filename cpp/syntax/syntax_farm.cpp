@@ -4,6 +4,10 @@
 #include "parse_tree.hpp"
 
 namespace silva {
+  bool token_t::is_language() const
+  {
+    return token_id == token_id_language;
+  }
 
   expected_t<string_view_t> token_info_t::string_as_plain_contained() const
   {
@@ -180,22 +184,22 @@ namespace silva {
   }
 
   expected_t<name_id_t> lexicon_t::name_id_definition(const name_id_t scope_name,
-                                                      span_t<const token_id_t> ts) const
+                                                      span_t<const token_t> ts) const
   {
     name_id_t retval = scope_name;
     SILVA_EXPECT(!ts.empty(), MINOR);
     index_t idx = 0;
-    if (ts.front() == name_sep) {
+    if (ts.front().token_id == name_sep) {
       retval = name_id_none;
       idx += 1;
     }
     while (idx < ts.size()) {
-      const token_id_t base = ts[idx];
+      const token_id_t base = ts[idx].token_id;
       SILVA_EXPECT(base != name_sep, MINOR);
       retval = sfp->name_id(retval, base);
       idx += 1;
       if (idx < ts.size()) {
-        SILVA_EXPECT(ts[idx] == name_sep, MINOR);
+        SILVA_EXPECT(ts[idx].token_id == name_sep, MINOR);
         idx += 1;
       }
     }

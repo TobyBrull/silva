@@ -26,7 +26,8 @@ tokenizer Testor:
     const string_view_t src = "x = a + b\ny = c * d\n";
 
     const auto fp = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.seed", string_t{src}));
-    const auto tp = SILVA_REQUIRE(se->tokenizer_farm.apply(fp, sf.token_id("Testor")));
+    const tokenization_ptr_t tp =
+        SILVA_REQUIRE(se->tokenizer_farm.apply(fp, sf.token_id("Testor")));
 
     const string_view_t expected = R"'(
 [  0]   1:1   cat=name                 x

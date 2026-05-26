@@ -236,18 +236,18 @@ namespace silva::seed::impl {
         while (t_idx < t_end) {
           SILVA_EXPECT(t_idx + 1 < t_end, BROKEN_SEED);
           const string_t str =
-              SILVA_EXPECT_FWD(sfp->token_infos[tokens[t_idx + 1]].contained_string());
-          if (tokens[t_idx] == lexicon.ti_slash) {
+              SILVA_EXPECT_FWD(sfp->token_infos[tokens[t_idx + 1].token_id].contained_string());
+          if (tokens[t_idx].token_id == lexicon.ti_slash) {
             SILVA_EXPECT(!had_prefix, BROKEN_SEED);
             mm.prefix  = str;
             had_prefix = true;
           }
-          else if (tokens[t_idx] == lexicon.ti_backslash) {
+          else if (tokens[t_idx].token_id == lexicon.ti_backslash) {
             SILVA_EXPECT(!had_postfix, BROKEN_SEED);
             mm.postfix  = str;
             had_postfix = true;
           }
-          else if (tokens[t_idx] == lexicon.ti_pipe) {
+          else if (tokens[t_idx].token_id == lexicon.ti_pipe) {
             SILVA_EXPECT(!had_prefix, BROKEN_SEED);
             SILVA_EXPECT(!had_postfix, BROKEN_SEED);
             mm.exact    = str;
@@ -497,12 +497,13 @@ namespace silva::seed {
 
         frag_idx = SILVA_EXPECT_FWD(fp->advance_language(frag_idx));
 
-        const index_t language_idx = retval->languages.size();
-        const index_t token_idx    = retval->size();
-        retval->languages.emplace(token_idx, fragment_span_t{fp, old_frag_idx, frag_idx});
-        retval->tokens.push_back(token_id_language);
-        retval->categories.push_back(token_id_language);
-        retval->locations.push_back(fp->fragments[old_frag_idx].location);
+        const index_t token_idx = retval->size();
+        retval->tokens.push_back(token_t{
+            .token_id       = token_id_language,
+            .category_id    = token_id_language,
+            .frag_idx_begin = old_frag_idx,
+            .frag_idx_end   = frag_idx,
+        });
         continue;
       }
 
@@ -557,9 +558,12 @@ namespace silva::seed {
             tid = sfp->token_id("<ws>");
           }
 
-          retval->tokens.push_back(tid);
-          retval->categories.push_back(rule.token_category_name);
-          retval->locations.push_back(fp->fragments[frag_idx].location);
+          retval->tokens.push_back(token_t{
+              .token_id       = tid,
+              .category_id    = rule.token_category_name,
+              .frag_idx_begin = frag_idx,
+              .frag_idx_end   = cursor,
+          });
         }
 
         frag_idx = cursor;

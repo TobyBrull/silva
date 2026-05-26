@@ -113,23 +113,22 @@ namespace silva::lox {
                                                    const lexicon_t& lexicon)
   {
     SILVA_EXPECT(pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
-    const auto ti    = pts.ptp->tp->tokens[pts[0].token_begin];
-    const auto tc    = pts.ptp->tp->categories[pts[0].token_begin];
-    const auto tinfo = pts.ptp->tp->token_info_get(pts[0].token_begin);
-    if (ti == lexicon.ti_nil) {
+    const auto& token = pts.ptp->tp->tokens[pts[0].token_begin];
+    const auto tinfo  = pts.ptp->tp->token_info_get(pts[0].token_begin);
+    if (token.token_id == lexicon.ti_nil) {
       return object_pool.make(none);
     }
-    else if (ti == lexicon.ti_true) {
+    else if (token.token_id == lexicon.ti_true) {
       return object_pool.make(true);
     }
-    else if (ti == lexicon.ti_false) {
+    else if (token.token_id == lexicon.ti_false) {
       return object_pool.make(false);
     }
-    else if (tc == lexicon.ti_string) {
+    else if (token.category_id == lexicon.ti_string) {
       const auto sov = SILVA_EXPECT_FWD(tinfo->string_as_plain_contained());
       return object_pool.make(string_t{sov});
     }
-    else if (tc == lexicon.ti_number) {
+    else if (token.category_id == lexicon.ti_number) {
       const auto dd = SILVA_EXPECT_FWD(tinfo->number_as_double());
       return object_pool.make(double{dd});
     }
@@ -137,7 +136,7 @@ namespace silva::lox {
                  MINOR,
                  "{} could not turn literal into lox object {}",
                  pts,
-                 lexicon.sfp->token_id_wrap(ti));
+                 lexicon.sfp->token_id_wrap(token.token_id));
   }
 
   // object_t

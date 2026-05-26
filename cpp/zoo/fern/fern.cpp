@@ -157,7 +157,7 @@ namespace silva::fern {
           const auto& node = pts[child_node_index];
           if (labeled_item.num_children == 2 && child_index == 0) {
             SILVA_EXPECT(node.rule_name == lexicon.ni_label, MINOR);
-            const token_id_t tcat     = parse_tree->tp->categories[node.token_begin];
+            const token_id_t tcat     = parse_tree->tp->tokens[node.token_begin].category_id;
             const token_info_t* tinfo = parse_tree->tp->token_info_get(node.token_begin);
             if (tcat == lexicon.ti_string) {
               retval.label = string_t{SILVA_EXPECT_FWD(
@@ -174,23 +174,22 @@ namespace silva::fern {
           }
           else if (node.rule_name == lexicon.ni_value) {
             SILVA_EXPECT(node.num_children == 0, MINOR, "Value node must have zero children");
-            const token_id_t token_id  = parse_tree->tp->tokens[node.token_begin];
-            const token_id_t token_cat = parse_tree->tp->categories[node.token_begin];
-            const auto* tinfo          = parse_tree->tp->token_info_get(node.token_begin);
-            if (token_id == lexicon.ti_none) {
+            const auto& token = parse_tree->tp->tokens[node.token_begin];
+            const auto* tinfo = parse_tree->tp->token_info_get(node.token_begin);
+            if (token.token_id == lexicon.ti_none) {
               retval.item.value = none;
             }
-            else if (token_id == lexicon.ti_true) {
+            else if (token.token_id == lexicon.ti_true) {
               retval.item.value = true;
             }
-            else if (token_id == lexicon.ti_false) {
+            else if (token.token_id == lexicon.ti_false) {
               retval.item.value = false;
             }
-            else if (token_cat == lexicon.ti_string) {
+            else if (token.category_id == lexicon.ti_string) {
               retval.item.value =
                   string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
             }
-            else if (token_cat == lexicon.ti_number) {
+            else if (token.category_id == lexicon.ti_number) {
               retval.item.value = SILVA_EXPECT_FWD(tinfo->number_as_double(), MAJOR);
             }
             else {

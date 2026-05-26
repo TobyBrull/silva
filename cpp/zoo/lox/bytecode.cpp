@@ -26,7 +26,7 @@ namespace silva::lox {
     string_view_t space{space_buf};
     string_t retval;
     index_t ip = 0;
-    const file_location_t* prev_tloc{nullptr};
+    optional_t<file_location_t> prev_tloc;
     auto it        = origin_info.begin();
     const auto end = origin_info.end();
     while (ip < bytecode.size()) {
@@ -34,10 +34,9 @@ namespace silva::lox {
       retval += fmt::format("{:4} ", ip);
       const parse_tree_span_t pts = origin_info_at_instr(ip);
       SILVA_EXPECT(pts != parse_tree_span_t{}, ASSERT);
-      const file_location_t* tloc = &pts.ptp->tp->locations[pts[0].token_begin];
-      if (prev_tloc == nullptr || *prev_tloc != *tloc) {
-        retval +=
-            fmt::format("{:20}", fmt::format("[{}:{}]", tloc->line_num + 1, tloc->column + 1));
+      const auto tloc = pts.ptp->tp->location_at(pts[0].token_begin);
+      if (!prev_tloc.has_value() || prev_tloc != tloc) {
+        retval += fmt::format("{:20}", fmt::format("[{}:{}]", tloc.line_num + 1, tloc.column + 1));
       }
       else {
         retval += fmt::format("{:20}", " -- ");

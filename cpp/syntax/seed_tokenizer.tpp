@@ -101,18 +101,18 @@ tokenizer FreeForm:
     const auto tp = SILVA_REQUIRE(tf.apply(fr, ti_testor));
 
     REQUIRE(tp->size() == 8);
-    CHECK(tp->tokens[0] == sf.token_id("$hello"));
-    CHECK(tp->categories[0] == ti_name);
-    CHECK(tp->tokens[1] == sf.token_id("==+++"));
-    CHECK(tp->categories[1] == ti_op);
-    CHECK(tp->tokens[2] == sf.token_id("array_t"));
-    CHECK(tp->categories[2] == ti_name);
-    CHECK(tp->tokens[3] == sf.token_id("var/file.txt"));
-    CHECK(tp->categories[3] == ti_relp);
-    CHECK(tp->categories[4] == ti_lang);
-    CHECK(tp->categories[5] == ti_name);
-    CHECK(tp->categories[6] == ti_silly);
-    CHECK(tp->categories[7] == ti_sane);
+    CHECK(tp->tokens[0].token_id == sf.token_id("$hello"));
+    CHECK(tp->tokens[0].category_id == ti_name);
+    CHECK(tp->tokens[1].token_id == sf.token_id("==+++"));
+    CHECK(tp->tokens[1].category_id == ti_op);
+    CHECK(tp->tokens[2].token_id == sf.token_id("array_t"));
+    CHECK(tp->tokens[2].category_id == ti_name);
+    CHECK(tp->tokens[3].token_id == sf.token_id("var/file.txt"));
+    CHECK(tp->tokens[3].category_id == ti_relp);
+    CHECK(tp->tokens[4].category_id == ti_lang);
+    CHECK(tp->tokens[5].category_id == ti_name);
+    CHECK(tp->tokens[6].category_id == ti_silly);
+    CHECK(tp->tokens[7].category_id == ti_sane);
   }
   TEST_CASE("bootstrap-seed-tokenizer")
   {

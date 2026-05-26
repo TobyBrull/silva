@@ -19,6 +19,15 @@ namespace silva {
   constexpr inline name_id_t name_id_leave_abs  = 2;
   constexpr inline name_id_t name_id_leave_rel  = 3;
 
+  struct token_t {
+    token_id_t token_id    = token_id_none;
+    token_id_t category_id = token_id_none;
+    index_t frag_idx_begin = 0;
+    index_t frag_idx_end   = 0;
+
+    bool is_language() const;
+  };
+
   struct name_abs_t {
     name_id_t id = name_id_none;
   };
@@ -122,11 +131,11 @@ namespace silva {
     string_t name_id_str(name_id_t) const;
 
     expected_t<name_id_t> name_id_definition(const name_id_t scope_name,
-                                             span_t<const token_id_t>) const;
+                                             span_t<const token_t>) const;
 
     template<Namespace Ns>
     expected_t<name_id_t>
-    name_id_lookup(const name_id_t scope_name, span_t<const token_id_t>, const Ns&) const;
+    name_id_lookup(const name_id_t scope_name, span_t<const token_t>, const Ns&) const;
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
 
@@ -184,12 +193,12 @@ namespace silva {
 
   template<Namespace Ns>
   expected_t<name_id_t> lexicon_t::name_id_lookup(const name_id_t scope_name,
-                                                  const span_t<const token_id_t> ts,
+                                                  const span_t<const token_t> ts,
                                                   const Ns& ns) const
   {
     SILVA_EXPECT(!ts.empty(), MINOR);
     index_t idx = 0;
-    if (ts.front() == name_sep) {
+    if (ts.front().token_id == name_sep) {
       const name_id_t abs_name = SILVA_EXPECT_FWD(name_id_definition(scope_name, ts));
       SILVA_EXPECT(ns.contains(abs_name),
                    MINOR,
@@ -216,8 +225,8 @@ namespace silva {
                                  .finish(error_level_t::MINOR,
                                          "unable to lookup name in scope {}: {}...{}",
                                          name_id_wrap(scope_name),
-                                         sfp->token_id_wrap(ts.front()),
-                                         sfp->token_id_wrap(ts.back())));
+                                         sfp->token_id_wrap(ts.front().token_id),
+                                         sfp->token_id_wrap(ts.back().token_id)));
     }
   }
 }

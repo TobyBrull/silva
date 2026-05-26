@@ -1,7 +1,5 @@
 #pragma once
 
-#include "canopy/file_location.hpp"
-
 #include "fragmentization.hpp"
 
 namespace silva {
@@ -10,20 +8,11 @@ namespace silva {
     filepath_t filepath;
 
     fragment_span_t fs;
-
-    // For tokens that are a "language", the corresponding entry in "tokens" and in "categories"
-    // will both be "token_id_language".
-    array_t<token_id_t> tokens;
-    array_t<token_id_t> categories;
-    array_t<file_location_t> locations;
-
-    // Maps the *index* of an entry in "tokens" and "categories" that contains "token_id_language"
-    // to the corresponding range of fragments (including the LANG_BEGIN and LANG_END fragments).
-    hash_map_t<index_t, fragment_span_t> languages;
+    array_t<token_t> tokens;
 
     index_t size() const;
 
-    tokenization_t copy() const;
+    file_location_t location_at(index_t idx) const;
 
     const token_info_t* token_info_get(index_t token_index) const;
 
@@ -45,7 +34,7 @@ namespace silva {
 
     index_t size() const;
 
-    operator span_t<const token_id_t>();
+    operator span_t<const token_t>() const;
 
     friend void pretty_write_impl(const token_span_t&, byte_sink_t*);
   };
