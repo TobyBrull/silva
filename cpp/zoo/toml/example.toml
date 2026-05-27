@@ -74,21 +74,21 @@ false_value = false
 # ==============================================================================
 [datetimes]
 # Offset Date-Time (Fully qualified timestamps)
-#offset_utc = 1979-05-27T07:32:00Z
-#offset_numeric = 1979-05-27T00:32:00-07:00
-#offset_with_ms = 1979-05-27T00:32:00.999999-07:00
-#offset_space_separator = 1979-05-27 07:32:00Z
+offset_utc = 1979-05-27T07:32:00Z
+offset_numeric = 1979-05-27T00:32:00-07:00
+offset_with_ms = 1979-05-27T00:32:00.999999-07:00
+# offset_space_separator = 1979-05-27 07:32:00Z
 
 # Local Date-Time (Omits the timezone offset)
-#local_date_time = 1979-05-27T07:32:00
-#local_date_time_ms = 1979-05-27T07:32:00.999999
+local_date_time = 1979-05-27T07:32:00
+local_date_time_ms = 1979-05-27T07:32:00.999999
 #
 ## Local Date (Omits time entirely)
-#local_date = 1979-05-27
+local_date = 1979-05-27
 #
 ## Local Time (Omits date entirely)
-#local_time = 07:32:00
-#local_time_ms = 00:32:00.999999
+local_time = 07:32:00
+local_time_ms = 00:32:00.999999
 
 # ==============================================================================
 # DATA TYPE: ARRAYS

@@ -20,7 +20,10 @@ language Toml:
   InlineTable = '{' ( Keyval ( ',' Keyval ) * ',' ? ) ? '}'
   Number = ( '-' | '+' ) ? ( number | 'inf' | 'nan' )
 
-  DateTime = date_time | date
+  DateTime = no_whitespace (
+    number ':' number ':' number ( 'Z' | ':' number | ε ) |
+    number ' ' nubmer ':' number ':' number
+    )
   #  ;; Date and Time (as defined in RFC 3339)
   #
   #  date-time      = offset-date-time / local-date-time / local-date / local-time
