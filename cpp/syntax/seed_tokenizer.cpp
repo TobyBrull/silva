@@ -73,7 +73,7 @@ namespace silva::seed::impl {
     }
     const string_view_t frag_text = fr.get_fragment_text(frag_idx);
     using enum case_mask_t;
-    if (category == IDENTIFIER) {
+    if (category == ID_LOWER) {
       if (case_mask != ANY) {
         const case_mask_t frag_cm = SILVA_EXPECT_FWD(compute_case_mask(frag_text));
         if ((std::to_underlying(frag_cm) & std::to_underlying(case_mask)) == 0) {
@@ -138,7 +138,7 @@ namespace silva::seed::impl {
         return {{COMMENT, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_NUMBER) {
-        return {{NUMBER, case_mask_t::ANY}};
+        return {{DIGIT, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_STRING) {
         return {{STRING, case_mask_t::ANY}};
@@ -159,28 +159,28 @@ namespace silva::seed::impl {
         return {{OPERATOR, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_IDENTIFIER) {
-        return {{IDENTIFIER, case_mask_t::ANY}};
+        return {{ID_LOWER, case_mask_t::ANY}};
       }
       else if (ti == lexicon.ti_IDENTIFIER_SILVA_CASE) {
-        return {{IDENTIFIER, case_mask_t::SILVA_CASE}};
+        return {{ID_LOWER, case_mask_t::SILVA_CASE}};
       }
       else if (ti == lexicon.ti_IDENTIFIER_SNAKE_CASE) {
-        return {{IDENTIFIER, case_mask_t::SNAKE_CASE}};
+        return {{ID_LOWER, case_mask_t::SNAKE_CASE}};
       }
       else if (ti == lexicon.ti_IDENTIFIER_CAMEL_CASE) {
-        return {{IDENTIFIER, case_mask_t::CAMEL_CASE}};
+        return {{ID_LOWER, case_mask_t::CAMEL_CASE}};
       }
       else if (ti == lexicon.ti_IDENTIFIER_PASCAL_CASE) {
-        return {{IDENTIFIER, case_mask_t::PASCAL_CASE}};
+        return {{ID_LOWER, case_mask_t::PASCAL_CASE}};
       }
       else if (ti == lexicon.ti_IDENTIFIER_MACRO_CASE) {
-        return {{IDENTIFIER, case_mask_t::MACRO_CASE}};
+        return {{ID_LOWER, case_mask_t::MACRO_CASE}};
       }
       else if (ti == lexicon.ti_IDENTIFIER_UPPER_CASE) {
-        return {{IDENTIFIER, case_mask_t::UPPER_CASE}};
+        return {{ID_LOWER, case_mask_t::UPPER_CASE}};
       }
       else if (ti == lexicon.ti_IDENTIFIER_LOWER_CASE) {
-        return {{IDENTIFIER, case_mask_t::LOWER_CASE}};
+        return {{ID_LOWER, case_mask_t::LOWER_CASE}};
       }
       else {
         SILVA_EXPECT(false, MINOR);
@@ -600,19 +600,19 @@ namespace silva::seed {
     const matcher_t m_indent     = {.category = INDENT};
     const matcher_t m_dedent     = {.category = DEDENT};
     const matcher_t m_newline    = {.category = NEWLINE};
-    const matcher_t m_number     = {.category = NUMBER};
+    const matcher_t m_number     = {.category = DIGIT};
     const matcher_t m_string     = {.category = STRING};
     const matcher_t m_operator   = {.category = OPERATOR};
     const matcher_t m_paren      = {.category = PARENTHESIS};
-    const matcher_t m_id         = {.category = IDENTIFIER};
-    const matcher_t m_id_pascal  = {.category = IDENTIFIER, .case_mask = PASCAL_CASE};
-    const matcher_t m_id_snake   = {.category = IDENTIFIER, .case_mask = SNAKE_CASE};
-    const matcher_t m_id_macro   = {.category = IDENTIFIER, .case_mask = MACRO_CASE};
-    const matcher_t m_concat     = {.category = IDENTIFIER, .exact = "concat"};
-    const matcher_t m_but_then   = {.category = IDENTIFIER, .exact = "but_then"};
-    const matcher_t m_x          = {.category = IDENTIFIER, .exact = "x"};
-    const matcher_t m_p          = {.category = IDENTIFIER, .exact = "p"};
-    const matcher_t m_uscore     = {.category = IDENTIFIER, .exact = "_"};
+    const matcher_t m_id         = {.category = ID_LOWER};
+    const matcher_t m_id_pascal  = {.category = ID_LOWER, .case_mask = PASCAL_CASE};
+    const matcher_t m_id_snake   = {.category = ID_LOWER, .case_mask = SNAKE_CASE};
+    const matcher_t m_id_macro   = {.category = ID_LOWER, .case_mask = MACRO_CASE};
+    const matcher_t m_concat     = {.category = ID_LOWER, .exact = "concat"};
+    const matcher_t m_but_then   = {.category = ID_LOWER, .exact = "but_then"};
+    const matcher_t m_x          = {.category = ID_LOWER, .exact = "x"};
+    const matcher_t m_p          = {.category = ID_LOWER, .exact = "p"};
+    const matcher_t m_uscore     = {.category = ID_LOWER, .exact = "_"};
 
     const lexicon_t& lexicon = sfp->get_lexicon<lexicon_t>();
     {

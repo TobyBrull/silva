@@ -13,24 +13,32 @@ namespace silva {
   enum class fragment_category_t {
     INVALID = 0,
 
-    WHITESPACE,
-    COMMENT,
-
-    NUMBER,
     STRING,
 
     INDENT,
     DEDENT,
     NEWLINE,
 
+    SPACE,
+    LINEFEED,
+    DIGIT,
     PARENTHESIS,
     OPERATOR,
-    IDENTIFIER,
+
+    ID_LOWER,
+    ID_UPPER,
+    ID_START__NOT_ID_LOWER_AND_NOT_ID_UPPER,
+    ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT,
 
     LANG_BEGIN,
     LANG_END,
+
+    COMMENT,
+    WHITESPACE,
   };
 
+  constexpr bool is_fragment_category_id_start(fragment_category_t);
+  constexpr bool is_fragment_category_id_continue(fragment_category_t);
   constexpr bool is_fragment_category_real(fragment_category_t);
   constexpr bool is_fragment_category_visible(fragment_category_t);
 
@@ -89,6 +97,17 @@ namespace silva {
     return is_xid_start_generalized(cc) || cc == codepoint_category_t::XID_Continue;
   }
 
+  constexpr bool is_fragment_category_id_start(const fragment_category_t fc)
+  {
+    using enum fragment_category_t;
+    return (fc == ID_START__NOT_ID_LOWER_AND_NOT_ID_UPPER || fc == ID_LOWER || fc == ID_UPPER);
+  }
+  constexpr bool is_fragment_category_id_continue(const fragment_category_t fc)
+  {
+    using enum fragment_category_t;
+    return is_fragment_category_id_start(fc) && fc == ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT &&
+        fc == DIGIT;
+  }
   constexpr bool is_fragment_category_real(const fragment_category_t fc)
   {
     using enum fragment_category_t;
