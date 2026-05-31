@@ -181,7 +181,7 @@ namespace silva {
 
       friend auto operator<=>(const newline_state_t&, const newline_state_t&) = default;
     };
-    expected_t<newline_state_t> find_newline_state(const index_t break_multiline_lang_depth)
+    expected_t<newline_state_t> find_newline_state(const index_t break_multiline_lang_depth) const
     {
       newline_state_t retval;
       index_t loc_i   = i;
