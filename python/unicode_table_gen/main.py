@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
 import csv
 import requests
 import argparse
@@ -38,7 +38,7 @@ def codepoint_to_str(cp: Codepoint) -> str:
     retval = ""
     try:
         retval = chr(cp)
-    except:
+    except Exception:
         pass
     return retval
 
@@ -75,6 +75,8 @@ class UnicodeProperty:
         mm: dict[str, list[Codepoint]] = collections.defaultdict(list)
         for cp, val in enumerate(self.values):
             mm[val].append(cp)
+        # for cp in mm["XID_Start"]:
+        #    print(f"0x{cp:04x}    {codepoint_to_str(cp)}")
         retval = ""
         for k, codepoints in mm.items():
             retval += f"{k:20} [{len(codepoints):7}] "
@@ -85,7 +87,7 @@ class UnicodeProperty:
 
     def compute_enum_ints(self) -> dict[str, int]:
         enum_values: dict[str, bool] = {}
-        for cp, val in enumerate(self.values):
+        for _, val in enumerate(self.values):
             enum_values[val] = True
         retval: dict[str, int] = {}
         for idx, ev in enumerate(enum_values):
@@ -145,7 +147,7 @@ def parse_derived_file(filename: str) -> dict[str, UnicodeProperty]:
         elif len(row) == 3:
             propname_map[row[1]].recognise(row[0], row[2])
         else:
-            assert False, f"expected each row to have 2 or 3 fields"
+            assert False, "expected each row to have 2 or 3 fields"
     retval = {}
     for prop_name, prop in propname_map.items():
         retval["Derived_" + prop_name] = prop
@@ -181,7 +183,7 @@ def parse_unicode_data(filename: str) -> dict[str, UnicodeProperty]:
                     prop_gen_cat.recognise(
                         f"{range_start.codepoint_str}..{row[0]}", row[2]
                     )
-                    prop_gen_cat.recognise(
+                    prop_names.recognise(
                         f"{range_start.codepoint_str}..{row[0]}", row[1]
                     )
                     range_start = None
@@ -193,6 +195,7 @@ def parse_unicode_data(filename: str) -> dict[str, UnicodeProperty]:
                 assert range_start is None, f"{line_num=}"
                 prop_gen_cat.recognise_one(row[0], row[2])
                 prop_names.recognise_one(row[0], row[1])
+
     return {"Names": prop_names, "General_Category": prop_gen_cat}
 
 
@@ -219,7 +222,6 @@ def process_props(
     loaded_props: dict[str, UnicodeProperty],
 ) -> dict[str, UnicodeProperty]:
     retval: dict[str, UnicodeProperty] = {}
-
     prop_gen_cat = apply_mapping(
         loaded_props["General_Category"],
         make_mapping(
@@ -463,6 +465,7 @@ def handle_generate(args):
 
     # Process UCD data.
     cleaned_props = process_props(loaded_props)
+
     general_category = loaded_props["General_Category"]
     parens, parens_prop = discover_parentheses(
         general_category, loaded_props["Names"].values
@@ -480,7 +483,7 @@ def handle_generate(args):
         cleaned_props["XID_Start"], cleaned_props["XID_Continue"]
     )
     assert "YesNo" not in prop_comb.value_set(), (
-        f"Expected XID_Start to be subset of XID_Continue"
+        "Expected XID_Start to be subset of XID_Continue"
     )
 
     gen_cat = cleaned_props["General_Category"]
@@ -511,7 +514,7 @@ def handle_generate(args):
             "＿",
             "･",
         ]
-    ], f"Expected only one element in intersection of XID_Continue and Operator"
+    ]
 
     main_prop = UnicodeProperty("Forbidden")
     main_prop.ingest(cleaned_props["Operator"], "Yes", "Operator")
@@ -519,6 +522,7 @@ def handle_generate(args):
     main_prop.ingest(cleaned_props["IsParenthesis"], "Right", "ParenthesisRight")
     main_prop.ingest(cleaned_props["XID_Continue"], "Yes", "XID_Continue")
     main_prop.ingest(cleaned_props["XID_Start"], "Yes", "XID_Start")
+    print(main_prop.to_string())
     main_prop.ingest(
         cleaned_props["General_Category"], "LetterUppercase", "XID_Uppercase"
     )
