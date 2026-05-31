@@ -1,8 +1,14 @@
 # TODO
 
+* Parse -3.5e-4 in Seed, not in tokenization?
+* Parse Toml's "2025-07-03 23:55:00"?
+* Remove tokenization step (rename what is currently "fragmentization" to "tokenization")?
+    * add way to easily ignore whitespace, indent, etc...?
+
 * tokenization:
     * Parse Python
     * Parse C
+    * Parse Toml
     * Python style string interpolation
     * After errors, parsing should be resume (for error handling in IDEs)
 

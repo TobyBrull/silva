@@ -33,6 +33,7 @@ pyright = ">=1.1.409,<2"
 requests = ">=2.34.2,<3"
 numpy = ">=2.4.6,<3"
 pytest = ">=9.0.3,<10"
+termcolor = ">=3.3.0,<4"
 
 [feature.dev.dependencies]
 cmake-language-server = ">=0.1.11,<0.2"
@@ -52,6 +53,9 @@ default = ["clang-22", "build", "dev", "python"]
 args = [{ "arg" = "preset", "default" = "debug" }]
 cmd = "bash task_test.sh {{ preset }}"
 
+[tasks.test-python]
+cmd = "bash task_test_python.sh"
+
 [tasks.format-check]
 cmd = "bash task_format_check.sh"
 
@@ -61,6 +65,7 @@ cmd = "bash task_format.sh"
 [tasks.test-all]
 depends-on = [
   { task = "format-check", environment = "default" },
+  { task = "test-python", environment = "python-only" },
   { task = "test", environment = "gcc-15-build", args = ["debug"] },
   { task = "test", environment = "gcc-15-build", args = ["release"] },
   { task = "test", environment = "gcc-15-build", args = ["tracy"] },
