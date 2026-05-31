@@ -31,8 +31,6 @@ pixi run test-all && echo "ALL TESTS SUCCEEDED!"
 ## Development
 
 ```bash
-pixi run format
-
 eval "$( pixi shell-hook )"
 
 PRESET=debug

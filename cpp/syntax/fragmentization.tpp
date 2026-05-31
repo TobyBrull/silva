@@ -37,6 +37,7 @@ namespace silva::test {
     CHECK(cct[U'A'] == XID_Uppercase);
     CHECK(cct[U'a'] == XID_Lowercase);
     CHECK(cct[U'_'] == XID_Start);
+    CHECK(cct[U'林'] == XID_Start);
     CHECK(cct[U'-'] == Operator);
   }
 

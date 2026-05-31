@@ -533,8 +533,9 @@ def handle_generate(args):
     main_prop.ingest(cleaned_props["NFC_QuickCheck"], "No", "Forbidden")
     main_prop.values[str_to_codepoint("\n")] = "Newline"
     main_prop.values[str_to_codepoint(" ")] = "Space"
+    main_prop.values[str_to_codepoint("_")] = "XID_Start"
 
-    assert main_prop.values[str_to_codepoint("_")] == "XID_Continue"
+    assert main_prop.values[str_to_codepoint("_")] == "XID_Start"
     assert main_prop.values[str_to_codepoint("a")] == "XID_Lowercase"
     assert main_prop.values[str_to_codepoint("A")] == "XID_Uppercase"
     assert main_prop.values[str_to_codepoint("0")] == "XID_Continue"

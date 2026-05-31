@@ -1,3 +1,5 @@
+exclude = [".pixi/**"]
+
 [formatting]
 column_width = 100
 inline_table_expand = false
