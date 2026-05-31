@@ -21,13 +21,13 @@ Codepoint = int
 
 def handle_download(args):
     for unicode_file in unicode_files:
-        url = f'https://www.unicode.org/Public/UCD/latest/ucd/{unicode_file}'
+        url = f"https://www.unicode.org/Public/UCD/latest/ucd/{unicode_file}"
         target_filename = os.path.join(args.workdir, unicode_file)
 
         # Use stream=True to handle large files efficiently
         with requests.get(url, stream=True) as response:
             response.raise_for_status()  # Check for HTTP errors
-            with open(target_filename, 'wb') as f:
+            with open(target_filename, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
 
@@ -35,7 +35,7 @@ def handle_download(args):
 
 
 def codepoint_to_str(cp: Codepoint) -> str:
-    retval = ''
+    retval = ""
     try:
         retval = chr(cp)
     except:
@@ -54,7 +54,7 @@ class UnicodeProperty:
 
     def recognise(self, codepoint_str: str, value: str):
         if ".." in codepoint_str:
-            codepoint_range = codepoint_str.split('..', 1)
+            codepoint_range = codepoint_str.split("..", 1)
             assert len(codepoint_range) == 2
             codepoint_from = Codepoint(codepoint_range[0], 16)
             codepoint_upto = Codepoint(codepoint_range[1], 16)
@@ -111,7 +111,7 @@ class UnicodeProperty:
     def value_set(self) -> list[str]:
         return list(sorted(set(self.values)))
 
-    def ingest(self, other: 'UnicodeProperty', other_value: str, self_value: str):
+    def ingest(self, other: "UnicodeProperty", other_value: str, self_value: str):
         for cp, val in enumerate(other.values):
             if val == other_value:
                 self.values[cp] = self_value
@@ -126,12 +126,12 @@ class UnicodeProperty:
 
 def _load_derived_file(filename: str) -> list[tuple[str, ...]]:
     results = []
-    with open(filename, 'r') as file:
+    with open(filename, "r") as file:
         for line in file:
-            content = line.split('#', 1)[0].strip()
+            content = line.split("#", 1)[0].strip()
             if not content:
                 continue
-            fields = tuple(field.strip() for field in content.split(';'))
+            fields = tuple(field.strip() for field in content.split(";"))
             results.append(fields)
     return results
 
@@ -145,7 +145,7 @@ def parse_derived_file(filename: str) -> dict[str, UnicodeProperty]:
         elif len(row) == 3:
             propname_map[row[1]].recognise(row[0], row[2])
         else:
-            assert False, f'expected each row to have 2 or 3 fields'
+            assert False, f"expected each row to have 2 or 3 fields"
     retval = {}
     for prop_name, prop in propname_map.items():
         retval["Derived_" + prop_name] = prop
@@ -162,8 +162,8 @@ class RangeStart:
 def parse_unicode_data(filename: str) -> dict[str, UnicodeProperty]:
     prop_gen_cat = UnicodeProperty()
     prop_names = UnicodeProperty()
-    with open(filename, 'r') as file:
-        reader = csv.reader(file, delimiter=';')
+    with open(filename, "r") as file:
+        reader = csv.reader(file, delimiter=";")
         range_start: RangeStart | None = None
         for line_num, row in enumerate(reader):
             row_name = row[1]
@@ -171,13 +171,19 @@ def parse_unicode_data(filename: str) -> dict[str, UnicodeProperty]:
                 row_name = row_name[1:-1]
                 if row_name.endswith("First"):
                     assert range_start is None
-                    range_start = RangeStart(name=row_name[:-5], codepoint_str=row[0], value=row[2])
+                    range_start = RangeStart(
+                        name=row_name[:-5], codepoint_str=row[0], value=row[2]
+                    )
                 elif row_name.endswith("Last"):
                     assert range_start is not None
                     assert range_start.name + "Last" == row_name
                     assert range_start.value == row[2]
-                    prop_gen_cat.recognise(f"{range_start.codepoint_str}..{row[0]}", row[2])
-                    prop_gen_cat.recognise(f"{range_start.codepoint_str}..{row[0]}", row[1])
+                    prop_gen_cat.recognise(
+                        f"{range_start.codepoint_str}..{row[0]}", row[2]
+                    )
+                    prop_gen_cat.recognise(
+                        f"{range_start.codepoint_str}..{row[0]}", row[1]
+                    )
                     range_start = None
                 else:
                     raise Exception(
@@ -209,7 +215,9 @@ def apply_mapping(prop: UnicodeProperty, mapping) -> UnicodeProperty:
 YES_mapping = make_mapping({"Invalid": "No", "YES": "Yes"})
 
 
-def process_props(loaded_props: dict[str, UnicodeProperty]) -> dict[str, UnicodeProperty]:
+def process_props(
+    loaded_props: dict[str, UnicodeProperty],
+) -> dict[str, UnicodeProperty]:
     retval: dict[str, UnicodeProperty] = {}
 
     prop_gen_cat = apply_mapping(
@@ -254,7 +262,9 @@ def process_props(loaded_props: dict[str, UnicodeProperty]) -> dict[str, Unicode
     retval["General_Category"] = prop_gen_cat
 
     retval["XID_Start"] = apply_mapping(loaded_props["Derived_XID_Start"], YES_mapping)
-    retval["XID_Continue"] = apply_mapping(loaded_props["Derived_XID_Continue"], YES_mapping)
+    retval["XID_Continue"] = apply_mapping(
+        loaded_props["Derived_XID_Continue"], YES_mapping
+    )
 
     # retval["Math"] = apply_mapping(loaded_props["Derived_Math"], YES_mapping)
     retval["Operator"] = apply_mapping(
@@ -286,7 +296,11 @@ def process_props(loaded_props: dict[str, UnicodeProperty]) -> dict[str, Unicode
 
 class MultistageTable:
     def __init__(
-        self, num_lower_bits: int, stage_1: list[int], stage_2: list[int], stage_3: list[dict]
+        self,
+        num_lower_bits: int,
+        stage_1: list[int],
+        stage_2: list[int],
+        stage_3: list[dict],
     ):
         self.num_lower_bits = num_lower_bits
         self.stage_1 = stage_1
@@ -295,9 +309,11 @@ class MultistageTable:
 
     def stats(self) -> str:
         total_size = (
-            len(self.stage_1) + len(self.stage_2) + len(self.stage_3) * len(self.stage_3[0])
+            len(self.stage_1)
+            + len(self.stage_2)
+            + len(self.stage_3) * len(self.stage_3[0])
         )
-        return f'{len(self.stage_1)=} {len(self.stage_2)=} {len(self.stage_3)=} = {total_size=}'
+        return f"{len(self.stage_1)=} {len(self.stage_2)=} {len(self.stage_3)=} = {total_size=}"
 
     def to_cpp(self, cppw: CppWriter):
         cppw.hpp += "  enum class codepoint_category_t {\n"
@@ -318,7 +334,9 @@ class MultistageTable:
                     retval += " "
             return retval
 
-        cppw.cpp += "  unicode::table_t<codepoint_category_t> codepoint_category_table {\n"
+        cppw.cpp += (
+            "  unicode::table_t<codepoint_category_t> codepoint_category_table {\n"
+        )
         cppw.cpp += "    .stage_1 = {" + array_to_str(self.stage_1) + "},\n"
         cppw.cpp += "    .stage_2 = {" + array_to_str(self.stage_2) + "},\n"
         cppw.cpp += "    .stage_3 = {" + array_to_str(self.stage_3) + "},\n"
@@ -326,10 +344,12 @@ class MultistageTable:
         cppw.cpp += "\n"
 
 
-def make_multi_stage_table(num_lower_bits: int, prop: UnicodeProperty) -> MultistageTable:
+def make_multi_stage_table(
+    num_lower_bits: int, prop: UnicodeProperty
+) -> MultistageTable:
     len_stage_1 = 0x110000 >> num_lower_bits
     block_len_stage_2 = 1 << num_lower_bits
-    print(f'{len_stage_1=} {block_len_stage_2=}')
+    print(f"{len_stage_1=} {block_len_stage_2=}")
     stage_1 = [0] * len_stage_1
     stage_2_blocks: dict[tuple, int] = {}
     stage_2 = []
@@ -390,13 +410,13 @@ class ParenthesesMap:
         cppw.hpp += "  extern hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis;\n"
         cppw.hpp += "\n"
 
-        cppw.cpp += (
-            "  hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis {\n"
-        )
+        cppw.cpp += "  hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis {\n"
         for pp in self.parens:
             cppw.cpp += f"    {{0x{pp.left:04x}, 0x{pp.right:04x}}}, "
             cppw.cpp += f"{{0x{pp.right:04x}, 0x{pp.left:04x}}},"
-            cppw.cpp += f" // {codepoint_to_str(pp.left)} {codepoint_to_str(pp.right)}\n"
+            cppw.cpp += (
+                f" // {codepoint_to_str(pp.left)} {codepoint_to_str(pp.right)}\n"
+            )
         cppw.cpp += "  };\n"
         cppw.cpp += "\n"
 
@@ -444,7 +464,9 @@ def handle_generate(args):
     # Process UCD data.
     cleaned_props = process_props(loaded_props)
     general_category = loaded_props["General_Category"]
-    parens, parens_prop = discover_parentheses(general_category, loaded_props["Names"].values)
+    parens, parens_prop = discover_parentheses(
+        general_category, loaded_props["Names"].values
+    )
     cleaned_props["IsParenthesis"] = parens_prop
 
     # Print processed UCD data.
@@ -454,36 +476,42 @@ def handle_generate(args):
     pprint.pprint(parens.parens[:10])
     print()
 
-    prop_comb = UnicodeProperty.combine(cleaned_props["XID_Start"], cleaned_props["XID_Continue"])
-    assert "YesNo" not in prop_comb.value_set(), f'Expected XID_Start to be subset of XID_Continue'
+    prop_comb = UnicodeProperty.combine(
+        cleaned_props["XID_Start"], cleaned_props["XID_Continue"]
+    )
+    assert "YesNo" not in prop_comb.value_set(), (
+        f"Expected XID_Start to be subset of XID_Continue"
+    )
 
     gen_cat = cleaned_props["General_Category"]
     prop_comb = UnicodeProperty.combine(gen_cat, cleaned_props["XID_Start"])
     assert "LetterUppercaseNo" not in prop_comb.value_set()
     assert "LetterLowercaseNo" not in prop_comb.value_set()
 
-    prop_comb = UnicodeProperty.combine(cleaned_props["XID_Continue"], cleaned_props["Operator"])
+    prop_comb = UnicodeProperty.combine(
+        cleaned_props["XID_Continue"], cleaned_props["Operator"]
+    )
     assert prop_comb.get_by_value("YesYes") == [
         str_to_codepoint(x)
         for x in [
-            '_',
-            '·',
-            '·',
-            '‿',
-            '⁀',
-            '⁔',
-            '℘',
-            '℮',
-            '・',
-            '︳',
-            '︴',
-            '﹍',
-            '﹎',
-            '﹏',
-            '＿',
-            '･',
+            "_",
+            "·",
+            "·",
+            "‿",
+            "⁀",
+            "⁔",
+            "℘",
+            "℮",
+            "・",
+            "︳",
+            "︴",
+            "﹍",
+            "﹎",
+            "﹏",
+            "＿",
+            "･",
         ]
-    ], f'Expected only one element in intersection of XID_Continue and Operator'
+    ], f"Expected only one element in intersection of XID_Continue and Operator"
 
     main_prop = UnicodeProperty("Forbidden")
     main_prop.ingest(cleaned_props["Operator"], "Yes", "Operator")
@@ -491,22 +519,25 @@ def handle_generate(args):
     main_prop.ingest(cleaned_props["IsParenthesis"], "Right", "ParenthesisRight")
     main_prop.ingest(cleaned_props["XID_Continue"], "Yes", "XID_Continue")
     main_prop.ingest(cleaned_props["XID_Start"], "Yes", "XID_Start")
-    main_prop.ingest(cleaned_props["General_Category"], "LetterUppercase", "XID_Uppercase")
-    main_prop.ingest(cleaned_props["General_Category"], "LetterLowercase", "XID_Lowercase")
-    main_prop.values[str_to_codepoint('_')] = "XID_Start"
+    main_prop.ingest(
+        cleaned_props["General_Category"], "LetterUppercase", "XID_Uppercase"
+    )
+    main_prop.ingest(
+        cleaned_props["General_Category"], "LetterLowercase", "XID_Lowercase"
+    )
     main_prop.ingest(cleaned_props["General_Category"], "Unassigned", "Forbidden")
     main_prop.ingest(cleaned_props["NFC_QuickCheck"], "No", "Forbidden")
-    main_prop.values[str_to_codepoint('\n')] = "Newline"
-    main_prop.values[str_to_codepoint(' ')] = "Space"
+    main_prop.values[str_to_codepoint("\n")] = "Newline"
+    main_prop.values[str_to_codepoint(" ")] = "Space"
 
-    assert main_prop.values[str_to_codepoint('_')] == "XID_Start"
-    assert main_prop.values[str_to_codepoint('a')] == "XID_Lowercase"
-    assert main_prop.values[str_to_codepoint('A')] == "XID_Uppercase"
-    assert main_prop.values[str_to_codepoint('0')] == "XID_Continue"
+    assert main_prop.values[str_to_codepoint("_")] == "XID_Continue"
+    assert main_prop.values[str_to_codepoint("a")] == "XID_Lowercase"
+    assert main_prop.values[str_to_codepoint("A")] == "XID_Uppercase"
+    assert main_prop.values[str_to_codepoint("0")] == "XID_Continue"
     assert main_prop.values[str_to_codepoint('"')] == "Operator"
-    assert main_prop.values[str_to_codepoint('*')] == "Operator"
-    assert main_prop.values[str_to_codepoint('!')] == "Operator"
-    assert main_prop.values[str_to_codepoint('⊙')] == "Operator"
+    assert main_prop.values[str_to_codepoint("*")] == "Operator"
+    assert main_prop.values[str_to_codepoint("!")] == "Operator"
+    assert main_prop.values[str_to_codepoint("⊙")] == "Operator"
 
     print(main_prop.to_string())
 
@@ -523,18 +554,18 @@ def handle_generate(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--workdir', type=str, required=True)
+    parser.add_argument("--workdir", type=str, required=True)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    download_parser = subparsers.add_parser('download')
+    download_parser = subparsers.add_parser("download")
     download_parser.set_defaults(func=handle_download)
-    generate_parser = subparsers.add_parser('generate')
+    generate_parser = subparsers.add_parser("generate")
     generate_parser.set_defaults(func=handle_generate)
-    generate_parser.add_argument('--num-lower-bits', type=int, default=8)
-    generate_parser.add_argument('--output-file-base', type=str, required=True)
+    generate_parser.add_argument("--num-lower-bits", type=int, default=8)
+    generate_parser.add_argument("--output-file-base", type=str, required=True)
     args = parser.parse_args()
-    assert os.path.exists(args.workdir) and os.path.isdir(
-        args.workdir
-    ), f'Could not find {args.workdir=}'
+    assert os.path.exists(args.workdir) and os.path.isdir(args.workdir), (
+        f"Could not find {args.workdir=}"
+    )
     args.func(args)
 
 
