@@ -109,16 +109,6 @@ namespace silva::seed {
     const name_id_t ni_axe_ops     = sfp->name_id_of(ni_axe, "Ops");
     const name_id_t ni_axe_op_type = sfp->name_id_of(ni_axe, "OpType");
     const name_id_t ni_axe_op      = sfp->name_id_of(ni_axe, "Op");
-
-    const name_id_t ni_tok             = sfp->name_id_of(ni_seed, "Tokenizer");
-    const name_id_t ni_tok_inc_rule    = sfp->name_id_of(ni_tok, "IncludeRule");
-    const name_id_t ni_tok_ign_rule    = sfp->name_id_of(ni_tok, "IgnoreRule");
-    const name_id_t ni_tok_tok_rule    = sfp->name_id_of(ni_tok, "TokenRule");
-    const name_id_t ni_tok_defn        = sfp->name_id_of(ni_tok, "Defn");
-    const name_id_t ni_tok_prefix_item = sfp->name_id_of(ni_tok, "PrefixItem");
-    const name_id_t ni_tok_item        = sfp->name_id_of(ni_tok, "Item");
-    const name_id_t ni_tok_matcher     = sfp->name_id_of(ni_tok, "Matcher");
-    const name_id_t ni_tok_list        = sfp->name_id_of(ni_tok, "List");
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
 }

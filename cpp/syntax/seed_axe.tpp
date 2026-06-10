@@ -11,11 +11,12 @@ using enum silva::seed::impl::assoc_t;
 
 namespace silva::seed::test {
   template<typename SeedAxeNursery>
-  expected_t<parse_tree_ptr_t> run_axe(syntax_farm_t& sf, const axe_t& axe, tokenization_ptr_t tp)
+  expected_t<parse_tree_ptr_t>
+  run_axe(syntax_farm_t& sf, const axe_t& axe, fragmentization_ptr_t fp)
   {
-    const index_t n     = tp->size();
+    const index_t n     = fp->size();
     const auto& lexicon = sf.get_lexicon<lexicon_t>();
-    SeedAxeNursery nursery(axe, std::move(tp), lexicon);
+    SeedAxeNursery nursery(axe, std::move(fp), lexicon);
     const parse_tree_node_t sub = SILVA_EXPECT_FWD(nursery.expression());
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.subtree_size == nursery.tree.size(), ASSERT);
@@ -30,9 +31,8 @@ namespace silva::seed::test {
                 const optional_t<string_view_t> expected_str)
   {
     INFO(text);
-    auto tt =
-        SILVA_REQUIRE(si.tokenizer_farm.apply_text("", string_t{text}, si.sfp->token_id("Fern")));
-    auto maybe_result_pt = run_axe<SeedAxeNursery>(*si.sfp, pa, std::move(tt));
+    auto fp              = SILVA_REQUIRE(fragmentize(si.sfp, "", string_t{text}));
+    auto maybe_result_pt = run_axe<SeedAxeNursery>(*si.sfp, pa, std::move(fp));
     optional_t<string_t> result_str;
     if (maybe_result_pt.has_value()) {
       auto result_pt = *std::move(maybe_result_pt);
@@ -58,7 +58,7 @@ namespace silva::seed::test {
       const name_id_t ni_atom = sfp->name_id_of("Test", "Atom");
       const name_id_t ni_expr = sfp->name_id_of("Expr");
 
-      test_nursery_t(const axe_t& axe, tokenization_ptr_t tp, const lexicon_t& lexicon)
+      test_nursery_t(const axe_t& axe, fragmentization_ptr_t tp, const lexicon_t& lexicon)
         : parse_tree_nursery_t(tp), axe(axe), lexicon(lexicon)
       {
       }
@@ -418,8 +418,8 @@ namespace silva::seed::test {
       const name_id_t ni_arg        = sfp->name_id_of("Test", "Arg");
       const name_id_t ni_args       = sfp->name_id_of("Test", "Args");
 
-      test_nursery_t(const axe_t& axe, tokenization_ptr_t tp, const lexicon_t& lexicon)
-        : parse_tree_nursery_t(tp), axe(axe), lexicon(lexicon)
+      test_nursery_t(const axe_t& axe, fragmentization_ptr_t fp, const lexicon_t& lexicon)
+        : parse_tree_nursery_t(fp), axe(axe), lexicon(lexicon)
       {
       }
 

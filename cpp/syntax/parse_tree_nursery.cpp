@@ -45,15 +45,15 @@ namespace silva {
 
   // parse_tree_nursery_t
 
-  unique_ptr_t<parse_tree_t> parse_tree_nursery_t::finish() &&
+  parse_tree_ptr_t parse_tree_nursery_t::finish() &&
   {
     return std::make_unique<parse_tree_t>(parse_tree_t{
-        .tp    = std::move(tp),
+        .fp    = std::move(fp),
         .nodes = std::move(tree),
     });
   }
 
-  parse_tree_nursery_t::parse_tree_nursery_t(tokenization_ptr_t tp) : sfp(tp->sfp), tp(tp) {}
+  parse_tree_nursery_t::parse_tree_nursery_t(fragmentization_ptr_t fp) : sfp(fp->sfp), tp(fp) {}
 
   // Token helper functions.
 

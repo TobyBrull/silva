@@ -129,13 +129,6 @@ namespace silva::seed::impl {
       return {};
     }
 
-    expected_t<void> handle_tokenizer(const parse_tree_span_t pts_tok)
-    {
-      SILVA_EXPECT(pts_tok[0].rule_name == lexicon.ni_tok, MINOR, "expected Tokenizer");
-      SILVA_EXPECT_FWD(se->tokenizer_farm.add(pts_tok));
-      return {};
-    }
-
     template<typename Iter>
     expected_t<void> handle_scope_impl(const name_id_t scope_name,
                                        const parse_tree_span_t pts_scope,
@@ -202,10 +195,7 @@ namespace silva::seed::impl {
 
       for (const auto [node_index, child_index]: pts_seed.children_range()) {
         const auto pts_child = pts_seed.sub_tree_span_at(node_index);
-        if (pts_child[0].rule_name == lexicon.ni_tok) {
-          SILVA_EXPECT_FWD(handle_tokenizer(pts_child));
-        }
-        else if (pts_child[0].rule_name == lexicon.ni_language) {
+        if (pts_child[0].rule_name == lexicon.ni_language) {
           SILVA_EXPECT_FWD(handle_language(scope_name, pts_child));
         }
         else if (pts_child[0].rule_name == lexicon.ni_scope) {
@@ -272,16 +262,16 @@ namespace silva::seed::impl {
 
     seed_exec_trace_t exec_trace{.sfp = sfp, .lexicon = lexicon};
 
-    interpreter_apply_nursery_t(tokenization_ptr_t tp,
+    interpreter_apply_nursery_t(fragmentization_ptr_t fp,
                                 const lexicon_t& lexicon,
                                 const interpreter_t* root)
-      : parse_tree_nursery_t(tp), lexicon(lexicon), se(root)
+      : parse_tree_nursery_t(fp), lexicon(lexicon), se(root)
     {
     }
 
     expected_t<void> check()
     {
-      SILVA_EXPECT(sfp == tp->sfp,
+      SILVA_EXPECT(sfp == fp->sfp,
                    MAJOR,
                    "Seed and target parse-trees/tokenizations must be in same syntax_farm_t");
       return {};
@@ -630,10 +620,7 @@ namespace silva::seed::impl {
 }
 
 namespace silva::seed {
-  interpreter_t::interpreter_t(syntax_farm_ptr_t sfp)
-    : sfp(sfp), bootstrap_interpreter(sfp), tokenizer_farm(sfp)
-  {
-  }
+  interpreter_t::interpreter_t(syntax_farm_ptr_t sfp) : sfp(sfp), bootstrap_interpreter(sfp) {}
 
   expected_t<void> interpreter_t::add_seed(parse_tree_span_t pts)
   {
@@ -709,14 +696,6 @@ namespace silva::seed {
 
     for (auto& [rule_name, axe]: axes) {
       SILVA_EXPECT_FWD(axe.compile(lexicon, rule_exprs));
-    }
-
-    for (const auto& [lang_id, lang_pts]: languages) {
-      SILVA_EXPECT(tokenizer_farm.tokenizers.contains(lang_id),
-                   MINOR,
-                   "language {} defined at {} doesn't have a tokenizer",
-                   sfp->token_id_wrap(lang_id),
-                   lang_pts);
     }
 
     is_compiled = true;

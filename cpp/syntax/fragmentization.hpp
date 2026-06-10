@@ -58,6 +58,8 @@ namespace silva {
 
     array_t<fragment_t> fragments;
 
+    index_t size() const;
+
     string_view_t get_fragment_text(index_t fragment_idx) const;
 
     expected_t<index_t> advance_language(const index_t start) const;

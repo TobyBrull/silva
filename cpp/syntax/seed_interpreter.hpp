@@ -2,15 +2,12 @@
 
 #include "seed.hpp"
 #include "seed_axe.hpp"
-#include "seed_tokenizer.hpp"
 
 namespace silva::seed {
   // Driver for a program in the Seed language.
   struct interpreter_t {
     syntax_farm_ptr_t sfp;
     bootstrap_interpreter_t bootstrap_interpreter;
-
-    tokenizer_farm_t tokenizer_farm;
 
     struct rule_expr_data_t {
       parse_tree_span_t expr;

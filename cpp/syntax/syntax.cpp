@@ -1,7 +1,6 @@
 #include "syntax.hpp"
 
 #include "seed.hpp"
-#include "seed_tokenizer.hpp"
 
 #include "zoo/fern/fern.hpp"
 

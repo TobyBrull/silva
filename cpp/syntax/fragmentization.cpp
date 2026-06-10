@@ -537,6 +537,11 @@ namespace silva {
     stream->format("{} {}", silva::pretty_string(ff.category), silva::pretty_string(ff.location));
   }
 
+  index_t fragmentization_t::size() const
+  {
+    return fragments.size();
+  }
+
   string_view_t fragmentization_t::get_fragment_text(const index_t frag_idx) const
   {
     const index_t start = fragments[frag_idx].location.byte_offset;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "seed.lexicon.hpp"
-#include "seed_tokenizer.hpp"
 
 #include "parse_tree.hpp"
 
@@ -50,30 +49,39 @@ namespace silva::seed {
   //  * "any" matches any token and also end-of-file.
 
   const string_view_t seed_str = R"'(
-tokenizer Seed:
-  frag_name = IDENTIFIER_MACRO_CASE
-  rule_name = IDENTIFIER_PASCAL_CASE
-  token_category_name = IDENTIFIER_SNAKE_CASE
-  include tokenizer OffSide
+identifier = ID_START ID_CONTINUE *
+id_kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *
+id_snake_case = ID_LOWER + ( '_' ID_LOWER + ) *
+id_camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *
+id_pascal_case = ( ID_UPPER ID_LOWER + ) +
+id_macro_case = ID_UPPER + ( '_' ID_UPPER ) *
 
 language Seed:
   ⊙ = ( Tokenizer | Language | Scope | Rule ) *
+
+  skip = SPACE *
+
+  frag_name = id_macro_case
+  rule_name = id_pascal_case
+  token_category_name = id_snake_case
+
   Language = 'language' rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
-  ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
-  Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe | Qualifier * Expr newline )
+  ScopeImpl = alias NEWLINE INDENT ( Scope | Rule ) * DEDENT
+  Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe | Qualifier * Expr NEWLINE )
   Qualifier = 'alias' | 'no_whitespace'
   Expr:
-    ⊙ = axe Atom
+    ⊙ = axe Atom operator
       Prefix    = rtl   prefix 'not'
       Postfix   = ltr   postfix '?' '*' '+'
       Concat    = ltr   infix_flat concat
       And       = ltr   infix_flat 'but_then'
       Or        = ltr   infix_flat '|'
     Atom = alias Nonterminal | Terminal | '(' Expr ')'
+    operator = ( 'not' | 'but_then' | OPERATOR )
     Alias = Expr
   Nonterminal = '.' ? rule_name ( '.' rule_name ) *
-  Terminal = ( string | token_category_name
+  Terminal = ( STRING | token_category_name
              | 'any' | 'ε' | 'end_of_file' )
 
 None = ε
@@ -94,7 +102,6 @@ None = ε
     ~bootstrap_interpreter_t();
 
     const lexicon_t& lexicon() const;
-    const tokenizer_farm_t& tokenizer_farm() const;
 
     expected_t<parse_tree_ptr_t> parse(fragment_span_t);
   };
