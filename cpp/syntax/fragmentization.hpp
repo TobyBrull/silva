@@ -36,7 +36,7 @@ namespace silva {
     COMMENT,
     WHITESPACE,
   };
-
+  constexpr bool has_unique_codepoint(fragment_category_t);
   constexpr bool is_fragment_category_id_start(fragment_category_t);
   constexpr bool is_fragment_category_id_continue(fragment_category_t);
   constexpr bool is_fragment_category_real(fragment_category_t);
@@ -60,13 +60,24 @@ namespace silva {
 
     index_t size() const;
 
-    string_view_t get_fragment_text(index_t fragment_idx) const;
+    file_location_t location_at(index_t idx) const;
+
+    string_view_t get_fragment_text(index_t frag_idx) const;
+    index_t get_fragment_byte_offset(index_t frag_idx) const;
+    expected_t<unicode::codepoint_t> get_unique_codepoint(index_t frag_idx) const;
 
     expected_t<index_t> advance_language(const index_t start) const;
 
     friend void pretty_write_impl(const fragmentization_t&, byte_sink_t*);
   };
   using fragmentization_ptr_t = ptr_t<const fragmentization_t>;
+
+  struct fragment_location_t {
+    fragmentization_ptr_t fp;
+    index_t fragment_index = 0;
+
+    friend void pretty_write_impl(const fragment_location_t&, byte_sink_t*);
+  };
 
   struct fragment_span_t {
     fragmentization_ptr_t fp;
@@ -89,6 +100,20 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+  constexpr bool has_unique_codepoint(const fragment_category_t fc)
+  {
+    using enum fragment_category_t;
+    return (fc == SPACE ||                                   //
+            fc == LINEFEED ||                                //
+            fc == DIGIT ||                                   //
+            fc == PARENTHESIS ||                             //
+            fc == OPERATOR ||                                //
+            fc == ID_LOWER ||                                //
+            fc == ID_UPPER ||                                //
+            fc == ID_START__NOT_ID_LOWER_AND_NOT_ID_UPPER || //
+            fc == ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT || //
+            false);
+  }
   constexpr bool is_xid_start_generalized(const codepoint_category_t cc)
   {
     using enum codepoint_category_t;
@@ -115,9 +140,14 @@ namespace silva {
     using enum fragment_category_t;
     return (fc != WHITESPACE && fc != COMMENT);
   }
-  constexpr bool is_fragment_category_visible(fragment_category_t fc)
+  constexpr bool is_fragment_category_visible(const fragment_category_t fc)
   {
     using enum fragment_category_t;
-    return (fc != WHITESPACE && fc != COMMENT && fc != INDENT && fc != DEDENT && fc != NEWLINE);
+    return (fc != WHITESPACE && //
+            fc != COMMENT &&    //
+            fc != INDENT &&     //
+            fc != DEDENT &&     //
+            fc != NEWLINE &&    //
+            true);
   }
 }

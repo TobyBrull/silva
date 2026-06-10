@@ -12,10 +12,7 @@ namespace silva {
   {
     if (idx < size()) {
       const index_t frag_idx = tokens[idx].frag_idx_begin;
-      const auto& fragments  = fs.fp->fragments;
-      if (frag_idx < fragments.size()) {
-        return fragments[frag_idx].location;
-      }
+      return fs.fp->location_at(frag_idx);
     }
     return file_location_eof;
   }

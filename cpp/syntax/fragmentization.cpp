@@ -542,6 +542,14 @@ namespace silva {
     return fragments.size();
   }
 
+  file_location_t fragmentization_t::location_at(const index_t idx) const
+  {
+    if (idx < size()) {
+      return fragments[idx].location;
+    }
+    return file_location_eof;
+  }
+
   string_view_t fragmentization_t::get_fragment_text(const index_t frag_idx) const
   {
     const index_t start = fragments[frag_idx].location.byte_offset;
@@ -549,6 +557,28 @@ namespace silva {
         ? fragments[frag_idx + 1].location.byte_offset
         : source_code.size();
     return string_view_t{source_code}.substr(start, end - start);
+  }
+
+  index_t fragmentization_t::get_fragment_byte_offset(const index_t frag_idx) const
+  {
+    if (frag_idx < size()) {
+      return fragments[frag_idx].location.byte_offset;
+    }
+    else {
+      return source_code.size();
+    }
+  }
+
+  expected_t<unicode::codepoint_t>
+  fragmentization_t::get_unique_codepoint(const index_t frag_idx) const
+  {
+    const auto frag = fragments[frag_idx];
+    SILVA_EXPECT(has_unique_codepoint(frag.category), MINOR);
+    const index_t bo         = frag.location.byte_offset;
+    const string_view_t subs = string_view_t{source_code}.substr(bo);
+    const auto [cp, new_idx] = SILVA_EXPECT_FWD(unicode::utf8_decode_one(subs));
+    SILVA_EXPECT(get_fragment_byte_offset(frag_idx + 1) == bo + new_idx, MAJOR);
+    return cp;
   }
 
   expected_t<index_t> fragmentization_t::advance_language(const index_t start) const
@@ -591,5 +621,15 @@ namespace silva {
       stream->format("[{}]", hexdump(sv));
       stream->write_str("\n");
     }
+  }
+
+  void pretty_write_impl(const fragment_location_t& self, byte_sink_t* stream)
+  {
+    if (self.fp.is_nullptr()) {
+      stream->write_str("unknown token-location");
+      return;
+    }
+    stream->format("{}:", self.fp->filepath.filename().string());
+    silva::pretty_write(self.fp->location_at(self.fragment_index), stream);
   }
 }

@@ -10,30 +10,30 @@ namespace silva {
   SILVA_EXPECT(cond,                                 \
                MINOR,                                \
                "[{}] {}: " fmt_str,                  \
-               token_location_by(),                  \
+               fragment_location_by(),               \
                lexicon.name_id_wrap(name) __VA_OPT__(, ) __VA_ARGS__);
 
-#define SILVA_EXPECT_PARSE_TOKEN_ID(name, token_id)                       \
-  SILVA_EXPECT_PARSE(name,                                                \
-                     num_tokens_left() >= 1 && token_id_by() == token_id, \
-                     "expected {}, got {}",                               \
-                     sfp->token_id_wrap(token_id),                        \
-                     sfp->token_id_wrap(token_id_by()));                  \
-  token_index += 1;
-
-#define SILVA_EXPECT_PARSE_TOKEN_CATEGORY(name, token_cat)                       \
-  SILVA_EXPECT_PARSE(name,                                                       \
-                     num_tokens_left() >= 1 && token_category_by() == token_cat, \
-                     "expected category {}, got {}",                             \
-                     sfp->token_id_wrap(token_cat),                              \
-                     sfp->token_id_wrap(token_category_by()));                   \
-  token_index += 1;
-
 #define SILVA_EXPECT_PARSE_FWD(name, expr) \
-  SILVA_EXPECT_FWD(expr, "[{}] {}", token_location_by(), lexicon.name_id_wrap(name))
+  SILVA_EXPECT_FWD(expr, "[{}] {}", fragment_location_by(), lexicon.name_id_wrap(name))
+
+#define SILVA_EXPECT_PARSE_FRAGMENT_CODEPOINT(name, codepoint)                              \
+  {                                                                                         \
+    const auto cp = SILVA_EXPECT_PARSE_FWD(name, fp->get_unique_codepoint(fragment_index)); \
+    SILVA_EXPECT_PARSE(name, cp == codepoint, "expected {}, got {}", codepoint, cp);        \
+    fragment_index += 1;                                                                    \
+  }
+
+#define SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(name, frag_cat)                      \
+  SILVA_EXPECT_PARSE(name,                                                        \
+                     num_fragments_left() >= 1 &&                                 \
+                         fragment_category_by() == fragment_category_t::frag_cat, \
+                     "expected category {}, got {}",                              \
+                     frag_cat,                                                    \
+                     fragment_category_by());                                     \
+  fragment_index += 1;
 
   struct parse_tree_nursery_state_t : public tree_nursery_state_t {
-    index_t token_index = 0;
+    index_t fragment_index = 0;
   };
 
   struct parse_tree_nursery_t
@@ -43,7 +43,7 @@ namespace silva {
 
     tokenization_t tokenization;
 
-    index_t token_index = 0;
+    index_t fragment_index = 0;
 
     parse_tree_nursery_t(fragmentization_ptr_t);
 
@@ -59,11 +59,14 @@ namespace silva {
 
     parse_tree_ptr_t finish() &&;
 
-    const index_t num_tokens_left() const;
-    const token_id_t token_id_by(index_t token_index_offset = 0) const;
-    const token_id_t token_category_by(index_t token_index_offset = 0) const;
-    const token_info_t* token_data_by(index_t token_index_offset = 0) const;
-    token_location_t token_location_by(index_t token_index_offset = 0) const;
-    token_location_t token_location_at(index_t token_index) const;
+    index_t num_fragments_left() const;
+    const fragment_t* fragment_by(index_t idx_offset = 0) const;
+
+    // Returns U'\0' if the given codepoint does not have a unique codepoint.
+    unicode::codepoint_t fragment_unique_codepoint_or_zero_by(index_t idx_offset = 0) const;
+
+    fragment_category_t fragment_category_by(index_t idx_offset = 0) const;
+    fragment_location_t fragment_location_by(index_t idx_offset = 0) const;
+    fragment_location_t fragment_location_at(index_t idx) const;
   };
 }

@@ -20,8 +20,8 @@ namespace silva::seed::test {
     const parse_tree_node_t sub = SILVA_EXPECT_FWD(nursery.expression());
     SILVA_EXPECT(sub.num_children == 1, ASSERT);
     SILVA_EXPECT(sub.subtree_size == nursery.tree.size(), ASSERT);
-    SILVA_EXPECT(nursery.token_index == n, MAJOR, "Tokens left after parsing fern.");
-    return sf.add(std::move(nursery).finish());
+    SILVA_EXPECT(nursery.fragment_index == n, MAJOR, "Tokens left after parsing fern.");
+    return std::move(nursery).finish();
   }
 
   template<typename SeedAxeNursery>
@@ -67,15 +67,15 @@ namespace silva::seed::test {
       {
         auto ss_rule = stake();
         ss_rule.create_node(ni_atom);
-        SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
-        if (token_category_by() == lexicon.ti_number ||
-            token_category_by() == lexicon.ti_identifier) {
-          token_index += 1;
+        SILVA_EXPECT(num_fragments_left() >= 1, MINOR, "No token left for atom expression");
+        if (fragment_category_by() == fragment_category_t::DIGIT ||
+            fragment_category_by() == fragment_category_t::ID_LOWER) {
+          fragment_index += 1;
         }
         else {
-          SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, lexicon.ti_paren_open);
+          SILVA_EXPECT_PARSE_FRAGMENT_CODEPOINT(ni_atom, U'(');
           ss_rule.add_proto_node(SILVA_EXPECT_FWD(expression()));
-          SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, lexicon.ti_paren_close);
+          SILVA_EXPECT_PARSE_FRAGMENT_CODEPOINT(ni_atom, U')');
         }
         return ss_rule.commit();
       }
@@ -427,22 +427,22 @@ namespace silva::seed::test {
       {
         auto ss_rule = stake();
         ss_rule.create_node(ni_atom);
-        SILVA_EXPECT(num_tokens_left() >= 1, MINOR, "No token left for atom expression");
-        if (token_category_by() == lexicon.ti_number) {
-          SILVA_EXPECT(num_tokens_left() >= 2 && token_category_by(1) == lexicon.ti_operator,
-                       MINOR);
-          token_index += 2;
+        SILVA_EXPECT(num_fragments_left() >= 1, MINOR, "No token left for atom expression");
+        using enum fragment_category_t;
+        if (fragment_category_by() == DIGIT) {
+          SILVA_EXPECT(num_fragments_left() >= 2 && fragment_category_by(1) == OPERATOR, MINOR);
+          fragment_index += 2;
         }
-        else if (token_id_by() == ti_shift_l) {
-          SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, ti_shift_l);
+        else if (fragment_unique_codepoint_or_zero_by() == ti_shift_l) {
+          SILVA_EXPECT_PARSE_FRAGMENT_CODEPOINT(ni_atom, ti_shift_l);
           ss_rule.add_proto_node(SILVA_EXPECT_FWD(expression(ni_expr_prflo)));
-          SILVA_EXPECT_PARSE_TOKEN_ID(ni_atom, ti_shift_r);
+          SILVA_EXPECT_PARSE_FRAGMENT_CODEPOINT(ni_atom, ti_shift_r);
         }
         else {
-          SILVA_EXPECT(token_category_by() == lexicon.ti_identifier ||
-                           token_id_by() == lexicon.ti_comma,
+          SILVA_EXPECT(fragment_category_by() == ID_LOWER ||
+                           fragment_unique_codepoint_or_zero_by() == U',',
                        MINOR);
-          token_index += 1;
+          fragment_index += 1;
         }
         return ss_rule.commit();
       }
@@ -451,8 +451,10 @@ namespace silva::seed::test {
       {
         auto ss_rule = stake();
         ss_rule.create_node(ni_arg);
-        SILVA_EXPECT_PARSE(ni_arg, token_category_by() == lexicon.ti_string, "expected string");
-        token_index += 1;
+        SILVA_EXPECT_PARSE(ni_arg,
+                           fragment_category_by() == fragment_category_t::STRING,
+                           "expected string");
+        fragment_index += 1;
         return ss_rule.commit();
       }
 
@@ -461,10 +463,10 @@ namespace silva::seed::test {
         auto ss_rule = stake();
         ss_rule.create_node(ni_args);
         bool first = true;
-        while (num_tokens_left() >= 1) {
+        while (num_fragments_left() >= 1) {
           if (!first) {
-            if (token_id_by() == lexicon.ti_comma) {
-              token_index += 1;
+            if (fragment_unique_codepoint_or_zero_by() == U',') {
+              fragment_index += 1;
               ss_rule.add_proto_node(SILVA_EXPECT_FWD(arg()));
             }
             else {
