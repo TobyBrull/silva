@@ -33,7 +33,7 @@ namespace silva::seed {
 
   const string_view_t axe_str = R"'(
 Seed.Axe:
-  ⊙ = Seed.Nonterminal NEWLINE INDENT ( Level NEWLINE ) * DEDENT
+  ⊙ = Seed.Nonterminal Seed.Nonterminal NEWLINE INDENT ( Level NEWLINE ) * DEDENT
   Level = rule_name '=' Assoc Ops *
   Assoc = 'ltr' | 'rtl'
   Ops = OpType ( '->' Seed.Nonterminal ) ? Op *
@@ -47,6 +47,7 @@ Seed.Axe:
     lexicon_ptr_t lp;
     name_id_t name = name_id_none;
     name_id_ref_t atom_rule;
+    name_id_ref_t oper_rule;
     hash_map_t<token_id_t, impl::axe_result_t> results;
     optional_t<impl::result_oper_t<impl::oper_regular_t>> concat_result;
 
@@ -105,6 +106,7 @@ namespace silva::seed {
   expected_t<void> axe_t::compile(const lexicon_t& lexicon, const Ns& ns)
   {
     SILVA_EXPECT_FWD(atom_rule.resolve(name, lexicon, ns));
+    SILVA_EXPECT_FWD(oper_rule.resolve(name, lexicon, ns));
     return impl::for_each_name_id_ref(*this, [&](name_id_ref_t& nir) -> expected_t<void> {
       return nir.resolve(name, lexicon, ns);
     });
