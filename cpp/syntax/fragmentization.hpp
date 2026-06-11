@@ -42,6 +42,8 @@ namespace silva {
   constexpr bool is_fragment_category_real(fragment_category_t);
   constexpr bool is_fragment_category_visible(fragment_category_t);
 
+  token_id_t fragment_category_to_token_id(syntax_farm_t&, fragment_category_t);
+
   struct fragment_t {
     fragment_category_t category = fragment_category_t::INVALID;
     file_location_t location;

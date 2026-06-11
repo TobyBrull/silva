@@ -9,6 +9,12 @@ namespace silva {
   using enum codepoint_category_t;
   using enum fragment_category_t;
 
+  token_id_t fragment_category_to_token_id(syntax_farm_t& sf, const fragment_category_t fc)
+  {
+    static const auto vals = enum_hashmap_to_string<fragment_category_t>();
+    return sf.token_id(vals.at(fc));
+  }
+
   constexpr static array_fixed_t<unicode::codepoint_t, 1> xid_additional_internal = {U'-'};
 
   constexpr bool is_ascii_digit(const unicode::codepoint_t cp)

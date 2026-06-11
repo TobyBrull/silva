@@ -1,5 +1,10 @@
 # TODO
 
+* parse skip-rule AFTER every token
+    * to support "end_of_file"
+    * don't skip in seed.cpp in recursive token calls
+* prevent token-rules from using non-terminal rules?
+
 * Parse -3.5e-4 in Seed, not in tokenization?
 * Parse Toml's "2025-07-03 23:55:00"?
 * Remove tokenization step (rename what is currently "fragmentization" to "tokenization")?

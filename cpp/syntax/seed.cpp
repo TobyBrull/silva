@@ -29,14 +29,7 @@ namespace silva::seed::impl {
     expected_t<token_t> literal_token(const fragmented_token_t ft)
     {
       skip();
-      auto ts         = token_stake(ft.ti);
-      const index_t n = ft.items.size();
-      SILVA_EXPECT_PARSE(ft.ti, num_fragments_left() >= n, "not enough fragments left");
-      for (index_t i = 0; i < n; ++i) {
-        SILVA_EXPECT(ft.items[i].codepoint == fp->get_unique_codepoint(fragment_index), MINOR);
-        fragment_index += 1;
-      }
-      return ts.commit();
+      return literal_fragmented_token(ft);
     }
 
     expected_t<token_t> identifier()
@@ -157,7 +150,7 @@ namespace silva::seed::impl {
       const index_t orig_frag_idx = fragment_index;
       ss_rule.create_node(lexicon.ni_term);
       error_nursery_t error_nursery;
-      for (const auto& ft: {lexicon.ti_any, lexicon.ti_eps, lexicon.ti_eof}) {
+      for (const auto& ft: {lexicon.ti_eps, lexicon.ti_eof}) {
         auto result = literal_token(ft);
         if (result) {
           add_token(*result);

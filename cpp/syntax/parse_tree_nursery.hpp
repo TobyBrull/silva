@@ -72,6 +72,8 @@ namespace silva {
     };
     [[nodiscard]] token_stake_t token_stake(this auto& self, const token_id_t token_cat);
 
+    expected_t<token_t> literal_fragmented_token(fragmented_token_t);
+
     void add_token(const token_t&);
 
     void on_get_state(parse_tree_nursery_state_t&) const;
@@ -145,6 +147,19 @@ namespace silva {
   parse_tree_nursery_t::token_stake(this auto& self, const token_id_t token_cat)
   {
     return token_stake_t{&self, token_cat, self.fragment_index};
+  }
+
+  inline expected_t<token_t>
+  parse_tree_nursery_t::literal_fragmented_token(const fragmented_token_t ft)
+  {
+    auto ts         = token_stake(ft.ti);
+    const index_t n = ft.items.size();
+    SILVA_EXPECT(num_fragments_left() >= n, MINOR, "not enough fragments left");
+    for (index_t i = 0; i < n; ++i) {
+      SILVA_EXPECT(ft.items[i].codepoint == fp->get_unique_codepoint(fragment_index), MINOR);
+      fragment_index += 1;
+    }
+    return ts.commit();
   }
 
   inline void parse_tree_nursery_t::add_token(const token_t& token)

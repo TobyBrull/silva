@@ -51,9 +51,9 @@ namespace silva::seed {
     const fragmented_token_t ti_qmark         = *fragmented_token(sfp, "?");
     const fragmented_token_t ti_star          = *fragmented_token(sfp, "*");
     const fragmented_token_t ti_plus          = *fragmented_token(sfp, "+");
-    const fragmented_token_t ti_any           = *fragmented_token(sfp, "any");
     const fragmented_token_t ti_eps           = *fragmented_token(sfp, "ε");
     const fragmented_token_t ti_eof           = *fragmented_token(sfp, "end_of_file");
+    const fragmented_token_t ti_skip          = *fragmented_token(sfp, "skip");
 
     const fragmented_token_t ti_indent         = *fragmented_token(sfp, "indent");
     const fragmented_token_t ti_dedent         = *fragmented_token(sfp, "dedent");

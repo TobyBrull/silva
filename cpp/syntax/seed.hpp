@@ -83,7 +83,7 @@ language Seed:
     operator = ( 'not' | 'but_then' | OPERATOR )
     Alias = Expr
   Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
-  Terminal = ( string | frag_name | 'any' | 'ε' | 'end_of_file' )
+  Terminal = ( string | frag_name | 'ε' | 'end_of_file' )
 
 None = ε
 )'";
