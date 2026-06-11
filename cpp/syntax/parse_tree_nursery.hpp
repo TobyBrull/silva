@@ -54,7 +54,9 @@ namespace silva {
       index_t orig_fragment_index   = 0;
 
       token_stake_t() = default;
-      token_stake_t(parse_tree_nursery_t*);
+      token_stake_t(parse_tree_nursery_t* nursery,
+                    const token_id_t token_cat,
+                    const index_t orig_fragment_index);
 
       token_stake_t(stake_t&&);
       token_stake_t& operator=(stake_t&&);
@@ -99,6 +101,13 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+
+  inline parse_tree_nursery_t::token_stake_t::token_stake_t(parse_tree_nursery_t* nursery,
+                                                            const token_id_t token_cat,
+                                                            const index_t orig_fragment_index)
+    : nursery(nursery), token_cat(token_cat), orig_fragment_index(orig_fragment_index)
+  {
+  }
 
   inline void parse_tree_nursery_t::token_stake_t::add_token(const token_t& token)
   {
