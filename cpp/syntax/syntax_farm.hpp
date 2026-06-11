@@ -91,6 +91,7 @@ namespace silva {
     ~syntax_farm_t();
 
     token_id_t token_id(string_view_t);
+    token_id_t token_id(fragment_span_t);
 
     expected_t<token_id_t> token_id_in_string(token_id_t);
 

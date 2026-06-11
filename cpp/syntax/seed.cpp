@@ -4,8 +4,11 @@
 #include "seed_axe.hpp"
 
 #include "canopy/expected.hpp"
+#include "syntax/parse_tree_nursery.hpp"
 
 namespace silva::seed::impl {
+  using enum fragment_category_t;
+
   struct base_parse_tree_nursery_t : public parse_tree_nursery_t {
     const lexicon_t& lexicon;
 
@@ -14,35 +17,204 @@ namespace silva::seed::impl {
     {
     }
 
+    expected_t<token_t> literal_token(const fragmented_token_t ft)
+    {
+      auto ts         = token_stake(ft.ti);
+      const index_t n = ft.items.size();
+      SILVA_EXPECT_PARSE(ft.ti, num_fragments_left() >= n, "not enough fragments left");
+      for (index_t i = 0; i < n; ++i) {
+        SILVA_EXPECT(ft.items[i].codepoint == fp->get_unique_codepoint(fragment_index), MINOR);
+        fragment_index += 1;
+      }
+      return ts.commit();
+    }
+
+    expected_t<token_t> identifier()
+    {
+      auto ts = token_stake(lexicon.ni_id);
+      SILVA_EXPECT_PARSE(lexicon.ni_id,
+                         is_fragment_category_id_start(fragment_category_by()),
+                         "expected fragment with category ID_START");
+      fragment_index += 1;
+      while (num_fragments_left() >= 1 &&
+             is_fragment_category_id_continue(fragment_category_by())) {
+        fragment_index += 1;
+      }
+      return ts.commit();
+    }
+
+    expected_t<token_t> identifier_snake_case()
+    {
+      auto ts = token_stake(lexicon.ni_id_snake);
+      SILVA_EXPECT_PARSE(lexicon.ni_id_snake,
+                         num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER,
+                         "expected fragment with category ID_LOWER");
+      fragment_index += 1;
+      while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
+        fragment_index += 1;
+      }
+      while (num_fragments_left() >= 2 && fragment_unique_codepoint_or_zero_by(0) == U'_' &&
+             fragment_category_by(1) == ID_LOWER) {
+        fragment_index += 2;
+        while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
+          fragment_index += 1;
+        }
+      }
+      return ts.commit();
+    }
+
+    expected_t<token_t> identifier_pascal_case()
+    {
+      auto ts = token_stake(lexicon.ni_id_pascal);
+      SILVA_EXPECT_PARSE(lexicon.ni_id_pascal,
+                         num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER,
+                         "expected fragment with category ID_UPPER");
+      fragment_index += 1;
+      SILVA_EXPECT_PARSE(lexicon.ni_id_pascal,
+                         num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER,
+                         "expected fragment with category ID_LOWER");
+      fragment_index += 1;
+      while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
+        fragment_index += 1;
+      }
+      while (num_fragments_left() >= 2 && fragment_category_by(0) == ID_UPPER &&
+             fragment_category_by(1) == ID_LOWER) {
+        fragment_index += 2;
+        while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
+          fragment_index += 1;
+        }
+      }
+      return ts.commit();
+    }
+
+    expected_t<token_t> identifier_macro_case()
+    {
+      auto ts = token_stake(lexicon.ni_id_macro);
+      SILVA_EXPECT_PARSE(lexicon.ni_id_macro,
+                         num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER,
+                         "expected fragment with category ID_UPPER");
+      fragment_index += 1;
+      while (num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER) {
+        fragment_index += 1;
+      }
+      while (num_fragments_left() >= 2 && fragment_unique_codepoint_or_zero_by(0) == U'_' &&
+             fragment_category_by(1) == ID_UPPER) {
+        fragment_index += 2;
+        while (num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER) {
+          fragment_index += 1;
+        }
+      }
+      return ts.commit();
+    }
+
+    expected_t<token_t> string()
+    {
+      auto ts = token_stake(lexicon.ni_string);
+      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_string, STRING);
+      return ts.commit();
+    }
+
+    expected_t<token_t> frag_name()
+    {
+      auto ts = token_stake(lexicon.ni_frag_name);
+      ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_frag_name, identifier_macro_case()));
+      return ts.commit();
+    }
+    expected_t<token_t> rule_name()
+    {
+      auto ts = token_stake(lexicon.ni_rule_name);
+      ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule_name, identifier_pascal_case()));
+      return ts.commit();
+    }
+    expected_t<token_t> token_category_name()
+    {
+      auto ts = token_stake(lexicon.ni_token_cat_name);
+      ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_token_cat_name, identifier_snake_case()));
+      return ts.commit();
+    }
+
     expected_t<parse_tree_node_t> terminal()
     {
-      auto ss_rule = stake();
+      auto ss_rule                = stake();
+      const index_t orig_frag_idx = fragment_index;
       ss_rule.create_node(lexicon.ni_term);
-      SILVA_EXPECT_PARSE(lexicon.ni_term, num_tokens_left() >= 1, "no tokens left");
-      SILVA_EXPECT_PARSE(lexicon.ni_term,
-                         token_category_by() == lexicon.ti_string ||
-                             token_category_by() == lexicon.ti_token_cat_name ||
-                             token_id_by() == lexicon.ti_any || token_id_by() == lexicon.ti_eps ||
-                             token_id_by() == lexicon.ti_eof,
-                         "unexpected {}",
-                         sfp->token_id_wrap(token_id_by()));
-      token_index += 1;
-      return ss_rule.commit();
+      error_nursery_t error_nursery;
+      for (const auto& ft: {lexicon.ti_any, lexicon.ti_eps, lexicon.ti_eof}) {
+        auto result = literal_token(ft);
+        if (result) {
+          add_token(*result);
+          return ss_rule.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      {
+        auto result = string();
+        if (result) {
+          add_token(*result);
+          return ss_rule.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      {
+        auto result = frag_name();
+        if (result) {
+          add_token(*result);
+          return ss_rule.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      return std::unexpected(std::move(error_nursery)
+                                 .finish_short(error_level_t::MINOR,
+                                               "[{}] {}",
+                                               fragment_location_at(orig_frag_idx),
+                                               lexicon.name_id_wrap(lexicon.ni_atom)));
     }
 
     expected_t<parse_tree_node_t> nonterminal()
     {
       auto ss_rule = stake();
+
       ss_rule.create_node(lexicon.ni_nt);
-      if (num_tokens_left() >= 1 && token_id_by() == lexicon.name_sep) {
-        token_index += 1;
+      {
+        auto result = literal_token(lexicon.ti_dot);
+        (void)result;
       }
-      SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_nt, lexicon.ti_rule_name);
-      while (num_tokens_left() >= 2 && token_id_by() == lexicon.name_sep) {
-        token_index += 1;
-        SILVA_EXPECT_PARSE_TOKEN_CATEGORY(lexicon.ni_nt, lexicon.ti_rule_name);
+
+      while (true) {
+        auto ss_local = stake();
+        auto result_1 = rule_name();
+        if (!result_1) {
+          break;
+        }
+        auto result_2 = literal_token(lexicon.ti_dot);
+        if (!result_2) {
+          break;
+        }
+        ss_rule.add_proto_node(ss_local.commit());
       }
-      return ss_rule.commit();
+
+      error_nursery_t error_nursery;
+      {
+        auto result = rule_name();
+        if (result) {
+          add_token(*result);
+          return ss_rule.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      {
+        auto result = token_category_name();
+        if (result) {
+          add_token(*result);
+          return ss_rule.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      return std::unexpected(std::move(error_nursery)
+                                 .finish_short(error_level_t::MINOR,
+                                               "[{}] {}",
+                                               fragment_location_at(fragment_index),
+                                               lexicon.name_id_wrap(lexicon.ni_atom)));
     }
 
     expected_t<parse_tree_node_t> axe_op()

@@ -9,13 +9,15 @@
 namespace silva::unicode {
   using codepoint_t = char32_t;
 
+  static constexpr codepoint_t codepoint_none = U'\0';
+
   void utf8_encode_one(string_t& output, codepoint_t);
   string_t utf8_encode_one(codepoint_t);
 
   expected_t<tuple_t<codepoint_t, index_t>> utf8_decode_one(string_view_t);
 
   struct codepoint_data_t {
-    codepoint_t codepoint = 0;
+    codepoint_t codepoint = codepoint_none;
     index_t byte_offset   = 0;
     index_t len           = 0;
 

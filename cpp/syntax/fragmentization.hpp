@@ -95,6 +95,16 @@ namespace silva {
   expected_t<fragmentization_ptr_t>
   fragmentize(syntax_farm_ptr_t, filepath_t, string_t source_code);
   expected_t<fragmentization_ptr_t> fragmentize_load(syntax_farm_ptr_t, filepath_t);
+
+  struct fragmented_token_t {
+    token_id_t ti = token_id_none;
+    struct item_t {
+      fragment_category_t category   = fragment_category_t::INVALID;
+      unicode::codepoint_t codepoint = unicode::codepoint_none;
+    };
+    array_t<item_t> items;
+  };
+  expected_t<fragmented_token_t> fragmented_token(syntax_farm_ptr_t, string_view_t);
 }
 
 // IMPLEMENTATION
@@ -132,7 +142,7 @@ namespace silva {
   constexpr bool is_fragment_category_id_continue(const fragment_category_t fc)
   {
     using enum fragment_category_t;
-    return is_fragment_category_id_start(fc) && fc == ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT &&
+    return is_fragment_category_id_start(fc) || fc == ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT ||
         fc == DIGIT;
   }
   constexpr bool is_fragment_category_real(const fragment_category_t fc)

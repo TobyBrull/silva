@@ -28,12 +28,13 @@ namespace silva {
                      num_fragments_left() >= 1 &&                                 \
                          fragment_category_by() == fragment_category_t::frag_cat, \
                      "expected category {}, got {}",                              \
-                     frag_cat,                                                    \
+                     fragment_category_t::frag_cat,                               \
                      fragment_category_by());                                     \
   fragment_index += 1;
 
   struct parse_tree_nursery_state_t : public tree_nursery_state_t {
     index_t fragment_index = 0;
+    index_t token_index    = 0;
   };
 
   struct parse_tree_nursery_t
@@ -46,6 +47,30 @@ namespace silva {
     index_t fragment_index = 0;
 
     parse_tree_nursery_t(fragmentization_ptr_t);
+
+    struct token_stake_t {
+      parse_tree_nursery_t* nursery = nullptr;
+      token_id_t token_cat          = token_id_none;
+      index_t orig_fragment_index   = 0;
+
+      token_stake_t() = default;
+      token_stake_t(parse_tree_nursery_t*);
+
+      token_stake_t(stake_t&&);
+      token_stake_t& operator=(stake_t&&);
+
+      token_stake_t(const stake_t&)            = delete;
+      token_stake_t& operator=(const stake_t&) = delete;
+
+      void add_token(const token_t&);
+
+      token_t commit();
+      void clear();
+      ~token_stake_t();
+    };
+    [[nodiscard]] token_stake_t token_stake(this auto& self, const token_id_t token_cat);
+
+    void add_token(const token_t&);
 
     void on_get_state(parse_tree_nursery_state_t&) const;
     void on_set_state(const parse_tree_nursery_state_t&);
@@ -69,4 +94,52 @@ namespace silva {
     fragment_location_t fragment_location_by(index_t idx_offset = 0) const;
     fragment_location_t fragment_location_at(index_t idx) const;
   };
+}
+
+// IMPLEMENTATION
+
+namespace silva {
+
+  inline void parse_tree_nursery_t::token_stake_t::add_token(const token_t& token)
+  {
+    SILVA_ASSERT(token.frag_idx_begin >= orig_fragment_index);
+    SILVA_ASSERT(token.frag_idx_end == nursery->fragment_index);
+  }
+
+  inline token_t parse_tree_nursery_t::token_stake_t::commit()
+  {
+    const fragment_span_t fs{nursery->fp, orig_fragment_index, nursery->fragment_index};
+    token_t retval{
+        .token_id       = nursery->sfp->token_id(fs),
+        .category_id    = token_cat,
+        .frag_idx_begin = fs.begin,
+        .frag_idx_end   = fs.end,
+    };
+    nursery = nullptr;
+    return retval;
+  }
+
+  inline void parse_tree_nursery_t::token_stake_t::clear()
+  {
+    if (nursery != nullptr) {
+      nursery->fragment_index = orig_fragment_index;
+    }
+    nursery = nullptr;
+  }
+
+  inline parse_tree_nursery_t::token_stake_t::~token_stake_t()
+  {
+    clear();
+  }
+
+  [[nodiscard]] parse_tree_nursery_t::token_stake_t
+  parse_tree_nursery_t::token_stake(this auto& self, const token_id_t token_cat)
+  {
+    return token_stake_t{&self, token_cat, self.fragment_index};
+  }
+
+  inline void parse_tree_nursery_t::add_token(const token_t& token)
+  {
+    tokenization.tokens.push_back(token);
+  }
 }

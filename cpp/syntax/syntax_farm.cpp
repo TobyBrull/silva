@@ -85,6 +85,13 @@ namespace silva {
     }
   }
 
+  token_id_t syntax_farm_t::token_id(const fragment_span_t fs)
+  {
+    const index_t beg_byte_offset = fs.fp->get_fragment_byte_offset(fs.begin);
+    const index_t end_byte_offset = fs.fp->get_fragment_byte_offset(fs.end);
+    return token_id(fs.fp->source_code.substr(beg_byte_offset, end_byte_offset - beg_byte_offset));
+  }
+
   expected_t<token_id_t> syntax_farm_t::token_id_in_string(const token_id_t ti)
   {
     const auto& token_info = token_infos[ti];

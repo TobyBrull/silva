@@ -77,12 +77,6 @@ namespace silva {
     return retval;
   }
 
-  index_t parse_tree_span_t::token_size() const
-  {
-    const auto& root = (*this)[0];
-    return root.token_end - root.token_begin;
-  }
-
   expected_t<token_id_t> parse_tree_span_t::front_token_id() const
   {
     SILVA_EXPECT(token_size() > 0, MINOR);
@@ -148,6 +142,12 @@ namespace silva {
   {
     SILVA_EXPECT(token_size() > 0, MINOR);
     return at_token_location(token_size() - 1);
+  }
+
+  index_t parse_tree_span_t::token_size() const
+  {
+    const auto& root = (*this)[0];
+    return root.token_end - root.token_begin;
   }
 
   token_span_t parse_tree_span_t::token_span() const

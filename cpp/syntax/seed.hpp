@@ -50,20 +50,22 @@ namespace silva::seed {
 
   const string_view_t seed_str = R"'(
 identifier = ID_START ID_CONTINUE *
-id_kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *
-id_snake_case = ID_LOWER + ( '_' ID_LOWER + ) *
-id_camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *
-id_pascal_case = ( ID_UPPER ID_LOWER + ) +
-id_macro_case = ID_UPPER + ( '_' ID_UPPER ) *
+identifier_kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *
+identifier_snake_case = ID_LOWER + ( '_' ID_LOWER + ) *
+identifier_camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *
+identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +
+identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *
+
+string = STRING
 
 language Seed:
   ⊙ = ( Tokenizer | Language | Scope | Rule ) *
 
-  skip = SPACE *
+  skip = ( SPACE | COMMENT | WHITESPACE ) *
 
-  frag_name = id_macro_case
-  rule_name = id_pascal_case
-  token_category_name = id_snake_case
+  frag_name = identifier_macro_case
+  rule_name = identifier_pascal_case
+  token_category_name = identifier_snake_case
 
   Language = 'language' rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
@@ -80,9 +82,8 @@ language Seed:
     Atom = alias Nonterminal | Terminal | '(' Expr ')'
     operator = ( 'not' | 'but_then' | OPERATOR )
     Alias = Expr
-  Nonterminal = '.' ? rule_name ( '.' rule_name ) *
-  Terminal = ( STRING | token_category_name
-             | 'any' | 'ε' | 'end_of_file' )
+  Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
+  Terminal = ( string | frag_name | 'any' | 'ε' | 'end_of_file' )
 
 None = ε
 )'";

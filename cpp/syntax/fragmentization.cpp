@@ -532,6 +532,33 @@ namespace silva {
     return fp;
   }
 
+  expected_t<fragmented_token_t> fragmented_token(syntax_farm_ptr_t sfp, string_view_t sv)
+  {
+    const token_id_t ti = sfp->token_id(sv);
+
+    // TODO: make faster
+    string_t temp;
+    temp.reserve(sv.size() + 1);
+    temp.append(sv);
+    temp += '\n';
+    auto ff = SILVA_EXPECT_FWD(fragmentize_unique("", std::move(temp)));
+
+    array_t<fragmented_token_t::item_t> items;
+    items.reserve(ff->fragments.size());
+
+    for (index_t i = 0; i < ff->fragments.size(); ++i) {
+      items.push_back(fragmented_token_t::item_t{
+          .category  = ff->fragments[i].category,
+          .codepoint = SILVA_EXPECT_FWD(ff->get_unique_codepoint(i)),
+      });
+    }
+
+    return fragmented_token_t{
+        .ti    = ti,
+        .items = std::move(items),
+    };
+  }
+
   void pretty_write_impl(const fragment_t& ff, byte_sink_t* stream)
   {
     stream->format("{} {}", silva::pretty_string(ff.category), silva::pretty_string(ff.location));

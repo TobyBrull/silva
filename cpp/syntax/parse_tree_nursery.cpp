@@ -7,17 +7,19 @@ namespace silva {
   void parse_tree_nursery_t::on_get_state(parse_tree_nursery_state_t& s) const
   {
     s.fragment_index = fragment_index;
+    s.token_index    = tokenization.tokens.size();
   }
 
   void parse_tree_nursery_t::on_set_state(const parse_tree_nursery_state_t& s)
   {
     fragment_index = s.fragment_index;
+    tokenization.tokens.resize(s.token_index);
   }
 
   void parse_tree_nursery_t::on_stake_ctor(parse_tree_node_t& proto_node) const
   {
-    proto_node.token_begin = fragment_index;
-    proto_node.token_end   = fragment_index + 1;
+    proto_node.token_begin = tokenization.size();
+    proto_node.token_end   = tokenization.size();
   }
 
   void parse_tree_nursery_t::on_stake_create_node(parse_tree_node_t& proto_node,
@@ -35,7 +37,7 @@ namespace silva {
 
   void parse_tree_nursery_t::on_stake_commit_pre(parse_tree_node_t& proto_node) const
   {
-    proto_node.token_end = fragment_index;
+    proto_node.token_end = tokenization.size();
   }
 
   void parse_tree_nursery_t::on_stake_commit_owning_to_proto(parse_tree_node_t& proto_node) const
