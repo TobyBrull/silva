@@ -101,7 +101,8 @@ namespace silva {
   expected_t<fragmentization_ptr_t> fragmentize_load(syntax_farm_ptr_t, filepath_t);
 
   struct fragmented_token_t {
-    token_id_t ti = token_id_none;
+    token_id_t token_id = token_id_none;
+    name_id_t category  = name_id_none;
     struct item_t {
       fragment_category_t category   = fragment_category_t::INVALID;
       unicode::codepoint_t codepoint = unicode::codepoint_none;

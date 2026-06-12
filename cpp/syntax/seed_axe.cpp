@@ -126,10 +126,12 @@ namespace silva::seed::impl {
       SILVA_EXPECT(pts_op[0].rule_name == lexicon.ni_axe_op, BROKEN_SEED);
       const token_id_t axe_op = SILVA_EXPECT_FWD(pts_op.front_token_id());
       const name_id_t axe_cat = SILVA_EXPECT_FWD(pts_op.front_token_category());
-      SILVA_EXPECT(axe_cat == lexicon.ni_string || axe_op == lexicon.ti_concat.ti, BROKEN_SEED);
-      if (axe_op_type != lexicon.ti_infix.ti && axe_op_type != lexicon.ti_infix_flat.ti) {
+      SILVA_EXPECT(axe_cat == lexicon.ni_string || axe_op == lexicon.ti_concat.token_id,
+                   BROKEN_SEED);
+      if (axe_op_type != lexicon.ti_infix.token_id &&
+          axe_op_type != lexicon.ti_infix_flat.token_id) {
         SILVA_EXPECT(
-            axe_op != lexicon.ti_concat.ti,
+            axe_op != lexicon.ti_concat.token_id,
             MINOR,
             "{} the 'concat' token may only be used with 'infix' or 'infix_flat' operations.",
             pts_op);
@@ -148,12 +150,14 @@ namespace silva::seed::impl {
       const auto pts_op_type = pts_ops.sub_tree_span_at(it.pos);
       SILVA_EXPECT(pts_op_type[0].rule_name == lexicon.ni_axe_op_type, BROKEN_SEED);
       const token_id_t axe_op_type = SILVA_EXPECT_FWD(pts_op_type.front_token_id());
-      SILVA_EXPECT(
-          axe_op_type == lexicon.ti_prefix.ti || axe_op_type == lexicon.ti_prefix_n.ti ||
-              axe_op_type == lexicon.ti_infix.ti || axe_op_type == lexicon.ti_infix_flat.ti ||
-              axe_op_type == lexicon.ti_ternary.ti || axe_op_type == lexicon.ti_postfix.ti ||
-              axe_op_type == lexicon.ti_postfix_n.ti,
-          BROKEN_SEED);
+      SILVA_EXPECT(axe_op_type == lexicon.ti_prefix.token_id ||
+                       axe_op_type == lexicon.ti_prefix_n.token_id ||
+                       axe_op_type == lexicon.ti_infix.token_id ||
+                       axe_op_type == lexicon.ti_infix_flat.token_id ||
+                       axe_op_type == lexicon.ti_ternary.token_id ||
+                       axe_op_type == lexicon.ti_postfix.token_id ||
+                       axe_op_type == lexicon.ti_postfix_n.token_id,
+                   BROKEN_SEED);
       ++it;
 
       optional_t<index_t> nest_rule_name;
@@ -166,8 +170,9 @@ namespace silva::seed::impl {
         }
       }
 
-      if (axe_op_type == lexicon.ti_prefix_n.ti || axe_op_type == lexicon.ti_ternary.ti ||
-          axe_op_type == lexicon.ti_postfix_n.ti) {
+      if (axe_op_type == lexicon.ti_prefix_n.token_id ||
+          axe_op_type == lexicon.ti_ternary.token_id ||
+          axe_op_type == lexicon.ti_postfix_n.token_id) {
         const index_t num_op_tokens = pts_ops[0].num_children - it.child_index;
         SILVA_EXPECT(num_op_tokens % 2 == 0,
                      MINOR,
@@ -184,21 +189,23 @@ namespace silva::seed::impl {
       }
 
       if (assoc == LEFT_TO_RIGHT) {
-        SILVA_EXPECT(
-            axe_op_type == lexicon.ti_postfix.ti || axe_op_type == lexicon.ti_postfix_n.ti ||
-                axe_op_type == lexicon.ti_infix.ti || axe_op_type == lexicon.ti_infix_flat.ti ||
-                axe_op_type == lexicon.ti_ternary.ti,
-            MINOR,
-            "{} an 'ltr' level requires operators of type [ postfix postfix_nest_t "
-            "infix_t ternary_t ], not {}",
-            pts_ops,
-            sfp->token_id_wrap(axe_op_type));
+        SILVA_EXPECT(axe_op_type == lexicon.ti_postfix.token_id ||
+                         axe_op_type == lexicon.ti_postfix_n.token_id ||
+                         axe_op_type == lexicon.ti_infix.token_id ||
+                         axe_op_type == lexicon.ti_infix_flat.token_id ||
+                         axe_op_type == lexicon.ti_ternary.token_id,
+                     MINOR,
+                     "{} an 'ltr' level requires operators of type [ postfix postfix_nest_t "
+                     "infix_t ternary_t ], not {}",
+                     pts_ops,
+                     sfp->token_id_wrap(axe_op_type));
       }
       else if (assoc == RIGHT_TO_LEFT) {
-        SILVA_EXPECT(axe_op_type == lexicon.ti_prefix.ti || axe_op_type == lexicon.ti_prefix_n.ti ||
-                         axe_op_type == lexicon.ti_infix.ti ||
-                         axe_op_type == lexicon.ti_infix_flat.ti ||
-                         axe_op_type == lexicon.ti_ternary.ti,
+        SILVA_EXPECT(axe_op_type == lexicon.ti_prefix.token_id ||
+                         axe_op_type == lexicon.ti_prefix_n.token_id ||
+                         axe_op_type == lexicon.ti_infix.token_id ||
+                         axe_op_type == lexicon.ti_infix_flat.token_id ||
+                         axe_op_type == lexicon.ti_ternary.token_id,
                      MINOR,
                      "{} 'rtl' levels require operators of type [ prefix_t prefix_nest_t "
                      "infix_t ternary_t ], not {}",
@@ -221,7 +228,7 @@ namespace silva::seed::impl {
         SILVA_EXPECT_FWD(op(axe_op_type, pts_op));
         const token_id_t ti = SILVA_EXPECT_FWD(pts_op.front_token_id());
         ++it;
-        SILVA_EXPECT(ti != lexicon.ti_concat.ti, ASSERT);
+        SILVA_EXPECT(ti != lexicon.ti_concat.token_id, ASSERT);
         const token_id_t retval = SILVA_EXPECT_FWD(sfp->token_id_in_string(ti));
         return {{retval, pts_op}};
       };
@@ -233,7 +240,7 @@ namespace silva::seed::impl {
         SILVA_EXPECT_FWD(op(axe_op_type, pts_op));
         const token_id_t ti = SILVA_EXPECT_FWD(pts_op.front_token_id());
         ++it;
-        if (ti == lexicon.ti_concat.ti) {
+        if (ti == lexicon.ti_concat.token_id) {
           return {{std::nullopt, pts_op}};
         }
         const token_id_t retval = SILVA_EXPECT_FWD(sfp->token_id_in_string(ti));
@@ -243,7 +250,7 @@ namespace silva::seed::impl {
       // Conceptually, it would make more sense to lower the "while" loop into each of the "if-else"
       // conditions, but the code is a bit shorter this way.
       while (it != end) {
-        if (axe_op_type == lexicon.ti_prefix.ti) {
+        if (axe_op_type == lexicon.ti_prefix.token_id) {
           const auto [ti_op, pts_op] = SILVA_EXPECT_FWD(get_next_not_concat());
           SILVA_EXPECT_FWD(register_op(ti_op,
                                        prefix_t{
@@ -253,7 +260,7 @@ namespace silva::seed::impl {
                                        precedence,
                                        pts_op));
         }
-        else if (axe_op_type == lexicon.ti_prefix_n.ti) {
+        else if (axe_op_type == lexicon.ti_prefix_n.token_id) {
           const auto [ti_left, pts_left]   = SILVA_EXPECT_FWD(get_next_not_concat());
           const auto [ti_right, pts_right] = SILVA_EXPECT_FWD(get_next_not_concat());
           SILVA_EXPECT_FWD(register_op(ti_left,
@@ -267,12 +274,13 @@ namespace silva::seed::impl {
                                        pts_left));
           SILVA_EXPECT_FWD(register_right_op(ti_right, pts_right));
         }
-        else if (axe_op_type == lexicon.ti_infix.ti || axe_op_type == lexicon.ti_infix_flat.ti) {
+        else if (axe_op_type == lexicon.ti_infix.token_id ||
+                 axe_op_type == lexicon.ti_infix_flat.token_id) {
           const auto [maybe_ti_op, pts_op] = SILVA_EXPECT_FWD(get_next_or_concat());
-          const bool is_flatten            = (axe_op_type == lexicon.ti_infix_flat.ti);
+          const bool is_flatten            = (axe_op_type == lexicon.ti_infix_flat.token_id);
           const bool is_concat             = !maybe_ti_op.has_value();
           precedence_t used_prec           = precedence;
-          const token_id_t ti_op           = maybe_ti_op.value_or(lexicon.ti_concat.ti);
+          const token_id_t ti_op           = maybe_ti_op.value_or(lexicon.ti_concat.token_id);
           const infix_t op{
               .token_id = ti_op,
               .concat   = is_concat,
@@ -299,7 +307,7 @@ namespace silva::seed::impl {
             SILVA_EXPECT_FWD(register_op(ti_op, op, full_name, used_prec, pts_op));
           }
         }
-        else if (axe_op_type == lexicon.ti_ternary.ti) {
+        else if (axe_op_type == lexicon.ti_ternary.token_id) {
           const auto [ti_first, pts_first]   = SILVA_EXPECT_FWD(get_next_not_concat());
           const auto [ti_second, pts_second] = SILVA_EXPECT_FWD(get_next_not_concat());
           SILVA_EXPECT_FWD(register_op(ti_first,
@@ -313,7 +321,7 @@ namespace silva::seed::impl {
                                        pts_first));
           SILVA_EXPECT_FWD(register_right_op(ti_second, pts_second));
         }
-        else if (axe_op_type == lexicon.ti_postfix.ti) {
+        else if (axe_op_type == lexicon.ti_postfix.token_id) {
           const auto [ti_op, pts_op] = SILVA_EXPECT_FWD(get_next_not_concat());
           SILVA_EXPECT_FWD(register_op(ti_op,
                                        postfix_t{
@@ -323,7 +331,7 @@ namespace silva::seed::impl {
                                        precedence,
                                        pts_op));
         }
-        else if (axe_op_type == lexicon.ti_postfix_n.ti) {
+        else if (axe_op_type == lexicon.ti_postfix_n.token_id) {
           const auto [ti_left, pts_left]   = SILVA_EXPECT_FWD(get_next_not_concat());
           const auto [ti_right, pts_right] = SILVA_EXPECT_FWD(get_next_not_concat());
           SILVA_EXPECT_FWD(register_op(ti_left,
@@ -364,10 +372,10 @@ namespace silva::seed::impl {
         if (child_index == 0) {
           SILVA_EXPECT(pts_child[0].rule_name == lexicon.ni_axe_assoc, BROKEN_SEED);
           const token_id_t ti_assoc = SILVA_EXPECT_FWD(pts_child.front_token_id());
-          if (ti_assoc == lexicon.ti_ltr.ti) {
+          if (ti_assoc == lexicon.ti_ltr.token_id) {
             assoc = LEFT_TO_RIGHT;
           }
-          else if (ti_assoc == lexicon.ti_rtl.ti) {
+          else if (ti_assoc == lexicon.ti_rtl.token_id) {
             assoc = RIGHT_TO_LEFT;
           }
           else {

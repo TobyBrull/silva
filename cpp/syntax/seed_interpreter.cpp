@@ -60,7 +60,7 @@ namespace silva::seed::impl {
 
       name_id_t curr_rule_name;
       bool is_token_rule = false;
-      if (SILVA_EXPECT_FWD(pts_rule.front_token_id()) == lexicon.ti_here.ti) {
+      if (SILVA_EXPECT_FWD(pts_rule.front_token_id()) == lexicon.ti_here.token_id) {
         SILVA_EXPECT(is_first_in_scope,
                      MINOR,
                      "{} rule starting with '⊙' is only allowed as the first rule in a scope",
@@ -81,10 +81,10 @@ namespace silva::seed::impl {
       while (it != end && pts_rule[it.pos].rule_name == lexicon.ni_qualifier) {
         const auto pts_qual    = pts_rule.sub_tree_span_at(it.pos);
         const token_id_t q_tok = SILVA_EXPECT_FWD(pts_qual.front_token_id());
-        if (q_tok == lexicon.ti_alias.ti) {
+        if (q_tok == lexicon.ti_alias.token_id) {
           is_alias = true;
         }
-        else if (q_tok == lexicon.ti_no_whitespace.ti) {
+        else if (q_tok == lexicon.ti_no_whitespace.token_id) {
           is_no_whitespace = true;
         }
         else {
@@ -105,7 +105,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT_FWD(
           register_rule(curr_rule_name, pts_rhs_0, is_token_rule, is_alias, is_no_whitespace));
 
-      if (sfp->name_infos[curr_rule_name].base_name == lexicon.ti_skip.ti) {
+      if (sfp->name_infos[curr_rule_name].base_name == lexicon.ti_skip.token_id) {
         se->skip_rule_expr =
             interpreter_t::rule_expr_data_t{.expr = pts_rhs_0, .is_token_rule = true};
       }
@@ -319,14 +319,14 @@ namespace silva::seed::impl {
       const auto& s_node = pts[0];
       SILVA_EXPECT(s_node.rule_name == lexicon.ni_term, MAJOR);
       const auto& s_front_token = pts.ptp->tp->tokens[s_node.token_begin];
-      if (s_front_token.token_id == lexicon.ti_eps.ti) {
+      if (s_front_token.token_id == lexicon.ti_eps.token_id) {
         return ss.commit();
       }
-      else if (s_front_token.token_id == lexicon.ti_eof.ti) {
+      else if (s_front_token.token_id == lexicon.ti_eof.token_id) {
         SILVA_EXPECT_PARSE(t_rule_name,
                            num_fragments_left() == 0,
                            "expected {}",
-                           sfp->token_id_wrap(lexicon.ti_eof.ti));
+                           sfp->token_id_wrap(lexicon.ti_eof.token_id));
         return ss.commit();
       }
       SILVA_EXPECT_PARSE(t_rule_name,
@@ -379,16 +379,16 @@ namespace silva::seed::impl {
     {
       index_t min_repeat = 0;
       index_t max_repeat = std::numeric_limits<index_t>::max();
-      SILVA_EXPECT(op_ti == lexicon.ti_qmark.ti || op_ti == lexicon.ti_star.ti ||
-                       op_ti == lexicon.ti_plus.ti,
+      SILVA_EXPECT(op_ti == lexicon.ti_qmark.token_id || op_ti == lexicon.ti_star.token_id ||
+                       op_ti == lexicon.ti_plus.token_id,
                    MAJOR);
-      if (op_ti == lexicon.ti_qmark.ti) {
+      if (op_ti == lexicon.ti_qmark.token_id) {
         max_repeat = 1;
       }
-      else if (op_ti == lexicon.ti_star.ti) {
+      else if (op_ti == lexicon.ti_star.token_id) {
         ;
       }
-      else if (op_ti == lexicon.ti_plus.ti) {
+      else if (op_ti == lexicon.ti_plus.token_id) {
         min_repeat = 1;
       }
       return {pair_t{min_repeat, max_repeat}};

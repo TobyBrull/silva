@@ -587,8 +587,8 @@ namespace silva {
     }
 
     return fragmented_token_t{
-        .ti    = ti,
-        .items = std::move(items),
+        .token_id = ti,
+        .items    = std::move(items),
     };
   }
 

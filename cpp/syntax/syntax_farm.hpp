@@ -14,10 +14,9 @@ namespace silva {
 
   constexpr inline token_id_t token_id_none     = 0;
   constexpr inline token_id_t token_id_language = 1;
+  constexpr inline token_id_t token_id_literal  = 2;
   constexpr inline name_id_t name_id_none       = 0;
-  constexpr inline name_id_t name_id_root_abs   = 1;
-  constexpr inline name_id_t name_id_leave_abs  = 2;
-  constexpr inline name_id_t name_id_leave_rel  = 3;
+  constexpr inline name_id_t name_id_literal    = 1;
 
   struct token_t {
     token_id_t token_id    = token_id_none;

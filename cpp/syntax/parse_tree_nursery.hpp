@@ -154,7 +154,7 @@ namespace silva {
   inline expected_t<token_t>
   parse_tree_nursery_t::literal_fragmented_token(const fragmented_token_t ft)
   {
-    auto ts         = token_stake(ft.ti);
+    auto ts         = token_stake(name_id_literal);
     const index_t n = ft.items.size();
     SILVA_EXPECT(num_fragments_left() >= n, MINOR, "not enough fragments left");
     for (index_t i = 0; i < n; ++i) {
