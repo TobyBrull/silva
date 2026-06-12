@@ -4,11 +4,11 @@
 
 namespace silva::fern {
   const string_view_t seed_str = R"'(
-tokenizer Fern:
-  include tokenizer FreeForm
-
 language Fern:
   ⊙ = '[' LabeledItem * ']'
+
+  skip = skip_free_form
+
   LabeledItem = ( Label ':' ) ? ( Fern | Value )
   Label = string | identifier
   Value = 'none' | 'true' | 'false' | string | number

@@ -18,21 +18,12 @@ namespace silva::seed::test {
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
-tokenizer SimpleFern:
-  ignore WHITESPACE
-  ignore COMMENT
-  ignore INDENT
-  ignore DEDENT
-  ignore NEWLINE
-  number = NUMBER
-  string = STRING
-  operator = PARENTHESIS
-  operator = ::: OPERATOR
-  identifier = IDENTIFIER
-
 language SimpleFern:
   ⊙ = '[' ( LabeledItem ';' ? ) * ']'
-  LabeledItem = ( Label ':' )? Item
+
+  skip = skip_free_form
+
+  LabeledItem = ( Label ':' ) ? Item
   Label = string
   Item = SimpleFern | string | number
 )'";

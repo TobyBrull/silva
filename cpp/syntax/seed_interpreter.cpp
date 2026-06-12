@@ -128,6 +128,9 @@ namespace silva::seed::impl {
         SILVA_EXPECT(axe_it != axe_end, MINOR);
         SILVA_EXPECT(pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_nt, MINOR);
         ++axe_it;
+        SILVA_EXPECT(axe_it != axe_end, MINOR);
+        SILVA_EXPECT(pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_nt, MINOR);
+        ++axe_it;
         while (axe_it != axe_end) {
           SILVA_EXPECT(pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_axe_level, MINOR);
           const auto pts_level          = pts_rhs_0.sub_tree_span_at(axe_it.pos);

@@ -57,11 +57,15 @@ identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +
 identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *
 
 string = STRING
+number = DIGIT ( ID_LOWER | ID_UPPER |  '.' | '\'' | '+' | '-' ) *
+
+skip_free_form = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+skip_off_side  = ( SPACE | LINEFEED | COMMENT | WHITESPACE ) *
 
 language Seed:
   ⊙ = ( Tokenizer | Language | Scope | Rule ) *
 
-  skip = ( SPACE | COMMENT | WHITESPACE ) *
+  skip = skip_off_side
 
   frag_name = identifier_macro_case
   rule_name = identifier_pascal_case

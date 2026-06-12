@@ -699,18 +699,19 @@ namespace silva::seed::impl {
 
       while (true) {
         const index_t oper_token_index   = num_tokens();
+        const auto oper_state            = nursery.get_state();
         const expected_t<token_id_t> res = SILVA_EXPECT_FWD_IF(MAJOR, parse_oper_token(axe.name));
         if (res.has_value()) {
           const auto it = axe.results.find(*res);
           if (it != axe.results.end()) {
             const axe_result_t& axe_result = it->second;
             if (axe_result.is_right_bracket) {
-              nursery.tokenization.tokens.resize(oper_token_index);
+              nursery.set_state(oper_state);
               break;
             }
             if (mode == INFIX_MODE && axe.concat_result.has_value()) {
               if (axe_result.prefix.has_value() && !axe_result.regular.has_value()) {
-                nursery.tokenization.tokens.resize(oper_token_index);
+                nursery.set_state(oper_state);
                 SILVA_EXPECT_FWD(hallucinate_concat());
                 continue;
               }
@@ -719,7 +720,7 @@ namespace silva::seed::impl {
             if (mode == ATOM_MODE && axe_result.prefix.has_value()) {
               const auto& prefix_result = axe_result.prefix.value();
               if (prefix_result.precedence.level_index < min_prec_level) {
-                nursery.tokenization.tokens.resize(oper_token_index);
+                nursery.set_state(oper_state);
                 break;
               }
               SILVA_EXPECT_FWD(stack_pop(prefix_result.precedence));
@@ -757,7 +758,7 @@ namespace silva::seed::impl {
             else if (mode == INFIX_MODE && axe_result.regular.has_value()) {
               const auto& regular_result = axe_result.regular.value();
               if (regular_result.precedence.level_index < min_prec_level) {
-                nursery.tokenization.tokens.resize(oper_token_index);
+                nursery.set_state(oper_state);
                 break;
               }
               SILVA_EXPECT_FWD(stack_pop(regular_result.precedence));
@@ -822,7 +823,7 @@ namespace silva::seed::impl {
               }
             }
           }
-          nursery.tokenization.tokens.resize(oper_token_index);
+          nursery.set_state(oper_state);
         }
 
         if (mode == INFIX_MODE && !axe.concat_result.has_value()) {

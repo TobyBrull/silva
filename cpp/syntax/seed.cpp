@@ -17,14 +17,16 @@ namespace silva::seed::impl {
     {
     }
 
-    void skip()
+    void skip_off_side()
     {
       while (num_fragments_left() >= 1 &&
-             (fragment_category_by() == SPACE || fragment_category_by() == COMMENT ||
-              fragment_category_by() == WHITESPACE)) {
+             (fragment_category_by() == SPACE || fragment_category_by() == LINEFEED ||
+              fragment_category_by() == COMMENT || fragment_category_by() == WHITESPACE)) {
         fragment_index += 1;
       }
     }
+
+    void skip() { skip_off_side(); }
 
     expected_t<token_t> literal_token(const fragmented_token_t ft)
     {
@@ -119,6 +121,26 @@ namespace silva::seed::impl {
       skip();
       auto ts = token_stake(lexicon.ni_string);
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_string, STRING);
+      return ts.commit();
+    }
+
+    expected_t<token_t> number()
+    {
+      skip();
+      auto ts = token_stake(lexicon.ni_number);
+      SILVA_EXPECT_PARSE(lexicon.ni_number,
+                         num_fragments_left() >= 1 && fragment_category_by() == DIGIT,
+                         "expected fragment with category DIGIT");
+      fragment_index += 1;
+      while (num_fragments_left() >= 1 &&
+             (fragment_category_by() == DIGIT || fragment_category_by() == ID_LOWER ||
+              fragment_category_by() == ID_UPPER ||
+              fragment_unique_codepoint_or_zero_by() == U'.' ||
+              fragment_unique_codepoint_or_zero_by() == U'\'' ||
+              fragment_unique_codepoint_or_zero_by() == U'+' ||
+              fragment_unique_codepoint_or_zero_by() == U'-')) {
+        fragment_index += 1;
+      }
       return ts.commit();
     }
 
@@ -341,6 +363,7 @@ namespace silva::seed::impl {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_axe);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe, nonterminal()));
+      ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe, nonterminal()));
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_axe, NEWLINE);
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_axe, INDENT);
       while (num_fragments_left() >= 1 && fragment_category_by() != DEDENT) {
@@ -377,6 +400,7 @@ namespace silva::seed::impl {
     {
       hash_set_t<name_id_t> atom_set;
       atom_set.insert(lexicon.ni_atom);
+      atom_set.insert(lexicon.ni_oper);
       SILVA_ASSERT(retval.compile(lexicon, atom_set));
     }
     return retval;
@@ -441,6 +465,10 @@ namespace silva::seed::impl {
     {
       if (rule_name == lexicon.ni_atom) {
         return atom();
+      }
+      else if (rule_name == lexicon.ni_oper) {
+        add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_oper, expr_oper()));
+        return {};
       }
       else if (rule_name == lexicon.ni_expr) {
         return expr();
@@ -540,20 +568,33 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_rule);
+
       {
-        auto result = literal_token(lexicon.ti_here);
-        if (result) {
-          add_token(*result);
+        bool matched_here = false;
+        {
+          auto result = literal_token(lexicon.ti_here);
+          if (result) {
+            add_token(*result);
+            matched_here = true;
+          }
         }
-        else {
+        if (!matched_here) {
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, nonterminal()));
         }
       }
+
       add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, literal_token(lexicon.ti_equal)));
+
       {
-        auto result = literal_token(lexicon.ti_axe);
-        if (result) {
-          add_token(*result);
+        bool matched_axe = false;
+        {
+          auto result = literal_token(lexicon.ti_axe);
+          if (result) {
+            add_token(*result);
+            matched_axe = true;
+          }
+        }
+        if (matched_axe) {
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, axe()));
         }
         else {
@@ -564,6 +605,7 @@ namespace silva::seed::impl {
           SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_rule, NEWLINE);
         }
       }
+
       return ss_rule.commit();
     }
 

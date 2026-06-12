@@ -91,6 +91,7 @@ namespace silva::seed {
     const name_id_t ni_id_pascal = sfp->name_id_of("identifier_pascal_case");
     const name_id_t ni_id_macro  = sfp->name_id_of("identifier_macro_case");
     const name_id_t ni_string    = sfp->name_id_of("string");
+    const name_id_t ni_number    = sfp->name_id_of("number");
 
     const name_id_t ni_seed = sfp->name_id_of("Seed");
 
@@ -104,6 +105,7 @@ namespace silva::seed {
     const name_id_t ni_qualifier = sfp->name_id_of(ni_seed, "Qualifier");
     const name_id_t ni_expr      = sfp->name_id_of(ni_seed, "Expr");
     const name_id_t ni_atom      = sfp->name_id_of(ni_expr, "Atom");
+    const name_id_t ni_oper      = sfp->name_id_of(ni_expr, "operator");
     const name_id_t ni_term      = sfp->name_id_of(ni_seed, "Terminal");
     const name_id_t ni_tok_cat   = sfp->name_id_of(ni_seed, "TokenCategory");
 
