@@ -461,6 +461,24 @@ namespace silva::seed::impl {
                                                lexicon.name_id_wrap(lexicon.ni_atom)));
     }
 
+    expected_t<token_t> expr_oper()
+    {
+      skip();
+      auto ts = token_stake(lexicon.ni_oper);
+      for (const auto& ft: {lexicon.ti_not, lexicon.ti_but_then}) {
+        auto result = literal_token(ft);
+        if (result) {
+          ts.add_token(*result);
+          return ts.commit();
+        }
+      }
+      SILVA_EXPECT_PARSE(lexicon.ni_oper,
+                         num_fragments_left() >= 1 && fragment_category_by() == OPERATOR,
+                         "expected 'not', 'but_then', or a fragment with category OPERATOR");
+      fragment_index += 1;
+      return ts.commit();
+    }
+
     expected_t<parse_tree_node_t> any_rule(const name_id_t rule_name)
     {
       if (rule_name == lexicon.ni_atom) {

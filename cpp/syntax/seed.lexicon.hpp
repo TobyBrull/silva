@@ -40,6 +40,8 @@ namespace silva::seed {
     const fragmented_token_t ti_prefix        = *fragmented_token(sfp, "prefix");
     const fragmented_token_t ti_prefix_n      = *fragmented_token(sfp, "prefix_nest");
     const fragmented_token_t ti_concat        = *fragmented_token(sfp, "concat");
+    const fragmented_token_t ti_not           = *fragmented_token(sfp, "not");
+    const fragmented_token_t ti_but_then      = *fragmented_token(sfp, "but_then");
     const fragmented_token_t ti_tokenizer     = *fragmented_token(sfp, "tokenizer");
     const fragmented_token_t ti_language      = *fragmented_token(sfp, "language");
     const fragmented_token_t ti_include       = *fragmented_token(sfp, "include");

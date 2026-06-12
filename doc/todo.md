@@ -1,6 +1,9 @@
 # TODO
 
 * make token_id_t and name_id_t strong typedefs
+* enforce:
+    * node-rules may only use other node-rules or token-rules
+    * token-rules may only use other token-rules or FRAGMENTS
 * parse skip-rule AFTER every token
     * to support "end_of_file"
     * don't skip in seed.cpp in recursive token calls
