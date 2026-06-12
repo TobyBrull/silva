@@ -21,7 +21,7 @@ namespace silva::seed::test {
 language SimpleFern:
   ⊙ = '[' ( LabeledItem ';' ? ) * ']'
 
-  skip = skip_free_form
+  skip = skip_off_side
 
   LabeledItem = ( Label ':' ) ? Item
   Label = string

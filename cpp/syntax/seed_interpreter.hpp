@@ -17,8 +17,6 @@ namespace silva::seed {
     };
     hash_map_t<name_id_t, rule_expr_data_t> rule_exprs;
 
-    rule_expr_data_t skip_rule_expr;
-
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
     hash_map_t<name_id_t, axe_t> axes;
 
@@ -26,7 +24,11 @@ namespace silva::seed {
     // (i.e., of category: identifier or operator).
     hash_map_t<token_id_t, fragmented_token_t> string_to_ft;
 
-    hash_map_t<token_id_t, parse_tree_span_t> languages;
+    struct language_data_t {
+      parse_tree_span_t pts;
+      optional_t<rule_expr_data_t> skip_rule_expr;
+    };
+    hash_map_t<token_id_t, language_data_t> languages;
 
     interpreter_t(syntax_farm_ptr_t);
 
