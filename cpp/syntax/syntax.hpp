@@ -13,8 +13,8 @@ language Silva:
 
   skip = skip_free_form
 
-  language_name = identifier_pascal_case
-  Section = language_name language
+  lang_name = identifier_pascal_case
+  Section = lang_name language
 )'";
 
   unique_ptr_t<seed::interpreter_t> standard_seed_interpreter(syntax_farm_ptr_t);

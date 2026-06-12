@@ -66,6 +66,9 @@ namespace silva::seed::impl {
           fragment_index += 1;
         }
       }
+      SILVA_EXPECT(num_fragments_left() == 0 ||
+                       !is_fragment_category_id_continue(fragment_category_by()),
+                   MINOR);
       return ts.commit();
     }
 
@@ -92,6 +95,9 @@ namespace silva::seed::impl {
           fragment_index += 1;
         }
       }
+      SILVA_EXPECT(num_fragments_left() == 0 ||
+                       !is_fragment_category_id_continue(fragment_category_by()),
+                   MINOR);
       return ts.commit();
     }
 
@@ -113,6 +119,9 @@ namespace silva::seed::impl {
           fragment_index += 1;
         }
       }
+      SILVA_EXPECT(num_fragments_left() == 0 ||
+                       !is_fragment_category_id_continue(fragment_category_by()),
+                   MINOR);
       return ts.commit();
     }
 
@@ -212,7 +221,7 @@ namespace silva::seed::impl {
       const index_t orig_frag_idx = fragment_index;
       ss_rule.create_node(lexicon.ni_term);
       error_nursery_t error_nursery;
-      for (const auto& ft: {lexicon.ti_eps, lexicon.ti_eof}) {
+      for (const auto& ft: {lexicon.ti_eps, lexicon.ti_eof, lexicon.ti_language}) {
         auto result = literal_token(ft);
         if (result) {
           add_token_and_skip(*result);
@@ -250,18 +259,26 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_nt);
       {
         auto result = literal_token(lexicon.ti_dot);
-        (void)result;
+        if (result) {
+          add_token_and_skip(*result);
+        }
       }
 
       while (true) {
         auto ss_local = stake();
-        auto result_1 = rule_name();
-        if (!result_1) {
-          break;
+        {
+          auto result = rule_name();
+          if (!result) {
+            break;
+          }
+          add_token_and_skip(*result);
         }
-        auto result_2 = literal_token(lexicon.ti_dot);
-        if (!result_2) {
-          break;
+        {
+          auto result = literal_token(lexicon.ti_dot);
+          if (!result) {
+            break;
+          }
+          add_token_and_skip(*result);
         }
         ss_rule.add_proto_node(ss_local.commit());
       }
@@ -473,7 +490,7 @@ namespace silva::seed::impl {
       const index_t orig_frag_idx = fragment_index;
       error_nursery_t error_nursery;
       {
-        auto result = nonterminal();
+        auto result = terminal();
         if (result) {
           ss.add_proto_node(*result);
           return ss.commit();
@@ -481,7 +498,7 @@ namespace silva::seed::impl {
         error_nursery.add_child_error(std::move(result).error());
       }
       {
-        auto result = terminal();
+        auto result = nonterminal();
         if (result) {
           ss.add_proto_node(*result);
           return ss.commit();

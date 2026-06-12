@@ -50,11 +50,11 @@ namespace silva::seed {
 
   const string_view_t seed_str = R"'(
 identifier = ID_START ID_CONTINUE *
-identifier_kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *
-identifier_snake_case = ID_LOWER + ( '_' ID_LOWER + ) *
-identifier_camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *
-identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +
-identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *
+identifier_kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *       not ID_CONTINUE
+identifier_snake_case = ID_LOWER + ( '_' ID_LOWER + ) *       not ID_CONTINUE
+identifier_camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *  not ID_CONTINUE
+identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +            not ID_CONTINUE
+identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *       not ID_CONTINUE
 
 string = STRING
 number = DIGIT ( ID_LOWER | ID_UPPER |  '.' | '\'' | '+' | '-' ) *
@@ -68,7 +68,7 @@ skip_free_form = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | N
 skip_off_side  = ( SPACE | LINEFEED | COMMENT | WHITESPACE ) *
 
 language Seed:
-  ⊙ = ( Tokenizer | Language | Scope | Rule ) *
+  ⊙ = ( Language | Scope | Rule ) *
 
   skip = skip_off_side
 
@@ -88,11 +88,11 @@ language Seed:
       Concat    = ltr   infix_flat concat
       And       = ltr   infix_flat 'but_then'
       Or        = ltr   infix_flat '|'
-    Atom = alias Nonterminal | Terminal | '(' Expr ')'
+    Atom = alias Terminal | Nonterminal | '(' Expr ')'
     operator = ( 'not' | 'but_then' | operator_single )
     Alias = Expr
+  Terminal = ( 'ε' | 'end_of_file' | 'language' | string | frag_name )
   Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
-  Terminal = ( string | frag_name | 'ε' | 'end_of_file' )
 
 None = ε
 )'";
