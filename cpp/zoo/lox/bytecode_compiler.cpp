@@ -183,7 +183,7 @@ namespace silva::lox {
                                          GET_SUPER,
                                          pts.ptp->tp->tokens[pts[0].token_begin + 2].token_id);
       }
-      else if (token.category_id == lexicon.ti_identifier) {
+      else if (token.category == lexicon.ni_identifier) {
         SILVA_EXPECT_FWD(get_variable(pts, token.token_id));
       }
       else {
@@ -306,12 +306,12 @@ namespace silva::lox {
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
           SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
           const auto& token = pts.ptp->tp->tokens[lr_pts[0].token_begin];
-          SILVA_EXPECT(token.category_id == lexicon.ti_identifier, MINOR);
+          SILVA_EXPECT(token.category == lexicon.ni_identifier, MINOR);
           cfs().nursery.append_index_instr(pts, SET_PROPERTY, token.token_id);
         }
         else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const auto& token = pts.ptp->tp->tokens[lhs_pts[0].token_begin];
-          SILVA_EXPECT(token.category_id == lexicon.ti_identifier, MINOR);
+          SILVA_EXPECT(token.category == lexicon.ni_identifier, MINOR);
           SILVA_EXPECT_FWD(set_variable(lhs_pts, token.token_id));
         }
         else {

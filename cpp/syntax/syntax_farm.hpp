@@ -21,7 +21,7 @@ namespace silva {
 
   struct token_t {
     token_id_t token_id    = token_id_none;
-    token_id_t category_id = token_id_none;
+    name_id_t category     = token_id_none;
     index_t frag_idx_begin = 0;
     index_t frag_idx_end   = 0;
 

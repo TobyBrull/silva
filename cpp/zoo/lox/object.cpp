@@ -124,11 +124,11 @@ namespace silva::lox {
     else if (token.token_id == lexicon.ti_false) {
       return object_pool.make(false);
     }
-    else if (token.category_id == lexicon.ti_string) {
+    else if (token.category == lexicon.ni_string) {
       const auto sov = SILVA_EXPECT_FWD(tinfo->string_as_plain_contained());
       return object_pool.make(string_t{sov});
     }
-    else if (token.category_id == lexicon.ti_number) {
+    else if (token.category == lexicon.ni_number) {
       const auto dd = SILVA_EXPECT_FWD(tinfo->number_as_double());
       return object_pool.make(double{dd});
     }

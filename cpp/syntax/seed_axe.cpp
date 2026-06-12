@@ -124,9 +124,9 @@ namespace silva::seed::impl {
     expected_t<void> op(const token_id_t axe_op_type, const parse_tree_span_t pts_op)
     {
       SILVA_EXPECT(pts_op[0].rule_name == lexicon.ni_axe_op, BROKEN_SEED);
-      const token_id_t axe_op  = SILVA_EXPECT_FWD(pts_op.front_token_id());
-      const token_id_t axe_cat = SILVA_EXPECT_FWD(pts_op.front_token_category());
-      SILVA_EXPECT(axe_cat == lexicon.ti_string.ti || axe_op == lexicon.ti_concat.ti, BROKEN_SEED);
+      const token_id_t axe_op = SILVA_EXPECT_FWD(pts_op.front_token_id());
+      const name_id_t axe_cat = SILVA_EXPECT_FWD(pts_op.front_token_category());
+      SILVA_EXPECT(axe_cat == lexicon.ni_string || axe_op == lexicon.ti_concat.ti, BROKEN_SEED);
       if (axe_op_type != lexicon.ti_infix.ti && axe_op_type != lexicon.ti_infix_flat.ti) {
         SILVA_EXPECT(
             axe_op != lexicon.ti_concat.ti,

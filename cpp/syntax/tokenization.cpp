@@ -1,5 +1,6 @@
 #include "tokenization.hpp"
 
+#include "seed.lexicon.hpp"
 #include "syntax_farm.hpp"
 
 namespace silva {
@@ -83,16 +84,17 @@ namespace silva {
 
   void pretty_write_impl(const tokenization_t& self, byte_sink_t* stream)
   {
+    const auto& lexicon = self.sfp->get_lexicon<silva::seed::lexicon_t>();
     for (index_t token_index = 0; token_index < self.size(); ++token_index) {
       const token_t& token         = self.tokens[token_index];
       const token_info_t* tii_info = &self.sfp->token_infos[token.token_id];
-      const token_info_t* tic_info = &self.sfp->token_infos[token.category_id];
+      const string_t token_cat_str = lexicon.name_id_str(token.category);
       const auto [line, column, _] = self.location_at(token_index);
       stream->format("[{:3}] {:3}:{:<3} cat={:20} {}\n",
                      token_index,
                      line + 1,
                      column + 1,
-                     tic_info->str,
+                     token_cat_str,
                      tii_info->str);
     }
   }

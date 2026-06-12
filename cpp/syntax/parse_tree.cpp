@@ -82,7 +82,7 @@ namespace silva {
     SILVA_EXPECT(token_size() > 0, MINOR);
     return at_token_id(0);
   }
-  expected_t<token_id_t> parse_tree_span_t::front_token_category() const
+  expected_t<name_id_t> parse_tree_span_t::front_token_category() const
   {
     SILVA_EXPECT(token_size() > 0, MINOR);
     return at_token_category(0);
@@ -103,10 +103,10 @@ namespace silva {
     SILVA_EXPECT(idx < token_size(), MINOR);
     return ptp->tp->tokens[(*this)[0].token_begin + idx].token_id;
   }
-  expected_t<token_id_t> parse_tree_span_t::at_token_category(const index_t idx) const
+  expected_t<name_id_t> parse_tree_span_t::at_token_category(const index_t idx) const
   {
     SILVA_EXPECT(idx < token_size(), MINOR);
-    return ptp->tp->tokens[(*this)[0].token_begin + idx].category_id;
+    return ptp->tp->tokens[(*this)[0].token_begin + idx].category;
   }
   expected_t<fragment_span_t> parse_tree_span_t::at_language(const index_t idx) const
   {
@@ -128,7 +128,7 @@ namespace silva {
     SILVA_EXPECT(token_size() > 0, MINOR);
     return at_token_id(token_size() - 1);
   }
-  expected_t<token_id_t> parse_tree_span_t::back_token_category() const
+  expected_t<name_id_t> parse_tree_span_t::back_token_category() const
   {
     SILVA_EXPECT(token_size() > 0, MINOR);
     return at_token_category(token_size() - 1);

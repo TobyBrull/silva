@@ -50,12 +50,12 @@ namespace silva {
 
     struct token_stake_t {
       parse_tree_nursery_t* nursery = nullptr;
-      token_id_t token_cat          = token_id_none;
+      name_id_t token_cat           = name_id_none;
       index_t orig_fragment_index   = 0;
 
       token_stake_t() = default;
       token_stake_t(parse_tree_nursery_t* nursery,
-                    const token_id_t token_cat,
+                    const name_id_t token_cat,
                     const index_t orig_fragment_index);
 
       token_stake_t(stake_t&&);
@@ -105,7 +105,7 @@ namespace silva {
 namespace silva {
 
   inline parse_tree_nursery_t::token_stake_t::token_stake_t(parse_tree_nursery_t* nursery,
-                                                            const token_id_t token_cat,
+                                                            const name_id_t token_cat,
                                                             const index_t orig_fragment_index)
     : nursery(nursery), token_cat(token_cat), orig_fragment_index(orig_fragment_index)
   {
@@ -122,7 +122,7 @@ namespace silva {
     const fragment_span_t fs{nursery->fp, orig_fragment_index, nursery->fragment_index};
     token_t retval{
         .token_id       = nursery->sfp->token_id(fs),
-        .category_id    = token_cat,
+        .category       = token_cat,
         .frag_idx_begin = fs.begin,
         .frag_idx_end   = fs.end,
     };
@@ -144,7 +144,7 @@ namespace silva {
   }
 
   [[nodiscard]] parse_tree_nursery_t::token_stake_t
-  parse_tree_nursery_t::token_stake(this auto& self, const token_id_t token_cat)
+  parse_tree_nursery_t::token_stake(this auto& self, const name_id_t token_cat)
   {
     return token_stake_t{&self, token_cat, self.fragment_index};
   }
