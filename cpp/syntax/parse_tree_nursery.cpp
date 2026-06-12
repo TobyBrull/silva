@@ -47,8 +47,20 @@ namespace silva {
 
   // parse_tree_nursery_t
 
-  parse_tree_ptr_t parse_tree_nursery_t::finish() &&
+  expected_t<void> parse_tree_nursery_t::init(const name_id_t language_name,
+                                              const lexicon_t& lexicon)
   {
+    fragment_index = fs.begin;
+    SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(language_name, LANG_BEGIN);
+    SILVA_EXPECT_PARSE(language_name,
+                       fp->fragments[fs.end - 1].category == fragment_category_t::LANG_END,
+                       "fragment_span_t doesn't properly point to language");
+    return {};
+  }
+
+  expected_t<parse_tree_ptr_t> parse_tree_nursery_t::finish() &&
+  {
+    SILVA_EXPECT(fragment_index + 1 == fs.end, MINOR, "[{}] vs [{}]", fragment_index, fs.end);
     auto tp = sfp->add(std::make_unique<tokenization_t>(std::move(tokenization)));
     auto pt = sfp->add(std::make_unique<parse_tree_t>(parse_tree_t{
         .tp    = std::move(tp),
@@ -57,11 +69,12 @@ namespace silva {
     return pt;
   }
 
-  parse_tree_nursery_t::parse_tree_nursery_t(fragmentization_ptr_t fp) : sfp(fp->sfp), fp(fp)
+  parse_tree_nursery_t::parse_tree_nursery_t(fragment_span_t fs)
+    : sfp(fs.fp->sfp), fp(fs.fp), fs(fs)
   {
     tokenization.sfp      = sfp;
     tokenization.filepath = fp->filepath;
-    tokenization.fs       = fragment_span_t(fp, 0, fp->fragments.size());
+    tokenization.fs       = fs;
   }
 
   // Token helper functions.

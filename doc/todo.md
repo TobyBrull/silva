@@ -1,7 +1,6 @@
 # TODO
 
 * make token_id_t and name_id_t strong typedefs
-* parse_tree_nursery and parse functions to take fragment_span_t (instead of fragmentization_t)
 * enforce:
     * node-rules may only use other node-rules or token-rules
     * token-rules may only use other token-rules or FRAGMENTS

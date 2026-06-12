@@ -12,8 +12,8 @@ namespace silva::seed::impl {
   struct base_parse_tree_nursery_t : public parse_tree_nursery_t {
     const lexicon_t& lexicon;
 
-    base_parse_tree_nursery_t(fragmentization_ptr_t fp, const lexicon_t& lexicon)
-      : parse_tree_nursery_t(fp), lexicon(lexicon)
+    base_parse_tree_nursery_t(fragment_span_t fs, const lexicon_t& lexicon)
+      : parse_tree_nursery_t(fs), lexicon(lexicon)
     {
     }
 
@@ -40,7 +40,8 @@ namespace silva::seed::impl {
       auto ts = token_stake(lexicon.ni_id);
       SILVA_EXPECT_PARSE(lexicon.ni_id,
                          is_fragment_category_id_start(fragment_category_by()),
-                         "expected fragment with category ID_START");
+                         "expected fragment with category ID_START; got {}",
+                         fragment_category_by());
       fragment_index += 1;
       while (num_fragments_left() >= 1 &&
              is_fragment_category_id_continue(fragment_category_by())) {
@@ -55,7 +56,8 @@ namespace silva::seed::impl {
       auto ts = token_stake(lexicon.ni_id_snake);
       SILVA_EXPECT_PARSE(lexicon.ni_id_snake,
                          num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER,
-                         "expected fragment with category ID_LOWER");
+                         "expected fragment with category ID_LOWER; got {}",
+                         fragment_category_by());
       fragment_index += 1;
       while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
         fragment_index += 1;
@@ -76,11 +78,13 @@ namespace silva::seed::impl {
       auto ts = token_stake(lexicon.ni_id_pascal);
       SILVA_EXPECT_PARSE(lexicon.ni_id_pascal,
                          num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER,
-                         "expected fragment with category ID_UPPER");
+                         "expected fragment with category ID_UPPER; got {}",
+                         fragment_category_by());
       fragment_index += 1;
       SILVA_EXPECT_PARSE(lexicon.ni_id_pascal,
                          num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER,
-                         "expected fragment with category ID_LOWER");
+                         "expected fragment with category ID_LOWER; got {}",
+                         fragment_category_by());
       fragment_index += 1;
       while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
         fragment_index += 1;
@@ -101,7 +105,8 @@ namespace silva::seed::impl {
       auto ts = token_stake(lexicon.ni_id_macro);
       SILVA_EXPECT_PARSE(lexicon.ni_id_macro,
                          num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER,
-                         "expected fragment with category ID_UPPER");
+                         "expected fragment with category ID_UPPER; got {}",
+                         fragment_category_by());
       fragment_index += 1;
       while (num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER) {
         fragment_index += 1;
@@ -130,7 +135,8 @@ namespace silva::seed::impl {
       auto ts = token_stake(lexicon.ni_number);
       SILVA_EXPECT_PARSE(lexicon.ni_number,
                          num_fragments_left() >= 1 && fragment_category_by() == DIGIT,
-                         "expected fragment with category DIGIT");
+                         "expected fragment with category DIGIT; got {}",
+                         fragment_category_by());
       fragment_index += 1;
       while (num_fragments_left() >= 1 &&
              (fragment_category_by() == DIGIT || fragment_category_by() == ID_LOWER ||
@@ -394,8 +400,9 @@ namespace silva::seed::impl {
     const auto axe_text = find_subsection(seed_str, "⊙ = axe ", "    Atom = alias");
     const auto axe_frag = SILVA_EXPECT_ASSERT(fragmentize(sfp, "seed.axe", string_t{axe_text}));
     impl::base_parse_tree_nursery_t nursery(axe_frag, lexicon);
+    SILVA_EXPECT_ASSERT(nursery.init(nursery.lexicon.ni_axe, nursery.lexicon));
     SILVA_EXPECT_ASSERT(nursery.axe());
-    parse_tree_ptr_t pt = std::move(nursery).finish();
+    parse_tree_ptr_t pt = SILVA_EXPECT_ASSERT(std::move(nursery).finish());
     auto retval         = SILVA_EXPECT_ASSERT(axe_create(sfp, lexicon.ni_expr, pt->span()));
     {
       hash_set_t<name_id_t> atom_set;
@@ -409,10 +416,8 @@ namespace silva::seed::impl {
   struct seed_parse_tree_nursery_t : public base_parse_tree_nursery_t {
     axe_t& seed_expr_axe;
 
-    seed_parse_tree_nursery_t(fragmentization_ptr_t fp,
-                              const lexicon_t& lexicon,
-                              axe_t& seed_expr_axe)
-      : base_parse_tree_nursery_t(fp, lexicon), seed_expr_axe(seed_expr_axe)
+    seed_parse_tree_nursery_t(fragment_span_t fs, const lexicon_t& lexicon, axe_t& seed_expr_axe)
+      : base_parse_tree_nursery_t(fs, lexicon), seed_expr_axe(seed_expr_axe)
     {
     }
 
@@ -682,8 +687,9 @@ namespace silva::seed {
 
     expected_t<parse_tree_ptr_t> parse(fragment_span_t fs)
     {
-      impl::seed_parse_tree_nursery_t nursery(fs.fp, lexicon, seed_expr_axe);
-      nursery.fragment_index = fs.begin;
+      SILVA_EXPECT(sfp == fs.fp->sfp, ASSERT);
+      impl::seed_parse_tree_nursery_t nursery(fs, lexicon, seed_expr_axe);
+      SILVA_EXPECT_ASSERT(nursery.init(nursery.lexicon.ni_axe, nursery.lexicon));
       SILVA_EXPECT_FWD(nursery.seed());
       nursery.skip();
       SILVA_EXPECT(nursery.fragment_index == fs.end,

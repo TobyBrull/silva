@@ -41,12 +41,13 @@ namespace silva {
     : public tree_nursery_t<parse_tree_node_t, parse_tree_nursery_state_t, parse_tree_nursery_t> {
     syntax_farm_ptr_t sfp;
     fragmentization_ptr_t fp;
+    fragment_span_t fs;
 
     tokenization_t tokenization;
 
-    index_t fragment_index = 0;
+    parse_tree_nursery_t(fragment_span_t);
 
-    parse_tree_nursery_t(fragmentization_ptr_t);
+    index_t fragment_index = 0;
 
     struct token_stake_t {
       parse_tree_nursery_t* nursery = nullptr;
@@ -86,7 +87,8 @@ namespace silva {
     void on_stake_commit_pre(parse_tree_node_t& proto_node) const;
     void on_stake_commit_owning_to_proto(parse_tree_node_t& proto_node) const;
 
-    parse_tree_ptr_t finish() &&;
+    expected_t<void> init(name_id_t, const lexicon_t&);
+    expected_t<parse_tree_ptr_t> finish() &&;
 
     index_t num_fragments_left() const;
     const fragment_t* fragment_by(index_t idx_offset = 0) const;
