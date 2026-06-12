@@ -27,13 +27,16 @@ namespace silva {
 
   expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset) const
   {
+    auto retval = silva::pretty_string(*ptp->tp);
+    retval += '\n';
     const seed::lexicon_t& lexicon = ptp->tp->sfp->get_lexicon<seed::lexicon_t>();
-    return tree_span_t::to_string([&](string_t& curr_line, auto& path) {
+    retval += SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
       const auto pts = this->sub_tree_span_at(path.back().node_index);
       curr_line += lexicon.name_id_str(pts[0].rule_name);
       string_pad(curr_line, token_offset);
       curr_line += silva::pretty_string(pts.token_span());
-    });
+    }));
+    return retval;
   }
 
   expected_t<string_t> parse_tree_span_t::to_graphviz() const

@@ -57,7 +57,12 @@ namespace silva {
     return pt;
   }
 
-  parse_tree_nursery_t::parse_tree_nursery_t(fragmentization_ptr_t fp) : sfp(fp->sfp), fp(fp) {}
+  parse_tree_nursery_t::parse_tree_nursery_t(fragmentization_ptr_t fp) : sfp(fp->sfp), fp(fp)
+  {
+    tokenization.sfp      = sfp;
+    tokenization.filepath = fp->filepath;
+    tokenization.fs       = fragment_span_t(fp, 0, fp->fragments.size());
+  }
 
   // Token helper functions.
 
