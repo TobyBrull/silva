@@ -93,6 +93,8 @@ namespace silva {
     operator span_t<const fragment_t>();
   };
 
+  string_t escape_string(string_t);
+
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize_unique(filepath_t, string_t source_code);
   expected_t<fragmentization_ptr_t>
   fragmentize(syntax_farm_ptr_t, filepath_t, string_t source_code);

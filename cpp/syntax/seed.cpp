@@ -30,13 +30,11 @@ namespace silva::seed::impl {
 
     expected_t<token_t> literal_token(const fragmented_token_t ft)
     {
-      skip();
       return literal_fragmented_token(ft);
     }
 
     expected_t<token_t> identifier()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_id);
       SILVA_EXPECT_PARSE(lexicon.ni_id,
                          is_fragment_category_id_start(fragment_category_by()),
@@ -52,7 +50,6 @@ namespace silva::seed::impl {
 
     expected_t<token_t> identifier_snake_case()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_id_snake);
       SILVA_EXPECT_PARSE(lexicon.ni_id_snake,
                          num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER,
@@ -74,7 +71,6 @@ namespace silva::seed::impl {
 
     expected_t<token_t> identifier_pascal_case()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_id_pascal);
       SILVA_EXPECT_PARSE(lexicon.ni_id_pascal,
                          num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER,
@@ -101,7 +97,6 @@ namespace silva::seed::impl {
 
     expected_t<token_t> identifier_macro_case()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_id_macro);
       SILVA_EXPECT_PARSE(lexicon.ni_id_macro,
                          num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER,
@@ -123,7 +118,6 @@ namespace silva::seed::impl {
 
     expected_t<token_t> string()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_string);
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_string, STRING);
       return ts.commit();
@@ -131,7 +125,6 @@ namespace silva::seed::impl {
 
     expected_t<token_t> number()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_number);
       SILVA_EXPECT_PARSE(lexicon.ni_number,
                          num_fragments_left() >= 1 && fragment_category_by() == DIGIT,
@@ -150,26 +143,67 @@ namespace silva::seed::impl {
       return ts.commit();
     }
 
+    expected_t<token_t> newline()
+    {
+      auto ts = token_stake(lexicon.ni_newline);
+      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_newline, NEWLINE);
+      return ts.commit();
+    }
+
+    expected_t<token_t> indent()
+    {
+      auto ts = token_stake(lexicon.ni_indent);
+      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_indent, INDENT);
+      return ts.commit();
+    }
+
+    expected_t<token_t> dedent()
+    {
+      auto ts = token_stake(lexicon.ni_dedent);
+      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_dedent, DEDENT);
+      return ts.commit();
+    }
+
+    expected_t<token_t> operator_single()
+    {
+      auto ts = token_stake(lexicon.ni_operator_single);
+      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_operator_single, OPERATOR);
+      return ts.commit();
+    }
+
+    expected_t<token_t> operator_greedy()
+    {
+      auto ts = token_stake(lexicon.ni_operator_greedy);
+      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_operator_greedy, OPERATOR);
+      while (num_fragments_left() >= 1 && fragment_category_by() == OPERATOR) {
+        fragment_index += 1;
+      }
+      return ts.commit();
+    }
+
     expected_t<token_t> frag_name()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_frag_name);
       ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_frag_name, identifier_macro_case()));
       return ts.commit();
     }
     expected_t<token_t> rule_name()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_rule_name);
       ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule_name, identifier_pascal_case()));
       return ts.commit();
     }
     expected_t<token_t> token_category_name()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_token_cat_name);
       ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_token_cat_name, identifier_snake_case()));
       return ts.commit();
+    }
+
+    void add_token_and_skip(const token_t& token)
+    {
+      add_token(token);
+      skip();
     }
 
     expected_t<parse_tree_node_t> terminal()
@@ -181,7 +215,7 @@ namespace silva::seed::impl {
       for (const auto& ft: {lexicon.ti_eps, lexicon.ti_eof}) {
         auto result = literal_token(ft);
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -189,7 +223,7 @@ namespace silva::seed::impl {
       {
         auto result = string();
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -197,7 +231,7 @@ namespace silva::seed::impl {
       {
         auto result = frag_name();
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -236,7 +270,7 @@ namespace silva::seed::impl {
       {
         auto result = rule_name();
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -244,7 +278,7 @@ namespace silva::seed::impl {
       {
         auto result = token_category_name();
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -265,7 +299,7 @@ namespace silva::seed::impl {
       {
         auto result = string();
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -273,7 +307,7 @@ namespace silva::seed::impl {
       {
         auto result = literal_token(lexicon.ti_concat);
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -300,7 +334,7 @@ namespace silva::seed::impl {
                             lexicon.ti_postfix}) {
         auto result = literal_token(ft);
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -320,7 +354,7 @@ namespace silva::seed::impl {
       {
         auto result = literal_token(lexicon.ti_right_arrow);
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_ops, nonterminal()));
         }
       }
@@ -339,7 +373,7 @@ namespace silva::seed::impl {
       for (const auto& ft: {lexicon.ti_ltr, lexicon.ti_rtl}) {
         auto result = literal_token(ft);
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -355,8 +389,9 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_axe_level);
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_level, rule_name()));
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_level, literal_token(lexicon.ti_equal)));
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_level, rule_name()));
+      add_token_and_skip(
+          SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_level, literal_token(lexicon.ti_equal)));
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_level, axe_assoc()));
       while (auto result = axe_ops()) {
         ss_rule.add_proto_node(*result);
@@ -424,9 +459,11 @@ namespace silva::seed::impl {
     expected_t<parse_tree_node_t> expr_parens()
     {
       auto ss = stake();
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal_token(lexicon.ti_paren_open)));
+      add_token_and_skip(
+          SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal_token(lexicon.ti_paren_open)));
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, expr()));
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal_token(lexicon.ti_paren_close)));
+      add_token_and_skip(
+          SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal_token(lexicon.ti_paren_close)));
       return ss.commit();
     }
 
@@ -468,7 +505,6 @@ namespace silva::seed::impl {
 
     expected_t<token_t> expr_oper()
     {
-      skip();
       auto ts = token_stake(lexicon.ni_oper);
       for (const auto& ft: {lexicon.ti_not, lexicon.ti_but_then}) {
         auto result = literal_token(ft);
@@ -477,10 +513,7 @@ namespace silva::seed::impl {
           return ts.commit();
         }
       }
-      SILVA_EXPECT_PARSE(lexicon.ni_oper,
-                         num_fragments_left() >= 1 && fragment_category_by() == OPERATOR,
-                         "expected 'not', 'but_then', or a fragment with category OPERATOR");
-      fragment_index += 1;
+      ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_oper, operator_single()));
       return ts.commit();
     }
 
@@ -490,8 +523,9 @@ namespace silva::seed::impl {
         return atom();
       }
       else if (rule_name == lexicon.ni_oper) {
-        add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_oper, expr_oper()));
-        return {};
+        auto ss = stake();
+        add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_oper, expr_oper()));
+        return ss.commit();
       }
       else if (rule_name == lexicon.ni_expr) {
         return expr();
@@ -510,7 +544,7 @@ namespace silva::seed::impl {
       for (const auto& ft: {lexicon.ti_alias, lexicon.ti_no_whitespace}) {
         auto result = literal_token(ft);
         if (result) {
-          add_token(*result);
+          add_token_and_skip(*result);
           return ss_rule.commit();
         }
         error_nursery.add_child_error(std::move(result).error());
@@ -535,8 +569,8 @@ namespace silva::seed::impl {
     expected_t<parse_tree_node_t> scope_impl()
     {
       auto ss_rule = stake();
-      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_scope, NEWLINE);
-      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_scope, INDENT);
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, newline()));
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, indent()));
       while (num_fragments_left() >= 1 && fragment_category_by() != DEDENT) {
         const index_t orig_frag_idx = fragment_index;
         error_nursery_t error_nursery;
@@ -562,7 +596,7 @@ namespace silva::seed::impl {
                                                  fragment_location_at(orig_frag_idx),
                                                  lexicon.name_id_wrap(lexicon.ni_scope)));
       }
-      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_scope, DEDENT);
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, dedent()));
       return ss_rule.commit();
     }
 
@@ -571,7 +605,7 @@ namespace silva::seed::impl {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_scope);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, nonterminal()));
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, literal_token(lexicon.ti_colon)));
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, literal_token(lexicon.ti_colon)));
       ss_rule.add_proto_node(SILVA_EXPECT_FWD(scope_impl()));
       return ss_rule.commit();
     }
@@ -580,9 +614,11 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_language);
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, literal_token(lexicon.ti_language)));
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, rule_name()));
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, literal_token(lexicon.ti_colon)));
+      add_token_and_skip(
+          SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, literal_token(lexicon.ti_language)));
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, rule_name()));
+      add_token_and_skip(
+          SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, literal_token(lexicon.ti_colon)));
       ss_rule.add_proto_node(SILVA_EXPECT_FWD(scope_impl()));
       return ss_rule.commit();
     }
@@ -597,7 +633,7 @@ namespace silva::seed::impl {
         {
           auto result = literal_token(lexicon.ti_here);
           if (result) {
-            add_token(*result);
+            add_token_and_skip(*result);
             matched_here = true;
           }
         }
@@ -606,14 +642,14 @@ namespace silva::seed::impl {
         }
       }
 
-      add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, literal_token(lexicon.ti_equal)));
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, literal_token(lexicon.ti_equal)));
 
       {
         bool matched_axe = false;
         {
           auto result = literal_token(lexicon.ti_axe);
           if (result) {
-            add_token(*result);
+            add_token_and_skip(*result);
             matched_axe = true;
           }
         }
@@ -625,7 +661,7 @@ namespace silva::seed::impl {
             ss_rule.add_proto_node(*qual);
           }
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, expr()));
-          SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_rule, NEWLINE);
+          add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, newline()));
         }
       }
 
@@ -636,7 +672,7 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_seed);
-      while (num_fragments_left() >= 1 && fragment_category_by() != DEDENT) {
+      while (num_fragments_left() >= 1 && fragment_category_by() != LANG_END) {
         const index_t orig_frag_idx = fragment_index;
         error_nursery_t error_nursery;
         {
@@ -690,9 +726,9 @@ namespace silva::seed {
       SILVA_EXPECT(sfp == fs.fp->sfp, ASSERT);
       impl::seed_parse_tree_nursery_t nursery(fs, lexicon, seed_expr_axe);
       SILVA_EXPECT_ASSERT(nursery.init(nursery.lexicon.ni_axe, nursery.lexicon));
-      SILVA_EXPECT_FWD(nursery.seed());
       nursery.skip();
-      SILVA_EXPECT(nursery.fragment_index == fs.end,
+      SILVA_EXPECT_FWD(nursery.seed());
+      SILVA_EXPECT(nursery.fragment_index + 1 == fs.end,
                    MINOR,
                    "could not parse entire text; stopped at {}",
                    nursery.fragment_location_by());

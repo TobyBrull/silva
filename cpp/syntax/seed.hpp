@@ -58,6 +58,11 @@ identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *
 
 string = STRING
 number = DIGIT ( ID_LOWER | ID_UPPER |  '.' | '\'' | '+' | '-' ) *
+newline = NEWLINE
+indent = INDENT
+dedent = DEDENT
+operator_single = OPERATOR
+operator_greedy = OPERATOR +
 
 skip_free_form = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
 skip_off_side  = ( SPACE | LINEFEED | COMMENT | WHITESPACE ) *
@@ -73,8 +78,8 @@ language Seed:
 
   Language = 'language' rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
-  ScopeImpl = alias NEWLINE INDENT ( Scope | Rule ) * DEDENT
-  Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe | Qualifier * Expr NEWLINE )
+  ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
+  Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe | Qualifier * Expr newline )
   Qualifier = 'alias' | 'no_whitespace'
   Expr:
     ⊙ = axe Atom operator
@@ -84,7 +89,7 @@ language Seed:
       And       = ltr   infix_flat 'but_then'
       Or        = ltr   infix_flat '|'
     Atom = alias Nonterminal | Terminal | '(' Expr ')'
-    operator = ( 'not' | 'but_then' | OPERATOR )
+    operator = ( 'not' | 'but_then' | operator_single )
     Alias = Expr
   Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
   Terminal = ( string | frag_name | 'ε' | 'end_of_file' )

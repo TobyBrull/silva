@@ -508,6 +508,16 @@ namespace silva {
     return span_t<const fragment_t>(fp->fragments.data() + begin, end - begin);
   }
 
+  string_t escape_string(string_t retval)
+  {
+    for (index_t i = 0; i < retval.size(); ++i) {
+      if (retval[i] == '\n') {
+        retval.replace(i, 1, "\\n");
+      }
+    }
+    return retval;
+  }
+
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize_unique(filepath_t filepath,
                                                                  string_t source_code)
   {

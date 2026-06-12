@@ -64,7 +64,7 @@ namespace silva {
     string_t retval;
     const auto print_tokens = [&retval, &self](const index_t begin, const index_t end) {
       for (index_t token_idx = begin; token_idx < end; ++token_idx) {
-        retval += self.tp->token_info_get(token_idx)->str;
+        retval += escape_string(self.tp->token_info_get(token_idx)->str);
         if (token_idx + 1 < end) {
           retval += " ";
         }
@@ -95,7 +95,7 @@ namespace silva {
                      line + 1,
                      column + 1,
                      token_cat_str,
-                     tii_info->str);
+                     escape_string(tii_info->str));
     }
   }
 }
