@@ -541,22 +541,39 @@ namespace silva {
   expected_t<fragmented_token_t> fragmented_token(syntax_farm_ptr_t sfp, string_view_t sv)
   {
     const token_id_t ti = sfp->token_id(sv);
-
-    // TODO: make faster
-    string_t temp;
-    temp.reserve(sv.size() + 1);
-    temp.append(sv);
-    temp += '\n';
-    auto ff = SILVA_EXPECT_FWD(fragmentize_unique("", std::move(temp)));
-
     array_t<fragmented_token_t::item_t> items;
-    items.reserve(ff->fragments.size());
-
-    for (index_t i = 0; i < ff->fragments.size(); ++i) {
-      items.push_back(fragmented_token_t::item_t{
-          .category  = ff->fragments[i].category,
-          .codepoint = SILVA_EXPECT_FWD(ff->get_unique_codepoint(i)),
-      });
+    for (auto maybe_ud: unicode::utf8_decode_generator(sv)) {
+      const unicode::codepoint_data_t ud = SILVA_EXPECT_FWD(std::move(maybe_ud));
+      const codepoint_category_t cc      = codepoint_category_table[ud.codepoint];
+      fragment_category_t fc             = INVALID;
+      if (is_ascii_digit(ud.codepoint)) {
+        fc = DIGIT;
+      }
+      else if (cc == Operator) {
+        fc = OPERATOR;
+      }
+      else if (cc == ParenthesisLeft || cc == ParenthesisRight) {
+        fc = PARENTHESIS;
+      }
+      else if (cc == XID_Lowercase) {
+        fc = ID_LOWER;
+      }
+      else if (cc == XID_Uppercase) {
+        fc = ID_UPPER;
+      }
+      else if (cc == XID_Start) {
+        fc = ID_START__NOT_ID_LOWER_AND_NOT_ID_UPPER;
+      }
+      else if (cc == XID_Continue) {
+        fc = ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT;
+      }
+      else if (cc == Space) {
+        fc = SPACE;
+      }
+      else {
+        SILVA_EXPECT(false, MINOR, "fragmented_token: unsupported codepoint in [{}]", sv);
+      }
+      items.push_back(fragmented_token_t::item_t{.category = fc, .codepoint = ud.codepoint});
     }
 
     return fragmented_token_t{
