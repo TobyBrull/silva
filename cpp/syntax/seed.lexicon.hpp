@@ -64,23 +64,8 @@ namespace silva::seed {
     const fragmented_token_t ti_token_cat_name = *fragmented_token(sfp, "token_category_name");
     const fragmented_token_t ti_frag_name      = *fragmented_token(sfp, "frag_name");
 
-    const token_id_t ti_WHITESPACE             = sfp->token_id("WHITESPACE");
-    const token_id_t ti_COMMENT                = sfp->token_id("COMMENT");
-    const token_id_t ti_NUMBER                 = sfp->token_id("NUMBER");
-    const token_id_t ti_STRING                 = sfp->token_id("STRING");
-    const token_id_t ti_INDENT                 = sfp->token_id("INDENT");
-    const token_id_t ti_DEDENT                 = sfp->token_id("DEDENT");
-    const token_id_t ti_NEWLINE                = sfp->token_id("NEWLINE");
-    const token_id_t ti_OPERATOR               = sfp->token_id("OPERATOR");
-    const token_id_t ti_PARENTHESIS            = sfp->token_id("PARENTHESIS");
-    const token_id_t ti_IDENTIFIER             = sfp->token_id("IDENTIFIER");
-    const token_id_t ti_IDENTIFIER_SILVA_CASE  = sfp->token_id("IDENTIFIER_SILVA_CASE");
-    const token_id_t ti_IDENTIFIER_SNAKE_CASE  = sfp->token_id("IDENTIFIER_SNAKE_CASE");
-    const token_id_t ti_IDENTIFIER_CAMEL_CASE  = sfp->token_id("IDENTIFIER_CAMEL_CASE");
-    const token_id_t ti_IDENTIFIER_PASCAL_CASE = sfp->token_id("IDENTIFIER_PASCAL_CASE");
-    const token_id_t ti_IDENTIFIER_MACRO_CASE  = sfp->token_id("IDENTIFIER_MACRO_CASE");
-    const token_id_t ti_IDENTIFIER_UPPER_CASE  = sfp->token_id("IDENTIFIER_UPPER_CASE");
-    const token_id_t ti_IDENTIFIER_LOWER_CASE  = sfp->token_id("IDENTIFIER_LOWER_CASE");
+    const fragmented_token_t ti_ID_START    = *fragmented_token(sfp, "ID_START");
+    const fragmented_token_t ti_ID_CONTINUE = *fragmented_token(sfp, "ID_CONTINUE");
 
     const token_id_t ti_r_defaults = sfp->token_id("Defaults");
     const token_id_t ti_r_offside  = sfp->token_id("OffSide");

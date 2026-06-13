@@ -34,59 +34,52 @@ language SimpleFern:
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
-[0].Seed                                          tokenizer SimpleFern ... <ws> <ws>
-  [0].Seed.Tokenizer                              tokenizer SimpleFern ... <ws> <ws>
-    [0].Seed.Tokenizer.IgnoreRule                 ignore WHITESPACE <ws>
-      [0].Seed.Tokenizer.Defn                     WHITESPACE
-        [0].Seed.Tokenizer.PrefixItem             WHITESPACE
-          [0].Seed.Tokenizer.Item                 WHITESPACE
-            [0].Seed.Tokenizer.Matcher            WHITESPACE
-    [1].Seed.Tokenizer.IgnoreRule                 ignore COMMENT <ws>
-      [0].Seed.Tokenizer.Defn                     COMMENT
-        [0].Seed.Tokenizer.PrefixItem             COMMENT
-          [0].Seed.Tokenizer.Item                 COMMENT
-            [0].Seed.Tokenizer.Matcher            COMMENT
-    [2].Seed.Tokenizer.IgnoreRule                 ignore INDENT <ws>
-      [0].Seed.Tokenizer.Defn                     INDENT
-        [0].Seed.Tokenizer.PrefixItem             INDENT
-          [0].Seed.Tokenizer.Item                 INDENT
-            [0].Seed.Tokenizer.Matcher            INDENT
-    [3].Seed.Tokenizer.IgnoreRule                 ignore DEDENT <ws>
-      [0].Seed.Tokenizer.Defn                     DEDENT
-        [0].Seed.Tokenizer.PrefixItem             DEDENT
-          [0].Seed.Tokenizer.Item                 DEDENT
-            [0].Seed.Tokenizer.Matcher            DEDENT
-    [4].Seed.Tokenizer.IgnoreRule                 ignore NEWLINE <ws>
-      [0].Seed.Tokenizer.Defn                     NEWLINE
-        [0].Seed.Tokenizer.PrefixItem             NEWLINE
-          [0].Seed.Tokenizer.Item                 NEWLINE
-            [0].Seed.Tokenizer.Matcher            NEWLINE
-    [5].Seed.Tokenizer.TokenRule                  number = NUMBER <ws>
-      [0].Seed.Tokenizer.Defn                     NUMBER
-        [0].Seed.Tokenizer.PrefixItem             NUMBER
-          [0].Seed.Tokenizer.Item                 NUMBER
-            [0].Seed.Tokenizer.Matcher            NUMBER
-    [6].Seed.Tokenizer.TokenRule                  string = STRING <ws>
-      [0].Seed.Tokenizer.Defn                     STRING
-        [0].Seed.Tokenizer.PrefixItem             STRING
-          [0].Seed.Tokenizer.Item                 STRING
-            [0].Seed.Tokenizer.Matcher            STRING
-    [7].Seed.Tokenizer.TokenRule                  operator = PARENTHESIS <ws>
-      [0].Seed.Tokenizer.Defn                     PARENTHESIS
-        [0].Seed.Tokenizer.PrefixItem             PARENTHESIS
-          [0].Seed.Tokenizer.Item                 PARENTHESIS
-            [0].Seed.Tokenizer.Matcher            PARENTHESIS
-    [8].Seed.Tokenizer.TokenRule                  operator = ::: OPERATOR <ws>
-      [0].Seed.Tokenizer.Defn                     ::: OPERATOR
-        [0].Seed.Tokenizer.Item                   OPERATOR
-          [0].Seed.Tokenizer.Matcher              OPERATOR
-    [9].Seed.Tokenizer.TokenRule                  identifier = IDENTIFIER <ws>
-      [0].Seed.Tokenizer.Defn                     IDENTIFIER
-        [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
-          [0].Seed.Tokenizer.Item                 IDENTIFIER
-            [0].Seed.Tokenizer.Matcher            IDENTIFIER
-  [1].Seed.Language                               language SimpleFern ... <ws> <ws>
-    [0].Seed.Rule                                 ⊙ = ... ']' <ws>
+[  0]   2:1   cat=.literal                                 language
+[  1]   2:10  cat=.Seed.rule_name                          SimpleFern
+[  2]   2:20  cat=.literal                                 :
+[  3]   2:21  cat=.newline                                 \n
+[  4]   3:1   cat=.indent                                    
+[  5]   3:3   cat=.literal                                 ⊙
+[  6]   3:5   cat=.literal                                 =
+[  7]   3:7   cat=.string                                  '['
+[  8]   3:11  cat=.literal                                 (
+[  9]   3:13  cat=.Seed.rule_name                          LabeledItem
+[ 10]   3:25  cat=.string                                  ';'
+[ 11]   3:29  cat=.Seed.Expr.operator                      ?
+[ 12]   3:31  cat=.literal                                 )
+[ 13]   3:33  cat=.Seed.Expr.operator                      *
+[ 14]   3:35  cat=.string                                  ']'
+[ 15]   3:38  cat=.newline                                 \n
+[ 16]   5:3   cat=.Seed.token_category_name                skip
+[ 17]   5:8   cat=.literal                                 =
+[ 18]   5:10  cat=.Seed.token_category_name                skip_off_side
+[ 19]   5:23  cat=.newline                                 \n
+[ 20]   7:3   cat=.Seed.rule_name                          LabeledItem
+[ 21]   7:15  cat=.literal                                 =
+[ 22]   7:17  cat=.literal                                 (
+[ 23]   7:19  cat=.Seed.rule_name                          Label
+[ 24]   7:25  cat=.string                                  ':'
+[ 25]   7:29  cat=.literal                                 )
+[ 26]   7:31  cat=.Seed.Expr.operator                      ?
+[ 27]   7:33  cat=.Seed.rule_name                          Item
+[ 28]   7:37  cat=.newline                                 \n  
+[ 29]   8:3   cat=.Seed.rule_name                          Label
+[ 30]   8:9   cat=.literal                                 =
+[ 31]   8:11  cat=.Seed.token_category_name                string
+[ 32]   8:17  cat=.newline                                 \n  
+[ 33]   9:3   cat=.Seed.rule_name                          Item
+[ 34]   9:8   cat=.literal                                 =
+[ 35]   9:10  cat=.Seed.rule_name                          SimpleFern
+[ 36]   9:21  cat=.Seed.Expr.operator                      |
+[ 37]   9:23  cat=.Seed.token_category_name                string
+[ 38]   9:30  cat=.Seed.Expr.operator                      |
+[ 39]   9:32  cat=.Seed.token_category_name                number
+[ 40]   9:38  cat=.newline                                 
+[ 41]   9:38  cat=.dedent                                  
+
+[0].Seed                                          language SimpleFern ...  
+  [0].Seed.Language                               language SimpleFern ...  
+    [0].Seed.Rule                                 ⊙ = ... ']' \n
       [0].Seed.Expr.Concat.concat                 '[' ( ... * ']'
         [0].Seed.Terminal                         '['
         [1].Seed.Expr.Postfix.*                   ( LabeledItem ... ) *
@@ -95,7 +88,10 @@ language SimpleFern:
             [1].Seed.Expr.Postfix.?               ';' ?
               [0].Seed.Terminal                   ';'
         [2].Seed.Terminal                         ']'
-    [1].Seed.Rule                                 LabeledItem = ... Item <ws>
+    [1].Seed.Rule                                 skip = skip_off_side \n
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_off_side
+    [2].Seed.Rule                                 LabeledItem = ... Item \n  
       [0].Seed.Nonterminal                        LabeledItem
       [1].Seed.Expr.Concat.concat                 ( Label ... ? Item
         [0].Seed.Expr.Postfix.?                   ( Label ':' ) ?
@@ -103,15 +99,15 @@ language SimpleFern:
             [0].Seed.Nonterminal                  Label
             [1].Seed.Terminal                     ':'
         [1].Seed.Nonterminal                      Item
-    [2].Seed.Rule                                 Label = string <ws>
+    [3].Seed.Rule                                 Label = string \n  
       [0].Seed.Nonterminal                        Label
-      [1].Seed.Terminal                           string
-    [3].Seed.Rule                                 Item = ... number <ws>
+      [1].Seed.Nonterminal                        string
+    [4].Seed.Rule                                 Item = ... number 
       [0].Seed.Nonterminal                        Item
       [1].Seed.Expr.Or.|                          SimpleFern | string | number
         [0].Seed.Nonterminal                      SimpleFern
-        [1].Seed.Terminal                         string
-        [2].Seed.Terminal                         number
+        [1].Seed.Nonterminal                      string
+        [2].Seed.Nonterminal                      number
 )";
 
     const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string());

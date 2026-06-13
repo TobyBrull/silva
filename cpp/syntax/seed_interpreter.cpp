@@ -361,18 +361,34 @@ namespace silva::seed::impl {
                                                "[{}] while matching {}",
                                                fragment_location_by(),
                                                sfp->token_id_wrap(expected_ft.token_id));
-        add_token(token);
-        SILVA_EXPECT_FWD(skip());
+        if (token_rule_depth == 0) {
+          add_token(token);
+          SILVA_EXPECT_FWD(skip());
+        }
       }
       else if (s_front_token.category == lexicon.ni_frag_name) {
         const token_id_t expected_frag_cat_ti = s_front_token.token_id;
-        const token_id_t curr_frag_cat_ti =
-            fragment_category_to_token_id(*sfp, fragment_category_by());
-        SILVA_EXPECT(curr_frag_cat_ti == expected_frag_cat_ti,
-                     MINOR,
-                     "expected token of category {}; got {}",
-                     sfp->token_id_wrap(expected_frag_cat_ti),
-                     sfp->token_id_wrap(curr_frag_cat_ti));
+        if (expected_frag_cat_ti == lexicon.ti_ID_START.token_id) {
+          SILVA_EXPECT(is_fragment_category_id_start(fragment_category_by()),
+                       MINOR,
+                       "expected token of category ID_START; got {}",
+                       sfp->token_id_wrap(expected_frag_cat_ti));
+        }
+        else if (expected_frag_cat_ti == lexicon.ti_ID_CONTINUE.token_id) {
+          SILVA_EXPECT(is_fragment_category_id_continue(fragment_category_by()),
+                       MINOR,
+                       "expected token of category ID_CONTINUE; got {}",
+                       sfp->token_id_wrap(expected_frag_cat_ti));
+        }
+        else {
+          const token_id_t curr_frag_cat_ti =
+              fragment_category_to_token_id(*sfp, fragment_category_by());
+          SILVA_EXPECT(curr_frag_cat_ti == expected_frag_cat_ti,
+                       MINOR,
+                       "expected token of category {}; got {}",
+                       sfp->token_id_wrap(expected_frag_cat_ti),
+                       sfp->token_id_wrap(curr_frag_cat_ti));
+        }
         fragment_index += 1;
       }
       else {
