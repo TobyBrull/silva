@@ -158,7 +158,12 @@ namespace silva {
     const index_t n = ft.items.size();
     SILVA_EXPECT(num_fragments_left() >= n, MINOR, "not enough fragments left");
     for (index_t i = 0; i < n; ++i) {
-      SILVA_EXPECT(ft.items[i].codepoint == fp->get_unique_codepoint(fragment_index), MINOR);
+      const auto curr_cp = SILVA_EXPECT_FWD(fp->get_unique_codepoint(fragment_index));
+      SILVA_EXPECT(ft.items[i].codepoint == curr_cp,
+                   MINOR,
+                   "expected '{}'; got '{}'",
+                   unicode::utf8_encode_one(ft.items[i].codepoint),
+                   unicode::utf8_encode_one(curr_cp));
       fragment_index += 1;
     }
     return ts.commit();

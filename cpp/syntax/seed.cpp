@@ -422,13 +422,13 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_axe);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe, nonterminal()));
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe, nonterminal()));
-      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_axe, NEWLINE);
-      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_axe, INDENT);
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, newline()));
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, indent()));
       while (num_fragments_left() >= 1 && fragment_category_by() != DEDENT) {
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe, axe_level()));
-        SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_axe, NEWLINE);
+        add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, newline()));
       }
-      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_axe, DEDENT);
+      add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, dedent()));
       return ss_rule.commit();
     }
   };

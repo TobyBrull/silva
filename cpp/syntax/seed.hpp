@@ -57,7 +57,7 @@ identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +            not ID_CONTINUE
 identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *       not ID_CONTINUE
 
 string = STRING
-number = DIGIT ( ID_LOWER | ID_UPPER |  '.' | '\'' | '+' | '-' ) *
+number = DIGIT ( DIGIT | 'e' | 'E' |  '.' | '\'' | '+' | '-' ) *
 newline = NEWLINE
 indent = INDENT
 dedent = DEDENT
