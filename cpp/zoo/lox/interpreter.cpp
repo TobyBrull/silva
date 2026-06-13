@@ -427,7 +427,7 @@ namespace silva::lox {
             pts,
             sfp->token_id_wrap(field_name));
       }
-      else if (token.category == lexicon.ni_identifier) {
+      else if (token.category == lexicon.ni_identifier || token.token_id == lexicon.ti_this) {
         object_ref_t* ptr = [&] {
           const auto it = intp->resolution.find(pts);
           if (it != intp->resolution.end()) {

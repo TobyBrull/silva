@@ -183,7 +183,7 @@ namespace silva::lox {
                                          GET_SUPER,
                                          pts.ptp->tp->tokens[pts[0].token_begin + 2].token_id);
       }
-      else if (token.category == lexicon.ni_identifier) {
+      else if (token.category == lexicon.ni_identifier || token.token_id == lexicon.ti_this) {
         SILVA_EXPECT_FWD(get_variable(pts, token.token_id));
       }
       else {

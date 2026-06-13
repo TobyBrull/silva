@@ -103,10 +103,10 @@ namespace silva::lox {
       rv.push_back(test_case_t{
           R"(
         fun foo1(y) {
-          fun printer(x) {
+          fun my_printer(x) {
             print x;
           }
-          printer(y * 10);
+          my_printer(y * 10);
         }
         fun foo2(y) {
           print y * 100;

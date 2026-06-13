@@ -63,6 +63,7 @@ indent = INDENT
 dedent = DEDENT
 operator_single = OPERATOR
 operator_greedy = OPERATOR +
+parenthesis = PARENTHESIS
 
 skip_free_form = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
 skip_off_side  = ( SPACE | LINEFEED | COMMENT | WHITESPACE ) *

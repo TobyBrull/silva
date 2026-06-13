@@ -36,7 +36,10 @@ namespace silva {
     COMMENT,
     WHITESPACE,
   };
-  constexpr bool has_unique_codepoint(fragment_category_t);
+
+  // If a fragment corresponds to a unique codepoint.
+  constexpr bool is_fragment_category_simple(fragment_category_t);
+
   constexpr bool is_fragment_category_id_start(fragment_category_t);
   constexpr bool is_fragment_category_id_continue(fragment_category_t);
   constexpr bool is_fragment_category_real(fragment_category_t);
@@ -115,7 +118,7 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
-  constexpr bool has_unique_codepoint(const fragment_category_t fc)
+  constexpr bool is_fragment_category_simple(const fragment_category_t fc)
   {
     using enum fragment_category_t;
     return (fc == SPACE ||                                   //

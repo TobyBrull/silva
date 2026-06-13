@@ -30,7 +30,7 @@ language Lox:
     Block = '{' ( Decl | Stmt ) * '}'
     ExprStmt = Expr ';'
   Expr:
-    ⊙ = axe Atom operator_greedy
+    ⊙ = axe Atom oper
       Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
       Unary       = rtl prefix '!' '-'
       Factor      = ltr infix '*' '/'
@@ -44,6 +44,7 @@ language Lox:
            | number | string
            | 'super' '.' identifier | identifier
            | '(' Expr ')' )
+    oper = 'and' | 'or' | '<=' | '>=' | '==' | '!=' | operator_single | parenthesis
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
     ⊙ = identifier '(' Parameters ')' Stmt.Block

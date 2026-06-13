@@ -356,7 +356,6 @@ namespace silva::seed::impl {
                      "Couldn't find token for {}",
                      sfp->token_id_wrap(s_front_token.token_id));
         const fragmented_token_t& expected_ft = it->second;
-        SILVA_EXPECT_FWD(skip());
         const token_t token = SILVA_EXPECT_FWD(literal_fragmented_token(expected_ft),
                                                "[{}] while matching {}",
                                                fragment_location_by(),

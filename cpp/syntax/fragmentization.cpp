@@ -633,7 +633,7 @@ namespace silva {
   fragmentization_t::get_unique_codepoint(const index_t frag_idx) const
   {
     const auto frag = fragments[frag_idx];
-    SILVA_EXPECT(has_unique_codepoint(frag.category), MINOR);
+    SILVA_EXPECT(is_fragment_category_simple(frag.category), MINOR);
     const index_t bo         = frag.location.byte_offset;
     const string_view_t subs = string_view_t{source_code}.substr(bo);
     const auto [cp, new_idx] = SILVA_EXPECT_FWD(unicode::utf8_decode_one(subs));
