@@ -6,11 +6,9 @@
 
 namespace silva::lox {
   const string_view_t seed_str = R"'(
-tokenizer Lox:
-  include tokenizer FreeForm
-
 language Lox:
   ⊙ = ( Decl | Stmt ) *
+  skip = skip_free_form
   Decl:
     ⊙ = Var | Fun | Class
     Var = 'var' identifier ( '=' Expr ) ? ';'
@@ -32,7 +30,7 @@ language Lox:
     Block = '{' ( Decl | Stmt ) * '}'
     ExprStmt = Expr ';'
   Expr:
-    ⊙ = axe Atom
+    ⊙ = axe Atom oper
       Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
       Unary       = rtl prefix '!' '-'
       Factor      = ltr infix '*' '/'
@@ -46,6 +44,7 @@ language Lox:
            | number | string
            | 'super' '.' identifier | identifier
            | '(' Expr ')' )
+    oper = 'and' | 'or' | '<=' | '>=' | '==' | '!=' | operator_single | parenthesis
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
     ⊙ = identifier '(' Parameters ')' Stmt.Block

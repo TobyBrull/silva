@@ -3,7 +3,7 @@
 #include "fragmentization.hpp"
 
 namespace silva {
-  struct tokenization_t : public menhir_t {
+  struct tokenization_t : public sprite_t {
     syntax_farm_ptr_t sfp;
     filepath_t filepath;
 

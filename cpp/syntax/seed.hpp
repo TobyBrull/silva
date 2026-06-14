@@ -1,7 +1,6 @@
 #pragma once
 
 #include "seed.lexicon.hpp"
-#include "seed_tokenizer.hpp"
 
 #include "parse_tree.hpp"
 
@@ -50,31 +49,51 @@ namespace silva::seed {
   //  * "any" matches any token and also end-of-file.
 
   const string_view_t seed_str = R"'(
-tokenizer Seed:
-  frag_name = IDENTIFIER_MACRO_CASE
-  rule_name = IDENTIFIER_PASCAL_CASE
-  token_category_name = IDENTIFIER_SNAKE_CASE
-  include tokenizer OffSide
+identifier = ID_START ID_CONTINUE *
+identifier_kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *       not ID_CONTINUE
+identifier_snake_case = ID_LOWER + ( '_' ID_LOWER + ) *       not ID_CONTINUE
+identifier_camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *  not ID_CONTINUE
+identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +            not ID_CONTINUE
+identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *       not ID_CONTINUE
+
+string = STRING
+number = DIGIT ( DIGIT | 'e' | 'E' |  '.' | '\'' | '+' | '-' ) *
+newline = NEWLINE
+indent = INDENT
+dedent = DEDENT
+operator_single = OPERATOR
+operator_greedy = OPERATOR +
+parenthesis = PARENTHESIS
+
+skip_free_form = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+skip_off_side  = ( SPACE | LINEFEED | COMMENT | WHITESPACE ) *
 
 language Seed:
-  ⊙ = ( Tokenizer | Language | Scope | Rule ) *
+  ⊙ = ( Language | Scope | Rule ) *
+
+  skip = skip_off_side
+
+  frag_name = identifier_macro_case
+  rule_name = identifier_pascal_case
+  token_category_name = identifier_snake_case
+
   Language = 'language' rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
   Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe | Qualifier * Expr newline )
   Qualifier = 'alias' | 'no_whitespace'
   Expr:
-    ⊙ = axe Atom
+    ⊙ = axe Atom operator
       Prefix    = rtl   prefix 'not'
       Postfix   = ltr   postfix '?' '*' '+'
       Concat    = ltr   infix_flat concat
       And       = ltr   infix_flat 'but_then'
       Or        = ltr   infix_flat '|'
-    Atom = alias Nonterminal | Terminal | '(' Expr ')'
+    Atom = alias Terminal | Nonterminal | '(' Expr ')'
+    operator = ( 'not' | 'but_then' | operator_single )
     Alias = Expr
-  Nonterminal = '.' ? rule_name ( '.' rule_name ) *
-  Terminal = ( string | token_category_name
-             | 'any' | 'ε' | 'end_of_file' )
+  Terminal = ( 'ε' | 'end_of_language' | 'language' | string | frag_name )
+  Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
 
 None = ε
 )'";
@@ -94,7 +113,6 @@ None = ε
     ~bootstrap_interpreter_t();
 
     const lexicon_t& lexicon() const;
-    const tokenizer_farm_t& tokenizer_farm() const;
 
     expected_t<parse_tree_ptr_t> parse(fragment_span_t);
   };

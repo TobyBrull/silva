@@ -38,7 +38,7 @@ namespace silva::unicode {
   {
     SILVA_EXPECT(buffer.size() >= 1, MINOR, "can't get codepoint from empty string");
     const char lb      = buffer.front();
-    codepoint_t retval = 0;
+    codepoint_t retval = codepoint_none;
     index_t len        = 0;
     if ((lb & 0x80) == 0) {
       return {{codepoint_t(lb), 1}};

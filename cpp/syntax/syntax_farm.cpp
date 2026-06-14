@@ -58,15 +58,31 @@ namespace silva {
 
   syntax_farm_t::syntax_farm_t()
   {
-    token_infos.emplace_back();
-    token_lookup[""] = token_id_none;
-
-    token_infos.emplace_back(token_info_t{.str = "language"});
-    token_lookup["language"] = token_id_language;
-
-    const name_info_t fni{0, 0};
-    name_infos.emplace_back(fni);
-    name_lookup.emplace(fni, 0);
+    {
+      token_infos.emplace_back();
+      token_lookup[""] = token_id_none;
+    }
+    {
+      SILVA_ASSERT(token_infos.size() == token_id_language);
+      token_infos.emplace_back(token_info_t{.str = "language"});
+      token_lookup["language"] = token_id_language;
+    }
+    {
+      SILVA_ASSERT(token_infos.size() == token_id_literal);
+      token_infos.emplace_back(token_info_t{.str = "literal"});
+      token_lookup["literal"] = token_id_literal;
+    }
+    {
+      const name_info_t fni{0, 0};
+      name_infos.emplace_back(fni);
+      name_lookup.emplace(fni, 0);
+    }
+    {
+      SILVA_ASSERT(name_infos.size() == name_id_literal);
+      const name_info_t fni{0, token_id_literal};
+      name_infos.emplace_back(fni);
+      name_lookup.emplace(fni, name_id_literal);
+    }
   }
 
   syntax_farm_t::~syntax_farm_t() = default;
@@ -83,6 +99,13 @@ namespace silva {
       token_lookup.emplace(token_str, new_token_id);
       return new_token_id;
     }
+  }
+
+  token_id_t syntax_farm_t::token_id(const fragment_span_t fs)
+  {
+    const index_t beg_byte_offset = fs.fp->get_fragment_byte_offset(fs.begin);
+    const index_t end_byte_offset = fs.fp->get_fragment_byte_offset(fs.end);
+    return token_id(fs.fp->source_code.substr(beg_byte_offset, end_byte_offset - beg_byte_offset));
   }
 
   expected_t<token_id_t> syntax_farm_t::token_id_in_string(const token_id_t ti)

@@ -14,14 +14,13 @@ namespace silva {
 
   constexpr inline token_id_t token_id_none     = 0;
   constexpr inline token_id_t token_id_language = 1;
+  constexpr inline token_id_t token_id_literal  = 2;
   constexpr inline name_id_t name_id_none       = 0;
-  constexpr inline name_id_t name_id_root_abs   = 1;
-  constexpr inline name_id_t name_id_leave_abs  = 2;
-  constexpr inline name_id_t name_id_leave_rel  = 3;
+  constexpr inline name_id_t name_id_literal    = 1;
 
   struct token_t {
     token_id_t token_id    = token_id_none;
-    token_id_t category_id = token_id_none;
+    name_id_t category     = token_id_none;
     index_t frag_idx_begin = 0;
     index_t frag_idx_end   = 0;
 
@@ -91,6 +90,7 @@ namespace silva {
     ~syntax_farm_t();
 
     token_id_t token_id(string_view_t);
+    token_id_t token_id(fragment_span_t);
 
     expected_t<token_id_t> token_id_in_string(token_id_t);
 

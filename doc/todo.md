@@ -1,5 +1,24 @@
 # TODO
 
+* make interpreter_t::apply take token_id_t for language, not name_id_t for rule
+* make token_id_t and name_id_t strong typedefs
+* allow token-categories that start with, e.g., "language"
+    * for this group fragment-categories and demand that every literal only has fragments from a
+      single group?
+    * when matching literals (e.g., 'fun') these should only match if the next fragment is from a
+      different group (fix: "ffunction" in lox.lox and change "lang_name" back to "language_name" in
+      syntax.hpp)
+    * token rules startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
+* enforce:
+    * node-rules may only use other node-rules or token-rules
+    * token-rules may only use other token-rules or FRAGMENTS
+* Functionality to add to seed:
+    * `[ a b c ]` as a synonym for `a | b | c`
+* parse skip-rule AFTER every token
+    * to support "end_of_language"
+    * don't skip in seed.cpp in recursive token calls
+* prevent token-rules from using non-terminal rules?
+
 * Parse -3.5e-4 in Seed, not in tokenization?
 * Parse Toml's "2025-07-03 23:55:00"?
 * Remove tokenization step (rename what is currently "fragmentization" to "tokenization")?

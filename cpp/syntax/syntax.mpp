@@ -68,7 +68,7 @@ namespace silva {
           const name_id_t sub_lang_rule  = SILVA_EXPECT_FWD(language_rule(sf, sub_lang_name));
           const fragment_span_t sub_fs   = SILVA_EXPECT_FWD(pts_node.back_language());
 
-          parse_tree_ptr_t sub_pt   = SILVA_EXPECT_FWD(si->apply(std::move(sub_fs), sub_lang_rule));
+          parse_tree_ptr_t sub_pt   = SILVA_EXPECT_FWD(si->apply(sub_fs, sub_lang_rule));
           parse_tree_span_t sub_pts = sub_pt->span();
           SILVA_EXPECT_FWD(apply_action(*si, sub_pts));
         }

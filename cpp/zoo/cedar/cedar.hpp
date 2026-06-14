@@ -10,20 +10,15 @@ namespace silva::cedar {
   // https://port70.net/~nsz/c/c11/n1570.html#A
   //
   const string_view_t seed_str = R"'(
-tokenizer Cedar:
-  operator = [ '...' '.' ';' ':' '*=' '*' '/=' '/' '%=' '%' '~' '++' '+=' '+' '--' '-=' '->' '-'
-               '!=' '!' '==' '=' '<<=' '<<' '<=' '<' '>>=' '>>' '>=' '>'
-               '&&' '&=' '&' '||' '|=' '|' '^=' '^' '?' ',' ]
-  keyword = [ 'break' 'case' 'char' 'const' 'continue' 'default' 'do'
-              'double' 'else' 'enum' 'extern' 'float' 'for' 'goto' 'if'
-              'inline' 'int' 'long' 'restrict' 'return' 'short'
-              'signed' 'sizeof' 'static' 'struct' 'switch' 'typedef' 'union'
-              'unsigned' 'void' 'volatile' 'while' '_Alignof' '_Atomic'
-              '_Thread_local' 'alignas' ]
-  include tokenizer FreeForm
 
 language Cedar:
   ⊙ = Declaration *
+
+  skip = skip_free_form
+  operator = ( '...' | '.' | ';' | ':' | '*=' | '*' | '/=' | '/' | '%=' | '%' | '~' | '++' | '+=' | '+' | '--' | '-=' | '->' | '-' |
+               '!=' | '!' | '==' | '=' | '<<=' | '<<' | '<=' | '<' | '>>=' | '>>' | '>=' | '>' |
+               '&&' | '&=' | '&' | '||' | '|=' | '|' | '^=' | '^' | '?' | ',' )
+
   Declaration:
     ⊙ = Specifiers Init ? ( ';' | Stmt.Compound )
     Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier | Type.Specifier ) +
@@ -51,7 +46,7 @@ language Cedar:
                 )
 
     # TODO: should only match identifiers that have previously been typedef'ed.
-    TypedefName = not any
+    TypedefName = not ε
 
     Qualifier = ( 'const' | 'volatile' | 'restrict' | '_Atomic' )
     SpecifierQualifierList = ( Qualifier | Specifier ) +
@@ -95,7 +90,7 @@ language Cedar:
     ExprStmt = Expr ? ';'
 
   Expr:
-    ⊙ = axe Atom
+    ⊙ = axe Atom oper
       Postfix     = ltr  postfix '++' '--' \
                          postfix_nest -> ExprOrNone '(' ')' '[' ']' \
                          infix '.' '->'
@@ -115,6 +110,7 @@ language Cedar:
       Assignment  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
       Comma       = ltr  infix_flat ','
     Atom = number | string + | identifier | '(' Expr ')' | Sizeof | Alignof
+    oper = operator | parenthesis
     Sizeof = 'sizeof' ( Expr.Unary | '(' Type.Name ')' )
     Alignof = '_Alignof' '(' Type.Name ')'
     ExprOrNone = Expr | None

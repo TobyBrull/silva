@@ -2,7 +2,6 @@
 
 #include "seed.hpp"
 #include "seed_axe.hpp"
-#include "seed_tokenizer.hpp"
 
 namespace silva::seed {
   // Driver for a program in the Seed language.
@@ -10,10 +9,9 @@ namespace silva::seed {
     syntax_farm_ptr_t sfp;
     bootstrap_interpreter_t bootstrap_interpreter;
 
-    tokenizer_farm_t tokenizer_farm;
-
     struct rule_expr_data_t {
       parse_tree_span_t expr;
+      bool is_token_rule    = false;
       bool is_alias         = false;
       bool is_no_whitespace = false;
     };
@@ -24,9 +22,13 @@ namespace silva::seed {
 
     // Maps a token of the form ['word'] (i.e., of category: string) to a token of the form [word]
     // (i.e., of category: identifier or operator).
-    hash_map_t<token_id_t, token_id_t> string_to_token;
+    hash_map_t<token_id_t, fragmented_token_t> string_to_ft;
 
-    hash_map_t<token_id_t, parse_tree_span_t> languages;
+    struct language_data_t {
+      parse_tree_span_t pts;
+      optional_t<rule_expr_data_t> skip_rule_expr;
+    };
+    hash_map_t<token_id_t, language_data_t> languages;
 
     interpreter_t(syntax_farm_ptr_t);
 

@@ -19,9 +19,9 @@ namespace silva::lox {
     token_id_t ti_super = sfp->token_id("super");
     token_id_t ti_init  = sfp->token_id("init");
 
-    token_id_t ti_identifier = sfp->token_id("identifier");
-    token_id_t ti_number     = sfp->token_id("number");
-    token_id_t ti_string     = sfp->token_id("string");
+    token_id_t ni_identifier = sfp->name_id_of("identifier");
+    token_id_t ni_number     = sfp->name_id_of("number");
+    token_id_t ni_string     = sfp->name_id_of("string");
 
     name_id_t ni_none           = sfp->name_id_of("None");
     name_id_t ni_lox            = sfp->name_id_of("Lox");

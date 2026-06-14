@@ -6,18 +6,20 @@ namespace silva {
 
   void parse_tree_nursery_t::on_get_state(parse_tree_nursery_state_t& s) const
   {
-    s.token_index = token_index;
+    s.fragment_index = fragment_index;
+    s.token_index    = tokenization.tokens.size();
   }
 
   void parse_tree_nursery_t::on_set_state(const parse_tree_nursery_state_t& s)
   {
-    token_index = s.token_index;
+    fragment_index = s.fragment_index;
+    tokenization.tokens.resize(s.token_index);
   }
 
   void parse_tree_nursery_t::on_stake_ctor(parse_tree_node_t& proto_node) const
   {
-    proto_node.token_begin = token_index;
-    proto_node.token_end   = token_index + 1;
+    proto_node.token_begin = tokenization.size();
+    proto_node.token_end   = tokenization.size();
   }
 
   void parse_tree_nursery_t::on_stake_create_node(parse_tree_node_t& proto_node,
@@ -35,7 +37,7 @@ namespace silva {
 
   void parse_tree_nursery_t::on_stake_commit_pre(parse_tree_node_t& proto_node) const
   {
-    proto_node.token_end = token_index;
+    proto_node.token_end = tokenization.size();
   }
 
   void parse_tree_nursery_t::on_stake_commit_owning_to_proto(parse_tree_node_t& proto_node) const
@@ -45,50 +47,74 @@ namespace silva {
 
   // parse_tree_nursery_t
 
-  unique_ptr_t<parse_tree_t> parse_tree_nursery_t::finish() &&
+  expected_t<void> parse_tree_nursery_t::init(const name_id_t language_name,
+                                              const lexicon_t& lexicon)
   {
-    return std::make_unique<parse_tree_t>(parse_tree_t{
-        .tp    = std::move(tp),
-        .nodes = std::move(tree),
-    });
+    fragment_index = fs.begin;
+    SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(language_name, LANG_BEGIN);
+    SILVA_EXPECT_PARSE(language_name,
+                       fp->fragments[fs.end - 1].category == fragment_category_t::LANG_END,
+                       "fragment_span_t doesn't properly point to language");
+    return {};
   }
 
-  parse_tree_nursery_t::parse_tree_nursery_t(tokenization_ptr_t tp) : sfp(tp->sfp), tp(tp) {}
+  expected_t<parse_tree_ptr_t> parse_tree_nursery_t::finish() &&
+  {
+    SILVA_EXPECT(fragment_index + 1 == fs.end, MINOR, "[{}] vs [{}]", fragment_index, fs.end);
+    auto tp = sfp->add(std::make_unique<tokenization_t>(std::move(tokenization)));
+    auto pt = sfp->add(std::make_unique<parse_tree_t>(parse_tree_t{
+        .tp    = std::move(tp),
+        .nodes = std::move(tree),
+    }));
+    return pt;
+  }
+
+  parse_tree_nursery_t::parse_tree_nursery_t(fragment_span_t fs)
+    : sfp(fs.fp->sfp), fp(fs.fp), fs(fs)
+  {
+    tokenization.sfp      = sfp;
+    tokenization.filepath = fp->filepath;
+    tokenization.fs       = fs;
+  }
 
   // Token helper functions.
 
-  const index_t parse_tree_nursery_t::num_tokens_left() const
+  index_t parse_tree_nursery_t::num_fragments_left() const
   {
-    return tp->size() - token_index;
+    return fp->size() - fragment_index;
   }
-
-  const token_id_t parse_tree_nursery_t::token_id_by(const index_t token_index_offset) const
+  const fragment_t* parse_tree_nursery_t::fragment_by(const index_t idx_offset) const
   {
-    return tp->tokens[token_index + token_index_offset].token_id;
+    return &(fp->fragments[fragment_index + idx_offset]);
   }
-  const token_id_t parse_tree_nursery_t::token_category_by(const index_t token_index_offset) const
+  unicode::codepoint_t
+  parse_tree_nursery_t::fragment_unique_codepoint_or_zero_by(const index_t idx_offset) const
   {
-    return tp->tokens[token_index + token_index_offset].category_id;
+    auto res = fp->get_unique_codepoint(fragment_index + idx_offset);
+    if (res.has_value()) {
+      return *res;
+    }
+    else {
+      return U'\0';
+    }
   }
-
-  const token_info_t* parse_tree_nursery_t::token_data_by(const index_t token_index_offset) const
+  fragment_category_t parse_tree_nursery_t::fragment_category_by(const index_t idx_offset) const
   {
-    const token_id_t token_id_ = token_id_by(token_index_offset);
-    return &(tp->sfp->token_infos[token_id_]);
+    return fragment_by(idx_offset)->category;
   }
-
-  token_location_t parse_tree_nursery_t::token_location_by(const index_t token_index_offset) const
+  fragment_location_t parse_tree_nursery_t::fragment_location_by(const index_t idx_offset) const
   {
-    return token_location_t{
-        .tp          = tp,
-        .token_index = token_index + token_index_offset,
+    return fragment_location_t{
+        .fp             = fp,
+        .fragment_index = fragment_index + idx_offset,
     };
   }
-  token_location_t parse_tree_nursery_t::token_location_at(const index_t arg_token_index) const
+  fragment_location_t
+  parse_tree_nursery_t::fragment_location_at(const index_t arg_token_index) const
   {
-    return token_location_t{
-        .tp          = tp,
-        .token_index = arg_token_index,
+    return fragment_location_t{
+        .fp             = fp,
+        .fragment_index = arg_token_index,
     };
   }
 }

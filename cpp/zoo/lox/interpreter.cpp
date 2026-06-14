@@ -133,7 +133,7 @@ namespace silva::lox {
                          pts_curr);
           }
 
-          const bool is_identifier = (token.category_id == lexicon->ti_identifier);
+          const bool is_identifier = (token.category == lexicon->ni_identifier);
           const bool is_keyword =
               (token.token_id == lexicon->ti_true || token.token_id == lexicon->ti_false ||
                token.token_id == lexicon->ti_nil);
@@ -155,8 +155,8 @@ namespace silva::lox {
             }
           }
 
-          const bool is_number = (token.category_id == lexicon->ti_number);
-          const bool is_string = (token.category_id == lexicon->ti_string);
+          const bool is_number = (token.category == lexicon->ni_number);
+          const bool is_string = (token.category == lexicon->ni_string);
           if (is_keyword || is_number || is_string) {
             object_ref_t literal =
                 SILVA_EXPECT_FWD_AS(object_ref_from_literal(pts_ti, object_pool, *lexicon), MAJOR);
@@ -370,7 +370,7 @@ namespace silva::lox {
           auto lr_pts = lhs_pts.sub_tree_span_at(lr);
           SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
           const auto& token = pts.ptp->tp->tokens[lr_pts[0].token_begin];
-          SILVA_EXPECT(token.category_id == lexicon.ti_identifier, MINOR);
+          SILVA_EXPECT(token.category == lexicon.ni_identifier, MINOR);
 
           SILVA_EXPECT(ll_ref->holds_class_instance(), MINOR);
           auto& ci                  = std::get<class_instance_t>(ll_ref->data);
@@ -378,7 +378,7 @@ namespace silva::lox {
         }
         else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const auto& token = pts.ptp->tp->tokens[lhs_pts[0].token_begin];
-          SILVA_EXPECT(token.category_id == lexicon.ti_identifier, MINOR);
+          SILVA_EXPECT(token.category == lexicon.ni_identifier, MINOR);
           SILVA_EXPECT_FWD(scope.set(token.token_id, rhs_ref),
                            "{} assignment to undeclared variable",
                            pts);
@@ -427,7 +427,7 @@ namespace silva::lox {
             pts,
             sfp->token_id_wrap(field_name));
       }
-      else if (token.category_id == lexicon.ti_identifier) {
+      else if (token.category == lexicon.ni_identifier || token.token_id == lexicon.ti_this) {
         object_ref_t* ptr = [&] {
           const auto it = intp->resolution.find(pts);
           if (it != intp->resolution.end()) {

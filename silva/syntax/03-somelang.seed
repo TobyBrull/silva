@@ -1,7 +1,5 @@
-tokenizer Somelang:
-  include tokenizer FreeForm
-
 language Somelang:
   ⊙ = As Bs
+  skip = skip_free_form
   As = 'a' *
   Bs = 'b' *

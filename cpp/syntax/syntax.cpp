@@ -1,7 +1,6 @@
 #include "syntax.hpp"
 
 #include "seed.hpp"
-#include "seed_tokenizer.hpp"
 
 #include "zoo/fern/fern.hpp"
 
@@ -16,10 +15,8 @@ namespace silva {
   unique_ptr_t<seed::interpreter_t> standard_seed_interpreter(syntax_farm_ptr_t sfp)
   {
     array_t<tuple_t<filepath_t, string_t>> sources = {
-        {"tokenizers.seed", string_t{seed::bootstrap_tokenizers_str}},
         {"seed.seed", string_t{seed::seed_str}},
         {"axe.seed", string_t{seed::axe_str}},
-        {"tokenizer.seed", string_t{seed::seed_tokenizer_str}},
         {"fern.seed", string_t{fern::seed_str}},
         {"silva.seed", string_t{seed_str}},
     };

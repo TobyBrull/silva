@@ -1,6 +1,6 @@
 #pragma once
 
-#include "syntax_farm.hpp"
+#include "fragmentization.hpp"
 
 namespace silva::seed {
   struct lexicon_t : public silva::lexicon_t {
@@ -12,72 +12,60 @@ namespace silva::seed {
     friend struct silva::syntax_farm_t;
 
    public:
-    const token_id_t ti_here          = sfp->token_id("⊙");
-    const token_id_t ti_comma         = sfp->token_id(",");
-    const token_id_t ti_dash          = sfp->token_id("-");
-    const token_id_t ti_equal         = sfp->token_id("=");
-    const token_id_t ti_axe           = sfp->token_id("axe");
-    const token_id_t ti_alias         = sfp->token_id("alias");
-    const token_id_t ti_no_whitespace = sfp->token_id("no_whitespace");
-    const token_id_t ti_right_arrow   = sfp->token_id("->");
-    const token_id_t ti_brack_open    = sfp->token_id("[");
-    const token_id_t ti_brack_close   = sfp->token_id("]");
-    const token_id_t ti_paren_open    = sfp->token_id("(");
-    const token_id_t ti_paren_close   = sfp->token_id(")");
-    const token_id_t ti_identifier    = sfp->token_id("identifier");
-    const token_id_t ti_slash         = sfp->token_id("/");
-    const token_id_t ti_operator      = sfp->token_id("operator");
-    const token_id_t ti_string        = sfp->token_id("string");
-    const token_id_t ti_number        = sfp->token_id("number");
-    const token_id_t ti_any           = sfp->token_id("any");
-    const token_id_t ti_eps           = sfp->token_id("ε");
-    const token_id_t ti_eof           = sfp->token_id("end_of_file");
-    const token_id_t ti_ltr           = sfp->token_id("ltr");
-    const token_id_t ti_rtl           = sfp->token_id("rtl");
-    const token_id_t ti_postfix       = sfp->token_id("postfix");
-    const token_id_t ti_postfix_n     = sfp->token_id("postfix_nest");
-    const token_id_t ti_infix         = sfp->token_id("infix");
-    const token_id_t ti_infix_flat    = sfp->token_id("infix_flat");
-    const token_id_t ti_ternary       = sfp->token_id("ternary");
-    const token_id_t ti_prefix        = sfp->token_id("prefix");
-    const token_id_t ti_prefix_n      = sfp->token_id("prefix_nest");
-    const token_id_t ti_concat        = sfp->token_id("concat");
-    const token_id_t ti_tokenizer     = sfp->token_id("tokenizer");
-    const token_id_t ti_language      = sfp->token_id("language");
-    const token_id_t ti_include       = sfp->token_id("include");
-    const token_id_t ti_ignore        = sfp->token_id("ignore");
-    const token_id_t ti_colon         = sfp->token_id(":");
-    const token_id_t ti_triple_colon  = sfp->token_id(":::");
-    const token_id_t ti_backslash     = sfp->token_id("\\");
-    const token_id_t ti_pipe          = sfp->token_id("|");
-    const token_id_t ti_qmark         = sfp->token_id("?");
-    const token_id_t ti_star          = sfp->token_id("*");
-    const token_id_t ti_plus          = sfp->token_id("+");
+    const fragmented_token_t ti_dot           = *fragmented_token(sfp, ".");
+    const fragmented_token_t ti_here          = *fragmented_token(sfp, "⊙");
+    const fragmented_token_t ti_comma         = *fragmented_token(sfp, ",");
+    const fragmented_token_t ti_dash          = *fragmented_token(sfp, "-");
+    const fragmented_token_t ti_equal         = *fragmented_token(sfp, "=");
+    const fragmented_token_t ti_axe           = *fragmented_token(sfp, "axe");
+    const fragmented_token_t ti_alias         = *fragmented_token(sfp, "alias");
+    const fragmented_token_t ti_no_whitespace = *fragmented_token(sfp, "no_whitespace");
+    const fragmented_token_t ti_right_arrow   = *fragmented_token(sfp, "->");
+    const fragmented_token_t ti_brack_open    = *fragmented_token(sfp, "[");
+    const fragmented_token_t ti_brack_close   = *fragmented_token(sfp, "]");
+    const fragmented_token_t ti_paren_open    = *fragmented_token(sfp, "(");
+    const fragmented_token_t ti_paren_close   = *fragmented_token(sfp, ")");
+    const fragmented_token_t ti_identifier    = *fragmented_token(sfp, "identifier");
+    const fragmented_token_t ti_slash         = *fragmented_token(sfp, "/");
+    const fragmented_token_t ti_operator      = *fragmented_token(sfp, "operator");
+    const fragmented_token_t ti_string        = *fragmented_token(sfp, "string");
+    const fragmented_token_t ti_number        = *fragmented_token(sfp, "number");
+    const fragmented_token_t ti_ltr           = *fragmented_token(sfp, "ltr");
+    const fragmented_token_t ti_rtl           = *fragmented_token(sfp, "rtl");
+    const fragmented_token_t ti_postfix       = *fragmented_token(sfp, "postfix");
+    const fragmented_token_t ti_postfix_n     = *fragmented_token(sfp, "postfix_nest");
+    const fragmented_token_t ti_infix         = *fragmented_token(sfp, "infix");
+    const fragmented_token_t ti_infix_flat    = *fragmented_token(sfp, "infix_flat");
+    const fragmented_token_t ti_ternary       = *fragmented_token(sfp, "ternary");
+    const fragmented_token_t ti_prefix        = *fragmented_token(sfp, "prefix");
+    const fragmented_token_t ti_prefix_n      = *fragmented_token(sfp, "prefix_nest");
+    const fragmented_token_t ti_concat        = *fragmented_token(sfp, "concat");
+    const fragmented_token_t ti_not           = *fragmented_token(sfp, "not");
+    const fragmented_token_t ti_but_then      = *fragmented_token(sfp, "but_then");
+    const fragmented_token_t ti_tokenizer     = *fragmented_token(sfp, "tokenizer");
+    const fragmented_token_t ti_language      = *fragmented_token(sfp, "language");
+    const fragmented_token_t ti_include       = *fragmented_token(sfp, "include");
+    const fragmented_token_t ti_ignore        = *fragmented_token(sfp, "ignore");
+    const fragmented_token_t ti_colon         = *fragmented_token(sfp, ":");
+    const fragmented_token_t ti_triple_colon  = *fragmented_token(sfp, ":::");
+    const fragmented_token_t ti_backslash     = *fragmented_token(sfp, "\\");
+    const fragmented_token_t ti_pipe          = *fragmented_token(sfp, "|");
+    const fragmented_token_t ti_qmark         = *fragmented_token(sfp, "?");
+    const fragmented_token_t ti_star          = *fragmented_token(sfp, "*");
+    const fragmented_token_t ti_plus          = *fragmented_token(sfp, "+");
+    const fragmented_token_t ti_eps           = *fragmented_token(sfp, "ε");
+    const fragmented_token_t ti_end_of_lang   = *fragmented_token(sfp, "end_of_language");
+    const fragmented_token_t ti_skip          = *fragmented_token(sfp, "skip");
 
-    const token_id_t ti_indent         = sfp->token_id("indent");
-    const token_id_t ti_dedent         = sfp->token_id("dedent");
-    const token_id_t ti_newline        = sfp->token_id("newline");
-    const token_id_t ti_rule_name      = sfp->token_id("rule_name");
-    const token_id_t ti_token_cat_name = sfp->token_id("token_category_name");
-    const token_id_t ti_frag_name      = sfp->token_id("frag_name");
+    const fragmented_token_t ti_indent         = *fragmented_token(sfp, "indent");
+    const fragmented_token_t ti_dedent         = *fragmented_token(sfp, "dedent");
+    const fragmented_token_t ti_newline        = *fragmented_token(sfp, "newline");
+    const fragmented_token_t ti_rule_name      = *fragmented_token(sfp, "rule_name");
+    const fragmented_token_t ti_token_cat_name = *fragmented_token(sfp, "token_category_name");
+    const fragmented_token_t ti_frag_name      = *fragmented_token(sfp, "frag_name");
 
-    const token_id_t ti_WHITESPACE             = sfp->token_id("WHITESPACE");
-    const token_id_t ti_COMMENT                = sfp->token_id("COMMENT");
-    const token_id_t ti_NUMBER                 = sfp->token_id("NUMBER");
-    const token_id_t ti_STRING                 = sfp->token_id("STRING");
-    const token_id_t ti_INDENT                 = sfp->token_id("INDENT");
-    const token_id_t ti_DEDENT                 = sfp->token_id("DEDENT");
-    const token_id_t ti_NEWLINE                = sfp->token_id("NEWLINE");
-    const token_id_t ti_OPERATOR               = sfp->token_id("OPERATOR");
-    const token_id_t ti_PARENTHESIS            = sfp->token_id("PARENTHESIS");
-    const token_id_t ti_IDENTIFIER             = sfp->token_id("IDENTIFIER");
-    const token_id_t ti_IDENTIFIER_SILVA_CASE  = sfp->token_id("IDENTIFIER_SILVA_CASE");
-    const token_id_t ti_IDENTIFIER_SNAKE_CASE  = sfp->token_id("IDENTIFIER_SNAKE_CASE");
-    const token_id_t ti_IDENTIFIER_CAMEL_CASE  = sfp->token_id("IDENTIFIER_CAMEL_CASE");
-    const token_id_t ti_IDENTIFIER_PASCAL_CASE = sfp->token_id("IDENTIFIER_PASCAL_CASE");
-    const token_id_t ti_IDENTIFIER_MACRO_CASE  = sfp->token_id("IDENTIFIER_MACRO_CASE");
-    const token_id_t ti_IDENTIFIER_UPPER_CASE  = sfp->token_id("IDENTIFIER_UPPER_CASE");
-    const token_id_t ti_IDENTIFIER_LOWER_CASE  = sfp->token_id("IDENTIFIER_LOWER_CASE");
+    const fragmented_token_t ti_ID_START    = *fragmented_token(sfp, "ID_START");
+    const fragmented_token_t ti_ID_CONTINUE = *fragmented_token(sfp, "ID_CONTINUE");
 
     const token_id_t ti_r_defaults = sfp->token_id("Defaults");
     const token_id_t ti_r_offside  = sfp->token_id("OffSide");
@@ -85,13 +73,31 @@ namespace silva::seed {
     const token_id_t ti_r_seed     = sfp->token_id("Seed");
     const token_id_t ti_r_fern     = sfp->token_id("Fern");
 
-    const name_id_t ni_seed      = sfp->name_id_of("Seed");
+    const name_id_t ni_id              = sfp->name_id_of("identifier");
+    const name_id_t ni_id_snake        = sfp->name_id_of("identifier_snake_case");
+    const name_id_t ni_id_pascal       = sfp->name_id_of("identifier_pascal_case");
+    const name_id_t ni_id_macro        = sfp->name_id_of("identifier_macro_case");
+    const name_id_t ni_string          = sfp->name_id_of("string");
+    const name_id_t ni_number          = sfp->name_id_of("number");
+    const name_id_t ni_newline         = sfp->name_id_of("newline");
+    const name_id_t ni_indent          = sfp->name_id_of("indent");
+    const name_id_t ni_dedent          = sfp->name_id_of("dedent");
+    const name_id_t ni_operator_single = sfp->name_id_of("operator_single");
+    const name_id_t ni_operator_greedy = sfp->name_id_of("operator_greedy");
+
+    const name_id_t ni_seed = sfp->name_id_of("Seed");
+
+    const name_id_t ni_frag_name      = sfp->name_id_of(ni_seed, "frag_name");
+    const name_id_t ni_rule_name      = sfp->name_id_of(ni_seed, "rule_name");
+    const name_id_t ni_token_cat_name = sfp->name_id_of(ni_seed, "token_category_name");
+
     const name_id_t ni_language  = sfp->name_id_of(ni_seed, "Language");
     const name_id_t ni_scope     = sfp->name_id_of(ni_seed, "Scope");
     const name_id_t ni_rule      = sfp->name_id_of(ni_seed, "Rule");
     const name_id_t ni_qualifier = sfp->name_id_of(ni_seed, "Qualifier");
     const name_id_t ni_expr      = sfp->name_id_of(ni_seed, "Expr");
     const name_id_t ni_atom      = sfp->name_id_of(ni_expr, "Atom");
+    const name_id_t ni_oper      = sfp->name_id_of(ni_expr, "operator");
     const name_id_t ni_term      = sfp->name_id_of(ni_seed, "Terminal");
     const name_id_t ni_tok_cat   = sfp->name_id_of(ni_seed, "TokenCategory");
 
@@ -109,16 +115,6 @@ namespace silva::seed {
     const name_id_t ni_axe_ops     = sfp->name_id_of(ni_axe, "Ops");
     const name_id_t ni_axe_op_type = sfp->name_id_of(ni_axe, "OpType");
     const name_id_t ni_axe_op      = sfp->name_id_of(ni_axe, "Op");
-
-    const name_id_t ni_tok             = sfp->name_id_of(ni_seed, "Tokenizer");
-    const name_id_t ni_tok_inc_rule    = sfp->name_id_of(ni_tok, "IncludeRule");
-    const name_id_t ni_tok_ign_rule    = sfp->name_id_of(ni_tok, "IgnoreRule");
-    const name_id_t ni_tok_tok_rule    = sfp->name_id_of(ni_tok, "TokenRule");
-    const name_id_t ni_tok_defn        = sfp->name_id_of(ni_tok, "Defn");
-    const name_id_t ni_tok_prefix_item = sfp->name_id_of(ni_tok, "PrefixItem");
-    const name_id_t ni_tok_item        = sfp->name_id_of(ni_tok, "Item");
-    const name_id_t ni_tok_matcher     = sfp->name_id_of(ni_tok, "Matcher");
-    const name_id_t ni_tok_list        = sfp->name_id_of(ni_tok, "List");
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
 }

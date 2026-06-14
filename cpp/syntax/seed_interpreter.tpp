@@ -9,18 +9,10 @@ namespace silva::seed::test {
   TEST_CASE("not-but_then", "[seed-interpreter][seed]")
   {
     const string_view_t frog_seed = R"'(
-tokenizer Frog:
-  ignore WHITESPACE
-  ignore COMMENT
-  ignore INDENT
-  ignore DEDENT
-  ignore NEWLINE
-  number = NUMBER
-  string = STRING
-  identifier = IDENTIFIER
-
 language Frog:
   ⊙ = Rule *
+  skip = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+  identifier = ID_START ID_CONTINUE *
   Rule = RuleName Expr
   RuleName = alias Keyword
   Expr = Primary +
@@ -32,74 +24,122 @@ language Frog:
     interpreter_t se(sf.ptr());
     auto ptp = SILVA_REQUIRE(se.add_seed_text("frog.seed", string_t{frog_seed}));
     const string_view_t expected_seed_pt = R"(
-[0].Seed                                          tokenizer Frog ... <ws> <ws>
-  [0].Seed.Tokenizer                              tokenizer Frog ... <ws> <ws>
-    [0].Seed.Tokenizer.IgnoreRule                 ignore WHITESPACE <ws>
-      [0].Seed.Tokenizer.Defn                     WHITESPACE
-        [0].Seed.Tokenizer.PrefixItem             WHITESPACE
-          [0].Seed.Tokenizer.Item                 WHITESPACE
-            [0].Seed.Tokenizer.Matcher            WHITESPACE
-    [1].Seed.Tokenizer.IgnoreRule                 ignore COMMENT <ws>
-      [0].Seed.Tokenizer.Defn                     COMMENT
-        [0].Seed.Tokenizer.PrefixItem             COMMENT
-          [0].Seed.Tokenizer.Item                 COMMENT
-            [0].Seed.Tokenizer.Matcher            COMMENT
-    [2].Seed.Tokenizer.IgnoreRule                 ignore INDENT <ws>
-      [0].Seed.Tokenizer.Defn                     INDENT
-        [0].Seed.Tokenizer.PrefixItem             INDENT
-          [0].Seed.Tokenizer.Item                 INDENT
-            [0].Seed.Tokenizer.Matcher            INDENT
-    [3].Seed.Tokenizer.IgnoreRule                 ignore DEDENT <ws>
-      [0].Seed.Tokenizer.Defn                     DEDENT
-        [0].Seed.Tokenizer.PrefixItem             DEDENT
-          [0].Seed.Tokenizer.Item                 DEDENT
-            [0].Seed.Tokenizer.Matcher            DEDENT
-    [4].Seed.Tokenizer.IgnoreRule                 ignore NEWLINE <ws>
-      [0].Seed.Tokenizer.Defn                     NEWLINE
-        [0].Seed.Tokenizer.PrefixItem             NEWLINE
-          [0].Seed.Tokenizer.Item                 NEWLINE
-            [0].Seed.Tokenizer.Matcher            NEWLINE
-    [5].Seed.Tokenizer.TokenRule                  number = NUMBER <ws>
-      [0].Seed.Tokenizer.Defn                     NUMBER
-        [0].Seed.Tokenizer.PrefixItem             NUMBER
-          [0].Seed.Tokenizer.Item                 NUMBER
-            [0].Seed.Tokenizer.Matcher            NUMBER
-    [6].Seed.Tokenizer.TokenRule                  string = STRING <ws>
-      [0].Seed.Tokenizer.Defn                     STRING
-        [0].Seed.Tokenizer.PrefixItem             STRING
-          [0].Seed.Tokenizer.Item                 STRING
-            [0].Seed.Tokenizer.Matcher            STRING
-    [7].Seed.Tokenizer.TokenRule                  identifier = IDENTIFIER <ws>
-      [0].Seed.Tokenizer.Defn                     IDENTIFIER
-        [0].Seed.Tokenizer.PrefixItem             IDENTIFIER
-          [0].Seed.Tokenizer.Item                 IDENTIFIER
-            [0].Seed.Tokenizer.Matcher            IDENTIFIER
-  [1].Seed.Language                               language Frog ... <ws> <ws>
-    [0].Seed.Rule                                 ⊙ = Rule * <ws>
+[  0]   2:1   cat=.literal                                 language
+[  1]   2:10  cat=.Seed.rule_name                          Frog
+[  2]   2:14  cat=.literal                                 :
+[  3]   2:15  cat=.newline                                 \n
+[  4]   3:1   cat=.indent                                    
+[  5]   3:3   cat=.literal                                 ⊙
+[  6]   3:5   cat=.literal                                 =
+[  7]   3:7   cat=.Seed.rule_name                          Rule
+[  8]   3:12  cat=.Seed.Expr.operator                      *
+[  9]   3:13  cat=.newline                                 \n  
+[ 10]   4:3   cat=.Seed.token_category_name                skip
+[ 11]   4:8   cat=.literal                                 =
+[ 12]   4:10  cat=.literal                                 (
+[ 13]   4:12  cat=.Seed.frag_name                          SPACE
+[ 14]   4:18  cat=.Seed.Expr.operator                      |
+[ 15]   4:20  cat=.Seed.frag_name                          LINEFEED
+[ 16]   4:29  cat=.Seed.Expr.operator                      |
+[ 17]   4:31  cat=.Seed.frag_name                          COMMENT
+[ 18]   4:39  cat=.Seed.Expr.operator                      |
+[ 19]   4:41  cat=.Seed.frag_name                          WHITESPACE
+[ 20]   4:52  cat=.Seed.Expr.operator                      |
+[ 21]   4:54  cat=.Seed.frag_name                          INDENT
+[ 22]   4:61  cat=.Seed.Expr.operator                      |
+[ 23]   4:63  cat=.Seed.frag_name                          DEDENT
+[ 24]   4:70  cat=.Seed.Expr.operator                      |
+[ 25]   4:72  cat=.Seed.frag_name                          NEWLINE
+[ 26]   4:80  cat=.literal                                 )
+[ 27]   4:82  cat=.Seed.Expr.operator                      *
+[ 28]   4:83  cat=.newline                                 \n  
+[ 29]   5:3   cat=.Seed.token_category_name                identifier
+[ 30]   5:14  cat=.literal                                 =
+[ 31]   5:16  cat=.Seed.frag_name                          ID_START
+[ 32]   5:25  cat=.Seed.frag_name                          ID_CONTINUE
+[ 33]   5:37  cat=.Seed.Expr.operator                      *
+[ 34]   5:38  cat=.newline                                 \n  
+[ 35]   6:3   cat=.Seed.rule_name                          Rule
+[ 36]   6:8   cat=.literal                                 =
+[ 37]   6:10  cat=.Seed.rule_name                          RuleName
+[ 38]   6:19  cat=.Seed.rule_name                          Expr
+[ 39]   6:23  cat=.newline                                 \n  
+[ 40]   7:3   cat=.Seed.rule_name                          RuleName
+[ 41]   7:12  cat=.literal                                 =
+[ 42]   7:14  cat=.literal                                 alias
+[ 43]   7:20  cat=.Seed.rule_name                          Keyword
+[ 44]   7:27  cat=.newline                                 \n  
+[ 45]   8:3   cat=.Seed.rule_name                          Expr
+[ 46]   8:8   cat=.literal                                 =
+[ 47]   8:10  cat=.Seed.rule_name                          Primary
+[ 48]   8:18  cat=.Seed.Expr.operator                      +
+[ 49]   8:19  cat=.newline                                 \n  
+[ 50]   9:3   cat=.Seed.rule_name                          Primary
+[ 51]   9:11  cat=.literal                                 =
+[ 52]   9:13  cat=.Seed.Expr.operator                      not
+[ 53]   9:17  cat=.Seed.rule_name                          Keyword
+[ 54]   9:25  cat=.Seed.Expr.operator                      but_then
+[ 55]   9:34  cat=.Seed.token_category_name                identifier
+[ 56]   9:44  cat=.newline                                 \n  
+[ 57]  10:3   cat=.Seed.rule_name                          Keyword
+[ 58]  10:10  cat=.literal                                 :
+[ 59]  10:11  cat=.newline                                 \n
+[ 60]  11:1   cat=.indent                                      
+[ 61]  11:5   cat=.literal                                 ⊙
+[ 62]  11:7   cat=.literal                                 =
+[ 63]  11:9   cat=.string                                  'keyword1'
+[ 64]  11:20  cat=.Seed.Expr.operator                      |
+[ 65]  11:22  cat=.string                                  'keyword2'
+[ 66]  11:33  cat=.Seed.Expr.operator                      |
+[ 67]  11:35  cat=.string                                  'keyword3'
+[ 68]  11:45  cat=.newline                                 
+[ 69]  11:45  cat=.dedent                                  
+[ 70]  11:45  cat=.dedent                                  
+
+[0].Seed                                          language Frog ...  
+  [0].Seed.Language                               language Frog ...  
+    [0].Seed.Rule                                 ⊙ = Rule * \n  
       [0].Seed.Expr.Postfix.*                     Rule *
         [0].Seed.Nonterminal                      Rule
-    [1].Seed.Rule                                 Rule = RuleName Expr <ws>
+    [1].Seed.Rule                                 skip = ... * \n  
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Expr.Postfix.*                     ( SPACE ... ) *
+        [0].Seed.Expr.Or.|                        SPACE | ... | NEWLINE
+          [0].Seed.Terminal                       SPACE
+          [1].Seed.Terminal                       LINEFEED
+          [2].Seed.Terminal                       COMMENT
+          [3].Seed.Terminal                       WHITESPACE
+          [4].Seed.Terminal                       INDENT
+          [5].Seed.Terminal                       DEDENT
+          [6].Seed.Terminal                       NEWLINE
+    [2].Seed.Rule                                 identifier = ... * \n  
+      [0].Seed.Nonterminal                        identifier
+      [1].Seed.Expr.Concat.concat                 ID_START ID_CONTINUE *
+        [0].Seed.Terminal                         ID_START
+        [1].Seed.Expr.Postfix.*                   ID_CONTINUE *
+          [0].Seed.Terminal                       ID_CONTINUE
+    [3].Seed.Rule                                 Rule = RuleName Expr \n  
       [0].Seed.Nonterminal                        Rule
       [1].Seed.Expr.Concat.concat                 RuleName Expr
         [0].Seed.Nonterminal                      RuleName
         [1].Seed.Nonterminal                      Expr
-    [2].Seed.Rule                                 RuleName = alias Keyword <ws>
+    [4].Seed.Rule                                 RuleName = alias Keyword \n  
       [0].Seed.Nonterminal                        RuleName
       [1].Seed.Qualifier                          alias
       [2].Seed.Nonterminal                        Keyword
-    [3].Seed.Rule                                 Expr = Primary + <ws>
+    [5].Seed.Rule                                 Expr = Primary + \n  
       [0].Seed.Nonterminal                        Expr
       [1].Seed.Expr.Postfix.+                     Primary +
         [0].Seed.Nonterminal                      Primary
-    [4].Seed.Rule                                 Primary = ... identifier <ws>
+    [6].Seed.Rule                                 Primary = ... identifier \n  
       [0].Seed.Nonterminal                        Primary
       [1].Seed.Expr.And.but_then                  not Keyword but_then identifier
         [0].Seed.Expr.Prefix.not                  not Keyword
           [0].Seed.Nonterminal                    Keyword
-        [1].Seed.Terminal                         identifier
-    [5].Seed.Scope                                Keyword : ... <ws> <ws>
+        [1].Seed.Nonterminal                      identifier
+    [7].Seed.Scope                                Keyword : ...  
       [0].Seed.Nonterminal                        Keyword
-      [1].Seed.Rule                               ⊙ = ... 'keyword3' <ws>
+      [1].Seed.Rule                               ⊙ = ... 'keyword3' 
         [0].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
           [0].Seed.Terminal                       'keyword1'
           [1].Seed.Terminal                       'keyword2'
@@ -116,6 +156,20 @@ language Frog:
 )'";
     const auto frog_pt       = SILVA_REQUIRE(se.apply_text("", frog_text, sf.name_id_of("Frog")));
     const string_view_t expected = R"(
+[  0]   2:5   cat=.literal                                 keyword1
+[  1]   2:14  cat=.Frog.identifier                         a
+[  2]   2:16  cat=.Frog.identifier                         b
+[  3]   2:18  cat=.Frog.identifier                         c
+[  4]   3:5   cat=.literal                                 keyword2
+[  5]   3:14  cat=.Frog.identifier                         d
+[  6]   3:16  cat=.Frog.identifier                         e
+[  7]   4:5   cat=.literal                                 keyword1
+[  8]   4:14  cat=.Frog.identifier                         f
+[  9]   5:5   cat=.literal                                 keyword3
+[ 10]   5:14  cat=.Frog.identifier                         g
+[ 11]   5:16  cat=.Frog.identifier                         h
+[ 12]   5:18  cat=.Frog.identifier                         i
+
 [0].Frog                                          keyword1 a ... h i
   [0].Frog.Rule                                   keyword1 a b c
     [0].Frog.Keyword                              keyword1
@@ -149,18 +203,10 @@ language Frog:
     auto se = standard_seed_interpreter(sf.ptr());
 
     const string_view_t testor_lang = R"'(
-tokenizer Testor:
-  ignore WHITESPACE
-  ignore COMMENT
-  ignore INDENT
-  ignore DEDENT
-  ignore NEWLINE
-  name = IDENTIFIER
-  op = OPERATOR
-
 language Testor:
   ⊙ = Assign *
-  Assign = name '=' name op name
+  skip = skip_free_form
+  Assign = identifier '=' identifier operator_single identifier
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_lang}));
 
@@ -172,6 +218,17 @@ language Testor:
     CHECK(pt->tp->size() == 10);
 
     const string_view_t expected = R"(
+[  0]   1:1   cat=.identifier                              x
+[  1]   1:3   cat=.literal                                 =
+[  2]   1:5   cat=.identifier                              a
+[  3]   1:7   cat=.operator_single                         +
+[  4]   1:9   cat=.identifier                              b
+[  5]   2:1   cat=.identifier                              y
+[  6]   2:3   cat=.literal                                 =
+[  7]   2:5   cat=.identifier                              c
+[  8]   2:7   cat=.operator_single                         *
+[  9]   2:9   cat=.identifier                              d
+
 [0].Testor                                        x = ... * d
   [0].Testor.Assign                               x = a + b
   [1].Testor.Assign                               y = c * d
@@ -183,18 +240,9 @@ language Testor:
   TEST_CASE("multiple-texts", "[seed-interpreter]")
   {
     const string_view_t text1_seed = R"'(
-tokenizer Foo:
-  ignore WHITESPACE
-  ignore COMMENT
-  ignore INDENT
-  ignore DEDENT
-  ignore NEWLINE
-  number = NUMBER
-  string = STRING
-  identifier = IDENTIFIER
-
 language Foo:
   ⊙ = 'a' 'b' 'c' Bar ?
+  skip = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
 )'";
     const string_view_t text2_seed = R"'(
 Bar:
@@ -213,6 +261,16 @@ Bar:
     auto pt = SILVA_REQUIRE(se.apply_text("", text, sf.name_id_of("Foo")));
 
     const string_view_t expected = R"(
+[  0]   2:5   cat=.literal                                 a
+[  1]   2:7   cat=.literal                                 b
+[  2]   2:9   cat=.literal                                 c
+[  3]   2:11  cat=.literal                                 x
+[  4]   2:13  cat=.literal                                 y
+[  5]   2:15  cat=.literal                                 z
+[  6]   2:17  cat=.literal                                 a
+[  7]   2:19  cat=.literal                                 b
+[  8]   2:21  cat=.literal                                 c
+
 [0].Foo                                           a b ... b c
   [0].Bar                                         x y ... b c
     [0].Foo                                       a b c
