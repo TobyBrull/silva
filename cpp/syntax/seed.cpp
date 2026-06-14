@@ -221,7 +221,7 @@ namespace silva::seed::impl {
       const index_t orig_frag_idx = fragment_index;
       ss_rule.create_node(lexicon.ni_term);
       error_nursery_t error_nursery;
-      for (const auto& ft: {lexicon.ti_eps, lexicon.ti_eof, lexicon.ti_language}) {
+      for (const auto& ft: {lexicon.ti_eps, lexicon.ti_end_of_lang, lexicon.ti_language}) {
         auto result = literal_token(ft);
         if (result) {
           add_token_and_skip(*result);

@@ -1,40 +1,40 @@
 Soil «
 
-name_t = str_t
-age_t = i32_t
+t_name = t_str
+t_age = t_i32
 
-person_t = [
+t_person = [
   [
-    name_t : first;
-    name_t : last = 'Trump';
+    t_name : first;
+    t_name : last = 'Trump';
   ] : name = [ 'Arno' 'Nym' ];
-  age_t : age = size_f(name.first);
+  t_age : age = f_size(name.first);
 ]
 
-bs = person_t :: [ [ 'Bjarne' 'Stroustrup' ] 80 ]
+bs = t_person :: [ [ 'Bjarne' 'Stroustrup' ] 80 ]
 
-is_adult_f = person_t -> bool_t {
+f_is_adult = t_person -> t_bool {
   retval = arg.age >= 18;
 }
 
-example_f = [] {
-  age = age_t :: 42;
-  p1 = person_t :: [ name : [ first : 'Bob' last : 'Bobson' ] age : 20 ];
-  p2 = person_t :: [ [ 'Alice' 'Allison' ] 30 ];
-  ['{} is-adult = {}' p1 is_adult_f(p1)] | log_f;
-  vector_f(person_t) :: [ p1 p2 ] | std.filter_m(arg.age <= 40) | log_f;
-  « some sub language » | print_f;
+f_example = [] {
+  age = t_age :: 42;
+  p1 = t_person :: [ name : [ first : 'Bob' last : 'Bobson' ] age : 20 ];
+  p2 = t_person :: [ [ 'Alice' 'Allison' ] 30 ];
+  ['{} is-adult = {}' p1 f_is_adult(p1)] | f_log;
+  f_vector(t_person) :: [ p1 p2 ] | std.filter_m(arg.age <= 40) | f_log;
+  « some sub language » | f_print;
 
-  if p1.name.first | size_f > 10 {
-    'This name is long' | log_f;
-  } elif p1.name.first | size_f > 5 {
-    'This name it not long' | log_f;
+  if p1.name.first | f_size > 10 {
+    'This name is long' | f_log;
+  } elif p1.name.first | f_size > 5 {
+    'This name it not long' | f_log;
   } else {
-    'This name it short' | log_f;
+    'This name it short' | f_log;
   }
 
-  sum = i64_t :: 0;
-  for i = i64_t :: 0; i < n; i += 1 {
+  sum = t_i64 :: 0;
+  for i = t_i64 :: 0; i < n; i += 1 {
     sum += i;
   }
 

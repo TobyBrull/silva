@@ -1,21 +1,17 @@
 Seed «
-tokenizer AsBs:
-  include tokenizer FreeForm
-
 language AsBs:
   ⊙ = 'a' * 'b' *
+  skip = skip_free_form
 »
 
 AsBs « a a a b b »
 
 Seed «
-tokenizer CppStmts:
-  include tokenizer FreeForm
-
 language CppStmts:
   ⊙ = ( Expr ';' ) *
+  skip = skip_free_form
   Expr:
-    ⊙ = axe Atom
+    ⊙ = axe Atom oper
       Namespace   = rtl   infix '::' prefix '::'
       Postfix     = ltr   postfix '++' '--' \
                           postfix_nest '(' ')' '[' ']' \
@@ -39,6 +35,7 @@ language CppStmts:
                           ternary '?' ':'
       Comma       = ltr   infix ','
     Atom = number | string | identifier | '(' Expr ')'
+    oper = parenthesis | operator_greedy
     Type = identifier
 »
 

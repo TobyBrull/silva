@@ -1,11 +1,9 @@
 Seed «
-tokenizer Soil:
-  type_name = IDENTIFIER_SNAKE_CASE\'_t'
-  func_name = IDENTIFIER_SNAKE_CASE\'_f'
-  include tokenizer FreeForm
-
 language Soil:
   ⊙ = ( Type.Defn | Func.Defn | Variable.Defn ) *
+  skip = skip_free_form
+  type_name = 't_' identifier # should be: ending with "_t"
+  func_name = 'f_' identifier # should be: ending with "_f"
   Type:
     ⊙ = Name | Struct
     Name = type_name
@@ -20,7 +18,7 @@ language Soil:
   Expr:
     ⊙ = Axe
     Maybe = Expr | ε
-    Axe = axe Atom
+    Axe = axe Atom oper
       Member    = ltr infix '.'
       CallPost  = ltr postfix_nest '(' ')'
       Typing    = ltr infix '::'
@@ -35,6 +33,7 @@ language Soil:
            | string | number
            | 'true' | 'false' | 'none'
            | '(' Expr ')' )
+    oper = operator_greedy | parenthesis
     Struct:
       ⊙ = '[' LabeledItem * ']'
       LabeledItem = ( Variable.Name ':' ) ? ( Struct | Expr )

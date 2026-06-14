@@ -92,7 +92,7 @@ language Seed:
     Atom = alias Terminal | Nonterminal | '(' Expr ')'
     operator = ( 'not' | 'but_then' | operator_single )
     Alias = Expr
-  Terminal = ( 'ε' | 'end_of_file' | 'language' | string | frag_name )
+  Terminal = ( 'ε' | 'end_of_language' | 'language' | string | frag_name )
   Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
 
 None = ε

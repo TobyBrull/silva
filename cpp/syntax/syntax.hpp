@@ -9,7 +9,7 @@ namespace silva {
 
   const string_view_t seed_str = R"'(
 language Silva:
-  ⊙ = Section * end_of_file
+  ⊙ = Section *
 
   skip = skip_free_form
 

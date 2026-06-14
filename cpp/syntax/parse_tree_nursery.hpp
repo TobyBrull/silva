@@ -67,7 +67,7 @@ namespace silva {
 
       void add_token(const token_t&);
 
-      token_t commit();
+      token_t commit(bool is_language = false);
       void clear();
       ~token_stake_t();
     };
@@ -119,11 +119,11 @@ namespace silva {
     SILVA_ASSERT(token.frag_idx_end == nursery->fragment_index);
   }
 
-  inline token_t parse_tree_nursery_t::token_stake_t::commit()
+  inline token_t parse_tree_nursery_t::token_stake_t::commit(const bool is_language)
   {
     const fragment_span_t fs{nursery->fp, orig_fragment_index, nursery->fragment_index};
     token_t retval{
-        .token_id       = nursery->sfp->token_id(fs),
+        .token_id       = is_language ? token_id_language : nursery->sfp->token_id(fs),
         .category       = token_cat,
         .frag_idx_begin = fs.begin,
         .frag_idx_end   = fs.end,

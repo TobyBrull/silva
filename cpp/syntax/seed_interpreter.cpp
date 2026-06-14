@@ -294,11 +294,11 @@ namespace silva::seed::impl {
 
     seed_exec_trace_t exec_trace{.sfp = sfp, .lexicon = lexicon};
 
-    interpreter_apply_nursery_t(fragmentization_ptr_t fp,
+    interpreter_apply_nursery_t(fragment_span_t fs,
                                 const lexicon_t& lexicon,
                                 const interpreter_t* root,
                                 const interpreter_t::language_data_t* lang_data)
-      : parse_tree_nursery_t(fp), lexicon(lexicon), se(root), lang_data(lang_data)
+      : parse_tree_nursery_t(fs), lexicon(lexicon), se(root), lang_data(lang_data)
     {
     }
 
@@ -338,11 +338,26 @@ namespace silva::seed::impl {
       if (s_front_token.token_id == lexicon.ti_eps.token_id) {
         return ss.commit();
       }
-      else if (s_front_token.token_id == lexicon.ti_eof.token_id) {
+      else if (s_front_token.token_id == lexicon.ti_end_of_lang.token_id) {
         SILVA_EXPECT_PARSE(t_rule_name,
                            num_fragments_left() == 0,
                            "expected {}",
-                           sfp->token_id_wrap(lexicon.ti_eof.token_id));
+                           sfp->token_id_wrap(lexicon.ti_end_of_lang.token_id));
+        return ss.commit();
+      }
+      else if (s_front_token.token_id == lexicon.ti_language.token_id) {
+        SILVA_EXPECT_PARSE(
+            t_rule_name,
+            token_rule_depth == 0,
+            "the 'language' token-category may not be used inside other token rules");
+        auto ts = token_stake(lexicon.ti_language.token_id);
+        SILVA_EXPECT_PARSE(t_rule_name,
+                           fragment_category_by() == fragment_category_t::LANG_BEGIN,
+                           "expected token of category LANG_BEGIN; got {}",
+                           fragment_category_by());
+        fragment_index = SILVA_EXPECT_PARSE_FWD(t_rule_name, fp->advance_language(fragment_index));
+        add_token(ts.commit(true));
+        SILVA_EXPECT_FWD(skip());
         return ss.commit();
       }
       SILVA_EXPECT_PARSE(t_rule_name,
@@ -815,7 +830,7 @@ namespace silva::seed {
                  "unknown language {}",
                  sfp->token_id_wrap(lang_name));
 
-    impl::interpreter_apply_nursery_t nursery(fs.fp,
+    impl::interpreter_apply_nursery_t nursery(fs,
                                               bootstrap_interpreter.lexicon(),
                                               this,
                                               &lang_it->second);

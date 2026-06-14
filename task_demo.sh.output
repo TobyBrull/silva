@@ -1,58 +1,77 @@
 1:1      LANG_BEGIN                      []
 1:1      PARENTHESIS [                   [0x5b]
-1:2      WHITESPACE                      [0x0a 0x20 0x20]
-2:3      IDENTIFIER  none                [0x6e 0x6f 0x6e 0x65]
-2:7      WHITESPACE                      [0x0a 0x20 0x20]
-3:3      IDENTIFIER  true                [0x74 0x72 0x75 0x65]
-3:7      WHITESPACE                      [0x0a 0x20 0x20]
-4:3      NUMBER      42                  [0x34 0x32]
-4:5      WHITESPACE                      [0x0a 0x20 0x20]
-5:3      IDENTIFIER  hello               [0x68 0x65 0x6c 0x6c 0x6f]
-5:8      WHITESPACE                      [0x20]
+1:2      LINEFEED                        [0x0a]
+2:1      SPACE                           [0x20]
+2:2      SPACE                           [0x20]
+2:3      ID_LOWER    n                   [0x6e]
+2:4      ID_LOWER    o                   [0x6f]
+2:5      ID_LOWER    n                   [0x6e]
+2:6      ID_LOWER    e                   [0x65]
+2:7      LINEFEED                        [0x0a]
+3:1      SPACE                           [0x20]
+3:2      SPACE                           [0x20]
+3:3      ID_LOWER    t                   [0x74]
+3:4      ID_LOWER    r                   [0x72]
+3:5      ID_LOWER    u                   [0x75]
+3:6      ID_LOWER    e                   [0x65]
+3:7      LINEFEED                        [0x0a]
+4:1      SPACE                           [0x20]
+4:2      SPACE                           [0x20]
+4:3      DIGIT       4                   [0x34]
+4:4      DIGIT       2                   [0x32]
+4:5      LINEFEED                        [0x0a]
+5:1      SPACE                           [0x20]
+5:2      SPACE                           [0x20]
+5:3      ID_LOWER    h                   [0x68]
+5:4      ID_LOWER    e                   [0x65]
+5:5      ID_LOWER    l                   [0x6c]
+5:6      ID_LOWER    l                   [0x6c]
+5:7      ID_LOWER    o                   [0x6f]
+5:8      SPACE                           [0x20]
 5:9      OPERATOR    :                   [0x3a]
-5:10     WHITESPACE                      [0x20]
+5:10     SPACE                           [0x20]
 5:11     STRING      'World'             [0x27 0x57 0x6f 0x72 0x6c 0x64 0x27]
-5:18     WHITESPACE                      [0x0a 0x20 0x20]
+5:18     LINEFEED                        [0x0a]
+6:1      SPACE                           [0x20]
+6:2      SPACE                           [0x20]
 6:3      PARENTHESIS [                   [0x5b]
 6:4      PARENTHESIS ]                   [0x5d]
-6:5      WHITESPACE                      [0x0a 0x20 0x20]
+6:5      LINEFEED                        [0x0a]
+7:1      SPACE                           [0x20]
+7:2      SPACE                           [0x20]
 7:3      PARENTHESIS [                   [0x5b]
-7:4      WHITESPACE                      [0x0a 0x20 0x20 0x20 0x20]
+7:4      LINEFEED                        [0x0a]
+8:1      SPACE                           [0x20]
+8:2      SPACE                           [0x20]
+8:3      SPACE                           [0x20]
+8:4      SPACE                           [0x20]
 8:5      STRING      'one'               [0x27 0x6f 0x6e 0x65 0x27]
-8:10     WHITESPACE                      [0x20]
+8:10     SPACE                           [0x20]
 8:11     OPERATOR    :                   [0x3a]
-8:12     WHITESPACE                      [0x20]
-8:13     NUMBER      1.0                 [0x31 0x2e 0x30]
-8:16     WHITESPACE                      [0x0a 0x20 0x20 0x20 0x20]
+8:12     SPACE                           [0x20]
+8:13     DIGIT       1                   [0x31]
+8:14     OPERATOR    .                   [0x2e]
+8:15     DIGIT       0                   [0x30]
+8:16     LINEFEED                        [0x0a]
+9:1      SPACE                           [0x20]
+9:2      SPACE                           [0x20]
+9:3      SPACE                           [0x20]
+9:4      SPACE                           [0x20]
 9:5      STRING      'two'               [0x27 0x74 0x77 0x6f 0x27]
-9:10     WHITESPACE                      [0x20]
+9:10     SPACE                           [0x20]
 9:11     OPERATOR    :                   [0x3a]
-9:12     WHITESPACE                      [0x20]
-9:13     NUMBER      2.0                 [0x32 0x2e 0x30]
-9:16     WHITESPACE                      [0x0a 0x20 0x20]
+9:12     SPACE                           [0x20]
+9:13     DIGIT       2                   [0x32]
+9:14     OPERATOR    .                   [0x2e]
+9:15     DIGIT       0                   [0x30]
+9:16     LINEFEED                        [0x0a]
+10:1     SPACE                           [0x20]
+10:2     SPACE                           [0x20]
 10:3     PARENTHESIS ]                   [0x5d]
-10:4     WHITESPACE                      [0x0a]
+10:4     LINEFEED                        [0x0a]
 11:1     PARENTHESIS ]                   [0x5d]
 11:2     NEWLINE                         []
 11:2     LANG_END                        [0x0a]
-[  0]   1:1   cat=operator             [
-[  1]   2:3   cat=identifier           none
-[  2]   3:3   cat=identifier           true
-[  3]   4:3   cat=number               42
-[  4]   5:3   cat=identifier           hello
-[  5]   5:9   cat=operator             :
-[  6]   5:11  cat=string               'World'
-[  7]   6:3   cat=operator             [
-[  8]   6:4   cat=operator             ]
-[  9]   7:3   cat=operator             [
-[ 10]   8:5   cat=string               'one'
-[ 11]   8:11  cat=operator             :
-[ 12]   8:13  cat=number               1.0
-[ 13]   9:5   cat=string               'two'
-[ 14]   9:11  cat=operator             :
-[ 15]   9:13  cat=number               2.0
-[ 16]  10:3   cat=operator             ]
-[ 17]  11:1   cat=operator             ]
 [
   none
   true
@@ -66,35 +85,67 @@
 ]
 
 ERROR (MAJOR):
-  ┌─expected token of category token[ string ]; got token[ operator ]
-  ├─expected token of category token[ identifier ]; got token[ operator ]
+    expected token of category token[ STRING ]; got token[ PARENTHESIS ]
+    [01-broken.fern:9:3] .string
+  ┌─while calling [handle_rule_token(t_rule_name,...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:676]
+  │ expected token of category ID_START; got token[ ID_START ]
+  │ [01-broken.fern:9:3] .identifier: expected sequence[ ID_START ID_CONTINUE * ]
+  │ [01-broken.fern:9:3] .identifier
+  ├─while calling [handle_rule_token(t_rule_name,...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:676]
   [01-broken.fern:9:3] .Fern.Label: expected alternation[ string | identifier ]
   [01-broken.fern:9:3] .Fern.Label
+  while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 ┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ Label ':' ]
-│     [01-broken.fern:11:5] .Fern.LabeledItem: expected token[ : ]
+│     [01-broken.fern:11:5] expected token[ : ]
+│     [01-broken.fern:11:5] while matching token[ : ]
 │   ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ Label ':' ]
-│   │   [01-broken.fern:10:5] .Fern: expected token[ [ ]
+│   │   [01-broken.fern:10:5] expected token[ [ ]
+│   │   [01-broken.fern:10:5] while matching token[ [ ]
 │   │   [01-broken.fern:10:5] .Fern: expected sequence[ '[' LabeledItem * ']' ]
-│   │ ┌─[01-broken.fern:10:5] .Fern
-│   │ │ ┌─[01-broken.fern:10:5] .Fern.Value: expected token[ none ]
-│   │ │ ├─[01-broken.fern:10:5] .Fern.Value: expected token[ true ]
-│   │ │ ├─[01-broken.fern:10:5] .Fern.Value: expected token[ false ]
-│   │ │ ├─expected token of category token[ string ]; got token[ identifier ]
-│   │ │ ├─expected token of category token[ number ]; got token[ identifier ]
+│   │   [01-broken.fern:10:5] .Fern
+│   │ ┌─while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
+│   │ │   [01-broken.fern:10:5] expected token[ none ]
+│   │ │ ┌─[01-broken.fern:10:5] while matching token[ none ]
+│   │ │ │ [01-broken.fern:10:5] expected token[ true ]
+│   │ │ ├─[01-broken.fern:10:5] while matching token[ true ]
+│   │ │ │ [01-broken.fern:10:5] expected token[ false ]
+│   │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
+│   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
+│   │ │ │ [01-broken.fern:10:5] .string
+│   │ │ ├─while calling [handle_rule_token(t_rule_name,...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:676]
+│   │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+│   │ │ │ [01-broken.fern:10:5] .number: expected sequence[ DIGIT ( ... ) * ]
+│   │ │ │ [01-broken.fern:10:5] .number
+│   │ │ ├─while calling [handle_rule_token(t_rule_name,...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:676]
 │   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ 'none' | ... | number ]
-│   │ ├─[01-broken.fern:10:5] .Fern.Value
+│   │ │ [01-broken.fern:10:5] .Fern.Value
+│   │ ├─while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 │   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern | Value ]
 │   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
-│ ┌─[01-broken.fern:10:5] .Fern.LabeledItem
-│ ├─[01-broken.fern:10:5] .Fern: expected token[ ] ]
+│   [01-broken.fern:10:5] .Fern.LabeledItem
+│ ┌─while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
+│ │ [01-broken.fern:10:5] expected token[ ] ]
+│ ├─[01-broken.fern:10:5] while matching token[ ] ]
 │ [01-broken.fern:9:3] .Fern: expected sequence[ '[' LabeledItem * ']' ]
 │ [01-broken.fern:9:3] .Fern
+│ while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 ├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern | Value ]
 [01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
 [01-broken.fern:9:3] .Fern.LabeledItem
+while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 [01-broken.fern:1:1] .Fern: expected sequence[ '[' LabeledItem * ']' ]
 [01-broken.fern:1:1] .Fern
+while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 seed::interpreter_t::apply(.Fern) failed to parse
+
+[  0]   1:1   cat=.literal                                 [
+[  1]   2:3   cat=.literal                                 none
+[  2]   3:3   cat=.literal                                 [
+[  3]   3:4   cat=.literal                                 ]
+[  4]   4:3   cat=.literal                                 [
+[  5]   5:5   cat=.literal                                 none
+[  6]   6:3   cat=.literal                                 ]
+[  7]   7:1   cat=.literal                                 ]
 
 [0].Fern                                          [ none ... ] ]
   [0].Fern.LabeledItem                            none
@@ -107,33 +158,84 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Fern.Value                            none
 
 [0]                                                    false     unknown token-location
-  [0].Fern                                             true      01-simplest.fern:1:1
-    [0].Fern.LabeledItem                               true      01-simplest.fern:2:3
+  [0].skip_free_form                                   true      01-simplest.fern:1:1
+    [0].skip_free_form                                 true      01-simplest.fern:1:1
+  [1].Fern                                             true      01-simplest.fern:1:1
+    [0].skip_free_form                                 true      01-simplest.fern:1:2
+      [0].skip_free_form                               true      01-simplest.fern:2:3
+    [1].Fern.LabeledItem                               true      01-simplest.fern:2:3
       [0].Fern.Label                                   true      01-simplest.fern:2:3
+        [0].string                                     false     01-simplest.fern:2:3
+        [1].identifier                                 true      01-simplest.fern:2:3
+          [0].skip_free_form                           true      01-simplest.fern:2:7
       [1].Fern                                         false     01-simplest.fern:2:3
       [2].Fern.Value                                   true      01-simplest.fern:2:3
-    [1].Fern.LabeledItem                               true      01-simplest.fern:3:3
+        [0].skip_free_form                             true      01-simplest.fern:2:7
+          [0].skip_free_form                           true      01-simplest.fern:3:3
+    [2].Fern.LabeledItem                               true      01-simplest.fern:3:3
       [0].Fern.Label                                   false     01-simplest.fern:3:3
+        [0].string                                     false     01-simplest.fern:3:3
+        [1].identifier                                 false     01-simplest.fern:3:3
       [1].Fern                                         true      01-simplest.fern:3:3
-        [0].Fern.LabeledItem                           false     01-simplest.fern:3:4
+        [0].skip_free_form                             true      01-simplest.fern:3:4
+          [0].skip_free_form                           true      01-simplest.fern:3:4
+        [1].Fern.LabeledItem                           false     01-simplest.fern:3:4
           [0].Fern.Label                               false     01-simplest.fern:3:4
+            [0].string                                 false     01-simplest.fern:3:4
+            [1].identifier                             false     01-simplest.fern:3:4
           [1].Fern                                     false     01-simplest.fern:3:4
           [2].Fern.Value                               false     01-simplest.fern:3:4
-    [2].Fern.LabeledItem                               true      01-simplest.fern:4:3
+            [0].string                                 false     01-simplest.fern:3:4
+            [1].number                                 false     01-simplest.fern:3:4
+        [2].skip_free_form                             true      01-simplest.fern:3:5
+          [0].skip_free_form                           true      01-simplest.fern:4:3
+    [3].Fern.LabeledItem                               true      01-simplest.fern:4:3
       [0].Fern.Label                                   false     01-simplest.fern:4:3
+        [0].string                                     false     01-simplest.fern:4:3
+        [1].identifier                                 false     01-simplest.fern:4:3
       [1].Fern                                         true      01-simplest.fern:4:3
-        [0].Fern.LabeledItem                           true      01-simplest.fern:5:5
+        [0].skip_free_form                             true      01-simplest.fern:4:4
+          [0].skip_free_form                           true      01-simplest.fern:5:5
+        [1].Fern.LabeledItem                           true      01-simplest.fern:5:5
           [0].Fern.Label                               true      01-simplest.fern:5:5
+            [0].string                                 false     01-simplest.fern:5:5
+            [1].identifier                             true      01-simplest.fern:5:5
+              [0].skip_free_form                       true      01-simplest.fern:5:9
           [1].Fern                                     false     01-simplest.fern:5:5
           [2].Fern.Value                               true      01-simplest.fern:5:5
-        [1].Fern.LabeledItem                           false     01-simplest.fern:6:3
+            [0].skip_free_form                         true      01-simplest.fern:5:9
+              [0].skip_free_form                       true      01-simplest.fern:6:3
+        [2].Fern.LabeledItem                           false     01-simplest.fern:6:3
           [0].Fern.Label                               false     01-simplest.fern:6:3
+            [0].string                                 false     01-simplest.fern:6:3
+            [1].identifier                             false     01-simplest.fern:6:3
           [1].Fern                                     false     01-simplest.fern:6:3
           [2].Fern.Value                               false     01-simplest.fern:6:3
-    [3].Fern.LabeledItem                               false     01-simplest.fern:7:1
+            [0].string                                 false     01-simplest.fern:6:3
+            [1].number                                 false     01-simplest.fern:6:3
+        [3].skip_free_form                             true      01-simplest.fern:6:4
+          [0].skip_free_form                           true      01-simplest.fern:7:1
+    [4].Fern.LabeledItem                               false     01-simplest.fern:7:1
       [0].Fern.Label                                   false     01-simplest.fern:7:1
+        [0].string                                     false     01-simplest.fern:7:1
+        [1].identifier                                 false     01-simplest.fern:7:1
       [1].Fern                                         false     01-simplest.fern:7:1
       [2].Fern.Value                                   false     01-simplest.fern:7:1
+        [0].string                                     false     01-simplest.fern:7:1
+        [1].number                                     false     01-simplest.fern:7:1
+    [5].skip_free_form                                 true      01-simplest.fern:7:2
+      [0].skip_free_form                               true      01-simplest.fern:7:2
+[  0]   1:1   cat=.Silva.lang_name                         Seed
+[  1]   1:6   cat=.literal                                 language
+[  2]   7:1   cat=.Silva.lang_name                         AsBs
+[  3]   7:6   cat=.literal                                 language
+[  4]   9:1   cat=.Silva.lang_name                         Seed
+[  5]   9:6   cat=.literal                                 language
+[  6]  42:1   cat=.Silva.lang_name                         CppStmts
+[  7]  42:10  cat=.literal                                 language
+[  8]  51:1   cat=.Silva.lang_name                         Fern
+[  9]  51:6   cat=.literal                                 language
+
 [0].Silva                                         Seed language ... Fern language
   [0].Silva.Section                               Seed language
   [1].Silva.Section                               AsBs language
@@ -141,34 +243,258 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [3].Silva.Section                               CppStmts language
   [4].Silva.Section                               Fern language
 
-[0].Seed                                          tokenizer AsBs ... <ws> <ws>
-  [0].Seed.Tokenizer                              tokenizer AsBs ... <ws> <ws>
-    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm <ws>
-  [1].Seed.Language                               language AsBs ... <ws> <ws>
-    [0].Seed.Rule                                 ⊙ = ... * <ws>
+[  0]   2:1   cat=.literal                                 language
+[  1]   2:10  cat=.Seed.rule_name                          AsBs
+[  2]   2:14  cat=.literal                                 :
+[  3]   2:15  cat=.newline                                 \n
+[  4]   3:1   cat=.indent                                    
+[  5]   3:3   cat=.literal                                 ⊙
+[  6]   3:5   cat=.literal                                 =
+[  7]   3:7   cat=.string                                  'a'
+[  8]   3:11  cat=.Seed.Expr.operator                      *
+[  9]   3:13  cat=.string                                  'b'
+[ 10]   3:17  cat=.Seed.Expr.operator                      *
+[ 11]   3:18  cat=.newline                                 \n  
+[ 12]   4:3   cat=.Seed.token_category_name                skip
+[ 13]   4:8   cat=.literal                                 =
+[ 14]   4:10  cat=.Seed.token_category_name                skip_free_form
+[ 15]   4:24  cat=.newline                                 \n
+[ 16]   5:1   cat=.dedent                                  
+
+[0].Seed                                          language AsBs ... \n 
+  [0].Seed.Language                               language AsBs ... \n 
+    [0].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.Expr.Concat.concat                 'a' * 'b' *
         [0].Seed.Expr.Postfix.*                   'a' *
           [0].Seed.Terminal                       'a'
         [1].Seed.Expr.Postfix.*                   'b' *
           [0].Seed.Terminal                       'b'
+    [1].Seed.Rule                                 skip = skip_free_form \n
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_free_form
+
+[  0]   7:8   cat=.literal                                 a
+[  1]   7:10  cat=.literal                                 a
+[  2]   7:12  cat=.literal                                 a
+[  3]   7:14  cat=.literal                                 b
+[  4]   7:16  cat=.literal                                 b
 
 [0].AsBs                                          a a a b b
 
-[0].Seed                                          tokenizer CppStmts ... <ws> <ws>
-  [0].Seed.Tokenizer                              tokenizer CppStmts ... <ws> <ws>
-    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm <ws>
-  [1].Seed.Language                               language CppStmts ... <ws> <ws>
-    [0].Seed.Rule                                 ⊙ = ... * <ws>
+[  0]  10:1   cat=.literal                                 language
+[  1]  10:10  cat=.Seed.rule_name                          CppStmts
+[  2]  10:18  cat=.literal                                 :
+[  3]  10:19  cat=.newline                                 \n
+[  4]  11:1   cat=.indent                                    
+[  5]  11:3   cat=.literal                                 ⊙
+[  6]  11:5   cat=.literal                                 =
+[  7]  11:7   cat=.literal                                 (
+[  8]  11:9   cat=.Seed.rule_name                          Expr
+[  9]  11:14  cat=.string                                  ';'
+[ 10]  11:18  cat=.literal                                 )
+[ 11]  11:20  cat=.Seed.Expr.operator                      *
+[ 12]  11:21  cat=.newline                                 \n  
+[ 13]  12:3   cat=.Seed.token_category_name                skip
+[ 14]  12:8   cat=.literal                                 =
+[ 15]  12:10  cat=.Seed.token_category_name                skip_free_form
+[ 16]  12:24  cat=.newline                                 \n  
+[ 17]  13:3   cat=.Seed.rule_name                          Expr
+[ 18]  13:7   cat=.literal                                 :
+[ 19]  13:8   cat=.newline                                 \n
+[ 20]  14:1   cat=.indent                                      
+[ 21]  14:5   cat=.literal                                 ⊙
+[ 22]  14:7   cat=.literal                                 =
+[ 23]  14:9   cat=.literal                                 axe
+[ 24]  14:13  cat=.Seed.rule_name                          Atom
+[ 25]  14:18  cat=.Seed.token_category_name                oper
+[ 26]  14:22  cat=.newline                                 \n
+[ 27]  15:1   cat=.indent                                        
+[ 28]  15:7   cat=.Seed.rule_name                          Namespace
+[ 29]  15:19  cat=.literal                                 =
+[ 30]  15:21  cat=.literal                                 rtl
+[ 31]  15:27  cat=.literal                                 infix
+[ 32]  15:33  cat=.string                                  '::'
+[ 33]  15:38  cat=.literal                                 prefix
+[ 34]  15:45  cat=.string                                  '::'
+[ 35]  15:49  cat=.newline                                 \n      
+[ 36]  16:7   cat=.Seed.rule_name                          Postfix
+[ 37]  16:19  cat=.literal                                 =
+[ 38]  16:21  cat=.literal                                 ltr
+[ 39]  16:27  cat=.literal                                 postfix
+[ 40]  16:35  cat=.string                                  '++'
+[ 41]  16:40  cat=.string                                  '--'
+[ 42]  17:27  cat=.literal                                 postfix_nest
+[ 43]  17:40  cat=.string                                  '('
+[ 44]  17:44  cat=.string                                  ')'
+[ 45]  17:48  cat=.string                                  '['
+[ 46]  17:52  cat=.string                                  ']'
+[ 47]  18:27  cat=.literal                                 infix
+[ 48]  18:33  cat=.string                                  '.'
+[ 49]  18:37  cat=.string                                  '->'
+[ 50]  18:41  cat=.newline                                 \n      
+[ 51]  19:7   cat=.Seed.rule_name                          Prefix
+[ 52]  19:19  cat=.literal                                 =
+[ 53]  19:21  cat=.literal                                 rtl
+[ 54]  19:27  cat=.literal                                 prefix
+[ 55]  19:34  cat=.string                                  '++'
+[ 56]  19:39  cat=.string                                  '--'
+[ 57]  19:44  cat=.string                                  '+'
+[ 58]  19:48  cat=.string                                  '-'
+[ 59]  19:52  cat=.string                                  '!'
+[ 60]  19:56  cat=.string                                  '~'
+[ 61]  19:60  cat=.string                                  '*'
+[ 62]  19:64  cat=.string                                  '&'
+[ 63]  19:68  cat=.string                                  'sizeof'
+[ 64]  19:77  cat=.string                                  'new'
+[ 65]  20:27  cat=.literal                                 prefix_nest
+[ 66]  20:39  cat=.literal                                 ->
+[ 67]  20:42  cat=.Seed.rule_name                          Type
+[ 68]  20:47  cat=.string                                  '('
+[ 69]  20:51  cat=.string                                  ')'
+[ 70]  20:54  cat=.newline                                 \n      
+[ 71]  21:7   cat=.Seed.rule_name                          Member
+[ 72]  21:19  cat=.literal                                 =
+[ 73]  21:21  cat=.literal                                 ltr
+[ 74]  21:27  cat=.literal                                 infix
+[ 75]  21:33  cat=.string                                  '.*'
+[ 76]  21:38  cat=.string                                  '->*'
+[ 77]  21:43  cat=.newline                                 \n      
+[ 78]  22:7   cat=.Seed.rule_name                          Multiply
+[ 79]  22:19  cat=.literal                                 =
+[ 80]  22:21  cat=.literal                                 ltr
+[ 81]  22:27  cat=.literal                                 infix
+[ 82]  22:33  cat=.string                                  '*'
+[ 83]  22:37  cat=.string                                  '/'
+[ 84]  22:41  cat=.string                                  '%'
+[ 85]  22:44  cat=.newline                                 \n      
+[ 86]  23:7   cat=.Seed.rule_name                          Addition
+[ 87]  23:19  cat=.literal                                 =
+[ 88]  23:21  cat=.literal                                 ltr
+[ 89]  23:27  cat=.literal                                 infix
+[ 90]  23:33  cat=.string                                  '+'
+[ 91]  23:37  cat=.string                                  '-'
+[ 92]  23:40  cat=.newline                                 \n      
+[ 93]  24:7   cat=.Seed.rule_name                          Bitshift
+[ 94]  24:19  cat=.literal                                 =
+[ 95]  24:21  cat=.literal                                 ltr
+[ 96]  24:27  cat=.literal                                 infix
+[ 97]  24:33  cat=.string                                  '<<'
+[ 98]  24:38  cat=.string                                  '>>'
+[ 99]  24:42  cat=.newline                                 \n      
+[100]  25:7   cat=.Seed.rule_name                          Spaceship
+[101]  25:19  cat=.literal                                 =
+[102]  25:21  cat=.literal                                 ltr
+[103]  25:27  cat=.literal                                 infix
+[104]  25:33  cat=.string                                  '<=>'
+[105]  25:38  cat=.newline                                 \n      
+[106]  26:7   cat=.Seed.rule_name                          Comparison
+[107]  26:19  cat=.literal                                 =
+[108]  26:21  cat=.literal                                 ltr
+[109]  26:27  cat=.literal                                 infix
+[110]  26:33  cat=.string                                  '<'
+[111]  26:37  cat=.string                                  '<='
+[112]  26:42  cat=.string                                  '>'
+[113]  26:46  cat=.string                                  '>='
+[114]  26:50  cat=.newline                                 \n      
+[115]  27:7   cat=.Seed.rule_name                          Equality
+[116]  27:19  cat=.literal                                 =
+[117]  27:21  cat=.literal                                 ltr
+[118]  27:27  cat=.literal                                 infix
+[119]  27:33  cat=.string                                  '=='
+[120]  27:38  cat=.string                                  '!='
+[121]  27:42  cat=.newline                                 \n      
+[122]  28:7   cat=.Seed.rule_name                          BitAnd
+[123]  28:19  cat=.literal                                 =
+[124]  28:21  cat=.literal                                 ltr
+[125]  28:27  cat=.literal                                 infix
+[126]  28:33  cat=.string                                  '&'
+[127]  28:36  cat=.newline                                 \n      
+[128]  29:7   cat=.Seed.rule_name                          BitXor
+[129]  29:19  cat=.literal                                 =
+[130]  29:21  cat=.literal                                 ltr
+[131]  29:27  cat=.literal                                 infix
+[132]  29:33  cat=.string                                  '^'
+[133]  29:36  cat=.newline                                 \n      
+[134]  30:7   cat=.Seed.rule_name                          BitOr
+[135]  30:19  cat=.literal                                 =
+[136]  30:21  cat=.literal                                 ltr
+[137]  30:27  cat=.literal                                 infix
+[138]  30:33  cat=.string                                  '|'
+[139]  30:36  cat=.newline                                 \n      
+[140]  31:7   cat=.Seed.rule_name                          LogicalAnd
+[141]  31:19  cat=.literal                                 =
+[142]  31:21  cat=.literal                                 ltr
+[143]  31:27  cat=.literal                                 infix
+[144]  31:33  cat=.string                                  '&&'
+[145]  31:37  cat=.newline                                 \n      
+[146]  32:7   cat=.Seed.rule_name                          LogicalOr
+[147]  32:19  cat=.literal                                 =
+[148]  32:21  cat=.literal                                 ltr
+[149]  32:27  cat=.literal                                 infix
+[150]  32:33  cat=.string                                  '||'
+[151]  32:37  cat=.newline                                 \n      
+[152]  33:7   cat=.Seed.rule_name                          Assignment
+[153]  33:19  cat=.literal                                 =
+[154]  33:21  cat=.literal                                 rtl
+[155]  33:27  cat=.literal                                 infix
+[156]  33:33  cat=.string                                  '='
+[157]  33:37  cat=.string                                  '+='
+[158]  33:42  cat=.string                                  '-='
+[159]  34:27  cat=.literal                                 prefix
+[160]  34:34  cat=.string                                  'throw'
+[161]  35:27  cat=.literal                                 ternary
+[162]  35:35  cat=.string                                  '?'
+[163]  35:39  cat=.string                                  ':'
+[164]  35:42  cat=.newline                                 \n      
+[165]  36:7   cat=.Seed.rule_name                          Comma
+[166]  36:19  cat=.literal                                 =
+[167]  36:21  cat=.literal                                 ltr
+[168]  36:27  cat=.literal                                 infix
+[169]  36:33  cat=.string                                  ','
+[170]  36:36  cat=.newline                                 \n
+[171]  37:1   cat=.dedent                                      
+[172]  37:5   cat=.Seed.rule_name                          Atom
+[173]  37:10  cat=.literal                                 =
+[174]  37:12  cat=.Seed.token_category_name                number
+[175]  37:19  cat=.Seed.Expr.operator                      |
+[176]  37:21  cat=.Seed.token_category_name                string
+[177]  37:28  cat=.Seed.Expr.operator                      |
+[178]  37:30  cat=.Seed.token_category_name                identifier
+[179]  37:41  cat=.Seed.Expr.operator                      |
+[180]  37:43  cat=.string                                  '('
+[181]  37:47  cat=.Seed.rule_name                          Expr
+[182]  37:52  cat=.string                                  ')'
+[183]  37:55  cat=.newline                                 \n    
+[184]  38:5   cat=.Seed.token_category_name                oper
+[185]  38:10  cat=.literal                                 =
+[186]  38:12  cat=.Seed.token_category_name                parenthesis
+[187]  38:24  cat=.Seed.Expr.operator                      |
+[188]  38:26  cat=.Seed.token_category_name                operator_greedy
+[189]  38:41  cat=.newline                                 \n    
+[190]  39:5   cat=.Seed.rule_name                          Type
+[191]  39:10  cat=.literal                                 =
+[192]  39:12  cat=.Seed.token_category_name                identifier
+[193]  39:22  cat=.newline                                 \n
+[194]  40:1   cat=.dedent                                  
+[195]  40:1   cat=.dedent                                  
+
+[0].Seed                                          language CppStmts ...  
+  [0].Seed.Language                               language CppStmts ...  
+    [0].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.Expr.Postfix.*                     ( Expr ';' ) *
         [0].Seed.Expr.Concat.concat               Expr ';'
           [0].Seed.Nonterminal                    Expr
           [1].Seed.Terminal                       ';'
-    [1].Seed.Scope                                Expr : ... <ws> <ws>
+    [1].Seed.Rule                                 skip = skip_free_form \n  
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_free_form
+    [2].Seed.Scope                                Expr : ... \n 
       [0].Seed.Nonterminal                        Expr
-      [1].Seed.Rule                               ⊙ = ... <ws> <ws>
-        [0].Seed.Axe                              Atom <ws> ... <ws> <ws>
+      [1].Seed.Rule                               ⊙ = ... \n     
+        [0].Seed.Axe                              Atom oper ... \n     
           [0].Seed.Nonterminal                    Atom
-          [1].Seed.Axe.Level                      Namespace = ... prefix '::'
+          [1].Seed.Nonterminal                    oper
+          [2].Seed.Axe.Level                      Namespace = ... prefix '::'
             [0].Seed.Axe.Assoc                    rtl
             [1].Seed.Axe.Ops                      infix '::'
               [0].Seed.Axe.OpType                 infix
@@ -176,7 +502,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [2].Seed.Axe.Ops                      prefix '::'
               [0].Seed.Axe.OpType                 prefix
               [1].Seed.Axe.Op                     '::'
-          [2].Seed.Axe.Level                      Postfix = ... '.' '->'
+          [3].Seed.Axe.Level                      Postfix = ... '.' '->'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      postfix '++' '--'
               [0].Seed.Axe.OpType                 postfix
@@ -192,7 +518,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.'
               [2].Seed.Axe.Op                     '->'
-          [3].Seed.Axe.Level                      Prefix = ... '(' ')'
+          [4].Seed.Axe.Level                      Prefix = ... '(' ')'
             [0].Seed.Axe.Assoc                    rtl
             [1].Seed.Axe.Ops                      prefix '++' ... 'sizeof' 'new'
               [0].Seed.Axe.OpType                 prefix
@@ -211,37 +537,37 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [1].Seed.Nonterminal                Type
               [2].Seed.Axe.Op                     '('
               [3].Seed.Axe.Op                     ')'
-          [4].Seed.Axe.Level                      Member = ... '.*' '->*'
+          [5].Seed.Axe.Level                      Member = ... '.*' '->*'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '.*' '->*'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.*'
               [2].Seed.Axe.Op                     '->*'
-          [5].Seed.Axe.Level                      Multiply = ... '/' '%'
+          [6].Seed.Axe.Level                      Multiply = ... '/' '%'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '*' '/' '%'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '*'
               [2].Seed.Axe.Op                     '/'
               [3].Seed.Axe.Op                     '%'
-          [6].Seed.Axe.Level                      Addition = ... '+' '-'
+          [7].Seed.Axe.Level                      Addition = ... '+' '-'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '+' '-'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '+'
               [2].Seed.Axe.Op                     '-'
-          [7].Seed.Axe.Level                      Bitshift = ... '<<' '>>'
+          [8].Seed.Axe.Level                      Bitshift = ... '<<' '>>'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '<<' '>>'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '<<'
               [2].Seed.Axe.Op                     '>>'
-          [8].Seed.Axe.Level                      Spaceship = ltr infix '<=>'
+          [9].Seed.Axe.Level                      Spaceship = ltr infix '<=>'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '<=>'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '<=>'
-          [9].Seed.Axe.Level                      Comparison = ... '>' '>='
+          [10].Seed.Axe.Level                     Comparison = ... '>' '>='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '<' '<=' '>' '>='
               [0].Seed.Axe.OpType                 infix
@@ -249,38 +575,38 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [2].Seed.Axe.Op                     '<='
               [3].Seed.Axe.Op                     '>'
               [4].Seed.Axe.Op                     '>='
-          [10].Seed.Axe.Level                     Equality = ... '==' '!='
+          [11].Seed.Axe.Level                     Equality = ... '==' '!='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '==' '!='
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '=='
               [2].Seed.Axe.Op                     '!='
-          [11].Seed.Axe.Level                     BitAnd = ltr infix '&'
+          [12].Seed.Axe.Level                     BitAnd = ltr infix '&'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '&'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '&'
-          [12].Seed.Axe.Level                     BitXor = ltr infix '^'
+          [13].Seed.Axe.Level                     BitXor = ltr infix '^'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '^'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '^'
-          [13].Seed.Axe.Level                     BitOr = ltr infix '|'
+          [14].Seed.Axe.Level                     BitOr = ltr infix '|'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '|'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '|'
-          [14].Seed.Axe.Level                     LogicalAnd = ltr infix '&&'
+          [15].Seed.Axe.Level                     LogicalAnd = ltr infix '&&'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '&&'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '&&'
-          [15].Seed.Axe.Level                     LogicalOr = ltr infix '||'
+          [16].Seed.Axe.Level                     LogicalOr = ltr infix '||'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '||'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '||'
-          [16].Seed.Axe.Level                     Assignment = ... '?' ':'
+          [17].Seed.Axe.Level                     Assignment = ... '?' ':'
             [0].Seed.Axe.Assoc                    rtl
             [1].Seed.Axe.Ops                      infix '=' '+=' '-='
               [0].Seed.Axe.OpType                 infix
@@ -294,24 +620,90 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Seed.Axe.OpType                 ternary
               [1].Seed.Axe.Op                     '?'
               [2].Seed.Axe.Op                     ':'
-          [17].Seed.Axe.Level                     Comma = ltr infix ','
+          [18].Seed.Axe.Level                     Comma = ltr infix ','
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix ','
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     ','
-      [2].Seed.Rule                               Atom = ... ')' <ws>
+      [2].Seed.Rule                               Atom = ... ')' \n    
         [0].Seed.Nonterminal                      Atom
         [1].Seed.Expr.Or.|                        number | ... Expr ')'
-          [0].Seed.Terminal                       number
-          [1].Seed.Terminal                       string
-          [2].Seed.Terminal                       identifier
+          [0].Seed.Nonterminal                    number
+          [1].Seed.Nonterminal                    string
+          [2].Seed.Nonterminal                    identifier
           [3].Seed.Expr.Concat.concat             '(' Expr ')'
             [0].Seed.Terminal                     '('
             [1].Seed.Nonterminal                  Expr
             [2].Seed.Terminal                     ')'
-      [3].Seed.Rule                               Type = identifier <ws>
+      [3].Seed.Rule                               oper = ... operator_greedy \n    
+        [0].Seed.Nonterminal                      oper
+        [1].Seed.Expr.Or.|                        parenthesis | operator_greedy
+          [0].Seed.Nonterminal                    parenthesis
+          [1].Seed.Nonterminal                    operator_greedy
+      [4].Seed.Rule                               Type = identifier \n
         [0].Seed.Nonterminal                      Type
-        [1].Seed.Terminal                         identifier
+        [1].Seed.Nonterminal                      identifier
+
+[  0]  43:1   cat=.number                                  1
+[  1]  43:3   cat=.CppStmts.Expr.oper                      +
+[  2]  43:5   cat=.number                                  2
+[  3]  43:7   cat=.CppStmts.Expr.oper                      *
+[  4]  43:9   cat=.number                                  3
+[  5]  43:11  cat=.CppStmts.Expr.oper                      +
+[  6]  43:13  cat=.number                                  4
+[  7]  43:15  cat=.CppStmts.Expr.oper                      *
+[  8]  43:17  cat=.number                                  5
+[  9]  43:19  cat=.literal                                 ;
+[ 10]  44:1   cat=.identifier                              a
+[ 11]  44:2   cat=.CppStmts.Expr.oper                      [
+[ 12]  44:3   cat=.number                                  1
+[ 13]  44:4   cat=.CppStmts.Expr.oper                      ]
+[ 14]  44:6   cat=.CppStmts.Expr.oper                      =
+[ 15]  44:8   cat=.identifier                              std
+[ 16]  44:11  cat=.CppStmts.Expr.oper                      ::
+[ 17]  44:13  cat=.identifier                              sin
+[ 18]  44:16  cat=.CppStmts.Expr.oper                      (
+[ 19]  44:17  cat=.number                                  3.14
+[ 20]  44:21  cat=.CppStmts.Expr.oper                      )
+[ 21]  44:23  cat=.literal                                 ;
+[ 22]  45:1   cat=.number                                  1
+[ 23]  45:3   cat=.CppStmts.Expr.oper                      |
+[ 24]  45:5   cat=.number                                  0
+[ 25]  45:7   cat=.CppStmts.Expr.oper                      <=
+[ 26]  45:10  cat=.identifier                              x
+[ 27]  45:12  cat=.CppStmts.Expr.oper                      *
+[ 28]  45:14  cat=.number                                  10
+[ 29]  45:17  cat=.CppStmts.Expr.oper                      <=
+[ 30]  45:20  cat=.number                                  2
+[ 31]  45:22  cat=.CppStmts.Expr.oper                      +
+[ 32]  45:24  cat=.number                                  3
+[ 33]  45:26  cat=.literal                                 ;
+[ 34]  46:1   cat=.identifier                              std
+[ 35]  46:4   cat=.CppStmts.Expr.oper                      ::
+[ 36]  46:6   cat=.identifier                              get
+[ 37]  46:9   cat=.CppStmts.Expr.oper                      (
+[ 38]  46:10  cat=.identifier                              x
+[ 39]  46:11  cat=.CppStmts.Expr.oper                      )
+[ 40]  46:13  cat=.CppStmts.Expr.oper                      =
+[ 41]  46:15  cat=.CppStmts.Expr.oper                      ::
+[ 42]  46:17  cat=.identifier                              std
+[ 43]  46:20  cat=.CppStmts.Expr.oper                      ::
+[ 44]  46:22  cat=.identifier                              get
+[ 45]  46:25  cat=.CppStmts.Expr.oper                      (
+[ 46]  46:26  cat=.identifier                              x
+[ 47]  46:27  cat=.CppStmts.Expr.oper                      )
+[ 48]  46:29  cat=.literal                                 ;
+[ 49]  47:1   cat=.CppStmts.Expr.oper                      ++
+[ 50]  47:4   cat=.identifier                              x
+[ 51]  47:6   cat=.CppStmts.Expr.oper                      ++
+[ 52]  47:9   cat=.literal                                 ;
+[ 53]  48:1   cat=.identifier                              a
+[ 54]  48:3   cat=.CppStmts.Expr.oper                      +
+[ 55]  48:5   cat=.CppStmts.Expr.oper                      (
+[ 56]  48:6   cat=.identifier                              int
+[ 57]  48:9   cat=.CppStmts.Expr.oper                      )
+[ 58]  48:11  cat=.identifier                              b
+[ 59]  48:13  cat=.literal                                 ;
 
 [0].CppStmts                                      1 + ... b ;
   [0].CppStmts.Expr.Addition.+                    1 + ... * 5
@@ -364,6 +756,25 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].CppStmts.Expr.Type                      int
       [1].CppStmts.Expr.Atom                      b
 
+[  0]  52:1   cat=.literal                                 [
+[  1]  53:3   cat=.literal                                 none
+[  2]  54:3   cat=.literal                                 true
+[  3]  55:3   cat=.number                                  42
+[  4]  56:3   cat=.identifier                              hello
+[  5]  56:9   cat=.literal                                 :
+[  6]  56:11  cat=.string                                  'World'
+[  7]  57:3   cat=.literal                                 [
+[  8]  57:4   cat=.literal                                 ]
+[  9]  58:3   cat=.literal                                 [
+[ 10]  59:5   cat=.string                                  'one'
+[ 11]  59:11  cat=.literal                                 :
+[ 12]  59:13  cat=.number                                  1.0
+[ 13]  60:5   cat=.string                                  'two'
+[ 14]  60:11  cat=.literal                                 :
+[ 15]  60:13  cat=.number                                  2.0
+[ 16]  61:3   cat=.literal                                 ]
+[ 17]  62:1   cat=.literal                                 ]
+
 [0].Fern                                          [ none ... ] ]
   [0].Fern.LabeledItem                            none
     [0].Fern.Value                                none
@@ -385,76 +796,478 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Fern.Label                            'two'
         [1].Fern.Value                            2.0
 
-[0].Seed                                          tokenizer Somelang ... <ws> <ws>
-  [0].Seed.Tokenizer                              tokenizer Somelang ... <ws> <ws>
-    [0].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm <ws>
-  [1].Seed.Language                               language Somelang ... <ws> <ws>
-    [0].Seed.Rule                                 ⊙ = As Bs <ws>
+[  0]   1:1   cat=.literal                                 language
+[  1]   1:10  cat=.Seed.rule_name                          Somelang
+[  2]   1:18  cat=.literal                                 :
+[  3]   1:19  cat=.newline                                 \n
+[  4]   2:1   cat=.indent                                    
+[  5]   2:3   cat=.literal                                 ⊙
+[  6]   2:5   cat=.literal                                 =
+[  7]   2:7   cat=.Seed.rule_name                          As
+[  8]   2:10  cat=.Seed.rule_name                          Bs
+[  9]   2:12  cat=.newline                                 \n  
+[ 10]   3:3   cat=.Seed.token_category_name                skip
+[ 11]   3:8   cat=.literal                                 =
+[ 12]   3:10  cat=.Seed.token_category_name                skip_free_form
+[ 13]   3:24  cat=.newline                                 \n  
+[ 14]   4:3   cat=.Seed.rule_name                          As
+[ 15]   4:6   cat=.literal                                 =
+[ 16]   4:8   cat=.string                                  'a'
+[ 17]   4:12  cat=.Seed.Expr.operator                      *
+[ 18]   4:13  cat=.newline                                 \n  
+[ 19]   5:3   cat=.Seed.rule_name                          Bs
+[ 20]   5:6   cat=.literal                                 =
+[ 21]   5:8   cat=.string                                  'b'
+[ 22]   5:12  cat=.Seed.Expr.operator                      *
+[ 23]   5:13  cat=.newline                                 
+[ 24]   5:13  cat=.dedent                                  
+
+[0].Seed                                          language Somelang ...  
+  [0].Seed.Language                               language Somelang ...  
+    [0].Seed.Rule                                 ⊙ = As Bs \n  
       [0].Seed.Expr.Concat.concat                 As Bs
         [0].Seed.Nonterminal                      As
         [1].Seed.Nonterminal                      Bs
-    [1].Seed.Rule                                 As = 'a' * <ws>
+    [1].Seed.Rule                                 skip = skip_free_form \n  
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_free_form
+    [2].Seed.Rule                                 As = 'a' * \n  
       [0].Seed.Nonterminal                        As
       [1].Seed.Expr.Postfix.*                     'a' *
         [0].Seed.Terminal                         'a'
-    [2].Seed.Rule                                 Bs = 'b' * <ws>
+    [3].Seed.Rule                                 Bs = 'b' * 
       [0].Seed.Nonterminal                        Bs
       [1].Seed.Expr.Postfix.*                     'b' *
         [0].Seed.Terminal                         'b'
+
+[  0]   1:1   cat=.literal                                 a
+[  1]   1:3   cat=.literal                                 a
+[  2]   1:5   cat=.literal                                 a
+[  3]   1:7   cat=.literal                                 a
+[  4]   1:9   cat=.literal                                 b
+[  5]   1:11  cat=.literal                                 b
+[  6]   1:13  cat=.literal                                 b
 
 [0].Somelang                                      a a ... b b
   [0].Somelang.As                                 a a a a
   [1].Somelang.Bs                                 b b b
 
+[  0]   1:1   cat=.Silva.lang_name                         Seed
+[  1]   1:6   cat=.literal                                 language
+
 [0].Silva                                         Seed language
   [0].Silva.Section                               Seed language
 
-[0].Seed                                          tokenizer Soil ... <ws> <ws>
-  [0].Seed.Tokenizer                              tokenizer Soil ... <ws> <ws>
-    [0].Seed.Tokenizer.TokenRule                  type_name = ... '_t' <ws>
-      [0].Seed.Tokenizer.Defn                     IDENTIFIER_SNAKE_CASE \ '_t'
-        [0].Seed.Tokenizer.PrefixItem             IDENTIFIER_SNAKE_CASE \ '_t'
-          [0].Seed.Tokenizer.Item                 IDENTIFIER_SNAKE_CASE \ '_t'
-            [0].Seed.Tokenizer.Matcher            IDENTIFIER_SNAKE_CASE \ '_t'
-    [1].Seed.Tokenizer.TokenRule                  func_name = ... '_f' <ws>
-      [0].Seed.Tokenizer.Defn                     IDENTIFIER_SNAKE_CASE \ '_f'
-        [0].Seed.Tokenizer.PrefixItem             IDENTIFIER_SNAKE_CASE \ '_f'
-          [0].Seed.Tokenizer.Item                 IDENTIFIER_SNAKE_CASE \ '_f'
-            [0].Seed.Tokenizer.Matcher            IDENTIFIER_SNAKE_CASE \ '_f'
-    [2].Seed.Tokenizer.IncludeRule                include tokenizer FreeForm <ws>
-  [1].Seed.Language                               language Soil ... <ws> <ws>
-    [0].Seed.Rule                                 ⊙ = ... * <ws>
+[  0]   2:1   cat=.literal                                 language
+[  1]   2:10  cat=.Seed.rule_name                          Soil
+[  2]   2:14  cat=.literal                                 :
+[  3]   2:15  cat=.newline                                 \n
+[  4]   3:1   cat=.indent                                    
+[  5]   3:3   cat=.literal                                 ⊙
+[  6]   3:5   cat=.literal                                 =
+[  7]   3:7   cat=.literal                                 (
+[  8]   3:9   cat=.Seed.rule_name                          Type
+[  9]   3:13  cat=.literal                                 .
+[ 10]   3:14  cat=.Seed.rule_name                          Defn
+[ 11]   3:19  cat=.Seed.Expr.operator                      |
+[ 12]   3:21  cat=.Seed.rule_name                          Func
+[ 13]   3:25  cat=.literal                                 .
+[ 14]   3:26  cat=.Seed.rule_name                          Defn
+[ 15]   3:31  cat=.Seed.Expr.operator                      |
+[ 16]   3:33  cat=.Seed.rule_name                          Variable
+[ 17]   3:41  cat=.literal                                 .
+[ 18]   3:42  cat=.Seed.rule_name                          Defn
+[ 19]   3:47  cat=.literal                                 )
+[ 20]   3:49  cat=.Seed.Expr.operator                      *
+[ 21]   3:50  cat=.newline                                 \n  
+[ 22]   4:3   cat=.Seed.token_category_name                skip
+[ 23]   4:8   cat=.literal                                 =
+[ 24]   4:10  cat=.Seed.token_category_name                skip_free_form
+[ 25]   4:24  cat=.newline                                 \n  
+[ 26]   5:3   cat=.Seed.token_category_name                type_name
+[ 27]   5:13  cat=.literal                                 =
+[ 28]   5:15  cat=.string                                  't_'
+[ 29]   5:20  cat=.Seed.token_category_name                identifier
+[ 30]   5:60  cat=.newline                                 \n  
+[ 31]   6:3   cat=.Seed.token_category_name                func_name
+[ 32]   6:13  cat=.literal                                 =
+[ 33]   6:15  cat=.string                                  'f_'
+[ 34]   6:20  cat=.Seed.token_category_name                identifier
+[ 35]   6:60  cat=.newline                                 \n  
+[ 36]   7:3   cat=.Seed.rule_name                          Type
+[ 37]   7:7   cat=.literal                                 :
+[ 38]   7:8   cat=.newline                                 \n
+[ 39]   8:1   cat=.indent                                      
+[ 40]   8:5   cat=.literal                                 ⊙
+[ 41]   8:7   cat=.literal                                 =
+[ 42]   8:9   cat=.Seed.rule_name                          Name
+[ 43]   8:14  cat=.Seed.Expr.operator                      |
+[ 44]   8:16  cat=.Seed.rule_name                          Struct
+[ 45]   8:22  cat=.newline                                 \n    
+[ 46]   9:5   cat=.Seed.rule_name                          Name
+[ 47]   9:10  cat=.literal                                 =
+[ 48]   9:12  cat=.Seed.token_category_name                type_name
+[ 49]   9:21  cat=.newline                                 \n    
+[ 50]  10:5   cat=.Seed.rule_name                          Defn
+[ 51]  10:10  cat=.literal                                 =
+[ 52]  10:12  cat=.Seed.rule_name                          Name
+[ 53]  10:17  cat=.string                                  '='
+[ 54]  10:21  cat=.Seed.rule_name                          Type
+[ 55]  10:25  cat=.newline                                 \n    
+[ 56]  11:5   cat=.Seed.rule_name                          Struct
+[ 57]  11:11  cat=.literal                                 :
+[ 58]  11:12  cat=.newline                                 \n
+[ 59]  12:1   cat=.indent                                        
+[ 60]  12:7   cat=.literal                                 ⊙
+[ 61]  12:9   cat=.literal                                 =
+[ 62]  12:11  cat=.string                                  '['
+[ 63]  12:15  cat=.Seed.rule_name                          Member
+[ 64]  12:22  cat=.Seed.Expr.operator                      *
+[ 65]  12:24  cat=.string                                  ']'
+[ 66]  12:27  cat=.newline                                 \n      
+[ 67]  13:7   cat=.Seed.rule_name                          Member
+[ 68]  13:13  cat=.literal                                 :
+[ 69]  13:14  cat=.newline                                 \n
+[ 70]  14:1   cat=.indent                                          
+[ 71]  14:9   cat=.literal                                 ⊙
+[ 72]  14:11  cat=.literal                                 =
+[ 73]  14:13  cat=.Seed.rule_name                          Type
+[ 74]  14:18  cat=.Seed.rule_name                          Label
+[ 75]  14:24  cat=.Seed.Expr.operator                      ?
+[ 76]  14:26  cat=.Seed.rule_name                          Init
+[ 77]  14:31  cat=.Seed.Expr.operator                      ?
+[ 78]  14:33  cat=.string                                  ';'
+[ 79]  14:36  cat=.newline                                 \n        
+[ 80]  15:9   cat=.Seed.rule_name                          Label
+[ 81]  15:15  cat=.literal                                 =
+[ 82]  15:17  cat=.string                                  ':'
+[ 83]  15:21  cat=.Seed.rule_name                          Name
+[ 84]  15:25  cat=.newline                                 \n        
+[ 85]  16:9   cat=.Seed.rule_name                          Init
+[ 86]  16:14  cat=.literal                                 =
+[ 87]  16:16  cat=.string                                  '='
+[ 88]  16:20  cat=.Seed.rule_name                          Expr
+[ 89]  16:24  cat=.newline                                 \n        
+[ 90]  17:9   cat=.Seed.rule_name                          Name
+[ 91]  17:14  cat=.literal                                 =
+[ 92]  17:16  cat=.Seed.token_category_name                identifier
+[ 93]  17:26  cat=.newline                                 \n
+[ 94]  18:1   cat=.dedent                                  
+[ 95]  18:1   cat=.dedent                                  
+[ 96]  18:1   cat=.dedent                                    
+[ 97]  18:3   cat=.Seed.rule_name                          Expr
+[ 98]  18:7   cat=.literal                                 :
+[ 99]  18:8   cat=.newline                                 \n
+[100]  19:1   cat=.indent                                      
+[101]  19:5   cat=.literal                                 ⊙
+[102]  19:7   cat=.literal                                 =
+[103]  19:9   cat=.Seed.rule_name                          Axe
+[104]  19:12  cat=.newline                                 \n    
+[105]  20:5   cat=.Seed.rule_name                          Maybe
+[106]  20:11  cat=.literal                                 =
+[107]  20:13  cat=.Seed.rule_name                          Expr
+[108]  20:18  cat=.Seed.Expr.operator                      |
+[109]  20:20  cat=.literal                                 ε
+[110]  20:21  cat=.newline                                 \n    
+[111]  21:5   cat=.Seed.rule_name                          Axe
+[112]  21:9   cat=.literal                                 =
+[113]  21:11  cat=.literal                                 axe
+[114]  21:15  cat=.Seed.rule_name                          Atom
+[115]  21:20  cat=.Seed.token_category_name                oper
+[116]  21:24  cat=.newline                                 \n
+[117]  22:1   cat=.indent                                        
+[118]  22:7   cat=.Seed.rule_name                          Member
+[119]  22:17  cat=.literal                                 =
+[120]  22:19  cat=.literal                                 ltr
+[121]  22:23  cat=.literal                                 infix
+[122]  22:29  cat=.string                                  '.'
+[123]  22:32  cat=.newline                                 \n      
+[124]  23:7   cat=.Seed.rule_name                          CallPost
+[125]  23:17  cat=.literal                                 =
+[126]  23:19  cat=.literal                                 ltr
+[127]  23:23  cat=.literal                                 postfix_nest
+[128]  23:36  cat=.string                                  '('
+[129]  23:40  cat=.string                                  ')'
+[130]  23:43  cat=.newline                                 \n      
+[131]  24:7   cat=.Seed.rule_name                          Typing
+[132]  24:17  cat=.literal                                 =
+[133]  24:19  cat=.literal                                 ltr
+[134]  24:23  cat=.literal                                 infix
+[135]  24:29  cat=.string                                  '::'
+[136]  24:33  cat=.newline                                 \n      
+[137]  25:7   cat=.Seed.rule_name                          CallPipe
+[138]  25:17  cat=.literal                                 =
+[139]  25:19  cat=.literal                                 ltr
+[140]  25:23  cat=.literal                                 infix
+[141]  25:29  cat=.string                                  '|'
+[142]  25:32  cat=.newline                                 \n      
+[143]  26:7   cat=.Seed.rule_name                          Mul
+[144]  26:17  cat=.literal                                 =
+[145]  26:19  cat=.literal                                 ltr
+[146]  26:23  cat=.literal                                 infix
+[147]  26:29  cat=.string                                  '*'
+[148]  26:33  cat=.string                                  '//'
+[149]  26:37  cat=.newline                                 \n      
+[150]  27:7   cat=.Seed.rule_name                          Add
+[151]  27:17  cat=.literal                                 =
+[152]  27:19  cat=.literal                                 ltr
+[153]  27:23  cat=.literal                                 infix
+[154]  27:29  cat=.string                                  '+'
+[155]  27:33  cat=.string                                  '-'
+[156]  27:36  cat=.newline                                 \n      
+[157]  28:7   cat=.Seed.rule_name                          Comp
+[158]  28:17  cat=.literal                                 =
+[159]  28:19  cat=.literal                                 ltr
+[160]  28:23  cat=.literal                                 infix
+[161]  28:29  cat=.string                                  '=='
+[162]  28:34  cat=.string                                  '<='
+[163]  28:39  cat=.string                                  '<'
+[164]  28:43  cat=.string                                  '>'
+[165]  28:47  cat=.string                                  '>='
+[166]  28:51  cat=.newline                                 \n      
+[167]  29:7   cat=.Seed.rule_name                          Logic
+[168]  29:17  cat=.literal                                 =
+[169]  29:19  cat=.literal                                 ltr
+[170]  29:23  cat=.literal                                 infix
+[171]  29:29  cat=.string                                  'and'
+[172]  29:35  cat=.string                                  'or'
+[173]  29:39  cat=.newline                                 \n      
+[174]  30:7   cat=.Seed.rule_name                          Assign
+[175]  30:17  cat=.literal                                 =
+[176]  30:19  cat=.literal                                 ltr
+[177]  30:23  cat=.literal                                 infix
+[178]  30:29  cat=.string                                  '='
+[179]  30:33  cat=.string                                  '+='
+[180]  30:38  cat=.string                                  '*='
+[181]  30:42  cat=.newline                                 \n
+[182]  31:1   cat=.dedent                                      
+[183]  31:5   cat=.Seed.rule_name                          Atom
+[184]  31:10  cat=.literal                                 =
+[185]  31:12  cat=.literal                                 (
+[186]  31:14  cat=.Seed.rule_name                          Struct
+[187]  31:21  cat=.Seed.Expr.operator                      |
+[188]  31:23  cat=.literal                                 language
+[189]  32:12  cat=.Seed.Expr.operator                      |
+[190]  32:14  cat=.Seed.token_category_name                type_name
+[191]  32:24  cat=.Seed.Expr.operator                      |
+[192]  32:26  cat=.Seed.token_category_name                func_name
+[193]  32:36  cat=.Seed.Expr.operator                      |
+[194]  32:38  cat=.Seed.token_category_name                identifier
+[195]  33:12  cat=.Seed.Expr.operator                      |
+[196]  33:14  cat=.Seed.token_category_name                string
+[197]  33:21  cat=.Seed.Expr.operator                      |
+[198]  33:23  cat=.Seed.token_category_name                number
+[199]  34:12  cat=.Seed.Expr.operator                      |
+[200]  34:14  cat=.string                                  'true'
+[201]  34:21  cat=.Seed.Expr.operator                      |
+[202]  34:23  cat=.string                                  'false'
+[203]  34:31  cat=.Seed.Expr.operator                      |
+[204]  34:33  cat=.string                                  'none'
+[205]  35:12  cat=.Seed.Expr.operator                      |
+[206]  35:14  cat=.string                                  '('
+[207]  35:18  cat=.Seed.rule_name                          Expr
+[208]  35:23  cat=.string                                  ')'
+[209]  35:27  cat=.literal                                 )
+[210]  35:28  cat=.newline                                 \n    
+[211]  36:5   cat=.Seed.token_category_name                oper
+[212]  36:10  cat=.literal                                 =
+[213]  36:12  cat=.Seed.token_category_name                operator_greedy
+[214]  36:28  cat=.Seed.Expr.operator                      |
+[215]  36:30  cat=.Seed.token_category_name                parenthesis
+[216]  36:41  cat=.newline                                 \n    
+[217]  37:5   cat=.Seed.rule_name                          Struct
+[218]  37:11  cat=.literal                                 :
+[219]  37:12  cat=.newline                                 \n
+[220]  38:1   cat=.indent                                        
+[221]  38:7   cat=.literal                                 ⊙
+[222]  38:9   cat=.literal                                 =
+[223]  38:11  cat=.string                                  '['
+[224]  38:15  cat=.Seed.rule_name                          LabeledItem
+[225]  38:27  cat=.Seed.Expr.operator                      *
+[226]  38:29  cat=.string                                  ']'
+[227]  38:32  cat=.newline                                 \n      
+[228]  39:7   cat=.Seed.rule_name                          LabeledItem
+[229]  39:19  cat=.literal                                 =
+[230]  39:21  cat=.literal                                 (
+[231]  39:23  cat=.Seed.rule_name                          Variable
+[232]  39:31  cat=.literal                                 .
+[233]  39:32  cat=.Seed.rule_name                          Name
+[234]  39:37  cat=.string                                  ':'
+[235]  39:41  cat=.literal                                 )
+[236]  39:43  cat=.Seed.Expr.operator                      ?
+[237]  39:45  cat=.literal                                 (
+[238]  39:47  cat=.Seed.rule_name                          Struct
+[239]  39:54  cat=.Seed.Expr.operator                      |
+[240]  39:56  cat=.Seed.rule_name                          Expr
+[241]  39:61  cat=.literal                                 )
+[242]  39:62  cat=.newline                                 \n
+[243]  40:1   cat=.dedent                                  
+[244]  40:1   cat=.dedent                                    
+[245]  40:3   cat=.Seed.rule_name                          Func
+[246]  40:7   cat=.literal                                 :
+[247]  40:8   cat=.newline                                 \n
+[248]  41:1   cat=.indent                                      
+[249]  41:5   cat=.literal                                 ⊙
+[250]  41:7   cat=.literal                                 =
+[251]  41:9   cat=.Seed.rule_name                          Name
+[252]  41:13  cat=.newline                                 \n    
+[253]  42:5   cat=.Seed.rule_name                          Name
+[254]  42:10  cat=.literal                                 =
+[255]  42:12  cat=.Seed.token_category_name                func_name
+[256]  42:21  cat=.newline                                 \n    
+[257]  43:5   cat=.Seed.rule_name                          Defn
+[258]  43:10  cat=.literal                                 =
+[259]  43:12  cat=.Seed.rule_name                          Name
+[260]  43:17  cat=.string                                  '='
+[261]  43:21  cat=.Seed.rule_name                          Signature
+[262]  43:31  cat=.Seed.rule_name                          Body
+[263]  43:35  cat=.newline                                 \n    
+[264]  44:5   cat=.Seed.rule_name                          Signature
+[265]  44:15  cat=.literal                                 =
+[266]  44:17  cat=.Seed.rule_name                          Type
+[267]  44:22  cat=.literal                                 (
+[268]  44:24  cat=.string                                  '->'
+[269]  44:29  cat=.Seed.rule_name                          Type
+[270]  44:34  cat=.literal                                 )
+[271]  44:36  cat=.Seed.Expr.operator                      ?
+[272]  44:37  cat=.newline                                 \n    
+[273]  45:5   cat=.Seed.rule_name                          Body
+[274]  45:10  cat=.literal                                 =
+[275]  45:12  cat=.string                                  '{'
+[276]  45:16  cat=.Seed.rule_name                          Stmt
+[277]  45:21  cat=.Seed.Expr.operator                      *
+[278]  45:23  cat=.string                                  '}'
+[279]  45:26  cat=.newline                                 \n    
+[280]  46:5   cat=.Seed.rule_name                          Stmt
+[281]  46:9   cat=.literal                                 :
+[282]  46:10  cat=.newline                                 \n
+[283]  47:1   cat=.indent                                        
+[284]  47:7   cat=.literal                                 ⊙
+[285]  47:9   cat=.literal                                 =
+[286]  47:11  cat=.Seed.rule_name                          If
+[287]  47:14  cat=.Seed.Expr.operator                      |
+[288]  47:16  cat=.Seed.rule_name                          For
+[289]  47:20  cat=.Seed.Expr.operator                      |
+[290]  47:22  cat=.Seed.rule_name                          Expr
+[291]  47:27  cat=.string                                  ';'
+[292]  47:30  cat=.newline                                 \n      
+[293]  48:7   cat=.Seed.rule_name                          If
+[294]  48:9   cat=.literal                                 :
+[295]  48:10  cat=.newline                                 \n
+[296]  49:1   cat=.indent                                          
+[297]  49:9   cat=.literal                                 ⊙
+[298]  49:11  cat=.literal                                 =
+[299]  49:13  cat=.string                                  'if'
+[300]  49:18  cat=.Seed.rule_name                          Branch
+[301]  49:25  cat=.literal                                 (
+[302]  49:27  cat=.string                                  'elif'
+[303]  49:34  cat=.Seed.rule_name                          Branch
+[304]  49:41  cat=.literal                                 )
+[305]  49:43  cat=.Seed.Expr.operator                      *
+[306]  49:45  cat=.literal                                 (
+[307]  49:47  cat=.string                                  'else'
+[308]  49:54  cat=.Seed.rule_name                          Body
+[309]  49:59  cat=.literal                                 )
+[310]  49:61  cat=.Seed.Expr.operator                      ?
+[311]  49:62  cat=.newline                                 \n        
+[312]  50:9   cat=.Seed.rule_name                          Branch
+[313]  50:16  cat=.literal                                 =
+[314]  50:18  cat=.Seed.rule_name                          Expr
+[315]  50:23  cat=.Seed.rule_name                          Body
+[316]  50:27  cat=.newline                                 \n
+[317]  51:1   cat=.dedent                                        
+[318]  51:7   cat=.Seed.rule_name                          For
+[319]  51:11  cat=.literal                                 =
+[320]  51:13  cat=.string                                  'for'
+[321]  51:19  cat=.Seed.rule_name                          Expr
+[322]  51:23  cat=.literal                                 .
+[323]  51:24  cat=.Seed.rule_name                          Maybe
+[324]  51:30  cat=.string                                  ';'
+[325]  51:34  cat=.Seed.rule_name                          Expr
+[326]  51:38  cat=.literal                                 .
+[327]  51:39  cat=.Seed.rule_name                          Maybe
+[328]  51:45  cat=.string                                  ';'
+[329]  51:49  cat=.Seed.rule_name                          Expr
+[330]  51:53  cat=.literal                                 .
+[331]  51:54  cat=.Seed.rule_name                          Maybe
+[332]  51:60  cat=.Seed.rule_name                          Body
+[333]  51:64  cat=.newline                                 \n
+[334]  52:1   cat=.dedent                                  
+[335]  52:1   cat=.dedent                                    
+[336]  52:3   cat=.Seed.rule_name                          Variable
+[337]  52:11  cat=.literal                                 :
+[338]  52:12  cat=.newline                                 \n
+[339]  53:1   cat=.indent                                      
+[340]  53:5   cat=.Seed.rule_name                          Name
+[341]  53:10  cat=.literal                                 =
+[342]  53:12  cat=.Seed.Expr.operator                      not
+[343]  53:16  cat=.Seed.rule_name                          Type
+[344]  53:20  cat=.literal                                 .
+[345]  53:21  cat=.Seed.rule_name                          Name
+[346]  53:26  cat=.Seed.Expr.operator                      but_then
+[347]  53:35  cat=.Seed.Expr.operator                      not
+[348]  53:39  cat=.Seed.rule_name                          Func
+[349]  53:43  cat=.literal                                 .
+[350]  53:44  cat=.Seed.rule_name                          Name
+[351]  53:49  cat=.Seed.Expr.operator                      but_then
+[352]  53:58  cat=.Seed.token_category_name                identifier
+[353]  53:68  cat=.newline                                 \n    
+[354]  54:5   cat=.Seed.rule_name                          Defn
+[355]  54:10  cat=.literal                                 =
+[356]  54:12  cat=.Seed.rule_name                          Name
+[357]  54:17  cat=.string                                  '='
+[358]  54:21  cat=.Seed.rule_name                          Expr
+[359]  54:25  cat=.newline                                 \n
+[360]  55:1   cat=.dedent                                  
+[361]  55:1   cat=.dedent                                  
+
+[0].Seed                                          language Soil ...  
+  [0].Seed.Language                               language Soil ...  
+    [0].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.Expr.Postfix.*                     ( Type ... ) *
         [0].Seed.Expr.Or.|                        Type . ... . Defn
           [0].Seed.Nonterminal                    Type . Defn
           [1].Seed.Nonterminal                    Func . Defn
           [2].Seed.Nonterminal                    Variable . Defn
-    [1].Seed.Scope                                Type : ... <ws> <ws>
+    [1].Seed.Rule                                 skip = skip_free_form \n  
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_free_form
+    [2].Seed.Rule                                 type_name = 't_' identifier \n  
+      [0].Seed.Nonterminal                        type_name
+      [1].Seed.Expr.Concat.concat                 't_' identifier
+        [0].Seed.Terminal                         't_'
+        [1].Seed.Nonterminal                      identifier
+    [3].Seed.Rule                                 func_name = 'f_' identifier \n  
+      [0].Seed.Nonterminal                        func_name
+      [1].Seed.Expr.Concat.concat                 'f_' identifier
+        [0].Seed.Terminal                         'f_'
+        [1].Seed.Nonterminal                      identifier
+    [4].Seed.Scope                                Type : ...    
       [0].Seed.Nonterminal                        Type
-      [1].Seed.Rule                               ⊙ = ... Struct <ws>
+      [1].Seed.Rule                               ⊙ = ... Struct \n    
         [0].Seed.Expr.Or.|                        Name | Struct
           [0].Seed.Nonterminal                    Name
           [1].Seed.Nonterminal                    Struct
-      [2].Seed.Rule                               Name = type_name <ws>
+      [2].Seed.Rule                               Name = type_name \n    
         [0].Seed.Nonterminal                      Name
-        [1].Seed.Terminal                         type_name
-      [3].Seed.Rule                               Defn = ... Type <ws>
+        [1].Seed.Nonterminal                      type_name
+      [3].Seed.Rule                               Defn = ... Type \n    
         [0].Seed.Nonterminal                      Defn
         [1].Seed.Expr.Concat.concat               Name '=' Type
           [0].Seed.Nonterminal                    Name
           [1].Seed.Terminal                       '='
           [2].Seed.Nonterminal                    Type
-      [4].Seed.Scope                              Struct : ... <ws> <ws>
+      [4].Seed.Scope                              Struct : ...  
         [0].Seed.Nonterminal                      Struct
-        [1].Seed.Rule                             ⊙ = ... ']' <ws>
+        [1].Seed.Rule                             ⊙ = ... ']' \n      
           [0].Seed.Expr.Concat.concat             '[' Member * ']'
             [0].Seed.Terminal                     '['
             [1].Seed.Expr.Postfix.*               Member *
               [0].Seed.Nonterminal                Member
             [2].Seed.Terminal                     ']'
-        [2].Seed.Scope                            Member : ... <ws> <ws>
+        [2].Seed.Scope                            Member : ... \n 
           [0].Seed.Nonterminal                    Member
-          [1].Seed.Rule                           ⊙ = ... ';' <ws>
+          [1].Seed.Rule                           ⊙ = ... ';' \n        
             [0].Seed.Expr.Concat.concat           Type Label ... ? ';'
               [0].Seed.Nonterminal                Type
               [1].Seed.Expr.Postfix.?             Label ?
@@ -462,66 +1275,67 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [2].Seed.Expr.Postfix.?             Init ?
                 [0].Seed.Nonterminal              Init
               [3].Seed.Terminal                   ';'
-          [2].Seed.Rule                           Label = ':' Name <ws>
+          [2].Seed.Rule                           Label = ':' Name \n        
             [0].Seed.Nonterminal                  Label
             [1].Seed.Expr.Concat.concat           ':' Name
               [0].Seed.Terminal                   ':'
               [1].Seed.Nonterminal                Name
-          [3].Seed.Rule                           Init = '=' Expr <ws>
+          [3].Seed.Rule                           Init = '=' Expr \n        
             [0].Seed.Nonterminal                  Init
             [1].Seed.Expr.Concat.concat           '=' Expr
               [0].Seed.Terminal                   '='
               [1].Seed.Nonterminal                Expr
-          [4].Seed.Rule                           Name = identifier <ws>
+          [4].Seed.Rule                           Name = identifier \n
             [0].Seed.Nonterminal                  Name
-            [1].Seed.Terminal                     identifier
-    [2].Seed.Scope                                Expr : ... <ws> <ws>
+            [1].Seed.Nonterminal                  identifier
+    [5].Seed.Scope                                Expr : ...    
       [0].Seed.Nonterminal                        Expr
-      [1].Seed.Rule                               ⊙ = Axe <ws>
+      [1].Seed.Rule                               ⊙ = Axe \n    
         [0].Seed.Nonterminal                      Axe
-      [2].Seed.Rule                               Maybe = ... ε <ws>
+      [2].Seed.Rule                               Maybe = ... ε \n    
         [0].Seed.Nonterminal                      Maybe
         [1].Seed.Expr.Or.|                        Expr | ε
           [0].Seed.Nonterminal                    Expr
           [1].Seed.Terminal                       ε
-      [3].Seed.Rule                               Axe = ... <ws> <ws>
+      [3].Seed.Rule                               Axe = ... \n     
         [0].Seed.Nonterminal                      Axe
-        [1].Seed.Axe                              Atom <ws> ... <ws> <ws>
+        [1].Seed.Axe                              Atom oper ... \n     
           [0].Seed.Nonterminal                    Atom
-          [1].Seed.Axe.Level                      Member = ltr infix '.'
+          [1].Seed.Nonterminal                    oper
+          [2].Seed.Axe.Level                      Member = ltr infix '.'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '.'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.'
-          [2].Seed.Axe.Level                      CallPost = ... '(' ')'
+          [3].Seed.Axe.Level                      CallPost = ... '(' ')'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      postfix_nest '(' ')'
               [0].Seed.Axe.OpType                 postfix_nest
               [1].Seed.Axe.Op                     '('
               [2].Seed.Axe.Op                     ')'
-          [3].Seed.Axe.Level                      Typing = ltr infix '::'
+          [4].Seed.Axe.Level                      Typing = ltr infix '::'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '::'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '::'
-          [4].Seed.Axe.Level                      CallPipe = ltr infix '|'
+          [5].Seed.Axe.Level                      CallPipe = ltr infix '|'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '|'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '|'
-          [5].Seed.Axe.Level                      Mul = ... '*' '//'
+          [6].Seed.Axe.Level                      Mul = ... '*' '//'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '*' '//'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '*'
               [2].Seed.Axe.Op                     '//'
-          [6].Seed.Axe.Level                      Add = ... '+' '-'
+          [7].Seed.Axe.Level                      Add = ... '+' '-'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '+' '-'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '+'
               [2].Seed.Axe.Op                     '-'
-          [7].Seed.Axe.Level                      Comp = ... '>' '>='
+          [8].Seed.Axe.Level                      Comp = ... '>' '>='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '==' ... '>' '>='
               [0].Seed.Axe.OpType                 infix
@@ -530,29 +1344,29 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [3].Seed.Axe.Op                     '<'
               [4].Seed.Axe.Op                     '>'
               [5].Seed.Axe.Op                     '>='
-          [8].Seed.Axe.Level                      Logic = ... 'and' 'or'
+          [9].Seed.Axe.Level                      Logic = ... 'and' 'or'
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix 'and' 'or'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     'and'
               [2].Seed.Axe.Op                     'or'
-          [9].Seed.Axe.Level                      Assign = ... '+=' '*='
+          [10].Seed.Axe.Level                     Assign = ... '+=' '*='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '=' '+=' '*='
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '='
               [2].Seed.Axe.Op                     '+='
               [3].Seed.Axe.Op                     '*='
-      [4].Seed.Rule                               Atom = ... ) <ws>
+      [4].Seed.Rule                               Atom = ... ) \n    
         [0].Seed.Nonterminal                      Atom
         [1].Seed.Expr.Or.|                        Struct | ... Expr ')'
           [0].Seed.Nonterminal                    Struct
           [1].Seed.Terminal                       language
-          [2].Seed.Terminal                       type_name
-          [3].Seed.Terminal                       func_name
-          [4].Seed.Terminal                       identifier
-          [5].Seed.Terminal                       string
-          [6].Seed.Terminal                       number
+          [2].Seed.Nonterminal                    type_name
+          [3].Seed.Nonterminal                    func_name
+          [4].Seed.Nonterminal                    identifier
+          [5].Seed.Nonterminal                    string
+          [6].Seed.Nonterminal                    number
           [7].Seed.Terminal                       'true'
           [8].Seed.Terminal                       'false'
           [9].Seed.Terminal                       'none'
@@ -560,15 +1374,20 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].Seed.Terminal                     '('
             [1].Seed.Nonterminal                  Expr
             [2].Seed.Terminal                     ')'
-      [5].Seed.Scope                              Struct : ... <ws> <ws>
+      [5].Seed.Rule                               oper = ... parenthesis \n    
+        [0].Seed.Nonterminal                      oper
+        [1].Seed.Expr.Or.|                        operator_greedy | parenthesis
+          [0].Seed.Nonterminal                    operator_greedy
+          [1].Seed.Nonterminal                    parenthesis
+      [6].Seed.Scope                              Struct : ... \n 
         [0].Seed.Nonterminal                      Struct
-        [1].Seed.Rule                             ⊙ = ... ']' <ws>
+        [1].Seed.Rule                             ⊙ = ... ']' \n      
           [0].Seed.Expr.Concat.concat             '[' LabeledItem * ']'
             [0].Seed.Terminal                     '['
             [1].Seed.Expr.Postfix.*               LabeledItem *
               [0].Seed.Nonterminal                LabeledItem
             [2].Seed.Terminal                     ']'
-        [2].Seed.Rule                             LabeledItem = ... ) <ws>
+        [2].Seed.Rule                             LabeledItem = ... ) \n
           [0].Seed.Nonterminal                    LabeledItem
           [1].Seed.Expr.Concat.concat             ( Variable ... Expr )
             [0].Seed.Expr.Postfix.?               ( Variable ... ) ?
@@ -578,21 +1397,21 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].Seed.Expr.Or.|                    Struct | Expr
               [0].Seed.Nonterminal                Struct
               [1].Seed.Nonterminal                Expr
-    [3].Seed.Scope                                Func : ... <ws> <ws>
+    [6].Seed.Scope                                Func : ...    
       [0].Seed.Nonterminal                        Func
-      [1].Seed.Rule                               ⊙ = Name <ws>
+      [1].Seed.Rule                               ⊙ = Name \n    
         [0].Seed.Nonterminal                      Name
-      [2].Seed.Rule                               Name = func_name <ws>
+      [2].Seed.Rule                               Name = func_name \n    
         [0].Seed.Nonterminal                      Name
-        [1].Seed.Terminal                         func_name
-      [3].Seed.Rule                               Defn = ... Body <ws>
+        [1].Seed.Nonterminal                      func_name
+      [3].Seed.Rule                               Defn = ... Body \n    
         [0].Seed.Nonterminal                      Defn
         [1].Seed.Expr.Concat.concat               Name '=' Signature Body
           [0].Seed.Nonterminal                    Name
           [1].Seed.Terminal                       '='
           [2].Seed.Nonterminal                    Signature
           [3].Seed.Nonterminal                    Body
-      [4].Seed.Rule                               Signature = ... ? <ws>
+      [4].Seed.Rule                               Signature = ... ? \n    
         [0].Seed.Nonterminal                      Signature
         [1].Seed.Expr.Concat.concat               Type ( ... ) ?
           [0].Seed.Nonterminal                    Type
@@ -600,25 +1419,25 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].Seed.Expr.Concat.concat           '->' Type
               [0].Seed.Terminal                   '->'
               [1].Seed.Nonterminal                Type
-      [5].Seed.Rule                               Body = ... '}' <ws>
+      [5].Seed.Rule                               Body = ... '}' \n    
         [0].Seed.Nonterminal                      Body
         [1].Seed.Expr.Concat.concat               '{' Stmt * '}'
           [0].Seed.Terminal                       '{'
           [1].Seed.Expr.Postfix.*                 Stmt *
             [0].Seed.Nonterminal                  Stmt
           [2].Seed.Terminal                       '}'
-      [6].Seed.Scope                              Stmt : ... <ws> <ws>
+      [6].Seed.Scope                              Stmt : ... \n 
         [0].Seed.Nonterminal                      Stmt
-        [1].Seed.Rule                             ⊙ = ... ';' <ws>
+        [1].Seed.Rule                             ⊙ = ... ';' \n      
           [0].Seed.Expr.Or.|                      If | ... Expr ';'
             [0].Seed.Nonterminal                  If
             [1].Seed.Nonterminal                  For
             [2].Seed.Expr.Concat.concat           Expr ';'
               [0].Seed.Nonterminal                Expr
               [1].Seed.Terminal                   ';'
-        [2].Seed.Scope                            If : ... <ws> <ws>
+        [2].Seed.Scope                            If : ... \n       
           [0].Seed.Nonterminal                    If
-          [1].Seed.Rule                           ⊙ = ... ? <ws>
+          [1].Seed.Rule                           ⊙ = ... ? \n        
             [0].Seed.Expr.Concat.concat           'if' Branch ... ) ?
               [0].Seed.Terminal                   'if'
               [1].Seed.Nonterminal                Branch
@@ -630,12 +1449,12 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].Seed.Expr.Concat.concat       'else' Body
                   [0].Seed.Terminal               'else'
                   [1].Seed.Nonterminal            Body
-          [2].Seed.Rule                           Branch = Expr Body <ws>
+          [2].Seed.Rule                           Branch = Expr Body \n
             [0].Seed.Nonterminal                  Branch
             [1].Seed.Expr.Concat.concat           Expr Body
               [0].Seed.Nonterminal                Expr
               [1].Seed.Nonterminal                Body
-        [3].Seed.Rule                             For = ... Body <ws>
+        [3].Seed.Rule                             For = ... Body \n
           [0].Seed.Nonterminal                    For
           [1].Seed.Expr.Concat.concat             'for' Expr ... Maybe Body
             [0].Seed.Terminal                     'for'
@@ -645,50 +1464,284 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [4].Seed.Terminal                     ';'
             [5].Seed.Nonterminal                  Expr . Maybe
             [6].Seed.Nonterminal                  Body
-    [4].Seed.Scope                                Variable : ... <ws> <ws>
+    [7].Seed.Scope                                Variable : ... \n 
       [0].Seed.Nonterminal                        Variable
-      [1].Seed.Rule                               Name = ... identifier <ws>
+      [1].Seed.Rule                               Name = ... identifier \n    
         [0].Seed.Nonterminal                      Name
         [1].Seed.Expr.And.but_then                not Type ... but_then identifier
           [0].Seed.Expr.Prefix.not                not Type . Name
             [0].Seed.Nonterminal                  Type . Name
           [1].Seed.Expr.Prefix.not                not Func . Name
             [0].Seed.Nonterminal                  Func . Name
-          [2].Seed.Terminal                       identifier
-      [2].Seed.Rule                               Defn = ... Expr <ws>
+          [2].Seed.Nonterminal                    identifier
+      [2].Seed.Rule                               Defn = ... Expr \n
         [0].Seed.Nonterminal                      Defn
         [1].Seed.Expr.Concat.concat               Name '=' Expr
           [0].Seed.Nonterminal                    Name
           [1].Seed.Terminal                       '='
           [2].Seed.Nonterminal                    Expr
 
+[  0]   1:1   cat=.Silva.lang_name                         Soil
+[  1]   1:6   cat=.literal                                 language
+
 [0].Silva                                         Soil language
   [0].Silva.Section                               Soil language
 
-[0].Soil                                          name_t = ... } }
-  [0].Soil.Type.Defn                              name_t = str_t
-    [0].Soil.Type.Name                            name_t
-    [1].Soil.Type                                 str_t
-      [0].Soil.Type.Name                          str_t
-  [1].Soil.Type.Defn                              age_t = i32_t
-    [0].Soil.Type.Name                            age_t
-    [1].Soil.Type                                 i32_t
-      [0].Soil.Type.Name                          i32_t
-  [2].Soil.Type.Defn                              person_t = ... ; ]
-    [0].Soil.Type.Name                            person_t
+[  0]   3:1   cat=.Soil.type_name                          t_name
+[  1]   3:8   cat=.literal                                 =
+[  2]   3:10  cat=.Soil.type_name                          t_str
+[  3]   4:1   cat=.Soil.type_name                          t_age
+[  4]   4:7   cat=.literal                                 =
+[  5]   4:9   cat=.Soil.type_name                          t_i32
+[  6]   6:1   cat=.Soil.type_name                          t_person
+[  7]   6:10  cat=.literal                                 =
+[  8]   6:12  cat=.literal                                 [
+[  9]   7:3   cat=.literal                                 [
+[ 10]   8:5   cat=.Soil.type_name                          t_name
+[ 11]   8:12  cat=.literal                                 :
+[ 12]   8:14  cat=.identifier                              first
+[ 13]   8:19  cat=.literal                                 ;
+[ 14]   9:5   cat=.Soil.type_name                          t_name
+[ 15]   9:12  cat=.literal                                 :
+[ 16]   9:14  cat=.identifier                              last
+[ 17]   9:19  cat=.literal                                 =
+[ 18]   9:21  cat=.string                                  'Trump'
+[ 19]   9:28  cat=.literal                                 ;
+[ 20]  10:3   cat=.literal                                 ]
+[ 21]  10:5   cat=.literal                                 :
+[ 22]  10:7   cat=.identifier                              name
+[ 23]  10:12  cat=.literal                                 =
+[ 24]  10:14  cat=.literal                                 [
+[ 25]  10:16  cat=.string                                  'Arno'
+[ 26]  10:23  cat=.string                                  'Nym'
+[ 27]  10:29  cat=.literal                                 ]
+[ 28]  10:30  cat=.literal                                 ;
+[ 29]  11:3   cat=.Soil.type_name                          t_age
+[ 30]  11:9   cat=.literal                                 :
+[ 31]  11:11  cat=.identifier                              age
+[ 32]  11:15  cat=.literal                                 =
+[ 33]  11:17  cat=.Soil.func_name                          f_size
+[ 34]  11:23  cat=.Soil.Expr.oper                          (
+[ 35]  11:24  cat=.identifier                              name
+[ 36]  11:28  cat=.Soil.Expr.oper                          .
+[ 37]  11:29  cat=.identifier                              first
+[ 38]  11:34  cat=.Soil.Expr.oper                          )
+[ 39]  11:35  cat=.literal                                 ;
+[ 40]  12:1   cat=.literal                                 ]
+[ 41]  14:1   cat=.identifier                              bs
+[ 42]  14:4   cat=.literal                                 =
+[ 43]  14:6   cat=.Soil.type_name                          t_person
+[ 44]  14:15  cat=.Soil.Expr.oper                          ::
+[ 45]  14:18  cat=.literal                                 [
+[ 46]  14:20  cat=.literal                                 [
+[ 47]  14:22  cat=.string                                  'Bjarne'
+[ 48]  14:31  cat=.string                                  'Stroustrup'
+[ 49]  14:44  cat=.literal                                 ]
+[ 50]  14:46  cat=.number                                  80
+[ 51]  14:49  cat=.literal                                 ]
+[ 52]  16:1   cat=.Soil.func_name                          f_is_adult
+[ 53]  16:12  cat=.literal                                 =
+[ 54]  16:14  cat=.Soil.type_name                          t_person
+[ 55]  16:23  cat=.literal                                 ->
+[ 56]  16:26  cat=.Soil.type_name                          t_bool
+[ 57]  16:33  cat=.literal                                 {
+[ 58]  17:3   cat=.identifier                              retval
+[ 59]  17:10  cat=.Soil.Expr.oper                          =
+[ 60]  17:12  cat=.identifier                              arg
+[ 61]  17:15  cat=.Soil.Expr.oper                          .
+[ 62]  17:16  cat=.identifier                              age
+[ 63]  17:20  cat=.Soil.Expr.oper                          >=
+[ 64]  17:23  cat=.number                                  18
+[ 65]  17:25  cat=.literal                                 ;
+[ 66]  18:1   cat=.literal                                 }
+[ 67]  20:1   cat=.Soil.func_name                          f_example
+[ 68]  20:11  cat=.literal                                 =
+[ 69]  20:13  cat=.literal                                 [
+[ 70]  20:14  cat=.literal                                 ]
+[ 71]  20:16  cat=.literal                                 {
+[ 72]  21:3   cat=.identifier                              age
+[ 73]  21:7   cat=.Soil.Expr.oper                          =
+[ 74]  21:9   cat=.Soil.type_name                          t_age
+[ 75]  21:15  cat=.Soil.Expr.oper                          ::
+[ 76]  21:18  cat=.number                                  42
+[ 77]  21:20  cat=.literal                                 ;
+[ 78]  22:3   cat=.identifier                              p1
+[ 79]  22:6   cat=.Soil.Expr.oper                          =
+[ 80]  22:8   cat=.Soil.type_name                          t_person
+[ 81]  22:17  cat=.Soil.Expr.oper                          ::
+[ 82]  22:20  cat=.literal                                 [
+[ 83]  22:22  cat=.identifier                              name
+[ 84]  22:27  cat=.literal                                 :
+[ 85]  22:29  cat=.literal                                 [
+[ 86]  22:31  cat=.identifier                              first
+[ 87]  22:37  cat=.literal                                 :
+[ 88]  22:39  cat=.string                                  'Bob'
+[ 89]  22:45  cat=.identifier                              last
+[ 90]  22:50  cat=.literal                                 :
+[ 91]  22:52  cat=.string                                  'Bobson'
+[ 92]  22:61  cat=.literal                                 ]
+[ 93]  22:63  cat=.identifier                              age
+[ 94]  22:67  cat=.literal                                 :
+[ 95]  22:69  cat=.number                                  20
+[ 96]  22:72  cat=.literal                                 ]
+[ 97]  22:73  cat=.literal                                 ;
+[ 98]  23:3   cat=.identifier                              p2
+[ 99]  23:6   cat=.Soil.Expr.oper                          =
+[100]  23:8   cat=.Soil.type_name                          t_person
+[101]  23:17  cat=.Soil.Expr.oper                          ::
+[102]  23:20  cat=.literal                                 [
+[103]  23:22  cat=.literal                                 [
+[104]  23:24  cat=.string                                  'Alice'
+[105]  23:32  cat=.string                                  'Allison'
+[106]  23:42  cat=.literal                                 ]
+[107]  23:44  cat=.number                                  30
+[108]  23:47  cat=.literal                                 ]
+[109]  23:48  cat=.literal                                 ;
+[110]  24:3   cat=.literal                                 [
+[111]  24:4   cat=.string                                  '{} is-adult = {}'
+[112]  24:23  cat=.identifier                              p1
+[113]  24:26  cat=.Soil.func_name                          f_is_adult
+[114]  24:36  cat=.Soil.Expr.oper                          (
+[115]  24:37  cat=.identifier                              p1
+[116]  24:39  cat=.Soil.Expr.oper                          )
+[117]  24:40  cat=.literal                                 ]
+[118]  24:42  cat=.Soil.Expr.oper                          |
+[119]  24:44  cat=.Soil.func_name                          f_log
+[120]  24:49  cat=.literal                                 ;
+[121]  25:3   cat=.Soil.func_name                          f_vector
+[122]  25:11  cat=.Soil.Expr.oper                          (
+[123]  25:12  cat=.Soil.type_name                          t_person
+[124]  25:20  cat=.Soil.Expr.oper                          )
+[125]  25:22  cat=.Soil.Expr.oper                          ::
+[126]  25:25  cat=.literal                                 [
+[127]  25:27  cat=.identifier                              p1
+[128]  25:30  cat=.identifier                              p2
+[129]  25:33  cat=.literal                                 ]
+[130]  25:35  cat=.Soil.Expr.oper                          |
+[131]  25:37  cat=.identifier                              std
+[132]  25:40  cat=.Soil.Expr.oper                          .
+[133]  25:41  cat=.identifier                              filter_m
+[134]  25:49  cat=.Soil.Expr.oper                          (
+[135]  25:50  cat=.identifier                              arg
+[136]  25:53  cat=.Soil.Expr.oper                          .
+[137]  25:54  cat=.identifier                              age
+[138]  25:58  cat=.Soil.Expr.oper                          <=
+[139]  25:61  cat=.number                                  40
+[140]  25:63  cat=.Soil.Expr.oper                          )
+[141]  25:65  cat=.Soil.Expr.oper                          |
+[142]  25:67  cat=.Soil.func_name                          f_log
+[143]  25:72  cat=.literal                                 ;
+[144]  26:3   cat=.literal                                 language
+[145]  26:25  cat=.Soil.Expr.oper                          |
+[146]  26:27  cat=.Soil.func_name                          f_print
+[147]  26:34  cat=.literal                                 ;
+[148]  28:3   cat=.literal                                 if
+[149]  28:6   cat=.identifier                              p1
+[150]  28:8   cat=.Soil.Expr.oper                          .
+[151]  28:9   cat=.identifier                              name
+[152]  28:13  cat=.Soil.Expr.oper                          .
+[153]  28:14  cat=.identifier                              first
+[154]  28:20  cat=.Soil.Expr.oper                          |
+[155]  28:22  cat=.Soil.func_name                          f_size
+[156]  28:29  cat=.Soil.Expr.oper                          >
+[157]  28:31  cat=.number                                  10
+[158]  28:34  cat=.literal                                 {
+[159]  29:5   cat=.string                                  'This name is long'
+[160]  29:25  cat=.Soil.Expr.oper                          |
+[161]  29:27  cat=.Soil.func_name                          f_log
+[162]  29:32  cat=.literal                                 ;
+[163]  30:3   cat=.literal                                 }
+[164]  30:5   cat=.literal                                 elif
+[165]  30:10  cat=.identifier                              p1
+[166]  30:12  cat=.Soil.Expr.oper                          .
+[167]  30:13  cat=.identifier                              name
+[168]  30:17  cat=.Soil.Expr.oper                          .
+[169]  30:18  cat=.identifier                              first
+[170]  30:24  cat=.Soil.Expr.oper                          |
+[171]  30:26  cat=.Soil.func_name                          f_size
+[172]  30:33  cat=.Soil.Expr.oper                          >
+[173]  30:35  cat=.number                                  5
+[174]  30:37  cat=.literal                                 {
+[175]  31:5   cat=.string                                  'This name it not long'
+[176]  31:29  cat=.Soil.Expr.oper                          |
+[177]  31:31  cat=.Soil.func_name                          f_log
+[178]  31:36  cat=.literal                                 ;
+[179]  32:3   cat=.literal                                 }
+[180]  32:5   cat=.literal                                 else
+[181]  32:10  cat=.literal                                 {
+[182]  33:5   cat=.string                                  'This name it short'
+[183]  33:26  cat=.Soil.Expr.oper                          |
+[184]  33:28  cat=.Soil.func_name                          f_log
+[185]  33:33  cat=.literal                                 ;
+[186]  34:3   cat=.literal                                 }
+[187]  36:3   cat=.identifier                              sum
+[188]  36:7   cat=.Soil.Expr.oper                          =
+[189]  36:9   cat=.Soil.type_name                          t_i64
+[190]  36:15  cat=.Soil.Expr.oper                          ::
+[191]  36:18  cat=.number                                  0
+[192]  36:19  cat=.literal                                 ;
+[193]  37:3   cat=.literal                                 for
+[194]  37:7   cat=.identifier                              i
+[195]  37:9   cat=.Soil.Expr.oper                          =
+[196]  37:11  cat=.Soil.type_name                          t_i64
+[197]  37:17  cat=.Soil.Expr.oper                          ::
+[198]  37:20  cat=.number                                  0
+[199]  37:21  cat=.literal                                 ;
+[200]  37:23  cat=.identifier                              i
+[201]  37:25  cat=.Soil.Expr.oper                          <
+[202]  37:27  cat=.identifier                              n
+[203]  37:28  cat=.literal                                 ;
+[204]  37:30  cat=.identifier                              i
+[205]  37:32  cat=.Soil.Expr.oper                          +=
+[206]  37:35  cat=.number                                  1
+[207]  37:37  cat=.literal                                 {
+[208]  38:5   cat=.identifier                              sum
+[209]  38:9   cat=.Soil.Expr.oper                          +=
+[210]  38:12  cat=.identifier                              i
+[211]  38:13  cat=.literal                                 ;
+[212]  39:3   cat=.literal                                 }
+[213]  41:3   cat=.identifier                              abc
+[214]  41:7   cat=.Soil.Expr.oper                          =
+[215]  41:9   cat=.number                                  42
+[216]  41:11  cat=.literal                                 ;
+[217]  42:3   cat=.literal                                 for
+[218]  42:7   cat=.literal                                 ;
+[219]  42:9   cat=.identifier                              i
+[220]  42:11  cat=.Soil.Expr.oper                          <
+[221]  42:13  cat=.identifier                              n
+[222]  42:14  cat=.literal                                 ;
+[223]  42:16  cat=.literal                                 {
+[224]  43:5   cat=.identifier                              sum
+[225]  43:9   cat=.Soil.Expr.oper                          +=
+[226]  43:12  cat=.identifier                              i
+[227]  43:13  cat=.literal                                 ;
+[228]  44:3   cat=.literal                                 }
+[229]  45:1   cat=.literal                                 }
+
+[0].Soil                                          t_name = ... } }
+  [0].Soil.Type.Defn                              t_name = t_str
+    [0].Soil.Type.Name                            t_name
+    [1].Soil.Type                                 t_str
+      [0].Soil.Type.Name                          t_str
+  [1].Soil.Type.Defn                              t_age = t_i32
+    [0].Soil.Type.Name                            t_age
+    [1].Soil.Type                                 t_i32
+      [0].Soil.Type.Name                          t_i32
+  [2].Soil.Type.Defn                              t_person = ... ; ]
+    [0].Soil.Type.Name                            t_person
     [1].Soil.Type                                 [ [ ... ; ]
       [0].Soil.Type.Struct                        [ [ ... ; ]
-        [0].Soil.Type.Struct.Member               [ name_t ... ] ;
-          [0].Soil.Type                           [ name_t ... ; ]
-            [0].Soil.Type.Struct                  [ name_t ... ; ]
-              [0].Soil.Type.Struct.Member         name_t : first ;
-                [0].Soil.Type                     name_t
-                  [0].Soil.Type.Name              name_t
+        [0].Soil.Type.Struct.Member               [ t_name ... ] ;
+          [0].Soil.Type                           [ t_name ... ; ]
+            [0].Soil.Type.Struct                  [ t_name ... ; ]
+              [0].Soil.Type.Struct.Member         t_name : first ;
+                [0].Soil.Type                     t_name
+                  [0].Soil.Type.Name              t_name
                 [1].Soil.Type.Struct.Member.Label : first
                   [0].Soil.Type.Struct.Member.Name first
-              [1].Soil.Type.Struct.Member         name_t : ... 'Trump' ;
-                [0].Soil.Type                     name_t
-                  [0].Soil.Type.Name              name_t
+              [1].Soil.Type.Struct.Member         t_name : ... 'Trump' ;
+                [0].Soil.Type                     t_name
+                  [0].Soil.Type.Name              t_name
                 [1].Soil.Type.Struct.Member.Label : last
                   [0].Soil.Type.Struct.Member.Name last
                 [2].Soil.Type.Struct.Member.Init  = 'Trump'
@@ -706,23 +1759,23 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [1].Soil.Expr.Struct.LabeledItem 'Nym'
                     [0].Soil.Expr                 'Nym'
                       [0].Soil.Expr.Atom          'Nym'
-        [1].Soil.Type.Struct.Member               age_t : ... ) ;
-          [0].Soil.Type                           age_t
-            [0].Soil.Type.Name                    age_t
+        [1].Soil.Type.Struct.Member               t_age : ... ) ;
+          [0].Soil.Type                           t_age
+            [0].Soil.Type.Name                    t_age
           [1].Soil.Type.Struct.Member.Label       : age
             [0].Soil.Type.Struct.Member.Name      age
-          [2].Soil.Type.Struct.Member.Init        = size_f ... first )
-            [0].Soil.Expr                         size_f ( ... first )
-              [0].Soil.Expr.Axe.CallPost.(        size_f ( ... first )
-                [0].Soil.Expr.Atom                size_f
+          [2].Soil.Type.Struct.Member.Init        = f_size ... first )
+            [0].Soil.Expr                         f_size ( ... first )
+              [0].Soil.Expr.Axe.CallPost.(        f_size ( ... first )
+                [0].Soil.Expr.Atom                f_size
                 [1].Soil.Expr.Axe.Member..        name . first
                   [0].Soil.Expr.Atom              name
                   [1].Soil.Expr.Atom              first
   [3].Soil.Variable.Defn                          bs = ... 80 ]
     [0].Soil.Variable.Name                        bs
-    [1].Soil.Expr                                 person_t :: ... 80 ]
-      [0].Soil.Expr.Axe.Typing.::                 person_t :: ... 80 ]
-        [0].Soil.Expr.Atom                        person_t
+    [1].Soil.Expr                                 t_person :: ... 80 ]
+      [0].Soil.Expr.Axe.Typing.::                 t_person :: ... 80 ]
+        [0].Soil.Expr.Atom                        t_person
         [1].Soil.Expr.Atom                        [ [ ... 80 ]
           [0].Soil.Expr.Struct                    [ [ ... 80 ]
             [0].Soil.Expr.Struct.LabeledItem      [ 'Bjarne' 'Stroustrup' ]
@@ -736,13 +1789,13 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].Soil.Expr.Struct.LabeledItem      80
               [0].Soil.Expr                       80
                 [0].Soil.Expr.Atom                80
-  [4].Soil.Func.Defn                              is_adult_f = ... ; }
-    [0].Soil.Func.Name                            is_adult_f
-    [1].Soil.Func.Signature                       person_t -> bool_t
-      [0].Soil.Type                               person_t
-        [0].Soil.Type.Name                        person_t
-      [1].Soil.Type                               bool_t
-        [0].Soil.Type.Name                        bool_t
+  [4].Soil.Func.Defn                              f_is_adult = ... ; }
+    [0].Soil.Func.Name                            f_is_adult
+    [1].Soil.Func.Signature                       t_person -> t_bool
+      [0].Soil.Type                               t_person
+        [0].Soil.Type.Name                        t_person
+      [1].Soil.Type                               t_bool
+        [0].Soil.Type.Name                        t_bool
     [2].Soil.Func.Body                            { retval ... ; }
       [0].Soil.Func.Stmt                          retval = ... 18 ;
         [0].Soil.Expr                             retval = ... >= 18
@@ -753,25 +1806,25 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].Soil.Expr.Atom                arg
                 [1].Soil.Expr.Atom                age
               [1].Soil.Expr.Atom                  18
-  [5].Soil.Func.Defn                              example_f = ... } }
-    [0].Soil.Func.Name                            example_f
+  [5].Soil.Func.Defn                              f_example = ... } }
+    [0].Soil.Func.Name                            f_example
     [1].Soil.Func.Signature                       [ ]
       [0].Soil.Type                               [ ]
         [0].Soil.Type.Struct                      [ ]
     [2].Soil.Func.Body                            { age ... } }
       [0].Soil.Func.Stmt                          age = ... 42 ;
-        [0].Soil.Expr                             age = age_t :: 42
-          [0].Soil.Expr.Axe.Assign.=              age = age_t :: 42
+        [0].Soil.Expr                             age = t_age :: 42
+          [0].Soil.Expr.Axe.Assign.=              age = t_age :: 42
             [0].Soil.Expr.Atom                    age
-            [1].Soil.Expr.Axe.Typing.::           age_t :: 42
-              [0].Soil.Expr.Atom                  age_t
+            [1].Soil.Expr.Axe.Typing.::           t_age :: 42
+              [0].Soil.Expr.Atom                  t_age
               [1].Soil.Expr.Atom                  42
       [1].Soil.Func.Stmt                          p1 = ... ] ;
         [0].Soil.Expr                             p1 = ... 20 ]
           [0].Soil.Expr.Axe.Assign.=              p1 = ... 20 ]
             [0].Soil.Expr.Atom                    p1
-            [1].Soil.Expr.Axe.Typing.::           person_t :: ... 20 ]
-              [0].Soil.Expr.Atom                  person_t
+            [1].Soil.Expr.Axe.Typing.::           t_person :: ... 20 ]
+              [0].Soil.Expr.Atom                  t_person
               [1].Soil.Expr.Atom                  [ name ... 20 ]
                 [0].Soil.Expr.Struct              [ name ... 20 ]
                   [0].Soil.Expr.Struct.LabeledItem name : ... 'Bobson' ]
@@ -793,8 +1846,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Soil.Expr                             p2 = ... 30 ]
           [0].Soil.Expr.Axe.Assign.=              p2 = ... 30 ]
             [0].Soil.Expr.Atom                    p2
-            [1].Soil.Expr.Axe.Typing.::           person_t :: ... 30 ]
-              [0].Soil.Expr.Atom                  person_t
+            [1].Soil.Expr.Axe.Typing.::           t_person :: ... 30 ]
+              [0].Soil.Expr.Atom                  t_person
               [1].Soil.Expr.Atom                  [ [ ... 30 ]
                 [0].Soil.Expr.Struct              [ [ ... 30 ]
                   [0].Soil.Expr.Struct.LabeledItem [ 'Alice' 'Allison' ]
@@ -808,9 +1861,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [1].Soil.Expr.Struct.LabeledItem 30
                     [0].Soil.Expr                 30
                       [0].Soil.Expr.Atom          30
-      [3].Soil.Func.Stmt                          [ '{} is-adult = {}' ... log_f ;
-        [0].Soil.Expr                             [ '{} is-adult = {}' ... | log_f
-          [0].Soil.Expr.Axe.CallPipe.|            [ '{} is-adult = {}' ... | log_f
+      [3].Soil.Func.Stmt                          [ '{} is-adult = {}' ... f_log ;
+        [0].Soil.Expr                             [ '{} is-adult = {}' ... | f_log
+          [0].Soil.Expr.Axe.CallPipe.|            [ '{} is-adult = {}' ... | f_log
             [0].Soil.Expr.Atom                    [ '{} is-adult = {}' ... ) ]
               [0].Soil.Expr.Struct                [ '{} is-adult = {}' ... ) ]
                 [0].Soil.Expr.Struct.LabeledItem  '{} is-adult = {}'
@@ -819,20 +1872,20 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [1].Soil.Expr.Struct.LabeledItem  p1
                   [0].Soil.Expr                   p1
                     [0].Soil.Expr.Atom            p1
-                [2].Soil.Expr.Struct.LabeledItem  is_adult_f ( p1 )
-                  [0].Soil.Expr                   is_adult_f ( p1 )
-                    [0].Soil.Expr.Axe.CallPost.(  is_adult_f ( p1 )
-                      [0].Soil.Expr.Atom          is_adult_f
+                [2].Soil.Expr.Struct.LabeledItem  f_is_adult ( p1 )
+                  [0].Soil.Expr                   f_is_adult ( p1 )
+                    [0].Soil.Expr.Axe.CallPost.(  f_is_adult ( p1 )
+                      [0].Soil.Expr.Atom          f_is_adult
                       [1].Soil.Expr.Atom          p1
-            [1].Soil.Expr.Atom                    log_f
-      [4].Soil.Func.Stmt                          vector_f ( ... log_f ;
-        [0].Soil.Expr                             vector_f ( ... | log_f
-          [0].Soil.Expr.Axe.CallPipe.|            vector_f ( ... | log_f
-            [0].Soil.Expr.Axe.CallPipe.|          vector_f ( ... 40 )
-              [0].Soil.Expr.Axe.Typing.::         vector_f ( ... p2 ]
-                [0].Soil.Expr.Axe.CallPost.(      vector_f ( person_t )
-                  [0].Soil.Expr.Atom              vector_f
-                  [1].Soil.Expr.Atom              person_t
+            [1].Soil.Expr.Atom                    f_log
+      [4].Soil.Func.Stmt                          f_vector ( ... f_log ;
+        [0].Soil.Expr                             f_vector ( ... | f_log
+          [0].Soil.Expr.Axe.CallPipe.|            f_vector ( ... | f_log
+            [0].Soil.Expr.Axe.CallPipe.|          f_vector ( ... 40 )
+              [0].Soil.Expr.Axe.Typing.::         f_vector ( ... p2 ]
+                [0].Soil.Expr.Axe.CallPost.(      f_vector ( t_person )
+                  [0].Soil.Expr.Atom              f_vector
+                  [1].Soil.Expr.Atom              t_person
                 [1].Soil.Expr.Atom                [ p1 p2 ]
                   [0].Soil.Expr.Struct            [ p1 p2 ]
                     [0].Soil.Expr.Struct.LabeledItem p1
@@ -850,69 +1903,69 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].Soil.Expr.Atom            arg
                     [1].Soil.Expr.Atom            age
                   [1].Soil.Expr.Atom              40
-            [1].Soil.Expr.Atom                    log_f
-      [5].Soil.Func.Stmt                          language | print_f ;
-        [0].Soil.Expr                             language | print_f
-          [0].Soil.Expr.Axe.CallPipe.|            language | print_f
+            [1].Soil.Expr.Atom                    f_log
+      [5].Soil.Func.Stmt                          language | f_print ;
+        [0].Soil.Expr                             language | f_print
+          [0].Soil.Expr.Axe.CallPipe.|            language | f_print
             [0].Soil.Expr.Atom                    language
-            [1].Soil.Expr.Atom                    print_f
+            [1].Soil.Expr.Atom                    f_print
       [6].Soil.Func.Stmt                          if p1 ... ; }
         [0].Soil.Func.Stmt.If                     if p1 ... ; }
           [0].Soil.Func.Stmt.If.Branch            p1 . ... ; }
             [0].Soil.Expr                         p1 . ... > 10
               [0].Soil.Expr.Axe.Comp.>            p1 . ... > 10
-                [0].Soil.Expr.Axe.CallPipe.|      p1 . ... | size_f
+                [0].Soil.Expr.Axe.CallPipe.|      p1 . ... | f_size
                   [0].Soil.Expr.Axe.Member..      p1 . name . first
                     [0].Soil.Expr.Axe.Member..    p1 . name
                       [0].Soil.Expr.Atom          p1
                       [1].Soil.Expr.Atom          name
                     [1].Soil.Expr.Atom            first
-                  [1].Soil.Expr.Atom              size_f
+                  [1].Soil.Expr.Atom              f_size
                 [1].Soil.Expr.Atom                10
             [1].Soil.Func.Body                    { 'This name is long' ... ; }
-              [0].Soil.Func.Stmt                  'This name is long' | log_f ;
-                [0].Soil.Expr                     'This name is long' | log_f
-                  [0].Soil.Expr.Axe.CallPipe.|    'This name is long' | log_f
+              [0].Soil.Func.Stmt                  'This name is long' | f_log ;
+                [0].Soil.Expr                     'This name is long' | f_log
+                  [0].Soil.Expr.Axe.CallPipe.|    'This name is long' | f_log
                     [0].Soil.Expr.Atom            'This name is long'
-                    [1].Soil.Expr.Atom            log_f
+                    [1].Soil.Expr.Atom            f_log
           [1].Soil.Func.Stmt.If.Branch            p1 . ... ; }
             [0].Soil.Expr                         p1 . ... > 5
               [0].Soil.Expr.Axe.Comp.>            p1 . ... > 5
-                [0].Soil.Expr.Axe.CallPipe.|      p1 . ... | size_f
+                [0].Soil.Expr.Axe.CallPipe.|      p1 . ... | f_size
                   [0].Soil.Expr.Axe.Member..      p1 . name . first
                     [0].Soil.Expr.Axe.Member..    p1 . name
                       [0].Soil.Expr.Atom          p1
                       [1].Soil.Expr.Atom          name
                     [1].Soil.Expr.Atom            first
-                  [1].Soil.Expr.Atom              size_f
+                  [1].Soil.Expr.Atom              f_size
                 [1].Soil.Expr.Atom                5
             [1].Soil.Func.Body                    { 'This name it not long' ... ; }
-              [0].Soil.Func.Stmt                  'This name it not long' | log_f ;
-                [0].Soil.Expr                     'This name it not long' | log_f
-                  [0].Soil.Expr.Axe.CallPipe.|    'This name it not long' | log_f
+              [0].Soil.Func.Stmt                  'This name it not long' | f_log ;
+                [0].Soil.Expr                     'This name it not long' | f_log
+                  [0].Soil.Expr.Axe.CallPipe.|    'This name it not long' | f_log
                     [0].Soil.Expr.Atom            'This name it not long'
-                    [1].Soil.Expr.Atom            log_f
+                    [1].Soil.Expr.Atom            f_log
           [2].Soil.Func.Body                      { 'This name it short' ... ; }
-            [0].Soil.Func.Stmt                    'This name it short' | log_f ;
-              [0].Soil.Expr                       'This name it short' | log_f
-                [0].Soil.Expr.Axe.CallPipe.|      'This name it short' | log_f
+            [0].Soil.Func.Stmt                    'This name it short' | f_log ;
+              [0].Soil.Expr                       'This name it short' | f_log
+                [0].Soil.Expr.Axe.CallPipe.|      'This name it short' | f_log
                   [0].Soil.Expr.Atom              'This name it short'
-                  [1].Soil.Expr.Atom              log_f
+                  [1].Soil.Expr.Atom              f_log
       [7].Soil.Func.Stmt                          sum = ... 0 ;
-        [0].Soil.Expr                             sum = i64_t :: 0
-          [0].Soil.Expr.Axe.Assign.=              sum = i64_t :: 0
+        [0].Soil.Expr                             sum = t_i64 :: 0
+          [0].Soil.Expr.Axe.Assign.=              sum = t_i64 :: 0
             [0].Soil.Expr.Atom                    sum
-            [1].Soil.Expr.Axe.Typing.::           i64_t :: 0
-              [0].Soil.Expr.Atom                  i64_t
+            [1].Soil.Expr.Axe.Typing.::           t_i64 :: 0
+              [0].Soil.Expr.Atom                  t_i64
               [1].Soil.Expr.Atom                  0
       [8].Soil.Func.Stmt                          for i ... ; }
         [0].Soil.Func.Stmt.For                    for i ... ; }
-          [0].Soil.Expr.Maybe                     i = i64_t :: 0
-            [0].Soil.Expr                         i = i64_t :: 0
-              [0].Soil.Expr.Axe.Assign.=          i = i64_t :: 0
+          [0].Soil.Expr.Maybe                     i = t_i64 :: 0
+            [0].Soil.Expr                         i = t_i64 :: 0
+              [0].Soil.Expr.Axe.Assign.=          i = t_i64 :: 0
                 [0].Soil.Expr.Atom                i
-                [1].Soil.Expr.Axe.Typing.::       i64_t :: 0
-                  [0].Soil.Expr.Atom              i64_t
+                [1].Soil.Expr.Axe.Typing.::       t_i64 :: 0
+                  [0].Soil.Expr.Atom              t_i64
                   [1].Soil.Expr.Atom              0
           [1].Soil.Expr.Maybe                     i < n
             [0].Soil.Expr                         i < n
@@ -959,6 +2012,184 @@ Mr Jane
 2
 3
 Mr Jane
+[  0]   1:1   cat=.literal                                 extern
+[  1]   1:8   cat=.literal                                 void
+[  2]   1:12  cat=.literal                                 *
+[  3]   1:14  cat=.identifier                              stdout
+[  4]   1:20  cat=.literal                                 ;
+[  5]   2:1   cat=.literal                                 extern
+[  6]   2:8   cat=.literal                                 int
+[  7]   2:12  cat=.identifier                              fprintf
+[  8]   2:19  cat=.literal                                 (
+[  9]   2:20  cat=.literal                                 void
+[ 10]   2:24  cat=.literal                                 *
+[ 11]   2:26  cat=.identifier                              stream
+[ 12]   2:32  cat=.literal                                 ,
+[ 13]   2:34  cat=.literal                                 const
+[ 14]   2:40  cat=.literal                                 char
+[ 15]   2:44  cat=.literal                                 *
+[ 16]   2:46  cat=.identifier                              format
+[ 17]   2:52  cat=.literal                                 ,
+[ 18]   2:54  cat=.literal                                 ...
+[ 19]   2:57  cat=.literal                                 )
+[ 20]   2:58  cat=.literal                                 ;
+[ 21]   4:1   cat=.literal                                 int
+[ 22]   5:1   cat=.identifier                              main
+[ 23]   5:5   cat=.literal                                 (
+[ 24]   5:6   cat=.literal                                 int
+[ 25]   5:10  cat=.identifier                              argc
+[ 26]   5:14  cat=.literal                                 ,
+[ 27]   5:16  cat=.literal                                 char
+[ 28]   5:20  cat=.literal                                 *
+[ 29]   5:22  cat=.identifier                              argv
+[ 30]   5:26  cat=.literal                                 [
+[ 31]   5:27  cat=.literal                                 ]
+[ 32]   5:28  cat=.literal                                 )
+[ 33]   6:1   cat=.literal                                 {
+[ 34]   7:3   cat=.literal                                 for
+[ 35]   7:7   cat=.literal                                 (
+[ 36]   7:8   cat=.literal                                 int
+[ 37]   7:12  cat=.identifier                              i
+[ 38]   7:14  cat=.literal                                 =
+[ 39]   7:16  cat=.number                                  0
+[ 40]   7:17  cat=.literal                                 ;
+[ 41]   7:19  cat=.identifier                              i
+[ 42]   7:21  cat=.Cedar.Expr.oper                         <
+[ 43]   7:23  cat=.identifier                              argc
+[ 44]   7:27  cat=.literal                                 ;
+[ 45]   7:29  cat=.identifier                              i
+[ 46]   7:30  cat=.Cedar.Expr.oper                         ++
+[ 47]   7:32  cat=.literal                                 )
+[ 48]   7:34  cat=.literal                                 {
+[ 49]   8:5   cat=.identifier                              fprintf
+[ 50]   8:12  cat=.Cedar.Expr.oper                         (
+[ 51]   8:13  cat=.identifier                              stdout
+[ 52]   8:19  cat=.Cedar.Expr.oper                         ,
+[ 53]   8:21  cat=.string                                  "[%d] = %s\n"
+[ 54]   8:34  cat=.Cedar.Expr.oper                         ,
+[ 55]   8:36  cat=.identifier                              i
+[ 56]   8:37  cat=.Cedar.Expr.oper                         ,
+[ 57]   8:39  cat=.identifier                              argv
+[ 58]   8:43  cat=.Cedar.Expr.oper                         [
+[ 59]   8:44  cat=.identifier                              i
+[ 60]   8:45  cat=.Cedar.Expr.oper                         ]
+[ 61]   8:46  cat=.Cedar.Expr.oper                         )
+[ 62]   8:47  cat=.literal                                 ;
+[ 63]   9:3   cat=.literal                                 }
+[ 64]  10:3   cat=.literal                                 return
+[ 65]  10:10  cat=.number                                  0
+[ 66]  10:11  cat=.literal                                 ;
+[ 67]  11:1   cat=.literal                                 }
+[ 68]  13:1   cat=.literal                                 int
+[ 69]  13:5   cat=.identifier                              test_1
+[ 70]  13:11  cat=.literal                                 (
+[ 71]  13:12  cat=.literal                                 int
+[ 72]  13:15  cat=.literal                                 *
+[ 73]  13:16  cat=.literal                                 ,
+[ 74]  13:18  cat=.literal                                 int
+[ 75]  13:21  cat=.literal                                 *
+[ 76]  13:23  cat=.identifier                              i
+[ 77]  13:24  cat=.literal                                 )
+[ 78]  13:25  cat=.literal                                 ;
+[ 79]  14:1   cat=.literal                                 int
+[ 80]  14:5   cat=.identifier                              test_2
+[ 81]  14:11  cat=.literal                                 (
+[ 82]  14:12  cat=.literal                                 int
+[ 83]  14:16  cat=.literal                                 (
+[ 84]  14:17  cat=.literal                                 *
+[ 85]  14:18  cat=.literal                                 (
+[ 86]  14:19  cat=.literal                                 *
+[ 87]  14:20  cat=.identifier                              foo
+[ 88]  14:23  cat=.literal                                 )
+[ 89]  14:24  cat=.literal                                 (
+[ 90]  14:25  cat=.literal                                 const
+[ 91]  14:31  cat=.literal                                 void
+[ 92]  14:35  cat=.literal                                 *
+[ 93]  14:36  cat=.literal                                 )
+[ 94]  14:37  cat=.literal                                 )
+[ 95]  14:38  cat=.literal                                 [
+[ 96]  14:39  cat=.number                                  3
+[ 97]  14:40  cat=.literal                                 ]
+[ 98]  14:41  cat=.literal                                 )
+[ 99]  14:42  cat=.literal                                 ;
+[100]  15:1   cat=.literal                                 void
+[101]  15:5   cat=.literal                                 *
+[102]  15:7   cat=.literal                                 (
+[103]  15:8   cat=.literal                                 *
+[104]  15:9   cat=.literal                                 (
+[105]  15:10  cat=.literal                                 *
+[106]  15:11  cat=.identifier                              test_3
+[107]  15:17  cat=.literal                                 [
+[108]  15:18  cat=.number                                  2
+[109]  15:19  cat=.literal                                 ]
+[110]  15:20  cat=.literal                                 )
+[111]  15:21  cat=.literal                                 (
+[112]  15:22  cat=.literal                                 int
+[113]  15:25  cat=.literal                                 ,
+[114]  15:27  cat=.literal                                 void
+[115]  15:31  cat=.literal                                 *
+[116]  15:32  cat=.literal                                 [
+[117]  15:33  cat=.literal                                 ]
+[118]  15:34  cat=.literal                                 )
+[119]  15:35  cat=.literal                                 )
+[120]  15:36  cat=.literal                                 [
+[121]  15:37  cat=.number                                  123
+[122]  15:40  cat=.literal                                 ]
+[123]  15:41  cat=.literal                                 ;
+[124]  16:1   cat=.literal                                 int
+[125]  16:5   cat=.literal                                 (
+[126]  16:6   cat=.literal                                 *
+[127]  16:7   cat=.literal                                 (
+[128]  16:8   cat=.literal                                 *
+[129]  16:9   cat=.identifier                              test_4
+[130]  16:15  cat=.literal                                 )
+[131]  16:16  cat=.literal                                 (
+[132]  16:17  cat=.literal                                 )
+[133]  16:18  cat=.literal                                 )
+[134]  16:19  cat=.literal                                 [
+[135]  16:20  cat=.number                                  3
+[136]  16:21  cat=.literal                                 ]
+[137]  16:22  cat=.literal                                 ;
+[138]  17:1   cat=.literal                                 char
+[139]  17:5   cat=.literal                                 *
+[140]  17:7   cat=.literal                                 (
+[141]  17:8   cat=.literal                                 *
+[142]  17:9   cat=.literal                                 (
+[143]  17:10  cat=.literal                                 *
+[144]  17:11  cat=.literal                                 *
+[145]  17:12  cat=.identifier                              test_5
+[146]  17:18  cat=.literal                                 [
+[147]  17:19  cat=.literal                                 ]
+[148]  17:20  cat=.literal                                 [
+[149]  17:21  cat=.number                                  8
+[150]  17:22  cat=.literal                                 ]
+[151]  17:23  cat=.literal                                 )
+[152]  17:24  cat=.literal                                 (
+[153]  17:25  cat=.literal                                 )
+[154]  17:26  cat=.literal                                 )
+[155]  17:27  cat=.literal                                 [
+[156]  17:28  cat=.literal                                 ]
+[157]  17:29  cat=.literal                                 ;
+[158]  18:1   cat=.literal                                 int
+[159]  18:5   cat=.literal                                 *
+[160]  18:6   cat=.identifier                              test_6
+[161]  18:12  cat=.literal                                 (
+[162]  18:13  cat=.literal                                 )
+[163]  18:14  cat=.literal                                 ;
+[164]  19:1   cat=.literal                                 int
+[165]  19:5   cat=.literal                                 (
+[166]  19:6   cat=.literal                                 *
+[167]  19:7   cat=.identifier                              test_7
+[168]  19:13  cat=.literal                                 )
+[169]  19:14  cat=.literal                                 (
+[170]  19:15  cat=.literal                                 )
+[171]  19:16  cat=.literal                                 ;
+[172]  20:1   cat=.literal                                 char
+[173]  20:6   cat=.literal                                 *
+[174]  20:7   cat=.literal                                 *
+[175]  20:8   cat=.identifier                              test_8
+[176]  20:14  cat=.literal                                 ;
+
 [0].Cedar                                                                                           extern void ... test_8 ;
   [0].Cedar.Declaration                                                                             extern void * stdout ;
     [0].Cedar.Declaration.Specifiers                                                                extern void
