@@ -86,15 +86,12 @@
 
 ERROR (MAJOR):
     expected token of category token[ STRING ]; got token[ PARENTHESIS ]
-    [01-broken.fern:9:3] .string
-  ┌─while calling [handle_rule_token(t_rule_name,...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:676]
+  ┌─[01-broken.fern:9:3] .string
   │ expected token of category ID_START; got token[ ID_START ]
   │ [01-broken.fern:9:3] .identifier: expected sequence[ ID_START ID_CONTINUE * ]
-  │ [01-broken.fern:9:3] .identifier
-  ├─while calling [handle_rule_token(t_rule_name,...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:676]
+  ├─[01-broken.fern:9:3] .identifier
   [01-broken.fern:9:3] .Fern.Label: expected alternation[ string | identifier ]
   [01-broken.fern:9:3] .Fern.Label
-  while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 ┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ Label ':' ]
 │     [01-broken.fern:11:5] expected token[ : ]
 │     [01-broken.fern:11:5] while matching token[ : ]
@@ -102,8 +99,7 @@ ERROR (MAJOR):
 │   │   [01-broken.fern:10:5] expected token[ [ ]
 │   │   [01-broken.fern:10:5] while matching token[ [ ]
 │   │   [01-broken.fern:10:5] .Fern: expected sequence[ '[' LabeledItem * ']' ]
-│   │   [01-broken.fern:10:5] .Fern
-│   │ ┌─while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
+│   │ ┌─[01-broken.fern:10:5] .Fern
 │   │ │   [01-broken.fern:10:5] expected token[ none ]
 │   │ │ ┌─[01-broken.fern:10:5] while matching token[ none ]
 │   │ │ │ [01-broken.fern:10:5] expected token[ true ]
@@ -111,31 +107,24 @@ ERROR (MAJOR):
 │   │ │ │ [01-broken.fern:10:5] expected token[ false ]
 │   │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
 │   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
-│   │ │ │ [01-broken.fern:10:5] .string
-│   │ │ ├─while calling [handle_rule_token(t_rule_name,...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:676]
+│   │ │ ├─[01-broken.fern:10:5] .string
 │   │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
 │   │ │ │ [01-broken.fern:10:5] .number: expected sequence[ DIGIT ( ... ) * ]
-│   │ │ │ [01-broken.fern:10:5] .number
-│   │ │ ├─while calling [handle_rule_token(t_rule_name,...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:676]
+│   │ │ ├─[01-broken.fern:10:5] .number
 │   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ 'none' | ... | number ]
-│   │ │ [01-broken.fern:10:5] .Fern.Value
-│   │ ├─while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
+│   │ ├─[01-broken.fern:10:5] .Fern.Value
 │   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern | Value ]
 │   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
-│   [01-broken.fern:10:5] .Fern.LabeledItem
-│ ┌─while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
+│ ┌─[01-broken.fern:10:5] .Fern.LabeledItem
 │ │ [01-broken.fern:10:5] expected token[ ] ]
 │ ├─[01-broken.fern:10:5] while matching token[ ] ]
 │ [01-broken.fern:9:3] .Fern: expected sequence[ '[' LabeledItem * ']' ]
 │ [01-broken.fern:9:3] .Fern
-│ while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 ├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern | Value ]
 [01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
 [01-broken.fern:9:3] .Fern.LabeledItem
-while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 [01-broken.fern:1:1] .Fern: expected sequence[ '[' LabeledItem * ']' ]
 [01-broken.fern:1:1] .Fern
-while calling [handle_rule_node(t_rule_name, ...] at [/home/toby/git/silva/cpp/syntax/seed_interpreter.cpp:679]
 seed::interpreter_t::apply(.Fern) failed to parse
 
 [  0]   1:1   cat=.literal                                 [

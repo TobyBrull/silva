@@ -673,10 +673,10 @@ namespace silva::seed::impl {
       const interpreter_t::rule_expr_data_t& rule_data = it->second;
       node_and_error_t retval;
       if (rule_data.is_token_rule) {
-        retval = SILVA_EXPECT_FWD(handle_rule_token(t_rule_name, rule_data));
+        retval = SILVA_EXPECT_FWD_PLAIN(handle_rule_token(t_rule_name, rule_data));
       }
       else {
-        retval = SILVA_EXPECT_FWD(handle_rule_node(t_rule_name, rule_data));
+        retval = SILVA_EXPECT_FWD_PLAIN(handle_rule_node(t_rule_name, rule_data));
       }
       ets->success = true;
       return retval;
