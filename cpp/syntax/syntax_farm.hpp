@@ -7,20 +7,32 @@ namespace silva {
 
   // An index in the "token_infos" vector of "syntax_farm_t". Equality of two tokens is then
   // equivalent to the equality of their token_info_index_t.
-  using token_id_t = index_t;
+  struct token_id_t {
+    index_t val = 0;
+
+    bool is_valid() const { return *this != token_id_t{}; }
+
+    friend auto operator<=>(token_id_t, token_id_t) = default;
+    friend hash_value_t hash_impl(token_id_t x) { return hash_impl(x.val); }
+  };
 
   // Index in "name_infos".
-  using name_id_t = index_t;
+  struct name_id_t {
+    index_t val = 0;
 
-  constexpr inline token_id_t token_id_none     = 0;
-  constexpr inline token_id_t token_id_language = 1;
-  constexpr inline token_id_t token_id_literal  = 2;
-  constexpr inline name_id_t name_id_none       = 0;
-  constexpr inline name_id_t name_id_literal    = 1;
+    bool is_valid() const { return *this != name_id_t{}; }
+
+    friend auto operator<=>(name_id_t, name_id_t) = default;
+    friend hash_value_t hash_impl(name_id_t x) { return hash_impl(x.val); }
+  };
+
+  constexpr inline token_id_t token_id_language{1};
+  constexpr inline token_id_t token_id_literal{2};
+  constexpr inline name_id_t name_id_literal{1};
 
   struct token_t {
-    token_id_t token_id    = token_id_none;
-    name_id_t category     = token_id_none;
+    token_id_t token_id;
+    name_id_t category;
     index_t frag_idx_begin = 0;
     index_t frag_idx_end   = 0;
 
@@ -28,11 +40,11 @@ namespace silva {
   };
 
   struct name_abs_t {
-    name_id_t id = name_id_none;
+    name_id_t id;
   };
 
   struct name_t {
-    name_id_t id = name_id_none;
+    name_id_t id;
   };
 
   struct token_info_t {
@@ -46,8 +58,8 @@ namespace silva {
   };
 
   struct name_info_t {
-    name_id_t parent_name = name_id_none;
-    token_id_t base_name  = token_id_none;
+    name_id_t parent_name;
+    token_id_t base_name;
 
     friend auto operator<=>(const name_info_t&, const name_info_t&) = default;
     friend hash_value_t hash_impl(const name_info_t& x);
@@ -118,7 +130,7 @@ namespace silva {
 
   struct lexicon_t : public menhir_t {
     syntax_farm_ptr_t sfp;
-    token_id_t language_name = token_id_none;
+    token_id_t language_name;
 
     token_id_t name_sep = sfp->token_id(".");
 
@@ -141,14 +153,14 @@ namespace silva {
 
   struct token_id_wrap_t {
     syntax_farm_ptr_t sfp;
-    token_id_t token_id = token_id_none;
+    token_id_t token_id;
 
     friend void pretty_write_impl(const token_id_wrap_t&, byte_sink_t*);
   };
 
   struct name_id_wrap_t {
     lexicon_ptr_t lp;
-    name_id_t name_id = name_id_none;
+    name_id_t name_id;
 
     friend void pretty_write_impl(const name_id_wrap_t&, byte_sink_t*);
   };
@@ -180,7 +192,7 @@ namespace silva {
   {
     array_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
-    return name_id_span(name_id_none, vec);
+    return name_id_span(name_id_t{}, vec);
   }
 
   template<typename... Ts>
@@ -216,10 +228,10 @@ namespace silva {
         }
         error_nursery.add_child_error(
             make_error(error_level_t::MINOR, {}, "could not find {}", name_id_wrap(curr_name)));
-        if (curr_scope == name_id_none) {
+        if (!curr_scope.is_valid()) {
           break;
         }
-        curr_scope = sfp->name_infos[curr_scope].parent_name;
+        curr_scope = sfp->name_infos[curr_scope.val].parent_name;
       }
       return std::unexpected(std::move(error_nursery)
                                  .finish(error_level_t::MINOR,

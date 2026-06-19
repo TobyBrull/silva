@@ -22,7 +22,7 @@ namespace silva {
 
   void pretty_write_impl(const parse_tree_node_t& ptn, byte_sink_t* byte_sink)
   {
-    byte_sink->format("{}@{}:{}", ptn.rule_name, ptn.token_begin, ptn.token_end);
+    byte_sink->format("{}@{}:{}", ptn.rule_name.val, ptn.token_begin, ptn.token_end);
   }
 
   expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset) const
@@ -187,7 +187,7 @@ namespace silva {
 
   void name_id_ref_t::resolve_clear() const
   {
-    resolved_name = name_id_none;
+    resolved_name = name_id_t{};
   }
 
   bool operator==(const name_id_ref_t& lhs, const name_id_ref_t& rhs)

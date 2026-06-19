@@ -7,7 +7,7 @@ namespace silva::lox {
   make_builtins(syntax_farm_ptr_t sfp, const parser_t& parser, object_pool_t& object_pool)
   {
     struct builtin_decl_t {
-      token_id_t name = token_id_none;
+      token_id_t name;
       silva::function_t<expected_t<object_ref_t>(object_pool_t&, span_t<const object_ref_t>)> impl;
     };
     array_t<builtin_decl_t> builtin_decls{

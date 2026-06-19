@@ -60,15 +60,15 @@ namespace silva {
   {
     {
       token_infos.emplace_back();
-      token_lookup[""] = token_id_none;
+      token_lookup[""] = token_id_t{};
     }
     {
-      SILVA_ASSERT(token_infos.size() == token_id_language);
+      SILVA_ASSERT(token_infos.size() == token_id_language.val);
       token_infos.emplace_back(token_info_t{.str = "language"});
       token_lookup["language"] = token_id_language;
     }
     {
-      SILVA_ASSERT(token_infos.size() == token_id_literal);
+      SILVA_ASSERT(token_infos.size() == token_id_literal.val);
       token_infos.emplace_back(token_info_t{.str = "literal"});
       token_lookup["literal"] = token_id_literal;
     }
@@ -78,7 +78,7 @@ namespace silva {
       name_lookup.emplace(fni, 0);
     }
     {
-      SILVA_ASSERT(name_infos.size() == name_id_literal);
+      SILVA_ASSERT(name_infos.size() == name_id_literal.val);
       const name_info_t fni{0, token_id_literal};
       name_infos.emplace_back(fni);
       name_lookup.emplace(fni, name_id_literal);
@@ -94,7 +94,7 @@ namespace silva {
       return it->second;
     }
     else {
-      const token_id_t new_token_id = token_infos.size();
+      const token_id_t new_token_id(token_infos.size());
       token_infos.push_back(token_info_t{string_t{token_str}});
       token_lookup.emplace(token_str, new_token_id);
       return new_token_id;
@@ -110,7 +110,7 @@ namespace silva {
 
   expected_t<token_id_t> syntax_farm_t::token_id_in_string(const token_id_t ti)
   {
-    const auto& token_info = token_infos[ti];
+    const auto& token_info = token_infos[ti.val];
     const string_t str     = SILVA_EXPECT_FWD(token_info.contained_string(),
                                               "{} not a string containing a token",
                                               token_id_wrap(ti));
@@ -137,16 +137,16 @@ namespace silva {
     return retval;
   }
 
-  bool syntax_farm_t::name_id_is_parent(const name_id_t parent_name, token_id_t child_name) const
+  bool syntax_farm_t::name_id_is_parent(const name_id_t parent_name, name_id_t child_name) const
   {
     while (true) {
       if (child_name == parent_name) {
         return true;
       }
-      if (child_name == name_id_none) {
+      if (!child_name.is_valid()) {
         return false;
       }
-      child_name = name_infos[child_name].parent_name;
+      child_name = name_infos[child_name.val].parent_name;
     }
   }
 
@@ -157,10 +157,10 @@ namespace silva {
       array_t<name_id_t> retval;
       while (true) {
         retval.push_back(x);
-        if (x == name_id_none) {
+        if (!x.is_valid()) {
           break;
         }
-        x = name_infos[x].parent_name;
+        x = name_infos[x.val].parent_name;
       }
       std::ranges::reverse(retval);
       return retval;
@@ -198,12 +198,12 @@ namespace silva {
 
   string_t lexicon_t::name_id_str(const name_id_t name_id) const
   {
-    if (name_id == name_id_none) {
+    if (!name_id.is_valid()) {
       return "";
     }
-    const name_info_t& ni = sfp->name_infos[name_id];
-    return name_id_str(ni.parent_name) + sfp->token_infos[name_sep].str +
-        sfp->token_infos[ni.base_name].str;
+    const name_info_t& ni = sfp->name_infos[name_id.val];
+    return name_id_str(ni.parent_name) + sfp->token_infos[name_sep.val].str +
+        sfp->token_infos[ni.base_name.val].str;
   }
 
   expected_t<name_id_t> lexicon_t::name_id_definition(const name_id_t scope_name,
@@ -213,7 +213,7 @@ namespace silva {
     SILVA_EXPECT(!ts.empty(), MINOR);
     index_t idx = 0;
     if (ts.front().token_id == name_sep) {
-      retval = name_id_none;
+      retval = name_id_t{};
       idx += 1;
     }
     while (idx < ts.size()) {
@@ -231,7 +231,7 @@ namespace silva {
 
   void pretty_write_impl(const token_id_wrap_t& x, byte_sink_t* byte_sink)
   {
-    byte_sink->format("token[ {} ]", x.sfp->token_infos[x.token_id].str);
+    byte_sink->format("token[ {} ]", x.sfp->token_infos[x.token_id.val].str);
   }
 
   void pretty_write_impl(const name_id_wrap_t& x, byte_sink_t* byte_sink)

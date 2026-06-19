@@ -32,7 +32,7 @@ namespace silva {
 
   expected_t<name_id_t> language_rule(syntax_farm_t& sf, const token_id_t language_name)
   {
-    string_t lang_name = sf.token_infos[language_name].str;
+    string_t lang_name = sf.token_infos[language_name.val].str;
     SILVA_EXPECT(!lang_name.empty(), MINOR);
     lang_name[0] = std::toupper(lang_name[0]);
     return sf.name_id_of(lang_name);

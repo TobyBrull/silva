@@ -42,7 +42,7 @@ namespace silva {
 
   void parse_tree_nursery_t::on_stake_commit_owning_to_proto(parse_tree_node_t& proto_node) const
   {
-    proto_node.rule_name = name_id_none;
+    proto_node.rule_name = name_id_t{};
   }
 
   // parse_tree_nursery_t

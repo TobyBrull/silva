@@ -45,7 +45,7 @@ Seed.Axe:
 
   struct axe_t {
     lexicon_ptr_t lp;
-    name_id_t name = name_id_none;
+    name_id_t name;
     name_id_ref_t atom_rule;
     name_id_ref_t oper_rule;
     hash_map_t<token_id_t, impl::axe_result_t> results;

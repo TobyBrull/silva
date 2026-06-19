@@ -51,7 +51,7 @@ namespace silva {
 
     struct token_stake_t {
       parse_tree_nursery_t* nursery = nullptr;
-      name_id_t token_cat           = name_id_none;
+      name_id_t token_cat;
       index_t orig_fragment_index   = 0;
 
       token_stake_t() = default;
@@ -71,7 +71,7 @@ namespace silva {
       void clear();
       ~token_stake_t();
     };
-    [[nodiscard]] token_stake_t token_stake(this auto& self, const token_id_t token_cat);
+    [[nodiscard]] token_stake_t token_stake(this auto& self, const name_id_t token_cat);
 
     expected_t<token_t> literal_fragmented_token(fragmented_token_t);
 

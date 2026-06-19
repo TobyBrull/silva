@@ -37,7 +37,7 @@ namespace silva::seed::impl {
 
   struct axe_create_nursery_t {
     syntax_farm_ptr_t sfp;
-    name_id_t axe_name       = name_id_none;
+    name_id_t axe_name;
     const lexicon_t& lexicon = sfp->get_lexicon<lexicon_t>();
 
     axe_t retval{
@@ -477,7 +477,7 @@ namespace silva::seed::impl {
     struct oper_item_t {
       oper_any_t oper;
       index_t arity        = 0;
-      name_id_t level_name = 0;
+      name_id_t level_name;
       precedence_t precedence;
       array_small_t<index_t, 2> covered_token_indexes;
       optional_t<index_t> min_token_index;
@@ -505,7 +505,7 @@ namespace silva::seed::impl {
     expected_t<tuple_t<parse_tree_node_t, term_node_t>>
     invoke_rule_parser(const name_id_t rule_name)
     {
-      SILVA_EXPECT(rule_name > name_id_none, MAJOR, "trying to invoke empty rule");
+      SILVA_EXPECT(rule_name.is_valid(), MAJOR, "trying to invoke empty rule");
       auto ss = nursery.stake();
       ss.add_proto_node(SILVA_EXPECT_FWD(rule_parser(rule_name)));
       SILVA_EXPECT(ss.proto_node.num_children == 1,
@@ -549,7 +549,7 @@ namespace silva::seed::impl {
 
     struct consistent_range_t {
       index_t num_atoms          = 0;
-      name_id_t joint_level_name = name_id_none;
+      name_id_t joint_level_name;
       index_t token_begin        = 0;
       index_t token_end          = 0;
     };
@@ -894,7 +894,7 @@ namespace silva::seed::impl {
       auto ss = nursery.stake();
       {
         auto ss_rule = nursery.stake();
-        ss_rule.create_node(name_id_none);
+        ss_rule.create_node(name_id_t{});
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(axe.name, shunting_yard()));
 
         const auto& root_node          = output_tree.back();

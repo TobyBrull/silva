@@ -21,7 +21,7 @@ namespace silva {
   const token_info_t* tokenization_t::token_info_get(const index_t token_index) const
   {
     const token_id_t ti = tokens[token_index].token_id;
-    return &sfp->token_infos[ti];
+    return &sfp->token_infos[ti.val];
   }
 
   token_id_t syntax_farm_get_token_id_from_info(syntax_farm_t& sf, const token_info_t& token_info)
@@ -31,7 +31,7 @@ namespace silva {
       return it->second;
     }
     else {
-      const token_id_t new_token_id = sf.token_infos.size();
+      const token_id_t new_token_id(sf.token_infos.size());
       sf.token_infos.push_back(token_info);
       sf.token_lookup.emplace(token_info.str, new_token_id);
       return new_token_id;
@@ -87,7 +87,7 @@ namespace silva {
     const auto& lexicon = self.sfp->get_lexicon<seed::lexicon_t>();
     for (index_t token_index = 0; token_index < self.size(); ++token_index) {
       const token_t& token         = self.tokens[token_index];
-      const token_info_t* tii_info = &self.sfp->token_infos[token.token_id];
+      const token_info_t* tii_info = &self.sfp->token_infos[token.token_id.val];
       const string_t token_cat_str = lexicon.name_id_str(token.category);
       const auto [line, column, _] = self.location_at(token_index);
       stream->format("[{:3}] {:3}:{:<3} cat={:40} {}\n",

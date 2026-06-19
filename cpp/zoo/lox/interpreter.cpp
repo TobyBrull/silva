@@ -138,7 +138,7 @@ namespace silva::lox {
               (token.token_id == lexicon->ti_true || token.token_id == lexicon->ti_false ||
                token.token_id == lexicon->ti_nil);
           const name_id_t pr =
-              (path.size() >= 2) ? pts[path[path.size() - 2].node_index].rule_name : name_id_none;
+              (path.size() >= 2) ? pts[path[path.size() - 2].node_index].rule_name : name_id_t{};
           const bool is_member_access =
               (pr == lexicon->ni_expr_member && path.back().child_index == 1);
           const bool is_func_callee = (pr == lexicon->ni_expr_call && path.back().child_index == 0);
@@ -675,13 +675,13 @@ namespace silva::lox {
       else if (rule_name == lexicon.ni_decl) {
         return decl(pts.sub_tree_span_at(1), scope);
       }
-      else if (sfp->name_infos[rule_name].parent_name == lexicon.ni_decl) {
+      else if (sfp->name_infos[rule_name.val].parent_name == lexicon.ni_decl) {
         return decl(pts, scope);
       }
       else if (rule_name == lexicon.ni_stmt) {
         return stmt(pts.sub_tree_span_at(1), scope);
       }
-      else if (sfp->name_infos[rule_name].parent_name == lexicon.ni_stmt) {
+      else if (sfp->name_infos[rule_name.val].parent_name == lexicon.ni_stmt) {
         return stmt(pts, scope);
       }
       else {

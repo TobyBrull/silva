@@ -25,7 +25,7 @@ namespace silva::lox {
 
       index_t scope_depth = 0;
       struct local_t {
-        token_id_t var_name = token_id_none;
+        token_id_t var_name;
       };
       array_t<local_t> locals;
 
@@ -42,7 +42,7 @@ namespace silva::lox {
     array_t<func_scope_t> func_scopes;
 
     // returns index into "upvalue_infos" of the "func_scopes" entry with index "fs_idx".
-    optional_t<index_t> resolve_upvalue(const index_t fs_idx, const index_t ti)
+    optional_t<index_t> resolve_upvalue(const index_t fs_idx, const token_id_t ti)
     {
       if (fs_idx > 0) {
         if (const auto idx = resolve_local(fs_idx - 1, ti); idx.has_value()) {
@@ -140,7 +140,7 @@ namespace silva::lox {
         cfs().nursery.append_index_instr(pts, GET_UPVALUE, idx.value());
       }
       else {
-        cfs().nursery.append_index_instr(pts, GET_GLOBAL, ti);
+        cfs().nursery.append_index_instr(pts, GET_GLOBAL, ti.val);
       }
       return {};
     }
@@ -153,7 +153,7 @@ namespace silva::lox {
         cfs().nursery.append_index_instr(pts, SET_UPVALUE, idx.value());
       }
       else {
-        cfs().nursery.append_index_instr(pts, SET_GLOBAL, ti);
+        cfs().nursery.append_index_instr(pts, SET_GLOBAL, ti.val);
       }
       return {};
     }
@@ -181,7 +181,7 @@ namespace silva::lox {
         SILVA_EXPECT_FWD(get_variable(pts, lexicon.ti_super));
         cfs().nursery.append_index_instr(pts,
                                          GET_SUPER,
-                                         pts.ptp->tp->tokens[pts[0].token_begin + 2].token_id);
+                                         pts.ptp->tp->tokens[pts[0].token_begin + 2].token_id.val);
       }
       else if (token.category == lexicon.ni_identifier || token.token_id == lexicon.ti_this) {
         SILVA_EXPECT_FWD(get_variable(pts, token.token_id));
@@ -292,7 +292,7 @@ namespace silva::lox {
         const auto pts_rhs = pts.sub_tree_span_at(rhs);
         SILVA_EXPECT(pts_rhs[0].rule_name == lexicon.ni_expr_atom, MINOR);
         const token_id_t field_name = pts.ptp->tp->tokens[pts_rhs[0].token_begin].token_id;
-        cfs().nursery.append_index_instr(pts, GET_PROPERTY, field_name);
+        cfs().nursery.append_index_instr(pts, GET_PROPERTY, field_name.val);
       }
       else if (pts[0].rule_name == lexicon.ni_expr_b_assign) {
         const auto [lhs, rhs] = SILVA_EXPECT_FWD(pts.get_children<2>());
@@ -307,7 +307,7 @@ namespace silva::lox {
           SILVA_EXPECT(lr_pts[0].rule_name == lexicon.ni_expr_atom, MINOR);
           const auto& token = pts.ptp->tp->tokens[lr_pts[0].token_begin];
           SILVA_EXPECT(token.category == lexicon.ni_identifier, MINOR);
-          cfs().nursery.append_index_instr(pts, SET_PROPERTY, token.token_id);
+          cfs().nursery.append_index_instr(pts, SET_PROPERTY, token.token_id.val);
         }
         else if (lhs_pts[0].rule_name == lexicon.ni_expr_atom) {
           const auto& token = pts.ptp->tp->tokens[lhs_pts[0].token_begin];
@@ -334,7 +334,7 @@ namespace silva::lox {
       {
         func_scope_guard_t fsg{this};
         cfs().locals.push_back(func_scope_t::local_t{
-            .var_name = with_this ? lexicon.ti_this : token_id_none,
+            .var_name = with_this ? lexicon.ti_this : token_id_t{},
         });
         const auto pts_fun_p = fun.parameters();
         for (const auto [node_idx, child_idx]: pts_fun_p.children_range()) {
@@ -398,7 +398,7 @@ namespace silva::lox {
       }
 
       if (func_scopes.size() == 1 && cfs().scope_depth == 0) {
-        cfs().nursery.append_index_instr(pts, DEFINE_GLOBAL, decl_name);
+        cfs().nursery.append_index_instr(pts, DEFINE_GLOBAL, decl_name.val);
       }
       else {
         cfs().locals.push_back(func_scope_t::local_t{.var_name = decl_name});
@@ -407,7 +407,7 @@ namespace silva::lox {
       if (rule_name == lexicon.ni_decl_class) {
         block_scope_guard_t bsg(this, pts);
 
-        token_id_t superclass_name = token_id_none;
+        token_id_t superclass_name;
 
         auto [it, end] = pts.children_range();
 
@@ -422,9 +422,9 @@ namespace silva::lox {
         ++it;
 
         SILVA_EXPECT_FWD(get_variable(pts, decl_name));
-        cfs().locals.push_back(func_scope_t::local_t{.var_name = token_id_none});
+        cfs().locals.push_back(func_scope_t::local_t{});
 
-        if (superclass_name != token_id_none) {
+        if (superclass_name.is_valid()) {
           cfs().nursery.append_simple_instr(pts_super, INHERIT);
         }
 
@@ -432,7 +432,7 @@ namespace silva::lox {
           const auto pts_method = pts.sub_tree_span_at(it.pos);
           SILVA_EXPECT_FWD(function(pts_method, true));
           const token_id_t method_name = pts.ptp->tp->tokens[pts_method[0].token_begin].token_id;
-          cfs().nursery.append_index_instr(pts_method, METHOD, method_name);
+          cfs().nursery.append_index_instr(pts_method, METHOD, method_name.val);
           ++it;
         }
       }
@@ -558,13 +558,13 @@ namespace silva::lox {
       else if (rule_name == lexicon.ni_decl) {
         return decl(pts.sub_tree_span_at(1));
       }
-      else if (sfp->name_infos[rule_name].parent_name == lexicon.ni_decl) {
+      else if (sfp->name_infos[rule_name.val].parent_name == lexicon.ni_decl) {
         return decl(pts);
       }
       else if (rule_name == lexicon.ni_stmt) {
         return stmt(pts.sub_tree_span_at(1));
       }
-      else if (sfp->name_infos[rule_name].parent_name == lexicon.ni_stmt) {
+      else if (sfp->name_infos[rule_name.val].parent_name == lexicon.ni_stmt) {
         return stmt(pts);
       }
       else {

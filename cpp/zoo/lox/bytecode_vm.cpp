@@ -144,8 +144,8 @@ namespace silva::lox {
     }
     expected_t<void> _get_global()
     {
-      const index_t ti = curr_index_in_instr();
-      auto it          = vm.globals.find(ti);
+      const token_id_t ti{curr_index_in_instr()};
+      auto it = vm.globals.find(ti);
       SILVA_EXPECT(it != vm.globals.end(),
                    RUNTIME,
                    "{} couldn't find global variable {}",
@@ -157,7 +157,7 @@ namespace silva::lox {
     }
     expected_t<void> _define_global()
     {
-      const index_t ti = curr_index_in_instr();
+      const token_id_t ti{curr_index_in_instr()};
       SILVA_EXPECT(vm.stack.size() >= 1,
                    RUNTIME,
                    "bytecode instruction DEFINE_GLOBAL needs non-empty stack");
@@ -168,7 +168,7 @@ namespace silva::lox {
     }
     expected_t<void> _set_global()
     {
-      const index_t ti = curr_index_in_instr();
+      const token_id_t ti{curr_index_in_instr()};
       SILVA_EXPECT(vm.stack.size() >= 1,
                    RUNTIME,
                    "bytecode instruction SET_GLOBAL needs non-empty stack");
@@ -196,7 +196,7 @@ namespace silva::lox {
     }
     expected_t<void> _get_property()
     {
-      const index_t field_name = curr_index_in_instr();
+      const token_id_t field_name{curr_index_in_instr()};
       SILVA_EXPECT(vm.stack.size() >= 1, RUNTIME);
       auto class_instance = vm.stack.back();
       SILVA_EXPECT(class_instance->holds_class_instance(), RUNTIME);
@@ -216,7 +216,7 @@ namespace silva::lox {
     }
     expected_t<void> _set_property()
     {
-      const index_t field_name = curr_index_in_instr();
+      const token_id_t field_name{curr_index_in_instr()};
       SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);
       auto class_instance = vm.stack.back();
       SILVA_EXPECT(class_instance->holds_class_instance(),
@@ -231,7 +231,7 @@ namespace silva::lox {
     }
     expected_t<void> _get_super()
     {
-      const index_t field_name = curr_index_in_instr();
+      const token_id_t field_name{curr_index_in_instr()};
       SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);
       auto superclass = vm.stack.back();
       SILVA_EXPECT(superclass->holds_class(), RUNTIME);
@@ -545,7 +545,7 @@ namespace silva::lox {
     }
     expected_t<void> _method()
     {
-      const index_t method_name = curr_index_in_instr();
+      const token_id_t method_name{curr_index_in_instr()};
       SILVA_EXPECT(vm.stack.size() >= 2, RUNTIME);
       auto closure = vm.stack.back();
       SILVA_EXPECT(closure->holds_closure(),

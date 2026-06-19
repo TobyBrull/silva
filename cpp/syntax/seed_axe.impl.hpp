@@ -83,7 +83,7 @@ namespace silva::seed::impl {
   template<typename Oper>
   struct result_oper_t {
     Oper oper;
-    name_id_t name = name_id_none;
+    name_id_t name;
     precedence_t precedence;
     parse_tree_span_t pts;
 

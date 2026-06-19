@@ -6,7 +6,7 @@
 
 namespace silva {
   struct parse_tree_node_t : public tree_node_t {
-    name_id_t rule_name = 0;
+    name_id_t rule_name;
     index_t token_begin = std::numeric_limits<index_t>::max();
     index_t token_end   = std::numeric_limits<index_t>::min();
 
@@ -75,7 +75,7 @@ namespace silva {
     expected_t<void> resolve(const name_id_t scope_name, const lexicon_t&, const Ns&) const;
 
     // Derived data; ignored for equality and hashing.
-    mutable name_id_t resolved_name = name_id_none;
+    mutable name_id_t resolved_name;
     operator name_id_t() const { return resolved_name; }
 
     friend bool operator==(const name_id_ref_t& lhs, const name_id_ref_t& rhs);

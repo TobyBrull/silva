@@ -1,7 +1,5 @@
 # TODO
 
-* make interpreter_t::apply take token_id_t for language, not name_id_t for rule
-* make token_id_t and name_id_t strong typedefs
 * allow token-categories that start with, e.g., "language"
     * for this group fragment-categories and demand that every literal only has fragments from a
       single group?
