@@ -109,7 +109,7 @@ ERROR (MAJOR):
 │   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
 │   │ │ ├─[01-broken.fern:10:5] .string
 │   │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │ [01-broken.fern:10:5] .number: expected sequence[ DIGIT ( ... ) * ]
+│   │ │ │ [01-broken.fern:10:5] .number: expected sequence[ DIGIT [ ... ] * ]
 │   │ │ ├─[01-broken.fern:10:5] .number
 │   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ 'none' | ... | number ]
 │   │ ├─[01-broken.fern:10:5] .Fern.Value

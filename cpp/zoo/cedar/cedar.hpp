@@ -10,19 +10,20 @@ namespace silva::cedar {
   // https://port70.net/~nsz/c/c11/n1570.html#A
   //
   const string_view_t seed_str = R"'(
-
 language Cedar:
   skip = skip_free_form
-  operator = ( '...' | '.' | ';' | ':' | '*=' | '*' | '/=' | '/' | '%=' | '%' | '~' | '++' | '+=' | '+' | '--' | '-=' | '->' | '-' |
-               '!=' | '!' | '==' | '=' | '<<=' | '<<' | '<=' | '<' | '>>=' | '>>' | '>=' | '>' |
-               '&&' | '&=' | '&' | '||' | '|=' | '|' | '^=' | '^' | '?' | ',' )
+
+  operator = [ '...' '.' ';' ':' '*=' '*' '/=' '/' '%=' '%' '~'
+               '++' '+=' '+' '--' '-=' '->' '-' 
+               '!=' '!' '==' '=' '<<=' '<<' '<=' '<' '>>=' '>>' '>=' '>'
+               '&&' '&=' '&' '||' '|=' '|' '^=' '^' '?' ',' ]
 
   ⊙ = Declaration *
 
   Declaration:
     ⊙ = Specifiers Init ? ( ';' | Stmt.Compound )
-    Specifiers = ( StorageClassSpecifier | FunctionSpecifier | AlignmentSpecifier | Type.Qualifier | Type.Specifier ) +
-    StorageClassSpecifier = 'typedef' | 'extern' | 'static' | '_Thread_local'
+    Specifiers = [ StorageClassSpecifier FunctionSpecifier AlignmentSpecifier Type.Qualifier Type.Specifier ] +
+    StorageClassSpecifier = [ 'typedef' 'extern' 'static' '_Thread_local' ]
     FunctionSpecifier = 'inline'
     AlignmentSpecifier = 'alignas' '(' ( Type.Name | Expr.Conditional ) ')'
 
@@ -34,21 +35,14 @@ language Cedar:
     InitializerList = Initializer ( ε ',' Initializer ) *
 
   Type:
-    IntSpecifier = ( 'signed' | 'unsigned' | 'short' | 'long' | 'char' | 'int' ) +
-    FloatSpecifier = 'float' | 'double'
-    Specifier = ( 'void'
-                | IntSpecifier
-                | FloatSpecifier
-                | AtomicTypeSpecifier
-                | StructSpecifier
-                | EnumSpecifier
-                | TypedefName
-                )
+    IntSpecifier = [ 'signed' 'unsigned' 'short' 'long' 'char' 'int' ] +
+    FloatSpecifier = [ 'float' 'double' ]
+    Specifier = [ 'void' IntSpecifier FloatSpecifier AtomicTypeSpecifier StructSpecifier EnumSpecifier TypedefName ]
 
     # TODO: should only match identifiers that have previously been typedef'ed.
     TypedefName = not ε
 
-    Qualifier = ( 'const' | 'volatile' | 'restrict' | '_Atomic' )
+    Qualifier = [ 'const' 'volatile' 'restrict' '_Atomic' ]
     SpecifierQualifierList = ( Qualifier | Specifier ) +
     Name = SpecifierQualifierList Declarator.Abstract ?
     AtomicTypeSpecifier = '_Atomic' '(' Name ')'
@@ -67,13 +61,7 @@ language Cedar:
       Suffix = '(' Declaration.ParameterList ? ')' | '[' Expr.Conditional ? ']'
 
   Stmt:
-    ⊙ = ( Compound
-        | If | Switch | Case | Default
-        | While | DoWhile | For
-        | Continue | Break | Return
-        | Goto | Label
-        | ExprStmt
-        )
+    ⊙ = [ Compound If Switch Case Default While DoWhile For Continue Break Return Goto Label ExprStmt ]
     Compound = '{' ( Stmt | Declaration ) * '}'
     If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
     Switch = 'switch' '(' Expr ')' Stmt

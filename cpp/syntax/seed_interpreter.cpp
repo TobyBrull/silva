@@ -654,6 +654,9 @@ namespace silva::seed::impl {
       else if (sfp->name_id_is_parent(lexicon.ni_expr_or, s_rule_name)) {
         return s_expr_or(pts, t_rule_name);
       }
+      else if (s_rule_name == lexicon.ni_alternation) {
+        return s_expr_or(pts, t_rule_name);
+      }
       else if (s_rule_name == lexicon.ni_term) {
         return s_terminal(pts, t_rule_name);
       }

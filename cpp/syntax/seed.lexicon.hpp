@@ -97,12 +97,13 @@ namespace silva::seed {
     const name_id_t ni_scope      = sfp->name_id_of(ni_seed, "Scope");
     const name_id_t ni_rule       = sfp->name_id_of(ni_seed, "Rule");
     const name_id_t ni_qualifier  = sfp->name_id_of(ni_seed, "Qualifier");
-    const name_id_t ni_expr       = sfp->name_id_of(ni_seed, "Expr");
-    const name_id_t ni_atom       = sfp->name_id_of(ni_expr, "Atom");
-    const name_id_t ni_quantifier = sfp->name_id_of(ni_expr, "Quantifier");
-    const name_id_t ni_oper       = sfp->name_id_of(ni_expr, "operator");
-    const name_id_t ni_term       = sfp->name_id_of(ni_seed, "Terminal");
-    const name_id_t ni_tok_cat    = sfp->name_id_of(ni_seed, "TokenCategory");
+    const name_id_t ni_expr        = sfp->name_id_of(ni_seed, "Expr");
+    const name_id_t ni_atom        = sfp->name_id_of(ni_expr, "Atom");
+    const name_id_t ni_alternation = sfp->name_id_of(ni_expr, "Alternation");
+    const name_id_t ni_quantifier  = sfp->name_id_of(ni_expr, "Quantifier");
+    const name_id_t ni_oper        = sfp->name_id_of(ni_expr, "operator");
+    const name_id_t ni_term        = sfp->name_id_of(ni_seed, "Terminal");
+    const name_id_t ni_tok_cat     = sfp->name_id_of(ni_seed, "TokenCategory");
 
     const name_id_t ni_expr_prefix  = sfp->name_id_of(ni_expr, "Prefix");
     const name_id_t ni_expr_postfix = sfp->name_id_of(ni_expr, "Postfix");

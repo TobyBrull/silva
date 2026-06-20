@@ -57,7 +57,7 @@ identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +            not ID_CONTINUE
 identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *       not ID_CONTINUE
 
 string = STRING
-number = DIGIT ( DIGIT | ID_LOWER | ID_UPPER | '.' | '\'' | '+' | '-' ) *
+number = DIGIT [ DIGIT ID_LOWER ID_UPPER '.' '\'' '+' '-' ] *
 newline = NEWLINE
 indent = INDENT
 dedent = DEDENT
@@ -65,8 +65,8 @@ operator_single = OPERATOR
 operator_greedy = OPERATOR +
 parenthesis = PARENTHESIS
 
-skip_free_form = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
-skip_off_side  = ( SPACE | LINEFEED | COMMENT | WHITESPACE ) *
+skip_free_form = [ SPACE LINEFEED COMMENT WHITESPACE INDENT DEDENT NEWLINE ] *
+skip_off_side  = [ SPACE LINEFEED COMMENT WHITESPACE ] *
 
 language Seed:
   skip = skip_off_side
@@ -75,12 +75,12 @@ language Seed:
   rule_name = identifier_pascal_case
   token_category_name = identifier_snake_case
 
-  ⊙ = ( Language | Scope | Rule ) *
+  ⊙ = [ Language Scope Rule ] *
   Language = 'language' rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
   Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe | Qualifier * Expr newline )
-  Qualifier = 'alias' | 'no_whitespace'
+  Qualifier = [ 'alias' 'no_whitespace' ]
   Expr:
     ⊙ = axe Atom operator
       Prefix    = rtl   prefix 'not'
@@ -89,11 +89,12 @@ language Seed:
       Concat    = ltr   infix_flat concat
       And       = ltr   infix_flat 'but_then'
       Or        = ltr   infix_flat '|'
-    Atom = alias Terminal | Nonterminal | '(' Expr ')'
+    Atom = alias Terminal | Nonterminal | '(' Expr ')' | Alternation
+    Alternation = '[' ( Terminal | Nonterminal ) + ']'
     Quantifier = number ? ',' number ? | number
-    operator = ( 'not' | 'but_then' | operator_single | '{' | '}' )
+    operator = [ 'not' 'but_then' operator_single '{' '}' ]
     Alias = Expr
-  Terminal = ( 'ε' | 'end_of_language' | 'language' | string | frag_name )
+  Terminal = [ 'ε' 'end_of_language' 'language' string frag_name ]
   Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
 
 None = ε

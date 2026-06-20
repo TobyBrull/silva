@@ -485,6 +485,40 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
+    expected_t<parse_tree_node_t> alternation()
+    {
+      auto ss = stake();
+      ss.create_node(lexicon.ni_alternation);
+      add_token_and_skip(
+          SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal_token(lexicon.ti_brack_open)));
+      index_t count = 0;
+      while (true) {
+        {
+          auto result = terminal();
+          if (result) {
+            ss.add_proto_node(*result);
+            count += 1;
+            continue;
+          }
+        }
+        {
+          auto result = nonterminal();
+          if (result) {
+            ss.add_proto_node(*result);
+            count += 1;
+            continue;
+          }
+        }
+        break;
+      }
+      SILVA_EXPECT_PARSE(lexicon.ni_atom,
+                         count >= 1,
+                         "expected at least one Terminal or Nonterminal inside '[' ']'");
+      add_token_and_skip(
+          SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal_token(lexicon.ti_brack_close)));
+      return ss.commit();
+    }
+
     expected_t<parse_tree_node_t> atom()
     {
       auto ss                     = stake();
@@ -508,6 +542,14 @@ namespace silva::seed::impl {
       }
       {
         auto result = expr_parens();
+        if (result) {
+          ss.add_proto_node(*result);
+          return ss.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      {
+        auto result = alternation();
         if (result) {
           ss.add_proto_node(*result);
           return ss.commit();

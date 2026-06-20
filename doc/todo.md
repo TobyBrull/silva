@@ -1,8 +1,6 @@
 # TODO
 
 * Functionality to add to seed:
-    * abbrev for `a | b | c`
-        * `[ a b c ]`
     * abbrev for `a ( b ( c ( d ) ? ) ? ) ?`
         * `a → b → c → d` ?
 * Tokenization
