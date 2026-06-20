@@ -11,8 +11,8 @@ namespace silva {
 
   token_id_t fragment_category_to_token_id(syntax_farm_t& sf, const fragment_category_t fc)
   {
-    static const auto vals = enum_hashmap_to_string<fragment_category_t>();
-    return sf.token_id(vals.at(fc));
+    const auto& hm = enum_hashmap_to_string<fragment_category_t>();
+    return sf.token_id(hm.at(fc));
   }
 
   constexpr static array_fixed_t<unicode::codepoint_t, 1> xid_additional_internal = {U'-'};

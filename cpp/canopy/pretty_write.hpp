@@ -180,7 +180,7 @@ namespace silva {
     requires std::is_enum_v<Enum>
   void pretty_write_impl(const Enum& x, byte_sink_t* byte_sink)
   {
-    static const auto vals = enum_hashmap_to_string<Enum>();
-    byte_sink->write_str(string_view_t{vals.at(x)});
+    const auto& hm = enum_hashmap_to_string<Enum>();
+    byte_sink->write_str(string_view_t{hm.at(x)});
   }
 }

@@ -19,11 +19,19 @@ namespace silva {
   };
   inline constexpr hash_t hash;
 
+  struct equal_t : public customization_point_t<bool(const void*)> {
+    using is_transparent = void;
+
+    template<typename T, typename U>
+    constexpr bool operator()(const T& lhs, const U& rhs) const;
+  };
+  inline constexpr equal_t equal;
+
   template<typename K, typename V>
-  using hash_map_t = std::unordered_map<K, V, hash_t>;
+  using hash_map_t = std::unordered_map<K, V, hash_t, equal_t>;
 
   template<typename T>
-  using hash_set_t = std::unordered_set<T, hash_t>;
+  using hash_set_t = std::unordered_set<T, hash_t, equal_t>;
 
   struct hash_combiner_t {
     hash_value_t value = 0;
@@ -62,6 +70,11 @@ namespace silva {
   {
     using silva::hash_impl;
     return hash_impl(x);
+  }
+  template<typename T, typename U>
+  constexpr bool equal_t::operator()(const T& lhs, const U& rhs) const
+  {
+    return lhs == rhs;
   }
 
   inline void hash_combiner_t::combine(const hash_value_t x)

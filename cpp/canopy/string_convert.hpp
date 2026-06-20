@@ -1,5 +1,6 @@
 #pragma once
 
+#include "enum.hpp"
 #include "expected.hpp"
 #include "string_or_view.hpp"
 #include "types.hpp"
@@ -37,7 +38,7 @@ namespace silva {
         return false;
       }
       else {
-        SILVA_EXPECT(false, MINOR, "Could not convert string '{}' to bool", value);
+        SILVA_EXPECT(false, MINOR, "could not convert string '{}' to bool", value);
       }
     }
     else if constexpr (std::same_as<index_t, T>) {
@@ -45,7 +46,7 @@ namespace silva {
         return std::stoll(string_t{value});
       }
       catch (...) {
-        SILVA_EXPECT(false, MINOR, "Could not convert string '{}' to index_t", value);
+        SILVA_EXPECT(false, MINOR, "could not convert string '{}' to index_t", value);
       }
     }
     else if constexpr (std::same_as<double, T>) {
@@ -53,8 +54,18 @@ namespace silva {
         return std::stod(string_t{value});
       }
       catch (...) {
-        SILVA_EXPECT(false, MINOR, "Could not convert string '{}' to double", value);
+        SILVA_EXPECT(false, MINOR, "could not convert string '{}' to double", value);
       }
+    }
+    else if constexpr (std::is_enum_v<T>) {
+      const auto& hm = enum_hashmap_from_string<T>();
+      const auto it  = hm.find(value);
+      SILVA_EXPECT(it != hm.end(),
+                   MINOR,
+                   "could not convert string '{}' to enum of type '{}'",
+                   value,
+                   rfl::type_name_t<T>().name());
+      return it->second;
     }
     else {
       static_assert(false, "Unsupported type in silva::convert_to");

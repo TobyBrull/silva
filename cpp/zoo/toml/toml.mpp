@@ -1,5 +1,6 @@
 #include "toml.hpp"
 
+#include "canopy/env_context.hpp"
 #include "canopy/main.hpp"
 
 #include "syntax/syntax.hpp"
@@ -20,7 +21,9 @@ namespace silva::toml {
     parse_tree_ptr_t ptp;
     ptp = SILVA_EXPECT_FWD_PLAIN(se->apply(fp, sf.name_id_of("Toml")));
 
-    fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string()));
+    using tsm_t    = parse_tree_span_t::to_string_mode_t;
+    const auto tsm = SILVA_ENV_CONTEXT_AS("print-mode", tsm_t, tsm_t::ALL);
+    fmt::print("{}\n", SILVA_EXPECT_FWD(ptp->span().to_string(50, tsm)));
 
     return {};
   }

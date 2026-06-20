@@ -1,15 +1,5 @@
 # TODO
 
-* allow token-categories that start with, e.g., "language"
-    * for this group fragment-categories and demand that every literal only has fragments from a
-      single group?
-    * when matching literals (e.g., 'fun') these should only match if the next fragment is from a
-      different group (fix: "ffunction" in lox.lox and change "lang_name" back to "language_name" in
-      syntax.hpp)
-    * token rules startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
-* enforce:
-    * node-rules may only use other node-rules or token-rules
-    * token-rules may only use other token-rules or FRAGMENTS
 * Functionality to add to seed:
     * abbrev for `a | b | c`
         * `[ a b c ]`
@@ -20,19 +10,24 @@
         * `DIGIT { 2 , }`
     * abbrev for `a ( b ( c ( d ) ? ) ? ) ?`
         * `a → b → c → d` ?
+* Tokenization
+    * `number` rule should be more specific (e.g., only allow `x` in second place, etc...)
+* allow token-categories that start with, e.g., "language"
+    * for this group fragment-categories and demand that every literal only has fragments from a
+      single group?
+    * when matching literals (e.g., 'fun') these should only match if the next fragment is from a
+      different group (fix: "ffunction" in lox.lox and change "lang_name" back to "language_name" in
+      syntax.hpp)
+    * token rules startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
+* enforce:
+    * node-rules may only use other node-rules or token-rules
+    * token-rules may only use other token-rules or FRAGMENTS
 * parse skip-rule AFTER every token
     * to support "end_of_language"
     * don't skip in seed.cpp in recursive token calls
-* Allow "⊙" later in "language" section
-    * or remove "⊙" completely
-    * in any case it should be possible to first define all tokens before the non-terminals
+* In parsing errors, show what has been successfully parsed so far
 
-* Parse -3.5e-4 in Seed, not in tokenization?
-* Parse Toml's "2025-07-03 23:55:00"?
-* Remove tokenization step (rename what is currently "fragmentization" to "tokenization")?
-    * add way to easily ignore whitespace, indent, etc...?
-
-* tokenization:
+* Parsing:
     * Parse Python
     * Parse C
     * Parse Toml
