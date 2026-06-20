@@ -1,15 +1,17 @@
 Seed «
 language AsBs:
-  ⊙ = 'a' * 'b' *
   skip = skip_free_form
+
+  ⊙ = 'a' * 'b' *
 »
 
 AsBs « a a a b b »
 
 Seed «
 language CppStmts:
-  ⊙ = ( Expr ';' ) *
   skip = skip_free_form
+
+  ⊙ = ( Expr ';' ) *
   Expr:
     ⊙ = axe Atom oper
       Namespace   = rtl   infix '::' prefix '::'

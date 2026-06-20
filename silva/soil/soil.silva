@@ -1,9 +1,11 @@
 Seed «
 language Soil:
-  ⊙ = ( Type.Defn | Func.Defn | Variable.Defn ) *
   skip = skip_free_form
+
   type_name = 't_' identifier # should be: ending with "_t"
   func_name = 'f_' identifier # should be: ending with "_f"
+
+  ⊙ = ( Type.Defn | Func.Defn | Variable.Defn ) *
   Type:
     ⊙ = Name | Struct
     Name = type_name

@@ -216,14 +216,14 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].skip_free_form                               true      01-simplest.fern:7:2
 [  0]   1:1   cat=.Silva.lang_name                         Seed
 [  1]   1:6   cat=.literal                                 language
-[  2]   7:1   cat=.Silva.lang_name                         AsBs
-[  3]   7:6   cat=.literal                                 language
-[  4]   9:1   cat=.Silva.lang_name                         Seed
-[  5]   9:6   cat=.literal                                 language
-[  6]  42:1   cat=.Silva.lang_name                         CppStmts
-[  7]  42:10  cat=.literal                                 language
-[  8]  51:1   cat=.Silva.lang_name                         Fern
-[  9]  51:6   cat=.literal                                 language
+[  2]   8:1   cat=.Silva.lang_name                         AsBs
+[  3]   8:6   cat=.literal                                 language
+[  4]  10:1   cat=.Silva.lang_name                         Seed
+[  5]  10:6   cat=.literal                                 language
+[  6]  44:1   cat=.Silva.lang_name                         CppStmts
+[  7]  44:10  cat=.literal                                 language
+[  8]  53:1   cat=.Silva.lang_name                         Fern
+[  9]  53:6   cat=.literal                                 language
 
 [0].Silva                                         Seed language ... Fern language
   [0].Silva.Section                               Seed language
@@ -237,246 +237,246 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [  2]   2:14  cat=.literal                                 :
 [  3]   2:15  cat=.newline                                 \n
 [  4]   3:1   cat=.indent                                    
-[  5]   3:3   cat=.literal                                 ⊙
-[  6]   3:5   cat=.literal                                 =
-[  7]   3:7   cat=.string                                  'a'
-[  8]   3:11  cat=.Seed.Expr.operator                      *
-[  9]   3:13  cat=.string                                  'b'
-[ 10]   3:17  cat=.Seed.Expr.operator                      *
-[ 11]   3:18  cat=.newline                                 \n  
-[ 12]   4:3   cat=.Seed.token_category_name                skip
-[ 13]   4:8   cat=.literal                                 =
-[ 14]   4:10  cat=.Seed.token_category_name                skip_free_form
-[ 15]   4:24  cat=.newline                                 \n
-[ 16]   5:1   cat=.dedent                                  
+[  5]   3:3   cat=.Seed.token_category_name                skip
+[  6]   3:8   cat=.literal                                 =
+[  7]   3:10  cat=.Seed.token_category_name                skip_free_form
+[  8]   3:24  cat=.newline                                 \n
+[  9]   5:3   cat=.literal                                 ⊙
+[ 10]   5:5   cat=.literal                                 =
+[ 11]   5:7   cat=.string                                  'a'
+[ 12]   5:11  cat=.Seed.Expr.operator                      *
+[ 13]   5:13  cat=.string                                  'b'
+[ 14]   5:17  cat=.Seed.Expr.operator                      *
+[ 15]   5:18  cat=.newline                                 \n
+[ 16]   6:1   cat=.dedent                                  
 
 [0].Seed                                          language AsBs ... \n 
   [0].Seed.Language                               language AsBs ... \n 
-    [0].Seed.Rule                                 ⊙ = ... * \n  
+    [0].Seed.Rule                                 skip = skip_free_form \n
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_free_form
+    [1].Seed.Rule                                 ⊙ = ... * \n
       [0].Seed.Expr.Concat.concat                 'a' * 'b' *
         [0].Seed.Expr.Postfix.*                   'a' *
           [0].Seed.Terminal                       'a'
         [1].Seed.Expr.Postfix.*                   'b' *
           [0].Seed.Terminal                       'b'
-    [1].Seed.Rule                                 skip = skip_free_form \n
-      [0].Seed.Nonterminal                        skip
-      [1].Seed.Nonterminal                        skip_free_form
 
-[  0]   7:8   cat=.literal                                 a
-[  1]   7:10  cat=.literal                                 a
-[  2]   7:12  cat=.literal                                 a
-[  3]   7:14  cat=.literal                                 b
-[  4]   7:16  cat=.literal                                 b
+[  0]   8:8   cat=.literal                                 a
+[  1]   8:10  cat=.literal                                 a
+[  2]   8:12  cat=.literal                                 a
+[  3]   8:14  cat=.literal                                 b
+[  4]   8:16  cat=.literal                                 b
 
 [0].AsBs                                          a a a b b
 
-[  0]  10:1   cat=.literal                                 language
-[  1]  10:10  cat=.Seed.rule_name                          CppStmts
-[  2]  10:18  cat=.literal                                 :
-[  3]  10:19  cat=.newline                                 \n
-[  4]  11:1   cat=.indent                                    
-[  5]  11:3   cat=.literal                                 ⊙
-[  6]  11:5   cat=.literal                                 =
-[  7]  11:7   cat=.literal                                 (
-[  8]  11:9   cat=.Seed.rule_name                          Expr
-[  9]  11:14  cat=.string                                  ';'
-[ 10]  11:18  cat=.literal                                 )
-[ 11]  11:20  cat=.Seed.Expr.operator                      *
-[ 12]  11:21  cat=.newline                                 \n  
-[ 13]  12:3   cat=.Seed.token_category_name                skip
-[ 14]  12:8   cat=.literal                                 =
-[ 15]  12:10  cat=.Seed.token_category_name                skip_free_form
-[ 16]  12:24  cat=.newline                                 \n  
-[ 17]  13:3   cat=.Seed.rule_name                          Expr
-[ 18]  13:7   cat=.literal                                 :
-[ 19]  13:8   cat=.newline                                 \n
-[ 20]  14:1   cat=.indent                                      
-[ 21]  14:5   cat=.literal                                 ⊙
-[ 22]  14:7   cat=.literal                                 =
-[ 23]  14:9   cat=.literal                                 axe
-[ 24]  14:13  cat=.Seed.rule_name                          Atom
-[ 25]  14:18  cat=.Seed.token_category_name                oper
-[ 26]  14:22  cat=.newline                                 \n
-[ 27]  15:1   cat=.indent                                        
-[ 28]  15:7   cat=.Seed.rule_name                          Namespace
-[ 29]  15:19  cat=.literal                                 =
-[ 30]  15:21  cat=.literal                                 rtl
-[ 31]  15:27  cat=.literal                                 infix
-[ 32]  15:33  cat=.string                                  '::'
-[ 33]  15:38  cat=.literal                                 prefix
-[ 34]  15:45  cat=.string                                  '::'
-[ 35]  15:49  cat=.newline                                 \n      
-[ 36]  16:7   cat=.Seed.rule_name                          Postfix
-[ 37]  16:19  cat=.literal                                 =
-[ 38]  16:21  cat=.literal                                 ltr
-[ 39]  16:27  cat=.literal                                 postfix
-[ 40]  16:35  cat=.string                                  '++'
-[ 41]  16:40  cat=.string                                  '--'
-[ 42]  17:27  cat=.literal                                 postfix_nest
-[ 43]  17:40  cat=.string                                  '('
-[ 44]  17:44  cat=.string                                  ')'
-[ 45]  17:48  cat=.string                                  '['
-[ 46]  17:52  cat=.string                                  ']'
-[ 47]  18:27  cat=.literal                                 infix
-[ 48]  18:33  cat=.string                                  '.'
-[ 49]  18:37  cat=.string                                  '->'
-[ 50]  18:41  cat=.newline                                 \n      
-[ 51]  19:7   cat=.Seed.rule_name                          Prefix
-[ 52]  19:19  cat=.literal                                 =
-[ 53]  19:21  cat=.literal                                 rtl
-[ 54]  19:27  cat=.literal                                 prefix
-[ 55]  19:34  cat=.string                                  '++'
-[ 56]  19:39  cat=.string                                  '--'
-[ 57]  19:44  cat=.string                                  '+'
-[ 58]  19:48  cat=.string                                  '-'
-[ 59]  19:52  cat=.string                                  '!'
-[ 60]  19:56  cat=.string                                  '~'
-[ 61]  19:60  cat=.string                                  '*'
-[ 62]  19:64  cat=.string                                  '&'
-[ 63]  19:68  cat=.string                                  'sizeof'
-[ 64]  19:77  cat=.string                                  'new'
-[ 65]  20:27  cat=.literal                                 prefix_nest
-[ 66]  20:39  cat=.literal                                 ->
-[ 67]  20:42  cat=.Seed.rule_name                          Type
-[ 68]  20:47  cat=.string                                  '('
-[ 69]  20:51  cat=.string                                  ')'
-[ 70]  20:54  cat=.newline                                 \n      
-[ 71]  21:7   cat=.Seed.rule_name                          Member
-[ 72]  21:19  cat=.literal                                 =
-[ 73]  21:21  cat=.literal                                 ltr
-[ 74]  21:27  cat=.literal                                 infix
-[ 75]  21:33  cat=.string                                  '.*'
-[ 76]  21:38  cat=.string                                  '->*'
-[ 77]  21:43  cat=.newline                                 \n      
-[ 78]  22:7   cat=.Seed.rule_name                          Multiply
-[ 79]  22:19  cat=.literal                                 =
-[ 80]  22:21  cat=.literal                                 ltr
-[ 81]  22:27  cat=.literal                                 infix
-[ 82]  22:33  cat=.string                                  '*'
-[ 83]  22:37  cat=.string                                  '/'
-[ 84]  22:41  cat=.string                                  '%'
-[ 85]  22:44  cat=.newline                                 \n      
-[ 86]  23:7   cat=.Seed.rule_name                          Addition
-[ 87]  23:19  cat=.literal                                 =
-[ 88]  23:21  cat=.literal                                 ltr
-[ 89]  23:27  cat=.literal                                 infix
-[ 90]  23:33  cat=.string                                  '+'
-[ 91]  23:37  cat=.string                                  '-'
-[ 92]  23:40  cat=.newline                                 \n      
-[ 93]  24:7   cat=.Seed.rule_name                          Bitshift
-[ 94]  24:19  cat=.literal                                 =
-[ 95]  24:21  cat=.literal                                 ltr
-[ 96]  24:27  cat=.literal                                 infix
-[ 97]  24:33  cat=.string                                  '<<'
-[ 98]  24:38  cat=.string                                  '>>'
-[ 99]  24:42  cat=.newline                                 \n      
-[100]  25:7   cat=.Seed.rule_name                          Spaceship
-[101]  25:19  cat=.literal                                 =
-[102]  25:21  cat=.literal                                 ltr
-[103]  25:27  cat=.literal                                 infix
-[104]  25:33  cat=.string                                  '<=>'
-[105]  25:38  cat=.newline                                 \n      
-[106]  26:7   cat=.Seed.rule_name                          Comparison
-[107]  26:19  cat=.literal                                 =
-[108]  26:21  cat=.literal                                 ltr
-[109]  26:27  cat=.literal                                 infix
-[110]  26:33  cat=.string                                  '<'
-[111]  26:37  cat=.string                                  '<='
-[112]  26:42  cat=.string                                  '>'
-[113]  26:46  cat=.string                                  '>='
-[114]  26:50  cat=.newline                                 \n      
-[115]  27:7   cat=.Seed.rule_name                          Equality
-[116]  27:19  cat=.literal                                 =
-[117]  27:21  cat=.literal                                 ltr
-[118]  27:27  cat=.literal                                 infix
-[119]  27:33  cat=.string                                  '=='
-[120]  27:38  cat=.string                                  '!='
-[121]  27:42  cat=.newline                                 \n      
-[122]  28:7   cat=.Seed.rule_name                          BitAnd
-[123]  28:19  cat=.literal                                 =
-[124]  28:21  cat=.literal                                 ltr
-[125]  28:27  cat=.literal                                 infix
-[126]  28:33  cat=.string                                  '&'
-[127]  28:36  cat=.newline                                 \n      
-[128]  29:7   cat=.Seed.rule_name                          BitXor
-[129]  29:19  cat=.literal                                 =
-[130]  29:21  cat=.literal                                 ltr
-[131]  29:27  cat=.literal                                 infix
-[132]  29:33  cat=.string                                  '^'
-[133]  29:36  cat=.newline                                 \n      
-[134]  30:7   cat=.Seed.rule_name                          BitOr
-[135]  30:19  cat=.literal                                 =
-[136]  30:21  cat=.literal                                 ltr
-[137]  30:27  cat=.literal                                 infix
-[138]  30:33  cat=.string                                  '|'
-[139]  30:36  cat=.newline                                 \n      
-[140]  31:7   cat=.Seed.rule_name                          LogicalAnd
-[141]  31:19  cat=.literal                                 =
-[142]  31:21  cat=.literal                                 ltr
-[143]  31:27  cat=.literal                                 infix
-[144]  31:33  cat=.string                                  '&&'
-[145]  31:37  cat=.newline                                 \n      
-[146]  32:7   cat=.Seed.rule_name                          LogicalOr
-[147]  32:19  cat=.literal                                 =
-[148]  32:21  cat=.literal                                 ltr
-[149]  32:27  cat=.literal                                 infix
-[150]  32:33  cat=.string                                  '||'
-[151]  32:37  cat=.newline                                 \n      
-[152]  33:7   cat=.Seed.rule_name                          Assignment
-[153]  33:19  cat=.literal                                 =
-[154]  33:21  cat=.literal                                 rtl
-[155]  33:27  cat=.literal                                 infix
-[156]  33:33  cat=.string                                  '='
-[157]  33:37  cat=.string                                  '+='
-[158]  33:42  cat=.string                                  '-='
-[159]  34:27  cat=.literal                                 prefix
-[160]  34:34  cat=.string                                  'throw'
-[161]  35:27  cat=.literal                                 ternary
-[162]  35:35  cat=.string                                  '?'
-[163]  35:39  cat=.string                                  ':'
-[164]  35:42  cat=.newline                                 \n      
-[165]  36:7   cat=.Seed.rule_name                          Comma
-[166]  36:19  cat=.literal                                 =
-[167]  36:21  cat=.literal                                 ltr
-[168]  36:27  cat=.literal                                 infix
-[169]  36:33  cat=.string                                  ','
-[170]  36:36  cat=.newline                                 \n
-[171]  37:1   cat=.dedent                                      
-[172]  37:5   cat=.Seed.rule_name                          Atom
-[173]  37:10  cat=.literal                                 =
-[174]  37:12  cat=.Seed.token_category_name                number
-[175]  37:19  cat=.Seed.Expr.operator                      |
-[176]  37:21  cat=.Seed.token_category_name                string
-[177]  37:28  cat=.Seed.Expr.operator                      |
-[178]  37:30  cat=.Seed.token_category_name                identifier
-[179]  37:41  cat=.Seed.Expr.operator                      |
-[180]  37:43  cat=.string                                  '('
-[181]  37:47  cat=.Seed.rule_name                          Expr
-[182]  37:52  cat=.string                                  ')'
-[183]  37:55  cat=.newline                                 \n    
-[184]  38:5   cat=.Seed.token_category_name                oper
-[185]  38:10  cat=.literal                                 =
-[186]  38:12  cat=.Seed.token_category_name                parenthesis
-[187]  38:24  cat=.Seed.Expr.operator                      |
-[188]  38:26  cat=.Seed.token_category_name                operator_greedy
-[189]  38:41  cat=.newline                                 \n    
-[190]  39:5   cat=.Seed.rule_name                          Type
-[191]  39:10  cat=.literal                                 =
-[192]  39:12  cat=.Seed.token_category_name                identifier
-[193]  39:22  cat=.newline                                 \n
-[194]  40:1   cat=.dedent                                  
-[195]  40:1   cat=.dedent                                  
+[  0]  11:1   cat=.literal                                 language
+[  1]  11:10  cat=.Seed.rule_name                          CppStmts
+[  2]  11:18  cat=.literal                                 :
+[  3]  11:19  cat=.newline                                 \n
+[  4]  12:1   cat=.indent                                    
+[  5]  12:3   cat=.Seed.token_category_name                skip
+[  6]  12:8   cat=.literal                                 =
+[  7]  12:10  cat=.Seed.token_category_name                skip_free_form
+[  8]  12:24  cat=.newline                                 \n
+[  9]  14:3   cat=.literal                                 ⊙
+[ 10]  14:5   cat=.literal                                 =
+[ 11]  14:7   cat=.literal                                 (
+[ 12]  14:9   cat=.Seed.rule_name                          Expr
+[ 13]  14:14  cat=.string                                  ';'
+[ 14]  14:18  cat=.literal                                 )
+[ 15]  14:20  cat=.Seed.Expr.operator                      *
+[ 16]  14:21  cat=.newline                                 \n  
+[ 17]  15:3   cat=.Seed.rule_name                          Expr
+[ 18]  15:7   cat=.literal                                 :
+[ 19]  15:8   cat=.newline                                 \n
+[ 20]  16:1   cat=.indent                                      
+[ 21]  16:5   cat=.literal                                 ⊙
+[ 22]  16:7   cat=.literal                                 =
+[ 23]  16:9   cat=.literal                                 axe
+[ 24]  16:13  cat=.Seed.rule_name                          Atom
+[ 25]  16:18  cat=.Seed.token_category_name                oper
+[ 26]  16:22  cat=.newline                                 \n
+[ 27]  17:1   cat=.indent                                        
+[ 28]  17:7   cat=.Seed.rule_name                          Namespace
+[ 29]  17:19  cat=.literal                                 =
+[ 30]  17:21  cat=.literal                                 rtl
+[ 31]  17:27  cat=.literal                                 infix
+[ 32]  17:33  cat=.string                                  '::'
+[ 33]  17:38  cat=.literal                                 prefix
+[ 34]  17:45  cat=.string                                  '::'
+[ 35]  17:49  cat=.newline                                 \n      
+[ 36]  18:7   cat=.Seed.rule_name                          Postfix
+[ 37]  18:19  cat=.literal                                 =
+[ 38]  18:21  cat=.literal                                 ltr
+[ 39]  18:27  cat=.literal                                 postfix
+[ 40]  18:35  cat=.string                                  '++'
+[ 41]  18:40  cat=.string                                  '--'
+[ 42]  19:27  cat=.literal                                 postfix_nest
+[ 43]  19:40  cat=.string                                  '('
+[ 44]  19:44  cat=.string                                  ')'
+[ 45]  19:48  cat=.string                                  '['
+[ 46]  19:52  cat=.string                                  ']'
+[ 47]  20:27  cat=.literal                                 infix
+[ 48]  20:33  cat=.string                                  '.'
+[ 49]  20:37  cat=.string                                  '->'
+[ 50]  20:41  cat=.newline                                 \n      
+[ 51]  21:7   cat=.Seed.rule_name                          Prefix
+[ 52]  21:19  cat=.literal                                 =
+[ 53]  21:21  cat=.literal                                 rtl
+[ 54]  21:27  cat=.literal                                 prefix
+[ 55]  21:34  cat=.string                                  '++'
+[ 56]  21:39  cat=.string                                  '--'
+[ 57]  21:44  cat=.string                                  '+'
+[ 58]  21:48  cat=.string                                  '-'
+[ 59]  21:52  cat=.string                                  '!'
+[ 60]  21:56  cat=.string                                  '~'
+[ 61]  21:60  cat=.string                                  '*'
+[ 62]  21:64  cat=.string                                  '&'
+[ 63]  21:68  cat=.string                                  'sizeof'
+[ 64]  21:77  cat=.string                                  'new'
+[ 65]  22:27  cat=.literal                                 prefix_nest
+[ 66]  22:39  cat=.literal                                 ->
+[ 67]  22:42  cat=.Seed.rule_name                          Type
+[ 68]  22:47  cat=.string                                  '('
+[ 69]  22:51  cat=.string                                  ')'
+[ 70]  22:54  cat=.newline                                 \n      
+[ 71]  23:7   cat=.Seed.rule_name                          Member
+[ 72]  23:19  cat=.literal                                 =
+[ 73]  23:21  cat=.literal                                 ltr
+[ 74]  23:27  cat=.literal                                 infix
+[ 75]  23:33  cat=.string                                  '.*'
+[ 76]  23:38  cat=.string                                  '->*'
+[ 77]  23:43  cat=.newline                                 \n      
+[ 78]  24:7   cat=.Seed.rule_name                          Multiply
+[ 79]  24:19  cat=.literal                                 =
+[ 80]  24:21  cat=.literal                                 ltr
+[ 81]  24:27  cat=.literal                                 infix
+[ 82]  24:33  cat=.string                                  '*'
+[ 83]  24:37  cat=.string                                  '/'
+[ 84]  24:41  cat=.string                                  '%'
+[ 85]  24:44  cat=.newline                                 \n      
+[ 86]  25:7   cat=.Seed.rule_name                          Addition
+[ 87]  25:19  cat=.literal                                 =
+[ 88]  25:21  cat=.literal                                 ltr
+[ 89]  25:27  cat=.literal                                 infix
+[ 90]  25:33  cat=.string                                  '+'
+[ 91]  25:37  cat=.string                                  '-'
+[ 92]  25:40  cat=.newline                                 \n      
+[ 93]  26:7   cat=.Seed.rule_name                          Bitshift
+[ 94]  26:19  cat=.literal                                 =
+[ 95]  26:21  cat=.literal                                 ltr
+[ 96]  26:27  cat=.literal                                 infix
+[ 97]  26:33  cat=.string                                  '<<'
+[ 98]  26:38  cat=.string                                  '>>'
+[ 99]  26:42  cat=.newline                                 \n      
+[100]  27:7   cat=.Seed.rule_name                          Spaceship
+[101]  27:19  cat=.literal                                 =
+[102]  27:21  cat=.literal                                 ltr
+[103]  27:27  cat=.literal                                 infix
+[104]  27:33  cat=.string                                  '<=>'
+[105]  27:38  cat=.newline                                 \n      
+[106]  28:7   cat=.Seed.rule_name                          Comparison
+[107]  28:19  cat=.literal                                 =
+[108]  28:21  cat=.literal                                 ltr
+[109]  28:27  cat=.literal                                 infix
+[110]  28:33  cat=.string                                  '<'
+[111]  28:37  cat=.string                                  '<='
+[112]  28:42  cat=.string                                  '>'
+[113]  28:46  cat=.string                                  '>='
+[114]  28:50  cat=.newline                                 \n      
+[115]  29:7   cat=.Seed.rule_name                          Equality
+[116]  29:19  cat=.literal                                 =
+[117]  29:21  cat=.literal                                 ltr
+[118]  29:27  cat=.literal                                 infix
+[119]  29:33  cat=.string                                  '=='
+[120]  29:38  cat=.string                                  '!='
+[121]  29:42  cat=.newline                                 \n      
+[122]  30:7   cat=.Seed.rule_name                          BitAnd
+[123]  30:19  cat=.literal                                 =
+[124]  30:21  cat=.literal                                 ltr
+[125]  30:27  cat=.literal                                 infix
+[126]  30:33  cat=.string                                  '&'
+[127]  30:36  cat=.newline                                 \n      
+[128]  31:7   cat=.Seed.rule_name                          BitXor
+[129]  31:19  cat=.literal                                 =
+[130]  31:21  cat=.literal                                 ltr
+[131]  31:27  cat=.literal                                 infix
+[132]  31:33  cat=.string                                  '^'
+[133]  31:36  cat=.newline                                 \n      
+[134]  32:7   cat=.Seed.rule_name                          BitOr
+[135]  32:19  cat=.literal                                 =
+[136]  32:21  cat=.literal                                 ltr
+[137]  32:27  cat=.literal                                 infix
+[138]  32:33  cat=.string                                  '|'
+[139]  32:36  cat=.newline                                 \n      
+[140]  33:7   cat=.Seed.rule_name                          LogicalAnd
+[141]  33:19  cat=.literal                                 =
+[142]  33:21  cat=.literal                                 ltr
+[143]  33:27  cat=.literal                                 infix
+[144]  33:33  cat=.string                                  '&&'
+[145]  33:37  cat=.newline                                 \n      
+[146]  34:7   cat=.Seed.rule_name                          LogicalOr
+[147]  34:19  cat=.literal                                 =
+[148]  34:21  cat=.literal                                 ltr
+[149]  34:27  cat=.literal                                 infix
+[150]  34:33  cat=.string                                  '||'
+[151]  34:37  cat=.newline                                 \n      
+[152]  35:7   cat=.Seed.rule_name                          Assignment
+[153]  35:19  cat=.literal                                 =
+[154]  35:21  cat=.literal                                 rtl
+[155]  35:27  cat=.literal                                 infix
+[156]  35:33  cat=.string                                  '='
+[157]  35:37  cat=.string                                  '+='
+[158]  35:42  cat=.string                                  '-='
+[159]  36:27  cat=.literal                                 prefix
+[160]  36:34  cat=.string                                  'throw'
+[161]  37:27  cat=.literal                                 ternary
+[162]  37:35  cat=.string                                  '?'
+[163]  37:39  cat=.string                                  ':'
+[164]  37:42  cat=.newline                                 \n      
+[165]  38:7   cat=.Seed.rule_name                          Comma
+[166]  38:19  cat=.literal                                 =
+[167]  38:21  cat=.literal                                 ltr
+[168]  38:27  cat=.literal                                 infix
+[169]  38:33  cat=.string                                  ','
+[170]  38:36  cat=.newline                                 \n
+[171]  39:1   cat=.dedent                                      
+[172]  39:5   cat=.Seed.rule_name                          Atom
+[173]  39:10  cat=.literal                                 =
+[174]  39:12  cat=.Seed.token_category_name                number
+[175]  39:19  cat=.Seed.Expr.operator                      |
+[176]  39:21  cat=.Seed.token_category_name                string
+[177]  39:28  cat=.Seed.Expr.operator                      |
+[178]  39:30  cat=.Seed.token_category_name                identifier
+[179]  39:41  cat=.Seed.Expr.operator                      |
+[180]  39:43  cat=.string                                  '('
+[181]  39:47  cat=.Seed.rule_name                          Expr
+[182]  39:52  cat=.string                                  ')'
+[183]  39:55  cat=.newline                                 \n    
+[184]  40:5   cat=.Seed.token_category_name                oper
+[185]  40:10  cat=.literal                                 =
+[186]  40:12  cat=.Seed.token_category_name                parenthesis
+[187]  40:24  cat=.Seed.Expr.operator                      |
+[188]  40:26  cat=.Seed.token_category_name                operator_greedy
+[189]  40:41  cat=.newline                                 \n    
+[190]  41:5   cat=.Seed.rule_name                          Type
+[191]  41:10  cat=.literal                                 =
+[192]  41:12  cat=.Seed.token_category_name                identifier
+[193]  41:22  cat=.newline                                 \n
+[194]  42:1   cat=.dedent                                  
+[195]  42:1   cat=.dedent                                  
 
 [0].Seed                                          language CppStmts ...  
   [0].Seed.Language                               language CppStmts ...  
-    [0].Seed.Rule                                 ⊙ = ... * \n  
+    [0].Seed.Rule                                 skip = skip_free_form \n
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_free_form
+    [1].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.Expr.Postfix.*                     ( Expr ';' ) *
         [0].Seed.Expr.Concat.concat               Expr ';'
           [0].Seed.Nonterminal                    Expr
           [1].Seed.Terminal                       ';'
-    [1].Seed.Rule                                 skip = skip_free_form \n  
-      [0].Seed.Nonterminal                        skip
-      [1].Seed.Nonterminal                        skip_free_form
     [2].Seed.Scope                                Expr : ... \n 
       [0].Seed.Nonterminal                        Expr
       [1].Seed.Rule                               ⊙ = ... \n     
@@ -633,66 +633,66 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.Nonterminal                      Type
         [1].Seed.Nonterminal                      identifier
 
-[  0]  43:1   cat=.number                                  1
-[  1]  43:3   cat=.CppStmts.Expr.oper                      +
-[  2]  43:5   cat=.number                                  2
-[  3]  43:7   cat=.CppStmts.Expr.oper                      *
-[  4]  43:9   cat=.number                                  3
-[  5]  43:11  cat=.CppStmts.Expr.oper                      +
-[  6]  43:13  cat=.number                                  4
-[  7]  43:15  cat=.CppStmts.Expr.oper                      *
-[  8]  43:17  cat=.number                                  5
-[  9]  43:19  cat=.literal                                 ;
-[ 10]  44:1   cat=.identifier                              a
-[ 11]  44:2   cat=.CppStmts.Expr.oper                      [
-[ 12]  44:3   cat=.number                                  1
-[ 13]  44:4   cat=.CppStmts.Expr.oper                      ]
-[ 14]  44:6   cat=.CppStmts.Expr.oper                      =
-[ 15]  44:8   cat=.identifier                              std
-[ 16]  44:11  cat=.CppStmts.Expr.oper                      ::
-[ 17]  44:13  cat=.identifier                              sin
-[ 18]  44:16  cat=.CppStmts.Expr.oper                      (
-[ 19]  44:17  cat=.number                                  3.14
-[ 20]  44:21  cat=.CppStmts.Expr.oper                      )
-[ 21]  44:23  cat=.literal                                 ;
-[ 22]  45:1   cat=.number                                  1
-[ 23]  45:3   cat=.CppStmts.Expr.oper                      |
-[ 24]  45:5   cat=.number                                  0
-[ 25]  45:7   cat=.CppStmts.Expr.oper                      <=
-[ 26]  45:10  cat=.identifier                              x
-[ 27]  45:12  cat=.CppStmts.Expr.oper                      *
-[ 28]  45:14  cat=.number                                  10
-[ 29]  45:17  cat=.CppStmts.Expr.oper                      <=
-[ 30]  45:20  cat=.number                                  2
-[ 31]  45:22  cat=.CppStmts.Expr.oper                      +
-[ 32]  45:24  cat=.number                                  3
-[ 33]  45:26  cat=.literal                                 ;
-[ 34]  46:1   cat=.identifier                              std
-[ 35]  46:4   cat=.CppStmts.Expr.oper                      ::
-[ 36]  46:6   cat=.identifier                              get
-[ 37]  46:9   cat=.CppStmts.Expr.oper                      (
-[ 38]  46:10  cat=.identifier                              x
-[ 39]  46:11  cat=.CppStmts.Expr.oper                      )
-[ 40]  46:13  cat=.CppStmts.Expr.oper                      =
-[ 41]  46:15  cat=.CppStmts.Expr.oper                      ::
-[ 42]  46:17  cat=.identifier                              std
-[ 43]  46:20  cat=.CppStmts.Expr.oper                      ::
-[ 44]  46:22  cat=.identifier                              get
-[ 45]  46:25  cat=.CppStmts.Expr.oper                      (
-[ 46]  46:26  cat=.identifier                              x
-[ 47]  46:27  cat=.CppStmts.Expr.oper                      )
-[ 48]  46:29  cat=.literal                                 ;
-[ 49]  47:1   cat=.CppStmts.Expr.oper                      ++
-[ 50]  47:4   cat=.identifier                              x
-[ 51]  47:6   cat=.CppStmts.Expr.oper                      ++
-[ 52]  47:9   cat=.literal                                 ;
-[ 53]  48:1   cat=.identifier                              a
-[ 54]  48:3   cat=.CppStmts.Expr.oper                      +
-[ 55]  48:5   cat=.CppStmts.Expr.oper                      (
-[ 56]  48:6   cat=.identifier                              int
-[ 57]  48:9   cat=.CppStmts.Expr.oper                      )
-[ 58]  48:11  cat=.identifier                              b
-[ 59]  48:13  cat=.literal                                 ;
+[  0]  45:1   cat=.number                                  1
+[  1]  45:3   cat=.CppStmts.Expr.oper                      +
+[  2]  45:5   cat=.number                                  2
+[  3]  45:7   cat=.CppStmts.Expr.oper                      *
+[  4]  45:9   cat=.number                                  3
+[  5]  45:11  cat=.CppStmts.Expr.oper                      +
+[  6]  45:13  cat=.number                                  4
+[  7]  45:15  cat=.CppStmts.Expr.oper                      *
+[  8]  45:17  cat=.number                                  5
+[  9]  45:19  cat=.literal                                 ;
+[ 10]  46:1   cat=.identifier                              a
+[ 11]  46:2   cat=.CppStmts.Expr.oper                      [
+[ 12]  46:3   cat=.number                                  1
+[ 13]  46:4   cat=.CppStmts.Expr.oper                      ]
+[ 14]  46:6   cat=.CppStmts.Expr.oper                      =
+[ 15]  46:8   cat=.identifier                              std
+[ 16]  46:11  cat=.CppStmts.Expr.oper                      ::
+[ 17]  46:13  cat=.identifier                              sin
+[ 18]  46:16  cat=.CppStmts.Expr.oper                      (
+[ 19]  46:17  cat=.number                                  3.14
+[ 20]  46:21  cat=.CppStmts.Expr.oper                      )
+[ 21]  46:23  cat=.literal                                 ;
+[ 22]  47:1   cat=.number                                  1
+[ 23]  47:3   cat=.CppStmts.Expr.oper                      |
+[ 24]  47:5   cat=.number                                  0
+[ 25]  47:7   cat=.CppStmts.Expr.oper                      <=
+[ 26]  47:10  cat=.identifier                              x
+[ 27]  47:12  cat=.CppStmts.Expr.oper                      *
+[ 28]  47:14  cat=.number                                  10
+[ 29]  47:17  cat=.CppStmts.Expr.oper                      <=
+[ 30]  47:20  cat=.number                                  2
+[ 31]  47:22  cat=.CppStmts.Expr.oper                      +
+[ 32]  47:24  cat=.number                                  3
+[ 33]  47:26  cat=.literal                                 ;
+[ 34]  48:1   cat=.identifier                              std
+[ 35]  48:4   cat=.CppStmts.Expr.oper                      ::
+[ 36]  48:6   cat=.identifier                              get
+[ 37]  48:9   cat=.CppStmts.Expr.oper                      (
+[ 38]  48:10  cat=.identifier                              x
+[ 39]  48:11  cat=.CppStmts.Expr.oper                      )
+[ 40]  48:13  cat=.CppStmts.Expr.oper                      =
+[ 41]  48:15  cat=.CppStmts.Expr.oper                      ::
+[ 42]  48:17  cat=.identifier                              std
+[ 43]  48:20  cat=.CppStmts.Expr.oper                      ::
+[ 44]  48:22  cat=.identifier                              get
+[ 45]  48:25  cat=.CppStmts.Expr.oper                      (
+[ 46]  48:26  cat=.identifier                              x
+[ 47]  48:27  cat=.CppStmts.Expr.oper                      )
+[ 48]  48:29  cat=.literal                                 ;
+[ 49]  49:1   cat=.CppStmts.Expr.oper                      ++
+[ 50]  49:4   cat=.identifier                              x
+[ 51]  49:6   cat=.CppStmts.Expr.oper                      ++
+[ 52]  49:9   cat=.literal                                 ;
+[ 53]  50:1   cat=.identifier                              a
+[ 54]  50:3   cat=.CppStmts.Expr.oper                      +
+[ 55]  50:5   cat=.CppStmts.Expr.oper                      (
+[ 56]  50:6   cat=.identifier                              int
+[ 57]  50:9   cat=.CppStmts.Expr.oper                      )
+[ 58]  50:11  cat=.identifier                              b
+[ 59]  50:13  cat=.literal                                 ;
 
 [0].CppStmts                                      1 + ... b ;
   [0].CppStmts.Expr.Addition.+                    1 + ... * 5
@@ -745,24 +745,24 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].CppStmts.Expr.Type                      int
       [1].CppStmts.Expr.Atom                      b
 
-[  0]  52:1   cat=.literal                                 [
-[  1]  53:3   cat=.literal                                 none
-[  2]  54:3   cat=.literal                                 true
-[  3]  55:3   cat=.number                                  42
-[  4]  56:3   cat=.identifier                              hello
-[  5]  56:9   cat=.literal                                 :
-[  6]  56:11  cat=.string                                  'World'
-[  7]  57:3   cat=.literal                                 [
-[  8]  57:4   cat=.literal                                 ]
-[  9]  58:3   cat=.literal                                 [
-[ 10]  59:5   cat=.string                                  'one'
-[ 11]  59:11  cat=.literal                                 :
-[ 12]  59:13  cat=.number                                  1.0
-[ 13]  60:5   cat=.string                                  'two'
-[ 14]  60:11  cat=.literal                                 :
-[ 15]  60:13  cat=.number                                  2.0
-[ 16]  61:3   cat=.literal                                 ]
-[ 17]  62:1   cat=.literal                                 ]
+[  0]  54:1   cat=.literal                                 [
+[  1]  55:3   cat=.literal                                 none
+[  2]  56:3   cat=.literal                                 true
+[  3]  57:3   cat=.number                                  42
+[  4]  58:3   cat=.identifier                              hello
+[  5]  58:9   cat=.literal                                 :
+[  6]  58:11  cat=.string                                  'World'
+[  7]  59:3   cat=.literal                                 [
+[  8]  59:4   cat=.literal                                 ]
+[  9]  60:3   cat=.literal                                 [
+[ 10]  61:5   cat=.string                                  'one'
+[ 11]  61:11  cat=.literal                                 :
+[ 12]  61:13  cat=.number                                  1.0
+[ 13]  62:5   cat=.string                                  'two'
+[ 14]  62:11  cat=.literal                                 :
+[ 15]  62:13  cat=.number                                  2.0
+[ 16]  63:3   cat=.literal                                 ]
+[ 17]  64:1   cat=.literal                                 ]
 
 [0].Fern                                          [ none ... ] ]
   [0].Fern.LabeledItem                            none
@@ -790,36 +790,36 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [  2]   1:18  cat=.literal                                 :
 [  3]   1:19  cat=.newline                                 \n
 [  4]   2:1   cat=.indent                                    
-[  5]   2:3   cat=.literal                                 ⊙
-[  6]   2:5   cat=.literal                                 =
-[  7]   2:7   cat=.Seed.rule_name                          As
-[  8]   2:10  cat=.Seed.rule_name                          Bs
-[  9]   2:12  cat=.newline                                 \n  
-[ 10]   3:3   cat=.Seed.token_category_name                skip
-[ 11]   3:8   cat=.literal                                 =
-[ 12]   3:10  cat=.Seed.token_category_name                skip_free_form
-[ 13]   3:24  cat=.newline                                 \n  
-[ 14]   4:3   cat=.Seed.rule_name                          As
-[ 15]   4:6   cat=.literal                                 =
-[ 16]   4:8   cat=.string                                  'a'
-[ 17]   4:12  cat=.Seed.Expr.operator                      *
-[ 18]   4:13  cat=.newline                                 \n  
-[ 19]   5:3   cat=.Seed.rule_name                          Bs
-[ 20]   5:6   cat=.literal                                 =
-[ 21]   5:8   cat=.string                                  'b'
-[ 22]   5:12  cat=.Seed.Expr.operator                      *
-[ 23]   5:13  cat=.newline                                 
-[ 24]   5:13  cat=.dedent                                  
+[  5]   2:3   cat=.Seed.token_category_name                skip
+[  6]   2:8   cat=.literal                                 =
+[  7]   2:10  cat=.Seed.token_category_name                skip_free_form
+[  8]   2:24  cat=.newline                                 \n
+[  9]   4:3   cat=.literal                                 ⊙
+[ 10]   4:5   cat=.literal                                 =
+[ 11]   4:7   cat=.Seed.rule_name                          As
+[ 12]   4:10  cat=.Seed.rule_name                          Bs
+[ 13]   4:12  cat=.newline                                 \n  
+[ 14]   5:3   cat=.Seed.rule_name                          As
+[ 15]   5:6   cat=.literal                                 =
+[ 16]   5:8   cat=.string                                  'a'
+[ 17]   5:12  cat=.Seed.Expr.operator                      *
+[ 18]   5:13  cat=.newline                                 \n  
+[ 19]   6:3   cat=.Seed.rule_name                          Bs
+[ 20]   6:6   cat=.literal                                 =
+[ 21]   6:8   cat=.string                                  'b'
+[ 22]   6:12  cat=.Seed.Expr.operator                      *
+[ 23]   6:13  cat=.newline                                 
+[ 24]   6:13  cat=.dedent                                  
 
 [0].Seed                                          language Somelang ...  
   [0].Seed.Language                               language Somelang ...  
-    [0].Seed.Rule                                 ⊙ = As Bs \n  
+    [0].Seed.Rule                                 skip = skip_free_form \n
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_free_form
+    [1].Seed.Rule                                 ⊙ = As Bs \n  
       [0].Seed.Expr.Concat.concat                 As Bs
         [0].Seed.Nonterminal                      As
         [1].Seed.Nonterminal                      Bs
-    [1].Seed.Rule                                 skip = skip_free_form \n  
-      [0].Seed.Nonterminal                        skip
-      [1].Seed.Nonterminal                        skip_free_form
     [2].Seed.Rule                                 As = 'a' * \n  
       [0].Seed.Nonterminal                        As
       [1].Seed.Expr.Postfix.*                     'a' *
@@ -852,385 +852,385 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [  2]   2:14  cat=.literal                                 :
 [  3]   2:15  cat=.newline                                 \n
 [  4]   3:1   cat=.indent                                    
-[  5]   3:3   cat=.literal                                 ⊙
-[  6]   3:5   cat=.literal                                 =
-[  7]   3:7   cat=.literal                                 (
-[  8]   3:9   cat=.Seed.rule_name                          Type
-[  9]   3:13  cat=.literal                                 .
-[ 10]   3:14  cat=.Seed.rule_name                          Defn
-[ 11]   3:19  cat=.Seed.Expr.operator                      |
-[ 12]   3:21  cat=.Seed.rule_name                          Func
-[ 13]   3:25  cat=.literal                                 .
-[ 14]   3:26  cat=.Seed.rule_name                          Defn
-[ 15]   3:31  cat=.Seed.Expr.operator                      |
-[ 16]   3:33  cat=.Seed.rule_name                          Variable
-[ 17]   3:41  cat=.literal                                 .
-[ 18]   3:42  cat=.Seed.rule_name                          Defn
-[ 19]   3:47  cat=.literal                                 )
-[ 20]   3:49  cat=.Seed.Expr.operator                      *
-[ 21]   3:50  cat=.newline                                 \n  
-[ 22]   4:3   cat=.Seed.token_category_name                skip
-[ 23]   4:8   cat=.literal                                 =
-[ 24]   4:10  cat=.Seed.token_category_name                skip_free_form
-[ 25]   4:24  cat=.newline                                 \n  
-[ 26]   5:3   cat=.Seed.token_category_name                type_name
-[ 27]   5:13  cat=.literal                                 =
-[ 28]   5:15  cat=.string                                  't_'
-[ 29]   5:20  cat=.Seed.token_category_name                identifier
-[ 30]   5:60  cat=.newline                                 \n  
-[ 31]   6:3   cat=.Seed.token_category_name                func_name
-[ 32]   6:13  cat=.literal                                 =
-[ 33]   6:15  cat=.string                                  'f_'
-[ 34]   6:20  cat=.Seed.token_category_name                identifier
-[ 35]   6:60  cat=.newline                                 \n  
-[ 36]   7:3   cat=.Seed.rule_name                          Type
-[ 37]   7:7   cat=.literal                                 :
-[ 38]   7:8   cat=.newline                                 \n
-[ 39]   8:1   cat=.indent                                      
-[ 40]   8:5   cat=.literal                                 ⊙
-[ 41]   8:7   cat=.literal                                 =
-[ 42]   8:9   cat=.Seed.rule_name                          Name
-[ 43]   8:14  cat=.Seed.Expr.operator                      |
-[ 44]   8:16  cat=.Seed.rule_name                          Struct
-[ 45]   8:22  cat=.newline                                 \n    
-[ 46]   9:5   cat=.Seed.rule_name                          Name
-[ 47]   9:10  cat=.literal                                 =
-[ 48]   9:12  cat=.Seed.token_category_name                type_name
-[ 49]   9:21  cat=.newline                                 \n    
-[ 50]  10:5   cat=.Seed.rule_name                          Defn
-[ 51]  10:10  cat=.literal                                 =
-[ 52]  10:12  cat=.Seed.rule_name                          Name
-[ 53]  10:17  cat=.string                                  '='
-[ 54]  10:21  cat=.Seed.rule_name                          Type
-[ 55]  10:25  cat=.newline                                 \n    
-[ 56]  11:5   cat=.Seed.rule_name                          Struct
-[ 57]  11:11  cat=.literal                                 :
-[ 58]  11:12  cat=.newline                                 \n
-[ 59]  12:1   cat=.indent                                        
-[ 60]  12:7   cat=.literal                                 ⊙
-[ 61]  12:9   cat=.literal                                 =
-[ 62]  12:11  cat=.string                                  '['
-[ 63]  12:15  cat=.Seed.rule_name                          Member
-[ 64]  12:22  cat=.Seed.Expr.operator                      *
-[ 65]  12:24  cat=.string                                  ']'
-[ 66]  12:27  cat=.newline                                 \n      
-[ 67]  13:7   cat=.Seed.rule_name                          Member
-[ 68]  13:13  cat=.literal                                 :
-[ 69]  13:14  cat=.newline                                 \n
-[ 70]  14:1   cat=.indent                                          
-[ 71]  14:9   cat=.literal                                 ⊙
-[ 72]  14:11  cat=.literal                                 =
-[ 73]  14:13  cat=.Seed.rule_name                          Type
-[ 74]  14:18  cat=.Seed.rule_name                          Label
-[ 75]  14:24  cat=.Seed.Expr.operator                      ?
-[ 76]  14:26  cat=.Seed.rule_name                          Init
-[ 77]  14:31  cat=.Seed.Expr.operator                      ?
-[ 78]  14:33  cat=.string                                  ';'
-[ 79]  14:36  cat=.newline                                 \n        
-[ 80]  15:9   cat=.Seed.rule_name                          Label
-[ 81]  15:15  cat=.literal                                 =
-[ 82]  15:17  cat=.string                                  ':'
-[ 83]  15:21  cat=.Seed.rule_name                          Name
-[ 84]  15:25  cat=.newline                                 \n        
-[ 85]  16:9   cat=.Seed.rule_name                          Init
-[ 86]  16:14  cat=.literal                                 =
-[ 87]  16:16  cat=.string                                  '='
-[ 88]  16:20  cat=.Seed.rule_name                          Expr
-[ 89]  16:24  cat=.newline                                 \n        
-[ 90]  17:9   cat=.Seed.rule_name                          Name
-[ 91]  17:14  cat=.literal                                 =
-[ 92]  17:16  cat=.Seed.token_category_name                identifier
-[ 93]  17:26  cat=.newline                                 \n
-[ 94]  18:1   cat=.dedent                                  
-[ 95]  18:1   cat=.dedent                                  
-[ 96]  18:1   cat=.dedent                                    
-[ 97]  18:3   cat=.Seed.rule_name                          Expr
-[ 98]  18:7   cat=.literal                                 :
-[ 99]  18:8   cat=.newline                                 \n
-[100]  19:1   cat=.indent                                      
-[101]  19:5   cat=.literal                                 ⊙
-[102]  19:7   cat=.literal                                 =
-[103]  19:9   cat=.Seed.rule_name                          Axe
-[104]  19:12  cat=.newline                                 \n    
-[105]  20:5   cat=.Seed.rule_name                          Maybe
-[106]  20:11  cat=.literal                                 =
-[107]  20:13  cat=.Seed.rule_name                          Expr
-[108]  20:18  cat=.Seed.Expr.operator                      |
-[109]  20:20  cat=.literal                                 ε
-[110]  20:21  cat=.newline                                 \n    
-[111]  21:5   cat=.Seed.rule_name                          Axe
-[112]  21:9   cat=.literal                                 =
-[113]  21:11  cat=.literal                                 axe
-[114]  21:15  cat=.Seed.rule_name                          Atom
-[115]  21:20  cat=.Seed.token_category_name                oper
-[116]  21:24  cat=.newline                                 \n
-[117]  22:1   cat=.indent                                        
-[118]  22:7   cat=.Seed.rule_name                          Member
-[119]  22:17  cat=.literal                                 =
-[120]  22:19  cat=.literal                                 ltr
-[121]  22:23  cat=.literal                                 infix
-[122]  22:29  cat=.string                                  '.'
-[123]  22:32  cat=.newline                                 \n      
-[124]  23:7   cat=.Seed.rule_name                          CallPost
-[125]  23:17  cat=.literal                                 =
-[126]  23:19  cat=.literal                                 ltr
-[127]  23:23  cat=.literal                                 postfix_nest
-[128]  23:36  cat=.string                                  '('
-[129]  23:40  cat=.string                                  ')'
-[130]  23:43  cat=.newline                                 \n      
-[131]  24:7   cat=.Seed.rule_name                          Typing
-[132]  24:17  cat=.literal                                 =
-[133]  24:19  cat=.literal                                 ltr
-[134]  24:23  cat=.literal                                 infix
-[135]  24:29  cat=.string                                  '::'
-[136]  24:33  cat=.newline                                 \n      
-[137]  25:7   cat=.Seed.rule_name                          CallPipe
-[138]  25:17  cat=.literal                                 =
-[139]  25:19  cat=.literal                                 ltr
-[140]  25:23  cat=.literal                                 infix
-[141]  25:29  cat=.string                                  '|'
-[142]  25:32  cat=.newline                                 \n      
-[143]  26:7   cat=.Seed.rule_name                          Mul
-[144]  26:17  cat=.literal                                 =
-[145]  26:19  cat=.literal                                 ltr
-[146]  26:23  cat=.literal                                 infix
-[147]  26:29  cat=.string                                  '*'
-[148]  26:33  cat=.string                                  '//'
-[149]  26:37  cat=.newline                                 \n      
-[150]  27:7   cat=.Seed.rule_name                          Add
-[151]  27:17  cat=.literal                                 =
-[152]  27:19  cat=.literal                                 ltr
-[153]  27:23  cat=.literal                                 infix
-[154]  27:29  cat=.string                                  '+'
-[155]  27:33  cat=.string                                  '-'
-[156]  27:36  cat=.newline                                 \n      
-[157]  28:7   cat=.Seed.rule_name                          Comp
-[158]  28:17  cat=.literal                                 =
-[159]  28:19  cat=.literal                                 ltr
-[160]  28:23  cat=.literal                                 infix
-[161]  28:29  cat=.string                                  '=='
-[162]  28:34  cat=.string                                  '<='
-[163]  28:39  cat=.string                                  '<'
-[164]  28:43  cat=.string                                  '>'
-[165]  28:47  cat=.string                                  '>='
-[166]  28:51  cat=.newline                                 \n      
-[167]  29:7   cat=.Seed.rule_name                          Logic
-[168]  29:17  cat=.literal                                 =
-[169]  29:19  cat=.literal                                 ltr
-[170]  29:23  cat=.literal                                 infix
-[171]  29:29  cat=.string                                  'and'
-[172]  29:35  cat=.string                                  'or'
-[173]  29:39  cat=.newline                                 \n      
-[174]  30:7   cat=.Seed.rule_name                          Assign
-[175]  30:17  cat=.literal                                 =
-[176]  30:19  cat=.literal                                 ltr
-[177]  30:23  cat=.literal                                 infix
-[178]  30:29  cat=.string                                  '='
-[179]  30:33  cat=.string                                  '+='
-[180]  30:38  cat=.string                                  '*='
-[181]  30:42  cat=.newline                                 \n
-[182]  31:1   cat=.dedent                                      
-[183]  31:5   cat=.Seed.rule_name                          Atom
-[184]  31:10  cat=.literal                                 =
-[185]  31:12  cat=.literal                                 (
-[186]  31:14  cat=.Seed.rule_name                          Struct
-[187]  31:21  cat=.Seed.Expr.operator                      |
-[188]  31:23  cat=.literal                                 language
-[189]  32:12  cat=.Seed.Expr.operator                      |
-[190]  32:14  cat=.Seed.token_category_name                type_name
-[191]  32:24  cat=.Seed.Expr.operator                      |
-[192]  32:26  cat=.Seed.token_category_name                func_name
-[193]  32:36  cat=.Seed.Expr.operator                      |
-[194]  32:38  cat=.Seed.token_category_name                identifier
-[195]  33:12  cat=.Seed.Expr.operator                      |
-[196]  33:14  cat=.Seed.token_category_name                string
-[197]  33:21  cat=.Seed.Expr.operator                      |
-[198]  33:23  cat=.Seed.token_category_name                number
-[199]  34:12  cat=.Seed.Expr.operator                      |
-[200]  34:14  cat=.string                                  'true'
-[201]  34:21  cat=.Seed.Expr.operator                      |
-[202]  34:23  cat=.string                                  'false'
-[203]  34:31  cat=.Seed.Expr.operator                      |
-[204]  34:33  cat=.string                                  'none'
-[205]  35:12  cat=.Seed.Expr.operator                      |
-[206]  35:14  cat=.string                                  '('
-[207]  35:18  cat=.Seed.rule_name                          Expr
-[208]  35:23  cat=.string                                  ')'
-[209]  35:27  cat=.literal                                 )
-[210]  35:28  cat=.newline                                 \n    
-[211]  36:5   cat=.Seed.token_category_name                oper
-[212]  36:10  cat=.literal                                 =
-[213]  36:12  cat=.Seed.token_category_name                operator_greedy
-[214]  36:28  cat=.Seed.Expr.operator                      |
-[215]  36:30  cat=.Seed.token_category_name                parenthesis
-[216]  36:41  cat=.newline                                 \n    
-[217]  37:5   cat=.Seed.rule_name                          Struct
-[218]  37:11  cat=.literal                                 :
-[219]  37:12  cat=.newline                                 \n
-[220]  38:1   cat=.indent                                        
-[221]  38:7   cat=.literal                                 ⊙
-[222]  38:9   cat=.literal                                 =
-[223]  38:11  cat=.string                                  '['
-[224]  38:15  cat=.Seed.rule_name                          LabeledItem
-[225]  38:27  cat=.Seed.Expr.operator                      *
-[226]  38:29  cat=.string                                  ']'
-[227]  38:32  cat=.newline                                 \n      
-[228]  39:7   cat=.Seed.rule_name                          LabeledItem
-[229]  39:19  cat=.literal                                 =
-[230]  39:21  cat=.literal                                 (
-[231]  39:23  cat=.Seed.rule_name                          Variable
-[232]  39:31  cat=.literal                                 .
-[233]  39:32  cat=.Seed.rule_name                          Name
-[234]  39:37  cat=.string                                  ':'
-[235]  39:41  cat=.literal                                 )
-[236]  39:43  cat=.Seed.Expr.operator                      ?
-[237]  39:45  cat=.literal                                 (
-[238]  39:47  cat=.Seed.rule_name                          Struct
-[239]  39:54  cat=.Seed.Expr.operator                      |
-[240]  39:56  cat=.Seed.rule_name                          Expr
-[241]  39:61  cat=.literal                                 )
-[242]  39:62  cat=.newline                                 \n
-[243]  40:1   cat=.dedent                                  
-[244]  40:1   cat=.dedent                                    
-[245]  40:3   cat=.Seed.rule_name                          Func
-[246]  40:7   cat=.literal                                 :
-[247]  40:8   cat=.newline                                 \n
-[248]  41:1   cat=.indent                                      
-[249]  41:5   cat=.literal                                 ⊙
-[250]  41:7   cat=.literal                                 =
-[251]  41:9   cat=.Seed.rule_name                          Name
-[252]  41:13  cat=.newline                                 \n    
-[253]  42:5   cat=.Seed.rule_name                          Name
-[254]  42:10  cat=.literal                                 =
-[255]  42:12  cat=.Seed.token_category_name                func_name
-[256]  42:21  cat=.newline                                 \n    
-[257]  43:5   cat=.Seed.rule_name                          Defn
-[258]  43:10  cat=.literal                                 =
-[259]  43:12  cat=.Seed.rule_name                          Name
-[260]  43:17  cat=.string                                  '='
-[261]  43:21  cat=.Seed.rule_name                          Signature
-[262]  43:31  cat=.Seed.rule_name                          Body
-[263]  43:35  cat=.newline                                 \n    
-[264]  44:5   cat=.Seed.rule_name                          Signature
-[265]  44:15  cat=.literal                                 =
-[266]  44:17  cat=.Seed.rule_name                          Type
-[267]  44:22  cat=.literal                                 (
-[268]  44:24  cat=.string                                  '->'
-[269]  44:29  cat=.Seed.rule_name                          Type
-[270]  44:34  cat=.literal                                 )
-[271]  44:36  cat=.Seed.Expr.operator                      ?
-[272]  44:37  cat=.newline                                 \n    
-[273]  45:5   cat=.Seed.rule_name                          Body
-[274]  45:10  cat=.literal                                 =
-[275]  45:12  cat=.string                                  '{'
-[276]  45:16  cat=.Seed.rule_name                          Stmt
-[277]  45:21  cat=.Seed.Expr.operator                      *
-[278]  45:23  cat=.string                                  '}'
-[279]  45:26  cat=.newline                                 \n    
-[280]  46:5   cat=.Seed.rule_name                          Stmt
-[281]  46:9   cat=.literal                                 :
-[282]  46:10  cat=.newline                                 \n
-[283]  47:1   cat=.indent                                        
-[284]  47:7   cat=.literal                                 ⊙
-[285]  47:9   cat=.literal                                 =
-[286]  47:11  cat=.Seed.rule_name                          If
-[287]  47:14  cat=.Seed.Expr.operator                      |
-[288]  47:16  cat=.Seed.rule_name                          For
-[289]  47:20  cat=.Seed.Expr.operator                      |
-[290]  47:22  cat=.Seed.rule_name                          Expr
-[291]  47:27  cat=.string                                  ';'
-[292]  47:30  cat=.newline                                 \n      
-[293]  48:7   cat=.Seed.rule_name                          If
-[294]  48:9   cat=.literal                                 :
-[295]  48:10  cat=.newline                                 \n
-[296]  49:1   cat=.indent                                          
-[297]  49:9   cat=.literal                                 ⊙
-[298]  49:11  cat=.literal                                 =
-[299]  49:13  cat=.string                                  'if'
-[300]  49:18  cat=.Seed.rule_name                          Branch
-[301]  49:25  cat=.literal                                 (
-[302]  49:27  cat=.string                                  'elif'
-[303]  49:34  cat=.Seed.rule_name                          Branch
-[304]  49:41  cat=.literal                                 )
-[305]  49:43  cat=.Seed.Expr.operator                      *
-[306]  49:45  cat=.literal                                 (
-[307]  49:47  cat=.string                                  'else'
-[308]  49:54  cat=.Seed.rule_name                          Body
-[309]  49:59  cat=.literal                                 )
-[310]  49:61  cat=.Seed.Expr.operator                      ?
-[311]  49:62  cat=.newline                                 \n        
-[312]  50:9   cat=.Seed.rule_name                          Branch
-[313]  50:16  cat=.literal                                 =
-[314]  50:18  cat=.Seed.rule_name                          Expr
-[315]  50:23  cat=.Seed.rule_name                          Body
-[316]  50:27  cat=.newline                                 \n
-[317]  51:1   cat=.dedent                                        
-[318]  51:7   cat=.Seed.rule_name                          For
-[319]  51:11  cat=.literal                                 =
-[320]  51:13  cat=.string                                  'for'
-[321]  51:19  cat=.Seed.rule_name                          Expr
-[322]  51:23  cat=.literal                                 .
-[323]  51:24  cat=.Seed.rule_name                          Maybe
-[324]  51:30  cat=.string                                  ';'
-[325]  51:34  cat=.Seed.rule_name                          Expr
-[326]  51:38  cat=.literal                                 .
-[327]  51:39  cat=.Seed.rule_name                          Maybe
-[328]  51:45  cat=.string                                  ';'
-[329]  51:49  cat=.Seed.rule_name                          Expr
-[330]  51:53  cat=.literal                                 .
-[331]  51:54  cat=.Seed.rule_name                          Maybe
-[332]  51:60  cat=.Seed.rule_name                          Body
-[333]  51:64  cat=.newline                                 \n
-[334]  52:1   cat=.dedent                                  
-[335]  52:1   cat=.dedent                                    
-[336]  52:3   cat=.Seed.rule_name                          Variable
-[337]  52:11  cat=.literal                                 :
-[338]  52:12  cat=.newline                                 \n
-[339]  53:1   cat=.indent                                      
-[340]  53:5   cat=.Seed.rule_name                          Name
-[341]  53:10  cat=.literal                                 =
-[342]  53:12  cat=.Seed.Expr.operator                      not
-[343]  53:16  cat=.Seed.rule_name                          Type
-[344]  53:20  cat=.literal                                 .
-[345]  53:21  cat=.Seed.rule_name                          Name
-[346]  53:26  cat=.Seed.Expr.operator                      but_then
-[347]  53:35  cat=.Seed.Expr.operator                      not
-[348]  53:39  cat=.Seed.rule_name                          Func
-[349]  53:43  cat=.literal                                 .
-[350]  53:44  cat=.Seed.rule_name                          Name
-[351]  53:49  cat=.Seed.Expr.operator                      but_then
-[352]  53:58  cat=.Seed.token_category_name                identifier
-[353]  53:68  cat=.newline                                 \n    
-[354]  54:5   cat=.Seed.rule_name                          Defn
-[355]  54:10  cat=.literal                                 =
-[356]  54:12  cat=.Seed.rule_name                          Name
-[357]  54:17  cat=.string                                  '='
-[358]  54:21  cat=.Seed.rule_name                          Expr
-[359]  54:25  cat=.newline                                 \n
-[360]  55:1   cat=.dedent                                  
-[361]  55:1   cat=.dedent                                  
+[  5]   3:3   cat=.Seed.token_category_name                skip
+[  6]   3:8   cat=.literal                                 =
+[  7]   3:10  cat=.Seed.token_category_name                skip_free_form
+[  8]   3:24  cat=.newline                                 \n
+[  9]   5:3   cat=.Seed.token_category_name                type_name
+[ 10]   5:13  cat=.literal                                 =
+[ 11]   5:15  cat=.string                                  't_'
+[ 12]   5:20  cat=.Seed.token_category_name                identifier
+[ 13]   5:60  cat=.newline                                 \n  
+[ 14]   6:3   cat=.Seed.token_category_name                func_name
+[ 15]   6:13  cat=.literal                                 =
+[ 16]   6:15  cat=.string                                  'f_'
+[ 17]   6:20  cat=.Seed.token_category_name                identifier
+[ 18]   6:60  cat=.newline                                 \n
+[ 19]   8:3   cat=.literal                                 ⊙
+[ 20]   8:5   cat=.literal                                 =
+[ 21]   8:7   cat=.literal                                 (
+[ 22]   8:9   cat=.Seed.rule_name                          Type
+[ 23]   8:13  cat=.literal                                 .
+[ 24]   8:14  cat=.Seed.rule_name                          Defn
+[ 25]   8:19  cat=.Seed.Expr.operator                      |
+[ 26]   8:21  cat=.Seed.rule_name                          Func
+[ 27]   8:25  cat=.literal                                 .
+[ 28]   8:26  cat=.Seed.rule_name                          Defn
+[ 29]   8:31  cat=.Seed.Expr.operator                      |
+[ 30]   8:33  cat=.Seed.rule_name                          Variable
+[ 31]   8:41  cat=.literal                                 .
+[ 32]   8:42  cat=.Seed.rule_name                          Defn
+[ 33]   8:47  cat=.literal                                 )
+[ 34]   8:49  cat=.Seed.Expr.operator                      *
+[ 35]   8:50  cat=.newline                                 \n  
+[ 36]   9:3   cat=.Seed.rule_name                          Type
+[ 37]   9:7   cat=.literal                                 :
+[ 38]   9:8   cat=.newline                                 \n
+[ 39]  10:1   cat=.indent                                      
+[ 40]  10:5   cat=.literal                                 ⊙
+[ 41]  10:7   cat=.literal                                 =
+[ 42]  10:9   cat=.Seed.rule_name                          Name
+[ 43]  10:14  cat=.Seed.Expr.operator                      |
+[ 44]  10:16  cat=.Seed.rule_name                          Struct
+[ 45]  10:22  cat=.newline                                 \n    
+[ 46]  11:5   cat=.Seed.rule_name                          Name
+[ 47]  11:10  cat=.literal                                 =
+[ 48]  11:12  cat=.Seed.token_category_name                type_name
+[ 49]  11:21  cat=.newline                                 \n    
+[ 50]  12:5   cat=.Seed.rule_name                          Defn
+[ 51]  12:10  cat=.literal                                 =
+[ 52]  12:12  cat=.Seed.rule_name                          Name
+[ 53]  12:17  cat=.string                                  '='
+[ 54]  12:21  cat=.Seed.rule_name                          Type
+[ 55]  12:25  cat=.newline                                 \n    
+[ 56]  13:5   cat=.Seed.rule_name                          Struct
+[ 57]  13:11  cat=.literal                                 :
+[ 58]  13:12  cat=.newline                                 \n
+[ 59]  14:1   cat=.indent                                        
+[ 60]  14:7   cat=.literal                                 ⊙
+[ 61]  14:9   cat=.literal                                 =
+[ 62]  14:11  cat=.string                                  '['
+[ 63]  14:15  cat=.Seed.rule_name                          Member
+[ 64]  14:22  cat=.Seed.Expr.operator                      *
+[ 65]  14:24  cat=.string                                  ']'
+[ 66]  14:27  cat=.newline                                 \n      
+[ 67]  15:7   cat=.Seed.rule_name                          Member
+[ 68]  15:13  cat=.literal                                 :
+[ 69]  15:14  cat=.newline                                 \n
+[ 70]  16:1   cat=.indent                                          
+[ 71]  16:9   cat=.literal                                 ⊙
+[ 72]  16:11  cat=.literal                                 =
+[ 73]  16:13  cat=.Seed.rule_name                          Type
+[ 74]  16:18  cat=.Seed.rule_name                          Label
+[ 75]  16:24  cat=.Seed.Expr.operator                      ?
+[ 76]  16:26  cat=.Seed.rule_name                          Init
+[ 77]  16:31  cat=.Seed.Expr.operator                      ?
+[ 78]  16:33  cat=.string                                  ';'
+[ 79]  16:36  cat=.newline                                 \n        
+[ 80]  17:9   cat=.Seed.rule_name                          Label
+[ 81]  17:15  cat=.literal                                 =
+[ 82]  17:17  cat=.string                                  ':'
+[ 83]  17:21  cat=.Seed.rule_name                          Name
+[ 84]  17:25  cat=.newline                                 \n        
+[ 85]  18:9   cat=.Seed.rule_name                          Init
+[ 86]  18:14  cat=.literal                                 =
+[ 87]  18:16  cat=.string                                  '='
+[ 88]  18:20  cat=.Seed.rule_name                          Expr
+[ 89]  18:24  cat=.newline                                 \n        
+[ 90]  19:9   cat=.Seed.rule_name                          Name
+[ 91]  19:14  cat=.literal                                 =
+[ 92]  19:16  cat=.Seed.token_category_name                identifier
+[ 93]  19:26  cat=.newline                                 \n
+[ 94]  20:1   cat=.dedent                                  
+[ 95]  20:1   cat=.dedent                                  
+[ 96]  20:1   cat=.dedent                                    
+[ 97]  20:3   cat=.Seed.rule_name                          Expr
+[ 98]  20:7   cat=.literal                                 :
+[ 99]  20:8   cat=.newline                                 \n
+[100]  21:1   cat=.indent                                      
+[101]  21:5   cat=.literal                                 ⊙
+[102]  21:7   cat=.literal                                 =
+[103]  21:9   cat=.Seed.rule_name                          Axe
+[104]  21:12  cat=.newline                                 \n    
+[105]  22:5   cat=.Seed.rule_name                          Maybe
+[106]  22:11  cat=.literal                                 =
+[107]  22:13  cat=.Seed.rule_name                          Expr
+[108]  22:18  cat=.Seed.Expr.operator                      |
+[109]  22:20  cat=.literal                                 ε
+[110]  22:21  cat=.newline                                 \n    
+[111]  23:5   cat=.Seed.rule_name                          Axe
+[112]  23:9   cat=.literal                                 =
+[113]  23:11  cat=.literal                                 axe
+[114]  23:15  cat=.Seed.rule_name                          Atom
+[115]  23:20  cat=.Seed.token_category_name                oper
+[116]  23:24  cat=.newline                                 \n
+[117]  24:1   cat=.indent                                        
+[118]  24:7   cat=.Seed.rule_name                          Member
+[119]  24:17  cat=.literal                                 =
+[120]  24:19  cat=.literal                                 ltr
+[121]  24:23  cat=.literal                                 infix
+[122]  24:29  cat=.string                                  '.'
+[123]  24:32  cat=.newline                                 \n      
+[124]  25:7   cat=.Seed.rule_name                          CallPost
+[125]  25:17  cat=.literal                                 =
+[126]  25:19  cat=.literal                                 ltr
+[127]  25:23  cat=.literal                                 postfix_nest
+[128]  25:36  cat=.string                                  '('
+[129]  25:40  cat=.string                                  ')'
+[130]  25:43  cat=.newline                                 \n      
+[131]  26:7   cat=.Seed.rule_name                          Typing
+[132]  26:17  cat=.literal                                 =
+[133]  26:19  cat=.literal                                 ltr
+[134]  26:23  cat=.literal                                 infix
+[135]  26:29  cat=.string                                  '::'
+[136]  26:33  cat=.newline                                 \n      
+[137]  27:7   cat=.Seed.rule_name                          CallPipe
+[138]  27:17  cat=.literal                                 =
+[139]  27:19  cat=.literal                                 ltr
+[140]  27:23  cat=.literal                                 infix
+[141]  27:29  cat=.string                                  '|'
+[142]  27:32  cat=.newline                                 \n      
+[143]  28:7   cat=.Seed.rule_name                          Mul
+[144]  28:17  cat=.literal                                 =
+[145]  28:19  cat=.literal                                 ltr
+[146]  28:23  cat=.literal                                 infix
+[147]  28:29  cat=.string                                  '*'
+[148]  28:33  cat=.string                                  '//'
+[149]  28:37  cat=.newline                                 \n      
+[150]  29:7   cat=.Seed.rule_name                          Add
+[151]  29:17  cat=.literal                                 =
+[152]  29:19  cat=.literal                                 ltr
+[153]  29:23  cat=.literal                                 infix
+[154]  29:29  cat=.string                                  '+'
+[155]  29:33  cat=.string                                  '-'
+[156]  29:36  cat=.newline                                 \n      
+[157]  30:7   cat=.Seed.rule_name                          Comp
+[158]  30:17  cat=.literal                                 =
+[159]  30:19  cat=.literal                                 ltr
+[160]  30:23  cat=.literal                                 infix
+[161]  30:29  cat=.string                                  '=='
+[162]  30:34  cat=.string                                  '<='
+[163]  30:39  cat=.string                                  '<'
+[164]  30:43  cat=.string                                  '>'
+[165]  30:47  cat=.string                                  '>='
+[166]  30:51  cat=.newline                                 \n      
+[167]  31:7   cat=.Seed.rule_name                          Logic
+[168]  31:17  cat=.literal                                 =
+[169]  31:19  cat=.literal                                 ltr
+[170]  31:23  cat=.literal                                 infix
+[171]  31:29  cat=.string                                  'and'
+[172]  31:35  cat=.string                                  'or'
+[173]  31:39  cat=.newline                                 \n      
+[174]  32:7   cat=.Seed.rule_name                          Assign
+[175]  32:17  cat=.literal                                 =
+[176]  32:19  cat=.literal                                 ltr
+[177]  32:23  cat=.literal                                 infix
+[178]  32:29  cat=.string                                  '='
+[179]  32:33  cat=.string                                  '+='
+[180]  32:38  cat=.string                                  '*='
+[181]  32:42  cat=.newline                                 \n
+[182]  33:1   cat=.dedent                                      
+[183]  33:5   cat=.Seed.rule_name                          Atom
+[184]  33:10  cat=.literal                                 =
+[185]  33:12  cat=.literal                                 (
+[186]  33:14  cat=.Seed.rule_name                          Struct
+[187]  33:21  cat=.Seed.Expr.operator                      |
+[188]  33:23  cat=.literal                                 language
+[189]  34:12  cat=.Seed.Expr.operator                      |
+[190]  34:14  cat=.Seed.token_category_name                type_name
+[191]  34:24  cat=.Seed.Expr.operator                      |
+[192]  34:26  cat=.Seed.token_category_name                func_name
+[193]  34:36  cat=.Seed.Expr.operator                      |
+[194]  34:38  cat=.Seed.token_category_name                identifier
+[195]  35:12  cat=.Seed.Expr.operator                      |
+[196]  35:14  cat=.Seed.token_category_name                string
+[197]  35:21  cat=.Seed.Expr.operator                      |
+[198]  35:23  cat=.Seed.token_category_name                number
+[199]  36:12  cat=.Seed.Expr.operator                      |
+[200]  36:14  cat=.string                                  'true'
+[201]  36:21  cat=.Seed.Expr.operator                      |
+[202]  36:23  cat=.string                                  'false'
+[203]  36:31  cat=.Seed.Expr.operator                      |
+[204]  36:33  cat=.string                                  'none'
+[205]  37:12  cat=.Seed.Expr.operator                      |
+[206]  37:14  cat=.string                                  '('
+[207]  37:18  cat=.Seed.rule_name                          Expr
+[208]  37:23  cat=.string                                  ')'
+[209]  37:27  cat=.literal                                 )
+[210]  37:28  cat=.newline                                 \n    
+[211]  38:5   cat=.Seed.token_category_name                oper
+[212]  38:10  cat=.literal                                 =
+[213]  38:12  cat=.Seed.token_category_name                operator_greedy
+[214]  38:28  cat=.Seed.Expr.operator                      |
+[215]  38:30  cat=.Seed.token_category_name                parenthesis
+[216]  38:41  cat=.newline                                 \n    
+[217]  39:5   cat=.Seed.rule_name                          Struct
+[218]  39:11  cat=.literal                                 :
+[219]  39:12  cat=.newline                                 \n
+[220]  40:1   cat=.indent                                        
+[221]  40:7   cat=.literal                                 ⊙
+[222]  40:9   cat=.literal                                 =
+[223]  40:11  cat=.string                                  '['
+[224]  40:15  cat=.Seed.rule_name                          LabeledItem
+[225]  40:27  cat=.Seed.Expr.operator                      *
+[226]  40:29  cat=.string                                  ']'
+[227]  40:32  cat=.newline                                 \n      
+[228]  41:7   cat=.Seed.rule_name                          LabeledItem
+[229]  41:19  cat=.literal                                 =
+[230]  41:21  cat=.literal                                 (
+[231]  41:23  cat=.Seed.rule_name                          Variable
+[232]  41:31  cat=.literal                                 .
+[233]  41:32  cat=.Seed.rule_name                          Name
+[234]  41:37  cat=.string                                  ':'
+[235]  41:41  cat=.literal                                 )
+[236]  41:43  cat=.Seed.Expr.operator                      ?
+[237]  41:45  cat=.literal                                 (
+[238]  41:47  cat=.Seed.rule_name                          Struct
+[239]  41:54  cat=.Seed.Expr.operator                      |
+[240]  41:56  cat=.Seed.rule_name                          Expr
+[241]  41:61  cat=.literal                                 )
+[242]  41:62  cat=.newline                                 \n
+[243]  42:1   cat=.dedent                                  
+[244]  42:1   cat=.dedent                                    
+[245]  42:3   cat=.Seed.rule_name                          Func
+[246]  42:7   cat=.literal                                 :
+[247]  42:8   cat=.newline                                 \n
+[248]  43:1   cat=.indent                                      
+[249]  43:5   cat=.literal                                 ⊙
+[250]  43:7   cat=.literal                                 =
+[251]  43:9   cat=.Seed.rule_name                          Name
+[252]  43:13  cat=.newline                                 \n    
+[253]  44:5   cat=.Seed.rule_name                          Name
+[254]  44:10  cat=.literal                                 =
+[255]  44:12  cat=.Seed.token_category_name                func_name
+[256]  44:21  cat=.newline                                 \n    
+[257]  45:5   cat=.Seed.rule_name                          Defn
+[258]  45:10  cat=.literal                                 =
+[259]  45:12  cat=.Seed.rule_name                          Name
+[260]  45:17  cat=.string                                  '='
+[261]  45:21  cat=.Seed.rule_name                          Signature
+[262]  45:31  cat=.Seed.rule_name                          Body
+[263]  45:35  cat=.newline                                 \n    
+[264]  46:5   cat=.Seed.rule_name                          Signature
+[265]  46:15  cat=.literal                                 =
+[266]  46:17  cat=.Seed.rule_name                          Type
+[267]  46:22  cat=.literal                                 (
+[268]  46:24  cat=.string                                  '->'
+[269]  46:29  cat=.Seed.rule_name                          Type
+[270]  46:34  cat=.literal                                 )
+[271]  46:36  cat=.Seed.Expr.operator                      ?
+[272]  46:37  cat=.newline                                 \n    
+[273]  47:5   cat=.Seed.rule_name                          Body
+[274]  47:10  cat=.literal                                 =
+[275]  47:12  cat=.string                                  '{'
+[276]  47:16  cat=.Seed.rule_name                          Stmt
+[277]  47:21  cat=.Seed.Expr.operator                      *
+[278]  47:23  cat=.string                                  '}'
+[279]  47:26  cat=.newline                                 \n    
+[280]  48:5   cat=.Seed.rule_name                          Stmt
+[281]  48:9   cat=.literal                                 :
+[282]  48:10  cat=.newline                                 \n
+[283]  49:1   cat=.indent                                        
+[284]  49:7   cat=.literal                                 ⊙
+[285]  49:9   cat=.literal                                 =
+[286]  49:11  cat=.Seed.rule_name                          If
+[287]  49:14  cat=.Seed.Expr.operator                      |
+[288]  49:16  cat=.Seed.rule_name                          For
+[289]  49:20  cat=.Seed.Expr.operator                      |
+[290]  49:22  cat=.Seed.rule_name                          Expr
+[291]  49:27  cat=.string                                  ';'
+[292]  49:30  cat=.newline                                 \n      
+[293]  50:7   cat=.Seed.rule_name                          If
+[294]  50:9   cat=.literal                                 :
+[295]  50:10  cat=.newline                                 \n
+[296]  51:1   cat=.indent                                          
+[297]  51:9   cat=.literal                                 ⊙
+[298]  51:11  cat=.literal                                 =
+[299]  51:13  cat=.string                                  'if'
+[300]  51:18  cat=.Seed.rule_name                          Branch
+[301]  51:25  cat=.literal                                 (
+[302]  51:27  cat=.string                                  'elif'
+[303]  51:34  cat=.Seed.rule_name                          Branch
+[304]  51:41  cat=.literal                                 )
+[305]  51:43  cat=.Seed.Expr.operator                      *
+[306]  51:45  cat=.literal                                 (
+[307]  51:47  cat=.string                                  'else'
+[308]  51:54  cat=.Seed.rule_name                          Body
+[309]  51:59  cat=.literal                                 )
+[310]  51:61  cat=.Seed.Expr.operator                      ?
+[311]  51:62  cat=.newline                                 \n        
+[312]  52:9   cat=.Seed.rule_name                          Branch
+[313]  52:16  cat=.literal                                 =
+[314]  52:18  cat=.Seed.rule_name                          Expr
+[315]  52:23  cat=.Seed.rule_name                          Body
+[316]  52:27  cat=.newline                                 \n
+[317]  53:1   cat=.dedent                                        
+[318]  53:7   cat=.Seed.rule_name                          For
+[319]  53:11  cat=.literal                                 =
+[320]  53:13  cat=.string                                  'for'
+[321]  53:19  cat=.Seed.rule_name                          Expr
+[322]  53:23  cat=.literal                                 .
+[323]  53:24  cat=.Seed.rule_name                          Maybe
+[324]  53:30  cat=.string                                  ';'
+[325]  53:34  cat=.Seed.rule_name                          Expr
+[326]  53:38  cat=.literal                                 .
+[327]  53:39  cat=.Seed.rule_name                          Maybe
+[328]  53:45  cat=.string                                  ';'
+[329]  53:49  cat=.Seed.rule_name                          Expr
+[330]  53:53  cat=.literal                                 .
+[331]  53:54  cat=.Seed.rule_name                          Maybe
+[332]  53:60  cat=.Seed.rule_name                          Body
+[333]  53:64  cat=.newline                                 \n
+[334]  54:1   cat=.dedent                                  
+[335]  54:1   cat=.dedent                                    
+[336]  54:3   cat=.Seed.rule_name                          Variable
+[337]  54:11  cat=.literal                                 :
+[338]  54:12  cat=.newline                                 \n
+[339]  55:1   cat=.indent                                      
+[340]  55:5   cat=.Seed.rule_name                          Name
+[341]  55:10  cat=.literal                                 =
+[342]  55:12  cat=.Seed.Expr.operator                      not
+[343]  55:16  cat=.Seed.rule_name                          Type
+[344]  55:20  cat=.literal                                 .
+[345]  55:21  cat=.Seed.rule_name                          Name
+[346]  55:26  cat=.Seed.Expr.operator                      but_then
+[347]  55:35  cat=.Seed.Expr.operator                      not
+[348]  55:39  cat=.Seed.rule_name                          Func
+[349]  55:43  cat=.literal                                 .
+[350]  55:44  cat=.Seed.rule_name                          Name
+[351]  55:49  cat=.Seed.Expr.operator                      but_then
+[352]  55:58  cat=.Seed.token_category_name                identifier
+[353]  55:68  cat=.newline                                 \n    
+[354]  56:5   cat=.Seed.rule_name                          Defn
+[355]  56:10  cat=.literal                                 =
+[356]  56:12  cat=.Seed.rule_name                          Name
+[357]  56:17  cat=.string                                  '='
+[358]  56:21  cat=.Seed.rule_name                          Expr
+[359]  56:25  cat=.newline                                 \n
+[360]  57:1   cat=.dedent                                  
+[361]  57:1   cat=.dedent                                  
 
 [0].Seed                                          language Soil ...  
   [0].Seed.Language                               language Soil ...  
-    [0].Seed.Rule                                 ⊙ = ... * \n  
+    [0].Seed.Rule                                 skip = skip_free_form \n
+      [0].Seed.Nonterminal                        skip
+      [1].Seed.Nonterminal                        skip_free_form
+    [1].Seed.Rule                                 type_name = 't_' identifier \n  
+      [0].Seed.Nonterminal                        type_name
+      [1].Seed.Expr.Concat.concat                 't_' identifier
+        [0].Seed.Terminal                         't_'
+        [1].Seed.Nonterminal                      identifier
+    [2].Seed.Rule                                 func_name = 'f_' identifier \n
+      [0].Seed.Nonterminal                        func_name
+      [1].Seed.Expr.Concat.concat                 'f_' identifier
+        [0].Seed.Terminal                         'f_'
+        [1].Seed.Nonterminal                      identifier
+    [3].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.Expr.Postfix.*                     ( Type ... ) *
         [0].Seed.Expr.Or.|                        Type . ... . Defn
           [0].Seed.Nonterminal                    Type . Defn
           [1].Seed.Nonterminal                    Func . Defn
           [2].Seed.Nonterminal                    Variable . Defn
-    [1].Seed.Rule                                 skip = skip_free_form \n  
-      [0].Seed.Nonterminal                        skip
-      [1].Seed.Nonterminal                        skip_free_form
-    [2].Seed.Rule                                 type_name = 't_' identifier \n  
-      [0].Seed.Nonterminal                        type_name
-      [1].Seed.Expr.Concat.concat                 't_' identifier
-        [0].Seed.Terminal                         't_'
-        [1].Seed.Nonterminal                      identifier
-    [3].Seed.Rule                                 func_name = 'f_' identifier \n  
-      [0].Seed.Nonterminal                        func_name
-      [1].Seed.Expr.Concat.concat                 'f_' identifier
-        [0].Seed.Terminal                         'f_'
-        [1].Seed.Nonterminal                      identifier
     [4].Seed.Scope                                Type : ...    
       [0].Seed.Nonterminal                        Type
       [1].Seed.Rule                               ⊙ = ... Struct \n    
@@ -2423,4 +2423,857 @@ Mr Jane
         [0].Cedar.Type.Declarator.Pointer                                                           * *
           [0].Cedar.Type.Declarator.Pointer                                                         *
         [1].Cedar.Type.Declarator.Direct                                                            test_8
+
+[  0]   6:1   cat=.Toml.identifier                         bare_key
+[  1]   6:10  cat=.literal                                 =
+[  2]   6:12  cat=.string                                  "Alphanumeric, underscores, and dashes allowed"
+[  3]   7:1   cat=.Toml.identifier                         bare-key-dash
+[  4]   7:15  cat=.literal                                 =
+[  5]   7:17  cat=.string                                  "Dashes are completely legal"
+[  6]   8:1   cat=.Toml.identifier                         bare_key_123
+[  7]   8:14  cat=.literal                                 =
+[  8]   8:16  cat=.string                                  "Numbers are allowed"
+[  9]  10:1   cat=.string                                  "quoted key"
+[ 10]  10:14  cat=.literal                                 =
+[ 11]  10:16  cat=.string                                  "Allows spaces and special characters"
+[ 12]  11:1   cat=.string                                  'literal key'
+[ 13]  11:15  cat=.literal                                 =
+[ 14]  11:17  cat=.string                                  "No escaping processed inside the key name"
+[ 15]  12:1   cat=.string                                  ""
+[ 16]  12:4   cat=.literal                                 =
+[ 17]  12:6   cat=.string                                  "Empty string keys are explicitly valid"
+[ 18]  15:1   cat=.Toml.identifier                         physical
+[ 19]  15:9   cat=.literal                                 .
+[ 20]  15:10  cat=.Toml.identifier                         property
+[ 21]  15:18  cat=.literal                                 .
+[ 22]  15:19  cat=.Toml.identifier                         color
+[ 23]  15:25  cat=.literal                                 =
+[ 24]  15:27  cat=.string                                  "blue"
+[ 25]  16:1   cat=.Toml.identifier                         physical
+[ 26]  16:9   cat=.literal                                 .
+[ 27]  16:10  cat=.Toml.identifier                         property
+[ 28]  16:18  cat=.literal                                 .
+[ 29]  16:19  cat=.Toml.identifier                         shape
+[ 30]  16:25  cat=.literal                                 =
+[ 31]  16:27  cat=.string                                  "round"
+[ 32]  21:1   cat=.literal                                 [
+[ 33]  21:2   cat=.Toml.identifier                         strings
+[ 34]  21:9   cat=.literal                                 ]
+[ 35]  24:1   cat=.Toml.identifier                         basic
+[ 36]  24:7   cat=.literal                                 =
+[ 37]  24:9   cat=.string                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
+[ 38]  25:1   cat=.Toml.identifier                         escaped
+[ 39]  25:9   cat=.literal                                 =
+[ 40]  25:11  cat=.string                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
+[ 41]  30:1   cat=.literal                                 [
+[ 42]  30:2   cat=.Toml.identifier                         integers
+[ 43]  30:10  cat=.literal                                 ]
+[ 44]  31:1   cat=.Toml.identifier                         positive
+[ 45]  31:10  cat=.literal                                 =
+[ 46]  31:12  cat=.literal                                 +
+[ 47]  31:13  cat=.number                                  99
+[ 48]  32:1   cat=.Toml.identifier                         negative
+[ 49]  32:10  cat=.literal                                 =
+[ 50]  32:12  cat=.literal                                 -
+[ 51]  32:13  cat=.number                                  17
+[ 52]  33:1   cat=.Toml.identifier                         zero
+[ 53]  33:6   cat=.literal                                 =
+[ 54]  33:8   cat=.number                                  0
+[ 55]  34:1   cat=.Toml.identifier                         zero_plus
+[ 56]  34:11  cat=.literal                                 =
+[ 57]  34:13  cat=.literal                                 +
+[ 58]  34:14  cat=.number                                  0
+[ 59]  35:1   cat=.Toml.identifier                         zero_minus
+[ 60]  35:12  cat=.literal                                 =
+[ 61]  35:14  cat=.literal                                 -
+[ 62]  35:15  cat=.number                                  0
+[ 63]  39:1   cat=.Toml.identifier                         hexadecimal
+[ 64]  39:13  cat=.literal                                 =
+[ 65]  39:15  cat=.number                                  0xDEADBEEF
+[ 66]  40:1   cat=.Toml.identifier                         hex_lowercase
+[ 67]  40:15  cat=.literal                                 =
+[ 68]  40:17  cat=.number                                  0xdeadbeef
+[ 69]  41:1   cat=.Toml.identifier                         octal
+[ 70]  41:7   cat=.literal                                 =
+[ 71]  41:9   cat=.number                                  0o755
+[ 72]  42:1   cat=.Toml.identifier                         binary
+[ 73]  42:8   cat=.literal                                 =
+[ 74]  42:10  cat=.number                                  0b11010010
+[ 75]  47:1   cat=.literal                                 [
+[ 76]  47:2   cat=.Toml.identifier                         floats
+[ 77]  47:8   cat=.literal                                 ]
+[ 78]  48:1   cat=.Toml.identifier                         normal
+[ 79]  48:8   cat=.literal                                 =
+[ 80]  48:10  cat=.literal                                 +
+[ 81]  48:11  cat=.number                                  3.14159
+[ 82]  49:1   cat=.Toml.identifier                         negative
+[ 83]  49:10  cat=.literal                                 =
+[ 84]  49:12  cat=.literal                                 -
+[ 85]  49:13  cat=.number                                  0.01
+[ 86]  50:1   cat=.Toml.identifier                         fractional_zero
+[ 87]  50:17  cat=.literal                                 =
+[ 88]  50:19  cat=.number                                  5.0
+[ 89]  53:1   cat=.Toml.identifier                         exponent_large
+[ 90]  53:16  cat=.literal                                 =
+[ 91]  53:18  cat=.number                                  5e+22
+[ 92]  54:1   cat=.Toml.identifier                         exponent_small
+[ 93]  54:16  cat=.literal                                 =
+[ 94]  54:18  cat=.number                                  1e-14
+[ 95]  55:1   cat=.Toml.identifier                         exponent_mixed
+[ 96]  55:16  cat=.literal                                 =
+[ 97]  55:18  cat=.literal                                 -
+[ 98]  55:19  cat=.number                                  6.23e-4
+[ 99]  58:1   cat=.Toml.identifier                         infinity
+[100]  58:10  cat=.literal                                 =
+[101]  58:12  cat=.literal                                 inf
+[102]  59:1   cat=.Toml.identifier                         positive_infinity
+[103]  59:19  cat=.literal                                 =
+[104]  59:21  cat=.literal                                 +
+[105]  59:22  cat=.literal                                 inf
+[106]  60:1   cat=.Toml.identifier                         negative_infinity
+[107]  60:19  cat=.literal                                 =
+[108]  60:21  cat=.literal                                 -
+[109]  60:22  cat=.literal                                 inf
+[110]  61:1   cat=.Toml.identifier                         not_a_number
+[111]  61:14  cat=.literal                                 =
+[112]  61:16  cat=.literal                                 nan
+[113]  62:1   cat=.Toml.identifier                         positive_not_a_number
+[114]  62:23  cat=.literal                                 =
+[115]  62:25  cat=.literal                                 +
+[116]  62:26  cat=.literal                                 nan
+[117]  63:1   cat=.Toml.identifier                         negative_not_a_number
+[118]  63:23  cat=.literal                                 =
+[119]  63:25  cat=.literal                                 -
+[120]  63:26  cat=.literal                                 nan
+[121]  68:1   cat=.literal                                 [
+[122]  68:2   cat=.Toml.identifier                         booleans
+[123]  68:10  cat=.literal                                 ]
+[124]  69:1   cat=.Toml.identifier                         true_value
+[125]  69:12  cat=.literal                                 =
+[126]  69:14  cat=.literal                                 true
+[127]  70:1   cat=.Toml.identifier                         false_value
+[128]  70:13  cat=.literal                                 =
+[129]  70:15  cat=.literal                                 false
+[130]  75:1   cat=.literal                                 [
+[131]  75:2   cat=.Toml.identifier                         datetimes
+[132]  75:11  cat=.literal                                 ]
+[133]  77:1   cat=.Toml.identifier                         offset_utc
+[134]  77:12  cat=.literal                                 =
+[135]  77:14  cat=.Toml.date_time                          1979-05-27T07:32:00Z
+[136]  78:1   cat=.Toml.identifier                         offset_numeric
+[137]  78:16  cat=.literal                                 =
+[138]  78:18  cat=.Toml.date_time                          1979-05-27T00:32:00-07:00
+[139]  79:1   cat=.Toml.identifier                         offset_with_ms
+[140]  79:16  cat=.literal                                 =
+[141]  79:18  cat=.Toml.date_time                          1979-05-27T00:32:00.999999-07:00
+[142]  80:1   cat=.Toml.identifier                         offset_space_separator
+[143]  80:24  cat=.literal                                 =
+[144]  80:26  cat=.Toml.date_time                          1979-05-27 07:32:00Z
+[145]  83:1   cat=.Toml.identifier                         local_date_time
+[146]  83:17  cat=.literal                                 =
+[147]  83:19  cat=.Toml.date_time                          1979-05-27T07:32:00
+[148]  84:1   cat=.Toml.identifier                         local_date_time_ms
+[149]  84:20  cat=.literal                                 =
+[150]  84:22  cat=.Toml.date_time                          1979-05-27T07:32:00.999999
+[151]  87:1   cat=.Toml.identifier                         local_date
+[152]  87:12  cat=.literal                                 =
+[153]  87:14  cat=.Toml.date                               1979-05-27
+[154]  90:1   cat=.Toml.identifier                         local_time
+[155]  90:12  cat=.literal                                 =
+[156]  90:14  cat=.Toml.time                               07:32:00
+[157]  91:1   cat=.Toml.identifier                         local_time_ms
+[158]  91:15  cat=.literal                                 =
+[159]  91:17  cat=.Toml.time                               00:32:00.999999
+[160]  96:1   cat=.literal                                 [
+[161]  96:2   cat=.Toml.identifier                         arrays
+[162]  96:8   cat=.literal                                 ]
+[163]  97:1   cat=.Toml.identifier                         integers
+[164]  97:10  cat=.literal                                 =
+[165]  97:12  cat=.literal                                 [
+[166]  97:13  cat=.number                                  1
+[167]  97:14  cat=.literal                                 ,
+[168]  97:16  cat=.number                                  2
+[169]  97:17  cat=.literal                                 ,
+[170]  97:19  cat=.number                                  3
+[171]  97:20  cat=.literal                                 ]
+[172]  98:1   cat=.Toml.identifier                         strings
+[173]  98:9   cat=.literal                                 =
+[174]  98:11  cat=.literal                                 [
+[175]  98:12  cat=.string                                  "red"
+[176]  98:17  cat=.literal                                 ,
+[177]  98:19  cat=.string                                  "yellow"
+[178]  98:27  cat=.literal                                 ,
+[179]  98:29  cat=.string                                  "green"
+[180]  98:36  cat=.literal                                 ]
+[181]  99:1   cat=.Toml.identifier                         nested_arrays
+[182]  99:15  cat=.literal                                 =
+[183]  99:17  cat=.literal                                 [
+[184]  99:18  cat=.literal                                 [
+[185]  99:19  cat=.number                                  1
+[186]  99:20  cat=.literal                                 ,
+[187]  99:22  cat=.number                                  2
+[188]  99:23  cat=.literal                                 ]
+[189]  99:24  cat=.literal                                 ,
+[190]  99:26  cat=.literal                                 [
+[191]  99:27  cat=.number                                  3
+[192]  99:28  cat=.literal                                 ,
+[193]  99:30  cat=.number                                  4
+[194]  99:31  cat=.literal                                 ,
+[195]  99:33  cat=.number                                  5
+[196]  99:34  cat=.literal                                 ]
+[197]  99:35  cat=.literal                                 ]
+[198] 102:1   cat=.Toml.identifier                         multiline_and_mixed_whitespace
+[199] 102:32  cat=.literal                                 =
+[200] 102:34  cat=.literal                                 [
+[201] 103:3   cat=.string                                  "allowed"
+[202] 103:12  cat=.literal                                 ,
+[203] 104:3   cat=.string                                  "across"
+[204] 104:11  cat=.literal                                 ,
+[205] 105:3   cat=.string                                  "multiple"
+[206] 105:13  cat=.literal                                 ,
+[207] 106:3   cat=.string                                  "lines"
+[208] 106:10  cat=.literal                                 ,
+[209] 107:1   cat=.literal                                 ]
+[210] 110:1   cat=.Toml.identifier                         mixed_types
+[211] 110:13  cat=.literal                                 =
+[212] 110:15  cat=.literal                                 [
+[213] 110:16  cat=.number                                  1
+[214] 110:17  cat=.literal                                 ,
+[215] 110:19  cat=.number                                  2
+[216] 110:20  cat=.literal                                 ,
+[217] 110:22  cat=.string                                  "three"
+[218] 110:29  cat=.literal                                 ,
+[219] 110:31  cat=.literal                                 [
+[220] 110:32  cat=.string                                  "four"
+[221] 110:38  cat=.literal                                 ,
+[222] 110:40  cat=.number                                  5
+[223] 110:41  cat=.literal                                 ]
+[224] 110:42  cat=.literal                                 ,
+[225] 110:44  cat=.number                                  6.0
+[226] 110:47  cat=.literal                                 ,
+[227] 110:49  cat=.Toml.date                               1979-05-27
+[228] 110:59  cat=.literal                                 ]
+[229] 115:1   cat=.literal                                 [
+[230] 115:2   cat=.Toml.identifier                         inline_tables
+[231] 115:15  cat=.literal                                 ]
+[232] 117:1   cat=.Toml.identifier                         basic
+[233] 117:7   cat=.literal                                 =
+[234] 117:9   cat=.literal                                 {
+[235] 117:11  cat=.Toml.identifier                         first
+[236] 117:17  cat=.literal                                 =
+[237] 117:19  cat=.string                                  "Tom"
+[238] 117:24  cat=.literal                                 ,
+[239] 117:26  cat=.Toml.identifier                         last
+[240] 117:31  cat=.literal                                 =
+[241] 117:33  cat=.string                                  "Preston-Werner"
+[242] 117:50  cat=.literal                                 }
+[243] 118:1   cat=.Toml.identifier                         point
+[244] 118:7   cat=.literal                                 =
+[245] 118:9   cat=.literal                                 {
+[246] 118:11  cat=.Toml.identifier                         x
+[247] 118:13  cat=.literal                                 =
+[248] 118:15  cat=.number                                  1
+[249] 118:16  cat=.literal                                 ,
+[250] 118:18  cat=.Toml.identifier                         y
+[251] 118:20  cat=.literal                                 =
+[252] 118:22  cat=.number                                  2
+[253] 118:23  cat=.literal                                 ,
+[254] 118:25  cat=.Toml.identifier                         z
+[255] 118:27  cat=.literal                                 =
+[256] 118:29  cat=.number                                  3
+[257] 118:31  cat=.literal                                 }
+[258] 121:1   cat=.Toml.identifier                         nested
+[259] 121:8   cat=.literal                                 =
+[260] 121:10  cat=.literal                                 {
+[261] 121:12  cat=.Toml.identifier                         identity
+[262] 121:21  cat=.literal                                 =
+[263] 121:23  cat=.literal                                 {
+[264] 121:25  cat=.Toml.identifier                         id
+[265] 121:28  cat=.literal                                 =
+[266] 121:30  cat=.number                                  42
+[267] 121:32  cat=.literal                                 ,
+[268] 121:34  cat=.Toml.identifier                         role
+[269] 121:39  cat=.literal                                 =
+[270] 121:41  cat=.string                                  "admin"
+[271] 121:49  cat=.literal                                 }
+[272] 121:50  cat=.literal                                 ,
+[273] 121:52  cat=.Toml.identifier                         active
+[274] 121:59  cat=.literal                                 =
+[275] 121:61  cat=.literal                                 true
+[276] 121:66  cat=.literal                                 }
+[277] 124:1   cat=.Toml.identifier                         empty
+[278] 124:7   cat=.literal                                 =
+[279] 124:9   cat=.literal                                 {
+[280] 124:10  cat=.literal                                 }
+[281] 129:1   cat=.literal                                 [
+[282] 129:2   cat=.Toml.identifier                         explicit_table_1
+[283] 129:18  cat=.literal                                 ]
+[284] 130:1   cat=.Toml.identifier                         key_a
+[285] 130:7   cat=.literal                                 =
+[286] 130:9   cat=.string                                  "Value inside explicit_table_1"
+[287] 132:1   cat=.literal                                 [
+[288] 132:2   cat=.Toml.identifier                         explicit_table_1
+[289] 132:18  cat=.literal                                 .
+[290] 132:19  cat=.Toml.identifier                         nested_child
+[291] 132:31  cat=.literal                                 ]
+[292] 133:1   cat=.Toml.identifier                         key_b
+[293] 133:7   cat=.literal                                 =
+[294] 133:9   cat=.string                                  "Value inside nested_child"
+[295] 136:1   cat=.literal                                 [
+[296] 136:2   cat=.Toml.identifier                         explicit_table_2
+[297] 136:18  cat=.literal                                 ]
+[298] 139:1   cat=.literal                                 [
+[299] 139:2   cat=.Toml.identifier                         explicit_table_3
+[300] 139:18  cat=.literal                                 .
+[301] 139:19  cat=.Toml.identifier                         sub_table
+[302] 139:28  cat=.literal                                 .
+[303] 139:29  cat=.Toml.identifier                         deep_table
+[304] 139:39  cat=.literal                                 ]
+[305] 140:1   cat=.Toml.identifier                         final_key
+[306] 140:11  cat=.literal                                 =
+[307] 140:13  cat=.string                                  "Resolves deep nesting paths cleanly"
+[308] 147:1   cat=.literal                                 [[
+[309] 147:3   cat=.Toml.identifier                         products
+[310] 147:11  cat=.literal                                 ]]
+[311] 148:1   cat=.Toml.identifier                         name
+[312] 148:6   cat=.literal                                 =
+[313] 148:8   cat=.string                                  "Hammer"
+[314] 149:1   cat=.Toml.identifier                         sku
+[315] 149:5   cat=.literal                                 =
+[316] 149:7   cat=.number                                  738594937
+[317] 152:1   cat=.literal                                 [[
+[318] 152:3   cat=.Toml.identifier                         products
+[319] 152:11  cat=.literal                                 ]]
+[320] 155:1   cat=.literal                                 [[
+[321] 155:3   cat=.Toml.identifier                         products
+[322] 155:11  cat=.literal                                 ]]
+[323] 156:1   cat=.Toml.identifier                         name
+[324] 156:6   cat=.literal                                 =
+[325] 156:8   cat=.string                                  "Nail"
+[326] 157:1   cat=.Toml.identifier                         sku
+[327] 157:5   cat=.literal                                 =
+[328] 157:7   cat=.number                                  284758393
+[329] 159:1   cat=.literal                                 [[
+[330] 159:3   cat=.Toml.identifier                         products
+[331] 159:11  cat=.literal                                 .
+[332] 159:12  cat=.Toml.identifier                         categories
+[333] 159:22  cat=.literal                                 ]]
+[334] 160:1   cat=.Toml.identifier                         name
+[335] 160:6   cat=.literal                                 =
+[336] 160:8   cat=.string                                  "Fasteners"
+[337] 163:1   cat=.literal                                 [[
+[338] 163:3   cat=.Toml.identifier                         fruit
+[339] 163:8   cat=.literal                                 ]]
+[340] 164:1   cat=.Toml.identifier                         name
+[341] 164:6   cat=.literal                                 =
+[342] 164:8   cat=.string                                  "apple"
+[343] 166:1   cat=.literal                                 [
+[344] 166:2   cat=.Toml.identifier                         fruit
+[345] 166:7   cat=.literal                                 .
+[346] 166:8   cat=.Toml.identifier                         physical
+[347] 166:16  cat=.literal                                 ]
+[348] 167:1   cat=.Toml.identifier                         color
+[349] 167:7   cat=.literal                                 =
+[350] 167:9   cat=.string                                  "red"
+[351] 169:1   cat=.literal                                 [[
+[352] 169:3   cat=.Toml.identifier                         fruit
+[353] 169:8   cat=.literal                                 .
+[354] 169:9   cat=.Toml.identifier                         varieties
+[355] 169:18  cat=.literal                                 ]]
+[356] 170:1   cat=.Toml.identifier                         name
+[357] 170:6   cat=.literal                                 =
+[358] 170:8   cat=.string                                  "gala"
+[359] 172:1   cat=.literal                                 [[
+[360] 172:3   cat=.Toml.identifier                         fruit
+[361] 172:8   cat=.literal                                 .
+[362] 172:9   cat=.Toml.identifier                         varieties
+[363] 172:18  cat=.literal                                 ]]
+[364] 173:1   cat=.Toml.identifier                         name
+[365] 173:6   cat=.literal                                 =
+[366] 173:8   cat=.string                                  "fuji"
+[367] 175:1   cat=.literal                                 [[
+[368] 175:3   cat=.Toml.identifier                         fruit
+[369] 175:8   cat=.literal                                 ]]
+[370] 176:1   cat=.Toml.identifier                         name
+[371] 176:6   cat=.literal                                 =
+[372] 176:8   cat=.string                                  "banana"
+[373] 178:1   cat=.literal                                 [[
+[374] 178:3   cat=.Toml.identifier                         fruit
+[375] 178:8   cat=.literal                                 .
+[376] 178:9   cat=.Toml.identifier                         varieties
+[377] 178:18  cat=.literal                                 ]]
+[378] 179:1   cat=.Toml.identifier                         name
+[379] 179:6   cat=.literal                                 =
+[380] 179:8   cat=.string                                  "cavendish"
+
+[0].Toml                                          bare_key = ... = "cavendish"
+  [0].Toml.Keyval                                 bare_key = "Alphanumeric, underscores, and dashes allowed"
+    [0].Toml.Key                                  bare_key
+      [0].Toml.SimpleKey                          bare_key
+    [1].Toml.Val                                  "Alphanumeric, underscores, and dashes allowed"
+  [1].Toml.Keyval                                 bare-key-dash = "Dashes are completely legal"
+    [0].Toml.Key                                  bare-key-dash
+      [0].Toml.SimpleKey                          bare-key-dash
+    [1].Toml.Val                                  "Dashes are completely legal"
+  [2].Toml.Keyval                                 bare_key_123 = "Numbers are allowed"
+    [0].Toml.Key                                  bare_key_123
+      [0].Toml.SimpleKey                          bare_key_123
+    [1].Toml.Val                                  "Numbers are allowed"
+  [3].Toml.Keyval                                 "quoted key" = "Allows spaces and special characters"
+    [0].Toml.Key                                  "quoted key"
+      [0].Toml.SimpleKey                          "quoted key"
+    [1].Toml.Val                                  "Allows spaces and special characters"
+  [4].Toml.Keyval                                 'literal key' = "No escaping processed inside the key name"
+    [0].Toml.Key                                  'literal key'
+      [0].Toml.SimpleKey                          'literal key'
+    [1].Toml.Val                                  "No escaping processed inside the key name"
+  [5].Toml.Keyval                                 "" = "Empty string keys are explicitly valid"
+    [0].Toml.Key                                  ""
+      [0].Toml.SimpleKey                          ""
+    [1].Toml.Val                                  "Empty string keys are explicitly valid"
+  [6].Toml.Keyval                                 physical . ... = "blue"
+    [0].Toml.Key                                  physical . property . color
+      [0].Toml.SimpleKey                          physical
+      [1].Toml.SimpleKey                          property
+      [2].Toml.SimpleKey                          color
+    [1].Toml.Val                                  "blue"
+  [7].Toml.Keyval                                 physical . ... = "round"
+    [0].Toml.Key                                  physical . property . shape
+      [0].Toml.SimpleKey                          physical
+      [1].Toml.SimpleKey                          property
+      [2].Toml.SimpleKey                          shape
+    [1].Toml.Val                                  "round"
+  [8].Toml.Table                                  [ strings ]
+    [0].Toml.StdTable                             [ strings ]
+      [0].Toml.Key                                strings
+        [0].Toml.SimpleKey                        strings
+  [9].Toml.Keyval                                 basic = "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
+    [0].Toml.Key                                  basic
+      [0].Toml.SimpleKey                          basic
+    [1].Toml.Val                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
+  [10].Toml.Keyval                                escaped = "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
+    [0].Toml.Key                                  escaped
+      [0].Toml.SimpleKey                          escaped
+    [1].Toml.Val                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
+  [11].Toml.Table                                 [ integers ]
+    [0].Toml.StdTable                             [ integers ]
+      [0].Toml.Key                                integers
+        [0].Toml.SimpleKey                        integers
+  [12].Toml.Keyval                                positive = + 99
+    [0].Toml.Key                                  positive
+      [0].Toml.SimpleKey                          positive
+    [1].Toml.Val                                  + 99
+      [0].Toml.Number                             + 99
+  [13].Toml.Keyval                                negative = - 17
+    [0].Toml.Key                                  negative
+      [0].Toml.SimpleKey                          negative
+    [1].Toml.Val                                  - 17
+      [0].Toml.Number                             - 17
+  [14].Toml.Keyval                                zero = 0
+    [0].Toml.Key                                  zero
+      [0].Toml.SimpleKey                          zero
+    [1].Toml.Val                                  0
+      [0].Toml.Number                             0
+  [15].Toml.Keyval                                zero_plus = + 0
+    [0].Toml.Key                                  zero_plus
+      [0].Toml.SimpleKey                          zero_plus
+    [1].Toml.Val                                  + 0
+      [0].Toml.Number                             + 0
+  [16].Toml.Keyval                                zero_minus = - 0
+    [0].Toml.Key                                  zero_minus
+      [0].Toml.SimpleKey                          zero_minus
+    [1].Toml.Val                                  - 0
+      [0].Toml.Number                             - 0
+  [17].Toml.Keyval                                hexadecimal = 0xDEADBEEF
+    [0].Toml.Key                                  hexadecimal
+      [0].Toml.SimpleKey                          hexadecimal
+    [1].Toml.Val                                  0xDEADBEEF
+      [0].Toml.Number                             0xDEADBEEF
+  [18].Toml.Keyval                                hex_lowercase = 0xdeadbeef
+    [0].Toml.Key                                  hex_lowercase
+      [0].Toml.SimpleKey                          hex_lowercase
+    [1].Toml.Val                                  0xdeadbeef
+      [0].Toml.Number                             0xdeadbeef
+  [19].Toml.Keyval                                octal = 0o755
+    [0].Toml.Key                                  octal
+      [0].Toml.SimpleKey                          octal
+    [1].Toml.Val                                  0o755
+      [0].Toml.Number                             0o755
+  [20].Toml.Keyval                                binary = 0b11010010
+    [0].Toml.Key                                  binary
+      [0].Toml.SimpleKey                          binary
+    [1].Toml.Val                                  0b11010010
+      [0].Toml.Number                             0b11010010
+  [21].Toml.Table                                 [ floats ]
+    [0].Toml.StdTable                             [ floats ]
+      [0].Toml.Key                                floats
+        [0].Toml.SimpleKey                        floats
+  [22].Toml.Keyval                                normal = + 3.14159
+    [0].Toml.Key                                  normal
+      [0].Toml.SimpleKey                          normal
+    [1].Toml.Val                                  + 3.14159
+      [0].Toml.Number                             + 3.14159
+  [23].Toml.Keyval                                negative = - 0.01
+    [0].Toml.Key                                  negative
+      [0].Toml.SimpleKey                          negative
+    [1].Toml.Val                                  - 0.01
+      [0].Toml.Number                             - 0.01
+  [24].Toml.Keyval                                fractional_zero = 5.0
+    [0].Toml.Key                                  fractional_zero
+      [0].Toml.SimpleKey                          fractional_zero
+    [1].Toml.Val                                  5.0
+      [0].Toml.Number                             5.0
+  [25].Toml.Keyval                                exponent_large = 5e+22
+    [0].Toml.Key                                  exponent_large
+      [0].Toml.SimpleKey                          exponent_large
+    [1].Toml.Val                                  5e+22
+      [0].Toml.Number                             5e+22
+  [26].Toml.Keyval                                exponent_small = 1e-14
+    [0].Toml.Key                                  exponent_small
+      [0].Toml.SimpleKey                          exponent_small
+    [1].Toml.Val                                  1e-14
+      [0].Toml.Number                             1e-14
+  [27].Toml.Keyval                                exponent_mixed = - 6.23e-4
+    [0].Toml.Key                                  exponent_mixed
+      [0].Toml.SimpleKey                          exponent_mixed
+    [1].Toml.Val                                  - 6.23e-4
+      [0].Toml.Number                             - 6.23e-4
+  [28].Toml.Keyval                                infinity = inf
+    [0].Toml.Key                                  infinity
+      [0].Toml.SimpleKey                          infinity
+    [1].Toml.Val                                  inf
+      [0].Toml.Number                             inf
+  [29].Toml.Keyval                                positive_infinity = + inf
+    [0].Toml.Key                                  positive_infinity
+      [0].Toml.SimpleKey                          positive_infinity
+    [1].Toml.Val                                  + inf
+      [0].Toml.Number                             + inf
+  [30].Toml.Keyval                                negative_infinity = - inf
+    [0].Toml.Key                                  negative_infinity
+      [0].Toml.SimpleKey                          negative_infinity
+    [1].Toml.Val                                  - inf
+      [0].Toml.Number                             - inf
+  [31].Toml.Keyval                                not_a_number = nan
+    [0].Toml.Key                                  not_a_number
+      [0].Toml.SimpleKey                          not_a_number
+    [1].Toml.Val                                  nan
+      [0].Toml.Number                             nan
+  [32].Toml.Keyval                                positive_not_a_number = + nan
+    [0].Toml.Key                                  positive_not_a_number
+      [0].Toml.SimpleKey                          positive_not_a_number
+    [1].Toml.Val                                  + nan
+      [0].Toml.Number                             + nan
+  [33].Toml.Keyval                                negative_not_a_number = - nan
+    [0].Toml.Key                                  negative_not_a_number
+      [0].Toml.SimpleKey                          negative_not_a_number
+    [1].Toml.Val                                  - nan
+      [0].Toml.Number                             - nan
+  [34].Toml.Table                                 [ booleans ]
+    [0].Toml.StdTable                             [ booleans ]
+      [0].Toml.Key                                booleans
+        [0].Toml.SimpleKey                        booleans
+  [35].Toml.Keyval                                true_value = true
+    [0].Toml.Key                                  true_value
+      [0].Toml.SimpleKey                          true_value
+    [1].Toml.Val                                  true
+  [36].Toml.Keyval                                false_value = false
+    [0].Toml.Key                                  false_value
+      [0].Toml.SimpleKey                          false_value
+    [1].Toml.Val                                  false
+  [37].Toml.Table                                 [ datetimes ]
+    [0].Toml.StdTable                             [ datetimes ]
+      [0].Toml.Key                                datetimes
+        [0].Toml.SimpleKey                        datetimes
+  [38].Toml.Keyval                                offset_utc = 1979-05-27T07:32:00Z
+    [0].Toml.Key                                  offset_utc
+      [0].Toml.SimpleKey                          offset_utc
+    [1].Toml.Val                                  1979-05-27T07:32:00Z
+  [39].Toml.Keyval                                offset_numeric = 1979-05-27T00:32:00-07:00
+    [0].Toml.Key                                  offset_numeric
+      [0].Toml.SimpleKey                          offset_numeric
+    [1].Toml.Val                                  1979-05-27T00:32:00-07:00
+  [40].Toml.Keyval                                offset_with_ms = 1979-05-27T00:32:00.999999-07:00
+    [0].Toml.Key                                  offset_with_ms
+      [0].Toml.SimpleKey                          offset_with_ms
+    [1].Toml.Val                                  1979-05-27T00:32:00.999999-07:00
+  [41].Toml.Keyval                                offset_space_separator = 1979-05-27 07:32:00Z
+    [0].Toml.Key                                  offset_space_separator
+      [0].Toml.SimpleKey                          offset_space_separator
+    [1].Toml.Val                                  1979-05-27 07:32:00Z
+  [42].Toml.Keyval                                local_date_time = 1979-05-27T07:32:00
+    [0].Toml.Key                                  local_date_time
+      [0].Toml.SimpleKey                          local_date_time
+    [1].Toml.Val                                  1979-05-27T07:32:00
+  [43].Toml.Keyval                                local_date_time_ms = 1979-05-27T07:32:00.999999
+    [0].Toml.Key                                  local_date_time_ms
+      [0].Toml.SimpleKey                          local_date_time_ms
+    [1].Toml.Val                                  1979-05-27T07:32:00.999999
+  [44].Toml.Keyval                                local_date = 1979-05-27
+    [0].Toml.Key                                  local_date
+      [0].Toml.SimpleKey                          local_date
+    [1].Toml.Val                                  1979-05-27
+  [45].Toml.Keyval                                local_time = 07:32:00
+    [0].Toml.Key                                  local_time
+      [0].Toml.SimpleKey                          local_time
+    [1].Toml.Val                                  07:32:00
+  [46].Toml.Keyval                                local_time_ms = 00:32:00.999999
+    [0].Toml.Key                                  local_time_ms
+      [0].Toml.SimpleKey                          local_time_ms
+    [1].Toml.Val                                  00:32:00.999999
+  [47].Toml.Table                                 [ arrays ]
+    [0].Toml.StdTable                             [ arrays ]
+      [0].Toml.Key                                arrays
+        [0].Toml.SimpleKey                        arrays
+  [48].Toml.Keyval                                integers = ... 3 ]
+    [0].Toml.Key                                  integers
+      [0].Toml.SimpleKey                          integers
+    [1].Toml.Val                                  [ 1 ... 3 ]
+      [0].Toml.Array                              [ 1 ... 3 ]
+        [0].Toml.Val                              1
+          [0].Toml.Number                         1
+        [1].Toml.Val                              2
+          [0].Toml.Number                         2
+        [2].Toml.Val                              3
+          [0].Toml.Number                         3
+  [49].Toml.Keyval                                strings = ... "green" ]
+    [0].Toml.Key                                  strings
+      [0].Toml.SimpleKey                          strings
+    [1].Toml.Val                                  [ "red" ... "green" ]
+      [0].Toml.Array                              [ "red" ... "green" ]
+        [0].Toml.Val                              "red"
+        [1].Toml.Val                              "yellow"
+        [2].Toml.Val                              "green"
+  [50].Toml.Keyval                                nested_arrays = ... ] ]
+    [0].Toml.Key                                  nested_arrays
+      [0].Toml.SimpleKey                          nested_arrays
+    [1].Toml.Val                                  [ [ ... ] ]
+      [0].Toml.Array                              [ [ ... ] ]
+        [0].Toml.Val                              [ 1 , 2 ]
+          [0].Toml.Array                          [ 1 , 2 ]
+            [0].Toml.Val                          1
+              [0].Toml.Number                     1
+            [1].Toml.Val                          2
+              [0].Toml.Number                     2
+        [1].Toml.Val                              [ 3 ... 5 ]
+          [0].Toml.Array                          [ 3 ... 5 ]
+            [0].Toml.Val                          3
+              [0].Toml.Number                     3
+            [1].Toml.Val                          4
+              [0].Toml.Number                     4
+            [2].Toml.Val                          5
+              [0].Toml.Number                     5
+  [51].Toml.Keyval                                multiline_and_mixed_whitespace = ... , ]
+    [0].Toml.Key                                  multiline_and_mixed_whitespace
+      [0].Toml.SimpleKey                          multiline_and_mixed_whitespace
+    [1].Toml.Val                                  [ "allowed" ... , ]
+      [0].Toml.Array                              [ "allowed" ... , ]
+        [0].Toml.Val                              "allowed"
+        [1].Toml.Val                              "across"
+        [2].Toml.Val                              "multiple"
+        [3].Toml.Val                              "lines"
+  [52].Toml.Keyval                                mixed_types = ... 1979-05-27 ]
+    [0].Toml.Key                                  mixed_types
+      [0].Toml.SimpleKey                          mixed_types
+    [1].Toml.Val                                  [ 1 ... 1979-05-27 ]
+      [0].Toml.Array                              [ 1 ... 1979-05-27 ]
+        [0].Toml.Val                              1
+          [0].Toml.Number                         1
+        [1].Toml.Val                              2
+          [0].Toml.Number                         2
+        [2].Toml.Val                              "three"
+        [3].Toml.Val                              [ "four" , 5 ]
+          [0].Toml.Array                          [ "four" , 5 ]
+            [0].Toml.Val                          "four"
+            [1].Toml.Val                          5
+              [0].Toml.Number                     5
+        [4].Toml.Val                              6.0
+          [0].Toml.Number                         6.0
+        [5].Toml.Val                              1979-05-27
+  [53].Toml.Table                                 [ inline_tables ]
+    [0].Toml.StdTable                             [ inline_tables ]
+      [0].Toml.Key                                inline_tables
+        [0].Toml.SimpleKey                        inline_tables
+  [54].Toml.Keyval                                basic = ... "Preston-Werner" }
+    [0].Toml.Key                                  basic
+      [0].Toml.SimpleKey                          basic
+    [1].Toml.Val                                  { first ... "Preston-Werner" }
+      [0].Toml.InlineTable                        { first ... "Preston-Werner" }
+        [0].Toml.Keyval                           first = "Tom"
+          [0].Toml.Key                            first
+            [0].Toml.SimpleKey                    first
+          [1].Toml.Val                            "Tom"
+        [1].Toml.Keyval                           last = "Preston-Werner"
+          [0].Toml.Key                            last
+            [0].Toml.SimpleKey                    last
+          [1].Toml.Val                            "Preston-Werner"
+  [55].Toml.Keyval                                point = ... 3 }
+    [0].Toml.Key                                  point
+      [0].Toml.SimpleKey                          point
+    [1].Toml.Val                                  { x ... 3 }
+      [0].Toml.InlineTable                        { x ... 3 }
+        [0].Toml.Keyval                           x = 1
+          [0].Toml.Key                            x
+            [0].Toml.SimpleKey                    x
+          [1].Toml.Val                            1
+            [0].Toml.Number                       1
+        [1].Toml.Keyval                           y = 2
+          [0].Toml.Key                            y
+            [0].Toml.SimpleKey                    y
+          [1].Toml.Val                            2
+            [0].Toml.Number                       2
+        [2].Toml.Keyval                           z = 3
+          [0].Toml.Key                            z
+            [0].Toml.SimpleKey                    z
+          [1].Toml.Val                            3
+            [0].Toml.Number                       3
+  [56].Toml.Keyval                                nested = ... true }
+    [0].Toml.Key                                  nested
+      [0].Toml.SimpleKey                          nested
+    [1].Toml.Val                                  { identity ... true }
+      [0].Toml.InlineTable                        { identity ... true }
+        [0].Toml.Keyval                           identity = ... "admin" }
+          [0].Toml.Key                            identity
+            [0].Toml.SimpleKey                    identity
+          [1].Toml.Val                            { id ... "admin" }
+            [0].Toml.InlineTable                  { id ... "admin" }
+              [0].Toml.Keyval                     id = 42
+                [0].Toml.Key                      id
+                  [0].Toml.SimpleKey              id
+                [1].Toml.Val                      42
+                  [0].Toml.Number                 42
+              [1].Toml.Keyval                     role = "admin"
+                [0].Toml.Key                      role
+                  [0].Toml.SimpleKey              role
+                [1].Toml.Val                      "admin"
+        [1].Toml.Keyval                           active = true
+          [0].Toml.Key                            active
+            [0].Toml.SimpleKey                    active
+          [1].Toml.Val                            true
+  [57].Toml.Keyval                                empty = { }
+    [0].Toml.Key                                  empty
+      [0].Toml.SimpleKey                          empty
+    [1].Toml.Val                                  { }
+      [0].Toml.InlineTable                        { }
+  [58].Toml.Table                                 [ explicit_table_1 ]
+    [0].Toml.StdTable                             [ explicit_table_1 ]
+      [0].Toml.Key                                explicit_table_1
+        [0].Toml.SimpleKey                        explicit_table_1
+  [59].Toml.Keyval                                key_a = "Value inside explicit_table_1"
+    [0].Toml.Key                                  key_a
+      [0].Toml.SimpleKey                          key_a
+    [1].Toml.Val                                  "Value inside explicit_table_1"
+  [60].Toml.Table                                 [ explicit_table_1 . nested_child ]
+    [0].Toml.StdTable                             [ explicit_table_1 . nested_child ]
+      [0].Toml.Key                                explicit_table_1 . nested_child
+        [0].Toml.SimpleKey                        explicit_table_1
+        [1].Toml.SimpleKey                        nested_child
+  [61].Toml.Keyval                                key_b = "Value inside nested_child"
+    [0].Toml.Key                                  key_b
+      [0].Toml.SimpleKey                          key_b
+    [1].Toml.Val                                  "Value inside nested_child"
+  [62].Toml.Table                                 [ explicit_table_2 ]
+    [0].Toml.StdTable                             [ explicit_table_2 ]
+      [0].Toml.Key                                explicit_table_2
+        [0].Toml.SimpleKey                        explicit_table_2
+  [63].Toml.Table                                 [ explicit_table_3 ... deep_table ]
+    [0].Toml.StdTable                             [ explicit_table_3 ... deep_table ]
+      [0].Toml.Key                                explicit_table_3 . sub_table . deep_table
+        [0].Toml.SimpleKey                        explicit_table_3
+        [1].Toml.SimpleKey                        sub_table
+        [2].Toml.SimpleKey                        deep_table
+  [64].Toml.Keyval                                final_key = "Resolves deep nesting paths cleanly"
+    [0].Toml.Key                                  final_key
+      [0].Toml.SimpleKey                          final_key
+    [1].Toml.Val                                  "Resolves deep nesting paths cleanly"
+  [65].Toml.Table                                 [[ products ]]
+    [0].Toml.ArrayTable                           [[ products ]]
+      [0].Toml.Key                                products
+        [0].Toml.SimpleKey                        products
+  [66].Toml.Keyval                                name = "Hammer"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "Hammer"
+  [67].Toml.Keyval                                sku = 738594937
+    [0].Toml.Key                                  sku
+      [0].Toml.SimpleKey                          sku
+    [1].Toml.Val                                  738594937
+      [0].Toml.Number                             738594937
+  [68].Toml.Table                                 [[ products ]]
+    [0].Toml.ArrayTable                           [[ products ]]
+      [0].Toml.Key                                products
+        [0].Toml.SimpleKey                        products
+  [69].Toml.Table                                 [[ products ]]
+    [0].Toml.ArrayTable                           [[ products ]]
+      [0].Toml.Key                                products
+        [0].Toml.SimpleKey                        products
+  [70].Toml.Keyval                                name = "Nail"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "Nail"
+  [71].Toml.Keyval                                sku = 284758393
+    [0].Toml.Key                                  sku
+      [0].Toml.SimpleKey                          sku
+    [1].Toml.Val                                  284758393
+      [0].Toml.Number                             284758393
+  [72].Toml.Table                                 [[ products . categories ]]
+    [0].Toml.ArrayTable                           [[ products . categories ]]
+      [0].Toml.Key                                products . categories
+        [0].Toml.SimpleKey                        products
+        [1].Toml.SimpleKey                        categories
+  [73].Toml.Keyval                                name = "Fasteners"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "Fasteners"
+  [74].Toml.Table                                 [[ fruit ]]
+    [0].Toml.ArrayTable                           [[ fruit ]]
+      [0].Toml.Key                                fruit
+        [0].Toml.SimpleKey                        fruit
+  [75].Toml.Keyval                                name = "apple"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "apple"
+  [76].Toml.Table                                 [ fruit . physical ]
+    [0].Toml.StdTable                             [ fruit . physical ]
+      [0].Toml.Key                                fruit . physical
+        [0].Toml.SimpleKey                        fruit
+        [1].Toml.SimpleKey                        physical
+  [77].Toml.Keyval                                color = "red"
+    [0].Toml.Key                                  color
+      [0].Toml.SimpleKey                          color
+    [1].Toml.Val                                  "red"
+  [78].Toml.Table                                 [[ fruit . varieties ]]
+    [0].Toml.ArrayTable                           [[ fruit . varieties ]]
+      [0].Toml.Key                                fruit . varieties
+        [0].Toml.SimpleKey                        fruit
+        [1].Toml.SimpleKey                        varieties
+  [79].Toml.Keyval                                name = "gala"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "gala"
+  [80].Toml.Table                                 [[ fruit . varieties ]]
+    [0].Toml.ArrayTable                           [[ fruit . varieties ]]
+      [0].Toml.Key                                fruit . varieties
+        [0].Toml.SimpleKey                        fruit
+        [1].Toml.SimpleKey                        varieties
+  [81].Toml.Keyval                                name = "fuji"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "fuji"
+  [82].Toml.Table                                 [[ fruit ]]
+    [0].Toml.ArrayTable                           [[ fruit ]]
+      [0].Toml.Key                                fruit
+        [0].Toml.SimpleKey                        fruit
+  [83].Toml.Keyval                                name = "banana"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "banana"
+  [84].Toml.Table                                 [[ fruit . varieties ]]
+    [0].Toml.ArrayTable                           [[ fruit . varieties ]]
+      [0].Toml.Key                                fruit . varieties
+        [0].Toml.SimpleKey                        fruit
+        [1].Toml.SimpleKey                        varieties
+  [85].Toml.Keyval                                name = "cavendish"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "cavendish"
 

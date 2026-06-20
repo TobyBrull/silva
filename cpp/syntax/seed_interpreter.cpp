@@ -51,9 +51,7 @@ namespace silva::seed::impl {
       return {};
     }
 
-    expected_t<void> handle_rule(const name_id_t scope_name,
-                                 const parse_tree_span_t pts_rule,
-                                 const bool is_first_in_scope)
+    expected_t<void> handle_rule(const name_id_t scope_name, const parse_tree_span_t pts_rule)
     {
       SILVA_EXPECT(pts_rule[0].rule_name == lexicon.ni_rule, MINOR, "expected Rule");
 
@@ -63,10 +61,6 @@ namespace silva::seed::impl {
       name_id_t curr_rule_name;
       bool is_token_rule = false;
       if (SILVA_EXPECT_FWD(pts_rule.front_token_id()) == lexicon.ti_here.token_id) {
-        SILVA_EXPECT(is_first_in_scope,
-                     MINOR,
-                     "{} rule starting with '⊙' is only allowed as the first rule in a scope",
-                     pts_rule);
         curr_rule_name = scope_name;
       }
       else {
@@ -155,16 +149,14 @@ namespace silva::seed::impl {
                                        Iter it,
                                        const Iter end)
     {
-      bool is_first_in_scope = true;
       while (it != end) {
         const auto pts_child = pts_scope.sub_tree_span_at(it.pos);
         if (pts_child[0].rule_name == lexicon.ni_scope) {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
         else {
-          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, is_first_in_scope));
+          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child));
         }
-        is_first_in_scope = false;
         ++it;
       }
       return {};
@@ -230,7 +222,7 @@ namespace silva::seed::impl {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
         else {
-          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, false));
+          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child));
         }
       }
       return {};

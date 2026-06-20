@@ -58,7 +58,13 @@ namespace silva {
 
     friend void pretty_write_impl(const parse_tree_span_t&, byte_sink_t*);
 
-    expected_t<string_t> to_string(index_t token_offset = 50) const;
+    enum class to_string_mode_t {
+      TOKENIZATION = 0b001,
+      PARSE_TREE   = 0b010,
+      ALL          = 0b011,
+    };
+    expected_t<string_t> to_string(index_t token_indent = 50,
+                                   to_string_mode_t     = to_string_mode_t::ALL) const;
     expected_t<string_t> to_graphviz() const;
 
     friend bool operator==(const parse_tree_span_t&, const parse_tree_span_t&) = default;

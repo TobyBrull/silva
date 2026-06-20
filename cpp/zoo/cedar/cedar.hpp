@@ -12,12 +12,12 @@ namespace silva::cedar {
   const string_view_t seed_str = R"'(
 
 language Cedar:
-  ⊙ = Declaration *
-
   skip = skip_free_form
   operator = ( '...' | '.' | ';' | ':' | '*=' | '*' | '/=' | '/' | '%=' | '%' | '~' | '++' | '+=' | '+' | '--' | '-=' | '->' | '-' |
                '!=' | '!' | '==' | '=' | '<<=' | '<<' | '<=' | '<' | '>>=' | '>>' | '>=' | '>' |
                '&&' | '&=' | '&' | '||' | '|=' | '|' | '^=' | '^' | '?' | ',' )
+
+  ⊙ = Declaration *
 
   Declaration:
     ⊙ = Specifiers Init ? ( ';' | Stmt.Compound )

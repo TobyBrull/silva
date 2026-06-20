@@ -7,8 +7,9 @@
 namespace silva::lox {
   const string_view_t seed_str = R"'(
 language Lox:
-  ⊙ = ( Decl | Stmt ) *
   skip = skip_free_form
+
+  ⊙ = ( Decl | Stmt ) *
   Decl:
     ⊙ = Var | Fun | Class
     Var = 'var' identifier ( '=' Expr ) ? ';'

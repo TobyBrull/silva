@@ -57,7 +57,7 @@ identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +            not ID_CONTINUE
 identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *       not ID_CONTINUE
 
 string = STRING
-number = DIGIT ( DIGIT | 'e' | 'E' |  '.' | '\'' | '+' | '-' ) *
+number = DIGIT ( DIGIT | ID_LOWER | ID_UPPER | '.' | '\'' | '+' | '-' ) *
 newline = NEWLINE
 indent = INDENT
 dedent = DEDENT
@@ -69,14 +69,13 @@ skip_free_form = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | N
 skip_off_side  = ( SPACE | LINEFEED | COMMENT | WHITESPACE ) *
 
 language Seed:
-  ⊙ = ( Language | Scope | Rule ) *
-
   skip = skip_off_side
 
   frag_name = identifier_macro_case
   rule_name = identifier_pascal_case
   token_category_name = identifier_snake_case
 
+  ⊙ = ( Language | Scope | Rule ) *
   Language = 'language' rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = alias newline indent ( Scope | Rule ) * dedent

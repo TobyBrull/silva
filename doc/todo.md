@@ -11,11 +11,21 @@
     * node-rules may only use other node-rules or token-rules
     * token-rules may only use other token-rules or FRAGMENTS
 * Functionality to add to seed:
-    * `[ a b c ]` as a synonym for `a | b | c`
+    * abbrev for `a | b | c`
+        * `[ a b c ]`
+    * abbrev for `DIGIT DIGIT DIGIT DIGIT`
+        * `DIGIT { 4 }`
+        * `DIGIT { 2 , 4 }`
+        * `DIGIT { , 4 }`
+        * `DIGIT { 2 , }`
+    * abbrev for `a ( b ( c ( d ) ? ) ? ) ?`
+        * `a → b → c → d` ?
 * parse skip-rule AFTER every token
     * to support "end_of_language"
     * don't skip in seed.cpp in recursive token calls
-* prevent token-rules from using non-terminal rules?
+* Allow "⊙" later in "language" section
+    * or remove "⊙" completely
+    * in any case it should be possible to first define all tokens before the non-terminals
 
 * Parse -3.5e-4 in Seed, not in tokenization?
 * Parse Toml's "2025-07-03 23:55:00"?

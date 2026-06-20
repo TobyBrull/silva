@@ -25,17 +25,23 @@ namespace silva {
     byte_sink->format("{}@{}:{}", ptn.rule_name.val, ptn.token_begin, ptn.token_end);
   }
 
-  expected_t<string_t> parse_tree_span_t::to_string(const index_t token_offset) const
+  expected_t<string_t> parse_tree_span_t::to_string(const index_t token_indent,
+                                                    const to_string_mode_t mode) const
   {
-    auto retval = silva::pretty_string(*ptp->tp);
-    retval += '\n';
-    const seed::lexicon_t& lexicon = ptp->tp->sfp->get_lexicon<seed::lexicon_t>();
-    retval += SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
-      const auto pts = this->sub_tree_span_at(path.back().node_index);
-      curr_line += lexicon.name_id_str(pts[0].rule_name);
-      string_pad(curr_line, token_offset);
-      curr_line += silva::pretty_string(pts.token_span());
-    }));
+    string_t retval;
+    if (std::to_underlying(mode) & std::to_underlying(to_string_mode_t::TOKENIZATION)) {
+      retval += silva::pretty_string(*ptp->tp);
+      retval += '\n';
+    }
+    if (std::to_underlying(mode) & std::to_underlying(to_string_mode_t::PARSE_TREE)) {
+      const seed::lexicon_t& lexicon = ptp->tp->sfp->get_lexicon<seed::lexicon_t>();
+      retval += SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
+        const auto pts = this->sub_tree_span_at(path.back().node_index);
+        curr_line += lexicon.name_id_str(pts[0].rule_name);
+        string_pad(curr_line, token_indent);
+        curr_line += silva::pretty_string(pts.token_span());
+      }));
+    }
     return retval;
   }
 
