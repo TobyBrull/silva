@@ -3,11 +3,6 @@
 * Functionality to add to seed:
     * abbrev for `a | b | c`
         * `[ a b c ]`
-    * abbrev for `DIGIT DIGIT DIGIT DIGIT`
-        * `DIGIT { 4 }`
-        * `DIGIT { 2 , 4 }`
-        * `DIGIT { , 4 }`
-        * `DIGIT { 2 , }`
     * abbrev for `a ( b ( c ( d ) ? ) ? ) ?`
         * `a → b → c → d` ?
 * Tokenization

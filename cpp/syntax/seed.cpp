@@ -459,6 +459,7 @@ namespace silva::seed::impl {
     {
       hash_set_t<name_id_t> atom_set;
       atom_set.insert(lexicon.ni_atom);
+      atom_set.insert(lexicon.ni_quantifier);
       atom_set.insert(lexicon.ni_oper);
       SILVA_ASSERT(retval.compile(lexicon, atom_set));
     }
@@ -523,7 +524,8 @@ namespace silva::seed::impl {
     expected_t<token_t> expr_oper()
     {
       auto ts = token_stake(lexicon.ni_oper);
-      for (const auto& ft: {lexicon.ti_not, lexicon.ti_but_then}) {
+      for (const auto& ft:
+           {lexicon.ti_not, lexicon.ti_but_then, lexicon.ti_brace_open, lexicon.ti_brace_close}) {
         auto result = literal_token(ft);
         if (result) {
           ts.add_token(*result);
@@ -534,10 +536,42 @@ namespace silva::seed::impl {
       return ts.commit();
     }
 
+    expected_t<parse_tree_node_t> quantifier()
+    {
+      auto ss_rule = stake();
+      ss_rule.create_node(lexicon.ni_quantifier);
+      bool has_first_number = false;
+      {
+        auto result = number();
+        if (result) {
+          add_token_and_skip(*result);
+          has_first_number = true;
+        }
+      }
+      {
+        auto result = literal_token(lexicon.ti_comma);
+        if (result) {
+          add_token_and_skip(*result);
+          if (auto second = number()) {
+            add_token_and_skip(*second);
+          }
+        }
+        else {
+          SILVA_EXPECT_PARSE(lexicon.ni_quantifier,
+                             has_first_number,
+                             "expected number or ',' in quantifier");
+        }
+      }
+      return ss_rule.commit();
+    }
+
     expected_t<parse_tree_node_t> any_rule(const name_id_t rule_name)
     {
       if (rule_name == lexicon.ni_atom) {
         return atom();
+      }
+      else if (rule_name == lexicon.ni_quantifier) {
+        return quantifier();
       }
       else if (rule_name == lexicon.ni_oper) {
         auto ss = stake();

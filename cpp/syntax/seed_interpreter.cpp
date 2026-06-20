@@ -436,18 +436,69 @@ namespace silva::seed::impl {
       return {pair_t{min_repeat, max_repeat}};
     }
 
+    expected_t<pair_t<index_t, index_t>> get_min_max_quantifier(const parse_tree_span_t& quant_pts)
+    {
+      index_t min_repeat         = 0;
+      index_t max_repeat         = std::numeric_limits<index_t>::max();
+      const index_t num_tokens   = quant_pts.token_size();
+      const auto token_as_number = [&](const index_t idx) -> expected_t<index_t> {
+        const token_id_t ti = SILVA_EXPECT_FWD(quant_pts.at_token_id(idx));
+        const double value  = SILVA_EXPECT_FWD(sfp->token_infos[ti.val].number_as_double());
+        return static_cast<index_t>(value);
+      };
+      optional_t<index_t> comma_pos;
+      for (index_t i = 0; i < num_tokens; ++i) {
+        if (SILVA_EXPECT_FWD(quant_pts.at_token_id(i)) == lexicon.ti_comma.token_id) {
+          comma_pos = i;
+          break;
+        }
+      }
+      if (!comma_pos.has_value()) {
+        SILVA_EXPECT(num_tokens == 1, MAJOR, "expected single number in quantifier");
+        min_repeat = max_repeat = SILVA_EXPECT_FWD(token_as_number(0));
+      }
+      else {
+        const index_t cp = comma_pos.value();
+        SILVA_EXPECT(cp <= 1 && num_tokens <= 2 + cp, MAJOR, "malformed quantifier");
+        if (cp == 1) {
+          min_repeat = SILVA_EXPECT_FWD(token_as_number(0));
+        }
+        if (cp + 1 < num_tokens) {
+          max_repeat = SILVA_EXPECT_FWD(token_as_number(cp + 1));
+        }
+      }
+      SILVA_EXPECT(min_repeat <= max_repeat,
+                   MINOR,
+                   "expected min-repeat (={}) <= max-repeat (={})",
+                   min_repeat,
+                   max_repeat);
+      return {{min_repeat, max_repeat}};
+    }
+
     expected_t<node_and_error_t> s_expr_postfix(const parse_tree_span_t pts,
                                                 const name_id_t t_rule_name)
     {
-      auto ss                             = stake();
-      const auto children                 = SILVA_EXPECT_FWD(pts.get_children<1>());
-      const token_id_t op_ti              = sfp->name_infos[pts[0].rule_name.val].base_name;
-      const auto [min_repeat, max_repeat] = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
-      index_t repeat_count                = 0;
+      auto ss                = stake();
+      index_t base_child_idx = 0;
+      index_t min_repeat     = 0;
+      index_t max_repeat     = 0;
+      const token_id_t op_ti = sfp->name_infos[pts[0].rule_name.val].base_name;
+      if (op_ti == lexicon.ti_brace_open.token_id) {
+        const auto children              = SILVA_EXPECT_FWD(pts.get_children<2>());
+        base_child_idx                   = children[0];
+        const auto pts_braces            = pts.sub_tree_span_at(children[1]);
+        std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_quantifier(pts_braces));
+      }
+      else {
+        const auto children              = SILVA_EXPECT_FWD(pts.get_children<1>());
+        base_child_idx                   = children[0];
+        std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
+      }
+      index_t repeat_count = 0;
       error_t last_error;
       while (repeat_count < max_repeat) {
         auto result =
-            SILVA_EXPECT_FWD_IF(MAJOR, s_expr(pts.sub_tree_span_at(children[0]), t_rule_name));
+            SILVA_EXPECT_FWD_IF(MAJOR, s_expr(pts.sub_tree_span_at(base_child_idx), t_rule_name));
         if (result.has_value()) {
           ss.add_proto_node(std::move(*result).as_node());
           repeat_count += 1;

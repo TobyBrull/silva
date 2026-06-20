@@ -8,9 +8,9 @@ language Toml:
   skip = skip_free_form
 
   identifier = ID_START ( ID_CONTINUE | '-' | '_' ) *
-  date = DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT
-  time = DIGIT DIGIT ':' DIGIT DIGIT ( ':' DIGIT DIGIT ( '.' DIGIT DIGIT DIGIT ( DIGIT DIGIT DIGIT ( DIGIT DIGIT DIGIT) ? ) ? ) ? ) ?
-  timezone = ( 'Z' | ( '+' | '-' ) DIGIT DIGIT ':' DIGIT DIGIT )
+  date = DIGIT{4} '-' DIGIT{2} '-' DIGIT{2}
+  time = DIGIT{2} ':' DIGIT{2} ( ':' DIGIT{2} ( '.' DIGIT{3} ( DIGIT{3} ( DIGIT{3} ) ? ) ? ) ? ) ?
+  timezone = ( 'Z' | ( '+' | '-' ) DIGIT{2} ':' DIGIT{2} )
   date_time = date ( ' ' | 'T' ) time timezone ?
 
   ⊙ = ( Keyval | Table ) *

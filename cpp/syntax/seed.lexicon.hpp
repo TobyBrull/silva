@@ -23,6 +23,8 @@ namespace silva::seed {
     const fragmented_token_t ti_right_arrow   = *fragmented_token(sfp, "->");
     const fragmented_token_t ti_brack_open    = *fragmented_token(sfp, "[");
     const fragmented_token_t ti_brack_close   = *fragmented_token(sfp, "]");
+    const fragmented_token_t ti_brace_open    = *fragmented_token(sfp, "{");
+    const fragmented_token_t ti_brace_close   = *fragmented_token(sfp, "}");
     const fragmented_token_t ti_paren_open    = *fragmented_token(sfp, "(");
     const fragmented_token_t ti_paren_close   = *fragmented_token(sfp, ")");
     const fragmented_token_t ti_identifier    = *fragmented_token(sfp, "identifier");
@@ -91,15 +93,16 @@ namespace silva::seed {
     const name_id_t ni_rule_name      = sfp->name_id_of(ni_seed, "rule_name");
     const name_id_t ni_token_cat_name = sfp->name_id_of(ni_seed, "token_category_name");
 
-    const name_id_t ni_language  = sfp->name_id_of(ni_seed, "Language");
-    const name_id_t ni_scope     = sfp->name_id_of(ni_seed, "Scope");
-    const name_id_t ni_rule      = sfp->name_id_of(ni_seed, "Rule");
-    const name_id_t ni_qualifier = sfp->name_id_of(ni_seed, "Qualifier");
-    const name_id_t ni_expr      = sfp->name_id_of(ni_seed, "Expr");
-    const name_id_t ni_atom      = sfp->name_id_of(ni_expr, "Atom");
-    const name_id_t ni_oper      = sfp->name_id_of(ni_expr, "operator");
-    const name_id_t ni_term      = sfp->name_id_of(ni_seed, "Terminal");
-    const name_id_t ni_tok_cat   = sfp->name_id_of(ni_seed, "TokenCategory");
+    const name_id_t ni_language   = sfp->name_id_of(ni_seed, "Language");
+    const name_id_t ni_scope      = sfp->name_id_of(ni_seed, "Scope");
+    const name_id_t ni_rule       = sfp->name_id_of(ni_seed, "Rule");
+    const name_id_t ni_qualifier  = sfp->name_id_of(ni_seed, "Qualifier");
+    const name_id_t ni_expr       = sfp->name_id_of(ni_seed, "Expr");
+    const name_id_t ni_atom       = sfp->name_id_of(ni_expr, "Atom");
+    const name_id_t ni_quantifier = sfp->name_id_of(ni_expr, "Quantifier");
+    const name_id_t ni_oper       = sfp->name_id_of(ni_expr, "operator");
+    const name_id_t ni_term       = sfp->name_id_of(ni_seed, "Terminal");
+    const name_id_t ni_tok_cat    = sfp->name_id_of(ni_seed, "TokenCategory");
 
     const name_id_t ni_expr_prefix  = sfp->name_id_of(ni_expr, "Prefix");
     const name_id_t ni_expr_postfix = sfp->name_id_of(ni_expr, "Postfix");

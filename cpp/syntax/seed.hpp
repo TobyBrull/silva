@@ -84,12 +84,14 @@ language Seed:
   Expr:
     ⊙ = axe Atom operator
       Prefix    = rtl   prefix 'not'
-      Postfix   = ltr   postfix '?' '*' '+'
+      Postfix   = ltr   postfix '?' '*' '+' \
+                        postfix_nest -> Quantifier '{' '}'
       Concat    = ltr   infix_flat concat
       And       = ltr   infix_flat 'but_then'
       Or        = ltr   infix_flat '|'
     Atom = alias Terminal | Nonterminal | '(' Expr ')'
-    operator = ( 'not' | 'but_then' | operator_single )
+    Quantifier = number ? ',' number ? | number
+    operator = ( 'not' | 'but_then' | operator_single | '{' | '}' )
     Alias = Expr
   Terminal = ( 'ε' | 'end_of_language' | 'language' | string | frag_name )
   Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
