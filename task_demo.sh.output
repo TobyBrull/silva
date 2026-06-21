@@ -2424,13 +2424,13 @@ Mr Jane
           [0].Cedar.Type.Declarator.Pointer                                                         *
         [1].Cedar.Type.Declarator.Direct                                                            test_8
 
-[  0]   6:1   cat=.Toml.identifier                         bare_key
+[  0]   6:1   cat=.identifier_with_dash                    bare_key
 [  1]   6:10  cat=.literal                                 =
 [  2]   6:12  cat=.string                                  "Alphanumeric, underscores, and dashes allowed"
-[  3]   7:1   cat=.Toml.identifier                         bare-key-dash
+[  3]   7:1   cat=.identifier_with_dash                    bare-key-dash
 [  4]   7:15  cat=.literal                                 =
 [  5]   7:17  cat=.string                                  "Dashes are completely legal"
-[  6]   8:1   cat=.Toml.identifier                         bare_key_123
+[  6]   8:1   cat=.identifier_with_dash                    bare_key_123
 [  7]   8:14  cat=.literal                                 =
 [  8]   8:16  cat=.string                                  "Numbers are allowed"
 [  9]  10:1   cat=.string                                  "quoted key"
@@ -2442,152 +2442,152 @@ Mr Jane
 [ 15]  12:1   cat=.string                                  ""
 [ 16]  12:4   cat=.literal                                 =
 [ 17]  12:6   cat=.string                                  "Empty string keys are explicitly valid"
-[ 18]  15:1   cat=.Toml.identifier                         physical
+[ 18]  15:1   cat=.identifier_with_dash                    physical
 [ 19]  15:9   cat=.literal                                 .
-[ 20]  15:10  cat=.Toml.identifier                         property
+[ 20]  15:10  cat=.identifier_with_dash                    property
 [ 21]  15:18  cat=.literal                                 .
-[ 22]  15:19  cat=.Toml.identifier                         color
+[ 22]  15:19  cat=.identifier_with_dash                    color
 [ 23]  15:25  cat=.literal                                 =
 [ 24]  15:27  cat=.string                                  "blue"
-[ 25]  16:1   cat=.Toml.identifier                         physical
+[ 25]  16:1   cat=.identifier_with_dash                    physical
 [ 26]  16:9   cat=.literal                                 .
-[ 27]  16:10  cat=.Toml.identifier                         property
+[ 27]  16:10  cat=.identifier_with_dash                    property
 [ 28]  16:18  cat=.literal                                 .
-[ 29]  16:19  cat=.Toml.identifier                         shape
+[ 29]  16:19  cat=.identifier_with_dash                    shape
 [ 30]  16:25  cat=.literal                                 =
 [ 31]  16:27  cat=.string                                  "round"
 [ 32]  21:1   cat=.literal                                 [
-[ 33]  21:2   cat=.Toml.identifier                         strings
+[ 33]  21:2   cat=.identifier_with_dash                    strings
 [ 34]  21:9   cat=.literal                                 ]
-[ 35]  24:1   cat=.Toml.identifier                         basic
+[ 35]  24:1   cat=.identifier_with_dash                    basic
 [ 36]  24:7   cat=.literal                                 =
 [ 37]  24:9   cat=.string                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
-[ 38]  25:1   cat=.Toml.identifier                         escaped
+[ 38]  25:1   cat=.identifier_with_dash                    escaped
 [ 39]  25:9   cat=.literal                                 =
 [ 40]  25:11  cat=.string                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
 [ 41]  30:1   cat=.literal                                 [
-[ 42]  30:2   cat=.Toml.identifier                         integers
+[ 42]  30:2   cat=.identifier_with_dash                    integers
 [ 43]  30:10  cat=.literal                                 ]
-[ 44]  31:1   cat=.Toml.identifier                         positive
+[ 44]  31:1   cat=.identifier_with_dash                    positive
 [ 45]  31:10  cat=.literal                                 =
 [ 46]  31:12  cat=.literal                                 +
 [ 47]  31:13  cat=.number                                  99
-[ 48]  32:1   cat=.Toml.identifier                         negative
+[ 48]  32:1   cat=.identifier_with_dash                    negative
 [ 49]  32:10  cat=.literal                                 =
 [ 50]  32:12  cat=.literal                                 -
 [ 51]  32:13  cat=.number                                  17
-[ 52]  33:1   cat=.Toml.identifier                         zero
+[ 52]  33:1   cat=.identifier_with_dash                    zero
 [ 53]  33:6   cat=.literal                                 =
 [ 54]  33:8   cat=.number                                  0
-[ 55]  34:1   cat=.Toml.identifier                         zero_plus
+[ 55]  34:1   cat=.identifier_with_dash                    zero_plus
 [ 56]  34:11  cat=.literal                                 =
 [ 57]  34:13  cat=.literal                                 +
 [ 58]  34:14  cat=.number                                  0
-[ 59]  35:1   cat=.Toml.identifier                         zero_minus
+[ 59]  35:1   cat=.identifier_with_dash                    zero_minus
 [ 60]  35:12  cat=.literal                                 =
 [ 61]  35:14  cat=.literal                                 -
 [ 62]  35:15  cat=.number                                  0
-[ 63]  39:1   cat=.Toml.identifier                         hexadecimal
+[ 63]  39:1   cat=.identifier_with_dash                    hexadecimal
 [ 64]  39:13  cat=.literal                                 =
 [ 65]  39:15  cat=.number                                  0xDEADBEEF
-[ 66]  40:1   cat=.Toml.identifier                         hex_lowercase
+[ 66]  40:1   cat=.identifier_with_dash                    hex_lowercase
 [ 67]  40:15  cat=.literal                                 =
 [ 68]  40:17  cat=.number                                  0xdeadbeef
-[ 69]  41:1   cat=.Toml.identifier                         octal
+[ 69]  41:1   cat=.identifier_with_dash                    octal
 [ 70]  41:7   cat=.literal                                 =
 [ 71]  41:9   cat=.number                                  0o755
-[ 72]  42:1   cat=.Toml.identifier                         binary
+[ 72]  42:1   cat=.identifier_with_dash                    binary
 [ 73]  42:8   cat=.literal                                 =
 [ 74]  42:10  cat=.number                                  0b11010010
 [ 75]  47:1   cat=.literal                                 [
-[ 76]  47:2   cat=.Toml.identifier                         floats
+[ 76]  47:2   cat=.identifier_with_dash                    floats
 [ 77]  47:8   cat=.literal                                 ]
-[ 78]  48:1   cat=.Toml.identifier                         normal
+[ 78]  48:1   cat=.identifier_with_dash                    normal
 [ 79]  48:8   cat=.literal                                 =
 [ 80]  48:10  cat=.literal                                 +
 [ 81]  48:11  cat=.number                                  3.14159
-[ 82]  49:1   cat=.Toml.identifier                         negative
+[ 82]  49:1   cat=.identifier_with_dash                    negative
 [ 83]  49:10  cat=.literal                                 =
 [ 84]  49:12  cat=.literal                                 -
 [ 85]  49:13  cat=.number                                  0.01
-[ 86]  50:1   cat=.Toml.identifier                         fractional_zero
+[ 86]  50:1   cat=.identifier_with_dash                    fractional_zero
 [ 87]  50:17  cat=.literal                                 =
 [ 88]  50:19  cat=.number                                  5.0
-[ 89]  53:1   cat=.Toml.identifier                         exponent_large
+[ 89]  53:1   cat=.identifier_with_dash                    exponent_large
 [ 90]  53:16  cat=.literal                                 =
 [ 91]  53:18  cat=.number                                  5e+22
-[ 92]  54:1   cat=.Toml.identifier                         exponent_small
+[ 92]  54:1   cat=.identifier_with_dash                    exponent_small
 [ 93]  54:16  cat=.literal                                 =
 [ 94]  54:18  cat=.number                                  1e-14
-[ 95]  55:1   cat=.Toml.identifier                         exponent_mixed
+[ 95]  55:1   cat=.identifier_with_dash                    exponent_mixed
 [ 96]  55:16  cat=.literal                                 =
 [ 97]  55:18  cat=.literal                                 -
 [ 98]  55:19  cat=.number                                  6.23e-4
-[ 99]  58:1   cat=.Toml.identifier                         infinity
+[ 99]  58:1   cat=.identifier_with_dash                    infinity
 [100]  58:10  cat=.literal                                 =
 [101]  58:12  cat=.literal                                 inf
-[102]  59:1   cat=.Toml.identifier                         positive_infinity
+[102]  59:1   cat=.identifier_with_dash                    positive_infinity
 [103]  59:19  cat=.literal                                 =
 [104]  59:21  cat=.literal                                 +
 [105]  59:22  cat=.literal                                 inf
-[106]  60:1   cat=.Toml.identifier                         negative_infinity
+[106]  60:1   cat=.identifier_with_dash                    negative_infinity
 [107]  60:19  cat=.literal                                 =
 [108]  60:21  cat=.literal                                 -
 [109]  60:22  cat=.literal                                 inf
-[110]  61:1   cat=.Toml.identifier                         not_a_number
+[110]  61:1   cat=.identifier_with_dash                    not_a_number
 [111]  61:14  cat=.literal                                 =
 [112]  61:16  cat=.literal                                 nan
-[113]  62:1   cat=.Toml.identifier                         positive_not_a_number
+[113]  62:1   cat=.identifier_with_dash                    positive_not_a_number
 [114]  62:23  cat=.literal                                 =
 [115]  62:25  cat=.literal                                 +
 [116]  62:26  cat=.literal                                 nan
-[117]  63:1   cat=.Toml.identifier                         negative_not_a_number
+[117]  63:1   cat=.identifier_with_dash                    negative_not_a_number
 [118]  63:23  cat=.literal                                 =
 [119]  63:25  cat=.literal                                 -
 [120]  63:26  cat=.literal                                 nan
 [121]  68:1   cat=.literal                                 [
-[122]  68:2   cat=.Toml.identifier                         booleans
+[122]  68:2   cat=.identifier_with_dash                    booleans
 [123]  68:10  cat=.literal                                 ]
-[124]  69:1   cat=.Toml.identifier                         true_value
+[124]  69:1   cat=.identifier_with_dash                    true_value
 [125]  69:12  cat=.literal                                 =
 [126]  69:14  cat=.literal                                 true
-[127]  70:1   cat=.Toml.identifier                         false_value
+[127]  70:1   cat=.identifier_with_dash                    false_value
 [128]  70:13  cat=.literal                                 =
 [129]  70:15  cat=.literal                                 false
 [130]  75:1   cat=.literal                                 [
-[131]  75:2   cat=.Toml.identifier                         datetimes
+[131]  75:2   cat=.identifier_with_dash                    datetimes
 [132]  75:11  cat=.literal                                 ]
-[133]  77:1   cat=.Toml.identifier                         offset_utc
+[133]  77:1   cat=.identifier_with_dash                    offset_utc
 [134]  77:12  cat=.literal                                 =
-[135]  77:14  cat=.Toml.date_time                          1979-05-27T07:32:00Z
-[136]  78:1   cat=.Toml.identifier                         offset_numeric
+[135]  77:14  cat=.timepoint_any                           1979-05-27T07:32:00Z
+[136]  78:1   cat=.identifier_with_dash                    offset_numeric
 [137]  78:16  cat=.literal                                 =
-[138]  78:18  cat=.Toml.date_time                          1979-05-27T00:32:00-07:00
-[139]  79:1   cat=.Toml.identifier                         offset_with_ms
+[138]  78:18  cat=.timepoint_any                           1979-05-27T00:32:00-07:00
+[139]  79:1   cat=.identifier_with_dash                    offset_with_ms
 [140]  79:16  cat=.literal                                 =
-[141]  79:18  cat=.Toml.date_time                          1979-05-27T00:32:00.999999-07:00
-[142]  80:1   cat=.Toml.identifier                         offset_space_separator
+[141]  79:18  cat=.timepoint_any                           1979-05-27T00:32:00.999999-07:00
+[142]  80:1   cat=.identifier_with_dash                    offset_space_separator
 [143]  80:24  cat=.literal                                 =
-[144]  80:26  cat=.Toml.date_time                          1979-05-27 07:32:00Z
-[145]  83:1   cat=.Toml.identifier                         local_date_time
+[144]  80:26  cat=.timepoint_any                           1979-05-27 07:32:00Z
+[145]  83:1   cat=.identifier_with_dash                    local_date_time
 [146]  83:17  cat=.literal                                 =
-[147]  83:19  cat=.Toml.date_time                          1979-05-27T07:32:00
-[148]  84:1   cat=.Toml.identifier                         local_date_time_ms
+[147]  83:19  cat=.timepoint_local_any                     1979-05-27T07:32:00
+[148]  84:1   cat=.identifier_with_dash                    local_date_time_ms
 [149]  84:20  cat=.literal                                 =
-[150]  84:22  cat=.Toml.date_time                          1979-05-27T07:32:00.999999
-[151]  87:1   cat=.Toml.identifier                         local_date
+[150]  84:22  cat=.timepoint_local_any                     1979-05-27T07:32:00.999999
+[151]  87:1   cat=.identifier_with_dash                    local_date
 [152]  87:12  cat=.literal                                 =
-[153]  87:14  cat=.Toml.date                               1979-05-27
-[154]  90:1   cat=.Toml.identifier                         local_time
+[153]  87:14  cat=.date                                    1979-05-27
+[154]  90:1   cat=.identifier_with_dash                    local_time
 [155]  90:12  cat=.literal                                 =
-[156]  90:14  cat=.Toml.time                               07:32:00
-[157]  91:1   cat=.Toml.identifier                         local_time_ms
+[156]  90:14  cat=.time_of_day_any                         07:32:00
+[157]  91:1   cat=.identifier_with_dash                    local_time_ms
 [158]  91:15  cat=.literal                                 =
-[159]  91:17  cat=.Toml.time                               00:32:00.999999
+[159]  91:17  cat=.time_of_day_any                         00:32:00.999999
 [160]  96:1   cat=.literal                                 [
-[161]  96:2   cat=.Toml.identifier                         arrays
+[161]  96:2   cat=.identifier_with_dash                    arrays
 [162]  96:8   cat=.literal                                 ]
-[163]  97:1   cat=.Toml.identifier                         integers
+[163]  97:1   cat=.identifier_with_dash                    integers
 [164]  97:10  cat=.literal                                 =
 [165]  97:12  cat=.literal                                 [
 [166]  97:13  cat=.number                                  1
@@ -2596,7 +2596,7 @@ Mr Jane
 [169]  97:17  cat=.literal                                 ,
 [170]  97:19  cat=.number                                  3
 [171]  97:20  cat=.literal                                 ]
-[172]  98:1   cat=.Toml.identifier                         strings
+[172]  98:1   cat=.identifier_with_dash                    strings
 [173]  98:9   cat=.literal                                 =
 [174]  98:11  cat=.literal                                 [
 [175]  98:12  cat=.string                                  "red"
@@ -2605,7 +2605,7 @@ Mr Jane
 [178]  98:27  cat=.literal                                 ,
 [179]  98:29  cat=.string                                  "green"
 [180]  98:36  cat=.literal                                 ]
-[181]  99:1   cat=.Toml.identifier                         nested_arrays
+[181]  99:1   cat=.identifier_with_dash                    nested_arrays
 [182]  99:15  cat=.literal                                 =
 [183]  99:17  cat=.literal                                 [
 [184]  99:18  cat=.literal                                 [
@@ -2622,7 +2622,7 @@ Mr Jane
 [195]  99:33  cat=.number                                  5
 [196]  99:34  cat=.literal                                 ]
 [197]  99:35  cat=.literal                                 ]
-[198] 102:1   cat=.Toml.identifier                         multiline_and_mixed_whitespace
+[198] 102:1   cat=.identifier_with_dash                    multiline_and_mixed_whitespace
 [199] 102:32  cat=.literal                                 =
 [200] 102:34  cat=.literal                                 [
 [201] 103:3   cat=.string                                  "allowed"
@@ -2634,7 +2634,7 @@ Mr Jane
 [207] 106:3   cat=.string                                  "lines"
 [208] 106:10  cat=.literal                                 ,
 [209] 107:1   cat=.literal                                 ]
-[210] 110:1   cat=.Toml.identifier                         mixed_types
+[210] 110:1   cat=.identifier_with_dash                    mixed_types
 [211] 110:13  cat=.literal                                 =
 [212] 110:15  cat=.literal                                 [
 [213] 110:16  cat=.number                                  1
@@ -2651,158 +2651,158 @@ Mr Jane
 [224] 110:42  cat=.literal                                 ,
 [225] 110:44  cat=.number                                  6.0
 [226] 110:47  cat=.literal                                 ,
-[227] 110:49  cat=.Toml.date                               1979-05-27
+[227] 110:49  cat=.date                                    1979-05-27
 [228] 110:59  cat=.literal                                 ]
 [229] 115:1   cat=.literal                                 [
-[230] 115:2   cat=.Toml.identifier                         inline_tables
+[230] 115:2   cat=.identifier_with_dash                    inline_tables
 [231] 115:15  cat=.literal                                 ]
-[232] 117:1   cat=.Toml.identifier                         basic
+[232] 117:1   cat=.identifier_with_dash                    basic
 [233] 117:7   cat=.literal                                 =
 [234] 117:9   cat=.literal                                 {
-[235] 117:11  cat=.Toml.identifier                         first
+[235] 117:11  cat=.identifier_with_dash                    first
 [236] 117:17  cat=.literal                                 =
 [237] 117:19  cat=.string                                  "Tom"
 [238] 117:24  cat=.literal                                 ,
-[239] 117:26  cat=.Toml.identifier                         last
+[239] 117:26  cat=.identifier_with_dash                    last
 [240] 117:31  cat=.literal                                 =
 [241] 117:33  cat=.string                                  "Preston-Werner"
 [242] 117:50  cat=.literal                                 }
-[243] 118:1   cat=.Toml.identifier                         point
+[243] 118:1   cat=.identifier_with_dash                    point
 [244] 118:7   cat=.literal                                 =
 [245] 118:9   cat=.literal                                 {
-[246] 118:11  cat=.Toml.identifier                         x
+[246] 118:11  cat=.identifier_with_dash                    x
 [247] 118:13  cat=.literal                                 =
 [248] 118:15  cat=.number                                  1
 [249] 118:16  cat=.literal                                 ,
-[250] 118:18  cat=.Toml.identifier                         y
+[250] 118:18  cat=.identifier_with_dash                    y
 [251] 118:20  cat=.literal                                 =
 [252] 118:22  cat=.number                                  2
 [253] 118:23  cat=.literal                                 ,
-[254] 118:25  cat=.Toml.identifier                         z
+[254] 118:25  cat=.identifier_with_dash                    z
 [255] 118:27  cat=.literal                                 =
 [256] 118:29  cat=.number                                  3
 [257] 118:31  cat=.literal                                 }
-[258] 121:1   cat=.Toml.identifier                         nested
+[258] 121:1   cat=.identifier_with_dash                    nested
 [259] 121:8   cat=.literal                                 =
 [260] 121:10  cat=.literal                                 {
-[261] 121:12  cat=.Toml.identifier                         identity
+[261] 121:12  cat=.identifier_with_dash                    identity
 [262] 121:21  cat=.literal                                 =
 [263] 121:23  cat=.literal                                 {
-[264] 121:25  cat=.Toml.identifier                         id
+[264] 121:25  cat=.identifier_with_dash                    id
 [265] 121:28  cat=.literal                                 =
 [266] 121:30  cat=.number                                  42
 [267] 121:32  cat=.literal                                 ,
-[268] 121:34  cat=.Toml.identifier                         role
+[268] 121:34  cat=.identifier_with_dash                    role
 [269] 121:39  cat=.literal                                 =
 [270] 121:41  cat=.string                                  "admin"
 [271] 121:49  cat=.literal                                 }
 [272] 121:50  cat=.literal                                 ,
-[273] 121:52  cat=.Toml.identifier                         active
+[273] 121:52  cat=.identifier_with_dash                    active
 [274] 121:59  cat=.literal                                 =
 [275] 121:61  cat=.literal                                 true
 [276] 121:66  cat=.literal                                 }
-[277] 124:1   cat=.Toml.identifier                         empty
+[277] 124:1   cat=.identifier_with_dash                    empty
 [278] 124:7   cat=.literal                                 =
 [279] 124:9   cat=.literal                                 {
 [280] 124:10  cat=.literal                                 }
 [281] 129:1   cat=.literal                                 [
-[282] 129:2   cat=.Toml.identifier                         explicit_table_1
+[282] 129:2   cat=.identifier_with_dash                    explicit_table_1
 [283] 129:18  cat=.literal                                 ]
-[284] 130:1   cat=.Toml.identifier                         key_a
+[284] 130:1   cat=.identifier_with_dash                    key_a
 [285] 130:7   cat=.literal                                 =
 [286] 130:9   cat=.string                                  "Value inside explicit_table_1"
 [287] 132:1   cat=.literal                                 [
-[288] 132:2   cat=.Toml.identifier                         explicit_table_1
+[288] 132:2   cat=.identifier_with_dash                    explicit_table_1
 [289] 132:18  cat=.literal                                 .
-[290] 132:19  cat=.Toml.identifier                         nested_child
+[290] 132:19  cat=.identifier_with_dash                    nested_child
 [291] 132:31  cat=.literal                                 ]
-[292] 133:1   cat=.Toml.identifier                         key_b
+[292] 133:1   cat=.identifier_with_dash                    key_b
 [293] 133:7   cat=.literal                                 =
 [294] 133:9   cat=.string                                  "Value inside nested_child"
 [295] 136:1   cat=.literal                                 [
-[296] 136:2   cat=.Toml.identifier                         explicit_table_2
+[296] 136:2   cat=.identifier_with_dash                    explicit_table_2
 [297] 136:18  cat=.literal                                 ]
 [298] 139:1   cat=.literal                                 [
-[299] 139:2   cat=.Toml.identifier                         explicit_table_3
+[299] 139:2   cat=.identifier_with_dash                    explicit_table_3
 [300] 139:18  cat=.literal                                 .
-[301] 139:19  cat=.Toml.identifier                         sub_table
+[301] 139:19  cat=.identifier_with_dash                    sub_table
 [302] 139:28  cat=.literal                                 .
-[303] 139:29  cat=.Toml.identifier                         deep_table
+[303] 139:29  cat=.identifier_with_dash                    deep_table
 [304] 139:39  cat=.literal                                 ]
-[305] 140:1   cat=.Toml.identifier                         final_key
+[305] 140:1   cat=.identifier_with_dash                    final_key
 [306] 140:11  cat=.literal                                 =
 [307] 140:13  cat=.string                                  "Resolves deep nesting paths cleanly"
 [308] 147:1   cat=.literal                                 [[
-[309] 147:3   cat=.Toml.identifier                         products
+[309] 147:3   cat=.identifier_with_dash                    products
 [310] 147:11  cat=.literal                                 ]]
-[311] 148:1   cat=.Toml.identifier                         name
+[311] 148:1   cat=.identifier_with_dash                    name
 [312] 148:6   cat=.literal                                 =
 [313] 148:8   cat=.string                                  "Hammer"
-[314] 149:1   cat=.Toml.identifier                         sku
+[314] 149:1   cat=.identifier_with_dash                    sku
 [315] 149:5   cat=.literal                                 =
 [316] 149:7   cat=.number                                  738594937
 [317] 152:1   cat=.literal                                 [[
-[318] 152:3   cat=.Toml.identifier                         products
+[318] 152:3   cat=.identifier_with_dash                    products
 [319] 152:11  cat=.literal                                 ]]
 [320] 155:1   cat=.literal                                 [[
-[321] 155:3   cat=.Toml.identifier                         products
+[321] 155:3   cat=.identifier_with_dash                    products
 [322] 155:11  cat=.literal                                 ]]
-[323] 156:1   cat=.Toml.identifier                         name
+[323] 156:1   cat=.identifier_with_dash                    name
 [324] 156:6   cat=.literal                                 =
 [325] 156:8   cat=.string                                  "Nail"
-[326] 157:1   cat=.Toml.identifier                         sku
+[326] 157:1   cat=.identifier_with_dash                    sku
 [327] 157:5   cat=.literal                                 =
 [328] 157:7   cat=.number                                  284758393
 [329] 159:1   cat=.literal                                 [[
-[330] 159:3   cat=.Toml.identifier                         products
+[330] 159:3   cat=.identifier_with_dash                    products
 [331] 159:11  cat=.literal                                 .
-[332] 159:12  cat=.Toml.identifier                         categories
+[332] 159:12  cat=.identifier_with_dash                    categories
 [333] 159:22  cat=.literal                                 ]]
-[334] 160:1   cat=.Toml.identifier                         name
+[334] 160:1   cat=.identifier_with_dash                    name
 [335] 160:6   cat=.literal                                 =
 [336] 160:8   cat=.string                                  "Fasteners"
 [337] 163:1   cat=.literal                                 [[
-[338] 163:3   cat=.Toml.identifier                         fruit
+[338] 163:3   cat=.identifier_with_dash                    fruit
 [339] 163:8   cat=.literal                                 ]]
-[340] 164:1   cat=.Toml.identifier                         name
+[340] 164:1   cat=.identifier_with_dash                    name
 [341] 164:6   cat=.literal                                 =
 [342] 164:8   cat=.string                                  "apple"
 [343] 166:1   cat=.literal                                 [
-[344] 166:2   cat=.Toml.identifier                         fruit
+[344] 166:2   cat=.identifier_with_dash                    fruit
 [345] 166:7   cat=.literal                                 .
-[346] 166:8   cat=.Toml.identifier                         physical
+[346] 166:8   cat=.identifier_with_dash                    physical
 [347] 166:16  cat=.literal                                 ]
-[348] 167:1   cat=.Toml.identifier                         color
+[348] 167:1   cat=.identifier_with_dash                    color
 [349] 167:7   cat=.literal                                 =
 [350] 167:9   cat=.string                                  "red"
 [351] 169:1   cat=.literal                                 [[
-[352] 169:3   cat=.Toml.identifier                         fruit
+[352] 169:3   cat=.identifier_with_dash                    fruit
 [353] 169:8   cat=.literal                                 .
-[354] 169:9   cat=.Toml.identifier                         varieties
+[354] 169:9   cat=.identifier_with_dash                    varieties
 [355] 169:18  cat=.literal                                 ]]
-[356] 170:1   cat=.Toml.identifier                         name
+[356] 170:1   cat=.identifier_with_dash                    name
 [357] 170:6   cat=.literal                                 =
 [358] 170:8   cat=.string                                  "gala"
 [359] 172:1   cat=.literal                                 [[
-[360] 172:3   cat=.Toml.identifier                         fruit
+[360] 172:3   cat=.identifier_with_dash                    fruit
 [361] 172:8   cat=.literal                                 .
-[362] 172:9   cat=.Toml.identifier                         varieties
+[362] 172:9   cat=.identifier_with_dash                    varieties
 [363] 172:18  cat=.literal                                 ]]
-[364] 173:1   cat=.Toml.identifier                         name
+[364] 173:1   cat=.identifier_with_dash                    name
 [365] 173:6   cat=.literal                                 =
 [366] 173:8   cat=.string                                  "fuji"
 [367] 175:1   cat=.literal                                 [[
-[368] 175:3   cat=.Toml.identifier                         fruit
+[368] 175:3   cat=.identifier_with_dash                    fruit
 [369] 175:8   cat=.literal                                 ]]
-[370] 176:1   cat=.Toml.identifier                         name
+[370] 176:1   cat=.identifier_with_dash                    name
 [371] 176:6   cat=.literal                                 =
 [372] 176:8   cat=.string                                  "banana"
 [373] 178:1   cat=.literal                                 [[
-[374] 178:3   cat=.Toml.identifier                         fruit
+[374] 178:3   cat=.identifier_with_dash                    fruit
 [375] 178:8   cat=.literal                                 .
-[376] 178:9   cat=.Toml.identifier                         varieties
+[376] 178:9   cat=.identifier_with_dash                    varieties
 [377] 178:18  cat=.literal                                 ]]
-[378] 179:1   cat=.Toml.identifier                         name
+[378] 179:1   cat=.identifier_with_dash                    name
 [379] 179:6   cat=.literal                                 =
 [380] 179:8   cat=.string                                  "cavendish"
 
