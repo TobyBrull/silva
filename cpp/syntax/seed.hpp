@@ -88,6 +88,7 @@ language Seed:
                         postfix_nest -> Quantifier '{' '}'
       Concat    = ltr   infix_flat concat
       And       = ltr   infix_flat 'but_then'
+      Followup  = ltr   infix_flat '⇒'
       Or        = ltr   infix_flat '|'
     Atom = alias Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'

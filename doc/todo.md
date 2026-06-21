@@ -1,8 +1,5 @@
 # TODO
 
-* Functionality to add to seed:
-    * abbrev for `a ( b ( c ( d ) ? ) ? ) ?`
-        * `a → b → c → d` ?
 * Tokenization
     * `number` rule should be more specific (e.g., only allow `x` in second place, etc...)
 * allow token-categories that start with, e.g., "language"

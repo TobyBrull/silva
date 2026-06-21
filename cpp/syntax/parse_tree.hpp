@@ -59,6 +59,7 @@ namespace silva {
     friend void pretty_write_impl(const parse_tree_span_t&, byte_sink_t*);
 
     enum class to_string_mode_t {
+      NONE         = 0b000,
       TOKENIZATION = 0b001,
       PARSE_TREE   = 0b010,
       ALL          = 0b011,

@@ -596,6 +596,25 @@ namespace silva::seed::impl {
       return ss->commit();
     }
 
+    expected_t<node_and_error_t> s_expr_followup(const parse_tree_span_t pts,
+                                                 const name_id_t t_rule_name)
+    {
+      auto ss = stake();
+      for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
+        auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name);
+        if (result.has_value()) {
+          ss.add_proto_node(std::move(result->node));
+        }
+        else {
+          if (child_index == 0) {
+            return std::unexpected(std::move(result).error());
+          }
+          break;
+        }
+      }
+      return ss.commit();
+    }
+
     expected_t<node_and_error_t> s_expr_or(const parse_tree_span_t pts, const name_id_t t_rule_name)
     {
       const index_t orig_fragment_index = fragment_index;
@@ -650,6 +669,9 @@ namespace silva::seed::impl {
       }
       else if (sfp->name_id_is_parent(lexicon.ni_expr_and, s_rule_name)) {
         return s_expr_and(pts, t_rule_name);
+      }
+      else if (sfp->name_id_is_parent(lexicon.ni_expr_followup, s_rule_name)) {
+        return s_expr_followup(pts, t_rule_name);
       }
       else if (sfp->name_id_is_parent(lexicon.ni_expr_or, s_rule_name)) {
         return s_expr_or(pts, t_rule_name);
