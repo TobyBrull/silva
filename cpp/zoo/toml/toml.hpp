@@ -13,12 +13,11 @@ language Toml:
   SimpleKey = string | identifier_with_dash
   Val = string | 'true' | 'false' | Array | InlineTable \
       | timepoint_any | timepoint_local_any | date | time_of_day_any \
-      | Number
+      | number
   Array = '[' ( Val ( ε ',' Val ) * ',' ? ) ? ']'
   Table = ArrayTable | StdTable
   StdTable = '[' Key ']'
   ArrayTable = '[[' Key ']]'
   InlineTable = '{' ( Keyval ( ',' Keyval ) * ',' ? ) ? '}'
-  Number = ( '-' | '+' ) ? ( number | 'inf' | 'nan' )
 )'";
 }

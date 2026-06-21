@@ -108,8 +108,25 @@ ERROR (MAJOR):
 │   │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
 │   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
 │   │ │ ├─[01-broken.fern:10:5] .string
-│   │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │ [01-broken.fern:10:5] .number: expected sequence[ DIGIT [ ... ] * ]
+│   │ │ │     [01-broken.fern:10:5] expected token[ -inf ]
+│   │ │ │   ┌─[01-broken.fern:10:5] while matching token[ -inf ]
+│   │ │ │   │ [01-broken.fern:10:5] expected token[ +inf ]
+│   │ │ │   ├─[01-broken.fern:10:5] while matching token[ +inf ]
+│   │ │ │   │ [01-broken.fern:10:5] expected token[ inf ]
+│   │ │ │   ├─[01-broken.fern:10:5] while matching token[ inf ]
+│   │ │ │   │ [01-broken.fern:10:5] expected token[ nan ]
+│   │ │ │   ├─[01-broken.fern:10:5] while matching token[ nan ]
+│   │ │ │   [01-broken.fern:10:5] .number_special: expected alternation[ [ '-inf' ... 'nan' ] ]
+│   │ │ │ ┌─[01-broken.fern:10:5] .number_special
+│   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│   │ │ │ │ ┌─[01-broken.fern:10:5] .number_plain: expected alternation[ [ '+' '-' ] ]
+│   │ │ │ │ ├─expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+│   │ │ │ │ [01-broken.fern:10:5] .number_plain: expected sequence[ [ '+' ... ] * ]
+│   │ │ │ ├─[01-broken.fern:10:5] .number_plain
+│   │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ number_special number_plain ] ]
 │   │ │ ├─[01-broken.fern:10:5] .number
 │   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ 'none' | ... | number ]
 │   │ ├─[01-broken.fern:10:5] .Fern.Value
@@ -176,6 +193,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [2].Fern.Value                               false     01-simplest.fern:3:4
             [0].string                                 false     01-simplest.fern:3:4
             [1].number                                 false     01-simplest.fern:3:4
+              [0].number_special                       false     01-simplest.fern:3:4
+              [1].number_plain                         false     01-simplest.fern:3:4
         [2].skip_free_form                             true      01-simplest.fern:3:5
           [0].skip_free_form                           true      01-simplest.fern:4:3
     [3].Fern.LabeledItem                               true      01-simplest.fern:4:3
@@ -202,6 +221,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [2].Fern.Value                               false     01-simplest.fern:6:3
             [0].string                                 false     01-simplest.fern:6:3
             [1].number                                 false     01-simplest.fern:6:3
+              [0].number_special                       false     01-simplest.fern:6:3
+              [1].number_plain                         false     01-simplest.fern:6:3
         [3].skip_free_form                             true      01-simplest.fern:6:4
           [0].skip_free_form                           true      01-simplest.fern:7:1
     [4].Fern.LabeledItem                               false     01-simplest.fern:7:1
@@ -212,6 +233,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [2].Fern.Value                                   false     01-simplest.fern:7:1
         [0].string                                     false     01-simplest.fern:7:1
         [1].number                                     false     01-simplest.fern:7:1
+          [0].number_special                           false     01-simplest.fern:7:1
+          [1].number_plain                             false     01-simplest.fern:7:1
     [5].skip_free_form                                 true      01-simplest.fern:7:2
       [0].skip_free_form                               true      01-simplest.fern:7:2
 [  0]   1:1   cat=.Silva.lang_name                         Seed
@@ -2470,341 +2493,324 @@ Mr Jane
 [ 43]  30:10  cat=.literal                                 ]
 [ 44]  31:1   cat=.identifier_with_dash                    positive
 [ 45]  31:10  cat=.literal                                 =
-[ 46]  31:12  cat=.literal                                 +
-[ 47]  31:13  cat=.number                                  99
-[ 48]  32:1   cat=.identifier_with_dash                    negative
-[ 49]  32:10  cat=.literal                                 =
-[ 50]  32:12  cat=.literal                                 -
-[ 51]  32:13  cat=.number                                  17
-[ 52]  33:1   cat=.identifier_with_dash                    zero
-[ 53]  33:6   cat=.literal                                 =
-[ 54]  33:8   cat=.number                                  0
-[ 55]  34:1   cat=.identifier_with_dash                    zero_plus
-[ 56]  34:11  cat=.literal                                 =
-[ 57]  34:13  cat=.literal                                 +
-[ 58]  34:14  cat=.number                                  0
-[ 59]  35:1   cat=.identifier_with_dash                    zero_minus
-[ 60]  35:12  cat=.literal                                 =
-[ 61]  35:14  cat=.literal                                 -
-[ 62]  35:15  cat=.number                                  0
-[ 63]  39:1   cat=.identifier_with_dash                    hexadecimal
-[ 64]  39:13  cat=.literal                                 =
-[ 65]  39:15  cat=.number                                  0xDEADBEEF
-[ 66]  40:1   cat=.identifier_with_dash                    hex_lowercase
-[ 67]  40:15  cat=.literal                                 =
-[ 68]  40:17  cat=.number                                  0xdeadbeef
-[ 69]  41:1   cat=.identifier_with_dash                    octal
-[ 70]  41:7   cat=.literal                                 =
-[ 71]  41:9   cat=.number                                  0o755
-[ 72]  42:1   cat=.identifier_with_dash                    binary
-[ 73]  42:8   cat=.literal                                 =
-[ 74]  42:10  cat=.number                                  0b11010010
-[ 75]  47:1   cat=.literal                                 [
-[ 76]  47:2   cat=.identifier_with_dash                    floats
-[ 77]  47:8   cat=.literal                                 ]
-[ 78]  48:1   cat=.identifier_with_dash                    normal
-[ 79]  48:8   cat=.literal                                 =
-[ 80]  48:10  cat=.literal                                 +
-[ 81]  48:11  cat=.number                                  3.14159
-[ 82]  49:1   cat=.identifier_with_dash                    negative
-[ 83]  49:10  cat=.literal                                 =
-[ 84]  49:12  cat=.literal                                 -
-[ 85]  49:13  cat=.number                                  0.01
-[ 86]  50:1   cat=.identifier_with_dash                    fractional_zero
-[ 87]  50:17  cat=.literal                                 =
-[ 88]  50:19  cat=.number                                  5.0
-[ 89]  53:1   cat=.identifier_with_dash                    exponent_large
-[ 90]  53:16  cat=.literal                                 =
-[ 91]  53:18  cat=.number                                  5e+22
-[ 92]  54:1   cat=.identifier_with_dash                    exponent_small
-[ 93]  54:16  cat=.literal                                 =
-[ 94]  54:18  cat=.number                                  1e-14
-[ 95]  55:1   cat=.identifier_with_dash                    exponent_mixed
-[ 96]  55:16  cat=.literal                                 =
-[ 97]  55:18  cat=.literal                                 -
-[ 98]  55:19  cat=.number                                  6.23e-4
-[ 99]  58:1   cat=.identifier_with_dash                    infinity
-[100]  58:10  cat=.literal                                 =
-[101]  58:12  cat=.literal                                 inf
-[102]  59:1   cat=.identifier_with_dash                    positive_infinity
-[103]  59:19  cat=.literal                                 =
-[104]  59:21  cat=.literal                                 +
-[105]  59:22  cat=.literal                                 inf
-[106]  60:1   cat=.identifier_with_dash                    negative_infinity
-[107]  60:19  cat=.literal                                 =
-[108]  60:21  cat=.literal                                 -
-[109]  60:22  cat=.literal                                 inf
-[110]  61:1   cat=.identifier_with_dash                    not_a_number
-[111]  61:14  cat=.literal                                 =
-[112]  61:16  cat=.literal                                 nan
-[113]  62:1   cat=.identifier_with_dash                    positive_not_a_number
-[114]  62:23  cat=.literal                                 =
-[115]  62:25  cat=.literal                                 +
-[116]  62:26  cat=.literal                                 nan
-[117]  63:1   cat=.identifier_with_dash                    negative_not_a_number
-[118]  63:23  cat=.literal                                 =
-[119]  63:25  cat=.literal                                 -
-[120]  63:26  cat=.literal                                 nan
-[121]  68:1   cat=.literal                                 [
-[122]  68:2   cat=.identifier_with_dash                    booleans
-[123]  68:10  cat=.literal                                 ]
-[124]  69:1   cat=.identifier_with_dash                    true_value
-[125]  69:12  cat=.literal                                 =
-[126]  69:14  cat=.literal                                 true
-[127]  70:1   cat=.identifier_with_dash                    false_value
-[128]  70:13  cat=.literal                                 =
-[129]  70:15  cat=.literal                                 false
-[130]  75:1   cat=.literal                                 [
-[131]  75:2   cat=.identifier_with_dash                    datetimes
-[132]  75:11  cat=.literal                                 ]
-[133]  77:1   cat=.identifier_with_dash                    offset_utc
-[134]  77:12  cat=.literal                                 =
-[135]  77:14  cat=.timepoint_any                           1979-05-27T07:32:00Z
-[136]  78:1   cat=.identifier_with_dash                    offset_numeric
-[137]  78:16  cat=.literal                                 =
-[138]  78:18  cat=.timepoint_any                           1979-05-27T00:32:00-07:00
-[139]  79:1   cat=.identifier_with_dash                    offset_with_ms
-[140]  79:16  cat=.literal                                 =
-[141]  79:18  cat=.timepoint_any                           1979-05-27T00:32:00.999999-07:00
-[142]  80:1   cat=.identifier_with_dash                    offset_space_separator
-[143]  80:24  cat=.literal                                 =
-[144]  80:26  cat=.timepoint_any                           1979-05-27 07:32:00Z
-[145]  83:1   cat=.identifier_with_dash                    local_date_time
-[146]  83:17  cat=.literal                                 =
-[147]  83:19  cat=.timepoint_local_any                     1979-05-27T07:32:00
-[148]  84:1   cat=.identifier_with_dash                    local_date_time_ms
-[149]  84:20  cat=.literal                                 =
-[150]  84:22  cat=.timepoint_local_any                     1979-05-27T07:32:00.999999
-[151]  87:1   cat=.identifier_with_dash                    local_date
-[152]  87:12  cat=.literal                                 =
-[153]  87:14  cat=.date                                    1979-05-27
-[154]  90:1   cat=.identifier_with_dash                    local_time
-[155]  90:12  cat=.literal                                 =
-[156]  90:14  cat=.time_of_day_any                         07:32:00
-[157]  91:1   cat=.identifier_with_dash                    local_time_ms
-[158]  91:15  cat=.literal                                 =
-[159]  91:17  cat=.time_of_day_any                         00:32:00.999999
-[160]  96:1   cat=.literal                                 [
-[161]  96:2   cat=.identifier_with_dash                    arrays
-[162]  96:8   cat=.literal                                 ]
-[163]  97:1   cat=.identifier_with_dash                    integers
-[164]  97:10  cat=.literal                                 =
-[165]  97:12  cat=.literal                                 [
-[166]  97:13  cat=.number                                  1
-[167]  97:14  cat=.literal                                 ,
-[168]  97:16  cat=.number                                  2
-[169]  97:17  cat=.literal                                 ,
-[170]  97:19  cat=.number                                  3
-[171]  97:20  cat=.literal                                 ]
-[172]  98:1   cat=.identifier_with_dash                    strings
-[173]  98:9   cat=.literal                                 =
-[174]  98:11  cat=.literal                                 [
-[175]  98:12  cat=.string                                  "red"
-[176]  98:17  cat=.literal                                 ,
-[177]  98:19  cat=.string                                  "yellow"
-[178]  98:27  cat=.literal                                 ,
-[179]  98:29  cat=.string                                  "green"
-[180]  98:36  cat=.literal                                 ]
-[181]  99:1   cat=.identifier_with_dash                    nested_arrays
-[182]  99:15  cat=.literal                                 =
-[183]  99:17  cat=.literal                                 [
-[184]  99:18  cat=.literal                                 [
-[185]  99:19  cat=.number                                  1
-[186]  99:20  cat=.literal                                 ,
-[187]  99:22  cat=.number                                  2
-[188]  99:23  cat=.literal                                 ]
-[189]  99:24  cat=.literal                                 ,
-[190]  99:26  cat=.literal                                 [
-[191]  99:27  cat=.number                                  3
-[192]  99:28  cat=.literal                                 ,
-[193]  99:30  cat=.number                                  4
-[194]  99:31  cat=.literal                                 ,
-[195]  99:33  cat=.number                                  5
-[196]  99:34  cat=.literal                                 ]
-[197]  99:35  cat=.literal                                 ]
-[198] 102:1   cat=.identifier_with_dash                    multiline_and_mixed_whitespace
-[199] 102:32  cat=.literal                                 =
-[200] 102:34  cat=.literal                                 [
-[201] 103:3   cat=.string                                  "allowed"
-[202] 103:12  cat=.literal                                 ,
-[203] 104:3   cat=.string                                  "across"
-[204] 104:11  cat=.literal                                 ,
-[205] 105:3   cat=.string                                  "multiple"
-[206] 105:13  cat=.literal                                 ,
-[207] 106:3   cat=.string                                  "lines"
-[208] 106:10  cat=.literal                                 ,
-[209] 107:1   cat=.literal                                 ]
-[210] 110:1   cat=.identifier_with_dash                    mixed_types
-[211] 110:13  cat=.literal                                 =
-[212] 110:15  cat=.literal                                 [
-[213] 110:16  cat=.number                                  1
-[214] 110:17  cat=.literal                                 ,
-[215] 110:19  cat=.number                                  2
-[216] 110:20  cat=.literal                                 ,
-[217] 110:22  cat=.string                                  "three"
-[218] 110:29  cat=.literal                                 ,
-[219] 110:31  cat=.literal                                 [
-[220] 110:32  cat=.string                                  "four"
-[221] 110:38  cat=.literal                                 ,
-[222] 110:40  cat=.number                                  5
-[223] 110:41  cat=.literal                                 ]
-[224] 110:42  cat=.literal                                 ,
-[225] 110:44  cat=.number                                  6.0
-[226] 110:47  cat=.literal                                 ,
-[227] 110:49  cat=.date                                    1979-05-27
-[228] 110:59  cat=.literal                                 ]
-[229] 115:1   cat=.literal                                 [
-[230] 115:2   cat=.identifier_with_dash                    inline_tables
-[231] 115:15  cat=.literal                                 ]
-[232] 117:1   cat=.identifier_with_dash                    basic
-[233] 117:7   cat=.literal                                 =
-[234] 117:9   cat=.literal                                 {
-[235] 117:11  cat=.identifier_with_dash                    first
-[236] 117:17  cat=.literal                                 =
-[237] 117:19  cat=.string                                  "Tom"
-[238] 117:24  cat=.literal                                 ,
-[239] 117:26  cat=.identifier_with_dash                    last
-[240] 117:31  cat=.literal                                 =
-[241] 117:33  cat=.string                                  "Preston-Werner"
-[242] 117:50  cat=.literal                                 }
-[243] 118:1   cat=.identifier_with_dash                    point
-[244] 118:7   cat=.literal                                 =
-[245] 118:9   cat=.literal                                 {
-[246] 118:11  cat=.identifier_with_dash                    x
-[247] 118:13  cat=.literal                                 =
-[248] 118:15  cat=.number                                  1
-[249] 118:16  cat=.literal                                 ,
-[250] 118:18  cat=.identifier_with_dash                    y
-[251] 118:20  cat=.literal                                 =
-[252] 118:22  cat=.number                                  2
-[253] 118:23  cat=.literal                                 ,
-[254] 118:25  cat=.identifier_with_dash                    z
-[255] 118:27  cat=.literal                                 =
-[256] 118:29  cat=.number                                  3
-[257] 118:31  cat=.literal                                 }
-[258] 121:1   cat=.identifier_with_dash                    nested
-[259] 121:8   cat=.literal                                 =
-[260] 121:10  cat=.literal                                 {
-[261] 121:12  cat=.identifier_with_dash                    identity
-[262] 121:21  cat=.literal                                 =
-[263] 121:23  cat=.literal                                 {
-[264] 121:25  cat=.identifier_with_dash                    id
-[265] 121:28  cat=.literal                                 =
-[266] 121:30  cat=.number                                  42
-[267] 121:32  cat=.literal                                 ,
-[268] 121:34  cat=.identifier_with_dash                    role
-[269] 121:39  cat=.literal                                 =
-[270] 121:41  cat=.string                                  "admin"
-[271] 121:49  cat=.literal                                 }
-[272] 121:50  cat=.literal                                 ,
-[273] 121:52  cat=.identifier_with_dash                    active
-[274] 121:59  cat=.literal                                 =
-[275] 121:61  cat=.literal                                 true
-[276] 121:66  cat=.literal                                 }
-[277] 124:1   cat=.identifier_with_dash                    empty
-[278] 124:7   cat=.literal                                 =
-[279] 124:9   cat=.literal                                 {
-[280] 124:10  cat=.literal                                 }
-[281] 129:1   cat=.literal                                 [
-[282] 129:2   cat=.identifier_with_dash                    explicit_table_1
-[283] 129:18  cat=.literal                                 ]
-[284] 130:1   cat=.identifier_with_dash                    key_a
-[285] 130:7   cat=.literal                                 =
-[286] 130:9   cat=.string                                  "Value inside explicit_table_1"
-[287] 132:1   cat=.literal                                 [
-[288] 132:2   cat=.identifier_with_dash                    explicit_table_1
-[289] 132:18  cat=.literal                                 .
-[290] 132:19  cat=.identifier_with_dash                    nested_child
-[291] 132:31  cat=.literal                                 ]
-[292] 133:1   cat=.identifier_with_dash                    key_b
-[293] 133:7   cat=.literal                                 =
-[294] 133:9   cat=.string                                  "Value inside nested_child"
-[295] 136:1   cat=.literal                                 [
-[296] 136:2   cat=.identifier_with_dash                    explicit_table_2
-[297] 136:18  cat=.literal                                 ]
-[298] 139:1   cat=.literal                                 [
-[299] 139:2   cat=.identifier_with_dash                    explicit_table_3
-[300] 139:18  cat=.literal                                 .
-[301] 139:19  cat=.identifier_with_dash                    sub_table
-[302] 139:28  cat=.literal                                 .
-[303] 139:29  cat=.identifier_with_dash                    deep_table
-[304] 139:39  cat=.literal                                 ]
-[305] 140:1   cat=.identifier_with_dash                    final_key
-[306] 140:11  cat=.literal                                 =
-[307] 140:13  cat=.string                                  "Resolves deep nesting paths cleanly"
-[308] 147:1   cat=.literal                                 [[
-[309] 147:3   cat=.identifier_with_dash                    products
-[310] 147:11  cat=.literal                                 ]]
-[311] 148:1   cat=.identifier_with_dash                    name
-[312] 148:6   cat=.literal                                 =
-[313] 148:8   cat=.string                                  "Hammer"
-[314] 149:1   cat=.identifier_with_dash                    sku
-[315] 149:5   cat=.literal                                 =
-[316] 149:7   cat=.number                                  738594937
-[317] 152:1   cat=.literal                                 [[
-[318] 152:3   cat=.identifier_with_dash                    products
-[319] 152:11  cat=.literal                                 ]]
-[320] 155:1   cat=.literal                                 [[
-[321] 155:3   cat=.identifier_with_dash                    products
-[322] 155:11  cat=.literal                                 ]]
-[323] 156:1   cat=.identifier_with_dash                    name
-[324] 156:6   cat=.literal                                 =
-[325] 156:8   cat=.string                                  "Nail"
-[326] 157:1   cat=.identifier_with_dash                    sku
-[327] 157:5   cat=.literal                                 =
-[328] 157:7   cat=.number                                  284758393
-[329] 159:1   cat=.literal                                 [[
-[330] 159:3   cat=.identifier_with_dash                    products
-[331] 159:11  cat=.literal                                 .
-[332] 159:12  cat=.identifier_with_dash                    categories
-[333] 159:22  cat=.literal                                 ]]
-[334] 160:1   cat=.identifier_with_dash                    name
-[335] 160:6   cat=.literal                                 =
-[336] 160:8   cat=.string                                  "Fasteners"
-[337] 163:1   cat=.literal                                 [[
-[338] 163:3   cat=.identifier_with_dash                    fruit
-[339] 163:8   cat=.literal                                 ]]
-[340] 164:1   cat=.identifier_with_dash                    name
-[341] 164:6   cat=.literal                                 =
-[342] 164:8   cat=.string                                  "apple"
-[343] 166:1   cat=.literal                                 [
-[344] 166:2   cat=.identifier_with_dash                    fruit
-[345] 166:7   cat=.literal                                 .
-[346] 166:8   cat=.identifier_with_dash                    physical
-[347] 166:16  cat=.literal                                 ]
-[348] 167:1   cat=.identifier_with_dash                    color
-[349] 167:7   cat=.literal                                 =
-[350] 167:9   cat=.string                                  "red"
-[351] 169:1   cat=.literal                                 [[
-[352] 169:3   cat=.identifier_with_dash                    fruit
-[353] 169:8   cat=.literal                                 .
-[354] 169:9   cat=.identifier_with_dash                    varieties
-[355] 169:18  cat=.literal                                 ]]
-[356] 170:1   cat=.identifier_with_dash                    name
-[357] 170:6   cat=.literal                                 =
-[358] 170:8   cat=.string                                  "gala"
-[359] 172:1   cat=.literal                                 [[
-[360] 172:3   cat=.identifier_with_dash                    fruit
-[361] 172:8   cat=.literal                                 .
-[362] 172:9   cat=.identifier_with_dash                    varieties
-[363] 172:18  cat=.literal                                 ]]
-[364] 173:1   cat=.identifier_with_dash                    name
-[365] 173:6   cat=.literal                                 =
-[366] 173:8   cat=.string                                  "fuji"
-[367] 175:1   cat=.literal                                 [[
-[368] 175:3   cat=.identifier_with_dash                    fruit
-[369] 175:8   cat=.literal                                 ]]
-[370] 176:1   cat=.identifier_with_dash                    name
-[371] 176:6   cat=.literal                                 =
-[372] 176:8   cat=.string                                  "banana"
-[373] 178:1   cat=.literal                                 [[
-[374] 178:3   cat=.identifier_with_dash                    fruit
-[375] 178:8   cat=.literal                                 .
-[376] 178:9   cat=.identifier_with_dash                    varieties
-[377] 178:18  cat=.literal                                 ]]
-[378] 179:1   cat=.identifier_with_dash                    name
-[379] 179:6   cat=.literal                                 =
-[380] 179:8   cat=.string                                  "cavendish"
+[ 46]  31:12  cat=.number                                  +99
+[ 47]  32:1   cat=.identifier_with_dash                    negative
+[ 48]  32:10  cat=.literal                                 =
+[ 49]  32:12  cat=.number                                  -17
+[ 50]  33:1   cat=.identifier_with_dash                    zero
+[ 51]  33:6   cat=.literal                                 =
+[ 52]  33:8   cat=.number                                  0
+[ 53]  34:1   cat=.identifier_with_dash                    zero_plus
+[ 54]  34:11  cat=.literal                                 =
+[ 55]  34:13  cat=.number                                  +0
+[ 56]  35:1   cat=.identifier_with_dash                    zero_minus
+[ 57]  35:12  cat=.literal                                 =
+[ 58]  35:14  cat=.number                                  -0
+[ 59]  39:1   cat=.identifier_with_dash                    hexadecimal
+[ 60]  39:13  cat=.literal                                 =
+[ 61]  39:15  cat=.number                                  0xDEADBEEF
+[ 62]  40:1   cat=.identifier_with_dash                    hex_lowercase
+[ 63]  40:15  cat=.literal                                 =
+[ 64]  40:17  cat=.number                                  0xdeadbeef
+[ 65]  41:1   cat=.identifier_with_dash                    octal
+[ 66]  41:7   cat=.literal                                 =
+[ 67]  41:9   cat=.number                                  0o755
+[ 68]  42:1   cat=.identifier_with_dash                    binary
+[ 69]  42:8   cat=.literal                                 =
+[ 70]  42:10  cat=.number                                  0b11010010
+[ 71]  47:1   cat=.literal                                 [
+[ 72]  47:2   cat=.identifier_with_dash                    floats
+[ 73]  47:8   cat=.literal                                 ]
+[ 74]  48:1   cat=.identifier_with_dash                    normal
+[ 75]  48:8   cat=.literal                                 =
+[ 76]  48:10  cat=.number                                  +3.14159
+[ 77]  49:1   cat=.identifier_with_dash                    negative
+[ 78]  49:10  cat=.literal                                 =
+[ 79]  49:12  cat=.number                                  -0.01
+[ 80]  50:1   cat=.identifier_with_dash                    fractional_zero
+[ 81]  50:17  cat=.literal                                 =
+[ 82]  50:19  cat=.number                                  5.0
+[ 83]  53:1   cat=.identifier_with_dash                    exponent_large
+[ 84]  53:16  cat=.literal                                 =
+[ 85]  53:18  cat=.number                                  5e+22
+[ 86]  54:1   cat=.identifier_with_dash                    exponent_small
+[ 87]  54:16  cat=.literal                                 =
+[ 88]  54:18  cat=.number                                  1e-14
+[ 89]  55:1   cat=.identifier_with_dash                    exponent_mixed
+[ 90]  55:16  cat=.literal                                 =
+[ 91]  55:18  cat=.number                                  -6.23e-4
+[ 92]  58:1   cat=.identifier_with_dash                    infinity
+[ 93]  58:10  cat=.literal                                 =
+[ 94]  58:12  cat=.number                                  inf
+[ 95]  59:1   cat=.identifier_with_dash                    positive_infinity
+[ 96]  59:19  cat=.literal                                 =
+[ 97]  59:21  cat=.number                                  +inf
+[ 98]  60:1   cat=.identifier_with_dash                    negative_infinity
+[ 99]  60:19  cat=.literal                                 =
+[100]  60:21  cat=.number                                  -inf
+[101]  61:1   cat=.identifier_with_dash                    not_a_number
+[102]  61:14  cat=.literal                                 =
+[103]  61:16  cat=.number                                  nan
+[104]  66:1   cat=.literal                                 [
+[105]  66:2   cat=.identifier_with_dash                    booleans
+[106]  66:10  cat=.literal                                 ]
+[107]  67:1   cat=.identifier_with_dash                    true_value
+[108]  67:12  cat=.literal                                 =
+[109]  67:14  cat=.literal                                 true
+[110]  68:1   cat=.identifier_with_dash                    false_value
+[111]  68:13  cat=.literal                                 =
+[112]  68:15  cat=.literal                                 false
+[113]  73:1   cat=.literal                                 [
+[114]  73:2   cat=.identifier_with_dash                    datetimes
+[115]  73:11  cat=.literal                                 ]
+[116]  75:1   cat=.identifier_with_dash                    offset_utc
+[117]  75:12  cat=.literal                                 =
+[118]  75:14  cat=.timepoint_any                           1979-05-27T07:32:00Z
+[119]  76:1   cat=.identifier_with_dash                    offset_numeric
+[120]  76:16  cat=.literal                                 =
+[121]  76:18  cat=.timepoint_any                           1979-05-27T00:32:00-07:00
+[122]  77:1   cat=.identifier_with_dash                    offset_with_ms
+[123]  77:16  cat=.literal                                 =
+[124]  77:18  cat=.timepoint_any                           1979-05-27T00:32:00.999999-07:00
+[125]  78:1   cat=.identifier_with_dash                    offset_space_separator
+[126]  78:24  cat=.literal                                 =
+[127]  78:26  cat=.timepoint_any                           1979-05-27 07:32:00Z
+[128]  81:1   cat=.identifier_with_dash                    local_date_time
+[129]  81:17  cat=.literal                                 =
+[130]  81:19  cat=.timepoint_local_any                     1979-05-27T07:32:00
+[131]  82:1   cat=.identifier_with_dash                    local_date_time_ms
+[132]  82:20  cat=.literal                                 =
+[133]  82:22  cat=.timepoint_local_any                     1979-05-27T07:32:00.999999
+[134]  85:1   cat=.identifier_with_dash                    local_date
+[135]  85:12  cat=.literal                                 =
+[136]  85:14  cat=.date                                    1979-05-27
+[137]  88:1   cat=.identifier_with_dash                    local_time
+[138]  88:12  cat=.literal                                 =
+[139]  88:14  cat=.time_of_day_any                         07:32:00
+[140]  89:1   cat=.identifier_with_dash                    local_time_ms
+[141]  89:15  cat=.literal                                 =
+[142]  89:17  cat=.time_of_day_any                         00:32:00.999999
+[143]  94:1   cat=.literal                                 [
+[144]  94:2   cat=.identifier_with_dash                    arrays
+[145]  94:8   cat=.literal                                 ]
+[146]  95:1   cat=.identifier_with_dash                    integers
+[147]  95:10  cat=.literal                                 =
+[148]  95:12  cat=.literal                                 [
+[149]  95:13  cat=.number                                  1
+[150]  95:14  cat=.literal                                 ,
+[151]  95:16  cat=.number                                  2
+[152]  95:17  cat=.literal                                 ,
+[153]  95:19  cat=.number                                  3
+[154]  95:20  cat=.literal                                 ]
+[155]  96:1   cat=.identifier_with_dash                    strings
+[156]  96:9   cat=.literal                                 =
+[157]  96:11  cat=.literal                                 [
+[158]  96:12  cat=.string                                  "red"
+[159]  96:17  cat=.literal                                 ,
+[160]  96:19  cat=.string                                  "yellow"
+[161]  96:27  cat=.literal                                 ,
+[162]  96:29  cat=.string                                  "green"
+[163]  96:36  cat=.literal                                 ]
+[164]  97:1   cat=.identifier_with_dash                    nested_arrays
+[165]  97:15  cat=.literal                                 =
+[166]  97:17  cat=.literal                                 [
+[167]  97:18  cat=.literal                                 [
+[168]  97:19  cat=.number                                  1
+[169]  97:20  cat=.literal                                 ,
+[170]  97:22  cat=.number                                  2
+[171]  97:23  cat=.literal                                 ]
+[172]  97:24  cat=.literal                                 ,
+[173]  97:26  cat=.literal                                 [
+[174]  97:27  cat=.number                                  3
+[175]  97:28  cat=.literal                                 ,
+[176]  97:30  cat=.number                                  4
+[177]  97:31  cat=.literal                                 ,
+[178]  97:33  cat=.number                                  5
+[179]  97:34  cat=.literal                                 ]
+[180]  97:35  cat=.literal                                 ]
+[181] 100:1   cat=.identifier_with_dash                    multiline_and_mixed_whitespace
+[182] 100:32  cat=.literal                                 =
+[183] 100:34  cat=.literal                                 [
+[184] 101:3   cat=.string                                  "allowed"
+[185] 101:12  cat=.literal                                 ,
+[186] 102:3   cat=.string                                  "across"
+[187] 102:11  cat=.literal                                 ,
+[188] 103:3   cat=.string                                  "multiple"
+[189] 103:13  cat=.literal                                 ,
+[190] 104:3   cat=.string                                  "lines"
+[191] 104:10  cat=.literal                                 ,
+[192] 105:1   cat=.literal                                 ]
+[193] 108:1   cat=.identifier_with_dash                    mixed_types
+[194] 108:13  cat=.literal                                 =
+[195] 108:15  cat=.literal                                 [
+[196] 108:16  cat=.number                                  1
+[197] 108:17  cat=.literal                                 ,
+[198] 108:19  cat=.number                                  2
+[199] 108:20  cat=.literal                                 ,
+[200] 108:22  cat=.string                                  "three"
+[201] 108:29  cat=.literal                                 ,
+[202] 108:31  cat=.literal                                 [
+[203] 108:32  cat=.string                                  "four"
+[204] 108:38  cat=.literal                                 ,
+[205] 108:40  cat=.number                                  5
+[206] 108:41  cat=.literal                                 ]
+[207] 108:42  cat=.literal                                 ,
+[208] 108:44  cat=.number                                  6.0
+[209] 108:47  cat=.literal                                 ,
+[210] 108:49  cat=.date                                    1979-05-27
+[211] 108:59  cat=.literal                                 ]
+[212] 113:1   cat=.literal                                 [
+[213] 113:2   cat=.identifier_with_dash                    inline_tables
+[214] 113:15  cat=.literal                                 ]
+[215] 115:1   cat=.identifier_with_dash                    basic
+[216] 115:7   cat=.literal                                 =
+[217] 115:9   cat=.literal                                 {
+[218] 115:11  cat=.identifier_with_dash                    first
+[219] 115:17  cat=.literal                                 =
+[220] 115:19  cat=.string                                  "Tom"
+[221] 115:24  cat=.literal                                 ,
+[222] 115:26  cat=.identifier_with_dash                    last
+[223] 115:31  cat=.literal                                 =
+[224] 115:33  cat=.string                                  "Preston-Werner"
+[225] 115:50  cat=.literal                                 }
+[226] 116:1   cat=.identifier_with_dash                    point
+[227] 116:7   cat=.literal                                 =
+[228] 116:9   cat=.literal                                 {
+[229] 116:11  cat=.identifier_with_dash                    x
+[230] 116:13  cat=.literal                                 =
+[231] 116:15  cat=.number                                  1
+[232] 116:16  cat=.literal                                 ,
+[233] 116:18  cat=.identifier_with_dash                    y
+[234] 116:20  cat=.literal                                 =
+[235] 116:22  cat=.number                                  2
+[236] 116:23  cat=.literal                                 ,
+[237] 116:25  cat=.identifier_with_dash                    z
+[238] 116:27  cat=.literal                                 =
+[239] 116:29  cat=.number                                  3
+[240] 116:31  cat=.literal                                 }
+[241] 119:1   cat=.identifier_with_dash                    nested
+[242] 119:8   cat=.literal                                 =
+[243] 119:10  cat=.literal                                 {
+[244] 119:12  cat=.identifier_with_dash                    identity
+[245] 119:21  cat=.literal                                 =
+[246] 119:23  cat=.literal                                 {
+[247] 119:25  cat=.identifier_with_dash                    id
+[248] 119:28  cat=.literal                                 =
+[249] 119:30  cat=.number                                  42
+[250] 119:32  cat=.literal                                 ,
+[251] 119:34  cat=.identifier_with_dash                    role
+[252] 119:39  cat=.literal                                 =
+[253] 119:41  cat=.string                                  "admin"
+[254] 119:49  cat=.literal                                 }
+[255] 119:50  cat=.literal                                 ,
+[256] 119:52  cat=.identifier_with_dash                    active
+[257] 119:59  cat=.literal                                 =
+[258] 119:61  cat=.literal                                 true
+[259] 119:66  cat=.literal                                 }
+[260] 122:1   cat=.identifier_with_dash                    empty
+[261] 122:7   cat=.literal                                 =
+[262] 122:9   cat=.literal                                 {
+[263] 122:10  cat=.literal                                 }
+[264] 127:1   cat=.literal                                 [
+[265] 127:2   cat=.identifier_with_dash                    explicit_table_1
+[266] 127:18  cat=.literal                                 ]
+[267] 128:1   cat=.identifier_with_dash                    key_a
+[268] 128:7   cat=.literal                                 =
+[269] 128:9   cat=.string                                  "Value inside explicit_table_1"
+[270] 130:1   cat=.literal                                 [
+[271] 130:2   cat=.identifier_with_dash                    explicit_table_1
+[272] 130:18  cat=.literal                                 .
+[273] 130:19  cat=.identifier_with_dash                    nested_child
+[274] 130:31  cat=.literal                                 ]
+[275] 131:1   cat=.identifier_with_dash                    key_b
+[276] 131:7   cat=.literal                                 =
+[277] 131:9   cat=.string                                  "Value inside nested_child"
+[278] 134:1   cat=.literal                                 [
+[279] 134:2   cat=.identifier_with_dash                    explicit_table_2
+[280] 134:18  cat=.literal                                 ]
+[281] 137:1   cat=.literal                                 [
+[282] 137:2   cat=.identifier_with_dash                    explicit_table_3
+[283] 137:18  cat=.literal                                 .
+[284] 137:19  cat=.identifier_with_dash                    sub_table
+[285] 137:28  cat=.literal                                 .
+[286] 137:29  cat=.identifier_with_dash                    deep_table
+[287] 137:39  cat=.literal                                 ]
+[288] 138:1   cat=.identifier_with_dash                    final_key
+[289] 138:11  cat=.literal                                 =
+[290] 138:13  cat=.string                                  "Resolves deep nesting paths cleanly"
+[291] 145:1   cat=.literal                                 [[
+[292] 145:3   cat=.identifier_with_dash                    products
+[293] 145:11  cat=.literal                                 ]]
+[294] 146:1   cat=.identifier_with_dash                    name
+[295] 146:6   cat=.literal                                 =
+[296] 146:8   cat=.string                                  "Hammer"
+[297] 147:1   cat=.identifier_with_dash                    sku
+[298] 147:5   cat=.literal                                 =
+[299] 147:7   cat=.number                                  738594937
+[300] 150:1   cat=.literal                                 [[
+[301] 150:3   cat=.identifier_with_dash                    products
+[302] 150:11  cat=.literal                                 ]]
+[303] 153:1   cat=.literal                                 [[
+[304] 153:3   cat=.identifier_with_dash                    products
+[305] 153:11  cat=.literal                                 ]]
+[306] 154:1   cat=.identifier_with_dash                    name
+[307] 154:6   cat=.literal                                 =
+[308] 154:8   cat=.string                                  "Nail"
+[309] 155:1   cat=.identifier_with_dash                    sku
+[310] 155:5   cat=.literal                                 =
+[311] 155:7   cat=.number                                  284758393
+[312] 157:1   cat=.literal                                 [[
+[313] 157:3   cat=.identifier_with_dash                    products
+[314] 157:11  cat=.literal                                 .
+[315] 157:12  cat=.identifier_with_dash                    categories
+[316] 157:22  cat=.literal                                 ]]
+[317] 158:1   cat=.identifier_with_dash                    name
+[318] 158:6   cat=.literal                                 =
+[319] 158:8   cat=.string                                  "Fasteners"
+[320] 161:1   cat=.literal                                 [[
+[321] 161:3   cat=.identifier_with_dash                    fruit
+[322] 161:8   cat=.literal                                 ]]
+[323] 162:1   cat=.identifier_with_dash                    name
+[324] 162:6   cat=.literal                                 =
+[325] 162:8   cat=.string                                  "apple"
+[326] 164:1   cat=.literal                                 [
+[327] 164:2   cat=.identifier_with_dash                    fruit
+[328] 164:7   cat=.literal                                 .
+[329] 164:8   cat=.identifier_with_dash                    physical
+[330] 164:16  cat=.literal                                 ]
+[331] 165:1   cat=.identifier_with_dash                    color
+[332] 165:7   cat=.literal                                 =
+[333] 165:9   cat=.string                                  "red"
+[334] 167:1   cat=.literal                                 [[
+[335] 167:3   cat=.identifier_with_dash                    fruit
+[336] 167:8   cat=.literal                                 .
+[337] 167:9   cat=.identifier_with_dash                    varieties
+[338] 167:18  cat=.literal                                 ]]
+[339] 168:1   cat=.identifier_with_dash                    name
+[340] 168:6   cat=.literal                                 =
+[341] 168:8   cat=.string                                  "gala"
+[342] 170:1   cat=.literal                                 [[
+[343] 170:3   cat=.identifier_with_dash                    fruit
+[344] 170:8   cat=.literal                                 .
+[345] 170:9   cat=.identifier_with_dash                    varieties
+[346] 170:18  cat=.literal                                 ]]
+[347] 171:1   cat=.identifier_with_dash                    name
+[348] 171:6   cat=.literal                                 =
+[349] 171:8   cat=.string                                  "fuji"
+[350] 173:1   cat=.literal                                 [[
+[351] 173:3   cat=.identifier_with_dash                    fruit
+[352] 173:8   cat=.literal                                 ]]
+[353] 174:1   cat=.identifier_with_dash                    name
+[354] 174:6   cat=.literal                                 =
+[355] 174:8   cat=.string                                  "banana"
+[356] 176:1   cat=.literal                                 [[
+[357] 176:3   cat=.identifier_with_dash                    fruit
+[358] 176:8   cat=.literal                                 .
+[359] 176:9   cat=.identifier_with_dash                    varieties
+[360] 176:18  cat=.literal                                 ]]
+[361] 177:1   cat=.identifier_with_dash                    name
+[362] 177:6   cat=.literal                                 =
+[363] 177:8   cat=.string                                  "cavendish"
 
 [0].Toml                                          bare_key = ... = "cavendish"
   [0].Toml.Keyval                                 bare_key = "Alphanumeric, underscores, and dashes allowed"
@@ -2859,183 +2865,151 @@ Mr Jane
     [0].Toml.StdTable                             [ integers ]
       [0].Toml.Key                                integers
         [0].Toml.SimpleKey                        integers
-  [12].Toml.Keyval                                positive = + 99
+  [12].Toml.Keyval                                positive = +99
     [0].Toml.Key                                  positive
       [0].Toml.SimpleKey                          positive
-    [1].Toml.Val                                  + 99
-      [0].Toml.Number                             + 99
-  [13].Toml.Keyval                                negative = - 17
+    [1].Toml.Val                                  +99
+  [13].Toml.Keyval                                negative = -17
     [0].Toml.Key                                  negative
       [0].Toml.SimpleKey                          negative
-    [1].Toml.Val                                  - 17
-      [0].Toml.Number                             - 17
+    [1].Toml.Val                                  -17
   [14].Toml.Keyval                                zero = 0
     [0].Toml.Key                                  zero
       [0].Toml.SimpleKey                          zero
     [1].Toml.Val                                  0
-      [0].Toml.Number                             0
-  [15].Toml.Keyval                                zero_plus = + 0
+  [15].Toml.Keyval                                zero_plus = +0
     [0].Toml.Key                                  zero_plus
       [0].Toml.SimpleKey                          zero_plus
-    [1].Toml.Val                                  + 0
-      [0].Toml.Number                             + 0
-  [16].Toml.Keyval                                zero_minus = - 0
+    [1].Toml.Val                                  +0
+  [16].Toml.Keyval                                zero_minus = -0
     [0].Toml.Key                                  zero_minus
       [0].Toml.SimpleKey                          zero_minus
-    [1].Toml.Val                                  - 0
-      [0].Toml.Number                             - 0
+    [1].Toml.Val                                  -0
   [17].Toml.Keyval                                hexadecimal = 0xDEADBEEF
     [0].Toml.Key                                  hexadecimal
       [0].Toml.SimpleKey                          hexadecimal
     [1].Toml.Val                                  0xDEADBEEF
-      [0].Toml.Number                             0xDEADBEEF
   [18].Toml.Keyval                                hex_lowercase = 0xdeadbeef
     [0].Toml.Key                                  hex_lowercase
       [0].Toml.SimpleKey                          hex_lowercase
     [1].Toml.Val                                  0xdeadbeef
-      [0].Toml.Number                             0xdeadbeef
   [19].Toml.Keyval                                octal = 0o755
     [0].Toml.Key                                  octal
       [0].Toml.SimpleKey                          octal
     [1].Toml.Val                                  0o755
-      [0].Toml.Number                             0o755
   [20].Toml.Keyval                                binary = 0b11010010
     [0].Toml.Key                                  binary
       [0].Toml.SimpleKey                          binary
     [1].Toml.Val                                  0b11010010
-      [0].Toml.Number                             0b11010010
   [21].Toml.Table                                 [ floats ]
     [0].Toml.StdTable                             [ floats ]
       [0].Toml.Key                                floats
         [0].Toml.SimpleKey                        floats
-  [22].Toml.Keyval                                normal = + 3.14159
+  [22].Toml.Keyval                                normal = +3.14159
     [0].Toml.Key                                  normal
       [0].Toml.SimpleKey                          normal
-    [1].Toml.Val                                  + 3.14159
-      [0].Toml.Number                             + 3.14159
-  [23].Toml.Keyval                                negative = - 0.01
+    [1].Toml.Val                                  +3.14159
+  [23].Toml.Keyval                                negative = -0.01
     [0].Toml.Key                                  negative
       [0].Toml.SimpleKey                          negative
-    [1].Toml.Val                                  - 0.01
-      [0].Toml.Number                             - 0.01
+    [1].Toml.Val                                  -0.01
   [24].Toml.Keyval                                fractional_zero = 5.0
     [0].Toml.Key                                  fractional_zero
       [0].Toml.SimpleKey                          fractional_zero
     [1].Toml.Val                                  5.0
-      [0].Toml.Number                             5.0
   [25].Toml.Keyval                                exponent_large = 5e+22
     [0].Toml.Key                                  exponent_large
       [0].Toml.SimpleKey                          exponent_large
     [1].Toml.Val                                  5e+22
-      [0].Toml.Number                             5e+22
   [26].Toml.Keyval                                exponent_small = 1e-14
     [0].Toml.Key                                  exponent_small
       [0].Toml.SimpleKey                          exponent_small
     [1].Toml.Val                                  1e-14
-      [0].Toml.Number                             1e-14
-  [27].Toml.Keyval                                exponent_mixed = - 6.23e-4
+  [27].Toml.Keyval                                exponent_mixed = -6.23e-4
     [0].Toml.Key                                  exponent_mixed
       [0].Toml.SimpleKey                          exponent_mixed
-    [1].Toml.Val                                  - 6.23e-4
-      [0].Toml.Number                             - 6.23e-4
+    [1].Toml.Val                                  -6.23e-4
   [28].Toml.Keyval                                infinity = inf
     [0].Toml.Key                                  infinity
       [0].Toml.SimpleKey                          infinity
     [1].Toml.Val                                  inf
-      [0].Toml.Number                             inf
-  [29].Toml.Keyval                                positive_infinity = + inf
+  [29].Toml.Keyval                                positive_infinity = +inf
     [0].Toml.Key                                  positive_infinity
       [0].Toml.SimpleKey                          positive_infinity
-    [1].Toml.Val                                  + inf
-      [0].Toml.Number                             + inf
-  [30].Toml.Keyval                                negative_infinity = - inf
+    [1].Toml.Val                                  +inf
+  [30].Toml.Keyval                                negative_infinity = -inf
     [0].Toml.Key                                  negative_infinity
       [0].Toml.SimpleKey                          negative_infinity
-    [1].Toml.Val                                  - inf
-      [0].Toml.Number                             - inf
+    [1].Toml.Val                                  -inf
   [31].Toml.Keyval                                not_a_number = nan
     [0].Toml.Key                                  not_a_number
       [0].Toml.SimpleKey                          not_a_number
     [1].Toml.Val                                  nan
-      [0].Toml.Number                             nan
-  [32].Toml.Keyval                                positive_not_a_number = + nan
-    [0].Toml.Key                                  positive_not_a_number
-      [0].Toml.SimpleKey                          positive_not_a_number
-    [1].Toml.Val                                  + nan
-      [0].Toml.Number                             + nan
-  [33].Toml.Keyval                                negative_not_a_number = - nan
-    [0].Toml.Key                                  negative_not_a_number
-      [0].Toml.SimpleKey                          negative_not_a_number
-    [1].Toml.Val                                  - nan
-      [0].Toml.Number                             - nan
-  [34].Toml.Table                                 [ booleans ]
+  [32].Toml.Table                                 [ booleans ]
     [0].Toml.StdTable                             [ booleans ]
       [0].Toml.Key                                booleans
         [0].Toml.SimpleKey                        booleans
-  [35].Toml.Keyval                                true_value = true
+  [33].Toml.Keyval                                true_value = true
     [0].Toml.Key                                  true_value
       [0].Toml.SimpleKey                          true_value
     [1].Toml.Val                                  true
-  [36].Toml.Keyval                                false_value = false
+  [34].Toml.Keyval                                false_value = false
     [0].Toml.Key                                  false_value
       [0].Toml.SimpleKey                          false_value
     [1].Toml.Val                                  false
-  [37].Toml.Table                                 [ datetimes ]
+  [35].Toml.Table                                 [ datetimes ]
     [0].Toml.StdTable                             [ datetimes ]
       [0].Toml.Key                                datetimes
         [0].Toml.SimpleKey                        datetimes
-  [38].Toml.Keyval                                offset_utc = 1979-05-27T07:32:00Z
+  [36].Toml.Keyval                                offset_utc = 1979-05-27T07:32:00Z
     [0].Toml.Key                                  offset_utc
       [0].Toml.SimpleKey                          offset_utc
     [1].Toml.Val                                  1979-05-27T07:32:00Z
-  [39].Toml.Keyval                                offset_numeric = 1979-05-27T00:32:00-07:00
+  [37].Toml.Keyval                                offset_numeric = 1979-05-27T00:32:00-07:00
     [0].Toml.Key                                  offset_numeric
       [0].Toml.SimpleKey                          offset_numeric
     [1].Toml.Val                                  1979-05-27T00:32:00-07:00
-  [40].Toml.Keyval                                offset_with_ms = 1979-05-27T00:32:00.999999-07:00
+  [38].Toml.Keyval                                offset_with_ms = 1979-05-27T00:32:00.999999-07:00
     [0].Toml.Key                                  offset_with_ms
       [0].Toml.SimpleKey                          offset_with_ms
     [1].Toml.Val                                  1979-05-27T00:32:00.999999-07:00
-  [41].Toml.Keyval                                offset_space_separator = 1979-05-27 07:32:00Z
+  [39].Toml.Keyval                                offset_space_separator = 1979-05-27 07:32:00Z
     [0].Toml.Key                                  offset_space_separator
       [0].Toml.SimpleKey                          offset_space_separator
     [1].Toml.Val                                  1979-05-27 07:32:00Z
-  [42].Toml.Keyval                                local_date_time = 1979-05-27T07:32:00
+  [40].Toml.Keyval                                local_date_time = 1979-05-27T07:32:00
     [0].Toml.Key                                  local_date_time
       [0].Toml.SimpleKey                          local_date_time
     [1].Toml.Val                                  1979-05-27T07:32:00
-  [43].Toml.Keyval                                local_date_time_ms = 1979-05-27T07:32:00.999999
+  [41].Toml.Keyval                                local_date_time_ms = 1979-05-27T07:32:00.999999
     [0].Toml.Key                                  local_date_time_ms
       [0].Toml.SimpleKey                          local_date_time_ms
     [1].Toml.Val                                  1979-05-27T07:32:00.999999
-  [44].Toml.Keyval                                local_date = 1979-05-27
+  [42].Toml.Keyval                                local_date = 1979-05-27
     [0].Toml.Key                                  local_date
       [0].Toml.SimpleKey                          local_date
     [1].Toml.Val                                  1979-05-27
-  [45].Toml.Keyval                                local_time = 07:32:00
+  [43].Toml.Keyval                                local_time = 07:32:00
     [0].Toml.Key                                  local_time
       [0].Toml.SimpleKey                          local_time
     [1].Toml.Val                                  07:32:00
-  [46].Toml.Keyval                                local_time_ms = 00:32:00.999999
+  [44].Toml.Keyval                                local_time_ms = 00:32:00.999999
     [0].Toml.Key                                  local_time_ms
       [0].Toml.SimpleKey                          local_time_ms
     [1].Toml.Val                                  00:32:00.999999
-  [47].Toml.Table                                 [ arrays ]
+  [45].Toml.Table                                 [ arrays ]
     [0].Toml.StdTable                             [ arrays ]
       [0].Toml.Key                                arrays
         [0].Toml.SimpleKey                        arrays
-  [48].Toml.Keyval                                integers = ... 3 ]
+  [46].Toml.Keyval                                integers = ... 3 ]
     [0].Toml.Key                                  integers
       [0].Toml.SimpleKey                          integers
     [1].Toml.Val                                  [ 1 ... 3 ]
       [0].Toml.Array                              [ 1 ... 3 ]
         [0].Toml.Val                              1
-          [0].Toml.Number                         1
         [1].Toml.Val                              2
-          [0].Toml.Number                         2
         [2].Toml.Val                              3
-          [0].Toml.Number                         3
-  [49].Toml.Keyval                                strings = ... "green" ]
+  [47].Toml.Keyval                                strings = ... "green" ]
     [0].Toml.Key                                  strings
       [0].Toml.SimpleKey                          strings
     [1].Toml.Val                                  [ "red" ... "green" ]
@@ -3043,7 +3017,7 @@ Mr Jane
         [0].Toml.Val                              "red"
         [1].Toml.Val                              "yellow"
         [2].Toml.Val                              "green"
-  [50].Toml.Keyval                                nested_arrays = ... ] ]
+  [48].Toml.Keyval                                nested_arrays = ... ] ]
     [0].Toml.Key                                  nested_arrays
       [0].Toml.SimpleKey                          nested_arrays
     [1].Toml.Val                                  [ [ ... ] ]
@@ -3051,18 +3025,13 @@ Mr Jane
         [0].Toml.Val                              [ 1 , 2 ]
           [0].Toml.Array                          [ 1 , 2 ]
             [0].Toml.Val                          1
-              [0].Toml.Number                     1
             [1].Toml.Val                          2
-              [0].Toml.Number                     2
         [1].Toml.Val                              [ 3 ... 5 ]
           [0].Toml.Array                          [ 3 ... 5 ]
             [0].Toml.Val                          3
-              [0].Toml.Number                     3
             [1].Toml.Val                          4
-              [0].Toml.Number                     4
             [2].Toml.Val                          5
-              [0].Toml.Number                     5
-  [51].Toml.Keyval                                multiline_and_mixed_whitespace = ... , ]
+  [49].Toml.Keyval                                multiline_and_mixed_whitespace = ... , ]
     [0].Toml.Key                                  multiline_and_mixed_whitespace
       [0].Toml.SimpleKey                          multiline_and_mixed_whitespace
     [1].Toml.Val                                  [ "allowed" ... , ]
@@ -3071,29 +3040,25 @@ Mr Jane
         [1].Toml.Val                              "across"
         [2].Toml.Val                              "multiple"
         [3].Toml.Val                              "lines"
-  [52].Toml.Keyval                                mixed_types = ... 1979-05-27 ]
+  [50].Toml.Keyval                                mixed_types = ... 1979-05-27 ]
     [0].Toml.Key                                  mixed_types
       [0].Toml.SimpleKey                          mixed_types
     [1].Toml.Val                                  [ 1 ... 1979-05-27 ]
       [0].Toml.Array                              [ 1 ... 1979-05-27 ]
         [0].Toml.Val                              1
-          [0].Toml.Number                         1
         [1].Toml.Val                              2
-          [0].Toml.Number                         2
         [2].Toml.Val                              "three"
         [3].Toml.Val                              [ "four" , 5 ]
           [0].Toml.Array                          [ "four" , 5 ]
             [0].Toml.Val                          "four"
             [1].Toml.Val                          5
-              [0].Toml.Number                     5
         [4].Toml.Val                              6.0
-          [0].Toml.Number                         6.0
         [5].Toml.Val                              1979-05-27
-  [53].Toml.Table                                 [ inline_tables ]
+  [51].Toml.Table                                 [ inline_tables ]
     [0].Toml.StdTable                             [ inline_tables ]
       [0].Toml.Key                                inline_tables
         [0].Toml.SimpleKey                        inline_tables
-  [54].Toml.Keyval                                basic = ... "Preston-Werner" }
+  [52].Toml.Keyval                                basic = ... "Preston-Werner" }
     [0].Toml.Key                                  basic
       [0].Toml.SimpleKey                          basic
     [1].Toml.Val                                  { first ... "Preston-Werner" }
@@ -3106,7 +3071,7 @@ Mr Jane
           [0].Toml.Key                            last
             [0].Toml.SimpleKey                    last
           [1].Toml.Val                            "Preston-Werner"
-  [55].Toml.Keyval                                point = ... 3 }
+  [53].Toml.Keyval                                point = ... 3 }
     [0].Toml.Key                                  point
       [0].Toml.SimpleKey                          point
     [1].Toml.Val                                  { x ... 3 }
@@ -3115,18 +3080,15 @@ Mr Jane
           [0].Toml.Key                            x
             [0].Toml.SimpleKey                    x
           [1].Toml.Val                            1
-            [0].Toml.Number                       1
         [1].Toml.Keyval                           y = 2
           [0].Toml.Key                            y
             [0].Toml.SimpleKey                    y
           [1].Toml.Val                            2
-            [0].Toml.Number                       2
         [2].Toml.Keyval                           z = 3
           [0].Toml.Key                            z
             [0].Toml.SimpleKey                    z
           [1].Toml.Val                            3
-            [0].Toml.Number                       3
-  [56].Toml.Keyval                                nested = ... true }
+  [54].Toml.Keyval                                nested = ... true }
     [0].Toml.Key                                  nested
       [0].Toml.SimpleKey                          nested
     [1].Toml.Val                                  { identity ... true }
@@ -3140,7 +3102,6 @@ Mr Jane
                 [0].Toml.Key                      id
                   [0].Toml.SimpleKey              id
                 [1].Toml.Val                      42
-                  [0].Toml.Number                 42
               [1].Toml.Keyval                     role = "admin"
                 [0].Toml.Key                      role
                   [0].Toml.SimpleKey              role
@@ -3149,130 +3110,128 @@ Mr Jane
           [0].Toml.Key                            active
             [0].Toml.SimpleKey                    active
           [1].Toml.Val                            true
-  [57].Toml.Keyval                                empty = { }
+  [55].Toml.Keyval                                empty = { }
     [0].Toml.Key                                  empty
       [0].Toml.SimpleKey                          empty
     [1].Toml.Val                                  { }
       [0].Toml.InlineTable                        { }
-  [58].Toml.Table                                 [ explicit_table_1 ]
+  [56].Toml.Table                                 [ explicit_table_1 ]
     [0].Toml.StdTable                             [ explicit_table_1 ]
       [0].Toml.Key                                explicit_table_1
         [0].Toml.SimpleKey                        explicit_table_1
-  [59].Toml.Keyval                                key_a = "Value inside explicit_table_1"
+  [57].Toml.Keyval                                key_a = "Value inside explicit_table_1"
     [0].Toml.Key                                  key_a
       [0].Toml.SimpleKey                          key_a
     [1].Toml.Val                                  "Value inside explicit_table_1"
-  [60].Toml.Table                                 [ explicit_table_1 . nested_child ]
+  [58].Toml.Table                                 [ explicit_table_1 . nested_child ]
     [0].Toml.StdTable                             [ explicit_table_1 . nested_child ]
       [0].Toml.Key                                explicit_table_1 . nested_child
         [0].Toml.SimpleKey                        explicit_table_1
         [1].Toml.SimpleKey                        nested_child
-  [61].Toml.Keyval                                key_b = "Value inside nested_child"
+  [59].Toml.Keyval                                key_b = "Value inside nested_child"
     [0].Toml.Key                                  key_b
       [0].Toml.SimpleKey                          key_b
     [1].Toml.Val                                  "Value inside nested_child"
-  [62].Toml.Table                                 [ explicit_table_2 ]
+  [60].Toml.Table                                 [ explicit_table_2 ]
     [0].Toml.StdTable                             [ explicit_table_2 ]
       [0].Toml.Key                                explicit_table_2
         [0].Toml.SimpleKey                        explicit_table_2
-  [63].Toml.Table                                 [ explicit_table_3 ... deep_table ]
+  [61].Toml.Table                                 [ explicit_table_3 ... deep_table ]
     [0].Toml.StdTable                             [ explicit_table_3 ... deep_table ]
       [0].Toml.Key                                explicit_table_3 . sub_table . deep_table
         [0].Toml.SimpleKey                        explicit_table_3
         [1].Toml.SimpleKey                        sub_table
         [2].Toml.SimpleKey                        deep_table
-  [64].Toml.Keyval                                final_key = "Resolves deep nesting paths cleanly"
+  [62].Toml.Keyval                                final_key = "Resolves deep nesting paths cleanly"
     [0].Toml.Key                                  final_key
       [0].Toml.SimpleKey                          final_key
     [1].Toml.Val                                  "Resolves deep nesting paths cleanly"
-  [65].Toml.Table                                 [[ products ]]
+  [63].Toml.Table                                 [[ products ]]
     [0].Toml.ArrayTable                           [[ products ]]
       [0].Toml.Key                                products
         [0].Toml.SimpleKey                        products
-  [66].Toml.Keyval                                name = "Hammer"
+  [64].Toml.Keyval                                name = "Hammer"
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "Hammer"
-  [67].Toml.Keyval                                sku = 738594937
+  [65].Toml.Keyval                                sku = 738594937
     [0].Toml.Key                                  sku
       [0].Toml.SimpleKey                          sku
     [1].Toml.Val                                  738594937
-      [0].Toml.Number                             738594937
-  [68].Toml.Table                                 [[ products ]]
+  [66].Toml.Table                                 [[ products ]]
     [0].Toml.ArrayTable                           [[ products ]]
       [0].Toml.Key                                products
         [0].Toml.SimpleKey                        products
-  [69].Toml.Table                                 [[ products ]]
+  [67].Toml.Table                                 [[ products ]]
     [0].Toml.ArrayTable                           [[ products ]]
       [0].Toml.Key                                products
         [0].Toml.SimpleKey                        products
-  [70].Toml.Keyval                                name = "Nail"
+  [68].Toml.Keyval                                name = "Nail"
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "Nail"
-  [71].Toml.Keyval                                sku = 284758393
+  [69].Toml.Keyval                                sku = 284758393
     [0].Toml.Key                                  sku
       [0].Toml.SimpleKey                          sku
     [1].Toml.Val                                  284758393
-      [0].Toml.Number                             284758393
-  [72].Toml.Table                                 [[ products . categories ]]
+  [70].Toml.Table                                 [[ products . categories ]]
     [0].Toml.ArrayTable                           [[ products . categories ]]
       [0].Toml.Key                                products . categories
         [0].Toml.SimpleKey                        products
         [1].Toml.SimpleKey                        categories
-  [73].Toml.Keyval                                name = "Fasteners"
+  [71].Toml.Keyval                                name = "Fasteners"
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "Fasteners"
-  [74].Toml.Table                                 [[ fruit ]]
+  [72].Toml.Table                                 [[ fruit ]]
     [0].Toml.ArrayTable                           [[ fruit ]]
       [0].Toml.Key                                fruit
         [0].Toml.SimpleKey                        fruit
-  [75].Toml.Keyval                                name = "apple"
+  [73].Toml.Keyval                                name = "apple"
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "apple"
-  [76].Toml.Table                                 [ fruit . physical ]
+  [74].Toml.Table                                 [ fruit . physical ]
     [0].Toml.StdTable                             [ fruit . physical ]
       [0].Toml.Key                                fruit . physical
         [0].Toml.SimpleKey                        fruit
         [1].Toml.SimpleKey                        physical
-  [77].Toml.Keyval                                color = "red"
+  [75].Toml.Keyval                                color = "red"
     [0].Toml.Key                                  color
       [0].Toml.SimpleKey                          color
     [1].Toml.Val                                  "red"
+  [76].Toml.Table                                 [[ fruit . varieties ]]
+    [0].Toml.ArrayTable                           [[ fruit . varieties ]]
+      [0].Toml.Key                                fruit . varieties
+        [0].Toml.SimpleKey                        fruit
+        [1].Toml.SimpleKey                        varieties
+  [77].Toml.Keyval                                name = "gala"
+    [0].Toml.Key                                  name
+      [0].Toml.SimpleKey                          name
+    [1].Toml.Val                                  "gala"
   [78].Toml.Table                                 [[ fruit . varieties ]]
     [0].Toml.ArrayTable                           [[ fruit . varieties ]]
       [0].Toml.Key                                fruit . varieties
         [0].Toml.SimpleKey                        fruit
         [1].Toml.SimpleKey                        varieties
-  [79].Toml.Keyval                                name = "gala"
-    [0].Toml.Key                                  name
-      [0].Toml.SimpleKey                          name
-    [1].Toml.Val                                  "gala"
-  [80].Toml.Table                                 [[ fruit . varieties ]]
-    [0].Toml.ArrayTable                           [[ fruit . varieties ]]
-      [0].Toml.Key                                fruit . varieties
-        [0].Toml.SimpleKey                        fruit
-        [1].Toml.SimpleKey                        varieties
-  [81].Toml.Keyval                                name = "fuji"
+  [79].Toml.Keyval                                name = "fuji"
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "fuji"
-  [82].Toml.Table                                 [[ fruit ]]
+  [80].Toml.Table                                 [[ fruit ]]
     [0].Toml.ArrayTable                           [[ fruit ]]
       [0].Toml.Key                                fruit
         [0].Toml.SimpleKey                        fruit
-  [83].Toml.Keyval                                name = "banana"
+  [81].Toml.Keyval                                name = "banana"
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "banana"
-  [84].Toml.Table                                 [[ fruit . varieties ]]
+  [82].Toml.Table                                 [[ fruit . varieties ]]
     [0].Toml.ArrayTable                           [[ fruit . varieties ]]
       [0].Toml.Key                                fruit . varieties
         [0].Toml.SimpleKey                        fruit
         [1].Toml.SimpleKey                        varieties
-  [85].Toml.Keyval                                name = "cavendish"
+  [83].Toml.Keyval                                name = "cavendish"
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "cavendish"

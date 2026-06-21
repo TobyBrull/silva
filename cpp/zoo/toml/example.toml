@@ -59,8 +59,6 @@ infinity = inf
 positive_infinity = +inf
 negative_infinity = -inf
 not_a_number = nan
-positive_not_a_number = +nan
-negative_not_a_number = -nan
 
 # ==============================================================================
 # DATA TYPE: BOOLEANS

@@ -1,5 +1,6 @@
 #include "syntax.hpp"
 
+#include "seed.globals.hpp"
 #include "seed.hpp"
 
 #include "zoo/fern/fern.hpp"
@@ -15,6 +16,7 @@ namespace silva {
   unique_ptr_t<seed::interpreter_t> standard_seed_interpreter(syntax_farm_ptr_t sfp)
   {
     array_t<tuple_t<filepath_t, string_t>> sources = {
+        {"globals.seed", string_t{seed::globals_str}},
         {"seed.seed", string_t{seed::seed_str}},
         {"axe.seed", string_t{seed::axe_str}},
         {"fern.seed", string_t{fern::seed_str}},
