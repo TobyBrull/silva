@@ -30,8 +30,8 @@ namespace silva::fern::test {
 
     const string_view_t expected_parse_tree_str = R"(
 [  0]   1:1   cat=.literal                                 [
-[  1]   2:3   cat=.literal                                 none
-[  2]   3:3   cat=.literal                                 true
+[  1]   2:3   cat=.none                                    none
+[  2]   3:3   cat=.boolean                                 true
 [  3]   4:3   cat=.string                                  'test'
 [  4]   4:10  cat=.literal                                 :
 [  5]   4:12  cat=.string                                  'Hello'
