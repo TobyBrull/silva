@@ -52,9 +52,9 @@ namespace silva::seed {
 language Seed:
   skip = skip_off_side
 
-  frag_name = identifier_macro_case
-  rule_name = identifier_pascal_case
-  token_category_name = identifier_snake_case
+  frag_name = identifier.macro_case
+  rule_name = identifier.pascal_case
+  token_category_name = identifier.snake_case
 
   ⊙ = [ Language Scope Rule ] *
   Language = 'language' rule_name ':' ScopeImpl
@@ -77,7 +77,8 @@ language Seed:
     operator = [ 'not' 'but_then' operator_single '{' '}' ]
     Alias = Expr
   Terminal = [ 'ε' 'end_of_language' 'language' string frag_name ]
-  Nonterminal = '.' ? ( rule_name '.' ) * ( rule_name | token_category_name )
+  Nonterminal = '.' ? ( Name '.' ) * Name
+  Name = alias [ rule_name token_category_name ]
 )'";
 
   // Handcrafted Seed parser for bootstrapping purposes.

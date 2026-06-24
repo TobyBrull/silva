@@ -252,37 +252,10 @@ namespace silva::seed::impl {
                                                lexicon.name_id_wrap(lexicon.ni_atom)));
     }
 
-    expected_t<parse_tree_node_t> nonterminal()
+    expected_t<parse_tree_node_t> name()
     {
-      auto ss_rule = stake();
-
-      ss_rule.create_node(lexicon.ni_nt);
-      {
-        auto result = literal_token(lexicon.ti_dot);
-        if (result) {
-          add_token_and_skip(*result);
-        }
-      }
-
-      while (true) {
-        auto ss_local = stake();
-        {
-          auto result = rule_name();
-          if (!result) {
-            break;
-          }
-          add_token_and_skip(*result);
-        }
-        {
-          auto result = literal_token(lexicon.ti_dot);
-          if (!result) {
-            break;
-          }
-          add_token_and_skip(*result);
-        }
-        ss_rule.add_proto_node(ss_local.commit());
-      }
-
+      auto ss_rule                = stake();
+      const index_t orig_frag_idx = fragment_index;
       error_nursery_t error_nursery;
       {
         auto result = rule_name();
@@ -303,8 +276,49 @@ namespace silva::seed::impl {
       return std::unexpected(std::move(error_nursery)
                                  .finish_short(error_level_t::MINOR,
                                                "[{}] {}",
-                                               fragment_location_at(fragment_index),
-                                               lexicon.name_id_wrap(lexicon.ni_atom)));
+                                               fragment_location_at(orig_frag_idx),
+                                               lexicon.name_id_wrap(lexicon.ni_name)));
+    }
+
+    expected_t<parse_tree_node_t> nonterminal()
+    {
+      auto ss_rule = stake();
+
+      ss_rule.create_node(lexicon.ni_nt);
+      {
+        auto result = literal_token(lexicon.ti_dot);
+        if (result) {
+          add_token_and_skip(*result);
+        }
+      }
+
+      while (true) {
+        auto ss_local = stake();
+        {
+          auto result = name();
+          if (!result) {
+            break;
+          }
+          ss_local.add_proto_node(*result);
+        }
+        {
+          auto result = literal_token(lexicon.ti_dot);
+          if (!result) {
+            break;
+          }
+          add_token_and_skip(*result);
+        }
+        ss_rule.add_proto_node(ss_local.commit());
+      }
+
+      {
+        auto result = name();
+        if (result) {
+          ss_rule.add_proto_node(*result);
+          return ss_rule.commit();
+        }
+        return std::unexpected(std::move(result).error());
+      }
     }
 
     expected_t<parse_tree_node_t> axe_op()

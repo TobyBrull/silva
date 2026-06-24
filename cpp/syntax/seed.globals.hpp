@@ -14,13 +14,14 @@ parenthesis = PARENTHESIS
 operator_single = OPERATOR
 operator_greedy = OPERATOR +
 
-identifier = ID_START ID_CONTINUE *
-identifier_with_dash = ID_START ( ID_CONTINUE | '-' ) *
-identifier_kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *       not ID_CONTINUE
-identifier_snake_case = ID_LOWER + ( '_' ID_LOWER + ) *       not ID_CONTINUE
-identifier_camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *  not ID_CONTINUE
-identifier_pascal_case = ( ID_UPPER ID_LOWER + ) +            not ID_CONTINUE
-identifier_macro_case = ID_UPPER + ( '_' ID_UPPER + ) *       not ID_CONTINUE
+identifier:
+  ⊙ = ID_START ID_CONTINUE *
+  with_dashes = ID_START ( ID_CONTINUE | '-' ) *
+  kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *       not ID_CONTINUE
+  snake_case = ID_LOWER + ( '_' ID_LOWER + ) *       not ID_CONTINUE
+  camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *  not ID_CONTINUE
+  pascal_case = ( ID_UPPER ID_LOWER + ) +            not ID_CONTINUE
+  macro_case = ID_UPPER + ( '_' ID_UPPER + ) *       not ID_CONTINUE
 
 none = 'none'
 

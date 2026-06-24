@@ -2456,13 +2456,13 @@ Mr Jane
           [0].Cedar.Type.Declarator.Pointer                                                         *
         [1].Cedar.Type.Declarator.Direct                                                            test_8
 
-[  0]   6:1   cat=.identifier_with_dash                    bare_key
+[  0]   6:1   cat=.identifier.with_dashes                  bare_key
 [  1]   6:10  cat=.literal                                 =
 [  2]   6:12  cat=.string                                  "Alphanumeric, underscores, and dashes allowed"
-[  3]   7:1   cat=.identifier_with_dash                    bare-key-dash
+[  3]   7:1   cat=.identifier.with_dashes                  bare-key-dash
 [  4]   7:15  cat=.literal                                 =
 [  5]   7:17  cat=.string                                  "Dashes are completely legal"
-[  6]   8:1   cat=.identifier_with_dash                    bare_key_123
+[  6]   8:1   cat=.identifier.with_dashes                  bare_key_123
 [  7]   8:14  cat=.literal                                 =
 [  8]   8:16  cat=.string                                  "Numbers are allowed"
 [  9]  10:1   cat=.string                                  "quoted key"
@@ -2474,135 +2474,135 @@ Mr Jane
 [ 15]  12:1   cat=.string                                  ""
 [ 16]  12:4   cat=.literal                                 =
 [ 17]  12:6   cat=.string                                  "Empty string keys are explicitly valid"
-[ 18]  15:1   cat=.identifier_with_dash                    physical
+[ 18]  15:1   cat=.identifier.with_dashes                  physical
 [ 19]  15:9   cat=.literal                                 .
-[ 20]  15:10  cat=.identifier_with_dash                    property
+[ 20]  15:10  cat=.identifier.with_dashes                  property
 [ 21]  15:18  cat=.literal                                 .
-[ 22]  15:19  cat=.identifier_with_dash                    color
+[ 22]  15:19  cat=.identifier.with_dashes                  color
 [ 23]  15:25  cat=.literal                                 =
 [ 24]  15:27  cat=.string                                  "blue"
-[ 25]  16:1   cat=.identifier_with_dash                    physical
+[ 25]  16:1   cat=.identifier.with_dashes                  physical
 [ 26]  16:9   cat=.literal                                 .
-[ 27]  16:10  cat=.identifier_with_dash                    property
+[ 27]  16:10  cat=.identifier.with_dashes                  property
 [ 28]  16:18  cat=.literal                                 .
-[ 29]  16:19  cat=.identifier_with_dash                    shape
+[ 29]  16:19  cat=.identifier.with_dashes                  shape
 [ 30]  16:25  cat=.literal                                 =
 [ 31]  16:27  cat=.string                                  "round"
 [ 32]  21:1   cat=.literal                                 [
-[ 33]  21:2   cat=.identifier_with_dash                    strings
+[ 33]  21:2   cat=.identifier.with_dashes                  strings
 [ 34]  21:9   cat=.literal                                 ]
-[ 35]  24:1   cat=.identifier_with_dash                    basic
+[ 35]  24:1   cat=.identifier.with_dashes                  basic
 [ 36]  24:7   cat=.literal                                 =
 [ 37]  24:9   cat=.string                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
-[ 38]  25:1   cat=.identifier_with_dash                    escaped
+[ 38]  25:1   cat=.identifier.with_dashes                  escaped
 [ 39]  25:9   cat=.literal                                 =
 [ 40]  25:11  cat=.string                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
 [ 41]  30:1   cat=.literal                                 [
-[ 42]  30:2   cat=.identifier_with_dash                    integers
+[ 42]  30:2   cat=.identifier.with_dashes                  integers
 [ 43]  30:10  cat=.literal                                 ]
-[ 44]  31:1   cat=.identifier_with_dash                    positive
+[ 44]  31:1   cat=.identifier.with_dashes                  positive
 [ 45]  31:10  cat=.literal                                 =
 [ 46]  31:12  cat=.number                                  +99
-[ 47]  32:1   cat=.identifier_with_dash                    negative
+[ 47]  32:1   cat=.identifier.with_dashes                  negative
 [ 48]  32:10  cat=.literal                                 =
 [ 49]  32:12  cat=.number                                  -17
-[ 50]  33:1   cat=.identifier_with_dash                    zero
+[ 50]  33:1   cat=.identifier.with_dashes                  zero
 [ 51]  33:6   cat=.literal                                 =
 [ 52]  33:8   cat=.number                                  0
-[ 53]  34:1   cat=.identifier_with_dash                    zero_plus
+[ 53]  34:1   cat=.identifier.with_dashes                  zero_plus
 [ 54]  34:11  cat=.literal                                 =
 [ 55]  34:13  cat=.number                                  +0
-[ 56]  35:1   cat=.identifier_with_dash                    zero_minus
+[ 56]  35:1   cat=.identifier.with_dashes                  zero_minus
 [ 57]  35:12  cat=.literal                                 =
 [ 58]  35:14  cat=.number                                  -0
-[ 59]  39:1   cat=.identifier_with_dash                    hexadecimal
+[ 59]  39:1   cat=.identifier.with_dashes                  hexadecimal
 [ 60]  39:13  cat=.literal                                 =
 [ 61]  39:15  cat=.number                                  0xDEADBEEF
-[ 62]  40:1   cat=.identifier_with_dash                    hex_lowercase
+[ 62]  40:1   cat=.identifier.with_dashes                  hex_lowercase
 [ 63]  40:15  cat=.literal                                 =
 [ 64]  40:17  cat=.number                                  0xdeadbeef
-[ 65]  41:1   cat=.identifier_with_dash                    octal
+[ 65]  41:1   cat=.identifier.with_dashes                  octal
 [ 66]  41:7   cat=.literal                                 =
 [ 67]  41:9   cat=.number                                  0o755
-[ 68]  42:1   cat=.identifier_with_dash                    binary
+[ 68]  42:1   cat=.identifier.with_dashes                  binary
 [ 69]  42:8   cat=.literal                                 =
 [ 70]  42:10  cat=.number                                  0b11010010
 [ 71]  47:1   cat=.literal                                 [
-[ 72]  47:2   cat=.identifier_with_dash                    floats
+[ 72]  47:2   cat=.identifier.with_dashes                  floats
 [ 73]  47:8   cat=.literal                                 ]
-[ 74]  48:1   cat=.identifier_with_dash                    normal
+[ 74]  48:1   cat=.identifier.with_dashes                  normal
 [ 75]  48:8   cat=.literal                                 =
 [ 76]  48:10  cat=.number                                  +3.14159
-[ 77]  49:1   cat=.identifier_with_dash                    negative
+[ 77]  49:1   cat=.identifier.with_dashes                  negative
 [ 78]  49:10  cat=.literal                                 =
 [ 79]  49:12  cat=.number                                  -0.01
-[ 80]  50:1   cat=.identifier_with_dash                    fractional_zero
+[ 80]  50:1   cat=.identifier.with_dashes                  fractional_zero
 [ 81]  50:17  cat=.literal                                 =
 [ 82]  50:19  cat=.number                                  5.0
-[ 83]  53:1   cat=.identifier_with_dash                    exponent_large
+[ 83]  53:1   cat=.identifier.with_dashes                  exponent_large
 [ 84]  53:16  cat=.literal                                 =
 [ 85]  53:18  cat=.number                                  5e+22
-[ 86]  54:1   cat=.identifier_with_dash                    exponent_small
+[ 86]  54:1   cat=.identifier.with_dashes                  exponent_small
 [ 87]  54:16  cat=.literal                                 =
 [ 88]  54:18  cat=.number                                  1e-14
-[ 89]  55:1   cat=.identifier_with_dash                    exponent_mixed
+[ 89]  55:1   cat=.identifier.with_dashes                  exponent_mixed
 [ 90]  55:16  cat=.literal                                 =
 [ 91]  55:18  cat=.number                                  -6.23e-4
-[ 92]  58:1   cat=.identifier_with_dash                    infinity
+[ 92]  58:1   cat=.identifier.with_dashes                  infinity
 [ 93]  58:10  cat=.literal                                 =
 [ 94]  58:12  cat=.number                                  inf
-[ 95]  59:1   cat=.identifier_with_dash                    positive_infinity
+[ 95]  59:1   cat=.identifier.with_dashes                  positive_infinity
 [ 96]  59:19  cat=.literal                                 =
 [ 97]  59:21  cat=.number                                  +inf
-[ 98]  60:1   cat=.identifier_with_dash                    negative_infinity
+[ 98]  60:1   cat=.identifier.with_dashes                  negative_infinity
 [ 99]  60:19  cat=.literal                                 =
 [100]  60:21  cat=.number                                  -inf
-[101]  61:1   cat=.identifier_with_dash                    not_a_number
+[101]  61:1   cat=.identifier.with_dashes                  not_a_number
 [102]  61:14  cat=.literal                                 =
 [103]  61:16  cat=.number                                  nan
 [104]  66:1   cat=.literal                                 [
-[105]  66:2   cat=.identifier_with_dash                    booleans
+[105]  66:2   cat=.identifier.with_dashes                  booleans
 [106]  66:10  cat=.literal                                 ]
-[107]  67:1   cat=.identifier_with_dash                    true_value
+[107]  67:1   cat=.identifier.with_dashes                  true_value
 [108]  67:12  cat=.literal                                 =
 [109]  67:14  cat=.literal                                 true
-[110]  68:1   cat=.identifier_with_dash                    false_value
+[110]  68:1   cat=.identifier.with_dashes                  false_value
 [111]  68:13  cat=.literal                                 =
 [112]  68:15  cat=.literal                                 false
 [113]  73:1   cat=.literal                                 [
-[114]  73:2   cat=.identifier_with_dash                    datetimes
+[114]  73:2   cat=.identifier.with_dashes                  datetimes
 [115]  73:11  cat=.literal                                 ]
-[116]  75:1   cat=.identifier_with_dash                    offset_utc
+[116]  75:1   cat=.identifier.with_dashes                  offset_utc
 [117]  75:12  cat=.literal                                 =
 [118]  75:14  cat=.timepoint_any                           1979-05-27T07:32:00Z
-[119]  76:1   cat=.identifier_with_dash                    offset_numeric
+[119]  76:1   cat=.identifier.with_dashes                  offset_numeric
 [120]  76:16  cat=.literal                                 =
 [121]  76:18  cat=.timepoint_any                           1979-05-27T00:32:00-07:00
-[122]  77:1   cat=.identifier_with_dash                    offset_with_ms
+[122]  77:1   cat=.identifier.with_dashes                  offset_with_ms
 [123]  77:16  cat=.literal                                 =
 [124]  77:18  cat=.timepoint_any                           1979-05-27T00:32:00.999999-07:00
-[125]  78:1   cat=.identifier_with_dash                    offset_space_separator
+[125]  78:1   cat=.identifier.with_dashes                  offset_space_separator
 [126]  78:24  cat=.literal                                 =
 [127]  78:26  cat=.timepoint_any                           1979-05-27 07:32:00Z
-[128]  81:1   cat=.identifier_with_dash                    local_date_time
+[128]  81:1   cat=.identifier.with_dashes                  local_date_time
 [129]  81:17  cat=.literal                                 =
 [130]  81:19  cat=.timepoint_local_any                     1979-05-27T07:32:00
-[131]  82:1   cat=.identifier_with_dash                    local_date_time_ms
+[131]  82:1   cat=.identifier.with_dashes                  local_date_time_ms
 [132]  82:20  cat=.literal                                 =
 [133]  82:22  cat=.timepoint_local_any                     1979-05-27T07:32:00.999999
-[134]  85:1   cat=.identifier_with_dash                    local_date
+[134]  85:1   cat=.identifier.with_dashes                  local_date
 [135]  85:12  cat=.literal                                 =
 [136]  85:14  cat=.date                                    1979-05-27
-[137]  88:1   cat=.identifier_with_dash                    local_time
+[137]  88:1   cat=.identifier.with_dashes                  local_time
 [138]  88:12  cat=.literal                                 =
 [139]  88:14  cat=.time_of_day_any                         07:32:00
-[140]  89:1   cat=.identifier_with_dash                    local_time_ms
+[140]  89:1   cat=.identifier.with_dashes                  local_time_ms
 [141]  89:15  cat=.literal                                 =
 [142]  89:17  cat=.time_of_day_any                         00:32:00.999999
 [143]  94:1   cat=.literal                                 [
-[144]  94:2   cat=.identifier_with_dash                    arrays
+[144]  94:2   cat=.identifier.with_dashes                  arrays
 [145]  94:8   cat=.literal                                 ]
-[146]  95:1   cat=.identifier_with_dash                    integers
+[146]  95:1   cat=.identifier.with_dashes                  integers
 [147]  95:10  cat=.literal                                 =
 [148]  95:12  cat=.literal                                 [
 [149]  95:13  cat=.number                                  1
@@ -2611,7 +2611,7 @@ Mr Jane
 [152]  95:17  cat=.literal                                 ,
 [153]  95:19  cat=.number                                  3
 [154]  95:20  cat=.literal                                 ]
-[155]  96:1   cat=.identifier_with_dash                    strings
+[155]  96:1   cat=.identifier.with_dashes                  strings
 [156]  96:9   cat=.literal                                 =
 [157]  96:11  cat=.literal                                 [
 [158]  96:12  cat=.string                                  "red"
@@ -2620,7 +2620,7 @@ Mr Jane
 [161]  96:27  cat=.literal                                 ,
 [162]  96:29  cat=.string                                  "green"
 [163]  96:36  cat=.literal                                 ]
-[164]  97:1   cat=.identifier_with_dash                    nested_arrays
+[164]  97:1   cat=.identifier.with_dashes                  nested_arrays
 [165]  97:15  cat=.literal                                 =
 [166]  97:17  cat=.literal                                 [
 [167]  97:18  cat=.literal                                 [
@@ -2637,7 +2637,7 @@ Mr Jane
 [178]  97:33  cat=.number                                  5
 [179]  97:34  cat=.literal                                 ]
 [180]  97:35  cat=.literal                                 ]
-[181] 100:1   cat=.identifier_with_dash                    multiline_and_mixed_whitespace
+[181] 100:1   cat=.identifier.with_dashes                  multiline_and_mixed_whitespace
 [182] 100:32  cat=.literal                                 =
 [183] 100:34  cat=.literal                                 [
 [184] 101:3   cat=.string                                  "allowed"
@@ -2649,7 +2649,7 @@ Mr Jane
 [190] 104:3   cat=.string                                  "lines"
 [191] 104:10  cat=.literal                                 ,
 [192] 105:1   cat=.literal                                 ]
-[193] 108:1   cat=.identifier_with_dash                    mixed_types
+[193] 108:1   cat=.identifier.with_dashes                  mixed_types
 [194] 108:13  cat=.literal                                 =
 [195] 108:15  cat=.literal                                 [
 [196] 108:16  cat=.number                                  1
@@ -2669,155 +2669,155 @@ Mr Jane
 [210] 108:49  cat=.date                                    1979-05-27
 [211] 108:59  cat=.literal                                 ]
 [212] 113:1   cat=.literal                                 [
-[213] 113:2   cat=.identifier_with_dash                    inline_tables
+[213] 113:2   cat=.identifier.with_dashes                  inline_tables
 [214] 113:15  cat=.literal                                 ]
-[215] 115:1   cat=.identifier_with_dash                    basic
+[215] 115:1   cat=.identifier.with_dashes                  basic
 [216] 115:7   cat=.literal                                 =
 [217] 115:9   cat=.literal                                 {
-[218] 115:11  cat=.identifier_with_dash                    first
+[218] 115:11  cat=.identifier.with_dashes                  first
 [219] 115:17  cat=.literal                                 =
 [220] 115:19  cat=.string                                  "Tom"
 [221] 115:24  cat=.literal                                 ,
-[222] 115:26  cat=.identifier_with_dash                    last
+[222] 115:26  cat=.identifier.with_dashes                  last
 [223] 115:31  cat=.literal                                 =
 [224] 115:33  cat=.string                                  "Preston-Werner"
 [225] 115:50  cat=.literal                                 }
-[226] 116:1   cat=.identifier_with_dash                    point
+[226] 116:1   cat=.identifier.with_dashes                  point
 [227] 116:7   cat=.literal                                 =
 [228] 116:9   cat=.literal                                 {
-[229] 116:11  cat=.identifier_with_dash                    x
+[229] 116:11  cat=.identifier.with_dashes                  x
 [230] 116:13  cat=.literal                                 =
 [231] 116:15  cat=.number                                  1
 [232] 116:16  cat=.literal                                 ,
-[233] 116:18  cat=.identifier_with_dash                    y
+[233] 116:18  cat=.identifier.with_dashes                  y
 [234] 116:20  cat=.literal                                 =
 [235] 116:22  cat=.number                                  2
 [236] 116:23  cat=.literal                                 ,
-[237] 116:25  cat=.identifier_with_dash                    z
+[237] 116:25  cat=.identifier.with_dashes                  z
 [238] 116:27  cat=.literal                                 =
 [239] 116:29  cat=.number                                  3
 [240] 116:31  cat=.literal                                 }
-[241] 119:1   cat=.identifier_with_dash                    nested
+[241] 119:1   cat=.identifier.with_dashes                  nested
 [242] 119:8   cat=.literal                                 =
 [243] 119:10  cat=.literal                                 {
-[244] 119:12  cat=.identifier_with_dash                    identity
+[244] 119:12  cat=.identifier.with_dashes                  identity
 [245] 119:21  cat=.literal                                 =
 [246] 119:23  cat=.literal                                 {
-[247] 119:25  cat=.identifier_with_dash                    id
+[247] 119:25  cat=.identifier.with_dashes                  id
 [248] 119:28  cat=.literal                                 =
 [249] 119:30  cat=.number                                  42
 [250] 119:32  cat=.literal                                 ,
-[251] 119:34  cat=.identifier_with_dash                    role
+[251] 119:34  cat=.identifier.with_dashes                  role
 [252] 119:39  cat=.literal                                 =
 [253] 119:41  cat=.string                                  "admin"
 [254] 119:49  cat=.literal                                 }
 [255] 119:50  cat=.literal                                 ,
-[256] 119:52  cat=.identifier_with_dash                    active
+[256] 119:52  cat=.identifier.with_dashes                  active
 [257] 119:59  cat=.literal                                 =
 [258] 119:61  cat=.literal                                 true
 [259] 119:66  cat=.literal                                 }
-[260] 122:1   cat=.identifier_with_dash                    empty
+[260] 122:1   cat=.identifier.with_dashes                  empty
 [261] 122:7   cat=.literal                                 =
 [262] 122:9   cat=.literal                                 {
 [263] 122:10  cat=.literal                                 }
 [264] 127:1   cat=.literal                                 [
-[265] 127:2   cat=.identifier_with_dash                    explicit_table_1
+[265] 127:2   cat=.identifier.with_dashes                  explicit_table_1
 [266] 127:18  cat=.literal                                 ]
-[267] 128:1   cat=.identifier_with_dash                    key_a
+[267] 128:1   cat=.identifier.with_dashes                  key_a
 [268] 128:7   cat=.literal                                 =
 [269] 128:9   cat=.string                                  "Value inside explicit_table_1"
 [270] 130:1   cat=.literal                                 [
-[271] 130:2   cat=.identifier_with_dash                    explicit_table_1
+[271] 130:2   cat=.identifier.with_dashes                  explicit_table_1
 [272] 130:18  cat=.literal                                 .
-[273] 130:19  cat=.identifier_with_dash                    nested_child
+[273] 130:19  cat=.identifier.with_dashes                  nested_child
 [274] 130:31  cat=.literal                                 ]
-[275] 131:1   cat=.identifier_with_dash                    key_b
+[275] 131:1   cat=.identifier.with_dashes                  key_b
 [276] 131:7   cat=.literal                                 =
 [277] 131:9   cat=.string                                  "Value inside nested_child"
 [278] 134:1   cat=.literal                                 [
-[279] 134:2   cat=.identifier_with_dash                    explicit_table_2
+[279] 134:2   cat=.identifier.with_dashes                  explicit_table_2
 [280] 134:18  cat=.literal                                 ]
 [281] 137:1   cat=.literal                                 [
-[282] 137:2   cat=.identifier_with_dash                    explicit_table_3
+[282] 137:2   cat=.identifier.with_dashes                  explicit_table_3
 [283] 137:18  cat=.literal                                 .
-[284] 137:19  cat=.identifier_with_dash                    sub_table
+[284] 137:19  cat=.identifier.with_dashes                  sub_table
 [285] 137:28  cat=.literal                                 .
-[286] 137:29  cat=.identifier_with_dash                    deep_table
+[286] 137:29  cat=.identifier.with_dashes                  deep_table
 [287] 137:39  cat=.literal                                 ]
-[288] 138:1   cat=.identifier_with_dash                    final_key
+[288] 138:1   cat=.identifier.with_dashes                  final_key
 [289] 138:11  cat=.literal                                 =
 [290] 138:13  cat=.string                                  "Resolves deep nesting paths cleanly"
 [291] 145:1   cat=.literal                                 [[
-[292] 145:3   cat=.identifier_with_dash                    products
+[292] 145:3   cat=.identifier.with_dashes                  products
 [293] 145:11  cat=.literal                                 ]]
-[294] 146:1   cat=.identifier_with_dash                    name
+[294] 146:1   cat=.identifier.with_dashes                  name
 [295] 146:6   cat=.literal                                 =
 [296] 146:8   cat=.string                                  "Hammer"
-[297] 147:1   cat=.identifier_with_dash                    sku
+[297] 147:1   cat=.identifier.with_dashes                  sku
 [298] 147:5   cat=.literal                                 =
 [299] 147:7   cat=.number                                  738594937
 [300] 150:1   cat=.literal                                 [[
-[301] 150:3   cat=.identifier_with_dash                    products
+[301] 150:3   cat=.identifier.with_dashes                  products
 [302] 150:11  cat=.literal                                 ]]
 [303] 153:1   cat=.literal                                 [[
-[304] 153:3   cat=.identifier_with_dash                    products
+[304] 153:3   cat=.identifier.with_dashes                  products
 [305] 153:11  cat=.literal                                 ]]
-[306] 154:1   cat=.identifier_with_dash                    name
+[306] 154:1   cat=.identifier.with_dashes                  name
 [307] 154:6   cat=.literal                                 =
 [308] 154:8   cat=.string                                  "Nail"
-[309] 155:1   cat=.identifier_with_dash                    sku
+[309] 155:1   cat=.identifier.with_dashes                  sku
 [310] 155:5   cat=.literal                                 =
 [311] 155:7   cat=.number                                  284758393
 [312] 157:1   cat=.literal                                 [[
-[313] 157:3   cat=.identifier_with_dash                    products
+[313] 157:3   cat=.identifier.with_dashes                  products
 [314] 157:11  cat=.literal                                 .
-[315] 157:12  cat=.identifier_with_dash                    categories
+[315] 157:12  cat=.identifier.with_dashes                  categories
 [316] 157:22  cat=.literal                                 ]]
-[317] 158:1   cat=.identifier_with_dash                    name
+[317] 158:1   cat=.identifier.with_dashes                  name
 [318] 158:6   cat=.literal                                 =
 [319] 158:8   cat=.string                                  "Fasteners"
 [320] 161:1   cat=.literal                                 [[
-[321] 161:3   cat=.identifier_with_dash                    fruit
+[321] 161:3   cat=.identifier.with_dashes                  fruit
 [322] 161:8   cat=.literal                                 ]]
-[323] 162:1   cat=.identifier_with_dash                    name
+[323] 162:1   cat=.identifier.with_dashes                  name
 [324] 162:6   cat=.literal                                 =
 [325] 162:8   cat=.string                                  "apple"
 [326] 164:1   cat=.literal                                 [
-[327] 164:2   cat=.identifier_with_dash                    fruit
+[327] 164:2   cat=.identifier.with_dashes                  fruit
 [328] 164:7   cat=.literal                                 .
-[329] 164:8   cat=.identifier_with_dash                    physical
+[329] 164:8   cat=.identifier.with_dashes                  physical
 [330] 164:16  cat=.literal                                 ]
-[331] 165:1   cat=.identifier_with_dash                    color
+[331] 165:1   cat=.identifier.with_dashes                  color
 [332] 165:7   cat=.literal                                 =
 [333] 165:9   cat=.string                                  "red"
 [334] 167:1   cat=.literal                                 [[
-[335] 167:3   cat=.identifier_with_dash                    fruit
+[335] 167:3   cat=.identifier.with_dashes                  fruit
 [336] 167:8   cat=.literal                                 .
-[337] 167:9   cat=.identifier_with_dash                    varieties
+[337] 167:9   cat=.identifier.with_dashes                  varieties
 [338] 167:18  cat=.literal                                 ]]
-[339] 168:1   cat=.identifier_with_dash                    name
+[339] 168:1   cat=.identifier.with_dashes                  name
 [340] 168:6   cat=.literal                                 =
 [341] 168:8   cat=.string                                  "gala"
 [342] 170:1   cat=.literal                                 [[
-[343] 170:3   cat=.identifier_with_dash                    fruit
+[343] 170:3   cat=.identifier.with_dashes                  fruit
 [344] 170:8   cat=.literal                                 .
-[345] 170:9   cat=.identifier_with_dash                    varieties
+[345] 170:9   cat=.identifier.with_dashes                  varieties
 [346] 170:18  cat=.literal                                 ]]
-[347] 171:1   cat=.identifier_with_dash                    name
+[347] 171:1   cat=.identifier.with_dashes                  name
 [348] 171:6   cat=.literal                                 =
 [349] 171:8   cat=.string                                  "fuji"
 [350] 173:1   cat=.literal                                 [[
-[351] 173:3   cat=.identifier_with_dash                    fruit
+[351] 173:3   cat=.identifier.with_dashes                  fruit
 [352] 173:8   cat=.literal                                 ]]
-[353] 174:1   cat=.identifier_with_dash                    name
+[353] 174:1   cat=.identifier.with_dashes                  name
 [354] 174:6   cat=.literal                                 =
 [355] 174:8   cat=.string                                  "banana"
 [356] 176:1   cat=.literal                                 [[
-[357] 176:3   cat=.identifier_with_dash                    fruit
+[357] 176:3   cat=.identifier.with_dashes                  fruit
 [358] 176:8   cat=.literal                                 .
-[359] 176:9   cat=.identifier_with_dash                    varieties
+[359] 176:9   cat=.identifier.with_dashes                  varieties
 [360] 176:18  cat=.literal                                 ]]
-[361] 177:1   cat=.identifier_with_dash                    name
+[361] 177:1   cat=.identifier.with_dashes                  name
 [362] 177:6   cat=.literal                                 =
 [363] 177:8   cat=.string                                  "cavendish"
 

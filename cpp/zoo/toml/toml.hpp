@@ -10,7 +10,7 @@ language Toml:
   ⊙ = ( Keyval | Table ) *
   Keyval = Key '=' Val
   Key = SimpleKey ( '.' SimpleKey ) *
-  SimpleKey = string | identifier_with_dash
+  SimpleKey = string | identifier.with_dashes
   Val = string | 'true' | 'false' | Array | InlineTable \
       | timepoint_any | timepoint_local_any | date | time_of_day_any \
       | number

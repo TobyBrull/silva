@@ -13,7 +13,7 @@ language Silva:
 
   skip = skip_free_form
 
-  lang_name = identifier_pascal_case
+  lang_name = identifier.pascal_case
   Section = lang_name language
 )'";
 

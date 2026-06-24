@@ -112,7 +112,8 @@ namespace silva::seed {
     const name_id_t ni_expr_and      = sfp->name_id_of(ni_expr, "And");
     const name_id_t ni_expr_followup = sfp->name_id_of(ni_expr, "Followup");
 
-    const name_id_t ni_nt = sfp->name_id_of(ni_seed, "Nonterminal");
+    const name_id_t ni_nt   = sfp->name_id_of(ni_seed, "Nonterminal");
+    const name_id_t ni_name = sfp->name_id_of(ni_seed, "Name");
 
     const name_id_t ni_axe         = sfp->name_id_of(ni_seed, "Axe");
     const name_id_t ni_axe_level   = sfp->name_id_of(ni_axe, "Level");

@@ -13,6 +13,7 @@
 * enforce:
     * node-rules may only use other node-rules or token-rules
     * token-rules may only use other token-rules or FRAGMENTS
+    * tokens may only have other tokens as sub-rules
 * parse skip-rule AFTER every token
     * to support "end_of_language"
     * don't skip in seed.cpp in recursive token calls

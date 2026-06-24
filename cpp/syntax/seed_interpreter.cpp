@@ -51,7 +51,9 @@ namespace silva::seed::impl {
       return {};
     }
 
-    expected_t<void> handle_rule(const name_id_t scope_name, const parse_tree_span_t pts_rule)
+    expected_t<void> handle_rule(const name_id_t scope_name,
+                                 const parse_tree_span_t pts_rule,
+                                 const bool scope_is_token_rule)
     {
       SILVA_EXPECT(pts_rule[0].rule_name == lexicon.ni_rule, MINOR, "expected Rule");
 
@@ -62,6 +64,7 @@ namespace silva::seed::impl {
       bool is_token_rule = false;
       if (SILVA_EXPECT_FWD(pts_rule.front_token_id()) == lexicon.ti_here.token_id) {
         curr_rule_name = scope_name;
+        is_token_rule  = scope_is_token_rule;
       }
       else {
         const auto pts_nt = pts_rule.sub_tree_span_at(it.pos);
@@ -147,7 +150,8 @@ namespace silva::seed::impl {
     expected_t<void> handle_scope_impl(const name_id_t scope_name,
                                        const parse_tree_span_t pts_scope,
                                        Iter it,
-                                       const Iter end)
+                                       const Iter end,
+                                       const bool scope_is_token_rule)
     {
       while (it != end) {
         const auto pts_child = pts_scope.sub_tree_span_at(it.pos);
@@ -155,7 +159,7 @@ namespace silva::seed::impl {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
         else {
-          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child));
+          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, scope_is_token_rule));
         }
         ++it;
       }
@@ -172,12 +176,14 @@ namespace silva::seed::impl {
       const auto pts_nt = pts_scope.sub_tree_span_at(it.pos);
       const name_id_t curr_scope_name =
           SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
+      const name_id_t back_token_cat = SILVA_EXPECT_FWD(pts_nt.back_token_category());
+      const bool scope_is_token_rule = (back_token_cat == lexicon.ni_token_cat_name);
       ++it;
       SILVA_EXPECT(it != end,
                    MINOR,
                    "{} scope must have at least one sub-rule or sub-scope",
                    pts_scope);
-      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_scope, it, end));
+      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_scope, it, end, scope_is_token_rule));
       return {};
     }
 
@@ -203,7 +209,7 @@ namespace silva::seed::impl {
                    pts_language);
       auto [it, end]                  = pts_language.children_range();
       const name_id_t curr_scope_name = sfp->name_id(scope_name, lang_id);
-      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_language, it, end));
+      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_language, it, end, false));
       return {};
     }
 
@@ -222,7 +228,7 @@ namespace silva::seed::impl {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
         else {
-          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child));
+          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, false));
         }
       }
       return {};
