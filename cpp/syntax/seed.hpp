@@ -50,7 +50,7 @@ namespace silva::seed {
 
   const string_view_t seed_str = R"'(
 language Seed:
-  skip = skip_off_side
+  skip = skip.off_side
 
   frag_name = identifier.macro_case
   rule_name = identifier.pascal_case

@@ -5,7 +5,7 @@
 namespace silva::toml {
   const string_view_t seed_str = R"'(
 language Toml:
-  skip = skip_free_form
+  skip = skip.free_form
 
   ⊙ = ( Keyval | Table ) *
   Keyval = Key '=' Val

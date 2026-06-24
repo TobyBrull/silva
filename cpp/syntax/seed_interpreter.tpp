@@ -205,7 +205,7 @@ language Frog:
     const string_view_t testor_lang = R"'(
 language Testor:
   ⊙ = Assign *
-  skip = skip_free_form
+  skip = skip.free_form
   Assign = identifier '=' identifier operator_single identifier
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_lang}));

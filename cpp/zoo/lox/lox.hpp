@@ -7,7 +7,7 @@
 namespace silva::lox {
   const string_view_t seed_str = R"'(
 language Lox:
-  skip = skip_free_form
+  skip = skip.free_form
 
   ⊙ = ( Decl | Stmt ) *
   Decl:

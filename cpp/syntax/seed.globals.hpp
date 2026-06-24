@@ -96,8 +96,9 @@ timepoint_any       = timepoint | timepoint_rfc
 
 # 
 
-skip_free_form = [ SPACE LINEFEED COMMENT WHITESPACE INDENT DEDENT NEWLINE ] *
-skip_off_side  = [ SPACE LINEFEED COMMENT WHITESPACE ] *
+skip:
+  free_form = [ SPACE LINEFEED COMMENT WHITESPACE INDENT DEDENT NEWLINE ] *
+  off_side  = [ SPACE LINEFEED COMMENT WHITESPACE ] *
 
 None = ε
 )'";

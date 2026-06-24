@@ -11,7 +11,7 @@ namespace silva {
 language Silva:
   ⊙ = Section *
 
-  skip = skip_free_form
+  skip = skip.free_form
 
   lang_name = identifier.pascal_case
   Section = lang_name language

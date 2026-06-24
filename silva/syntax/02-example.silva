@@ -1,6 +1,6 @@
 Seed «
 language AsBs:
-  skip = skip_free_form
+  skip = skip.free_form
 
   ⊙ = 'a' * 'b' *
 »
@@ -9,7 +9,7 @@ AsBs « a a a b b »
 
 Seed «
 language CppStmts:
-  skip = skip_free_form
+  skip = skip.free_form
 
   ⊙ = ( Expr ';' ) *
   Expr:

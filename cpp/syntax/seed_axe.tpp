@@ -54,7 +54,7 @@ language Test:
     Eqa   = rtl   infix '='
   oper = operator_single | parenthesis
   Atom = identifier | number | '(' Test ')'
-  skip = skip_free_form
+  skip = skip.free_form
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
     const auto& sa = se->axes.at(sf.name_id_of("Test"));
@@ -529,7 +529,7 @@ language Test:
   oper = '<:' | ':>' | operator_single | parenthesis
   Atom = identifier | number operator_single | '(' Test ')' | '<<' Test.PrfLo '>>'
   Args = string ( ',' string ) * | ε
-  skip = skip_free_form
+  skip = skip.free_form
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
     const auto& sa = se->axes.at(sf.name_id_of("Test"));
