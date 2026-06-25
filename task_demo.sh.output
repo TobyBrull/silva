@@ -117,17 +117,17 @@ ERROR (MAJOR):
 │   │ │ │   ├─[01-broken.fern:10:5] while matching token[ inf ]
 │   │ │ │   │ [01-broken.fern:10:5] expected token[ nan ]
 │   │ │ │   ├─[01-broken.fern:10:5] while matching token[ nan ]
-│   │ │ │   [01-broken.fern:10:5] .number_special: expected alternation[ [ '-inf' ... 'nan' ] ]
-│   │ │ │ ┌─[01-broken.fern:10:5] .number_special
+│   │ │ │   [01-broken.fern:10:5] .number.special: expected alternation[ [ '-inf' ... 'nan' ] ]
+│   │ │ │ ┌─[01-broken.fern:10:5] .number.special
 │   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
 │   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
 │   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
 │   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│   │ │ │ │ ┌─[01-broken.fern:10:5] .number_plain: expected alternation[ [ '+' '-' ] ]
+│   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plain: expected alternation[ [ '+' '-' ] ]
 │   │ │ │ │ ├─expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │ │ [01-broken.fern:10:5] .number_plain: expected sequence[ [ '+' ... ] * ]
-│   │ │ │ ├─[01-broken.fern:10:5] .number_plain
-│   │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ number_special number_plain ] ]
+│   │ │ │ │ [01-broken.fern:10:5] .number.plain: expected sequence[ [ '+' ... ] * ]
+│   │ │ │ ├─[01-broken.fern:10:5] .number.plain
+│   │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ number ... plain ] ]
 │   │ │ ├─[01-broken.fern:10:5] .number
 │   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
 │   │ │ ├─[01-broken.fern:10:5] .string
@@ -197,8 +197,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].none                                   false     01-simplest.fern:3:4
             [1].boolean                                false     01-simplest.fern:3:4
             [2].number                                 false     01-simplest.fern:3:4
-              [0].number_special                       false     01-simplest.fern:3:4
-              [1].number_plain                         false     01-simplest.fern:3:4
+              [0].number.special                       false     01-simplest.fern:3:4
+              [1].number.plain                         false     01-simplest.fern:3:4
             [3].string                                 false     01-simplest.fern:3:4
         [2].skip.free_form                             true      01-simplest.fern:3:5
           [0].skip.free_form                           true      01-simplest.fern:4:3
@@ -227,8 +227,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].none                                   false     01-simplest.fern:6:3
             [1].boolean                                false     01-simplest.fern:6:3
             [2].number                                 false     01-simplest.fern:6:3
-              [0].number_special                       false     01-simplest.fern:6:3
-              [1].number_plain                         false     01-simplest.fern:6:3
+              [0].number.special                       false     01-simplest.fern:6:3
+              [1].number.plain                         false     01-simplest.fern:6:3
             [3].string                                 false     01-simplest.fern:6:3
         [3].skip.free_form                             true      01-simplest.fern:6:4
           [0].skip.free_form                           true      01-simplest.fern:7:1
@@ -241,8 +241,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].none                                       false     01-simplest.fern:7:1
         [1].boolean                                    false     01-simplest.fern:7:1
         [2].number                                     false     01-simplest.fern:7:1
-          [0].number_special                           false     01-simplest.fern:7:1
-          [1].number_plain                             false     01-simplest.fern:7:1
+          [0].number.special                           false     01-simplest.fern:7:1
+          [1].number.plain                             false     01-simplest.fern:7:1
         [3].string                                     false     01-simplest.fern:7:1
     [5].skip.free_form                                 true      01-simplest.fern:7:2
       [0].skip.free_form                               true      01-simplest.fern:7:2
@@ -2582,31 +2582,31 @@ Mr Jane
 [115]  73:11  cat=.literal                                 ]
 [116]  75:1   cat=.identifier.with_dashes                  offset_utc
 [117]  75:12  cat=.literal                                 =
-[118]  75:14  cat=.timepoint_any                           1979-05-27T07:32:00Z
+[118]  75:14  cat=.time.point.any                          1979-05-27T07:32:00Z
 [119]  76:1   cat=.identifier.with_dashes                  offset_numeric
 [120]  76:16  cat=.literal                                 =
-[121]  76:18  cat=.timepoint_any                           1979-05-27T00:32:00-07:00
+[121]  76:18  cat=.time.point.any                          1979-05-27T00:32:00-07:00
 [122]  77:1   cat=.identifier.with_dashes                  offset_with_ms
 [123]  77:16  cat=.literal                                 =
-[124]  77:18  cat=.timepoint_any                           1979-05-27T00:32:00.999999-07:00
+[124]  77:18  cat=.time.point.any                          1979-05-27T00:32:00.999999-07:00
 [125]  78:1   cat=.identifier.with_dashes                  offset_space_separator
 [126]  78:24  cat=.literal                                 =
-[127]  78:26  cat=.timepoint_any                           1979-05-27 07:32:00Z
+[127]  78:26  cat=.time.point.any                          1979-05-27 07:32:00Z
 [128]  81:1   cat=.identifier.with_dashes                  local_date_time
 [129]  81:17  cat=.literal                                 =
-[130]  81:19  cat=.timepoint_local_any                     1979-05-27T07:32:00
+[130]  81:19  cat=.time.point.local.any                    1979-05-27T07:32:00
 [131]  82:1   cat=.identifier.with_dashes                  local_date_time_ms
 [132]  82:20  cat=.literal                                 =
-[133]  82:22  cat=.timepoint_local_any                     1979-05-27T07:32:00.999999
+[133]  82:22  cat=.time.point.local.any                    1979-05-27T07:32:00.999999
 [134]  85:1   cat=.identifier.with_dashes                  local_date
 [135]  85:12  cat=.literal                                 =
 [136]  85:14  cat=.date                                    1979-05-27
 [137]  88:1   cat=.identifier.with_dashes                  local_time
 [138]  88:12  cat=.literal                                 =
-[139]  88:14  cat=.time_of_day_any                         07:32:00
+[139]  88:14  cat=.time.of_day.any                         07:32:00
 [140]  89:1   cat=.identifier.with_dashes                  local_time_ms
 [141]  89:15  cat=.literal                                 =
-[142]  89:17  cat=.time_of_day_any                         00:32:00.999999
+[142]  89:17  cat=.time.of_day.any                         00:32:00.999999
 [143]  94:1   cat=.literal                                 [
 [144]  94:2   cat=.identifier.with_dashes                  arrays
 [145]  94:8   cat=.literal                                 ]

@@ -12,7 +12,7 @@ language Toml:
   Key = SimpleKey ( '.' SimpleKey ) *
   SimpleKey = string | identifier.with_dashes
   Val = string | 'true' | 'false' | Array | InlineTable \
-      | timepoint_any | timepoint_local_any | date | time_of_day_any \
+      | time.point.any | time.point.local.any | date | time.of_day.any \
       | number
   Array = '[' ( Val ( ε ',' Val ) * ',' ? ) ? ']'
   Table = ArrayTable | StdTable
