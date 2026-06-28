@@ -33,11 +33,9 @@ pixi run test-all && echo "ALL TESTS SUCCEEDED!"
 ```bash
 eval "$( pixi shell-hook )"
 
-PRESET=debug
-PRESET=release
-PRESET=tracy
-BUILD_DIR="build.default.${PRESET}/"
-ln -sfn "${BUILD_DIR}" build
+PRESET=debug    ; BUILD_DIR="build.default.${PRESET}/"
+PRESET=release  ; BUILD_DIR="build.default.${PRESET}/"
+PRESET=tracy    ; BUILD_DIR="build.default.${PRESET}/"
 
 rm -rf "${BUILD_DIR}"
 cmake --preset "${PRESET}"

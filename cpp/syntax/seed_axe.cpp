@@ -476,7 +476,7 @@ namespace silva::seed::impl {
 
     struct oper_item_t {
       oper_any_t oper;
-      index_t arity        = 0;
+      index_t arity = 0;
       name_id_t level_name;
       precedence_t precedence;
       array_small_t<index_t, 2> covered_token_indexes;
@@ -548,10 +548,10 @@ namespace silva::seed::impl {
     }
 
     struct consistent_range_t {
-      index_t num_atoms          = 0;
+      index_t num_atoms = 0;
       name_id_t joint_level_name;
-      index_t token_begin        = 0;
-      index_t token_end          = 0;
+      index_t token_begin = 0;
+      index_t token_end   = 0;
     };
     expected_t<consistent_range_t> consistent_range(span_t<const oper_item_t> ois) const
     {

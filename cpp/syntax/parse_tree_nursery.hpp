@@ -52,7 +52,7 @@ namespace silva {
     struct token_stake_t {
       parse_tree_nursery_t* nursery = nullptr;
       name_id_t token_cat;
-      index_t orig_fragment_index   = 0;
+      index_t orig_fragment_index = 0;
 
       token_stake_t() = default;
       token_stake_t(parse_tree_nursery_t* nursery,
