@@ -258,9 +258,9 @@ namespace silva::seed::impl {
       string_t retval = SILVA_EXPECT_FWD(ets.to_string([&](string_t& curr_line, const auto& path) {
         const auto& data = ets[path.back().node_index].item.data;
         curr_line += lexicon.name_id_str(data.rule_name);
-        string_pad(curr_line, 55);
+        string_pad(curr_line, 85);
         curr_line += fmt::format("{}", data.success);
-        string_pad(curr_line, 65);
+        string_pad(curr_line, 95);
         curr_line += pretty_string(data.frag_pos);
       }));
       return {std::move(retval)};
@@ -908,6 +908,15 @@ namespace silva::seed {
                                               bootstrap_interpreter.lexicon(),
                                               this,
                                               &lang_it->second);
+
+    const auto do_trace =
+        SILVA_EXPECT_FWD_IF(MAJOR, env_context_get_as<bool>("SEED_EXEC_TRACE")).value_or(false);
+    scope_exit_t trace_exit([do_trace, &nursery] {
+      if (do_trace) {
+        fmt::print("{}", SILVA_ASSERT_FWD(std::move(nursery.exec_trace).as_tree_to_string()));
+      }
+    });
+
     SILVA_EXPECT_ASSERT(nursery.init(goal_rule_name, nursery.lexicon));
     SILVA_EXPECT_FWD(nursery.skip());
     SILVA_EXPECT_FWD(nursery.check());
@@ -923,10 +932,6 @@ namespace silva::seed {
     }
     SILVA_EXPECT(ptn.node.num_children == 1, ASSERT);
     SILVA_EXPECT(ptn.node.subtree_size == nursery.tree.size(), ASSERT);
-
-    if (SILVA_EXPECT_FWD_IF(MAJOR, env_context_get_as<bool>("SEED_EXEC_TRACE")).value_or(false)) {
-      fmt::print("{}", SILVA_EXPECT_FWD(std::move(nursery.exec_trace).as_tree_to_string()));
-    }
 
     return std::move(nursery).finish();
   }

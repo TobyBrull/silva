@@ -98,6 +98,7 @@ CONSTANT 3 3
     const auto ts = test_suite();
     for (const auto& chapter: ts) {
       for (const auto& test_case: chapter.test_cases) {
+        INFO(test_case.lox_code);
         if (test_case.is_success_expected()) {
           th.test_success(test_case.lox_code, std::get<string_view_t>(test_case.expected));
         }

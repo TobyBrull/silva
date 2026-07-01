@@ -20,6 +20,16 @@ namespace silva {
       silva::impl::assert_handler(__FILE__, __LINE__, __func__ __VA_OPT__(, ) __VA_ARGS__); \
     }                                                                                       \
   } while (false)
+
+#define SILVA_ASSERT_FWD(expression, ...)                                                   \
+  ({                                                                                        \
+    auto __silva_result = (expression);                                                     \
+    static_assert(silva::is_expected_t<decltype(__silva_result)>::value);                   \
+    if (!__silva_result.has_value()) {                                                      \
+      silva::impl::assert_handler(__FILE__, __LINE__, __func__ __VA_OPT__(, ) __VA_ARGS__); \
+    }                                                                                       \
+    *std::move(__silva_result);                                                             \
+  })
 }
 
 namespace silva::impl {
