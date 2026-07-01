@@ -17,58 +17,57 @@ operator_greedy = OPERATOR +
 identifier:
   ⊙ = ID_START ID_CONTINUE *
   with_dashes = ID_START ( ID_CONTINUE | '-' ) *
-  kebab_case = ID_LOWER + ( '-' ID_LOWER + ) *       not ID_CONTINUE
-  snake_case = ID_LOWER + ( '_' ID_LOWER + ) *       not ID_CONTINUE
-  camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *  not ID_CONTINUE
-  pascal_case = ( ID_UPPER ID_LOWER + ) +            not ID_CONTINUE
-  macro_case = ID_UPPER + ( '_' ID_UPPER + ) *       not ID_CONTINUE
+  kebab_case = ID_LOWER + ( '-' [ ID_LOWER DIGIT ] + ) *      not ID_CONTINUE
+  snake_case = [ '_' ID_LOWER DIGIT ] +                       not ID_CONTINUE
+  camel_case = ID_LOWER + ( ID_UPPER ID_LOWER + ) *           not ID_CONTINUE
+  pascal_case = ( ID_UPPER ID_LOWER + ) +                     not ID_CONTINUE
+  macro_case = ID_UPPER + ( '_' ID_UPPER + ) *                not ID_CONTINUE
 
 none = 'none'
 
 boolean = [ 'true' 'false' ]
 
-number: 
+number:
+  grouping = [ '\'' '_' ]
+
+  unsigned:
+    integer:
+      binary:
+        digit = [ '0' '1' ]
+        ⊙ = '0b' digit ( digit | grouping digit ) *
+      octal:
+        digit = [ '0' '1' '2' '3' '4' '5' '6' '7' ]
+        ⊙ = '0o' digit ( digit | grouping digit ) *
+      hexadecimal:
+        digit = decimal.digit | [ 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F' ]
+        ⊙ = '0x' digit ( digit | grouping digit ) *
+      decimal:
+        digit = octal.digit | [ '8' '9' ]
+        ⊙ = digit ( digit | grouping digit ) *
+
+    float:
+      special = [ 'inf' 'nan' ]
+
+      ⊙ = special | integer_part ( exponent | fraction exponent ? )
+
+      integer_part = integer.decimal
+      fraction = '.' integer.decimal.digit +
+      exponent = 'e' plus_minus integer.decimal.digit +
+
   plus_minus = [ '-' '+' ] ?
-  ⊙ = [ number.special number.plain ]
 
-  special = [ '-inf' '+inf' 'inf' 'nan' ]
-  plain = [ '+' '-' ] ? DIGIT [ DIGIT ID_LOWER ID_UPPER '.' '\'' '+' '-' ] *
+  integer:
+    binary = plus_minus unsigned.integer.binary
+    octal = plus_minus unsigned.integer.octal
+    hexadecimal = plus_minus unsigned.integer.hexadecimal
+    decimal = plus_minus unsigned.integer.decimal
+    ⊙ = [ binary octal hexadecimal decimal ]
 
-  #  integer = dec-int / hex-int / oct-int / bin-int
-  #  
-  #  minus = %x2D                       ; -
-  #  plus = %x2B                        ; +
-  #  underscore = %x5F                  ; _
-  #  digit1-9 = %x31-39                 ; 1-9
-  #  digit0-7 = %x30-37                 ; 0-7
-  #  digit0-1 = %x30-31                 ; 0-1
-  #  
-  #  hex-prefix = %x30.78               ; 0x
-  #  oct-prefix = %x30.6F               ; 0o
-  #  bin-prefix = %x30.62               ; 0b
-  #  
-  #  dec-int = [ minus / plus ] unsigned-dec-int
-  #  unsigned-dec-int = DIGIT / digit1-9 1*( DIGIT / underscore DIGIT )
-  #  
-  #  hex-int = hex-prefix HEXDIG *( HEXDIG / underscore HEXDIG )
-  #  oct-int = oct-prefix digit0-7 *( digit0-7 / underscore digit0-7 )
-  #  bin-int = bin-prefix digit0-1 *( digit0-1 / underscore digit0-1 )
-  #  
-  #  ;; Float
-  #  
-  #  float = float-int-part ( exp / frac [ exp ] )
-  #  float =/ special-float
-  #  
-  #  float-int-part = dec-int
-  #  frac = decimal-point zero-prefixable-int
-  #  decimal-point = %x2E               ; .
-  #  zero-prefixable-int = DIGIT *( DIGIT / underscore DIGIT )
-  #  
-  #  exp = "e" float-exp-part
-  #  float-exp-part = [ minus / plus ] zero-prefixable-int
-  #  
-  #  #number_int = [ '+' '-' ] ? DIGIT +
-  #  #number_float = [ '+' '-' ] ? DIGIT * '.' [ DIGIT ID_LOWER ID_UPPER '.' '\'' '+' '-' ] *
+  float:
+    special = plus_minus unsigned.float.special
+    ⊙ = plus_minus unsigned.float
+
+  ⊙ = [ float float.special integer ]
 
 # date:               2026-03-07
 date = DIGIT{4} '-' DIGIT{2} '-' DIGIT{2} not DIGIT
