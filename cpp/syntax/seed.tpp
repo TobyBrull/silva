@@ -192,4 +192,44 @@ language SimpleFern:
       CHECK(result == expected_parse_tree.substr(1));
     }
   }
+
+  TEST_CASE("tokenizers", "[seed][tokenizer]")
+  {
+    syntax_farm_t sf;
+    const name_id_t id  = sf.name_id_of("identifier");
+    const name_id_t num = sf.name_id_of("number");
+    const name_id_t str = sf.name_id_of("string");
+    const name_id_t boo = sf.name_id_of("boolean");
+    const auto si       = standard_seed_interpreter(sf.ptr());
+
+    const auto test = [&](string_t text,
+                          const string_view_t rule,
+                          array_t<string_view_t> expected_token_strs,
+                          array_t<name_id_t> expected_categories) {
+      const auto pts =
+          SILVA_REQUIRE(si->apply_text("", std::move(text), sf.name_id_of(rule)))->span();
+      REQUIRE(pts.token_size() == expected_token_strs.size());
+      REQUIRE(pts.token_size() == expected_categories.size());
+      for (index_t i = 0; i < expected_categories.size(); ++i) {
+        CHECK(SILVA_REQUIRE(pts.at_token_id(i)) == sf.token_id(expected_token_strs[i]));
+        CHECK(SILVA_REQUIRE(pts.at_token_category(i)) == expected_categories[i]);
+      }
+    };
+
+    SECTION("test1")
+    {
+      SILVA_REQUIRE(si->add_seed_text("t.seed", R"'(
+
+language Test:
+  ⊙ = ( boolean | number | identifier ) *
+  skip = skip.free_form
+
+)'"));
+
+      test("ab 123ab\n", "Test", {"ab", "123", "ab"}, {id, num, id});
+      test("x\n", "Test", {"x"}, {id});
+      test("1 2 3\n", "Test", {"1", "2", "3"}, {num, num, num});
+      test("0xff false foo\n", "Test", {"0xff", "false", "foo"}, {num, boo, id});
+    }
+  }
 }
