@@ -199,20 +199,23 @@ language SimpleFern:
     const name_id_t id  = sf.name_id_of("identifier");
     const name_id_t num = sf.name_id_of("number");
     const name_id_t str = sf.name_id_of("string");
-    const name_id_t boo = sf.name_id_of("boolean");
+    const name_id_t boo = sf.name_id_of("Boolean");
     const auto si       = standard_seed_interpreter(sf.ptr());
 
     const auto test = [&](string_t text,
                           const string_view_t rule,
                           array_t<string_view_t> expected_token_strs,
                           array_t<name_id_t> expected_categories) {
+      INFO(text);
       const auto pts =
           SILVA_REQUIRE(si->apply_text("", std::move(text), sf.name_id_of(rule)))->span();
       REQUIRE(pts.token_size() == expected_token_strs.size());
       REQUIRE(pts.token_size() == expected_categories.size());
       for (index_t i = 0; i < expected_categories.size(); ++i) {
-        CHECK(SILVA_REQUIRE(pts.at_token_id(i)) == sf.token_id(expected_token_strs[i]));
-        CHECK(SILVA_REQUIRE(pts.at_token_category(i)) == expected_categories[i]);
+        const token_id_t ti = SILVA_REQUIRE(pts.at_token_id(i));
+        const name_id_t tc  = SILVA_REQUIRE(pts.at_token_category(i));
+        CHECK(ti == sf.token_id(expected_token_strs[i]));
+        CHECK(tc == expected_categories[i]);
       }
     };
 
@@ -221,15 +224,15 @@ language SimpleFern:
       SILVA_REQUIRE(si->add_seed_text("t.seed", R"'(
 
 language Test:
-  ⊙ = ( boolean | number | identifier ) *
+  ⊙ = ( Boolean | number | identifier ) *
   skip = skip.free_form
 
 )'"));
 
       test("ab 123ab\n", "Test", {"ab", "123", "ab"}, {id, num, id});
-      test("x\n", "Test", {"x"}, {id});
+      test("truedat\n", "Test", {"truedat"}, {id});
       test("1 2 3\n", "Test", {"1", "2", "3"}, {num, num, num});
-      test("0xff false foo\n", "Test", {"0xff", "false", "foo"}, {num, boo, id});
+      test("0xff false foo\n", "Test", {"0xff", "false", "foo"}, {num, name_id_literal, id});
     }
   }
 }

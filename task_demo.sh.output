@@ -107,8 +107,8 @@ ERROR (MAJOR):
 │   │ │ │ ┌─[01-broken.fern:10:5] while matching token[ true ]
 │   │ │ │ │ [01-broken.fern:10:5] expected token[ false ]
 │   │ │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
-│   │ │ │ [01-broken.fern:10:5] .boolean: expected alternation[ [ 'true' 'false' ] ]
-│   │ │ ├─[01-broken.fern:10:5] .boolean
+│   │ │ │ [01-broken.fern:10:5] .Boolean: expected alternation[ [ "true" "false" ] ]
+│   │ │ ├─[01-broken.fern:10:5] .Boolean
 │   │ │ │       [01-broken.fern:10:5] expected token[ inf ]
 │   │ │ │     ┌─[01-broken.fern:10:5] while matching token[ inf ]
 │   │ │ │     │ [01-broken.fern:10:5] expected token[ nan ]
@@ -273,7 +273,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [1].Fern                                                                   false     01-simplest.fern:3:4
           [2].Fern.Value                                                             false     01-simplest.fern:3:4
             [0].none                                                                 false     01-simplest.fern:3:4
-            [1].boolean                                                              false     01-simplest.fern:3:4
+            [1].Boolean                                                              false     01-simplest.fern:3:4
             [2].number                                                               false     01-simplest.fern:3:4
               [0].number.float                                                       false     01-simplest.fern:3:4
                 [0].number.plus_minus                                                true      01-simplest.fern:3:4
@@ -327,7 +327,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [1].Fern                                                                   false     01-simplest.fern:6:3
           [2].Fern.Value                                                             false     01-simplest.fern:6:3
             [0].none                                                                 false     01-simplest.fern:6:3
-            [1].boolean                                                              false     01-simplest.fern:6:3
+            [1].Boolean                                                              false     01-simplest.fern:6:3
             [2].number                                                               false     01-simplest.fern:6:3
               [0].number.float                                                       false     01-simplest.fern:6:3
                 [0].number.plus_minus                                                true      01-simplest.fern:6:3
@@ -365,7 +365,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [1].Fern                                                                       false     01-simplest.fern:7:1
       [2].Fern.Value                                                                 false     01-simplest.fern:7:1
         [0].none                                                                     false     01-simplest.fern:7:1
-        [1].boolean                                                                  false     01-simplest.fern:7:1
+        [1].Boolean                                                                  false     01-simplest.fern:7:1
         [2].number                                                                   false     01-simplest.fern:7:1
           [0].number.float                                                           false     01-simplest.fern:7:1
             [0].number.plus_minus                                                    true      01-simplest.fern:7:1
@@ -396,15 +396,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [3].string                                                                   false     01-simplest.fern:7:1
     [5].skip.free_form                                                               true      01-simplest.fern:7:2
       [0].skip.free_form                                                             true      01-simplest.fern:7:2
-[  0]   1:1   cat=.Silva.lang_name                         Seed
+[  0]   1:1   cat=.Silva.language_name                     Seed
 [  1]   1:6   cat=.literal                                 language
-[  2]   8:1   cat=.Silva.lang_name                         AsBs
+[  2]   8:1   cat=.Silva.language_name                     AsBs
 [  3]   8:6   cat=.literal                                 language
-[  4]  10:1   cat=.Silva.lang_name                         Seed
+[  4]  10:1   cat=.Silva.language_name                     Seed
 [  5]  10:6   cat=.literal                                 language
-[  6]  44:1   cat=.Silva.lang_name                         CppStmts
+[  6]  44:1   cat=.Silva.language_name                     CppStmts
 [  7]  44:10  cat=.literal                                 language
-[  8]  53:1   cat=.Silva.lang_name                         Fern
+[  8]  53:1   cat=.Silva.language_name                     Fern
 [  9]  53:6   cat=.literal                                 language
 
 [0].Silva                                         Seed language ... Fern language
@@ -427,9 +427,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [ 10]   3:24  cat=.newline                                 \n
 [ 11]   5:3   cat=.literal                                 ⊙
 [ 12]   5:5   cat=.literal                                 =
-[ 13]   5:7   cat=.string                                  'a'
+[ 13]   5:7   cat=.string                                  "a"
 [ 14]   5:11  cat=.Seed.Expr.operator                      *
-[ 15]   5:13  cat=.string                                  'b'
+[ 15]   5:13  cat=.string                                  "b"
 [ 16]   5:17  cat=.Seed.Expr.operator                      *
 [ 17]   5:18  cat=.newline                                 \n
 [ 18]   6:1   cat=.dedent                                  
@@ -440,11 +440,11 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].Seed.Nonterminal                        skip
       [1].Seed.Nonterminal                        skip . free_form
     [1].Seed.Rule                                 ⊙ = ... * \n
-      [0].Seed.Expr.Concat.concat                 'a' * 'b' *
-        [0].Seed.Expr.Postfix.*                   'a' *
-          [0].Seed.Terminal                       'a'
-        [1].Seed.Expr.Postfix.*                   'b' *
-          [0].Seed.Terminal                       'b'
+      [0].Seed.Expr.Concat.concat                 "a" * "b" *
+        [0].Seed.Expr.Postfix.*                   "a" *
+          [0].Seed.Terminal                       "a"
+        [1].Seed.Expr.Postfix.*                   "b" *
+          [0].Seed.Terminal                       "b"
 
 [  0]   8:8   cat=.literal                                 a
 [  1]   8:10  cat=.literal                                 a
@@ -519,8 +519,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [ 62]  21:56  cat=.string                                  '~'
 [ 63]  21:60  cat=.string                                  '*'
 [ 64]  21:64  cat=.string                                  '&'
-[ 65]  21:68  cat=.string                                  'sizeof'
-[ 66]  21:77  cat=.string                                  'new'
+[ 65]  21:68  cat=.string                                  "sizeof"
+[ 66]  21:77  cat=.string                                  "new"
 [ 67]  22:27  cat=.literal                                 prefix_nest
 [ 68]  22:39  cat=.literal                                 ->
 [ 69]  22:42  cat=.Seed.rule_name                          Type
@@ -616,7 +616,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [159]  35:37  cat=.string                                  '+='
 [160]  35:42  cat=.string                                  '-='
 [161]  36:27  cat=.literal                                 prefix
-[162]  36:34  cat=.string                                  'throw'
+[162]  36:34  cat=.string                                  "throw"
 [163]  37:27  cat=.literal                                 ternary
 [164]  37:35  cat=.string                                  '?'
 [165]  37:39  cat=.string                                  ':'
@@ -695,7 +695,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [2].Seed.Axe.Op                     '->'
           [4].Seed.Axe.Level                      Prefix = ... '(' ')'
             [0].Seed.Axe.Assoc                    rtl
-            [1].Seed.Axe.Ops                      prefix '++' ... 'sizeof' 'new'
+            [1].Seed.Axe.Ops                      prefix '++' ... "sizeof" "new"
               [0].Seed.Axe.OpType                 prefix
               [1].Seed.Axe.Op                     '++'
               [2].Seed.Axe.Op                     '--'
@@ -705,8 +705,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [6].Seed.Axe.Op                     '~'
               [7].Seed.Axe.Op                     '*'
               [8].Seed.Axe.Op                     '&'
-              [9].Seed.Axe.Op                     'sizeof'
-              [10].Seed.Axe.Op                    'new'
+              [9].Seed.Axe.Op                     "sizeof"
+              [10].Seed.Axe.Op                    "new"
             [2].Seed.Axe.Ops                      prefix_nest -> Type '(' ')'
               [0].Seed.Axe.OpType                 prefix_nest
               [1].Seed.Nonterminal                Type
@@ -788,9 +788,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [1].Seed.Axe.Op                     '='
               [2].Seed.Axe.Op                     '+='
               [3].Seed.Axe.Op                     '-='
-            [2].Seed.Axe.Ops                      prefix 'throw'
+            [2].Seed.Axe.Ops                      prefix "throw"
               [0].Seed.Axe.OpType                 prefix
-              [1].Seed.Axe.Op                     'throw'
+              [1].Seed.Axe.Op                     "throw"
             [3].Seed.Axe.Ops                      ternary '?' ':'
               [0].Seed.Axe.OpType                 ternary
               [1].Seed.Axe.Op                     '?'
@@ -933,7 +933,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [  0]  54:1   cat=.literal                                 [
 [  1]  55:3   cat=.none                                    none
-[  2]  56:3   cat=.boolean                                 true
+[  2]  56:3   cat=.literal                                 true
 [  3]  57:3   cat=.number                                  42
 [  4]  58:3   cat=.identifier                              hello
 [  5]  58:9   cat=.literal                                 :
@@ -955,6 +955,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [0].Fern.Value                                none
   [1].Fern.LabeledItem                            true
     [0].Fern.Value                                true
+      [0].Boolean                                 true
   [2].Fern.LabeledItem                            42
     [0].Fern.Value                                42
   [3].Fern.LabeledItem                            hello : 'World'
@@ -989,12 +990,12 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [ 15]   4:12  cat=.newline                                 \n  
 [ 16]   5:3   cat=.Seed.rule_name                          As
 [ 17]   5:6   cat=.literal                                 =
-[ 18]   5:8   cat=.string                                  'a'
+[ 18]   5:8   cat=.string                                  "a"
 [ 19]   5:12  cat=.Seed.Expr.operator                      *
 [ 20]   5:13  cat=.newline                                 \n  
 [ 21]   6:3   cat=.Seed.rule_name                          Bs
 [ 22]   6:6   cat=.literal                                 =
-[ 23]   6:8   cat=.string                                  'b'
+[ 23]   6:8   cat=.string                                  "b"
 [ 24]   6:12  cat=.Seed.Expr.operator                      *
 [ 25]   6:13  cat=.newline                                 
 [ 26]   6:13  cat=.dedent                                  
@@ -1008,14 +1009,14 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].Seed.Expr.Concat.concat                 As Bs
         [0].Seed.Nonterminal                      As
         [1].Seed.Nonterminal                      Bs
-    [2].Seed.Rule                                 As = 'a' * \n  
+    [2].Seed.Rule                                 As = "a" * \n  
       [0].Seed.Nonterminal                        As
-      [1].Seed.Expr.Postfix.*                     'a' *
-        [0].Seed.Terminal                         'a'
-    [3].Seed.Rule                                 Bs = 'b' * 
+      [1].Seed.Expr.Postfix.*                     "a" *
+        [0].Seed.Terminal                         "a"
+    [3].Seed.Rule                                 Bs = "b" * 
       [0].Seed.Nonterminal                        Bs
-      [1].Seed.Expr.Postfix.*                     'b' *
-        [0].Seed.Terminal                         'b'
+      [1].Seed.Expr.Postfix.*                     "b" *
+        [0].Seed.Terminal                         "b"
 
 [  0]   1:1   cat=.literal                                 a
 [  1]   1:3   cat=.literal                                 a
@@ -1029,7 +1030,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [0].Somelang.As                                 a a a a
   [1].Somelang.Bs                                 b b b
 
-[  0]   1:1   cat=.Silva.lang_name                         Seed
+[  0]   1:1   cat=.Silva.language_name                     Seed
 [  1]   1:6   cat=.literal                                 language
 
 [0].Silva                                         Seed language
@@ -1208,8 +1209,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [170]  31:17  cat=.literal                                 =
 [171]  31:19  cat=.literal                                 ltr
 [172]  31:23  cat=.literal                                 infix
-[173]  31:29  cat=.string                                  'and'
-[174]  31:35  cat=.string                                  'or'
+[173]  31:29  cat=.string                                  "and"
+[174]  31:35  cat=.string                                  "or"
 [175]  31:39  cat=.newline                                 \n      
 [176]  32:7   cat=.Seed.rule_name                          Assign
 [177]  32:17  cat=.literal                                 =
@@ -1237,11 +1238,11 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [199]  35:21  cat=.Seed.Expr.operator                      |
 [200]  35:23  cat=.Seed.token_category_name                number
 [201]  36:12  cat=.Seed.Expr.operator                      |
-[202]  36:14  cat=.string                                  'true'
+[202]  36:14  cat=.string                                  "true"
 [203]  36:21  cat=.Seed.Expr.operator                      |
-[204]  36:23  cat=.string                                  'false'
+[204]  36:23  cat=.string                                  "false"
 [205]  36:31  cat=.Seed.Expr.operator                      |
-[206]  36:33  cat=.string                                  'none'
+[206]  36:33  cat=.string                                  "none"
 [207]  37:12  cat=.Seed.Expr.operator                      |
 [208]  37:14  cat=.string                                  '('
 [209]  37:18  cat=.Seed.rule_name                          Expr
@@ -1336,15 +1337,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [298]  51:1   cat=.indent                                          
 [299]  51:9   cat=.literal                                 ⊙
 [300]  51:11  cat=.literal                                 =
-[301]  51:13  cat=.string                                  'if'
+[301]  51:13  cat=.string                                  "if"
 [302]  51:18  cat=.Seed.rule_name                          Branch
 [303]  51:25  cat=.literal                                 (
-[304]  51:27  cat=.string                                  'elif'
+[304]  51:27  cat=.string                                  "elif"
 [305]  51:34  cat=.Seed.rule_name                          Branch
 [306]  51:41  cat=.literal                                 )
 [307]  51:43  cat=.Seed.Expr.operator                      *
 [308]  51:45  cat=.literal                                 (
-[309]  51:47  cat=.string                                  'else'
+[309]  51:47  cat=.string                                  "else"
 [310]  51:54  cat=.Seed.rule_name                          Body
 [311]  51:59  cat=.literal                                 )
 [312]  51:61  cat=.Seed.Expr.operator                      ?
@@ -1357,7 +1358,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [319]  53:1   cat=.dedent                                        
 [320]  53:7   cat=.Seed.rule_name                          For
 [321]  53:11  cat=.literal                                 =
-[322]  53:13  cat=.string                                  'for'
+[322]  53:13  cat=.string                                  "for"
 [323]  53:19  cat=.Seed.rule_name                          Expr
 [324]  53:23  cat=.literal                                 .
 [325]  53:24  cat=.Seed.rule_name                          Maybe
@@ -1523,12 +1524,12 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [3].Seed.Axe.Op                     '<'
               [4].Seed.Axe.Op                     '>'
               [5].Seed.Axe.Op                     '>='
-          [9].Seed.Axe.Level                      Logic = ... 'and' 'or'
+          [9].Seed.Axe.Level                      Logic = ... "and" "or"
             [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix 'and' 'or'
+            [1].Seed.Axe.Ops                      infix "and" "or"
               [0].Seed.Axe.OpType                 infix
-              [1].Seed.Axe.Op                     'and'
-              [2].Seed.Axe.Op                     'or'
+              [1].Seed.Axe.Op                     "and"
+              [2].Seed.Axe.Op                     "or"
           [10].Seed.Axe.Level                     Assign = ... '+=' '*='
             [0].Seed.Axe.Assoc                    ltr
             [1].Seed.Axe.Ops                      infix '=' '+=' '*='
@@ -1546,9 +1547,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [4].Seed.Nonterminal                    identifier
           [5].Seed.Nonterminal                    string
           [6].Seed.Nonterminal                    number
-          [7].Seed.Terminal                       'true'
-          [8].Seed.Terminal                       'false'
-          [9].Seed.Terminal                       'none'
+          [7].Seed.Terminal                       "true"
+          [8].Seed.Terminal                       "false"
+          [9].Seed.Terminal                       "none"
           [10].Seed.Expr.Concat.concat            '(' Expr ')'
             [0].Seed.Terminal                     '('
             [1].Seed.Nonterminal                  Expr
@@ -1617,16 +1618,16 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [2].Seed.Scope                            If : ... \n       
           [0].Seed.Nonterminal                    If
           [1].Seed.Rule                           ⊙ = ... ? \n        
-            [0].Seed.Expr.Concat.concat           'if' Branch ... ) ?
-              [0].Seed.Terminal                   'if'
+            [0].Seed.Expr.Concat.concat           "if" Branch ... ) ?
+              [0].Seed.Terminal                   "if"
               [1].Seed.Nonterminal                Branch
-              [2].Seed.Expr.Postfix.*             ( 'elif' Branch ) *
-                [0].Seed.Expr.Concat.concat       'elif' Branch
-                  [0].Seed.Terminal               'elif'
+              [2].Seed.Expr.Postfix.*             ( "elif" Branch ) *
+                [0].Seed.Expr.Concat.concat       "elif" Branch
+                  [0].Seed.Terminal               "elif"
                   [1].Seed.Nonterminal            Branch
-              [3].Seed.Expr.Postfix.?             ( 'else' Body ) ?
-                [0].Seed.Expr.Concat.concat       'else' Body
-                  [0].Seed.Terminal               'else'
+              [3].Seed.Expr.Postfix.?             ( "else" Body ) ?
+                [0].Seed.Expr.Concat.concat       "else" Body
+                  [0].Seed.Terminal               "else"
                   [1].Seed.Nonterminal            Body
           [2].Seed.Rule                           Branch = Expr Body \n
             [0].Seed.Nonterminal                  Branch
@@ -1635,8 +1636,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [1].Seed.Nonterminal                Body
         [3].Seed.Rule                             For = ... Body \n
           [0].Seed.Nonterminal                    For
-          [1].Seed.Expr.Concat.concat             'for' Expr ... Maybe Body
-            [0].Seed.Terminal                     'for'
+          [1].Seed.Expr.Concat.concat             "for" Expr ... Maybe Body
+            [0].Seed.Terminal                     "for"
             [1].Seed.Nonterminal                  Expr . Maybe
             [2].Seed.Terminal                     ';'
             [3].Seed.Nonterminal                  Expr . Maybe
@@ -1660,7 +1661,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [1].Seed.Terminal                       '='
           [2].Seed.Nonterminal                    Expr
 
-[  0]   1:1   cat=.Silva.lang_name                         Soil
+[  0]   1:1   cat=.Silva.language_name                     Soil
 [  1]   1:6   cat=.literal                                 language
 
 [0].Silva                                         Soil language

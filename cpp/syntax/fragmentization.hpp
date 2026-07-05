@@ -44,6 +44,7 @@ namespace silva {
   constexpr bool is_fragment_category_id_continue(fragment_category_t);
   constexpr bool is_fragment_category_real(fragment_category_t);
   constexpr bool is_fragment_category_visible(fragment_category_t);
+  constexpr bool is_fragment_category_text(fragment_category_t);
 
   token_id_t fragment_category_to_token_id(syntax_farm_t&, fragment_category_t);
 
@@ -106,13 +107,15 @@ namespace silva {
   struct fragmented_token_t {
     token_id_t token_id;
     name_id_t category;
+    bool as_identifier = false;
     struct item_t {
       fragment_category_t category   = fragment_category_t::INVALID;
       unicode::codepoint_t codepoint = unicode::codepoint_none;
     };
     array_t<item_t> items;
   };
-  expected_t<fragmented_token_t> fragmented_token(syntax_farm_ptr_t, string_view_t);
+  expected_t<fragmented_token_t>
+  fragmented_token(syntax_farm_ptr_t, string_view_t, bool as_identifier = false);
 }
 
 // IMPLEMENTATION
@@ -167,5 +170,10 @@ namespace silva {
             fc != DEDENT &&     //
             fc != NEWLINE &&    //
             true);
+  }
+  constexpr bool is_fragment_category_text(const fragment_category_t fc)
+  {
+    using enum fragment_category_t;
+    return is_fragment_category_id_start(fc) || fc == ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT;
   }
 }

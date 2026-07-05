@@ -173,7 +173,6 @@ namespace silva::fern {
             retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
           }
           else if (node.rule_name == lexicon.ni_value) {
-            SILVA_EXPECT(node.num_children == 0, MINOR, "Value node must have zero children");
             const auto& token = parse_tree->tp->tokens[node.token_begin];
             const auto* tinfo = parse_tree->tp->token_info_get(node.token_begin);
             if (token.token_id == lexicon.ti_none) {

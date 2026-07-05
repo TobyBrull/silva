@@ -11,7 +11,7 @@ language Toml:
   Keyval = Key '=' Val
   Key = SimpleKey ( '.' SimpleKey ) *
   SimpleKey = string | identifier.with_dashes
-  Val = string | 'true' | 'false' | Array | InlineTable \
+  Val = string | "true" | "false" | Array | InlineTable \
       | time.point.any | time.point.local.any | date | time.of_day.any \
       | number
   Array = '[' ( Val ( ε ',' Val ) * ',' ? ) ? ']'

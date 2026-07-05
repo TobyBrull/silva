@@ -1,13 +1,17 @@
 # TODO
 
+* rename 'alias' to 'no_node'
+* add syntax-farm.get(token_id_t)
+* add syntax-farm.get(name_id_t)?
+* move tokenization globals into 'Literal'
+* Turn all tokenization rules into normal rules
+
+* tokenization-less parse-tree
+
 * `number` tokenization: write tests
-* allow token-categories that start with, e.g., "language"
-    * for this group fragment-categories and demand that every literal only has fragments from a
-      single group?
-    * when matching literals (e.g., 'fun') these should only match if the next fragment is from a
-      different group (fix: "ffunction" in lox.lox and change "lang_name" back to "language_name" in
-      syntax.hpp)
+* better tokenization
     * token rules startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
+    * also make '`...`' strings in fragmentization?
 * enforce:
     * node-rules may only use other node-rules or token-rules
     * token-rules may only use other token-rules or FRAGMENTS
@@ -15,6 +19,8 @@
 * parse skip-rule AFTER every token
     * to support "end_of_language"
     * don't skip in seed.cpp in recursive token calls
+* seed-axe:
+    * avoid common duplication in oper rule?
 * In parsing errors, show what has been successfully parsed so far
 
 * Parsing:

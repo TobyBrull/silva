@@ -2,5 +2,5 @@ language Somelang:
   skip = skip.free_form
 
   ⊙ = As Bs
-  As = 'a' *
-  Bs = 'b' *
+  As = "a" *
+  Bs = "b" *

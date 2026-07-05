@@ -31,7 +31,7 @@ namespace silva::fern::test {
     const string_view_t expected_parse_tree_str = R"(
 [  0]   1:1   cat=.literal                                 [
 [  1]   2:3   cat=.none                                    none
-[  2]   3:3   cat=.boolean                                 true
+[  2]   3:3   cat=.literal                                 true
 [  3]   4:3   cat=.string                                  'test'
 [  4]   4:10  cat=.literal                                 :
 [  5]   4:12  cat=.string                                  'Hello'
@@ -52,6 +52,7 @@ namespace silva::fern::test {
     [0].Fern.Value                                none
   [1].Fern.LabeledItem                            true
     [0].Fern.Value                                true
+      [0].Boolean                                 true
   [2].Fern.LabeledItem                            'test' : 'Hello'
     [0].Fern.Label                                'test'
     [1].Fern.Value                                'Hello'
@@ -84,6 +85,8 @@ digraph parse_tree {
   "/1/" [label="[1].Fern.LabeledItem\ntrue"]
   "/1/" -> "/1/0/"
   "/1/0/" [label="[0].Fern.Value\ntrue"]
+  "/1/0/" -> "/1/0/0/"
+  "/1/0/0/" [label="[0].Boolean\ntrue"]
   "/" -> "/2/"
   "/2/" [label="[2].Fern.LabeledItem\n'test'"]
   "/2/" -> "/2/0/"

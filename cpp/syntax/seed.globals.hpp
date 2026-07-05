@@ -23,9 +23,9 @@ identifier:
   pascal_case = ( ID_UPPER ID_LOWER + ) +                     not ID_CONTINUE
   macro_case = ID_UPPER + ( '_' ID_UPPER + ) *                not ID_CONTINUE
 
-none = 'none'
+none = "none"
 
-boolean = [ 'true' 'false' ]
+Boolean = [ "true" "false" ]
 
 number:
   grouping = [ '\'' '_' ]

@@ -151,38 +151,6 @@ namespace silva {
     return token_stake_t{&self, token_cat, self.fragment_index};
   }
 
-  inline expected_t<token_t>
-  parse_tree_nursery_t::literal_fragmented_token(const fragmented_token_t ft)
-  {
-    auto ts                     = token_stake(name_id_literal);
-    const index_t n             = ft.items.size();
-    const index_t orig_frag_idx = fragment_index;
-    SILVA_EXPECT(num_fragments_left() >= n,
-                 MINOR,
-                 "[{}] not enough fragments left when expecting {}",
-                 fragment_location_at(orig_frag_idx),
-                 sfp->token_id_wrap(ft.token_id));
-    for (index_t i = 0; i < n; ++i) {
-      auto maybe_curr_cp = fp->get_unique_codepoint(fragment_index);
-      if (!maybe_curr_cp.has_value()) {
-        maybe_curr_cp.error().clear();
-        SILVA_EXPECT(false,
-                     MINOR,
-                     "[{}] expected {}",
-                     fragment_location_at(orig_frag_idx),
-                     sfp->token_id_wrap(ft.token_id));
-      }
-      const unicode::codepoint_t curr_cp = *maybe_curr_cp;
-      SILVA_EXPECT(ft.items[i].codepoint == curr_cp,
-                   MINOR,
-                   "[{}] expected {}",
-                   fragment_location_at(orig_frag_idx),
-                   sfp->token_id_wrap(ft.token_id));
-      fragment_index += 1;
-    }
-    return ts.commit();
-  }
-
   inline void parse_tree_nursery_t::add_token(const token_t& token)
   {
     tokenization.tokens.push_back(token);

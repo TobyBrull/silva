@@ -23,7 +23,7 @@ namespace silva::seed {
   // matched, then the whole concatenated expression has to match; otherwise, the entire parse
   // algorithm results in failure. For example, if the rule
   //
-  // « - ConstFunc = 'static' 'func' identifier | 'static' identifier number »
+  // « - ConstFunc = "static" "func" identifier | "static" identifier number »
   //
   // is used to parse the language
   //
@@ -37,7 +37,7 @@ namespace silva::seed {
   // To disable the prefix rule for a concatenated expression, use the epsilon production. So, the
   // rule
   //
-  // « - ConstFunc = ε 'static' 'func' identifier | 'static' identifier number »
+  // « - ConstFunc = ε "static" "func" identifier | "static" identifier number »
   //
   // parses
   //
@@ -47,6 +47,12 @@ namespace silva::seed {
   //
   // Other remarks:
   //  * "any" matches any token and also end-of-file.
+  //  * There is a subtle distinction between literals that use double-quotes (") and those that use
+  //    single-quotes ('). Double-quotes only accept text as content, while single-quotes maybe
+  //    contain any character. With single-quotes, it simply tries to match the code-points in the
+  //    literal one by one. With double-quotes it does that but then also checks that the following
+  //    character (if it exists) is NOT text. So, the literal "language" doesn't match the beginning
+  //    of « language_name » but 'language' does.
 
   const string_view_t seed_str = R"'(
 language Seed:
@@ -57,26 +63,26 @@ language Seed:
   token_category_name = identifier.snake_case
 
   ⊙ = [ Language Scope Rule ] *
-  Language = 'language' rule_name ':' ScopeImpl
+  Language = "language" rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
-  Rule = ( '⊙' | Nonterminal ) '=' ( 'axe' Axe | Qualifier * Expr newline )
-  Qualifier = [ 'alias' 'no_whitespace' ]
+  Rule = ( '⊙' | Nonterminal ) '=' ( "axe" Axe | Qualifier * Expr newline )
+  Qualifier = [ "alias" "no_whitespace" ]
   Expr:
     ⊙ = axe Atom operator
-      Prefix    = rtl   prefix 'not'
+      Prefix    = rtl   prefix "not"
       Postfix   = ltr   postfix '?' '*' '+' \
                         postfix_nest -> Quantifier '{' '}'
       Concat    = ltr   infix_flat concat
-      And       = ltr   infix_flat 'but_then'
+      And       = ltr   infix_flat "but_then"
       Followup  = ltr   infix_flat '⇒'
       Or        = ltr   infix_flat '|'
     Atom = alias Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
     Quantifier = number ? ',' number ? | number
-    operator = [ 'not' 'but_then' operator_single '{' '}' ]
+    operator = [ "not" "but_then" operator_single '{' '}' ]
     Alias = Expr
-  Terminal = [ 'ε' 'end_of_language' 'language' string frag_name ]
+  Terminal = [ "ε" "end_of_language" "language" string frag_name ]
   Nonterminal = '.' ? ( Name '.' ) * Name
   Name = alias [ rule_name token_category_name ]
 )'";

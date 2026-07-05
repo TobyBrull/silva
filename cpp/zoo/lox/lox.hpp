@@ -12,22 +12,22 @@ language Lox:
   ⊙ = ( Decl | Stmt ) *
   Decl:
     ⊙ = Var | Fun | Class
-    Var = 'var' identifier ( '=' Expr ) ? ';'
-    Fun = 'fun' Function
+    Var = "var" identifier ( '=' Expr ) ? ';'
+    Fun = "fun" Function
     Class:
-      ⊙ = 'class' identifier Super '{' Function * '}'
+      ⊙ = "class" identifier Super '{' Function * '}'
       Super = ( '<' identifier ) ?
   Stmt:
     ⊙ = Print | If | For | While | Return | Block | ExprStmt
-    Print = 'print' Expr ';'
-    If = 'if' '(' Expr ')' Stmt ( 'else' Stmt ) ?
-    For = ( 'for' '('
+    Print = "print" Expr ';'
+    If = "if" '(' Expr ')' Stmt ( "else" Stmt ) ?
+    For = ( "for" '('
             ( Decl.Var | ExprStmt | None ';' )
             ( Expr | None ) ';'
             ( Expr | None )
             ')' Stmt )
-    While = 'while' '(' Expr ')' Stmt
-    Return = 'return' Expr ? ';'
+    While = "while" '(' Expr ')' Stmt
+    Return = "return" Expr ? ';'
     Block = '{' ( Decl | Stmt ) * '}'
     ExprStmt = Expr ';'
   Expr:
@@ -38,14 +38,14 @@ language Lox:
       Term        = ltr infix '+' '-'
       Comparison  = ltr infix '<' '>' '<=' '>='
       Equality    = ltr infix '==' '!='
-      LogicAnd    = ltr infix 'and'
-      LogicOr     = ltr infix 'or'
+      LogicAnd    = ltr infix "and"
+      LogicOr     = ltr infix "or"
       Assign      = ltr infix '='
-    Atom = ( 'true' | 'false' | 'nil' | 'this'
+    Atom = ( "true" | "false" | "nil" | "this"
            | number | string
-           | 'super' '.' identifier | identifier
+           | "super" '.' identifier | identifier
            | '(' Expr ')' )
-    oper = 'and' | 'or' | '<=' | '>=' | '==' | '!=' | operator_single | parenthesis
+    oper = "and" | "or" | '<=' | '>=' | '==' | '!=' | operator_single | parenthesis
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
     ⊙ = identifier '(' Parameters ')' Stmt.Block

@@ -35,12 +35,12 @@ namespace silva::seed {
 Seed.Axe:
   ⊙ = Seed.Nonterminal Seed.Nonterminal newline indent ( Level newline ) * dedent
   Level = rule_name '=' Assoc Ops *
-  Assoc = 'ltr' | 'rtl'
+  Assoc = "ltr" | "rtl"
   Ops = OpType ( '->' Seed.Nonterminal ) ? Op *
-  OpType = ( 'prefix_nest' | 'prefix'
-           | 'infix_flat' | 'infix' | 'ternary'
-           | 'postfix_nest' | 'postfix' )
-  Op = string | 'concat'
+  OpType = ( "prefix_nest" | "prefix"
+           | "infix_flat" | "infix" | "ternary"
+           | "postfix_nest" | "postfix" )
+  Op = string | "concat"
 )'";
 
   struct axe_t {

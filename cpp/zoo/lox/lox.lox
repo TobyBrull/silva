@@ -1834,17 +1834,17 @@ class Resolver {
     this.program.resolve(this);
   }
 
-  resolveFunction(ffunction) {
+  resolveFunction(function) {
     this.beginScope();
     fun declareParam(param) {
       this.declare(param);
       this.define(param);
     }
-    ffunction.params.foreach(declareParam);
+    function.params.foreach(declareParam);
     fun resolveStatement(statement) {
       statement.resolve(resolver);
     }
-    ffunction.body.foreach(resolveStatement);
+    function.body.foreach(resolveStatement);
     this.endScope();
   }
 

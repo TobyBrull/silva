@@ -2,7 +2,7 @@ Seed «
 language AsBs:
   skip = skip.free_form
 
-  ⊙ = 'a' * 'b' *
+  ⊙ = "a" * "b" *
 »
 
 AsBs « a a a b b »
@@ -18,7 +18,7 @@ language CppStmts:
       Postfix     = ltr   postfix '++' '--' \
                           postfix_nest '(' ')' '[' ']' \
                           infix '.' '->'
-      Prefix      = rtl   prefix '++' '--' '+' '-' '!' '~' '*' '&' 'sizeof' 'new' \
+      Prefix      = rtl   prefix '++' '--' '+' '-' '!' '~' '*' '&' "sizeof" "new" \
                           prefix_nest -> Type '(' ')'
       Member      = ltr   infix '.*' '->*'
       Multiply    = ltr   infix '*' '/' '%'
@@ -33,7 +33,7 @@ language CppStmts:
       LogicalAnd  = ltr   infix '&&'
       LogicalOr   = ltr   infix '||'
       Assignment  = rtl   infix '=' '+=' '-=' \
-                          prefix 'throw' \
+                          prefix "throw" \
                           ternary '?' ':'
       Comma       = ltr   infix ','
     Atom = number | string | identifier | '(' Expr ')'

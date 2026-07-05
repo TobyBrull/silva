@@ -28,12 +28,12 @@ language Soil:
       Mul       = ltr infix '*' '//'
       Add       = ltr infix '+' '-'
       Comp      = ltr infix '==' '<=' '<' '>' '>='
-      Logic     = ltr infix 'and' 'or'
+      Logic     = ltr infix "and" "or"
       Assign    = ltr infix '=' '+=' '*='
     Atom = ( Struct | language
            | type_name | func_name | identifier
            | string | number
-           | 'true' | 'false' | 'none'
+           | "true" | "false" | "none"
            | '(' Expr ')' )
     oper = operator_greedy | parenthesis
     Struct:
@@ -48,9 +48,9 @@ language Soil:
     Stmt:
       ⊙ = If | For | Expr ';'
       If:
-        ⊙ = 'if' Branch ( 'elif' Branch ) * ( 'else' Body ) ?
+        ⊙ = "if" Branch ( "elif" Branch ) * ( "else" Body ) ?
         Branch = Expr Body
-      For = 'for' Expr.Maybe ';' Expr.Maybe ';' Expr.Maybe Body
+      For = "for" Expr.Maybe ';' Expr.Maybe ';' Expr.Maybe Body
   Variable:
     Name = not Type.Name but_then not Func.Name but_then identifier
     Defn = Name '=' Expr

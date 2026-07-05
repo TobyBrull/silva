@@ -548,7 +548,8 @@ namespace silva {
     return fp;
   }
 
-  expected_t<fragmented_token_t> fragmented_token(syntax_farm_ptr_t sfp, string_view_t sv)
+  expected_t<fragmented_token_t>
+  fragmented_token(syntax_farm_ptr_t sfp, string_view_t sv, const bool as_identifier)
   {
     const token_id_t ti = sfp->token_id(sv);
     array_t<fragmented_token_t::item_t> items;
@@ -583,12 +584,20 @@ namespace silva {
       else {
         SILVA_EXPECT(false, MINOR, "fragmented_token: unsupported codepoint in [{}]", sv);
       }
+
+      if (as_identifier) {
+        SILVA_EXPECT(is_fragment_category_text(fc),
+                     MINOR,
+                     "token that are treated as-identifier may only contain text");
+      }
+
       items.push_back(fragmented_token_t::item_t{.category = fc, .codepoint = ud.codepoint});
     }
 
     return fragmented_token_t{
-        .token_id = ti,
-        .items    = std::move(items),
+        .token_id      = ti,
+        .as_identifier = as_identifier,
+        .items         = std::move(items),
     };
   }
 

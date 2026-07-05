@@ -116,9 +116,12 @@ namespace silva::seed::impl {
         if (pts_rhs_0[i].rule_name == lexicon.ni_term) {
           const auto& token = tp->tokens[pts_rhs_0[i].token_begin];
           if (token.category == lexicon.ni_string) {
-            const auto ti     = SILVA_EXPECT_FWD(sfp->token_id_in_string(token.token_id));
-            const auto& tinfo = sfp->token_infos[ti.val];
-            se->string_to_ft[token.token_id] = SILVA_EXPECT_FWD(fragmented_token(sfp, tinfo.str));
+            const auto& ti_full_info = sfp->token_infos[token.token_id.val];
+            const bool as_identifier = (ti_full_info.str[0] == U'"');
+            const auto ti            = SILVA_EXPECT_FWD(sfp->token_id_in_string(token.token_id));
+            const auto& ti_info      = sfp->token_infos[ti.val];
+            se->string_to_ft[token.token_id] =
+                SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, as_identifier));
           }
         }
       }
