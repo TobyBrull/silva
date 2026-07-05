@@ -14,7 +14,7 @@ language Frog:
   skip = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
   identifier = ID_START ID_CONTINUE *
   Rule = RuleName Expr
-  RuleName = alias Keyword
+  RuleName = no_node Keyword
   Expr = Primary +
   Primary = not Keyword but_then identifier
   Keyword:
@@ -66,9 +66,9 @@ language Frog:
 [ 39]   6:23  cat=.newline                                 \n  
 [ 40]   7:3   cat=.Seed.rule_name                          RuleName
 [ 41]   7:12  cat=.literal                                 =
-[ 42]   7:14  cat=.literal                                 alias
-[ 43]   7:20  cat=.Seed.rule_name                          Keyword
-[ 44]   7:27  cat=.newline                                 \n  
+[ 42]   7:14  cat=.literal                                 no_node
+[ 43]   7:22  cat=.Seed.rule_name                          Keyword
+[ 44]   7:29  cat=.newline                                 \n  
 [ 45]   8:3   cat=.Seed.rule_name                          Expr
 [ 46]   8:8   cat=.literal                                 =
 [ 47]   8:10  cat=.Seed.rule_name                          Primary
@@ -123,9 +123,9 @@ language Frog:
       [1].Seed.Expr.Concat.concat                 RuleName Expr
         [0].Seed.Nonterminal                      RuleName
         [1].Seed.Nonterminal                      Expr
-    [4].Seed.Rule                                 RuleName = alias Keyword \n  
+    [4].Seed.Rule                                 RuleName = no_node Keyword \n  
       [0].Seed.Nonterminal                        RuleName
-      [1].Seed.Qualifier                          alias
+      [1].Seed.Qualifier                          no_node
       [2].Seed.Nonterminal                        Keyword
     [5].Seed.Rule                                 Expr = Primary + \n  
       [0].Seed.Nonterminal                        Expr

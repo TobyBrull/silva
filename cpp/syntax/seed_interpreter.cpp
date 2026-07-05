@@ -33,14 +33,14 @@ namespace silva::seed::impl {
     expected_t<void> register_rule(const name_id_t rule_name,
                                    const parse_tree_span_t& pts,
                                    const bool is_token_rule    = false,
-                                   const bool is_alias         = false,
+                                   const bool is_no_node       = false,
                                    const bool is_no_whitespace = false)
     {
       const auto [emplace_it, inserted] = se->rule_exprs.emplace(
           rule_name,
           interpreter_t::rule_expr_data_t{.expr             = pts,
                                           .is_token_rule    = is_token_rule,
-                                          .is_alias         = is_alias,
+                                          .is_no_node       = is_no_node,
                                           .is_no_whitespace = is_no_whitespace});
       SILVA_EXPECT(inserted,
                    MINOR,
@@ -75,13 +75,13 @@ namespace silva::seed::impl {
         ++it;
       }
 
-      bool is_alias         = false;
+      bool is_no_node       = false;
       bool is_no_whitespace = false;
       while (it != end && pts_rule[it.pos].rule_name == lexicon.ni_qualifier) {
         const auto pts_qual    = pts_rule.sub_tree_span_at(it.pos);
         const token_id_t q_tok = SILVA_EXPECT_FWD(pts_qual.front_token_id());
-        if (q_tok == lexicon.ti_alias.token_id) {
-          is_alias = true;
+        if (q_tok == lexicon.ti_no_node.token_id) {
+          is_no_node = true;
         }
         else if (q_tok == lexicon.ti_no_whitespace.token_id) {
           is_no_whitespace = true;
@@ -102,7 +102,7 @@ namespace silva::seed::impl {
       ++it;
       SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
       SILVA_EXPECT_FWD(
-          register_rule(curr_rule_name, pts_rhs_0, is_token_rule, is_alias, is_no_whitespace));
+          register_rule(curr_rule_name, pts_rhs_0, is_token_rule, is_no_node, is_no_whitespace));
 
       if (sfp->get(curr_rule_name).base_name == lexicon.ti_skip.token_id) {
         SILVA_EXPECT(current_language_id.has_value(),
@@ -775,7 +775,7 @@ namespace silva::seed::impl {
       }
       else {
         auto ss = stake();
-        if (!rule_data.is_alias) {
+        if (!rule_data.is_no_node) {
           ss.create_node(t_rule_name);
         }
         auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(s_pts, t_rule_name));

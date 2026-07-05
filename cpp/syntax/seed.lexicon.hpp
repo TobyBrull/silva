@@ -18,7 +18,7 @@ namespace silva::seed {
     const fragmented_token_t ti_dash          = *fragmented_token(sfp, "-");
     const fragmented_token_t ti_equal         = *fragmented_token(sfp, "=");
     const fragmented_token_t ti_axe           = *fragmented_token(sfp, "axe", true);
-    const fragmented_token_t ti_alias         = *fragmented_token(sfp, "alias", true);
+    const fragmented_token_t ti_no_node       = *fragmented_token(sfp, "no_node", true);
     const fragmented_token_t ti_no_whitespace = *fragmented_token(sfp, "no_whitespace", true);
     const fragmented_token_t ti_right_arrow   = *fragmented_token(sfp, "->");
     const fragmented_token_t ti_brack_open    = *fragmented_token(sfp, "[");

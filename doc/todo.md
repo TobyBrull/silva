@@ -1,6 +1,5 @@
 # TODO
 
-* rename 'alias' to 'no_node'
 * move tokenization globals into 'Literal'
 * Turn all tokenization rules into normal rules
 

@@ -65,9 +65,9 @@ language Seed:
   ⊙ = [ Language Scope Rule ] *
   Language = "language" rule_name ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
-  ScopeImpl = alias newline indent ( Scope | Rule ) * dedent
+  ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
   Rule = ( '⊙' | Nonterminal ) '=' ( "axe" Axe | Qualifier * Expr newline )
-  Qualifier = [ "alias" "no_whitespace" ]
+  Qualifier = [ "no_node" "no_whitespace" ]
   Expr:
     ⊙ = axe Atom operator
       Prefix    = rtl   prefix "not"
@@ -77,14 +77,14 @@ language Seed:
       And       = ltr   infix_flat "but_then"
       Followup  = ltr   infix_flat '⇒'
       Or        = ltr   infix_flat '|'
-    Atom = alias Terminal | Nonterminal | '(' Expr ')' | Alternation
+    Atom = no_node Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
     Quantifier = number ? ',' number ? | number
     operator = [ "not" "but_then" operator.single '{' '}' ]
-    Alias = Expr
+    NoNode = Expr
   Terminal = [ "ε" "end_of_language" "language" string frag_name ]
   Nonterminal = '.' ? ( Name '.' ) * Name
-  Name = alias [ rule_name token_category_name ]
+  Name = no_node [ rule_name token_category_name ]
 )'";
 
   // Handcrafted Seed parser for bootstrapping purposes.

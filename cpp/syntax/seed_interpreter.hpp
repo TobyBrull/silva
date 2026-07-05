@@ -12,7 +12,7 @@ namespace silva::seed {
     struct rule_expr_data_t {
       parse_tree_span_t expr;
       bool is_token_rule    = false;
-      bool is_alias         = false;
+      bool is_no_node       = false;
       bool is_no_whitespace = false;
     };
     hash_map_t<name_id_t, rule_expr_data_t> rule_exprs;

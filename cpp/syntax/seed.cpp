@@ -431,7 +431,7 @@ namespace silva::seed::impl {
 
   axe_t make_bootstrap_seed_expr_axe(syntax_farm_ptr_t sfp, const lexicon_t& lexicon)
   {
-    const auto axe_text = find_subsection(seed_str, "⊙ = axe ", "    Atom = alias");
+    const auto axe_text = find_subsection(seed_str, "⊙ = axe ", "    Atom = no_node");
     const auto axe_frag = SILVA_EXPECT_ASSERT(fragmentize(sfp, "seed.axe", string_t{axe_text}));
     impl::base_parse_tree_nursery_t nursery(axe_frag, lexicon);
     SILVA_EXPECT_ASSERT(nursery.init(nursery.lexicon.ni_axe, nursery.lexicon));
@@ -616,7 +616,7 @@ namespace silva::seed::impl {
       const index_t orig_frag_idx = fragment_index;
       ss_rule.create_node(lexicon.ni_qualifier);
       error_nursery_t error_nursery;
-      for (const auto& ft: {lexicon.ti_alias, lexicon.ti_no_whitespace}) {
+      for (const auto& ft: {lexicon.ti_no_node, lexicon.ti_no_whitespace}) {
         auto result = literal_fragmented_token(ft);
         if (result) {
           add_token_and_skip(*result);
