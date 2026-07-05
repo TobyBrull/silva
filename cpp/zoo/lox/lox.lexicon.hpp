@@ -23,7 +23,7 @@ namespace silva::lox {
     name_id_t ni_number     = sfp->name_id_of("number");
     name_id_t ni_string     = sfp->name_id_of("string");
 
-    name_id_t ni_none           = sfp->name_id_of("None");
+    name_id_t ni_epsilon        = sfp->name_id_of("Epsilon");
     name_id_t ni_lox            = sfp->name_id_of("Lox");
     name_id_t ni_decl           = sfp->name_id_of(ni_lox, "Decl");
     name_id_t ni_decl_var       = sfp->name_id_of(ni_decl, "Var");

@@ -80,7 +80,7 @@ language Cedar:
   Expr:
     ⊙ = axe Atom oper
       Postfix     = ltr  postfix '++' '--' \
-                         postfix_nest -> ExprOrNone '(' ')' '[' ']' \
+                         postfix_nest -> ExprOrEpsilon '(' ')' '[' ']' \
                          infix '.' '->'
       Unary       = rtl  prefix '++' '--' '+' '-' '!' '~' '*' '&' \
                          prefix_nest -> Type.Name '(' ')'
@@ -101,7 +101,7 @@ language Cedar:
     oper = operator | parenthesis
     Sizeof = "sizeof" ( Expr.Unary | '(' Type.Name ')' )
     Alignof = "_Alignof" '(' Type.Name ')'
-    ExprOrNone = Expr | None
+    ExprOrEpsilon = Expr | Epsilon
 )'";
 
   unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);

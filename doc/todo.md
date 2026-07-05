@@ -1,7 +1,9 @@
 # TODO
 
-* move tokenization globals into 'Literal'
 * Turn all tokenization rules into normal rules
+    * use camelCase for rules that do NOT create nodes by default
+    * use PascalCase for rule that DO create notes by default
+    * remove 'no_node' qualifier
 
 * tokenization-less parse-tree
 

@@ -10,7 +10,7 @@ language Fern:
   ⊙ = '[' LabeledItem * ']'
   LabeledItem = ( Label ':' ) ? ( Fern | Value )
   Label = string | identifier
-  Value = none | Boolean | number | string
+  Value = None | Boolean | number | string
 )'";
 
   // Object-oriented interface

@@ -22,9 +22,9 @@ language Lox:
     Print = "print" Expr ';'
     If = "if" '(' Expr ')' Stmt ( "else" Stmt ) ?
     For = ( "for" '('
-            ( Decl.Var | ExprStmt | None ';' )
-            ( Expr | None ) ';'
-            ( Expr | None )
+            ( Decl.Var | ExprStmt | Epsilon ';' )
+            ( Expr | Epsilon ) ';'
+            ( Expr | Epsilon )
             ')' Stmt )
     While = "while" '(' Expr ')' Stmt
     Return = "return" Expr ? ';'

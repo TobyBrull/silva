@@ -547,7 +547,7 @@ namespace silva::lox {
     {
       SILVA_EXPECT(pts.size() > 0, MAJOR);
       const name_id_t rule_name = pts[0].rule_name;
-      if (rule_name == lexicon.ni_none) {
+      if (rule_name == lexicon.ni_epsilon) {
         ;
       }
       else if (rule_name == lexicon.ni_lox) {

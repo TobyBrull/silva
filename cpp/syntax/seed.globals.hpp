@@ -24,7 +24,7 @@ identifier:
   pascal_case = ( ID_UPPER ID_LOWER + ) +                     not ID_CONTINUE
   macro_case = ID_UPPER + ( '_' ID_UPPER + ) *                not ID_CONTINUE
 
-none = "none"
+None = "none"
 
 Boolean = [ "true" "false" ]
 
@@ -100,6 +100,6 @@ skip:
   free_form = [ SPACE LINEFEED COMMENT WHITESPACE INDENT DEDENT NEWLINE ] *
   off_side  = [ SPACE LINEFEED COMMENT WHITESPACE ] *
 
-None = ε
+Epsilon = ε
 )'";
 }

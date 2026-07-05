@@ -102,7 +102,7 @@ ERROR (MAJOR):
 │   │ ┌─[01-broken.fern:10:5] .Fern
 │   │ │   [01-broken.fern:10:5] expected token[ none ]
 │   │ │   [01-broken.fern:10:5] while matching token[ none ]
-│   │ │ ┌─[01-broken.fern:10:5] .none
+│   │ │ ┌─[01-broken.fern:10:5] .None
 │   │ │ │   [01-broken.fern:10:5] expected token[ true ]
 │   │ │ │ ┌─[01-broken.fern:10:5] while matching token[ true ]
 │   │ │ │ │ [01-broken.fern:10:5] expected token[ false ]
@@ -209,7 +209,7 @@ ERROR (MAJOR):
 │   │ │ ├─[01-broken.fern:10:5] .number
 │   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
 │   │ │ ├─[01-broken.fern:10:5] .string
-│   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ none | ... | string ]
+│   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ None | ... | string ]
 │   │ ├─[01-broken.fern:10:5] .Fern.Value
 │   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern | Value ]
 │   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
@@ -226,23 +226,25 @@ ERROR (MAJOR):
 seed::interpreter_t::apply(.Fern) failed to parse
 
 [  0]   1:1   cat=.literal                                 [
-[  1]   2:3   cat=.none                                    none
+[  1]   2:3   cat=.literal                                 none
 [  2]   3:3   cat=.literal                                 [
 [  3]   3:4   cat=.literal                                 ]
 [  4]   4:3   cat=.literal                                 [
-[  5]   5:5   cat=.none                                    none
+[  5]   5:5   cat=.literal                                 none
 [  6]   6:3   cat=.literal                                 ]
 [  7]   7:1   cat=.literal                                 ]
 
 [0].Fern                                          [ none ... ] ]
   [0].Fern.LabeledItem                            none
     [0].Fern.Value                                none
+      [0].None                                    none
   [1].Fern.LabeledItem                            [ ]
     [0].Fern                                      [ ]
   [2].Fern.LabeledItem                            [ none ]
     [0].Fern                                      [ none ]
       [0].Fern.LabeledItem                        none
         [0].Fern.Value                            none
+          [0].None                                none
 
 [0]                                                                                  false     unknown token-location
   [0].skip.free_form                                                                 true      01-simplest.fern:1:1
@@ -257,8 +259,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].skip.free_form                                                         true      01-simplest.fern:2:7
       [1].Fern                                                                       false     01-simplest.fern:2:3
       [2].Fern.Value                                                                 true      01-simplest.fern:2:3
-        [0].none                                                                     true      01-simplest.fern:2:3
+        [0].None                                                                     true      01-simplest.fern:2:3
           [0].skip.free_form                                                         true      01-simplest.fern:2:7
+            [0].skip.free_form                                                       true      01-simplest.fern:3:3
     [2].Fern.LabeledItem                                                             true      01-simplest.fern:3:3
       [0].Fern.Label                                                                 false     01-simplest.fern:3:3
         [0].string                                                                   false     01-simplest.fern:3:3
@@ -272,7 +275,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].identifier                                                           false     01-simplest.fern:3:4
           [1].Fern                                                                   false     01-simplest.fern:3:4
           [2].Fern.Value                                                             false     01-simplest.fern:3:4
-            [0].none                                                                 false     01-simplest.fern:3:4
+            [0].None                                                                 false     01-simplest.fern:3:4
             [1].Boolean                                                              false     01-simplest.fern:3:4
             [2].number                                                               false     01-simplest.fern:3:4
               [0].number.float                                                       false     01-simplest.fern:3:4
@@ -318,15 +321,16 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].skip.free_form                                                     true      01-simplest.fern:5:9
           [1].Fern                                                                   false     01-simplest.fern:5:5
           [2].Fern.Value                                                             true      01-simplest.fern:5:5
-            [0].none                                                                 true      01-simplest.fern:5:5
+            [0].None                                                                 true      01-simplest.fern:5:5
               [0].skip.free_form                                                     true      01-simplest.fern:5:9
+                [0].skip.free_form                                                   true      01-simplest.fern:6:3
         [2].Fern.LabeledItem                                                         false     01-simplest.fern:6:3
           [0].Fern.Label                                                             false     01-simplest.fern:6:3
             [0].string                                                               false     01-simplest.fern:6:3
             [1].identifier                                                           false     01-simplest.fern:6:3
           [1].Fern                                                                   false     01-simplest.fern:6:3
           [2].Fern.Value                                                             false     01-simplest.fern:6:3
-            [0].none                                                                 false     01-simplest.fern:6:3
+            [0].None                                                                 false     01-simplest.fern:6:3
             [1].Boolean                                                              false     01-simplest.fern:6:3
             [2].number                                                               false     01-simplest.fern:6:3
               [0].number.float                                                       false     01-simplest.fern:6:3
@@ -364,7 +368,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].identifier                                                               false     01-simplest.fern:7:1
       [1].Fern                                                                       false     01-simplest.fern:7:1
       [2].Fern.Value                                                                 false     01-simplest.fern:7:1
-        [0].none                                                                     false     01-simplest.fern:7:1
+        [0].None                                                                     false     01-simplest.fern:7:1
         [1].Boolean                                                                  false     01-simplest.fern:7:1
         [2].number                                                                   false     01-simplest.fern:7:1
           [0].number.float                                                           false     01-simplest.fern:7:1
@@ -934,7 +938,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [1].CppStmts.Expr.Atom                      b
 
 [  0]  54:1   cat=.literal                                 [
-[  1]  55:3   cat=.none                                    none
+[  1]  55:3   cat=.literal                                 none
 [  2]  56:3   cat=.literal                                 true
 [  3]  57:3   cat=.number                                  42
 [  4]  58:3   cat=.identifier                              hello
@@ -955,6 +959,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [0].Fern                                          [ none ... ] ]
   [0].Fern.LabeledItem                            none
     [0].Fern.Value                                none
+      [0].None                                    none
   [1].Fern.LabeledItem                            true
     [0].Fern.Value                                true
       [0].Boolean                                 true
@@ -2454,14 +2459,14 @@ Mr Jane
                 [0].Cedar.Stmt.ExprStmt                                                             fprintf ( ... ) ;
                   [0].Cedar.Expr.Postfix.(                                                          fprintf ( ... ] )
                     [0].Cedar.Expr.Atom                                                             fprintf
-                    [1].Cedar.Expr.ExprOrNone                                                       stdout , ... i ]
+                    [1].Cedar.Expr.ExprOrEpsilon                                                    stdout , ... i ]
                       [0].Cedar.Expr.Comma.,                                                        stdout , ... i ]
                         [0].Cedar.Expr.Atom                                                         stdout
                         [1].Cedar.Expr.Atom                                                         "[%d] = %s\n"
                         [2].Cedar.Expr.Atom                                                         i
                         [3].Cedar.Expr.Postfix.[                                                    argv [ i ]
                           [0].Cedar.Expr.Atom                                                       argv
-                          [1].Cedar.Expr.ExprOrNone                                                 i
+                          [1].Cedar.Expr.ExprOrEpsilon                                              i
                             [0].Cedar.Expr.Atom                                                     i
       [1].Cedar.Stmt                                                                                return 0 ;
         [0].Cedar.Stmt.Return                                                                       return 0 ;
