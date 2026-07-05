@@ -71,8 +71,8 @@ namespace silva::seed {
     const name_id_t ni_newline         = sfp->name_id_of("newline");
     const name_id_t ni_indent          = sfp->name_id_of("indent");
     const name_id_t ni_dedent          = sfp->name_id_of("dedent");
-    const name_id_t ni_operator_single = sfp->name_id_of("operator_single");
-    const name_id_t ni_operator_greedy = sfp->name_id_of("operator_greedy");
+    const name_id_t ni_operator_single = sfp->name_id_of("operator", "single");
+    const name_id_t ni_operator_greedy = sfp->name_id_of("operator", "greedy");
 
     const name_id_t ni_seed = sfp->name_id_of("Seed");
 

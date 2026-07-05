@@ -206,7 +206,7 @@ language Frog:
 language Testor:
   ⊙ = Assign *
   skip = skip.free_form
-  Assign = identifier '=' identifier operator_single identifier
+  Assign = identifier '=' identifier operator.single identifier
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_lang}));
 
@@ -221,12 +221,12 @@ language Testor:
 [  0]   1:1   cat=.identifier                              x
 [  1]   1:3   cat=.literal                                 =
 [  2]   1:5   cat=.identifier                              a
-[  3]   1:7   cat=.operator_single                         +
+[  3]   1:7   cat=.operator.single                         +
 [  4]   1:9   cat=.identifier                              b
 [  5]   2:1   cat=.identifier                              y
 [  6]   2:3   cat=.literal                                 =
 [  7]   2:5   cat=.identifier                              c
-[  8]   2:7   cat=.operator_single                         *
+[  8]   2:7   cat=.operator.single                         *
 [  9]   2:9   cat=.identifier                              d
 
 [0].Testor                                        x = ... * d

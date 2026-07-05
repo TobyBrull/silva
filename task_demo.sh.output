@@ -644,14 +644,16 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [187]  40:10  cat=.literal                                 =
 [188]  40:12  cat=.Seed.token_category_name                parenthesis
 [189]  40:24  cat=.Seed.Expr.operator                      |
-[190]  40:26  cat=.Seed.token_category_name                operator_greedy
-[191]  40:41  cat=.newline                                 \n    
-[192]  41:5   cat=.Seed.rule_name                          Type
-[193]  41:10  cat=.literal                                 =
-[194]  41:12  cat=.Seed.token_category_name                identifier
-[195]  41:22  cat=.newline                                 \n
-[196]  42:1   cat=.dedent                                  
-[197]  42:1   cat=.dedent                                  
+[190]  40:26  cat=.Seed.token_category_name                operator
+[191]  40:34  cat=.literal                                 .
+[192]  40:35  cat=.Seed.token_category_name                greedy
+[193]  40:41  cat=.newline                                 \n    
+[194]  41:5   cat=.Seed.rule_name                          Type
+[195]  41:10  cat=.literal                                 =
+[196]  41:12  cat=.Seed.token_category_name                identifier
+[197]  41:22  cat=.newline                                 \n
+[198]  42:1   cat=.dedent                                  
+[199]  42:1   cat=.dedent                                  
 
 [0].Seed                                          language CppStmts ...  
   [0].Seed.Language                               language CppStmts ...  
@@ -810,11 +812,11 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].Seed.Terminal                     '('
             [1].Seed.Nonterminal                  Expr
             [2].Seed.Terminal                     ')'
-      [3].Seed.Rule                               oper = ... operator_greedy \n    
+      [3].Seed.Rule                               oper = ... greedy \n    
         [0].Seed.Nonterminal                      oper
-        [1].Seed.Expr.Or.|                        parenthesis | operator_greedy
+        [1].Seed.Expr.Or.|                        parenthesis | operator . greedy
           [0].Seed.Nonterminal                    parenthesis
-          [1].Seed.Nonterminal                    operator_greedy
+          [1].Seed.Nonterminal                    operator . greedy
       [4].Seed.Rule                               Type = identifier \n
         [0].Seed.Nonterminal                      Type
         [1].Seed.Nonterminal                      identifier
@@ -1251,155 +1253,157 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [212]  37:28  cat=.newline                                 \n    
 [213]  38:5   cat=.Seed.token_category_name                oper
 [214]  38:10  cat=.literal                                 =
-[215]  38:12  cat=.Seed.token_category_name                operator_greedy
-[216]  38:28  cat=.Seed.Expr.operator                      |
-[217]  38:30  cat=.Seed.token_category_name                parenthesis
-[218]  38:41  cat=.newline                                 \n    
-[219]  39:5   cat=.Seed.rule_name                          Struct
-[220]  39:11  cat=.literal                                 :
-[221]  39:12  cat=.newline                                 \n
-[222]  40:1   cat=.indent                                        
-[223]  40:7   cat=.literal                                 ⊙
-[224]  40:9   cat=.literal                                 =
-[225]  40:11  cat=.string                                  '['
-[226]  40:15  cat=.Seed.rule_name                          LabeledItem
-[227]  40:27  cat=.Seed.Expr.operator                      *
-[228]  40:29  cat=.string                                  ']'
-[229]  40:32  cat=.newline                                 \n      
-[230]  41:7   cat=.Seed.rule_name                          LabeledItem
-[231]  41:19  cat=.literal                                 =
-[232]  41:21  cat=.literal                                 (
-[233]  41:23  cat=.Seed.rule_name                          Variable
-[234]  41:31  cat=.literal                                 .
-[235]  41:32  cat=.Seed.rule_name                          Name
-[236]  41:37  cat=.string                                  ':'
-[237]  41:41  cat=.literal                                 )
-[238]  41:43  cat=.Seed.Expr.operator                      ?
-[239]  41:45  cat=.literal                                 (
-[240]  41:47  cat=.Seed.rule_name                          Struct
-[241]  41:54  cat=.Seed.Expr.operator                      |
-[242]  41:56  cat=.Seed.rule_name                          Expr
-[243]  41:61  cat=.literal                                 )
-[244]  41:62  cat=.newline                                 \n
-[245]  42:1   cat=.dedent                                  
-[246]  42:1   cat=.dedent                                    
-[247]  42:3   cat=.Seed.rule_name                          Func
-[248]  42:7   cat=.literal                                 :
-[249]  42:8   cat=.newline                                 \n
-[250]  43:1   cat=.indent                                      
-[251]  43:5   cat=.literal                                 ⊙
-[252]  43:7   cat=.literal                                 =
-[253]  43:9   cat=.Seed.rule_name                          Name
-[254]  43:13  cat=.newline                                 \n    
-[255]  44:5   cat=.Seed.rule_name                          Name
-[256]  44:10  cat=.literal                                 =
-[257]  44:12  cat=.Seed.token_category_name                func_name
-[258]  44:21  cat=.newline                                 \n    
-[259]  45:5   cat=.Seed.rule_name                          Defn
-[260]  45:10  cat=.literal                                 =
-[261]  45:12  cat=.Seed.rule_name                          Name
-[262]  45:17  cat=.string                                  '='
-[263]  45:21  cat=.Seed.rule_name                          Signature
-[264]  45:31  cat=.Seed.rule_name                          Body
-[265]  45:35  cat=.newline                                 \n    
-[266]  46:5   cat=.Seed.rule_name                          Signature
-[267]  46:15  cat=.literal                                 =
-[268]  46:17  cat=.Seed.rule_name                          Type
-[269]  46:22  cat=.literal                                 (
-[270]  46:24  cat=.string                                  '->'
-[271]  46:29  cat=.Seed.rule_name                          Type
-[272]  46:34  cat=.literal                                 )
-[273]  46:36  cat=.Seed.Expr.operator                      ?
-[274]  46:37  cat=.newline                                 \n    
-[275]  47:5   cat=.Seed.rule_name                          Body
-[276]  47:10  cat=.literal                                 =
-[277]  47:12  cat=.string                                  '{'
-[278]  47:16  cat=.Seed.rule_name                          Stmt
-[279]  47:21  cat=.Seed.Expr.operator                      *
-[280]  47:23  cat=.string                                  '}'
-[281]  47:26  cat=.newline                                 \n    
-[282]  48:5   cat=.Seed.rule_name                          Stmt
-[283]  48:9   cat=.literal                                 :
-[284]  48:10  cat=.newline                                 \n
-[285]  49:1   cat=.indent                                        
-[286]  49:7   cat=.literal                                 ⊙
-[287]  49:9   cat=.literal                                 =
-[288]  49:11  cat=.Seed.rule_name                          If
-[289]  49:14  cat=.Seed.Expr.operator                      |
-[290]  49:16  cat=.Seed.rule_name                          For
-[291]  49:20  cat=.Seed.Expr.operator                      |
-[292]  49:22  cat=.Seed.rule_name                          Expr
-[293]  49:27  cat=.string                                  ';'
-[294]  49:30  cat=.newline                                 \n      
-[295]  50:7   cat=.Seed.rule_name                          If
-[296]  50:9   cat=.literal                                 :
-[297]  50:10  cat=.newline                                 \n
-[298]  51:1   cat=.indent                                          
-[299]  51:9   cat=.literal                                 ⊙
-[300]  51:11  cat=.literal                                 =
-[301]  51:13  cat=.string                                  "if"
-[302]  51:18  cat=.Seed.rule_name                          Branch
-[303]  51:25  cat=.literal                                 (
-[304]  51:27  cat=.string                                  "elif"
-[305]  51:34  cat=.Seed.rule_name                          Branch
-[306]  51:41  cat=.literal                                 )
-[307]  51:43  cat=.Seed.Expr.operator                      *
-[308]  51:45  cat=.literal                                 (
-[309]  51:47  cat=.string                                  "else"
-[310]  51:54  cat=.Seed.rule_name                          Body
-[311]  51:59  cat=.literal                                 )
-[312]  51:61  cat=.Seed.Expr.operator                      ?
-[313]  51:62  cat=.newline                                 \n        
-[314]  52:9   cat=.Seed.rule_name                          Branch
-[315]  52:16  cat=.literal                                 =
-[316]  52:18  cat=.Seed.rule_name                          Expr
-[317]  52:23  cat=.Seed.rule_name                          Body
-[318]  52:27  cat=.newline                                 \n
-[319]  53:1   cat=.dedent                                        
-[320]  53:7   cat=.Seed.rule_name                          For
-[321]  53:11  cat=.literal                                 =
-[322]  53:13  cat=.string                                  "for"
-[323]  53:19  cat=.Seed.rule_name                          Expr
-[324]  53:23  cat=.literal                                 .
-[325]  53:24  cat=.Seed.rule_name                          Maybe
-[326]  53:30  cat=.string                                  ';'
-[327]  53:34  cat=.Seed.rule_name                          Expr
-[328]  53:38  cat=.literal                                 .
-[329]  53:39  cat=.Seed.rule_name                          Maybe
-[330]  53:45  cat=.string                                  ';'
-[331]  53:49  cat=.Seed.rule_name                          Expr
-[332]  53:53  cat=.literal                                 .
-[333]  53:54  cat=.Seed.rule_name                          Maybe
-[334]  53:60  cat=.Seed.rule_name                          Body
-[335]  53:64  cat=.newline                                 \n
-[336]  54:1   cat=.dedent                                  
-[337]  54:1   cat=.dedent                                    
-[338]  54:3   cat=.Seed.rule_name                          Variable
-[339]  54:11  cat=.literal                                 :
-[340]  54:12  cat=.newline                                 \n
-[341]  55:1   cat=.indent                                      
-[342]  55:5   cat=.Seed.rule_name                          Name
-[343]  55:10  cat=.literal                                 =
-[344]  55:12  cat=.Seed.Expr.operator                      not
-[345]  55:16  cat=.Seed.rule_name                          Type
-[346]  55:20  cat=.literal                                 .
-[347]  55:21  cat=.Seed.rule_name                          Name
-[348]  55:26  cat=.Seed.Expr.operator                      but_then
-[349]  55:35  cat=.Seed.Expr.operator                      not
-[350]  55:39  cat=.Seed.rule_name                          Func
-[351]  55:43  cat=.literal                                 .
-[352]  55:44  cat=.Seed.rule_name                          Name
-[353]  55:49  cat=.Seed.Expr.operator                      but_then
-[354]  55:58  cat=.Seed.token_category_name                identifier
-[355]  55:68  cat=.newline                                 \n    
-[356]  56:5   cat=.Seed.rule_name                          Defn
-[357]  56:10  cat=.literal                                 =
-[358]  56:12  cat=.Seed.rule_name                          Name
-[359]  56:17  cat=.string                                  '='
-[360]  56:21  cat=.Seed.rule_name                          Expr
-[361]  56:25  cat=.newline                                 \n
-[362]  57:1   cat=.dedent                                  
-[363]  57:1   cat=.dedent                                  
+[215]  38:12  cat=.Seed.token_category_name                operator
+[216]  38:20  cat=.literal                                 .
+[217]  38:21  cat=.Seed.token_category_name                greedy
+[218]  38:28  cat=.Seed.Expr.operator                      |
+[219]  38:30  cat=.Seed.token_category_name                parenthesis
+[220]  38:41  cat=.newline                                 \n    
+[221]  39:5   cat=.Seed.rule_name                          Struct
+[222]  39:11  cat=.literal                                 :
+[223]  39:12  cat=.newline                                 \n
+[224]  40:1   cat=.indent                                        
+[225]  40:7   cat=.literal                                 ⊙
+[226]  40:9   cat=.literal                                 =
+[227]  40:11  cat=.string                                  '['
+[228]  40:15  cat=.Seed.rule_name                          LabeledItem
+[229]  40:27  cat=.Seed.Expr.operator                      *
+[230]  40:29  cat=.string                                  ']'
+[231]  40:32  cat=.newline                                 \n      
+[232]  41:7   cat=.Seed.rule_name                          LabeledItem
+[233]  41:19  cat=.literal                                 =
+[234]  41:21  cat=.literal                                 (
+[235]  41:23  cat=.Seed.rule_name                          Variable
+[236]  41:31  cat=.literal                                 .
+[237]  41:32  cat=.Seed.rule_name                          Name
+[238]  41:37  cat=.string                                  ':'
+[239]  41:41  cat=.literal                                 )
+[240]  41:43  cat=.Seed.Expr.operator                      ?
+[241]  41:45  cat=.literal                                 (
+[242]  41:47  cat=.Seed.rule_name                          Struct
+[243]  41:54  cat=.Seed.Expr.operator                      |
+[244]  41:56  cat=.Seed.rule_name                          Expr
+[245]  41:61  cat=.literal                                 )
+[246]  41:62  cat=.newline                                 \n
+[247]  42:1   cat=.dedent                                  
+[248]  42:1   cat=.dedent                                    
+[249]  42:3   cat=.Seed.rule_name                          Func
+[250]  42:7   cat=.literal                                 :
+[251]  42:8   cat=.newline                                 \n
+[252]  43:1   cat=.indent                                      
+[253]  43:5   cat=.literal                                 ⊙
+[254]  43:7   cat=.literal                                 =
+[255]  43:9   cat=.Seed.rule_name                          Name
+[256]  43:13  cat=.newline                                 \n    
+[257]  44:5   cat=.Seed.rule_name                          Name
+[258]  44:10  cat=.literal                                 =
+[259]  44:12  cat=.Seed.token_category_name                func_name
+[260]  44:21  cat=.newline                                 \n    
+[261]  45:5   cat=.Seed.rule_name                          Defn
+[262]  45:10  cat=.literal                                 =
+[263]  45:12  cat=.Seed.rule_name                          Name
+[264]  45:17  cat=.string                                  '='
+[265]  45:21  cat=.Seed.rule_name                          Signature
+[266]  45:31  cat=.Seed.rule_name                          Body
+[267]  45:35  cat=.newline                                 \n    
+[268]  46:5   cat=.Seed.rule_name                          Signature
+[269]  46:15  cat=.literal                                 =
+[270]  46:17  cat=.Seed.rule_name                          Type
+[271]  46:22  cat=.literal                                 (
+[272]  46:24  cat=.string                                  '->'
+[273]  46:29  cat=.Seed.rule_name                          Type
+[274]  46:34  cat=.literal                                 )
+[275]  46:36  cat=.Seed.Expr.operator                      ?
+[276]  46:37  cat=.newline                                 \n    
+[277]  47:5   cat=.Seed.rule_name                          Body
+[278]  47:10  cat=.literal                                 =
+[279]  47:12  cat=.string                                  '{'
+[280]  47:16  cat=.Seed.rule_name                          Stmt
+[281]  47:21  cat=.Seed.Expr.operator                      *
+[282]  47:23  cat=.string                                  '}'
+[283]  47:26  cat=.newline                                 \n    
+[284]  48:5   cat=.Seed.rule_name                          Stmt
+[285]  48:9   cat=.literal                                 :
+[286]  48:10  cat=.newline                                 \n
+[287]  49:1   cat=.indent                                        
+[288]  49:7   cat=.literal                                 ⊙
+[289]  49:9   cat=.literal                                 =
+[290]  49:11  cat=.Seed.rule_name                          If
+[291]  49:14  cat=.Seed.Expr.operator                      |
+[292]  49:16  cat=.Seed.rule_name                          For
+[293]  49:20  cat=.Seed.Expr.operator                      |
+[294]  49:22  cat=.Seed.rule_name                          Expr
+[295]  49:27  cat=.string                                  ';'
+[296]  49:30  cat=.newline                                 \n      
+[297]  50:7   cat=.Seed.rule_name                          If
+[298]  50:9   cat=.literal                                 :
+[299]  50:10  cat=.newline                                 \n
+[300]  51:1   cat=.indent                                          
+[301]  51:9   cat=.literal                                 ⊙
+[302]  51:11  cat=.literal                                 =
+[303]  51:13  cat=.string                                  "if"
+[304]  51:18  cat=.Seed.rule_name                          Branch
+[305]  51:25  cat=.literal                                 (
+[306]  51:27  cat=.string                                  "elif"
+[307]  51:34  cat=.Seed.rule_name                          Branch
+[308]  51:41  cat=.literal                                 )
+[309]  51:43  cat=.Seed.Expr.operator                      *
+[310]  51:45  cat=.literal                                 (
+[311]  51:47  cat=.string                                  "else"
+[312]  51:54  cat=.Seed.rule_name                          Body
+[313]  51:59  cat=.literal                                 )
+[314]  51:61  cat=.Seed.Expr.operator                      ?
+[315]  51:62  cat=.newline                                 \n        
+[316]  52:9   cat=.Seed.rule_name                          Branch
+[317]  52:16  cat=.literal                                 =
+[318]  52:18  cat=.Seed.rule_name                          Expr
+[319]  52:23  cat=.Seed.rule_name                          Body
+[320]  52:27  cat=.newline                                 \n
+[321]  53:1   cat=.dedent                                        
+[322]  53:7   cat=.Seed.rule_name                          For
+[323]  53:11  cat=.literal                                 =
+[324]  53:13  cat=.string                                  "for"
+[325]  53:19  cat=.Seed.rule_name                          Expr
+[326]  53:23  cat=.literal                                 .
+[327]  53:24  cat=.Seed.rule_name                          Maybe
+[328]  53:30  cat=.string                                  ';'
+[329]  53:34  cat=.Seed.rule_name                          Expr
+[330]  53:38  cat=.literal                                 .
+[331]  53:39  cat=.Seed.rule_name                          Maybe
+[332]  53:45  cat=.string                                  ';'
+[333]  53:49  cat=.Seed.rule_name                          Expr
+[334]  53:53  cat=.literal                                 .
+[335]  53:54  cat=.Seed.rule_name                          Maybe
+[336]  53:60  cat=.Seed.rule_name                          Body
+[337]  53:64  cat=.newline                                 \n
+[338]  54:1   cat=.dedent                                  
+[339]  54:1   cat=.dedent                                    
+[340]  54:3   cat=.Seed.rule_name                          Variable
+[341]  54:11  cat=.literal                                 :
+[342]  54:12  cat=.newline                                 \n
+[343]  55:1   cat=.indent                                      
+[344]  55:5   cat=.Seed.rule_name                          Name
+[345]  55:10  cat=.literal                                 =
+[346]  55:12  cat=.Seed.Expr.operator                      not
+[347]  55:16  cat=.Seed.rule_name                          Type
+[348]  55:20  cat=.literal                                 .
+[349]  55:21  cat=.Seed.rule_name                          Name
+[350]  55:26  cat=.Seed.Expr.operator                      but_then
+[351]  55:35  cat=.Seed.Expr.operator                      not
+[352]  55:39  cat=.Seed.rule_name                          Func
+[353]  55:43  cat=.literal                                 .
+[354]  55:44  cat=.Seed.rule_name                          Name
+[355]  55:49  cat=.Seed.Expr.operator                      but_then
+[356]  55:58  cat=.Seed.token_category_name                identifier
+[357]  55:68  cat=.newline                                 \n    
+[358]  56:5   cat=.Seed.rule_name                          Defn
+[359]  56:10  cat=.literal                                 =
+[360]  56:12  cat=.Seed.rule_name                          Name
+[361]  56:17  cat=.string                                  '='
+[362]  56:21  cat=.Seed.rule_name                          Expr
+[363]  56:25  cat=.newline                                 \n
+[364]  57:1   cat=.dedent                                  
+[365]  57:1   cat=.dedent                                  
 
 [0].Seed                                          language Soil ...  
   [0].Seed.Language                               language Soil ...  
@@ -1556,8 +1560,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [2].Seed.Terminal                     ')'
       [5].Seed.Rule                               oper = ... parenthesis \n    
         [0].Seed.Nonterminal                      oper
-        [1].Seed.Expr.Or.|                        operator_greedy | parenthesis
-          [0].Seed.Nonterminal                    operator_greedy
+        [1].Seed.Expr.Or.|                        operator . greedy | parenthesis
+          [0].Seed.Nonterminal                    operator . greedy
           [1].Seed.Nonterminal                    parenthesis
       [6].Seed.Scope                              Struct : ... \n 
         [0].Seed.Nonterminal                      Struct

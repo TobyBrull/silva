@@ -80,7 +80,7 @@ language Seed:
     Atom = alias Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
     Quantifier = number ? ',' number ? | number
-    operator = [ "not" "but_then" operator_single '{' '}' ]
+    operator = [ "not" "but_then" operator.single '{' '}' ]
     Alias = Expr
   Terminal = [ "ε" "end_of_language" "language" string frag_name ]
   Nonterminal = '.' ? ( Name '.' ) * Name

@@ -45,7 +45,7 @@ language Lox:
            | number | string
            | "super" '.' identifier | identifier
            | '(' Expr ')' )
-    oper = "and" | "or" | '<=' | '>=' | '==' | '!=' | operator_single | parenthesis
+    oper = "and" | "or" | '<=' | '>=' | '==' | '!=' | operator.single | parenthesis
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
     ⊙ = identifier '(' Parameters ')' Stmt.Block

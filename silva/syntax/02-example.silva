@@ -37,7 +37,7 @@ language CppStmts:
                           ternary '?' ':'
       Comma       = ltr   infix ','
     Atom = number | string | identifier | '(' Expr ')'
-    oper = parenthesis | operator_greedy
+    oper = parenthesis | operator.greedy
     Type = identifier
 »
 

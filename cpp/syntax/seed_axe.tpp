@@ -52,7 +52,7 @@ language Test:
     Add   = ltr   infix '+' '-'
     Ter   = rtl   ternary '?' ':'
     Eqa   = rtl   infix '='
-  oper = operator_single | parenthesis
+  oper = operator.single | parenthesis
   Atom = identifier | number | '(' Test ')'
   skip = skip.free_form
 )'";
@@ -526,8 +526,8 @@ language Test:
     Mul     = ltr   infix '*'
     Add     = ltr   infix_flat '+' infix '-'
     Assign  = rtl   infix_flat '=' infix '%'
-  oper = '<:' | ':>' | operator_single | parenthesis
-  Atom = identifier | number operator_single | '(' Test ')' | '<<' Test.PrfLo '>>'
+  oper = '<:' | ':>' | operator.single | parenthesis
+  Atom = identifier | number operator.single | '(' Test ')' | '<<' Test.PrfLo '>>'
   Args = string ( ',' string ) * | ε
   skip = skip.free_form
 )'";
@@ -649,7 +649,7 @@ language Test:
     test::test_axe(*se, sa, "a 1 + z\n", R"(
 [  0]   1:1   cat=.identifier                              a
 [  1]   1:3   cat=.number                                  1
-[  2]   1:5   cat=.operator_single                         +
+[  2]   1:5   cat=.operator.single                         +
 [  3]   1:7   cat=.identifier                              z
 
 [0].Test.Cat.concat                               a 1 + z

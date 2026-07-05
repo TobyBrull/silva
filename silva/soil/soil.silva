@@ -35,7 +35,7 @@ language Soil:
            | string | number
            | "true" | "false" | "none"
            | '(' Expr ')' )
-    oper = operator_greedy | parenthesis
+    oper = operator.greedy | parenthesis
     Struct:
       ⊙ = '[' LabeledItem * ']'
       LabeledItem = ( Variable.Name ':' ) ? ( Struct | Expr )

@@ -11,8 +11,9 @@ dedent = DEDENT
 newline = NEWLINE
 
 parenthesis = PARENTHESIS
-operator_single = OPERATOR
-operator_greedy = OPERATOR +
+operator:
+  single = OPERATOR
+  greedy = OPERATOR +
 
 identifier:
   ⊙ = ID_START ID_CONTINUE *
