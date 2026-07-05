@@ -101,6 +101,9 @@ namespace silva {
     syntax_farm_t();
     ~syntax_farm_t();
 
+    const token_info_t& get(token_id_t) const;
+    const name_info_t& get(name_id_t) const;
+
     token_id_t token_id(string_view_t);
     token_id_t token_id(fragment_span_t);
 
@@ -231,7 +234,7 @@ namespace silva {
         if (!curr_scope.is_valid()) {
           break;
         }
-        curr_scope = sfp->name_infos[curr_scope.val].parent_name;
+        curr_scope = sfp->get(curr_scope).parent_name;
       }
       return std::unexpected(std::move(error_nursery)
                                  .finish(error_level_t::MINOR,

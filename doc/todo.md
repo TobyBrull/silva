@@ -1,8 +1,6 @@
 # TODO
 
 * rename 'alias' to 'no_node'
-* add syntax-farm.get(token_id_t)
-* add syntax-farm.get(name_id_t)?
 * move tokenization globals into 'Literal'
 * Turn all tokenization rules into normal rules
 

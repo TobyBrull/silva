@@ -104,7 +104,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT_FWD(
           register_rule(curr_rule_name, pts_rhs_0, is_token_rule, is_alias, is_no_whitespace));
 
-      if (sfp->name_infos[curr_rule_name.val].base_name == lexicon.ti_skip.token_id) {
+      if (sfp->get(curr_rule_name).base_name == lexicon.ti_skip.token_id) {
         SILVA_EXPECT(current_language_id.has_value(),
                      MINOR,
                      "skip token-rule may only be used in language");
@@ -116,10 +116,10 @@ namespace silva::seed::impl {
         if (pts_rhs_0[i].rule_name == lexicon.ni_term) {
           const auto& token = tp->tokens[pts_rhs_0[i].token_begin];
           if (token.category == lexicon.ni_string) {
-            const auto& ti_full_info = sfp->token_infos[token.token_id.val];
+            const auto& ti_full_info = sfp->get(token.token_id);
             const bool as_identifier = (ti_full_info.str[0] == U'"');
             const auto ti            = SILVA_EXPECT_FWD(sfp->token_id_in_string(token.token_id));
-            const auto& ti_info      = sfp->token_infos[ti.val];
+            const auto& ti_info      = sfp->get(ti);
             se->string_to_ft[token.token_id] =
                 SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, as_identifier));
           }
@@ -452,7 +452,7 @@ namespace silva::seed::impl {
       const index_t num_tokens   = quant_pts.token_size();
       const auto token_as_number = [&](const index_t idx) -> expected_t<index_t> {
         const token_id_t ti = SILVA_EXPECT_FWD(quant_pts.at_token_id(idx));
-        const double value  = SILVA_EXPECT_FWD(sfp->token_infos[ti.val].number_as_double());
+        const double value  = SILVA_EXPECT_FWD(sfp->get(ti).number_as_double());
         return static_cast<index_t>(value);
       };
       optional_t<index_t> comma_pos;
@@ -491,7 +491,7 @@ namespace silva::seed::impl {
       index_t base_child_idx = 0;
       index_t min_repeat     = 0;
       index_t max_repeat     = 0;
-      const token_id_t op_ti = sfp->name_infos[pts[0].rule_name.val].base_name;
+      const token_id_t op_ti = sfp->get(pts[0].rule_name).base_name;
       if (op_ti == lexicon.ti_brace_open.token_id) {
         const auto children              = SILVA_EXPECT_FWD(pts.get_children<2>());
         base_child_idx                   = children[0];
@@ -770,7 +770,7 @@ namespace silva::seed::impl {
         retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name, t_rule_name));
       }
       else if (s_expr_name == lexicon.ni_axe_level) {
-        const name_id_t axe_name = sfp->name_infos[t_rule_name.val].parent_name;
+        const name_id_t axe_name = sfp->get(t_rule_name).parent_name;
         retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(axe_name, t_rule_name));
       }
       else {
@@ -897,10 +897,10 @@ namespace silva::seed {
     }
 
     name_id_t curr = goal_rule_name;
-    while (sfp->name_infos[curr.val].parent_name.is_valid()) {
-      curr = sfp->name_infos[curr.val].parent_name;
+    while (sfp->get(curr).parent_name.is_valid()) {
+      curr = sfp->get(curr).parent_name;
     }
-    const token_id_t lang_name = sfp->name_infos[curr.val].base_name;
+    const token_id_t lang_name = sfp->get(curr).base_name;
     const auto lang_it         = languages.find(lang_name);
     SILVA_EXPECT(lang_it != languages.end(),
                  MINOR,

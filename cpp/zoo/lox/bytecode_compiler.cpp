@@ -558,13 +558,13 @@ namespace silva::lox {
       else if (rule_name == lexicon.ni_decl) {
         return decl(pts.sub_tree_span_at(1));
       }
-      else if (sfp->name_infos[rule_name.val].parent_name == lexicon.ni_decl) {
+      else if (sfp->get(rule_name).parent_name == lexicon.ni_decl) {
         return decl(pts);
       }
       else if (rule_name == lexicon.ni_stmt) {
         return stmt(pts.sub_tree_span_at(1));
       }
-      else if (sfp->name_infos[rule_name.val].parent_name == lexicon.ni_stmt) {
+      else if (sfp->get(rule_name).parent_name == lexicon.ni_stmt) {
         return stmt(pts);
       }
       else {

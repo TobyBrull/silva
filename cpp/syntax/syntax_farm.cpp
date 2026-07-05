@@ -87,6 +87,15 @@ namespace silva {
 
   syntax_farm_t::~syntax_farm_t() = default;
 
+  const token_info_t& syntax_farm_t::get(const token_id_t ti) const
+  {
+    return token_infos[ti.val];
+  }
+  const name_info_t& syntax_farm_t::get(const name_id_t ni) const
+  {
+    return name_infos[ni.val];
+  }
+
   token_id_t syntax_farm_t::token_id(const string_view_t token_str)
   {
     const auto it = token_lookup.find(string_t{token_str});
@@ -110,7 +119,7 @@ namespace silva {
 
   expected_t<token_id_t> syntax_farm_t::token_id_in_string(const token_id_t ti)
   {
-    const auto& token_info = token_infos[ti.val];
+    const auto& token_info = get(ti);
     const string_t str     = SILVA_EXPECT_FWD(token_info.contained_string(),
                                               "{} not a string containing a token",
                                               token_id_wrap(ti));
@@ -146,7 +155,7 @@ namespace silva {
       if (!child_name.is_valid()) {
         return false;
       }
-      child_name = name_infos[child_name.val].parent_name;
+      child_name = get(child_name).parent_name;
     }
   }
 
@@ -160,7 +169,7 @@ namespace silva {
         if (!x.is_valid()) {
           break;
         }
-        x = name_infos[x.val].parent_name;
+        x = get(x).parent_name;
       }
       std::ranges::reverse(retval);
       return retval;
@@ -201,9 +210,9 @@ namespace silva {
     if (!name_id.is_valid()) {
       return "";
     }
-    const name_info_t& ni = sfp->name_infos[name_id.val];
-    return name_id_str(ni.parent_name) + sfp->token_infos[name_sep.val].str +
-        sfp->token_infos[ni.base_name.val].str;
+    const name_info_t& ni = sfp->get(name_id);
+    return name_id_str(ni.parent_name) + sfp->get(name_sep).str +
+        sfp->get(ni.base_name).str;
   }
 
   expected_t<name_id_t> lexicon_t::name_id_definition(const name_id_t scope_name,
@@ -231,7 +240,7 @@ namespace silva {
 
   void pretty_write_impl(const token_id_wrap_t& x, byte_sink_t* byte_sink)
   {
-    byte_sink->format("token[ {} ]", x.sfp->token_infos[x.token_id.val].str);
+    byte_sink->format("token[ {} ]", x.sfp->get(x.token_id).str);
   }
 
   void pretty_write_impl(const name_id_wrap_t& x, byte_sink_t* byte_sink)
