@@ -211,8 +211,7 @@ namespace silva {
       return "";
     }
     const name_info_t& ni = sfp->get(name_id);
-    return name_id_str(ni.parent_name) + sfp->get(name_sep).str +
-        sfp->get(ni.base_name).str;
+    return name_id_str(ni.parent_name) + sfp->get(name_sep).str + sfp->get(ni.base_name).str;
   }
 
   expected_t<name_id_t> lexicon_t::name_id_definition(const name_id_t scope_name,
