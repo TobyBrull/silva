@@ -115,32 +115,8 @@ ERROR (MAJOR):
 │   │ │ │     ├─[01-broken.fern:10:5] while matching token[ nan ]
 │   │ │ │     [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
 │   │ │ │   ┌─[01-broken.fern:10:5] .number.unsigned.float.special
-│   │ │ │   │     [01-broken.fern:10:5] expected token[ 0 ]
-│   │ │ │   │   ┌─[01-broken.fern:10:5] while matching token[ 0 ]
-│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ 1 ]
-│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ 1 ]
-│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ 2 ]
-│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ 2 ]
-│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ 3 ]
-│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ 3 ]
-│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ 4 ]
-│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ 4 ]
-│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ 5 ]
-│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ 5 ]
-│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ 6 ]
-│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ 6 ]
-│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ 7 ]
-│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ 7 ]
-│   │ │ │   │   [01-broken.fern:10:5] .number.unsigned.integer.octal.digit: expected alternation[ [ '0' ... '7' ] ]
-│   │ │ │   │ ┌─[01-broken.fern:10:5] .number.unsigned.integer.octal.digit
-│   │ │ │   │ │   [01-broken.fern:10:5] expected token[ 8 ]
-│   │ │ │   │ │ ┌─[01-broken.fern:10:5] while matching token[ 8 ]
-│   │ │ │   │ │ │ [01-broken.fern:10:5] expected token[ 9 ]
-│   │ │ │   │ │ ├─[01-broken.fern:10:5] while matching token[ 9 ]
-│   │ │ │   │ ├─[01-broken.fern:10:5] .number.unsigned.integer.decimal.digit: expected alternation[ [ '8' '9' ] ]
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal.digit: expected alternation[ octal . ... '9' ] ]
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal.digit
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ digit ( ... ) * ]
+│   │ │ │   │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ( ... ) * ]
 │   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
 │   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
 │   │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integerPart ( ... ? ) ]
@@ -158,48 +134,24 @@ ERROR (MAJOR):
 │   │ │ │ ├─[01-broken.fern:10:5] .number.float.special
 │   │ │ │ │   [01-broken.fern:10:5] expected token[ 0b ]
 │   │ │ │ │   [01-broken.fern:10:5] while matching token[ 0b ]
-│   │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b' digit ... ) * ]
+│   │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b' ( ... ) * ]
 │   │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary
 │   │ │ │ │   [01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusMinus unsigned ... . binary ]
 │   │ │ │ │ ┌─[01-broken.fern:10:5] .number.integer.binary
 │   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0o ]
 │   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0o ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o' digit ... ) * ]
+│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o' ( ... ) * ]
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusMinus unsigned ... . octal ]
 │   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.octal
 │   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0x ]
 │   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0x ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x' digit ... ) * ]
+│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x' ( ... ) * ]
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusMinus unsigned ... . hexadecimal ]
 │   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.hexadecimal
-│   │ │ │ │ │     [01-broken.fern:10:5] expected token[ 0 ]
-│   │ │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ 0 ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ 1 ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ 1 ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ 2 ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ 2 ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ 3 ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ 3 ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ 4 ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ 4 ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ 5 ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ 5 ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ 6 ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ 6 ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ 7 ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ 7 ]
-│   │ │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.octal.digit: expected alternation[ [ '0' ... '7' ] ]
-│   │ │ │ │ │ ┌─[01-broken.fern:10:5] .number.unsigned.integer.octal.digit
-│   │ │ │ │ │ │   [01-broken.fern:10:5] expected token[ 8 ]
-│   │ │ │ │ │ │ ┌─[01-broken.fern:10:5] while matching token[ 8 ]
-│   │ │ │ │ │ │ │ [01-broken.fern:10:5] expected token[ 9 ]
-│   │ │ │ │ │ │ ├─[01-broken.fern:10:5] while matching token[ 9 ]
-│   │ │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.decimal.digit: expected alternation[ [ '8' '9' ] ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal.digit: expected alternation[ octal . ... '9' ] ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal.digit
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ digit ( ... ) * ]
+│   │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ( ... ) * ]
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusMinus unsigned ... . decimal ]
 │   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.decimal
@@ -284,8 +236,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.unsigned.float.special                                  false     01-simplest.fern:3:4
                   [1].number.unsigned.float.integerPart                              false     01-simplest.fern:3:4
                     [0].number.unsigned.integer.decimal                              false     01-simplest.fern:3:4
-                      [0].number.unsigned.integer.decimal.digit                      false     01-simplest.fern:3:4
-                        [0].number.unsigned.integer.octal.digit                      false     01-simplest.fern:3:4
               [1].number.float.special                                               false     01-simplest.fern:3:4
                 [0].number.plusMinus                                                 true      01-simplest.fern:3:4
                 [1].number.unsigned.float.special                                    false     01-simplest.fern:3:4
@@ -302,8 +252,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [3].number.integer.decimal                                           false     01-simplest.fern:3:4
                   [0].number.plusMinus                                               true      01-simplest.fern:3:4
                   [1].number.unsigned.integer.decimal                                false     01-simplest.fern:3:4
-                    [0].number.unsigned.integer.decimal.digit                        false     01-simplest.fern:3:4
-                      [0].number.unsigned.integer.octal.digit                        false     01-simplest.fern:3:4
             [3].string                                                               false     01-simplest.fern:3:4
         [2].skip.freeForm                                                            true      01-simplest.fern:3:5
           [0].skip.freeForm                                                          true      01-simplest.fern:4:3
@@ -339,8 +287,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.unsigned.float.special                                  false     01-simplest.fern:6:3
                   [1].number.unsigned.float.integerPart                              false     01-simplest.fern:6:3
                     [0].number.unsigned.integer.decimal                              false     01-simplest.fern:6:3
-                      [0].number.unsigned.integer.decimal.digit                      false     01-simplest.fern:6:3
-                        [0].number.unsigned.integer.octal.digit                      false     01-simplest.fern:6:3
               [1].number.float.special                                               false     01-simplest.fern:6:3
                 [0].number.plusMinus                                                 true      01-simplest.fern:6:3
                 [1].number.unsigned.float.special                                    false     01-simplest.fern:6:3
@@ -357,8 +303,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [3].number.integer.decimal                                           false     01-simplest.fern:6:3
                   [0].number.plusMinus                                               true      01-simplest.fern:6:3
                   [1].number.unsigned.integer.decimal                                false     01-simplest.fern:6:3
-                    [0].number.unsigned.integer.decimal.digit                        false     01-simplest.fern:6:3
-                      [0].number.unsigned.integer.octal.digit                        false     01-simplest.fern:6:3
             [3].string                                                               false     01-simplest.fern:6:3
         [3].skip.freeForm                                                            true      01-simplest.fern:6:4
           [0].skip.freeForm                                                          true      01-simplest.fern:7:1
@@ -377,8 +321,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].number.unsigned.float.special                                      false     01-simplest.fern:7:1
               [1].number.unsigned.float.integerPart                                  false     01-simplest.fern:7:1
                 [0].number.unsigned.integer.decimal                                  false     01-simplest.fern:7:1
-                  [0].number.unsigned.integer.decimal.digit                          false     01-simplest.fern:7:1
-                    [0].number.unsigned.integer.octal.digit                          false     01-simplest.fern:7:1
           [1].number.float.special                                                   false     01-simplest.fern:7:1
             [0].number.plusMinus                                                     true      01-simplest.fern:7:1
             [1].number.unsigned.float.special                                        false     01-simplest.fern:7:1
@@ -395,8 +337,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [3].number.integer.decimal                                               false     01-simplest.fern:7:1
               [0].number.plusMinus                                                   true      01-simplest.fern:7:1
               [1].number.unsigned.integer.decimal                                    false     01-simplest.fern:7:1
-                [0].number.unsigned.integer.decimal.digit                            false     01-simplest.fern:7:1
-                  [0].number.unsigned.integer.octal.digit                            false     01-simplest.fern:7:1
         [3].string                                                                   false     01-simplest.fern:7:1
     [5].skip.freeForm                                                                true      01-simplest.fern:7:2
       [0].skip.freeForm                                                              true      01-simplest.fern:7:2

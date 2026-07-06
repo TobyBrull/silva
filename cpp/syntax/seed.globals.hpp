@@ -29,31 +29,20 @@ None = "none"
 Boolean = [ "true" "false" ]
 
 number:
-  grouping = [ '\'' '_' ]
-
   unsigned:
     integer:
-      binary:
-        digit = [ '0' '1' ]
-        ⊙ = '0b' digit ( digit | grouping digit ) *
-      octal:
-        digit = [ '0' '1' '2' '3' '4' '5' '6' '7' ]
-        ⊙ = '0o' digit ( digit | grouping digit ) *
-      hexadecimal:
-        digit = decimal.digit | [ 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F' ]
-        ⊙ = '0x' digit ( digit | grouping digit ) *
-      decimal:
-        digit = octal.digit | [ '8' '9' ]
-        ⊙ = digit ( digit | grouping digit ) *
+      grouping = no_node '\''
+      binary = '0b' ( DIGIT | grouping ) *
+      octal = '0o' ( DIGIT | grouping ) *
+      hexadecimal = '0x' ( DIGIT | ID_LOWER | ID_UPPER | grouping ) *
+      decimal = DIGIT ( DIGIT | grouping ) *
 
     float:
       special = [ 'inf' 'nan' ]
-
       ⊙ = special | integerPart ( exponent | fraction exponent ? )
-
       integerPart = integer.decimal
-      fraction = '.' integer.decimal.digit +
-      exponent = 'e' plusMinus integer.decimal.digit +
+      fraction = '.' DIGIT +
+      exponent = 'e' plusMinus DIGIT +
 
   plusMinus = [ '-' '+' ] ?
 
