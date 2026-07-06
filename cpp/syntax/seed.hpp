@@ -56,14 +56,14 @@ namespace silva::seed {
 
   const string_view_t seed_str = R"'(
 language Seed:
-  skip = skip.off_side
+  skip = skip.offSide
 
-  frag_name = identifier.macro_case
-  rule_name = identifier.pascal_case
-  token_category_name = identifier.snake_case
+  fragName = identifier.macroCase
+  ruleName = identifier.pascalCase
+  tokenCategoryName = identifier.camelCase
 
   ⊙ = [ Language Scope Rule ] *
-  Language = "language" rule_name ':' ScopeImpl
+  Language = "language" ruleName ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
   Rule = ( '⊙' | Nonterminal ) '=' ( "axe" Axe | Qualifier * Expr newline )
@@ -82,9 +82,9 @@ language Seed:
     Quantifier = number ? ',' number ? | number
     operator = [ "not" "but_then" operator.single '{' '}' ]
     NoNode = Expr
-  Terminal = [ "ε" "end_of_language" "language" string frag_name ]
+  Terminal = [ "ε" "end_of_language" "language" string fragName ]
   Nonterminal = '.' ? ( Name '.' ) * Name
-  Name = no_node [ rule_name token_category_name ]
+  Name = no_node [ ruleName tokenCategoryName ]
 )'";
 
   // Handcrafted Seed parser for bootstrapping purposes.

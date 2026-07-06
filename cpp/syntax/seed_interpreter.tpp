@@ -25,63 +25,63 @@ language Frog:
     auto ptp = SILVA_REQUIRE(se.add_seed_text("frog.seed", string_t{frog_seed}));
     const string_view_t expected_seed_pt = R"(
 [  0]   2:1   cat=.literal                                 language
-[  1]   2:10  cat=.Seed.rule_name                          Frog
+[  1]   2:10  cat=.Seed.ruleName                           Frog
 [  2]   2:14  cat=.literal                                 :
 [  3]   2:15  cat=.newline                                 \n
 [  4]   3:1   cat=.indent                                    
 [  5]   3:3   cat=.literal                                 ⊙
 [  6]   3:5   cat=.literal                                 =
-[  7]   3:7   cat=.Seed.rule_name                          Rule
+[  7]   3:7   cat=.Seed.ruleName                           Rule
 [  8]   3:12  cat=.Seed.Expr.operator                      *
 [  9]   3:13  cat=.newline                                 \n  
-[ 10]   4:3   cat=.Seed.token_category_name                skip
+[ 10]   4:3   cat=.Seed.tokenCategoryName                  skip
 [ 11]   4:8   cat=.literal                                 =
 [ 12]   4:10  cat=.literal                                 (
-[ 13]   4:12  cat=.Seed.frag_name                          SPACE
+[ 13]   4:12  cat=.Seed.fragName                           SPACE
 [ 14]   4:18  cat=.Seed.Expr.operator                      |
-[ 15]   4:20  cat=.Seed.frag_name                          LINEFEED
+[ 15]   4:20  cat=.Seed.fragName                           LINEFEED
 [ 16]   4:29  cat=.Seed.Expr.operator                      |
-[ 17]   4:31  cat=.Seed.frag_name                          COMMENT
+[ 17]   4:31  cat=.Seed.fragName                           COMMENT
 [ 18]   4:39  cat=.Seed.Expr.operator                      |
-[ 19]   4:41  cat=.Seed.frag_name                          WHITESPACE
+[ 19]   4:41  cat=.Seed.fragName                           WHITESPACE
 [ 20]   4:52  cat=.Seed.Expr.operator                      |
-[ 21]   4:54  cat=.Seed.frag_name                          INDENT
+[ 21]   4:54  cat=.Seed.fragName                           INDENT
 [ 22]   4:61  cat=.Seed.Expr.operator                      |
-[ 23]   4:63  cat=.Seed.frag_name                          DEDENT
+[ 23]   4:63  cat=.Seed.fragName                           DEDENT
 [ 24]   4:70  cat=.Seed.Expr.operator                      |
-[ 25]   4:72  cat=.Seed.frag_name                          NEWLINE
+[ 25]   4:72  cat=.Seed.fragName                           NEWLINE
 [ 26]   4:80  cat=.literal                                 )
 [ 27]   4:82  cat=.Seed.Expr.operator                      *
 [ 28]   4:83  cat=.newline                                 \n  
-[ 29]   5:3   cat=.Seed.token_category_name                identifier
+[ 29]   5:3   cat=.Seed.tokenCategoryName                  identifier
 [ 30]   5:14  cat=.literal                                 =
-[ 31]   5:16  cat=.Seed.frag_name                          ID_START
-[ 32]   5:25  cat=.Seed.frag_name                          ID_CONTINUE
+[ 31]   5:16  cat=.Seed.fragName                           ID_START
+[ 32]   5:25  cat=.Seed.fragName                           ID_CONTINUE
 [ 33]   5:37  cat=.Seed.Expr.operator                      *
 [ 34]   5:38  cat=.newline                                 \n  
-[ 35]   6:3   cat=.Seed.rule_name                          Rule
+[ 35]   6:3   cat=.Seed.ruleName                           Rule
 [ 36]   6:8   cat=.literal                                 =
-[ 37]   6:10  cat=.Seed.rule_name                          RuleName
-[ 38]   6:19  cat=.Seed.rule_name                          Expr
+[ 37]   6:10  cat=.Seed.ruleName                           RuleName
+[ 38]   6:19  cat=.Seed.ruleName                           Expr
 [ 39]   6:23  cat=.newline                                 \n  
-[ 40]   7:3   cat=.Seed.rule_name                          RuleName
+[ 40]   7:3   cat=.Seed.ruleName                           RuleName
 [ 41]   7:12  cat=.literal                                 =
 [ 42]   7:14  cat=.literal                                 no_node
-[ 43]   7:22  cat=.Seed.rule_name                          Keyword
+[ 43]   7:22  cat=.Seed.ruleName                           Keyword
 [ 44]   7:29  cat=.newline                                 \n  
-[ 45]   8:3   cat=.Seed.rule_name                          Expr
+[ 45]   8:3   cat=.Seed.ruleName                           Expr
 [ 46]   8:8   cat=.literal                                 =
-[ 47]   8:10  cat=.Seed.rule_name                          Primary
+[ 47]   8:10  cat=.Seed.ruleName                           Primary
 [ 48]   8:18  cat=.Seed.Expr.operator                      +
 [ 49]   8:19  cat=.newline                                 \n  
-[ 50]   9:3   cat=.Seed.rule_name                          Primary
+[ 50]   9:3   cat=.Seed.ruleName                           Primary
 [ 51]   9:11  cat=.literal                                 =
 [ 52]   9:13  cat=.Seed.Expr.operator                      not
-[ 53]   9:17  cat=.Seed.rule_name                          Keyword
+[ 53]   9:17  cat=.Seed.ruleName                           Keyword
 [ 54]   9:25  cat=.Seed.Expr.operator                      but_then
-[ 55]   9:34  cat=.Seed.token_category_name                identifier
+[ 55]   9:34  cat=.Seed.tokenCategoryName                  identifier
 [ 56]   9:44  cat=.newline                                 \n  
-[ 57]  10:3   cat=.Seed.rule_name                          Keyword
+[ 57]  10:3   cat=.Seed.ruleName                           Keyword
 [ 58]  10:10  cat=.literal                                 :
 [ 59]  10:11  cat=.newline                                 \n
 [ 60]  11:1   cat=.indent                                      
@@ -205,7 +205,7 @@ language Frog:
     const string_view_t testor_lang = R"'(
 language Testor:
   ⊙ = Assign *
-  skip = skip.free_form
+  skip = skip.freeForm
   Assign = identifier '=' identifier operator.single identifier
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_lang}));

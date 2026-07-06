@@ -11,7 +11,7 @@ namespace silva::cedar {
   //
   const string_view_t seed_str = R"'(
 language Cedar:
-  skip = skip.free_form
+  skip = skip.freeForm
 
   operator = [ '...' '.' ';' ':' '*=' '*' '/=' '/' '%=' '%' '~'
                '++' '+=' '+' '--' '-=' '->' '-'

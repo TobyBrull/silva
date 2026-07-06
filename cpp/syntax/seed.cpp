@@ -28,18 +28,24 @@ namespace silva::seed::impl {
 
     void skip() { skip_off_side(); }
 
-    expected_t<token_t> identifier_snake_case()
+    expected_t<token_t> identifier_camel_case()
     {
-      auto ts                           = token_stake(lexicon.ni_id_snake);
-      const index_t orig_fragment_index = fragment_index;
-      while (num_fragments_left() >= 1 &&
-             (fragment_unique_codepoint_or_zero_by(0) == U'_' ||
-              fragment_category_by(0) == ID_LOWER || fragment_category_by(0) == DIGIT)) {
+      auto ts = token_stake(lexicon.ni_id_camel);
+      SILVA_EXPECT_PARSE(lexicon.ni_id_camel,
+                         num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER,
+                         "expected fragment with category ID_LOWER; got {}",
+                         fragment_category_by());
+      fragment_index += 1;
+      while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
         fragment_index += 1;
       }
-      SILVA_EXPECT(fragment_index - orig_fragment_index > 0,
-                   MINOR,
-                   "no fragments for identifier.snake_case");
+      while (num_fragments_left() >= 2 && fragment_category_by(0) == ID_UPPER &&
+             fragment_category_by(1) == ID_LOWER) {
+        fragment_index += 2;
+        while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
+          fragment_index += 1;
+        }
+      }
       SILVA_EXPECT(num_fragments_left() == 0 ||
                        !is_fragment_category_id_continue(fragment_category_by()),
                    MINOR);
@@ -173,7 +179,7 @@ namespace silva::seed::impl {
     expected_t<token_t> token_category_name()
     {
       auto ts = token_stake(lexicon.ni_token_cat_name);
-      ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_token_cat_name, identifier_snake_case()));
+      ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_token_cat_name, identifier_camel_case()));
       return ts.commit();
     }
 

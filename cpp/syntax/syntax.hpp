@@ -11,10 +11,10 @@ namespace silva {
 language Silva:
   ⊙ = Section *
 
-  skip = skip.free_form
+  skip = skip.freeForm
 
-  language_name = identifier.pascal_case
-  Section = language_name language
+  languageName = identifier.pascalCase
+  Section = languageName language
 )'";
 
   unique_ptr_t<seed::interpreter_t> standard_seed_interpreter(syntax_farm_ptr_t);

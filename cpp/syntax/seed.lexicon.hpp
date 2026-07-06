@@ -63,7 +63,7 @@ namespace silva::seed {
     const token_id_t ti_r_fern     = sfp->token_id("Fern");
 
     const name_id_t ni_id              = sfp->name_id_of("identifier");
-    const name_id_t ni_id_snake        = sfp->name_id_of("identifier_snake_case");
+    const name_id_t ni_id_camel        = sfp->name_id_of("identifier_camel_case");
     const name_id_t ni_id_pascal       = sfp->name_id_of("identifier_pascal_case");
     const name_id_t ni_id_macro        = sfp->name_id_of("identifier_macro_case");
     const name_id_t ni_string          = sfp->name_id_of("string");
@@ -76,9 +76,9 @@ namespace silva::seed {
 
     const name_id_t ni_seed = sfp->name_id_of("Seed");
 
-    const name_id_t ni_frag_name      = sfp->name_id_of(ni_seed, "frag_name");
-    const name_id_t ni_rule_name      = sfp->name_id_of(ni_seed, "rule_name");
-    const name_id_t ni_token_cat_name = sfp->name_id_of(ni_seed, "token_category_name");
+    const name_id_t ni_frag_name      = sfp->name_id_of(ni_seed, "fragName");
+    const name_id_t ni_rule_name      = sfp->name_id_of(ni_seed, "ruleName");
+    const name_id_t ni_token_cat_name = sfp->name_id_of(ni_seed, "tokenCategoryName");
 
     const name_id_t ni_language    = sfp->name_id_of(ni_seed, "Language");
     const name_id_t ni_scope       = sfp->name_id_of(ni_seed, "Scope");

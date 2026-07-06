@@ -37,17 +37,17 @@ language SimpleFern:
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
-[  0]   2:1   cat=.Seed.token_category_name                string
+[  0]   2:1   cat=.Seed.tokenCategoryName                  string
 [  1]   2:8   cat=.literal                                 =
-[  2]   2:10  cat=.Seed.frag_name                          STRING
+[  2]   2:10  cat=.Seed.fragName                           STRING
 [  3]   2:16  cat=.newline                                 \n
-[  4]   3:1   cat=.Seed.token_category_name                number
+[  4]   3:1   cat=.Seed.tokenCategoryName                  number
 [  5]   3:8   cat=.literal                                 =
-[  6]   3:10  cat=.Seed.frag_name                          DIGIT
+[  6]   3:10  cat=.Seed.fragName                           DIGIT
 [  7]   3:16  cat=.Seed.Expr.operator                      +
 [  8]   3:17  cat=.newline                                 \n
 [  9]   5:1   cat=.literal                                 language
-[ 10]   5:10  cat=.Seed.rule_name                          SimpleFern
+[ 10]   5:10  cat=.Seed.ruleName                           SimpleFern
 [ 11]   5:20  cat=.literal                                 :
 [ 12]   5:21  cat=.newline                                 \n
 [ 13]   6:1   cat=.indent                                    
@@ -55,52 +55,52 @@ language SimpleFern:
 [ 15]   6:5   cat=.literal                                 =
 [ 16]   6:7   cat=.string                                  '['
 [ 17]   6:11  cat=.literal                                 (
-[ 18]   6:13  cat=.Seed.rule_name                          LabeledItem
+[ 18]   6:13  cat=.Seed.ruleName                           LabeledItem
 [ 19]   6:25  cat=.string                                  ';'
 [ 20]   6:29  cat=.Seed.Expr.operator                      ?
 [ 21]   6:31  cat=.literal                                 )
 [ 22]   6:33  cat=.Seed.Expr.operator                      *
 [ 23]   6:35  cat=.string                                  ']'
 [ 24]   6:38  cat=.newline                                 \n
-[ 25]   8:3   cat=.Seed.token_category_name                skip
+[ 25]   8:3   cat=.Seed.tokenCategoryName                  skip
 [ 26]   8:8   cat=.literal                                 =
 [ 27]   8:10  cat=.literal                                 (
-[ 28]   8:12  cat=.Seed.frag_name                          SPACE
+[ 28]   8:12  cat=.Seed.fragName                           SPACE
 [ 29]   8:18  cat=.Seed.Expr.operator                      |
-[ 30]   8:20  cat=.Seed.frag_name                          LINEFEED
+[ 30]   8:20  cat=.Seed.fragName                           LINEFEED
 [ 31]   8:29  cat=.Seed.Expr.operator                      |
-[ 32]   8:31  cat=.Seed.frag_name                          COMMENT
+[ 32]   8:31  cat=.Seed.fragName                           COMMENT
 [ 33]   8:39  cat=.Seed.Expr.operator                      |
-[ 34]   8:41  cat=.Seed.frag_name                          WHITESPACE
+[ 34]   8:41  cat=.Seed.fragName                           WHITESPACE
 [ 35]   8:52  cat=.Seed.Expr.operator                      |
-[ 36]   8:54  cat=.Seed.frag_name                          INDENT
+[ 36]   8:54  cat=.Seed.fragName                           INDENT
 [ 37]   8:61  cat=.Seed.Expr.operator                      |
-[ 38]   8:63  cat=.Seed.frag_name                          DEDENT
+[ 38]   8:63  cat=.Seed.fragName                           DEDENT
 [ 39]   8:70  cat=.Seed.Expr.operator                      |
-[ 40]   8:72  cat=.Seed.frag_name                          NEWLINE
+[ 40]   8:72  cat=.Seed.fragName                           NEWLINE
 [ 41]   8:80  cat=.literal                                 )
 [ 42]   8:82  cat=.Seed.Expr.operator                      *
 [ 43]   8:83  cat=.newline                                 \n
-[ 44]  10:3   cat=.Seed.rule_name                          LabeledItem
+[ 44]  10:3   cat=.Seed.ruleName                           LabeledItem
 [ 45]  10:15  cat=.literal                                 =
 [ 46]  10:17  cat=.literal                                 (
-[ 47]  10:19  cat=.Seed.rule_name                          Label
+[ 47]  10:19  cat=.Seed.ruleName                           Label
 [ 48]  10:25  cat=.string                                  ':'
 [ 49]  10:29  cat=.literal                                 )
 [ 50]  10:31  cat=.Seed.Expr.operator                      ?
-[ 51]  10:33  cat=.Seed.rule_name                          Item
+[ 51]  10:33  cat=.Seed.ruleName                           Item
 [ 52]  10:37  cat=.newline                                 \n  
-[ 53]  11:3   cat=.Seed.rule_name                          Label
+[ 53]  11:3   cat=.Seed.ruleName                           Label
 [ 54]  11:9   cat=.literal                                 =
-[ 55]  11:11  cat=.Seed.token_category_name                string
+[ 55]  11:11  cat=.Seed.tokenCategoryName                  string
 [ 56]  11:17  cat=.newline                                 \n  
-[ 57]  12:3   cat=.Seed.rule_name                          Item
+[ 57]  12:3   cat=.Seed.ruleName                           Item
 [ 58]  12:8   cat=.literal                                 =
-[ 59]  12:10  cat=.Seed.rule_name                          SimpleFern
+[ 59]  12:10  cat=.Seed.ruleName                           SimpleFern
 [ 60]  12:21  cat=.Seed.Expr.operator                      |
-[ 61]  12:23  cat=.Seed.token_category_name                string
+[ 61]  12:23  cat=.Seed.tokenCategoryName                  string
 [ 62]  12:30  cat=.Seed.Expr.operator                      |
-[ 63]  12:32  cat=.Seed.token_category_name                number
+[ 63]  12:32  cat=.Seed.tokenCategoryName                  number
 [ 64]  12:38  cat=.newline                                 
 [ 65]  12:38  cat=.dedent                                  
 
@@ -225,7 +225,7 @@ language SimpleFern:
 
 language Test:
   ⊙ = ( Boolean | number | identifier ) *
-  skip = skip.free_form
+  skip = skip.freeForm
 
 )'"));
 

@@ -1,14 +1,14 @@
 Seed «
 language Soil:
-  skip = skip.free_form
+  skip = skip.freeForm
 
-  type_name = 't_' identifier # should be: ending with "_t"
-  func_name = 'f_' identifier # should be: ending with "_f"
+  typeName = 't_' identifier # should be: ending with "_t"
+  funcName = 'f_' identifier # should be: ending with "_f"
 
   ⊙ = ( Type.Defn | Func.Defn | Variable.Defn ) *
   Type:
     ⊙ = Name | Struct
-    Name = type_name
+    Name = typeName
     Defn = Name '=' Type
     Struct:
       ⊙ = '[' Member * ']'
@@ -31,7 +31,7 @@ language Soil:
       Logic     = ltr infix "and" "or"
       Assign    = ltr infix '=' '+=' '*='
     Atom = ( Struct | language
-           | type_name | func_name | identifier
+           | typeName | funcName | identifier
            | string | number
            | "true" | "false" | "none"
            | '(' Expr ')' )
@@ -41,7 +41,7 @@ language Soil:
       LabeledItem = ( Variable.Name ':' ) ? ( Struct | Expr )
   Func:
     ⊙ = Name
-    Name = func_name
+    Name = funcName
     Defn = Name '=' Signature Body
     Signature = Type ( '->' Type ) ?
     Body = '{' Stmt * '}'

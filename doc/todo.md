@@ -11,6 +11,7 @@
 * better tokenization
     * token rules startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
     * also make '`...`' strings in fragmentization?
+    * Identifier tokens should always parse the chars greedily; then apply some predicate afterwards
 * enforce:
     * node-rules may only use other node-rules or token-rules
     * token-rules may only use other token-rules or FRAGMENTS
@@ -20,6 +21,7 @@
     * don't skip in seed.cpp in recursive token calls
 * seed-axe:
     * avoid common duplication in oper rule?
+    * allow more than just "" and '' in operators
 * In parsing errors, show what has been successfully parsed so far
 
 * Parsing:
