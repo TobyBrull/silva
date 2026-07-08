@@ -6,12 +6,37 @@
 
 namespace silva::seed {
 
-  // A program in the Seed language describes a way to turn a tokenization_t into a parse_tree_t.
-  // The actual algorithm to do this is implemented in "seed::interpreter_t".
+  // The Seed language offers a way to define parsing functions (called "rules" here) that call each
+  // other (it's also possible to hand-write additional parsing functions that call and are called
+  // by Seed functions/rules). As such, Seed describes a way to turn a fragmentization_t into a
+  // parse_tree_t.
   //
-  // The language is akin to BNF. The resulting parsing algorithm is essentially a PEG but with one
-  // caveat, which is called the "prefix-rule".
+  // (Currently Seed does not yet support hand-written functions, and only a tree-walker is
+  // implemented in "seed::interpreter_t".)
   //
+  // The language is akin to BNF. The corresponding parsing functions are essentially PEG (greedy
+  // repetition, ordered choice) but with a few twists:
+  //  * The "prefix directive", see below.
+  //  * There is a dedicated "skip" rule to skip whitespace.
+  //  * There are two types of rules: branch-rules (indicated by PascalCase) and twig-rules
+  //    (indicated by camelCase). Both types of nodes (if successfully parsed) create nodes in the
+  //    resulting parse_tree_t (unless they specify the "no_node" qualifier). Branch-rules may call
+  //    branch-rules or twig-rules. Twig-rules may only call twig-rules. Branch-rules correspond to
+  //    the usual rules that you would find in a grammar for parsing a stream of tokens; twig-rules
+  //    correspond to the tokenization.
+  //    The skip rule is invoked at the very beginning of a parse, and then also whenever a
+  //    *branch-rule* successfully applied a *twig-rule* (but a twig-rule successfully applying
+  //    another twig-rule does *not* trigger the skip rule).
+  //  * There is a subtle distinction between literals that use double-quotes (") and those that use
+  //    single-quotes ('). Double-quotes only accept text (silva::is_fragment_category_text) as
+  //    content, while single-quotes maybe contain any character. With single-quotes, it simply
+  //    tries to match the code-points in the literal one by one. With double-quotes it does that
+  //    but then also checks that the codepoint following the last matched codepoint (if it exists)
+  //    is NOT text. So, the literal "language" doesn't match the beginning of « language_name » but
+  //    'language' does.
+  //
+  //
+  // References:
   //  * The quite readable original paper by Bryan Ford "Parsing Expression Grammars: A
   //    Recognition-Based Syntactic Foundation"
   //    https://bford.info/pub/lang/peg.pdf
@@ -19,40 +44,31 @@ namespace silva::seed {
   //  * Guido van Rossum's "PEG Parsing Series"
   //    https://medium.com/@gvanrossum_83706/peg-parsing-series-de5d41b2ed60
   //
-  // The prefix-rule says that in every concatenated expression, if all leading literals are
+  //
+  // # The Prefix Directive
+  //
+  // The prefix directive says that in every concatenated expression, if all leading literals are
   // matched, then the whole concatenated expression has to match; otherwise, the entire parse
-  // algorithm results in failure. For example, if the rule
-  //
-  // « - ConstFunc = "static" "func" identifier | "static" identifier number »
-  //
+  // is failed. For example, if the Seed rule
+  //    ⎢ ConstFunc = "static" "func" identifier | "static" identifier number
   // is used to parse the language
-  //
-  // « static func 2 »
-  //
+  //    ⎢ static func 2
   // this will result in a parse error even though the second alternative would be a match. This is
   // because all leading literals (the "prefix") in the first alternative (of which there are two:
-  // 'static' and 'func') are already matched. So at that point, the parsing algorithm commits to
-  // the first alternative and aborts the parse if the whole expression does not match.
+  // "static" and "func") are already matched. So at that point, the parsing algorithm commits to
+  // the first alternative and aborts the entire parse if the whole *concatenated expression* does
+  // not match.
   //
-  // To disable the prefix rule for a concatenated expression, use the epsilon production. So, the
-  // rule
+  // To disable the prefix directive for a concatenated expression, use the epsilon production. So,
+  // the rule
+  //    ⎢ ConstFunc = ε "static" "func" identifier | "static" identifier number
+  // parses « static func 2 » just fine.
   //
-  // « - ConstFunc = ε "static" "func" identifier | "static" identifier number »
   //
-  // parses
+  // # Other remarks
   //
-  // « static func 2 »
-  //
-  // just fine.
-  //
-  // Other remarks:
   //  * "any" matches any token and also end-of-file.
-  //  * There is a subtle distinction between literals that use double-quotes (") and those that use
-  //    single-quotes ('). Double-quotes only accept text as content, while single-quotes maybe
-  //    contain any character. With single-quotes, it simply tries to match the code-points in the
-  //    literal one by one. With double-quotes it does that but then also checks that the following
-  //    character (if it exists) is NOT text. So, the literal "language" doesn't match the beginning
-  //    of « language_name » but 'language' does.
+  //
 
   const string_view_t seed_str = R"'(
 language Seed:
