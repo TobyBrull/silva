@@ -2,6 +2,7 @@
 
 #include "canopy/variant.hpp"
 
+#include <algorithm>
 #include <ranges>
 #include <variant>
 
@@ -369,8 +370,12 @@ namespace silva::seed::impl {
       assoc_t assoc = INVALID;
       for (const auto [child_node_index, child_index]: pts_level.children_range()) {
         const auto pts_child = pts_level.sub_tree_span_at(child_node_index);
-        if (child_index == 0) {
-          SILVA_EXPECT(pts_child[0].rule_name == lexicon.ni_axe_assoc, BROKEN_SEED);
+        const name_id_t cn   = pts_child[0].rule_name;
+        if (cn == lexicon.ni_rule_name) {
+          // The level's name (a twig-rule node); already read via front_token_id() above.
+          continue;
+        }
+        else if (cn == lexicon.ni_axe_assoc) {
           const token_id_t ti_assoc = SILVA_EXPECT_FWD(pts_child.front_token_id());
           if (ti_assoc == lexicon.ti_ltr.token_id) {
             assoc = LEFT_TO_RIGHT;
@@ -383,8 +388,8 @@ namespace silva::seed::impl {
           }
         }
         else {
-          const auto pts_ops = pts_level.sub_tree_span_at(child_node_index);
-          SILVA_EXPECT_FWD(ops(level_index, full_name, assoc, pts_ops));
+          SILVA_EXPECT(cn == lexicon.ni_axe_ops, BROKEN_SEED);
+          SILVA_EXPECT_FWD(ops(level_index, full_name, assoc, pts_child));
         }
       }
       return {};
@@ -405,10 +410,14 @@ namespace silva::seed::impl {
       retval.oper_rule = pts_axe_oper_nt;
       ++it;
 
-      level_index_t curr_level = pts_axe[0].num_children - 1;
+      // The remaining children are the Level nodes, interspersed with newline/indent/dedent
+      // twig-rule nodes (which are skipped here).
+      level_index_t curr_level = pts_axe.count_children_with(lexicon.ni_axe_level) + 1;
       while (it != end) {
-        curr_level -= 1;
-        SILVA_EXPECT_FWD(level(curr_level, pts_axe.sub_tree_span_at(it.pos)));
+        if (pts_axe[it.pos].rule_name == lexicon.ni_axe_level) {
+          curr_level -= 1;
+          SILVA_EXPECT_FWD(level(curr_level, pts_axe.sub_tree_span_at(it.pos)));
+        }
         ++it;
       }
       SILVA_EXPECT_FWD(add_to_level_map(axe_name, curr_level));
@@ -445,23 +454,6 @@ namespace silva::seed::impl {
 
     index_t num_tokens() const { return nursery.tokenization.tokens.size(); }
 
-    expected_t<token_id_t> parse_oper_token(const name_id_t name)
-    {
-      const index_t old_tree_size  = nursery.tree.size();
-      const index_t old_num_tokens = num_tokens();
-      const auto ptn               = SILVA_EXPECT_PARSE_FWD(name, rule_parser(axe.oper_rule));
-      SILVA_EXPECT(ptn.num_children == 0 && ptn.subtree_size == 0,
-                   MAJOR,
-                   "expected 'operator' rule to return token; not node");
-      SILVA_EXPECT(num_tokens() == old_num_tokens + 1,
-                   MAJOR,
-                   "the operator rule given to seed::axe_t must always produce a single token");
-      SILVA_EXPECT(nursery.tree.size() == old_tree_size,
-                   MAJOR,
-                   "the operator rule must not produce any nodes");
-      return nursery.tokenization.tokens.back().token_id;
-    }
-
     // internal state associated with a run
 
     enum class mode_t {
@@ -482,6 +474,11 @@ namespace silva::seed::impl {
       array_small_t<index_t, 2> covered_token_indexes;
       optional_t<index_t> min_token_index;
       optional_t<index_t> max_token_index;
+      // Indexes into "output_tree" of the operator node(s) that this operator produced (e.g. the
+      // two brackets for a nested operator). These become children of the resulting level-node,
+      // interspersed with the operand atoms in token order. Empty for the hallucinated "concat"
+      // operator (which has no operator token/node).
+      array_small_t<index_t, 2> oper_output_indexes;
     };
     array_t<oper_item_t> oper_stack;
 
@@ -502,6 +499,43 @@ namespace silva::seed::impl {
 
     // functions
 
+    struct oper_token_t {
+      token_id_t token_id{0};
+      // The node that the operator rule produced, as a proto-node (used for subtree-accounting on
+      // the enclosing nursery-stake).
+      parse_tree_node_t ptn;
+      // A leaf term_node_t whose "tree_index" points at the operator subtree left behind on
+      // "nursery.tree" (just like the atoms parsed via "invoke_rule_parser").
+      term_node_t tn;
+    };
+
+    // The operator rule is treated just like the atom rule: it leaves its subtree on
+    // "nursery.tree", and we remember where via the returned "term_node_t". The caller is
+    // responsible for pushing "tn" into "output_tree" (and recording its index) once it commits to
+    // the operator.
+    expected_t<oper_token_t> parse_oper_token(const name_id_t name)
+    {
+      const index_t old_num_tokens = num_tokens();
+      auto ss                      = nursery.stake();
+      const index_t tree_index     = ss.orig_state.tree_size;
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(name, rule_parser(axe.oper_rule)));
+      SILVA_EXPECT(ss.proto_node.num_children == 1,
+                   MAJOR,
+                   "expected 'operator' rule to return exactly one node");
+      SILVA_EXPECT(num_tokens() == old_num_tokens + 1,
+                   MAJOR,
+                   "the operator rule given to seed::axe_t must always produce a single token");
+      parse_tree_node_t ptn = ss.commit();
+      term_node_t tn{ptn, tree_index};
+      tn.num_children = 0;
+      tn.subtree_size = 1;
+      return oper_token_t{
+          .token_id = nursery.tokenization.tokens.back().token_id,
+          .ptn      = ptn,
+          .tn       = tn,
+      };
+    }
+
     expected_t<tuple_t<parse_tree_node_t, term_node_t>>
     invoke_rule_parser(const name_id_t rule_name)
     {
@@ -519,12 +553,23 @@ namespace silva::seed::impl {
       return {{ptn, tn}};
     }
 
-    // The left-bracket/first operator token has already been produced by the caller; its index is
-    // passed as "left_token_index". This parses the nested expression and the matching right token.
-    expected_t<tuple_t<index_t, index_t, parse_tree_node_t>>
-    handle_nest(const index_t left_token_index,
-                const token_id_t right_token,
-                const optional_t<name_id_ref_t>& nest_rule)
+    struct nest_result_t {
+      index_t token_begin = 0;
+      index_t token_end   = 0;
+      parse_tree_node_t ptn;
+      array_small_t<index_t, 2> oper_output_indexes;
+    };
+
+    // The left-bracket/first operator token has already been produced by the caller, and its
+    // term-node "left_tn" is passed in. This pushes the left operator node into the "output_tree",
+    // parses the nested expression (also pushed) and the matching right operator token (also
+    // pushed). The "ptn" that is returned only accounts for the subtree left on "nursery.tree" by
+    // the nested expression and the right operator (the left operator was already committed by the
+    // caller and is accounted for there).
+    expected_t<nest_result_t> handle_nest(const term_node_t& left_tn,
+                                          const index_t left_token_index,
+                                          const token_id_t right_token,
+                                          const optional_t<name_id_ref_t>& nest_rule)
     {
       auto ss = nursery.stake();
 
@@ -535,16 +580,31 @@ namespace silva::seed::impl {
       const auto [ptn, tn] = SILVA_EXPECT_FWD(invoke_rule_parser(used_rule_name));
       ss.add_proto_node(ptn);
 
-      const token_id_t right_tid = SILVA_EXPECT_FWD(parse_oper_token(used_rule_name));
+      const auto right = SILVA_EXPECT_FWD(parse_oper_token(used_rule_name));
       SILVA_EXPECT_PARSE(used_rule_name,
-                         right_tid == right_token,
+                         right.token_id == right_token,
                          "expected {}, got {}",
                          sfp->token_id_wrap(right_token),
-                         sfp->token_id_wrap(right_tid));
+                         sfp->token_id_wrap(right.token_id));
+      ss.add_proto_node(right.ptn);
 
+      // All parsing succeeded; now append the operator/operand nodes to "output_tree" in token
+      // order (left-bracket, nested expression, right-bracket).
+      const index_t left_out_idx = output_tree.size();
+      output_tree.push_back(left_tn);
       open_term_stack.push_back(output_tree.size());
       output_tree.push_back(tn);
-      return {{token_begin, num_tokens(), ss.commit()}};
+      const index_t right_out_idx = output_tree.size();
+      output_tree.push_back(right.tn);
+
+      nest_result_t retval{
+          .token_begin = token_begin,
+          .token_end   = num_tokens(),
+          .ptn         = ss.commit(),
+      };
+      retval.oper_output_indexes.emplace_back(left_out_idx);
+      retval.oper_output_indexes.emplace_back(right_out_idx);
+      return retval;
     }
 
     struct consistent_range_t {
@@ -662,20 +722,36 @@ namespace silva::seed::impl {
                                             static_cast<size_t>(oper_stack_end - oper_stack_begin)};
         const consistent_range_t cr =
             SILVA_EXPECT_PARSE_FWD(oper_stack[oper_stack_begin].level_name, consistent_range(ois));
-        oper_stack.resize(oper_stack.size() - ois.size());
         SILVA_EXPECT(cr.num_atoms <= open_term_stack.size(), MINOR);
-        index_t subtree_size = 1;
+
+        // The children of the resulting level-node are the operand atoms together with all
+        // operator nodes produced by the operators being popped, sorted into token order (which,
+        // since everything is appended to "output_tree" as it is parsed, is the same as increasing
+        // "output_tree" index).
+        array_t<index_t> child_indexes;
         for (index_t i = open_term_stack.size() - cr.num_atoms; i < open_term_stack.size(); ++i) {
-          const index_t curr_subtree_size = output_tree[open_term_stack[i]].subtree_size;
-          if (i > open_term_stack.size() - cr.num_atoms) {
-            SILVA_EXPECT(open_term_stack[i - 1] == open_term_stack[i] - curr_subtree_size, ASSERT);
+          child_indexes.push_back(open_term_stack[i]);
+        }
+        for (const auto& oi: ois) {
+          for (const index_t oper_out_idx: oi.oper_output_indexes) {
+            child_indexes.push_back(oper_out_idx);
+          }
+        }
+        std::sort(child_indexes.begin(), child_indexes.end());
+
+        oper_stack.resize(oper_stack.size() - ois.size());
+        index_t subtree_size = 1;
+        for (index_t i = 0; i < index_t(child_indexes.size()); ++i) {
+          const index_t curr_subtree_size = output_tree[child_indexes[i]].subtree_size;
+          if (i > 0) {
+            SILVA_EXPECT(child_indexes[i - 1] == child_indexes[i] - curr_subtree_size, ASSERT);
           }
           subtree_size += curr_subtree_size;
         }
         open_term_stack.resize(open_term_stack.size() - cr.num_atoms);
         open_term_stack.push_back(output_tree.size());
         term_node_t tn;
-        tn.num_children = cr.num_atoms;
+        tn.num_children = child_indexes.size();
         tn.subtree_size = subtree_size;
         tn.rule_name    = cr.joint_level_name;
         tn.token_begin  = cr.token_begin;
@@ -706,11 +782,19 @@ namespace silva::seed::impl {
       auto ss = nursery.stake();
 
       while (true) {
-        const index_t oper_token_index   = num_tokens();
-        const auto oper_state            = nursery.get_state();
-        const expected_t<token_id_t> res = SILVA_EXPECT_FWD_IF(MAJOR, parse_oper_token(axe.name));
+        const index_t oper_token_index = num_tokens();
+        const auto oper_state          = nursery.get_state();
+        auto res                       = SILVA_EXPECT_FWD_IF(MAJOR, parse_oper_token(axe.name));
         if (res.has_value()) {
-          const auto it = axe.results.find(*res);
+          // Pushes the (non-nested) operator node onto "output_tree" and accounts for its subtree
+          // on the enclosing stake. Returns the "output_tree" index of the operator node.
+          const auto commit_oper = [&]() -> index_t {
+            ss.add_proto_node(res->ptn);
+            const index_t oper_out_idx = output_tree.size();
+            output_tree.push_back(res->tn);
+            return oper_out_idx;
+          };
+          const auto it = axe.results.find(res->token_id);
           if (it != axe.results.end()) {
             const axe_result_t& axe_result = it->second;
             if (axe_result.is_right_bracket) {
@@ -734,6 +818,7 @@ namespace silva::seed::impl {
               SILVA_EXPECT_FWD(stack_pop(prefix_result.precedence));
 
               if (const auto* x = std::get_if<prefix_t>(&prefix_result.oper)) {
+                const index_t oper_out_idx = commit_oper();
                 oper_stack.push_back(oper_item_t{
                     .oper                  = *x,
                     .arity                 = prefix_t::arity,
@@ -741,23 +826,25 @@ namespace silva::seed::impl {
                     .precedence            = prefix_result.precedence,
                     .covered_token_indexes = {oper_token_index},
                     .min_token_index       = oper_token_index,
+                    .oper_output_indexes   = {oper_out_idx},
                 });
                 continue;
               }
               else if (const auto* x = std::get_if<prefix_nest_t>(&prefix_result.oper)) {
                 auto nest_res = SILVA_EXPECT_FWD_IF(
                     MAJOR,
-                    handle_nest(oper_token_index, x->right_bracket, x->nest_rule_name));
+                    handle_nest(res->tn, oper_token_index, x->right_bracket, x->nest_rule_name));
                 if (nest_res.has_value()) {
-                  const auto [token_begin, token_end, ptn] = *nest_res;
-                  ss.add_proto_node(ptn);
+                  ss.add_proto_node(res->ptn);
+                  ss.add_proto_node(nest_res->ptn);
                   oper_stack.push_back(oper_item_t{
                       .oper                  = *x,
                       .arity                 = prefix_nest_t::arity,
                       .level_name            = prefix_result.name,
                       .precedence            = prefix_result.precedence,
-                      .covered_token_indexes = {token_begin, token_end - 1},
-                      .min_token_index       = token_begin,
+                      .covered_token_indexes = {nest_res->token_begin, nest_res->token_end - 1},
+                      .min_token_index       = nest_res->token_begin,
+                      .oper_output_indexes   = nest_res->oper_output_indexes,
                   });
                   continue;
                 }
@@ -772,6 +859,7 @@ namespace silva::seed::impl {
               SILVA_EXPECT_FWD(stack_pop(regular_result.precedence));
 
               if (const auto* x = std::get_if<postfix_t>(&regular_result.oper)) {
+                const index_t oper_out_idx = commit_oper();
                 oper_stack.push_back(oper_item_t{
                     .oper                  = *x,
                     .arity                 = postfix_t::arity,
@@ -779,34 +867,38 @@ namespace silva::seed::impl {
                     .precedence            = regular_result.precedence,
                     .covered_token_indexes = {oper_token_index},
                     .max_token_index       = oper_token_index + 1,
+                    .oper_output_indexes   = {oper_out_idx},
                 });
                 continue;
               }
               else if (const auto* x = std::get_if<postfix_nest_t>(&regular_result.oper)) {
                 auto nest_res = SILVA_EXPECT_FWD_IF(
                     MAJOR,
-                    handle_nest(oper_token_index, x->right_bracket, x->nest_rule_name));
+                    handle_nest(res->tn, oper_token_index, x->right_bracket, x->nest_rule_name));
                 if (nest_res.has_value()) {
-                  const auto [token_begin, token_end, ptn] = *nest_res;
-                  ss.add_proto_node(ptn);
+                  ss.add_proto_node(res->ptn);
+                  ss.add_proto_node(nest_res->ptn);
                   oper_stack.push_back(oper_item_t{
                       .oper                  = *x,
                       .arity                 = postfix_nest_t::arity,
                       .level_name            = regular_result.name,
                       .precedence            = regular_result.precedence,
-                      .covered_token_indexes = {token_begin, token_end - 1},
-                      .max_token_index       = token_end,
+                      .covered_token_indexes = {nest_res->token_begin, nest_res->token_end - 1},
+                      .max_token_index       = nest_res->token_end,
+                      .oper_output_indexes   = nest_res->oper_output_indexes,
                   });
                   continue;
                 }
               }
               else if (const auto* x = std::get_if<infix_t>(&regular_result.oper)) {
+                const index_t oper_out_idx = commit_oper();
                 oper_stack.push_back(oper_item_t{
                     .oper                  = *x,
                     .arity                 = infix_t::arity,
                     .level_name            = regular_result.name,
                     .precedence            = regular_result.precedence,
                     .covered_token_indexes = {oper_token_index},
+                    .oper_output_indexes   = {oper_out_idx},
                 });
                 mode = ATOM_MODE;
                 continue;
@@ -814,16 +906,17 @@ namespace silva::seed::impl {
               else if (const auto* x = std::get_if<ternary_t>(&regular_result.oper)) {
                 auto nest_res = SILVA_EXPECT_FWD_IF(
                     MAJOR,
-                    handle_nest(oper_token_index, x->second, x->nest_rule_name));
+                    handle_nest(res->tn, oper_token_index, x->second, x->nest_rule_name));
                 if (nest_res.has_value()) {
-                  const auto [token_begin, token_end, ptn] = *nest_res;
-                  ss.add_proto_node(ptn);
+                  ss.add_proto_node(res->ptn);
+                  ss.add_proto_node(nest_res->ptn);
                   oper_stack.push_back(oper_item_t{
                       .oper                  = *x,
                       .arity                 = ternary_t::arity,
                       .level_name            = regular_result.name,
                       .precedence            = regular_result.precedence,
-                      .covered_token_indexes = {token_begin, token_end - 1},
+                      .covered_token_indexes = {nest_res->token_begin, nest_res->token_end - 1},
+                      .oper_output_indexes   = nest_res->oper_output_indexes,
                   });
                   mode = ATOM_MODE;
                   continue;

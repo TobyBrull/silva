@@ -100,6 +100,10 @@ namespace silva::seed::impl {
       const auto pts_rhs_0 = pts_rule.sub_tree_span_at(it.pos);
 
       ++it;
+      // A non-axe rule ends with a "newline" twig-rule node; skip it.
+      while (it != end && pts_rule[it.pos].rule_name == lexicon.ni_newline) {
+        ++it;
+      }
       SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
       SILVA_EXPECT_FWD(
           register_rule(curr_rule_name, pts_rhs_0, is_token_rule, is_no_node, is_no_whitespace));
@@ -136,12 +140,15 @@ namespace silva::seed::impl {
         SILVA_EXPECT(axe_it != axe_end, MINOR);
         SILVA_EXPECT(pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_nt, MINOR);
         ++axe_it;
+        // The remaining children are Level nodes, interspersed with newline/indent/dedent
+        // twig-rule nodes (which are skipped here).
         while (axe_it != axe_end) {
-          SILVA_EXPECT(pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_axe_level, MINOR);
-          const auto pts_level          = pts_rhs_0.sub_tree_span_at(axe_it.pos);
-          const token_id_t level_name   = SILVA_EXPECT_FWD(pts_level.front_token_id());
-          const name_id_t axe_rule_name = sfp->name_id(curr_rule_name, level_name);
-          SILVA_EXPECT_FWD(register_rule(axe_rule_name, pts_level));
+          if (pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_axe_level) {
+            const auto pts_level          = pts_rhs_0.sub_tree_span_at(axe_it.pos);
+            const token_id_t level_name   = SILVA_EXPECT_FWD(pts_level.front_token_id());
+            const name_id_t axe_rule_name = sfp->name_id(curr_rule_name, level_name);
+            SILVA_EXPECT_FWD(register_rule(axe_rule_name, pts_level));
+          }
           ++axe_it;
         }
       }
@@ -158,12 +165,15 @@ namespace silva::seed::impl {
     {
       while (it != end) {
         const auto pts_child = pts_scope.sub_tree_span_at(it.pos);
-        if (pts_child[0].rule_name == lexicon.ni_scope) {
+        const name_id_t cn   = pts_child[0].rule_name;
+        if (cn == lexicon.ni_scope) {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
-        else {
+        else if (cn == lexicon.ni_rule) {
           SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, scope_is_token_rule));
         }
+        // else: skip the twig-rule nodes (ruleName, newline, indent, dedent) that are direct
+        // children of the enclosing scope/language.
         ++it;
       }
       return {};
@@ -224,15 +234,17 @@ namespace silva::seed::impl {
 
       for (const auto [node_index, child_index]: pts_seed.children_range()) {
         const auto pts_child = pts_seed.sub_tree_span_at(node_index);
-        if (pts_child[0].rule_name == lexicon.ni_language) {
+        const name_id_t cn   = pts_child[0].rule_name;
+        if (cn == lexicon.ni_language) {
           SILVA_EXPECT_FWD(handle_language(scope_name, pts_child));
         }
-        else if (pts_child[0].rule_name == lexicon.ni_scope) {
+        else if (cn == lexicon.ni_scope) {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
-        else {
+        else if (cn == lexicon.ni_rule) {
           SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, false));
         }
+        // else: skip any stray twig-rule nodes.
       }
       return {};
     }
@@ -412,12 +424,27 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
+    // The children of a Seed.Expr grammar node (as produced by the Expr-axe) now include the
+    // operator nodes (named "Seed.Expr.operator") interspersed among the operands. When walking the
+    // grammar tree, these operator nodes carry no grammatical meaning and are skipped.
+    array_t<index_t> grammar_child_indexes(const parse_tree_span_t& pts) const
+    {
+      array_t<index_t> retval;
+      for (const auto [child_node_index, child_index]: pts.children_range()) {
+        if (pts[child_node_index].rule_name != lexicon.ni_oper) {
+          retval.push_back(child_node_index);
+        }
+      }
+      return retval;
+    }
+
     expected_t<node_and_error_t> s_expr_prefix(const parse_tree_span_t pts,
                                                const name_id_t t_rule_name)
     {
       {
         auto ss             = stake();
-        const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
+        const auto children = grammar_child_indexes(pts);
+        SILVA_EXPECT(children.size() == 1, MAJOR, "expected single operand in 'not' expression");
         auto result =
             SILVA_EXPECT_FWD_IF(MAJOR, s_expr(pts.sub_tree_span_at(children[0]), t_rule_name));
         SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
@@ -492,14 +519,15 @@ namespace silva::seed::impl {
       index_t min_repeat     = 0;
       index_t max_repeat     = 0;
       const token_id_t op_ti = sfp->get(pts[0].rule_name).base_name;
+      const auto children    = grammar_child_indexes(pts);
       if (op_ti == lexicon.ti_brace_open.token_id) {
-        const auto children              = SILVA_EXPECT_FWD(pts.get_children<2>());
+        SILVA_EXPECT(children.size() == 2, MAJOR, "expected operand and quantifier");
         base_child_idx                   = children[0];
         const auto pts_braces            = pts.sub_tree_span_at(children[1]);
         std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_quantifier(pts_braces));
       }
       else {
-        const auto children              = SILVA_EXPECT_FWD(pts.get_children<1>());
+        SILVA_EXPECT(children.size() == 1, MAJOR, "expected single operand");
         base_child_idx                   = children[0];
         std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
       }
@@ -596,7 +624,7 @@ namespace silva::seed::impl {
                                             const name_id_t t_rule_name)
     {
       optional_t<stake_t> ss;
-      for (const auto [child_node_index, child_index]: pts.children_range()) {
+      for (const index_t child_node_index: grammar_child_indexes(pts)) {
         ss.emplace(stake());
         auto result = SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(child_node_index), t_rule_name));
         ss->add_proto_node(std::move(result).as_node());
@@ -608,9 +636,10 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> s_expr_followup(const parse_tree_span_t pts,
                                                  const name_id_t t_rule_name)
     {
-      auto ss = stake();
-      for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-        auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name);
+      auto ss             = stake();
+      const auto children = grammar_child_indexes(pts);
+      for (index_t child_index = 0; child_index < index_t(children.size()); ++child_index) {
+        auto result = s_expr(pts.sub_tree_span_at(children[child_index]), t_rule_name);
         if (result.has_value()) {
           ss.add_proto_node(std::move(result->node));
         }
@@ -630,7 +659,7 @@ namespace silva::seed::impl {
       error_nursery_t error_nursery;
       optional_t<parse_tree_node_t> retval;
       error_level_t error_level = MINOR;
-      for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
+      for (const index_t sub_s_node_index: grammar_child_indexes(pts)) {
         auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name);
         if (result.has_value()) {
           retval = std::move(*result).as_node();
@@ -792,7 +821,13 @@ namespace silva::seed::impl {
       token_rule_depth += 1;
       scope_exit_t token_scope_exit([this] { token_rule_depth -= 1; });
 
-      auto ss     = stake();
+      auto ss = stake();
+      // A twig-rule produces a single node (the token), named after the outermost token-rule.
+      // Twig-rules invoked from within another twig-rule are token-internal and do not create
+      // their own node.
+      if (!rule_data.is_no_node && entered_token_space) {
+        ss.create_node(t_rule_name);
+      }
       auto ts     = token_stake(t_rule_name);
       auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(rule_data.expr, t_rule_name));
       const token_t token = ts.commit();

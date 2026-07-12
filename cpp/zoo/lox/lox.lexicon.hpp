@@ -57,6 +57,7 @@ namespace silva::lox {
     name_id_t ni_expr_b_or      = sfp->name_id_of(ni_expr, "LogicOr", "or");
     name_id_t ni_expr_b_assign  = sfp->name_id_of(ni_expr, "Assign", "=");
     name_id_t ni_expr_atom      = sfp->name_id_of(ni_expr, "Atom");
+    name_id_t ni_expr_oper      = sfp->name_id_of(ni_expr, "oper");
     name_id_t ni_function       = sfp->name_id_of(ni_lox, "Function");
     name_id_t ni_function_param = sfp->name_id_of(ni_function, "Parameter");
   };
