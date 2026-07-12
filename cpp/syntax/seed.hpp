@@ -17,23 +17,26 @@ namespace silva::seed {
   // The language is akin to BNF. The corresponding parsing functions are essentially PEG (greedy
   // repetition, ordered choice) but with a few twists:
   //  * The "prefix directive", see below.
-  //  * There is a dedicated "skip" rule to skip whitespace.
-  //  * There are two types of rules: branch-rules (indicated by PascalCase) and twig-rules
-  //    (indicated by camelCase). Both types of nodes (if successfully parsed) create nodes in the
+  //  * There is a dedicated "skip-rule" to skip whitespace.
+  //  * There are two types of rules: "branch-rules" (indicated by PascalCase) and "twig-rules"
+  //    (indicated by camelCase). Both types of rules (if successfully parsed) create nodes in the
   //    resulting parse_tree_t (unless they specify the "no_node" qualifier). Branch-rules may call
   //    branch-rules or twig-rules. Twig-rules may only call twig-rules. Branch-rules correspond to
-  //    the usual rules that you would find in a grammar for parsing a stream of tokens; twig-rules
-  //    correspond to the tokenization.
-  //    The skip rule is invoked at the very beginning of a parse, and then also whenever a
+  //    the usual rules that you would find in a grammar for parsing a stream of tokens (rather than
+  //    the fragments that are parsed here); twig-rules then correspond to the tokenization. The
+  //    skip-rule is invoked at the very beginning of a parse, and then also whenever a
   //    *branch-rule* successfully applied a *twig-rule* (but a twig-rule successfully applying
-  //    another twig-rule does *not* trigger the skip rule).
+  //    another twig-rule does *not* trigger the skip-rule). Only twig-rules may directly refer to
+  //    fragments by using the corresponding ALL_CAPS identifiers.
   //  * There is a subtle distinction between literals that use double-quotes (") and those that use
   //    single-quotes ('). Double-quotes only accept text (silva::is_fragment_category_text) as
   //    content, while single-quotes maybe contain any character. With single-quotes, it simply
   //    tries to match the code-points in the literal one by one. With double-quotes it does that
   //    but then also checks that the codepoint following the last matched codepoint (if it exists)
   //    is NOT text. So, the literal "language" doesn't match the beginning of « language_name » but
-  //    'language' does.
+  //    'language' does. Both literals are treated like twig-rules; their successful parse leads to
+  //    a node in the parse_tree_t, and the skip-rule is only invoked afterwards if within a
+  //    branch-rule.
   //
   //
   // References:
