@@ -822,10 +822,7 @@ namespace silva::seed::impl {
       scope_exit_t token_scope_exit([this] { token_rule_depth -= 1; });
 
       auto ss = stake();
-      // A twig-rule produces a single node (the token), named after the outermost token-rule.
-      // Twig-rules invoked from within another twig-rule are token-internal and do not create
-      // their own node.
-      if (!rule_data.is_no_node && entered_token_space) {
+      if (!rule_data.is_no_node) {
         ss.create_node(t_rule_name);
       }
       auto ts     = token_stake(t_rule_name);
