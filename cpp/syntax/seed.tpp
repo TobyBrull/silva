@@ -1,5 +1,6 @@
 #include "seed.hpp"
 
+#include "seed.globals.hpp"
 #include "syntax.hpp"
 
 #include <catch2/catch_all.hpp>
@@ -8,11 +9,13 @@ namespace silva::seed::test {
   TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
     syntax_farm_t sf;
-    const auto spr   = standard_seed_interpreter(sf.ptr());
-    const auto fp    = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", string_t{seed_str}));
-    const auto pts_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(fp));
-    const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
-    CHECK(pts_1->nodes == pts_2->nodes);
+    const auto spr = standard_seed_interpreter(sf.ptr());
+    for (const auto txt: {seed_str, globals_str}) {
+      const auto fp    = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", string_t{txt}));
+      const auto pts_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(fp));
+      const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
+      CHECK(pts_1->nodes == pts_2->nodes);
+    }
   }
 
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
