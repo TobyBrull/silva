@@ -12,17 +12,17 @@ newline = NEWLINE
 
 parenthesis = PARENTHESIS
 operator:
-  single = OPERATOR
-  greedy = OPERATOR +
+  single = no_node OPERATOR
+  greedy = no_node OPERATOR +
 
 identifier:
   ⊙ = ID_START ID_CONTINUE *
-  withDashes = ID_START ( ID_CONTINUE | '-' ) *
-  kebabCase = ID_LOWER + ( '-' [ ID_LOWER DIGIT ] + ) *       not ID_CONTINUE
-  snakeCase = [ '_' ID_LOWER DIGIT ] +                        not ID_CONTINUE
-  camelCase = ID_LOWER + ( ID_UPPER ID_LOWER + ) *            not ID_CONTINUE
-  pascalCase = ( ID_UPPER ID_LOWER + ) +                      not ID_CONTINUE
-  macroCase = ID_UPPER + ( '_' ID_UPPER + ) *                 not ID_CONTINUE
+  withDashes  = no_node ID_START ( ID_CONTINUE | '-' ) *
+  kebabCase   = no_node ID_LOWER + ( '-' [ ID_LOWER DIGIT ] + ) *       not ID_CONTINUE
+  snakeCase   = no_node [ '_' ID_LOWER DIGIT ] +                        not ID_CONTINUE
+  camelCase   = no_node ID_LOWER + ( ID_UPPER ID_LOWER + ) *            not ID_CONTINUE
+  pascalCase  = no_node ( ID_UPPER ID_LOWER + ) +                      not ID_CONTINUE
+  macroCase   = no_node ID_UPPER + ( '_' ID_UPPER + ) *                 not ID_CONTINUE
 
 None = "none"
 
