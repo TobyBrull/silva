@@ -115,19 +115,51 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
-    expected_t<parse_tree_node_t> number()
+    expected_t<parse_tree_node_t> number_uint_dec()
     {
       auto ss = stake();
-      ss.create_node(lexicon.ni_number);
-      auto ts = token_stake(lexicon.ni_number);
+      ss.create_node(lexicon.ni_num_uint_dec);
       SILVA_EXPECT_PARSE(lexicon.ni_number,
                          num_fragments_left() >= 1 && fragment_category_by() == DIGIT,
                          "expected fragment with category DIGIT; got {}",
                          fragment_category_by());
       fragment_index += 1;
-      while (num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER) {
+      while (num_fragments_left() >= 1 && fragment_category_by() == DIGIT) {
         fragment_index += 1;
       }
+      return ss.commit();
+    }
+
+    expected_t<parse_tree_node_t> number_plus_minus()
+    {
+      auto ss = stake();
+      ss.create_node(lexicon.ni_num_pm);
+      return ss.commit();
+    }
+
+    expected_t<parse_tree_node_t> number_integer_decimal()
+    {
+      auto ss = stake();
+      ss.create_node(lexicon.ni_num_int_dec);
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_num_int_dec, number_plus_minus()));
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_num_int_dec, number_uint_dec()));
+      return ss.commit();
+    }
+
+    expected_t<parse_tree_node_t> number_integer()
+    {
+      auto ss = stake();
+      ss.create_node(lexicon.ni_num_integer);
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_num_integer, number_integer_decimal()));
+      return ss.commit();
+    }
+
+    expected_t<parse_tree_node_t> number()
+    {
+      auto ss = stake();
+      ss.create_node(lexicon.ni_number);
+      auto ts = token_stake(lexicon.ni_number);
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_number, number_integer()));
       add_token_and_skip(ts.commit());
       return ss.commit();
     }

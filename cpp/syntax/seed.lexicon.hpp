@@ -62,15 +62,19 @@ namespace silva::seed {
     const token_id_t ti_r_seed     = sfp->token_id("Seed");
     const token_id_t ti_r_fern     = sfp->token_id("Fern");
 
-    const name_id_t ni_id              = sfp->name_id_of("identifier");
-    const name_id_t ni_id_camel        = sfp->name_id_of("identifier_camel_case");
-    const name_id_t ni_id_pascal       = sfp->name_id_of("identifier_pascal_case");
-    const name_id_t ni_id_macro        = sfp->name_id_of("identifier_macro_case");
-    const name_id_t ni_string          = sfp->name_id_of("string");
-    const name_id_t ni_number          = sfp->name_id_of("number");
-    const name_id_t ni_newline         = sfp->name_id_of("newline");
-    const name_id_t ni_indent          = sfp->name_id_of("indent");
-    const name_id_t ni_dedent          = sfp->name_id_of("dedent");
+    const name_id_t ni_id           = sfp->name_id_of("identifier");
+    const name_id_t ni_id_camel     = sfp->name_id_of("identifier_camel_case");
+    const name_id_t ni_id_pascal    = sfp->name_id_of("identifier_pascal_case");
+    const name_id_t ni_id_macro     = sfp->name_id_of("identifier_macro_case");
+    const name_id_t ni_string       = sfp->name_id_of("string");
+    const name_id_t ni_number       = sfp->name_id_of("number");
+    const name_id_t ni_num_integer  = sfp->name_id_of(ni_number, "integer");
+    const name_id_t ni_num_int_dec  = sfp->name_id_of(ni_number, "integer", "decimal");
+    const name_id_t ni_num_pm       = sfp->name_id_of(ni_number, "plusMinus");
+    const name_id_t ni_num_uint_dec = sfp->name_id_of(ni_number, "unsigned", "integer", "decimal");
+    const name_id_t ni_newline      = sfp->name_id_of("newline");
+    const name_id_t ni_indent       = sfp->name_id_of("indent");
+    const name_id_t ni_dedent       = sfp->name_id_of("dedent");
     const name_id_t ni_operator_single = sfp->name_id_of("operator", "single");
     const name_id_t ni_operator_greedy = sfp->name_id_of("operator", "greedy");
 
