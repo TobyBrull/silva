@@ -8,6 +8,8 @@
 * tokenization-less parse-tree
 
 * `number` tokenization: write tests
+* more Seed:
+    * support explicitly forcing 'node' or 'no_node' on a called rule
 * better tokenization
     * token rules startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
     * also make '`...`' strings in fragmentization?
