@@ -6,9 +6,10 @@ namespace silva::seed {
 
   const string_view_t globals_str = R"'(
 string = STRING
-indent = INDENT
-dedent = DEDENT
-newline = NEWLINE
+
+indent  = no_node INDENT
+dedent  = no_node DEDENT
+newline = no_node NEWLINE
 
 parenthesis = PARENTHESIS
 operator:
