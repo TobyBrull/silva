@@ -147,6 +147,10 @@ language Test:
 
 [0].Test.Atom                                     1
   [0].number                                      1
+    [0].number.integer                            
+      [0].number.integer.decimal                  
+        [0].number.plusMinus                      
+        [1].number.unsigned.integer.decimal       
 )");
     test::test_axe(*se, sa, "1 + 2\n", R"(
 [  0]   1:1   cat=.number                                  1
@@ -156,9 +160,17 @@ language Test:
 [0].Test.Add.+                                    1 + 2
   [0].Test.Atom                                   1
     [0].number                                    1
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
   [1].Test.oper                                   +
   [2].Test.Atom                                   2
     [0].number                                    2
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
 )");
     test::test_axe(*se, sa, "1 - 2\n", R"(
 [  0]   1:1   cat=.number                                  1
@@ -168,9 +180,17 @@ language Test:
 [0].Test.Add.-                                    1 - 2
   [0].Test.Atom                                   1
     [0].number                                    1
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
   [1].Test.oper                                   -
   [2].Test.Atom                                   2
     [0].number                                    2
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
 )");
     test::test_axe(*se, sa, "1 + 2 * 3 + 4\n", R"(
 [  0]   1:1   cat=.number                                  1
@@ -185,16 +205,32 @@ language Test:
   [0].Test.Add.+                                  1 + 2 * 3
     [0].Test.Atom                                 1
       [0].number                                  1
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [1].Test.oper                                 +
     [2].Test.Mul.*                                2 * 3
       [0].Test.Atom                               2
         [0].number                                2
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
       [1].Test.oper                               *
       [2].Test.Atom                               3
         [0].number                                3
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
   [1].Test.oper                                   +
   [2].Test.Atom                                   4
     [0].number                                    4
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
 )");
     test::test_axe(*se, sa, "1 - 2 + f . g . h * 3 / 4\n", R"(
 [  0]   1:1   cat=.number                                  1
@@ -215,9 +251,17 @@ language Test:
   [0].Test.Add.-                                  1 - 2
     [0].Test.Atom                                 1
       [0].number                                  1
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [1].Test.oper                                 -
     [2].Test.Atom                                 2
       [0].number                                  2
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [1].Test.oper                                   +
   [2].Test.Mul./                                  f . ... / 4
     [0].Test.Mul.*                                f . ... * 3
@@ -234,9 +278,17 @@ language Test:
       [1].Test.oper                               *
       [2].Test.Atom                               3
         [0].number                                3
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
     [1].Test.oper                                 /
     [2].Test.Atom                                 4
       [0].number                                  4
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
 )");
     test::test_axe(*se, sa, "2 ! + 3\n", R"(
 [  0]   1:1   cat=.number                                  2
@@ -248,10 +300,18 @@ language Test:
   [0].Test.Exc.!                                  2 !
     [0].Test.Atom                                 2
       [0].number                                  2
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [1].Test.oper                                 !
   [1].Test.oper                                   +
   [2].Test.Atom                                   3
     [0].number                                    3
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
 )");
     test::test_axe(*se, sa, " - + 1\n", R"(
 [  0]   1:2   cat=.Test.oper                               -
@@ -264,6 +324,10 @@ language Test:
     [0].Test.oper                                 +
     [1].Test.Atom                                 1
       [0].number                                  1
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
 )");
     test::test_axe(*se, sa, "a + - + 1\n", R"(
 [  0]   1:1   cat=.identifier                              a
@@ -282,6 +346,10 @@ language Test:
       [0].Test.oper                               +
       [1].Test.Atom                               1
         [0].number                                1
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
 )");
     test::test_axe(*se, sa, "- - 1 * 2\n", R"(
 [  0]   1:1   cat=.Test.oper                               -
@@ -297,9 +365,17 @@ language Test:
       [0].Test.oper                               -
       [1].Test.Atom                               1
         [0].number                                1
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
   [1].Test.oper                                   *
   [2].Test.Atom                                   2
     [0].number                                    2
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
 )");
     test::test_axe(*se, sa, "- - 1 . 2\n", R"(
 [  0]   1:1   cat=.Test.oper                               -
@@ -315,9 +391,17 @@ language Test:
     [1].Test.Dot..                                1 . 2
       [0].Test.Atom                               1
         [0].number                                1
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
       [1].Test.oper                               .
       [2].Test.Atom                               2
         [0].number                                2
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
 )");
     test::test_axe(*se, sa, "1 . 2 !\n", R"(
 [  0]   1:1   cat=.number                                  1
@@ -329,9 +413,17 @@ language Test:
   [0].Test.Dot..                                  1 . 2
     [0].Test.Atom                                 1
       [0].number                                  1
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [1].Test.oper                                 .
     [2].Test.Atom                                 2
       [0].number                                  2
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [1].Test.oper                                   !
 )");
     test::test_axe(*se, sa, "1 + 2 !\n", R"(
@@ -343,10 +435,18 @@ language Test:
 [0].Test.Add.+                                    1 + 2 !
   [0].Test.Atom                                   1
     [0].number                                    1
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
   [1].Test.oper                                   +
   [2].Test.Exc.!                                  2 !
     [0].Test.Atom                                 2
       [0].number                                  2
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [1].Test.oper                                 !
 )");
     test::test_axe(*se, sa, "2 ! . 3\n", {none});
@@ -360,6 +460,10 @@ language Test:
   [0].Test.Dol.$                                  2 $
     [0].Test.Atom                                 2
       [0].number                                  2
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [1].Test.oper                                 $
   [1].Test.oper                                   !
 )");
@@ -375,6 +479,10 @@ language Test:
     [0].Test.oper                                 ~
     [1].Test.Atom                                 2
       [0].number                                  2
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
 )");
     test::test_axe(*se, sa, "~ + 2\n", {none});
     test::test_axe(*se, sa, "( ( 0 ) )\n", R"(
@@ -388,6 +496,10 @@ language Test:
   [0].Test.Atom                                   ( 0 )
     [0].Test.Atom                                 0
       [0].number                                  0
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
 )");
     test::test_axe(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
 [  0]   1:1   cat=.number                                  1
@@ -404,17 +516,33 @@ language Test:
   [0].Test.Mul.*                                  1 * ... 3 )
     [0].Test.Atom                                 1
       [0].number                                  1
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [1].Test.oper                                 *
     [2].Test.Atom                                 ( 2 + 3 )
       [0].Test.Add.+                              2 + 3
         [0].Test.Atom                             2
           [0].number                              2
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
         [1].Test.oper                             +
         [2].Test.Atom                             3
           [0].number                              3
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
   [1].Test.oper                                   *
   [2].Test.Atom                                   4
     [0].number                                    4
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
 )");
     test::test_axe(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
 [  0]   1:1   cat=.number                                  1
@@ -431,17 +559,33 @@ language Test:
   [0].Test.Mul.*                                  1 * ... 3 )
     [0].Test.Atom                                 1
       [0].number                                  1
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [1].Test.oper                                 *
     [2].Test.Atom                                 ( 2 + 3 )
       [0].Test.Add.+                              2 + 3
         [0].Test.Atom                             2
           [0].number                              2
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
         [1].Test.oper                             +
         [2].Test.Atom                             3
           [0].number                              3
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
   [1].Test.oper                                   *
   [2].Test.Atom                                   4
     [0].number                                    4
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
 )");
     test::test_axe(*se, sa, "a [ 0 ]\n", R"(
 [  0]   1:1   cat=.identifier                              a
@@ -453,9 +597,15 @@ language Test:
   [0].Test.Atom                                   a
     [0].identifier                                a
   [1].Test.oper                                   [
+    [0].parenthesis                               
   [2].Test.Atom                                   0
     [0].number                                    0
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
   [3].Test.oper                                   ]
+    [0].parenthesis                               
 )");
     test::test_axe(*se, sa, "a [ 0 ] [ 1 ]\n", R"(
 [  0]   1:1   cat=.identifier                              a
@@ -471,13 +621,25 @@ language Test:
     [0].Test.Atom                                 a
       [0].identifier                              a
     [1].Test.oper                                 [
+      [0].parenthesis                             
     [2].Test.Atom                                 0
       [0].number                                  0
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [3].Test.oper                                 ]
+      [0].parenthesis                             
   [1].Test.oper                                   [
+    [0].parenthesis                               
   [2].Test.Atom                                   1
     [0].number                                    1
+      [0].number.integer                          
+        [0].number.integer.decimal                
+          [0].number.plusMinus                    
+          [1].number.unsigned.integer.decimal     
   [3].Test.oper                                   ]
+    [0].parenthesis                               
 )");
     test::test_axe(*se, sa, "a [ 0 ] . b [ 1 ]\n", {none});
     test::test_axe(*se, sa, "a [ 0 ] + b [ 1 ]\n", R"(
@@ -496,17 +658,29 @@ language Test:
     [0].Test.Atom                                 a
       [0].identifier                              a
     [1].Test.oper                                 [
+      [0].parenthesis                             
     [2].Test.Atom                                 0
       [0].number                                  0
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [3].Test.oper                                 ]
+      [0].parenthesis                             
   [1].Test.oper                                   +
   [2].Test.Sub.[                                  b [ 1 ]
     [0].Test.Atom                                 b
       [0].identifier                              b
     [1].Test.oper                                 [
+      [0].parenthesis                             
     [2].Test.Atom                                 1
       [0].number                                  1
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
     [3].Test.oper                                 ]
+      [0].parenthesis                             
 )");
     test::test_axe(*se, sa, "a ? b : c\n", R"(
 [  0]   1:1   cat=.identifier                              a
@@ -776,9 +950,11 @@ language Test:
 
 [0].Test.PrfLo.{                                  { b } a
   [0].Test.oper                                   {
+    [0].parenthesis                               
   [1].Test.Atom                                   b
     [0].identifier                                b
   [2].Test.oper                                   }
+    [0].parenthesis                               
   [3].Test.Atom                                   a
     [0].identifier                                a
 )");
@@ -795,9 +971,11 @@ language Test:
     [0].identifier                                a
   [1].Test.PrfHi.(                                ( b ) c
     [0].Test.oper                                 (
+      [0].parenthesis                             
     [1].Test.Atom                                 b
       [0].identifier                              b
     [2].Test.oper                                 )
+      [0].parenthesis                             
     [3].Test.Atom                                 c
       [0].identifier                              c
 )");
@@ -816,9 +994,11 @@ language Test:
   [1].Test.Atom                                   << { ... c >>
     [0].Test.PrfLo.{                              { b } c
       [0].Test.oper                               {
+        [0].parenthesis                           
       [1].Test.Atom                               b
         [0].identifier                            b
       [2].Test.oper                               }
+        [0].parenthesis                           
       [3].Test.Atom                               c
         [0].identifier                            c
 )");
@@ -837,7 +1017,10 @@ language Test:
       [0].identifier                              a
     [1].Test.Atom                                 1 +
       [0].number                                  1
-      [1].operator.single                         +
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [1].Test.Atom                                   z
     [0].identifier                                z
 )");

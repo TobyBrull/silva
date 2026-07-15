@@ -99,15 +99,12 @@ language Frog:
 [0].Seed                                          language Frog ...  
   [0].Seed.Language                               language Frog ...  
     [0].Seed.ruleName                             Frog
-    [1].newline                                   \n
-    [2].indent                                      
-    [3].Seed.Rule                                 ⊙ = Rule * \n  
+    [1].Seed.Rule                                 ⊙ = Rule * \n  
       [0].Seed.Expr.Postfix.*                     Rule *
         [0].Seed.Nonterminal                      Rule
           [0].Seed.ruleName                       Rule
         [1].Seed.Expr.operator                    *
-      [1].newline                                 \n  
-    [4].Seed.Rule                                 skip = ... * \n  
+    [2].Seed.Rule                                 skip = ... * \n  
       [0].Seed.Nonterminal                        skip
         [0].Seed.tokenCategoryName                skip
       [1].Seed.Expr.Postfix.*                     ( SPACE ... ) *
@@ -133,8 +130,7 @@ language Frog:
           [12].Seed.Terminal                      NEWLINE
             [0].Seed.fragName                     NEWLINE
         [1].Seed.Expr.operator                    *
-      [2].newline                                 \n  
-    [5].Seed.Rule                                 identifier = ... * \n  
+    [3].Seed.Rule                                 identifier = ... * \n  
       [0].Seed.Nonterminal                        identifier
         [0].Seed.tokenCategoryName                identifier
       [1].Seed.Expr.Concat.concat                 ID_START ID_CONTINUE *
@@ -144,8 +140,7 @@ language Frog:
           [0].Seed.Terminal                       ID_CONTINUE
             [0].Seed.fragName                     ID_CONTINUE
           [1].Seed.Expr.operator                  *
-      [2].newline                                 \n  
-    [6].Seed.Rule                                 Rule = RuleName Expr \n  
+    [4].Seed.Rule                                 Rule = RuleName Expr \n  
       [0].Seed.Nonterminal                        Rule
         [0].Seed.ruleName                         Rule
       [1].Seed.Expr.Concat.concat                 RuleName Expr
@@ -153,23 +148,20 @@ language Frog:
           [0].Seed.ruleName                       RuleName
         [1].Seed.Nonterminal                      Expr
           [0].Seed.ruleName                       Expr
-      [2].newline                                 \n  
-    [7].Seed.Rule                                 RuleName = no_node Keyword \n  
+    [5].Seed.Rule                                 RuleName = no_node Keyword \n  
       [0].Seed.Nonterminal                        RuleName
         [0].Seed.ruleName                         RuleName
       [1].Seed.Qualifier                          no_node
       [2].Seed.Nonterminal                        Keyword
         [0].Seed.ruleName                         Keyword
-      [3].newline                                 \n  
-    [8].Seed.Rule                                 Expr = Primary + \n  
+    [6].Seed.Rule                                 Expr = Primary + \n  
       [0].Seed.Nonterminal                        Expr
         [0].Seed.ruleName                         Expr
       [1].Seed.Expr.Postfix.+                     Primary +
         [0].Seed.Nonterminal                      Primary
           [0].Seed.ruleName                       Primary
         [1].Seed.Expr.operator                    +
-      [2].newline                                 \n  
-    [9].Seed.Rule                                 Primary = ... identifier \n  
+    [7].Seed.Rule                                 Primary = ... identifier \n  
       [0].Seed.Nonterminal                        Primary
         [0].Seed.ruleName                         Primary
       [1].Seed.Expr.And.but_then                  not Keyword but_then identifier
@@ -180,13 +172,10 @@ language Frog:
         [1].Seed.Expr.operator                    but_then
         [2].Seed.Nonterminal                      identifier
           [0].Seed.tokenCategoryName              identifier
-      [2].newline                                 \n  
-    [10].Seed.Scope                               Keyword : ...  
+    [8].Seed.Scope                                Keyword : ...  
       [0].Seed.Nonterminal                        Keyword
         [0].Seed.ruleName                         Keyword
-      [1].newline                                 \n
-      [2].indent                                      
-      [3].Seed.Rule                               ⊙ = ... 'keyword3' 
+      [1].Seed.Rule                               ⊙ = ... 'keyword3' 
         [0].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
           [0].Seed.Terminal                       'keyword1'
             [0].string                            'keyword1'
@@ -196,9 +185,6 @@ language Frog:
           [3].Seed.Expr.operator                  |
           [4].Seed.Terminal                       'keyword3'
             [0].string                            'keyword3'
-        [1].newline                               
-      [4].dedent                                  
-    [11].dedent                                   
 )";
     const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));
@@ -297,13 +283,11 @@ language Testor:
   [0].Testor.Assign                               x = a + b
     [0].identifier                                x
     [1].identifier                                a
-    [2].operator.single                           +
-    [3].identifier                                b
+    [2].identifier                                b
   [1].Testor.Assign                               y = c * d
     [0].identifier                                y
     [1].identifier                                c
-    [2].operator.single                           *
-    [3].identifier                                d
+    [2].identifier                                d
 )";
     const string_t result        = SILVA_REQUIRE(pt->span().to_string());
     CHECK(result == expected.substr(1));

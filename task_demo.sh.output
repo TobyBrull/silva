@@ -353,10 +353,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Silva                                         Seed language ... Fern language
   [0].Silva.Section                               Seed language
+    [0].Silva.languageName                        Seed
   [1].Silva.Section                               AsBs language
+    [0].Silva.languageName                        AsBs
   [2].Silva.Section                               Seed language
+    [0].Silva.languageName                        Seed
   [3].Silva.Section                               CppStmts language
+    [0].Silva.languageName                        CppStmts
   [4].Silva.Section                               Fern language
+    [0].Silva.languageName                        Fern
 
 [  0]   2:1   cat=.literal                                 language
 [  1]   2:10  cat=.Seed.ruleName                           AsBs
@@ -380,15 +385,23 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Seed                                          language AsBs ... \n 
   [0].Seed.Language                               language AsBs ... \n 
-    [0].Seed.Rule                                 skip = ... freeForm \n
+    [0].Seed.ruleName                             AsBs
+    [1].Seed.Rule                                 skip = ... freeForm \n
       [0].Seed.Nonterminal                        skip
+        [0].Seed.tokenCategoryName                skip
       [1].Seed.Nonterminal                        skip . freeForm
-    [1].Seed.Rule                                 ⊙ = ... * \n
+        [0].Seed.tokenCategoryName                skip
+        [1].Seed.tokenCategoryName                freeForm
+    [2].Seed.Rule                                 ⊙ = ... * \n
       [0].Seed.Expr.Concat.concat                 "a" * "b" *
         [0].Seed.Expr.Postfix.*                   "a" *
           [0].Seed.Terminal                       "a"
+            [0].string                            "a"
+          [1].Seed.Expr.operator                  *
         [1].Seed.Expr.Postfix.*                   "b" *
           [0].Seed.Terminal                       "b"
+            [0].string                            "b"
+          [1].Seed.Expr.operator                  *
 
 [  0]   8:8   cat=.literal                                 a
 [  1]   8:10  cat=.literal                                 a
@@ -601,169 +614,264 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Seed                                          language CppStmts ...  
   [0].Seed.Language                               language CppStmts ...  
-    [0].Seed.Rule                                 skip = ... freeForm \n
+    [0].Seed.ruleName                             CppStmts
+    [1].Seed.Rule                                 skip = ... freeForm \n
       [0].Seed.Nonterminal                        skip
+        [0].Seed.tokenCategoryName                skip
       [1].Seed.Nonterminal                        skip . freeForm
-    [1].Seed.Rule                                 ⊙ = ... * \n  
+        [0].Seed.tokenCategoryName                skip
+        [1].Seed.tokenCategoryName                freeForm
+    [2].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.Expr.Postfix.*                     ( Expr ';' ) *
         [0].Seed.Expr.Concat.concat               Expr ';'
           [0].Seed.Nonterminal                    Expr
+            [0].Seed.ruleName                     Expr
           [1].Seed.Terminal                       ';'
-    [2].Seed.Scope                                Expr : ... \n 
+            [0].string                            ';'
+        [1].Seed.Expr.operator                    *
+    [3].Seed.Scope                                Expr : ... \n 
       [0].Seed.Nonterminal                        Expr
+        [0].Seed.ruleName                         Expr
       [1].Seed.Rule                               ⊙ = ... \n     
         [0].Seed.Axe                              Atom oper ... \n     
           [0].Seed.Nonterminal                    Atom
+            [0].Seed.ruleName                     Atom
           [1].Seed.Nonterminal                    oper
+            [0].Seed.tokenCategoryName            oper
           [2].Seed.Axe.Level                      Namespace = ... prefix '::'
-            [0].Seed.Axe.Assoc                    rtl
-            [1].Seed.Axe.Ops                      infix '::'
+            [0].Seed.ruleName                     Namespace
+            [1].Seed.Axe.Assoc                    rtl
+            [2].Seed.Axe.Ops                      infix '::'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '::'
-            [2].Seed.Axe.Ops                      prefix '::'
+                [0].string                        '::'
+            [3].Seed.Axe.Ops                      prefix '::'
               [0].Seed.Axe.OpType                 prefix
               [1].Seed.Axe.Op                     '::'
+                [0].string                        '::'
           [3].Seed.Axe.Level                      Postfix = ... '.' '->'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      postfix '++' '--'
+            [0].Seed.ruleName                     Postfix
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      postfix '++' '--'
               [0].Seed.Axe.OpType                 postfix
               [1].Seed.Axe.Op                     '++'
+                [0].string                        '++'
               [2].Seed.Axe.Op                     '--'
-            [2].Seed.Axe.Ops                      postfix_nest '(' ')' '[' ']'
+                [0].string                        '--'
+            [3].Seed.Axe.Ops                      postfix_nest '(' ')' '[' ']'
               [0].Seed.Axe.OpType                 postfix_nest
               [1].Seed.Axe.Op                     '('
+                [0].string                        '('
               [2].Seed.Axe.Op                     ')'
+                [0].string                        ')'
               [3].Seed.Axe.Op                     '['
+                [0].string                        '['
               [4].Seed.Axe.Op                     ']'
-            [3].Seed.Axe.Ops                      infix '.' '->'
+                [0].string                        ']'
+            [4].Seed.Axe.Ops                      infix '.' '->'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.'
+                [0].string                        '.'
               [2].Seed.Axe.Op                     '->'
+                [0].string                        '->'
           [4].Seed.Axe.Level                      Prefix = ... '(' ')'
-            [0].Seed.Axe.Assoc                    rtl
-            [1].Seed.Axe.Ops                      prefix '++' ... "sizeof" "new"
+            [0].Seed.ruleName                     Prefix
+            [1].Seed.Axe.Assoc                    rtl
+            [2].Seed.Axe.Ops                      prefix '++' ... "sizeof" "new"
               [0].Seed.Axe.OpType                 prefix
               [1].Seed.Axe.Op                     '++'
+                [0].string                        '++'
               [2].Seed.Axe.Op                     '--'
+                [0].string                        '--'
               [3].Seed.Axe.Op                     '+'
+                [0].string                        '+'
               [4].Seed.Axe.Op                     '-'
+                [0].string                        '-'
               [5].Seed.Axe.Op                     '!'
+                [0].string                        '!'
               [6].Seed.Axe.Op                     '~'
+                [0].string                        '~'
               [7].Seed.Axe.Op                     '*'
+                [0].string                        '*'
               [8].Seed.Axe.Op                     '&'
+                [0].string                        '&'
               [9].Seed.Axe.Op                     "sizeof"
+                [0].string                        "sizeof"
               [10].Seed.Axe.Op                    "new"
-            [2].Seed.Axe.Ops                      prefix_nest -> Type '(' ')'
+                [0].string                        "new"
+            [3].Seed.Axe.Ops                      prefix_nest -> Type '(' ')'
               [0].Seed.Axe.OpType                 prefix_nest
               [1].Seed.Nonterminal                Type
+                [0].Seed.ruleName                 Type
               [2].Seed.Axe.Op                     '('
+                [0].string                        '('
               [3].Seed.Axe.Op                     ')'
+                [0].string                        ')'
           [5].Seed.Axe.Level                      Member = ... '.*' '->*'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '.*' '->*'
+            [0].Seed.ruleName                     Member
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '.*' '->*'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.*'
+                [0].string                        '.*'
               [2].Seed.Axe.Op                     '->*'
+                [0].string                        '->*'
           [6].Seed.Axe.Level                      Multiply = ... '/' '%'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '*' '/' '%'
+            [0].Seed.ruleName                     Multiply
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '*' '/' '%'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '*'
+                [0].string                        '*'
               [2].Seed.Axe.Op                     '/'
+                [0].string                        '/'
               [3].Seed.Axe.Op                     '%'
+                [0].string                        '%'
           [7].Seed.Axe.Level                      Addition = ... '+' '-'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '+' '-'
+            [0].Seed.ruleName                     Addition
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '+' '-'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '+'
+                [0].string                        '+'
               [2].Seed.Axe.Op                     '-'
+                [0].string                        '-'
           [8].Seed.Axe.Level                      Bitshift = ... '<<' '>>'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '<<' '>>'
+            [0].Seed.ruleName                     Bitshift
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '<<' '>>'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '<<'
+                [0].string                        '<<'
               [2].Seed.Axe.Op                     '>>'
+                [0].string                        '>>'
           [9].Seed.Axe.Level                      Spaceship = ltr infix '<=>'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '<=>'
+            [0].Seed.ruleName                     Spaceship
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '<=>'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '<=>'
+                [0].string                        '<=>'
           [10].Seed.Axe.Level                     Comparison = ... '>' '>='
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '<' '<=' '>' '>='
+            [0].Seed.ruleName                     Comparison
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '<' '<=' '>' '>='
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '<'
+                [0].string                        '<'
               [2].Seed.Axe.Op                     '<='
+                [0].string                        '<='
               [3].Seed.Axe.Op                     '>'
+                [0].string                        '>'
               [4].Seed.Axe.Op                     '>='
+                [0].string                        '>='
           [11].Seed.Axe.Level                     Equality = ... '==' '!='
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '==' '!='
+            [0].Seed.ruleName                     Equality
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '==' '!='
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '=='
+                [0].string                        '=='
               [2].Seed.Axe.Op                     '!='
+                [0].string                        '!='
           [12].Seed.Axe.Level                     BitAnd = ltr infix '&'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '&'
+            [0].Seed.ruleName                     BitAnd
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '&'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '&'
+                [0].string                        '&'
           [13].Seed.Axe.Level                     BitXor = ltr infix '^'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '^'
+            [0].Seed.ruleName                     BitXor
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '^'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '^'
+                [0].string                        '^'
           [14].Seed.Axe.Level                     BitOr = ltr infix '|'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '|'
+            [0].Seed.ruleName                     BitOr
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '|'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '|'
+                [0].string                        '|'
           [15].Seed.Axe.Level                     LogicalAnd = ltr infix '&&'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '&&'
+            [0].Seed.ruleName                     LogicalAnd
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '&&'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '&&'
+                [0].string                        '&&'
           [16].Seed.Axe.Level                     LogicalOr = ltr infix '||'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '||'
+            [0].Seed.ruleName                     LogicalOr
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '||'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '||'
+                [0].string                        '||'
           [17].Seed.Axe.Level                     Assignment = ... '?' ':'
-            [0].Seed.Axe.Assoc                    rtl
-            [1].Seed.Axe.Ops                      infix '=' '+=' '-='
+            [0].Seed.ruleName                     Assignment
+            [1].Seed.Axe.Assoc                    rtl
+            [2].Seed.Axe.Ops                      infix '=' '+=' '-='
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '='
+                [0].string                        '='
               [2].Seed.Axe.Op                     '+='
+                [0].string                        '+='
               [3].Seed.Axe.Op                     '-='
-            [2].Seed.Axe.Ops                      prefix "throw"
+                [0].string                        '-='
+            [3].Seed.Axe.Ops                      prefix "throw"
               [0].Seed.Axe.OpType                 prefix
               [1].Seed.Axe.Op                     "throw"
-            [3].Seed.Axe.Ops                      ternary '?' ':'
+                [0].string                        "throw"
+            [4].Seed.Axe.Ops                      ternary '?' ':'
               [0].Seed.Axe.OpType                 ternary
               [1].Seed.Axe.Op                     '?'
+                [0].string                        '?'
               [2].Seed.Axe.Op                     ':'
+                [0].string                        ':'
           [18].Seed.Axe.Level                     Comma = ltr infix ','
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix ','
+            [0].Seed.ruleName                     Comma
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix ','
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     ','
+                [0].string                        ','
       [2].Seed.Rule                               Atom = ... ')' \n    
         [0].Seed.Nonterminal                      Atom
+          [0].Seed.ruleName                       Atom
         [1].Seed.Expr.Or.|                        number | ... Expr ')'
           [0].Seed.Nonterminal                    number
-          [1].Seed.Nonterminal                    string
-          [2].Seed.Nonterminal                    identifier
-          [3].Seed.Expr.Concat.concat             '(' Expr ')'
+            [0].Seed.tokenCategoryName            number
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Nonterminal                    string
+            [0].Seed.tokenCategoryName            string
+          [3].Seed.Expr.operator                  |
+          [4].Seed.Nonterminal                    identifier
+            [0].Seed.tokenCategoryName            identifier
+          [5].Seed.Expr.operator                  |
+          [6].Seed.Expr.Concat.concat             '(' Expr ')'
             [0].Seed.Terminal                     '('
+              [0].string                          '('
             [1].Seed.Nonterminal                  Expr
+              [0].Seed.ruleName                   Expr
             [2].Seed.Terminal                     ')'
+              [0].string                          ')'
       [3].Seed.Rule                               oper = ... greedy \n    
         [0].Seed.Nonterminal                      oper
+          [0].Seed.tokenCategoryName              oper
         [1].Seed.Expr.Or.|                        parenthesis | operator . greedy
           [0].Seed.Nonterminal                    parenthesis
-          [1].Seed.Nonterminal                    operator . greedy
+            [0].Seed.tokenCategoryName            parenthesis
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Nonterminal                    operator . greedy
+            [0].Seed.tokenCategoryName            operator
+            [1].Seed.tokenCategoryName            greedy
       [4].Seed.Rule                               Type = identifier \n
         [0].Seed.Nonterminal                      Type
+          [0].Seed.ruleName                       Type
         [1].Seed.Nonterminal                      identifier
+          [0].Seed.tokenCategoryName              identifier
 
 [  0]  45:1   cat=.number                                  1
 [  1]  45:3   cat=.CppStmts.Expr.oper                      +
@@ -830,52 +938,166 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [0].CppStmts.Expr.Addition.+                    1 + ... * 5
     [0].CppStmts.Expr.Addition.+                  1 + 2 * 3
       [0].CppStmts.Expr.Atom                      1
-      [1].CppStmts.Expr.Multiply.*                2 * 3
+        [0].number                                1
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
+      [1].CppStmts.Expr.oper                      +
+      [2].CppStmts.Expr.Multiply.*                2 * 3
         [0].CppStmts.Expr.Atom                    2
-        [1].CppStmts.Expr.Atom                    3
-    [1].CppStmts.Expr.Multiply.*                  4 * 5
+          [0].number                              2
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
+        [1].CppStmts.Expr.oper                    *
+        [2].CppStmts.Expr.Atom                    3
+          [0].number                              3
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
+    [1].CppStmts.Expr.oper                        +
+    [2].CppStmts.Expr.Multiply.*                  4 * 5
       [0].CppStmts.Expr.Atom                      4
-      [1].CppStmts.Expr.Atom                      5
+        [0].number                                4
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
+      [1].CppStmts.Expr.oper                      *
+      [2].CppStmts.Expr.Atom                      5
+        [0].number                                5
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
   [1].CppStmts.Expr.Assignment.=                  a [ ... 3.14 )
     [0].CppStmts.Expr.Postfix.[                   a [ 1 ]
       [0].CppStmts.Expr.Atom                      a
-      [1].CppStmts.Expr.Atom                      1
-    [1].CppStmts.Expr.Postfix.(                   std :: ... 3.14 )
+        [0].identifier                            a
+      [1].CppStmts.Expr.oper                      [
+        [0].parenthesis                           
+      [2].CppStmts.Expr.Atom                      1
+        [0].number                                1
+          [0].number.integer                      
+            [0].number.integer.decimal            
+              [0].number.plusMinus                
+              [1].number.unsigned.integer.decimal 
+      [3].CppStmts.Expr.oper                      ]
+        [0].parenthesis                           
+    [1].CppStmts.Expr.oper                        =
+    [2].CppStmts.Expr.Postfix.(                   std :: ... 3.14 )
       [0].CppStmts.Expr.Namespace.::              std :: sin
         [0].CppStmts.Expr.Atom                    std
-        [1].CppStmts.Expr.Atom                    sin
-      [1].CppStmts.Expr.Atom                      3.14
+          [0].identifier                          std
+        [1].CppStmts.Expr.oper                    ::
+        [2].CppStmts.Expr.Atom                    sin
+          [0].identifier                          sin
+      [1].CppStmts.Expr.oper                      (
+        [0].parenthesis                           
+      [2].CppStmts.Expr.Atom                      3.14
+        [0].number                                3.14
+          [0].number.float                        
+            [0].number.plusMinus                  
+            [1].number.unsigned.float             
+              [0].number.unsigned.float.integerPart 
+                [0].number.unsigned.integer.decimal 
+              [1].number.unsigned.float.fraction  
+      [3].CppStmts.Expr.oper                      )
+        [0].parenthesis                           
   [2].CppStmts.Expr.BitOr.|                       1 | ... + 3
     [0].CppStmts.Expr.Atom                        1
-    [1].CppStmts.Expr.Comparison.<=               0 <= ... + 3
+      [0].number                                  1
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
+    [1].CppStmts.Expr.oper                        |
+    [2].CppStmts.Expr.Comparison.<=               0 <= ... + 3
       [0].CppStmts.Expr.Comparison.<=             0 <= x * 10
         [0].CppStmts.Expr.Atom                    0
-        [1].CppStmts.Expr.Multiply.*              x * 10
+          [0].number                              0
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
+        [1].CppStmts.Expr.oper                    <=
+        [2].CppStmts.Expr.Multiply.*              x * 10
           [0].CppStmts.Expr.Atom                  x
-          [1].CppStmts.Expr.Atom                  10
-      [1].CppStmts.Expr.Addition.+                2 + 3
+            [0].identifier                        x
+          [1].CppStmts.Expr.oper                  *
+          [2].CppStmts.Expr.Atom                  10
+            [0].number                            10
+              [0].number.integer                  
+                [0].number.integer.decimal        
+                  [0].number.plusMinus            
+                  [1].number.unsigned.integer.decimal 
+      [1].CppStmts.Expr.oper                      <=
+      [2].CppStmts.Expr.Addition.+                2 + 3
         [0].CppStmts.Expr.Atom                    2
-        [1].CppStmts.Expr.Atom                    3
+          [0].number                              2
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
+        [1].CppStmts.Expr.oper                    +
+        [2].CppStmts.Expr.Atom                    3
+          [0].number                              3
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
   [3].CppStmts.Expr.Assignment.=                  std :: ... x )
     [0].CppStmts.Expr.Postfix.(                   std :: ... x )
       [0].CppStmts.Expr.Namespace.::              std :: get
         [0].CppStmts.Expr.Atom                    std
-        [1].CppStmts.Expr.Atom                    get
-      [1].CppStmts.Expr.Atom                      x
-    [1].CppStmts.Expr.Postfix.(                   :: std ... x )
+          [0].identifier                          std
+        [1].CppStmts.Expr.oper                    ::
+        [2].CppStmts.Expr.Atom                    get
+          [0].identifier                          get
+      [1].CppStmts.Expr.oper                      (
+        [0].parenthesis                           
+      [2].CppStmts.Expr.Atom                      x
+        [0].identifier                            x
+      [3].CppStmts.Expr.oper                      )
+        [0].parenthesis                           
+    [1].CppStmts.Expr.oper                        =
+    [2].CppStmts.Expr.Postfix.(                   :: std ... x )
       [0].CppStmts.Expr.Namespace.::              :: std :: get
-        [0].CppStmts.Expr.Namespace.::            std :: get
+        [0].CppStmts.Expr.oper                    ::
+        [1].CppStmts.Expr.Namespace.::            std :: get
           [0].CppStmts.Expr.Atom                  std
-          [1].CppStmts.Expr.Atom                  get
-      [1].CppStmts.Expr.Atom                      x
+            [0].identifier                        std
+          [1].CppStmts.Expr.oper                  ::
+          [2].CppStmts.Expr.Atom                  get
+            [0].identifier                        get
+      [1].CppStmts.Expr.oper                      (
+        [0].parenthesis                           
+      [2].CppStmts.Expr.Atom                      x
+        [0].identifier                            x
+      [3].CppStmts.Expr.oper                      )
+        [0].parenthesis                           
   [4].CppStmts.Expr.Prefix.++                     ++ x ++
-    [0].CppStmts.Expr.Postfix.++                  x ++
+    [0].CppStmts.Expr.oper                        ++
+    [1].CppStmts.Expr.Postfix.++                  x ++
       [0].CppStmts.Expr.Atom                      x
+        [0].identifier                            x
+      [1].CppStmts.Expr.oper                      ++
   [5].CppStmts.Expr.Addition.+                    a + ... ) b
     [0].CppStmts.Expr.Atom                        a
-    [1].CppStmts.Expr.Prefix.(                    ( int ) b
-      [0].CppStmts.Expr.Type                      int
-      [1].CppStmts.Expr.Atom                      b
+      [0].identifier                              a
+    [1].CppStmts.Expr.oper                        +
+    [2].CppStmts.Expr.Prefix.(                    ( int ) b
+      [0].CppStmts.Expr.oper                      (
+        [0].parenthesis                           
+      [1].CppStmts.Expr.Type                      int
+        [0].identifier                            int
+      [2].CppStmts.Expr.oper                      )
+        [0].parenthesis                           
+      [3].CppStmts.Expr.Atom                      b
+        [0].identifier                            b
 
 [  0]  54:1   cat=.literal                                 [
 [  1]  55:3   cat=.literal                                 none
@@ -905,19 +1127,42 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].Boolean                                 true
   [2].Fern.LabeledItem                            42
     [0].Fern.Value                                42
+      [0].number                                  42
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [3].Fern.LabeledItem                            hello : 'World'
     [0].Fern.Label                                hello
+      [0].identifier                              hello
     [1].Fern.Value                                'World'
+      [0].string                                  'World'
   [4].Fern.LabeledItem                            [ ]
     [0].Fern                                      [ ]
   [5].Fern.LabeledItem                            [ 'one' ... 2.0 ]
     [0].Fern                                      [ 'one' ... 2.0 ]
       [0].Fern.LabeledItem                        'one' : 1.0
         [0].Fern.Label                            'one'
+          [0].string                              'one'
         [1].Fern.Value                            1.0
+          [0].number                              1.0
+            [0].number.float                      
+              [0].number.plusMinus                
+              [1].number.unsigned.float           
+                [0].number.unsigned.float.integerPart 
+                  [0].number.unsigned.integer.decimal 
+                [1].number.unsigned.float.fraction 
       [1].Fern.LabeledItem                        'two' : 2.0
         [0].Fern.Label                            'two'
+          [0].string                              'two'
         [1].Fern.Value                            2.0
+          [0].number                              2.0
+            [0].number.float                      
+              [0].number.plusMinus                
+              [1].number.unsigned.float           
+                [0].number.unsigned.float.integerPart 
+                  [0].number.unsigned.integer.decimal 
+                [1].number.unsigned.float.fraction 
 
 [  0]   1:1   cat=.literal                                 language
 [  1]   1:10  cat=.Seed.ruleName                           Somelang
@@ -949,21 +1194,33 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Seed                                          language Somelang ...  
   [0].Seed.Language                               language Somelang ...  
-    [0].Seed.Rule                                 skip = ... freeForm \n
+    [0].Seed.ruleName                             Somelang
+    [1].Seed.Rule                                 skip = ... freeForm \n
       [0].Seed.Nonterminal                        skip
+        [0].Seed.tokenCategoryName                skip
       [1].Seed.Nonterminal                        skip . freeForm
-    [1].Seed.Rule                                 ⊙ = As Bs \n  
+        [0].Seed.tokenCategoryName                skip
+        [1].Seed.tokenCategoryName                freeForm
+    [2].Seed.Rule                                 ⊙ = As Bs \n  
       [0].Seed.Expr.Concat.concat                 As Bs
         [0].Seed.Nonterminal                      As
+          [0].Seed.ruleName                       As
         [1].Seed.Nonterminal                      Bs
-    [2].Seed.Rule                                 As = "a" * \n  
+          [0].Seed.ruleName                       Bs
+    [3].Seed.Rule                                 As = "a" * \n  
       [0].Seed.Nonterminal                        As
+        [0].Seed.ruleName                         As
       [1].Seed.Expr.Postfix.*                     "a" *
         [0].Seed.Terminal                         "a"
-    [3].Seed.Rule                                 Bs = "b" * 
+          [0].string                              "a"
+        [1].Seed.Expr.operator                    *
+    [4].Seed.Rule                                 Bs = "b" * 
       [0].Seed.Nonterminal                        Bs
+        [0].Seed.ruleName                         Bs
       [1].Seed.Expr.Postfix.*                     "b" *
         [0].Seed.Terminal                         "b"
+          [0].string                              "b"
+        [1].Seed.Expr.operator                    *
 
 [  0]   1:1   cat=.literal                                 a
 [  1]   1:3   cat=.literal                                 a
@@ -982,6 +1239,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Silva                                         Seed language
   [0].Silva.Section                               Seed language
+    [0].Silva.languageName                        Seed
 
 [  0]   2:1   cat=.literal                                 language
 [  1]   2:10  cat=.Seed.ruleName                           Soil
@@ -1352,269 +1610,460 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].Seed                                          language Soil ...  
   [0].Seed.Language                               language Soil ...  
-    [0].Seed.Rule                                 skip = ... freeForm \n
+    [0].Seed.ruleName                             Soil
+    [1].Seed.Rule                                 skip = ... freeForm \n
       [0].Seed.Nonterminal                        skip
+        [0].Seed.tokenCategoryName                skip
       [1].Seed.Nonterminal                        skip . freeForm
-    [1].Seed.Rule                                 typeName = 't_' identifier \n  
+        [0].Seed.tokenCategoryName                skip
+        [1].Seed.tokenCategoryName                freeForm
+    [2].Seed.Rule                                 typeName = 't_' identifier \n  
       [0].Seed.Nonterminal                        typeName
+        [0].Seed.tokenCategoryName                typeName
       [1].Seed.Expr.Concat.concat                 't_' identifier
         [0].Seed.Terminal                         't_'
+          [0].string                              't_'
         [1].Seed.Nonterminal                      identifier
-    [2].Seed.Rule                                 funcName = 'f_' identifier \n
+          [0].Seed.tokenCategoryName              identifier
+    [3].Seed.Rule                                 funcName = 'f_' identifier \n
       [0].Seed.Nonterminal                        funcName
+        [0].Seed.tokenCategoryName                funcName
       [1].Seed.Expr.Concat.concat                 'f_' identifier
         [0].Seed.Terminal                         'f_'
+          [0].string                              'f_'
         [1].Seed.Nonterminal                      identifier
-    [3].Seed.Rule                                 ⊙ = ... * \n  
+          [0].Seed.tokenCategoryName              identifier
+    [4].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.Expr.Postfix.*                     ( Type ... ) *
         [0].Seed.Expr.Or.|                        Type . ... . Defn
           [0].Seed.Nonterminal                    Type . Defn
-          [1].Seed.Nonterminal                    Func . Defn
-          [2].Seed.Nonterminal                    Variable . Defn
-    [4].Seed.Scope                                Type : ...    
+            [0].Seed.ruleName                     Type
+            [1].Seed.ruleName                     Defn
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Nonterminal                    Func . Defn
+            [0].Seed.ruleName                     Func
+            [1].Seed.ruleName                     Defn
+          [3].Seed.Expr.operator                  |
+          [4].Seed.Nonterminal                    Variable . Defn
+            [0].Seed.ruleName                     Variable
+            [1].Seed.ruleName                     Defn
+        [1].Seed.Expr.operator                    *
+    [5].Seed.Scope                                Type : ...    
       [0].Seed.Nonterminal                        Type
+        [0].Seed.ruleName                         Type
       [1].Seed.Rule                               ⊙ = ... Struct \n    
         [0].Seed.Expr.Or.|                        Name | Struct
           [0].Seed.Nonterminal                    Name
-          [1].Seed.Nonterminal                    Struct
+            [0].Seed.ruleName                     Name
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Nonterminal                    Struct
+            [0].Seed.ruleName                     Struct
       [2].Seed.Rule                               Name = typeName \n    
         [0].Seed.Nonterminal                      Name
+          [0].Seed.ruleName                       Name
         [1].Seed.Nonterminal                      typeName
+          [0].Seed.tokenCategoryName              typeName
       [3].Seed.Rule                               Defn = ... Type \n    
         [0].Seed.Nonterminal                      Defn
+          [0].Seed.ruleName                       Defn
         [1].Seed.Expr.Concat.concat               Name '=' Type
           [0].Seed.Nonterminal                    Name
+            [0].Seed.ruleName                     Name
           [1].Seed.Terminal                       '='
+            [0].string                            '='
           [2].Seed.Nonterminal                    Type
+            [0].Seed.ruleName                     Type
       [4].Seed.Scope                              Struct : ...  
         [0].Seed.Nonterminal                      Struct
+          [0].Seed.ruleName                       Struct
         [1].Seed.Rule                             ⊙ = ... ']' \n      
           [0].Seed.Expr.Concat.concat             '[' Member * ']'
             [0].Seed.Terminal                     '['
+              [0].string                          '['
             [1].Seed.Expr.Postfix.*               Member *
               [0].Seed.Nonterminal                Member
+                [0].Seed.ruleName                 Member
+              [1].Seed.Expr.operator              *
             [2].Seed.Terminal                     ']'
+              [0].string                          ']'
         [2].Seed.Scope                            Member : ... \n 
           [0].Seed.Nonterminal                    Member
+            [0].Seed.ruleName                     Member
           [1].Seed.Rule                           ⊙ = ... ';' \n        
             [0].Seed.Expr.Concat.concat           Type Label ... ? ';'
               [0].Seed.Nonterminal                Type
+                [0].Seed.ruleName                 Type
               [1].Seed.Expr.Postfix.?             Label ?
                 [0].Seed.Nonterminal              Label
+                  [0].Seed.ruleName               Label
+                [1].Seed.Expr.operator            ?
               [2].Seed.Expr.Postfix.?             Init ?
                 [0].Seed.Nonterminal              Init
+                  [0].Seed.ruleName               Init
+                [1].Seed.Expr.operator            ?
               [3].Seed.Terminal                   ';'
+                [0].string                        ';'
           [2].Seed.Rule                           Label = ':' Name \n        
             [0].Seed.Nonterminal                  Label
+              [0].Seed.ruleName                   Label
             [1].Seed.Expr.Concat.concat           ':' Name
               [0].Seed.Terminal                   ':'
+                [0].string                        ':'
               [1].Seed.Nonterminal                Name
+                [0].Seed.ruleName                 Name
           [3].Seed.Rule                           Init = '=' Expr \n        
             [0].Seed.Nonterminal                  Init
+              [0].Seed.ruleName                   Init
             [1].Seed.Expr.Concat.concat           '=' Expr
               [0].Seed.Terminal                   '='
+                [0].string                        '='
               [1].Seed.Nonterminal                Expr
+                [0].Seed.ruleName                 Expr
           [4].Seed.Rule                           Name = identifier \n
             [0].Seed.Nonterminal                  Name
+              [0].Seed.ruleName                   Name
             [1].Seed.Nonterminal                  identifier
-    [5].Seed.Scope                                Expr : ...    
+              [0].Seed.tokenCategoryName          identifier
+    [6].Seed.Scope                                Expr : ...    
       [0].Seed.Nonterminal                        Expr
+        [0].Seed.ruleName                         Expr
       [1].Seed.Rule                               ⊙ = Axe \n    
         [0].Seed.Nonterminal                      Axe
+          [0].Seed.ruleName                       Axe
       [2].Seed.Rule                               Maybe = ... ε \n    
         [0].Seed.Nonterminal                      Maybe
+          [0].Seed.ruleName                       Maybe
         [1].Seed.Expr.Or.|                        Expr | ε
           [0].Seed.Nonterminal                    Expr
-          [1].Seed.Terminal                       ε
+            [0].Seed.ruleName                     Expr
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Terminal                       ε
       [3].Seed.Rule                               Axe = ... \n     
         [0].Seed.Nonterminal                      Axe
+          [0].Seed.ruleName                       Axe
         [1].Seed.Axe                              Atom oper ... \n     
           [0].Seed.Nonterminal                    Atom
+            [0].Seed.ruleName                     Atom
           [1].Seed.Nonterminal                    oper
+            [0].Seed.tokenCategoryName            oper
           [2].Seed.Axe.Level                      Member = ltr infix '.'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '.'
+            [0].Seed.ruleName                     Member
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '.'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '.'
+                [0].string                        '.'
           [3].Seed.Axe.Level                      CallPost = ... '(' ')'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      postfix_nest '(' ')'
+            [0].Seed.ruleName                     CallPost
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      postfix_nest '(' ')'
               [0].Seed.Axe.OpType                 postfix_nest
               [1].Seed.Axe.Op                     '('
+                [0].string                        '('
               [2].Seed.Axe.Op                     ')'
+                [0].string                        ')'
           [4].Seed.Axe.Level                      Typing = ltr infix '::'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '::'
+            [0].Seed.ruleName                     Typing
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '::'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '::'
+                [0].string                        '::'
           [5].Seed.Axe.Level                      CallPipe = ltr infix '|'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '|'
+            [0].Seed.ruleName                     CallPipe
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '|'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '|'
+                [0].string                        '|'
           [6].Seed.Axe.Level                      Mul = ... '*' '//'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '*' '//'
+            [0].Seed.ruleName                     Mul
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '*' '//'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '*'
+                [0].string                        '*'
               [2].Seed.Axe.Op                     '//'
+                [0].string                        '//'
           [7].Seed.Axe.Level                      Add = ... '+' '-'
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '+' '-'
+            [0].Seed.ruleName                     Add
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '+' '-'
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '+'
+                [0].string                        '+'
               [2].Seed.Axe.Op                     '-'
+                [0].string                        '-'
           [8].Seed.Axe.Level                      Comp = ... '>' '>='
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '==' ... '>' '>='
+            [0].Seed.ruleName                     Comp
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '==' ... '>' '>='
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '=='
+                [0].string                        '=='
               [2].Seed.Axe.Op                     '<='
+                [0].string                        '<='
               [3].Seed.Axe.Op                     '<'
+                [0].string                        '<'
               [4].Seed.Axe.Op                     '>'
+                [0].string                        '>'
               [5].Seed.Axe.Op                     '>='
+                [0].string                        '>='
           [9].Seed.Axe.Level                      Logic = ... "and" "or"
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix "and" "or"
+            [0].Seed.ruleName                     Logic
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix "and" "or"
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     "and"
+                [0].string                        "and"
               [2].Seed.Axe.Op                     "or"
+                [0].string                        "or"
           [10].Seed.Axe.Level                     Assign = ... '+=' '*='
-            [0].Seed.Axe.Assoc                    ltr
-            [1].Seed.Axe.Ops                      infix '=' '+=' '*='
+            [0].Seed.ruleName                     Assign
+            [1].Seed.Axe.Assoc                    ltr
+            [2].Seed.Axe.Ops                      infix '=' '+=' '*='
               [0].Seed.Axe.OpType                 infix
               [1].Seed.Axe.Op                     '='
+                [0].string                        '='
               [2].Seed.Axe.Op                     '+='
+                [0].string                        '+='
               [3].Seed.Axe.Op                     '*='
+                [0].string                        '*='
       [4].Seed.Rule                               Atom = ... ) \n    
         [0].Seed.Nonterminal                      Atom
+          [0].Seed.ruleName                       Atom
         [1].Seed.Expr.Or.|                        Struct | ... Expr ')'
           [0].Seed.Nonterminal                    Struct
-          [1].Seed.Terminal                       language
-          [2].Seed.Nonterminal                    typeName
-          [3].Seed.Nonterminal                    funcName
-          [4].Seed.Nonterminal                    identifier
-          [5].Seed.Nonterminal                    string
-          [6].Seed.Nonterminal                    number
-          [7].Seed.Terminal                       "true"
-          [8].Seed.Terminal                       "false"
-          [9].Seed.Terminal                       "none"
-          [10].Seed.Expr.Concat.concat            '(' Expr ')'
+            [0].Seed.ruleName                     Struct
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Terminal                       language
+          [3].Seed.Expr.operator                  |
+          [4].Seed.Nonterminal                    typeName
+            [0].Seed.tokenCategoryName            typeName
+          [5].Seed.Expr.operator                  |
+          [6].Seed.Nonterminal                    funcName
+            [0].Seed.tokenCategoryName            funcName
+          [7].Seed.Expr.operator                  |
+          [8].Seed.Nonterminal                    identifier
+            [0].Seed.tokenCategoryName            identifier
+          [9].Seed.Expr.operator                  |
+          [10].Seed.Nonterminal                   string
+            [0].Seed.tokenCategoryName            string
+          [11].Seed.Expr.operator                 |
+          [12].Seed.Nonterminal                   number
+            [0].Seed.tokenCategoryName            number
+          [13].Seed.Expr.operator                 |
+          [14].Seed.Terminal                      "true"
+            [0].string                            "true"
+          [15].Seed.Expr.operator                 |
+          [16].Seed.Terminal                      "false"
+            [0].string                            "false"
+          [17].Seed.Expr.operator                 |
+          [18].Seed.Terminal                      "none"
+            [0].string                            "none"
+          [19].Seed.Expr.operator                 |
+          [20].Seed.Expr.Concat.concat            '(' Expr ')'
             [0].Seed.Terminal                     '('
+              [0].string                          '('
             [1].Seed.Nonterminal                  Expr
+              [0].Seed.ruleName                   Expr
             [2].Seed.Terminal                     ')'
+              [0].string                          ')'
       [5].Seed.Rule                               oper = ... parenthesis \n    
         [0].Seed.Nonterminal                      oper
+          [0].Seed.tokenCategoryName              oper
         [1].Seed.Expr.Or.|                        operator . greedy | parenthesis
           [0].Seed.Nonterminal                    operator . greedy
-          [1].Seed.Nonterminal                    parenthesis
+            [0].Seed.tokenCategoryName            operator
+            [1].Seed.tokenCategoryName            greedy
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Nonterminal                    parenthesis
+            [0].Seed.tokenCategoryName            parenthesis
       [6].Seed.Scope                              Struct : ... \n 
         [0].Seed.Nonterminal                      Struct
+          [0].Seed.ruleName                       Struct
         [1].Seed.Rule                             ⊙ = ... ']' \n      
           [0].Seed.Expr.Concat.concat             '[' LabeledItem * ']'
             [0].Seed.Terminal                     '['
+              [0].string                          '['
             [1].Seed.Expr.Postfix.*               LabeledItem *
               [0].Seed.Nonterminal                LabeledItem
+                [0].Seed.ruleName                 LabeledItem
+              [1].Seed.Expr.operator              *
             [2].Seed.Terminal                     ']'
+              [0].string                          ']'
         [2].Seed.Rule                             LabeledItem = ... ) \n
           [0].Seed.Nonterminal                    LabeledItem
+            [0].Seed.ruleName                     LabeledItem
           [1].Seed.Expr.Concat.concat             ( Variable ... Expr )
             [0].Seed.Expr.Postfix.?               ( Variable ... ) ?
               [0].Seed.Expr.Concat.concat         Variable . Name ':'
                 [0].Seed.Nonterminal              Variable . Name
+                  [0].Seed.ruleName               Variable
+                  [1].Seed.ruleName               Name
                 [1].Seed.Terminal                 ':'
+                  [0].string                      ':'
+              [1].Seed.Expr.operator              ?
             [1].Seed.Expr.Or.|                    Struct | Expr
               [0].Seed.Nonterminal                Struct
-              [1].Seed.Nonterminal                Expr
-    [6].Seed.Scope                                Func : ...    
+                [0].Seed.ruleName                 Struct
+              [1].Seed.Expr.operator              |
+              [2].Seed.Nonterminal                Expr
+                [0].Seed.ruleName                 Expr
+    [7].Seed.Scope                                Func : ...    
       [0].Seed.Nonterminal                        Func
+        [0].Seed.ruleName                         Func
       [1].Seed.Rule                               ⊙ = Name \n    
         [0].Seed.Nonterminal                      Name
+          [0].Seed.ruleName                       Name
       [2].Seed.Rule                               Name = funcName \n    
         [0].Seed.Nonterminal                      Name
+          [0].Seed.ruleName                       Name
         [1].Seed.Nonterminal                      funcName
+          [0].Seed.tokenCategoryName              funcName
       [3].Seed.Rule                               Defn = ... Body \n    
         [0].Seed.Nonterminal                      Defn
+          [0].Seed.ruleName                       Defn
         [1].Seed.Expr.Concat.concat               Name '=' Signature Body
           [0].Seed.Nonterminal                    Name
+            [0].Seed.ruleName                     Name
           [1].Seed.Terminal                       '='
+            [0].string                            '='
           [2].Seed.Nonterminal                    Signature
+            [0].Seed.ruleName                     Signature
           [3].Seed.Nonterminal                    Body
+            [0].Seed.ruleName                     Body
       [4].Seed.Rule                               Signature = ... ? \n    
         [0].Seed.Nonterminal                      Signature
+          [0].Seed.ruleName                       Signature
         [1].Seed.Expr.Concat.concat               Type ( ... ) ?
           [0].Seed.Nonterminal                    Type
+            [0].Seed.ruleName                     Type
           [1].Seed.Expr.Postfix.?                 ( '->' Type ) ?
             [0].Seed.Expr.Concat.concat           '->' Type
               [0].Seed.Terminal                   '->'
+                [0].string                        '->'
               [1].Seed.Nonterminal                Type
+                [0].Seed.ruleName                 Type
+            [1].Seed.Expr.operator                ?
       [5].Seed.Rule                               Body = ... '}' \n    
         [0].Seed.Nonterminal                      Body
+          [0].Seed.ruleName                       Body
         [1].Seed.Expr.Concat.concat               '{' Stmt * '}'
           [0].Seed.Terminal                       '{'
+            [0].string                            '{'
           [1].Seed.Expr.Postfix.*                 Stmt *
             [0].Seed.Nonterminal                  Stmt
+              [0].Seed.ruleName                   Stmt
+            [1].Seed.Expr.operator                *
           [2].Seed.Terminal                       '}'
+            [0].string                            '}'
       [6].Seed.Scope                              Stmt : ... \n 
         [0].Seed.Nonterminal                      Stmt
+          [0].Seed.ruleName                       Stmt
         [1].Seed.Rule                             ⊙ = ... ';' \n      
           [0].Seed.Expr.Or.|                      If | ... Expr ';'
             [0].Seed.Nonterminal                  If
-            [1].Seed.Nonterminal                  For
-            [2].Seed.Expr.Concat.concat           Expr ';'
+              [0].Seed.ruleName                   If
+            [1].Seed.Expr.operator                |
+            [2].Seed.Nonterminal                  For
+              [0].Seed.ruleName                   For
+            [3].Seed.Expr.operator                |
+            [4].Seed.Expr.Concat.concat           Expr ';'
               [0].Seed.Nonterminal                Expr
+                [0].Seed.ruleName                 Expr
               [1].Seed.Terminal                   ';'
+                [0].string                        ';'
         [2].Seed.Scope                            If : ... \n       
           [0].Seed.Nonterminal                    If
+            [0].Seed.ruleName                     If
           [1].Seed.Rule                           ⊙ = ... ? \n        
             [0].Seed.Expr.Concat.concat           "if" Branch ... ) ?
               [0].Seed.Terminal                   "if"
+                [0].string                        "if"
               [1].Seed.Nonterminal                Branch
+                [0].Seed.ruleName                 Branch
               [2].Seed.Expr.Postfix.*             ( "elif" Branch ) *
                 [0].Seed.Expr.Concat.concat       "elif" Branch
                   [0].Seed.Terminal               "elif"
+                    [0].string                    "elif"
                   [1].Seed.Nonterminal            Branch
+                    [0].Seed.ruleName             Branch
+                [1].Seed.Expr.operator            *
               [3].Seed.Expr.Postfix.?             ( "else" Body ) ?
                 [0].Seed.Expr.Concat.concat       "else" Body
                   [0].Seed.Terminal               "else"
+                    [0].string                    "else"
                   [1].Seed.Nonterminal            Body
+                    [0].Seed.ruleName             Body
+                [1].Seed.Expr.operator            ?
           [2].Seed.Rule                           Branch = Expr Body \n
             [0].Seed.Nonterminal                  Branch
+              [0].Seed.ruleName                   Branch
             [1].Seed.Expr.Concat.concat           Expr Body
               [0].Seed.Nonterminal                Expr
+                [0].Seed.ruleName                 Expr
               [1].Seed.Nonterminal                Body
+                [0].Seed.ruleName                 Body
         [3].Seed.Rule                             For = ... Body \n
           [0].Seed.Nonterminal                    For
+            [0].Seed.ruleName                     For
           [1].Seed.Expr.Concat.concat             "for" Expr ... Maybe Body
             [0].Seed.Terminal                     "for"
+              [0].string                          "for"
             [1].Seed.Nonterminal                  Expr . Maybe
+              [0].Seed.ruleName                   Expr
+              [1].Seed.ruleName                   Maybe
             [2].Seed.Terminal                     ';'
+              [0].string                          ';'
             [3].Seed.Nonterminal                  Expr . Maybe
+              [0].Seed.ruleName                   Expr
+              [1].Seed.ruleName                   Maybe
             [4].Seed.Terminal                     ';'
+              [0].string                          ';'
             [5].Seed.Nonterminal                  Expr . Maybe
+              [0].Seed.ruleName                   Expr
+              [1].Seed.ruleName                   Maybe
             [6].Seed.Nonterminal                  Body
-    [7].Seed.Scope                                Variable : ... \n 
+              [0].Seed.ruleName                   Body
+    [8].Seed.Scope                                Variable : ... \n 
       [0].Seed.Nonterminal                        Variable
+        [0].Seed.ruleName                         Variable
       [1].Seed.Rule                               Name = ... identifier \n    
         [0].Seed.Nonterminal                      Name
+          [0].Seed.ruleName                       Name
         [1].Seed.Expr.And.but_then                not Type ... but_then identifier
           [0].Seed.Expr.Prefix.not                not Type . Name
-            [0].Seed.Nonterminal                  Type . Name
-          [1].Seed.Expr.Prefix.not                not Func . Name
-            [0].Seed.Nonterminal                  Func . Name
-          [2].Seed.Nonterminal                    identifier
+            [0].Seed.Expr.operator                not
+            [1].Seed.Nonterminal                  Type . Name
+              [0].Seed.ruleName                   Type
+              [1].Seed.ruleName                   Name
+          [1].Seed.Expr.operator                  but_then
+          [2].Seed.Expr.Prefix.not                not Func . Name
+            [0].Seed.Expr.operator                not
+            [1].Seed.Nonterminal                  Func . Name
+              [0].Seed.ruleName                   Func
+              [1].Seed.ruleName                   Name
+          [3].Seed.Expr.operator                  but_then
+          [4].Seed.Nonterminal                    identifier
+            [0].Seed.tokenCategoryName            identifier
       [2].Seed.Rule                               Defn = ... Expr \n
         [0].Seed.Nonterminal                      Defn
+          [0].Seed.ruleName                       Defn
         [1].Seed.Expr.Concat.concat               Name '=' Expr
           [0].Seed.Nonterminal                    Name
+            [0].Seed.ruleName                     Name
           [1].Seed.Terminal                       '='
+            [0].string                            '='
           [2].Seed.Nonterminal                    Expr
+            [0].Seed.ruleName                     Expr
 
 [  0]   1:1   cat=.Silva.languageName                      Soil
 [  1]   1:6   cat=.literal                                 language
 
 [0].Silva                                         Soil language
   [0].Silva.Section                               Soil language
+    [0].Silva.languageName                        Soil
 
 [  0]   3:1   cat=.Soil.typeName                           t_name
 [  1]   3:8   cat=.literal                                 =
@@ -1850,14 +2299,24 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [0].Soil                                          t_name = ... } }
   [0].Soil.Type.Defn                              t_name = t_str
     [0].Soil.Type.Name                            t_name
+      [0].Soil.typeName                           t_name
+        [0].identifier                            
     [1].Soil.Type                                 t_str
       [0].Soil.Type.Name                          t_str
+        [0].Soil.typeName                         t_str
+          [0].identifier                          
   [1].Soil.Type.Defn                              t_age = t_i32
     [0].Soil.Type.Name                            t_age
+      [0].Soil.typeName                           t_age
+        [0].identifier                            
     [1].Soil.Type                                 t_i32
       [0].Soil.Type.Name                          t_i32
+        [0].Soil.typeName                         t_i32
+          [0].identifier                          
   [2].Soil.Type.Defn                              t_person = ... ; ]
     [0].Soil.Type.Name                            t_person
+      [0].Soil.typeName                           t_person
+        [0].identifier                            
     [1].Soil.Type                                 [ [ ... ; ]
       [0].Soil.Type.Struct                        [ [ ... ; ]
         [0].Soil.Type.Struct.Member               [ t_name ... ] ;
@@ -1866,18 +2325,26 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Soil.Type.Struct.Member         t_name : first ;
                 [0].Soil.Type                     t_name
                   [0].Soil.Type.Name              t_name
+                    [0].Soil.typeName             t_name
+                      [0].identifier              
                 [1].Soil.Type.Struct.Member.Label : first
                   [0].Soil.Type.Struct.Member.Name first
+                    [0].identifier                first
               [1].Soil.Type.Struct.Member         t_name : ... 'Trump' ;
                 [0].Soil.Type                     t_name
                   [0].Soil.Type.Name              t_name
+                    [0].Soil.typeName             t_name
+                      [0].identifier              
                 [1].Soil.Type.Struct.Member.Label : last
                   [0].Soil.Type.Struct.Member.Name last
+                    [0].identifier                last
                 [2].Soil.Type.Struct.Member.Init  = 'Trump'
                   [0].Soil.Expr                   'Trump'
                     [0].Soil.Expr.Atom            'Trump'
+                      [0].string                  'Trump'
           [1].Soil.Type.Struct.Member.Label       : name
             [0].Soil.Type.Struct.Member.Name      name
+              [0].identifier                      name
           [2].Soil.Type.Struct.Member.Init        = [ 'Arno' 'Nym' ]
             [0].Soil.Expr                         [ 'Arno' 'Nym' ]
               [0].Soil.Expr.Atom                  [ 'Arno' 'Nym' ]
@@ -1885,58 +2352,102 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].Soil.Expr.Struct.LabeledItem 'Arno'
                     [0].Soil.Expr                 'Arno'
                       [0].Soil.Expr.Atom          'Arno'
+                        [0].string                'Arno'
                   [1].Soil.Expr.Struct.LabeledItem 'Nym'
                     [0].Soil.Expr                 'Nym'
                       [0].Soil.Expr.Atom          'Nym'
+                        [0].string                'Nym'
         [1].Soil.Type.Struct.Member               t_age : ... ) ;
           [0].Soil.Type                           t_age
             [0].Soil.Type.Name                    t_age
+              [0].Soil.typeName                   t_age
+                [0].identifier                    
           [1].Soil.Type.Struct.Member.Label       : age
             [0].Soil.Type.Struct.Member.Name      age
+              [0].identifier                      age
           [2].Soil.Type.Struct.Member.Init        = f_size ... first )
             [0].Soil.Expr                         f_size ( ... first )
               [0].Soil.Expr.Axe.CallPost.(        f_size ( ... first )
                 [0].Soil.Expr.Atom                f_size
-                [1].Soil.Expr.Axe.Member..        name . first
+                  [0].Soil.funcName               f_size
+                    [0].identifier                
+                [1].Soil.Expr.oper                (
+                  [0].parenthesis                 
+                [2].Soil.Expr.Axe.Member..        name . first
                   [0].Soil.Expr.Atom              name
-                  [1].Soil.Expr.Atom              first
+                    [0].identifier                name
+                  [1].Soil.Expr.oper              .
+                  [2].Soil.Expr.Atom              first
+                    [0].identifier                first
+                [3].Soil.Expr.oper                )
+                  [0].parenthesis                 
   [3].Soil.Variable.Defn                          bs = ... 80 ]
     [0].Soil.Variable.Name                        bs
+      [0].identifier                              bs
     [1].Soil.Expr                                 t_person :: ... 80 ]
       [0].Soil.Expr.Axe.Typing.::                 t_person :: ... 80 ]
         [0].Soil.Expr.Atom                        t_person
-        [1].Soil.Expr.Atom                        [ [ ... 80 ]
+          [0].Soil.typeName                       t_person
+            [0].identifier                        
+        [1].Soil.Expr.oper                        ::
+        [2].Soil.Expr.Atom                        [ [ ... 80 ]
           [0].Soil.Expr.Struct                    [ [ ... 80 ]
             [0].Soil.Expr.Struct.LabeledItem      [ 'Bjarne' 'Stroustrup' ]
               [0].Soil.Expr.Struct                [ 'Bjarne' 'Stroustrup' ]
                 [0].Soil.Expr.Struct.LabeledItem  'Bjarne'
                   [0].Soil.Expr                   'Bjarne'
                     [0].Soil.Expr.Atom            'Bjarne'
+                      [0].string                  'Bjarne'
                 [1].Soil.Expr.Struct.LabeledItem  'Stroustrup'
                   [0].Soil.Expr                   'Stroustrup'
                     [0].Soil.Expr.Atom            'Stroustrup'
+                      [0].string                  'Stroustrup'
             [1].Soil.Expr.Struct.LabeledItem      80
               [0].Soil.Expr                       80
                 [0].Soil.Expr.Atom                80
+                  [0].number                      80
+                    [0].number.integer            
+                      [0].number.integer.decimal  
+                        [0].number.plusMinus      
+                        [1].number.unsigned.integer.decimal 
   [4].Soil.Func.Defn                              f_is_adult = ... ; }
     [0].Soil.Func.Name                            f_is_adult
+      [0].Soil.funcName                           f_is_adult
+        [0].identifier                            
     [1].Soil.Func.Signature                       t_person -> t_bool
       [0].Soil.Type                               t_person
         [0].Soil.Type.Name                        t_person
+          [0].Soil.typeName                       t_person
+            [0].identifier                        
       [1].Soil.Type                               t_bool
         [0].Soil.Type.Name                        t_bool
+          [0].Soil.typeName                       t_bool
+            [0].identifier                        
     [2].Soil.Func.Body                            { retval ... ; }
       [0].Soil.Func.Stmt                          retval = ... 18 ;
         [0].Soil.Expr                             retval = ... >= 18
           [0].Soil.Expr.Axe.Assign.=              retval = ... >= 18
             [0].Soil.Expr.Atom                    retval
-            [1].Soil.Expr.Axe.Comp.>=             arg . age >= 18
+              [0].identifier                      retval
+            [1].Soil.Expr.oper                    =
+            [2].Soil.Expr.Axe.Comp.>=             arg . age >= 18
               [0].Soil.Expr.Axe.Member..          arg . age
                 [0].Soil.Expr.Atom                arg
-                [1].Soil.Expr.Atom                age
-              [1].Soil.Expr.Atom                  18
+                  [0].identifier                  arg
+                [1].Soil.Expr.oper                .
+                [2].Soil.Expr.Atom                age
+                  [0].identifier                  age
+              [1].Soil.Expr.oper                  >=
+              [2].Soil.Expr.Atom                  18
+                [0].number                        18
+                  [0].number.integer              
+                    [0].number.integer.decimal    
+                      [0].number.plusMinus        
+                      [1].number.unsigned.integer.decimal 
   [5].Soil.Func.Defn                              f_example = ... } }
     [0].Soil.Func.Name                            f_example
+      [0].Soil.funcName                           f_example
+        [0].identifier                            
     [1].Soil.Func.Signature                       [ ]
       [0].Soil.Type                               [ ]
         [0].Soil.Type.Struct                      [ ]
@@ -1945,51 +2456,89 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Soil.Expr                             age = t_age :: 42
           [0].Soil.Expr.Axe.Assign.=              age = t_age :: 42
             [0].Soil.Expr.Atom                    age
-            [1].Soil.Expr.Axe.Typing.::           t_age :: 42
+              [0].identifier                      age
+            [1].Soil.Expr.oper                    =
+            [2].Soil.Expr.Axe.Typing.::           t_age :: 42
               [0].Soil.Expr.Atom                  t_age
-              [1].Soil.Expr.Atom                  42
+                [0].Soil.typeName                 t_age
+                  [0].identifier                  
+              [1].Soil.Expr.oper                  ::
+              [2].Soil.Expr.Atom                  42
+                [0].number                        42
+                  [0].number.integer              
+                    [0].number.integer.decimal    
+                      [0].number.plusMinus        
+                      [1].number.unsigned.integer.decimal 
       [1].Soil.Func.Stmt                          p1 = ... ] ;
         [0].Soil.Expr                             p1 = ... 20 ]
           [0].Soil.Expr.Axe.Assign.=              p1 = ... 20 ]
             [0].Soil.Expr.Atom                    p1
-            [1].Soil.Expr.Axe.Typing.::           t_person :: ... 20 ]
+              [0].identifier                      p1
+            [1].Soil.Expr.oper                    =
+            [2].Soil.Expr.Axe.Typing.::           t_person :: ... 20 ]
               [0].Soil.Expr.Atom                  t_person
-              [1].Soil.Expr.Atom                  [ name ... 20 ]
+                [0].Soil.typeName                 t_person
+                  [0].identifier                  
+              [1].Soil.Expr.oper                  ::
+              [2].Soil.Expr.Atom                  [ name ... 20 ]
                 [0].Soil.Expr.Struct              [ name ... 20 ]
                   [0].Soil.Expr.Struct.LabeledItem name : ... 'Bobson' ]
                     [0].Soil.Variable.Name        name
+                      [0].identifier              name
                     [1].Soil.Expr.Struct          [ first ... 'Bobson' ]
                       [0].Soil.Expr.Struct.LabeledItem first : 'Bob'
                         [0].Soil.Variable.Name    first
+                          [0].identifier          first
                         [1].Soil.Expr             'Bob'
                           [0].Soil.Expr.Atom      'Bob'
+                            [0].string            'Bob'
                       [1].Soil.Expr.Struct.LabeledItem last : 'Bobson'
                         [0].Soil.Variable.Name    last
+                          [0].identifier          last
                         [1].Soil.Expr             'Bobson'
                           [0].Soil.Expr.Atom      'Bobson'
+                            [0].string            'Bobson'
                   [1].Soil.Expr.Struct.LabeledItem age : 20
                     [0].Soil.Variable.Name        age
+                      [0].identifier              age
                     [1].Soil.Expr                 20
                       [0].Soil.Expr.Atom          20
+                        [0].number                20
+                          [0].number.integer      
+                            [0].number.integer.decimal 
+                              [0].number.plusMinus 
+                              [1].number.unsigned.integer.decimal 
       [2].Soil.Func.Stmt                          p2 = ... ] ;
         [0].Soil.Expr                             p2 = ... 30 ]
           [0].Soil.Expr.Axe.Assign.=              p2 = ... 30 ]
             [0].Soil.Expr.Atom                    p2
-            [1].Soil.Expr.Axe.Typing.::           t_person :: ... 30 ]
+              [0].identifier                      p2
+            [1].Soil.Expr.oper                    =
+            [2].Soil.Expr.Axe.Typing.::           t_person :: ... 30 ]
               [0].Soil.Expr.Atom                  t_person
-              [1].Soil.Expr.Atom                  [ [ ... 30 ]
+                [0].Soil.typeName                 t_person
+                  [0].identifier                  
+              [1].Soil.Expr.oper                  ::
+              [2].Soil.Expr.Atom                  [ [ ... 30 ]
                 [0].Soil.Expr.Struct              [ [ ... 30 ]
                   [0].Soil.Expr.Struct.LabeledItem [ 'Alice' 'Allison' ]
                     [0].Soil.Expr.Struct          [ 'Alice' 'Allison' ]
                       [0].Soil.Expr.Struct.LabeledItem 'Alice'
                         [0].Soil.Expr             'Alice'
                           [0].Soil.Expr.Atom      'Alice'
+                            [0].string            'Alice'
                       [1].Soil.Expr.Struct.LabeledItem 'Allison'
                         [0].Soil.Expr             'Allison'
                           [0].Soil.Expr.Atom      'Allison'
+                            [0].string            'Allison'
                   [1].Soil.Expr.Struct.LabeledItem 30
                     [0].Soil.Expr                 30
                       [0].Soil.Expr.Atom          30
+                        [0].number                30
+                          [0].number.integer      
+                            [0].number.integer.decimal 
+                              [0].number.plusMinus 
+                              [1].number.unsigned.integer.decimal 
       [3].Soil.Func.Stmt                          [ '{} is-adult = {}' ... f_log ;
         [0].Soil.Expr                             [ '{} is-adult = {}' ... | f_log
           [0].Soil.Expr.Axe.CallPipe.|            [ '{} is-adult = {}' ... | f_log
@@ -1998,15 +2547,27 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].Soil.Expr.Struct.LabeledItem  '{} is-adult = {}'
                   [0].Soil.Expr                   '{} is-adult = {}'
                     [0].Soil.Expr.Atom            '{} is-adult = {}'
+                      [0].string                  '{} is-adult = {}'
                 [1].Soil.Expr.Struct.LabeledItem  p1
                   [0].Soil.Expr                   p1
                     [0].Soil.Expr.Atom            p1
+                      [0].identifier              p1
                 [2].Soil.Expr.Struct.LabeledItem  f_is_adult ( p1 )
                   [0].Soil.Expr                   f_is_adult ( p1 )
                     [0].Soil.Expr.Axe.CallPost.(  f_is_adult ( p1 )
                       [0].Soil.Expr.Atom          f_is_adult
-                      [1].Soil.Expr.Atom          p1
-            [1].Soil.Expr.Atom                    f_log
+                        [0].Soil.funcName         f_is_adult
+                          [0].identifier          
+                      [1].Soil.Expr.oper          (
+                        [0].parenthesis           
+                      [2].Soil.Expr.Atom          p1
+                        [0].identifier            p1
+                      [3].Soil.Expr.oper          )
+                        [0].parenthesis           
+            [1].Soil.Expr.oper                    |
+            [2].Soil.Expr.Atom                    f_log
+              [0].Soil.funcName                   f_log
+                [0].identifier                    
       [4].Soil.Func.Stmt                          f_vector ( ... f_log ;
         [0].Soil.Expr                             f_vector ( ... | f_log
           [0].Soil.Expr.Axe.CallPipe.|            f_vector ( ... | f_log
@@ -2014,30 +2575,64 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Soil.Expr.Axe.Typing.::         f_vector ( ... p2 ]
                 [0].Soil.Expr.Axe.CallPost.(      f_vector ( t_person )
                   [0].Soil.Expr.Atom              f_vector
-                  [1].Soil.Expr.Atom              t_person
-                [1].Soil.Expr.Atom                [ p1 p2 ]
+                    [0].Soil.funcName             f_vector
+                      [0].identifier              
+                  [1].Soil.Expr.oper              (
+                    [0].parenthesis               
+                  [2].Soil.Expr.Atom              t_person
+                    [0].Soil.typeName             t_person
+                      [0].identifier              
+                  [3].Soil.Expr.oper              )
+                    [0].parenthesis               
+                [1].Soil.Expr.oper                ::
+                [2].Soil.Expr.Atom                [ p1 p2 ]
                   [0].Soil.Expr.Struct            [ p1 p2 ]
                     [0].Soil.Expr.Struct.LabeledItem p1
                       [0].Soil.Expr               p1
                         [0].Soil.Expr.Atom        p1
+                          [0].identifier          p1
                     [1].Soil.Expr.Struct.LabeledItem p2
                       [0].Soil.Expr               p2
                         [0].Soil.Expr.Atom        p2
-              [1].Soil.Expr.Axe.CallPost.(        std . ... 40 )
+                          [0].identifier          p2
+              [1].Soil.Expr.oper                  |
+              [2].Soil.Expr.Axe.CallPost.(        std . ... 40 )
                 [0].Soil.Expr.Axe.Member..        std . filter_m
                   [0].Soil.Expr.Atom              std
-                  [1].Soil.Expr.Atom              filter_m
-                [1].Soil.Expr.Axe.Comp.<=         arg . age <= 40
+                    [0].identifier                std
+                  [1].Soil.Expr.oper              .
+                  [2].Soil.Expr.Atom              filter_m
+                    [0].identifier                filter_m
+                [1].Soil.Expr.oper                (
+                  [0].parenthesis                 
+                [2].Soil.Expr.Axe.Comp.<=         arg . age <= 40
                   [0].Soil.Expr.Axe.Member..      arg . age
                     [0].Soil.Expr.Atom            arg
-                    [1].Soil.Expr.Atom            age
-                  [1].Soil.Expr.Atom              40
-            [1].Soil.Expr.Atom                    f_log
+                      [0].identifier              arg
+                    [1].Soil.Expr.oper            .
+                    [2].Soil.Expr.Atom            age
+                      [0].identifier              age
+                  [1].Soil.Expr.oper              <=
+                  [2].Soil.Expr.Atom              40
+                    [0].number                    40
+                      [0].number.integer          
+                        [0].number.integer.decimal 
+                          [0].number.plusMinus    
+                          [1].number.unsigned.integer.decimal 
+                [3].Soil.Expr.oper                )
+                  [0].parenthesis                 
+            [1].Soil.Expr.oper                    |
+            [2].Soil.Expr.Atom                    f_log
+              [0].Soil.funcName                   f_log
+                [0].identifier                    
       [5].Soil.Func.Stmt                          language | f_print ;
         [0].Soil.Expr                             language | f_print
           [0].Soil.Expr.Axe.CallPipe.|            language | f_print
             [0].Soil.Expr.Atom                    language
-            [1].Soil.Expr.Atom                    f_print
+            [1].Soil.Expr.oper                    |
+            [2].Soil.Expr.Atom                    f_print
+              [0].Soil.funcName                   f_print
+                [0].identifier                    
       [6].Soil.Func.Stmt                          if p1 ... ; }
         [0].Soil.Func.Stmt.If                     if p1 ... ; }
           [0].Soil.Func.Stmt.If.Branch            p1 . ... ; }
@@ -2047,16 +2642,34 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].Soil.Expr.Axe.Member..      p1 . name . first
                     [0].Soil.Expr.Axe.Member..    p1 . name
                       [0].Soil.Expr.Atom          p1
-                      [1].Soil.Expr.Atom          name
-                    [1].Soil.Expr.Atom            first
-                  [1].Soil.Expr.Atom              f_size
-                [1].Soil.Expr.Atom                10
+                        [0].identifier            p1
+                      [1].Soil.Expr.oper          .
+                      [2].Soil.Expr.Atom          name
+                        [0].identifier            name
+                    [1].Soil.Expr.oper            .
+                    [2].Soil.Expr.Atom            first
+                      [0].identifier              first
+                  [1].Soil.Expr.oper              |
+                  [2].Soil.Expr.Atom              f_size
+                    [0].Soil.funcName             f_size
+                      [0].identifier              
+                [1].Soil.Expr.oper                >
+                [2].Soil.Expr.Atom                10
+                  [0].number                      10
+                    [0].number.integer            
+                      [0].number.integer.decimal  
+                        [0].number.plusMinus      
+                        [1].number.unsigned.integer.decimal 
             [1].Soil.Func.Body                    { 'This name is long' ... ; }
               [0].Soil.Func.Stmt                  'This name is long' | f_log ;
                 [0].Soil.Expr                     'This name is long' | f_log
                   [0].Soil.Expr.Axe.CallPipe.|    'This name is long' | f_log
                     [0].Soil.Expr.Atom            'This name is long'
-                    [1].Soil.Expr.Atom            f_log
+                      [0].string                  'This name is long'
+                    [1].Soil.Expr.oper            |
+                    [2].Soil.Expr.Atom            f_log
+                      [0].Soil.funcName           f_log
+                        [0].identifier            
           [1].Soil.Func.Stmt.If.Branch            p1 . ... ; }
             [0].Soil.Expr                         p1 . ... > 5
               [0].Soil.Expr.Axe.Comp.>            p1 . ... > 5
@@ -2064,59 +2677,121 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].Soil.Expr.Axe.Member..      p1 . name . first
                     [0].Soil.Expr.Axe.Member..    p1 . name
                       [0].Soil.Expr.Atom          p1
-                      [1].Soil.Expr.Atom          name
-                    [1].Soil.Expr.Atom            first
-                  [1].Soil.Expr.Atom              f_size
-                [1].Soil.Expr.Atom                5
+                        [0].identifier            p1
+                      [1].Soil.Expr.oper          .
+                      [2].Soil.Expr.Atom          name
+                        [0].identifier            name
+                    [1].Soil.Expr.oper            .
+                    [2].Soil.Expr.Atom            first
+                      [0].identifier              first
+                  [1].Soil.Expr.oper              |
+                  [2].Soil.Expr.Atom              f_size
+                    [0].Soil.funcName             f_size
+                      [0].identifier              
+                [1].Soil.Expr.oper                >
+                [2].Soil.Expr.Atom                5
+                  [0].number                      5
+                    [0].number.integer            
+                      [0].number.integer.decimal  
+                        [0].number.plusMinus      
+                        [1].number.unsigned.integer.decimal 
             [1].Soil.Func.Body                    { 'This name it not long' ... ; }
               [0].Soil.Func.Stmt                  'This name it not long' | f_log ;
                 [0].Soil.Expr                     'This name it not long' | f_log
                   [0].Soil.Expr.Axe.CallPipe.|    'This name it not long' | f_log
                     [0].Soil.Expr.Atom            'This name it not long'
-                    [1].Soil.Expr.Atom            f_log
+                      [0].string                  'This name it not long'
+                    [1].Soil.Expr.oper            |
+                    [2].Soil.Expr.Atom            f_log
+                      [0].Soil.funcName           f_log
+                        [0].identifier            
           [2].Soil.Func.Body                      { 'This name it short' ... ; }
             [0].Soil.Func.Stmt                    'This name it short' | f_log ;
               [0].Soil.Expr                       'This name it short' | f_log
                 [0].Soil.Expr.Axe.CallPipe.|      'This name it short' | f_log
                   [0].Soil.Expr.Atom              'This name it short'
-                  [1].Soil.Expr.Atom              f_log
+                    [0].string                    'This name it short'
+                  [1].Soil.Expr.oper              |
+                  [2].Soil.Expr.Atom              f_log
+                    [0].Soil.funcName             f_log
+                      [0].identifier              
       [7].Soil.Func.Stmt                          sum = ... 0 ;
         [0].Soil.Expr                             sum = t_i64 :: 0
           [0].Soil.Expr.Axe.Assign.=              sum = t_i64 :: 0
             [0].Soil.Expr.Atom                    sum
-            [1].Soil.Expr.Axe.Typing.::           t_i64 :: 0
+              [0].identifier                      sum
+            [1].Soil.Expr.oper                    =
+            [2].Soil.Expr.Axe.Typing.::           t_i64 :: 0
               [0].Soil.Expr.Atom                  t_i64
-              [1].Soil.Expr.Atom                  0
+                [0].Soil.typeName                 t_i64
+                  [0].identifier                  
+              [1].Soil.Expr.oper                  ::
+              [2].Soil.Expr.Atom                  0
+                [0].number                        0
+                  [0].number.integer              
+                    [0].number.integer.decimal    
+                      [0].number.plusMinus        
+                      [1].number.unsigned.integer.decimal 
       [8].Soil.Func.Stmt                          for i ... ; }
         [0].Soil.Func.Stmt.For                    for i ... ; }
           [0].Soil.Expr.Maybe                     i = t_i64 :: 0
             [0].Soil.Expr                         i = t_i64 :: 0
               [0].Soil.Expr.Axe.Assign.=          i = t_i64 :: 0
                 [0].Soil.Expr.Atom                i
-                [1].Soil.Expr.Axe.Typing.::       t_i64 :: 0
+                  [0].identifier                  i
+                [1].Soil.Expr.oper                =
+                [2].Soil.Expr.Axe.Typing.::       t_i64 :: 0
                   [0].Soil.Expr.Atom              t_i64
-                  [1].Soil.Expr.Atom              0
+                    [0].Soil.typeName             t_i64
+                      [0].identifier              
+                  [1].Soil.Expr.oper              ::
+                  [2].Soil.Expr.Atom              0
+                    [0].number                    0
+                      [0].number.integer          
+                        [0].number.integer.decimal 
+                          [0].number.plusMinus    
+                          [1].number.unsigned.integer.decimal 
           [1].Soil.Expr.Maybe                     i < n
             [0].Soil.Expr                         i < n
               [0].Soil.Expr.Axe.Comp.<            i < n
                 [0].Soil.Expr.Atom                i
-                [1].Soil.Expr.Atom                n
+                  [0].identifier                  i
+                [1].Soil.Expr.oper                <
+                [2].Soil.Expr.Atom                n
+                  [0].identifier                  n
           [2].Soil.Expr.Maybe                     i += 1
             [0].Soil.Expr                         i += 1
               [0].Soil.Expr.Axe.Assign.+=         i += 1
                 [0].Soil.Expr.Atom                i
-                [1].Soil.Expr.Atom                1
+                  [0].identifier                  i
+                [1].Soil.Expr.oper                +=
+                [2].Soil.Expr.Atom                1
+                  [0].number                      1
+                    [0].number.integer            
+                      [0].number.integer.decimal  
+                        [0].number.plusMinus      
+                        [1].number.unsigned.integer.decimal 
           [3].Soil.Func.Body                      { sum ... ; }
             [0].Soil.Func.Stmt                    sum += i ;
               [0].Soil.Expr                       sum += i
                 [0].Soil.Expr.Axe.Assign.+=       sum += i
                   [0].Soil.Expr.Atom              sum
-                  [1].Soil.Expr.Atom              i
+                    [0].identifier                sum
+                  [1].Soil.Expr.oper              +=
+                  [2].Soil.Expr.Atom              i
+                    [0].identifier                i
       [9].Soil.Func.Stmt                          abc = 42 ;
         [0].Soil.Expr                             abc = 42
           [0].Soil.Expr.Axe.Assign.=              abc = 42
             [0].Soil.Expr.Atom                    abc
-            [1].Soil.Expr.Atom                    42
+              [0].identifier                      abc
+            [1].Soil.Expr.oper                    =
+            [2].Soil.Expr.Atom                    42
+              [0].number                          42
+                [0].number.integer                
+                  [0].number.integer.decimal      
+                    [0].number.plusMinus          
+                    [1].number.unsigned.integer.decimal 
       [10].Soil.Func.Stmt                         for ; ... ; }
         [0].Soil.Func.Stmt.For                    for ; ... ; }
           [0].Soil.Expr.Maybe                     
@@ -2124,14 +2799,20 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].Soil.Expr                         i < n
               [0].Soil.Expr.Axe.Comp.<            i < n
                 [0].Soil.Expr.Atom                i
-                [1].Soil.Expr.Atom                n
+                  [0].identifier                  i
+                [1].Soil.Expr.oper                <
+                [2].Soil.Expr.Atom                n
+                  [0].identifier                  n
           [2].Soil.Expr.Maybe                     
           [3].Soil.Func.Body                      { sum ... ; }
             [0].Soil.Func.Stmt                    sum += i ;
               [0].Soil.Expr                       sum += i
                 [0].Soil.Expr.Axe.Assign.+=       sum += i
                   [0].Soil.Expr.Atom              sum
-                  [1].Soil.Expr.Atom              i
+                    [0].identifier                sum
+                  [1].Soil.Expr.oper              +=
+                  [2].Soil.Expr.Atom              i
+                    [0].identifier                i
 
 1
 2
@@ -2328,6 +3009,7 @@ Mr Jane
       [0].Cedar.Type.Declarator                                                                     * stdout
         [0].Cedar.Type.Declarator.Pointer                                                           *
         [1].Cedar.Type.Declarator.Direct                                                            stdout
+          [0].identifier                                                                            stdout
   [1].Cedar.Declaration                                                                             extern int ... ) ;
     [0].Cedar.Declaration.Specifiers                                                                extern int
       [0].Cedar.Declaration.StorageClassSpecifier                                                   extern
@@ -2336,7 +3018,8 @@ Mr Jane
     [1].Cedar.Declaration.Init                                                                      fprintf ( ... ... )
       [0].Cedar.Type.Declarator                                                                     fprintf ( ... ... )
         [0].Cedar.Type.Declarator.Direct                                                            fprintf ( ... ... )
-          [0].Cedar.Type.Declarator.Suffix                                                          ( void ... ... )
+          [0].identifier                                                                            fprintf
+          [1].Cedar.Type.Declarator.Suffix                                                          ( void ... ... )
             [0].Cedar.Declaration.ParameterList                                                     void * ... , ...
               [0].Cedar.Declaration.ParameterDeclaration                                            void * stream
                 [0].Cedar.Declaration.Specifiers                                                    void
@@ -2344,6 +3027,7 @@ Mr Jane
                 [1].Cedar.Type.Declarator                                                           * stream
                   [0].Cedar.Type.Declarator.Pointer                                                 *
                   [1].Cedar.Type.Declarator.Direct                                                  stream
+                    [0].identifier                                                                  stream
               [1].Cedar.Declaration.ParameterDeclaration                                            const char * format
                 [0].Cedar.Declaration.Specifiers                                                    const char
                   [0].Cedar.Type.Qualifier                                                          const
@@ -2352,6 +3036,7 @@ Mr Jane
                 [1].Cedar.Type.Declarator                                                           * format
                   [0].Cedar.Type.Declarator.Pointer                                                 *
                   [1].Cedar.Type.Declarator.Direct                                                  format
+                    [0].identifier                                                                  format
               [2].Cedar.Declaration.ParameterDeclaration                                            ...
   [2].Cedar.Declaration                                                                             int main ... ; }
     [0].Cedar.Declaration.Specifiers                                                                int
@@ -2360,7 +3045,8 @@ Mr Jane
     [1].Cedar.Declaration.Init                                                                      main ( ... ] )
       [0].Cedar.Type.Declarator                                                                     main ( ... ] )
         [0].Cedar.Type.Declarator.Direct                                                            main ( ... ] )
-          [0].Cedar.Type.Declarator.Suffix                                                          ( int ... ] )
+          [0].identifier                                                                            main
+          [1].Cedar.Type.Declarator.Suffix                                                          ( int ... ] )
             [0].Cedar.Declaration.ParameterList                                                     int argc ... [ ]
               [0].Cedar.Declaration.ParameterDeclaration                                            int argc
                 [0].Cedar.Declaration.Specifiers                                                    int
@@ -2368,6 +3054,7 @@ Mr Jane
                     [0].Cedar.Type.IntSpecifier                                                     int
                 [1].Cedar.Type.Declarator                                                           argc
                   [0].Cedar.Type.Declarator.Direct                                                  argc
+                    [0].identifier                                                                  argc
               [1].Cedar.Declaration.ParameterDeclaration                                            char * argv [ ]
                 [0].Cedar.Declaration.Specifiers                                                    char
                   [0].Cedar.Type.Specifier                                                          char
@@ -2375,7 +3062,8 @@ Mr Jane
                 [1].Cedar.Type.Declarator                                                           * argv [ ]
                   [0].Cedar.Type.Declarator.Pointer                                                 *
                   [1].Cedar.Type.Declarator.Direct                                                  argv [ ]
-                    [0].Cedar.Type.Declarator.Suffix                                                [ ]
+                    [0].identifier                                                                  argv
+                    [1].Cedar.Type.Declarator.Suffix                                                [ ]
     [2].Cedar.Stmt.Compound                                                                         { for ... ; }
       [0].Cedar.Stmt                                                                                for ( ... ; }
         [0].Cedar.Stmt.For                                                                          for ( ... ; }
@@ -2386,31 +3074,69 @@ Mr Jane
             [1].Cedar.Declaration.Init                                                              i = 0
               [0].Cedar.Type.Declarator                                                             i
                 [0].Cedar.Type.Declarator.Direct                                                    i
+                  [0].identifier                                                                    i
               [1].Cedar.Declaration.Initializer                                                     0
                 [0].Cedar.Expr.Atom                                                                 0
+                  [0].number                                                                        0
+                    [0].number.integer                                                              
+                      [0].number.integer.decimal                                                    
+                        [0].number.plusMinus                                                        
+                        [1].number.unsigned.integer.decimal                                         
           [1].Cedar.Expr.Relational.<                                                               i < argc
             [0].Cedar.Expr.Atom                                                                     i
-            [1].Cedar.Expr.Atom                                                                     argc
+              [0].identifier                                                                        i
+            [1].Cedar.Expr.oper                                                                     <
+              [0].Cedar.operator                                                                    
+            [2].Cedar.Expr.Atom                                                                     argc
+              [0].identifier                                                                        argc
           [2].Cedar.Expr.Postfix.++                                                                 i ++
             [0].Cedar.Expr.Atom                                                                     i
+              [0].identifier                                                                        i
+            [1].Cedar.Expr.oper                                                                     ++
+              [0].Cedar.operator                                                                    
           [3].Cedar.Stmt                                                                            { fprintf ... ; }
             [0].Cedar.Stmt.Compound                                                                 { fprintf ... ; }
               [0].Cedar.Stmt                                                                        fprintf ( ... ) ;
                 [0].Cedar.Stmt.ExprStmt                                                             fprintf ( ... ) ;
                   [0].Cedar.Expr.Postfix.(                                                          fprintf ( ... ] )
                     [0].Cedar.Expr.Atom                                                             fprintf
-                    [1].Cedar.Expr.ExprOrEpsilon                                                    stdout , ... i ]
+                      [0].identifier                                                                fprintf
+                    [1].Cedar.Expr.oper                                                             (
+                      [0].parenthesis                                                               
+                    [2].Cedar.Expr.ExprOrEpsilon                                                    stdout , ... i ]
                       [0].Cedar.Expr.Comma.,                                                        stdout , ... i ]
                         [0].Cedar.Expr.Atom                                                         stdout
-                        [1].Cedar.Expr.Atom                                                         "[%d] = %s\n"
-                        [2].Cedar.Expr.Atom                                                         i
-                        [3].Cedar.Expr.Postfix.[                                                    argv [ i ]
+                          [0].identifier                                                            stdout
+                        [1].Cedar.Expr.oper                                                         ,
+                          [0].Cedar.operator                                                        
+                        [2].Cedar.Expr.Atom                                                         "[%d] = %s\n"
+                          [0].string                                                                "[%d] = %s\n"
+                        [3].Cedar.Expr.oper                                                         ,
+                          [0].Cedar.operator                                                        
+                        [4].Cedar.Expr.Atom                                                         i
+                          [0].identifier                                                            i
+                        [5].Cedar.Expr.oper                                                         ,
+                          [0].Cedar.operator                                                        
+                        [6].Cedar.Expr.Postfix.[                                                    argv [ i ]
                           [0].Cedar.Expr.Atom                                                       argv
-                          [1].Cedar.Expr.ExprOrEpsilon                                              i
+                            [0].identifier                                                          argv
+                          [1].Cedar.Expr.oper                                                       [
+                            [0].parenthesis                                                         
+                          [2].Cedar.Expr.ExprOrEpsilon                                              i
                             [0].Cedar.Expr.Atom                                                     i
+                              [0].identifier                                                        i
+                          [3].Cedar.Expr.oper                                                       ]
+                            [0].parenthesis                                                         
+                    [3].Cedar.Expr.oper                                                             )
+                      [0].parenthesis                                                               
       [1].Cedar.Stmt                                                                                return 0 ;
         [0].Cedar.Stmt.Return                                                                       return 0 ;
           [0].Cedar.Expr.Atom                                                                       0
+            [0].number                                                                              0
+              [0].number.integer                                                                    
+                [0].number.integer.decimal                                                          
+                  [0].number.plusMinus                                                              
+                  [1].number.unsigned.integer.decimal                                               
   [3].Cedar.Declaration                                                                             int test_1 ... ) ;
     [0].Cedar.Declaration.Specifiers                                                                int
       [0].Cedar.Type.Specifier                                                                      int
@@ -2418,7 +3144,8 @@ Mr Jane
     [1].Cedar.Declaration.Init                                                                      test_1 ( ... i )
       [0].Cedar.Type.Declarator                                                                     test_1 ( ... i )
         [0].Cedar.Type.Declarator.Direct                                                            test_1 ( ... i )
-          [0].Cedar.Type.Declarator.Suffix                                                          ( int ... i )
+          [0].identifier                                                                            test_1
+          [1].Cedar.Type.Declarator.Suffix                                                          ( int ... i )
             [0].Cedar.Declaration.ParameterList                                                     int * ... * i
               [0].Cedar.Declaration.ParameterDeclaration                                            int *
                 [0].Cedar.Declaration.Specifiers                                                    int
@@ -2434,6 +3161,7 @@ Mr Jane
                 [1].Cedar.Type.Declarator                                                           * i
                   [0].Cedar.Type.Declarator.Pointer                                                 *
                   [1].Cedar.Type.Declarator.Direct                                                  i
+                    [0].identifier                                                                  i
   [4].Cedar.Declaration                                                                             int test_2 ... ) ;
     [0].Cedar.Declaration.Specifiers                                                                int
       [0].Cedar.Type.Specifier                                                                      int
@@ -2441,7 +3169,8 @@ Mr Jane
     [1].Cedar.Declaration.Init                                                                      test_2 ( ... ] )
       [0].Cedar.Type.Declarator                                                                     test_2 ( ... ] )
         [0].Cedar.Type.Declarator.Direct                                                            test_2 ( ... ] )
-          [0].Cedar.Type.Declarator.Suffix                                                          ( int ... ] )
+          [0].identifier                                                                            test_2
+          [1].Cedar.Type.Declarator.Suffix                                                          ( int ... ] )
             [0].Cedar.Declaration.ParameterList                                                     int ( ... 3 ]
               [0].Cedar.Declaration.ParameterDeclaration                                            int ( ... 3 ]
                 [0].Cedar.Declaration.Specifiers                                                    int
@@ -2455,6 +3184,7 @@ Mr Jane
                         [0].Cedar.Type.Declarator                                                   * foo
                           [0].Cedar.Type.Declarator.Pointer                                         *
                           [1].Cedar.Type.Declarator.Direct                                          foo
+                            [0].identifier                                                          foo
                         [1].Cedar.Type.Declarator.Suffix                                            ( const void * )
                           [0].Cedar.Declaration.ParameterList                                       const void *
                             [0].Cedar.Declaration.ParameterDeclaration                              const void *
@@ -2466,6 +3196,11 @@ Mr Jane
                                 [1].Cedar.Type.Declarator.DirectAbstract                            
                     [1].Cedar.Type.Declarator.Suffix                                                [ 3 ]
                       [0].Cedar.Expr.Atom                                                           3
+                        [0].number                                                                  3
+                          [0].number.integer                                                        
+                            [0].number.integer.decimal                                              
+                              [0].number.plusMinus                                                  
+                              [1].number.unsigned.integer.decimal                                   
   [5].Cedar.Declaration                                                                             void * ... ] ;
     [0].Cedar.Declaration.Specifiers                                                                void
       [0].Cedar.Type.Specifier                                                                      void
@@ -2479,8 +3214,14 @@ Mr Jane
               [0].Cedar.Type.Declarator                                                             * test_3 [ 2 ]
                 [0].Cedar.Type.Declarator.Pointer                                                   *
                 [1].Cedar.Type.Declarator.Direct                                                    test_3 [ 2 ]
-                  [0].Cedar.Type.Declarator.Suffix                                                  [ 2 ]
+                  [0].identifier                                                                    test_3
+                  [1].Cedar.Type.Declarator.Suffix                                                  [ 2 ]
                     [0].Cedar.Expr.Atom                                                             2
+                      [0].number                                                                    2
+                        [0].number.integer                                                          
+                          [0].number.integer.decimal                                                
+                            [0].number.plusMinus                                                    
+                            [1].number.unsigned.integer.decimal                                     
               [1].Cedar.Type.Declarator.Suffix                                                      ( int ... ] )
                 [0].Cedar.Declaration.ParameterList                                                 int , ... [ ]
                   [0].Cedar.Declaration.ParameterDeclaration                                        int
@@ -2498,6 +3239,11 @@ Mr Jane
                         [0].Cedar.Type.Declarator.Suffix                                            [ ]
           [1].Cedar.Type.Declarator.Suffix                                                          [ 123 ]
             [0].Cedar.Expr.Atom                                                                     123
+              [0].number                                                                            123
+                [0].number.integer                                                                  
+                  [0].number.integer.decimal                                                        
+                    [0].number.plusMinus                                                            
+                    [1].number.unsigned.integer.decimal                                             
   [6].Cedar.Declaration                                                                             int ( ... ] ;
     [0].Cedar.Declaration.Specifiers                                                                int
       [0].Cedar.Type.Specifier                                                                      int
@@ -2511,9 +3257,15 @@ Mr Jane
               [0].Cedar.Type.Declarator                                                             * test_4
                 [0].Cedar.Type.Declarator.Pointer                                                   *
                 [1].Cedar.Type.Declarator.Direct                                                    test_4
+                  [0].identifier                                                                    test_4
               [1].Cedar.Type.Declarator.Suffix                                                      ( )
           [1].Cedar.Type.Declarator.Suffix                                                          [ 3 ]
             [0].Cedar.Expr.Atom                                                                     3
+              [0].number                                                                            3
+                [0].number.integer                                                                  
+                  [0].number.integer.decimal                                                        
+                    [0].number.plusMinus                                                            
+                    [1].number.unsigned.integer.decimal                                             
   [7].Cedar.Declaration                                                                             char * ... ] ;
     [0].Cedar.Declaration.Specifiers                                                                char
       [0].Cedar.Type.Specifier                                                                      char
@@ -2529,9 +3281,15 @@ Mr Jane
                 [0].Cedar.Type.Declarator.Pointer                                                   * *
                   [0].Cedar.Type.Declarator.Pointer                                                 *
                 [1].Cedar.Type.Declarator.Direct                                                    test_5 [ ... 8 ]
-                  [0].Cedar.Type.Declarator.Suffix                                                  [ ]
-                  [1].Cedar.Type.Declarator.Suffix                                                  [ 8 ]
+                  [0].identifier                                                                    test_5
+                  [1].Cedar.Type.Declarator.Suffix                                                  [ ]
+                  [2].Cedar.Type.Declarator.Suffix                                                  [ 8 ]
                     [0].Cedar.Expr.Atom                                                             8
+                      [0].number                                                                    8
+                        [0].number.integer                                                          
+                          [0].number.integer.decimal                                                
+                            [0].number.plusMinus                                                    
+                            [1].number.unsigned.integer.decimal                                     
               [1].Cedar.Type.Declarator.Suffix                                                      ( )
           [1].Cedar.Type.Declarator.Suffix                                                          [ ]
   [8].Cedar.Declaration                                                                             int * ... ) ;
@@ -2542,7 +3300,8 @@ Mr Jane
       [0].Cedar.Type.Declarator                                                                     * test_6 ( )
         [0].Cedar.Type.Declarator.Pointer                                                           *
         [1].Cedar.Type.Declarator.Direct                                                            test_6 ( )
-          [0].Cedar.Type.Declarator.Suffix                                                          ( )
+          [0].identifier                                                                            test_6
+          [1].Cedar.Type.Declarator.Suffix                                                          ( )
   [9].Cedar.Declaration                                                                             int ( ... ) ;
     [0].Cedar.Declaration.Specifiers                                                                int
       [0].Cedar.Type.Specifier                                                                      int
@@ -2553,6 +3312,7 @@ Mr Jane
           [0].Cedar.Type.Declarator                                                                 * test_7
             [0].Cedar.Type.Declarator.Pointer                                                       *
             [1].Cedar.Type.Declarator.Direct                                                        test_7
+              [0].identifier                                                                        test_7
           [1].Cedar.Type.Declarator.Suffix                                                          ( )
   [10].Cedar.Declaration                                                                            char * * test_8 ;
     [0].Cedar.Declaration.Specifiers                                                                char
@@ -2563,6 +3323,7 @@ Mr Jane
         [0].Cedar.Type.Declarator.Pointer                                                           * *
           [0].Cedar.Type.Declarator.Pointer                                                         *
         [1].Cedar.Type.Declarator.Direct                                                            test_8
+          [0].identifier                                                                            test_8
 
 [  0]   6:1   cat=.identifier.withDashes                   bare_key
 [  1]   6:10  cat=.literal                                 =
@@ -2934,38 +3695,49 @@ Mr Jane
     [0].Toml.Key                                  bare_key
       [0].Toml.SimpleKey                          bare_key
     [1].Toml.Val                                  "Alphanumeric, underscores, and dashes allowed"
+      [0].string                                  "Alphanumeric, underscores, and dashes allowed"
   [1].Toml.Keyval                                 bare-key-dash = "Dashes are completely legal"
     [0].Toml.Key                                  bare-key-dash
       [0].Toml.SimpleKey                          bare-key-dash
     [1].Toml.Val                                  "Dashes are completely legal"
+      [0].string                                  "Dashes are completely legal"
   [2].Toml.Keyval                                 bare_key_123 = "Numbers are allowed"
     [0].Toml.Key                                  bare_key_123
       [0].Toml.SimpleKey                          bare_key_123
     [1].Toml.Val                                  "Numbers are allowed"
+      [0].string                                  "Numbers are allowed"
   [3].Toml.Keyval                                 "quoted key" = "Allows spaces and special characters"
     [0].Toml.Key                                  "quoted key"
       [0].Toml.SimpleKey                          "quoted key"
+        [0].string                                "quoted key"
     [1].Toml.Val                                  "Allows spaces and special characters"
+      [0].string                                  "Allows spaces and special characters"
   [4].Toml.Keyval                                 'literal key' = "No escaping processed inside the key name"
     [0].Toml.Key                                  'literal key'
       [0].Toml.SimpleKey                          'literal key'
+        [0].string                                'literal key'
     [1].Toml.Val                                  "No escaping processed inside the key name"
+      [0].string                                  "No escaping processed inside the key name"
   [5].Toml.Keyval                                 "" = "Empty string keys are explicitly valid"
     [0].Toml.Key                                  ""
       [0].Toml.SimpleKey                          ""
+        [0].string                                ""
     [1].Toml.Val                                  "Empty string keys are explicitly valid"
+      [0].string                                  "Empty string keys are explicitly valid"
   [6].Toml.Keyval                                 physical . ... = "blue"
     [0].Toml.Key                                  physical . property . color
       [0].Toml.SimpleKey                          physical
       [1].Toml.SimpleKey                          property
       [2].Toml.SimpleKey                          color
     [1].Toml.Val                                  "blue"
+      [0].string                                  "blue"
   [7].Toml.Keyval                                 physical . ... = "round"
     [0].Toml.Key                                  physical . property . shape
       [0].Toml.SimpleKey                          physical
       [1].Toml.SimpleKey                          property
       [2].Toml.SimpleKey                          shape
     [1].Toml.Val                                  "round"
+      [0].string                                  "round"
   [8].Toml.Table                                  [ strings ]
     [0].Toml.StdTable                             [ strings ]
       [0].Toml.Key                                strings
@@ -2974,10 +3746,12 @@ Mr Jane
     [0].Toml.Key                                  basic
       [0].Toml.SimpleKey                          basic
     [1].Toml.Val                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
+      [0].string                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
   [10].Toml.Keyval                                escaped = "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
     [0].Toml.Key                                  escaped
       [0].Toml.SimpleKey                          escaped
     [1].Toml.Val                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
+      [0].string                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
   [11].Toml.Table                                 [ integers ]
     [0].Toml.StdTable                             [ integers ]
       [0].Toml.Key                                integers
@@ -2986,38 +3760,83 @@ Mr Jane
     [0].Toml.Key                                  positive
       [0].Toml.SimpleKey                          positive
     [1].Toml.Val                                  +99
+      [0].number                                  +99
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [13].Toml.Keyval                                negative = -17
     [0].Toml.Key                                  negative
       [0].Toml.SimpleKey                          negative
     [1].Toml.Val                                  -17
+      [0].number                                  -17
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [14].Toml.Keyval                                zero = 0
     [0].Toml.Key                                  zero
       [0].Toml.SimpleKey                          zero
     [1].Toml.Val                                  0
+      [0].number                                  0
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [15].Toml.Keyval                                zero_plus = +0
     [0].Toml.Key                                  zero_plus
       [0].Toml.SimpleKey                          zero_plus
     [1].Toml.Val                                  +0
+      [0].number                                  +0
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [16].Toml.Keyval                                zero_minus = -0
     [0].Toml.Key                                  zero_minus
       [0].Toml.SimpleKey                          zero_minus
     [1].Toml.Val                                  -0
+      [0].number                                  -0
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [17].Toml.Keyval                                hexadecimal = 0xDEADBEEF
     [0].Toml.Key                                  hexadecimal
       [0].Toml.SimpleKey                          hexadecimal
     [1].Toml.Val                                  0xDEADBEEF
+      [0].number                                  0xDEADBEEF
+        [0].number.integer                        
+          [0].number.integer.hexadecimal          
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.hexadecimal 
   [18].Toml.Keyval                                hex_lowercase = 0xdeadbeef
     [0].Toml.Key                                  hex_lowercase
       [0].Toml.SimpleKey                          hex_lowercase
     [1].Toml.Val                                  0xdeadbeef
+      [0].number                                  0xdeadbeef
+        [0].number.integer                        
+          [0].number.integer.hexadecimal          
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.hexadecimal 
   [19].Toml.Keyval                                octal = 0o755
     [0].Toml.Key                                  octal
       [0].Toml.SimpleKey                          octal
     [1].Toml.Val                                  0o755
+      [0].number                                  0o755
+        [0].number.integer                        
+          [0].number.integer.octal                
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.octal     
   [20].Toml.Keyval                                binary = 0b11010010
     [0].Toml.Key                                  binary
       [0].Toml.SimpleKey                          binary
     [1].Toml.Val                                  0b11010010
+      [0].number                                  0b11010010
+        [0].number.integer                        
+          [0].number.integer.binary               
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.binary    
   [21].Toml.Table                                 [ floats ]
     [0].Toml.StdTable                             [ floats ]
       [0].Toml.Key                                floats
@@ -3026,42 +3845,108 @@ Mr Jane
     [0].Toml.Key                                  normal
       [0].Toml.SimpleKey                          normal
     [1].Toml.Val                                  +3.14159
+      [0].number                                  +3.14159
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.integerPart 
+              [0].number.unsigned.integer.decimal 
+            [1].number.unsigned.float.fraction    
   [23].Toml.Keyval                                negative = -0.01
     [0].Toml.Key                                  negative
       [0].Toml.SimpleKey                          negative
     [1].Toml.Val                                  -0.01
+      [0].number                                  -0.01
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.integerPart 
+              [0].number.unsigned.integer.decimal 
+            [1].number.unsigned.float.fraction    
   [24].Toml.Keyval                                fractional_zero = 5.0
     [0].Toml.Key                                  fractional_zero
       [0].Toml.SimpleKey                          fractional_zero
     [1].Toml.Val                                  5.0
+      [0].number                                  5.0
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.integerPart 
+              [0].number.unsigned.integer.decimal 
+            [1].number.unsigned.float.fraction    
   [25].Toml.Keyval                                exponent_large = 5e+22
     [0].Toml.Key                                  exponent_large
       [0].Toml.SimpleKey                          exponent_large
     [1].Toml.Val                                  5e+22
+      [0].number                                  5e+22
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.integerPart 
+              [0].number.unsigned.integer.decimal 
+            [1].number.unsigned.float.exponent    
+              [0].number.plusMinus                
   [26].Toml.Keyval                                exponent_small = 1e-14
     [0].Toml.Key                                  exponent_small
       [0].Toml.SimpleKey                          exponent_small
     [1].Toml.Val                                  1e-14
+      [0].number                                  1e-14
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.integerPart 
+              [0].number.unsigned.integer.decimal 
+            [1].number.unsigned.float.exponent    
+              [0].number.plusMinus                
   [27].Toml.Keyval                                exponent_mixed = -6.23e-4
     [0].Toml.Key                                  exponent_mixed
       [0].Toml.SimpleKey                          exponent_mixed
     [1].Toml.Val                                  -6.23e-4
+      [0].number                                  -6.23e-4
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.integerPart 
+              [0].number.unsigned.integer.decimal 
+            [1].number.unsigned.float.fraction    
+            [2].number.unsigned.float.exponent    
+              [0].number.plusMinus                
   [28].Toml.Keyval                                infinity = inf
     [0].Toml.Key                                  infinity
       [0].Toml.SimpleKey                          infinity
     [1].Toml.Val                                  inf
+      [0].number                                  inf
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.special     
   [29].Toml.Keyval                                positive_infinity = +inf
     [0].Toml.Key                                  positive_infinity
       [0].Toml.SimpleKey                          positive_infinity
     [1].Toml.Val                                  +inf
+      [0].number                                  +inf
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.special     
   [30].Toml.Keyval                                negative_infinity = -inf
     [0].Toml.Key                                  negative_infinity
       [0].Toml.SimpleKey                          negative_infinity
     [1].Toml.Val                                  -inf
+      [0].number                                  -inf
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.special     
   [31].Toml.Keyval                                not_a_number = nan
     [0].Toml.Key                                  not_a_number
       [0].Toml.SimpleKey                          not_a_number
     [1].Toml.Val                                  nan
+      [0].number                                  nan
+        [0].number.float                          
+          [0].number.plusMinus                    
+          [1].number.unsigned.float               
+            [0].number.unsigned.float.special     
   [32].Toml.Table                                 [ booleans ]
     [0].Toml.StdTable                             [ booleans ]
       [0].Toml.Key                                booleans
@@ -3082,38 +3967,73 @@ Mr Jane
     [0].Toml.Key                                  offset_utc
       [0].Toml.SimpleKey                          offset_utc
     [1].Toml.Val                                  1979-05-27T07:32:00Z
+      [0].time.point.any                          1979-05-27T07:32:00Z
+        [0].time.point.rfc                        
+          [0].time.point.local.rfc                
+            [0].date                              
+            [1].time.ofDay.rfc                    
+          [1].time.zone                           
   [37].Toml.Keyval                                offset_numeric = 1979-05-27T00:32:00-07:00
     [0].Toml.Key                                  offset_numeric
       [0].Toml.SimpleKey                          offset_numeric
     [1].Toml.Val                                  1979-05-27T00:32:00-07:00
+      [0].time.point.any                          1979-05-27T00:32:00-07:00
+        [0].time.point.rfc                        
+          [0].time.point.local.rfc                
+            [0].date                              
+            [1].time.ofDay.rfc                    
+          [1].time.zone                           
   [38].Toml.Keyval                                offset_with_ms = 1979-05-27T00:32:00.999999-07:00
     [0].Toml.Key                                  offset_with_ms
       [0].Toml.SimpleKey                          offset_with_ms
     [1].Toml.Val                                  1979-05-27T00:32:00.999999-07:00
+      [0].time.point.any                          1979-05-27T00:32:00.999999-07:00
+        [0].time.point.rfc                        
+          [0].time.point.local.rfc                
+            [0].date                              
+            [1].time.ofDay.rfc                    
+          [1].time.zone                           
   [39].Toml.Keyval                                offset_space_separator = 1979-05-27 07:32:00Z
     [0].Toml.Key                                  offset_space_separator
       [0].Toml.SimpleKey                          offset_space_separator
     [1].Toml.Val                                  1979-05-27 07:32:00Z
+      [0].time.point.any                          1979-05-27 07:32:00Z
+        [0].time.point.rfc                        
+          [0].time.point.local.rfc                
+            [0].date                              
+            [1].time.ofDay.rfc                    
+          [1].time.zone                           
   [40].Toml.Keyval                                local_date_time = 1979-05-27T07:32:00
     [0].Toml.Key                                  local_date_time
       [0].Toml.SimpleKey                          local_date_time
     [1].Toml.Val                                  1979-05-27T07:32:00
+      [0].time.point.local.any                    1979-05-27T07:32:00
+        [0].time.point.local.rfc                  
+          [0].date                                
+          [1].time.ofDay.rfc                      
   [41].Toml.Keyval                                local_date_time_ms = 1979-05-27T07:32:00.999999
     [0].Toml.Key                                  local_date_time_ms
       [0].Toml.SimpleKey                          local_date_time_ms
     [1].Toml.Val                                  1979-05-27T07:32:00.999999
+      [0].time.point.local.any                    1979-05-27T07:32:00.999999
+        [0].time.point.local.rfc                  
+          [0].date                                
+          [1].time.ofDay.rfc                      
   [42].Toml.Keyval                                local_date = 1979-05-27
     [0].Toml.Key                                  local_date
       [0].Toml.SimpleKey                          local_date
     [1].Toml.Val                                  1979-05-27
+      [0].date                                    1979-05-27
   [43].Toml.Keyval                                local_time = 07:32:00
     [0].Toml.Key                                  local_time
       [0].Toml.SimpleKey                          local_time
     [1].Toml.Val                                  07:32:00
+      [0].time.ofDay.any                          07:32:00
   [44].Toml.Keyval                                local_time_ms = 00:32:00.999999
     [0].Toml.Key                                  local_time_ms
       [0].Toml.SimpleKey                          local_time_ms
     [1].Toml.Val                                  00:32:00.999999
+      [0].time.ofDay.any                          00:32:00.999999
   [45].Toml.Table                                 [ arrays ]
     [0].Toml.StdTable                             [ arrays ]
       [0].Toml.Key                                arrays
@@ -3124,16 +4044,34 @@ Mr Jane
     [1].Toml.Val                                  [ 1 ... 3 ]
       [0].Toml.Array                              [ 1 ... 3 ]
         [0].Toml.Val                              1
+          [0].number                              1
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
         [1].Toml.Val                              2
+          [0].number                              2
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
         [2].Toml.Val                              3
+          [0].number                              3
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
   [47].Toml.Keyval                                strings = ... "green" ]
     [0].Toml.Key                                  strings
       [0].Toml.SimpleKey                          strings
     [1].Toml.Val                                  [ "red" ... "green" ]
       [0].Toml.Array                              [ "red" ... "green" ]
         [0].Toml.Val                              "red"
+          [0].string                              "red"
         [1].Toml.Val                              "yellow"
+          [0].string                              "yellow"
         [2].Toml.Val                              "green"
+          [0].string                              "green"
   [48].Toml.Keyval                                nested_arrays = ... ] ]
     [0].Toml.Key                                  nested_arrays
       [0].Toml.SimpleKey                          nested_arrays
@@ -3142,35 +4080,89 @@ Mr Jane
         [0].Toml.Val                              [ 1 , 2 ]
           [0].Toml.Array                          [ 1 , 2 ]
             [0].Toml.Val                          1
+              [0].number                          1
+                [0].number.integer                
+                  [0].number.integer.decimal      
+                    [0].number.plusMinus          
+                    [1].number.unsigned.integer.decimal 
             [1].Toml.Val                          2
+              [0].number                          2
+                [0].number.integer                
+                  [0].number.integer.decimal      
+                    [0].number.plusMinus          
+                    [1].number.unsigned.integer.decimal 
         [1].Toml.Val                              [ 3 ... 5 ]
           [0].Toml.Array                          [ 3 ... 5 ]
             [0].Toml.Val                          3
+              [0].number                          3
+                [0].number.integer                
+                  [0].number.integer.decimal      
+                    [0].number.plusMinus          
+                    [1].number.unsigned.integer.decimal 
             [1].Toml.Val                          4
+              [0].number                          4
+                [0].number.integer                
+                  [0].number.integer.decimal      
+                    [0].number.plusMinus          
+                    [1].number.unsigned.integer.decimal 
             [2].Toml.Val                          5
+              [0].number                          5
+                [0].number.integer                
+                  [0].number.integer.decimal      
+                    [0].number.plusMinus          
+                    [1].number.unsigned.integer.decimal 
   [49].Toml.Keyval                                multiline_and_mixed_whitespace = ... , ]
     [0].Toml.Key                                  multiline_and_mixed_whitespace
       [0].Toml.SimpleKey                          multiline_and_mixed_whitespace
     [1].Toml.Val                                  [ "allowed" ... , ]
       [0].Toml.Array                              [ "allowed" ... , ]
         [0].Toml.Val                              "allowed"
+          [0].string                              "allowed"
         [1].Toml.Val                              "across"
+          [0].string                              "across"
         [2].Toml.Val                              "multiple"
+          [0].string                              "multiple"
         [3].Toml.Val                              "lines"
+          [0].string                              "lines"
   [50].Toml.Keyval                                mixed_types = ... 1979-05-27 ]
     [0].Toml.Key                                  mixed_types
       [0].Toml.SimpleKey                          mixed_types
     [1].Toml.Val                                  [ 1 ... 1979-05-27 ]
       [0].Toml.Array                              [ 1 ... 1979-05-27 ]
         [0].Toml.Val                              1
+          [0].number                              1
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
         [1].Toml.Val                              2
+          [0].number                              2
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
         [2].Toml.Val                              "three"
+          [0].string                              "three"
         [3].Toml.Val                              [ "four" , 5 ]
           [0].Toml.Array                          [ "four" , 5 ]
             [0].Toml.Val                          "four"
+              [0].string                          "four"
             [1].Toml.Val                          5
+              [0].number                          5
+                [0].number.integer                
+                  [0].number.integer.decimal      
+                    [0].number.plusMinus          
+                    [1].number.unsigned.integer.decimal 
         [4].Toml.Val                              6.0
+          [0].number                              6.0
+            [0].number.float                      
+              [0].number.plusMinus                
+              [1].number.unsigned.float           
+                [0].number.unsigned.float.integerPart 
+                  [0].number.unsigned.integer.decimal 
+                [1].number.unsigned.float.fraction 
         [5].Toml.Val                              1979-05-27
+          [0].date                                1979-05-27
   [51].Toml.Table                                 [ inline_tables ]
     [0].Toml.StdTable                             [ inline_tables ]
       [0].Toml.Key                                inline_tables
@@ -3184,10 +4176,12 @@ Mr Jane
           [0].Toml.Key                            first
             [0].Toml.SimpleKey                    first
           [1].Toml.Val                            "Tom"
+            [0].string                            "Tom"
         [1].Toml.Keyval                           last = "Preston-Werner"
           [0].Toml.Key                            last
             [0].Toml.SimpleKey                    last
           [1].Toml.Val                            "Preston-Werner"
+            [0].string                            "Preston-Werner"
   [53].Toml.Keyval                                point = ... 3 }
     [0].Toml.Key                                  point
       [0].Toml.SimpleKey                          point
@@ -3197,14 +4191,29 @@ Mr Jane
           [0].Toml.Key                            x
             [0].Toml.SimpleKey                    x
           [1].Toml.Val                            1
+            [0].number                            1
+              [0].number.integer                  
+                [0].number.integer.decimal        
+                  [0].number.plusMinus            
+                  [1].number.unsigned.integer.decimal 
         [1].Toml.Keyval                           y = 2
           [0].Toml.Key                            y
             [0].Toml.SimpleKey                    y
           [1].Toml.Val                            2
+            [0].number                            2
+              [0].number.integer                  
+                [0].number.integer.decimal        
+                  [0].number.plusMinus            
+                  [1].number.unsigned.integer.decimal 
         [2].Toml.Keyval                           z = 3
           [0].Toml.Key                            z
             [0].Toml.SimpleKey                    z
           [1].Toml.Val                            3
+            [0].number                            3
+              [0].number.integer                  
+                [0].number.integer.decimal        
+                  [0].number.plusMinus            
+                  [1].number.unsigned.integer.decimal 
   [54].Toml.Keyval                                nested = ... true }
     [0].Toml.Key                                  nested
       [0].Toml.SimpleKey                          nested
@@ -3219,10 +4228,16 @@ Mr Jane
                 [0].Toml.Key                      id
                   [0].Toml.SimpleKey              id
                 [1].Toml.Val                      42
+                  [0].number                      42
+                    [0].number.integer            
+                      [0].number.integer.decimal  
+                        [0].number.plusMinus      
+                        [1].number.unsigned.integer.decimal 
               [1].Toml.Keyval                     role = "admin"
                 [0].Toml.Key                      role
                   [0].Toml.SimpleKey              role
                 [1].Toml.Val                      "admin"
+                  [0].string                      "admin"
         [1].Toml.Keyval                           active = true
           [0].Toml.Key                            active
             [0].Toml.SimpleKey                    active
@@ -3240,6 +4255,7 @@ Mr Jane
     [0].Toml.Key                                  key_a
       [0].Toml.SimpleKey                          key_a
     [1].Toml.Val                                  "Value inside explicit_table_1"
+      [0].string                                  "Value inside explicit_table_1"
   [58].Toml.Table                                 [ explicit_table_1 . nested_child ]
     [0].Toml.StdTable                             [ explicit_table_1 . nested_child ]
       [0].Toml.Key                                explicit_table_1 . nested_child
@@ -3249,6 +4265,7 @@ Mr Jane
     [0].Toml.Key                                  key_b
       [0].Toml.SimpleKey                          key_b
     [1].Toml.Val                                  "Value inside nested_child"
+      [0].string                                  "Value inside nested_child"
   [60].Toml.Table                                 [ explicit_table_2 ]
     [0].Toml.StdTable                             [ explicit_table_2 ]
       [0].Toml.Key                                explicit_table_2
@@ -3263,6 +4280,7 @@ Mr Jane
     [0].Toml.Key                                  final_key
       [0].Toml.SimpleKey                          final_key
     [1].Toml.Val                                  "Resolves deep nesting paths cleanly"
+      [0].string                                  "Resolves deep nesting paths cleanly"
   [63].Toml.Table                                 [[ products ]]
     [0].Toml.ArrayTable                           [[ products ]]
       [0].Toml.Key                                products
@@ -3271,10 +4289,16 @@ Mr Jane
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "Hammer"
+      [0].string                                  "Hammer"
   [65].Toml.Keyval                                sku = 738594937
     [0].Toml.Key                                  sku
       [0].Toml.SimpleKey                          sku
     [1].Toml.Val                                  738594937
+      [0].number                                  738594937
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [66].Toml.Table                                 [[ products ]]
     [0].Toml.ArrayTable                           [[ products ]]
       [0].Toml.Key                                products
@@ -3287,10 +4311,16 @@ Mr Jane
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "Nail"
+      [0].string                                  "Nail"
   [69].Toml.Keyval                                sku = 284758393
     [0].Toml.Key                                  sku
       [0].Toml.SimpleKey                          sku
     [1].Toml.Val                                  284758393
+      [0].number                                  284758393
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [70].Toml.Table                                 [[ products . categories ]]
     [0].Toml.ArrayTable                           [[ products . categories ]]
       [0].Toml.Key                                products . categories
@@ -3300,6 +4330,7 @@ Mr Jane
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "Fasteners"
+      [0].string                                  "Fasteners"
   [72].Toml.Table                                 [[ fruit ]]
     [0].Toml.ArrayTable                           [[ fruit ]]
       [0].Toml.Key                                fruit
@@ -3308,6 +4339,7 @@ Mr Jane
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "apple"
+      [0].string                                  "apple"
   [74].Toml.Table                                 [ fruit . physical ]
     [0].Toml.StdTable                             [ fruit . physical ]
       [0].Toml.Key                                fruit . physical
@@ -3317,6 +4349,7 @@ Mr Jane
     [0].Toml.Key                                  color
       [0].Toml.SimpleKey                          color
     [1].Toml.Val                                  "red"
+      [0].string                                  "red"
   [76].Toml.Table                                 [[ fruit . varieties ]]
     [0].Toml.ArrayTable                           [[ fruit . varieties ]]
       [0].Toml.Key                                fruit . varieties
@@ -3326,6 +4359,7 @@ Mr Jane
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "gala"
+      [0].string                                  "gala"
   [78].Toml.Table                                 [[ fruit . varieties ]]
     [0].Toml.ArrayTable                           [[ fruit . varieties ]]
       [0].Toml.Key                                fruit . varieties
@@ -3335,6 +4369,7 @@ Mr Jane
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "fuji"
+      [0].string                                  "fuji"
   [80].Toml.Table                                 [[ fruit ]]
     [0].Toml.ArrayTable                           [[ fruit ]]
       [0].Toml.Key                                fruit
@@ -3343,6 +4378,7 @@ Mr Jane
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "banana"
+      [0].string                                  "banana"
   [82].Toml.Table                                 [[ fruit . varieties ]]
     [0].Toml.ArrayTable                           [[ fruit . varieties ]]
       [0].Toml.Key                                fruit . varieties
@@ -3352,4 +4388,5 @@ Mr Jane
     [0].Toml.Key                                  name
       [0].Toml.SimpleKey                          name
     [1].Toml.Val                                  "cavendish"
+      [0].string                                  "cavendish"
 

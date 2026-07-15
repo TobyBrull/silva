@@ -62,6 +62,10 @@ namespace silva::fern::test {
   [3].Fern.LabeledItem                            42
     [0].Fern.Value                                42
       [0].number                                  42
+        [0].number.integer                        
+          [0].number.integer.decimal              
+            [0].number.plusMinus                  
+            [1].number.unsigned.integer.decimal   
   [4].Fern.LabeledItem                            [ ]
     [0].Fern                                      [ ]
   [5].Fern.LabeledItem                            [ 1 ... 3 ]
@@ -69,14 +73,26 @@ namespace silva::fern::test {
       [0].Fern.LabeledItem                        1
         [0].Fern.Value                            1
           [0].number                              1
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
       [1].Fern.LabeledItem                        'two' : 2
         [0].Fern.Label                            'two'
           [0].string                              'two'
         [1].Fern.Value                            2
           [0].number                              2
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
       [2].Fern.LabeledItem                        3
         [0].Fern.Value                            3
           [0].number                              3
+            [0].number.integer                    
+              [0].number.integer.decimal          
+                [0].number.plusMinus              
+                [1].number.unsigned.integer.decimal 
 )";
 
     const string_t result_str = SILVA_REQUIRE(pt->span().to_string());
@@ -113,6 +129,14 @@ digraph parse_tree {
   "/3/0/" [label="[0].Fern.Value\n42"]
   "/3/0/" -> "/3/0/0/"
   "/3/0/0/" [label="[0].number\n42"]
+  "/3/0/0/" -> "/3/0/0/0/"
+  "/3/0/0/0/" [label="[0].number.integer\n42"]
+  "/3/0/0/0/" -> "/3/0/0/0/0/"
+  "/3/0/0/0/0/" [label="[0].number.integer.decimal\n42"]
+  "/3/0/0/0/0/" -> "/3/0/0/0/0/0/"
+  "/3/0/0/0/0/0/" [label="[0].number.plusMinus\n42"]
+  "/3/0/0/0/0/" -> "/3/0/0/0/0/1/"
+  "/3/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n42"]
   "/" -> "/4/"
   "/4/" [label="[4].Fern.LabeledItem\n["]
   "/4/" -> "/4/0/"
@@ -127,6 +151,14 @@ digraph parse_tree {
   "/5/0/0/0/" [label="[0].Fern.Value\n1"]
   "/5/0/0/0/" -> "/5/0/0/0/0/"
   "/5/0/0/0/0/" [label="[0].number\n1"]
+  "/5/0/0/0/0/" -> "/5/0/0/0/0/0/"
+  "/5/0/0/0/0/0/" [label="[0].number.integer\n1"]
+  "/5/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/"
+  "/5/0/0/0/0/0/0/" [label="[0].number.integer.decimal\n1"]
+  "/5/0/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/0/"
+  "/5/0/0/0/0/0/0/0/" [label="[0].number.plusMinus\n1"]
+  "/5/0/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/1/"
+  "/5/0/0/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n1"]
   "/5/0/" -> "/5/0/1/"
   "/5/0/1/" [label="[1].Fern.LabeledItem\n'two'"]
   "/5/0/1/" -> "/5/0/1/0/"
@@ -137,12 +169,28 @@ digraph parse_tree {
   "/5/0/1/1/" [label="[1].Fern.Value\n2"]
   "/5/0/1/1/" -> "/5/0/1/1/0/"
   "/5/0/1/1/0/" [label="[0].number\n2"]
+  "/5/0/1/1/0/" -> "/5/0/1/1/0/0/"
+  "/5/0/1/1/0/0/" [label="[0].number.integer\n2"]
+  "/5/0/1/1/0/0/" -> "/5/0/1/1/0/0/0/"
+  "/5/0/1/1/0/0/0/" [label="[0].number.integer.decimal\n2"]
+  "/5/0/1/1/0/0/0/" -> "/5/0/1/1/0/0/0/0/"
+  "/5/0/1/1/0/0/0/0/" [label="[0].number.plusMinus\n2"]
+  "/5/0/1/1/0/0/0/" -> "/5/0/1/1/0/0/0/1/"
+  "/5/0/1/1/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n2"]
   "/5/0/" -> "/5/0/2/"
   "/5/0/2/" [label="[2].Fern.LabeledItem\n3"]
   "/5/0/2/" -> "/5/0/2/0/"
   "/5/0/2/0/" [label="[0].Fern.Value\n3"]
   "/5/0/2/0/" -> "/5/0/2/0/0/"
   "/5/0/2/0/0/" [label="[0].number\n3"]
+  "/5/0/2/0/0/" -> "/5/0/2/0/0/0/"
+  "/5/0/2/0/0/0/" [label="[0].number.integer\n3"]
+  "/5/0/2/0/0/0/" -> "/5/0/2/0/0/0/0/"
+  "/5/0/2/0/0/0/0/" [label="[0].number.integer.decimal\n3"]
+  "/5/0/2/0/0/0/0/" -> "/5/0/2/0/0/0/0/0/"
+  "/5/0/2/0/0/0/0/0/" [label="[0].number.plusMinus\n3"]
+  "/5/0/2/0/0/0/0/" -> "/5/0/2/0/0/0/0/1/"
+  "/5/0/2/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n3"]
 })";
 
     const string_t result_graphviz = SILVA_REQUIRE(pt->span().to_graphviz());
