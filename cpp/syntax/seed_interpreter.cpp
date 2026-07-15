@@ -100,10 +100,6 @@ namespace silva::seed::impl {
       const auto pts_rhs_0 = pts_rule.sub_tree_span_at(it.pos);
 
       ++it;
-      // A non-axe rule ends with a "newline" twig-rule node; skip it.
-      while (it != end && pts_rule[it.pos].rule_name == lexicon.ni_newline) {
-        ++it;
-      }
       SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
       SILVA_EXPECT_FWD(
           register_rule(curr_rule_name, pts_rhs_0, is_token_rule, is_no_node, is_no_whitespace));
@@ -140,15 +136,12 @@ namespace silva::seed::impl {
         SILVA_EXPECT(axe_it != axe_end, MINOR);
         SILVA_EXPECT(pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_nt, MINOR);
         ++axe_it;
-        // The remaining children are Level nodes, interspersed with newline/indent/dedent
-        // twig-rule nodes (which are skipped here).
         while (axe_it != axe_end) {
-          if (pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_axe_level) {
-            const auto pts_level          = pts_rhs_0.sub_tree_span_at(axe_it.pos);
-            const token_id_t level_name   = SILVA_EXPECT_FWD(pts_level.front_token_id());
-            const name_id_t axe_rule_name = sfp->name_id(curr_rule_name, level_name);
-            SILVA_EXPECT_FWD(register_rule(axe_rule_name, pts_level));
-          }
+          SILVA_EXPECT(pts_rhs_0[axe_it.pos].rule_name == lexicon.ni_axe_level, MINOR);
+          const auto pts_level          = pts_rhs_0.sub_tree_span_at(axe_it.pos);
+          const token_id_t level_name   = SILVA_EXPECT_FWD(pts_level.front_token_id());
+          const name_id_t axe_rule_name = sfp->name_id(curr_rule_name, level_name);
+          SILVA_EXPECT_FWD(register_rule(axe_rule_name, pts_level));
           ++axe_it;
         }
       }
@@ -172,8 +165,12 @@ namespace silva::seed::impl {
         else if (cn == lexicon.ni_rule) {
           SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, scope_is_token_rule));
         }
-        // else: skip the twig-rule nodes (ruleName, newline, indent, dedent) that are direct
-        // children of the enclosing scope/language.
+        else {
+          SILVA_EXPECT(false,
+                       MINOR,
+                       "expected Scope or Rule node; got {}",
+                       lexicon.name_id_wrap(cn));
+        }
         ++it;
       }
       return {};
@@ -220,7 +217,13 @@ namespace silva::seed::impl {
                    sfp->token_id_wrap(lang_id),
                    lang_it->second.pts,
                    pts_language);
-      auto [it, end]                  = pts_language.children_range();
+      auto [it, end] = pts_language.children_range();
+      SILVA_EXPECT(it != end, MINOR, "expected child nodes at {}, got none", pts_language);
+      SILVA_EXPECT(pts_language[it.pos].rule_name == lexicon.ni_rule_name,
+                   MINOR,
+                   "expected first child node at {}, to be ruleName",
+                   pts_language);
+      ++it;
       const name_id_t curr_scope_name = sfp->name_id(scope_name, lang_id);
       SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_language, it, end, false));
       return {};
@@ -234,17 +237,15 @@ namespace silva::seed::impl {
 
       for (const auto [node_index, child_index]: pts_seed.children_range()) {
         const auto pts_child = pts_seed.sub_tree_span_at(node_index);
-        const name_id_t cn   = pts_child[0].rule_name;
-        if (cn == lexicon.ni_language) {
+        if (pts_child[0].rule_name == lexicon.ni_language) {
           SILVA_EXPECT_FWD(handle_language(scope_name, pts_child));
         }
-        else if (cn == lexicon.ni_scope) {
+        else if (pts_child[0].rule_name == lexicon.ni_scope) {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
-        else if (cn == lexicon.ni_rule) {
+        else {
           SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, false));
         }
-        // else: skip any stray twig-rule nodes.
       }
       return {};
     }

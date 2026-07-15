@@ -2,7 +2,6 @@
 
 #include "canopy/variant.hpp"
 
-#include <algorithm>
 #include <ranges>
 #include <variant>
 
