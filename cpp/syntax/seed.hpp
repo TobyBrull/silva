@@ -99,7 +99,7 @@ language Seed:
     Atom = no_node Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
     Quantifier = number ? ',' number ? | number
-    operator = [ "not" "but_then" operator.single '{' '}' ]
+    operator = [ "not" "but_then" '{' '}' operator.single ]
     NoNode = Expr
   Terminal = [ "ε" "end_of_language" "language" string fragName ]
   Nonterminal = '.' ? ( Name '.' ) * Name

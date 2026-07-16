@@ -191,11 +191,11 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
-    expected_t<token_t> operator_single()
+    expected_t<parse_tree_node_t> operator_single()
     {
-      auto ts = token_stake(lexicon.ni_operator_single);
+      auto ss = stake();
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_operator_single, OPERATOR);
-      return ts.commit();
+      return ss.commit();
     }
 
     expected_t<token_t> operator_greedy()
@@ -604,19 +604,22 @@ namespace silva::seed::impl {
                                                lexicon.name_id_wrap(lexicon.ni_atom)));
     }
 
-    expected_t<token_t> expr_oper()
+    expected_t<parse_tree_node_t> expr_oper()
     {
+      auto ss = stake();
+      ss.create_node(lexicon.ni_oper);
       auto ts = token_stake(lexicon.ni_oper);
       for (const auto& ft:
            {lexicon.ti_not, lexicon.ti_but_then, lexicon.ti_brace_open, lexicon.ti_brace_close}) {
         auto result = literal_fragmented_token(ft);
         if (result) {
-          ts.add_token(*result);
-          return ts.commit();
+          add_token_and_skip(ts.commit());
+          return ss.commit();
         }
       }
-      ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_oper, operator_single()));
-      return ts.commit();
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_oper, operator_single()));
+      add_token_and_skip(ts.commit());
+      return ss.commit();
     }
 
     expected_t<parse_tree_node_t> quantifier()
@@ -657,10 +660,7 @@ namespace silva::seed::impl {
         return quantifier();
       }
       else if (rule_name == lexicon.ni_oper) {
-        auto ss = stake();
-        ss.create_node(lexicon.ni_oper);
-        add_token_and_skip(SILVA_EXPECT_PARSE_FWD(lexicon.ni_oper, expr_oper()));
-        return ss.commit();
+        return expr_oper();
       }
       else if (rule_name == lexicon.ni_expr) {
         return expr();
