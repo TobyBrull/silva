@@ -86,6 +86,12 @@ namespace silva {
     return retval;
   }
 
+  expected_t<token_id_t> parse_tree_span_t::token() const
+  {
+    SILVA_EXPECT(token_size() == 1, MINOR);
+    return at_token_id(0);
+  }
+
   expected_t<token_id_t> parse_tree_span_t::front_token_id() const
   {
     SILVA_EXPECT(token_size() > 0, MINOR);

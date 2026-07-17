@@ -37,6 +37,8 @@ namespace silva {
 
     index_t count_children_with(name_id_t) const;
 
+    expected_t<token_id_t> token() const;
+
     expected_t<token_id_t> front_token_id() const;
     expected_t<name_id_t> front_token_category() const;
     expected_t<fragment_span_t> front_language() const;
