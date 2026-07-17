@@ -5,6 +5,8 @@
     * use PascalCase for rule that DO create notes by default
     * remove 'no_node' qualifier
 
+* replace pts.get_children() with function that returns pts's, not indexes
+
 * tokenization-less parse-tree
 
 * `number` tokenization: write tests

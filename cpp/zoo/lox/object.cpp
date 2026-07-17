@@ -11,9 +11,6 @@ namespace silva::lox {
   function_t& function_t::operator=(function_t&&) = default;
   function_t::~function_t()                       = default;
 
-  // Function's grammar is « identifier '(' Parameters ')' Stmt.Block », and since the twig-rule
-  // "identifier" now produces a leaf node, the children are: [identifier, Parameters, Block]. So
-  // "Parameters" lives at node-index 2 (right after the single-node "identifier").
   index_t function_t::arity() const
   {
     const index_t arity = pts[2].num_children;
