@@ -498,6 +498,7 @@ namespace silva::seed::impl {
       return {{min_repeat, max_repeat}};
     }
 
+    // can be 'a ?' 'a *' 'a +' or 'a{2,3}'
     expected_t<node_and_error_t> s_expr_postfix(const parse_tree_span_t pts,
                                                 const name_id_t t_rule_name)
     {
@@ -505,10 +506,11 @@ namespace silva::seed::impl {
       index_t min_repeat     = 0;
       index_t max_repeat     = 0;
       const token_id_t op_ti = sfp->get(pts[0].rule_name).base_name;
-      const auto children    = SILVA_EXPECT_FWD(pts.get_children<2>());
-      const auto pts_expr    = pts.sub_tree_span_at(children[0]);
-      const auto pts_postfix = pts.sub_tree_span_at(children[1]);
-      if (op_ti == lexicon.ti_brace_open.token_id) {
+      const auto children    = SILVA_EXPECT_FWD(pts.get_children_up_to<4>());
+      SILVA_EXPECT(children.size == 2 || children.size == 4, MAJOR);
+      const auto pts_expr = pts.sub_tree_span_at(children[0]);
+      if (children.size == 4) {
+        const auto pts_postfix           = pts.sub_tree_span_at(children[2]);
         std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_quantifier(pts_postfix));
       }
       else {
