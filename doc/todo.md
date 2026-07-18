@@ -7,6 +7,10 @@
 
 * replace pts.get_children() with function that returns pts's, not indexes
 
+* overhaul seed-axe
+    * avoid std::sort (treat three different types of arity in separate branches; simplfy
+      "consistent_range" function)
+
 * tokenization-less parse-tree
 
 * `number` tokenization: write tests

@@ -369,12 +369,10 @@ namespace silva::seed::impl {
       assoc_t assoc = INVALID;
       for (const auto [child_node_index, child_index]: pts_level.children_range()) {
         const auto pts_child = pts_level.sub_tree_span_at(child_node_index);
-        const name_id_t cn   = pts_child[0].rule_name;
-        if (cn == lexicon.ni_rule_name) {
-          // The level's name (a twig-rule node); already read via front_token_id() above.
-          continue;
+        if (child_index == 0) {
         }
-        else if (cn == lexicon.ni_axe_assoc) {
+        else if (child_index == 1) {
+          SILVA_EXPECT(pts_child[0].rule_name == lexicon.ni_axe_assoc, BROKEN_SEED);
           const token_id_t ti_assoc = SILVA_EXPECT_FWD(pts_child.front_token_id());
           if (ti_assoc == lexicon.ti_ltr.token_id) {
             assoc = LEFT_TO_RIGHT;
@@ -387,8 +385,8 @@ namespace silva::seed::impl {
           }
         }
         else {
-          SILVA_EXPECT(cn == lexicon.ni_axe_ops, BROKEN_SEED);
-          SILVA_EXPECT_FWD(ops(level_index, full_name, assoc, pts_child));
+          const auto pts_ops = pts_level.sub_tree_span_at(child_node_index);
+          SILVA_EXPECT_FWD(ops(level_index, full_name, assoc, pts_ops));
         }
       }
       return {};
@@ -409,14 +407,10 @@ namespace silva::seed::impl {
       retval.oper_rule = pts_axe_oper_nt;
       ++it;
 
-      // The remaining children are the Level nodes, interspersed with newline/indent/dedent
-      // twig-rule nodes (which are skipped here).
-      level_index_t curr_level = pts_axe.count_children_with(lexicon.ni_axe_level) + 1;
+      level_index_t curr_level = pts_axe[0].num_children - 1;
       while (it != end) {
-        if (pts_axe[it.pos].rule_name == lexicon.ni_axe_level) {
-          curr_level -= 1;
-          SILVA_EXPECT_FWD(level(curr_level, pts_axe.sub_tree_span_at(it.pos)));
-        }
+        curr_level -= 1;
+        SILVA_EXPECT_FWD(level(curr_level, pts_axe.sub_tree_span_at(it.pos)));
         ++it;
       }
       SILVA_EXPECT_FWD(add_to_level_map(axe_name, curr_level));
@@ -473,10 +467,6 @@ namespace silva::seed::impl {
       array_small_t<index_t, 2> covered_token_indexes;
       optional_t<index_t> min_token_index;
       optional_t<index_t> max_token_index;
-      // Indexes into "output_tree" of the operator node(s) that this operator produced (e.g. the
-      // two brackets for a nested operator). These become children of the resulting level-node,
-      // interspersed with the operand atoms in token order. Empty for the hallucinated "concat"
-      // operator (which has no operator token/node).
       array_small_t<index_t, 2> oper_output_indexes;
     };
     array_t<oper_item_t> oper_stack;
@@ -498,58 +488,39 @@ namespace silva::seed::impl {
 
     // functions
 
-    struct oper_token_t {
-      token_id_t token_id{0};
-      // The node that the operator rule produced, as a proto-node (used for subtree-accounting on
-      // the enclosing nursery-stake).
+    struct rule_parser_result_t {
+      token_id_t token_id;
       parse_tree_node_t ptn;
-      // A leaf term_node_t whose "tree_index" points at the operator subtree left behind on
-      // "nursery.tree" (just like the atoms parsed via "invoke_rule_parser").
       term_node_t tn;
     };
-
-    // The operator rule is treated just like the atom rule: it leaves its subtree on
-    // "nursery.tree", and we remember where via the returned "term_node_t". The caller is
-    // responsible for pushing "tn" into "output_tree" (and recording its index) once it commits to
-    // the operator.
-    expected_t<oper_token_t> parse_oper_token(const name_id_t name)
+    expected_t<rule_parser_result_t> invoke_rule_parser_oper()
     {
-      const index_t old_num_tokens = num_tokens();
-      auto ss                      = nursery.stake();
-      const index_t tree_index     = ss.orig_state.tree_size;
-      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(name, rule_parser(axe.oper_rule)));
-      SILVA_EXPECT(ss.proto_node.num_children == 1,
-                   MAJOR,
-                   "expected 'operator' rule to return exactly one node");
-      SILVA_EXPECT(num_tokens() == old_num_tokens + 1,
-                   MAJOR,
-                   "the operator rule given to seed::axe_t must always produce a single token");
-      parse_tree_node_t ptn = ss.commit();
-      term_node_t tn{ptn, tree_index};
-      tn.num_children = 0;
-      tn.subtree_size = 1;
-      return oper_token_t{
-          .token_id = nursery.tokenization.tokens.back().token_id,
-          .ptn      = ptn,
-          .tn       = tn,
-      };
+      const index_t old_num_tokens       = num_tokens();
+      auto retval                        = SILVA_EXPECT_FWD(invoke_rule_parser(axe.oper_rule));
+      const index_t num_generated_tokens = num_tokens() - old_num_tokens;
+      SILVA_EXPECT(num_generated_tokens == 1, MAJOR);
+      retval.token_id = nursery.tokenization.tokens.back().token_id;
+      return retval;
     }
-
-    expected_t<tuple_t<parse_tree_node_t, term_node_t>>
-    invoke_rule_parser(const name_id_t rule_name)
+    expected_t<rule_parser_result_t> invoke_rule_parser(const name_id_t rule_name)
     {
       SILVA_EXPECT(rule_name.is_valid(), MAJOR, "trying to invoke empty rule");
       auto ss = nursery.stake();
       ss.add_proto_node(SILVA_EXPECT_FWD(rule_parser(rule_name)));
-      SILVA_EXPECT(ss.proto_node.num_children == 1,
-                   MAJOR,
-                   "The atom function given to seed::axe_t must always parse a single child");
+      SILVA_EXPECT(
+          ss.proto_node.num_children == 1,
+          MAJOR,
+          "The 'atom' or 'oper' function given to seed::axe_t must always parse a single child");
       const index_t tree_index = ss.orig_state.tree_size;
       parse_tree_node_t ptn    = ss.commit();
       term_node_t tn{ptn, tree_index};
       tn.num_children = 0;
       tn.subtree_size = 1;
-      return {{ptn, tn}};
+      return rule_parser_result_t{
+          .token_id = {},
+          .ptn      = ptn,
+          .tn       = tn,
+      };
     }
 
     struct nest_result_t {
@@ -559,12 +530,9 @@ namespace silva::seed::impl {
       array_small_t<index_t, 2> oper_output_indexes;
     };
 
-    // The left-bracket/first operator token has already been produced by the caller, and its
-    // term-node "left_tn" is passed in. This pushes the left operator node into the "output_tree",
-    // parses the nested expression (also pushed) and the matching right operator token (also
-    // pushed). The "ptn" that is returned only accounts for the subtree left on "nursery.tree" by
-    // the nested expression and the right operator (the left operator was already committed by the
-    // caller and is accounted for there).
+    // The left-bracket/first operator token has already been produced by the caller; its index is
+    // passed as "left_token_index". This function then parses the nested expression and the
+    // matching right token.
     expected_t<nest_result_t> handle_nest(const term_node_t& left_tn,
                                           const index_t left_token_index,
                                           const token_id_t right_token,
@@ -576,10 +544,10 @@ namespace silva::seed::impl {
       const index_t token_begin      = left_token_index;
       const name_id_t used_rule_name = nest_rule ? *nest_rule : axe.name;
 
-      const auto [ptn, tn] = SILVA_EXPECT_FWD(invoke_rule_parser(used_rule_name));
+      const auto [_, ptn, tn] = SILVA_EXPECT_FWD(invoke_rule_parser(used_rule_name));
       ss.add_proto_node(ptn);
 
-      const auto right = SILVA_EXPECT_FWD(parse_oper_token(used_rule_name));
+      const auto right = SILVA_EXPECT_FWD(invoke_rule_parser_oper());
       SILVA_EXPECT_PARSE(used_rule_name,
                          right.token_id == right_token,
                          "expected {}, got {}",
@@ -723,10 +691,6 @@ namespace silva::seed::impl {
             SILVA_EXPECT_PARSE_FWD(oper_stack[oper_stack_begin].level_name, consistent_range(ois));
         SILVA_EXPECT(cr.num_atoms <= open_term_stack.size(), MINOR);
 
-        // The children of the resulting level-node are the operand atoms together with all
-        // operator nodes produced by the operators being popped, sorted into token order (which,
-        // since everything is appended to "output_tree" as it is parsed, is the same as increasing
-        // "output_tree" index).
         array_t<index_t> child_indexes;
         for (index_t i = open_term_stack.size() - cr.num_atoms; i < open_term_stack.size(); ++i) {
           child_indexes.push_back(open_term_stack[i]);
@@ -783,7 +747,7 @@ namespace silva::seed::impl {
       while (true) {
         const index_t oper_token_index = num_tokens();
         const auto oper_state          = nursery.get_state();
-        auto res                       = SILVA_EXPECT_FWD_IF(MAJOR, parse_oper_token(axe.name));
+        auto res                       = SILVA_EXPECT_FWD_IF(MAJOR, invoke_rule_parser_oper());
         if (res.has_value()) {
           // Pushes the (non-nested) operator node onto "output_tree" and accounts for its subtree
           // on the enclosing stake. Returns the "output_tree" index of the operator node.
@@ -934,7 +898,7 @@ namespace silva::seed::impl {
         if (!maybe_res.has_value()) {
           break;
         }
-        auto [ptn, tn] = *std::move(maybe_res);
+        auto [_, ptn, tn] = *std::move(maybe_res);
         ss.add_proto_node(ptn);
         if (mode == INFIX_MODE && axe.concat_result.has_value()) {
           SILVA_EXPECT_FWD(hallucinate_concat());
