@@ -1,5 +1,7 @@
 # TODO
 
+* check that empty oper-rules work in axe (and also empty atom rules)
+
 * Turn all tokenization rules into normal rules
     * use camelCase for rules that do NOT create nodes by default
     * use PascalCase for rule that DO create notes by default

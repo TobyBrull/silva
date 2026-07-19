@@ -367,8 +367,6 @@ namespace silva::lox {
       const name_id_t rule_name  = pts[0].rule_name;
       const token_id_t decl_name = pts.ptp->tp->tokens[pts[0].token_begin + 1].token_id;
       if (rule_name == lexicon.ni_decl_var) {
-        // « Var = "var" identifier ( '=' Expr ) ? ';' » — skip the leading identifier node and
-        // compile the optional initializer expression.
         const auto children = SILVA_EXPECT_FWD(pts.get_children_up_to<2>());
         if (children.size == 2) {
           SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(children[1])),
