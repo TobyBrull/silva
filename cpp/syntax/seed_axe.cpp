@@ -467,6 +467,7 @@ namespace silva::seed::impl {
       array_small_t<index_t, 2> covered_token_indexes;
       optional_t<index_t> min_token_index;
       optional_t<index_t> max_token_index;
+      // index into the "output_tree" array
       array_small_t<index_t, 2> oper_output_indexes;
     };
     array_t<oper_item_t> oper_stack;

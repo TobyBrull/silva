@@ -198,16 +198,6 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
-    expected_t<token_t> operator_greedy()
-    {
-      auto ts = token_stake(lexicon.ni_operator_greedy);
-      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_operator_greedy, OPERATOR);
-      while (num_fragments_left() >= 1 && fragment_category_by() == OPERATOR) {
-        fragment_index += 1;
-      }
-      return ts.commit();
-    }
-
     expected_t<parse_tree_node_t> frag_name()
     {
       auto ss = stake();
