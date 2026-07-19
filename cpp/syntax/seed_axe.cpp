@@ -555,12 +555,12 @@ namespace silva::seed::impl {
                          sfp->token_id_wrap(right.token_id));
       ss.add_proto_node(right.ptn);
 
-      // All parsing succeeded; now append the operator/operand nodes to "output_tree" in token
-      // order (left-bracket, nested expression, right-bracket).
       const index_t left_out_idx = output_tree.size();
       output_tree.push_back(left_tn);
+
       open_term_stack.push_back(output_tree.size());
       output_tree.push_back(tn);
+
       const index_t right_out_idx = output_tree.size();
       output_tree.push_back(right.tn);
 
@@ -749,8 +749,6 @@ namespace silva::seed::impl {
         const auto oper_state          = nursery.get_state();
         auto res                       = SILVA_EXPECT_FWD_IF(MAJOR, invoke_rule_parser_oper());
         if (res.has_value()) {
-          // Pushes the (non-nested) operator node onto "output_tree" and accounts for its subtree
-          // on the enclosing stake. Returns the "output_tree" index of the operator node.
           const auto commit_oper = [&]() -> index_t {
             ss.add_proto_node(res->ptn);
             const index_t oper_out_idx = output_tree.size();
