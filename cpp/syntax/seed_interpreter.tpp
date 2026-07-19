@@ -98,52 +98,93 @@ language Frog:
 
 [0].Seed                                          language Frog ...  
   [0].Seed.Language                               language Frog ...  
-    [0].Seed.Rule                                 ⊙ = Rule * \n  
+    [0].Seed.ruleName                             Frog
+    [1].Seed.Rule                                 ⊙ = Rule * \n  
       [0].Seed.Expr.Postfix.*                     Rule *
         [0].Seed.Nonterminal                      Rule
-    [1].Seed.Rule                                 skip = ... * \n  
+          [0].Seed.ruleName                       Rule
+        [1].Seed.Expr.operator                    *
+    [2].Seed.Rule                                 skip = ... * \n  
       [0].Seed.Nonterminal                        skip
+        [0].Seed.tokenCategoryName                skip
       [1].Seed.Expr.Postfix.*                     ( SPACE ... ) *
         [0].Seed.Expr.Or.|                        SPACE | ... | NEWLINE
           [0].Seed.Terminal                       SPACE
-          [1].Seed.Terminal                       LINEFEED
-          [2].Seed.Terminal                       COMMENT
-          [3].Seed.Terminal                       WHITESPACE
-          [4].Seed.Terminal                       INDENT
-          [5].Seed.Terminal                       DEDENT
-          [6].Seed.Terminal                       NEWLINE
-    [2].Seed.Rule                                 identifier = ... * \n  
+            [0].Seed.fragName                     SPACE
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Terminal                       LINEFEED
+            [0].Seed.fragName                     LINEFEED
+          [3].Seed.Expr.operator                  |
+          [4].Seed.Terminal                       COMMENT
+            [0].Seed.fragName                     COMMENT
+          [5].Seed.Expr.operator                  |
+          [6].Seed.Terminal                       WHITESPACE
+            [0].Seed.fragName                     WHITESPACE
+          [7].Seed.Expr.operator                  |
+          [8].Seed.Terminal                       INDENT
+            [0].Seed.fragName                     INDENT
+          [9].Seed.Expr.operator                  |
+          [10].Seed.Terminal                      DEDENT
+            [0].Seed.fragName                     DEDENT
+          [11].Seed.Expr.operator                 |
+          [12].Seed.Terminal                      NEWLINE
+            [0].Seed.fragName                     NEWLINE
+        [1].Seed.Expr.operator                    *
+    [3].Seed.Rule                                 identifier = ... * \n  
       [0].Seed.Nonterminal                        identifier
+        [0].Seed.tokenCategoryName                identifier
       [1].Seed.Expr.Concat.concat                 ID_START ID_CONTINUE *
         [0].Seed.Terminal                         ID_START
+          [0].Seed.fragName                       ID_START
         [1].Seed.Expr.Postfix.*                   ID_CONTINUE *
           [0].Seed.Terminal                       ID_CONTINUE
-    [3].Seed.Rule                                 Rule = RuleName Expr \n  
+            [0].Seed.fragName                     ID_CONTINUE
+          [1].Seed.Expr.operator                  *
+    [4].Seed.Rule                                 Rule = RuleName Expr \n  
       [0].Seed.Nonterminal                        Rule
+        [0].Seed.ruleName                         Rule
       [1].Seed.Expr.Concat.concat                 RuleName Expr
         [0].Seed.Nonterminal                      RuleName
+          [0].Seed.ruleName                       RuleName
         [1].Seed.Nonterminal                      Expr
-    [4].Seed.Rule                                 RuleName = no_node Keyword \n  
+          [0].Seed.ruleName                       Expr
+    [5].Seed.Rule                                 RuleName = no_node Keyword \n  
       [0].Seed.Nonterminal                        RuleName
+        [0].Seed.ruleName                         RuleName
       [1].Seed.Qualifier                          no_node
       [2].Seed.Nonterminal                        Keyword
-    [5].Seed.Rule                                 Expr = Primary + \n  
+        [0].Seed.ruleName                         Keyword
+    [6].Seed.Rule                                 Expr = Primary + \n  
       [0].Seed.Nonterminal                        Expr
+        [0].Seed.ruleName                         Expr
       [1].Seed.Expr.Postfix.+                     Primary +
         [0].Seed.Nonterminal                      Primary
-    [6].Seed.Rule                                 Primary = ... identifier \n  
+          [0].Seed.ruleName                       Primary
+        [1].Seed.Expr.operator                    +
+    [7].Seed.Rule                                 Primary = ... identifier \n  
       [0].Seed.Nonterminal                        Primary
+        [0].Seed.ruleName                         Primary
       [1].Seed.Expr.And.but_then                  not Keyword but_then identifier
         [0].Seed.Expr.Prefix.not                  not Keyword
-          [0].Seed.Nonterminal                    Keyword
-        [1].Seed.Nonterminal                      identifier
-    [7].Seed.Scope                                Keyword : ...  
+          [0].Seed.Expr.operator                  not
+          [1].Seed.Nonterminal                    Keyword
+            [0].Seed.ruleName                     Keyword
+        [1].Seed.Expr.operator                    but_then
+        [2].Seed.Nonterminal                      identifier
+          [0].Seed.tokenCategoryName              identifier
+    [8].Seed.Scope                                Keyword : ...  
       [0].Seed.Nonterminal                        Keyword
+        [0].Seed.ruleName                         Keyword
       [1].Seed.Rule                               ⊙ = ... 'keyword3' 
         [0].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
           [0].Seed.Terminal                       'keyword1'
-          [1].Seed.Terminal                       'keyword2'
-          [2].Seed.Terminal                       'keyword3'
+            [0].string                            'keyword1'
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Terminal                       'keyword2'
+            [0].string                            'keyword2'
+          [3].Seed.Expr.operator                  |
+          [4].Seed.Terminal                       'keyword3'
+            [0].string                            'keyword3'
 )";
     const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));
@@ -175,23 +216,32 @@ language Frog:
     [0].Frog.Keyword                              keyword1
     [1].Frog.Expr                                 a b c
       [0].Frog.Primary                            a
+        [0].Frog.identifier                       a
       [1].Frog.Primary                            b
+        [0].Frog.identifier                       b
       [2].Frog.Primary                            c
+        [0].Frog.identifier                       c
   [1].Frog.Rule                                   keyword2 d e
     [0].Frog.Keyword                              keyword2
     [1].Frog.Expr                                 d e
       [0].Frog.Primary                            d
+        [0].Frog.identifier                       d
       [1].Frog.Primary                            e
+        [0].Frog.identifier                       e
   [2].Frog.Rule                                   keyword1 f
     [0].Frog.Keyword                              keyword1
     [1].Frog.Expr                                 f
       [0].Frog.Primary                            f
+        [0].Frog.identifier                       f
   [3].Frog.Rule                                   keyword3 g h i
     [0].Frog.Keyword                              keyword3
     [1].Frog.Expr                                 g h i
       [0].Frog.Primary                            g
+        [0].Frog.identifier                       g
       [1].Frog.Primary                            h
+        [0].Frog.identifier                       h
       [2].Frog.Primary                            i
+        [0].Frog.identifier                       i
 )";
     const string_t frog_pt_str{SILVA_REQUIRE(frog_pt->span().to_string())};
     CHECK(frog_pt_str == expected.substr(1));
@@ -231,7 +281,13 @@ language Testor:
 
 [0].Testor                                        x = ... * d
   [0].Testor.Assign                               x = a + b
+    [0].identifier                                x
+    [1].identifier                                a
+    [2].identifier                                b
   [1].Testor.Assign                               y = c * d
+    [0].identifier                                y
+    [1].identifier                                c
+    [2].identifier                                d
 )";
     const string_t result        = SILVA_REQUIRE(pt->span().to_string());
     CHECK(result == expected.substr(1));

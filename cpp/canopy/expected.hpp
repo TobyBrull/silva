@@ -50,6 +50,16 @@ namespace silva {
   } while (false)
 #define SILVA_EXPECT(...) SILVA_EXPECT_IMPL(return, __VA_ARGS__)
 
+#define SILVA_EXPECT_NURSERY_BREAK(error_nursery, condition, error_level, ...)        \
+  if (!(condition)) {                                                                 \
+    error_nursery.add_child_error(silva::impl::silva_expect(__FILE__,                 \
+                                                            __LINE__,                 \
+                                                            error_level,              \
+                                                            #condition __VA_OPT__(, ) \
+                                                                __VA_ARGS__));        \
+    break;                                                                            \
+  }
+
 // Semantics:
 // Must only be used inside functions whose return value is "expected_t<...>". Also the provided
 // "expression" must evaluate to a type of the form "expected_t<Result>". If the result of

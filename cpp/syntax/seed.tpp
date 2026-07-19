@@ -1,5 +1,6 @@
 #include "seed.hpp"
 
+#include "seed.globals.hpp"
 #include "syntax.hpp"
 
 #include <catch2/catch_all.hpp>
@@ -8,11 +9,13 @@ namespace silva::seed::test {
   TEST_CASE("seed-parse-root", "[seed][seed::interpreter_t]")
   {
     syntax_farm_t sf;
-    const auto spr   = standard_seed_interpreter(sf.ptr());
-    const auto fp    = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", string_t{seed_str}));
-    const auto pts_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(fp));
-    const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
-    CHECK(pts_1->nodes == pts_2->nodes);
+    const auto spr = standard_seed_interpreter(sf.ptr());
+    for (const auto txt: {seed_str, globals_str}) {
+      const auto fp    = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", string_t{txt}));
+      const auto pts_1 = SILVA_REQUIRE(bootstrap_interpreter_t{sf.ptr()}.parse(fp));
+      const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
+      CHECK(pts_1->nodes == pts_2->nodes);
+    }
   }
 
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
@@ -107,49 +110,89 @@ language SimpleFern:
 [0].Seed                                          string = ...  
   [0].Seed.Rule                                   string = STRING \n
     [0].Seed.Nonterminal                          string
+      [0].Seed.tokenCategoryName                  string
     [1].Seed.Terminal                             STRING
+      [0].Seed.fragName                           STRING
   [1].Seed.Rule                                   number = DIGIT + \n
     [0].Seed.Nonterminal                          number
+      [0].Seed.tokenCategoryName                  number
     [1].Seed.Expr.Postfix.+                       DIGIT +
       [0].Seed.Terminal                           DIGIT
+        [0].Seed.fragName                         DIGIT
+      [1].Seed.Expr.operator                      +
   [2].Seed.Language                               language SimpleFern ...  
-    [0].Seed.Rule                                 ⊙ = ... ']' \n
+    [0].Seed.ruleName                             SimpleFern
+    [1].Seed.Rule                                 ⊙ = ... ']' \n
       [0].Seed.Expr.Concat.concat                 '[' ( ... * ']'
         [0].Seed.Terminal                         '['
+          [0].string                              '['
         [1].Seed.Expr.Postfix.*                   ( LabeledItem ... ) *
           [0].Seed.Expr.Concat.concat             LabeledItem ';' ?
             [0].Seed.Nonterminal                  LabeledItem
+              [0].Seed.ruleName                   LabeledItem
             [1].Seed.Expr.Postfix.?               ';' ?
               [0].Seed.Terminal                   ';'
+                [0].string                        ';'
+              [1].Seed.Expr.operator              ?
+          [1].Seed.Expr.operator                  *
         [2].Seed.Terminal                         ']'
-    [1].Seed.Rule                                 skip = ... * \n
+          [0].string                              ']'
+    [2].Seed.Rule                                 skip = ... * \n
       [0].Seed.Nonterminal                        skip
+        [0].Seed.tokenCategoryName                skip
       [1].Seed.Expr.Postfix.*                     ( SPACE ... ) *
         [0].Seed.Expr.Or.|                        SPACE | ... | NEWLINE
           [0].Seed.Terminal                       SPACE
-          [1].Seed.Terminal                       LINEFEED
-          [2].Seed.Terminal                       COMMENT
-          [3].Seed.Terminal                       WHITESPACE
-          [4].Seed.Terminal                       INDENT
-          [5].Seed.Terminal                       DEDENT
-          [6].Seed.Terminal                       NEWLINE
-    [2].Seed.Rule                                 LabeledItem = ... Item \n  
+            [0].Seed.fragName                     SPACE
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Terminal                       LINEFEED
+            [0].Seed.fragName                     LINEFEED
+          [3].Seed.Expr.operator                  |
+          [4].Seed.Terminal                       COMMENT
+            [0].Seed.fragName                     COMMENT
+          [5].Seed.Expr.operator                  |
+          [6].Seed.Terminal                       WHITESPACE
+            [0].Seed.fragName                     WHITESPACE
+          [7].Seed.Expr.operator                  |
+          [8].Seed.Terminal                       INDENT
+            [0].Seed.fragName                     INDENT
+          [9].Seed.Expr.operator                  |
+          [10].Seed.Terminal                      DEDENT
+            [0].Seed.fragName                     DEDENT
+          [11].Seed.Expr.operator                 |
+          [12].Seed.Terminal                      NEWLINE
+            [0].Seed.fragName                     NEWLINE
+        [1].Seed.Expr.operator                    *
+    [3].Seed.Rule                                 LabeledItem = ... Item \n  
       [0].Seed.Nonterminal                        LabeledItem
+        [0].Seed.ruleName                         LabeledItem
       [1].Seed.Expr.Concat.concat                 ( Label ... ? Item
         [0].Seed.Expr.Postfix.?                   ( Label ':' ) ?
           [0].Seed.Expr.Concat.concat             Label ':'
             [0].Seed.Nonterminal                  Label
+              [0].Seed.ruleName                   Label
             [1].Seed.Terminal                     ':'
+              [0].string                          ':'
+          [1].Seed.Expr.operator                  ?
         [1].Seed.Nonterminal                      Item
-    [3].Seed.Rule                                 Label = string \n  
+          [0].Seed.ruleName                       Item
+    [4].Seed.Rule                                 Label = string \n  
       [0].Seed.Nonterminal                        Label
+        [0].Seed.ruleName                         Label
       [1].Seed.Nonterminal                        string
-    [4].Seed.Rule                                 Item = ... number 
+        [0].Seed.tokenCategoryName                string
+    [5].Seed.Rule                                 Item = ... number 
       [0].Seed.Nonterminal                        Item
+        [0].Seed.ruleName                         Item
       [1].Seed.Expr.Or.|                          SimpleFern | string | number
         [0].Seed.Nonterminal                      SimpleFern
-        [1].Seed.Nonterminal                      string
-        [2].Seed.Nonterminal                      number
+          [0].Seed.ruleName                       SimpleFern
+        [1].Seed.Expr.operator                    |
+        [2].Seed.Nonterminal                      string
+          [0].Seed.tokenCategoryName              string
+        [3].Seed.Expr.operator                    |
+        [4].Seed.Nonterminal                      number
+          [0].Seed.tokenCategoryName              number
 )";
 
     const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string());
@@ -178,15 +221,19 @@ language SimpleFern:
 [0].SimpleFern                                    [ 'abc' ... ; ]
   [0].SimpleFern.LabeledItem                      'abc'
     [0].SimpleFern.Item                           'abc'
+      [0].string                                  'abc'
   [1].SimpleFern.LabeledItem                      [ 'def' 123 ]
     [0].SimpleFern.Item                           [ 'def' 123 ]
       [0].SimpleFern                              [ 'def' 123 ]
         [0].SimpleFern.LabeledItem                'def'
           [0].SimpleFern.Item                     'def'
+            [0].string                            'def'
         [1].SimpleFern.LabeledItem                123
           [0].SimpleFern.Item                     123
+            [0].number                            123
   [2].SimpleFern.LabeledItem                      'jkl'
     [0].SimpleFern.Item                           'jkl'
+      [0].string                                  'jkl'
 )";
       const string_t result{SILVA_REQUIRE(sfpt->span().to_string())};
       CHECK(result == expected_parse_tree.substr(1));

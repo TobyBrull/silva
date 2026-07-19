@@ -158,11 +158,18 @@ namespace silva::seed::impl {
     {
       while (it != end) {
         const auto pts_child = pts_scope.sub_tree_span_at(it.pos);
-        if (pts_child[0].rule_name == lexicon.ni_scope) {
+        const name_id_t cn   = pts_child[0].rule_name;
+        if (cn == lexicon.ni_scope) {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
-        else {
+        else if (cn == lexicon.ni_rule) {
           SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, scope_is_token_rule));
+        }
+        else {
+          SILVA_EXPECT(false,
+                       MINOR,
+                       "expected Scope or Rule node; got {}",
+                       lexicon.name_id_wrap(cn));
         }
         ++it;
       }
@@ -210,7 +217,13 @@ namespace silva::seed::impl {
                    sfp->token_id_wrap(lang_id),
                    lang_it->second.pts,
                    pts_language);
-      auto [it, end]                  = pts_language.children_range();
+      auto [it, end] = pts_language.children_range();
+      SILVA_EXPECT(it != end, MINOR, "expected child nodes at {}, got none", pts_language);
+      SILVA_EXPECT(pts_language[it.pos].rule_name == lexicon.ni_rule_name,
+                   MINOR,
+                   "expected first child node at {}, to be ruleName",
+                   pts_language);
+      ++it;
       const name_id_t curr_scope_name = sfp->name_id(scope_name, lang_id);
       SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_language, it, end, false));
       return {};
@@ -417,9 +430,10 @@ namespace silva::seed::impl {
     {
       {
         auto ss             = stake();
-        const auto children = SILVA_EXPECT_FWD(pts.get_children<1>());
-        auto result =
-            SILVA_EXPECT_FWD_IF(MAJOR, s_expr(pts.sub_tree_span_at(children[0]), t_rule_name));
+        const auto children = SILVA_EXPECT_FWD(pts.get_children<2>());
+        SILVA_EXPECT(pts[children[0]].rule_name == lexicon.ni_oper, MAJOR);
+        const auto sub_pts = pts.sub_tree_span_at(children[1]);
+        const auto result  = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(sub_pts, t_rule_name));
         SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
       }
       auto ss = stake();
@@ -484,30 +498,28 @@ namespace silva::seed::impl {
       return {{min_repeat, max_repeat}};
     }
 
+    // can be 'a ?' 'a *' 'a +' or 'a{2,3}'
     expected_t<node_and_error_t> s_expr_postfix(const parse_tree_span_t pts,
                                                 const name_id_t t_rule_name)
     {
       auto ss                = stake();
-      index_t base_child_idx = 0;
       index_t min_repeat     = 0;
       index_t max_repeat     = 0;
       const token_id_t op_ti = sfp->get(pts[0].rule_name).base_name;
-      if (op_ti == lexicon.ti_brace_open.token_id) {
-        const auto children              = SILVA_EXPECT_FWD(pts.get_children<2>());
-        base_child_idx                   = children[0];
-        const auto pts_braces            = pts.sub_tree_span_at(children[1]);
-        std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_quantifier(pts_braces));
+      const auto children    = SILVA_EXPECT_FWD(pts.get_children_up_to<4>());
+      SILVA_EXPECT(children.size == 2 || children.size == 4, MAJOR);
+      const auto pts_expr = pts.sub_tree_span_at(children[0]);
+      if (children.size == 4) {
+        const auto pts_postfix           = pts.sub_tree_span_at(children[2]);
+        std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_quantifier(pts_postfix));
       }
       else {
-        const auto children              = SILVA_EXPECT_FWD(pts.get_children<1>());
-        base_child_idx                   = children[0];
         std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
       }
       index_t repeat_count = 0;
       error_t last_error;
       while (repeat_count < max_repeat) {
-        auto result =
-            SILVA_EXPECT_FWD_IF(MAJOR, s_expr(pts.sub_tree_span_at(base_child_idx), t_rule_name));
+        auto result = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(pts_expr, t_rule_name));
         if (result.has_value()) {
           ss.add_proto_node(std::move(*result).as_node());
           repeat_count += 1;
@@ -596,10 +608,18 @@ namespace silva::seed::impl {
                                             const name_id_t t_rule_name)
     {
       optional_t<stake_t> ss;
-      for (const auto [child_node_index, child_index]: pts.children_range()) {
+      auto [it, end] = pts.children_range();
+      while (true) {
+        SILVA_EXPECT(it != end, MAJOR);
         ss.emplace(stake());
-        auto result = SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(child_node_index), t_rule_name));
+        auto result = SILVA_EXPECT_FWD(s_expr(pts.sub_tree_span_at(it.pos), t_rule_name));
         ss->add_proto_node(std::move(result).as_node());
+        ++it;
+        if (it == end) {
+          break;
+        }
+        SILVA_EXPECT(pts[it.pos].rule_name == lexicon.ni_oper, MAJOR);
+        ++it;
       }
       SILVA_EXPECT(ss.has_value(), MAJOR);
       return ss->commit();
@@ -608,30 +628,43 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> s_expr_followup(const parse_tree_span_t pts,
                                                  const name_id_t t_rule_name)
     {
-      auto ss = stake();
-      for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-        auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name);
+      auto ss        = stake();
+      auto [it, end] = pts.children_range();
+      bool is_first  = true;
+      while (true) {
+        SILVA_EXPECT(it != end, MAJOR);
+        auto result = s_expr(pts.sub_tree_span_at(it.pos), t_rule_name);
         if (result.has_value()) {
           ss.add_proto_node(std::move(result->node));
         }
         else {
-          if (child_index == 0) {
+          if (is_first) {
             return std::unexpected(std::move(result).error());
           }
           break;
         }
+        is_first = false;
+        ++it;
+        if (it == end) {
+          break;
+        }
+        SILVA_EXPECT(pts[it.pos].rule_name == lexicon.ni_oper, MAJOR);
+        ++it;
       }
       return ss.commit();
     }
 
+    // can be 'a | b | c' or '[ a b c ]'
     expected_t<node_and_error_t> s_expr_or(const parse_tree_span_t pts, const name_id_t t_rule_name)
     {
       const index_t orig_fragment_index = fragment_index;
       error_nursery_t error_nursery;
       optional_t<parse_tree_node_t> retval;
       error_level_t error_level = MINOR;
-      for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
-        auto result = s_expr(pts.sub_tree_span_at(sub_s_node_index), t_rule_name);
+      auto [it, end]            = pts.children_range();
+      while (true) {
+        SILVA_EXPECT_NURSERY_BREAK(error_nursery, it != end, MAJOR, "expected sub-tree");
+        auto result = s_expr(pts.sub_tree_span_at(it.pos), t_rule_name);
         if (result.has_value()) {
           retval = std::move(*result).as_node();
           break;
@@ -642,6 +675,13 @@ namespace silva::seed::impl {
           if (error_level >= MAJOR) {
             break;
           }
+        }
+        ++it;
+        if (it == end) {
+          break;
+        }
+        if (pts[it.pos].rule_name == lexicon.ni_oper) {
+          ++it;
         }
       }
       if (retval.has_value()) {
@@ -792,7 +832,10 @@ namespace silva::seed::impl {
       token_rule_depth += 1;
       scope_exit_t token_scope_exit([this] { token_rule_depth -= 1; });
 
-      auto ss     = stake();
+      auto ss = stake();
+      if (!rule_data.is_no_node) {
+        ss.create_node(t_rule_name);
+      }
       auto ts     = token_stake(t_rule_name);
       auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(rule_data.expr, t_rule_name));
       const token_t token = ts.commit();

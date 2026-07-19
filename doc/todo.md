@@ -1,13 +1,24 @@
 # TODO
 
+* check that empty oper-rules work in axe (and also empty atom rules)
+
 * Turn all tokenization rules into normal rules
     * use camelCase for rules that do NOT create nodes by default
     * use PascalCase for rule that DO create notes by default
     * remove 'no_node' qualifier
 
+* replace pts.get_children() with function that returns pts's, not indexes
+
+* overhaul seed-axe
+    * avoid std::sort (treat three different types of arity in separate branches; simplfy
+      "consistent_range" function)
+    * ...
+
 * tokenization-less parse-tree
 
 * `number` tokenization: write tests
+* more Seed:
+    * support explicitly forcing 'node' or 'no_node' on a called rule
 * better tokenization
     * token rules startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
     * also make '`...`' strings in fragmentization?
