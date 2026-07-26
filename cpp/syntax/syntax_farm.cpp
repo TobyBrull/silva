@@ -83,6 +83,12 @@ namespace silva {
       name_infos.emplace_back(fni);
       name_lookup.emplace(fni, name_id_literal);
     }
+    {
+      SILVA_ASSERT(name_infos.size() == name_id_language.val);
+      const name_info_t fni{0, token_id_language};
+      name_infos.emplace_back(fni);
+      name_lookup.emplace(fni, name_id_language);
+    }
   }
 
   syntax_farm_t::~syntax_farm_t() = default;

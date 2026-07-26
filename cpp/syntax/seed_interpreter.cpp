@@ -364,6 +364,7 @@ namespace silva::seed::impl {
             t_rule_name,
             token_rule_depth == 0,
             "the 'language' token-category may not be used inside other token rules");
+        ss.create_node(name_id_language);
         auto ts = token_stake(name_id_t{lexicon.ti_language.token_id.val});
         SILVA_EXPECT_PARSE(t_rule_name,
                            fragment_category_by() == fragment_category_t::LANG_BEGIN,
