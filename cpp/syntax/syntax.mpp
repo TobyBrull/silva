@@ -63,10 +63,11 @@ namespace silva {
 
       if (pts[0].rule_name == ni_silva) {
         for (const auto [node_idx, child_idx]: pts.children_range()) {
-          const auto pts_node            = pts.sub_tree_span_at(node_idx);
-          const token_id_t sub_lang_name = SILVA_EXPECT_FWD(pts_node.front_token_id());
-          const name_id_t sub_lang_rule  = SILVA_EXPECT_FWD(language_rule(sf, sub_lang_name));
-          const fragment_span_t sub_fs   = SILVA_EXPECT_FWD(pts_node.back_language());
+          const auto pts_section          = pts.sub_tree_span_at(node_idx);
+          const auto [pts_name, pts_lang] = SILVA_EXPECT_FWD(pts_section.get_children_pts<2>());
+          const token_id_t sub_lang_name  = SILVA_EXPECT_FWD(pts_name.token());
+          const name_id_t sub_lang_rule   = SILVA_EXPECT_FWD(language_rule(sf, sub_lang_name));
+          const fragment_span_t sub_fs    = SILVA_EXPECT_FWD(pts_lang.language());
 
           parse_tree_ptr_t sub_pt   = SILVA_EXPECT_FWD(si->apply(sub_fs, sub_lang_rule));
           parse_tree_span_t sub_pts = sub_pt->span();

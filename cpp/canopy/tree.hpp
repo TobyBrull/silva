@@ -63,6 +63,9 @@ namespace silva {
     template<index_t N>
     expected_t<array_fixed_t<index_t, N>> get_children() const;
 
+    template<index_t N, typename T>
+    expected_t<array_fixed_t<T, N>> get_children_pts(this const T&);
+
     // Get the indexes of the children of "parent_node_index" but only if the number of children
     // matches "N".
     template<index_t N>
@@ -254,6 +257,24 @@ namespace silva {
     array_fixed_t<index_t, N> retval;
     for (const auto [child_node_index, child_index]: children_range()) {
       retval[child_index] = child_node_index;
+    }
+    return retval;
+  }
+
+  template<typename NodeData>
+  template<index_t N, typename T>
+  expected_t<array_fixed_t<T, N>> tree_span_t<NodeData>::get_children_pts(this const T& self)
+  {
+    const auto& node = self[0];
+    SILVA_EXPECT(node.num_children == N,
+                 MAJOR,
+                 "expected {} children, got {}",
+                 N,
+                 node.num_children);
+    static_assert(std::derived_from<T, tree_span_t<NodeData>>);
+    array_fixed_t<T, N> retval;
+    for (const auto [child_node_index, child_index]: self.children_range()) {
+      retval[child_index] = self.sub_tree_span_at(child_node_index);
     }
     return retval;
   }

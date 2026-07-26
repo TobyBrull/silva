@@ -91,6 +91,15 @@ namespace silva {
     SILVA_EXPECT(token_size() == 1, MINOR);
     return at_token_id(0);
   }
+  expected_t<fragment_span_t> parse_tree_span_t::language() const
+  {
+    SILVA_EXPECT(token_size() == 1, MINOR);
+    const auto& root         = (*this)[0];
+    const tokenization_t& tp = *(ptp->tp);
+    const auto& token        = tp.tokens[root.token_begin];
+    SILVA_EXPECT(token.is_language(), MINOR);
+    return fragment_span_t{tp.fs.fp, token.frag_idx_begin, token.frag_idx_end};
+  }
 
   expected_t<token_id_t> parse_tree_span_t::front_token_id() const
   {
@@ -101,11 +110,6 @@ namespace silva {
   {
     SILVA_EXPECT(token_size() > 0, MINOR);
     return at_token_category(0);
-  }
-  expected_t<fragment_span_t> parse_tree_span_t::front_language() const
-  {
-    SILVA_EXPECT(token_size() > 0, MINOR);
-    return at_language(0);
   }
   expected_t<token_location_t> parse_tree_span_t::front_token_location() const
   {
@@ -123,15 +127,6 @@ namespace silva {
     SILVA_EXPECT(idx < token_size(), MINOR);
     return ptp->tp->tokens[(*this)[0].token_begin + idx].category;
   }
-  expected_t<fragment_span_t> parse_tree_span_t::at_language(const index_t idx) const
-  {
-    SILVA_EXPECT(idx < token_size(), MINOR);
-    const auto& root         = (*this)[0];
-    const tokenization_t& tp = *(ptp->tp);
-    const auto& token        = tp.tokens[root.token_begin + idx];
-    SILVA_EXPECT(token.is_language(), MINOR);
-    return fragment_span_t{tp.fs.fp, token.frag_idx_begin, token.frag_idx_end};
-  }
   expected_t<token_location_t> parse_tree_span_t::at_token_location(const index_t idx) const
   {
     SILVA_EXPECT(idx < token_size(), MINOR);
@@ -147,11 +142,6 @@ namespace silva {
   {
     SILVA_EXPECT(token_size() > 0, MINOR);
     return at_token_category(token_size() - 1);
-  }
-  expected_t<fragment_span_t> parse_tree_span_t::back_language() const
-  {
-    SILVA_EXPECT(token_size() > 0, MINOR);
-    return at_language(token_size() - 1);
   }
   expected_t<token_location_t> parse_tree_span_t::back_token_location() const
   {
