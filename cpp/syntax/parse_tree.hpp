@@ -42,15 +42,12 @@ namespace silva {
 
     expected_t<token_id_t> front_token_id() const;
     expected_t<name_id_t> front_token_category() const;
-    expected_t<token_location_t> front_token_location() const;
 
     expected_t<token_id_t> at_token_id(index_t) const;
     expected_t<name_id_t> at_token_category(index_t) const;
-    expected_t<token_location_t> at_token_location(index_t) const;
 
     expected_t<token_id_t> back_token_id() const;
     expected_t<name_id_t> back_token_category() const;
-    expected_t<token_location_t> back_token_location() const;
 
     index_t token_size() const;
     token_span_t token_span() const;
