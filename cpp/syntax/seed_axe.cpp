@@ -123,15 +123,21 @@ namespace silva::seed::impl {
 
     expected_t<void> op(const token_id_t axe_op_type, const parse_tree_span_t pts_op)
     {
+      const auto op_tok = SILVA_EXPECT_FWD(pts_op.token());
       SILVA_EXPECT(pts_op[0].rule_name == lexicon.ni_axe_op, BROKEN_SEED);
-      const token_id_t axe_op = SILVA_EXPECT_FWD(pts_op.front_token_id());
-      const name_id_t axe_cat = SILVA_EXPECT_FWD(pts_op.front_token_category());
-      SILVA_EXPECT(axe_cat == lexicon.ni_string || axe_op == lexicon.ti_concat.token_id,
-                   BROKEN_SEED);
-      if (axe_op_type != lexicon.ti_infix.token_id &&
-          axe_op_type != lexicon.ti_infix_flat.token_id) {
+      const auto sub_ptses = SILVA_EXPECT_FWD(pts_op.get_children_up_to_pts<1>());
+      if (sub_ptses.size == 0) {
+        SILVA_EXPECT(op_tok == lexicon.ti_concat.token_id, BROKEN_SEED);
+      }
+      else {
+        SILVA_EXPECT(sub_ptses.size == 1, BROKEN_SEED);
+        const parse_tree_span_t sub_pts = sub_ptses[0];
+        SILVA_EXPECT(sub_pts[0].rule_name == lexicon.ni_string, BROKEN_SEED);
+      }
+      if (op_tok == lexicon.ti_concat.token_id) {
         SILVA_EXPECT(
-            axe_op != lexicon.ti_concat.token_id,
+            axe_op_type == lexicon.ti_infix.token_id ||
+                axe_op_type == lexicon.ti_infix_flat.token_id,
             MINOR,
             "{} the 'concat' token may only be used with 'infix' or 'infix_flat' operations.",
             pts_op);

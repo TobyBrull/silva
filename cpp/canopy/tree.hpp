@@ -54,22 +54,31 @@ namespace silva {
       requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
     expected_t<void> visit_subtree(Visitor) const;
 
+    template<typename Self>
+    expected_t<Self> get_child_by_skipping_pts(this const Self&, index_t);
+
     // Get the indexes of the children of "parent_node_index" but only if the number of children
     // matches "N".
     array_t<index_t> get_children_dyn() const;
+
+    template<typename Self>
+    array_t<Self> get_children_dyn_pts(this const Self&);
 
     // Get the indexes of the children of "parent_node_index" but only if the number of children
     // matches "N".
     template<index_t N>
     expected_t<array_fixed_t<index_t, N>> get_children() const;
 
-    template<index_t N, typename T>
-    expected_t<array_fixed_t<T, N>> get_children_pts(this const T&);
+    template<index_t N, typename Self>
+    expected_t<array_fixed_t<Self, N>> get_children_pts(this const Self&);
 
     // Get the indexes of the children of "parent_node_index" but only if the number of children
     // matches "N".
     template<index_t N>
     expected_t<array_small_t<index_t, N>> get_children_up_to() const;
+
+    template<index_t N, typename Self>
+    expected_t<array_small_t<Self, N>> get_children_up_to_pts(this const Self&);
 
     friend bool operator==(const tree_span_t&, const tree_span_t&) = default;
     // friend hash_value_t hash_impl(const tree_span_t& x);
@@ -233,6 +242,26 @@ namespace silva {
   }
 
   template<typename NodeData>
+  template<typename Self>
+  expected_t<Self> tree_span_t<NodeData>::get_child_by_skipping_pts(this const Self& self,
+                                                                    index_t idx)
+  {
+    if (0 <= idx) {
+      SILVA_EXPECT(idx < self[0].num_children, MINOR);
+      index_t pos = 1;
+      while (idx > 0) {
+        pos += self[pos].subtree_size;
+        idx -= 1;
+      }
+      return self.sub_tree_span_at(pos);
+    }
+    else {
+      SILVA_EXPECT(-self[0].num_children <= idx && idx <= -1, MINOR);
+      return self.get_child_by_skipping_pts(self[0].num_children + idx);
+    }
+  }
+
+  template<typename NodeData>
   array_t<index_t> tree_span_t<NodeData>::get_children_dyn() const
   {
     const auto& node = (*this)[0];
@@ -240,6 +269,19 @@ namespace silva {
     retval.reserve(node.num_children);
     for (const auto [child_node_index, child_index]: children_range()) {
       retval.emplace_back(child_node_index);
+    }
+    return retval;
+  }
+
+  template<typename NodeData>
+  template<typename Self>
+  array_t<Self> tree_span_t<NodeData>::get_children_dyn_pts(this const Self& self)
+  {
+    const auto& node = self[0];
+    array_t<Self> retval;
+    retval.reserve(node.num_children);
+    for (const auto [child_node_index, child_index]: self.children_range()) {
+      retval.emplace_back(self.sub_tree_span_at(child_node_index));
     }
     return retval;
   }
@@ -262,8 +304,8 @@ namespace silva {
   }
 
   template<typename NodeData>
-  template<index_t N, typename T>
-  expected_t<array_fixed_t<T, N>> tree_span_t<NodeData>::get_children_pts(this const T& self)
+  template<index_t N, typename Self>
+  expected_t<array_fixed_t<Self, N>> tree_span_t<NodeData>::get_children_pts(this const Self& self)
   {
     const auto& node = self[0];
     SILVA_EXPECT(node.num_children == N,
@@ -271,8 +313,8 @@ namespace silva {
                  "expected {} children, got {}",
                  N,
                  node.num_children);
-    static_assert(std::derived_from<T, tree_span_t<NodeData>>);
-    array_fixed_t<T, N> retval;
+    static_assert(std::derived_from<Self, tree_span_t<NodeData>>);
+    array_fixed_t<Self, N> retval;
     for (const auto [child_node_index, child_index]: self.children_range()) {
       retval[child_index] = self.sub_tree_span_at(child_node_index);
     }
@@ -288,6 +330,21 @@ namespace silva {
     array_small_t<index_t, N> retval;
     for (const auto [child_node_index, child_index]: children_range()) {
       retval.emplace_back(child_node_index);
+    }
+    return retval;
+  }
+
+  template<typename NodeData>
+  template<index_t N, typename Self>
+  expected_t<array_small_t<Self, N>>
+  tree_span_t<NodeData>::get_children_up_to_pts(this const Self& self)
+  {
+    const auto& node = self[0];
+    SILVA_EXPECT(node.num_children <= N, MAJOR);
+    static_assert(std::derived_from<Self, tree_span_t<NodeData>>);
+    array_small_t<Self, N> retval;
+    for (const auto [child_node_index, child_index]: self.children_range()) {
+      retval.emplace_back(self.sub_tree_span_at(child_node_index));
     }
     return retval;
   }

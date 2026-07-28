@@ -252,17 +252,19 @@ language SimpleFern:
     const auto test = [&](string_t text,
                           const string_view_t rule,
                           array_t<string_view_t> expected_token_strs,
-                          array_t<name_id_t> expected_categories) {
+                          array_t<name_id_t> expected_rule_names) {
       INFO(text);
       const auto pts =
           SILVA_REQUIRE(si->apply_text("", std::move(text), sf.name_id_of(rule)))->span();
-      REQUIRE(pts.token_size() == expected_token_strs.size());
-      REQUIRE(pts.token_size() == expected_categories.size());
-      for (index_t i = 0; i < expected_categories.size(); ++i) {
-        const token_id_t ti = SILVA_REQUIRE(pts.at_token_id(i));
-        const name_id_t tc  = SILVA_REQUIRE(pts.at_token_category(i));
+      const auto tok_ptses = pts.get_children_dyn_pts();
+      REQUIRE(tok_ptses.size() == expected_token_strs.size());
+      REQUIRE(tok_ptses.size() == expected_rule_names.size());
+      for (index_t i = 0; i < expected_rule_names.size(); ++i) {
+        INFO(i);
+        const token_id_t ti = SILVA_REQUIRE(tok_ptses[i].token());
+        const name_id_t ni  = SILVA_REQUIRE(tok_ptses[i].get_child_by_skipping_pts(0))[0].rule_name;
         CHECK(ti == sf.token_id(expected_token_strs[i]));
-        CHECK(tc == expected_categories[i]);
+        CHECK(ni == expected_rule_names[i]);
       }
     };
 
@@ -271,7 +273,8 @@ language SimpleFern:
       SILVA_REQUIRE(si->add_seed_text("t.seed", R"'(
 
 language Test:
-  ⊙ = ( Boolean | number | identifier ) *
+  ⊙ = Val *
+  Val = ( Boolean | number | identifier )
   skip = skip.freeForm
 
 )'"));
@@ -279,7 +282,7 @@ language Test:
       test("ab 123ab\n", "Test", {"ab", "123", "ab"}, {id, num, id});
       test("truedat\n", "Test", {"truedat"}, {id});
       test("1 2 3\n", "Test", {"1", "2", "3"}, {num, num, num});
-      test("0xff false foo\n", "Test", {"0xff", "false", "foo"}, {num, name_id_literal, id});
+      test("0xff false foo\n", "Test", {"0xff", "false", "foo"}, {num, boo, id});
     }
   }
 }

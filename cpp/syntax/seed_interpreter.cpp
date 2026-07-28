@@ -70,8 +70,8 @@ namespace silva::seed::impl {
         const auto pts_nt = pts_rule.sub_tree_span_at(it.pos);
         curr_rule_name =
             SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
-        const name_id_t back_token_cat = SILVA_EXPECT_FWD(pts_nt.back_token_category());
-        is_token_rule                  = (back_token_cat == lexicon.ni_token_cat_name);
+        const auto back_name_pts = SILVA_EXPECT_FWD(pts_nt.get_child_by_skipping_pts(-1));
+        is_token_rule            = (back_name_pts[0].rule_name == lexicon.ni_token_cat_name);
         ++it;
       }
 
@@ -186,8 +186,8 @@ namespace silva::seed::impl {
       const auto pts_nt = pts_scope.sub_tree_span_at(it.pos);
       const name_id_t curr_scope_name =
           SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
-      const name_id_t back_token_cat = SILVA_EXPECT_FWD(pts_nt.back_token_category());
-      const bool scope_is_token_rule = (back_token_cat == lexicon.ni_token_cat_name);
+      const auto back_name_pts       = SILVA_EXPECT_FWD(pts_nt.get_child_by_skipping_pts(-1));
+      const bool scope_is_token_rule = (back_name_pts[0].rule_name == lexicon.ni_token_cat_name);
       ++it;
       SILVA_EXPECT(it != end,
                    MINOR,
@@ -555,8 +555,8 @@ namespace silva::seed::impl {
       index_t lead_terminals = 0;
       for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
         const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
-        if (sub_pts[0].rule_name == lexicon.ni_term &&
-            SILVA_EXPECT_FWD(sub_pts.front_token_category()) == lexicon.ni_string) {
+        if (sub_pts[0].rule_name == lexicon.ni_term && sub_pts[0].num_children == 1 &&
+            sub_pts[1].rule_name == lexicon.ni_string) {
           lead_terminals += 1;
         }
         else {
