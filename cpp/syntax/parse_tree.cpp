@@ -111,11 +111,6 @@ namespace silva {
     SILVA_EXPECT(idx < token_size(), MINOR);
     return ptp->tp->tokens[(*this)[0].token_begin + idx].token_id;
   }
-  expected_t<token_id_t> parse_tree_span_t::back_token_id() const
-  {
-    SILVA_EXPECT(token_size() > 0, MINOR);
-    return at_token_id(token_size() - 1);
-  }
 
   index_t parse_tree_span_t::token_size() const
   {
