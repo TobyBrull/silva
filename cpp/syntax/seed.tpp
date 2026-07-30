@@ -54,7 +54,7 @@ language SimpleFern:
 [ 11]   5:20  cat=.literal                                 :
 [ 12]   5:21  cat=.newline                                 \n
 [ 13]   6:1   cat=.indent                                    
-[ 14]   6:3   cat=.literal                                 ⊙
+[ 14]   6:3   cat=.Seed.here                               ⊙
 [ 15]   6:5   cat=.literal                                 =
 [ 16]   6:7   cat=.string                                  '['
 [ 17]   6:11  cat=.literal                                 (
@@ -123,7 +123,8 @@ language SimpleFern:
   [2].Seed.Language                               language SimpleFern ...  
     [0].Seed.ruleName                             SimpleFern
     [1].Seed.Rule                                 ⊙ = ... ']' \n
-      [0].Seed.Expr.Concat.concat                 '[' ( ... * ']'
+      [0].Seed.here                               ⊙
+      [1].Seed.Expr.Concat.concat                 '[' ( ... * ']'
         [0].Seed.Terminal                         '['
           [0].string                              '['
         [1].Seed.Expr.Postfix.*                   ( LabeledItem ... ) *

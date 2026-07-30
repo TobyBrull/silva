@@ -379,7 +379,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [  8]   3:14  cat=.literal                                 .
 [  9]   3:15  cat=.Seed.tokenCategoryName                  freeForm
 [ 10]   3:23  cat=.newline                                 \n
-[ 11]   5:3   cat=.literal                                 ⊙
+[ 11]   5:3   cat=.Seed.here                               ⊙
 [ 12]   5:5   cat=.literal                                 =
 [ 13]   5:7   cat=.string                                  "a"
 [ 14]   5:11  cat=.Seed.Expr.operator                      *
@@ -398,7 +398,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.tokenCategoryName                skip
         [1].Seed.tokenCategoryName                freeForm
     [2].Seed.Rule                                 ⊙ = ... * \n
-      [0].Seed.Expr.Concat.concat                 "a" * "b" *
+      [0].Seed.here                               ⊙
+      [1].Seed.Expr.Concat.concat                 "a" * "b" *
         [0].Seed.Expr.Postfix.*                   "a" *
           [0].Seed.Terminal                       "a"
             [0].string                            "a"
@@ -427,7 +428,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [  8]  12:14  cat=.literal                                 .
 [  9]  12:15  cat=.Seed.tokenCategoryName                  freeForm
 [ 10]  12:23  cat=.newline                                 \n
-[ 11]  14:3   cat=.literal                                 ⊙
+[ 11]  14:3   cat=.Seed.here                               ⊙
 [ 12]  14:5   cat=.literal                                 =
 [ 13]  14:7   cat=.literal                                 (
 [ 14]  14:9   cat=.Seed.ruleName                           Expr
@@ -439,7 +440,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [ 20]  15:7   cat=.literal                                 :
 [ 21]  15:8   cat=.newline                                 \n
 [ 22]  16:1   cat=.indent                                      
-[ 23]  16:5   cat=.literal                                 ⊙
+[ 23]  16:5   cat=.Seed.here                               ⊙
 [ 24]  16:7   cat=.literal                                 =
 [ 25]  16:9   cat=.literal                                 axe
 [ 26]  16:13  cat=.Seed.ruleName                           Atom
@@ -627,7 +628,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.tokenCategoryName                skip
         [1].Seed.tokenCategoryName                freeForm
     [2].Seed.Rule                                 ⊙ = ... * \n  
-      [0].Seed.Expr.Postfix.*                     ( Expr ';' ) *
+      [0].Seed.here                               ⊙
+      [1].Seed.Expr.Postfix.*                     ( Expr ';' ) *
         [0].Seed.Expr.Concat.concat               Expr ';'
           [0].Seed.Nonterminal                    Expr
             [0].Seed.ruleName                     Expr
@@ -638,7 +640,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].Seed.Nonterminal                        Expr
         [0].Seed.ruleName                         Expr
       [1].Seed.Rule                               ⊙ = ... \n     
-        [0].Seed.Axe                              Atom oper ... \n     
+        [0].Seed.here                             ⊙
+        [1].Seed.Axe                              Atom oper ... \n     
           [0].Seed.Nonterminal                    Atom
             [0].Seed.ruleName                     Atom
           [1].Seed.Nonterminal                    oper
@@ -1180,7 +1183,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [  8]   2:14  cat=.literal                                 .
 [  9]   2:15  cat=.Seed.tokenCategoryName                  freeForm
 [ 10]   2:23  cat=.newline                                 \n
-[ 11]   4:3   cat=.literal                                 ⊙
+[ 11]   4:3   cat=.Seed.here                               ⊙
 [ 12]   4:5   cat=.literal                                 =
 [ 13]   4:7   cat=.Seed.ruleName                           As
 [ 14]   4:10  cat=.Seed.ruleName                           Bs
@@ -1207,7 +1210,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.tokenCategoryName                skip
         [1].Seed.tokenCategoryName                freeForm
     [2].Seed.Rule                                 ⊙ = As Bs \n  
-      [0].Seed.Expr.Concat.concat                 As Bs
+      [0].Seed.here                               ⊙
+      [1].Seed.Expr.Concat.concat                 As Bs
         [0].Seed.Nonterminal                      As
           [0].Seed.ruleName                       As
         [1].Seed.Nonterminal                      Bs
@@ -1268,7 +1272,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [ 18]   6:14  cat=.string                                  'f_'
 [ 19]   6:19  cat=.Seed.tokenCategoryName                  identifier
 [ 20]   6:59  cat=.newline                                 \n
-[ 21]   8:3   cat=.literal                                 ⊙
+[ 21]   8:3   cat=.Seed.here                               ⊙
 [ 22]   8:5   cat=.literal                                 =
 [ 23]   8:7   cat=.literal                                 (
 [ 24]   8:9   cat=.Seed.ruleName                           Type
@@ -1289,7 +1293,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [ 39]   9:7   cat=.literal                                 :
 [ 40]   9:8   cat=.newline                                 \n
 [ 41]  10:1   cat=.indent                                      
-[ 42]  10:5   cat=.literal                                 ⊙
+[ 42]  10:5   cat=.Seed.here                               ⊙
 [ 43]  10:7   cat=.literal                                 =
 [ 44]  10:9   cat=.Seed.ruleName                           Name
 [ 45]  10:14  cat=.Seed.Expr.operator                      |
@@ -1309,7 +1313,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [ 59]  13:11  cat=.literal                                 :
 [ 60]  13:12  cat=.newline                                 \n
 [ 61]  14:1   cat=.indent                                        
-[ 62]  14:7   cat=.literal                                 ⊙
+[ 62]  14:7   cat=.Seed.here                               ⊙
 [ 63]  14:9   cat=.literal                                 =
 [ 64]  14:11  cat=.string                                  '['
 [ 65]  14:15  cat=.Seed.ruleName                           Member
@@ -1320,7 +1324,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [ 70]  15:13  cat=.literal                                 :
 [ 71]  15:14  cat=.newline                                 \n
 [ 72]  16:1   cat=.indent                                          
-[ 73]  16:9   cat=.literal                                 ⊙
+[ 73]  16:9   cat=.Seed.here                               ⊙
 [ 74]  16:11  cat=.literal                                 =
 [ 75]  16:13  cat=.Seed.ruleName                           Type
 [ 76]  16:18  cat=.Seed.ruleName                           Label
@@ -1350,7 +1354,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [100]  20:7   cat=.literal                                 :
 [101]  20:8   cat=.newline                                 \n
 [102]  21:1   cat=.indent                                      
-[103]  21:5   cat=.literal                                 ⊙
+[103]  21:5   cat=.Seed.here                               ⊙
 [104]  21:7   cat=.literal                                 =
 [105]  21:9   cat=.Seed.ruleName                           Axe
 [106]  21:12  cat=.newline                                 \n    
@@ -1472,7 +1476,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [222]  39:11  cat=.literal                                 :
 [223]  39:12  cat=.newline                                 \n
 [224]  40:1   cat=.indent                                        
-[225]  40:7   cat=.literal                                 ⊙
+[225]  40:7   cat=.Seed.here                               ⊙
 [226]  40:9   cat=.literal                                 =
 [227]  40:11  cat=.string                                  '['
 [228]  40:15  cat=.Seed.ruleName                           LabeledItem
@@ -1500,7 +1504,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [250]  42:7   cat=.literal                                 :
 [251]  42:8   cat=.newline                                 \n
 [252]  43:1   cat=.indent                                      
-[253]  43:5   cat=.literal                                 ⊙
+[253]  43:5   cat=.Seed.here                               ⊙
 [254]  43:7   cat=.literal                                 =
 [255]  43:9   cat=.Seed.ruleName                           Name
 [256]  43:13  cat=.newline                                 \n    
@@ -1535,7 +1539,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [285]  48:9   cat=.literal                                 :
 [286]  48:10  cat=.newline                                 \n
 [287]  49:1   cat=.indent                                        
-[288]  49:7   cat=.literal                                 ⊙
+[288]  49:7   cat=.Seed.here                               ⊙
 [289]  49:9   cat=.literal                                 =
 [290]  49:11  cat=.Seed.ruleName                           If
 [291]  49:14  cat=.Seed.Expr.operator                      |
@@ -1548,7 +1552,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [298]  50:9   cat=.literal                                 :
 [299]  50:10  cat=.newline                                 \n
 [300]  51:1   cat=.indent                                          
-[301]  51:9   cat=.literal                                 ⊙
+[301]  51:9   cat=.Seed.here                               ⊙
 [302]  51:11  cat=.literal                                 =
 [303]  51:13  cat=.string                                  "if"
 [304]  51:18  cat=.Seed.ruleName                           Branch
@@ -1640,7 +1644,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].Seed.Nonterminal                      identifier
           [0].Seed.tokenCategoryName              identifier
     [4].Seed.Rule                                 ⊙ = ... * \n  
-      [0].Seed.Expr.Postfix.*                     ( Type ... ) *
+      [0].Seed.here                               ⊙
+      [1].Seed.Expr.Postfix.*                     ( Type ... ) *
         [0].Seed.Expr.Or.|                        Type . ... . Defn
           [0].Seed.Nonterminal                    Type . Defn
             [0].Seed.ruleName                     Type
@@ -1658,7 +1663,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].Seed.Nonterminal                        Type
         [0].Seed.ruleName                         Type
       [1].Seed.Rule                               ⊙ = ... Struct \n    
-        [0].Seed.Expr.Or.|                        Name | Struct
+        [0].Seed.here                             ⊙
+        [1].Seed.Expr.Or.|                        Name | Struct
           [0].Seed.Nonterminal                    Name
             [0].Seed.ruleName                     Name
           [1].Seed.Expr.operator                  |
@@ -1683,7 +1689,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.Nonterminal                      Struct
           [0].Seed.ruleName                       Struct
         [1].Seed.Rule                             ⊙ = ... ']' \n      
-          [0].Seed.Expr.Concat.concat             '[' Member * ']'
+          [0].Seed.here                           ⊙
+          [1].Seed.Expr.Concat.concat             '[' Member * ']'
             [0].Seed.Terminal                     '['
               [0].string                          '['
             [1].Seed.Expr.Postfix.*               Member *
@@ -1696,7 +1703,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].Seed.Nonterminal                    Member
             [0].Seed.ruleName                     Member
           [1].Seed.Rule                           ⊙ = ... ';' \n        
-            [0].Seed.Expr.Concat.concat           Type Label ... ? ';'
+            [0].Seed.here                         ⊙
+            [1].Seed.Expr.Concat.concat           Type Label ... ? ';'
               [0].Seed.Nonterminal                Type
                 [0].Seed.ruleName                 Type
               [1].Seed.Expr.Postfix.?             Label ?
@@ -1734,7 +1742,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].Seed.Nonterminal                        Expr
         [0].Seed.ruleName                         Expr
       [1].Seed.Rule                               ⊙ = Axe \n    
-        [0].Seed.Nonterminal                      Axe
+        [0].Seed.here                             ⊙
+        [1].Seed.Nonterminal                      Axe
           [0].Seed.ruleName                       Axe
       [2].Seed.Rule                               Maybe = ... ε \n    
         [0].Seed.Nonterminal                      Maybe
@@ -1889,7 +1898,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.Nonterminal                      Struct
           [0].Seed.ruleName                       Struct
         [1].Seed.Rule                             ⊙ = ... ']' \n      
-          [0].Seed.Expr.Concat.concat             '[' LabeledItem * ']'
+          [0].Seed.here                           ⊙
+          [1].Seed.Expr.Concat.concat             '[' LabeledItem * ']'
             [0].Seed.Terminal                     '['
               [0].string                          '['
             [1].Seed.Expr.Postfix.*               LabeledItem *
@@ -1920,7 +1930,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].Seed.Nonterminal                        Func
         [0].Seed.ruleName                         Func
       [1].Seed.Rule                               ⊙ = Name \n    
-        [0].Seed.Nonterminal                      Name
+        [0].Seed.here                             ⊙
+        [1].Seed.Nonterminal                      Name
           [0].Seed.ruleName                       Name
       [2].Seed.Rule                               Name = funcName \n    
         [0].Seed.Nonterminal                      Name
@@ -1968,7 +1979,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.Nonterminal                      Stmt
           [0].Seed.ruleName                       Stmt
         [1].Seed.Rule                             ⊙ = ... ';' \n      
-          [0].Seed.Expr.Or.|                      If | ... Expr ';'
+          [0].Seed.here                           ⊙
+          [1].Seed.Expr.Or.|                      If | ... Expr ';'
             [0].Seed.Nonterminal                  If
               [0].Seed.ruleName                   If
             [1].Seed.Expr.operator                |
@@ -1984,7 +1996,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].Seed.Nonterminal                    If
             [0].Seed.ruleName                     If
           [1].Seed.Rule                           ⊙ = ... ? \n        
-            [0].Seed.Expr.Concat.concat           "if" Branch ... ) ?
+            [0].Seed.here                         ⊙
+            [1].Seed.Expr.Concat.concat           "if" Branch ... ) ?
               [0].Seed.Terminal                   "if"
                 [0].string                        "if"
               [1].Seed.Nonterminal                Branch

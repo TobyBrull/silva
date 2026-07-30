@@ -29,7 +29,7 @@ language Frog:
 [  2]   2:14  cat=.literal                                 :
 [  3]   2:15  cat=.newline                                 \n
 [  4]   3:1   cat=.indent                                    
-[  5]   3:3   cat=.literal                                 ⊙
+[  5]   3:3   cat=.Seed.here                               ⊙
 [  6]   3:5   cat=.literal                                 =
 [  7]   3:7   cat=.Seed.ruleName                           Rule
 [  8]   3:12  cat=.Seed.Expr.operator                      *
@@ -85,7 +85,7 @@ language Frog:
 [ 58]  10:10  cat=.literal                                 :
 [ 59]  10:11  cat=.newline                                 \n
 [ 60]  11:1   cat=.indent                                      
-[ 61]  11:5   cat=.literal                                 ⊙
+[ 61]  11:5   cat=.Seed.here                               ⊙
 [ 62]  11:7   cat=.literal                                 =
 [ 63]  11:9   cat=.string                                  'keyword1'
 [ 64]  11:20  cat=.Seed.Expr.operator                      |
@@ -100,7 +100,8 @@ language Frog:
   [0].Seed.Language                               language Frog ...  
     [0].Seed.ruleName                             Frog
     [1].Seed.Rule                                 ⊙ = Rule * \n  
-      [0].Seed.Expr.Postfix.*                     Rule *
+      [0].Seed.here                               ⊙
+      [1].Seed.Expr.Postfix.*                     Rule *
         [0].Seed.Nonterminal                      Rule
           [0].Seed.ruleName                       Rule
         [1].Seed.Expr.operator                    *
@@ -176,7 +177,8 @@ language Frog:
       [0].Seed.Nonterminal                        Keyword
         [0].Seed.ruleName                         Keyword
       [1].Seed.Rule                               ⊙ = ... 'keyword3' 
-        [0].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
+        [0].Seed.here                             ⊙
+        [1].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
           [0].Seed.Terminal                       'keyword1'
             [0].string                            'keyword1'
           [1].Seed.Expr.operator                  |

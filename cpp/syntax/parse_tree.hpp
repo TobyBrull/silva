@@ -40,9 +40,6 @@ namespace silva {
     expected_t<token_id_t> token() const;
     expected_t<fragment_span_t> language() const;
 
-    expected_t<token_id_t> front_token_id() const;
-    expected_t<token_id_t> at_token_id(index_t) const;
-
     index_t token_size() const;
     token_span_t token_span() const;
     token_location_t token_location() const;

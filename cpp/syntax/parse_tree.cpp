@@ -89,7 +89,7 @@ namespace silva {
   expected_t<token_id_t> parse_tree_span_t::token() const
   {
     SILVA_EXPECT(token_size() == 1, MINOR);
-    return at_token_id(0);
+    return ptp->tp->tokens[(*this)[0].token_begin].token_id;
   }
   expected_t<fragment_span_t> parse_tree_span_t::language() const
   {
@@ -99,17 +99,6 @@ namespace silva {
     const auto& token        = tp.tokens[root.token_begin];
     SILVA_EXPECT(token.is_language(), MINOR);
     return fragment_span_t{tp.fs.fp, token.frag_idx_begin, token.frag_idx_end};
-  }
-
-  expected_t<token_id_t> parse_tree_span_t::front_token_id() const
-  {
-    SILVA_EXPECT(token_size() > 0, MINOR);
-    return at_token_id(0);
-  }
-  expected_t<token_id_t> parse_tree_span_t::at_token_id(const index_t idx) const
-  {
-    SILVA_EXPECT(idx < token_size(), MINOR);
-    return ptp->tp->tokens[(*this)[0].token_begin + idx].token_id;
   }
 
   index_t parse_tree_span_t::token_size() const

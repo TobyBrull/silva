@@ -616,28 +616,7 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_quantifier);
-      bool has_first_number = false;
-      {
-        auto result = number();
-        if (result) {
-          ss_rule.add_proto_node(*result);
-          has_first_number = true;
-        }
-      }
-      {
-        auto result = literal_fragmented_token(lexicon.ti_comma);
-        if (result) {
-          add_token_and_skip(*result);
-          if (auto second = number()) {
-            ss_rule.add_proto_node(*second);
-          }
-        }
-        else {
-          SILVA_EXPECT_PARSE(lexicon.ni_quantifier,
-                             has_first_number,
-                             "expected number or ',' in quantifier");
-        }
-      }
+      ss_rule.add_proto_node(SILVA_EXPECT_FWD(number()));
       return ss_rule.commit();
     }
 
@@ -749,6 +728,16 @@ namespace silva::seed::impl {
       return ss_rule.commit();
     }
 
+    expected_t<parse_tree_node_t> here()
+    {
+      auto ss = stake();
+      ss.create_node(lexicon.ni_here);
+      auto ts = token_stake(lexicon.ni_here);
+      SILVA_EXPECT_FWD(literal_fragmented_token(lexicon.ti_here));
+      add_token_and_skip(ts.commit());
+      return ss.commit();
+    }
+
     expected_t<parse_tree_node_t> rule()
     {
       auto ss_rule = stake();
@@ -756,12 +745,10 @@ namespace silva::seed::impl {
 
       {
         bool matched_here = false;
-        {
-          auto result = literal_fragmented_token(lexicon.ti_here);
-          if (result) {
-            add_token_and_skip(*result);
-            matched_here = true;
-          }
+        auto result       = here();
+        if (result) {
+          ss_rule.add_proto_node(*result);
+          matched_here = true;
         }
         if (!matched_here) {
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, nonterminal()));

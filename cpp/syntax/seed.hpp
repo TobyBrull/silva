@@ -85,7 +85,8 @@ language Seed:
   Language = "language" ruleName ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
-  Rule = ( '⊙' | Nonterminal ) '=' ( "axe" Axe | Qualifier * Expr newline )
+  Rule = ( here | Nonterminal ) '=' ( "axe" Axe | Qualifier * Expr newline )
+  here = '⊙'
   Qualifier = [ "no_node" "no_whitespace" ]
   Expr:
     ⊙ = axe Atom operator
@@ -98,7 +99,8 @@ language Seed:
       Or        = ltr   infix_flat '|'
     Atom = no_node Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
-    Quantifier = number ? ',' number ? | number
+    Quantifier = number ? comma number ? | number
+    comma = ','
     operator = [ "not" "but_then" '{' '}' operator.single ]
     NoNode = Expr
   Terminal = [ "ε" "end_of_language" "language" string fragName ]
