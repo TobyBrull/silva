@@ -57,6 +57,9 @@ namespace silva {
   {
     proto_node.token_begin = tokenization.size();
     proto_node.token_end   = tokenization.size();
+
+    proto_node.fragment_begin = fragment_index;
+    proto_node.fragment_end   = fragment_index;
   }
 
   void parse_tree_nursery_t::on_stake_create_node(parse_tree_node_t& proto_node,
@@ -70,11 +73,16 @@ namespace silva {
   {
     proto_node.token_begin = std::min(proto_node.token_begin, other.token_begin);
     proto_node.token_end   = std::max(proto_node.token_end, other.token_end);
+
+    proto_node.fragment_begin = std::min(proto_node.fragment_begin, other.fragment_begin);
+    proto_node.fragment_end   = std::max(proto_node.fragment_end, other.fragment_end);
   }
 
   void parse_tree_nursery_t::on_stake_commit_pre(parse_tree_node_t& proto_node) const
   {
     proto_node.token_end = tokenization.size();
+
+    proto_node.fragment_end = fragment_index;
   }
 
   void parse_tree_nursery_t::on_stake_commit_owning_to_proto(parse_tree_node_t& proto_node) const

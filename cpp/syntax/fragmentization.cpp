@@ -508,6 +508,27 @@ namespace silva {
     return span_t<const fragment_t>(fp->fragments.data() + begin, end - begin);
   }
 
+  void pretty_write_impl(const fragment_span_t& self, byte_sink_t* stream)
+  {
+    constexpr index_t max_num_frags = 10;
+    string_t retval;
+    const auto print_frags = [&retval, &self](const index_t begin, const index_t end) {
+      for (index_t idx = begin; idx < end; ++idx) {
+        retval += self.fp->get_fragment_text(idx);
+      }
+    };
+    const index_t num_frags = self.end - self.begin;
+    if (num_frags <= max_num_frags) {
+      print_frags(self.begin, self.end);
+    }
+    else {
+      print_frags(self.begin, self.begin + max_num_frags / 2);
+      retval += " ... ";
+      print_frags(self.end - max_num_frags / 2, self.end);
+    }
+    stream->write_str(retval);
+  }
+
   string_t escape_string(string_t retval)
   {
     for (index_t i = 0; i < retval.size(); ++i) {

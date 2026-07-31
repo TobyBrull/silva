@@ -10,6 +10,9 @@ namespace silva {
     index_t token_begin = std::numeric_limits<index_t>::max();
     index_t token_end   = std::numeric_limits<index_t>::min();
 
+    index_t fragment_begin = std::numeric_limits<index_t>::max();
+    index_t fragment_end   = std::numeric_limits<index_t>::min();
+
     index_t num_tokens() const { return token_end - token_begin; }
 
     friend auto operator<=>(const parse_tree_node_t&, const parse_tree_node_t&) = default;
@@ -42,7 +45,9 @@ namespace silva {
 
     index_t token_size() const;
     token_span_t token_span() const;
-    token_location_t token_location() const;
+
+    fragment_span_t fragment_span() const;
+    fragment_location_t location() const;
 
     friend void pretty_write_impl(const parse_tree_span_t&, byte_sink_t*);
 

@@ -1,5 +1,6 @@
 # TODO
 
+* clean TODO in lox/test_suite.cpp
 * tokenization-less parse-tree
 
 * replace pts.get_children() with function that returns pts's, not indexes

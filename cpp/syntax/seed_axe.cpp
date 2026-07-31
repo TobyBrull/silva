@@ -579,8 +579,10 @@ namespace silva::seed::impl {
     struct consistent_range_t {
       index_t num_atoms = 0;
       name_id_t joint_level_name;
-      index_t token_begin = 0;
-      index_t token_end   = 0;
+      index_t token_begin    = 0;
+      index_t token_end      = 0;
+      index_t fragment_begin = 0;
+      index_t fragment_end   = 0;
     };
     expected_t<consistent_range_t> consistent_range(span_t<const oper_item_t> ois) const
     {
@@ -610,6 +612,8 @@ namespace silva::seed::impl {
           .joint_level_name = ois.front().level_name,
           .token_begin      = front_atn.token_begin,
           .token_end        = front_atn.token_end,
+          .fragment_begin   = front_atn.fragment_begin,
+          .fragment_end     = front_atn.fragment_end,
       };
 
       const auto check_coverage = [&](const oper_item_t& oi) -> expected_t<void> {
@@ -716,12 +720,14 @@ namespace silva::seed::impl {
         open_term_stack.resize(open_term_stack.size() - cr.num_atoms);
         open_term_stack.push_back(output_tree.size());
         term_node_t tn;
-        tn.num_children = child_indexes.size();
-        tn.subtree_size = subtree_size;
-        tn.rule_name    = cr.joint_level_name;
-        tn.token_begin  = cr.token_begin;
-        tn.token_end    = cr.token_end;
-        tn.tree_index   = none;
+        tn.num_children   = child_indexes.size();
+        tn.subtree_size   = subtree_size;
+        tn.rule_name      = cr.joint_level_name;
+        tn.token_begin    = cr.token_begin;
+        tn.token_end      = cr.token_end;
+        tn.fragment_begin = cr.fragment_begin;
+        tn.fragment_end   = cr.fragment_end;
+        tn.tree_index     = none;
         output_tree.push_back(tn);
       }
       return {};
@@ -939,8 +945,10 @@ namespace silva::seed::impl {
               generate_output(ats.sub_tree_span_at(node_index), leaf_terms_tree);
           rv_nodes[retval].subtree_size += rv_nodes[sub_node_index].subtree_size;
         }
-        rv_nodes[retval].token_begin = node.token_begin;
-        rv_nodes[retval].token_end   = node.token_end;
+        rv_nodes[retval].token_begin    = node.token_begin;
+        rv_nodes[retval].token_end      = node.token_end;
+        rv_nodes[retval].fragment_begin = node.fragment_begin;
+        rv_nodes[retval].fragment_end   = node.fragment_end;
       }
       return retval;
     }
@@ -1020,10 +1028,12 @@ namespace silva::seed {
                          nursery.fragment_location_at(orig_fragment_index));
     auto& rv_nodes = nursery.tree;
     parse_tree_node_t retval;
-    retval.num_children = 1;
-    retval.subtree_size = rv_nodes[created_node].subtree_size;
-    retval.token_begin  = rv_nodes[created_node].token_begin;
-    retval.token_end    = rv_nodes[created_node].token_end;
+    retval.num_children   = 1;
+    retval.subtree_size   = rv_nodes[created_node].subtree_size;
+    retval.token_begin    = rv_nodes[created_node].token_begin;
+    retval.token_end      = rv_nodes[created_node].token_end;
+    retval.fragment_begin = rv_nodes[created_node].fragment_begin;
+    retval.fragment_end   = rv_nodes[created_node].fragment_end;
     return retval;
   }
 }

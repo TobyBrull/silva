@@ -95,6 +95,8 @@ namespace silva {
     fragment_span_t(fragmentization_ptr_t, index_t begin, index_t end);
 
     operator span_t<const fragment_t>();
+
+    friend void pretty_write_impl(const fragment_span_t&, byte_sink_t*);
   };
 
   string_t escape_string(string_t);

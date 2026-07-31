@@ -15,14 +15,14 @@ namespace silva {
     }
     else {
       stream->format("[{}] parse_tree_span[ {} ]",
-                     pretty_string(pts.token_location()),
-                     pretty_string(pts.token_span()));
+                     pretty_string(pts.location()),
+                     pretty_string(pts.fragment_span()));
     }
   }
 
   void pretty_write_impl(const parse_tree_node_t& ptn, byte_sink_t* byte_sink)
   {
-    byte_sink->format("{}@{}:{}", ptn.rule_name.val, ptn.token_begin, ptn.token_end);
+    byte_sink->format("{}@{}:{}", ptn.rule_name.val, ptn.fragment_begin, ptn.fragment_end);
   }
 
   expected_t<string_t> parse_tree_span_t::to_string(const index_t token_indent,
@@ -116,11 +116,20 @@ namespace silva {
     };
   }
 
-  token_location_t parse_tree_span_t::token_location() const
+  fragment_span_t parse_tree_span_t::fragment_span() const
   {
-    return token_location_t{
-        .tp          = ptp->tp,
-        .token_index = (*this)[0].token_begin,
+    return fragment_span_t{
+        ptp->tp->fs.fp,
+        (*this)[0].fragment_begin,
+        (*this)[0].fragment_end,
+    };
+  }
+
+  fragment_location_t parse_tree_span_t::location() const
+  {
+    return fragment_location_t{
+        ptp->tp->fs.fp,
+        (*this)[0].fragment_begin,
     };
   }
 
