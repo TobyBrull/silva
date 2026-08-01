@@ -11,7 +11,7 @@ namespace silva::seed {
 
     struct rule_expr_data_t {
       parse_tree_span_t expr;
-      bool is_token_rule    = false;
+      bool is_twig_rule     = false;
       bool is_no_node       = false;
       bool is_no_whitespace = false;
     };

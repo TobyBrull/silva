@@ -32,14 +32,14 @@ namespace silva::seed::impl {
 
     expected_t<void> register_rule(const name_id_t rule_name,
                                    const parse_tree_span_t& pts,
-                                   const bool is_token_rule    = false,
+                                   const bool is_twig_rule     = false,
                                    const bool is_no_node       = false,
                                    const bool is_no_whitespace = false)
     {
       const auto [emplace_it, inserted] = se->rule_exprs.emplace(
           rule_name,
           interpreter_t::rule_expr_data_t{.expr             = pts,
-                                          .is_token_rule    = is_token_rule,
+                                          .is_twig_rule     = is_twig_rule,
                                           .is_no_node       = is_no_node,
                                           .is_no_whitespace = is_no_whitespace});
       SILVA_EXPECT(inserted,
@@ -53,7 +53,7 @@ namespace silva::seed::impl {
 
     expected_t<void> handle_rule(const name_id_t scope_name,
                                  const parse_tree_span_t pts_rule,
-                                 const bool scope_is_token_rule)
+                                 const bool scope_is_twig_rule)
     {
       SILVA_EXPECT(pts_rule[0].rule_name == lexicon.ni_rule, MINOR, "expected Rule");
 
@@ -61,17 +61,17 @@ namespace silva::seed::impl {
       SILVA_EXPECT(it != end, MINOR, "{} rule must have at least two children", pts_rule);
 
       name_id_t curr_rule_name;
-      bool is_token_rule = false;
+      bool is_twig_rule = false;
       if (pts_rule[it.pos].rule_name == lexicon.ni_here) {
         curr_rule_name = scope_name;
-        is_token_rule  = scope_is_token_rule;
+        is_twig_rule   = scope_is_twig_rule;
       }
       else {
         const auto pts_nt = pts_rule.sub_tree_span_at(it.pos);
         curr_rule_name =
             SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
         const auto back_name_pts = SILVA_EXPECT_FWD(pts_nt.get_child_by_skipping_pts(-1));
-        is_token_rule            = (back_name_pts[0].rule_name == lexicon.ni_token_cat_name);
+        is_twig_rule             = (back_name_pts[0].rule_name == lexicon.ni_token_cat_name);
       }
       ++it;
       SILVA_EXPECT(it != end, MINOR, "{} rule must have at least two children", pts_rule);
@@ -103,7 +103,7 @@ namespace silva::seed::impl {
       ++it;
       SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
       SILVA_EXPECT_FWD(
-          register_rule(curr_rule_name, pts_rhs_0, is_token_rule, is_no_node, is_no_whitespace));
+          register_rule(curr_rule_name, pts_rhs_0, is_twig_rule, is_no_node, is_no_whitespace));
 
       const name_info_t& ni = sfp->get(curr_rule_name);
       if (ni.base_name == lexicon.ti_skip.token_id) {
@@ -116,19 +116,19 @@ namespace silva::seed::impl {
                      "'skip' rule must not be nested in sub-scope of a language");
         SILVA_EXPECT(parent_ni.base_name == current_language_id.value(), ASSERT);
         se->languages.at(*current_language_id).skip_rule_expr =
-            interpreter_t::rule_expr_data_t{.expr = pts_rhs_0, .is_token_rule = true};
+            interpreter_t::rule_expr_data_t{.expr = pts_rhs_0, .is_twig_rule = true};
       }
 
       for (index_t i = 0; i < pts_rhs_0.size(); ++i) {
         if (pts_rhs_0[i].rule_name == lexicon.ni_term) {
           const auto& token = tp->tokens[pts_rhs_0[i].token_begin];
           if (token.category == lexicon.ni_string) {
-            const auto& ti_full_info = sfp->get(token.token_id);
-            const bool as_identifier = (ti_full_info.str[0] == U'"');
-            const auto ti            = SILVA_EXPECT_FWD(sfp->token_id_in_string(token.token_id));
-            const auto& ti_info      = sfp->get(ti);
+            const auto& ti_full_info    = sfp->get(token.token_id);
+            const bool is_double_quoted = (ti_full_info.str[0] == U'"');
+            const auto ti               = SILVA_EXPECT_FWD(sfp->token_id_in_string(token.token_id));
+            const auto& ti_info         = sfp->get(ti);
             se->string_to_ft[token.token_id] =
-                SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, as_identifier));
+                SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, is_double_quoted));
           }
         }
       }
@@ -162,7 +162,7 @@ namespace silva::seed::impl {
                                        const parse_tree_span_t pts_scope,
                                        Iter it,
                                        const Iter end,
-                                       const bool scope_is_token_rule)
+                                       const bool scope_is_twig_rule)
     {
       while (it != end) {
         const auto pts_child = pts_scope.sub_tree_span_at(it.pos);
@@ -171,7 +171,7 @@ namespace silva::seed::impl {
           SILVA_EXPECT_FWD(handle_scope(scope_name, pts_child));
         }
         else if (cn == lexicon.ni_rule) {
-          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, scope_is_token_rule));
+          SILVA_EXPECT_FWD(handle_rule(scope_name, pts_child, scope_is_twig_rule));
         }
         else {
           SILVA_EXPECT(false,
@@ -194,14 +194,14 @@ namespace silva::seed::impl {
       const auto pts_nt = pts_scope.sub_tree_span_at(it.pos);
       const name_id_t curr_scope_name =
           SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
-      const auto back_name_pts       = SILVA_EXPECT_FWD(pts_nt.get_child_by_skipping_pts(-1));
-      const bool scope_is_token_rule = (back_name_pts[0].rule_name == lexicon.ni_token_cat_name);
+      const auto back_name_pts      = SILVA_EXPECT_FWD(pts_nt.get_child_by_skipping_pts(-1));
+      const bool scope_is_twig_rule = (back_name_pts[0].rule_name == lexicon.ni_token_cat_name);
       ++it;
       SILVA_EXPECT(it != end,
                    MINOR,
                    "{} scope must have at least one sub-rule or sub-scope",
                    pts_scope);
-      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_scope, it, end, scope_is_token_rule));
+      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, pts_scope, it, end, scope_is_twig_rule));
       return {};
     }
 
@@ -301,7 +301,7 @@ namespace silva::seed::impl {
 
     int rule_depth = 0;
 
-    int token_rule_depth = 0;
+    int twig_rule_depth = 0;
 
     bool no_whitespace = false;
     struct no_whitespace_scope_t {
@@ -371,7 +371,7 @@ namespace silva::seed::impl {
       else if (s_front_token.token_id == lexicon.ti_language.token_id) {
         SILVA_EXPECT_PARSE(
             t_rule_name,
-            token_rule_depth == 0,
+            twig_rule_depth == 0,
             "the 'language' token-category may not be used inside other token rules");
         ss.create_node(name_id_language);
         auto ts = token_stake(name_id_t{lexicon.ti_language.token_id.val});
@@ -399,7 +399,7 @@ namespace silva::seed::impl {
                                                "[{}] while matching {}",
                                                fragment_location_by(),
                                                sfp->token_id_wrap(expected_ft.token_id));
-        if (token_rule_depth == 0) {
+        if (twig_rule_depth == 0) {
           add_token(token);
           SILVA_EXPECT_FWD(skip());
         }
@@ -799,7 +799,7 @@ namespace silva::seed::impl {
                    lexicon.name_id_str(t_rule_name));
       const interpreter_t::rule_expr_data_t& rule_data = it->second;
       node_and_error_t retval;
-      if (rule_data.is_token_rule) {
+      if (rule_data.is_twig_rule) {
         retval = SILVA_EXPECT_FWD_PLAIN(handle_rule_token(t_rule_name, rule_data));
       }
       else {
@@ -838,9 +838,9 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> handle_rule_token(const name_id_t t_rule_name,
                                                    const interpreter_t::rule_expr_data_t& rule_data)
     {
-      const bool entered_token_space = (token_rule_depth == 0);
-      token_rule_depth += 1;
-      scope_exit_t token_scope_exit([this] { token_rule_depth -= 1; });
+      const bool entered_token_space = (twig_rule_depth == 0);
+      twig_rule_depth += 1;
+      scope_exit_t token_scope_exit([this] { twig_rule_depth -= 1; });
 
       auto ss = stake();
       if (!rule_data.is_no_node) {
