@@ -714,20 +714,6 @@ namespace silva::seed::impl {
       return SILVA_EXPECT_FWD_IF(MAJOR, handle_rule(next_t_rule_name));
     }
 
-    expected_t<node_and_error_t> s_atom(const parse_tree_span_t pts, const name_id_t t_rule_name)
-    {
-      if (pts[0].num_children == 3) {
-        const auto pts_expr = SILVA_EXPECT_FWD(pts.get_child_by_skipping_pts(1));
-        SILVA_EXPECT(pts_expr[0].rule_name == lexicon.ni_expr, BROKEN_SEED);
-        return s_expr(pts_expr, t_rule_name);
-      }
-      else {
-        SILVA_EXPECT(pts[0].num_children == 1, BROKEN_SEED);
-        const auto pts_sub = SILVA_EXPECT_FWD(pts.get_child_by_skipping_pts(0));
-        return s_expr(pts_sub, t_rule_name);
-      }
-    }
-
     expected_t<node_and_error_t> s_expr(const parse_tree_span_t pts, const name_id_t t_rule_name)
     {
       const name_id_t s_rule_name = pts[0].rule_name;
@@ -758,15 +744,8 @@ namespace silva::seed::impl {
       else if (s_rule_name == lexicon.ni_nt) {
         return s_nonterminal(pts, t_rule_name);
       }
-      else if (s_rule_name == lexicon.ni_atom) {
-        return s_atom(pts, t_rule_name);
-      }
       else {
-        SILVA_EXPECT(false,
-                     MAJOR,
-                     "unknown rule-name {}: {}",
-                     lexicon.name_id_wrap(s_rule_name),
-                     pts);
+        SILVA_EXPECT(false, MAJOR, "unknown seed expression {}", pts);
       }
     }
 

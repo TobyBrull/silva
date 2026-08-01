@@ -97,7 +97,7 @@ language Seed:
       And       = ltr   infix_flat "but_then"
       Followup  = ltr   infix_flat '⇒'
       Or        = ltr   infix_flat '|'
-    Atom = Terminal | Nonterminal | '(' Expr ')' | Alternation
+    Atom = no_node Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
     Quantifier = number ? comma number ? | number
     comma = ','

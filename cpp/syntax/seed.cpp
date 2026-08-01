@@ -480,7 +480,7 @@ namespace silva::seed::impl {
 
   axe_t make_bootstrap_seed_expr_axe(syntax_farm_ptr_t sfp, const lexicon_t& lexicon)
   {
-    const auto axe_text = find_subsection(seed_str, "⊙ = axe ", "    Atom = Terminal | ");
+    const auto axe_text = find_subsection(seed_str, "⊙ = axe ", "    Atom = no_node");
     const auto axe_frag = SILVA_EXPECT_ASSERT(fragmentize(sfp, "seed.axe", string_t{axe_text}));
     impl::base_parse_tree_nursery_t nursery(axe_frag, lexicon);
     SILVA_EXPECT_ASSERT(nursery.init(nursery.lexicon.ni_axe, nursery.lexicon));
@@ -552,8 +552,7 @@ namespace silva::seed::impl {
 
     expected_t<parse_tree_node_t> atom()
     {
-      auto ss = stake();
-      ss.create_node(lexicon.ni_atom);
+      auto ss                     = stake();
       const index_t orig_frag_idx = fragment_index;
       error_nursery_t error_nursery;
       {

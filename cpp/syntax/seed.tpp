@@ -111,112 +111,89 @@ language SimpleFern:
   [0].Seed.Rule                                   string = STRING \n
     [0].Seed.Nonterminal                          string
       [0].Seed.tokenCategoryName                  string
-    [1].Seed.Expr.Atom                            STRING
-      [0].Seed.Terminal                           STRING
-        [0].Seed.fragName                         STRING
+    [1].Seed.Terminal                             STRING
+      [0].Seed.fragName                           STRING
   [1].Seed.Rule                                   number = DIGIT + \n
     [0].Seed.Nonterminal                          number
       [0].Seed.tokenCategoryName                  number
     [1].Seed.Expr.Postfix.+                       DIGIT +
-      [0].Seed.Expr.Atom                          DIGIT
-        [0].Seed.Terminal                         DIGIT
-          [0].Seed.fragName                       DIGIT
+      [0].Seed.Terminal                           DIGIT
+        [0].Seed.fragName                         DIGIT
       [1].Seed.Expr.operator                      +
   [2].Seed.Language                               language SimpleFern ...  
     [0].Seed.ruleName                             SimpleFern
     [1].Seed.Rule                                 ⊙ = ... ']' \n
       [0].Seed.here                               ⊙
       [1].Seed.Expr.Concat.concat                 '[' ( ... * ']'
-        [0].Seed.Expr.Atom                        '['
-          [0].Seed.Terminal                       '['
-            [0].string                            '['
+        [0].Seed.Terminal                         '['
+          [0].string                              '['
         [1].Seed.Expr.Postfix.*                   ( LabeledItem ... ) *
-          [0].Seed.Expr.Atom                      ( LabeledItem ';' ? )
-            [0].Seed.Expr.Concat.concat           LabeledItem ';' ?
-              [0].Seed.Expr.Atom                  LabeledItem
-                [0].Seed.Nonterminal              LabeledItem
-                  [0].Seed.ruleName               LabeledItem
-              [1].Seed.Expr.Postfix.?             ';' ?
-                [0].Seed.Expr.Atom                ';'
-                  [0].Seed.Terminal               ';'
-                    [0].string                    ';'
-                [1].Seed.Expr.operator            ?
+          [0].Seed.Expr.Concat.concat             LabeledItem ';' ?
+            [0].Seed.Nonterminal                  LabeledItem
+              [0].Seed.ruleName                   LabeledItem
+            [1].Seed.Expr.Postfix.?               ';' ?
+              [0].Seed.Terminal                   ';'
+                [0].string                        ';'
+              [1].Seed.Expr.operator              ?
           [1].Seed.Expr.operator                  *
-        [2].Seed.Expr.Atom                        ']'
-          [0].Seed.Terminal                       ']'
-            [0].string                            ']'
+        [2].Seed.Terminal                         ']'
+          [0].string                              ']'
     [2].Seed.Rule                                 skip = ... * \n
       [0].Seed.Nonterminal                        skip
         [0].Seed.tokenCategoryName                skip
       [1].Seed.Expr.Postfix.*                     ( SPACE ... ) *
-        [0].Seed.Expr.Atom                        ( SPACE ... NEWLINE )
-          [0].Seed.Expr.Or.|                      SPACE | ... | NEWLINE
-            [0].Seed.Expr.Atom                    SPACE
-              [0].Seed.Terminal                   SPACE
-                [0].Seed.fragName                 SPACE
-            [1].Seed.Expr.operator                |
-            [2].Seed.Expr.Atom                    LINEFEED
-              [0].Seed.Terminal                   LINEFEED
-                [0].Seed.fragName                 LINEFEED
-            [3].Seed.Expr.operator                |
-            [4].Seed.Expr.Atom                    COMMENT
-              [0].Seed.Terminal                   COMMENT
-                [0].Seed.fragName                 COMMENT
-            [5].Seed.Expr.operator                |
-            [6].Seed.Expr.Atom                    WHITESPACE
-              [0].Seed.Terminal                   WHITESPACE
-                [0].Seed.fragName                 WHITESPACE
-            [7].Seed.Expr.operator                |
-            [8].Seed.Expr.Atom                    INDENT
-              [0].Seed.Terminal                   INDENT
-                [0].Seed.fragName                 INDENT
-            [9].Seed.Expr.operator                |
-            [10].Seed.Expr.Atom                   DEDENT
-              [0].Seed.Terminal                   DEDENT
-                [0].Seed.fragName                 DEDENT
-            [11].Seed.Expr.operator               |
-            [12].Seed.Expr.Atom                   NEWLINE
-              [0].Seed.Terminal                   NEWLINE
-                [0].Seed.fragName                 NEWLINE
+        [0].Seed.Expr.Or.|                        SPACE | ... | NEWLINE
+          [0].Seed.Terminal                       SPACE
+            [0].Seed.fragName                     SPACE
+          [1].Seed.Expr.operator                  |
+          [2].Seed.Terminal                       LINEFEED
+            [0].Seed.fragName                     LINEFEED
+          [3].Seed.Expr.operator                  |
+          [4].Seed.Terminal                       COMMENT
+            [0].Seed.fragName                     COMMENT
+          [5].Seed.Expr.operator                  |
+          [6].Seed.Terminal                       WHITESPACE
+            [0].Seed.fragName                     WHITESPACE
+          [7].Seed.Expr.operator                  |
+          [8].Seed.Terminal                       INDENT
+            [0].Seed.fragName                     INDENT
+          [9].Seed.Expr.operator                  |
+          [10].Seed.Terminal                      DEDENT
+            [0].Seed.fragName                     DEDENT
+          [11].Seed.Expr.operator                 |
+          [12].Seed.Terminal                      NEWLINE
+            [0].Seed.fragName                     NEWLINE
         [1].Seed.Expr.operator                    *
     [3].Seed.Rule                                 LabeledItem = ... Item \n  
       [0].Seed.Nonterminal                        LabeledItem
         [0].Seed.ruleName                         LabeledItem
       [1].Seed.Expr.Concat.concat                 ( Label ... ? Item
         [0].Seed.Expr.Postfix.?                   ( Label ':' ) ?
-          [0].Seed.Expr.Atom                      ( Label ':' )
-            [0].Seed.Expr.Concat.concat           Label ':'
-              [0].Seed.Expr.Atom                  Label
-                [0].Seed.Nonterminal              Label
-                  [0].Seed.ruleName               Label
-              [1].Seed.Expr.Atom                  ':'
-                [0].Seed.Terminal                 ':'
-                  [0].string                      ':'
+          [0].Seed.Expr.Concat.concat             Label ':'
+            [0].Seed.Nonterminal                  Label
+              [0].Seed.ruleName                   Label
+            [1].Seed.Terminal                     ':'
+              [0].string                          ':'
           [1].Seed.Expr.operator                  ?
-        [1].Seed.Expr.Atom                        Item
-          [0].Seed.Nonterminal                    Item
-            [0].Seed.ruleName                     Item
+        [1].Seed.Nonterminal                      Item
+          [0].Seed.ruleName                       Item
     [4].Seed.Rule                                 Label = string \n  
       [0].Seed.Nonterminal                        Label
         [0].Seed.ruleName                         Label
-      [1].Seed.Expr.Atom                          string
-        [0].Seed.Nonterminal                      string
-          [0].Seed.tokenCategoryName              string
+      [1].Seed.Nonterminal                        string
+        [0].Seed.tokenCategoryName                string
     [5].Seed.Rule                                 Item = ... number 
       [0].Seed.Nonterminal                        Item
         [0].Seed.ruleName                         Item
       [1].Seed.Expr.Or.|                          SimpleFern | string | number
-        [0].Seed.Expr.Atom                        SimpleFern
-          [0].Seed.Nonterminal                    SimpleFern
-            [0].Seed.ruleName                     SimpleFern
+        [0].Seed.Nonterminal                      SimpleFern
+          [0].Seed.ruleName                       SimpleFern
         [1].Seed.Expr.operator                    |
-        [2].Seed.Expr.Atom                        string
-          [0].Seed.Nonterminal                    string
-            [0].Seed.tokenCategoryName            string
+        [2].Seed.Nonterminal                      string
+          [0].Seed.tokenCategoryName              string
         [3].Seed.Expr.operator                    |
-        [4].Seed.Expr.Atom                        number
-          [0].Seed.Nonterminal                    number
-            [0].Seed.tokenCategoryName            number
+        [4].Seed.Nonterminal                      number
+          [0].Seed.tokenCategoryName              number
 )";
 
     const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string());
