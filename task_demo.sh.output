@@ -84,95 +84,160 @@
   ]
 ]
 
-ERROR (MAJOR):
-    expected token of category token[ STRING ]; got token[ PARENTHESIS ]
-  ┌─[01-broken.fern:9:3] .string
-  │ expected token of category ID_START; got token[ ID_START ]
-  │ [01-broken.fern:9:3] .identifier: expected sequence[ ID_START ID_CONTINUE * ]
-  ├─[01-broken.fern:9:3] .identifier
-  [01-broken.fern:9:3] .Fern.Label: expected alternation[ string | identifier ]
-  [01-broken.fern:9:3] .Fern.Label
-┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ Label ':' ]
-│     [01-broken.fern:11:5] expected token[ : ]
-│     [01-broken.fern:11:5] while matching token[ : ]
-│   ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ Label ':' ]
-│   │   [01-broken.fern:10:5] expected token[ [ ]
-│   │   [01-broken.fern:10:5] while matching token[ [ ]
-│   │   [01-broken.fern:10:5] .Fern: expected sequence[ '[' LabeledItem * ']' ]
-│   │ ┌─[01-broken.fern:10:5] .Fern
-│   │ │   [01-broken.fern:10:5] expected token[ none ]
-│   │ │   [01-broken.fern:10:5] while matching token[ none ]
-│   │ │ ┌─[01-broken.fern:10:5] .None
-│   │ │ │   [01-broken.fern:10:5] expected token[ true ]
-│   │ │ │ ┌─[01-broken.fern:10:5] while matching token[ true ]
-│   │ │ │ │ [01-broken.fern:10:5] expected token[ false ]
-│   │ │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
-│   │ │ │ [01-broken.fern:10:5] .Boolean: expected alternation[ [ "true" "false" ] ]
-│   │ │ ├─[01-broken.fern:10:5] .Boolean
-│   │ │ │       [01-broken.fern:10:5] expected token[ inf ]
-│   │ │ │     ┌─[01-broken.fern:10:5] while matching token[ inf ]
-│   │ │ │     │ [01-broken.fern:10:5] expected token[ nan ]
-│   │ │ │     ├─[01-broken.fern:10:5] while matching token[ nan ]
-│   │ │ │     [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
-│   │ │ │   ┌─[01-broken.fern:10:5] .number.unsigned.float.special
-│   │ │ │   │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ( ... ) * ]
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
-│   │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integerPart ( ... ? ) ]
-│   │ │ │   [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ special | ... ? ) ]
-│   │ │ │   [01-broken.fern:10:5] .number.unsigned.float
-│   │ │ │   [01-broken.fern:10:5] .number.float: expected sequence[ plusMinus unsigned . float ]
-│   │ │ │ ┌─[01-broken.fern:10:5] .number.float
-│   │ │ │ │   [01-broken.fern:10:5] expected token[ inf ]
-│   │ │ │ │ ┌─[01-broken.fern:10:5] while matching token[ inf ]
-│   │ │ │ │ │ [01-broken.fern:10:5] expected token[ nan ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] while matching token[ nan ]
-│   │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
-│   │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special
-│   │ │ │ │ [01-broken.fern:10:5] .number.float.special: expected sequence[ plusMinus unsigned ... . special ]
-│   │ │ │ ├─[01-broken.fern:10:5] .number.float.special
-│   │ │ │ │   [01-broken.fern:10:5] expected token[ 0b ]
-│   │ │ │ │   [01-broken.fern:10:5] while matching token[ 0b ]
-│   │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b' ( ... ) * ]
-│   │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary
-│   │ │ │ │   [01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusMinus unsigned ... . binary ]
-│   │ │ │ │ ┌─[01-broken.fern:10:5] .number.integer.binary
-│   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0o ]
-│   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0o ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o' ( ... ) * ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusMinus unsigned ... . octal ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.octal
-│   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0x ]
-│   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0x ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x' ( ... ) * ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusMinus unsigned ... . hexadecimal ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.hexadecimal
-│   │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ( ... ) * ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusMinus unsigned ... . decimal ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.decimal
-│   │ │ │ │ [01-broken.fern:10:5] .number.integer: expected alternation[ [ binary ... decimal ] ]
-│   │ │ │ ├─[01-broken.fern:10:5] .number.integer
-│   │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ float ... integer ] ]
-│   │ │ ├─[01-broken.fern:10:5] .number
-│   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
-│   │ │ ├─[01-broken.fern:10:5] .string
-│   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ None | ... | string ]
-│   │ ├─[01-broken.fern:10:5] .Fern.Value
-│   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern | Value ]
-│   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
-│ ┌─[01-broken.fern:10:5] .Fern.LabeledItem
-│ │ [01-broken.fern:10:5] expected token[ ] ]
-│ ├─[01-broken.fern:10:5] while matching token[ ] ]
-│ [01-broken.fern:9:3] .Fern: expected sequence[ '[' LabeledItem * ']' ]
-│ [01-broken.fern:9:3] .Fern
-├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern | Value ]
-[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
-[01-broken.fern:9:3] .Fern.LabeledItem
+ERROR (MINOR):
+      expected token of category token[ STRING ]; got token[ PARENTHESIS ]
+    ┌─[01-broken.fern:9:3] .string
+    │ expected token of category ID_START; got token[ ID_START ]
+    │ [01-broken.fern:9:3] .identifier: expected sequence[ ID_START ID_CONTINUE * ]
+    ├─[01-broken.fern:9:3] .identifier
+    [01-broken.fern:9:3] .Fern.Label: expected alternation[ string | identifier ]
+    [01-broken.fern:9:3] .Fern.Label
+  ┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ Label ':' ]
+  │       [01-broken.fern:11:5] expected token[ : ]
+  │       [01-broken.fern:11:5] while matching token[ : ]
+  │     ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ Label ':' ]
+  │     │   [01-broken.fern:10:5] expected token[ [ ]
+  │     │   [01-broken.fern:10:5] while matching token[ [ ]
+  │     │   [01-broken.fern:10:5] .Fern: expected sequence[ '[' LabeledItem * ']' ]
+  │     │ ┌─[01-broken.fern:10:5] .Fern
+  │     │ │   [01-broken.fern:10:5] expected token[ none ]
+  │     │ │   [01-broken.fern:10:5] while matching token[ none ]
+  │     │ │ ┌─[01-broken.fern:10:5] .None
+  │     │ │ │   [01-broken.fern:10:5] expected token[ true ]
+  │     │ │ │ ┌─[01-broken.fern:10:5] while matching token[ true ]
+  │     │ │ │ │ [01-broken.fern:10:5] expected token[ false ]
+  │     │ │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
+  │     │ │ │ [01-broken.fern:10:5] .Boolean: expected alternation[ [ "true" "false" ] ]
+  │     │ │ ├─[01-broken.fern:10:5] .Boolean
+  │     │ │ │       [01-broken.fern:10:5] expected token[ inf ]
+  │     │ │ │     ┌─[01-broken.fern:10:5] while matching token[ inf ]
+  │     │ │ │     │ [01-broken.fern:10:5] expected token[ nan ]
+  │     │ │ │     ├─[01-broken.fern:10:5] while matching token[ nan ]
+  │     │ │ │     [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
+  │     │ │ │   ┌─[01-broken.fern:10:5] .number.unsigned.float.special
+  │     │ │ │   │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+  │     │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ( ... ) * ]
+  │     │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
+  │     │ │ │   │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
+  │     │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integerPart ( ... ? ) ]
+  │     │ │ │   [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ special | ... ? ) ]
+  │     │ │ │   [01-broken.fern:10:5] .number.unsigned.float
+  │     │ │ │   [01-broken.fern:10:5] .number.float: expected sequence[ plusMinus unsigned . float ]
+  │     │ │ │ ┌─[01-broken.fern:10:5] .number.float
+  │     │ │ │ │   [01-broken.fern:10:5] expected token[ inf ]
+  │     │ │ │ │ ┌─[01-broken.fern:10:5] while matching token[ inf ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] expected token[ nan ]
+  │     │ │ │ │ ├─[01-broken.fern:10:5] while matching token[ nan ]
+  │     │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
+  │     │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special
+  │     │ │ │ │ [01-broken.fern:10:5] .number.float.special: expected sequence[ plusMinus unsigned ... . special ]
+  │     │ │ │ ├─[01-broken.fern:10:5] .number.float.special
+  │     │ │ │ │   [01-broken.fern:10:5] expected token[ 0b ]
+  │     │ │ │ │   [01-broken.fern:10:5] while matching token[ 0b ]
+  │     │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b' ( ... ) * ]
+  │     │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary
+  │     │ │ │ │   [01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusMinus unsigned ... . binary ]
+  │     │ │ │ │ ┌─[01-broken.fern:10:5] .number.integer.binary
+  │     │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0o ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0o ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o' ( ... ) * ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusMinus unsigned ... . octal ]
+  │     │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.octal
+  │     │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0x ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0x ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x' ( ... ) * ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusMinus unsigned ... . hexadecimal ]
+  │     │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.hexadecimal
+  │     │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ( ... ) * ]
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
+  │     │ │ │ │ │ [01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusMinus unsigned ... . decimal ]
+  │     │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.decimal
+  │     │ │ │ │ [01-broken.fern:10:5] .number.integer: expected alternation[ [ binary ... decimal ] ]
+  │     │ │ │ ├─[01-broken.fern:10:5] .number.integer
+  │     │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ float ... integer ] ]
+  │     │ │ ├─[01-broken.fern:10:5] .number
+  │     │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
+  │     │ │ ├─[01-broken.fern:10:5] .string
+  │     │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ None | ... | string ]
+  │     │ ├─[01-broken.fern:10:5] .Fern.Value
+  │     ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern | Value ]
+  │     [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
+  │   ┌─[01-broken.fern:10:5] .Fern.LabeledItem
+  │   │ [01-broken.fern:10:5] expected token[ ] ]
+  │   ├─[01-broken.fern:10:5] while matching token[ ] ]
+  │   [01-broken.fern:9:3] .Fern: expected sequence[ '[' LabeledItem * ']' ]
+  │ ┌─[01-broken.fern:9:3] .Fern
+  │ │   [01-broken.fern:9:3] expected token[ none ]
+  │ │   [01-broken.fern:9:3] while matching token[ none ]
+  │ │ ┌─[01-broken.fern:9:3] .None
+  │ │ │   [01-broken.fern:9:3] expected token[ true ]
+  │ │ │ ┌─[01-broken.fern:9:3] while matching token[ true ]
+  │ │ │ │ [01-broken.fern:9:3] expected token[ false ]
+  │ │ │ ├─[01-broken.fern:9:3] while matching token[ false ]
+  │ │ │ [01-broken.fern:9:3] .Boolean: expected alternation[ [ "true" "false" ] ]
+  │ │ ├─[01-broken.fern:9:3] .Boolean
+  │ │ │       [01-broken.fern:9:3] expected token[ inf ]
+  │ │ │     ┌─[01-broken.fern:9:3] while matching token[ inf ]
+  │ │ │     │ [01-broken.fern:9:3] expected token[ nan ]
+  │ │ │     ├─[01-broken.fern:9:3] while matching token[ nan ]
+  │ │ │     [01-broken.fern:9:3] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
+  │ │ │   ┌─[01-broken.fern:9:3] .number.unsigned.float.special
+  │ │ │   │ expected token of category token[ DIGIT ]; got token[ PARENTHESIS ]
+  │ │ │   │ [01-broken.fern:9:3] .number.unsigned.integer.decimal: expected sequence[ DIGIT ( ... ) * ]
+  │ │ │   │ [01-broken.fern:9:3] .number.unsigned.integer.decimal
+  │ │ │   │ [01-broken.fern:9:3] .number.unsigned.float.integerPart
+  │ │ │   ├─[01-broken.fern:9:3] .number.unsigned.float: expected sequence[ integerPart ( ... ? ) ]
+  │ │ │   [01-broken.fern:9:3] .number.unsigned.float: expected alternation[ special | ... ? ) ]
+  │ │ │   [01-broken.fern:9:3] .number.unsigned.float
+  │ │ │   [01-broken.fern:9:3] .number.float: expected sequence[ plusMinus unsigned . float ]
+  │ │ │ ┌─[01-broken.fern:9:3] .number.float
+  │ │ │ │   [01-broken.fern:9:3] expected token[ inf ]
+  │ │ │ │ ┌─[01-broken.fern:9:3] while matching token[ inf ]
+  │ │ │ │ │ [01-broken.fern:9:3] expected token[ nan ]
+  │ │ │ │ ├─[01-broken.fern:9:3] while matching token[ nan ]
+  │ │ │ │ [01-broken.fern:9:3] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
+  │ │ │ │ [01-broken.fern:9:3] .number.unsigned.float.special
+  │ │ │ │ [01-broken.fern:9:3] .number.float.special: expected sequence[ plusMinus unsigned ... . special ]
+  │ │ │ ├─[01-broken.fern:9:3] .number.float.special
+  │ │ │ │   [01-broken.fern:9:3] expected token[ 0b ]
+  │ │ │ │   [01-broken.fern:9:3] while matching token[ 0b ]
+  │ │ │ │   [01-broken.fern:9:3] .number.unsigned.integer.binary: expected sequence[ '0b' ( ... ) * ]
+  │ │ │ │   [01-broken.fern:9:3] .number.unsigned.integer.binary
+  │ │ │ │   [01-broken.fern:9:3] .number.integer.binary: expected sequence[ plusMinus unsigned ... . binary ]
+  │ │ │ │ ┌─[01-broken.fern:9:3] .number.integer.binary
+  │ │ │ │ │ [01-broken.fern:9:3] expected token[ 0o ]
+  │ │ │ │ │ [01-broken.fern:9:3] while matching token[ 0o ]
+  │ │ │ │ │ [01-broken.fern:9:3] .number.unsigned.integer.octal: expected sequence[ '0o' ( ... ) * ]
+  │ │ │ │ │ [01-broken.fern:9:3] .number.unsigned.integer.octal
+  │ │ │ │ │ [01-broken.fern:9:3] .number.integer.octal: expected sequence[ plusMinus unsigned ... . octal ]
+  │ │ │ │ ├─[01-broken.fern:9:3] .number.integer.octal
+  │ │ │ │ │ [01-broken.fern:9:3] expected token[ 0x ]
+  │ │ │ │ │ [01-broken.fern:9:3] while matching token[ 0x ]
+  │ │ │ │ │ [01-broken.fern:9:3] .number.unsigned.integer.hexadecimal: expected sequence[ '0x' ( ... ) * ]
+  │ │ │ │ │ [01-broken.fern:9:3] .number.unsigned.integer.hexadecimal
+  │ │ │ │ │ [01-broken.fern:9:3] .number.integer.hexadecimal: expected sequence[ plusMinus unsigned ... . hexadecimal ]
+  │ │ │ │ ├─[01-broken.fern:9:3] .number.integer.hexadecimal
+  │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ PARENTHESIS ]
+  │ │ │ │ │ [01-broken.fern:9:3] .number.unsigned.integer.decimal: expected sequence[ DIGIT ( ... ) * ]
+  │ │ │ │ │ [01-broken.fern:9:3] .number.unsigned.integer.decimal
+  │ │ │ │ │ [01-broken.fern:9:3] .number.integer.decimal: expected sequence[ plusMinus unsigned ... . decimal ]
+  │ │ │ │ ├─[01-broken.fern:9:3] .number.integer.decimal
+  │ │ │ │ [01-broken.fern:9:3] .number.integer: expected alternation[ [ binary ... decimal ] ]
+  │ │ │ ├─[01-broken.fern:9:3] .number.integer
+  │ │ │ [01-broken.fern:9:3] .number: expected alternation[ [ float ... integer ] ]
+  │ │ ├─[01-broken.fern:9:3] .number
+  │ │ │ expected token of category token[ STRING ]; got token[ PARENTHESIS ]
+  │ │ ├─[01-broken.fern:9:3] .string
+  │ │ [01-broken.fern:9:3] .Fern.Value: expected alternation[ None | ... | string ]
+  │ ├─[01-broken.fern:9:3] .Fern.Value
+  ├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern | Value ]
+  [01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
+┌─[01-broken.fern:9:3] .Fern.LabeledItem
+│ [01-broken.fern:9:3] expected token[ ] ]
+├─[01-broken.fern:9:3] while matching token[ ] ]
 [01-broken.fern:1:1] .Fern: expected sequence[ '[' LabeledItem * ']' ]
 [01-broken.fern:1:1] .Fern
 seed::interpreter_t::apply(.Fern) failed to parse
@@ -394,19 +459,22 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].Seed.Rule                                 skip = ... freeForm \n
       [0].Seed.Nonterminal                        skip
         [0].Seed.tokenCategoryName                skip
-      [1].Seed.Nonterminal                        skip . freeForm
-        [0].Seed.tokenCategoryName                skip
-        [1].Seed.tokenCategoryName                freeForm
+      [1].Seed.Expr.Atom                          skip . freeForm
+        [0].Seed.Nonterminal                      skip . freeForm
+          [0].Seed.tokenCategoryName              skip
+          [1].Seed.tokenCategoryName              freeForm
     [2].Seed.Rule                                 ⊙ = ... * \n
       [0].Seed.here                               ⊙
       [1].Seed.Expr.Concat.concat                 "a" * "b" *
         [0].Seed.Expr.Postfix.*                   "a" *
-          [0].Seed.Terminal                       "a"
-            [0].string                            "a"
+          [0].Seed.Expr.Atom                      "a"
+            [0].Seed.Terminal                     "a"
+              [0].string                          "a"
           [1].Seed.Expr.operator                  *
         [1].Seed.Expr.Postfix.*                   "b" *
-          [0].Seed.Terminal                       "b"
-            [0].string                            "b"
+          [0].Seed.Expr.Atom                      "b"
+            [0].Seed.Terminal                     "b"
+              [0].string                          "b"
           [1].Seed.Expr.operator                  *
 
 [  0]   8:8   cat=.literal                                 a
@@ -624,17 +692,21 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].Seed.Rule                                 skip = ... freeForm \n
       [0].Seed.Nonterminal                        skip
         [0].Seed.tokenCategoryName                skip
-      [1].Seed.Nonterminal                        skip . freeForm
-        [0].Seed.tokenCategoryName                skip
-        [1].Seed.tokenCategoryName                freeForm
+      [1].Seed.Expr.Atom                          skip . freeForm
+        [0].Seed.Nonterminal                      skip . freeForm
+          [0].Seed.tokenCategoryName              skip
+          [1].Seed.tokenCategoryName              freeForm
     [2].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.here                               ⊙
       [1].Seed.Expr.Postfix.*                     ( Expr ';' ) *
-        [0].Seed.Expr.Concat.concat               Expr ';'
-          [0].Seed.Nonterminal                    Expr
-            [0].Seed.ruleName                     Expr
-          [1].Seed.Terminal                       ';'
-            [0].string                            ';'
+        [0].Seed.Expr.Atom                        ( Expr ';' )
+          [0].Seed.Expr.Concat.concat             Expr ';'
+            [0].Seed.Expr.Atom                    Expr
+              [0].Seed.Nonterminal                Expr
+                [0].Seed.ruleName                 Expr
+            [1].Seed.Expr.Atom                    ';'
+              [0].Seed.Terminal                   ';'
+                [0].string                        ';'
         [1].Seed.Expr.operator                    *
     [3].Seed.Scope                                Expr : ... \n 
       [0].Seed.Nonterminal                        Expr
@@ -849,37 +921,46 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.Nonterminal                      Atom
           [0].Seed.ruleName                       Atom
         [1].Seed.Expr.Or.|                        number | ... Expr ')'
-          [0].Seed.Nonterminal                    number
-            [0].Seed.tokenCategoryName            number
+          [0].Seed.Expr.Atom                      number
+            [0].Seed.Nonterminal                  number
+              [0].Seed.tokenCategoryName          number
           [1].Seed.Expr.operator                  |
-          [2].Seed.Nonterminal                    string
-            [0].Seed.tokenCategoryName            string
+          [2].Seed.Expr.Atom                      string
+            [0].Seed.Nonterminal                  string
+              [0].Seed.tokenCategoryName          string
           [3].Seed.Expr.operator                  |
-          [4].Seed.Nonterminal                    identifier
-            [0].Seed.tokenCategoryName            identifier
+          [4].Seed.Expr.Atom                      identifier
+            [0].Seed.Nonterminal                  identifier
+              [0].Seed.tokenCategoryName          identifier
           [5].Seed.Expr.operator                  |
           [6].Seed.Expr.Concat.concat             '(' Expr ')'
-            [0].Seed.Terminal                     '('
-              [0].string                          '('
-            [1].Seed.Nonterminal                  Expr
-              [0].Seed.ruleName                   Expr
-            [2].Seed.Terminal                     ')'
-              [0].string                          ')'
+            [0].Seed.Expr.Atom                    '('
+              [0].Seed.Terminal                   '('
+                [0].string                        '('
+            [1].Seed.Expr.Atom                    Expr
+              [0].Seed.Nonterminal                Expr
+                [0].Seed.ruleName                 Expr
+            [2].Seed.Expr.Atom                    ')'
+              [0].Seed.Terminal                   ')'
+                [0].string                        ')'
       [3].Seed.Rule                               oper = ... greedy \n    
         [0].Seed.Nonterminal                      oper
           [0].Seed.tokenCategoryName              oper
         [1].Seed.Expr.Or.|                        parenthesis | operator . greedy
-          [0].Seed.Nonterminal                    parenthesis
-            [0].Seed.tokenCategoryName            parenthesis
+          [0].Seed.Expr.Atom                      parenthesis
+            [0].Seed.Nonterminal                  parenthesis
+              [0].Seed.tokenCategoryName          parenthesis
           [1].Seed.Expr.operator                  |
-          [2].Seed.Nonterminal                    operator . greedy
-            [0].Seed.tokenCategoryName            operator
-            [1].Seed.tokenCategoryName            greedy
+          [2].Seed.Expr.Atom                      operator . greedy
+            [0].Seed.Nonterminal                  operator . greedy
+              [0].Seed.tokenCategoryName          operator
+              [1].Seed.tokenCategoryName          greedy
       [4].Seed.Rule                               Type = identifier \n
         [0].Seed.Nonterminal                      Type
           [0].Seed.ruleName                       Type
-        [1].Seed.Nonterminal                      identifier
-          [0].Seed.tokenCategoryName              identifier
+        [1].Seed.Expr.Atom                        identifier
+          [0].Seed.Nonterminal                    identifier
+            [0].Seed.tokenCategoryName            identifier
 
 [  0]  45:1   cat=.number                                  1
 [  1]  45:3   cat=.CppStmts.Expr.oper                      +
@@ -1206,29 +1287,34 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].Seed.Rule                                 skip = ... freeForm \n
       [0].Seed.Nonterminal                        skip
         [0].Seed.tokenCategoryName                skip
-      [1].Seed.Nonterminal                        skip . freeForm
-        [0].Seed.tokenCategoryName                skip
-        [1].Seed.tokenCategoryName                freeForm
+      [1].Seed.Expr.Atom                          skip . freeForm
+        [0].Seed.Nonterminal                      skip . freeForm
+          [0].Seed.tokenCategoryName              skip
+          [1].Seed.tokenCategoryName              freeForm
     [2].Seed.Rule                                 ⊙ = As Bs \n  
       [0].Seed.here                               ⊙
       [1].Seed.Expr.Concat.concat                 As Bs
-        [0].Seed.Nonterminal                      As
-          [0].Seed.ruleName                       As
-        [1].Seed.Nonterminal                      Bs
-          [0].Seed.ruleName                       Bs
+        [0].Seed.Expr.Atom                        As
+          [0].Seed.Nonterminal                    As
+            [0].Seed.ruleName                     As
+        [1].Seed.Expr.Atom                        Bs
+          [0].Seed.Nonterminal                    Bs
+            [0].Seed.ruleName                     Bs
     [3].Seed.Rule                                 As = "a" * \n  
       [0].Seed.Nonterminal                        As
         [0].Seed.ruleName                         As
       [1].Seed.Expr.Postfix.*                     "a" *
-        [0].Seed.Terminal                         "a"
-          [0].string                              "a"
+        [0].Seed.Expr.Atom                        "a"
+          [0].Seed.Terminal                       "a"
+            [0].string                            "a"
         [1].Seed.Expr.operator                    *
     [4].Seed.Rule                                 Bs = "b" * 
       [0].Seed.Nonterminal                        Bs
         [0].Seed.ruleName                         Bs
       [1].Seed.Expr.Postfix.*                     "b" *
-        [0].Seed.Terminal                         "b"
-          [0].string                              "b"
+        [0].Seed.Expr.Atom                        "b"
+          [0].Seed.Terminal                       "b"
+            [0].string                            "b"
         [1].Seed.Expr.operator                    *
 
 [  0]   1:1   cat=.literal                                 a
@@ -1624,40 +1710,49 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].Seed.Rule                                 skip = ... freeForm \n
       [0].Seed.Nonterminal                        skip
         [0].Seed.tokenCategoryName                skip
-      [1].Seed.Nonterminal                        skip . freeForm
-        [0].Seed.tokenCategoryName                skip
-        [1].Seed.tokenCategoryName                freeForm
+      [1].Seed.Expr.Atom                          skip . freeForm
+        [0].Seed.Nonterminal                      skip . freeForm
+          [0].Seed.tokenCategoryName              skip
+          [1].Seed.tokenCategoryName              freeForm
     [2].Seed.Rule                                 typeName = 't_' identifier \n  
       [0].Seed.Nonterminal                        typeName
         [0].Seed.tokenCategoryName                typeName
       [1].Seed.Expr.Concat.concat                 't_' identifier
-        [0].Seed.Terminal                         't_'
-          [0].string                              't_'
-        [1].Seed.Nonterminal                      identifier
-          [0].Seed.tokenCategoryName              identifier
+        [0].Seed.Expr.Atom                        't_'
+          [0].Seed.Terminal                       't_'
+            [0].string                            't_'
+        [1].Seed.Expr.Atom                        identifier
+          [0].Seed.Nonterminal                    identifier
+            [0].Seed.tokenCategoryName            identifier
     [3].Seed.Rule                                 funcName = 'f_' identifier \n
       [0].Seed.Nonterminal                        funcName
         [0].Seed.tokenCategoryName                funcName
       [1].Seed.Expr.Concat.concat                 'f_' identifier
-        [0].Seed.Terminal                         'f_'
-          [0].string                              'f_'
-        [1].Seed.Nonterminal                      identifier
-          [0].Seed.tokenCategoryName              identifier
+        [0].Seed.Expr.Atom                        'f_'
+          [0].Seed.Terminal                       'f_'
+            [0].string                            'f_'
+        [1].Seed.Expr.Atom                        identifier
+          [0].Seed.Nonterminal                    identifier
+            [0].Seed.tokenCategoryName            identifier
     [4].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.here                               ⊙
       [1].Seed.Expr.Postfix.*                     ( Type ... ) *
-        [0].Seed.Expr.Or.|                        Type . ... . Defn
-          [0].Seed.Nonterminal                    Type . Defn
-            [0].Seed.ruleName                     Type
-            [1].Seed.ruleName                     Defn
-          [1].Seed.Expr.operator                  |
-          [2].Seed.Nonterminal                    Func . Defn
-            [0].Seed.ruleName                     Func
-            [1].Seed.ruleName                     Defn
-          [3].Seed.Expr.operator                  |
-          [4].Seed.Nonterminal                    Variable . Defn
-            [0].Seed.ruleName                     Variable
-            [1].Seed.ruleName                     Defn
+        [0].Seed.Expr.Atom                        ( Type ... Defn )
+          [0].Seed.Expr.Or.|                      Type . ... . Defn
+            [0].Seed.Expr.Atom                    Type . Defn
+              [0].Seed.Nonterminal                Type . Defn
+                [0].Seed.ruleName                 Type
+                [1].Seed.ruleName                 Defn
+            [1].Seed.Expr.operator                |
+            [2].Seed.Expr.Atom                    Func . Defn
+              [0].Seed.Nonterminal                Func . Defn
+                [0].Seed.ruleName                 Func
+                [1].Seed.ruleName                 Defn
+            [3].Seed.Expr.operator                |
+            [4].Seed.Expr.Atom                    Variable . Defn
+              [0].Seed.Nonterminal                Variable . Defn
+                [0].Seed.ruleName                 Variable
+                [1].Seed.ruleName                 Defn
         [1].Seed.Expr.operator                    *
     [5].Seed.Scope                                Type : ...    
       [0].Seed.Nonterminal                        Type
@@ -1665,94 +1760,115 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [1].Seed.Rule                               ⊙ = ... Struct \n    
         [0].Seed.here                             ⊙
         [1].Seed.Expr.Or.|                        Name | Struct
-          [0].Seed.Nonterminal                    Name
-            [0].Seed.ruleName                     Name
+          [0].Seed.Expr.Atom                      Name
+            [0].Seed.Nonterminal                  Name
+              [0].Seed.ruleName                   Name
           [1].Seed.Expr.operator                  |
-          [2].Seed.Nonterminal                    Struct
-            [0].Seed.ruleName                     Struct
+          [2].Seed.Expr.Atom                      Struct
+            [0].Seed.Nonterminal                  Struct
+              [0].Seed.ruleName                   Struct
       [2].Seed.Rule                               Name = typeName \n    
         [0].Seed.Nonterminal                      Name
           [0].Seed.ruleName                       Name
-        [1].Seed.Nonterminal                      typeName
-          [0].Seed.tokenCategoryName              typeName
+        [1].Seed.Expr.Atom                        typeName
+          [0].Seed.Nonterminal                    typeName
+            [0].Seed.tokenCategoryName            typeName
       [3].Seed.Rule                               Defn = ... Type \n    
         [0].Seed.Nonterminal                      Defn
           [0].Seed.ruleName                       Defn
         [1].Seed.Expr.Concat.concat               Name '=' Type
-          [0].Seed.Nonterminal                    Name
-            [0].Seed.ruleName                     Name
-          [1].Seed.Terminal                       '='
-            [0].string                            '='
-          [2].Seed.Nonterminal                    Type
-            [0].Seed.ruleName                     Type
+          [0].Seed.Expr.Atom                      Name
+            [0].Seed.Nonterminal                  Name
+              [0].Seed.ruleName                   Name
+          [1].Seed.Expr.Atom                      '='
+            [0].Seed.Terminal                     '='
+              [0].string                          '='
+          [2].Seed.Expr.Atom                      Type
+            [0].Seed.Nonterminal                  Type
+              [0].Seed.ruleName                   Type
       [4].Seed.Scope                              Struct : ...  
         [0].Seed.Nonterminal                      Struct
           [0].Seed.ruleName                       Struct
         [1].Seed.Rule                             ⊙ = ... ']' \n      
           [0].Seed.here                           ⊙
           [1].Seed.Expr.Concat.concat             '[' Member * ']'
-            [0].Seed.Terminal                     '['
-              [0].string                          '['
+            [0].Seed.Expr.Atom                    '['
+              [0].Seed.Terminal                   '['
+                [0].string                        '['
             [1].Seed.Expr.Postfix.*               Member *
-              [0].Seed.Nonterminal                Member
-                [0].Seed.ruleName                 Member
+              [0].Seed.Expr.Atom                  Member
+                [0].Seed.Nonterminal              Member
+                  [0].Seed.ruleName               Member
               [1].Seed.Expr.operator              *
-            [2].Seed.Terminal                     ']'
-              [0].string                          ']'
+            [2].Seed.Expr.Atom                    ']'
+              [0].Seed.Terminal                   ']'
+                [0].string                        ']'
         [2].Seed.Scope                            Member : ... \n 
           [0].Seed.Nonterminal                    Member
             [0].Seed.ruleName                     Member
           [1].Seed.Rule                           ⊙ = ... ';' \n        
             [0].Seed.here                         ⊙
             [1].Seed.Expr.Concat.concat           Type Label ... ? ';'
-              [0].Seed.Nonterminal                Type
-                [0].Seed.ruleName                 Type
+              [0].Seed.Expr.Atom                  Type
+                [0].Seed.Nonterminal              Type
+                  [0].Seed.ruleName               Type
               [1].Seed.Expr.Postfix.?             Label ?
-                [0].Seed.Nonterminal              Label
-                  [0].Seed.ruleName               Label
+                [0].Seed.Expr.Atom                Label
+                  [0].Seed.Nonterminal            Label
+                    [0].Seed.ruleName             Label
                 [1].Seed.Expr.operator            ?
               [2].Seed.Expr.Postfix.?             Init ?
-                [0].Seed.Nonterminal              Init
-                  [0].Seed.ruleName               Init
+                [0].Seed.Expr.Atom                Init
+                  [0].Seed.Nonterminal            Init
+                    [0].Seed.ruleName             Init
                 [1].Seed.Expr.operator            ?
-              [3].Seed.Terminal                   ';'
-                [0].string                        ';'
+              [3].Seed.Expr.Atom                  ';'
+                [0].Seed.Terminal                 ';'
+                  [0].string                      ';'
           [2].Seed.Rule                           Label = ':' Name \n        
             [0].Seed.Nonterminal                  Label
               [0].Seed.ruleName                   Label
             [1].Seed.Expr.Concat.concat           ':' Name
-              [0].Seed.Terminal                   ':'
-                [0].string                        ':'
-              [1].Seed.Nonterminal                Name
-                [0].Seed.ruleName                 Name
+              [0].Seed.Expr.Atom                  ':'
+                [0].Seed.Terminal                 ':'
+                  [0].string                      ':'
+              [1].Seed.Expr.Atom                  Name
+                [0].Seed.Nonterminal              Name
+                  [0].Seed.ruleName               Name
           [3].Seed.Rule                           Init = '=' Expr \n        
             [0].Seed.Nonterminal                  Init
               [0].Seed.ruleName                   Init
             [1].Seed.Expr.Concat.concat           '=' Expr
-              [0].Seed.Terminal                   '='
-                [0].string                        '='
-              [1].Seed.Nonterminal                Expr
-                [0].Seed.ruleName                 Expr
+              [0].Seed.Expr.Atom                  '='
+                [0].Seed.Terminal                 '='
+                  [0].string                      '='
+              [1].Seed.Expr.Atom                  Expr
+                [0].Seed.Nonterminal              Expr
+                  [0].Seed.ruleName               Expr
           [4].Seed.Rule                           Name = identifier \n
             [0].Seed.Nonterminal                  Name
               [0].Seed.ruleName                   Name
-            [1].Seed.Nonterminal                  identifier
-              [0].Seed.tokenCategoryName          identifier
+            [1].Seed.Expr.Atom                    identifier
+              [0].Seed.Nonterminal                identifier
+                [0].Seed.tokenCategoryName        identifier
     [6].Seed.Scope                                Expr : ...    
       [0].Seed.Nonterminal                        Expr
         [0].Seed.ruleName                         Expr
       [1].Seed.Rule                               ⊙ = Axe \n    
         [0].Seed.here                             ⊙
-        [1].Seed.Nonterminal                      Axe
-          [0].Seed.ruleName                       Axe
+        [1].Seed.Expr.Atom                        Axe
+          [0].Seed.Nonterminal                    Axe
+            [0].Seed.ruleName                     Axe
       [2].Seed.Rule                               Maybe = ... ε \n    
         [0].Seed.Nonterminal                      Maybe
           [0].Seed.ruleName                       Maybe
         [1].Seed.Expr.Or.|                        Expr | ε
-          [0].Seed.Nonterminal                    Expr
-            [0].Seed.ruleName                     Expr
+          [0].Seed.Expr.Atom                      Expr
+            [0].Seed.Nonterminal                  Expr
+              [0].Seed.ruleName                   Expr
           [1].Seed.Expr.operator                  |
-          [2].Seed.Terminal                       ε
+          [2].Seed.Expr.Atom                      ε
+            [0].Seed.Terminal                     ε
       [3].Seed.Rule                               Axe = ... \n     
         [0].Seed.Nonterminal                      Axe
           [0].Seed.ruleName                       Axe
@@ -1847,204 +1963,263 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [4].Seed.Rule                               Atom = ... ) \n    
         [0].Seed.Nonterminal                      Atom
           [0].Seed.ruleName                       Atom
-        [1].Seed.Expr.Or.|                        Struct | ... Expr ')'
-          [0].Seed.Nonterminal                    Struct
-            [0].Seed.ruleName                     Struct
-          [1].Seed.Expr.operator                  |
-          [2].Seed.Terminal                       language
-          [3].Seed.Expr.operator                  |
-          [4].Seed.Nonterminal                    typeName
-            [0].Seed.tokenCategoryName            typeName
-          [5].Seed.Expr.operator                  |
-          [6].Seed.Nonterminal                    funcName
-            [0].Seed.tokenCategoryName            funcName
-          [7].Seed.Expr.operator                  |
-          [8].Seed.Nonterminal                    identifier
-            [0].Seed.tokenCategoryName            identifier
-          [9].Seed.Expr.operator                  |
-          [10].Seed.Nonterminal                   string
-            [0].Seed.tokenCategoryName            string
-          [11].Seed.Expr.operator                 |
-          [12].Seed.Nonterminal                   number
-            [0].Seed.tokenCategoryName            number
-          [13].Seed.Expr.operator                 |
-          [14].Seed.Terminal                      "true"
-            [0].string                            "true"
-          [15].Seed.Expr.operator                 |
-          [16].Seed.Terminal                      "false"
-            [0].string                            "false"
-          [17].Seed.Expr.operator                 |
-          [18].Seed.Terminal                      "none"
-            [0].string                            "none"
-          [19].Seed.Expr.operator                 |
-          [20].Seed.Expr.Concat.concat            '(' Expr ')'
-            [0].Seed.Terminal                     '('
-              [0].string                          '('
-            [1].Seed.Nonterminal                  Expr
-              [0].Seed.ruleName                   Expr
-            [2].Seed.Terminal                     ')'
-              [0].string                          ')'
+        [1].Seed.Expr.Atom                        ( Struct ... ')' )
+          [0].Seed.Expr.Or.|                      Struct | ... Expr ')'
+            [0].Seed.Expr.Atom                    Struct
+              [0].Seed.Nonterminal                Struct
+                [0].Seed.ruleName                 Struct
+            [1].Seed.Expr.operator                |
+            [2].Seed.Expr.Atom                    language
+              [0].Seed.Terminal                   language
+            [3].Seed.Expr.operator                |
+            [4].Seed.Expr.Atom                    typeName
+              [0].Seed.Nonterminal                typeName
+                [0].Seed.tokenCategoryName        typeName
+            [5].Seed.Expr.operator                |
+            [6].Seed.Expr.Atom                    funcName
+              [0].Seed.Nonterminal                funcName
+                [0].Seed.tokenCategoryName        funcName
+            [7].Seed.Expr.operator                |
+            [8].Seed.Expr.Atom                    identifier
+              [0].Seed.Nonterminal                identifier
+                [0].Seed.tokenCategoryName        identifier
+            [9].Seed.Expr.operator                |
+            [10].Seed.Expr.Atom                   string
+              [0].Seed.Nonterminal                string
+                [0].Seed.tokenCategoryName        string
+            [11].Seed.Expr.operator               |
+            [12].Seed.Expr.Atom                   number
+              [0].Seed.Nonterminal                number
+                [0].Seed.tokenCategoryName        number
+            [13].Seed.Expr.operator               |
+            [14].Seed.Expr.Atom                   "true"
+              [0].Seed.Terminal                   "true"
+                [0].string                        "true"
+            [15].Seed.Expr.operator               |
+            [16].Seed.Expr.Atom                   "false"
+              [0].Seed.Terminal                   "false"
+                [0].string                        "false"
+            [17].Seed.Expr.operator               |
+            [18].Seed.Expr.Atom                   "none"
+              [0].Seed.Terminal                   "none"
+                [0].string                        "none"
+            [19].Seed.Expr.operator               |
+            [20].Seed.Expr.Concat.concat          '(' Expr ')'
+              [0].Seed.Expr.Atom                  '('
+                [0].Seed.Terminal                 '('
+                  [0].string                      '('
+              [1].Seed.Expr.Atom                  Expr
+                [0].Seed.Nonterminal              Expr
+                  [0].Seed.ruleName               Expr
+              [2].Seed.Expr.Atom                  ')'
+                [0].Seed.Terminal                 ')'
+                  [0].string                      ')'
       [5].Seed.Rule                               oper = ... parenthesis \n    
         [0].Seed.Nonterminal                      oper
           [0].Seed.tokenCategoryName              oper
         [1].Seed.Expr.Or.|                        operator . greedy | parenthesis
-          [0].Seed.Nonterminal                    operator . greedy
-            [0].Seed.tokenCategoryName            operator
-            [1].Seed.tokenCategoryName            greedy
+          [0].Seed.Expr.Atom                      operator . greedy
+            [0].Seed.Nonterminal                  operator . greedy
+              [0].Seed.tokenCategoryName          operator
+              [1].Seed.tokenCategoryName          greedy
           [1].Seed.Expr.operator                  |
-          [2].Seed.Nonterminal                    parenthesis
-            [0].Seed.tokenCategoryName            parenthesis
+          [2].Seed.Expr.Atom                      parenthesis
+            [0].Seed.Nonterminal                  parenthesis
+              [0].Seed.tokenCategoryName          parenthesis
       [6].Seed.Scope                              Struct : ... \n 
         [0].Seed.Nonterminal                      Struct
           [0].Seed.ruleName                       Struct
         [1].Seed.Rule                             ⊙ = ... ']' \n      
           [0].Seed.here                           ⊙
           [1].Seed.Expr.Concat.concat             '[' LabeledItem * ']'
-            [0].Seed.Terminal                     '['
-              [0].string                          '['
+            [0].Seed.Expr.Atom                    '['
+              [0].Seed.Terminal                   '['
+                [0].string                        '['
             [1].Seed.Expr.Postfix.*               LabeledItem *
-              [0].Seed.Nonterminal                LabeledItem
-                [0].Seed.ruleName                 LabeledItem
+              [0].Seed.Expr.Atom                  LabeledItem
+                [0].Seed.Nonterminal              LabeledItem
+                  [0].Seed.ruleName               LabeledItem
               [1].Seed.Expr.operator              *
-            [2].Seed.Terminal                     ']'
-              [0].string                          ']'
+            [2].Seed.Expr.Atom                    ']'
+              [0].Seed.Terminal                   ']'
+                [0].string                        ']'
         [2].Seed.Rule                             LabeledItem = ... ) \n
           [0].Seed.Nonterminal                    LabeledItem
             [0].Seed.ruleName                     LabeledItem
           [1].Seed.Expr.Concat.concat             ( Variable ... Expr )
             [0].Seed.Expr.Postfix.?               ( Variable ... ) ?
-              [0].Seed.Expr.Concat.concat         Variable . Name ':'
-                [0].Seed.Nonterminal              Variable . Name
-                  [0].Seed.ruleName               Variable
-                  [1].Seed.ruleName               Name
-                [1].Seed.Terminal                 ':'
-                  [0].string                      ':'
+              [0].Seed.Expr.Atom                  ( Variable ... ':' )
+                [0].Seed.Expr.Concat.concat       Variable . Name ':'
+                  [0].Seed.Expr.Atom              Variable . Name
+                    [0].Seed.Nonterminal          Variable . Name
+                      [0].Seed.ruleName           Variable
+                      [1].Seed.ruleName           Name
+                  [1].Seed.Expr.Atom              ':'
+                    [0].Seed.Terminal             ':'
+                      [0].string                  ':'
               [1].Seed.Expr.operator              ?
-            [1].Seed.Expr.Or.|                    Struct | Expr
-              [0].Seed.Nonterminal                Struct
-                [0].Seed.ruleName                 Struct
-              [1].Seed.Expr.operator              |
-              [2].Seed.Nonterminal                Expr
-                [0].Seed.ruleName                 Expr
+            [1].Seed.Expr.Atom                    ( Struct | Expr )
+              [0].Seed.Expr.Or.|                  Struct | Expr
+                [0].Seed.Expr.Atom                Struct
+                  [0].Seed.Nonterminal            Struct
+                    [0].Seed.ruleName             Struct
+                [1].Seed.Expr.operator            |
+                [2].Seed.Expr.Atom                Expr
+                  [0].Seed.Nonterminal            Expr
+                    [0].Seed.ruleName             Expr
     [7].Seed.Scope                                Func : ...    
       [0].Seed.Nonterminal                        Func
         [0].Seed.ruleName                         Func
       [1].Seed.Rule                               ⊙ = Name \n    
         [0].Seed.here                             ⊙
-        [1].Seed.Nonterminal                      Name
-          [0].Seed.ruleName                       Name
+        [1].Seed.Expr.Atom                        Name
+          [0].Seed.Nonterminal                    Name
+            [0].Seed.ruleName                     Name
       [2].Seed.Rule                               Name = funcName \n    
         [0].Seed.Nonterminal                      Name
           [0].Seed.ruleName                       Name
-        [1].Seed.Nonterminal                      funcName
-          [0].Seed.tokenCategoryName              funcName
+        [1].Seed.Expr.Atom                        funcName
+          [0].Seed.Nonterminal                    funcName
+            [0].Seed.tokenCategoryName            funcName
       [3].Seed.Rule                               Defn = ... Body \n    
         [0].Seed.Nonterminal                      Defn
           [0].Seed.ruleName                       Defn
         [1].Seed.Expr.Concat.concat               Name '=' Signature Body
-          [0].Seed.Nonterminal                    Name
-            [0].Seed.ruleName                     Name
-          [1].Seed.Terminal                       '='
-            [0].string                            '='
-          [2].Seed.Nonterminal                    Signature
-            [0].Seed.ruleName                     Signature
-          [3].Seed.Nonterminal                    Body
-            [0].Seed.ruleName                     Body
+          [0].Seed.Expr.Atom                      Name
+            [0].Seed.Nonterminal                  Name
+              [0].Seed.ruleName                   Name
+          [1].Seed.Expr.Atom                      '='
+            [0].Seed.Terminal                     '='
+              [0].string                          '='
+          [2].Seed.Expr.Atom                      Signature
+            [0].Seed.Nonterminal                  Signature
+              [0].Seed.ruleName                   Signature
+          [3].Seed.Expr.Atom                      Body
+            [0].Seed.Nonterminal                  Body
+              [0].Seed.ruleName                   Body
       [4].Seed.Rule                               Signature = ... ? \n    
         [0].Seed.Nonterminal                      Signature
           [0].Seed.ruleName                       Signature
         [1].Seed.Expr.Concat.concat               Type ( ... ) ?
-          [0].Seed.Nonterminal                    Type
-            [0].Seed.ruleName                     Type
+          [0].Seed.Expr.Atom                      Type
+            [0].Seed.Nonterminal                  Type
+              [0].Seed.ruleName                   Type
           [1].Seed.Expr.Postfix.?                 ( '->' Type ) ?
-            [0].Seed.Expr.Concat.concat           '->' Type
-              [0].Seed.Terminal                   '->'
-                [0].string                        '->'
-              [1].Seed.Nonterminal                Type
-                [0].Seed.ruleName                 Type
+            [0].Seed.Expr.Atom                    ( '->' Type )
+              [0].Seed.Expr.Concat.concat         '->' Type
+                [0].Seed.Expr.Atom                '->'
+                  [0].Seed.Terminal               '->'
+                    [0].string                    '->'
+                [1].Seed.Expr.Atom                Type
+                  [0].Seed.Nonterminal            Type
+                    [0].Seed.ruleName             Type
             [1].Seed.Expr.operator                ?
       [5].Seed.Rule                               Body = ... '}' \n    
         [0].Seed.Nonterminal                      Body
           [0].Seed.ruleName                       Body
         [1].Seed.Expr.Concat.concat               '{' Stmt * '}'
-          [0].Seed.Terminal                       '{'
-            [0].string                            '{'
+          [0].Seed.Expr.Atom                      '{'
+            [0].Seed.Terminal                     '{'
+              [0].string                          '{'
           [1].Seed.Expr.Postfix.*                 Stmt *
-            [0].Seed.Nonterminal                  Stmt
-              [0].Seed.ruleName                   Stmt
+            [0].Seed.Expr.Atom                    Stmt
+              [0].Seed.Nonterminal                Stmt
+                [0].Seed.ruleName                 Stmt
             [1].Seed.Expr.operator                *
-          [2].Seed.Terminal                       '}'
-            [0].string                            '}'
+          [2].Seed.Expr.Atom                      '}'
+            [0].Seed.Terminal                     '}'
+              [0].string                          '}'
       [6].Seed.Scope                              Stmt : ... \n 
         [0].Seed.Nonterminal                      Stmt
           [0].Seed.ruleName                       Stmt
         [1].Seed.Rule                             ⊙ = ... ';' \n      
           [0].Seed.here                           ⊙
           [1].Seed.Expr.Or.|                      If | ... Expr ';'
-            [0].Seed.Nonterminal                  If
-              [0].Seed.ruleName                   If
+            [0].Seed.Expr.Atom                    If
+              [0].Seed.Nonterminal                If
+                [0].Seed.ruleName                 If
             [1].Seed.Expr.operator                |
-            [2].Seed.Nonterminal                  For
-              [0].Seed.ruleName                   For
+            [2].Seed.Expr.Atom                    For
+              [0].Seed.Nonterminal                For
+                [0].Seed.ruleName                 For
             [3].Seed.Expr.operator                |
             [4].Seed.Expr.Concat.concat           Expr ';'
-              [0].Seed.Nonterminal                Expr
-                [0].Seed.ruleName                 Expr
-              [1].Seed.Terminal                   ';'
-                [0].string                        ';'
+              [0].Seed.Expr.Atom                  Expr
+                [0].Seed.Nonterminal              Expr
+                  [0].Seed.ruleName               Expr
+              [1].Seed.Expr.Atom                  ';'
+                [0].Seed.Terminal                 ';'
+                  [0].string                      ';'
         [2].Seed.Scope                            If : ... \n       
           [0].Seed.Nonterminal                    If
             [0].Seed.ruleName                     If
           [1].Seed.Rule                           ⊙ = ... ? \n        
             [0].Seed.here                         ⊙
             [1].Seed.Expr.Concat.concat           "if" Branch ... ) ?
-              [0].Seed.Terminal                   "if"
-                [0].string                        "if"
-              [1].Seed.Nonterminal                Branch
-                [0].Seed.ruleName                 Branch
+              [0].Seed.Expr.Atom                  "if"
+                [0].Seed.Terminal                 "if"
+                  [0].string                      "if"
+              [1].Seed.Expr.Atom                  Branch
+                [0].Seed.Nonterminal              Branch
+                  [0].Seed.ruleName               Branch
               [2].Seed.Expr.Postfix.*             ( "elif" Branch ) *
-                [0].Seed.Expr.Concat.concat       "elif" Branch
-                  [0].Seed.Terminal               "elif"
-                    [0].string                    "elif"
-                  [1].Seed.Nonterminal            Branch
-                    [0].Seed.ruleName             Branch
+                [0].Seed.Expr.Atom                ( "elif" Branch )
+                  [0].Seed.Expr.Concat.concat     "elif" Branch
+                    [0].Seed.Expr.Atom            "elif"
+                      [0].Seed.Terminal           "elif"
+                        [0].string                "elif"
+                    [1].Seed.Expr.Atom            Branch
+                      [0].Seed.Nonterminal        Branch
+                        [0].Seed.ruleName         Branch
                 [1].Seed.Expr.operator            *
               [3].Seed.Expr.Postfix.?             ( "else" Body ) ?
-                [0].Seed.Expr.Concat.concat       "else" Body
-                  [0].Seed.Terminal               "else"
-                    [0].string                    "else"
-                  [1].Seed.Nonterminal            Body
-                    [0].Seed.ruleName             Body
+                [0].Seed.Expr.Atom                ( "else" Body )
+                  [0].Seed.Expr.Concat.concat     "else" Body
+                    [0].Seed.Expr.Atom            "else"
+                      [0].Seed.Terminal           "else"
+                        [0].string                "else"
+                    [1].Seed.Expr.Atom            Body
+                      [0].Seed.Nonterminal        Body
+                        [0].Seed.ruleName         Body
                 [1].Seed.Expr.operator            ?
           [2].Seed.Rule                           Branch = Expr Body \n
             [0].Seed.Nonterminal                  Branch
               [0].Seed.ruleName                   Branch
             [1].Seed.Expr.Concat.concat           Expr Body
-              [0].Seed.Nonterminal                Expr
-                [0].Seed.ruleName                 Expr
-              [1].Seed.Nonterminal                Body
-                [0].Seed.ruleName                 Body
+              [0].Seed.Expr.Atom                  Expr
+                [0].Seed.Nonterminal              Expr
+                  [0].Seed.ruleName               Expr
+              [1].Seed.Expr.Atom                  Body
+                [0].Seed.Nonterminal              Body
+                  [0].Seed.ruleName               Body
         [3].Seed.Rule                             For = ... Body \n
           [0].Seed.Nonterminal                    For
             [0].Seed.ruleName                     For
           [1].Seed.Expr.Concat.concat             "for" Expr ... Maybe Body
-            [0].Seed.Terminal                     "for"
-              [0].string                          "for"
-            [1].Seed.Nonterminal                  Expr . Maybe
-              [0].Seed.ruleName                   Expr
-              [1].Seed.ruleName                   Maybe
-            [2].Seed.Terminal                     ';'
-              [0].string                          ';'
-            [3].Seed.Nonterminal                  Expr . Maybe
-              [0].Seed.ruleName                   Expr
-              [1].Seed.ruleName                   Maybe
-            [4].Seed.Terminal                     ';'
-              [0].string                          ';'
-            [5].Seed.Nonterminal                  Expr . Maybe
-              [0].Seed.ruleName                   Expr
-              [1].Seed.ruleName                   Maybe
-            [6].Seed.Nonterminal                  Body
-              [0].Seed.ruleName                   Body
+            [0].Seed.Expr.Atom                    "for"
+              [0].Seed.Terminal                   "for"
+                [0].string                        "for"
+            [1].Seed.Expr.Atom                    Expr . Maybe
+              [0].Seed.Nonterminal                Expr . Maybe
+                [0].Seed.ruleName                 Expr
+                [1].Seed.ruleName                 Maybe
+            [2].Seed.Expr.Atom                    ';'
+              [0].Seed.Terminal                   ';'
+                [0].string                        ';'
+            [3].Seed.Expr.Atom                    Expr . Maybe
+              [0].Seed.Nonterminal                Expr . Maybe
+                [0].Seed.ruleName                 Expr
+                [1].Seed.ruleName                 Maybe
+            [4].Seed.Expr.Atom                    ';'
+              [0].Seed.Terminal                   ';'
+                [0].string                        ';'
+            [5].Seed.Expr.Atom                    Expr . Maybe
+              [0].Seed.Nonterminal                Expr . Maybe
+                [0].Seed.ruleName                 Expr
+                [1].Seed.ruleName                 Maybe
+            [6].Seed.Expr.Atom                    Body
+              [0].Seed.Nonterminal                Body
+                [0].Seed.ruleName                 Body
     [8].Seed.Scope                                Variable : ... \n 
       [0].Seed.Nonterminal                        Variable
         [0].Seed.ruleName                         Variable
@@ -2054,28 +2229,34 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].Seed.Expr.And.but_then                not Type ... but_then identifier
           [0].Seed.Expr.Prefix.not                not Type . Name
             [0].Seed.Expr.operator                not
-            [1].Seed.Nonterminal                  Type . Name
-              [0].Seed.ruleName                   Type
-              [1].Seed.ruleName                   Name
+            [1].Seed.Expr.Atom                    Type . Name
+              [0].Seed.Nonterminal                Type . Name
+                [0].Seed.ruleName                 Type
+                [1].Seed.ruleName                 Name
           [1].Seed.Expr.operator                  but_then
           [2].Seed.Expr.Prefix.not                not Func . Name
             [0].Seed.Expr.operator                not
-            [1].Seed.Nonterminal                  Func . Name
-              [0].Seed.ruleName                   Func
-              [1].Seed.ruleName                   Name
+            [1].Seed.Expr.Atom                    Func . Name
+              [0].Seed.Nonterminal                Func . Name
+                [0].Seed.ruleName                 Func
+                [1].Seed.ruleName                 Name
           [3].Seed.Expr.operator                  but_then
-          [4].Seed.Nonterminal                    identifier
-            [0].Seed.tokenCategoryName            identifier
+          [4].Seed.Expr.Atom                      identifier
+            [0].Seed.Nonterminal                  identifier
+              [0].Seed.tokenCategoryName          identifier
       [2].Seed.Rule                               Defn = ... Expr \n
         [0].Seed.Nonterminal                      Defn
           [0].Seed.ruleName                       Defn
         [1].Seed.Expr.Concat.concat               Name '=' Expr
-          [0].Seed.Nonterminal                    Name
-            [0].Seed.ruleName                     Name
-          [1].Seed.Terminal                       '='
-            [0].string                            '='
-          [2].Seed.Nonterminal                    Expr
-            [0].Seed.ruleName                     Expr
+          [0].Seed.Expr.Atom                      Name
+            [0].Seed.Nonterminal                  Name
+              [0].Seed.ruleName                   Name
+          [1].Seed.Expr.Atom                      '='
+            [0].Seed.Terminal                     '='
+              [0].string                          '='
+          [2].Seed.Expr.Atom                      Expr
+            [0].Seed.Nonterminal                  Expr
+              [0].Seed.ruleName                   Expr
 
 [  0]   1:1   cat=.Silva.languageName                      Soil
 [  1]   1:6   cat=.language                                language
