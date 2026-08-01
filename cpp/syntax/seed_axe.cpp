@@ -895,6 +895,11 @@ namespace silva::seed::impl {
           }
           nursery.set_state(oper_state);
         }
+        else {
+          // TODO: should ideally remember the error here, potentionally combine it with errors
+          // below, and then return the total error if this function returns in error.
+          res.error().clear();
+        }
 
         if (mode == INFIX_MODE && !axe.concat_result.has_value()) {
           break;

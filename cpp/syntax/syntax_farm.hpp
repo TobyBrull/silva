@@ -28,8 +28,8 @@ namespace silva {
 
   constexpr inline token_id_t token_id_language{1};
   constexpr inline token_id_t token_id_literal{2};
-  constexpr inline name_id_t name_id_literal{1};
-  constexpr inline name_id_t name_id_language{2};
+  constexpr inline name_id_t name_id_language{1};
+  constexpr inline name_id_t name_id_literal{2};
 
   struct token_t {
     token_id_t token_id;

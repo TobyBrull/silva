@@ -341,15 +341,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [5].skip.freeForm                                                                true      01-simplest.fern:7:2
       [0].skip.freeForm                                                              true      01-simplest.fern:7:2
 [  0]   1:1   cat=.Silva.languageName                      Seed
-[  1]   1:6   cat=.literal                                 language
+[  1]   1:6   cat=.language                                language
 [  2]   8:1   cat=.Silva.languageName                      AsBs
-[  3]   8:6   cat=.literal                                 language
+[  3]   8:6   cat=.language                                language
 [  4]  10:1   cat=.Silva.languageName                      Seed
-[  5]  10:6   cat=.literal                                 language
+[  5]  10:6   cat=.language                                language
 [  6]  44:1   cat=.Silva.languageName                      CppStmts
-[  7]  44:10  cat=.literal                                 language
+[  7]  44:10  cat=.language                                language
 [  8]  53:1   cat=.Silva.languageName                      Fern
-[  9]  53:6   cat=.literal                                 language
+[  9]  53:6   cat=.language                                language
 
 [0].Silva                                         Seed language ... Fern language
   [0].Silva.Section                               Seed language
@@ -1244,7 +1244,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
   [1].Somelang.Bs                                 b b b
 
 [  0]   1:1   cat=.Silva.languageName                      Seed
-[  1]   1:6   cat=.literal                                 language
+[  1]   1:6   cat=.language                                language
 
 [0].Silva                                         Seed language
   [0].Silva.Section                               Seed language
@@ -2078,7 +2078,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].Seed.ruleName                     Expr
 
 [  0]   1:1   cat=.Silva.languageName                      Soil
-[  1]   1:6   cat=.literal                                 language
+[  1]   1:6   cat=.language                                language
 
 [0].Silva                                         Soil language
   [0].Silva.Section                               Soil language
@@ -2229,7 +2229,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [141]  25:65  cat=.Soil.Expr.oper                          |
 [142]  25:67  cat=.Soil.funcName                           f_log
 [143]  25:72  cat=.literal                                 ;
-[144]  26:3   cat=.literal                                 language
+[144]  26:3   cat=.language                                language
 [145]  26:25  cat=.Soil.Expr.oper                          |
 [146]  26:27  cat=.Soil.funcName                           f_print
 [147]  26:34  cat=.literal                                 ;
