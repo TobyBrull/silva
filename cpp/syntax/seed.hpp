@@ -87,7 +87,7 @@ language Seed:
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
   Rule = ( here | Nonterminal ) '=' ( "axe" Axe | Qualifier * Expr newline )
   here = '⊙'
-  Qualifier = [ "no_node" "no_whitespace" ]
+  Qualifier = [ "no_node" "no_whitespace" "literal_nodes" ]
   Expr:
     ⊙ = axe Atom operator
       Prefix    = rtl   prefix "not"
@@ -99,12 +99,11 @@ language Seed:
       Or        = ltr   infix_flat '|'
     Atom = no_node Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
-    Quantifier = number ? comma number ? | number
-    comma = ','
+    Quantifier = literal_nodes number ? ',' number ? | number
     operator = [ "not" "but_then" '{' '}' operator.single ]
     NoNode = Expr
   Terminal = [ "ε" "end_of_language" "language" string fragName ]
-  Nonterminal = '.' ? ( Name '.' ) * Name
+  Nonterminal = literal_nodes '.' ? ( Name '.' ) * Name
   Name = no_node [ ruleName tokenCategoryName ]
 )'";
 

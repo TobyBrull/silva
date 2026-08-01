@@ -14,6 +14,7 @@ namespace silva::seed {
       bool is_twig_rule     = false;
       bool is_no_node       = false;
       bool is_no_whitespace = false;
+      bool is_literal_nodes = false;
     };
     hash_map_t<name_id_t, rule_expr_data_t> rule_exprs;
 

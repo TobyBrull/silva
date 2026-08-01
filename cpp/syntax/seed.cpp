@@ -645,7 +645,11 @@ namespace silva::seed::impl {
       const index_t orig_frag_idx = fragment_index;
       ss_rule.create_node(lexicon.ni_qualifier);
       error_nursery_t error_nursery;
-      for (const auto& ft: {lexicon.ti_no_node, lexicon.ti_no_whitespace}) {
+      for (const auto& ft: {
+               lexicon.ti_no_node,
+               lexicon.ti_no_whitespace,
+               lexicon.ti_lit_nodes,
+           }) {
         auto result = literal_fragmented_token(ft);
         if (result) {
           add_token_and_skip(*result);
