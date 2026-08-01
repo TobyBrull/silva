@@ -1,7 +1,10 @@
 # TODO
 
-* clean TODO in lox/test_suite.cpp
 * tokenization-less parse-tree
+    * make double-quoted strings generated parse-tree nodes
+    * make seed-axe completely parse-tree based
+        * clean TODO in lox/test_suite.cpp
+    * double-quoted strings should probably support "eps0"
 
 * replace pts.get_children() with function that returns pts's, not indexes
 
