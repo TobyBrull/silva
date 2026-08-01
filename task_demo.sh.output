@@ -396,7 +396,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.tokenCategoryName                skip
       [1].Seed.Nonterminal                        skip . freeForm
         [0].Seed.tokenCategoryName                skip
-        [1].Seed.tokenCategoryName                freeForm
+        [1].literal                               .
+        [2].Seed.tokenCategoryName                freeForm
     [2].Seed.Rule                                 ⊙ = ... * \n
       [0].Seed.here                               ⊙
       [1].Seed.Expr.Concat.concat                 "a" * "b" *
@@ -626,7 +627,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.tokenCategoryName                skip
       [1].Seed.Nonterminal                        skip . freeForm
         [0].Seed.tokenCategoryName                skip
-        [1].Seed.tokenCategoryName                freeForm
+        [1].literal                               .
+        [2].Seed.tokenCategoryName                freeForm
     [2].Seed.Rule                                 ⊙ = ... * \n  
       [0].Seed.here                               ⊙
       [1].Seed.Expr.Postfix.*                     ( Expr ';' ) *
@@ -874,7 +876,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [1].Seed.Expr.operator                  |
           [2].Seed.Nonterminal                    operator . greedy
             [0].Seed.tokenCategoryName            operator
-            [1].Seed.tokenCategoryName            greedy
+            [1].literal                           .
+            [2].Seed.tokenCategoryName            greedy
       [4].Seed.Rule                               Type = identifier \n
         [0].Seed.Nonterminal                      Type
           [0].Seed.ruleName                       Type
@@ -1208,7 +1211,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.tokenCategoryName                skip
       [1].Seed.Nonterminal                        skip . freeForm
         [0].Seed.tokenCategoryName                skip
-        [1].Seed.tokenCategoryName                freeForm
+        [1].literal                               .
+        [2].Seed.tokenCategoryName                freeForm
     [2].Seed.Rule                                 ⊙ = As Bs \n  
       [0].Seed.here                               ⊙
       [1].Seed.Expr.Concat.concat                 As Bs
@@ -1626,7 +1630,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.tokenCategoryName                skip
       [1].Seed.Nonterminal                        skip . freeForm
         [0].Seed.tokenCategoryName                skip
-        [1].Seed.tokenCategoryName                freeForm
+        [1].literal                               .
+        [2].Seed.tokenCategoryName                freeForm
     [2].Seed.Rule                                 typeName = 't_' identifier \n  
       [0].Seed.Nonterminal                        typeName
         [0].Seed.tokenCategoryName                typeName
@@ -1649,15 +1654,18 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Seed.Expr.Or.|                        Type . ... . Defn
           [0].Seed.Nonterminal                    Type . Defn
             [0].Seed.ruleName                     Type
-            [1].Seed.ruleName                     Defn
+            [1].literal                           .
+            [2].Seed.ruleName                     Defn
           [1].Seed.Expr.operator                  |
           [2].Seed.Nonterminal                    Func . Defn
             [0].Seed.ruleName                     Func
-            [1].Seed.ruleName                     Defn
+            [1].literal                           .
+            [2].Seed.ruleName                     Defn
           [3].Seed.Expr.operator                  |
           [4].Seed.Nonterminal                    Variable . Defn
             [0].Seed.ruleName                     Variable
-            [1].Seed.ruleName                     Defn
+            [1].literal                           .
+            [2].Seed.ruleName                     Defn
         [1].Seed.Expr.operator                    *
     [5].Seed.Scope                                Type : ...    
       [0].Seed.Nonterminal                        Type
@@ -1890,7 +1898,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].Seed.Expr.Or.|                        operator . greedy | parenthesis
           [0].Seed.Nonterminal                    operator . greedy
             [0].Seed.tokenCategoryName            operator
-            [1].Seed.tokenCategoryName            greedy
+            [1].literal                           .
+            [2].Seed.tokenCategoryName            greedy
           [1].Seed.Expr.operator                  |
           [2].Seed.Nonterminal                    parenthesis
             [0].Seed.tokenCategoryName            parenthesis
@@ -1916,7 +1925,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].Seed.Expr.Concat.concat         Variable . Name ':'
                 [0].Seed.Nonterminal              Variable . Name
                   [0].Seed.ruleName               Variable
-                  [1].Seed.ruleName               Name
+                  [1].literal                     .
+                  [2].Seed.ruleName               Name
                 [1].Seed.Terminal                 ':'
                   [0].string                      ':'
               [1].Seed.Expr.operator              ?
@@ -2032,17 +2042,20 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].string                          "for"
             [1].Seed.Nonterminal                  Expr . Maybe
               [0].Seed.ruleName                   Expr
-              [1].Seed.ruleName                   Maybe
+              [1].literal                         .
+              [2].Seed.ruleName                   Maybe
             [2].Seed.Terminal                     ';'
               [0].string                          ';'
             [3].Seed.Nonterminal                  Expr . Maybe
               [0].Seed.ruleName                   Expr
-              [1].Seed.ruleName                   Maybe
+              [1].literal                         .
+              [2].Seed.ruleName                   Maybe
             [4].Seed.Terminal                     ';'
               [0].string                          ';'
             [5].Seed.Nonterminal                  Expr . Maybe
               [0].Seed.ruleName                   Expr
-              [1].Seed.ruleName                   Maybe
+              [1].literal                         .
+              [2].Seed.ruleName                   Maybe
             [6].Seed.Nonterminal                  Body
               [0].Seed.ruleName                   Body
     [8].Seed.Scope                                Variable : ... \n 
@@ -2056,13 +2069,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].Seed.Expr.operator                not
             [1].Seed.Nonterminal                  Type . Name
               [0].Seed.ruleName                   Type
-              [1].Seed.ruleName                   Name
+              [1].literal                         .
+              [2].Seed.ruleName                   Name
           [1].Seed.Expr.operator                  but_then
           [2].Seed.Expr.Prefix.not                not Func . Name
             [0].Seed.Expr.operator                not
             [1].Seed.Nonterminal                  Func . Name
               [0].Seed.ruleName                   Func
-              [1].Seed.ruleName                   Name
+              [1].literal                         .
+              [2].Seed.ruleName                   Name
           [3].Seed.Expr.operator                  but_then
           [4].Seed.Nonterminal                    identifier
             [0].Seed.tokenCategoryName            identifier

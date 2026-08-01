@@ -73,7 +73,7 @@ namespace silva {
     };
     [[nodiscard]] token_stake_t token_stake(this auto& self, const name_id_t token_cat);
 
-    expected_t<token_t> literal_fragmented_token(fragmented_token_t);
+    expected_t<parse_tree_node_t> parse_literal(const fragmented_token_t&);
 
     void add_token(const token_t&);
 

@@ -3,9 +3,9 @@
 #include "syntax_farm.hpp"
 
 namespace silva {
-  expected_t<token_t> parse_tree_nursery_t::literal_fragmented_token(const fragmented_token_t ft)
+  expected_t<parse_tree_node_t> parse_tree_nursery_t::parse_literal(const fragmented_token_t& ft)
   {
-    auto ts                     = token_stake(name_id_literal);
+    auto ss_rule                = stake();
     const index_t n             = ft.items.size();
     const index_t orig_frag_idx = fragment_index;
     SILVA_EXPECT(num_fragments_left() >= n,
@@ -38,7 +38,7 @@ namespace silva {
                    fragment_location_at(orig_frag_idx),
                    sfp->token_id_wrap(ft.token_id));
     }
-    return ts.commit();
+    return ss_rule.commit();
   }
 
   void parse_tree_nursery_t::on_get_state(parse_tree_nursery_state_t& s) const

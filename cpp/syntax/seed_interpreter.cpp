@@ -405,11 +405,16 @@ namespace silva::seed::impl {
                      "Couldn't find token for {}",
                      sfp->token_id_wrap(s_front_token.token_id));
         const fragmented_token_t& expected_ft = it->second;
-        const token_t token = SILVA_EXPECT_FWD(literal_fragmented_token(expected_ft),
-                                               "[{}] while matching {}",
-                                               fragment_location_by(),
-                                               sfp->token_id_wrap(expected_ft.token_id));
+        auto ts                               = token_stake(name_id_literal);
+        ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(expected_ft),
+                                           "[{}] while matching {}",
+                                           fragment_location_by(),
+                                           sfp->token_id_wrap(expected_ft.token_id)));
+        const token_t token = ts.commit();
         if (twig_rule_depth == 0) {
+          if (curr_rule->is_literal_nodes) {
+            ss.create_node(name_id_literal);
+          }
           add_token(token);
           SILVA_EXPECT_FWD(skip());
         }
