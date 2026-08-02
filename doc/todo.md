@@ -1,7 +1,6 @@
 # TODO
 
 * tokenization-less parse-tree
-    * make double-quoted strings generated parse-tree nodes
     * make seed-axe completely parse-tree based
         * clean TODO in lox/test_suite.cpp
     * double-quoted strings should probably support "eps0"
@@ -11,8 +10,9 @@
 * overhaul seed-axe
     * avoid std::sort (treat three different types of arity in separate branches; simplfy
       "consistent_range" function)
-    * allow oper-rules and atom-rules to produce arbitrary number of subnodes
-    * ...
+    * support synthesising the "oper" rule somehow?
+    * avoid common duplication in oper rule?
+    * allow more than just "" and '' in operators
 
 * `number` tokenization: write tests
 * more Seed:
@@ -28,9 +28,6 @@
 * parse skip-rule AFTER every token
     * to support "end_of_language"
     * don't skip in seed.cpp in recursive token calls
-* seed-axe:
-    * avoid common duplication in oper rule?
-    * allow more than just "" and '' in operators
 * In parsing errors, show what has been successfully parsed so far
 
 * Parsing:
