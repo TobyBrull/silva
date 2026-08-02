@@ -90,7 +90,7 @@ ERROR (MAJOR):
   │ expected token of category ID_START; got token[ ID_START ]
   │ [01-broken.fern:9:3] .identifier: expected sequence[ ID_START ID_CONTINUE * ]
   ├─[01-broken.fern:9:3] .identifier
-  [01-broken.fern:9:3] .Fern.Label: expected alternation[ string | identifier ]
+  [01-broken.fern:9:3] .Fern.Label: expected alternation[ string  ]
   [01-broken.fern:9:3] .Fern.Label
 ┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ Label ':' ]
 │     [01-broken.fern:11:5] expected token[ : ]
@@ -120,7 +120,7 @@ ERROR (MAJOR):
 │   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
 │   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
 │   │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integerPart ( ... ? ) ]
-│   │ │ │   [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ special | ... ? ) ]
+│   │ │ │   [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ special  ]
 │   │ │ │   [01-broken.fern:10:5] .number.unsigned.float
 │   │ │ │   [01-broken.fern:10:5] .number.float: expected sequence[ plusMinus unsigned . float ]
 │   │ │ │ ┌─[01-broken.fern:10:5] .number.float
@@ -155,22 +155,22 @@ ERROR (MAJOR):
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusMinus unsigned ... . decimal ]
 │   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.decimal
-│   │ │ │ │ [01-broken.fern:10:5] .number.integer: expected alternation[ [ binary ... decimal ] ]
+│   │ │ │ │ [01-broken.fern:10:5] .number.integer: expected alternation[ [ bin ... mal ] ]
 │   │ │ │ ├─[01-broken.fern:10:5] .number.integer
-│   │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ float ... integer ] ]
+│   │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ flo ... ger ] ]
 │   │ │ ├─[01-broken.fern:10:5] .number
 │   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
 │   │ │ ├─[01-broken.fern:10:5] .string
-│   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ None | ... | string ]
+│   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ None  ]
 │   │ ├─[01-broken.fern:10:5] .Fern.Value
-│   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern | Value ]
+│   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern  ]
 │   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
 │ ┌─[01-broken.fern:10:5] .Fern.LabeledItem
 │ │ [01-broken.fern:10:5] expected token[ ] ]
 │ ├─[01-broken.fern:10:5] while matching token[ ] ]
 │ [01-broken.fern:9:3] .Fern: expected sequence[ '[' LabeledItem * ']' ]
 │ [01-broken.fern:9:3] .Fern
-├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern | Value ]
+├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern  ]
 [01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( Label ... Value ) ]
 [01-broken.fern:9:3] .Fern.LabeledItem
 [01-broken.fern:1:1] .Fern: expected sequence[ '[' LabeledItem * ']' ]

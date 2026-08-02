@@ -145,13 +145,6 @@ namespace silva {
     name_id_wrap_t name_id_wrap(name_id_t) const;
 
     string_t name_id_str(name_id_t) const;
-
-    expected_t<name_id_t> name_id_definition(const name_id_t scope_name,
-                                             span_t<const token_t>) const;
-
-    template<Namespace Ns>
-    expected_t<name_id_t>
-    name_id_lookup(const name_id_t scope_name, span_t<const token_t>, const Ns&) const;
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
 
@@ -205,44 +198,5 @@ namespace silva {
     array_t<token_id_t> vec;
     ((vec.push_back(token_id(std::forward<Ts>(xs)))), ...);
     return name_id_span(parent_name, vec);
-  }
-
-  template<Namespace Ns>
-  expected_t<name_id_t> lexicon_t::name_id_lookup(const name_id_t scope_name,
-                                                  const span_t<const token_t> ts,
-                                                  const Ns& ns) const
-  {
-    SILVA_EXPECT(!ts.empty(), MINOR);
-    index_t idx = 0;
-    if (ts.front().token_id == name_sep) {
-      const name_id_t abs_name = SILVA_EXPECT_FWD(name_id_definition(scope_name, ts));
-      SILVA_EXPECT(ns.contains(abs_name),
-                   MINOR,
-                   "absolute name {} does not exist",
-                   name_id_wrap(abs_name));
-      return abs_name;
-    }
-    else {
-      name_id_t curr_scope = scope_name;
-      error_nursery_t error_nursery;
-      while (true) {
-        const name_id_t curr_name = SILVA_EXPECT_FWD(name_id_definition(curr_scope, ts));
-        if (ns.contains(curr_name)) {
-          return curr_name;
-        }
-        error_nursery.add_child_error(
-            make_error(error_level_t::MINOR, {}, "could not find {}", name_id_wrap(curr_name)));
-        if (!curr_scope.is_valid()) {
-          break;
-        }
-        curr_scope = sfp->get(curr_scope).parent_name;
-      }
-      return std::unexpected(std::move(error_nursery)
-                                 .finish(error_level_t::MINOR,
-                                         "unable to lookup name in scope {}: {}...{}",
-                                         name_id_wrap(scope_name),
-                                         sfp->token_id_wrap(ts.front().token_id),
-                                         sfp->token_id_wrap(ts.back().token_id)));
-    }
   }
 }

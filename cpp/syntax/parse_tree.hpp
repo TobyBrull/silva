@@ -64,6 +64,13 @@ namespace silva {
     friend bool operator==(const parse_tree_span_t&, const parse_tree_span_t&) = default;
   };
 
+  expected_t<name_id_t>
+  name_id_definition(const lexicon_t&, name_id_t scope_name, span_t<const token_t>);
+
+  template<Namespace Ns>
+  expected_t<name_id_t>
+  name_id_lookup(const lexicon_t&, name_id_t scope_name, span_t<const token_t>, const Ns&);
+
   struct name_id_ref_t {
     parse_tree_span_t pts;
 
@@ -71,6 +78,7 @@ namespace silva {
     name_id_ref_t(parse_tree_span_t);
 
     void resolve_clear() const;
+
     template<Namespace Ns>
     expected_t<void> resolve(const name_id_t scope_name, const lexicon_t&, const Ns&) const;
 
@@ -92,10 +100,51 @@ namespace silva {
   }
 
   template<Namespace Ns>
+  expected_t<name_id_t> name_id_lookup(const lexicon_t& lexicon,
+                                       const name_id_t scope_name,
+                                       const span_t<const token_t> ts,
+                                       const Ns& ns)
+  {
+    SILVA_EXPECT(!ts.empty(), MINOR);
+    if (ts.front().token_id == lexicon.name_sep) {
+      const name_id_t abs_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, ts));
+      SILVA_EXPECT(ns.contains(abs_name),
+                   MINOR,
+                   "absolute name {} does not exist",
+                   lexicon.name_id_wrap(abs_name));
+      return abs_name;
+    }
+    else {
+      name_id_t curr_scope = scope_name;
+      error_nursery_t error_nursery;
+      while (true) {
+        const name_id_t curr_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, curr_scope, ts));
+        if (ns.contains(curr_name)) {
+          return curr_name;
+        }
+        error_nursery.add_child_error(make_error(error_level_t::MINOR,
+                                                 {},
+                                                 "could not find {}",
+                                                 lexicon.name_id_wrap(curr_name)));
+        if (!curr_scope.is_valid()) {
+          break;
+        }
+        curr_scope = lexicon.sfp->get(curr_scope).parent_name;
+      }
+      return std::unexpected(std::move(error_nursery)
+                                 .finish(error_level_t::MINOR,
+                                         "unable to lookup name in scope {}: {}...{}",
+                                         lexicon.name_id_wrap(scope_name),
+                                         lexicon.sfp->token_id_wrap(ts.front().token_id),
+                                         lexicon.sfp->token_id_wrap(ts.back().token_id)));
+    }
+  }
+
+  template<Namespace Ns>
   expected_t<void>
   name_id_ref_t::resolve(const name_id_t scope_name, const lexicon_t& lexicon, const Ns& ns) const
   {
-    resolved_name = SILVA_EXPECT_FWD(lexicon.name_id_lookup(scope_name, pts.token_span(), ns));
+    resolved_name = SILVA_EXPECT_FWD(name_id_lookup(lexicon, scope_name, pts.token_span(), ns));
     return {};
   }
 }

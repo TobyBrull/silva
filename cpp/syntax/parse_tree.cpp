@@ -146,6 +146,29 @@ namespace silva {
     };
   }
 
+  expected_t<name_id_t>
+  name_id_definition(const lexicon_t& lexicon, const name_id_t scope_name, span_t<const token_t> ts)
+  {
+    name_id_t retval = scope_name;
+    SILVA_EXPECT(!ts.empty(), MINOR);
+    index_t idx = 0;
+    if (ts.front().token_id == lexicon.name_sep) {
+      retval = name_id_t{};
+      idx += 1;
+    }
+    while (idx < ts.size()) {
+      const token_id_t base = ts[idx].token_id;
+      SILVA_EXPECT(base != lexicon.name_sep, MINOR);
+      retval = lexicon.sfp->name_id(retval, base);
+      idx += 1;
+      if (idx < ts.size()) {
+        SILVA_EXPECT(ts[idx].token_id == lexicon.name_sep, MINOR);
+        idx += 1;
+      }
+    }
+    return retval;
+  }
+
   name_id_ref_t::name_id_ref_t(parse_tree_span_t pts) : pts(std::move(pts)) {}
 
   void name_id_ref_t::resolve_clear() const

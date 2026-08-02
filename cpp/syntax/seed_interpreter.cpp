@@ -70,7 +70,7 @@ namespace silva::seed::impl {
       else {
         const auto pts_nt = pts_rule.sub_tree_span_at(it.pos);
         curr_rule_name =
-            SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
+            SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt.token_span()));
         const auto back_name_pts = SILVA_EXPECT_FWD(pts_nt.get_child_by_skipping_pts(-1));
         is_twig_rule             = (back_name_pts[0].rule_name == lexicon.ni_token_cat_name);
       }
@@ -202,7 +202,7 @@ namespace silva::seed::impl {
 
       const auto pts_nt = pts_scope.sub_tree_span_at(it.pos);
       const name_id_t curr_scope_name =
-          SILVA_EXPECT_FWD(lexicon.name_id_definition(scope_name, pts_nt.token_span()));
+          SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt.token_span()));
       const auto back_name_pts      = SILVA_EXPECT_FWD(pts_nt.get_child_by_skipping_pts(-1));
       const bool scope_is_twig_rule = (back_name_pts[0].rule_name == lexicon.ni_token_cat_name);
       ++it;
@@ -717,7 +717,7 @@ namespace silva::seed::impl {
                                          "[{}] {}: expected alternation[ {} ]",
                                          fragment_location_at(orig_fragment_index),
                                          lexicon.name_id_wrap(t_rule_name),
-                                         pts.token_span()));
+                                         pts.fragment_span()));
     }
 
     expected_t<node_and_error_t> s_nonterminal(const parse_tree_span_t pts,
