@@ -65,11 +65,11 @@ namespace silva {
   };
 
   expected_t<name_id_t>
-  name_id_definition(const lexicon_t&, name_id_t scope_name, span_t<const token_t>);
+  name_id_definition(const lexicon_t&, name_id_t scope_name, const parse_tree_span_t&);
 
   template<Namespace Ns>
   expected_t<name_id_t>
-  name_id_lookup(const lexicon_t&, name_id_t scope_name, span_t<const token_t>, const Ns&);
+  name_id_lookup(const lexicon_t&, name_id_t scope_name, const parse_tree_span_t&, const Ns&);
 
   struct name_id_ref_t {
     parse_tree_span_t pts;
@@ -102,12 +102,13 @@ namespace silva {
   template<Namespace Ns>
   expected_t<name_id_t> name_id_lookup(const lexicon_t& lexicon,
                                        const name_id_t scope_name,
-                                       const span_t<const token_t> ts,
+                                       const parse_tree_span_t& pts,
                                        const Ns& ns)
   {
-    SILVA_EXPECT(!ts.empty(), MINOR);
-    if (ts.front().token_id == lexicon.name_sep) {
-      const name_id_t abs_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, ts));
+    SILVA_EXPECT(pts[0].num_children > 0, MINOR);
+    const token_id_t front_token = SILVA_EXPECT_FWD(pts.sub_tree_span_at(1).token());
+    if (front_token == lexicon.name_sep) {
+      const name_id_t abs_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts));
       SILVA_EXPECT(ns.contains(abs_name),
                    MINOR,
                    "absolute name {} does not exist",
@@ -118,7 +119,7 @@ namespace silva {
       name_id_t curr_scope = scope_name;
       error_nursery_t error_nursery;
       while (true) {
-        const name_id_t curr_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, curr_scope, ts));
+        const name_id_t curr_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, curr_scope, pts));
         if (ns.contains(curr_name)) {
           return curr_name;
         }
@@ -133,10 +134,9 @@ namespace silva {
       }
       return std::unexpected(std::move(error_nursery)
                                  .finish(error_level_t::MINOR,
-                                         "unable to lookup name in scope {}: {}...{}",
+                                         "unable to lookup name in scope {}: {}",
                                          lexicon.name_id_wrap(scope_name),
-                                         lexicon.sfp->token_id_wrap(ts.front().token_id),
-                                         lexicon.sfp->token_id_wrap(ts.back().token_id)));
+                                         pts.fragment_span()));
     }
   }
 
@@ -144,7 +144,7 @@ namespace silva {
   expected_t<void>
   name_id_ref_t::resolve(const name_id_t scope_name, const lexicon_t& lexicon, const Ns& ns) const
   {
-    resolved_name = SILVA_EXPECT_FWD(name_id_lookup(lexicon, scope_name, pts.token_span(), ns));
+    resolved_name = SILVA_EXPECT_FWD(name_id_lookup(lexicon, scope_name, pts, ns));
     return {};
   }
 }

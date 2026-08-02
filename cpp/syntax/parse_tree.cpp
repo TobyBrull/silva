@@ -146,24 +146,26 @@ namespace silva {
     };
   }
 
-  expected_t<name_id_t>
-  name_id_definition(const lexicon_t& lexicon, const name_id_t scope_name, span_t<const token_t> ts)
+  expected_t<name_id_t> name_id_definition(const lexicon_t& lexicon,
+                                           const name_id_t scope_name,
+                                           const parse_tree_span_t& pts)
   {
+    auto [it, end] = pts.children_range();
     name_id_t retval = scope_name;
-    SILVA_EXPECT(!ts.empty(), MINOR);
-    index_t idx = 0;
-    if (ts.front().token_id == lexicon.name_sep) {
+    SILVA_EXPECT(it != end, MINOR);
+    if (SILVA_EXPECT_FWD(pts.sub_tree_span_at(it.pos).token()) == lexicon.name_sep) {
       retval = name_id_t{};
-      idx += 1;
+      ++it;
     }
-    while (idx < ts.size()) {
-      const token_id_t base = ts[idx].token_id;
+    while (it != end) {
+      const token_id_t base = SILVA_EXPECT_FWD(pts.sub_tree_span_at(it.pos).token());
       SILVA_EXPECT(base != lexicon.name_sep, MINOR);
       retval = lexicon.sfp->name_id(retval, base);
-      idx += 1;
-      if (idx < ts.size()) {
-        SILVA_EXPECT(ts[idx].token_id == lexicon.name_sep, MINOR);
-        idx += 1;
+      ++it;
+      if (it != end) {
+        const token_id_t expected_sep = SILVA_EXPECT_FWD(pts.sub_tree_span_at(it.pos).token());
+        SILVA_EXPECT(expected_sep == lexicon.name_sep, MINOR);
+        ++it;
       }
     }
     return retval;
