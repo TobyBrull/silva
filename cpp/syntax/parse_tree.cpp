@@ -150,7 +150,7 @@ namespace silva {
                                            const name_id_t scope_name,
                                            const parse_tree_span_t& pts)
   {
-    auto [it, end] = pts.children_range();
+    auto [it, end]   = pts.children_range();
     name_id_t retval = scope_name;
     SILVA_EXPECT(it != end, MINOR);
     if (SILVA_EXPECT_FWD(pts.sub_tree_span_at(it.pos).token()) == lexicon.name_sep) {
