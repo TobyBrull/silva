@@ -18,7 +18,7 @@ namespace silva {
 
     array_small_t() = default;
 
-    array_small_t(std::initializer_list<index_t>);
+    array_small_t(std::initializer_list<T>);
 
     array_small_t(array_small_t&&);
     array_small_t& operator=(array_small_t&&);
@@ -53,7 +53,7 @@ namespace silva {
   }
 
   template<typename T, index_t N>
-  array_small_t<T, N>::array_small_t(std::initializer_list<index_t> il)
+  array_small_t<T, N>::array_small_t(std::initializer_list<T> il)
   {
     SILVA_ASSERT(il.size() <= N);
     for (const auto& x: il) {

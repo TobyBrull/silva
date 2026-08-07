@@ -560,9 +560,7 @@ namespace silva::lox {
                                test_error_t{{
                                    "type error evaluating expression",
                                    "while executing instruction",
-                                   // TODO:
-                                   // "42 + 'world'",
-                                   "42",
+                                   "42 + 'world'",
                                    "[test.lox:1:15]",
                                }}});
     }

@@ -465,13 +465,34 @@ namespace silva::seed::impl {
       index_t arity = 0;
       name_id_t level_name;
       precedence_t precedence;
-      array_small_t<index_t, 2> covered_token_indexes;
+
+      struct symbol_t {
+        index_t token_begin    = 0;
+        index_t token_end      = 0;
+        index_t fragment_begin = 0;
+        index_t fragment_end   = 0;
+        struct related_atom_t {
+          enum way_t {
+            NONE = 0,
+            LEFTWARD,
+            RIGHTWARD,
+          };
+          way_t way        = NONE;
+          index_t atom_idx = 0;
+        };
+        array_small_t<related_atom_t, 2> related_atoms;
+      };
+      array_small_t<symbol_t, 2> symbols;
+
       optional_t<index_t> min_token_index;
       optional_t<index_t> max_token_index;
+
       // index into the "output_tree" array
       array_small_t<index_t, 2> oper_output_indexes;
     };
     array_t<oper_item_t> oper_stack;
+
+    using enum oper_item_t::symbol_t::related_atom_t::way_t;
 
     // Indexes into the "output_tree" vector.
     array_t<index_t> open_term_stack;
@@ -530,6 +551,7 @@ namespace silva::seed::impl {
       index_t token_end   = 0;
       parse_tree_node_t ptn;
       array_small_t<index_t, 2> oper_output_indexes;
+      rule_parser_result_t right_res;
     };
 
     // The left-bracket/first operator token has already been produced by the caller; its index is
@@ -573,6 +595,7 @@ namespace silva::seed::impl {
       };
       retval.oper_output_indexes.emplace_back(left_out_idx);
       retval.oper_output_indexes.emplace_back(right_out_idx);
+      retval.right_res = right;
       return retval;
     }
 
@@ -586,17 +609,13 @@ namespace silva::seed::impl {
     };
     expected_t<consistent_range_t> consistent_range(span_t<const oper_item_t> ois) const
     {
-      // The following probably doesn't make sense if ois.size() > 1 and the operators are of
-      // type ternary_t, prefix_nest_t, or postfix_nest_t. Should probably rewrite the logic to
-      // cover this case explicitly, and then handle ois.size() > 1 only for prefix_t,
-      // postfix_t, and infix_t.
-
       SILVA_EXPECT(!ois.empty(), ASSERT);
       const index_t common_arity = ois.front().arity;
       for (index_t i = 1; i < ois.size(); ++i) {
         SILVA_EXPECT(ois.front().oper == ois[i].oper, ASSERT);
         SILVA_EXPECT(common_arity == ois[i].arity, ASSERT);
       }
+
       SILVA_EXPECT(common_arity >= 1, ASSERT);
       const index_t combined_arity = (common_arity - 1) * ois.size() + 1;
       SILVA_EXPECT(combined_arity <= open_term_stack.size(),
@@ -605,76 +624,73 @@ namespace silva::seed::impl {
                    nursery.fragment_location_by(),
                    combined_arity,
                    open_term_stack.size());
-      const index_t atom_stack_begin = open_term_stack.size() - combined_arity;
-      const auto& front_atn          = output_tree[open_term_stack[atom_stack_begin]];
+
+      const index_t ots_front     = open_term_stack.size() - combined_arity;
+      const term_node_t& front_tn = output_tree[open_term_stack[ots_front]];
       consistent_range_t retval{
           .num_atoms        = combined_arity,
           .joint_level_name = ois.front().level_name,
-          .token_begin      = front_atn.token_begin,
-          .token_end        = front_atn.token_end,
-          .fragment_begin   = front_atn.fragment_begin,
-          .fragment_end     = front_atn.fragment_end,
+          .token_begin      = front_tn.token_begin,
+          .token_end        = front_tn.token_end,
+          .fragment_begin   = front_tn.fragment_begin,
+          .fragment_end     = front_tn.fragment_end,
       };
-
-      const auto check_coverage = [&](const oper_item_t& oi) -> expected_t<void> {
-        SILVA_EXPECT(!oi.min_token_index.has_value() || oi.min_token_index <= retval.token_begin,
-                     MINOR);
-        SILVA_EXPECT(!oi.max_token_index.has_value() || retval.token_end <= oi.max_token_index,
-                     MINOR);
-        return {};
-      };
-
-      index_t oi_index = 0;
-      index_t cti_pos  = 0;
-      while (oi_index < ois.size() && ois[oi_index].covered_token_indexes.size == 0) {
-        SILVA_EXPECT_FWD(check_coverage(ois[oi_index]));
-        oi_index += 1;
+      for (index_t idx = ots_front + 1; idx < open_term_stack.size(); ++idx) {
+        const term_node_t& tn = output_tree[open_term_stack[idx]];
+        retval.token_begin    = std::min(retval.token_begin, tn.token_begin);
+        retval.token_end      = std::max(retval.token_end, tn.token_end);
+        retval.fragment_begin = std::min(retval.fragment_begin, tn.fragment_begin);
+        retval.fragment_end   = std::max(retval.fragment_end, tn.fragment_end);
       }
-      const auto cti_peek = [&]() -> optional_t<index_t> {
-        if (oi_index < ois.size() && cti_pos < ois[oi_index].covered_token_indexes.size) {
-          return ois[oi_index].covered_token_indexes[cti_pos];
-        }
-        else {
-          return {none};
-        }
-      };
-      const auto cti_advance = [&]() -> expected_t<void> {
-        cti_pos += 1;
-        if (cti_pos == ois[oi_index].covered_token_indexes.size) {
-          SILVA_EXPECT_FWD(check_coverage(ois[oi_index]));
-          oi_index += 1;
-          cti_pos = 0;
-        }
-        return {};
-      };
-      const auto try_ctis = [&]() -> expected_t<void> {
-        if (const auto cti = cti_peek(); cti.has_value() && cti.value() < retval.token_begin) {
-          SILVA_EXPECT(cti.value() + 1 == retval.token_begin, MINOR);
-          retval.token_begin -= 1;
-          SILVA_EXPECT_FWD(cti_advance());
-        }
-        if (const auto cti = cti_peek(); cti.has_value()) {
-          SILVA_EXPECT(retval.token_end <= cti.value(), MINOR);
-          if (retval.token_end == cti.value()) {
-            retval.token_end += 1;
-            SILVA_EXPECT_FWD(cti_advance());
+
+      const auto handle_symbol = [&](const index_t atom_offset,
+                                     const oper_item_t::symbol_t& symbol) -> expected_t<void> {
+        for (const auto& ra: symbol.related_atoms) {
+          const term_node_t& tn =
+              output_tree[open_term_stack[ots_front + atom_offset + ra.atom_idx]];
+          if (ra.way == LEFTWARD) {
+            SILVA_EXPECT(
+                tn.fragment_end <= symbol.fragment_begin,
+                MINOR,
+                "LEFTWARD condition tn.fragment_end={} <= symbol.fragment_begin={} violated",
+                tn.fragment_end,
+                symbol.fragment_begin);
+          }
+          else if (ra.way == RIGHTWARD) {
+            SILVA_EXPECT(
+                symbol.fragment_end <= tn.fragment_begin,
+                MINOR,
+                "RIGHTWARD condition symbol.fragment_end={} <= tn.fragment_begin={} violated",
+                symbol.fragment_end,
+                tn.fragment_begin);
+          }
+          else {
+            SILVA_EXPECT(false, ASSERT);
           }
         }
+        retval.token_begin    = std::min(retval.token_begin, symbol.token_begin);
+        retval.token_end      = std::max(retval.token_end, symbol.token_end);
+        retval.fragment_begin = std::min(retval.fragment_begin, symbol.fragment_begin);
+        retval.fragment_end   = std::max(retval.fragment_end, symbol.fragment_end);
         return {};
       };
 
-      SILVA_EXPECT_FWD(try_ctis());
-      for (index_t atom_stack_index = atom_stack_begin + 1;
-           atom_stack_index < open_term_stack.size();
-           ++atom_stack_index) {
-        const auto& atn = output_tree[open_term_stack[atom_stack_index]];
-        SILVA_EXPECT(retval.token_end == atn.token_begin, MINOR);
-        retval.token_end = atn.token_end;
-        SILVA_EXPECT_FWD(try_ctis());
+      if (ois.size() == 1) {
+        const oper_item_t& oi = ois.front();
+        SILVA_EXPECT(oi.arity == combined_arity, ASSERT);
+        for (const auto& symbol: oi.symbols) {
+          SILVA_EXPECT_FWD(handle_symbol(0, symbol));
+        }
+        return retval;
       }
-
-      SILVA_EXPECT(oi_index == ois.size(), MINOR);
-      SILVA_EXPECT(cti_pos == 0, MINOR);
+      else {
+        SILVA_EXPECT(common_arity == 2, MINOR, "only infix operator can be flat");
+        for (index_t oi_idx = 0; oi_idx < ois.size(); ++oi_idx) {
+          for (const auto& symbol: ois[oi_idx].symbols) {
+            SILVA_EXPECT_FWD(handle_symbol(oi_idx, symbol));
+          }
+        }
+      }
 
       return retval;
     }
@@ -738,11 +754,23 @@ namespace silva::seed::impl {
       SILVA_EXPECT(axe.concat_result.has_value(), ASSERT);
       const auto& reg = axe.concat_result.value();
       SILVA_EXPECT_FWD(stack_pop(reg.precedence));
+      const auto& rhs = output_tree[open_term_stack.back()];
       oper_stack.push_back(oper_item_t{
           .oper       = std::get<infix_t>(reg.oper),
           .arity      = infix_t::arity,
           .level_name = reg.name,
           .precedence = reg.precedence,
+          .symbols    = {{
+              .token_begin    = rhs.token_end,
+              .token_end      = rhs.token_end,
+              .fragment_begin = rhs.fragment_end,
+              .fragment_end   = rhs.fragment_end,
+              .related_atoms =
+                  {
+                      {.way = LEFTWARD, .atom_idx = 0},
+                      {.way = RIGHTWARD, .atom_idx = 1},
+                  },
+          }},
       });
       mode = ATOM_MODE;
       return {};
@@ -789,13 +817,19 @@ namespace silva::seed::impl {
               if (const auto* x = std::get_if<prefix_t>(&prefix_result.oper)) {
                 const index_t oper_out_idx = commit_oper();
                 oper_stack.push_back(oper_item_t{
-                    .oper                  = *x,
-                    .arity                 = prefix_t::arity,
-                    .level_name            = prefix_result.name,
-                    .precedence            = prefix_result.precedence,
-                    .covered_token_indexes = {oper_token_index},
-                    .min_token_index       = oper_token_index,
-                    .oper_output_indexes   = {oper_out_idx},
+                    .oper                = *x,
+                    .arity               = prefix_t::arity,
+                    .level_name          = prefix_result.name,
+                    .precedence          = prefix_result.precedence,
+                    .symbols             = {{
+                        .token_begin    = res->ptn.token_begin,
+                        .token_end      = res->ptn.token_end,
+                        .fragment_begin = res->ptn.fragment_begin,
+                        .fragment_end   = res->ptn.fragment_end,
+                        .related_atoms  = {{.way = RIGHTWARD, .atom_idx = 0}},
+                    }},
+                    .min_token_index     = oper_token_index,
+                    .oper_output_indexes = {oper_out_idx},
                 });
                 continue;
               }
@@ -807,13 +841,33 @@ namespace silva::seed::impl {
                   ss.add_proto_node(res->ptn);
                   ss.add_proto_node(nest_res->ptn);
                   oper_stack.push_back(oper_item_t{
-                      .oper                  = *x,
-                      .arity                 = prefix_nest_t::arity,
-                      .level_name            = prefix_result.name,
-                      .precedence            = prefix_result.precedence,
-                      .covered_token_indexes = {nest_res->token_begin, nest_res->token_end - 1},
-                      .min_token_index       = nest_res->token_begin,
-                      .oper_output_indexes   = nest_res->oper_output_indexes,
+                      .oper       = *x,
+                      .arity      = prefix_nest_t::arity,
+                      .level_name = prefix_result.name,
+                      .precedence = prefix_result.precedence,
+                      .symbols =
+                          {
+                              {
+                                  .token_begin    = res->ptn.token_begin,
+                                  .token_end      = res->ptn.token_end,
+                                  .fragment_begin = res->ptn.fragment_begin,
+                                  .fragment_end   = res->ptn.fragment_end,
+                                  .related_atoms  = {{.way = RIGHTWARD, .atom_idx = 0}},
+                              },
+                              {
+                                  .token_begin    = nest_res->right_res.ptn.token_begin,
+                                  .token_end      = nest_res->right_res.ptn.token_end,
+                                  .fragment_begin = nest_res->right_res.ptn.fragment_begin,
+                                  .fragment_end   = nest_res->right_res.ptn.fragment_end,
+                                  .related_atoms =
+                                      {
+                                          {.way = LEFTWARD, .atom_idx = 0},
+                                          {.way = RIGHTWARD, .atom_idx = 1},
+                                      },
+                              },
+                          },
+                      .min_token_index     = nest_res->token_begin,
+                      .oper_output_indexes = nest_res->oper_output_indexes,
                   });
                   continue;
                 }
@@ -830,13 +884,19 @@ namespace silva::seed::impl {
               if (const auto* x = std::get_if<postfix_t>(&regular_result.oper)) {
                 const index_t oper_out_idx = commit_oper();
                 oper_stack.push_back(oper_item_t{
-                    .oper                  = *x,
-                    .arity                 = postfix_t::arity,
-                    .level_name            = regular_result.name,
-                    .precedence            = regular_result.precedence,
-                    .covered_token_indexes = {oper_token_index},
-                    .max_token_index       = oper_token_index + 1,
-                    .oper_output_indexes   = {oper_out_idx},
+                    .oper                = *x,
+                    .arity               = postfix_t::arity,
+                    .level_name          = regular_result.name,
+                    .precedence          = regular_result.precedence,
+                    .symbols             = {{
+                        .token_begin    = res->ptn.token_begin,
+                        .token_end      = res->ptn.token_end,
+                        .fragment_begin = res->ptn.fragment_begin,
+                        .fragment_end   = res->ptn.fragment_end,
+                        .related_atoms  = {{.way = LEFTWARD, .atom_idx = 0}},
+                    }},
+                    .max_token_index     = oper_token_index + 1,
+                    .oper_output_indexes = {oper_out_idx},
                 });
                 continue;
               }
@@ -848,13 +908,33 @@ namespace silva::seed::impl {
                   ss.add_proto_node(res->ptn);
                   ss.add_proto_node(nest_res->ptn);
                   oper_stack.push_back(oper_item_t{
-                      .oper                  = *x,
-                      .arity                 = postfix_nest_t::arity,
-                      .level_name            = regular_result.name,
-                      .precedence            = regular_result.precedence,
-                      .covered_token_indexes = {nest_res->token_begin, nest_res->token_end - 1},
-                      .max_token_index       = nest_res->token_end,
-                      .oper_output_indexes   = nest_res->oper_output_indexes,
+                      .oper       = *x,
+                      .arity      = postfix_nest_t::arity,
+                      .level_name = regular_result.name,
+                      .precedence = regular_result.precedence,
+                      .symbols =
+                          {
+                              {
+                                  .token_begin    = res->ptn.token_begin,
+                                  .token_end      = res->ptn.token_end,
+                                  .fragment_begin = res->ptn.fragment_begin,
+                                  .fragment_end   = res->ptn.fragment_end,
+                                  .related_atoms =
+                                      {
+                                          {.way = LEFTWARD, .atom_idx = 0},
+                                          {.way = RIGHTWARD, .atom_idx = 1},
+                                      },
+                              },
+                              {
+                                  .token_begin    = nest_res->right_res.ptn.token_begin,
+                                  .token_end      = nest_res->right_res.ptn.token_end,
+                                  .fragment_begin = nest_res->right_res.ptn.fragment_begin,
+                                  .fragment_end   = nest_res->right_res.ptn.fragment_end,
+                                  .related_atoms  = {{.way = LEFTWARD, .atom_idx = 1}},
+                              },
+                          },
+                      .max_token_index     = nest_res->token_end,
+                      .oper_output_indexes = nest_res->oper_output_indexes,
                   });
                   continue;
                 }
@@ -862,12 +942,22 @@ namespace silva::seed::impl {
               else if (const auto* x = std::get_if<infix_t>(&regular_result.oper)) {
                 const index_t oper_out_idx = commit_oper();
                 oper_stack.push_back(oper_item_t{
-                    .oper                  = *x,
-                    .arity                 = infix_t::arity,
-                    .level_name            = regular_result.name,
-                    .precedence            = regular_result.precedence,
-                    .covered_token_indexes = {oper_token_index},
-                    .oper_output_indexes   = {oper_out_idx},
+                    .oper                = *x,
+                    .arity               = infix_t::arity,
+                    .level_name          = regular_result.name,
+                    .precedence          = regular_result.precedence,
+                    .symbols             = {{
+                        .token_begin    = res->ptn.token_begin,
+                        .token_end      = res->ptn.token_end,
+                        .fragment_begin = res->ptn.fragment_begin,
+                        .fragment_end   = res->ptn.fragment_end,
+                        .related_atoms =
+                            {
+                                {.way = LEFTWARD, .atom_idx = 0},
+                                {.way = RIGHTWARD, .atom_idx = 1},
+                            },
+                    }},
+                    .oper_output_indexes = {oper_out_idx},
                 });
                 mode = ATOM_MODE;
                 continue;
@@ -880,12 +970,36 @@ namespace silva::seed::impl {
                   ss.add_proto_node(res->ptn);
                   ss.add_proto_node(nest_res->ptn);
                   oper_stack.push_back(oper_item_t{
-                      .oper                  = *x,
-                      .arity                 = ternary_t::arity,
-                      .level_name            = regular_result.name,
-                      .precedence            = regular_result.precedence,
-                      .covered_token_indexes = {nest_res->token_begin, nest_res->token_end - 1},
-                      .oper_output_indexes   = nest_res->oper_output_indexes,
+                      .oper       = *x,
+                      .arity      = ternary_t::arity,
+                      .level_name = regular_result.name,
+                      .precedence = regular_result.precedence,
+                      .symbols =
+                          {
+                              {
+                                  .token_begin    = res->ptn.token_begin,
+                                  .token_end      = res->ptn.token_end,
+                                  .fragment_begin = res->ptn.fragment_begin,
+                                  .fragment_end   = res->ptn.fragment_end,
+                                  .related_atoms =
+                                      {
+                                          {.way = LEFTWARD, .atom_idx = 0},
+                                          {.way = RIGHTWARD, .atom_idx = 1},
+                                      },
+                              },
+                              {
+                                  .token_begin    = nest_res->right_res.ptn.token_begin,
+                                  .token_end      = nest_res->right_res.ptn.token_end,
+                                  .fragment_begin = nest_res->right_res.ptn.fragment_begin,
+                                  .fragment_end   = nest_res->right_res.ptn.fragment_end,
+                                  .related_atoms =
+                                      {
+                                          {.way = LEFTWARD, .atom_idx = 1},
+                                          {.way = RIGHTWARD, .atom_idx = 2},
+                                      },
+                              },
+                          },
+                      .oper_output_indexes = nest_res->oper_output_indexes,
                   });
                   mode = ATOM_MODE;
                   continue;
@@ -924,7 +1038,10 @@ namespace silva::seed::impl {
                        fragment_location_by());
       SILVA_EXPECT(oper_stack.empty(), MINOR);
       SILVA_EXPECT_PARSE(axe.name, open_term_stack.size() > 0, "empty expression");
-      SILVA_EXPECT(open_term_stack.size() == 1, MINOR);
+      SILVA_EXPECT(open_term_stack.size() == 1,
+                   MINOR,
+                   "had open_term_stack of size {}",
+                   open_term_stack.size());
       SILVA_EXPECT(open_term_stack.front() + 1 == output_tree.size(), MINOR);
       return ss.commit();
     }
@@ -966,11 +1083,9 @@ namespace silva::seed::impl {
         ss_rule.create_node(name_id_t{});
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(axe.name, shunting_yard()));
 
-        const auto& root_node          = output_tree.back();
-        const index_t expr_token_begin = root_node.token_begin;
-        const index_t expr_token_end   = root_node.token_end;
-        SILVA_EXPECT(ss_rule.orig_state.token_index == expr_token_begin, ASSERT);
-        SILVA_EXPECT(num_tokens() == expr_token_end, ASSERT);
+        const auto& root_node = output_tree.back();
+        SILVA_EXPECT(ss_rule.orig_state.token_index == root_node.token_begin, ASSERT);
+        SILVA_EXPECT(num_tokens() == root_node.token_end, ASSERT);
 
         ss_rule.commit();
       }
