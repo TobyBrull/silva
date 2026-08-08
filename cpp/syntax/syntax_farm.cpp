@@ -4,11 +4,6 @@
 #include "parse_tree.hpp"
 
 namespace silva {
-  bool token_t::is_language() const
-  {
-    return token_id == token_id_language;
-  }
-
   expected_t<string_view_t> token_info_t::string_as_plain_contained() const
   {
     SILVA_EXPECT(str.size() >= 2, MINOR);
@@ -118,9 +113,7 @@ namespace silva {
 
   token_id_t syntax_farm_t::token_id(const fragment_span_t fs)
   {
-    const index_t beg_byte_offset = fs.fp->get_fragment_byte_offset(fs.begin);
-    const index_t end_byte_offset = fs.fp->get_fragment_byte_offset(fs.end);
-    return token_id(fs.fp->source_code.substr(beg_byte_offset, end_byte_offset - beg_byte_offset));
+    return token_id(fs.as_string_view());
   }
 
   expected_t<token_id_t> syntax_farm_t::token_id_in_string(const token_id_t ti)
@@ -234,11 +227,6 @@ namespace silva {
   {
     fragmentizations.push_back(std::move(x));
     return fragmentizations.back()->ptr();
-  }
-  tokenization_ptr_t syntax_farm_t::add(unique_ptr_t<const tokenization_t> x)
-  {
-    tokenizations.push_back(std::move(x));
-    return tokenizations.back()->ptr();
   }
   parse_tree_ptr_t syntax_farm_t::add(unique_ptr_t<const parse_tree_t> x)
   {

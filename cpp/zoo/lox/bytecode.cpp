@@ -34,7 +34,7 @@ namespace silva::lox {
       retval += fmt::format("{:4} ", ip);
       const parse_tree_span_t pts = origin_info_at_instr(ip);
       SILVA_EXPECT(pts != parse_tree_span_t{}, ASSERT);
-      const auto tloc = pts.ptp->tp->location_at(pts[0].token_begin);
+      const auto tloc = pts.ptp->fp->location_at(pts[0].fragment_begin);
       if (!prev_tloc.has_value() || prev_tloc != tloc) {
         retval += fmt::format("{:20}", fmt::format("[{}:{}]", tloc.line_num + 1, tloc.column + 1));
       }

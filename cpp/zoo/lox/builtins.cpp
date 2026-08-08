@@ -1,5 +1,7 @@
 #include "builtins.hpp"
 
+#include "lox.hpp"
+
 #include <chrono>
 
 namespace silva::lox {
@@ -90,8 +92,7 @@ namespace silva::lox {
       SILVA_EXPECT(it != end, ASSERT);
       const auto pts_function =
           pts_builtin.sub_tree_span_at(it.pos).sub_tree_span_at(1).sub_tree_span_at(1);
-      const token_id_t lox_name =
-          pts_function.ptp->tp->tokens[pts_function[0].token_begin].token_id;
+      const token_id_t lox_name = SILVA_EXPECT_FWD(child_token(pts_function));
       SILVA_EXPECT(lox_name == builtin_decl.name,
                    ASSERT,
                    "expected function '{}', but found '{}'",

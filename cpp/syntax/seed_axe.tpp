@@ -143,8 +143,6 @@ language Test:
     }
 
     test::test_axe(*se, sa, "1\n", R"(
-[  0]   1:1   cat=.number                                  1
-
 [0].Test.Atom                                     1<NEWLINE>
   [0].number                                      1
     [0].number.integer                            1
@@ -153,10 +151,6 @@ language Test:
         [1].number.unsigned.integer.decimal       1
 )");
     test::test_axe(*se, sa, "1 + 2\n", R"(
-[  0]   1:1   cat=.number                                  1
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.number                                  2
-
 [0].Test.Add.+                                    1 + 2<NEWLINE>
   [0].Test.Atom                                   1 
     [0].number                                    1
@@ -173,10 +167,6 @@ language Test:
           [1].number.unsigned.integer.decimal     2
 )");
     test::test_axe(*se, sa, "1 - 2\n", R"(
-[  0]   1:1   cat=.number                                  1
-[  1]   1:3   cat=.Test.oper                               -
-[  2]   1:5   cat=.number                                  2
-
 [0].Test.Add.-                                    1 - 2<NEWLINE>
   [0].Test.Atom                                   1 
     [0].number                                    1
@@ -193,14 +183,6 @@ language Test:
           [1].number.unsigned.integer.decimal     2
 )");
     test::test_axe(*se, sa, "1 + 2 * 3 + 4\n", R"(
-[  0]   1:1   cat=.number                                  1
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.number                                  2
-[  3]   1:7   cat=.Test.oper                               *
-[  4]   1:9   cat=.number                                  3
-[  5]   1:11  cat=.Test.oper                               +
-[  6]   1:13  cat=.number                                  4
-
 [0].Test.Add.+                                    1 + 2 ...  + 4<NEWLINE>
   [0].Test.Add.+                                  1 + 2 * 3 
     [0].Test.Atom                                 1 
@@ -233,20 +215,6 @@ language Test:
           [1].number.unsigned.integer.decimal     4
 )");
     test::test_axe(*se, sa, "1 - 2 + f . g . h * 3 / 4\n", R"(
-[  0]   1:1   cat=.number                                  1
-[  1]   1:3   cat=.Test.oper                               -
-[  2]   1:5   cat=.number                                  2
-[  3]   1:7   cat=.Test.oper                               +
-[  4]   1:9   cat=.identifier                              f
-[  5]   1:11  cat=.Test.oper                               .
-[  6]   1:13  cat=.identifier                              g
-[  7]   1:15  cat=.Test.oper                               .
-[  8]   1:17  cat=.identifier                              h
-[  9]   1:19  cat=.Test.oper                               *
-[ 10]   1:21  cat=.number                                  3
-[ 11]   1:23  cat=.Test.oper                               /
-[ 12]   1:25  cat=.number                                  4
-
 [0].Test.Add.+                                    1 - 2 ...  / 4<NEWLINE>
   [0].Test.Add.-                                  1 - 2 
     [0].Test.Atom                                 1 
@@ -291,11 +259,6 @@ language Test:
             [1].number.unsigned.integer.decimal   4
 )");
     test::test_axe(*se, sa, "2 ! + 3\n", R"(
-[  0]   1:1   cat=.number                                  2
-[  1]   1:3   cat=.Test.oper                               !
-[  2]   1:5   cat=.Test.oper                               +
-[  3]   1:7   cat=.number                                  3
-
 [0].Test.Add.+                                    2 ! + 3<NEWLINE>
   [0].Test.Exc.!                                  2 ! 
     [0].Test.Atom                                 2 
@@ -314,10 +277,6 @@ language Test:
           [1].number.unsigned.integer.decimal     3
 )");
     test::test_axe(*se, sa, " - + 1\n", R"(
-[  0]   1:2   cat=.Test.oper                               -
-[  1]   1:4   cat=.Test.oper                               +
-[  2]   1:6   cat=.number                                  1
-
 [0].Test.Prf.-                                    - + 1<NEWLINE><DEDENT>
   [0].Test.oper                                   -
   [1].Test.Prf.+                                  + 1<NEWLINE><DEDENT>
@@ -330,12 +289,6 @@ language Test:
             [1].number.unsigned.integer.decimal   1
 )");
     test::test_axe(*se, sa, "a + - + 1\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.Test.oper                               -
-[  3]   1:7   cat=.Test.oper                               +
-[  4]   1:9   cat=.number                                  1
-
 [0].Test.Add.+                                    a + - + 1<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -352,12 +305,6 @@ language Test:
               [1].number.unsigned.integer.decimal 1
 )");
     test::test_axe(*se, sa, "- - 1 * 2\n", R"(
-[  0]   1:1   cat=.Test.oper                               -
-[  1]   1:3   cat=.Test.oper                               -
-[  2]   1:5   cat=.number                                  1
-[  3]   1:7   cat=.Test.oper                               *
-[  4]   1:9   cat=.number                                  2
-
 [0].Test.Mul.*                                    - - 1 * 2<NEWLINE>
   [0].Test.Prf.-                                  - - 1 
     [0].Test.oper                                 -
@@ -378,12 +325,6 @@ language Test:
           [1].number.unsigned.integer.decimal     2
 )");
     test::test_axe(*se, sa, "- - 1 . 2\n", R"(
-[  0]   1:1   cat=.Test.oper                               -
-[  1]   1:3   cat=.Test.oper                               -
-[  2]   1:5   cat=.number                                  1
-[  3]   1:7   cat=.Test.oper                               .
-[  4]   1:9   cat=.number                                  2
-
 [0].Test.Prf.-                                    - - 1 . 2<NEWLINE>
   [0].Test.oper                                   -
   [1].Test.Prf.-                                  - 1 . 2<NEWLINE>
@@ -404,11 +345,6 @@ language Test:
               [1].number.unsigned.integer.decimal 2
 )");
     test::test_axe(*se, sa, "1 . 2 !\n", R"(
-[  0]   1:1   cat=.number                                  1
-[  1]   1:3   cat=.Test.oper                               .
-[  2]   1:5   cat=.number                                  2
-[  3]   1:7   cat=.Test.oper                               !
-
 [0].Test.Exc.!                                    1 . 2 !<NEWLINE>
   [0].Test.Dot..                                  1 . 2 
     [0].Test.Atom                                 1 
@@ -427,11 +363,6 @@ language Test:
   [1].Test.oper                                   !
 )");
     test::test_axe(*se, sa, "1 + 2 !\n", R"(
-[  0]   1:1   cat=.number                                  1
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.number                                  2
-[  3]   1:7   cat=.Test.oper                               !
-
 [0].Test.Add.+                                    1 + 2 !<NEWLINE>
   [0].Test.Atom                                   1 
     [0].number                                    1
@@ -452,10 +383,6 @@ language Test:
     test::test_axe(*se, sa, "2 ! . 3\n", {none});
     test::test_axe(*se, sa, "2 . - 3\n", {none});
     test::test_axe(*se, sa, "2 $ !\n", R"(
-[  0]   1:1   cat=.number                                  2
-[  1]   1:3   cat=.Test.oper                               $
-[  2]   1:5   cat=.Test.oper                               !
-
 [0].Test.Exc.!                                    2 $ !<NEWLINE>
   [0].Test.Dol.$                                  2 $ 
     [0].Test.Atom                                 2 
@@ -469,10 +396,6 @@ language Test:
 )");
     test::test_axe(*se, sa, "2 ! $\n", {none});
     test::test_axe(*se, sa, "+ ~ 2\n", R"(
-[  0]   1:1   cat=.Test.oper                               +
-[  1]   1:3   cat=.Test.oper                               ~
-[  2]   1:5   cat=.number                                  2
-
 [0].Test.Prf.+                                    + ~ 2<NEWLINE>
   [0].Test.oper                                   +
   [1].Test.Til.~                                  ~ 2<NEWLINE>
@@ -486,12 +409,6 @@ language Test:
 )");
     test::test_axe(*se, sa, "~ + 2\n", {none});
     test::test_axe(*se, sa, "( ( 0 ) )\n", R"(
-[  0]   1:1   cat=.literal                                 (
-[  1]   1:3   cat=.literal                                 (
-[  2]   1:5   cat=.number                                  0
-[  3]   1:7   cat=.literal                                 )
-[  4]   1:9   cat=.literal                                 )
-
 [0].Test.Atom                                     ( ( 0 ) )<NEWLINE>
   [0].Test.Atom                                   ( 0 ) 
     [0].Test.Atom                                 0 
@@ -502,16 +419,6 @@ language Test:
             [1].number.unsigned.integer.decimal   0
 )");
     test::test_axe(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
-[  0]   1:1   cat=.number                                  1
-[  1]   1:3   cat=.Test.oper                               *
-[  2]   1:5   cat=.literal                                 (
-[  3]   1:7   cat=.number                                  2
-[  4]   1:9   cat=.Test.oper                               +
-[  5]   1:11  cat=.number                                  3
-[  6]   1:13  cat=.literal                                 )
-[  7]   1:15  cat=.Test.oper                               *
-[  8]   1:17  cat=.number                                  4
-
 [0].Test.Mul.*                                    1 * ( ...  * 4<NEWLINE>
   [0].Test.Mul.*                                  1 * ( ...  3 ) 
     [0].Test.Atom                                 1 
@@ -545,16 +452,6 @@ language Test:
           [1].number.unsigned.integer.decimal     4
 )");
     test::test_axe(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
-[  0]   1:1   cat=.number                                  1
-[  1]   1:3   cat=.Test.oper                               *
-[  2]   1:5   cat=.literal                                 (
-[  3]   1:7   cat=.number                                  2
-[  4]   1:9   cat=.Test.oper                               +
-[  5]   1:11  cat=.number                                  3
-[  6]   1:13  cat=.literal                                 )
-[  7]   1:15  cat=.Test.oper                               *
-[  8]   1:17  cat=.number                                  4
-
 [0].Test.Mul.*                                    1 * ( ...  * 4<NEWLINE>
   [0].Test.Mul.*                                  1 * ( ...  3 ) 
     [0].Test.Atom                                 1 
@@ -588,11 +485,6 @@ language Test:
           [1].number.unsigned.integer.decimal     4
 )");
     test::test_axe(*se, sa, "a [ 0 ]\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               [
-[  2]   1:5   cat=.number                                  0
-[  3]   1:7   cat=.Test.oper                               ]
-
 [0].Test.Sub.[                                    a [ 0 ]<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -608,14 +500,6 @@ language Test:
     [0].parenthesis                               ]
 )");
     test::test_axe(*se, sa, "a [ 0 ] [ 1 ]\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               [
-[  2]   1:5   cat=.number                                  0
-[  3]   1:7   cat=.Test.oper                               ]
-[  4]   1:9   cat=.Test.oper                               [
-[  5]   1:11  cat=.number                                  1
-[  6]   1:13  cat=.Test.oper                               ]
-
 [0].Test.Sub.[                                    a [ 0 ...  1 ]<NEWLINE>
   [0].Test.Sub.[                                  a [ 0 ] 
     [0].Test.Atom                                 a 
@@ -643,16 +527,6 @@ language Test:
 )");
     test::test_axe(*se, sa, "a [ 0 ] . b [ 1 ]\n", {none});
     test::test_axe(*se, sa, "a [ 0 ] + b [ 1 ]\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               [
-[  2]   1:5   cat=.number                                  0
-[  3]   1:7   cat=.Test.oper                               ]
-[  4]   1:9   cat=.Test.oper                               +
-[  5]   1:11  cat=.identifier                              b
-[  6]   1:13  cat=.Test.oper                               [
-[  7]   1:15  cat=.number                                  1
-[  8]   1:17  cat=.Test.oper                               ]
-
 [0].Test.Add.+                                    a [ 0 ...  1 ]<NEWLINE>
   [0].Test.Sub.[                                  a [ 0 ] 
     [0].Test.Atom                                 a 
@@ -683,12 +557,6 @@ language Test:
       [0].parenthesis                             ]
 )");
     test::test_axe(*se, sa, "a ? b : c\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               ?
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               :
-[  4]   1:9   cat=.identifier                              c
-
 [0].Test.Ter.?                                    a ? b : c<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -700,16 +568,6 @@ language Test:
     [0].identifier                                c
 )");
     test::test_axe(*se, sa, "a ? b : c ? d : e\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               ?
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               :
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               ?
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               :
-[  8]   1:17  cat=.identifier                              e
-
 [0].Test.Ter.?                                    a ? b ...  : e<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -728,16 +586,6 @@ language Test:
       [0].identifier                              e
 )");
     test::test_axe(*se, sa, "a ? b ? c : d : e\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               ?
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               ?
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               :
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               :
-[  8]   1:17  cat=.identifier                              e
-
 [0].Test.Ter.?                                    a ? b ...  : e<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -756,18 +604,6 @@ language Test:
     [0].identifier                                e
 )");
     test::test_axe(*se, sa, "a = b ? c = d : e = f\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               =
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               ?
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               =
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               :
-[  8]   1:17  cat=.identifier                              e
-[  9]   1:19  cat=.Test.oper                               =
-[ 10]   1:21  cat=.identifier                              f
-
 [0].Test.Eqa.=                                    a = b ...  = f<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -791,18 +627,6 @@ language Test:
       [0].identifier                              f
 )");
     test::test_axe(*se, sa, "a + b ? c + d : e + f\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               ?
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               +
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               :
-[  8]   1:17  cat=.identifier                              e
-[  9]   1:19  cat=.Test.oper                               +
-[ 10]   1:21  cat=.identifier                              f
-
 [0].Test.Ter.?                                    a + b ...  + f<NEWLINE>
   [0].Test.Add.+                                  a + b 
     [0].Test.Atom                                 a 
@@ -851,16 +675,10 @@ language Test:
     CHECK(sa.results.size() == 11);
 
     test::test_axe(*se, sa, "a\n", R"(
-[  0]   1:1   cat=.identifier                              a
-
 [0].Test.Atom                                     a<NEWLINE>
   [0].identifier                                  a
 )");
     test::test_axe(*se, sa, "a y z\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.identifier                              y
-[  2]   1:5   cat=.identifier                              z
-
 [0].Test.Cat.concat                               a y z<NEWLINE>
   [0].Test.Cat.concat                             a y 
     [0].Test.Atom                                 a 
@@ -871,10 +689,6 @@ language Test:
     [0].identifier                                z
 )");
     test::test_axe(*se, sa, "<: :> a\n", R"(
-[  0]   1:1   cat=.Test.oper                               <:
-[  1]   1:4   cat=.Test.oper                               :>
-[  2]   1:7   cat=.identifier                              a
-
 [0].Test.PrfLo.<:                                 <: :> a<NEWLINE>
   [0].Test.oper                                   <:
   [1].Test.Args                                   
@@ -883,11 +697,6 @@ language Test:
     [0].identifier                                a
 )");
     test::test_axe(*se, sa, "<: 'foo' :> a\n", R"(
-[  0]   1:1   cat=.Test.oper                               <:
-[  1]   1:4   cat=.string                                  'foo'
-[  2]   1:10  cat=.Test.oper                               :>
-[  3]   1:13  cat=.identifier                              a
-
 [0].Test.PrfLo.<:                                 <: 'foo' :> a<NEWLINE>
   [0].Test.oper                                   <:
   [1].Test.Args                                   'foo' 
@@ -897,15 +706,6 @@ language Test:
     [0].identifier                                a
 )");
     test::test_axe(*se, sa, "<: 'foo' , 'bar' , 'baz' :> a\n", R"(
-[  0]   1:1   cat=.Test.oper                               <:
-[  1]   1:4   cat=.string                                  'foo'
-[  2]   1:10  cat=.literal                                 ,
-[  3]   1:12  cat=.string                                  'bar'
-[  4]   1:18  cat=.literal                                 ,
-[  5]   1:20  cat=.string                                  'baz'
-[  6]   1:26  cat=.Test.oper                               :>
-[  7]   1:29  cat=.identifier                              a
-
 [0].Test.PrfLo.<:                                 <: 'foo'  ... :> a<NEWLINE>
   [0].Test.oper                                   <:
   [1].Test.Args                                   'foo' , 'bar' , 'baz' 
@@ -917,17 +717,6 @@ language Test:
     [0].identifier                                a
 )");
     test::test_axe(*se, sa, "a * <: 'foo' , 'bar' , 'baz' :> a\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               *
-[  2]   1:5   cat=.Test.oper                               <:
-[  3]   1:8   cat=.string                                  'foo'
-[  4]   1:14  cat=.literal                                 ,
-[  5]   1:16  cat=.string                                  'bar'
-[  6]   1:22  cat=.literal                                 ,
-[  7]   1:24  cat=.string                                  'baz'
-[  8]   1:30  cat=.Test.oper                               :>
-[  9]   1:33  cat=.identifier                              a
-
 [0].Test.Mul.*                                    a * < ... :> a<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -943,11 +732,6 @@ language Test:
       [0].identifier                              a
 )");
     test::test_axe(*se, sa, "{ b } a\n", R"(
-[  0]   1:1   cat=.Test.oper                               {
-[  1]   1:3   cat=.identifier                              b
-[  2]   1:5   cat=.Test.oper                               }
-[  3]   1:7   cat=.identifier                              a
-
 [0].Test.PrfLo.{                                  { b } a<NEWLINE>
   [0].Test.oper                                   {
     [0].parenthesis                               {
@@ -960,12 +744,6 @@ language Test:
 )");
     test::test_axe(*se, sa, "a { b } c\n", {none});
     test::test_axe(*se, sa, "a ( b ) c\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               (
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               )
-[  4]   1:9   cat=.identifier                              c
-
 [0].Test.Cat.concat                               a ( b ) c<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -980,14 +758,6 @@ language Test:
       [0].identifier                              c
 )");
     test::test_axe(*se, sa, "a << { b } c >>\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.literal                                 <<
-[  2]   1:6   cat=.Test.oper                               {
-[  3]   1:8   cat=.identifier                              b
-[  4]   1:10  cat=.Test.oper                               }
-[  5]   1:12  cat=.identifier                              c
-[  6]   1:14  cat=.literal                                 >>
-
 [0].Test.Cat.concat                               a <<  ... c >><NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -1006,11 +776,6 @@ language Test:
     test::test_axe(*se, sa, "<< a { b } >> c\n", {none});
     test::test_axe(*se, sa, "a 1 a z\n", {none});
     test::test_axe(*se, sa, "a 1 + z\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.number                                  1
-[  2]   1:5   cat=.operator.single                         +
-[  3]   1:7   cat=.identifier                              z
-
 [0].Test.Cat.concat                               a 1 + z<NEWLINE>
   [0].Test.Cat.concat                             a 1 + 
     [0].Test.Atom                                 a 
@@ -1025,12 +790,6 @@ language Test:
     [0].identifier                                z
 )");
     test::test_axe(*se, sa, "a + b + c\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               +
-[  4]   1:9   cat=.identifier                              c
-
 [0].Test.Add.+                                    a + b + c<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -1042,18 +801,6 @@ language Test:
     [0].identifier                                c
 )");
     test::test_axe(*se, sa, "a + b + c * d + e + f\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               +
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               *
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               +
-[  8]   1:17  cat=.identifier                              e
-[  9]   1:19  cat=.Test.oper                               +
-[ 10]   1:21  cat=.identifier                              f
-
 [0].Test.Add.+                                    a + b ...  + f<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -1075,20 +822,6 @@ language Test:
     [0].identifier                                f
 )");
     test::test_axe(*se, sa, "a + b + c - d - e + f + g\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               +
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               -
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               -
-[  8]   1:17  cat=.identifier                              e
-[  9]   1:19  cat=.Test.oper                               +
-[ 10]   1:21  cat=.identifier                              f
-[ 11]   1:23  cat=.Test.oper                               +
-[ 12]   1:25  cat=.identifier                              g
-
 [0].Test.Add.+                                    a + b ...  + g<NEWLINE>
   [0].Test.Add.-                                  a + b ...  - e 
     [0].Test.Add.-                                a + b ...  - d 
@@ -1115,16 +848,6 @@ language Test:
     [0].identifier                                g
 )");
     test::test_axe(*se, sa, "a - b + c + d - e\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               -
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               +
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               +
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               -
-[  8]   1:17  cat=.identifier                              e
-
 [0].Test.Add.-                                    a - b ...  - e<NEWLINE>
   [0].Test.Add.+                                  a - b ...  + d 
     [0].Test.Add.-                                a - b 
@@ -1144,18 +867,6 @@ language Test:
     [0].identifier                                e
 )");
     test::test_axe(*se, sa, "a + b + c - d + e + f\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               +
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               +
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               -
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               +
-[  8]   1:17  cat=.identifier                              e
-[  9]   1:19  cat=.Test.oper                               +
-[ 10]   1:21  cat=.identifier                              f
-
 [0].Test.Add.+                                    a + b ...  + f<NEWLINE>
   [0].Test.Add.-                                  a + b ...  - d 
     [0].Test.Add.+                                a + b + c 
@@ -1178,16 +889,6 @@ language Test:
     [0].identifier                                f
 )");
     test::test_axe(*se, sa, "a % b = c = d % e\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               %
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               =
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               =
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               %
-[  8]   1:17  cat=.identifier                              e
-
 [0].Test.Assign.%                                 a % b ...  % e<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a
@@ -1207,18 +908,6 @@ language Test:
         [0].identifier                            e
 )");
     test::test_axe(*se, sa, "a = b = c % d = e = f\n", R"(
-[  0]   1:1   cat=.identifier                              a
-[  1]   1:3   cat=.Test.oper                               =
-[  2]   1:5   cat=.identifier                              b
-[  3]   1:7   cat=.Test.oper                               =
-[  4]   1:9   cat=.identifier                              c
-[  5]   1:11  cat=.Test.oper                               %
-[  6]   1:13  cat=.identifier                              d
-[  7]   1:15  cat=.Test.oper                               =
-[  8]   1:17  cat=.identifier                              e
-[  9]   1:19  cat=.Test.oper                               =
-[ 10]   1:21  cat=.identifier                              f
-
 [0].Test.Assign.=                                 a = b ...  = f<NEWLINE>
   [0].Test.Atom                                   a 
     [0].identifier                                a

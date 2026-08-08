@@ -9,7 +9,6 @@
 #include "parse_tree_nursery.hpp"
 #include "seed.hpp"
 #include "seed_axe.hpp"
-#include "tokenization.hpp"
 
 #include <utility>
 
@@ -23,12 +22,7 @@ namespace silva::seed::impl {
 
     optional_t<token_id_t> current_language_id;
 
-    const tokenization_ptr_t tp;
-
-    interpreter_adder_t(interpreter_t* se, const parse_tree_span_t& pts)
-      : se(se), lexicon(se->bootstrap_interpreter.lexicon()), tp(pts.ptp->tp)
-    {
-    }
+    interpreter_adder_t(interpreter_t* se) : se(se), lexicon(se->bootstrap_interpreter.lexicon()) {}
 
     expected_t<void> register_rule(const name_id_t rule_name,
                                    const parse_tree_span_t& pts,
@@ -128,16 +122,15 @@ namespace silva::seed::impl {
       }
 
       for (index_t i = 0; i < pts_rhs_0.size(); ++i) {
-        if (pts_rhs_0[i].rule_name == lexicon.ni_term) {
-          const auto& token = tp->tokens[pts_rhs_0[i].token_begin];
-          if (token.category == lexicon.ni_string) {
-            const auto& ti_full_info    = sfp->get(token.token_id);
-            const bool is_double_quoted = (ti_full_info.str[0] == U'"');
-            const auto ti               = SILVA_EXPECT_FWD(sfp->token_id_in_string(token.token_id));
-            const auto& ti_info         = sfp->get(ti);
-            se->string_to_ft[token.token_id] =
-                SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, is_double_quoted));
-          }
+        if (pts_rhs_0[i].rule_name == lexicon.ni_term && pts_rhs_0[i].num_children == 1 &&
+            pts_rhs_0[i + 1].rule_name == lexicon.ni_string) {
+          const token_id_t str_ti     = SILVA_EXPECT_FWD(pts_rhs_0.sub_tree_span_at(i + 1).token());
+          const auto& ti_full_info    = sfp->get(str_ti);
+          const bool is_double_quoted = (ti_full_info.str[0] == U'"');
+          const auto ti               = SILVA_EXPECT_FWD(sfp->token_id_in_string(str_ti));
+          const auto& ti_info         = sfp->get(ti);
+          se->string_to_ft[str_ti] =
+              SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, is_double_quoted));
         }
       }
 
@@ -338,7 +331,7 @@ namespace silva::seed::impl {
     {
       SILVA_EXPECT(sfp == fp->sfp,
                    MAJOR,
-                   "Seed and target parse-trees/tokenizations must be in same syntax_farm_t");
+                   "Seed and target parse-trees/fragmentizations must be in same syntax_farm_t");
       return {};
     }
 
@@ -366,57 +359,53 @@ namespace silva::seed::impl {
       auto ss            = stake();
       const auto& s_node = pts[0];
       SILVA_EXPECT(s_node.rule_name == lexicon.ni_term, MAJOR);
-      const auto& s_front_token = pts.ptp->tp->tokens[s_node.token_begin];
-      if (s_front_token.token_id == lexicon.ti_eps.token_id) {
+      const bool s_has_child              = (s_node.num_children == 1);
+      const name_id_t s_cat               = s_has_child ? pts[1].rule_name : name_id_literal;
+      const parse_tree_span_t s_token_pts = s_has_child ? pts.sub_tree_span_at(1) : pts;
+      const token_id_t s_token_id         = SILVA_EXPECT_FWD(s_token_pts.token());
+      if (s_token_id == lexicon.ti_eps.token_id) {
         return ss.commit();
       }
-      else if (s_front_token.token_id == lexicon.ti_end_of_lang.token_id) {
+      else if (s_token_id == lexicon.ti_end_of_lang.token_id) {
         SILVA_EXPECT_PARSE(t_rule_name,
                            num_fragments_left() == 0,
                            "expected {}",
                            sfp->token_id_wrap(lexicon.ti_end_of_lang.token_id));
         return ss.commit();
       }
-      else if (s_front_token.token_id == token_id_language) {
+      else if (s_token_id == token_id_language) {
         SILVA_EXPECT_PARSE(
             t_rule_name,
             twig_rule_depth == 0,
             "the 'language' token-category may not be used inside other token rules");
         ss.create_node(name_id_language);
-        auto ts = token_stake(name_id_language);
         SILVA_EXPECT_PARSE(t_rule_name,
                            fragment_category_by() == fragment_category_t::LANG_BEGIN,
                            "expected token of category LANG_BEGIN; got {}",
                            fragment_category_by());
         fragment_index = SILVA_EXPECT_PARSE_FWD(t_rule_name, fp->advance_language(fragment_index));
-        add_token(ts.commit(true));
-        auto retval = ss.commit();
+        auto retval    = ss.commit();
         SILVA_EXPECT_FWD(skip());
         return retval;
       }
       SILVA_EXPECT_PARSE(t_rule_name,
                          num_fragments_left() > 0,
-                         "Reached end of token-stream when looking for {}",
-                         sfp->token_id_wrap(s_front_token.token_id));
+                         "Reached end of fragment-stream when looking for {}",
+                         sfp->token_id_wrap(s_token_id));
 
-      if (s_front_token.category == lexicon.ni_string) {
-        const auto it = se->string_to_ft.find(s_front_token.token_id);
+      if (s_cat == lexicon.ni_string) {
+        const auto it = se->string_to_ft.find(s_token_id);
         SILVA_EXPECT(it != se->string_to_ft.end(),
                      MAJOR,
                      "Couldn't find token for {}",
-                     sfp->token_id_wrap(s_front_token.token_id));
+                     sfp->token_id_wrap(s_token_id));
         const fragmented_token_t& expected_ft = it->second;
-        auto ts                               = token_stake(name_id_literal);
         ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(expected_ft),
                                            "[{}] while matching {}",
                                            fragment_location_by(),
                                            sfp->token_id_wrap(expected_ft.token_id)));
-        const token_t token = ts.commit();
         if (curr_rule->is_literal_nodes) {
           ss.create_node(name_id_literal);
-        }
-        if (twig_rule_depth == 0) {
-          add_token(token);
         }
         auto retval = ss.commit();
         if (twig_rule_depth == 0) {
@@ -424,8 +413,8 @@ namespace silva::seed::impl {
         }
         return retval;
       }
-      else if (s_front_token.category == lexicon.ni_frag_name) {
-        const token_id_t expected_frag_cat_ti = s_front_token.token_id;
+      else if (s_cat == lexicon.ni_frag_name) {
+        const token_id_t expected_frag_cat_ti = s_token_id;
         if (expected_frag_cat_ti == lexicon.ti_ID_START.token_id) {
           SILVA_EXPECT(is_fragment_category_id_start(fragment_category_by()),
                        MINOR,
@@ -593,24 +582,22 @@ namespace silva::seed::impl {
         }
       }
 
-      index_t prev_token_end = -1;
+      index_t prev_fragment_end = -1;
       for (const auto [sub_s_node_index, child_index]: pts.children_range()) {
         const auto sub_pts = pts.sub_tree_span_at(sub_s_node_index);
         auto result        = s_expr(sub_pts, t_rule_name);
         if (result.has_value()) {
           const parse_tree_node_t& result_node = result->node;
-          const bool curr_has_tokens           = (result_node.token_end > result_node.token_begin);
-          if (curr_rule->is_no_whitespace && prev_token_end >= 0 && curr_has_tokens) {
-            const token_t& lhs_data = tokenization.tokens[prev_token_end - 1];
-            const token_t& rhs_data = tokenization.tokens[result_node.token_begin];
+          const bool curr_has_fragments = (result_node.fragment_end > result_node.fragment_begin);
+          if (curr_rule->is_no_whitespace && prev_fragment_end >= 0 && curr_has_fragments) {
             SILVA_EXPECT_PARSE(t_rule_name,
-                               lhs_data.frag_idx_end == rhs_data.frag_idx_begin,
+                               prev_fragment_end == result_node.fragment_begin,
                                "no_whitespace: gap between {} and {}",
-                               sfp->token_id_wrap(lhs_data.token_id),
-                               sfp->token_id_wrap(rhs_data.token_id));
+                               fragment_location_at(prev_fragment_end),
+                               fragment_location_at(result_node.fragment_begin));
           }
-          if (curr_has_tokens) {
-            prev_token_end = result_node.token_end;
+          if (curr_has_fragments) {
+            prev_fragment_end = result_node.fragment_end;
           }
           if (!result->last_error.is_empty()) {
             error_nursery.add_child_error(std::move(result->last_error));
@@ -867,12 +854,7 @@ namespace silva::seed::impl {
       if (!rule_data.is_no_node) {
         ss.create_node(t_rule_name);
       }
-      auto ts     = token_stake(t_rule_name);
       auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(rule_data.expr, t_rule_name));
-      const token_t token = ts.commit();
-      if (entered_token_space) {
-        add_token(token);
-      }
       ss.add_proto_node(std::move(result.node));
       auto retval = ss.commit();
       if (entered_token_space) {
@@ -888,7 +870,7 @@ namespace silva::seed {
 
   expected_t<void> interpreter_t::add_seed(parse_tree_span_t pts)
   {
-    impl::interpreter_adder_t adder(this, pts);
+    impl::interpreter_adder_t adder(this);
     SILVA_EXPECT_FWD(adder.handle_all(pts));
     compile_reset();
     return {};

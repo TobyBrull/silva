@@ -21,8 +21,8 @@ namespace silva::fern {
 
     const name_id_t ni_fern     = sfp->name_id_of("Fern");
     const name_id_t ni_lbl_item = sfp->name_id_of(ni_fern, "LabeledItem");
-    const name_id_t ni_label    = sfp->name_id_of(ni_fern, "Label");
-    const name_id_t ni_value    = sfp->name_id_of(ni_fern, "Value");
+    const name_id_t ni_label    = sfp->name_id_of(ni_fern, "label");
+    const name_id_t ni_value    = sfp->name_id_of(ni_fern, "value");
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
 }

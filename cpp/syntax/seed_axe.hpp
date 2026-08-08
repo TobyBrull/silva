@@ -34,13 +34,13 @@ namespace silva::seed {
   const string_view_t axe_str = R"'(
 Seed.Axe:
   ⊙ = Seed.Nonterminal Seed.Nonterminal newline indent ( Level newline ) * dedent
-  Level = ruleName '=' Assoc Ops *
-  Assoc = "ltr" | "rtl"
-  Ops = OpType ( '->' Seed.Nonterminal ) ? Op *
-  OpType = ( "prefix_nest" | "prefix"
+  Level = ruleName '=' assoc Ops *
+  assoc = "ltr" | "rtl"
+  Ops = opType ( '->' Seed.Nonterminal ) ? op *
+  opType = ( "prefix_nest" | "prefix"
            | "infix_flat" | "infix" | "ternary"
            | "postfix_nest" | "postfix" )
-  Op = string | "concat"
+  op = string | "concat"
 )'";
 
   struct axe_t {

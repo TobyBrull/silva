@@ -8,9 +8,9 @@ language Fern:
   skip = skip.freeForm
 
   ⊙ = '[' LabeledItem * ']'
-  LabeledItem = ( Label ':' ) ? ( Fern | Value )
-  Label = string | identifier
-  Value = none | boolean | number | string
+  LabeledItem = ( label ':' ) ? ( Fern | value )
+  label = string | identifier
+  value = none | boolean | number | string
 )'";
 
   // Object-oriented interface

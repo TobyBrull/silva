@@ -34,7 +34,6 @@ namespace silva {
 
   struct parse_tree_nursery_state_t : public tree_nursery_state_t {
     index_t fragment_index = 0;
-    index_t token_index    = 0;
   };
 
   struct parse_tree_nursery_t
@@ -43,39 +42,11 @@ namespace silva {
     fragmentization_ptr_t fp;
     fragment_span_t fs;
 
-    tokenization_t tokenization;
-
     parse_tree_nursery_t(fragment_span_t);
 
     index_t fragment_index = 0;
 
-    struct token_stake_t {
-      parse_tree_nursery_t* nursery = nullptr;
-      name_id_t token_cat;
-      index_t orig_fragment_index = 0;
-
-      token_stake_t() = default;
-      token_stake_t(parse_tree_nursery_t* nursery,
-                    const name_id_t token_cat,
-                    const index_t orig_fragment_index);
-
-      token_stake_t(stake_t&&);
-      token_stake_t& operator=(stake_t&&);
-
-      token_stake_t(const stake_t&)            = delete;
-      token_stake_t& operator=(const stake_t&) = delete;
-
-      void add_token(const token_t&);
-
-      token_t commit(bool is_language = false);
-      void clear();
-      ~token_stake_t();
-    };
-    [[nodiscard]] token_stake_t token_stake(this auto& self, const name_id_t token_cat);
-
     expected_t<parse_tree_node_t> parse_literal(const fragmented_token_t&);
-
-    void add_token(const token_t&);
 
     void on_get_state(parse_tree_nursery_state_t&) const;
     void on_set_state(const parse_tree_nursery_state_t&);
@@ -105,54 +76,4 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
-
-  inline parse_tree_nursery_t::token_stake_t::token_stake_t(parse_tree_nursery_t* nursery,
-                                                            const name_id_t token_cat,
-                                                            const index_t orig_fragment_index)
-    : nursery(nursery), token_cat(token_cat), orig_fragment_index(orig_fragment_index)
-  {
-  }
-
-  inline void parse_tree_nursery_t::token_stake_t::add_token(const token_t& token)
-  {
-    SILVA_ASSERT(token.frag_idx_begin >= orig_fragment_index);
-    SILVA_ASSERT(token.frag_idx_end == nursery->fragment_index);
-  }
-
-  inline token_t parse_tree_nursery_t::token_stake_t::commit(const bool is_language)
-  {
-    const fragment_span_t fs{nursery->fp, orig_fragment_index, nursery->fragment_index};
-    token_t retval{
-        .token_id       = is_language ? token_id_language : nursery->sfp->token_id(fs),
-        .category       = token_cat,
-        .frag_idx_begin = fs.begin,
-        .frag_idx_end   = fs.end,
-    };
-    nursery = nullptr;
-    return retval;
-  }
-
-  inline void parse_tree_nursery_t::token_stake_t::clear()
-  {
-    if (nursery != nullptr) {
-      nursery->fragment_index = orig_fragment_index;
-    }
-    nursery = nullptr;
-  }
-
-  inline parse_tree_nursery_t::token_stake_t::~token_stake_t()
-  {
-    clear();
-  }
-
-  [[nodiscard]] parse_tree_nursery_t::token_stake_t
-  parse_tree_nursery_t::token_stake(this auto& self, const name_id_t token_cat)
-  {
-    return token_stake_t{&self, token_cat, self.fragment_index};
-  }
-
-  inline void parse_tree_nursery_t::add_token(const token_t& token)
-  {
-    tokenization.tokens.push_back(token);
-  }
 }

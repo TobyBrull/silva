@@ -145,8 +145,15 @@ namespace silva::fern {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
-      syntax_farm_ptr_t sfp          = parse_tree->tp->sfp;
+      syntax_farm_ptr_t sfp          = parse_tree->fp->sfp;
       const lexicon_t& lexicon       = sfp->get_lexicon<lexicon_t>();
+
+      // The "Label" and "Value" rules of the Fern grammar each consist of a single twig-rule
+      // (e.g. "string" or "number"); the name of that twig-rule is the category.
+      static name_id_t category_of(const parse_tree_span_t pts)
+      {
+        return (pts[0].num_children == 1) ? pts[1].rule_name : name_id_t{};
+      }
 
       expected_t<fern_labeled_item_t> labeled_item(const parse_tree_span_t pts)
       {
@@ -157,12 +164,11 @@ namespace silva::fern {
           const auto& node = pts[child_node_index];
           if (labeled_item.num_children == 2 && child_index == 0) {
             SILVA_EXPECT(node.rule_name == lexicon.ni_label, MINOR);
-            const name_id_t tcat      = parse_tree->tp->tokens[node.token_begin].category;
-            const token_info_t* tinfo = parse_tree->tp->token_info_get(node.token_begin);
+            const auto pts_label      = pts.sub_tree_span_at(child_node_index);
+            const name_id_t tcat      = category_of(pts_label);
+            const token_info_t* tinfo = &sfp->get(SILVA_EXPECT_FWD(pts_label.token()));
             if (tcat == lexicon.ni_string) {
-              retval.label = string_t{SILVA_EXPECT_FWD(
-                  parse_tree->tp->token_info_get(node.token_begin)->string_as_plain_contained(),
-                  MAJOR)};
+              retval.label = string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
             }
             else {
               retval.label = tinfo->str;
@@ -173,22 +179,24 @@ namespace silva::fern {
             retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
           }
           else if (node.rule_name == lexicon.ni_value) {
-            const auto& token = parse_tree->tp->tokens[node.token_begin];
-            const auto* tinfo = parse_tree->tp->token_info_get(node.token_begin);
-            if (token.token_id == lexicon.ti_none) {
+            const auto pts_value      = pts.sub_tree_span_at(child_node_index);
+            const token_id_t ti       = SILVA_EXPECT_FWD(pts_value.token());
+            const name_id_t tcat      = category_of(pts_value);
+            const token_info_t* tinfo = &sfp->get(ti);
+            if (ti == lexicon.ti_none) {
               retval.item.value = none;
             }
-            else if (token.token_id == lexicon.ti_true) {
+            else if (ti == lexicon.ti_true) {
               retval.item.value = true;
             }
-            else if (token.token_id == lexicon.ti_false) {
+            else if (ti == lexicon.ti_false) {
               retval.item.value = false;
             }
-            else if (token.category == lexicon.ni_string) {
+            else if (tcat == lexicon.ni_string) {
               retval.item.value =
                   string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
             }
-            else if (token.category == lexicon.ni_number) {
+            else if (tcat == lexicon.ni_number) {
               retval.item.value = SILVA_EXPECT_FWD(tinfo->number_as_double(), MAJOR);
             }
             else {

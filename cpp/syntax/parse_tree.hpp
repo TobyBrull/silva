@@ -2,25 +2,21 @@
 
 #include "canopy/tree.hpp"
 
-#include "tokenization.hpp"
+#include "fragmentization.hpp"
 
 namespace silva {
   struct parse_tree_node_t : public tree_node_t {
     name_id_t rule_name;
-    index_t token_begin = std::numeric_limits<index_t>::max();
-    index_t token_end   = std::numeric_limits<index_t>::min();
 
     index_t fragment_begin = std::numeric_limits<index_t>::max();
     index_t fragment_end   = std::numeric_limits<index_t>::min();
-
-    index_t num_tokens() const { return token_end - token_begin; }
 
     friend auto operator<=>(const parse_tree_node_t&, const parse_tree_node_t&) = default;
     friend void pretty_write_impl(const parse_tree_node_t&, byte_sink_t*);
   };
 
   struct parse_tree_t : public sprite_t {
-    tokenization_ptr_t tp;
+    fragmentization_ptr_t fp;
     array_t<parse_tree_node_t> nodes;
 
     auto span(this auto&&);
@@ -48,14 +44,7 @@ namespace silva {
 
     friend void pretty_write_impl(const parse_tree_span_t&, byte_sink_t*);
 
-    enum class to_string_mode_t {
-      NONE         = 0b000,
-      TOKENIZATION = 0b001,
-      PARSE_TREE   = 0b010,
-      ALL          = 0b011,
-    };
-    expected_t<string_t> to_string(index_t token_indent = 50,
-                                   to_string_mode_t     = to_string_mode_t::ALL) const;
+    expected_t<string_t> to_string(index_t fragment_indent = 50) const;
     expected_t<string_t> to_graphviz() const;
 
     friend bool operator==(const parse_tree_span_t&, const parse_tree_span_t&) = default;

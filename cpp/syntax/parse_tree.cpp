@@ -6,8 +6,6 @@
 #include "seed.lexicon.hpp"
 
 namespace silva {
-  constexpr index_t max_num_tokens = 5;
-
   void pretty_write_impl(const parse_tree_span_t& pts, byte_sink_t* stream)
   {
     if (pts.ptp.is_nullptr()) {
@@ -25,34 +23,27 @@ namespace silva {
     byte_sink->format("{}@{}:{}", ptn.rule_name.val, ptn.fragment_begin, ptn.fragment_end);
   }
 
-  expected_t<string_t> parse_tree_span_t::to_string(const index_t token_indent,
-                                                    const to_string_mode_t mode) const
+  expected_t<string_t> parse_tree_span_t::to_string(const index_t fragment_indent) const
   {
     string_t retval;
-    if (std::to_underlying(mode) & std::to_underlying(to_string_mode_t::TOKENIZATION)) {
-      retval += silva::pretty_string(*ptp->tp);
-      retval += '\n';
-    }
-    if (std::to_underlying(mode) & std::to_underlying(to_string_mode_t::PARSE_TREE)) {
-      const seed::lexicon_t& lexicon = ptp->tp->sfp->get_lexicon<seed::lexicon_t>();
-      retval += SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
-        const auto pts = this->sub_tree_span_at(path.back().node_index);
-        curr_line += lexicon.name_id_str(pts[0].rule_name);
-        string_pad(curr_line, token_indent);
-        curr_line += silva::pretty_string(pts.fragment_span());
-      }));
-    }
+    const seed::lexicon_t& lexicon = ptp->fp->sfp->get_lexicon<seed::lexicon_t>();
+    retval += SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
+      const auto pts = this->sub_tree_span_at(path.back().node_index);
+      curr_line += lexicon.name_id_str(pts[0].rule_name);
+      string_pad(curr_line, fragment_indent);
+      curr_line += silva::pretty_string(pts.fragment_span());
+    }));
     return retval;
   }
 
   expected_t<string_t> parse_tree_span_t::to_graphviz() const
   {
-    const seed::lexicon_t& lexicon = ptp->tp->sfp->get_lexicon<seed::lexicon_t>();
+    const seed::lexicon_t& lexicon = ptp->fp->sfp->get_lexicon<seed::lexicon_t>();
     return tree_span_t::to_graphviz([&](string_t& curr_line, auto& path) {
       const auto pts = this->sub_tree_span_at(path.back().node_index);
       curr_line += fmt::format("{}\\n{}",
                                lexicon.name_id_str(pts[0].rule_name),
-                               string_escaped(silva::pretty_string(pts.fragment_span())));
+                               escape_string(silva::pretty_string(pts.fragment_span())));
     });
   }
 
@@ -89,21 +80,18 @@ namespace silva {
 
   expected_t<token_id_t> parse_tree_span_t::token() const
   {
-    return ptp->tp->tokens[(*this)[0].token_begin].token_id;
+    return fragment_span().derive_token_id();
   }
   expected_t<fragment_span_t> parse_tree_span_t::language() const
   {
-    const auto& root         = (*this)[0];
-    const tokenization_t& tp = *(ptp->tp);
-    const auto& token        = tp.tokens[root.token_begin];
-    SILVA_EXPECT(token.is_language(), MINOR);
-    return fragment_span_t{tp.fs.fp, token.frag_idx_begin, token.frag_idx_end};
+    SILVA_EXPECT((*this)[0].rule_name == name_id_language, MINOR);
+    return fragment_span();
   }
 
   fragment_span_t parse_tree_span_t::fragment_span() const
   {
     return fragment_span_t{
-        ptp->tp->fs.fp,
+        ptp->fp,
         (*this)[0].fragment_begin,
         (*this)[0].fragment_end,
     };
@@ -112,7 +100,7 @@ namespace silva {
   fragment_location_t parse_tree_span_t::location() const
   {
     return fragment_location_t{
-        ptp->tp->fs.fp,
+        ptp->fp,
         (*this)[0].fragment_begin,
     };
   }
@@ -125,7 +113,7 @@ namespace silva {
       nodes.push_back((*this)[i]);
     }
     return parse_tree_t{
-        .tp    = ptp->tp,
+        .fp    = ptp->fp,
         .nodes = std::move(nodes),
     };
   }

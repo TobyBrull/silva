@@ -40,73 +40,6 @@ language SimpleFern:
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
-[  0]   2:1   cat=.Seed.tokenCategoryName                  string
-[  1]   2:8   cat=.literal                                 =
-[  2]   2:10  cat=.Seed.fragName                           STRING
-[  3]   2:16  cat=.newline                                 \n
-[  4]   3:1   cat=.Seed.tokenCategoryName                  number
-[  5]   3:8   cat=.literal                                 =
-[  6]   3:10  cat=.Seed.fragName                           DIGIT
-[  7]   3:16  cat=.Seed.Expr.operator                      +
-[  8]   3:17  cat=.newline                                 \n
-[  9]   5:1   cat=.literal                                 language
-[ 10]   5:10  cat=.Seed.ruleName                           SimpleFern
-[ 11]   5:20  cat=.literal                                 :
-[ 12]   5:21  cat=.newline                                 \n
-[ 13]   6:1   cat=.indent                                    
-[ 14]   6:3   cat=.Seed.here                               ⊙
-[ 15]   6:5   cat=.literal                                 =
-[ 16]   6:7   cat=.string                                  '['
-[ 17]   6:11  cat=.literal                                 (
-[ 18]   6:13  cat=.Seed.ruleName                           LabeledItem
-[ 19]   6:25  cat=.string                                  ';'
-[ 20]   6:29  cat=.Seed.Expr.operator                      ?
-[ 21]   6:31  cat=.literal                                 )
-[ 22]   6:33  cat=.Seed.Expr.operator                      *
-[ 23]   6:35  cat=.string                                  ']'
-[ 24]   6:38  cat=.newline                                 \n
-[ 25]   8:3   cat=.Seed.tokenCategoryName                  skip
-[ 26]   8:8   cat=.literal                                 =
-[ 27]   8:10  cat=.literal                                 (
-[ 28]   8:12  cat=.Seed.fragName                           SPACE
-[ 29]   8:18  cat=.Seed.Expr.operator                      |
-[ 30]   8:20  cat=.Seed.fragName                           LINEFEED
-[ 31]   8:29  cat=.Seed.Expr.operator                      |
-[ 32]   8:31  cat=.Seed.fragName                           COMMENT
-[ 33]   8:39  cat=.Seed.Expr.operator                      |
-[ 34]   8:41  cat=.Seed.fragName                           WHITESPACE
-[ 35]   8:52  cat=.Seed.Expr.operator                      |
-[ 36]   8:54  cat=.Seed.fragName                           INDENT
-[ 37]   8:61  cat=.Seed.Expr.operator                      |
-[ 38]   8:63  cat=.Seed.fragName                           DEDENT
-[ 39]   8:70  cat=.Seed.Expr.operator                      |
-[ 40]   8:72  cat=.Seed.fragName                           NEWLINE
-[ 41]   8:80  cat=.literal                                 )
-[ 42]   8:82  cat=.Seed.Expr.operator                      *
-[ 43]   8:83  cat=.newline                                 \n
-[ 44]  10:3   cat=.Seed.ruleName                           LabeledItem
-[ 45]  10:15  cat=.literal                                 =
-[ 46]  10:17  cat=.literal                                 (
-[ 47]  10:19  cat=.Seed.ruleName                           Label
-[ 48]  10:25  cat=.string                                  ':'
-[ 49]  10:29  cat=.literal                                 )
-[ 50]  10:31  cat=.Seed.Expr.operator                      ?
-[ 51]  10:33  cat=.Seed.ruleName                           Item
-[ 52]  10:37  cat=.newline                                 \n  
-[ 53]  11:3   cat=.Seed.ruleName                           Label
-[ 54]  11:9   cat=.literal                                 =
-[ 55]  11:11  cat=.Seed.tokenCategoryName                  string
-[ 56]  11:17  cat=.newline                                 \n  
-[ 57]  12:3   cat=.Seed.ruleName                           Item
-[ 58]  12:8   cat=.literal                                 =
-[ 59]  12:10  cat=.Seed.ruleName                           SimpleFern
-[ 60]  12:21  cat=.Seed.Expr.operator                      |
-[ 61]  12:23  cat=.Seed.tokenCategoryName                  string
-[ 62]  12:30  cat=.Seed.Expr.operator                      |
-[ 63]  12:32  cat=.Seed.tokenCategoryName                  number
-[ 64]  12:38  cat=.newline                                 
-[ 65]  12:38  cat=.dedent                                  
-
 [0].Seed                                          strin ... ber<NEWLINE><DEDENT>
   [0].Seed.Rule                                   strin ... RING<NEWLINE>
     [0].Seed.Nonterminal                          string 
@@ -208,17 +141,6 @@ language SimpleFern:
       const auto fp          = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", sf_code));
       const auto sfpt        = SILVA_REQUIRE(se.apply(fp, sf.name_id_of("SimpleFern")));
       const std::string_view expected_parse_tree = R"(
-[  0]   1:2   cat=.literal                                 [
-[  1]   1:4   cat=.string                                  'abc'
-[  2]   1:10  cat=.literal                                 ;
-[  3]   1:12  cat=.literal                                 [
-[  4]   1:14  cat=.string                                  'def'
-[  5]   1:20  cat=.number                                  123
-[  6]   1:24  cat=.literal                                 ]
-[  7]   1:26  cat=.string                                  'jkl'
-[  8]   1:32  cat=.literal                                 ;
-[  9]   1:33  cat=.literal                                 ]
-
 [0].SimpleFern                                    [ 'abc' ; ...  ;]<NEWLINE><DEDENT>
   [0].SimpleFern.LabeledItem                      'abc' 
     [0].SimpleFern.Item                           'abc' 
@@ -272,12 +194,10 @@ language SimpleFern:
     SECTION("test1")
     {
       SILVA_REQUIRE(si->add_seed_text("t.seed", R"'(
-
 language Test:
-  ⊙ = Val *
-  Val = ( boolean | number | identifier )
+  ⊙ = val *
+  val = ( boolean | number | identifier )
   skip = skip.freeForm
-
 )'"));
 
       test("ab 123ab\n", "Test", {"ab", "123", "ab"}, {id, num, id});

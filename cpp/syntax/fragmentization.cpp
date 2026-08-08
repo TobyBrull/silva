@@ -508,6 +508,19 @@ namespace silva {
     return span_t<const fragment_t>(fp->fragments.data() + begin, end - begin);
   }
 
+  string_view_t fragment_span_t::as_string_view() const
+  {
+    const index_t beg_byte_offset = fp->get_fragment_byte_offset(begin);
+    const index_t end_byte_offset = fp->get_fragment_byte_offset(end);
+    return string_view_t{fp->source_code}.substr(beg_byte_offset,
+                                                 end_byte_offset - beg_byte_offset);
+  }
+
+  token_id_t fragment_span_t::derive_token_id() const
+  {
+    return fp->sfp->token_id(*this);
+  }
+
   void pretty_write_impl(const fragment_span_t& self, byte_sink_t* stream)
   {
     constexpr index_t max_num_frags = 10;
@@ -536,11 +549,18 @@ namespace silva {
     stream->write_str(retval);
   }
 
-  string_t escape_string(string_t retval)
+  string_t escape_string(string_view_t sv)
   {
-    for (index_t i = 0; i < retval.size(); ++i) {
-      if (retval[i] == '\n') {
-        retval.replace(i, 1, "\\n");
+    string_t retval;
+    for (index_t i = 0; i < sv.size(); ++i) {
+      if (sv[i] == '\n') {
+        retval.append("\\n");
+      }
+      else if (sv[i] == '\\') {
+        retval.append("\\\\");
+      }
+      else {
+        retval.push_back(sv[i]);
       }
     }
     return retval;
