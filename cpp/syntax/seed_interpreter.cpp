@@ -390,13 +390,15 @@ namespace silva::seed::impl {
                            fragment_category_by());
         fragment_index = SILVA_EXPECT_PARSE_FWD(t_rule_name, fp->advance_language(fragment_index));
         add_token(ts.commit(true));
+        auto retval = ss.commit();
         SILVA_EXPECT_FWD(skip());
-        return ss.commit();
+        return retval;
       }
       SILVA_EXPECT_PARSE(t_rule_name,
                          num_fragments_left() > 0,
                          "Reached end of token-stream when looking for {}",
                          sfp->token_id_wrap(s_front_token.token_id));
+
       if (s_front_token.category == lexicon.ni_string) {
         const auto it = se->string_to_ft.find(s_front_token.token_id);
         SILVA_EXPECT(it != se->string_to_ft.end(),
@@ -410,13 +412,17 @@ namespace silva::seed::impl {
                                            fragment_location_by(),
                                            sfp->token_id_wrap(expected_ft.token_id)));
         const token_t token = ts.commit();
+        if (curr_rule->is_literal_nodes) {
+          ss.create_node(name_id_literal);
+        }
         if (twig_rule_depth == 0) {
-          if (curr_rule->is_literal_nodes) {
-            ss.create_node(name_id_literal);
-          }
           add_token(token);
+        }
+        auto retval = ss.commit();
+        if (twig_rule_depth == 0) {
           SILVA_EXPECT_FWD(skip());
         }
+        return retval;
       }
       else if (s_front_token.category == lexicon.ni_frag_name) {
         const token_id_t expected_frag_cat_ti = s_front_token.token_id;
@@ -622,7 +628,7 @@ namespace silva::seed::impl {
                                              "[{}] {}: expected sequence[ {} ]",
                                              fragment_location_at(orig_fragment_index),
                                              lexicon.name_id_wrap(t_rule_name),
-                                             pts.token_span()));
+                                             pts.fragment_span()));
         }
       }
       return ss.commit();
@@ -814,17 +820,18 @@ namespace silva::seed::impl {
       const interpreter_t::rule_expr_data_t& rule_data = it->second;
       node_and_error_t retval;
       if (rule_data.is_twig_rule) {
-        retval = SILVA_EXPECT_FWD_PLAIN(handle_rule_token(t_rule_name, rule_data));
+        retval = SILVA_EXPECT_FWD_PLAIN(handle_twig_rule(t_rule_name, rule_data));
       }
       else {
-        retval = SILVA_EXPECT_FWD_PLAIN(handle_rule_node(t_rule_name, rule_data));
+        retval = SILVA_EXPECT_FWD_PLAIN(handle_branch_rule(t_rule_name, rule_data));
       }
       ets->success = true;
       return retval;
     }
 
-    expected_t<node_and_error_t> handle_rule_node(const name_id_t t_rule_name,
-                                                  const interpreter_t::rule_expr_data_t& rule_data)
+    expected_t<node_and_error_t>
+    handle_branch_rule(const name_id_t t_rule_name,
+                       const interpreter_t::rule_expr_data_t& rule_data)
     {
       const parse_tree_span_t& s_pts = rule_data.expr;
       const name_id_t s_expr_name    = s_pts[0].rule_name;
@@ -849,8 +856,8 @@ namespace silva::seed::impl {
       return retval;
     }
 
-    expected_t<node_and_error_t> handle_rule_token(const name_id_t t_rule_name,
-                                                   const interpreter_t::rule_expr_data_t& rule_data)
+    expected_t<node_and_error_t> handle_twig_rule(const name_id_t t_rule_name,
+                                                  const interpreter_t::rule_expr_data_t& rule_data)
     {
       const bool entered_token_space = (twig_rule_depth == 0);
       twig_rule_depth += 1;
@@ -865,10 +872,13 @@ namespace silva::seed::impl {
       const token_t token = ts.commit();
       if (entered_token_space) {
         add_token(token);
-        SILVA_EXPECT_FWD(skip());
       }
       ss.add_proto_node(std::move(result.node));
-      return ss.commit();
+      auto retval = ss.commit();
+      if (entered_token_space) {
+        SILVA_EXPECT_FWD(skip());
+      }
+      return retval;
     }
   };
 }

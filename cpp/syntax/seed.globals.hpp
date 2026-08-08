@@ -25,9 +25,9 @@ identifier:
   pascalCase  = no_node ( ID_UPPER ID_LOWER + ) +                      not ID_CONTINUE
   macroCase   = no_node ID_UPPER + ( '_' ID_UPPER + ) *                 not ID_CONTINUE
 
-None = "none"
+none = "none"
 
-Boolean = [ "true" "false" ]
+boolean = [ "true" "false" ]
 
 number:
   unsigned:

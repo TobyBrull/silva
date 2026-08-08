@@ -39,7 +39,7 @@ namespace silva {
         const auto pts = this->sub_tree_span_at(path.back().node_index);
         curr_line += lexicon.name_id_str(pts[0].rule_name);
         string_pad(curr_line, token_indent);
-        curr_line += silva::pretty_string(pts.token_span());
+        curr_line += silva::pretty_string(pts.fragment_span());
       }));
     }
     return retval;
@@ -105,15 +105,6 @@ namespace silva {
   {
     const auto& root = (*this)[0];
     return root.token_end - root.token_begin;
-  }
-
-  token_span_t parse_tree_span_t::token_span() const
-  {
-    return token_span_t{
-        .tp    = ptp->tp,
-        .begin = (*this)[0].token_begin,
-        .end   = (*this)[0].token_end,
-    };
   }
 
   fragment_span_t parse_tree_span_t::fragment_span() const

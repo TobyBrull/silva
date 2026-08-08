@@ -514,7 +514,14 @@ namespace silva {
     string_t retval;
     const auto print_frags = [&retval, &self](const index_t begin, const index_t end) {
       for (index_t idx = begin; idx < end; ++idx) {
-        retval += self.fp->get_fragment_text(idx);
+        const auto& frag = self.fp->fragments[idx];
+        if (!is_fragment_category_visible(frag.category)) {
+          retval += fmt::format("<{}>", silva::pretty_string(frag.category));
+        }
+        else {
+          const string_view_t frag_text = self.fp->get_fragment_text(idx);
+          retval += escape_string(string_t{frag_text});
+        }
       }
     };
     const index_t num_frags = self.end - self.begin;

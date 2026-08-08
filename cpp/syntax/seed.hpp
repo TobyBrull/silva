@@ -24,19 +24,24 @@ namespace silva::seed {
   //    branch-rules or twig-rules. Twig-rules may only call twig-rules. Branch-rules correspond to
   //    the usual rules that you would find in a grammar for parsing a stream of tokens (rather than
   //    the fragments that are parsed here); twig-rules then correspond to the tokenization. The
-  //    skip-rule is invoked at the very beginning of a parse, and then also whenever a
+  //    skip-rule is invoked at the very beginning of a parse, and then also every time after a
   //    *branch-rule* successfully applied a *twig-rule* (but a twig-rule successfully applying
-  //    another twig-rule does *not* trigger the skip-rule). Only twig-rules may directly refer to
-  //    fragments by using the corresponding ALL_CAPS identifiers.
+  //    another twig-rule does *not* trigger the skip-rule); in this case, the twig-rule with *not*
+  //    contain the fragments that were skipped while the branch-rule *will* contain them. The
+  //    skip-rule is also invoked after every time a branch-rule uses a literal.
+  //  * Only twig-rules may directly refer to fragments by using the corresponding ALL_CAPS
+  //    identifiers.
+  //  * From a twig-rule a token can be derived; a token is a unique integer that refers to specific
+  //    sequence of fragments. It is not allowed to derive tokens from branch-rules.
   //  * There is a subtle distinction between literals that use double-quotes (") and those that use
   //    single-quotes ('). Double-quotes only accept text (silva::is_fragment_category_text) as
   //    content, while single-quotes maybe contain any character. With single-quotes, it simply
-  //    tries to match the code-points in the literal one by one. With double-quotes it does that
-  //    but then also checks that the codepoint following the last matched codepoint (if it exists)
-  //    is NOT text. So, the literal "language" doesn't match the beginning of « language_name » but
-  //    'language' does. Both literals are treated like twig-rules; their successful parse leads to
-  //    a node in the parse_tree_t, and the skip-rule is only invoked afterwards if within a
-  //    branch-rule.
+  //    tries to match the code-points in the literal one by one. With double-quotes it does that,
+  //    too, but then also checks that the codepoint following the last matched codepoint (if it
+  //    exists) is NOT text. So, the literal "language" doesn't match the beginning of «
+  //    language_name » but 'language' does.
+  //  * Both types of literal (single and double quoted) generate nodes in the resulting parse-tree
+  //    if and only if the "literal_nodes" qualifier is specified.
   //
   //
   // References:

@@ -111,8 +111,10 @@ namespace silva::seed::impl {
       ss.create_node(lexicon.ni_string);
       auto ts = token_stake(lexicon.ni_string);
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_string, STRING);
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> number_uint_dec()
@@ -160,8 +162,10 @@ namespace silva::seed::impl {
       ss.create_node(lexicon.ni_number);
       auto ts = token_stake(lexicon.ni_number);
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_number, number_integer()));
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> newline()
@@ -169,8 +173,10 @@ namespace silva::seed::impl {
       auto ss = stake();
       auto ts = token_stake(lexicon.ni_newline);
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_newline, NEWLINE);
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> indent()
@@ -178,8 +184,10 @@ namespace silva::seed::impl {
       auto ss = stake();
       auto ts = token_stake(lexicon.ni_indent);
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_indent, INDENT);
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> dedent()
@@ -187,8 +195,10 @@ namespace silva::seed::impl {
       auto ss = stake();
       auto ts = token_stake(lexicon.ni_dedent);
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_dedent, DEDENT);
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> operator_single()
@@ -204,8 +214,10 @@ namespace silva::seed::impl {
       ss.create_node(lexicon.ni_frag_name);
       auto ts = token_stake(lexicon.ni_frag_name);
       ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_frag_name, identifier_macro_case()));
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
     expected_t<parse_tree_node_t> rule_name()
     {
@@ -213,8 +225,10 @@ namespace silva::seed::impl {
       ss.create_node(lexicon.ni_rule_name);
       auto ts = token_stake(lexicon.ni_rule_name);
       ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule_name, identifier_pascal_case()));
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
     expected_t<parse_tree_node_t> token_category_name()
     {
@@ -222,14 +236,10 @@ namespace silva::seed::impl {
       ss.create_node(lexicon.ni_token_cat_name);
       auto ts = token_stake(lexicon.ni_token_cat_name);
       ts.add_token(SILVA_EXPECT_PARSE_FWD(lexicon.ni_token_cat_name, identifier_camel_case()));
-      add_token_and_skip(ts.commit());
-      return ss.commit();
-    }
-
-    void add_token_and_skip(const token_t& token)
-    {
-      add_token(token);
+      add_token(ts.commit());
+      auto retval = ss.commit();
       skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> literal(const fragmented_token_t& ft)
@@ -237,8 +247,10 @@ namespace silva::seed::impl {
       auto ss = stake();
       auto ts = token_stake(name_id_literal);
       ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(ft)));
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> literal_node(const fragmented_token_t& ft)
@@ -247,8 +259,10 @@ namespace silva::seed::impl {
       auto ts = token_stake(name_id_literal);
       ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(ft)));
       ss.create_node(name_id_literal);
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> terminal()
@@ -623,13 +637,17 @@ namespace silva::seed::impl {
         auto result = parse_literal(ft);
         if (result) {
           ss.add_proto_node(*result);
-          add_token_and_skip(ts.commit());
-          return ss.commit();
+          add_token(ts.commit());
+          auto retval = ss.commit();
+          skip();
+          return retval;
         }
       }
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_oper, operator_single()));
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> quantifier()
@@ -757,8 +775,10 @@ namespace silva::seed::impl {
       ss.create_node(lexicon.ni_here);
       auto ts = token_stake(lexicon.ni_here);
       ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(lexicon.ti_here)));
-      add_token_and_skip(ts.commit());
-      return ss.commit();
+      add_token(ts.commit());
+      auto retval = ss.commit();
+      skip();
+      return retval;
     }
 
     expected_t<parse_tree_node_t> rule()
