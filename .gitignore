@@ -1,6 +1,6 @@
 build*
 var/
-tmp/
+tmp*
 .cache/
 __pycache__/
 # pixi environments
