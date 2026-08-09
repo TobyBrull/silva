@@ -6,6 +6,9 @@
 * Seed: it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
 * Fragmentization: NEWLINE fragments should never have empty size
 * make fragmenziation.hpp:escape_string function efficient
+* seed.cpp: skipping should be done by calling function
+* Seed-Axe: should probably always produce it's own node
+* do not allow tokens to be derived for branch-rules
 
 * replace pts.get_children() with function that returns pts's, not indexes
 
