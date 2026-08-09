@@ -56,7 +56,7 @@ namespace silva {
   {
     string_t dpp       = dir_path_pattern;
     const char* result = mkdtemp(dpp.data());
-    SILVA_ASSERT(result);
+    SILVA_ASSERT(result, "mkdtemp({}) failed", dpp);
     dir_path = result;
   }
 

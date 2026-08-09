@@ -359,7 +359,6 @@ namespace silva {
   template<typename NodeDataFunc>
   expected_t<string_t> tree_span_t<NodeData>::to_string(NodeDataFunc node_data_func) const
   {
-    string_t curr_line;
     string_t retval;
     auto result = visit_subtree(
         [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
@@ -367,6 +366,7 @@ namespace silva {
             return true;
           }
           SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
+          string_t curr_line;
           curr_line.assign(2 * (path.size() - 1), ' ');
           curr_line += fmt::format("[{}]", path.back().child_index);
           node_data_func(curr_line, path);
@@ -392,18 +392,19 @@ namespace silva {
           SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
           const auto& node = (*this)[path.back().node_index];
           string_t node_name{"/"};
+          string_t curr_line;
           if (path.size() >= 2) {
             string_t parent_node_name = "/";
             for (index_t i = 1; i < path.size() - 1; ++i) {
               parent_node_name += fmt::format("{}/", path[i].child_index);
             }
             node_name = fmt::format("{}{}/", parent_node_name, path.back().child_index);
-            retval += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
+            curr_line += fmt::format("  \"{}\" -> \"{}\"\n", parent_node_name, node_name);
           }
-          retval += fmt::format("  \"{}\" [label=\"[{}]{}\"]\n",
-                                node_name,
-                                path.back().child_index,
-                                node_data_func(node));
+          curr_line += fmt::format("  \"{}\" [label=\"[{}]", node_name, path.back().child_index);
+          node_data_func(curr_line, path);
+          curr_line += "\"]\n";
+          retval += curr_line;
           return true;
         });
     SILVA_EXPECT_FWD(std::move(result));

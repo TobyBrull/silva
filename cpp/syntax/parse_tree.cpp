@@ -48,10 +48,11 @@ namespace silva {
   expected_t<string_t> parse_tree_span_t::to_graphviz() const
   {
     const seed::lexicon_t& lexicon = ptp->tp->sfp->get_lexicon<seed::lexicon_t>();
-    return tree_span_t::to_graphviz([&](auto& node) {
-      return fmt::format("{}\\n{}",
-                         lexicon.name_id_str(node.rule_name),
-                         string_escaped(ptp->tp->token_info_get(node.token_begin)->str));
+    return tree_span_t::to_graphviz([&](string_t& curr_line, auto& path) {
+      const auto pts = this->sub_tree_span_at(path.back().node_index);
+      curr_line += fmt::format("{}\\n{}",
+                               lexicon.name_id_str(pts[0].rule_name),
+                               string_escaped(silva::pretty_string(pts.fragment_span())));
     });
   }
 

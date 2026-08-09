@@ -100,33 +100,33 @@ namespace silva::fern::test {
 
     const string_view_t expected_parse_tree_str_graphviz = R"(
 digraph parse_tree {
-  "/" [label="[0].Fern\n["]
+  "/" [label="[0].Fern\n[\\n  n ...  ]\\n]<NEWLINE>"]
   "/" -> "/0/"
-  "/0/" [label="[0].Fern.LabeledItem\nnone"]
+  "/0/" [label="[0].Fern.LabeledItem\nnone\\n  "]
   "/0/" -> "/0/0/"
-  "/0/0/" [label="[0].Fern.Value\nnone"]
+  "/0/0/" [label="[0].Fern.Value\nnone\\n  "]
   "/0/0/" -> "/0/0/0/"
   "/0/0/0/" [label="[0].none\nnone"]
   "/" -> "/1/"
-  "/1/" [label="[1].Fern.LabeledItem\ntrue"]
+  "/1/" [label="[1].Fern.LabeledItem\ntrue\\n  "]
   "/1/" -> "/1/0/"
-  "/1/0/" [label="[0].Fern.Value\ntrue"]
+  "/1/0/" [label="[0].Fern.Value\ntrue\\n  "]
   "/1/0/" -> "/1/0/0/"
   "/1/0/0/" [label="[0].boolean\ntrue"]
   "/" -> "/2/"
-  "/2/" [label="[2].Fern.LabeledItem\n'test'"]
+  "/2/" [label="[2].Fern.LabeledItem\n'test' : 'Hello'\\n  "]
   "/2/" -> "/2/0/"
-  "/2/0/" [label="[0].Fern.Label\n'test'"]
+  "/2/0/" [label="[0].Fern.Label\n'test' "]
   "/2/0/" -> "/2/0/0/"
   "/2/0/0/" [label="[0].string\n'test'"]
   "/2/" -> "/2/1/"
-  "/2/1/" [label="[1].Fern.Value\n'Hello'"]
+  "/2/1/" [label="[1].Fern.Value\n'Hello'\\n  "]
   "/2/1/" -> "/2/1/0/"
   "/2/1/0/" [label="[0].string\n'Hello'"]
   "/" -> "/3/"
-  "/3/" [label="[3].Fern.LabeledItem\n42"]
+  "/3/" [label="[3].Fern.LabeledItem\n42\\n  "]
   "/3/" -> "/3/0/"
-  "/3/0/" [label="[0].Fern.Value\n42"]
+  "/3/0/" [label="[0].Fern.Value\n42\\n  "]
   "/3/0/" -> "/3/0/0/"
   "/3/0/0/" [label="[0].number\n42"]
   "/3/0/0/" -> "/3/0/0/0/"
@@ -134,21 +134,21 @@ digraph parse_tree {
   "/3/0/0/0/" -> "/3/0/0/0/0/"
   "/3/0/0/0/0/" [label="[0].number.integer.decimal\n42"]
   "/3/0/0/0/0/" -> "/3/0/0/0/0/0/"
-  "/3/0/0/0/0/0/" [label="[0].number.plusMinus\n42"]
+  "/3/0/0/0/0/0/" [label="[0].number.plusMinus\n"]
   "/3/0/0/0/0/" -> "/3/0/0/0/0/1/"
   "/3/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n42"]
   "/" -> "/4/"
-  "/4/" [label="[4].Fern.LabeledItem\n["]
+  "/4/" [label="[4].Fern.LabeledItem\n[]\\n  "]
   "/4/" -> "/4/0/"
-  "/4/0/" [label="[0].Fern\n["]
+  "/4/0/" [label="[0].Fern\n[]\\n  "]
   "/" -> "/5/"
-  "/5/" [label="[5].Fern.LabeledItem\n["]
+  "/5/" [label="[5].Fern.LabeledItem\n[\\n    ... \\n  ]\\n"]
   "/5/" -> "/5/0/"
-  "/5/0/" [label="[0].Fern\n["]
+  "/5/0/" [label="[0].Fern\n[\\n    ... \\n  ]\\n"]
   "/5/0/" -> "/5/0/0/"
-  "/5/0/0/" [label="[0].Fern.LabeledItem\n1"]
+  "/5/0/0/" [label="[0].Fern.LabeledItem\n1\\n    "]
   "/5/0/0/" -> "/5/0/0/0/"
-  "/5/0/0/0/" [label="[0].Fern.Value\n1"]
+  "/5/0/0/0/" [label="[0].Fern.Value\n1\\n    "]
   "/5/0/0/0/" -> "/5/0/0/0/0/"
   "/5/0/0/0/0/" [label="[0].number\n1"]
   "/5/0/0/0/0/" -> "/5/0/0/0/0/0/"
@@ -156,17 +156,17 @@ digraph parse_tree {
   "/5/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/"
   "/5/0/0/0/0/0/0/" [label="[0].number.integer.decimal\n1"]
   "/5/0/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/0/"
-  "/5/0/0/0/0/0/0/0/" [label="[0].number.plusMinus\n1"]
+  "/5/0/0/0/0/0/0/0/" [label="[0].number.plusMinus\n"]
   "/5/0/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/1/"
   "/5/0/0/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n1"]
   "/5/0/" -> "/5/0/1/"
-  "/5/0/1/" [label="[1].Fern.LabeledItem\n'two'"]
+  "/5/0/1/" [label="[1].Fern.LabeledItem\n'two' : 2\\n    "]
   "/5/0/1/" -> "/5/0/1/0/"
-  "/5/0/1/0/" [label="[0].Fern.Label\n'two'"]
+  "/5/0/1/0/" [label="[0].Fern.Label\n'two' "]
   "/5/0/1/0/" -> "/5/0/1/0/0/"
   "/5/0/1/0/0/" [label="[0].string\n'two'"]
   "/5/0/1/" -> "/5/0/1/1/"
-  "/5/0/1/1/" [label="[1].Fern.Value\n2"]
+  "/5/0/1/1/" [label="[1].Fern.Value\n2\\n    "]
   "/5/0/1/1/" -> "/5/0/1/1/0/"
   "/5/0/1/1/0/" [label="[0].number\n2"]
   "/5/0/1/1/0/" -> "/5/0/1/1/0/0/"
@@ -174,13 +174,13 @@ digraph parse_tree {
   "/5/0/1/1/0/0/" -> "/5/0/1/1/0/0/0/"
   "/5/0/1/1/0/0/0/" [label="[0].number.integer.decimal\n2"]
   "/5/0/1/1/0/0/0/" -> "/5/0/1/1/0/0/0/0/"
-  "/5/0/1/1/0/0/0/0/" [label="[0].number.plusMinus\n2"]
+  "/5/0/1/1/0/0/0/0/" [label="[0].number.plusMinus\n"]
   "/5/0/1/1/0/0/0/" -> "/5/0/1/1/0/0/0/1/"
   "/5/0/1/1/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n2"]
   "/5/0/" -> "/5/0/2/"
-  "/5/0/2/" [label="[2].Fern.LabeledItem\n3"]
+  "/5/0/2/" [label="[2].Fern.LabeledItem\n3\\n  "]
   "/5/0/2/" -> "/5/0/2/0/"
-  "/5/0/2/0/" [label="[0].Fern.Value\n3"]
+  "/5/0/2/0/" [label="[0].Fern.Value\n3\\n  "]
   "/5/0/2/0/" -> "/5/0/2/0/0/"
   "/5/0/2/0/0/" [label="[0].number\n3"]
   "/5/0/2/0/0/" -> "/5/0/2/0/0/0/"
@@ -188,7 +188,7 @@ digraph parse_tree {
   "/5/0/2/0/0/0/" -> "/5/0/2/0/0/0/0/"
   "/5/0/2/0/0/0/0/" [label="[0].number.integer.decimal\n3"]
   "/5/0/2/0/0/0/0/" -> "/5/0/2/0/0/0/0/0/"
-  "/5/0/2/0/0/0/0/0/" [label="[0].number.plusMinus\n3"]
+  "/5/0/2/0/0/0/0/0/" [label="[0].number.plusMinus\n"]
   "/5/0/2/0/0/0/0/" -> "/5/0/2/0/0/0/0/1/"
   "/5/0/2/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n3"]
 })";
