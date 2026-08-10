@@ -3,6 +3,9 @@
 * tokenization-less parse-tree
     * double-quoted strings should probably support "eps0"
 
+* when serializing parse-tree:
+    * show escaped fragments for branch-rules and pure fragments for twig-rules
+    * remove fragmentization.hpp:escape_string() function
 * Seed: it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
 * Fragmentization: NEWLINE fragments should never have empty size
 * make fragmenziation.hpp:escape_string function efficient

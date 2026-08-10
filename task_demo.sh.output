@@ -2909,7 +2909,7 @@ Mr Jane
 [ 50]   8:12  cat=.Cedar.Expr.oper                         (
 [ 51]   8:13  cat=.identifier                              stdout
 [ 52]   8:19  cat=.Cedar.Expr.oper                         ,
-[ 53]   8:21  cat=.string                                  "[%d] = %s\n"
+[ 53]   8:21  cat=.string                                  "[%d] = %s\\n"
 [ 54]   8:34  cat=.Cedar.Expr.oper                         ,
 [ 55]   8:36  cat=.identifier                              i
 [ 56]   8:37  cat=.Cedar.Expr.oper                         ,
@@ -3143,8 +3143,8 @@ Mr Jane
                           [0].identifier                                                            stdout
                         [1].Cedar.Expr.oper                                                         ,
                           [0].Cedar.operator                                                        ,
-                        [2].Cedar.Expr.Atom                                                         "[%d] = %s\n"
-                          [0].string                                                                "[%d] = %s\n"
+                        [2].Cedar.Expr.Atom                                                         "[%d] = %s\\n"
+                          [0].string                                                                "[%d] = %s\\n"
                         [3].Cedar.Expr.oper                                                         ,
                           [0].Cedar.operator                                                        ,
                         [4].Cedar.Expr.Atom                                                         i
@@ -3396,10 +3396,10 @@ Mr Jane
 [ 34]  21:9   cat=.literal                                 ]
 [ 35]  24:1   cat=.identifier.withDashes                   basic
 [ 36]  24:7   cat=.literal                                 =
-[ 37]  24:9   cat=.string                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
+[ 37]  24:9   cat=.string                                  "The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t."
 [ 38]  25:1   cat=.identifier.withDashes                   escaped
 [ 39]  25:9   cat=.literal                                 =
-[ 40]  25:11  cat=.string                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
+[ 40]  25:11  cat=.string                                  "Quote: \\", Backslash: \\\\, Backspace: \\b, Formfeed: \\f, CarriageReturn: \\r"
 [ 41]  30:1   cat=.literal                                 [
 [ 42]  30:2   cat=.identifier.withDashes                   integers
 [ 43]  30:10  cat=.literal                                 ]
@@ -3776,16 +3776,16 @@ Mr Jane
     [0].Toml.StdTable                             [stri ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>
       [0].Toml.Key                                strings
         [0].Toml.SimpleKey                        strings
-  [9].Toml.Keyval                                 basic = "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."<NEWLINE>
+  [9].Toml.Keyval                                 basic = "The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t."<NEWLINE>
     [0].Toml.Key                                  basic 
       [0].Toml.SimpleKey                          basic 
-    [1].Toml.Val                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."<NEWLINE>
-      [0].string                                  "The quick brown fox jumps over the lazy dog.\nWith a newline and a tab:\t."
+    [1].Toml.Val                                  "The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t."<NEWLINE>
+      [0].string                                  "The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t."
   [10].Toml.Keyval                                escap ... <WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>
     [0].Toml.Key                                  escaped 
       [0].Toml.SimpleKey                          escaped 
-    [1].Toml.Val                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>
-      [0].string                                  "Quote: \", Backslash: \\, Backspace: \b, Formfeed: \f, CarriageReturn: \r"
+    [1].Toml.Val                                  "Quote: \\", Backslash: \\\\, Backspace: \\b, Formfeed: \\f, CarriageReturn: \\r"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>
+      [0].string                                  "Quote: \\", Backslash: \\\\, Backspace: \\b, Formfeed: \\f, CarriageReturn: \\r"
   [11].Toml.Table                                 [inte ... ers]<NEWLINE>
     [0].Toml.StdTable                             [inte ... ers]<NEWLINE>
       [0].Toml.Key                                integers

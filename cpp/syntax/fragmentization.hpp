@@ -96,10 +96,14 @@ namespace silva {
 
     operator span_t<const fragment_t>();
 
+    string_view_t as_string_view() const;
+
+    token_id_t derive_token_id() const;
+
     friend void pretty_write_impl(const fragment_span_t&, byte_sink_t*);
   };
 
-  string_t escape_string(string_t);
+  string_t escape_string(string_view_t);
 
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize_unique(filepath_t, string_t source_code);
   expected_t<fragmentization_ptr_t>
