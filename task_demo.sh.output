@@ -90,12 +90,12 @@ ERROR (MAJOR):
   │ expected token of category ID_START; got token[ ID_START ]
   │ [01-broken.fern:9:3] .identifier: expected sequence[ ID_ST ... NUE * ]
   ├─[01-broken.fern:9:3] .identifier
-  [01-broken.fern:9:3] .Fern.Label: expected alternation[ strin ... ifier ]
-  [01-broken.fern:9:3] .Fern.Label
-┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ Label ':'  ]
+  [01-broken.fern:9:3] .Fern.label: expected alternation[ strin ... ifier ]
+  [01-broken.fern:9:3] .Fern.label
+┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ label ':'  ]
 │     [01-broken.fern:11:5] expected token[ : ]
 │     [01-broken.fern:11:5] while matching token[ : ]
-│   ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ Label ':'  ]
+│   ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ label ':'  ]
 │   │   [01-broken.fern:10:5] expected token[ [ ]
 │   │   [01-broken.fern:10:5] while matching token[ [ ]
 │   │   [01-broken.fern:10:5] .Fern: expected sequence[ '[' Lab ... m * ']' ]
@@ -161,41 +161,41 @@ ERROR (MAJOR):
 │   │ │ ├─[01-broken.fern:10:5] .number
 │   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
 │   │ │ ├─[01-broken.fern:10:5] .string
-│   │ │ [01-broken.fern:10:5] .Fern.Value: expected alternation[ none  ... tring ]
-│   │ ├─[01-broken.fern:10:5] .Fern.Value
+│   │ │ [01-broken.fern:10:5] .Fern.value: expected alternation[ none  ... tring ]
+│   │ ├─[01-broken.fern:10:5] .Fern.value
 │   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
-│   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( Lab ... lue ) ]
+│   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
 │ ┌─[01-broken.fern:10:5] .Fern.LabeledItem
 │ │ [01-broken.fern:10:5] expected token[ ] ]
 │ ├─[01-broken.fern:10:5] while matching token[ ] ]
 │ [01-broken.fern:9:3] .Fern: expected sequence[ '[' Lab ... m * ']' ]
 │ [01-broken.fern:9:3] .Fern
 ├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
-[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( Lab ... lue ) ]
+[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
 [01-broken.fern:9:3] .Fern.LabeledItem
 [01-broken.fern:1:1] .Fern: expected sequence[ '[' Lab ... m * ']' ]
 [01-broken.fern:1:1] .Fern
 seed::interpreter_t::apply(.Fern) failed to parse
 
 [  0]   1:1   cat=.literal                                 [
-[  1]   2:3   cat=.none                                    none
+[  1]   2:3   cat=.Fern.value                              none
 [  2]   3:3   cat=.literal                                 [
 [  3]   3:4   cat=.literal                                 ]
 [  4]   4:3   cat=.literal                                 [
-[  5]   5:5   cat=.none                                    none
+[  5]   5:5   cat=.Fern.value                              none
 [  6]   6:3   cat=.literal                                 ]
 [  7]   7:1   cat=.literal                                 ]
 
 [0].Fern                                          [\n  n ...  ]\n]<NEWLINE>
   [0].Fern.LabeledItem                            none\n  
-    [0].Fern.Value                                none\n  
+    [0].Fern.value                                none
       [0].none                                    none
   [1].Fern.LabeledItem                            []\n  
     [0].Fern                                      []\n  
   [2].Fern.LabeledItem                            [\n    ... \n  ]\n
     [0].Fern                                      [\n    ... \n  ]\n
       [0].Fern.LabeledItem                        none\n  
-        [0].Fern.Value                            none\n  
+        [0].Fern.value                            none
           [0].none                                none
 
 [0]                                                                                  false     unknown token-location
@@ -205,27 +205,27 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [0].skip.freeForm                                                                true      01-simplest.fern:1:2
       [0].skip.freeForm                                                              true      01-simplest.fern:2:3
     [1].Fern.LabeledItem                                                             true      01-simplest.fern:2:3
-      [0].Fern.Label                                                                 true      01-simplest.fern:2:3
+      [0].Fern.label                                                                 true      01-simplest.fern:2:3
         [0].string                                                                   false     01-simplest.fern:2:3
         [1].identifier                                                               true      01-simplest.fern:2:3
-          [0].skip.freeForm                                                          true      01-simplest.fern:2:7
+        [2].skip.freeForm                                                            true      01-simplest.fern:2:7
       [1].Fern                                                                       false     01-simplest.fern:2:3
-      [2].Fern.Value                                                                 true      01-simplest.fern:2:3
+      [2].Fern.value                                                                 true      01-simplest.fern:2:3
         [0].none                                                                     true      01-simplest.fern:2:3
-          [0].skip.freeForm                                                          true      01-simplest.fern:2:7
+        [1].skip.freeForm                                                            true      01-simplest.fern:2:7
     [2].Fern.LabeledItem                                                             true      01-simplest.fern:3:3
-      [0].Fern.Label                                                                 false     01-simplest.fern:3:3
+      [0].Fern.label                                                                 false     01-simplest.fern:3:3
         [0].string                                                                   false     01-simplest.fern:3:3
         [1].identifier                                                               false     01-simplest.fern:3:3
       [1].Fern                                                                       true      01-simplest.fern:3:3
         [0].skip.freeForm                                                            true      01-simplest.fern:3:4
           [0].skip.freeForm                                                          true      01-simplest.fern:3:4
         [1].Fern.LabeledItem                                                         false     01-simplest.fern:3:4
-          [0].Fern.Label                                                             false     01-simplest.fern:3:4
+          [0].Fern.label                                                             false     01-simplest.fern:3:4
             [0].string                                                               false     01-simplest.fern:3:4
             [1].identifier                                                           false     01-simplest.fern:3:4
           [1].Fern                                                                   false     01-simplest.fern:3:4
-          [2].Fern.Value                                                             false     01-simplest.fern:3:4
+          [2].Fern.value                                                             false     01-simplest.fern:3:4
             [0].none                                                                 false     01-simplest.fern:3:4
             [1].boolean                                                              false     01-simplest.fern:3:4
             [2].number                                                               false     01-simplest.fern:3:4
@@ -255,27 +255,27 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [2].skip.freeForm                                                            true      01-simplest.fern:3:5
           [0].skip.freeForm                                                          true      01-simplest.fern:4:3
     [3].Fern.LabeledItem                                                             true      01-simplest.fern:4:3
-      [0].Fern.Label                                                                 false     01-simplest.fern:4:3
+      [0].Fern.label                                                                 false     01-simplest.fern:4:3
         [0].string                                                                   false     01-simplest.fern:4:3
         [1].identifier                                                               false     01-simplest.fern:4:3
       [1].Fern                                                                       true      01-simplest.fern:4:3
         [0].skip.freeForm                                                            true      01-simplest.fern:4:4
           [0].skip.freeForm                                                          true      01-simplest.fern:5:5
         [1].Fern.LabeledItem                                                         true      01-simplest.fern:5:5
-          [0].Fern.Label                                                             true      01-simplest.fern:5:5
+          [0].Fern.label                                                             true      01-simplest.fern:5:5
             [0].string                                                               false     01-simplest.fern:5:5
             [1].identifier                                                           true      01-simplest.fern:5:5
-              [0].skip.freeForm                                                      true      01-simplest.fern:5:9
+            [2].skip.freeForm                                                        true      01-simplest.fern:5:9
           [1].Fern                                                                   false     01-simplest.fern:5:5
-          [2].Fern.Value                                                             true      01-simplest.fern:5:5
+          [2].Fern.value                                                             true      01-simplest.fern:5:5
             [0].none                                                                 true      01-simplest.fern:5:5
-              [0].skip.freeForm                                                      true      01-simplest.fern:5:9
+            [1].skip.freeForm                                                        true      01-simplest.fern:5:9
         [2].Fern.LabeledItem                                                         false     01-simplest.fern:6:3
-          [0].Fern.Label                                                             false     01-simplest.fern:6:3
+          [0].Fern.label                                                             false     01-simplest.fern:6:3
             [0].string                                                               false     01-simplest.fern:6:3
             [1].identifier                                                           false     01-simplest.fern:6:3
           [1].Fern                                                                   false     01-simplest.fern:6:3
-          [2].Fern.Value                                                             false     01-simplest.fern:6:3
+          [2].Fern.value                                                             false     01-simplest.fern:6:3
             [0].none                                                                 false     01-simplest.fern:6:3
             [1].boolean                                                              false     01-simplest.fern:6:3
             [2].number                                                               false     01-simplest.fern:6:3
@@ -305,11 +305,11 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [3].skip.freeForm                                                            true      01-simplest.fern:6:4
           [0].skip.freeForm                                                          true      01-simplest.fern:7:1
     [4].Fern.LabeledItem                                                             false     01-simplest.fern:7:1
-      [0].Fern.Label                                                                 false     01-simplest.fern:7:1
+      [0].Fern.label                                                                 false     01-simplest.fern:7:1
         [0].string                                                                   false     01-simplest.fern:7:1
         [1].identifier                                                               false     01-simplest.fern:7:1
       [1].Fern                                                                       false     01-simplest.fern:7:1
-      [2].Fern.Value                                                                 false     01-simplest.fern:7:1
+      [2].Fern.value                                                                 false     01-simplest.fern:7:1
         [0].none                                                                     false     01-simplest.fern:7:1
         [1].boolean                                                                  false     01-simplest.fern:7:1
         [2].number                                                                   false     01-simplest.fern:7:1
@@ -1109,51 +1109,51 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].identifier                            b
 
 [  0]  54:1   cat=.literal                                 [
-[  1]  55:3   cat=.none                                    none
-[  2]  56:3   cat=.boolean                                 true
-[  3]  57:3   cat=.number                                  42
-[  4]  58:3   cat=.identifier                              hello
+[  1]  55:3   cat=.Fern.value                              none
+[  2]  56:3   cat=.Fern.value                              true
+[  3]  57:3   cat=.Fern.value                              42
+[  4]  58:3   cat=.Fern.label                              hello
 [  5]  58:9   cat=.literal                                 :
-[  6]  58:11  cat=.string                                  'World'
+[  6]  58:11  cat=.Fern.value                              'World'
 [  7]  59:3   cat=.literal                                 [
 [  8]  59:4   cat=.literal                                 ]
 [  9]  60:3   cat=.literal                                 [
-[ 10]  61:5   cat=.string                                  'one'
+[ 10]  61:5   cat=.Fern.label                              'one'
 [ 11]  61:11  cat=.literal                                 :
-[ 12]  61:13  cat=.number                                  1.0
-[ 13]  62:5   cat=.string                                  'two'
+[ 12]  61:13  cat=.Fern.value                              1.0
+[ 13]  62:5   cat=.Fern.label                              'two'
 [ 14]  62:11  cat=.literal                                 :
-[ 15]  62:13  cat=.number                                  2.0
+[ 15]  62:13  cat=.Fern.value                              2.0
 [ 16]  63:3   cat=.literal                                 ]
 [ 17]  64:1   cat=.literal                                 ]
 
 [0].Fern                                          [\n  n ... ]\n]<NEWLINE><WHITESPACE>
   [0].Fern.LabeledItem                            none\n  
-    [0].Fern.Value                                none\n  
+    [0].Fern.value                                none
       [0].none                                    none
   [1].Fern.LabeledItem                            true\n  
-    [0].Fern.Value                                true\n  
+    [0].Fern.value                                true
       [0].boolean                                 true
   [2].Fern.LabeledItem                            42\n  
-    [0].Fern.Value                                42\n  
+    [0].Fern.value                                42
       [0].number                                  42
         [0].number.integer                        42
           [0].number.integer.decimal              42
             [0].number.plusMinus                  
             [1].number.unsigned.integer.decimal   42
   [3].Fern.LabeledItem                            hello ...  'World'\n  
-    [0].Fern.Label                                hello 
+    [0].Fern.label                                hello
       [0].identifier                              hello
-    [1].Fern.Value                                'World'\n  
+    [1].Fern.value                                'World'
       [0].string                                  'World'
   [4].Fern.LabeledItem                            []\n  
     [0].Fern                                      []\n  
   [5].Fern.LabeledItem                            [\n    ... \n  ]\n
     [0].Fern                                      [\n    ... \n  ]\n
       [0].Fern.LabeledItem                        'one' : 1 ... \n    
-        [0].Fern.Label                            'one' 
+        [0].Fern.label                            'one'
           [0].string                              'one'
-        [1].Fern.Value                            1.0\n    
+        [1].Fern.value                            1.0
           [0].number                              1.0
             [0].number.float                      1.0
               [0].number.plusMinus                
@@ -1162,9 +1162,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.unsigned.integer.decimal 1
                 [1].number.unsigned.float.fraction .0
       [1].Fern.LabeledItem                        'two' : 2.0\n  
-        [0].Fern.Label                            'two' 
+        [0].Fern.label                            'two'
           [0].string                              'two'
-        [1].Fern.Value                            2.0\n  
+        [1].Fern.value                            2.0
           [0].number                              2.0
             [0].number.float                      2.0
               [0].number.plusMinus                

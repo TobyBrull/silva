@@ -145,7 +145,7 @@ namespace silva::fern {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
-      syntax_farm_ptr_t sfp          = parse_tree->tp->sfp;
+      syntax_farm_ptr_t sfp          = parse_tree->tp->fs.fp->sfp;
       const lexicon_t& lexicon       = sfp->get_lexicon<lexicon_t>();
 
       expected_t<fern_labeled_item_t> labeled_item(const parse_tree_span_t pts)
@@ -153,48 +153,52 @@ namespace silva::fern {
         const auto& labeled_item = pts[0];
         SILVA_EXPECT(labeled_item.rule_name == lexicon.ni_lbl_item, MINOR);
         fern_labeled_item_t retval;
-        for (const auto [child_node_index, child_index]: pts.children_range()) {
-          const auto& node = pts[child_node_index];
-          if (labeled_item.num_children == 2 && child_index == 0) {
-            SILVA_EXPECT(node.rule_name == lexicon.ni_label, MINOR);
-            const name_id_t tcat      = parse_tree->tp->tokens[node.token_begin].category;
-            const token_info_t* tinfo = parse_tree->tp->token_info_get(node.token_begin);
-            if (tcat == lexicon.ni_string) {
-              retval.label = string_t{SILVA_EXPECT_FWD(
-                  parse_tree->tp->token_info_get(node.token_begin)->string_as_plain_contained(),
-                  MAJOR)};
-            }
-            else {
-              retval.label = tinfo->str;
-            }
+        const auto pts_children = SILVA_EXPECT_FWD(pts.get_children_up_to_pts<2>());
+        SILVA_EXPECT(pts_children.size == 1 || pts_children.size == 2, MINOR);
+        if (pts_children.size == 2) {
+          const auto pts_label = pts_children[0];
+          SILVA_EXPECT(pts_label[0].rule_name == lexicon.ni_label, MINOR);
+          const auto [pts_label_child] = SILVA_EXPECT_FWD(pts_label.get_children_pts<1>());
+          const name_id_t rn           = pts_label_child.rule_name();
+          const token_info_t* tinfo    = &sfp->get(SILVA_EXPECT_FWD(pts_label.token()));
+          if (rn == lexicon.ni_string) {
+            retval.label = string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
           }
-          else if (node.rule_name == lexicon.ni_fern) {
-            fern_t sub_fern   = SILVA_EXPECT_FWD(fern(pts.sub_tree_span_at(child_node_index)));
-            retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
+          else {
+            retval.label = tinfo->str;
           }
-          else if (node.rule_name == lexicon.ni_value) {
-            const auto& token = parse_tree->tp->tokens[node.token_begin];
-            const auto* tinfo = parse_tree->tp->token_info_get(node.token_begin);
-            if (token.token_id == lexicon.ti_none) {
-              retval.item.value = none;
-            }
-            else if (token.token_id == lexicon.ti_true) {
-              retval.item.value = true;
-            }
-            else if (token.token_id == lexicon.ti_false) {
-              retval.item.value = false;
-            }
-            else if (token.category == lexicon.ni_string) {
-              retval.item.value =
-                  string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
-            }
-            else if (token.category == lexicon.ni_number) {
-              retval.item.value = SILVA_EXPECT_FWD(tinfo->number_as_double(), MAJOR);
-            }
-            else {
-              SILVA_EXPECT(false, MINOR, "Unknown item '{}'", tinfo->str);
-            }
+        }
+        const auto pts_item = pts_children.back();
+        if (pts_item.rule_name() == lexicon.ni_fern) {
+          fern_t sub_fern   = SILVA_EXPECT_FWD(fern(pts_item));
+          retval.item.value = std::make_unique<fern_t>(std::move(sub_fern));
+        }
+        else if (pts_item.rule_name() == lexicon.ni_value) {
+          const token_id_t ti          = SILVA_EXPECT_FWD(pts_item.token());
+          const auto [pts_value_child] = SILVA_EXPECT_FWD(pts_item.get_children_pts<1>());
+          const token_info_t* tinfo    = &sfp->get(ti);
+          if (ti == lexicon.ti_none) {
+            retval.item.value = none;
           }
+          else if (ti == lexicon.ti_true) {
+            retval.item.value = true;
+          }
+          else if (ti == lexicon.ti_false) {
+            retval.item.value = false;
+          }
+          else if (pts_value_child.rule_name() == lexicon.ni_string) {
+            retval.item.value =
+                string_t{SILVA_EXPECT_FWD(tinfo->string_as_plain_contained(), MAJOR)};
+          }
+          else if (pts_value_child.rule_name() == lexicon.ni_number) {
+            retval.item.value = SILVA_EXPECT_FWD(tinfo->number_as_double(), MAJOR);
+          }
+          else {
+            SILVA_EXPECT(false, MINOR, "Unknown item '{}'", tinfo->str);
+          }
+        }
+        else {
+          SILVA_EXPECT(false, MINOR, "Unknown item '{}'", pts_item);
         }
         return retval;
       }

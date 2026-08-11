@@ -34,6 +34,8 @@ namespace silva {
     parse_tree_span_t(const parse_tree_node_t* root, index_t stride, parse_tree_ptr_t);
     parse_tree_span_t(const parse_tree_t&);
 
+    name_id_t rule_name() const;
+
     parse_tree_t copy() const;
 
     parse_tree_span_t sub_tree_span_at(index_t) const;
@@ -94,6 +96,11 @@ namespace silva {
   inline auto parse_tree_t::span(this auto&& self)
   {
     return parse_tree_span_t{self};
+  }
+
+  inline name_id_t parse_tree_span_t::rule_name() const
+  {
+    return root->rule_name;
   }
 
   template<Namespace Ns>
