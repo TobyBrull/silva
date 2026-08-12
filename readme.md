@@ -12,7 +12,8 @@ The Seed language allows users to define PEG parsers.
 Implemented Seed parsers:
 * [Fern](cpp/zoo/fern/fern.hpp): A bit like JSON, but simpler.
 * [Seed](cpp/syntax/seed.hpp): The Seed language defined in itself. For expression parsing a
-  shunting yard algorithm is used that's described by [seed_axe.hpp](cpp/syntax/seed_axe.hpp).
+  shunting yard algorithm is used that's described by [seed_axe.hpp](cpp/syntax/seed_axe.hpp) and
+  some global definitions are in [seed.globals.hpp](cpp/syntax/seed.globals.hpp).
 * [Cedar](cpp/zoo/cedar/cedar.hpp): Basically preprocessed C.
 * [TOML](cpp/zoo/toml/toml.hpp): Tom's Obvious, Minimal Language.
 * [Lox](cpp/zoo/lox/lox.hpp): The toy language from the book "Crafting Interpreters".
