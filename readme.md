@@ -7,30 +7,24 @@ language.
 
 ## Concepts
 
-The Seed language is as a formal specification for the syntax of another language.
+The Seed language allows users to define PEG parsers.
 
-The Fern language is akin to JSON. Its syntax is described by the Seed program
-`silva::fern::seed_str` ([fern.hpp](cpp/zoo/fern/fern.hpp)).
-
-The syntax of the Seed language itself is described by the Seed program
-`silva::seed::seed_str` ([seed.hpp](cpp/syntax/seed.hpp)) and
-`silva::seed::seed_axe_str` ([seed_axe.hpp](cpp/syntax/seed_axe.hpp)).
-
-A parser can automatically be derived from a Seed program.
-This is implemented in the class
-`silva::seed::interpreter_t` ([seed_interpreter.hpp](cpp/syntax/seed_interpreter.hpp)).
-
-
-## Testing
-
-```bash
-pixi run test-all && echo "ALL TESTS SUCCEEDED!"
-```
+Implemented Seed parsers:
+* [Fern](cpp/zoo/fern/fern.hpp): A bit like JSON, but simpler.
+* [Seed](cpp/syntax/seed.hpp): The Seed language defined in itself. For expression parsing a
+  shunting yard algorithm is used that's described by [seed_axe.hpp](cpp/syntax/seed_axe.hpp).
+* [Cedar](cpp/zoo/cedar/cedar.hpp): Basically preprocessed C.
+* [TOML](cpp/zoo/toml/toml.hpp): Tom's Obvious, Minimal Language.
+* [Lox](cpp/zoo/lox/lox.hpp): The toy language from the book "Crafting Interpreters".
 
 
 ## Development
 
+Requires [Pixi](https://pixi.prefix.dev/latest/#installation).
+
 ```bash
+pixi run test-all && echo "ALL TESTS SUCCEEDED!"
+
 eval "$( pixi shell-hook )"
 
 PRESET=debug    ; BUILD_DIR="build.default.${PRESET}/"
@@ -43,11 +37,11 @@ ninja -C "${BUILD_DIR}" && time "${BUILD_DIR}/cpp/silva_test"
 bash task_format_check.sh && echo "ALL FORMATTING OKAY!"
 bash task_format.sh
 bash task_test.sh "${PRESET}" && echo "ALL TESTS PASSED!"
-bash task_test_python.sh && echo "ALL PYTHON TESTS PASSED"
+bash task_test_python.sh && echo "ALL PYTHON TESTS PASSED!"
 ```
 
 
-## Release
+## Packaging
 
 ```bash
 pixi publish --target-dir=var/
