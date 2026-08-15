@@ -454,11 +454,10 @@ namespace silva::seed::impl {
                                                const name_id_t t_rule_name)
     {
       {
-        auto ss             = stake();
-        const auto children = SILVA_EXPECT_FWD(pts.get_children<2>());
-        SILVA_EXPECT(pts[children[0]].rule_name == lexicon.ni_oper, MAJOR);
-        const auto sub_pts = pts.sub_tree_span_at(children[1]);
-        const auto result  = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(sub_pts, t_rule_name));
+        auto ss                        = stake();
+        const auto [pts_oper, sub_pts] = SILVA_EXPECT_FWD(pts.get_children_pts<2>());
+        SILVA_EXPECT(pts_oper.rule_name() == lexicon.ni_oper, MAJOR);
+        const auto result = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(sub_pts, t_rule_name));
         SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
       }
       auto ss = stake();
@@ -527,16 +526,16 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> s_expr_postfix(const parse_tree_span_t pts,
                                                 const name_id_t t_rule_name)
     {
-      auto ss                = stake();
-      index_t min_repeat     = 0;
-      index_t max_repeat     = 0;
-      const token_id_t op_ti = sfp->get(pts[0].rule_name).base_name;
-      const auto children    = SILVA_EXPECT_FWD(pts.get_children_up_to<4>());
-      SILVA_EXPECT(children.size == 2 || children.size == 4, MAJOR);
-      const auto pts_expr = pts.sub_tree_span_at(children[0]);
-      if (children.size == 4) {
-        const auto pts_postfix           = pts.sub_tree_span_at(children[2]);
-        std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_quantifier(pts_postfix));
+      auto ss                 = stake();
+      index_t min_repeat      = 0;
+      index_t max_repeat      = 0;
+      const token_id_t op_ti  = sfp->get(pts[0].rule_name).base_name;
+      const auto pts_children = SILVA_EXPECT_FWD(pts.get_children_up_to_pts<4>());
+      SILVA_EXPECT(pts_children.size == 2 || pts_children.size == 4, MAJOR);
+      const auto pts_expr = pts_children[0];
+      if (pts_children.size == 4) {
+        std::tie(min_repeat, max_repeat) =
+            SILVA_EXPECT_FWD(get_min_max_quantifier(pts_children[2]));
       }
       else {
         std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
