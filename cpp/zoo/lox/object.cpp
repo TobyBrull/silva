@@ -19,11 +19,11 @@ namespace silva::lox {
   }
   parse_tree_span_t function_t::parameters() const
   {
-    return pts.sub_tree_span_at(2);
+    return pts.subspan_at(2);
   }
   parse_tree_span_t function_t::body() const
   {
-    return pts.sub_tree_span_at(pts[2].subtree_size + 2);
+    return pts.subspan_at(pts[2].subtree_size + 2);
   }
 
   bool operator==(const function_t& lhs, const function_t& rhs)

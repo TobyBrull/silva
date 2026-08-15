@@ -179,13 +179,13 @@ language SimpleFern:
       INFO(text);
       const auto pts =
           SILVA_REQUIRE(si->apply_text("", std::move(text), sf.name_id_of(rule)))->span();
-      const auto tok_ptses = pts.get_children_dyn_pts();
+      const auto tok_ptses = pts.get_children_array();
       REQUIRE(tok_ptses.size() == expected_token_strs.size());
       REQUIRE(tok_ptses.size() == expected_rule_names.size());
       for (index_t i = 0; i < expected_rule_names.size(); ++i) {
         INFO(i);
         const token_id_t ti = SILVA_REQUIRE(tok_ptses[i].token());
-        const name_id_t ni  = SILVA_REQUIRE(tok_ptses[i].get_child_by_skipping_pts(0))[0].rule_name;
+        const name_id_t ni  = SILVA_REQUIRE(tok_ptses[i].iterate_to_child(0))[0].rule_name;
         CHECK(ti == sf.token_id(expected_token_strs[i]));
         CHECK(ni == expected_rule_names[i]);
       }

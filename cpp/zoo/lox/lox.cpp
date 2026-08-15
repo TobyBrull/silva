@@ -13,7 +13,7 @@ namespace silva::lox {
   expected_t<atom_token_t> atom_token(const parse_tree_span_t& pts, const lexicon_t& lexicon)
   {
     SILVA_EXPECT(pts.rule_name() == lexicon.ni_expr_atom, ASSERT);
-    const auto [pts_child] = SILVA_EXPECT_FWD(pts.get_children_pts<1>());
+    const auto [pts_child] = SILVA_EXPECT_FWD(pts.get_children<1>());
     if (pts_child.rule_name() == lexicon.ni_expr_literal) {
       return atom_token_t{
           .token_id = SILVA_EXPECT_FWD(pts_child.token()),

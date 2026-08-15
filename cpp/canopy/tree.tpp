@@ -58,31 +58,30 @@ namespace silva::test {
       CHECK(result_str == expected.substr(1));
     }
 
-    CHECK(tspan.get_children_dyn_pts() ==
+    CHECK(tspan.get_children_array() ==
           array_t<tree_span_t<test_tree_node_t>>{
-              tspan.sub_tree_span_at(1),
-              tspan.sub_tree_span_at(5),
-              tspan.sub_tree_span_at(6),
+              tspan.subspan_at(1),
+              tspan.subspan_at(5),
+              tspan.subspan_at(6),
           });
     CHECK(tspan.subtree_size() == 8);
-    CHECK(tspan.sub_tree_span_at(1).get_children_dyn_pts() ==
+    CHECK(tspan.subspan_at(1).get_children_array() ==
           array_t<tree_span_t<test_tree_node_t>>{
-              tspan.sub_tree_span_at(1).sub_tree_span_at(1),
-              tspan.sub_tree_span_at(1).sub_tree_span_at(2),
+              tspan.subspan_at(1).subspan_at(1),
+              tspan.subspan_at(1).subspan_at(2),
           });
-    CHECK(tspan.sub_tree_span_at(1).subtree_size() == 4);
-    CHECK(tspan.sub_tree_span_at(2).get_children_dyn_pts() ==
-          array_t<tree_span_t<test_tree_node_t>>{});
-    CHECK(tspan.sub_tree_span_at(2).subtree_size() == 1);
-    CHECK(tspan.sub_tree_span_at(3).get_children_dyn_pts() ==
+    CHECK(tspan.subspan_at(1).subtree_size() == 4);
+    CHECK(tspan.subspan_at(2).get_children_array() == array_t<tree_span_t<test_tree_node_t>>{});
+    CHECK(tspan.subspan_at(2).subtree_size() == 1);
+    CHECK(tspan.subspan_at(3).get_children_array() ==
           array_t<tree_span_t<test_tree_node_t>>{
-              tspan.sub_tree_span_at(3).sub_tree_span_at(1),
+              tspan.subspan_at(3).subspan_at(1),
           });
-    CHECK(tspan.sub_tree_span_at(3).subtree_size() == 2);
+    CHECK(tspan.subspan_at(3).subtree_size() == 2);
 
     {
       array_t<string_t> results;
-      for (const auto tspan_child: tspan.children_range_pts()) {
+      for (const auto tspan_child: tspan.children_range()) {
         results.push_back(tspan_child[0].name);
       }
       CHECK(results == array_t<string_t>{"B", "C", "D"});

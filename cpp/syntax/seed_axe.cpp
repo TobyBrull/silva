@@ -125,7 +125,7 @@ namespace silva::seed::impl {
     {
       const auto op_tok = SILVA_EXPECT_FWD(pts_op.token());
       SILVA_EXPECT(pts_op[0].rule_name == lexicon.ni_axe_op, BROKEN_SEED);
-      const auto sub_ptses = SILVA_EXPECT_FWD(pts_op.get_children_up_to_pts<1>());
+      const auto sub_ptses = SILVA_EXPECT_FWD(pts_op.get_children_up_to<1>());
       if (sub_ptses.size == 0) {
         SILVA_EXPECT(op_tok == lexicon.ti_concat.token_id, BROKEN_SEED);
       }
@@ -151,7 +151,7 @@ namespace silva::seed::impl {
                          const parse_tree_span_t pts_ops)
     {
       SILVA_EXPECT(pts_ops[0].rule_name == lexicon.ni_axe_ops, BROKEN_SEED);
-      auto [it, end] = pts_ops.children_range_pts();
+      auto [it, end] = pts_ops.children_range();
       SILVA_EXPECT(it != end, BROKEN_SEED);
       const auto pts_op_type = *it;
       SILVA_EXPECT(pts_op_type[0].rule_name == lexicon.ni_axe_op_type, BROKEN_SEED);
@@ -368,7 +368,7 @@ namespace silva::seed::impl {
     expected_t<void> level(const level_index_t level_index, const parse_tree_span_t pts_level)
     {
       SILVA_EXPECT(pts_level[0].rule_name == lexicon.ni_axe_level, BROKEN_SEED);
-      const auto pts_children = pts_level.get_children_dyn_pts();
+      const auto pts_children = pts_level.get_children_array();
       SILVA_EXPECT(pts_children.size() >= 2, BROKEN_SEED);
       const token_id_t base_name = SILVA_EXPECT_FWD(pts_children[0].token());
       const name_id_t full_name  = sfp->name_id(axe_name, base_name);
@@ -395,7 +395,7 @@ namespace silva::seed::impl {
 
     expected_t<void> run(const parse_tree_span_t pts_axe)
     {
-      auto [it, end] = pts_axe.children_range_pts();
+      auto [it, end] = pts_axe.children_range();
       SILVA_EXPECT(it != end, MINOR, "{} should have at least one child", pts_axe);
       const auto pts_axe_atom_nt = *it;
       SILVA_EXPECT(pts_axe_atom_nt[0].rule_name == lexicon.ni_nt, MINOR);
@@ -1007,7 +1007,7 @@ namespace silva::seed::impl {
       const index_t retval = rv_nodes.size();
       const auto& node     = ats[0];
       if (node.tree_index.has_value()) {
-        const auto to_implant = leaf_terms_tree.span().sub_tree_span_at(node.tree_index.value());
+        const auto to_implant = leaf_terms_tree.span().subspan_at(node.tree_index.value());
         rv_nodes.insert(rv_nodes.end(),
                         to_implant.root,
                         to_implant.root + to_implant.subtree_size());
@@ -1017,7 +1017,7 @@ namespace silva::seed::impl {
         rv_nodes[retval].rule_name    = node.rule_name;
         rv_nodes[retval].num_children = ats.root->num_children;
         rv_nodes[retval].subtree_size = 1;
-        const auto child_pts_array    = ats.get_children_dyn_pts();
+        const auto child_pts_array    = ats.get_children_array();
         for (const auto child_pts: std::ranges::reverse_view(child_pts_array)) {
           const index_t sub_node_index = generate_output(child_pts, leaf_terms_tree);
           rv_nodes[retval].subtree_size += rv_nodes[sub_node_index].subtree_size;
@@ -1045,7 +1045,7 @@ namespace silva::seed::impl {
 
       parse_tree_t temp_tree{.fp = {}, .nodes = std::move(nursery.tree)};
       const parse_tree_t leaf_terms_tree =
-          temp_tree.span().sub_tree_span_at(ss.orig_state.tree_size).copy();
+          temp_tree.span().subspan_at(ss.orig_state.tree_size).copy();
       nursery.tree = std::move(temp_tree.nodes);
       nursery.tree.resize(ss.orig_state.tree_size);
 

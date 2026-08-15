@@ -28,7 +28,7 @@ namespace silva {
     string_t retval;
     const seed::lexicon_t& lexicon = ptp->fp->sfp->get_lexicon<seed::lexicon_t>();
     retval += SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
-      const auto pts = this->sub_tree_span_at(path.back().node_index);
+      const auto pts = this->subspan_at(path.back().node_index);
       curr_line += lexicon.name_id_str(pts[0].rule_name);
       string_pad(curr_line, fragment_indent);
       curr_line += silva::pretty_string(pts.fragment_span());
@@ -40,7 +40,7 @@ namespace silva {
   {
     const seed::lexicon_t& lexicon = ptp->fp->sfp->get_lexicon<seed::lexicon_t>();
     return tree_span_t::to_graphviz([&](string_t& curr_line, auto& path) {
-      const auto pts = this->sub_tree_span_at(path.back().node_index);
+      const auto pts = this->subspan_at(path.back().node_index);
       curr_line += fmt::format("{}\\n{}",
                                lexicon.name_id_str(pts[0].rule_name),
                                escape_string(silva::pretty_string(pts.fragment_span())));
@@ -59,7 +59,7 @@ namespace silva {
   {
   }
 
-  parse_tree_span_t parse_tree_span_t::sub_tree_span_at(const index_t pos) const
+  parse_tree_span_t parse_tree_span_t::subspan_at(const index_t pos) const
   {
     return parse_tree_span_t{&((*this)[pos]), stride, ptp};
   }
@@ -67,7 +67,7 @@ namespace silva {
   index_t parse_tree_span_t::count_children_with(const name_id_t name_id) const
   {
     index_t retval = 0;
-    for (const auto pts_child: children_range_pts()) {
+    for (const auto pts_child: children_range()) {
       if (pts_child.rule_name() == name_id) {
         retval += 1;
       }
@@ -119,7 +119,7 @@ namespace silva {
                                            const name_id_t scope_name,
                                            const parse_tree_span_t& pts)
   {
-    auto [it, end]   = pts.children_range_pts();
+    auto [it, end]   = pts.children_range();
     name_id_t retval = scope_name;
     SILVA_EXPECT(it != end, MINOR);
     if (SILVA_EXPECT_FWD((*it).token()) == lexicon.name_sep) {

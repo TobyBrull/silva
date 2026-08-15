@@ -36,7 +36,7 @@ namespace silva {
 
     parse_tree_t copy() const;
 
-    parse_tree_span_t sub_tree_span_at(index_t) const;
+    parse_tree_span_t subspan_at(index_t) const;
 
     index_t count_children_with(name_id_t) const;
 
@@ -109,7 +109,7 @@ namespace silva {
                                        const Ns& ns)
   {
     SILVA_EXPECT(pts[0].num_children > 0, MINOR);
-    const token_id_t front_token = SILVA_EXPECT_FWD(pts.sub_tree_span_at(1).token());
+    const token_id_t front_token = SILVA_EXPECT_FWD(pts.subspan_at(1).token());
     if (front_token == lexicon.name_sep) {
       const name_id_t abs_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts));
       SILVA_EXPECT(ns.contains(abs_name),
