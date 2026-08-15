@@ -1,6 +1,7 @@
 #include "object.hpp"
 
 #include "bytecode.hpp"
+#include "lox.hpp"
 
 namespace silva::lox {
 
@@ -113,8 +114,8 @@ namespace silva::lox {
                                                    const lexicon_t& lexicon)
   {
     SILVA_EXPECT(pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
-    const auto& token = pts.ptp->tp->tokens[pts[0].token_begin];
-    const auto tinfo  = pts.ptp->tp->token_info_get(pts[0].token_begin);
+    const auto token = SILVA_EXPECT_FWD(atom_token(pts, lexicon));
+    const auto tinfo = &lexicon.sfp->get(token.token_id);
     if (token.token_id == lexicon.ti_nil) {
       return object_pool.make(none);
     }

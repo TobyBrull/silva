@@ -145,7 +145,7 @@ namespace silva::fern {
   namespace impl {
     struct fern_nursery_t {
       const parse_tree_t* parse_tree = nullptr;
-      syntax_farm_ptr_t sfp          = parse_tree->tp->fs.fp->sfp;
+      syntax_farm_ptr_t sfp          = parse_tree->fp->sfp;
       const lexicon_t& lexicon       = sfp->get_lexicon<lexicon_t>();
 
       expected_t<fern_labeled_item_t> labeled_item(const parse_tree_span_t pts)

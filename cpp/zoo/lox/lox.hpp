@@ -1,8 +1,10 @@
 #pragma once
 
-#include "canopy/types.hpp"
+#include "lox.lexicon.hpp"
 
 #include "syntax/seed_interpreter.hpp"
+
+#include "canopy/types.hpp"
 
 namespace silva::lox {
   const string_view_t seed_str = R"'(
@@ -41,10 +43,10 @@ language Lox:
       LogicAnd    = ltr infix "and"
       LogicOr     = ltr infix "or"
       Assign      = ltr infix '='
-    Atom = ( "true" | "false" | "nil" | "this"
-           | number | string
+    Atom = ( literal | number | string
            | "super" '.' identifier | identifier
            | '(' Expr ')' )
+    literal = "true" | "false" | "nil" | "this"
     oper = "and" | "or" | '<=' | '>=' | '==' | '!=' | operator.single | parenthesis
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
@@ -54,4 +56,12 @@ language Lox:
 )'";
 
   unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);
+
+  struct atom_token_t {
+    token_id_t token_id;
+    name_id_t category;
+    // The "identifier" in the « = "super" '.' identifier » rule
+    token_id_t member_token_id;
+  };
+  expected_t<atom_token_t> atom_token(const parse_tree_span_t&, const lexicon_t&);
 }

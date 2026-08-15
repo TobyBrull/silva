@@ -88,7 +88,7 @@ namespace silva::seed {
     const name_id_t ni_scope       = sfp->name_id_of(ni_seed, "Scope");
     const name_id_t ni_rule        = sfp->name_id_of(ni_seed, "Rule");
     const name_id_t ni_here        = sfp->name_id_of(ni_seed, "here");
-    const name_id_t ni_qualifier   = sfp->name_id_of(ni_seed, "Qualifier");
+    const name_id_t ni_qualifier   = sfp->name_id_of(ni_seed, "qualifier");
     const name_id_t ni_expr        = sfp->name_id_of(ni_seed, "Expr");
     const name_id_t ni_atom        = sfp->name_id_of(ni_expr, "Atom");
     const name_id_t ni_alternation = sfp->name_id_of(ni_expr, "Alternation");
@@ -96,6 +96,7 @@ namespace silva::seed {
     const name_id_t ni_comma       = sfp->name_id_of(ni_expr, "comma");
     const name_id_t ni_oper        = sfp->name_id_of(ni_expr, "operator");
     const name_id_t ni_term        = sfp->name_id_of(ni_seed, "Terminal");
+    const name_id_t ni_keyword     = sfp->name_id_of(ni_seed, "keyword");
     const name_id_t ni_tok_cat     = sfp->name_id_of(ni_seed, "TokenCategory");
 
     const name_id_t ni_expr_prefix   = sfp->name_id_of(ni_expr, "Prefix");
@@ -110,10 +111,10 @@ namespace silva::seed {
 
     const name_id_t ni_axe         = sfp->name_id_of(ni_seed, "Axe");
     const name_id_t ni_axe_level   = sfp->name_id_of(ni_axe, "Level");
-    const name_id_t ni_axe_assoc   = sfp->name_id_of(ni_axe, "Assoc");
+    const name_id_t ni_axe_assoc   = sfp->name_id_of(ni_axe, "assoc");
     const name_id_t ni_axe_ops     = sfp->name_id_of(ni_axe, "Ops");
-    const name_id_t ni_axe_op_type = sfp->name_id_of(ni_axe, "OpType");
-    const name_id_t ni_axe_op      = sfp->name_id_of(ni_axe, "Op");
+    const name_id_t ni_axe_op_type = sfp->name_id_of(ni_axe, "opType");
+    const name_id_t ni_axe_op      = sfp->name_id_of(ni_axe, "op");
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
 }

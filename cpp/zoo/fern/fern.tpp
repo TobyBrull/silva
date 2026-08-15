@@ -29,24 +29,6 @@ namespace silva::fern::test {
     CHECK(fern.to_string() == fern_text);
 
     const string_view_t expected_parse_tree_str = R"(
-[  0]   1:1   cat=.literal                                 [
-[  1]   2:3   cat=.Fern.value                              none
-[  2]   3:3   cat=.Fern.value                              true
-[  3]   4:3   cat=.Fern.label                              'test'
-[  4]   4:10  cat=.literal                                 :
-[  5]   4:12  cat=.Fern.value                              'Hello'
-[  6]   5:3   cat=.Fern.value                              42
-[  7]   6:3   cat=.literal                                 [
-[  8]   6:4   cat=.literal                                 ]
-[  9]   7:3   cat=.literal                                 [
-[ 10]   8:5   cat=.Fern.value                              1
-[ 11]   9:5   cat=.Fern.label                              'two'
-[ 12]   9:11  cat=.literal                                 :
-[ 13]   9:13  cat=.Fern.value                              2
-[ 14]  10:5   cat=.Fern.value                              3
-[ 15]  11:3   cat=.literal                                 ]
-[ 16]  12:1   cat=.literal                                 ]
-
 [0].Fern                                          [\n  n ...  ]\n]<NEWLINE>
   [0].Fern.LabeledItem                            none\n  
     [0].Fern.value                                none

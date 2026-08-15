@@ -24,78 +24,6 @@ language Frog:
     interpreter_t se(sf.ptr());
     auto ptp = SILVA_REQUIRE(se.add_seed_text("frog.seed", string_t{frog_seed}));
     const string_view_t expected_seed_pt = R"(
-[  0]   2:1   cat=.literal                                 language
-[  1]   2:10  cat=.Seed.ruleName                           Frog
-[  2]   2:14  cat=.literal                                 :
-[  3]   2:15  cat=.newline                                 \n
-[  4]   3:1   cat=.indent                                    
-[  5]   3:3   cat=.Seed.here                               ⊙
-[  6]   3:5   cat=.literal                                 =
-[  7]   3:7   cat=.Seed.ruleName                           Rule
-[  8]   3:12  cat=.Seed.Expr.operator                      *
-[  9]   3:13  cat=.newline                                 \n  
-[ 10]   4:3   cat=.Seed.tokenCategoryName                  skip
-[ 11]   4:8   cat=.literal                                 =
-[ 12]   4:10  cat=.literal                                 (
-[ 13]   4:12  cat=.Seed.fragName                           SPACE
-[ 14]   4:18  cat=.Seed.Expr.operator                      |
-[ 15]   4:20  cat=.Seed.fragName                           LINEFEED
-[ 16]   4:29  cat=.Seed.Expr.operator                      |
-[ 17]   4:31  cat=.Seed.fragName                           COMMENT
-[ 18]   4:39  cat=.Seed.Expr.operator                      |
-[ 19]   4:41  cat=.Seed.fragName                           WHITESPACE
-[ 20]   4:52  cat=.Seed.Expr.operator                      |
-[ 21]   4:54  cat=.Seed.fragName                           INDENT
-[ 22]   4:61  cat=.Seed.Expr.operator                      |
-[ 23]   4:63  cat=.Seed.fragName                           DEDENT
-[ 24]   4:70  cat=.Seed.Expr.operator                      |
-[ 25]   4:72  cat=.Seed.fragName                           NEWLINE
-[ 26]   4:80  cat=.literal                                 )
-[ 27]   4:82  cat=.Seed.Expr.operator                      *
-[ 28]   4:83  cat=.newline                                 \n  
-[ 29]   5:3   cat=.Seed.tokenCategoryName                  identifier
-[ 30]   5:14  cat=.literal                                 =
-[ 31]   5:16  cat=.Seed.fragName                           ID_START
-[ 32]   5:25  cat=.Seed.fragName                           ID_CONTINUE
-[ 33]   5:37  cat=.Seed.Expr.operator                      *
-[ 34]   5:38  cat=.newline                                 \n  
-[ 35]   6:3   cat=.Seed.ruleName                           Rule
-[ 36]   6:8   cat=.literal                                 =
-[ 37]   6:10  cat=.Seed.ruleName                           RuleName
-[ 38]   6:19  cat=.Seed.ruleName                           Expr
-[ 39]   6:23  cat=.newline                                 \n  
-[ 40]   7:3   cat=.Seed.ruleName                           RuleName
-[ 41]   7:12  cat=.literal                                 =
-[ 42]   7:14  cat=.literal                                 no_node
-[ 43]   7:22  cat=.Seed.ruleName                           Keyword
-[ 44]   7:29  cat=.newline                                 \n  
-[ 45]   8:3   cat=.Seed.ruleName                           Expr
-[ 46]   8:8   cat=.literal                                 =
-[ 47]   8:10  cat=.Seed.ruleName                           Primary
-[ 48]   8:18  cat=.Seed.Expr.operator                      +
-[ 49]   8:19  cat=.newline                                 \n  
-[ 50]   9:3   cat=.Seed.ruleName                           Primary
-[ 51]   9:11  cat=.literal                                 =
-[ 52]   9:13  cat=.Seed.Expr.operator                      not
-[ 53]   9:17  cat=.Seed.ruleName                           Keyword
-[ 54]   9:25  cat=.Seed.Expr.operator                      but_then
-[ 55]   9:34  cat=.Seed.tokenCategoryName                  identifier
-[ 56]   9:44  cat=.newline                                 \n  
-[ 57]  10:3   cat=.Seed.ruleName                           Keyword
-[ 58]  10:10  cat=.literal                                 :
-[ 59]  10:11  cat=.newline                                 \n
-[ 60]  11:1   cat=.indent                                      
-[ 61]  11:5   cat=.Seed.here                               ⊙
-[ 62]  11:7   cat=.literal                                 =
-[ 63]  11:9   cat=.string                                  'keyword1'
-[ 64]  11:20  cat=.Seed.Expr.operator                      |
-[ 65]  11:22  cat=.string                                  'keyword2'
-[ 66]  11:33  cat=.Seed.Expr.operator                      |
-[ 67]  11:35  cat=.string                                  'keyword3'
-[ 68]  11:45  cat=.newline                                 
-[ 69]  11:45  cat=.dedent                                  
-[ 70]  11:45  cat=.dedent                                  
-
 [0].Seed                                          langu ...  'keyword3'<NEWLINE><DEDENT><DEDENT>
   [0].Seed.Language                               langu ...  'keyword3'<NEWLINE><DEDENT><DEDENT>
     [0].Seed.ruleName                             Frog
@@ -152,7 +80,7 @@ language Frog:
     [5].Seed.Rule                                 RuleN ... word<NEWLINE>
       [0].Seed.Nonterminal                        RuleName 
         [0].Seed.ruleName                         RuleName
-      [1].Seed.Qualifier                          no_node 
+      [1].Seed.qualifier                          no_node
       [2].Seed.Nonterminal                        Keyword
         [0].Seed.ruleName                         Keyword
     [6].Seed.Rule                                 Expr  ... ry +<NEWLINE>
@@ -199,20 +127,6 @@ language Frog:
 )'";
     const auto frog_pt       = SILVA_REQUIRE(se.apply_text("", frog_text, sf.name_id_of("Frog")));
     const string_view_t expected = R"(
-[  0]   2:5   cat=.literal                                 keyword1
-[  1]   2:14  cat=.Frog.identifier                         a
-[  2]   2:16  cat=.Frog.identifier                         b
-[  3]   2:18  cat=.Frog.identifier                         c
-[  4]   3:5   cat=.literal                                 keyword2
-[  5]   3:14  cat=.Frog.identifier                         d
-[  6]   3:16  cat=.Frog.identifier                         e
-[  7]   4:5   cat=.literal                                 keyword1
-[  8]   4:14  cat=.Frog.identifier                         f
-[  9]   5:5   cat=.literal                                 keyword3
-[ 10]   5:14  cat=.Frog.identifier                         g
-[ 11]   5:16  cat=.Frog.identifier                         h
-[ 12]   5:18  cat=.Frog.identifier                         i
-
 [0].Frog                                          keywo ... h i<NEWLINE><DEDENT>
   [0].Frog.Rule                                   keywo ...  b c<NEWLINE>
     [0].Frog.Keyword                              keyword1 
@@ -267,20 +181,8 @@ language Testor:
     const auto fp = SILVA_REQUIRE(fragmentize(sf.ptr(), "test.src", string_t{src}));
     CHECK(fp->fragments.size() == 22);
     const auto pt = SILVA_REQUIRE(se->apply(fp, sf.name_id_of("Testor")));
-    CHECK(pt->tp->size() == 10);
 
     const string_view_t expected = R"(
-[  0]   1:1   cat=.identifier                              x
-[  1]   1:3   cat=.literal                                 =
-[  2]   1:5   cat=.identifier                              a
-[  3]   1:7   cat=.operator.single                         +
-[  4]   1:9   cat=.identifier                              b
-[  5]   2:1   cat=.identifier                              y
-[  6]   2:3   cat=.literal                                 =
-[  7]   2:5   cat=.identifier                              c
-[  8]   2:7   cat=.operator.single                         *
-[  9]   2:9   cat=.identifier                              d
-
 [0].Testor                                        x = a ...  * d<NEWLINE>
   [0].Testor.Assign                               x = a + b<NEWLINE>
     [0].identifier                                x
@@ -319,16 +221,6 @@ Bar:
     auto pt = SILVA_REQUIRE(se.apply_text("", text, sf.name_id_of("Foo")));
 
     const string_view_t expected = R"(
-[  0]   2:5   cat=.literal                                 a
-[  1]   2:7   cat=.literal                                 b
-[  2]   2:9   cat=.literal                                 c
-[  3]   2:11  cat=.literal                                 x
-[  4]   2:13  cat=.literal                                 y
-[  5]   2:15  cat=.literal                                 z
-[  6]   2:17  cat=.literal                                 a
-[  7]   2:19  cat=.literal                                 b
-[  8]   2:21  cat=.literal                                 c
-
 [0].Foo                                           a b c ... b c<NEWLINE><DEDENT>
   [0].Bar                                         x y z ... b c<NEWLINE><DEDENT>
     [0].Foo                                       a b c<NEWLINE><DEDENT>

@@ -31,15 +31,6 @@ namespace silva {
   constexpr inline name_id_t name_id_language{1};
   constexpr inline name_id_t name_id_literal{2};
 
-  struct token_t {
-    token_id_t token_id;
-    name_id_t category;
-    index_t frag_idx_begin = 0;
-    index_t frag_idx_end   = 0;
-
-    bool is_language() const;
-  };
-
   struct name_abs_t {
     name_id_t id;
   };
@@ -70,13 +61,10 @@ namespace silva {
   struct name_id_wrap_t;
 
   struct fragmentization_t;
-  struct tokenization_t;
   struct parse_tree_t;
   using fragmentization_ptr_t = ptr_t<const fragmentization_t>;
-  using tokenization_ptr_t    = ptr_t<const tokenization_t>;
   using parse_tree_ptr_t      = ptr_t<const parse_tree_t>;
   struct fragment_span_t;
-  struct token_span_t;
   struct parse_tree_span_t;
 
   struct lexicon_t;
@@ -96,7 +84,6 @@ namespace silva {
     hash_map_t<std::type_index, unique_ptr_t<const lexicon_t>> lexicons;
 
     array_t<unique_ptr_t<const fragmentization_t>> fragmentizations;
-    array_t<unique_ptr_t<const tokenization_t>> tokenizations;
     array_t<unique_ptr_t<const parse_tree_t>> parse_trees;
 
     syntax_farm_t();
@@ -127,7 +114,6 @@ namespace silva {
     const LexiconType& get_lexicon();
 
     fragmentization_ptr_t add(unique_ptr_t<const fragmentization_t>);
-    tokenization_ptr_t add(unique_ptr_t<const tokenization_t>);
     parse_tree_ptr_t add(unique_ptr_t<const parse_tree_t>);
   };
   using syntax_farm_ptr_t = ptr_t<syntax_farm_t>;

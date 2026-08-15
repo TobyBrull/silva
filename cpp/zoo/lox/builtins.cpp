@@ -88,16 +88,16 @@ namespace silva::lox {
     auto [it, end] = pts_builtin.children_range();
     for (const builtin_decl_t& builtin_decl: builtin_decls) {
       SILVA_EXPECT(it != end, ASSERT);
-      const auto pts_function =
+      const auto pts_fun =
           pts_builtin.sub_tree_span_at(it.pos).sub_tree_span_at(1).sub_tree_span_at(1);
-      const token_id_t lox_name =
-          pts_function.ptp->tp->tokens[pts_function[0].token_begin].token_id;
+      const auto pts_fun_id     = SILVA_EXPECT_FWD(pts_fun.get_child_by_skipping_pts(0));
+      const token_id_t lox_name = SILVA_EXPECT_FWD(pts_fun_id.token());
       SILVA_EXPECT(lox_name == builtin_decl.name,
                    ASSERT,
                    "expected function '{}', but found '{}'",
                    sfp->token_id_wrap(lox_name),
                    sfp->token_id_wrap(builtin_decl.name));
-      function_builtin_t fb{{pts_function}, builtin_decl.impl};
+      function_builtin_t fb{{pts_fun}, builtin_decl.impl};
       // fb.closure           = scopes.root();
       ++it;
       retval[lox_name] = object_pool.make(std::move(fb));

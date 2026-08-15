@@ -10,9 +10,13 @@
 * Seed: it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
 * Fragmentization: NEWLINE fragments should never have empty size
 * make fragmenziation.hpp:escape_string function efficient
-* seed.cpp: skipping should be done by calling function
+* seed.cpp: skipping should be done by branch-function just after it successfully called a
+  twig-function
 * Seed-Axe: should probably always produce it's own node
 * do not allow tokens to be derived for branch-rules
+
+* smarter skipping: skipping could only happen right before the algorithm descends into a twig-rule
+  and only if it previously emerged from a twig-rule and no skipping has happened yet?
 
 * parse_tree_span_t:
     * clean up interface; rename function names
