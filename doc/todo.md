@@ -13,8 +13,6 @@
     * make fragmenziation.hpp:escape_string function efficient
 
 * skipping:
-    * seed.cpp: skipping should be done by branch-function just after it successfully called a
-      twig-function
     * It's easy to write a rule « Terminal = "language" | fragName ». However, this also skips
       whitespace after "language", which can be confusing. Maybe disallow literals in branch-rules?
       Or error if a branch-rule has an alternation between multiple literals?
