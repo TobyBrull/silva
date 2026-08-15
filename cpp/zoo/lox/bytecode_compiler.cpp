@@ -275,8 +275,8 @@ namespace silva::lox {
       else if (pts[0].rule_name == lexicon.ni_expr_call) {
         const auto [pts_fun, _open, pts_args, _close] = SILVA_EXPECT_FWD(pts.get_children_pts<4>());
         SILVA_EXPECT_FWD(expr(pts_fun));
-        for (const auto [node_idx, child_idx]: pts_args.children_range()) {
-          SILVA_EXPECT_FWD(expr(pts_args.sub_tree_span_at(node_idx)));
+        for (const auto pts_arg: pts_args.children_range_pts()) {
+          SILVA_EXPECT_FWD(expr(pts_arg));
         }
         cfs().nursery.append_index_instr(pts, CALL, pts_args[0].num_children);
       }
@@ -326,8 +326,7 @@ namespace silva::lox {
             .var_name = with_this ? lexicon.ti_this : token_id_t{},
         });
         const auto pts_fun_p = fun.parameters();
-        for (const auto [node_idx, child_idx]: pts_fun_p.children_range()) {
-          const auto pts_p          = pts_fun_p.sub_tree_span_at(node_idx);
+        for (const auto pts_p: pts_fun_p.children_range_pts()) {
           const token_id_t ti_param = SILVA_EXPECT_FWD(pts_p.token());
           cfs().locals.push_back(func_scope_t::local_t{
               .var_name = ti_param,
@@ -400,12 +399,12 @@ namespace silva::lox {
 
         token_id_t superclass_name;
 
-        auto [it, end] = pts.children_range();
+        auto [it, end] = pts.children_range_pts();
         SILVA_EXPECT(it != end, MAJOR);
         ++it;
         SILVA_EXPECT(it != end, MAJOR);
 
-        const auto pts_super = pts.sub_tree_span_at(it.pos);
+        const auto pts_super = *it;
         SILVA_EXPECT(pts_super.rule_name() == lexicon.ni_decl_class_s, MAJOR);
         if (pts_super.num_children() > 0) {
           const auto [pts_super_id] = SILVA_EXPECT_FWD(pts_super.get_children_pts<1>());
@@ -423,7 +422,7 @@ namespace silva::lox {
         }
 
         while (it != end) {
-          const auto pts_method = pts.sub_tree_span_at(it.pos);
+          const auto pts_method = *it;
           SILVA_EXPECT_FWD(function(pts_method, true));
           const auto pts_method_id     = SILVA_EXPECT_FWD(pts_method.get_child_by_skipping_pts(0));
           const token_id_t method_name = SILVA_EXPECT_FWD(pts_method_id.token());
@@ -445,23 +444,20 @@ namespace silva::lox {
         cfs().nursery.append_simple_instr(pts, PRINT);
       }
       else if (rule_name == lexicon.ni_stmt_if) {
-        auto [it, end] = pts.children_range();
+        auto [it, end] = pts.children_range_pts();
         SILVA_EXPECT(it != end, MAJOR);
-        pts.sub_tree_span_at(it.pos);
-        SILVA_EXPECT_FWD(expr(pts.sub_tree_span_at(it.pos)),
-                         "{} error compiling if-condition",
-                         pts);
+        SILVA_EXPECT_FWD(expr(*it), "{} error compiling if-condition", pts);
         ++it;
         SILVA_EXPECT(it != end, MAJOR);
         const index_t j1 = cfs().nursery.append_index_instr(pts, JUMP_IF_FALSE, 0);
         cfs().nursery.append_simple_instr(pts, POP);
-        SILVA_EXPECT_FWD(go(pts.sub_tree_span_at(it.pos)));
+        SILVA_EXPECT_FWD(go(*it));
         const index_t j2 = cfs().nursery.append_index_instr(pts, JUMP, 0);
         cfs().nursery.backpatch_index_instr(j1, cfs().bytecode.size() - j1);
         cfs().nursery.append_simple_instr(pts, POP);
         ++it;
         if (it != end) {
-          SILVA_EXPECT_FWD(go(pts.sub_tree_span_at(it.pos)));
+          SILVA_EXPECT_FWD(go(*it));
         }
         cfs().nursery.backpatch_index_instr(j2, cfs().bytecode.size() - j2);
       }
@@ -514,8 +510,8 @@ namespace silva::lox {
       }
       else if (rule_name == lexicon.ni_stmt_block) {
         block_scope_guard_t bsg{this, pts};
-        for (const auto [node_idx, child_idx]: pts.children_range()) {
-          SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
+        for (const auto pts_child: pts.children_range_pts()) {
+          SILVA_EXPECT_FWD_PLAIN(go(pts_child));
         }
       }
       else if (rule_name == lexicon.ni_stmt_expr) {
@@ -538,8 +534,8 @@ namespace silva::lox {
         ;
       }
       else if (rule_name == lexicon.ni_lox) {
-        for (const auto [node_idx, child_idx]: pts.children_range()) {
-          SILVA_EXPECT_FWD_PLAIN(go(pts.sub_tree_span_at(node_idx)));
+        for (const auto pts_child: pts.children_range_pts()) {
+          SILVA_EXPECT_FWD_PLAIN(go(pts_child));
         }
       }
       else if (rule_name == lexicon.ni_decl) {

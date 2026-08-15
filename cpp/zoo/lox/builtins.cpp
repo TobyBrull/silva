@@ -88,7 +88,7 @@ namespace silva::lox {
     auto [it, end] = pts_builtin.children_range_pts();
     for (const builtin_decl_t& builtin_decl: builtin_decls) {
       SILVA_EXPECT(it != end, ASSERT);
-      const auto pts_fun = (*it).sub_tree_span_at(1).sub_tree_span_at(1);
+      const auto pts_fun        = (*it).sub_tree_span_at(1).sub_tree_span_at(1);
       const auto pts_fun_id     = SILVA_EXPECT_FWD(pts_fun.get_child_by_skipping_pts(0));
       const token_id_t lox_name = SILVA_EXPECT_FWD(pts_fun_id.token());
       SILVA_EXPECT(lox_name == builtin_decl.name,

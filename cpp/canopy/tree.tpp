@@ -7,7 +7,10 @@ namespace silva::test {
     string_t name;
   };
 
-  static_assert(std::input_or_output_iterator<tree_span_child_iter_t<test_tree_node_t>>);
+  static_assert(std::input_or_output_iterator<
+                tree_span_child_pts_iter_t<tree_span_t<test_tree_node_t>, true>>);
+  static_assert(std::input_or_output_iterator<
+                tree_span_child_pts_iter_t<tree_span_t<test_tree_node_t>, false>>);
 
   TEST_CASE("tree")
   {
