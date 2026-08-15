@@ -7,6 +7,11 @@ namespace silva::test {
     string_t name;
   };
 
+  void pretty_write_impl(const tree_span_t<test_tree_node_t>& ts, byte_sink_t* byte_sink)
+  {
+    byte_sink->format("{}", ts[0].name);
+  }
+
   static_assert(std::input_or_output_iterator<
                 tree_span_child_pts_iter_t<tree_span_t<test_tree_node_t>, true>>);
   static_assert(std::input_or_output_iterator<
@@ -53,13 +58,26 @@ namespace silva::test {
       CHECK(result_str == expected.substr(1));
     }
 
-    CHECK(tspan.get_children_dyn() == array_t<index_t>{1, 5, 6});
+    CHECK(tspan.get_children_dyn_pts() ==
+          array_t<tree_span_t<test_tree_node_t>>{
+              tspan.sub_tree_span_at(1),
+              tspan.sub_tree_span_at(5),
+              tspan.sub_tree_span_at(6),
+          });
     CHECK(tspan.subtree_size() == 8);
-    CHECK(tspan.sub_tree_span_at(1).get_children_dyn() == array_t<index_t>{1, 2});
+    CHECK(tspan.sub_tree_span_at(1).get_children_dyn_pts() ==
+          array_t<tree_span_t<test_tree_node_t>>{
+              tspan.sub_tree_span_at(1).sub_tree_span_at(1),
+              tspan.sub_tree_span_at(1).sub_tree_span_at(2),
+          });
     CHECK(tspan.sub_tree_span_at(1).subtree_size() == 4);
-    CHECK(tspan.sub_tree_span_at(2).get_children_dyn() == array_t<index_t>{});
+    CHECK(tspan.sub_tree_span_at(2).get_children_dyn_pts() ==
+          array_t<tree_span_t<test_tree_node_t>>{});
     CHECK(tspan.sub_tree_span_at(2).subtree_size() == 1);
-    CHECK(tspan.sub_tree_span_at(3).get_children_dyn() == array_t<index_t>{1});
+    CHECK(tspan.sub_tree_span_at(3).get_children_dyn_pts() ==
+          array_t<tree_span_t<test_tree_node_t>>{
+              tspan.sub_tree_span_at(3).sub_tree_span_at(1),
+          });
     CHECK(tspan.sub_tree_span_at(3).subtree_size() == 2);
 
     {

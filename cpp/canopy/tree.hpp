@@ -59,10 +59,6 @@ namespace silva {
     template<typename Self>
     expected_t<Self> get_child_by_skipping_pts(this const Self&, index_t);
 
-    // Get the indexes of the children of "parent_node_index" but only if the number of children
-    // matches "N".
-    array_t<index_t> get_children_dyn() const;
-
     template<typename Self>
     array_t<Self> get_children_dyn_pts(this const Self&);
 
@@ -283,18 +279,6 @@ namespace silva {
       SILVA_EXPECT(-self[0].num_children <= idx && idx <= -1, MINOR);
       return self.get_child_by_skipping_pts(self[0].num_children + idx);
     }
-  }
-
-  template<typename NodeData>
-  array_t<index_t> tree_span_t<NodeData>::get_children_dyn() const
-  {
-    const auto& node = (*this)[0];
-    array_t<index_t> retval;
-    retval.reserve(node.num_children);
-    for (index_t pos = 1; pos < node.subtree_size; pos += (*this)[pos].subtree_size) {
-      retval.emplace_back(pos);
-    }
-    return retval;
   }
 
   template<typename NodeData>

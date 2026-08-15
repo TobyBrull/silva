@@ -1017,10 +1017,9 @@ namespace silva::seed::impl {
         rv_nodes[retval].rule_name    = node.rule_name;
         rv_nodes[retval].num_children = ats.root->num_children;
         rv_nodes[retval].subtree_size = 1;
-        const auto child_node_indexes = ats.get_children_dyn();
-        for (const index_t node_index: std::ranges::reverse_view(child_node_indexes)) {
-          const index_t sub_node_index =
-              generate_output(ats.sub_tree_span_at(node_index), leaf_terms_tree);
+        const auto child_pts_array    = ats.get_children_dyn_pts();
+        for (const auto child_pts: std::ranges::reverse_view(child_pts_array)) {
+          const index_t sub_node_index = generate_output(child_pts, leaf_terms_tree);
           rv_nodes[retval].subtree_size += rv_nodes[sub_node_index].subtree_size;
         }
         rv_nodes[retval].fragment_begin = node.fragment_begin;
