@@ -1,28 +1,34 @@
 # TODO
 
-* tokenization-less parse-tree
-    * double-quoted strings should probably support "eps0"
+* rename tree_span_t::size() -> num_children()
 
 * when serializing parse-tree:
     * show escaped fragments for branch-rules and pure fragments for twig-rules
     * remove fragmentization.hpp:escape_string() function
-* rename tree_span_t::size() -> num_children()
 * Seed: it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
-* Fragmentization: NEWLINE fragments should never have empty size
-* make fragmenziation.hpp:escape_string function efficient
-* seed.cpp: skipping should be done by branch-function just after it successfully called a
-  twig-function
 * Seed-Axe: should probably always produce it's own node
-* do not allow tokens to be derived for branch-rules
 
-* smarter skipping: skipping could only happen right before the algorithm descends into a twig-rule
-  and only if it previously emerged from a twig-rule and no skipping has happened yet?
+* Fragmentization:
+    * NEWLINE fragments should never have empty size
+    * make fragmenziation.hpp:escape_string function efficient
+
+* skipping:
+    * seed.cpp: skipping should be done by branch-function just after it successfully called a
+      twig-function
+    * It's easy to write a rule « Terminal = "language" | fragName ». However, this also skips
+      whitespace after "language", which can be confusing. Maybe disallow literals in branch-rules?
+      Or error if a branch-rule has an alternation between multiple literals?
+    * smarter skipping: skipping could only happen right before the algorithm descends into a twig-rule
+      and only if it previously emerged from a twig-rule and no skipping has happened yet?
+
+* double-quoted strings should support digits after first place "eps0"
 
 * parse_tree_span_t:
     * clean up interface; rename function names
     * distinguish branch and twig rules at the level of parse-tree
         * add method ::get_first_token()? (i.e., decend first child until you hit the first
           twig-rule, and call "token()" on this)
+    * do not allow token() to be called on branch-rules?
 
 * replace pts.get_children() with function that returns pts's, not indexes
 
