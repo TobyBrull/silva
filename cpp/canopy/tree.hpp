@@ -62,19 +62,11 @@ namespace silva {
     template<typename Self>
     array_t<Self> get_children_dyn_pts(this const Self&);
 
-    // Get the indexes of the children of "parent_node_index" but only if the number of children
-    // matches "N".
-    template<index_t N>
-    expected_t<array_fixed_t<index_t, N>> get_children() const;
-
+    // Get the direct child tree-spans if the number of children is exactly equal to "N".
     template<index_t N, typename Self>
     expected_t<array_fixed_t<Self, N>> get_children_pts(this const Self&);
 
-    // Get the indexes of the children of "parent_node_index" but only if the number of children
-    // matches "N".
-    template<index_t N>
-    expected_t<array_small_t<index_t, N>> get_children_up_to() const;
-
+    // Get the direct child tree-spans if the number of children is less-or-equal to "N".
     template<index_t N, typename Self>
     expected_t<array_small_t<Self, N>> get_children_up_to_pts(this const Self&);
 
@@ -295,25 +287,6 @@ namespace silva {
   }
 
   template<typename NodeData>
-  template<index_t N>
-  expected_t<array_fixed_t<index_t, N>> tree_span_t<NodeData>::get_children() const
-  {
-    const auto& node = (*this)[0];
-    SILVA_EXPECT(node.num_children == N,
-                 MAJOR,
-                 "expected {} children, got {}",
-                 N,
-                 node.num_children);
-    array_fixed_t<index_t, N> retval;
-    index_t child_index = 0;
-    for (index_t pos = 1; pos < node.subtree_size; pos += (*this)[pos].subtree_size) {
-      retval[child_index] = pos;
-      child_index += 1;
-    }
-    return retval;
-  }
-
-  template<typename NodeData>
   template<index_t N, typename Self>
   expected_t<array_fixed_t<Self, N>> tree_span_t<NodeData>::get_children_pts(this const Self& self)
   {
@@ -327,19 +300,6 @@ namespace silva {
     array_fixed_t<Self, N> retval;
     for (const auto [pts_child, child_index]: self.children_range_pts_with_idx()) {
       retval[child_index] = pts_child;
-    }
-    return retval;
-  }
-
-  template<typename NodeData>
-  template<index_t N>
-  expected_t<array_small_t<index_t, N>> tree_span_t<NodeData>::get_children_up_to() const
-  {
-    const auto& node = (*this)[0];
-    SILVA_EXPECT(node.num_children <= N, MAJOR);
-    array_small_t<index_t, N> retval;
-    for (index_t pos = 1; pos < node.subtree_size; pos += (*this)[pos].subtree_size) {
-      retval.emplace_back(pos);
     }
     return retval;
   }
