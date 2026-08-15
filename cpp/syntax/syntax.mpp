@@ -7,7 +7,7 @@
 namespace silva {
   expected_t<void> apply_action(seed::interpreter_t& si, const parse_tree_span_t pts)
   {
-    if (pts[0].rule_name == si.sfp->get_lexicon<seed::lexicon_t>().ni_seed) {
+    if (pts.rule_name() == si.sfp->get_lexicon<seed::lexicon_t>().ni_seed) {
       SILVA_EXPECT_FWD(si.add_seed_copy(pts));
     }
 
@@ -61,7 +61,7 @@ namespace silva {
       parse_tree_span_t pts = pt->span();
       SILVA_EXPECT_FWD(apply_action(*si, pts));
 
-      if (pts[0].rule_name == ni_silva) {
+      if (pts.rule_name() == ni_silva) {
         for (const auto pts_section: pts.children_range()) {
           const auto [pts_name, pts_lang] = SILVA_EXPECT_FWD(pts_section.get_children<2>());
           const token_id_t sub_lang_name  = SILVA_EXPECT_FWD(pts_name.token());

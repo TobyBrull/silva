@@ -33,8 +33,7 @@ namespace silva {
     index_t subtree_size() const;
     index_t num_children() const;
 
-    auto& operator[](this auto&&, index_t);
-
+    auto& node_at(this auto&&, index_t);
     tree_span_t subspan_at(index_t) const;
 
     auto children_range(this auto&&);
@@ -115,7 +114,7 @@ namespace silva {
   template<typename Span, bool WithIdx>
   void tree_span_child_pts_iter_t<Span, WithIdx>::increment()
   {
-    pos += tree_span[pos].subtree_size;
+    pos += tree_span.node_at(pos).subtree_size;
     child_index += 1;
   }
 
@@ -146,7 +145,7 @@ namespace silva {
   }
 
   template<typename NodeData>
-  auto& tree_span_t<NodeData>::operator[](this auto&& self, const index_t i)
+  auto& tree_span_t<NodeData>::node_at(this auto&& self, const index_t i)
   {
     return *(self.root + self.stride * i);
   }
@@ -154,7 +153,7 @@ namespace silva {
   template<typename NodeData>
   tree_span_t<NodeData> tree_span_t<NodeData>::subspan_at(const index_t pos) const
   {
-    return {&((*this)[pos]), stride};
+    return {&((*this).node_at(pos)), stride};
   }
 
   namespace impl {
@@ -199,9 +198,9 @@ namespace silva {
         [&](const index_t new_node_index) -> expected_t<optional_t<index_t>> {
       index_t next_child_index = 0;
       while (!path.empty() &&
-             path.back().node_index + (*this)[path.back().node_index].subtree_size <=
+             path.back().node_index + (*this).node_at(path.back().node_index).subtree_size <=
                  new_node_index) {
-        const bool is_leaf = ((*this)[path.back().node_index].num_children == 0);
+        const bool is_leaf = ((*this).node_at(path.back().node_index).num_children == 0);
         next_child_index   = path.back().child_index + 1;
         if (!is_leaf) {
           const bool cont =
@@ -215,7 +214,7 @@ namespace silva {
       return {next_child_index};
     };
 
-    const index_t end_node_index = (*this)[0].subtree_size;
+    const index_t end_node_index = (*this).subtree_size();
     for (index_t node_index = 0; node_index < end_node_index; ++node_index) {
       const optional_t<index_t> maybe_new_child_index =
           SILVA_EXPECT_FWD(clean_stack_till(node_index));
@@ -223,7 +222,7 @@ namespace silva {
         return {};
       }
       path.push_back({.node_index = node_index, .child_index = maybe_new_child_index.value()});
-      const bool is_leaf = ((*this)[node_index].num_children == 0);
+      const bool is_leaf = ((*this).node_at(node_index).num_children == 0);
       if (is_leaf) {
         const bool cont =
             SILVA_EXPECT_FWD(visitor(span_t<const tree_branch_t>{path}, tree_event_t::ON_LEAF));
@@ -258,17 +257,17 @@ namespace silva {
   expected_t<Self> tree_span_t<NodeData>::iterate_to_child(this const Self& self, index_t idx)
   {
     if (0 <= idx) {
-      SILVA_EXPECT(idx < self[0].num_children, MINOR);
+      SILVA_EXPECT(idx < self.num_children(), MINOR);
       index_t pos = 1;
       while (idx > 0) {
-        pos += self[pos].subtree_size;
+        pos += self.node_at(pos).subtree_size;
         idx -= 1;
       }
       return self.subspan_at(pos);
     }
     else {
-      SILVA_EXPECT(-self[0].num_children <= idx && idx <= -1, MINOR);
-      return self.iterate_to_child(self[0].num_children + idx);
+      SILVA_EXPECT(-self.num_children() <= idx && idx <= -1, MINOR);
+      return self.iterate_to_child(self.num_children() + idx);
     }
   }
 
@@ -276,7 +275,7 @@ namespace silva {
   template<typename Self>
   array_t<Self> tree_span_t<NodeData>::get_children_array(this const Self& self)
   {
-    const auto& node = self[0];
+    const auto& node = self.node_at(0);
     array_t<Self> retval;
     retval.reserve(node.num_children);
     for (const auto pts_child: self.children_range()) {
@@ -289,7 +288,7 @@ namespace silva {
   template<index_t N, typename Self>
   expected_t<array_fixed_t<Self, N>> tree_span_t<NodeData>::get_children(this const Self& self)
   {
-    const auto& node = self[0];
+    const auto& node = self.node_at(0);
     SILVA_EXPECT(node.num_children == N,
                  MAJOR,
                  "expected {} children, got {}",
@@ -308,7 +307,7 @@ namespace silva {
   expected_t<array_small_t<Self, N>>
   tree_span_t<NodeData>::get_children_up_to(this const Self& self)
   {
-    const auto& node = self[0];
+    const auto& node = self.node_at(0);
     SILVA_EXPECT(node.num_children <= N, MAJOR);
     static_assert(std::derived_from<Self, tree_span_t<NodeData>>);
     array_small_t<Self, N> retval;
@@ -359,7 +358,7 @@ namespace silva {
             return true;
           }
           SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
-          const auto& node = (*this)[path.back().node_index];
+          const auto& node = (*this).node_at(path.back().node_index);
           string_t node_name{"/"};
           string_t curr_line;
           if (path.size() >= 2) {

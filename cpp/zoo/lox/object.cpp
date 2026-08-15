@@ -14,7 +14,7 @@ namespace silva::lox {
 
   index_t function_t::arity() const
   {
-    const index_t arity = pts[2].num_children;
+    const index_t arity = pts.node_at(2).num_children;
     return arity;
   }
   parse_tree_span_t function_t::parameters() const
@@ -23,7 +23,7 @@ namespace silva::lox {
   }
   parse_tree_span_t function_t::body() const
   {
-    return pts.subspan_at(pts[2].subtree_size + 2);
+    return pts.subspan_at(pts.node_at(2).subtree_size + 2);
   }
 
   bool operator==(const function_t& lhs, const function_t& rhs)
@@ -113,7 +113,7 @@ namespace silva::lox {
                                                    object_pool_t& object_pool,
                                                    const lexicon_t& lexicon)
   {
-    SILVA_EXPECT(pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
+    SILVA_EXPECT(pts.rule_name() == lexicon.ni_expr_atom, ASSERT);
     const auto token = SILVA_EXPECT_FWD(atom_token(pts, lexicon));
     const auto tinfo = &lexicon.sfp->get(token.token_id);
     if (token.token_id == lexicon.ti_nil) {

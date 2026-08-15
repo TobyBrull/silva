@@ -185,7 +185,7 @@ language SimpleFern:
       for (index_t i = 0; i < expected_rule_names.size(); ++i) {
         INFO(i);
         const token_id_t ti = SILVA_REQUIRE(tok_ptses[i].token());
-        const name_id_t ni  = SILVA_REQUIRE(tok_ptses[i].iterate_to_child(0))[0].rule_name;
+        const name_id_t ni  = SILVA_REQUIRE(tok_ptses[i].iterate_to_child(0)).rule_name();
         CHECK(ti == sf.token_id(expected_token_strs[i]));
         CHECK(ni == expected_rule_names[i]);
       }

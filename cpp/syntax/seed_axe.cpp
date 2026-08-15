@@ -124,7 +124,7 @@ namespace silva::seed::impl {
     expected_t<void> op(const token_id_t axe_op_type, const parse_tree_span_t pts_op)
     {
       const auto op_tok = SILVA_EXPECT_FWD(pts_op.token());
-      SILVA_EXPECT(pts_op[0].rule_name == lexicon.ni_axe_op, BROKEN_SEED);
+      SILVA_EXPECT(pts_op.rule_name() == lexicon.ni_axe_op, BROKEN_SEED);
       const auto sub_ptses = SILVA_EXPECT_FWD(pts_op.get_children_up_to<1>());
       if (sub_ptses.size == 0) {
         SILVA_EXPECT(op_tok == lexicon.ti_concat.token_id, BROKEN_SEED);
@@ -132,7 +132,7 @@ namespace silva::seed::impl {
       else {
         SILVA_EXPECT(sub_ptses.size == 1, BROKEN_SEED);
         const parse_tree_span_t sub_pts = sub_ptses[0];
-        SILVA_EXPECT(sub_pts[0].rule_name == lexicon.ni_string, BROKEN_SEED);
+        SILVA_EXPECT(sub_pts.rule_name() == lexicon.ni_string, BROKEN_SEED);
       }
       if (op_tok == lexicon.ti_concat.token_id) {
         SILVA_EXPECT(
@@ -150,11 +150,11 @@ namespace silva::seed::impl {
                          const assoc_t assoc,
                          const parse_tree_span_t pts_ops)
     {
-      SILVA_EXPECT(pts_ops[0].rule_name == lexicon.ni_axe_ops, BROKEN_SEED);
+      SILVA_EXPECT(pts_ops.rule_name() == lexicon.ni_axe_ops, BROKEN_SEED);
       auto [it, end] = pts_ops.children_range();
       SILVA_EXPECT(it != end, BROKEN_SEED);
       const auto pts_op_type = *it;
-      SILVA_EXPECT(pts_op_type[0].rule_name == lexicon.ni_axe_op_type, BROKEN_SEED);
+      SILVA_EXPECT(pts_op_type.rule_name() == lexicon.ni_axe_op_type, BROKEN_SEED);
       const token_id_t axe_op_type = SILVA_EXPECT_FWD(pts_op_type.token());
       SILVA_EXPECT(axe_op_type == lexicon.ti_prefix.token_id ||
                        axe_op_type == lexicon.ti_prefix_n.token_id ||
@@ -170,7 +170,7 @@ namespace silva::seed::impl {
       optional_t<parse_tree_span_t> pts_nt;
       if (it != end) {
         const auto curr_pts = *it;
-        if (curr_pts[0].rule_name == lexicon.ni_nt) {
+        if (curr_pts.rule_name() == lexicon.ni_nt) {
           pts_nt = curr_pts;
           ++it;
         }
@@ -179,7 +179,7 @@ namespace silva::seed::impl {
       if (axe_op_type == lexicon.ti_prefix_n.token_id ||
           axe_op_type == lexicon.ti_ternary.token_id ||
           axe_op_type == lexicon.ti_postfix_n.token_id) {
-        const index_t num_op_tokens = pts_ops[0].num_children - it.child_index;
+        const index_t num_op_tokens = pts_ops.num_children() - it.child_index;
         SILVA_EXPECT(num_op_tokens % 2 == 0,
                      MINOR,
                      "{} for operations [ atom_nest atom_nest_transparent prefix_nest ternary "
@@ -367,7 +367,7 @@ namespace silva::seed::impl {
 
     expected_t<void> level(const level_index_t level_index, const parse_tree_span_t pts_level)
     {
-      SILVA_EXPECT(pts_level[0].rule_name == lexicon.ni_axe_level, BROKEN_SEED);
+      SILVA_EXPECT(pts_level.rule_name() == lexicon.ni_axe_level, BROKEN_SEED);
       const auto pts_children = pts_level.get_children_array();
       SILVA_EXPECT(pts_children.size() >= 2, BROKEN_SEED);
       const token_id_t base_name = SILVA_EXPECT_FWD(pts_children[0].token());
@@ -375,7 +375,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT_FWD(add_to_level_map(full_name, level_index));
 
       assoc_t assoc = INVALID;
-      SILVA_EXPECT(pts_children[1][0].rule_name == lexicon.ni_axe_assoc, BROKEN_SEED);
+      SILVA_EXPECT(pts_children[1].rule_name() == lexicon.ni_axe_assoc, BROKEN_SEED);
       const token_id_t ti_assoc = SILVA_EXPECT_FWD(pts_children[1].token());
       if (ti_assoc == lexicon.ti_ltr.token_id) {
         assoc = LEFT_TO_RIGHT;
@@ -398,17 +398,17 @@ namespace silva::seed::impl {
       auto [it, end] = pts_axe.children_range();
       SILVA_EXPECT(it != end, MINOR, "{} should have at least one child", pts_axe);
       const auto pts_axe_atom_nt = *it;
-      SILVA_EXPECT(pts_axe_atom_nt[0].rule_name == lexicon.ni_nt, MINOR);
+      SILVA_EXPECT(pts_axe_atom_nt.rule_name() == lexicon.ni_nt, MINOR);
       retval.atom_rule = pts_axe_atom_nt;
       ++it;
 
       SILVA_EXPECT(it != end, MINOR, "{} should have at least two children", pts_axe);
       const auto pts_axe_oper_nt = *it;
-      SILVA_EXPECT(pts_axe_oper_nt[0].rule_name == lexicon.ni_nt, MINOR);
+      SILVA_EXPECT(pts_axe_oper_nt.rule_name() == lexicon.ni_nt, MINOR);
       retval.oper_rule = pts_axe_oper_nt;
       ++it;
 
-      level_index_t curr_level = pts_axe[0].num_children - 1;
+      level_index_t curr_level = pts_axe.num_children() - 1;
       while (it != end) {
         curr_level -= 1;
         SILVA_EXPECT_FWD(level(curr_level, *it));
@@ -1005,7 +1005,7 @@ namespace silva::seed::impl {
     {
       auto& rv_nodes       = nursery.tree;
       const index_t retval = rv_nodes.size();
-      const auto& node     = ats[0];
+      const auto& node     = ats.node_at(0);
       if (node.tree_index.has_value()) {
         const auto to_implant = leaf_terms_tree.span().subspan_at(node.tree_index.value());
         rv_nodes.insert(rv_nodes.end(),

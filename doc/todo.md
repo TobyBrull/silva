@@ -20,13 +20,10 @@
     * when serializing parse-tree:
         * show escaped fragments for branch-rules and pure fragments for twig-rules
         * remove fragmentization.hpp:escape_string() function
-    * clean up interface; rename function names
     * distinguish branch and twig rules at the level of parse-tree
         * add method ::get_first_token()? (i.e., decend first child until you hit the first
           twig-rule, and call "token()" on this)
     * do not allow token() to be called on branch-rules?
-
-* replace pts.get_children() with function that returns pts's, not indexes
 
 * overhaul seed-axe
     * avoid std::sort (treat three different types of arity in separate branches; simplfy

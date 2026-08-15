@@ -29,7 +29,7 @@ namespace silva {
     const seed::lexicon_t& lexicon = ptp->fp->sfp->get_lexicon<seed::lexicon_t>();
     retval += SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
       const auto pts = this->subspan_at(path.back().node_index);
-      curr_line += lexicon.name_id_str(pts[0].rule_name);
+      curr_line += lexicon.name_id_str(pts.rule_name());
       string_pad(curr_line, fragment_indent);
       curr_line += silva::pretty_string(pts.fragment_span());
     }));
@@ -42,7 +42,7 @@ namespace silva {
     return tree_span_t::to_graphviz([&](string_t& curr_line, auto& path) {
       const auto pts = this->subspan_at(path.back().node_index);
       curr_line += fmt::format("{}\\n{}",
-                               lexicon.name_id_str(pts[0].rule_name),
+                               lexicon.name_id_str(pts.rule_name()),
                                escape_string(silva::pretty_string(pts.fragment_span())));
     });
   }
@@ -61,7 +61,7 @@ namespace silva {
 
   parse_tree_span_t parse_tree_span_t::subspan_at(const index_t pos) const
   {
-    return parse_tree_span_t{&((*this)[pos]), stride, ptp};
+    return parse_tree_span_t{&((*this).node_at(pos)), stride, ptp};
   }
 
   index_t parse_tree_span_t::count_children_with(const name_id_t name_id) const
@@ -81,7 +81,7 @@ namespace silva {
   }
   expected_t<fragment_span_t> parse_tree_span_t::language() const
   {
-    SILVA_EXPECT((*this)[0].rule_name == name_id_language, MINOR);
+    SILVA_EXPECT((*this).rule_name() == name_id_language, MINOR);
     return fragment_span();
   }
 
@@ -89,8 +89,8 @@ namespace silva {
   {
     return fragment_span_t{
         ptp->fp,
-        (*this)[0].fragment_begin,
-        (*this)[0].fragment_end,
+        (*this).fragment_begin(),
+        (*this).fragment_end(),
     };
   }
 
@@ -98,7 +98,7 @@ namespace silva {
   {
     return fragment_location_t{
         ptp->fp,
-        (*this)[0].fragment_begin,
+        (*this).fragment_begin(),
     };
   }
 
@@ -107,7 +107,7 @@ namespace silva {
     array_t<parse_tree_node_t> nodes;
     nodes.reserve(subtree_size());
     for (index_t i = 0; i < subtree_size(); ++i) {
-      nodes.push_back((*this)[i]);
+      nodes.push_back((*this).node_at(i));
     }
     return parse_tree_t{
         .fp    = ptp->fp,

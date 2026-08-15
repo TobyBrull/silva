@@ -150,14 +150,13 @@ namespace silva::fern {
 
       expected_t<fern_labeled_item_t> labeled_item(const parse_tree_span_t pts)
       {
-        const auto& labeled_item = pts[0];
-        SILVA_EXPECT(labeled_item.rule_name == lexicon.ni_lbl_item, MINOR);
+        SILVA_EXPECT(pts.rule_name() == lexicon.ni_lbl_item, MINOR);
         fern_labeled_item_t retval;
         const auto pts_children = SILVA_EXPECT_FWD(pts.get_children_up_to<2>());
         SILVA_EXPECT(pts_children.size == 1 || pts_children.size == 2, MINOR);
         if (pts_children.size == 2) {
           const auto pts_label = pts_children[0];
-          SILVA_EXPECT(pts_label[0].rule_name == lexicon.ni_label, MINOR);
+          SILVA_EXPECT(pts_label.rule_name() == lexicon.ni_label, MINOR);
           const auto [pts_label_child] = SILVA_EXPECT_FWD(pts_label.get_children<1>());
           const name_id_t rn           = pts_label_child.rule_name();
           const token_info_t* tinfo    = &sfp->get(SILVA_EXPECT_FWD(pts_label.token()));
@@ -205,7 +204,7 @@ namespace silva::fern {
 
       expected_t<fern_t> fern(const parse_tree_span_t pts)
       {
-        SILVA_EXPECT(pts[0].rule_name == lexicon.ni_fern, MINOR);
+        SILVA_EXPECT(pts.rule_name() == lexicon.ni_fern, MINOR);
         fern_t retval;
         for (const auto pts_child: pts.children_range()) {
           fern_labeled_item_t li = SILVA_EXPECT_FWD(labeled_item(pts_child));

@@ -108,7 +108,7 @@ namespace silva {
                                        const parse_tree_span_t& pts,
                                        const Ns& ns)
   {
-    SILVA_EXPECT(pts[0].num_children > 0, MINOR);
+    SILVA_EXPECT(pts.num_children() > 0, MINOR);
     const token_id_t front_token = SILVA_EXPECT_FWD(pts.subspan_at(1).token());
     if (front_token == lexicon.name_sep) {
       const name_id_t abs_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts));

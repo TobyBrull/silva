@@ -9,7 +9,7 @@ namespace silva::test {
 
   void pretty_write_impl(const tree_span_t<test_tree_node_t>& ts, byte_sink_t* byte_sink)
   {
-    byte_sink->format("{}", ts[0].name);
+    byte_sink->format("{}", ts.node_at(0).name);
   }
 
   static_assert(std::input_or_output_iterator<
@@ -43,7 +43,7 @@ namespace silva::test {
     {
       const string_t result_str =
           SILVA_REQUIRE(tspan.to_string([&](string_t& curr_line, auto& path) {
-            curr_line += fmt::format(" {}", tspan[path.back().node_index].name);
+            curr_line += fmt::format(" {}", tspan.node_at(path.back().node_index).name);
           }));
       const string_view_t expected = R"(
 [0] A
@@ -82,7 +82,7 @@ namespace silva::test {
     {
       array_t<string_t> results;
       for (const auto tspan_child: tspan.children_range()) {
-        results.push_back(tspan_child[0].name);
+        results.push_back(tspan_child.node_at(0).name);
       }
       CHECK(results == array_t<string_t>{"B", "C", "D"});
     }

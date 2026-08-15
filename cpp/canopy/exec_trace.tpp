@@ -35,7 +35,7 @@ namespace silva::test {
     auto etr = SILVA_REQUIRE(widget.et.as_tree("ROOT"));
     tree_span_t ets{etr};
     const string_t estr = SILVA_REQUIRE(ets.to_string([&](string_t& curr_line, auto& path) {
-      const widget_t::data_t& dd = ets.subspan_at(path.back().node_index)[0].item.data;
+      const widget_t::data_t& dd = ets.subspan_at(path.back().node_index).node_at(0).item.data;
       curr_line += fmt::format("{} / {}", dd.name, dd.success);
     }));
     const string_view_t expected = R"(
