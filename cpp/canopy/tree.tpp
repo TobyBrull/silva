@@ -51,13 +51,13 @@ namespace silva::test {
     }
 
     CHECK(tspan.get_children_dyn() == array_t<index_t>{1, 5, 6});
-    CHECK(tspan.size() == 8);
+    CHECK(tspan.subtree_size() == 8);
     CHECK(tspan.sub_tree_span_at(1).get_children_dyn() == array_t<index_t>{1, 2});
-    CHECK(tspan.sub_tree_span_at(1).size() == 4);
+    CHECK(tspan.sub_tree_span_at(1).subtree_size() == 4);
     CHECK(tspan.sub_tree_span_at(2).get_children_dyn() == array_t<index_t>{});
-    CHECK(tspan.sub_tree_span_at(2).size() == 1);
+    CHECK(tspan.sub_tree_span_at(2).subtree_size() == 1);
     CHECK(tspan.sub_tree_span_at(3).get_children_dyn() == array_t<index_t>{1});
-    CHECK(tspan.sub_tree_span_at(3).size() == 2);
+    CHECK(tspan.sub_tree_span_at(3).subtree_size() == 2);
 
     {
       array_t<string_t> results;

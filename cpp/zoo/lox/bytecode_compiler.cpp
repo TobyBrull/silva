@@ -161,7 +161,7 @@ namespace silva::lox {
 
     expected_t<void> expr_atom(const parse_tree_span_t pts)
     {
-      SILVA_EXPECT(pts.size() > 0 && pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
+      SILVA_EXPECT(pts.subtree_size() > 0 && pts[0].rule_name == lexicon.ni_expr_atom, ASSERT);
       if (pts[0].num_children == 1 && pts[1].rule_name != lexicon.ni_expr_literal &&
           sfp->name_id_is_parent(lexicon.ni_expr, pts[1].rule_name)) {
         return expr(pts.sub_tree_span_at(1));
@@ -546,7 +546,7 @@ namespace silva::lox {
 
     expected_t<void> go(const parse_tree_span_t pts)
     {
-      SILVA_EXPECT(pts.size() > 0, MAJOR);
+      SILVA_EXPECT(pts.subtree_size() > 0, MAJOR);
       const name_id_t rule_name = pts[0].rule_name;
       if (rule_name == lexicon.ni_epsilon) {
         ;

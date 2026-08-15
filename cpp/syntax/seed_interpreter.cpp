@@ -121,7 +121,7 @@ namespace silva::seed::impl {
             interpreter_t::rule_expr_data_t{.expr = pts_rhs_0, .is_twig_rule = true};
       }
 
-      for (index_t i = 0; i < pts_rhs_0.size(); ++i) {
+      for (index_t i = 0; i < pts_rhs_0.subtree_size(); ++i) {
         if (pts_rhs_0[i].rule_name == lexicon.ni_term && pts_rhs_0[i].num_children == 1 &&
             pts_rhs_0[i + 1].rule_name == lexicon.ni_string) {
           const token_id_t str_ti     = SILVA_EXPECT_FWD(pts_rhs_0.sub_tree_span_at(i + 1).token());
@@ -241,7 +241,7 @@ namespace silva::seed::impl {
 
     expected_t<void> handle_seed(const name_id_t scope_name, const parse_tree_span_t pts_seed)
     {
-      SILVA_EXPECT(pts_seed.size() != 0 && pts_seed[0].rule_name == lexicon.ni_seed,
+      SILVA_EXPECT(pts_seed.subtree_size() != 0 && pts_seed[0].rule_name == lexicon.ni_seed,
                    MINOR,
                    "Seed parse_tree should start with Seed node");
 

@@ -1,10 +1,5 @@
 # TODO
 
-* rename tree_span_t::size() -> num_children()
-
-* when serializing parse-tree:
-    * show escaped fragments for branch-rules and pure fragments for twig-rules
-    * remove fragmentization.hpp:escape_string() function
 * Seed: it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
 * Seed-Axe: should probably always produce it's own node
 
@@ -22,6 +17,9 @@
 * double-quoted strings should support digits after first place "eps0"
 
 * parse_tree_span_t:
+    * when serializing parse-tree:
+        * show escaped fragments for branch-rules and pure fragments for twig-rules
+        * remove fragmentization.hpp:escape_string() function
     * clean up interface; rename function names
     * distinguish branch and twig rules at the level of parse-tree
         * add method ::get_first_token()? (i.e., decend first child until you hit the first

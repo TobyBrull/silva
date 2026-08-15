@@ -108,8 +108,8 @@ namespace silva {
   parse_tree_t parse_tree_span_t::copy() const
   {
     array_t<parse_tree_node_t> nodes;
-    nodes.reserve(size());
-    for (index_t i = 0; i < size(); ++i) {
+    nodes.reserve(subtree_size());
+    for (index_t i = 0; i < subtree_size(); ++i) {
       nodes.push_back((*this)[i]);
     }
     return parse_tree_t{

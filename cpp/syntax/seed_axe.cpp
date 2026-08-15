@@ -1008,7 +1008,9 @@ namespace silva::seed::impl {
       const auto& node     = ats[0];
       if (node.tree_index.has_value()) {
         const auto to_implant = leaf_terms_tree.span().sub_tree_span_at(node.tree_index.value());
-        rv_nodes.insert(rv_nodes.end(), to_implant.root, to_implant.root + to_implant.size());
+        rv_nodes.insert(rv_nodes.end(),
+                        to_implant.root,
+                        to_implant.root + to_implant.subtree_size());
       }
       else {
         rv_nodes.emplace_back();

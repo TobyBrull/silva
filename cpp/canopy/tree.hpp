@@ -30,7 +30,7 @@ namespace silva {
     explicit tree_span_t(span_t<NodeData>);
     explicit tree_span_t(array_t<NodeData>&);
 
-    index_t size() const; // TODO: subtree_size
+    index_t subtree_size() const;
     index_t num_children() const;
 
     auto& operator[](this auto&&, index_t);
@@ -143,7 +143,7 @@ namespace silva {
   }
 
   template<typename NodeData>
-  index_t tree_span_t<NodeData>::size() const
+  index_t tree_span_t<NodeData>::subtree_size() const
   {
     return root->subtree_size;
   }
