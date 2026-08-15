@@ -207,9 +207,8 @@ namespace silva::fern {
       {
         SILVA_EXPECT(pts[0].rule_name == lexicon.ni_fern, MINOR);
         fern_t retval;
-        for (const auto [child_node_index, child_index]: pts.children_range()) {
-          fern_labeled_item_t li =
-              SILVA_EXPECT_FWD(labeled_item(pts.sub_tree_span_at(child_node_index)));
+        for (const auto pts_child: pts.children_range_pts()) {
+          fern_labeled_item_t li = SILVA_EXPECT_FWD(labeled_item(pts_child));
           retval.push_back(std::move(li));
         }
         return retval;

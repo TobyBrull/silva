@@ -38,6 +38,8 @@ namespace silva {
     tree_span_t sub_tree_span_at(index_t) const;
 
     auto children_range(this auto&&);
+    auto children_range_pts(this auto&&);
+    auto children_range_pts_with_idx(this auto&&);
 
     bool is_consistent() const;
 
@@ -103,6 +105,18 @@ namespace silva {
     friend auto operator<=>(const tree_span_child_iter_t&, const tree_span_child_iter_t&) = default;
   };
 
+  template<typename Span, bool WithIdx>
+  struct tree_span_child_pts_iter_t : public iterator_facade_t {
+    Span tree_span;
+    index_t pos         = 1;
+    index_t child_index = 0;
+
+    auto dereference() const;
+    void increment();
+    friend auto operator<=>(const tree_span_child_pts_iter_t&,
+                            const tree_span_child_pts_iter_t&) = default;
+  };
+
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   using tree_t = array_t<NodeData>;
@@ -122,6 +136,24 @@ namespace silva {
   template<typename NodeData>
     requires std::derived_from<NodeData, tree_node_t>
   void tree_span_child_iter_t<NodeData>::increment()
+  {
+    pos += tree_span[pos].subtree_size;
+    child_index += 1;
+  }
+
+  template<typename Span, bool WithIdx>
+  auto tree_span_child_pts_iter_t<Span, WithIdx>::dereference() const
+  {
+    if constexpr (WithIdx) {
+      return pair_t<Span, index_t>{tree_span.sub_tree_span_at(pos), child_index};
+    }
+    else {
+      return tree_span.sub_tree_span_at(pos);
+    }
+  }
+
+  template<typename Span, bool WithIdx>
+  void tree_span_child_pts_iter_t<Span, WithIdx>::increment()
   {
     pos += tree_span[pos].subtree_size;
     child_index += 1;
@@ -181,6 +213,38 @@ namespace silva {
     };
     return std::ranges::subrange<tree_span_child_iter_t<NodeData>,
                                  tree_span_child_iter_t<NodeData>>(begin, end);
+  }
+
+  namespace impl {
+    template<bool WithIdx, typename Span>
+    auto children_range_pts(const Span& self)
+    {
+      using iter_t = tree_span_child_pts_iter_t<Span, WithIdx>;
+      static_assert(std::input_or_output_iterator<iter_t>);
+      iter_t begin{
+          .tree_span   = self,
+          .pos         = 1,
+          .child_index = 0,
+      };
+      iter_t end{
+          .tree_span   = self,
+          .pos         = self.root->subtree_size,
+          .child_index = self.root->num_children,
+      };
+      return std::ranges::subrange<iter_t, iter_t>(begin, end);
+    }
+  }
+
+  template<typename NodeData>
+  auto tree_span_t<NodeData>::children_range_pts(this auto&& self)
+  {
+    return impl::children_range_pts<false, std::remove_cvref_t<decltype(self)>>(self);
+  }
+
+  template<typename NodeData>
+  auto tree_span_t<NodeData>::children_range_pts_with_idx(this auto&& self)
+  {
+    return impl::children_range_pts<true, std::remove_cvref_t<decltype(self)>>(self);
   }
 
   template<typename NodeData>
@@ -286,8 +350,8 @@ namespace silva {
     const auto& node = self[0];
     array_t<Self> retval;
     retval.reserve(node.num_children);
-    for (const auto [child_node_index, child_index]: self.children_range()) {
-      retval.emplace_back(self.sub_tree_span_at(child_node_index));
+    for (const auto pts_child: self.children_range_pts()) {
+      retval.emplace_back(pts_child);
     }
     return retval;
   }
@@ -321,8 +385,8 @@ namespace silva {
                  node.num_children);
     static_assert(std::derived_from<Self, tree_span_t<NodeData>>);
     array_fixed_t<Self, N> retval;
-    for (const auto [child_node_index, child_index]: self.children_range()) {
-      retval[child_index] = self.sub_tree_span_at(child_node_index);
+    for (const auto [pts_child, child_index]: self.children_range_pts_with_idx()) {
+      retval[child_index] = pts_child;
     }
     return retval;
   }
@@ -349,8 +413,8 @@ namespace silva {
     SILVA_EXPECT(node.num_children <= N, MAJOR);
     static_assert(std::derived_from<Self, tree_span_t<NodeData>>);
     array_small_t<Self, N> retval;
-    for (const auto [child_node_index, child_index]: self.children_range()) {
-      retval.emplace_back(self.sub_tree_span_at(child_node_index));
+    for (const auto pts_child: self.children_range_pts()) {
+      retval.emplace_back(pts_child);
     }
     return retval;
   }

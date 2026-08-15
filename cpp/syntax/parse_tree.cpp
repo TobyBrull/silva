@@ -66,14 +66,11 @@ namespace silva {
 
   index_t parse_tree_span_t::count_children_with(const name_id_t name_id) const
   {
-    auto [it, end] = children_range();
     index_t retval = 0;
-    while (it != end) {
-      const auto rn = (*this)[it.pos].rule_name;
-      if (rn == name_id) {
+    for (const auto pts_child: children_range_pts()) {
+      if (pts_child.rule_name() == name_id) {
         retval += 1;
       }
-      ++it;
     }
     return retval;
   }
@@ -122,20 +119,20 @@ namespace silva {
                                            const name_id_t scope_name,
                                            const parse_tree_span_t& pts)
   {
-    auto [it, end]   = pts.children_range();
+    auto [it, end]   = pts.children_range_pts();
     name_id_t retval = scope_name;
     SILVA_EXPECT(it != end, MINOR);
-    if (SILVA_EXPECT_FWD(pts.sub_tree_span_at(it.pos).token()) == lexicon.name_sep) {
+    if (SILVA_EXPECT_FWD((*it).token()) == lexicon.name_sep) {
       retval = name_id_t{};
       ++it;
     }
     while (it != end) {
-      const token_id_t base = SILVA_EXPECT_FWD(pts.sub_tree_span_at(it.pos).token());
+      const token_id_t base = SILVA_EXPECT_FWD((*it).token());
       SILVA_EXPECT(base != lexicon.name_sep, MINOR);
       retval = lexicon.sfp->name_id(retval, base);
       ++it;
       if (it != end) {
-        const token_id_t expected_sep = SILVA_EXPECT_FWD(pts.sub_tree_span_at(it.pos).token());
+        const token_id_t expected_sep = SILVA_EXPECT_FWD((*it).token());
         SILVA_EXPECT(expected_sep == lexicon.name_sep, MINOR);
         ++it;
       }

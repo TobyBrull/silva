@@ -151,9 +151,9 @@ namespace silva::seed::impl {
                          const parse_tree_span_t pts_ops)
     {
       SILVA_EXPECT(pts_ops[0].rule_name == lexicon.ni_axe_ops, BROKEN_SEED);
-      auto [it, end] = pts_ops.children_range();
+      auto [it, end] = pts_ops.children_range_pts();
       SILVA_EXPECT(it != end, BROKEN_SEED);
-      const auto pts_op_type = pts_ops.sub_tree_span_at(it.pos);
+      const auto pts_op_type = *it;
       SILVA_EXPECT(pts_op_type[0].rule_name == lexicon.ni_axe_op_type, BROKEN_SEED);
       const token_id_t axe_op_type = SILVA_EXPECT_FWD(pts_op_type.token());
       SILVA_EXPECT(axe_op_type == lexicon.ti_prefix.token_id ||
@@ -169,7 +169,7 @@ namespace silva::seed::impl {
       optional_t<index_t> nest_rule_name;
       optional_t<parse_tree_span_t> pts_nt;
       if (it != end) {
-        const auto curr_pts = pts_ops.sub_tree_span_at(it.pos);
+        const auto curr_pts = *it;
         if (curr_pts[0].rule_name == lexicon.ni_nt) {
           pts_nt = curr_pts;
           ++it;
@@ -230,7 +230,7 @@ namespace silva::seed::impl {
       const auto& get_next_not_concat =
           [&]() -> expected_t<tuple_t<token_id_t, parse_tree_span_t>> {
         SILVA_EXPECT(it != end, ASSERT);
-        const auto pts_op = pts_ops.sub_tree_span_at(it.pos);
+        const auto pts_op = *it;
         SILVA_EXPECT_FWD(op(axe_op_type, pts_op));
         const token_id_t ti = SILVA_EXPECT_FWD(pts_op.token());
         ++it;
@@ -242,7 +242,7 @@ namespace silva::seed::impl {
       const auto& get_next_or_concat =
           [&]() -> expected_t<tuple_t<optional_t<token_id_t>, parse_tree_span_t>> {
         SILVA_EXPECT(it != end, ASSERT);
-        const auto pts_op = pts_ops.sub_tree_span_at(it.pos);
+        const auto pts_op = *it;
         SILVA_EXPECT_FWD(op(axe_op_type, pts_op));
         const token_id_t ti = SILVA_EXPECT_FWD(pts_op.token());
         ++it;
@@ -395,15 +395,15 @@ namespace silva::seed::impl {
 
     expected_t<void> run(const parse_tree_span_t pts_axe)
     {
-      auto [it, end] = pts_axe.children_range();
+      auto [it, end] = pts_axe.children_range_pts();
       SILVA_EXPECT(it != end, MINOR, "{} should have at least one child", pts_axe);
-      const auto pts_axe_atom_nt = pts_axe.sub_tree_span_at(it.pos);
+      const auto pts_axe_atom_nt = *it;
       SILVA_EXPECT(pts_axe_atom_nt[0].rule_name == lexicon.ni_nt, MINOR);
       retval.atom_rule = pts_axe_atom_nt;
       ++it;
 
       SILVA_EXPECT(it != end, MINOR, "{} should have at least two children", pts_axe);
-      const auto pts_axe_oper_nt = pts_axe.sub_tree_span_at(it.pos);
+      const auto pts_axe_oper_nt = *it;
       SILVA_EXPECT(pts_axe_oper_nt[0].rule_name == lexicon.ni_nt, MINOR);
       retval.oper_rule = pts_axe_oper_nt;
       ++it;
@@ -411,7 +411,7 @@ namespace silva::seed::impl {
       level_index_t curr_level = pts_axe[0].num_children - 1;
       while (it != end) {
         curr_level -= 1;
-        SILVA_EXPECT_FWD(level(curr_level, pts_axe.sub_tree_span_at(it.pos)));
+        SILVA_EXPECT_FWD(level(curr_level, *it));
         ++it;
       }
       SILVA_EXPECT_FWD(add_to_level_map(axe_name, curr_level));

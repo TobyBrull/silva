@@ -61,8 +61,8 @@ namespace silva::test {
 
     {
       array_t<string_t> results;
-      for (const auto& [node_idx, child_idx]: tspan.children_range()) {
-        results.push_back(tspan[node_idx].name);
+      for (const auto tspan_child: tspan.children_range_pts()) {
+        results.push_back(tspan_child[0].name);
       }
       CHECK(results == array_t<string_t>{"B", "C", "D"});
     }
