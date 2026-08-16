@@ -1,16 +1,18 @@
 # TODO
 
+* smarter skipping: skipping could only happen right before the algorithm descends into a twig-rule
+  and only if it previously emerged from a twig-rule and no skipping has happened yet?
+
+* ParseTrees:
+    * distinguish branch and twig rules at the level of parse-tree
+        * add method ::get_first_token()? (i.e., decend first child until you hit the first
+          twig-rule, and call "token()" on this)
+    * do not allow token() to be called on branch-rules
+
 * Seed-Axe:
-    * avoid std::sort (treat three different types of arity in separate branches; simplfy
-      "consistent_range" function)
     * support synthesising the "oper" rule somehow?
     * avoid common duplication in oper rule?
     * allow more than just "" and '' in operators
-
-* Seed skipping:
-    * smarter skipping: skipping could only happen right before the algorithm descends into a twig-rule
-      and only if it previously emerged from a twig-rule and no skipping has happened yet?
-    * does "end_of_language" work correctly
 
 * Seed:
     * it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
@@ -21,6 +23,7 @@
     * support explicitly forcing 'node' or 'no_node' on a called rule
     * twig-rules to support startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
     * Support checking if a parse_tree_t is valid according to a given Seed?
+    * does "end_of_language" work correctly
 
 * Fragmentization:
     * NEWLINE fragments should never have empty size
@@ -33,10 +36,6 @@
     * when serializing parse-tree:
         * show escaped fragments for branch-rules and pure fragments for twig-rules
         * remove fragmentization.hpp:escape_string() function
-    * distinguish branch and twig rules at the level of parse-tree
-        * add method ::get_first_token()? (i.e., decend first child until you hit the first
-          twig-rule, and call "token()" on this)
-    * do not allow token() to be called on branch-rules
     * Support construction of parse_tree_t's
         * Allow a parse_tree_t to be spliced into another parse_tree_t.
 

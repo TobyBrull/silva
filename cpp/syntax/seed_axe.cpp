@@ -695,28 +695,36 @@ namespace silva::seed::impl {
             oper_stack_begin -= 1;
           }
         }
-        const span_t<const open_oper_item_t> oois{
+        const span_t<const open_oper_item_t> open_oper_items{
             &open_oper_stack[oper_stack_begin],
             static_cast<size_t>(oper_stack_end - oper_stack_begin)};
         const consistent_range_t cr =
             SILVA_EXPECT_PARSE_FWD(open_oper_stack[oper_stack_begin].level_name,
-                                   consistent_range(oois));
+                                   consistent_range(open_oper_items));
         SILVA_EXPECT(cr.num_atoms <= open_expr_stack.size(), MINOR);
 
-        array_t<index_t> child_indexes;
+        array_t<index_t> child_indexes_open_expr_stack;
         for (index_t i = open_expr_stack.size() - cr.num_atoms; i < open_expr_stack.size(); ++i) {
-          child_indexes.push_back(open_expr_stack[i]);
+          child_indexes_open_expr_stack.push_back(open_expr_stack[i]);
         }
-        for (const open_oper_item_t& ooi: oois) {
+        SILVA_EXPECT(std::ranges::is_sorted(child_indexes_open_expr_stack), ASSERT);
+
+        array_t<index_t> child_indexes_open_oper_stack;
+        for (const open_oper_item_t& ooi: open_oper_items) {
           for (const open_oper_item_t::symbol_t& sym: ooi.symbols) {
             if (sym.expr_tree_idx != -1) {
-              child_indexes.push_back(sym.expr_tree_idx);
+              child_indexes_open_oper_stack.push_back(sym.expr_tree_idx);
             }
           }
         }
-        std::sort(child_indexes.begin(), child_indexes.end());
+        SILVA_EXPECT(std::ranges::is_sorted(child_indexes_open_oper_stack), ASSERT);
 
-        open_oper_stack.resize(open_oper_stack.size() - oois.size());
+        array_t<index_t> child_indexes;
+        std::ranges::merge(child_indexes_open_expr_stack,
+                           child_indexes_open_oper_stack,
+                           std::back_inserter(child_indexes));
+
+        open_oper_stack.resize(open_oper_stack.size() - open_oper_items.size());
         index_t subtree_size = 1;
         for (index_t i = 0; i < index_t(child_indexes.size()); ++i) {
           const index_t curr_subtree_size = expr_tree[child_indexes[i]].subtree_size;
