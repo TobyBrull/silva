@@ -495,7 +495,7 @@ namespace silva::seed::impl {
     struct expr_node_t : public parse_tree_node_t {
       // If the term is a subtree that was parsed via the "rule_parser", this is an index into
       // "nursery.tree" (and later, during "generate_output()", an index into the temporary vector_t
-      // "leaf_terms_tree"). Otherwise, i.e., if the term is an expression derived from an operator,
+      // "parsed_trees"). Otherwise, i.e., if the term is an expression derived from an operator,
       // this value is "none".
       optional_t<index_t> nursery_tree_index;
     };
@@ -1014,37 +1014,37 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
-    index_t generate_output(const tree_span_t<const expr_node_t> ats,
-                            const parse_tree_t& leaf_terms_tree)
+    parse_tree_node_t generate_output(const tree_span_t<const expr_node_t> ets,
+                                      const parse_tree_t& parsed_trees)
     {
-      auto& rv_nodes       = nursery.tree;
-      const index_t retval = rv_nodes.size();
-      const auto& node     = ats.node_at(0);
-      if (node.nursery_tree_index.has_value()) {
-        const auto to_implant = leaf_terms_tree.span().subspan_at(node.nursery_tree_index.value());
-        rv_nodes.insert(rv_nodes.end(),
-                        to_implant.root,
-                        to_implant.root + to_implant.subtree_size());
+      auto ps              = nursery.pure_stake();
+      const auto& ets_node = ets.node_at(0);
+      ps.create_node(ets_node.rule_name);
+      if (ets_node.nursery_tree_index.has_value()) {
+        nursery.tree.pop_back();
+        const parse_tree_span_t to_implant =
+            parsed_trees.span().subspan_at(ets_node.nursery_tree_index.value());
+        ps.proto_node = to_implant.node_at(0);
+        nursery.tree.insert(nursery.tree.end(),
+                            to_implant.root,
+                            to_implant.root + to_implant.subtree_size());
       }
       else {
-        rv_nodes.emplace_back();
-        rv_nodes[retval].rule_name    = node.rule_name;
-        rv_nodes[retval].num_children = ats.root->num_children;
-        rv_nodes[retval].subtree_size = 1;
-        const auto child_pts_array    = ats.get_children_array();
+        const auto child_pts_array = ets.get_children_array();
         for (const auto child_pts: std::ranges::reverse_view(child_pts_array)) {
-          const index_t sub_node_index = generate_output(child_pts, leaf_terms_tree);
-          rv_nodes[retval].subtree_size += rv_nodes[sub_node_index].subtree_size;
+          ps.add_proto_node(generate_output(child_pts, parsed_trees));
         }
-        rv_nodes[retval].fragment_begin = node.fragment_begin;
-        rv_nodes[retval].fragment_end   = node.fragment_end;
+        ps.proto_node.fragment_begin = ets_node.fragment_begin;
+        ps.proto_node.fragment_end   = ets_node.fragment_end;
       }
-      return retval;
+      return ps.commit();
     }
 
-    expected_t<index_t> run()
+    expected_t<parse_tree_node_t> run()
     {
       auto ss = nursery.stake();
+      // ss.create_node(axe.name);
+      const index_t parsed_trees_idx = nursery.tree.size();
       {
         auto ss_rule = nursery.stake();
         ss_rule.create_node(name_id_t{});
@@ -1058,23 +1058,20 @@ namespace silva::seed::impl {
       }
 
       parse_tree_t temp_tree{.fp = {}, .nodes = std::move(nursery.tree)};
-      const parse_tree_t leaf_terms_tree =
-          temp_tree.span().subspan_at(ss.orig_state.tree_size).copy();
+      const parse_tree_t parsed_trees = temp_tree.span().subspan_at(parsed_trees_idx).copy();
+      temp_tree.nodes.resize(parsed_trees_idx);
       nursery.tree = std::move(temp_tree.nodes);
-      nursery.tree.resize(ss.orig_state.tree_size);
 
       for (auto& atn: expr_tree) {
         if (atn.nursery_tree_index.has_value()) {
-          atn.nursery_tree_index.value() -= ss.orig_state.tree_size;
+          atn.nursery_tree_index.value() -= parsed_trees_idx;
         }
       }
 
-      ss.commit();
-
       SILVA_EXPECT(expr_tree.size() >= 1, ASSERT);
       tree_span_t<const expr_node_t> ats{&expr_tree.back(), -1};
-      const index_t retval = generate_output(ats, leaf_terms_tree);
-      return {retval};
+      ss.add_proto_node(generate_output(ats, parsed_trees));
+      return ss.commit();
     }
   };
 }
@@ -1109,16 +1106,10 @@ namespace silva::seed {
         .min_prec_level = min_prec_level,
     };
     const index_t orig_fragment_index = nursery.fragment_index;
-    const index_t created_node =
+    const parse_tree_node_t retval =
         SILVA_EXPECT_FWD(run.run(),
                          "[{}] when parsing expression starting here",
                          nursery.fragment_location_at(orig_fragment_index));
-    auto& rv_nodes = nursery.tree;
-    parse_tree_node_t retval;
-    retval.num_children   = 1;
-    retval.subtree_size   = rv_nodes[created_node].subtree_size;
-    retval.fragment_begin = rv_nodes[created_node].fragment_begin;
-    retval.fragment_end   = rv_nodes[created_node].fragment_end;
     return retval;
   }
 }

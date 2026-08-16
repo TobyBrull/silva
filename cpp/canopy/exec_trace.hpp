@@ -87,9 +87,9 @@ namespace silva {
                               exec_state_t,
                               exec_tree_nursery_t<T>> {
       using exec_node_t = typename exec_trace_t<T>::node_t;
-      using stake_t     = tree_nursery_t<typename exec_trace_t<T>::node_t,
-                                         exec_state_t,
-                                         exec_tree_nursery_t<T>>::stake_t;
+      using stake_t     = typename tree_nursery_t<typename exec_trace_t<T>::node_t,
+                                                  exec_state_t,
+                                                  exec_tree_nursery_t<T>>::template stake_t<>;
       array_t<stake_t> stakes;
 
       template<typename... Args>

@@ -19,6 +19,7 @@ namespace silva {
     StateType get_state(this const auto&);
     void set_state(this auto&, const StateType&);
 
+    template<bool IsPure = false>
     struct stake_t {
       Derived* nursery = nullptr;
       StateType orig_state;
@@ -43,7 +44,8 @@ namespace silva {
       void clear();
       ~stake_t();
     };
-    [[nodiscard]] stake_t stake(this auto& self) { return stake_t{&self}; }
+    [[nodiscard]] stake_t<false> stake(this auto& self) { return stake_t<false>{&self}; }
+    [[nodiscard]] stake_t<true> pure_stake(this auto& self) { return stake_t<true>{&self}; }
 
     array_t<NodeType> finish() &&;
 
@@ -93,7 +95,8 @@ namespace silva {
   // stake_t
 
   template<typename NodeType, typename StateType, typename Derived>
-  tree_nursery_t<NodeType, StateType, Derived>::stake_t::stake_t(Derived* nursery)
+  template<bool IsPure>
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>::stake_t(Derived* nursery)
     : nursery(nursery), orig_state(nursery->get_state())
   {
     proto_node.subtree_size = 0;
@@ -103,7 +106,8 @@ namespace silva {
   }
 
   template<typename NodeType, typename StateType, typename Derived>
-  tree_nursery_t<NodeType, StateType, Derived>::stake_t::stake_t(stake_t&& other)
+  template<bool IsPure>
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>::stake_t(stake_t&& other)
     : nursery(std::exchange(other.nursery, nullptr))
     , orig_state(std::move(other.orig_state))
     , proto_node(std::move(other.proto_node))
@@ -112,8 +116,9 @@ namespace silva {
   }
 
   template<typename NodeType, typename StateType, typename Derived>
-  tree_nursery_t<NodeType, StateType, Derived>::stake_t&
-  tree_nursery_t<NodeType, StateType, Derived>::stake_t::operator=(stake_t&& other)
+  template<bool IsPure>
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>&
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>::operator=(stake_t&& other)
   {
     if (this != &other) {
       clear();
@@ -126,8 +131,9 @@ namespace silva {
   }
 
   template<typename NodeType, typename StateType, typename Derived>
+  template<bool IsPure>
   template<typename... Args>
-  void tree_nursery_t<NodeType, StateType, Derived>::stake_t::create_node(Args&&... args)
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>::create_node(Args&&... args)
   {
     SILVA_ASSERT(!owns_node);
     SILVA_ASSERT(proto_node.subtree_size == 0);
@@ -144,7 +150,9 @@ namespace silva {
   }
 
   template<typename NodeType, typename StateType, typename Derived>
-  void tree_nursery_t<NodeType, StateType, Derived>::stake_t::add_proto_node(const NodeType& other)
+  template<bool IsPure>
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>::add_proto_node(
+      const NodeType& other)
   {
     proto_node.num_children += other.num_children;
     proto_node.subtree_size += other.subtree_size;
@@ -155,11 +163,12 @@ namespace silva {
   }
 
   template<typename NodeType, typename StateType, typename Derived>
-  NodeType tree_nursery_t<NodeType, StateType, Derived>::stake_t::commit()
+  template<bool IsPure>
+  NodeType tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>::commit()
   {
     SILVA_ASSERT(nursery != nullptr);
 
-    if constexpr (requires(Derived d) { d.on_stake_commit_pre(proto_node); }) {
+    if constexpr (!IsPure && requires(Derived d) { d.on_stake_commit_pre(proto_node); }) {
       nursery->on_stake_commit_pre(proto_node);
     }
 
@@ -176,7 +185,8 @@ namespace silva {
   }
 
   template<typename NodeType, typename StateType, typename Derived>
-  void tree_nursery_t<NodeType, StateType, Derived>::stake_t::clear()
+  template<bool IsPure>
+  void tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>::clear()
   {
     if (nursery != nullptr) {
       nursery->set_state(orig_state);
@@ -185,7 +195,8 @@ namespace silva {
   }
 
   template<typename NodeType, typename StateType, typename Derived>
-  tree_nursery_t<NodeType, StateType, Derived>::stake_t::~stake_t()
+  template<bool IsPure>
+  tree_nursery_t<NodeType, StateType, Derived>::stake_t<IsPure>::~stake_t()
   {
     clear();
   }
