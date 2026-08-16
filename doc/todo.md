@@ -1,22 +1,39 @@
 # TODO
 
-* Seed: it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
-* Seed-Axe: should probably always produce it's own node
+* Seed-Axe:
+    * should always produce it's own node
+    * avoid std::sort (treat three different types of arity in separate branches; simplfy
+      "consistent_range" function)
+    * support synthesising the "oper" rule somehow?
+    * avoid common duplication in oper rule?
+    * allow more than just "" and '' in operators
 
-* Fragmentization:
-    * NEWLINE fragments should never have empty size
-    * make fragmenziation.hpp:escape_string function efficient
-
-* skipping:
+* Seed skipping:
     * It's easy to write a rule « Terminal = "language" | fragName ». However, this also skips
       whitespace after "language", which can be confusing. Maybe disallow literals in branch-rules?
       Or error if a branch-rule has an alternation between multiple literals?
     * smarter skipping: skipping could only happen right before the algorithm descends into a twig-rule
       and only if it previously emerged from a twig-rule and no skipping has happened yet?
+    * does "end_of_language" work correctly
 
-* double-quoted strings should support digits after first place "eps0"
+* Seed:
+    * it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
+    * enforce:
+        * node-rules may only use other node-rules or token-rules
+        * token-rules may only use other token-rules or FRAGMENTS
+        * tokens may only have other tokens as sub-rules
+    * support explicitly forcing 'node' or 'no_node' on a called rule
+    * twig-rules to support startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
+    * Support checking if a parse_tree_t is valid according to a given Seed?
 
-* parse_tree_span_t:
+* Fragmentization:
+    * NEWLINE fragments should never have empty size
+    * make fragmenziation.hpp:escape_string function efficient
+    * double-quoted strings should support digits after first place "eps0"
+    * also make '`...`' strings in fragmentization?
+    * write tests for `number`
+
+* ParseTrees:
     * when serializing parse-tree:
         * show escaped fragments for branch-rules and pure fragments for twig-rules
         * remove fragmentization.hpp:escape_string() function
@@ -24,29 +41,11 @@
         * add method ::get_first_token()? (i.e., decend first child until you hit the first
           twig-rule, and call "token()" on this)
     * do not allow token() to be called on branch-rules?
+    * Support construction of parse_tree_t's
+        * Allow a parse_tree_t to be spliced into another parse_tree_t.
 
-* overhaul seed-axe
-    * avoid std::sort (treat three different types of arity in separate branches; simplfy
-      "consistent_range" function)
-    * support synthesising the "oper" rule somehow?
-    * avoid common duplication in oper rule?
-    * allow more than just "" and '' in operators
-
-* `number` tokenization: write tests
-* more Seed:
-    * support explicitly forcing 'node' or 'no_node' on a called rule
-* better tokenization
-    * token rules startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
-    * also make '`...`' strings in fragmentization?
-    * Identifier tokens should always parse the chars greedily; then apply some predicate afterwards
-* enforce:
-    * node-rules may only use other node-rules or token-rules
-    * token-rules may only use other token-rules or FRAGMENTS
-    * tokens may only have other tokens as sub-rules
-* parse skip-rule AFTER every token
-    * to support "end_of_language"
-    * don't skip in seed.cpp in recursive token calls
-* In parsing errors, show what has been successfully parsed so far
+* Errors:
+    * In parsing errors, show what has been successfully parsed so far?
 
 * Parsing:
     * Parse Python
@@ -58,13 +57,6 @@
 * Lox:
     * Unify: object_pool_t, cactus_t?
         * get rid of object_t::clear_scopes()
-
-* ParseTrees
-    * Support conversion of parse_tree_t (with Seed) back to text/tokenization_t.
-        * I think the parse_tree_t should be detached from the tokenization_t
-    * Support construction of parse_tree_t's
-        * Allow a parse_tree_t to be spliced into another parse_tree_t.
-    * Support checking if a parse_tree_t is valid according to a given Seed.
 
 
 ## Long Term
@@ -100,7 +92,7 @@
 * Write a language server
 * Write a REPL
 
-* Library
+* Library/Canopy:
     * output_buffer_t / string_output_buffer_t
     * context:
         * logging
