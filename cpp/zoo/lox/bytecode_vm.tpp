@@ -120,7 +120,7 @@ CONSTANT 3 3
           return fib(n - 1) + fib(n - 2);
         }
         print fib(30);
-      )");
+)");
     SILVA_REQUIRE(th.vm.run(*chunk));
     const auto end = time_point_t::now();
     fmt::println("FIBS TOOK {}\n", end - start);

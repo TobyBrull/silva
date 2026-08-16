@@ -725,7 +725,6 @@ namespace silva::seed::impl {
     {
       const name_id_t s_rule_name = pts.rule_name();
       if (s_rule_name == lexicon.ni_expr) {
-        // TODO: only needed if a seed-axe actually produces its own node
         const auto [pts_child] = SILVA_EXPECT_FWD(pts.get_children<1>());
         return s_expr(pts_child, t_rule_name);
       }
