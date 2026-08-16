@@ -8,9 +8,6 @@
     * allow more than just "" and '' in operators
 
 * Seed skipping:
-    * It's easy to write a rule « Terminal = "language" | fragName ». However, this also skips
-      whitespace after "language", which can be confusing. Maybe disallow literals in branch-rules?
-      Or error if a branch-rule has an alternation between multiple literals?
     * smarter skipping: skipping could only happen right before the algorithm descends into a twig-rule
       and only if it previously emerged from a twig-rule and no skipping has happened yet?
     * does "end_of_language" work correctly
@@ -39,7 +36,7 @@
     * distinguish branch and twig rules at the level of parse-tree
         * add method ::get_first_token()? (i.e., decend first child until you hit the first
           twig-rule, and call "token()" on this)
-    * do not allow token() to be called on branch-rules?
+    * do not allow token() to be called on branch-rules
     * Support construction of parse_tree_t's
         * Allow a parse_tree_t to be spliced into another parse_tree_t.
 
