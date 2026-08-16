@@ -1043,7 +1043,7 @@ namespace silva::seed::impl {
     expected_t<parse_tree_node_t> run()
     {
       auto ss = nursery.stake();
-      // ss.create_node(axe.name);
+      ss.create_node(axe.name);
       const index_t parsed_trees_idx = nursery.tree.size();
       {
         auto ss_rule = nursery.stake();

@@ -69,34 +69,39 @@ language Expr:
     const auto expr_pt = SILVA_REQUIRE(si.apply_text("", expr_text, sf.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
-[0].Expr.Add.+                                    ( 5 + ... 100<NEWLINE><DEDENT>
-  [0].Expr.Atom                                   ( 5 + ... 20 ) 
-    [0].Expr.Add.+                                5 + i ... * 20 
-      [0].Expr.Atom                               5 
-        [0].Expr.number                           5
-      [1].Expr.operator                           +
-      [2].Expr.Atom                               if a  ... * 20 
-        [0].Expr.Comp.<                           a < 3 
-          [0].Expr.Atom                           a 
-            [0].Expr.identifier                   a
-          [1].Expr.operator                       <
-          [2].Expr.Atom                           3 
-            [0].Expr.number                       3
-        [1].Expr.Add.+                            b + 10 
-          [0].Expr.Atom                           b 
-            [0].Expr.identifier                   b
+[0].Expr                                          ( 5 + ... 100<NEWLINE><DEDENT>
+  [0].Expr.Add.+                                  ( 5 + ... 100<NEWLINE><DEDENT>
+    [0].Expr.Atom                                 ( 5 + ... 20 ) 
+      [0].Expr                                    5 + i ... * 20 
+        [0].Expr.Add.+                            5 + i ... * 20 
+          [0].Expr.Atom                           5 
+            [0].Expr.number                       5
           [1].Expr.operator                       +
-          [2].Expr.Atom                           10 
-            [0].Expr.number                       10
-        [2].Expr.Mult.*                           c * 20 
-          [0].Expr.Atom                           c 
-            [0].Expr.identifier                   c
-          [1].Expr.operator                       *
-          [2].Expr.Atom                           20 
-            [0].Expr.number                       20
-  [1].Expr.operator                               +
-  [2].Expr.Atom                                   100<NEWLINE><DEDENT>
-    [0].Expr.number                               100
+          [2].Expr.Atom                           if a  ... * 20 
+            [0].Expr                              a < 3 
+              [0].Expr.Comp.<                     a < 3 
+                [0].Expr.Atom                     a 
+                  [0].Expr.identifier             a
+                [1].Expr.operator                 <
+                [2].Expr.Atom                     3 
+                  [0].Expr.number                 3
+            [1].Expr                              b + 10 
+              [0].Expr.Add.+                      b + 10 
+                [0].Expr.Atom                     b 
+                  [0].Expr.identifier             b
+                [1].Expr.operator                 +
+                [2].Expr.Atom                     10 
+                  [0].Expr.number                 10
+            [2].Expr                              c * 20 
+              [0].Expr.Mult.*                     c * 20 
+                [0].Expr.Atom                     c 
+                  [0].Expr.identifier             c
+                [1].Expr.operator                 *
+                [2].Expr.Atom                     20 
+                  [0].Expr.number                 20
+    [1].Expr.operator                             +
+    [2].Expr.Atom                                 100<NEWLINE><DEDENT>
+      [0].Expr.number                             100
 )";
     const string_t result{SILVA_REQUIRE(expr_pt->span().to_string())};
     CHECK(result == expected_parse_tree.substr(1));

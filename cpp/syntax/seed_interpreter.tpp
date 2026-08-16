@@ -29,92 +29,101 @@ language Frog:
     [0].Seed.ruleName                             Frog
     [1].Seed.Rule                                 ⊙ = R ... le *<NEWLINE>
       [0].Seed.here                               ⊙
-      [1].Seed.Expr.Postfix.*                     Rule *
-        [0].Seed.Nonterminal                      Rule 
-          [0].Seed.ruleName                       Rule
-        [1].Seed.Expr.operator                    *
+      [1].Seed.Expr                               Rule *
+        [0].Seed.Expr.Postfix.*                   Rule *
+          [0].Seed.Nonterminal                    Rule 
+            [0].Seed.ruleName                     Rule
+          [1].Seed.Expr.operator                  *
     [2].Seed.Rule                                 skip  ...  ) *<NEWLINE>
       [0].Seed.Nonterminal                        skip 
         [0].Seed.tokenCategoryName                skip
-      [1].Seed.Expr.Postfix.*                     ( SPA ... E ) *
-        [0].Seed.Expr.Or.|                        SPACE ... LINE 
-          [0].Seed.Terminal                       SPACE 
-            [0].Seed.fragName                     SPACE
-          [1].Seed.Expr.operator                  |
-          [2].Seed.Terminal                       LINEFEED 
-            [0].Seed.fragName                     LINEFEED
-          [3].Seed.Expr.operator                  |
-          [4].Seed.Terminal                       COMMENT 
-            [0].Seed.fragName                     COMMENT
-          [5].Seed.Expr.operator                  |
-          [6].Seed.Terminal                       WHITE ... PACE 
-            [0].Seed.fragName                     WHITESPACE
-          [7].Seed.Expr.operator                  |
-          [8].Seed.Terminal                       INDENT 
-            [0].Seed.fragName                     INDENT
-          [9].Seed.Expr.operator                  |
-          [10].Seed.Terminal                      DEDENT 
-            [0].Seed.fragName                     DEDENT
-          [11].Seed.Expr.operator                 |
-          [12].Seed.Terminal                      NEWLINE 
-            [0].Seed.fragName                     NEWLINE
-        [1].Seed.Expr.operator                    *
+      [1].Seed.Expr                               ( SPA ... E ) *
+        [0].Seed.Expr.Postfix.*                   ( SPA ... E ) *
+          [0].Seed.Expr                           SPACE ... LINE 
+            [0].Seed.Expr.Or.|                    SPACE ... LINE 
+              [0].Seed.Terminal                   SPACE 
+                [0].Seed.fragName                 SPACE
+              [1].Seed.Expr.operator              |
+              [2].Seed.Terminal                   LINEFEED 
+                [0].Seed.fragName                 LINEFEED
+              [3].Seed.Expr.operator              |
+              [4].Seed.Terminal                   COMMENT 
+                [0].Seed.fragName                 COMMENT
+              [5].Seed.Expr.operator              |
+              [6].Seed.Terminal                   WHITE ... PACE 
+                [0].Seed.fragName                 WHITESPACE
+              [7].Seed.Expr.operator              |
+              [8].Seed.Terminal                   INDENT 
+                [0].Seed.fragName                 INDENT
+              [9].Seed.Expr.operator              |
+              [10].Seed.Terminal                  DEDENT 
+                [0].Seed.fragName                 DEDENT
+              [11].Seed.Expr.operator             |
+              [12].Seed.Terminal                  NEWLINE 
+                [0].Seed.fragName                 NEWLINE
+          [1].Seed.Expr.operator                  *
     [3].Seed.Rule                                 ident ... UE *<NEWLINE>
       [0].Seed.Nonterminal                        ident ... fier 
         [0].Seed.tokenCategoryName                identifier
-      [1].Seed.Expr.Concat.concat                 ID_ST ... NUE *
-        [0].Seed.Terminal                         ID_START 
-          [0].Seed.fragName                       ID_START
-        [1].Seed.Expr.Postfix.*                   ID_CO ... NUE *
-          [0].Seed.Terminal                       ID_CO ... INUE 
-            [0].Seed.fragName                     ID_CO ... TINUE
-          [1].Seed.Expr.operator                  *
+      [1].Seed.Expr                               ID_ST ... NUE *
+        [0].Seed.Expr.Concat.concat               ID_ST ... NUE *
+          [0].Seed.Terminal                       ID_START 
+            [0].Seed.fragName                     ID_START
+          [1].Seed.Expr.Postfix.*                 ID_CO ... NUE *
+            [0].Seed.Terminal                     ID_CO ... INUE 
+              [0].Seed.fragName                   ID_CO ... TINUE
+            [1].Seed.Expr.operator                *
     [4].Seed.Rule                                 Rule  ... Expr<NEWLINE>
       [0].Seed.Nonterminal                        Rule 
         [0].Seed.ruleName                         Rule
-      [1].Seed.Expr.Concat.concat                 RuleN ...  Expr
-        [0].Seed.Nonterminal                      RuleName 
-          [0].Seed.ruleName                       RuleName
-        [1].Seed.Nonterminal                      Expr
-          [0].Seed.ruleName                       Expr
+      [1].Seed.Expr                               RuleN ...  Expr
+        [0].Seed.Expr.Concat.concat               RuleN ...  Expr
+          [0].Seed.Nonterminal                    RuleName 
+            [0].Seed.ruleName                     RuleName
+          [1].Seed.Nonterminal                    Expr
+            [0].Seed.ruleName                     Expr
     [5].Seed.Rule                                 RuleN ... word<NEWLINE>
       [0].Seed.Nonterminal                        RuleName 
         [0].Seed.ruleName                         RuleName
       [1].Seed.qualifier                          no_node
-      [2].Seed.Nonterminal                        Keyword
-        [0].Seed.ruleName                         Keyword
+      [2].Seed.Expr                               Keyword
+        [0].Seed.Nonterminal                      Keyword
+          [0].Seed.ruleName                       Keyword
     [6].Seed.Rule                                 Expr  ... ry +<NEWLINE>
       [0].Seed.Nonterminal                        Expr 
         [0].Seed.ruleName                         Expr
-      [1].Seed.Expr.Postfix.+                     Primary +
-        [0].Seed.Nonterminal                      Primary 
-          [0].Seed.ruleName                       Primary
-        [1].Seed.Expr.operator                    +
+      [1].Seed.Expr                               Primary +
+        [0].Seed.Expr.Postfix.+                   Primary +
+          [0].Seed.Nonterminal                    Primary 
+            [0].Seed.ruleName                     Primary
+          [1].Seed.Expr.operator                  +
     [7].Seed.Rule                                 Prima ... fier<NEWLINE>
       [0].Seed.Nonterminal                        Primary 
         [0].Seed.ruleName                         Primary
-      [1].Seed.Expr.And.but_then                  not K ... ifier
-        [0].Seed.Expr.Prefix.not                  not K ... word 
-          [0].Seed.Expr.operator                  not
-          [1].Seed.Nonterminal                    Keyword 
-            [0].Seed.ruleName                     Keyword
-        [1].Seed.Expr.operator                    but_then
-        [2].Seed.Nonterminal                      identifier
-          [0].Seed.tokenCategoryName              identifier
+      [1].Seed.Expr                               not K ... ifier
+        [0].Seed.Expr.And.but_then                not K ... ifier
+          [0].Seed.Expr.Prefix.not                not K ... word 
+            [0].Seed.Expr.operator                not
+            [1].Seed.Nonterminal                  Keyword 
+              [0].Seed.ruleName                   Keyword
+          [1].Seed.Expr.operator                  but_then
+          [2].Seed.Nonterminal                    identifier
+            [0].Seed.tokenCategoryName            identifier
     [8].Seed.Scope                                Keywo ... | 'keyword3'<NEWLINE><DEDENT>
       [0].Seed.Nonterminal                        Keyword
         [0].Seed.ruleName                         Keyword
       [1].Seed.Rule                               ⊙ = 'keyword1' ...  | 'keyword3'<NEWLINE>
         [0].Seed.here                             ⊙
-        [1].Seed.Expr.Or.|                        'keyword1' | 'keyword2' | 'keyword3'
-          [0].Seed.Terminal                       'keyword1' 
-            [0].string                            'keyword1'
-          [1].Seed.Expr.operator                  |
-          [2].Seed.Terminal                       'keyword2' 
-            [0].string                            'keyword2'
-          [3].Seed.Expr.operator                  |
-          [4].Seed.Terminal                       'keyword3'
-            [0].string                            'keyword3'
+        [1].Seed.Expr                             'keyword1' | 'keyword2' | 'keyword3'
+          [0].Seed.Expr.Or.|                      'keyword1' | 'keyword2' | 'keyword3'
+            [0].Seed.Terminal                     'keyword1' 
+              [0].string                          'keyword1'
+            [1].Seed.Expr.operator                |
+            [2].Seed.Terminal                     'keyword2' 
+              [0].string                          'keyword2'
+            [3].Seed.Expr.operator                |
+            [4].Seed.Terminal                     'keyword3'
+              [0].string                          'keyword3'
 )";
     const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};
     CHECK(seed_pt_str == expected_seed_pt.substr(1));

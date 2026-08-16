@@ -252,6 +252,11 @@ namespace silva::lox {
 
     expected_t<object_ref_t> expr(const parse_tree_span_t pts)
     {
+      if (pts.rule_name() == lexicon.ni_expr) {
+        const auto [pts_child] = SILVA_EXPECT_FWD(pts.get_children<1>());
+        return expr_or_atom(pts_child);
+      }
+
 #define UNARY_PREFIX(op_rule_name, op_func)                                                        \
   else if (rn == op_rule_name)                                                                     \
   {                                                                                                \
@@ -398,9 +403,12 @@ namespace silva::lox {
     expected_t<object_ref_t> atom(const parse_tree_span_t pts)
     {
       SILVA_EXPECT(pts.subtree_size() > 0 && pts.rule_name() == lexicon.ni_expr_atom, ASSERT);
-      if (pts.num_children() == 1 && pts.node_at(1).rule_name != lexicon.ni_expr_literal &&
-          sfp->name_id_is_parent(lexicon.ni_expr, pts.node_at(1).rule_name)) {
-        return expr(pts.subspan_at(1));
+      if (pts.num_children() == 1) {
+        const auto [pts_child] = SILVA_EXPECT_FWD(pts.get_children<1>());
+        if (pts_child.rule_name() != lexicon.ni_expr_literal &&
+            sfp->name_id_is_parent(lexicon.ni_expr, pts_child.rule_name())) {
+          return expr(pts_child);
+        }
       }
       if (const auto it = intp->literals.find(pts); it != intp->literals.end()) {
         return it->second;
@@ -454,7 +462,7 @@ namespace silva::lox {
       if (rule_name == lexicon.ni_expr_atom) {
         return atom(pts);
       }
-      else if (sfp->name_id_is_parent(lexicon.ni_expr, rule_name)) {
+      else if (rule_name == lexicon.ni_expr || sfp->name_id_is_parent(lexicon.ni_expr, rule_name)) {
         return expr(pts);
       }
       else {
