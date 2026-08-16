@@ -214,9 +214,7 @@ namespace silva::seed::impl {
     {
       auto ss = stake();
       ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(ft)));
-      auto retval = ss.commit();
-      skip();
-      return retval;
+      return ss.commit();
     }
 
     expected_t<parse_tree_node_t> literal_node(const fragmented_token_t& ft)
@@ -224,9 +222,7 @@ namespace silva::seed::impl {
       auto ss = stake();
       ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(ft)));
       ss.create_node(name_id_literal);
-      auto retval = ss.commit();
-      skip();
-      return retval;
+      return ss.commit();
     }
 
     expected_t<parse_tree_node_t> keyword()
@@ -328,6 +324,7 @@ namespace silva::seed::impl {
       {
         auto result = literal_node(lexicon.ti_dot);
         if (result) {
+          skip();
           ss_rule.add_proto_node(*result);
         }
       }
@@ -346,6 +343,7 @@ namespace silva::seed::impl {
           if (!result) {
             break;
           }
+          skip();
           ss_local.add_proto_node(*result);
         }
         ss_rule.add_proto_node(ss_local.commit());
@@ -426,6 +424,7 @@ namespace silva::seed::impl {
       {
         auto result = literal(lexicon.ti_right_arrow);
         if (result) {
+          skip();
           ss_rule.add_proto_node(*result);
           ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_ops, nonterminal()));
         }
@@ -466,6 +465,7 @@ namespace silva::seed::impl {
       skip();
       ss_rule.add_proto_node(
           SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_level, literal(lexicon.ti_equal)));
+      skip();
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_axe_level, axe_assoc()));
       skip();
       while (auto result = axe_ops()) {
@@ -540,8 +540,10 @@ namespace silva::seed::impl {
     {
       auto ss = stake();
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal(lexicon.ti_paren_open)));
+      skip();
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, expr()));
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal(lexicon.ti_paren_close)));
+      skip();
       return ss.commit();
     }
 
@@ -550,6 +552,7 @@ namespace silva::seed::impl {
       auto ss = stake();
       ss.create_node(lexicon.ni_alternation);
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal(lexicon.ti_brack_open)));
+      skip();
       index_t count = 0;
       while (true) {
         {
@@ -574,6 +577,7 @@ namespace silva::seed::impl {
                          count >= 1,
                          "expected at least one Terminal or Nonterminal inside '[' ']'");
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_atom, literal(lexicon.ti_brack_close)));
+      skip();
       return ss.commit();
     }
 
@@ -751,6 +755,7 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_scope);
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, nonterminal()));
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_scope, literal(lexicon.ti_colon)));
+      skip();
       ss_rule.add_proto_node(SILVA_EXPECT_FWD(scope_impl()));
       return ss_rule.commit();
     }
@@ -761,10 +766,12 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_language);
       ss_rule.add_proto_node(
           SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, literal(lexicon.ti_language)));
+      skip();
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, rule_name()));
       skip();
       ss_rule.add_proto_node(
           SILVA_EXPECT_PARSE_FWD(lexicon.ni_language, literal(lexicon.ti_colon)));
+      skip();
       ss_rule.add_proto_node(SILVA_EXPECT_FWD(scope_impl()));
       return ss_rule.commit();
     }
@@ -796,12 +803,14 @@ namespace silva::seed::impl {
       }
 
       ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_rule, literal(lexicon.ti_equal)));
+      skip();
 
       {
         bool matched_axe = false;
         {
           auto result = literal(lexicon.ti_axe);
           if (result) {
+            skip();
             ss_rule.add_proto_node(*result);
             matched_axe = true;
           }
