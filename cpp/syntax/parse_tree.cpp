@@ -31,7 +31,7 @@ namespace silva {
       const auto pts = this->subspan_at(path.back().node_index);
       curr_line += lexicon.name_id_str(pts.rule_name());
       string_pad(curr_line, fragment_indent);
-      curr_line += silva::pretty_string(pts.fragment_span());
+      curr_line += fmt::format("｢{}｣", silva::pretty_string(pts.fragment_span()));
     }));
     return retval;
   }
