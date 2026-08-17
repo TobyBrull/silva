@@ -1,8 +1,5 @@
 # TODO
 
-* smarter skipping: skipping could only happen right before the algorithm descends into a twig-rule
-  and only if it previously emerged from a twig-rule and no skipping has happened yet?
-
 * ParseTrees:
     * distinguish branch and twig rules at the level of parse-tree
         * add method ::get_first_token()? (i.e., decend first child until you hit the first
