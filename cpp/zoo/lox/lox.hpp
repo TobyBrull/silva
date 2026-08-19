@@ -51,8 +51,7 @@ language Lox:
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
     ⊙ = identifier '(' Parameters ')' Stmt.Block
-    Parameters = ( Parameter ( ',' Parameter ) * ) ?
-    Parameter = identifier
+    Parameters = ( identifier ( ',' identifier ) * ) ?
 )'";
 
   unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);

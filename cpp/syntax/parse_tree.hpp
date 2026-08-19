@@ -5,6 +5,8 @@
 #include "fragmentization.hpp"
 
 namespace silva {
+  expected_t<bool> is_twig_rule(const syntax_farm_t&, name_id_t rule_name);
+
   struct parse_tree_node_t : public tree_node_t {
     name_id_t rule_name;
 

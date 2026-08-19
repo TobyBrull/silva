@@ -1,10 +1,15 @@
 # TODO
 
+* syntax-farm:
+    * "token_lookup" should be based on string_view_t keys (or even fragment_span_t's??)
+    * syntax_farm -> syntax_context?
+    * make '.' default name_id_t separater and remove virtual table from lexicon_t
+        * remove silva::lexicon_t entirely?
+
 * ParseTrees:
     * distinguish branch and twig rules at the level of parse-tree
-        * add method ::get_first_token()? (i.e., decend first child until you hit the first
-          twig-rule, and call "token()" on this)
-    * do not allow token() to be called on branch-rules
+    * add method ::get_first_token()? (i.e., decend first child until you hit the first
+      twig-rule, and call "token()" on this)
 
 * Seed-Axe:
     * support synthesising the "oper" rule somehow?
