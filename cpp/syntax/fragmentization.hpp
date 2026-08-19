@@ -94,6 +94,8 @@ namespace silva {
     fragment_span_t(fragmentization_ptr_t);
     fragment_span_t(fragmentization_ptr_t, index_t begin, index_t end);
 
+    fragment_span_t subspan(index_t offset, optional_t<index_t> count);
+
     operator span_t<const fragment_t>();
 
     string_view_t as_string_view() const;

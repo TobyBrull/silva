@@ -503,6 +503,13 @@ namespace silva {
   {
   }
 
+  fragment_span_t fragment_span_t::subspan(index_t offset, optional_t<index_t> count)
+  {
+    const index_t retval_begin = begin + offset;
+    const index_t retval_end   = count ? retval_begin + *count : end;
+    return fragment_span_t(fp, retval_begin, retval_end);
+  }
+
   fragment_span_t::operator span_t<const fragment_t>()
   {
     return span_t<const fragment_t>(fp->fragments.data() + begin, end - begin);
