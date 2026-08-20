@@ -21,4 +21,5 @@ namespace silva {
   extern unicode::table_t<codepoint_category_t> codepoint_category_table;
 
   extern hash_map_t<unicode::codepoint_t, unicode::codepoint_t> opposite_parenthesis;
+
 }
