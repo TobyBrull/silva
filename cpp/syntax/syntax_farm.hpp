@@ -28,8 +28,11 @@ namespace silva {
 
   constexpr inline token_id_t token_id_language{1};
   constexpr inline token_id_t token_id_literal{2};
+  constexpr inline token_id_t token_id_dot{3};
   constexpr inline name_id_t name_id_language{1};
   constexpr inline name_id_t name_id_literal{2};
+
+  constexpr inline token_id_t token_id_default_name_sep = token_id_dot;
 
   struct name_abs_t {
     name_id_t id;
@@ -109,6 +112,9 @@ namespace silva {
     name_id_t name_id_of(name_id_t parent_name, Ts&&... xs);
 
     token_id_wrap_t token_id_wrap(token_id_t);
+    name_id_wrap_t name_id_wrap(name_id_t, token_id_t name_sep);
+
+    string_t name_id_str(name_id_t, token_id_t name_sep) const;
 
     template<typename LexiconType>
     const LexiconType& get_lexicon();
@@ -122,14 +128,13 @@ namespace silva {
     syntax_farm_ptr_t sfp;
     token_id_t language_name;
 
-    token_id_t name_sep = sfp->token_id(".");
+    token_id_t name_sep = token_id_default_name_sep;
 
     lexicon_t(syntax_farm_ptr_t);
 
     virtual ~lexicon_t();
 
     name_id_wrap_t name_id_wrap(name_id_t) const;
-
     string_t name_id_str(name_id_t) const;
   };
   using lexicon_ptr_t = ptr_t<const lexicon_t>;
@@ -142,7 +147,8 @@ namespace silva {
   };
 
   struct name_id_wrap_t {
-    lexicon_ptr_t lp;
+    syntax_farm_ptr_t sfp;
+    token_id_t name_sep;
     name_id_t name_id;
 
     friend void pretty_write_impl(const name_id_wrap_t&, byte_sink_t*);

@@ -2,8 +2,6 @@
 
 #include "canopy/tree.hpp"
 
-#include "seed.lexicon.hpp"
-
 namespace silva {
   expected_t<bool> is_twig_rule(const syntax_farm_t& sf, name_id_t rule_name)
   {
@@ -34,24 +32,22 @@ namespace silva {
 
   expected_t<string_t> parse_tree_span_t::to_string(const index_t fragment_indent) const
   {
-    string_t retval;
-    const seed::lexicon_t& lexicon = ptp->fp->sfp->get_lexicon<seed::lexicon_t>();
-    retval += SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
+    auto& sf = *ptp->fp->sfp;
+    return SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
       const auto pts = this->subspan_at(path.back().node_index);
-      curr_line += lexicon.name_id_str(pts.rule_name());
+      curr_line += sf.name_id_str(pts.rule_name(), token_id_default_name_sep);
       string_pad(curr_line, fragment_indent);
       curr_line += fmt::format("｢{}｣", silva::pretty_string(pts.fragment_span()));
     }));
-    return retval;
   }
 
   expected_t<string_t> parse_tree_span_t::to_graphviz() const
   {
-    const seed::lexicon_t& lexicon = ptp->fp->sfp->get_lexicon<seed::lexicon_t>();
+    auto& sf = *ptp->fp->sfp;
     return tree_span_t::to_graphviz([&](string_t& curr_line, auto& path) {
       const auto pts = this->subspan_at(path.back().node_index);
       curr_line += fmt::format("{}\\n{}",
-                               lexicon.name_id_str(pts.rule_name()),
+                               sf.name_id_str(pts.rule_name(), token_id_default_name_sep),
                                escape_string(silva::pretty_string(pts.fragment_span())));
     });
   }
@@ -86,13 +82,12 @@ namespace silva {
 
   expected_t<token_id_t> parse_tree_span_t::token() const
   {
-    auto& sf            = *ptp->fp->sfp;
-    const bool is_tr    = SILVA_EXPECT_FWD(is_twig_rule(sf, root->rule_name));
-    const auto& lexicon = sf.get_lexicon<seed::lexicon_t>();
+    auto& sf         = *ptp->fp->sfp;
+    const bool is_tr = SILVA_EXPECT_FWD(is_twig_rule(sf, root->rule_name));
     SILVA_EXPECT(is_tr,
                  MINOR,
                  "token should only be obtain from twig-rules, not from {}",
-                 lexicon.name_id_wrap(root->rule_name));
+                 sf.name_id_wrap(root->rule_name, token_id_default_name_sep));
     return fragment_span().derive_token_id();
   }
   expected_t<fragment_span_t> parse_tree_span_t::language() const

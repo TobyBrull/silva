@@ -68,6 +68,11 @@ namespace silva {
       token_lookup["literal"] = token_id_literal;
     }
     {
+      SILVA_ASSERT(token_infos.size() == token_id_dot.val);
+      token_infos.emplace_back(token_info_t{.str = "."});
+      token_lookup["."] = token_id_dot;
+    }
+    {
       const name_info_t fni{0, 0};
       name_infos.emplace_back(fni);
       name_lookup.emplace(fni, 0);
@@ -191,6 +196,23 @@ namespace silva {
         .token_id = token_id,
     };
   }
+  name_id_wrap_t syntax_farm_t::name_id_wrap(const name_id_t name_id, const token_id_t name_sep)
+  {
+    return name_id_wrap_t{
+        .sfp      = ptr(),
+        .name_sep = name_sep,
+        .name_id  = name_id,
+    };
+  }
+
+  string_t syntax_farm_t::name_id_str(const name_id_t name_id, const token_id_t name_sep) const
+  {
+    if (!name_id.is_valid()) {
+      return "";
+    }
+    const name_info_t& ni = get(name_id);
+    return name_id_str(ni.parent_name, name_sep) + get(name_sep).str + get(ni.base_name).str;
+  }
 
   lexicon_t::lexicon_t(syntax_farm_ptr_t sfp) : sfp(std::move(sfp)) {}
 
@@ -198,19 +220,11 @@ namespace silva {
 
   name_id_wrap_t lexicon_t::name_id_wrap(const name_id_t name_id) const
   {
-    return name_id_wrap_t{
-        .lp      = ptr(),
-        .name_id = name_id,
-    };
+    return sfp->name_id_wrap(name_id, name_sep);
   }
-
   string_t lexicon_t::name_id_str(const name_id_t name_id) const
   {
-    if (!name_id.is_valid()) {
-      return "";
-    }
-    const name_info_t& ni = sfp->get(name_id);
-    return name_id_str(ni.parent_name) + sfp->get(name_sep).str + sfp->get(ni.base_name).str;
+    return sfp->name_id_str(name_id, name_sep);
   }
 
   void pretty_write_impl(const token_id_wrap_t& x, byte_sink_t* byte_sink)
@@ -220,7 +234,7 @@ namespace silva {
 
   void pretty_write_impl(const name_id_wrap_t& x, byte_sink_t* byte_sink)
   {
-    byte_sink->write_str(x.lp->name_id_str(x.name_id));
+    byte_sink->write_str(x.sfp->name_id_str(x.name_id, x.name_sep));
   }
 
   fragmentization_ptr_t syntax_farm_t::add(unique_ptr_t<const fragmentization_t> x)

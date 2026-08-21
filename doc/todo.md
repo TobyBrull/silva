@@ -3,8 +3,6 @@
 * syntax-farm:
     * "token_lookup" should be based on string_view_t keys (or even fragment_span_t's??)
     * syntax_farm -> syntax_context?
-    * make '.' default name_id_t separater and remove virtual table from lexicon_t
-        * remove silva::lexicon_t entirely?
 
 * ParseTrees:
     * distinguish branch and twig rules at the level of parse-tree
