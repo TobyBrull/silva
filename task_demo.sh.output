@@ -2067,11 +2067,7 @@ Mr Jane
               [1].Cedar.Declaration.Initializer                                                     ｢0｣
                 [0].Cedar.Expr                                                                      ｢0｣
                   [0].Cedar.Expr.Atom                                                               ｢0｣
-                    [0].number                                                                      ｢0｣
-                      [0].number.integer                                                            ｢0｣
-                        [0].number.integer.decimal                                                  ｢0｣
-                          [0].number.plusMinus                                                      ｢｣
-                          [1].number.unsigned.integer.decimal                                       ｢0｣
+                    [0].Cedar.Expr.number                                                           ｢0｣
           [1].Cedar.Expr                                                                            ｢i < argc｣
             [0].Cedar.Expr.Relational.<                                                             ｢i < argc｣
               [0].Cedar.Expr.Atom                                                                   ｢i ｣
@@ -2128,11 +2124,7 @@ Mr Jane
         [0].Cedar.Stmt.Return                                                                       ｢return 0;\n｣
           [0].Cedar.Expr                                                                            ｢0｣
             [0].Cedar.Expr.Atom                                                                     ｢0｣
-              [0].number                                                                            ｢0｣
-                [0].number.integer                                                                  ｢0｣
-                  [0].number.integer.decimal                                                        ｢0｣
-                    [0].number.plusMinus                                                            ｢｣
-                    [1].number.unsigned.integer.decimal                                             ｢0｣
+              [0].Cedar.Expr.number                                                                 ｢0｣
   [3].Cedar.Declaration                                                                             ｢int t ...  i);<NEWLINE>｣
     [0].Cedar.Declaration.Specifiers                                                                ｢int ｣
       [0].Cedar.Type.Specifier                                                                      ｢int ｣
@@ -2193,11 +2185,7 @@ Mr Jane
                     [1].Cedar.Type.Declarator.Suffix                                                ｢[3]｣
                       [0].Cedar.Expr                                                                ｢3｣
                         [0].Cedar.Expr.Atom                                                         ｢3｣
-                          [0].number                                                                ｢3｣
-                            [0].number.integer                                                      ｢3｣
-                              [0].number.integer.decimal                                            ｢3｣
-                                [0].number.plusMinus                                                ｢｣
-                                [1].number.unsigned.integer.decimal                                 ｢3｣
+                          [0].Cedar.Expr.number                                                     ｢3｣
   [5].Cedar.Declaration                                                                             ｢void* ... 23];<NEWLINE>｣
     [0].Cedar.Declaration.Specifiers                                                                ｢void｣
       [0].Cedar.Type.Specifier                                                                      ｢void｣
@@ -2215,11 +2203,7 @@ Mr Jane
                   [1].Cedar.Type.Declarator.Suffix                                                  ｢[2]｣
                     [0].Cedar.Expr                                                                  ｢2｣
                       [0].Cedar.Expr.Atom                                                           ｢2｣
-                        [0].number                                                                  ｢2｣
-                          [0].number.integer                                                        ｢2｣
-                            [0].number.integer.decimal                                              ｢2｣
-                              [0].number.plusMinus                                                  ｢｣
-                              [1].number.unsigned.integer.decimal                                   ｢2｣
+                        [0].Cedar.Expr.number                                                       ｢2｣
               [1].Cedar.Type.Declarator.Suffix                                                      ｢(int, ... d*[])｣
                 [0].Cedar.Declaration.ParameterList                                                 ｢int,  ... id*[]｣
                   [0].Cedar.Declaration.ParameterDeclaration                                        ｢int｣
@@ -2238,11 +2222,7 @@ Mr Jane
           [1].Cedar.Type.Declarator.Suffix                                                          ｢[123]｣
             [0].Cedar.Expr                                                                          ｢123｣
               [0].Cedar.Expr.Atom                                                                   ｢123｣
-                [0].number                                                                          ｢123｣
-                  [0].number.integer                                                                ｢123｣
-                    [0].number.integer.decimal                                                      ｢123｣
-                      [0].number.plusMinus                                                          ｢｣
-                      [1].number.unsigned.integer.decimal                                           ｢123｣
+                [0].Cedar.Expr.number                                                               ｢123｣
   [6].Cedar.Declaration                                                                             ｢int ( ... [3];<NEWLINE>｣
     [0].Cedar.Declaration.Specifiers                                                                ｢int ｣
       [0].Cedar.Type.Specifier                                                                      ｢int ｣
@@ -2261,11 +2241,7 @@ Mr Jane
           [1].Cedar.Type.Declarator.Suffix                                                          ｢[3]｣
             [0].Cedar.Expr                                                                          ｢3｣
               [0].Cedar.Expr.Atom                                                                   ｢3｣
-                [0].number                                                                          ｢3｣
-                  [0].number.integer                                                                ｢3｣
-                    [0].number.integer.decimal                                                      ｢3｣
-                      [0].number.plusMinus                                                          ｢｣
-                      [1].number.unsigned.integer.decimal                                           ｢3｣
+                [0].Cedar.Expr.number                                                               ｢3｣
   [7].Cedar.Declaration                                                                             ｢char* ... )[];<NEWLINE>｣
     [0].Cedar.Declaration.Specifiers                                                                ｢char｣
       [0].Cedar.Type.Specifier                                                                      ｢char｣
@@ -2286,11 +2262,7 @@ Mr Jane
                   [2].Cedar.Type.Declarator.Suffix                                                  ｢[8]｣
                     [0].Cedar.Expr                                                                  ｢8｣
                       [0].Cedar.Expr.Atom                                                           ｢8｣
-                        [0].number                                                                  ｢8｣
-                          [0].number.integer                                                        ｢8｣
-                            [0].number.integer.decimal                                              ｢8｣
-                              [0].number.plusMinus                                                  ｢｣
-                              [1].number.unsigned.integer.decimal                                   ｢8｣
+                        [0].Cedar.Expr.number                                                       ｢8｣
               [1].Cedar.Type.Declarator.Suffix                                                      ｢()｣
           [1].Cedar.Type.Declarator.Suffix                                                          ｢[]｣
   [8].Cedar.Declaration                                                                             ｢int * ... 6();<NEWLINE>｣

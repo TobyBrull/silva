@@ -23,7 +23,6 @@
 * Fragmentization:
     * NEWLINE fragments should never have empty size
     * make fragmenziation.hpp:escape_string function efficient
-    * double-quoted strings should support digits after first place "eps0"
     * also make '`...`' strings in fragmentization?
     * write tests for `number`
 
@@ -35,7 +34,11 @@
         * Allow a parse_tree_t to be spliced into another parse_tree_t.
 
 * Errors:
-    * In parsing errors, show what has been successfully parsed so far?
+    * color furthest fragment in readable color?
+    * pass node_and_error_t::last_error through seed-axe
+        * error involving Cedar's ExprStmt = Expr ? ';' have no useful info
+    * rethink error generation fundamentally
+        * In parsing errors, show what has been successfully parsed so far?
 
 * Parsing:
     * Parse Python

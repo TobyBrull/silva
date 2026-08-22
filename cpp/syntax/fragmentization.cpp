@@ -603,6 +603,7 @@ namespace silva {
   {
     const token_id_t ti = sfp->token_id(sv);
     array_t<fragmented_token_t::item_t> items;
+    bool first = true;
     for (auto maybe_ud: unicode::utf8_decode_generator(sv)) {
       const unicode::codepoint_data_t ud = SILVA_EXPECT_FWD(std::move(maybe_ud));
       const codepoint_category_t cc      = codepoint_category_table[ud.codepoint];
@@ -636,9 +637,17 @@ namespace silva {
       }
 
       if (as_identifier) {
-        SILVA_EXPECT(is_fragment_category_text(fc),
-                     MINOR,
-                     "token that are treated as-identifier may only contain text");
+        if (first) {
+          SILVA_EXPECT(is_fragment_category_id_start(fc),
+                       MINOR,
+                       "token that are treated as-identifier may only contain identifiers");
+          first = false;
+        }
+        else {
+          SILVA_EXPECT(is_fragment_category_id_continue(fc),
+                       MINOR,
+                       "token that are treated as-identifier may only contain identifiers");
+        }
       }
 
       items.push_back(fragmented_token_t::item_t{.category = fc, .codepoint = ud.codepoint});

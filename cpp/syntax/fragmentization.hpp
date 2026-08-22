@@ -44,7 +44,6 @@ namespace silva {
   constexpr bool is_fragment_category_id_continue(fragment_category_t);
   constexpr bool is_fragment_category_real(fragment_category_t);
   constexpr bool is_fragment_category_visible(fragment_category_t);
-  constexpr bool is_fragment_category_text(fragment_category_t);
 
   token_id_t fragment_category_to_token_id(syntax_farm_t&, fragment_category_t);
 
@@ -176,10 +175,5 @@ namespace silva {
             fc != DEDENT &&     //
             fc != NEWLINE &&    //
             true);
-  }
-  constexpr bool is_fragment_category_text(const fragment_category_t fc)
-  {
-    using enum fragment_category_t;
-    return is_fragment_category_id_start(fc) || fc == ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT;
   }
 }

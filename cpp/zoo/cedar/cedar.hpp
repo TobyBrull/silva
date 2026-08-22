@@ -97,7 +97,8 @@ language Cedar:
       Conditional = rtl  ternary '?' ':'
       Assignment  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
       Comma       = ltr  infix_flat ','
-    Atom = number | string + | identifier | '(' Expr ')' | Sizeof | Alignof
+    Atom = Sizeof | Alignof | identifier | '(' Expr ')' | number | string +
+    number = [ DIGIT '.' ] [ DIGIT '.' 'e' 'E' 'l' 'L' 'u' 'U' '-' '+' ] *
     oper = operator | parenthesis
     Sizeof = "sizeof" ( Expr.Unary | '(' Type.Name ')' )
     Alignof = "_Alignof" '(' Type.Name ')'

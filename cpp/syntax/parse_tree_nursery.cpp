@@ -13,6 +13,7 @@ namespace silva {
                  "[{}] not enough fragments left when expecting {}",
                  fragment_location_at(orig_frag_idx),
                  sfp->token_id_wrap(ft.token_id));
+    SILVA_EXPECT(n > 0, ASSERT);
     for (index_t i = 0; i < n; ++i) {
       auto maybe_curr_cp = fp->get_unique_codepoint(fragment_index);
       if (!maybe_curr_cp.has_value()) {
@@ -32,7 +33,8 @@ namespace silva {
       fragment_index += 1;
     }
     if (ft.as_identifier) {
-      SILVA_EXPECT(num_fragments_left() == 0 || !is_fragment_category_text(fragment_category_by()),
+      SILVA_EXPECT(num_fragments_left() == 0 ||
+                       !is_fragment_category_id_continue(fragment_category_by()),
                    MINOR,
                    "[{}] expected {}",
                    fragment_location_at(orig_frag_idx),

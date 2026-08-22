@@ -35,6 +35,7 @@ numpy = ">=2.4.6,<3"
 pytest = ">=9.0.3,<10"
 termcolor = ">=3.3.0,<4"
 textual = ">=8.2.8,<9"
+tqdm = ">=4.70.0,<5"
 
 [feature.dev.dependencies]
 cmake-language-server = ">=0.1.11,<0.2"
