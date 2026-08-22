@@ -3,10 +3,6 @@
 * syntax-farm:
     * "token_lookup" should be based on string_view_t keys (or even fragment_span_t's??)
 
-* ParseTrees:
-    * add method ::get_first_token()? (i.e., decend first child until you hit the first
-      twig-rule, and call "token()" on this)
-
 * Seed-Axe:
     * support synthesising the "oper" rule somehow?
     * avoid common duplication in oper rule?

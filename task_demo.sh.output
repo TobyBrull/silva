@@ -1989,10 +1989,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
 2
 3
 Mr Jane
-1
-2
-3
-Mr Jane
 [0].Cedar                                                                                           ｢exter ... t_8;<NEWLINE>｣
   [0].Cedar.Declaration                                                                             ｢exter ... out;<NEWLINE>｣
     [0].Cedar.Declaration.Specifiers                                                                ｢exter ...  void｣

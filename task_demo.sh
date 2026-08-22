@@ -25,8 +25,7 @@ SEED_EXEC_TRACE=true "./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/01-simplest.
 "./${BUILD_DIR}/cpp/silva_syntax" silva/soil/soil.silva silva/soil/example.silva
 
 # Lox
-"./${BUILD_DIR}/cpp/silva_lox" cpp/zoo/lox/lox.lox --use-interpreter=true < cpp/zoo/lox/example.lox
-"./${BUILD_DIR}/cpp/silva_lox" cpp/zoo/lox/lox.lox --use-interpreter=false < cpp/zoo/lox/example.lox
+"./${BUILD_DIR}/cpp/silva_lox" cpp/zoo/lox/lox.lox < cpp/zoo/lox/example.lox
 
 # Cedar
 "./${BUILD_DIR}/cpp/silva_cedar" cpp/zoo/cedar/test.cedar
