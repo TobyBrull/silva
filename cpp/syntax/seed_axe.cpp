@@ -519,13 +519,12 @@ namespace silva::seed::impl {
       auto retval = SILVA_EXPECT_FWD(invoke_rule_parser(axe.oper_rule));
       SILVA_EXPECT(retval.tn.nursery_tree_index.has_value(), MAJOR);
       const parse_tree_node_t& oper_node = nursery.tree[retval.tn.nursery_tree_index.value()];
-      retval.token_id =
-          fragment_span_t{
-              nursery.fp,
-              oper_node.fragment_begin,
-              oper_node.fragment_end,
-          }
-              .derive_token_id();
+      const fragment_span_t fs{
+          nursery.fp,
+          oper_node.fragment_begin,
+          oper_node.fragment_end,
+      };
+      retval.token_id = sfp->token_id(fs);
       return retval;
     }
     expected_t<rule_parser_result_t> invoke_rule_parser(const name_id_t rule_name)
@@ -1027,7 +1026,7 @@ namespace silva::seed::impl {
     {
       auto ps              = nursery.pure_stake();
       const auto& ets_node = ets.node_at(0);
-      ps.create_node(ets_node.rule_name);
+      ps.create_node(ets_node.rule_name, ets_node.allow_token);
       if (ets_node.nursery_tree_index.has_value()) {
         nursery.tree.pop_back();
         const parse_tree_span_t to_implant =
@@ -1051,11 +1050,11 @@ namespace silva::seed::impl {
     expected_t<parse_tree_node_t> run()
     {
       auto ss = nursery.stake();
-      ss.create_node(axe.name);
+      ss.create_node(axe.name, false);
       const index_t parsed_trees_idx = nursery.tree.size();
       {
         auto ss_rule = nursery.stake();
-        ss_rule.create_node(name_id_t{});
+        ss_rule.create_node(name_id_t{}, false);
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(axe.name, shunting_yard()));
 
         const auto& root_node = expr_tree.back();

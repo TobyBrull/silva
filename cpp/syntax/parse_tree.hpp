@@ -5,13 +5,13 @@
 #include "fragmentization.hpp"
 
 namespace silva {
-  expected_t<bool> is_twig_rule(const syntax_farm_t&, name_id_t rule_name);
-
   struct parse_tree_node_t : public tree_node_t {
     name_id_t rule_name;
 
     index_t fragment_begin = std::numeric_limits<index_t>::max();
     index_t fragment_end   = std::numeric_limits<index_t>::min();
+
+    bool allow_token = false;
 
     friend auto operator<=>(const parse_tree_node_t&, const parse_tree_node_t&) = default;
     friend void pretty_write_impl(const parse_tree_node_t&, byte_sink_t*);
@@ -35,6 +35,7 @@ namespace silva {
     name_id_t rule_name() const;
     index_t fragment_begin() const;
     index_t fragment_end() const;
+    bool allow_token() const;
 
     parse_tree_t copy() const;
 
@@ -43,8 +44,6 @@ namespace silva {
     index_t count_children_with(name_id_t) const;
 
     expected_t<token_id_t> token() const;
-    expected_t<fragment_span_t> language() const;
-
     fragment_span_t fragment_span() const;
     fragment_location_t location() const;
 
@@ -102,6 +101,10 @@ namespace silva {
   inline index_t parse_tree_span_t::fragment_end() const
   {
     return root->fragment_end;
+  }
+  inline bool parse_tree_span_t::allow_token() const
+  {
+    return root->allow_token;
   }
 
   template<Namespace Ns>

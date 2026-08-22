@@ -3,16 +3,6 @@
 #include "canopy/tree.hpp"
 
 namespace silva {
-  expected_t<bool> is_twig_rule(const syntax_farm_t& sf, name_id_t rule_name)
-  {
-    const token_id_t ti = sf.name_infos[rule_name.val].base_name;
-    // TODO: do use fragmentized token directly
-    const string_view_t sv         = sf.token_infos[ti.val].str;
-    const auto [cp, _]             = SILVA_EXPECT_FWD(unicode::utf8_decode_one(sv));
-    const codepoint_category_t cpc = codepoint_category_table[cp];
-    return (cpc == codepoint_category_t::XID_Lowercase);
-  }
-
   void pretty_write_impl(const parse_tree_span_t& pts, byte_sink_t* stream)
   {
     if (pts.ptp.is_nullptr()) {
@@ -82,20 +72,13 @@ namespace silva {
 
   expected_t<token_id_t> parse_tree_span_t::token() const
   {
-    auto& sf         = *ptp->fp->sfp;
-    const bool is_tr = SILVA_EXPECT_FWD(is_twig_rule(sf, root->rule_name));
-    SILVA_EXPECT(is_tr,
+    auto& sf = *ptp->fp->sfp;
+    SILVA_EXPECT(root->allow_token,
                  MINOR,
                  "token should only be obtain from twig-rules, not from {}",
                  sf.name_id_wrap(root->rule_name, token_id_default_name_sep));
-    return fragment_span().derive_token_id();
+    return sf.token_id(fragment_span());
   }
-  expected_t<fragment_span_t> parse_tree_span_t::language() const
-  {
-    SILVA_EXPECT((*this).rule_name() == name_id_language, MINOR);
-    return fragment_span();
-  }
-
   fragment_span_t parse_tree_span_t::fragment_span() const
   {
     return fragment_span_t{
@@ -104,7 +87,6 @@ namespace silva {
         (*this).fragment_end(),
     };
   }
-
   fragment_location_t parse_tree_span_t::location() const
   {
     return fragment_location_t{

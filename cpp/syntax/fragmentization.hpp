@@ -100,8 +100,6 @@ namespace silva {
 
     string_view_t as_string_view() const;
 
-    token_id_t derive_token_id() const;
-
     friend void pretty_write_impl(const fragment_span_t&, byte_sink_t*);
   };
 

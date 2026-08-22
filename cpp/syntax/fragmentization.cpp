@@ -523,11 +523,6 @@ namespace silva {
                                                  end_byte_offset - beg_byte_offset);
   }
 
-  token_id_t fragment_span_t::derive_token_id() const
-  {
-    return fp->sfp->token_id(*this);
-  }
-
   void pretty_write_impl(const fragment_span_t& self, byte_sink_t* stream)
   {
     constexpr index_t max_num_frags = 10;

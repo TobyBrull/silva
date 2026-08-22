@@ -2,10 +2,8 @@
 
 * syntax-farm:
     * "token_lookup" should be based on string_view_t keys (or even fragment_span_t's??)
-    * syntax_farm -> syntax_context?
 
 * ParseTrees:
-    * distinguish branch and twig rules at the level of parse-tree
     * add method ::get_first_token()? (i.e., decend first child until you hit the first
       twig-rule, and call "token()" on this)
 
@@ -13,6 +11,7 @@
     * support synthesising the "oper" rule somehow?
     * avoid common duplication in oper rule?
     * allow more than just "" and '' in operators
+    * axe.name must not be twig-rule
 
 * Seed:
     * it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.

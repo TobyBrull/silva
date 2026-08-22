@@ -58,9 +58,11 @@ namespace silva {
   }
 
   void parse_tree_nursery_t::on_stake_create_node(parse_tree_node_t& proto_node,
-                                                  const name_id_t rule_name) const
+                                                  const name_id_t rule_name,
+                                                  const bool allow_token) const
   {
-    proto_node.rule_name = rule_name;
+    proto_node.rule_name   = rule_name;
+    proto_node.allow_token = allow_token;
   }
 
   void parse_tree_nursery_t::on_stake_add_proto_node(parse_tree_node_t& proto_node,

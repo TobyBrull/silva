@@ -376,7 +376,7 @@ namespace silva::seed::impl {
               t_rule_name,
               twig_rule_depth == 0,
               "the 'language' token-category may not be used inside other token rules");
-          ss.create_node(name_id_language);
+          ss.create_node(name_id_language, false);
           SILVA_EXPECT_PARSE(t_rule_name,
                              fragment_category_by() == fragment_category_t::LANG_BEGIN,
                              "expected token of category LANG_BEGIN; got {}",
@@ -408,7 +408,7 @@ namespace silva::seed::impl {
                                            fragment_location_by(),
                                            sfp->token_id_wrap(expected_ft.token_id)));
         if (curr_rule->is_literal_nodes) {
-          ss.create_node(name_id_literal);
+          ss.create_node(name_id_literal, true);
         }
         auto retval = ss.commit();
         if (twig_rule_depth == 0) {
@@ -838,7 +838,7 @@ namespace silva::seed::impl {
       else {
         auto ss = stake();
         if (!rule_data.is_no_node) {
-          ss.create_node(t_rule_name);
+          ss.create_node(t_rule_name, false);
         }
         auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(s_pts, t_rule_name));
         ss.add_proto_node(std::move(result.node));
@@ -856,7 +856,7 @@ namespace silva::seed::impl {
 
       auto ss = stake();
       if (!rule_data.is_no_node) {
-        ss.create_node(t_rule_name);
+        ss.create_node(t_rule_name, true);
       }
       auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(rule_data.expr, t_rule_name));
       ss.add_proto_node(std::move(result.node));
