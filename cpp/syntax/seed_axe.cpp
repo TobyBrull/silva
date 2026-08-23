@@ -612,7 +612,7 @@ namespace silva::seed::impl {
       const index_t combined_arity = (common_arity - 1) * ois.size() + 1;
       SILVA_EXPECT(combined_arity <= open_expr_stack.size(),
                    MINOR,
-                   "[{}] Operator(s) expected at total of {} operands, but only found {}",
+                   "[{}] Operator(s) expected a total of {} operands, but only found {}",
                    nursery.fragment_location_by(),
                    combined_arity,
                    open_expr_stack.size());

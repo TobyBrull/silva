@@ -644,6 +644,13 @@ namespace silva {
     };
   }
 
+  expected_t<bool> fragment_span_ends_with(const fragment_span_t& fs, const fragmented_token_t& ft)
+  {
+    const auto sv                    = fs.as_string_view();
+    const string_view_t expected_end = fs.fp->sfp->get(ft.token_id).str;
+    return sv.ends_with(expected_end);
+  }
+
   void pretty_write_impl(const fragment_t& ff, byte_sink_t* stream)
   {
     stream->format("{} {}", silva::pretty_string(ff.category), silva::pretty_string(ff.location));

@@ -104,6 +104,7 @@ namespace silva::seed {
     const name_id_t ni_expr_or       = sfp->name_id_of(ni_expr, "Or");
     const name_id_t ni_expr_and      = sfp->name_id_of(ni_expr, "And");
     const name_id_t ni_expr_followup = sfp->name_id_of(ni_expr, "Followup");
+    const name_id_t ni_expr_ending   = sfp->name_id_of(ni_expr, "Ending");
 
     const name_id_t ni_nt   = sfp->name_id_of(ni_seed, "Nonterminal");
     const name_id_t ni_name = sfp->name_id_of(ni_seed, "Name");

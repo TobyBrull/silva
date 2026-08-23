@@ -93,6 +93,10 @@ namespace silva {
     fragment_span_t(fragmentization_ptr_t);
     fragment_span_t(fragmentization_ptr_t, index_t begin, index_t end);
 
+    index_t size() const;
+
+    const fragment_t& operator[](index_t) const;
+
     fragment_span_t subspan(index_t offset, optional_t<index_t> count);
 
     operator span_t<const fragment_t>();
@@ -119,6 +123,8 @@ namespace silva {
   };
   expected_t<fragmented_token_t>
   fragmented_token(syntax_farm_ptr_t, string_view_t, bool as_identifier = false);
+
+  expected_t<bool> fragment_span_ends_with(const fragment_span_t&, const fragmented_token_t&);
 }
 
 // IMPLEMENTATION
@@ -173,5 +179,14 @@ namespace silva {
             fc != DEDENT &&     //
             fc != NEWLINE &&    //
             true);
+  }
+
+  inline index_t fragment_span_t::size() const
+  {
+    return end - begin;
+  }
+  inline const fragment_t& fragment_span_t::operator[](const index_t idx) const
+  {
+    return fp->fragments[begin + idx];
   }
 }

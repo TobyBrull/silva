@@ -6,6 +6,7 @@
 * Seed-Axe:
     * support synthesising the "oper" rule somehow? avoid common duplication in oper rule?
     * allow more than just "" and '' in operators?
+    * seed-axe generated rule-names should not contain operator token
 
 * Seed:
     * enforce:
@@ -13,8 +14,6 @@
         * token-rules may only use other token-rules or FRAGMENTS
         * tokens may only have other tokens as sub-rules
         * axe.name must not be twig-rule
-    * twig-rules to support endswith(...) (and use "_t" and "_f" in soil again)
-        * 'but_also'?
 
 * parse-tree::to_string(): show escaped fragments for branch-rules and pure fragments for twig-rules
 

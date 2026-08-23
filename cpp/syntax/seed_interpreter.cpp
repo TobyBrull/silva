@@ -9,6 +9,7 @@
 #include "parse_tree_nursery.hpp"
 #include "seed.hpp"
 #include "seed_axe.hpp"
+#include "syntax/fragmentization.hpp"
 
 #include <utility>
 
@@ -393,7 +394,7 @@ namespace silva::seed::impl {
         const auto it = se->string_to_ft.find(s_token_id);
         SILVA_EXPECT(it != se->string_to_ft.end(),
                      MAJOR,
-                     "Couldn't find token for {}",
+                     "couldn't find token for {}",
                      sfp->token_id_wrap(s_token_id));
         const fragmented_token_t& expected_ft = it->second;
         ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(expected_ft),
@@ -664,6 +665,37 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
+    expected_t<node_and_error_t> s_expr_ending(const parse_tree_span_t pts,
+                                               const name_id_t t_rule_name)
+    {
+      const auto [pts_expr, pts_oper, pts_endswith] = SILVA_EXPECT_FWD(pts.get_children<3>());
+      SILVA_EXPECT(pts_endswith.rule_name() == lexicon.ni_term,
+                   MINOR,
+                   "rhs of 'ending_with' expect to be plain string/literal");
+      const auto [pts_endswith_str] = SILVA_EXPECT_FWD(pts_endswith.get_children<1>());
+      SILVA_EXPECT(pts_endswith_str.rule_name() == lexicon.ni_string,
+                   MINOR,
+                   "rhs of 'ending_with' expect to be plain string/literal");
+      auto retval = SILVA_EXPECT_FWD(s_expr(pts_expr, t_rule_name));
+      {
+        const auto endswith_token = SILVA_EXPECT_FWD(pts_endswith_str.token());
+        const auto it             = se->string_to_ft.find(endswith_token);
+        SILVA_EXPECT(it != se->string_to_ft.end(),
+                     MAJOR,
+                     "couldn't find token for {}",
+                     sfp->token_id_wrap(endswith_token));
+        const fragmented_token_t& ft = it->second;
+        const fragment_span_t fs{fp, retval.node.fragment_begin, retval.node.fragment_end};
+        const bool endswith = SILVA_EXPECT_FWD_AS(fragment_span_ends_with(fs, ft), MAJOR);
+        SILVA_EXPECT(endswith,
+                     MINOR,
+                     "{} does not end with {}",
+                     fs,
+                     sfp->token_id_wrap(ft.token_id));
+      }
+      return retval;
+    }
+
     // can be 'a | b | c' or '[ a b c ]'
     expected_t<node_and_error_t> s_expr_or(const parse_tree_span_t pts, const name_id_t t_rule_name)
     {
@@ -736,6 +768,9 @@ namespace silva::seed::impl {
       else if (sfp->name_id_is_parent(lexicon.ni_expr_followup, s_rule_name)) {
         return s_expr_followup(pts, t_rule_name);
       }
+      else if (sfp->name_id_is_parent(lexicon.ni_expr_ending, s_rule_name)) {
+        return s_expr_ending(pts, t_rule_name);
+      }
       else if (sfp->name_id_is_parent(lexicon.ni_expr_or, s_rule_name)) {
         return s_expr_or(pts, t_rule_name);
       }
@@ -749,7 +784,7 @@ namespace silva::seed::impl {
         return s_nonterminal(pts, t_rule_name);
       }
       else {
-        SILVA_EXPECT(false, MAJOR, "unknown seed expression {}", pts);
+        SILVA_EXPECT(false, MAJOR, "unknown Seed expression {}", pts);
       }
     }
 
