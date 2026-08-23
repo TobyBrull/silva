@@ -98,7 +98,7 @@ language Cedar:
       Assignment  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '<<=' '>>=' '&=' '^=' '|='
       Comma       = ltr  infix_flat ','
     Atom = Sizeof | Alignof | identifier | '(' Expr ')' | number | string +
-    number = [ DIGIT '.' ] [ DIGIT '.' 'e' 'E' 'l' 'L' 'u' 'U' '-' '+' ] *
+    number = [ DIGIT '.' ] [ DIGIT '.' 'x' 'e' 'E' 'f' 'F' 'l' 'L' 'u' 'U' '-' '+' ] *
     oper = operator | parenthesis
     Sizeof = "sizeof" ( Expr.Unary | '(' Type.Name ')' )
     Alignof = "_Alignof" '(' Type.Name ')'

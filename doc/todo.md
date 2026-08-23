@@ -3,19 +3,13 @@
 * Fragmentization:
     * NEWLINE fragments should never have empty size
 
-* Seed-Axe:
-    * support synthesising the "oper" rule somehow? avoid common duplication in oper rule?
-    * allow more than just "" and '' in operators?
-    * seed-axe generated rule-names should not contain operator token
-
-* Seed:
-    * enforce:
-        * node-rules may only use other node-rules or token-rules
-        * token-rules may only use other token-rules or FRAGMENTS
-        * tokens may only have other tokens as sub-rules
-        * axe.name must not be twig-rule
-
 * parse-tree::to_string(): show escaped fragments for branch-rules and pure fragments for twig-rules
+
+* Seed-Axe:
+    * seed-axe generated rule-names should not contain operator token
+    * support synthesising the "oper" rule somehow?
+        * avoid common duplication in oper rule?
+        * allow more than just "" and '' in operators?
 
 * Python: add basic parser
 
@@ -38,7 +32,8 @@
     * function
         * allow uses to write typical parse functions in silva directly
         * add `joined_f(',', Base)`?
-    * add Seed Axe derivation (sub-Axe, super-Axe) mechanism?
+    * Axe:
+        * add Seed Axe derivation (sub-Axe, super-Axe) mechanism?
     * translate Seed program into IR:
         * check Seed program during translation
         * check that all Nonterminals can be resolved
@@ -52,6 +47,11 @@
     * allow the parser to descent into strings?
         * for example for the Seed literal « "not" », the parser could be modified to output a
           parse-tree that already contains the token `not` (i.e., without the double-quotes)
+    * Type-checking:
+        * branch-rules may not use FRAGMENTS
+        * token-rules may only use other token-rules or FRAGMENTS
+        * tokens may only have other tokens as nested rules
+        * axe.name must not be twig-rule
     * write tests for rules `number` and `date`
     * make seed-engine-based error look more like the error from the manual Fern parser; by creating
       bespoke error messages for certain edge cases.
