@@ -107,7 +107,7 @@ ERROR (MAJOR):
 │   │ │ │ ┌─[01-broken.fern:10:5] while matching token[ true ]
 │   │ │ │ │ [01-broken.fern:10:5] expected token[ false ]
 │   │ │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
-│   │ │ │ [01-broken.fern:10:5] .boolean: expected alternation[ [ "true" "false" ] ]
+│   │ │ │ [01-broken.fern:10:5] .boolean: expected alternation[ [ \"true\" \"false\" ] ]
 │   │ │ ├─[01-broken.fern:10:5] .boolean
 │   │ │ │       [01-broken.fern:10:5] expected token[ inf ]
 │   │ │ │     ┌─[01-broken.fern:10:5] while matching token[ inf ]
@@ -357,17 +357,17 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].Seed.tokenCategoryName              ｢skip｣
           [1].literal                             ｢.｣
           [2].Seed.tokenCategoryName              ｢freeForm｣
-    [2].Seed.Rule                                 ｢⊙ = "a" ... "b" *<NEWLINE><WHITESPACE>｣
+    [2].Seed.Rule                                 ｢⊙ = \"a\" ... \"b\" *<NEWLINE><WHITESPACE>｣
       [0].Seed.here                               ｢⊙｣
-      [1].Seed.Expr                               ｢"a" * "b" *｣
-        [0].Seed.Expr.Concat.concat               ｢"a" * "b" *｣
-          [0].Seed.Expr.Postfix.*                 ｢"a" * ｣
-            [0].Seed.Terminal                     ｢"a" ｣
-              [0].string                          ｢"a"｣
+      [1].Seed.Expr                               ｢\"a\" * \"b\" *｣
+        [0].Seed.Expr.Concat.concat               ｢\"a\" * \"b\" *｣
+          [0].Seed.Expr.Postfix.*                 ｢\"a\" * ｣
+            [0].Seed.Terminal                     ｢\"a\" ｣
+              [0].string                          ｢\"a\"｣
             [1].Seed.Expr.operator                ｢*｣
-          [1].Seed.Expr.Postfix.*                 ｢"b" *｣
-            [0].Seed.Terminal                     ｢"b" ｣
-              [0].string                          ｢"b"｣
+          [1].Seed.Expr.Postfix.*                 ｢\"b\" *｣
+            [0].Seed.Terminal                     ｢\"b\" ｣
+              [0].string                          ｢\"b\"｣
             [1].Seed.Expr.operator                ｢*｣
 
 [0].AsBs                                          ｢a a a ...  b <NEWLINE><DEDENT>｣
@@ -461,10 +461,10 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].string                        ｢'*'｣
               [8].Seed.Axe.op                     ｢'&'｣
                 [0].string                        ｢'&'｣
-              [9].Seed.Axe.op                     ｢"sizeof"｣
-                [0].string                        ｢"sizeof"｣
-              [10].Seed.Axe.op                    ｢"new"｣
-                [0].string                        ｢"new"｣
+              [9].Seed.Axe.op                     ｢\"sizeof\"｣
+                [0].string                        ｢\"sizeof\"｣
+              [10].Seed.Axe.op                    ｢\"new\"｣
+                [0].string                        ｢\"new\"｣
             [3].Seed.Axe.Ops                      ｢prefi ... e '(' ')'｣
               [0].Seed.Axe.opType                 ｢prefi ... _nest｣
               [1].Seed.Nonterminal                ｢Type ｣
@@ -588,8 +588,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].string                        ｢'-='｣
             [3].Seed.Axe.Ops                      ｢prefi ...      ｣
               [0].Seed.Axe.opType                 ｢prefix｣
-              [1].Seed.Axe.op                     ｢"throw"｣
-                [0].string                        ｢"throw"｣
+              [1].Seed.Axe.op                     ｢\"throw\"｣
+                [0].string                        ｢\"throw\"｣
             [4].Seed.Axe.Ops                      ｢terna ... y '?' ':'｣
               [0].Seed.Axe.opType                 ｢ternary｣
               [1].Seed.Axe.op                     ｢'?'｣
@@ -864,8 +864,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.unsigned.integer.decimal ｢2｣
                 [1].number.unsigned.float.fraction ｢.0｣
 
-[0].Seed                                          ｢langu ... "b" *<NEWLINE><DEDENT>｣
-  [0].Seed.Language                               ｢langu ... "b" *<NEWLINE><DEDENT>｣
+[0].Seed                                          ｢langu ... \"b\" *<NEWLINE><DEDENT>｣
+  [0].Seed.Language                               ｢langu ... \"b\" *<NEWLINE><DEDENT>｣
     [0].Seed.ruleName                             ｢Somelang｣
     [1].Seed.Rule                                 ｢skip  ... orm<NEWLINE><WHITESPACE>｣
       [0].Seed.Nonterminal                        ｢skip ｣
@@ -883,21 +883,21 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].Seed.ruleName                     ｢As｣
           [1].Seed.Nonterminal                    ｢Bs｣
             [0].Seed.ruleName                     ｢Bs｣
-    [3].Seed.Rule                                 ｢As = "a" *<NEWLINE>｣
+    [3].Seed.Rule                                 ｢As = \"a\" *<NEWLINE>｣
       [0].Seed.Nonterminal                        ｢As ｣
         [0].Seed.ruleName                         ｢As｣
-      [1].Seed.Expr                               ｢"a" *｣
-        [0].Seed.Expr.Postfix.*                   ｢"a" *｣
-          [0].Seed.Terminal                       ｢"a" ｣
-            [0].string                            ｢"a"｣
+      [1].Seed.Expr                               ｢\"a\" *｣
+        [0].Seed.Expr.Postfix.*                   ｢\"a\" *｣
+          [0].Seed.Terminal                       ｢\"a\" ｣
+            [0].string                            ｢\"a\"｣
           [1].Seed.Expr.operator                  ｢*｣
-    [4].Seed.Rule                                 ｢Bs = "b" *<NEWLINE>｣
+    [4].Seed.Rule                                 ｢Bs = \"b\" *<NEWLINE>｣
       [0].Seed.Nonterminal                        ｢Bs ｣
         [0].Seed.ruleName                         ｢Bs｣
-      [1].Seed.Expr                               ｢"b" *｣
-        [0].Seed.Expr.Postfix.*                   ｢"b" *｣
-          [0].Seed.Terminal                       ｢"b" ｣
-            [0].string                            ｢"b"｣
+      [1].Seed.Expr                               ｢\"b\" *｣
+        [0].Seed.Expr.Postfix.*                   ｢\"b\" *｣
+          [0].Seed.Terminal                       ｢\"b\" ｣
+            [0].string                            ｢\"b\"｣
           [1].Seed.Expr.operator                  ｢*｣
 
 [0].Somelang                                      ｢a a a ...  b b<NEWLINE>｣
@@ -1135,15 +1135,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].string                        ｢'>'｣
               [5].Seed.Axe.op                     ｢'>='｣
                 [0].string                        ｢'>='｣
-          [9].Seed.Axe.Level                      ｢Logic ... x "and" "or"｣
+          [9].Seed.Axe.Level                      ｢Logic ... x \"and\" \"or\"｣
             [0].Seed.ruleName                     ｢Logic｣
             [1].Seed.Axe.assoc                    ｢ltr｣
-            [2].Seed.Axe.Ops                      ｢infix "and" "or"｣
+            [2].Seed.Axe.Ops                      ｢infix \"and\" \"or\"｣
               [0].Seed.Axe.opType                 ｢infix｣
-              [1].Seed.Axe.op                     ｢"and"｣
-                [0].string                        ｢"and"｣
-              [2].Seed.Axe.op                     ｢"or"｣
-                [0].string                        ｢"or"｣
+              [1].Seed.Axe.op                     ｢\"and\"｣
+                [0].string                        ｢\"and\"｣
+              [2].Seed.Axe.op                     ｢\"or\"｣
+                [0].string                        ｢\"or\"｣
           [10].Seed.Axe.Level                     ｢Assig ... '=' '+=' '*='｣
             [0].Seed.ruleName                     ｢Assign｣
             [1].Seed.Axe.assoc                    ｢ltr｣
@@ -1182,14 +1182,14 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [12].Seed.Nonterminal               ｢numbe ...      ｣
                 [0].Seed.tokenCategoryName        ｢number｣
               [13].Seed.Expr.operator             ｢|｣
-              [14].Seed.Terminal                  ｢"true" ｣
-                [0].string                        ｢"true"｣
+              [14].Seed.Terminal                  ｢\"true\" ｣
+                [0].string                        ｢\"true\"｣
               [15].Seed.Expr.operator             ｢|｣
-              [16].Seed.Terminal                  ｢"false" ｣
-                [0].string                        ｢"false"｣
+              [16].Seed.Terminal                  ｢\"false\" ｣
+                [0].string                        ｢\"false\"｣
               [17].Seed.Expr.operator             ｢|｣
-              [18].Seed.Terminal                  ｢"none"\n    ...      ｣
-                [0].string                        ｢"none"｣
+              [18].Seed.Terminal                  ｢\"none\"\n    ...      ｣
+                [0].string                        ｢\"none\"｣
               [19].Seed.Expr.operator             ｢|｣
               [20].Seed.Expr.Concat.concat        ｢'(' Expr ')' ｣
                 [0].Seed.Terminal                 ｢'(' ｣
@@ -1323,27 +1323,27 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [2].Seed.Scope                            ｢If:<NEWLINE><INDENT> ... ody<NEWLINE><DEDENT>｣
           [0].Seed.Nonterminal                    ｢If｣
             [0].Seed.ruleName                     ｢If｣
-          [1].Seed.Rule                           ｢⊙ = "if" ...  ) ?<NEWLINE>｣
+          [1].Seed.Rule                           ｢⊙ = \"if\" ...  ) ?<NEWLINE>｣
             [0].Seed.here                         ｢⊙｣
-            [1].Seed.Expr                         ｢"if" Bra ... y ) ?｣
-              [0].Seed.Expr.Concat.concat         ｢"if" Bra ... y ) ?｣
-                [0].Seed.Terminal                 ｢"if" ｣
-                  [0].string                      ｢"if"｣
+            [1].Seed.Expr                         ｢\"if\" Bra ... y ) ?｣
+              [0].Seed.Expr.Concat.concat         ｢\"if\" Bra ... y ) ?｣
+                [0].Seed.Terminal                 ｢\"if\" ｣
+                  [0].string                      ｢\"if\"｣
                 [1].Seed.Nonterminal              ｢Branch ｣
                   [0].Seed.ruleName               ｢Branch｣
-                [2].Seed.Expr.Postfix.*           ｢( "elif" B ...  ) * ｣
-                  [0].Seed.Expr                   ｢"elif" Branch ｣
-                    [0].Seed.Expr.Concat.concat   ｢"elif" Branch ｣
-                      [0].Seed.Terminal           ｢"elif" ｣
-                        [0].string                ｢"elif"｣
+                [2].Seed.Expr.Postfix.*           ｢( \"elif\" B ...  ) * ｣
+                  [0].Seed.Expr                   ｢\"elif\" Branch ｣
+                    [0].Seed.Expr.Concat.concat   ｢\"elif\" Branch ｣
+                      [0].Seed.Terminal           ｢\"elif\" ｣
+                        [0].string                ｢\"elif\"｣
                       [1].Seed.Nonterminal        ｢Branch ｣
                         [0].Seed.ruleName         ｢Branch｣
                   [1].Seed.Expr.operator          ｢*｣
-                [3].Seed.Expr.Postfix.?           ｢( "else" B ... y ) ?｣
-                  [0].Seed.Expr                   ｢"else" Body ｣
-                    [0].Seed.Expr.Concat.concat   ｢"else" Body ｣
-                      [0].Seed.Terminal           ｢"else" ｣
-                        [0].string                ｢"else"｣
+                [3].Seed.Expr.Postfix.?           ｢( \"else\" B ... y ) ?｣
+                  [0].Seed.Expr                   ｢\"else\" Body ｣
+                    [0].Seed.Expr.Concat.concat   ｢\"else\" Body ｣
+                      [0].Seed.Terminal           ｢\"else\" ｣
+                        [0].string                ｢\"else\"｣
                       [1].Seed.Nonterminal        ｢Body ｣
                         [0].Seed.ruleName         ｢Body｣
                   [1].Seed.Expr.operator          ｢?｣
@@ -1359,10 +1359,10 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [3].Seed.Rule                             ｢For = ... Body<NEWLINE>｣
           [0].Seed.Nonterminal                    ｢For ｣
             [0].Seed.ruleName                     ｢For｣
-          [1].Seed.Expr                           ｢"for" Exp ...  Body｣
-            [0].Seed.Expr.Concat.concat           ｢"for" Exp ...  Body｣
-              [0].Seed.Terminal                   ｢"for" ｣
-                [0].string                        ｢"for"｣
+          [1].Seed.Expr                           ｢\"for\" Exp ...  Body｣
+            [0].Seed.Expr.Concat.concat           ｢\"for\" Exp ...  Body｣
+              [0].Seed.Terminal                   ｢\"for\" ｣
+                [0].string                        ｢\"for\"｣
               [1].Seed.Nonterminal                ｢Expr. ... aybe ｣
                 [0].Seed.ruleName                 ｢Expr｣
                 [1].literal                       ｢.｣
@@ -2099,8 +2099,8 @@ Mr Jane
                               [0].identifier                                                        ｢stdout｣
                             [1].Cedar.Expr.oper                                                     ｢,｣
                               [0].Cedar.operator                                                    ｢,｣
-                            [2].Cedar.Expr.Atom                                                     ｢"[%d] = %s\\n"｣
-                              [0].string                                                            ｢"[%d] = %s\\n"｣
+                            [2].Cedar.Expr.Atom                                                     ｢\"[%d] = %s\\n\"｣
+                              [0].string                                                            ｢\"[%d] = %s\\n\"｣
                             [3].Cedar.Expr.oper                                                     ｢,｣
                               [0].Cedar.operator                                                    ｢,｣
                             [4].Cedar.Expr.Atom                                                     ｢i｣
@@ -2298,68 +2298,68 @@ Mr Jane
         [1].Cedar.Type.Declarator.Direct                                                            ｢test_8｣
           [0].identifier                                                                            ｢test_8｣
 
-[0].Toml                                          ｢bare_ ...  = "cavendish"<NEWLINE>｣
-  [0].Toml.Keyval                                 ｢bare_ ...  = "Alphanumeric, underscores, and dashes allowed"<NEWLINE>｣
+[0].Toml                                          ｢bare_ ...  = \"cavendish\"<NEWLINE>｣
+  [0].Toml.Keyval                                 ｢bare_ ...  = \"Alphanumeric, underscores, and dashes allowed\"<NEWLINE>｣
     [0].Toml.Key                                  ｢bare_key ｣
       [0].Toml.SimpleKey                          ｢bare_key ｣
-    [1].Toml.Val                                  ｢"Alphanumeric, underscores, and dashes allowed"<NEWLINE>｣
-      [0].string                                  ｢"Alphanumeric, underscores, and dashes allowed"｣
-  [1].Toml.Keyval                                 ｢bare- ...  = "Dashes are completely legal"<NEWLINE>｣
+    [1].Toml.Val                                  ｢\"Alphanumeric, underscores, and dashes allowed\"<NEWLINE>｣
+      [0].string                                  ｢\"Alphanumeric, underscores, and dashes allowed\"｣
+  [1].Toml.Keyval                                 ｢bare- ...  = \"Dashes are completely legal\"<NEWLINE>｣
     [0].Toml.Key                                  ｢bare- ... dash ｣
       [0].Toml.SimpleKey                          ｢bare- ... dash ｣
-    [1].Toml.Val                                  ｢"Dashes are completely legal"<NEWLINE>｣
-      [0].string                                  ｢"Dashes are completely legal"｣
-  [2].Toml.Keyval                                 ｢bare_ ... = "Numbers are allowed"<NEWLINE><WHITESPACE>｣
+    [1].Toml.Val                                  ｢\"Dashes are completely legal\"<NEWLINE>｣
+      [0].string                                  ｢\"Dashes are completely legal\"｣
+  [2].Toml.Keyval                                 ｢bare_ ... = \"Numbers are allowed\"<NEWLINE><WHITESPACE>｣
     [0].Toml.Key                                  ｢bare_ ... _123 ｣
       [0].Toml.SimpleKey                          ｢bare_ ... _123 ｣
-    [1].Toml.Val                                  ｢"Numbers are allowed"<NEWLINE><WHITESPACE>｣
-      [0].string                                  ｢"Numbers are allowed"｣
-  [3].Toml.Keyval                                 ｢"quoted key" = "Allows spaces and special characters"<NEWLINE>｣
-    [0].Toml.Key                                  ｢"quoted key" ｣
-      [0].Toml.SimpleKey                          ｢"quoted key" ｣
-        [0].string                                ｢"quoted key"｣
-    [1].Toml.Val                                  ｢"Allows spaces and special characters"<NEWLINE>｣
-      [0].string                                  ｢"Allows spaces and special characters"｣
-  [4].Toml.Keyval                                 ｢'literal key' = "No escaping processed inside the key name"<NEWLINE>｣
+    [1].Toml.Val                                  ｢\"Numbers are allowed\"<NEWLINE><WHITESPACE>｣
+      [0].string                                  ｢\"Numbers are allowed\"｣
+  [3].Toml.Keyval                                 ｢\"quoted key\" = \"Allows spaces and special characters\"<NEWLINE>｣
+    [0].Toml.Key                                  ｢\"quoted key\" ｣
+      [0].Toml.SimpleKey                          ｢\"quoted key\" ｣
+        [0].string                                ｢\"quoted key\"｣
+    [1].Toml.Val                                  ｢\"Allows spaces and special characters\"<NEWLINE>｣
+      [0].string                                  ｢\"Allows spaces and special characters\"｣
+  [4].Toml.Keyval                                 ｢'literal key' = \"No escaping processed inside the key name\"<NEWLINE>｣
     [0].Toml.Key                                  ｢'literal key' ｣
       [0].Toml.SimpleKey                          ｢'literal key' ｣
         [0].string                                ｢'literal key'｣
-    [1].Toml.Val                                  ｢"No escaping processed inside the key name"<NEWLINE>｣
-      [0].string                                  ｢"No escaping processed inside the key name"｣
-  [5].Toml.Keyval                                 ｢"" = "Empty string keys are explicitly valid"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
-    [0].Toml.Key                                  ｢"" ｣
-      [0].Toml.SimpleKey                          ｢"" ｣
-        [0].string                                ｢""｣
-    [1].Toml.Val                                  ｢"Empty string keys are explicitly valid"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
-      [0].string                                  ｢"Empty string keys are explicitly valid"｣
-  [6].Toml.Keyval                                 ｢physi ...  = "blue"<NEWLINE>｣
+    [1].Toml.Val                                  ｢\"No escaping processed inside the key name\"<NEWLINE>｣
+      [0].string                                  ｢\"No escaping processed inside the key name\"｣
+  [5].Toml.Keyval                                 ｢\"\" = \"Empty string keys are explicitly valid\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
+    [0].Toml.Key                                  ｢\"\" ｣
+      [0].Toml.SimpleKey                          ｢\"\" ｣
+        [0].string                                ｢\"\"｣
+    [1].Toml.Val                                  ｢\"Empty string keys are explicitly valid\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
+      [0].string                                  ｢\"Empty string keys are explicitly valid\"｣
+  [6].Toml.Keyval                                 ｢physi ...  = \"blue\"<NEWLINE>｣
     [0].Toml.Key                                  ｢physi ... olor ｣
       [0].Toml.SimpleKey                          ｢physical｣
       [1].Toml.SimpleKey                          ｢property｣
       [2].Toml.SimpleKey                          ｢color ｣
-    [1].Toml.Val                                  ｢"blue"<NEWLINE>｣
-      [0].string                                  ｢"blue"｣
+    [1].Toml.Val                                  ｢\"blue\"<NEWLINE>｣
+      [0].string                                  ｢\"blue\"｣
   [7].Toml.Keyval                                 ｢physi ... <WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢physi ... hape ｣
       [0].Toml.SimpleKey                          ｢physical｣
       [1].Toml.SimpleKey                          ｢property｣
       [2].Toml.SimpleKey                          ｢shape ｣
-    [1].Toml.Val                                  ｢"round"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>｣
-      [0].string                                  ｢"round"｣
+    [1].Toml.Val                                  ｢\"round\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>｣
+      [0].string                                  ｢\"round\"｣
   [8].Toml.Table                                  ｢[stri ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.StdTable                             ｢[stri ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
       [0].Toml.Key                                ｢strings｣
         [0].Toml.SimpleKey                        ｢strings｣
-  [9].Toml.Keyval                                 ｢basic = "The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t."<NEWLINE>｣
+  [9].Toml.Keyval                                 ｢basic = \"The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t.\"<NEWLINE>｣
     [0].Toml.Key                                  ｢basic ｣
       [0].Toml.SimpleKey                          ｢basic ｣
-    [1].Toml.Val                                  ｢"The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t."<NEWLINE>｣
-      [0].string                                  ｢"The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t."｣
+    [1].Toml.Val                                  ｢\"The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t.\"<NEWLINE>｣
+      [0].string                                  ｢\"The quick brown fox jumps over the lazy dog.\\nWith a newline and a tab:\\t.\"｣
   [10].Toml.Keyval                                ｢escap ... <WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢escaped ｣
       [0].Toml.SimpleKey                          ｢escaped ｣
-    [1].Toml.Val                                  ｢"Quote: \\", Backslash: \\\\, Backspace: \\b, Formfeed: \\f, CarriageReturn: \\r"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>｣
-      [0].string                                  ｢"Quote: \\", Backslash: \\\\, Backspace: \\b, Formfeed: \\f, CarriageReturn: \\r"｣
+    [1].Toml.Val                                  ｢\"Quote: \\\", Backslash: \\\\, Backspace: \\b, Formfeed: \\f, CarriageReturn: \\r\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>｣
+      [0].string                                  ｢\"Quote: \\\", Backslash: \\\\, Backspace: \\b, Formfeed: \\f, CarriageReturn: \\r\"｣
   [11].Toml.Table                                 ｢[inte ... ers]<NEWLINE>｣
     [0].Toml.StdTable                             ｢[inte ... ers]<NEWLINE>｣
       [0].Toml.Key                                ｢integers｣
@@ -2669,17 +2669,17 @@ Mr Jane
               [0].number.integer.decimal          ｢3｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢3｣
-  [47].Toml.Keyval                                ｢strin ... , "green"]<NEWLINE>｣
+  [47].Toml.Keyval                                ｢strin ... , \"green\"]<NEWLINE>｣
     [0].Toml.Key                                  ｢strings ｣
       [0].Toml.SimpleKey                          ｢strings ｣
-    [1].Toml.Val                                  ｢["red", "yellow", "green"]<NEWLINE>｣
-      [0].Toml.Array                              ｢["red", "yellow", "green"]<NEWLINE>｣
-        [0].Toml.Val                              ｢"red"｣
-          [0].string                              ｢"red"｣
-        [1].Toml.Val                              ｢"yellow"｣
-          [0].string                              ｢"yellow"｣
-        [2].Toml.Val                              ｢"green"｣
-          [0].string                              ｢"green"｣
+    [1].Toml.Val                                  ｢[\"red\", \"yellow\", \"green\"]<NEWLINE>｣
+      [0].Toml.Array                              ｢[\"red\", \"yellow\", \"green\"]<NEWLINE>｣
+        [0].Toml.Val                              ｢\"red\"｣
+          [0].string                              ｢\"red\"｣
+        [1].Toml.Val                              ｢\"yellow\"｣
+          [0].string                              ｢\"yellow\"｣
+        [2].Toml.Val                              ｢\"green\"｣
+          [0].string                              ｢\"green\"｣
   [48].Toml.Keyval                                ｢neste ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢neste ... rays ｣
       [0].Toml.SimpleKey                          ｢neste ... rays ｣
@@ -2722,16 +2722,16 @@ Mr Jane
   [49].Toml.Keyval                                ｢multi ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢multi ... pace ｣
       [0].Toml.SimpleKey                          ｢multi ... pace ｣
-    [1].Toml.Val                                  ｢[\n  "allowed" ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
-      [0].Toml.Array                              ｢[\n  "allowed" ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
-        [0].Toml.Val                              ｢"allowed"｣
-          [0].string                              ｢"allowed"｣
-        [1].Toml.Val                              ｢"across"｣
-          [0].string                              ｢"across"｣
-        [2].Toml.Val                              ｢"multiple"｣
-          [0].string                              ｢"multiple"｣
-        [3].Toml.Val                              ｢"lines"｣
-          [0].string                              ｢"lines"｣
+    [1].Toml.Val                                  ｢[\n  \"allowed\" ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
+      [0].Toml.Array                              ｢[\n  \"allowed\" ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
+        [0].Toml.Val                              ｢\"allowed\"｣
+          [0].string                              ｢\"allowed\"｣
+        [1].Toml.Val                              ｢\"across\"｣
+          [0].string                              ｢\"across\"｣
+        [2].Toml.Val                              ｢\"multiple\"｣
+          [0].string                              ｢\"multiple\"｣
+        [3].Toml.Val                              ｢\"lines\"｣
+          [0].string                              ｢\"lines\"｣
   [50].Toml.Keyval                                ｢mixed ... <WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢mixed ... ypes ｣
       [0].Toml.SimpleKey                          ｢mixed ... ypes ｣
@@ -2749,12 +2749,12 @@ Mr Jane
               [0].number.integer.decimal          ｢2｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢2｣
-        [2].Toml.Val                              ｢"three"｣
-          [0].string                              ｢"three"｣
-        [3].Toml.Val                              ｢["four", 5]｣
-          [0].Toml.Array                          ｢["four", 5]｣
-            [0].Toml.Val                          ｢"four"｣
-              [0].string                          ｢"four"｣
+        [2].Toml.Val                              ｢\"three\"｣
+          [0].string                              ｢\"three\"｣
+        [3].Toml.Val                              ｢[\"four\", 5]｣
+          [0].Toml.Array                          ｢[\"four\", 5]｣
+            [0].Toml.Val                          ｢\"four\"｣
+              [0].string                          ｢\"four\"｣
             [1].Toml.Val                          ｢5｣
               [0].number                          ｢5｣
                 [0].number.integer                ｢5｣
@@ -2775,21 +2775,21 @@ Mr Jane
     [0].Toml.StdTable                             ｢[inli ... s]<NEWLINE><COMMENT><WHITESPACE>｣
       [0].Toml.Key                                ｢inlin ... ables｣
         [0].Toml.SimpleKey                        ｢inlin ... ables｣
-  [52].Toml.Keyval                                ｢basic ...  "Preston-Werner" }<NEWLINE>｣
+  [52].Toml.Keyval                                ｢basic ...  \"Preston-Werner\" }<NEWLINE>｣
     [0].Toml.Key                                  ｢basic ｣
       [0].Toml.SimpleKey                          ｢basic ｣
-    [1].Toml.Val                                  ｢{ fir ...  "Preston-Werner" }<NEWLINE>｣
-      [0].Toml.InlineTable                        ｢{ fir ...  "Preston-Werner" }<NEWLINE>｣
-        [0].Toml.Keyval                           ｢first = "Tom"｣
+    [1].Toml.Val                                  ｢{ fir ...  \"Preston-Werner\" }<NEWLINE>｣
+      [0].Toml.InlineTable                        ｢{ fir ...  \"Preston-Werner\" }<NEWLINE>｣
+        [0].Toml.Keyval                           ｢first = \"Tom\"｣
           [0].Toml.Key                            ｢first ｣
             [0].Toml.SimpleKey                    ｢first ｣
-          [1].Toml.Val                            ｢"Tom"｣
-            [0].string                            ｢"Tom"｣
-        [1].Toml.Keyval                           ｢last = "Preston-Werner" ｣
+          [1].Toml.Val                            ｢\"Tom\"｣
+            [0].string                            ｢\"Tom\"｣
+        [1].Toml.Keyval                           ｢last = \"Preston-Werner\" ｣
           [0].Toml.Key                            ｢last ｣
             [0].Toml.SimpleKey                    ｢last ｣
-          [1].Toml.Val                            ｢"Preston-Werner" ｣
-            [0].string                            ｢"Preston-Werner"｣
+          [1].Toml.Val                            ｢\"Preston-Werner\" ｣
+            [0].string                            ｢\"Preston-Werner\"｣
   [53].Toml.Keyval                                ｢point ... }<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢point ｣
       [0].Toml.SimpleKey                          ｢point ｣
@@ -2827,11 +2827,11 @@ Mr Jane
       [0].Toml.SimpleKey                          ｢nested ｣
     [1].Toml.Val                                  ｢{ ide ... }<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
       [0].Toml.InlineTable                        ｢{ ide ... }<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
-        [0].Toml.Keyval                           ｢ident ... = "admin" }｣
+        [0].Toml.Keyval                           ｢ident ... = \"admin\" }｣
           [0].Toml.Key                            ｢identity ｣
             [0].Toml.SimpleKey                    ｢identity ｣
-          [1].Toml.Val                            ｢{ id  ... = "admin" }｣
-            [0].Toml.InlineTable                  ｢{ id  ... = "admin" }｣
+          [1].Toml.Val                            ｢{ id  ... = \"admin\" }｣
+            [0].Toml.InlineTable                  ｢{ id  ... = \"admin\" }｣
               [0].Toml.Keyval                     ｢id = 42｣
                 [0].Toml.Key                      ｢id ｣
                   [0].Toml.SimpleKey              ｢id ｣
@@ -2841,11 +2841,11 @@ Mr Jane
                       [0].number.integer.decimal  ｢42｣
                         [0].number.plusMinus      ｢｣
                         [1].number.unsigned.integer.decimal ｢42｣
-              [1].Toml.Keyval                     ｢role = "admin" ｣
+              [1].Toml.Keyval                     ｢role = \"admin\" ｣
                 [0].Toml.Key                      ｢role ｣
                   [0].Toml.SimpleKey              ｢role ｣
-                [1].Toml.Val                      ｢"admin" ｣
-                  [0].string                      ｢"admin"｣
+                [1].Toml.Val                      ｢\"admin\" ｣
+                  [0].string                      ｢\"admin\"｣
         [1].Toml.Keyval                           ｢activ ... true ｣
           [0].Toml.Key                            ｢active ｣
             [0].Toml.SimpleKey                    ｢active ｣
@@ -2859,21 +2859,21 @@ Mr Jane
     [0].Toml.StdTable                             ｢[expl ... e_1]<NEWLINE>｣
       [0].Toml.Key                                ｢expli ... ble_1｣
         [0].Toml.SimpleKey                        ｢expli ... ble_1｣
-  [57].Toml.Keyval                                ｢key_a ... = "Value inside explicit_table_1"<NEWLINE><WHITESPACE>｣
+  [57].Toml.Keyval                                ｢key_a ... = \"Value inside explicit_table_1\"<NEWLINE><WHITESPACE>｣
     [0].Toml.Key                                  ｢key_a ｣
       [0].Toml.SimpleKey                          ｢key_a ｣
-    [1].Toml.Val                                  ｢"Value inside explicit_table_1"<NEWLINE><WHITESPACE>｣
-      [0].string                                  ｢"Value inside explicit_table_1"｣
+    [1].Toml.Val                                  ｢\"Value inside explicit_table_1\"<NEWLINE><WHITESPACE>｣
+      [0].string                                  ｢\"Value inside explicit_table_1\"｣
   [58].Toml.Table                                 ｢[expl ... ild]<NEWLINE>｣
     [0].Toml.StdTable                             ｢[expl ... ild]<NEWLINE>｣
       [0].Toml.Key                                ｢expli ... child｣
         [0].Toml.SimpleKey                        ｢expli ... ble_1｣
         [1].Toml.SimpleKey                        ｢neste ... child｣
-  [59].Toml.Keyval                                ｢key_b ... "Value inside nested_child"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
+  [59].Toml.Keyval                                ｢key_b ... \"Value inside nested_child\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢key_b ｣
       [0].Toml.SimpleKey                          ｢key_b ｣
-    [1].Toml.Val                                  ｢"Value inside nested_child"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
-      [0].string                                  ｢"Value inside nested_child"｣
+    [1].Toml.Val                                  ｢\"Value inside nested_child\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
+      [0].string                                  ｢\"Value inside nested_child\"｣
   [60].Toml.Table                                 ｢[expl ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.StdTable                             ｢[expl ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
       [0].Toml.Key                                ｢expli ... ble_2｣
@@ -2887,17 +2887,17 @@ Mr Jane
   [62].Toml.Keyval                                ｢final ... <COMMENT><WHITESPACE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢final_key ｣
       [0].Toml.SimpleKey                          ｢final_key ｣
-    [1].Toml.Val                                  ｢"Resolves deep nesting paths cleanly"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE> ... <COMMENT><WHITESPACE><WHITESPACE><COMMENT><WHITESPACE>｣
-      [0].string                                  ｢"Resolves deep nesting paths cleanly"｣
+    [1].Toml.Val                                  ｢\"Resolves deep nesting paths cleanly\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE> ... <COMMENT><WHITESPACE><WHITESPACE><COMMENT><WHITESPACE>｣
+      [0].string                                  ｢\"Resolves deep nesting paths cleanly\"｣
   [63].Toml.Table                                 ｢[[pro ... ts]]<NEWLINE>｣
     [0].Toml.ArrayTable                           ｢[[pro ... ts]]<NEWLINE>｣
       [0].Toml.Key                                ｢products｣
         [0].Toml.SimpleKey                        ｢products｣
-  [64].Toml.Keyval                                ｢name = "Hammer"<NEWLINE>｣
+  [64].Toml.Keyval                                ｢name = \"Hammer\"<NEWLINE>｣
     [0].Toml.Key                                  ｢name ｣
       [0].Toml.SimpleKey                          ｢name ｣
-    [1].Toml.Val                                  ｢"Hammer"<NEWLINE>｣
-      [0].string                                  ｢"Hammer"｣
+    [1].Toml.Val                                  ｢\"Hammer\"<NEWLINE>｣
+      [0].string                                  ｢\"Hammer\"｣
   [65].Toml.Keyval                                ｢sku = ... 7<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢sku ｣
       [0].Toml.SimpleKey                          ｢sku ｣
@@ -2915,11 +2915,11 @@ Mr Jane
     [0].Toml.ArrayTable                           ｢[[pro ... ts]]<NEWLINE>｣
       [0].Toml.Key                                ｢products｣
         [0].Toml.SimpleKey                        ｢products｣
-  [68].Toml.Keyval                                ｢name = "Nail"<NEWLINE>｣
+  [68].Toml.Keyval                                ｢name = \"Nail\"<NEWLINE>｣
     [0].Toml.Key                                  ｢name ｣
       [0].Toml.SimpleKey                          ｢name ｣
-    [1].Toml.Val                                  ｢"Nail"<NEWLINE>｣
-      [0].string                                  ｢"Nail"｣
+    [1].Toml.Val                                  ｢\"Nail\"<NEWLINE>｣
+      [0].string                                  ｢\"Nail\"｣
   [69].Toml.Keyval                                ｢sku = ... 393<NEWLINE><WHITESPACE>｣
     [0].Toml.Key                                  ｢sku ｣
       [0].Toml.SimpleKey                          ｢sku ｣
@@ -2934,67 +2934,67 @@ Mr Jane
       [0].Toml.Key                                ｢produ ... ories｣
         [0].Toml.SimpleKey                        ｢products｣
         [1].Toml.SimpleKey                        ｢categories｣
-  [71].Toml.Keyval                                ｢name  ... "Fasteners"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
+  [71].Toml.Keyval                                ｢name  ... \"Fasteners\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
     [0].Toml.Key                                  ｢name ｣
       [0].Toml.SimpleKey                          ｢name ｣
-    [1].Toml.Val                                  ｢"Fasteners"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
-      [0].string                                  ｢"Fasteners"｣
+    [1].Toml.Val                                  ｢\"Fasteners\"<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>｣
+      [0].string                                  ｢\"Fasteners\"｣
   [72].Toml.Table                                 ｢[[fruit]]<NEWLINE>｣
     [0].Toml.ArrayTable                           ｢[[fruit]]<NEWLINE>｣
       [0].Toml.Key                                ｢fruit｣
         [0].Toml.SimpleKey                        ｢fruit｣
-  [73].Toml.Keyval                                ｢name = "apple"<NEWLINE><WHITESPACE>｣
+  [73].Toml.Keyval                                ｢name = \"apple\"<NEWLINE><WHITESPACE>｣
     [0].Toml.Key                                  ｢name ｣
       [0].Toml.SimpleKey                          ｢name ｣
-    [1].Toml.Val                                  ｢"apple"<NEWLINE><WHITESPACE>｣
-      [0].string                                  ｢"apple"｣
+    [1].Toml.Val                                  ｢\"apple\"<NEWLINE><WHITESPACE>｣
+      [0].string                                  ｢\"apple\"｣
   [74].Toml.Table                                 ｢[frui ... cal]<NEWLINE>｣
     [0].Toml.StdTable                             ｢[frui ... cal]<NEWLINE>｣
       [0].Toml.Key                                ｢fruit ... sical｣
         [0].Toml.SimpleKey                        ｢fruit｣
         [1].Toml.SimpleKey                        ｢physical｣
-  [75].Toml.Keyval                                ｢color ... = "red"<NEWLINE><WHITESPACE>｣
+  [75].Toml.Keyval                                ｢color ... = \"red\"<NEWLINE><WHITESPACE>｣
     [0].Toml.Key                                  ｢color ｣
       [0].Toml.SimpleKey                          ｢color ｣
-    [1].Toml.Val                                  ｢"red"<NEWLINE><WHITESPACE>｣
-      [0].string                                  ｢"red"｣
+    [1].Toml.Val                                  ｢\"red\"<NEWLINE><WHITESPACE>｣
+      [0].string                                  ｢\"red\"｣
   [76].Toml.Table                                 ｢[[fru ... es]]<NEWLINE>｣
     [0].Toml.ArrayTable                           ｢[[fru ... es]]<NEWLINE>｣
       [0].Toml.Key                                ｢fruit ... eties｣
         [0].Toml.SimpleKey                        ｢fruit｣
         [1].Toml.SimpleKey                        ｢varieties｣
-  [77].Toml.Keyval                                ｢name = "gala"<NEWLINE><WHITESPACE>｣
+  [77].Toml.Keyval                                ｢name = \"gala\"<NEWLINE><WHITESPACE>｣
     [0].Toml.Key                                  ｢name ｣
       [0].Toml.SimpleKey                          ｢name ｣
-    [1].Toml.Val                                  ｢"gala"<NEWLINE><WHITESPACE>｣
-      [0].string                                  ｢"gala"｣
+    [1].Toml.Val                                  ｢\"gala\"<NEWLINE><WHITESPACE>｣
+      [0].string                                  ｢\"gala\"｣
   [78].Toml.Table                                 ｢[[fru ... es]]<NEWLINE>｣
     [0].Toml.ArrayTable                           ｢[[fru ... es]]<NEWLINE>｣
       [0].Toml.Key                                ｢fruit ... eties｣
         [0].Toml.SimpleKey                        ｢fruit｣
         [1].Toml.SimpleKey                        ｢varieties｣
-  [79].Toml.Keyval                                ｢name = "fuji"<NEWLINE><WHITESPACE>｣
+  [79].Toml.Keyval                                ｢name = \"fuji\"<NEWLINE><WHITESPACE>｣
     [0].Toml.Key                                  ｢name ｣
       [0].Toml.SimpleKey                          ｢name ｣
-    [1].Toml.Val                                  ｢"fuji"<NEWLINE><WHITESPACE>｣
-      [0].string                                  ｢"fuji"｣
+    [1].Toml.Val                                  ｢\"fuji\"<NEWLINE><WHITESPACE>｣
+      [0].string                                  ｢\"fuji\"｣
   [80].Toml.Table                                 ｢[[fruit]]<NEWLINE>｣
     [0].Toml.ArrayTable                           ｢[[fruit]]<NEWLINE>｣
       [0].Toml.Key                                ｢fruit｣
         [0].Toml.SimpleKey                        ｢fruit｣
-  [81].Toml.Keyval                                ｢name = "banana"<NEWLINE><WHITESPACE>｣
+  [81].Toml.Keyval                                ｢name = \"banana\"<NEWLINE><WHITESPACE>｣
     [0].Toml.Key                                  ｢name ｣
       [0].Toml.SimpleKey                          ｢name ｣
-    [1].Toml.Val                                  ｢"banana"<NEWLINE><WHITESPACE>｣
-      [0].string                                  ｢"banana"｣
+    [1].Toml.Val                                  ｢\"banana\"<NEWLINE><WHITESPACE>｣
+      [0].string                                  ｢\"banana\"｣
   [82].Toml.Table                                 ｢[[fru ... es]]<NEWLINE>｣
     [0].Toml.ArrayTable                           ｢[[fru ... es]]<NEWLINE>｣
       [0].Toml.Key                                ｢fruit ... eties｣
         [0].Toml.SimpleKey                        ｢fruit｣
         [1].Toml.SimpleKey                        ｢varieties｣
-  [83].Toml.Keyval                                ｢name = "cavendish"<NEWLINE>｣
+  [83].Toml.Keyval                                ｢name = \"cavendish\"<NEWLINE>｣
     [0].Toml.Key                                  ｢name ｣
       [0].Toml.SimpleKey                          ｢name ｣
-    [1].Toml.Val                                  ｢"cavendish"<NEWLINE>｣
-      [0].string                                  ｢"cavendish"｣
+    [1].Toml.Val                                  ｢\"cavendish\"<NEWLINE>｣
+      [0].string                                  ｢\"cavendish\"｣
 

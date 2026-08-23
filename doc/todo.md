@@ -1,30 +1,31 @@
 # TODO
 
+* Fragmentization:
+    * process plain-strings in Seed; only keep MULTILINE_STRING as fragment
+    * allow any type of parentheses to denote "language"
+    * NEWLINE fragments should never have empty size
+    * also make '`...`' strings in fragmentization?
+    * write tests for `number`
+
 * Seed-Axe:
     * support synthesising the "oper" rule somehow?
     * avoid common duplication in oper rule?
     * allow more than just "" and '' in operators
-    * axe.name must not be twig-rule
 
 * Seed:
     * enforce:
         * node-rules may only use other node-rules or token-rules
         * token-rules may only use other token-rules or FRAGMENTS
         * tokens may only have other tokens as sub-rules
+        * axe.name must not be twig-rule
     * support explicitly forcing 'node' or 'no_node' on a called rule
     * twig-rules to support startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
+        * 'but_also'?
     * Support checking if a parse_tree_t is valid according to a given Seed?
-
-* Fragmentization:
-    * NEWLINE fragments should never have empty size
-    * make fragmenziation.hpp:escape_string function efficient
-    * also make '`...`' strings in fragmentization?
-    * write tests for `number`
 
 * ParseTrees:
     * when serializing parse-tree:
         * show escaped fragments for branch-rules and pure fragments for twig-rules
-        * remove fragmentization.hpp:escape_string() function
     * Support construction of parse_tree_t's
         * Allow a parse_tree_t to be spliced into another parse_tree_t.
 

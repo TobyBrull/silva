@@ -3,6 +3,7 @@
 #include "canopy/expected.hpp"
 #include "canopy/filesystem.hpp"
 #include "canopy/pretty_write.hpp"
+#include "canopy/string_convert.hpp"
 #include "canopy/unicode.hpp"
 
 namespace silva {
@@ -535,7 +536,7 @@ namespace silva {
         }
         else {
           const string_view_t frag_text = self.fp->get_fragment_text(idx);
-          retval += escape_string(string_t{frag_text});
+          string_append_escaped(retval, frag_text);
         }
       }
     };
@@ -549,23 +550,6 @@ namespace silva {
       print_frags(self.end - max_num_frags / 2, self.end);
     }
     stream->write_str(retval);
-  }
-
-  string_t escape_string(string_view_t sv)
-  {
-    string_t retval;
-    for (index_t i = 0; i < sv.size(); ++i) {
-      if (sv[i] == '\n') {
-        retval.append("\\n");
-      }
-      else if (sv[i] == '\\') {
-        retval.append("\\\\");
-      }
-      else {
-        retval.push_back(sv[i]);
-      }
-    }
-    return retval;
   }
 
   expected_t<unique_ptr_t<fragmentization_t>> fragmentize_unique(filepath_t filepath,

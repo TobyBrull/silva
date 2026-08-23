@@ -1,5 +1,6 @@
 #include "parse_tree.hpp"
 
+#include "canopy/string_convert.hpp"
 #include "canopy/tree.hpp"
 
 namespace silva {
@@ -36,9 +37,9 @@ namespace silva {
     auto& sf = *ptp->fp->sfp;
     return tree_span_t::to_graphviz([&](string_t& curr_line, auto& path) {
       const auto pts = this->subspan_at(path.back().node_index);
-      curr_line += fmt::format("{}\\n{}",
-                               sf.name_id_str(pts.rule_name(), token_id_default_name_sep),
-                               escape_string(silva::pretty_string(pts.fragment_span())));
+      curr_line += sf.name_id_str(pts.rule_name(), token_id_default_name_sep);
+      curr_line += "\\n";
+      string_append_escaped(curr_line, silva::pretty_string(pts.fragment_span()));
     });
   }
 
