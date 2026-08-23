@@ -364,13 +364,6 @@ namespace silva::seed::impl {
         if (s_token_id == lexicon.ti_eps.token_id) {
           return ss.commit();
         }
-        else if (s_token_id == lexicon.ti_end_of_lang.token_id) {
-          SILVA_EXPECT_PARSE(t_rule_name,
-                             num_fragments_left() == 0,
-                             "expected {}",
-                             sfp->token_id_wrap(lexicon.ti_end_of_lang.token_id));
-          return ss.commit();
-        }
         else if (s_token_id == token_id_language) {
           SILVA_EXPECT_PARSE(
               t_rule_name,

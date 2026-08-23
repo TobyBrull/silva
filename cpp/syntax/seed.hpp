@@ -108,7 +108,7 @@ language Seed:
     operator = [ "not" "but_then" '{' '}' operator.single ]
     NoNode = Expr
   Terminal = [ keyword string fragName ]
-  keyword = [ "ε" "end_of_language" "language" ]
+  keyword = [ "ε" "language" ]
   Nonterminal = literal_nodes '.' ? ( Name '.' ) * Name
   Name = no_node [ ruleName tokenCategoryName ]
 )'";

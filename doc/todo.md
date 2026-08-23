@@ -1,8 +1,5 @@
 # TODO
 
-* syntax-farm:
-    * "token_lookup" should be based on string_view_t keys (or even fragment_span_t's??)
-
 * Seed-Axe:
     * support synthesising the "oper" rule somehow?
     * avoid common duplication in oper rule?
@@ -10,7 +7,6 @@
     * axe.name must not be twig-rule
 
 * Seed:
-    * it doesn't really make sense anymore to speak of Terminal and Nonterminal in the current form.
     * enforce:
         * node-rules may only use other node-rules or token-rules
         * token-rules may only use other token-rules or FRAGMENTS
@@ -18,7 +14,6 @@
     * support explicitly forcing 'node' or 'no_node' on a called rule
     * twig-rules to support startswith(...) endswith(...) (and use "_t" and "_f" in soil again)
     * Support checking if a parse_tree_t is valid according to a given Seed?
-    * does "end_of_language" work correctly
 
 * Fragmentization:
     * NEWLINE fragments should never have empty size
