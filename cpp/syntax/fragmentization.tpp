@@ -71,7 +71,7 @@ A ⎢ ( B
       const array_t<fragment_t> expected_fragments{
           {LANG_BEGIN, {0, 0, 0}},
           {WHITESPACE, {0, 0, 0}},
-          {LANG_END, {0, 0, 0}},
+          {LANG_END, {1, 0, 1}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -106,7 +106,7 @@ xyz123_äß
           {ID_LOWER, {2, 8, 11}},
           {NEWLINE, {2, 9, 13}},
           {WHITESPACE, {3, 0, 14}},
-          {LANG_END, {3, 0, 14}},
+          {LANG_END, {4, 0, 15}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -133,7 +133,7 @@ xyz123_äß
           {ID_LOWER, {0, 14, 14}}, //
           {ID_LOWER, {0, 15, 15}}, //
           {NEWLINE, {0, 16, 16}},  //
-          {LANG_END, {0, 16, 16}},
+          {LANG_END, {1, 0, 17}},
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -198,7 +198,7 @@ back
           {ID_LOWER, {8, 3, 67}},    // k
           {NEWLINE, {8, 4, 68}},     //
           {WHITESPACE, {9, 0, 69}},  //
-          {LANG_END, {9, 0, 69}},    //
+          {LANG_END, {10, 0, 70}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -213,8 +213,8 @@ back
           {ID_LOWER, {0, 3, 3}},   // e
           {ID_LOWER, {0, 4, 4}},   // f
           {NEWLINE, {0, 5, 5}},    //
-          {DEDENT, {0, 5, 5}},     //
-          {LANG_END, {0, 5, 5}},   //
+          {DEDENT, {1, 0, 6}},     //
+          {LANG_END, {1, 0, 6}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -266,8 +266,8 @@ b    # Hi
           {ID_LOWER, {7, 4, 50}},     // i
           {ID_LOWER, {7, 5, 51}},     // d
           {NEWLINE, {7, 6, 52}},      //
-          {DEDENT, {7, 6, 52}},       //
-          {LANG_END, {7, 6, 52}},     //
+          {DEDENT, {8, 0, 53}},       //
+          {LANG_END, {8, 0, 53}},     //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -320,8 +320,8 @@ y
           {WHITESPACE, {7, 8, 72}}, //
           {ID_LOWER, {8, 0, 74}},   // y
           {NEWLINE, {8, 1, 75}},    //
-          {DEDENT, {8, 1, 75}},     //
-          {LANG_END, {8, 1, 75}},   //
+          {DEDENT, {9, 0, 76}},     //
+          {LANG_END, {9, 0, 76}},   //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -341,7 +341,7 @@ y¶ xyz
           {ID_LOWER, {2, 0, 9}},   // y
           {STRING, {2, 1, 10}},    // ' xyz'
           {NEWLINE, {2, 6, 16}},   //
-          {LANG_END, {2, 6, 16}},  //
+          {LANG_END, {3, 0, 17}},  //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -425,7 +425,7 @@ x)
           {DEDENT, {9, 0, 82}},       //
           {LANG_END, {9, 0, 82}},     //
           {NEWLINE, {9, 1, 84}},      //
-          {LANG_END, {9, 1, 84}},     //
+          {LANG_END, {10, 0, 85}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -460,11 +460,11 @@ Py ⎢ (x +
           {NEWLINE, {3, 5, 33}},     //
           {PARENTHESIS, {3, 5, 33}}, //
           {NEWLINE, {3, 6, 34}},     //
-          {DEDENT, {3, 6, 34}},      //
-          {LANG_END, {3, 6, 34}},    //
-          {NEWLINE, {3, 6, 34}},     //
-          {WHITESPACE, {3, 6, 34}},  //
-          {LANG_END, {3, 6, 34}},    //
+          {DEDENT, {4, 0, 35}},      //
+          {LANG_END, {4, 0, 35}},    //
+          {NEWLINE, {4, 0, 35}},     //
+          {WHITESPACE, {4, 0, 35}},  //
+          {LANG_END, {4, 0, 35}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }
@@ -523,14 +523,14 @@ Python ⎢def
           {DEDENT, {7, 17, 150}},     //
           {LANG_END, {7, 17, 150}},   //
           {NEWLINE, {7, 18, 152}},    //
-          {LANG_END, {7, 18, 152}},   //
-          {NEWLINE, {7, 18, 152}},    //
-          {WHITESPACE, {7, 18, 152}}, //
-          {DEDENT, {7, 18, 152}},     //
-          {LANG_END, {7, 18, 152}},   //
-          {NEWLINE, {7, 18, 152}},    //
-          {WHITESPACE, {7, 18, 152}}, //
-          {LANG_END, {7, 18, 152}},   //
+          {LANG_END, {8, 0, 153}},    //
+          {NEWLINE, {8, 0, 153}},     //
+          {WHITESPACE, {8, 0, 153}},  //
+          {DEDENT, {8, 0, 153}},      //
+          {LANG_END, {8, 0, 153}},    //
+          {NEWLINE, {8, 0, 153}},     //
+          {WHITESPACE, {8, 0, 153}},  //
+          {LANG_END, {8, 0, 153}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }

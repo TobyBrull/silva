@@ -87,6 +87,7 @@ namespace silva {
     SILVA_EXPECT(!retval.empty() && retval.back().codepoint == U'\n',
                  MINOR,
                  "source-code expected to end with newline");
+    retval.push_back(categorized_codepoint_data_t{.location = loc});
     return {std::move(retval)};
   }
 
@@ -100,7 +101,7 @@ namespace silva {
       retval->source_code = std::move(source_code);
       ccd                 = std::move(orig_ccd);
       SILVA_EXPECT(ccd.size() >= 1, ASSERT);
-      n = ccd.size();
+      n = ccd.size() - 1;
       return {};
     }
 
@@ -417,7 +418,7 @@ namespace silva {
           if (ccd[i].codepoint == U'⎢') {
             SILVA_EXPECT_FWD(emit(i++, LANG_BEGIN));
             const start_of_line_info_t up_ns = SILVA_EXPECT_FWD(run_language(false, 1));
-            const index_t final_i            = std::min(i, n - 1);
+            const index_t final_i            = std::min(i, n);
             SILVA_EXPECT_FWD(emit(final_i, LANG_END));
             SILVA_EXPECT_FWD(emit(final_i, NEWLINE));
             if (up_ns.multiline_lang_depth < languages.back().multiline_lang_depth) {
@@ -472,7 +473,7 @@ namespace silva {
                    "Unmatched parenthesis at {}",
                    languages.back().parentheses.back().location);
 
-      const index_t final_i = std::min(i, n - 1);
+      const index_t final_i = std::min(i, n);
       if (!did_just_emit_newline) {
         SILVA_EXPECT_FWD(emit(final_i, NEWLINE));
       }
@@ -492,7 +493,7 @@ namespace silva {
       const start_of_line_info_t up_ns = SILVA_EXPECT_FWD(run_language(false, 0));
       SILVA_EXPECT(languages.empty(), MINOR);
       SILVA_EXPECT(up_ns == start_of_line_info_t{}, MINOR);
-      SILVA_EXPECT_FWD(emit(n - 1, LANG_END));
+      SILVA_EXPECT_FWD(emit(n, LANG_END));
       return {};
     }
   };

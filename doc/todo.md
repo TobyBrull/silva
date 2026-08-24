@@ -1,8 +1,5 @@
 # TODO
 
-* Fragmentization:
-    * NEWLINE fragments should never have empty size
-
 * parse-tree::to_string(): show escaped fragments for branch-rules and pure fragments for twig-rules
 
 * Seed-Axe:

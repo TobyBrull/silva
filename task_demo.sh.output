@@ -70,8 +70,8 @@
 10:3     PARENTHESIS ]                   [0x5d]
 10:4     LINEFEED                        [0x0a]
 11:1     PARENTHESIS ]                   [0x5d]
-11:2     NEWLINE                         []
-11:2     LANG_END                        [0x0a]
+11:2     NEWLINE                         [0x0a]
+12:1     LANG_END                        []
 [
   none
   true
@@ -328,7 +328,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [1].number.unsigned.integer.decimal                                    false     01-simplest.fern:7:1
         [3].string                                                                   false     01-simplest.fern:7:1
     [5].skip.freeForm                                                                true      01-simplest.fern:7:2
-      [0].skip.freeForm                                                              true      01-simplest.fern:7:2
+      [0].skip.freeForm                                                              true      01-simplest.fern:8:1
 [0].Silva                                         ｢Seed  ... ]<NEWLINE><WHITESPACE>»<NEWLINE>｣
   [0].Silva.Section                               ｢Seed  ... <WHITESPACE><DEDENT>»<NEWLINE><WHITESPACE>｣
     [0].Silva.languageName                        ｢Seed｣
