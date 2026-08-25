@@ -29,37 +29,37 @@ namespace silva::fern::test {
     CHECK(fern.to_string() == fern_text);
 
     const string_view_t expected_parse_tree_str = R"(
-[0].Fern                                          ｢[\n  n ...  ]\n]<NEWLINE>｣
-  [0].Fern.LabeledItem                            ｢none\n  ｣
+[0].Fern                                          [\n  n ...  ]\n]<NEWLINE>¦
+  [0].Fern.LabeledItem                            none\n  ¦
     [0].Fern.value                                ｢none｣
       [0].none                                    ｢none｣
-  [1].Fern.LabeledItem                            ｢true\n  ｣
+  [1].Fern.LabeledItem                            true\n  ¦
     [0].Fern.value                                ｢true｣
       [0].boolean                                 ｢true｣
-  [2].Fern.LabeledItem                            ｢'test' : 'Hello'\n  ｣
+  [2].Fern.LabeledItem                            'test' : 'Hello'\n  ¦
     [0].Fern.label                                ｢'test'｣
       [0].string                                  ｢'test'｣
     [1].Fern.value                                ｢'Hello'｣
       [0].string                                  ｢'Hello'｣
-  [3].Fern.LabeledItem                            ｢42\n  ｣
+  [3].Fern.LabeledItem                            42\n  ¦
     [0].Fern.value                                ｢42｣
       [0].number                                  ｢42｣
         [0].number.integer                        ｢42｣
           [0].number.integer.decimal              ｢42｣
             [0].number.plusMinus                  ｢｣
             [1].number.unsigned.integer.decimal   ｢42｣
-  [4].Fern.LabeledItem                            ｢[]\n  ｣
-    [0].Fern                                      ｢[]\n  ｣
-  [5].Fern.LabeledItem                            ｢[\n    ... \n  ]\n｣
-    [0].Fern                                      ｢[\n    ... \n  ]\n｣
-      [0].Fern.LabeledItem                        ｢1\n    ｣
+  [4].Fern.LabeledItem                            []\n  ¦
+    [0].Fern                                      []\n  ¦
+  [5].Fern.LabeledItem                            [\n    ... \n  ]\n¦
+    [0].Fern                                      [\n    ... \n  ]\n¦
+      [0].Fern.LabeledItem                        1\n    ¦
         [0].Fern.value                            ｢1｣
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢1｣
-      [1].Fern.LabeledItem                        ｢'two' : 2\n    ｣
+      [1].Fern.LabeledItem                        'two' : 2\n    ¦
         [0].Fern.label                            ｢'two'｣
           [0].string                              ｢'two'｣
         [1].Fern.value                            ｢2｣
@@ -68,7 +68,7 @@ namespace silva::fern::test {
               [0].number.integer.decimal          ｢2｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢2｣
-      [2].Fern.LabeledItem                        ｢3\n  ｣
+      [2].Fern.LabeledItem                        3\n  ¦
         [0].Fern.value                            ｢3｣
           [0].number                              ｢3｣
             [0].number.integer                    ｢3｣

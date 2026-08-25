@@ -1,7 +1,5 @@
 # TODO
 
-* parse-tree::to_string(): show escaped fragments for branch-rules and pure fragments for twig-rules
-
 * Seed-Axe:
     * seed-axe generated rule-names should not contain operator token
     * support synthesising the "oper" rule somehow?

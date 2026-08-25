@@ -23,21 +23,21 @@ number = DIGIT +
     const auto expr_pt = SILVA_REQUIRE(si.apply_text("", expr_text, sf.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
-[0].Expr                                          ｢5 + 4 ... + 1<NEWLINE><DEDENT>｣
-  [0].Add                                         ｢5 + 4 ... + 1<NEWLINE><DEDENT>｣
-    [0].Mult                                      ｢5 ｣
-      [0].Primary                                 ｢5 ｣
+[0].Expr                                          5 + 4 ... + 1<NEWLINE><DEDENT>¦
+  [0].Add                                         5 + 4 ... + 1<NEWLINE><DEDENT>¦
+    [0].Mult                                      5 ¦
+      [0].Primary                                 5 ¦
         [0].number                                ｢5｣
-    [1].Add                                       ｢4 * 2 ... + 1<NEWLINE><DEDENT>｣
-      [0].Mult                                    ｢4 * 2 ｣
-        [0].Primary                               ｢4 ｣
+    [1].Add                                       4 * 2 ... + 1<NEWLINE><DEDENT>¦
+      [0].Mult                                    4 * 2 ¦
+        [0].Primary                               4 ¦
           [0].number                              ｢4｣
-        [1].Mult                                  ｢2 ｣
-          [0].Primary                             ｢2 ｣
+        [1].Mult                                  2 ¦
+          [0].Primary                             2 ¦
             [0].number                            ｢2｣
-      [1].Add                                     ｢1<NEWLINE><DEDENT>｣
-        [0].Mult                                  ｢1<NEWLINE><DEDENT>｣
-          [0].Primary                             ｢1<NEWLINE><DEDENT>｣
+      [1].Add                                     1<NEWLINE><DEDENT>¦
+        [0].Mult                                  1<NEWLINE><DEDENT>¦
+          [0].Primary                             1<NEWLINE><DEDENT>¦
             [0].number                            ｢1｣
 )";
     const string_t result{SILVA_REQUIRE(expr_pt->span().to_string())};
@@ -69,38 +69,38 @@ language Expr:
     const auto expr_pt = SILVA_REQUIRE(si.apply_text("", expr_text, sf.name_id_of("Expr")));
 
     const std::string_view expected_parse_tree = R"(
-[0].Expr                                          ｢( 5 + ... 100<NEWLINE><DEDENT>｣
-  [0].Expr.Add.+                                  ｢( 5 + ... 100<NEWLINE><DEDENT>｣
-    [0].Expr.Atom                                 ｢( 5 + ... 20 ) ｣
-      [0].Expr                                    ｢5 + i ... * 20 ｣
-        [0].Expr.Add.+                            ｢5 + i ... * 20 ｣
-          [0].Expr.Atom                           ｢5 ｣
+[0].Expr                                          ( 5 + ... 100<NEWLINE><DEDENT>¦
+  [0].Expr.Add.+                                  ( 5 + ... 100<NEWLINE><DEDENT>¦
+    [0].Expr.Atom                                 ( 5 + ... 20 ) ¦
+      [0].Expr                                    5 + i ... * 20 ¦
+        [0].Expr.Add.+                            5 + i ... * 20 ¦
+          [0].Expr.Atom                           5 ¦
             [0].Expr.number                       ｢5｣
           [1].Expr.operator                       ｢+｣
-          [2].Expr.Atom                           ｢if a  ... * 20 ｣
-            [0].Expr                              ｢a < 3 ｣
-              [0].Expr.Comp.<                     ｢a < 3 ｣
-                [0].Expr.Atom                     ｢a ｣
+          [2].Expr.Atom                           if a  ... * 20 ¦
+            [0].Expr                              a < 3 ¦
+              [0].Expr.Comp.<                     a < 3 ¦
+                [0].Expr.Atom                     a ¦
                   [0].Expr.identifier             ｢a｣
                 [1].Expr.operator                 ｢<｣
-                [2].Expr.Atom                     ｢3 ｣
+                [2].Expr.Atom                     3 ¦
                   [0].Expr.number                 ｢3｣
-            [1].Expr                              ｢b + 10 ｣
-              [0].Expr.Add.+                      ｢b + 10 ｣
-                [0].Expr.Atom                     ｢b ｣
+            [1].Expr                              b + 10 ¦
+              [0].Expr.Add.+                      b + 10 ¦
+                [0].Expr.Atom                     b ¦
                   [0].Expr.identifier             ｢b｣
                 [1].Expr.operator                 ｢+｣
-                [2].Expr.Atom                     ｢10 ｣
+                [2].Expr.Atom                     10 ¦
                   [0].Expr.number                 ｢10｣
-            [2].Expr                              ｢c * 20 ｣
-              [0].Expr.Mult.*                     ｢c * 20 ｣
-                [0].Expr.Atom                     ｢c ｣
+            [2].Expr                              c * 20 ¦
+              [0].Expr.Mult.*                     c * 20 ¦
+                [0].Expr.Atom                     c ¦
                   [0].Expr.identifier             ｢c｣
                 [1].Expr.operator                 ｢*｣
-                [2].Expr.Atom                     ｢20 ｣
+                [2].Expr.Atom                     20 ¦
                   [0].Expr.number                 ｢20｣
     [1].Expr.operator                             ｢+｣
-    [2].Expr.Atom                                 ｢100<NEWLINE><DEDENT>｣
+    [2].Expr.Atom                                 100<NEWLINE><DEDENT>¦
       [0].Expr.number                             ｢100｣
 )";
     const string_t result{SILVA_REQUIRE(expr_pt->span().to_string())};

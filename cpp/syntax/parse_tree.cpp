@@ -24,12 +24,20 @@ namespace silva {
   expected_t<string_t> parse_tree_span_t::to_string(const index_t fragment_indent) const
   {
     auto& sf = *ptp->fp->sfp;
-    return SILVA_EXPECT_FWD(tree_span_t::to_string([&](string_t& curr_line, auto& path) {
-      const auto pts = this->subspan_at(path.back().node_index);
-      curr_line += sf.name_id_str(pts.rule_name(), token_id_default_name_sep);
-      string_pad(curr_line, fragment_indent);
-      curr_line += fmt::format("｢{}｣", silva::pretty_string(pts.fragment_span()));
-    }));
+    return SILVA_EXPECT_FWD(
+        tree_span_t::to_string([&](string_t& curr_line, auto& path) -> expected_t<void> {
+          const auto pts = this->subspan_at(path.back().node_index);
+          curr_line += sf.name_id_str(pts.rule_name(), token_id_default_name_sep);
+          string_pad(curr_line, fragment_indent);
+          if (pts.allow_token()) {
+            const auto ti = SILVA_EXPECT_FWD(pts.token());
+            curr_line += fmt::format("｢{}｣", sf.get(ti).str);
+          }
+          else {
+            curr_line += fmt::format("{}¦", silva::pretty_string(pts.fragment_span()));
+          }
+          return {};
+        }));
   }
 
   expected_t<string_t> parse_tree_span_t::to_graphviz() const
