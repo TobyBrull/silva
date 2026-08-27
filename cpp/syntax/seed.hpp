@@ -108,7 +108,7 @@ language Seed:
     Quantifier = literal_nodes number ? ',' number ? | number
     operator = [ "ending_with" "not" "but_then" '{' '}' operator.single ]
     NoNode = Expr
-  Terminal = [ keyword string fragName ]
+  Terminal = "literals_of" Nonterminal | [ keyword string fragName ]
   keyword = [ "ε" "language" ]
   Nonterminal = literal_nodes '.' ? ( Name '.' ) * Name
   Name = no_node [ ruleName tokenCategoryName ]

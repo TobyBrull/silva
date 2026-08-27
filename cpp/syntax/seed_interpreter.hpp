@@ -25,6 +25,10 @@ namespace silva::seed {
     // (i.e., of category: identifier or operator).
     hash_map_t<token_id_t, fragmented_token_t> string_to_ft;
 
+    // Maps a rule/scope name to all string-literal tokens occuring inside that scope (including
+    // nested rules); used to implement the "literals_of" mechanism.
+    hash_map_t<name_id_t, array_t<fragmented_token_t>> scope_to_literals;
+
     struct language_data_t {
       parse_tree_span_t pts;
       optional_t<rule_expr_data_t> skip_rule_expr;

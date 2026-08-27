@@ -1,5 +1,5 @@
-- When I say "git staged changes", then I mean the changes that are currently in the git staging
-  area.
+- When I say "git staged changes", then I mean the output of "git diff --staged".
+  When I say "git unstaged changes", then I mean the output of "git diff".
 - In relation to git, never stage any changes, never make any commits, never create any branches,
   never push any branches.
 - Never read or write any files outside of the repo root. If you need to write temporary files, put

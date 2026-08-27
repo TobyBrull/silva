@@ -2,9 +2,8 @@
 
 * Seed-Axe:
     * seed-axe generated rule-names should not contain operator token
-    * support synthesising the "oper" rule somehow?
-        * avoid common duplication in oper rule?
-        * allow more than just "" and '' in operators?
+    * allow more than just "" and '' in operators?
+    * allow "no_node" on axe
 
 * Python: add basic parser
 

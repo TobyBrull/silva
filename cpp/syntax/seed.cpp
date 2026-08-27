@@ -253,6 +253,15 @@ namespace silva::seed::impl {
       ss_rule.create_node(lexicon.ni_term, false);
       error_nursery_t error_nursery;
       {
+        auto result = literal(lexicon.ti_literals_of);
+        if (result) {
+          skip();
+          ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_term, nonterminal()));
+          return ss_rule.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      {
         auto result = keyword();
         if (result) {
           skip();

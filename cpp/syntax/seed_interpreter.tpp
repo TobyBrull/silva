@@ -16,7 +16,7 @@ language Frog:
   Rule = RuleName Expr
   RuleName = no_node Keyword
   Expr = Primary +
-  Primary = not Keyword but_then identifier
+  Primary = not literals_of Keyword but_then identifier
   Keyword:
     ⊙ = 'keyword1' | 'keyword2' | 'keyword3'
 )'";
@@ -100,12 +100,13 @@ language Frog:
     [7].Seed.Rule                                 Prima ... fier<NEWLINE>¦
       [0].Seed.Nonterminal                        Primary ¦
         [0].Seed.ruleName                         ｢Primary｣
-      [1].Seed.Expr                               not K ... ifier¦
-        [0].Seed.Expr.And.but_then                not K ... ifier¦
-          [0].Seed.Expr.Prefix.not                not K ... word ¦
+      [1].Seed.Expr                               not l ... ifier¦
+        [0].Seed.Expr.And.but_then                not l ... ifier¦
+          [0].Seed.Expr.Prefix.not                not l ... word ¦
             [0].Seed.Expr.operator                ｢not｣
-            [1].Seed.Nonterminal                  Keyword ¦
-              [0].Seed.ruleName                   ｢Keyword｣
+            [1].Seed.Terminal                     liter ... word ¦
+              [0].Seed.Nonterminal                Keyword ¦
+                [0].Seed.ruleName                 ｢Keyword｣
           [1].Seed.Expr.operator                  ｢but_then｣
           [2].Seed.Nonterminal                    identifier¦
             [0].Seed.tokenCategoryName            ｢identifier｣

@@ -25,6 +25,15 @@ namespace silva::seed::impl {
 
     interpreter_adder_t(interpreter_t* se) : se(se), lexicon(se->bootstrap_interpreter.lexicon()) {}
 
+    expected_t<void> recognize_literal(name_id_t rule_name, const fragmented_token_t& ft)
+    {
+      while (rule_name.is_valid()) {
+        se->scope_to_literals[rule_name].push_back(ft);
+        rule_name = sfp->get(rule_name).parent_name;
+      }
+      return {};
+    }
+
     expected_t<void> register_rule(const name_id_t rule_name,
                                    const parse_tree_span_t& pts,
                                    const bool is_twig_rule     = false,
@@ -131,8 +140,9 @@ namespace silva::seed::impl {
           const bool is_double_quoted = (ti_full_info.str[0] == U'"');
           const auto ti               = SILVA_EXPECT_FWD(sfp->token_id_in_string(str_ti));
           const auto& ti_info         = sfp->get(ti);
-          se->string_to_ft[str_ti] =
-              SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, is_double_quoted));
+          auto ft = SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, is_double_quoted));
+          SILVA_EXPECT_FWD(recognize_literal(curr_rule_name, ft));
+          se->string_to_ft[str_ti] = std::move(ft);
         }
       }
 
@@ -360,6 +370,41 @@ namespace silva::seed::impl {
       SILVA_EXPECT(pts.rule_name() == lexicon.ni_term, MAJOR);
       const auto [s_token_pts] =
           SILVA_EXPECT_FWD(pts.get_children<1>(), BROKEN_SEED, "{} Terminal without child", pts);
+      if (s_token_pts.rule_name() == lexicon.ni_nt) {
+        const auto nt_it = se->resolved_names.find(s_token_pts);
+        SILVA_EXPECT(nt_it != se->resolved_names.end(),
+                     MAJOR,
+                     "{} couldn't lookup nonterminal",
+                     pts);
+        const name_id_t literal_scope = nt_it->resolved_name;
+        const auto ls_it              = se->scope_to_literals.find(literal_scope);
+        SILVA_EXPECT(ls_it != se->scope_to_literals.end(),
+                     MAJOR,
+                     "literals_of {}: no such scope",
+                     lexicon.name_id_wrap(literal_scope));
+        error_nursery_t error_nursery;
+        for (const fragmented_token_t& ft: ls_it->second) {
+          auto result = parse_literal(ft);
+          if (!result) {
+            error_nursery.add_child_error(std::move(result).error());
+            continue;
+          }
+          ss.add_proto_node(*result);
+          if (curr_rule->is_literal_nodes) {
+            ss.create_node(name_id_literal, true);
+          }
+          auto retval = ss.commit();
+          if (twig_rule_depth == 0) {
+            SILVA_EXPECT_FWD(skip());
+          }
+          return retval;
+        }
+        return std::unexpected(std::move(error_nursery)
+                                   .finish_short(MINOR,
+                                                 "[{}] not in literals_of {}",
+                                                 fragment_location_by(),
+                                                 lexicon.name_id_wrap(literal_scope)));
+      }
       const token_id_t s_token_id = SILVA_EXPECT_FWD(s_token_pts.token());
       if (s_token_pts.rule_name() == lexicon.ni_keyword) {
         if (s_token_id == lexicon.ti_eps.token_id) {
