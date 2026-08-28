@@ -90,7 +90,7 @@ language Seed:
   Language = "language" ruleName ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
-  Rule = ( here | Nonterminal ) '=' ( "axe" Axe | qualifier * Expr newline )
+  Rule = ( here | Nonterminal ) '=' qualifier * ( "axe" Axe | Expr newline )
   here = '⊙'
   qualifier = [ "no_node" "no_whitespace" "literal_nodes" ]
   Expr:

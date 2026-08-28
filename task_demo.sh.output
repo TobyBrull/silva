@@ -1069,7 +1069,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [3].Seed.Rule                               Axe = ... '+=' '*='<NEWLINE><DEDENT>¦
         [0].Seed.Nonterminal                      Axe ¦
           [0].Seed.ruleName                       ｢Axe｣
-        [1].Seed.Axe                              Atom  ... '+=' '*='<NEWLINE><DEDENT>¦
+        [1].Seed.qualifier                        ｢no_node｣
+        [2].Seed.Axe                              Atom  ... '+=' '*='<NEWLINE><DEDENT>¦
           [0].Seed.Nonterminal                    Atom ¦
             [0].Seed.ruleName                     ｢Atom｣
           [1].Seed.Nonterminal                    oper¦
@@ -1468,27 +1469,23 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].identifier                ｢last｣
                 [2].Soil.Type.Struct.Member.Init  = 'Trump'¦
                   [0].Soil.Expr                   'Trump'¦
-                    [0].Soil.Expr.Axe             'Trump'¦
-                      [0].Soil.Expr.Atom          'Trump'¦
-                        [0].string                ｢'Trump'｣
+                    [0].Soil.Expr.Atom            'Trump'¦
+                      [0].string                  ｢'Trump'｣
           [1].Soil.Type.Struct.Member.Label       : name ¦
             [0].Soil.Type.Struct.Member.Name      name ¦
               [0].identifier                      ｢name｣
           [2].Soil.Type.Struct.Member.Init        = [ 'Arno' 'Nym' ]¦
             [0].Soil.Expr                         [ 'Arno' 'Nym' ]¦
-              [0].Soil.Expr.Axe                   [ 'Arno' 'Nym' ]¦
-                [0].Soil.Expr.Atom                [ 'Arno' 'Nym' ]¦
-                  [0].Soil.Expr.Struct            [ 'Arno' 'Nym' ]¦
-                    [0].Soil.Expr.Struct.LabeledItem 'Arno' ¦
-                      [0].Soil.Expr               'Arno' ¦
-                        [0].Soil.Expr.Axe         'Arno' ¦
-                          [0].Soil.Expr.Atom      'Arno' ¦
-                            [0].string            ｢'Arno'｣
-                    [1].Soil.Expr.Struct.LabeledItem 'Nym' ¦
-                      [0].Soil.Expr               'Nym' ¦
-                        [0].Soil.Expr.Axe         'Nym' ¦
-                          [0].Soil.Expr.Atom      'Nym' ¦
-                            [0].string            ｢'Nym'｣
+              [0].Soil.Expr.Atom                  [ 'Arno' 'Nym' ]¦
+                [0].Soil.Expr.Struct              [ 'Arno' 'Nym' ]¦
+                  [0].Soil.Expr.Struct.LabeledItem 'Arno' ¦
+                    [0].Soil.Expr                 'Arno' ¦
+                      [0].Soil.Expr.Atom          'Arno' ¦
+                        [0].string                ｢'Arno'｣
+                  [1].Soil.Expr.Struct.LabeledItem 'Nym' ¦
+                    [0].Soil.Expr                 'Nym' ¦
+                      [0].Soil.Expr.Atom          'Nym' ¦
+                        [0].string                ｢'Nym'｣
         [1].Soil.Type.Struct.Member               age_t ... st);\n¦
           [0].Soil.Type                           age_t ¦
             [0].Soil.Type.Name                    age_t ¦
@@ -1499,55 +1496,49 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].identifier                      ｢age｣
           [2].Soil.Type.Struct.Member.Init        = siz ... irst)¦
             [0].Soil.Expr                         size_ ... irst)¦
-              [0].Soil.Expr.Axe                   size_ ... irst)¦
-                [0].Soil.Expr.Axe.CallPost.(      size_ ... irst)¦
-                  [0].Soil.Expr.Atom              size_f¦
-                    [0].Soil.funcName             ｢size_f｣
-                      [0].identifier              ｢size_f｣
-                  [1].Soil.Expr.oper              ｢(｣
-                    [0].parenthesis               ｢(｣
-                  [2].Soil.Expr.Axe               name.first¦
-                    [0].Soil.Expr.Axe.Member..    name.first¦
-                      [0].Soil.Expr.Atom          name¦
-                        [0].identifier            ｢name｣
-                      [1].Soil.Expr.oper          ｢.｣
-                      [2].Soil.Expr.Atom          first¦
-                        [0].identifier            ｢first｣
-                  [3].Soil.Expr.oper              ｢)｣
-                    [0].parenthesis               ｢)｣
+              [0].Soil.Expr.Axe.CallPost.(        size_ ... irst)¦
+                [0].Soil.Expr.Atom                size_f¦
+                  [0].Soil.funcName               ｢size_f｣
+                    [0].identifier                ｢size_f｣
+                [1].Soil.Expr.oper                ｢(｣
+                  [0].parenthesis                 ｢(｣
+                [2].Soil.Expr.Axe.Member..        name.first¦
+                  [0].Soil.Expr.Atom              name¦
+                    [0].identifier                ｢name｣
+                  [1].Soil.Expr.oper              ｢.｣
+                  [2].Soil.Expr.Atom              first¦
+                    [0].identifier                ｢first｣
+                [3].Soil.Expr.oper                ｢)｣
+                  [0].parenthesis                 ｢)｣
   [3].Soil.Variable.Defn                          bs =  ... 0 ]<NEWLINE><WHITESPACE>¦
     [0].Soil.Variable.Name                        bs ¦
       [0].identifier                              ｢bs｣
     [1].Soil.Expr                                 perso ... 0 ]<NEWLINE><WHITESPACE>¦
-      [0].Soil.Expr.Axe                           perso ... 0 ]<NEWLINE><WHITESPACE>¦
-        [0].Soil.Expr.Axe.Typing.::               perso ... 0 ]<NEWLINE><WHITESPACE>¦
-          [0].Soil.Expr.Atom                      person_t ¦
-            [0].Soil.typeName                     ｢person_t｣
-              [0].identifier                      ｢person_t｣
-          [1].Soil.Expr.oper                      ｢::｣
-          [2].Soil.Expr.Atom                      [ [ 'Bjarne' ... 0 ]<NEWLINE><WHITESPACE>¦
-            [0].Soil.Expr.Struct                  [ [ 'Bjarne' ... 0 ]<NEWLINE><WHITESPACE>¦
-              [0].Soil.Expr.Struct.LabeledItem    [ 'Bjarne' 'Stroustrup' ] ¦
-                [0].Soil.Expr.Struct              [ 'Bjarne' 'Stroustrup' ] ¦
-                  [0].Soil.Expr.Struct.LabeledItem 'Bjarne' ¦
-                    [0].Soil.Expr                 'Bjarne' ¦
-                      [0].Soil.Expr.Axe           'Bjarne' ¦
-                        [0].Soil.Expr.Atom        'Bjarne' ¦
-                          [0].string              ｢'Bjarne'｣
-                  [1].Soil.Expr.Struct.LabeledItem 'Stroustrup' ¦
-                    [0].Soil.Expr                 'Stroustrup' ¦
-                      [0].Soil.Expr.Axe           'Stroustrup' ¦
-                        [0].Soil.Expr.Atom        'Stroustrup' ¦
-                          [0].string              ｢'Stroustrup'｣
-              [1].Soil.Expr.Struct.LabeledItem    80 ¦
-                [0].Soil.Expr                     80 ¦
-                  [0].Soil.Expr.Axe               80 ¦
-                    [0].Soil.Expr.Atom            80 ¦
-                      [0].number                  ｢80｣
-                        [0].number.integer        ｢80｣
-                          [0].number.integer.decimal ｢80｣
-                            [0].number.plusMinus  ｢｣
-                            [1].number.unsigned.integer.decimal ｢80｣
+      [0].Soil.Expr.Axe.Typing.::                 perso ... 0 ]<NEWLINE><WHITESPACE>¦
+        [0].Soil.Expr.Atom                        person_t ¦
+          [0].Soil.typeName                       ｢person_t｣
+            [0].identifier                        ｢person_t｣
+        [1].Soil.Expr.oper                        ｢::｣
+        [2].Soil.Expr.Atom                        [ [ 'Bjarne' ... 0 ]<NEWLINE><WHITESPACE>¦
+          [0].Soil.Expr.Struct                    [ [ 'Bjarne' ... 0 ]<NEWLINE><WHITESPACE>¦
+            [0].Soil.Expr.Struct.LabeledItem      [ 'Bjarne' 'Stroustrup' ] ¦
+              [0].Soil.Expr.Struct                [ 'Bjarne' 'Stroustrup' ] ¦
+                [0].Soil.Expr.Struct.LabeledItem  'Bjarne' ¦
+                  [0].Soil.Expr                   'Bjarne' ¦
+                    [0].Soil.Expr.Atom            'Bjarne' ¦
+                      [0].string                  ｢'Bjarne'｣
+                [1].Soil.Expr.Struct.LabeledItem  'Stroustrup' ¦
+                  [0].Soil.Expr                   'Stroustrup' ¦
+                    [0].Soil.Expr.Atom            'Stroustrup' ¦
+                      [0].string                  ｢'Stroustrup'｣
+            [1].Soil.Expr.Struct.LabeledItem      80 ¦
+              [0].Soil.Expr                       80 ¦
+                [0].Soil.Expr.Atom                80 ¦
+                  [0].number                      ｢80｣
+                    [0].number.integer            ｢80｣
+                      [0].number.integer.decimal  ｢80｣
+                        [0].number.plusMinus      ｢｣
+                        [1].number.unsigned.integer.decimal ｢80｣
   [4].Soil.Func.Defn                              is_ad ... ;\n}<NEWLINE><WHITESPACE>¦
     [0].Soil.Func.Name                            is_ad ... lt_f ¦
       [0].Soil.funcName                           ｢is_adult_f｣
@@ -1564,25 +1555,24 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [2].Soil.Func.Body                            {\n  r ... ;\n}<NEWLINE><WHITESPACE>¦
       [0].Soil.Func.Stmt                          retva ...  18;\n¦
         [0].Soil.Expr                             retva ... >= 18¦
-          [0].Soil.Expr.Axe                       retva ... >= 18¦
-            [0].Soil.Expr.Axe.Assign.=            retva ... >= 18¦
-              [0].Soil.Expr.Atom                  retval ¦
-                [0].identifier                    ｢retval｣
-              [1].Soil.Expr.oper                  ｢=｣
-              [2].Soil.Expr.Axe.Comp.>=           arg.a ... >= 18¦
-                [0].Soil.Expr.Axe.Member..        arg.age ¦
-                  [0].Soil.Expr.Atom              arg¦
-                    [0].identifier                ｢arg｣
-                  [1].Soil.Expr.oper              ｢.｣
-                  [2].Soil.Expr.Atom              age ¦
-                    [0].identifier                ｢age｣
-                [1].Soil.Expr.oper                ｢>=｣
-                [2].Soil.Expr.Atom                18¦
-                  [0].number                      ｢18｣
-                    [0].number.integer            ｢18｣
-                      [0].number.integer.decimal  ｢18｣
-                        [0].number.plusMinus      ｢｣
-                        [1].number.unsigned.integer.decimal ｢18｣
+          [0].Soil.Expr.Axe.Assign.=              retva ... >= 18¦
+            [0].Soil.Expr.Atom                    retval ¦
+              [0].identifier                      ｢retval｣
+            [1].Soil.Expr.oper                    ｢=｣
+            [2].Soil.Expr.Axe.Comp.>=             arg.a ... >= 18¦
+              [0].Soil.Expr.Axe.Member..          arg.age ¦
+                [0].Soil.Expr.Atom                arg¦
+                  [0].identifier                  ｢arg｣
+                [1].Soil.Expr.oper                ｢.｣
+                [2].Soil.Expr.Atom                age ¦
+                  [0].identifier                  ｢age｣
+              [1].Soil.Expr.oper                  ｢>=｣
+              [2].Soil.Expr.Atom                  18¦
+                [0].number                        ｢18｣
+                  [0].number.integer              ｢18｣
+                    [0].number.integer.decimal    ｢18｣
+                      [0].number.plusMinus        ｢｣
+                      [1].number.unsigned.integer.decimal ｢18｣
   [5].Soil.Func.Defn                              examp ... }\n}<NEWLINE><WHITESPACE>¦
     [0].Soil.Func.Name                            example_f ¦
       [0].Soil.funcName                           ｢example_f｣
@@ -1593,399 +1583,366 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [2].Soil.Func.Body                            {\n  a ... }\n}<NEWLINE><WHITESPACE>¦
       [0].Soil.Func.Stmt                          age = ... 2;\n  ¦
         [0].Soil.Expr                             age = ... :: 42¦
-          [0].Soil.Expr.Axe                       age = ... :: 42¦
-            [0].Soil.Expr.Axe.Assign.=            age = ... :: 42¦
-              [0].Soil.Expr.Atom                  age ¦
-                [0].identifier                    ｢age｣
-              [1].Soil.Expr.oper                  ｢=｣
-              [2].Soil.Expr.Axe.Typing.::         age_t ... :: 42¦
-                [0].Soil.Expr.Atom                age_t ¦
-                  [0].Soil.typeName               ｢age_t｣
-                    [0].identifier                ｢age_t｣
-                [1].Soil.Expr.oper                ｢::｣
-                [2].Soil.Expr.Atom                42¦
-                  [0].number                      ｢42｣
-                    [0].number.integer            ｢42｣
-                      [0].number.integer.decimal  ｢42｣
-                        [0].number.plusMinus      ｢｣
-                        [1].number.unsigned.integer.decimal ｢42｣
-      [1].Soil.Func.Stmt                          p1 =  ... ];\n  ¦
-        [0].Soil.Expr                             p1 =  ...  20 ]¦
-          [0].Soil.Expr.Axe                       p1 =  ...  20 ]¦
-            [0].Soil.Expr.Axe.Assign.=            p1 =  ...  20 ]¦
-              [0].Soil.Expr.Atom                  p1 ¦
-                [0].identifier                    ｢p1｣
-              [1].Soil.Expr.oper                  ｢=｣
-              [2].Soil.Expr.Axe.Typing.::         perso ...  20 ]¦
-                [0].Soil.Expr.Atom                person_t ¦
-                  [0].Soil.typeName               ｢person_t｣
-                    [0].identifier                ｢person_t｣
-                [1].Soil.Expr.oper                ｢::｣
-                [2].Soil.Expr.Atom                [ nam ...  20 ]¦
-                  [0].Soil.Expr.Struct            [ nam ...  20 ]¦
-                    [0].Soil.Expr.Struct.LabeledItem name  ...  'Bobson' ] ¦
-                      [0].Soil.Variable.Name      name ¦
-                        [0].identifier            ｢name｣
-                      [1].Soil.Expr.Struct        [ fir ...  'Bobson' ] ¦
-                        [0].Soil.Expr.Struct.LabeledItem first : 'Bob' ¦
-                          [0].Soil.Variable.Name  first ¦
-                            [0].identifier        ｢first｣
-                          [1].Soil.Expr           'Bob' ¦
-                            [0].Soil.Expr.Axe     'Bob' ¦
-                              [0].Soil.Expr.Atom  'Bob' ¦
-                                [0].string        ｢'Bob'｣
-                        [1].Soil.Expr.Struct.LabeledItem last : 'Bobson' ¦
-                          [0].Soil.Variable.Name  last ¦
-                            [0].identifier        ｢last｣
-                          [1].Soil.Expr           'Bobson' ¦
-                            [0].Soil.Expr.Axe     'Bobson' ¦
-                              [0].Soil.Expr.Atom  'Bobson' ¦
-                                [0].string        ｢'Bobson'｣
-                    [1].Soil.Expr.Struct.LabeledItem age : 20 ¦
-                      [0].Soil.Variable.Name      age ¦
-                        [0].identifier            ｢age｣
-                      [1].Soil.Expr               20 ¦
-                        [0].Soil.Expr.Axe         20 ¦
-                          [0].Soil.Expr.Atom      20 ¦
-                            [0].number            ｢20｣
-                              [0].number.integer  ｢20｣
-                                [0].number.integer.decimal ｢20｣
-                                  [0].number.plusMinus ｢｣
-                                  [1].number.unsigned.integer.decimal ｢20｣
-      [2].Soil.Func.Stmt                          p2 =  ... ];\n  ¦
-        [0].Soil.Expr                             p2 =  ...  30 ]¦
-          [0].Soil.Expr.Axe                       p2 =  ...  30 ]¦
-            [0].Soil.Expr.Axe.Assign.=            p2 =  ...  30 ]¦
-              [0].Soil.Expr.Atom                  p2 ¦
-                [0].identifier                    ｢p2｣
-              [1].Soil.Expr.oper                  ｢=｣
-              [2].Soil.Expr.Axe.Typing.::         perso ...  30 ]¦
-                [0].Soil.Expr.Atom                person_t ¦
-                  [0].Soil.typeName               ｢person_t｣
-                    [0].identifier                ｢person_t｣
-                [1].Soil.Expr.oper                ｢::｣
-                [2].Soil.Expr.Atom                [ [ 'Alice' ...  30 ]¦
-                  [0].Soil.Expr.Struct            [ [ 'Alice' ...  30 ]¦
-                    [0].Soil.Expr.Struct.LabeledItem [ 'Alice' 'Allison' ] ¦
-                      [0].Soil.Expr.Struct        [ 'Alice' 'Allison' ] ¦
-                        [0].Soil.Expr.Struct.LabeledItem 'Alice' ¦
-                          [0].Soil.Expr           'Alice' ¦
-                            [0].Soil.Expr.Axe     'Alice' ¦
-                              [0].Soil.Expr.Atom  'Alice' ¦
-                                [0].string        ｢'Alice'｣
-                        [1].Soil.Expr.Struct.LabeledItem 'Allison' ¦
-                          [0].Soil.Expr           'Allison' ¦
-                            [0].Soil.Expr.Axe     'Allison' ¦
-                              [0].Soil.Expr.Atom  'Allison' ¦
-                                [0].string        ｢'Allison'｣
-                    [1].Soil.Expr.Struct.LabeledItem 30 ¦
-                      [0].Soil.Expr               30 ¦
-                        [0].Soil.Expr.Axe         30 ¦
-                          [0].Soil.Expr.Atom      30 ¦
-                            [0].number            ｢30｣
-                              [0].number.integer  ｢30｣
-                                [0].number.integer.decimal ｢30｣
-                                  [0].number.plusMinus ｢｣
-                                  [1].number.unsigned.integer.decimal ｢30｣
-      [3].Soil.Func.Stmt                          ['{} is-adult = {}' p1 ... f;\n  ¦
-        [0].Soil.Expr                             ['{} is-adult = {}' p1 ... log_f¦
-          [0].Soil.Expr.Axe                       ['{} is-adult = {}' p1 ... log_f¦
-            [0].Soil.Expr.Axe.CallPipe.|          ['{} is-adult = {}' p1 ... log_f¦
-              [0].Soil.Expr.Atom                  ['{} is-adult = {}' p1 ... p1)] ¦
-                [0].Soil.Expr.Struct              ['{} is-adult = {}' p1 ... p1)] ¦
-                  [0].Soil.Expr.Struct.LabeledItem '{} is-adult = {}' ¦
-                    [0].Soil.Expr                 '{} is-adult = {}' ¦
-                      [0].Soil.Expr.Axe           '{} is-adult = {}' ¦
-                        [0].Soil.Expr.Atom        '{} is-adult = {}' ¦
-                          [0].string              ｢'{} is-adult = {}'｣
-                  [1].Soil.Expr.Struct.LabeledItem p1 ¦
-                    [0].Soil.Expr                 p1 ¦
-                      [0].Soil.Expr.Axe           p1 ¦
-                        [0].Soil.Expr.Atom        p1 ¦
-                          [0].identifier          ｢p1｣
-                  [2].Soil.Expr.Struct.LabeledItem is_ad ... f(p1)¦
-                    [0].Soil.Expr                 is_ad ... f(p1)¦
-                      [0].Soil.Expr.Axe           is_ad ... f(p1)¦
-                        [0].Soil.Expr.Axe.CallPost.( is_ad ... f(p1)¦
-                          [0].Soil.Expr.Atom      is_adult_f¦
-                            [0].Soil.funcName     ｢is_adult_f｣
-                              [0].identifier      ｢is_adult_f｣
-                          [1].Soil.Expr.oper      ｢(｣
-                            [0].parenthesis       ｢(｣
-                          [2].Soil.Expr.Axe       p1¦
-                            [0].Soil.Expr.Atom    p1¦
-                              [0].identifier      ｢p1｣
-                          [3].Soil.Expr.oper      ｢)｣
-                            [0].parenthesis       ｢)｣
-              [1].Soil.Expr.oper                  ｢|｣
-              [2].Soil.Expr.Atom                  log_f¦
-                [0].Soil.funcName                 ｢log_f｣
-                  [0].identifier                  ｢log_f｣
-      [4].Soil.Func.Stmt                          vecto ... f;\n  ¦
-        [0].Soil.Expr                             vecto ... log_f¦
-          [0].Soil.Expr.Axe                       vecto ... log_f¦
-            [0].Soil.Expr.Axe.CallPipe.|          vecto ... log_f¦
-              [0].Soil.Expr.Axe.CallPipe.|        vecto ...  40) ¦
-                [0].Soil.Expr.Axe.Typing.::       vecto ... p2 ] ¦
-                  [0].Soil.Expr.Axe.CallPost.(    vecto ... n_t) ¦
-                    [0].Soil.Expr.Atom            vector_f¦
-                      [0].Soil.funcName           ｢vector_f｣
-                        [0].identifier            ｢vector_f｣
-                    [1].Soil.Expr.oper            ｢(｣
-                      [0].parenthesis             ｢(｣
-                    [2].Soil.Expr.Axe             person_t¦
-                      [0].Soil.Expr.Atom          person_t¦
-                        [0].Soil.typeName         ｢person_t｣
-                          [0].identifier          ｢person_t｣
-                    [3].Soil.Expr.oper            ｢)｣
-                      [0].parenthesis             ｢)｣
-                  [1].Soil.Expr.oper              ｢::｣
-                  [2].Soil.Expr.Atom              [ p1 p2 ] ¦
-                    [0].Soil.Expr.Struct          [ p1 p2 ] ¦
-                      [0].Soil.Expr.Struct.LabeledItem p1 ¦
-                        [0].Soil.Expr             p1 ¦
-                          [0].Soil.Expr.Axe       p1 ¦
-                            [0].Soil.Expr.Atom    p1 ¦
-                              [0].identifier      ｢p1｣
-                      [1].Soil.Expr.Struct.LabeledItem p2 ¦
-                        [0].Soil.Expr             p2 ¦
-                          [0].Soil.Expr.Axe       p2 ¦
-                            [0].Soil.Expr.Atom    p2 ¦
-                              [0].identifier      ｢p2｣
-                [1].Soil.Expr.oper                ｢|｣
-                [2].Soil.Expr.Axe.CallPost.(      std.f ...  40) ¦
-                  [0].Soil.Expr.Axe.Member..      std.f ... ter_m¦
-                    [0].Soil.Expr.Atom            std¦
-                      [0].identifier              ｢std｣
-                    [1].Soil.Expr.oper            ｢.｣
-                    [2].Soil.Expr.Atom            filter_m¦
-                      [0].identifier              ｢filter_m｣
-                  [1].Soil.Expr.oper              ｢(｣
-                    [0].parenthesis               ｢(｣
-                  [2].Soil.Expr.Axe               arg.a ... <= 40¦
-                    [0].Soil.Expr.Axe.Comp.<=     arg.a ... <= 40¦
-                      [0].Soil.Expr.Axe.Member..  arg.age ¦
-                        [0].Soil.Expr.Atom        arg¦
-                          [0].identifier          ｢arg｣
-                        [1].Soil.Expr.oper        ｢.｣
-                        [2].Soil.Expr.Atom        age ¦
-                          [0].identifier          ｢age｣
-                      [1].Soil.Expr.oper          ｢<=｣
-                      [2].Soil.Expr.Atom          40¦
-                        [0].number                ｢40｣
-                          [0].number.integer      ｢40｣
-                            [0].number.integer.decimal ｢40｣
-                              [0].number.plusMinus ｢｣
-                              [1].number.unsigned.integer.decimal ｢40｣
-                  [3].Soil.Expr.oper              ｢)｣
-                    [0].parenthesis               ｢)｣
-              [1].Soil.Expr.oper                  ｢|｣
-              [2].Soil.Expr.Atom                  log_f¦
-                [0].Soil.funcName                 ｢log_f｣
-                  [0].identifier                  ｢log_f｣
-      [5].Soil.Func.Stmt                          «<INDENT>som ... ;\n\n  ¦
-        [0].Soil.Expr                             «<INDENT>som ... int_f¦
-          [0].Soil.Expr.Axe                       «<INDENT>som ... int_f¦
-            [0].Soil.Expr.Axe.CallPipe.|          «<INDENT>som ... int_f¦
-              [0].Soil.Expr.Atom                  «<INDENT>som ...  <NEWLINE><DEDENT>» ¦
-                [0].language                      «<INDENT>som ... e <NEWLINE><DEDENT>»¦
-              [1].Soil.Expr.oper                  ｢|｣
-              [2].Soil.Expr.Atom                  print_f¦
-                [0].Soil.funcName                 ｢print_f｣
-                  [0].identifier                  ｢print_f｣
-      [6].Soil.Func.Stmt                          if p1 ... }\n\n  ¦
-        [0].Soil.Func.Stmt.If                     if p1 ... }\n\n  ¦
-          [0].Soil.Func.Stmt.If.Branch            p1.na ... \n  } ¦
-            [0].Soil.Expr                         p1.na ... > 10 ¦
-              [0].Soil.Expr.Axe                   p1.na ... > 10 ¦
-                [0].Soil.Expr.Axe.Comp.>          p1.na ... > 10 ¦
-                  [0].Soil.Expr.Axe.CallPipe.|    p1.na ... ze_f ¦
-                    [0].Soil.Expr.Axe.Member..    p1.na ... irst ¦
-                      [0].Soil.Expr.Axe.Member..  p1.name¦
-                        [0].Soil.Expr.Atom        p1¦
-                          [0].identifier          ｢p1｣
-                        [1].Soil.Expr.oper        ｢.｣
-                        [2].Soil.Expr.Atom        name¦
-                          [0].identifier          ｢name｣
-                      [1].Soil.Expr.oper          ｢.｣
-                      [2].Soil.Expr.Atom          first ¦
-                        [0].identifier            ｢first｣
-                    [1].Soil.Expr.oper            ｢|｣
-                    [2].Soil.Expr.Atom            size_f ¦
-                      [0].Soil.funcName           ｢size_f｣
-                        [0].identifier            ｢size_f｣
-                  [1].Soil.Expr.oper              ｢>｣
-                  [2].Soil.Expr.Atom              10 ¦
-                    [0].number                    ｢10｣
-                      [0].number.integer          ｢10｣
-                        [0].number.integer.decimal ｢10｣
-                          [0].number.plusMinus    ｢｣
-                          [1].number.unsigned.integer.decimal ｢10｣
-            [1].Soil.Func.Body                    {\n    ... \n  } ¦
-              [0].Soil.Func.Stmt                  'This name is long' | l ... f;\n  ¦
-                [0].Soil.Expr                     'This name is long' | log_f¦
-                  [0].Soil.Expr.Axe               'This name is long' | log_f¦
-                    [0].Soil.Expr.Axe.CallPipe.|  'This name is long' | log_f¦
-                      [0].Soil.Expr.Atom          'This name is long' ¦
-                        [0].string                ｢'This name is long'｣
-                      [1].Soil.Expr.oper          ｢|｣
-                      [2].Soil.Expr.Atom          log_f¦
-                        [0].Soil.funcName         ｢log_f｣
-                          [0].identifier          ｢log_f｣
-          [1].Soil.Func.Stmt.If.Branch            p1.na ... \n  } ¦
-            [0].Soil.Expr                         p1.na ...  > 5 ¦
-              [0].Soil.Expr.Axe                   p1.na ...  > 5 ¦
-                [0].Soil.Expr.Axe.Comp.>          p1.na ...  > 5 ¦
-                  [0].Soil.Expr.Axe.CallPipe.|    p1.na ... ze_f ¦
-                    [0].Soil.Expr.Axe.Member..    p1.na ... irst ¦
-                      [0].Soil.Expr.Axe.Member..  p1.name¦
-                        [0].Soil.Expr.Atom        p1¦
-                          [0].identifier          ｢p1｣
-                        [1].Soil.Expr.oper        ｢.｣
-                        [2].Soil.Expr.Atom        name¦
-                          [0].identifier          ｢name｣
-                      [1].Soil.Expr.oper          ｢.｣
-                      [2].Soil.Expr.Atom          first ¦
-                        [0].identifier            ｢first｣
-                    [1].Soil.Expr.oper            ｢|｣
-                    [2].Soil.Expr.Atom            size_f ¦
-                      [0].Soil.funcName           ｢size_f｣
-                        [0].identifier            ｢size_f｣
-                  [1].Soil.Expr.oper              ｢>｣
-                  [2].Soil.Expr.Atom              5 ¦
-                    [0].number                    ｢5｣
-                      [0].number.integer          ｢5｣
-                        [0].number.integer.decimal ｢5｣
-                          [0].number.plusMinus    ｢｣
-                          [1].number.unsigned.integer.decimal ｢5｣
-            [1].Soil.Func.Body                    {\n    ... \n  } ¦
-              [0].Soil.Func.Stmt                  'This name it not long' | l ... f;\n  ¦
-                [0].Soil.Expr                     'This name it not long' | log_f¦
-                  [0].Soil.Expr.Axe               'This name it not long' | log_f¦
-                    [0].Soil.Expr.Axe.CallPipe.|  'This name it not long' | log_f¦
-                      [0].Soil.Expr.Atom          'This name it not long' ¦
-                        [0].string                ｢'This name it not long'｣
-                      [1].Soil.Expr.oper          ｢|｣
-                      [2].Soil.Expr.Atom          log_f¦
-                        [0].Soil.funcName         ｢log_f｣
-                          [0].identifier          ｢log_f｣
-          [2].Soil.Func.Body                      {\n    ... }\n\n  ¦
-            [0].Soil.Func.Stmt                    'This name it short' | l ... f;\n  ¦
-              [0].Soil.Expr                       'This name it short' | log_f¦
-                [0].Soil.Expr.Axe                 'This name it short' | log_f¦
-                  [0].Soil.Expr.Axe.CallPipe.|    'This name it short' | log_f¦
-                    [0].Soil.Expr.Atom            'This name it short' ¦
-                      [0].string                  ｢'This name it short'｣
-                    [1].Soil.Expr.oper            ｢|｣
-                    [2].Soil.Expr.Atom            log_f¦
-                      [0].Soil.funcName           ｢log_f｣
-                        [0].identifier            ｢log_f｣
-      [7].Soil.Func.Stmt                          sum = ... 0;\n  ¦
-        [0].Soil.Expr                             sum = ...  :: 0¦
-          [0].Soil.Expr.Axe                       sum = ...  :: 0¦
-            [0].Soil.Expr.Axe.Assign.=            sum = ...  :: 0¦
-              [0].Soil.Expr.Atom                  sum ¦
-                [0].identifier                    ｢sum｣
-              [1].Soil.Expr.oper                  ｢=｣
-              [2].Soil.Expr.Axe.Typing.::         i64_t :: 0¦
-                [0].Soil.Expr.Atom                i64_t ¦
-                  [0].Soil.typeName               ｢i64_t｣
-                    [0].identifier                ｢i64_t｣
-                [1].Soil.Expr.oper                ｢::｣
-                [2].Soil.Expr.Atom                0¦
-                  [0].number                      ｢0｣
-                    [0].number.integer            ｢0｣
-                      [0].number.integer.decimal  ｢0｣
-                        [0].number.plusMinus      ｢｣
-                        [1].number.unsigned.integer.decimal ｢0｣
-      [8].Soil.Func.Stmt                          for i ... }\n\n  ¦
-        [0].Soil.Func.Stmt.For                    for i ... }\n\n  ¦
-          [0].Soil.Expr.Maybe                     i = i ...  :: 0¦
-            [0].Soil.Expr                         i = i ...  :: 0¦
-              [0].Soil.Expr.Axe                   i = i ...  :: 0¦
-                [0].Soil.Expr.Axe.Assign.=        i = i ...  :: 0¦
-                  [0].Soil.Expr.Atom              i ¦
-                    [0].identifier                ｢i｣
-                  [1].Soil.Expr.oper              ｢=｣
-                  [2].Soil.Expr.Axe.Typing.::     i64_t :: 0¦
-                    [0].Soil.Expr.Atom            i64_t ¦
-                      [0].Soil.typeName           ｢i64_t｣
-                        [0].identifier            ｢i64_t｣
-                    [1].Soil.Expr.oper            ｢::｣
-                    [2].Soil.Expr.Atom            0¦
-                      [0].number                  ｢0｣
-                        [0].number.integer        ｢0｣
-                          [0].number.integer.decimal ｢0｣
-                            [0].number.plusMinus  ｢｣
-                            [1].number.unsigned.integer.decimal ｢0｣
-          [1].Soil.Expr.Maybe                     i < n¦
-            [0].Soil.Expr                         i < n¦
-              [0].Soil.Expr.Axe                   i < n¦
-                [0].Soil.Expr.Axe.Comp.<          i < n¦
-                  [0].Soil.Expr.Atom              i ¦
-                    [0].identifier                ｢i｣
-                  [1].Soil.Expr.oper              ｢<｣
-                  [2].Soil.Expr.Atom              n¦
-                    [0].identifier                ｢n｣
-          [2].Soil.Expr.Maybe                     i += 1 ¦
-            [0].Soil.Expr                         i += 1 ¦
-              [0].Soil.Expr.Axe                   i += 1 ¦
-                [0].Soil.Expr.Axe.Assign.+=       i += 1 ¦
-                  [0].Soil.Expr.Atom              i ¦
-                    [0].identifier                ｢i｣
-                  [1].Soil.Expr.oper              ｢+=｣
-                  [2].Soil.Expr.Atom              1 ¦
-                    [0].number                    ｢1｣
-                      [0].number.integer          ｢1｣
-                        [0].number.integer.decimal ｢1｣
-                          [0].number.plusMinus    ｢｣
-                          [1].number.unsigned.integer.decimal ｢1｣
-          [3].Soil.Func.Body                      {\n    ... }\n\n  ¦
-            [0].Soil.Func.Stmt                    sum + ... i;\n  ¦
-              [0].Soil.Expr                       sum += i¦
-                [0].Soil.Expr.Axe                 sum += i¦
-                  [0].Soil.Expr.Axe.Assign.+=     sum += i¦
-                    [0].Soil.Expr.Atom            sum ¦
-                      [0].identifier              ｢sum｣
-                    [1].Soil.Expr.oper            ｢+=｣
-                    [2].Soil.Expr.Atom            i¦
-                      [0].identifier              ｢i｣
-      [9].Soil.Func.Stmt                          abc = ... 2;\n  ¦
-        [0].Soil.Expr                             abc = 42¦
-          [0].Soil.Expr.Axe                       abc = 42¦
-            [0].Soil.Expr.Axe.Assign.=            abc = 42¦
-              [0].Soil.Expr.Atom                  abc ¦
-                [0].identifier                    ｢abc｣
-              [1].Soil.Expr.oper                  ｢=｣
+          [0].Soil.Expr.Axe.Assign.=              age = ... :: 42¦
+            [0].Soil.Expr.Atom                    age ¦
+              [0].identifier                      ｢age｣
+            [1].Soil.Expr.oper                    ｢=｣
+            [2].Soil.Expr.Axe.Typing.::           age_t ... :: 42¦
+              [0].Soil.Expr.Atom                  age_t ¦
+                [0].Soil.typeName                 ｢age_t｣
+                  [0].identifier                  ｢age_t｣
+              [1].Soil.Expr.oper                  ｢::｣
               [2].Soil.Expr.Atom                  42¦
                 [0].number                        ｢42｣
                   [0].number.integer              ｢42｣
                     [0].number.integer.decimal    ｢42｣
                       [0].number.plusMinus        ｢｣
                       [1].number.unsigned.integer.decimal ｢42｣
+      [1].Soil.Func.Stmt                          p1 =  ... ];\n  ¦
+        [0].Soil.Expr                             p1 =  ...  20 ]¦
+          [0].Soil.Expr.Axe.Assign.=              p1 =  ...  20 ]¦
+            [0].Soil.Expr.Atom                    p1 ¦
+              [0].identifier                      ｢p1｣
+            [1].Soil.Expr.oper                    ｢=｣
+            [2].Soil.Expr.Axe.Typing.::           perso ...  20 ]¦
+              [0].Soil.Expr.Atom                  person_t ¦
+                [0].Soil.typeName                 ｢person_t｣
+                  [0].identifier                  ｢person_t｣
+              [1].Soil.Expr.oper                  ｢::｣
+              [2].Soil.Expr.Atom                  [ nam ...  20 ]¦
+                [0].Soil.Expr.Struct              [ nam ...  20 ]¦
+                  [0].Soil.Expr.Struct.LabeledItem name  ...  'Bobson' ] ¦
+                    [0].Soil.Variable.Name        name ¦
+                      [0].identifier              ｢name｣
+                    [1].Soil.Expr.Struct          [ fir ...  'Bobson' ] ¦
+                      [0].Soil.Expr.Struct.LabeledItem first : 'Bob' ¦
+                        [0].Soil.Variable.Name    first ¦
+                          [0].identifier          ｢first｣
+                        [1].Soil.Expr             'Bob' ¦
+                          [0].Soil.Expr.Atom      'Bob' ¦
+                            [0].string            ｢'Bob'｣
+                      [1].Soil.Expr.Struct.LabeledItem last : 'Bobson' ¦
+                        [0].Soil.Variable.Name    last ¦
+                          [0].identifier          ｢last｣
+                        [1].Soil.Expr             'Bobson' ¦
+                          [0].Soil.Expr.Atom      'Bobson' ¦
+                            [0].string            ｢'Bobson'｣
+                  [1].Soil.Expr.Struct.LabeledItem age : 20 ¦
+                    [0].Soil.Variable.Name        age ¦
+                      [0].identifier              ｢age｣
+                    [1].Soil.Expr                 20 ¦
+                      [0].Soil.Expr.Atom          20 ¦
+                        [0].number                ｢20｣
+                          [0].number.integer      ｢20｣
+                            [0].number.integer.decimal ｢20｣
+                              [0].number.plusMinus ｢｣
+                              [1].number.unsigned.integer.decimal ｢20｣
+      [2].Soil.Func.Stmt                          p2 =  ... ];\n  ¦
+        [0].Soil.Expr                             p2 =  ...  30 ]¦
+          [0].Soil.Expr.Axe.Assign.=              p2 =  ...  30 ]¦
+            [0].Soil.Expr.Atom                    p2 ¦
+              [0].identifier                      ｢p2｣
+            [1].Soil.Expr.oper                    ｢=｣
+            [2].Soil.Expr.Axe.Typing.::           perso ...  30 ]¦
+              [0].Soil.Expr.Atom                  person_t ¦
+                [0].Soil.typeName                 ｢person_t｣
+                  [0].identifier                  ｢person_t｣
+              [1].Soil.Expr.oper                  ｢::｣
+              [2].Soil.Expr.Atom                  [ [ 'Alice' ...  30 ]¦
+                [0].Soil.Expr.Struct              [ [ 'Alice' ...  30 ]¦
+                  [0].Soil.Expr.Struct.LabeledItem [ 'Alice' 'Allison' ] ¦
+                    [0].Soil.Expr.Struct          [ 'Alice' 'Allison' ] ¦
+                      [0].Soil.Expr.Struct.LabeledItem 'Alice' ¦
+                        [0].Soil.Expr             'Alice' ¦
+                          [0].Soil.Expr.Atom      'Alice' ¦
+                            [0].string            ｢'Alice'｣
+                      [1].Soil.Expr.Struct.LabeledItem 'Allison' ¦
+                        [0].Soil.Expr             'Allison' ¦
+                          [0].Soil.Expr.Atom      'Allison' ¦
+                            [0].string            ｢'Allison'｣
+                  [1].Soil.Expr.Struct.LabeledItem 30 ¦
+                    [0].Soil.Expr                 30 ¦
+                      [0].Soil.Expr.Atom          30 ¦
+                        [0].number                ｢30｣
+                          [0].number.integer      ｢30｣
+                            [0].number.integer.decimal ｢30｣
+                              [0].number.plusMinus ｢｣
+                              [1].number.unsigned.integer.decimal ｢30｣
+      [3].Soil.Func.Stmt                          ['{} is-adult = {}' p1 ... f;\n  ¦
+        [0].Soil.Expr                             ['{} is-adult = {}' p1 ... log_f¦
+          [0].Soil.Expr.Axe.CallPipe.|            ['{} is-adult = {}' p1 ... log_f¦
+            [0].Soil.Expr.Atom                    ['{} is-adult = {}' p1 ... p1)] ¦
+              [0].Soil.Expr.Struct                ['{} is-adult = {}' p1 ... p1)] ¦
+                [0].Soil.Expr.Struct.LabeledItem  '{} is-adult = {}' ¦
+                  [0].Soil.Expr                   '{} is-adult = {}' ¦
+                    [0].Soil.Expr.Atom            '{} is-adult = {}' ¦
+                      [0].string                  ｢'{} is-adult = {}'｣
+                [1].Soil.Expr.Struct.LabeledItem  p1 ¦
+                  [0].Soil.Expr                   p1 ¦
+                    [0].Soil.Expr.Atom            p1 ¦
+                      [0].identifier              ｢p1｣
+                [2].Soil.Expr.Struct.LabeledItem  is_ad ... f(p1)¦
+                  [0].Soil.Expr                   is_ad ... f(p1)¦
+                    [0].Soil.Expr.Axe.CallPost.(  is_ad ... f(p1)¦
+                      [0].Soil.Expr.Atom          is_adult_f¦
+                        [0].Soil.funcName         ｢is_adult_f｣
+                          [0].identifier          ｢is_adult_f｣
+                      [1].Soil.Expr.oper          ｢(｣
+                        [0].parenthesis           ｢(｣
+                      [2].Soil.Expr.Atom          p1¦
+                        [0].identifier            ｢p1｣
+                      [3].Soil.Expr.oper          ｢)｣
+                        [0].parenthesis           ｢)｣
+            [1].Soil.Expr.oper                    ｢|｣
+            [2].Soil.Expr.Atom                    log_f¦
+              [0].Soil.funcName                   ｢log_f｣
+                [0].identifier                    ｢log_f｣
+      [4].Soil.Func.Stmt                          vecto ... f;\n  ¦
+        [0].Soil.Expr                             vecto ... log_f¦
+          [0].Soil.Expr.Axe.CallPipe.|            vecto ... log_f¦
+            [0].Soil.Expr.Axe.CallPipe.|          vecto ...  40) ¦
+              [0].Soil.Expr.Axe.Typing.::         vecto ... p2 ] ¦
+                [0].Soil.Expr.Axe.CallPost.(      vecto ... n_t) ¦
+                  [0].Soil.Expr.Atom              vector_f¦
+                    [0].Soil.funcName             ｢vector_f｣
+                      [0].identifier              ｢vector_f｣
+                  [1].Soil.Expr.oper              ｢(｣
+                    [0].parenthesis               ｢(｣
+                  [2].Soil.Expr.Atom              person_t¦
+                    [0].Soil.typeName             ｢person_t｣
+                      [0].identifier              ｢person_t｣
+                  [3].Soil.Expr.oper              ｢)｣
+                    [0].parenthesis               ｢)｣
+                [1].Soil.Expr.oper                ｢::｣
+                [2].Soil.Expr.Atom                [ p1 p2 ] ¦
+                  [0].Soil.Expr.Struct            [ p1 p2 ] ¦
+                    [0].Soil.Expr.Struct.LabeledItem p1 ¦
+                      [0].Soil.Expr               p1 ¦
+                        [0].Soil.Expr.Atom        p1 ¦
+                          [0].identifier          ｢p1｣
+                    [1].Soil.Expr.Struct.LabeledItem p2 ¦
+                      [0].Soil.Expr               p2 ¦
+                        [0].Soil.Expr.Atom        p2 ¦
+                          [0].identifier          ｢p2｣
+              [1].Soil.Expr.oper                  ｢|｣
+              [2].Soil.Expr.Axe.CallPost.(        std.f ...  40) ¦
+                [0].Soil.Expr.Axe.Member..        std.f ... ter_m¦
+                  [0].Soil.Expr.Atom              std¦
+                    [0].identifier                ｢std｣
+                  [1].Soil.Expr.oper              ｢.｣
+                  [2].Soil.Expr.Atom              filter_m¦
+                    [0].identifier                ｢filter_m｣
+                [1].Soil.Expr.oper                ｢(｣
+                  [0].parenthesis                 ｢(｣
+                [2].Soil.Expr.Axe.Comp.<=         arg.a ... <= 40¦
+                  [0].Soil.Expr.Axe.Member..      arg.age ¦
+                    [0].Soil.Expr.Atom            arg¦
+                      [0].identifier              ｢arg｣
+                    [1].Soil.Expr.oper            ｢.｣
+                    [2].Soil.Expr.Atom            age ¦
+                      [0].identifier              ｢age｣
+                  [1].Soil.Expr.oper              ｢<=｣
+                  [2].Soil.Expr.Atom              40¦
+                    [0].number                    ｢40｣
+                      [0].number.integer          ｢40｣
+                        [0].number.integer.decimal ｢40｣
+                          [0].number.plusMinus    ｢｣
+                          [1].number.unsigned.integer.decimal ｢40｣
+                [3].Soil.Expr.oper                ｢)｣
+                  [0].parenthesis                 ｢)｣
+            [1].Soil.Expr.oper                    ｢|｣
+            [2].Soil.Expr.Atom                    log_f¦
+              [0].Soil.funcName                   ｢log_f｣
+                [0].identifier                    ｢log_f｣
+      [5].Soil.Func.Stmt                          «<INDENT>som ... ;\n\n  ¦
+        [0].Soil.Expr                             «<INDENT>som ... int_f¦
+          [0].Soil.Expr.Axe.CallPipe.|            «<INDENT>som ... int_f¦
+            [0].Soil.Expr.Atom                    «<INDENT>som ...  <NEWLINE><DEDENT>» ¦
+              [0].language                        «<INDENT>som ... e <NEWLINE><DEDENT>»¦
+            [1].Soil.Expr.oper                    ｢|｣
+            [2].Soil.Expr.Atom                    print_f¦
+              [0].Soil.funcName                   ｢print_f｣
+                [0].identifier                    ｢print_f｣
+      [6].Soil.Func.Stmt                          if p1 ... }\n\n  ¦
+        [0].Soil.Func.Stmt.If                     if p1 ... }\n\n  ¦
+          [0].Soil.Func.Stmt.If.Branch            p1.na ... \n  } ¦
+            [0].Soil.Expr                         p1.na ... > 10 ¦
+              [0].Soil.Expr.Axe.Comp.>            p1.na ... > 10 ¦
+                [0].Soil.Expr.Axe.CallPipe.|      p1.na ... ze_f ¦
+                  [0].Soil.Expr.Axe.Member..      p1.na ... irst ¦
+                    [0].Soil.Expr.Axe.Member..    p1.name¦
+                      [0].Soil.Expr.Atom          p1¦
+                        [0].identifier            ｢p1｣
+                      [1].Soil.Expr.oper          ｢.｣
+                      [2].Soil.Expr.Atom          name¦
+                        [0].identifier            ｢name｣
+                    [1].Soil.Expr.oper            ｢.｣
+                    [2].Soil.Expr.Atom            first ¦
+                      [0].identifier              ｢first｣
+                  [1].Soil.Expr.oper              ｢|｣
+                  [2].Soil.Expr.Atom              size_f ¦
+                    [0].Soil.funcName             ｢size_f｣
+                      [0].identifier              ｢size_f｣
+                [1].Soil.Expr.oper                ｢>｣
+                [2].Soil.Expr.Atom                10 ¦
+                  [0].number                      ｢10｣
+                    [0].number.integer            ｢10｣
+                      [0].number.integer.decimal  ｢10｣
+                        [0].number.plusMinus      ｢｣
+                        [1].number.unsigned.integer.decimal ｢10｣
+            [1].Soil.Func.Body                    {\n    ... \n  } ¦
+              [0].Soil.Func.Stmt                  'This name is long' | l ... f;\n  ¦
+                [0].Soil.Expr                     'This name is long' | log_f¦
+                  [0].Soil.Expr.Axe.CallPipe.|    'This name is long' | log_f¦
+                    [0].Soil.Expr.Atom            'This name is long' ¦
+                      [0].string                  ｢'This name is long'｣
+                    [1].Soil.Expr.oper            ｢|｣
+                    [2].Soil.Expr.Atom            log_f¦
+                      [0].Soil.funcName           ｢log_f｣
+                        [0].identifier            ｢log_f｣
+          [1].Soil.Func.Stmt.If.Branch            p1.na ... \n  } ¦
+            [0].Soil.Expr                         p1.na ...  > 5 ¦
+              [0].Soil.Expr.Axe.Comp.>            p1.na ...  > 5 ¦
+                [0].Soil.Expr.Axe.CallPipe.|      p1.na ... ze_f ¦
+                  [0].Soil.Expr.Axe.Member..      p1.na ... irst ¦
+                    [0].Soil.Expr.Axe.Member..    p1.name¦
+                      [0].Soil.Expr.Atom          p1¦
+                        [0].identifier            ｢p1｣
+                      [1].Soil.Expr.oper          ｢.｣
+                      [2].Soil.Expr.Atom          name¦
+                        [0].identifier            ｢name｣
+                    [1].Soil.Expr.oper            ｢.｣
+                    [2].Soil.Expr.Atom            first ¦
+                      [0].identifier              ｢first｣
+                  [1].Soil.Expr.oper              ｢|｣
+                  [2].Soil.Expr.Atom              size_f ¦
+                    [0].Soil.funcName             ｢size_f｣
+                      [0].identifier              ｢size_f｣
+                [1].Soil.Expr.oper                ｢>｣
+                [2].Soil.Expr.Atom                5 ¦
+                  [0].number                      ｢5｣
+                    [0].number.integer            ｢5｣
+                      [0].number.integer.decimal  ｢5｣
+                        [0].number.plusMinus      ｢｣
+                        [1].number.unsigned.integer.decimal ｢5｣
+            [1].Soil.Func.Body                    {\n    ... \n  } ¦
+              [0].Soil.Func.Stmt                  'This name it not long' | l ... f;\n  ¦
+                [0].Soil.Expr                     'This name it not long' | log_f¦
+                  [0].Soil.Expr.Axe.CallPipe.|    'This name it not long' | log_f¦
+                    [0].Soil.Expr.Atom            'This name it not long' ¦
+                      [0].string                  ｢'This name it not long'｣
+                    [1].Soil.Expr.oper            ｢|｣
+                    [2].Soil.Expr.Atom            log_f¦
+                      [0].Soil.funcName           ｢log_f｣
+                        [0].identifier            ｢log_f｣
+          [2].Soil.Func.Body                      {\n    ... }\n\n  ¦
+            [0].Soil.Func.Stmt                    'This name it short' | l ... f;\n  ¦
+              [0].Soil.Expr                       'This name it short' | log_f¦
+                [0].Soil.Expr.Axe.CallPipe.|      'This name it short' | log_f¦
+                  [0].Soil.Expr.Atom              'This name it short' ¦
+                    [0].string                    ｢'This name it short'｣
+                  [1].Soil.Expr.oper              ｢|｣
+                  [2].Soil.Expr.Atom              log_f¦
+                    [0].Soil.funcName             ｢log_f｣
+                      [0].identifier              ｢log_f｣
+      [7].Soil.Func.Stmt                          sum = ... 0;\n  ¦
+        [0].Soil.Expr                             sum = ...  :: 0¦
+          [0].Soil.Expr.Axe.Assign.=              sum = ...  :: 0¦
+            [0].Soil.Expr.Atom                    sum ¦
+              [0].identifier                      ｢sum｣
+            [1].Soil.Expr.oper                    ｢=｣
+            [2].Soil.Expr.Axe.Typing.::           i64_t :: 0¦
+              [0].Soil.Expr.Atom                  i64_t ¦
+                [0].Soil.typeName                 ｢i64_t｣
+                  [0].identifier                  ｢i64_t｣
+              [1].Soil.Expr.oper                  ｢::｣
+              [2].Soil.Expr.Atom                  0¦
+                [0].number                        ｢0｣
+                  [0].number.integer              ｢0｣
+                    [0].number.integer.decimal    ｢0｣
+                      [0].number.plusMinus        ｢｣
+                      [1].number.unsigned.integer.decimal ｢0｣
+      [8].Soil.Func.Stmt                          for i ... }\n\n  ¦
+        [0].Soil.Func.Stmt.For                    for i ... }\n\n  ¦
+          [0].Soil.Expr.Maybe                     i = i ...  :: 0¦
+            [0].Soil.Expr                         i = i ...  :: 0¦
+              [0].Soil.Expr.Axe.Assign.=          i = i ...  :: 0¦
+                [0].Soil.Expr.Atom                i ¦
+                  [0].identifier                  ｢i｣
+                [1].Soil.Expr.oper                ｢=｣
+                [2].Soil.Expr.Axe.Typing.::       i64_t :: 0¦
+                  [0].Soil.Expr.Atom              i64_t ¦
+                    [0].Soil.typeName             ｢i64_t｣
+                      [0].identifier              ｢i64_t｣
+                  [1].Soil.Expr.oper              ｢::｣
+                  [2].Soil.Expr.Atom              0¦
+                    [0].number                    ｢0｣
+                      [0].number.integer          ｢0｣
+                        [0].number.integer.decimal ｢0｣
+                          [0].number.plusMinus    ｢｣
+                          [1].number.unsigned.integer.decimal ｢0｣
+          [1].Soil.Expr.Maybe                     i < n¦
+            [0].Soil.Expr                         i < n¦
+              [0].Soil.Expr.Axe.Comp.<            i < n¦
+                [0].Soil.Expr.Atom                i ¦
+                  [0].identifier                  ｢i｣
+                [1].Soil.Expr.oper                ｢<｣
+                [2].Soil.Expr.Atom                n¦
+                  [0].identifier                  ｢n｣
+          [2].Soil.Expr.Maybe                     i += 1 ¦
+            [0].Soil.Expr                         i += 1 ¦
+              [0].Soil.Expr.Axe.Assign.+=         i += 1 ¦
+                [0].Soil.Expr.Atom                i ¦
+                  [0].identifier                  ｢i｣
+                [1].Soil.Expr.oper                ｢+=｣
+                [2].Soil.Expr.Atom                1 ¦
+                  [0].number                      ｢1｣
+                    [0].number.integer            ｢1｣
+                      [0].number.integer.decimal  ｢1｣
+                        [0].number.plusMinus      ｢｣
+                        [1].number.unsigned.integer.decimal ｢1｣
+          [3].Soil.Func.Body                      {\n    ... }\n\n  ¦
+            [0].Soil.Func.Stmt                    sum + ... i;\n  ¦
+              [0].Soil.Expr                       sum += i¦
+                [0].Soil.Expr.Axe.Assign.+=       sum += i¦
+                  [0].Soil.Expr.Atom              sum ¦
+                    [0].identifier                ｢sum｣
+                  [1].Soil.Expr.oper              ｢+=｣
+                  [2].Soil.Expr.Atom              i¦
+                    [0].identifier                ｢i｣
+      [9].Soil.Func.Stmt                          abc = ... 2;\n  ¦
+        [0].Soil.Expr                             abc = 42¦
+          [0].Soil.Expr.Axe.Assign.=              abc = 42¦
+            [0].Soil.Expr.Atom                    abc ¦
+              [0].identifier                      ｢abc｣
+            [1].Soil.Expr.oper                    ｢=｣
+            [2].Soil.Expr.Atom                    42¦
+              [0].number                          ｢42｣
+                [0].number.integer                ｢42｣
+                  [0].number.integer.decimal      ｢42｣
+                    [0].number.plusMinus          ｢｣
+                    [1].number.unsigned.integer.decimal ｢42｣
       [10].Soil.Func.Stmt                         for ; ... \n  }\n¦
         [0].Soil.Func.Stmt.For                    for ; ... \n  }\n¦
           [0].Soil.Expr.Maybe                     ¦
           [1].Soil.Expr.Maybe                     i < n¦
             [0].Soil.Expr                         i < n¦
-              [0].Soil.Expr.Axe                   i < n¦
-                [0].Soil.Expr.Axe.Comp.<          i < n¦
-                  [0].Soil.Expr.Atom              i ¦
-                    [0].identifier                ｢i｣
-                  [1].Soil.Expr.oper              ｢<｣
-                  [2].Soil.Expr.Atom              n¦
-                    [0].identifier                ｢n｣
+              [0].Soil.Expr.Axe.Comp.<            i < n¦
+                [0].Soil.Expr.Atom                i ¦
+                  [0].identifier                  ｢i｣
+                [1].Soil.Expr.oper                ｢<｣
+                [2].Soil.Expr.Atom                n¦
+                  [0].identifier                  ｢n｣
           [2].Soil.Expr.Maybe                     ¦
           [3].Soil.Func.Body                      {\n    ... \n  }\n¦
             [0].Soil.Func.Stmt                    sum + ... i;\n  ¦
               [0].Soil.Expr                       sum += i¦
-                [0].Soil.Expr.Axe                 sum += i¦
-                  [0].Soil.Expr.Axe.Assign.+=     sum += i¦
-                    [0].Soil.Expr.Atom            sum ¦
-                      [0].identifier              ｢sum｣
-                    [1].Soil.Expr.oper            ｢+=｣
-                    [2].Soil.Expr.Atom            i¦
-                      [0].identifier              ｢i｣
+                [0].Soil.Expr.Axe.Assign.+=       sum += i¦
+                  [0].Soil.Expr.Atom              sum ¦
+                    [0].identifier                ｢sum｣
+                  [1].Soil.Expr.oper              ｢+=｣
+                  [2].Soil.Expr.Atom              i¦
+                    [0].identifier                ｢i｣
 
 1
 2

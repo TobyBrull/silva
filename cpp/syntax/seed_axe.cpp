@@ -1047,10 +1047,12 @@ namespace silva::seed::impl {
       return ps.commit();
     }
 
-    expected_t<parse_tree_node_t> run()
+    expected_t<parse_tree_node_t> run(const bool is_no_node)
     {
       auto ss = nursery.stake();
-      ss.create_node(axe.name, false);
+      if (!is_no_node) {
+        ss.create_node(axe.name, false);
+      }
       const index_t parsed_trees_idx = nursery.tree.size();
       {
         auto ss_rule = nursery.stake();
@@ -1097,14 +1099,15 @@ namespace silva::seed {
 
   expected_t<parse_tree_node_t>
   axe_t::apply(parse_tree_nursery_t& nursery,
-               const name_id_t rule_name,
+               const name_id_t lowest_prec_rule_name,
+               const bool is_no_node,
                delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser) const
   {
-    const auto level_it = level_map.find(rule_name);
+    const auto level_it = level_map.find(lowest_prec_rule_name);
     SILVA_EXPECT(level_it != level_map.end(),
                  MINOR,
                  "unknown rule-name {}",
-                 lp->name_id_wrap(rule_name));
+                 lp->name_id_wrap(lowest_prec_rule_name));
     const impl::level_index_t min_prec_level = level_it->second;
     impl::axe_run_t run{
         .axe            = *this,
@@ -1114,7 +1117,7 @@ namespace silva::seed {
     };
     const index_t orig_fragment_index = nursery.fragment_index;
     const parse_tree_node_t retval =
-        SILVA_EXPECT_FWD(run.run(),
+        SILVA_EXPECT_FWD(run.run(is_no_node),
                          "[{}] when parsing expression starting here",
                          nursery.fragment_location_at(orig_fragment_index));
     return retval;

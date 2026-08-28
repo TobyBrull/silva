@@ -3,7 +3,6 @@
 * Seed-Axe:
     * seed-axe generated rule-names should not contain operator token
     * allow more than just "" and '' in operators?
-    * allow "no_node" on axe
 
 * Python: add basic parser
 

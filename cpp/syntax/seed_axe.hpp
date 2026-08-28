@@ -58,7 +58,10 @@ Seed.Axe:
     expected_t<void> compile(const lexicon_t&, const Ns&);
 
     using parse_delegate_t = delegate_t<expected_t<parse_tree_node_t>(name_id_t)>;
-    expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&, name_id_t, parse_delegate_t) const;
+    expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&,
+                                        name_id_t lowest_prec_rule_name,
+                                        bool is_no_node,
+                                        parse_delegate_t) const;
   };
 
   expected_t<axe_t> axe_create(syntax_farm_ptr_t, name_id_t axe_name, parse_tree_span_t);

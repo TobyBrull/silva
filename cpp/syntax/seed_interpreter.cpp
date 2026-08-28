@@ -838,6 +838,9 @@ namespace silva::seed::impl {
     {
       const auto it = se->axes.find(axe_rule_name);
       SILVA_EXPECT(it != se->axes.end(), MAJOR);
+      const auto it_re = se->rule_exprs.find(axe_rule_name);
+      SILVA_EXPECT(it_re != se->rule_exprs.end(), MAJOR);
+      const bool is_no_node = it_re->second.is_no_node;
       auto ss{stake()};
       const axe_t& axe = it->second;
       const axe_t::parse_delegate_t::pack_t pack{
@@ -847,7 +850,8 @@ namespace silva::seed::impl {
           },
       };
       ss.add_proto_node(
-          SILVA_EXPECT_PARSE_FWD(t_rule_name, axe.apply(*this, t_rule_name, pack.delegate)));
+          SILVA_EXPECT_PARSE_FWD(t_rule_name,
+                                 axe.apply(*this, t_rule_name, is_no_node, pack.delegate)));
       return ss.commit();
     }
 

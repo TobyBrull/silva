@@ -20,7 +20,7 @@ language Soil:
   Expr:
     ⊙ = Axe
     Maybe = Expr | ε
-    Axe = axe Atom oper
+    Axe = no_node axe Atom oper
       Member    = ltr infix '.'
       CallPost  = ltr postfix_nest '(' ')'
       Typing    = ltr infix '::'
