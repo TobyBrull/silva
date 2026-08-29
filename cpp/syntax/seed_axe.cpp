@@ -520,19 +520,10 @@ namespace silva::seed::impl {
 
     using enum open_oper_item_t::symbol_t::related_expr_t::way_t;
 
-    struct rule_parser_result_t {
-      token_id_t token_id;
-      parse_tree_node_t ptn;
-      expr_node_t tn;
-    };
     struct oper_parse_result_t {
       token_id_t token_id;
       parse_tree_node_t ptn;
     };
-    // Tries all the operator-token literals known to this axe (longest first, then in the order
-    // in which they appear across the levels), and returns the first one that matches. Atoms skip
-    // trailing whitespace/comments/etc. as part of being parsed via "rule_parser"; a bare
-    // operator-token literal has to do so explicitly here, via "skip_parser".
     expected_t<oper_parse_result_t> parse_oper_literal()
     {
       for (const auto& ft: axe.op_literals) {
@@ -543,8 +534,6 @@ namespace silva::seed::impl {
               .ptn      = *std::move(result),
           };
           SILVA_EXPECT_FWD(skip_parser());
-          // Like every other rule/token parsed by this axe, the recorded fragment range extends
-          // over any whitespace/comments/etc. skipped immediately afterwards.
           retval.ptn.fragment_end = nursery.fragment_index;
           return retval;
         }
@@ -552,6 +541,12 @@ namespace silva::seed::impl {
       }
       SILVA_EXPECT(false, MINOR, "[{}] no operator token matched", fragment_location_by());
     }
+
+    struct rule_parser_result_t {
+      token_id_t token_id;
+      parse_tree_node_t ptn;
+      expr_node_t tn;
+    };
     expected_t<rule_parser_result_t> invoke_rule_parser(const name_id_t rule_name)
     {
       SILVA_EXPECT(rule_name.is_valid(), MAJOR, "trying to invoke empty rule");
@@ -573,9 +568,8 @@ namespace silva::seed::impl {
       };
     }
 
-    // The left-bracket/first operator token has already been produced by the caller. This function
-    // then parses the nested expression and the matching right token. Neither bracket token is
-    // embedded in the output tree; the joint node's rule-name is enough to identify them.
+    // The left-bracket/first operator token has already been parsed by the caller. This function
+    // then parses the nested expression and the matching right token.
     struct nest_result_t {
       parse_tree_node_t ptn;
       oper_parse_result_t right_res;
@@ -1042,8 +1036,16 @@ namespace silva::seed::impl {
         ss_rule.add_proto_node(SILVA_EXPECT_PARSE_FWD(axe.name, shunting_yard()));
 
         const auto& root_node = expr_tree.back();
-        SILVA_EXPECT(ss_rule.orig_state.fragment_index == root_node.fragment_begin, ASSERT);
-        SILVA_EXPECT(nursery.fragment_index == root_node.fragment_end, ASSERT);
+        SILVA_EXPECT(ss_rule.orig_state.fragment_index == root_node.fragment_begin,
+                     ASSERT,
+                     "ss_rule.orig_state.fragment_index={}, root_node.fragment_begin={}",
+                     ss_rule.orig_state.fragment_index,
+                     root_node.fragment_begin);
+        SILVA_EXPECT(nursery.fragment_index == root_node.fragment_end,
+                     ASSERT,
+                     "nusery.fragment_index={}, root_node.fragment_index={}",
+                     nursery.fragment_index,
+                     root_node.fragment_end);
 
         ss_rule.commit();
       }
