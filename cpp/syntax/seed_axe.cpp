@@ -482,9 +482,6 @@ namespace silva::seed::impl {
         index_t fragment_begin = 0;
         index_t fragment_end   = 0;
 
-        // index into the "expr_tree" array
-        index_t expr_tree_idx = 0;
-
         struct related_expr_t {
           enum way_t {
             NONE = 0,
@@ -720,26 +717,11 @@ namespace silva::seed::impl {
                                    consistent_range(open_oper_items));
         SILVA_EXPECT(cr.num_atoms <= open_expr_stack.size(), MINOR);
 
-        array_t<index_t> child_indexes_open_expr_stack;
-        for (index_t i = open_expr_stack.size() - cr.num_atoms; i < open_expr_stack.size(); ++i) {
-          child_indexes_open_expr_stack.push_back(open_expr_stack[i]);
-        }
-        SILVA_EXPECT(std::ranges::is_sorted(child_indexes_open_expr_stack), ASSERT);
-
-        array_t<index_t> child_indexes_open_oper_stack;
-        for (const open_oper_item_t& ooi: open_oper_items) {
-          for (const open_oper_item_t::symbol_t& sym: ooi.symbols) {
-            if (sym.expr_tree_idx != -1) {
-              child_indexes_open_oper_stack.push_back(sym.expr_tree_idx);
-            }
-          }
-        }
-        SILVA_EXPECT(std::ranges::is_sorted(child_indexes_open_oper_stack), ASSERT);
-
         array_t<index_t> child_indexes;
-        std::ranges::merge(child_indexes_open_expr_stack,
-                           child_indexes_open_oper_stack,
-                           std::back_inserter(child_indexes));
+        for (index_t i = open_expr_stack.size() - cr.num_atoms; i < open_expr_stack.size(); ++i) {
+          child_indexes.push_back(open_expr_stack[i]);
+        }
+        SILVA_EXPECT(std::ranges::is_sorted(child_indexes), ASSERT);
 
         open_oper_stack.resize(open_oper_stack.size() - open_oper_items.size());
         index_t subtree_size = 1;
@@ -778,7 +760,6 @@ namespace silva::seed::impl {
           .symbols    = {{
               .fragment_begin = lhs.fragment_end,
               .fragment_end   = lhs.fragment_end,
-              .expr_tree_idx  = -1,
               .related_exprs =
                   {
                       {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -831,7 +812,6 @@ namespace silva::seed::impl {
                     .symbols    = {{
                         .fragment_begin = res->ptn.fragment_begin,
                         .fragment_end   = res->ptn.fragment_end,
-                        .expr_tree_idx  = -1,
                         .related_exprs  = {{.way = RIGHTWARD, .expr_idx_offset = 0}},
                     }},
                 });
@@ -853,13 +833,11 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = res->ptn.fragment_begin,
                                   .fragment_end   = res->ptn.fragment_end,
-                                  .expr_tree_idx  = -1,
                                   .related_exprs  = {{.way = RIGHTWARD, .expr_idx_offset = 0}},
                               },
                               {
                                   .fragment_begin = nest_res->right_res.ptn.fragment_begin,
                                   .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .expr_tree_idx  = -1,
                                   .related_exprs =
                                       {
                                           {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -890,7 +868,6 @@ namespace silva::seed::impl {
                     .symbols    = {{
                         .fragment_begin = res->ptn.fragment_begin,
                         .fragment_end   = res->ptn.fragment_end,
-                        .expr_tree_idx  = -1,
                         .related_exprs  = {{.way = LEFTWARD, .expr_idx_offset = 0}},
                     }},
                 });
@@ -912,7 +889,6 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = res->ptn.fragment_begin,
                                   .fragment_end   = res->ptn.fragment_end,
-                                  .expr_tree_idx  = -1,
                                   .related_exprs =
                                       {
                                           {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -922,7 +898,6 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = nest_res->right_res.ptn.fragment_begin,
                                   .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .expr_tree_idx  = -1,
                                   .related_exprs  = {{.way = LEFTWARD, .expr_idx_offset = 1}},
                               },
                           },
@@ -940,7 +915,6 @@ namespace silva::seed::impl {
                     .symbols    = {{
                         .fragment_begin = res->ptn.fragment_begin,
                         .fragment_end   = res->ptn.fragment_end,
-                        .expr_tree_idx  = -1,
                         .related_exprs =
                             {
                                 {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -967,7 +941,6 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = res->ptn.fragment_begin,
                                   .fragment_end   = res->ptn.fragment_end,
-                                  .expr_tree_idx  = -1,
                                   .related_exprs =
                                       {
                                           {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -977,7 +950,6 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = nest_res->right_res.ptn.fragment_begin,
                                   .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .expr_tree_idx  = -1,
                                   .related_exprs =
                                       {
                                           {.way = LEFTWARD, .expr_idx_offset = 1},
