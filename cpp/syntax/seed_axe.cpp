@@ -142,6 +142,20 @@ namespace silva::seed::impl {
             "{} the 'concat' token may only be used with 'infix' or 'infix_flat' operations.",
             pts_op);
       }
+      else {
+        const auto& op_tok_info    = sfp->get(op_tok);
+        const bool is_double_quote = (op_tok_info.str[0] == '"');
+        const token_id_t plain_ti  = SILVA_EXPECT_FWD(sfp->token_id_in_string(op_tok));
+        const auto& plain_ti_info  = sfp->get(plain_ti);
+        auto ft = SILVA_EXPECT_FWD(fragmented_token(sfp, plain_ti_info.str, is_double_quote));
+        const bool already_present =
+            std::ranges::find_if(retval.op_literals, [&](const fragmented_token_t& x) {
+              return x.token_id == ft.token_id;
+            }) != retval.op_literals.end();
+        if (!already_present) {
+          retval.op_literals.push_back(std::move(ft));
+        }
+      }
       return {};
     }
 
@@ -402,13 +416,7 @@ namespace silva::seed::impl {
       retval.atom_rule = pts_axe_atom_nt;
       ++it;
 
-      SILVA_EXPECT(it != end, MINOR, "{} should have at least two children", pts_axe);
-      const auto pts_axe_oper_nt = *it;
-      SILVA_EXPECT(pts_axe_oper_nt.rule_name() == lexicon.ni_nt, MINOR);
-      retval.oper_rule = pts_axe_oper_nt;
-      ++it;
-
-      level_index_t curr_level = pts_axe.num_children() - 1;
+      level_index_t curr_level = pts_axe.num_children();
       while (it != end) {
         curr_level -= 1;
         SILVA_EXPECT_FWD(level(curr_level, *it));
@@ -416,6 +424,14 @@ namespace silva::seed::impl {
       }
       SILVA_EXPECT_FWD(add_to_level_map(axe_name, curr_level));
       SILVA_EXPECT(curr_level == 1, ASSERT);
+
+      // Longer operator tokens must be tried before any shorter token they start with (e.g. "!="
+      // before "!"), so that the latter cannot shadow the former; ties keep level-declaration
+      // order.
+      std::ranges::stable_sort(retval.op_literals,
+                               [](const fragmented_token_t& a, const fragmented_token_t& b) {
+                                 return a.items.size() > b.items.size();
+                               });
       return {};
     }
   };
@@ -437,6 +453,7 @@ namespace silva::seed::impl {
     parse_tree_nursery_t& nursery;
     const lexicon_t& lexicon = *axe.lp;
     delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser;
+    delegate_t<expected_t<void>()> skip_parser;
     level_index_t min_prec_level = {};
 
     syntax_farm_ptr_t sfp = nursery.sfp;
@@ -514,18 +531,32 @@ namespace silva::seed::impl {
       parse_tree_node_t ptn;
       expr_node_t tn;
     };
-    expected_t<rule_parser_result_t> invoke_rule_parser_oper()
+    struct oper_parse_result_t {
+      token_id_t token_id;
+      parse_tree_node_t ptn;
+    };
+    // Tries all the operator-token literals known to this axe (longest first, then in the order
+    // in which they appear across the levels), and returns the first one that matches. Atoms skip
+    // trailing whitespace/comments/etc. as part of being parsed via "rule_parser"; a bare
+    // operator-token literal has to do so explicitly here, via "skip_parser".
+    expected_t<oper_parse_result_t> parse_oper_literal()
     {
-      auto retval = SILVA_EXPECT_FWD(invoke_rule_parser(axe.oper_rule));
-      SILVA_EXPECT(retval.tn.nursery_tree_index.has_value(), MAJOR);
-      const parse_tree_node_t& oper_node = nursery.tree[retval.tn.nursery_tree_index.value()];
-      const fragment_span_t fs{
-          nursery.fp,
-          oper_node.fragment_begin,
-          oper_node.fragment_end,
-      };
-      retval.token_id = sfp->token_id(fs);
-      return retval;
+      for (const auto& ft: axe.op_literals) {
+        auto result = nursery.parse_literal(ft);
+        if (result.has_value()) {
+          oper_parse_result_t retval{
+              .token_id = ft.token_id,
+              .ptn      = *std::move(result),
+          };
+          SILVA_EXPECT_FWD(skip_parser());
+          // Like every other rule/token parsed by this axe, the recorded fragment range extends
+          // over any whitespace/comments/etc. skipped immediately afterwards.
+          retval.ptn.fragment_end = nursery.fragment_index;
+          return retval;
+        }
+        result.error().clear();
+      }
+      SILVA_EXPECT(false, MINOR, "[{}] no operator token matched", fragment_location_by());
     }
     expected_t<rule_parser_result_t> invoke_rule_parser(const name_id_t rule_name)
     {
@@ -549,15 +580,13 @@ namespace silva::seed::impl {
     }
 
     // The left-bracket/first operator token has already been produced by the caller. This function
-    // then parses the nested expression and the matching right token.
+    // then parses the nested expression and the matching right token. Neither bracket token is
+    // embedded in the output tree; the joint node's rule-name is enough to identify them.
     struct nest_result_t {
       parse_tree_node_t ptn;
-      index_t lhs_expr_idx = 0;
-      index_t rhs_expr_idx = 0;
-      rule_parser_result_t right_res;
+      oper_parse_result_t right_res;
     };
-    expected_t<nest_result_t> handle_nest(const expr_node_t& left_tn,
-                                          const token_id_t right_token,
+    expected_t<nest_result_t> handle_nest(const token_id_t right_token,
                                           const optional_t<name_id_ref_t>& nest_rule)
     {
       auto ss = nursery.stake();
@@ -567,7 +596,7 @@ namespace silva::seed::impl {
       const auto [_, ptn, tn] = SILVA_EXPECT_FWD(invoke_rule_parser(used_rule_name));
       ss.add_proto_node(ptn);
 
-      const auto right = SILVA_EXPECT_FWD(invoke_rule_parser_oper());
+      const auto right = SILVA_EXPECT_FWD(parse_oper_literal());
       SILVA_EXPECT_PARSE(used_rule_name,
                          right.token_id == right_token,
                          "expected {}, got {}",
@@ -575,21 +604,13 @@ namespace silva::seed::impl {
                          sfp->token_id_wrap(right.token_id));
       ss.add_proto_node(right.ptn);
 
-      const index_t left_out_idx = expr_tree.size();
-      expr_tree.push_back(left_tn);
-
       open_expr_stack.push_back(expr_tree.size());
       expr_tree.push_back(tn);
 
-      const index_t right_out_idx = expr_tree.size();
-      expr_tree.push_back(right.tn);
-
       nest_result_t retval{
-          .ptn = ss.commit(),
+          .ptn       = ss.commit(),
+          .right_res = right,
       };
-      retval.lhs_expr_idx = left_out_idx;
-      retval.rhs_expr_idx = right_out_idx;
-      retval.right_res    = right;
       return retval;
     }
 
@@ -778,14 +799,8 @@ namespace silva::seed::impl {
 
       while (true) {
         const auto oper_state = nursery.get_state();
-        auto res              = SILVA_EXPECT_FWD_IF(MAJOR, invoke_rule_parser_oper());
+        auto res              = SILVA_EXPECT_FWD_IF(MAJOR, parse_oper_literal());
         if (res.has_value()) {
-          const auto commit_oper = [&]() -> index_t {
-            ss.add_proto_node(res->ptn);
-            const index_t oper_out_idx = expr_tree.size();
-            expr_tree.push_back(res->tn);
-            return oper_out_idx;
-          };
           const auto it = axe.results.find(res->token_id);
           if (it != axe.results.end()) {
             const axe_result_t& axe_result = it->second;
@@ -810,7 +825,7 @@ namespace silva::seed::impl {
               SILVA_EXPECT_FWD(stack_pop(prefix_result.precedence));
 
               if (const auto* x = std::get_if<prefix_t>(&prefix_result.oper)) {
-                const index_t oper_out_idx = commit_oper();
+                ss.add_proto_node(res->ptn);
                 open_oper_stack.push_back(open_oper_item_t{
                     .oper       = *x,
                     .arity      = prefix_t::arity,
@@ -819,7 +834,7 @@ namespace silva::seed::impl {
                     .symbols    = {{
                         .fragment_begin = res->ptn.fragment_begin,
                         .fragment_end   = res->ptn.fragment_end,
-                        .expr_tree_idx  = oper_out_idx,
+                        .expr_tree_idx  = -1,
                         .related_exprs  = {{.way = RIGHTWARD, .expr_idx_offset = 0}},
                     }},
                 });
@@ -827,8 +842,7 @@ namespace silva::seed::impl {
               }
               else if (const auto* x = std::get_if<prefix_nest_t>(&prefix_result.oper)) {
                 auto nest_res =
-                    SILVA_EXPECT_FWD_IF(MAJOR,
-                                        handle_nest(res->tn, x->right_bracket, x->nest_rule_name));
+                    SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->right_bracket, x->nest_rule_name));
                 if (nest_res.has_value()) {
                   ss.add_proto_node(res->ptn);
                   ss.add_proto_node(nest_res->ptn);
@@ -842,13 +856,13 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = res->ptn.fragment_begin,
                                   .fragment_end   = res->ptn.fragment_end,
-                                  .expr_tree_idx  = nest_res->lhs_expr_idx,
+                                  .expr_tree_idx  = -1,
                                   .related_exprs  = {{.way = RIGHTWARD, .expr_idx_offset = 0}},
                               },
                               {
                                   .fragment_begin = nest_res->right_res.ptn.fragment_begin,
                                   .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .expr_tree_idx  = nest_res->rhs_expr_idx,
+                                  .expr_tree_idx  = -1,
                                   .related_exprs =
                                       {
                                           {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -870,7 +884,7 @@ namespace silva::seed::impl {
               SILVA_EXPECT_FWD(stack_pop(regular_result.precedence));
 
               if (const auto* x = std::get_if<postfix_t>(&regular_result.oper)) {
-                const index_t oper_out_idx = commit_oper();
+                ss.add_proto_node(res->ptn);
                 open_oper_stack.push_back(open_oper_item_t{
                     .oper       = *x,
                     .arity      = postfix_t::arity,
@@ -879,7 +893,7 @@ namespace silva::seed::impl {
                     .symbols    = {{
                         .fragment_begin = res->ptn.fragment_begin,
                         .fragment_end   = res->ptn.fragment_end,
-                        .expr_tree_idx  = oper_out_idx,
+                        .expr_tree_idx  = -1,
                         .related_exprs  = {{.way = LEFTWARD, .expr_idx_offset = 0}},
                     }},
                 });
@@ -887,8 +901,7 @@ namespace silva::seed::impl {
               }
               else if (const auto* x = std::get_if<postfix_nest_t>(&regular_result.oper)) {
                 auto nest_res =
-                    SILVA_EXPECT_FWD_IF(MAJOR,
-                                        handle_nest(res->tn, x->right_bracket, x->nest_rule_name));
+                    SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->right_bracket, x->nest_rule_name));
                 if (nest_res.has_value()) {
                   ss.add_proto_node(res->ptn);
                   ss.add_proto_node(nest_res->ptn);
@@ -902,7 +915,7 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = res->ptn.fragment_begin,
                                   .fragment_end   = res->ptn.fragment_end,
-                                  .expr_tree_idx  = nest_res->lhs_expr_idx,
+                                  .expr_tree_idx  = -1,
                                   .related_exprs =
                                       {
                                           {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -912,7 +925,7 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = nest_res->right_res.ptn.fragment_begin,
                                   .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .expr_tree_idx  = nest_res->rhs_expr_idx,
+                                  .expr_tree_idx  = -1,
                                   .related_exprs  = {{.way = LEFTWARD, .expr_idx_offset = 1}},
                               },
                           },
@@ -921,7 +934,7 @@ namespace silva::seed::impl {
                 }
               }
               else if (const auto* x = std::get_if<infix_t>(&regular_result.oper)) {
-                const index_t oper_out_idx = commit_oper();
+                ss.add_proto_node(res->ptn);
                 open_oper_stack.push_back(open_oper_item_t{
                     .oper       = *x,
                     .arity      = infix_t::arity,
@@ -930,7 +943,7 @@ namespace silva::seed::impl {
                     .symbols    = {{
                         .fragment_begin = res->ptn.fragment_begin,
                         .fragment_end   = res->ptn.fragment_end,
-                        .expr_tree_idx  = oper_out_idx,
+                        .expr_tree_idx  = -1,
                         .related_exprs =
                             {
                                 {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -943,7 +956,7 @@ namespace silva::seed::impl {
               }
               else if (const auto* x = std::get_if<ternary_t>(&regular_result.oper)) {
                 auto nest_res =
-                    SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(res->tn, x->second, x->nest_rule_name));
+                    SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->second, x->nest_rule_name));
                 if (nest_res.has_value()) {
                   ss.add_proto_node(res->ptn);
                   ss.add_proto_node(nest_res->ptn);
@@ -957,7 +970,7 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = res->ptn.fragment_begin,
                                   .fragment_end   = res->ptn.fragment_end,
-                                  .expr_tree_idx  = nest_res->lhs_expr_idx,
+                                  .expr_tree_idx  = -1,
                                   .related_exprs =
                                       {
                                           {.way = LEFTWARD, .expr_idx_offset = 0},
@@ -967,7 +980,7 @@ namespace silva::seed::impl {
                               {
                                   .fragment_begin = nest_res->right_res.ptn.fragment_begin,
                                   .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .expr_tree_idx  = nest_res->rhs_expr_idx,
+                                  .expr_tree_idx  = -1,
                                   .related_exprs =
                                       {
                                           {.way = LEFTWARD, .expr_idx_offset = 1},
@@ -1089,7 +1102,6 @@ namespace silva::seed {
   void axe_t::compile_reset()
   {
     atom_rule.resolve_clear();
-    oper_rule.resolve_clear();
     auto res = impl::for_each_name_id_ref(*this, [&](name_id_ref_t& nir) -> expected_t<void> {
       nir.resolve_clear();
       return {};
@@ -1101,7 +1113,8 @@ namespace silva::seed {
   axe_t::apply(parse_tree_nursery_t& nursery,
                const name_id_t lowest_prec_rule_name,
                const bool is_no_node,
-               delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser) const
+               delegate_t<expected_t<parse_tree_node_t>(name_id_t)> rule_parser,
+               delegate_t<expected_t<void>()> skip_parser) const
   {
     const auto level_it = level_map.find(lowest_prec_rule_name);
     SILVA_EXPECT(level_it != level_map.end(),
@@ -1113,6 +1126,7 @@ namespace silva::seed {
         .axe            = *this,
         .nursery        = nursery,
         .rule_parser    = rule_parser,
+        .skip_parser    = skip_parser,
         .min_prec_level = min_prec_level,
     };
     const index_t orig_fragment_index = nursery.fragment_index;
