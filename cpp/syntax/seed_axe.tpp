@@ -168,6 +168,31 @@ language Test:
             [0].number.plusMinus                  ｢｣
             [1].number.unsigned.integer.decimal   ｢2｣
 )");
+    test::test_axe(*se, sa, "1 + 2 + 3\n", R"(
+[0].Test                                          1 + 2 + 3<NEWLINE>¦
+  [0].Test.Add.+                                  1 + 2 + 3<NEWLINE>¦
+    [0].Test.Add.+                                1 + 2 ¦
+      [0].Test.Atom                               1 ¦
+        [0].number                                ｢1｣
+          [0].number.integer                      ｢1｣
+            [0].number.integer.decimal            ｢1｣
+              [0].number.plusMinus                ｢｣
+              [1].number.unsigned.integer.decimal ｢1｣
+      [1].Test.oper                               ｢+｣
+      [2].Test.Atom                               2 ¦
+        [0].number                                ｢2｣
+          [0].number.integer                      ｢2｣
+            [0].number.integer.decimal            ｢2｣
+              [0].number.plusMinus                ｢｣
+              [1].number.unsigned.integer.decimal ｢2｣
+    [1].Test.oper                                 ｢+｣
+    [2].Test.Atom                                 3<NEWLINE>¦
+      [0].number                                  ｢3｣
+        [0].number.integer                        ｢3｣
+          [0].number.integer.decimal              ｢3｣
+            [0].number.plusMinus                  ｢｣
+            [1].number.unsigned.integer.decimal   ｢3｣
+)");
     test::test_axe(*se, sa, "1 - 2\n", R"(
 [0].Test                                          1 - 2<NEWLINE>¦
   [0].Test.Add.-                                  1 - 2<NEWLINE>¦

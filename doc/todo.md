@@ -1,9 +1,5 @@
 # TODO
 
-* Seed-Axe:
-    * seed-axe generated rule-names should not contain operator token
-    * allow more than just "" and '' in operators?
-
 * Python: add basic parser
 
 * Errors:
