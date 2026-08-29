@@ -143,16 +143,12 @@ namespace silva::seed::impl {
             pts_op);
       }
       else {
-        const auto& op_tok_info    = sfp->get(op_tok);
-        const bool is_double_quote = (op_tok_info.str[0] == '"');
-        const token_id_t plain_ti  = SILVA_EXPECT_FWD(sfp->token_id_in_string(op_tok));
-        const auto& plain_ti_info  = sfp->get(plain_ti);
-        auto ft = SILVA_EXPECT_FWD(fragmented_token(sfp, plain_ti_info.str, is_double_quote));
-        const bool already_present =
+        auto ft = SILVA_EXPECT_FWD(fragment_token_from_string(sfp, op_tok));
+        const auto op_it =
             std::ranges::find_if(retval.op_literals, [&](const fragmented_token_t& x) {
               return x.token_id == ft.token_id;
-            }) != retval.op_literals.end();
-        if (!already_present) {
+            });
+        if (const bool already_present = op_it != retval.op_literals.end(); !already_present) {
           retval.op_literals.push_back(std::move(ft));
         }
       }
@@ -432,6 +428,7 @@ namespace silva::seed::impl {
                                [](const fragmented_token_t& a, const fragmented_token_t& b) {
                                  return a.items.size() > b.items.size();
                                });
+
       return {};
     }
   };

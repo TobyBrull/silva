@@ -645,6 +645,16 @@ namespace silva {
     };
   }
 
+  expected_t<fragmented_token_t> fragment_token_from_string(syntax_farm_ptr_t sfp,
+                                                            const token_id_t quoted)
+  {
+    const auto& quoted_info     = sfp->get(quoted);
+    const bool is_double_quoted = (quoted_info.str[0] == '"');
+    const token_id_t plain_ti   = SILVA_EXPECT_FWD(sfp->token_id_in_string(quoted));
+    const auto& plain_info      = sfp->get(plain_ti);
+    return fragmented_token(sfp, plain_info.str, is_double_quoted);
+  }
+
   expected_t<bool> fragment_span_ends_with(const fragment_span_t& fs, const fragmented_token_t& ft)
   {
     const auto sv                    = fs.as_string_view();

@@ -135,12 +135,8 @@ namespace silva::seed::impl {
         if (pts_rhs_0.node_at(i).rule_name == lexicon.ni_term &&
             pts_rhs_0.node_at(i).num_children == 1 &&
             pts_rhs_0.node_at(i + 1).rule_name == lexicon.ni_string) {
-          const token_id_t str_ti     = SILVA_EXPECT_FWD(pts_rhs_0.subspan_at(i + 1).token());
-          const auto& ti_full_info    = sfp->get(str_ti);
-          const bool is_double_quoted = (ti_full_info.str[0] == U'"');
-          const auto ti               = SILVA_EXPECT_FWD(sfp->token_id_in_string(str_ti));
-          const auto& ti_info         = sfp->get(ti);
-          auto ft = SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, is_double_quoted));
+          const token_id_t str_ti = SILVA_EXPECT_FWD(pts_rhs_0.subspan_at(i + 1).token());
+          auto ft                 = SILVA_EXPECT_FWD(fragment_token_from_string(sfp, str_ti));
           SILVA_EXPECT_FWD(recognize_literal(curr_rule_name, ft));
           se->string_to_ft[str_ti] = std::move(ft);
         }

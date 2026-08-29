@@ -123,6 +123,7 @@ namespace silva {
   };
   expected_t<fragmented_token_t>
   fragmented_token(syntax_farm_ptr_t, string_view_t, bool as_identifier = false);
+  expected_t<fragmented_token_t> fragment_token_from_string(syntax_farm_ptr_t, token_id_t quoted);
 
   expected_t<bool> fragment_span_ends_with(const fragment_span_t&, const fragmented_token_t&);
 }
