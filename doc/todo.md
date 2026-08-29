@@ -1,6 +1,7 @@
 # TODO
 
-* Python: add basic parser
+* Python Seed-parser
+* Bash Seed-parser?
 
 * Errors:
     * color furthest fragment in readable color?
