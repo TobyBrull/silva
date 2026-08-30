@@ -47,7 +47,11 @@ Seed.Axe:
     lexicon_ptr_t lp;
     name_id_t name;
     name_id_ref_t atom_rule;
+
+    // Array of all literals used in this axe's definition, sorted by length. The sorting is
+    // necessary so that, e.g., '!=' is tried before '!'.
     array_t<fragmented_token_t> op_literals;
+
     hash_map_t<token_id_t, impl::axe_result_t> results;
     optional_t<impl::result_oper_t<impl::oper_regular_t>> concat_result;
 

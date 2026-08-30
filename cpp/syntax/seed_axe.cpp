@@ -421,9 +421,6 @@ namespace silva::seed::impl {
       SILVA_EXPECT_FWD(add_to_level_map(axe_name, curr_level));
       SILVA_EXPECT(curr_level == 1, ASSERT);
 
-      // Longer operator tokens must be tried before any shorter token they start with (e.g. "!="
-      // before "!"), so that the latter cannot shadow the former; ties keep level-declaration
-      // order.
       std::ranges::stable_sort(retval.op_literals,
                                [](const fragmented_token_t& a, const fragmented_token_t& b) {
                                  return a.items.size() > b.items.size();
@@ -537,7 +534,6 @@ namespace silva::seed::impl {
               .ptn      = ss.commit(),
           };
         }
-        result.error().clear();
       }
       SILVA_EXPECT(false, MINOR, "[{}] no operator token matched", fragment_location_by());
     }
@@ -573,7 +569,7 @@ namespace silva::seed::impl {
       parse_tree_node_t ptn;
       oper_parse_result_t right_res;
     };
-    expected_t<nest_result_t> handle_nest(const token_id_t right_token,
+    expected_t<nest_result_t> handle_nest(const token_id_t expected_right_token,
                                           const optional_t<name_id_ref_t>& nest_rule)
     {
       auto ss = nursery.stake();
@@ -585,9 +581,9 @@ namespace silva::seed::impl {
 
       const auto right = SILVA_EXPECT_FWD(parse_oper_literal());
       SILVA_EXPECT_PARSE(used_rule_name,
-                         right.token_id == right_token,
+                         right.token_id == expected_right_token,
                          "expected {}, got {}",
-                         sfp->token_id_wrap(right_token),
+                         sfp->token_id_wrap(expected_right_token),
                          sfp->token_id_wrap(right.token_id));
       ss.add_proto_node(right.ptn);
 
