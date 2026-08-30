@@ -1,0 +1,233 @@
+"""A small tour through the Python grammar."""
+
+import os
+import os.path as osp
+from collections import OrderedDict
+from . import sibling
+from .relative import thing as other, second
+
+GREETING = "hello"
+LIMIT: int = 10
+_TABLE = {"a": 1, "b": 2, **{"c": 3}}
+NUMBERS = [0, 1_000, 0b1010, 0o755, 0xdeadBEEF, 1.5, .5, 2., 1e-9, 3j]
+EMPTY = ()
+SINGLE = (1,)
+PAIR = 1, 2
+SET = {1, 2, 3}
+DOTS = ...
+
+
+type Alias = dict
+
+
+def describe(value, *args, sep=", ", **kwargs):
+    """Return a printable description."""
+    parts = [repr(value)]
+    for arg in args:
+        parts.append(repr(arg))
+    for key in sorted(kwargs):
+        parts.append(key + "=" + repr(kwargs[key]))
+    return sep.join(parts)
+
+
+def arithmetic(a, b=2, /, c=3, *, d=4):
+    total = a + b * c - d
+    total += a // b
+    total -= -a
+    total *= +b
+    total **= 2
+    total @= b
+    total //= 3
+    total %= 7
+    total &= 0xff
+    total |= 0x0f
+    total ^= 0b11
+    total <<= 1
+    total >>= 2
+    shifted = (a << 2) | (b >> 1) & ~c ^ d
+    return total, shifted, a ** -b, not a
+
+
+def comparisons(a, b, seq):
+    if a < b <= 10 and b != a or not (a == b):
+        return True
+    if a is b or a is not b:
+        return False
+    if a in seq and a not in seq:
+        return None
+    return a > b >= 0
+
+
+def branching(n):
+    if n < 0:
+        sign = -1
+    elif n == 0:
+        sign = 0
+    else:
+        sign = 1
+    while n > 0:
+        n -= 1
+        if n == 3:
+            continue
+        if n == 1:
+            break
+    else:
+        pass
+    return sign
+
+
+def looping(rows, columns):
+    table = []
+    for i, row in enumerate(rows):
+        for column in columns:
+            table.append((i, row, column))
+    else:
+        del table[0]
+    squares = [x * x for x in range(10) if x % 2 == 0]
+    pairs = {k: v for k, v in _TABLE.items()}
+    uniq = {c for c in GREETING}
+    lazy = (y for y in squares)
+    nested = [(a, b) for a in range(3) for b in range(3) if a != b]
+    return table, squares, pairs, uniq, lazy, nested
+
+
+def exceptional(path):
+    try:
+        handle = open(path)
+    except FileNotFoundError as exc:
+        raise RuntimeError("missing") from exc
+    except (OSError, ValueError):
+        return None
+    except:
+        raise
+    else:
+        data = handle.read()
+    finally:
+        handle = None
+    try:
+        pass
+    except* TypeError as group:
+        pass
+    with open(path) as handle, open(path, "rb") as raw:
+        assert handle is not raw, "distinct handles"
+    with (open(path) as first, open(path) as second):
+        pass
+    return data
+
+
+def scoping():
+    global GREETING
+    counter = 0
+
+    def bump():
+        nonlocal counter
+        counter += 1
+        return counter
+
+    return bump
+
+
+def slicing(seq):
+    head = seq[0]
+    tail = seq[1:]
+    body = seq[1:-1]
+    every = seq[::2]
+    window = seq[1:5:2]
+    grid = seq[0, 1]
+    both = seq[:, ::-1]
+    return head, tail, body, every, window, grid, both
+
+
+def lambdas():
+    add = lambda a, b: a + b
+    const = lambda: 0
+    starred = lambda *a, **kw: (a, kw)
+    ternary = lambda x: "big" if x > 10 else "small"
+    return add, const, starred, ternary
+
+
+def walrus(values):
+    if (n := len(values)) > 3:
+        print(f"{n} values", "are plenty", sep=" ")
+    while (chunk := values[:2]):
+        values = values[2:]
+    return [y for x in values if (y := x * 2) > 0]
+
+
+def classify(command):
+    match command:
+        case "quit" | "exit":
+            return 0
+        case ["move", direction]:
+            return direction
+        case ["scale", *factors]:
+            return factors
+        case {"kind": kind, **rest}:
+            return kind, rest
+        case Point(x=0, y=0):
+            return "origin"
+        case Point(x, y) if x == y:
+            return "diagonal"
+        case (1, 2, 3):
+            return "triple"
+        case -1:
+            return "negative"
+        case None | True | False:
+            return "constant"
+        case os.sep:
+            return "separator"
+        case value as captured:
+            return captured
+        case _:
+            return None
+
+
+class Point:
+    kind = "point"
+
+    def __init__(self, x, y=0):
+        self.x = x
+        self.y = y
+
+    @property
+    def norm(self):
+        return (self.x ** 2 + self.y ** 2) ** 0.5
+
+    @staticmethod
+    def origin():
+        return Point(0, 0)
+
+    def __repr__(self):
+        return "Point(" + str(self.x) + ", " + str(self.y) + ")"
+
+
+class Labelled[T](Point, metaclass=type):
+    def label(self) -> str:
+        return "%s" % self.kind
+
+
+def generic[T, *Ts, **P](first: T, *rest: object) -> T:
+    return first
+
+
+async def fetch(session, urls):
+    async with session.begin() as tx:
+        results = []
+        async for url in urls:
+            results.append(await session.get(url))
+    return results
+
+
+def generating(n):
+    for i in range(n):
+        yield i
+    yield from range(n, 2 * n)
+    value = yield
+    return value
+
+
+if __name__ == "__main__":
+    point = Point(3, 4)
+    print(describe(point), point.norm)
+    print(classify("quit"), classify(["move", "north"]))
+    x = 1; y = 2; print(x, y)

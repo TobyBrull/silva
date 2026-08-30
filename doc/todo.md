@@ -1,6 +1,5 @@
 # TODO
 
-* Python Seed-parser
 * Bash Seed-parser?
 
 * Errors:
@@ -10,6 +9,7 @@
     * rethink error generation fundamentally
         * In parsing errors, show what has been successfully parsed so far?
     * After errors, parsing should be resume (for error handling in IDEs)
+    * Maybe use Python's "invalid_*" rules?
 
 * Lox:
     * Unify: object_pool_t, cactus_t?

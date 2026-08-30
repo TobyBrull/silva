@@ -30,5 +30,8 @@ SEED_EXEC_TRACE=true "./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/01-simplest.
 # Cedar
 "./${BUILD_DIR}/cpp/silva_cedar" cpp/zoo/cedar/test.cedar
 
+# Pine
+"./${BUILD_DIR}/cpp/silva_pine" cpp/zoo/pine/test.pine
+
 # TOML
 "./${BUILD_DIR}/cpp/silva_toml" cpp/zoo/toml/example.toml
