@@ -526,16 +526,16 @@ namespace silva::seed::impl {
     };
     expected_t<oper_parse_result_t> parse_oper_literal()
     {
+      auto ss = nursery.stake();
       for (const auto& ft: axe.op_literals) {
         auto result = nursery.parse_literal(ft);
         if (result.has_value()) {
-          oper_parse_result_t retval{
-              .token_id = ft.token_id,
-              .ptn      = *std::move(result),
-          };
+          ss.add_proto_node(*result);
           SILVA_EXPECT_FWD(skip_parser());
-          retval.ptn.fragment_end = nursery.fragment_index;
-          return retval;
+          return oper_parse_result_t{
+              .token_id = ft.token_id,
+              .ptn      = ss.commit(),
+          };
         }
         result.error().clear();
       }
@@ -543,7 +543,6 @@ namespace silva::seed::impl {
     }
 
     struct rule_parser_result_t {
-      token_id_t token_id;
       parse_tree_node_t ptn;
       expr_node_t tn;
     };
@@ -558,14 +557,14 @@ namespace silva::seed::impl {
           "The 'atom' or 'oper' function given to seed::axe_t must always parse a single child");
       const index_t tree_index = ss.orig_state.tree_size;
       parse_tree_node_t ptn    = ss.commit();
-      expr_node_t tn{ptn, tree_index};
-      tn.num_children = 0;
-      tn.subtree_size = 1;
-      return rule_parser_result_t{
-          .token_id = {},
-          .ptn      = ptn,
-          .tn       = tn,
-      };
+      expr_node_t tn;
+      tn.num_children       = 0;
+      tn.subtree_size       = 1;
+      tn.fragment_begin     = ptn.fragment_begin;
+      tn.fragment_end       = ptn.fragment_end;
+      tn.allow_token        = ptn.allow_token;
+      tn.nursery_tree_index = tree_index;
+      return rule_parser_result_t{.ptn = std::move(ptn), .tn = std::move(tn)};
     }
 
     // The left-bracket/first operator token has already been parsed by the caller. This function
@@ -581,7 +580,7 @@ namespace silva::seed::impl {
 
       const name_id_t used_rule_name = nest_rule ? *nest_rule : axe.name;
 
-      const auto [_, ptn, tn] = SILVA_EXPECT_FWD(invoke_rule_parser(used_rule_name));
+      const auto [ptn, tn] = SILVA_EXPECT_FWD(invoke_rule_parser(used_rule_name));
       ss.add_proto_node(ptn);
 
       const auto right = SILVA_EXPECT_FWD(parse_oper_literal());
@@ -974,7 +973,7 @@ namespace silva::seed::impl {
         if (!maybe_res.has_value()) {
           break;
         }
-        auto [_, ptn, tn] = *std::move(maybe_res);
+        auto [ptn, tn] = *std::move(maybe_res);
         ss.add_proto_node(ptn);
         if (mode == INFIX_MODE && axe.concat_result.has_value()) {
           SILVA_EXPECT_FWD(hallucinate_concat());
