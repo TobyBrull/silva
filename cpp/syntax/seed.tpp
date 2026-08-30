@@ -54,7 +54,6 @@ language SimpleFern:
       [0].Seed.Expr.Postfix.+                     DIGIT +¦
         [0].Seed.Terminal                         DIGIT ¦
           [0].Seed.fragName                       ｢DIGIT｣
-        [1].Seed.Expr.operator                    ｢+｣
   [2].Seed.Language                               langu ... ber<NEWLINE><DEDENT>¦
     [0].Seed.ruleName                             ｢SimpleFern｣
     [1].Seed.Rule                                 ⊙ = '[' ... * ']'<NEWLINE><WHITESPACE>¦
@@ -71,8 +70,6 @@ language SimpleFern:
                 [1].Seed.Expr.Postfix.?           ';' ? ¦
                   [0].Seed.Terminal               ';' ¦
                     [0].string                    ｢';'｣
-                  [1].Seed.Expr.operator          ｢?｣
-            [1].Seed.Expr.operator                ｢*｣
           [2].Seed.Terminal                       ']'¦
             [0].string                            ｢']'｣
     [2].Seed.Rule                                 skip  ... ) *<NEWLINE><WHITESPACE>¦
@@ -84,25 +81,18 @@ language SimpleFern:
             [0].Seed.Expr.Or.|                    SPACE ... LINE ¦
               [0].Seed.Terminal                   SPACE ¦
                 [0].Seed.fragName                 ｢SPACE｣
-              [1].Seed.Expr.operator              ｢|｣
-              [2].Seed.Terminal                   LINEFEED ¦
+              [1].Seed.Terminal                   LINEFEED ¦
                 [0].Seed.fragName                 ｢LINEFEED｣
-              [3].Seed.Expr.operator              ｢|｣
-              [4].Seed.Terminal                   COMMENT ¦
+              [2].Seed.Terminal                   COMMENT ¦
                 [0].Seed.fragName                 ｢COMMENT｣
-              [5].Seed.Expr.operator              ｢|｣
-              [6].Seed.Terminal                   WHITE ... PACE ¦
+              [3].Seed.Terminal                   WHITE ... PACE ¦
                 [0].Seed.fragName                 ｢WHITESPACE｣
-              [7].Seed.Expr.operator              ｢|｣
-              [8].Seed.Terminal                   INDENT ¦
+              [4].Seed.Terminal                   INDENT ¦
                 [0].Seed.fragName                 ｢INDENT｣
-              [9].Seed.Expr.operator              ｢|｣
-              [10].Seed.Terminal                  DEDENT ¦
+              [5].Seed.Terminal                   DEDENT ¦
                 [0].Seed.fragName                 ｢DEDENT｣
-              [11].Seed.Expr.operator             ｢|｣
-              [12].Seed.Terminal                  NEWLINE ¦
+              [6].Seed.Terminal                   NEWLINE ¦
                 [0].Seed.fragName                 ｢NEWLINE｣
-          [1].Seed.Expr.operator                  ｢*｣
     [3].Seed.Rule                                 Label ... Item<NEWLINE>¦
       [0].Seed.Nonterminal                        Label ... Item ¦
         [0].Seed.ruleName                         ｢LabeledItem｣
@@ -115,7 +105,6 @@ language SimpleFern:
                   [0].Seed.ruleName               ｢Label｣
                 [1].Seed.Terminal                 ':' ¦
                   [0].string                      ｢':'｣
-            [1].Seed.Expr.operator                ｢?｣
           [1].Seed.Nonterminal                    Item¦
             [0].Seed.ruleName                     ｢Item｣
     [4].Seed.Rule                                 Label ... ring<NEWLINE>¦
@@ -131,11 +120,9 @@ language SimpleFern:
         [0].Seed.Expr.Or.|                        Simpl ... umber¦
           [0].Seed.Nonterminal                    Simpl ... Fern ¦
             [0].Seed.ruleName                     ｢SimpleFern｣
-          [1].Seed.Expr.operator                  ｢|｣
-          [2].Seed.Nonterminal                    string ¦
+          [1].Seed.Nonterminal                    string ¦
             [0].Seed.tokenCategoryName            ｢string｣
-          [3].Seed.Expr.operator                  ｢|｣
-          [4].Seed.Nonterminal                    number¦
+          [2].Seed.Nonterminal                    number¦
             [0].Seed.tokenCategoryName            ｢number｣
 )";
 

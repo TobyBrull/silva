@@ -76,7 +76,6 @@ namespace silva::seed {
     const name_id_t ni_newline      = sfp->name_id_of("newline");
     const name_id_t ni_indent       = sfp->name_id_of("indent");
     const name_id_t ni_dedent       = sfp->name_id_of("dedent");
-    const name_id_t ni_operator_single = sfp->name_id_of("operator", "single");
 
     const name_id_t ni_seed = sfp->name_id_of("Seed");
 
@@ -94,7 +93,6 @@ namespace silva::seed {
     const name_id_t ni_alternation = sfp->name_id_of(ni_expr, "Alternation");
     const name_id_t ni_quantifier  = sfp->name_id_of(ni_expr, "Quantifier");
     const name_id_t ni_comma       = sfp->name_id_of(ni_expr, "comma");
-    const name_id_t ni_oper        = sfp->name_id_of(ni_expr, "operator");
     const name_id_t ni_term        = sfp->name_id_of(ni_seed, "Terminal");
     const name_id_t ni_keyword     = sfp->name_id_of(ni_seed, "keyword");
     const name_id_t ni_tok_cat     = sfp->name_id_of(ni_seed, "TokenCategory");

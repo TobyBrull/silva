@@ -13,7 +13,7 @@ language CppStmts:
 
   ⊙ = ( Expr ';' ) *
   Expr:
-    ⊙ = axe Atom oper
+    ⊙ = axe Atom
       Namespace   = rtl   infix '::' prefix '::'
       Postfix     = ltr   postfix '++' '--' \
                           postfix_nest '(' ')' '[' ']' \
@@ -37,7 +37,6 @@ language CppStmts:
                           ternary '?' ':'
       Comma       = ltr   infix ','
     Atom = number | string | identifier | '(' Expr ')'
-    oper = parenthesis | operator.greedy
     Type = identifier
 »
 

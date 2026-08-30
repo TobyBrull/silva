@@ -33,7 +33,6 @@ language Frog:
         [0].Seed.Expr.Postfix.*                   Rule *¦
           [0].Seed.Nonterminal                    Rule ¦
             [0].Seed.ruleName                     ｢Rule｣
-          [1].Seed.Expr.operator                  ｢*｣
     [2].Seed.Rule                                 skip  ...  ) *<NEWLINE>¦
       [0].Seed.Nonterminal                        skip ¦
         [0].Seed.tokenCategoryName                ｢skip｣
@@ -43,25 +42,18 @@ language Frog:
             [0].Seed.Expr.Or.|                    SPACE ... LINE ¦
               [0].Seed.Terminal                   SPACE ¦
                 [0].Seed.fragName                 ｢SPACE｣
-              [1].Seed.Expr.operator              ｢|｣
-              [2].Seed.Terminal                   LINEFEED ¦
+              [1].Seed.Terminal                   LINEFEED ¦
                 [0].Seed.fragName                 ｢LINEFEED｣
-              [3].Seed.Expr.operator              ｢|｣
-              [4].Seed.Terminal                   COMMENT ¦
+              [2].Seed.Terminal                   COMMENT ¦
                 [0].Seed.fragName                 ｢COMMENT｣
-              [5].Seed.Expr.operator              ｢|｣
-              [6].Seed.Terminal                   WHITE ... PACE ¦
+              [3].Seed.Terminal                   WHITE ... PACE ¦
                 [0].Seed.fragName                 ｢WHITESPACE｣
-              [7].Seed.Expr.operator              ｢|｣
-              [8].Seed.Terminal                   INDENT ¦
+              [4].Seed.Terminal                   INDENT ¦
                 [0].Seed.fragName                 ｢INDENT｣
-              [9].Seed.Expr.operator              ｢|｣
-              [10].Seed.Terminal                  DEDENT ¦
+              [5].Seed.Terminal                   DEDENT ¦
                 [0].Seed.fragName                 ｢DEDENT｣
-              [11].Seed.Expr.operator             ｢|｣
-              [12].Seed.Terminal                  NEWLINE ¦
+              [6].Seed.Terminal                   NEWLINE ¦
                 [0].Seed.fragName                 ｢NEWLINE｣
-          [1].Seed.Expr.operator                  ｢*｣
     [3].Seed.Rule                                 ident ... UE *<NEWLINE>¦
       [0].Seed.Nonterminal                        ident ... fier ¦
         [0].Seed.tokenCategoryName                ｢identifier｣
@@ -72,7 +64,6 @@ language Frog:
           [1].Seed.Expr.Postfix.*                 ID_CO ... NUE *¦
             [0].Seed.Terminal                     ID_CO ... INUE ¦
               [0].Seed.fragName                   ｢ID_CONTINUE｣
-            [1].Seed.Expr.operator                ｢*｣
     [4].Seed.Rule                                 Rule  ... Expr<NEWLINE>¦
       [0].Seed.Nonterminal                        Rule ¦
         [0].Seed.ruleName                         ｢Rule｣
@@ -96,19 +87,16 @@ language Frog:
         [0].Seed.Expr.Postfix.+                   Primary +¦
           [0].Seed.Nonterminal                    Primary ¦
             [0].Seed.ruleName                     ｢Primary｣
-          [1].Seed.Expr.operator                  ｢+｣
     [7].Seed.Rule                                 Prima ... fier<NEWLINE>¦
       [0].Seed.Nonterminal                        Primary ¦
         [0].Seed.ruleName                         ｢Primary｣
       [1].Seed.Expr                               not l ... ifier¦
         [0].Seed.Expr.And.but_then                not l ... ifier¦
           [0].Seed.Expr.Prefix.not                not l ... word ¦
-            [0].Seed.Expr.operator                ｢not｣
-            [1].Seed.Terminal                     liter ... word ¦
+            [0].Seed.Terminal                     liter ... word ¦
               [0].Seed.Nonterminal                Keyword ¦
                 [0].Seed.ruleName                 ｢Keyword｣
-          [1].Seed.Expr.operator                  ｢but_then｣
-          [2].Seed.Nonterminal                    identifier¦
+          [1].Seed.Nonterminal                    identifier¦
             [0].Seed.tokenCategoryName            ｢identifier｣
     [8].Seed.Scope                                Keywo ... | 'keyword3'<NEWLINE><DEDENT>¦
       [0].Seed.Nonterminal                        Keyword¦
@@ -119,11 +107,9 @@ language Frog:
           [0].Seed.Expr.Or.|                      'keyword1' | 'keyword2' | 'keyword3'¦
             [0].Seed.Terminal                     'keyword1' ¦
               [0].string                          ｢'keyword1'｣
-            [1].Seed.Expr.operator                ｢|｣
-            [2].Seed.Terminal                     'keyword2' ¦
+            [1].Seed.Terminal                     'keyword2' ¦
               [0].string                          ｢'keyword2'｣
-            [3].Seed.Expr.operator                ｢|｣
-            [4].Seed.Terminal                     'keyword3'¦
+            [2].Seed.Terminal                     'keyword3'¦
               [0].string                          ｢'keyword3'｣
 )";
     const string_t seed_pt_str{SILVA_REQUIRE(ptp->span().to_string())};

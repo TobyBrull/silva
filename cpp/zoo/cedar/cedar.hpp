@@ -13,11 +13,6 @@ namespace silva::cedar {
 language Cedar:
   skip = skip.freeForm
 
-  operator = [ '...' '.' ';' ':' '*=' '*' '/=' '/' '%=' '%' '~'
-               '++' '+=' '+' '--' '-=' '->' '-'
-               '!=' '!' '==' '=' '<<=' '<<' '<=' '<' '>>=' '>>' '>=' '>'
-               '&&' '&=' '&' '||' '|=' '|' '^=' '^' '?' ',' ]
-
   ⊙ = Declaration *
 
   Declaration:
@@ -78,7 +73,7 @@ language Cedar:
     ExprStmt = Expr ? ';'
 
   Expr:
-    ⊙ = axe Atom oper
+    ⊙ = axe Atom
       Postfix     = ltr  postfix '++' '--' \
                          postfix_nest -> ExprOrEpsilon '(' ')' '[' ']' \
                          infix '.' '->'
@@ -99,7 +94,6 @@ language Cedar:
       Comma       = ltr  infix_flat ','
     Atom = Sizeof | Alignof | identifier | '(' Expr ')' | number | string +
     number = [ DIGIT '.' ] [ DIGIT '.' 'x' 'e' 'E' 'f' 'F' 'l' 'L' 'u' 'U' '-' '+' ] *
-    oper = operator | parenthesis
     Sizeof = "sizeof" ( Expr.Unary | '(' Type.Name ')' )
     Alignof = "_Alignof" '(' Type.Name ')'
     ExprOrEpsilon = Expr | Epsilon

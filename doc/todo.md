@@ -1,6 +1,7 @@
 # TODO
 
-* Python: add basic parser
+* Python Seed-parser
+* Bash Seed-parser?
 
 * Errors:
     * color furthest fragment in readable color?
@@ -40,7 +41,7 @@
         * branch-rules may not use FRAGMENTS
         * token-rules may only use other token-rules or FRAGMENTS
         * tokens may only have other tokens as nested rules
-        * axe.name must not be twig-rule
+        * seed-axe (and its sub-rules) must not be defined as twig-rules
     * write tests for rules `number` and `date`
     * make seed-engine-based error look more like the error from the manual Fern parser; by creating
       bespoke error messages for certain edge cases.

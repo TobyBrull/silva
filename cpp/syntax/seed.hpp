@@ -94,7 +94,7 @@ language Seed:
   here = '⊙'
   qualifier = [ "no_node" "no_whitespace" "literal_nodes" ]
   Expr:
-    ⊙ = axe Atom operator
+    ⊙ = axe Atom
       Ending    = ltr   infix "ending_with"
       Prefix    = rtl   prefix "not"
       Postfix   = ltr   postfix '?' '*' '+' \
@@ -106,7 +106,6 @@ language Seed:
     Atom = no_node Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
     Quantifier = literal_nodes number ? ',' number ? | number
-    operator = [ "ending_with" "not" "but_then" '{' '}' operator.single ]
     NoNode = Expr
   Terminal = "literals_of" Nonterminal | [ keyword string fragName ]
   keyword = [ "ε" "language" ]

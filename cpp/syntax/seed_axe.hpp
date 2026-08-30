@@ -33,7 +33,7 @@ namespace silva::seed {
 
   const string_view_t axe_str = R"'(
 Seed.Axe:
-  ⊙ = Seed.Nonterminal Seed.Nonterminal newline indent ( Level newline ) * dedent
+  ⊙ = Seed.Nonterminal newline indent ( Level newline ) * dedent
   Level = ruleName '=' assoc Ops *
   assoc = "ltr" | "rtl"
   Ops = opType ( '->' Seed.Nonterminal ) ? op *
@@ -47,7 +47,12 @@ Seed.Axe:
     lexicon_ptr_t lp;
     name_id_t name;
     name_id_ref_t atom_rule;
-    name_id_ref_t oper_rule;
+
+    // Array of all literals used in this axe's definition, sorted by literal length first and then
+    // appearance in the axe's definition. The sorting is necessary so that, e.g., '!=' is tried
+    // before '!' even if '!' has higher precedence.
+    array_t<fragmented_token_t> op_literals;
+
     hash_map_t<token_id_t, impl::axe_result_t> results;
     optional_t<impl::result_oper_t<impl::oper_regular_t>> concat_result;
 
@@ -58,10 +63,12 @@ Seed.Axe:
     expected_t<void> compile(const lexicon_t&, const Ns&);
 
     using parse_delegate_t = delegate_t<expected_t<parse_tree_node_t>(name_id_t)>;
+    using skip_delegate_t  = delegate_t<expected_t<void>()>;
     expected_t<parse_tree_node_t> apply(parse_tree_nursery_t&,
                                         name_id_t lowest_prec_rule_name,
                                         bool is_no_node,
-                                        parse_delegate_t) const;
+                                        parse_delegate_t,
+                                        skip_delegate_t) const;
   };
 
   expected_t<axe_t> axe_create(syntax_farm_ptr_t, name_id_t axe_name, parse_tree_span_t);
@@ -109,7 +116,6 @@ namespace silva::seed {
   expected_t<void> axe_t::compile(const lexicon_t& lexicon, const Ns& ns)
   {
     SILVA_EXPECT_FWD(atom_rule.resolve(name, lexicon, ns));
-    SILVA_EXPECT_FWD(oper_rule.resolve(name, lexicon, ns));
     return impl::for_each_name_id_ref(*this, [&](name_id_ref_t& nir) -> expected_t<void> {
       return nir.resolve(name, lexicon, ns);
     });

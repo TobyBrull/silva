@@ -41,7 +41,7 @@ namespace silva::seed::test {
     const unique_ptr_t<seed::interpreter_t> se = standard_seed_interpreter(sf.ptr());
     const string_view_t test_axe_str           = R"'(
 language Test:
-  ⊙ = axe Atom oper
+  ⊙ = axe Atom
     Dot   = rtl   infix '.'
     Sub   = ltr   postfix_nest '[' ']'
     Dol   = ltr   postfix '$'
@@ -52,7 +52,6 @@ language Test:
     Add   = ltr   infix '+' '-'
     Ter   = rtl   ternary '?' ':'
     Eqa   = rtl   infix '='
-  oper = operator.single | parenthesis
   Atom = identifier | number | '(' Test ')'
   skip = skip.freeForm
 )'";
@@ -160,8 +159,7 @@ language Test:
           [0].number.integer.decimal              ｢1｣
             [0].number.plusMinus                  ｢｣
             [1].number.unsigned.integer.decimal   ｢1｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Atom                                 2<NEWLINE>¦
+    [1].Test.Atom                                 2<NEWLINE>¦
       [0].number                                  ｢2｣
         [0].number.integer                        ｢2｣
           [0].number.integer.decimal              ｢2｣
@@ -178,15 +176,13 @@ language Test:
             [0].number.integer.decimal            ｢1｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢1｣
-      [1].Test.oper                               ｢+｣
-      [2].Test.Atom                               2 ¦
+      [1].Test.Atom                               2 ¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢2｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Atom                                 3<NEWLINE>¦
+    [1].Test.Atom                                 3<NEWLINE>¦
       [0].number                                  ｢3｣
         [0].number.integer                        ｢3｣
           [0].number.integer.decimal              ｢3｣
@@ -202,8 +198,7 @@ language Test:
           [0].number.integer.decimal              ｢1｣
             [0].number.plusMinus                  ｢｣
             [1].number.unsigned.integer.decimal   ｢1｣
-    [1].Test.oper                                 ｢-｣
-    [2].Test.Atom                                 2<NEWLINE>¦
+    [1].Test.Atom                                 2<NEWLINE>¦
       [0].number                                  ｢2｣
         [0].number.integer                        ｢2｣
           [0].number.integer.decimal              ｢2｣
@@ -220,23 +215,20 @@ language Test:
             [0].number.integer.decimal            ｢1｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢1｣
-      [1].Test.oper                               ｢+｣
-      [2].Test.Mul.*                              2 * 3 ¦
+      [1].Test.Mul.*                              2 * 3 ¦
         [0].Test.Atom                             2 ¦
           [0].number                              ｢2｣
             [0].number.integer                    ｢2｣
               [0].number.integer.decimal          ｢2｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢2｣
-        [1].Test.oper                             ｢*｣
-        [2].Test.Atom                             3 ¦
+        [1].Test.Atom                             3 ¦
           [0].number                              ｢3｣
             [0].number.integer                    ｢3｣
               [0].number.integer.decimal          ｢3｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢3｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Atom                                 4<NEWLINE>¦
+    [1].Test.Atom                                 4<NEWLINE>¦
       [0].number                                  ｢4｣
         [0].number.integer                        ｢4｣
           [0].number.integer.decimal              ｢4｣
@@ -253,35 +245,29 @@ language Test:
             [0].number.integer.decimal            ｢1｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢1｣
-      [1].Test.oper                               ｢-｣
-      [2].Test.Atom                               2 ¦
+      [1].Test.Atom                               2 ¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢2｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Mul./                                f . g ...  / 4<NEWLINE>¦
+    [1].Test.Mul./                                f . g ...  / 4<NEWLINE>¦
       [0].Test.Mul.*                              f . g ...  * 3 ¦
         [0].Test.Dot..                            f . g . h ¦
           [0].Test.Atom                           f ¦
             [0].identifier                        ｢f｣
-          [1].Test.oper                           ｢.｣
-          [2].Test.Dot..                          g . h ¦
+          [1].Test.Dot..                          g . h ¦
             [0].Test.Atom                         g ¦
               [0].identifier                      ｢g｣
-            [1].Test.oper                         ｢.｣
-            [2].Test.Atom                         h ¦
+            [1].Test.Atom                         h ¦
               [0].identifier                      ｢h｣
-        [1].Test.oper                             ｢*｣
-        [2].Test.Atom                             3 ¦
+        [1].Test.Atom                             3 ¦
           [0].number                              ｢3｣
             [0].number.integer                    ｢3｣
               [0].number.integer.decimal          ｢3｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢3｣
-      [1].Test.oper                               ｢/｣
-      [2].Test.Atom                               4<NEWLINE>¦
+      [1].Test.Atom                               4<NEWLINE>¦
         [0].number                                ｢4｣
           [0].number.integer                      ｢4｣
             [0].number.integer.decimal            ｢4｣
@@ -298,9 +284,7 @@ language Test:
             [0].number.integer.decimal            ｢2｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢2｣
-      [1].Test.oper                               ｢!｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Atom                                 3<NEWLINE>¦
+    [1].Test.Atom                                 3<NEWLINE>¦
       [0].number                                  ｢3｣
         [0].number.integer                        ｢3｣
           [0].number.integer.decimal              ｢3｣
@@ -310,10 +294,8 @@ language Test:
     test::test_axe(*se, sa, " - + 1\n", R"(
 [0].Test                                          - + 1<NEWLINE><DEDENT>¦
   [0].Test.Prf.-                                  - + 1<NEWLINE><DEDENT>¦
-    [0].Test.oper                                 ｢-｣
-    [1].Test.Prf.+                                + 1<NEWLINE><DEDENT>¦
-      [0].Test.oper                               ｢+｣
-      [1].Test.Atom                               1<NEWLINE><DEDENT>¦
+    [0].Test.Prf.+                                + 1<NEWLINE><DEDENT>¦
+      [0].Test.Atom                               1<NEWLINE><DEDENT>¦
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
@@ -325,12 +307,9 @@ language Test:
   [0].Test.Add.+                                  a + - + 1<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Prf.-                                - + 1<NEWLINE>¦
-      [0].Test.oper                               ｢-｣
-      [1].Test.Prf.+                              + 1<NEWLINE>¦
-        [0].Test.oper                             ｢+｣
-        [1].Test.Atom                             1<NEWLINE>¦
+    [1].Test.Prf.-                                - + 1<NEWLINE>¦
+      [0].Test.Prf.+                              + 1<NEWLINE>¦
+        [0].Test.Atom                             1<NEWLINE>¦
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
@@ -341,17 +320,14 @@ language Test:
 [0].Test                                          - - 1 * 2<NEWLINE>¦
   [0].Test.Mul.*                                  - - 1 * 2<NEWLINE>¦
     [0].Test.Prf.-                                - - 1 ¦
-      [0].Test.oper                               ｢-｣
-      [1].Test.Prf.-                              - 1 ¦
-        [0].Test.oper                             ｢-｣
-        [1].Test.Atom                             1 ¦
+      [0].Test.Prf.-                              - 1 ¦
+        [0].Test.Atom                             1 ¦
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢1｣
-    [1].Test.oper                                 ｢*｣
-    [2].Test.Atom                                 2<NEWLINE>¦
+    [1].Test.Atom                                 2<NEWLINE>¦
       [0].number                                  ｢2｣
         [0].number.integer                        ｢2｣
           [0].number.integer.decimal              ｢2｣
@@ -361,18 +337,15 @@ language Test:
     test::test_axe(*se, sa, "- - 1 . 2\n", R"(
 [0].Test                                          - - 1 . 2<NEWLINE>¦
   [0].Test.Prf.-                                  - - 1 . 2<NEWLINE>¦
-    [0].Test.oper                                 ｢-｣
-    [1].Test.Prf.-                                - 1 . 2<NEWLINE>¦
-      [0].Test.oper                               ｢-｣
-      [1].Test.Dot..                              1 . 2<NEWLINE>¦
+    [0].Test.Prf.-                                - 1 . 2<NEWLINE>¦
+      [0].Test.Dot..                              1 . 2<NEWLINE>¦
         [0].Test.Atom                             1 ¦
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢1｣
-        [1].Test.oper                             ｢.｣
-        [2].Test.Atom                             2<NEWLINE>¦
+        [1].Test.Atom                             2<NEWLINE>¦
           [0].number                              ｢2｣
             [0].number.integer                    ｢2｣
               [0].number.integer.decimal          ｢2｣
@@ -389,14 +362,12 @@ language Test:
             [0].number.integer.decimal            ｢1｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢1｣
-      [1].Test.oper                               ｢.｣
-      [2].Test.Atom                               2 ¦
+      [1].Test.Atom                               2 ¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢2｣
-    [1].Test.oper                                 ｢!｣
 )");
     test::test_axe(*se, sa, "1 + 2 !\n", R"(
 [0].Test                                          1 + 2 !<NEWLINE>¦
@@ -407,15 +378,13 @@ language Test:
           [0].number.integer.decimal              ｢1｣
             [0].number.plusMinus                  ｢｣
             [1].number.unsigned.integer.decimal   ｢1｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Exc.!                                2 !<NEWLINE>¦
+    [1].Test.Exc.!                                2 !<NEWLINE>¦
       [0].Test.Atom                               2 ¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢2｣
-      [1].Test.oper                               ｢!｣
 )");
     test::test_axe(*se, sa, "2 ! . 3\n", {none});
     test::test_axe(*se, sa, "2 . - 3\n", {none});
@@ -429,17 +398,13 @@ language Test:
             [0].number.integer.decimal            ｢2｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢2｣
-      [1].Test.oper                               ｢$｣
-    [1].Test.oper                                 ｢!｣
 )");
     test::test_axe(*se, sa, "2 ! $\n", {none});
     test::test_axe(*se, sa, "+ ~ 2\n", R"(
 [0].Test                                          + ~ 2<NEWLINE>¦
   [0].Test.Prf.+                                  + ~ 2<NEWLINE>¦
-    [0].Test.oper                                 ｢+｣
-    [1].Test.Til.~                                ~ 2<NEWLINE>¦
-      [0].Test.oper                               ｢~｣
-      [1].Test.Atom                               2<NEWLINE>¦
+    [0].Test.Til.~                                ~ 2<NEWLINE>¦
+      [0].Test.Atom                               2<NEWLINE>¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
@@ -470,8 +435,7 @@ language Test:
             [0].number.integer.decimal            ｢1｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢1｣
-      [1].Test.oper                               ｢*｣
-      [2].Test.Atom                               ( 2 + 3 ) ¦
+      [1].Test.Atom                               ( 2 + 3 ) ¦
         [0].Test                                  2 + 3 ¦
           [0].Test.Add.+                          2 + 3 ¦
             [0].Test.Atom                         2 ¦
@@ -480,15 +444,13 @@ language Test:
                   [0].number.integer.decimal      ｢2｣
                     [0].number.plusMinus          ｢｣
                     [1].number.unsigned.integer.decimal ｢2｣
-            [1].Test.oper                         ｢+｣
-            [2].Test.Atom                         3 ¦
+            [1].Test.Atom                         3 ¦
               [0].number                          ｢3｣
                 [0].number.integer                ｢3｣
                   [0].number.integer.decimal      ｢3｣
                     [0].number.plusMinus          ｢｣
                     [1].number.unsigned.integer.decimal ｢3｣
-    [1].Test.oper                                 ｢*｣
-    [2].Test.Atom                                 4<NEWLINE>¦
+    [1].Test.Atom                                 4<NEWLINE>¦
       [0].number                                  ｢4｣
         [0].number.integer                        ｢4｣
           [0].number.integer.decimal              ｢4｣
@@ -505,8 +467,7 @@ language Test:
             [0].number.integer.decimal            ｢1｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢1｣
-      [1].Test.oper                               ｢*｣
-      [2].Test.Atom                               ( 2 + 3 ) ¦
+      [1].Test.Atom                               ( 2 + 3 ) ¦
         [0].Test                                  2 + 3 ¦
           [0].Test.Add.+                          2 + 3 ¦
             [0].Test.Atom                         2 ¦
@@ -515,15 +476,13 @@ language Test:
                   [0].number.integer.decimal      ｢2｣
                     [0].number.plusMinus          ｢｣
                     [1].number.unsigned.integer.decimal ｢2｣
-            [1].Test.oper                         ｢+｣
-            [2].Test.Atom                         3 ¦
+            [1].Test.Atom                         3 ¦
               [0].number                          ｢3｣
                 [0].number.integer                ｢3｣
                   [0].number.integer.decimal      ｢3｣
                     [0].number.plusMinus          ｢｣
                     [1].number.unsigned.integer.decimal ｢3｣
-    [1].Test.oper                                 ｢*｣
-    [2].Test.Atom                                 4<NEWLINE>¦
+    [1].Test.Atom                                 4<NEWLINE>¦
       [0].number                                  ｢4｣
         [0].number.integer                        ｢4｣
           [0].number.integer.decimal              ｢4｣
@@ -535,17 +494,13 @@ language Test:
   [0].Test.Sub.[                                  a [ 0 ]<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢[｣
-      [0].parenthesis                             ｢[｣
-    [2].Test                                      0 ¦
+    [1].Test                                      0 ¦
       [0].Test.Atom                               0 ¦
         [0].number                                ｢0｣
           [0].number.integer                      ｢0｣
             [0].number.integer.decimal            ｢0｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢0｣
-    [3].Test.oper                                 ｢]｣
-      [0].parenthesis                             ｢]｣
 )");
     test::test_axe(*se, sa, "a [ 0 ] [ 1 ]\n", R"(
 [0].Test                                          a [ 0 ...  1 ]<NEWLINE>¦
@@ -553,28 +508,20 @@ language Test:
     [0].Test.Sub.[                                a [ 0 ] ¦
       [0].Test.Atom                               a ¦
         [0].identifier                            ｢a｣
-      [1].Test.oper                               ｢[｣
-        [0].parenthesis                           ｢[｣
-      [2].Test                                    0 ¦
+      [1].Test                                    0 ¦
         [0].Test.Atom                             0 ¦
           [0].number                              ｢0｣
             [0].number.integer                    ｢0｣
               [0].number.integer.decimal          ｢0｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢0｣
-      [3].Test.oper                               ｢]｣
-        [0].parenthesis                           ｢]｣
-    [1].Test.oper                                 ｢[｣
-      [0].parenthesis                             ｢[｣
-    [2].Test                                      1 ¦
+    [1].Test                                      1 ¦
       [0].Test.Atom                               1 ¦
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
               [0].number.plusMinus                ｢｣
               [1].number.unsigned.integer.decimal ｢1｣
-    [3].Test.oper                                 ｢]｣
-      [0].parenthesis                             ｢]｣
 )");
     test::test_axe(*se, sa, "a [ 0 ] . b [ 1 ]\n", {none});
     test::test_axe(*se, sa, "a [ 0 ] + b [ 1 ]\n", R"(
@@ -583,44 +530,33 @@ language Test:
     [0].Test.Sub.[                                a [ 0 ] ¦
       [0].Test.Atom                               a ¦
         [0].identifier                            ｢a｣
-      [1].Test.oper                               ｢[｣
-        [0].parenthesis                           ｢[｣
-      [2].Test                                    0 ¦
+      [1].Test                                    0 ¦
         [0].Test.Atom                             0 ¦
           [0].number                              ｢0｣
             [0].number.integer                    ｢0｣
               [0].number.integer.decimal          ｢0｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢0｣
-      [3].Test.oper                               ｢]｣
-        [0].parenthesis                           ｢]｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Sub.[                                b [ 1 ]<NEWLINE>¦
+    [1].Test.Sub.[                                b [ 1 ]<NEWLINE>¦
       [0].Test.Atom                               b ¦
         [0].identifier                            ｢b｣
-      [1].Test.oper                               ｢[｣
-        [0].parenthesis                           ｢[｣
-      [2].Test                                    1 ¦
+      [1].Test                                    1 ¦
         [0].Test.Atom                             1 ¦
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
                 [0].number.plusMinus              ｢｣
                 [1].number.unsigned.integer.decimal ｢1｣
-      [3].Test.oper                               ｢]｣
-        [0].parenthesis                           ｢]｣
 )");
     test::test_axe(*se, sa, "a ? b : c\n", R"(
 [0].Test                                          a ? b : c<NEWLINE>¦
   [0].Test.Ter.?                                  a ? b : c<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢?｣
-    [2].Test                                      b ¦
+    [1].Test                                      b ¦
       [0].Test.Atom                               b ¦
         [0].identifier                            ｢b｣
-    [3].Test.oper                                 ｢:｣
-    [4].Test.Atom                                 c<NEWLINE>¦
+    [2].Test.Atom                                 c<NEWLINE>¦
       [0].identifier                              ｢c｣
 )");
     test::test_axe(*se, sa, "a ? b : c ? d : e\n", R"(
@@ -628,20 +564,16 @@ language Test:
   [0].Test.Ter.?                                  a ? b ...  : e<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢?｣
-    [2].Test                                      b ¦
+    [1].Test                                      b ¦
       [0].Test.Atom                               b ¦
         [0].identifier                            ｢b｣
-    [3].Test.oper                                 ｢:｣
-    [4].Test.Ter.?                                c ? d : e<NEWLINE>¦
+    [2].Test.Ter.?                                c ? d : e<NEWLINE>¦
       [0].Test.Atom                               c ¦
         [0].identifier                            ｢c｣
-      [1].Test.oper                               ｢?｣
-      [2].Test                                    d ¦
+      [1].Test                                    d ¦
         [0].Test.Atom                             d ¦
           [0].identifier                          ｢d｣
-      [3].Test.oper                               ｢:｣
-      [4].Test.Atom                               e<NEWLINE>¦
+      [2].Test.Atom                               e<NEWLINE>¦
         [0].identifier                            ｢e｣
 )");
     test::test_axe(*se, sa, "a ? b ? c : d : e\n", R"(
@@ -649,20 +581,16 @@ language Test:
   [0].Test.Ter.?                                  a ? b ...  : e<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢?｣
-    [2].Test                                      b ? c : d ¦
+    [1].Test                                      b ? c : d ¦
       [0].Test.Ter.?                              b ? c : d ¦
         [0].Test.Atom                             b ¦
           [0].identifier                          ｢b｣
-        [1].Test.oper                             ｢?｣
-        [2].Test                                  c ¦
+        [1].Test                                  c ¦
           [0].Test.Atom                           c ¦
             [0].identifier                        ｢c｣
-        [3].Test.oper                             ｢:｣
-        [4].Test.Atom                             d ¦
+        [2].Test.Atom                             d ¦
           [0].identifier                          ｢d｣
-    [3].Test.oper                                 ｢:｣
-    [4].Test.Atom                                 e<NEWLINE>¦
+    [2].Test.Atom                                 e<NEWLINE>¦
       [0].identifier                              ｢e｣
 )");
     test::test_axe(*se, sa, "a = b ? c = d : e = f\n", R"(
@@ -670,24 +598,19 @@ language Test:
   [0].Test.Eqa.=                                  a = b ...  = f<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢=｣
-    [2].Test.Eqa.=                                b ? c ...  = f<NEWLINE>¦
+    [1].Test.Eqa.=                                b ? c ...  = f<NEWLINE>¦
       [0].Test.Ter.?                              b ? c ...  : e ¦
         [0].Test.Atom                             b ¦
           [0].identifier                          ｢b｣
-        [1].Test.oper                             ｢?｣
-        [2].Test                                  c = d ¦
+        [1].Test                                  c = d ¦
           [0].Test.Eqa.=                          c = d ¦
             [0].Test.Atom                         c ¦
               [0].identifier                      ｢c｣
-            [1].Test.oper                         ｢=｣
-            [2].Test.Atom                         d ¦
+            [1].Test.Atom                         d ¦
               [0].identifier                      ｢d｣
-        [3].Test.oper                             ｢:｣
-        [4].Test.Atom                             e ¦
+        [2].Test.Atom                             e ¦
           [0].identifier                          ｢e｣
-      [1].Test.oper                               ｢=｣
-      [2].Test.Atom                               f<NEWLINE>¦
+      [1].Test.Atom                               f<NEWLINE>¦
         [0].identifier                            ｢f｣
 )");
     test::test_axe(*se, sa, "a + b ? c + d : e + f\n", R"(
@@ -696,23 +619,18 @@ language Test:
     [0].Test.Add.+                                a + b ¦
       [0].Test.Atom                               a ¦
         [0].identifier                            ｢a｣
-      [1].Test.oper                               ｢+｣
-      [2].Test.Atom                               b ¦
+      [1].Test.Atom                               b ¦
         [0].identifier                            ｢b｣
-    [1].Test.oper                                 ｢?｣
-    [2].Test                                      c + d ¦
+    [1].Test                                      c + d ¦
       [0].Test.Add.+                              c + d ¦
         [0].Test.Atom                             c ¦
           [0].identifier                          ｢c｣
-        [1].Test.oper                             ｢+｣
-        [2].Test.Atom                             d ¦
+        [1].Test.Atom                             d ¦
           [0].identifier                          ｢d｣
-    [3].Test.oper                                 ｢:｣
-    [4].Test.Add.+                                e + f<NEWLINE>¦
+    [2].Test.Add.+                                e + f<NEWLINE>¦
       [0].Test.Atom                               e ¦
         [0].identifier                            ｢e｣
-      [1].Test.oper                               ｢+｣
-      [2].Test.Atom                               f<NEWLINE>¦
+      [1].Test.Atom                               f<NEWLINE>¦
         [0].identifier                            ｢f｣
 )");
   }
@@ -723,14 +641,13 @@ language Test:
     const unique_ptr_t<seed::interpreter_t> se = standard_seed_interpreter(sf.ptr());
     const string_view_t test_axe_str           = R"'(
 language Test:
-  ⊙ = axe Atom oper
+  ⊙ = axe Atom
     PrfHi   = rtl   prefix_nest '(' ')'
     Cat     = ltr   infix concat
     PrfLo   = rtl   prefix_nest '{' '}' prefix_nest -> Args '<:' ':>'
     Mul     = ltr   infix '*'
     Add     = ltr   infix_flat '+' infix '-'
     Assign  = rtl   infix_flat '=' infix '%'
-  oper = '<:' | ':>' | operator.single | parenthesis
   Atom = identifier | number operator.single | '(' Test ')' | '<<' Test.PrfLo '>>'
   Args = string ( ',' string ) * | ε
   skip = skip.freeForm
@@ -759,32 +676,26 @@ language Test:
     test::test_axe(*se, sa, "<: :> a\n", R"(
 [0].Test                                          <: :> a<NEWLINE>¦
   [0].Test.PrfLo.<:                               <: :> a<NEWLINE>¦
-    [0].Test.oper                                 ｢<:｣
-    [1].Test.Args                                 ¦
-    [2].Test.oper                                 ｢:>｣
-    [3].Test.Atom                                 a<NEWLINE>¦
+    [0].Test.Args                                 ¦
+    [1].Test.Atom                                 a<NEWLINE>¦
       [0].identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "<: 'foo' :> a\n", R"(
 [0].Test                                          <: 'foo' :> a<NEWLINE>¦
   [0].Test.PrfLo.<:                               <: 'foo' :> a<NEWLINE>¦
-    [0].Test.oper                                 ｢<:｣
-    [1].Test.Args                                 'foo' ¦
+    [0].Test.Args                                 'foo' ¦
       [0].string                                  ｢'foo'｣
-    [2].Test.oper                                 ｢:>｣
-    [3].Test.Atom                                 a<NEWLINE>¦
+    [1].Test.Atom                                 a<NEWLINE>¦
       [0].identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "<: 'foo' , 'bar' , 'baz' :> a\n", R"(
 [0].Test                                          <: 'foo'  ... :> a<NEWLINE>¦
   [0].Test.PrfLo.<:                               <: 'foo'  ... :> a<NEWLINE>¦
-    [0].Test.oper                                 ｢<:｣
-    [1].Test.Args                                 'foo' , 'bar' , 'baz' ¦
+    [0].Test.Args                                 'foo' , 'bar' , 'baz' ¦
       [0].string                                  ｢'foo'｣
       [1].string                                  ｢'bar'｣
       [2].string                                  ｢'baz'｣
-    [2].Test.oper                                 ｢:>｣
-    [3].Test.Atom                                 a<NEWLINE>¦
+    [1].Test.Atom                                 a<NEWLINE>¦
       [0].identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "a * <: 'foo' , 'bar' , 'baz' :> a\n", R"(
@@ -792,28 +703,21 @@ language Test:
   [0].Test.Mul.*                                  a * < ... :> a<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢*｣
-    [2].Test.PrfLo.<:                             <: 'foo'  ... :> a<NEWLINE>¦
-      [0].Test.oper                               ｢<:｣
-      [1].Test.Args                               'foo' , 'bar' , 'baz' ¦
+    [1].Test.PrfLo.<:                             <: 'foo'  ... :> a<NEWLINE>¦
+      [0].Test.Args                               'foo' , 'bar' , 'baz' ¦
         [0].string                                ｢'foo'｣
         [1].string                                ｢'bar'｣
         [2].string                                ｢'baz'｣
-      [2].Test.oper                               ｢:>｣
-      [3].Test.Atom                               a<NEWLINE>¦
+      [1].Test.Atom                               a<NEWLINE>¦
         [0].identifier                            ｢a｣
 )");
     test::test_axe(*se, sa, "{ b } a\n", R"(
 [0].Test                                          { b } a<NEWLINE>¦
   [0].Test.PrfLo.{                                { b } a<NEWLINE>¦
-    [0].Test.oper                                 ｢{｣
-      [0].parenthesis                             ｢{｣
-    [1].Test                                      b ¦
+    [0].Test                                      b ¦
       [0].Test.Atom                               b ¦
         [0].identifier                            ｢b｣
-    [2].Test.oper                                 ｢}｣
-      [0].parenthesis                             ｢}｣
-    [3].Test.Atom                                 a<NEWLINE>¦
+    [1].Test.Atom                                 a<NEWLINE>¦
       [0].identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "a { b } c\n", {none});
@@ -823,14 +727,10 @@ language Test:
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
     [1].Test.PrfHi.(                              ( b ) c<NEWLINE>¦
-      [0].Test.oper                               ｢(｣
-        [0].parenthesis                           ｢(｣
-      [1].Test                                    b ¦
+      [0].Test                                    b ¦
         [0].Test.Atom                             b ¦
           [0].identifier                          ｢b｣
-      [2].Test.oper                               ｢)｣
-        [0].parenthesis                           ｢)｣
-      [3].Test.Atom                               c<NEWLINE>¦
+      [1].Test.Atom                               c<NEWLINE>¦
         [0].identifier                            ｢c｣
 )");
     test::test_axe(*se, sa, "a << { b } c >>\n", R"(
@@ -841,14 +741,10 @@ language Test:
     [1].Test.Atom                                 << {  ... c >><NEWLINE>¦
       [0].Test                                    { b } c ¦
         [0].Test.PrfLo.{                          { b } c ¦
-          [0].Test.oper                           ｢{｣
-            [0].parenthesis                       ｢{｣
-          [1].Test                                b ¦
+          [0].Test                                b ¦
             [0].Test.Atom                         b ¦
               [0].identifier                      ｢b｣
-          [2].Test.oper                           ｢}｣
-            [0].parenthesis                       ｢}｣
-          [3].Test.Atom                           c ¦
+          [1].Test.Atom                           c ¦
             [0].identifier                        ｢c｣
 )");
     test::test_axe(*se, sa, "a << b * c >>\n", {none});
@@ -874,11 +770,9 @@ language Test:
   [0].Test.Add.+                                  a + b + c<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Atom                                 b ¦
+    [1].Test.Atom                                 b ¦
       [0].identifier                              ｢b｣
-    [3].Test.oper                                 ｢+｣
-    [4].Test.Atom                                 c<NEWLINE>¦
+    [2].Test.Atom                                 c<NEWLINE>¦
       [0].identifier                              ｢c｣
 )");
     test::test_axe(*se, sa, "a + b + c * d + e + f\n", R"(
@@ -886,21 +780,16 @@ language Test:
   [0].Test.Add.+                                  a + b ...  + f<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Atom                                 b ¦
+    [1].Test.Atom                                 b ¦
       [0].identifier                              ｢b｣
-    [3].Test.oper                                 ｢+｣
-    [4].Test.Mul.*                                c * d ¦
+    [2].Test.Mul.*                                c * d ¦
       [0].Test.Atom                               c ¦
         [0].identifier                            ｢c｣
-      [1].Test.oper                               ｢*｣
-      [2].Test.Atom                               d ¦
+      [1].Test.Atom                               d ¦
         [0].identifier                            ｢d｣
-    [5].Test.oper                                 ｢+｣
-    [6].Test.Atom                                 e ¦
+    [3].Test.Atom                                 e ¦
       [0].identifier                              ｢e｣
-    [7].Test.oper                                 ｢+｣
-    [8].Test.Atom                                 f<NEWLINE>¦
+    [4].Test.Atom                                 f<NEWLINE>¦
       [0].identifier                              ｢f｣
 )");
     test::test_axe(*se, sa, "a + b + c - d - e + f + g\n", R"(
@@ -911,23 +800,17 @@ language Test:
         [0].Test.Add.+                            a + b + c ¦
           [0].Test.Atom                           a ¦
             [0].identifier                        ｢a｣
-          [1].Test.oper                           ｢+｣
-          [2].Test.Atom                           b ¦
+          [1].Test.Atom                           b ¦
             [0].identifier                        ｢b｣
-          [3].Test.oper                           ｢+｣
-          [4].Test.Atom                           c ¦
+          [2].Test.Atom                           c ¦
             [0].identifier                        ｢c｣
-        [1].Test.oper                             ｢-｣
-        [2].Test.Atom                             d ¦
+        [1].Test.Atom                             d ¦
           [0].identifier                          ｢d｣
-      [1].Test.oper                               ｢-｣
-      [2].Test.Atom                               e ¦
+      [1].Test.Atom                               e ¦
         [0].identifier                            ｢e｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Atom                                 f ¦
+    [1].Test.Atom                                 f ¦
       [0].identifier                              ｢f｣
-    [3].Test.oper                                 ｢+｣
-    [4].Test.Atom                                 g<NEWLINE>¦
+    [2].Test.Atom                                 g<NEWLINE>¦
       [0].identifier                              ｢g｣
 )");
     test::test_axe(*se, sa, "a - b + c + d - e\n", R"(
@@ -937,17 +820,13 @@ language Test:
       [0].Test.Add.-                              a - b ¦
         [0].Test.Atom                             a ¦
           [0].identifier                          ｢a｣
-        [1].Test.oper                             ｢-｣
-        [2].Test.Atom                             b ¦
+        [1].Test.Atom                             b ¦
           [0].identifier                          ｢b｣
-      [1].Test.oper                               ｢+｣
-      [2].Test.Atom                               c ¦
+      [1].Test.Atom                               c ¦
         [0].identifier                            ｢c｣
-      [3].Test.oper                               ｢+｣
-      [4].Test.Atom                               d ¦
+      [2].Test.Atom                               d ¦
         [0].identifier                            ｢d｣
-    [1].Test.oper                                 ｢-｣
-    [2].Test.Atom                                 e<NEWLINE>¦
+    [1].Test.Atom                                 e<NEWLINE>¦
       [0].identifier                              ｢e｣
 )");
     test::test_axe(*se, sa, "a + b + c - d + e + f\n", R"(
@@ -957,20 +836,15 @@ language Test:
       [0].Test.Add.+                              a + b + c ¦
         [0].Test.Atom                             a ¦
           [0].identifier                          ｢a｣
-        [1].Test.oper                             ｢+｣
-        [2].Test.Atom                             b ¦
+        [1].Test.Atom                             b ¦
           [0].identifier                          ｢b｣
-        [3].Test.oper                             ｢+｣
-        [4].Test.Atom                             c ¦
+        [2].Test.Atom                             c ¦
           [0].identifier                          ｢c｣
-      [1].Test.oper                               ｢-｣
-      [2].Test.Atom                               d ¦
+      [1].Test.Atom                               d ¦
         [0].identifier                            ｢d｣
-    [1].Test.oper                                 ｢+｣
-    [2].Test.Atom                                 e ¦
+    [1].Test.Atom                                 e ¦
       [0].identifier                              ｢e｣
-    [3].Test.oper                                 ｢+｣
-    [4].Test.Atom                                 f<NEWLINE>¦
+    [2].Test.Atom                                 f<NEWLINE>¦
       [0].identifier                              ｢f｣
 )");
     test::test_axe(*se, sa, "a % b = c = d % e\n", R"(
@@ -978,19 +852,15 @@ language Test:
   [0].Test.Assign.%                               a % b ...  % e<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢%｣
-    [2].Test.Assign.=                             b = c ...  % e<NEWLINE>¦
+    [1].Test.Assign.=                             b = c ...  % e<NEWLINE>¦
       [0].Test.Atom                               b ¦
         [0].identifier                            ｢b｣
-      [1].Test.oper                               ｢=｣
-      [2].Test.Atom                               c ¦
+      [1].Test.Atom                               c ¦
         [0].identifier                            ｢c｣
-      [3].Test.oper                               ｢=｣
-      [4].Test.Assign.%                           d % e<NEWLINE>¦
+      [2].Test.Assign.%                           d % e<NEWLINE>¦
         [0].Test.Atom                             d ¦
           [0].identifier                          ｢d｣
-        [1].Test.oper                             ｢%｣
-        [2].Test.Atom                             e<NEWLINE>¦
+        [1].Test.Atom                             e<NEWLINE>¦
           [0].identifier                          ｢e｣
 )");
     test::test_axe(*se, sa, "a = b = c % d = e = f\n", R"(
@@ -998,22 +868,17 @@ language Test:
   [0].Test.Assign.=                               a = b ...  = f<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.oper                                 ｢=｣
-    [2].Test.Atom                                 b ¦
+    [1].Test.Atom                                 b ¦
       [0].identifier                              ｢b｣
-    [3].Test.oper                                 ｢=｣
-    [4].Test.Assign.%                             c % d ...  = f<NEWLINE>¦
+    [2].Test.Assign.%                             c % d ...  = f<NEWLINE>¦
       [0].Test.Atom                               c ¦
         [0].identifier                            ｢c｣
-      [1].Test.oper                               ｢%｣
-      [2].Test.Assign.=                           d = e = f<NEWLINE>¦
+      [1].Test.Assign.=                           d = e = f<NEWLINE>¦
         [0].Test.Atom                             d ¦
           [0].identifier                          ｢d｣
-        [1].Test.oper                             ｢=｣
-        [2].Test.Atom                             e ¦
+        [1].Test.Atom                             e ¦
           [0].identifier                          ｢e｣
-        [3].Test.oper                             ｢=｣
-        [4].Test.Atom                             f<NEWLINE>¦
+        [2].Test.Atom                             f<NEWLINE>¦
           [0].identifier                          ｢f｣
 )");
   }

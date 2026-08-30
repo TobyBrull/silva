@@ -135,12 +135,8 @@ namespace silva::seed::impl {
         if (pts_rhs_0.node_at(i).rule_name == lexicon.ni_term &&
             pts_rhs_0.node_at(i).num_children == 1 &&
             pts_rhs_0.node_at(i + 1).rule_name == lexicon.ni_string) {
-          const token_id_t str_ti     = SILVA_EXPECT_FWD(pts_rhs_0.subspan_at(i + 1).token());
-          const auto& ti_full_info    = sfp->get(str_ti);
-          const bool is_double_quoted = (ti_full_info.str[0] == U'"');
-          const auto ti               = SILVA_EXPECT_FWD(sfp->token_id_in_string(str_ti));
-          const auto& ti_info         = sfp->get(ti);
-          auto ft = SILVA_EXPECT_FWD(fragmented_token(sfp, ti_info.str, is_double_quoted));
+          const token_id_t str_ti = SILVA_EXPECT_FWD(pts_rhs_0.subspan_at(i + 1).token());
+          auto ft                 = SILVA_EXPECT_FWD(fragment_token_from_string(sfp, str_ti));
           SILVA_EXPECT_FWD(recognize_literal(curr_rule_name, ft));
           se->string_to_ft[str_ti] = std::move(ft);
         }
@@ -150,9 +146,6 @@ namespace silva::seed::impl {
       if (expr_rule_name == lexicon.ni_axe) {
         se->axes[curr_rule_name] = SILVA_EXPECT_FWD(axe_create(sfp, curr_rule_name, pts_rhs_0));
         auto [axe_it, axe_end]   = pts_rhs_0.children_range();
-        SILVA_EXPECT(axe_it != axe_end, MINOR);
-        SILVA_EXPECT((*axe_it).rule_name() == lexicon.ni_nt, MINOR);
-        ++axe_it;
         SILVA_EXPECT(axe_it != axe_end, MINOR);
         SILVA_EXPECT((*axe_it).rule_name() == lexicon.ni_nt, MINOR);
         ++axe_it;
@@ -490,10 +483,9 @@ namespace silva::seed::impl {
                                                const name_id_t t_rule_name)
     {
       {
-        auto ss                        = stake();
-        const auto [pts_oper, sub_pts] = SILVA_EXPECT_FWD(pts.get_children<2>());
-        SILVA_EXPECT(pts_oper.rule_name() == lexicon.ni_oper, MAJOR);
-        const auto result = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(sub_pts, t_rule_name));
+        auto ss              = stake();
+        const auto [sub_pts] = SILVA_EXPECT_FWD(pts.get_children<1>());
+        const auto result    = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(sub_pts, t_rule_name));
         SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
       }
       auto ss = stake();
@@ -566,12 +558,12 @@ namespace silva::seed::impl {
       index_t min_repeat      = 0;
       index_t max_repeat      = 0;
       const token_id_t op_ti  = sfp->get(pts.rule_name()).base_name;
-      const auto pts_children = SILVA_EXPECT_FWD(pts.get_children_up_to<4>());
-      SILVA_EXPECT(pts_children.size == 2 || pts_children.size == 4, MAJOR);
+      const auto pts_children = SILVA_EXPECT_FWD(pts.get_children_up_to<2>());
+      SILVA_EXPECT(pts_children.size == 1 || pts_children.size == 2, MAJOR);
       const auto pts_expr = pts_children[0];
-      if (pts_children.size == 4) {
+      if (pts_children.size == 2) {
         std::tie(min_repeat, max_repeat) =
-            SILVA_EXPECT_FWD(get_min_max_quantifier(pts_children[2]));
+            SILVA_EXPECT_FWD(get_min_max_quantifier(pts_children[1]));
       }
       else {
         std::tie(min_repeat, max_repeat) = SILVA_EXPECT_FWD(get_min_max_repeat(op_ti));
@@ -674,8 +666,6 @@ namespace silva::seed::impl {
         if (it == end) {
           break;
         }
-        SILVA_EXPECT((*it).rule_name() == lexicon.ni_oper, MAJOR);
-        ++it;
       }
       SILVA_EXPECT(ss.has_value(), MAJOR);
       return ss->commit();
@@ -704,8 +694,6 @@ namespace silva::seed::impl {
         if (it == end) {
           break;
         }
-        SILVA_EXPECT((*it).rule_name() == lexicon.ni_oper, MAJOR);
-        ++it;
       }
       return ss.commit();
     }
@@ -713,7 +701,7 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> s_expr_ending(const parse_tree_span_t pts,
                                                const name_id_t t_rule_name)
     {
-      const auto [pts_expr, pts_oper, pts_endswith] = SILVA_EXPECT_FWD(pts.get_children<3>());
+      const auto [pts_expr, pts_endswith] = SILVA_EXPECT_FWD(pts.get_children<2>());
       SILVA_EXPECT(pts_endswith.rule_name() == lexicon.ni_term,
                    MINOR,
                    "rhs of 'ending_with' expect to be plain string/literal");
@@ -766,9 +754,6 @@ namespace silva::seed::impl {
         ++it;
         if (it == end) {
           break;
-        }
-        if ((*it).rule_name() == lexicon.ni_oper) {
-          ++it;
         }
       }
       if (retval.has_value()) {
@@ -849,9 +834,10 @@ namespace silva::seed::impl {
             return std::move(result).as_node();
           },
       };
-      ss.add_proto_node(
-          SILVA_EXPECT_PARSE_FWD(t_rule_name,
-                                 axe.apply(*this, t_rule_name, is_no_node, pack.delegate)));
+      const auto skip_dg = axe_t::skip_delegate_t::make<&interpreter_apply_nursery_t::skip>(this);
+      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(
+          t_rule_name,
+          axe.apply(*this, t_rule_name, is_no_node, pack.delegate, skip_dg)));
       return ss.commit();
     }
 
