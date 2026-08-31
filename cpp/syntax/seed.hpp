@@ -34,12 +34,11 @@ namespace silva::seed {
   //  * From a twig-rule a token can be derived; a token is a unique integer that refers to specific
   //    sequence of fragments. It is not allowed to derive tokens from branch-rules.
   //  * There is a subtle distinction between literals that use double-quotes (") and those that use
-  //    single-quotes ('). Double-quotes only accept text (silva::is_fragment_category_text) as
-  //    content, while single-quotes maybe contain any character. With single-quotes, it simply
-  //    tries to match the code-points in the literal one by one. With double-quotes it does that,
-  //    too, but then also checks that the codepoint following the last matched codepoint (if it
-  //    exists) is NOT text. So, the literal "language" doesn't match the beginning of «
-  //    language_name » but 'language' does.
+  //    single-quotes ('). With single-quotes, it simply tries to match the code-points in the
+  //    literal one by one. With double-quotes it does that, too, but then also checks that the
+  //    codepoint following the last matched codepoint (if it exists) is NOT text (i.e., not
+  //    silva::is_fragment_category_id_continue()). So, the literal "language" doesn't match the
+  //    beginning of « language_name » but 'language' does.
   //  * Both types of literal (single and double quoted) generate nodes in the resulting parse-tree
   //    if and only if the "literal_nodes" qualifier is specified.
   //
