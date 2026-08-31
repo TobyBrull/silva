@@ -45,7 +45,7 @@ def arithmetic(a, b=2, /, c=3, *, d=4):
     total <<= 1
     total >>= 2
     shifted = (a << 2) | (b >> 1) & ~c ^ d
-    return total, shifted, a ** -b, not a
+    return total, shifted, a ** b, not a
 
 
 def comparisons(a, b, seq):

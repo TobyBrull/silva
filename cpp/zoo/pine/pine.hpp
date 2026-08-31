@@ -21,7 +21,13 @@ namespace silva::pine {
   //  * The rules dealing with assignment-targets ("t_primary", "star_atom", "del_t_atom", ...) are
   //    collapsed onto "Expr.Primary". This accepts a few targets that Python rejects (e.g.,
   //    « f(x) = 1 ») but parses the same language otherwise.
-  //  * Support the two-token operators "not in" and "is not".
+  //  * The two-token operators "not in" and "is not" are not expressible as axe-operators. They
+  //    are instead built from an infix "not" (resp. "is") whose right operand starts with the
+  //    prefix-operator "in" (resp. "not"); both prefixes bind tighter than the comparisons. So
+  //    « a not in b » is « a not (in b) » and « a is not b » is « a is (not b) ». For the same
+  //    reason "not" binds tighter than the comparisons everywhere, i.e., « not a == b » is
+  //    « (not a) == b » rather than « not (a == b) ». As a side-effect the axe also accepts
+  //    « in b » and « a not b », which Python rejects.
   //
   const string_view_t seed_str = R"'(
 language Pine:
@@ -98,7 +104,7 @@ language Pine:
   Param = '/' | '**' ParamDef | '*' ParamDef ? | ParamDef
   ParamDef = identifier ( ':' not '=' Expr ) ? ( '=' not '=' Expr ) ?
 
-  LambdaParams = LambdaParam ( ε ',' LambdaParam ) * ',' ?
+  LambdaParams = ( LambdaParam ( ε ',' LambdaParam ) * ',' ? ) ?
   LambdaParam = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
   LambdaParamDef = identifier ( '=' not '=' Expr ) ?
 
@@ -114,66 +120,62 @@ language Pine:
   Slice = Expr ? ':' not '=' Expr ? ( ':' not '=' Expr ? ) ? | '*' Expr | Expr.Named
 
   StarExprs = StarExpr ( ε ',' StarExpr ) * ',' ?
-  StarExpr = '*' Expr.Bitwise | Expr
+  StarExpr = no_node Starred | Expr
+  Starred = '*' Expr.BitOr
   StarNamedExprs = StarNamedExpr ( ε ',' StarNamedExpr ) * ',' ?
-  StarNamedExpr = '*' Expr.Bitwise | Expr.Named
+  StarNamedExpr = no_node Starred | Expr.Named
 
   ForIfClauses = ForIfClause +
   ForIfClause = "async" ? "for" Target.Stars "in" Expr.Disjunction ( "if" Expr.Disjunction ) *
 
   Target:
     Stars = Star ( ε ',' Star ) * ',' ?
-    Star = '*' Star | Single
+    Star = no_node Starred | Single
+    Starred = '*' Star
     Single = Expr.Primary
     Dels = Single ( ε ',' Single ) * ',' ?
 
   Expr:
-    ⊙ = Lambda | Conditional
-    Lambda = "lambda" LambdaParams ? ':' Expr
-    Conditional = Disjunction ( "if" Disjunction "else" Expr ) ?
-    Disjunction = Conjunction ( ε "or" Conjunction ) *
-    Conjunction = Inversion ( ε "and" Inversion ) *
-    Inversion = "not" Inversion | Comparison
-    Comparison = Bitwise ( CompareOp Bitwise ) *
-    CompareOp = [ '==' '!=' '<=' '>=' '<' '>' ] | "not" "in" | "in" | "is" "not" | "is"
-    Named = identifier ':=' Expr | Expr
+    ⊙ = no_node axe Atom
+      Primary     = ltr  postfix_nest -> Arguments '(' ')' \
+                         postfix_nest -> Slices '[' ']' \
+                         infix '.'
+      Await       = rtl  prefix "await"
+      Power       = rtl  infix '**'
+      Unary       = rtl  prefix '+' '-' '~'
+      Term        = ltr  infix '*' '/' '//' '%' '@'
+      Sum         = ltr  infix '+' '-'
+      Shift       = ltr  infix '<<' '>>'
+      BitAnd      = ltr  infix '&'
+      BitXor      = ltr  infix '^'
+      BitOr       = ltr  infix '|'
+      Inversion   = rtl  prefix "not" "in"
+      Comparison  = ltr  infix '==' '!=' '<=' '>=' '<' '>' "in" "is" "not"
+      Conjunction = ltr  infix_flat "and"
+      Disjunction = ltr  infix_flat "or"
+      Conditional = rtl  ternary "if" "else"
+      Lambda      = rtl  prefix_nest -> LambdaParams "lambda" ':'
+
+    Atom = ( "True" | "False" | "None" | '...' | Strings | number
+           | GenExp | Group | Tuple
+           | ListComp | List
+           | DictComp | SetComp | Dict | Set
+           | identifier )
+    GenExp = ε '(' Named ForIfClauses ')'
+    Group = ε '(' ( Yield | Named ) ')'
+    Tuple = '(' ( StarNamedExpr ',' StarNamedExprs ? ) ? ')'
+    ListComp = ε '[' Named ForIfClauses ']'
+    List = '[' StarNamedExprs ? ']'
+    DictComp = ε '{' KvPair ForIfClauses '}'
+    SetComp = ε '{' Named ForIfClauses '}'
+    Dict = ε '{' ( KvPairs ) ? '}'
+    Set = '{' StarNamedExprs '}'
+    KvPairs = KvPair ( ε ',' KvPair ) * ',' ?
+    KvPair = '**' Expr.BitOr | Expr ':' not '=' Expr
+
+    Named = no_node Assign | Expr
+    Assign = identifier ':=' Expr
     Yield = "yield" ( "from" Expr | StarExprs ? )
-
-    Bitwise:
-      ⊙ = axe Factor
-        Term  = ltr  infix '*' '/' '//' '%' '@'
-        Sum   = ltr  infix '+' '-'
-        Shift = ltr  infix '<<' '>>'
-        And   = ltr  infix '&'
-        Xor   = ltr  infix '^'
-        Or    = ltr  infix '|'
-
-    Factor = [ '+' '-' '~' ] Factor | Power
-    Power = Await ( '**' Factor ) ?
-    Await = "await" Primary | Primary
-
-    Primary:
-      ⊙ = axe Atom
-        Trailer = ltr  postfix_nest -> Arguments '(' ')' \
-                       postfix_nest -> Slices '[' ']' \
-                       infix '.'
-
-      Atom = ( "True" | "False" | "None" | '...' | Strings | number
-             | GenExp | Group | Tuple
-             | ListComp | List
-             | DictComp | SetComp | Dict | Set
-             | identifier )
-      GenExp = ε '(' Expr.Named ForIfClauses ')'
-      Group = ε '(' ( Expr.Yield | Expr.Named ) ')'
-      Tuple = '(' ( StarNamedExpr ',' StarNamedExprs ? ) ? ')'
-      ListComp = ε '[' Expr.Named ForIfClauses ']'
-      List = '[' StarNamedExprs ? ']'
-      DictComp = ε '{' KvPair ForIfClauses '}'
-      SetComp = ε '{' Expr.Named ForIfClauses '}'
-      Dict = ε '{' ( KvPairs ) ? '}'
-      Set = '{' StarNamedExprs '}'
-      KvPairs = KvPair ( ε ',' KvPair ) * ',' ?
-      KvPair = '**' Expr.Bitwise | Expr ':' not '=' Expr
 
     Strings = stringLiteral +
     stringLiteral = ( ID_START ID_CONTINUE * ) ? STRING
