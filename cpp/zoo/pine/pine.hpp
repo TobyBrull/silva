@@ -14,6 +14,8 @@ namespace silva::pine {
   //    the unary '-' in the sense that the expression « -2**2 » is parsed as « -(2**2) » whereas «
   //    2**-2 » is parsed as « 2**(-2) ». This parser here rejects the second form as unary '-' has
   //    lower precedence than '**'.
+  //  * The two-token operators "not in" and "is not" are single literals here, so their two words
+  //    have to be separated by exactly one space; « a not  in b » is not accepted.
   //
   //  * The many rules spelling out where a '/', a '*' or a '**' may appear in a parameter-list
   //    ("slash_no_default", "star_etc", "kwds", their "lambda_"-variants, ...) are collapsed onto
@@ -21,13 +23,6 @@ namespace silva::pine {
   //  * The rules dealing with assignment-targets ("t_primary", "star_atom", "del_t_atom", ...) are
   //    collapsed onto "Expr.Primary". This accepts a few targets that Python rejects (e.g.,
   //    « f(x) = 1 ») but parses the same language otherwise.
-  //  * The two-token operators "not in" and "is not" are not expressible as axe-operators. They
-  //    are instead built from an infix "not" (resp. "is") whose right operand starts with the
-  //    prefix-operator "in" (resp. "not"); both prefixes bind tighter than the comparisons. So
-  //    « a not in b » is « a not (in b) » and « a is not b » is « a is (not b) ». For the same
-  //    reason "not" binds tighter than the comparisons everywhere, i.e., « not a == b » is
-  //    « (not a) == b » rather than « not (a == b) ». As a side-effect the axe also accepts
-  //    « in b » and « a not b », which Python rejects.
   //
   const string_view_t seed_str = R"'(
 language Pine:
@@ -149,8 +144,9 @@ language Pine:
       BitAnd      = ltr  infix '&'
       BitXor      = ltr  infix '^'
       BitOr       = ltr  infix '|'
-      Inversion   = rtl  prefix "not" "in"
-      Comparison  = ltr  infix '==' '!=' '<=' '>=' '<' '>' "in" "is" "not"
+      Comparison  = ltr  infix '==' '!=' '<=' '>=' '<' '>' \
+                         "in" "not in" "is" "is not"
+      Inversion   = rtl  prefix "not"
       Conjunction = ltr  infix_flat "and"
       Disjunction = ltr  infix_flat "or"
       Conditional = rtl  ternary "if" "else"

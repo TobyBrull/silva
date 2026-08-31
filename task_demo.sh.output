@@ -2776,12 +2776,11 @@ Mr Jane
                       [0].identifier                                                                ｢a｣
                     [1].Pine.Expr.Atom                                                              b ¦
                       [0].identifier                                                                ｢b｣
-                  [1].Pine.Expr.Comparison.is                                                       a is not b¦
+                  [1].Pine.Expr.Comparison.is not                                                   a is not b¦
                     [0].Pine.Expr.Atom                                                              a ¦
                       [0].identifier                                                                ｢a｣
-                    [1].Pine.Expr.Inversion.not                                                     not b¦
-                      [0].Pine.Expr.Atom                                                            b¦
-                        [0].identifier                                                              ｢b｣
+                    [1].Pine.Expr.Atom                                                              b¦
+                      [0].identifier                                                                ｢b｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... lse<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt                                                                     retur ... alse<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           retur ... alse<NEWLINE>¦
@@ -2798,12 +2797,11 @@ Mr Jane
                       [0].identifier                                                                ｢a｣
                     [1].Pine.Expr.Atom                                                              seq ¦
                       [0].identifier                                                                ｢seq｣
-                  [1].Pine.Expr.Comparison.not                                                      a not ... n seq¦
+                  [1].Pine.Expr.Comparison.not in                                                   a not ... n seq¦
                     [0].Pine.Expr.Atom                                                              a ¦
                       [0].identifier                                                                ｢a｣
-                    [1].Pine.Expr.Inversion.in                                                      in seq¦
-                      [0].Pine.Expr.Atom                                                            seq¦
-                        [0].identifier                                                              ｢seq｣
+                    [1].Pine.Expr.Atom                                                              seq¦
+                      [0].identifier                                                                ｢seq｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... one<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt                                                                     retur ... None<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           retur ... None<NEWLINE>¦
@@ -3386,12 +3384,11 @@ Mr Jane
                     [0].Pine.Stmt.Simples                                                           asser ... w, \"distinct handles\"<NEWLINE>¦
                       [0].Pine.Stmt.Simple                                                          asser ... aw, \"distinct handles\"¦
                         [0].Pine.Stmt.Assert                                                        asser ... aw, \"distinct handles\"¦
-                          [0].Pine.Expr.Comparison.is                                               handl ... t raw¦
+                          [0].Pine.Expr.Comparison.is not                                           handl ... t raw¦
                             [0].Pine.Expr.Atom                                                      handle ¦
                               [0].identifier                                                        ｢handle｣
-                            [1].Pine.Expr.Inversion.not                                             not raw¦
-                              [0].Pine.Expr.Atom                                                    raw¦
-                                [0].identifier                                                      ｢raw｣
+                            [1].Pine.Expr.Atom                                                      raw¦
+                              [0].identifier                                                        ｢raw｣
                           [1].Pine.Expr.Atom                                                        \"distinct handles\"¦
                             [0].Pine.Expr.Strings                                                   \"distinct handles\"¦
                               [0].Pine.Expr.stringLiteral                                           ｢"distinct handles"｣
