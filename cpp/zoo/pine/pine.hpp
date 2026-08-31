@@ -16,8 +16,7 @@ namespace silva::pine {
   //    lower precedence than '**'.
   //  * The two-token operators "not in" and "is not" are single literals here, so their two words
   //    have to be separated by exactly one space; « a not  in b » is not accepted.
-  //
-  //  * The many rules spelling out where a '/', a '*' or a '**' may appear in a parameter-list
+  //  * The many rules spelling out where '/', '*' or '**' may appear in a parameter-list
   //    ("slash_no_default", "star_etc", "kwds", their "lambda_"-variants, ...) are collapsed onto
   //    "Params"/"LambdaParams", which leaves the ordering of the parameter kinds unchecked.
   //  * The rules dealing with assignment-targets ("t_primary", "star_atom", "del_t_atom", ...) are
@@ -32,7 +31,8 @@ language Pine:
 
   Stmt:
     ⊙ = Compound | Simples
-    Block = newline indent Stmt + dedent | Simples
+
+    Compound = [ Decorated Async Function Class If While For Try With Match ]
 
     Simples = Simple ( ε ';' Simple ) * ';' ? newline
     Simple = [ Return Import Raise Pass Del Yield Assert Break Continue Global Nonlocal
@@ -58,7 +58,6 @@ language Pine:
       augassign = [ '+=' '-=' '**=' '*=' '@=' '//=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' ]
     Rhs = Expr.Yield | StarExprs
 
-    Compound = [ Decorated Async Function Class If While For Try With Match ]
     Decorated = ( '@' Expr.Named newline ) + ( Async | Function | Class )
     Async = "async" [ Function For With ]
 
@@ -84,6 +83,8 @@ language Pine:
     Case = ε "case" Pattern.Patterns Guard ? ':' Block
     Guard = "if" Expr.Named
     SubjectExpr = StarNamedExpr ',' StarNamedExprs ? | Expr.Named
+
+    Block = newline indent Stmt + dedent | Simples
 
   Import:
     ⊙ = Name | From
