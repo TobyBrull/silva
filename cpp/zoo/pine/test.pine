@@ -210,6 +210,11 @@ def generic[T, *Ts, **P](first: T, *rest: object) -> T:
     return first
 
 
+def trace(fn):
+    return fn
+
+
+@trace
 async def fetch(session, urls):
     async with session.begin() as tx:
         results = []

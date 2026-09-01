@@ -32,23 +32,32 @@ language Pine:
   Stmt:
     ⊙ = Compound | Simples
 
-    Compound = [ Decorated Async Function Class If While For Try With Match ]
-
     Simples = Simple ( ε ';' Simple ) * ';' ? newline
     Simple = [ Return Import Raise Pass Del Yield Assert Break Continue Global Nonlocal
-               TypeAlias Assignment StarExprs ]
+               Assignment TypeAlias StarExprs ]
 
+    Compound = [ Function If Class With For Try While Match ]
+
+    Return = "return" StarExprs ?
+    Raise = "raise" ⇒ Expr ⇒ "from" Expr
     Pass = "pass"
     Break = "break"
     Continue = "continue"
-    Return = "return" StarExprs ?
-    Raise = "raise" ( Expr ( "from" Expr ) ? ) ?
-    Del = "del" Target.Dels
-    Yield = Expr.Yield
-    Assert = "assert" Expr ( ',' Expr ) ?
     Global = "global" identifier ( ε ',' identifier ) *
     Nonlocal = "nonlocal" identifier ( ε ',' identifier ) *
-    TypeAlias = ε "type" identifier TypeParams ? '=' not '=' Expr
+    Del = "del" Expr.Primary ( ε ',' Expr.Primary) * ',' ?
+    Yield = Expr.Yield
+    Assert = "assert" Expr ( ',' Expr ) ?
+
+    Import:
+      ⊙ = Name | From
+      Name = "import" DottedAsName ( ε ',' DottedAsName ) *
+      From = ε "from" Dots + "import" Targets | "from" Dots * DottedName "import" Targets
+      Dots = '...' | '.'
+      Targets = '(' AsName ( ε ',' AsName ) * ',' ? ')' | '*' | AsName ( ε ',' AsName ) *
+      AsName = identifier ( "as" identifier ) ?
+      DottedAsName = DottedName ( "as" identifier ) ?
+      DottedName = identifier ( ε '.' identifier ) *
 
     Assignment:
       ⊙ = Annotated | Augmented | Plain
@@ -58,19 +67,23 @@ language Pine:
       augassign = [ '+=' '-=' '**=' '*=' '@=' '//=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' ]
     Rhs = Expr.Yield | StarExprs
 
-    Decorated = ( '@' Expr.Named newline ) + ( Async | Function | Class )
-    Async = "async" [ Function For With ]
+    Decorators = ( '@' Expr.Named newline ) +
 
-    Function = "def" identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block
-    Class = "class" identifier TypeParams ? ( '(' Arguments ')' ) ? ':' Block
+    Function = Decorators FunctionRaw | FunctionRaw
+    FunctionRaw = "async" "def" identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block \
+                | "def" identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block
+
+    Class = Decorators ClassRaw | ClassRaw
+    ClassRaw = "class" identifier TypeParams ? ( '(' Arguments ')' ) ? ':' Block
 
     If = "if" Expr.Named ':' Block Elif * Else ?
     Elif = "elif" Expr.Named ':' Block
     Else = "else" ':' Block
     While = "while" Expr.Named ':' Block Else ?
-    For = "for" Target.Stars "in" StarExprs ':' Block Else ?
+    For = "async" "for" Target.Stars "in" StarExprs ':' Block Else ? \
+        | "for" Target.Stars "in" StarExprs ':' Block Else ?
 
-    With = "with" WithItems ':' Block
+    With = "async" "with" WithItems ':' Block | "with" WithItems ':' Block
     WithItems = ε '(' WithItem ( ε ',' WithItem ) * ',' ? ')' | WithItem ( ε ',' WithItem ) *
     WithItem = Expr ( "as" Target.Star ) ?
 
@@ -86,16 +99,6 @@ language Pine:
 
     Block = newline indent Stmt + dedent | Simples
 
-  Import:
-    ⊙ = Name | From
-    Name = "import" DottedAsName ( ε ',' DottedAsName ) *
-    From = ε "from" Dots + "import" Targets | "from" Dots * DottedName "import" Targets
-    Dots = '...' | '.'
-    Targets = '(' AsName ( ε ',' AsName ) * ',' ? ')' | '*' | AsName ( ε ',' AsName ) *
-    AsName = identifier ( "as" identifier ) ?
-    DottedAsName = DottedName ( "as" identifier ) ?
-    DottedName = identifier ( ε '.' identifier ) *
-
   Params = Param ( ε ',' Param ) * ',' ?
   Param = '/' | '**' ParamDef | '*' ParamDef ? | ParamDef
   ParamDef = identifier ( ':' not '=' Expr ) ? ( '=' not '=' Expr ) ?
@@ -104,6 +107,7 @@ language Pine:
   LambdaParam = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
   LambdaParamDef = identifier ( '=' not '=' Expr ) ?
 
+  TypeAlias = "type" identifier TypeParams ? '=' Expr
   TypeParams = '[' TypeParam ( ε ',' TypeParam ) * ',' ? ']'
   TypeParam = '**' identifier Default ? | '*' identifier Default ? \
             | identifier ( ':' not '=' Expr ) ? Default ?
@@ -129,7 +133,6 @@ language Pine:
     Star = no_node Starred | Single
     Starred = '*' Star
     Single = Expr.Primary
-    Dels = Single ( ε ',' Single ) * ',' ?
 
   Expr:
     ⊙ = no_node axe Atom
