@@ -45,26 +45,29 @@ language Pine:
     Continue = "continue"
     Global = "global" identifier ( ε ',' identifier ) *
     Nonlocal = "nonlocal" identifier ( ε ',' identifier ) *
-    Del = "del" Expr.Primary ( ε ',' Expr.Primary) * ',' ?
+    Del = "del" Expr.Primary ( ε ',' Expr.Primary ) * ',' ?
     Yield = Expr.Yield
     Assert = "assert" Expr ( ',' Expr ) ?
 
     Import:
       ⊙ = Name | From
       Name = "import" DottedAsName ( ε ',' DottedAsName ) *
-      From = ε "from" Dots + "import" Targets | "from" Dots * DottedName "import" Targets
-      Dots = '...' | '.'
-      Targets = '(' AsName ( ε ',' AsName ) * ',' ? ')' | '*' | AsName ( ε ',' AsName ) *
+      From = "from" ( dots ? DottedName "import" | dots "import" ) Targets
+      dots = '.' +
+      Targets = '(' AsName ( ε ',' AsName ) * ',' ? ')' \
+              | AsName ( ε ',' AsName ) * \
+              | '*'
       AsName = identifier ( "as" identifier ) ?
       DottedAsName = DottedName ( "as" identifier ) ?
       DottedName = identifier ( ε '.' identifier ) *
 
     Assignment:
       ⊙ = Annotated | Augmented | Plain
-      Annotated = Target.Single ':' not '=' Expr ( '=' not '=' Rhs ) ?
-      Augmented = Target.Single augassign Rhs
+      Annotated = Expr.Primary ':' not '=' Expr ( '=' not '=' Rhs ) ?
       Plain = ( Target.Stars '=' not '=' ) + Rhs
-      augassign = [ '+=' '-=' '**=' '*=' '@=' '//=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' ]
+      Augmented = Expr.Primary augassign Rhs
+      augassign = [ '+=' '-=' '*=' '@=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' '**=' '//=' ]
+
     Rhs = Expr.Yield | StarExprs
 
     Decorators = ( '@' Expr.Named newline ) +
@@ -130,9 +133,8 @@ language Pine:
 
   Target:
     Stars = Star ( ε ',' Star ) * ',' ?
-    Star = no_node Starred | Single
+    Star = no_node Starred | Expr.Primary
     Starred = '*' Star
-    Single = Expr.Primary
 
   Expr:
     ⊙ = no_node axe Atom
@@ -173,7 +175,7 @@ language Pine:
     KvPairs = KvPair ( ε ',' KvPair ) * ',' ?
     KvPair = '**' Expr.BitOr | Expr ':' not '=' Expr
 
-    Named = no_node Assign | Expr
+    Named = Assign | Expr
     Assign = identifier ':=' Expr
     Yield = "yield" ( "from" Expr | StarExprs ? )
 
