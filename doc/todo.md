@@ -22,6 +22,7 @@
     * Support positive lookahead in Seed (similar to "&" in the python grammar; "!" is already
       equivalent to "not")
         * maybe also add the cut ("~") and force-parse ("&&") operators from Python's grammar?
+        * replace prefix rule with the cut ("~") operator?
     * function
         * allow uses to write typical parse functions in silva directly
         * add `joined_f(',', Base)`?

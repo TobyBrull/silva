@@ -60,7 +60,7 @@ language Pine:
     Import:
       ⊙ = Name | From
       Name = "import" DottedAsName ( ε ',' DottedAsName ) *
-      From = "from" ( dots ? DottedName "import" | dots "import" ) Targets
+      From = "from" ( dots ? DottedName "import" | dots "import" ) ~ Targets
       dots = '.' +
       Targets = '(' AsName ( ε ',' AsName ) * ',' ? ')' \
               | AsName ( ε ',' AsName ) * \
@@ -69,23 +69,21 @@ language Pine:
       DottedAsName = DottedName ( "as" identifier ) ?
       DottedName = identifier ( ε '.' identifier ) *
 
+    Block = newline indent Stmt + dedent | Simples
     Decorators = ( '@' Expr.Named newline ) +
+    async = "async"
 
-    Function = Decorators FunctionRaw | FunctionRaw
-    FunctionRaw = "async" "def" identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block \
-                | "def" identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block
+    Class = Decorators ? "class" ~ identifier TypeParams ? ( '(' Arguments ')' ) ? ':' Block
 
-    Class = Decorators ClassRaw | ClassRaw
-    ClassRaw = "class" identifier TypeParams ? ( '(' Arguments ')' ) ? ':' Block
+    Function = Decorators ? async ? "def" ~ identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block
 
     If = "if" Expr.Named ':' Block Elif * Else ?
     Elif = "elif" Expr.Named ':' Block
     Else = "else" ':' Block
     While = "while" Expr.Named ':' Block Else ?
-    For = "async" "for" Target.Stars "in" StarExprs ':' Block Else ? \
-        | "for" Target.Stars "in" StarExprs ':' Block Else ?
+    For = async ? "for" ~ Target.Stars "in" StarExprs ':' Block Else ?
 
-    With = "async" "with" WithItems ':' Block | "with" WithItems ':' Block
+    With = async ? "with" ~ WithItems ':' Block
     WithItems = ε '(' WithItem ( ε ',' WithItem ) * ',' ? ')' | WithItem ( ε ',' WithItem ) *
     WithItem = Expr ( "as" Target.Star ) ?
 
@@ -98,8 +96,6 @@ language Pine:
     Case = ε "case" Pattern.Patterns Guard ? ':' Block
     Guard = "if" Expr.Named
     SubjectExpr = StarNamedExpr ',' StarNamedExprs ? | Expr.Named
-
-    Block = newline indent Stmt + dedent | Simples
 
   Params = Param ( ε ',' Param ) * ',' ?
   Param = '/' | '**' ParamDef | '*' ParamDef ? | ParamDef
