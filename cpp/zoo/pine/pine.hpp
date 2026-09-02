@@ -75,7 +75,13 @@ language Pine:
 
     Class = Decorators ? "class" ~ identifier TypeParams ? ( '(' Arguments ')' ) ? ':' Block
 
-    Function = Decorators ? async ? "def" ~ identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block
+    Function:
+      ⊙ = Decorators ? async ? "def" ~ identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block
+      Params = Param ( ε ',' Param ) * ',' ?
+      Param = '/' | '**' ParamDef | '*' ParamDef ? | ParamDef
+      ParamDef = identifier ( ':' not '=' Expr ) ? ( '=' not '=' Expr ) ?
+
+    TypeAlias = "type" identifier TypeParams ? '=' Expr
 
     If = "if" Expr.Named ':' Block Elif * Else ?
     Elif = "elif" Expr.Named ':' Block
@@ -97,19 +103,15 @@ language Pine:
     Guard = "if" Expr.Named
     SubjectExpr = StarNamedExpr ',' StarNamedExprs ? | Expr.Named
 
-  Params = Param ( ε ',' Param ) * ',' ?
-  Param = '/' | '**' ParamDef | '*' ParamDef ? | ParamDef
-  ParamDef = identifier ( ':' not '=' Expr ) ? ( '=' not '=' Expr ) ?
+  TypeParams:
+    ⊙ = '[' Single ( ε ',' Single ) * ',' ? ']'
+    Single = '**' identifier Default ? | '*' identifier Default ? \
+              | identifier ( ':' not '=' Expr ) ? Default ?
+    Default = '=' not '=' Expr
 
   LambdaParams = ( LambdaParam ( ε ',' LambdaParam ) * ',' ? ) ?
   LambdaParam = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
   LambdaParamDef = identifier ( '=' not '=' Expr ) ?
-
-  TypeAlias = "type" identifier TypeParams ? '=' Expr
-  TypeParams = '[' TypeParam ( ε ',' TypeParam ) * ',' ? ']'
-  TypeParam = '**' identifier Default ? | '*' identifier Default ? \
-            | identifier ( ':' not '=' Expr ) ? Default ?
-  Default = '=' not '=' Expr
 
   Arguments = ( Arg ( ε ',' Arg ) * ',' ? ) ?
   Arg = '**' Expr | '*' Expr | identifier '=' not '=' Expr | Expr.Named ForIfClauses ?
