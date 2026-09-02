@@ -4,6 +4,7 @@
 #include "canopy/expected.hpp"
 
 namespace silva {
+  struct syntax_farm_t;
 
   // An index in the "token_infos" vector of "syntax_farm_t". Equality of two tokens is then
   // equivalent to the equality of their token_info_index_t.
@@ -22,6 +23,8 @@ namespace silva {
 
     bool is_valid() const { return *this != name_id_t{}; }
 
+    bool is_parent_of(name_id_t, const syntax_farm_t&) const;
+
     friend auto operator<=>(name_id_t, name_id_t) = default;
     friend hash_value_t hash_impl(name_id_t x) { return hash_impl(x.val); }
   };
@@ -33,14 +36,6 @@ namespace silva {
   constexpr inline name_id_t name_id_literal{2};
 
   constexpr inline token_id_t token_id_default_name_sep = token_id_dot;
-
-  struct name_abs_t {
-    name_id_t id;
-  };
-
-  struct name_t {
-    name_id_t id;
-  };
 
   struct token_info_t {
     string_t str;

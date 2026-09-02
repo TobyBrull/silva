@@ -165,7 +165,7 @@ namespace silva::lox {
       if (pts.num_children() == 1) {
         const auto [pts_child] = SILVA_EXPECT_FWD(pts.get_children<1>());
         if (pts_child.rule_name() != lexicon.ni_expr_literal &&
-            sfp->name_id_is_parent(lexicon.ni_expr, pts_child.rule_name())) {
+            lexicon.ni_expr.is_parent_of(pts_child.rule_name(), *sfp)) {
           return expr(pts_child);
         }
       }
@@ -214,7 +214,7 @@ namespace silva::lox {
 
     expected_t<void> expr(const parse_tree_span_t pts)
     {
-      SILVA_EXPECT(sfp->name_id_is_parent(lexicon.ni_expr, pts.rule_name()), ASSERT);
+      SILVA_EXPECT(lexicon.ni_expr.is_parent_of(pts.rule_name(), *sfp), ASSERT);
       if (pts.rule_name() == lexicon.ni_expr) {
         const auto [pts_child] = SILVA_EXPECT_FWD(pts.get_children<1>());
         return expr(pts_child);

@@ -4,6 +4,11 @@
 #include "parse_tree.hpp"
 
 namespace silva {
+  bool name_id_t::is_parent_of(const name_id_t child, const syntax_farm_t& sf) const
+  {
+    return sf.name_id_is_parent(*this, child);
+  }
+
   expected_t<string_view_t> token_info_t::string_as_plain_contained() const
   {
     SILVA_EXPECT(str.size() >= 2, MINOR);

@@ -3,10 +3,6 @@
 * Python Seed-parser
 * Bash Seed-parser?
 
-* Seed-axe:
-    * allow arbitrary twig-rules
-* nicer ni_rule.is_parent_of(ni_parent)
-
 * Errors:
     * color furthest fragment in readable color?
     * pass node_and_error_t::last_error through seed-axe
