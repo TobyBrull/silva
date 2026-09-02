@@ -80,7 +80,7 @@ namespace silva::seed::impl {
         if (is_commit_terminal(lexicon, sub_pts)) {
           SILVA_EXPECT(!commit_after.has_value(),
                        MINOR,
-                       "{} more than one \"commit\" keyword in concatenated expression",
+                       "{} more than one commit operator in concatenated expression",
                        pts_concat);
           commit_after = sub_expr_index;
           continue;
@@ -459,7 +459,7 @@ namespace silva::seed::impl {
       if (s_token_pts.rule_name() == lexicon.ni_keyword) {
         SILVA_EXPECT(s_token_id != lexicon.ti_commit.token_id,
                      BROKEN_SEED,
-                     "the \"commit\" keyword is only allowed directly in a concat expression");
+                     "the commit operator is only allowed directly in a concat expression");
         if (s_token_id == lexicon.ti_eps.token_id) {
           return ss.commit();
         }

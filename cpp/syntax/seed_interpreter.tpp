@@ -201,8 +201,8 @@ language Testor:
   ⊙ = Plain
   Plain          =   "static" "func" identifier | "static" identifier number
   NoPrefix       = ε "static" "func" identifier | "static" identifier number
-  NoPrefixCommit = ε "static" "func" commit identifier | "static" identifier number
-  EarlyCommit    =   "static" commit "func" identifier | "static" identifier number
+  NoPrefixCommit = ε "static" "func" ~ identifier | "static" identifier number
+  EarlyCommit    =   "static" ~ "func" identifier | "static" identifier number
 )'";
     syntax_farm_t sf;
     auto se = standard_seed_interpreter(sf.ptr());
