@@ -228,7 +228,7 @@ namespace silva::seed::impl {
       const index_t orig_frag_idx = fragment_index;
       ss_rule.create_node(lexicon.ni_keyword, true);
       error_nursery_t error_nursery;
-      for (const auto& ft: {lexicon.ti_eps, lexicon.ti_language}) {
+      for (const auto& ft: {lexicon.ti_eps, lexicon.ti_language, lexicon.ti_commit}) {
         auto result = parse_literal(ft);
         if (result) {
           ss_rule.add_proto_node(*result);

@@ -193,6 +193,37 @@ language Testor:
     CHECK(result == expected.substr(1));
   }
 
+  TEST_CASE("commit", "[seed-interpreter]")
+  {
+    const string_view_t testor_seed = R"'(
+language Testor:
+  skip = skip.freeForm
+  ⊙ = Plain
+  Plain          =   "static" "func" identifier | "static" identifier number
+  NoPrefix       = ε "static" "func" identifier | "static" identifier number
+  NoPrefixCommit = ε "static" "func" commit identifier | "static" identifier number
+  EarlyCommit    =   "static" commit "func" identifier | "static" identifier number
+)'";
+    syntax_farm_t sf;
+    auto se = standard_seed_interpreter(sf.ptr());
+    SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_seed}));
+
+    const name_id_t ni_plain            = sf.name_id_of("Testor", "Plain");
+    const name_id_t ni_no_prefix        = sf.name_id_of("Testor", "NoPrefix");
+    const name_id_t ni_no_prefix_commit = sf.name_id_of("Testor", "NoPrefixCommit");
+    const name_id_t ni_early_commit     = sf.name_id_of("Testor", "EarlyCommit");
+
+    SILVA_REQUIRE(se->apply_text("", "static class 42\n", ni_plain));
+    SILVA_REQUIRE(se->apply_text("", "static class 42\n", ni_no_prefix));
+    SILVA_REQUIRE(se->apply_text("", "static class 42\n", ni_no_prefix_commit));
+    SILVA_REQUIRE_ERROR(se->apply_text("", "static class 42\n", ni_early_commit));
+
+    SILVA_REQUIRE_ERROR(se->apply_text("", "static func 42\n", ni_plain));
+    SILVA_REQUIRE(se->apply_text("", "static func 42\n", ni_no_prefix));
+    SILVA_REQUIRE_ERROR(se->apply_text("", "static func 42\n", ni_no_prefix_commit));
+    SILVA_REQUIRE_ERROR(se->apply_text("", "static func 42\n", ni_early_commit));
+  }
+
   TEST_CASE("multiple-texts", "[seed-interpreter]")
   {
     const string_view_t text1_seed = R"'(

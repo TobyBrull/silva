@@ -11,3 +11,4 @@
 - Run the regession tests via `bash task_test.sh debug`. This writes a file
   `var/task_demo.sh.output` which is meant to be compared against `task_demo.sh.output`. Some diffs
   here are usually fine.
+- Keep comments in the generated code to a minimum.

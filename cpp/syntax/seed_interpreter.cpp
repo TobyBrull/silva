@@ -16,6 +16,19 @@
 using enum silva::error_level_t;
 
 namespace silva::seed::impl {
+  bool is_string_terminal(const lexicon_t& lexicon, const parse_tree_span_t& pts)
+  {
+    return pts.rule_name() == lexicon.ni_term && pts.num_children() == 1 &&
+        pts.node_at(1).rule_name == lexicon.ni_string;
+  }
+
+  bool is_commit_terminal(const lexicon_t& lexicon, const parse_tree_span_t& pts)
+  {
+    return pts.rule_name() == lexicon.ni_term && pts.num_children() == 1 &&
+        pts.node_at(1).rule_name == lexicon.ni_keyword &&
+        pts.subspan_at(1).token() == lexicon.ti_commit.token_id;
+  }
+
   struct interpreter_adder_t {
     interpreter_t* se     = nullptr;
     syntax_farm_ptr_t sfp = se->sfp;
@@ -53,6 +66,48 @@ namespace silva::seed::impl {
                    pts,
                    lexicon.name_id_wrap(rule_name),
                    emplace_it->second.expr);
+      return {};
+    }
+
+    expected_t<void> handle_concat_expr(const parse_tree_span_t pts_concat)
+    {
+      SILVA_EXPECT(sfp->name_id_is_parent(lexicon.ni_expr_concat, pts_concat.rule_name()), ASSERT);
+      optional_t<index_t> commit_after;
+      index_t leading_literals = 0;
+      bool in_leading_literals = true;
+      index_t sub_expr_index   = 0;
+      for (const auto sub_pts: pts_concat.children_range()) {
+        if (is_commit_terminal(lexicon, sub_pts)) {
+          SILVA_EXPECT(!commit_after.has_value(),
+                       MINOR,
+                       "{} more than one \"commit\" keyword in concatenated expression",
+                       pts_concat);
+          commit_after = sub_expr_index;
+          continue;
+        }
+        if (in_leading_literals) {
+          if (is_string_terminal(lexicon, sub_pts)) {
+            leading_literals += 1;
+          }
+          else {
+            in_leading_literals = false;
+          }
+        }
+        sub_expr_index += 1;
+      }
+      if (leading_literals >= 1) {
+        if (!commit_after.has_value()) {
+          commit_after = leading_literals;
+        }
+        else {
+          commit_after = std::min(*commit_after, leading_literals);
+        }
+      }
+      const auto [it, inserted] = se->expr_data.emplace(pts_concat,
+                                                        interpreter_t::expr_data_t{
+                                                            .commit_after = commit_after,
+                                                        });
+      SILVA_EXPECT(inserted, ASSERT, "{} concatenated expression handled twice", pts_concat);
       return {};
     }
 
@@ -132,13 +187,15 @@ namespace silva::seed::impl {
       }
 
       for (index_t i = 0; i < pts_rhs_0.subtree_size(); ++i) {
-        if (pts_rhs_0.node_at(i).rule_name == lexicon.ni_term &&
-            pts_rhs_0.node_at(i).num_children == 1 &&
-            pts_rhs_0.node_at(i + 1).rule_name == lexicon.ni_string) {
+        const parse_tree_span_t pts_node = pts_rhs_0.subspan_at(i);
+        if (is_string_terminal(lexicon, pts_node)) {
           const token_id_t str_ti = SILVA_EXPECT_FWD(pts_rhs_0.subspan_at(i + 1).token());
           auto ft                 = SILVA_EXPECT_FWD(fragment_token_from_string(sfp, str_ti));
           SILVA_EXPECT_FWD(recognize_literal(curr_rule_name, ft));
           se->string_to_ft[str_ti] = std::move(ft);
+        }
+        else if (sfp->name_id_is_parent(lexicon.ni_expr_concat, pts_node.rule_name())) {
+          SILVA_EXPECT_FWD(handle_concat_expr(pts_node));
         }
       }
 
@@ -400,6 +457,9 @@ namespace silva::seed::impl {
       }
       const token_id_t s_token_id = SILVA_EXPECT_FWD(s_token_pts.token());
       if (s_token_pts.rule_name() == lexicon.ni_keyword) {
+        SILVA_EXPECT(s_token_id != lexicon.ti_commit.token_id,
+                     BROKEN_SEED,
+                     "the \"commit\" keyword is only allowed directly in a concat expression");
         if (s_token_id == lexicon.ti_eps.token_id) {
           return ss.commit();
         }
@@ -602,20 +662,19 @@ namespace silva::seed::impl {
       auto ss                           = stake();
       error_nursery_t error_nursery;
 
-      // Should do this bit ahead of time and store a map in the interpreter_t.
-      index_t lead_terminals = 0;
-      for (const auto sub_pts: pts.children_range()) {
-        if (sub_pts.rule_name() == lexicon.ni_term && sub_pts.num_children() == 1 &&
-            sub_pts.node_at(1).rule_name == lexicon.ni_string) {
-          lead_terminals += 1;
-        }
-        else {
-          break;
-        }
-      }
+      const auto it = se->expr_data.find(pts);
+      SILVA_EXPECT(it != se->expr_data.end(),
+                   MAJOR,
+                   "{} no expression-data for concatenated expression",
+                   pts);
+      const optional_t<index_t> commit_after = it->second.commit_after;
 
       index_t prev_fragment_end = -1;
-      for (const auto [sub_pts, child_index]: pts.children_range_idx()) {
+      index_t sub_expr_index    = 0;
+      for (const auto sub_pts: pts.children_range()) {
+        if (is_commit_terminal(lexicon, sub_pts)) {
+          continue;
+        }
         auto result = s_expr(sub_pts, t_rule_name);
         if (result.has_value()) {
           const parse_tree_node_t& result_node = result->node;
@@ -637,7 +696,7 @@ namespace silva::seed::impl {
         }
         else {
           error_level_t error_level = result.error().level;
-          if (lead_terminals >= 1 && child_index >= lead_terminals) {
+          if (commit_after.has_value() && sub_expr_index >= commit_after) {
             error_level = std::max(error_level, MAJOR);
           }
           error_nursery.add_child_error(std::move(result).error());
@@ -648,6 +707,7 @@ namespace silva::seed::impl {
                                              lexicon.name_id_wrap(t_rule_name),
                                              pts.fragment_span()));
         }
+        sub_expr_index += 1;
       }
       return ss.commit();
     }

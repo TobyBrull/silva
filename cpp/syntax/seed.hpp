@@ -16,7 +16,7 @@ namespace silva::seed {
   //
   // The language is akin to BNF. The corresponding parsing functions are essentially PEG (greedy
   // repetition, ordered choice) but with a few twists:
-  //  * The "prefix directive", see below.
+  //  * The "prefix directive" and the "commit" keyword, see below.
   //  * There is a dedicated "skip-rule" to skip whitespace.
   //  * There are two types of rules: "branch-rules" (indicated by PascalCase) and "twig-rules"
   //    (indicated by camelCase). Both types of rules (if successfully parsed) create nodes in the
@@ -52,24 +52,36 @@ namespace silva::seed {
   //    https://medium.com/@gvanrossum_83706/peg-parsing-series-de5d41b2ed60
   //
   //
-  // # The Prefix Directive
+  // # The Prefix directive and the "commit" keyword
   //
-  // The prefix directive says that in every concatenated expression, if all leading literals are
-  // matched, then the whole concatenated expression has to match; otherwise, the entire parse
-  // is failed. For example, if the Seed rule
-  //    ⎢ ConstFunc = "static" "func" identifier | "static" identifier number
+  // Often an initial keyword signals the beginning of a specific grammatical construct. For
+  // example, every function might begin with "fun". In this case, Seed allows the parser to
+  // "commit", meaning that, here in this example, a valid function is expected to be parsed after
+  // "fun" or the entire parse is considered to be failed.
+  //
+  // Committing behaviour can be triggered in two ways: via the prefix directive or by explicity
+  // using the "commit" keyword. Both approaches work on the level of a .Seed.Expr.Concat
+  // (concatenated) expression. The prefix directive says that if a concatenated expression starts
+  // with at least one literal, the parser commits if all leading literals are matched; this is
+  // as-if the "commit" keyword is put after a consecutive streak of leading literals.
+  //
+  // For example, if the Seed rule
+  //    ⎢ ConstFunc = "static" "func" commit identifier | "static" identifier number
   // is used to parse the language
-  //    ⎢ static func 2
+  //    ⎢ static func 42
   // this will result in a parse error even though the second alternative would be a match. This is
   // because all leading literals (the "prefix") in the first alternative (of which there are two:
-  // "static" and "func") are already matched. So at that point, the parsing algorithm commits to
-  // the first alternative and aborts the entire parse if the whole *concatenated expression* does
-  // not match.
+  // "static" and "func") are already matched (there is also a gratuitous "commit" keyword). So at
+  // that point, the parsing algorithm commits to the first alternative and aborts the entire parse
+  // if the whole *first concatenated expression* does not match. On the other hand, if the same
+  // Seed rule is used to parse
+  //    ⎢ static class 42
+  // this works just fine, as the parser never got to the "commit" point.
   //
   // To disable the prefix directive for a concatenated expression, use the epsilon production. So,
   // the rule
   //    ⎢ ConstFunc = ε "static" "func" identifier | "static" identifier number
-  // parses « static func 2 » just fine.
+  // parses « static func 42 » just fine.
   //
   //
   // # Other remarks
@@ -107,7 +119,7 @@ language Seed:
     Quantifier = literal_nodes number ? ',' number ? | number
     NoNode = Expr
   Terminal = "literals_of" Nonterminal | [ keyword string fragName ]
-  keyword = [ "ε" "language" ]
+  keyword = [ "ε" "language" "commit" ]
   Nonterminal = literal_nodes '.' ? ( Name '.' ) * Name
   Name = no_node [ ruleName tokenCategoryName ]
 )'";

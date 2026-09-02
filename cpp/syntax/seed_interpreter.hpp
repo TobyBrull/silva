@@ -35,6 +35,11 @@ namespace silva::seed {
     };
     hash_map_t<token_id_t, language_data_t> languages;
 
+    struct expr_data_t {
+      optional_t<index_t> commit_after;
+    };
+    hash_map_t<parse_tree_span_t, expr_data_t> expr_data;
+
     interpreter_t(syntax_farm_ptr_t);
 
     expected_t<void> add_seed(parse_tree_span_t pts_seed);
