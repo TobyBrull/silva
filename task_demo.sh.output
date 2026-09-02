@@ -2145,7 +2145,7 @@ Mr Jane
             [0].Pine.Target.Stars                                                                   GREETING ¦
               [0].Pine.Expr.Atom                                                                    GREETING ¦
                 [0].identifier                                                                      ｢GREETING｣
-            [1].Pine.Stmt.Rhs                                                                       \"hello\"¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            \"hello\"¦
               [0].Pine.StarExprs                                                                    \"hello\"¦
                 [0].Pine.Expr.Atom                                                                  \"hello\"¦
                   [0].Pine.Expr.Strings                                                             \"hello\"¦
@@ -2159,7 +2159,7 @@ Mr Jane
               [0].identifier                                                                        ｢LIMIT｣
             [1].Pine.Expr.Atom                                                                      int ¦
               [0].identifier                                                                        ｢int｣
-            [2].Pine.Stmt.Rhs                                                                       10¦
+            [2].Pine.Stmt.Assignment.Rhs                                                            10¦
               [0].Pine.StarExprs                                                                    10¦
                 [0].Pine.Expr.Atom                                                                  10¦
                   [0].Pine.Expr.number                                                              ｢10｣
@@ -2171,7 +2171,7 @@ Mr Jane
             [0].Pine.Target.Stars                                                                   _TABLE ¦
               [0].Pine.Expr.Atom                                                                    _TABLE ¦
                 [0].identifier                                                                      ｢_TABLE｣
-            [1].Pine.Stmt.Rhs                                                                       {\"a\": 1 ... : 3}}¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            {\"a\": 1 ... : 3}}¦
               [0].Pine.StarExprs                                                                    {\"a\": 1 ... : 3}}¦
                 [0].Pine.Expr.Atom                                                                  {\"a\": 1 ... : 3}}¦
                   [0].Pine.Expr.Dict                                                                {\"a\": 1 ... : 3}}¦
@@ -2206,7 +2206,7 @@ Mr Jane
             [0].Pine.Target.Stars                                                                   NUMBERS ¦
               [0].Pine.Expr.Atom                                                                    NUMBERS ¦
                 [0].identifier                                                                      ｢NUMBERS｣
-            [1].Pine.Stmt.Rhs                                                                       [0, 1 ... , 3j]¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            [0, 1 ... , 3j]¦
               [0].Pine.StarExprs                                                                    [0, 1 ... , 3j]¦
                 [0].Pine.Expr.Atom                                                                  [0, 1 ... , 3j]¦
                   [0].Pine.Expr.List                                                                [0, 1 ... , 3j]¦
@@ -2249,7 +2249,7 @@ Mr Jane
             [0].Pine.Target.Stars                                                                   EMPTY ¦
               [0].Pine.Expr.Atom                                                                    EMPTY ¦
                 [0].identifier                                                                      ｢EMPTY｣
-            [1].Pine.Stmt.Rhs                                                                       ()¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            ()¦
               [0].Pine.StarExprs                                                                    ()¦
                 [0].Pine.Expr.Atom                                                                  ()¦
                   [0].Pine.Expr.Tuple                                                               ()¦
@@ -2261,7 +2261,7 @@ Mr Jane
             [0].Pine.Target.Stars                                                                   SINGLE ¦
               [0].Pine.Expr.Atom                                                                    SINGLE ¦
                 [0].identifier                                                                      ｢SINGLE｣
-            [1].Pine.Stmt.Rhs                                                                       (1,)¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            (1,)¦
               [0].Pine.StarExprs                                                                    (1,)¦
                 [0].Pine.Expr.Atom                                                                  (1,)¦
                   [0].Pine.Expr.Tuple                                                               (1,)¦
@@ -2276,7 +2276,7 @@ Mr Jane
             [0].Pine.Target.Stars                                                                   PAIR ¦
               [0].Pine.Expr.Atom                                                                    PAIR ¦
                 [0].identifier                                                                      ｢PAIR｣
-            [1].Pine.Stmt.Rhs                                                                       1, 2¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            1, 2¦
               [0].Pine.StarExprs                                                                    1, 2¦
                 [0].Pine.Expr.Atom                                                                  1¦
                   [0].Pine.Expr.number                                                              ｢1｣
@@ -2290,7 +2290,7 @@ Mr Jane
             [0].Pine.Target.Stars                                                                   SET ¦
               [0].Pine.Expr.Atom                                                                    SET ¦
                 [0].identifier                                                                      ｢SET｣
-            [1].Pine.Stmt.Rhs                                                                       {1, 2, 3}¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            {1, 2, 3}¦
               [0].Pine.StarExprs                                                                    {1, 2, 3}¦
                 [0].Pine.Expr.Atom                                                                  {1, 2, 3}¦
                   [0].Pine.Expr.Set                                                                 {1, 2, 3}¦
@@ -2312,7 +2312,7 @@ Mr Jane
             [0].Pine.Target.Stars                                                                   DOTS ¦
               [0].Pine.Expr.Atom                                                                    DOTS ¦
                 [0].identifier                                                                      ｢DOTS｣
-            [1].Pine.Stmt.Rhs                                                                       ...¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            ...¦
               [0].Pine.StarExprs                                                                    ...¦
                 [0].Pine.Expr.Atom                                                                  ...¦
   [15].Pine.Stmt                                                                                    type  ... ct<NEWLINE><WHITESPACE><WHITESPACE>¦
@@ -2361,7 +2361,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         parts ¦
                         [0].Pine.Expr.Atom                                                          parts ¦
                           [0].identifier                                                            ｢parts｣
-                      [1].Pine.Stmt.Rhs                                                             [repr ... lue)]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  [repr ... lue)]¦
                         [0].Pine.StarExprs                                                          [repr ... lue)]¦
                           [0].Pine.Expr.Atom                                                        [repr ... lue)]¦
                             [0].Pine.Expr.List                                                      [repr ... lue)]¦
@@ -2507,7 +2507,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         total ¦
                         [0].Pine.Expr.Atom                                                          total ¦
                           [0].identifier                                                            ｢total｣
-                      [1].Pine.Stmt.Rhs                                                             a + b ... c - d¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  a + b ... c - d¦
                         [0].Pine.StarExprs                                                          a + b ... c - d¦
                           [0].Pine.Expr.Sum.-                                                       a + b ... c - d¦
                             [0].Pine.Expr.Sum.+                                                     a + b * c ¦
@@ -2528,7 +2528,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢+=｣
-                      [2].Pine.Stmt.Rhs                                                             a // b¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  a // b¦
                         [0].Pine.StarExprs                                                          a // b¦
                           [0].Pine.Expr.Term.//                                                     a // b¦
                             [0].Pine.Expr.Atom                                                      a ¦
@@ -2543,7 +2543,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢-=｣
-                      [2].Pine.Stmt.Rhs                                                             -a¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  -a¦
                         [0].Pine.StarExprs                                                          -a¦
                           [0].Pine.Expr.Unary.-                                                     -a¦
                             [0].Pine.Expr.Atom                                                      a¦
@@ -2556,7 +2556,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢*=｣
-                      [2].Pine.Stmt.Rhs                                                             +b¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  +b¦
                         [0].Pine.StarExprs                                                          +b¦
                           [0].Pine.Expr.Unary.+                                                     +b¦
                             [0].Pine.Expr.Atom                                                      b¦
@@ -2569,7 +2569,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢**=｣
-                      [2].Pine.Stmt.Rhs                                                             2¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  2¦
                         [0].Pine.StarExprs                                                          2¦
                           [0].Pine.Expr.Atom                                                        2¦
                             [0].Pine.Expr.number                                                    ｢2｣
@@ -2581,7 +2581,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢@=｣
-                      [2].Pine.Stmt.Rhs                                                             b¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  b¦
                         [0].Pine.StarExprs                                                          b¦
                           [0].Pine.Expr.Atom                                                        b¦
                             [0].identifier                                                          ｢b｣
@@ -2593,7 +2593,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢//=｣
-                      [2].Pine.Stmt.Rhs                                                             3¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  3¦
                         [0].Pine.StarExprs                                                          3¦
                           [0].Pine.Expr.Atom                                                        3¦
                             [0].Pine.Expr.number                                                    ｢3｣
@@ -2605,7 +2605,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢%=｣
-                      [2].Pine.Stmt.Rhs                                                             7¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  7¦
                         [0].Pine.StarExprs                                                          7¦
                           [0].Pine.Expr.Atom                                                        7¦
                             [0].Pine.Expr.number                                                    ｢7｣
@@ -2617,7 +2617,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢&=｣
-                      [2].Pine.Stmt.Rhs                                                             0xff¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  0xff¦
                         [0].Pine.StarExprs                                                          0xff¦
                           [0].Pine.Expr.Atom                                                        0xff¦
                             [0].Pine.Expr.number                                                    ｢0xff｣
@@ -2629,7 +2629,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢|=｣
-                      [2].Pine.Stmt.Rhs                                                             0x0f¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  0x0f¦
                         [0].Pine.StarExprs                                                          0x0f¦
                           [0].Pine.Expr.Atom                                                        0x0f¦
                             [0].Pine.Expr.number                                                    ｢0x0f｣
@@ -2641,7 +2641,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢^=｣
-                      [2].Pine.Stmt.Rhs                                                             0b11¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  0b11¦
                         [0].Pine.StarExprs                                                          0b11¦
                           [0].Pine.Expr.Atom                                                        0b11¦
                             [0].Pine.Expr.number                                                    ｢0b11｣
@@ -2653,7 +2653,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢<<=｣
-                      [2].Pine.Stmt.Rhs                                                             1¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  1¦
                         [0].Pine.StarExprs                                                          1¦
                           [0].Pine.Expr.Atom                                                        1¦
                             [0].Pine.Expr.number                                                    ｢1｣
@@ -2665,7 +2665,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            total ¦
                         [0].identifier                                                              ｢total｣
                       [1].Pine.Stmt.Assignment.augassign                                            ｢>>=｣
-                      [2].Pine.Stmt.Rhs                                                             2¦
+                      [2].Pine.Stmt.Assignment.Rhs                                                  2¦
                         [0].Pine.StarExprs                                                          2¦
                           [0].Pine.Expr.Atom                                                        2¦
                             [0].Pine.Expr.number                                                    ｢2｣
@@ -2677,7 +2677,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         shifted ¦
                         [0].Pine.Expr.Atom                                                          shifted ¦
                           [0].identifier                                                            ｢shifted｣
-                      [1].Pine.Stmt.Rhs                                                             (a << ... c ^ d¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  (a << ... c ^ d¦
                         [0].Pine.StarExprs                                                          (a << ... c ^ d¦
                           [0].Pine.Expr.BitOr.|                                                     (a << ... c ^ d¦
                             [0].Pine.Expr.Atom                                                      (a << 2) ¦
@@ -2856,7 +2856,7 @@ Mr Jane
                               [0].Pine.Target.Stars                                                 sign ¦
                                 [0].Pine.Expr.Atom                                                  sign ¦
                                   [0].identifier                                                    ｢sign｣
-                              [1].Pine.Stmt.Rhs                                                     -1¦
+                              [1].Pine.Stmt.Assignment.Rhs                                          -1¦
                                 [0].Pine.StarExprs                                                  -1¦
                                   [0].Pine.Expr.Unary.-                                             -1¦
                                     [0].Pine.Expr.Atom                                              1¦
@@ -2877,7 +2877,7 @@ Mr Jane
                                 [0].Pine.Target.Stars                                               sign ¦
                                   [0].Pine.Expr.Atom                                                sign ¦
                                     [0].identifier                                                  ｢sign｣
-                                [1].Pine.Stmt.Rhs                                                   0¦
+                                [1].Pine.Stmt.Assignment.Rhs                                        0¦
                                   [0].Pine.StarExprs                                                0¦
                                     [0].Pine.Expr.Atom                                              0¦
                                       [0].Pine.Expr.number                                          ｢0｣
@@ -2891,7 +2891,7 @@ Mr Jane
                                 [0].Pine.Target.Stars                                               sign ¦
                                   [0].Pine.Expr.Atom                                                sign ¦
                                     [0].identifier                                                  ｢sign｣
-                                [1].Pine.Stmt.Rhs                                                   1¦
+                                [1].Pine.Stmt.Assignment.Rhs                                        1¦
                                   [0].Pine.StarExprs                                                1¦
                                     [0].Pine.Expr.Atom                                              1¦
                                       [0].Pine.Expr.number                                          ｢1｣
@@ -2913,7 +2913,7 @@ Mr Jane
                               [0].Pine.Expr.Atom                                                    n ¦
                                 [0].identifier                                                      ｢n｣
                               [1].Pine.Stmt.Assignment.augassign                                    ｢-=｣
-                              [2].Pine.Stmt.Rhs                                                     1¦
+                              [2].Pine.Stmt.Assignment.Rhs                                          1¦
                                 [0].Pine.StarExprs                                                  1¦
                                   [0].Pine.Expr.Atom                                                1¦
                                     [0].Pine.Expr.number                                            ｢1｣
@@ -2979,7 +2979,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         table ¦
                         [0].Pine.Expr.Atom                                                          table ¦
                           [0].identifier                                                            ｢table｣
-                      [1].Pine.Stmt.Rhs                                                             []¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  []¦
                         [0].Pine.StarExprs                                                          []¦
                           [0].Pine.Expr.Atom                                                        []¦
                             [0].Pine.Expr.List                                                      []¦
@@ -3058,7 +3058,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         squares ¦
                         [0].Pine.Expr.Atom                                                          squares ¦
                           [0].identifier                                                            ｢squares｣
-                      [1].Pine.Stmt.Rhs                                                             [x *  ... == 0]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  [x *  ... == 0]¦
                         [0].Pine.StarExprs                                                          [x *  ... == 0]¦
                           [0].Pine.Expr.Atom                                                        [x *  ... == 0]¦
                             [0].Pine.Expr.ListComp                                                  [x *  ... == 0]¦
@@ -3097,7 +3097,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         pairs ¦
                         [0].Pine.Expr.Atom                                                          pairs ¦
                           [0].identifier                                                            ｢pairs｣
-                      [1].Pine.Stmt.Rhs                                                             {k: v ... ms()}¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  {k: v ... ms()}¦
                         [0].Pine.StarExprs                                                          {k: v ... ms()}¦
                           [0].Pine.Expr.Atom                                                        {k: v ... ms()}¦
                             [0].Pine.Expr.DictComp                                                  {k: v ... ms()}¦
@@ -3128,7 +3128,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         uniq ¦
                         [0].Pine.Expr.Atom                                                          uniq ¦
                           [0].identifier                                                            ｢uniq｣
-                      [1].Pine.Stmt.Rhs                                                             {c fo ... TING}¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  {c fo ... TING}¦
                         [0].Pine.StarExprs                                                          {c fo ... TING}¦
                           [0].Pine.Expr.Atom                                                        {c fo ... TING}¦
                             [0].Pine.Expr.SetComp                                                   {c fo ... TING}¦
@@ -3150,7 +3150,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         lazy ¦
                         [0].Pine.Expr.Atom                                                          lazy ¦
                           [0].identifier                                                            ｢lazy｣
-                      [1].Pine.Stmt.Rhs                                                             (y fo ... ares)¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  (y fo ... ares)¦
                         [0].Pine.StarExprs                                                          (y fo ... ares)¦
                           [0].Pine.Expr.Atom                                                        (y fo ... ares)¦
                             [0].Pine.Expr.GenExp                                                    (y fo ... ares)¦
@@ -3172,7 +3172,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         nested ¦
                         [0].Pine.Expr.Atom                                                          nested ¦
                           [0].identifier                                                            ｢nested｣
-                      [1].Pine.Stmt.Rhs                                                             [(a,  ... != b]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  [(a,  ... != b]¦
                         [0].Pine.StarExprs                                                          [(a,  ... != b]¦
                           [0].Pine.Expr.Atom                                                        [(a,  ... != b]¦
                             [0].Pine.Expr.ListComp                                                  [(a,  ... != b]¦
@@ -3255,7 +3255,7 @@ Mr Jane
                               [0].Pine.Target.Stars                                                 handle ¦
                                 [0].Pine.Expr.Atom                                                  handle ¦
                                   [0].identifier                                                    ｢handle｣
-                              [1].Pine.Stmt.Rhs                                                     open(path)¦
+                              [1].Pine.Stmt.Assignment.Rhs                                          open(path)¦
                                 [0].Pine.StarExprs                                                  open(path)¦
                                   [0].Pine.Expr.Primary.(                                           open(path)¦
                                     [0].Pine.Expr.Atom                                              open¦
@@ -3318,7 +3318,7 @@ Mr Jane
                                 [0].Pine.Target.Stars                                               data ¦
                                   [0].Pine.Expr.Atom                                                data ¦
                                     [0].identifier                                                  ｢data｣
-                                [1].Pine.Stmt.Rhs                                                   handl ... ead()¦
+                                [1].Pine.Stmt.Assignment.Rhs                                        handl ... ead()¦
                                   [0].Pine.StarExprs                                                handl ... ead()¦
                                     [0].Pine.Expr.Primary.(                                         handl ... ead()¦
                                       [0].Pine.Expr.Primary..                                       handl ... .read¦
@@ -3337,7 +3337,7 @@ Mr Jane
                                 [0].Pine.Target.Stars                                               handle ¦
                                   [0].Pine.Expr.Atom                                                handle ¦
                                     [0].identifier                                                  ｢handle｣
-                                [1].Pine.Stmt.Rhs                                                   None¦
+                                [1].Pine.Stmt.Assignment.Rhs                                        None¦
                                   [0].Pine.StarExprs                                                None¦
                                     [0].Pine.Expr.Atom                                              None¦
             [1].Pine.Stmt                                                                           try:<NEWLINE> ... ass<NEWLINE><DEDENT>¦
@@ -3458,7 +3458,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         counter ¦
                         [0].Pine.Expr.Atom                                                          counter ¦
                           [0].identifier                                                            ｢counter｣
-                      [1].Pine.Stmt.Rhs                                                             0¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  0¦
                         [0].Pine.StarExprs                                                          0¦
                           [0].Pine.Expr.Atom                                                        0¦
                             [0].Pine.Expr.number                                                    ｢0｣
@@ -3481,7 +3481,7 @@ Mr Jane
                                 [0].Pine.Expr.Atom                                                  counter ¦
                                   [0].identifier                                                    ｢counter｣
                                 [1].Pine.Stmt.Assignment.augassign                                  ｢+=｣
-                                [2].Pine.Stmt.Rhs                                                   1¦
+                                [2].Pine.Stmt.Assignment.Rhs                                        1¦
                                   [0].Pine.StarExprs                                                1¦
                                     [0].Pine.Expr.Atom                                              1¦
                                       [0].Pine.Expr.number                                          ｢1｣
@@ -3517,7 +3517,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         head ¦
                         [0].Pine.Expr.Atom                                                          head ¦
                           [0].identifier                                                            ｢head｣
-                      [1].Pine.Stmt.Rhs                                                             seq[0]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  seq[0]¦
                         [0].Pine.StarExprs                                                          seq[0]¦
                           [0].Pine.Expr.Primary.[                                                   seq[0]¦
                             [0].Pine.Expr.Atom                                                      seq¦
@@ -3535,7 +3535,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         tail ¦
                         [0].Pine.Expr.Atom                                                          tail ¦
                           [0].identifier                                                            ｢tail｣
-                      [1].Pine.Stmt.Rhs                                                             seq[1:]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  seq[1:]¦
                         [0].Pine.StarExprs                                                          seq[1:]¦
                           [0].Pine.Expr.Primary.[                                                   seq[1:]¦
                             [0].Pine.Expr.Atom                                                      seq¦
@@ -3552,7 +3552,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         body ¦
                         [0].Pine.Expr.Atom                                                          body ¦
                           [0].identifier                                                            ｢body｣
-                      [1].Pine.Stmt.Rhs                                                             seq[1:-1]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  seq[1:-1]¦
                         [0].Pine.StarExprs                                                          seq[1:-1]¦
                           [0].Pine.Expr.Primary.[                                                   seq[1:-1]¦
                             [0].Pine.Expr.Atom                                                      seq¦
@@ -3572,7 +3572,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         every ¦
                         [0].Pine.Expr.Atom                                                          every ¦
                           [0].identifier                                                            ｢every｣
-                      [1].Pine.Stmt.Rhs                                                             seq[::2]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  seq[::2]¦
                         [0].Pine.StarExprs                                                          seq[::2]¦
                           [0].Pine.Expr.Primary.[                                                   seq[::2]¦
                             [0].Pine.Expr.Atom                                                      seq¦
@@ -3589,7 +3589,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         window ¦
                         [0].Pine.Expr.Atom                                                          window ¦
                           [0].identifier                                                            ｢window｣
-                      [1].Pine.Stmt.Rhs                                                             seq[1:5:2]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  seq[1:5:2]¦
                         [0].Pine.StarExprs                                                          seq[1:5:2]¦
                           [0].Pine.Expr.Primary.[                                                   seq[1:5:2]¦
                             [0].Pine.Expr.Atom                                                      seq¦
@@ -3610,7 +3610,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         grid ¦
                         [0].Pine.Expr.Atom                                                          grid ¦
                           [0].identifier                                                            ｢grid｣
-                      [1].Pine.Stmt.Rhs                                                             seq[0, 1]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  seq[0, 1]¦
                         [0].Pine.StarExprs                                                          seq[0, 1]¦
                           [0].Pine.Expr.Primary.[                                                   seq[0, 1]¦
                             [0].Pine.Expr.Atom                                                      seq¦
@@ -3632,7 +3632,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         both ¦
                         [0].Pine.Expr.Atom                                                          both ¦
                           [0].identifier                                                            ｢both｣
-                      [1].Pine.Stmt.Rhs                                                             seq[: ... ::-1]¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  seq[: ... ::-1]¦
                         [0].Pine.StarExprs                                                          seq[: ... ::-1]¦
                           [0].Pine.Expr.Primary.[                                                   seq[: ... ::-1]¦
                             [0].Pine.Expr.Atom                                                      seq¦
@@ -3676,7 +3676,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         add ¦
                         [0].Pine.Expr.Atom                                                          add ¦
                           [0].identifier                                                            ｢add｣
-                      [1].Pine.Stmt.Rhs                                                             lambd ... a + b¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  lambd ... a + b¦
                         [0].Pine.StarExprs                                                          lambd ... a + b¦
                           [0].Pine.Expr.Lambda.lambda                                               lambd ... a + b¦
                             [0].Pine.LambdaParams                                                   a, b¦
@@ -3699,7 +3699,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         const ¦
                         [0].Pine.Expr.Atom                                                          const ¦
                           [0].identifier                                                            ｢const｣
-                      [1].Pine.Stmt.Rhs                                                             lambda: 0¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  lambda: 0¦
                         [0].Pine.StarExprs                                                          lambda: 0¦
                           [0].Pine.Expr.Lambda.lambda                                               lambda: 0¦
                             [0].Pine.LambdaParams                                                   ¦
@@ -3713,7 +3713,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         starred ¦
                         [0].Pine.Expr.Atom                                                          starred ¦
                           [0].identifier                                                            ｢starred｣
-                      [1].Pine.Stmt.Rhs                                                             lambd ... , kw)¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  lambd ... , kw)¦
                         [0].Pine.StarExprs                                                          lambd ... , kw)¦
                           [0].Pine.Expr.Lambda.lambda                                               lambd ... , kw)¦
                             [0].Pine.LambdaParams                                                   *a, **kw¦
@@ -3740,7 +3740,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         ternary ¦
                         [0].Pine.Expr.Atom                                                          ternary ¦
                           [0].identifier                                                            ｢ternary｣
-                      [1].Pine.Stmt.Rhs                                                             lambd ... lse \"small\"¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  lambd ... lse \"small\"¦
                         [0].Pine.StarExprs                                                          lambd ... lse \"small\"¦
                           [0].Pine.Expr.Lambda.lambda                                               lambd ... lse \"small\"¦
                             [0].Pine.LambdaParams                                                   x¦
@@ -3851,7 +3851,7 @@ Mr Jane
                               [0].Pine.Target.Stars                                                 values ¦
                                 [0].Pine.Expr.Atom                                                  values ¦
                                   [0].identifier                                                    ｢values｣
-                              [1].Pine.Stmt.Rhs                                                     values[2:]¦
+                              [1].Pine.Stmt.Assignment.Rhs                                          values[2:]¦
                                 [0].Pine.StarExprs                                                  values[2:]¦
                                   [0].Pine.Expr.Primary.[                                           values[2:]¦
                                     [0].Pine.Expr.Atom                                              values¦
@@ -4216,7 +4216,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         kind ¦
                         [0].Pine.Expr.Atom                                                          kind ¦
                           [0].identifier                                                            ｢kind｣
-                      [1].Pine.Stmt.Rhs                                                             \"point\"¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  \"point\"¦
                         [0].Pine.StarExprs                                                          \"point\"¦
                           [0].Pine.Expr.Atom                                                        \"point\"¦
                             [0].Pine.Expr.Strings                                                   \"point\"¦
@@ -4250,7 +4250,7 @@ Mr Jane
                                       [0].identifier                                                ｢self｣
                                     [1].Pine.Expr.Atom                                              x ¦
                                       [0].identifier                                                ｢x｣
-                                [1].Pine.Stmt.Rhs                                                   x¦
+                                [1].Pine.Stmt.Assignment.Rhs                                        x¦
                                   [0].Pine.StarExprs                                                x¦
                                     [0].Pine.Expr.Atom                                              x¦
                                       [0].identifier                                                ｢x｣
@@ -4265,7 +4265,7 @@ Mr Jane
                                       [0].identifier                                                ｢self｣
                                     [1].Pine.Expr.Atom                                              y ¦
                                       [0].identifier                                                ｢y｣
-                                [1].Pine.Stmt.Rhs                                                   y¦
+                                [1].Pine.Stmt.Assignment.Rhs                                        y¦
                                   [0].Pine.StarExprs                                                y¦
                                     [0].Pine.Expr.Atom                                              y¦
                                       [0].identifier                                                ｢y｣
@@ -4522,7 +4522,7 @@ Mr Jane
                               [0].Pine.Target.Stars                                                 results ¦
                                 [0].Pine.Expr.Atom                                                  results ¦
                                   [0].identifier                                                    ｢results｣
-                              [1].Pine.Stmt.Rhs                                                     []¦
+                              [1].Pine.Stmt.Assignment.Rhs                                          []¦
                                 [0].Pine.StarExprs                                                  []¦
                                   [0].Pine.Expr.Atom                                                []¦
                                     [0].Pine.Expr.List                                              []¦
@@ -4630,7 +4630,7 @@ Mr Jane
                       [0].Pine.Target.Stars                                                         value ¦
                         [0].Pine.Expr.Atom                                                          value ¦
                           [0].identifier                                                            ｢value｣
-                      [1].Pine.Stmt.Rhs                                                             yield¦
+                      [1].Pine.Stmt.Assignment.Rhs                                                  yield¦
                         [0].Pine.Expr.Yield                                                         yield¦
             [3].Pine.Stmt                                                                           retur ... ue<NEWLINE><WHITESPACE><WHITESPACE>¦
               [0].Pine.Stmt.Simples                                                                 retur ... ue<NEWLINE><WHITESPACE><WHITESPACE>¦
@@ -4658,7 +4658,7 @@ Mr Jane
                     [0].Pine.Target.Stars                                                           point ¦
                       [0].Pine.Expr.Atom                                                            point ¦
                         [0].identifier                                                              ｢point｣
-                    [1].Pine.Stmt.Rhs                                                               Point ... 3, 4)¦
+                    [1].Pine.Stmt.Assignment.Rhs                                                    Point ... 3, 4)¦
                       [0].Pine.StarExprs                                                            Point ... 3, 4)¦
                         [0].Pine.Expr.Primary.(                                                     Point ... 3, 4)¦
                           [0].Pine.Expr.Atom                                                        Point¦
@@ -4743,7 +4743,7 @@ Mr Jane
                     [0].Pine.Target.Stars                                                           x ¦
                       [0].Pine.Expr.Atom                                                            x ¦
                         [0].identifier                                                              ｢x｣
-                    [1].Pine.Stmt.Rhs                                                               1¦
+                    [1].Pine.Stmt.Assignment.Rhs                                                    1¦
                       [0].Pine.StarExprs                                                            1¦
                         [0].Pine.Expr.Atom                                                          1¦
                           [0].Pine.Expr.number                                                      ｢1｣
@@ -4753,7 +4753,7 @@ Mr Jane
                     [0].Pine.Target.Stars                                                           y ¦
                       [0].Pine.Expr.Atom                                                            y ¦
                         [0].identifier                                                              ｢y｣
-                    [1].Pine.Stmt.Rhs                                                               2¦
+                    [1].Pine.Stmt.Assignment.Rhs                                                    2¦
                       [0].Pine.StarExprs                                                            2¦
                         [0].Pine.Expr.Atom                                                          2¦
                           [0].Pine.Expr.number                                                      ｢2｣

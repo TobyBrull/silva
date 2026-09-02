@@ -38,6 +38,14 @@ language Pine:
 
     Compound = [ Function If Class With For Try While Match ]
 
+    Assignment:
+      ⊙ = Annotated | Plain | Augmented
+      Annotated = Expr.Primary ':' Expr ( '=' Rhs ) ?
+      Plain = ( Target.Stars '=' not '=' ) + Rhs
+      Augmented = Expr.Primary augassign Rhs
+      augassign = [ '+=' '-=' '*=' '@=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' '**=' '//=' ]
+      Rhs = Expr.Yield | StarExprs
+
     Return = "return" StarExprs ?
     Raise = "raise" ⇒ Expr ⇒ "from" Expr
     Pass = "pass"
@@ -60,15 +68,6 @@ language Pine:
       AsName = identifier ( "as" identifier ) ?
       DottedAsName = DottedName ( "as" identifier ) ?
       DottedName = identifier ( ε '.' identifier ) *
-
-    Assignment:
-      ⊙ = Annotated | Augmented | Plain
-      Annotated = Expr.Primary ':' not '=' Expr ( '=' not '=' Rhs ) ?
-      Plain = ( Target.Stars '=' not '=' ) + Rhs
-      Augmented = Expr.Primary augassign Rhs
-      augassign = [ '+=' '-=' '*=' '@=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' '**=' '//=' ]
-
-    Rhs = Expr.Yield | StarExprs
 
     Decorators = ( '@' Expr.Named newline ) +
 
