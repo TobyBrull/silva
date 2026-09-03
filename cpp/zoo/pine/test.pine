@@ -206,7 +206,7 @@ class Labelled[T](Point, metaclass=type):
         return "%s" % self.kind
 
 
-def generic[T, *Ts, **P](first: T, *rest: object) -> T:
+def generic[T, *Ts, **P](first: T, *rest: *list[object]) -> T:
     return first
 
 

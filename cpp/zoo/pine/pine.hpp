@@ -73,30 +73,34 @@ language Pine:
     Decorators = ( '@' Expr.Named newline ) +
     async = "async"
 
-    Class = Decorators ? "class" ~ identifier TypeParams ? ( '(' Arguments ')' ) ? ':' Block
+    Class = Decorators ? "class" ~ identifier TypeParams ( '(' Arguments ')' ) ? ':' Block
 
     Function:
-      ⊙ = Decorators ? async ? "def" ~ identifier TypeParams ? '(' Params ? ')' ( '->' Expr ) ? ':' Block
-      Params = Param ( ε ',' Param ) * ',' ?
-      Param = '/' | '**' ParamDef | '*' ParamDef ? | ParamDef
-      ParamDef = identifier ( ':' not '=' Expr ) ? ( '=' not '=' Expr ) ?
+      ⊙ = Decorators ? async ? "def" ~ identifier TypeParams '(' Params ')' ( '->' Expr ) ? ':' Block
+      Params = Param ( ε ',' Param ) * ',' ? | ε
+      Param = '/' | '**' ParamDef | '*' ParamDefStar ? | ParamDef
+      ParamDef = identifier ( ':' Expr ) ? ( '=' Expr ) ?
+      ParamDefStar = identifier ( ':' StarExpr ) ? ( '=' Expr ) ?
 
-    TypeAlias = "type" identifier TypeParams ? '=' Expr
+    TypeAlias = "type" identifier TypeParams '=' Expr
 
     If = "if" Expr.Named ':' Block Elif * Else ?
     Elif = "elif" Expr.Named ':' Block
     Else = "else" ':' Block
+
     While = "while" Expr.Named ':' Block Else ?
     For = async ? "for" ~ Target.Stars "in" StarExprs ':' Block Else ?
 
-    With = async ? "with" ~ WithItems ':' Block
-    WithItems = ε '(' WithItem ( ε ',' WithItem ) * ',' ? ')' | WithItem ( ε ',' WithItem ) *
-    WithItem = Expr ( "as" Target.Star ) ?
+    With:
+      ⊙ = async ? "with" ~ Items ':' Block
+      Items = Item ( ε ',' Item ) * | ε '(' Item ( ε ',' Item ) * ',' ? ')'
+      Item = Expr ( "as" Target.Star ) ?
 
-    Try = "try" ':' Block ( ExceptStar + | Except + ) ? Else ? Finally ?
-    Except = ε "except" ( Expr ( "as" identifier ) ? ) ? ':' Block
-    ExceptStar = ε "except" '*' Expr ( "as" identifier ) ? ':' Block
-    Finally = "finally" ':' Block
+    Try:
+      ⊙ = "try" ':' Block ( ExceptStar + | Except + ) ? Else ? Finally ?
+      Except = ε "except" ( Expr ( "as" identifier ) ? ) ? ':' Block
+      ExceptStar = ε "except" '*' Expr ( "as" identifier ) ? ':' Block
+      Finally = "finally" ':' Block
 
     Match = ε "match" SubjectExpr ':' newline indent Case + dedent
     Case = ε "case" Pattern.Patterns Guard ? ':' Block
@@ -104,7 +108,7 @@ language Pine:
     SubjectExpr = StarNamedExpr ',' StarNamedExprs ? | Expr.Named
 
   TypeParams:
-    ⊙ = '[' Singular ( ε ',' Singular ) * ',' ? ']'
+    ⊙ = '[' Singular ( ε ',' Singular ) * ',' ? ']' | ε
     Singular = no_node Normal | Star2 | Star1
     Normal = identifier ( ':' Expr ) ? Default ?
     Star1 = '*' identifier ( '=' StarExpr ) ?
@@ -116,7 +120,7 @@ language Pine:
   LambdaParamDef = identifier ( '=' not '=' Expr ) ?
 
   Arguments:
-    ⊙ = ( Singular ( ε ',' Singular ) * ',' ? ) ?
+    ⊙ = Singular ( ε ',' Singular ) * ',' ? | ε
     Singular = '**' Expr | '*' Expr | identifier '=' not '=' Expr | Expr.Named ForIfClauses ?
 
   Slices = Slice ( ε ',' Slice ) * ',' ?
@@ -165,7 +169,7 @@ language Pine:
            | identifier )
     GenExp = ε '(' Named ForIfClauses ')'
     Group = ε '(' ( Yield | Named ) ')'
-    Tuple = '(' ( StarNamedExpr ',' StarNamedExprs ? ) ? ')'
+    Tuple = ε '(' ( StarNamedExpr ',' StarNamedExprs ? ) ? ')'
     ListComp = ε '[' Named ForIfClauses ']'
     List = '[' StarNamedExprs ? ']'
     DictComp = ε '{' KvPair ForIfClauses '}'

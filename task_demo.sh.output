@@ -2320,18 +2320,20 @@ Mr Jane
       [0].Pine.Stmt.Simple                                                                          type  ...  dict¦
         [0].Pine.Stmt.TypeAlias                                                                     type  ...  dict¦
           [0].identifier                                                                            ｢Alias｣
-          [1].Pine.Expr.Atom                                                                        dict¦
+          [1].Pine.TypeParams                                                                       ¦
+          [2].Pine.Expr.Atom                                                                        dict¦
             [0].identifier                                                                          ｢dict｣
   [16].Pine.Stmt                                                                                    def d ... )<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          def d ... )<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def d ... )<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢describe｣
-        [1].Pine.Stmt.Function.Params                                                               value ... wargs¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               value ... wargs¦
           [0].Pine.Stmt.Function.Param                                                              value¦
             [0].Pine.Stmt.Function.ParamDef                                                         value¦
               [0].identifier                                                                        ｢value｣
           [1].Pine.Stmt.Function.Param                                                              *args¦
-            [0].Pine.Stmt.Function.ParamDef                                                         args¦
+            [0].Pine.Stmt.Function.ParamDefStar                                                     args¦
               [0].identifier                                                                        ｢args｣
           [2].Pine.Stmt.Function.Param                                                              sep=\", \"¦
             [0].Pine.Stmt.Function.ParamDef                                                         sep=\", \"¦
@@ -2342,7 +2344,7 @@ Mr Jane
           [3].Pine.Stmt.Function.Param                                                              **kwargs¦
             [0].Pine.Stmt.Function.ParamDef                                                         kwargs¦
               [0].identifier                                                                        ｢kwargs｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>\"\"\"Return a printable description.\"\"\" ... )<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>\"\"\"Return a printable description.\"\"\" ... )<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             \"\"\"Return a printable description.\"\"\"<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   \"\"\"Return a printable description.\"\"\"<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  \"\"\"Return a printable description.\"\"\"¦
@@ -2475,7 +2477,8 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def a ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def a ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢arithmetic｣
-        [1].Pine.Stmt.Function.Params                                                               a, b= ... , d=4¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               a, b= ... , d=4¦
           [0].Pine.Stmt.Function.Param                                                              a¦
             [0].Pine.Stmt.Function.ParamDef                                                         a¦
               [0].identifier                                                                        ｢a｣
@@ -2496,7 +2499,7 @@ Mr Jane
               [0].identifier                                                                        ｢d｣
               [1].Pine.Expr.Atom                                                                    4¦
                 [0].Pine.Expr.number                                                                ｢4｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>tot ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>tot ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             total ...  - d<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ...  - d<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ... c - d¦
@@ -2722,7 +2725,8 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def c ... 0<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def c ... 0<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢comparisons｣
-        [1].Pine.Stmt.Function.Params                                                               a, b, seq¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               a, b, seq¦
           [0].Pine.Stmt.Function.Param                                                              a¦
             [0].Pine.Stmt.Function.ParamDef                                                         a¦
               [0].identifier                                                                        ｢a｣
@@ -2732,7 +2736,7 @@ Mr Jane
           [2].Pine.Stmt.Function.Param                                                              seq¦
             [0].Pine.Stmt.Function.ParamDef                                                         seq¦
               [0].identifier                                                                        ｢seq｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>if  ... 0<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>if  ... 0<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             if a  ... rue<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  if a  ... rue<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.If                                                                      if a  ... rue<NEWLINE><DEDENT>¦
@@ -2829,11 +2833,12 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def b ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def b ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢branching｣
-        [1].Pine.Stmt.Function.Params                                                               n¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               n¦
           [0].Pine.Stmt.Function.Param                                                              n¦
             [0].Pine.Stmt.Function.ParamDef                                                         n¦
               [0].identifier                                                                        ｢n｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>if  ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>if  ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             if n  ... = 1<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  if n  ... = 1<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.If                                                                      if n  ... = 1<NEWLINE><DEDENT>¦
@@ -2958,14 +2963,15 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def l ... d<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def l ... d<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢looping｣
-        [1].Pine.Stmt.Function.Params                                                               rows, ... lumns¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               rows, ... lumns¦
           [0].Pine.Stmt.Function.Param                                                              rows¦
             [0].Pine.Stmt.Function.ParamDef                                                         rows¦
               [0].identifier                                                                        ｢rows｣
           [1].Pine.Stmt.Function.Param                                                              columns¦
             [0].Pine.Stmt.Function.ParamDef                                                         columns¦
               [0].identifier                                                                        ｢columns｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>tab ... d<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>tab ... d<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             table ... = []<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   table ... = []<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  table = []¦
@@ -3232,11 +3238,12 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def e ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def e ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢exceptional｣
-        [1].Pine.Stmt.Function.Params                                                               path¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               path¦
           [0].Pine.Stmt.Function.Param                                                              path¦
             [0].Pine.Stmt.Function.ParamDef                                                         path¦
               [0].identifier                                                                        ｢path｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>try ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>try ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             try:<NEWLINE> ... one<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  try:<NEWLINE> ... one<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.Try                                                                     try:<NEWLINE> ... one<NEWLINE><DEDENT>¦
@@ -3259,7 +3266,7 @@ Mr Jane
                                       [0].Pine.Expr.Named                                           path¦
                                         [0].Pine.Expr.Atom                                          path¦
                                           [0].identifier                                            ｢path｣
-                [1].Pine.Stmt.Except                                                                excep ... exc<NEWLINE><DEDENT>¦
+                [1].Pine.Stmt.Try.Except                                                            excep ... exc<NEWLINE><DEDENT>¦
                   [0].Pine.Expr.Atom                                                                FileN ... rror ¦
                     [0].identifier                                                                  ｢FileNotFoundError｣
                   [1].identifier                                                                    ｢exc｣
@@ -3279,7 +3286,7 @@ Mr Jane
                                         [0].Pine.Expr.stringLiteral                                 ｢"missing"｣
                             [1].Pine.Expr.Atom                                                      exc¦
                               [0].identifier                                                        ｢exc｣
-                [2].Pine.Stmt.Except                                                                excep ... one<NEWLINE><DEDENT>¦
+                [2].Pine.Stmt.Try.Except                                                            excep ... one<NEWLINE><DEDENT>¦
                   [0].Pine.Expr.Atom                                                                (OSEr ... rror)¦
                     [0].Pine.Expr.Tuple                                                             (OSEr ... rror)¦
                       [0].Pine.Expr.Named                                                           OSError¦
@@ -3296,7 +3303,7 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      retur ...  None¦
                             [0].Pine.StarExprs                                                      None¦
                               [0].Pine.Expr.Atom                                                    None¦
-                [3].Pine.Stmt.Except                                                                excep ... ise<NEWLINE><DEDENT>¦
+                [3].Pine.Stmt.Try.Except                                                            excep ... ise<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt.Block                                                               <NEWLINE><INDENT>raise<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   raise<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         raise<NEWLINE>¦
@@ -3321,7 +3328,7 @@ Mr Jane
                                       [1].Pine.Expr.Atom                                            read¦
                                         [0].identifier                                              ｢read｣
                                     [1].Pine.Arguments                                              ¦
-                [5].Pine.Stmt.Finally                                                               final ... one<NEWLINE><DEDENT>¦
+                [5].Pine.Stmt.Try.Finally                                                           final ... one<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt.Block                                                               <NEWLINE><INDENT>han ... one<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   handl ... None<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         handl ... None<NEWLINE>¦
@@ -3342,7 +3349,7 @@ Mr Jane
                     [0].Pine.Stmt.Simples                                                           pass<NEWLINE>¦
                       [0].Pine.Stmt.Simple                                                          pass¦
                         [0].Pine.Stmt.Pass                                                          pass¦
-                [1].Pine.Stmt.ExceptStar                                                            excep ... ass<NEWLINE><DEDENT>¦
+                [1].Pine.Stmt.Try.ExceptStar                                                        excep ... ass<NEWLINE><DEDENT>¦
                   [0].Pine.Expr.Atom                                                                TypeError ¦
                     [0].identifier                                                                  ｢TypeError｣
                   [1].identifier                                                                    ｢group｣
@@ -3354,8 +3361,8 @@ Mr Jane
           [2].Pine.Stmt                                                                             with  ... , \"distinct handles\"<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  with  ... , \"distinct handles\"<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.With                                                                    with  ... , \"distinct handles\"<NEWLINE><DEDENT>¦
-                [0].Pine.Stmt.WithItems                                                             open( ... s raw¦
-                  [0].Pine.Stmt.WithItem                                                            open( ... andle¦
+                [0].Pine.Stmt.With.Items                                                            open( ... s raw¦
+                  [0].Pine.Stmt.With.Item                                                           open( ... andle¦
                     [0].Pine.Expr.Primary.(                                                         open( ... ath) ¦
                       [0].Pine.Expr.Atom                                                            open¦
                         [0].identifier                                                              ｢open｣
@@ -3366,7 +3373,7 @@ Mr Jane
                               [0].identifier                                                        ｢path｣
                     [1].Pine.Expr.Atom                                                              handle¦
                       [0].identifier                                                                ｢handle｣
-                  [1].Pine.Stmt.WithItem                                                            open( ... s raw¦
+                  [1].Pine.Stmt.With.Item                                                           open( ... s raw¦
                     [0].Pine.Expr.Primary.(                                                         open( ... , \"rb\") ¦
                       [0].Pine.Expr.Atom                                                            open¦
                         [0].identifier                                                              ｢open｣
@@ -3398,8 +3405,8 @@ Mr Jane
           [3].Pine.Stmt                                                                             with  ... ass<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  with  ... ass<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.With                                                                    with  ... ass<NEWLINE><DEDENT>¦
-                [0].Pine.Stmt.WithItems                                                             (open ... cond)¦
-                  [0].Pine.Stmt.WithItem                                                            open( ... first¦
+                [0].Pine.Stmt.With.Items                                                            (open ... cond)¦
+                  [0].Pine.Stmt.With.Item                                                           open( ... first¦
                     [0].Pine.Expr.Primary.(                                                         open( ... ath) ¦
                       [0].Pine.Expr.Atom                                                            open¦
                         [0].identifier                                                              ｢open｣
@@ -3410,7 +3417,7 @@ Mr Jane
                               [0].identifier                                                        ｢path｣
                     [1].Pine.Expr.Atom                                                              first¦
                       [0].identifier                                                                ｢first｣
-                  [1].Pine.Stmt.WithItem                                                            open( ... econd¦
+                  [1].Pine.Stmt.With.Item                                                           open( ... econd¦
                     [0].Pine.Expr.Primary.(                                                         open( ... ath) ¦
                       [0].Pine.Expr.Atom                                                            open¦
                         [0].identifier                                                              ｢open｣
@@ -3437,7 +3444,9 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def s ... p<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def s ... p<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢scoping｣
-        [1].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>glo ... p<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               ¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>glo ... p<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             globa ... TING<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   globa ... TING<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  globa ... ETING¦
@@ -3459,7 +3468,9 @@ Mr Jane
             [0].Pine.Stmt.Compound                                                                  def b ... er<NEWLINE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def b ... er<NEWLINE><WHITESPACE><DEDENT>¦
                 [0].identifier                                                                      ｢bump｣
-                [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>non ... er<NEWLINE><WHITESPACE><DEDENT>¦
+                [1].Pine.TypeParams                                                                 ¦
+                [2].Pine.Stmt.Function.Params                                                       ¦
+                [3].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>non ... er<NEWLINE><WHITESPACE><DEDENT>¦
                   [0].Pine.Stmt                                                                     nonlo ... nter<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           nonlo ... nter<NEWLINE>¦
                       [0].Pine.Stmt.Simple                                                          nonlo ... unter¦
@@ -3495,11 +3506,12 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def s ... h<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def s ... h<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢slicing｣
-        [1].Pine.Stmt.Function.Params                                                               seq¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               seq¦
           [0].Pine.Stmt.Function.Param                                                              seq¦
             [0].Pine.Stmt.Function.ParamDef                                                         seq¦
               [0].identifier                                                                        ｢seq｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>hea ... h<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>hea ... h<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             head  ... q[0]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   head  ... q[0]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  head  ... eq[0]¦
@@ -3657,7 +3669,9 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def l ... y<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def l ... y<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢lambdas｣
-        [1].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>add ... y<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               ¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>add ... y<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             add = ...  + b<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   add = ...  + b<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  add = ... a + b¦
@@ -3766,11 +3780,12 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def w ... ]<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def w ... ]<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢walrus｣
-        [1].Pine.Stmt.Function.Params                                                               values¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               values¦
           [0].Pine.Stmt.Function.Param                                                              values¦
             [0].Pine.Stmt.Function.ParamDef                                                         values¦
               [0].identifier                                                                        ｢values｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>if  ... ]<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>if  ... ]<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             if (n ... =\" \")<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  if (n ... =\" \")<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.If                                                                      if (n ... =\" \")<NEWLINE><DEDENT>¦
@@ -3883,11 +3898,12 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def c ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def c ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
         [0].identifier                                                                              ｢classify｣
-        [1].Pine.Stmt.Function.Params                                                               command¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               command¦
           [0].Pine.Stmt.Function.Param                                                              command¦
             [0].Pine.Stmt.Function.ParamDef                                                         command¦
               [0].identifier                                                                        ｢command｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>mat ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>mat ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
           [0].Pine.Stmt                                                                             match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
               [0].Pine.Stmt.Match                                                                   match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
@@ -4194,7 +4210,8 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Class                                                                           class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
         [0].identifier                                                                              ｢Point｣
-        [1].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>kin ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>kin ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
           [0].Pine.Stmt                                                                             kind = \"point\"<NEWLINE><WHITESPACE>¦
             [0].Pine.Stmt.Simples                                                                   kind = \"point\"<NEWLINE><WHITESPACE>¦
               [0].Pine.Stmt.Simple                                                                  kind = \"point\"¦
@@ -4212,7 +4229,8 @@ Mr Jane
             [0].Pine.Stmt.Compound                                                                  def _ ...  y<NEWLINE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def _ ...  y<NEWLINE><WHITESPACE><DEDENT>¦
                 [0].identifier                                                                      ｢__init__｣
-                [1].Pine.Stmt.Function.Params                                                       self, ... , y=0¦
+                [1].Pine.TypeParams                                                                 ¦
+                [2].Pine.Stmt.Function.Params                                                       self, ... , y=0¦
                   [0].Pine.Stmt.Function.Param                                                      self¦
                     [0].Pine.Stmt.Function.ParamDef                                                 self¦
                       [0].identifier                                                                ｢self｣
@@ -4224,7 +4242,7 @@ Mr Jane
                       [0].identifier                                                                ｢y｣
                       [1].Pine.Expr.Atom                                                            0¦
                         [0].Pine.Expr.number                                                        ｢0｣
-                [2].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>sel ...  y<NEWLINE><WHITESPACE><DEDENT>¦
+                [3].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>sel ...  y<NEWLINE><WHITESPACE><DEDENT>¦
                   [0].Pine.Stmt                                                                     self. ...  = x<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           self. ...  = x<NEWLINE>¦
                       [0].Pine.Stmt.Simple                                                          self.x = x¦
@@ -4263,11 +4281,12 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              property¦
                       [0].identifier                                                                ｢property｣
                 [1].identifier                                                                      ｢norm｣
-                [2].Pine.Stmt.Function.Params                                                       self¦
+                [2].Pine.TypeParams                                                                 ¦
+                [3].Pine.Stmt.Function.Params                                                       self¦
                   [0].Pine.Stmt.Function.Param                                                      self¦
                     [0].Pine.Stmt.Function.ParamDef                                                 self¦
                       [0].identifier                                                                ｢self｣
-                [3].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... .5<NEWLINE><WHITESPACE><DEDENT>¦
+                [4].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... .5<NEWLINE><WHITESPACE><DEDENT>¦
                   [0].Pine.Stmt                                                                     retur ... 0.5<NEWLINE><WHITESPACE>¦
                     [0].Pine.Stmt.Simples                                                           retur ... 0.5<NEWLINE><WHITESPACE>¦
                       [0].Pine.Stmt.Simple                                                          retur ... * 0.5¦
@@ -4304,7 +4323,9 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              stati ... ethod¦
                       [0].identifier                                                                ｢staticmethod｣
                 [1].identifier                                                                      ｢origin｣
-                [2].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... 0)<NEWLINE><WHITESPACE><DEDENT>¦
+                [2].Pine.TypeParams                                                                 ¦
+                [3].Pine.Stmt.Function.Params                                                       ¦
+                [4].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... 0)<NEWLINE><WHITESPACE><DEDENT>¦
                   [0].Pine.Stmt                                                                     retur ...  0)<NEWLINE><WHITESPACE>¦
                     [0].Pine.Stmt.Simples                                                           retur ...  0)<NEWLINE><WHITESPACE>¦
                       [0].Pine.Stmt.Simple                                                          retur ... 0, 0)¦
@@ -4326,11 +4347,12 @@ Mr Jane
             [0].Pine.Stmt.Compound                                                                  def _ ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def _ ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
                 [0].identifier                                                                      ｢__repr__｣
-                [1].Pine.Stmt.Function.Params                                                       self¦
+                [1].Pine.TypeParams                                                                 ¦
+                [2].Pine.Stmt.Function.Params                                                       self¦
                   [0].Pine.Stmt.Function.Param                                                      self¦
                     [0].Pine.Stmt.Function.ParamDef                                                 self¦
                       [0].identifier                                                                ｢self｣
-                [2].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+                [3].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
                   [0].Pine.Stmt                                                                     retur ...  \")\"<NEWLINE><WHITESPACE><WHITESPACE>¦
                     [0].Pine.Stmt.Simples                                                           retur ...  \")\"<NEWLINE><WHITESPACE><WHITESPACE>¦
                       [0].Pine.Stmt.Simple                                                          retur ... ) + \")\"¦
@@ -4392,13 +4414,14 @@ Mr Jane
             [0].Pine.Stmt.Compound                                                                  def l ... d<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def l ... d<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
                 [0].identifier                                                                      ｢label｣
-                [1].Pine.Stmt.Function.Params                                                       self¦
+                [1].Pine.TypeParams                                                                 ¦
+                [2].Pine.Stmt.Function.Params                                                       self¦
                   [0].Pine.Stmt.Function.Param                                                      self¦
                     [0].Pine.Stmt.Function.ParamDef                                                 self¦
                       [0].identifier                                                                ｢self｣
-                [2].Pine.Expr.Atom                                                                  str¦
+                [3].Pine.Expr.Atom                                                                  str¦
                   [0].identifier                                                                    ｢str｣
-                [3].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... d<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+                [4].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ret ... d<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
                   [0].Pine.Stmt                                                                     retur ... nd<NEWLINE><WHITESPACE><WHITESPACE>¦
                     [0].Pine.Stmt.Simples                                                           retur ... nd<NEWLINE><WHITESPACE><WHITESPACE>¦
                       [0].Pine.Stmt.Simple                                                          retur ... .kind¦
@@ -4424,17 +4447,24 @@ Mr Jane
             [0].identifier                                                                          ｢Ts｣
           [2].Pine.TypeParams.Star2                                                                 **P¦
             [0].identifier                                                                          ｢P｣
-        [2].Pine.Stmt.Function.Params                                                               first ... bject¦
+        [2].Pine.Stmt.Function.Params                                                               first ... ject]¦
           [0].Pine.Stmt.Function.Param                                                              first: T¦
             [0].Pine.Stmt.Function.ParamDef                                                         first: T¦
               [0].identifier                                                                        ｢first｣
               [1].Pine.Expr.Atom                                                                    T¦
                 [0].identifier                                                                      ｢T｣
-          [1].Pine.Stmt.Function.Param                                                              *rest ... bject¦
-            [0].Pine.Stmt.Function.ParamDef                                                         rest: ... bject¦
+          [1].Pine.Stmt.Function.Param                                                              *rest ... ject]¦
+            [0].Pine.Stmt.Function.ParamDefStar                                                     rest: ... ject]¦
               [0].identifier                                                                        ｢rest｣
-              [1].Pine.Expr.Atom                                                                    object¦
-                [0].identifier                                                                      ｢object｣
+              [1].Pine.Starred                                                                      *list ... ject]¦
+                [0].Pine.Expr.Primary.[                                                             list[ ... ject]¦
+                  [0].Pine.Expr.Atom                                                                list¦
+                    [0].identifier                                                                  ｢list｣
+                  [1].Pine.Slices                                                                   object¦
+                    [0].Pine.Slice                                                                  object¦
+                      [0].Pine.Expr.Named                                                           object¦
+                        [0].Pine.Expr.Atom                                                          object¦
+                          [0].identifier                                                            ｢object｣
         [3].Pine.Expr.Atom                                                                          T¦
           [0].identifier                                                                            ｢T｣
         [4].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>ret ... t<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
@@ -4449,11 +4479,12 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def t ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def t ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢trace｣
-        [1].Pine.Stmt.Function.Params                                                               fn¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               fn¦
           [0].Pine.Stmt.Function.Param                                                              fn¦
             [0].Pine.Stmt.Function.ParamDef                                                         fn¦
               [0].identifier                                                                        ｢fn｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>ret ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>ret ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             retur ... fn<NEWLINE><WHITESPACE><WHITESPACE>¦
             [0].Pine.Stmt.Simples                                                                   retur ... fn<NEWLINE><WHITESPACE><WHITESPACE>¦
               [0].Pine.Stmt.Simple                                                                  return fn¦
@@ -4470,20 +4501,21 @@ Mr Jane
               [0].identifier                                                                        ｢trace｣
         [1].Pine.Stmt.async                                                                         ｢async｣
         [2].identifier                                                                              ｢fetch｣
-        [3].Pine.Stmt.Function.Params                                                               sessi ...  urls¦
+        [3].Pine.TypeParams                                                                         ¦
+        [4].Pine.Stmt.Function.Params                                                               sessi ...  urls¦
           [0].Pine.Stmt.Function.Param                                                              session¦
             [0].Pine.Stmt.Function.ParamDef                                                         session¦
               [0].identifier                                                                        ｢session｣
           [1].Pine.Stmt.Function.Param                                                              urls¦
             [0].Pine.Stmt.Function.ParamDef                                                         urls¦
               [0].identifier                                                                        ｢urls｣
-        [4].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>asy ... s<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [5].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>asy ... s<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             async ... ))<NEWLINE><DEDENT><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  async ... ))<NEWLINE><DEDENT><DEDENT>¦
               [0].Pine.Stmt.With                                                                    async ... ))<NEWLINE><DEDENT><DEDENT>¦
                 [0].Pine.Stmt.async                                                                 ｢async｣
-                [1].Pine.Stmt.WithItems                                                             sessi ... as tx¦
-                  [0].Pine.Stmt.WithItem                                                            sessi ... as tx¦
+                [1].Pine.Stmt.With.Items                                                            sessi ... as tx¦
+                  [0].Pine.Stmt.With.Item                                                           sessi ... as tx¦
                     [0].Pine.Expr.Primary.(                                                         sessi ... in() ¦
                       [0].Pine.Expr.Primary..                                                       sessi ... begin¦
                         [0].Pine.Expr.Atom                                                          session¦
@@ -4553,11 +4585,12 @@ Mr Jane
     [0].Pine.Stmt.Compound                                                                          def g ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def g ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢generating｣
-        [1].Pine.Stmt.Function.Params                                                               n¦
+        [1].Pine.TypeParams                                                                         ¦
+        [2].Pine.Stmt.Function.Params                                                               n¦
           [0].Pine.Stmt.Function.Param                                                              n¦
             [0].Pine.Stmt.Function.ParamDef                                                         n¦
               [0].identifier                                                                        ｢n｣
-        [2].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>for ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>for ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             for i ... d i<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  for i ... d i<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.For                                                                     for i ... d i<NEWLINE><DEDENT>¦
