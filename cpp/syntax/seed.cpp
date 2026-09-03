@@ -40,15 +40,10 @@ namespace silva::seed::impl {
                          "expected fragment with category ID_LOWER; got {}",
                          fragment_category_by());
       fragment_index += 1;
-      while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
+      while (num_fragments_left() >= 1 &&
+             (fragment_category_by() == ID_UPPER || fragment_category_by() == ID_LOWER ||
+              fragment_category_by() == DIGIT)) {
         fragment_index += 1;
-      }
-      while (num_fragments_left() >= 2 && fragment_category_by(0) == ID_UPPER &&
-             fragment_category_by(1) == ID_LOWER) {
-        fragment_index += 2;
-        while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
-          fragment_index += 1;
-        }
       }
       SILVA_EXPECT(num_fragments_left() == 0 ||
                        !is_fragment_category_id_continue(fragment_category_by()),
@@ -64,20 +59,10 @@ namespace silva::seed::impl {
                          "expected fragment with category ID_UPPER; got {}",
                          fragment_category_by());
       fragment_index += 1;
-      SILVA_EXPECT_PARSE(lexicon.ni_id_pascal,
-                         num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER,
-                         "expected fragment with category ID_LOWER; got {}",
-                         fragment_category_by());
-      fragment_index += 1;
-      while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
+      while (num_fragments_left() >= 1 &&
+             (fragment_category_by() == ID_UPPER || fragment_category_by() == ID_LOWER ||
+              fragment_category_by() == DIGIT)) {
         fragment_index += 1;
-      }
-      while (num_fragments_left() >= 2 && fragment_category_by(0) == ID_UPPER &&
-             fragment_category_by(1) == ID_LOWER) {
-        fragment_index += 2;
-        while (num_fragments_left() >= 1 && fragment_category_by() == ID_LOWER) {
-          fragment_index += 1;
-        }
       }
       SILVA_EXPECT(num_fragments_left() == 0 ||
                        !is_fragment_category_id_continue(fragment_category_by()),
@@ -93,15 +78,10 @@ namespace silva::seed::impl {
                          "expected fragment with category ID_UPPER; got {}",
                          fragment_category_by());
       fragment_index += 1;
-      while (num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER) {
+      while (num_fragments_left() >= 1 &&
+             (fragment_unique_codepoint_or_zero_by() == U'_' ||
+              fragment_category_by() == ID_UPPER || fragment_category_by() == DIGIT)) {
         fragment_index += 1;
-      }
-      while (num_fragments_left() >= 2 && fragment_unique_codepoint_or_zero_by(0) == U'_' &&
-             fragment_category_by(1) == ID_UPPER) {
-        fragment_index += 2;
-        while (num_fragments_left() >= 1 && fragment_category_by() == ID_UPPER) {
-          fragment_index += 1;
-        }
       }
       SILVA_EXPECT(num_fragments_left() == 0 ||
                        !is_fragment_category_id_continue(fragment_category_by()),

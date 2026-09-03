@@ -19,11 +19,11 @@ operator:
 identifier:
   ⊙ = ID_START ID_CONTINUE *
   withDashes  = no_node ID_START ( ID_CONTINUE | '-' ) *
-  kebabCase   = no_node ID_LOWER + ( '-' [ ID_LOWER DIGIT ] + ) *   not ID_CONTINUE
+  kebabCase   = no_node ID_LOWER [ '-' ID_LOWER DIGIT ] *           not ID_CONTINUE
   snakeCase   = no_node [ '_' ID_LOWER DIGIT ] +                    not ID_CONTINUE
-  camelCase   = no_node ID_LOWER + ( ID_UPPER ID_LOWER + ) *        not ID_CONTINUE
-  pascalCase  = no_node ( ID_UPPER ID_LOWER + ) +                   not ID_CONTINUE
-  macroCase   = no_node ID_UPPER + ( '_' ID_UPPER + ) *             not ID_CONTINUE
+  camelCase   = no_node ID_LOWER [ ID_UPPER ID_LOWER DIGIT ] *      not ID_CONTINUE
+  pascalCase  = no_node ID_UPPER [ ID_UPPER ID_LOWER DIGIT ] *      not ID_CONTINUE
+  macroCase   = no_node ID_UPPER [ '_' ID_UPPER DIGIT ] +           not ID_CONTINUE
 
 none = "none"
 
