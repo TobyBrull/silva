@@ -2370,7 +2370,7 @@ Mr Jane
                                   [0].Pine.Expr.Atom                                                repr¦
                                     [0].identifier                                                  ｢repr｣
                                   [1].Pine.Arguments                                                value¦
-                                    [0].Pine.Arg                                                    value¦
+                                    [0].Pine.Arguments.Singular                                     value¦
                                       [0].Pine.Expr.Named                                           value¦
                                         [0].Pine.Expr.Atom                                          value¦
                                           [0].identifier                                            ｢value｣
@@ -2395,13 +2395,13 @@ Mr Jane
                               [1].Pine.Expr.Atom                                                    append¦
                                 [0].identifier                                                      ｢append｣
                             [1].Pine.Arguments                                                      repr(arg)¦
-                              [0].Pine.Arg                                                          repr(arg)¦
+                              [0].Pine.Arguments.Singular                                           repr(arg)¦
                                 [0].Pine.Expr.Named                                                 repr(arg)¦
                                   [0].Pine.Expr.Primary.(                                           repr(arg)¦
                                     [0].Pine.Expr.Atom                                              repr¦
                                       [0].identifier                                                ｢repr｣
                                     [1].Pine.Arguments                                              arg¦
-                                      [0].Pine.Arg                                                  arg¦
+                                      [0].Pine.Arguments.Singular                                   arg¦
                                         [0].Pine.Expr.Named                                         arg¦
                                           [0].Pine.Expr.Atom                                        arg¦
                                             [0].identifier                                          ｢arg｣
@@ -2416,7 +2416,7 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              sorted¦
                       [0].identifier                                                                ｢sorted｣
                     [1].Pine.Arguments                                                              kwargs¦
-                      [0].Pine.Arg                                                                  kwargs¦
+                      [0].Pine.Arguments.Singular                                                   kwargs¦
                         [0].Pine.Expr.Named                                                         kwargs¦
                           [0].Pine.Expr.Atom                                                        kwargs¦
                             [0].identifier                                                          ｢kwargs｣
@@ -2432,7 +2432,7 @@ Mr Jane
                               [1].Pine.Expr.Atom                                                    append¦
                                 [0].identifier                                                      ｢append｣
                             [1].Pine.Arguments                                                      key + ... key])¦
-                              [0].Pine.Arg                                                          key + ... key])¦
+                              [0].Pine.Arguments.Singular                                           key + ... key])¦
                                 [0].Pine.Expr.Named                                                 key + ... key])¦
                                   [0].Pine.Expr.Sum.+                                               key + ... key])¦
                                     [0].Pine.Expr.Sum.+                                             key + \"=\" ¦
@@ -2445,7 +2445,7 @@ Mr Jane
                                       [0].Pine.Expr.Atom                                            repr¦
                                         [0].identifier                                              ｢repr｣
                                       [1].Pine.Arguments                                            kwarg ... [key]¦
-                                        [0].Pine.Arg                                                kwarg ... [key]¦
+                                        [0].Pine.Arguments.Singular                                 kwarg ... [key]¦
                                           [0].Pine.Expr.Named                                       kwarg ... [key]¦
                                             [0].Pine.Expr.Primary.[                                 kwarg ... [key]¦
                                               [0].Pine.Expr.Atom                                    kwargs¦
@@ -2467,7 +2467,7 @@ Mr Jane
                         [1].Pine.Expr.Atom                                                          join¦
                           [0].identifier                                                            ｢join｣
                       [1].Pine.Arguments                                                            parts¦
-                        [0].Pine.Arg                                                                parts¦
+                        [0].Pine.Arguments.Singular                                                 parts¦
                           [0].Pine.Expr.Named                                                       parts¦
                             [0].Pine.Expr.Atom                                                      parts¦
                               [0].identifier                                                        ｢parts｣
@@ -2991,7 +2991,7 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              enumerate¦
                       [0].identifier                                                                ｢enumerate｣
                     [1].Pine.Arguments                                                              rows¦
-                      [0].Pine.Arg                                                                  rows¦
+                      [0].Pine.Arguments.Singular                                                   rows¦
                         [0].Pine.Expr.Named                                                         rows¦
                           [0].Pine.Expr.Atom                                                        rows¦
                             [0].identifier                                                          ｢rows｣
@@ -3017,7 +3017,7 @@ Mr Jane
                                       [1].Pine.Expr.Atom                                            append¦
                                         [0].identifier                                              ｢append｣
                                     [1].Pine.Arguments                                              (i, r ... lumn)¦
-                                      [0].Pine.Arg                                                  (i, r ... lumn)¦
+                                      [0].Pine.Arguments.Singular                                   (i, r ... lumn)¦
                                         [0].Pine.Expr.Named                                         (i, r ... lumn)¦
                                           [0].Pine.Expr.Atom                                        (i, r ... lumn)¦
                                             [0].Pine.Expr.Tuple                                     (i, r ... lumn)¦
@@ -3072,7 +3072,7 @@ Mr Jane
                                   [0].Pine.Expr.Atom                                                range¦
                                     [0].identifier                                                  ｢range｣
                                   [1].Pine.Arguments                                                10¦
-                                    [0].Pine.Arg                                                    10¦
+                                    [0].Pine.Arguments.Singular                                     10¦
                                       [0].Pine.Expr.Named                                           10¦
                                         [0].Pine.Expr.Atom                                          10¦
                                           [0].Pine.Expr.number                                      ｢10｣
@@ -3190,7 +3190,7 @@ Mr Jane
                                   [0].Pine.Expr.Atom                                                range¦
                                     [0].identifier                                                  ｢range｣
                                   [1].Pine.Arguments                                                3¦
-                                    [0].Pine.Arg                                                    3¦
+                                    [0].Pine.Arguments.Singular                                     3¦
                                       [0].Pine.Expr.Named                                           3¦
                                         [0].Pine.Expr.Atom                                          3¦
                                           [0].Pine.Expr.number                                      ｢3｣
@@ -3202,7 +3202,7 @@ Mr Jane
                                   [0].Pine.Expr.Atom                                                range¦
                                     [0].identifier                                                  ｢range｣
                                   [1].Pine.Arguments                                                3¦
-                                    [0].Pine.Arg                                                    3¦
+                                    [0].Pine.Arguments.Singular                                     3¦
                                       [0].Pine.Expr.Named                                           3¦
                                         [0].Pine.Expr.Atom                                          3¦
                                           [0].Pine.Expr.number                                      ｢3｣
@@ -3255,7 +3255,7 @@ Mr Jane
                                   [0].Pine.Expr.Atom                                                open¦
                                     [0].identifier                                                  ｢open｣
                                   [1].Pine.Arguments                                                path¦
-                                    [0].Pine.Arg                                                    path¦
+                                    [0].Pine.Arguments.Singular                                     path¦
                                       [0].Pine.Expr.Named                                           path¦
                                         [0].Pine.Expr.Atom                                          path¦
                                           [0].identifier                                            ｢path｣
@@ -3272,7 +3272,7 @@ Mr Jane
                               [0].Pine.Expr.Atom                                                    Runti ... Error¦
                                 [0].identifier                                                      ｢RuntimeError｣
                               [1].Pine.Arguments                                                    \"missing\"¦
-                                [0].Pine.Arg                                                        \"missing\"¦
+                                [0].Pine.Arguments.Singular                                         \"missing\"¦
                                   [0].Pine.Expr.Named                                               \"missing\"¦
                                     [0].Pine.Expr.Atom                                              \"missing\"¦
                                       [0].Pine.Expr.Strings                                         \"missing\"¦
@@ -3360,7 +3360,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            open¦
                         [0].identifier                                                              ｢open｣
                       [1].Pine.Arguments                                                            path¦
-                        [0].Pine.Arg                                                                path¦
+                        [0].Pine.Arguments.Singular                                                 path¦
                           [0].Pine.Expr.Named                                                       path¦
                             [0].Pine.Expr.Atom                                                      path¦
                               [0].identifier                                                        ｢path｣
@@ -3371,11 +3371,11 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            open¦
                         [0].identifier                                                              ｢open｣
                       [1].Pine.Arguments                                                            path, \"rb\"¦
-                        [0].Pine.Arg                                                                path¦
+                        [0].Pine.Arguments.Singular                                                 path¦
                           [0].Pine.Expr.Named                                                       path¦
                             [0].Pine.Expr.Atom                                                      path¦
                               [0].identifier                                                        ｢path｣
-                        [1].Pine.Arg                                                                \"rb\"¦
+                        [1].Pine.Arguments.Singular                                                 \"rb\"¦
                           [0].Pine.Expr.Named                                                       \"rb\"¦
                             [0].Pine.Expr.Atom                                                      \"rb\"¦
                               [0].Pine.Expr.Strings                                                 \"rb\"¦
@@ -3404,7 +3404,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            open¦
                         [0].identifier                                                              ｢open｣
                       [1].Pine.Arguments                                                            path¦
-                        [0].Pine.Arg                                                                path¦
+                        [0].Pine.Arguments.Singular                                                 path¦
                           [0].Pine.Expr.Named                                                       path¦
                             [0].Pine.Expr.Atom                                                      path¦
                               [0].identifier                                                        ｢path｣
@@ -3415,7 +3415,7 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            open¦
                         [0].identifier                                                              ｢open｣
                       [1].Pine.Arguments                                                            path¦
-                        [0].Pine.Arg                                                                path¦
+                        [0].Pine.Arguments.Singular                                                 path¦
                           [0].Pine.Expr.Named                                                       path¦
                             [0].Pine.Expr.Atom                                                      path¦
                               [0].identifier                                                        ｢path｣
@@ -3785,7 +3785,7 @@ Mr Jane
                               [0].Pine.Expr.Atom                                                    len¦
                                 [0].identifier                                                      ｢len｣
                               [1].Pine.Arguments                                                    values¦
-                                [0].Pine.Arg                                                        values¦
+                                [0].Pine.Arguments.Singular                                         values¦
                                   [0].Pine.Expr.Named                                               values¦
                                     [0].Pine.Expr.Atom                                              values¦
                                       [0].identifier                                                ｢values｣
@@ -3800,17 +3800,17 @@ Mr Jane
                             [0].Pine.Expr.Atom                                                      print¦
                               [0].identifier                                                        ｢print｣
                             [1].Pine.Arguments                                                      f\"{n} values\", \"are plenty\" ... sep=\" \"¦
-                              [0].Pine.Arg                                                          f\"{n} values\"¦
+                              [0].Pine.Arguments.Singular                                           f\"{n} values\"¦
                                 [0].Pine.Expr.Named                                                 f\"{n} values\"¦
                                   [0].Pine.Expr.Atom                                                f\"{n} values\"¦
                                     [0].Pine.Expr.Strings                                           f\"{n} values\"¦
                                       [0].Pine.Expr.stringLiteral                                   ｢f"{n} values"｣
-                              [1].Pine.Arg                                                          \"are plenty\"¦
+                              [1].Pine.Arguments.Singular                                           \"are plenty\"¦
                                 [0].Pine.Expr.Named                                                 \"are plenty\"¦
                                   [0].Pine.Expr.Atom                                                \"are plenty\"¦
                                     [0].Pine.Expr.Strings                                           \"are plenty\"¦
                                       [0].Pine.Expr.stringLiteral                                   ｢"are plenty"｣
-                              [2].Pine.Arg                                                          sep=\" \"¦
+                              [2].Pine.Arguments.Singular                                           sep=\" \"¦
                                 [0].identifier                                                      ｢sep｣
                                 [1].Pine.Expr.Atom                                                  \" \"¦
                                   [0].Pine.Expr.Strings                                             \" \"¦
@@ -4314,11 +4314,11 @@ Mr Jane
                               [0].Pine.Expr.Atom                                                    Point¦
                                 [0].identifier                                                      ｢Point｣
                               [1].Pine.Arguments                                                    0, 0¦
-                                [0].Pine.Arg                                                        0¦
+                                [0].Pine.Arguments.Singular                                         0¦
                                   [0].Pine.Expr.Named                                               0¦
                                     [0].Pine.Expr.Atom                                              0¦
                                       [0].Pine.Expr.number                                          ｢0｣
-                                [1].Pine.Arg                                                        0¦
+                                [1].Pine.Arguments.Singular                                         0¦
                                   [0].Pine.Expr.Named                                               0¦
                                     [0].Pine.Expr.Atom                                              0¦
                                       [0].Pine.Expr.number                                          ｢0｣
@@ -4347,7 +4347,7 @@ Mr Jane
                                       [0].Pine.Expr.Atom                                            str¦
                                         [0].identifier                                              ｢str｣
                                       [1].Pine.Arguments                                            self.x¦
-                                        [0].Pine.Arg                                                self.x¦
+                                        [0].Pine.Arguments.Singular                                 self.x¦
                                           [0].Pine.Expr.Named                                       self.x¦
                                             [0].Pine.Expr.Primary..                                 self.x¦
                                               [0].Pine.Expr.Atom                                    self¦
@@ -4361,7 +4361,7 @@ Mr Jane
                                   [0].Pine.Expr.Atom                                                str¦
                                     [0].identifier                                                  ｢str｣
                                   [1].Pine.Arguments                                                self.y¦
-                                    [0].Pine.Arg                                                    self.y¦
+                                    [0].Pine.Arguments.Singular                                     self.y¦
                                       [0].Pine.Expr.Named                                           self.y¦
                                         [0].Pine.Expr.Primary..                                     self.y¦
                                           [0].Pine.Expr.Atom                                        self¦
@@ -4376,14 +4376,14 @@ Mr Jane
       [0].Pine.Stmt.Class                                                                           class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
         [0].identifier                                                                              ｢Labelled｣
         [1].Pine.TypeParams                                                                         [T]¦
-          [0].Pine.TypeParams.Single                                                                T¦
+          [0].Pine.TypeParams.Normal                                                                T¦
             [0].identifier                                                                          ｢T｣
         [2].Pine.Arguments                                                                          Point ... =type¦
-          [0].Pine.Arg                                                                              Point¦
+          [0].Pine.Arguments.Singular                                                               Point¦
             [0].Pine.Expr.Named                                                                     Point¦
               [0].Pine.Expr.Atom                                                                    Point¦
                 [0].identifier                                                                      ｢Point｣
-          [1].Pine.Arg                                                                              metac ... =type¦
+          [1].Pine.Arguments.Singular                                                               metac ... =type¦
             [0].identifier                                                                          ｢metaclass｣
             [1].Pine.Expr.Atom                                                                      type¦
               [0].identifier                                                                        ｢type｣
@@ -4418,11 +4418,11 @@ Mr Jane
       [0].Pine.Stmt.Function                                                                        def g ... t<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢generic｣
         [1].Pine.TypeParams                                                                         [T, * ...  **P]¦
-          [0].Pine.TypeParams.Single                                                                T¦
+          [0].Pine.TypeParams.Normal                                                                T¦
             [0].identifier                                                                          ｢T｣
-          [1].Pine.TypeParams.Single                                                                *Ts¦
+          [1].Pine.TypeParams.Star1                                                                 *Ts¦
             [0].identifier                                                                          ｢Ts｣
-          [2].Pine.TypeParams.Single                                                                **P¦
+          [2].Pine.TypeParams.Star2                                                                 **P¦
             [0].identifier                                                                          ｢P｣
         [2].Pine.Stmt.Function.Params                                                               first ... bject¦
           [0].Pine.Stmt.Function.Param                                                              first: T¦
@@ -4528,7 +4528,7 @@ Mr Jane
                                       [1].Pine.Expr.Atom                                            append¦
                                         [0].identifier                                              ｢append｣
                                     [1].Pine.Arguments                                              await ... (url)¦
-                                      [0].Pine.Arg                                                  await ... (url)¦
+                                      [0].Pine.Arguments.Singular                                   await ... (url)¦
                                         [0].Pine.Expr.Named                                         await ... (url)¦
                                           [0].Pine.Expr.Await.await                                 await ... (url)¦
                                             [0].Pine.Expr.Primary.(                                 sessi ... (url)¦
@@ -4538,7 +4538,7 @@ Mr Jane
                                                 [1].Pine.Expr.Atom                                  get¦
                                                   [0].identifier                                    ｢get｣
                                               [1].Pine.Arguments                                    url¦
-                                                [0].Pine.Arg                                        url¦
+                                                [0].Pine.Arguments.Singular                         url¦
                                                   [0].Pine.Expr.Named                               url¦
                                                     [0].Pine.Expr.Atom                              url¦
                                                       [0].identifier                                ｢url｣
@@ -4569,7 +4569,7 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              range¦
                       [0].identifier                                                                ｢range｣
                     [1].Pine.Arguments                                                              n¦
-                      [0].Pine.Arg                                                                  n¦
+                      [0].Pine.Arguments.Singular                                                   n¦
                         [0].Pine.Expr.Named                                                         n¦
                           [0].Pine.Expr.Atom                                                        n¦
                             [0].identifier                                                          ｢n｣
@@ -4591,11 +4591,11 @@ Mr Jane
                       [0].Pine.Expr.Atom                                                            range¦
                         [0].identifier                                                              ｢range｣
                       [1].Pine.Arguments                                                            n, 2 * n¦
-                        [0].Pine.Arg                                                                n¦
+                        [0].Pine.Arguments.Singular                                                 n¦
                           [0].Pine.Expr.Named                                                       n¦
                             [0].Pine.Expr.Atom                                                      n¦
                               [0].identifier                                                        ｢n｣
-                        [1].Pine.Arg                                                                2 * n¦
+                        [1].Pine.Arguments.Singular                                                 2 * n¦
                           [0].Pine.Expr.Named                                                       2 * n¦
                             [0].Pine.Expr.Term.*                                                    2 * n¦
                               [0].Pine.Expr.Atom                                                    2 ¦
@@ -4644,11 +4644,11 @@ Mr Jane
                           [0].Pine.Expr.Atom                                                        Point¦
                             [0].identifier                                                          ｢Point｣
                           [1].Pine.Arguments                                                        3, 4¦
-                            [0].Pine.Arg                                                            3¦
+                            [0].Pine.Arguments.Singular                                             3¦
                               [0].Pine.Expr.Named                                                   3¦
                                 [0].Pine.Expr.Atom                                                  3¦
                                   [0].Pine.Expr.number                                              ｢3｣
-                            [1].Pine.Arg                                                            4¦
+                            [1].Pine.Arguments.Singular                                             4¦
                               [0].Pine.Expr.Named                                                   4¦
                                 [0].Pine.Expr.Atom                                                  4¦
                                   [0].Pine.Expr.number                                              ｢4｣
@@ -4660,17 +4660,17 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              print¦
                       [0].identifier                                                                ｢print｣
                     [1].Pine.Arguments                                                              descr ... .norm¦
-                      [0].Pine.Arg                                                                  descr ... oint)¦
+                      [0].Pine.Arguments.Singular                                                   descr ... oint)¦
                         [0].Pine.Expr.Named                                                         descr ... oint)¦
                           [0].Pine.Expr.Primary.(                                                   descr ... oint)¦
                             [0].Pine.Expr.Atom                                                      describe¦
                               [0].identifier                                                        ｢describe｣
                             [1].Pine.Arguments                                                      point¦
-                              [0].Pine.Arg                                                          point¦
+                              [0].Pine.Arguments.Singular                                           point¦
                                 [0].Pine.Expr.Named                                                 point¦
                                   [0].Pine.Expr.Atom                                                point¦
                                     [0].identifier                                                  ｢point｣
-                      [1].Pine.Arg                                                                  point.norm¦
+                      [1].Pine.Arguments.Singular                                                   point.norm¦
                         [0].Pine.Expr.Named                                                         point.norm¦
                           [0].Pine.Expr.Primary..                                                   point.norm¦
                             [0].Pine.Expr.Atom                                                      point¦
@@ -4685,24 +4685,24 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              print¦
                       [0].identifier                                                                ｢print｣
                     [1].Pine.Arguments                                                              class ... , \"north\"])¦
-                      [0].Pine.Arg                                                                  class ... fy(\"quit\")¦
+                      [0].Pine.Arguments.Singular                                                   class ... fy(\"quit\")¦
                         [0].Pine.Expr.Named                                                         class ... fy(\"quit\")¦
                           [0].Pine.Expr.Primary.(                                                   class ... fy(\"quit\")¦
                             [0].Pine.Expr.Atom                                                      classify¦
                               [0].identifier                                                        ｢classify｣
                             [1].Pine.Arguments                                                      \"quit\"¦
-                              [0].Pine.Arg                                                          \"quit\"¦
+                              [0].Pine.Arguments.Singular                                           \"quit\"¦
                                 [0].Pine.Expr.Named                                                 \"quit\"¦
                                   [0].Pine.Expr.Atom                                                \"quit\"¦
                                     [0].Pine.Expr.Strings                                           \"quit\"¦
                                       [0].Pine.Expr.stringLiteral                                   ｢"quit"｣
-                      [1].Pine.Arg                                                                  class ... , \"north\"])¦
+                      [1].Pine.Arguments.Singular                                                   class ... , \"north\"])¦
                         [0].Pine.Expr.Named                                                         class ... , \"north\"])¦
                           [0].Pine.Expr.Primary.(                                                   class ... , \"north\"])¦
                             [0].Pine.Expr.Atom                                                      classify¦
                               [0].identifier                                                        ｢classify｣
                             [1].Pine.Arguments                                                      [\"move\", \"north\"]¦
-                              [0].Pine.Arg                                                          [\"move\", \"north\"]¦
+                              [0].Pine.Arguments.Singular                                           [\"move\", \"north\"]¦
                                 [0].Pine.Expr.Named                                                 [\"move\", \"north\"]¦
                                   [0].Pine.Expr.Atom                                                [\"move\", \"north\"]¦
                                     [0].Pine.Expr.List                                              [\"move\", \"north\"]¦
@@ -4743,11 +4743,11 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              print¦
                       [0].identifier                                                                ｢print｣
                     [1].Pine.Arguments                                                              x, y¦
-                      [0].Pine.Arg                                                                  x¦
+                      [0].Pine.Arguments.Singular                                                   x¦
                         [0].Pine.Expr.Named                                                         x¦
                           [0].Pine.Expr.Atom                                                        x¦
                             [0].identifier                                                          ｢x｣
-                      [1].Pine.Arg                                                                  y¦
+                      [1].Pine.Arguments.Singular                                                   y¦
                         [0].Pine.Expr.Named                                                         y¦
                           [0].Pine.Expr.Atom                                                        y¦
                             [0].identifier                                                          ｢y｣

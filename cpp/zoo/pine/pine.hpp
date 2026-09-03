@@ -104,17 +104,20 @@ language Pine:
     SubjectExpr = StarNamedExpr ',' StarNamedExprs ? | Expr.Named
 
   TypeParams:
-    ⊙ = '[' Single ( ε ',' Single ) * ',' ? ']'
-    Single = '**' identifier Default ? | '*' identifier Default ? \
-              | identifier ( ':' not '=' Expr ) ? Default ?
-    Default = '=' not '=' Expr
+    ⊙ = '[' Singular ( ε ',' Singular ) * ',' ? ']'
+    Singular = no_node Normal | Star2 | Star1
+    Normal = identifier ( ':' Expr ) ? Default ?
+    Star1 = '*' identifier ( '=' StarExpr ) ?
+    Star2 = '**' identifier Default ?
+    Default = '=' Expr
 
   LambdaParams = ( LambdaParam ( ε ',' LambdaParam ) * ',' ? ) ?
   LambdaParam = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
   LambdaParamDef = identifier ( '=' not '=' Expr ) ?
 
-  Arguments = ( Arg ( ε ',' Arg ) * ',' ? ) ?
-  Arg = '**' Expr | '*' Expr | identifier '=' not '=' Expr | Expr.Named ForIfClauses ?
+  Arguments:
+    ⊙ = ( Singular ( ε ',' Singular ) * ',' ? ) ?
+    Singular = '**' Expr | '*' Expr | identifier '=' not '=' Expr | Expr.Named ForIfClauses ?
 
   Slices = Slice ( ε ',' Slice ) * ',' ?
   Slice = Expr ? ':' not '=' Expr ? ( ':' not '=' Expr ? ) ? | '*' Expr | Expr.Named
