@@ -2082,10 +2082,10 @@ Mr Jane
       [0].Pine.Stmt.Simple                                                                          \"\"\"A small tour through the Python grammar.\"\"\"¦
         [0].Pine.StarExprs                                                                          \"\"\"A small tour through the Python grammar.\"\"\"¦
           [0].Pine.Expr.Atom                                                                        \"\"\"A small tour through the Python grammar.\"\"\"¦
-            [0].Pine.Expr.Strings                                                                   \"\"\"A small tour through the Python grammar.\"\"\"¦
-              [0].Pine.Expr.stringLiteral                                                           ｢""｣
-              [1].Pine.Expr.stringLiteral                                                           ｢"A small tour through the Python grammar."｣
-              [2].Pine.Expr.stringLiteral                                                           ｢""｣
+            [0].Pine.Strings                                                                        \"\"\"A small tour through the Python grammar.\"\"\"¦
+              [0].string                                                                            ｢""｣
+              [1].string                                                                            ｢"A small tour through the Python grammar."｣
+              [2].string                                                                            ｢""｣
   [1].Pine.Stmt                                                                                     import os<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           import os<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          import os¦
@@ -2148,8 +2148,8 @@ Mr Jane
             [1].Pine.Stmt.Assignment.Rhs                                                            \"hello\"¦
               [0].Pine.StarExprs                                                                    \"hello\"¦
                 [0].Pine.Expr.Atom                                                                  \"hello\"¦
-                  [0].Pine.Expr.Strings                                                             \"hello\"¦
-                    [0].Pine.Expr.stringLiteral                                                     ｢"hello"｣
+                  [0].Pine.Strings                                                                  \"hello\"¦
+                    [0].string                                                                      ｢"hello"｣
   [7].Pine.Stmt                                                                                     LIMIT ... = 10<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           LIMIT ... = 10<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          LIMIT ...  = 10¦
@@ -2162,7 +2162,7 @@ Mr Jane
             [2].Pine.Stmt.Assignment.Rhs                                                            10¦
               [0].Pine.StarExprs                                                                    10¦
                 [0].Pine.Expr.Atom                                                                  10¦
-                  [0].Pine.Expr.number                                                              ｢10｣
+                  [0].Pine.number                                                                   ｢10｣
   [8].Pine.Stmt                                                                                     _TABL ...  3}}<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           _TABL ...  3}}<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          _TABL ... : 3}}¦
@@ -2178,26 +2178,26 @@ Mr Jane
                     [0].Pine.Expr.KvPairs                                                           \"a\": 1, ... \"c\": 3}¦
                       [0].Pine.Expr.KvPair                                                          \"a\": 1¦
                         [0].Pine.Expr.Atom                                                          \"a\"¦
-                          [0].Pine.Expr.Strings                                                     \"a\"¦
-                            [0].Pine.Expr.stringLiteral                                             ｢"a"｣
+                          [0].Pine.Strings                                                          \"a\"¦
+                            [0].string                                                              ｢"a"｣
                         [1].Pine.Expr.Atom                                                          1¦
-                          [0].Pine.Expr.number                                                      ｢1｣
+                          [0].Pine.number                                                           ｢1｣
                       [1].Pine.Expr.KvPair                                                          \"b\": 2¦
                         [0].Pine.Expr.Atom                                                          \"b\"¦
-                          [0].Pine.Expr.Strings                                                     \"b\"¦
-                            [0].Pine.Expr.stringLiteral                                             ｢"b"｣
+                          [0].Pine.Strings                                                          \"b\"¦
+                            [0].string                                                              ｢"b"｣
                         [1].Pine.Expr.Atom                                                          2¦
-                          [0].Pine.Expr.number                                                      ｢2｣
+                          [0].Pine.number                                                           ｢2｣
                       [2].Pine.Expr.KvPair                                                          **{\"c\": 3}¦
                         [0].Pine.Expr.Atom                                                          {\"c\": 3}¦
                           [0].Pine.Expr.Dict                                                        {\"c\": 3}¦
                             [0].Pine.Expr.KvPairs                                                   \"c\": 3¦
                               [0].Pine.Expr.KvPair                                                  \"c\": 3¦
                                 [0].Pine.Expr.Atom                                                  \"c\"¦
-                                  [0].Pine.Expr.Strings                                             \"c\"¦
-                                    [0].Pine.Expr.stringLiteral                                     ｢"c"｣
+                                  [0].Pine.Strings                                                  \"c\"¦
+                                    [0].string                                                      ｢"c"｣
                                 [1].Pine.Expr.Atom                                                  3¦
-                                  [0].Pine.Expr.number                                              ｢3｣
+                                  [0].Pine.number                                                   ｢3｣
   [9].Pine.Stmt                                                                                     NUMBE ...  3j]<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           NUMBE ...  3j]<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          NUMBE ... , 3j]¦
@@ -2213,34 +2213,35 @@ Mr Jane
                     [0].Pine.StarNamedExprs                                                         0, 1_ ... 9, 3j¦
                       [0].Pine.Expr.Named                                                           0¦
                         [0].Pine.Expr.Atom                                                          0¦
-                          [0].Pine.Expr.number                                                      ｢0｣
+                          [0].Pine.number                                                           ｢0｣
                       [1].Pine.Expr.Named                                                           1_000¦
                         [0].Pine.Expr.Atom                                                          1_000¦
-                          [0].Pine.Expr.number                                                      ｢1_000｣
+                          [0].Pine.number                                                           ｢1_000｣
                       [2].Pine.Expr.Named                                                           0b1010¦
                         [0].Pine.Expr.Atom                                                          0b1010¦
-                          [0].Pine.Expr.number                                                      ｢0b1010｣
+                          [0].Pine.number                                                           ｢0b1010｣
                       [3].Pine.Expr.Named                                                           0o755¦
                         [0].Pine.Expr.Atom                                                          0o755¦
-                          [0].Pine.Expr.number                                                      ｢0o755｣
+                          [0].Pine.number                                                           ｢0o755｣
                       [4].Pine.Expr.Named                                                           0xdeadBEEF¦
                         [0].Pine.Expr.Atom                                                          0xdeadBEEF¦
-                          [0].Pine.Expr.number                                                      ｢0xdeadBEEF｣
+                          [0].Pine.number                                                           ｢0xdeadBEEF｣
                       [5].Pine.Expr.Named                                                           1.5¦
                         [0].Pine.Expr.Atom                                                          1.5¦
-                          [0].Pine.Expr.number                                                      ｢1.5｣
+                          [0].Pine.number                                                           ｢1.5｣
                       [6].Pine.Expr.Named                                                           .5¦
                         [0].Pine.Expr.Atom                                                          .5¦
-                          [0].Pine.Expr.number                                                      ｢.5｣
+                          [0].Pine.number                                                           ｢.5｣
                       [7].Pine.Expr.Named                                                           2.¦
                         [0].Pine.Expr.Atom                                                          2.¦
-                          [0].Pine.Expr.number                                                      ｢2.｣
+                          [0].Pine.number                                                           ｢2.｣
                       [8].Pine.Expr.Named                                                           1e-9¦
                         [0].Pine.Expr.Atom                                                          1e-9¦
-                          [0].Pine.Expr.number                                                      ｢1e-9｣
+                          [0].Pine.number                                                           ｢1e-9｣
+                            [0].Pine.number.plusMinus                                               ｢-｣
                       [9].Pine.Expr.Named                                                           3j¦
                         [0].Pine.Expr.Atom                                                          3j¦
-                          [0].Pine.Expr.number                                                      ｢3j｣
+                          [0].Pine.number                                                           ｢3j｣
   [10].Pine.Stmt                                                                                    EMPTY ... = ()<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           EMPTY ... = ()<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          EMPTY = ()¦
@@ -2267,7 +2268,7 @@ Mr Jane
                   [0].Pine.Expr.Tuple                                                               (1,)¦
                     [0].Pine.Expr.Named                                                             1¦
                       [0].Pine.Expr.Atom                                                            1¦
-                        [0].Pine.Expr.number                                                        ｢1｣
+                        [0].Pine.number                                                             ｢1｣
   [12].Pine.Stmt                                                                                    PAIR  ... 1, 2<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           PAIR  ... 1, 2<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          PAIR  ...  1, 2¦
@@ -2279,9 +2280,9 @@ Mr Jane
             [1].Pine.Stmt.Assignment.Rhs                                                            1, 2¦
               [0].Pine.StarExprs                                                                    1, 2¦
                 [0].Pine.Expr.Atom                                                                  1¦
-                  [0].Pine.Expr.number                                                              ｢1｣
+                  [0].Pine.number                                                                   ｢1｣
                 [1].Pine.Expr.Atom                                                                  2¦
-                  [0].Pine.Expr.number                                                              ｢2｣
+                  [0].Pine.number                                                                   ｢2｣
   [13].Pine.Stmt                                                                                    SET = ... , 3}<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           SET = ... , 3}<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          SET = ... 2, 3}¦
@@ -2297,13 +2298,13 @@ Mr Jane
                     [0].Pine.StarNamedExprs                                                         1, 2, 3¦
                       [0].Pine.Expr.Named                                                           1¦
                         [0].Pine.Expr.Atom                                                          1¦
-                          [0].Pine.Expr.number                                                      ｢1｣
+                          [0].Pine.number                                                           ｢1｣
                       [1].Pine.Expr.Named                                                           2¦
                         [0].Pine.Expr.Atom                                                          2¦
-                          [0].Pine.Expr.number                                                      ｢2｣
+                          [0].Pine.number                                                           ｢2｣
                       [2].Pine.Expr.Named                                                           3¦
                         [0].Pine.Expr.Atom                                                          3¦
-                          [0].Pine.Expr.number                                                      ｢3｣
+                          [0].Pine.number                                                           ｢3｣
   [14].Pine.Stmt                                                                                    DOTS  ... ..<NEWLINE><WHITESPACE><WHITESPACE>¦
     [0].Pine.Stmt.Simples                                                                           DOTS  ... ..<NEWLINE><WHITESPACE><WHITESPACE>¦
       [0].Pine.Stmt.Simple                                                                          DOTS = ...¦
@@ -2339,8 +2340,8 @@ Mr Jane
             [0].Pine.Stmt.Function.ParamDef                                                         sep=\", \"¦
               [0].identifier                                                                        ｢sep｣
               [1].Pine.Expr.Atom                                                                    \", \"¦
-                [0].Pine.Expr.Strings                                                               \", \"¦
-                  [0].Pine.Expr.stringLiteral                                                       ｢", "｣
+                [0].Pine.Strings                                                                    \", \"¦
+                  [0].string                                                                        ｢", "｣
           [3].Pine.Stmt.Function.Param                                                              **kwargs¦
             [0].Pine.Stmt.Function.ParamDef                                                         kwargs¦
               [0].identifier                                                                        ｢kwargs｣
@@ -2350,10 +2351,10 @@ Mr Jane
               [0].Pine.Stmt.Simple                                                                  \"\"\"Return a printable description.\"\"\"¦
                 [0].Pine.StarExprs                                                                  \"\"\"Return a printable description.\"\"\"¦
                   [0].Pine.Expr.Atom                                                                \"\"\"Return a printable description.\"\"\"¦
-                    [0].Pine.Expr.Strings                                                           \"\"\"Return a printable description.\"\"\"¦
-                      [0].Pine.Expr.stringLiteral                                                   ｢""｣
-                      [1].Pine.Expr.stringLiteral                                                   ｢"Return a printable description."｣
-                      [2].Pine.Expr.stringLiteral                                                   ｢""｣
+                    [0].Pine.Strings                                                                \"\"\"Return a printable description.\"\"\"¦
+                      [0].string                                                                    ｢""｣
+                      [1].string                                                                    ｢"Return a printable description."｣
+                      [2].string                                                                    ｢""｣
           [1].Pine.Stmt                                                                             parts ... ue)]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   parts ... ue)]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  parts ... lue)]¦
@@ -2441,8 +2442,8 @@ Mr Jane
                                       [0].Pine.Expr.Atom                                            key ¦
                                         [0].identifier                                              ｢key｣
                                       [1].Pine.Expr.Atom                                            \"=\" ¦
-                                        [0].Pine.Expr.Strings                                       \"=\" ¦
-                                          [0].Pine.Expr.stringLiteral                               ｢"="｣
+                                        [0].Pine.Strings                                            \"=\" ¦
+                                          [0].string                                                ｢"="｣
                                     [1].Pine.Expr.Primary.(                                         repr( ... key])¦
                                       [0].Pine.Expr.Atom                                            repr¦
                                         [0].identifier                                              ｢repr｣
@@ -2486,19 +2487,19 @@ Mr Jane
             [0].Pine.Stmt.Function.ParamDef                                                         b=2¦
               [0].identifier                                                                        ｢b｣
               [1].Pine.Expr.Atom                                                                    2¦
-                [0].Pine.Expr.number                                                                ｢2｣
+                [0].Pine.number                                                                     ｢2｣
           [2].Pine.Stmt.Function.Param                                                              /¦
           [3].Pine.Stmt.Function.Param                                                              c=3¦
             [0].Pine.Stmt.Function.ParamDef                                                         c=3¦
               [0].identifier                                                                        ｢c｣
               [1].Pine.Expr.Atom                                                                    3¦
-                [0].Pine.Expr.number                                                                ｢3｣
+                [0].Pine.number                                                                     ｢3｣
           [4].Pine.Stmt.Function.Param                                                              *¦
           [5].Pine.Stmt.Function.Param                                                              d=4¦
             [0].Pine.Stmt.Function.ParamDef                                                         d=4¦
               [0].identifier                                                                        ｢d｣
               [1].Pine.Expr.Atom                                                                    4¦
-                [0].Pine.Expr.number                                                                ｢4｣
+                [0].Pine.number                                                                     ｢4｣
         [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>tot ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             total ...  - d<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ...  - d<NEWLINE>¦
@@ -2573,7 +2574,7 @@ Mr Jane
                     [2].Pine.Stmt.Assignment.Rhs                                                    2¦
                       [0].Pine.StarExprs                                                            2¦
                         [0].Pine.Expr.Atom                                                          2¦
-                          [0].Pine.Expr.number                                                      ｢2｣
+                          [0].Pine.number                                                           ｢2｣
           [5].Pine.Stmt                                                                             total ... @= b<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... @= b<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total @= b¦
@@ -2597,7 +2598,7 @@ Mr Jane
                     [2].Pine.Stmt.Assignment.Rhs                                                    3¦
                       [0].Pine.StarExprs                                                            3¦
                         [0].Pine.Expr.Atom                                                          3¦
-                          [0].Pine.Expr.number                                                      ｢3｣
+                          [0].Pine.number                                                           ｢3｣
           [7].Pine.Stmt                                                                             total ... %= 7<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... %= 7<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total %= 7¦
@@ -2609,7 +2610,7 @@ Mr Jane
                     [2].Pine.Stmt.Assignment.Rhs                                                    7¦
                       [0].Pine.StarExprs                                                            7¦
                         [0].Pine.Expr.Atom                                                          7¦
-                          [0].Pine.Expr.number                                                      ｢7｣
+                          [0].Pine.number                                                           ｢7｣
           [8].Pine.Stmt                                                                             total ... 0xff<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... 0xff<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ...  0xff¦
@@ -2621,7 +2622,7 @@ Mr Jane
                     [2].Pine.Stmt.Assignment.Rhs                                                    0xff¦
                       [0].Pine.StarExprs                                                            0xff¦
                         [0].Pine.Expr.Atom                                                          0xff¦
-                          [0].Pine.Expr.number                                                      ｢0xff｣
+                          [0].Pine.number                                                           ｢0xff｣
           [9].Pine.Stmt                                                                             total ... 0x0f<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... 0x0f<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ...  0x0f¦
@@ -2633,7 +2634,7 @@ Mr Jane
                     [2].Pine.Stmt.Assignment.Rhs                                                    0x0f¦
                       [0].Pine.StarExprs                                                            0x0f¦
                         [0].Pine.Expr.Atom                                                          0x0f¦
-                          [0].Pine.Expr.number                                                      ｢0x0f｣
+                          [0].Pine.number                                                           ｢0x0f｣
           [10].Pine.Stmt                                                                            total ... 0b11<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... 0b11<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ...  0b11¦
@@ -2645,7 +2646,7 @@ Mr Jane
                     [2].Pine.Stmt.Assignment.Rhs                                                    0b11¦
                       [0].Pine.StarExprs                                                            0b11¦
                         [0].Pine.Expr.Atom                                                          0b11¦
-                          [0].Pine.Expr.number                                                      ｢0b11｣
+                          [0].Pine.number                                                           ｢0b11｣
           [11].Pine.Stmt                                                                            total ... <= 1<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... <= 1<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ... <<= 1¦
@@ -2657,7 +2658,7 @@ Mr Jane
                     [2].Pine.Stmt.Assignment.Rhs                                                    1¦
                       [0].Pine.StarExprs                                                            1¦
                         [0].Pine.Expr.Atom                                                          1¦
-                          [0].Pine.Expr.number                                                      ｢1｣
+                          [0].Pine.number                                                           ｢1｣
           [12].Pine.Stmt                                                                            total ... >= 2<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... >= 2<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ... >>= 2¦
@@ -2669,7 +2670,7 @@ Mr Jane
                     [2].Pine.Stmt.Assignment.Rhs                                                    2¦
                       [0].Pine.StarExprs                                                            2¦
                         [0].Pine.Expr.Atom                                                          2¦
-                          [0].Pine.Expr.number                                                      ｢2｣
+                          [0].Pine.number                                                           ｢2｣
           [13].Pine.Stmt                                                                            shift ...  ^ d<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   shift ...  ^ d<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  shift ... c ^ d¦
@@ -2688,7 +2689,7 @@ Mr Jane
                                   [0].Pine.Expr.Atom                                                a ¦
                                     [0].identifier                                                  ｢a｣
                                   [1].Pine.Expr.Atom                                                2¦
-                                    [0].Pine.Expr.number                                            ｢2｣
+                                    [0].Pine.number                                                 ｢2｣
                           [1].Pine.Expr.BitXor.^                                                    (b >> ... c ^ d¦
                             [0].Pine.Expr.BitAnd.&                                                  (b >> ... & ~c ¦
                               [0].Pine.Expr.Atom                                                    (b >> 1) ¦
@@ -2698,7 +2699,7 @@ Mr Jane
                                       [0].Pine.Expr.Atom                                            b ¦
                                         [0].identifier                                              ｢b｣
                                       [1].Pine.Expr.Atom                                            1¦
-                                        [0].Pine.Expr.number                                        ｢1｣
+                                        [0].Pine.number                                             ｢1｣
                               [1].Pine.Expr.Unary.~                                                 ~c ¦
                                 [0].Pine.Expr.Atom                                                  c ¦
                                   [0].identifier                                                    ｢c｣
@@ -2750,7 +2751,7 @@ Mr Jane
                           [1].Pine.Expr.Atom                                                        b ¦
                             [0].identifier                                                          ｢b｣
                         [1].Pine.Expr.Atom                                                          10 ¦
-                          [0].Pine.Expr.number                                                      ｢10｣
+                          [0].Pine.number                                                           ｢10｣
                       [1].Pine.Expr.Comparison.!=                                                   b != a ¦
                         [0].Pine.Expr.Atom                                                          b ¦
                           [0].identifier                                                            ｢b｣
@@ -2772,6 +2773,7 @@ Mr Jane
                         [0].Pine.Stmt.Return                                                        retur ...  True¦
                           [0].Pine.StarExprs                                                        True¦
                             [0].Pine.Expr.Atom                                                      True¦
+                              [0].Pine.builtinLiteral                                               ｢True｣
           [1].Pine.Stmt                                                                             if a  ... lse<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  if a  ... lse<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.If                                                                      if a  ... lse<NEWLINE><DEDENT>¦
@@ -2794,6 +2796,7 @@ Mr Jane
                         [0].Pine.Stmt.Return                                                        retur ... False¦
                           [0].Pine.StarExprs                                                        False¦
                             [0].Pine.Expr.Atom                                                      False¦
+                              [0].Pine.builtinLiteral                                               ｢False｣
           [2].Pine.Stmt                                                                             if a  ... one<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  if a  ... one<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.If                                                                      if a  ... one<NEWLINE><DEDENT>¦
@@ -2816,6 +2819,7 @@ Mr Jane
                         [0].Pine.Stmt.Return                                                        retur ...  None¦
                           [0].Pine.StarExprs                                                        None¦
                             [0].Pine.Expr.Atom                                                      None¦
+                              [0].Pine.builtinLiteral                                               ｢None｣
           [3].Pine.Stmt                                                                             retur ...  0<NEWLINE><WHITESPACE><WHITESPACE>¦
             [0].Pine.Stmt.Simples                                                                   retur ...  0<NEWLINE><WHITESPACE><WHITESPACE>¦
               [0].Pine.Stmt.Simple                                                                  retur ...  >= 0¦
@@ -2828,7 +2832,7 @@ Mr Jane
                         [1].Pine.Expr.Atom                                                          b ¦
                           [0].identifier                                                            ｢b｣
                       [1].Pine.Expr.Atom                                                            0¦
-                        [0].Pine.Expr.number                                                        ｢0｣
+                        [0].Pine.number                                                             ｢0｣
   [19].Pine.Stmt                                                                                    def b ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          def b ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def b ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
@@ -2847,7 +2851,7 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              n ¦
                       [0].identifier                                                                ｢n｣
                     [1].Pine.Expr.Atom                                                              0¦
-                      [0].Pine.Expr.number                                                          ｢0｣
+                      [0].Pine.number                                                               ｢0｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>sig ...  -1<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt                                                                     sign = -1<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           sign = -1<NEWLINE>¦
@@ -2861,14 +2865,14 @@ Mr Jane
                               [0].Pine.StarExprs                                                    -1¦
                                 [0].Pine.Expr.Unary.-                                               -1¦
                                   [0].Pine.Expr.Atom                                                1¦
-                                    [0].Pine.Expr.number                                            ｢1｣
+                                    [0].Pine.number                                                 ｢1｣
                 [2].Pine.Stmt.Elif                                                                  elif  ... = 0<NEWLINE><DEDENT>¦
                   [0].Pine.Expr.Named                                                               n == 0¦
                     [0].Pine.Expr.Comparison.==                                                     n == 0¦
                       [0].Pine.Expr.Atom                                                            n ¦
                         [0].identifier                                                              ｢n｣
                       [1].Pine.Expr.Atom                                                            0¦
-                        [0].Pine.Expr.number                                                        ｢0｣
+                        [0].Pine.number                                                             ｢0｣
                   [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>sig ... = 0<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   sign = 0<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         sign = 0<NEWLINE>¦
@@ -2881,7 +2885,7 @@ Mr Jane
                               [1].Pine.Stmt.Assignment.Rhs                                          0¦
                                 [0].Pine.StarExprs                                                  0¦
                                   [0].Pine.Expr.Atom                                                0¦
-                                    [0].Pine.Expr.number                                            ｢0｣
+                                    [0].Pine.number                                                 ｢0｣
                 [3].Pine.Stmt.Else                                                                  else: ... = 1<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt.Block                                                               <NEWLINE><INDENT>sig ... = 1<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   sign = 1<NEWLINE>¦
@@ -2895,7 +2899,7 @@ Mr Jane
                               [1].Pine.Stmt.Assignment.Rhs                                          1¦
                                 [0].Pine.StarExprs                                                  1¦
                                   [0].Pine.Expr.Atom                                                1¦
-                                    [0].Pine.Expr.number                                            ｢1｣
+                                    [0].Pine.number                                                 ｢1｣
           [1].Pine.Stmt                                                                             while ... ass<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  while ... ass<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.While                                                                   while ... ass<NEWLINE><DEDENT>¦
@@ -2904,7 +2908,7 @@ Mr Jane
                     [0].Pine.Expr.Atom                                                              n ¦
                       [0].identifier                                                                ｢n｣
                     [1].Pine.Expr.Atom                                                              0¦
-                      [0].Pine.Expr.number                                                          ｢0｣
+                      [0].Pine.number                                                               ｢0｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>n - ... ak<NEWLINE><DEDENT><DEDENT>¦
                   [0].Pine.Stmt                                                                     n -= 1<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           n -= 1<NEWLINE>¦
@@ -2917,7 +2921,7 @@ Mr Jane
                             [2].Pine.Stmt.Assignment.Rhs                                            1¦
                               [0].Pine.StarExprs                                                    1¦
                                 [0].Pine.Expr.Atom                                                  1¦
-                                  [0].Pine.Expr.number                                              ｢1｣
+                                  [0].Pine.number                                                   ｢1｣
                   [1].Pine.Stmt                                                                     if n  ... nue<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt.Compound                                                          if n  ... nue<NEWLINE><DEDENT>¦
                       [0].Pine.Stmt.If                                                              if n  ... nue<NEWLINE><DEDENT>¦
@@ -2926,7 +2930,7 @@ Mr Jane
                             [0].Pine.Expr.Atom                                                      n ¦
                               [0].identifier                                                        ｢n｣
                             [1].Pine.Expr.Atom                                                      3¦
-                              [0].Pine.Expr.number                                                  ｢3｣
+                              [0].Pine.number                                                       ｢3｣
                         [1].Pine.Stmt.Block                                                         <NEWLINE><INDENT>con ... nue<NEWLINE><DEDENT>¦
                           [0].Pine.Stmt                                                             continue<NEWLINE>¦
                             [0].Pine.Stmt.Simples                                                   continue<NEWLINE>¦
@@ -2940,7 +2944,7 @@ Mr Jane
                             [0].Pine.Expr.Atom                                                      n ¦
                               [0].identifier                                                        ｢n｣
                             [1].Pine.Expr.Atom                                                      1¦
-                              [0].Pine.Expr.number                                                  ｢1｣
+                              [0].Pine.number                                                       ｢1｣
                         [1].Pine.Stmt.Block                                                         <NEWLINE><INDENT>break<NEWLINE><DEDENT>¦
                           [0].Pine.Stmt                                                             break<NEWLINE>¦
                             [0].Pine.Stmt.Simples                                                   break<NEWLINE>¦
@@ -3050,7 +3054,7 @@ Mr Jane
                                 [0].Pine.Slice                                                      0¦
                                   [0].Pine.Expr.Named                                               0¦
                                     [0].Pine.Expr.Atom                                              0¦
-                                      [0].Pine.Expr.number                                          ｢0｣
+                                      [0].Pine.number                                               ｢0｣
           [2].Pine.Stmt                                                                             squar ... = 0]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   squar ... = 0]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  squar ... == 0]¦
@@ -3081,15 +3085,15 @@ Mr Jane
                                     [0].Pine.Arguments.Singular                                     10¦
                                       [0].Pine.Expr.Named                                           10¦
                                         [0].Pine.Expr.Atom                                          10¦
-                                          [0].Pine.Expr.number                                      ｢10｣
+                                          [0].Pine.number                                           ｢10｣
                                 [2].Pine.Expr.Comparison.==                                         x % 2 == 0¦
                                   [0].Pine.Expr.Term.%                                              x % 2 ¦
                                     [0].Pine.Expr.Atom                                              x ¦
                                       [0].identifier                                                ｢x｣
                                     [1].Pine.Expr.Atom                                              2 ¦
-                                      [0].Pine.Expr.number                                          ｢2｣
+                                      [0].Pine.number                                               ｢2｣
                                   [1].Pine.Expr.Atom                                                0¦
-                                    [0].Pine.Expr.number                                            ｢0｣
+                                    [0].Pine.number                                                 ｢0｣
           [3].Pine.Stmt                                                                             pairs ... s()}<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   pairs ... s()}<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  pairs ... ms()}¦
@@ -3199,7 +3203,7 @@ Mr Jane
                                     [0].Pine.Arguments.Singular                                     3¦
                                       [0].Pine.Expr.Named                                           3¦
                                         [0].Pine.Expr.Atom                                          3¦
-                                          [0].Pine.Expr.number                                      ｢3｣
+                                          [0].Pine.number                                           ｢3｣
                               [1].Pine.ForIfClause                                                  for b ...  != b¦
                                 [0].Pine.Target.Stars                                               b ¦
                                   [0].Pine.Expr.Atom                                                b ¦
@@ -3211,7 +3215,7 @@ Mr Jane
                                     [0].Pine.Arguments.Singular                                     3¦
                                       [0].Pine.Expr.Named                                           3¦
                                         [0].Pine.Expr.Atom                                          3¦
-                                          [0].Pine.Expr.number                                      ｢3｣
+                                          [0].Pine.number                                           ｢3｣
                                 [2].Pine.Expr.Comparison.!=                                         a != b¦
                                   [0].Pine.Expr.Atom                                                a ¦
                                     [0].identifier                                                  ｢a｣
@@ -3282,8 +3286,8 @@ Mr Jane
                                 [0].Pine.Arguments.Singular                                         \"missing\"¦
                                   [0].Pine.Expr.Named                                               \"missing\"¦
                                     [0].Pine.Expr.Atom                                              \"missing\"¦
-                                      [0].Pine.Expr.Strings                                         \"missing\"¦
-                                        [0].Pine.Expr.stringLiteral                                 ｢"missing"｣
+                                      [0].Pine.Strings                                              \"missing\"¦
+                                        [0].string                                                  ｢"missing"｣
                             [1].Pine.Expr.Atom                                                      exc¦
                               [0].identifier                                                        ｢exc｣
                 [2].Pine.Stmt.Try.Except                                                            excep ... one<NEWLINE><DEDENT>¦
@@ -3303,6 +3307,7 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      retur ...  None¦
                             [0].Pine.StarExprs                                                      None¦
                               [0].Pine.Expr.Atom                                                    None¦
+                                [0].Pine.builtinLiteral                                             ｢None｣
                 [3].Pine.Stmt.Try.Except                                                            excep ... ise<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt.Block                                                               <NEWLINE><INDENT>raise<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   raise<NEWLINE>¦
@@ -3341,6 +3346,7 @@ Mr Jane
                               [1].Pine.Stmt.Assignment.Rhs                                          None¦
                                 [0].Pine.StarExprs                                                  None¦
                                   [0].Pine.Expr.Atom                                                None¦
+                                    [0].Pine.builtinLiteral                                         ｢None｣
           [1].Pine.Stmt                                                                             try:<NEWLINE> ... ass<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  try:<NEWLINE> ... ass<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.Try                                                                     try:<NEWLINE> ... ass<NEWLINE><DEDENT>¦
@@ -3349,11 +3355,12 @@ Mr Jane
                     [0].Pine.Stmt.Simples                                                           pass<NEWLINE>¦
                       [0].Pine.Stmt.Simple                                                          pass¦
                         [0].Pine.Stmt.Pass                                                          pass¦
-                [1].Pine.Stmt.Try.ExceptStar                                                        excep ... ass<NEWLINE><DEDENT>¦
-                  [0].Pine.Expr.Atom                                                                TypeError ¦
+                [1].Pine.Stmt.Try.Except                                                            excep ... ass<NEWLINE><DEDENT>¦
+                  [0].Pine.Stmt.Try.star                                                            ｢*｣
+                  [1].Pine.Expr.Atom                                                                TypeError ¦
                     [0].identifier                                                                  ｢TypeError｣
-                  [1].identifier                                                                    ｢group｣
-                  [2].Pine.Stmt.Block                                                               <NEWLINE><INDENT>pass<NEWLINE><DEDENT>¦
+                  [2].identifier                                                                    ｢group｣
+                  [3].Pine.Stmt.Block                                                               <NEWLINE><INDENT>pass<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   pass<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         pass<NEWLINE>¦
                         [0].Pine.Stmt.Simple                                                        pass¦
@@ -3385,8 +3392,8 @@ Mr Jane
                         [1].Pine.Arguments.Singular                                                 \"rb\"¦
                           [0].Pine.Expr.Named                                                       \"rb\"¦
                             [0].Pine.Expr.Atom                                                      \"rb\"¦
-                              [0].Pine.Expr.Strings                                                 \"rb\"¦
-                                [0].Pine.Expr.stringLiteral                                         ｢"rb"｣
+                              [0].Pine.Strings                                                      \"rb\"¦
+                                [0].string                                                          ｢"rb"｣
                     [1].Pine.Expr.Atom                                                              raw¦
                       [0].identifier                                                                ｢raw｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>ass ... , \"distinct handles\"<NEWLINE><DEDENT>¦
@@ -3400,8 +3407,8 @@ Mr Jane
                             [1].Pine.Expr.Atom                                                      raw¦
                               [0].identifier                                                        ｢raw｣
                           [1].Pine.Expr.Atom                                                        \"distinct handles\"¦
-                            [0].Pine.Expr.Strings                                                   \"distinct handles\"¦
-                              [0].Pine.Expr.stringLiteral                                           ｢"distinct handles"｣
+                            [0].Pine.Strings                                                        \"distinct handles\"¦
+                              [0].string                                                            ｢"distinct handles"｣
           [3].Pine.Stmt                                                                             with  ... ass<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  with  ... ass<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.With                                                                    with  ... ass<NEWLINE><DEDENT>¦
@@ -3463,7 +3470,7 @@ Mr Jane
                     [1].Pine.Stmt.Assignment.Rhs                                                    0¦
                       [0].Pine.StarExprs                                                            0¦
                         [0].Pine.Expr.Atom                                                          0¦
-                          [0].Pine.Expr.number                                                      ｢0｣
+                          [0].Pine.number                                                           ｢0｣
           [2].Pine.Stmt                                                                             def b ... er<NEWLINE><WHITESPACE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  def b ... er<NEWLINE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def b ... er<NEWLINE><WHITESPACE><DEDENT>¦
@@ -3487,7 +3494,7 @@ Mr Jane
                             [2].Pine.Stmt.Assignment.Rhs                                            1¦
                               [0].Pine.StarExprs                                                    1¦
                                 [0].Pine.Expr.Atom                                                  1¦
-                                  [0].Pine.Expr.number                                              ｢1｣
+                                  [0].Pine.number                                                   ｢1｣
                   [2].Pine.Stmt                                                                     retur ... ter<NEWLINE><WHITESPACE>¦
                     [0].Pine.Stmt.Simples                                                           retur ... ter<NEWLINE><WHITESPACE>¦
                       [0].Pine.Stmt.Simple                                                          retur ... unter¦
@@ -3529,7 +3536,7 @@ Mr Jane
                             [0].Pine.Slice                                                          0¦
                               [0].Pine.Expr.Named                                                   0¦
                                 [0].Pine.Expr.Atom                                                  0¦
-                                  [0].Pine.Expr.number                                              ｢0｣
+                                  [0].Pine.number                                                   ｢0｣
           [1].Pine.Stmt                                                                             tail  ... [1:]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   tail  ... [1:]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  tail  ... q[1:]¦
@@ -3546,7 +3553,7 @@ Mr Jane
                           [1].Pine.Slices                                                           1:¦
                             [0].Pine.Slice                                                          1:¦
                               [0].Pine.Expr.Atom                                                    1¦
-                                [0].Pine.Expr.number                                                ｢1｣
+                                [0].Pine.number                                                     ｢1｣
           [2].Pine.Stmt                                                                             body  ... :-1]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   body  ... :-1]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  body  ... 1:-1]¦
@@ -3563,10 +3570,10 @@ Mr Jane
                           [1].Pine.Slices                                                           1:-1¦
                             [0].Pine.Slice                                                          1:-1¦
                               [0].Pine.Expr.Atom                                                    1¦
-                                [0].Pine.Expr.number                                                ｢1｣
+                                [0].Pine.number                                                     ｢1｣
                               [1].Pine.Expr.Unary.-                                                 -1¦
                                 [0].Pine.Expr.Atom                                                  1¦
-                                  [0].Pine.Expr.number                                              ｢1｣
+                                  [0].Pine.number                                                   ｢1｣
           [3].Pine.Stmt                                                                             every ... ::2]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   every ... ::2]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  every ... [::2]¦
@@ -3583,7 +3590,7 @@ Mr Jane
                           [1].Pine.Slices                                                           ::2¦
                             [0].Pine.Slice                                                          ::2¦
                               [0].Pine.Expr.Atom                                                    2¦
-                                [0].Pine.Expr.number                                                ｢2｣
+                                [0].Pine.number                                                     ｢2｣
           [4].Pine.Stmt                                                                             windo ... 5:2]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   windo ... 5:2]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  windo ... :5:2]¦
@@ -3600,11 +3607,11 @@ Mr Jane
                           [1].Pine.Slices                                                           1:5:2¦
                             [0].Pine.Slice                                                          1:5:2¦
                               [0].Pine.Expr.Atom                                                    1¦
-                                [0].Pine.Expr.number                                                ｢1｣
+                                [0].Pine.number                                                     ｢1｣
                               [1].Pine.Expr.Atom                                                    5¦
-                                [0].Pine.Expr.number                                                ｢5｣
+                                [0].Pine.number                                                     ｢5｣
                               [2].Pine.Expr.Atom                                                    2¦
-                                [0].Pine.Expr.number                                                ｢2｣
+                                [0].Pine.number                                                     ｢2｣
           [5].Pine.Stmt                                                                             grid  ... , 1]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   grid  ... , 1]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  grid  ... 0, 1]¦
@@ -3622,11 +3629,11 @@ Mr Jane
                             [0].Pine.Slice                                                          0¦
                               [0].Pine.Expr.Named                                                   0¦
                                 [0].Pine.Expr.Atom                                                  0¦
-                                  [0].Pine.Expr.number                                              ｢0｣
+                                  [0].Pine.number                                                   ｢0｣
                             [1].Pine.Slice                                                          1¦
                               [0].Pine.Expr.Named                                                   1¦
                                 [0].Pine.Expr.Atom                                                  1¦
-                                  [0].Pine.Expr.number                                              ｢1｣
+                                  [0].Pine.number                                                   ｢1｣
           [6].Pine.Stmt                                                                             both  ... :-1]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   both  ... :-1]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  both  ... ::-1]¦
@@ -3645,7 +3652,7 @@ Mr Jane
                             [1].Pine.Slice                                                          ::-1¦
                               [0].Pine.Expr.Unary.-                                                 -1¦
                                 [0].Pine.Expr.Atom                                                  1¦
-                                  [0].Pine.Expr.number                                              ｢1｣
+                                  [0].Pine.number                                                   ｢1｣
           [7].Pine.Stmt                                                                             retur ... th<NEWLINE><WHITESPACE><WHITESPACE>¦
             [0].Pine.Stmt.Simples                                                                   retur ... th<NEWLINE><WHITESPACE><WHITESPACE>¦
               [0].Pine.Stmt.Simple                                                                  retur ...  both¦
@@ -3708,7 +3715,7 @@ Mr Jane
                         [0].Pine.Expr.Lambda.lambda                                                 lambda: 0¦
                           [0].Pine.LambdaParams                                                     ¦
                           [1].Pine.Expr.Atom                                                        0¦
-                            [0].Pine.Expr.number                                                    ｢0｣
+                            [0].Pine.number                                                         ｢0｣
           [2].Pine.Stmt                                                                             starr ...  kw)<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   starr ...  kw)<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  starr ... , kw)¦
@@ -3753,16 +3760,16 @@ Mr Jane
                                 [0].identifier                                                      ｢x｣
                           [1].Pine.Expr.Conditional.if                                              \"big\" if  ... lse \"small\"¦
                             [0].Pine.Expr.Atom                                                      \"big\" ¦
-                              [0].Pine.Expr.Strings                                                 \"big\" ¦
-                                [0].Pine.Expr.stringLiteral                                         ｢"big"｣
+                              [0].Pine.Strings                                                      \"big\" ¦
+                                [0].string                                                          ｢"big"｣
                             [1].Pine.Expr.Comparison.>                                              x > 10 ¦
                               [0].Pine.Expr.Atom                                                    x ¦
                                 [0].identifier                                                      ｢x｣
                               [1].Pine.Expr.Atom                                                    10 ¦
-                                [0].Pine.Expr.number                                                ｢10｣
+                                [0].Pine.number                                                     ｢10｣
                             [2].Pine.Expr.Atom                                                      \"small\"¦
-                              [0].Pine.Expr.Strings                                                 \"small\"¦
-                                [0].Pine.Expr.stringLiteral                                         ｢"small"｣
+                              [0].Pine.Strings                                                      \"small\"¦
+                                [0].string                                                          ｢"small"｣
           [4].Pine.Stmt                                                                             retur ... ry<NEWLINE><WHITESPACE><WHITESPACE>¦
             [0].Pine.Stmt.Simples                                                                   retur ... ry<NEWLINE><WHITESPACE><WHITESPACE>¦
               [0].Pine.Stmt.Simple                                                                  retur ... rnary¦
@@ -3805,7 +3812,7 @@ Mr Jane
                                     [0].Pine.Expr.Atom                                              values¦
                                       [0].identifier                                                ｢values｣
                     [1].Pine.Expr.Atom                                                              3¦
-                      [0].Pine.Expr.number                                                          ｢3｣
+                      [0].Pine.number                                                               ｢3｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>pri ... =\" \")<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt                                                                     print ... p=\" \")<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           print ... p=\" \")<NEWLINE>¦
@@ -3818,18 +3825,18 @@ Mr Jane
                               [0].Pine.Arguments.Singular                                           f\"{n} values\"¦
                                 [0].Pine.Expr.Named                                                 f\"{n} values\"¦
                                   [0].Pine.Expr.Atom                                                f\"{n} values\"¦
-                                    [0].Pine.Expr.Strings                                           f\"{n} values\"¦
-                                      [0].Pine.Expr.stringLiteral                                   ｢f"{n} values"｣
+                                    [0].Pine.Strings                                                f\"{n} values\"¦
+                                      [0].Pine.Strings.fstring                                      ｢f"{n} values"｣
                               [1].Pine.Arguments.Singular                                           \"are plenty\"¦
                                 [0].Pine.Expr.Named                                                 \"are plenty\"¦
                                   [0].Pine.Expr.Atom                                                \"are plenty\"¦
-                                    [0].Pine.Expr.Strings                                           \"are plenty\"¦
-                                      [0].Pine.Expr.stringLiteral                                   ｢"are plenty"｣
+                                    [0].Pine.Strings                                                \"are plenty\"¦
+                                      [0].string                                                    ｢"are plenty"｣
                               [2].Pine.Arguments.Singular                                           sep=\" \"¦
                                 [0].identifier                                                      ｢sep｣
                                 [1].Pine.Expr.Atom                                                  \" \"¦
-                                  [0].Pine.Expr.Strings                                             \" \"¦
-                                    [0].Pine.Expr.stringLiteral                                     ｢" "｣
+                                  [0].Pine.Strings                                                  \" \"¦
+                                    [0].string                                                      ｢" "｣
           [1].Pine.Stmt                                                                             while ... 2:]<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  while ... 2:]<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.While                                                                   while ... 2:]<NEWLINE><DEDENT>¦
@@ -3845,7 +3852,7 @@ Mr Jane
                             [1].Pine.Slices                                                         :2¦
                               [0].Pine.Slice                                                        :2¦
                                 [0].Pine.Expr.Atom                                                  2¦
-                                  [0].Pine.Expr.number                                              ｢2｣
+                                  [0].Pine.number                                                   ｢2｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>val ... 2:]<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt                                                                     value ... [2:]<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           value ... [2:]<NEWLINE>¦
@@ -3863,7 +3870,7 @@ Mr Jane
                                   [1].Pine.Slices                                                   2:¦
                                     [0].Pine.Slice                                                  2:¦
                                       [0].Pine.Expr.Atom                                            2¦
-                                        [0].Pine.Expr.number                                        ｢2｣
+                                        [0].Pine.number                                             ｢2｣
           [2].Pine.Stmt                                                                             retur ... 0]<NEWLINE><WHITESPACE><WHITESPACE>¦
             [0].Pine.Stmt.Simples                                                                   retur ... 0]<NEWLINE><WHITESPACE><WHITESPACE>¦
               [0].Pine.Stmt.Simple                                                                  retur ...  > 0]¦
@@ -3891,9 +3898,9 @@ Mr Jane
                                         [0].Pine.Expr.Atom                                          x ¦
                                           [0].identifier                                            ｢x｣
                                         [1].Pine.Expr.Atom                                          2¦
-                                          [0].Pine.Expr.number                                      ｢2｣
+                                          [0].Pine.number                                           ｢2｣
                               [1].Pine.Expr.Atom                                                    0¦
-                                [0].Pine.Expr.number                                                ｢0｣
+                                [0].Pine.number                                                     ｢0｣
   [26].Pine.Stmt                                                                                    def c ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          def c ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def c ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
@@ -3907,22 +3914,22 @@ Mr Jane
           [0].Pine.Stmt                                                                             match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
               [0].Pine.Stmt.Match                                                                   match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
-                [0].Pine.Stmt.SubjectExpr                                                           command¦
+                [0].Pine.Stmt.Match.SubjectExpr                                                     command¦
                   [0].Pine.Expr.Named                                                               command¦
                     [0].Pine.Expr.Atom                                                              command¦
                       [0].identifier                                                                ｢command｣
-                [1].Pine.Stmt.Case                                                                  case  ... n 0<NEWLINE><DEDENT>¦
+                [1].Pine.Stmt.Match.Case                                                            case  ... n 0<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         \"quit\" | \"exit\"¦
                     [0].Pine.Pattern                                                                \"quit\" | \"exit\"¦
                       [0].Pine.Pattern.Or                                                           \"quit\" | \"exit\"¦
                         [0].Pine.Pattern.Closed                                                     \"quit\" ¦
                           [0].Pine.Pattern.Literal                                                  \"quit\" ¦
-                            [0].Pine.Expr.Strings                                                   \"quit\" ¦
-                              [0].Pine.Expr.stringLiteral                                           ｢"quit"｣
+                            [0].Pine.Strings                                                        \"quit\" ¦
+                              [0].string                                                            ｢"quit"｣
                         [1].Pine.Pattern.Closed                                                     \"exit\"¦
                           [0].Pine.Pattern.Literal                                                  \"exit\"¦
-                            [0].Pine.Expr.Strings                                                   \"exit\"¦
-                              [0].Pine.Expr.stringLiteral                                           ｢"exit"｣
+                            [0].Pine.Strings                                                        \"exit\"¦
+                              [0].string                                                            ｢"exit"｣
                   [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n 0<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   return 0<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         return 0<NEWLINE>¦
@@ -3930,8 +3937,8 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      return 0¦
                             [0].Pine.StarExprs                                                      0¦
                               [0].Pine.Expr.Atom                                                    0¦
-                                [0].Pine.Expr.number                                                ｢0｣
-                [2].Pine.Stmt.Case                                                                  case  ... ion<NEWLINE><DEDENT>¦
+                                [0].Pine.number                                                     ｢0｣
+                [2].Pine.Stmt.Match.Case                                                            case  ... ion<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         [\"move\", d ... tion]¦
                     [0].Pine.Pattern                                                                [\"move\", d ... tion]¦
                       [0].Pine.Pattern.Or                                                           [\"move\", d ... tion]¦
@@ -3943,8 +3950,8 @@ Mr Jane
                                   [0].Pine.Pattern.Or                                               \"move\"¦
                                     [0].Pine.Pattern.Closed                                         \"move\"¦
                                       [0].Pine.Pattern.Literal                                      \"move\"¦
-                                        [0].Pine.Expr.Strings                                       \"move\"¦
-                                          [0].Pine.Expr.stringLiteral                               ｢"move"｣
+                                        [0].Pine.Strings                                            \"move\"¦
+                                          [0].string                                                ｢"move"｣
                               [1].Pine.Pattern.MaybeStar                                            direction¦
                                 [0].Pine.Pattern                                                    direction¦
                                   [0].Pine.Pattern.Or                                               direction¦
@@ -3959,7 +3966,7 @@ Mr Jane
                             [0].Pine.StarExprs                                                      direction¦
                               [0].Pine.Expr.Atom                                                    direction¦
                                 [0].identifier                                                      ｢direction｣
-                [3].Pine.Stmt.Case                                                                  case  ... ors<NEWLINE><DEDENT>¦
+                [3].Pine.Stmt.Match.Case                                                            case  ... ors<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         [\"scale\", * ... tors]¦
                     [0].Pine.Pattern                                                                [\"scale\", * ... tors]¦
                       [0].Pine.Pattern.Or                                                           [\"scale\", * ... tors]¦
@@ -3971,8 +3978,8 @@ Mr Jane
                                   [0].Pine.Pattern.Or                                               \"scale\"¦
                                     [0].Pine.Pattern.Closed                                         \"scale\"¦
                                       [0].Pine.Pattern.Literal                                      \"scale\"¦
-                                        [0].Pine.Expr.Strings                                       \"scale\"¦
-                                          [0].Pine.Expr.stringLiteral                               ｢"scale"｣
+                                        [0].Pine.Strings                                            \"scale\"¦
+                                          [0].string                                                ｢"scale"｣
                               [1].Pine.Pattern.MaybeStar                                            *factors¦
                                 [0].Pine.Pattern.Star                                               *factors¦
                                   [0].Pine.Pattern.Capture                                          factors¦
@@ -3985,7 +3992,7 @@ Mr Jane
                             [0].Pine.StarExprs                                                      factors¦
                               [0].Pine.Expr.Atom                                                    factors¦
                                 [0].identifier                                                      ｢factors｣
-                [4].Pine.Stmt.Case                                                                  case  ... est<NEWLINE><DEDENT>¦
+                [4].Pine.Stmt.Match.Case                                                            case  ... est<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         {\"kind\": k ... rest}¦
                     [0].Pine.Pattern                                                                {\"kind\": k ... rest}¦
                       [0].Pine.Pattern.Or                                                           {\"kind\": k ... rest}¦
@@ -3994,8 +4001,8 @@ Mr Jane
                             [0].Pine.Pattern.Items                                                  \"kind\": kind¦
                               [0].Pine.Pattern.KeyValue                                             \"kind\": kind¦
                                 [0].Pine.Pattern.Literal                                            \"kind\"¦
-                                  [0].Pine.Expr.Strings                                             \"kind\"¦
-                                    [0].Pine.Expr.stringLiteral                                     ｢"kind"｣
+                                  [0].Pine.Strings                                                  \"kind\"¦
+                                    [0].string                                                      ｢"kind"｣
                                 [1].Pine.Pattern                                                    kind¦
                                   [0].Pine.Pattern.Or                                               kind¦
                                     [0].Pine.Pattern.Closed                                         kind¦
@@ -4014,7 +4021,7 @@ Mr Jane
                                 [0].identifier                                                      ｢kind｣
                               [1].Pine.Expr.Atom                                                    rest¦
                                 [0].identifier                                                      ｢rest｣
-                [5].Pine.Stmt.Case                                                                  case  ... n \"origin\"<NEWLINE><DEDENT>¦
+                [5].Pine.Stmt.Match.Case                                                            case  ... n \"origin\"<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         Point ...  y=0)¦
                     [0].Pine.Pattern                                                                Point ...  y=0)¦
                       [0].Pine.Pattern.Or                                                           Point ...  y=0)¦
@@ -4029,16 +4036,16 @@ Mr Jane
                                   [0].Pine.Pattern.Or                                               0¦
                                     [0].Pine.Pattern.Closed                                         0¦
                                       [0].Pine.Pattern.Literal                                      0¦
-                                        [0].Pine.Pattern.SignedNumber                               0¦
-                                          [0].Pine.Expr.number                                      ｢0｣
+                                        [0].Pine.Pattern.Literal.SignedNumber                       0¦
+                                          [0].Pine.number                                           ｢0｣
                               [1].Pine.Pattern.Keyword                                              y=0¦
                                 [0].identifier                                                      ｢y｣
                                 [1].Pine.Pattern                                                    0¦
                                   [0].Pine.Pattern.Or                                               0¦
                                     [0].Pine.Pattern.Closed                                         0¦
                                       [0].Pine.Pattern.Literal                                      0¦
-                                        [0].Pine.Pattern.SignedNumber                               0¦
-                                          [0].Pine.Expr.number                                      ｢0｣
+                                        [0].Pine.Pattern.Literal.SignedNumber                       0¦
+                                          [0].Pine.number                                           ｢0｣
                   [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"origin\"<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   return \"origin\"<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         return \"origin\"<NEWLINE>¦
@@ -4046,9 +4053,9 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      return \"origin\"¦
                             [0].Pine.StarExprs                                                      \"origin\"¦
                               [0].Pine.Expr.Atom                                                    \"origin\"¦
-                                [0].Pine.Expr.Strings                                               \"origin\"¦
-                                  [0].Pine.Expr.stringLiteral                                       ｢"origin"｣
-                [6].Pine.Stmt.Case                                                                  case  ... n \"diagonal\"<NEWLINE><DEDENT>¦
+                                [0].Pine.Strings                                                    \"origin\"¦
+                                  [0].string                                                        ｢"origin"｣
+                [6].Pine.Stmt.Match.Case                                                            case  ... n \"diagonal\"<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         Point ... , y) ¦
                     [0].Pine.Pattern                                                                Point ... , y) ¦
                       [0].Pine.Pattern.Or                                                           Point ... , y) ¦
@@ -4067,7 +4074,7 @@ Mr Jane
                                   [0].Pine.Pattern.Closed                                           y¦
                                     [0].Pine.Pattern.Capture                                        y¦
                                       [0].identifier                                                ｢y｣
-                  [1].Pine.Stmt.Guard                                                               if x == y¦
+                  [1].Pine.Stmt.Match.Guard                                                         if x == y¦
                     [0].Pine.Expr.Named                                                             x == y¦
                       [0].Pine.Expr.Comparison.==                                                   x == y¦
                         [0].Pine.Expr.Atom                                                          x ¦
@@ -4081,9 +4088,9 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      return \"diagonal\"¦
                             [0].Pine.StarExprs                                                      \"diagonal\"¦
                               [0].Pine.Expr.Atom                                                    \"diagonal\"¦
-                                [0].Pine.Expr.Strings                                               \"diagonal\"¦
-                                  [0].Pine.Expr.stringLiteral                                       ｢"diagonal"｣
-                [7].Pine.Stmt.Case                                                                  case  ... n \"triple\"<NEWLINE><DEDENT>¦
+                                [0].Pine.Strings                                                    \"diagonal\"¦
+                                  [0].string                                                        ｢"diagonal"｣
+                [7].Pine.Stmt.Match.Case                                                            case  ... n \"triple\"<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         (1, 2, 3)¦
                     [0].Pine.Pattern                                                                (1, 2, 3)¦
                       [0].Pine.Pattern.Or                                                           (1, 2, 3)¦
@@ -4095,23 +4102,23 @@ Mr Jane
                                   [0].Pine.Pattern.Or                                               1¦
                                     [0].Pine.Pattern.Closed                                         1¦
                                       [0].Pine.Pattern.Literal                                      1¦
-                                        [0].Pine.Pattern.SignedNumber                               1¦
-                                          [0].Pine.Expr.number                                      ｢1｣
+                                        [0].Pine.Pattern.Literal.SignedNumber                       1¦
+                                          [0].Pine.number                                           ｢1｣
                               [1].Pine.Pattern.MaybeSequence                                        2, 3¦
                                 [0].Pine.Pattern.MaybeStar                                          2¦
                                   [0].Pine.Pattern                                                  2¦
                                     [0].Pine.Pattern.Or                                             2¦
                                       [0].Pine.Pattern.Closed                                       2¦
                                         [0].Pine.Pattern.Literal                                    2¦
-                                          [0].Pine.Pattern.SignedNumber                             2¦
-                                            [0].Pine.Expr.number                                    ｢2｣
+                                          [0].Pine.Pattern.Literal.SignedNumber                     2¦
+                                            [0].Pine.number                                         ｢2｣
                                 [1].Pine.Pattern.MaybeStar                                          3¦
                                   [0].Pine.Pattern                                                  3¦
                                     [0].Pine.Pattern.Or                                             3¦
                                       [0].Pine.Pattern.Closed                                       3¦
                                         [0].Pine.Pattern.Literal                                    3¦
-                                          [0].Pine.Pattern.SignedNumber                             3¦
-                                            [0].Pine.Expr.number                                    ｢3｣
+                                          [0].Pine.Pattern.Literal.SignedNumber                     3¦
+                                            [0].Pine.number                                         ｢3｣
                   [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"triple\"<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   return \"triple\"<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         return \"triple\"<NEWLINE>¦
@@ -4119,16 +4126,17 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      return \"triple\"¦
                             [0].Pine.StarExprs                                                      \"triple\"¦
                               [0].Pine.Expr.Atom                                                    \"triple\"¦
-                                [0].Pine.Expr.Strings                                               \"triple\"¦
-                                  [0].Pine.Expr.stringLiteral                                       ｢"triple"｣
-                [8].Pine.Stmt.Case                                                                  case  ... n \"negative\"<NEWLINE><DEDENT>¦
+                                [0].Pine.Strings                                                    \"triple\"¦
+                                  [0].string                                                        ｢"triple"｣
+                [8].Pine.Stmt.Match.Case                                                            case  ... n \"negative\"<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         -1¦
                     [0].Pine.Pattern                                                                -1¦
                       [0].Pine.Pattern.Or                                                           -1¦
                         [0].Pine.Pattern.Closed                                                     -1¦
                           [0].Pine.Pattern.Literal                                                  -1¦
-                            [0].Pine.Pattern.SignedNumber                                           -1¦
-                              [0].Pine.Expr.number                                                  ｢1｣
+                            [0].Pine.Pattern.Literal.SignedNumber                                   -1¦
+                              [0].Pine.number.minus                                                 ｢-｣
+                              [1].Pine.number                                                       ｢1｣
                   [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"negative\"<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   return \"negative\"<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         return \"negative\"<NEWLINE>¦
@@ -4136,18 +4144,21 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      return \"negative\"¦
                             [0].Pine.StarExprs                                                      \"negative\"¦
                               [0].Pine.Expr.Atom                                                    \"negative\"¦
-                                [0].Pine.Expr.Strings                                               \"negative\"¦
-                                  [0].Pine.Expr.stringLiteral                                       ｢"negative"｣
-                [9].Pine.Stmt.Case                                                                  case  ... n \"constant\"<NEWLINE><DEDENT>¦
+                                [0].Pine.Strings                                                    \"negative\"¦
+                                  [0].string                                                        ｢"negative"｣
+                [9].Pine.Stmt.Match.Case                                                            case  ... n \"constant\"<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         None  ... False¦
                     [0].Pine.Pattern                                                                None  ... False¦
                       [0].Pine.Pattern.Or                                                           None  ... False¦
                         [0].Pine.Pattern.Closed                                                     None ¦
                           [0].Pine.Pattern.Literal                                                  None ¦
+                            [0].Pine.builtinLiteral                                                 ｢None｣
                         [1].Pine.Pattern.Closed                                                     True ¦
                           [0].Pine.Pattern.Literal                                                  True ¦
+                            [0].Pine.builtinLiteral                                                 ｢True｣
                         [2].Pine.Pattern.Closed                                                     False¦
                           [0].Pine.Pattern.Literal                                                  False¦
+                            [0].Pine.builtinLiteral                                                 ｢False｣
                   [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"constant\"<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   return \"constant\"<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         return \"constant\"<NEWLINE>¦
@@ -4155,9 +4166,9 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      return \"constant\"¦
                             [0].Pine.StarExprs                                                      \"constant\"¦
                               [0].Pine.Expr.Atom                                                    \"constant\"¦
-                                [0].Pine.Expr.Strings                                               \"constant\"¦
-                                  [0].Pine.Expr.stringLiteral                                       ｢"constant"｣
-                [10].Pine.Stmt.Case                                                                 case  ... n \"separator\"<NEWLINE><DEDENT>¦
+                                [0].Pine.Strings                                                    \"constant\"¦
+                                  [0].string                                                        ｢"constant"｣
+                [10].Pine.Stmt.Match.Case                                                           case  ... n \"separator\"<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         os.sep¦
                     [0].Pine.Pattern                                                                os.sep¦
                       [0].Pine.Pattern.Or                                                           os.sep¦
@@ -4173,9 +4184,9 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      return \"separator\"¦
                             [0].Pine.StarExprs                                                      \"separator\"¦
                               [0].Pine.Expr.Atom                                                    \"separator\"¦
-                                [0].Pine.Expr.Strings                                               \"separator\"¦
-                                  [0].Pine.Expr.stringLiteral                                       ｢"separator"｣
-                [11].Pine.Stmt.Case                                                                 case  ... red<NEWLINE><DEDENT>¦
+                                [0].Pine.Strings                                                    \"separator\"¦
+                                  [0].string                                                        ｢"separator"｣
+                [11].Pine.Stmt.Match.Case                                                           case  ... red<NEWLINE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         value ... tured¦
                     [0].Pine.Pattern                                                                value ... tured¦
                       [0].Pine.Pattern.As                                                           value ... tured¦
@@ -4193,7 +4204,7 @@ Mr Jane
                             [0].Pine.StarExprs                                                      captured¦
                               [0].Pine.Expr.Atom                                                    captured¦
                                 [0].identifier                                                      ｢captured｣
-                [12].Pine.Stmt.Case                                                                 case  ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+                [12].Pine.Stmt.Match.Case                                                           case  ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
                   [0].Pine.Pattern.Patterns                                                         _¦
                     [0].Pine.Pattern                                                                _¦
                       [0].Pine.Pattern.Or                                                           _¦
@@ -4206,6 +4217,7 @@ Mr Jane
                           [0].Pine.Stmt.Return                                                      retur ...  None¦
                             [0].Pine.StarExprs                                                      None¦
                               [0].Pine.Expr.Atom                                                    None¦
+                                [0].Pine.builtinLiteral                                             ｢None｣
   [27].Pine.Stmt                                                                                    class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Class                                                                           class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
@@ -4223,8 +4235,8 @@ Mr Jane
                     [1].Pine.Stmt.Assignment.Rhs                                                    \"point\"¦
                       [0].Pine.StarExprs                                                            \"point\"¦
                         [0].Pine.Expr.Atom                                                          \"point\"¦
-                          [0].Pine.Expr.Strings                                                     \"point\"¦
-                            [0].Pine.Expr.stringLiteral                                             ｢"point"｣
+                          [0].Pine.Strings                                                          \"point\"¦
+                            [0].string                                                              ｢"point"｣
           [1].Pine.Stmt                                                                             def _ ...  y<NEWLINE><WHITESPACE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  def _ ...  y<NEWLINE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def _ ...  y<NEWLINE><WHITESPACE><DEDENT>¦
@@ -4241,7 +4253,7 @@ Mr Jane
                     [0].Pine.Stmt.Function.ParamDef                                                 y=0¦
                       [0].identifier                                                                ｢y｣
                       [1].Pine.Expr.Atom                                                            0¦
-                        [0].Pine.Expr.number                                                        ｢0｣
+                        [0].Pine.number                                                             ｢0｣
                 [3].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>sel ...  y<NEWLINE><WHITESPACE><DEDENT>¦
                   [0].Pine.Stmt                                                                     self. ...  = x<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           self. ...  = x<NEWLINE>¦
@@ -4304,7 +4316,7 @@ Mr Jane
                                           [1].Pine.Expr.Atom                                        x ¦
                                             [0].identifier                                          ｢x｣
                                         [1].Pine.Expr.Atom                                          2 ¦
-                                          [0].Pine.Expr.number                                      ｢2｣
+                                          [0].Pine.number                                           ｢2｣
                                       [1].Pine.Expr.Power.**                                        self. ...  ** 2¦
                                         [0].Pine.Expr.Primary..                                     self.y ¦
                                           [0].Pine.Expr.Atom                                        self¦
@@ -4312,9 +4324,9 @@ Mr Jane
                                           [1].Pine.Expr.Atom                                        y ¦
                                             [0].identifier                                          ｢y｣
                                         [1].Pine.Expr.Atom                                          2¦
-                                          [0].Pine.Expr.number                                      ｢2｣
+                                          [0].Pine.number                                           ｢2｣
                               [1].Pine.Expr.Atom                                                    0.5¦
-                                [0].Pine.Expr.number                                                ｢0.5｣
+                                [0].Pine.number                                                     ｢0.5｣
           [3].Pine.Stmt                                                                             @stat ... 0)<NEWLINE><WHITESPACE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  @stat ... 0)<NEWLINE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                @stat ... 0)<NEWLINE><WHITESPACE><DEDENT>¦
@@ -4338,11 +4350,11 @@ Mr Jane
                                 [0].Pine.Arguments.Singular                                         0¦
                                   [0].Pine.Expr.Named                                               0¦
                                     [0].Pine.Expr.Atom                                              0¦
-                                      [0].Pine.Expr.number                                          ｢0｣
+                                      [0].Pine.number                                               ｢0｣
                                 [1].Pine.Arguments.Singular                                         0¦
                                   [0].Pine.Expr.Named                                               0¦
                                     [0].Pine.Expr.Atom                                              0¦
-                                      [0].Pine.Expr.number                                          ｢0｣
+                                      [0].Pine.number                                               ｢0｣
           [4].Pine.Stmt                                                                             def _ ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  def _ ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def _ ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
@@ -4363,8 +4375,8 @@ Mr Jane
                                 [0].Pine.Expr.Sum.+                                                 \"Point(\" + s ...  + \", \" ¦
                                   [0].Pine.Expr.Sum.+                                               \"Point(\" + s ... f.x) ¦
                                     [0].Pine.Expr.Atom                                              \"Point(\" ¦
-                                      [0].Pine.Expr.Strings                                         \"Point(\" ¦
-                                        [0].Pine.Expr.stringLiteral                                 ｢"Point("｣
+                                      [0].Pine.Strings                                              \"Point(\" ¦
+                                        [0].string                                                  ｢"Point("｣
                                     [1].Pine.Expr.Primary.(                                         str(s ... f.x) ¦
                                       [0].Pine.Expr.Atom                                            str¦
                                         [0].identifier                                              ｢str｣
@@ -4377,8 +4389,8 @@ Mr Jane
                                               [1].Pine.Expr.Atom                                    x¦
                                                 [0].identifier                                      ｢x｣
                                   [1].Pine.Expr.Atom                                                \", \" ¦
-                                    [0].Pine.Expr.Strings                                           \", \" ¦
-                                      [0].Pine.Expr.stringLiteral                                   ｢", "｣
+                                    [0].Pine.Strings                                                \", \" ¦
+                                      [0].string                                                    ｢", "｣
                                 [1].Pine.Expr.Primary.(                                             str(s ... f.y) ¦
                                   [0].Pine.Expr.Atom                                                str¦
                                     [0].identifier                                                  ｢str｣
@@ -4391,8 +4403,8 @@ Mr Jane
                                           [1].Pine.Expr.Atom                                        y¦
                                             [0].identifier                                          ｢y｣
                               [1].Pine.Expr.Atom                                                    \")\"¦
-                                [0].Pine.Expr.Strings                                               \")\"¦
-                                  [0].Pine.Expr.stringLiteral                                       ｢")"｣
+                                [0].Pine.Strings                                                    \")\"¦
+                                  [0].string                                                        ｢")"｣
   [28].Pine.Stmt                                                                                    class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Class                                                                           class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
@@ -4429,8 +4441,8 @@ Mr Jane
                           [0].Pine.StarExprs                                                        \"%s\" % s ... .kind¦
                             [0].Pine.Expr.Term.%                                                    \"%s\" % s ... .kind¦
                               [0].Pine.Expr.Atom                                                    \"%s\" ¦
-                                [0].Pine.Expr.Strings                                               \"%s\" ¦
-                                  [0].Pine.Expr.stringLiteral                                       ｢"%s"｣
+                                [0].Pine.Strings                                                    \"%s\" ¦
+                                  [0].string                                                        ｢"%s"｣
                               [1].Pine.Expr.Primary..                                               self.kind¦
                                 [0].Pine.Expr.Atom                                                  self¦
                                   [0].identifier                                                    ｢self｣
@@ -4632,7 +4644,7 @@ Mr Jane
                           [0].Pine.Expr.Named                                                       2 * n¦
                             [0].Pine.Expr.Term.*                                                    2 * n¦
                               [0].Pine.Expr.Atom                                                    2 ¦
-                                [0].Pine.Expr.number                                                ｢2｣
+                                [0].Pine.number                                                     ｢2｣
                               [1].Pine.Expr.Atom                                                    n¦
                                 [0].identifier                                                      ｢n｣
           [2].Pine.Stmt                                                                             value ... ield<NEWLINE>¦
@@ -4660,8 +4672,8 @@ Mr Jane
             [0].Pine.Expr.Atom                                                                      __name__ ¦
               [0].identifier                                                                        ｢__name__｣
             [1].Pine.Expr.Atom                                                                      \"__main__\"¦
-              [0].Pine.Expr.Strings                                                                 \"__main__\"¦
-                [0].Pine.Expr.stringLiteral                                                         ｢"__main__"｣
+              [0].Pine.Strings                                                                      \"__main__\"¦
+                [0].string                                                                          ｢"__main__"｣
         [1].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>poi ...  y)<NEWLINE><DEDENT>¦
           [0].Pine.Stmt                                                                             point ... , 4)<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   point ... , 4)<NEWLINE>¦
@@ -4680,11 +4692,11 @@ Mr Jane
                             [0].Pine.Arguments.Singular                                             3¦
                               [0].Pine.Expr.Named                                                   3¦
                                 [0].Pine.Expr.Atom                                                  3¦
-                                  [0].Pine.Expr.number                                              ｢3｣
+                                  [0].Pine.number                                                   ｢3｣
                             [1].Pine.Arguments.Singular                                             4¦
                               [0].Pine.Expr.Named                                                   4¦
                                 [0].Pine.Expr.Atom                                                  4¦
-                                  [0].Pine.Expr.number                                              ｢4｣
+                                  [0].Pine.number                                                   ｢4｣
           [1].Pine.Stmt                                                                             print ... orm)<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   print ... orm)<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  print ... norm)¦
@@ -4727,8 +4739,8 @@ Mr Jane
                               [0].Pine.Arguments.Singular                                           \"quit\"¦
                                 [0].Pine.Expr.Named                                                 \"quit\"¦
                                   [0].Pine.Expr.Atom                                                \"quit\"¦
-                                    [0].Pine.Expr.Strings                                           \"quit\"¦
-                                      [0].Pine.Expr.stringLiteral                                   ｢"quit"｣
+                                    [0].Pine.Strings                                                \"quit\"¦
+                                      [0].string                                                    ｢"quit"｣
                       [1].Pine.Arguments.Singular                                                   class ... , \"north\"])¦
                         [0].Pine.Expr.Named                                                         class ... , \"north\"])¦
                           [0].Pine.Expr.Primary.(                                                   class ... , \"north\"])¦
@@ -4742,12 +4754,12 @@ Mr Jane
                                       [0].Pine.StarNamedExprs                                       \"move\", \"north\"¦
                                         [0].Pine.Expr.Named                                         \"move\"¦
                                           [0].Pine.Expr.Atom                                        \"move\"¦
-                                            [0].Pine.Expr.Strings                                   \"move\"¦
-                                              [0].Pine.Expr.stringLiteral                           ｢"move"｣
+                                            [0].Pine.Strings                                        \"move\"¦
+                                              [0].string                                            ｢"move"｣
                                         [1].Pine.Expr.Named                                         \"north\"¦
                                           [0].Pine.Expr.Atom                                        \"north\"¦
-                                            [0].Pine.Expr.Strings                                   \"north\"¦
-                                              [0].Pine.Expr.stringLiteral                           ｢"north"｣
+                                            [0].Pine.Strings                                        \"north\"¦
+                                              [0].string                                            ｢"north"｣
           [3].Pine.Stmt                                                                             x = 1 ... , y)<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   x = 1 ... , y)<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  x = 1¦
@@ -4759,7 +4771,7 @@ Mr Jane
                     [1].Pine.Stmt.Assignment.Rhs                                                    1¦
                       [0].Pine.StarExprs                                                            1¦
                         [0].Pine.Expr.Atom                                                          1¦
-                          [0].Pine.Expr.number                                                      ｢1｣
+                          [0].Pine.number                                                           ｢1｣
               [1].Pine.Stmt.Simple                                                                  y = 2¦
                 [0].Pine.Stmt.Assignment                                                            y = 2¦
                   [0].Pine.Stmt.Assignment.Plain                                                    y = 2¦
@@ -4769,7 +4781,7 @@ Mr Jane
                     [1].Pine.Stmt.Assignment.Rhs                                                    2¦
                       [0].Pine.StarExprs                                                            2¦
                         [0].Pine.Expr.Atom                                                          2¦
-                          [0].Pine.Expr.number                                                      ｢2｣
+                          [0].Pine.number                                                           ｢2｣
               [2].Pine.Stmt.Simple                                                                  print ... x, y)¦
                 [0].Pine.StarExprs                                                                  print ... x, y)¦
                   [0].Pine.Expr.Primary.(                                                           print ... x, y)¦

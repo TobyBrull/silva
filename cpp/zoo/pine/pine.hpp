@@ -97,15 +97,51 @@ language Pine:
       Item = Expr ( "as" Target.Star ) ?
 
     Try:
-      ⊙ = "try" ':' Block ( ExceptStar + | Except + ) ? Else ? Finally ?
-      Except = ε "except" ( Expr ( "as" identifier ) ? ) ? ':' Block
-      ExceptStar = ε "except" '*' Expr ( "as" identifier ) ? ':' Block
+      ⊙ = "try" ':' Block Except * Else ? Finally ?
+      Except = ε "except" star ? ( Expr ( "as" identifier ) ? ) ? ':' Block
+      star = '*'
       Finally = "finally" ':' Block
 
-    Match = ε "match" SubjectExpr ':' newline indent Case + dedent
-    Case = ε "case" Pattern.Patterns Guard ? ':' Block
-    Guard = "if" Expr.Named
-    SubjectExpr = StarNamedExpr ',' StarNamedExprs ? | Expr.Named
+    Match:
+      ⊙ = "match" SubjectExpr ':' newline indent Case + dedent
+      Case = "case" Pattern.Patterns Guard ? ':' Block
+      Guard = "if" Expr.Named
+      SubjectExpr = StarNamedExpr ',' StarNamedExprs ? | Expr.Named
+
+  Pattern:
+    ⊙ = As | Or
+    Patterns = OpenSequence | Pattern
+    As = Or "as" Capture
+    Or = Closed ( ε '|' Closed ) *
+    Closed = [ Literal Capture Wildcard Value Group Sequence Mapping Class ]
+
+    Literal:
+      ⊙ = ComplexNumber | SignedNumber | Strings | builtinLiteral
+      SignedNumber = number.minus ? number
+      ComplexNumber = SignedNumber number.plusMinus number
+
+    Capture = not "_" identifier not [ '.' '(' '=' ]
+    Wildcard = "_"
+    Value = Attr not [ '.' '(' '=' ]
+    Attr = identifier ( ε '.' identifier ) +
+    NameOrAttr = identifier ( ε '.' identifier ) *
+
+    Group = ε '(' Pattern ')'
+    Sequence = ε '[' MaybeSequence ? ']' | '(' OpenSequence ? ')'
+    OpenSequence = MaybeStar ',' MaybeSequence ?
+    MaybeSequence = MaybeStar ( ε ',' MaybeStar ) * ',' ?
+    MaybeStar = Star | Pattern
+    Star = '*' ( Capture | Wildcard )
+
+    Mapping = '{' ( Items ( ε ',' DoubleStar ) ? | DoubleStar ) ? ',' ? '}'
+    Items = KeyValue ( ε ',' KeyValue ) *
+    KeyValue = ( Literal | Attr ) ':' not '=' Pattern
+    DoubleStar = '**' Capture
+
+    Class = NameOrAttr '(' ( Positionals ( ε ',' Keywords ) ? | Keywords ) ? ',' ? ')'
+    Positionals = Pattern ( ε ',' Pattern ) *
+    Keywords = Keyword ( ε ',' Keyword ) *
+    Keyword = identifier '=' not '=' Pattern
 
   TypeParams:
     ⊙ = '[' Singular ( ε ',' Singular ) * ',' ? ']' | ε
@@ -162,7 +198,7 @@ language Pine:
       Conditional = rtl  ternary "if" "else"
       Lambda      = rtl  prefix_nest -> LambdaParams "lambda" ':'
 
-    Atom = ( "True" | "False" | "None" | '...' | Strings | number
+    Atom = ( builtinLiteral | '...' | Strings | number
            | GenExp | Group | Tuple
            | ListComp | List
            | DictComp | SetComp | Dict | Set
@@ -183,54 +219,25 @@ language Pine:
     Assign = identifier ':=' Expr
     Yield = "yield" ( "from" Expr | StarExprs ? )
 
-    Strings = stringLiteral +
-    stringLiteral = ( ID_START ID_CONTINUE * ) ? STRING
+  builtinLiteral = "None" | "True" | "False"
 
-    number:
-      ⊙ = [ imaginary float integer ] not ID_CONTINUE
-      digits = no_node DIGIT ( DIGIT | '_' ) *
-      exponent = no_node [ 'e' 'E' ] [ '+' '-' ] ? digits
-      integer = no_node [ binary octal hexadecimal decimal ]
-      binary = no_node ε '0' [ 'b' 'B' ] ( DIGIT | '_' ) +
-      octal = no_node ε '0' [ 'o' 'O' ] ( DIGIT | '_' ) +
-      hexadecimal = no_node ε '0' [ 'x' 'X' ] ( DIGIT | ID_LOWER | ID_UPPER | '_' ) +
-      decimal = no_node digits
-      float = no_node ( digits '.' digits ? exponent ? | '.' digits exponent ? | digits exponent )
-      imaginary = no_node ( float | digits ) [ 'j' 'J' ]
+  Strings:
+    ⊙ = ( string | fstring ) +
+    fstring = ( 'f' | 't' ) STRING # TODO: support real f-strings and t-strings
 
-  Pattern:
-    ⊙ = As | Or
-    Patterns = OpenSequence | Pattern
-    As = Or "as" Capture
-    Or = Closed ( ε '|' Closed ) *
-    Closed = [ Literal Class Value Group Sequence Mapping Wildcard Capture ]
-
-    Literal = ComplexNumber | SignedNumber | Expr.Strings | "None" | "True" | "False"
-    SignedNumber = '-' ? Expr.number
-    ComplexNumber = SignedNumber [ '+' '-' ] Expr.number
-
-    Wildcard = "_"
-    Capture = not "_" identifier not [ '.' '(' '=' ]
-    Value = Attr not [ '.' '(' '=' ]
-    Attr = identifier ( ε '.' identifier ) +
-    NameOrAttr = identifier ( ε '.' identifier ) *
-
-    Group = ε '(' Pattern ')'
-    Sequence = ε '[' MaybeSequence ? ']' | '(' OpenSequence ? ')'
-    OpenSequence = MaybeStar ',' MaybeSequence ?
-    MaybeSequence = MaybeStar ( ε ',' MaybeStar ) * ',' ?
-    MaybeStar = Star | Pattern
-    Star = '*' ( Capture | Wildcard )
-
-    Mapping = '{' ( Items ( ε ',' DoubleStar ) ? | DoubleStar ) ? ',' ? '}'
-    Items = KeyValue ( ε ',' KeyValue ) *
-    KeyValue = ( Literal | Attr ) ':' not '=' Pattern
-    DoubleStar = '**' Capture
-
-    Class = NameOrAttr '(' ( Positionals ( ε ',' Keywords ) ? | Keywords ) ? ',' ? ')'
-    Positionals = Pattern ( ε ',' Pattern ) *
-    Keywords = Keyword ( ε ',' Keyword ) *
-    Keyword = identifier '=' not '=' Pattern
+  number:
+    ⊙ = [ imaginary float integer ] not ID_CONTINUE
+    digits = no_node DIGIT ( DIGIT | '_' ) *
+    exponent = no_node [ 'e' 'E' ] plusMinus ? digits
+    plusMinus = [ '+' '-' ]
+    minus = '-'
+    integer = no_node [ binary octal hexadecimal decimal ]
+    binary = no_node ε '0' [ 'b' 'B' ] ( DIGIT | '_' ) +
+    octal = no_node ε '0' [ 'o' 'O' ] ( DIGIT | '_' ) +
+    hexadecimal = no_node ε '0' [ 'x' 'X' ] ( DIGIT | ID_LOWER | ID_UPPER | '_' ) +
+    decimal = no_node digits
+    float = no_node ( digits '.' digits ? exponent ? | '.' digits exponent ? | digits exponent )
+    imaginary = no_node ( float | digits ) [ 'j' 'J' ]
 )'";
 
   unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);
