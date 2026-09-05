@@ -6,8 +6,9 @@
 
 namespace silva::pine {
 
-  // Adoption of the full grammar of Python, see
+  // Adoption of the full grammar of Python, cf.
   // https://docs.python.org/3/reference/grammar.html
+  // as of 2026-09-05, but without pattern matching.
   //
   // Deviations from the reference grammar:
   //  * Python's exponentiation operator '**' is asymmetric in terms of its precedence relative to
@@ -36,7 +37,7 @@ language Pine:
     Simple = [ Return Import Raise Pass Del Yield Assert Break Continue Global Nonlocal
                Assignment TypeAlias StarExprs ]
 
-    Compound = [ Function If Class With For Try While Match ]
+    Compound = [ Function If Class With For Try While ]
 
     Assignment:
       ⊙ = Annotated | Plain | Augmented
@@ -101,47 +102,6 @@ language Pine:
       Except = ε "except" star ? ( Expr ( "as" identifier ) ? ) ? ':' Block
       star = '*'
       Finally = "finally" ':' Block
-
-    Match:
-      ⊙ = "match" SubjectExpr ':' newline indent Case + dedent
-      Case = "case" Pattern.Patterns Guard ? ':' Block
-      Guard = "if" Expr.Named
-      SubjectExpr = StarNamedExpr ',' StarNamedExprs ? | Expr.Named
-
-  Pattern:
-    ⊙ = As | Or
-    Patterns = OpenSequence | Pattern
-    As = Or "as" Capture
-    Or = Closed ( ε '|' Closed ) *
-    Closed = [ Literal Capture Wildcard Value Group Sequence Mapping Class ]
-
-    Literal:
-      ⊙ = ComplexNumber | SignedNumber | Strings | builtinLiteral
-      SignedNumber = number.minus ? number
-      ComplexNumber = SignedNumber number.plusMinus number
-
-    Capture = not "_" identifier not [ '.' '(' '=' ]
-    Wildcard = "_"
-    Value = Attr not [ '.' '(' '=' ]
-    Attr = identifier ( ε '.' identifier ) +
-    NameOrAttr = identifier ( ε '.' identifier ) *
-
-    Group = ε '(' Pattern ')'
-    Sequence = ε '[' MaybeSequence ? ']' | '(' OpenSequence ? ')'
-    OpenSequence = MaybeStar ',' MaybeSequence ?
-    MaybeSequence = MaybeStar ( ε ',' MaybeStar ) * ',' ?
-    MaybeStar = Star | Pattern
-    Star = '*' ( Capture | Wildcard )
-
-    Mapping = '{' ( Items ( ε ',' DoubleStar ) ? | DoubleStar ) ? ',' ? '}'
-    Items = KeyValue ( ε ',' KeyValue ) *
-    KeyValue = ( Literal | Attr ) ':' not '=' Pattern
-    DoubleStar = '**' Capture
-
-    Class = NameOrAttr '(' ( Positionals ( ε ',' Keywords ) ? | Keywords ) ? ',' ? ')'
-    Positionals = Pattern ( ε ',' Pattern ) *
-    Keywords = Keyword ( ε ',' Keyword ) *
-    Keyword = identifier '=' not '=' Pattern
 
   TypeParams:
     ⊙ = '[' Singular ( ε ',' Singular ) * ',' ? ']' | ε

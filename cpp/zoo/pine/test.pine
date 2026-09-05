@@ -154,34 +154,6 @@ def walrus(values):
     return [y for x in values if (y := x * 2) > 0]
 
 
-def classify(command):
-    match command:
-        case "quit" | "exit":
-            return 0
-        case ["move", direction]:
-            return direction
-        case ["scale", *factors]:
-            return factors
-        case {"kind": kind, **rest}:
-            return kind, rest
-        case Point(x=0, y=0):
-            return "origin"
-        case Point(x, y) if x == y:
-            return "diagonal"
-        case (1, 2, 3):
-            return "triple"
-        case -1:
-            return "negative"
-        case None | True | False:
-            return "constant"
-        case os.sep:
-            return "separator"
-        case value as captured:
-            return captured
-        case _:
-            return None
-
-
 class Point:
     kind = "point"
 

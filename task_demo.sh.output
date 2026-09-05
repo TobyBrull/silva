@@ -3901,324 +3901,7 @@ Mr Jane
                                           [0].Pine.number                                           ｢2｣
                               [1].Pine.Expr.Atom                                                    0¦
                                 [0].Pine.number                                                     ｢0｣
-  [26].Pine.Stmt                                                                                    def c ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
-    [0].Pine.Stmt.Compound                                                                          def c ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
-      [0].Pine.Stmt.Function                                                                        def c ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
-        [0].identifier                                                                              ｢classify｣
-        [1].Pine.TypeParams                                                                         ¦
-        [2].Pine.Stmt.Function.Params                                                               command¦
-          [0].Pine.Stmt.Function.Param                                                              command¦
-            [0].Pine.Stmt.Function.ParamDef                                                         command¦
-              [0].identifier                                                                        ｢command｣
-        [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>mat ... <WHITESPACE><WHITESPACE><DEDENT><DEDENT><DEDENT>¦
-          [0].Pine.Stmt                                                                             match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
-            [0].Pine.Stmt.Compound                                                                  match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
-              [0].Pine.Stmt.Match                                                                   match ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
-                [0].Pine.Stmt.Match.SubjectExpr                                                     command¦
-                  [0].Pine.Expr.Named                                                               command¦
-                    [0].Pine.Expr.Atom                                                              command¦
-                      [0].identifier                                                                ｢command｣
-                [1].Pine.Stmt.Match.Case                                                            case  ... n 0<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         \"quit\" | \"exit\"¦
-                    [0].Pine.Pattern                                                                \"quit\" | \"exit\"¦
-                      [0].Pine.Pattern.Or                                                           \"quit\" | \"exit\"¦
-                        [0].Pine.Pattern.Closed                                                     \"quit\" ¦
-                          [0].Pine.Pattern.Literal                                                  \"quit\" ¦
-                            [0].Pine.Strings                                                        \"quit\" ¦
-                              [0].string                                                            ｢"quit"｣
-                        [1].Pine.Pattern.Closed                                                     \"exit\"¦
-                          [0].Pine.Pattern.Literal                                                  \"exit\"¦
-                            [0].Pine.Strings                                                        \"exit\"¦
-                              [0].string                                                            ｢"exit"｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n 0<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   return 0<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         return 0<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        return 0¦
-                          [0].Pine.Stmt.Return                                                      return 0¦
-                            [0].Pine.StarExprs                                                      0¦
-                              [0].Pine.Expr.Atom                                                    0¦
-                                [0].Pine.number                                                     ｢0｣
-                [2].Pine.Stmt.Match.Case                                                            case  ... ion<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         [\"move\", d ... tion]¦
-                    [0].Pine.Pattern                                                                [\"move\", d ... tion]¦
-                      [0].Pine.Pattern.Or                                                           [\"move\", d ... tion]¦
-                        [0].Pine.Pattern.Closed                                                     [\"move\", d ... tion]¦
-                          [0].Pine.Pattern.Sequence                                                 [\"move\", d ... tion]¦
-                            [0].Pine.Pattern.MaybeSequence                                          \"move\", di ... ction¦
-                              [0].Pine.Pattern.MaybeStar                                            \"move\"¦
-                                [0].Pine.Pattern                                                    \"move\"¦
-                                  [0].Pine.Pattern.Or                                               \"move\"¦
-                                    [0].Pine.Pattern.Closed                                         \"move\"¦
-                                      [0].Pine.Pattern.Literal                                      \"move\"¦
-                                        [0].Pine.Strings                                            \"move\"¦
-                                          [0].string                                                ｢"move"｣
-                              [1].Pine.Pattern.MaybeStar                                            direction¦
-                                [0].Pine.Pattern                                                    direction¦
-                                  [0].Pine.Pattern.Or                                               direction¦
-                                    [0].Pine.Pattern.Closed                                         direction¦
-                                      [0].Pine.Pattern.Capture                                      direction¦
-                                        [0].identifier                                              ｢direction｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... ion<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   retur ... tion<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         retur ... tion<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        retur ... ction¦
-                          [0].Pine.Stmt.Return                                                      retur ... ction¦
-                            [0].Pine.StarExprs                                                      direction¦
-                              [0].Pine.Expr.Atom                                                    direction¦
-                                [0].identifier                                                      ｢direction｣
-                [3].Pine.Stmt.Match.Case                                                            case  ... ors<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         [\"scale\", * ... tors]¦
-                    [0].Pine.Pattern                                                                [\"scale\", * ... tors]¦
-                      [0].Pine.Pattern.Or                                                           [\"scale\", * ... tors]¦
-                        [0].Pine.Pattern.Closed                                                     [\"scale\", * ... tors]¦
-                          [0].Pine.Pattern.Sequence                                                 [\"scale\", * ... tors]¦
-                            [0].Pine.Pattern.MaybeSequence                                          \"scale\", *f ... ctors¦
-                              [0].Pine.Pattern.MaybeStar                                            \"scale\"¦
-                                [0].Pine.Pattern                                                    \"scale\"¦
-                                  [0].Pine.Pattern.Or                                               \"scale\"¦
-                                    [0].Pine.Pattern.Closed                                         \"scale\"¦
-                                      [0].Pine.Pattern.Literal                                      \"scale\"¦
-                                        [0].Pine.Strings                                            \"scale\"¦
-                                          [0].string                                                ｢"scale"｣
-                              [1].Pine.Pattern.MaybeStar                                            *factors¦
-                                [0].Pine.Pattern.Star                                               *factors¦
-                                  [0].Pine.Pattern.Capture                                          factors¦
-                                    [0].identifier                                                  ｢factors｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... ors<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   retur ... tors<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         retur ... tors<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        retur ... ctors¦
-                          [0].Pine.Stmt.Return                                                      retur ... ctors¦
-                            [0].Pine.StarExprs                                                      factors¦
-                              [0].Pine.Expr.Atom                                                    factors¦
-                                [0].identifier                                                      ｢factors｣
-                [4].Pine.Stmt.Match.Case                                                            case  ... est<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         {\"kind\": k ... rest}¦
-                    [0].Pine.Pattern                                                                {\"kind\": k ... rest}¦
-                      [0].Pine.Pattern.Or                                                           {\"kind\": k ... rest}¦
-                        [0].Pine.Pattern.Closed                                                     {\"kind\": k ... rest}¦
-                          [0].Pine.Pattern.Mapping                                                  {\"kind\": k ... rest}¦
-                            [0].Pine.Pattern.Items                                                  \"kind\": kind¦
-                              [0].Pine.Pattern.KeyValue                                             \"kind\": kind¦
-                                [0].Pine.Pattern.Literal                                            \"kind\"¦
-                                  [0].Pine.Strings                                                  \"kind\"¦
-                                    [0].string                                                      ｢"kind"｣
-                                [1].Pine.Pattern                                                    kind¦
-                                  [0].Pine.Pattern.Or                                               kind¦
-                                    [0].Pine.Pattern.Closed                                         kind¦
-                                      [0].Pine.Pattern.Capture                                      kind¦
-                                        [0].identifier                                              ｢kind｣
-                            [1].Pine.Pattern.DoubleStar                                             **rest¦
-                              [0].Pine.Pattern.Capture                                              rest¦
-                                [0].identifier                                                      ｢rest｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... est<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   retur ... rest<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         retur ... rest<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        retur ...  rest¦
-                          [0].Pine.Stmt.Return                                                      retur ...  rest¦
-                            [0].Pine.StarExprs                                                      kind, rest¦
-                              [0].Pine.Expr.Atom                                                    kind¦
-                                [0].identifier                                                      ｢kind｣
-                              [1].Pine.Expr.Atom                                                    rest¦
-                                [0].identifier                                                      ｢rest｣
-                [5].Pine.Stmt.Match.Case                                                            case  ... n \"origin\"<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         Point ...  y=0)¦
-                    [0].Pine.Pattern                                                                Point ...  y=0)¦
-                      [0].Pine.Pattern.Or                                                           Point ...  y=0)¦
-                        [0].Pine.Pattern.Closed                                                     Point ...  y=0)¦
-                          [0].Pine.Pattern.Class                                                    Point ...  y=0)¦
-                            [0].Pine.Pattern.NameOrAttr                                             Point¦
-                              [0].identifier                                                        ｢Point｣
-                            [1].Pine.Pattern.Keywords                                               x=0, y=0¦
-                              [0].Pine.Pattern.Keyword                                              x=0¦
-                                [0].identifier                                                      ｢x｣
-                                [1].Pine.Pattern                                                    0¦
-                                  [0].Pine.Pattern.Or                                               0¦
-                                    [0].Pine.Pattern.Closed                                         0¦
-                                      [0].Pine.Pattern.Literal                                      0¦
-                                        [0].Pine.Pattern.Literal.SignedNumber                       0¦
-                                          [0].Pine.number                                           ｢0｣
-                              [1].Pine.Pattern.Keyword                                              y=0¦
-                                [0].identifier                                                      ｢y｣
-                                [1].Pine.Pattern                                                    0¦
-                                  [0].Pine.Pattern.Or                                               0¦
-                                    [0].Pine.Pattern.Closed                                         0¦
-                                      [0].Pine.Pattern.Literal                                      0¦
-                                        [0].Pine.Pattern.Literal.SignedNumber                       0¦
-                                          [0].Pine.number                                           ｢0｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"origin\"<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   return \"origin\"<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         return \"origin\"<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        return \"origin\"¦
-                          [0].Pine.Stmt.Return                                                      return \"origin\"¦
-                            [0].Pine.StarExprs                                                      \"origin\"¦
-                              [0].Pine.Expr.Atom                                                    \"origin\"¦
-                                [0].Pine.Strings                                                    \"origin\"¦
-                                  [0].string                                                        ｢"origin"｣
-                [6].Pine.Stmt.Match.Case                                                            case  ... n \"diagonal\"<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         Point ... , y) ¦
-                    [0].Pine.Pattern                                                                Point ... , y) ¦
-                      [0].Pine.Pattern.Or                                                           Point ... , y) ¦
-                        [0].Pine.Pattern.Closed                                                     Point ... , y) ¦
-                          [0].Pine.Pattern.Class                                                    Point ... , y) ¦
-                            [0].Pine.Pattern.NameOrAttr                                             Point¦
-                              [0].identifier                                                        ｢Point｣
-                            [1].Pine.Pattern.Positionals                                            x, y¦
-                              [0].Pine.Pattern                                                      x¦
-                                [0].Pine.Pattern.Or                                                 x¦
-                                  [0].Pine.Pattern.Closed                                           x¦
-                                    [0].Pine.Pattern.Capture                                        x¦
-                                      [0].identifier                                                ｢x｣
-                              [1].Pine.Pattern                                                      y¦
-                                [0].Pine.Pattern.Or                                                 y¦
-                                  [0].Pine.Pattern.Closed                                           y¦
-                                    [0].Pine.Pattern.Capture                                        y¦
-                                      [0].identifier                                                ｢y｣
-                  [1].Pine.Stmt.Match.Guard                                                         if x == y¦
-                    [0].Pine.Expr.Named                                                             x == y¦
-                      [0].Pine.Expr.Comparison.==                                                   x == y¦
-                        [0].Pine.Expr.Atom                                                          x ¦
-                          [0].identifier                                                            ｢x｣
-                        [1].Pine.Expr.Atom                                                          y¦
-                          [0].identifier                                                            ｢y｣
-                  [2].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"diagonal\"<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   return \"diagonal\"<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         return \"diagonal\"<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        return \"diagonal\"¦
-                          [0].Pine.Stmt.Return                                                      return \"diagonal\"¦
-                            [0].Pine.StarExprs                                                      \"diagonal\"¦
-                              [0].Pine.Expr.Atom                                                    \"diagonal\"¦
-                                [0].Pine.Strings                                                    \"diagonal\"¦
-                                  [0].string                                                        ｢"diagonal"｣
-                [7].Pine.Stmt.Match.Case                                                            case  ... n \"triple\"<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         (1, 2, 3)¦
-                    [0].Pine.Pattern                                                                (1, 2, 3)¦
-                      [0].Pine.Pattern.Or                                                           (1, 2, 3)¦
-                        [0].Pine.Pattern.Closed                                                     (1, 2, 3)¦
-                          [0].Pine.Pattern.Sequence                                                 (1, 2, 3)¦
-                            [0].Pine.Pattern.OpenSequence                                           1, 2, 3¦
-                              [0].Pine.Pattern.MaybeStar                                            1¦
-                                [0].Pine.Pattern                                                    1¦
-                                  [0].Pine.Pattern.Or                                               1¦
-                                    [0].Pine.Pattern.Closed                                         1¦
-                                      [0].Pine.Pattern.Literal                                      1¦
-                                        [0].Pine.Pattern.Literal.SignedNumber                       1¦
-                                          [0].Pine.number                                           ｢1｣
-                              [1].Pine.Pattern.MaybeSequence                                        2, 3¦
-                                [0].Pine.Pattern.MaybeStar                                          2¦
-                                  [0].Pine.Pattern                                                  2¦
-                                    [0].Pine.Pattern.Or                                             2¦
-                                      [0].Pine.Pattern.Closed                                       2¦
-                                        [0].Pine.Pattern.Literal                                    2¦
-                                          [0].Pine.Pattern.Literal.SignedNumber                     2¦
-                                            [0].Pine.number                                         ｢2｣
-                                [1].Pine.Pattern.MaybeStar                                          3¦
-                                  [0].Pine.Pattern                                                  3¦
-                                    [0].Pine.Pattern.Or                                             3¦
-                                      [0].Pine.Pattern.Closed                                       3¦
-                                        [0].Pine.Pattern.Literal                                    3¦
-                                          [0].Pine.Pattern.Literal.SignedNumber                     3¦
-                                            [0].Pine.number                                         ｢3｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"triple\"<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   return \"triple\"<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         return \"triple\"<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        return \"triple\"¦
-                          [0].Pine.Stmt.Return                                                      return \"triple\"¦
-                            [0].Pine.StarExprs                                                      \"triple\"¦
-                              [0].Pine.Expr.Atom                                                    \"triple\"¦
-                                [0].Pine.Strings                                                    \"triple\"¦
-                                  [0].string                                                        ｢"triple"｣
-                [8].Pine.Stmt.Match.Case                                                            case  ... n \"negative\"<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         -1¦
-                    [0].Pine.Pattern                                                                -1¦
-                      [0].Pine.Pattern.Or                                                           -1¦
-                        [0].Pine.Pattern.Closed                                                     -1¦
-                          [0].Pine.Pattern.Literal                                                  -1¦
-                            [0].Pine.Pattern.Literal.SignedNumber                                   -1¦
-                              [0].Pine.number.minus                                                 ｢-｣
-                              [1].Pine.number                                                       ｢1｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"negative\"<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   return \"negative\"<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         return \"negative\"<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        return \"negative\"¦
-                          [0].Pine.Stmt.Return                                                      return \"negative\"¦
-                            [0].Pine.StarExprs                                                      \"negative\"¦
-                              [0].Pine.Expr.Atom                                                    \"negative\"¦
-                                [0].Pine.Strings                                                    \"negative\"¦
-                                  [0].string                                                        ｢"negative"｣
-                [9].Pine.Stmt.Match.Case                                                            case  ... n \"constant\"<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         None  ... False¦
-                    [0].Pine.Pattern                                                                None  ... False¦
-                      [0].Pine.Pattern.Or                                                           None  ... False¦
-                        [0].Pine.Pattern.Closed                                                     None ¦
-                          [0].Pine.Pattern.Literal                                                  None ¦
-                            [0].Pine.builtinLiteral                                                 ｢None｣
-                        [1].Pine.Pattern.Closed                                                     True ¦
-                          [0].Pine.Pattern.Literal                                                  True ¦
-                            [0].Pine.builtinLiteral                                                 ｢True｣
-                        [2].Pine.Pattern.Closed                                                     False¦
-                          [0].Pine.Pattern.Literal                                                  False¦
-                            [0].Pine.builtinLiteral                                                 ｢False｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"constant\"<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   return \"constant\"<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         return \"constant\"<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        return \"constant\"¦
-                          [0].Pine.Stmt.Return                                                      return \"constant\"¦
-                            [0].Pine.StarExprs                                                      \"constant\"¦
-                              [0].Pine.Expr.Atom                                                    \"constant\"¦
-                                [0].Pine.Strings                                                    \"constant\"¦
-                                  [0].string                                                        ｢"constant"｣
-                [10].Pine.Stmt.Match.Case                                                           case  ... n \"separator\"<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         os.sep¦
-                    [0].Pine.Pattern                                                                os.sep¦
-                      [0].Pine.Pattern.Or                                                           os.sep¦
-                        [0].Pine.Pattern.Closed                                                     os.sep¦
-                          [0].Pine.Pattern.Value                                                    os.sep¦
-                            [0].Pine.Pattern.Attr                                                   os.sep¦
-                              [0].identifier                                                        ｢os｣
-                              [1].identifier                                                        ｢sep｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... n \"separator\"<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   return \"separator\"<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         return \"separator\"<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        return \"separator\"¦
-                          [0].Pine.Stmt.Return                                                      return \"separator\"¦
-                            [0].Pine.StarExprs                                                      \"separator\"¦
-                              [0].Pine.Expr.Atom                                                    \"separator\"¦
-                                [0].Pine.Strings                                                    \"separator\"¦
-                                  [0].string                                                        ｢"separator"｣
-                [11].Pine.Stmt.Match.Case                                                           case  ... red<NEWLINE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         value ... tured¦
-                    [0].Pine.Pattern                                                                value ... tured¦
-                      [0].Pine.Pattern.As                                                           value ... tured¦
-                        [0].Pine.Pattern.Or                                                         value ¦
-                          [0].Pine.Pattern.Closed                                                   value ¦
-                            [0].Pine.Pattern.Capture                                                value ¦
-                              [0].identifier                                                        ｢value｣
-                        [1].Pine.Pattern.Capture                                                    captured¦
-                          [0].identifier                                                            ｢captured｣
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... red<NEWLINE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   retur ... ured<NEWLINE>¦
-                      [0].Pine.Stmt.Simples                                                         retur ... ured<NEWLINE>¦
-                        [0].Pine.Stmt.Simple                                                        retur ... tured¦
-                          [0].Pine.Stmt.Return                                                      retur ... tured¦
-                            [0].Pine.StarExprs                                                      captured¦
-                              [0].Pine.Expr.Atom                                                    captured¦
-                                [0].identifier                                                      ｢captured｣
-                [12].Pine.Stmt.Match.Case                                                           case  ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
-                  [0].Pine.Pattern.Patterns                                                         _¦
-                    [0].Pine.Pattern                                                                _¦
-                      [0].Pine.Pattern.Or                                                           _¦
-                        [0].Pine.Pattern.Closed                                                     _¦
-                          [0].Pine.Pattern.Wildcard                                                 _¦
-                  [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>ret ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
-                    [0].Pine.Stmt                                                                   retur ... ne<NEWLINE><WHITESPACE><WHITESPACE>¦
-                      [0].Pine.Stmt.Simples                                                         retur ... ne<NEWLINE><WHITESPACE><WHITESPACE>¦
-                        [0].Pine.Stmt.Simple                                                        retur ...  None¦
-                          [0].Pine.Stmt.Return                                                      retur ...  None¦
-                            [0].Pine.StarExprs                                                      None¦
-                              [0].Pine.Expr.Atom                                                    None¦
-                                [0].Pine.builtinLiteral                                             ｢None｣
-  [27].Pine.Stmt                                                                                    class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
+  [26].Pine.Stmt                                                                                    class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Class                                                                           class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
         [0].identifier                                                                              ｢Point｣
@@ -4405,7 +4088,7 @@ Mr Jane
                               [1].Pine.Expr.Atom                                                    \")\"¦
                                 [0].Pine.Strings                                                    \")\"¦
                                   [0].string                                                        ｢")"｣
-  [28].Pine.Stmt                                                                                    class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
+  [27].Pine.Stmt                                                                                    class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Class                                                                           class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
         [0].identifier                                                                              ｢Labelled｣
@@ -4448,7 +4131,7 @@ Mr Jane
                                   [0].identifier                                                    ｢self｣
                                 [1].Pine.Expr.Atom                                                  kind¦
                                   [0].identifier                                                    ｢kind｣
-  [29].Pine.Stmt                                                                                    def g ... t<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+  [28].Pine.Stmt                                                                                    def g ... t<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          def g ... t<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def g ... t<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢generic｣
@@ -4487,7 +4170,7 @@ Mr Jane
                   [0].Pine.StarExprs                                                                first¦
                     [0].Pine.Expr.Atom                                                              first¦
                       [0].identifier                                                                ｢first｣
-  [30].Pine.Stmt                                                                                    def t ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+  [29].Pine.Stmt                                                                                    def t ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          def t ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def t ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢trace｣
@@ -4504,7 +4187,7 @@ Mr Jane
                   [0].Pine.StarExprs                                                                fn¦
                     [0].Pine.Expr.Atom                                                              fn¦
                       [0].identifier                                                                ｢fn｣
-  [31].Pine.Stmt                                                                                    @trac ... s<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+  [30].Pine.Stmt                                                                                    @trac ... s<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          @trac ... s<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        @trac ... s<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].Pine.Stmt.Decorators                                                                    @trace<NEWLINE>¦
@@ -4593,7 +4276,7 @@ Mr Jane
                   [0].Pine.StarExprs                                                                results¦
                     [0].Pine.Expr.Atom                                                              results¦
                       [0].identifier                                                                ｢results｣
-  [32].Pine.Stmt                                                                                    def g ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
+  [31].Pine.Stmt                                                                                    def g ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          def g ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def g ... e<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
         [0].identifier                                                                              ｢generating｣
@@ -4664,7 +4347,7 @@ Mr Jane
                   [0].Pine.StarExprs                                                                value¦
                     [0].Pine.Expr.Atom                                                              value¦
                       [0].identifier                                                                ｢value｣
-  [33].Pine.Stmt                                                                                    if __ ...  y)<NEWLINE><DEDENT>¦
+  [32].Pine.Stmt                                                                                    if __ ...  y)<NEWLINE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          if __ ...  y)<NEWLINE><DEDENT>¦
       [0].Pine.Stmt.If                                                                              if __ ...  y)<NEWLINE><DEDENT>¦
         [0].Pine.Expr.Named                                                                         __nam ...  == \"__main__\"¦
