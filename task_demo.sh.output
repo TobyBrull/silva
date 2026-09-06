@@ -3690,12 +3690,12 @@ Mr Jane
                     [1].Pine.Stmt.Assignment.Rhs                                                    lambd ... a + b¦
                       [0].Pine.StarExprs                                                            lambd ... a + b¦
                         [0].Pine.Expr.Lambda.lambda                                                 lambd ... a + b¦
-                          [0].Pine.LambdaParams                                                     a, b¦
-                            [0].Pine.LambdaParam                                                    a¦
-                              [0].Pine.LambdaParamDef                                               a¦
+                          [0].Pine.Expr.LambdaParams                                                a, b¦
+                            [0].Pine.Expr.LambdaParams.Singular                                     a¦
+                              [0].Pine.Expr.LambdaParams.LambdaParamDef                             a¦
                                 [0].identifier                                                      ｢a｣
-                            [1].Pine.LambdaParam                                                    b¦
-                              [0].Pine.LambdaParamDef                                               b¦
+                            [1].Pine.Expr.LambdaParams.Singular                                     b¦
+                              [0].Pine.Expr.LambdaParams.LambdaParamDef                             b¦
                                 [0].identifier                                                      ｢b｣
                           [1].Pine.Expr.Sum.+                                                       a + b¦
                             [0].Pine.Expr.Atom                                                      a ¦
@@ -3713,7 +3713,7 @@ Mr Jane
                     [1].Pine.Stmt.Assignment.Rhs                                                    lambda: 0¦
                       [0].Pine.StarExprs                                                            lambda: 0¦
                         [0].Pine.Expr.Lambda.lambda                                                 lambda: 0¦
-                          [0].Pine.LambdaParams                                                     ¦
+                          [0].Pine.Expr.LambdaParams                                                ¦
                           [1].Pine.Expr.Atom                                                        0¦
                             [0].Pine.number                                                         ｢0｣
           [2].Pine.Stmt                                                                             starr ...  kw)<NEWLINE>¦
@@ -3727,12 +3727,12 @@ Mr Jane
                     [1].Pine.Stmt.Assignment.Rhs                                                    lambd ... , kw)¦
                       [0].Pine.StarExprs                                                            lambd ... , kw)¦
                         [0].Pine.Expr.Lambda.lambda                                                 lambd ... , kw)¦
-                          [0].Pine.LambdaParams                                                     *a, **kw¦
-                            [0].Pine.LambdaParam                                                    *a¦
-                              [0].Pine.LambdaParamDef                                               a¦
+                          [0].Pine.Expr.LambdaParams                                                *a, **kw¦
+                            [0].Pine.Expr.LambdaParams.Singular                                     *a¦
+                              [0].Pine.Expr.LambdaParams.LambdaParamDef                             a¦
                                 [0].identifier                                                      ｢a｣
-                            [1].Pine.LambdaParam                                                    **kw¦
-                              [0].Pine.LambdaParamDef                                               kw¦
+                            [1].Pine.Expr.LambdaParams.Singular                                     **kw¦
+                              [0].Pine.Expr.LambdaParams.LambdaParamDef                             kw¦
                                 [0].identifier                                                      ｢kw｣
                           [1].Pine.Expr.Atom                                                        (a, kw)¦
                             [0].Pine.Expr.Tuple                                                     (a, kw)¦
@@ -3754,9 +3754,9 @@ Mr Jane
                     [1].Pine.Stmt.Assignment.Rhs                                                    lambd ... lse \"small\"¦
                       [0].Pine.StarExprs                                                            lambd ... lse \"small\"¦
                         [0].Pine.Expr.Lambda.lambda                                                 lambd ... lse \"small\"¦
-                          [0].Pine.LambdaParams                                                     x¦
-                            [0].Pine.LambdaParam                                                    x¦
-                              [0].Pine.LambdaParamDef                                               x¦
+                          [0].Pine.Expr.LambdaParams                                                x¦
+                            [0].Pine.Expr.LambdaParams.Singular                                     x¦
+                              [0].Pine.Expr.LambdaParams.LambdaParamDef                             x¦
                                 [0].identifier                                                      ｢x｣
                           [1].Pine.Expr.Conditional.if                                              \"big\" if  ... lse \"small\"¦
                             [0].Pine.Expr.Atom                                                      \"big\" ¦

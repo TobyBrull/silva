@@ -13,13 +13,14 @@ namespace silva::pine {
   // Deviations from the reference grammar:
   //  * Python's exponentiation operator '**' is asymmetric in terms of its precedence relative to
   //    the unary '-' in the sense that the expression « -2**2 » is parsed as « -(2**2) » whereas «
-  //    2**-2 » is parsed as « 2**(-2) ». This parser here rejects the second form as unary '-' has
-  //    lower precedence than '**'.
+  //    2**-2 » is parsed as « 2**(-2) ». This parser here rejects the second form without
+  //    parenthesis, since unary '-' has lower precedence than '**'.
   //  * The two-token operators "not in" and "is not" are single literals here, so their two words
   //    have to be separated by exactly one space; « a not  in b » is not accepted.
-  //  * The many rules spelling out where '/', '*' or '**' may appear in a parameter-list
-  //    ("slash_no_default", "star_etc", "kwds", their "lambda_"-variants, ...) are collapsed onto
-  //    "Params"/"LambdaParams", which leaves the ordering of the parameter kinds unchecked.
+  //  * Python has many rules describing exactly where '/', '*' or '**' may appear in a
+  //    parameter-list ("slash_no_default", "star_etc", "kwds", their "lambda_"-variants, ...).
+  //    These rules are collapsed onto "Params"/"LambdaParams", which leaves the ordering of the
+  //    parameter kinds unchecked during parsing.
   //  * The rules dealing with assignment-targets ("t_primary", "star_atom", "del_t_atom", ...) are
   //    collapsed onto "Expr.Primary". This accepts a few targets that Python rejects (e.g.,
   //    « f(x) = 1 ») but parses the same language otherwise.
@@ -111,13 +112,9 @@ language Pine:
     Star2 = '**' identifier Default ?
     Default = '=' Expr
 
-  LambdaParams = ( LambdaParam ( ε ',' LambdaParam ) * ',' ? ) ?
-  LambdaParam = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
-  LambdaParamDef = identifier ( '=' not '=' Expr ) ?
-
   Arguments:
-    ⊙ = Singular ( ε ',' Singular ) * ',' ? | ε
-    Singular = '**' Expr | '*' Expr | identifier '=' not '=' Expr | Expr.Named ForIfClauses ?
+    ⊙ = Expr.Named ForIfClause | Singular ( ε ',' Singular ) * ',' ? | ε
+    Singular = '**' Expr | '*' Expr | identifier '=' Expr | Expr.Named
 
   Slices = Slice ( ε ',' Slice ) * ',' ?
   Slice = Expr ? ':' not '=' Expr ? ( ':' not '=' Expr ? ) ? | '*' Expr | Expr.Named
@@ -174,6 +171,11 @@ language Pine:
     Set = '{' StarNamedExprs '}'
     KvPairs = KvPair ( ε ',' KvPair ) * ',' ?
     KvPair = '**' Expr.BitOr | Expr ':' not '=' Expr
+
+    LambdaParams:
+      ⊙ = ( Singular ( ε ',' Singular ) * ',' ? ) ?
+      Singular = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
+      LambdaParamDef = identifier ( '=' not '=' Expr ) ?
 
     Named = Assign | Expr
     Assign = identifier ':=' Expr
