@@ -2453,8 +2453,8 @@ Mr Jane
                                             [0].Pine.Expr.Primary.[                                 kwarg ... [key]¦
                                               [0].Pine.Expr.Atom                                    kwargs¦
                                                 [0].identifier                                      ｢kwargs｣
-                                              [1].Pine.Slices                                       key¦
-                                                [0].Pine.Slice                                      key¦
+                                              [1].Pine.Expr.Slices                                  key¦
+                                                [0].Pine.Expr.Slices.Singular                       key¦
                                                   [0].Pine.Expr.Named                               key¦
                                                     [0].Pine.Expr.Atom                              key¦
                                                       [0].identifier                                ｢key｣
@@ -3050,8 +3050,8 @@ Mr Jane
                             [0].Pine.Expr.Primary.[                                                 table[0]¦
                               [0].Pine.Expr.Atom                                                    table¦
                                 [0].identifier                                                      ｢table｣
-                              [1].Pine.Slices                                                       0¦
-                                [0].Pine.Slice                                                      0¦
+                              [1].Pine.Expr.Slices                                                  0¦
+                                [0].Pine.Expr.Slices.Singular                                       0¦
                                   [0].Pine.Expr.Named                                               0¦
                                     [0].Pine.Expr.Atom                                              0¦
                                       [0].Pine.number                                               ｢0｣
@@ -3532,8 +3532,8 @@ Mr Jane
                         [0].Pine.Expr.Primary.[                                                     seq[0]¦
                           [0].Pine.Expr.Atom                                                        seq¦
                             [0].identifier                                                          ｢seq｣
-                          [1].Pine.Slices                                                           0¦
-                            [0].Pine.Slice                                                          0¦
+                          [1].Pine.Expr.Slices                                                      0¦
+                            [0].Pine.Expr.Slices.Singular                                           0¦
                               [0].Pine.Expr.Named                                                   0¦
                                 [0].Pine.Expr.Atom                                                  0¦
                                   [0].Pine.number                                                   ｢0｣
@@ -3550,8 +3550,8 @@ Mr Jane
                         [0].Pine.Expr.Primary.[                                                     seq[1:]¦
                           [0].Pine.Expr.Atom                                                        seq¦
                             [0].identifier                                                          ｢seq｣
-                          [1].Pine.Slices                                                           1:¦
-                            [0].Pine.Slice                                                          1:¦
+                          [1].Pine.Expr.Slices                                                      1:¦
+                            [0].Pine.Expr.Slices.Singular                                           1:¦
                               [0].Pine.Expr.Atom                                                    1¦
                                 [0].Pine.number                                                     ｢1｣
           [2].Pine.Stmt                                                                             body  ... :-1]<NEWLINE>¦
@@ -3567,8 +3567,8 @@ Mr Jane
                         [0].Pine.Expr.Primary.[                                                     seq[1:-1]¦
                           [0].Pine.Expr.Atom                                                        seq¦
                             [0].identifier                                                          ｢seq｣
-                          [1].Pine.Slices                                                           1:-1¦
-                            [0].Pine.Slice                                                          1:-1¦
+                          [1].Pine.Expr.Slices                                                      1:-1¦
+                            [0].Pine.Expr.Slices.Singular                                           1:-1¦
                               [0].Pine.Expr.Atom                                                    1¦
                                 [0].Pine.number                                                     ｢1｣
                               [1].Pine.Expr.Unary.-                                                 -1¦
@@ -3587,8 +3587,8 @@ Mr Jane
                         [0].Pine.Expr.Primary.[                                                     seq[::2]¦
                           [0].Pine.Expr.Atom                                                        seq¦
                             [0].identifier                                                          ｢seq｣
-                          [1].Pine.Slices                                                           ::2¦
-                            [0].Pine.Slice                                                          ::2¦
+                          [1].Pine.Expr.Slices                                                      ::2¦
+                            [0].Pine.Expr.Slices.Singular                                           ::2¦
                               [0].Pine.Expr.Atom                                                    2¦
                                 [0].Pine.number                                                     ｢2｣
           [4].Pine.Stmt                                                                             windo ... 5:2]<NEWLINE>¦
@@ -3604,8 +3604,8 @@ Mr Jane
                         [0].Pine.Expr.Primary.[                                                     seq[1:5:2]¦
                           [0].Pine.Expr.Atom                                                        seq¦
                             [0].identifier                                                          ｢seq｣
-                          [1].Pine.Slices                                                           1:5:2¦
-                            [0].Pine.Slice                                                          1:5:2¦
+                          [1].Pine.Expr.Slices                                                      1:5:2¦
+                            [0].Pine.Expr.Slices.Singular                                           1:5:2¦
                               [0].Pine.Expr.Atom                                                    1¦
                                 [0].Pine.number                                                     ｢1｣
                               [1].Pine.Expr.Atom                                                    5¦
@@ -3625,12 +3625,12 @@ Mr Jane
                         [0].Pine.Expr.Primary.[                                                     seq[0, 1]¦
                           [0].Pine.Expr.Atom                                                        seq¦
                             [0].identifier                                                          ｢seq｣
-                          [1].Pine.Slices                                                           0, 1¦
-                            [0].Pine.Slice                                                          0¦
+                          [1].Pine.Expr.Slices                                                      0, 1¦
+                            [0].Pine.Expr.Slices.Singular                                           0¦
                               [0].Pine.Expr.Named                                                   0¦
                                 [0].Pine.Expr.Atom                                                  0¦
                                   [0].Pine.number                                                   ｢0｣
-                            [1].Pine.Slice                                                          1¦
+                            [1].Pine.Expr.Slices.Singular                                           1¦
                               [0].Pine.Expr.Named                                                   1¦
                                 [0].Pine.Expr.Atom                                                  1¦
                                   [0].Pine.number                                                   ｢1｣
@@ -3647,9 +3647,9 @@ Mr Jane
                         [0].Pine.Expr.Primary.[                                                     seq[: ... ::-1]¦
                           [0].Pine.Expr.Atom                                                        seq¦
                             [0].identifier                                                          ｢seq｣
-                          [1].Pine.Slices                                                           :, ::-1¦
-                            [0].Pine.Slice                                                          :¦
-                            [1].Pine.Slice                                                          ::-1¦
+                          [1].Pine.Expr.Slices                                                      :, ::-1¦
+                            [0].Pine.Expr.Slices.Singular                                           :¦
+                            [1].Pine.Expr.Slices.Singular                                           ::-1¦
                               [0].Pine.Expr.Unary.-                                                 -1¦
                                 [0].Pine.Expr.Atom                                                  1¦
                                   [0].Pine.number                                                   ｢1｣
@@ -3849,8 +3849,8 @@ Mr Jane
                           [1].Pine.Expr.Primary.[                                                   values[:2]¦
                             [0].Pine.Expr.Atom                                                      values¦
                               [0].identifier                                                        ｢values｣
-                            [1].Pine.Slices                                                         :2¦
-                              [0].Pine.Slice                                                        :2¦
+                            [1].Pine.Expr.Slices                                                    :2¦
+                              [0].Pine.Expr.Slices.Singular                                         :2¦
                                 [0].Pine.Expr.Atom                                                  2¦
                                   [0].Pine.number                                                   ｢2｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>val ... 2:]<NEWLINE><DEDENT>¦
@@ -3867,8 +3867,8 @@ Mr Jane
                                 [0].Pine.Expr.Primary.[                                             values[2:]¦
                                   [0].Pine.Expr.Atom                                                values¦
                                     [0].identifier                                                  ｢values｣
-                                  [1].Pine.Slices                                                   2:¦
-                                    [0].Pine.Slice                                                  2:¦
+                                  [1].Pine.Expr.Slices                                              2:¦
+                                    [0].Pine.Expr.Slices.Singular                                   2:¦
                                       [0].Pine.Expr.Atom                                            2¦
                                         [0].Pine.number                                             ｢2｣
           [2].Pine.Stmt                                                                             retur ... 0]<NEWLINE><WHITESPACE><WHITESPACE>¦
@@ -4155,8 +4155,8 @@ Mr Jane
                 [0].Pine.Expr.Primary.[                                                             list[ ... ject]¦
                   [0].Pine.Expr.Atom                                                                list¦
                     [0].identifier                                                                  ｢list｣
-                  [1].Pine.Slices                                                                   object¦
-                    [0].Pine.Slice                                                                  object¦
+                  [1].Pine.Expr.Slices                                                              object¦
+                    [0].Pine.Expr.Slices.Singular                                                   object¦
                       [0].Pine.Expr.Named                                                           object¦
                         [0].Pine.Expr.Atom                                                          object¦
                           [0].identifier                                                            ｢object｣

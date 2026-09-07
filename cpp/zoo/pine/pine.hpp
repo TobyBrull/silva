@@ -116,9 +116,6 @@ language Pine:
     ⊙ = Expr.Named ForIfClause | Singular ( ε ',' Singular ) * ',' ? | ε
     Singular = '**' Expr | '*' Expr | identifier '=' Expr | Expr.Named
 
-  Slices = Slice ( ε ',' Slice ) * ',' ?
-  Slice = Expr ? ':' not '=' Expr ? ( ':' not '=' Expr ? ) ? | '*' Expr | Expr.Named
-
   StarExprs = StarExpr ( ε ',' StarExpr ) * ',' ?
   StarExpr = no_node Starred | Expr
   Starred = '*' Expr.BitOr
@@ -126,7 +123,7 @@ language Pine:
   StarNamedExpr = no_node Starred | Expr.Named
 
   ForIfClauses = ForIfClause +
-  ForIfClause = "async" ? "for" Target.Stars "in" Expr.Disjunction ( "if" Expr.Disjunction ) *
+  ForIfClause = "async" ? "for" Target.Stars "in" ~ Expr.Disjunction ( "if" Expr.Disjunction ) *
 
   Target:
     Stars = Star ( ε ',' Star ) * ',' ?
@@ -171,6 +168,10 @@ language Pine:
     Set = '{' StarNamedExprs '}'
     KvPairs = KvPair ( ε ',' KvPair ) * ',' ?
     KvPair = '**' Expr.BitOr | Expr ':' not '=' Expr
+
+    Slices:
+      ⊙ = Singular ( ε ',' Singular ) * ',' ?
+      Singular = Expr ? ':' not '=' Expr ? ( ':' not '=' Expr ? ) ? | '*' Expr | Expr.Named
 
     LambdaParams:
       ⊙ = ( Singular ( ε ',' Singular ) * ',' ? ) ?
