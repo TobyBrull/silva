@@ -43,7 +43,7 @@ language Pine:
     Assignment:
       ⊙ = Annotated | Plain | Augmented
       Annotated = Expr.Primary ':' Expr ( '=' Rhs ) ?
-      Plain = ( Target.Stars '=' not '=' ) + Rhs
+      Plain = ( StarTargets '=' not '=' ) + Rhs
       Augmented = Expr.Primary augassign Rhs
       augassign = [ '+=' '-=' '*=' '@=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' '**=' '//=' ]
       Rhs = Expr.Yield | StarExprs
@@ -91,17 +91,16 @@ language Pine:
     Else = "else" ':' Block
 
     While = "while" Expr.Named ':' Block Else ?
-    For = async ? "for" ~ Target.Stars "in" StarExprs ':' Block Else ?
+    For = async ? "for" ~ StarTargets "in" StarExprs ':' Block Else ?
 
     With:
       ⊙ = async ? "with" ~ Items ':' Block
       Items = Item ( ε ',' Item ) * | ε '(' Item ( ε ',' Item ) * ',' ? ')'
-      Item = Expr ( "as" Target.Star ) ?
+      Item = Expr ( "as" StarTarget ) ?
 
     Try:
       ⊙ = "try" ':' Block Except * Else ? Finally ?
       Except = ε "except" star ? ( Expr ( "as" identifier ) ? ) ? ':' Block
-      star = '*'
       Finally = "finally" ':' Block
 
   TypeParams:
@@ -117,18 +116,15 @@ language Pine:
     Singular = '**' Expr | '*' Expr | identifier '=' Expr | Expr.Named
 
   StarExprs = StarExpr ( ε ',' StarExpr ) * ',' ?
-  StarExpr = no_node Starred | Expr
-  Starred = '*' Expr.BitOr
+  StarExpr = star Expr.BitOr | Expr
   StarNamedExprs = StarNamedExpr ( ε ',' StarNamedExpr ) * ',' ?
-  StarNamedExpr = no_node Starred | Expr.Named
+  StarNamedExpr = star Expr.BitOr | Expr.Named
+  StarTargets = StarTarget ( ε ',' StarTarget ) * ',' ?
+  StarTarget = star ? Expr.Primary
+  star = '*'
 
   ForIfClauses = ForIfClause +
-  ForIfClause = "async" ? "for" Target.Stars "in" ~ Expr.Disjunction ( "if" Expr.Disjunction ) *
-
-  Target:
-    Stars = Star ( ε ',' Star ) * ',' ?
-    Star = no_node Starred | Expr.Primary
-    Starred = '*' Star
+  ForIfClause = "async" ? "for" StarTargets "in" ~ Expr.Disjunction ( "if" Expr.Disjunction ) *
 
   Expr:
     ⊙ = no_node axe Atom
@@ -159,19 +155,19 @@ language Pine:
            | identifier )
     GenExp = ε '(' Named ForIfClauses ')'
     Group = ε '(' ( Yield | Named ) ')'
-    Tuple = ε '(' ( StarNamedExpr ',' StarNamedExprs ? ) ? ')'
-    ListComp = ε '[' Named ForIfClauses ']'
+    Tuple = ε '(' StarNamedExprs ? ')'
     List = '[' StarNamedExprs ? ']'
-    DictComp = ε '{' KvPair ForIfClauses '}'
+    ListComp = ε '[' Named ForIfClauses ']'
+    Set = '{' StarNamedExprs '}'
     SetComp = ε '{' Named ForIfClauses '}'
     Dict = ε '{' ( KvPairs ) ? '}'
-    Set = '{' StarNamedExprs '}'
+    DictComp = ε '{' KvPair ForIfClauses '}'
     KvPairs = KvPair ( ε ',' KvPair ) * ',' ?
-    KvPair = '**' Expr.BitOr | Expr ':' not '=' Expr
+    KvPair = '**' Expr.BitOr | Expr ':' Expr
 
     Slices:
       ⊙ = Singular ( ε ',' Singular ) * ',' ?
-      Singular = Expr ? ':' not '=' Expr ? ( ':' not '=' Expr ? ) ? | '*' Expr | Expr.Named
+      Singular = Expr ? ':' Expr ? ( ':' Expr ? ) ? | '*' Expr | Expr.Named
 
     LambdaParams:
       ⊙ = ( Singular ( ε ',' Singular ) * ',' ? ) ?
