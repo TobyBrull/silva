@@ -111,9 +111,8 @@ language Pine:
     Star2 = '**' identifier Default ?
     Default = '=' Expr
 
-  Arguments:
-    ⊙ = Expr.Named ForIfClause | Singular ( ε ',' Singular ) * ',' ? | ε
-    Singular = '**' Expr | '*' Expr | identifier '=' Expr | Expr.Named
+  Arguments = Expr.Named ForIfClause | Argument ( ε ',' Argument ) * ',' ? | ε
+  Argument = '**' Expr | '*' Expr | identifier '=' Expr | Expr.Named
 
   StarExprs = StarExpr ( ε ',' StarExpr ) * ',' ?
   StarExpr = star Expr.BitOr | Expr
@@ -165,17 +164,14 @@ language Pine:
     KvPairs = KvPair ( ε ',' KvPair ) * ',' ?
     KvPair = '**' Expr.BitOr | Expr ':' Expr
 
-    Slices:
-      ⊙ = Singular ( ε ',' Singular ) * ',' ?
-      Singular = Expr ? ':' Expr ? ( ':' Expr ? ) ? | '*' Expr | Expr.Named
+    Slices = Slice ( ε ',' Slice ) * ',' ?
+    Slice = Expr ? ':' Expr ? ( ':' Expr ? ) ? | '*' Expr | Expr.Named
 
-    LambdaParams:
-      ⊙ = ( Singular ( ε ',' Singular ) * ',' ? ) ?
-      Singular = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
-      LambdaParamDef = identifier ( '=' not '=' Expr ) ?
+    LambdaParams = ( LambdaParam ( ε ',' LambdaParam ) * ',' ? ) ?
+    LambdaParam = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
+    LambdaParamDef = identifier ( '=' not '=' Expr ) ?
 
-    Named = Assign | Expr
-    Assign = identifier ':=' Expr
+    Named = ( identifier ':=' ) ? Expr
     Yield = "yield" ( "from" Expr | StarExprs ? )
 
   builtinLiteral = "None" | "True" | "False"
