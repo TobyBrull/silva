@@ -24,17 +24,11 @@ SEED_EXEC_TRACE=true "./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/01-simplest.
 "./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
 "./${BUILD_DIR}/cpp/silva_syntax" silva/soil/soil.silva silva/soil/example.silva
 
-# Lox
+# Zoo
+
 "./${BUILD_DIR}/cpp/silva_lox" cpp/zoo/lox/lox.lox < cpp/zoo/lox/example.lox
 
-# Cedar
-"./${BUILD_DIR}/cpp/silva_cedar" cpp/zoo/cedar/test.cedar
-
-# Pine
-"./${BUILD_DIR}/cpp/silva_pine" cpp/zoo/pine/test.pine
-
-# Ash
-"./${BUILD_DIR}/cpp/silva_ash" cpp/zoo/ash/test.ash
-
-# Tomel
-"./${BUILD_DIR}/cpp/silva_tomel" cpp/zoo/tomel/example.tomel
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/cedar/{cedar.seed,example.cedar}
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/pine/{pine.seed,example.pine}
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/ash/{ash.seed,example.ash}
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/tomel/{tomel.seed,example.tomel}

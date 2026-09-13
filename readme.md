@@ -10,15 +10,19 @@ language.
 The Seed sub-language allows users to define PEG parsers.
 
 Implemented parsers:
-* [Fern](cpp/zoo/fern/fern.hpp): A bit like JSON, but simpler. A Fern example file can be found
-  [here](silva/syntax/01-simple.fern).
+* [Fern](cpp/zoo/fern/fern.hpp): A bit like JSON, but simpler.
+  [Example](silva/syntax/01-simple.fern).
 * [Seed](cpp/syntax/seed.hpp): The Seed language defined in itself. For expression parsing a
   shunting yard algorithm is used that's described by [seed_axe.hpp](cpp/syntax/seed_axe.hpp) and
   some Seed global definitions are in [seed.globals.hpp](cpp/syntax/seed.globals.hpp).
-* [Cedar](cpp/zoo/cedar/cedar.hpp): Basically preprocessed C.
-* [Pine](cpp/zoo/pine/pine.hpp): Basically Python (without pattern matching).
-* [Tomel](cpp/zoo/tomel/tomel.hpp): Basically Tom's Obvious, Minimal Language.
-* [Ash](cpp/zoo/ash/ash.hpp): A language that looks a bit like Bash. Vibe coded.
+* [Cedar](cpp/zoo/cedar/cedar.seed): Basically preprocessed C.
+  [Example](cpp/zoo/cedar/example.cedar)
+* [Pine](cpp/zoo/pine/pine.seed): Basically Python (without pattern matching).
+  [Example](cpp/zoo/pine/example.pine)
+* [Ash](cpp/zoo/ash/ash.seed): A language that looks a bit like Bash. Vibe coded.
+  [Example](cpp/zoo/ash/example.ash)
+* [Tomel](cpp/zoo/tomel/tomel.seed): Basically Tom's Obvious, Minimal Language.
+  [Example](cpp/zoo/tomel/example.tomel)
 * [Lox](cpp/zoo/lox/lox.hpp): The toy language from the book "Crafting Interpreters".
 
 

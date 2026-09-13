@@ -1,31 +1,22 @@
-#pragma once
+# Adoption of
+# https://docs.python.org/3/reference/grammar.html
+# as of 2026-09-05, but without pattern matching.
+#
+# Deviations from the reference grammar:
+#  * Python's exponentiation operator '**' is asymmetric in terms of its precedence relative to
+#    the unary '-' in the sense that the expression « -2**2 » is parsed as « -(2**2) » whereas «
+#    2**-2 » is parsed as « 2**(-2) ». This parser here rejects the second form without
+#    parenthesis, since unary '-' has lower precedence than '**'.
+#  * The two-token operators "not in" and "is not" are single literals here, so their two words
+#    have to be separated by exactly one space; « a not  in b » is not accepted.
+#  * Python has many rules describing exactly where '/', '*' or '**' may appear in a
+#    parameter-list ("slash_no_default", "star_etc", "kwds", their "lambda_"-variants, ...).
+#    These rules are collapsed onto "Params"/"LambdaParams", which leaves the ordering of the
+#    parameter kinds unchecked during parsing.
+#  * The rules dealing with assignment-targets ("t_primary", "star_atom", "del_t_atom", ...) are
+#    collapsed onto "Expr.Primary". This accepts a few targets that Python rejects (e.g.,
+#    « f(x) = 1 ») but parses the same language otherwise.
 
-#include "canopy/types.hpp"
-
-#include "syntax/seed_interpreter.hpp"
-
-namespace silva::pine {
-
-  // Adoption of
-  // https://docs.python.org/3/reference/grammar.html
-  // as of 2026-09-05, but without pattern matching.
-  //
-  // Deviations from the reference grammar:
-  //  * Python's exponentiation operator '**' is asymmetric in terms of its precedence relative to
-  //    the unary '-' in the sense that the expression « -2**2 » is parsed as « -(2**2) » whereas «
-  //    2**-2 » is parsed as « 2**(-2) ». This parser here rejects the second form without
-  //    parenthesis, since unary '-' has lower precedence than '**'.
-  //  * The two-token operators "not in" and "is not" are single literals here, so their two words
-  //    have to be separated by exactly one space; « a not  in b » is not accepted.
-  //  * Python has many rules describing exactly where '/', '*' or '**' may appear in a
-  //    parameter-list ("slash_no_default", "star_etc", "kwds", their "lambda_"-variants, ...).
-  //    These rules are collapsed onto "Params"/"LambdaParams", which leaves the ordering of the
-  //    parameter kinds unchecked during parsing.
-  //  * The rules dealing with assignment-targets ("t_primary", "star_atom", "del_t_atom", ...) are
-  //    collapsed onto "Expr.Primary". This accepts a few targets that Python rejects (e.g.,
-  //    « f(x) = 1 ») but parses the same language otherwise.
-  //
-  const string_view_t seed_str = R"'(
 language Pine:
   skip = skip.offSide
 
@@ -183,7 +174,3 @@ language Pine:
   number:
     ⊙ = .number imaginaryPart ?
     imaginaryPart = [ 'j' 'J' ]
-)'";
-
-  unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);
-}

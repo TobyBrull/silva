@@ -1,15 +1,6 @@
-#pragma once
+# Adoption of a subset of Annex A from the C standard, e.g.,
+# https://port70.net/~nsz/c/c11/n1570.html#A
 
-#include "canopy/types.hpp"
-
-#include "syntax/seed_interpreter.hpp"
-
-namespace silva::cedar {
-
-  // Adoption of a subset of Annex A from the C standard, e.g.,
-  // https://port70.net/~nsz/c/c11/n1570.html#A
-  //
-  const string_view_t seed_str = R"'(
 language Cedar:
   skip = skip.freeForm
 
@@ -97,7 +88,3 @@ language Cedar:
     Sizeof = "sizeof" ( Expr.Unary | '(' Type.Name ')' )
     Alignof = "_Alignof" '(' Type.Name ')'
     ExprOrEpsilon = Expr | Epsilon
-)'";
-
-  unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);
-}

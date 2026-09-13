@@ -16,7 +16,7 @@ namespace silva {
       ;
     }
     else if (action == "print-parse-tree") {
-      fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_string()));
+      fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_string(80)));
     }
     else if (action == "print-graph") {
       fmt::print("{}\n", SILVA_EXPECT_FWD(pts.to_graphviz()));
