@@ -1,0 +1,118 @@
+#pragma once
+
+#include "canopy/types.hpp"
+
+#include "syntax/seed_interpreter.hpp"
+
+namespace silva::ash {
+
+  // Adoption of the Bash/POSIX shell grammar, e.g.,
+  // https://cmdse.github.io/pages/appendix/bash-grammar.html
+  //
+  // The defining feature of shell syntax is that an unquoted run of characters -- including
+  // characters like '/', '.', '-', '*' or '=' that other languages use as operators -- is simply a
+  // word, i.e. a string. Only the shell metacharacters ( '|', '&', ';', '<', '>', '(', ')' and
+  // whitespace ) terminate such a word.
+  //
+  // Deviations from Bash that the underlying fragmentization forces upon us:
+  //  * All parentheses/brackets/braces have to be balanced. In particular, the "case"-item form
+  //    « pattern ) » is only supported in its parenthesized form « ( pattern ) » (which Bash
+  //    accepts as well).
+  //  * '#' always starts a comment (Bash only does so at the start of a word), '`' and here-
+  //    documents are not supported, and a backslash only continues a line (it does not escape
+  //    individual characters).
+  //  * The word-parts of a word are glued together without whitespace by making "word" a
+  //    twig-rule (twig-rules never invoke the skip-rule internally); command-substitution
+  //    « $(...) » recurses back into the branch-rules and is therefore only available as a word
+  //    of its own, and « name=$(...) » is the only place where the "no whitespace" requirement is
+  //    not actually enforced.
+  //
+  const string_view_t seed_str = R"'(
+language Ash:
+  skip = skipHorizontal
+  skipHorizontal = no_node [ SPACE COMMENT WHITESPACE INDENT DEDENT ] *
+
+  ⊙ = Linebreak ( CompleteCommand ( NewlineList CompleteCommand ) * NewlineList ? ) ?
+
+  # Line structure and separators. Newlines are significant, so they are not skipped.
+  newline       = no_node [ NEWLINE LINEFEED ]
+  Linebreak     = no_node newline *
+  NewlineList   = no_node newline +
+  separatorOp   = [ '&' ';' ] not [ '&' ';' ]
+  semi          = ε ';' not ';'
+  dsemi         = ';;'
+  Separator     = no_node separatorOp Linebreak | NewlineList
+  SequentialSep = no_node semi Linebreak | NewlineList
+
+  CompleteCommand = List separatorOp ?
+  List            = AndOr ( separatorOp AndOr ) *
+  AndOr           = Pipeline ( andOrOp Linebreak Pipeline ) *
+  andOrOp         = [ '&&' '||' ]
+  Pipeline        = bang ? PipeSequence
+  bang            = ε '!' not wordChar
+  PipeSequence    = Command ( pipeOp Linebreak Command ) *
+  pipeOp          = ε '|' not '|'
+
+  Command = FunctionDefinition | CompoundCommand RedirectList ? | SimpleCommand
+
+  CompoundCommand = [ BraceGroup Subshell ForClause CaseClause IfClause WhileClause UntilClause ]
+  CompoundList    = no_node Linebreak Term Separator ?
+  Term            = AndOr ( Separator AndOr ) *
+
+  BraceGroup = '{' CompoundList '}'
+  Subshell   = '(' CompoundList ')'
+  DoGroup    = "do" CompoundList "done"
+
+  IfClause    = "if" CompoundList "then" CompoundList ElsePart ? "fi"
+  ElsePart    = "elif" CompoundList "then" CompoundList ElsePart ? | "else" CompoundList
+  WhileClause = "while" CompoundList DoGroup
+  UntilClause = "until" CompoundList DoGroup
+  ForClause   = "for" varName ( ε Linebreak "in" WordList ? ) ? SequentialSep ? DoGroup
+  WordList    = Word +
+
+  CaseClause = "case" Word Linebreak "in" Linebreak CaseList ? "esac"
+  CaseList   = CaseItem +
+  CaseItem   = '(' ? Pattern ')' ( CompoundList | Linebreak ) ( ε dsemi Linebreak ) ?
+  Pattern    = Word ( '|' Word ) *
+
+  FunctionDefinition = "function" fname ( ε '(' ')' ) ? Linebreak FunctionBody \
+                     | fname '(' ')' Linebreak FunctionBody
+  FunctionBody       = no_node CompoundCommand RedirectList ?
+  fname              = identifier
+
+  SimpleCommand = CmdPrefix ( ε CmdName CmdSuffix ? ) ? | CmdName CmdSuffix ?
+  CmdPrefix     = ( IoRedirect | Assignment ) +
+  CmdSuffix     = ( IoRedirect | Word ) +
+  CmdName       = not reservedWord Word
+  Assignment    = AssignSubst | assignWord
+  AssignSubst   = no_node assignName CommandSubstitution
+  assignWord    = no_node assignName word ?
+  assignName    = no_node identifier '='
+
+  RedirectList = IoRedirect +
+  IoRedirect   = ioRedir Word
+  ioRedir      = no_node ioNumber ? ioOp
+  ioNumber     = DIGIT +
+  ioOp         = [ '>>' '>&' '>|' '<<-' '<<' '<&' '<>' '>' '<' ]
+
+  reservedWord = no_node keyword not wordChar
+  keyword      = [ "if" "then" "elif" "else" "fi" "do" "done" "case" "esac" \
+                   "while" "until" "for" "in" "function" "select" "time" ]
+
+  # Words. A word is a twig-rule, so that its parts are glued together without any skipping.
+  Word                = word | CommandSubstitution
+  CommandSubstitution = '$(' CompoundList ')'
+  word                = wordPart +
+  wordPart            = no_node [ arithExpansion braceParam dollarParam bareChunk string ]
+  arithExpansion      = '$((' [ wordChar SPACE ] + '))'
+  braceParam          = '${' wordChar + '}'
+  dollarParam         = ε '$' [ identifier DIGIT specialParam ]
+  specialParam        = [ '?' '@' '*' '$' '!' '-' ]
+  bareChunk           = no_node wordChar +
+  wordChar            = no_node [ ID_START ID_CONTINUE DIGIT '[' ']' ] | wordOperator
+  wordOperator        = no_node not [ '|' '&' ';' '<' '>' '$' '`' ] OPERATOR
+  varName             = identifier
+)'";
+
+  unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);
+}

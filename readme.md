@@ -18,6 +18,7 @@ Implemented parsers:
 * [Cedar](cpp/zoo/cedar/cedar.hpp): Basically preprocessed C.
 * [Pine](cpp/zoo/pine/pine.hpp): Basically Python (without pattern matching).
 * [Tomel](cpp/zoo/tomel/tomel.hpp): Basically Tom's Obvious, Minimal Language.
+* [Ash](cpp/zoo/ash/ash.hpp): A language that looks a bit like Bash. Vibe coded.
 * [Lox](cpp/zoo/lox/lox.hpp): The toy language from the book "Crafting Interpreters".
 
 

@@ -33,5 +33,8 @@ SEED_EXEC_TRACE=true "./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/01-simplest.
 # Pine
 "./${BUILD_DIR}/cpp/silva_pine" cpp/zoo/pine/test.pine
 
+# Ash
+"./${BUILD_DIR}/cpp/silva_ash" cpp/zoo/ash/test.ash
+
 # Tomel
 "./${BUILD_DIR}/cpp/silva_tomel" cpp/zoo/tomel/example.tomel
