@@ -9,6 +9,7 @@ file(
   "zoo/fern/*.cpp"
   "zoo/lox/*.cpp"
   "zoo/cedar/*.cpp"
+  "zoo/pine/*.cpp"
   "*.cpp")
 file(GLOB_RECURSE SILVA_TEST_FILES "*.tpp")
 file(GLOB_RECURSE SILVA_MAIN_FILES "*.mpp")

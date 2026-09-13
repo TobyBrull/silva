@@ -1,0 +1,189 @@
+#pragma once
+
+#include "canopy/types.hpp"
+
+#include "syntax/seed_interpreter.hpp"
+
+namespace silva::pine {
+
+  // Adoption of the full grammar of Python, cf.
+  // https://docs.python.org/3/reference/grammar.html
+  // as of 2026-09-05, but without pattern matching.
+  //
+  // Deviations from the reference grammar:
+  //  * Python's exponentiation operator '**' is asymmetric in terms of its precedence relative to
+  //    the unary '-' in the sense that the expression « -2**2 » is parsed as « -(2**2) » whereas «
+  //    2**-2 » is parsed as « 2**(-2) ». This parser here rejects the second form without
+  //    parenthesis, since unary '-' has lower precedence than '**'.
+  //  * The two-token operators "not in" and "is not" are single literals here, so their two words
+  //    have to be separated by exactly one space; « a not  in b » is not accepted.
+  //  * Python has many rules describing exactly where '/', '*' or '**' may appear in a
+  //    parameter-list ("slash_no_default", "star_etc", "kwds", their "lambda_"-variants, ...).
+  //    These rules are collapsed onto "Params"/"LambdaParams", which leaves the ordering of the
+  //    parameter kinds unchecked during parsing.
+  //  * The rules dealing with assignment-targets ("t_primary", "star_atom", "del_t_atom", ...) are
+  //    collapsed onto "Expr.Primary". This accepts a few targets that Python rejects (e.g.,
+  //    « f(x) = 1 ») but parses the same language otherwise.
+  //
+  const string_view_t seed_str = R"'(
+language Pine:
+  skip = skip.offSide
+
+  ⊙ = Stmt *
+
+  Stmt:
+    ⊙ = Compound | Simples
+
+    Simples = Simple ( ε ';' Simple ) * ';' ? newline
+    Simple = [ Return Import Raise Pass Del Yield Assert Break Continue Global Nonlocal
+               Assignment TypeAlias StarExprs ]
+
+    Compound = [ Function If Class With For Try While ]
+
+    Assignment:
+      ⊙ = Annotated | Plain | Augmented
+      Annotated = Expr.Primary ':' Expr ( '=' Rhs ) ?
+      Plain = ( StarTargets '=' not '=' ) + Rhs
+      Augmented = Expr.Primary augassign Rhs
+      augassign = [ '+=' '-=' '*=' '@=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' '**=' '//=' ]
+      Rhs = Expr.Yield | StarExprs
+
+    Return = "return" StarExprs ?
+    Raise = "raise" ⇒ Expr ⇒ "from" Expr
+    Pass = "pass"
+    Break = "break"
+    Continue = "continue"
+    Global = "global" identifier ( ε ',' identifier ) *
+    Nonlocal = "nonlocal" identifier ( ε ',' identifier ) *
+    Del = "del" Expr.Primary ( ε ',' Expr.Primary ) * ',' ?
+    Yield = Expr.Yield
+    Assert = "assert" Expr ( ',' Expr ) ?
+
+    Import:
+      ⊙ = Name | From
+      Name = "import" DottedAsName ( ε ',' DottedAsName ) *
+      From = "from" ( dots ? DottedName "import" | dots "import" ) ~ Targets
+      dots = '.' +
+      Targets = '(' AsName ( ε ',' AsName ) * ',' ? ')' \
+              | AsName ( ε ',' AsName ) * \
+              | '*'
+      AsName = identifier ( "as" identifier ) ?
+      DottedAsName = DottedName ( "as" identifier ) ?
+      DottedName = identifier ( ε '.' identifier ) *
+
+    Block = newline indent Stmt + dedent | Simples
+    Decorators = ( '@' Expr.Named newline ) +
+    async = "async"
+
+    Class = Decorators ? "class" ~ identifier TypeParams ( '(' Arguments ')' ) ? ':' Block
+
+    Function:
+      ⊙ = Decorators ? async ? "def" ~ identifier TypeParams '(' Params ')' ( '->' Expr ) ? ':' Block
+      Params = Param ( ε ',' Param ) * ',' ? | ε
+      Param = '/' | '**' ParamDef | '*' ParamDefStar ? | ParamDef
+      ParamDef = identifier ( ':' Expr ) ? ( '=' Expr ) ?
+      ParamDefStar = identifier ( ':' StarExpr ) ? ( '=' Expr ) ?
+
+    TypeAlias = "type" identifier TypeParams '=' Expr
+
+    If = "if" Expr.Named ':' Block Elif * Else ?
+    Elif = "elif" Expr.Named ':' Block
+    Else = "else" ':' Block
+
+    While = "while" Expr.Named ':' Block Else ?
+    For = async ? "for" ~ StarTargets "in" StarExprs ':' Block Else ?
+
+    With:
+      ⊙ = async ? "with" ~ Items ':' Block
+      Items = Item ( ε ',' Item ) * | ε '(' Item ( ε ',' Item ) * ',' ? ')'
+      Item = Expr ( "as" StarTarget ) ?
+
+    Try:
+      ⊙ = "try" ':' Block Except * Else ? Finally ?
+      Except = ε "except" star ? ( Expr ( "as" identifier ) ? ) ? ':' Block
+      Finally = "finally" ':' Block
+
+  TypeParams:
+    ⊙ = '[' Singular ( ε ',' Singular ) * ',' ? ']' | ε
+    Singular = no_node Normal | Star2 | Star1
+    Normal = identifier ( ':' Expr ) ? Default ?
+    Star1 = '*' identifier ( '=' StarExpr ) ?
+    Star2 = '**' identifier Default ?
+    Default = '=' Expr
+
+  Arguments = Expr.Named ForIfClause | Argument ( ε ',' Argument ) * ',' ? | ε
+  Argument = '**' Expr | '*' Expr | identifier '=' Expr | Expr.Named
+
+  StarExprs = StarExpr ( ε ',' StarExpr ) * ',' ?
+  StarExpr = star Expr.BitOr | Expr
+  StarNamedExprs = StarNamedExpr ( ε ',' StarNamedExpr ) * ',' ?
+  StarNamedExpr = star Expr.BitOr | Expr.Named
+  StarTargets = StarTarget ( ε ',' StarTarget ) * ',' ?
+  StarTarget = star ? Expr.Primary
+  star = '*'
+
+  ForIfClauses = ForIfClause +
+  ForIfClause = "async" ? "for" StarTargets "in" ~ Expr.Disjunction ( "if" Expr.Disjunction ) *
+
+  Expr:
+    ⊙ = no_node axe Atom
+      Primary     = ltr  postfix_nest -> Arguments '(' ')' \
+                         postfix_nest -> Slices '[' ']' \
+                         infix '.'
+      Await       = rtl  prefix "await"
+      Power       = rtl  infix '**'
+      Unary       = rtl  prefix '+' '-' '~'
+      Term        = ltr  infix '*' '/' '//' '%' '@'
+      Sum         = ltr  infix '+' '-'
+      Shift       = ltr  infix '<<' '>>'
+      BitAnd      = ltr  infix '&'
+      BitXor      = ltr  infix '^'
+      BitOr       = ltr  infix '|'
+      Comparison  = ltr  infix '==' '!=' '<=' '>=' '<' '>' \
+                         "in" "not in" "is" "is not"
+      Inversion   = rtl  prefix "not"
+      Conjunction = ltr  infix_flat "and"
+      Disjunction = ltr  infix_flat "or"
+      Conditional = rtl  ternary "if" "else"
+      Lambda      = rtl  prefix_nest -> LambdaParams "lambda" ':'
+
+    Atom = ( builtinLiteral | '...' | Strings | number
+           | GenExp | Group | Tuple
+           | ListComp | List
+           | DictComp | SetComp | Dict | Set
+           | identifier )
+    GenExp = ε '(' Named ForIfClauses ')'
+    Group = ε '(' ( Yield | Named ) ')'
+    Tuple = ε '(' StarNamedExprs ? ')'
+    List = '[' StarNamedExprs ? ']'
+    ListComp = ε '[' Named ForIfClauses ']'
+    Set = '{' StarNamedExprs '}'
+    SetComp = ε '{' Named ForIfClauses '}'
+    Dict = ε '{' ( KvPairs ) ? '}'
+    DictComp = ε '{' KvPair ForIfClauses '}'
+    KvPairs = KvPair ( ε ',' KvPair ) * ',' ?
+    KvPair = '**' Expr.BitOr | Expr ':' Expr
+
+    Slices = Slice ( ε ',' Slice ) * ',' ?
+    Slice = Expr ? ':' Expr ? ( ':' Expr ? ) ? | '*' Expr | Expr.Named
+
+    LambdaParams = ( LambdaParam ( ε ',' LambdaParam ) * ',' ? ) ?
+    LambdaParam = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
+    LambdaParamDef = identifier ( '=' not '=' Expr ) ?
+
+    Named = ( identifier ':=' ) ? Expr
+    Yield = "yield" ( "from" Expr | StarExprs ? )
+
+  builtinLiteral = "None" | "True" | "False"
+
+  Strings:
+    ⊙ = ( string | fstring ) +
+    fstring = ( 'f' | 't' ) STRING # TODO: support f-strings
+
+  number:
+    ⊙ = .number imaginaryPart ?
+    imaginaryPart = [ 'j' 'J' ]
+)'";
+
+  unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);
+}

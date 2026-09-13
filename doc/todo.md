@@ -1,6 +1,5 @@
 # TODO
 
-* Python Seed-parser
 * Bash Seed-parser?
 
 * Errors:
@@ -10,6 +9,7 @@
     * rethink error generation fundamentally
         * In parsing errors, show what has been successfully parsed so far?
     * After errors, parsing should be resume (for error handling in IDEs)
+    * Maybe use Python's "invalid_*" rules?
 
 * Lox:
     * Unify: object_pool_t, cactus_t?
@@ -19,6 +19,10 @@
 ## Long Term
 
 * Seed / Fragmentization:
+    * Support positive lookahead in Seed (similar to "&" in the python grammar; "!" is already
+      equivalent to "not")
+        * maybe also add the cut ("~") and force-parse ("&&") operators from Python's grammar?
+        * replace prefix rule with the cut ("~") operator?
     * function
         * allow uses to write typical parse functions in silva directly
         * add `joined_f(',', Base)`?
@@ -33,7 +37,7 @@
         * this might also enable recursion detection (and prevention)
         * recursion prevention could be a functional part of the parsing (by ignoring recursive
           branches certain grammars become viable that otherwise wouldn't be viable)
-    * allow any type of parentheses to denote sub-language
+    * allow any type of parentheses to denote sub-language?
     * allow the parser to descent into strings?
         * for example for the Seed literal « "not" », the parser could be modified to output a
           parse-tree that already contains the token `not` (i.e., without the double-quotes)

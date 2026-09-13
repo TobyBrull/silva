@@ -46,8 +46,7 @@ namespace silva::fern::test {
       [0].number                                  ｢42｣
         [0].number.integer                        ｢42｣
           [0].number.integer.decimal              ｢42｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢42｣
+            [0].number.unsigned.integer.decimal   ｢42｣
   [4].Fern.LabeledItem                            []\n  ¦
     [0].Fern                                      []\n  ¦
   [5].Fern.LabeledItem                            [\n    ... \n  ]\n¦
@@ -57,8 +56,7 @@ namespace silva::fern::test {
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢1｣
+                [0].number.unsigned.integer.decimal ｢1｣
       [1].Fern.LabeledItem                        'two' : 2\n    ¦
         [0].Fern.label                            ｢'two'｣
           [0].string                              ｢'two'｣
@@ -66,15 +64,13 @@ namespace silva::fern::test {
           [0].number                              ｢2｣
             [0].number.integer                    ｢2｣
               [0].number.integer.decimal          ｢2｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢2｣
+                [0].number.unsigned.integer.decimal ｢2｣
       [2].Fern.LabeledItem                        3\n  ¦
         [0].Fern.value                            ｢3｣
           [0].number                              ｢3｣
             [0].number.integer                    ｢3｣
               [0].number.integer.decimal          ｢3｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢3｣
+                [0].number.unsigned.integer.decimal ｢3｣
 )";
 
     const string_t result_str = SILVA_REQUIRE(pt->span().to_string());
@@ -116,9 +112,7 @@ digraph parse_tree {
   "/3/0/0/0/" -> "/3/0/0/0/0/"
   "/3/0/0/0/0/" [label="[0].number.integer.decimal\n42"]
   "/3/0/0/0/0/" -> "/3/0/0/0/0/0/"
-  "/3/0/0/0/0/0/" [label="[0].number.plusMinus\n"]
-  "/3/0/0/0/0/" -> "/3/0/0/0/0/1/"
-  "/3/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n42"]
+  "/3/0/0/0/0/0/" [label="[0].number.unsigned.integer.decimal\n42"]
   "/" -> "/4/"
   "/4/" [label="[4].Fern.LabeledItem\n[]\\n  "]
   "/4/" -> "/4/0/"
@@ -138,9 +132,7 @@ digraph parse_tree {
   "/5/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/"
   "/5/0/0/0/0/0/0/" [label="[0].number.integer.decimal\n1"]
   "/5/0/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/0/"
-  "/5/0/0/0/0/0/0/0/" [label="[0].number.plusMinus\n"]
-  "/5/0/0/0/0/0/0/" -> "/5/0/0/0/0/0/0/1/"
-  "/5/0/0/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n1"]
+  "/5/0/0/0/0/0/0/0/" [label="[0].number.unsigned.integer.decimal\n1"]
   "/5/0/" -> "/5/0/1/"
   "/5/0/1/" [label="[1].Fern.LabeledItem\n'two' : 2\\n    "]
   "/5/0/1/" -> "/5/0/1/0/"
@@ -156,9 +148,7 @@ digraph parse_tree {
   "/5/0/1/1/0/0/" -> "/5/0/1/1/0/0/0/"
   "/5/0/1/1/0/0/0/" [label="[0].number.integer.decimal\n2"]
   "/5/0/1/1/0/0/0/" -> "/5/0/1/1/0/0/0/0/"
-  "/5/0/1/1/0/0/0/0/" [label="[0].number.plusMinus\n"]
-  "/5/0/1/1/0/0/0/" -> "/5/0/1/1/0/0/0/1/"
-  "/5/0/1/1/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n2"]
+  "/5/0/1/1/0/0/0/0/" [label="[0].number.unsigned.integer.decimal\n2"]
   "/5/0/" -> "/5/0/2/"
   "/5/0/2/" [label="[2].Fern.LabeledItem\n3\\n  "]
   "/5/0/2/" -> "/5/0/2/0/"
@@ -170,9 +160,7 @@ digraph parse_tree {
   "/5/0/2/0/0/0/" -> "/5/0/2/0/0/0/0/"
   "/5/0/2/0/0/0/0/" [label="[0].number.integer.decimal\n3"]
   "/5/0/2/0/0/0/0/" -> "/5/0/2/0/0/0/0/0/"
-  "/5/0/2/0/0/0/0/0/" [label="[0].number.plusMinus\n"]
-  "/5/0/2/0/0/0/0/" -> "/5/0/2/0/0/0/0/1/"
-  "/5/0/2/0/0/0/0/1/" [label="[1].number.unsigned.integer.decimal\n3"]
+  "/5/0/2/0/0/0/0/0/" [label="[0].number.unsigned.integer.decimal\n3"]
 })";
 
     const string_t result_graphviz = SILVA_REQUIRE(pt->span().to_graphviz());
