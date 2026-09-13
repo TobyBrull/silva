@@ -9,7 +9,7 @@ from .relative import thing as other, second
 GREETING = "hello"
 LIMIT: int = 10
 _TABLE = {"a": 1, "b": 2, **{"c": 3}}
-NUMBERS = [0, 1_000, 0b1010, 0o755, 0xdeadBEEF, 1.5, .5, 2., 1e-9, 3j]
+NUMBERS = [0, 1_000, 0b1010, 0o755, 0xdeadBEEF, 1.5, 2.0, 1e-9, 3j, 123e456_789]
 EMPTY = ()
 SINGLE = (1,)
 PAIR = 1, 2

@@ -109,50 +109,86 @@ ERROR (MAJOR):
 │   │ │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
 │   │ │ │ [01-broken.fern:10:5] .boolean: expected alternation[ [ \"true\" \"false\" ] ]
 │   │ │ ├─[01-broken.fern:10:5] .boolean
-│   │ │ │       [01-broken.fern:10:5] expected token[ inf ]
-│   │ │ │     ┌─[01-broken.fern:10:5] while matching token[ inf ]
-│   │ │ │     │ [01-broken.fern:10:5] expected token[ nan ]
-│   │ │ │     ├─[01-broken.fern:10:5] while matching token[ nan ]
-│   │ │ │     [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
-│   │ │ │   ┌─[01-broken.fern:10:5] .number.unsigned.float.special
-│   │ │ │   │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
-│   │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integ ... t ? ) ]
-│   │ │ │   [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ speci ... t ? ) ]
-│   │ │ │   [01-broken.fern:10:5] .number.unsigned.float
+│   │ │ │       [01-broken.fern:10:5] expected token[ + ]
+│   │ │ │     ┌─[01-broken.fern:10:5] while matching token[ + ]
+│   │ │ │     │ [01-broken.fern:10:5] expected token[ - ]
+│   │ │ │     ├─[01-broken.fern:10:5] while matching token[ - ]
+│   │ │ │     [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' '-' ] ]
+│   │ │ │   ┌─[01-broken.fern:10:5] .number.plusMinus
+│   │ │ │   │     [01-broken.fern:10:5] expected token[ inf ]
+│   │ │ │   │   ┌─[01-broken.fern:10:5] while matching token[ inf ]
+│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ nan ]
+│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ nan ]
+│   │ │ │   │   [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
+│   │ │ │   │ ┌─[01-broken.fern:10:5] .number.unsigned.float.special
+│   │ │ │   │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+│   │ │ │   │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
+│   │ │ │   │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
+│   │ │ │   │ │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
+│   │ │ │   │ ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integ ... t ? ) ]
+│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ speci ... t ? ) ]
+│   │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.float
 │   │ │ │   [01-broken.fern:10:5] .number.float: expected sequence[ plusM ... float ]
 │   │ │ │ ┌─[01-broken.fern:10:5] .number.float
-│   │ │ │ │   [01-broken.fern:10:5] expected token[ inf ]
-│   │ │ │ │ ┌─[01-broken.fern:10:5] while matching token[ inf ]
-│   │ │ │ │ │ [01-broken.fern:10:5] expected token[ nan ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] while matching token[ nan ]
-│   │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
-│   │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special
+│   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│   │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' '-' ] ]
+│   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│   │ │ │ │ │   [01-broken.fern:10:5] expected token[ inf ]
+│   │ │ │ │ │ ┌─[01-broken.fern:10:5] while matching token[ inf ]
+│   │ │ │ │ │ │ [01-broken.fern:10:5] expected token[ nan ]
+│   │ │ │ │ │ ├─[01-broken.fern:10:5] while matching token[ nan ]
+│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'inf' 'nan' ] ]
+│   │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.float.special
 │   │ │ │ │ [01-broken.fern:10:5] .number.float.special: expected sequence[ plusM ... ecial ]
 │   │ │ │ ├─[01-broken.fern:10:5] .number.float.special
-│   │ │ │ │   [01-broken.fern:10:5] expected token[ 0b ]
-│   │ │ │ │   [01-broken.fern:10:5] while matching token[ 0b ]
-│   │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b' ( D ... g ) * ]
-│   │ │ │ │   [01-broken.fern:10:5] .number.unsigned.integer.binary
+│   │ │ │ │       [01-broken.fern:10:5] expected token[ + ]
+│   │ │ │ │     ┌─[01-broken.fern:10:5] while matching token[ + ]
+│   │ │ │ │     │ [01-broken.fern:10:5] expected token[ - ]
+│   │ │ │ │     ├─[01-broken.fern:10:5] while matching token[ - ]
+│   │ │ │ │     [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' '-' ] ]
+│   │ │ │ │   ┌─[01-broken.fern:10:5] .number.plusMinus
+│   │ │ │ │   │ [01-broken.fern:10:5] expected token[ 0b ]
+│   │ │ │ │   │ [01-broken.fern:10:5] while matching token[ 0b ]
+│   │ │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b' ( D ... g ) * ]
+│   │ │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.integer.binary
 │   │ │ │ │   [01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusM ... inary ]
 │   │ │ │ │ ┌─[01-broken.fern:10:5] .number.integer.binary
-│   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0o ]
-│   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0o ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o' ( D ... g ) * ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal
+│   │ │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│   │ │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│   │ │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' '-' ] ]
+│   │ │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│   │ │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0o ]
+│   │ │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0o ]
+│   │ │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o' ( D ... g ) * ]
+│   │ │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.octal
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusM ... octal ]
 │   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.octal
-│   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0x ]
-│   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0x ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x' ( D ... g ) * ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
+│   │ │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│   │ │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│   │ │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' '-' ] ]
+│   │ │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│   │ │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0x ]
+│   │ │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0x ]
+│   │ │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x' ( D ... g ) * ]
+│   │ │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusM ... cimal ]
 │   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.hexadecimal
-│   │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
+│   │ │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│   │ │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│   │ │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' '-' ] ]
+│   │ │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│   │ │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+│   │ │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
+│   │ │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.decimal
 │   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusM ... cimal ]
 │   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.decimal
 │   │ │ │ │ [01-broken.fern:10:5] .number.integer: expected alternation[ [ bin ... mal ] ]
@@ -221,26 +257,26 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].boolean                                                              false     01-simplest.fern:3:4
             [2].number                                                               false     01-simplest.fern:3:4
               [0].number.float                                                       false     01-simplest.fern:3:4
-                [0].number.plusMinus                                                 true      01-simplest.fern:3:4
+                [0].number.plusMinus                                                 false     01-simplest.fern:3:4
                 [1].number.unsigned.float                                            false     01-simplest.fern:3:4
                   [0].number.unsigned.float.special                                  false     01-simplest.fern:3:4
                   [1].number.unsigned.float.integerPart                              false     01-simplest.fern:3:4
                     [0].number.unsigned.integer.decimal                              false     01-simplest.fern:3:4
               [1].number.float.special                                               false     01-simplest.fern:3:4
-                [0].number.plusMinus                                                 true      01-simplest.fern:3:4
+                [0].number.plusMinus                                                 false     01-simplest.fern:3:4
                 [1].number.unsigned.float.special                                    false     01-simplest.fern:3:4
               [2].number.integer                                                     false     01-simplest.fern:3:4
                 [0].number.integer.binary                                            false     01-simplest.fern:3:4
-                  [0].number.plusMinus                                               true      01-simplest.fern:3:4
+                  [0].number.plusMinus                                               false     01-simplest.fern:3:4
                   [1].number.unsigned.integer.binary                                 false     01-simplest.fern:3:4
                 [1].number.integer.octal                                             false     01-simplest.fern:3:4
-                  [0].number.plusMinus                                               true      01-simplest.fern:3:4
+                  [0].number.plusMinus                                               false     01-simplest.fern:3:4
                   [1].number.unsigned.integer.octal                                  false     01-simplest.fern:3:4
                 [2].number.integer.hexadecimal                                       false     01-simplest.fern:3:4
-                  [0].number.plusMinus                                               true      01-simplest.fern:3:4
+                  [0].number.plusMinus                                               false     01-simplest.fern:3:4
                   [1].number.unsigned.integer.hexadecimal                            false     01-simplest.fern:3:4
                 [3].number.integer.decimal                                           false     01-simplest.fern:3:4
-                  [0].number.plusMinus                                               true      01-simplest.fern:3:4
+                  [0].number.plusMinus                                               false     01-simplest.fern:3:4
                   [1].number.unsigned.integer.decimal                                false     01-simplest.fern:3:4
             [3].string                                                               false     01-simplest.fern:3:4
         [2].skip.freeForm                                                            true      01-simplest.fern:3:5
@@ -271,26 +307,26 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].boolean                                                              false     01-simplest.fern:6:3
             [2].number                                                               false     01-simplest.fern:6:3
               [0].number.float                                                       false     01-simplest.fern:6:3
-                [0].number.plusMinus                                                 true      01-simplest.fern:6:3
+                [0].number.plusMinus                                                 false     01-simplest.fern:6:3
                 [1].number.unsigned.float                                            false     01-simplest.fern:6:3
                   [0].number.unsigned.float.special                                  false     01-simplest.fern:6:3
                   [1].number.unsigned.float.integerPart                              false     01-simplest.fern:6:3
                     [0].number.unsigned.integer.decimal                              false     01-simplest.fern:6:3
               [1].number.float.special                                               false     01-simplest.fern:6:3
-                [0].number.plusMinus                                                 true      01-simplest.fern:6:3
+                [0].number.plusMinus                                                 false     01-simplest.fern:6:3
                 [1].number.unsigned.float.special                                    false     01-simplest.fern:6:3
               [2].number.integer                                                     false     01-simplest.fern:6:3
                 [0].number.integer.binary                                            false     01-simplest.fern:6:3
-                  [0].number.plusMinus                                               true      01-simplest.fern:6:3
+                  [0].number.plusMinus                                               false     01-simplest.fern:6:3
                   [1].number.unsigned.integer.binary                                 false     01-simplest.fern:6:3
                 [1].number.integer.octal                                             false     01-simplest.fern:6:3
-                  [0].number.plusMinus                                               true      01-simplest.fern:6:3
+                  [0].number.plusMinus                                               false     01-simplest.fern:6:3
                   [1].number.unsigned.integer.octal                                  false     01-simplest.fern:6:3
                 [2].number.integer.hexadecimal                                       false     01-simplest.fern:6:3
-                  [0].number.plusMinus                                               true      01-simplest.fern:6:3
+                  [0].number.plusMinus                                               false     01-simplest.fern:6:3
                   [1].number.unsigned.integer.hexadecimal                            false     01-simplest.fern:6:3
                 [3].number.integer.decimal                                           false     01-simplest.fern:6:3
-                  [0].number.plusMinus                                               true      01-simplest.fern:6:3
+                  [0].number.plusMinus                                               false     01-simplest.fern:6:3
                   [1].number.unsigned.integer.decimal                                false     01-simplest.fern:6:3
             [3].string                                                               false     01-simplest.fern:6:3
         [3].skip.freeForm                                                            true      01-simplest.fern:6:4
@@ -305,26 +341,26 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].boolean                                                                  false     01-simplest.fern:7:1
         [2].number                                                                   false     01-simplest.fern:7:1
           [0].number.float                                                           false     01-simplest.fern:7:1
-            [0].number.plusMinus                                                     true      01-simplest.fern:7:1
+            [0].number.plusMinus                                                     false     01-simplest.fern:7:1
             [1].number.unsigned.float                                                false     01-simplest.fern:7:1
               [0].number.unsigned.float.special                                      false     01-simplest.fern:7:1
               [1].number.unsigned.float.integerPart                                  false     01-simplest.fern:7:1
                 [0].number.unsigned.integer.decimal                                  false     01-simplest.fern:7:1
           [1].number.float.special                                                   false     01-simplest.fern:7:1
-            [0].number.plusMinus                                                     true      01-simplest.fern:7:1
+            [0].number.plusMinus                                                     false     01-simplest.fern:7:1
             [1].number.unsigned.float.special                                        false     01-simplest.fern:7:1
           [2].number.integer                                                         false     01-simplest.fern:7:1
             [0].number.integer.binary                                                false     01-simplest.fern:7:1
-              [0].number.plusMinus                                                   true      01-simplest.fern:7:1
+              [0].number.plusMinus                                                   false     01-simplest.fern:7:1
               [1].number.unsigned.integer.binary                                     false     01-simplest.fern:7:1
             [1].number.integer.octal                                                 false     01-simplest.fern:7:1
-              [0].number.plusMinus                                                   true      01-simplest.fern:7:1
+              [0].number.plusMinus                                                   false     01-simplest.fern:7:1
               [1].number.unsigned.integer.octal                                      false     01-simplest.fern:7:1
             [2].number.integer.hexadecimal                                           false     01-simplest.fern:7:1
-              [0].number.plusMinus                                                   true      01-simplest.fern:7:1
+              [0].number.plusMinus                                                   false     01-simplest.fern:7:1
               [1].number.unsigned.integer.hexadecimal                                false     01-simplest.fern:7:1
             [3].number.integer.decimal                                               false     01-simplest.fern:7:1
-              [0].number.plusMinus                                                   true      01-simplest.fern:7:1
+              [0].number.plusMinus                                                   false     01-simplest.fern:7:1
               [1].number.unsigned.integer.decimal                                    false     01-simplest.fern:7:1
         [3].string                                                                   false     01-simplest.fern:7:1
     [5].skip.freeForm                                                                true      01-simplest.fern:7:2
@@ -631,34 +667,29 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢1｣
+                [0].number.unsigned.integer.decimal ｢1｣
         [1].CppStmts.Expr.Multiply.*              2 * 3 ¦
           [0].CppStmts.Expr.Atom                  2 ¦
             [0].number                            ｢2｣
               [0].number.integer                  ｢2｣
                 [0].number.integer.decimal        ｢2｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢2｣
+                  [0].number.unsigned.integer.decimal ｢2｣
           [1].CppStmts.Expr.Atom                  3 ¦
             [0].number                            ｢3｣
               [0].number.integer                  ｢3｣
                 [0].number.integer.decimal        ｢3｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢3｣
+                  [0].number.unsigned.integer.decimal ｢3｣
       [1].CppStmts.Expr.Multiply.*                4 * 5 ¦
         [0].CppStmts.Expr.Atom                    4 ¦
           [0].number                              ｢4｣
             [0].number.integer                    ｢4｣
               [0].number.integer.decimal          ｢4｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢4｣
+                [0].number.unsigned.integer.decimal ｢4｣
         [1].CppStmts.Expr.Atom                    5 ¦
           [0].number                              ｢5｣
             [0].number.integer                    ｢5｣
               [0].number.integer.decimal          ｢5｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢5｣
+                [0].number.unsigned.integer.decimal ｢5｣
   [1].CppStmts.Expr                               a[1]  ... .14) ¦
     [0].CppStmts.Expr.Assignment.=                a[1]  ... .14) ¦
       [0].CppStmts.Expr.Postfix.[                 a[1] ¦
@@ -669,8 +700,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [0].number                            ｢1｣
               [0].number.integer                  ｢1｣
                 [0].number.integer.decimal        ｢1｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢1｣
+                  [0].number.unsigned.integer.decimal ｢1｣
       [1].CppStmts.Expr.Postfix.(                 std:: ... .14) ¦
         [0].CppStmts.Expr.Namespace.::            std::sin¦
           [0].CppStmts.Expr.Atom                  std¦
@@ -681,27 +711,25 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].CppStmts.Expr.Atom                  3.14¦
             [0].number                            ｢3.14｣
               [0].number.float                    ｢3.14｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.float         ｢3.14｣
+                [0].number.unsigned.float         ｢3.14｣
                   [0].number.unsigned.float.integerPart ｢3｣
                     [0].number.unsigned.integer.decimal ｢3｣
                   [1].number.unsigned.float.fraction ｢.14｣
+                    [0].number.unsigned.integer.decimal ｢14｣
   [2].CppStmts.Expr                               1 | 0 ...  + 3 ¦
     [0].CppStmts.Expr.BitOr.|                     1 | 0 ...  + 3 ¦
       [0].CppStmts.Expr.Atom                      1 ¦
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
       [1].CppStmts.Expr.Comparison.<=             0 <=  ...  + 3 ¦
         [0].CppStmts.Expr.Comparison.<=           0 <=  ... * 10 ¦
           [0].CppStmts.Expr.Atom                  0 ¦
             [0].number                            ｢0｣
               [0].number.integer                  ｢0｣
                 [0].number.integer.decimal        ｢0｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢0｣
+                  [0].number.unsigned.integer.decimal ｢0｣
           [1].CppStmts.Expr.Multiply.*            x * 10 ¦
             [0].CppStmts.Expr.Atom                x ¦
               [0].identifier                      ｢x｣
@@ -709,21 +737,18 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].number                          ｢10｣
                 [0].number.integer                ｢10｣
                   [0].number.integer.decimal      ｢10｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢10｣
+                    [0].number.unsigned.integer.decimal ｢10｣
         [1].CppStmts.Expr.Addition.+              2 + 3 ¦
           [0].CppStmts.Expr.Atom                  2 ¦
             [0].number                            ｢2｣
               [0].number.integer                  ｢2｣
                 [0].number.integer.decimal        ｢2｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢2｣
+                  [0].number.unsigned.integer.decimal ｢2｣
           [1].CppStmts.Expr.Atom                  3 ¦
             [0].number                            ｢3｣
               [0].number.integer                  ｢3｣
                 [0].number.integer.decimal        ｢3｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢3｣
+                  [0].number.unsigned.integer.decimal ｢3｣
   [3].CppStmts.Expr                               std:: ... t(x) ¦
     [0].CppStmts.Expr.Assignment.=                std:: ... t(x) ¦
       [0].CppStmts.Expr.Postfix.(                 std:: ... t(x) ¦
@@ -772,8 +797,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].number                                  ｢42｣
         [0].number.integer                        ｢42｣
           [0].number.integer.decimal              ｢42｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢42｣
+            [0].number.unsigned.integer.decimal   ｢42｣
   [3].Fern.LabeledItem                            hello ...  'World'\n  ¦
     [0].Fern.label                                ｢hello｣
       [0].identifier                              ｢hello｣
@@ -789,22 +813,22 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].Fern.value                            ｢1.0｣
           [0].number                              ｢1.0｣
             [0].number.float                      ｢1.0｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.float           ｢1.0｣
+              [0].number.unsigned.float           ｢1.0｣
                 [0].number.unsigned.float.integerPart ｢1｣
                   [0].number.unsigned.integer.decimal ｢1｣
                 [1].number.unsigned.float.fraction ｢.0｣
+                  [0].number.unsigned.integer.decimal ｢0｣
       [1].Fern.LabeledItem                        'two' : 2.0\n  ¦
         [0].Fern.label                            ｢'two'｣
           [0].string                              ｢'two'｣
         [1].Fern.value                            ｢2.0｣
           [0].number                              ｢2.0｣
             [0].number.float                      ｢2.0｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.float           ｢2.0｣
+              [0].number.unsigned.float           ｢2.0｣
                 [0].number.unsigned.float.integerPart ｢2｣
                   [0].number.unsigned.integer.decimal ｢2｣
                 [1].number.unsigned.float.fraction ｢.0｣
+                  [0].number.unsigned.integer.decimal ｢0｣
 
 [0].Seed                                          langu ... \"b\" *<NEWLINE><DEDENT>¦
   [0].Seed.Language                               langu ... \"b\" *<NEWLINE><DEDENT>¦
@@ -1424,8 +1448,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number                      ｢80｣
                     [0].number.integer            ｢80｣
                       [0].number.integer.decimal  ｢80｣
-                        [0].number.plusMinus      ｢｣
-                        [1].number.unsigned.integer.decimal ｢80｣
+                        [0].number.unsigned.integer.decimal ｢80｣
   [4].Soil.Func.Defn                              is_ad ... ;\n}<NEWLINE><WHITESPACE>¦
     [0].Soil.Func.Name                            is_ad ... lt_f ¦
       [0].Soil.funcName                           ｢is_adult_f｣
@@ -1455,8 +1478,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].number                        ｢18｣
                   [0].number.integer              ｢18｣
                     [0].number.integer.decimal    ｢18｣
-                      [0].number.plusMinus        ｢｣
-                      [1].number.unsigned.integer.decimal ｢18｣
+                      [0].number.unsigned.integer.decimal ｢18｣
   [5].Soil.Func.Defn                              examp ... }\n}<NEWLINE><WHITESPACE>¦
     [0].Soil.Func.Name                            example_f ¦
       [0].Soil.funcName                           ｢example_f｣
@@ -1478,8 +1500,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].number                        ｢42｣
                   [0].number.integer              ｢42｣
                     [0].number.integer.decimal    ｢42｣
-                      [0].number.plusMinus        ｢｣
-                      [1].number.unsigned.integer.decimal ｢42｣
+                      [0].number.unsigned.integer.decimal ｢42｣
       [1].Soil.Func.Stmt                          p1 =  ... ];\n  ¦
         [0].Soil.Expr                             p1 =  ...  20 ]¦
           [0].Soil.Expr.Axe.Assign.=              p1 =  ...  20 ]¦
@@ -1515,8 +1536,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                         [0].number                ｢20｣
                           [0].number.integer      ｢20｣
                             [0].number.integer.decimal ｢20｣
-                              [0].number.plusMinus ｢｣
-                              [1].number.unsigned.integer.decimal ｢20｣
+                              [0].number.unsigned.integer.decimal ｢20｣
       [2].Soil.Func.Stmt                          p2 =  ... ];\n  ¦
         [0].Soil.Expr                             p2 =  ...  30 ]¦
           [0].Soil.Expr.Axe.Assign.=              p2 =  ...  30 ]¦
@@ -1544,8 +1564,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                         [0].number                ｢30｣
                           [0].number.integer      ｢30｣
                             [0].number.integer.decimal ｢30｣
-                              [0].number.plusMinus ｢｣
-                              [1].number.unsigned.integer.decimal ｢30｣
+                              [0].number.unsigned.integer.decimal ｢30｣
       [3].Soil.Func.Stmt                          ['{} is-adult = {}' p1 ... f;\n  ¦
         [0].Soil.Expr                             ['{} is-adult = {}' p1 ... log_f¦
           [0].Soil.Expr.Axe.CallPipe.|            ['{} is-adult = {}' p1 ... log_f¦
@@ -1608,8 +1627,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].number                    ｢40｣
                       [0].number.integer          ｢40｣
                         [0].number.integer.decimal ｢40｣
-                          [0].number.plusMinus    ｢｣
-                          [1].number.unsigned.integer.decimal ｢40｣
+                          [0].number.unsigned.integer.decimal ｢40｣
             [1].Soil.Expr.Atom                    log_f¦
               [0].Soil.funcName                   ｢log_f｣
                 [0].identifier                    ｢log_f｣
@@ -1642,8 +1660,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number                      ｢10｣
                     [0].number.integer            ｢10｣
                       [0].number.integer.decimal  ｢10｣
-                        [0].number.plusMinus      ｢｣
-                        [1].number.unsigned.integer.decimal ｢10｣
+                        [0].number.unsigned.integer.decimal ｢10｣
             [1].Soil.Func.Body                    {\n    ... \n  } ¦
               [0].Soil.Func.Stmt                  'This name is long' | l ... f;\n  ¦
                 [0].Soil.Expr                     'This name is long' | log_f¦
@@ -1672,8 +1689,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number                      ｢5｣
                     [0].number.integer            ｢5｣
                       [0].number.integer.decimal  ｢5｣
-                        [0].number.plusMinus      ｢｣
-                        [1].number.unsigned.integer.decimal ｢5｣
+                        [0].number.unsigned.integer.decimal ｢5｣
             [1].Soil.Func.Body                    {\n    ... \n  } ¦
               [0].Soil.Func.Stmt                  'This name it not long' | l ... f;\n  ¦
                 [0].Soil.Expr                     'This name it not long' | log_f¦
@@ -1705,8 +1721,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].number                        ｢0｣
                   [0].number.integer              ｢0｣
                     [0].number.integer.decimal    ｢0｣
-                      [0].number.plusMinus        ｢｣
-                      [1].number.unsigned.integer.decimal ｢0｣
+                      [0].number.unsigned.integer.decimal ｢0｣
       [8].Soil.Func.Stmt                          for i ... }\n\n  ¦
         [0].Soil.Func.Stmt.For                    for i ... }\n\n  ¦
           [0].Soil.Expr.Maybe                     i = i ...  :: 0¦
@@ -1722,8 +1737,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].number                    ｢0｣
                       [0].number.integer          ｢0｣
                         [0].number.integer.decimal ｢0｣
-                          [0].number.plusMinus    ｢｣
-                          [1].number.unsigned.integer.decimal ｢0｣
+                          [0].number.unsigned.integer.decimal ｢0｣
           [1].Soil.Expr.Maybe                     i < n¦
             [0].Soil.Expr                         i < n¦
               [0].Soil.Expr.Axe.Comp.<            i < n¦
@@ -1740,8 +1754,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number                      ｢1｣
                     [0].number.integer            ｢1｣
                       [0].number.integer.decimal  ｢1｣
-                        [0].number.plusMinus      ｢｣
-                        [1].number.unsigned.integer.decimal ｢1｣
+                        [0].number.unsigned.integer.decimal ｢1｣
           [3].Soil.Func.Body                      {\n    ... }\n\n  ¦
             [0].Soil.Func.Stmt                    sum + ... i;\n  ¦
               [0].Soil.Expr                       sum += i¦
@@ -1759,8 +1772,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].number                          ｢42｣
                 [0].number.integer                ｢42｣
                   [0].number.integer.decimal      ｢42｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢42｣
+                    [0].number.unsigned.integer.decimal ｢42｣
       [10].Soil.Func.Stmt                         for ; ... \n  }\n¦
         [0].Soil.Func.Stmt.For                    for ; ... \n  }\n¦
           [0].Soil.Expr.Maybe                     ¦
@@ -2167,6 +2179,10 @@ Mr Jane
                 [0].Pine.StarExpr                                                                   10¦
                   [0].Pine.Expr.Atom                                                                10¦
                     [0].Pine.number                                                                 ｢10｣
+                      [0].number                                                                    ｢10｣
+                        [0].number.integer                                                          ｢10｣
+                          [0].number.integer.decimal                                                ｢10｣
+                            [0].number.unsigned.integer.decimal                                     ｢10｣
   [8].Pine.Stmt                                                                                     _TABL ...  3}}<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           _TABL ...  3}}<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          _TABL ... : 3}}¦
@@ -2188,12 +2204,20 @@ Mr Jane
                               [0].string                                                            ｢"a"｣
                           [1].Pine.Expr.Atom                                                        1¦
                             [0].Pine.number                                                         ｢1｣
+                              [0].number                                                            ｢1｣
+                                [0].number.integer                                                  ｢1｣
+                                  [0].number.integer.decimal                                        ｢1｣
+                                    [0].number.unsigned.integer.decimal                             ｢1｣
                         [1].Pine.Expr.KvPair                                                        \"b\": 2¦
                           [0].Pine.Expr.Atom                                                        \"b\"¦
                             [0].Pine.Strings                                                        \"b\"¦
                               [0].string                                                            ｢"b"｣
                           [1].Pine.Expr.Atom                                                        2¦
                             [0].Pine.number                                                         ｢2｣
+                              [0].number                                                            ｢2｣
+                                [0].number.integer                                                  ｢2｣
+                                  [0].number.integer.decimal                                        ｢2｣
+                                    [0].number.unsigned.integer.decimal                             ｢2｣
                         [2].Pine.Expr.KvPair                                                        **{\"c\": 3}¦
                           [0].Pine.Expr.Atom                                                        {\"c\": 3}¦
                             [0].Pine.Expr.Dict                                                      {\"c\": 3}¦
@@ -2204,62 +2228,119 @@ Mr Jane
                                       [0].string                                                    ｢"c"｣
                                   [1].Pine.Expr.Atom                                                3¦
                                     [0].Pine.number                                                 ｢3｣
-  [9].Pine.Stmt                                                                                     NUMBE ...  3j]<NEWLINE>¦
-    [0].Pine.Stmt.Simples                                                                           NUMBE ...  3j]<NEWLINE>¦
-      [0].Pine.Stmt.Simple                                                                          NUMBE ... , 3j]¦
-        [0].Pine.Stmt.Assignment                                                                    NUMBE ... , 3j]¦
-          [0].Pine.Stmt.Assignment.Plain                                                            NUMBE ... , 3j]¦
+                                      [0].number                                                    ｢3｣
+                                        [0].number.integer                                          ｢3｣
+                                          [0].number.integer.decimal                                ｢3｣
+                                            [0].number.unsigned.integer.decimal                     ｢3｣
+  [9].Pine.Stmt                                                                                     NUMBE ... 789]<NEWLINE>¦
+    [0].Pine.Stmt.Simples                                                                           NUMBE ... 789]<NEWLINE>¦
+      [0].Pine.Stmt.Simple                                                                          NUMBE ... _789]¦
+        [0].Pine.Stmt.Assignment                                                                    NUMBE ... _789]¦
+          [0].Pine.Stmt.Assignment.Plain                                                            NUMBE ... _789]¦
             [0].Pine.StarTargets                                                                    NUMBERS ¦
               [0].Pine.StarTarget                                                                   NUMBERS ¦
                 [0].Pine.Expr.Atom                                                                  NUMBERS ¦
                   [0].identifier                                                                    ｢NUMBERS｣
-            [1].Pine.Stmt.Assignment.Rhs                                                            [0, 1 ... , 3j]¦
-              [0].Pine.StarExprs                                                                    [0, 1 ... , 3j]¦
-                [0].Pine.StarExpr                                                                   [0, 1 ... , 3j]¦
-                  [0].Pine.Expr.Atom                                                                [0, 1 ... , 3j]¦
-                    [0].Pine.Expr.List                                                              [0, 1 ... , 3j]¦
-                      [0].Pine.StarNamedExprs                                                       0, 1_ ... 9, 3j¦
+            [1].Pine.Stmt.Assignment.Rhs                                                            [0, 1 ... _789]¦
+              [0].Pine.StarExprs                                                                    [0, 1 ... _789]¦
+                [0].Pine.StarExpr                                                                   [0, 1 ... _789]¦
+                  [0].Pine.Expr.Atom                                                                [0, 1 ... _789]¦
+                    [0].Pine.Expr.List                                                              [0, 1 ... _789]¦
+                      [0].Pine.StarNamedExprs                                                       0, 1_ ... 6_789¦
                         [0].Pine.StarNamedExpr                                                      0¦
                           [0].Pine.Expr.Named                                                       0¦
                             [0].Pine.Expr.Atom                                                      0¦
                               [0].Pine.number                                                       ｢0｣
+                                [0].number                                                          ｢0｣
+                                  [0].number.integer                                                ｢0｣
+                                    [0].number.integer.decimal                                      ｢0｣
+                                      [0].number.unsigned.integer.decimal                           ｢0｣
                         [1].Pine.StarNamedExpr                                                      1_000¦
                           [0].Pine.Expr.Named                                                       1_000¦
                             [0].Pine.Expr.Atom                                                      1_000¦
                               [0].Pine.number                                                       ｢1_000｣
+                                [0].number                                                          ｢1_000｣
+                                  [0].number.integer                                                ｢1_000｣
+                                    [0].number.integer.decimal                                      ｢1_000｣
+                                      [0].number.unsigned.integer.decimal                           ｢1_000｣
                         [2].Pine.StarNamedExpr                                                      0b1010¦
                           [0].Pine.Expr.Named                                                       0b1010¦
                             [0].Pine.Expr.Atom                                                      0b1010¦
                               [0].Pine.number                                                       ｢0b1010｣
+                                [0].number                                                          ｢0b1010｣
+                                  [0].number.integer                                                ｢0b1010｣
+                                    [0].number.integer.binary                                       ｢0b1010｣
+                                      [0].number.unsigned.integer.binary                            ｢0b1010｣
                         [3].Pine.StarNamedExpr                                                      0o755¦
                           [0].Pine.Expr.Named                                                       0o755¦
                             [0].Pine.Expr.Atom                                                      0o755¦
                               [0].Pine.number                                                       ｢0o755｣
+                                [0].number                                                          ｢0o755｣
+                                  [0].number.integer                                                ｢0o755｣
+                                    [0].number.integer.octal                                        ｢0o755｣
+                                      [0].number.unsigned.integer.octal                             ｢0o755｣
                         [4].Pine.StarNamedExpr                                                      0xdeadBEEF¦
                           [0].Pine.Expr.Named                                                       0xdeadBEEF¦
                             [0].Pine.Expr.Atom                                                      0xdeadBEEF¦
                               [0].Pine.number                                                       ｢0xdeadBEEF｣
+                                [0].number                                                          ｢0xdeadBEEF｣
+                                  [0].number.integer                                                ｢0xdeadBEEF｣
+                                    [0].number.integer.hexadecimal                                  ｢0xdeadBEEF｣
+                                      [0].number.unsigned.integer.hexadecimal                       ｢0xdeadBEEF｣
                         [5].Pine.StarNamedExpr                                                      1.5¦
                           [0].Pine.Expr.Named                                                       1.5¦
                             [0].Pine.Expr.Atom                                                      1.5¦
                               [0].Pine.number                                                       ｢1.5｣
-                        [6].Pine.StarNamedExpr                                                      .5¦
-                          [0].Pine.Expr.Named                                                       .5¦
-                            [0].Pine.Expr.Atom                                                      .5¦
-                              [0].Pine.number                                                       ｢.5｣
-                        [7].Pine.StarNamedExpr                                                      2.¦
-                          [0].Pine.Expr.Named                                                       2.¦
-                            [0].Pine.Expr.Atom                                                      2.¦
-                              [0].Pine.number                                                       ｢2.｣
-                        [8].Pine.StarNamedExpr                                                      1e-9¦
+                                [0].number                                                          ｢1.5｣
+                                  [0].number.float                                                  ｢1.5｣
+                                    [0].number.unsigned.float                                       ｢1.5｣
+                                      [0].number.unsigned.float.integerPart                         ｢1｣
+                                        [0].number.unsigned.integer.decimal                         ｢1｣
+                                      [1].number.unsigned.float.fraction                            ｢.5｣
+                                        [0].number.unsigned.integer.decimal                         ｢5｣
+                        [6].Pine.StarNamedExpr                                                      2.0¦
+                          [0].Pine.Expr.Named                                                       2.0¦
+                            [0].Pine.Expr.Atom                                                      2.0¦
+                              [0].Pine.number                                                       ｢2.0｣
+                                [0].number                                                          ｢2.0｣
+                                  [0].number.float                                                  ｢2.0｣
+                                    [0].number.unsigned.float                                       ｢2.0｣
+                                      [0].number.unsigned.float.integerPart                         ｢2｣
+                                        [0].number.unsigned.integer.decimal                         ｢2｣
+                                      [1].number.unsigned.float.fraction                            ｢.0｣
+                                        [0].number.unsigned.integer.decimal                         ｢0｣
+                        [7].Pine.StarNamedExpr                                                      1e-9¦
                           [0].Pine.Expr.Named                                                       1e-9¦
                             [0].Pine.Expr.Atom                                                      1e-9¦
                               [0].Pine.number                                                       ｢1e-9｣
-                                [0].Pine.number.plusMinus                                           ｢-｣
-                        [9].Pine.StarNamedExpr                                                      3j¦
+                                [0].number                                                          ｢1e-9｣
+                                  [0].number.float                                                  ｢1e-9｣
+                                    [0].number.unsigned.float                                       ｢1e-9｣
+                                      [0].number.unsigned.float.integerPart                         ｢1｣
+                                        [0].number.unsigned.integer.decimal                         ｢1｣
+                                      [1].number.unsigned.float.exponent                            ｢e-9｣
+                                        [0].number.plusMinus                                        ｢-｣
+                                        [1].number.unsigned.integer.decimal                         ｢9｣
+                        [8].Pine.StarNamedExpr                                                      3j¦
                           [0].Pine.Expr.Named                                                       3j¦
                             [0].Pine.Expr.Atom                                                      3j¦
                               [0].Pine.number                                                       ｢3j｣
+                                [0].number                                                          ｢3｣
+                                  [0].number.integer                                                ｢3｣
+                                    [0].number.integer.decimal                                      ｢3｣
+                                      [0].number.unsigned.integer.decimal                           ｢3｣
+                                [1].Pine.number.imaginaryPart                                       ｢j｣
+                        [9].Pine.StarNamedExpr                                                      123e4 ... 6_789¦
+                          [0].Pine.Expr.Named                                                       123e4 ... 6_789¦
+                            [0].Pine.Expr.Atom                                                      123e4 ... 6_789¦
+                              [0].Pine.number                                                       ｢123e456_789｣
+                                [0].number                                                          ｢123e456_789｣
+                                  [0].number.float                                                  ｢123e456_789｣
+                                    [0].number.unsigned.float                                       ｢123e456_789｣
+                                      [0].number.unsigned.float.integerPart                         ｢123｣
+                                        [0].number.unsigned.integer.decimal                         ｢123｣
+                                      [1].number.unsigned.float.exponent                            ｢e456_789｣
+                                        [0].number.unsigned.integer.decimal                         ｢456_789｣
   [10].Pine.Stmt                                                                                    EMPTY ... = ()<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           EMPTY ... = ()<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          EMPTY = ()¦
@@ -2293,6 +2374,10 @@ Mr Jane
                           [0].Pine.Expr.Named                                                       1¦
                             [0].Pine.Expr.Atom                                                      1¦
                               [0].Pine.number                                                       ｢1｣
+                                [0].number                                                          ｢1｣
+                                  [0].number.integer                                                ｢1｣
+                                    [0].number.integer.decimal                                      ｢1｣
+                                      [0].number.unsigned.integer.decimal                           ｢1｣
   [12].Pine.Stmt                                                                                    PAIR  ... 1, 2<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           PAIR  ... 1, 2<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          PAIR  ...  1, 2¦
@@ -2307,9 +2392,17 @@ Mr Jane
                 [0].Pine.StarExpr                                                                   1¦
                   [0].Pine.Expr.Atom                                                                1¦
                     [0].Pine.number                                                                 ｢1｣
+                      [0].number                                                                    ｢1｣
+                        [0].number.integer                                                          ｢1｣
+                          [0].number.integer.decimal                                                ｢1｣
+                            [0].number.unsigned.integer.decimal                                     ｢1｣
                 [1].Pine.StarExpr                                                                   2¦
                   [0].Pine.Expr.Atom                                                                2¦
                     [0].Pine.number                                                                 ｢2｣
+                      [0].number                                                                    ｢2｣
+                        [0].number.integer                                                          ｢2｣
+                          [0].number.integer.decimal                                                ｢2｣
+                            [0].number.unsigned.integer.decimal                                     ｢2｣
   [13].Pine.Stmt                                                                                    SET = ... , 3}<NEWLINE>¦
     [0].Pine.Stmt.Simples                                                                           SET = ... , 3}<NEWLINE>¦
       [0].Pine.Stmt.Simple                                                                          SET = ... 2, 3}¦
@@ -2329,14 +2422,26 @@ Mr Jane
                           [0].Pine.Expr.Named                                                       1¦
                             [0].Pine.Expr.Atom                                                      1¦
                               [0].Pine.number                                                       ｢1｣
+                                [0].number                                                          ｢1｣
+                                  [0].number.integer                                                ｢1｣
+                                    [0].number.integer.decimal                                      ｢1｣
+                                      [0].number.unsigned.integer.decimal                           ｢1｣
                         [1].Pine.StarNamedExpr                                                      2¦
                           [0].Pine.Expr.Named                                                       2¦
                             [0].Pine.Expr.Atom                                                      2¦
                               [0].Pine.number                                                       ｢2｣
+                                [0].number                                                          ｢2｣
+                                  [0].number.integer                                                ｢2｣
+                                    [0].number.integer.decimal                                      ｢2｣
+                                      [0].number.unsigned.integer.decimal                           ｢2｣
                         [2].Pine.StarNamedExpr                                                      3¦
                           [0].Pine.Expr.Named                                                       3¦
                             [0].Pine.Expr.Atom                                                      3¦
                               [0].Pine.number                                                       ｢3｣
+                                [0].number                                                          ｢3｣
+                                  [0].number.integer                                                ｢3｣
+                                    [0].number.integer.decimal                                      ｢3｣
+                                      [0].number.unsigned.integer.decimal                           ｢3｣
   [14].Pine.Stmt                                                                                    DOTS  ... ..<NEWLINE><WHITESPACE><WHITESPACE>¦
     [0].Pine.Stmt.Simples                                                                           DOTS  ... ..<NEWLINE><WHITESPACE><WHITESPACE>¦
       [0].Pine.Stmt.Simple                                                                          DOTS = ...¦
@@ -2533,18 +2638,30 @@ Mr Jane
               [0].identifier                                                                        ｢b｣
               [1].Pine.Expr.Atom                                                                    2¦
                 [0].Pine.number                                                                     ｢2｣
+                  [0].number                                                                        ｢2｣
+                    [0].number.integer                                                              ｢2｣
+                      [0].number.integer.decimal                                                    ｢2｣
+                        [0].number.unsigned.integer.decimal                                         ｢2｣
           [2].Pine.Stmt.Function.Param                                                              /¦
           [3].Pine.Stmt.Function.Param                                                              c=3¦
             [0].Pine.Stmt.Function.ParamDef                                                         c=3¦
               [0].identifier                                                                        ｢c｣
               [1].Pine.Expr.Atom                                                                    3¦
                 [0].Pine.number                                                                     ｢3｣
+                  [0].number                                                                        ｢3｣
+                    [0].number.integer                                                              ｢3｣
+                      [0].number.integer.decimal                                                    ｢3｣
+                        [0].number.unsigned.integer.decimal                                         ｢3｣
           [4].Pine.Stmt.Function.Param                                                              *¦
           [5].Pine.Stmt.Function.Param                                                              d=4¦
             [0].Pine.Stmt.Function.ParamDef                                                         d=4¦
               [0].identifier                                                                        ｢d｣
               [1].Pine.Expr.Atom                                                                    4¦
                 [0].Pine.number                                                                     ｢4｣
+                  [0].number                                                                        ｢4｣
+                    [0].number.integer                                                              ｢4｣
+                      [0].number.integer.decimal                                                    ｢4｣
+                        [0].number.unsigned.integer.decimal                                         ｢4｣
         [3].Pine.Stmt.Block                                                                         <NEWLINE><INDENT>tot ... a<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
           [0].Pine.Stmt                                                                             total ...  - d<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ...  - d<NEWLINE>¦
@@ -2626,6 +2743,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           2¦
                           [0].Pine.Expr.Atom                                                        2¦
                             [0].Pine.number                                                         ｢2｣
+                              [0].number                                                            ｢2｣
+                                [0].number.integer                                                  ｢2｣
+                                  [0].number.integer.decimal                                        ｢2｣
+                                    [0].number.unsigned.integer.decimal                             ｢2｣
           [5].Pine.Stmt                                                                             total ... @= b<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... @= b<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total @= b¦
@@ -2652,6 +2773,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           3¦
                           [0].Pine.Expr.Atom                                                        3¦
                             [0].Pine.number                                                         ｢3｣
+                              [0].number                                                            ｢3｣
+                                [0].number.integer                                                  ｢3｣
+                                  [0].number.integer.decimal                                        ｢3｣
+                                    [0].number.unsigned.integer.decimal                             ｢3｣
           [7].Pine.Stmt                                                                             total ... %= 7<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... %= 7<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total %= 7¦
@@ -2665,6 +2790,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           7¦
                           [0].Pine.Expr.Atom                                                        7¦
                             [0].Pine.number                                                         ｢7｣
+                              [0].number                                                            ｢7｣
+                                [0].number.integer                                                  ｢7｣
+                                  [0].number.integer.decimal                                        ｢7｣
+                                    [0].number.unsigned.integer.decimal                             ｢7｣
           [8].Pine.Stmt                                                                             total ... 0xff<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... 0xff<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ...  0xff¦
@@ -2678,6 +2807,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           0xff¦
                           [0].Pine.Expr.Atom                                                        0xff¦
                             [0].Pine.number                                                         ｢0xff｣
+                              [0].number                                                            ｢0xff｣
+                                [0].number.integer                                                  ｢0xff｣
+                                  [0].number.integer.hexadecimal                                    ｢0xff｣
+                                    [0].number.unsigned.integer.hexadecimal                         ｢0xff｣
           [9].Pine.Stmt                                                                             total ... 0x0f<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... 0x0f<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ...  0x0f¦
@@ -2691,6 +2824,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           0x0f¦
                           [0].Pine.Expr.Atom                                                        0x0f¦
                             [0].Pine.number                                                         ｢0x0f｣
+                              [0].number                                                            ｢0x0f｣
+                                [0].number.integer                                                  ｢0x0f｣
+                                  [0].number.integer.hexadecimal                                    ｢0x0f｣
+                                    [0].number.unsigned.integer.hexadecimal                         ｢0x0f｣
           [10].Pine.Stmt                                                                            total ... 0b11<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... 0b11<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ...  0b11¦
@@ -2704,6 +2841,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           0b11¦
                           [0].Pine.Expr.Atom                                                        0b11¦
                             [0].Pine.number                                                         ｢0b11｣
+                              [0].number                                                            ｢0b11｣
+                                [0].number.integer                                                  ｢0b11｣
+                                  [0].number.integer.binary                                         ｢0b11｣
+                                    [0].number.unsigned.integer.binary                              ｢0b11｣
           [11].Pine.Stmt                                                                            total ... <= 1<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... <= 1<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ... <<= 1¦
@@ -2717,6 +2858,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           1¦
                           [0].Pine.Expr.Atom                                                        1¦
                             [0].Pine.number                                                         ｢1｣
+                              [0].number                                                            ｢1｣
+                                [0].number.integer                                                  ｢1｣
+                                  [0].number.integer.decimal                                        ｢1｣
+                                    [0].number.unsigned.integer.decimal                             ｢1｣
           [12].Pine.Stmt                                                                            total ... >= 2<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   total ... >= 2<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  total ... >>= 2¦
@@ -2730,6 +2875,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           2¦
                           [0].Pine.Expr.Atom                                                        2¦
                             [0].Pine.number                                                         ｢2｣
+                              [0].number                                                            ｢2｣
+                                [0].number.integer                                                  ｢2｣
+                                  [0].number.integer.decimal                                        ｢2｣
+                                    [0].number.unsigned.integer.decimal                             ｢2｣
           [13].Pine.Stmt                                                                            shift ...  ^ d<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   shift ...  ^ d<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  shift ... c ^ d¦
@@ -2751,6 +2900,10 @@ Mr Jane
                                       [0].identifier                                                ｢a｣
                                     [1].Pine.Expr.Atom                                              2¦
                                       [0].Pine.number                                               ｢2｣
+                                        [0].number                                                  ｢2｣
+                                          [0].number.integer                                        ｢2｣
+                                            [0].number.integer.decimal                              ｢2｣
+                                              [0].number.unsigned.integer.decimal                   ｢2｣
                             [1].Pine.Expr.BitXor.^                                                  (b >> ... c ^ d¦
                               [0].Pine.Expr.BitAnd.&                                                (b >> ... & ~c ¦
                                 [0].Pine.Expr.Atom                                                  (b >> 1) ¦
@@ -2761,6 +2914,10 @@ Mr Jane
                                           [0].identifier                                            ｢b｣
                                         [1].Pine.Expr.Atom                                          1¦
                                           [0].Pine.number                                           ｢1｣
+                                            [0].number                                              ｢1｣
+                                              [0].number.integer                                    ｢1｣
+                                                [0].number.integer.decimal                          ｢1｣
+                                                  [0].number.unsigned.integer.decimal               ｢1｣
                                 [1].Pine.Expr.Unary.~                                               ~c ¦
                                   [0].Pine.Expr.Atom                                                c ¦
                                     [0].identifier                                                  ｢c｣
@@ -2817,6 +2974,10 @@ Mr Jane
                             [0].identifier                                                          ｢b｣
                         [1].Pine.Expr.Atom                                                          10 ¦
                           [0].Pine.number                                                           ｢10｣
+                            [0].number                                                              ｢10｣
+                              [0].number.integer                                                    ｢10｣
+                                [0].number.integer.decimal                                          ｢10｣
+                                  [0].number.unsigned.integer.decimal                               ｢10｣
                       [1].Pine.Expr.Comparison.!=                                                   b != a ¦
                         [0].Pine.Expr.Atom                                                          b ¦
                           [0].identifier                                                            ｢b｣
@@ -2902,6 +3063,10 @@ Mr Jane
                             [0].identifier                                                          ｢b｣
                         [1].Pine.Expr.Atom                                                          0¦
                           [0].Pine.number                                                           ｢0｣
+                            [0].number                                                              ｢0｣
+                              [0].number.integer                                                    ｢0｣
+                                [0].number.integer.decimal                                          ｢0｣
+                                  [0].number.unsigned.integer.decimal                               ｢0｣
   [19].Pine.Stmt                                                                                    def b ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          def b ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
       [0].Pine.Stmt.Function                                                                        def b ... n<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
@@ -2921,6 +3086,10 @@ Mr Jane
                       [0].identifier                                                                ｢n｣
                     [1].Pine.Expr.Atom                                                              0¦
                       [0].Pine.number                                                               ｢0｣
+                        [0].number                                                                  ｢0｣
+                          [0].number.integer                                                        ｢0｣
+                            [0].number.integer.decimal                                              ｢0｣
+                              [0].number.unsigned.integer.decimal                                   ｢0｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>sig ...  -1<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt                                                                     sign = -1<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           sign = -1<NEWLINE>¦
@@ -2937,6 +3106,10 @@ Mr Jane
                                   [0].Pine.Expr.Unary.-                                             -1¦
                                     [0].Pine.Expr.Atom                                              1¦
                                       [0].Pine.number                                               ｢1｣
+                                        [0].number                                                  ｢1｣
+                                          [0].number.integer                                        ｢1｣
+                                            [0].number.integer.decimal                              ｢1｣
+                                              [0].number.unsigned.integer.decimal                   ｢1｣
                 [2].Pine.Stmt.Elif                                                                  elif  ... = 0<NEWLINE><DEDENT>¦
                   [0].Pine.Expr.Named                                                               n == 0¦
                     [0].Pine.Expr.Comparison.==                                                     n == 0¦
@@ -2944,6 +3117,10 @@ Mr Jane
                         [0].identifier                                                              ｢n｣
                       [1].Pine.Expr.Atom                                                            0¦
                         [0].Pine.number                                                             ｢0｣
+                          [0].number                                                                ｢0｣
+                            [0].number.integer                                                      ｢0｣
+                              [0].number.integer.decimal                                            ｢0｣
+                                [0].number.unsigned.integer.decimal                                 ｢0｣
                   [1].Pine.Stmt.Block                                                               <NEWLINE><INDENT>sig ... = 0<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   sign = 0<NEWLINE>¦
                       [0].Pine.Stmt.Simples                                                         sign = 0<NEWLINE>¦
@@ -2959,6 +3136,10 @@ Mr Jane
                                   [0].Pine.StarExpr                                                 0¦
                                     [0].Pine.Expr.Atom                                              0¦
                                       [0].Pine.number                                               ｢0｣
+                                        [0].number                                                  ｢0｣
+                                          [0].number.integer                                        ｢0｣
+                                            [0].number.integer.decimal                              ｢0｣
+                                              [0].number.unsigned.integer.decimal                   ｢0｣
                 [3].Pine.Stmt.Else                                                                  else: ... = 1<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt.Block                                                               <NEWLINE><INDENT>sig ... = 1<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt                                                                   sign = 1<NEWLINE>¦
@@ -2975,6 +3156,10 @@ Mr Jane
                                   [0].Pine.StarExpr                                                 1¦
                                     [0].Pine.Expr.Atom                                              1¦
                                       [0].Pine.number                                               ｢1｣
+                                        [0].number                                                  ｢1｣
+                                          [0].number.integer                                        ｢1｣
+                                            [0].number.integer.decimal                              ｢1｣
+                                              [0].number.unsigned.integer.decimal                   ｢1｣
           [1].Pine.Stmt                                                                             while ... ass<NEWLINE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  while ... ass<NEWLINE><DEDENT>¦
               [0].Pine.Stmt.While                                                                   while ... ass<NEWLINE><DEDENT>¦
@@ -2984,6 +3169,10 @@ Mr Jane
                       [0].identifier                                                                ｢n｣
                     [1].Pine.Expr.Atom                                                              0¦
                       [0].Pine.number                                                               ｢0｣
+                        [0].number                                                                  ｢0｣
+                          [0].number.integer                                                        ｢0｣
+                            [0].number.integer.decimal                                              ｢0｣
+                              [0].number.unsigned.integer.decimal                                   ｢0｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>n - ... ak<NEWLINE><DEDENT><DEDENT>¦
                   [0].Pine.Stmt                                                                     n -= 1<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           n -= 1<NEWLINE>¦
@@ -2998,6 +3187,10 @@ Mr Jane
                                 [0].Pine.StarExpr                                                   1¦
                                   [0].Pine.Expr.Atom                                                1¦
                                     [0].Pine.number                                                 ｢1｣
+                                      [0].number                                                    ｢1｣
+                                        [0].number.integer                                          ｢1｣
+                                          [0].number.integer.decimal                                ｢1｣
+                                            [0].number.unsigned.integer.decimal                     ｢1｣
                   [1].Pine.Stmt                                                                     if n  ... nue<NEWLINE><DEDENT>¦
                     [0].Pine.Stmt.Compound                                                          if n  ... nue<NEWLINE><DEDENT>¦
                       [0].Pine.Stmt.If                                                              if n  ... nue<NEWLINE><DEDENT>¦
@@ -3007,6 +3200,10 @@ Mr Jane
                               [0].identifier                                                        ｢n｣
                             [1].Pine.Expr.Atom                                                      3¦
                               [0].Pine.number                                                       ｢3｣
+                                [0].number                                                          ｢3｣
+                                  [0].number.integer                                                ｢3｣
+                                    [0].number.integer.decimal                                      ｢3｣
+                                      [0].number.unsigned.integer.decimal                           ｢3｣
                         [1].Pine.Stmt.Block                                                         <NEWLINE><INDENT>con ... nue<NEWLINE><DEDENT>¦
                           [0].Pine.Stmt                                                             continue<NEWLINE>¦
                             [0].Pine.Stmt.Simples                                                   continue<NEWLINE>¦
@@ -3021,6 +3218,10 @@ Mr Jane
                               [0].identifier                                                        ｢n｣
                             [1].Pine.Expr.Atom                                                      1¦
                               [0].Pine.number                                                       ｢1｣
+                                [0].number                                                          ｢1｣
+                                  [0].number.integer                                                ｢1｣
+                                    [0].number.integer.decimal                                      ｢1｣
+                                      [0].number.unsigned.integer.decimal                           ｢1｣
                         [1].Pine.Stmt.Block                                                         <NEWLINE><INDENT>break<NEWLINE><DEDENT>¦
                           [0].Pine.Stmt                                                             break<NEWLINE>¦
                             [0].Pine.Stmt.Simples                                                   break<NEWLINE>¦
@@ -3143,6 +3344,10 @@ Mr Jane
                                   [0].Pine.Expr.Named                                               0¦
                                     [0].Pine.Expr.Atom                                              0¦
                                       [0].Pine.number                                               ｢0｣
+                                        [0].number                                                  ｢0｣
+                                          [0].number.integer                                        ｢0｣
+                                            [0].number.integer.decimal                              ｢0｣
+                                              [0].number.unsigned.integer.decimal                   ｢0｣
           [2].Pine.Stmt                                                                             squar ... = 0]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   squar ... = 0]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  squar ... == 0]¦
@@ -3177,14 +3382,26 @@ Mr Jane
                                         [0].Pine.Expr.Named                                         10¦
                                           [0].Pine.Expr.Atom                                        10¦
                                             [0].Pine.number                                         ｢10｣
+                                              [0].number                                            ｢10｣
+                                                [0].number.integer                                  ｢10｣
+                                                  [0].number.integer.decimal                        ｢10｣
+                                                    [0].number.unsigned.integer.decimal             ｢10｣
                                   [2].Pine.Expr.Comparison.==                                       x % 2 == 0¦
                                     [0].Pine.Expr.Term.%                                            x % 2 ¦
                                       [0].Pine.Expr.Atom                                            x ¦
                                         [0].identifier                                              ｢x｣
                                       [1].Pine.Expr.Atom                                            2 ¦
                                         [0].Pine.number                                             ｢2｣
+                                          [0].number                                                ｢2｣
+                                            [0].number.integer                                      ｢2｣
+                                              [0].number.integer.decimal                            ｢2｣
+                                                [0].number.unsigned.integer.decimal                 ｢2｣
                                     [1].Pine.Expr.Atom                                              0¦
                                       [0].Pine.number                                               ｢0｣
+                                        [0].number                                                  ｢0｣
+                                          [0].number.integer                                        ｢0｣
+                                            [0].number.integer.decimal                              ｢0｣
+                                              [0].number.unsigned.integer.decimal                   ｢0｣
           [3].Pine.Stmt                                                                             pairs ... s()}<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   pairs ... s()}<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  pairs ... ms()}¦
@@ -3310,6 +3527,10 @@ Mr Jane
                                         [0].Pine.Expr.Named                                         3¦
                                           [0].Pine.Expr.Atom                                        3¦
                                             [0].Pine.number                                         ｢3｣
+                                              [0].number                                            ｢3｣
+                                                [0].number.integer                                  ｢3｣
+                                                  [0].number.integer.decimal                        ｢3｣
+                                                    [0].number.unsigned.integer.decimal             ｢3｣
                                 [1].Pine.ForIfClause                                                for b ...  != b¦
                                   [0].Pine.StarTargets                                              b ¦
                                     [0].Pine.StarTarget                                             b ¦
@@ -3323,6 +3544,10 @@ Mr Jane
                                         [0].Pine.Expr.Named                                         3¦
                                           [0].Pine.Expr.Atom                                        3¦
                                             [0].Pine.number                                         ｢3｣
+                                              [0].number                                            ｢3｣
+                                                [0].number.integer                                  ｢3｣
+                                                  [0].number.integer.decimal                        ｢3｣
+                                                    [0].number.unsigned.integer.decimal             ｢3｣
                                   [2].Pine.Expr.Comparison.!=                                       a != b¦
                                     [0].Pine.Expr.Atom                                              a ¦
                                       [0].identifier                                                ｢a｣
@@ -3600,6 +3825,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           0¦
                           [0].Pine.Expr.Atom                                                        0¦
                             [0].Pine.number                                                         ｢0｣
+                              [0].number                                                            ｢0｣
+                                [0].number.integer                                                  ｢0｣
+                                  [0].number.integer.decimal                                        ｢0｣
+                                    [0].number.unsigned.integer.decimal                             ｢0｣
           [2].Pine.Stmt                                                                             def b ... er<NEWLINE><WHITESPACE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  def b ... er<NEWLINE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def b ... er<NEWLINE><WHITESPACE><DEDENT>¦
@@ -3625,6 +3854,10 @@ Mr Jane
                                 [0].Pine.StarExpr                                                   1¦
                                   [0].Pine.Expr.Atom                                                1¦
                                     [0].Pine.number                                                 ｢1｣
+                                      [0].number                                                    ｢1｣
+                                        [0].number.integer                                          ｢1｣
+                                          [0].number.integer.decimal                                ｢1｣
+                                            [0].number.unsigned.integer.decimal                     ｢1｣
                   [2].Pine.Stmt                                                                     retur ... ter<NEWLINE><WHITESPACE>¦
                     [0].Pine.Stmt.Simples                                                           retur ... ter<NEWLINE><WHITESPACE>¦
                       [0].Pine.Stmt.Simple                                                          retur ... unter¦
@@ -3671,6 +3904,10 @@ Mr Jane
                                 [0].Pine.Expr.Named                                                 0¦
                                   [0].Pine.Expr.Atom                                                0¦
                                     [0].Pine.number                                                 ｢0｣
+                                      [0].number                                                    ｢0｣
+                                        [0].number.integer                                          ｢0｣
+                                          [0].number.integer.decimal                                ｢0｣
+                                            [0].number.unsigned.integer.decimal                     ｢0｣
           [1].Pine.Stmt                                                                             tail  ... [1:]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   tail  ... [1:]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  tail  ... q[1:]¦
@@ -3690,6 +3927,10 @@ Mr Jane
                               [0].Pine.Expr.Slice                                                   1:¦
                                 [0].Pine.Expr.Atom                                                  1¦
                                   [0].Pine.number                                                   ｢1｣
+                                    [0].number                                                      ｢1｣
+                                      [0].number.integer                                            ｢1｣
+                                        [0].number.integer.decimal                                  ｢1｣
+                                          [0].number.unsigned.integer.decimal                       ｢1｣
           [2].Pine.Stmt                                                                             body  ... :-1]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   body  ... :-1]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  body  ... 1:-1]¦
@@ -3709,9 +3950,17 @@ Mr Jane
                               [0].Pine.Expr.Slice                                                   1:-1¦
                                 [0].Pine.Expr.Atom                                                  1¦
                                   [0].Pine.number                                                   ｢1｣
+                                    [0].number                                                      ｢1｣
+                                      [0].number.integer                                            ｢1｣
+                                        [0].number.integer.decimal                                  ｢1｣
+                                          [0].number.unsigned.integer.decimal                       ｢1｣
                                 [1].Pine.Expr.Unary.-                                               -1¦
                                   [0].Pine.Expr.Atom                                                1¦
                                     [0].Pine.number                                                 ｢1｣
+                                      [0].number                                                    ｢1｣
+                                        [0].number.integer                                          ｢1｣
+                                          [0].number.integer.decimal                                ｢1｣
+                                            [0].number.unsigned.integer.decimal                     ｢1｣
           [3].Pine.Stmt                                                                             every ... ::2]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   every ... ::2]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  every ... [::2]¦
@@ -3731,6 +3980,10 @@ Mr Jane
                               [0].Pine.Expr.Slice                                                   ::2¦
                                 [0].Pine.Expr.Atom                                                  2¦
                                   [0].Pine.number                                                   ｢2｣
+                                    [0].number                                                      ｢2｣
+                                      [0].number.integer                                            ｢2｣
+                                        [0].number.integer.decimal                                  ｢2｣
+                                          [0].number.unsigned.integer.decimal                       ｢2｣
           [4].Pine.Stmt                                                                             windo ... 5:2]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   windo ... 5:2]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  windo ... :5:2]¦
@@ -3750,10 +4003,22 @@ Mr Jane
                               [0].Pine.Expr.Slice                                                   1:5:2¦
                                 [0].Pine.Expr.Atom                                                  1¦
                                   [0].Pine.number                                                   ｢1｣
+                                    [0].number                                                      ｢1｣
+                                      [0].number.integer                                            ｢1｣
+                                        [0].number.integer.decimal                                  ｢1｣
+                                          [0].number.unsigned.integer.decimal                       ｢1｣
                                 [1].Pine.Expr.Atom                                                  5¦
                                   [0].Pine.number                                                   ｢5｣
+                                    [0].number                                                      ｢5｣
+                                      [0].number.integer                                            ｢5｣
+                                        [0].number.integer.decimal                                  ｢5｣
+                                          [0].number.unsigned.integer.decimal                       ｢5｣
                                 [2].Pine.Expr.Atom                                                  2¦
                                   [0].Pine.number                                                   ｢2｣
+                                    [0].number                                                      ｢2｣
+                                      [0].number.integer                                            ｢2｣
+                                        [0].number.integer.decimal                                  ｢2｣
+                                          [0].number.unsigned.integer.decimal                       ｢2｣
           [5].Pine.Stmt                                                                             grid  ... , 1]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   grid  ... , 1]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  grid  ... 0, 1]¦
@@ -3774,10 +4039,18 @@ Mr Jane
                                 [0].Pine.Expr.Named                                                 0¦
                                   [0].Pine.Expr.Atom                                                0¦
                                     [0].Pine.number                                                 ｢0｣
+                                      [0].number                                                    ｢0｣
+                                        [0].number.integer                                          ｢0｣
+                                          [0].number.integer.decimal                                ｢0｣
+                                            [0].number.unsigned.integer.decimal                     ｢0｣
                               [1].Pine.Expr.Slice                                                   1¦
                                 [0].Pine.Expr.Named                                                 1¦
                                   [0].Pine.Expr.Atom                                                1¦
                                     [0].Pine.number                                                 ｢1｣
+                                      [0].number                                                    ｢1｣
+                                        [0].number.integer                                          ｢1｣
+                                          [0].number.integer.decimal                                ｢1｣
+                                            [0].number.unsigned.integer.decimal                     ｢1｣
           [6].Pine.Stmt                                                                             both  ... :-1]<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   both  ... :-1]<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  both  ... ::-1]¦
@@ -3799,6 +4072,10 @@ Mr Jane
                                 [0].Pine.Expr.Unary.-                                               -1¦
                                   [0].Pine.Expr.Atom                                                1¦
                                     [0].Pine.number                                                 ｢1｣
+                                      [0].number                                                    ｢1｣
+                                        [0].number.integer                                          ｢1｣
+                                          [0].number.integer.decimal                                ｢1｣
+                                            [0].number.unsigned.integer.decimal                     ｢1｣
           [7].Pine.Stmt                                                                             retur ... th<NEWLINE><WHITESPACE><WHITESPACE>¦
             [0].Pine.Stmt.Simples                                                                   retur ... th<NEWLINE><WHITESPACE><WHITESPACE>¦
               [0].Pine.Stmt.Simple                                                                  retur ...  both¦
@@ -3873,6 +4150,10 @@ Mr Jane
                             [0].Pine.Expr.LambdaParams                                              ¦
                             [1].Pine.Expr.Atom                                                      0¦
                               [0].Pine.number                                                       ｢0｣
+                                [0].number                                                          ｢0｣
+                                  [0].number.integer                                                ｢0｣
+                                    [0].number.integer.decimal                                      ｢0｣
+                                      [0].number.unsigned.integer.decimal                           ｢0｣
           [2].Pine.Stmt                                                                             starr ...  kw)<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   starr ...  kw)<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  starr ... , kw)¦
@@ -3930,6 +4211,10 @@ Mr Jane
                                   [0].identifier                                                    ｢x｣
                                 [1].Pine.Expr.Atom                                                  10 ¦
                                   [0].Pine.number                                                   ｢10｣
+                                    [0].number                                                      ｢10｣
+                                      [0].number.integer                                            ｢10｣
+                                        [0].number.integer.decimal                                  ｢10｣
+                                          [0].number.unsigned.integer.decimal                       ｢10｣
                               [2].Pine.Expr.Atom                                                    \"small\"¦
                                 [0].Pine.Strings                                                    \"small\"¦
                                   [0].string                                                        ｢"small"｣
@@ -3979,6 +4264,10 @@ Mr Jane
                                     [0].identifier                                                  ｢values｣
                     [1].Pine.Expr.Atom                                                              3¦
                       [0].Pine.number                                                               ｢3｣
+                        [0].number                                                                  ｢3｣
+                          [0].number.integer                                                        ｢3｣
+                            [0].number.integer.decimal                                              ｢3｣
+                              [0].number.unsigned.integer.decimal                                   ｢3｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>pri ... =\" \")<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt                                                                     print ... p=\" \")<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           print ... p=\" \")<NEWLINE>¦
@@ -4019,6 +4308,10 @@ Mr Jane
                             [0].Pine.Expr.Slice                                                     :2¦
                               [0].Pine.Expr.Atom                                                    2¦
                                 [0].Pine.number                                                     ｢2｣
+                                  [0].number                                                        ｢2｣
+                                    [0].number.integer                                              ｢2｣
+                                      [0].number.integer.decimal                                    ｢2｣
+                                        [0].number.unsigned.integer.decimal                         ｢2｣
                 [1].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>val ... 2:]<NEWLINE><DEDENT>¦
                   [0].Pine.Stmt                                                                     value ... [2:]<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           value ... [2:]<NEWLINE>¦
@@ -4039,6 +4332,10 @@ Mr Jane
                                       [0].Pine.Expr.Slice                                           2:¦
                                         [0].Pine.Expr.Atom                                          2¦
                                           [0].Pine.number                                           ｢2｣
+                                            [0].number                                              ｢2｣
+                                              [0].number.integer                                    ｢2｣
+                                                [0].number.integer.decimal                          ｢2｣
+                                                  [0].number.unsigned.integer.decimal               ｢2｣
           [2].Pine.Stmt                                                                             retur ... 0]<NEWLINE><WHITESPACE><WHITESPACE>¦
             [0].Pine.Stmt.Simples                                                                   retur ... 0]<NEWLINE><WHITESPACE><WHITESPACE>¦
               [0].Pine.Stmt.Simple                                                                  retur ...  > 0]¦
@@ -4068,8 +4365,16 @@ Mr Jane
                                           [0].identifier                                            ｢x｣
                                         [1].Pine.Expr.Atom                                          2¦
                                           [0].Pine.number                                           ｢2｣
+                                            [0].number                                              ｢2｣
+                                              [0].number.integer                                    ｢2｣
+                                                [0].number.integer.decimal                          ｢2｣
+                                                  [0].number.unsigned.integer.decimal               ｢2｣
                                 [1].Pine.Expr.Atom                                                  0¦
                                   [0].Pine.number                                                   ｢0｣
+                                    [0].number                                                      ｢0｣
+                                      [0].number.integer                                            ｢0｣
+                                        [0].number.integer.decimal                                  ｢0｣
+                                          [0].number.unsigned.integer.decimal                       ｢0｣
   [26].Pine.Stmt                                                                                    class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
     [0].Pine.Stmt.Compound                                                                          class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Class                                                                           class ... <NEWLINE><WHITESPACE><WHITESPACE><DEDENT><DEDENT>¦
@@ -4108,6 +4413,10 @@ Mr Jane
                       [0].identifier                                                                ｢y｣
                       [1].Pine.Expr.Atom                                                            0¦
                         [0].Pine.number                                                             ｢0｣
+                          [0].number                                                                ｢0｣
+                            [0].number.integer                                                      ｢0｣
+                              [0].number.integer.decimal                                            ｢0｣
+                                [0].number.unsigned.integer.decimal                                 ｢0｣
                 [3].Pine.Stmt.Block                                                                 <NEWLINE><INDENT>sel ...  y<NEWLINE><WHITESPACE><DEDENT>¦
                   [0].Pine.Stmt                                                                     self. ...  = x<NEWLINE>¦
                     [0].Pine.Stmt.Simples                                                           self. ...  = x<NEWLINE>¦
@@ -4176,6 +4485,10 @@ Mr Jane
                                               [0].identifier                                        ｢x｣
                                           [1].Pine.Expr.Atom                                        2 ¦
                                             [0].Pine.number                                         ｢2｣
+                                              [0].number                                            ｢2｣
+                                                [0].number.integer                                  ｢2｣
+                                                  [0].number.integer.decimal                        ｢2｣
+                                                    [0].number.unsigned.integer.decimal             ｢2｣
                                         [1].Pine.Expr.Power.**                                      self. ...  ** 2¦
                                           [0].Pine.Expr.Primary..                                   self.y ¦
                                             [0].Pine.Expr.Atom                                      self¦
@@ -4184,8 +4497,19 @@ Mr Jane
                                               [0].identifier                                        ｢y｣
                                           [1].Pine.Expr.Atom                                        2¦
                                             [0].Pine.number                                         ｢2｣
+                                              [0].number                                            ｢2｣
+                                                [0].number.integer                                  ｢2｣
+                                                  [0].number.integer.decimal                        ｢2｣
+                                                    [0].number.unsigned.integer.decimal             ｢2｣
                                 [1].Pine.Expr.Atom                                                  0.5¦
                                   [0].Pine.number                                                   ｢0.5｣
+                                    [0].number                                                      ｢0.5｣
+                                      [0].number.float                                              ｢0.5｣
+                                        [0].number.unsigned.float                                   ｢0.5｣
+                                          [0].number.unsigned.float.integerPart                     ｢0｣
+                                            [0].number.unsigned.integer.decimal                     ｢0｣
+                                          [1].number.unsigned.float.fraction                        ｢.5｣
+                                            [0].number.unsigned.integer.decimal                     ｢5｣
           [3].Pine.Stmt                                                                             @stat ... 0)<NEWLINE><WHITESPACE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  @stat ... 0)<NEWLINE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                @stat ... 0)<NEWLINE><WHITESPACE><DEDENT>¦
@@ -4211,10 +4535,18 @@ Mr Jane
                                     [0].Pine.Expr.Named                                             0¦
                                       [0].Pine.Expr.Atom                                            0¦
                                         [0].Pine.number                                             ｢0｣
+                                          [0].number                                                ｢0｣
+                                            [0].number.integer                                      ｢0｣
+                                              [0].number.integer.decimal                            ｢0｣
+                                                [0].number.unsigned.integer.decimal                 ｢0｣
                                   [1].Pine.Argument                                                 0¦
                                     [0].Pine.Expr.Named                                             0¦
                                       [0].Pine.Expr.Atom                                            0¦
                                         [0].Pine.number                                             ｢0｣
+                                          [0].number                                                ｢0｣
+                                            [0].number.integer                                      ｢0｣
+                                              [0].number.integer.decimal                            ｢0｣
+                                                [0].number.unsigned.integer.decimal                 ｢0｣
           [4].Pine.Stmt                                                                             def _ ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
             [0].Pine.Stmt.Compound                                                                  def _ ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
               [0].Pine.Stmt.Function                                                                def _ ... \")\"<NEWLINE><WHITESPACE><WHITESPACE><DEDENT>¦
@@ -4520,6 +4852,10 @@ Mr Jane
                             [0].Pine.Expr.Term.*                                                    2 * n¦
                               [0].Pine.Expr.Atom                                                    2 ¦
                                 [0].Pine.number                                                     ｢2｣
+                                  [0].number                                                        ｢2｣
+                                    [0].number.integer                                              ｢2｣
+                                      [0].number.integer.decimal                                    ｢2｣
+                                        [0].number.unsigned.integer.decimal                         ｢2｣
                               [1].Pine.Expr.Atom                                                    n¦
                                 [0].identifier                                                      ｢n｣
           [2].Pine.Stmt                                                                             value ... ield<NEWLINE>¦
@@ -4572,10 +4908,18 @@ Mr Jane
                                 [0].Pine.Expr.Named                                                 3¦
                                   [0].Pine.Expr.Atom                                                3¦
                                     [0].Pine.number                                                 ｢3｣
+                                      [0].number                                                    ｢3｣
+                                        [0].number.integer                                          ｢3｣
+                                          [0].number.integer.decimal                                ｢3｣
+                                            [0].number.unsigned.integer.decimal                     ｢3｣
                               [1].Pine.Argument                                                     4¦
                                 [0].Pine.Expr.Named                                                 4¦
                                   [0].Pine.Expr.Atom                                                4¦
                                     [0].Pine.number                                                 ｢4｣
+                                      [0].number                                                    ｢4｣
+                                        [0].number.integer                                          ｢4｣
+                                          [0].number.integer.decimal                                ｢4｣
+                                            [0].number.unsigned.integer.decimal                     ｢4｣
           [1].Pine.Stmt                                                                             print ... orm)<NEWLINE>¦
             [0].Pine.Stmt.Simples                                                                   print ... orm)<NEWLINE>¦
               [0].Pine.Stmt.Simple                                                                  print ... norm)¦
@@ -4657,6 +5001,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           1¦
                           [0].Pine.Expr.Atom                                                        1¦
                             [0].Pine.number                                                         ｢1｣
+                              [0].number                                                            ｢1｣
+                                [0].number.integer                                                  ｢1｣
+                                  [0].number.integer.decimal                                        ｢1｣
+                                    [0].number.unsigned.integer.decimal                             ｢1｣
               [1].Pine.Stmt.Simple                                                                  y = 2¦
                 [0].Pine.Stmt.Assignment                                                            y = 2¦
                   [0].Pine.Stmt.Assignment.Plain                                                    y = 2¦
@@ -4669,6 +5017,10 @@ Mr Jane
                         [0].Pine.StarExpr                                                           2¦
                           [0].Pine.Expr.Atom                                                        2¦
                             [0].Pine.number                                                         ｢2｣
+                              [0].number                                                            ｢2｣
+                                [0].number.integer                                                  ｢2｣
+                                  [0].number.integer.decimal                                        ｢2｣
+                                    [0].number.unsigned.integer.decimal                             ｢2｣
               [2].Pine.Stmt.Simple                                                                  print ... x, y)¦
                 [0].Pine.StarExprs                                                                  print ... x, y)¦
                   [0].Pine.StarExpr                                                                 print ... x, y)¦
@@ -4776,8 +5128,7 @@ Mr Jane
       [0].number                                  ｢0｣
         [0].number.integer                        ｢0｣
           [0].number.integer.decimal              ｢0｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢0｣
+            [0].number.unsigned.integer.decimal   ｢0｣
   [15].Toml.Keyval                                zero_ ... = +0<NEWLINE>¦
     [0].Toml.Key                                  zero_plus ¦
       [0].Toml.SimpleKey                          zero_plus ¦
@@ -4803,8 +5154,7 @@ Mr Jane
       [0].number                                  ｢0xDEADBEEF｣
         [0].number.integer                        ｢0xDEADBEEF｣
           [0].number.integer.hexadecimal          ｢0xDEADBEEF｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.hexadecimal ｢0xDEADBEEF｣
+            [0].number.unsigned.integer.hexadecimal ｢0xDEADBEEF｣
   [18].Toml.Keyval                                hex_l ... beef<NEWLINE>¦
     [0].Toml.Key                                  hex_l ... case ¦
       [0].Toml.SimpleKey                          hex_l ... case ¦
@@ -4812,8 +5162,7 @@ Mr Jane
       [0].number                                  ｢0xdeadbeef｣
         [0].number.integer                        ｢0xdeadbeef｣
           [0].number.integer.hexadecimal          ｢0xdeadbeef｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.hexadecimal ｢0xdeadbeef｣
+            [0].number.unsigned.integer.hexadecimal ｢0xdeadbeef｣
   [19].Toml.Keyval                                octal ... o755<NEWLINE>¦
     [0].Toml.Key                                  octal ¦
       [0].Toml.SimpleKey                          octal ¦
@@ -4821,8 +5170,7 @@ Mr Jane
       [0].number                                  ｢0o755｣
         [0].number.integer                        ｢0o755｣
           [0].number.integer.octal                ｢0o755｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.octal     ｢0o755｣
+            [0].number.unsigned.integer.octal     ｢0o755｣
   [20].Toml.Keyval                                binar ... <WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>¦
     [0].Toml.Key                                  binary ¦
       [0].Toml.SimpleKey                          binary ¦
@@ -4830,8 +5178,7 @@ Mr Jane
       [0].number                                  ｢0b11010010｣
         [0].number.integer                        ｢0b11010010｣
           [0].number.integer.binary               ｢0b11010010｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.binary    ｢0b11010010｣
+            [0].number.unsigned.integer.binary    ｢0b11010010｣
   [21].Toml.Table                                 [floats]<NEWLINE>¦
     [0].Toml.StdTable                             [floats]<NEWLINE>¦
       [0].Toml.Key                                floats¦
@@ -4847,6 +5194,7 @@ Mr Jane
             [0].number.unsigned.float.integerPart ｢3｣
               [0].number.unsigned.integer.decimal ｢3｣
             [1].number.unsigned.float.fraction    ｢.14159｣
+              [0].number.unsigned.integer.decimal ｢14159｣
   [23].Toml.Keyval                                negat ... 0.01<NEWLINE>¦
     [0].Toml.Key                                  negative ¦
       [0].Toml.SimpleKey                          negative ¦
@@ -4858,41 +5206,42 @@ Mr Jane
             [0].number.unsigned.float.integerPart ｢0｣
               [0].number.unsigned.integer.decimal ｢0｣
             [1].number.unsigned.float.fraction    ｢.01｣
+              [0].number.unsigned.integer.decimal ｢01｣
   [24].Toml.Keyval                                fract ... 0<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
     [0].Toml.Key                                  fract ... zero ¦
       [0].Toml.SimpleKey                          fract ... zero ¦
     [1].Toml.Val                                  5.0<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
       [0].number                                  ｢5.0｣
         [0].number.float                          ｢5.0｣
-          [0].number.plusMinus                    ｢｣
-          [1].number.unsigned.float               ｢5.0｣
+          [0].number.unsigned.float               ｢5.0｣
             [0].number.unsigned.float.integerPart ｢5｣
               [0].number.unsigned.integer.decimal ｢5｣
             [1].number.unsigned.float.fraction    ｢.0｣
+              [0].number.unsigned.integer.decimal ｢0｣
   [25].Toml.Keyval                                expon ... e+22<NEWLINE>¦
     [0].Toml.Key                                  expon ... arge ¦
       [0].Toml.SimpleKey                          expon ... arge ¦
     [1].Toml.Val                                  5e+22<NEWLINE>¦
       [0].number                                  ｢5e+22｣
         [0].number.float                          ｢5e+22｣
-          [0].number.plusMinus                    ｢｣
-          [1].number.unsigned.float               ｢5e+22｣
+          [0].number.unsigned.float               ｢5e+22｣
             [0].number.unsigned.float.integerPart ｢5｣
               [0].number.unsigned.integer.decimal ｢5｣
             [1].number.unsigned.float.exponent    ｢e+22｣
               [0].number.plusMinus                ｢+｣
+              [1].number.unsigned.integer.decimal ｢22｣
   [26].Toml.Keyval                                expon ... e-14<NEWLINE>¦
     [0].Toml.Key                                  expon ... mall ¦
       [0].Toml.SimpleKey                          expon ... mall ¦
     [1].Toml.Val                                  1e-14<NEWLINE>¦
       [0].number                                  ｢1e-14｣
         [0].number.float                          ｢1e-14｣
-          [0].number.plusMinus                    ｢｣
-          [1].number.unsigned.float               ｢1e-14｣
+          [0].number.unsigned.float               ｢1e-14｣
             [0].number.unsigned.float.integerPart ｢1｣
               [0].number.unsigned.integer.decimal ｢1｣
             [1].number.unsigned.float.exponent    ｢e-14｣
               [0].number.plusMinus                ｢-｣
+              [1].number.unsigned.integer.decimal ｢14｣
   [27].Toml.Keyval                                expon ... 4<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
     [0].Toml.Key                                  expon ... ixed ¦
       [0].Toml.SimpleKey                          expon ... ixed ¦
@@ -4904,16 +5253,17 @@ Mr Jane
             [0].number.unsigned.float.integerPart ｢6｣
               [0].number.unsigned.integer.decimal ｢6｣
             [1].number.unsigned.float.fraction    ｢.23｣
+              [0].number.unsigned.integer.decimal ｢23｣
             [2].number.unsigned.float.exponent    ｢e-4｣
               [0].number.plusMinus                ｢-｣
+              [1].number.unsigned.integer.decimal ｢4｣
   [28].Toml.Keyval                                infin ...  inf<NEWLINE>¦
     [0].Toml.Key                                  infinity ¦
       [0].Toml.SimpleKey                          infinity ¦
     [1].Toml.Val                                  inf<NEWLINE>¦
       [0].number                                  ｢inf｣
         [0].number.float                          ｢inf｣
-          [0].number.plusMinus                    ｢｣
-          [1].number.unsigned.float               ｢inf｣
+          [0].number.unsigned.float               ｢inf｣
             [0].number.unsigned.float.special     ｢inf｣
   [29].Toml.Keyval                                posit ... +inf<NEWLINE>¦
     [0].Toml.Key                                  posit ... nity ¦
@@ -4939,8 +5289,7 @@ Mr Jane
     [1].Toml.Val                                  nan<NEWLINE><WHITESPACE> ... <WHITESPACE><COMMENT><WHITESPACE><COMMENT><WHITESPACE>¦
       [0].number                                  ｢nan｣
         [0].number.float                          ｢nan｣
-          [0].number.plusMinus                    ｢｣
-          [1].number.unsigned.float               ｢nan｣
+          [0].number.unsigned.float               ｢nan｣
             [0].number.unsigned.float.special     ｢nan｣
   [32].Toml.Table                                 [bool ... ans]<NEWLINE>¦
     [0].Toml.StdTable                             [bool ... ans]<NEWLINE>¦
@@ -5042,20 +5391,17 @@ Mr Jane
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢1｣
+                [0].number.unsigned.integer.decimal ｢1｣
         [1].Toml.Val                              2¦
           [0].number                              ｢2｣
             [0].number.integer                    ｢2｣
               [0].number.integer.decimal          ｢2｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢2｣
+                [0].number.unsigned.integer.decimal ｢2｣
         [2].Toml.Val                              3¦
           [0].number                              ｢3｣
             [0].number.integer                    ｢3｣
               [0].number.integer.decimal          ｢3｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢3｣
+                [0].number.unsigned.integer.decimal ｢3｣
   [47].Toml.Keyval                                strin ... , \"green\"]<NEWLINE>¦
     [0].Toml.Key                                  strings ¦
       [0].Toml.SimpleKey                          strings ¦
@@ -5078,34 +5424,29 @@ Mr Jane
               [0].number                          ｢1｣
                 [0].number.integer                ｢1｣
                   [0].number.integer.decimal      ｢1｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢1｣
+                    [0].number.unsigned.integer.decimal ｢1｣
             [1].Toml.Val                          2¦
               [0].number                          ｢2｣
                 [0].number.integer                ｢2｣
                   [0].number.integer.decimal      ｢2｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢2｣
+                    [0].number.unsigned.integer.decimal ｢2｣
         [1].Toml.Val                              [3, 4, 5]¦
           [0].Toml.Array                          [3, 4, 5]¦
             [0].Toml.Val                          3¦
               [0].number                          ｢3｣
                 [0].number.integer                ｢3｣
                   [0].number.integer.decimal      ｢3｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢3｣
+                    [0].number.unsigned.integer.decimal ｢3｣
             [1].Toml.Val                          4¦
               [0].number                          ｢4｣
                 [0].number.integer                ｢4｣
                   [0].number.integer.decimal      ｢4｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢4｣
+                    [0].number.unsigned.integer.decimal ｢4｣
             [2].Toml.Val                          5¦
               [0].number                          ｢5｣
                 [0].number.integer                ｢5｣
                   [0].number.integer.decimal      ｢5｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢5｣
+                    [0].number.unsigned.integer.decimal ｢5｣
   [49].Toml.Keyval                                multi ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
     [0].Toml.Key                                  multi ... pace ¦
       [0].Toml.SimpleKey                          multi ... pace ¦
@@ -5128,14 +5469,12 @@ Mr Jane
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢1｣
+                [0].number.unsigned.integer.decimal ｢1｣
         [1].Toml.Val                              2¦
           [0].number                              ｢2｣
             [0].number.integer                    ｢2｣
               [0].number.integer.decimal          ｢2｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢2｣
+                [0].number.unsigned.integer.decimal ｢2｣
         [2].Toml.Val                              \"three\"¦
           [0].string                              ｢"three"｣
         [3].Toml.Val                              [\"four\", 5]¦
@@ -5146,16 +5485,15 @@ Mr Jane
               [0].number                          ｢5｣
                 [0].number.integer                ｢5｣
                   [0].number.integer.decimal      ｢5｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢5｣
+                    [0].number.unsigned.integer.decimal ｢5｣
         [4].Toml.Val                              6.0¦
           [0].number                              ｢6.0｣
             [0].number.float                      ｢6.0｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.float           ｢6.0｣
+              [0].number.unsigned.float           ｢6.0｣
                 [0].number.unsigned.float.integerPart ｢6｣
                   [0].number.unsigned.integer.decimal ｢6｣
                 [1].number.unsigned.float.fraction ｢.0｣
+                  [0].number.unsigned.integer.decimal ｢0｣
         [5].Toml.Val                              1979-05-27¦
           [0].date                                ｢1979-05-27｣
   [51].Toml.Table                                 [inli ... s]<NEWLINE><COMMENT><WHITESPACE>¦
@@ -5189,8 +5527,7 @@ Mr Jane
             [0].number                            ｢1｣
               [0].number.integer                  ｢1｣
                 [0].number.integer.decimal        ｢1｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢1｣
+                  [0].number.unsigned.integer.decimal ｢1｣
         [1].Toml.Keyval                           y = 2¦
           [0].Toml.Key                            y ¦
             [0].Toml.SimpleKey                    y ¦
@@ -5198,8 +5535,7 @@ Mr Jane
             [0].number                            ｢2｣
               [0].number.integer                  ｢2｣
                 [0].number.integer.decimal        ｢2｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢2｣
+                  [0].number.unsigned.integer.decimal ｢2｣
         [2].Toml.Keyval                           z = 3 ¦
           [0].Toml.Key                            z ¦
             [0].Toml.SimpleKey                    z ¦
@@ -5207,8 +5543,7 @@ Mr Jane
             [0].number                            ｢3｣
               [0].number.integer                  ｢3｣
                 [0].number.integer.decimal        ｢3｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢3｣
+                  [0].number.unsigned.integer.decimal ｢3｣
   [54].Toml.Keyval                                neste ... }<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
     [0].Toml.Key                                  nested ¦
       [0].Toml.SimpleKey                          nested ¦
@@ -5226,8 +5561,7 @@ Mr Jane
                   [0].number                      ｢42｣
                     [0].number.integer            ｢42｣
                       [0].number.integer.decimal  ｢42｣
-                        [0].number.plusMinus      ｢｣
-                        [1].number.unsigned.integer.decimal ｢42｣
+                        [0].number.unsigned.integer.decimal ｢42｣
               [1].Toml.Keyval                     role = \"admin\" ¦
                 [0].Toml.Key                      role ¦
                   [0].Toml.SimpleKey              role ¦
@@ -5292,8 +5626,7 @@ Mr Jane
       [0].number                                  ｢738594937｣
         [0].number.integer                        ｢738594937｣
           [0].number.integer.decimal              ｢738594937｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢738594937｣
+            [0].number.unsigned.integer.decimal   ｢738594937｣
   [66].Toml.Table                                 [[pro ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
     [0].Toml.ArrayTable                           [[pro ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
       [0].Toml.Key                                products¦
@@ -5314,8 +5647,7 @@ Mr Jane
       [0].number                                  ｢284758393｣
         [0].number.integer                        ｢284758393｣
           [0].number.integer.decimal              ｢284758393｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢284758393｣
+            [0].number.unsigned.integer.decimal   ｢284758393｣
   [70].Toml.Table                                 [[pro ... es]]<NEWLINE>¦
     [0].Toml.ArrayTable                           [[pro ... es]]<NEWLINE>¦
       [0].Toml.Key                                produ ... ories¦

@@ -116,6 +116,12 @@ namespace silva::seed::impl {
     {
       auto ss = stake();
       ss.create_node(lexicon.ni_num_pm, true);
+      SILVA_EXPECT_PARSE(lexicon.ni_num_pm,
+                         num_fragments_left() >= 1 &&
+                             (fragment_unique_codepoint_or_zero_by() == U'+' ||
+                              fragment_unique_codepoint_or_zero_by() == U'-'),
+                         "expected '+' or '-'; got {}",
+                         fragment_category_by());
       return ss.commit();
     }
 
@@ -123,7 +129,12 @@ namespace silva::seed::impl {
     {
       auto ss = stake();
       ss.create_node(lexicon.ni_num_int_dec, true);
-      ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_num_int_dec, number_plus_minus()));
+      {
+        auto result = number_plus_minus();
+        if (result) {
+          ss.add_proto_node(std::move(*result));
+        }
+      }
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(lexicon.ni_num_int_dec, number_uint_dec()));
       return ss.commit();
     }

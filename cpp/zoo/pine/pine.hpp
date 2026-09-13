@@ -178,21 +178,11 @@ language Pine:
 
   Strings:
     ⊙ = ( string | fstring ) +
-    fstring = ( 'f' | 't' ) STRING # TODO: support real f-strings and t-strings
+    fstring = ( 'f' | 't' ) STRING # TODO: support f-strings
 
   number:
-    ⊙ = [ imaginary float integer ] not ID_CONTINUE
-    digits = no_node DIGIT ( DIGIT | '_' ) *
-    exponent = no_node [ 'e' 'E' ] plusMinus ? digits
-    plusMinus = [ '+' '-' ]
-    minus = '-'
-    integer = no_node [ binary octal hexadecimal decimal ]
-    binary = no_node ε '0' [ 'b' 'B' ] ( DIGIT | '_' ) +
-    octal = no_node ε '0' [ 'o' 'O' ] ( DIGIT | '_' ) +
-    hexadecimal = no_node ε '0' [ 'x' 'X' ] ( DIGIT | ID_LOWER | ID_UPPER | '_' ) +
-    decimal = no_node digits
-    float = no_node ( digits '.' digits ? exponent ? | '.' digits exponent ? | digits exponent )
-    imaginary = no_node ( float | digits ) [ 'j' 'J' ]
+    ⊙ = .number imaginaryPart ?
+    imaginaryPart = [ 'j' 'J' ]
 )'";
 
   unique_ptr_t<seed::interpreter_t> seed_interpreter(syntax_farm_ptr_t);

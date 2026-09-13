@@ -32,7 +32,7 @@ boolean = [ "true" "false" ]
 number:
   unsigned:
     integer:
-      grouping = no_node '\''
+      grouping = no_node '_'
       binary = '0b' ( DIGIT | grouping ) *
       octal = '0o' ( DIGIT | grouping ) *
       hexadecimal = '0x' ( DIGIT | ID_LOWER | ID_UPPER | grouping ) *
@@ -42,21 +42,21 @@ number:
       special = [ 'inf' 'nan' ]
       ⊙ = special | integerPart ( exponent | fraction exponent ? )
       integerPart = integer.decimal
-      fraction = '.' DIGIT +
-      exponent = 'e' plusMinus DIGIT +
+      fraction = '.' integer.decimal
+      exponent = 'e' plusMinus ? integer.decimal
 
-  plusMinus = [ '-' '+' ] ?
+  plusMinus = [ '+' '-' ]
 
   integer:
-    binary = plusMinus unsigned.integer.binary
-    octal = plusMinus unsigned.integer.octal
-    hexadecimal = plusMinus unsigned.integer.hexadecimal
-    decimal = plusMinus unsigned.integer.decimal
+    binary = plusMinus ? unsigned.integer.binary
+    octal = plusMinus ? unsigned.integer.octal
+    hexadecimal = plusMinus ? unsigned.integer.hexadecimal
+    decimal = plusMinus ? unsigned.integer.decimal
     ⊙ = [ binary octal hexadecimal decimal ]
 
   float:
-    special = plusMinus unsigned.float.special
-    ⊙ = plusMinus unsigned.float
+    special = plusMinus ? unsigned.float.special
+    ⊙ = plusMinus ? unsigned.float
 
   ⊙ = [ float float.special integer ]
 

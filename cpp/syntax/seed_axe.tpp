@@ -147,8 +147,7 @@ language Test:
     [0].number                                    ｢1｣
       [0].number.integer                          ｢1｣
         [0].number.integer.decimal                ｢1｣
-          [0].number.plusMinus                    ｢｣
-          [1].number.unsigned.integer.decimal     ｢1｣
+          [0].number.unsigned.integer.decimal     ｢1｣
 )");
     test::test_axe(*se, sa, "1 + 2\n", R"(
 [0].Test                                          1 + 2<NEWLINE>¦
@@ -157,14 +156,12 @@ language Test:
       [0].number                                  ｢1｣
         [0].number.integer                        ｢1｣
           [0].number.integer.decimal              ｢1｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢1｣
+            [0].number.unsigned.integer.decimal   ｢1｣
     [1].Test.Atom                                 2<NEWLINE>¦
       [0].number                                  ｢2｣
         [0].number.integer                        ｢2｣
           [0].number.integer.decimal              ｢2｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢2｣
+            [0].number.unsigned.integer.decimal   ｢2｣
 )");
     test::test_axe(*se, sa, "1 + 2 + 3\n", R"(
 [0].Test                                          1 + 2 + 3<NEWLINE>¦
@@ -174,20 +171,17 @@ language Test:
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
       [1].Test.Atom                               2 ¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢2｣
+              [0].number.unsigned.integer.decimal ｢2｣
     [1].Test.Atom                                 3<NEWLINE>¦
       [0].number                                  ｢3｣
         [0].number.integer                        ｢3｣
           [0].number.integer.decimal              ｢3｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢3｣
+            [0].number.unsigned.integer.decimal   ｢3｣
 )");
     test::test_axe(*se, sa, "1 - 2\n", R"(
 [0].Test                                          1 - 2<NEWLINE>¦
@@ -196,14 +190,12 @@ language Test:
       [0].number                                  ｢1｣
         [0].number.integer                        ｢1｣
           [0].number.integer.decimal              ｢1｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢1｣
+            [0].number.unsigned.integer.decimal   ｢1｣
     [1].Test.Atom                                 2<NEWLINE>¦
       [0].number                                  ｢2｣
         [0].number.integer                        ｢2｣
           [0].number.integer.decimal              ｢2｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢2｣
+            [0].number.unsigned.integer.decimal   ｢2｣
 )");
     test::test_axe(*se, sa, "1 + 2 * 3 + 4\n", R"(
 [0].Test                                          1 + 2 ...  + 4<NEWLINE>¦
@@ -213,27 +205,23 @@ language Test:
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
       [1].Test.Mul.*                              2 * 3 ¦
         [0].Test.Atom                             2 ¦
           [0].number                              ｢2｣
             [0].number.integer                    ｢2｣
               [0].number.integer.decimal          ｢2｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢2｣
+                [0].number.unsigned.integer.decimal ｢2｣
         [1].Test.Atom                             3 ¦
           [0].number                              ｢3｣
             [0].number.integer                    ｢3｣
               [0].number.integer.decimal          ｢3｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢3｣
+                [0].number.unsigned.integer.decimal ｢3｣
     [1].Test.Atom                                 4<NEWLINE>¦
       [0].number                                  ｢4｣
         [0].number.integer                        ｢4｣
           [0].number.integer.decimal              ｢4｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢4｣
+            [0].number.unsigned.integer.decimal   ｢4｣
 )");
     test::test_axe(*se, sa, "1 - 2 + f . g . h * 3 / 4\n", R"(
 [0].Test                                          1 - 2 ...  / 4<NEWLINE>¦
@@ -243,14 +231,12 @@ language Test:
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
       [1].Test.Atom                               2 ¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢2｣
+              [0].number.unsigned.integer.decimal ｢2｣
     [1].Test.Mul./                                f . g ...  / 4<NEWLINE>¦
       [0].Test.Mul.*                              f . g ...  * 3 ¦
         [0].Test.Dot..                            f . g . h ¦
@@ -265,14 +251,12 @@ language Test:
           [0].number                              ｢3｣
             [0].number.integer                    ｢3｣
               [0].number.integer.decimal          ｢3｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢3｣
+                [0].number.unsigned.integer.decimal ｢3｣
       [1].Test.Atom                               4<NEWLINE>¦
         [0].number                                ｢4｣
           [0].number.integer                      ｢4｣
             [0].number.integer.decimal            ｢4｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢4｣
+              [0].number.unsigned.integer.decimal ｢4｣
 )");
     test::test_axe(*se, sa, "2 ! + 3\n", R"(
 [0].Test                                          2 ! + 3<NEWLINE>¦
@@ -282,14 +266,12 @@ language Test:
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢2｣
+              [0].number.unsigned.integer.decimal ｢2｣
     [1].Test.Atom                                 3<NEWLINE>¦
       [0].number                                  ｢3｣
         [0].number.integer                        ｢3｣
           [0].number.integer.decimal              ｢3｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢3｣
+            [0].number.unsigned.integer.decimal   ｢3｣
 )");
     test::test_axe(*se, sa, " - + 1\n", R"(
 [0].Test                                          - + 1<NEWLINE><DEDENT>¦
@@ -299,8 +281,7 @@ language Test:
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
 )");
     test::test_axe(*se, sa, "a + - + 1\n", R"(
 [0].Test                                          a + - + 1<NEWLINE>¦
@@ -313,8 +294,7 @@ language Test:
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢1｣
+                [0].number.unsigned.integer.decimal ｢1｣
 )");
     test::test_axe(*se, sa, "- - 1 * 2\n", R"(
 [0].Test                                          - - 1 * 2<NEWLINE>¦
@@ -325,14 +305,12 @@ language Test:
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢1｣
+                [0].number.unsigned.integer.decimal ｢1｣
     [1].Test.Atom                                 2<NEWLINE>¦
       [0].number                                  ｢2｣
         [0].number.integer                        ｢2｣
           [0].number.integer.decimal              ｢2｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢2｣
+            [0].number.unsigned.integer.decimal   ｢2｣
 )");
     test::test_axe(*se, sa, "- - 1 . 2\n", R"(
 [0].Test                                          - - 1 . 2<NEWLINE>¦
@@ -343,14 +321,12 @@ language Test:
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢1｣
+                [0].number.unsigned.integer.decimal ｢1｣
         [1].Test.Atom                             2<NEWLINE>¦
           [0].number                              ｢2｣
             [0].number.integer                    ｢2｣
               [0].number.integer.decimal          ｢2｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢2｣
+                [0].number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "1 . 2 !\n", R"(
 [0].Test                                          1 . 2 !<NEWLINE>¦
@@ -360,14 +336,12 @@ language Test:
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
       [1].Test.Atom                               2 ¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢2｣
+              [0].number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "1 + 2 !\n", R"(
 [0].Test                                          1 + 2 !<NEWLINE>¦
@@ -376,15 +350,13 @@ language Test:
       [0].number                                  ｢1｣
         [0].number.integer                        ｢1｣
           [0].number.integer.decimal              ｢1｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢1｣
+            [0].number.unsigned.integer.decimal   ｢1｣
     [1].Test.Exc.!                                2 !<NEWLINE>¦
       [0].Test.Atom                               2 ¦
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢2｣
+              [0].number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "2 ! . 3\n", {none});
     test::test_axe(*se, sa, "2 . - 3\n", {none});
@@ -396,8 +368,7 @@ language Test:
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢2｣
+              [0].number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "2 ! $\n", {none});
     test::test_axe(*se, sa, "+ ~ 2\n", R"(
@@ -408,8 +379,7 @@ language Test:
         [0].number                                ｢2｣
           [0].number.integer                      ｢2｣
             [0].number.integer.decimal            ｢2｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢2｣
+              [0].number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "~ + 2\n", {none});
     test::test_axe(*se, sa, "( ( 0 ) )\n", R"(
@@ -422,8 +392,7 @@ language Test:
             [0].number                            ｢0｣
               [0].number.integer                  ｢0｣
                 [0].number.integer.decimal        ｢0｣
-                  [0].number.plusMinus            ｢｣
-                  [1].number.unsigned.integer.decimal ｢0｣
+                  [0].number.unsigned.integer.decimal ｢0｣
 )");
     test::test_axe(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
 [0].Test                                          1 * ( ...  * 4<NEWLINE>¦
@@ -433,8 +402,7 @@ language Test:
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
       [1].Test.Atom                               ( 2 + 3 ) ¦
         [0].Test                                  2 + 3 ¦
           [0].Test.Add.+                          2 + 3 ¦
@@ -442,20 +410,17 @@ language Test:
               [0].number                          ｢2｣
                 [0].number.integer                ｢2｣
                   [0].number.integer.decimal      ｢2｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢2｣
+                    [0].number.unsigned.integer.decimal ｢2｣
             [1].Test.Atom                         3 ¦
               [0].number                          ｢3｣
                 [0].number.integer                ｢3｣
                   [0].number.integer.decimal      ｢3｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢3｣
+                    [0].number.unsigned.integer.decimal ｢3｣
     [1].Test.Atom                                 4<NEWLINE>¦
       [0].number                                  ｢4｣
         [0].number.integer                        ｢4｣
           [0].number.integer.decimal              ｢4｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢4｣
+            [0].number.unsigned.integer.decimal   ｢4｣
 )");
     test::test_axe(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
 [0].Test                                          1 * ( ...  * 4<NEWLINE>¦
@@ -465,8 +430,7 @@ language Test:
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
       [1].Test.Atom                               ( 2 + 3 ) ¦
         [0].Test                                  2 + 3 ¦
           [0].Test.Add.+                          2 + 3 ¦
@@ -474,20 +438,17 @@ language Test:
               [0].number                          ｢2｣
                 [0].number.integer                ｢2｣
                   [0].number.integer.decimal      ｢2｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢2｣
+                    [0].number.unsigned.integer.decimal ｢2｣
             [1].Test.Atom                         3 ¦
               [0].number                          ｢3｣
                 [0].number.integer                ｢3｣
                   [0].number.integer.decimal      ｢3｣
-                    [0].number.plusMinus          ｢｣
-                    [1].number.unsigned.integer.decimal ｢3｣
+                    [0].number.unsigned.integer.decimal ｢3｣
     [1].Test.Atom                                 4<NEWLINE>¦
       [0].number                                  ｢4｣
         [0].number.integer                        ｢4｣
           [0].number.integer.decimal              ｢4｣
-            [0].number.plusMinus                  ｢｣
-            [1].number.unsigned.integer.decimal   ｢4｣
+            [0].number.unsigned.integer.decimal   ｢4｣
 )");
     test::test_axe(*se, sa, "a [ 0 ]\n", R"(
 [0].Test                                          a [ 0 ]<NEWLINE>¦
@@ -499,8 +460,7 @@ language Test:
         [0].number                                ｢0｣
           [0].number.integer                      ｢0｣
             [0].number.integer.decimal            ｢0｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢0｣
+              [0].number.unsigned.integer.decimal ｢0｣
 )");
     test::test_axe(*se, sa, "a [ 0 ] [ 1 ]\n", R"(
 [0].Test                                          a [ 0 ...  1 ]<NEWLINE>¦
@@ -513,15 +473,13 @@ language Test:
           [0].number                              ｢0｣
             [0].number.integer                    ｢0｣
               [0].number.integer.decimal          ｢0｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢0｣
+                [0].number.unsigned.integer.decimal ｢0｣
     [1].Test                                      1 ¦
       [0].Test.Atom                               1 ¦
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
 )");
     test::test_axe(*se, sa, "a [ 0 ] . b [ 1 ]\n", {none});
     test::test_axe(*se, sa, "a [ 0 ] + b [ 1 ]\n", R"(
@@ -535,8 +493,7 @@ language Test:
           [0].number                              ｢0｣
             [0].number.integer                    ｢0｣
               [0].number.integer.decimal          ｢0｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢0｣
+                [0].number.unsigned.integer.decimal ｢0｣
     [1].Test.Sub.[                                b [ 1 ]<NEWLINE>¦
       [0].Test.Atom                               b ¦
         [0].identifier                            ｢b｣
@@ -545,8 +502,7 @@ language Test:
           [0].number                              ｢1｣
             [0].number.integer                    ｢1｣
               [0].number.integer.decimal          ｢1｣
-                [0].number.plusMinus              ｢｣
-                [1].number.unsigned.integer.decimal ｢1｣
+                [0].number.unsigned.integer.decimal ｢1｣
 )");
     test::test_axe(*se, sa, "a ? b : c\n", R"(
 [0].Test                                          a ? b : c<NEWLINE>¦
@@ -760,8 +716,7 @@ language Test:
         [0].number                                ｢1｣
           [0].number.integer                      ｢1｣
             [0].number.integer.decimal            ｢1｣
-              [0].number.plusMinus                ｢｣
-              [1].number.unsigned.integer.decimal ｢1｣
+              [0].number.unsigned.integer.decimal ｢1｣
     [1].Test.Atom                                 z<NEWLINE>¦
       [0].identifier                              ｢z｣
 )");
