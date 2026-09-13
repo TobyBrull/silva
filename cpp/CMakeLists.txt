@@ -1,13 +1,7 @@
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in"
                "${CMAKE_CURRENT_BINARY_DIR}/config.hpp")
 
-file(
-  GLOB
-  SILVA_LIB_FILES
-  "canopy/*.cpp"
-  "syntax/*.cpp"
-  "zoo/*/*.cpp"
-  "*.cpp")
+file(GLOB SILVA_LIB_FILES "canopy/*.cpp" "syntax/*.cpp" "zoo/*/*.cpp" "*.cpp")
 file(GLOB_RECURSE SILVA_TEST_FILES "*.tpp")
 file(GLOB_RECURSE SILVA_MAIN_FILES "*.mpp")
 
