@@ -1,6 +1,6 @@
 # TODO
 
-* Bash Seed-parser?
+* Expand fragmentization (and parsing) into strings?
 
 * Errors:
     * color furthest fragment in readable color?
@@ -11,9 +11,11 @@
     * After errors, parsing should be resume (for error handling in IDEs)
     * Maybe use Python's "invalid_*" rules?
 
-* Lox:
-    * Unify: object_pool_t, cactus_t?
-        * get rid of object_t::clear_scopes()
+* Runtime:
+    * ??
+    * Lox:
+        * Unify: object_pool_t, cactus_t?
+            * get rid of object_t::clear_scopes()
 
 
 ## Long Term
