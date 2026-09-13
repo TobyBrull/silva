@@ -37,13 +37,6 @@ def arithmetic(a, b=2, /, c=3, *, d=4):
     total *= +b
     total **= 2
     total @= b
-    total //= 3
-    total %= 7
-    total &= 0xff
-    total |= 0x0f
-    total ^= 0b11
-    total <<= 1
-    total >>= 2
     shifted = (a << 2) | (b >> 1) & ~c ^ d
     return total, shifted, a ** b, not a
 

@@ -2,9 +2,14 @@
 
 #include "canopy/string.hpp"
 
-namespace silva::toml {
+namespace silva::tomel {
+
+  // Adoption of
+  // https://github.com/toml-lang/toml/blob/main/toml.abnf
+  // with some differences with respect to how literals are handled
+  //
   const string_view_t seed_str = R"'(
-language Toml:
+language Tomel:
   skip = skip.freeForm
 
   ⊙ = ( Keyval | Table ) *

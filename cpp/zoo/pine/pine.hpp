@@ -6,7 +6,7 @@
 
 namespace silva::pine {
 
-  // Adoption of the full grammar of Python, cf.
+  // Adoption of
   // https://docs.python.org/3/reference/grammar.html
   // as of 2026-09-05, but without pattern matching.
   //

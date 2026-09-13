@@ -10,12 +10,14 @@ language.
 The Seed sub-language allows users to define PEG parsers.
 
 Implemented parsers:
-* [Fern](cpp/zoo/fern/fern.hpp): A bit like JSON, but simpler.
+* [Fern](cpp/zoo/fern/fern.hpp): A bit like JSON, but simpler. A Fern example file can be found
+  [here](silva/syntax/01-simple.fern).
 * [Seed](cpp/syntax/seed.hpp): The Seed language defined in itself. For expression parsing a
   shunting yard algorithm is used that's described by [seed_axe.hpp](cpp/syntax/seed_axe.hpp) and
   some Seed global definitions are in [seed.globals.hpp](cpp/syntax/seed.globals.hpp).
 * [Cedar](cpp/zoo/cedar/cedar.hpp): Basically preprocessed C.
-* [TOML](cpp/zoo/toml/toml.hpp): Tom's Obvious, Minimal Language.
+* [Pine](cpp/zoo/pine/pine.hpp): Basically Python (without pattern matching).
+* [Tomel](cpp/zoo/tomel/tomel.hpp): Basically Tom's Obvious, Minimal Language.
 * [Lox](cpp/zoo/lox/lox.hpp): The toy language from the book "Crafting Interpreters".
 
 
