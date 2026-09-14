@@ -20,7 +20,6 @@ namespace silva {
     NEWLINE,
 
     SPACE,
-    LINEFEED,
     DIGIT,
     PARENTHESIS,
     OPERATOR,
@@ -135,7 +134,6 @@ namespace silva {
   {
     using enum fragment_category_t;
     return (fc == SPACE ||                                   //
-            fc == LINEFEED ||                                //
             fc == DIGIT ||                                   //
             fc == PARENTHESIS ||                             //
             fc == OPERATOR ||                                //

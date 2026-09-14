@@ -20,8 +20,8 @@ namespace silva::seed::impl {
     void skip_off_side()
     {
       while (num_fragments_left() >= 1 &&
-             (fragment_category_by() == SPACE || fragment_category_by() == LINEFEED ||
-              fragment_category_by() == COMMENT || fragment_category_by() == WHITESPACE)) {
+             (fragment_category_by() == SPACE || fragment_category_by() == COMMENT ||
+              fragment_category_by() == WHITESPACE)) {
         fragment_index += 1;
       }
     }

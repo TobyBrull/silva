@@ -1,6 +1,8 @@
 # TODO
 
 * Expand fragmentization (and parsing) into strings?
+    * should EVERY indent be parsable?
+    * remove trailing '\\' in lox
 
 * Errors:
     * color furthest fragment in readable color?
@@ -10,6 +12,8 @@
         * In parsing errors, show what has been successfully parsed so far?
     * After errors, parsing should be resume (for error handling in IDEs)
     * Maybe use Python's "invalid_*" rules?
+
+* Rewrite design.md
 
 * Runtime:
     * ??

@@ -54,10 +54,10 @@ namespace silva::test {
       const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", "»\n"));
       CHECK_THAT(err_msg, ContainsSubstring("unexpected '»'"));
     }
-    SECTION("error: non-matching parentheses")
+    SECTION("error: line-continuation leaving multi-line language")
     {
       const auto text    = R"(
-A ⎢ ( B
+A ⎢ ( B \
 )
 )";
       const auto err_msg = SILVA_REQUIRE_ERROR(fragmentize_unique("..", text));
@@ -248,21 +248,23 @@ b    # Hi
           {ID_LOWER, {3, 9, 26}},     // d
           {SPACE, {3, 10, 27}},       //
           {PARENTHESIS, {3, 11, 28}}, // (
-          {LINEFEED, {3, 12, 29}},    //
+          {NEWLINE, {3, 12, 29}},     //
+          {DEDENT, {4, 0, 30}},       //
+          {DEDENT, {4, 0, 30}},       //
           {ID_LOWER, {4, 0, 30}},     // b
           {SPACE, {4, 1, 31}},        //
           {SPACE, {4, 2, 32}},        //
           {SPACE, {4, 3, 33}},        //
           {SPACE, {4, 4, 34}},        //
-          {COMMENT, {4, 5, 35}},      // # Hi
-          {LINEFEED, {4, 9, 39}},     //
-          {SPACE, {5, 0, 40}},        //
-          {SPACE, {5, 1, 41}},        //
+          {COMMENT, {4, 5, 35}},      //
+          {NEWLINE, {4, 9, 39}},      //
+          {INDENT, {5, 0, 40}},       //
           {ID_LOWER, {5, 2, 42}},     // c
-          {LINEFEED, {5, 3, 43}},     //
+          {NEWLINE, {5, 3, 43}},      //
+          {DEDENT, {6, 0, 44}},       //
           {PARENTHESIS, {6, 0, 44}},  // )
           {NEWLINE, {6, 1, 45}},      //
-          {DEDENT, {7, 0, 46}},       //
+          {INDENT, {7, 0, 46}},       //
           {ID_LOWER, {7, 4, 50}},     // i
           {ID_LOWER, {7, 5, 51}},     // d
           {NEWLINE, {7, 6, 52}},      //
@@ -349,12 +351,12 @@ y¶ xyz
     {
       const auto text = R"(
 Python ⎢def
-       ⎢  return (x +
+       ⎢  return (x + \
        ⎢ y)
 
 Python «
 def
-  return (
+  return ( \
 x)
 »
 )";
@@ -369,7 +371,7 @@ x)
           {ID_LOWER, {1, 4, 5}},      // o
           {ID_LOWER, {1, 5, 6}},      // n
           {SPACE, {1, 6, 7}},         //
-          {LANG_BEGIN, {1, 7, 8}},    //
+          {LANG_BEGIN, {1, 7, 8}},    // ⎢
           {ID_LOWER, {1, 8, 11}},     // d
           {ID_LOWER, {1, 9, 12}},     // e
           {ID_LOWER, {1, 10, 13}},    // f
@@ -386,53 +388,55 @@ x)
           {ID_LOWER, {2, 18, 35}},    // x
           {SPACE, {2, 19, 36}},       //
           {OPERATOR, {2, 20, 37}},    // +
-          {LINEFEED, {2, 21, 38}},    //
-          {SPACE, {3, 8, 49}},        //
-          {ID_LOWER, {3, 9, 50}},     // y
-          {PARENTHESIS, {3, 10, 51}}, // )
-          {NEWLINE, {3, 11, 52}},     //
-          {DEDENT, {4, 0, 53}},       //
-          {LANG_END, {4, 0, 53}},     //
-          {NEWLINE, {4, 0, 53}},      //
-          {WHITESPACE, {4, 0, 53}},   //
-          {ID_UPPER, {5, 0, 54}},     // P
-          {ID_LOWER, {5, 1, 55}},     // y
-          {ID_LOWER, {5, 2, 56}},     // t
-          {ID_LOWER, {5, 3, 57}},     // h
-          {ID_LOWER, {5, 4, 58}},     // o
-          {ID_LOWER, {5, 5, 59}},     // n
-          {SPACE, {5, 6, 60}},        //
-          {LANG_BEGIN, {5, 7, 61}},   //
-          {WHITESPACE, {5, 8, 63}},   //
-          {ID_LOWER, {6, 0, 64}},     // d
-          {ID_LOWER, {6, 1, 65}},     // e
-          {ID_LOWER, {6, 2, 66}},     // f
-          {NEWLINE, {6, 3, 67}},      //
-          {INDENT, {7, 0, 68}},       //
-          {ID_LOWER, {7, 2, 70}},     // r
-          {ID_LOWER, {7, 3, 71}},     // e
-          {ID_LOWER, {7, 4, 72}},     // t
-          {ID_LOWER, {7, 5, 73}},     // u
-          {ID_LOWER, {7, 6, 74}},     // r
-          {ID_LOWER, {7, 7, 75}},     // n
-          {SPACE, {7, 8, 76}},        //
-          {PARENTHESIS, {7, 9, 77}},  // (
-          {LINEFEED, {7, 10, 78}},    //
-          {ID_LOWER, {8, 0, 79}},     // x
-          {PARENTHESIS, {8, 1, 80}},  // )
-          {NEWLINE, {8, 2, 81}},      //
-          {WHITESPACE, {9, 0, 82}},   //
-          {DEDENT, {9, 0, 82}},       //
-          {LANG_END, {9, 0, 82}},     //
-          {NEWLINE, {9, 1, 84}},      //
-          {LANG_END, {10, 0, 85}},    //
+          {SPACE, {2, 21, 38}},       //
+          {WHITESPACE, {2, 22, 39}},  //
+          {SPACE, {3, 8, 51}},        //
+          {ID_LOWER, {3, 9, 52}},     // y
+          {PARENTHESIS, {3, 10, 53}}, // )
+          {NEWLINE, {3, 11, 54}},     //
+          {DEDENT, {4, 0, 55}},       //
+          {LANG_END, {4, 0, 55}},     //
+          {NEWLINE, {4, 0, 55}},      //
+          {WHITESPACE, {4, 0, 55}},   //
+          {ID_UPPER, {5, 0, 56}},     // P
+          {ID_LOWER, {5, 1, 57}},     // y
+          {ID_LOWER, {5, 2, 58}},     // t
+          {ID_LOWER, {5, 3, 59}},     // h
+          {ID_LOWER, {5, 4, 60}},     // o
+          {ID_LOWER, {5, 5, 61}},     // n
+          {SPACE, {5, 6, 62}},        //
+          {LANG_BEGIN, {5, 7, 63}},   // «
+          {WHITESPACE, {5, 8, 65}},   //
+          {ID_LOWER, {6, 0, 66}},     // d
+          {ID_LOWER, {6, 1, 67}},     // e
+          {ID_LOWER, {6, 2, 68}},     // f
+          {NEWLINE, {6, 3, 69}},      //
+          {INDENT, {7, 0, 70}},       //
+          {ID_LOWER, {7, 2, 72}},     // r
+          {ID_LOWER, {7, 3, 73}},     // e
+          {ID_LOWER, {7, 4, 74}},     // t
+          {ID_LOWER, {7, 5, 75}},     // u
+          {ID_LOWER, {7, 6, 76}},     // r
+          {ID_LOWER, {7, 7, 77}},     // n
+          {SPACE, {7, 8, 78}},        //
+          {PARENTHESIS, {7, 9, 79}},  // (
+          {SPACE, {7, 10, 80}},       //
+          {WHITESPACE, {7, 11, 81}},  //
+          {ID_LOWER, {8, 0, 83}},     // x
+          {PARENTHESIS, {8, 1, 84}},  // )
+          {NEWLINE, {8, 2, 85}},      //
+          {WHITESPACE, {9, 0, 86}},   //
+          {DEDENT, {9, 0, 86}},       //
+          {LANG_END, {9, 0, 86}},     // »
+          {NEWLINE, {9, 1, 88}},      //
+          {LANG_END, {10, 0, 89}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }
     SECTION("language-parens")
     {
       const auto text = R"(
-Py ⎢ (x +
+Py ⎢ (x + \
    ⎢ ⎢ y
    ⎢ )
 )";
@@ -443,28 +447,29 @@ Py ⎢ (x +
           {ID_UPPER, {1, 0, 1}},     // P
           {ID_LOWER, {1, 1, 2}},     // y
           {SPACE, {1, 2, 3}},        //
-          {LANG_BEGIN, {1, 3, 4}},   //
+          {LANG_BEGIN, {1, 3, 4}},   // ⎢
           {INDENT, {1, 4, 7}},       //
           {PARENTHESIS, {1, 5, 8}},  // (
           {ID_LOWER, {1, 6, 9}},     // x
           {SPACE, {1, 7, 10}},       //
           {OPERATOR, {1, 8, 11}},    // +
-          {LINEFEED, {1, 9, 12}},    //
-          {SPACE, {2, 4, 19}},       //
-          {LANG_BEGIN, {2, 5, 20}},  //
-          {INDENT, {2, 6, 23}},      //
-          {ID_LOWER, {2, 7, 24}},    // y
-          {NEWLINE, {2, 8, 25}},     //
-          {DEDENT, {3, 5, 33}},      //
-          {LANG_END, {3, 5, 33}},    //
-          {NEWLINE, {3, 5, 33}},     //
-          {PARENTHESIS, {3, 5, 33}}, //
-          {NEWLINE, {3, 6, 34}},     //
-          {DEDENT, {4, 0, 35}},      //
-          {LANG_END, {4, 0, 35}},    //
-          {NEWLINE, {4, 0, 35}},     //
-          {WHITESPACE, {4, 0, 35}},  //
-          {LANG_END, {4, 0, 35}},    //
+          {SPACE, {1, 9, 12}},       //
+          {WHITESPACE, {1, 10, 13}}, //
+          {SPACE, {2, 4, 21}},       //
+          {LANG_BEGIN, {2, 5, 22}},  // ⎢
+          {INDENT, {2, 6, 25}},      //
+          {ID_LOWER, {2, 7, 26}},    // y
+          {NEWLINE, {2, 8, 27}},     //
+          {DEDENT, {3, 5, 35}},      //
+          {LANG_END, {3, 5, 35}},    //
+          {NEWLINE, {3, 5, 35}},     //
+          {PARENTHESIS, {3, 5, 35}}, // )
+          {NEWLINE, {3, 6, 36}},     //
+          {DEDENT, {4, 0, 37}},      //
+          {LANG_END, {4, 0, 37}},    //
+          {NEWLINE, {4, 0, 37}},     //
+          {WHITESPACE, {4, 0, 37}},  //
+          {LANG_END, {4, 0, 37}},    //
       };
       CHECK(frag->fragments == expected_fragments);
     }

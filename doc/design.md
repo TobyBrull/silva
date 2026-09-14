@@ -19,9 +19,8 @@ Although we want *some* flexibility of the tokenization, we're also happy to acc
 invariants between different tokenization; for example, in `x = "Hello"` the `"Hello"` bit will
 always be a string literal. For this reason, Silva uses the concept of "fragmentation" (or
 pre-tokenization), which expresses a common denominator with respect to tokenization between all
-languages that Silva supports. Fragmentation also already checks that all "parentheses" are
-nested/well-formed in the standard way. This nesting structure can then be used to define nested
-languages.
+languages that Silva supports. Fragmentation does not impose any nesting requirements on
+"parentheses"; only the sub-language delimiters « » are required to be well-formed.
 
 The nature of fragmentation, as described below, means that Silva can't parse Rust, for example,
 because Rust uses `'a` as lifetime annotation, but this would always be fragmented as the beginning
@@ -54,11 +53,13 @@ treated as a line continuation.
 also in XID_Continue. A distinction is made between operators representing opening or closing
 parentheses (called parentheses-chars, as per [this
 answer](https://stackoverflow.com/a/13535289/1171688)) and all other operator chars. The parentheses
-chars are expected to be properly nested already at this stage.
-* [indent,dedent,newline] Only space and newline are allowed. Indenting works like Python. Note that
-here the equivalent of Python's INDENT and DEDENT are still fragments rather than tokens. Also, at
-this stage there is only a single NEWLINE fragment (not NL and NEWLINE like in Python). Consecutive
-newlines are fragmented as a single NEWLINE followed by whitespace.
+chars are not required to be properly nested at this stage.
+* [indent,dedent,newline] Only space and newline are allowed. Indenting works like Python, except
+that INDENT and DEDENT are generated regardless of any enclosing parentheses (like in Haskell and
+F#); use a trailing '\\' to continue a line. Note that here the equivalent of Python's INDENT and
+DEDENT are still fragments rather than tokens. Also, at this stage there is only a single NEWLINE
+fragment (not NL and NEWLINE like in Python). Consecutive newlines are fragmented as a single
+NEWLINE followed by whitespace.
 * Any other Unicode code-point not explicitly allowed by any of the semantic fragments or any
 sequence that's not in NFC in the semantic part means that the input file is ill-formed.
 
