@@ -21,7 +21,8 @@
 
 language Ash:
   skip = skipHorizontal
-  skipHorizontal = no_node [ SPACE LINE_CONTINUATION COMMENT WHITESPACE INDENT DEDENT ] *
+  skipHorizontal = no_node [ .comment SPACE LINE_CONTINUATION \
+                             INDENT DEDENT INDENTATION_BROKEN ] *
 
   ⊙ = Linebreak ( CompleteCommand ( NewlineList CompleteCommand ) * NewlineList ? ) ?
 

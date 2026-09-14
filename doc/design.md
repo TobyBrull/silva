@@ -19,7 +19,8 @@ Although we want *some* flexibility of the tokenization, we're also happy to acc
 invariants between different tokenization; for example, in `x = "Hello"` the `"Hello"` bit will
 always be a string literal. For this reason, Silva uses the concept of "fragmentation" (or
 pre-tokenization), which expresses a common denominator with respect to tokenization between all
-languages that Silva supports.
+languages that Silva supports. Fragmentation does not impose any nesting requirements on
+"parentheses"; only the sub-language delimiters « » are required to be well-formed.
 
 The nature of fragmentation, as described below, means that Silva can't parse Rust, for example,
 because Rust uses `'a` as lifetime annotation, but this would always be fragmented as the beginning
@@ -38,15 +39,11 @@ name.
 
 * [whitespace] Only space and newlines are allowed; no tabs; no carriage-return. Some of those are
 then interpreted under the "indent" and "newline" rubriks below, others are "genuine whitespace".
-* [comment] Python-style comments (#); a comment reaches to the end of the line and becomes a
-single COMMENT fragment.
-* [string] Single-line string literals (delimited by ' or ") become a single SIMPLE_STRING
-fragment. Zig-style multi-line string literals (introduced by '¶') become a single
-MULTILINE_STRING fragment; they span several lines and would otherwise interfere with the off-side
-rule.
-* The content of string-literals, comments, and genuine whitespace together is called the
-"non-semantic" part of an input file; the corresponding fragments are the non-semantic fragments
-(see silva::is_fragment_category_real). All other fragments are "semantic".
+* Fragmentation does *not* know about comments or single-line string-literals; those are the
+concern of the individual languages and are described in Seed (see "Comments and strings" below).
+Only Zig-style multi-line string literals (introduced by '¶') are recognised here, as a single
+MULTILINE_STRING fragment, because they span several lines and would otherwise interfere with the
+off-side rule.
 * A '\\' at the end of a line is a line continuation (LINE_CONTINUATION).
 * [identifier] XID_Start XID_Continue*.
 * [number] everything that starts with [0-9] followed by XID_Continue.
@@ -59,29 +56,37 @@ chars are not required to be properly nested at this stage.
 that INDENT and DEDENT are generated regardless of any enclosing parentheses (like in Haskell and
 F#); use a trailing '\\' to continue a line. Note that here the equivalent of Python's INDENT and
 DEDENT are still fragments rather than tokens. Also, at this stage there is only a single NEWLINE
-fragment (not NL and NEWLINE like in Python). Blank lines and comment-only lines produce a
-WHITESPACE fragment instead of a NEWLINE fragment, and they do not take part in indentation. A line
-whose indentation matches none of the enclosing indentation levels produces an INDENTATION_BROKEN
-fragment; from then on the enclosing language emits no further INDENT/DEDENT fragments.
+fragment (not NL and NEWLINE like in Python); every line-end produces one, including the line-ends
+of blank lines (fragmentation cannot tell which lines are blank, as it does not know about
+comments). A line whose indentation matches none of the enclosing indentation levels produces an
+INDENTATION_BROKEN fragment.
 * Any other Unicode code-point not explicitly allowed by any of the semantic fragments or any
 sequence that's not in NFC in the semantic part means that the input file is ill-formed.
 
-## ANY and LANGUAGE
+## Comments and strings
 
-Two additional fragment atoms exist that only twig-rules may use:
+Because fragmentation does not recognise comments or single-line strings, their syntax is written
+in Seed instead, using two fragment atoms that only twig-rules may use:
 
 * `ANY` matches one *visible* fragment, i.e. anything except INDENT, DEDENT, INDENTATION_BROKEN,
 NEWLINE and LINE_CONTINUATION. Rules built out of `ANY` are therefore automatically confined to a
 single line.
-* `LANGUAGE` matches a whole balanced LANG_BEGIN/LANG_END region.
+* `LANGUAGE` matches a whole balanced LANG_BEGIN/LANG_END region; putting it before `ANY` in an
+alternation is what allows a comment to contain « … ».
 
 The standard definitions live in `seed::globals_str`: `string`, `indent`, `dedent`, `newline` and
-the two skip-rules `offSide` and `freeForm`. A language selects one of the latter
-via its `skip` rule.
+the two skip-rules `offSide` and `freeForm`. A language selects one of the latter via its `skip`
+rule.
 
-Note that the code-points that fragmentation treats specially -- '⎢', '«', '»', '¶' and a '\\' at
-the end of a line -- keep their meaning inside comments and strings. In particular a '«' inside a
+Two consequences follow from doing it this way:
+
+* The code-points that fragmentation still treats specially -- '⎢', '«', '»', '¶' and a '\\' at the
+end of a line -- keep their meaning inside comments and strings. In particular a '«' inside a
 comment must still be matched by a '»'.
+* Comments are code as far as the off-side rule is concerned: they take part in indentation and a
+mis-indented comment is a parse error. Blank and comment-only lines produce no tokens, though;
+their NEWLINE is absorbed by the `offSide.blankLines` rule, which the `indent`, `dedent` and
+`newline` rules of `seed::globals_str` apply after themselves.
 
 ## Tokenization
 

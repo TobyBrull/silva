@@ -11,7 +11,7 @@ namespace silva::seed::test {
     const string_view_t frog_seed = R"'(
 language Frog:
   ⊙ = Rule *
-  skip = ( SPACE | LINE_CONTINUATION | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+  skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
   identifier = ID_START ID_CONTINUE *
   Rule = RuleName Expr
   RuleName = no_node Keyword
@@ -24,8 +24,8 @@ language Frog:
     interpreter_t se(sf.ptr());
     auto ptp = SILVA_REQUIRE(se.add_seed_text("frog.seed", string_t{frog_seed}));
     const string_view_t expected_seed_pt = R"(
-[0].Seed                                          langu ...  'keyword3'<NEWLINE><DEDENT><DEDENT>¦
-  [0].Seed.Language                               langu ...  'keyword3'<NEWLINE><DEDENT><DEDENT>¦
+[0].Seed                                          <NEWLINE>lang ... 3'<NEWLINE><DEDENT><DEDENT>¦
+  [0].Seed.Language                               langu ... 3'<NEWLINE><DEDENT><DEDENT>¦
     [0].Seed.ruleName                             ｢Frog｣
     [1].Seed.Rule                                 ⊙ = R ... le *<NEWLINE>¦
       [0].Seed.here                               ｢⊙｣
@@ -44,15 +44,11 @@ language Frog:
                 [0].Seed.fragName                 ｢SPACE｣
               [1].Seed.Terminal                   LINE_ ... TION ¦
                 [0].Seed.fragName                 ｢LINE_CONTINUATION｣
-              [2].Seed.Terminal                   COMMENT ¦
-                [0].Seed.fragName                 ｢COMMENT｣
-              [3].Seed.Terminal                   WHITE ... PACE ¦
-                [0].Seed.fragName                 ｢WHITESPACE｣
-              [4].Seed.Terminal                   INDENT ¦
+              [2].Seed.Terminal                   INDENT ¦
                 [0].Seed.fragName                 ｢INDENT｣
-              [5].Seed.Terminal                   DEDENT ¦
+              [3].Seed.Terminal                   DEDENT ¦
                 [0].Seed.fragName                 ｢DEDENT｣
-              [6].Seed.Terminal                   NEWLINE ¦
+              [4].Seed.Terminal                   NEWLINE ¦
                 [0].Seed.fragName                 ｢NEWLINE｣
     [3].Seed.Rule                                 ident ... UE *<NEWLINE>¦
       [0].Seed.Nonterminal                        ident ... fier ¦
@@ -98,16 +94,16 @@ language Frog:
                 [0].Seed.ruleName                 ｢Keyword｣
           [1].Seed.Nonterminal                    identifier¦
             [0].Seed.tokenCategoryName            ｢identifier｣
-    [8].Seed.Scope                                Keywo ... | 'keyword3'<NEWLINE><DEDENT>¦
+    [8].Seed.Scope                                Keywo ... d3'<NEWLINE><DEDENT>¦
       [0].Seed.Nonterminal                        Keyword¦
         [0].Seed.ruleName                         ｢Keyword｣
-      [1].Seed.Rule                               ⊙ = 'keyword1' ...  | 'keyword3'<NEWLINE>¦
+      [1].Seed.Rule                               ⊙ = ' ... rd3'<NEWLINE>¦
         [0].Seed.here                             ｢⊙｣
-        [1].Seed.Expr                             'keyword1' | 'keyword2' | 'keyword3'¦
-          [0].Seed.Expr.Or.|                      'keyword1' | 'keyword2' | 'keyword3'¦
-            [0].Seed.Terminal                     'keyword1' ¦
+        [1].Seed.Expr                             'keyw ... ord3'¦
+          [0].Seed.Expr.Or.|                      'keyw ... ord3'¦
+            [0].Seed.Terminal                     'keyw ... rd1' ¦
               [0].string                          ｢'keyword1'｣
-            [1].Seed.Terminal                     'keyword2' ¦
+            [1].Seed.Terminal                     'keyw ... rd2' ¦
               [0].string                          ｢'keyword2'｣
             [2].Seed.Terminal                     'keyword3'¦
               [0].string                          ｢'keyword3'｣
@@ -229,7 +225,7 @@ language Testor:
     const string_view_t text1_seed = R"'(
 language Foo:
   ⊙ = 'a' 'b' 'c' Bar ?
-  skip = ( SPACE | LINE_CONTINUATION | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+  skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 )'";
     const string_view_t text2_seed = R"'(
 Bar:

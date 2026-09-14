@@ -31,9 +31,9 @@ namespace silva::seed {
   //    skip-rule is also invoked after every time a branch-rule uses a literal.
   //  * Only twig-rules may directly refer to fragments by using the corresponding ALL_CAPS
   //    identifiers. Two additional ALL_CAPS identifiers exist: "ANY" matches any single visible
-  //    fragment (silva::is_fragment_category_visible(); this is any fragment except the
-  //    indentation related ones, NEWLINE, LINE_CONTINUATION, WHITESPACE, and COMMENT), and
-  //    "LANGUAGE" matches a whole balanced LANG_BEGIN/LANG_END region.
+  //    fragment (silva::is_fragment_category_visible(); this is any fragment except indentation
+  //    related tokens, NEWLINE, and LINE_CONTINUATION), and "LANGUAGE" matches a whole balanced
+  //    LANG_BEGIN/LANG_END region.
   //  * From a twig-rule a token can be derived; a token is a unique integer that refers to specific
   //    sequence of fragments. It is not allowed to derive tokens from branch-rules.
   //  * There is a subtle distinction between literals that use double-quotes (") and those that use
@@ -95,7 +95,7 @@ language Seed:
   ruleName = identifier.pascalCase
   tokenCategoryName = identifier.camelCase
 
-  ⊙ = [ Language Scope Rule ] *
+  ⊙ = newline ? [ Language Scope Rule ] *
   Language = "language" ruleName ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent

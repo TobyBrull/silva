@@ -27,14 +27,6 @@ namespace silva {
     return ('a' <= cp && cp < 'z') || ('A' <= cp && cp < 'Z');
   }
 
-  template<index_t N>
-  constexpr bool is_one_of(const unicode::codepoint_t cp,
-                           const array_fixed_t<unicode::codepoint_t, N> cps)
-  {
-    const auto it = std::ranges::find(cps, cp);
-    return (it != cps.end());
-  }
-
   struct categorized_codepoint_data_t : public unicode::codepoint_data_t {
     codepoint_category_t category = codepoint_category_t::Forbidden;
     file_location_t location;
@@ -111,17 +103,6 @@ namespace silva {
 
     expected_t<void> emit(const index_t idx, fragment_category_t fc)
     {
-      if (fc == NEWLINE) {
-        if (!languages.back().saw_nontrivial_since_last_newline) {
-          fc = WHITESPACE;
-        }
-        languages.back().saw_nontrivial_since_last_newline = false;
-      }
-      else if (is_fragment_category_real(fc)) {
-        if (!languages.empty()) {
-          languages.back().saw_nontrivial_since_last_newline = true;
-        }
-      }
       retval->fragments.push_back(fragment_t{
           .category = fc,
           .location = ccd[idx].location,
@@ -130,10 +111,9 @@ namespace silva {
     }
 
     struct language_data_t {
-      bool uses_angle_quotes                 = false;
-      index_t multiline_lang_depth           = 0;
-      bool saw_nontrivial_since_last_newline = false;
-      bool indentation_broken                = false;
+      bool uses_angle_quotes       = false;
+      index_t multiline_lang_depth = 0;
+      bool indentation_broken      = false;
 
       array_t<index_t> indents = {0};
     };
@@ -212,8 +192,7 @@ namespace silva {
           retval.is_empty         = false;
           break;
         }
-        else if (ccd[loc_i].codepoint == U'\n' || ccd[loc_i].codepoint == U'#' ||
-                 ccd[loc_i].codepoint == U'»') {
+        else if (ccd[loc_i].codepoint == U'\n' || ccd[loc_i].codepoint == U'»') {
           break;
         }
         else {
@@ -251,70 +230,6 @@ namespace silva {
         }
         i = ns.new_i;
       }
-      return {};
-    }
-
-    expected_t<bool> try_recognize_string()
-    {
-      if (i < n && (ccd[i].codepoint == U'"' || ccd[i].codepoint == U'\'')) {
-        SILVA_EXPECT_FWD(emit(i, SIMPLE_STRING));
-        const unicode::codepoint_t delim = ccd[i].codepoint;
-        i++;
-        while (i < n) {
-          if (ccd[i].codepoint == U'\\') {
-            SILVA_EXPECT(i + 1 < n,
-                         MINOR,
-                         "expected character after '\\' in string at {}",
-                         ccd[i].location);
-            constexpr static array_fixed_t<unicode::codepoint_t, 12> escape_seqs = {
-                U'a',
-                U'b',
-                U'e',
-                U'f',
-                U'n',
-                U'r',
-                U't',
-                U'v',
-                U'\\',
-                U'\'',
-                U'"',
-                U'?',
-            };
-            SILVA_EXPECT(is_one_of<12>(ccd[i + 1].codepoint, escape_seqs),
-                         MINOR,
-                         "unexpected escape sequence at {}, allowed escape sequences: {}",
-                         ccd[i].location,
-                         escape_seqs);
-            i += 2;
-          }
-          else if (ccd[i].codepoint == delim) {
-            i += 1;
-            break;
-          }
-          else {
-            i += 1;
-          }
-        }
-        return true;
-      }
-      else if (i + 1 < n && (ccd[i].codepoint == U'\\' && ccd[i + 1].codepoint == U'\\')) {
-        SILVA_EXPECT_FWD(emit(i, SIMPLE_STRING));
-        while (i < n && ccd[i].codepoint != U'\n') {
-          ++i;
-        }
-        return true;
-      }
-      return false;
-    }
-
-    bool is_comment_start(const index_t idx) { return (idx < n && ccd[idx].codepoint == U'#'); }
-
-    // Leaves "i" on newline or at EOF.
-    expected_t<bool> recognize_comment()
-    {
-      SILVA_EXPECT(is_comment_start(i), ASSERT);
-      SILVA_EXPECT_FWD(emit(i, COMMENT));
-      skip_to_end_of_line();
       return {};
     }
 
@@ -410,10 +325,6 @@ namespace silva {
             }
             continue;
           }
-          if (ccd[i].codepoint == U'#') {
-            SILVA_EXPECT_FWD(recognize_comment());
-            continue;
-          }
           if (ccd[i].codepoint == U'¶') {
             SILVA_EXPECT_FWD(recognize_multiline_string());
             continue;
@@ -433,9 +344,7 @@ namespace silva {
             i = cont_ns.new_i_linefeed;
             continue;
           }
-          if (!SILVA_EXPECT_FWD(try_recognize_string())) {
-            SILVA_EXPECT_FWD(emit(i++, OPERATOR));
-          }
+          SILVA_EXPECT_FWD(emit(i++, OPERATOR));
         }
         else if (is_ascii_digit(ccd[i].codepoint)) {
           SILVA_EXPECT_FWD(emit(i++, DIGIT));

@@ -21,13 +21,13 @@ namespace silva::seed::test {
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
-string = MULTILINE_STRING | SIMPLE_STRING
+string = '\'' ( not '\'' ANY ) * '\''
 number = DIGIT +
 
 language SimpleFern:
   ⊙ = '[' ( LabeledItem ';' ? ) * ']'
 
-  skip = ( SPACE | LINE_CONTINUATION | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+  skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 
   LabeledItem = ( Label ':' ) ? Item
   Label = string
@@ -40,17 +40,25 @@ language SimpleFern:
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
-[0].Seed                                          strin ... ber<NEWLINE><DEDENT>¦
-  [0].Seed.Rule                                   strin ... RING<NEWLINE>¦
+[0].Seed                                          <NEWLINE>stri ... ber<NEWLINE><DEDENT>¦
+  [0].Seed.Rule                                   strin ... '\\''<NEWLINE>¦
     [0].Seed.Nonterminal                          string ¦
       [0].Seed.tokenCategoryName                  ｢string｣
-    [1].Seed.Expr                                 MULTI ... TRING¦
-      [0].Seed.Expr.Or.|                          MULTI ... TRING¦
-        [0].Seed.Terminal                         MULTI ... RING ¦
-          [0].Seed.fragName                       ｢MULTILINE_STRING｣
-        [1].Seed.Terminal                         SIMPL ... TRING¦
-          [0].Seed.fragName                       ｢SIMPLE_STRING｣
-  [1].Seed.Rule                                   numbe ... T +<NEWLINE><WHITESPACE>¦
+    [1].Seed.Expr                                 '\\''  ...  '\\''¦
+      [0].Seed.Expr.Concat.concat                 '\\''  ...  '\\''¦
+        [0].Seed.Terminal                         '\\'' ¦
+          [0].string                              ｢'\''｣
+        [1].Seed.Expr.Postfix.*                   ( not ...  ) * ¦
+          [0].Seed.Expr                           not ' ...  ANY ¦
+            [0].Seed.Expr.Concat.concat           not ' ...  ANY ¦
+              [0].Seed.Expr.Prefix.not            not '\\'' ¦
+                [0].Seed.Terminal                 '\\'' ¦
+                  [0].string                      ｢'\''｣
+              [1].Seed.Terminal                   ANY ¦
+                [0].Seed.fragName                 ｢ANY｣
+        [2].Seed.Terminal                         '\\''¦
+          [0].string                              ｢'\''｣
+  [1].Seed.Rule                                   numbe ... T +<NEWLINE><NEWLINE>¦
     [0].Seed.Nonterminal                          number ¦
       [0].Seed.tokenCategoryName                  ｢number｣
     [1].Seed.Expr                                 DIGIT +¦
@@ -59,15 +67,15 @@ language SimpleFern:
           [0].Seed.fragName                       ｢DIGIT｣
   [2].Seed.Language                               langu ... ber<NEWLINE><DEDENT>¦
     [0].Seed.ruleName                             ｢SimpleFern｣
-    [1].Seed.Rule                                 ⊙ = '[' ... * ']'<NEWLINE><WHITESPACE>¦
+    [1].Seed.Rule                                 ⊙ = ' ... ']'<NEWLINE><NEWLINE>¦
       [0].Seed.here                               ｢⊙｣
-      [1].Seed.Expr                               '[' ( L ... ) * ']'¦
-        [0].Seed.Expr.Concat.concat               '[' ( L ... ) * ']'¦
+      [1].Seed.Expr                               '[' ( ... * ']'¦
+        [0].Seed.Expr.Concat.concat               '[' ( ... * ']'¦
           [0].Seed.Terminal                       '[' ¦
             [0].string                            ｢'['｣
           [1].Seed.Expr.Postfix.*                 ( Lab ...  ) * ¦
-            [0].Seed.Expr                         Label ...  ';' ? ¦
-              [0].Seed.Expr.Concat.concat         Label ...  ';' ? ¦
+            [0].Seed.Expr                         Label ... ;' ? ¦
+              [0].Seed.Expr.Concat.concat         Label ... ;' ? ¦
                 [0].Seed.Nonterminal              Label ... Item ¦
                   [0].Seed.ruleName               ｢LabeledItem｣
                 [1].Seed.Expr.Postfix.?           ';' ? ¦
@@ -75,7 +83,7 @@ language SimpleFern:
                     [0].string                    ｢';'｣
           [2].Seed.Terminal                       ']'¦
             [0].string                            ｢']'｣
-    [2].Seed.Rule                                 skip  ... ) *<NEWLINE><WHITESPACE>¦
+    [2].Seed.Rule                                 skip  ... ) *<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                        skip ¦
         [0].Seed.tokenCategoryName                ｢skip｣
       [1].Seed.Expr                               ( SPA ... E ) *¦
@@ -86,15 +94,11 @@ language SimpleFern:
                 [0].Seed.fragName                 ｢SPACE｣
               [1].Seed.Terminal                   LINE_ ... TION ¦
                 [0].Seed.fragName                 ｢LINE_CONTINUATION｣
-              [2].Seed.Terminal                   COMMENT ¦
-                [0].Seed.fragName                 ｢COMMENT｣
-              [3].Seed.Terminal                   WHITE ... PACE ¦
-                [0].Seed.fragName                 ｢WHITESPACE｣
-              [4].Seed.Terminal                   INDENT ¦
+              [2].Seed.Terminal                   INDENT ¦
                 [0].Seed.fragName                 ｢INDENT｣
-              [5].Seed.Terminal                   DEDENT ¦
+              [3].Seed.Terminal                   DEDENT ¦
                 [0].Seed.fragName                 ｢DEDENT｣
-              [6].Seed.Terminal                   NEWLINE ¦
+              [4].Seed.Terminal                   NEWLINE ¦
                 [0].Seed.fragName                 ｢NEWLINE｣
     [3].Seed.Rule                                 Label ... Item<NEWLINE>¦
       [0].Seed.Nonterminal                        Label ... Item ¦
@@ -141,13 +145,13 @@ language SimpleFern:
       const auto fp          = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", sf_code));
       const auto sfpt        = SILVA_REQUIRE(se.apply(fp, sf.name_id_of("SimpleFern")));
       const std::string_view expected_parse_tree = R"(
-[0].SimpleFern                                    [ 'abc' ; ...  ;]<NEWLINE><DEDENT>¦
+[0].SimpleFern                                    [ 'ab ...  ;]<NEWLINE><DEDENT>¦
   [0].SimpleFern.LabeledItem                      'abc' ¦
     [0].SimpleFern.Item                           'abc' ¦
       [0].string                                  ｢'abc'｣
-  [1].SimpleFern.LabeledItem                      [ 'def' 123 ] ¦
-    [0].SimpleFern.Item                           [ 'def' 123 ] ¦
-      [0].SimpleFern                              [ 'def' 123 ] ¦
+  [1].SimpleFern.LabeledItem                      [ 'de ... 23 ] ¦
+    [0].SimpleFern.Item                           [ 'de ... 23 ] ¦
+      [0].SimpleFern                              [ 'de ... 23 ] ¦
         [0].SimpleFern.LabeledItem                'def' ¦
           [0].SimpleFern.Item                     'def' ¦
             [0].string                            ｢'def'｣

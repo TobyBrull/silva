@@ -637,17 +637,17 @@ language Test:
       [0].identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "<: 'foo' :> a\n", R"(
-[0].Test                                          <: 'foo' :> a<NEWLINE>¦
-  [0].Test.PrfLo.<:                               <: 'foo' :> a<NEWLINE>¦
+[0].Test                                          <: 'f ... :> a<NEWLINE>¦
+  [0].Test.PrfLo.<:                               <: 'f ... :> a<NEWLINE>¦
     [0].Test.Args                                 'foo' ¦
       [0].string                                  ｢'foo'｣
     [1].Test.Atom                                 a<NEWLINE>¦
       [0].identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "<: 'foo' , 'bar' , 'baz' :> a\n", R"(
-[0].Test                                          <: 'foo'  ... :> a<NEWLINE>¦
-  [0].Test.PrfLo.<:                               <: 'foo'  ... :> a<NEWLINE>¦
-    [0].Test.Args                                 'foo' , 'bar' , 'baz' ¦
+[0].Test                                          <: 'f ... :> a<NEWLINE>¦
+  [0].Test.PrfLo.<:                               <: 'f ... :> a<NEWLINE>¦
+    [0].Test.Args                                 'foo' ... baz' ¦
       [0].string                                  ｢'foo'｣
       [1].string                                  ｢'bar'｣
       [2].string                                  ｢'baz'｣
@@ -659,8 +659,8 @@ language Test:
   [0].Test.Mul.*                                  a * < ... :> a<NEWLINE>¦
     [0].Test.Atom                                 a ¦
       [0].identifier                              ｢a｣
-    [1].Test.PrfLo.<:                             <: 'foo'  ... :> a<NEWLINE>¦
-      [0].Test.Args                               'foo' , 'bar' , 'baz' ¦
+    [1].Test.PrfLo.<:                             <: 'f ... :> a<NEWLINE>¦
+      [0].Test.Args                               'foo' ... baz' ¦
         [0].string                                ｢'foo'｣
         [1].string                                ｢'bar'｣
         [2].string                                ｢'baz'｣

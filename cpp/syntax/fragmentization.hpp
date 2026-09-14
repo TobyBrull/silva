@@ -32,11 +32,8 @@ namespace silva {
     LANG_END,
 
     MULTILINE_STRING,
-    SIMPLE_STRING,
 
     LINE_CONTINUATION,
-    WHITESPACE,
-    COMMENT,
   };
 
   // If a fragment corresponds to a unique codepoint.
@@ -44,7 +41,6 @@ namespace silva {
 
   constexpr bool is_fragment_category_id_start(fragment_category_t);
   constexpr bool is_fragment_category_id_continue(fragment_category_t);
-  constexpr bool is_fragment_category_real(fragment_category_t);
   constexpr bool is_fragment_category_visible(fragment_category_t);
 
   token_id_t fragment_category_to_token_id(syntax_farm_t&, fragment_category_t);
@@ -167,19 +163,14 @@ namespace silva {
     return is_fragment_category_id_start(fc) || fc == ID_CONTINUE__NOT_ID_START_AND_NOT_DIGIT ||
         fc == DIGIT;
   }
-  constexpr bool is_fragment_category_real(const fragment_category_t fc)
-  {
-    using enum fragment_category_t;
-    return (fc != LINE_CONTINUATION && fc != WHITESPACE && fc != COMMENT);
-  }
   constexpr bool is_fragment_category_visible(const fragment_category_t fc)
   {
     using enum fragment_category_t;
-    return (is_fragment_category_real(fc) && //
-            fc != INDENT &&                  //
-            fc != DEDENT &&                  //
-            fc != INDENTATION_BROKEN &&      //
-            fc != NEWLINE &&                 //
+    return (fc != INDENT &&             //
+            fc != DEDENT &&             //
+            fc != INDENTATION_BROKEN && //
+            fc != NEWLINE &&            //
+            fc != LINE_CONTINUATION &&  //
             true);
   }
 
