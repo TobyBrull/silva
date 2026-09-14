@@ -4470,40 +4470,39 @@ Mr Jane
                 [0].string                                                      ｢"lambda"｣
               [3].Seed.Axe.op                                                   ｢':'｣
                 [0].string                                                      ｢':'｣
-      [2].Seed.Rule                                                             Atom  ... er )<NEWLINE>¦
+      [2].Seed.Rule                                                             Atom  ... fier<NEWLINE>¦
         [0].Seed.Nonterminal                                                    Atom ¦
           [0].Seed.ruleName                                                     ｢Atom｣
-        [1].Seed.Expr                                                           ( bui ... ier )¦
-          [0].Seed.Expr                                                         built ... fier ¦
-            [0].Seed.Expr.Or.|                                                  built ... fier ¦
-              [0].Seed.Nonterminal                                              built ... eral ¦
-                [0].Seed.tokenCategoryName                                      ｢builtinLiteral｣
-              [1].Seed.Terminal                                                 '...' ¦
-                [0].string                                                      ｢'...'｣
-              [2].Seed.Nonterminal                                              Strings ¦
-                [0].Seed.ruleName                                               ｢Strings｣
-              [3].Seed.Nonterminal                                              numbe ...      ¦
-                [0].Seed.tokenCategoryName                                      ｢number｣
-              [4].Seed.Nonterminal                                              GenExp ¦
-                [0].Seed.ruleName                                               ｢GenExp｣
-              [5].Seed.Nonterminal                                              Group ¦
-                [0].Seed.ruleName                                               ｢Group｣
-              [6].Seed.Nonterminal                                              Tuple ...      ¦
-                [0].Seed.ruleName                                               ｢Tuple｣
-              [7].Seed.Nonterminal                                              ListComp ¦
-                [0].Seed.ruleName                                               ｢ListComp｣
-              [8].Seed.Nonterminal                                              List\n ...      ¦
-                [0].Seed.ruleName                                               ｢List｣
-              [9].Seed.Nonterminal                                              DictComp ¦
-                [0].Seed.ruleName                                               ｢DictComp｣
-              [10].Seed.Nonterminal                                             SetComp ¦
-                [0].Seed.ruleName                                               ｢SetComp｣
-              [11].Seed.Nonterminal                                             Dict ¦
-                [0].Seed.ruleName                                               ｢Dict｣
-              [12].Seed.Nonterminal                                             Set\n  ...      ¦
-                [0].Seed.ruleName                                               ｢Set｣
-              [13].Seed.Nonterminal                                             ident ... fier ¦
-                [0].Seed.tokenCategoryName                                      ｢identifier｣
+        [1].Seed.Expr                                                           built ... ifier¦
+          [0].Seed.Expr.Or.|                                                    built ... ifier¦
+            [0].Seed.Nonterminal                                                built ... eral ¦
+              [0].Seed.tokenCategoryName                                        ｢builtinLiteral｣
+            [1].Seed.Terminal                                                   '...' ¦
+              [0].string                                                        ｢'...'｣
+            [2].Seed.Nonterminal                                                Strings ¦
+              [0].Seed.ruleName                                                 ｢Strings｣
+            [3].Seed.Nonterminal                                                numbe ...      ¦
+              [0].Seed.tokenCategoryName                                        ｢number｣
+            [4].Seed.Nonterminal                                                GenExp ¦
+              [0].Seed.ruleName                                                 ｢GenExp｣
+            [5].Seed.Nonterminal                                                Group ¦
+              [0].Seed.ruleName                                                 ｢Group｣
+            [6].Seed.Nonterminal                                                Tuple ...      ¦
+              [0].Seed.ruleName                                                 ｢Tuple｣
+            [7].Seed.Nonterminal                                                ListComp ¦
+              [0].Seed.ruleName                                                 ｢ListComp｣
+            [8].Seed.Nonterminal                                                List  ...      ¦
+              [0].Seed.ruleName                                                 ｢List｣
+            [9].Seed.Nonterminal                                                DictComp ¦
+              [0].Seed.ruleName                                                 ｢DictComp｣
+            [10].Seed.Nonterminal                                               SetComp ¦
+              [0].Seed.ruleName                                                 ｢SetComp｣
+            [11].Seed.Nonterminal                                               Dict ¦
+              [0].Seed.ruleName                                                 ｢Dict｣
+            [12].Seed.Nonterminal                                               Set <WHITESPACE> ...      ¦
+              [0].Seed.ruleName                                                 ｢Set｣
+            [13].Seed.Nonterminal                                               identifier¦
+              [0].Seed.tokenCategoryName                                        ｢identifier｣
       [3].Seed.Rule                                                             GenEx ... es ')'<NEWLINE>¦
         [0].Seed.Nonterminal                                                    GenExp ¦
           [0].Seed.ruleName                                                     ｢GenExp｣
