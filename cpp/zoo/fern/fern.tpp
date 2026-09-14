@@ -36,7 +36,7 @@ namespace silva::fern::test {
   [1].Fern.LabeledItem                            true<NEWLINE>¦
     [0].Fern.value                                ｢true｣
       [0].boolean                                 ｢true｣
-  [2].Fern.LabeledItem                            'test' : 'Hello'<NEWLINE>¦
+  [2].Fern.LabeledItem                            'test ... llo'<NEWLINE>¦
     [0].Fern.label                                ｢'test'｣
       [0].string                                  ｢'test'｣
     [1].Fern.value                                ｢'Hello'｣
@@ -92,7 +92,7 @@ digraph parse_tree {
   "/1/0/" -> "/1/0/0/"
   "/1/0/0/" [label="[0].boolean\ntrue"]
   "/" -> "/2/"
-  "/2/" [label="[2].Fern.LabeledItem\n'test' : 'Hello'<NEWLINE>"]
+  "/2/" [label="[2].Fern.LabeledItem\n'test ... llo'<NEWLINE>"]
   "/2/" -> "/2/0/"
   "/2/0/" [label="[0].Fern.label\n'test'"]
   "/2/0/" -> "/2/0/0/"

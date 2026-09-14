@@ -17,13 +17,43 @@ namespace silva::seed::impl {
     {
     }
 
+    expected_t<void> comment()
+    {
+      SILVA_EXPECT(fragment_unique_codepoint_or_zero_by() == U'#', ASSERT);
+      fragment_index += 1;
+      while (num_fragments_left() >= 1) {
+        if (fragment_category_by() == LANG_BEGIN) {
+          fragment_index = SILVA_EXPECT_FWD(fp->advance_language(fragment_index));
+        }
+        else if (is_fragment_category_visible(fragment_category_by())) {
+          fragment_index += 1;
+        }
+        else {
+          break;
+        }
+      }
+      return {};
+    }
+
+    expected_t<void> skip_horizontal()
+    {
+      while (num_fragments_left() >= 1) {
+        if (fragment_category_by() == SPACE || fragment_category_by() == LINE_CONTINUATION) {
+          fragment_index += 1;
+        }
+        else if (fragment_unique_codepoint_or_zero_by() == U'#') {
+          SILVA_EXPECT_FWD(comment());
+        }
+        else {
+          break;
+        }
+      }
+      return {};
+    }
+
     expected_t<void> skip()
     {
-      while (num_fragments_left() >= 1 &&
-             (fragment_category_by() == SPACE || fragment_category_by() == LINE_CONTINUATION ||
-              fragment_category_by() == COMMENT || fragment_category_by() == WHITESPACE)) {
-        fragment_index += 1;
-      }
+      SILVA_EXPECT_FWD(skip_horizontal());
       return {};
     }
 
@@ -89,11 +119,36 @@ namespace silva::seed::impl {
       auto ss = stake();
       ss.create_node(lexicon.ni_string, true);
       SILVA_EXPECT_PARSE(lexicon.ni_string,
-                         num_fragments_left() >= 1 &&
-                             (fragment_category_by() == MULTILINE_STRING ||
-                              fragment_category_by() == SIMPLE_STRING),
-                         "expected category MULTILINE_STRING or SIMPLE_STRING, got {}",
+                         num_fragments_left() >= 1,
+                         "expected string; reached end of fragment-stream");
+      if (fragment_category_by() == MULTILINE_STRING) {
+        fragment_index += 1;
+        return ss.commit();
+      }
+      const unicode::codepoint_t delim = fragment_unique_codepoint_or_zero_by();
+      SILVA_EXPECT_PARSE(lexicon.ni_string,
+                         delim == U'\'' || delim == U'"',
+                         "expected string; got {}",
                          fragment_category_by());
+      fragment_index += 1;
+      while (num_fragments_left() >= 1) {
+        const unicode::codepoint_t cp = fragment_unique_codepoint_or_zero_by();
+        if (cp == U'\\' && num_fragments_left() >= 2 &&
+            is_fragment_category_visible(fragment_category_by(1))) {
+          fragment_index += 2;
+        }
+        else if (cp != delim && is_fragment_category_visible(fragment_category_by())) {
+          fragment_index += 1;
+        }
+        else {
+          break;
+        }
+      }
+      SILVA_EXPECT(num_fragments_left() >= 1 && fragment_unique_codepoint_or_zero_by() == delim,
+                   MAJOR,
+                   "[{}] {}: unterminated string",
+                   fragment_location_by(),
+                   lexicon.name_id_wrap(lexicon.ni_string));
       fragment_index += 1;
       return ss.commit();
     }
@@ -156,10 +211,27 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
+    expected_t<void> blank_lines()
+    {
+      while (true) {
+        const index_t orig_frag_idx = fragment_index;
+        SILVA_EXPECT_FWD(skip_horizontal());
+        if (num_fragments_left() >= 1 && fragment_category_by() == NEWLINE) {
+          fragment_index += 1;
+        }
+        else {
+          fragment_index = orig_frag_idx;
+          break;
+        }
+      }
+      return {};
+    }
+
     expected_t<parse_tree_node_t> newline()
     {
       auto ss = stake();
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_newline, NEWLINE);
+      SILVA_EXPECT_FWD(blank_lines());
       return ss.commit();
     }
 
@@ -167,6 +239,7 @@ namespace silva::seed::impl {
     {
       auto ss = stake();
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_indent, INDENT);
+      SILVA_EXPECT_FWD(blank_lines());
       return ss.commit();
     }
 
@@ -174,6 +247,7 @@ namespace silva::seed::impl {
     {
       auto ss = stake();
       SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_dedent, DEDENT);
+      SILVA_EXPECT_FWD(blank_lines());
       return ss.commit();
     }
 
@@ -843,6 +917,10 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_seed, false);
+      if (auto result = newline(); result) {
+        ss_rule.add_proto_node(*result);
+        SILVA_EXPECT_FWD(skip());
+      }
       while (num_fragments_left() >= 1 && fragment_category_by() != LANG_END) {
         const index_t orig_frag_idx = fragment_index;
         error_nursery_t error_nursery;

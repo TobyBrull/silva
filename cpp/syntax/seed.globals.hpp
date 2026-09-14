@@ -5,7 +5,10 @@
 namespace silva::seed {
 
   const string_view_t globals_str = R"'(
-string = MULTILINE_STRING | SIMPLE_STRING
+string:
+  ⊙ = MULTILINE_STRING | single | double
+  single = no_node '\'' ~ ( '\\' ANY | not '\'' ANY ) * '\''
+  double = no_node '"' ~ ( '\\' ANY | not '"' ANY ) * '"'
 
 parenthesis = PARENTHESIS
 operator:
@@ -82,13 +85,20 @@ time:
       rfc = date ( 'T' | ' ' ) time.ofDay.rfc
       any = time.point.local | time.point.local.rfc
 
-indent  = no_node INDENT
-dedent  = no_node DEDENT
-newline = no_node NEWLINE
+comment = no_node '#' ( LANGUAGE | ANY ) *
 
-offSide = no_node [ SPACE LINE_CONTINUATION COMMENT WHITESPACE ] *
-freeForm = no_node [ SPACE LINE_CONTINUATION COMMENT WHITESPACE \
-                     INDENT DEDENT INDENTATION_BROKEN NEWLINE ] *
+indent  = no_node INDENT .offSide.blankLines
+dedent  = no_node DEDENT .offSide.blankLines
+newline = no_node NEWLINE .offSide.blankLines
+
+offSide:
+  ⊙ = horizontal
+  horizontal = no_node [ SPACE LINE_CONTINUATION comment ] *
+  blankLines = no_node ( horizontal NEWLINE ) *
+
+freeForm = no_node [ comment \
+                     NEWLINE SPACE LINE_CONTINUATION \
+                     INDENT DEDENT INDENTATION_BROKEN ] *
 
 Epsilon = ε
 )'";
