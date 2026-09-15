@@ -706,7 +706,7 @@ class Call {
     }
     this.arguments.foreach(addArgument);
     if (arguments.length() != callee.arity()) {
-      runtimeError("Expected " + numberStr(callee.arity()) + \
+      runtimeError("Expected " + numberStr(callee.arity()) +
                    " arguments but got " + numberStr(arguments.length()) + ".");
     }
     return callee.call(interpreter, arguments);
@@ -1058,7 +1058,7 @@ class Class {
 
     var methods = Map();
     fun addMethod(method) {
-      var function = LoxFunction(method, interpreter.environment, \
+      var function = LoxFunction(method, interpreter.environment,
                                  method.name == "init");
       methods.set(method.name, function);
     }
@@ -1702,7 +1702,7 @@ class Parser {
 
   comparison() {
     var expr = this.addition();
-    while (this.token.type == GREATER or this.token.type == GREATER_EQUAL or \
+    while (this.token.type == GREATER or this.token.type == GREATER_EQUAL or
            this.token.type == LESS or this.token.type == LESS_EQUAL) {
       var operator = this.token.type;
       this.next();

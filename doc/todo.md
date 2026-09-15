@@ -1,8 +1,6 @@
 # TODO
 
 * Expand fragmentization (and parsing) into strings?
-    * should EVERY indent be parsable?
-    * remove trailing '\\' in lox
 
 * Errors:
     * color furthest fragment in readable color?

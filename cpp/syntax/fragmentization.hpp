@@ -17,6 +17,7 @@ namespace silva {
 
     INDENT,
     DEDENT,
+    INDENTATION_BROKEN,
     NEWLINE,
 
     SPACE,
@@ -172,11 +173,12 @@ namespace silva {
   constexpr bool is_fragment_category_visible(const fragment_category_t fc)
   {
     using enum fragment_category_t;
-    return (fc != WHITESPACE && //
-            fc != COMMENT &&    //
-            fc != INDENT &&     //
-            fc != DEDENT &&     //
-            fc != NEWLINE &&    //
+    return (fc != WHITESPACE &&         //
+            fc != COMMENT &&            //
+            fc != INDENT &&             //
+            fc != DEDENT &&             //
+            fc != INDENTATION_BROKEN && //
+            fc != NEWLINE &&            //
             true);
   }
 

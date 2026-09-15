@@ -87,7 +87,7 @@ time:
       any = time.point.local | time.point.local.rfc
 
 skip:
-  freeForm = [ SPACE LINEFEED COMMENT WHITESPACE INDENT DEDENT NEWLINE ] *
+  freeForm = [ SPACE LINEFEED COMMENT WHITESPACE INDENT DEDENT INDENTATION_BROKEN NEWLINE ] *
   offSide  = [ SPACE LINEFEED COMMENT WHITESPACE ] *
 
 Epsilon = ε

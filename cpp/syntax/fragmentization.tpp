@@ -218,6 +218,35 @@ back
       };
       CHECK(frag->fragments == expected_fragments);
     }
+    SECTION("broken-indent")
+    {
+      const auto text = R"(
+def
+    id
+  fed
+)";
+      const auto frag = SILVA_REQUIRE(fragmentize_unique("..", text));
+      const array_t<fragment_t> expected_fragments{
+          {LANG_BEGIN, {0, 0, 0}},          //
+          {WHITESPACE, {0, 0, 0}},          //
+          {ID_LOWER, {1, 0, 1}},            // d
+          {ID_LOWER, {1, 1, 2}},            // e
+          {ID_LOWER, {1, 2, 3}},            // f
+          {NEWLINE, {1, 3, 4}},             //
+          {INDENT, {2, 0, 5}},              //
+          {ID_LOWER, {2, 4, 9}},            // i
+          {ID_LOWER, {2, 5, 10}},           // d
+          {NEWLINE, {2, 6, 11}},            //
+          {DEDENT, {3, 0, 12}},             //
+          {INDENTATION_BROKEN, {3, 0, 12}}, //
+          {ID_LOWER, {3, 2, 14}},           // f
+          {ID_LOWER, {3, 3, 15}},           // e
+          {ID_LOWER, {3, 4, 16}},           // d
+          {NEWLINE, {3, 5, 17}},            //
+          {LANG_END, {4, 0, 18}},           //
+      };
+      CHECK(frag->fragments == expected_fragments);
+    }
     SECTION("parentheses")
     {
       const auto text = R"(

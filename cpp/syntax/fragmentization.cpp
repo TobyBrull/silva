@@ -133,6 +133,7 @@ namespace silva {
       bool uses_angle_quotes                 = false;
       index_t multiline_lang_depth           = 0;
       bool saw_nontrivial_since_last_newline = false;
+      bool indentation_broken                = false;
 
       array_t<index_t> indents = {0};
     };
@@ -144,7 +145,11 @@ namespace silva {
       SILVA_EXPECT(indent >= 0, ASSERT);
       SILVA_EXPECT(idx >= indent, ASSERT);
       const index_t start_idx = idx - indent;
-      auto& indents           = languages.back().indents;
+      auto& language          = languages.back();
+      if (language.indentation_broken) {
+        return false;
+      }
+      auto& indents = language.indents;
       SILVA_EXPECT(!indents.empty(), ASSERT);
       if (indents.back() < indent) {
         SILVA_EXPECT_FWD(emit(start_idx, INDENT));
@@ -152,14 +157,19 @@ namespace silva {
         return true;
       }
       else if (indents.back() > indent) {
-        while (indents.back() > indent) {
+        while (indents.size() > 1 && indents.back() > indent) {
           SILVA_EXPECT_FWD(emit(start_idx, DEDENT));
           indents.pop_back();
         }
-        SILVA_EXPECT(!indents.empty() && indents.back() == indent,
-                     MINOR,
-                     "inconsistent indent: indent at {} doesn't match any previous indent",
-                     ccd[idx].location);
+        SILVA_EXPECT(!indents.empty(), ASSERT);
+        if (indents.back() != indent) {
+          while (indents.size() > 1) {
+            SILVA_EXPECT_FWD(emit(start_idx, DEDENT));
+            indents.pop_back();
+          }
+          SILVA_EXPECT_FWD(emit(start_idx, INDENTATION_BROKEN));
+          language.indentation_broken = true;
+        }
         return true;
       }
       return false;
