@@ -1,77 +1,59 @@
-1:1      LANG_BEGIN                      []
-1:1      PARENTHESIS [                   [0x5b]
-1:2      LINEFEED                        [0x0a]
-2:1      SPACE                           [0x20]
-2:2      SPACE                           [0x20]
-2:3      ID_LOWER    n                   [0x6e]
-2:4      ID_LOWER    o                   [0x6f]
-2:5      ID_LOWER    n                   [0x6e]
-2:6      ID_LOWER    e                   [0x65]
-2:7      LINEFEED                        [0x0a]
-3:1      SPACE                           [0x20]
-3:2      SPACE                           [0x20]
-3:3      ID_LOWER    t                   [0x74]
-3:4      ID_LOWER    r                   [0x72]
-3:5      ID_LOWER    u                   [0x75]
-3:6      ID_LOWER    e                   [0x65]
-3:7      LINEFEED                        [0x0a]
-4:1      SPACE                           [0x20]
-4:2      SPACE                           [0x20]
-4:3      DIGIT       4                   [0x34]
-4:4      DIGIT       2                   [0x32]
-4:5      LINEFEED                        [0x0a]
-5:1      SPACE                           [0x20]
-5:2      SPACE                           [0x20]
-5:3      ID_LOWER    h                   [0x68]
-5:4      ID_LOWER    e                   [0x65]
-5:5      ID_LOWER    l                   [0x6c]
-5:6      ID_LOWER    l                   [0x6c]
-5:7      ID_LOWER    o                   [0x6f]
-5:8      SPACE                           [0x20]
-5:9      OPERATOR    :                   [0x3a]
-5:10     SPACE                           [0x20]
-5:11     STRING      'World'             [0x27 0x57 0x6f 0x72 0x6c 0x64 0x27]
-5:18     LINEFEED                        [0x0a]
-6:1      SPACE                           [0x20]
-6:2      SPACE                           [0x20]
-6:3      PARENTHESIS [                   [0x5b]
-6:4      PARENTHESIS ]                   [0x5d]
-6:5      LINEFEED                        [0x0a]
-7:1      SPACE                           [0x20]
-7:2      SPACE                           [0x20]
-7:3      PARENTHESIS [                   [0x5b]
-7:4      LINEFEED                        [0x0a]
-8:1      SPACE                           [0x20]
-8:2      SPACE                           [0x20]
-8:3      SPACE                           [0x20]
-8:4      SPACE                           [0x20]
-8:5      STRING      'one'               [0x27 0x6f 0x6e 0x65 0x27]
-8:10     SPACE                           [0x20]
-8:11     OPERATOR    :                   [0x3a]
-8:12     SPACE                           [0x20]
-8:13     DIGIT       1                   [0x31]
-8:14     OPERATOR    .                   [0x2e]
-8:15     DIGIT       0                   [0x30]
-8:16     LINEFEED                        [0x0a]
-9:1      SPACE                           [0x20]
-9:2      SPACE                           [0x20]
-9:3      SPACE                           [0x20]
-9:4      SPACE                           [0x20]
-9:5      STRING      'two'               [0x27 0x74 0x77 0x6f 0x27]
-9:10     SPACE                           [0x20]
-9:11     OPERATOR    :                   [0x3a]
-9:12     SPACE                           [0x20]
-9:13     DIGIT       2                   [0x32]
-9:14     OPERATOR    .                   [0x2e]
-9:15     DIGIT       0                   [0x30]
-9:16     LINEFEED                        [0x0a]
-10:1     SPACE                           [0x20]
-10:2     SPACE                           [0x20]
-10:3     PARENTHESIS ]                   [0x5d]
-10:4     LINEFEED                        [0x0a]
-11:1     PARENTHESIS ]                   [0x5d]
-11:2     NEWLINE                         [0x0a]
-12:1     LANG_END                        []
+1:1      LANG_BEGIN                             []
+1:1      PARENTHESIS        [                   [0x5b]
+1:2      NEWLINE                                [0x0a]
+2:1      INDENT                                 [0x20 0x20]
+2:3      ID_LOWER           n                   [0x6e]
+2:4      ID_LOWER           o                   [0x6f]
+2:5      ID_LOWER           n                   [0x6e]
+2:6      ID_LOWER           e                   [0x65]
+2:7      NEWLINE                                [0x0a 0x20 0x20]
+3:3      ID_LOWER           t                   [0x74]
+3:4      ID_LOWER           r                   [0x72]
+3:5      ID_LOWER           u                   [0x75]
+3:6      ID_LOWER           e                   [0x65]
+3:7      NEWLINE                                [0x0a 0x20 0x20]
+4:3      DIGIT              4                   [0x34]
+4:4      DIGIT              2                   [0x32]
+4:5      NEWLINE                                [0x0a 0x20 0x20]
+5:3      ID_LOWER           h                   [0x68]
+5:4      ID_LOWER           e                   [0x65]
+5:5      ID_LOWER           l                   [0x6c]
+5:6      ID_LOWER           l                   [0x6c]
+5:7      ID_LOWER           o                   [0x6f]
+5:8      SPACE                                  [0x20]
+5:9      OPERATOR           :                   [0x3a]
+5:10     SPACE                                  [0x20]
+5:11     SIMPLE_STRING      'World'             [0x27 0x57 0x6f 0x72 0x6c 0x64 0x27]
+5:18     NEWLINE                                [0x0a 0x20 0x20]
+6:3      PARENTHESIS        [                   [0x5b]
+6:4      PARENTHESIS        ]                   [0x5d]
+6:5      NEWLINE                                [0x0a 0x20 0x20]
+7:3      PARENTHESIS        [                   [0x5b]
+7:4      NEWLINE                                [0x0a]
+8:1      INDENT                                 [0x20 0x20 0x20 0x20]
+8:5      SIMPLE_STRING      'one'               [0x27 0x6f 0x6e 0x65 0x27]
+8:10     SPACE                                  [0x20]
+8:11     OPERATOR           :                   [0x3a]
+8:12     SPACE                                  [0x20]
+8:13     DIGIT              1                   [0x31]
+8:14     OPERATOR           .                   [0x2e]
+8:15     DIGIT              0                   [0x30]
+8:16     NEWLINE                                [0x0a 0x20 0x20 0x20 0x20]
+9:5      SIMPLE_STRING      'two'               [0x27 0x74 0x77 0x6f 0x27]
+9:10     SPACE                                  [0x20]
+9:11     OPERATOR           :                   [0x3a]
+9:12     SPACE                                  [0x20]
+9:13     DIGIT              2                   [0x32]
+9:14     OPERATOR           .                   [0x2e]
+9:15     DIGIT              0                   [0x30]
+9:16     NEWLINE                                [0x0a]
+10:1     DEDENT                                 [0x20 0x20]
+10:3     PARENTHESIS        ]                   [0x5d]
+10:4     NEWLINE                                [0x0a]
+11:1     DEDENT                                 []
+11:1     PARENTHESIS        ]                   [0x5d]
+11:2     NEWLINE                                [0x0a]
+12:1     LANG_END                               []
 [
   none
   true
@@ -85,7 +67,9 @@
 ]
 
 ERROR (MAJOR):
-    expected token of category token[ STRING ]; got token[ PARENTHESIS ]
+    ┌─expected token of category token[ MULTILINE_STRING ]; got token[ PARENTHESIS ]
+    ├─expected token of category token[ SIMPLE_STRING ]; got token[ PARENTHESIS ]
+    [01-broken.fern:9:3] .string: expected alternation[ MULTI ... TRING ]
   ┌─[01-broken.fern:9:3] .string
   │ expected token of category ID_START; got token[ ID_START ]
   │ [01-broken.fern:9:3] .identifier: expected sequence[ ID_ST ... NUE * ]
@@ -195,7 +179,9 @@ ERROR (MAJOR):
 │   │ │ │ ├─[01-broken.fern:10:5] .number.integer
 │   │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ flo ... ger ] ]
 │   │ │ ├─[01-broken.fern:10:5] .number
-│   │ │ │ expected token of category token[ STRING ]; got token[ ID_LOWER ]
+│   │ │ │ ┌─expected token of category token[ MULTILINE_STRING ]; got token[ ID_LOWER ]
+│   │ │ │ ├─expected token of category token[ SIMPLE_STRING ]; got token[ ID_LOWER ]
+│   │ │ │ [01-broken.fern:10:5] .string: expected alternation[ MULTI ... TRING ]
 │   │ │ ├─[01-broken.fern:10:5] .string
 │   │ │ [01-broken.fern:10:5] .Fern.value: expected alternation[ none  ... tring ]
 │   │ ├─[01-broken.fern:10:5] .Fern.value
@@ -213,24 +199,22 @@ ERROR (MAJOR):
 [01-broken.fern:1:1] .Fern
 seed::interpreter_t::apply(.Fern) failed to parse
 
-[0].Fern                                                                        [\n  n ...  ]\n]<NEWLINE>¦
-  [0].Fern.LabeledItem                                                          none\n  ¦
+[0].Fern                                                                        [<NEWLINE><INDENT>no ... ]<NEWLINE><DEDENT>]<NEWLINE>¦
+  [0].Fern.LabeledItem                                                          none<NEWLINE>¦
     [0].Fern.value                                                              ｢none｣
       [0].none                                                                  ｢none｣
-  [1].Fern.LabeledItem                                                          []\n  ¦
-    [0].Fern                                                                    []\n  ¦
-  [2].Fern.LabeledItem                                                          [\n    ... \n  ]\n¦
-    [0].Fern                                                                    [\n    ... \n  ]\n¦
-      [0].Fern.LabeledItem                                                      none\n  ¦
+  [1].Fern.LabeledItem                                                          []<NEWLINE>¦
+    [0].Fern                                                                    []<NEWLINE>¦
+  [2].Fern.LabeledItem                                                          [<NEWLINE><INDENT>no ... <NEWLINE><DEDENT>]<NEWLINE><DEDENT>¦
+    [0].Fern                                                                    [<NEWLINE><INDENT>no ... <NEWLINE><DEDENT>]<NEWLINE><DEDENT>¦
+      [0].Fern.LabeledItem                                                      none<NEWLINE><DEDENT>¦
         [0].Fern.value                                                          ｢none｣
           [0].none                                                              ｢none｣
 
 [0]                                                                                  false     unknown token-location
   [0].skip.freeForm                                                                  true      01-simplest.fern:1:1
-    [0].skip.freeForm                                                                true      01-simplest.fern:1:1
   [1].Fern                                                                           true      01-simplest.fern:1:1
     [0].skip.freeForm                                                                true      01-simplest.fern:1:2
-      [0].skip.freeForm                                                              true      01-simplest.fern:2:3
     [1].Fern.LabeledItem                                                             true      01-simplest.fern:2:3
       [0].Fern.label                                                                 true      01-simplest.fern:2:3
         [0].string                                                                   false     01-simplest.fern:2:3
@@ -246,7 +230,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].identifier                                                               false     01-simplest.fern:3:3
       [1].Fern                                                                       true      01-simplest.fern:3:3
         [0].skip.freeForm                                                            true      01-simplest.fern:3:4
-          [0].skip.freeForm                                                          true      01-simplest.fern:3:4
         [1].Fern.LabeledItem                                                         false     01-simplest.fern:3:4
           [0].Fern.label                                                             false     01-simplest.fern:3:4
             [0].string                                                               false     01-simplest.fern:3:4
@@ -280,14 +263,12 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [1].number.unsigned.integer.decimal                                false     01-simplest.fern:3:4
             [3].string                                                               false     01-simplest.fern:3:4
         [2].skip.freeForm                                                            true      01-simplest.fern:3:5
-          [0].skip.freeForm                                                          true      01-simplest.fern:4:3
     [3].Fern.LabeledItem                                                             true      01-simplest.fern:4:3
       [0].Fern.label                                                                 false     01-simplest.fern:4:3
         [0].string                                                                   false     01-simplest.fern:4:3
         [1].identifier                                                               false     01-simplest.fern:4:3
       [1].Fern                                                                       true      01-simplest.fern:4:3
         [0].skip.freeForm                                                            true      01-simplest.fern:4:4
-          [0].skip.freeForm                                                          true      01-simplest.fern:5:5
         [1].Fern.LabeledItem                                                         true      01-simplest.fern:5:5
           [0].Fern.label                                                             true      01-simplest.fern:5:5
             [0].string                                                               false     01-simplest.fern:5:5
@@ -330,7 +311,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [1].number.unsigned.integer.decimal                                false     01-simplest.fern:6:3
             [3].string                                                               false     01-simplest.fern:6:3
         [3].skip.freeForm                                                            true      01-simplest.fern:6:4
-          [0].skip.freeForm                                                          true      01-simplest.fern:7:1
     [4].Fern.LabeledItem                                                             false     01-simplest.fern:7:1
       [0].Fern.label                                                                 false     01-simplest.fern:7:1
         [0].string                                                                   false     01-simplest.fern:7:1
@@ -364,7 +344,6 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [1].number.unsigned.integer.decimal                                    false     01-simplest.fern:7:1
         [3].string                                                                   false     01-simplest.fern:7:1
     [5].skip.freeForm                                                                true      01-simplest.fern:7:2
-      [0].skip.freeForm                                                              true      01-simplest.fern:8:1
 [0].Silva                                                                       Seed  ... ]<NEWLINE><WHITESPACE>»<NEWLINE>¦
   [0].Silva.Section                                                             Seed  ... <WHITESPACE><DEDENT>»<NEWLINE><WHITESPACE>¦
     [0].Silva.languageName                                                      ｢Seed｣
@@ -380,7 +359,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].language                                                                «<WHITESPACE>1 + ...  ;<NEWLINE><WHITESPACE>»¦
   [4].Silva.Section                                                             Fern  ... ]<NEWLINE><WHITESPACE>»<NEWLINE>¦
     [0].Silva.languageName                                                      ｢Fern｣
-    [1].language                                                                «<WHITESPACE>[\n  ... \n]<NEWLINE><WHITESPACE>»¦
+    [1].language                                                                «<WHITESPACE>[<NEWLINE><INDENT> ... <DEDENT>]<NEWLINE><WHITESPACE>»¦
 
 [0].Seed                                                                        langu ...  *<NEWLINE><WHITESPACE><DEDENT>¦
   [0].Seed.Language                                                             langu ...  *<NEWLINE><WHITESPACE><DEDENT>¦
@@ -785,29 +764,29 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [1].CppStmts.Expr.Atom                                                  b ¦
           [0].identifier                                                        ｢b｣
 
-[0].Fern                                                                        [\n  n ... ]\n]<NEWLINE><WHITESPACE>¦
-  [0].Fern.LabeledItem                                                          none\n  ¦
+[0].Fern                                                                        [<NEWLINE><INDENT>no ... <NEWLINE><DEDENT>]<NEWLINE><WHITESPACE>¦
+  [0].Fern.LabeledItem                                                          none<NEWLINE>¦
     [0].Fern.value                                                              ｢none｣
       [0].none                                                                  ｢none｣
-  [1].Fern.LabeledItem                                                          true\n  ¦
+  [1].Fern.LabeledItem                                                          true<NEWLINE>¦
     [0].Fern.value                                                              ｢true｣
       [0].boolean                                                               ｢true｣
-  [2].Fern.LabeledItem                                                          42\n  ¦
+  [2].Fern.LabeledItem                                                          42<NEWLINE>¦
     [0].Fern.value                                                              ｢42｣
       [0].number                                                                ｢42｣
         [0].number.integer                                                      ｢42｣
           [0].number.integer.decimal                                            ｢42｣
             [0].number.unsigned.integer.decimal                                 ｢42｣
-  [3].Fern.LabeledItem                                                          hello ...  'World'\n  ¦
+  [3].Fern.LabeledItem                                                          hello : 'World'<NEWLINE>¦
     [0].Fern.label                                                              ｢hello｣
       [0].identifier                                                            ｢hello｣
     [1].Fern.value                                                              ｢'World'｣
       [0].string                                                                ｢'World'｣
-  [4].Fern.LabeledItem                                                          []\n  ¦
-    [0].Fern                                                                    []\n  ¦
-  [5].Fern.LabeledItem                                                          [\n    ... \n  ]\n¦
-    [0].Fern                                                                    [\n    ... \n  ]\n¦
-      [0].Fern.LabeledItem                                                      'one' : 1 ... \n    ¦
+  [4].Fern.LabeledItem                                                          []<NEWLINE>¦
+    [0].Fern                                                                    []<NEWLINE>¦
+  [5].Fern.LabeledItem                                                          [<NEWLINE><INDENT>'one'  ... <NEWLINE><DEDENT>]<NEWLINE><DEDENT>¦
+    [0].Fern                                                                    [<NEWLINE><INDENT>'one'  ... <NEWLINE><DEDENT>]<NEWLINE><DEDENT>¦
+      [0].Fern.LabeledItem                                                      'one' : 1.0<NEWLINE>¦
         [0].Fern.label                                                          ｢'one'｣
           [0].string                                                            ｢'one'｣
         [1].Fern.value                                                          ｢1.0｣
@@ -818,7 +797,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.unsigned.integer.decimal                           ｢1｣
                 [1].number.unsigned.float.fraction                              ｢.0｣
                   [0].number.unsigned.integer.decimal                           ｢0｣
-      [1].Fern.LabeledItem                                                      'two' : 2.0\n  ¦
+      [1].Fern.LabeledItem                                                      'two' : 2.0<NEWLINE><DEDENT>¦
         [0].Fern.label                                                          ｢'two'｣
           [0].string                                                            ｢'two'｣
         [1].Fern.value                                                          ｢2.0｣
@@ -1110,39 +1089,38 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].string                                                      ｢'+='｣
               [3].Seed.Axe.op                                                   ｢'*='｣
                 [0].string                                                      ｢'*='｣
-      [4].Seed.Rule                                                             Atom  ...  ')' )<NEWLINE>¦
+      [4].Seed.Rule                                                             Atom  ... pr ')'<NEWLINE>¦
         [0].Seed.Nonterminal                                                    Atom ¦
           [0].Seed.ruleName                                                     ｢Atom｣
-        [1].Seed.Expr                                                           ( Str ... r ')' )¦
-          [0].Seed.Expr                                                         Struc ... pr ')' ¦
-            [0].Seed.Expr.Or.|                                                  Struc ... pr ')' ¦
-              [0].Seed.Nonterminal                                              Struct ¦
-                [0].Seed.ruleName                                               ｢Struct｣
-              [1].Seed.Terminal                                                 langu ...      ¦
-                [0].Seed.keyword                                                ｢language｣
-              [2].Seed.Nonterminal                                              typeName ¦
-                [0].Seed.tokenCategoryName                                      ｢typeName｣
-              [3].Seed.Nonterminal                                              funcName ¦
-                [0].Seed.tokenCategoryName                                      ｢funcName｣
-              [4].Seed.Nonterminal                                              ident ...      ¦
-                [0].Seed.tokenCategoryName                                      ｢identifier｣
-              [5].Seed.Nonterminal                                              string ¦
-                [0].Seed.tokenCategoryName                                      ｢string｣
-              [6].Seed.Nonterminal                                              numbe ...      ¦
-                [0].Seed.tokenCategoryName                                      ｢number｣
-              [7].Seed.Terminal                                                 \"true\" ¦
-                [0].string                                                      ｢"true"｣
-              [8].Seed.Terminal                                                 \"false\" ¦
-                [0].string                                                      ｢"false"｣
-              [9].Seed.Terminal                                                 \"none\"\n    ...      ¦
-                [0].string                                                      ｢"none"｣
-              [10].Seed.Expr.Concat.concat                                      '(' Expr ')' ¦
-                [0].Seed.Terminal                                               '(' ¦
-                  [0].string                                                    ｢'('｣
-                [1].Seed.Nonterminal                                            Expr ¦
-                  [0].Seed.ruleName                                             ｢Expr｣
-                [2].Seed.Terminal                                               ')' ¦
-                  [0].string                                                    ｢')'｣
+        [1].Seed.Expr                                                           Struc ... xpr ')'¦
+          [0].Seed.Expr.Or.|                                                    Struc ... xpr ')'¦
+            [0].Seed.Nonterminal                                                Struct ¦
+              [0].Seed.ruleName                                                 ｢Struct｣
+            [1].Seed.Terminal                                                   langu ...      ¦
+              [0].Seed.keyword                                                  ｢language｣
+            [2].Seed.Nonterminal                                                typeName ¦
+              [0].Seed.tokenCategoryName                                        ｢typeName｣
+            [3].Seed.Nonterminal                                                funcName ¦
+              [0].Seed.tokenCategoryName                                        ｢funcName｣
+            [4].Seed.Nonterminal                                                ident ...      ¦
+              [0].Seed.tokenCategoryName                                        ｢identifier｣
+            [5].Seed.Nonterminal                                                string ¦
+              [0].Seed.tokenCategoryName                                        ｢string｣
+            [6].Seed.Nonterminal                                                numbe ...      ¦
+              [0].Seed.tokenCategoryName                                        ｢number｣
+            [7].Seed.Terminal                                                   \"true\" ¦
+              [0].string                                                        ｢"true"｣
+            [8].Seed.Terminal                                                   \"false\" ¦
+              [0].string                                                        ｢"false"｣
+            [9].Seed.Terminal                                                   \"none\" <LINE_CONTINUATION>   ...      ¦
+              [0].string                                                        ｢"none"｣
+            [10].Seed.Expr.Concat.concat                                        '(' Expr ')'¦
+              [0].Seed.Terminal                                                 '(' ¦
+                [0].string                                                      ｢'('｣
+              [1].Seed.Nonterminal                                              Expr ¦
+                [0].Seed.ruleName                                               ｢Expr｣
+              [2].Seed.Terminal                                                 ')'¦
+                [0].string                                                      ｢')'｣
       [5].Seed.Scope                                                            Struc ... r )<NEWLINE><DEDENT>¦
         [0].Seed.Nonterminal                                                    Struct¦
           [0].Seed.ruleName                                                     ｢Struct｣
@@ -1340,9 +1318,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
 [0].Silva                                                                       Soil  ... }<NEWLINE><WHITESPACE>»<NEWLINE>¦
   [0].Silva.Section                                                             Soil  ... }<NEWLINE><WHITESPACE>»<NEWLINE>¦
     [0].Silva.languageName                                                      ｢Soil｣
-    [1].language                                                                «<WHITESPACE><WHITESPACE>na ... \n}<NEWLINE><WHITESPACE>»¦
+    [1].language                                                                «<WHITESPACE><WHITESPACE>na ... <DEDENT>}<NEWLINE><WHITESPACE>»¦
 
-[0].Soil                                                                        name_ ... }\n}<NEWLINE><WHITESPACE>¦
+[0].Soil                                                                        name_ ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
   [0].Soil.Type.Defn                                                            name_ ... tr_t<NEWLINE>¦
     [0].Soil.Type.Name                                                          name_t ¦
       [0].Soil.typeName                                                         ｢name_t｣
@@ -1359,16 +1337,16 @@ seed::interpreter_t::apply(.Fern) failed to parse
       [0].Soil.Type.Name                                                        i32_t<NEWLINE><WHITESPACE>¦
         [0].Soil.typeName                                                       ｢i32_t｣
           [0].identifier                                                        ｢i32_t｣
-  [2].Soil.Type.Defn                                                            perso ... ;\n]<NEWLINE><WHITESPACE>¦
+  [2].Soil.Type.Defn                                                            perso ... <NEWLINE><DEDENT>]<NEWLINE><WHITESPACE>¦
     [0].Soil.Type.Name                                                          person_t ¦
       [0].Soil.typeName                                                         ｢person_t｣
         [0].identifier                                                          ｢person_t｣
-    [1].Soil.Type                                                               [\n  [ ... ;\n]<NEWLINE><WHITESPACE>¦
-      [0].Soil.Type.Struct                                                      [\n  [ ... ;\n]<NEWLINE><WHITESPACE>¦
-        [0].Soil.Type.Struct.Member                                             [\n    ... ];\n  ¦
-          [0].Soil.Type                                                         [\n    ... \n  ] ¦
-            [0].Soil.Type.Struct                                                [\n    ... \n  ] ¦
-              [0].Soil.Type.Struct.Member                                       name_ ... \n    ¦
+    [1].Soil.Type                                                               [<NEWLINE><INDENT>[<NEWLINE> ... <NEWLINE><DEDENT>]<NEWLINE><WHITESPACE>¦
+      [0].Soil.Type.Struct                                                      [<NEWLINE><INDENT>[<NEWLINE> ... <NEWLINE><DEDENT>]<NEWLINE><WHITESPACE>¦
+        [0].Soil.Type.Struct.Member                                             [<NEWLINE><INDENT>na ... 'Nym' ];<NEWLINE>¦
+          [0].Soil.Type                                                         [<NEWLINE><INDENT>na ... ;<NEWLINE><DEDENT>] ¦
+            [0].Soil.Type.Struct                                                [<NEWLINE><INDENT>na ... ;<NEWLINE><DEDENT>] ¦
+              [0].Soil.Type.Struct.Member                                       name_ ... rst;<NEWLINE>¦
                 [0].Soil.Type                                                   name_t ¦
                   [0].Soil.Type.Name                                            name_t ¦
                     [0].Soil.typeName                                           ｢name_t｣
@@ -1376,7 +1354,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [1].Soil.Type.Struct.Member.Label                               : first¦
                   [0].Soil.Type.Struct.Member.Name                              first¦
                     [0].identifier                                              ｢first｣
-              [1].Soil.Type.Struct.Member                                       name_ ... 'Trump';\n  ¦
+              [1].Soil.Type.Struct.Member                                       name_ ...  'Trump';<NEWLINE><DEDENT>¦
                 [0].Soil.Type                                                   name_t ¦
                   [0].Soil.Type.Name                                            name_t ¦
                     [0].Soil.typeName                                           ｢name_t｣
@@ -1403,7 +1381,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].Soil.Expr                                               'Nym' ¦
                       [0].Soil.Expr.Atom                                        'Nym' ¦
                         [0].string                                              ｢'Nym'｣
-        [1].Soil.Type.Struct.Member                                             age_t ... st);\n¦
+        [1].Soil.Type.Struct.Member                                             age_t ... t);<NEWLINE><DEDENT>¦
           [0].Soil.Type                                                         age_t ¦
             [0].Soil.Type.Name                                                  age_t ¦
               [0].Soil.typeName                                                 ｢age_t｣
@@ -1449,7 +1427,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].number.integer                                          ｢80｣
                       [0].number.integer.decimal                                ｢80｣
                         [0].number.unsigned.integer.decimal                     ｢80｣
-  [4].Soil.Func.Defn                                                            is_ad ... ;\n}<NEWLINE><WHITESPACE>¦
+  [4].Soil.Func.Defn                                                            is_ad ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
     [0].Soil.Func.Name                                                          is_ad ... lt_f ¦
       [0].Soil.funcName                                                         ｢is_adult_f｣
         [0].identifier                                                          ｢is_adult_f｣
@@ -1462,8 +1440,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
         [0].Soil.Type.Name                                                      bool_t ¦
           [0].Soil.typeName                                                     ｢bool_t｣
             [0].identifier                                                      ｢bool_t｣
-    [2].Soil.Func.Body                                                          {\n  r ... ;\n}<NEWLINE><WHITESPACE>¦
-      [0].Soil.Func.Stmt                                                        retva ...  18;\n¦
+    [2].Soil.Func.Body                                                          {<NEWLINE><INDENT>re ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
+      [0].Soil.Func.Stmt                                                        retva ... 18;<NEWLINE><DEDENT>¦
         [0].Soil.Expr                                                           retva ... >= 18¦
           [0].Soil.Expr.Axe.Assign.=                                            retva ... >= 18¦
             [0].Soil.Expr.Atom                                                  retval ¦
@@ -1479,15 +1457,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.integer                                            ｢18｣
                     [0].number.integer.decimal                                  ｢18｣
                       [0].number.unsigned.integer.decimal                       ｢18｣
-  [5].Soil.Func.Defn                                                            examp ... }\n}<NEWLINE><WHITESPACE>¦
+  [5].Soil.Func.Defn                                                            examp ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
     [0].Soil.Func.Name                                                          example_f ¦
       [0].Soil.funcName                                                         ｢example_f｣
         [0].identifier                                                          ｢example_f｣
     [1].Soil.Func.Signature                                                     [] ¦
       [0].Soil.Type                                                             [] ¦
         [0].Soil.Type.Struct                                                    [] ¦
-    [2].Soil.Func.Body                                                          {\n  a ... }\n}<NEWLINE><WHITESPACE>¦
-      [0].Soil.Func.Stmt                                                        age = ... 2;\n  ¦
+    [2].Soil.Func.Body                                                          {<NEWLINE><INDENT>ag ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
+      [0].Soil.Func.Stmt                                                        age = ...  42;<NEWLINE>¦
         [0].Soil.Expr                                                           age = ... :: 42¦
           [0].Soil.Expr.Axe.Assign.=                                            age = ... :: 42¦
             [0].Soil.Expr.Atom                                                  age ¦
@@ -1501,7 +1479,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.integer                                            ｢42｣
                     [0].number.integer.decimal                                  ｢42｣
                       [0].number.unsigned.integer.decimal                       ｢42｣
-      [1].Soil.Func.Stmt                                                        p1 =  ... ];\n  ¦
+      [1].Soil.Func.Stmt                                                        p1 =  ... 0 ];<NEWLINE>¦
         [0].Soil.Expr                                                           p1 =  ...  20 ]¦
           [0].Soil.Expr.Axe.Assign.=                                            p1 =  ...  20 ]¦
             [0].Soil.Expr.Atom                                                  p1 ¦
@@ -1537,7 +1515,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                           [0].number.integer                                    ｢20｣
                             [0].number.integer.decimal                          ｢20｣
                               [0].number.unsigned.integer.decimal               ｢20｣
-      [2].Soil.Func.Stmt                                                        p2 =  ... ];\n  ¦
+      [2].Soil.Func.Stmt                                                        p2 =  ... 0 ];<NEWLINE>¦
         [0].Soil.Expr                                                           p2 =  ...  30 ]¦
           [0].Soil.Expr.Axe.Assign.=                                            p2 =  ...  30 ]¦
             [0].Soil.Expr.Atom                                                  p2 ¦
@@ -1565,7 +1543,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                           [0].number.integer                                    ｢30｣
                             [0].number.integer.decimal                          ｢30｣
                               [0].number.unsigned.integer.decimal               ｢30｣
-      [3].Soil.Func.Stmt                                                        ['{} is-adult = {}' p1 ... f;\n  ¦
+      [3].Soil.Func.Stmt                                                        ['{} is-adult = {}' p1 ... g_f;<NEWLINE>¦
         [0].Soil.Expr                                                           ['{} is-adult = {}' p1 ... log_f¦
           [0].Soil.Expr.Axe.CallPipe.|                                          ['{} is-adult = {}' p1 ... log_f¦
             [0].Soil.Expr.Atom                                                  ['{} is-adult = {}' p1 ... p1)] ¦
@@ -1589,7 +1567,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].Soil.Expr.Atom                                                  log_f¦
               [0].Soil.funcName                                                 ｢log_f｣
                 [0].identifier                                                  ｢log_f｣
-      [4].Soil.Func.Stmt                                                        vecto ... f;\n  ¦
+      [4].Soil.Func.Stmt                                                        vecto ... g_f;<NEWLINE>¦
         [0].Soil.Expr                                                           vecto ... log_f¦
           [0].Soil.Expr.Axe.CallPipe.|                                          vecto ... log_f¦
             [0].Soil.Expr.Axe.CallPipe.|                                        vecto ...  40) ¦
@@ -1631,7 +1609,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].Soil.Expr.Atom                                                  log_f¦
               [0].Soil.funcName                                                 ｢log_f｣
                 [0].identifier                                                  ｢log_f｣
-      [5].Soil.Func.Stmt                                                        «<INDENT>som ... ;\n\n  ¦
+      [5].Soil.Func.Stmt                                                        «<INDENT>som ... _f;<NEWLINE><WHITESPACE>¦
         [0].Soil.Expr                                                           «<INDENT>som ... int_f¦
           [0].Soil.Expr.Axe.CallPipe.|                                          «<INDENT>som ... int_f¦
             [0].Soil.Expr.Atom                                                  «<INDENT>som ...  <NEWLINE><DEDENT>» ¦
@@ -1639,9 +1617,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
             [1].Soil.Expr.Atom                                                  print_f¦
               [0].Soil.funcName                                                 ｢print_f｣
                 [0].identifier                                                  ｢print_f｣
-      [6].Soil.Func.Stmt                                                        if p1 ... }\n\n  ¦
-        [0].Soil.Func.Stmt.If                                                   if p1 ... }\n\n  ¦
-          [0].Soil.Func.Stmt.If.Branch                                          p1.na ... \n  } ¦
+      [6].Soil.Func.Stmt                                                        if p1 ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
+        [0].Soil.Func.Stmt.If                                                   if p1 ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
+          [0].Soil.Func.Stmt.If.Branch                                          p1.na ... ;<NEWLINE><DEDENT>} ¦
             [0].Soil.Expr                                                       p1.na ... > 10 ¦
               [0].Soil.Expr.Axe.Comp.>                                          p1.na ... > 10 ¦
                 [0].Soil.Expr.Axe.CallPipe.|                                    p1.na ... ze_f ¦
@@ -1661,8 +1639,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].number.integer                                          ｢10｣
                       [0].number.integer.decimal                                ｢10｣
                         [0].number.unsigned.integer.decimal                     ｢10｣
-            [1].Soil.Func.Body                                                  {\n    ... \n  } ¦
-              [0].Soil.Func.Stmt                                                'This name is long' | l ... f;\n  ¦
+            [1].Soil.Func.Body                                                  {<NEWLINE><INDENT>'This name is long'  ... ;<NEWLINE><DEDENT>} ¦
+              [0].Soil.Func.Stmt                                                'This name is long' | l ... _f;<NEWLINE><DEDENT>¦
                 [0].Soil.Expr                                                   'This name is long' | log_f¦
                   [0].Soil.Expr.Axe.CallPipe.|                                  'This name is long' | log_f¦
                     [0].Soil.Expr.Atom                                          'This name is long' ¦
@@ -1670,7 +1648,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [1].Soil.Expr.Atom                                          log_f¦
                       [0].Soil.funcName                                         ｢log_f｣
                         [0].identifier                                          ｢log_f｣
-          [1].Soil.Func.Stmt.If.Branch                                          p1.na ... \n  } ¦
+          [1].Soil.Func.Stmt.If.Branch                                          p1.na ... ;<NEWLINE><DEDENT>} ¦
             [0].Soil.Expr                                                       p1.na ...  > 5 ¦
               [0].Soil.Expr.Axe.Comp.>                                          p1.na ...  > 5 ¦
                 [0].Soil.Expr.Axe.CallPipe.|                                    p1.na ... ze_f ¦
@@ -1690,8 +1668,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].number.integer                                          ｢5｣
                       [0].number.integer.decimal                                ｢5｣
                         [0].number.unsigned.integer.decimal                     ｢5｣
-            [1].Soil.Func.Body                                                  {\n    ... \n  } ¦
-              [0].Soil.Func.Stmt                                                'This name it not long' | l ... f;\n  ¦
+            [1].Soil.Func.Body                                                  {<NEWLINE><INDENT>'This name it not long'  ... ;<NEWLINE><DEDENT>} ¦
+              [0].Soil.Func.Stmt                                                'This name it not long' | l ... _f;<NEWLINE><DEDENT>¦
                 [0].Soil.Expr                                                   'This name it not long' | log_f¦
                   [0].Soil.Expr.Axe.CallPipe.|                                  'This name it not long' | log_f¦
                     [0].Soil.Expr.Atom                                          'This name it not long' ¦
@@ -1699,8 +1677,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [1].Soil.Expr.Atom                                          log_f¦
                       [0].Soil.funcName                                         ｢log_f｣
                         [0].identifier                                          ｢log_f｣
-          [2].Soil.Func.Body                                                    {\n    ... }\n\n  ¦
-            [0].Soil.Func.Stmt                                                  'This name it short' | l ... f;\n  ¦
+          [2].Soil.Func.Body                                                    {<NEWLINE><INDENT>'This name it short'  ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
+            [0].Soil.Func.Stmt                                                  'This name it short' | l ... _f;<NEWLINE><DEDENT>¦
               [0].Soil.Expr                                                     'This name it short' | log_f¦
                 [0].Soil.Expr.Axe.CallPipe.|                                    'This name it short' | log_f¦
                   [0].Soil.Expr.Atom                                            'This name it short' ¦
@@ -1708,7 +1686,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [1].Soil.Expr.Atom                                            log_f¦
                     [0].Soil.funcName                                           ｢log_f｣
                       [0].identifier                                            ｢log_f｣
-      [7].Soil.Func.Stmt                                                        sum = ... 0;\n  ¦
+      [7].Soil.Func.Stmt                                                        sum = ... : 0;<NEWLINE>¦
         [0].Soil.Expr                                                           sum = ...  :: 0¦
           [0].Soil.Expr.Axe.Assign.=                                            sum = ...  :: 0¦
             [0].Soil.Expr.Atom                                                  sum ¦
@@ -1722,8 +1700,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.integer                                            ｢0｣
                     [0].number.integer.decimal                                  ｢0｣
                       [0].number.unsigned.integer.decimal                       ｢0｣
-      [8].Soil.Func.Stmt                                                        for i ... }\n\n  ¦
-        [0].Soil.Func.Stmt.For                                                  for i ... }\n\n  ¦
+      [8].Soil.Func.Stmt                                                        for i ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
+        [0].Soil.Func.Stmt.For                                                  for i ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
           [0].Soil.Expr.Maybe                                                   i = i ...  :: 0¦
             [0].Soil.Expr                                                       i = i ...  :: 0¦
               [0].Soil.Expr.Axe.Assign.=                                        i = i ...  :: 0¦
@@ -1755,15 +1733,15 @@ seed::interpreter_t::apply(.Fern) failed to parse
                     [0].number.integer                                          ｢1｣
                       [0].number.integer.decimal                                ｢1｣
                         [0].number.unsigned.integer.decimal                     ｢1｣
-          [3].Soil.Func.Body                                                    {\n    ... }\n\n  ¦
-            [0].Soil.Func.Stmt                                                  sum + ... i;\n  ¦
+          [3].Soil.Func.Body                                                    {<NEWLINE><INDENT>su ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
+            [0].Soil.Func.Stmt                                                  sum + ...  i;<NEWLINE><DEDENT>¦
               [0].Soil.Expr                                                     sum += i¦
                 [0].Soil.Expr.Axe.Assign.+=                                     sum += i¦
                   [0].Soil.Expr.Atom                                            sum ¦
                     [0].identifier                                              ｢sum｣
                   [1].Soil.Expr.Atom                                            i¦
                     [0].identifier                                              ｢i｣
-      [9].Soil.Func.Stmt                                                        abc = ... 2;\n  ¦
+      [9].Soil.Func.Stmt                                                        abc = 42;<NEWLINE>¦
         [0].Soil.Expr                                                           abc = 42¦
           [0].Soil.Expr.Axe.Assign.=                                            abc = 42¦
             [0].Soil.Expr.Atom                                                  abc ¦
@@ -1773,8 +1751,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [0].number.integer                                              ｢42｣
                   [0].number.integer.decimal                                    ｢42｣
                     [0].number.unsigned.integer.decimal                         ｢42｣
-      [10].Soil.Func.Stmt                                                       for ; ... \n  }\n¦
-        [0].Soil.Func.Stmt.For                                                  for ; ... \n  }\n¦
+      [10].Soil.Func.Stmt                                                       for ; ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
+        [0].Soil.Func.Stmt.For                                                  for ; ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
           [0].Soil.Expr.Maybe                                                   ¦
           [1].Soil.Expr.Maybe                                                   i < n¦
             [0].Soil.Expr                                                       i < n¦
@@ -1784,8 +1762,8 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [1].Soil.Expr.Atom                                              n¦
                   [0].identifier                                                ｢n｣
           [2].Soil.Expr.Maybe                                                   ¦
-          [3].Soil.Func.Body                                                    {\n    ... \n  }\n¦
-            [0].Soil.Func.Stmt                                                  sum + ... i;\n  ¦
+          [3].Soil.Func.Body                                                    {<NEWLINE><INDENT>su ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
+            [0].Soil.Func.Stmt                                                  sum + ...  i;<NEWLINE><DEDENT>¦
               [0].Soil.Expr                                                     sum += i¦
                 [0].Soil.Expr.Axe.Assign.+=                                     sum += i¦
                   [0].Soil.Expr.Atom                                            sum ¦
@@ -2846,7 +2824,7 @@ Mr Jane
                   [1].Cedar.Type.Declarator.Direct                              format¦
                     [0].identifier                                              ｢format｣
               [2].Cedar.Declaration.ParameterDeclaration                        ...¦
-  [2].Cedar.Declaration                                                         int<NEWLINE>m ... ;\n}<NEWLINE><WHITESPACE>¦
+  [2].Cedar.Declaration                                                         int<NEWLINE>m ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
     [0].Cedar.Declaration.Specifiers                                            int<NEWLINE>¦
       [0].Cedar.Type.Specifier                                                  int<NEWLINE>¦
         [0].Cedar.Type.IntSpecifier                                             int<NEWLINE>¦
@@ -2872,9 +2850,9 @@ Mr Jane
                   [1].Cedar.Type.Declarator.Direct                              argv[]¦
                     [0].identifier                                              ｢argv｣
                     [1].Cedar.Type.Declarator.Suffix                            []¦
-    [2].Cedar.Stmt.Compound                                                     {\n  f ... ;\n}<NEWLINE><WHITESPACE>¦
-      [0].Cedar.Stmt                                                            for ( ...  }\n  ¦
-        [0].Cedar.Stmt.For                                                      for ( ...  }\n  ¦
+    [2].Cedar.Stmt.Compound                                                     {<NEWLINE><INDENT>fo ... <NEWLINE><DEDENT>}<NEWLINE><WHITESPACE>¦
+      [0].Cedar.Stmt                                                            for ( ... ;<NEWLINE><DEDENT>}<NEWLINE>¦
+        [0].Cedar.Stmt.For                                                      for ( ... ;<NEWLINE><DEDENT>}<NEWLINE>¦
           [0].Cedar.Declaration                                                 int i ... = 0; ¦
             [0].Cedar.Declaration.Specifiers                                    int ¦
               [0].Cedar.Type.Specifier                                          int ¦
@@ -2897,10 +2875,10 @@ Mr Jane
             [0].Cedar.Expr.Postfix.++                                           i++¦
               [0].Cedar.Expr.Atom                                               i¦
                 [0].identifier                                                  ｢i｣
-          [3].Cedar.Stmt                                                        {\n    ...  }\n  ¦
-            [0].Cedar.Stmt.Compound                                             {\n    ...  }\n  ¦
-              [0].Cedar.Stmt                                                    fprin ... );\n  ¦
-                [0].Cedar.Stmt.ExprStmt                                         fprin ... );\n  ¦
+          [3].Cedar.Stmt                                                        {<NEWLINE><INDENT>fp ... ;<NEWLINE><DEDENT>}<NEWLINE>¦
+            [0].Cedar.Stmt.Compound                                             {<NEWLINE><INDENT>fp ... ;<NEWLINE><DEDENT>}<NEWLINE>¦
+              [0].Cedar.Stmt                                                    fprin ... ]);<NEWLINE><DEDENT>¦
+                [0].Cedar.Stmt.ExprStmt                                         fprin ... ]);<NEWLINE><DEDENT>¦
                   [0].Cedar.Expr                                                fprin ... v[i])¦
                     [0].Cedar.Expr.Postfix.(                                    fprin ... v[i])¦
                       [0].Cedar.Expr.Atom                                       fprintf¦
@@ -2921,8 +2899,8 @@ Mr Jane
                                 [0].Cedar.Expr                                  i¦
                                   [0].Cedar.Expr.Atom                           i¦
                                     [0].identifier                              ｢i｣
-      [1].Cedar.Stmt                                                            return 0;\n¦
-        [0].Cedar.Stmt.Return                                                   return 0;\n¦
+      [1].Cedar.Stmt                                                            retur ...  0;<NEWLINE><DEDENT>¦
+        [0].Cedar.Stmt.Return                                                   retur ...  0;<NEWLINE><DEDENT>¦
           [0].Cedar.Expr                                                        0¦
             [0].Cedar.Expr.Atom                                                 0¦
               [0].Cedar.Expr.number                                             ｢0｣
@@ -3516,7 +3494,7 @@ Mr Jane
                 [3].Seed.Expr.Postfix.?                                         ',' ? ¦
                   [0].Seed.Terminal                                             ',' ¦
                     [0].string                                                  ｢','｣
-                [4].Seed.Terminal                                               ')' <WHITESPACE>   ...      ¦
+                [4].Seed.Terminal                                               ')' <LINE_CONTINUATION>   ...      ¦
                   [0].string                                                    ｢')'｣
               [1].Seed.Expr.Concat.concat                                       AsNam ...      ¦
                 [0].Seed.Nonterminal                                            AsName ¦
@@ -4470,40 +4448,39 @@ Mr Jane
                 [0].string                                                      ｢"lambda"｣
               [3].Seed.Axe.op                                                   ｢':'｣
                 [0].string                                                      ｢':'｣
-      [2].Seed.Rule                                                             Atom  ... er )<NEWLINE>¦
+      [2].Seed.Rule                                                             Atom  ... fier<NEWLINE>¦
         [0].Seed.Nonterminal                                                    Atom ¦
           [0].Seed.ruleName                                                     ｢Atom｣
-        [1].Seed.Expr                                                           ( bui ... ier )¦
-          [0].Seed.Expr                                                         built ... fier ¦
-            [0].Seed.Expr.Or.|                                                  built ... fier ¦
-              [0].Seed.Nonterminal                                              built ... eral ¦
-                [0].Seed.tokenCategoryName                                      ｢builtinLiteral｣
-              [1].Seed.Terminal                                                 '...' ¦
-                [0].string                                                      ｢'...'｣
-              [2].Seed.Nonterminal                                              Strings ¦
-                [0].Seed.ruleName                                               ｢Strings｣
-              [3].Seed.Nonterminal                                              numbe ...      ¦
-                [0].Seed.tokenCategoryName                                      ｢number｣
-              [4].Seed.Nonterminal                                              GenExp ¦
-                [0].Seed.ruleName                                               ｢GenExp｣
-              [5].Seed.Nonterminal                                              Group ¦
-                [0].Seed.ruleName                                               ｢Group｣
-              [6].Seed.Nonterminal                                              Tuple ...      ¦
-                [0].Seed.ruleName                                               ｢Tuple｣
-              [7].Seed.Nonterminal                                              ListComp ¦
-                [0].Seed.ruleName                                               ｢ListComp｣
-              [8].Seed.Nonterminal                                              List\n ...      ¦
-                [0].Seed.ruleName                                               ｢List｣
-              [9].Seed.Nonterminal                                              DictComp ¦
-                [0].Seed.ruleName                                               ｢DictComp｣
-              [10].Seed.Nonterminal                                             SetComp ¦
-                [0].Seed.ruleName                                               ｢SetComp｣
-              [11].Seed.Nonterminal                                             Dict ¦
-                [0].Seed.ruleName                                               ｢Dict｣
-              [12].Seed.Nonterminal                                             Set\n  ...      ¦
-                [0].Seed.ruleName                                               ｢Set｣
-              [13].Seed.Nonterminal                                             ident ... fier ¦
-                [0].Seed.tokenCategoryName                                      ｢identifier｣
+        [1].Seed.Expr                                                           built ... ifier¦
+          [0].Seed.Expr.Or.|                                                    built ... ifier¦
+            [0].Seed.Nonterminal                                                built ... eral ¦
+              [0].Seed.tokenCategoryName                                        ｢builtinLiteral｣
+            [1].Seed.Terminal                                                   '...' ¦
+              [0].string                                                        ｢'...'｣
+            [2].Seed.Nonterminal                                                Strings ¦
+              [0].Seed.ruleName                                                 ｢Strings｣
+            [3].Seed.Nonterminal                                                numbe ...      ¦
+              [0].Seed.tokenCategoryName                                        ｢number｣
+            [4].Seed.Nonterminal                                                GenExp ¦
+              [0].Seed.ruleName                                                 ｢GenExp｣
+            [5].Seed.Nonterminal                                                Group ¦
+              [0].Seed.ruleName                                                 ｢Group｣
+            [6].Seed.Nonterminal                                                Tuple ...      ¦
+              [0].Seed.ruleName                                                 ｢Tuple｣
+            [7].Seed.Nonterminal                                                ListComp ¦
+              [0].Seed.ruleName                                                 ｢ListComp｣
+            [8].Seed.Nonterminal                                                List  ...      ¦
+              [0].Seed.ruleName                                                 ｢List｣
+            [9].Seed.Nonterminal                                                DictComp ¦
+              [0].Seed.ruleName                                                 ｢DictComp｣
+            [10].Seed.Nonterminal                                               SetComp ¦
+              [0].Seed.ruleName                                                 ｢SetComp｣
+            [11].Seed.Nonterminal                                               Dict ¦
+              [0].Seed.ruleName                                                 ｢Dict｣
+            [12].Seed.Nonterminal                                               Set <LINE_CONTINUATION> ...      ¦
+              [0].Seed.ruleName                                                 ｢Set｣
+            [13].Seed.Nonterminal                                               identifier¦
+              [0].Seed.tokenCategoryName                                        ｢identifier｣
       [3].Seed.Rule                                                             GenEx ... es ')'<NEWLINE>¦
         [0].Seed.Nonterminal                                                    GenExp ¦
           [0].Seed.ruleName                                                     ｢GenExp｣
@@ -4834,19 +4811,19 @@ Mr Jane
                   [0].Seed.tokenCategoryName                                    ｢string｣
                 [1].Seed.Nonterminal                                            fstring ¦
                   [0].Seed.tokenCategoryName                                    ｢fstring｣
-      [2].Seed.Rule                                                             fstri ... G <COMMENT><NEWLINE><WHITESPACE>¦
+      [2].Seed.Rule                                                             fstri ... g <COMMENT><NEWLINE><WHITESPACE>¦
         [0].Seed.Nonterminal                                                    fstring ¦
           [0].Seed.tokenCategoryName                                            ｢fstring｣
-        [1].Seed.Expr                                                           ( 'f' | ... ING <COMMENT>¦
-          [0].Seed.Expr.Concat.concat                                           ( 'f' | ... ING <COMMENT>¦
+        [1].Seed.Expr                                                           ( 'f' | ... ing <COMMENT>¦
+          [0].Seed.Expr.Concat.concat                                           ( 'f' | ... ing <COMMENT>¦
             [0].Seed.Expr                                                       'f' | 't' ¦
               [0].Seed.Expr.Or.|                                                'f' | 't' ¦
                 [0].Seed.Terminal                                               'f' ¦
                   [0].string                                                    ｢'f'｣
                 [1].Seed.Terminal                                               't' ¦
                   [0].string                                                    ｢'t'｣
-            [1].Seed.Terminal                                                   STRING <COMMENT>¦
-              [0].Seed.fragName                                                 ｢STRING｣
+            [1].Seed.Nonterminal                                                string <COMMENT>¦
+              [0].Seed.tokenCategoryName                                        ｢string｣
     [19].Seed.Scope                                                             numbe ... 'J' ]<NEWLINE><DEDENT>¦
       [0].Seed.Nonterminal                                                      number¦
         [0].Seed.tokenCategoryName                                              ｢number｣
@@ -6946,6 +6923,7 @@ Mr Jane
                                     [0].Pine.Expr.Atom                          f\"{n} values\"¦
                                       [0].Pine.Strings                          f\"{n} values\"¦
                                         [0].Pine.Strings.fstring                ｢f"{n} values"｣
+                                          [0].string                            ｢"{n} values"｣
                                 [1].Pine.Argument                               \"are plenty\"¦
                                   [0].Pine.Expr.Named                           \"are plenty\"¦
                                     [0].Pine.Expr.Atom                          \"are plenty\"¦
@@ -7718,13 +7696,15 @@ Mr Jane
           [0].Seed.Expr.Alternation                                             [ SPA ... NT ] ¦
             [0].Seed.Terminal                                                   SPACE ¦
               [0].Seed.fragName                                                 ｢SPACE｣
-            [1].Seed.Terminal                                                   COMMENT ¦
+            [1].Seed.Terminal                                                   LINE_ ... TION ¦
+              [0].Seed.fragName                                                 ｢LINE_CONTINUATION｣
+            [2].Seed.Terminal                                                   COMMENT ¦
               [0].Seed.fragName                                                 ｢COMMENT｣
-            [2].Seed.Terminal                                                   WHITE ... PACE ¦
+            [3].Seed.Terminal                                                   WHITE ... PACE ¦
               [0].Seed.fragName                                                 ｢WHITESPACE｣
-            [3].Seed.Terminal                                                   INDENT ¦
+            [4].Seed.Terminal                                                   INDENT ¦
               [0].Seed.fragName                                                 ｢INDENT｣
-            [4].Seed.Terminal                                                   DEDENT ¦
+            [5].Seed.Terminal                                                   DEDENT ¦
               [0].Seed.fragName                                                 ｢DEDENT｣
     [3].Seed.Rule                                                               ⊙ = L ... ?<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
       [0].Seed.here                                                             ｢⊙｣
@@ -7747,16 +7727,13 @@ Mr Jane
                 [2].Seed.Expr.Postfix.?                                         Newli ... st ? ¦
                   [0].Seed.Nonterminal                                          Newli ... List ¦
                     [0].Seed.ruleName                                           ｢NewlineList｣
-    [4].Seed.Rule                                                               newli ... ED ]<NEWLINE>¦
+    [4].Seed.Rule                                                               newli ... LINE<NEWLINE>¦
       [0].Seed.Nonterminal                                                      newli ...      ¦
         [0].Seed.tokenCategoryName                                              ｢newline｣
       [1].Seed.qualifier                                                        ｢no_node｣
-      [2].Seed.Expr                                                             [ NEW ... EED ]¦
-        [0].Seed.Expr.Alternation                                               [ NEW ... EED ]¦
-          [0].Seed.Terminal                                                     NEWLINE ¦
-            [0].Seed.fragName                                                   ｢NEWLINE｣
-          [1].Seed.Terminal                                                     LINEFEED ¦
-            [0].Seed.fragName                                                   ｢LINEFEED｣
+      [2].Seed.Expr                                                             NEWLINE¦
+        [0].Seed.Terminal                                                       NEWLINE¦
+          [0].Seed.fragName                                                     ｢NEWLINE｣
     [5].Seed.Rule                                                               Lineb ... ne *<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Lineb ...      ¦
         [0].Seed.ruleName                                                       ｢Linebreak｣
@@ -8425,7 +8402,7 @@ Mr Jane
             [0].string                                                          ｢"done"｣
           [7].Seed.Terminal                                                     \"case\" ¦
             [0].string                                                          ｢"case"｣
-          [8].Seed.Terminal                                                     \"esac\" <WHITESPACE>   ...      ¦
+          [8].Seed.Terminal                                                     \"esac\" <LINE_CONTINUATION>   ...      ¦
             [0].string                                                          ｢"esac"｣
           [9].Seed.Terminal                                                     \"while\" ¦
             [0].string                                                          ｢"while"｣
@@ -8664,17 +8641,17 @@ Mr Jane
                     [0].identifier                                              ｢greeting｣
                     [1].Ash.word                                                ｢"hello, world"｣
                       [0].string                                                ｢"hello, world"｣
-  [5].Ash.CompleteCommand                                                       greet ... '%s\\n' \"$greeting\"\n}¦
-    [0].Ash.List                                                                greet ... '%s\\n' \"$greeting\"\n}¦
-      [0].Ash.AndOr                                                             greet ... '%s\\n' \"$greeting\"\n}¦
-        [0].Ash.Pipeline                                                        greet ... '%s\\n' \"$greeting\"\n}¦
-          [0].Ash.PipeSequence                                                  greet ... '%s\\n' \"$greeting\"\n}¦
-            [0].Ash.Command                                                     greet ... '%s\\n' \"$greeting\"\n}¦
-              [0].Ash.FunctionDefinition                                        greet ... '%s\\n' \"$greeting\"\n}¦
+  [5].Ash.CompleteCommand                                                       greet ...  \"$greeting\"<NEWLINE><DEDENT>}¦
+    [0].Ash.List                                                                greet ...  \"$greeting\"<NEWLINE><DEDENT>}¦
+      [0].Ash.AndOr                                                             greet ...  \"$greeting\"<NEWLINE><DEDENT>}¦
+        [0].Ash.Pipeline                                                        greet ...  \"$greeting\"<NEWLINE><DEDENT>}¦
+          [0].Ash.PipeSequence                                                  greet ...  \"$greeting\"<NEWLINE><DEDENT>}¦
+            [0].Ash.Command                                                     greet ...  \"$greeting\"<NEWLINE><DEDENT>}¦
+              [0].Ash.FunctionDefinition                                        greet ...  \"$greeting\"<NEWLINE><DEDENT>}¦
                 [0].Ash.fname                                                   ｢greet｣
                   [0].identifier                                                ｢greet｣
-                [1].Ash.CompoundCommand                                         {\n    ... '%s\\n' \"$greeting\"\n}¦
-                  [0].Ash.BraceGroup                                            {\n    ... '%s\\n' \"$greeting\"\n}¦
+                [1].Ash.CompoundCommand                                         {<NEWLINE><INDENT>pr ...  \"$greeting\"<NEWLINE><DEDENT>}¦
+                  [0].Ash.BraceGroup                                            {<NEWLINE><INDENT>pr ...  \"$greeting\"<NEWLINE><DEDENT>}¦
                     [0].Ash.Term                                                printf '%s\\n' \"$greeting\"¦
                       [0].Ash.AndOr                                             printf '%s\\n' \"$greeting\"¦
                         [0].Ash.Pipeline                                        printf '%s\\n' \"$greeting\"¦
@@ -8691,17 +8668,17 @@ Mr Jane
                                   [1].Ash.Word                                  \"$greeting\"¦
                                     [0].Ash.word                                ｢"$greeting"｣
                                       [0].string                                ｢"$greeting"｣
-  [6].Ash.CompleteCommand                                                       count ... o \"args: $n\"\n}¦
-    [0].Ash.List                                                                count ... o \"args: $n\"\n}¦
-      [0].Ash.AndOr                                                             count ... o \"args: $n\"\n}¦
-        [0].Ash.Pipeline                                                        count ... o \"args: $n\"\n}¦
-          [0].Ash.PipeSequence                                                  count ... o \"args: $n\"\n}¦
-            [0].Ash.Command                                                     count ... o \"args: $n\"\n}¦
-              [0].Ash.FunctionDefinition                                        count ... o \"args: $n\"\n}¦
+  [6].Ash.CompleteCommand                                                       count ...  \"args: $n\"<NEWLINE><DEDENT>}¦
+    [0].Ash.List                                                                count ...  \"args: $n\"<NEWLINE><DEDENT>}¦
+      [0].Ash.AndOr                                                             count ...  \"args: $n\"<NEWLINE><DEDENT>}¦
+        [0].Ash.Pipeline                                                        count ...  \"args: $n\"<NEWLINE><DEDENT>}¦
+          [0].Ash.PipeSequence                                                  count ...  \"args: $n\"<NEWLINE><DEDENT>}¦
+            [0].Ash.Command                                                     count ...  \"args: $n\"<NEWLINE><DEDENT>}¦
+              [0].Ash.FunctionDefinition                                        count ...  \"args: $n\"<NEWLINE><DEDENT>}¦
                 [0].Ash.fname                                                   ｢count_args｣
                   [0].identifier                                                ｢count_args｣
-                [1].Ash.CompoundCommand                                         {\n    ... o \"args: $n\"\n}¦
-                  [0].Ash.BraceGroup                                            {\n    ... o \"args: $n\"\n}¦
+                [1].Ash.CompoundCommand                                         {<NEWLINE><INDENT>lo ...  \"args: $n\"<NEWLINE><DEDENT>}¦
+                  [0].Ash.BraceGroup                                            {<NEWLINE><INDENT>lo ...  \"args: $n\"<NEWLINE><DEDENT>}¦
                     [0].Ash.Term                                                local ... cho \"args: $n\"¦
                       [0].Ash.AndOr                                             local n=$1¦
                         [0].Ash.Pipeline                                        local n=$1¦
@@ -9265,17 +9242,17 @@ Mr Jane
                     [0].Ash.ioOp                                                ｢>｣
                     [1].Ash.Word                                                /dev/null¦
                       [0].Ash.word                                              ｢/dev/null｣
-  [20].Ash.CompleteCommand                                                      funct ... >&2\n}¦
-    [0].Ash.List                                                                funct ... >&2\n}¦
-      [0].Ash.AndOr                                                             funct ... >&2\n}¦
-        [0].Ash.Pipeline                                                        funct ... >&2\n}¦
-          [0].Ash.PipeSequence                                                  funct ... >&2\n}¦
-            [0].Ash.Command                                                     funct ... >&2\n}¦
-              [0].Ash.FunctionDefinition                                        funct ... >&2\n}¦
+  [20].Ash.CompleteCommand                                                      funct ... &2<NEWLINE><DEDENT>}¦
+    [0].Ash.List                                                                funct ... &2<NEWLINE><DEDENT>}¦
+      [0].Ash.AndOr                                                             funct ... &2<NEWLINE><DEDENT>}¦
+        [0].Ash.Pipeline                                                        funct ... &2<NEWLINE><DEDENT>}¦
+          [0].Ash.PipeSequence                                                  funct ... &2<NEWLINE><DEDENT>}¦
+            [0].Ash.Command                                                     funct ... &2<NEWLINE><DEDENT>}¦
+              [0].Ash.FunctionDefinition                                        funct ... &2<NEWLINE><DEDENT>}¦
                 [0].Ash.fname                                                   ｢usage｣
                   [0].identifier                                                ｢usage｣
-                [1].Ash.CompoundCommand                                         {\n    ... >&2\n}¦
-                  [0].Ash.BraceGroup                                            {\n    ... >&2\n}¦
+                [1].Ash.CompoundCommand                                         {<NEWLINE><INDENT>ec ... &2<NEWLINE><DEDENT>}¦
+                  [0].Ash.BraceGroup                                            {<NEWLINE><INDENT>ec ... &2<NEWLINE><DEDENT>}¦
                     [0].Ash.Term                                                echo \"usage: $0 [options]\" >&2¦
                       [0].Ash.AndOr                                             echo \"usage: $0 [options]\" >&2¦
                         [0].Ash.Pipeline                                        echo \"usage: $0 [options]\" >&2¦
@@ -9293,28 +9270,28 @@ Mr Jane
                                     [0].Ash.ioOp                                ｢>&｣
                                     [1].Ash.Word                                2¦
                                       [0].Ash.word                              ｢2｣
-  [21].Ash.CompleteCommand                                                      show_ ... one\n}¦
-    [0].Ash.List                                                                show_ ... one\n}¦
-      [0].Ash.AndOr                                                             show_ ... one\n}¦
-        [0].Ash.Pipeline                                                        show_ ... one\n}¦
-          [0].Ash.PipeSequence                                                  show_ ... one\n}¦
-            [0].Ash.Command                                                     show_ ... one\n}¦
-              [0].Ash.FunctionDefinition                                        show_ ... one\n}¦
+  [21].Ash.CompleteCommand                                                      show_ ... ne<NEWLINE><DEDENT>}¦
+    [0].Ash.List                                                                show_ ... ne<NEWLINE><DEDENT>}¦
+      [0].Ash.AndOr                                                             show_ ... ne<NEWLINE><DEDENT>}¦
+        [0].Ash.Pipeline                                                        show_ ... ne<NEWLINE><DEDENT>}¦
+          [0].Ash.PipeSequence                                                  show_ ... ne<NEWLINE><DEDENT>}¦
+            [0].Ash.Command                                                     show_ ... ne<NEWLINE><DEDENT>}¦
+              [0].Ash.FunctionDefinition                                        show_ ... ne<NEWLINE><DEDENT>}¦
                 [0].Ash.fname                                                   ｢show_all｣
                   [0].identifier                                                ｢show_all｣
-                [1].Ash.CompoundCommand                                         {\n    ... one\n}¦
-                  [0].Ash.BraceGroup                                            {\n    ... one\n}¦
-                    [0].Ash.Term                                                for a ...  done¦
-                      [0].Ash.AndOr                                             for a ...  done¦
-                        [0].Ash.Pipeline                                        for a ...  done¦
-                          [0].Ash.PipeSequence                                  for a ...  done¦
-                            [0].Ash.Command                                     for a ...  done¦
-                              [0].Ash.CompoundCommand                           for a ...  done¦
-                                [0].Ash.ForClause                               for a ...  done¦
+                [1].Ash.CompoundCommand                                         {<NEWLINE><INDENT>fo ... ne<NEWLINE><DEDENT>}¦
+                  [0].Ash.BraceGroup                                            {<NEWLINE><INDENT>fo ... ne<NEWLINE><DEDENT>}¦
+                    [0].Ash.Term                                                for a ... <DEDENT>done¦
+                      [0].Ash.AndOr                                             for a ... <DEDENT>done¦
+                        [0].Ash.Pipeline                                        for a ... <DEDENT>done¦
+                          [0].Ash.PipeSequence                                  for a ... <DEDENT>done¦
+                            [0].Ash.Command                                     for a ... <DEDENT>done¦
+                              [0].Ash.CompoundCommand                           for a ... <DEDENT>done¦
+                                [0].Ash.ForClause                               for a ... <DEDENT>done¦
                                   [0].Ash.varName                               ｢arg｣
                                     [0].identifier                              ｢arg｣
                                   [1].Ash.semi                                  ｢;｣
-                                  [2].Ash.DoGroup                               do\n   ...  done¦
+                                  [2].Ash.DoGroup                               do<NEWLINE><INDENT>p ... <DEDENT>done¦
                                     [0].Ash.Term                                printf '%s\\n' \"$arg\"¦
                                       [0].Ash.AndOr                             printf '%s\\n' \"$arg\"¦
                                         [0].Ash.Pipeline                        printf '%s\\n' \"$arg\"¦
@@ -10061,8 +10038,8 @@ Mr Jane
   [49].Tomel.Keyval                                                             multi ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
     [0].Tomel.Key                                                               multi ... pace ¦
       [0].Tomel.SimpleKey                                                       multi ... pace ¦
-    [1].Tomel.Val                                                               [\n  \"allowed\" ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
-      [0].Tomel.Array                                                           [\n  \"allowed\" ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
+    [1].Tomel.Val                                                               [<NEWLINE><INDENT>\"allowed\", ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
+      [0].Tomel.Array                                                           [<NEWLINE><INDENT>\"allowed\", ... ]<NEWLINE><WHITESPACE><COMMENT><WHITESPACE>¦
         [0].Tomel.Val                                                           \"allowed\"¦
           [0].string                                                            ｢"allowed"｣
         [1].Tomel.Val                                                           \"across\"¦

@@ -37,9 +37,9 @@ Seed.Axe:
   Level = ruleName '=' assoc Ops *
   assoc = "ltr" | "rtl"
   Ops = opType ( '->' Seed.Nonterminal ) ? op *
-  opType = ( "prefix_nest" | "prefix"
-           | "infix_flat" | "infix" | "ternary"
-           | "postfix_nest" | "postfix" )
+  opType = "prefix_nest" | "prefix" \
+         | "infix_flat" | "infix" | "ternary" \
+         | "postfix_nest" | "postfix"
   op = string | "concat"
 )'";
 

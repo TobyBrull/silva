@@ -21,12 +21,12 @@
 
 language Ash:
   skip = skipHorizontal
-  skipHorizontal = no_node [ SPACE COMMENT WHITESPACE INDENT DEDENT ] *
+  skipHorizontal = no_node [ SPACE LINE_CONTINUATION COMMENT WHITESPACE INDENT DEDENT ] *
 
   ⊙ = Linebreak ( CompleteCommand ( NewlineList CompleteCommand ) * NewlineList ? ) ?
 
   # Line structure and separators. Newlines are significant, so they are not skipped.
-  newline       = no_node [ NEWLINE LINEFEED ]
+  newline       = no_node NEWLINE
   Linebreak     = no_node newline *
   NewlineList   = no_node newline +
   separatorOp   = [ '&' ';' ] not [ '&' ';' ]

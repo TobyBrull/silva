@@ -26,7 +26,7 @@ language Pine:
     ⊙ = Compound | Simples
 
     Simples = Simple ( ε ';' Simple ) * ';' ? newline
-    Simple = [ Return Import Raise Pass Del Yield Assert Break Continue Global Nonlocal
+    Simple = [ Return Import Raise Pass Del Yield Assert Break Continue Global Nonlocal \
                Assignment TypeAlias StarExprs ]
 
     Compound = [ Function If Class With For Try While ]
@@ -138,11 +138,11 @@ language Pine:
       Conditional = rtl  ternary "if" "else"
       Lambda      = rtl  prefix_nest -> LambdaParams "lambda" ':'
 
-    Atom = ( builtinLiteral | '...' | Strings | number
-           | GenExp | Group | Tuple
-           | ListComp | List
-           | DictComp | SetComp | Dict | Set
-           | identifier )
+    Atom = builtinLiteral | '...' | Strings | number \
+         | GenExp | Group | Tuple \
+         | ListComp | List \
+         | DictComp | SetComp | Dict | Set \
+         | identifier
     GenExp = ε '(' Named ForIfClauses ')'
     Group = ε '(' ( Yield | Named ) ')'
     Tuple = ε '(' StarNamedExprs ? ')'
@@ -169,7 +169,7 @@ language Pine:
 
   Strings:
     ⊙ = ( string | fstring ) +
-    fstring = ( 'f' | 't' ) STRING # TODO: support f-strings
+    fstring = ( 'f' | 't' ) string # TODO: support f-strings
 
   number:
     ⊙ = .number imaginaryPart ?

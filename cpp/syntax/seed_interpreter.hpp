@@ -31,6 +31,7 @@ namespace silva::seed {
 
     struct language_data_t {
       parse_tree_span_t pts;
+      name_id_t skip_rule_name;
       optional_t<rule_expr_data_t> skip_rule_expr;
     };
     hash_map_t<token_id_t, language_data_t> languages;

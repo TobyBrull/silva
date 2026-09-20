@@ -19,9 +19,7 @@ Although we want *some* flexibility of the tokenization, we're also happy to acc
 invariants between different tokenization; for example, in `x = "Hello"` the `"Hello"` bit will
 always be a string literal. For this reason, Silva uses the concept of "fragmentation" (or
 pre-tokenization), which expresses a common denominator with respect to tokenization between all
-languages that Silva supports. Fragmentation also already checks that all "parentheses" are
-nested/well-formed in the standard way. This nesting structure can then be used to define nested
-languages.
+languages that Silva supports.
 
 The nature of fragmentation, as described below, means that Silva can't parse Rust, for example,
 because Rust uses `'a` as lifetime annotation, but this would always be fragmented as the beginning
@@ -40,27 +38,50 @@ name.
 
 * [whitespace] Only space and newlines are allowed; no tabs; no carriage-return. Some of those are
 then interpreted under the "indent" and "newline" rubriks below, others are "genuine whitespace".
-* [comment] This covers C-style (/**/), C++-style (//), and Python-style comments (#).
-* [string] Allows a wide range of string literals of C++ and Python. Also supports Zig's multi-line
-literals. This part could also be made to support Python-style f-strings.
+* [comment] Python-style comments (#); a comment reaches to the end of the line and becomes a
+single COMMENT fragment.
+* [string] Single-line string literals (delimited by ' or ") become a single SIMPLE_STRING
+fragment. Zig-style multi-line string literals (introduced by '¶') become a single
+MULTILINE_STRING fragment; they span several lines and would otherwise interfere with the off-side
+rule.
 * The content of string-literals, comments, and genuine whitespace together is called the
-"non-semantic" part of an input file. String-literals, comments, and real whitespace are called
-non-semantic fragments. The following, on the other hand, are called "semantic" fragments, forming
-the semantic part of the input file. Also, a '\\' at the end of a line (unless in string) will be
-treated as a line continuation.
+"non-semantic" part of an input file; the corresponding fragments are the non-semantic fragments
+(see silva::is_fragment_category_real). All other fragments are "semantic".
+* A '\\' at the end of a line is a line continuation (LINE_CONTINUATION).
 * [identifier] XID_Start XID_Continue*.
 * [number] everything that starts with [0-9] followed by XID_Continue.
 * [operator,parenthesis] Every unicode code-point that has the derived core property Math but is not
 also in XID_Continue. A distinction is made between operators representing opening or closing
 parentheses (called parentheses-chars, as per [this
 answer](https://stackoverflow.com/a/13535289/1171688)) and all other operator chars. The parentheses
-chars are expected to be properly nested already at this stage.
-* [indent,dedent,newline] Only space and newline are allowed. Indenting works like Python. Note that
-here the equivalent of Python's INDENT and DEDENT are still fragments rather than tokens. Also, at
-this stage there is only a single NEWLINE fragment (not NL and NEWLINE like in Python). Consecutive
-newlines are fragmented as a single NEWLINE followed by whitespace.
+chars are not required to be properly nested at this stage.
+* [indent,dedent,newline] Only space and newline are allowed. Indenting works like Python, except
+that INDENT and DEDENT are generated regardless of any enclosing parentheses (like in Haskell and
+F#); use a trailing '\\' to continue a line. Note that here the equivalent of Python's INDENT and
+DEDENT are still fragments rather than tokens. Also, at this stage there is only a single NEWLINE
+fragment (not NL and NEWLINE like in Python). Blank lines and comment-only lines produce a
+WHITESPACE fragment instead of a NEWLINE fragment, and they do not take part in indentation. A line
+whose indentation matches none of the enclosing indentation levels produces an INDENTATION_BROKEN
+fragment; from then on the enclosing language emits no further INDENT/DEDENT fragments.
 * Any other Unicode code-point not explicitly allowed by any of the semantic fragments or any
 sequence that's not in NFC in the semantic part means that the input file is ill-formed.
+
+## ANY and LANGUAGE
+
+Two additional fragment atoms exist that only twig-rules may use:
+
+* `ANY` matches one *visible* fragment, i.e. anything except INDENT, DEDENT, INDENTATION_BROKEN,
+NEWLINE and LINE_CONTINUATION. Rules built out of `ANY` are therefore automatically confined to a
+single line.
+* `LANGUAGE` matches a whole balanced LANG_BEGIN/LANG_END region.
+
+The standard definitions live in `seed::globals_str`: `string`, `indent`, `dedent`, `newline` and
+the two skip-rules `offSide.skipRule` and `freeForm.skipRule`. A language selects one of the latter
+via its `skip` rule.
+
+Note that the code-points that fragmentation treats specially -- '⎢', '«', '»', '¶' and a '\\' at
+the end of a line -- keep their meaning inside comments and strings. In particular a '«' inside a
+comment must still be matched by a '»'.
 
 ## Tokenization
 

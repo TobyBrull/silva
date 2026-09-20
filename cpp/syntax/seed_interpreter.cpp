@@ -59,6 +59,7 @@ namespace silva::seed::impl {
           interpreter_t::rule_expr_data_t{.expr             = pts,
                                           .is_twig_rule     = is_twig_rule,
                                           .is_no_node       = is_no_node,
+                                          .is_no_whitespace = is_no_whitespace,
                                           .is_literal_nodes = is_literal_nodes});
       SILVA_EXPECT(inserted,
                    MINOR,
@@ -182,8 +183,12 @@ namespace silva::seed::impl {
                      MINOR,
                      "'skip' rule must not be nested in sub-scope of a language");
         SILVA_EXPECT(parent_ni.base_name == current_language_id.value(), ASSERT);
-        se->languages.at(*current_language_id).skip_rule_expr =
-            interpreter_t::rule_expr_data_t{.expr = pts_rhs_0, .is_twig_rule = true};
+        interpreter_t::language_data_t& ld = se->languages.at(*current_language_id);
+        ld.skip_rule_name                  = curr_rule_name;
+        ld.skip_rule_expr                  = interpreter_t::rule_expr_data_t{
+            .expr         = pts_rhs_0,
+            .is_twig_rule = true,
+        };
       }
 
       for (index_t i = 0; i < pts_rhs_0.subtree_size(); ++i) {
@@ -510,7 +515,22 @@ namespace silva::seed::impl {
       }
       else if (s_token_pts.rule_name() == lexicon.ni_frag_name) {
         const token_id_t expected_frag_cat_ti = s_token_id;
-        if (expected_frag_cat_ti == lexicon.ti_ID_START.token_id) {
+        if (expected_frag_cat_ti == lexicon.ti_LANGUAGE.token_id) {
+          SILVA_EXPECT(fragment_category_by() == fragment_category_t::LANG_BEGIN,
+                       MINOR,
+                       "expected token of category LANG_BEGIN; got {}",
+                       fragment_category_by());
+          fragment_index =
+              SILVA_EXPECT_PARSE_FWD(t_rule_name, fp->advance_language(fragment_index));
+          return ss.commit();
+        }
+        else if (expected_frag_cat_ti == lexicon.ti_ANY.token_id) {
+          SILVA_EXPECT(is_fragment_category_visible(fragment_category_by()),
+                       MINOR,
+                       "expected token of category ANY; got {}",
+                       fragment_category_by());
+        }
+        else if (expected_frag_cat_ti == lexicon.ti_ID_START.token_id) {
           SILVA_EXPECT(is_fragment_category_id_start(fragment_category_by()),
                        MINOR,
                        "expected token of category ID_START; got {}",
@@ -906,12 +926,10 @@ namespace silva::seed::impl {
       if (!lang_data->skip_rule_expr.has_value()) {
         return {};
       }
-      const parse_tree_span_t& s_pts = lang_data->skip_rule_expr->expr;
-      if (s_pts.ptp.is_nullptr()) {
-        return {};
-      }
+      const interpreter_t::rule_expr_data_t& sre = *lang_data->skip_rule_expr;
+      SILVA_EXPECT(!sre.expr.ptp.is_nullptr(), ASSERT);
       auto ss = stake();
-      SILVA_EXPECT_FWD_IF(MAJOR, s_expr(s_pts, name_id_t{}));
+      SILVA_EXPECT_FWD_IF(MAJOR, handle_twig_rule(lang_data->skip_rule_name, sre, true));
       const index_t new_frag_idx = fragment_index;
       ss.clear();
       fragment_index = new_frag_idx;
@@ -934,7 +952,7 @@ namespace silva::seed::impl {
       const interpreter_t::rule_expr_data_t& rule_data = it->second;
       node_and_error_t retval;
       if (rule_data.is_twig_rule) {
-        retval = SILVA_EXPECT_FWD_PLAIN(handle_twig_rule(t_rule_name, rule_data));
+        retval = SILVA_EXPECT_FWD_PLAIN(handle_twig_rule(t_rule_name, rule_data, false));
       }
       else {
         retval = SILVA_EXPECT_FWD_PLAIN(handle_branch_rule(t_rule_name, rule_data));
@@ -947,9 +965,9 @@ namespace silva::seed::impl {
     handle_branch_rule(const name_id_t t_rule_name,
                        const interpreter_t::rule_expr_data_t& rule_data)
     {
+      rule_expr_data_scope_t rule_scope(*this, &rule_data);
       const parse_tree_span_t& s_pts = rule_data.expr;
       const name_id_t s_expr_name    = s_pts.rule_name();
-      rule_expr_data_scope_t rule_scope(*this, &rule_data);
       node_and_error_t retval;
       if (s_expr_name == lexicon.ni_axe) {
         retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name, t_rule_name));
@@ -971,8 +989,10 @@ namespace silva::seed::impl {
     }
 
     expected_t<node_and_error_t> handle_twig_rule(const name_id_t t_rule_name,
-                                                  const interpreter_t::rule_expr_data_t& rule_data)
+                                                  const interpreter_t::rule_expr_data_t& rule_data,
+                                                  const bool from_skip)
     {
+      rule_expr_data_scope_t rule_scope(*this, &rule_data);
       const bool entered_token_space = (twig_rule_depth == 0);
       twig_rule_depth += 1;
       scope_exit_t token_scope_exit([this] { twig_rule_depth -= 1; });
@@ -984,7 +1004,7 @@ namespace silva::seed::impl {
       auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(rule_data.expr, t_rule_name));
       ss.add_proto_node(std::move(result.node));
       auto retval = ss.commit();
-      if (entered_token_space) {
+      if (entered_token_space && !from_skip) {
         SILVA_EXPECT_FWD(skip());
       }
       return retval;

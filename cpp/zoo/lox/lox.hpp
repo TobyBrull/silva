@@ -23,11 +23,11 @@ language Lox:
     ⊙ = Print | If | For | While | Return | Block | ExprStmt
     Print = "print" Expr ';'
     If = "if" '(' Expr ')' Stmt ( "else" Stmt ) ?
-    For = ( "for" '('
-            ( Decl.Var | ExprStmt | Epsilon ';' )
-            ( Expr | Epsilon ) ';'
-            ( Expr | Epsilon )
-            ')' Stmt )
+    For = "for" '(' \
+          ( Decl.Var | ExprStmt | Epsilon ';' ) \
+          ( Expr | Epsilon ) ';' \
+          ( Expr | Epsilon ) \
+          ')' Stmt
     While = "while" '(' Expr ')' Stmt
     Return = "return" Expr ? ';'
     Block = '{' ( Decl | Stmt ) * '}'
@@ -43,9 +43,9 @@ language Lox:
       LogicAnd    = ltr infix "and"
       LogicOr     = ltr infix "or"
       Assign      = ltr infix '='
-    Atom = ( literal | number | string
-           | "super" '.' identifier | identifier
-           | '(' Expr ')' )
+    Atom = literal | number | string \
+         | "super" '.' identifier | identifier \
+         | '(' Expr ')'
     literal = "true" | "false" | "nil" | "this"
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:

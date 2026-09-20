@@ -11,7 +11,7 @@ namespace silva::seed::test {
     const string_view_t frog_seed = R"'(
 language Frog:
   ⊙ = Rule *
-  skip = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+  skip = ( SPACE | LINE_CONTINUATION | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
   identifier = ID_START ID_CONTINUE *
   Rule = RuleName Expr
   RuleName = no_node Keyword
@@ -42,8 +42,8 @@ language Frog:
             [0].Seed.Expr.Or.|                    SPACE ... LINE ¦
               [0].Seed.Terminal                   SPACE ¦
                 [0].Seed.fragName                 ｢SPACE｣
-              [1].Seed.Terminal                   LINEFEED ¦
-                [0].Seed.fragName                 ｢LINEFEED｣
+              [1].Seed.Terminal                   LINE_ ... TION ¦
+                [0].Seed.fragName                 ｢LINE_CONTINUATION｣
               [2].Seed.Terminal                   COMMENT ¦
                 [0].Seed.fragName                 ｢COMMENT｣
               [3].Seed.Terminal                   WHITE ... PACE ¦
@@ -229,7 +229,7 @@ language Testor:
     const string_view_t text1_seed = R"'(
 language Foo:
   ⊙ = 'a' 'b' 'c' Bar ?
-  skip = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+  skip = ( SPACE | LINE_CONTINUATION | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
 )'";
     const string_view_t text2_seed = R"'(
 Bar:

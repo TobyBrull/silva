@@ -1,7 +1,5 @@
 # TODO
 
-* Expand fragmentization (and parsing) into strings?
-
 * Errors:
     * color furthest fragment in readable color?
     * pass node_and_error_t::last_error through seed-axe
@@ -10,6 +8,8 @@
         * In parsing errors, show what has been successfully parsed so far?
     * After errors, parsing should be resume (for error handling in IDEs)
     * Maybe use Python's "invalid_*" rules?
+
+* Rewrite design.md
 
 * Runtime:
     * ??
@@ -28,6 +28,9 @@
     * function
         * allow uses to write typical parse functions in silva directly
         * add `joined_f(',', Base)`?
+            * rules should be able to take rules as parameters
+            * scopes should be able to take rules as parameters, which results in multiple rules:
+                * e.g., « skip, newline, indent, dedent = offSide('//') »
     * Axe:
         * add Seed Axe derivation (sub-Axe, super-Axe) mechanism?
     * translate Seed program into IR:

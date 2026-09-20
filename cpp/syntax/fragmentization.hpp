@@ -13,14 +13,12 @@ namespace silva {
   enum class fragment_category_t {
     INVALID = 0,
 
-    STRING,
-
     INDENT,
     DEDENT,
+    INDENTATION_BROKEN,
     NEWLINE,
 
     SPACE,
-    LINEFEED,
     DIGIT,
     PARENTHESIS,
     OPERATOR,
@@ -33,8 +31,12 @@ namespace silva {
     LANG_BEGIN,
     LANG_END,
 
-    COMMENT,
+    MULTILINE_STRING,
+    SIMPLE_STRING,
+
+    LINE_CONTINUATION,
     WHITESPACE,
+    COMMENT,
   };
 
   // If a fragment corresponds to a unique codepoint.
@@ -135,7 +137,6 @@ namespace silva {
   {
     using enum fragment_category_t;
     return (fc == SPACE ||                                   //
-            fc == LINEFEED ||                                //
             fc == DIGIT ||                                   //
             fc == PARENTHESIS ||                             //
             fc == OPERATOR ||                                //
@@ -169,16 +170,16 @@ namespace silva {
   constexpr bool is_fragment_category_real(const fragment_category_t fc)
   {
     using enum fragment_category_t;
-    return (fc != WHITESPACE && fc != COMMENT);
+    return (fc != LINE_CONTINUATION && fc != WHITESPACE && fc != COMMENT);
   }
   constexpr bool is_fragment_category_visible(const fragment_category_t fc)
   {
     using enum fragment_category_t;
-    return (fc != WHITESPACE && //
-            fc != COMMENT &&    //
-            fc != INDENT &&     //
-            fc != DEDENT &&     //
-            fc != NEWLINE &&    //
+    return (is_fragment_category_real(fc) && //
+            fc != INDENT &&                  //
+            fc != DEDENT &&                  //
+            fc != INDENTATION_BROKEN &&      //
+            fc != NEWLINE &&                 //
             true);
   }
 

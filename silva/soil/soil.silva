@@ -30,11 +30,11 @@ language Soil:
       Comp      = ltr infix '==' '<=' '<' '>' '>='
       Logic     = ltr infix "and" "or"
       Assign    = ltr infix '=' '+=' '*='
-    Atom = ( Struct | language
-           | typeName | funcName | identifier
-           | string | number
-           | "true" | "false" | "none"
-           | '(' Expr ')' )
+    Atom = Struct | language \
+         | typeName | funcName | identifier \
+         | string | number \
+         | "true" | "false" | "none" \
+         | '(' Expr ')'
     Struct:
       ⊙ = '[' LabeledItem * ']'
       LabeledItem = ( Variable.Name ':' ) ? ( Struct | Expr )

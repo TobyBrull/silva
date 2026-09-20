@@ -17,18 +17,13 @@ namespace silva::seed::impl {
     {
     }
 
-    void skip_off_side()
+    expected_t<void> skip()
     {
       while (num_fragments_left() >= 1 &&
-             (fragment_category_by() == SPACE || fragment_category_by() == LINEFEED ||
+             (fragment_category_by() == SPACE || fragment_category_by() == LINE_CONTINUATION ||
               fragment_category_by() == COMMENT || fragment_category_by() == WHITESPACE)) {
         fragment_index += 1;
       }
-    }
-
-    expected_t<void> skip()
-    {
-      skip_off_side();
       return {};
     }
 
@@ -93,7 +88,13 @@ namespace silva::seed::impl {
     {
       auto ss = stake();
       ss.create_node(lexicon.ni_string, true);
-      SILVA_EXPECT_PARSE_FRAGMENT_CATEGORY(lexicon.ni_string, STRING);
+      SILVA_EXPECT_PARSE(lexicon.ni_string,
+                         num_fragments_left() >= 1 &&
+                             (fragment_category_by() == MULTILINE_STRING ||
+                              fragment_category_by() == SIMPLE_STRING),
+                         "expected category MULTILINE_STRING or SIMPLE_STRING, got {}",
+                         fragment_category_by());
+      fragment_index += 1;
       return ss.commit();
     }
 

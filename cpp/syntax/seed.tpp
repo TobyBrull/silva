@@ -21,13 +21,13 @@ namespace silva::seed::test {
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
-string = STRING
+string = MULTILINE_STRING | SIMPLE_STRING
 number = DIGIT +
 
 language SimpleFern:
   ⊙ = '[' ( LabeledItem ';' ? ) * ']'
 
-  skip = ( SPACE | LINEFEED | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
+  skip = ( SPACE | LINE_CONTINUATION | COMMENT | WHITESPACE | INDENT | DEDENT | NEWLINE ) *
 
   LabeledItem = ( Label ':' ) ? Item
   Label = string
@@ -44,9 +44,12 @@ language SimpleFern:
   [0].Seed.Rule                                   strin ... RING<NEWLINE>¦
     [0].Seed.Nonterminal                          string ¦
       [0].Seed.tokenCategoryName                  ｢string｣
-    [1].Seed.Expr                                 STRING¦
-      [0].Seed.Terminal                           STRING¦
-        [0].Seed.fragName                         ｢STRING｣
+    [1].Seed.Expr                                 MULTI ... TRING¦
+      [0].Seed.Expr.Or.|                          MULTI ... TRING¦
+        [0].Seed.Terminal                         MULTI ... RING ¦
+          [0].Seed.fragName                       ｢MULTILINE_STRING｣
+        [1].Seed.Terminal                         SIMPL ... TRING¦
+          [0].Seed.fragName                       ｢SIMPLE_STRING｣
   [1].Seed.Rule                                   numbe ... T +<NEWLINE><WHITESPACE>¦
     [0].Seed.Nonterminal                          number ¦
       [0].Seed.tokenCategoryName                  ｢number｣
@@ -81,8 +84,8 @@ language SimpleFern:
             [0].Seed.Expr.Or.|                    SPACE ... LINE ¦
               [0].Seed.Terminal                   SPACE ¦
                 [0].Seed.fragName                 ｢SPACE｣
-              [1].Seed.Terminal                   LINEFEED ¦
-                [0].Seed.fragName                 ｢LINEFEED｣
+              [1].Seed.Terminal                   LINE_ ... TION ¦
+                [0].Seed.fragName                 ｢LINE_CONTINUATION｣
               [2].Seed.Terminal                   COMMENT ¦
                 [0].Seed.fragName                 ｢COMMENT｣
               [3].Seed.Terminal                   WHITE ... PACE ¦
