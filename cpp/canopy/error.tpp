@@ -60,24 +60,6 @@ namespace silva::test {
     CHECK(error_context.tree.nodes.size() == 12);
     {
       const string_view_t expected = R"(
-      scope a 1
-      scope a 2
-              scope b 1 i
-            scope b 1 ii
-          scope b 1 iii
-          scope b 2
-        combined 1
-      combined 2
-      scope a 4
-    scope final 1
-  scope final 2
-scope final 3
-)";
-      const auto result            = final_error.to_string_plain();
-      CHECK(result.as_string_view() == expected.substr(1));
-    }
-    {
-      const string_view_t expected = R"(
 ┌─scope a 1
 ├─scope a 2
 │   scope b 1 i

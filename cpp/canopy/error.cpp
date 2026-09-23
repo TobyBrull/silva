@@ -90,30 +90,6 @@ namespace silva {
   }
 
   namespace impl {
-    void to_string_plain(const error_context_t* error_context,
-                         string_t& retval,
-                         const index_t node_index,
-                         const index_t indent)
-    {
-      error_context->tree.visit_children_reversed(
-          [&](const index_t child_node_index, const index_t child_index) {
-            to_string_plain(error_context, retval, child_node_index, indent + 2);
-          },
-          node_index);
-      const auto& node       = error_context->tree.nodes[node_index];
-      const string_t message = to_string(node, error_context->any_vector);
-      retval += fmt::format("{:{}}{}\n", "", indent, message);
-    }
-  }
-
-  string_or_view_t error_t::to_string_plain() const
-  {
-    string_t retval;
-    impl::to_string_plain(context.get(), retval, node_index, 0);
-    return string_or_view_t{std::move(retval)};
-  }
-
-  namespace impl {
     const static array_t<string_view_t> box_chars = {
         "  ", // [0]
         "│ ", // [1]

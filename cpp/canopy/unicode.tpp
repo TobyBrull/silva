@@ -80,7 +80,7 @@ namespace silva::unicode::test {
 
       expected_t<void> res = utf8_decode_for_each(string_view_t{s}, null_f);
       REQUIRE(!res.has_value());
-      const auto err_str = res.error().to_string_plain().as_string();
+      const auto err_str = res.error().to_string_structured().as_string();
       CHECK_THAT(err_str, ContainsSubstring("codepoint above 0x10FFFF"));
       CHECK_THAT(err_str, ContainsSubstring("unable to decode codepoint at 1"));
     }
@@ -92,7 +92,7 @@ namespace silva::unicode::test {
 
       expected_t<void> res = utf8_decode_for_each(string_view_t{s}, null_f);
       REQUIRE(!res.has_value());
-      const auto err_str = res.error().to_string_plain().as_string();
+      const auto err_str = res.error().to_string_structured().as_string();
       CHECK_THAT(err_str, ContainsSubstring("surrogate half"));
       CHECK_THAT(err_str, ContainsSubstring("unable to decode codepoint at 1"));
     }
