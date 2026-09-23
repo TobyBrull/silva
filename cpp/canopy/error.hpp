@@ -3,17 +3,17 @@
 #include "any_vector.hpp"
 #include "context.hpp"
 #include "error_level.hpp"
+#include "error_relevance.hpp"
 #include "error_tree.hpp"
 #include "pretty_write.hpp"
 
 namespace silva {
-
   struct error_context_t : public context_t<error_context_t> {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
 
     error_tree_t tree;
-    any_vector_t<pretty_string_t, move_ctor_t, dtor_t> any_vector;
+    any_vector_t<pretty_string_t, error_relevance_t, move_ctor_t, dtor_t> any_vector;
 
     ~error_context_t();
   };

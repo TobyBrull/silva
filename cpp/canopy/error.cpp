@@ -7,8 +7,9 @@
 #include <utility>
 
 namespace silva {
-  string_t to_string(const error_tree_t::node_t& node,
-                     const any_vector_t<pretty_string_t, move_ctor_t, dtor_t>& av)
+  string_t
+  to_string(const error_tree_t::node_t& node,
+            const any_vector_t<pretty_string_t, error_relevance_t, move_ctor_t, dtor_t>& av)
   {
     array_t<string_t> args;
     const auto end = av.index_iter_at(node.memento_buffer_offset_end);
@@ -206,7 +207,7 @@ namespace silva {
   void error_t::materialize()
   {
     auto& any_vector = context->any_vector;
-    any_vector_t<pretty_string_t, move_ctor_t, dtor_t> new_any_vector;
+    any_vector_t<pretty_string_t, error_relevance_t, move_ctor_t, dtor_t> new_any_vector;
     hash_map_t<any_vector_index_t, any_vector_index_t> offset_mapping;
     {
       for (const auto avi: any_vector.index_range()) {
