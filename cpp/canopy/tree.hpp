@@ -76,6 +76,12 @@ namespace silva {
     expected_t<string_t> to_string(NodeDataFunc) const;
 
     template<typename NodeDataFunc>
+    expected_t<string_t> to_string_structured(NodeDataFunc) const;
+
+    template<typename NodeDataFunc>
+    expected_t<string_t> to_string_structured_bottom_up(NodeDataFunc) const;
+
+    template<typename NodeDataFunc>
     expected_t<string_t> to_graphviz(NodeDataFunc) const;
   };
 
@@ -344,6 +350,90 @@ namespace silva {
         });
     SILVA_EXPECT_FWD(std::move(result));
     return retval;
+  }
+
+  namespace impl {
+    const static array_t<string_view_t> tree_box_chars = {
+        "  ", // [0] gap
+        "│ ", // [1] pass-through
+        "├─", // [2] inner branch
+        "┌─", // [3] outer branch (bottom-up)
+        "└─", // [4] outer branch (top-down)
+    };
+
+    template<bool TopDown, typename TreeSpan, typename NodeDataFunc>
+    expected_t<string_t> tree_to_string_structured(const TreeSpan& self,
+                                                   NodeDataFunc& node_data_func)
+    {
+      string_t retval;
+      array_t<index_t> box_levels;
+      array_t<tree_branch_t> path;
+      array_t<index_t> child_positions;
+      const auto visit = [&](this const auto& visit, const optional_t<index_t> branch) -> void {
+        if (branch.has_value()) {
+          box_levels.push_back(branch.value() == 2 ? 1 : 0);
+        }
+        const auto emit_line = [&] {
+          for (index_t i = 0; i < box_levels.size(); ++i) {
+            const bool is_innermost = (i + 1 == box_levels.size());
+            retval += tree_box_chars[(branch.has_value() && is_innermost) ? branch.value()
+                                                                          : box_levels[i]];
+          }
+          const span_t<const tree_branch_t> path_span{path};
+          node_data_func(retval, path_span);
+          retval += '\n';
+        };
+        if constexpr (TopDown) {
+          emit_line();
+        }
+        const index_t node_index   = path.back().node_index;
+        const index_t num_children = self.node_at(node_index).num_children;
+        const index_t base         = child_positions.size();
+        for (index_t i = 0, pos = node_index + 1; i < num_children; ++i) {
+          child_positions.push_back(pos);
+          pos += self.node_at(pos).subtree_size;
+        }
+        for (index_t k = 0; k < num_children; ++k) {
+          const index_t child_index = TopDown ? k : (num_children - 1 - k);
+          optional_t<index_t> child_branch;
+          if (num_children > 1) {
+            child_branch = (child_index + 1 == num_children) ? (TopDown ? 4 : 3) : 2;
+          }
+          path.push_back({
+              .node_index  = child_positions[base + child_index],
+              .child_index = child_index,
+          });
+          visit(child_branch);
+          path.pop_back();
+        }
+        child_positions.resize(base);
+        if constexpr (!TopDown) {
+          emit_line();
+        }
+        if (branch.has_value()) {
+          box_levels.pop_back();
+        }
+      };
+      path.push_back({.node_index = 0, .child_index = 0});
+      visit(optional_t<index_t>{});
+      return retval;
+    }
+  }
+
+  template<typename NodeData>
+  template<typename NodeDataFunc>
+  expected_t<string_t>
+  tree_span_t<NodeData>::to_string_structured(NodeDataFunc node_data_func) const
+  {
+    return impl::tree_to_string_structured<true>(*this, node_data_func);
+  }
+
+  template<typename NodeData>
+  template<typename NodeDataFunc>
+  expected_t<string_t>
+  tree_span_t<NodeData>::to_string_structured_bottom_up(NodeDataFunc node_data_func) const
+  {
+    return impl::tree_to_string_structured<false>(*this, node_data_func);
   }
 
   template<typename NodeData>
