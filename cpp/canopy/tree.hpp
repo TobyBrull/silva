@@ -361,12 +361,15 @@ namespace silva {
         "└─", // [4] outer branch (top-down)
     };
 
+    // The bottom-up rendering is the exact vertical mirror of the top-down one: same lines in
+    // reverse order, with "└─" replaced by "┌─".
     template<bool TopDown, typename TreeSpan, typename NodeDataFunc>
     expected_t<string_t> tree_to_string_structured(const TreeSpan& self,
                                                    NodeDataFunc node_data_func)
     {
       string_t retval;
       array_t<index_t> box_levels;
+      array_t<index_t> line_begins;
       auto result = self.visit_subtree([&](const span_t<const tree_branch_t> path,
                                            const tree_event_t event) -> expected_t<bool> {
         SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
@@ -374,24 +377,24 @@ namespace silva {
         if (path.size() >= 2) {
           const index_t num_siblings = self.node_at(path[path.size() - 2].node_index).num_children;
           if (num_siblings > 1) {
-            const index_t child_index = path.back().child_index;
-            const bool is_outer = TopDown ? (child_index + 1 == num_siblings) : (child_index == 0);
-            branch              = is_outer ? (TopDown ? 4 : 3) : 2;
+            const bool is_last = (path.back().child_index + 1 == num_siblings);
+            branch             = is_last ? (TopDown ? 4 : 3) : 2;
           }
         }
         if (branch.has_value() && is_on_entry(event)) {
           box_levels.push_back(branch.value() == 2 ? 1 : 0);
         }
-        if (TopDown ? is_on_entry(event) : is_on_exit(event)) {
-          string_t curr_line;
+        if (is_on_entry(event)) {
+          if constexpr (!TopDown) {
+            line_begins.push_back(std::ssize(retval));
+          }
           for (index_t i = 0; i < std::ssize(box_levels); ++i) {
             const bool is_last = (i + 1 == std::ssize(box_levels));
-            curr_line +=
+            retval +=
                 tree_box_chars[(branch.has_value() && is_last) ? branch.value() : box_levels[i]];
           }
-          node_data_func(curr_line, path);
-          curr_line += '\n';
-          retval += curr_line;
+          node_data_func(retval, path);
+          retval += '\n';
         }
         if (branch.has_value() && is_on_exit(event)) {
           box_levels.pop_back();
@@ -399,6 +402,15 @@ namespace silva {
         return true;
       });
       SILVA_EXPECT_FWD(std::move(result));
+      if constexpr (!TopDown) {
+        line_begins.push_back(std::ssize(retval));
+        string_t reversed;
+        reversed.reserve(retval.size());
+        for (index_t i = std::ssize(line_begins) - 1; i >= 1; --i) {
+          reversed.append(retval, line_begins[i - 1], line_begins[i] - line_begins[i - 1]);
+        }
+        retval = std::move(reversed);
+      }
       return retval;
     }
   }
