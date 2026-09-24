@@ -76,6 +76,12 @@ namespace silva {
     expected_t<string_t> to_string(NodeDataFunc) const;
 
     template<typename NodeDataFunc>
+    expected_t<string_t> to_string_structured(NodeDataFunc) const;
+
+    template<typename NodeDataFunc>
+    expected_t<string_t> to_string_structured_bottom_up(NodeDataFunc) const;
+
+    template<typename NodeDataFunc>
     expected_t<string_t> to_graphviz(NodeDataFunc) const;
   };
 
@@ -344,6 +350,73 @@ namespace silva {
         });
     SILVA_EXPECT_FWD(std::move(result));
     return retval;
+  }
+
+  namespace impl {
+    const static array_t<string_view_t> tree_box_chars = {
+        "  ", // [0] gap
+        "│ ", // [1] pass-through
+        "├─", // [2] inner branch
+        "┌─", // [3] outer branch (bottom-up)
+        "└─", // [4] outer branch (top-down)
+    };
+
+    template<bool TopDown, typename TreeSpan, typename NodeDataFunc>
+    expected_t<string_t> tree_to_string_structured(const TreeSpan& self,
+                                                   NodeDataFunc node_data_func)
+    {
+      string_t retval;
+      array_t<index_t> box_levels;
+      auto result = self.visit_subtree([&](const span_t<const tree_branch_t> path,
+                                           const tree_event_t event) -> expected_t<bool> {
+        SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
+        optional_t<index_t> branch;
+        if (path.size() >= 2) {
+          const index_t num_siblings = self.node_at(path[path.size() - 2].node_index).num_children;
+          if (num_siblings > 1) {
+            const index_t child_index = path.back().child_index;
+            const bool is_outer = TopDown ? (child_index + 1 == num_siblings) : (child_index == 0);
+            branch              = is_outer ? (TopDown ? 4 : 3) : 2;
+          }
+        }
+        if (branch.has_value() && is_on_entry(event)) {
+          box_levels.push_back(branch.value() == 2 ? 1 : 0);
+        }
+        if (TopDown ? is_on_entry(event) : is_on_exit(event)) {
+          string_t curr_line;
+          for (index_t i = 0; i < std::ssize(box_levels); ++i) {
+            const bool is_last = (i + 1 == std::ssize(box_levels));
+            curr_line +=
+                tree_box_chars[(branch.has_value() && is_last) ? branch.value() : box_levels[i]];
+          }
+          node_data_func(curr_line, path);
+          curr_line += '\n';
+          retval += curr_line;
+        }
+        if (branch.has_value() && is_on_exit(event)) {
+          box_levels.pop_back();
+        }
+        return true;
+      });
+      SILVA_EXPECT_FWD(std::move(result));
+      return retval;
+    }
+  }
+
+  template<typename NodeData>
+  template<typename NodeDataFunc>
+  expected_t<string_t>
+  tree_span_t<NodeData>::to_string_structured(NodeDataFunc node_data_func) const
+  {
+    return impl::tree_to_string_structured<true>(*this, std::move(node_data_func));
+  }
+
+  template<typename NodeData>
+  template<typename NodeDataFunc>
+  expected_t<string_t>
+  tree_span_t<NodeData>::to_string_structured_bottom_up(NodeDataFunc node_data_func) const
+  {
+    return impl::tree_to_string_structured<false>(*this, std::move(node_data_func));
   }
 
   template<typename NodeData>

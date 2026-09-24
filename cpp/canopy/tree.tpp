@@ -57,6 +57,40 @@ namespace silva::test {
 )";
       CHECK(result_str == expected.substr(1));
     }
+    {
+      const string_t result_str =
+          SILVA_REQUIRE(tspan.to_string_structured([&](string_t& curr_line, auto& path) {
+            curr_line += tspan.node_at(path.back().node_index).name;
+          }));
+      const string_view_t expected = R"(
+A
+├─B
+│ ├─E
+│ └─F
+│   G
+├─C
+└─D
+  H
+)";
+      CHECK(result_str == expected.substr(1));
+    }
+    {
+      const string_t result_str =
+          SILVA_REQUIRE(tspan.to_string_structured_bottom_up([&](string_t& curr_line, auto& path) {
+            curr_line += tspan.node_at(path.back().node_index).name;
+          }));
+      const string_view_t expected = R"(
+  ┌─E
+  │ G
+  ├─F
+┌─B
+├─C
+│ H
+├─D
+A
+)";
+      CHECK(result_str == expected.substr(1));
+    }
 
     CHECK(tspan.get_children_array() ==
           array_t<tree_span_t<test_tree_node_t>>{
