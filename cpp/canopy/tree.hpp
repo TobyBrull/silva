@@ -361,57 +361,15 @@ namespace silva {
         "└─", // [4] outer branch (top-down)
     };
 
-    // The bottom-up rendering is the exact vertical mirror of the top-down one: same lines in
-    // reverse order, with "└─" replaced by "┌─".
-    template<bool TopDown, typename TreeSpan, typename NodeDataFunc>
-    expected_t<string_t> tree_to_string_structured(const TreeSpan& self,
-                                                   NodeDataFunc node_data_func)
+    inline void tree_box_indent(string_t& retval,
+                                const array_t<index_t>& box_levels,
+                                const optional_t<index_t> branch)
     {
-      string_t retval;
-      array_t<index_t> box_levels;
-      array_t<index_t> line_begins;
-      auto result = self.visit_subtree([&](const span_t<const tree_branch_t> path,
-                                           const tree_event_t event) -> expected_t<bool> {
-        SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
-        optional_t<index_t> branch;
-        if (path.size() >= 2) {
-          const index_t num_siblings = self.node_at(path[path.size() - 2].node_index).num_children;
-          if (num_siblings > 1) {
-            const bool is_last = (path.back().child_index + 1 == num_siblings);
-            branch             = is_last ? (TopDown ? 4 : 3) : 2;
-          }
-        }
-        if (branch.has_value() && is_on_entry(event)) {
-          box_levels.push_back(branch.value() == 2 ? 1 : 0);
-        }
-        if (is_on_entry(event)) {
-          if constexpr (!TopDown) {
-            line_begins.push_back(std::ssize(retval));
-          }
-          for (index_t i = 0; i < std::ssize(box_levels); ++i) {
-            const bool is_last = (i + 1 == std::ssize(box_levels));
-            retval +=
-                tree_box_chars[(branch.has_value() && is_last) ? branch.value() : box_levels[i]];
-          }
-          node_data_func(retval, path);
-          retval += '\n';
-        }
-        if (branch.has_value() && is_on_exit(event)) {
-          box_levels.pop_back();
-        }
-        return true;
-      });
-      SILVA_EXPECT_FWD(std::move(result));
-      if constexpr (!TopDown) {
-        line_begins.push_back(std::ssize(retval));
-        string_t reversed;
-        reversed.reserve(retval.size());
-        for (index_t i = std::ssize(line_begins) - 1; i >= 1; --i) {
-          reversed.append(retval, line_begins[i - 1], line_begins[i] - line_begins[i - 1]);
-        }
-        retval = std::move(reversed);
+      for (index_t i = 0; i < std::ssize(box_levels); ++i) {
+        const bool is_innermost = (i + 1 == std::ssize(box_levels));
+        retval +=
+            tree_box_chars[(branch.has_value() && is_innermost) ? branch.value() : box_levels[i]];
       }
-      return retval;
     }
   }
 
@@ -420,7 +378,33 @@ namespace silva {
   expected_t<string_t>
   tree_span_t<NodeData>::to_string_structured(NodeDataFunc node_data_func) const
   {
-    return impl::tree_to_string_structured<true>(*this, std::move(node_data_func));
+    string_t retval;
+    array_t<index_t> box_levels;
+    auto result = visit_subtree([&](const span_t<const tree_branch_t> path,
+                                    const tree_event_t event) -> expected_t<bool> {
+      SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
+      optional_t<index_t> branch;
+      if (path.size() >= 2) {
+        const index_t num_siblings = (*this).node_at(path[path.size() - 2].node_index).num_children;
+        if (num_siblings > 1) {
+          branch = (path.back().child_index + 1 == num_siblings) ? 4 : 2;
+        }
+      }
+      if (branch.has_value() && is_on_entry(event)) {
+        box_levels.push_back(branch.value() == 2 ? 1 : 0);
+      }
+      if (is_on_entry(event)) {
+        impl::tree_box_indent(retval, box_levels, branch);
+        node_data_func(retval, path);
+        retval += '\n';
+      }
+      if (branch.has_value() && is_on_exit(event)) {
+        box_levels.pop_back();
+      }
+      return true;
+    });
+    SILVA_EXPECT_FWD(std::move(result));
+    return retval;
   }
 
   template<typename NodeData>
@@ -428,7 +412,33 @@ namespace silva {
   expected_t<string_t>
   tree_span_t<NodeData>::to_string_structured_bottom_up(NodeDataFunc node_data_func) const
   {
-    return impl::tree_to_string_structured<false>(*this, std::move(node_data_func));
+    string_t retval;
+    array_t<index_t> box_levels;
+    auto result = visit_subtree([&](const span_t<const tree_branch_t> path,
+                                    const tree_event_t event) -> expected_t<bool> {
+      SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
+      optional_t<index_t> branch;
+      if (path.size() >= 2) {
+        const index_t num_siblings = (*this).node_at(path[path.size() - 2].node_index).num_children;
+        if (num_siblings > 1) {
+          branch = (path.back().child_index == 0) ? 3 : 2;
+        }
+      }
+      if (branch.has_value() && is_on_entry(event)) {
+        box_levels.push_back(branch.value() == 2 ? 1 : 0);
+      }
+      if (is_on_exit(event)) {
+        impl::tree_box_indent(retval, box_levels, branch);
+        node_data_func(retval, path);
+        retval += '\n';
+        if (branch.has_value()) {
+          box_levels.pop_back();
+        }
+      }
+      return true;
+    });
+    SILVA_EXPECT_FWD(std::move(result));
+    return retval;
   }
 
   template<typename NodeData>

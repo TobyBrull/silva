@@ -80,13 +80,13 @@ A
             curr_line += tspan.node_at(path.back().node_index).name;
           }));
       const string_view_t expected = R"(
-  H
-┌─D
+  ┌─E
+  │ G
+  ├─F
+┌─B
 ├─C
-│   G
-│ ┌─F
-│ ├─E
-├─B
+│ H
+├─D
 A
 )";
       CHECK(result_str == expected.substr(1));
