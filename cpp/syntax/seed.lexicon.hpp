@@ -54,6 +54,7 @@ namespace silva::seed {
     const fragmented_token_t ti_eps           = *fragmented_token(sfp, "ε", true);
     const fragmented_token_t ti_commit        = *fragmented_token(sfp, "~");
     const fragmented_token_t ti_skip          = *fragmented_token(sfp, "skip", true);
+    const fragmented_token_t ti_initial       = *fragmented_token(sfp, "initial", true);
 
     const fragmented_token_t ti_ID_START    = *fragmented_token(sfp, "ID_START");
     const fragmented_token_t ti_ID_CONTINUE = *fragmented_token(sfp, "ID_CONTINUE");

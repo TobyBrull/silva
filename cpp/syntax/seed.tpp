@@ -40,7 +40,7 @@ language SimpleFern:
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
-[0].Seed                                          <NEWLINE>stri ... ber<NEWLINE><DEDENT>¦
+[0].Seed                                          strin ... ber<NEWLINE><DEDENT>¦
   [0].Seed.Rule                                   strin ... '\\''<NEWLINE>¦
     [0].Seed.Nonterminal                          string ¦
       [0].Seed.tokenCategoryName                  ｢string｣

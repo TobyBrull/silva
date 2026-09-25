@@ -93,6 +93,7 @@ newline = no_node NEWLINE .offSide.blankLines
 
 offSide:
   ⊙ = horizontal
+  initial = blankLines
   horizontal = no_node [ SPACE LINE_CONTINUATION comment ] *
   blankLines = no_node ( horizontal NEWLINE ) *
 

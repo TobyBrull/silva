@@ -90,12 +90,13 @@ namespace silva::seed {
   const string_view_t seed_str = R"'(
 language Seed:
   skip = offSide
+  skip.initial = offSide.initial
 
   fragName = identifier.macroCase
   ruleName = identifier.pascalCase
   tokenCategoryName = identifier.camelCase
 
-  ⊙ = newline ? [ Language Scope Rule ] *
+  ⊙ = [ Language Scope Rule ] *
   Language = "language" ruleName ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
