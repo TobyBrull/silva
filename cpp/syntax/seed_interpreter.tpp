@@ -24,7 +24,7 @@ language Frog:
     interpreter_t se(sf.ptr());
     auto ptp = SILVA_REQUIRE(se.add_seed_text("frog.seed", string_t{frog_seed}));
     const string_view_t expected_seed_pt = R"(
-[0].Seed                                          <NEWLINE>lang ... 3'<NEWLINE><DEDENT><DEDENT>¦
+[0].Seed                                          langu ... 3'<NEWLINE><DEDENT><DEDENT>¦
   [0].Seed.Language                               langu ... 3'<NEWLINE><DEDENT><DEDENT>¦
     [0].Seed.ruleName                             ｢Frog｣
     [1].Seed.Rule                                 ⊙ = R ... le *<NEWLINE>¦

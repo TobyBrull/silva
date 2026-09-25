@@ -917,10 +917,6 @@ namespace silva::seed::impl {
     {
       auto ss_rule = stake();
       ss_rule.create_node(lexicon.ni_seed, false);
-      if (auto result = newline(); result) {
-        ss_rule.add_proto_node(*result);
-        SILVA_EXPECT_FWD(skip());
-      }
       while (num_fragments_left() >= 1 && fragment_category_by() != LANG_END) {
         const index_t orig_frag_idx = fragment_index;
         error_nursery_t error_nursery;
@@ -975,7 +971,7 @@ namespace silva::seed {
       SILVA_EXPECT(sfp == fs.fp->sfp, ASSERT);
       impl::seed_parse_tree_nursery_t nursery(fs, lexicon, seed_expr_axe);
       SILVA_EXPECT_ASSERT(nursery.init(nursery.lexicon.ni_axe, nursery.lexicon));
-      SILVA_EXPECT_FWD(nursery.skip());
+      SILVA_EXPECT_FWD(nursery.blank_lines());
       SILVA_EXPECT_FWD(nursery.seed());
       SILVA_EXPECT(nursery.fragment_index + 1 == fs.end,
                    MINOR,

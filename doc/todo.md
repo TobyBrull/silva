@@ -30,7 +30,7 @@
         * add `joined_f(',', Base)`?
             * rules should be able to take rules as parameters
             * scopes should be able to take rules as parameters, which results in multiple rules:
-                * e.g., « skip, newline, indent, dedent = offSide('//') »
+                * e.g., « skip, skip.initial, newline, indent, dedent = offSide('//') »
     * Axe:
         * add Seed Axe derivation (sub-Axe, super-Axe) mechanism?
     * translate Seed program into IR:

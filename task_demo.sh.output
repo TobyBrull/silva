@@ -434,7 +434,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [0].Silva.languageName                                                      ｢Fern｣
     [1].language                                                                «<NEWLINE>[<NEWLINE><INDENT> ... <DEDENT>]<NEWLINE><NEWLINE>»¦
 
-[0].Seed                                                                        <NEWLINE>lang ...  *<NEWLINE><NEWLINE><DEDENT>¦
+[0].Seed                                                                        langu ...  *<NEWLINE><NEWLINE><DEDENT>¦
   [0].Seed.Language                                                             langu ...  *<NEWLINE><NEWLINE><DEDENT>¦
     [0].Seed.ruleName                                                           ｢AsBs｣
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><NEWLINE>¦
@@ -456,7 +456,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 
 [0].AsBs                                                                        a a a ...  b <NEWLINE><DEDENT>¦
 
-[0].Seed                                                                        <NEWLINE>lang ... r<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
+[0].Seed                                                                        langu ... r<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
   [0].Seed.Language                                                             langu ... r<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
     [0].Seed.ruleName                                                           ｢CppStmts｣
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><NEWLINE>¦
@@ -919,7 +919,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [0].Silva.languageName                                                      ｢Seed｣
     [1].language                                                                «<NEWLINE>lan ... <NEWLINE><NEWLINE><DEDENT><DEDENT>»¦
 
-[0].Seed                                                                        <NEWLINE>lang ... r<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
+[0].Seed                                                                        langu ... r<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
   [0].Seed.Language                                                             langu ... r<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
     [0].Seed.ruleName                                                           ｢Soil｣
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><NEWLINE>¦
@@ -1840,7 +1840,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
 2
 3
 Mr Jane
-[0].Seed                                                                        <NEWLINE># ht ... on<NEWLINE><DEDENT><DEDENT>¦
+[0].Seed                                                                        langu ... on<NEWLINE><DEDENT><DEDENT>¦
   [0].Seed.Language                                                             langu ... on<NEWLINE><DEDENT><DEDENT>¦
     [0].Seed.ruleName                                                           ｢Cedar｣
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><NEWLINE>¦
@@ -3140,22 +3140,32 @@ Mr Jane
         [1].Cedar.Type.Declarator.Direct                                        test_8¦
           [0].identifier                                                        ｢test_8｣
 
-[0].Seed                                                                        <NEWLINE># ht ...  ]<NEWLINE><DEDENT><DEDENT>¦
+[0].Seed                                                                        langu ...  ]<NEWLINE><DEDENT><DEDENT>¦
   [0].Seed.Language                                                             langu ...  ]<NEWLINE><DEDENT><DEDENT>¦
     [0].Seed.ruleName                                                           ｢Pine｣
-    [1].Seed.Rule                                                               skip  ... ide<NEWLINE><NEWLINE>¦
+    [1].Seed.Rule                                                               skip  ... Side<NEWLINE>¦
       [0].Seed.Nonterminal                                                      skip ¦
         [0].Seed.tokenCategoryName                                              ｢skip｣
       [1].Seed.Expr                                                             offSide¦
         [0].Seed.Nonterminal                                                    offSide¦
           [0].Seed.tokenCategoryName                                            ｢offSide｣
-    [2].Seed.Rule                                                               ⊙ = S ... t *<NEWLINE><NEWLINE>¦
+    [2].Seed.Rule                                                               skip. ... ial<NEWLINE><NEWLINE>¦
+      [0].Seed.Nonterminal                                                      skip. ... tial ¦
+        [0].Seed.tokenCategoryName                                              ｢skip｣
+        [1].literal                                                             ｢.｣
+        [2].Seed.tokenCategoryName                                              ｢initial｣
+      [1].Seed.Expr                                                             offSi ... itial¦
+        [0].Seed.Nonterminal                                                    offSi ... itial¦
+          [0].Seed.tokenCategoryName                                            ｢offSide｣
+          [1].literal                                                           ｢.｣
+          [2].Seed.tokenCategoryName                                            ｢initial｣
+    [3].Seed.Rule                                                               ⊙ = S ... t *<NEWLINE><NEWLINE>¦
       [0].Seed.here                                                             ｢⊙｣
       [1].Seed.Expr                                                             Stmt *¦
         [0].Seed.Expr.Postfix.*                                                 Stmt *¦
           [0].Seed.Nonterminal                                                  Stmt ¦
             [0].Seed.ruleName                                                   ｢Stmt｣
-    [3].Seed.Scope                                                              Stmt: ... k<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
+    [4].Seed.Scope                                                              Stmt: ... k<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
       [0].Seed.Nonterminal                                                      Stmt¦
         [0].Seed.ruleName                                                       ｢Stmt｣
       [1].Seed.Rule                                                             ⊙ = C ... les<NEWLINE><NEWLINE>¦
@@ -4042,7 +4052,7 @@ Mr Jane
                 [0].string                                                      ｢':'｣
               [2].Seed.Nonterminal                                              Block¦
                 [0].Seed.ruleName                                               ｢Block｣
-    [4].Seed.Scope                                                              TypeP ... pr<NEWLINE><NEWLINE><DEDENT>¦
+    [5].Seed.Scope                                                              TypeP ... pr<NEWLINE><NEWLINE><DEDENT>¦
       [0].Seed.Nonterminal                                                      TypeParams¦
         [0].Seed.ruleName                                                       ｢TypeParams｣
       [1].Seed.Rule                                                             ⊙ = ' ...  | ε<NEWLINE>¦
@@ -4136,7 +4146,7 @@ Mr Jane
               [0].string                                                        ｢'='｣
             [1].Seed.Nonterminal                                                Expr¦
               [0].Seed.ruleName                                                 ｢Expr｣
-    [5].Seed.Rule                                                               Argum ...  | ε<NEWLINE>¦
+    [6].Seed.Rule                                                               Argum ...  | ε<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Arguments ¦
         [0].Seed.ruleName                                                       ｢Arguments｣
       [1].Seed.Expr                                                             Expr. ... ? | ε¦
@@ -4165,7 +4175,7 @@ Mr Jane
                 [0].string                                                      ｢','｣
           [2].Seed.Terminal                                                     ε¦
             [0].Seed.keyword                                                    ｢ε｣
-    [6].Seed.Rule                                                               Argum ... med<NEWLINE><NEWLINE>¦
+    [7].Seed.Rule                                                               Argum ... med<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      Argument ¦
         [0].Seed.ruleName                                                       ｢Argument｣
       [1].Seed.Expr                                                             '**'  ... Named¦
@@ -4191,7 +4201,7 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢Expr｣
             [1].literal                                                         ｢.｣
             [2].Seed.ruleName                                                   ｢Named｣
-    [7].Seed.Rule                                                               StarE ... ,' ?<NEWLINE>¦
+    [8].Seed.Rule                                                               StarE ... ,' ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      StarExprs ¦
         [0].Seed.ruleName                                                       ｢StarExprs｣
       [1].Seed.Expr                                                             StarE ... ',' ?¦
@@ -4210,7 +4220,7 @@ Mr Jane
           [2].Seed.Expr.Postfix.?                                               ',' ?¦
             [0].Seed.Terminal                                                   ',' ¦
               [0].string                                                        ｢','｣
-    [8].Seed.Rule                                                               StarE ... Expr<NEWLINE>¦
+    [9].Seed.Rule                                                               StarE ... Expr<NEWLINE>¦
       [0].Seed.Nonterminal                                                      StarExpr ¦
         [0].Seed.ruleName                                                       ｢StarExpr｣
       [1].Seed.Expr                                                             star  ...  Expr¦
@@ -4224,7 +4234,7 @@ Mr Jane
               [2].Seed.ruleName                                                 ｢BitOr｣
           [1].Seed.Nonterminal                                                  Expr¦
             [0].Seed.ruleName                                                   ｢Expr｣
-    [9].Seed.Rule                                                               StarN ... ,' ?<NEWLINE>¦
+    [10].Seed.Rule                                                              StarN ... ,' ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      StarN ... xprs ¦
         [0].Seed.ruleName                                                       ｢StarNamedExprs｣
       [1].Seed.Expr                                                             StarN ... ',' ?¦
@@ -4243,7 +4253,7 @@ Mr Jane
           [2].Seed.Expr.Postfix.?                                               ',' ?¦
             [0].Seed.Terminal                                                   ',' ¦
               [0].string                                                        ｢','｣
-    [10].Seed.Rule                                                              StarN ... amed<NEWLINE>¦
+    [11].Seed.Rule                                                              StarN ... amed<NEWLINE>¦
       [0].Seed.Nonterminal                                                      StarN ... Expr ¦
         [0].Seed.ruleName                                                       ｢StarNamedExpr｣
       [1].Seed.Expr                                                             star  ... Named¦
@@ -4259,7 +4269,7 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢Expr｣
             [1].literal                                                         ｢.｣
             [2].Seed.ruleName                                                   ｢Named｣
-    [11].Seed.Rule                                                              StarT ... ,' ?<NEWLINE>¦
+    [12].Seed.Rule                                                              StarT ... ,' ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      StarT ... gets ¦
         [0].Seed.ruleName                                                       ｢StarTargets｣
       [1].Seed.Expr                                                             StarT ... ',' ?¦
@@ -4278,7 +4288,7 @@ Mr Jane
           [2].Seed.Expr.Postfix.?                                               ',' ?¦
             [0].Seed.Terminal                                                   ',' ¦
               [0].string                                                        ｢','｣
-    [12].Seed.Rule                                                              StarT ... mary<NEWLINE>¦
+    [13].Seed.Rule                                                              StarT ... mary<NEWLINE>¦
       [0].Seed.Nonterminal                                                      StarT ... rget ¦
         [0].Seed.ruleName                                                       ｢StarTarget｣
       [1].Seed.Expr                                                             star  ... imary¦
@@ -4290,20 +4300,20 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢Expr｣
             [1].literal                                                         ｢.｣
             [2].Seed.ruleName                                                   ｢Primary｣
-    [13].Seed.Rule                                                              star  ... '*'<NEWLINE><NEWLINE>¦
+    [14].Seed.Rule                                                              star  ... '*'<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      star ¦
         [0].Seed.tokenCategoryName                                              ｢star｣
       [1].Seed.Expr                                                             '*'¦
         [0].Seed.Terminal                                                       '*'¦
           [0].string                                                            ｢'*'｣
-    [14].Seed.Rule                                                              ForIf ... se +<NEWLINE>¦
+    [15].Seed.Rule                                                              ForIf ... se +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      ForIf ... uses ¦
         [0].Seed.ruleName                                                       ｢ForIfClauses｣
       [1].Seed.Expr                                                             ForIf ... use +¦
         [0].Seed.Expr.Postfix.+                                                 ForIf ... use +¦
           [0].Seed.Nonterminal                                                  ForIf ... ause ¦
             [0].Seed.ruleName                                                   ｢ForIfClause｣
-    [15].Seed.Rule                                                              ForIf ... ) *<NEWLINE><NEWLINE>¦
+    [16].Seed.Rule                                                              ForIf ... ) *<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      ForIf ... ause ¦
         [0].Seed.ruleName                                                       ｢ForIfClause｣
       [1].Seed.Expr                                                             \"asyn ... n ) *¦
@@ -4332,7 +4342,7 @@ Mr Jane
                   [0].Seed.ruleName                                             ｢Expr｣
                   [1].literal                                                   ｢.｣
                   [2].Seed.ruleName                                             ｢Disjunction｣
-    [16].Seed.Scope                                                             Expr: ...  )<NEWLINE><NEWLINE><DEDENT>¦
+    [17].Seed.Scope                                                             Expr: ...  )<NEWLINE><NEWLINE><DEDENT>¦
       [0].Seed.Nonterminal                                                      Expr¦
         [0].Seed.ruleName                                                       ｢Expr｣
       [1].Seed.Rule                                                             ⊙ = n ... :'<NEWLINE><NEWLINE><DEDENT>¦
@@ -4848,7 +4858,7 @@ Mr Jane
                 [1].Seed.Expr.Postfix.?                                         StarE ... rs ? ¦
                   [0].Seed.Nonterminal                                          StarExprs ¦
                     [0].Seed.ruleName                                           ｢StarExprs｣
-    [17].Seed.Rule                                                              built ... se\"<NEWLINE><NEWLINE>¦
+    [18].Seed.Rule                                                              built ... se\"<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      built ... eral ¦
         [0].Seed.tokenCategoryName                                              ｢builtinLiteral｣
       [1].Seed.Expr                                                             \"None ... alse\"¦
@@ -4859,7 +4869,7 @@ Mr Jane
             [0].string                                                          ｢"True"｣
           [2].Seed.Terminal                                                     \"False\"¦
             [0].string                                                          ｢"False"｣
-    [18].Seed.Scope                                                             Strin ... gs<NEWLINE><NEWLINE><DEDENT>¦
+    [19].Seed.Scope                                                             Strin ... gs<NEWLINE><NEWLINE><DEDENT>¦
       [0].Seed.Nonterminal                                                      Strings¦
         [0].Seed.ruleName                                                       ｢Strings｣
       [1].Seed.Rule                                                             ⊙ = ( ...  ) +<NEWLINE>¦
@@ -4885,7 +4895,7 @@ Mr Jane
                   [0].string                                                    ｢'t'｣
             [1].Seed.Nonterminal                                                strin ... rings¦
               [0].Seed.tokenCategoryName                                        ｢string｣
-    [19].Seed.Scope                                                             numbe ... ' ]<NEWLINE><DEDENT>¦
+    [20].Seed.Scope                                                             numbe ... ' ]<NEWLINE><DEDENT>¦
       [0].Seed.Nonterminal                                                      number¦
         [0].Seed.tokenCategoryName                                              ｢number｣
       [1].Seed.Rule                                                             ⊙ = . ... rt ?<NEWLINE>¦
@@ -7739,7 +7749,7 @@ Mr Jane
                             [0].Pine.Expr.Atom                                  y¦
                               [0].identifier                                    ｢y｣
 
-[0].Seed                                                                        <NEWLINE># ht ... ier<NEWLINE><DEDENT>¦
+[0].Seed                                                                        langu ... ier<NEWLINE><DEDENT>¦
   [0].Seed.Language                                                             langu ... ier<NEWLINE><DEDENT>¦
     [0].Seed.ruleName                                                           ｢Ash｣
     [1].Seed.Rule                                                               skip  ... ntal<NEWLINE>¦

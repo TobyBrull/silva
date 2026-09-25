@@ -19,6 +19,7 @@
 
 language Pine:
   skip = offSide
+  skip.initial = offSide.initial
 
   ⊙ = Stmt *
 

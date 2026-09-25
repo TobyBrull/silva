@@ -190,6 +190,25 @@ namespace silva::seed::impl {
             .is_twig_rule = true,
         };
       }
+      else if (ni.base_name == lexicon.ti_initial.token_id && ni.parent_name.is_valid() &&
+               sfp->get(ni.parent_name).base_name == lexicon.ti_skip.token_id) {
+        SILVA_EXPECT(current_language_id.has_value(),
+                     MINOR,
+                     "'skip.initial' rule may only be used in language");
+        const name_info_t& skip_ni = sfp->get(ni.parent_name);
+        SILVA_EXPECT(skip_ni.parent_name.is_valid() &&
+                         sfp->get(skip_ni.parent_name).parent_name == name_id_t{},
+                     MINOR,
+                     "'skip.initial' rule must not be nested in sub-scope of a language");
+        SILVA_EXPECT(sfp->get(skip_ni.parent_name).base_name == current_language_id.value(),
+                     ASSERT);
+        interpreter_t::language_data_t& ld = se->languages.at(*current_language_id);
+        ld.skip_initial_rule_name          = curr_rule_name;
+        ld.skip_initial_rule_expr          = interpreter_t::rule_expr_data_t{
+            .expr         = pts_rhs_0,
+            .is_twig_rule = true,
+        };
+      }
 
       for (index_t i = 0; i < pts_rhs_0.subtree_size(); ++i) {
         const parse_tree_span_t pts_node = pts_rhs_0.subspan_at(i);
@@ -923,13 +942,27 @@ namespace silva::seed::impl {
 
     expected_t<void> skip()
     {
-      if (!lang_data->skip_rule_expr.has_value()) {
+      return skip_impl(lang_data->skip_rule_name, lang_data->skip_rule_expr);
+    }
+
+    expected_t<void> skip_initial()
+    {
+      if (lang_data->skip_initial_rule_expr.has_value()) {
+        return skip_impl(lang_data->skip_initial_rule_name, lang_data->skip_initial_rule_expr);
+      }
+      return skip();
+    }
+
+    expected_t<void> skip_impl(const name_id_t rule_name,
+                               const optional_t<interpreter_t::rule_expr_data_t>& skip_rule_expr)
+    {
+      if (!skip_rule_expr.has_value()) {
         return {};
       }
-      const interpreter_t::rule_expr_data_t& sre = *lang_data->skip_rule_expr;
+      const interpreter_t::rule_expr_data_t& sre = *skip_rule_expr;
       SILVA_EXPECT(!sre.expr.ptp.is_nullptr(), ASSERT);
       auto ss = stake();
-      SILVA_EXPECT_FWD_IF(MAJOR, handle_twig_rule(lang_data->skip_rule_name, sre, true));
+      SILVA_EXPECT_FWD_IF(MAJOR, handle_twig_rule(rule_name, sre, true));
       const index_t new_frag_idx = fragment_index;
       ss.clear();
       fragment_index = new_frag_idx;
@@ -1127,7 +1160,7 @@ namespace silva::seed {
     });
 
     SILVA_EXPECT_ASSERT(nursery.init(goal_rule_name, nursery.lexicon));
-    SILVA_EXPECT_FWD(nursery.skip());
+    SILVA_EXPECT_FWD(nursery.skip_initial());
     SILVA_EXPECT_FWD(nursery.check());
     auto ptn = SILVA_EXPECT_FWD(nursery.handle_rule(goal_rule_name),
                                 "seed::interpreter_t::apply({}) failed to parse",
