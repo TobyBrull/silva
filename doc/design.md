@@ -76,7 +76,7 @@ single line.
 * `LANGUAGE` matches a whole balanced LANG_BEGIN/LANG_END region.
 
 The standard definitions live in `seed::globals_str`: `string`, `indent`, `dedent`, `newline` and
-the two skip-rules `offSide.skipRule` and `freeForm.skipRule`. A language selects one of the latter
+the two skip-rules `offSide` and `freeForm`. A language selects one of the latter
 via its `skip` rule.
 
 Note that the code-points that fragmentation treats specially -- '⎢', '«', '»', '¶' and a '\\' at

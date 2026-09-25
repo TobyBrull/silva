@@ -53,7 +53,7 @@ language Test:
     Ter   = rtl   ternary '?' ':'
     Eqa   = rtl   infix '='
   Atom = identifier | number | '(' Test ')'
-  skip = skip.freeForm
+  skip = freeForm
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
     const auto& sa = se->axes.at(sf.name_id_of("Test"));
@@ -606,7 +606,7 @@ language Test:
     Assign  = rtl   infix_flat '=' infix '%'
   Atom = identifier | number operator.single | '(' Test ')' | '<<' Test.PrfLo '>>'
   Args = string ( ',' string ) * | ε
-  skip = skip.freeForm
+  skip = freeForm
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
     const auto& sa = se->axes.at(sf.name_id_of("Test"));

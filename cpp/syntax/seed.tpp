@@ -197,7 +197,7 @@ language SimpleFern:
 language Test:
   ⊙ = val *
   val = ( boolean | number | identifier )
-  skip = skip.freeForm
+  skip = freeForm
 )'"));
 
       test("ab 123ab\n", "Test", {"ab", "123", "ab"}, {id, num, id});

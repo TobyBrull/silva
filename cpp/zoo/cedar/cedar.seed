@@ -2,7 +2,7 @@
 # https://port70.net/~nsz/c/c11/n1570.html#A
 
 language Cedar:
-  skip = skip.freeForm
+  skip = freeForm
 
   ⊙ = Declaration *
 

@@ -1,5 +1,5 @@
 language Somelang:
-  skip = skip.freeForm
+  skip = freeForm
 
   ⊙ = As Bs
   As = "a" *

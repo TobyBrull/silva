@@ -212,24 +212,24 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0].none                                                              ｢none｣
 
 [0]                                                                                  false     unknown token-location
-  [0].skip.freeForm                                                                  true      01-simplest.fern:1:1
+  [0].freeForm                                                                       true      01-simplest.fern:1:1
   [1].Fern                                                                           true      01-simplest.fern:1:1
-    [0].skip.freeForm                                                                true      01-simplest.fern:1:2
+    [0].freeForm                                                                     true      01-simplest.fern:1:2
     [1].Fern.LabeledItem                                                             true      01-simplest.fern:2:3
       [0].Fern.label                                                                 true      01-simplest.fern:2:3
         [0].string                                                                   false     01-simplest.fern:2:3
         [1].identifier                                                               true      01-simplest.fern:2:3
-        [2].skip.freeForm                                                            true      01-simplest.fern:2:7
+        [2].freeForm                                                                 true      01-simplest.fern:2:7
       [1].Fern                                                                       false     01-simplest.fern:2:3
       [2].Fern.value                                                                 true      01-simplest.fern:2:3
         [0].none                                                                     true      01-simplest.fern:2:3
-        [1].skip.freeForm                                                            true      01-simplest.fern:2:7
+        [1].freeForm                                                                 true      01-simplest.fern:2:7
     [2].Fern.LabeledItem                                                             true      01-simplest.fern:3:3
       [0].Fern.label                                                                 false     01-simplest.fern:3:3
         [0].string                                                                   false     01-simplest.fern:3:3
         [1].identifier                                                               false     01-simplest.fern:3:3
       [1].Fern                                                                       true      01-simplest.fern:3:3
-        [0].skip.freeForm                                                            true      01-simplest.fern:3:4
+        [0].freeForm                                                                 true      01-simplest.fern:3:4
         [1].Fern.LabeledItem                                                         false     01-simplest.fern:3:4
           [0].Fern.label                                                             false     01-simplest.fern:3:4
             [0].string                                                               false     01-simplest.fern:3:4
@@ -262,22 +262,22 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.plusMinus                                               false     01-simplest.fern:3:4
                   [1].number.unsigned.integer.decimal                                false     01-simplest.fern:3:4
             [3].string                                                               false     01-simplest.fern:3:4
-        [2].skip.freeForm                                                            true      01-simplest.fern:3:5
+        [2].freeForm                                                                 true      01-simplest.fern:3:5
     [3].Fern.LabeledItem                                                             true      01-simplest.fern:4:3
       [0].Fern.label                                                                 false     01-simplest.fern:4:3
         [0].string                                                                   false     01-simplest.fern:4:3
         [1].identifier                                                               false     01-simplest.fern:4:3
       [1].Fern                                                                       true      01-simplest.fern:4:3
-        [0].skip.freeForm                                                            true      01-simplest.fern:4:4
+        [0].freeForm                                                                 true      01-simplest.fern:4:4
         [1].Fern.LabeledItem                                                         true      01-simplest.fern:5:5
           [0].Fern.label                                                             true      01-simplest.fern:5:5
             [0].string                                                               false     01-simplest.fern:5:5
             [1].identifier                                                           true      01-simplest.fern:5:5
-            [2].skip.freeForm                                                        true      01-simplest.fern:5:9
+            [2].freeForm                                                             true      01-simplest.fern:5:9
           [1].Fern                                                                   false     01-simplest.fern:5:5
           [2].Fern.value                                                             true      01-simplest.fern:5:5
             [0].none                                                                 true      01-simplest.fern:5:5
-            [1].skip.freeForm                                                        true      01-simplest.fern:5:9
+            [1].freeForm                                                             true      01-simplest.fern:5:9
         [2].Fern.LabeledItem                                                         false     01-simplest.fern:6:3
           [0].Fern.label                                                             false     01-simplest.fern:6:3
             [0].string                                                               false     01-simplest.fern:6:3
@@ -310,7 +310,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0].number.plusMinus                                               false     01-simplest.fern:6:3
                   [1].number.unsigned.integer.decimal                                false     01-simplest.fern:6:3
             [3].string                                                               false     01-simplest.fern:6:3
-        [3].skip.freeForm                                                            true      01-simplest.fern:6:4
+        [3].freeForm                                                                 true      01-simplest.fern:6:4
     [4].Fern.LabeledItem                                                             false     01-simplest.fern:7:1
       [0].Fern.label                                                                 false     01-simplest.fern:7:1
         [0].string                                                                   false     01-simplest.fern:7:1
@@ -343,7 +343,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
               [0].number.plusMinus                                                   false     01-simplest.fern:7:1
               [1].number.unsigned.integer.decimal                                    false     01-simplest.fern:7:1
         [3].string                                                                   false     01-simplest.fern:7:1
-    [5].skip.freeForm                                                                true      01-simplest.fern:7:2
+    [5].freeForm                                                                     true      01-simplest.fern:7:2
 [0].Silva                                                                       Seed  ... ]<NEWLINE><WHITESPACE>»<NEWLINE>¦
   [0].Silva.Section                                                             Seed  ... <WHITESPACE><DEDENT>»<NEWLINE><WHITESPACE>¦
     [0].Silva.languageName                                                      ｢Seed｣
@@ -367,11 +367,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><WHITESPACE>¦
       [0].Seed.Nonterminal                                                      skip ¦
         [0].Seed.tokenCategoryName                                              ｢skip｣
-      [1].Seed.Expr                                                             skip. ... eForm¦
-        [0].Seed.Nonterminal                                                    skip. ... eForm¦
-          [0].Seed.tokenCategoryName                                            ｢skip｣
-          [1].literal                                                           ｢.｣
-          [2].Seed.tokenCategoryName                                            ｢freeForm｣
+      [1].Seed.Expr                                                             freeForm¦
+        [0].Seed.Nonterminal                                                    freeForm¦
+          [0].Seed.tokenCategoryName                                            ｢freeForm｣
     [2].Seed.Rule                                                               ⊙ = \"a\" ... \"b\" *<NEWLINE><WHITESPACE>¦
       [0].Seed.here                                                             ｢⊙｣
       [1].Seed.Expr                                                             \"a\" * \"b\" *¦
@@ -391,11 +389,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><WHITESPACE>¦
       [0].Seed.Nonterminal                                                      skip ¦
         [0].Seed.tokenCategoryName                                              ｢skip｣
-      [1].Seed.Expr                                                             skip. ... eForm¦
-        [0].Seed.Nonterminal                                                    skip. ... eForm¦
-          [0].Seed.tokenCategoryName                                            ｢skip｣
-          [1].literal                                                           ｢.｣
-          [2].Seed.tokenCategoryName                                            ｢freeForm｣
+      [1].Seed.Expr                                                             freeForm¦
+        [0].Seed.Nonterminal                                                    freeForm¦
+          [0].Seed.tokenCategoryName                                            ｢freeForm｣
     [2].Seed.Rule                                                               ⊙ = ( ...  ) *<NEWLINE>¦
       [0].Seed.here                                                             ｢⊙｣
       [1].Seed.Expr                                                             ( Exp ... ';' ) *¦
@@ -815,11 +811,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><WHITESPACE>¦
       [0].Seed.Nonterminal                                                      skip ¦
         [0].Seed.tokenCategoryName                                              ｢skip｣
-      [1].Seed.Expr                                                             skip. ... eForm¦
-        [0].Seed.Nonterminal                                                    skip. ... eForm¦
-          [0].Seed.tokenCategoryName                                            ｢skip｣
-          [1].literal                                                           ｢.｣
-          [2].Seed.tokenCategoryName                                            ｢freeForm｣
+      [1].Seed.Expr                                                             freeForm¦
+        [0].Seed.Nonterminal                                                    freeForm¦
+          [0].Seed.tokenCategoryName                                            ｢freeForm｣
     [2].Seed.Rule                                                               ⊙ = As Bs<NEWLINE>¦
       [0].Seed.here                                                             ｢⊙｣
       [1].Seed.Expr                                                             As Bs¦
@@ -858,11 +852,9 @@ seed::interpreter_t::apply(.Fern) failed to parse
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><WHITESPACE>¦
       [0].Seed.Nonterminal                                                      skip ¦
         [0].Seed.tokenCategoryName                                              ｢skip｣
-      [1].Seed.Expr                                                             skip. ... eForm¦
-        [0].Seed.Nonterminal                                                    skip. ... eForm¦
-          [0].Seed.tokenCategoryName                                            ｢skip｣
-          [1].literal                                                           ｢.｣
-          [2].Seed.tokenCategoryName                                            ｢freeForm｣
+      [1].Seed.Expr                                                             freeForm¦
+        [0].Seed.Nonterminal                                                    freeForm¦
+          [0].Seed.tokenCategoryName                                            ｢freeForm｣
     [2].Seed.Rule                                                               typeN ... th '_t'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      typeName ¦
         [0].Seed.tokenCategoryName                                              ｢typeName｣
@@ -1781,11 +1773,9 @@ Mr Jane
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><WHITESPACE>¦
       [0].Seed.Nonterminal                                                      skip ¦
         [0].Seed.tokenCategoryName                                              ｢skip｣
-      [1].Seed.Expr                                                             skip. ... eForm¦
-        [0].Seed.Nonterminal                                                    skip. ... eForm¦
-          [0].Seed.tokenCategoryName                                            ｢skip｣
-          [1].literal                                                           ｢.｣
-          [2].Seed.tokenCategoryName                                            ｢freeForm｣
+      [1].Seed.Expr                                                             freeForm¦
+        [0].Seed.Nonterminal                                                    freeForm¦
+          [0].Seed.tokenCategoryName                                            ｢freeForm｣
     [2].Seed.Rule                                                               ⊙ = D ... n *<NEWLINE><WHITESPACE>¦
       [0].Seed.here                                                             ｢⊙｣
       [1].Seed.Expr                                                             Decla ... ion *¦
@@ -3083,11 +3073,9 @@ Mr Jane
     [1].Seed.Rule                                                               skip  ... ide<NEWLINE><WHITESPACE>¦
       [0].Seed.Nonterminal                                                      skip ¦
         [0].Seed.tokenCategoryName                                              ｢skip｣
-      [1].Seed.Expr                                                             skip. ... fSide¦
-        [0].Seed.Nonterminal                                                    skip. ... fSide¦
-          [0].Seed.tokenCategoryName                                            ｢skip｣
-          [1].literal                                                           ｢.｣
-          [2].Seed.tokenCategoryName                                            ｢offSide｣
+      [1].Seed.Expr                                                             offSide¦
+        [0].Seed.Nonterminal                                                    offSide¦
+          [0].Seed.tokenCategoryName                                            ｢offSide｣
     [2].Seed.Rule                                                               ⊙ = S ... t *<NEWLINE><WHITESPACE>¦
       [0].Seed.here                                                             ｢⊙｣
       [1].Seed.Expr                                                             Stmt *¦
@@ -9453,11 +9441,9 @@ Mr Jane
     [1].Seed.Rule                                                               skip  ... orm<NEWLINE><WHITESPACE>¦
       [0].Seed.Nonterminal                                                      skip ¦
         [0].Seed.tokenCategoryName                                              ｢skip｣
-      [1].Seed.Expr                                                             skip. ... eForm¦
-        [0].Seed.Nonterminal                                                    skip. ... eForm¦
-          [0].Seed.tokenCategoryName                                            ｢skip｣
-          [1].literal                                                           ｢.｣
-          [2].Seed.tokenCategoryName                                            ｢freeForm｣
+      [1].Seed.Expr                                                             freeForm¦
+        [0].Seed.Nonterminal                                                    freeForm¦
+          [0].Seed.tokenCategoryName                                            ｢freeForm｣
     [2].Seed.Rule                                                               ⊙ = ( ...  ) *<NEWLINE>¦
       [0].Seed.here                                                             ｢⊙｣
       [1].Seed.Expr                                                             ( Key ... e ) *¦

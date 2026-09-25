@@ -86,10 +86,9 @@ indent  = no_node INDENT
 dedent  = no_node DEDENT
 newline = no_node NEWLINE
 
-skip:
-  offSide = no_node [ SPACE LINE_CONTINUATION COMMENT WHITESPACE ] *
-  freeForm = no_node [ SPACE LINE_CONTINUATION COMMENT WHITESPACE \
-                       INDENT DEDENT INDENTATION_BROKEN NEWLINE ] *
+offSide = no_node [ SPACE LINE_CONTINUATION COMMENT WHITESPACE ] *
+freeForm = no_node [ SPACE LINE_CONTINUATION COMMENT WHITESPACE \
+                     INDENT DEDENT INDENTATION_BROKEN NEWLINE ] *
 
 Epsilon = ε
 )'";

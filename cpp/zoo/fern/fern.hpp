@@ -5,7 +5,7 @@
 namespace silva::fern {
   const string_view_t seed_str = R"'(
 language Fern:
-  skip = skip.freeForm
+  skip = freeForm
 
   ⊙ = '[' LabeledItem * ']'
   LabeledItem = ( label ':' ) ? ( Fern | value )

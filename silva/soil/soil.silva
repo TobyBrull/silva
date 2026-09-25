@@ -1,6 +1,6 @@
 Seed «
 language Soil:
-  skip = skip.freeForm
+  skip = freeForm
 
   typeName = identifier ending_with '_t'
   funcName = identifier ending_with '_f'
