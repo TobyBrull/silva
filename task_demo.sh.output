@@ -7749,8 +7749,8 @@ Mr Jane
                             [0].Pine.Expr.Atom                                  y¦
                               [0].identifier                                    ｢y｣
 
-[0].Seed                                                                        langu ... ier<NEWLINE><DEDENT>¦
-  [0].Seed.Language                                                             langu ... ier<NEWLINE><DEDENT>¦
+[0].Seed                                                                        langu ... ) +<NEWLINE><DEDENT>¦
+  [0].Seed.Language                                                             langu ... ) +<NEWLINE><DEDENT>¦
     [0].Seed.ruleName                                                           ｢Ash｣
     [1].Seed.Rule                                                               skip  ... ntal<NEWLINE>¦
       [0].Seed.Nonterminal                                                      skip ¦
@@ -8348,23 +8348,10 @@ Mr Jane
     [44].Seed.Rule                                                              Assig ... Word<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Assig ... t    ¦
         [0].Seed.ruleName                                                       ｢Assignment｣
-      [1].Seed.Expr                                                             Assig ... nWord¦
-        [0].Seed.Expr.Or.|                                                      Assig ... nWord¦
-          [0].Seed.Nonterminal                                                  Assig ... ubst ¦
-            [0].Seed.ruleName                                                   ｢AssignSubst｣
-          [1].Seed.Nonterminal                                                  assignWord¦
-            [0].Seed.tokenCategoryName                                          ｢assignWord｣
-    [45].Seed.Rule                                                              Assig ... tion<NEWLINE>¦
-      [0].Seed.Nonterminal                                                      Assig ... st   ¦
-        [0].Seed.ruleName                                                       ｢AssignSubst｣
-      [1].Seed.qualifier                                                        ｢no_node｣
-      [2].Seed.Expr                                                             assig ... ution¦
-        [0].Seed.Expr.Concat.concat                                             assig ... ution¦
-          [0].Seed.Nonterminal                                                  assig ... Name ¦
-            [0].Seed.tokenCategoryName                                          ｢assignName｣
-          [1].Seed.Nonterminal                                                  Comma ... ution¦
-            [0].Seed.ruleName                                                   ｢CommandSubstitution｣
-    [46].Seed.Rule                                                              assig ... rd ?<NEWLINE>¦
+      [1].Seed.Expr                                                             assignWord¦
+        [0].Seed.Nonterminal                                                    assignWord¦
+          [0].Seed.tokenCategoryName                                            ｢assignWord｣
+    [45].Seed.Rule                                                              assig ... rd ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      assig ... d    ¦
         [0].Seed.tokenCategoryName                                              ｢assignWord｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8375,7 +8362,7 @@ Mr Jane
           [1].Seed.Expr.Postfix.?                                               word ?¦
             [0].Seed.Nonterminal                                                word ¦
               [0].Seed.tokenCategoryName                                        ｢word｣
-    [47].Seed.Rule                                                              assig ... '='<NEWLINE><NEWLINE>¦
+    [46].Seed.Rule                                                              assig ... '='<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      assig ... e    ¦
         [0].Seed.tokenCategoryName                                              ｢assignName｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8385,14 +8372,14 @@ Mr Jane
             [0].Seed.tokenCategoryName                                          ｢identifier｣
           [1].Seed.Terminal                                                     '='¦
             [0].string                                                          ｢'='｣
-    [48].Seed.Rule                                                              Redir ... ct +<NEWLINE>¦
+    [47].Seed.Rule                                                              Redir ... ct +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Redir ... List ¦
         [0].Seed.ruleName                                                       ｢RedirectList｣
       [1].Seed.Expr                                                             IoRed ... ect +¦
         [0].Seed.Expr.Postfix.+                                                 IoRed ... ect +¦
           [0].Seed.Nonterminal                                                  IoRed ... rect ¦
             [0].Seed.ruleName                                                   ｢IoRedirect｣
-    [49].Seed.Rule                                                              IoRed ... Word<NEWLINE>¦
+    [48].Seed.Rule                                                              IoRed ... Word<NEWLINE>¦
       [0].Seed.Nonterminal                                                      IoRed ... ct   ¦
         [0].Seed.ruleName                                                       ｢IoRedirect｣
       [1].Seed.Expr                                                             ioRed ...  Word¦
@@ -8401,7 +8388,7 @@ Mr Jane
             [0].Seed.tokenCategoryName                                          ｢ioRedir｣
           [1].Seed.Nonterminal                                                  Word¦
             [0].Seed.ruleName                                                   ｢Word｣
-    [50].Seed.Rule                                                              ioRed ... ioOp<NEWLINE>¦
+    [49].Seed.Rule                                                              ioRed ... ioOp<NEWLINE>¦
       [0].Seed.Nonterminal                                                      ioRed ...      ¦
         [0].Seed.tokenCategoryName                                              ｢ioRedir｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8412,14 +8399,14 @@ Mr Jane
               [0].Seed.tokenCategoryName                                        ｢ioNumber｣
           [1].Seed.Nonterminal                                                  ioOp¦
             [0].Seed.tokenCategoryName                                          ｢ioOp｣
-    [51].Seed.Rule                                                              ioNum ... IT +<NEWLINE>¦
+    [50].Seed.Rule                                                              ioNum ... IT +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      ioNum ...      ¦
         [0].Seed.tokenCategoryName                                              ｢ioNumber｣
       [1].Seed.Expr                                                             DIGIT +¦
         [0].Seed.Expr.Postfix.+                                                 DIGIT +¦
           [0].Seed.Terminal                                                     DIGIT ¦
             [0].Seed.fragName                                                   ｢DIGIT｣
-    [52].Seed.Rule                                                              ioOp  ... ' ]<NEWLINE><NEWLINE>¦
+    [51].Seed.Rule                                                              ioOp  ... ' ]<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      ioOp  ...      ¦
         [0].Seed.tokenCategoryName                                              ｢ioOp｣
       [1].Seed.Expr                                                             [ '>> ... '<' ]¦
@@ -8442,7 +8429,7 @@ Mr Jane
             [0].string                                                          ｢'>'｣
           [8].Seed.Terminal                                                     '<' ¦
             [0].string                                                          ｢'<'｣
-    [53].Seed.Rule                                                              reser ... Char<NEWLINE>¦
+    [52].Seed.Rule                                                              reser ... Char<NEWLINE>¦
       [0].Seed.Nonterminal                                                      reser ... Word ¦
         [0].Seed.tokenCategoryName                                              ｢reservedWord｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8453,7 +8440,7 @@ Mr Jane
           [1].Seed.Expr.Prefix.not                                              not w ... dChar¦
             [0].Seed.Nonterminal                                                wordChar¦
               [0].Seed.tokenCategoryName                                        ｢wordChar｣
-    [54].Seed.Rule                                                              keywo ... ing.<NEWLINE>¦
+    [53].Seed.Rule                                                              keywo ... ing.<NEWLINE>¦
       [0].Seed.Nonterminal                                                      keywo ...      ¦
         [0].Seed.tokenCategoryName                                              ｢keyword｣
       [1].Seed.Expr                                                             [ \"if ... me\" ]¦
@@ -8490,16 +8477,13 @@ Mr Jane
             [0].string                                                          ｢"select"｣
           [15].Seed.Terminal                                                    \"time\" ¦
             [0].string                                                          ｢"time"｣
-    [55].Seed.Rule                                                              Word  ... tion<NEWLINE>¦
+    [54].Seed.Rule                                                              Word  ... word<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Word  ...      ¦
         [0].Seed.ruleName                                                       ｢Word｣
-      [1].Seed.Expr                                                             word  ... ution¦
-        [0].Seed.Expr.Or.|                                                      word  ... ution¦
-          [0].Seed.Nonterminal                                                  word ¦
-            [0].Seed.tokenCategoryName                                          ｢word｣
-          [1].Seed.Nonterminal                                                  Comma ... ution¦
-            [0].Seed.ruleName                                                   ｢CommandSubstitution｣
-    [56].Seed.Rule                                                              Comma ...  ')'<NEWLINE>¦
+      [1].Seed.Expr                                                             word¦
+        [0].Seed.Nonterminal                                                    word¦
+          [0].Seed.tokenCategoryName                                            ｢word｣
+    [55].Seed.Rule                                                              Comma ...  ')'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Comma ... tion ¦
         [0].Seed.ruleName                                                       ｢CommandSubstitution｣
       [1].Seed.Expr                                                             '$('  ... t ')'¦
@@ -8510,30 +8494,34 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢CompoundList｣
           [2].Seed.Terminal                                                     ')'¦
             [0].string                                                          ｢')'｣
-    [57].Seed.Rule                                                              word  ... rt +<NEWLINE>¦
+    [56].Seed.Rule                                                              word  ... rt +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      word  ...      ¦
         [0].Seed.tokenCategoryName                                              ｢word｣
       [1].Seed.Expr                                                             wordPart +¦
         [0].Seed.Expr.Postfix.+                                                 wordPart +¦
           [0].Seed.Nonterminal                                                  wordPart ¦
             [0].Seed.tokenCategoryName                                          ｢wordPart｣
-    [58].Seed.Rule                                                              wordP ... ng ]<NEWLINE>¦
+    [57].Seed.Rule                                                              wordP ... nk ]<NEWLINE>¦
       [0].Seed.Nonterminal                                                      wordP ...      ¦
         [0].Seed.tokenCategoryName                                              ｢wordPart｣
       [1].Seed.qualifier                                                        ｢no_node｣
-      [2].Seed.Expr                                                             [ ari ... ing ]¦
-        [0].Seed.Expr.Alternation                                               [ ari ... ing ]¦
+      [2].Seed.Expr                                                             [ ari ... unk ]¦
+        [0].Seed.Expr.Alternation                                               [ ari ... unk ]¦
           [0].Seed.Nonterminal                                                  arith ... sion ¦
             [0].Seed.tokenCategoryName                                          ｢arithExpansion｣
-          [1].Seed.Nonterminal                                                  brace ... aram ¦
+          [1].Seed.Nonterminal                                                  Comma ... tion ¦
+            [0].Seed.ruleName                                                   ｢CommandSubstitution｣
+          [2].Seed.Nonterminal                                                  brace ... aram ¦
             [0].Seed.tokenCategoryName                                          ｢braceParam｣
-          [2].Seed.Nonterminal                                                  dolla ... aram ¦
+          [3].Seed.Nonterminal                                                  dolla ...      ¦
             [0].Seed.tokenCategoryName                                          ｢dollarParam｣
-          [3].Seed.Nonterminal                                                  bareChunk ¦
+          [4].Seed.Nonterminal                                                  singl ... oted ¦
+            [0].Seed.tokenCategoryName                                          ｢singleQuoted｣
+          [5].Seed.Nonterminal                                                  doubl ... oted ¦
+            [0].Seed.tokenCategoryName                                          ｢doubleQuoted｣
+          [6].Seed.Nonterminal                                                  bareChunk ¦
             [0].Seed.tokenCategoryName                                          ｢bareChunk｣
-          [4].Seed.Nonterminal                                                  string ¦
-            [0].Seed.tokenCategoryName                                          ｢string｣
-    [59].Seed.Rule                                                              arith ... '))'<NEWLINE>¦
+    [58].Seed.Rule                                                              arith ... '))'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      arith ...      ¦
         [0].Seed.tokenCategoryName                                              ｢arithExpansion｣
       [1].Seed.Expr                                                             '$((' ...  '))'¦
@@ -8548,7 +8536,7 @@ Mr Jane
                 [0].Seed.fragName                                               ｢SPACE｣
           [2].Seed.Terminal                                                     '))'¦
             [0].string                                                          ｢'))'｣
-    [60].Seed.Rule                                                              brace ...  '}'<NEWLINE>¦
+    [59].Seed.Rule                                                              brace ...  '}'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      brace ...      ¦
         [0].Seed.tokenCategoryName                                              ｢braceParam｣
       [1].Seed.Expr                                                             '${'  ... + '}'¦
@@ -8560,7 +8548,7 @@ Mr Jane
               [0].Seed.tokenCategoryName                                        ｢wordChar｣
           [2].Seed.Terminal                                                     '}'¦
             [0].string                                                          ｢'}'｣
-    [61].Seed.Rule                                                              dolla ... am ]<NEWLINE>¦
+    [60].Seed.Rule                                                              dolla ... am ]<NEWLINE>¦
       [0].Seed.Nonterminal                                                      dolla ...      ¦
         [0].Seed.tokenCategoryName                                              ｢dollarParam｣
       [1].Seed.Expr                                                             ε '$' ... ram ]¦
@@ -8576,7 +8564,7 @@ Mr Jane
               [0].Seed.fragName                                                 ｢DIGIT｣
             [2].Seed.Nonterminal                                                speci ... aram ¦
               [0].Seed.tokenCategoryName                                        ｢specialParam｣
-    [62].Seed.Rule                                                              speci ... -' ]<NEWLINE>¦
+    [61].Seed.Rule                                                              speci ... -' ]<NEWLINE>¦
       [0].Seed.Nonterminal                                                      speci ...      ¦
         [0].Seed.tokenCategoryName                                              ｢specialParam｣
       [1].Seed.Expr                                                             [ '?' ... '-' ]¦
@@ -8593,7 +8581,7 @@ Mr Jane
             [0].string                                                          ｢'!'｣
           [5].Seed.Terminal                                                     '-' ¦
             [0].string                                                          ｢'-'｣
-    [63].Seed.Rule                                                              bareC ... ar +<NEWLINE>¦
+    [62].Seed.Rule                                                              bareC ... ar +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      bareC ...      ¦
         [0].Seed.tokenCategoryName                                              ｢bareChunk｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8601,7 +8589,7 @@ Mr Jane
         [0].Seed.Expr.Postfix.+                                                 wordChar +¦
           [0].Seed.Nonterminal                                                  wordChar ¦
             [0].Seed.tokenCategoryName                                          ｢wordChar｣
-    [64].Seed.Rule                                                              wordC ... ator<NEWLINE>¦
+    [63].Seed.Rule                                                              wordC ... ator<NEWLINE>¦
       [0].Seed.Nonterminal                                                      wordC ...      ¦
         [0].Seed.tokenCategoryName                                              ｢wordChar｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8620,14 +8608,14 @@ Mr Jane
               [0].string                                                        ｢']'｣
           [1].Seed.Nonterminal                                                  wordO ... rator¦
             [0].Seed.tokenCategoryName                                          ｢wordOperator｣
-    [65].Seed.Rule                                                              wordO ... ATOR<NEWLINE>¦
+    [64].Seed.Rule                                                              wordO ... ATOR<NEWLINE>¦
       [0].Seed.Nonterminal                                                      wordO ...      ¦
         [0].Seed.tokenCategoryName                                              ｢wordOperator｣
       [1].Seed.qualifier                                                        ｢no_node｣
       [2].Seed.Expr                                                             not [ ... RATOR¦
         [0].Seed.Expr.Concat.concat                                             not [ ... RATOR¦
-          [0].Seed.Expr.Prefix.not                                              not [ ... `' ] ¦
-            [0].Seed.Expr.Alternation                                           [ '|' ... `' ] ¦
+          [0].Seed.Expr.Prefix.not                                              not [ ... \"' ] ¦
+            [0].Seed.Expr.Alternation                                           [ '|' ... \"' ] ¦
               [0].Seed.Terminal                                                 '|' ¦
                 [0].string                                                      ｢'|'｣
               [1].Seed.Terminal                                                 '&' ¦
@@ -8642,14 +8630,88 @@ Mr Jane
                 [0].string                                                      ｢'$'｣
               [6].Seed.Terminal                                                 '`' ¦
                 [0].string                                                      ｢'`'｣
+              [7].Seed.Terminal                                                 '\\'' ¦
+                [0].string                                                      ｢'\''｣
+              [8].Seed.Terminal                                                 '\"' ¦
+                [0].string                                                      ｢'"'｣
           [1].Seed.Terminal                                                     OPERATOR¦
             [0].Seed.fragName                                                   ｢OPERATOR｣
-    [66].Seed.Rule                                                              varNa ... fier<NEWLINE>¦
+    [65].Seed.Rule                                                              varNa ... ons.<NEWLINE>¦
       [0].Seed.Nonterminal                                                      varNa ...      ¦
         [0].Seed.tokenCategoryName                                              ｢varName｣
       [1].Seed.Expr                                                             identifier¦
         [0].Seed.Nonterminal                                                    identifier¦
           [0].Seed.tokenCategoryName                                            ｢identifier｣
+    [66].Seed.Rule                                                              singl ... '\\''<NEWLINE>¦
+      [0].Seed.Nonterminal                                                      singl ...      ¦
+        [0].Seed.tokenCategoryName                                              ｢singleQuoted｣
+      [1].Seed.Expr                                                             '\\''  ...  '\\''¦
+        [0].Seed.Expr.Concat.concat                                             '\\''  ...  '\\''¦
+          [0].Seed.Terminal                                                     '\\'' ¦
+            [0].string                                                          ｢'\''｣
+          [1].Seed.Expr.Postfix.*                                               ( not ...  ) * ¦
+            [0].Seed.Expr                                                       not ' ...  ANY ¦
+              [0].Seed.Expr.Concat.concat                                       not ' ...  ANY ¦
+                [0].Seed.Expr.Prefix.not                                        not '\\'' ¦
+                  [0].Seed.Terminal                                             '\\'' ¦
+                    [0].string                                                  ｢'\''｣
+                [1].Seed.Terminal                                               ANY ¦
+                  [0].Seed.fragName                                             ｢ANY｣
+          [2].Seed.Terminal                                                     '\\''¦
+            [0].string                                                          ｢'\''｣
+    [67].Seed.Rule                                                              doubl ...  '\"'<NEWLINE>¦
+      [0].Seed.Nonterminal                                                      doubl ...      ¦
+        [0].Seed.tokenCategoryName                                              ｢doubleQuoted｣
+      [1].Seed.Expr                                                             '\"' d ... * '\"'¦
+        [0].Seed.Expr.Concat.concat                                             '\"' d ... * '\"'¦
+          [0].Seed.Terminal                                                     '\"' ¦
+            [0].string                                                          ｢'"'｣
+          [1].Seed.Expr.Postfix.*                                               dqPart * ¦
+            [0].Seed.Nonterminal                                                dqPart ¦
+              [0].Seed.tokenCategoryName                                        ｢dqPart｣
+          [2].Seed.Terminal                                                     '\"'¦
+            [0].string                                                          ｢'"'｣
+    [68].Seed.Rule                                                              dqPar ... $' ]<NEWLINE>¦
+      [0].Seed.Nonterminal                                                      dqPar ...      ¦
+        [0].Seed.tokenCategoryName                                              ｢dqPart｣
+      [1].Seed.qualifier                                                        ｢no_node｣
+      [2].Seed.Expr                                                             [ ari ... '$' ]¦
+        [0].Seed.Expr.Alternation                                               [ ari ... '$' ]¦
+          [0].Seed.Nonterminal                                                  arith ... sion ¦
+            [0].Seed.tokenCategoryName                                          ｢arithExpansion｣
+          [1].Seed.Nonterminal                                                  Comma ... tion ¦
+            [0].Seed.ruleName                                                   ｢CommandSubstitution｣
+          [2].Seed.Nonterminal                                                  brace ... aram ¦
+            [0].Seed.tokenCategoryName                                          ｢braceParam｣
+          [3].Seed.Nonterminal                                                  dolla ...      ¦
+            [0].Seed.tokenCategoryName                                          ｢dollarParam｣
+          [4].Seed.Nonterminal                                                  dqChunk ¦
+            [0].Seed.tokenCategoryName                                          ｢dqChunk｣
+          [5].Seed.Terminal                                                     '$' ¦
+            [0].string                                                          ｢'$'｣
+    [69].Seed.Rule                                                              dqChu ...  ) +<NEWLINE>¦
+      [0].Seed.Nonterminal                                                      dqChu ...      ¦
+        [0].Seed.tokenCategoryName                                              ｢dqChunk｣
+      [1].Seed.Expr                                                             ( '\\\\ ... Y ) +¦
+        [0].Seed.Expr.Postfix.+                                                 ( '\\\\ ... Y ) +¦
+          [0].Seed.Expr                                                         '\\\\'  ...  ANY ¦
+            [0].Seed.Expr.Or.|                                                  '\\\\'  ...  ANY ¦
+              [0].Seed.Expr.Concat.concat                                       '\\\\' ANY ¦
+                [0].Seed.Terminal                                               '\\\\' ¦
+                  [0].string                                                    ｢'\\'｣
+                [1].Seed.Terminal                                               ANY ¦
+                  [0].Seed.fragName                                             ｢ANY｣
+              [1].Seed.Expr.Concat.concat                                       not [ ...  ANY ¦
+                [0].Seed.Expr.Prefix.not                                        not [ ... \\' ] ¦
+                  [0].Seed.Expr.Alternation                                     [ '\"' ... \\' ] ¦
+                    [0].Seed.Terminal                                           '\"' ¦
+                      [0].string                                                ｢'"'｣
+                    [1].Seed.Terminal                                           '$' ¦
+                      [0].string                                                ｢'$'｣
+                    [2].Seed.Terminal                                           '\\\\' ¦
+                      [0].string                                                ｢'\\'｣
+                [1].Seed.Terminal                                               ANY ¦
+                  [0].Seed.fragName                                             ｢ANY｣
 
 [0].Ash                                                                         <NEWLINE><NEWLINE>set ... it 0<NEWLINE>¦
   [0].Ash.CompleteCommand                                                       set -e¦
@@ -8700,6 +8762,7 @@ Mr Jane
                   [0].Ash.Assignment                                            name='ash'¦
                     [0].identifier                                              ｢name｣
                     [1].Ash.word                                                ｢'ash'｣
+                      [0].Ash.singleQuoted                                      ｢'ash'｣
   [4].Ash.CompleteCommand                                                       greet ... orld\"¦
     [0].Ash.List                                                                greet ... orld\"¦
       [0].Ash.AndOr                                                             greet ... orld\"¦
@@ -8707,13 +8770,12 @@ Mr Jane
           [0].Ash.PipeSequence                                                  greet ... orld\"¦
             [0].Ash.Command                                                     greet ... orld\"¦
               [0].Ash.SimpleCommand                                             greet ... orld\"¦
-                [0].Ash.CmdPrefix                                               greet ... llo, ¦
-                  [0].Ash.Assignment                                            greet ... llo, ¦
+                [0].Ash.CmdPrefix                                               greet ... orld\"¦
+                  [0].Ash.Assignment                                            greet ... orld\"¦
                     [0].identifier                                              ｢greeting｣
-                    [1].Ash.word                                                ｢"hello,｣
-                [1].Ash.CmdName                                                 world\"¦
-                  [0].Ash.Word                                                  world\"¦
-                    [0].Ash.word                                                ｢world"｣
+                    [1].Ash.word                                                ｢"hello, world"｣
+                      [0].Ash.doubleQuoted                                      ｢"hello, world"｣
+                        [0].Ash.dqChunk                                         ｢hello, world｣
   [5].Ash.CompleteCommand                                                       greet ... g\"<NEWLINE><DEDENT>}¦
     [0].Ash.List                                                                greet ... g\"<NEWLINE><DEDENT>}¦
       [0].Ash.AndOr                                                             greet ... g\"<NEWLINE><DEDENT>}¦
@@ -8737,10 +8799,12 @@ Mr Jane
                                 [1].Ash.CmdSuffix                               '%s\\n ... ting\"¦
                                   [0].Ash.Word                                  '%s\\n' ¦
                                     [0].Ash.word                                ｢'%s\n'｣
+                                      [0].Ash.singleQuoted                      ｢'%s\n'｣
                                   [1].Ash.Word                                  \"$gre ... ting\"¦
                                     [0].Ash.word                                ｢"$greeting"｣
-                                      [0].Ash.dollarParam                       ｢$greeting｣
-                                        [0].identifier                          ｢greeting｣
+                                      [0].Ash.doubleQuoted                      ｢"$greeting"｣
+                                        [0].Ash.dollarParam                     ｢$greeting｣
+                                          [0].identifier                        ｢greeting｣
   [6].Ash.CompleteCommand                                                       count ... n\"<NEWLINE><DEDENT>}¦
     [0].Ash.List                                                                count ... n\"<NEWLINE><DEDENT>}¦
       [0].Ash.AndOr                                                             count ... n\"<NEWLINE><DEDENT>}¦
@@ -8774,12 +8838,12 @@ Mr Jane
                                   [0].Ash.Word                                  echo ¦
                                     [0].Ash.word                                ｢echo｣
                                 [1].Ash.CmdSuffix                               \"args: $n\"¦
-                                  [0].Ash.Word                                  \"args: ¦
-                                    [0].Ash.word                                ｢"args:｣
-                                  [1].Ash.Word                                  $n\"¦
-                                    [0].Ash.word                                ｢$n"｣
-                                      [0].Ash.dollarParam                       ｢$n｣
-                                        [0].identifier                          ｢n｣
+                                  [0].Ash.Word                                  \"args: $n\"¦
+                                    [0].Ash.word                                ｢"args: $n"｣
+                                      [0].Ash.doubleQuoted                      ｢"args: $n"｣
+                                        [0].Ash.dqChunk                         ｢args: ｣
+                                        [1].Ash.dollarParam                     ｢$n｣
+                                          [0].identifier                        ｢n｣
   [7].Ash.CompleteCommand                                                       if [  ... 2<NEWLINE><DEDENT>fi¦
     [0].Ash.List                                                                if [  ... 2<NEWLINE><DEDENT>fi¦
       [0].Ash.AndOr                                                             if [  ... 2<NEWLINE><DEDENT>fi¦
@@ -8802,8 +8866,9 @@ Mr Jane
                                   [0].Ash.word                                  ｢-d｣
                                 [1].Ash.Word                                    \"$BIN ... DIR\" ¦
                                   [0].Ash.word                                  ｢"$BIN_DIR"｣
-                                    [0].Ash.dollarParam                         ｢$BIN_DIR｣
-                                      [0].identifier                            ｢BIN_DIR｣
+                                    [0].Ash.doubleQuoted                        ｢"$BIN_DIR"｣
+                                      [0].Ash.dollarParam                       ｢$BIN_DIR｣
+                                        [0].identifier                          ｢BIN_DIR｣
                                 [2].Ash.Word                                    ]¦
                                   [0].Ash.word                                  ｢]｣
                   [1].Ash.separatorOp                                           ｢;｣
@@ -8817,12 +8882,12 @@ Mr Jane
                                 [0].Ash.Word                                    echo ¦
                                   [0].Ash.word                                  ｢echo｣
                               [1].Ash.CmdSuffix                                 \"foun ... _DIR\"¦
-                                [0].Ash.Word                                    \"found ¦
-                                  [0].Ash.word                                  ｢"found｣
-                                [1].Ash.Word                                    $BIN_DIR\"¦
-                                  [0].Ash.word                                  ｢$BIN_DIR"｣
-                                    [0].Ash.dollarParam                         ｢$BIN_DIR｣
-                                      [0].identifier                            ｢BIN_DIR｣
+                                [0].Ash.Word                                    \"foun ... _DIR\"¦
+                                  [0].Ash.word                                  ｢"found $BIN_DIR"｣
+                                    [0].Ash.doubleQuoted                        ｢"found $BIN_DIR"｣
+                                      [0].Ash.dqChunk                           ｢found ｣
+                                      [1].Ash.dollarParam                       ｢$BIN_DIR｣
+                                        [0].identifier                          ｢BIN_DIR｣
                   [3].Ash.ElsePart                                              elif  ... >&2<NEWLINE><DEDENT>¦
                     [0].Ash.Term                                                [ -d  ... bin ]¦
                       [0].Ash.AndOr                                             [ -d  ... bin ]¦
@@ -8851,14 +8916,10 @@ Mr Jane
                                   [0].Ash.Word                                  echo ¦
                                     [0].Ash.word                                ｢echo｣
                                 [1].Ash.CmdSuffix                               \"fall ... /bin\"¦
-                                  [0].Ash.Word                                  \"falling ¦
-                                    [0].Ash.word                                ｢"falling｣
-                                  [1].Ash.Word                                  back ¦
-                                    [0].Ash.word                                ｢back｣
-                                  [2].Ash.Word                                  to ¦
-                                    [0].Ash.word                                ｢to｣
-                                  [3].Ash.Word                                  /usr/bin\"¦
-                                    [0].Ash.word                                ｢/usr/bin"｣
+                                  [0].Ash.Word                                  \"fall ... /bin\"¦
+                                    [0].Ash.word                                ｢"falling back to /usr/bin"｣
+                                      [0].Ash.doubleQuoted                      ｢"falling back to /usr/bin"｣
+                                        [0].Ash.dqChunk                         ｢falling back to /usr/bin｣
                     [3].Ash.ElsePart                                            else<NEWLINE> ... >&2<NEWLINE><DEDENT>¦
                       [0].Ash.Term                                              echo  ...  1>&2¦
                         [0].Ash.AndOr                                           echo  ...  1>&2¦
@@ -8870,13 +8931,11 @@ Mr Jane
                                     [0].Ash.Word                                echo ¦
                                       [0].Ash.word                              ｢echo｣
                                   [1].Ash.CmdSuffix                             \"no b ...  1>&2¦
-                                    [0].Ash.Word                                \"no ¦
-                                      [0].Ash.word                              ｢"no｣
-                                    [1].Ash.Word                                bin ¦
-                                      [0].Ash.word                              ｢bin｣
-                                    [2].Ash.Word                                dir\" ¦
-                                      [0].Ash.word                              ｢dir"｣
-                                    [3].Ash.IoRedirect                          1>&2¦
+                                    [0].Ash.Word                                \"no b ... dir\" ¦
+                                      [0].Ash.word                              ｢"no bin dir"｣
+                                        [0].Ash.doubleQuoted                    ｢"no bin dir"｣
+                                          [0].Ash.dqChunk                       ｢no bin dir｣
+                                    [1].Ash.IoRedirect                          1>&2¦
                                       [0].Ash.ioNumber                          ｢1｣
                                       [1].Ash.ioOp                              ｢>&｣
                                       [2].Ash.Word                              2¦
@@ -8910,12 +8969,12 @@ Mr Jane
                                   [0].Ash.Word                                  echo ¦
                                     [0].Ash.word                                ｢echo｣
                                 [1].Ash.CmdSuffix                               \"proc ... g $f\"¦
-                                  [0].Ash.Word                                  \"proc ... sing ¦
-                                    [0].Ash.word                                ｢"processing｣
-                                  [1].Ash.Word                                  $f\"¦
-                                    [0].Ash.word                                ｢$f"｣
-                                      [0].Ash.dollarParam                       ｢$f｣
-                                        [0].identifier                          ｢f｣
+                                  [0].Ash.Word                                  \"proc ... g $f\"¦
+                                    [0].Ash.word                                ｢"processing $f"｣
+                                      [0].Ash.doubleQuoted                      ｢"processing $f"｣
+                                        [0].Ash.dqChunk                         ｢processing ｣
+                                        [1].Ash.dollarParam                     ｢$f｣
+                                          [0].identifier                        ｢f｣
   [9].Ash.CompleteCommand                                                       i=0¦
     [0].Ash.List                                                                i=0¦
       [0].Ash.AndOr                                                             i=0¦
@@ -8966,28 +9025,8 @@ Mr Jane
                                 [0].Ash.CmdPrefix                               i=$(( ...  1 ))¦
                                   [0].Ash.Assignment                            i=$(( ...  1 ))¦
                                     [0].identifier                              ｢i｣
-                                    [1].Ash.CommandSubstitution                 $(( i ...  1 ))¦
-                                      [0].Ash.Term                              ( i + 1 )¦
-                                        [0].Ash.AndOr                           ( i + 1 )¦
-                                          [0].Ash.Pipeline                      ( i + 1 )¦
-                                            [0].Ash.PipeSequence                ( i + 1 )¦
-                                              [0].Ash.Command                   ( i + 1 )¦
-                                                [0].Ash.CompoundCommand         ( i + 1 )¦
-                                                  [0].Ash.Subshell              ( i + 1 )¦
-                                                    [0].Ash.Term                i + 1 ¦
-                                                      [0].Ash.AndOr             i + 1 ¦
-                                                        [0].Ash.Pipeline        i + 1 ¦
-                                                          [0].Ash.PipeSequence  i + 1 ¦
-                                                            [0].Ash.Command     i + 1 ¦
-                                                              [0].Ash.SimpleCommand i + 1 ¦
-                                                                [0].Ash.CmdName i ¦
-                                                                  [0].Ash.Word  i ¦
-                                                                    [0].Ash.word ｢i｣
-                                                                [1].Ash.CmdSuffix + 1 ¦
-                                                                  [0].Ash.Word  + ¦
-                                                                    [0].Ash.word ｢+｣
-                                                                  [1].Ash.Word  1 ¦
-                                                                    [0].Ash.word ｢1｣
+                                    [1].Ash.word                                ｢$(( i + 1 ))｣
+                                      [0].Ash.arithExpansion                    ｢$(( i + 1 ))｣
                       [1].Ash.AndOr                                             echo  ... i=$i\"¦
                         [0].Ash.Pipeline                                        echo  ... i=$i\"¦
                           [0].Ash.PipeSequence                                  echo  ... i=$i\"¦
@@ -8999,8 +9038,10 @@ Mr Jane
                                 [1].Ash.CmdSuffix                               \"i=$i\"¦
                                   [0].Ash.Word                                  \"i=$i\"¦
                                     [0].Ash.word                                ｢"i=$i"｣
-                                      [0].Ash.dollarParam                       ｢$i｣
-                                        [0].identifier                          ｢i｣
+                                      [0].Ash.doubleQuoted                      ｢"i=$i"｣
+                                        [0].Ash.dqChunk                         ｢i=｣
+                                        [1].Ash.dollarParam                     ｢$i｣
+                                          [0].identifier                        ｢i｣
   [11].Ash.CompleteCommand                                                      until ... <DEDENT>done¦
     [0].Ash.List                                                                until ... <DEDENT>done¦
       [0].Ash.AndOr                                                             until ... <DEDENT>done¦
@@ -9040,28 +9081,8 @@ Mr Jane
                                 [0].Ash.CmdPrefix                               i=$(( ...  1 ))¦
                                   [0].Ash.Assignment                            i=$(( ...  1 ))¦
                                     [0].identifier                              ｢i｣
-                                    [1].Ash.CommandSubstitution                 $(( i ...  1 ))¦
-                                      [0].Ash.Term                              ( i - 1 )¦
-                                        [0].Ash.AndOr                           ( i - 1 )¦
-                                          [0].Ash.Pipeline                      ( i - 1 )¦
-                                            [0].Ash.PipeSequence                ( i - 1 )¦
-                                              [0].Ash.Command                   ( i - 1 )¦
-                                                [0].Ash.CompoundCommand         ( i - 1 )¦
-                                                  [0].Ash.Subshell              ( i - 1 )¦
-                                                    [0].Ash.Term                i - 1 ¦
-                                                      [0].Ash.AndOr             i - 1 ¦
-                                                        [0].Ash.Pipeline        i - 1 ¦
-                                                          [0].Ash.PipeSequence  i - 1 ¦
-                                                            [0].Ash.Command     i - 1 ¦
-                                                              [0].Ash.SimpleCommand i - 1 ¦
-                                                                [0].Ash.CmdName i ¦
-                                                                  [0].Ash.Word  i ¦
-                                                                    [0].Ash.word ｢i｣
-                                                                [1].Ash.CmdSuffix - 1 ¦
-                                                                  [0].Ash.Word  - ¦
-                                                                    [0].Ash.word ｢-｣
-                                                                  [1].Ash.Word  1 ¦
-                                                                    [0].Ash.word ｢1｣
+                                    [1].Ash.word                                ｢$(( i - 1 ))｣
+                                      [0].Ash.arithExpansion                    ｢$(( i - 1 ))｣
   [12].Ash.CompleteCommand                                                      case  ... <DEDENT>esac¦
     [0].Ash.List                                                                case  ... <DEDENT>esac¦
       [0].Ash.AndOr                                                             case  ... <DEDENT>esac¦
@@ -9072,8 +9093,9 @@ Mr Jane
                 [0].Ash.CaseClause                                              case  ... <DEDENT>esac¦
                   [0].Ash.Word                                                  \"$name\" ¦
                     [0].Ash.word                                                ｢"$name"｣
-                      [0].Ash.dollarParam                                       ｢$name｣
-                        [0].identifier                                          ｢name｣
+                      [0].Ash.doubleQuoted                                      ｢"$name"｣
+                        [0].Ash.dollarParam                                     ｢$name｣
+                          [0].identifier                                        ｢name｣
                   [1].Ash.CaseList                                              (ash) ...  ;;<NEWLINE><DEDENT>¦
                     [0].Ash.CaseItem                                            (ash) ... \" ;;<NEWLINE>¦
                       [0].Ash.Pattern                                           ash¦
@@ -9089,12 +9111,10 @@ Mr Jane
                                     [0].Ash.Word                                echo ¦
                                       [0].Ash.word                              ｢echo｣
                                   [1].Ash.CmdSuffix                             \"this ... ash\" ¦
-                                    [0].Ash.Word                                \"this ¦
-                                      [0].Ash.word                              ｢"this｣
-                                    [1].Ash.Word                                is ¦
-                                      [0].Ash.word                              ｢is｣
-                                    [2].Ash.Word                                ash\" ¦
-                                      [0].Ash.word                              ｢ash"｣
+                                    [0].Ash.Word                                \"this ... ash\" ¦
+                                      [0].Ash.word                              ｢"this is ash"｣
+                                        [0].Ash.doubleQuoted                    ｢"this is ash"｣
+                                          [0].Ash.dqChunk                       ｢this is ash｣
                       [2].Ash.dsemi                                             ｢;;｣
                     [1].Ash.CaseItem                                            (bash ... \" ;;<NEWLINE>¦
                       [0].Ash.Pattern                                           bash|sh¦
@@ -9112,10 +9132,10 @@ Mr Jane
                                     [0].Ash.Word                                echo ¦
                                       [0].Ash.word                              ｢echo｣
                                   [1].Ash.CmdSuffix                             \"clos ... ugh\" ¦
-                                    [0].Ash.Word                                \"close ¦
-                                      [0].Ash.word                              ｢"close｣
-                                    [1].Ash.Word                                enough\" ¦
-                                      [0].Ash.word                              ｢enough"｣
+                                    [0].Ash.Word                                \"clos ... ugh\" ¦
+                                      [0].Ash.word                              ｢"close enough"｣
+                                        [0].Ash.doubleQuoted                    ｢"close enough"｣
+                                          [0].Ash.dqChunk                       ｢close enough｣
                       [2].Ash.dsemi                                             ｢;;｣
                     [2].Ash.CaseItem                                            (*) e ...  ;;<NEWLINE><DEDENT>¦
                       [0].Ash.Pattern                                           *¦
@@ -9133,6 +9153,8 @@ Mr Jane
                                   [1].Ash.CmdSuffix                             \"unknown\" ¦
                                     [0].Ash.Word                                \"unknown\" ¦
                                       [0].Ash.word                              ｢"unknown"｣
+                                        [0].Ash.doubleQuoted                    ｢"unknown"｣
+                                          [0].Ash.dqChunk                       ｢unknown｣
                       [2].Ash.dsemi                                             ｢;;｣
   [13].Ash.CompleteCommand                                                      today ... m-%d)¦
     [0].Ash.List                                                                today ... m-%d)¦
@@ -9144,19 +9166,20 @@ Mr Jane
                 [0].Ash.CmdPrefix                                               today ... m-%d)¦
                   [0].Ash.Assignment                                            today ... m-%d)¦
                     [0].identifier                                              ｢today｣
-                    [1].Ash.CommandSubstitution                                 $(dat ... m-%d)¦
-                      [0].Ash.Term                                              date  ... %m-%d¦
-                        [0].Ash.AndOr                                           date  ... %m-%d¦
-                          [0].Ash.Pipeline                                      date  ... %m-%d¦
-                            [0].Ash.PipeSequence                                date  ... %m-%d¦
-                              [0].Ash.Command                                   date  ... %m-%d¦
-                                [0].Ash.SimpleCommand                           date  ... %m-%d¦
-                                  [0].Ash.CmdName                               date ¦
-                                    [0].Ash.Word                                date ¦
-                                      [0].Ash.word                              ｢date｣
-                                  [1].Ash.CmdSuffix                             +%Y-%m-%d¦
-                                    [0].Ash.Word                                +%Y-%m-%d¦
-                                      [0].Ash.word                              ｢+%Y-%m-%d｣
+                    [1].Ash.word                                                ｢$(date +%Y-%m-%d)｣
+                      [0].Ash.CommandSubstitution                               $(dat ... m-%d)¦
+                        [0].Ash.Term                                            date  ... %m-%d¦
+                          [0].Ash.AndOr                                         date  ... %m-%d¦
+                            [0].Ash.Pipeline                                    date  ... %m-%d¦
+                              [0].Ash.PipeSequence                              date  ... %m-%d¦
+                                [0].Ash.Command                                 date  ... %m-%d¦
+                                  [0].Ash.SimpleCommand                         date  ... %m-%d¦
+                                    [0].Ash.CmdName                             date ¦
+                                      [0].Ash.Word                              date ¦
+                                        [0].Ash.word                            ｢date｣
+                                    [1].Ash.CmdSuffix                           +%Y-%m-%d¦
+                                      [0].Ash.Word                              +%Y-%m-%d¦
+                                        [0].Ash.word                            ｢+%Y-%m-%d｣
   [14].Ash.CompleteCommand                                                      echo  ... day}\"¦
     [0].Ash.List                                                                echo  ... day}\"¦
       [0].Ash.AndOr                                                             echo  ... day}\"¦
@@ -9168,13 +9191,11 @@ Mr Jane
                   [0].Ash.Word                                                  echo ¦
                     [0].Ash.word                                                ｢echo｣
                 [1].Ash.CmdSuffix                                               \"toda ... day}\"¦
-                  [0].Ash.Word                                                  \"today ¦
-                    [0].Ash.word                                                ｢"today｣
-                  [1].Ash.Word                                                  is ¦
-                    [0].Ash.word                                                ｢is｣
-                  [2].Ash.Word                                                  ${today}\"¦
-                    [0].Ash.word                                                ｢${today}"｣
-                      [0].Ash.braceParam                                        ｢${today}｣
+                  [0].Ash.Word                                                  \"toda ... day}\"¦
+                    [0].Ash.word                                                ｢"today is ${today}"｣
+                      [0].Ash.doubleQuoted                                      ｢"today is ${today}"｣
+                        [0].Ash.dqChunk                                         ｢today is ｣
+                        [1].Ash.braceParam                                      ｢${today}｣
   [15].Ash.CompleteCommand                                                      ls -l ... /null¦
     [0].Ash.List                                                                ls -l ... /null¦
       [0].Ash.AndOr                                                             ls -l ... /null¦
@@ -9201,6 +9222,7 @@ Mr Jane
                     [0].Ash.word                                                ｢-v｣
                   [1].Ash.Word                                                  '^total' ¦
                     [0].Ash.word                                                ｢'^total'｣
+                      [0].Ash.singleQuoted                                      ｢'^total'｣
             [3].Ash.pipeOp                                                      ｢|｣
             [4].Ash.Command                                                     wc -l ... /null¦
               [0].Ash.SimpleCommand                                             wc -l ... /null¦
@@ -9322,6 +9344,8 @@ Mr Jane
                 [1].Ash.CmdSuffix                                               \"failed\"¦
                   [0].Ash.Word                                                  \"failed\"¦
                     [0].Ash.word                                                ｢"failed"｣
+                      [0].Ash.doubleQuoted                                      ｢"failed"｣
+                        [0].Ash.dqChunk                                         ｢failed｣
   [19].Ash.CompleteCommand                                                      echo  ... /null¦
     [0].Ash.List                                                                echo  ... /null¦
       [0].Ash.AndOr                                                             echo  ... /null¦
@@ -9335,8 +9359,10 @@ Mr Jane
                 [1].Ash.CmdSuffix                                               \"${na ... /null¦
                   [0].Ash.Word                                                  \"${na ... ay}\" ¦
                     [0].Ash.word                                                ｢"${name}-${today}"｣
-                      [0].Ash.braceParam                                        ｢${name}｣
-                      [1].Ash.braceParam                                        ｢${today}｣
+                      [0].Ash.doubleQuoted                                      ｢"${name}-${today}"｣
+                        [0].Ash.braceParam                                      ｢${name}｣
+                        [1].Ash.dqChunk                                         ｢-｣
+                        [2].Ash.braceParam                                      ｢${today}｣
                   [1].Ash.IoRedirect                                            > /de ... /null¦
                     [0].Ash.ioOp                                                ｢>｣
                     [1].Ash.Word                                                /dev/null¦
@@ -9362,14 +9388,13 @@ Mr Jane
                                   [0].Ash.Word                                  echo ¦
                                     [0].Ash.word                                ｢echo｣
                                 [1].Ash.CmdSuffix                               \"usag ... \" >&2¦
-                                  [0].Ash.Word                                  \"usage: ¦
-                                    [0].Ash.word                                ｢"usage:｣
-                                  [1].Ash.Word                                  $0 ¦
-                                    [0].Ash.word                                ｢$0｣
-                                      [0].Ash.dollarParam                       ｢$0｣
-                                  [2].Ash.Word                                  [opti ... ns]\" ¦
-                                    [0].Ash.word                                ｢[options]"｣
-                                  [3].Ash.IoRedirect                            >&2¦
+                                  [0].Ash.Word                                  \"usag ... ns]\" ¦
+                                    [0].Ash.word                                ｢"usage: $0 [options]"｣
+                                      [0].Ash.doubleQuoted                      ｢"usage: $0 [options]"｣
+                                        [0].Ash.dqChunk                         ｢usage: ｣
+                                        [1].Ash.dollarParam                     ｢$0｣
+                                        [2].Ash.dqChunk                         ｢ [options]｣
+                                  [1].Ash.IoRedirect                            >&2¦
                                     [0].Ash.ioOp                                ｢>&｣
                                     [1].Ash.Word                                2¦
                                       [0].Ash.word                              ｢2｣
@@ -9407,10 +9432,12 @@ Mr Jane
                                                 [1].Ash.CmdSuffix               '%s\\n ... $arg\"¦
                                                   [0].Ash.Word                  '%s\\n' ¦
                                                     [0].Ash.word                ｢'%s\n'｣
+                                                      [0].Ash.singleQuoted      ｢'%s\n'｣
                                                   [1].Ash.Word                  \"$arg\"¦
                                                     [0].Ash.word                ｢"$arg"｣
-                                                      [0].Ash.dollarParam       ｢$arg｣
-                                                        [0].identifier          ｢arg｣
+                                                      [0].Ash.doubleQuoted      ｢"$arg"｣
+                                                        [0].Ash.dollarParam     ｢$arg｣
+                                                          [0].identifier        ｢arg｣
   [22].Ash.CompleteCommand                                                      targe ... share¦
     [0].Ash.List                                                                targe ... share¦
       [0].Ash.AndOr                                                             targe ... share¦
@@ -9455,8 +9482,9 @@ Mr Jane
                 [1].Ash.CmdSuffix                                               \"$tar ... /null¦
                   [0].Ash.Word                                                  \"$target\" ¦
                     [0].Ash.word                                                ｢"$target"｣
-                      [0].Ash.dollarParam                                       ｢$target｣
-                        [0].identifier                                          ｢target｣
+                      [0].Ash.doubleQuoted                                      ｢"$target"｣
+                        [0].Ash.dollarParam                                     ｢$target｣
+                          [0].identifier                                        ｢target｣
                   [1].Ash.IoRedirect                                            >> /d ... /null¦
                     [0].Ash.ioOp                                                ｢>>｣
                     [1].Ash.Word                                                /dev/null¦

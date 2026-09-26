@@ -14,10 +14,8 @@
 #    documents are not supported, and a backslash only continues a line (it does not escape
 #    individual characters).
 #  * The word-parts of a word are glued together without whitespace by making "word" a
-#    twig-rule (twig-rules never invoke the skip-rule internally); command-substitution
-#    « $(...) » recurses back into the branch-rules and is therefore only available as a word
-#    of its own, and « name=$(...) » is the only place where the "no whitespace" requirement is
-#    not actually enforced.
+#    twig-rule (twig-rules never invoke the skip-rule internally). Command-substitution
+#    « $(...) » is a branch-rule, which skips whitespace as usual inside the parentheses.
 
 language Ash:
   skip = skipHorizontal
@@ -76,8 +74,7 @@ language Ash:
   CmdPrefix     = ( IoRedirect | Assignment ) +
   CmdSuffix     = ( IoRedirect | Word ) +
   CmdName       = not reservedWord Word
-  Assignment    = AssignSubst | assignWord
-  AssignSubst   = no_node assignName CommandSubstitution
+  Assignment    = assignWord
   assignWord    = no_node assignName word ?
   assignName    = no_node identifier '='
 
@@ -92,15 +89,23 @@ language Ash:
                    "while" "until" "for" "in" "function" "select" "time" ]
 
   # Words. A word is a twig-rule, so that its parts are glued together without any skipping.
-  Word                = word | CommandSubstitution
+  Word                = word
   CommandSubstitution = '$(' CompoundList ')'
   word                = wordPart +
-  wordPart            = no_node [ arithExpansion braceParam dollarParam bareChunk string ]
+  wordPart            = no_node [ arithExpansion CommandSubstitution braceParam dollarParam \
+                                  singleQuoted doubleQuoted bareChunk ]
   arithExpansion      = '$((' [ wordChar SPACE ] + '))'
   braceParam          = '${' wordChar + '}'
   dollarParam         = ε '$' [ identifier DIGIT specialParam ]
   specialParam        = [ '?' '@' '*' '$' '!' '-' ]
   bareChunk           = no_node wordChar +
   wordChar            = no_node [ ID_START ID_CONTINUE DIGIT '[' ']' ] | wordOperator
-  wordOperator        = no_node not [ '|' '&' ';' '<' '>' '$' '`' ] OPERATOR
+  wordOperator        = no_node not [ '|' '&' ';' '<' '>' '$' '`' '\'' '"' ] OPERATOR
   varName             = identifier
+
+  # Strings. Single-quoted strings are literal; double-quoted strings may contain expansions.
+  singleQuoted        = '\'' ( not '\'' ANY ) * '\''
+  doubleQuoted        = '"' dqPart * '"'
+  dqPart              = no_node [ arithExpansion CommandSubstitution braceParam dollarParam \
+                                  dqChunk '$' ]
+  dqChunk             = ( '\\' ANY | not [ '"' '$' '\\' ] ANY ) +

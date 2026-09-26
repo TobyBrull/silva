@@ -388,6 +388,8 @@ namespace silva::seed::impl {
 
     int twig_rule_depth = 0;
 
+    index_t last_token_end = 0;
+
     const interpreter_t::rule_expr_data_t* curr_rule = nullptr;
     struct rule_expr_data_scope_t {
       interpreter_apply_nursery_t& self;
@@ -942,6 +944,7 @@ namespace silva::seed::impl {
 
     expected_t<void> skip()
     {
+      last_token_end = fragment_index;
       return skip_impl(lang_data->skip_rule_name, lang_data->skip_rule_expr);
     }
 
@@ -998,16 +1001,30 @@ namespace silva::seed::impl {
     handle_branch_rule(const name_id_t t_rule_name,
                        const interpreter_t::rule_expr_data_t& rule_data)
     {
+      // A branch-rule inside a twig-rule skips as usual, except after its last token.
+      const int outer_twig_rule_depth = twig_rule_depth;
+      twig_rule_depth                 = 0;
+      scope_exit_t twig_scope_exit(
+          [this, outer_twig_rule_depth] { twig_rule_depth = outer_twig_rule_depth; });
+      const index_t orig_fragment_index = fragment_index;
+      const auto unskip_if_in_twig_rule = [&] {
+        if (outer_twig_rule_depth > 0 && orig_fragment_index <= last_token_end &&
+            last_token_end <= fragment_index) {
+          fragment_index = last_token_end;
+        }
+      };
       rule_expr_data_scope_t rule_scope(*this, &rule_data);
       const parse_tree_span_t& s_pts = rule_data.expr;
       const name_id_t s_expr_name    = s_pts.rule_name();
       node_and_error_t retval;
       if (s_expr_name == lexicon.ni_axe) {
         retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name, t_rule_name));
+        unskip_if_in_twig_rule();
       }
       else if (s_expr_name == lexicon.ni_axe_level) {
         const name_id_t axe_name = sfp->get(t_rule_name).parent_name;
         retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(axe_name, t_rule_name));
+        unskip_if_in_twig_rule();
       }
       else {
         auto ss = stake();
@@ -1016,6 +1033,7 @@ namespace silva::seed::impl {
         }
         auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(s_pts, t_rule_name));
         ss.add_proto_node(std::move(result.node));
+        unskip_if_in_twig_rule();
         retval = node_and_error_t{ss.commit(), std::move(result.last_error)};
       }
       return retval;
