@@ -305,4 +305,52 @@ language Fstr:
     const string_t result        = SILVA_REQUIRE(pt->span().to_string());
     CHECK(result == expected.substr(1));
   }
+
+  TEST_CASE("branch-rule-in-twig-rule-unskip-backtrack", "[seed-interpreter]")
+  {
+    const string_view_t unskip_seed = R"'(
+language Unskip:
+  skip = ( SPACE | NEWLINE ) *
+  ⊙ = backtrack
+  backtrack = Backtrack SPACE 'x' SPACE 'z'
+  Backtrack = 'a' ( 'x' 'y' ) ?
+)'";
+    syntax_farm_t sf;
+    auto se = standard_seed_interpreter(sf.ptr());
+    SILVA_REQUIRE(se->add_seed_text("unskip.seed", string_t{unskip_seed}));
+
+    const auto pt = SILVA_REQUIRE(se->apply_text("", "a x z\n", sf.name_id_of("Unskip")));
+    const string_view_t expected = R"(
+[0].Unskip                                        a x z<NEWLINE>¦
+  [0].Unskip.backtrack                            ｢a x z｣
+    [0].Unskip.Backtrack                          a¦
+)";
+    const string_t result        = SILVA_REQUIRE(pt->span().to_string());
+    CHECK(result == expected.substr(1));
+  }
+
+  TEST_CASE("branch-rule-in-twig-rule-unskip-zero-width", "[seed-interpreter]")
+  {
+    const string_view_t unskip_seed = R"'(
+language Unskip:
+  skip = ( SPACE | NEWLINE ) *
+  ⊙ = zeroWidth
+  zeroWidth = ZeroWidth 'x'
+  ZeroWidth = 'a' maybeY
+  maybeY = 'y' ?
+)'";
+    syntax_farm_t sf;
+    auto se = standard_seed_interpreter(sf.ptr());
+    SILVA_REQUIRE(se->add_seed_text("unskip.seed", string_t{unskip_seed}));
+
+    const auto pt = SILVA_REQUIRE(se->apply_text("", "a x\n", sf.name_id_of("Unskip")));
+    const string_view_t expected = R"(
+[0].Unskip                                        a x<NEWLINE>¦
+  [0].Unskip.zeroWidth                            ｢a x｣
+    [0].Unskip.ZeroWidth                          a ¦
+      [0].Unskip.maybeY                           ｢｣
+)";
+    const string_t result        = SILVA_REQUIRE(pt->span().to_string());
+    CHECK(result == expected.substr(1));
+  }
 }
