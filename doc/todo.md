@@ -1,5 +1,8 @@
 # TODO
 
+* every name_id_t should be a namespace (that can contain other namespaces or rules) or a rule, but
+  a rule should not be able to contain subrules
+
 * Errors:
     * color furthest fragment in readable color?
     * pass node_and_error_t::last_error through seed-axe

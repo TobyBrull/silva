@@ -4869,7 +4869,7 @@ Mr Jane
             [0].string                                                          ｢"True"｣
           [2].Seed.Terminal                                                     \"False\"¦
             [0].string                                                          ｢"False"｣
-    [19].Seed.Scope                                                             Strin ... gs<NEWLINE><NEWLINE><DEDENT>¦
+    [19].Seed.Scope                                                             Strin ... +<NEWLINE><NEWLINE><DEDENT><DEDENT>¦
       [0].Seed.Nonterminal                                                      Strings¦
         [0].Seed.ruleName                                                       ｢Strings｣
       [1].Seed.Rule                                                             ⊙ = ( ...  ) +<NEWLINE>¦
@@ -4882,19 +4882,186 @@ Mr Jane
                   [0].Seed.tokenCategoryName                                    ｢string｣
                 [1].Seed.Nonterminal                                            fstring ¦
                   [0].Seed.tokenCategoryName                                    ｢fstring｣
-      [2].Seed.Rule                                                             fstri ... ngs<NEWLINE><NEWLINE>¦
-        [0].Seed.Nonterminal                                                    fstring ¦
+      [2].Seed.Scope                                                            fstri ...  +<NEWLINE><NEWLINE><DEDENT>¦
+        [0].Seed.Nonterminal                                                    fstring¦
           [0].Seed.tokenCategoryName                                            ｢fstring｣
-        [1].Seed.Expr                                                           ( 'f' ... rings¦
-          [0].Seed.Expr.Concat.concat                                           ( 'f' ... rings¦
-            [0].Seed.Expr                                                       'f' | 't' ¦
-              [0].Seed.Expr.Or.|                                                'f' | 't' ¦
-                [0].Seed.Terminal                                               'f' ¦
-                  [0].string                                                    ｢'f'｣
-                [1].Seed.Terminal                                               't' ¦
-                  [0].string                                                    ｢'t'｣
-            [1].Seed.Nonterminal                                                strin ... rings¦
-              [0].Seed.tokenCategoryName                                        ｢string｣
+        [1].Seed.Rule                                                           ⊙ = p ... '' )<NEWLINE>¦
+          [0].Seed.here                                                         ｢⊙｣
+          [1].Seed.Expr                                                         prefi ... \\'' )¦
+            [0].Seed.Expr.Concat.concat                                         prefi ... \\'' )¦
+              [0].Seed.Nonterminal                                              prefix ¦
+                [0].Seed.tokenCategoryName                                      ｢prefix｣
+              [1].Seed.Expr                                                     '\"' ( ... '\\'' ¦
+                [0].Seed.Expr.Or.|                                              '\"' ( ... '\\'' ¦
+                  [0].Seed.Expr.Concat.concat                                   '\"' ( ...  '\"' ¦
+                    [0].Seed.Terminal                                           '\"' ¦
+                      [0].string                                                ｢'"'｣
+                    [1].Seed.Expr.Postfix.*                                     ( Fie ...  ) * ¦
+                      [0].Seed.Expr                                             Field ... hunk ¦
+                        [0].Seed.Expr.Or.|                                      Field ... hunk ¦
+                          [0].Seed.Nonterminal                                  Field ¦
+                            [0].Seed.ruleName                                   ｢Field｣
+                          [1].Seed.Nonterminal                                  doubl ... hunk ¦
+                            [0].Seed.tokenCategoryName                          ｢doubleChunk｣
+                    [2].Seed.Terminal                                           '\"' ¦
+                      [0].string                                                ｢'"'｣
+                  [1].Seed.Expr.Concat.concat                                   '\\''  ... '\\'' ¦
+                    [0].Seed.Terminal                                           '\\'' ¦
+                      [0].string                                                ｢'\''｣
+                    [1].Seed.Expr.Postfix.*                                     ( Fie ...  ) * ¦
+                      [0].Seed.Expr                                             Field ... hunk ¦
+                        [0].Seed.Expr.Or.|                                      Field ... hunk ¦
+                          [0].Seed.Nonterminal                                  Field ¦
+                            [0].Seed.ruleName                                   ｢Field｣
+                          [1].Seed.Nonterminal                                  singl ... hunk ¦
+                            [0].Seed.tokenCategoryName                          ｢singleChunk｣
+                    [2].Seed.Terminal                                           '\\'' ¦
+                      [0].string                                                ｢'\''｣
+        [2].Seed.Rule                                                           prefi ... T' ]<NEWLINE>¦
+          [0].Seed.Nonterminal                                                  prefix ¦
+            [0].Seed.tokenCategoryName                                          ｢prefix｣
+          [1].Seed.Expr                                                         [ 'f' ... 'T' ]¦
+            [0].Seed.Expr.Alternation                                           [ 'f' ... 'T' ]¦
+              [0].Seed.Terminal                                                 'f' ¦
+                [0].string                                                      ｢'f'｣
+              [1].Seed.Terminal                                                 'F' ¦
+                [0].string                                                      ｢'F'｣
+              [2].Seed.Terminal                                                 't' ¦
+                [0].string                                                      ｢'t'｣
+              [3].Seed.Terminal                                                 'T' ¦
+                [0].string                                                      ｢'T'｣
+        [3].Seed.Rule                                                           doubl ...  ) +<NEWLINE>¦
+          [0].Seed.Nonterminal                                                  doubl ... hunk ¦
+            [0].Seed.tokenCategoryName                                          ｢doubleChunk｣
+          [1].Seed.Expr                                                         ( esc ... Y ) +¦
+            [0].Seed.Expr.Postfix.+                                             ( esc ... Y ) +¦
+              [0].Seed.Expr                                                     escap ...  ANY ¦
+                [0].Seed.Expr.Or.|                                              escap ...  ANY ¦
+                  [0].Seed.Nonterminal                                          escape ¦
+                    [0].Seed.tokenCategoryName                                  ｢escape｣
+                  [1].Seed.Expr.Concat.concat                                   not [ ...  ANY ¦
+                    [0].Seed.Expr.Prefix.not                                    not [ ... }' ] ¦
+                      [0].Seed.Expr.Alternation                                 [ '\"' ... }' ] ¦
+                        [0].Seed.Terminal                                       '\"' ¦
+                          [0].string                                            ｢'"'｣
+                        [1].Seed.Terminal                                       '{' ¦
+                          [0].string                                            ｢'{'｣
+                        [2].Seed.Terminal                                       '}' ¦
+                          [0].string                                            ｢'}'｣
+                    [1].Seed.Terminal                                           ANY ¦
+                      [0].Seed.fragName                                         ｢ANY｣
+        [4].Seed.Rule                                                           singl ...  ) +<NEWLINE>¦
+          [0].Seed.Nonterminal                                                  singl ... hunk ¦
+            [0].Seed.tokenCategoryName                                          ｢singleChunk｣
+          [1].Seed.Expr                                                         ( esc ... Y ) +¦
+            [0].Seed.Expr.Postfix.+                                             ( esc ... Y ) +¦
+              [0].Seed.Expr                                                     escap ...  ANY ¦
+                [0].Seed.Expr.Or.|                                              escap ...  ANY ¦
+                  [0].Seed.Nonterminal                                          escape ¦
+                    [0].Seed.tokenCategoryName                                  ｢escape｣
+                  [1].Seed.Expr.Concat.concat                                   not [ ...  ANY ¦
+                    [0].Seed.Expr.Prefix.not                                    not [ ... }' ] ¦
+                      [0].Seed.Expr.Alternation                                 [ '\\' ... }' ] ¦
+                        [0].Seed.Terminal                                       '\\'' ¦
+                          [0].string                                            ｢'\''｣
+                        [1].Seed.Terminal                                       '{' ¦
+                          [0].string                                            ｢'{'｣
+                        [2].Seed.Terminal                                       '}' ¦
+                          [0].string                                            ｢'}'｣
+                    [1].Seed.Terminal                                           ANY ¦
+                      [0].Seed.fragName                                         ｢ANY｣
+        [5].Seed.Rule                                                           escap ...  ANY<NEWLINE>¦
+          [0].Seed.Nonterminal                                                  escape ¦
+            [0].Seed.tokenCategoryName                                          ｢escape｣
+          [1].Seed.qualifier                                                    ｢no_node｣
+          [2].Seed.Expr                                                         '{{'  ... ] ANY¦
+            [0].Seed.Expr.Or.|                                                  '{{'  ... ] ANY¦
+              [0].Seed.Terminal                                                 '{{' ¦
+                [0].string                                                      ｢'{{'｣
+              [1].Seed.Terminal                                                 '}}' ¦
+                [0].string                                                      ｢'}}'｣
+              [2].Seed.Expr.Concat.concat                                       ε '\\\\ ... ] ANY¦
+                [0].Seed.Terminal                                               ε ¦
+                  [0].Seed.keyword                                              ｢ε｣
+                [1].Seed.Terminal                                               '\\\\' ¦
+                  [0].string                                                    ｢'\\'｣
+                [2].Seed.Expr.Prefix.not                                        not [ ... }' ] ¦
+                  [0].Seed.Expr.Alternation                                     [ '{' ... }' ] ¦
+                    [0].Seed.Terminal                                           '{' ¦
+                      [0].string                                                ｢'{'｣
+                    [1].Seed.Terminal                                           '}' ¦
+                      [0].string                                                ｢'}'｣
+                [3].Seed.Terminal                                               ANY¦
+                  [0].Seed.fragName                                             ｢ANY｣
+        [6].Seed.Rule                                                           Field ...  '}'<NEWLINE>¦
+          [0].Seed.Nonterminal                                                  Field ¦
+            [0].Seed.ruleName                                                   ｢Field｣
+          [1].Seed.Expr                                                         '{' ( ... ? '}'¦
+            [0].Seed.Expr.Concat.concat                                         '{' ( ... ? '}'¦
+              [0].Seed.Terminal                                                 '{' ¦
+                [0].string                                                      ｢'{'｣
+              [1].Seed.Expr                                                     Expr. ... xprs ¦
+                [0].Seed.Expr.Or.|                                              Expr. ... xprs ¦
+                  [0].Seed.Nonterminal                                          Expr. ... ield ¦
+                    [0].Seed.ruleName                                           ｢Expr｣
+                    [1].literal                                                 ｢.｣
+                    [2].Seed.ruleName                                           ｢Yield｣
+                  [1].Seed.Nonterminal                                          StarExprs ¦
+                    [0].Seed.ruleName                                           ｢StarExprs｣
+              [2].Seed.Expr.Postfix.?                                           '=' ? ¦
+                [0].Seed.Terminal                                               '=' ¦
+                  [0].string                                                    ｢'='｣
+              [3].Seed.Expr.Postfix.?                                           conve ... on ? ¦
+                [0].Seed.Nonterminal                                            conve ... sion ¦
+                  [0].Seed.tokenCategoryName                                    ｢conversion｣
+              [4].Seed.Expr.Postfix.?                                           forma ... ec ? ¦
+                [0].Seed.Nonterminal                                            forma ... Spec ¦
+                  [0].Seed.tokenCategoryName                                    ｢formatSpec｣
+              [5].Seed.Terminal                                                 '}'¦
+                [0].string                                                      ｢'}'｣
+        [7].Seed.Rule                                                           conve ... a' ]<NEWLINE>¦
+          [0].Seed.Nonterminal                                                  conve ... sion ¦
+            [0].Seed.tokenCategoryName                                          ｢conversion｣
+          [1].Seed.Expr                                                         '!' [ ... 'a' ]¦
+            [0].Seed.Expr.Concat.concat                                         '!' [ ... 'a' ]¦
+              [0].Seed.Terminal                                                 '!' ¦
+                [0].string                                                      ｢'!'｣
+              [1].Seed.Expr.Alternation                                         [ 'r' ... 'a' ]¦
+                [0].Seed.Terminal                                               'r' ¦
+                  [0].string                                                    ｢'r'｣
+                [1].Seed.Terminal                                               's' ¦
+                  [0].string                                                    ｢'s'｣
+                [2].Seed.Terminal                                               'a' ¦
+                  [0].string                                                    ｢'a'｣
+        [8].Seed.Rule                                                           forma ...  ) *<NEWLINE>¦
+          [0].Seed.Nonterminal                                                  forma ... Spec ¦
+            [0].Seed.tokenCategoryName                                          ｢formatSpec｣
+          [1].Seed.Expr                                                         ':' ( ... k ) *¦
+            [0].Seed.Expr.Concat.concat                                         ':' ( ... k ) *¦
+              [0].Seed.Terminal                                                 ':' ¦
+                [0].string                                                      ｢':'｣
+              [1].Seed.Expr.Postfix.*                                           ( Fie ... k ) *¦
+                [0].Seed.Expr                                                   Field ... hunk ¦
+                  [0].Seed.Expr.Or.|                                            Field ... hunk ¦
+                    [0].Seed.Nonterminal                                        Field ¦
+                      [0].Seed.ruleName                                         ｢Field｣
+                    [1].Seed.Nonterminal                                        forma ... hunk ¦
+                      [0].Seed.tokenCategoryName                                ｢formatChunk｣
+        [9].Seed.Rule                                                           forma ... ) +<NEWLINE><NEWLINE>¦
+          [0].Seed.Nonterminal                                                  forma ... hunk ¦
+            [0].Seed.tokenCategoryName                                          ｢formatChunk｣
+          [1].Seed.Expr                                                         ( not ... Y ) +¦
+            [0].Seed.Expr.Postfix.+                                             ( not ... Y ) +¦
+              [0].Seed.Expr                                                     not [ ...  ANY ¦
+                [0].Seed.Expr.Concat.concat                                     not [ ...  ANY ¦
+                  [0].Seed.Expr.Prefix.not                                      not [ ... }' ] ¦
+                    [0].Seed.Expr.Alternation                                   [ '{' ... }' ] ¦
+                      [0].Seed.Terminal                                         '{' ¦
+                        [0].string                                              ｢'{'｣
+                      [1].Seed.Terminal                                         '}' ¦
+                        [0].string                                              ｢'}'｣
+                  [1].Seed.Terminal                                             ANY ¦
+                    [0].Seed.fragName                                           ｢ANY｣
     [20].Seed.Scope                                                             numbe ... ' ]<NEWLINE><DEDENT>¦
       [0].Seed.Nonterminal                                                      number¦
         [0].Seed.tokenCategoryName                                              ｢number｣
@@ -6946,7 +7113,189 @@ Mr Jane
                     [3].Pine.StarExpr                                           ternary¦
                       [0].Pine.Expr.Atom                                        ternary¦
                         [0].identifier                                          ｢ternary｣
-  [25].Pine.Stmt                                                                def w ... ]<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+  [25].Pine.Stmt                                                                def f ... c<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+    [0].Pine.Stmt.Compound                                                      def f ... c<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+      [0].Pine.Stmt.Function                                                    def f ... c<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+        [0].identifier                                                          ｢formatting｣
+        [1].Pine.TypeParams                                                     ¦
+        [2].Pine.Stmt.Function.Params                                           name, ...  prec¦
+          [0].Pine.Stmt.Function.Param                                          name¦
+            [0].Pine.Stmt.Function.ParamDef                                     name¦
+              [0].identifier                                                    ｢name｣
+          [1].Pine.Stmt.Function.Param                                          value¦
+            [0].Pine.Stmt.Function.ParamDef                                     value¦
+              [0].identifier                                                    ｢value｣
+          [2].Pine.Stmt.Function.Param                                          width¦
+            [0].Pine.Stmt.Function.ParamDef                                     width¦
+              [0].identifier                                                    ｢width｣
+          [3].Pine.Stmt.Function.Param                                          prec¦
+            [0].Pine.Stmt.Function.ParamDef                                     prec¦
+              [0].identifier                                                    ｢prec｣
+        [3].Pine.Stmt.Block                                                     <NEWLINE><INDENT>x = ... c<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+          [0].Pine.Stmt                                                         x = f ... end\"<NEWLINE>¦
+            [0].Pine.Stmt.Simples                                               x = f ... end\"<NEWLINE>¦
+              [0].Pine.Stmt.Simple                                              x = f ...  end\"¦
+                [0].Pine.Stmt.Assignment                                        x = f ...  end\"¦
+                  [0].Pine.Stmt.Assignment.Plain                                x = f ...  end\"¦
+                    [0].Pine.StarTargets                                        x ¦
+                      [0].Pine.StarTarget                                       x ¦
+                        [0].Pine.Expr.Atom                                      x ¦
+                          [0].identifier                                        ｢x｣
+                    [1].Pine.Stmt.Assignment.Rhs                                f\"sta ...  end\"¦
+                      [0].Pine.StarExprs                                        f\"sta ...  end\"¦
+                        [0].Pine.StarExpr                                       f\"sta ...  end\"¦
+                          [0].Pine.Expr.Atom                                    f\"sta ...  end\"¦
+                            [0].Pine.Strings                                    f\"sta ...  end\"¦
+                              [0].Pine.Strings.fstring                          ｢f"start   {   x  :  {  y  } }   end"｣
+                                [0].Pine.Strings.fstring.prefix                 ｢f｣
+                                [1].Pine.Strings.fstring.doubleChunk            ｢start   ｣
+                                [2].Pine.Strings.fstring.Field                  {   x ...   } }¦
+                                  [0].Pine.StarExprs                            x  ¦
+                                    [0].Pine.StarExpr                           x  ¦
+                                      [0].Pine.Expr.Atom                        x  ¦
+                                        [0].identifier                          ｢x｣
+                                  [1].Pine.Strings.fstring.formatSpec           ｢:  {  y  } ｣
+                                    [0].Pine.Strings.fstring.formatChunk        ｢  ｣
+                                    [1].Pine.Strings.fstring.Field              {  y  }¦
+                                      [0].Pine.StarExprs                        y  ¦
+                                        [0].Pine.StarExpr                       y  ¦
+                                          [0].Pine.Expr.Atom                    y  ¦
+                                            [0].identifier                      ｢y｣
+                                    [2].Pine.Strings.fstring.formatChunk        ｢ ｣
+                                [3].Pine.Strings.fstring.doubleChunk            ｢   end｣
+          [1].Pine.Stmt                                                         a = f ... }f}\"<NEWLINE>¦
+            [0].Pine.Stmt.Simples                                               a = f ... }f}\"<NEWLINE>¦
+              [0].Pine.Stmt.Simple                                              a = f ... c}f}\"¦
+                [0].Pine.Stmt.Assignment                                        a = f ... c}f}\"¦
+                  [0].Pine.Stmt.Assignment.Plain                                a = f ... c}f}\"¦
+                    [0].Pine.StarTargets                                        a ¦
+                      [0].Pine.StarTarget                                       a ¦
+                        [0].Pine.Expr.Atom                                      a ¦
+                          [0].identifier                                        ｢a｣
+                    [1].Pine.Stmt.Assignment.Rhs                                f\"{na ... c}f}\"¦
+                      [0].Pine.StarExprs                                        f\"{na ... c}f}\"¦
+                        [0].Pine.StarExpr                                       f\"{na ... c}f}\"¦
+                          [0].Pine.Expr.Atom                                    f\"{na ... c}f}\"¦
+                            [0].Pine.Strings                                    f\"{na ... c}f}\"¦
+                              [0].Pine.Strings.fstring                          ｢f"{name!r}: { value :>{width}.{prec}f}"｣
+                                [0].Pine.Strings.fstring.prefix                 ｢f｣
+                                [1].Pine.Strings.fstring.Field                  {name!r}¦
+                                  [0].Pine.StarExprs                            name¦
+                                    [0].Pine.StarExpr                           name¦
+                                      [0].Pine.Expr.Atom                        name¦
+                                        [0].identifier                          ｢name｣
+                                  [1].Pine.Strings.fstring.conversion           ｢!r｣
+                                [2].Pine.Strings.fstring.doubleChunk            ｢: ｣
+                                [3].Pine.Strings.fstring.Field                  { val ... ec}f}¦
+                                  [0].Pine.StarExprs                            value ¦
+                                    [0].Pine.StarExpr                           value ¦
+                                      [0].Pine.Expr.Atom                        value ¦
+                                        [0].identifier                          ｢value｣
+                                  [1].Pine.Strings.fstring.formatSpec           ｢:>{width}.{prec}f｣
+                                    [0].Pine.Strings.fstring.formatChunk        ｢>｣
+                                    [1].Pine.Strings.fstring.Field              {width}¦
+                                      [0].Pine.StarExprs                        width¦
+                                        [0].Pine.StarExpr                       width¦
+                                          [0].Pine.Expr.Atom                    width¦
+                                            [0].identifier                      ｢width｣
+                                    [2].Pine.Strings.fstring.formatChunk        ｢.｣
+                                    [3].Pine.Strings.fstring.Field              {prec}¦
+                                      [0].Pine.StarExprs                        prec¦
+                                        [0].Pine.StarExpr                       prec¦
+                                          [0].Pine.Expr.Atom                    prec¦
+                                            [0].identifier                      ｢prec｣
+                                    [4].Pine.Strings.fstring.formatChunk        ｢f｣
+          [2].Pine.Stmt                                                         b = F ... \"]}'<NEWLINE>¦
+            [0].Pine.Stmt.Simples                                               b = F ... \"]}'<NEWLINE>¦
+              [0].Pine.Stmt.Simple                                              b = F ... y\"]}'¦
+                [0].Pine.Stmt.Assignment                                        b = F ... y\"]}'¦
+                  [0].Pine.Stmt.Assignment.Plain                                b = F ... y\"]}'¦
+                    [0].Pine.StarTargets                                        b ¦
+                      [0].Pine.StarTarget                                       b ¦
+                        [0].Pine.Expr.Atom                                      b ¦
+                          [0].identifier                                        ｢b｣
+                    [1].Pine.Stmt.Assignment.Rhs                                F'{{l ... y\"]}'¦
+                      [0].Pine.StarExprs                                        F'{{l ... y\"]}'¦
+                        [0].Pine.StarExpr                                       F'{{l ... y\"]}'¦
+                          [0].Pine.Expr.Atom                                    F'{{l ... y\"]}'¦
+                            [0].Pine.Strings                                    F'{{l ... y\"]}'¦
+                              [0].Pine.Strings.fstring                          ｢F'{{literal}} {value=} {name["key"]}'｣
+                                [0].Pine.Strings.fstring.prefix                 ｢F｣
+                                [1].Pine.Strings.fstring.Field                  {{lit ... ral}}¦
+                                  [0].Pine.StarExprs                            {literal}¦
+                                    [0].Pine.StarExpr                           {literal}¦
+                                      [0].Pine.Expr.Atom                        {literal}¦
+                                        [0].Pine.Expr.Set                       {literal}¦
+                                          [0].Pine.StarNamedExprs               literal¦
+                                            [0].Pine.StarNamedExpr              literal¦
+                                              [0].Pine.Expr.Named               literal¦
+                                                [0].Pine.Expr.Atom              literal¦
+                                                  [0].identifier                ｢literal｣
+                                [2].Pine.Strings.fstring.singleChunk            ｢ ｣
+                                [3].Pine.Strings.fstring.Field                  {value=}¦
+                                  [0].Pine.StarExprs                            value¦
+                                    [0].Pine.StarExpr                           value¦
+                                      [0].Pine.Expr.Atom                        value¦
+                                        [0].identifier                          ｢value｣
+                                [4].Pine.Strings.fstring.singleChunk            ｢ ｣
+                                [5].Pine.Strings.fstring.Field                  {name ... ey\"]}¦
+                                  [0].Pine.StarExprs                            name[ ... key\"]¦
+                                    [0].Pine.StarExpr                           name[ ... key\"]¦
+                                      [0].Pine.Expr.Primary.[                   name[ ... key\"]¦
+                                        [0].Pine.Expr.Atom                      name¦
+                                          [0].identifier                        ｢name｣
+                                        [1].Pine.Expr.Slices                    \"key\"¦
+                                          [0].Pine.Expr.Slice                   \"key\"¦
+                                            [0].Pine.Expr.Named                 \"key\"¦
+                                              [0].Pine.Expr.Atom                \"key\"¦
+                                                [0].Pine.Strings                \"key\"¦
+                                                  [0].string                    ｢"key"｣
+          [3].Pine.Stmt                                                         c = f ... ain\"<NEWLINE>¦
+            [0].Pine.Stmt.Simples                                               c = f ... ain\"<NEWLINE>¦
+              [0].Pine.Stmt.Simple                                              c = f ... lain\"¦
+                [0].Pine.Stmt.Assignment                                        c = f ... lain\"¦
+                  [0].Pine.Stmt.Assignment.Plain                                c = f ... lain\"¦
+                    [0].Pine.StarTargets                                        c ¦
+                      [0].Pine.StarTarget                                       c ¦
+                        [0].Pine.Expr.Atom                                      c ¦
+                          [0].identifier                                        ｢c｣
+                    [1].Pine.Stmt.Assignment.Rhs                                f\"\\d+ ... lain\"¦
+                      [0].Pine.StarExprs                                        f\"\\d+ ... lain\"¦
+                        [0].Pine.StarExpr                                       f\"\\d+ ... lain\"¦
+                          [0].Pine.Expr.Atom                                    f\"\\d+ ... lain\"¦
+                            [0].Pine.Strings                                    f\"\\d+ ... lain\"¦
+                              [0].Pine.Strings.fstring                          ｢f"\d+{name}"｣
+                                [0].Pine.Strings.fstring.prefix                 ｢f｣
+                                [1].Pine.Strings.fstring.doubleChunk            ｢\d+｣
+                                [2].Pine.Strings.fstring.Field                  {name}¦
+                                  [0].Pine.StarExprs                            name¦
+                                    [0].Pine.StarExpr                           name¦
+                                      [0].Pine.Expr.Atom                        name¦
+                                        [0].identifier                          ｢name｣
+                              [1].Pine.Strings.fstring                          ｢t"hello\{name}"｣
+                                [0].Pine.Strings.fstring.prefix                 ｢t｣
+                                [1].Pine.Strings.fstring.doubleChunk            ｢hello\｣
+                                [2].Pine.Strings.fstring.Field                  {name}¦
+                                  [0].Pine.StarExprs                            name¦
+                                    [0].Pine.StarExpr                           name¦
+                                      [0].Pine.Expr.Atom                        name¦
+                                        [0].identifier                          ｢name｣
+                              [2].string                                        ｢"plain"｣
+          [4].Pine.Stmt                                                         retur ...  c<NEWLINE><NEWLINE><NEWLINE>¦
+            [0].Pine.Stmt.Simples                                               retur ...  c<NEWLINE><NEWLINE><NEWLINE>¦
+              [0].Pine.Stmt.Simple                                              retur ...  b, c¦
+                [0].Pine.Stmt.Return                                            retur ...  b, c¦
+                  [0].Pine.StarExprs                                            a, b, c¦
+                    [0].Pine.StarExpr                                           a¦
+                      [0].Pine.Expr.Atom                                        a¦
+                        [0].identifier                                          ｢a｣
+                    [1].Pine.StarExpr                                           b¦
+                      [0].Pine.Expr.Atom                                        b¦
+                        [0].identifier                                          ｢b｣
+                    [2].Pine.StarExpr                                           c¦
+                      [0].Pine.Expr.Atom                                        c¦
+                        [0].identifier                                          ｢c｣
+  [26].Pine.Stmt                                                                def w ... ]<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                      def w ... ]<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
       [0].Pine.Stmt.Function                                                    def w ... ]<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
         [0].identifier                                                          ｢walrus｣
@@ -6994,7 +7343,13 @@ Mr Jane
                                     [0].Pine.Expr.Atom                          f\"{n} ... lues\"¦
                                       [0].Pine.Strings                          f\"{n} ... lues\"¦
                                         [0].Pine.Strings.fstring                ｢f"{n} values"｣
-                                          [0].string                            ｢"{n} values"｣
+                                          [0].Pine.Strings.fstring.prefix       ｢f｣
+                                          [1].Pine.Strings.fstring.Field        {n}¦
+                                            [0].Pine.StarExprs                  n¦
+                                              [0].Pine.StarExpr                 n¦
+                                                [0].Pine.Expr.Atom              n¦
+                                                  [0].identifier                ｢n｣
+                                          [2].Pine.Strings.fstring.doubleChunk  ｢ values｣
                                 [1].Pine.Argument                               \"are  ... enty\"¦
                                   [0].Pine.Expr.Named                           \"are  ... enty\"¦
                                     [0].Pine.Expr.Atom                          \"are  ... enty\"¦
@@ -7087,7 +7442,7 @@ Mr Jane
                                       [0].number.integer                        ｢0｣
                                         [0].number.integer.decimal              ｢0｣
                                           [0].number.unsigned.integer.decimal   ｢0｣
-  [26].Pine.Stmt                                                                class ... <NEWLINE><NEWLINE><NEWLINE><DEDENT><DEDENT>¦
+  [27].Pine.Stmt                                                                class ... <NEWLINE><NEWLINE><NEWLINE><DEDENT><DEDENT>¦
     [0].Pine.Stmt.Compound                                                      class ... <NEWLINE><NEWLINE><NEWLINE><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Class                                                       class ... <NEWLINE><NEWLINE><NEWLINE><DEDENT><DEDENT>¦
         [0].identifier                                                          ｢Point｣
@@ -7310,7 +7665,7 @@ Mr Jane
                                 [1].Pine.Expr.Atom                              \")\"¦
                                   [0].Pine.Strings                              \")\"¦
                                     [0].string                                  ｢")"｣
-  [27].Pine.Stmt                                                                class ... <NEWLINE><NEWLINE><NEWLINE><DEDENT><DEDENT>¦
+  [28].Pine.Stmt                                                                class ... <NEWLINE><NEWLINE><NEWLINE><DEDENT><DEDENT>¦
     [0].Pine.Stmt.Compound                                                      class ... <NEWLINE><NEWLINE><NEWLINE><DEDENT><DEDENT>¦
       [0].Pine.Stmt.Class                                                       class ... <NEWLINE><NEWLINE><NEWLINE><DEDENT><DEDENT>¦
         [0].identifier                                                          ｢Labelled｣
@@ -7354,7 +7709,7 @@ Mr Jane
                                     [0].identifier                              ｢self｣
                                   [1].Pine.Expr.Atom                            kind¦
                                     [0].identifier                              ｢kind｣
-  [28].Pine.Stmt                                                                def g ... t<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+  [29].Pine.Stmt                                                                def g ... t<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                      def g ... t<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
       [0].Pine.Stmt.Function                                                    def g ... t<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
         [0].identifier                                                          ｢generic｣
@@ -7395,7 +7750,7 @@ Mr Jane
                     [0].Pine.StarExpr                                           first¦
                       [0].Pine.Expr.Atom                                        first¦
                         [0].identifier                                          ｢first｣
-  [29].Pine.Stmt                                                                def t ... n<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+  [30].Pine.Stmt                                                                def t ... n<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                      def t ... n<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
       [0].Pine.Stmt.Function                                                    def t ... n<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
         [0].identifier                                                          ｢trace｣
@@ -7413,7 +7768,7 @@ Mr Jane
                     [0].Pine.StarExpr                                           fn¦
                       [0].Pine.Expr.Atom                                        fn¦
                         [0].identifier                                          ｢fn｣
-  [30].Pine.Stmt                                                                @trac ... s<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+  [31].Pine.Stmt                                                                @trac ... s<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                      @trac ... s<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
       [0].Pine.Stmt.Function                                                    @trac ... s<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
         [0].Pine.Stmt.Decorators                                                @trace<NEWLINE>¦
@@ -7509,7 +7864,7 @@ Mr Jane
                     [0].Pine.StarExpr                                           results¦
                       [0].Pine.Expr.Atom                                        results¦
                         [0].identifier                                          ｢results｣
-  [31].Pine.Stmt                                                                def g ... e<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
+  [32].Pine.Stmt                                                                def g ... e<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                      def g ... e<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
       [0].Pine.Stmt.Function                                                    def g ... e<NEWLINE><NEWLINE><NEWLINE><DEDENT>¦
         [0].identifier                                                          ｢generating｣
@@ -7589,7 +7944,7 @@ Mr Jane
                     [0].Pine.StarExpr                                           value¦
                       [0].Pine.Expr.Atom                                        value¦
                         [0].identifier                                          ｢value｣
-  [32].Pine.Stmt                                                                if __ ...  y)<NEWLINE><DEDENT>¦
+  [33].Pine.Stmt                                                                if __ ...  y)<NEWLINE><DEDENT>¦
     [0].Pine.Stmt.Compound                                                      if __ ...  y)<NEWLINE><DEDENT>¦
       [0].Pine.Stmt.If                                                          if __ ...  y)<NEWLINE><DEDENT>¦
         [0].Pine.Expr.Named                                                     __nam ... in__\"¦

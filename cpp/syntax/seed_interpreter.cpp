@@ -1013,6 +1013,7 @@ namespace silva::seed::impl {
           fragment_index = last_token_end;
         }
       };
+
       rule_expr_data_scope_t rule_scope(*this, &rule_data);
       const parse_tree_span_t& s_pts = rule_data.expr;
       const name_id_t s_expr_name    = s_pts.rule_name();

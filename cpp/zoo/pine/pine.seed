@@ -170,7 +170,16 @@ language Pine:
 
   Strings:
     ⊙ = ( string | fstring ) +
-    fstring = ( 'f' | 't' ) string # TODO: support f-strings
+    fstring:
+      ⊙ = prefix ( '"' ( Field | doubleChunk ) * '"' | '\'' ( Field | singleChunk ) * '\'' )
+      prefix = [ 'f' 'F' 't' 'T' ]
+      doubleChunk = ( escape | not [ '"' '{' '}' ] ANY ) +
+      singleChunk = ( escape | not [ '\'' '{' '}' ] ANY ) +
+      escape = no_node '{{' | '}}' | ε '\\' not [ '{' '}' ] ANY
+      Field = '{' ( Expr.Yield | StarExprs ) '=' ? conversion ? formatSpec ? '}'
+      conversion = '!' [ 'r' 's' 'a' ]
+      formatSpec = ':' ( Field | formatChunk ) *
+      formatChunk = ( not [ '{' '}' ] ANY ) +
 
   number:
     ⊙ = .number imaginaryPart ?

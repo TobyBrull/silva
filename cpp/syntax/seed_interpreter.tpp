@@ -251,4 +251,58 @@ Bar:
     const string_t result_str{SILVA_REQUIRE(pt->span().to_string())};
     CHECK(result_str == expected.substr(1));
   }
+
+  TEST_CASE("branch-rule-in-twig-rule", "[seed-interpreter]")
+  {
+    const string_view_t fstr_seed = R"'(
+language Fstr:
+  ⊙ = fstring
+  skip = freeForm
+  fstring = '"' ( Field | chunk ) * '"'
+  chunk = ( not [ '"' '{' '}' ] ANY ) +
+  Field = '{' Sum formatSpec ? '}'
+  formatSpec = ':' ( Field | formatChunk ) *
+  formatChunk = ( not [ '{' '}' ] ANY ) +
+  Sum:
+    ⊙ = axe Atom
+      Add = ltr infix '+'
+    Atom = identifier
+)'";
+    syntax_farm_t sf;
+    auto se = standard_seed_interpreter(sf.ptr());
+    SILVA_REQUIRE(se->add_seed_text("fstr.seed", string_t{fstr_seed}));
+
+    const string_t text          = R"'(" _ { x : a { y + y1 : b { z } } } _ "
+)'";
+    const auto pt                = SILVA_REQUIRE(se->apply_text("", text, sf.name_id_of("Fstr")));
+    const string_view_t expected = R"(
+[0].Fstr                                          \" _ { ...  _ \"<NEWLINE>¦
+  [0].Fstr.fstring                                ｢" _ { x : a { y + y1 : b { z } } } _ "｣
+    [0].Fstr.chunk                                ｢ _ ｣
+    [1].Fstr.Field                                { x : ... } } }¦
+      [0].Fstr.Sum                                x ¦
+        [0].Fstr.Sum.Atom                         x ¦
+          [0].identifier                          ｢x｣
+      [1].Fstr.formatSpec                         ｢: a { y + y1 : b { z } } ｣
+        [0].Fstr.formatChunk                      ｢ a ｣
+        [1].Fstr.Field                            { y + ... z } }¦
+          [0].Fstr.Sum                            y + y1 ¦
+            [0].Fstr.Sum.Add.+                    y + y1 ¦
+              [0].Fstr.Sum.Atom                   y ¦
+                [0].identifier                    ｢y｣
+              [1].Fstr.Sum.Atom                   y1 ¦
+                [0].identifier                    ｢y1｣
+          [1].Fstr.formatSpec                     ｢: b { z } ｣
+            [0].Fstr.formatChunk                  ｢ b ｣
+            [1].Fstr.Field                        { z }¦
+              [0].Fstr.Sum                        z ¦
+                [0].Fstr.Sum.Atom                 z ¦
+                  [0].identifier                  ｢z｣
+            [2].Fstr.formatChunk                  ｢ ｣
+        [2].Fstr.formatChunk                      ｢ ｣
+    [2].Fstr.chunk                                ｢ _ ｣
+)";
+    const string_t result        = SILVA_REQUIRE(pt->span().to_string());
+    CHECK(result == expected.substr(1));
+  }
 }
