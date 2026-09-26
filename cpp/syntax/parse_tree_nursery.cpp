@@ -45,12 +45,14 @@ namespace silva {
 
   void parse_tree_nursery_t::on_get_state(parse_tree_nursery_state_t& s) const
   {
-    s.fragment_index = fragment_index;
+    s.fragment_index                 = fragment_index;
+    s.fragment_index_last_skip_begin = fragment_index_last_skip_begin;
   }
 
   void parse_tree_nursery_t::on_set_state(const parse_tree_nursery_state_t& s)
   {
-    fragment_index = s.fragment_index;
+    fragment_index                 = s.fragment_index;
+    fragment_index_last_skip_begin = s.fragment_index_last_skip_begin;
   }
 
   void parse_tree_nursery_t::on_stake_ctor(parse_tree_node_t& proto_node) const

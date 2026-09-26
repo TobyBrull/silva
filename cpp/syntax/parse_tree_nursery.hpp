@@ -33,7 +33,8 @@ namespace silva {
   fragment_index += 1;
 
   struct parse_tree_nursery_state_t : public tree_nursery_state_t {
-    index_t fragment_index = 0;
+    index_t fragment_index                 = 0;
+    index_t fragment_index_last_skip_begin = 0;
   };
 
   struct parse_tree_nursery_t
@@ -45,6 +46,9 @@ namespace silva {
     parse_tree_nursery_t(fragment_span_t);
 
     index_t fragment_index = 0;
+
+    // Where the most recent skip started.
+    index_t fragment_index_last_skip_begin = 0;
 
     expected_t<parse_tree_node_t> parse_literal(const fragmented_token_t&);
 

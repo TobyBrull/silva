@@ -388,8 +388,6 @@ namespace silva::seed::impl {
 
     int twig_rule_depth = 0;
 
-    index_t last_token_end = 0;
-
     const interpreter_t::rule_expr_data_t* curr_rule = nullptr;
     struct rule_expr_data_scope_t {
       interpreter_apply_nursery_t& self;
@@ -944,7 +942,7 @@ namespace silva::seed::impl {
 
     expected_t<void> skip()
     {
-      last_token_end = fragment_index;
+      fragment_index_last_skip_begin = fragment_index;
       return skip_impl(lang_data->skip_rule_name, lang_data->skip_rule_expr);
     }
 
@@ -1008,9 +1006,9 @@ namespace silva::seed::impl {
           [this, outer_twig_rule_depth] { twig_rule_depth = outer_twig_rule_depth; });
       const index_t orig_fragment_index = fragment_index;
       const auto unskip_if_in_twig_rule = [&] {
-        if (outer_twig_rule_depth > 0 && orig_fragment_index <= last_token_end &&
-            last_token_end <= fragment_index) {
-          fragment_index = last_token_end;
+        if (outer_twig_rule_depth > 0 && orig_fragment_index <= fragment_index_last_skip_begin &&
+            fragment_index_last_skip_begin <= fragment_index) {
+          fragment_index = fragment_index_last_skip_begin;
         }
       };
 
