@@ -1,4 +1,6 @@
-# Adoption of the Bash/POSIX shell grammar, e.g.,
+# Adoption of the Bash/POSIX shell grammar.
+#
+# This used the following, which may or may not be reasonable.
 # https://cmdse.github.io/pages/appendix/bash-grammar.html
 #
 # The defining feature of shell syntax is that an unquoted run of characters -- including
@@ -35,13 +37,14 @@ language Ash:
   SequentialSep = no_node semi Linebreak | NewlineList
 
   CompleteCommand = List separatorOp ?
-  List            = AndOr ( separatorOp AndOr ) *
-  AndOr           = Pipeline ( andOrOp Linebreak Pipeline ) *
-  andOrOp         = [ '&&' '||' ]
-  Pipeline        = bang ? PipeSequence
-  bang            = ε '!' not wordChar
-  PipeSequence    = Command ( pipeOp Linebreak Command ) *
-  pipeOp          = ε '|' not '|'
+  List            = AndOr ( separatorOp not newline AndOr ) *
+
+  AndOr:
+    ⊙ = no_node axe Operand
+      Pipe  = ltr  infix_flat '|'
+      Bang  = rtl  prefix '!'
+      Logic = ltr  infix '&&' '||'
+    Operand = no_node Linebreak Command
 
   Command = FunctionDefinition | CompoundCommand RedirectList ? | SimpleCommand
 

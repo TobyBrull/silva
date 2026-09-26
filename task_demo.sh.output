@@ -7892,7 +7892,7 @@ Mr Jane
           [1].Seed.Expr.Postfix.?                                               separ ... rOp ?¦
             [0].Seed.Nonterminal                                                separ ... orOp ¦
               [0].Seed.tokenCategoryName                                        ｢separatorOp｣
-    [13].Seed.Rule                                                              List  ...  ) *<NEWLINE>¦
+    [13].Seed.Rule                                                              List  ... ) *<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      List  ...      ¦
         [0].Seed.ruleName                                                       ｢List｣
       [1].Seed.Expr                                                             AndOr ... r ) *¦
@@ -7904,84 +7904,54 @@ Mr Jane
               [0].Seed.Expr.Concat.concat                                       separ ... ndOr ¦
                 [0].Seed.Nonterminal                                            separ ... orOp ¦
                   [0].Seed.tokenCategoryName                                    ｢separatorOp｣
-                [1].Seed.Nonterminal                                            AndOr ¦
+                [1].Seed.Expr.Prefix.not                                        not n ... line ¦
+                  [0].Seed.Nonterminal                                          newline ¦
+                    [0].Seed.tokenCategoryName                                  ｢newline｣
+                [2].Seed.Nonterminal                                            AndOr ¦
                   [0].Seed.ruleName                                             ｢AndOr｣
-    [14].Seed.Rule                                                              AndOr ...  ) *<NEWLINE>¦
-      [0].Seed.Nonterminal                                                      AndOr ...      ¦
+    [14].Seed.Scope                                                             AndOr ... nd<NEWLINE><NEWLINE><DEDENT>¦
+      [0].Seed.Nonterminal                                                      AndOr¦
         [0].Seed.ruleName                                                       ｢AndOr｣
-      [1].Seed.Expr                                                             Pipel ... e ) *¦
-        [0].Seed.Expr.Concat.concat                                             Pipel ... e ) *¦
-          [0].Seed.Nonterminal                                                  Pipeline ¦
-            [0].Seed.ruleName                                                   ｢Pipeline｣
-          [1].Seed.Expr.Postfix.*                                               ( and ... e ) *¦
-            [0].Seed.Expr                                                       andOr ... line ¦
-              [0].Seed.Expr.Concat.concat                                       andOr ... line ¦
-                [0].Seed.Nonterminal                                            andOrOp ¦
-                  [0].Seed.tokenCategoryName                                    ｢andOrOp｣
-                [1].Seed.Nonterminal                                            Linebreak ¦
-                  [0].Seed.ruleName                                             ｢Linebreak｣
-                [2].Seed.Nonterminal                                            Pipeline ¦
-                  [0].Seed.ruleName                                             ｢Pipeline｣
-    [15].Seed.Rule                                                              andOr ... |' ]<NEWLINE>¦
-      [0].Seed.Nonterminal                                                      andOr ...      ¦
-        [0].Seed.tokenCategoryName                                              ｢andOrOp｣
-      [1].Seed.Expr                                                             [ '&& ... ||' ]¦
-        [0].Seed.Expr.Alternation                                               [ '&& ... ||' ]¦
-          [0].Seed.Terminal                                                     '&&' ¦
-            [0].string                                                          ｢'&&'｣
-          [1].Seed.Terminal                                                     '||' ¦
-            [0].string                                                          ｢'||'｣
-    [16].Seed.Rule                                                              Pipel ... ence<NEWLINE>¦
-      [0].Seed.Nonterminal                                                      Pipel ...      ¦
-        [0].Seed.ruleName                                                       ｢Pipeline｣
-      [1].Seed.Expr                                                             bang  ... uence¦
-        [0].Seed.Expr.Concat.concat                                             bang  ... uence¦
-          [0].Seed.Expr.Postfix.?                                               bang ? ¦
-            [0].Seed.Nonterminal                                                bang ¦
-              [0].Seed.tokenCategoryName                                        ｢bang｣
-          [1].Seed.Nonterminal                                                  PipeS ... uence¦
-            [0].Seed.ruleName                                                   ｢PipeSequence｣
-    [17].Seed.Rule                                                              bang  ... Char<NEWLINE>¦
-      [0].Seed.Nonterminal                                                      bang  ...      ¦
-        [0].Seed.tokenCategoryName                                              ｢bang｣
-      [1].Seed.Expr                                                             ε '!' ... dChar¦
-        [0].Seed.Expr.Concat.concat                                             ε '!' ... dChar¦
-          [0].Seed.Terminal                                                     ε ¦
-            [0].Seed.keyword                                                    ｢ε｣
-          [1].Seed.Terminal                                                     '!' ¦
-            [0].string                                                          ｢'!'｣
-          [2].Seed.Expr.Prefix.not                                              not w ... dChar¦
-            [0].Seed.Nonterminal                                                wordChar¦
-              [0].Seed.tokenCategoryName                                        ｢wordChar｣
-    [18].Seed.Rule                                                              PipeS ...  ) *<NEWLINE>¦
-      [0].Seed.Nonterminal                                                      PipeS ... e    ¦
-        [0].Seed.ruleName                                                       ｢PipeSequence｣
-      [1].Seed.Expr                                                             Comma ... d ) *¦
-        [0].Seed.Expr.Concat.concat                                             Comma ... d ) *¦
-          [0].Seed.Nonterminal                                                  Command ¦
-            [0].Seed.ruleName                                                   ｢Command｣
-          [1].Seed.Expr.Postfix.*                                               ( pip ... d ) *¦
-            [0].Seed.Expr                                                       pipeO ... mand ¦
-              [0].Seed.Expr.Concat.concat                                       pipeO ... mand ¦
-                [0].Seed.Nonterminal                                            pipeOp ¦
-                  [0].Seed.tokenCategoryName                                    ｢pipeOp｣
-                [1].Seed.Nonterminal                                            Linebreak ¦
-                  [0].Seed.ruleName                                             ｢Linebreak｣
-                [2].Seed.Nonterminal                                            Command ¦
-                  [0].Seed.ruleName                                             ｢Command｣
-    [19].Seed.Rule                                                              pipeO ... '|'<NEWLINE><NEWLINE>¦
-      [0].Seed.Nonterminal                                                      pipeO ...      ¦
-        [0].Seed.tokenCategoryName                                              ｢pipeOp｣
-      [1].Seed.Expr                                                             ε '|' ... t '|'¦
-        [0].Seed.Expr.Concat.concat                                             ε '|' ... t '|'¦
-          [0].Seed.Terminal                                                     ε ¦
-            [0].Seed.keyword                                                    ｢ε｣
-          [1].Seed.Terminal                                                     '|' ¦
-            [0].string                                                          ｢'|'｣
-          [2].Seed.Expr.Prefix.not                                              not '|'¦
-            [0].Seed.Terminal                                                   '|'¦
-              [0].string                                                        ｢'|'｣
-    [20].Seed.Rule                                                              Comma ... and<NEWLINE><NEWLINE>¦
+      [1].Seed.Rule                                                             ⊙ = n ... ||'<NEWLINE><DEDENT>¦
+        [0].Seed.here                                                           ｢⊙｣
+        [1].Seed.qualifier                                                      ｢no_node｣
+        [2].Seed.Axe                                                            Opera ... ||'<NEWLINE><DEDENT>¦
+          [0].Seed.Nonterminal                                                  Operand¦
+            [0].Seed.ruleName                                                   ｢Operand｣
+          [1].Seed.Axe.Level                                                    Pipe  ... t '|'¦
+            [0].Seed.ruleName                                                   ｢Pipe｣
+            [1].Seed.Axe.assoc                                                  ｢ltr｣
+            [2].Seed.Axe.Ops                                                    infix ... t '|'¦
+              [0].Seed.Axe.opType                                               ｢infix_flat｣
+              [1].Seed.Axe.op                                                   ｢'|'｣
+                [0].string                                                      ｢'|'｣
+          [2].Seed.Axe.Level                                                    Bang  ... x '!'¦
+            [0].Seed.ruleName                                                   ｢Bang｣
+            [1].Seed.Axe.assoc                                                  ｢rtl｣
+            [2].Seed.Axe.Ops                                                    prefix '!'¦
+              [0].Seed.Axe.opType                                               ｢prefix｣
+              [1].Seed.Axe.op                                                   ｢'!'｣
+                [0].string                                                      ｢'!'｣
+          [3].Seed.Axe.Level                                                    Logic ...  '||'¦
+            [0].Seed.ruleName                                                   ｢Logic｣
+            [1].Seed.Axe.assoc                                                  ｢ltr｣
+            [2].Seed.Axe.Ops                                                    infix ...  '||'¦
+              [0].Seed.Axe.opType                                               ｢infix｣
+              [1].Seed.Axe.op                                                   ｢'&&'｣
+                [0].string                                                      ｢'&&'｣
+              [2].Seed.Axe.op                                                   ｢'||'｣
+                [0].string                                                      ｢'||'｣
+      [2].Seed.Rule                                                             Opera ... and<NEWLINE><NEWLINE>¦
+        [0].Seed.Nonterminal                                                    Operand ¦
+          [0].Seed.ruleName                                                     ｢Operand｣
+        [1].Seed.qualifier                                                      ｢no_node｣
+        [2].Seed.Expr                                                           Lineb ... mmand¦
+          [0].Seed.Expr.Concat.concat                                           Lineb ... mmand¦
+            [0].Seed.Nonterminal                                                Linebreak ¦
+              [0].Seed.ruleName                                                 ｢Linebreak｣
+            [1].Seed.Nonterminal                                                Command¦
+              [0].Seed.ruleName                                                 ｢Command｣
+    [15].Seed.Rule                                                              Comma ... and<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      Command ¦
         [0].Seed.ruleName                                                       ｢Command｣
       [1].Seed.Expr                                                             Funct ... mmand¦
@@ -7996,7 +7966,7 @@ Mr Jane
                 [0].Seed.ruleName                                               ｢RedirectList｣
           [2].Seed.Nonterminal                                                  Simpl ... mmand¦
             [0].Seed.ruleName                                                   ｢SimpleCommand｣
-    [21].Seed.Rule                                                              Compo ... se ]<NEWLINE>¦
+    [16].Seed.Rule                                                              Compo ... se ]<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Compo ... mand ¦
         [0].Seed.ruleName                                                       ｢CompoundCommand｣
       [1].Seed.Expr                                                             [ Bra ... use ]¦
@@ -8015,7 +7985,7 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢WhileClause｣
           [6].Seed.Nonterminal                                                  Until ... ause ¦
             [0].Seed.ruleName                                                   ｢UntilClause｣
-    [22].Seed.Rule                                                              Compo ... or ?<NEWLINE>¦
+    [17].Seed.Rule                                                              Compo ... or ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Compo ... t    ¦
         [0].Seed.ruleName                                                       ｢CompoundList｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8028,7 +7998,7 @@ Mr Jane
           [2].Seed.Expr.Postfix.?                                               Separ ... tor ?¦
             [0].Seed.Nonterminal                                                Separator ¦
               [0].Seed.ruleName                                                 ｢Separator｣
-    [23].Seed.Rule                                                              Term  ... ) *<NEWLINE><NEWLINE>¦
+    [18].Seed.Rule                                                              Term  ... ) *<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      Term  ...      ¦
         [0].Seed.ruleName                                                       ｢Term｣
       [1].Seed.Expr                                                             AndOr ... r ) *¦
@@ -8042,7 +8012,7 @@ Mr Jane
                   [0].Seed.ruleName                                             ｢Separator｣
                 [1].Seed.Nonterminal                                            AndOr ¦
                   [0].Seed.ruleName                                             ｢AndOr｣
-    [24].Seed.Rule                                                              Brace ...  '}'<NEWLINE>¦
+    [19].Seed.Rule                                                              Brace ...  '}'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Brace ... roup ¦
         [0].Seed.ruleName                                                       ｢BraceGroup｣
       [1].Seed.Expr                                                             '{' C ... t '}'¦
@@ -8053,7 +8023,7 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢CompoundList｣
           [2].Seed.Terminal                                                     '}'¦
             [0].string                                                          ｢'}'｣
-    [25].Seed.Rule                                                              Subsh ...  ')'<NEWLINE>¦
+    [20].Seed.Rule                                                              Subsh ...  ')'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Subsh ... ll   ¦
         [0].Seed.ruleName                                                       ｢Subshell｣
       [1].Seed.Expr                                                             '(' C ... t ')'¦
@@ -8064,7 +8034,7 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢CompoundList｣
           [2].Seed.Terminal                                                     ')'¦
             [0].string                                                          ｢')'｣
-    [26].Seed.Rule                                                              DoGro ... ne\"<NEWLINE><NEWLINE>¦
+    [21].Seed.Rule                                                              DoGro ... ne\"<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      DoGro ... p    ¦
         [0].Seed.ruleName                                                       ｢DoGroup｣
       [1].Seed.Expr                                                             \"do\"  ... done\"¦
@@ -8075,7 +8045,7 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢CompoundList｣
           [2].Seed.Terminal                                                     \"done\"¦
             [0].string                                                          ｢"done"｣
-    [27].Seed.Rule                                                              IfCla ... \"fi\"<NEWLINE>¦
+    [22].Seed.Rule                                                              IfCla ... \"fi\"<NEWLINE>¦
       [0].Seed.Nonterminal                                                      IfCla ... e    ¦
         [0].Seed.ruleName                                                       ｢IfClause｣
       [1].Seed.Expr                                                             \"if\"  ...  \"fi\"¦
@@ -8093,7 +8063,7 @@ Mr Jane
               [0].Seed.ruleName                                                 ｢ElsePart｣
           [5].Seed.Terminal                                                     \"fi\"¦
             [0].string                                                          ｢"fi"｣
-    [28].Seed.Rule                                                              ElseP ... List<NEWLINE>¦
+    [23].Seed.Rule                                                              ElseP ... List<NEWLINE>¦
       [0].Seed.Nonterminal                                                      ElseP ... t    ¦
         [0].Seed.ruleName                                                       ｢ElsePart｣
       [1].Seed.Expr                                                             \"elif ... dList¦
@@ -8115,7 +8085,7 @@ Mr Jane
               [0].string                                                        ｢"else"｣
             [1].Seed.Nonterminal                                                Compo ... dList¦
               [0].Seed.ruleName                                                 ｢CompoundList｣
-    [29].Seed.Rule                                                              While ... roup<NEWLINE>¦
+    [24].Seed.Rule                                                              While ... roup<NEWLINE>¦
       [0].Seed.Nonterminal                                                      While ... ause ¦
         [0].Seed.ruleName                                                       ｢WhileClause｣
       [1].Seed.Expr                                                             \"whil ... Group¦
@@ -8126,7 +8096,7 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢CompoundList｣
           [2].Seed.Nonterminal                                                  DoGroup¦
             [0].Seed.ruleName                                                   ｢DoGroup｣
-    [30].Seed.Rule                                                              Until ... roup<NEWLINE>¦
+    [25].Seed.Rule                                                              Until ... roup<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Until ... ause ¦
         [0].Seed.ruleName                                                       ｢UntilClause｣
       [1].Seed.Expr                                                             \"unti ... Group¦
@@ -8137,7 +8107,7 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢CompoundList｣
           [2].Seed.Nonterminal                                                  DoGroup¦
             [0].Seed.ruleName                                                   ｢DoGroup｣
-    [31].Seed.Rule                                                              ForCl ... roup<NEWLINE>¦
+    [26].Seed.Rule                                                              ForCl ... roup<NEWLINE>¦
       [0].Seed.Nonterminal                                                      ForCl ... se   ¦
         [0].Seed.ruleName                                                       ｢ForClause｣
       [1].Seed.Expr                                                             \"for\" ... Group¦
@@ -8163,14 +8133,14 @@ Mr Jane
               [0].Seed.ruleName                                                 ｢SequentialSep｣
           [4].Seed.Nonterminal                                                  DoGroup¦
             [0].Seed.ruleName                                                   ｢DoGroup｣
-    [32].Seed.Rule                                                              WordL ... d +<NEWLINE><NEWLINE>¦
+    [27].Seed.Rule                                                              WordL ... d +<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      WordL ... t    ¦
         [0].Seed.ruleName                                                       ｢WordList｣
       [1].Seed.Expr                                                             Word +¦
         [0].Seed.Expr.Postfix.+                                                 Word +¦
           [0].Seed.Nonterminal                                                  Word ¦
             [0].Seed.ruleName                                                   ｢Word｣
-    [33].Seed.Rule                                                              CaseC ... sac\"<NEWLINE>¦
+    [28].Seed.Rule                                                              CaseC ... sac\"<NEWLINE>¦
       [0].Seed.Nonterminal                                                      CaseC ... ause ¦
         [0].Seed.ruleName                                                       ｢CaseClause｣
       [1].Seed.Expr                                                             \"case ... esac\"¦
@@ -8190,14 +8160,14 @@ Mr Jane
               [0].Seed.ruleName                                                 ｢CaseList｣
           [6].Seed.Terminal                                                     \"esac\"¦
             [0].string                                                          ｢"esac"｣
-    [34].Seed.Rule                                                              CaseL ... em +<NEWLINE>¦
+    [29].Seed.Rule                                                              CaseL ... em +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      CaseL ... st   ¦
         [0].Seed.ruleName                                                       ｢CaseList｣
       [1].Seed.Expr                                                             CaseItem +¦
         [0].Seed.Expr.Postfix.+                                                 CaseItem +¦
           [0].Seed.Nonterminal                                                  CaseItem ¦
             [0].Seed.ruleName                                                   ｢CaseItem｣
-    [35].Seed.Rule                                                              CaseI ...  ) ?<NEWLINE>¦
+    [30].Seed.Rule                                                              CaseI ...  ) ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      CaseI ... em   ¦
         [0].Seed.ruleName                                                       ｢CaseItem｣
       [1].Seed.Expr                                                             '(' ? ... k ) ?¦
@@ -8224,7 +8194,7 @@ Mr Jane
                   [0].Seed.tokenCategoryName                                    ｢dsemi｣
                 [2].Seed.Nonterminal                                            Linebreak ¦
                   [0].Seed.ruleName                                             ｢Linebreak｣
-    [36].Seed.Rule                                                              Patte ... ) *<NEWLINE><NEWLINE>¦
+    [31].Seed.Rule                                                              Patte ... ) *<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      Patte ... n    ¦
         [0].Seed.ruleName                                                       ｢Pattern｣
       [1].Seed.Expr                                                             Word  ... d ) *¦
@@ -8238,7 +8208,7 @@ Mr Jane
                   [0].string                                                    ｢'|'｣
                 [1].Seed.Nonterminal                                            Word ¦
                   [0].Seed.ruleName                                             ｢Word｣
-    [37].Seed.Rule                                                              Funct ... Body<NEWLINE>¦
+    [32].Seed.Rule                                                              Funct ... Body<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Funct ... tion ¦
         [0].Seed.ruleName                                                       ｢FunctionDefinition｣
       [1].Seed.Expr                                                             \"func ... nBody¦
@@ -8272,7 +8242,7 @@ Mr Jane
               [0].Seed.ruleName                                                 ｢Linebreak｣
             [4].Seed.Nonterminal                                                Funct ... nBody¦
               [0].Seed.ruleName                                                 ｢FunctionBody｣
-    [38].Seed.Rule                                                              Funct ... st ?<NEWLINE>¦
+    [33].Seed.Rule                                                              Funct ... st ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Funct ...      ¦
         [0].Seed.ruleName                                                       ｢FunctionBody｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8283,13 +8253,13 @@ Mr Jane
           [1].Seed.Expr.Postfix.?                                               Redir ... ist ?¦
             [0].Seed.Nonterminal                                                Redir ... List ¦
               [0].Seed.ruleName                                                 ｢RedirectList｣
-    [39].Seed.Rule                                                              fname ... ier<NEWLINE><NEWLINE>¦
+    [34].Seed.Rule                                                              fname ... ier<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      fname ...      ¦
         [0].Seed.tokenCategoryName                                              ｢fname｣
       [1].Seed.Expr                                                             identifier¦
         [0].Seed.Nonterminal                                                    identifier¦
           [0].Seed.tokenCategoryName                                            ｢identifier｣
-    [40].Seed.Rule                                                              Simpl ... ix ?<NEWLINE>¦
+    [35].Seed.Rule                                                              Simpl ... ix ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Simpl ... mand ¦
         [0].Seed.ruleName                                                       ｢SimpleCommand｣
       [1].Seed.Expr                                                             CmdPr ... fix ?¦
@@ -8313,7 +8283,7 @@ Mr Jane
             [1].Seed.Expr.Postfix.?                                             CmdSu ... fix ?¦
               [0].Seed.Nonterminal                                              CmdSuffix ¦
                 [0].Seed.ruleName                                               ｢CmdSuffix｣
-    [41].Seed.Rule                                                              CmdPr ...  ) +<NEWLINE>¦
+    [36].Seed.Rule                                                              CmdPr ...  ) +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      CmdPr ...      ¦
         [0].Seed.ruleName                                                       ｢CmdPrefix｣
       [1].Seed.Expr                                                             ( IoR ... t ) +¦
@@ -8324,7 +8294,7 @@ Mr Jane
                 [0].Seed.ruleName                                               ｢IoRedirect｣
               [1].Seed.Nonterminal                                              Assig ... ment ¦
                 [0].Seed.ruleName                                               ｢Assignment｣
-    [42].Seed.Rule                                                              CmdSu ...  ) +<NEWLINE>¦
+    [37].Seed.Rule                                                              CmdSu ...  ) +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      CmdSu ...      ¦
         [0].Seed.ruleName                                                       ｢CmdSuffix｣
       [1].Seed.Expr                                                             ( IoR ... d ) +¦
@@ -8335,7 +8305,7 @@ Mr Jane
                 [0].Seed.ruleName                                               ｢IoRedirect｣
               [1].Seed.Nonterminal                                              Word ¦
                 [0].Seed.ruleName                                               ｢Word｣
-    [43].Seed.Rule                                                              CmdNa ... Word<NEWLINE>¦
+    [38].Seed.Rule                                                              CmdNa ... Word<NEWLINE>¦
       [0].Seed.Nonterminal                                                      CmdNa ...      ¦
         [0].Seed.ruleName                                                       ｢CmdName｣
       [1].Seed.Expr                                                             not r ...  Word¦
@@ -8345,13 +8315,13 @@ Mr Jane
               [0].Seed.tokenCategoryName                                        ｢reservedWord｣
           [1].Seed.Nonterminal                                                  Word¦
             [0].Seed.ruleName                                                   ｢Word｣
-    [44].Seed.Rule                                                              Assig ... Word<NEWLINE>¦
+    [39].Seed.Rule                                                              Assig ... Word<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Assig ... t    ¦
         [0].Seed.ruleName                                                       ｢Assignment｣
       [1].Seed.Expr                                                             assignWord¦
         [0].Seed.Nonterminal                                                    assignWord¦
           [0].Seed.tokenCategoryName                                            ｢assignWord｣
-    [45].Seed.Rule                                                              assig ... rd ?<NEWLINE>¦
+    [40].Seed.Rule                                                              assig ... rd ?<NEWLINE>¦
       [0].Seed.Nonterminal                                                      assig ... d    ¦
         [0].Seed.tokenCategoryName                                              ｢assignWord｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8362,7 +8332,7 @@ Mr Jane
           [1].Seed.Expr.Postfix.?                                               word ?¦
             [0].Seed.Nonterminal                                                word ¦
               [0].Seed.tokenCategoryName                                        ｢word｣
-    [46].Seed.Rule                                                              assig ... '='<NEWLINE><NEWLINE>¦
+    [41].Seed.Rule                                                              assig ... '='<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      assig ... e    ¦
         [0].Seed.tokenCategoryName                                              ｢assignName｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8372,14 +8342,14 @@ Mr Jane
             [0].Seed.tokenCategoryName                                          ｢identifier｣
           [1].Seed.Terminal                                                     '='¦
             [0].string                                                          ｢'='｣
-    [47].Seed.Rule                                                              Redir ... ct +<NEWLINE>¦
+    [42].Seed.Rule                                                              Redir ... ct +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Redir ... List ¦
         [0].Seed.ruleName                                                       ｢RedirectList｣
       [1].Seed.Expr                                                             IoRed ... ect +¦
         [0].Seed.Expr.Postfix.+                                                 IoRed ... ect +¦
           [0].Seed.Nonterminal                                                  IoRed ... rect ¦
             [0].Seed.ruleName                                                   ｢IoRedirect｣
-    [48].Seed.Rule                                                              IoRed ... Word<NEWLINE>¦
+    [43].Seed.Rule                                                              IoRed ... Word<NEWLINE>¦
       [0].Seed.Nonterminal                                                      IoRed ... ct   ¦
         [0].Seed.ruleName                                                       ｢IoRedirect｣
       [1].Seed.Expr                                                             ioRed ...  Word¦
@@ -8388,7 +8358,7 @@ Mr Jane
             [0].Seed.tokenCategoryName                                          ｢ioRedir｣
           [1].Seed.Nonterminal                                                  Word¦
             [0].Seed.ruleName                                                   ｢Word｣
-    [49].Seed.Rule                                                              ioRed ... ioOp<NEWLINE>¦
+    [44].Seed.Rule                                                              ioRed ... ioOp<NEWLINE>¦
       [0].Seed.Nonterminal                                                      ioRed ...      ¦
         [0].Seed.tokenCategoryName                                              ｢ioRedir｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8399,14 +8369,14 @@ Mr Jane
               [0].Seed.tokenCategoryName                                        ｢ioNumber｣
           [1].Seed.Nonterminal                                                  ioOp¦
             [0].Seed.tokenCategoryName                                          ｢ioOp｣
-    [50].Seed.Rule                                                              ioNum ... IT +<NEWLINE>¦
+    [45].Seed.Rule                                                              ioNum ... IT +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      ioNum ...      ¦
         [0].Seed.tokenCategoryName                                              ｢ioNumber｣
       [1].Seed.Expr                                                             DIGIT +¦
         [0].Seed.Expr.Postfix.+                                                 DIGIT +¦
           [0].Seed.Terminal                                                     DIGIT ¦
             [0].Seed.fragName                                                   ｢DIGIT｣
-    [51].Seed.Rule                                                              ioOp  ... ' ]<NEWLINE><NEWLINE>¦
+    [46].Seed.Rule                                                              ioOp  ... ' ]<NEWLINE><NEWLINE>¦
       [0].Seed.Nonterminal                                                      ioOp  ...      ¦
         [0].Seed.tokenCategoryName                                              ｢ioOp｣
       [1].Seed.Expr                                                             [ '>> ... '<' ]¦
@@ -8429,7 +8399,7 @@ Mr Jane
             [0].string                                                          ｢'>'｣
           [8].Seed.Terminal                                                     '<' ¦
             [0].string                                                          ｢'<'｣
-    [52].Seed.Rule                                                              reser ... Char<NEWLINE>¦
+    [47].Seed.Rule                                                              reser ... Char<NEWLINE>¦
       [0].Seed.Nonterminal                                                      reser ... Word ¦
         [0].Seed.tokenCategoryName                                              ｢reservedWord｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8440,7 +8410,7 @@ Mr Jane
           [1].Seed.Expr.Prefix.not                                              not w ... dChar¦
             [0].Seed.Nonterminal                                                wordChar¦
               [0].Seed.tokenCategoryName                                        ｢wordChar｣
-    [53].Seed.Rule                                                              keywo ... ing.<NEWLINE>¦
+    [48].Seed.Rule                                                              keywo ... ing.<NEWLINE>¦
       [0].Seed.Nonterminal                                                      keywo ...      ¦
         [0].Seed.tokenCategoryName                                              ｢keyword｣
       [1].Seed.Expr                                                             [ \"if ... me\" ]¦
@@ -8477,13 +8447,13 @@ Mr Jane
             [0].string                                                          ｢"select"｣
           [15].Seed.Terminal                                                    \"time\" ¦
             [0].string                                                          ｢"time"｣
-    [54].Seed.Rule                                                              Word  ... word<NEWLINE>¦
+    [49].Seed.Rule                                                              Word  ... word<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Word  ...      ¦
         [0].Seed.ruleName                                                       ｢Word｣
       [1].Seed.Expr                                                             word¦
         [0].Seed.Nonterminal                                                    word¦
           [0].Seed.tokenCategoryName                                            ｢word｣
-    [55].Seed.Rule                                                              Comma ...  ')'<NEWLINE>¦
+    [50].Seed.Rule                                                              Comma ...  ')'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      Comma ... tion ¦
         [0].Seed.ruleName                                                       ｢CommandSubstitution｣
       [1].Seed.Expr                                                             '$('  ... t ')'¦
@@ -8494,14 +8464,14 @@ Mr Jane
             [0].Seed.ruleName                                                   ｢CompoundList｣
           [2].Seed.Terminal                                                     ')'¦
             [0].string                                                          ｢')'｣
-    [56].Seed.Rule                                                              word  ... rt +<NEWLINE>¦
+    [51].Seed.Rule                                                              word  ... rt +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      word  ...      ¦
         [0].Seed.tokenCategoryName                                              ｢word｣
       [1].Seed.Expr                                                             wordPart +¦
         [0].Seed.Expr.Postfix.+                                                 wordPart +¦
           [0].Seed.Nonterminal                                                  wordPart ¦
             [0].Seed.tokenCategoryName                                          ｢wordPart｣
-    [57].Seed.Rule                                                              wordP ... nk ]<NEWLINE>¦
+    [52].Seed.Rule                                                              wordP ... nk ]<NEWLINE>¦
       [0].Seed.Nonterminal                                                      wordP ...      ¦
         [0].Seed.tokenCategoryName                                              ｢wordPart｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8521,7 +8491,7 @@ Mr Jane
             [0].Seed.tokenCategoryName                                          ｢doubleQuoted｣
           [6].Seed.Nonterminal                                                  bareChunk ¦
             [0].Seed.tokenCategoryName                                          ｢bareChunk｣
-    [58].Seed.Rule                                                              arith ... '))'<NEWLINE>¦
+    [53].Seed.Rule                                                              arith ... '))'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      arith ...      ¦
         [0].Seed.tokenCategoryName                                              ｢arithExpansion｣
       [1].Seed.Expr                                                             '$((' ...  '))'¦
@@ -8536,7 +8506,7 @@ Mr Jane
                 [0].Seed.fragName                                               ｢SPACE｣
           [2].Seed.Terminal                                                     '))'¦
             [0].string                                                          ｢'))'｣
-    [59].Seed.Rule                                                              brace ...  '}'<NEWLINE>¦
+    [54].Seed.Rule                                                              brace ...  '}'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      brace ...      ¦
         [0].Seed.tokenCategoryName                                              ｢braceParam｣
       [1].Seed.Expr                                                             '${'  ... + '}'¦
@@ -8548,7 +8518,7 @@ Mr Jane
               [0].Seed.tokenCategoryName                                        ｢wordChar｣
           [2].Seed.Terminal                                                     '}'¦
             [0].string                                                          ｢'}'｣
-    [60].Seed.Rule                                                              dolla ... am ]<NEWLINE>¦
+    [55].Seed.Rule                                                              dolla ... am ]<NEWLINE>¦
       [0].Seed.Nonterminal                                                      dolla ...      ¦
         [0].Seed.tokenCategoryName                                              ｢dollarParam｣
       [1].Seed.Expr                                                             ε '$' ... ram ]¦
@@ -8564,7 +8534,7 @@ Mr Jane
               [0].Seed.fragName                                                 ｢DIGIT｣
             [2].Seed.Nonterminal                                                speci ... aram ¦
               [0].Seed.tokenCategoryName                                        ｢specialParam｣
-    [61].Seed.Rule                                                              speci ... -' ]<NEWLINE>¦
+    [56].Seed.Rule                                                              speci ... -' ]<NEWLINE>¦
       [0].Seed.Nonterminal                                                      speci ...      ¦
         [0].Seed.tokenCategoryName                                              ｢specialParam｣
       [1].Seed.Expr                                                             [ '?' ... '-' ]¦
@@ -8581,7 +8551,7 @@ Mr Jane
             [0].string                                                          ｢'!'｣
           [5].Seed.Terminal                                                     '-' ¦
             [0].string                                                          ｢'-'｣
-    [62].Seed.Rule                                                              bareC ... ar +<NEWLINE>¦
+    [57].Seed.Rule                                                              bareC ... ar +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      bareC ...      ¦
         [0].Seed.tokenCategoryName                                              ｢bareChunk｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8589,7 +8559,7 @@ Mr Jane
         [0].Seed.Expr.Postfix.+                                                 wordChar +¦
           [0].Seed.Nonterminal                                                  wordChar ¦
             [0].Seed.tokenCategoryName                                          ｢wordChar｣
-    [63].Seed.Rule                                                              wordC ... ator<NEWLINE>¦
+    [58].Seed.Rule                                                              wordC ... ator<NEWLINE>¦
       [0].Seed.Nonterminal                                                      wordC ...      ¦
         [0].Seed.tokenCategoryName                                              ｢wordChar｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8608,7 +8578,7 @@ Mr Jane
               [0].string                                                        ｢']'｣
           [1].Seed.Nonterminal                                                  wordO ... rator¦
             [0].Seed.tokenCategoryName                                          ｢wordOperator｣
-    [64].Seed.Rule                                                              wordO ... ATOR<NEWLINE>¦
+    [59].Seed.Rule                                                              wordO ... ATOR<NEWLINE>¦
       [0].Seed.Nonterminal                                                      wordO ...      ¦
         [0].Seed.tokenCategoryName                                              ｢wordOperator｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8636,13 +8606,13 @@ Mr Jane
                 [0].string                                                      ｢'"'｣
           [1].Seed.Terminal                                                     OPERATOR¦
             [0].Seed.fragName                                                   ｢OPERATOR｣
-    [65].Seed.Rule                                                              varNa ... ons.<NEWLINE>¦
+    [60].Seed.Rule                                                              varNa ... ons.<NEWLINE>¦
       [0].Seed.Nonterminal                                                      varNa ...      ¦
         [0].Seed.tokenCategoryName                                              ｢varName｣
       [1].Seed.Expr                                                             identifier¦
         [0].Seed.Nonterminal                                                    identifier¦
           [0].Seed.tokenCategoryName                                            ｢identifier｣
-    [66].Seed.Rule                                                              singl ... '\\''<NEWLINE>¦
+    [61].Seed.Rule                                                              singl ... '\\''<NEWLINE>¦
       [0].Seed.Nonterminal                                                      singl ...      ¦
         [0].Seed.tokenCategoryName                                              ｢singleQuoted｣
       [1].Seed.Expr                                                             '\\''  ...  '\\''¦
@@ -8659,7 +8629,7 @@ Mr Jane
                   [0].Seed.fragName                                             ｢ANY｣
           [2].Seed.Terminal                                                     '\\''¦
             [0].string                                                          ｢'\''｣
-    [67].Seed.Rule                                                              doubl ...  '\"'<NEWLINE>¦
+    [62].Seed.Rule                                                              doubl ...  '\"'<NEWLINE>¦
       [0].Seed.Nonterminal                                                      doubl ...      ¦
         [0].Seed.tokenCategoryName                                              ｢doubleQuoted｣
       [1].Seed.Expr                                                             '\"' d ... * '\"'¦
@@ -8671,7 +8641,7 @@ Mr Jane
               [0].Seed.tokenCategoryName                                        ｢dqPart｣
           [2].Seed.Terminal                                                     '\"'¦
             [0].string                                                          ｢'"'｣
-    [68].Seed.Rule                                                              dqPar ... $' ]<NEWLINE>¦
+    [63].Seed.Rule                                                              dqPar ... $' ]<NEWLINE>¦
       [0].Seed.Nonterminal                                                      dqPar ...      ¦
         [0].Seed.tokenCategoryName                                              ｢dqPart｣
       [1].Seed.qualifier                                                        ｢no_node｣
@@ -8689,7 +8659,7 @@ Mr Jane
             [0].Seed.tokenCategoryName                                          ｢dqChunk｣
           [5].Seed.Terminal                                                     '$' ¦
             [0].string                                                          ｢'$'｣
-    [69].Seed.Rule                                                              dqChu ...  ) +<NEWLINE>¦
+    [64].Seed.Rule                                                              dqChu ...  ) +<NEWLINE>¦
       [0].Seed.Nonterminal                                                      dqChu ...      ¦
         [0].Seed.tokenCategoryName                                              ｢dqChunk｣
       [1].Seed.Expr                                                             ( '\\\\ ... Y ) +¦
@@ -8716,868 +8686,697 @@ Mr Jane
 [0].Ash                                                                         <NEWLINE><NEWLINE>set ... it 0<NEWLINE>¦
   [0].Ash.CompleteCommand                                                       set -e¦
     [0].Ash.List                                                                set -e¦
-      [0].Ash.AndOr                                                             set -e¦
-        [0].Ash.Pipeline                                                        set -e¦
-          [0].Ash.PipeSequence                                                  set -e¦
-            [0].Ash.Command                                                     set -e¦
-              [0].Ash.SimpleCommand                                             set -e¦
-                [0].Ash.CmdName                                                 set ¦
-                  [0].Ash.Word                                                  set ¦
-                    [0].Ash.word                                                ｢set｣
-                [1].Ash.CmdSuffix                                               -e¦
-                  [0].Ash.Word                                                  -e¦
-                    [0].Ash.word                                                ｢-e｣
+      [0].Ash.Command                                                           set -e¦
+        [0].Ash.SimpleCommand                                                   set -e¦
+          [0].Ash.CmdName                                                       set ¦
+            [0].Ash.Word                                                        set ¦
+              [0].Ash.word                                                      ｢set｣
+          [1].Ash.CmdSuffix                                                     -e¦
+            [0].Ash.Word                                                        -e¦
+              [0].Ash.word                                                      ｢-e｣
   [1].Ash.CompleteCommand                                                       PREFI ... local¦
     [0].Ash.List                                                                PREFI ... local¦
-      [0].Ash.AndOr                                                             PREFI ... local¦
-        [0].Ash.Pipeline                                                        PREFI ... local¦
-          [0].Ash.PipeSequence                                                  PREFI ... local¦
-            [0].Ash.Command                                                     PREFI ... local¦
-              [0].Ash.SimpleCommand                                             PREFI ... local¦
-                [0].Ash.CmdPrefix                                               PREFI ... local¦
-                  [0].Ash.Assignment                                            PREFI ... local¦
-                    [0].identifier                                              ｢PREFIX｣
-                    [1].Ash.word                                                ｢/usr/local｣
+      [0].Ash.Command                                                           PREFI ... local¦
+        [0].Ash.SimpleCommand                                                   PREFI ... local¦
+          [0].Ash.CmdPrefix                                                     PREFI ... local¦
+            [0].Ash.Assignment                                                  PREFI ... local¦
+              [0].identifier                                                    ｢PREFIX｣
+              [1].Ash.word                                                      ｢/usr/local｣
   [2].Ash.CompleteCommand                                                       BIN_D ... X/bin¦
     [0].Ash.List                                                                BIN_D ... X/bin¦
-      [0].Ash.AndOr                                                             BIN_D ... X/bin¦
-        [0].Ash.Pipeline                                                        BIN_D ... X/bin¦
-          [0].Ash.PipeSequence                                                  BIN_D ... X/bin¦
-            [0].Ash.Command                                                     BIN_D ... X/bin¦
-              [0].Ash.SimpleCommand                                             BIN_D ... X/bin¦
-                [0].Ash.CmdPrefix                                               BIN_D ... X/bin¦
-                  [0].Ash.Assignment                                            BIN_D ... X/bin¦
-                    [0].identifier                                              ｢BIN_DIR｣
-                    [1].Ash.word                                                ｢$PREFIX/bin｣
-                      [0].Ash.dollarParam                                       ｢$PREFIX｣
-                        [0].identifier                                          ｢PREFIX｣
+      [0].Ash.Command                                                           BIN_D ... X/bin¦
+        [0].Ash.SimpleCommand                                                   BIN_D ... X/bin¦
+          [0].Ash.CmdPrefix                                                     BIN_D ... X/bin¦
+            [0].Ash.Assignment                                                  BIN_D ... X/bin¦
+              [0].identifier                                                    ｢BIN_DIR｣
+              [1].Ash.word                                                      ｢$PREFIX/bin｣
+                [0].Ash.dollarParam                                             ｢$PREFIX｣
+                  [0].identifier                                                ｢PREFIX｣
   [3].Ash.CompleteCommand                                                       name='ash'¦
     [0].Ash.List                                                                name='ash'¦
-      [0].Ash.AndOr                                                             name='ash'¦
-        [0].Ash.Pipeline                                                        name='ash'¦
-          [0].Ash.PipeSequence                                                  name='ash'¦
-            [0].Ash.Command                                                     name='ash'¦
-              [0].Ash.SimpleCommand                                             name='ash'¦
-                [0].Ash.CmdPrefix                                               name='ash'¦
-                  [0].Ash.Assignment                                            name='ash'¦
-                    [0].identifier                                              ｢name｣
-                    [1].Ash.word                                                ｢'ash'｣
-                      [0].Ash.singleQuoted                                      ｢'ash'｣
+      [0].Ash.Command                                                           name='ash'¦
+        [0].Ash.SimpleCommand                                                   name='ash'¦
+          [0].Ash.CmdPrefix                                                     name='ash'¦
+            [0].Ash.Assignment                                                  name='ash'¦
+              [0].identifier                                                    ｢name｣
+              [1].Ash.word                                                      ｢'ash'｣
+                [0].Ash.singleQuoted                                            ｢'ash'｣
   [4].Ash.CompleteCommand                                                       greet ... orld\"¦
     [0].Ash.List                                                                greet ... orld\"¦
-      [0].Ash.AndOr                                                             greet ... orld\"¦
-        [0].Ash.Pipeline                                                        greet ... orld\"¦
-          [0].Ash.PipeSequence                                                  greet ... orld\"¦
-            [0].Ash.Command                                                     greet ... orld\"¦
-              [0].Ash.SimpleCommand                                             greet ... orld\"¦
-                [0].Ash.CmdPrefix                                               greet ... orld\"¦
-                  [0].Ash.Assignment                                            greet ... orld\"¦
-                    [0].identifier                                              ｢greeting｣
-                    [1].Ash.word                                                ｢"hello, world"｣
-                      [0].Ash.doubleQuoted                                      ｢"hello, world"｣
-                        [0].Ash.dqChunk                                         ｢hello, world｣
+      [0].Ash.Command                                                           greet ... orld\"¦
+        [0].Ash.SimpleCommand                                                   greet ... orld\"¦
+          [0].Ash.CmdPrefix                                                     greet ... orld\"¦
+            [0].Ash.Assignment                                                  greet ... orld\"¦
+              [0].identifier                                                    ｢greeting｣
+              [1].Ash.word                                                      ｢"hello, world"｣
+                [0].Ash.doubleQuoted                                            ｢"hello, world"｣
+                  [0].Ash.dqChunk                                               ｢hello, world｣
   [5].Ash.CompleteCommand                                                       greet ... g\"<NEWLINE><DEDENT>}¦
     [0].Ash.List                                                                greet ... g\"<NEWLINE><DEDENT>}¦
-      [0].Ash.AndOr                                                             greet ... g\"<NEWLINE><DEDENT>}¦
-        [0].Ash.Pipeline                                                        greet ... g\"<NEWLINE><DEDENT>}¦
-          [0].Ash.PipeSequence                                                  greet ... g\"<NEWLINE><DEDENT>}¦
-            [0].Ash.Command                                                     greet ... g\"<NEWLINE><DEDENT>}¦
-              [0].Ash.FunctionDefinition                                        greet ... g\"<NEWLINE><DEDENT>}¦
-                [0].Ash.fname                                                   ｢greet｣
-                  [0].identifier                                                ｢greet｣
-                [1].Ash.CompoundCommand                                         {<NEWLINE><INDENT>pr ... g\"<NEWLINE><DEDENT>}¦
-                  [0].Ash.BraceGroup                                            {<NEWLINE><INDENT>pr ... g\"<NEWLINE><DEDENT>}¦
-                    [0].Ash.Term                                                print ... ting\"¦
-                      [0].Ash.AndOr                                             print ... ting\"¦
-                        [0].Ash.Pipeline                                        print ... ting\"¦
-                          [0].Ash.PipeSequence                                  print ... ting\"¦
-                            [0].Ash.Command                                     print ... ting\"¦
-                              [0].Ash.SimpleCommand                             print ... ting\"¦
-                                [0].Ash.CmdName                                 printf ¦
-                                  [0].Ash.Word                                  printf ¦
-                                    [0].Ash.word                                ｢printf｣
-                                [1].Ash.CmdSuffix                               '%s\\n ... ting\"¦
-                                  [0].Ash.Word                                  '%s\\n' ¦
-                                    [0].Ash.word                                ｢'%s\n'｣
-                                      [0].Ash.singleQuoted                      ｢'%s\n'｣
-                                  [1].Ash.Word                                  \"$gre ... ting\"¦
-                                    [0].Ash.word                                ｢"$greeting"｣
-                                      [0].Ash.doubleQuoted                      ｢"$greeting"｣
-                                        [0].Ash.dollarParam                     ｢$greeting｣
-                                          [0].identifier                        ｢greeting｣
+      [0].Ash.Command                                                           greet ... g\"<NEWLINE><DEDENT>}¦
+        [0].Ash.FunctionDefinition                                              greet ... g\"<NEWLINE><DEDENT>}¦
+          [0].Ash.fname                                                         ｢greet｣
+            [0].identifier                                                      ｢greet｣
+          [1].Ash.CompoundCommand                                               {<NEWLINE><INDENT>pr ... g\"<NEWLINE><DEDENT>}¦
+            [0].Ash.BraceGroup                                                  {<NEWLINE><INDENT>pr ... g\"<NEWLINE><DEDENT>}¦
+              [0].Ash.Term                                                      print ... ting\"¦
+                [0].Ash.Command                                                 print ... ting\"¦
+                  [0].Ash.SimpleCommand                                         print ... ting\"¦
+                    [0].Ash.CmdName                                             printf ¦
+                      [0].Ash.Word                                              printf ¦
+                        [0].Ash.word                                            ｢printf｣
+                    [1].Ash.CmdSuffix                                           '%s\\n ... ting\"¦
+                      [0].Ash.Word                                              '%s\\n' ¦
+                        [0].Ash.word                                            ｢'%s\n'｣
+                          [0].Ash.singleQuoted                                  ｢'%s\n'｣
+                      [1].Ash.Word                                              \"$gre ... ting\"¦
+                        [0].Ash.word                                            ｢"$greeting"｣
+                          [0].Ash.doubleQuoted                                  ｢"$greeting"｣
+                            [0].Ash.dollarParam                                 ｢$greeting｣
+                              [0].identifier                                    ｢greeting｣
   [6].Ash.CompleteCommand                                                       count ... n\"<NEWLINE><DEDENT>}¦
     [0].Ash.List                                                                count ... n\"<NEWLINE><DEDENT>}¦
-      [0].Ash.AndOr                                                             count ... n\"<NEWLINE><DEDENT>}¦
-        [0].Ash.Pipeline                                                        count ... n\"<NEWLINE><DEDENT>}¦
-          [0].Ash.PipeSequence                                                  count ... n\"<NEWLINE><DEDENT>}¦
-            [0].Ash.Command                                                     count ... n\"<NEWLINE><DEDENT>}¦
-              [0].Ash.FunctionDefinition                                        count ... n\"<NEWLINE><DEDENT>}¦
-                [0].Ash.fname                                                   ｢count_args｣
-                  [0].identifier                                                ｢count_args｣
-                [1].Ash.CompoundCommand                                         {<NEWLINE><INDENT>lo ... n\"<NEWLINE><DEDENT>}¦
-                  [0].Ash.BraceGroup                                            {<NEWLINE><INDENT>lo ... n\"<NEWLINE><DEDENT>}¦
-                    [0].Ash.Term                                                local ... : $n\"¦
-                      [0].Ash.AndOr                                             local n=$1¦
-                        [0].Ash.Pipeline                                        local n=$1¦
-                          [0].Ash.PipeSequence                                  local n=$1¦
-                            [0].Ash.Command                                     local n=$1¦
-                              [0].Ash.SimpleCommand                             local n=$1¦
-                                [0].Ash.CmdName                                 local ¦
-                                  [0].Ash.Word                                  local ¦
-                                    [0].Ash.word                                ｢local｣
-                                [1].Ash.CmdSuffix                               n=$1¦
-                                  [0].Ash.Word                                  n=$1¦
-                                    [0].Ash.word                                ｢n=$1｣
-                                      [0].Ash.dollarParam                       ｢$1｣
-                      [1].Ash.AndOr                                             echo  ... : $n\"¦
-                        [0].Ash.Pipeline                                        echo  ... : $n\"¦
-                          [0].Ash.PipeSequence                                  echo  ... : $n\"¦
-                            [0].Ash.Command                                     echo  ... : $n\"¦
-                              [0].Ash.SimpleCommand                             echo  ... : $n\"¦
-                                [0].Ash.CmdName                                 echo ¦
-                                  [0].Ash.Word                                  echo ¦
-                                    [0].Ash.word                                ｢echo｣
-                                [1].Ash.CmdSuffix                               \"args: $n\"¦
-                                  [0].Ash.Word                                  \"args: $n\"¦
-                                    [0].Ash.word                                ｢"args: $n"｣
-                                      [0].Ash.doubleQuoted                      ｢"args: $n"｣
-                                        [0].Ash.dqChunk                         ｢args: ｣
-                                        [1].Ash.dollarParam                     ｢$n｣
-                                          [0].identifier                        ｢n｣
+      [0].Ash.Command                                                           count ... n\"<NEWLINE><DEDENT>}¦
+        [0].Ash.FunctionDefinition                                              count ... n\"<NEWLINE><DEDENT>}¦
+          [0].Ash.fname                                                         ｢count_args｣
+            [0].identifier                                                      ｢count_args｣
+          [1].Ash.CompoundCommand                                               {<NEWLINE><INDENT>lo ... n\"<NEWLINE><DEDENT>}¦
+            [0].Ash.BraceGroup                                                  {<NEWLINE><INDENT>lo ... n\"<NEWLINE><DEDENT>}¦
+              [0].Ash.Term                                                      local ... : $n\"¦
+                [0].Ash.Command                                                 local n=$1¦
+                  [0].Ash.SimpleCommand                                         local n=$1¦
+                    [0].Ash.CmdName                                             local ¦
+                      [0].Ash.Word                                              local ¦
+                        [0].Ash.word                                            ｢local｣
+                    [1].Ash.CmdSuffix                                           n=$1¦
+                      [0].Ash.Word                                              n=$1¦
+                        [0].Ash.word                                            ｢n=$1｣
+                          [0].Ash.dollarParam                                   ｢$1｣
+                [1].Ash.Command                                                 echo  ... : $n\"¦
+                  [0].Ash.SimpleCommand                                         echo  ... : $n\"¦
+                    [0].Ash.CmdName                                             echo ¦
+                      [0].Ash.Word                                              echo ¦
+                        [0].Ash.word                                            ｢echo｣
+                    [1].Ash.CmdSuffix                                           \"args: $n\"¦
+                      [0].Ash.Word                                              \"args: $n\"¦
+                        [0].Ash.word                                            ｢"args: $n"｣
+                          [0].Ash.doubleQuoted                                  ｢"args: $n"｣
+                            [0].Ash.dqChunk                                     ｢args: ｣
+                            [1].Ash.dollarParam                                 ｢$n｣
+                              [0].identifier                                    ｢n｣
   [7].Ash.CompleteCommand                                                       if [  ... 2<NEWLINE><DEDENT>fi¦
     [0].Ash.List                                                                if [  ... 2<NEWLINE><DEDENT>fi¦
-      [0].Ash.AndOr                                                             if [  ... 2<NEWLINE><DEDENT>fi¦
-        [0].Ash.Pipeline                                                        if [  ... 2<NEWLINE><DEDENT>fi¦
-          [0].Ash.PipeSequence                                                  if [  ... 2<NEWLINE><DEDENT>fi¦
-            [0].Ash.Command                                                     if [  ... 2<NEWLINE><DEDENT>fi¦
-              [0].Ash.CompoundCommand                                           if [  ... 2<NEWLINE><DEDENT>fi¦
-                [0].Ash.IfClause                                                if [  ... 2<NEWLINE><DEDENT>fi¦
-                  [0].Ash.Term                                                  [ -d  ... IR\" ]¦
-                    [0].Ash.AndOr                                               [ -d  ... IR\" ]¦
-                      [0].Ash.Pipeline                                          [ -d  ... IR\" ]¦
-                        [0].Ash.PipeSequence                                    [ -d  ... IR\" ]¦
-                          [0].Ash.Command                                       [ -d  ... IR\" ]¦
-                            [0].Ash.SimpleCommand                               [ -d  ... IR\" ]¦
-                              [0].Ash.CmdName                                   [ ¦
-                                [0].Ash.Word                                    [ ¦
-                                  [0].Ash.word                                  ｢[｣
-                              [1].Ash.CmdSuffix                                 -d \"$ ... IR\" ]¦
-                                [0].Ash.Word                                    -d ¦
-                                  [0].Ash.word                                  ｢-d｣
-                                [1].Ash.Word                                    \"$BIN ... DIR\" ¦
-                                  [0].Ash.word                                  ｢"$BIN_DIR"｣
-                                    [0].Ash.doubleQuoted                        ｢"$BIN_DIR"｣
-                                      [0].Ash.dollarParam                       ｢$BIN_DIR｣
-                                        [0].identifier                          ｢BIN_DIR｣
-                                [2].Ash.Word                                    ]¦
-                                  [0].Ash.word                                  ｢]｣
-                  [1].Ash.separatorOp                                           ｢;｣
-                  [2].Ash.Term                                                  echo  ... _DIR\"¦
-                    [0].Ash.AndOr                                               echo  ... _DIR\"¦
-                      [0].Ash.Pipeline                                          echo  ... _DIR\"¦
-                        [0].Ash.PipeSequence                                    echo  ... _DIR\"¦
-                          [0].Ash.Command                                       echo  ... _DIR\"¦
-                            [0].Ash.SimpleCommand                               echo  ... _DIR\"¦
-                              [0].Ash.CmdName                                   echo ¦
-                                [0].Ash.Word                                    echo ¦
-                                  [0].Ash.word                                  ｢echo｣
-                              [1].Ash.CmdSuffix                                 \"foun ... _DIR\"¦
-                                [0].Ash.Word                                    \"foun ... _DIR\"¦
-                                  [0].Ash.word                                  ｢"found $BIN_DIR"｣
-                                    [0].Ash.doubleQuoted                        ｢"found $BIN_DIR"｣
-                                      [0].Ash.dqChunk                           ｢found ｣
-                                      [1].Ash.dollarParam                       ｢$BIN_DIR｣
-                                        [0].identifier                          ｢BIN_DIR｣
-                  [3].Ash.ElsePart                                              elif  ... >&2<NEWLINE><DEDENT>¦
-                    [0].Ash.Term                                                [ -d  ... bin ]¦
-                      [0].Ash.AndOr                                             [ -d  ... bin ]¦
-                        [0].Ash.Pipeline                                        [ -d  ... bin ]¦
-                          [0].Ash.PipeSequence                                  [ -d  ... bin ]¦
-                            [0].Ash.Command                                     [ -d  ... bin ]¦
-                              [0].Ash.SimpleCommand                             [ -d  ... bin ]¦
-                                [0].Ash.CmdName                                 [ ¦
-                                  [0].Ash.Word                                  [ ¦
-                                    [0].Ash.word                                ｢[｣
-                                [1].Ash.CmdSuffix                               -d /u ... bin ]¦
-                                  [0].Ash.Word                                  -d ¦
-                                    [0].Ash.word                                ｢-d｣
-                                  [1].Ash.Word                                  /usr/bin ¦
-                                    [0].Ash.word                                ｢/usr/bin｣
-                                  [2].Ash.Word                                  ]¦
-                                    [0].Ash.word                                ｢]｣
-                    [1].Ash.separatorOp                                         ｢;｣
-                    [2].Ash.Term                                                echo  ... /bin\"¦
-                      [0].Ash.AndOr                                             echo  ... /bin\"¦
-                        [0].Ash.Pipeline                                        echo  ... /bin\"¦
-                          [0].Ash.PipeSequence                                  echo  ... /bin\"¦
-                            [0].Ash.Command                                     echo  ... /bin\"¦
-                              [0].Ash.SimpleCommand                             echo  ... /bin\"¦
-                                [0].Ash.CmdName                                 echo ¦
-                                  [0].Ash.Word                                  echo ¦
-                                    [0].Ash.word                                ｢echo｣
-                                [1].Ash.CmdSuffix                               \"fall ... /bin\"¦
-                                  [0].Ash.Word                                  \"fall ... /bin\"¦
-                                    [0].Ash.word                                ｢"falling back to /usr/bin"｣
-                                      [0].Ash.doubleQuoted                      ｢"falling back to /usr/bin"｣
-                                        [0].Ash.dqChunk                         ｢falling back to /usr/bin｣
-                    [3].Ash.ElsePart                                            else<NEWLINE> ... >&2<NEWLINE><DEDENT>¦
-                      [0].Ash.Term                                              echo  ...  1>&2¦
-                        [0].Ash.AndOr                                           echo  ...  1>&2¦
-                          [0].Ash.Pipeline                                      echo  ...  1>&2¦
-                            [0].Ash.PipeSequence                                echo  ...  1>&2¦
-                              [0].Ash.Command                                   echo  ...  1>&2¦
-                                [0].Ash.SimpleCommand                           echo  ...  1>&2¦
-                                  [0].Ash.CmdName                               echo ¦
-                                    [0].Ash.Word                                echo ¦
-                                      [0].Ash.word                              ｢echo｣
-                                  [1].Ash.CmdSuffix                             \"no b ...  1>&2¦
-                                    [0].Ash.Word                                \"no b ... dir\" ¦
-                                      [0].Ash.word                              ｢"no bin dir"｣
-                                        [0].Ash.doubleQuoted                    ｢"no bin dir"｣
-                                          [0].Ash.dqChunk                       ｢no bin dir｣
-                                    [1].Ash.IoRedirect                          1>&2¦
-                                      [0].Ash.ioNumber                          ｢1｣
-                                      [1].Ash.ioOp                              ｢>&｣
-                                      [2].Ash.Word                              2¦
-                                        [0].Ash.word                            ｢2｣
+      [0].Ash.Command                                                           if [  ... 2<NEWLINE><DEDENT>fi¦
+        [0].Ash.CompoundCommand                                                 if [  ... 2<NEWLINE><DEDENT>fi¦
+          [0].Ash.IfClause                                                      if [  ... 2<NEWLINE><DEDENT>fi¦
+            [0].Ash.Term                                                        [ -d  ... IR\" ]¦
+              [0].Ash.Command                                                   [ -d  ... IR\" ]¦
+                [0].Ash.SimpleCommand                                           [ -d  ... IR\" ]¦
+                  [0].Ash.CmdName                                               [ ¦
+                    [0].Ash.Word                                                [ ¦
+                      [0].Ash.word                                              ｢[｣
+                  [1].Ash.CmdSuffix                                             -d \"$ ... IR\" ]¦
+                    [0].Ash.Word                                                -d ¦
+                      [0].Ash.word                                              ｢-d｣
+                    [1].Ash.Word                                                \"$BIN ... DIR\" ¦
+                      [0].Ash.word                                              ｢"$BIN_DIR"｣
+                        [0].Ash.doubleQuoted                                    ｢"$BIN_DIR"｣
+                          [0].Ash.dollarParam                                   ｢$BIN_DIR｣
+                            [0].identifier                                      ｢BIN_DIR｣
+                    [2].Ash.Word                                                ]¦
+                      [0].Ash.word                                              ｢]｣
+            [1].Ash.separatorOp                                                 ｢;｣
+            [2].Ash.Term                                                        echo  ... _DIR\"¦
+              [0].Ash.Command                                                   echo  ... _DIR\"¦
+                [0].Ash.SimpleCommand                                           echo  ... _DIR\"¦
+                  [0].Ash.CmdName                                               echo ¦
+                    [0].Ash.Word                                                echo ¦
+                      [0].Ash.word                                              ｢echo｣
+                  [1].Ash.CmdSuffix                                             \"foun ... _DIR\"¦
+                    [0].Ash.Word                                                \"foun ... _DIR\"¦
+                      [0].Ash.word                                              ｢"found $BIN_DIR"｣
+                        [0].Ash.doubleQuoted                                    ｢"found $BIN_DIR"｣
+                          [0].Ash.dqChunk                                       ｢found ｣
+                          [1].Ash.dollarParam                                   ｢$BIN_DIR｣
+                            [0].identifier                                      ｢BIN_DIR｣
+            [3].Ash.ElsePart                                                    elif  ... >&2<NEWLINE><DEDENT>¦
+              [0].Ash.Term                                                      [ -d  ... bin ]¦
+                [0].Ash.Command                                                 [ -d  ... bin ]¦
+                  [0].Ash.SimpleCommand                                         [ -d  ... bin ]¦
+                    [0].Ash.CmdName                                             [ ¦
+                      [0].Ash.Word                                              [ ¦
+                        [0].Ash.word                                            ｢[｣
+                    [1].Ash.CmdSuffix                                           -d /u ... bin ]¦
+                      [0].Ash.Word                                              -d ¦
+                        [0].Ash.word                                            ｢-d｣
+                      [1].Ash.Word                                              /usr/bin ¦
+                        [0].Ash.word                                            ｢/usr/bin｣
+                      [2].Ash.Word                                              ]¦
+                        [0].Ash.word                                            ｢]｣
+              [1].Ash.separatorOp                                               ｢;｣
+              [2].Ash.Term                                                      echo  ... /bin\"¦
+                [0].Ash.Command                                                 echo  ... /bin\"¦
+                  [0].Ash.SimpleCommand                                         echo  ... /bin\"¦
+                    [0].Ash.CmdName                                             echo ¦
+                      [0].Ash.Word                                              echo ¦
+                        [0].Ash.word                                            ｢echo｣
+                    [1].Ash.CmdSuffix                                           \"fall ... /bin\"¦
+                      [0].Ash.Word                                              \"fall ... /bin\"¦
+                        [0].Ash.word                                            ｢"falling back to /usr/bin"｣
+                          [0].Ash.doubleQuoted                                  ｢"falling back to /usr/bin"｣
+                            [0].Ash.dqChunk                                     ｢falling back to /usr/bin｣
+              [3].Ash.ElsePart                                                  else<NEWLINE> ... >&2<NEWLINE><DEDENT>¦
+                [0].Ash.Term                                                    echo  ...  1>&2¦
+                  [0].Ash.Command                                               echo  ...  1>&2¦
+                    [0].Ash.SimpleCommand                                       echo  ...  1>&2¦
+                      [0].Ash.CmdName                                           echo ¦
+                        [0].Ash.Word                                            echo ¦
+                          [0].Ash.word                                          ｢echo｣
+                      [1].Ash.CmdSuffix                                         \"no b ...  1>&2¦
+                        [0].Ash.Word                                            \"no b ... dir\" ¦
+                          [0].Ash.word                                          ｢"no bin dir"｣
+                            [0].Ash.doubleQuoted                                ｢"no bin dir"｣
+                              [0].Ash.dqChunk                                   ｢no bin dir｣
+                        [1].Ash.IoRedirect                                      1>&2¦
+                          [0].Ash.ioNumber                                      ｢1｣
+                          [1].Ash.ioOp                                          ｢>&｣
+                          [2].Ash.Word                                          2¦
+                            [0].Ash.word                                        ｢2｣
   [8].Ash.CompleteCommand                                                       for f ... <DEDENT>done¦
     [0].Ash.List                                                                for f ... <DEDENT>done¦
-      [0].Ash.AndOr                                                             for f ... <DEDENT>done¦
-        [0].Ash.Pipeline                                                        for f ... <DEDENT>done¦
-          [0].Ash.PipeSequence                                                  for f ... <DEDENT>done¦
-            [0].Ash.Command                                                     for f ... <DEDENT>done¦
-              [0].Ash.CompoundCommand                                           for f ... <DEDENT>done¦
-                [0].Ash.ForClause                                               for f ... <DEDENT>done¦
-                  [0].Ash.varName                                               ｢f｣
-                    [0].identifier                                              ｢f｣
-                  [1].Ash.WordList                                              a.txt ... c.txt¦
-                    [0].Ash.Word                                                a.txt ¦
-                      [0].Ash.word                                              ｢a.txt｣
-                    [1].Ash.Word                                                b.txt ¦
-                      [0].Ash.word                                              ｢b.txt｣
-                    [2].Ash.Word                                                c.txt¦
-                      [0].Ash.word                                              ｢c.txt｣
-                  [2].Ash.semi                                                  ｢;｣
-                  [3].Ash.DoGroup                                               do<NEWLINE><INDENT>e ... <DEDENT>done¦
-                    [0].Ash.Term                                                echo  ... g $f\"¦
-                      [0].Ash.AndOr                                             echo  ... g $f\"¦
-                        [0].Ash.Pipeline                                        echo  ... g $f\"¦
-                          [0].Ash.PipeSequence                                  echo  ... g $f\"¦
-                            [0].Ash.Command                                     echo  ... g $f\"¦
-                              [0].Ash.SimpleCommand                             echo  ... g $f\"¦
-                                [0].Ash.CmdName                                 echo ¦
-                                  [0].Ash.Word                                  echo ¦
-                                    [0].Ash.word                                ｢echo｣
-                                [1].Ash.CmdSuffix                               \"proc ... g $f\"¦
-                                  [0].Ash.Word                                  \"proc ... g $f\"¦
-                                    [0].Ash.word                                ｢"processing $f"｣
-                                      [0].Ash.doubleQuoted                      ｢"processing $f"｣
-                                        [0].Ash.dqChunk                         ｢processing ｣
-                                        [1].Ash.dollarParam                     ｢$f｣
-                                          [0].identifier                        ｢f｣
+      [0].Ash.Command                                                           for f ... <DEDENT>done¦
+        [0].Ash.CompoundCommand                                                 for f ... <DEDENT>done¦
+          [0].Ash.ForClause                                                     for f ... <DEDENT>done¦
+            [0].Ash.varName                                                     ｢f｣
+              [0].identifier                                                    ｢f｣
+            [1].Ash.WordList                                                    a.txt ... c.txt¦
+              [0].Ash.Word                                                      a.txt ¦
+                [0].Ash.word                                                    ｢a.txt｣
+              [1].Ash.Word                                                      b.txt ¦
+                [0].Ash.word                                                    ｢b.txt｣
+              [2].Ash.Word                                                      c.txt¦
+                [0].Ash.word                                                    ｢c.txt｣
+            [2].Ash.semi                                                        ｢;｣
+            [3].Ash.DoGroup                                                     do<NEWLINE><INDENT>e ... <DEDENT>done¦
+              [0].Ash.Term                                                      echo  ... g $f\"¦
+                [0].Ash.Command                                                 echo  ... g $f\"¦
+                  [0].Ash.SimpleCommand                                         echo  ... g $f\"¦
+                    [0].Ash.CmdName                                             echo ¦
+                      [0].Ash.Word                                              echo ¦
+                        [0].Ash.word                                            ｢echo｣
+                    [1].Ash.CmdSuffix                                           \"proc ... g $f\"¦
+                      [0].Ash.Word                                              \"proc ... g $f\"¦
+                        [0].Ash.word                                            ｢"processing $f"｣
+                          [0].Ash.doubleQuoted                                  ｢"processing $f"｣
+                            [0].Ash.dqChunk                                     ｢processing ｣
+                            [1].Ash.dollarParam                                 ｢$f｣
+                              [0].identifier                                    ｢f｣
   [9].Ash.CompleteCommand                                                       i=0¦
     [0].Ash.List                                                                i=0¦
-      [0].Ash.AndOr                                                             i=0¦
-        [0].Ash.Pipeline                                                        i=0¦
-          [0].Ash.PipeSequence                                                  i=0¦
-            [0].Ash.Command                                                     i=0¦
-              [0].Ash.SimpleCommand                                             i=0¦
-                [0].Ash.CmdPrefix                                               i=0¦
-                  [0].Ash.Assignment                                            i=0¦
-                    [0].identifier                                              ｢i｣
-                    [1].Ash.word                                                ｢0｣
+      [0].Ash.Command                                                           i=0¦
+        [0].Ash.SimpleCommand                                                   i=0¦
+          [0].Ash.CmdPrefix                                                     i=0¦
+            [0].Ash.Assignment                                                  i=0¦
+              [0].identifier                                                    ｢i｣
+              [1].Ash.word                                                      ｢0｣
   [10].Ash.CompleteCommand                                                      while ... <DEDENT>done¦
     [0].Ash.List                                                                while ... <DEDENT>done¦
-      [0].Ash.AndOr                                                             while ... <DEDENT>done¦
-        [0].Ash.Pipeline                                                        while ... <DEDENT>done¦
-          [0].Ash.PipeSequence                                                  while ... <DEDENT>done¦
-            [0].Ash.Command                                                     while ... <DEDENT>done¦
-              [0].Ash.CompoundCommand                                           while ... <DEDENT>done¦
-                [0].Ash.WhileClause                                             while ... <DEDENT>done¦
-                  [0].Ash.Term                                                  [ $i  ... t 3 ]¦
-                    [0].Ash.AndOr                                               [ $i  ... t 3 ]¦
-                      [0].Ash.Pipeline                                          [ $i  ... t 3 ]¦
-                        [0].Ash.PipeSequence                                    [ $i  ... t 3 ]¦
-                          [0].Ash.Command                                       [ $i  ... t 3 ]¦
-                            [0].Ash.SimpleCommand                               [ $i  ... t 3 ]¦
-                              [0].Ash.CmdName                                   [ ¦
-                                [0].Ash.Word                                    [ ¦
-                                  [0].Ash.word                                  ｢[｣
-                              [1].Ash.CmdSuffix                                 $i -lt 3 ]¦
-                                [0].Ash.Word                                    $i ¦
-                                  [0].Ash.word                                  ｢$i｣
-                                    [0].Ash.dollarParam                         ｢$i｣
-                                      [0].identifier                            ｢i｣
-                                [1].Ash.Word                                    -lt ¦
-                                  [0].Ash.word                                  ｢-lt｣
-                                [2].Ash.Word                                    3 ¦
-                                  [0].Ash.word                                  ｢3｣
-                                [3].Ash.Word                                    ]¦
-                                  [0].Ash.word                                  ｢]｣
-                  [1].Ash.separatorOp                                           ｢;｣
-                  [2].Ash.DoGroup                                               do<NEWLINE><INDENT>i ... <DEDENT>done¦
-                    [0].Ash.Term                                                i=$(( ... i=$i\"¦
-                      [0].Ash.AndOr                                             i=$(( ...  1 ))¦
-                        [0].Ash.Pipeline                                        i=$(( ...  1 ))¦
-                          [0].Ash.PipeSequence                                  i=$(( ...  1 ))¦
-                            [0].Ash.Command                                     i=$(( ...  1 ))¦
-                              [0].Ash.SimpleCommand                             i=$(( ...  1 ))¦
-                                [0].Ash.CmdPrefix                               i=$(( ...  1 ))¦
-                                  [0].Ash.Assignment                            i=$(( ...  1 ))¦
-                                    [0].identifier                              ｢i｣
-                                    [1].Ash.word                                ｢$(( i + 1 ))｣
-                                      [0].Ash.arithExpansion                    ｢$(( i + 1 ))｣
-                      [1].Ash.AndOr                                             echo  ... i=$i\"¦
-                        [0].Ash.Pipeline                                        echo  ... i=$i\"¦
-                          [0].Ash.PipeSequence                                  echo  ... i=$i\"¦
-                            [0].Ash.Command                                     echo  ... i=$i\"¦
-                              [0].Ash.SimpleCommand                             echo  ... i=$i\"¦
-                                [0].Ash.CmdName                                 echo ¦
-                                  [0].Ash.Word                                  echo ¦
-                                    [0].Ash.word                                ｢echo｣
-                                [1].Ash.CmdSuffix                               \"i=$i\"¦
-                                  [0].Ash.Word                                  \"i=$i\"¦
-                                    [0].Ash.word                                ｢"i=$i"｣
-                                      [0].Ash.doubleQuoted                      ｢"i=$i"｣
-                                        [0].Ash.dqChunk                         ｢i=｣
-                                        [1].Ash.dollarParam                     ｢$i｣
-                                          [0].identifier                        ｢i｣
+      [0].Ash.Command                                                           while ... <DEDENT>done¦
+        [0].Ash.CompoundCommand                                                 while ... <DEDENT>done¦
+          [0].Ash.WhileClause                                                   while ... <DEDENT>done¦
+            [0].Ash.Term                                                        [ $i  ... t 3 ]¦
+              [0].Ash.Command                                                   [ $i  ... t 3 ]¦
+                [0].Ash.SimpleCommand                                           [ $i  ... t 3 ]¦
+                  [0].Ash.CmdName                                               [ ¦
+                    [0].Ash.Word                                                [ ¦
+                      [0].Ash.word                                              ｢[｣
+                  [1].Ash.CmdSuffix                                             $i -lt 3 ]¦
+                    [0].Ash.Word                                                $i ¦
+                      [0].Ash.word                                              ｢$i｣
+                        [0].Ash.dollarParam                                     ｢$i｣
+                          [0].identifier                                        ｢i｣
+                    [1].Ash.Word                                                -lt ¦
+                      [0].Ash.word                                              ｢-lt｣
+                    [2].Ash.Word                                                3 ¦
+                      [0].Ash.word                                              ｢3｣
+                    [3].Ash.Word                                                ]¦
+                      [0].Ash.word                                              ｢]｣
+            [1].Ash.separatorOp                                                 ｢;｣
+            [2].Ash.DoGroup                                                     do<NEWLINE><INDENT>i ... <DEDENT>done¦
+              [0].Ash.Term                                                      i=$(( ... i=$i\"¦
+                [0].Ash.Command                                                 i=$(( ...  1 ))¦
+                  [0].Ash.SimpleCommand                                         i=$(( ...  1 ))¦
+                    [0].Ash.CmdPrefix                                           i=$(( ...  1 ))¦
+                      [0].Ash.Assignment                                        i=$(( ...  1 ))¦
+                        [0].identifier                                          ｢i｣
+                        [1].Ash.word                                            ｢$(( i + 1 ))｣
+                          [0].Ash.arithExpansion                                ｢$(( i + 1 ))｣
+                [1].Ash.Command                                                 echo  ... i=$i\"¦
+                  [0].Ash.SimpleCommand                                         echo  ... i=$i\"¦
+                    [0].Ash.CmdName                                             echo ¦
+                      [0].Ash.Word                                              echo ¦
+                        [0].Ash.word                                            ｢echo｣
+                    [1].Ash.CmdSuffix                                           \"i=$i\"¦
+                      [0].Ash.Word                                              \"i=$i\"¦
+                        [0].Ash.word                                            ｢"i=$i"｣
+                          [0].Ash.doubleQuoted                                  ｢"i=$i"｣
+                            [0].Ash.dqChunk                                     ｢i=｣
+                            [1].Ash.dollarParam                                 ｢$i｣
+                              [0].identifier                                    ｢i｣
   [11].Ash.CompleteCommand                                                      until ... <DEDENT>done¦
     [0].Ash.List                                                                until ... <DEDENT>done¦
-      [0].Ash.AndOr                                                             until ... <DEDENT>done¦
-        [0].Ash.Pipeline                                                        until ... <DEDENT>done¦
-          [0].Ash.PipeSequence                                                  until ... <DEDENT>done¦
-            [0].Ash.Command                                                     until ... <DEDENT>done¦
-              [0].Ash.CompoundCommand                                           until ... <DEDENT>done¦
-                [0].Ash.UntilClause                                             until ... <DEDENT>done¦
-                  [0].Ash.Term                                                  [ $i  ... q 0 ]¦
-                    [0].Ash.AndOr                                               [ $i  ... q 0 ]¦
-                      [0].Ash.Pipeline                                          [ $i  ... q 0 ]¦
-                        [0].Ash.PipeSequence                                    [ $i  ... q 0 ]¦
-                          [0].Ash.Command                                       [ $i  ... q 0 ]¦
-                            [0].Ash.SimpleCommand                               [ $i  ... q 0 ]¦
-                              [0].Ash.CmdName                                   [ ¦
-                                [0].Ash.Word                                    [ ¦
-                                  [0].Ash.word                                  ｢[｣
-                              [1].Ash.CmdSuffix                                 $i -eq 0 ]¦
-                                [0].Ash.Word                                    $i ¦
-                                  [0].Ash.word                                  ｢$i｣
-                                    [0].Ash.dollarParam                         ｢$i｣
-                                      [0].identifier                            ｢i｣
-                                [1].Ash.Word                                    -eq ¦
-                                  [0].Ash.word                                  ｢-eq｣
-                                [2].Ash.Word                                    0 ¦
-                                  [0].Ash.word                                  ｢0｣
-                                [3].Ash.Word                                    ]¦
-                                  [0].Ash.word                                  ｢]｣
-                  [1].Ash.separatorOp                                           ｢;｣
-                  [2].Ash.DoGroup                                               do<NEWLINE><INDENT>i ... <DEDENT>done¦
-                    [0].Ash.Term                                                i=$(( ...  1 ))¦
-                      [0].Ash.AndOr                                             i=$(( ...  1 ))¦
-                        [0].Ash.Pipeline                                        i=$(( ...  1 ))¦
-                          [0].Ash.PipeSequence                                  i=$(( ...  1 ))¦
-                            [0].Ash.Command                                     i=$(( ...  1 ))¦
-                              [0].Ash.SimpleCommand                             i=$(( ...  1 ))¦
-                                [0].Ash.CmdPrefix                               i=$(( ...  1 ))¦
-                                  [0].Ash.Assignment                            i=$(( ...  1 ))¦
-                                    [0].identifier                              ｢i｣
-                                    [1].Ash.word                                ｢$(( i - 1 ))｣
-                                      [0].Ash.arithExpansion                    ｢$(( i - 1 ))｣
+      [0].Ash.Command                                                           until ... <DEDENT>done¦
+        [0].Ash.CompoundCommand                                                 until ... <DEDENT>done¦
+          [0].Ash.UntilClause                                                   until ... <DEDENT>done¦
+            [0].Ash.Term                                                        [ $i  ... q 0 ]¦
+              [0].Ash.Command                                                   [ $i  ... q 0 ]¦
+                [0].Ash.SimpleCommand                                           [ $i  ... q 0 ]¦
+                  [0].Ash.CmdName                                               [ ¦
+                    [0].Ash.Word                                                [ ¦
+                      [0].Ash.word                                              ｢[｣
+                  [1].Ash.CmdSuffix                                             $i -eq 0 ]¦
+                    [0].Ash.Word                                                $i ¦
+                      [0].Ash.word                                              ｢$i｣
+                        [0].Ash.dollarParam                                     ｢$i｣
+                          [0].identifier                                        ｢i｣
+                    [1].Ash.Word                                                -eq ¦
+                      [0].Ash.word                                              ｢-eq｣
+                    [2].Ash.Word                                                0 ¦
+                      [0].Ash.word                                              ｢0｣
+                    [3].Ash.Word                                                ]¦
+                      [0].Ash.word                                              ｢]｣
+            [1].Ash.separatorOp                                                 ｢;｣
+            [2].Ash.DoGroup                                                     do<NEWLINE><INDENT>i ... <DEDENT>done¦
+              [0].Ash.Term                                                      i=$(( ...  1 ))¦
+                [0].Ash.Command                                                 i=$(( ...  1 ))¦
+                  [0].Ash.SimpleCommand                                         i=$(( ...  1 ))¦
+                    [0].Ash.CmdPrefix                                           i=$(( ...  1 ))¦
+                      [0].Ash.Assignment                                        i=$(( ...  1 ))¦
+                        [0].identifier                                          ｢i｣
+                        [1].Ash.word                                            ｢$(( i - 1 ))｣
+                          [0].Ash.arithExpansion                                ｢$(( i - 1 ))｣
   [12].Ash.CompleteCommand                                                      case  ... <DEDENT>esac¦
     [0].Ash.List                                                                case  ... <DEDENT>esac¦
-      [0].Ash.AndOr                                                             case  ... <DEDENT>esac¦
-        [0].Ash.Pipeline                                                        case  ... <DEDENT>esac¦
-          [0].Ash.PipeSequence                                                  case  ... <DEDENT>esac¦
-            [0].Ash.Command                                                     case  ... <DEDENT>esac¦
-              [0].Ash.CompoundCommand                                           case  ... <DEDENT>esac¦
-                [0].Ash.CaseClause                                              case  ... <DEDENT>esac¦
-                  [0].Ash.Word                                                  \"$name\" ¦
-                    [0].Ash.word                                                ｢"$name"｣
-                      [0].Ash.doubleQuoted                                      ｢"$name"｣
-                        [0].Ash.dollarParam                                     ｢$name｣
-                          [0].identifier                                        ｢name｣
-                  [1].Ash.CaseList                                              (ash) ...  ;;<NEWLINE><DEDENT>¦
-                    [0].Ash.CaseItem                                            (ash) ... \" ;;<NEWLINE>¦
-                      [0].Ash.Pattern                                           ash¦
-                        [0].Ash.Word                                            ash¦
-                          [0].Ash.word                                          ｢ash｣
-                      [1].Ash.Term                                              echo  ... ash\" ¦
-                        [0].Ash.AndOr                                           echo  ... ash\" ¦
-                          [0].Ash.Pipeline                                      echo  ... ash\" ¦
-                            [0].Ash.PipeSequence                                echo  ... ash\" ¦
-                              [0].Ash.Command                                   echo  ... ash\" ¦
-                                [0].Ash.SimpleCommand                           echo  ... ash\" ¦
-                                  [0].Ash.CmdName                               echo ¦
-                                    [0].Ash.Word                                echo ¦
-                                      [0].Ash.word                              ｢echo｣
-                                  [1].Ash.CmdSuffix                             \"this ... ash\" ¦
-                                    [0].Ash.Word                                \"this ... ash\" ¦
-                                      [0].Ash.word                              ｢"this is ash"｣
-                                        [0].Ash.doubleQuoted                    ｢"this is ash"｣
-                                          [0].Ash.dqChunk                       ｢this is ash｣
-                      [2].Ash.dsemi                                             ｢;;｣
-                    [1].Ash.CaseItem                                            (bash ... \" ;;<NEWLINE>¦
-                      [0].Ash.Pattern                                           bash|sh¦
-                        [0].Ash.Word                                            bash¦
-                          [0].Ash.word                                          ｢bash｣
-                        [1].Ash.Word                                            sh¦
-                          [0].Ash.word                                          ｢sh｣
-                      [1].Ash.Term                                              echo  ... ugh\" ¦
-                        [0].Ash.AndOr                                           echo  ... ugh\" ¦
-                          [0].Ash.Pipeline                                      echo  ... ugh\" ¦
-                            [0].Ash.PipeSequence                                echo  ... ugh\" ¦
-                              [0].Ash.Command                                   echo  ... ugh\" ¦
-                                [0].Ash.SimpleCommand                           echo  ... ugh\" ¦
-                                  [0].Ash.CmdName                               echo ¦
-                                    [0].Ash.Word                                echo ¦
-                                      [0].Ash.word                              ｢echo｣
-                                  [1].Ash.CmdSuffix                             \"clos ... ugh\" ¦
-                                    [0].Ash.Word                                \"clos ... ugh\" ¦
-                                      [0].Ash.word                              ｢"close enough"｣
-                                        [0].Ash.doubleQuoted                    ｢"close enough"｣
-                                          [0].Ash.dqChunk                       ｢close enough｣
-                      [2].Ash.dsemi                                             ｢;;｣
-                    [2].Ash.CaseItem                                            (*) e ...  ;;<NEWLINE><DEDENT>¦
-                      [0].Ash.Pattern                                           *¦
-                        [0].Ash.Word                                            *¦
-                          [0].Ash.word                                          ｢*｣
-                      [1].Ash.Term                                              echo  ... own\" ¦
-                        [0].Ash.AndOr                                           echo  ... own\" ¦
-                          [0].Ash.Pipeline                                      echo  ... own\" ¦
-                            [0].Ash.PipeSequence                                echo  ... own\" ¦
-                              [0].Ash.Command                                   echo  ... own\" ¦
-                                [0].Ash.SimpleCommand                           echo  ... own\" ¦
-                                  [0].Ash.CmdName                               echo ¦
-                                    [0].Ash.Word                                echo ¦
-                                      [0].Ash.word                              ｢echo｣
-                                  [1].Ash.CmdSuffix                             \"unknown\" ¦
-                                    [0].Ash.Word                                \"unknown\" ¦
-                                      [0].Ash.word                              ｢"unknown"｣
-                                        [0].Ash.doubleQuoted                    ｢"unknown"｣
-                                          [0].Ash.dqChunk                       ｢unknown｣
-                      [2].Ash.dsemi                                             ｢;;｣
+      [0].Ash.Command                                                           case  ... <DEDENT>esac¦
+        [0].Ash.CompoundCommand                                                 case  ... <DEDENT>esac¦
+          [0].Ash.CaseClause                                                    case  ... <DEDENT>esac¦
+            [0].Ash.Word                                                        \"$name\" ¦
+              [0].Ash.word                                                      ｢"$name"｣
+                [0].Ash.doubleQuoted                                            ｢"$name"｣
+                  [0].Ash.dollarParam                                           ｢$name｣
+                    [0].identifier                                              ｢name｣
+            [1].Ash.CaseList                                                    (ash) ...  ;;<NEWLINE><DEDENT>¦
+              [0].Ash.CaseItem                                                  (ash) ... \" ;;<NEWLINE>¦
+                [0].Ash.Pattern                                                 ash¦
+                  [0].Ash.Word                                                  ash¦
+                    [0].Ash.word                                                ｢ash｣
+                [1].Ash.Term                                                    echo  ... ash\" ¦
+                  [0].Ash.Command                                               echo  ... ash\" ¦
+                    [0].Ash.SimpleCommand                                       echo  ... ash\" ¦
+                      [0].Ash.CmdName                                           echo ¦
+                        [0].Ash.Word                                            echo ¦
+                          [0].Ash.word                                          ｢echo｣
+                      [1].Ash.CmdSuffix                                         \"this ... ash\" ¦
+                        [0].Ash.Word                                            \"this ... ash\" ¦
+                          [0].Ash.word                                          ｢"this is ash"｣
+                            [0].Ash.doubleQuoted                                ｢"this is ash"｣
+                              [0].Ash.dqChunk                                   ｢this is ash｣
+                [2].Ash.dsemi                                                   ｢;;｣
+              [1].Ash.CaseItem                                                  (bash ... \" ;;<NEWLINE>¦
+                [0].Ash.Pattern                                                 bash|sh¦
+                  [0].Ash.Word                                                  bash¦
+                    [0].Ash.word                                                ｢bash｣
+                  [1].Ash.Word                                                  sh¦
+                    [0].Ash.word                                                ｢sh｣
+                [1].Ash.Term                                                    echo  ... ugh\" ¦
+                  [0].Ash.Command                                               echo  ... ugh\" ¦
+                    [0].Ash.SimpleCommand                                       echo  ... ugh\" ¦
+                      [0].Ash.CmdName                                           echo ¦
+                        [0].Ash.Word                                            echo ¦
+                          [0].Ash.word                                          ｢echo｣
+                      [1].Ash.CmdSuffix                                         \"clos ... ugh\" ¦
+                        [0].Ash.Word                                            \"clos ... ugh\" ¦
+                          [0].Ash.word                                          ｢"close enough"｣
+                            [0].Ash.doubleQuoted                                ｢"close enough"｣
+                              [0].Ash.dqChunk                                   ｢close enough｣
+                [2].Ash.dsemi                                                   ｢;;｣
+              [2].Ash.CaseItem                                                  (*) e ...  ;;<NEWLINE><DEDENT>¦
+                [0].Ash.Pattern                                                 *¦
+                  [0].Ash.Word                                                  *¦
+                    [0].Ash.word                                                ｢*｣
+                [1].Ash.Term                                                    echo  ... own\" ¦
+                  [0].Ash.Command                                               echo  ... own\" ¦
+                    [0].Ash.SimpleCommand                                       echo  ... own\" ¦
+                      [0].Ash.CmdName                                           echo ¦
+                        [0].Ash.Word                                            echo ¦
+                          [0].Ash.word                                          ｢echo｣
+                      [1].Ash.CmdSuffix                                         \"unknown\" ¦
+                        [0].Ash.Word                                            \"unknown\" ¦
+                          [0].Ash.word                                          ｢"unknown"｣
+                            [0].Ash.doubleQuoted                                ｢"unknown"｣
+                              [0].Ash.dqChunk                                   ｢unknown｣
+                [2].Ash.dsemi                                                   ｢;;｣
   [13].Ash.CompleteCommand                                                      today ... m-%d)¦
     [0].Ash.List                                                                today ... m-%d)¦
-      [0].Ash.AndOr                                                             today ... m-%d)¦
-        [0].Ash.Pipeline                                                        today ... m-%d)¦
-          [0].Ash.PipeSequence                                                  today ... m-%d)¦
-            [0].Ash.Command                                                     today ... m-%d)¦
-              [0].Ash.SimpleCommand                                             today ... m-%d)¦
-                [0].Ash.CmdPrefix                                               today ... m-%d)¦
-                  [0].Ash.Assignment                                            today ... m-%d)¦
-                    [0].identifier                                              ｢today｣
-                    [1].Ash.word                                                ｢$(date +%Y-%m-%d)｣
-                      [0].Ash.CommandSubstitution                               $(dat ... m-%d)¦
-                        [0].Ash.Term                                            date  ... %m-%d¦
-                          [0].Ash.AndOr                                         date  ... %m-%d¦
-                            [0].Ash.Pipeline                                    date  ... %m-%d¦
-                              [0].Ash.PipeSequence                              date  ... %m-%d¦
-                                [0].Ash.Command                                 date  ... %m-%d¦
-                                  [0].Ash.SimpleCommand                         date  ... %m-%d¦
-                                    [0].Ash.CmdName                             date ¦
-                                      [0].Ash.Word                              date ¦
-                                        [0].Ash.word                            ｢date｣
-                                    [1].Ash.CmdSuffix                           +%Y-%m-%d¦
-                                      [0].Ash.Word                              +%Y-%m-%d¦
-                                        [0].Ash.word                            ｢+%Y-%m-%d｣
+      [0].Ash.Command                                                           today ... m-%d)¦
+        [0].Ash.SimpleCommand                                                   today ... m-%d)¦
+          [0].Ash.CmdPrefix                                                     today ... m-%d)¦
+            [0].Ash.Assignment                                                  today ... m-%d)¦
+              [0].identifier                                                    ｢today｣
+              [1].Ash.word                                                      ｢$(date +%Y-%m-%d)｣
+                [0].Ash.CommandSubstitution                                     $(dat ... m-%d)¦
+                  [0].Ash.Term                                                  date  ... %m-%d¦
+                    [0].Ash.Command                                             date  ... %m-%d¦
+                      [0].Ash.SimpleCommand                                     date  ... %m-%d¦
+                        [0].Ash.CmdName                                         date ¦
+                          [0].Ash.Word                                          date ¦
+                            [0].Ash.word                                        ｢date｣
+                        [1].Ash.CmdSuffix                                       +%Y-%m-%d¦
+                          [0].Ash.Word                                          +%Y-%m-%d¦
+                            [0].Ash.word                                        ｢+%Y-%m-%d｣
   [14].Ash.CompleteCommand                                                      echo  ... day}\"¦
     [0].Ash.List                                                                echo  ... day}\"¦
-      [0].Ash.AndOr                                                             echo  ... day}\"¦
-        [0].Ash.Pipeline                                                        echo  ... day}\"¦
-          [0].Ash.PipeSequence                                                  echo  ... day}\"¦
-            [0].Ash.Command                                                     echo  ... day}\"¦
-              [0].Ash.SimpleCommand                                             echo  ... day}\"¦
-                [0].Ash.CmdName                                                 echo ¦
-                  [0].Ash.Word                                                  echo ¦
-                    [0].Ash.word                                                ｢echo｣
-                [1].Ash.CmdSuffix                                               \"toda ... day}\"¦
-                  [0].Ash.Word                                                  \"toda ... day}\"¦
-                    [0].Ash.word                                                ｢"today is ${today}"｣
-                      [0].Ash.doubleQuoted                                      ｢"today is ${today}"｣
-                        [0].Ash.dqChunk                                         ｢today is ｣
-                        [1].Ash.braceParam                                      ｢${today}｣
+      [0].Ash.Command                                                           echo  ... day}\"¦
+        [0].Ash.SimpleCommand                                                   echo  ... day}\"¦
+          [0].Ash.CmdName                                                       echo ¦
+            [0].Ash.Word                                                        echo ¦
+              [0].Ash.word                                                      ｢echo｣
+          [1].Ash.CmdSuffix                                                     \"toda ... day}\"¦
+            [0].Ash.Word                                                        \"toda ... day}\"¦
+              [0].Ash.word                                                      ｢"today is ${today}"｣
+                [0].Ash.doubleQuoted                                            ｢"today is ${today}"｣
+                  [0].Ash.dqChunk                                               ｢today is ｣
+                  [1].Ash.braceParam                                            ｢${today}｣
   [15].Ash.CompleteCommand                                                      ls -l ... /null¦
     [0].Ash.List                                                                ls -l ... /null¦
-      [0].Ash.AndOr                                                             ls -l ... /null¦
-        [0].Ash.Pipeline                                                        ls -l ... /null¦
-          [0].Ash.PipeSequence                                                  ls -l ... /null¦
-            [0].Ash.Command                                                     ls -l ... /tmp ¦
-              [0].Ash.SimpleCommand                                             ls -l ... /tmp ¦
-                [0].Ash.CmdName                                                 ls ¦
-                  [0].Ash.Word                                                  ls ¦
-                    [0].Ash.word                                                ｢ls｣
-                [1].Ash.CmdSuffix                                               -la /tmp ¦
-                  [0].Ash.Word                                                  -la ¦
-                    [0].Ash.word                                                ｢-la｣
-                  [1].Ash.Word                                                  /tmp ¦
-                    [0].Ash.word                                                ｢/tmp｣
-            [1].Ash.pipeOp                                                      ｢|｣
-            [2].Ash.Command                                                     grep  ... tal' ¦
-              [0].Ash.SimpleCommand                                             grep  ... tal' ¦
-                [0].Ash.CmdName                                                 grep ¦
-                  [0].Ash.Word                                                  grep ¦
-                    [0].Ash.word                                                ｢grep｣
-                [1].Ash.CmdSuffix                                               -v '^ ... tal' ¦
-                  [0].Ash.Word                                                  -v ¦
-                    [0].Ash.word                                                ｢-v｣
-                  [1].Ash.Word                                                  '^total' ¦
-                    [0].Ash.word                                                ｢'^total'｣
-                      [0].Ash.singleQuoted                                      ｢'^total'｣
-            [3].Ash.pipeOp                                                      ｢|｣
-            [4].Ash.Command                                                     wc -l ... /null¦
-              [0].Ash.SimpleCommand                                             wc -l ... /null¦
-                [0].Ash.CmdName                                                 wc ¦
-                  [0].Ash.Word                                                  wc ¦
-                    [0].Ash.word                                                ｢wc｣
-                [1].Ash.CmdSuffix                                               -l >  ... /null¦
-                  [0].Ash.Word                                                  -l ¦
-                    [0].Ash.word                                                ｢-l｣
-                  [1].Ash.IoRedirect                                            > /de ... /null¦
-                    [0].Ash.ioOp                                                ｢>｣
-                    [1].Ash.Word                                                /dev/null¦
-                      [0].Ash.word                                              ｢/dev/null｣
+      [0].Ash.AndOr.Pipe.|                                                      ls -l ... /null¦
+        [0].Ash.Command                                                         ls -l ... /tmp ¦
+          [0].Ash.SimpleCommand                                                 ls -l ... /tmp ¦
+            [0].Ash.CmdName                                                     ls ¦
+              [0].Ash.Word                                                      ls ¦
+                [0].Ash.word                                                    ｢ls｣
+            [1].Ash.CmdSuffix                                                   -la /tmp ¦
+              [0].Ash.Word                                                      -la ¦
+                [0].Ash.word                                                    ｢-la｣
+              [1].Ash.Word                                                      /tmp ¦
+                [0].Ash.word                                                    ｢/tmp｣
+        [1].Ash.Command                                                         grep  ... tal' ¦
+          [0].Ash.SimpleCommand                                                 grep  ... tal' ¦
+            [0].Ash.CmdName                                                     grep ¦
+              [0].Ash.Word                                                      grep ¦
+                [0].Ash.word                                                    ｢grep｣
+            [1].Ash.CmdSuffix                                                   -v '^ ... tal' ¦
+              [0].Ash.Word                                                      -v ¦
+                [0].Ash.word                                                    ｢-v｣
+              [1].Ash.Word                                                      '^total' ¦
+                [0].Ash.word                                                    ｢'^total'｣
+                  [0].Ash.singleQuoted                                          ｢'^total'｣
+        [2].Ash.Command                                                         wc -l ... /null¦
+          [0].Ash.SimpleCommand                                                 wc -l ... /null¦
+            [0].Ash.CmdName                                                     wc ¦
+              [0].Ash.Word                                                      wc ¦
+                [0].Ash.word                                                    ｢wc｣
+            [1].Ash.CmdSuffix                                                   -l >  ... /null¦
+              [0].Ash.Word                                                      -l ¦
+                [0].Ash.word                                                    ｢-l｣
+              [1].Ash.IoRedirect                                                > /de ... /null¦
+                [0].Ash.ioOp                                                    ｢>｣
+                [1].Ash.Word                                                    /dev/null¦
+                  [0].Ash.word                                                  ｢/dev/null｣
   [16].Ash.CompleteCommand                                                      { ech ...  2>&1¦
     [0].Ash.List                                                                { ech ...  2>&1¦
-      [0].Ash.AndOr                                                             { ech ...  2>&1¦
-        [0].Ash.Pipeline                                                        { ech ...  2>&1¦
-          [0].Ash.PipeSequence                                                  { ech ...  2>&1¦
-            [0].Ash.Command                                                     { ech ...  2>&1¦
-              [0].Ash.CompoundCommand                                           { ech ... o; } ¦
-                [0].Ash.BraceGroup                                              { ech ... o; } ¦
-                  [0].Ash.Term                                                  echo  ... o two¦
-                    [0].Ash.AndOr                                               echo one¦
-                      [0].Ash.Pipeline                                          echo one¦
-                        [0].Ash.PipeSequence                                    echo one¦
-                          [0].Ash.Command                                       echo one¦
-                            [0].Ash.SimpleCommand                               echo one¦
-                              [0].Ash.CmdName                                   echo ¦
-                                [0].Ash.Word                                    echo ¦
-                                  [0].Ash.word                                  ｢echo｣
-                              [1].Ash.CmdSuffix                                 one¦
-                                [0].Ash.Word                                    one¦
-                                  [0].Ash.word                                  ｢one｣
-                    [1].Ash.separatorOp                                         ｢;｣
-                    [2].Ash.AndOr                                               echo two¦
-                      [0].Ash.Pipeline                                          echo two¦
-                        [0].Ash.PipeSequence                                    echo two¦
-                          [0].Ash.Command                                       echo two¦
-                            [0].Ash.SimpleCommand                               echo two¦
-                              [0].Ash.CmdName                                   echo ¦
-                                [0].Ash.Word                                    echo ¦
-                                  [0].Ash.word                                  ｢echo｣
-                              [1].Ash.CmdSuffix                                 two¦
-                                [0].Ash.Word                                    two¦
-                                  [0].Ash.word                                  ｢two｣
-                  [1].Ash.separatorOp                                           ｢;｣
-              [1].Ash.RedirectList                                              > /de ...  2>&1¦
-                [0].Ash.IoRedirect                                              > /de ... null ¦
-                  [0].Ash.ioOp                                                  ｢>｣
-                  [1].Ash.Word                                                  /dev/null ¦
-                    [0].Ash.word                                                ｢/dev/null｣
-                [1].Ash.IoRedirect                                              2>&1¦
-                  [0].Ash.ioNumber                                              ｢2｣
-                  [1].Ash.ioOp                                                  ｢>&｣
-                  [2].Ash.Word                                                  1¦
-                    [0].Ash.word                                                ｢1｣
+      [0].Ash.Command                                                           { ech ...  2>&1¦
+        [0].Ash.CompoundCommand                                                 { ech ... o; } ¦
+          [0].Ash.BraceGroup                                                    { ech ... o; } ¦
+            [0].Ash.Term                                                        echo  ... o two¦
+              [0].Ash.Command                                                   echo one¦
+                [0].Ash.SimpleCommand                                           echo one¦
+                  [0].Ash.CmdName                                               echo ¦
+                    [0].Ash.Word                                                echo ¦
+                      [0].Ash.word                                              ｢echo｣
+                  [1].Ash.CmdSuffix                                             one¦
+                    [0].Ash.Word                                                one¦
+                      [0].Ash.word                                              ｢one｣
+              [1].Ash.separatorOp                                               ｢;｣
+              [2].Ash.Command                                                   echo two¦
+                [0].Ash.SimpleCommand                                           echo two¦
+                  [0].Ash.CmdName                                               echo ¦
+                    [0].Ash.Word                                                echo ¦
+                      [0].Ash.word                                              ｢echo｣
+                  [1].Ash.CmdSuffix                                             two¦
+                    [0].Ash.Word                                                two¦
+                      [0].Ash.word                                              ｢two｣
+            [1].Ash.separatorOp                                                 ｢;｣
+        [1].Ash.RedirectList                                                    > /de ...  2>&1¦
+          [0].Ash.IoRedirect                                                    > /de ... null ¦
+            [0].Ash.ioOp                                                        ｢>｣
+            [1].Ash.Word                                                        /dev/null ¦
+              [0].Ash.word                                                      ｢/dev/null｣
+          [1].Ash.IoRedirect                                                    2>&1¦
+            [0].Ash.ioNumber                                                    ｢2｣
+            [1].Ash.ioOp                                                        ｢>&｣
+            [2].Ash.Word                                                        1¦
+              [0].Ash.word                                                      ｢1｣
   [17].Ash.CompleteCommand                                                      ( cd  ... /null¦
     [0].Ash.List                                                                ( cd  ... /null¦
-      [0].Ash.AndOr                                                             ( cd  ... /null¦
-        [0].Ash.Pipeline                                                        ( cd  ... /null¦
-          [0].Ash.PipeSequence                                                  ( cd  ... /null¦
-            [0].Ash.Command                                                     ( cd  ... /null¦
-              [0].Ash.CompoundCommand                                           ( cd  ... ls ) ¦
-                [0].Ash.Subshell                                                ( cd  ... ls ) ¦
-                  [0].Ash.Term                                                  cd /t ... & ls ¦
-                    [0].Ash.AndOr                                               cd /t ... & ls ¦
-                      [0].Ash.Pipeline                                          cd /tmp ¦
-                        [0].Ash.PipeSequence                                    cd /tmp ¦
-                          [0].Ash.Command                                       cd /tmp ¦
-                            [0].Ash.SimpleCommand                               cd /tmp ¦
-                              [0].Ash.CmdName                                   cd ¦
-                                [0].Ash.Word                                    cd ¦
-                                  [0].Ash.word                                  ｢cd｣
-                              [1].Ash.CmdSuffix                                 /tmp ¦
-                                [0].Ash.Word                                    /tmp ¦
-                                  [0].Ash.word                                  ｢/tmp｣
-                      [1].Ash.andOrOp                                           ｢&&｣
-                      [2].Ash.Pipeline                                          ls ¦
-                        [0].Ash.PipeSequence                                    ls ¦
-                          [0].Ash.Command                                       ls ¦
-                            [0].Ash.SimpleCommand                               ls ¦
-                              [0].Ash.CmdName                                   ls ¦
-                                [0].Ash.Word                                    ls ¦
-                                  [0].Ash.word                                  ｢ls｣
-              [1].Ash.RedirectList                                              > /de ... /null¦
-                [0].Ash.IoRedirect                                              > /de ... /null¦
-                  [0].Ash.ioOp                                                  ｢>｣
-                  [1].Ash.Word                                                  /dev/null¦
-                    [0].Ash.word                                                ｢/dev/null｣
+      [0].Ash.Command                                                           ( cd  ... /null¦
+        [0].Ash.CompoundCommand                                                 ( cd  ... ls ) ¦
+          [0].Ash.Subshell                                                      ( cd  ... ls ) ¦
+            [0].Ash.Term                                                        cd /t ... & ls ¦
+              [0].Ash.AndOr.Logic.&&                                            cd /t ... & ls ¦
+                [0].Ash.Command                                                 cd /tmp ¦
+                  [0].Ash.SimpleCommand                                         cd /tmp ¦
+                    [0].Ash.CmdName                                             cd ¦
+                      [0].Ash.Word                                              cd ¦
+                        [0].Ash.word                                            ｢cd｣
+                    [1].Ash.CmdSuffix                                           /tmp ¦
+                      [0].Ash.Word                                              /tmp ¦
+                        [0].Ash.word                                            ｢/tmp｣
+                [1].Ash.Command                                                 ls ¦
+                  [0].Ash.SimpleCommand                                         ls ¦
+                    [0].Ash.CmdName                                             ls ¦
+                      [0].Ash.Word                                              ls ¦
+                        [0].Ash.word                                            ｢ls｣
+        [1].Ash.RedirectList                                                    > /de ... /null¦
+          [0].Ash.IoRedirect                                                    > /de ... /null¦
+            [0].Ash.ioOp                                                        ｢>｣
+            [1].Ash.Word                                                        /dev/null¦
+              [0].Ash.word                                                      ｢/dev/null｣
   [18].Ash.CompleteCommand                                                      greet ... iled\"¦
     [0].Ash.List                                                                greet ... iled\"¦
-      [0].Ash.AndOr                                                             greet ... iled\"¦
-        [0].Ash.Pipeline                                                        greet ¦
-          [0].Ash.PipeSequence                                                  greet ¦
-            [0].Ash.Command                                                     greet ¦
-              [0].Ash.SimpleCommand                                             greet ¦
-                [0].Ash.CmdName                                                 greet ¦
-                  [0].Ash.Word                                                  greet ¦
-                    [0].Ash.word                                                ｢greet｣
-        [1].Ash.andOrOp                                                         ｢&&｣
-        [2].Ash.Pipeline                                                        count ... gs 3 ¦
-          [0].Ash.PipeSequence                                                  count ... gs 3 ¦
-            [0].Ash.Command                                                     count ... gs 3 ¦
-              [0].Ash.SimpleCommand                                             count ... gs 3 ¦
-                [0].Ash.CmdName                                                 count ... args ¦
-                  [0].Ash.Word                                                  count ... args ¦
-                    [0].Ash.word                                                ｢count_args｣
-                [1].Ash.CmdSuffix                                               3 ¦
-                  [0].Ash.Word                                                  3 ¦
-                    [0].Ash.word                                                ｢3｣
-        [3].Ash.andOrOp                                                         ｢||｣
-        [4].Ash.Pipeline                                                        echo  ... iled\"¦
-          [0].Ash.PipeSequence                                                  echo  ... iled\"¦
-            [0].Ash.Command                                                     echo  ... iled\"¦
-              [0].Ash.SimpleCommand                                             echo  ... iled\"¦
-                [0].Ash.CmdName                                                 echo ¦
-                  [0].Ash.Word                                                  echo ¦
-                    [0].Ash.word                                                ｢echo｣
-                [1].Ash.CmdSuffix                                               \"failed\"¦
-                  [0].Ash.Word                                                  \"failed\"¦
-                    [0].Ash.word                                                ｢"failed"｣
-                      [0].Ash.doubleQuoted                                      ｢"failed"｣
-                        [0].Ash.dqChunk                                         ｢failed｣
+      [0].Ash.AndOr.Logic.||                                                    greet ... iled\"¦
+        [0].Ash.AndOr.Logic.&&                                                  greet ... gs 3 ¦
+          [0].Ash.Command                                                       greet ¦
+            [0].Ash.SimpleCommand                                               greet ¦
+              [0].Ash.CmdName                                                   greet ¦
+                [0].Ash.Word                                                    greet ¦
+                  [0].Ash.word                                                  ｢greet｣
+          [1].Ash.Command                                                       count ... gs 3 ¦
+            [0].Ash.SimpleCommand                                               count ... gs 3 ¦
+              [0].Ash.CmdName                                                   count ... args ¦
+                [0].Ash.Word                                                    count ... args ¦
+                  [0].Ash.word                                                  ｢count_args｣
+              [1].Ash.CmdSuffix                                                 3 ¦
+                [0].Ash.Word                                                    3 ¦
+                  [0].Ash.word                                                  ｢3｣
+        [1].Ash.Command                                                         echo  ... iled\"¦
+          [0].Ash.SimpleCommand                                                 echo  ... iled\"¦
+            [0].Ash.CmdName                                                     echo ¦
+              [0].Ash.Word                                                      echo ¦
+                [0].Ash.word                                                    ｢echo｣
+            [1].Ash.CmdSuffix                                                   \"failed\"¦
+              [0].Ash.Word                                                      \"failed\"¦
+                [0].Ash.word                                                    ｢"failed"｣
+                  [0].Ash.doubleQuoted                                          ｢"failed"｣
+                    [0].Ash.dqChunk                                             ｢failed｣
   [19].Ash.CompleteCommand                                                      echo  ... /null¦
     [0].Ash.List                                                                echo  ... /null¦
-      [0].Ash.AndOr                                                             echo  ... /null¦
-        [0].Ash.Pipeline                                                        echo  ... /null¦
-          [0].Ash.PipeSequence                                                  echo  ... /null¦
-            [0].Ash.Command                                                     echo  ... /null¦
-              [0].Ash.SimpleCommand                                             echo  ... /null¦
-                [0].Ash.CmdName                                                 echo ¦
-                  [0].Ash.Word                                                  echo ¦
-                    [0].Ash.word                                                ｢echo｣
-                [1].Ash.CmdSuffix                                               \"${na ... /null¦
-                  [0].Ash.Word                                                  \"${na ... ay}\" ¦
-                    [0].Ash.word                                                ｢"${name}-${today}"｣
-                      [0].Ash.doubleQuoted                                      ｢"${name}-${today}"｣
-                        [0].Ash.braceParam                                      ｢${name}｣
-                        [1].Ash.dqChunk                                         ｢-｣
-                        [2].Ash.braceParam                                      ｢${today}｣
-                  [1].Ash.IoRedirect                                            > /de ... /null¦
-                    [0].Ash.ioOp                                                ｢>｣
-                    [1].Ash.Word                                                /dev/null¦
-                      [0].Ash.word                                              ｢/dev/null｣
+      [0].Ash.Command                                                           echo  ... /null¦
+        [0].Ash.SimpleCommand                                                   echo  ... /null¦
+          [0].Ash.CmdName                                                       echo ¦
+            [0].Ash.Word                                                        echo ¦
+              [0].Ash.word                                                      ｢echo｣
+          [1].Ash.CmdSuffix                                                     \"${na ... /null¦
+            [0].Ash.Word                                                        \"${na ... ay}\" ¦
+              [0].Ash.word                                                      ｢"${name}-${today}"｣
+                [0].Ash.doubleQuoted                                            ｢"${name}-${today}"｣
+                  [0].Ash.braceParam                                            ｢${name}｣
+                  [1].Ash.dqChunk                                               ｢-｣
+                  [2].Ash.braceParam                                            ｢${today}｣
+            [1].Ash.IoRedirect                                                  > /de ... /null¦
+              [0].Ash.ioOp                                                      ｢>｣
+              [1].Ash.Word                                                      /dev/null¦
+                [0].Ash.word                                                    ｢/dev/null｣
   [20].Ash.CompleteCommand                                                      funct ... &2<NEWLINE><DEDENT>}¦
     [0].Ash.List                                                                funct ... &2<NEWLINE><DEDENT>}¦
-      [0].Ash.AndOr                                                             funct ... &2<NEWLINE><DEDENT>}¦
-        [0].Ash.Pipeline                                                        funct ... &2<NEWLINE><DEDENT>}¦
-          [0].Ash.PipeSequence                                                  funct ... &2<NEWLINE><DEDENT>}¦
-            [0].Ash.Command                                                     funct ... &2<NEWLINE><DEDENT>}¦
-              [0].Ash.FunctionDefinition                                        funct ... &2<NEWLINE><DEDENT>}¦
-                [0].Ash.fname                                                   ｢usage｣
-                  [0].identifier                                                ｢usage｣
-                [1].Ash.CompoundCommand                                         {<NEWLINE><INDENT>ec ... &2<NEWLINE><DEDENT>}¦
-                  [0].Ash.BraceGroup                                            {<NEWLINE><INDENT>ec ... &2<NEWLINE><DEDENT>}¦
-                    [0].Ash.Term                                                echo  ... \" >&2¦
-                      [0].Ash.AndOr                                             echo  ... \" >&2¦
-                        [0].Ash.Pipeline                                        echo  ... \" >&2¦
-                          [0].Ash.PipeSequence                                  echo  ... \" >&2¦
-                            [0].Ash.Command                                     echo  ... \" >&2¦
-                              [0].Ash.SimpleCommand                             echo  ... \" >&2¦
-                                [0].Ash.CmdName                                 echo ¦
-                                  [0].Ash.Word                                  echo ¦
-                                    [0].Ash.word                                ｢echo｣
-                                [1].Ash.CmdSuffix                               \"usag ... \" >&2¦
-                                  [0].Ash.Word                                  \"usag ... ns]\" ¦
-                                    [0].Ash.word                                ｢"usage: $0 [options]"｣
-                                      [0].Ash.doubleQuoted                      ｢"usage: $0 [options]"｣
-                                        [0].Ash.dqChunk                         ｢usage: ｣
-                                        [1].Ash.dollarParam                     ｢$0｣
-                                        [2].Ash.dqChunk                         ｢ [options]｣
-                                  [1].Ash.IoRedirect                            >&2¦
-                                    [0].Ash.ioOp                                ｢>&｣
-                                    [1].Ash.Word                                2¦
-                                      [0].Ash.word                              ｢2｣
+      [0].Ash.Command                                                           funct ... &2<NEWLINE><DEDENT>}¦
+        [0].Ash.FunctionDefinition                                              funct ... &2<NEWLINE><DEDENT>}¦
+          [0].Ash.fname                                                         ｢usage｣
+            [0].identifier                                                      ｢usage｣
+          [1].Ash.CompoundCommand                                               {<NEWLINE><INDENT>ec ... &2<NEWLINE><DEDENT>}¦
+            [0].Ash.BraceGroup                                                  {<NEWLINE><INDENT>ec ... &2<NEWLINE><DEDENT>}¦
+              [0].Ash.Term                                                      echo  ... \" >&2¦
+                [0].Ash.Command                                                 echo  ... \" >&2¦
+                  [0].Ash.SimpleCommand                                         echo  ... \" >&2¦
+                    [0].Ash.CmdName                                             echo ¦
+                      [0].Ash.Word                                              echo ¦
+                        [0].Ash.word                                            ｢echo｣
+                    [1].Ash.CmdSuffix                                           \"usag ... \" >&2¦
+                      [0].Ash.Word                                              \"usag ... ns]\" ¦
+                        [0].Ash.word                                            ｢"usage: $0 [options]"｣
+                          [0].Ash.doubleQuoted                                  ｢"usage: $0 [options]"｣
+                            [0].Ash.dqChunk                                     ｢usage: ｣
+                            [1].Ash.dollarParam                                 ｢$0｣
+                            [2].Ash.dqChunk                                     ｢ [options]｣
+                      [1].Ash.IoRedirect                                        >&2¦
+                        [0].Ash.ioOp                                            ｢>&｣
+                        [1].Ash.Word                                            2¦
+                          [0].Ash.word                                          ｢2｣
   [21].Ash.CompleteCommand                                                      show_ ... ne<NEWLINE><DEDENT>}¦
     [0].Ash.List                                                                show_ ... ne<NEWLINE><DEDENT>}¦
-      [0].Ash.AndOr                                                             show_ ... ne<NEWLINE><DEDENT>}¦
-        [0].Ash.Pipeline                                                        show_ ... ne<NEWLINE><DEDENT>}¦
-          [0].Ash.PipeSequence                                                  show_ ... ne<NEWLINE><DEDENT>}¦
-            [0].Ash.Command                                                     show_ ... ne<NEWLINE><DEDENT>}¦
-              [0].Ash.FunctionDefinition                                        show_ ... ne<NEWLINE><DEDENT>}¦
-                [0].Ash.fname                                                   ｢show_all｣
-                  [0].identifier                                                ｢show_all｣
-                [1].Ash.CompoundCommand                                         {<NEWLINE><INDENT>fo ... ne<NEWLINE><DEDENT>}¦
-                  [0].Ash.BraceGroup                                            {<NEWLINE><INDENT>fo ... ne<NEWLINE><DEDENT>}¦
-                    [0].Ash.Term                                                for a ... <DEDENT>done¦
-                      [0].Ash.AndOr                                             for a ... <DEDENT>done¦
-                        [0].Ash.Pipeline                                        for a ... <DEDENT>done¦
-                          [0].Ash.PipeSequence                                  for a ... <DEDENT>done¦
-                            [0].Ash.Command                                     for a ... <DEDENT>done¦
-                              [0].Ash.CompoundCommand                           for a ... <DEDENT>done¦
-                                [0].Ash.ForClause                               for a ... <DEDENT>done¦
-                                  [0].Ash.varName                               ｢arg｣
-                                    [0].identifier                              ｢arg｣
-                                  [1].Ash.semi                                  ｢;｣
-                                  [2].Ash.DoGroup                               do<NEWLINE><INDENT>p ... <DEDENT>done¦
-                                    [0].Ash.Term                                print ... $arg\"¦
-                                      [0].Ash.AndOr                             print ... $arg\"¦
-                                        [0].Ash.Pipeline                        print ... $arg\"¦
-                                          [0].Ash.PipeSequence                  print ... $arg\"¦
-                                            [0].Ash.Command                     print ... $arg\"¦
-                                              [0].Ash.SimpleCommand             print ... $arg\"¦
-                                                [0].Ash.CmdName                 printf ¦
-                                                  [0].Ash.Word                  printf ¦
-                                                    [0].Ash.word                ｢printf｣
-                                                [1].Ash.CmdSuffix               '%s\\n ... $arg\"¦
-                                                  [0].Ash.Word                  '%s\\n' ¦
-                                                    [0].Ash.word                ｢'%s\n'｣
-                                                      [0].Ash.singleQuoted      ｢'%s\n'｣
-                                                  [1].Ash.Word                  \"$arg\"¦
-                                                    [0].Ash.word                ｢"$arg"｣
-                                                      [0].Ash.doubleQuoted      ｢"$arg"｣
-                                                        [0].Ash.dollarParam     ｢$arg｣
-                                                          [0].identifier        ｢arg｣
+      [0].Ash.Command                                                           show_ ... ne<NEWLINE><DEDENT>}¦
+        [0].Ash.FunctionDefinition                                              show_ ... ne<NEWLINE><DEDENT>}¦
+          [0].Ash.fname                                                         ｢show_all｣
+            [0].identifier                                                      ｢show_all｣
+          [1].Ash.CompoundCommand                                               {<NEWLINE><INDENT>fo ... ne<NEWLINE><DEDENT>}¦
+            [0].Ash.BraceGroup                                                  {<NEWLINE><INDENT>fo ... ne<NEWLINE><DEDENT>}¦
+              [0].Ash.Term                                                      for a ... <DEDENT>done¦
+                [0].Ash.Command                                                 for a ... <DEDENT>done¦
+                  [0].Ash.CompoundCommand                                       for a ... <DEDENT>done¦
+                    [0].Ash.ForClause                                           for a ... <DEDENT>done¦
+                      [0].Ash.varName                                           ｢arg｣
+                        [0].identifier                                          ｢arg｣
+                      [1].Ash.semi                                              ｢;｣
+                      [2].Ash.DoGroup                                           do<NEWLINE><INDENT>p ... <DEDENT>done¦
+                        [0].Ash.Term                                            print ... $arg\"¦
+                          [0].Ash.Command                                       print ... $arg\"¦
+                            [0].Ash.SimpleCommand                               print ... $arg\"¦
+                              [0].Ash.CmdName                                   printf ¦
+                                [0].Ash.Word                                    printf ¦
+                                  [0].Ash.word                                  ｢printf｣
+                              [1].Ash.CmdSuffix                                 '%s\\n ... $arg\"¦
+                                [0].Ash.Word                                    '%s\\n' ¦
+                                  [0].Ash.word                                  ｢'%s\n'｣
+                                    [0].Ash.singleQuoted                        ｢'%s\n'｣
+                                [1].Ash.Word                                    \"$arg\"¦
+                                  [0].Ash.word                                  ｢"$arg"｣
+                                    [0].Ash.doubleQuoted                        ｢"$arg"｣
+                                      [0].Ash.dollarParam                       ｢$arg｣
+                                        [0].identifier                          ｢arg｣
   [22].Ash.CompleteCommand                                                      targe ... share¦
     [0].Ash.List                                                                targe ... share¦
-      [0].Ash.AndOr                                                             targe ... share¦
-        [0].Ash.Pipeline                                                        targe ... share¦
-          [0].Ash.PipeSequence                                                  targe ... share¦
-            [0].Ash.Command                                                     targe ... share¦
-              [0].Ash.SimpleCommand                                             targe ... share¦
-                [0].Ash.CmdPrefix                                               targe ... share¦
-                  [0].Ash.Assignment                                            targe ... share¦
-                    [0].identifier                                              ｢target｣
-                    [1].Ash.word                                                ｢${DESTDIR:-/opt}/share｣
-                      [0].Ash.braceParam                                        ｢${DESTDIR:-/opt}｣
+      [0].Ash.Command                                                           targe ... share¦
+        [0].Ash.SimpleCommand                                                   targe ... share¦
+          [0].Ash.CmdPrefix                                                     targe ... share¦
+            [0].Ash.Assignment                                                  targe ... share¦
+              [0].identifier                                                    ｢target｣
+              [1].Ash.word                                                      ｢${DESTDIR:-/opt}/share｣
+                [0].Ash.braceParam                                              ｢${DESTDIR:-/opt}｣
   [23].Ash.CompleteCommand                                                      echo  ... /null¦
     [0].Ash.List                                                                echo  ... /null¦
-      [0].Ash.AndOr                                                             echo  ... /null¦
-        [0].Ash.Pipeline                                                        echo  ... /null¦
-          [0].Ash.PipeSequence                                                  echo  ... /null¦
-            [0].Ash.Command                                                     echo  ... /null¦
-              [0].Ash.SimpleCommand                                             echo  ... /null¦
-                [0].Ash.CmdName                                                 echo ¦
-                  [0].Ash.Word                                                  echo ¦
-                    [0].Ash.word                                                ｢echo｣
-                [1].Ash.CmdSuffix                                               ${nam ... /null¦
-                  [0].Ash.Word                                                  ${nam ... day} ¦
-                    [0].Ash.word                                                ｢${name}-${today}｣
-                      [0].Ash.braceParam                                        ｢${name}｣
-                      [1].Ash.braceParam                                        ｢${today}｣
-                  [1].Ash.IoRedirect                                            > /de ... /null¦
-                    [0].Ash.ioOp                                                ｢>｣
-                    [1].Ash.Word                                                /dev/null¦
-                      [0].Ash.word                                              ｢/dev/null｣
+      [0].Ash.Command                                                           echo  ... /null¦
+        [0].Ash.SimpleCommand                                                   echo  ... /null¦
+          [0].Ash.CmdName                                                       echo ¦
+            [0].Ash.Word                                                        echo ¦
+              [0].Ash.word                                                      ｢echo｣
+          [1].Ash.CmdSuffix                                                     ${nam ... /null¦
+            [0].Ash.Word                                                        ${nam ... day} ¦
+              [0].Ash.word                                                      ｢${name}-${today}｣
+                [0].Ash.braceParam                                              ｢${name}｣
+                [1].Ash.braceParam                                              ｢${today}｣
+            [1].Ash.IoRedirect                                                  > /de ... /null¦
+              [0].Ash.ioOp                                                      ｢>｣
+              [1].Ash.Word                                                      /dev/null¦
+                [0].Ash.word                                                    ｢/dev/null｣
   [24].Ash.CompleteCommand                                                      echo  ... /null¦
     [0].Ash.List                                                                echo  ... /null¦
-      [0].Ash.AndOr                                                             echo  ... /null¦
-        [0].Ash.Pipeline                                                        echo  ... /null¦
-          [0].Ash.PipeSequence                                                  echo  ... /null¦
-            [0].Ash.Command                                                     echo  ... /null¦
-              [0].Ash.SimpleCommand                                             echo  ... /null¦
-                [0].Ash.CmdName                                                 echo ¦
-                  [0].Ash.Word                                                  echo ¦
-                    [0].Ash.word                                                ｢echo｣
-                [1].Ash.CmdSuffix                                               \"$tar ... /null¦
-                  [0].Ash.Word                                                  \"$target\" ¦
-                    [0].Ash.word                                                ｢"$target"｣
-                      [0].Ash.doubleQuoted                                      ｢"$target"｣
-                        [0].Ash.dollarParam                                     ｢$target｣
-                          [0].identifier                                        ｢target｣
-                  [1].Ash.IoRedirect                                            >> /d ... /null¦
-                    [0].Ash.ioOp                                                ｢>>｣
-                    [1].Ash.Word                                                /dev/null¦
-                      [0].Ash.word                                              ｢/dev/null｣
+      [0].Ash.Command                                                           echo  ... /null¦
+        [0].Ash.SimpleCommand                                                   echo  ... /null¦
+          [0].Ash.CmdName                                                       echo ¦
+            [0].Ash.Word                                                        echo ¦
+              [0].Ash.word                                                      ｢echo｣
+          [1].Ash.CmdSuffix                                                     \"$tar ... /null¦
+            [0].Ash.Word                                                        \"$target\" ¦
+              [0].Ash.word                                                      ｢"$target"｣
+                [0].Ash.doubleQuoted                                            ｢"$target"｣
+                  [0].Ash.dollarParam                                           ｢$target｣
+                    [0].identifier                                              ｢target｣
+            [1].Ash.IoRedirect                                                  >> /d ... /null¦
+              [0].Ash.ioOp                                                      ｢>>｣
+              [1].Ash.Word                                                      /dev/null¦
+                [0].Ash.word                                                    ｢/dev/null｣
   [25].Ash.CompleteCommand                                                      echo  ... /null¦
     [0].Ash.List                                                                echo  ... /null¦
-      [0].Ash.AndOr                                                             echo  ... /null¦
-        [0].Ash.Pipeline                                                        echo  ... /null¦
-          [0].Ash.PipeSequence                                                  echo  ... /null¦
-            [0].Ash.Command                                                     echo  ... /null¦
-              [0].Ash.SimpleCommand                                             echo  ... /null¦
-                [0].Ash.CmdName                                                 echo ¦
-                  [0].Ash.Word                                                  echo ¦
-                    [0].Ash.word                                                ｢echo｣
-                [1].Ash.CmdSuffix                                               $? >  ... /null¦
-                  [0].Ash.Word                                                  $? ¦
-                    [0].Ash.word                                                ｢$?｣
-                      [0].Ash.dollarParam                                       ｢$?｣
-                        [0].Ash.specialParam                                    ｢?｣
-                  [1].Ash.IoRedirect                                            > /de ... /null¦
-                    [0].Ash.ioOp                                                ｢>｣
-                    [1].Ash.Word                                                /dev/null¦
-                      [0].Ash.word                                              ｢/dev/null｣
+      [0].Ash.Command                                                           echo  ... /null¦
+        [0].Ash.SimpleCommand                                                   echo  ... /null¦
+          [0].Ash.CmdName                                                       echo ¦
+            [0].Ash.Word                                                        echo ¦
+              [0].Ash.word                                                      ｢echo｣
+          [1].Ash.CmdSuffix                                                     $? >  ... /null¦
+            [0].Ash.Word                                                        $? ¦
+              [0].Ash.word                                                      ｢$?｣
+                [0].Ash.dollarParam                                             ｢$?｣
+                  [0].Ash.specialParam                                          ｢?｣
+            [1].Ash.IoRedirect                                                  > /de ... /null¦
+              [0].Ash.ioOp                                                      ｢>｣
+              [1].Ash.Word                                                      /dev/null¦
+                [0].Ash.word                                                    ｢/dev/null｣
   [26].Ash.CompleteCommand                                                      wc -l ... /null¦
     [0].Ash.List                                                                wc -l ... /null¦
-      [0].Ash.AndOr                                                             wc -l ... /null¦
-        [0].Ash.Pipeline                                                        wc -l ... /null¦
-          [0].Ash.PipeSequence                                                  wc -l ... /null¦
-            [0].Ash.Command                                                     wc -l ... /null¦
-              [0].Ash.SimpleCommand                                             wc -l ... /null¦
-                [0].Ash.CmdName                                                 wc ¦
-                  [0].Ash.Word                                                  wc ¦
-                    [0].Ash.word                                                ｢wc｣
-                [1].Ash.CmdSuffix                                               -l <  ... /null¦
-                  [0].Ash.Word                                                  -l ¦
-                    [0].Ash.word                                                ｢-l｣
-                  [1].Ash.IoRedirect                                            < /et ... name ¦
-                    [0].Ash.ioOp                                                ｢<｣
-                    [1].Ash.Word                                                /etc/ ... name ¦
-                      [0].Ash.word                                              ｢/etc/hostname｣
-                  [2].Ash.IoRedirect                                            > /de ... /null¦
-                    [0].Ash.ioOp                                                ｢>｣
-                    [1].Ash.Word                                                /dev/null¦
-                      [0].Ash.word                                              ｢/dev/null｣
+      [0].Ash.Command                                                           wc -l ... /null¦
+        [0].Ash.SimpleCommand                                                   wc -l ... /null¦
+          [0].Ash.CmdName                                                       wc ¦
+            [0].Ash.Word                                                        wc ¦
+              [0].Ash.word                                                      ｢wc｣
+          [1].Ash.CmdSuffix                                                     -l <  ... /null¦
+            [0].Ash.Word                                                        -l ¦
+              [0].Ash.word                                                      ｢-l｣
+            [1].Ash.IoRedirect                                                  < /et ... name ¦
+              [0].Ash.ioOp                                                      ｢<｣
+              [1].Ash.Word                                                      /etc/ ... name ¦
+                [0].Ash.word                                                    ｢/etc/hostname｣
+            [2].Ash.IoRedirect                                                  > /de ... /null¦
+              [0].Ash.ioOp                                                      ｢>｣
+              [1].Ash.Word                                                      /dev/null¦
+                [0].Ash.word                                                    ｢/dev/null｣
   [27].Ash.CompleteCommand                                                      ! fal ... ho ok¦
     [0].Ash.List                                                                ! fal ... ho ok¦
-      [0].Ash.AndOr                                                             ! fal ... ho ok¦
-        [0].Ash.Pipeline                                                        ! false ¦
-          [0].Ash.bang                                                          ｢!｣
-          [1].Ash.PipeSequence                                                  false ¦
-            [0].Ash.Command                                                     false ¦
-              [0].Ash.SimpleCommand                                             false ¦
-                [0].Ash.CmdName                                                 false ¦
-                  [0].Ash.Word                                                  false ¦
-                    [0].Ash.word                                                ｢false｣
-        [1].Ash.andOrOp                                                         ｢&&｣
-        [2].Ash.Pipeline                                                        echo ok¦
-          [0].Ash.PipeSequence                                                  echo ok¦
-            [0].Ash.Command                                                     echo ok¦
-              [0].Ash.SimpleCommand                                             echo ok¦
-                [0].Ash.CmdName                                                 echo ¦
-                  [0].Ash.Word                                                  echo ¦
-                    [0].Ash.word                                                ｢echo｣
-                [1].Ash.CmdSuffix                                               ok¦
-                  [0].Ash.Word                                                  ok¦
-                    [0].Ash.word                                                ｢ok｣
+      [0].Ash.AndOr.Logic.&&                                                    ! fal ... ho ok¦
+        [0].Ash.AndOr.Bang.!                                                    ! false ¦
+          [0].Ash.Command                                                       false ¦
+            [0].Ash.SimpleCommand                                               false ¦
+              [0].Ash.CmdName                                                   false ¦
+                [0].Ash.Word                                                    false ¦
+                  [0].Ash.word                                                  ｢false｣
+        [1].Ash.Command                                                         echo ok¦
+          [0].Ash.SimpleCommand                                                 echo ok¦
+            [0].Ash.CmdName                                                     echo ¦
+              [0].Ash.Word                                                      echo ¦
+                [0].Ash.word                                                    ｢echo｣
+            [1].Ash.CmdSuffix                                                   ok¦
+              [0].Ash.Word                                                      ok¦
+                [0].Ash.word                                                    ｢ok｣
   [28].Ash.CompleteCommand                                                      sleep 0 &¦
     [0].Ash.List                                                                sleep 0 ¦
-      [0].Ash.AndOr                                                             sleep 0 ¦
-        [0].Ash.Pipeline                                                        sleep 0 ¦
-          [0].Ash.PipeSequence                                                  sleep 0 ¦
-            [0].Ash.Command                                                     sleep 0 ¦
-              [0].Ash.SimpleCommand                                             sleep 0 ¦
-                [0].Ash.CmdName                                                 sleep ¦
-                  [0].Ash.Word                                                  sleep ¦
-                    [0].Ash.word                                                ｢sleep｣
-                [1].Ash.CmdSuffix                                               0 ¦
-                  [0].Ash.Word                                                  0 ¦
-                    [0].Ash.word                                                ｢0｣
+      [0].Ash.Command                                                           sleep 0 ¦
+        [0].Ash.SimpleCommand                                                   sleep 0 ¦
+          [0].Ash.CmdName                                                       sleep ¦
+            [0].Ash.Word                                                        sleep ¦
+              [0].Ash.word                                                      ｢sleep｣
+          [1].Ash.CmdSuffix                                                     0 ¦
+            [0].Ash.Word                                                        0 ¦
+              [0].Ash.word                                                      ｢0｣
     [1].Ash.separatorOp                                                         ｢&｣
   [29].Ash.CompleteCommand                                                      exit 0¦
     [0].Ash.List                                                                exit 0¦
-      [0].Ash.AndOr                                                             exit 0¦
-        [0].Ash.Pipeline                                                        exit 0¦
-          [0].Ash.PipeSequence                                                  exit 0¦
-            [0].Ash.Command                                                     exit 0¦
-              [0].Ash.SimpleCommand                                             exit 0¦
-                [0].Ash.CmdName                                                 exit ¦
-                  [0].Ash.Word                                                  exit ¦
-                    [0].Ash.word                                                ｢exit｣
-                [1].Ash.CmdSuffix                                               0¦
-                  [0].Ash.Word                                                  0¦
-                    [0].Ash.word                                                ｢0｣
+      [0].Ash.Command                                                           exit 0¦
+        [0].Ash.SimpleCommand                                                   exit 0¦
+          [0].Ash.CmdName                                                       exit ¦
+            [0].Ash.Word                                                        exit ¦
+              [0].Ash.word                                                      ｢exit｣
+          [1].Ash.CmdSuffix                                                     0¦
+            [0].Ash.Word                                                        0¦
+              [0].Ash.word                                                      ｢0｣
 
 [0].Seed                                                                        langu ... '}'<NEWLINE><DEDENT>¦
   [0].Seed.Language                                                             langu ... '}'<NEWLINE><DEDENT>¦
