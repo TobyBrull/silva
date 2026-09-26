@@ -139,6 +139,14 @@ def lambdas():
     return add, const, starred, ternary
 
 
+def formatting(name, value, width, prec):
+    x = f"start   {   x  :  {  y  } }   end"
+    a = f"{name!r}: { value :>{width}.{prec}f}"
+    b = F'{{literal}} {value=} {name["key"]}'
+    c = f"\d+{name}" t"hello\{name}" "plain"
+    return a, b, c
+
+
 def walrus(values):
     if (n := len(values)) > 3:
         print(f"{n} values", "are plenty", sep=" ")

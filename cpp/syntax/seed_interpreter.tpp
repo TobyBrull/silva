@@ -251,4 +251,106 @@ Bar:
     const string_t result_str{SILVA_REQUIRE(pt->span().to_string())};
     CHECK(result_str == expected.substr(1));
   }
+
+  TEST_CASE("branch-rule-in-twig-rule", "[seed-interpreter]")
+  {
+    const string_view_t fstr_seed = R"'(
+language Fstr:
+  ⊙ = fstring
+  skip = freeForm
+  fstring = '"' ( Field | chunk ) * '"'
+  chunk = ( not [ '"' '{' '}' ] ANY ) +
+  Field = '{' Sum formatSpec ? '}'
+  formatSpec = ':' ( Field | formatChunk ) *
+  formatChunk = ( not [ '{' '}' ] ANY ) +
+  Sum:
+    ⊙ = axe Atom
+      Add = ltr infix '+'
+    Atom = identifier
+)'";
+    syntax_farm_t sf;
+    auto se = standard_seed_interpreter(sf.ptr());
+    SILVA_REQUIRE(se->add_seed_text("fstr.seed", string_t{fstr_seed}));
+
+    const string_t text          = R"'(" _ { x : a { y + y1 : b { z } } } _ "
+)'";
+    const auto pt                = SILVA_REQUIRE(se->apply_text("", text, sf.name_id_of("Fstr")));
+    const string_view_t expected = R"(
+[0].Fstr                                          \" _ { ...  _ \"<NEWLINE>¦
+  [0].Fstr.fstring                                ｢" _ { x : a { y + y1 : b { z } } } _ "｣
+    [0].Fstr.chunk                                ｢ _ ｣
+    [1].Fstr.Field                                { x : ... } } }¦
+      [0].Fstr.Sum                                x ¦
+        [0].Fstr.Sum.Atom                         x ¦
+          [0].identifier                          ｢x｣
+      [1].Fstr.formatSpec                         ｢: a { y + y1 : b { z } } ｣
+        [0].Fstr.formatChunk                      ｢ a ｣
+        [1].Fstr.Field                            { y + ... z } }¦
+          [0].Fstr.Sum                            y + y1 ¦
+            [0].Fstr.Sum.Add.+                    y + y1 ¦
+              [0].Fstr.Sum.Atom                   y ¦
+                [0].identifier                    ｢y｣
+              [1].Fstr.Sum.Atom                   y1 ¦
+                [0].identifier                    ｢y1｣
+          [1].Fstr.formatSpec                     ｢: b { z } ｣
+            [0].Fstr.formatChunk                  ｢ b ｣
+            [1].Fstr.Field                        { z }¦
+              [0].Fstr.Sum                        z ¦
+                [0].Fstr.Sum.Atom                 z ¦
+                  [0].identifier                  ｢z｣
+            [2].Fstr.formatChunk                  ｢ ｣
+        [2].Fstr.formatChunk                      ｢ ｣
+    [2].Fstr.chunk                                ｢ _ ｣
+)";
+    const string_t result        = SILVA_REQUIRE(pt->span().to_string());
+    CHECK(result == expected.substr(1));
+  }
+
+  TEST_CASE("branch-rule-in-twig-rule-unskip-backtrack", "[seed-interpreter]")
+  {
+    const string_view_t unskip_seed = R"'(
+language Unskip:
+  skip = ( SPACE | NEWLINE ) *
+  ⊙ = backtrack
+  backtrack = Backtrack SPACE 'x' SPACE 'z'
+  Backtrack = 'a' ( 'x' 'y' ) ?
+)'";
+    syntax_farm_t sf;
+    auto se = standard_seed_interpreter(sf.ptr());
+    SILVA_REQUIRE(se->add_seed_text("unskip.seed", string_t{unskip_seed}));
+
+    const auto pt = SILVA_REQUIRE(se->apply_text("", "a x z\n", sf.name_id_of("Unskip")));
+    const string_view_t expected = R"(
+[0].Unskip                                        a x z<NEWLINE>¦
+  [0].Unskip.backtrack                            ｢a x z｣
+    [0].Unskip.Backtrack                          a¦
+)";
+    const string_t result        = SILVA_REQUIRE(pt->span().to_string());
+    CHECK(result == expected.substr(1));
+  }
+
+  TEST_CASE("branch-rule-in-twig-rule-unskip-zero-width", "[seed-interpreter]")
+  {
+    const string_view_t unskip_seed = R"'(
+language Unskip:
+  skip = ( SPACE | NEWLINE ) *
+  ⊙ = zeroWidth
+  zeroWidth = ZeroWidth 'x'
+  ZeroWidth = 'a' maybeY
+  maybeY = 'y' ?
+)'";
+    syntax_farm_t sf;
+    auto se = standard_seed_interpreter(sf.ptr());
+    SILVA_REQUIRE(se->add_seed_text("unskip.seed", string_t{unskip_seed}));
+
+    const auto pt = SILVA_REQUIRE(se->apply_text("", "a x\n", sf.name_id_of("Unskip")));
+    const string_view_t expected = R"(
+[0].Unskip                                        a x<NEWLINE>¦
+  [0].Unskip.zeroWidth                            ｢a x｣
+    [0].Unskip.ZeroWidth                          a ¦
+      [0].Unskip.maybeY                           ｢｣
+)";
+    const string_t result        = SILVA_REQUIRE(pt->span().to_string());
+    CHECK(result == expected.substr(1));
+  }
 }
