@@ -3,11 +3,14 @@
 #include "array.hpp"
 #include "string.hpp"
 
+#include <cstdio>
+
 #include <fmt/format.h>
 
 namespace silva {
   struct byte_sink_t {
     span_t<byte_t> span;
+    bool termcap = false;
 
     void write(span_t<const byte_t>);
     void write_str(string_view_t);
@@ -20,11 +23,12 @@ namespace silva {
     virtual void on_out_of_span(index_t size_hint = 0) = 0;
   };
 
-  struct byte_sink_stdout_t : public byte_sink_t {
+  struct byte_sink_cfile_t : public byte_sink_t {
     array_t<byte_t> buffer;
+    FILE* file = nullptr;
 
-    byte_sink_stdout_t(index_t init_buffer_size = min_buffer_size);
-    ~byte_sink_stdout_t();
+    byte_sink_cfile_t(FILE* file, index_t init_buffer_size = min_buffer_size);
+    ~byte_sink_cfile_t();
 
     void on_out_of_span(index_t = 0) final;
   };

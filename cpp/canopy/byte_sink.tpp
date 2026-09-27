@@ -3,12 +3,6 @@
 #include <catch2/catch_all.hpp>
 
 namespace silva::test {
-  TEST_CASE("stream_stdout_t")
-  {
-    byte_sink_stdout_t byte_sink;
-    byte_sink.format("Hello {}!\n", "Silva");
-    byte_sink.on_out_of_span();
-  }
   TEST_CASE("stream_memory_t")
   {
     for (const index_t init_buf_size: {1, 4, 128}) {

@@ -1,6 +1,6 @@
 #include "byte_sink.hpp"
 
-#include <iostream>
+#include <unistd.h>
 
 namespace silva {
   // stream_t
@@ -27,20 +27,22 @@ namespace silva {
 
   // stream_stdout_t
 
-  byte_sink_stdout_t::byte_sink_stdout_t(const index_t init_buffer_size) : buffer(init_buffer_size)
+  byte_sink_cfile_t::byte_sink_cfile_t(FILE* file, const index_t init_buffer_size)
+    : buffer(init_buffer_size), file(file)
   {
-    span = buffer;
+    span    = buffer;
+    termcap = isatty(fileno(file));
   }
-  byte_sink_stdout_t::~byte_sink_stdout_t()
+  byte_sink_cfile_t::~byte_sink_cfile_t()
   {
     on_out_of_span();
   }
 
-  void byte_sink_stdout_t::on_out_of_span(const index_t size_hint)
+  void byte_sink_cfile_t::on_out_of_span(const index_t size_hint)
   {
     const index_t curr_used = buffer.size() - span.size();
-    const string_view_t data((const char*)buffer.data(), curr_used);
-    std::cout << data << std::flush;
+    std::fwrite(buffer.data(), 1, curr_used, file);
+    std::fflush(file);
     buffer.resize(std::max<index_t>(size_hint, buffer.size()));
     span = buffer;
   }

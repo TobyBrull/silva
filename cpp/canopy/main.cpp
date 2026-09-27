@@ -21,7 +21,10 @@ namespace silva {
 
     if (!result) {
       const silva::error_t& error = result.error();
-      fmt::print(stderr, "ERROR ({}):\n{}\n", pretty_string(error.level), pretty_string(error));
+      byte_sink_cfile_t _stderr(stderr);
+      _stderr.format("ERROR ({}):\n", pretty_string(error.level));
+      silva::pretty_write(error, &_stderr);
+      _stderr.write_str("\n");
       return static_cast<int>(error.level);
     }
     else {
