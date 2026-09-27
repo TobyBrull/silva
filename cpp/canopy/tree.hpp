@@ -4,19 +4,9 @@
 #include "canopy/iterator_facade.hpp"
 #include "expected.hpp"
 #include "preprocessor.hpp"
-#include "types.hpp"
+#include "tree_node.hpp"
 
 namespace silva {
-
-  struct tree_node_t {
-    // Number of direct children of this node.
-    index_t num_children = 0;
-
-    // Size of the subtree rooted in this node, including this node.
-    index_t subtree_size = 1;
-
-    friend auto operator<=>(const tree_node_t&, const tree_node_t&) = default;
-  };
 
   template<typename NodeData>
   struct tree_span_t {
