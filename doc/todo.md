@@ -4,7 +4,6 @@
   a rule should not be able to contain subrules
 
 * Errors:
-    * color furthest fragment in readable color
     * rethink error generation fundamentally
         * In parsing errors, show what has been successfully parsed so far?
         * pass node_and_error_t::last_error through seed-axe

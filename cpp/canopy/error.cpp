@@ -2,6 +2,7 @@
 
 #include "assert.hpp"
 #include "format.hpp"
+#include "termcap.hpp"
 #include "tree.hpp"
 
 #include <algorithm>
@@ -24,9 +25,9 @@ namespace silva {
     };
   }
 
-  string_t
-  to_string(const error_tree_t::node_t& node,
-            const any_vector_t<pretty_string_t, error_relevance_t, move_ctor_t, dtor_t>& av)
+  string_t error_node_to_string(
+      const error_tree_t::node_t& node,
+      const any_vector_t<pretty_string_t, error_relevance_t, move_ctor_t, dtor_t>& av)
   {
     array_t<string_t> args;
     const auto end = av.index_iter_at(node.memento_buffer_offset_end);
@@ -108,37 +109,51 @@ namespace silva {
 
   string_or_view_t error_t::to_string_flat() const
   {
-    const auto& tree = context->tree;
-    const tree_span_t<const error_tree_t::node_t> orig_tspan{&tree.nodes[node_index], -1};
-    const auto& av  = context->any_vector;
-    const index_t n = orig_tspan.subtree_size();
+    return string_or_view_t{pretty_string(*this)};
+  }
+
+  void pretty_write_impl(const error_t& self, byte_sink_t* stream)
+  {
+    const auto& tree = self.context->tree;
+    const tree_span_t<const error_tree_t::node_t> orig_tspan{&tree.nodes[self.node_index], -1};
+    const auto& av            = self.context->any_vector;
+    const index_t n           = orig_tspan.subtree_size();
+    const auto node_relevance = [&](const error_tree_t::node_t& node) {
+      index_t retval = -1;
+      const auto end = av.index_iter_at(node.memento_buffer_offset_end);
+      for (auto it = av.index_iter_at(node.memento_buffer_offset); it != end; ++it) {
+        retval = std::max(retval, av.apply(*it, silva::error_relevance));
+      }
+      return retval;
+    };
     array_t<index_t> max_relevance(n, -1);
     for (index_t i = n - 1; i >= 0; --i) {
       const auto& node = orig_tspan.node_at(i);
-      const auto end   = av.index_iter_at(node.memento_buffer_offset_end);
-      for (auto it = av.index_iter_at(node.memento_buffer_offset); it != end; ++it) {
-        max_relevance[i] = std::max(max_relevance[i], av.apply(*it, silva::error_relevance));
-      }
+      max_relevance[i] = node_relevance(node);
       for (index_t pos = i + 1; pos < i + node.subtree_size;
            pos += orig_tspan.node_at(pos).subtree_size) {
         max_relevance[i] = std::max(max_relevance[i], max_relevance[pos]);
       }
     }
+    const index_t max_max_relevance = max_relevance[0];
     array_t<error_tree_t::node_t> sorted =
         orig_tspan.sorted([&](const span_t<const tree_branch_t> path) {
           return -max_relevance[path.back().node_index];
         });
     const tree_span_t tspan{sorted};
-    string_t retval =
-        SILVA_ASSERT_FWD(tspan.to_string_flat_bottom_up([&](string_t& curr_line, const auto& path) {
-          curr_line += to_string(tspan.node_at(path.back().node_index), context->any_vector);
+    const string_t retval = SILVA_ASSERT_FWD(tspan.to_string_flat_bottom_up(
+        [&](string_t& curr_line, const span_t<const tree_branch_t>& path) {
+          const auto& node     = tspan.node_at(path.back().node_index);
+          const bool highlight = stream->termcap && node_relevance(node) == max_max_relevance;
+          if (highlight) {
+            curr_line += termcap::bold;
+          }
+          curr_line += error_node_to_string(node, av);
+          if (highlight) {
+            curr_line += termcap::reset;
+          }
         }));
-    return string_or_view_t{std::move(retval)};
-  }
-
-  void pretty_write_impl(const error_t& self, byte_sink_t* stream)
-  {
-    stream->write_str(self.to_string_flat().as_string_view());
+    stream->write_str(retval);
   }
 
   void error_t::materialize()
