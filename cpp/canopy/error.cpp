@@ -2,6 +2,7 @@
 
 #include "assert.hpp"
 #include "format.hpp"
+#include "tree.hpp"
 
 #include <algorithm>
 #include <utility>
@@ -90,88 +91,38 @@ namespace silva {
   }
 
   namespace impl {
-    const static array_t<string_view_t> box_chars = {
-        "  ", // [0]
-        "│ ", // [1]
-        "├─", // [2]
-        "┌─", // [3]
-
-        "─ ",
-        "┐ ",
-        "┘ ",
-        "┌ ",
-        "└ ",
-        "├ ",
-        "┤ ",
-        "┬ ",
-        "┴ ",
-        "┼ ",
+    struct error_node_t : public tree_node_t {
+      index_t error_node_index = 0;
     };
 
-    void to_string_struct_indent(string_t& retval, array_t<index_t>& box_levels)
+    void copy_error_tree(const error_tree_t& error_tree,
+                         array_t<error_node_t>& retval,
+                         const index_t error_node_index)
     {
-      for (const index_t idx: box_levels) {
-        retval += box_chars[idx];
-      }
-    }
-
-    enum class state_t {
-      NONE,
-      NEST_LAST,
-      NEST_OTHER,
-    };
-
-    void to_string_struct(const error_context_t* error_context,
-                          string_t& retval,
-                          array_t<index_t>& box_levels,
-                          const index_t node_index,
-                          const state_t state)
-    {
-      const index_t num_children = error_context->tree.nodes[node_index].num_children;
-      if (num_children <= 1) {
-        error_context->tree.visit_children_reversed(
-            [&](const index_t child_node_index, const index_t child_index) {
-              to_string_struct(error_context, retval, box_levels, child_node_index, state_t::NONE);
-            },
-            node_index);
-      }
-      else {
-        error_context->tree.visit_children_reversed(
-            [&](const index_t child_node_index, const index_t child_index) {
-              state_t new_state = state_t::NONE;
-              if (child_index + 1 == num_children) {
-                box_levels.push_back(0);
-                new_state = state_t::NEST_LAST;
-              }
-              else {
-                box_levels.push_back(1);
-                new_state = state_t::NEST_OTHER;
-              }
-              to_string_struct(error_context, retval, box_levels, child_node_index, new_state);
-              box_levels.pop_back();
-            },
-            node_index);
-      }
-      optional_t<index_t> prev_back;
-      if (state != state_t::NONE) {
-        prev_back         = box_levels.back();
-        box_levels.back() = (state == state_t::NEST_OTHER) ? 2 : 3;
-      }
-      to_string_struct_indent(retval, box_levels);
-      if (prev_back.has_value()) {
-        box_levels.back() = prev_back.value();
-      }
-      const auto& node       = error_context->tree.nodes[node_index];
-      const string_t message = to_string(node, error_context->any_vector);
-      retval += message + "\n";
+      const index_t pos = retval.size();
+      error_node_t node;
+      node.num_children     = error_tree.nodes[error_node_index].num_children;
+      node.error_node_index = error_node_index;
+      retval.push_back(node);
+      error_tree.visit_children(
+          [&](const index_t child_node_index, const index_t) {
+            copy_error_tree(error_tree, retval, child_node_index);
+          },
+          error_node_index);
+      retval[pos].subtree_size = retval.size() - pos;
     }
   }
 
   string_or_view_t error_t::to_string_structured() const
   {
-    string_t retval;
-    array_t<index_t> box_levels;
-    impl::to_string_struct(context.get(), retval, box_levels, node_index, impl::state_t::NONE);
+    array_t<impl::error_node_t> nodes;
+    impl::copy_error_tree(context->tree, nodes, node_index);
+    const tree_span_t<const impl::error_node_t> tspan{nodes.data(), 1};
+    string_t retval = SILVA_ASSERT_FWD(
+        tspan.to_string_structured_bottom_up([&](string_t& curr_line, const auto& path) {
+          const index_t error_node_index = tspan.node_at(path.back().node_index).error_node_index;
+          curr_line += to_string(context->tree.nodes[error_node_index], context->any_vector);
+        }));
     return string_or_view_t{std::move(retval)};
   }
 
