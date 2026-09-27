@@ -8,6 +8,22 @@
 #include <utility>
 
 namespace silva {
+  namespace {
+    struct materialized_memento_t {
+      string_t str;
+      index_t relevance = -1;
+
+      friend void pretty_write_impl(const materialized_memento_t& self, byte_sink_t* stream)
+      {
+        stream->write_str(self.str);
+      }
+      friend index_t error_relevance_impl(const materialized_memento_t& self)
+      {
+        return self.relevance;
+      }
+    };
+  }
+
   string_t
   to_string(const error_tree_t::node_t& node,
             const any_vector_t<pretty_string_t, error_relevance_t, move_ctor_t, dtor_t>& av)
@@ -93,7 +109,26 @@ namespace silva {
   string_or_view_t error_t::to_string_flat() const
   {
     const auto& tree = context->tree;
-    const tree_span_t<const error_tree_t::node_t> tspan{&tree.nodes[node_index], -1};
+    const tree_span_t<const error_tree_t::node_t> orig_tspan{&tree.nodes[node_index], -1};
+    const auto& av  = context->any_vector;
+    const index_t n = orig_tspan.subtree_size();
+    array_t<index_t> max_relevance(n, -1);
+    for (index_t i = n - 1; i >= 0; --i) {
+      const auto& node = orig_tspan.node_at(i);
+      const auto end   = av.index_iter_at(node.memento_buffer_offset_end);
+      for (auto it = av.index_iter_at(node.memento_buffer_offset); it != end; ++it) {
+        max_relevance[i] = std::max(max_relevance[i], av.apply(*it, silva::error_relevance));
+      }
+      for (index_t pos = i + 1; pos < i + node.subtree_size;
+           pos += orig_tspan.node_at(pos).subtree_size) {
+        max_relevance[i] = std::max(max_relevance[i], max_relevance[pos]);
+      }
+    }
+    array_t<error_tree_t::node_t> sorted =
+        orig_tspan.sorted([&](const span_t<const tree_branch_t> path) {
+          return -max_relevance[path.back().node_index];
+        });
+    const tree_span_t tspan{sorted};
     string_t retval =
         SILVA_ASSERT_FWD(tspan.to_string_flat_bottom_up([&](string_t& curr_line, const auto& path) {
           curr_line += to_string(tspan.node_at(path.back().node_index), context->any_vector);
@@ -113,7 +148,10 @@ namespace silva {
     hash_map_t<any_vector_index_t, any_vector_index_t> offset_mapping;
     {
       for (const auto avi: any_vector.index_range()) {
-        string_t x          = any_vector.apply(avi, pretty_string);
+        materialized_memento_t x{
+            .str       = any_vector.apply(avi, pretty_string),
+            .relevance = any_vector.apply(avi, error_relevance),
+        };
         offset_mapping[avi] = new_any_vector.push_back(std::move(x));
       }
       offset_mapping[any_vector.next_index()] = new_any_vector.next_index();

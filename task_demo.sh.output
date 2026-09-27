@@ -98,126 +98,126 @@ ERROR (MAJOR):
   [01-broken.fern:9:3] .Fern.label: expected alternation[ strin ... ifier ]
   [01-broken.fern:9:3] .Fern.label
 ┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ label ':'  ]
-│     [01-broken.fern:11:5] expected token[ : ]
-│     [01-broken.fern:11:5] while matching token[ : ]
-│   ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ label ':'  ]
-│   │   [01-broken.fern:10:5] expected token[ [ ]
-│   │   [01-broken.fern:10:5] while matching token[ [ ]
-│   │   [01-broken.fern:10:5] .Fern: expected sequence[ '[' L ... * ']' ]
-│   │ ┌─[01-broken.fern:10:5] .Fern
-│   │ │   [01-broken.fern:10:5] expected token[ none ]
-│   │ │   [01-broken.fern:10:5] while matching token[ none ]
-│   │ │ ┌─[01-broken.fern:10:5] .none
-│   │ │ │   [01-broken.fern:10:5] expected token[ true ]
-│   │ │ │ ┌─[01-broken.fern:10:5] while matching token[ true ]
-│   │ │ │ │ [01-broken.fern:10:5] expected token[ false ]
-│   │ │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
-│   │ │ │ [01-broken.fern:10:5] .boolean: expected alternation[ [ \"tr ... se\" ] ]
-│   │ │ ├─[01-broken.fern:10:5] .boolean
-│   │ │ │       [01-broken.fern:10:5] expected token[ + ]
-│   │ │ │     ┌─[01-broken.fern:10:5] while matching token[ + ]
-│   │ │ │     │ [01-broken.fern:10:5] expected token[ - ]
-│   │ │ │     ├─[01-broken.fern:10:5] while matching token[ - ]
-│   │ │ │     [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│   │ │ │   ┌─[01-broken.fern:10:5] .number.plusMinus
-│   │ │ │   │     [01-broken.fern:10:5] expected token[ inf ]
-│   │ │ │   │   ┌─[01-broken.fern:10:5] while matching token[ inf ]
-│   │ │ │   │   │ [01-broken.fern:10:5] expected token[ nan ]
-│   │ │ │   │   ├─[01-broken.fern:10:5] while matching token[ nan ]
-│   │ │ │   │   [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
-│   │ │ │   │ ┌─[01-broken.fern:10:5] .number.unsigned.float.special
-│   │ │ │   │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │   │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
-│   │ │ │   │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
-│   │ │ │   │ │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
-│   │ │ │   │ ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integ ... t ? ) ]
-│   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ speci ... t ? ) ]
-│   │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.float
-│   │ │ │   [01-broken.fern:10:5] .number.float: expected sequence[ plusM ... float ]
-│   │ │ │ ┌─[01-broken.fern:10:5] .number.float
-│   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
-│   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
-│   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
-│   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│   │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
-│   │ │ │ │ │   [01-broken.fern:10:5] expected token[ inf ]
-│   │ │ │ │ │ ┌─[01-broken.fern:10:5] while matching token[ inf ]
-│   │ │ │ │ │ │ [01-broken.fern:10:5] expected token[ nan ]
-│   │ │ │ │ │ ├─[01-broken.fern:10:5] while matching token[ nan ]
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.float.special
-│   │ │ │ │ [01-broken.fern:10:5] .number.float.special: expected sequence[ plusM ... ecial ]
-│   │ │ │ ├─[01-broken.fern:10:5] .number.float.special
-│   │ │ │ │       [01-broken.fern:10:5] expected token[ + ]
-│   │ │ │ │     ┌─[01-broken.fern:10:5] while matching token[ + ]
-│   │ │ │ │     │ [01-broken.fern:10:5] expected token[ - ]
-│   │ │ │ │     ├─[01-broken.fern:10:5] while matching token[ - ]
-│   │ │ │ │     [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│   │ │ │ │   ┌─[01-broken.fern:10:5] .number.plusMinus
-│   │ │ │ │   │ [01-broken.fern:10:5] expected token[ 0b ]
-│   │ │ │ │   │ [01-broken.fern:10:5] while matching token[ 0b ]
-│   │ │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b'  ... g ) * ]
-│   │ │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.integer.binary
-│   │ │ │ │   [01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusM ... inary ]
-│   │ │ │ │ ┌─[01-broken.fern:10:5] .number.integer.binary
-│   │ │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
-│   │ │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│   │ │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│   │ │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
-│   │ │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0o ]
-│   │ │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0o ]
-│   │ │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o'  ... g ) * ]
-│   │ │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.octal
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusM ... octal ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.octal
-│   │ │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
-│   │ │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│   │ │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│   │ │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
-│   │ │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0x ]
-│   │ │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0x ]
-│   │ │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x'  ... g ) * ]
-│   │ │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusM ... cimal ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.hexadecimal
-│   │ │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
-│   │ │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
-│   │ │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
-│   │ │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│   │ │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│   │ │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
-│   │ │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│   │ │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
-│   │ │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.decimal
-│   │ │ │ │ │ [01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusM ... cimal ]
-│   │ │ │ │ ├─[01-broken.fern:10:5] .number.integer.decimal
-│   │ │ │ │ [01-broken.fern:10:5] .number.integer: expected alternation[ [ bin ... mal ] ]
-│   │ │ │ ├─[01-broken.fern:10:5] .number.integer
-│   │ │ │ [01-broken.fern:10:5] .number: expected alternation[ [ flo ... ger ] ]
-│   │ │ ├─[01-broken.fern:10:5] .number
-│   │ │ │ ┌─expected token of category token[ MULTILINE_STRING ]; got token[ ID_LOWER ]
-│   │ │ │ │ [01-broken.fern:10:5] expected token[ ' ]
-│   │ │ │ │ [01-broken.fern:10:5] while matching token[ ' ]
-│   │ │ │ │ [01-broken.fern:10:5] .string.single: expected sequence[ '\\''  ...  '\\'' ]
-│   │ │ │ ├─[01-broken.fern:10:5] .string.single
-│   │ │ │ │ [01-broken.fern:10:5] expected token[ " ]
-│   │ │ │ │ [01-broken.fern:10:5] while matching token[ " ]
-│   │ │ │ │ [01-broken.fern:10:5] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
-│   │ │ │ ├─[01-broken.fern:10:5] .string.double
-│   │ │ │ [01-broken.fern:10:5] .string: expected alternation[ MULTI ... ouble ]
-│   │ │ ├─[01-broken.fern:10:5] .string
-│   │ │ [01-broken.fern:10:5] .Fern.value: expected alternation[ none  ... tring ]
-│   │ ├─[01-broken.fern:10:5] .Fern.value
-│   ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
-│   [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
-│ ┌─[01-broken.fern:10:5] .Fern.LabeledItem
-│ │ [01-broken.fern:10:5] expected token[ ] ]
-│ ├─[01-broken.fern:10:5] while matching token[ ] ]
+│   [01-broken.fern:10:5] expected token[ ] ]
+│ ┌─[01-broken.fern:10:5] while matching token[ ] ]
+│ │     [01-broken.fern:10:5] expected token[ [ ]
+│ │     [01-broken.fern:10:5] while matching token[ [ ]
+│ │     [01-broken.fern:10:5] .Fern: expected sequence[ '[' L ... * ']' ]
+│ │   ┌─[01-broken.fern:10:5] .Fern
+│ │   │   [01-broken.fern:10:5] expected token[ none ]
+│ │   │   [01-broken.fern:10:5] while matching token[ none ]
+│ │   │ ┌─[01-broken.fern:10:5] .none
+│ │   │ │   [01-broken.fern:10:5] expected token[ true ]
+│ │   │ │ ┌─[01-broken.fern:10:5] while matching token[ true ]
+│ │   │ │ │ [01-broken.fern:10:5] expected token[ false ]
+│ │   │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
+│ │   │ │ [01-broken.fern:10:5] .boolean: expected alternation[ [ \"tr ... se\" ] ]
+│ │   │ ├─[01-broken.fern:10:5] .boolean
+│ │   │ │       [01-broken.fern:10:5] expected token[ + ]
+│ │   │ │     ┌─[01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │     │ [01-broken.fern:10:5] expected token[ - ]
+│ │   │ │     ├─[01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │     [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │   ┌─[01-broken.fern:10:5] .number.plusMinus
+│ │   │ │   │     [01-broken.fern:10:5] expected token[ inf ]
+│ │   │ │   │   ┌─[01-broken.fern:10:5] while matching token[ inf ]
+│ │   │ │   │   │ [01-broken.fern:10:5] expected token[ nan ]
+│ │   │ │   │   ├─[01-broken.fern:10:5] while matching token[ nan ]
+│ │   │ │   │   [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
+│ │   │ │   │ ┌─[01-broken.fern:10:5] .number.unsigned.float.special
+│ │   │ │   │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+│ │   │ │   │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
+│ │   │ │   │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
+│ │   │ │   │ │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
+│ │   │ │   │ ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integ ... t ? ) ]
+│ │   │ │   │ [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ speci ... t ? ) ]
+│ │   │ │   ├─[01-broken.fern:10:5] .number.unsigned.float
+│ │   │ │   [01-broken.fern:10:5] .number.float: expected sequence[ plusM ... float ]
+│ │   │ │ ┌─[01-broken.fern:10:5] .number.float
+│ │   │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │   [01-broken.fern:10:5] expected token[ inf ]
+│ │   │ │ │ │ ┌─[01-broken.fern:10:5] while matching token[ inf ]
+│ │   │ │ │ │ │ [01-broken.fern:10:5] expected token[ nan ]
+│ │   │ │ │ │ ├─[01-broken.fern:10:5] while matching token[ nan ]
+│ │   │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
+│ │   │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.float.special
+│ │   │ │ │ [01-broken.fern:10:5] .number.float.special: expected sequence[ plusM ... ecial ]
+│ │   │ │ ├─[01-broken.fern:10:5] .number.float.special
+│ │   │ │ │       [01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │     ┌─[01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │     │ [01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │     ├─[01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │     [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │   ┌─[01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │   │ [01-broken.fern:10:5] expected token[ 0b ]
+│ │   │ │ │   │ [01-broken.fern:10:5] while matching token[ 0b ]
+│ │   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b'  ... g ) * ]
+│ │   │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.integer.binary
+│ │   │ │ │   [01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusM ... inary ]
+│ │   │ │ │ ┌─[01-broken.fern:10:5] .number.integer.binary
+│ │   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0o ]
+│ │   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0o ]
+│ │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o'  ... g ) * ]
+│ │   │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.octal
+│ │   │ │ │ │ [01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusM ... octal ]
+│ │   │ │ │ ├─[01-broken.fern:10:5] .number.integer.octal
+│ │   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0x ]
+│ │   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0x ]
+│ │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x'  ... g ) * ]
+│ │   │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
+│ │   │ │ │ │ [01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusM ... cimal ]
+│ │   │ │ │ ├─[01-broken.fern:10:5] .number.integer.hexadecimal
+│ │   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
+│ │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
+│ │   │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.decimal
+│ │   │ │ │ │ [01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusM ... cimal ]
+│ │   │ │ │ ├─[01-broken.fern:10:5] .number.integer.decimal
+│ │   │ │ │ [01-broken.fern:10:5] .number.integer: expected alternation[ [ bin ... mal ] ]
+│ │   │ │ ├─[01-broken.fern:10:5] .number.integer
+│ │   │ │ [01-broken.fern:10:5] .number: expected alternation[ [ flo ... ger ] ]
+│ │   │ ├─[01-broken.fern:10:5] .number
+│ │   │ │ ┌─expected token of category token[ MULTILINE_STRING ]; got token[ ID_LOWER ]
+│ │   │ │ │ [01-broken.fern:10:5] expected token[ ' ]
+│ │   │ │ │ [01-broken.fern:10:5] while matching token[ ' ]
+│ │   │ │ │ [01-broken.fern:10:5] .string.single: expected sequence[ '\\''  ...  '\\'' ]
+│ │   │ │ ├─[01-broken.fern:10:5] .string.single
+│ │   │ │ │ [01-broken.fern:10:5] expected token[ " ]
+│ │   │ │ │ [01-broken.fern:10:5] while matching token[ " ]
+│ │   │ │ │ [01-broken.fern:10:5] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
+│ │   │ │ ├─[01-broken.fern:10:5] .string.double
+│ │   │ │ [01-broken.fern:10:5] .string: expected alternation[ MULTI ... ouble ]
+│ │   │ ├─[01-broken.fern:10:5] .string
+│ │   │ [01-broken.fern:10:5] .Fern.value: expected alternation[ none  ... tring ]
+│ │   ├─[01-broken.fern:10:5] .Fern.value
+│ │ ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
+│ │ │ [01-broken.fern:11:5] expected token[ : ]
+│ │ │ [01-broken.fern:11:5] while matching token[ : ]
+│ │ ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ label ':'  ]
+│ │ [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
+│ ├─[01-broken.fern:10:5] .Fern.LabeledItem
 │ [01-broken.fern:9:3] .Fern: expected sequence[ '[' L ... * ']' ]
 │ [01-broken.fern:9:3] .Fern
 ├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
