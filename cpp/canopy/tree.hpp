@@ -66,6 +66,9 @@ namespace silva {
     expected_t<string_t> to_string_top_down(NodeDataFunc) const;
 
     template<typename NodeDataFunc>
+    expected_t<string_t> to_string_bottom_up(NodeDataFunc) const;
+
+    template<typename NodeDataFunc>
     expected_t<string_t> to_string_flat_top_down(NodeDataFunc) const;
 
     template<typename NodeDataFunc>
@@ -339,6 +342,44 @@ namespace silva {
           return true;
         });
     SILVA_EXPECT_FWD(std::move(result));
+    return retval;
+  }
+
+  template<typename NodeData>
+  template<typename NodeDataFunc>
+  expected_t<string_t> tree_span_t<NodeData>::to_string_bottom_up(NodeDataFunc node_data_func) const
+  {
+    const auto& self = *this;
+    string_t retval;
+    array_t<tree_branch_t> path;
+    array_t<index_t> child_positions;
+    const auto visit = [&](this const auto& visit) -> void {
+      const index_t node_index   = path.back().node_index;
+      const index_t num_children = self.node_at(node_index).num_children;
+      const index_t base         = child_positions.size();
+      for (index_t i = 0, pos = node_index + 1; i < num_children; ++i) {
+        child_positions.push_back(pos);
+        pos += self.node_at(pos).subtree_size;
+      }
+      for (index_t child_index = num_children - 1; child_index >= 0; --child_index) {
+        path.push_back({
+            .node_index  = child_positions[base + child_index],
+            .child_index = child_index,
+        });
+        visit();
+        path.pop_back();
+      }
+      child_positions.resize(base);
+      string_t curr_line;
+      curr_line.assign(2 * (path.size() - 1), ' ');
+      curr_line += fmt::format("[{}]", path.back().child_index);
+      const span_t<const tree_branch_t> path_span{path};
+      node_data_func(curr_line, path_span);
+      retval += curr_line;
+      retval += '\n';
+    };
+    path.push_back({.node_index = 0, .child_index = 0});
+    visit();
     return retval;
   }
 
