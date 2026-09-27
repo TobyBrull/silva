@@ -110,13 +110,13 @@ namespace silva {
     SILVA_ASSERT(!last_node_index || *last_node_index + 1 == new_node_index);
     const auto mbo = context->any_vector.next_index();
     (context->any_vector.push_back(std::forward<MementoArgs>(memento_args)), ...);
-    context->tree.nodes.push_back(error_tree_t::node_t{
-        .num_children              = num_children,
-        .children_begin            = children_begin.value_or(new_node_index),
-        .memento_buffer_offset     = mbo,
-        .memento_buffer_offset_end = context->any_vector.next_index(),
-        .memento_buffer_begin      = memento_buffer_begin.value_or(mbo),
-    });
+    error_tree_t::node_t node;
+    node.num_children              = num_children;
+    node.subtree_size              = new_node_index + 1 - children_begin.value_or(new_node_index);
+    node.memento_buffer_offset     = mbo;
+    node.memento_buffer_offset_end = context->any_vector.next_index();
+    node.memento_buffer_begin      = memento_buffer_begin.value_or(mbo);
+    context->tree.nodes.push_back(node);
     error_t retval(context, new_node_index, error_level);
     release();
     return retval;

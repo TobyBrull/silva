@@ -67,7 +67,7 @@ namespace silva {
     if (!context.is_nullptr()) {
       SILVA_ASSERT(context->tree.nodes.size() == node_index + 1);
       const auto& node       = context->tree.nodes[node_index];
-      const index_t new_size = node.children_begin;
+      const index_t new_size = context->tree.children_begin(node_index);
       context->any_vector.resize_down_to(node.memento_buffer_begin);
       context->tree.nodes.resize(new_size);
       context.clear();
@@ -171,11 +171,12 @@ namespace silva {
     const auto& child_node = context->tree.nodes[child_error.node_index];
     if (num_children == 0) {
       last_node_index      = child_error.node_index;
-      children_begin       = child_node.children_begin;
+      children_begin       = context->tree.children_begin(child_error.node_index);
       memento_buffer_begin = child_node.memento_buffer_begin;
     }
     else {
-      SILVA_ASSERT(last_node_index && *last_node_index + 1 == child_node.children_begin);
+      SILVA_ASSERT(last_node_index &&
+                   *last_node_index + 1 == context->tree.children_begin(child_error.node_index));
       last_node_index = child_error.node_index;
     }
     num_children += 1;

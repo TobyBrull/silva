@@ -23,21 +23,21 @@ namespace silva::test {
   {
     error_tree_t tree;
     using node_t = error_tree_t::node_t;
-    tree.nodes.push_back(node_t{.num_children = 0, .children_begin = 0});  // [0]
-    tree.nodes.push_back(node_t{.num_children = 1, .children_begin = 0});  // [1]
-    tree.nodes.push_back(node_t{.num_children = 0, .children_begin = 2});  // [2]
-    tree.nodes.push_back(node_t{.num_children = 1, .children_begin = 2});  // [3]
-    tree.nodes.push_back(node_t{.num_children = 2, .children_begin = 0});  // [4]
-    tree.nodes.push_back(node_t{.num_children = 1, .children_begin = 0});  // [5]
-    tree.nodes.push_back(node_t{.num_children = 1, .children_begin = 0});  // [6]
-    tree.nodes.push_back(node_t{.num_children = 0, .children_begin = 7});  // [7]
-    tree.nodes.push_back(node_t{.num_children = 0, .children_begin = 8});  // [8]
-    tree.nodes.push_back(node_t{.num_children = 2, .children_begin = 7});  // [9]
-    tree.nodes.push_back(node_t{.num_children = 0, .children_begin = 10}); // [10]
-    tree.nodes.push_back(node_t{.num_children = 1, .children_begin = 10}); // [11]
-    tree.nodes.push_back(node_t{.num_children = 0, .children_begin = 12}); // [12]
-    tree.nodes.push_back(node_t{.num_children = 1, .children_begin = 12}); // [13]
-    tree.nodes.push_back(node_t{.num_children = 4, .children_begin = 0});  // [14]
+    tree.nodes.push_back(node_t{{.num_children = 0, .subtree_size = 1}});  // [0]
+    tree.nodes.push_back(node_t{{.num_children = 1, .subtree_size = 2}});  // [1]
+    tree.nodes.push_back(node_t{{.num_children = 0, .subtree_size = 1}});  // [2]
+    tree.nodes.push_back(node_t{{.num_children = 1, .subtree_size = 2}});  // [3]
+    tree.nodes.push_back(node_t{{.num_children = 2, .subtree_size = 5}});  // [4]
+    tree.nodes.push_back(node_t{{.num_children = 1, .subtree_size = 6}});  // [5]
+    tree.nodes.push_back(node_t{{.num_children = 1, .subtree_size = 7}});  // [6]
+    tree.nodes.push_back(node_t{{.num_children = 0, .subtree_size = 1}});  // [7]
+    tree.nodes.push_back(node_t{{.num_children = 0, .subtree_size = 1}});  // [8]
+    tree.nodes.push_back(node_t{{.num_children = 2, .subtree_size = 3}});  // [9]
+    tree.nodes.push_back(node_t{{.num_children = 0, .subtree_size = 1}});  // [10]
+    tree.nodes.push_back(node_t{{.num_children = 1, .subtree_size = 2}});  // [11]
+    tree.nodes.push_back(node_t{{.num_children = 0, .subtree_size = 1}});  // [12]
+    tree.nodes.push_back(node_t{{.num_children = 1, .subtree_size = 2}});  // [13]
+    tree.nodes.push_back(node_t{{.num_children = 4, .subtree_size = 15}}); // [14]
 
     array_t<result_t> result;
     tree.visit_subtree(

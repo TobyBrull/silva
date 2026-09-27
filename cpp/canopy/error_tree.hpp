@@ -2,6 +2,7 @@
 
 #include "any_vector.hpp"
 #include "assert.hpp"
+#include "tree_node.hpp"
 
 namespace silva {
   enum class tree_event_t {
@@ -22,15 +23,14 @@ namespace silva {
   };
 
   struct error_tree_t {
-    struct node_t {
-      index_t num_children   = 0;
-      index_t children_begin = 0;
-
+    struct node_t : public tree_node_t {
       any_vector_index_t memento_buffer_offset;
       any_vector_index_t memento_buffer_offset_end;
       any_vector_index_t memento_buffer_begin;
     };
     array_t<node_t> nodes;
+
+    index_t children_begin(index_t node_index) const;
 
     template<typename Visitor>
       requires std::invocable<Visitor, span_t<const tree_branch_t>, tree_event_t>
@@ -49,6 +49,11 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+  inline index_t error_tree_t::children_begin(const index_t node_index) const
+  {
+    return node_index + 1 - nodes[node_index].subtree_size;
+  }
+
   constexpr bool is_on_entry(const tree_event_t event)
   {
     const auto retval = (to_int(event) & to_int(tree_event_t::ON_ENTRY));
@@ -68,7 +73,7 @@ namespace silva {
     array_t<tree_branch_t> path;
     const auto clean_stack_till = [&](const index_t prev_node_index) -> optional_t<index_t> {
       index_t next_child_index = 0;
-      while (!path.empty() && prev_node_index <= nodes[path.back().node_index].children_begin) {
+      while (!path.empty() && prev_node_index <= children_begin(path.back().node_index)) {
         const bool is_leaf = (nodes[path.back().node_index].num_children == 0);
         next_child_index   = path.back().child_index + 1;
         if (!is_leaf) {
@@ -82,7 +87,7 @@ namespace silva {
       return {next_child_index};
     };
 
-    const index_t begin_node_index = nodes[start_node_index].children_begin;
+    const index_t begin_node_index = children_begin(start_node_index);
     index_t node_index             = start_node_index;
     while (true) {
       const optional_t<index_t> maybe_new_child_index = clean_stack_till(node_index + 1);
@@ -127,7 +132,7 @@ namespace silva {
     for (index_t child_index = 0; child_index < parent_node.num_children; ++child_index) {
       curr_node_index -= 1;
       visitor(curr_node_index, child_index);
-      curr_node_index = nodes[curr_node_index].children_begin;
+      curr_node_index = children_begin(curr_node_index);
     }
   }
 
@@ -142,7 +147,7 @@ namespace silva {
       const auto& parent_node = et.nodes[parent_node_index];
       if (child_index < parent_node.num_children) {
         const index_t child_node_index      = prev_child_node_begin - 1;
-        const index_t next_child_node_begin = et.nodes[child_node_index].children_begin;
+        const index_t next_child_node_begin = et.children_begin(child_node_index);
         error_tree_visit_children_reversed(et,
                                            visitor,
                                            parent_node_index,
