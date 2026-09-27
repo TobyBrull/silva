@@ -9,6 +9,10 @@ namespace silva {
   {
     if (pts.rule_name() == si.sfp->get_lexicon<seed::lexicon_t>().ni_seed) {
       SILVA_EXPECT_FWD(si.add_seed_copy(pts));
+      const bool show_seed_trees = SILVA_ENV_CONTEXT_AS("show-seed-trees", bool, false);
+      if (!show_seed_trees) {
+        return {};
+      }
     }
 
     const auto action = SILVA_ENV_CONTEXT("action", "print-parse-tree");

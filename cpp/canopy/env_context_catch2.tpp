@@ -12,7 +12,7 @@ namespace silva::test {
 
     void testRunStarting(const Catch::TestRunInfo&) override
     {
-      env_context_fill_environ(&env_context);
+      SILVA_ASSERT(env_context_fill_environ(&env_context));
     }
   };
 }

@@ -16,8 +16,8 @@ namespace silva {
     env_context_t() = default;
   };
 
-  void env_context_fill_environ(env_context_t*);
-  void env_context_fill_cmdline(env_context_t*, int argc, char* argv[]);
+  expected_t<void> env_context_fill_environ(env_context_t*);
+  expected_t<void> env_context_fill_cmdline(env_context_t*, int argc, char* argv[]);
 
   // Errors:
   //  - MINOR: Value doesn't exist.
@@ -43,6 +43,10 @@ namespace silva {
   expected_t<T> env_context_get_as(const string_view_t name)
   {
     const string_view_t value = SILVA_EXPECT_FWD(env_context_get(name));
-    return SILVA_EXPECT_FWD(convert_to<T>(value), MAJOR);
+    return SILVA_EXPECT_FWD(convert_to<T>(value),
+                            MAJOR,
+                            "while trying to convert env_context variable '{}' with value '{}'",
+                            string_t{name},
+                            string_t{value});
   }
 }
