@@ -53,7 +53,7 @@ namespace silva {
     template<typename... MementoArgs>
     void replace_message(MementoArgs&&...);
 
-    string_or_view_t to_string_structured() const;
+    string_or_view_t to_string_flat() const;
 
     friend void pretty_write_impl(const error_t&, byte_sink_t*);
 

@@ -40,97 +40,97 @@ language SimpleFern:
     const auto pts_2 = SILVA_REQUIRE(spr->apply(fp, sf.name_id_of("Seed")));
     CHECK(pts_1->nodes == pts_2->nodes);
     const std::string_view expected = R"(
-[0].Seed                                          strin ... ber<NEWLINE><DEDENT>¦
-  [0].Seed.Rule                                   strin ... '\\''<NEWLINE>¦
-    [0].Seed.Nonterminal                          string ¦
-      [0].Seed.tokenCategoryName                  ｢string｣
-    [1].Seed.Expr                                 '\\''  ...  '\\''¦
-      [0].Seed.Expr.Concat.concat                 '\\''  ...  '\\''¦
-        [0].Seed.Terminal                         '\\'' ¦
-          [0].string                              ｢'\''｣
-        [1].Seed.Expr.Postfix.*                   ( not ...  ) * ¦
-          [0].Seed.Expr                           not ' ...  ANY ¦
-            [0].Seed.Expr.Concat.concat           not ' ...  ANY ¦
-              [0].Seed.Expr.Prefix.not            not '\\'' ¦
-                [0].Seed.Terminal                 '\\'' ¦
-                  [0].string                      ｢'\''｣
-              [1].Seed.Terminal                   ANY ¦
-                [0].Seed.fragName                 ｢ANY｣
-        [2].Seed.Terminal                         '\\''¦
-          [0].string                              ｢'\''｣
-  [1].Seed.Rule                                   numbe ... T +<NEWLINE><NEWLINE>¦
-    [0].Seed.Nonterminal                          number ¦
-      [0].Seed.tokenCategoryName                  ｢number｣
-    [1].Seed.Expr                                 DIGIT +¦
-      [0].Seed.Expr.Postfix.+                     DIGIT +¦
-        [0].Seed.Terminal                         DIGIT ¦
-          [0].Seed.fragName                       ｢DIGIT｣
-  [2].Seed.Language                               langu ... ber<NEWLINE><DEDENT>¦
-    [0].Seed.ruleName                             ｢SimpleFern｣
-    [1].Seed.Rule                                 ⊙ = ' ... ']'<NEWLINE><NEWLINE>¦
-      [0].Seed.here                               ｢⊙｣
-      [1].Seed.Expr                               '[' ( ... * ']'¦
-        [0].Seed.Expr.Concat.concat               '[' ( ... * ']'¦
-          [0].Seed.Terminal                       '[' ¦
-            [0].string                            ｢'['｣
-          [1].Seed.Expr.Postfix.*                 ( Lab ...  ) * ¦
-            [0].Seed.Expr                         Label ... ;' ? ¦
-              [0].Seed.Expr.Concat.concat         Label ... ;' ? ¦
-                [0].Seed.Nonterminal              Label ... Item ¦
-                  [0].Seed.ruleName               ｢LabeledItem｣
-                [1].Seed.Expr.Postfix.?           ';' ? ¦
-                  [0].Seed.Terminal               ';' ¦
-                    [0].string                    ｢';'｣
-          [2].Seed.Terminal                       ']'¦
-            [0].string                            ｢']'｣
-    [2].Seed.Rule                                 skip  ... ) *<NEWLINE><NEWLINE>¦
-      [0].Seed.Nonterminal                        skip ¦
-        [0].Seed.tokenCategoryName                ｢skip｣
-      [1].Seed.Expr                               ( SPA ... E ) *¦
-        [0].Seed.Expr.Postfix.*                   ( SPA ... E ) *¦
-          [0].Seed.Expr                           SPACE ... LINE ¦
-            [0].Seed.Expr.Or.|                    SPACE ... LINE ¦
-              [0].Seed.Terminal                   SPACE ¦
-                [0].Seed.fragName                 ｢SPACE｣
-              [1].Seed.Terminal                   LINE_ ... TION ¦
-                [0].Seed.fragName                 ｢LINE_CONTINUATION｣
-              [2].Seed.Terminal                   INDENT ¦
-                [0].Seed.fragName                 ｢INDENT｣
-              [3].Seed.Terminal                   DEDENT ¦
-                [0].Seed.fragName                 ｢DEDENT｣
-              [4].Seed.Terminal                   NEWLINE ¦
-                [0].Seed.fragName                 ｢NEWLINE｣
-    [3].Seed.Rule                                 Label ... Item<NEWLINE>¦
-      [0].Seed.Nonterminal                        Label ... Item ¦
-        [0].Seed.ruleName                         ｢LabeledItem｣
-      [1].Seed.Expr                               ( Lab ...  Item¦
-        [0].Seed.Expr.Concat.concat               ( Lab ...  Item¦
-          [0].Seed.Expr.Postfix.?                 ( Lab ...  ) ? ¦
-            [0].Seed.Expr                         Label ':' ¦
-              [0].Seed.Expr.Concat.concat         Label ':' ¦
-                [0].Seed.Nonterminal              Label ¦
-                  [0].Seed.ruleName               ｢Label｣
-                [1].Seed.Terminal                 ':' ¦
-                  [0].string                      ｢':'｣
-          [1].Seed.Nonterminal                    Item¦
-            [0].Seed.ruleName                     ｢Item｣
-    [4].Seed.Rule                                 Label ... ring<NEWLINE>¦
-      [0].Seed.Nonterminal                        Label ¦
-        [0].Seed.ruleName                         ｢Label｣
-      [1].Seed.Expr                               string¦
-        [0].Seed.Nonterminal                      string¦
-          [0].Seed.tokenCategoryName              ｢string｣
-    [5].Seed.Rule                                 Item  ... mber<NEWLINE>¦
-      [0].Seed.Nonterminal                        Item ¦
-        [0].Seed.ruleName                         ｢Item｣
-      [1].Seed.Expr                               Simpl ... umber¦
-        [0].Seed.Expr.Or.|                        Simpl ... umber¦
-          [0].Seed.Nonterminal                    Simpl ... Fern ¦
-            [0].Seed.ruleName                     ｢SimpleFern｣
-          [1].Seed.Nonterminal                    string ¦
-            [0].Seed.tokenCategoryName            ｢string｣
-          [2].Seed.Nonterminal                    number¦
-            [0].Seed.tokenCategoryName            ｢number｣
+[0] .Seed                                         strin ... ber<NEWLINE><DEDENT>¦
+  [0] .Seed.Rule                                  strin ... '\\''<NEWLINE>¦
+    [0] .Seed.Nonterminal                         string ¦
+      [0] .Seed.tokenCategoryName                 ｢string｣
+    [1] .Seed.Expr                                '\\''  ...  '\\''¦
+      [0] .Seed.Expr.Concat.concat                '\\''  ...  '\\''¦
+        [0] .Seed.Terminal                        '\\'' ¦
+          [0] .string                             ｢'\''｣
+        [1] .Seed.Expr.Postfix.*                  ( not ...  ) * ¦
+          [0] .Seed.Expr                          not ' ...  ANY ¦
+            [0] .Seed.Expr.Concat.concat          not ' ...  ANY ¦
+              [0] .Seed.Expr.Prefix.not           not '\\'' ¦
+                [0] .Seed.Terminal                '\\'' ¦
+                  [0] .string                     ｢'\''｣
+              [1] .Seed.Terminal                  ANY ¦
+                [0] .Seed.fragName                ｢ANY｣
+        [2] .Seed.Terminal                        '\\''¦
+          [0] .string                             ｢'\''｣
+  [1] .Seed.Rule                                  numbe ... T +<NEWLINE><NEWLINE>¦
+    [0] .Seed.Nonterminal                         number ¦
+      [0] .Seed.tokenCategoryName                 ｢number｣
+    [1] .Seed.Expr                                DIGIT +¦
+      [0] .Seed.Expr.Postfix.+                    DIGIT +¦
+        [0] .Seed.Terminal                        DIGIT ¦
+          [0] .Seed.fragName                      ｢DIGIT｣
+  [2] .Seed.Language                              langu ... ber<NEWLINE><DEDENT>¦
+    [0] .Seed.ruleName                            ｢SimpleFern｣
+    [1] .Seed.Rule                                ⊙ = ' ... ']'<NEWLINE><NEWLINE>¦
+      [0] .Seed.here                              ｢⊙｣
+      [1] .Seed.Expr                              '[' ( ... * ']'¦
+        [0] .Seed.Expr.Concat.concat              '[' ( ... * ']'¦
+          [0] .Seed.Terminal                      '[' ¦
+            [0] .string                           ｢'['｣
+          [1] .Seed.Expr.Postfix.*                ( Lab ...  ) * ¦
+            [0] .Seed.Expr                        Label ... ;' ? ¦
+              [0] .Seed.Expr.Concat.concat        Label ... ;' ? ¦
+                [0] .Seed.Nonterminal             Label ... Item ¦
+                  [0] .Seed.ruleName              ｢LabeledItem｣
+                [1] .Seed.Expr.Postfix.?          ';' ? ¦
+                  [0] .Seed.Terminal              ';' ¦
+                    [0] .string                   ｢';'｣
+          [2] .Seed.Terminal                      ']'¦
+            [0] .string                           ｢']'｣
+    [2] .Seed.Rule                                skip  ... ) *<NEWLINE><NEWLINE>¦
+      [0] .Seed.Nonterminal                       skip ¦
+        [0] .Seed.tokenCategoryName               ｢skip｣
+      [1] .Seed.Expr                              ( SPA ... E ) *¦
+        [0] .Seed.Expr.Postfix.*                  ( SPA ... E ) *¦
+          [0] .Seed.Expr                          SPACE ... LINE ¦
+            [0] .Seed.Expr.Or.|                   SPACE ... LINE ¦
+              [0] .Seed.Terminal                  SPACE ¦
+                [0] .Seed.fragName                ｢SPACE｣
+              [1] .Seed.Terminal                  LINE_ ... TION ¦
+                [0] .Seed.fragName                ｢LINE_CONTINUATION｣
+              [2] .Seed.Terminal                  INDENT ¦
+                [0] .Seed.fragName                ｢INDENT｣
+              [3] .Seed.Terminal                  DEDENT ¦
+                [0] .Seed.fragName                ｢DEDENT｣
+              [4] .Seed.Terminal                  NEWLINE ¦
+                [0] .Seed.fragName                ｢NEWLINE｣
+    [3] .Seed.Rule                                Label ... Item<NEWLINE>¦
+      [0] .Seed.Nonterminal                       Label ... Item ¦
+        [0] .Seed.ruleName                        ｢LabeledItem｣
+      [1] .Seed.Expr                              ( Lab ...  Item¦
+        [0] .Seed.Expr.Concat.concat              ( Lab ...  Item¦
+          [0] .Seed.Expr.Postfix.?                ( Lab ...  ) ? ¦
+            [0] .Seed.Expr                        Label ':' ¦
+              [0] .Seed.Expr.Concat.concat        Label ':' ¦
+                [0] .Seed.Nonterminal             Label ¦
+                  [0] .Seed.ruleName              ｢Label｣
+                [1] .Seed.Terminal                ':' ¦
+                  [0] .string                     ｢':'｣
+          [1] .Seed.Nonterminal                   Item¦
+            [0] .Seed.ruleName                    ｢Item｣
+    [4] .Seed.Rule                                Label ... ring<NEWLINE>¦
+      [0] .Seed.Nonterminal                       Label ¦
+        [0] .Seed.ruleName                        ｢Label｣
+      [1] .Seed.Expr                              string¦
+        [0] .Seed.Nonterminal                     string¦
+          [0] .Seed.tokenCategoryName             ｢string｣
+    [5] .Seed.Rule                                Item  ... mber<NEWLINE>¦
+      [0] .Seed.Nonterminal                       Item ¦
+        [0] .Seed.ruleName                        ｢Item｣
+      [1] .Seed.Expr                              Simpl ... umber¦
+        [0] .Seed.Expr.Or.|                       Simpl ... umber¦
+          [0] .Seed.Nonterminal                   Simpl ... Fern ¦
+            [0] .Seed.ruleName                    ｢SimpleFern｣
+          [1] .Seed.Nonterminal                   string ¦
+            [0] .Seed.tokenCategoryName           ｢string｣
+          [2] .Seed.Nonterminal                   number¦
+            [0] .Seed.tokenCategoryName           ｢number｣
 )";
 
     const string_t pts_1_str = SILVA_REQUIRE(pts_1->span().to_string());
@@ -145,22 +145,22 @@ language SimpleFern:
       const auto fp          = SILVA_REQUIRE(fragmentize(sf.ptr(), "sf.code", sf_code));
       const auto sfpt        = SILVA_REQUIRE(se.apply(fp, sf.name_id_of("SimpleFern")));
       const std::string_view expected_parse_tree = R"(
-[0].SimpleFern                                    [ 'ab ...  ;]<NEWLINE><DEDENT>¦
-  [0].SimpleFern.LabeledItem                      'abc' ¦
-    [0].SimpleFern.Item                           'abc' ¦
-      [0].string                                  ｢'abc'｣
-  [1].SimpleFern.LabeledItem                      [ 'de ... 23 ] ¦
-    [0].SimpleFern.Item                           [ 'de ... 23 ] ¦
-      [0].SimpleFern                              [ 'de ... 23 ] ¦
-        [0].SimpleFern.LabeledItem                'def' ¦
-          [0].SimpleFern.Item                     'def' ¦
-            [0].string                            ｢'def'｣
-        [1].SimpleFern.LabeledItem                123 ¦
-          [0].SimpleFern.Item                     123 ¦
-            [0].number                            ｢123｣
-  [2].SimpleFern.LabeledItem                      'jkl' ¦
-    [0].SimpleFern.Item                           'jkl' ¦
-      [0].string                                  ｢'jkl'｣
+[0] .SimpleFern                                   [ 'ab ...  ;]<NEWLINE><DEDENT>¦
+  [0] .SimpleFern.LabeledItem                     'abc' ¦
+    [0] .SimpleFern.Item                          'abc' ¦
+      [0] .string                                 ｢'abc'｣
+  [1] .SimpleFern.LabeledItem                     [ 'de ... 23 ] ¦
+    [0] .SimpleFern.Item                          [ 'de ... 23 ] ¦
+      [0] .SimpleFern                             [ 'de ... 23 ] ¦
+        [0] .SimpleFern.LabeledItem               'def' ¦
+          [0] .SimpleFern.Item                    'def' ¦
+            [0] .string                           ｢'def'｣
+        [1] .SimpleFern.LabeledItem               123 ¦
+          [0] .SimpleFern.Item                    123 ¦
+            [0] .number                           ｢123｣
+  [2] .SimpleFern.LabeledItem                     'jkl' ¦
+    [0] .SimpleFern.Item                          'jkl' ¦
+      [0] .string                                 ｢'jkl'｣
 )";
       const string_t result{SILVA_REQUIRE(sfpt->span().to_string())};
       CHECK(result == expected_parse_tree.substr(1));

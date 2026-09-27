@@ -158,7 +158,7 @@ scope final 1
 scope final 2
 scope final 3
 )";
-      const auto result            = final_error.to_string_structured();
+      const auto result            = final_error.to_string_flat();
       CHECK(result.as_string_view() == expected.substr(1));
     }
   }

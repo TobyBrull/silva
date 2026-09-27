@@ -40,14 +40,14 @@ namespace silva::test {
           curr_line += fmt::format("{} / {}", dd.name, dd.success);
         }));
     const string_view_t expected = R"(
-[0]ROOT / false
-  [0]func_2 / false
-    [0]func_1 / true
-    [1]func_1 / true
-  [1]func_1 / true
-  [2]func_2 / false
-    [0]func_1 / true
-    [1]func_1 / true
+[0] ROOT / false
+  [0] func_2 / false
+    [0] func_1 / true
+    [1] func_1 / true
+  [1] func_1 / true
+  [2] func_2 / false
+    [0] func_1 / true
+    [1] func_1 / true
 )";
     CHECK(estr == expected.substr(1));
   }

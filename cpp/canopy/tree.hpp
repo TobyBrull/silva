@@ -6,6 +6,9 @@
 #include "preprocessor.hpp"
 #include "tree_types.hpp"
 
+#include <algorithm>
+#include <numeric>
+
 namespace silva {
 
   template<typename NodeData>
@@ -58,6 +61,13 @@ namespace silva {
     // Get the direct child tree-spans if the number of children is less-or-equal to "N".
     template<index_t N, typename Self>
     expected_t<array_small_t<Self, N>> get_children_up_to(this const Self&);
+
+    // Calls KeyFunc on each node (or rather: on the tree_span_t derived class corresponding to that
+    // node) that has siblings, an (stably) sorts every set of siblings by the index_t that KeyFunc
+    // is expected to return.
+    template<typename Self, typename KeyFunc>
+      requires std::invocable<KeyFunc, const Self&>
+    array_t<NodeData> sorted(this const Self&, KeyFunc);
 
     friend bool operator==(const tree_span_t&, const tree_span_t&) = default;
     // friend hash_value_t hash_impl(const tree_span_t& x);
@@ -317,6 +327,41 @@ namespace silva {
   }
 
   template<typename NodeData>
+  template<typename Self, typename KeyFunc>
+    requires std::invocable<KeyFunc, const Self&>
+  array_t<NodeData> tree_span_t<NodeData>::sorted(this const Self& self, KeyFunc key_func)
+  {
+    array_t<index_t> keys;
+    array_t<NodeData> retval;
+    retval.reserve(self.subtree_size());
+    const auto visit = [&](this const auto& visit, const Self& span) -> void {
+      retval.push_back(span.node_at(0));
+      const array_t<Self> children = span.get_children_array();
+      const index_t num_children   = children.size();
+      if (num_children <= 1) {
+        for (const Self& child: children) {
+          visit(child);
+        }
+        return;
+      }
+      keys.clear();
+      keys.reserve(num_children);
+      for (const Self& child: children) {
+        keys.push_back(key_func(child));
+      }
+      array_t<index_t> order(num_children);
+      std::iota(order.begin(), order.end(), 0);
+      std::ranges::stable_sort(order,
+                               [&](const index_t a, const index_t b) { return keys[a] < keys[b]; });
+      for (const index_t i: order) {
+        visit(children[i]);
+      }
+    };
+    visit(self);
+    return retval;
+  }
+
+  template<typename NodeData>
   hash_value_t hash_impl(const tree_span_t<NodeData>& x)
   {
     return hash(tuple_t<NodeData*, index_t>{x.root, x.stride});
@@ -335,7 +380,7 @@ namespace silva {
           SILVA_EXPECT(!path.empty(), ASSERT, "Empty path at " SILVA_CPP_LOCATION);
           string_t curr_line;
           curr_line.assign(2 * (path.size() - 1), ' ');
-          curr_line += fmt::format("[{}]", path.back().child_index);
+          curr_line += fmt::format("[{}] ", path.back().child_index);
           node_data_func(curr_line, path);
           retval += curr_line;
           retval += '\n';
@@ -372,7 +417,7 @@ namespace silva {
       child_positions.resize(base);
       string_t curr_line;
       curr_line.assign(2 * (path.size() - 1), ' ');
-      curr_line += fmt::format("[{}]", path.back().child_index);
+      curr_line += fmt::format("[{}] ", path.back().child_index);
       const span_t<const tree_branch_t> path_span{path};
       node_data_func(curr_line, path_span);
       retval += curr_line;
@@ -393,8 +438,7 @@ namespace silva {
     };
 
     template<bool TopDown, typename TreeSpan, typename NodeDataFunc>
-    expected_t<string_t> tree_to_string_structured(const TreeSpan& self,
-                                                   NodeDataFunc& node_data_func)
+    expected_t<string_t> tree_to_string_flat(const TreeSpan& self, NodeDataFunc& node_data_func)
     {
       string_t retval;
       array_t<index_t> box_levels;
@@ -456,7 +500,7 @@ namespace silva {
   expected_t<string_t>
   tree_span_t<NodeData>::to_string_flat_top_down(NodeDataFunc node_data_func) const
   {
-    return impl::tree_to_string_structured<true>(*this, node_data_func);
+    return impl::tree_to_string_flat<true>(*this, node_data_func);
   }
 
   template<typename NodeData>
@@ -464,7 +508,7 @@ namespace silva {
   expected_t<string_t>
   tree_span_t<NodeData>::to_string_flat_bottom_up(NodeDataFunc node_data_func) const
   {
-    return impl::tree_to_string_structured<false>(*this, node_data_func);
+    return impl::tree_to_string_flat<false>(*this, node_data_func);
   }
 
   template<typename NodeData>

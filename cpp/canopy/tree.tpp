@@ -19,6 +19,12 @@ namespace silva::test {
 
   TEST_CASE("tree")
   {
+    auto print_test_node = [](const auto tspan) {
+      return [tspan](string_t& curr_line, auto& path) {
+        curr_line += fmt::format("{}", tspan.node_at(path.back().node_index).name);
+      };
+    };
+
     array_t<test_tree_node_t> test_tree;
     test_tree.push_back({{3, 8}, "A"});
     test_tree.push_back({{2, 4}, "B"});
@@ -30,6 +36,7 @@ namespace silva::test {
     test_tree.push_back({{0, 1}, "H"});
 
     tree_span_t tspan{test_tree};
+
     SECTION("normal")
     {
       tspan = tree_span_t{test_tree};
@@ -41,10 +48,7 @@ namespace silva::test {
     }
 
     {
-      const string_t result_str =
-          SILVA_REQUIRE(tspan.to_string_top_down([&](string_t& curr_line, auto& path) {
-            curr_line += fmt::format(" {}", tspan.node_at(path.back().node_index).name);
-          }));
+      const string_t result_str = SILVA_REQUIRE(tspan.to_string_top_down(print_test_node(tspan)));
       const string_view_t expected = R"(
 [0] A
   [0] B
@@ -58,10 +62,7 @@ namespace silva::test {
       CHECK(result_str == expected.substr(1));
     }
     {
-      const string_t result_str =
-          SILVA_REQUIRE(tspan.to_string_bottom_up([&](string_t& curr_line, auto& path) {
-            curr_line += fmt::format(" {}", tspan.node_at(path.back().node_index).name);
-          }));
+      const string_t result_str = SILVA_REQUIRE(tspan.to_string_bottom_up(print_test_node(tspan)));
       const string_view_t expected = R"(
     [0] H
   [2] D
@@ -76,9 +77,7 @@ namespace silva::test {
     }
     {
       const string_t result_str =
-          SILVA_REQUIRE(tspan.to_string_flat_top_down([&](string_t& curr_line, auto& path) {
-            curr_line += tspan.node_at(path.back().node_index).name;
-          }));
+          SILVA_REQUIRE(tspan.to_string_flat_top_down(print_test_node(tspan)));
       const string_view_t expected = R"(
 A
 ├─B
@@ -93,9 +92,7 @@ A
     }
     {
       const string_t result_str =
-          SILVA_REQUIRE(tspan.to_string_flat_bottom_up([&](string_t& curr_line, auto& path) {
-            curr_line += tspan.node_at(path.back().node_index).name;
-          }));
+          SILVA_REQUIRE(tspan.to_string_flat_bottom_up(print_test_node(tspan)));
       const string_view_t expected = R"(
   H
 ┌─D
@@ -136,6 +133,27 @@ A
         results.push_back(tspan_child.node_at(0).name);
       }
       CHECK(results == array_t<string_t>{"B", "C", "D"});
+    }
+
+    {
+      auto key_func = [](const auto& child) {
+        return -index_t(child.node_at(0).name[0]);
+      };
+      array_t<test_tree_node_t> sorted_tree = tspan.sorted(key_func);
+      const tree_span_t sorted_tspan{sorted_tree};
+      const string_t result_str =
+          SILVA_REQUIRE(sorted_tspan.to_string_top_down(print_test_node(sorted_tspan)));
+      const string_view_t expected = R"(
+[0] A
+  [0] D
+    [0] H
+  [1] C
+  [2] B
+    [0] F
+      [0] G
+    [1] E
+)";
+      CHECK(result_str == expected.substr(1));
     }
   }
 }

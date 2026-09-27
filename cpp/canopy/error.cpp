@@ -90,7 +90,7 @@ namespace silva {
     }
   }
 
-  string_or_view_t error_t::to_string_structured() const
+  string_or_view_t error_t::to_string_flat() const
   {
     const auto& tree = context->tree;
     const tree_span_t<const error_tree_t::node_t> tspan{&tree.nodes[node_index], -1};
@@ -103,7 +103,7 @@ namespace silva {
 
   void pretty_write_impl(const error_t& self, byte_sink_t* stream)
   {
-    stream->write_str(self.to_string_structured().as_string_view());
+    stream->write_str(self.to_string_flat().as_string_view());
   }
 
   void error_t::materialize()
