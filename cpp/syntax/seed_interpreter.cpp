@@ -104,10 +104,10 @@ namespace silva::seed::impl {
           commit_after = std::min(*commit_after, leading_literals);
         }
       }
-      const auto [it, inserted] = se->expr_data.emplace(pts_concat,
-                                                        interpreter_t::expr_data_t{
-                                                            .commit_after = commit_after,
-                                                        });
+      const auto [it, inserted] = se->sub_expr_data.emplace(pts_concat,
+                                                            interpreter_t::sub_expr_data_t{
+                                                                .commit_after = commit_after,
+                                                            });
       SILVA_EXPECT(inserted, ASSERT, "{} concatenated expression handled twice", pts_concat);
       return {};
     }
@@ -703,8 +703,8 @@ namespace silva::seed::impl {
       auto ss                           = stake();
       error_nursery_t error_nursery;
 
-      const auto it = se->expr_data.find(pts);
-      SILVA_EXPECT(it != se->expr_data.end(),
+      const auto it = se->sub_expr_data.find(pts);
+      SILVA_EXPECT(it != se->sub_expr_data.end(),
                    MAJOR,
                    "{} no expression-data for concatenated expression",
                    pts);

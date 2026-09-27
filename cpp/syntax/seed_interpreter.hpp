@@ -21,14 +21,6 @@ namespace silva::seed {
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
     hash_map_t<name_id_t, axe_t> axes;
 
-    // Maps a token of the form ['word'] (i.e., of category: string) to a token of the form [word]
-    // (i.e., of category: identifier or operator).
-    hash_map_t<token_id_t, fragmented_token_t> string_to_ft;
-
-    // Maps a rule/scope name to all string-literal tokens occuring inside that scope (including
-    // nested rules); used to implement the "literals_of" mechanism.
-    hash_map_t<name_id_t, array_t<fragmented_token_t>> scope_to_literals;
-
     struct language_data_t {
       parse_tree_span_t pts;
       name_id_t skip_rule_name;
@@ -38,10 +30,20 @@ namespace silva::seed {
     };
     hash_map_t<token_id_t, language_data_t> languages;
 
-    struct expr_data_t {
+    // Maps a rule/scope name to all string-literal tokens occuring inside that scope (including
+    // nested rules); used to implement the "literals_of" mechanism.
+    hash_map_t<name_id_t, array_t<fragmented_token_t>> scope_to_literals;
+
+    // Maps a token of the form ['word'] (i.e., of category: string) to a token of the form [word]
+    // (i.e., of category: identifier or operator).
+    hash_map_t<token_id_t, fragmented_token_t> string_to_ft;
+
+    struct sub_expr_data_t {
+      // If a concat expression contains a '~', this member contains the index of the '~' in that
+      // concat expression.
       optional_t<index_t> commit_after;
     };
-    hash_map_t<parse_tree_span_t, expr_data_t> expr_data;
+    hash_map_t<parse_tree_span_t, sub_expr_data_t> sub_expr_data;
 
     interpreter_t(syntax_farm_ptr_t);
 
@@ -54,9 +56,9 @@ namespace silva::seed {
     expected_t<void> compile();
     bool is_compiled = false;
 
-    // For each node-index that is a "_.Seed.Nonterminal", gives the full name of the rule that this
-    // nonterminal references, taking into account the relative scope in which the rule was
-    // encountered.
+    // For each parse_tree_span_t with rule-name = .Seed.Nonterminal, contains the full name of the
+    // rule that this nonterminal references, taking into account the relative scope in which the
+    // rule was encountered.
     hash_set_t<name_id_ref_t> resolved_names;
 
     expected_t<parse_tree_ptr_t> apply(fragment_span_t, name_id_t goal_rule_name);
