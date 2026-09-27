@@ -41,7 +41,7 @@ namespace silva::seed::test {
     const unique_ptr_t<seed::interpreter_t> se = standard_seed_interpreter(sf.ptr());
     const string_view_t test_axe_str           = R"'(
 language Test:
-  ⊙ = axe Atom
+  main = axe Atom
     Dot   = rtl   infix '.'
     Sub   = ltr   postfix_nest '[' ']'
     Dol   = ltr   postfix '$'
@@ -597,7 +597,7 @@ language Test:
     const unique_ptr_t<seed::interpreter_t> se = standard_seed_interpreter(sf.ptr());
     const string_view_t test_axe_str           = R"'(
 language Test:
-  ⊙ = axe Atom
+  main = axe Atom
     PrfHi   = rtl   prefix_nest '(' ')'
     Cat     = ltr   infix concat
     PrfLo   = rtl   prefix_nest '{' '}' prefix_nest -> Args '<:' ':>'

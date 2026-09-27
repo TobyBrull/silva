@@ -13,7 +13,7 @@ namespace silva::seed {
 
    public:
     const fragmented_token_t ti_dot           = *fragmented_token(sfp, ".");
-    const fragmented_token_t ti_here          = *fragmented_token(sfp, "⊙");
+    const fragmented_token_t ti_main          = *fragmented_token(sfp, "main", true);
     const fragmented_token_t ti_comma         = *fragmented_token(sfp, ",");
     const fragmented_token_t ti_dash          = *fragmented_token(sfp, "-");
     const fragmented_token_t ti_equal         = *fragmented_token(sfp, "=");
@@ -90,7 +90,7 @@ namespace silva::seed {
     const name_id_t ni_language    = sfp->name_id_of(ni_seed, "Language");
     const name_id_t ni_scope       = sfp->name_id_of(ni_seed, "Scope");
     const name_id_t ni_rule        = sfp->name_id_of(ni_seed, "Rule");
-    const name_id_t ni_here        = sfp->name_id_of(ni_seed, "here");
+    const name_id_t ni_main_token  = sfp->name_id_of(ni_seed, "mainToken");
     const name_id_t ni_qualifier   = sfp->name_id_of(ni_seed, "qualifier");
     const name_id_t ni_expr        = sfp->name_id_of(ni_seed, "Expr");
     const name_id_t ni_atom        = sfp->name_id_of(ni_expr, "Atom");

@@ -7,7 +7,7 @@ namespace silva::fern {
 language Fern:
   skip = freeForm
 
-  ⊙ = '[' LabeledItem * ']'
+  main = '[' LabeledItem * ']'
   LabeledItem = ( label ':' ) ? ( Fern | value )
   label = string | identifier
   value = none | boolean | number | string

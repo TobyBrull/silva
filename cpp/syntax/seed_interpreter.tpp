@@ -10,7 +10,7 @@ namespace silva::seed::test {
   {
     const string_view_t frog_seed = R"'(
 language Frog:
-  ⊙ = Rule *
+  main = Rule *
   skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
   identifier = ID_START ID_CONTINUE *
   Rule = RuleName Expr
@@ -18,7 +18,7 @@ language Frog:
   Expr = Primary +
   Primary = not literals_of Keyword but_then identifier
   Keyword:
-    ⊙ = 'keyword1' | 'keyword2' | 'keyword3'
+    main = 'keyword1' | 'keyword2' | 'keyword3'
 )'";
     syntax_farm_t sf;
     interpreter_t se(sf.ptr());
@@ -27,8 +27,8 @@ language Frog:
 [0] .Seed                                         langu ... 3'<NEWLINE><DEDENT><DEDENT>¦
   [0] .Seed.Language                              langu ... 3'<NEWLINE><DEDENT><DEDENT>¦
     [0] .Seed.ruleName                            ｢Frog｣
-    [1] .Seed.Rule                                ⊙ = R ... le *<NEWLINE>¦
-      [0] .Seed.here                              ｢⊙｣
+    [1] .Seed.Rule                                main  ... le *<NEWLINE>¦
+      [0] .Seed.mainToken                         ｢main｣
       [1] .Seed.Expr                              Rule *¦
         [0] .Seed.Expr.Postfix.*                  Rule *¦
           [0] .Seed.Nonterminal                   Rule ¦
@@ -97,8 +97,8 @@ language Frog:
     [8] .Seed.Scope                               Keywo ... d3'<NEWLINE><DEDENT>¦
       [0] .Seed.Nonterminal                       Keyword¦
         [0] .Seed.ruleName                        ｢Keyword｣
-      [1] .Seed.Rule                              ⊙ = ' ... rd3'<NEWLINE>¦
-        [0] .Seed.here                            ｢⊙｣
+      [1] .Seed.Rule                              main  ... rd3'<NEWLINE>¦
+        [0] .Seed.mainToken                       ｢main｣
         [1] .Seed.Expr                            'keyw ... ord3'¦
           [0] .Seed.Expr.Or.|                     'keyw ... ord3'¦
             [0] .Seed.Terminal                    'keyw ... rd1' ¦
@@ -162,7 +162,7 @@ language Frog:
 
     const string_view_t testor_lang = R"'(
 language Testor:
-  ⊙ = Assign *
+  main = Assign *
   skip = freeForm
   Assign = identifier '=' identifier operator.single identifier
 )'";
@@ -194,7 +194,7 @@ language Testor:
     const string_view_t testor_seed = R"'(
 language Testor:
   skip = freeForm
-  ⊙ = Plain
+  main = Plain
   Plain          =   "static" "func" identifier | "static" identifier number
   NoPrefix       = ε "static" "func" identifier | "static" identifier number
   NoPrefixCommit = ε "static" "func" ~ identifier | "static" identifier number
@@ -224,12 +224,12 @@ language Testor:
   {
     const string_view_t text1_seed = R"'(
 language Foo:
-  ⊙ = 'a' 'b' 'c' Bar ?
+  main = 'a' 'b' 'c' Bar ?
   skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 )'";
     const string_view_t text2_seed = R"'(
 Bar:
-  ⊙ = 'x' 'y' 'z' Foo ?
+  main = 'x' 'y' 'z' Foo ?
   Blub = 'u' 'v' 'w'
 )'";
     syntax_farm_t sf;
@@ -256,7 +256,7 @@ Bar:
   {
     const string_view_t fstr_seed = R"'(
 language Fstr:
-  ⊙ = fstring
+  main = fstring
   skip = freeForm
   fstring = '"' ( Field | chunk ) * '"'
   chunk = ( not [ '"' '{' '}' ] ANY ) +
@@ -264,7 +264,7 @@ language Fstr:
   formatSpec = ':' ( Field | formatChunk ) *
   formatChunk = ( not [ '{' '}' ] ANY ) +
   Sum:
-    ⊙ = axe Atom
+    main = axe Atom
       Add = ltr infix '+'
     Atom = identifier
 )'";
@@ -311,7 +311,7 @@ language Fstr:
     const string_view_t unskip_seed = R"'(
 language Unskip:
   skip = ( SPACE | NEWLINE ) *
-  ⊙ = backtrack
+  main = backtrack
   backtrack = Backtrack SPACE 'x' SPACE 'z'
   Backtrack = 'a' ( 'x' 'y' ) ?
 )'";
@@ -334,7 +334,7 @@ language Unskip:
     const string_view_t unskip_seed = R"'(
 language Unskip:
   skip = ( SPACE | NEWLINE ) *
-  ⊙ = zeroWidth
+  main = zeroWidth
   zeroWidth = ZeroWidth 'x'
   ZeroWidth = 'a' maybeY
   maybeY = 'y' ?

@@ -6,7 +6,7 @@ namespace silva::seed {
 
   const string_view_t globals_str = R"'(
 string:
-  ⊙ = MULTILINE_STRING | single | double
+  main = MULTILINE_STRING | single | double
   single = no_node '\'' ~ ( '\\' ANY | not '\'' ANY ) * '\''
   double = no_node '"' ~ ( '\\' ANY | not '"' ANY ) * '"'
 
@@ -16,7 +16,7 @@ operator:
   greedy = no_node OPERATOR +
 
 identifier:
-  ⊙ = ID_START ID_CONTINUE *
+  main = ID_START ID_CONTINUE *
   withDashes  = no_node ID_START ( ID_CONTINUE | '-' ) *
   kebabCase   = no_node ID_LOWER [ '-' ID_LOWER DIGIT ] *           not ID_CONTINUE
   snakeCase   = no_node [ '_' ID_LOWER DIGIT ] +                    not ID_CONTINUE
@@ -39,7 +39,7 @@ number:
 
     float:
       special = [ 'inf' 'nan' ]
-      ⊙ = special | integerPart ( exponent | fraction exponent ? )
+      main = special | integerPart ( exponent | fraction exponent ? )
       integerPart = integer.decimal
       fraction = '.' integer.decimal
       exponent = 'e' plusMinus ? integer.decimal
@@ -51,13 +51,13 @@ number:
     octal = plusMinus ? unsigned.integer.octal
     hexadecimal = plusMinus ? unsigned.integer.hexadecimal
     decimal = plusMinus ? unsigned.integer.decimal
-    ⊙ = [ binary octal hexadecimal decimal ]
+    main = [ binary octal hexadecimal decimal ]
 
   float:
     special = plusMinus ? unsigned.float.special
-    ⊙ = plusMinus ? unsigned.float
+    main = plusMinus ? unsigned.float
 
-  ⊙ = [ float float.special integer ]
+  main = [ float float.special integer ]
 
 # date:               2026-03-07
 date = DIGIT{4} '-' DIGIT{2} '-' DIGIT{2} not DIGIT
@@ -68,7 +68,7 @@ date = DIGIT{4} '-' DIGIT{2} '-' DIGIT{2} not DIGIT
 # time.point:         2026-03-07/23:56:04/123.456/America/New_York
 time:
   ofDay:
-    ⊙ = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ '/' DIGIT{3} ⇒ '.' DIGIT{3} ⇒ '.' DIGIT{3} ) not DIGIT
+    main = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ '/' DIGIT{3} ⇒ '.' DIGIT{3} ⇒ '.' DIGIT{3} ) not DIGIT
     # time_of_day_rfc:  23:56:00.123456
     rfc     = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ '.' DIGIT{3} ⇒ DIGIT{3} ⇒ DIGIT{3} ) not DIGIT
     any     = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ ( '.' | '/' ) DIGIT{3} ⇒ DIGIT{3} ⇒ DIGIT{3} ) not DIGIT
@@ -76,12 +76,12 @@ time:
   zone = ( 'Z' | 'UTC' | ( '+' | '-' ) DIGIT{2} ':' DIGIT{2} not DIGIT )
 
   point:
-    ⊙ = local '/' time.zone
+    main = local '/' time.zone
     rfc = local.rfc time.zone
     any = time.point | time.point.rfc
 
     local:
-      ⊙ = date '/' time.ofDay
+      main = date '/' time.ofDay
       rfc = date ( 'T' | ' ' ) time.ofDay.rfc
       any = time.point.local | time.point.local.rfc
 
@@ -92,7 +92,7 @@ dedent  = no_node DEDENT .offSide.blankLines
 newline = no_node NEWLINE .offSide.blankLines
 
 offSide:
-  ⊙ = horizontal
+  main = horizontal
   initial = blankLines
   horizontal = no_node [ SPACE LINE_CONTINUATION comment ] *
   blankLines = no_node ( horizontal NEWLINE ) *

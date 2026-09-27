@@ -7,7 +7,7 @@ namespace silva::test {
   {
     const string_view_t expr_seed_text = R"'(
 language Expr:
-  ⊙ = Add
+  main = Add
   skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 Add = Mult ( '+' Add ) *
 Mult = Primary ( '*' Mult ) *
@@ -48,7 +48,7 @@ number = DIGIT +
   {
     const string_view_t expr_seed_text = R"'(
 language Expr:
-  ⊙ = axe Atom
+  main = axe Atom
     Mult    = ltr   infix '*'
     Add     = ltr   infix '+'
     Comp    = ltr   infix '<'

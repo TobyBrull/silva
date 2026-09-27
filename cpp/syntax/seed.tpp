@@ -25,7 +25,7 @@ string = '\'' ( not '\'' ANY ) * '\''
 number = DIGIT +
 
 language SimpleFern:
-  ⊙ = '[' ( LabeledItem ';' ? ) * ']'
+  main = '[' ( LabeledItem ';' ? ) * ']'
 
   skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 
@@ -67,8 +67,8 @@ language SimpleFern:
           [0] .Seed.fragName                      ｢DIGIT｣
   [2] .Seed.Language                              langu ... ber<NEWLINE><DEDENT>¦
     [0] .Seed.ruleName                            ｢SimpleFern｣
-    [1] .Seed.Rule                                ⊙ = ' ... ']'<NEWLINE><NEWLINE>¦
-      [0] .Seed.here                              ｢⊙｣
+    [1] .Seed.Rule                                main  ... ']'<NEWLINE><NEWLINE>¦
+      [0] .Seed.mainToken                         ｢main｣
       [1] .Seed.Expr                              '[' ( ... * ']'¦
         [0] .Seed.Expr.Concat.concat              '[' ( ... * ']'¦
           [0] .Seed.Terminal                      '[' ¦
@@ -199,7 +199,7 @@ language SimpleFern:
     {
       SILVA_REQUIRE(si->add_seed_text("t.seed", R"'(
 language Test:
-  ⊙ = val *
+  main = val *
   val = ( boolean | number | identifier )
   skip = freeForm
 )'"));

@@ -856,11 +856,11 @@ namespace silva::seed::impl {
       return ss_rule.commit();
     }
 
-    expected_t<parse_tree_node_t> here()
+    expected_t<parse_tree_node_t> main_token()
     {
       auto ss = stake();
-      ss.create_node(lexicon.ni_here, true);
-      ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(lexicon.ti_here)));
+      ss.create_node(lexicon.ni_main_token, true);
+      ss.add_proto_node(SILVA_EXPECT_FWD(parse_literal(lexicon.ti_main)));
       return ss.commit();
     }
 
@@ -871,7 +871,7 @@ namespace silva::seed::impl {
 
       {
         bool matched_here = false;
-        if (auto result = here(); result) {
+        if (auto result = main_token(); result) {
           SILVA_EXPECT_FWD(skip());
           ss_rule.add_proto_node(*result);
           matched_here = true;

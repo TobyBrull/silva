@@ -24,7 +24,7 @@ language Ash:
   skipHorizontal = no_node [ .comment SPACE LINE_CONTINUATION \
                              INDENT DEDENT INDENTATION_BROKEN ] *
 
-  ⊙ = Linebreak ( CompleteCommand ( NewlineList CompleteCommand ) * NewlineList ? ) ?
+  main = Linebreak ( CompleteCommand ( NewlineList CompleteCommand ) * NewlineList ? ) ?
 
   # Line structure and separators. Newlines are significant, so they are not skipped.
   newline       = no_node NEWLINE
@@ -40,7 +40,7 @@ language Ash:
   List            = AndOr ( separatorOp not newline AndOr ) *
 
   AndOr:
-    ⊙ = no_node axe Operand
+    main = no_node axe Operand
       Pipe  = ltr  infix_flat '|'
       Bang  = rtl  prefix '!'
       Logic = ltr  infix '&&' '||'

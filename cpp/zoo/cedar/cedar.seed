@@ -4,10 +4,10 @@
 language Cedar:
   skip = freeForm
 
-  ⊙ = Declaration *
+  main = Declaration *
 
   Declaration:
-    ⊙ = Specifiers Init ? ( ';' | Stmt.Compound )
+    main = Specifiers Init ? ( ';' | Stmt.Compound )
     Specifiers = [ StorageClassSpecifier FunctionSpecifier AlignmentSpecifier Type.Qualifier Type.Specifier ] +
     StorageClassSpecifier = [ "typedef" "extern" "static" "_Thread_local" ]
     FunctionSpecifier = "inline"
@@ -39,7 +39,7 @@ language Cedar:
     Enumerator = identifier ( '=' Expr.Conditional ) ?
 
     Declarator:
-      ⊙ = Pointer ? Direct
+      main = Pointer ? Direct
       Direct = ( identifier | '(' Declarator ')' ) Suffix *
       Abstract = Pointer DirectAbstract ? | DirectAbstract
       DirectAbstract = ( ε '(' Abstract ')' ) ? Suffix *
@@ -47,7 +47,7 @@ language Cedar:
       Suffix = '(' Declaration.ParameterList ? ')' | '[' Expr.Conditional ? ']'
 
   Stmt:
-    ⊙ = [ Compound If Switch Case Default While DoWhile For Continue Break Return Goto Label ExprStmt ]
+    main = [ Compound If Switch Case Default While DoWhile For Continue Break Return Goto Label ExprStmt ]
     Compound = '{' ( Stmt | Declaration ) * '}'
     If = "if" '(' Expr ')' Stmt ( "else" Stmt ) ?
     Switch = "switch" '(' Expr ')' Stmt
@@ -64,7 +64,7 @@ language Cedar:
     ExprStmt = Expr ? ';'
 
   Expr:
-    ⊙ = axe Atom
+    main = axe Atom
       Postfix     = ltr  postfix '++' '--' \
                          postfix_nest -> ExprOrEpsilon '(' ')' '[' ']' \
                          infix '.' '->'

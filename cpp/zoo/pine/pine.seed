@@ -21,10 +21,10 @@ language Pine:
   skip = offSide
   skip.initial = offSide.initial
 
-  ⊙ = Stmt *
+  main = Stmt *
 
   Stmt:
-    ⊙ = Compound | Simples
+    main = Compound | Simples
 
     Simples = Simple ( ε ';' Simple ) * ';' ? newline
     Simple = [ Return Import Raise Pass Del Yield Assert Break Continue Global Nonlocal \
@@ -33,7 +33,7 @@ language Pine:
     Compound = [ Function If Class With For Try While ]
 
     Assignment:
-      ⊙ = Annotated | Plain | Augmented
+      main = Annotated | Plain | Augmented
       Annotated = Expr.Primary ':' Expr ( '=' Rhs ) ?
       Plain = ( StarTargets '=' not '=' ) + Rhs
       Augmented = Expr.Primary augassign Rhs
@@ -52,7 +52,7 @@ language Pine:
     Assert = "assert" Expr ( ',' Expr ) ?
 
     Import:
-      ⊙ = Name | From
+      main = Name | From
       Name = "import" DottedAsName ( ε ',' DottedAsName ) *
       From = "from" ( dots ? DottedName "import" | dots "import" ) ~ Targets
       dots = '.' +
@@ -70,7 +70,7 @@ language Pine:
     Class = Decorators ? "class" ~ identifier TypeParams ( '(' Arguments ')' ) ? ':' Block
 
     Function:
-      ⊙ = Decorators ? async ? "def" ~ identifier TypeParams '(' Params ')' ( '->' Expr ) ? ':' Block
+      main = Decorators ? async ? "def" ~ identifier TypeParams '(' Params ')' ( '->' Expr ) ? ':' Block
       Params = Param ( ε ',' Param ) * ',' ? | ε
       Param = '/' | '**' ParamDef | '*' ParamDefStar ? | ParamDef
       ParamDef = identifier ( ':' Expr ) ? ( '=' Expr ) ?
@@ -86,17 +86,17 @@ language Pine:
     For = async ? "for" ~ StarTargets "in" StarExprs ':' Block Else ?
 
     With:
-      ⊙ = async ? "with" ~ Items ':' Block
+      main = async ? "with" ~ Items ':' Block
       Items = Item ( ε ',' Item ) * | ε '(' Item ( ε ',' Item ) * ',' ? ')'
       Item = Expr ( "as" StarTarget ) ?
 
     Try:
-      ⊙ = "try" ':' Block Except * Else ? Finally ?
+      main = "try" ':' Block Except * Else ? Finally ?
       Except = ε "except" star ? ( Expr ( "as" identifier ) ? ) ? ':' Block
       Finally = "finally" ':' Block
 
   TypeParams:
-    ⊙ = '[' Singular ( ε ',' Singular ) * ',' ? ']' | ε
+    main = '[' Singular ( ε ',' Singular ) * ',' ? ']' | ε
     Singular = no_node Normal | Star2 | Star1
     Normal = identifier ( ':' Expr ) ? Default ?
     Star1 = '*' identifier ( '=' StarExpr ) ?
@@ -118,7 +118,7 @@ language Pine:
   ForIfClause = "async" ? "for" StarTargets "in" ~ Expr.Disjunction ( "if" Expr.Disjunction ) *
 
   Expr:
-    ⊙ = no_node axe Atom
+    main = no_node axe Atom
       Primary     = ltr  postfix_nest -> Arguments '(' ')' \
                          postfix_nest -> Slices '[' ']' \
                          infix '.'
@@ -169,9 +169,9 @@ language Pine:
   builtinLiteral = "None" | "True" | "False"
 
   Strings:
-    ⊙ = ( string | fstring ) +
+    main = ( string | fstring ) +
     fstring:
-      ⊙ = prefix ( '"' ( Field | doubleChunk ) * '"' | '\'' ( Field | singleChunk ) * '\'' )
+      main = prefix ( '"' ( Field | doubleChunk ) * '"' | '\'' ( Field | singleChunk ) * '\'' )
       prefix = [ 'f' 'F' 't' 'T' ]
       doubleChunk = ( escape | not [ '"' '{' '}' ] ANY ) +
       singleChunk = ( escape | not [ '\'' '{' '}' ] ANY ) +
@@ -182,5 +182,5 @@ language Pine:
       formatChunk = ( not [ '{' '}' ] ANY ) +
 
   number:
-    ⊙ = .number imaginaryPart ?
+    main = .number imaginaryPart ?
     imaginaryPart = [ 'j' 'J' ]

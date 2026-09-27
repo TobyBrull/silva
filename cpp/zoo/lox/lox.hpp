@@ -11,16 +11,16 @@ namespace silva::lox {
 language Lox:
   skip = freeForm
 
-  ⊙ = ( Decl | Stmt ) *
+  main = ( Decl | Stmt ) *
   Decl:
-    ⊙ = Var | Fun | Class
+    main = Var | Fun | Class
     Var = "var" identifier ( '=' Expr ) ? ';'
     Fun = "fun" Function
     Class:
-      ⊙ = "class" identifier Super '{' Function * '}'
+      main = "class" identifier Super '{' Function * '}'
       Super = ( '<' identifier ) ?
   Stmt:
-    ⊙ = Print | If | For | While | Return | Block | ExprStmt
+    main = Print | If | For | While | Return | Block | ExprStmt
     Print = "print" Expr ';'
     If = "if" '(' Expr ')' Stmt ( "else" Stmt ) ?
     For = "for" '(' \
@@ -33,7 +33,7 @@ language Lox:
     Block = '{' ( Decl | Stmt ) * '}'
     ExprStmt = Expr ';'
   Expr:
-    ⊙ = axe Atom
+    main = axe Atom
       Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
       Unary       = rtl prefix '!' '-'
       Factor      = ltr infix '*' '/'
@@ -49,7 +49,7 @@ language Lox:
     literal = "true" | "false" | "nil" | "this"
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
-    ⊙ = identifier '(' Parameters ')' Stmt.Block
+    main = identifier '(' Parameters ')' Stmt.Block
     Parameters = ( identifier ( ',' identifier ) * ) ?
 )'";
 

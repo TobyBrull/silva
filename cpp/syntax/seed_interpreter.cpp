@@ -123,7 +123,7 @@ namespace silva::seed::impl {
 
       name_id_t curr_rule_name;
       bool is_twig_rule = false;
-      if ((*it).rule_name() == lexicon.ni_here) {
+      if ((*it).rule_name() == lexicon.ni_main_token) {
         curr_rule_name = scope_name;
         is_twig_rule   = scope_is_twig_rule;
       }

@@ -96,15 +96,15 @@ language Seed:
   ruleName = identifier.pascalCase
   tokenCategoryName = identifier.camelCase
 
-  ⊙ = [ Language Scope Rule ] *
+  main = [ Language Scope Rule ] *
   Language = "language" ruleName ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
-  Rule = ( here | Nonterminal ) '=' qualifier * ( "axe" Axe | Expr newline )
-  here = '⊙'
+  Rule = ( mainToken | Nonterminal ) '=' qualifier * ( "axe" Axe | Expr newline )
+  mainToken = "main"
   qualifier = [ "no_node" "no_whitespace" "literal_nodes" ]
   Expr:
-    ⊙ = axe Atom
+    main = axe Atom
       Ending    = ltr   infix "ending_with"
       Prefix    = rtl   prefix "not"
       Postfix   = ltr   postfix '?' '*' '+' \
