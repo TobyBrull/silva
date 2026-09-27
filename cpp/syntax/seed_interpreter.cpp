@@ -54,13 +54,13 @@ namespace silva::seed::impl {
                                    const bool is_no_whitespace = false,
                                    const bool is_literal_nodes = false)
     {
-      const auto [emplace_it, inserted] = se->rule_exprs.emplace(
-          rule_name,
-          interpreter_t::rule_expr_data_t{.expr             = pts,
-                                          .is_twig_rule     = is_twig_rule,
-                                          .is_no_node       = is_no_node,
-                                          .is_no_whitespace = is_no_whitespace,
-                                          .is_literal_nodes = is_literal_nodes});
+      const auto [emplace_it, inserted] =
+          se->rules.emplace(rule_name,
+                            interpreter_t::rule_data_t{.expr             = pts,
+                                                       .is_twig_rule     = is_twig_rule,
+                                                       .is_no_node       = is_no_node,
+                                                       .is_no_whitespace = is_no_whitespace,
+                                                       .is_literal_nodes = is_literal_nodes});
       SILVA_EXPECT(inserted,
                    MINOR,
                    "{} rule {} defined again, previously defined at {}",
@@ -186,7 +186,7 @@ namespace silva::seed::impl {
         SILVA_EXPECT(parent_ni.base_name == current_language_id.value(), ASSERT);
         interpreter_t::language_data_t& ld = se->languages.at(*current_language_id);
         ld.skip_rule_name                  = curr_rule_name;
-        ld.skip_rule_expr                  = interpreter_t::rule_expr_data_t{
+        ld.skip_rule_expr                  = interpreter_t::rule_data_t{
             .expr         = pts_rhs_0,
             .is_twig_rule = true,
         };
@@ -205,7 +205,7 @@ namespace silva::seed::impl {
                      ASSERT);
         interpreter_t::language_data_t& ld = se->languages.at(*current_language_id);
         ld.skip_initial_rule_name          = curr_rule_name;
-        ld.skip_initial_rule_expr          = interpreter_t::rule_expr_data_t{
+        ld.skip_initial_rule_expr          = interpreter_t::rule_data_t{
             .expr         = pts_rhs_0,
             .is_twig_rule = true,
         };
@@ -390,12 +390,12 @@ namespace silva::seed::impl {
 
     int twig_rule_depth = 0;
 
-    const interpreter_t::rule_expr_data_t* curr_rule = nullptr;
+    const interpreter_t::rule_data_t* curr_rule = nullptr;
     struct rule_expr_data_scope_t {
       interpreter_apply_nursery_t& self;
-      const interpreter_t::rule_expr_data_t* prev_value = nullptr;
+      const interpreter_t::rule_data_t* prev_value = nullptr;
       rule_expr_data_scope_t(interpreter_apply_nursery_t& self_,
-                             const interpreter_t::rule_expr_data_t* new_value)
+                             const interpreter_t::rule_data_t* new_value)
         : self(self_), prev_value(self_.curr_rule)
       {
         self.curr_rule = new_value;
@@ -924,8 +924,8 @@ namespace silva::seed::impl {
     {
       const auto it = se->axes.find(axe_rule_name);
       SILVA_EXPECT(it != se->axes.end(), MAJOR);
-      const auto it_re = se->rule_exprs.find(axe_rule_name);
-      SILVA_EXPECT(it_re != se->rule_exprs.end(), MAJOR);
+      const auto it_re = se->rules.find(axe_rule_name);
+      SILVA_EXPECT(it_re != se->rules.end(), MAJOR);
       const bool is_no_node = it_re->second.is_no_node;
       auto ss{stake()};
       const axe_t& axe = it->second;
@@ -957,12 +957,12 @@ namespace silva::seed::impl {
     }
 
     expected_t<void> skip_impl(const name_id_t rule_name,
-                               const optional_t<interpreter_t::rule_expr_data_t>& skip_rule_expr)
+                               const optional_t<interpreter_t::rule_data_t>& skip_rule_expr)
     {
       if (!skip_rule_expr.has_value()) {
         return {};
       }
-      const interpreter_t::rule_expr_data_t& sre = *skip_rule_expr;
+      const interpreter_t::rule_data_t& sre = *skip_rule_expr;
       SILVA_EXPECT(!sre.expr.ptp.is_nullptr(), ASSERT);
       auto ss = stake();
       SILVA_EXPECT_FWD_IF(MAJOR, handle_twig_rule(rule_name, sre, true));
@@ -980,12 +980,12 @@ namespace silva::seed::impl {
       SILVA_EXPECT(rule_depth <= 100,
                    FATAL,
                    "Stack is getting too deep. Infinite recursion in grammar?");
-      const auto it{se->rule_exprs.find(t_rule_name)};
-      SILVA_EXPECT(it != se->rule_exprs.end(),
+      const auto it{se->rules.find(t_rule_name)};
+      SILVA_EXPECT(it != se->rules.end(),
                    MAJOR,
                    "Unknown rule: {}",
                    lexicon.name_id_str(t_rule_name));
-      const interpreter_t::rule_expr_data_t& rule_data = it->second;
+      const interpreter_t::rule_data_t& rule_data = it->second;
       node_and_error_t retval;
       if (rule_data.is_twig_rule) {
         retval = SILVA_EXPECT_FWD_PLAIN(handle_twig_rule(t_rule_name, rule_data, false));
@@ -997,9 +997,8 @@ namespace silva::seed::impl {
       return retval;
     }
 
-    expected_t<node_and_error_t>
-    handle_branch_rule(const name_id_t t_rule_name,
-                       const interpreter_t::rule_expr_data_t& rule_data)
+    expected_t<node_and_error_t> handle_branch_rule(const name_id_t t_rule_name,
+                                                    const interpreter_t::rule_data_t& rule_data)
     {
       // A branch-rule inside a twig-rule skips as usual, except after its last token.
       const int outer_twig_rule_depth = twig_rule_depth;
@@ -1041,7 +1040,7 @@ namespace silva::seed::impl {
     }
 
     expected_t<node_and_error_t> handle_twig_rule(const name_id_t t_rule_name,
-                                                  const interpreter_t::rule_expr_data_t& rule_data,
+                                                  const interpreter_t::rule_data_t& rule_data,
                                                   const bool from_skip)
     {
       rule_expr_data_scope_t rule_scope(*this, &rule_data);
@@ -1114,7 +1113,7 @@ namespace silva::seed {
     compile_reset();
 
     const lexicon_t& lexicon = bootstrap_interpreter.lexicon();
-    for (const auto& [rule_name, rule_data]: rule_exprs) {
+    for (const auto& [rule_name, rule_data]: rules) {
       const parse_tree_span_t& pts_rule = rule_data.expr;
       if (pts_rule.rule_name() == lexicon.ni_axe_level) {
         // These parse-trees are already handled by the enclosing axe.
@@ -1131,7 +1130,7 @@ namespace silva::seed {
         const auto pts_nt   = pts_rule.subspan_at(path.back().node_index);
         auto [it, inserted] = resolved_names.emplace(pts_nt);
         SILVA_EXPECT(inserted, ASSERT);
-        SILVA_EXPECT_FWD(it->resolve(rule_name, lexicon, rule_exprs));
+        SILVA_EXPECT_FWD(it->resolve(rule_name, lexicon, rules));
         return true;
       });
       SILVA_EXPECT_FWD(std::move(res),
@@ -1140,7 +1139,7 @@ namespace silva::seed {
     }
 
     for (auto& [rule_name, axe]: axes) {
-      SILVA_EXPECT_FWD(axe.compile(lexicon, rule_exprs));
+      SILVA_EXPECT_FWD(axe.compile(lexicon, rules));
     }
 
     is_compiled = true;

@@ -9,14 +9,14 @@ namespace silva::seed {
     syntax_farm_ptr_t sfp;
     bootstrap_interpreter_t bootstrap_interpreter;
 
-    struct rule_expr_data_t {
+    struct rule_data_t {
       parse_tree_span_t expr;
       bool is_twig_rule     = false;
       bool is_no_node       = false;
       bool is_no_whitespace = false;
       bool is_literal_nodes = false;
     };
-    hash_map_t<name_id_t, rule_expr_data_t> rule_exprs;
+    hash_map_t<name_id_t, rule_data_t> rules;
 
     // Maps the rule-name of a seed-axe to the corresponding seed-axe.
     hash_map_t<name_id_t, axe_t> axes;
@@ -24,9 +24,9 @@ namespace silva::seed {
     struct language_data_t {
       parse_tree_span_t pts;
       name_id_t skip_rule_name;
-      optional_t<rule_expr_data_t> skip_rule_expr;
+      optional_t<rule_data_t> skip_rule_expr;
       name_id_t skip_initial_rule_name;
-      optional_t<rule_expr_data_t> skip_initial_rule_expr;
+      optional_t<rule_data_t> skip_initial_rule_expr;
     };
     hash_map_t<token_id_t, language_data_t> languages;
 
