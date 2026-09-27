@@ -1,4 +1,5 @@
 #include "error_tree.hpp"
+#include "tree.hpp"
 
 #include "rfl/json/write.hpp"
 
@@ -13,9 +14,9 @@ namespace silva::test {
     tree_event_t event = INVALID;
 
     friend auto operator<=>(const result_t&, const result_t&) = default;
-    friend std::ostream& operator<<(std::ostream& os, const result_t& self)
+    friend void pretty_write_impl(const result_t& self, byte_sink_t* byte_sink)
     {
-      return os << rfl::json::write(self) << '\n';
+      byte_sink->format("{}\n", rfl::json::write(self));
     }
   };
 
@@ -40,16 +41,17 @@ namespace silva::test {
     tree.nodes.push_back(node_t{{.num_children = 4, .subtree_size = 15}}); // [14]
 
     array_t<result_t> result;
-    tree.visit_subtree(
-        [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> bool {
+    const index_t root_index = tree.nodes.size() - 1;
+    const tree_span_t<const node_t> tspan{&tree.nodes[root_index], -1};
+    SILVA_REQUIRE(tspan.visit_subtree(
+        [&](const span_t<const tree_branch_t> path, const tree_event_t event) -> expected_t<bool> {
           result.push_back(result_t{
               .stack_size = path.size(),
-              .node_index = path.back().node_index,
+              .node_index = root_index - path.back().node_index,
               .event      = event,
           });
           return true;
-        },
-        tree.nodes.size() - 1);
+        }));
     CHECK(result ==
           array_t<result_t>{{
               result_t{.stack_size = 1, .node_index = 14, .event = ON_ENTRY},
