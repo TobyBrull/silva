@@ -42,7 +42,7 @@ namespace silva::test {
 
     {
       const string_t result_str =
-          SILVA_REQUIRE(tspan.to_string([&](string_t& curr_line, auto& path) {
+          SILVA_REQUIRE(tspan.to_string_top_down([&](string_t& curr_line, auto& path) {
             curr_line += fmt::format(" {}", tspan.node_at(path.back().node_index).name);
           }));
       const string_view_t expected = R"(
@@ -59,7 +59,7 @@ namespace silva::test {
     }
     {
       const string_t result_str =
-          SILVA_REQUIRE(tspan.to_string_structured([&](string_t& curr_line, auto& path) {
+          SILVA_REQUIRE(tspan.to_string_flat_top_down([&](string_t& curr_line, auto& path) {
             curr_line += tspan.node_at(path.back().node_index).name;
           }));
       const string_view_t expected = R"(
@@ -76,7 +76,7 @@ A
     }
     {
       const string_t result_str =
-          SILVA_REQUIRE(tspan.to_string_structured_bottom_up([&](string_t& curr_line, auto& path) {
+          SILVA_REQUIRE(tspan.to_string_flat_bottom_up([&](string_t& curr_line, auto& path) {
             curr_line += tspan.node_at(path.back().node_index).name;
           }));
       const string_view_t expected = R"(

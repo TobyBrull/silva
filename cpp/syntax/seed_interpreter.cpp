@@ -365,14 +365,15 @@ namespace silva::seed::impl {
     {
       auto ett = SILVA_EXPECT_FWD(std::move(*this).as_tree());
       tree_span_t ets{ett};
-      string_t retval = SILVA_EXPECT_FWD(ets.to_string([&](string_t& curr_line, const auto& path) {
-        const auto& data = ets.node_at(path.back().node_index).item.data;
-        curr_line += lexicon.name_id_str(data.rule_name);
-        string_pad(curr_line, 85);
-        curr_line += fmt::format("{}", data.success);
-        string_pad(curr_line, 95);
-        curr_line += pretty_string(data.frag_pos);
-      }));
+      string_t retval =
+          SILVA_EXPECT_FWD(ets.to_string_top_down([&](string_t& curr_line, const auto& path) {
+            const auto& data = ets.node_at(path.back().node_index).item.data;
+            curr_line += lexicon.name_id_str(data.rule_name);
+            string_pad(curr_line, 85);
+            curr_line += fmt::format("{}", data.success);
+            string_pad(curr_line, 95);
+            curr_line += pretty_string(data.frag_pos);
+          }));
       return {std::move(retval)};
     }
   };

@@ -63,13 +63,13 @@ namespace silva {
     // friend hash_value_t hash_impl(const tree_span_t& x);
 
     template<typename NodeDataFunc>
-    expected_t<string_t> to_string(NodeDataFunc) const;
+    expected_t<string_t> to_string_top_down(NodeDataFunc) const;
 
     template<typename NodeDataFunc>
-    expected_t<string_t> to_string_structured(NodeDataFunc) const;
+    expected_t<string_t> to_string_flat_top_down(NodeDataFunc) const;
 
     template<typename NodeDataFunc>
-    expected_t<string_t> to_string_structured_bottom_up(NodeDataFunc) const;
+    expected_t<string_t> to_string_flat_bottom_up(NodeDataFunc) const;
 
     template<typename NodeDataFunc>
     expected_t<string_t> to_graphviz(NodeDataFunc) const;
@@ -321,7 +321,7 @@ namespace silva {
 
   template<typename NodeData>
   template<typename NodeDataFunc>
-  expected_t<string_t> tree_span_t<NodeData>::to_string(NodeDataFunc node_data_func) const
+  expected_t<string_t> tree_span_t<NodeData>::to_string_top_down(NodeDataFunc node_data_func) const
   {
     string_t retval;
     auto result = visit_subtree(
@@ -413,7 +413,7 @@ namespace silva {
   template<typename NodeData>
   template<typename NodeDataFunc>
   expected_t<string_t>
-  tree_span_t<NodeData>::to_string_structured(NodeDataFunc node_data_func) const
+  tree_span_t<NodeData>::to_string_flat_top_down(NodeDataFunc node_data_func) const
   {
     return impl::tree_to_string_structured<true>(*this, node_data_func);
   }
@@ -421,7 +421,7 @@ namespace silva {
   template<typename NodeData>
   template<typename NodeDataFunc>
   expected_t<string_t>
-  tree_span_t<NodeData>::to_string_structured_bottom_up(NodeDataFunc node_data_func) const
+  tree_span_t<NodeData>::to_string_flat_bottom_up(NodeDataFunc node_data_func) const
   {
     return impl::tree_to_string_structured<false>(*this, node_data_func);
   }

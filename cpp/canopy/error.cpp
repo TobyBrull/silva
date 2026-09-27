@@ -118,8 +118,8 @@ namespace silva {
     array_t<impl::error_node_t> nodes;
     impl::copy_error_tree(context->tree, nodes, node_index);
     const tree_span_t<const impl::error_node_t> tspan{nodes.data(), 1};
-    string_t retval = SILVA_ASSERT_FWD(
-        tspan.to_string_structured_bottom_up([&](string_t& curr_line, const auto& path) {
+    string_t retval =
+        SILVA_ASSERT_FWD(tspan.to_string_flat_bottom_up([&](string_t& curr_line, const auto& path) {
           const index_t error_node_index = tspan.node_at(path.back().node_index).error_node_index;
           curr_line += to_string(context->tree.nodes[error_node_index], context->any_vector);
         }));
