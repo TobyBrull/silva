@@ -4,10 +4,21 @@
 #include "context.hpp"
 #include "error_level.hpp"
 #include "error_relevance.hpp"
-#include "error_tree.hpp"
 #include "pretty_write.hpp"
+#include "tree_types.hpp"
 
 namespace silva {
+  struct error_tree_t {
+    struct node_t : public tree_node_t {
+      any_vector_index_t memento_buffer_offset;
+      any_vector_index_t memento_buffer_offset_end;
+      any_vector_index_t memento_buffer_begin;
+    };
+    array_t<node_t> nodes;
+
+    index_t children_begin(index_t node_index) const;
+  };
+
   struct error_context_t : public context_t<error_context_t> {
     constexpr static bool context_use_default = true;
     constexpr static bool context_mutable_get = true;
@@ -80,6 +91,10 @@ namespace silva {
 // IMPLEMENTATION
 
 namespace silva {
+  inline index_t error_tree_t::children_begin(const index_t node_index) const
+  {
+    return node_index + 1 - nodes[node_index].subtree_size;
+  }
 
   template<typename... MementoArgs>
   void error_t::replace_message(MementoArgs&&... memento_args)
