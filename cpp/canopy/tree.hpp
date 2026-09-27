@@ -62,12 +62,12 @@ namespace silva {
     template<index_t N, typename Self>
     expected_t<array_small_t<Self, N>> get_children_up_to(this const Self&);
 
-    // Calls KeyFunc on each node (or rather: on the tree_span_t derived class corresponding to that
-    // node) that has siblings, an (stably) sorts every set of siblings by the index_t that KeyFunc
-    // is expected to return.
-    template<typename Self, typename KeyFunc>
-      requires std::invocable<KeyFunc, const Self&>
-    array_t<NodeData> sorted(this const Self&, KeyFunc);
+    // Calls KeyFunc on each node that has siblings and (stably) sorts every set of siblings by the
+    // index_t that KeyFunc is expected to return. Like NodeDataFunc, KeyFunc is given the path from
+    // the root to the node.
+    template<typename KeyFunc>
+      requires std::invocable<KeyFunc, span_t<const tree_branch_t>>
+    array_t<std::remove_const_t<NodeData>> sorted(KeyFunc) const;
 
     friend bool operator==(const tree_span_t&, const tree_span_t&) = default;
     // friend hash_value_t hash_impl(const tree_span_t& x);
@@ -327,37 +327,47 @@ namespace silva {
   }
 
   template<typename NodeData>
-  template<typename Self, typename KeyFunc>
-    requires std::invocable<KeyFunc, const Self&>
-  array_t<NodeData> tree_span_t<NodeData>::sorted(this const Self& self, KeyFunc key_func)
+  template<typename KeyFunc>
+    requires std::invocable<KeyFunc, span_t<const tree_branch_t>>
+  array_t<std::remove_const_t<NodeData>> tree_span_t<NodeData>::sorted(KeyFunc key_func) const
   {
-    array_t<index_t> keys;
-    array_t<NodeData> retval;
+    const auto& self = *this;
+    array_t<std::remove_const_t<NodeData>> retval;
     retval.reserve(self.subtree_size());
-    const auto visit = [&](this const auto& visit, const Self& span) -> void {
-      retval.push_back(span.node_at(0));
-      const array_t<Self> children = span.get_children_array();
-      const index_t num_children   = children.size();
-      if (num_children <= 1) {
-        for (const Self& child: children) {
-          visit(child);
-        }
-        return;
-      }
-      keys.clear();
-      keys.reserve(num_children);
-      for (const Self& child: children) {
-        keys.push_back(key_func(child));
+    array_t<tree_branch_t> path;
+    array_t<index_t> child_positions;
+    array_t<index_t> keys;
+    const auto visit = [&](this const auto& visit) -> void {
+      const index_t node_index = path.back().node_index;
+      retval.push_back(self.node_at(node_index));
+      const index_t num_children = self.node_at(node_index).num_children;
+      const index_t base         = child_positions.size();
+      for (index_t i = 0, pos = node_index + 1; i < num_children; ++i) {
+        child_positions.push_back(pos);
+        pos += self.node_at(pos).subtree_size;
       }
       array_t<index_t> order(num_children);
       std::iota(order.begin(), order.end(), 0);
-      std::ranges::stable_sort(order,
-                               [&](const index_t a, const index_t b) { return keys[a] < keys[b]; });
-      for (const index_t i: order) {
-        visit(children[i]);
+      if (num_children > 1) {
+        keys.clear();
+        for (index_t i = 0; i < num_children; ++i) {
+          path.push_back({.node_index = child_positions[base + i], .child_index = i});
+          keys.push_back(key_func(span_t<const tree_branch_t>{path}));
+          path.pop_back();
+        }
+        std::ranges::stable_sort(order, [&](const index_t a, const index_t b) {
+          return keys[a] < keys[b];
+        });
       }
+      for (const index_t i: order) {
+        path.push_back({.node_index = child_positions[base + i], .child_index = i});
+        visit();
+        path.pop_back();
+      }
+      child_positions.resize(base);
     };
-    visit(self);
+    path.push_back({.node_index = 0, .child_index = 0});
+    visit();
     return retval;
   }
 

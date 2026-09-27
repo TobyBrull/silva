@@ -136,8 +136,8 @@ A
     }
 
     {
-      auto key_func = [](const auto& child) {
-        return -index_t(child.node_at(0).name[0]);
+      auto key_func = [&](const span_t<const tree_branch_t> path) {
+        return -index_t(tspan.node_at(path.back().node_index).name[0]);
       };
       array_t<test_tree_node_t> sorted_tree = tspan.sorted(key_func);
       const tree_span_t sorted_tspan{sorted_tree};
