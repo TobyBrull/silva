@@ -3,14 +3,6 @@
 * every name_id_t should be a namespace (that can contain other namespaces or rules) or a rule, but
   a rule should not be able to contain subrules
 
-* Errors:
-    * rethink error generation fundamentally
-        * In parsing errors, show what has been successfully parsed so far?
-        * pass node_and_error_t::last_error through seed-axe
-        * error involving Cedar's ExprStmt = Expr ? ';' have no useful info
-    * After errors, parsing should be resume (for error handling in IDEs)
-    * Maybe use Python's "invalid_*" rules?
-
 * Rewrite design.md
 
 * Runtime:
@@ -54,21 +46,21 @@
         * tokens may only have other tokens as nested rules
         * seed-axe (and its sub-rules) must not be defined as twig-rules
     * write tests for rules `number` and `date`
-    * make seed-engine-based error look more like the error from the manual Fern parser; by creating
-      bespoke error messages for certain edge cases.
-        * For Seed expressions of the form ( 'a' | 'b' | 'c' ) make sure that the error is just one
-          level ("could not parse ( 'a' | 'b' | 'c' )").
-        * For Seed expressions of the form ( not keywords_of _.Fern ), give the error "not one of
-          the keywords of _.Fern".
-    * Resumable parser, i.e., the parser should continue to produced a (broken) parse_tree_t even if
-      errors are encountered. For example, take all rules of the form `'<$' ... '$>'`, `'[' ...
-      ']'`, `( Expr ';' ) *`, or `( '-' Expr ) *`, determine how they are nested, and infer a
-      overall structure from this first. Then parse the rest by filling in the gaps in this overall
-      structure where possible, generating errors otherwise. The returned data-structure could be a
-      parse_tree_t that contains `_.Error` rules in those gaps where parsing failed.
-    * also make '`...`' strings in fragmentization?
+    * Errors:
+        * rethink error generation fundamentally
+            * In parsing errors, show what has been successfully parsed so far?
+            * pass node_and_error_t::last_error through seed-axe
+            * error involving Cedar's ExprStmt = Expr ? ';' have no useful info if the parse error is in
+              the Expr
+        * After errors, parsing should be resume (for error handling in IDEs)
+        * Maybe use Python's "invalid_*" rules?
+        * make seed-engine-based error look more like the error from the manual Fern parser; by creating
+          bespoke error messages for certain edge cases.
+            * For Seed expressions of the form ( 'a' | 'b' | 'c' ) make sure that the error is just one
+              level ("could not parse ( 'a' | 'b' | 'c' )").
+            * For Seed expressions of the form ( not keywords_of _.Fern ), give the error "not one of
+              the keywords of _.Fern".
     * support explicitly forcing 'node' or 'no_node' on individual called rule
-    * Python style string interpolation
     * Mappings:
         * Given a parse-tree and a language, can you validate if the parse-tree conforms to that
           language?
