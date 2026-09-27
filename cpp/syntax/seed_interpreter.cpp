@@ -123,13 +123,14 @@ namespace silva::seed::impl {
 
       name_id_t curr_rule_name;
       bool is_twig_rule = false;
-      if ((*it).rule_name() == lexicon.ni_main_token) {
+      const auto pts_nt = *it;
+      if (pts_nt.num_children() == 1 &&
+          SILVA_EXPECT_FWD(pts_nt.subspan_at(1).token()) == lexicon.ti_main) {
         curr_rule_name = scope_name;
         is_twig_rule   = scope_is_twig_rule;
       }
       else {
-        const auto pts_nt = *it;
-        curr_rule_name    = SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt));
+        curr_rule_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt));
         const auto back_name_pts = SILVA_EXPECT_FWD(pts_nt.iterate_to_child(-1));
         is_twig_rule             = (back_name_pts.rule_name() == lexicon.ni_token_cat_name);
       }

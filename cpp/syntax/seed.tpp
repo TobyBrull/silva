@@ -68,7 +68,8 @@ language SimpleFern:
   [2] .Seed.Language                              langu ... ber<NEWLINE><DEDENT>¦
     [0] .Seed.ruleName                            ｢SimpleFern｣
     [1] .Seed.Rule                                main  ... ']'<NEWLINE><NEWLINE>¦
-      [0] .Seed.mainToken                         ｢main｣
+      [0] .Seed.Nonterminal                       main ¦
+        [0] .Seed.tokenCategoryName               ｢main｣
       [1] .Seed.Expr                              '[' ( ... * ']'¦
         [0] .Seed.Expr.Concat.concat              '[' ( ... * ']'¦
           [0] .Seed.Terminal                      '[' ¦

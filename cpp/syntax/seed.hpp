@@ -100,8 +100,7 @@ language Seed:
   Language = "language" ruleName ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
-  Rule = ( mainToken | Nonterminal ) '=' qualifier * ( "axe" Axe | Expr newline )
-  mainToken = "main"
+  Rule = Nonterminal '=' qualifier * ( "axe" Axe | Expr newline )
   qualifier = [ "no_node" "no_whitespace" "literal_nodes" ]
   Expr:
     main = axe Atom

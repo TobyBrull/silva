@@ -28,7 +28,8 @@ language Frog:
   [0] .Seed.Language                              langu ... 3'<NEWLINE><DEDENT><DEDENT>¦
     [0] .Seed.ruleName                            ｢Frog｣
     [1] .Seed.Rule                                main  ... le *<NEWLINE>¦
-      [0] .Seed.mainToken                         ｢main｣
+      [0] .Seed.Nonterminal                       main ¦
+        [0] .Seed.tokenCategoryName               ｢main｣
       [1] .Seed.Expr                              Rule *¦
         [0] .Seed.Expr.Postfix.*                  Rule *¦
           [0] .Seed.Nonterminal                   Rule ¦
@@ -98,7 +99,8 @@ language Frog:
       [0] .Seed.Nonterminal                       Keyword¦
         [0] .Seed.ruleName                        ｢Keyword｣
       [1] .Seed.Rule                              main  ... rd3'<NEWLINE>¦
-        [0] .Seed.mainToken                       ｢main｣
+        [0] .Seed.Nonterminal                     main ¦
+          [0] .Seed.tokenCategoryName             ｢main｣
         [1] .Seed.Expr                            'keyw ... ord3'¦
           [0] .Seed.Expr.Or.|                     'keyw ... ord3'¦
             [0] .Seed.Terminal                    'keyw ... rd1' ¦
