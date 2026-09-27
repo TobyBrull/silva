@@ -11,7 +11,7 @@ namespace silva {
 language Silva:
   main = Section *
 
-  skip = freeForm
+  skip.main = freeForm
 
   languageName = identifier.pascalCase
   Section = languageName language

@@ -89,7 +89,7 @@ namespace silva::seed {
 
   const string_view_t seed_str = R"'(
 language Seed:
-  skip = offSide
+  skip.main = offSide
   skip.initial = offSide.initial
 
   fragName = identifier.macroCase

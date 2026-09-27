@@ -20,7 +20,7 @@
 #    « $(...) » is a branch-rule, which skips whitespace as usual inside the parentheses.
 
 language Ash:
-  skip = skipHorizontal
+  skip.main = skipHorizontal
   skipHorizontal = no_node [ .comment SPACE LINE_CONTINUATION \
                              INDENT DEDENT INDENTATION_BROKEN ] *
 

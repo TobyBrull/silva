@@ -8,7 +8,7 @@ namespace silva::test {
     const string_view_t expr_seed_text = R"'(
 language Expr:
   main = Add
-  skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
+  skip.main = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 Add = Mult ( '+' Add ) *
 Mult = Primary ( '*' Mult ) *
 Primary = '(' Expr ')' | number
@@ -53,7 +53,7 @@ language Expr:
     Add     = ltr   infix '+'
     Comp    = ltr   infix '<'
   Atom = 'if' Expr 'then' Expr 'else' Expr | number | identifier | '(' Expr ')'
-  skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
+  skip.main = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
   number = DIGIT +
   identifier = ID_START ID_CONTINUE *
 )'";

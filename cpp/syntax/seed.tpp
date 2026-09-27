@@ -27,7 +27,7 @@ number = DIGIT +
 language SimpleFern:
   main = '[' ( LabeledItem ';' ? ) * ']'
 
-  skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
+  skip.main = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 
   LabeledItem = ( Label ':' ) ? Item
   Label = string
@@ -84,9 +84,11 @@ language SimpleFern:
                     [0] .string                   ｢';'｣
           [2] .Seed.Terminal                      ']'¦
             [0] .string                           ｢']'｣
-    [2] .Seed.Rule                                skip  ... ) *<NEWLINE><NEWLINE>¦
-      [0] .Seed.Nonterminal                       skip ¦
+    [2] .Seed.Rule                                skip. ... ) *<NEWLINE><NEWLINE>¦
+      [0] .Seed.Nonterminal                       skip.main ¦
         [0] .Seed.tokenCategoryName               ｢skip｣
+        [1] .literal                              ｢.｣
+        [2] .Seed.tokenCategoryName               ｢main｣
       [1] .Seed.Expr                              ( SPA ... E ) *¦
         [0] .Seed.Expr.Postfix.*                  ( SPA ... E ) *¦
           [0] .Seed.Expr                          SPACE ... LINE ¦
@@ -202,7 +204,7 @@ language SimpleFern:
 language Test:
   main = val *
   val = ( boolean | number | identifier )
-  skip = freeForm
+  skip.main = freeForm
 )'"));
 
       test("ab 123ab\n", "Test", {"ab", "123", "ab"}, {id, num, id});

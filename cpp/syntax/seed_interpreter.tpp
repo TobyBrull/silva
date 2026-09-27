@@ -11,7 +11,7 @@ namespace silva::seed::test {
     const string_view_t frog_seed = R"'(
 language Frog:
   main = Rule *
-  skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
+  skip.main = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
   identifier = ID_START ID_CONTINUE *
   Rule = RuleName Expr
   RuleName = no_node Keyword
@@ -34,9 +34,11 @@ language Frog:
         [0] .Seed.Expr.Postfix.*                  Rule *¦
           [0] .Seed.Nonterminal                   Rule ¦
             [0] .Seed.ruleName                    ｢Rule｣
-    [2] .Seed.Rule                                skip  ...  ) *<NEWLINE>¦
-      [0] .Seed.Nonterminal                       skip ¦
+    [2] .Seed.Rule                                skip. ...  ) *<NEWLINE>¦
+      [0] .Seed.Nonterminal                       skip.main ¦
         [0] .Seed.tokenCategoryName               ｢skip｣
+        [1] .literal                              ｢.｣
+        [2] .Seed.tokenCategoryName               ｢main｣
       [1] .Seed.Expr                              ( SPA ... E ) *¦
         [0] .Seed.Expr.Postfix.*                  ( SPA ... E ) *¦
           [0] .Seed.Expr                          SPACE ... LINE ¦
@@ -165,7 +167,7 @@ language Frog:
     const string_view_t testor_lang = R"'(
 language Testor:
   main = Assign *
-  skip = freeForm
+  skip.main = freeForm
   Assign = identifier '=' identifier operator.single identifier
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_lang}));
@@ -195,7 +197,7 @@ language Testor:
   {
     const string_view_t testor_seed = R"'(
 language Testor:
-  skip = freeForm
+  skip.main = freeForm
   main = Plain
   Plain          =   "static" "func" identifier | "static" identifier number
   NoPrefix       = ε "static" "func" identifier | "static" identifier number
@@ -227,7 +229,7 @@ language Testor:
     const string_view_t text1_seed = R"'(
 language Foo:
   main = 'a' 'b' 'c' Bar ?
-  skip = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
+  skip.main = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 )'";
     const string_view_t text2_seed = R"'(
 Bar:
@@ -259,7 +261,7 @@ Bar:
     const string_view_t fstr_seed = R"'(
 language Fstr:
   main = fstring
-  skip = freeForm
+  skip.main = freeForm
   fstring = '"' ( Field | chunk ) * '"'
   chunk = ( not [ '"' '{' '}' ] ANY ) +
   Field = '{' Sum formatSpec ? '}'
@@ -312,7 +314,7 @@ language Fstr:
   {
     const string_view_t unskip_seed = R"'(
 language Unskip:
-  skip = ( SPACE | NEWLINE ) *
+  skip.main = ( SPACE | NEWLINE ) *
   main = backtrack
   backtrack = Backtrack SPACE 'x' SPACE 'z'
   Backtrack = 'a' ( 'x' 'y' ) ?
@@ -335,7 +337,7 @@ language Unskip:
   {
     const string_view_t unskip_seed = R"'(
 language Unskip:
-  skip = ( SPACE | NEWLINE ) *
+  skip.main = ( SPACE | NEWLINE ) *
   main = zeroWidth
   zeroWidth = ZeroWidth 'x'
   ZeroWidth = 'a' maybeY
