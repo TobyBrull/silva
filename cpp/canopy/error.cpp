@@ -90,38 +90,13 @@ namespace silva {
     }
   }
 
-  namespace impl {
-    struct error_node_t : public tree_node_t {
-      index_t error_node_index = 0;
-    };
-
-    void copy_error_tree(const error_tree_t& error_tree,
-                         array_t<error_node_t>& retval,
-                         const index_t error_node_index)
-    {
-      const index_t pos = retval.size();
-      error_node_t node;
-      node.num_children     = error_tree.nodes[error_node_index].num_children;
-      node.error_node_index = error_node_index;
-      retval.push_back(node);
-      error_tree.visit_children(
-          [&](const index_t child_node_index, const index_t) {
-            copy_error_tree(error_tree, retval, child_node_index);
-          },
-          error_node_index);
-      retval[pos].subtree_size = retval.size() - pos;
-    }
-  }
-
   string_or_view_t error_t::to_string_structured() const
   {
-    array_t<impl::error_node_t> nodes;
-    impl::copy_error_tree(context->tree, nodes, node_index);
-    const tree_span_t<const impl::error_node_t> tspan{nodes.data(), 1};
+    const auto& tree = context->tree;
+    const tree_span_t<const error_tree_t::node_t> tspan{&tree.nodes[node_index], -1};
     string_t retval =
         SILVA_ASSERT_FWD(tspan.to_string_flat_bottom_up([&](string_t& curr_line, const auto& path) {
-          const index_t error_node_index = tspan.node_at(path.back().node_index).error_node_index;
-          curr_line += to_string(context->tree.nodes[error_node_index], context->any_vector);
+          curr_line += to_string(tspan.node_at(path.back().node_index), context->any_vector);
         }));
     return string_or_view_t{std::move(retval)};
   }
