@@ -4,7 +4,7 @@
 #include "canopy/iterator_facade.hpp"
 #include "expected.hpp"
 #include "preprocessor.hpp"
-#include "tree_node.hpp"
+#include "tree_types.hpp"
 
 namespace silva {
 

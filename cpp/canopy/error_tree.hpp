@@ -2,7 +2,7 @@
 
 #include "any_vector.hpp"
 #include "assert.hpp"
-#include "tree_node.hpp"
+#include "tree_types.hpp"
 
 namespace silva {
   enum class tree_event_t {
@@ -13,14 +13,6 @@ namespace silva {
   };
   constexpr bool is_on_entry(tree_event_t);
   constexpr bool is_on_exit(tree_event_t);
-
-  struct tree_branch_t {
-    index_t node_index = 0;
-
-    // This node ("node_index") is child number "child_index" of its parent. Zero for the root
-    // node.
-    index_t child_index = 0;
-  };
 
   struct error_tree_t {
     struct node_t : public tree_node_t {
