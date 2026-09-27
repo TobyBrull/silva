@@ -12,6 +12,7 @@ namespace silva {
     friend auto operator<=>(const file_location_t&, const file_location_t&) = default;
 
     friend void pretty_write_impl(const file_location_t&, byte_sink_t*);
+    friend index_t error_relevance_impl(const file_location_t&);
   };
   static constexpr file_location_t file_location_eof{.line_num    = -1,
                                                      .column      = -1,

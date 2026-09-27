@@ -15,4 +15,8 @@ namespace silva {
       }
     }
   }
+  index_t error_relevance_impl(const file_location_t& x)
+  {
+    return x.byte_offset;
+  }
 }

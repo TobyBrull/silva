@@ -643,4 +643,11 @@ namespace silva {
     stream->format("{}:", self.fp->filepath.filename().string());
     silva::pretty_write(self.fp->location_at(self.fragment_index), stream);
   }
+  index_t error_relevance_impl(const fragment_location_t& self)
+  {
+    if (self.fp.is_nullptr()) {
+      return -1;
+    }
+    return silva::error_relevance(self.fp->location_at(self.fragment_index));
+  }
 }

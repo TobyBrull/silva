@@ -1,7 +1,6 @@
 #pragma once
 
 #include "customization_point.hpp"
-#include "file_location.hpp"
 
 namespace silva {
   struct error_relevance_t : public customization_point_t<index_t(const void*)> {
@@ -12,8 +11,6 @@ namespace silva {
 
   template<typename T>
   index_t error_relevance_impl(const T&);
-
-  index_t error_relevance_impl(const file_location_t&);
 }
 
 // IMPLEMENTATION
@@ -30,10 +27,5 @@ namespace silva {
   index_t error_relevance_impl(const T& x)
   {
     return -1;
-  }
-
-  inline index_t error_relevance_impl(const file_location_t& x)
-  {
-    return x.byte_offset;
   }
 }

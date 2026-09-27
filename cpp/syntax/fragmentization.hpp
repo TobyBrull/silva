@@ -80,6 +80,7 @@ namespace silva {
     index_t fragment_index = 0;
 
     friend void pretty_write_impl(const fragment_location_t&, byte_sink_t*);
+    friend index_t error_relevance_impl(const fragment_location_t&);
   };
 
   struct fragment_span_t {
