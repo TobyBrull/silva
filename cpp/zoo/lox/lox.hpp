@@ -9,18 +9,18 @@
 namespace silva::lox {
   const string_view_t seed_str = R"'(
 language Lox:
-  skip.main = freeForm
+  skip.@ = freeForm
 
-  main = ( Decl | Stmt ) *
+  @ = ( Decl | Stmt ) *
   Decl:
-    main = Var | Fun | Class
+    @ = Var | Fun | Class
     Var = "var" identifier ( '=' Expr ) ? ';'
     Fun = "fun" Function
     Class:
-      main = "class" identifier Super '{' Function * '}'
+      @ = "class" identifier Super '{' Function * '}'
       Super = ( '<' identifier ) ?
   Stmt:
-    main = Print | If | For | While | Return | Block | ExprStmt
+    @ = Print | If | For | While | Return | Block | ExprStmt
     Print = "print" Expr ';'
     If = "if" '(' Expr ')' Stmt ( "else" Stmt ) ?
     For = "for" '(' \
@@ -33,7 +33,7 @@ language Lox:
     Block = '{' ( Decl | Stmt ) * '}'
     ExprStmt = Expr ';'
   Expr:
-    main = axe Atom
+    @ = axe Atom
       Call        = ltr postfix_nest -> Arguments '(' ')' infix '.'
       Unary       = rtl prefix '!' '-'
       Factor      = ltr infix '*' '/'
@@ -49,7 +49,7 @@ language Lox:
     literal = "true" | "false" | "nil" | "this"
     Arguments = ( Expr ( ',' Expr ) * ) ?
   Function:
-    main = identifier '(' Parameters ')' Stmt.Block
+    @ = identifier '(' Parameters ')' Stmt.Block
     Parameters = ( identifier ( ',' identifier ) * ) ?
 )'";
 

@@ -33,7 +33,7 @@ namespace silva::seed {
 
   const string_view_t axe_str = R"'(
 Seed.Axe:
-  main = Seed.Nonterminal newline indent ( Level newline ) * dedent
+  @ = Seed.Nonterminal newline indent ( Level newline ) * dedent
   Level = ruleName '=' assoc Ops *
   assoc = "ltr" | "rtl"
   Ops = opType ( '->' Seed.Nonterminal ) ? op *

@@ -89,21 +89,21 @@ namespace silva::seed {
 
   const string_view_t seed_str = R"'(
 language Seed:
-  skip.main = offSide
+  skip.@ = offSide
   skip.initial = offSide.initial
 
   fragName = identifier.macroCase
   ruleName = identifier.pascalCase
   tokenCategoryName = identifier.camelCase
 
-  main = [ Language Scope Rule ] *
+  @ = [ Language Scope Rule ] *
   Language = "language" ruleName ':' ScopeImpl
   Scope = Nonterminal ':' ScopeImpl
   ScopeImpl = no_node newline indent ( Scope | Rule ) * dedent
   Rule = Nonterminal '=' qualifier * ( "axe" Axe | Expr newline )
   qualifier = [ "no_node" "no_whitespace" "literal_nodes" ]
   Expr:
-    main = axe Atom
+    @ = axe Atom
       Ending    = ltr   infix "ending_with"
       Prefix    = rtl   prefix "not"
       Postfix   = ltr   postfix '?' '*' '+' \
@@ -118,7 +118,7 @@ language Seed:
     NoNode = Expr
   Terminal = "literals_of" Nonterminal | [ keyword string fragName ]
   keyword = [ "ε" "language" '~' ]
-  Nonterminal = literal_nodes '.' ? ( Name '.' ) * Name
+  Nonterminal = literal_nodes '.' ? ( Name '.' ) * [ Name '@' ]
   Name = no_node [ ruleName tokenCategoryName ]
 )'";
 

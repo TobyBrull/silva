@@ -1,24 +1,24 @@
 Seed «
 language Soil:
-  skip.main = freeForm
+  skip.@ = freeForm
 
   typeName = identifier ending_with '_t'
   funcName = identifier ending_with '_f'
 
-  main = ( Type.Defn | Func.Defn | Variable.Defn ) *
+  @ = ( Type.Defn | Func.Defn | Variable.Defn ) *
   Type:
-    main = Name | Struct
+    @ = Name | Struct
     Name = typeName
     Defn = Name '=' Type
     Struct:
-      main = '[' Member * ']'
+      @ = '[' Member * ']'
       Member:
-        main = Type Label ? Init ? ';'
+        @ = Type Label ? Init ? ';'
         Label = ':' Name
         Init = '=' Expr
         Name = identifier
   Expr:
-    main = Axe
+    @ = Axe
     Maybe = Expr | ε
     Axe = no_node axe Atom
       Member    = ltr infix '.'
@@ -36,18 +36,18 @@ language Soil:
          | "true" | "false" | "none" \
          | '(' Expr ')'
     Struct:
-      main = '[' LabeledItem * ']'
+      @ = '[' LabeledItem * ']'
       LabeledItem = ( Variable.Name ':' ) ? ( Struct | Expr )
   Func:
-    main = Name
+    @ = Name
     Name = funcName
     Defn = Name '=' Signature Body
     Signature = Type ( '->' Type ) ?
     Body = '{' Stmt * '}'
     Stmt:
-      main = If | For | Expr ';'
+      @ = If | For | Expr ';'
       If:
-        main = "if" Branch ( "elif" Branch ) * ( "else" Body ) ?
+        @ = "if" Branch ( "elif" Branch ) * ( "else" Body ) ?
         Branch = Expr Body
       For = "for" Expr.Maybe ';' Expr.Maybe ';' Expr.Maybe Body
   Variable:

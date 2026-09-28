@@ -20,11 +20,11 @@
 #    « $(...) » is a branch-rule, which skips whitespace as usual inside the parentheses.
 
 language Ash:
-  skip.main = skipHorizontal
+  skip.@ = skipHorizontal
   skipHorizontal = no_node [ .comment SPACE LINE_CONTINUATION \
                              INDENT DEDENT INDENTATION_BROKEN ] *
 
-  main = Linebreak ( CompleteCommand ( NewlineList CompleteCommand ) * NewlineList ? ) ?
+  @ = Linebreak ( CompleteCommand ( NewlineList CompleteCommand ) * NewlineList ? ) ?
 
   # Line structure and separators. Newlines are significant, so they are not skipped.
   newline       = no_node NEWLINE
@@ -40,7 +40,7 @@ language Ash:
   List            = AndOr ( separatorOp not newline AndOr ) *
 
   AndOr:
-    main = no_node axe Operand
+    @ = no_node axe Operand
       Pipe  = ltr  infix_flat '|'
       Bang  = rtl  prefix '!'
       Logic = ltr  infix '&&' '||'

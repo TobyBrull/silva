@@ -420,14 +420,29 @@ namespace silva::seed::impl {
         ss_rule.add_proto_node(ss_local.commit());
       }
 
+      error_nursery_t error_nursery;
       {
         auto result = name();
         if (result) {
           ss_rule.add_proto_node(*result);
           return ss_rule.commit();
         }
-        return std::unexpected(std::move(result).error());
+        error_nursery.add_child_error(std::move(result).error());
       }
+      {
+        auto result = literal_node(lexicon.ti_at);
+        if (result) {
+          SILVA_EXPECT_FWD(skip());
+          ss_rule.add_proto_node(*result);
+          return ss_rule.commit();
+        }
+        error_nursery.add_child_error(std::move(result).error());
+      }
+      return std::unexpected(std::move(error_nursery)
+                                 .finish_short(error_level_t::MINOR,
+                                               "[{}] {}",
+                                               fragment_location_by(),
+                                               lexicon.name_id_wrap(lexicon.ni_nt)));
     }
 
     expected_t<parse_tree_node_t> axe_op()

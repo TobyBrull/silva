@@ -1,19 +1,19 @@
 Seed «
 language AsBs:
-  skip.main = freeForm
+  skip.@ = freeForm
 
-  main = "a" * "b" *
+  @ = "a" * "b" *
 »
 
 AsBs « a a a b b »
 
 Seed «
 language CppStmts:
-  skip.main = freeForm
+  skip.@ = freeForm
 
-  main = ( Expr ';' ) *
+  @ = ( Expr ';' ) *
   Expr:
-    main = axe Atom
+    @ = axe Atom
       Namespace   = rtl   infix '::' prefix '::'
       Postfix     = ltr   postfix '++' '--' \
                           postfix_nest '(' ')' '[' ']' \

@@ -64,9 +64,9 @@ namespace silva::seed::impl {
       if (!scope_name.is_valid()) {
         return {};
       }
-      SILVA_EXPECT(sfp->get(scope_name).base_name != lexicon.ti_main,
+      SILVA_EXPECT(sfp->get(scope_name).base_name != lexicon.ti_at.token_id,
                    MINOR,
-                   "{} 'main' must always be a rule, never a scope",
+                   "{} '@' must always be a rule, never a scope",
                    lexicon.name_id_wrap(scope_name));
       SILVA_EXPECT_FWD(ensure_scope(sfp->get(scope_name).parent_name));
       const auto [it, inserted] =
@@ -197,30 +197,23 @@ namespace silva::seed::impl {
       const name_id_t curr_rule_name =
           SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt));
       const name_info_t ni = sfp->get(curr_rule_name);
-      const bool is_main   = (ni.base_name == lexicon.ti_main);
+      const bool is_main   = (ni.base_name == lexicon.ti_at.token_id);
       SILVA_EXPECT(!is_main || ni.parent_name.is_valid(),
                    MINOR,
-                   "{} 'main' rule must be inside a scope",
+                   "{} '@' rule must be inside a scope",
                    pts_rule);
 
       optional_t<parse_tree_span_t> pts_last_name;
-      optional_t<parse_tree_span_t> pts_prev_name;
       for (const auto pts_child: pts_nt.children_range()) {
         const name_id_t cn = pts_child.rule_name();
         if (cn == lexicon.ni_rule_name || cn == lexicon.ni_token_cat_name) {
-          pts_prev_name = pts_last_name;
           pts_last_name = pts_child;
         }
       }
-      SILVA_EXPECT(pts_last_name.has_value(), MINOR, "{} rule without name", pts_rule);
-      const auto is_twig_name = [&](const parse_tree_span_t& x) {
-        return x.rule_name() == lexicon.ni_token_cat_name;
-      };
-      bool is_twig_rule = is_twig_name(*pts_last_name);
-      if (is_main) {
-        is_twig_rule =
-            pts_prev_name.has_value() ? is_twig_name(*pts_prev_name) : scope_is_twig_rule;
-      }
+      SILVA_EXPECT(is_main || pts_last_name.has_value(), MINOR, "{} rule without name", pts_rule);
+      const bool is_twig_rule = pts_last_name.has_value()
+          ? pts_last_name->rule_name() == lexicon.ni_token_cat_name
+          : scope_is_twig_rule;
       ++it;
       SILVA_EXPECT(it != end, MINOR, "{} rule must have at least two children", pts_rule);
 
@@ -256,7 +249,7 @@ namespace silva::seed::impl {
       SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
 
       if (pts_rhs_0.rule_name() == lexicon.ni_axe) {
-        // The axe of a 'main' rule is named after its scope, like the parse-tree nodes it creates.
+        // The axe of an '@' rule is named after its scope, like the parse-tree nodes it creates.
         const name_id_t axe_name = is_main ? ni.parent_name : curr_rule_name;
         SILVA_EXPECT_FWD(register_axe(curr_rule_name, axe_name, pts_rhs_0, is_no_node));
       }
@@ -272,7 +265,7 @@ namespace silva::seed::impl {
       const bool is_skip_initial = (ni.base_name == lexicon.ti_initial.token_id);
       if ((is_main || is_skip_initial) && ni.parent_name.is_valid() &&
           sfp->get(ni.parent_name).base_name == lexicon.ti_skip.token_id) {
-        const string_view_t skip_rule_str = is_main ? "skip.main" : "skip.initial";
+        const string_view_t skip_rule_str = is_main ? "skip.@" : "skip.initial";
         SILVA_EXPECT(current_language_name.has_value(),
                      MINOR,
                      "'{}' rule may only be used in language",
@@ -433,7 +426,7 @@ namespace silva::seed::impl {
     }
   };
 
-  // Returns the rule or axe with the given name. If "name" refers to a scope, returns the "main"
+  // Returns the rule or axe with the given name. If "name" refers to a scope, returns the "@"
   // rule or axe inside that scope.
   expected_t<const interpreter_t::definition_t*>
   find_callable(const interpreter_t& se, const lexicon_t& lexicon, const name_id_t name)
@@ -447,11 +440,11 @@ namespace silva::seed::impl {
     if (is_callable(it->second)) {
       return &it->second;
     }
-    const name_id_t main_name = se.sfp->name_id(name, lexicon.ti_main);
+    const name_id_t main_name = se.sfp->name_id(name, lexicon.ti_at.token_id);
     const auto main_it        = se.definitions.find(main_name);
     SILVA_EXPECT(main_it != se.definitions.end(),
                  MAJOR,
-                 "Scope {} has no 'main' rule",
+                 "Scope {} has no '@' rule",
                  lexicon.name_id_str(name));
     SILVA_EXPECT(is_callable(main_it->second),
                  MAJOR,
@@ -1081,7 +1074,7 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> handle_rule(name_id_t t_rule_name)
     {
       const name_info_t ni = sfp->get(t_rule_name);
-      if (ni.base_name == lexicon.ti_main && ni.parent_name.is_valid()) {
+      if (ni.base_name == lexicon.ti_at.token_id && ni.parent_name.is_valid()) {
         t_rule_name = ni.parent_name;
       }
       auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name, fragment_location_by());
