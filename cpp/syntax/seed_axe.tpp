@@ -56,7 +56,9 @@ language Test:
   skip.main = freeForm
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
-    const auto& sa = se->axes.at(sf.name_id_of("Test"));
+    const auto& sa = *std::get<seed::interpreter_t::axe_data_t>(
+                          se->definitions.at(sf.name_id_of("Test", "main")))
+                          .axe;
     CHECK(!sa.concat_result.has_value());
     CHECK(sa.results.size() == 13);
     {
@@ -609,7 +611,9 @@ language Test:
   skip.main = freeForm
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
-    const auto& sa = se->axes.at(sf.name_id_of("Test"));
+    const auto& sa = *std::get<seed::interpreter_t::axe_data_t>(
+                          se->definitions.at(sf.name_id_of("Test", "main")))
+                          .axe;
     CHECK(sa.concat_result.has_value());
     CHECK(sa.results.size() == 11);
 

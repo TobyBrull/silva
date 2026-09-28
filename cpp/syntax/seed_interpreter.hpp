@@ -9,30 +9,34 @@ namespace silva::seed {
     syntax_farm_ptr_t sfp;
     bootstrap_interpreter_t bootstrap_interpreter;
 
-    struct rule_data_t {
+    struct common_data_t {
+      // Maps a rule/scope name to all string-literal tokens occuring inside that scope (including
+      // nested rules); used to implement the "literals_of" mechanism.
+      array_t<fragmented_token_t> scope_to_literals;
+    };
+    struct rule_data_t : public common_data_t {
       parse_tree_span_t expr;
       bool is_twig_rule     = false;
       bool is_no_node       = false;
       bool is_no_whitespace = false;
       bool is_literal_nodes = false;
     };
-    hash_map_t<name_id_t, rule_data_t> rules;
-
-    // Maps the rule-name of a seed-axe to the corresponding seed-axe.
-    hash_map_t<name_id_t, axe_t> axes;
-
-    struct language_data_t {
+    struct axe_data_t : public rule_data_t {
+      unique_ptr_t<axe_t> axe;
+    };
+    struct scope_data_t : public common_data_t {
+      // hash_set_t<name_id_t> sub_rules;
+      // hash_set_t<name_id_t> sub_scopes;
+    };
+    struct language_data_t : public scope_data_t {
       parse_tree_span_t pts;
       name_id_t skip_rule_name;
       optional_t<rule_data_t> skip_rule_expr;
       name_id_t skip_initial_rule_name;
       optional_t<rule_data_t> skip_initial_rule_expr;
     };
-    hash_map_t<token_id_t, language_data_t> languages;
-
-    // Maps a rule/scope name to all string-literal tokens occuring inside that scope (including
-    // nested rules); used to implement the "literals_of" mechanism.
-    hash_map_t<name_id_t, array_t<fragmented_token_t>> scope_to_literals;
+    using definition_t = variant_t<language_data_t, scope_data_t, rule_data_t, axe_data_t>;
+    hash_map_t<name_id_t, definition_t> definitions;
 
     // Maps a token of the form ['word'] (i.e., of category: string) to a token of the form [word]
     // (i.e., of category: identifier or operator).
