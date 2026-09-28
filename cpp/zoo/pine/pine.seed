@@ -18,7 +18,7 @@
 #    « f(x) = 1 ») but parses the same language otherwise.
 
 language Pine:
-  skip = offSide
+  skip.main = offSide
   skip.initial = offSide.initial
 
   main = Stmt *

@@ -174,41 +174,37 @@ namespace silva::seed::impl {
                                      is_no_whitespace,
                                      is_literal_nodes));
 
-      const name_info_t& ni = sfp->get(curr_rule_name);
-      if (ni.base_name == lexicon.ti_skip.token_id) {
+      const name_info_t& ni      = sfp->get(curr_rule_name);
+      const bool is_skip_main    = (ni.base_name == lexicon.ti_main);
+      const bool is_skip_initial = (ni.base_name == lexicon.ti_initial.token_id);
+      if ((is_skip_main || is_skip_initial) && ni.parent_name.is_valid() &&
+          sfp->get(ni.parent_name).base_name == lexicon.ti_skip.token_id) {
+        const string_view_t skip_rule_str = is_skip_main ? "skip.main" : "skip.initial";
         SILVA_EXPECT(current_language_id.has_value(),
                      MINOR,
-                     "'skip' rule may only be used in language");
-        const name_info_t& parent_ni = sfp->get(ni.parent_name);
-        SILVA_EXPECT(parent_ni.parent_name == name_id_t{},
-                     MINOR,
-                     "'skip' rule must not be nested in sub-scope of a language");
-        SILVA_EXPECT(parent_ni.base_name == current_language_id.value(), ASSERT);
-        interpreter_t::language_data_t& ld = se->languages.at(*current_language_id);
-        ld.skip_rule_name                  = curr_rule_name;
-        ld.skip_rule_expr                  = interpreter_t::rule_data_t{
-            .expr         = pts_rhs_0,
-            .is_twig_rule = true,
-        };
-      }
-      else if (ni.base_name == lexicon.ti_initial.token_id && ni.parent_name.is_valid() &&
-               sfp->get(ni.parent_name).base_name == lexicon.ti_skip.token_id) {
-        SILVA_EXPECT(current_language_id.has_value(),
-                     MINOR,
-                     "'skip.initial' rule may only be used in language");
+                     "'{}' rule may only be used in language",
+                     skip_rule_str);
         const name_info_t& skip_ni = sfp->get(ni.parent_name);
         SILVA_EXPECT(skip_ni.parent_name.is_valid() &&
                          sfp->get(skip_ni.parent_name).parent_name == name_id_t{},
                      MINOR,
-                     "'skip.initial' rule must not be nested in sub-scope of a language");
+                     "'{}' rule must not be nested in sub-scope of a language",
+                     skip_rule_str);
         SILVA_EXPECT(sfp->get(skip_ni.parent_name).base_name == current_language_id.value(),
                      ASSERT);
         interpreter_t::language_data_t& ld = se->languages.at(*current_language_id);
-        ld.skip_initial_rule_name          = curr_rule_name;
-        ld.skip_initial_rule_expr          = interpreter_t::rule_data_t{
+        const interpreter_t::rule_data_t rule_data{
             .expr         = pts_rhs_0,
             .is_twig_rule = true,
         };
+        if (is_skip_main) {
+          ld.skip_rule_name = curr_rule_name;
+          ld.skip_rule_expr = rule_data;
+        }
+        else {
+          ld.skip_initial_rule_name = curr_rule_name;
+          ld.skip_initial_rule_expr = rule_data;
+        }
       }
 
       for (index_t i = 0; i < pts_rhs_0.subtree_size(); ++i) {

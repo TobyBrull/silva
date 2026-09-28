@@ -1,5 +1,5 @@
 language Tomel:
-  skip = freeForm
+  skip.main = freeForm
 
   main = ( Keyval | Table ) *
   Keyval = Key '=' Val
