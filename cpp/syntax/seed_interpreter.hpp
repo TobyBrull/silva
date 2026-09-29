@@ -24,6 +24,10 @@ namespace silva::seed {
     struct axe_data_t : public rule_data_t {
       unique_ptr_t<axe_t> axe;
     };
+    struct axe_level_data_t : public common_data_t {
+      parse_tree_span_t expr;
+      const axe_data_t* axe_data = nullptr;
+    };
     struct scope_data_t : public common_data_t {
       // hash_set_t<name_id_t> sub_rules;
       // hash_set_t<name_id_t> sub_scopes;
@@ -35,7 +39,8 @@ namespace silva::seed {
       name_id_t skip_initial_rule_name;
       optional_t<rule_data_t> skip_initial_rule_expr;
     };
-    using definition_t = variant_t<language_data_t, scope_data_t, rule_data_t, axe_data_t>;
+    using definition_t =
+        variant_t<language_data_t, scope_data_t, rule_data_t, axe_data_t, axe_level_data_t>;
     hash_map_t<name_id_t, definition_t> definitions;
 
     // Maps a token of the form ['word'] (i.e., of category: string) to a token of the form [word]
