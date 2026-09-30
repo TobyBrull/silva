@@ -73,4 +73,13 @@ namespace silva::seed {
     expected_t<parse_tree_ptr_t> apply(fragment_span_t, name_id_t goal_rule_name);
     expected_t<parse_tree_ptr_t> apply_text(filepath_t, string_t, name_id_t goal_rule_name);
   };
+
+  struct definitions_wrap_t {
+    syntax_farm_ptr_t sfp;
+    const hash_map_t<name_id_t, interpreter_t::definition_t>& definitions;
+    token_id_t name_sep = token_id_default_name_sep;
+
+    definitions_wrap_t(const interpreter_t& x) : sfp(x.sfp), definitions(x.definitions) {}
+  };
+  void pretty_write_impl(const definitions_wrap_t&, byte_sink_t*);
 }

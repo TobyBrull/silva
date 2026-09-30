@@ -12,6 +12,7 @@
 #include "syntax/fragmentization.hpp"
 #include "syntax/syntax_farm.hpp"
 
+#include <algorithm>
 #include <utility>
 
 using enum silva::error_level_t;
@@ -1322,5 +1323,39 @@ namespace silva::seed {
   {
     auto ff = SILVA_EXPECT_FWD(fragmentize(sfp, std::move(filepath), std::move(text)));
     return apply(std::move(ff), goal_rule_name);
+  }
+
+  void pretty_write_impl(const definitions_wrap_t& x, byte_sink_t* byte_sink)
+  {
+    array_t<pair_t<string_t, const interpreter_t::definition_t*>> items;
+    for (const auto& [name, def]: x.definitions) {
+      items.emplace_back(x.sfp->name_id_str(name, x.name_sep), &def);
+    }
+    std::ranges::sort(items, {}, [](const auto& item) -> const string_t& { return item.first; });
+    for (const auto& [name_str, def]: items) {
+      byte_sink->write_str(name_str);
+      byte_sink->write_str("  -->  ");
+      std::visit(
+          [&](const auto& data) {
+            using T = std::decay_t<decltype(data)>;
+            if constexpr (std::same_as<T, interpreter_t::language_data_t>) {
+              byte_sink->format(" language");
+            }
+            else if constexpr (std::same_as<T, interpreter_t::scope_data_t>) {
+              byte_sink->write_str(" scope");
+            }
+            else if constexpr (std::same_as<T, interpreter_t::rule_data_t>) {
+              byte_sink->write_str(" rule");
+            }
+            else if constexpr (std::same_as<T, interpreter_t::axe_data_t>) {
+              byte_sink->write_str(" axe");
+            }
+            else if constexpr (std::same_as<T, interpreter_t::axe_level_data_t>) {
+              byte_sink->write_str(" axe_level");
+            }
+          },
+          *def);
+      byte_sink->write_str("\n");
+    }
   }
 }
