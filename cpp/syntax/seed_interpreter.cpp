@@ -10,6 +10,7 @@
 #include "seed.hpp"
 #include "seed_axe.hpp"
 #include "syntax/fragmentization.hpp"
+#include "syntax/syntax_farm.hpp"
 
 #include <utility>
 
@@ -34,16 +35,67 @@ namespace silva::seed::impl {
     syntax_farm_ptr_t sfp = se->sfp;
     const lexicon_t& lexicon;
 
-    optional_t<token_id_t> current_language_id;
+    optional_t<name_id_t> current_language_name;
 
     interpreter_adder_t(interpreter_t* se) : se(se), lexicon(se->bootstrap_interpreter.lexicon()) {}
 
-    expected_t<void> recognize_literal(name_id_t rule_name, const fragmented_token_t& ft)
+    expected_t<void> recognize_literal(name_id_t name, const fragmented_token_t& ft)
     {
-      while (rule_name.is_valid()) {
-        se->scope_to_literals[rule_name].push_back(ft);
-        rule_name = sfp->get(rule_name).parent_name;
+      while (name.is_valid()) {
+        const auto it = se->definitions.find(name);
+        SILVA_EXPECT(it != se->definitions.end(),
+                     ASSERT,
+                     "no definition for {}",
+                     lexicon.name_id_wrap(name));
+        std::visit([&](auto& def) { def.scope_to_literals.push_back(ft); }, it->second);
+        name = sfp->get(name).parent_name;
       }
+      return {};
+    }
+
+    static string_view_t definition_kind(const interpreter_t::definition_t& def)
+    {
+      static constexpr std::array<string_view_t, 5> kinds{"language",
+                                                          "scope",
+                                                          "rule",
+                                                          "axe",
+                                                          "axe_level"};
+      static_assert(std::variant_size_v<interpreter_t::definition_t> == kinds.size());
+      return kinds[def.index()];
+    }
+
+    expected_t<void> register_scope(const name_id_t scope_name)
+    {
+      if (!scope_name.is_valid()) {
+        return {};
+      }
+      SILVA_EXPECT(sfp->get(scope_name).base_name != lexicon.ti_at.token_id,
+                   MINOR,
+                   "{} '@' must always be a rule, never a scope",
+                   lexicon.name_id_wrap(scope_name));
+      SILVA_EXPECT_FWD(register_scope(sfp->get(scope_name).parent_name));
+      const auto [it, inserted] =
+          se->definitions.try_emplace(scope_name, interpreter_t::scope_data_t{});
+      SILVA_EXPECT(std::holds_alternative<interpreter_t::scope_data_t>(it->second) ||
+                       std::holds_alternative<interpreter_t::language_data_t>(it->second),
+                   MINOR,
+                   "{} expected scope, but it is defined as {}",
+                   lexicon.name_id_wrap(scope_name),
+                   definition_kind(it->second));
+      return {};
+    }
+
+    expected_t<void> register_rule_or_axe(const name_id_t name,
+                                          const parse_tree_span_t& pts,
+                                          interpreter_t::definition_t definition)
+    {
+      const auto [it, inserted] = se->definitions.try_emplace(name, std::move(definition));
+      SILVA_EXPECT(inserted,
+                   MINOR,
+                   "{} {} already defined as {}",
+                   pts,
+                   lexicon.name_id_wrap(name),
+                   definition_kind(it->second));
       return {};
     }
 
@@ -54,19 +106,47 @@ namespace silva::seed::impl {
                                    const bool is_no_whitespace = false,
                                    const bool is_literal_nodes = false)
     {
-      const auto [emplace_it, inserted] =
-          se->rules.emplace(rule_name,
-                            interpreter_t::rule_data_t{.expr             = pts,
-                                                       .is_twig_rule     = is_twig_rule,
-                                                       .is_no_node       = is_no_node,
-                                                       .is_no_whitespace = is_no_whitespace,
-                                                       .is_literal_nodes = is_literal_nodes});
-      SILVA_EXPECT(inserted,
-                   MINOR,
-                   "{} rule {} defined again, previously defined at {}",
-                   pts,
-                   lexicon.name_id_wrap(rule_name),
-                   emplace_it->second.expr);
+      SILVA_EXPECT_FWD(register_scope(sfp->get(rule_name).parent_name));
+      interpreter_t::rule_data_t rule_data;
+      rule_data.expr             = pts;
+      rule_data.is_twig_rule     = is_twig_rule;
+      rule_data.is_no_node       = is_no_node;
+      rule_data.is_no_whitespace = is_no_whitespace;
+      rule_data.is_literal_nodes = is_literal_nodes;
+      return register_rule_or_axe(rule_name, pts, std::move(rule_data));
+    }
+
+    expected_t<void> register_axe(const name_id_t axe_def_name,
+                                  const name_id_t axe_name,
+                                  const parse_tree_span_t& pts,
+                                  const bool is_no_node)
+    {
+      SILVA_EXPECT_FWD(register_scope(sfp->get(axe_def_name).parent_name));
+      interpreter_t::axe_data_t axe_data;
+      axe_data.expr       = pts;
+      axe_data.is_no_node = is_no_node;
+      axe_data.axe = std::make_unique<axe_t>(SILVA_EXPECT_FWD(axe_create(sfp, axe_name, pts)));
+      SILVA_EXPECT_FWD(register_rule_or_axe(axe_def_name, pts, std::move(axe_data)));
+      const auto* axe_data_ptr =
+          &std::get<interpreter_t::axe_data_t>(se->definitions.at(axe_def_name));
+
+      auto [axe_it, axe_end] = pts.children_range();
+      SILVA_EXPECT(axe_it != axe_end, MINOR);
+      SILVA_EXPECT((*axe_it).rule_name() == lexicon.ni_nt, MINOR);
+      ++axe_it;
+      while (axe_it != axe_end) {
+        SILVA_EXPECT((*axe_it).rule_name() == lexicon.ni_axe_level, MINOR);
+        const auto pts_level        = *axe_it;
+        const auto pts_rulename     = SILVA_EXPECT_FWD(pts_level.iterate_to_child(0));
+        const token_id_t level_name = SILVA_EXPECT_FWD(pts_rulename.token());
+        interpreter_t::axe_level_data_t level_data;
+        level_data.expr     = pts_level;
+        level_data.axe_data = axe_data_ptr;
+        SILVA_EXPECT_FWD(register_rule_or_axe(sfp->name_id(axe_name, level_name),
+                                              pts_level,
+                                              std::move(level_data)));
+        ++axe_it;
+      }
       return {};
     }
 
@@ -121,19 +201,27 @@ namespace silva::seed::impl {
       auto [it, end] = pts_rule.children_range();
       SILVA_EXPECT(it != end, MINOR, "{} rule must have at least two children", pts_rule);
 
-      name_id_t curr_rule_name;
-      bool is_twig_rule = false;
       const auto pts_nt = *it;
-      if (pts_nt.num_children() == 1 &&
-          SILVA_EXPECT_FWD(pts_nt.subspan_at(1).token()) == lexicon.ti_main) {
-        curr_rule_name = scope_name;
-        is_twig_rule   = scope_is_twig_rule;
+      const name_id_t curr_rule_name =
+          SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt));
+      const name_info_t ni = sfp->get(curr_rule_name);
+      const bool is_main   = (ni.base_name == lexicon.ti_at.token_id);
+      SILVA_EXPECT(!is_main || ni.parent_name.is_valid(),
+                   MINOR,
+                   "{} '@' rule must be inside a scope",
+                   pts_rule);
+
+      optional_t<parse_tree_span_t> pts_last_name;
+      for (const auto pts_child: pts_nt.children_range()) {
+        const name_id_t cn = pts_child.rule_name();
+        if (cn == lexicon.ni_rule_name || cn == lexicon.ni_token_cat_name) {
+          pts_last_name = pts_child;
+        }
       }
-      else {
-        curr_rule_name = SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt));
-        const auto back_name_pts = SILVA_EXPECT_FWD(pts_nt.iterate_to_child(-1));
-        is_twig_rule             = (back_name_pts.rule_name() == lexicon.ni_token_cat_name);
-      }
+      SILVA_EXPECT(is_main || pts_last_name.has_value(), MINOR, "{} rule without name", pts_rule);
+      const bool is_twig_rule = pts_last_name.has_value()
+          ? pts_last_name->rule_name() == lexicon.ni_token_cat_name
+          : scope_is_twig_rule;
       ++it;
       SILVA_EXPECT(it != end, MINOR, "{} rule must have at least two children", pts_rule);
 
@@ -167,20 +255,28 @@ namespace silva::seed::impl {
 
       ++it;
       SILVA_EXPECT(it == end, MINOR, "{} rule had too many children", pts_rule);
-      SILVA_EXPECT_FWD(register_rule(curr_rule_name,
-                                     pts_rhs_0,
-                                     is_twig_rule,
-                                     is_no_node,
-                                     is_no_whitespace,
-                                     is_literal_nodes));
 
-      const name_info_t& ni      = sfp->get(curr_rule_name);
-      const bool is_skip_main    = (ni.base_name == lexicon.ti_main);
+      if (pts_rhs_0.rule_name() == lexicon.ni_axe) {
+        // The axe of an '@' rule is named after its scope, like the parse-tree nodes it creates.
+        const name_id_t axe_name = is_main ? ni.parent_name : curr_rule_name;
+        SILVA_EXPECT(!is_no_whitespace, MINOR, "'no_whitespace' not supported for axes");
+        SILVA_EXPECT(!is_literal_nodes, MINOR, "'literal_nodes' not supported for axes (TODO)");
+        SILVA_EXPECT_FWD(register_axe(curr_rule_name, axe_name, pts_rhs_0, is_no_node));
+      }
+      else {
+        SILVA_EXPECT_FWD(register_rule(curr_rule_name,
+                                       pts_rhs_0,
+                                       is_twig_rule,
+                                       is_no_node,
+                                       is_no_whitespace,
+                                       is_literal_nodes));
+      }
+
       const bool is_skip_initial = (ni.base_name == lexicon.ti_initial.token_id);
-      if ((is_skip_main || is_skip_initial) && ni.parent_name.is_valid() &&
+      if ((is_main || is_skip_initial) && ni.parent_name.is_valid() &&
           sfp->get(ni.parent_name).base_name == lexicon.ti_skip.token_id) {
-        const string_view_t skip_rule_str = is_skip_main ? "skip.main" : "skip.initial";
-        SILVA_EXPECT(current_language_id.has_value(),
+        const string_view_t skip_rule_str = is_main ? "skip.@" : "skip.initial";
+        SILVA_EXPECT(current_language_name.has_value(),
                      MINOR,
                      "'{}' rule may only be used in language",
                      skip_rule_str);
@@ -190,20 +286,19 @@ namespace silva::seed::impl {
                      MINOR,
                      "'{}' rule must not be nested in sub-scope of a language",
                      skip_rule_str);
-        SILVA_EXPECT(sfp->get(skip_ni.parent_name).base_name == current_language_id.value(),
-                     ASSERT);
-        interpreter_t::language_data_t& ld = se->languages.at(*current_language_id);
-        const interpreter_t::rule_data_t rule_data{
-            .expr         = pts_rhs_0,
-            .is_twig_rule = true,
-        };
-        if (is_skip_main) {
+        SILVA_EXPECT(skip_ni.parent_name == current_language_name.value(), ASSERT);
+        auto& ld = std::get<interpreter_t::language_data_t>(
+            se->definitions.at(current_language_name.value()));
+        interpreter_t::rule_data_t rule_data;
+        rule_data.expr         = pts_rhs_0;
+        rule_data.is_twig_rule = true;
+        if (is_main) {
           ld.skip_rule_name = curr_rule_name;
-          ld.skip_rule_expr = rule_data;
+          ld.skip_rule_expr = std::move(rule_data);
         }
         else {
           ld.skip_initial_rule_name = curr_rule_name;
-          ld.skip_initial_rule_expr = rule_data;
+          ld.skip_initial_rule_expr = std::move(rule_data);
         }
       }
 
@@ -217,24 +312,6 @@ namespace silva::seed::impl {
         }
         else if (lexicon.ni_expr_concat.is_parent_of(pts_node.rule_name(), *sfp)) {
           SILVA_EXPECT_FWD(handle_concat_expr(pts_node));
-        }
-      }
-
-      const name_id_t expr_rule_name = pts_rhs_0.rule_name();
-      if (expr_rule_name == lexicon.ni_axe) {
-        se->axes[curr_rule_name] = SILVA_EXPECT_FWD(axe_create(sfp, curr_rule_name, pts_rhs_0));
-        auto [axe_it, axe_end]   = pts_rhs_0.children_range();
-        SILVA_EXPECT(axe_it != axe_end, MINOR);
-        SILVA_EXPECT((*axe_it).rule_name() == lexicon.ni_nt, MINOR);
-        ++axe_it;
-        while (axe_it != axe_end) {
-          SILVA_EXPECT((*axe_it).rule_name() == lexicon.ni_axe_level, MINOR);
-          const auto pts_level          = *axe_it;
-          const auto pts_rulename       = SILVA_EXPECT_FWD(pts_level.iterate_to_child(0));
-          const token_id_t level_name   = SILVA_EXPECT_FWD(pts_rulename.token());
-          const name_id_t axe_rule_name = sfp->name_id(curr_rule_name, level_name);
-          SILVA_EXPECT_FWD(register_rule(axe_rule_name, pts_level));
-          ++axe_it;
         }
       }
 
@@ -277,6 +354,7 @@ namespace silva::seed::impl {
       const auto pts_nt = *it;
       const name_id_t curr_scope_name =
           SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt));
+      SILVA_EXPECT_FWD(register_scope(curr_scope_name), "{} when defining scope", pts_scope);
       const auto back_name_pts      = SILVA_EXPECT_FWD(pts_nt.iterate_to_child(-1));
       const bool scope_is_twig_rule = (back_name_pts.rule_name() == lexicon.ni_token_cat_name);
       ++it;
@@ -291,33 +369,45 @@ namespace silva::seed::impl {
     expected_t<void> handle_language(const name_id_t scope_name,
                                      const parse_tree_span_t pts_language)
     {
-      SILVA_EXPECT(!current_language_id.has_value(),
+      SILVA_EXPECT(!current_language_name.has_value(),
                    MINOR,
                    "languages cannot be nested at {}",
                    pts_language);
-      SILVA_EXPECT(pts_language.rule_name() == lexicon.ni_language, MINOR, "expected Language");
-      const auto pts_rulename        = SILVA_EXPECT_FWD(pts_language.iterate_to_child(0));
-      const token_id_t lang_id       = SILVA_EXPECT_FWD(pts_rulename.token());
-      current_language_id            = lang_id;
-      const auto [lang_it, inserted] = se->languages.emplace(lang_id,
-                                                             interpreter_t::language_data_t{
-                                                                 .pts = pts_language,
-                                                             });
-      SILVA_EXPECT(inserted,
-                   MINOR,
-                   "Language {} already defined at {}; defined again at {}",
-                   sfp->token_id_wrap(lang_id),
-                   lang_it->second.pts,
-                   pts_language);
-      auto [it, end] = pts_language.children_range();
+      SILVA_EXPECT(pts_language.rule_name() == lexicon.ni_language, MINOR, "expected language");
+      SILVA_EXPECT(!scope_name.is_valid(), MINOR, "a language may only appear at global scope");
+      const auto pts_rulename  = SILVA_EXPECT_FWD(pts_language.iterate_to_child(0));
+      const token_id_t lang_id = SILVA_EXPECT_FWD(pts_rulename.token());
+      SILVA_EXPECT(lang_id.is_valid(), MINOR, "invalid language name");
+      const name_id_t lang_name = sfp->name_id(name_id_t{}, lang_id);
+      current_language_name     = lang_name;
+      interpreter_t::language_data_t lang_data;
+      lang_data.pts                  = pts_language;
+      const auto [lang_it, inserted] = se->definitions.try_emplace(lang_name);
+      if (!inserted) {
+        auto* prev_lang_data = std::get_if<interpreter_t::language_data_t>(&lang_it->second);
+        SILVA_EXPECT(prev_lang_data == nullptr,
+                     MINOR,
+                     "language {} defined at {} was previously defined at {}",
+                     sfp->token_id_wrap(lang_id),
+                     pts_language,
+                     prev_lang_data->pts);
+        auto* prev_scope_data = std::get_if<interpreter_t::scope_data_t>(&lang_it->second);
+        SILVA_EXPECT(prev_scope_data != nullptr,
+                     MINOR,
+                     "language {} defined at {} was previously defined as rule somewhere else",
+                     sfp->token_id_wrap(lang_id),
+                     pts_language);
+        static_cast<interpreter_t::scope_data_t&>(lang_data) = std::move(*prev_scope_data);
+      }
+      lang_it->second = std::move(lang_data);
+      auto [it, end]  = pts_language.children_range();
       SILVA_EXPECT(it != end, MINOR, "expected child nodes at {}, got none", pts_language);
       SILVA_EXPECT((*it).rule_name() == lexicon.ni_rule_name,
                    MINOR,
                    "expected first child node at {}, to be ruleName",
                    pts_language);
       ++it;
-      const name_id_t curr_scope_name = sfp->name_id(scope_name, lang_id);
-      SILVA_EXPECT_FWD(handle_scope_impl(curr_scope_name, it, end, false));
+      SILVA_EXPECT_FWD(handle_scope_impl(lang_name, it, end, false));
       return {};
     }
 
@@ -347,6 +437,34 @@ namespace silva::seed::impl {
       return {};
     }
   };
+
+  // Returns the rule or axe with the given name. If "name" refers to a scope, returns the "@"
+  // rule or axe inside that scope.
+  expected_t<const interpreter_t::definition_t*>
+  find_callable(const interpreter_t& se, const lexicon_t& lexicon, const name_id_t name)
+  {
+    const auto is_callable = [](const interpreter_t::definition_t& def) {
+      return std::holds_alternative<interpreter_t::rule_data_t>(def) ||
+          std::holds_alternative<interpreter_t::axe_data_t>(def) ||
+          std::holds_alternative<interpreter_t::axe_level_data_t>(def);
+    };
+    const auto it = se.definitions.find(name);
+    SILVA_EXPECT(it != se.definitions.end(), MAJOR, "Unknown rule: {}", lexicon.name_id_str(name));
+    if (is_callable(it->second)) {
+      return &it->second;
+    }
+    const name_id_t main_name = se.sfp->name_id(name, lexicon.ti_at.token_id);
+    const auto main_it        = se.definitions.find(main_name);
+    SILVA_EXPECT(main_it != se.definitions.end(),
+                 MAJOR,
+                 "Scope {} has no '@' rule",
+                 lexicon.name_id_str(name));
+    SILVA_EXPECT(is_callable(main_it->second),
+                 MAJOR,
+                 "{} is neither rule nor axe",
+                 lexicon.name_id_str(main_name));
+    return &main_it->second;
+  }
 
   struct seed_exec_trace_data_t {
     name_id_t rule_name;
@@ -449,13 +567,16 @@ namespace silva::seed::impl {
                      "{} couldn't lookup nonterminal",
                      pts);
         const name_id_t literal_scope = nt_it->resolved_name;
-        const auto ls_it              = se->scope_to_literals.find(literal_scope);
-        SILVA_EXPECT(ls_it != se->scope_to_literals.end(),
+        const auto ls_it              = se->definitions.find(literal_scope);
+        SILVA_EXPECT(ls_it != se->definitions.end(),
                      MAJOR,
                      "literals_of {}: no such scope",
                      lexicon.name_id_wrap(literal_scope));
+        const auto& literals =
+            std::visit([](const auto& def) -> const auto& { return def.scope_to_literals; },
+                       ls_it->second);
         error_nursery_t error_nursery;
-        for (const fragmented_token_t& ft: ls_it->second) {
+        for (const fragmented_token_t& ft: literals) {
           auto result = parse_literal(ft);
           if (!result) {
             error_nursery.add_child_error(std::move(result).error());
@@ -915,16 +1036,11 @@ namespace silva::seed::impl {
       }
     }
 
-    expected_t<node_and_error_t> handle_rule_axe(const name_id_t axe_rule_name,
+    expected_t<node_and_error_t> handle_rule_axe(const interpreter_t::axe_data_t& axe_data,
                                                  const name_id_t t_rule_name)
     {
-      const auto it = se->axes.find(axe_rule_name);
-      SILVA_EXPECT(it != se->axes.end(), MAJOR);
-      const auto it_re = se->rules.find(axe_rule_name);
-      SILVA_EXPECT(it_re != se->rules.end(), MAJOR);
-      const bool is_no_node = it_re->second.is_no_node;
       auto ss{stake()};
-      const axe_t& axe = it->second;
+      const axe_t& axe = *axe_data.axe;
       const axe_t::parse_delegate_t::pack_t pack{
           [&](const name_id_t rule_name) -> expected_t<parse_tree_node_t> {
             node_and_error_t result = SILVA_EXPECT_FWD(handle_rule(rule_name));
@@ -934,7 +1050,7 @@ namespace silva::seed::impl {
       const auto skip_dg = axe_t::skip_delegate_t::make<&interpreter_apply_nursery_t::skip>(this);
       ss.add_proto_node(SILVA_EXPECT_PARSE_FWD(
           t_rule_name,
-          axe.apply(*this, t_rule_name, is_no_node, pack.delegate, skip_dg)));
+          axe.apply(*this, t_rule_name, axe_data.is_no_node, pack.delegate, skip_dg)));
       return ss.commit();
     }
 
@@ -970,31 +1086,29 @@ namespace silva::seed::impl {
 
     expected_t<node_and_error_t> handle_rule(const name_id_t t_rule_name)
     {
+      const name_info_t ni = sfp->get(t_rule_name);
       auto ets = SILVA_EXEC_TRACE_SCOPE(exec_trace, t_rule_name, fragment_location_by());
       rule_depth += 1;
       scope_exit_t scope_exit([this] { rule_depth -= 1; });
       SILVA_EXPECT(rule_depth <= 100,
                    FATAL,
                    "Stack is getting too deep. Infinite recursion in grammar?");
-      const auto it{se->rules.find(t_rule_name)};
-      SILVA_EXPECT(it != se->rules.end(),
-                   MAJOR,
-                   "Unknown rule: {}",
-                   lexicon.name_id_str(t_rule_name));
-      const interpreter_t::rule_data_t& rule_data = it->second;
+      const interpreter_t::definition_t& def =
+          *SILVA_EXPECT_FWD(find_callable(*se, lexicon, t_rule_name));
+      const auto* rule_data = std::get_if<interpreter_t::rule_data_t>(&def);
       node_and_error_t retval;
-      if (rule_data.is_twig_rule) {
-        retval = SILVA_EXPECT_FWD_PLAIN(handle_twig_rule(t_rule_name, rule_data, false));
+      if (rule_data != nullptr && rule_data->is_twig_rule) {
+        retval = SILVA_EXPECT_FWD_PLAIN(handle_twig_rule(t_rule_name, *rule_data, false));
       }
       else {
-        retval = SILVA_EXPECT_FWD_PLAIN(handle_branch_rule(t_rule_name, rule_data));
+        retval = SILVA_EXPECT_FWD_PLAIN(handle_branch_rule(t_rule_name, def));
       }
       ets->success = true;
       return retval;
     }
 
     expected_t<node_and_error_t> handle_branch_rule(const name_id_t t_rule_name,
-                                                    const interpreter_t::rule_data_t& rule_data)
+                                                    const interpreter_t::definition_t& def)
     {
       // A branch-rule inside a twig-rule skips as usual, except after its last token.
       const int outer_twig_rule_depth = twig_rule_depth;
@@ -1009,25 +1123,26 @@ namespace silva::seed::impl {
         }
       };
 
-      rule_expr_data_scope_t rule_scope(*this, &rule_data);
-      const parse_tree_span_t& s_pts = rule_data.expr;
-      const name_id_t s_expr_name    = s_pts.rule_name();
       node_and_error_t retval;
-      if (s_expr_name == lexicon.ni_axe) {
-        retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(t_rule_name, t_rule_name));
+      if (const auto* axe_data = std::get_if<interpreter_t::axe_data_t>(&def)) {
+        rule_expr_data_scope_t rule_scope(*this, axe_data);
+        retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(*axe_data, t_rule_name));
         unskip_if_in_twig_rule();
       }
-      else if (s_expr_name == lexicon.ni_axe_level) {
-        const name_id_t axe_name = sfp->get(t_rule_name).parent_name;
-        retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(axe_name, t_rule_name));
+      else if (const auto* level_data = std::get_if<interpreter_t::axe_level_data_t>(&def)) {
+        const auto& axe_data = *level_data->axe_data;
+        rule_expr_data_scope_t rule_scope(*this, &axe_data);
+        retval = SILVA_EXPECT_PARSE_FWD(t_rule_name, handle_rule_axe(axe_data, t_rule_name));
         unskip_if_in_twig_rule();
       }
       else {
+        const auto& rule_data = std::get<interpreter_t::rule_data_t>(def);
+        rule_expr_data_scope_t rule_scope(*this, &rule_data);
         auto ss = stake();
         if (!rule_data.is_no_node) {
           ss.create_node(t_rule_name, false);
         }
-        auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(s_pts, t_rule_name));
+        auto result = SILVA_EXPECT_PARSE_FWD(t_rule_name, s_expr(rule_data.expr, t_rule_name));
         ss.add_proto_node(std::move(result.node));
         unskip_if_in_twig_rule();
         retval = node_and_error_t{ss.commit(), std::move(result.last_error)};
@@ -1099,8 +1214,10 @@ namespace silva::seed {
   {
     is_compiled = false;
     resolved_names.clear();
-    for (auto& [_, axe]: axes) {
-      axe.compile_reset();
+    for (auto& [_, def]: definitions) {
+      if (auto* axe_data = std::get_if<axe_data_t>(&def)) {
+        axe_data->axe->compile_reset();
+      }
     }
   }
 
@@ -1109,10 +1226,18 @@ namespace silva::seed {
     compile_reset();
 
     const lexicon_t& lexicon = bootstrap_interpreter.lexicon();
-    for (const auto& [rule_name, rule_data]: rules) {
-      const parse_tree_span_t& pts_rule = rule_data.expr;
-      if (pts_rule.rule_name() == lexicon.ni_axe_level) {
-        // These parse-trees are already handled by the enclosing axe.
+    for (const auto& [rule_name, def]: definitions) {
+      parse_tree_span_t pts_rule;
+      name_id_t scope_name;
+      if (const auto* rule_data = std::get_if<rule_data_t>(&def)) {
+        pts_rule   = rule_data->expr;
+        scope_name = sfp->get(rule_name).parent_name;
+      }
+      else if (const auto* axe_data = std::get_if<axe_data_t>(&def)) {
+        pts_rule   = axe_data->expr;
+        scope_name = axe_data->axe->name;
+      }
+      else {
         continue;
       }
       auto res = pts_rule.visit_subtree([&](const span_t<const tree_branch_t> path,
@@ -1126,7 +1251,7 @@ namespace silva::seed {
         const auto pts_nt   = pts_rule.subspan_at(path.back().node_index);
         auto [it, inserted] = resolved_names.emplace(pts_nt);
         SILVA_EXPECT(inserted, ASSERT);
-        SILVA_EXPECT_FWD(it->resolve(rule_name, lexicon, rules));
+        SILVA_EXPECT_FWD(it->resolve(scope_name, lexicon, definitions));
         return true;
       });
       SILVA_EXPECT_FWD(std::move(res),
@@ -1134,8 +1259,10 @@ namespace silva::seed {
                        lexicon.name_id_wrap(rule_name));
     }
 
-    for (auto& [rule_name, axe]: axes) {
-      SILVA_EXPECT_FWD(axe.compile(lexicon, rules));
+    for (auto& [_, def]: definitions) {
+      if (auto* axe_data = std::get_if<axe_data_t>(&def)) {
+        SILVA_EXPECT_FWD(axe_data->axe->compile(lexicon, definitions));
+      }
     }
 
     is_compiled = true;
@@ -1153,17 +1280,15 @@ namespace silva::seed {
     while (sfp->get(curr).parent_name.is_valid()) {
       curr = sfp->get(curr).parent_name;
     }
-    const token_id_t lang_name = sfp->get(curr).base_name;
-    const auto lang_it         = languages.find(lang_name);
-    SILVA_EXPECT(lang_it != languages.end(),
+    const auto lang_it = definitions.find(curr);
+    const auto* lang_data =
+        (lang_it != definitions.end()) ? std::get_if<language_data_t>(&lang_it->second) : nullptr;
+    SILVA_EXPECT(lang_data != nullptr,
                  MINOR,
                  "unknown language {}",
-                 sfp->token_id_wrap(lang_name));
+                 bootstrap_interpreter.lexicon().name_id_wrap(curr));
 
-    impl::interpreter_apply_nursery_t nursery(fs,
-                                              bootstrap_interpreter.lexicon(),
-                                              this,
-                                              &lang_it->second);
+    impl::interpreter_apply_nursery_t nursery(fs, bootstrap_interpreter.lexicon(), this, lang_data);
 
     const auto do_trace =
         SILVA_EXPECT_FWD_IF(MAJOR, env_context_get_as<bool>("SEED_EXEC_TRACE")).value_or(false);

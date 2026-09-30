@@ -9,9 +9,9 @@ namespace silva {
 
   const string_view_t seed_str = R"'(
 language Silva:
-  main = Section *
+  @ = Section *
 
-  skip.main = freeForm
+  skip.@ = freeForm
 
   languageName = identifier.pascalCase
   Section = languageName language

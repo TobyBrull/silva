@@ -1,8 +1,5 @@
 # TODO
 
-* every name_id_t should be a namespace (that can contain other namespaces or rules) or a rule, but
-  a rule should not be able to contain subrules
-
 * Rewrite design.md
 
 * Runtime:

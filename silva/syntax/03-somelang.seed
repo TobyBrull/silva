@@ -1,6 +1,6 @@
 language Somelang:
-  skip.main = freeForm
+  skip.@ = freeForm
 
-  main = As Bs
+  @ = As Bs
   As = "a" *
   Bs = "b" *

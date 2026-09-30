@@ -25,9 +25,9 @@ string = '\'' ( not '\'' ANY ) * '\''
 number = DIGIT +
 
 language SimpleFern:
-  main = '[' ( LabeledItem ';' ? ) * ']'
+  @ = '[' ( LabeledItem ';' ? ) * ']'
 
-  skip.main = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
+  skip.@ = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 
   LabeledItem = ( Label ':' ) ? Item
   Label = string
@@ -67,9 +67,9 @@ language SimpleFern:
           [0] .Seed.fragName                      ｢DIGIT｣
   [2] .Seed.Language                              langu ... ber<NEWLINE><DEDENT>¦
     [0] .Seed.ruleName                            ｢SimpleFern｣
-    [1] .Seed.Rule                                main  ... ']'<NEWLINE><NEWLINE>¦
-      [0] .Seed.Nonterminal                       main ¦
-        [0] .Seed.tokenCategoryName               ｢main｣
+    [1] .Seed.Rule                                @ = ' ... ']'<NEWLINE><NEWLINE>¦
+      [0] .Seed.Nonterminal                       @ ¦
+        [0] .literal                              ｢@｣
       [1] .Seed.Expr                              '[' ( ... * ']'¦
         [0] .Seed.Expr.Concat.concat              '[' ( ... * ']'¦
           [0] .Seed.Terminal                      '[' ¦
@@ -85,10 +85,10 @@ language SimpleFern:
           [2] .Seed.Terminal                      ']'¦
             [0] .string                           ｢']'｣
     [2] .Seed.Rule                                skip. ... ) *<NEWLINE><NEWLINE>¦
-      [0] .Seed.Nonterminal                       skip.main ¦
+      [0] .Seed.Nonterminal                       skip.@ ¦
         [0] .Seed.tokenCategoryName               ｢skip｣
         [1] .literal                              ｢.｣
-        [2] .Seed.tokenCategoryName               ｢main｣
+        [2] .literal                              ｢@｣
       [1] .Seed.Expr                              ( SPA ... E ) *¦
         [0] .Seed.Expr.Postfix.*                  ( SPA ... E ) *¦
           [0] .Seed.Expr                          SPACE ... LINE ¦
@@ -202,9 +202,9 @@ language SimpleFern:
     {
       SILVA_REQUIRE(si->add_seed_text("t.seed", R"'(
 language Test:
-  main = val *
+  @ = val *
   val = ( boolean | number | identifier )
-  skip.main = freeForm
+  skip.@ = freeForm
 )'"));
 
       test("ab 123ab\n", "Test", {"ab", "123", "ab"}, {id, num, id});

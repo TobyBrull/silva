@@ -1,7 +1,7 @@
 language Tomel:
-  skip.main = freeForm
+  skip.@ = freeForm
 
-  main = ( Keyval | Table ) *
+  @ = ( Keyval | Table ) *
   Keyval = Key '=' Val
   Key = SimpleKey ( '.' SimpleKey ) *
   SimpleKey = string | identifier.withDashes

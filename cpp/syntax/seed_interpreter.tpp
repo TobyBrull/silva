@@ -10,15 +10,15 @@ namespace silva::seed::test {
   {
     const string_view_t frog_seed = R"'(
 language Frog:
-  main = Rule *
-  skip.main = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
+  @ = Rule *
+  skip.@ = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
   identifier = ID_START ID_CONTINUE *
   Rule = RuleName Expr
   RuleName = no_node Keyword
   Expr = Primary +
   Primary = not literals_of Keyword but_then identifier
   Keyword:
-    main = 'keyword1' | 'keyword2' | 'keyword3'
+    @ = 'keyword1' | 'keyword2' | 'keyword3'
 )'";
     syntax_farm_t sf;
     interpreter_t se(sf.ptr());
@@ -27,18 +27,18 @@ language Frog:
 [0] .Seed                                         langu ... 3'<NEWLINE><DEDENT><DEDENT>¦
   [0] .Seed.Language                              langu ... 3'<NEWLINE><DEDENT><DEDENT>¦
     [0] .Seed.ruleName                            ｢Frog｣
-    [1] .Seed.Rule                                main  ... le *<NEWLINE>¦
-      [0] .Seed.Nonterminal                       main ¦
-        [0] .Seed.tokenCategoryName               ｢main｣
+    [1] .Seed.Rule                                @ = R ... le *<NEWLINE>¦
+      [0] .Seed.Nonterminal                       @ ¦
+        [0] .literal                              ｢@｣
       [1] .Seed.Expr                              Rule *¦
         [0] .Seed.Expr.Postfix.*                  Rule *¦
           [0] .Seed.Nonterminal                   Rule ¦
             [0] .Seed.ruleName                    ｢Rule｣
     [2] .Seed.Rule                                skip. ...  ) *<NEWLINE>¦
-      [0] .Seed.Nonterminal                       skip.main ¦
+      [0] .Seed.Nonterminal                       skip.@ ¦
         [0] .Seed.tokenCategoryName               ｢skip｣
         [1] .literal                              ｢.｣
-        [2] .Seed.tokenCategoryName               ｢main｣
+        [2] .literal                              ｢@｣
       [1] .Seed.Expr                              ( SPA ... E ) *¦
         [0] .Seed.Expr.Postfix.*                  ( SPA ... E ) *¦
           [0] .Seed.Expr                          SPACE ... LINE ¦
@@ -100,9 +100,9 @@ language Frog:
     [8] .Seed.Scope                               Keywo ... d3'<NEWLINE><DEDENT>¦
       [0] .Seed.Nonterminal                       Keyword¦
         [0] .Seed.ruleName                        ｢Keyword｣
-      [1] .Seed.Rule                              main  ... rd3'<NEWLINE>¦
-        [0] .Seed.Nonterminal                     main ¦
-          [0] .Seed.tokenCategoryName             ｢main｣
+      [1] .Seed.Rule                              @ = ' ... rd3'<NEWLINE>¦
+        [0] .Seed.Nonterminal                     @ ¦
+          [0] .literal                            ｢@｣
         [1] .Seed.Expr                            'keyw ... ord3'¦
           [0] .Seed.Expr.Or.|                     'keyw ... ord3'¦
             [0] .Seed.Terminal                    'keyw ... rd1' ¦
@@ -166,8 +166,8 @@ language Frog:
 
     const string_view_t testor_lang = R"'(
 language Testor:
-  main = Assign *
-  skip.main = freeForm
+  @ = Assign *
+  skip.@ = freeForm
   Assign = identifier '=' identifier operator.single identifier
 )'";
     SILVA_REQUIRE(se->add_seed_text("testor.seed", string_t{testor_lang}));
@@ -197,8 +197,8 @@ language Testor:
   {
     const string_view_t testor_seed = R"'(
 language Testor:
-  skip.main = freeForm
-  main = Plain
+  skip.@ = freeForm
+  @ = Plain
   Plain          =   "static" "func" identifier | "static" identifier number
   NoPrefix       = ε "static" "func" identifier | "static" identifier number
   NoPrefixCommit = ε "static" "func" ~ identifier | "static" identifier number
@@ -228,12 +228,12 @@ language Testor:
   {
     const string_view_t text1_seed = R"'(
 language Foo:
-  main = 'a' 'b' 'c' Bar ?
-  skip.main = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
+  @ = 'a' 'b' 'c' Bar ?
+  skip.@ = ( SPACE | LINE_CONTINUATION | INDENT | DEDENT | NEWLINE ) *
 )'";
     const string_view_t text2_seed = R"'(
 Bar:
-  main = 'x' 'y' 'z' Foo ?
+  @ = 'x' 'y' 'z' Foo ?
   Blub = 'u' 'v' 'w'
 )'";
     syntax_farm_t sf;
@@ -260,15 +260,15 @@ Bar:
   {
     const string_view_t fstr_seed = R"'(
 language Fstr:
-  main = fstring
-  skip.main = freeForm
+  @ = fstring
+  skip.@ = freeForm
   fstring = '"' ( Field | chunk ) * '"'
   chunk = ( not [ '"' '{' '}' ] ANY ) +
   Field = '{' Sum formatSpec ? '}'
   formatSpec = ':' ( Field | formatChunk ) *
   formatChunk = ( not [ '{' '}' ] ANY ) +
   Sum:
-    main = axe Atom
+    @ = axe Atom
       Add = ltr infix '+'
     Atom = identifier
 )'";
@@ -314,8 +314,8 @@ language Fstr:
   {
     const string_view_t unskip_seed = R"'(
 language Unskip:
-  skip.main = ( SPACE | NEWLINE ) *
-  main = backtrack
+  skip.@ = ( SPACE | NEWLINE ) *
+  @ = backtrack
   backtrack = Backtrack SPACE 'x' SPACE 'z'
   Backtrack = 'a' ( 'x' 'y' ) ?
 )'";
@@ -337,8 +337,8 @@ language Unskip:
   {
     const string_view_t unskip_seed = R"'(
 language Unskip:
-  skip.main = ( SPACE | NEWLINE ) *
-  main = zeroWidth
+  skip.@ = ( SPACE | NEWLINE ) *
+  @ = zeroWidth
   zeroWidth = ZeroWidth 'x'
   ZeroWidth = 'a' maybeY
   maybeY = 'y' ?

@@ -41,7 +41,7 @@ namespace silva::seed::test {
     const unique_ptr_t<seed::interpreter_t> se = standard_seed_interpreter(sf.ptr());
     const string_view_t test_axe_str           = R"'(
 language Test:
-  main = axe Atom
+  @ = axe Atom
     Dot   = rtl   infix '.'
     Sub   = ltr   postfix_nest '[' ']'
     Dol   = ltr   postfix '$'
@@ -53,10 +53,12 @@ language Test:
     Ter   = rtl   ternary '?' ':'
     Eqa   = rtl   infix '='
   Atom = identifier | number | '(' Test ')'
-  skip.main = freeForm
+  skip.@ = freeForm
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
-    const auto& sa = se->axes.at(sf.name_id_of("Test"));
+    const auto& sa =
+        *std::get<seed::interpreter_t::axe_data_t>(se->definitions.at(sf.name_id_of("Test", "@")))
+             .axe;
     CHECK(!sa.concat_result.has_value());
     CHECK(sa.results.size() == 13);
     {
@@ -597,7 +599,7 @@ language Test:
     const unique_ptr_t<seed::interpreter_t> se = standard_seed_interpreter(sf.ptr());
     const string_view_t test_axe_str           = R"'(
 language Test:
-  main = axe Atom
+  @ = axe Atom
     PrfHi   = rtl   prefix_nest '(' ')'
     Cat     = ltr   infix concat
     PrfLo   = rtl   prefix_nest '{' '}' prefix_nest -> Args '<:' ':>'
@@ -606,10 +608,12 @@ language Test:
     Assign  = rtl   infix_flat '=' infix '%'
   Atom = identifier | number operator.single | '(' Test ')' | '<<' Test.PrfLo '>>'
   Args = string ( ',' string ) * | ε
-  skip.main = freeForm
+  skip.@ = freeForm
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
-    const auto& sa = se->axes.at(sf.name_id_of("Test"));
+    const auto& sa =
+        *std::get<seed::interpreter_t::axe_data_t>(se->definitions.at(sf.name_id_of("Test", "@")))
+             .axe;
     CHECK(sa.concat_result.has_value());
     CHECK(sa.results.size() == 11);
 
