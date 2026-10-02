@@ -603,6 +603,7 @@ language Test:
     PrfHi   = rtl   prefix_nest '(' ')'
     Cat     = ltr   infix concat
     PrfLo   = rtl   prefix_nest '{' '}' prefix_nest -> Args '<:' ':>'
+    Cast    = ltr   postfix_nest -> Atom "as" none
     Mul     = ltr   infix '*'
     Add     = ltr   infix_flat '+' infix '-'
     Assign  = rtl   infix_flat '=' infix '%'
@@ -615,7 +616,7 @@ language Test:
         *std::get<seed::interpreter_t::axe_data_t>(se->definitions.at(sf.name_id_of("Test", "@")))
              .axe;
     CHECK(sa.concat_result.has_value());
-    CHECK(sa.results.size() == 11);
+    CHECK(sa.results.size() == 12);
 
     test::test_axe(*se, sa, "a\n", R"(
 [0] .Test                                         a<NEWLINE>¦
@@ -840,5 +841,47 @@ language Test:
         [2] .Test.Atom                            f<NEWLINE>¦
           [0] .identifier                         ｢f｣
 )");
+    test::test_axe(*se, sa, "a as b\n", R"(
+[0] .Test                                         a as b<NEWLINE>¦
+  [0] .Test.Cast.as                               a as b<NEWLINE>¦
+    [0] .Test.Atom                                a ¦
+      [0] .identifier                             ｢a｣
+    [1] .Test.Atom                                b<NEWLINE>¦
+      [0] .identifier                             ｢b｣
+)");
+    test::test_axe(*se, sa, "a as b as c\n", R"(
+[0] .Test                                         a as  ... as c<NEWLINE>¦
+  [0] .Test.Cast.as                               a as  ... as c<NEWLINE>¦
+    [0] .Test.Cast.as                             a as b ¦
+      [0] .Test.Atom                              a ¦
+        [0] .identifier                           ｢a｣
+      [1] .Test.Atom                              b ¦
+        [0] .identifier                           ｢b｣
+    [1] .Test.Atom                                c<NEWLINE>¦
+      [0] .identifier                             ｢c｣
+)");
+    test::test_axe(*se, sa, "a * b as c + d\n", R"(
+[0] .Test                                         a * b ...  + d<NEWLINE>¦
+  [0] .Test.Add.+                                 a * b ...  + d<NEWLINE>¦
+    [0] .Test.Mul.*                               a * b ... as c ¦
+      [0] .Test.Atom                              a ¦
+        [0] .identifier                           ｢a｣
+      [1] .Test.Cast.as                           b as c ¦
+        [0] .Test.Atom                            b ¦
+          [0] .identifier                         ｢b｣
+        [1] .Test.Atom                            c ¦
+          [0] .identifier                         ｢c｣
+    [1] .Test.Atom                                d<NEWLINE>¦
+      [0] .identifier                             ｢d｣
+)");
+    test::test_axe(*se, sa, "a as\n", R"(
+[0] .Test                                         a as<NEWLINE>¦
+  [0] .Test.Cat.concat                            a as<NEWLINE>¦
+    [0] .Test.Atom                                a ¦
+      [0] .identifier                             ｢a｣
+    [1] .Test.Atom                                as<NEWLINE>¦
+      [0] .identifier                             ｢as｣
+)");
+    test::test_axe(*se, sa, "a as b c\n", {none});
   }
 }

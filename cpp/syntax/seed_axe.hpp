@@ -40,7 +40,7 @@ Seed.Axe:
   opType = "prefix_nest" | "prefix" \
          | "infix_flat" | "infix" | "ternary" \
          | "postfix_nest" | "postfix"
-  op = string | "concat"
+  op = string | "concat" | "none"
 )'";
 
   struct axe_t {

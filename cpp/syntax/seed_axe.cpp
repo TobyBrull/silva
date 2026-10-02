@@ -121,13 +121,15 @@ namespace silva::seed::impl {
       return {};
     }
 
-    expected_t<void> op(const token_id_t axe_op_type, const parse_tree_span_t pts_op)
+    expected_t<void>
+    op(const token_id_t axe_op_type, const parse_tree_span_t pts_op, const bool allow_none = false)
     {
       const auto op_tok = SILVA_EXPECT_FWD(pts_op.token());
       SILVA_EXPECT(pts_op.rule_name() == lexicon.ni_axe_op, BROKEN_SEED);
       const auto sub_ptses = SILVA_EXPECT_FWD(pts_op.get_children_up_to<1>());
       if (sub_ptses.size == 0) {
-        SILVA_EXPECT(op_tok == lexicon.ti_concat.token_id, BROKEN_SEED);
+        SILVA_EXPECT(op_tok == lexicon.ti_concat.token_id || op_tok == lexicon.ti_none.token_id,
+                     BROKEN_SEED);
       }
       else {
         SILVA_EXPECT(sub_ptses.size == 1, BROKEN_SEED);
@@ -141,6 +143,13 @@ namespace silva::seed::impl {
             MINOR,
             "{} the 'concat' token may only be used with 'infix' or 'infix_flat' operations.",
             pts_op);
+      }
+      else if (op_tok == lexicon.ti_none.token_id) {
+        SILVA_EXPECT(allow_none,
+                     MINOR,
+                     "{} the 'none' token may only be used as the second token of a "
+                     "'postfix_nest' operation.",
+                     pts_op);
       }
       else {
         auto ft = SILVA_EXPECT_FWD(fragment_token_from_string(sfp, op_tok));
@@ -249,14 +258,14 @@ namespace silva::seed::impl {
         return {{retval, pts_op}};
       };
 
-      const auto& get_next_or_concat =
-          [&]() -> expected_t<tuple_t<optional_t<token_id_t>, parse_tree_span_t>> {
+      const auto& get_next_or = [&](const token_id_t special)
+          -> expected_t<tuple_t<optional_t<token_id_t>, parse_tree_span_t>> {
         SILVA_EXPECT(it != end, ASSERT);
         const auto pts_op = *it;
-        SILVA_EXPECT_FWD(op(axe_op_type, pts_op));
+        SILVA_EXPECT_FWD(op(axe_op_type, pts_op, special == lexicon.ti_none.token_id));
         const token_id_t ti = SILVA_EXPECT_FWD(pts_op.token());
         ++it;
-        if (ti == lexicon.ti_concat.token_id) {
+        if (ti == special) {
           return {{std::nullopt, pts_op}};
         }
         const token_id_t retval = SILVA_EXPECT_FWD(sfp->token_id_in_string(ti));
@@ -292,11 +301,12 @@ namespace silva::seed::impl {
         }
         else if (axe_op_type == lexicon.ti_infix.token_id ||
                  axe_op_type == lexicon.ti_infix_flat.token_id) {
-          const auto [maybe_ti_op, pts_op] = SILVA_EXPECT_FWD(get_next_or_concat());
-          const bool is_flatten            = (axe_op_type == lexicon.ti_infix_flat.token_id);
-          const bool is_concat             = !maybe_ti_op.has_value();
-          precedence_t used_prec           = precedence;
-          const token_id_t ti_op           = maybe_ti_op.value_or(lexicon.ti_concat.token_id);
+          const auto [maybe_ti_op, pts_op] =
+              SILVA_EXPECT_FWD(get_next_or(lexicon.ti_concat.token_id));
+          const bool is_flatten  = (axe_op_type == lexicon.ti_infix_flat.token_id);
+          const bool is_concat   = !maybe_ti_op.has_value();
+          precedence_t used_prec = precedence;
+          const token_id_t ti_op = maybe_ti_op.value_or(lexicon.ti_concat.token_id);
           const infix_t op{
               .token_id = ti_op,
               .concat   = is_concat,
@@ -348,8 +358,9 @@ namespace silva::seed::impl {
                                        pts_op));
         }
         else if (axe_op_type == lexicon.ti_postfix_n.token_id) {
-          const auto [ti_left, pts_left]   = SILVA_EXPECT_FWD(get_next_not_concat());
-          const auto [ti_right, pts_right] = SILVA_EXPECT_FWD(get_next_not_concat());
+          const auto [ti_left, pts_left] = SILVA_EXPECT_FWD(get_next_not_concat());
+          const auto [ti_right, pts_right] =
+              SILVA_EXPECT_FWD(get_next_or(lexicon.ti_none.token_id));
           SILVA_EXPECT_FWD(register_op(ti_left,
                                        postfix_nest_t{
                                            .left_bracket   = ti_left,
@@ -359,7 +370,9 @@ namespace silva::seed::impl {
                                        full_name,
                                        precedence,
                                        pts_left));
-          SILVA_EXPECT_FWD(register_right_op(ti_right, pts_right));
+          if (ti_right.has_value()) {
+            SILVA_EXPECT_FWD(register_right_op(ti_right.value(), pts_right));
+          }
         }
         else {
           SILVA_EXPECT(false, MAJOR, "Unexpected variant: {}", sfp->token_id_wrap(axe_op_type));
@@ -564,12 +577,12 @@ namespace silva::seed::impl {
     }
 
     // The left-bracket/first operator token has already been parsed by the caller. This function
-    // then parses the nested expression and the matching right token.
+    // then parses the nested expression and (maybe?) the matching right token.
     struct nest_result_t {
       parse_tree_node_t ptn;
       oper_parse_result_t right_res;
     };
-    expected_t<nest_result_t> handle_nest(const token_id_t expected_right_token,
+    expected_t<nest_result_t> handle_nest(const optional_t<token_id_t> expected_right_token,
                                           const optional_t<name_id_ref_t>& nest_rule)
     {
       auto ss = nursery.stake();
@@ -579,13 +592,20 @@ namespace silva::seed::impl {
       const auto [ptn, tn] = SILVA_EXPECT_FWD(invoke_rule_parser(used_rule_name));
       ss.add_proto_node(ptn);
 
-      const auto right = SILVA_EXPECT_FWD(parse_oper_literal());
-      SILVA_EXPECT_PARSE(used_rule_name,
-                         right.token_id == expected_right_token,
-                         "expected {}, got {}",
-                         sfp->token_id_wrap(expected_right_token),
-                         sfp->token_id_wrap(right.token_id));
-      ss.add_proto_node(right.ptn);
+      oper_parse_result_t right;
+      if (expected_right_token.has_value()) {
+        right = SILVA_EXPECT_FWD(parse_oper_literal());
+        SILVA_EXPECT_PARSE(used_rule_name,
+                           right.token_id == expected_right_token.value(),
+                           "expected {}, got {}",
+                           sfp->token_id_wrap(expected_right_token.value()),
+                           sfp->token_id_wrap(right.token_id));
+        ss.add_proto_node(right.ptn);
+      }
+      else {
+        right.ptn.fragment_begin = nursery.fragment_index;
+        right.ptn.fragment_end   = nursery.fragment_index;
+      }
 
       open_expr_stack.push_back(expr_tree.size());
       expr_tree.push_back(tn);

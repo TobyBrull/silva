@@ -459,8 +459,8 @@ namespace silva::seed::impl {
         }
         error_nursery.add_child_error(std::move(result).error());
       }
-      {
-        auto result = parse_literal(lexicon.ti_concat);
+      for (const auto& ft: {lexicon.ti_concat, lexicon.ti_none}) {
+        auto result = parse_literal(ft);
         if (result) {
           ss_rule.add_proto_node(*result);
           return ss_rule.commit();

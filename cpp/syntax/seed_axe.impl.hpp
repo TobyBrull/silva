@@ -14,15 +14,15 @@ namespace silva::seed::impl {
 
   struct prefix_t {
     constexpr static inline index_t arity = 1;
-    token_id_t token_id{0};
+    token_id_t token_id;
 
     friend auto operator<=>(const prefix_t&, const prefix_t&) = default;
   };
 
   struct prefix_nest_t {
     constexpr static inline index_t arity = 2;
-    token_id_t left_bracket{0};
-    token_id_t right_bracket{0};
+    token_id_t left_bracket;
+    token_id_t right_bracket;
 
     optional_t<name_id_ref_t> nest_rule_name;
 
@@ -31,7 +31,7 @@ namespace silva::seed::impl {
 
   struct infix_t {
     constexpr static inline index_t arity = 2;
-    token_id_t token_id{0};
+    token_id_t token_id;
     bool concat  = false;
     bool flatten = false;
 
@@ -40,8 +40,8 @@ namespace silva::seed::impl {
 
   struct ternary_t {
     constexpr static inline index_t arity = 3;
-    token_id_t first{0};
-    token_id_t second{0};
+    token_id_t first;
+    token_id_t second;
 
     optional_t<name_id_ref_t> nest_rule_name;
 
@@ -50,15 +50,15 @@ namespace silva::seed::impl {
 
   struct postfix_t {
     constexpr static inline index_t arity = 1;
-    token_id_t token_id{0};
+    token_id_t token_id;
 
     friend auto operator<=>(const postfix_t&, const postfix_t&) = default;
   };
 
   struct postfix_nest_t {
     constexpr static inline index_t arity = 2;
-    token_id_t left_bracket{0};
-    token_id_t right_bracket{0};
+    token_id_t left_bracket;
+    optional_t<token_id_t> right_bracket;
 
     optional_t<name_id_ref_t> nest_rule_name;
 
