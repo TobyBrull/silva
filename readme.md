@@ -22,6 +22,8 @@ Implemented parsers:
   ([Example](cpp/zoo/pine/example.pine))
 * [Ash](cpp/zoo/ash/ash.seed): A language that looks a bit like Bash. Vibe coded.
   ([Example](cpp/zoo/ash/example.ash))
+* [Rose](cpp/zoo/rose/rose.seed): Basically Rust. Vibe coded.
+  ([Example](cpp/zoo/rose/example.rose))
 * [Tomel](cpp/zoo/tomel/tomel.seed): Basically Tom's Obvious, Minimal Language.
   ([Example](cpp/zoo/tomel/example.tomel))
 * [Lox](cpp/zoo/lox/lox.hpp): The toy language from the book "Crafting Interpreters".

@@ -1,0 +1,364 @@
+//! A small tour through the Rust grammar.
+
+#![allow(dead_code, unused_variables)]
+
+extern crate alloc;
+extern crate core as rust_core;
+
+use std::collections::HashMap;
+use std::fmt::{self, Display, Formatter};
+use std::io::*;
+use std::ops::{Add, Index as Idx, Mul};
+use super::sibling::{nested::{Thing, Other as _}, *};
+
+/* Block comments /* can be nested */ and span
+   multiple lines. */
+
+pub mod geometry {
+    pub(crate) const ORIGIN: (f64, f64) = (0.0, 0.0);
+    pub(super) static mut COUNTER: u32 = 0;
+    pub(in crate::geometry) type Coord = f64;
+}
+
+mod external;
+
+const NUMBERS: [u64; 9] = [0, 1_000, 0b1010, 0o755, 0xdead_BEEF, 42u8 as u64, 7usize as u64, 1e3 as u64, 2.5e-3f64 as u64];
+const _: () = ();
+static GREETING: &'static str = "hello \"world\"\n";
+static BYTES: &[u8] = b"bytes\x00";
+static RAW: &str = r#"raw "quoted" string"#;
+static RAW2: &str = r##"even "# more"##;
+static CHARS: [char; 4] = ['a', '\n', '\'', '\u{1F600}'];
+static BYTE: u8 = b'x';
+
+/// A point in the plane.
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
+pub struct Point<T = f64> {
+    pub x: T,
+    pub(crate) y: T,
+}
+
+#[repr(transparent)]
+struct Meters(pub f64);
+
+struct Unit;
+
+struct Wrapper<'a, T: 'a + ?Sized, const N: usize = 3>(&'a T, [u8; N])
+where
+    T: Display;
+
+#[derive(Debug)]
+enum Shape {
+    Circle { center: Point, radius: f64 },
+    Rect(Point, Point),
+    Empty,
+}
+
+#[repr(u8)]
+enum Level {
+    Low = 1,
+    High = 1 << 4,
+}
+
+#[repr(C)]
+union IntOrFloat {
+    i: u32,
+    f: f32,
+}
+
+pub trait Area: Display + Sized {
+    const SIDES: usize;
+    type Output: Into<f64> + Copy;
+
+    fn area(&self) -> Self::Output;
+
+    fn describe(&self) -> String {
+        format!("area = {}", self.area().into())
+    }
+}
+
+unsafe trait Zeroable {}
+
+unsafe impl Zeroable for u32 {}
+
+impl<T: Add<Output = T> + Copy> Add for Point<T> {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self::Output {
+        Point { x: self.x + other.x, y: self.y + other.y }
+    }
+}
+
+impl Display for Shape {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match *self {
+            Shape::Circle { radius, .. } => write!(f, "circle({})", radius),
+            Shape::Rect(ref a, ref b) => write!(f, "rect({:?}, {:?})", a, b),
+            Shape::Empty => f.write_str("empty"),
+        }
+    }
+}
+
+impl Area for Shape {
+    const SIDES: usize = 0;
+    type Output = f64;
+
+    fn area(&self) -> f64 {
+        match self {
+            Shape::Circle { radius: r, center: _ } => std::f64::consts::PI * r * r,
+            &Shape::Rect(a, b) => ((b.x - a.x) * (b.y - a.y)).abs(),
+            _ => 0.0,
+        }
+    }
+}
+
+impl<T> Index<usize> for Wrapper<'_, T, 3>
+where
+    T: Display + ?Sized,
+{
+    type Output = u8;
+
+    fn index(&self, i: usize) -> &Self::Output {
+        &self.1[i]
+    }
+}
+
+impl Meters {
+    pub const fn new(value: f64) -> Self {
+        Self(value)
+    }
+
+    pub fn value(&self) -> f64 {
+        self.0
+    }
+
+    fn scale(mut self, factor: f64) -> Self {
+        self.0 *= factor;
+        self
+    }
+
+    fn boxed(self: Box<Self>) -> f64 {
+        self.0
+    }
+}
+
+extern "C" {
+    fn abs(input: i32) -> i32;
+    static errno: i32;
+}
+
+unsafe extern "C" fn callback(data: *const u8, len: usize, ...) -> *mut u8 {
+    data as *mut u8
+}
+
+fn arithmetic(a: i64, b: i64) -> (i64, i64, bool) {
+    let mut total = a + b * 2 - a / b % 3;
+    total += a;
+    total -= -b;
+    total *= !a;
+    total <<= 1;
+    total >>= 2;
+    total |= a & b ^ a | b;
+    let shifted = (a << 2) | (b >> 1);
+    let cmp = a < b && b <= 10 || a == b && a != 0 && a >= b && b > a;
+    (total, shifted as i64, cmp)
+}
+
+fn references<'a, 'b: 'a>(x: &'a mut i32, y: &'b i32) -> &'a i32 {
+    *x += *y;
+    let r = &x;
+    let rr = &&y;
+    let m = &mut *x;
+    *m = **rr;
+    x
+}
+
+fn control_flow(n: i32) -> i32 {
+    let sign = if n < 0 {
+        -1
+    } else if n == 0 {
+        0
+    } else {
+        1
+    };
+
+    let mut i = 0;
+    while i < 10 {
+        i += 1;
+        if i % 2 == 0 {
+            continue;
+        }
+    }
+
+    let found = 'outer: loop {
+        for x in 0..10 {
+            for y in (0..=x).rev() {
+                if x * y > 20 {
+                    break 'outer x * y;
+                }
+                if y == 3 {
+                    continue 'outer;
+                }
+            }
+        }
+        break -1;
+    };
+
+    let labelled = 'block: {
+        if found > 0 {
+            break 'block 1;
+        }
+        2
+    };
+
+    let mut stack = vec![1, 2, 3];
+    while let Some(top) = stack.pop() {
+        println!("{}", top);
+    }
+
+    if let Some(x) = stack.first() && *x > 0 {
+        return *x;
+    }
+
+    let Some(last) = stack.last() else {
+        return sign;
+    };
+
+    sign + found + labelled + *last
+}
+
+fn patterns(value: Option<(i32, &str)>, slice: &[i32], c: char) -> i32 {
+    match value {
+        Some((0, _)) => 0,
+        Some((n @ 1..=9, name)) if name.len() > 2 => n,
+        Some((-5..0, _)) | None => -1,
+        Some((n, "special")) => {
+            n * 2
+        }
+        Some(_) => 1,
+    };
+
+    match slice {
+        [] => 0,
+        [one] => *one,
+        [first, .., last] => first + last,
+        [first, rest @ ..] => *first + rest.len() as i32,
+    };
+
+    match c {
+        'a'..='z' | 'A'..='Z' => 1,
+        '0'..='9' => 2,
+        _ => 3,
+    };
+
+    let Point { x, y: ref mut why } = Point { x: 1, y: 2 };
+    let (a, mut b, ..) = (1, 2, 3, 4);
+    let &(ref p, q) = &(1, 2);
+    let [u, v] = [1u8, 2];
+    let Meters(len) = Meters::new(3.0);
+    let ((nested, _), _) = ((1, 2), 3);
+    x + a + b + p + q
+}
+
+fn expressions() {
+    let tuple = (1, "two", 3.0);
+    let single = (1,);
+    let unit = ();
+    let array = [0u8; 16];
+    let first = tuple.0;
+    let slice = &array[1..];
+    let middle = &array[2..4];
+    let all = &array[..];
+    let head = &array[..=3];
+    let range = 1..10;
+    let point = Point { x: 1.0, ..Default::default() };
+    let other = Point::<f64> { y: 2.0, x: 3.0 };
+    let shape = Shape::Circle { center: point, radius: 2.0 };
+    let map: HashMap<String, Vec<i32>> = HashMap::new();
+    let glued: Vec<Vec<u8>>= Vec::new();
+    let parsed = "42".parse::<i32>().unwrap_or_default();
+    let collected = (0..5).map(|x| x * 2).filter(|&x| x > 2).collect::<Vec<_>>();
+    let sum: i32 = collected.iter().sum();
+    let fallible = || -> Result<i32, String> {
+        let v: i32 = "7".parse().map_err(|e| format!("{e}"))?;
+        Ok(v)
+    };
+    let add = |a: i32, b: i32| -> i32 { a + b };
+    let captured = move || sum + parsed;
+    let qualified = <Shape as Area>::SIDES;
+    let size = <Vec<u8>>::new().len();
+    let unsafe_value = unsafe { abs(-3) };
+    let block = {
+        let inner = 5;
+        inner * 2
+    };
+    let cast = 3.7_f64 as i32 as u8;
+    let as_ref = &cast as &u8 as *const u8 as usize + 1;
+    let negated = -(-cast as i32);
+    let not = !true;
+    let raw_ident = r#match + 1;
+    let assigned;
+    assigned = 5;
+    let _ = (add(1, 2), captured(), fallible(), qualified, size, unsafe_value, block, not);
+}
+
+async fn fetch(url: &str) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
+    let response = request(url).await?;
+    let future = async move { response.len() };
+    let closure = async |x: u32| x + 1;
+    Ok(future.await.to_string())
+}
+
+fn generics<T, U, F>(items: &[T], f: F) -> impl Iterator<Item = U> + '_
+where
+    T: Clone + 'static,
+    F: Fn(&T) -> U + Copy + 'static,
+    for<'a> &'a T: IntoIterator,
+{
+    items.iter().map(move |item| f(item))
+}
+
+fn pointers(callback: fn(i32) -> i32, raw: *const i32, never: fn() -> !) -> Option<Box<dyn Fn(u8) -> u8>> {
+    let func: unsafe extern "C" fn(*const u8, usize, ...) -> *mut u8 = callback;
+    let opt: Option<&mut [Point<f32>]> = None;
+    let nested: Vec<Vec<HashMap<u8, (i8, [u16; 4])>>> = Vec::new();
+    Some(Box::new(|x| x + 1))
+}
+
+macro_rules! square {
+    ($x:expr) => {
+        $x * $x
+    };
+    ($($x:expr),+ $(,)?) => {
+        ($(square!($x)),+)
+    };
+}
+
+macro_rules! make_struct {
+    ($name:ident { $($field:ident : $ty:ty),* }) => {
+        struct $name { $($field: $ty),* }
+    }
+}
+
+make_struct!(Generated { a: u8, b: u16 });
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic(expected = "boom")]
+    fn it_works() {
+        assert_eq!(square!(3), 9);
+        assert!(Point::<i32>::default() == Point { x: 0, y: 0 });
+        panic!("boom");
+    }
+}
+
+fn main() {
+    let shapes: Vec<Box<dyn Area<Output = f64>>> = vec![];
+    for (index, shape) in shapes.iter().enumerate() {
+        println!("{index}: {}", shape.describe());
+    }
+    std::process::exit(control_flow(arithmetic(1, 2).0 as i32));
+}

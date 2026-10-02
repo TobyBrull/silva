@@ -1,0 +1,333 @@
+# Adoption of
+# https://doc.rust-lang.org/reference/grammar.html
+# as of 2026-10-01.
+#
+# Deviations from the reference grammar:
+#  * Rust forbids struct expressions in some places, e.g., the condition of an « if ». Instead of
+#    duplicating all expression rules, a struct expression here is only recognised if its '{' is
+#    followed by « name: », « name, », « 0: » or « .. ». So « Foo {} » and « Foo { x } » are not
+#    parsed as struct expressions.
+#  * The half-open range « a.. » and the full range « .. » are only supported directly inside an
+#    index-expression « x[a..] ».
+#  * The Rust grammar treats expressions with blocks (e.g., « if », « match », « loop ») specially
+#    when they are used as statements or as match-arm bodies. Here, such an expression ends the
+#    statement (or match-arm) unless it is followed by '.' or '?'.
+#  * Raw strings support at most two '#'.
+
+language Rose:
+  skip.@ = whitespace
+
+  whitespace = no_node [ comment NEWLINE SPACE LINE_CONTINUATION INDENT DEDENT INDENTATION_BROKEN ] *
+  comment:
+    @ = no_node line | block
+    line = no_node '//' ( LANGUAGE | ANY ) *
+    block = no_node '/*' ( block | not '*/' anyFragment ) * '*/'
+  anyFragment = no_node [ ANY NEWLINE INDENT DEDENT INDENTATION_BROKEN LINE_CONTINUATION ]
+
+  @ = InnerAttr * Item *
+
+  # Lexical structure
+
+  identifier = rawIdentifier | not keyword anyIdentifier
+  rawIdentifier = no_node ε 'r#' anyIdentifier
+  anyIdentifier = no_node ID_START ID_CONTINUE *
+  keyword = no_node [ "as" "async" "await" "break" "const" "continue" "crate" "dyn" "else" "enum" \
+                      "extern" "false" "fn" "for" "if" "impl" "in" "let" "loop" "match" "mod" \
+                      "move" "mut" "pub" "ref" "return" "self" "Self" "static" "struct" "super" \
+                      "trait" "true" "type" "unsafe" "use" "where" "while" "_" ]
+  pathKeyword = [ "super" "self" "Self" "crate" ]
+  selfValue = "self"
+  mut = "mut"
+  ref = "ref"
+  underscore = "_"
+  colon = no_node ε ':' not ':'
+  lifetime = ε '\'' anyIdentifier not '\''
+
+  literal = no_node [ string char number boolean ]
+  boolean = [ "true" "false" ]
+
+  string:
+    @ = no_node [ plain byte c raw byteRaw ]
+    plain = quoted
+    byte = ε 'b' quoted
+    c = ε 'c' quoted
+    raw = ε 'r' rawQuoted
+    byteRaw = ε 'br' rawQuoted
+    quoted = no_node '"' ( '\\' ANY | not '"' anyFragment ) * '"'
+    rawQuoted = no_node '##"' ( not '"##' anyFragment ) * '"##' \
+                      | '#"' ( not '"#' anyFragment ) * '"#' \
+                      | '"' ( not '"' anyFragment ) * '"'
+
+  char:
+    @ = no_node [ plain byte ]
+    plain = ε '\'' body '\''
+    byte = ε 'b\'' body '\''
+    body = no_node '\\' ( 'u{' ( not '}' ANY ) * '}' | ANY ) | not [ '\'' '\\' ] ANY
+
+  number:
+    @ = body suffix ? not ID_CONTINUE
+    body = no_node [ binary octal hexadecimal float decimal ]
+    binary = '0b' [ '0' '1' '_' ] +
+    octal = '0o' [ DIGIT '_' ] +
+    hexadecimal = '0x' [ DIGIT 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F' '_' ] +
+    float = decimal ( exponent | ε '.' decimal exponent ? )
+    exponent = [ 'e' 'E' ] [ '+' '-' ] ? decimal
+    decimal = DIGIT [ DIGIT '_' ] *
+    suffix = [ 'u' 'i' 'f' ] ( DIGIT + | 'size' )
+
+  # Token trees and attributes
+
+  DelimTokenTree = ε '(' TokenTree * ')' | ε '[' TokenTree * ']' | '{' TokenTree * '}'
+  TokenTree = DelimTokenTree | token
+  token = [ string char lifetime number rawIdentifier anyIdentifier OPERATOR ]
+
+  InnerAttr = '#' '!' '[' Attr ']'
+  OuterAttr = '#' '[' Attr ']'
+  Attr = SimplePath ( DelimTokenTree | '=' Expr ) ?
+
+  # Paths
+
+  SimplePath = '::' ? simplePathSegment ( ε '::' simplePathSegment ) *
+  simplePathSegment = identifier | pathKeyword | '$' "crate"
+  PathIdentSegment = no_node identifier | pathKeyword | '$' "crate"
+
+  PathInExpr = '::' ? PathExprSegment ( ε '::' PathExprSegment ) *
+  PathExprSegment = PathIdentSegment ( ε '::' GenericArgs ) ?
+
+  QualifiedPathType = '<' Type ( "as" TypePath ) ? '>'
+  QualifiedPathInExpr = QualifiedPathType ( ε '::' PathExprSegment ) +
+  QualifiedPathInType = QualifiedPathType ( ε '::' TypePathSegment ) +
+
+  TypePath = '::' ? TypePathSegment ( ε '::' TypePathSegment ) *
+  TypePathSegment = PathIdentSegment ( '::' ? ( GenericArgs | TypePathFn ) ) ?
+  TypePathFn = '(' ( Type ( ε ',' Type ) * ',' ? ) ? ')' ( '->' Type.NoBounds ) ?
+
+  GenericArgs:
+    @ = '<' ( Arg ( ε ',' Arg ) * ',' ? ) ? '>'
+    Arg = lifetime | Constraint | Type | Const
+    Constraint = identifier GenericArgs ? ( '=' Type | colon Bounds )
+    Const = Block | '-' ? literal
+
+  # Items
+
+  Item = OuterAttr * ( MacroRules | MacroItem | Visibility ? VisItem )
+  VisItem = no_node [ Module ExternCrate Use Function TypeAlias Struct Enum Union Const Static Trait \
+              Impl ExternBlock ]
+
+  Visibility = "pub" ( ε '(' pathKeyword ')' | ε '(' "in" SimplePath ')' ) ?
+
+  Module = "mod" identifier ( ';' | '{' InnerAttr * Item * '}' )
+
+  ExternCrate = "extern" "crate" ( identifier | pathKeyword ) ( "as" ( identifier | underscore ) ) ? ';'
+
+  Use:
+    @ = "use" Tree ';'
+    Tree = ( SimplePath ? '::' ) ? ( glob | '{' ( Tree ( ε ',' Tree ) * ',' ? ) ? '}' ) \
+         | SimplePath ( "as" ( identifier | underscore ) ) ?
+    glob = '*'
+
+  Function:
+    @ = Qualifiers "fn" ~ identifier GenericParams ? '(' Params ? ')' ( '->' Type ) ? Where ? \
+        ( Block | ';' )
+    Qualifiers = no_node qualifier * ( "extern" abi ? ) ?
+    qualifier = [ "const" "async" "unsafe" "safe" ]
+    abi = string
+    Params = SelfParam ( ε ',' Param ) * ',' ? | Param ( ε ',' Param ) * ',' ?
+    SelfParam = OuterAttr * ( TypedSelf | ShorthandSelf )
+    TypedSelf = mut ? selfValue colon Type
+    ShorthandSelf = ( '&' lifetime ? ) ? mut ? selfValue
+    Param = OuterAttr * ( Pattern.Bind colon ( Type | variadic ) | variadic | Type )
+    variadic = '...'
+
+  TypeAlias = "type" identifier GenericParams ? ( colon Bounds ) ? Where ? ( '=' Type Where ? ) ? ';'
+
+  Struct:
+    @ = "struct" identifier GenericParams ? ( Where ? Fields | TupleFields Where ? ';' | Where ? ';' )
+    Fields = '{' ( Field ( ε ',' Field ) * ',' ? ) ? '}'
+    Field = OuterAttr * Visibility ? identifier colon Type
+    TupleFields = '(' ( TupleField ( ε ',' TupleField ) * ',' ? ) ? ')'
+    TupleField = OuterAttr * Visibility ? Type
+
+  Enum:
+    @ = "enum" identifier GenericParams ? Where ? '{' ( Variant ( ε ',' Variant ) * ',' ? ) ? '}'
+    Variant = OuterAttr * Visibility ? identifier ( Struct.Fields | Struct.TupleFields ) ? \
+              ( '=' Expr ) ?
+
+  Union = ε "union" identifier GenericParams ? Where ? Struct.Fields
+
+  Const = ε "const" ( identifier | underscore ) colon ~ Type ( '=' Expr ) ? ';'
+
+  Static = "static" mut ? identifier colon Type ( '=' Expr ) ? ';'
+
+  Trait = "unsafe" ? "auto" ? "trait" ~ identifier GenericParams ? ( colon Bounds ? ) ? Where ? \
+          '{' InnerAttr * AssocItem * '}'
+
+  Impl = "unsafe" ? "impl" ~ GenericParams ? ( negative ? TypePath "for" Type | Type ) Where ? \
+         '{' InnerAttr * AssocItem * '}'
+  negative = '!'
+
+  AssocItem = OuterAttr * ( MacroItem | Visibility ? [ TypeAlias Const Function ] )
+
+  ExternBlock = "unsafe" ? "extern" Function.abi ? '{' ~ InnerAttr * ExternItem * '}'
+  ExternItem = OuterAttr * ( MacroItem | Visibility ? [ Static Function ] )
+
+  MacroItem = SimplePath '!' not '=' ( ε '(' TokenTree * ')' ';' | ε '[' TokenTree * ']' ';' \
+                                     | '{' TokenTree * '}' )
+
+  MacroRules:
+    @ = "macro_rules" '!' identifier ( '(' Rules ')' ';' | '[' Rules ']' ';' | '{' Rules '}' )
+    Rules = MacroRule ( ε ';' MacroRule ) * ';' ?
+    MacroRule = Matcher '=>' DelimTokenTree
+    Matcher = ε '(' Match * ')' | ε '[' Match * ']' | '{' Match * '}'
+    Match = Fragment | Repetition | Matcher | not '$' token
+    Fragment = ε '$' ( identifier | underscore ) colon fragSpec
+    Repetition = '$' '(' Match + ')' separator ? repOp
+    fragSpec = [ "block" "expr_2021" "expr" "ident" "item" "lifetime" "literal" "meta" "pat_param" \
+                 "pat" "path" "stmt" "tt" "ty" "vis" ]
+    separator = not repOp not '$' token
+    repOp = [ '*' '+' '?' ]
+
+  # Generics
+
+  GenericParams:
+    @ = '<' ( Param ( ε ',' Param ) * ',' ? ) ? '>'
+    Param = OuterAttr * [ LifetimeParam ConstParam TypeParam ]
+    LifetimeParam = lifetime ( colon LifetimeBounds ) ?
+    TypeParam = identifier ( colon Bounds ? ) ? ( '=' Type ) ?
+    ConstParam = "const" identifier colon Type ( '=' GenericArgs.Const ) ?
+
+  Where:
+    @ = "where" ( Predicate ( ε ',' Predicate ) * ',' ? ) ?
+    Predicate = lifetime colon LifetimeBounds | ForLifetimes ? Type colon Bounds ?
+
+  ForLifetimes = "for" GenericParams
+  LifetimeBounds = lifetime ( ε '+' lifetime ) * '+' ?
+  Bounds = Bound ( ε '+' Bound ) * '+' ?
+  Bound = lifetime | ε '(' TraitBound ')' | TraitBound
+  TraitBound = maybe ? ForLifetimes ? TypePath
+  maybe = '?'
+
+  # Types
+
+  Type:
+    @ = no_node [ ImplTrait TraitObject NoBounds ]
+    NoBounds = no_node [ never Ref Pointer Array Slice Paren Tuple underscore BareFunction \
+                         QualifiedPathInType Macro TypePath ]
+    ImplTrait = "impl" Bounds
+    TraitObject = "dyn" Bounds
+    never = '!'
+    Ref = '&' lifetime ? mut ? NoBounds
+    Pointer = '*' pointerKind NoBounds
+    pointerKind = [ "const" "mut" ]
+    Array = ε '[' Type ';' Expr ']'
+    Slice = '[' Type ']'
+    Paren = ε '(' Type ')'
+    Tuple = '(' ( Type ( ε ',' Type ) * ',' ? ) ? ')'
+    BareFunction = ForLifetimes ? Function.Qualifiers "fn" ~ '(' Params ? ')' ( '->' NoBounds ) ?
+    Params = Param ( ε ',' Param ) * ( ε ',' Function.variadic ) ? ',' ?
+    Param = OuterAttr * ( ε ( identifier | underscore ) colon ) ? Type
+    Macro = SimplePath '!' DelimTokenTree
+
+  # Statements
+
+  Block = '{' InnerAttr * Stmt * Expr ? '}'
+
+  Stmt:
+    @ = [ empty Let Item ExprStmt ]
+    empty = ';'
+    Let = OuterAttr * "let" ~ Pattern.Bind ( colon Type ) ? ( '=' Expr ( "else" Block ) ? ) ? ';'
+    ExprStmt = OuterAttr * ( BlockLike not [ '.' '?' ] ';' ? | Expr ';' )
+
+  BlockLike = no_node [ Expr.Unsafe Expr.Async Expr.ConstBlock Expr.Labeled Block Expr.If \
+                        Expr.Match Expr.Loop Expr.While Expr.For ]
+
+  # Expressions
+
+  Expr:
+    @ = axe Atom
+      Member  = ltr  postfix_nest -> CallArgs '(' ')' \
+                     postfix_nest -> IndexArg '[' ']' \
+                     postfix '?' ".await" \
+                     infix '.'
+      Unary   = rtl  prefix '-' '!' '*' '&' '&&' "&mut"
+      Cast    = ltr  postfix_nest -> Type.NoBounds "as" none
+      Product = ltr  infix '*' '/' '%'
+      Sum     = ltr  infix '+' '-'
+      Shift   = ltr  infix '<<' '>>'
+      BitAnd  = ltr  infix '&'
+      BitXor  = ltr  infix '^'
+      BitOr   = ltr  infix '|'
+      Compare = ltr  infix '==' '!=' '<=' '>=' '<' '>'
+      LazyAnd = ltr  infix_flat '&&'
+      LazyOr  = ltr  infix_flat '||'
+      Range   = rtl  prefix '..=' '..' \
+                     infix '..=' '..'
+      Assign  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>='
+
+    Atom = no_node [ literal Closure Async Unsafe ConstBlock Labeled Block If Match Loop While \
+                     For Return Break Continue Paren Tuple Array Macro Struct \
+                     QualifiedPathInExpr PathInExpr ]
+
+    CallArgs = ( Expr ( ε ',' Expr ) * ',' ? ) ?
+    IndexArg = RangeOpen | Expr
+    RangeOpen = Expr.LazyOr ? '..' not not ']'
+
+    Closure = "async" ? "move" ? ( '||' | '|' ( ClosureParam ( ε ',' ClosureParam ) * ',' ? ) ? '|' ) \
+              ( '->' Type.NoBounds Block | Expr )
+    ClosureParam = OuterAttr * Pattern.Bind ( colon Type ) ?
+
+    Async = "async" "move" ? Block
+    Unsafe = "unsafe" Block
+    ConstBlock = "const" Block
+    Labeled = lifetime ':' ~ ( Loop | While | For | Block )
+
+    If = "if" Conditions Block ( "else" ( Block | If ) ) ?
+    Conditions = LetChain | Expr
+    LetChain = ( Expr.Compare '&&' ) * LetCondition ( ε '&&' ( LetCondition | Expr.Compare ) ) *
+    LetCondition = "let" Pattern '=' Expr.Compare
+
+    Match = "match" Expr '{' InnerAttr * Arm * '}'
+    Arm = OuterAttr * Pattern ( "if" Expr.Range ) ? '=>' ( BlockLike not [ '.' '?' ] ',' ? | Expr ',' ? )
+
+    Loop = "loop" Block
+    While = "while" Conditions Block
+    For = "for" Pattern "in" Expr Block
+
+    Return = "return" Expr ?
+    Break = "break" lifetime ? Expr ?
+    Continue = "continue" lifetime ?
+
+    Paren = ε '(' Expr ')'
+    Tuple = '(' ( Expr ( ε ',' Expr ) * ',' ? ) ? ')'
+    Array = '[' ( ε Expr ';' Expr | Expr ( ε ',' Expr ) * ',' ? ) ? ']'
+
+    Macro = PathInExpr '!' not '=' DelimTokenTree
+
+    Struct = PathInExpr '{' not not StructStart \
+             ( Field ( ε ',' Field ) * ( ε ',' Base ) ? ',' ? | Base ) '}'
+    StructStart = identifier colon | identifier ',' | number colon | '..'
+    Field = OuterAttr * ( ε identifier colon Expr | ε number colon Expr | identifier )
+    Base = '..' Expr
+
+  # Patterns
+
+  Pattern:
+    @ = axe Atom
+      Ref   = rtl  prefix '&' '&&' "&mut"
+      Range = rtl  prefix '..=' \
+                   infix '..=' '..'
+      Bind  = rtl  infix '@'
+      Alt   = ltr  infix_flat '|'
+
+    Atom = no_node [ Literal underscore rest Macro Struct TupleStruct Ident Grouped Tuple Slice \
+                     QualifiedPathInExpr PathInExpr ]
+    Literal = '-' ? literal
+    rest = '..'
+    Macro = PathInExpr '!' DelimTokenTree
+    Ident = ref ? mut ? identifier not [ '::' '(' '{' '!' ]
+    TupleStruct = PathInExpr '(' ( Pattern ( ε ',' Pattern ) * ',' ? ) ? ')'
+    Grouped = ε '(' Pattern ')'
+    Tuple = '(' ( Pattern ( ε ',' Pattern ) * ',' ? ) ? ')'
+    Slice = '[' ( Pattern ( ε ',' Pattern ) * ',' ? ) ? ']'
+    Struct = PathInExpr '{' ( Field ( ε ',' Field ) * ( ε ',' rest ) ? ',' ? | rest ) ? '}'
+    Field = OuterAttr * ( ε identifier colon Pattern | ε number colon Pattern | ref ? mut ? identifier )
