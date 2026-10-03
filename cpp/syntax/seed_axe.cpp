@@ -179,6 +179,7 @@ namespace silva::seed::impl {
                        axe_op_type == lexicon.ti_prefix_n.token_id ||
                        axe_op_type == lexicon.ti_infix.token_id ||
                        axe_op_type == lexicon.ti_infix_flat.token_id ||
+                       axe_op_type == lexicon.ti_infix_open.token_id ||
                        axe_op_type == lexicon.ti_ternary.token_id ||
                        axe_op_type == lexicon.ti_postfix.token_id ||
                        axe_op_type == lexicon.ti_postfix_n.token_id,
@@ -218,10 +219,11 @@ namespace silva::seed::impl {
                          axe_op_type == lexicon.ti_postfix_n.token_id ||
                          axe_op_type == lexicon.ti_infix.token_id ||
                          axe_op_type == lexicon.ti_infix_flat.token_id ||
+                         axe_op_type == lexicon.ti_infix_open.token_id ||
                          axe_op_type == lexicon.ti_ternary.token_id,
                      MINOR,
-                     "{} an 'ltr' level requires operators of type [ postfix postfix_nest_t "
-                     "infix_t ternary_t ], not {}",
+                     "{} an 'ltr' level requires operators of type [ postfix postfix_nest infix "
+                     "infix_flat infix_open ternary ], not {}",
                      pts_ops,
                      sfp->token_id_wrap(axe_op_type));
       }
@@ -230,10 +232,11 @@ namespace silva::seed::impl {
                          axe_op_type == lexicon.ti_prefix_n.token_id ||
                          axe_op_type == lexicon.ti_infix.token_id ||
                          axe_op_type == lexicon.ti_infix_flat.token_id ||
+                         axe_op_type == lexicon.ti_infix_open.token_id ||
                          axe_op_type == lexicon.ti_ternary.token_id,
                      MINOR,
-                     "{} 'rtl' levels require operators of type [ prefix_t prefix_nest_t "
-                     "infix_t ternary_t ], not {}",
+                     "{} 'rtl' levels require operators of type [ prefix prefix_nest infix "
+                     "infix_flat infix_open ternary ], not {}",
                      pts_ops,
                      sfp->token_id_wrap(axe_op_type));
       }
@@ -300,10 +303,12 @@ namespace silva::seed::impl {
           SILVA_EXPECT_FWD(register_right_op(ti_right, pts_right));
         }
         else if (axe_op_type == lexicon.ti_infix.token_id ||
-                 axe_op_type == lexicon.ti_infix_flat.token_id) {
+                 axe_op_type == lexicon.ti_infix_flat.token_id ||
+                 axe_op_type == lexicon.ti_infix_open.token_id) {
           const auto [maybe_ti_op, pts_op] =
               SILVA_EXPECT_FWD(get_next_or(lexicon.ti_concat.token_id));
           const bool is_flatten  = (axe_op_type == lexicon.ti_infix_flat.token_id);
+          const bool is_open     = (axe_op_type == lexicon.ti_infix_open.token_id);
           const bool is_concat   = !maybe_ti_op.has_value();
           precedence_t used_prec = precedence;
           const token_id_t ti_op = maybe_ti_op.value_or(lexicon.ti_concat.token_id);
@@ -311,9 +316,15 @@ namespace silva::seed::impl {
               .token_id = ti_op,
               .concat   = is_concat,
               .flatten  = is_flatten,
+              .open     = is_open,
           };
           if (is_flatten) {
             used_prec.flatten_id = ti_op;
+          }
+          if (is_open) {
+            // All "infix_open" operators of a level share one flatten-id, so that chains of them
+            // (even of different tokens) end up next to each other on the operator stack.
+            used_prec.flatten_id = lexicon.ti_infix_open.token_id;
           }
           if (is_concat) {
             SILVA_EXPECT(!retval.concat_result.has_value(),
@@ -500,6 +511,7 @@ namespace silva::seed::impl {
           };
           way_t way               = NONE;
           index_t expr_idx_offset = 0;
+          bool is_optional        = false;
         };
         array_small_t<related_expr_t, 2> related_exprs;
       };
@@ -625,83 +637,104 @@ namespace silva::seed::impl {
     };
     expected_t<consistent_range_t> consistent_range(span_t<const open_oper_item_t> ois) const
     {
+      using symbol_t       = open_oper_item_t::symbol_t;
+      using related_expr_t = symbol_t::related_expr_t;
+
       SILVA_EXPECT(!ois.empty(), ASSERT);
       const index_t common_arity = ois.front().arity;
       for (index_t i = 1; i < ois.size(); ++i) {
         SILVA_EXPECT(ois.front().oper == ois[i].oper, ASSERT);
         SILVA_EXPECT(common_arity == ois[i].arity, ASSERT);
       }
-
       SILVA_EXPECT(common_arity >= 1, ASSERT);
+      SILVA_EXPECT(ois.size() == 1 || common_arity == 2, MINOR, "only infix operator can be flat");
       const index_t combined_arity = (common_arity - 1) * ois.size() + 1;
-      SILVA_EXPECT(combined_arity <= open_expr_stack.size(),
-                   MINOR,
-                   "[{}] Operator(s) expected a total of {} operands, but only found {}",
-                   nursery.fragment_location_by(),
-                   combined_arity,
-                   open_expr_stack.size());
 
-      const index_t ots_front     = open_expr_stack.size() - combined_arity;
-      const expr_node_t& front_tn = expr_tree[open_expr_stack[ots_front]];
-      consistent_range_t retval{
-          .num_atoms        = combined_arity,
-          .joint_level_name = ois.front().level_name,
-          .fragment_begin   = front_tn.fragment_begin,
-          .fragment_end     = front_tn.fragment_end,
+      // For each operand slot, all the conditions that symbols place on it.
+      struct condition_t {
+        const symbol_t* symbol = nullptr;
+        related_expr_t related_expr;
       };
-      for (index_t idx = ots_front + 1; idx < open_expr_stack.size(); ++idx) {
-        const expr_node_t& tn = expr_tree[open_expr_stack[idx]];
-        retval.fragment_begin = std::min(retval.fragment_begin, tn.fragment_begin);
-        retval.fragment_end   = std::max(retval.fragment_end, tn.fragment_end);
+      array_t<array_t<condition_t>> slot_conditions(combined_arity);
+      consistent_range_t retval{
+          .joint_level_name = ois.front().level_name,
+          .fragment_begin   = ois.front().symbols[0].fragment_begin,
+          .fragment_end     = ois.front().symbols[0].fragment_end,
+      };
+      for (index_t oi_idx = 0; oi_idx < ois.size(); ++oi_idx) {
+        for (const auto& symbol: ois[oi_idx].symbols) {
+          for (const auto& ra: symbol.related_exprs) {
+            const index_t slot = oi_idx * (common_arity - 1) + ra.expr_idx_offset;
+            SILVA_EXPECT(0 <= slot && slot < combined_arity, ASSERT);
+            slot_conditions[slot].push_back(condition_t{.symbol = &symbol, .related_expr = ra});
+          }
+          retval.fragment_begin = std::min(retval.fragment_begin, symbol.fragment_begin);
+          retval.fragment_end   = std::max(retval.fragment_end, symbol.fragment_end);
+        }
       }
 
-      const auto handle_symbol = [&](const index_t atom_offset,
-                                     const open_oper_item_t::symbol_t& symbol) -> expected_t<void> {
-        for (const auto& ra: symbol.related_exprs) {
-          const auto& expr_node =
-              expr_tree[open_expr_stack[ots_front + atom_offset + ra.expr_idx_offset]];
-          if (ra.way == LEFTWARD) {
-            SILVA_EXPECT(
-                expr_node.fragment_end <= symbol.fragment_begin,
-                MINOR,
-                "LEFTWARD condition tn.fragment_end={} <= symbol.fragment_begin={} violated",
-                expr_node.fragment_end,
-                symbol.fragment_begin);
-          }
-          else if (ra.way == RIGHTWARD) {
-            SILVA_EXPECT(
-                symbol.fragment_end <= expr_node.fragment_begin,
-                MINOR,
-                "RIGHTWARD condition symbol.fragment_end={} <= tn.fragment_begin={} violated",
-                symbol.fragment_end,
-                expr_node.fragment_begin);
-          }
-          else {
-            SILVA_EXPECT(false, ASSERT);
-          }
+      const auto check_condition = [&](const condition_t& cond,
+                                       const expr_node_t& expr_node) -> expected_t<void> {
+        const symbol_t& symbol = *cond.symbol;
+        if (cond.related_expr.way == LEFTWARD) {
+          SILVA_EXPECT(expr_node.fragment_end <= symbol.fragment_begin,
+                       MINOR,
+                       "LEFTWARD condition tn.fragment_end={} <= symbol.fragment_begin={} violated",
+                       expr_node.fragment_end,
+                       symbol.fragment_begin);
         }
-        retval.fragment_begin = std::min(retval.fragment_begin, symbol.fragment_begin);
-        retval.fragment_end   = std::max(retval.fragment_end, symbol.fragment_end);
+        else if (cond.related_expr.way == RIGHTWARD) {
+          SILVA_EXPECT(
+              symbol.fragment_end <= expr_node.fragment_begin,
+              MINOR,
+              "RIGHTWARD condition symbol.fragment_end={} <= tn.fragment_begin={} violated",
+              symbol.fragment_end,
+              expr_node.fragment_begin);
+        }
+        else {
+          SILVA_EXPECT(false, ASSERT);
+        }
         return {};
       };
 
-      if (ois.size() == 1) {
-        const open_oper_item_t& oi = ois.front();
-        SILVA_EXPECT(oi.arity == combined_arity, ASSERT);
-        for (const auto& symbol: oi.symbols) {
-          SILVA_EXPECT_FWD(handle_symbol(0, symbol));
+      // Two pointers: operand slots from right to left, and "open_expr_stack" from the top down.
+      // An optional slot is left empty if the next expression doesn't fit its conditions.
+      index_t expr_pos = open_expr_stack.size();
+      for (index_t slot = combined_arity - 1; slot >= 0; --slot) {
+        const auto& conditions = slot_conditions[slot];
+        const bool is_optional =
+            !conditions.empty() && std::ranges::all_of(conditions, [](const condition_t& cond) {
+              return cond.related_expr.is_optional;
+            });
+        if (expr_pos == 0) {
+          SILVA_EXPECT(is_optional,
+                       MINOR,
+                       "[{}] Operator(s) expected a total of {} operands, but only found {}",
+                       nursery.fragment_location_by(),
+                       combined_arity,
+                       open_expr_stack.size());
+          continue;
         }
-        return retval;
-      }
-      else {
-        SILVA_EXPECT(common_arity == 2, MINOR, "only infix operator can be flat");
-        for (index_t oi_idx = 0; oi_idx < ois.size(); ++oi_idx) {
-          for (const auto& symbol: ois[oi_idx].symbols) {
-            SILVA_EXPECT_FWD(handle_symbol(oi_idx, symbol));
+        const expr_node_t& expr_node = expr_tree[open_expr_stack[expr_pos - 1]];
+        expected_t<void> fits;
+        for (const auto& cond: conditions) {
+          fits = check_condition(cond, expr_node);
+          if (!fits.has_value()) {
+            break;
           }
         }
+        if (!fits.has_value()) {
+          if (is_optional) {
+            fits.error().clear();
+            continue;
+          }
+          return std::unexpected(std::move(fits).error());
+        }
+        expr_pos -= 1;
+        retval.fragment_begin = std::min(retval.fragment_begin, expr_node.fragment_begin);
+        retval.fragment_end   = std::max(retval.fragment_end, expr_node.fragment_end);
       }
-
+      retval.num_atoms = open_expr_stack.size() - expr_pos;
       return retval;
     }
 
@@ -710,13 +743,28 @@ namespace silva::seed::impl {
       while (!open_oper_stack.empty() && !(open_oper_stack.back().precedence < prec)) {
         const index_t oper_stack_end = open_oper_stack.size();
         index_t oper_stack_begin     = oper_stack_end - 1;
-        if (const auto* infix_op = std::get_if<infix_t>(&open_oper_stack[oper_stack_end - 1].oper);
+        const open_oper_item_t& top  = open_oper_stack[oper_stack_end - 1];
+        if (const auto* infix_op = std::get_if<infix_t>(&top.oper);
             infix_op != nullptr && infix_op->flatten) {
-          while (oper_stack_begin > 0 &&
-                 open_oper_stack[oper_stack_begin - 1].oper ==
-                     open_oper_stack[oper_stack_end - 1].oper) {
+          while (oper_stack_begin > 0 && open_oper_stack[oper_stack_begin - 1].oper == top.oper) {
             oper_stack_begin -= 1;
           }
+        }
+        else if (infix_op != nullptr && infix_op->open) {
+          const auto is_open_on_same_level = [&](const open_oper_item_t& oi) {
+            const auto* other = std::get_if<infix_t>(&oi.oper);
+            return other != nullptr && other->open &&
+                oi.precedence.level_index == top.precedence.level_index;
+          };
+          while (oper_stack_begin > 0 &&
+                 is_open_on_same_level(open_oper_stack[oper_stack_begin - 1])) {
+            oper_stack_begin -= 1;
+          }
+          SILVA_EXPECT(oper_stack_end - oper_stack_begin == 1,
+                       MINOR,
+                       "[{}] {} operators cannot be chained",
+                       nursery.fragment_location_at(top.symbols[0].fragment_begin),
+                       sfp->token_id_wrap(infix_op->token_id));
         }
         const span_t<const open_oper_item_t> open_oper_items{
             &open_oper_stack[oper_stack_begin],
@@ -780,6 +828,22 @@ namespace silva::seed::impl {
       return {};
     };
 
+    expected_t<void> hallucinate_none()
+    {
+      expr_node_t tn;
+      tn.rule_name          = lexicon.ni_none;
+      tn.allow_token        = true;
+      tn.num_children       = 0;
+      tn.subtree_size       = 1;
+      tn.fragment_begin     = nursery.fragment_index;
+      tn.fragment_end       = nursery.fragment_index;
+      tn.nursery_tree_index = none;
+      open_expr_stack.push_back(expr_tree.size());
+      expr_tree.push_back(tn);
+      mode = INFIX_MODE;
+      return {};
+    }
+
     expected_t<parse_tree_node_t> shunting_yard()
     {
       auto ss = nursery.stake();
@@ -799,6 +863,17 @@ namespace silva::seed::impl {
               if (axe_result.prefix.has_value() && !axe_result.regular.has_value()) {
                 nursery.set_state(oper_state);
                 SILVA_EXPECT_FWD(hallucinate_concat());
+                continue;
+              }
+            }
+
+            if (mode == ATOM_MODE && axe_result.regular.has_value()) {
+              const auto& regular_result = axe_result.regular.value();
+              const auto* infix_oper     = std::get_if<infix_t>(&regular_result.oper);
+              if (infix_oper != nullptr && infix_oper->open &&
+                  regular_result.precedence.level_index >= min_prec_level) {
+                nursery.set_state(oper_state);
+                SILVA_EXPECT_FWD(hallucinate_none());
                 continue;
               }
             }
@@ -927,7 +1002,7 @@ namespace silva::seed::impl {
                         .related_exprs =
                             {
                                 {.way = LEFTWARD, .expr_idx_offset = 0},
-                                {.way = RIGHTWARD, .expr_idx_offset = 1},
+                                {.way = RIGHTWARD, .expr_idx_offset = 1, .is_optional = x->open},
                             },
                     }},
                 });
@@ -998,6 +1073,12 @@ namespace silva::seed::impl {
         open_expr_stack.push_back(expr_tree.size());
         expr_tree.push_back(tn);
         mode = INFIX_MODE;
+      }
+      if (mode == ATOM_MODE && !open_oper_stack.empty()) {
+        const auto* infix_oper = std::get_if<infix_t>(&open_oper_stack.back().oper);
+        if (infix_oper != nullptr && infix_oper->open) {
+          SILVA_EXPECT_FWD(hallucinate_none());
+        }
       }
       SILVA_EXPECT_FWD(stack_pop(precedence_min),
                        "[{}] at the end of the expression",

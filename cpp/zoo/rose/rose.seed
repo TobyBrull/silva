@@ -3,12 +3,16 @@
 # as of 2026-10-01.
 #
 # Deviations from the reference grammar:
-#  * Rust forbids struct expressions in some places, e.g., the condition of an « if ». Instead of
-#    duplicating all expression rules, a struct expression here is only recognised if its '{' is
-#    followed by « name: », « name, », « 0: » or « .. ». So « Foo {} » and « Foo { x } » are not
-#    parsed as struct expressions.
-#  * The half-open range « a.. » and the full range « .. » are only supported directly inside an
-#    index-expression « x[a..] ».
+#
+#  * Rust forbids struct expressions (Expr.Struct) in some places; this is called the
+#    NO_STRUCT_LITERAL restriction. For example, in « if MyStruct {} {} » the « MyStruct {} »
+#    could be a struct literal followed by an empty block. Since Rust has the NO_STRUCT_LITERAL
+#    restriction for if conditions, though, this will be parsed as only « MyStruct » being the if
+#    condition, followed by the if-block, followed by an empty block.
+#    Another example of this problem is that « for i in 0.. {} » currently doesn't parse.
+#    In Seed, this could currently only be resolved by having two Seed axes, almost identical, just
+#    that the "Atom" in one does allow "Expr.Struct" and in the other not. The goal is to address
+#    that with parameterized rules/scopes at some point.
 #  * The Rust grammar treats expressions with blocks (e.g., « if », « match », « loop ») specially
 #    when they are used as statements or as match-arm bodies. Here, such an expression ends the
 #    statement (or match-arm) unless it is followed by '.' or '?'.
@@ -246,7 +250,7 @@ language Rose:
   Expr:
     @ = axe Atom
       Member  = ltr  postfix_nest -> CallArgs '(' ')' \
-                     postfix_nest -> IndexArg '[' ']' \
+                     postfix_nest '[' ']' \
                      postfix '?' ".await" \
                      infix '.'
       Unary   = rtl  prefix '-' '!' '*' '&' '&&' "&mut"
@@ -260,8 +264,7 @@ language Rose:
       Compare = ltr  infix '==' '!=' '<=' '>=' '<' '>'
       LazyAnd = ltr  infix_flat '&&'
       LazyOr  = ltr  infix_flat '||'
-      Range   = rtl  prefix '..=' '..' \
-                     infix '..=' '..'
+      Range   = rtl  infix_open '..=' '..'
       Assign  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>='
 
     Atom = no_node [ literal Closure Async Unsafe ConstBlock Labeled Block If Match Loop While \
@@ -269,8 +272,6 @@ language Rose:
                      QualifiedPathInExpr PathInExpr ]
 
     CallArgs = ( Expr ( ε ',' Expr ) * ',' ? ) ?
-    IndexArg = RangeOpen | Expr
-    RangeOpen = Expr.LazyOr ? '..' not not ']'
 
     Closure = "async" ? "move" ? ( '||' | '|' ( ClosureParam ( ε ',' ClosureParam ) * ',' ? ) ? '|' ) \
               ( '->' Type.NoBounds Block | Expr )
@@ -305,7 +306,7 @@ language Rose:
 
     Struct = PathInExpr '{' not not StructStart \
              ( Field ( ε ',' Field ) * ( ε ',' Base ) ? ',' ? | Base ) '}'
-    StructStart = identifier colon | identifier ',' | number colon | '..'
+    StructStart = identifier colon | identifier ',' | number colon | ε '..' not '='
     Field = OuterAttr * ( ε identifier colon Expr | ε number colon Expr | identifier )
     Base = '..' Expr
 
@@ -314,12 +315,11 @@ language Rose:
   Pattern:
     @ = axe Atom
       Ref   = rtl  prefix '&' '&&' "&mut"
-      Range = rtl  prefix '..=' \
-                   infix '..=' '..'
+      Range = rtl  infix_open '..=' '..'
       Bind  = rtl  infix '@'
       Alt   = ltr  infix_flat '|'
 
-    Atom = no_node [ Literal underscore rest Macro Struct TupleStruct Ident Grouped Tuple Slice \
+    Atom = no_node [ Literal underscore Macro Struct TupleStruct Ident Grouped Tuple Slice \
                      QualifiedPathInExpr PathInExpr ]
     Literal = '-' ? literal
     rest = '..'

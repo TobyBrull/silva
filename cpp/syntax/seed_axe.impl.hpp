@@ -34,6 +34,7 @@ namespace silva::seed::impl {
     token_id_t token_id;
     bool concat  = false;
     bool flatten = false;
+    bool open    = false;
 
     friend auto operator<=>(const infix_t&, const infix_t&) = default;
   };

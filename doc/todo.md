@@ -1,5 +1,11 @@
 # TODO
 
+* seed-axe: is concat branch in main shunting_yard() loop missing precedence check?
+    * should the precedence check be hoisted out?
+    * factor out prefix_oper_in_atom_mode() and regular_oper_in_infix_mode()
+* for example for the Seed literal « "not" », the parser could be modified to output a
+  parse-tree that already contains the token `not` (i.e., without the double-quotes)
+
 * Rewrite design.md
 
 * Runtime:
@@ -14,7 +20,7 @@
 * Seed / Fragmentization:
     * Support positive lookahead in Seed (similar to "&" in the python grammar; "!" is already
       equivalent to "not")
-        * maybe also add the cut ("~") and force-parse ("&&") operators from Python's grammar?
+        * add force-parse ("&&") operators from Python's grammar?
         * replace prefix rule with the cut ("~") operator?
     * function
         * allow uses to write typical parse functions in silva directly
@@ -22,8 +28,14 @@
             * rules should be able to take rules as parameters
             * scopes should be able to take rules as parameters, which results in multiple rules:
                 * e.g., « skip, skip.initial, newline, indent, dedent = offSide('//') »
+    * expression parentheses:
+        * support Rust's raw strings that use an arbitrary number of '####...' and end when finding
+          the same number of '#'.
+        * support rules that use one of multiple matching parentheses. for example, something like
+            « SubExpr = [ '(' '[' ] as OPEN Expr ClosingParenthesis(OPEN) »
     * Axe:
         * add Seed Axe derivation (sub-Axe, super-Axe) mechanism?
+        * support "literal_nodes" attribute
     * translate Seed program into IR:
         * check Seed program during translation
         * check that all Nonterminals can be resolved
@@ -33,10 +45,6 @@
         * this might also enable recursion detection (and prevention)
         * recursion prevention could be a functional part of the parsing (by ignoring recursive
           branches certain grammars become viable that otherwise wouldn't be viable)
-    * allow any type of parentheses to denote sub-language?
-    * allow the parser to descent into strings?
-        * for example for the Seed literal « "not" », the parser could be modified to output a
-          parse-tree that already contains the token `not` (i.e., without the double-quotes)
     * Type-checking:
         * branch-rules may not use FRAGMENTS
         * token-rules may only use other token-rules or FRAGMENTS

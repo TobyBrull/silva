@@ -606,6 +606,7 @@ language Test:
     Cast    = ltr   postfix_nest -> Atom "as" none
     Mul     = ltr   infix '*'
     Add     = ltr   infix_flat '+' infix '-'
+    Range   = rtl   infix_open '..' '..='
     Assign  = rtl   infix_flat '=' infix '%'
   Atom = identifier | number operator.single | '(' Test ')' | '<<' Test.PrfLo '>>'
   Args = string ( ',' string ) * | ε
@@ -616,7 +617,7 @@ language Test:
         *std::get<seed::interpreter_t::axe_data_t>(se->definitions.at(sf.name_id_of("Test", "@")))
              .axe;
     CHECK(sa.concat_result.has_value());
-    CHECK(sa.results.size() == 12);
+    CHECK(sa.results.size() == 14);
 
     test::test_axe(*se, sa, "a\n", R"(
 [0] .Test                                         a<NEWLINE>¦
@@ -883,5 +884,67 @@ language Test:
       [0] .identifier                             ｢as｣
 )");
     test::test_axe(*se, sa, "a as b c\n", {none});
+    test::test_axe(*se, sa, "..\n", R"(
+[0] .Test                                         ..<NEWLINE>¦
+  [0] .Test.Range...                              ..<NEWLINE>¦
+    [0] .none                                     ｢｣
+    [1] .none                                     ｢｣
+)");
+    test::test_axe(*se, sa, ".. b\n", R"(
+[0] .Test                                         .. b<NEWLINE>¦
+  [0] .Test.Range...                              .. b<NEWLINE>¦
+    [0] .none                                     ｢｣
+    [1] .Test.Atom                                b<NEWLINE>¦
+      [0] .identifier                             ｢b｣
+)");
+    test::test_axe(*se, sa, "a ..\n", R"(
+[0] .Test                                         a ..<NEWLINE>¦
+  [0] .Test.Range...                              a ..<NEWLINE>¦
+    [0] .Test.Atom                                a ¦
+      [0] .identifier                             ｢a｣
+    [1] .none                                     ｢｣
+)");
+    test::test_axe(*se, sa, "a .. b\n", R"(
+[0] .Test                                         a .. b<NEWLINE>¦
+  [0] .Test.Range...                              a .. b<NEWLINE>¦
+    [0] .Test.Atom                                a ¦
+      [0] .identifier                             ｢a｣
+    [1] .Test.Atom                                b<NEWLINE>¦
+      [0] .identifier                             ｢b｣
+)");
+    test::test_axe(*se, sa, "a .. b + c\n", R"(
+[0] .Test                                         a ..  ...  + c<NEWLINE>¦
+  [0] .Test.Range...                              a ..  ...  + c<NEWLINE>¦
+    [0] .Test.Atom                                a ¦
+      [0] .identifier                             ｢a｣
+    [1] .Test.Add.+                               b + c<NEWLINE>¦
+      [0] .Test.Atom                              b ¦
+        [0] .identifier                           ｢b｣
+      [1] .Test.Atom                              c<NEWLINE>¦
+        [0] .identifier                           ｢c｣
+)");
+    test::test_axe(*se, sa, "a = b ..\n", R"(
+[0] .Test                                         a = b ..<NEWLINE>¦
+  [0] .Test.Assign.=                              a = b ..<NEWLINE>¦
+    [0] .Test.Atom                                a ¦
+      [0] .identifier                             ｢a｣
+    [1] .Test.Range...                            b ..<NEWLINE>¦
+      [0] .Test.Atom                              b ¦
+        [0] .identifier                           ｢b｣
+      [1] .none                                   ｢｣
+)");
+    test::test_axe(*se, sa, "( a .. ) b\n", R"(
+[0] .Test                                         ( a . ...  ) b<NEWLINE>¦
+  [0] .Test.PrfHi.(                               ( a . ...  ) b<NEWLINE>¦
+    [0] .Test                                     a .. ¦
+      [0] .Test.Range...                          a .. ¦
+        [0] .Test.Atom                            a ¦
+          [0] .identifier                         ｢a｣
+        [1] .none                                 ｢｣
+    [1] .Test.Atom                                b<NEWLINE>¦
+      [0] .identifier                             ｢b｣
+)");
+    test::test_axe(*se, sa, "a .. b .. c\n", {none});
+    test::test_axe(*se, sa, "a .. b ..= c\n", {none});
   }
 }

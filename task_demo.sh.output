@@ -6133,11 +6133,10 @@ Mr Jane
                         [0] .Rose.pathKeyword                                   ｢self｣
                     [1] .Rose.number                                            ｢1｣
                       [0] .Rose.number.decimal                                  ｢1｣
-                  [1] .Rose.Expr.IndexArg                                       i¦
-                    [0] .Rose.Expr                                              i¦
-                      [0] .Rose.PathInExpr                                      i¦
-                        [0] .Rose.PathExprSegment                               i¦
-                          [0] .Rose.identifier                                  ｢i｣
+                  [1] .Rose.Expr                                                i¦
+                    [0] .Rose.PathInExpr                                        i¦
+                      [0] .Rose.PathExprSegment                                 i¦
+                        [0] .Rose.identifier                                    ｢i｣
   [32] .Rose.Item                                                               impl  ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
     [0] .Rose.Impl                                                              impl  ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
       [0] .Rose.TypePath                                                        Meters ¦
@@ -7212,7 +7211,9 @@ Mr Jane
                       [0] .Rose.Pattern.Ident                                   first¦
                         [0] .Rose.identifier                                    ｢first｣
                     [1] .Rose.Pattern                                           ..¦
-                      [0] .Rose.Pattern.rest                                    ｢..｣
+                      [0] .Rose.Pattern.Range...                                ..¦
+                        [0] .none                                               ｢｣
+                        [1] .none                                               ｢｣
                     [2] .Rose.Pattern                                           last¦
                       [0] .Rose.Pattern.Ident                                   last¦
                         [0] .Rose.identifier                                    ｢last｣
@@ -7234,7 +7235,9 @@ Mr Jane
                       [0] .Rose.Pattern.Bind.@                                  rest @ ..¦
                         [0] .Rose.Pattern.Ident                                 rest ¦
                           [0] .Rose.identifier                                  ｢rest｣
-                        [1] .Rose.Pattern.rest                                  ｢..｣
+                        [1] .Rose.Pattern.Range...                              ..¦
+                          [0] .none                                             ｢｣
+                          [1] .none                                             ｢｣
                 [1] .Rose.Expr                                                  *firs ... s i32¦
                   [0] .Rose.Expr.Sum.+                                          *firs ... s i32¦
                     [0] .Rose.Expr.Unary.*                                      *first ¦
@@ -7336,7 +7339,9 @@ Mr Jane
                     [0] .Rose.mut                                               ｢mut｣
                     [1] .Rose.identifier                                        ｢b｣
                 [2] .Rose.Pattern                                               ..¦
-                  [0] .Rose.Pattern.rest                                        ｢..｣
+                  [0] .Rose.Pattern.Range...                                    ..¦
+                    [0] .none                                                   ｢｣
+                    [1] .none                                                   ｢｣
             [1] .Rose.Expr                                                      (1, 2 ... 3, 4)¦
               [0] .Rose.Expr.Tuple                                              (1, 2 ... 3, 4)¦
                 [0] .Rose.Expr                                                  1¦
@@ -7535,11 +7540,11 @@ Mr Jane
                   [0] .Rose.PathInExpr                                          array¦
                     [0] .Rose.PathExprSegment                                   array¦
                       [0] .Rose.identifier                                      ｢array｣
-                  [1] .Rose.Expr.IndexArg                                       1..¦
-                    [0] .Rose.Expr.RangeOpen                                    1..¦
-                      [0] .Rose.Expr                                            1¦
-                        [0] .Rose.number                                        ｢1｣
-                          [0] .Rose.number.decimal                              ｢1｣
+                  [1] .Rose.Expr                                                1..¦
+                    [0] .Rose.Expr.Range...                                     1..¦
+                      [0] .Rose.number                                          ｢1｣
+                        [0] .Rose.number.decimal                                ｢1｣
+                      [1] .none                                                 ｢｣
         [6] .Rose.Stmt                                                          let m ... .4];<NEWLINE>¦
           [0] .Rose.Stmt.Let                                                    let m ... .4];<NEWLINE>¦
             [0] .Rose.Pattern                                                   middle ¦
@@ -7551,13 +7556,12 @@ Mr Jane
                   [0] .Rose.PathInExpr                                          array¦
                     [0] .Rose.PathExprSegment                                   array¦
                       [0] .Rose.identifier                                      ｢array｣
-                  [1] .Rose.Expr.IndexArg                                       2..4¦
-                    [0] .Rose.Expr                                              2..4¦
-                      [0] .Rose.Expr.Range...                                   2..4¦
-                        [0] .Rose.number                                        ｢2｣
-                          [0] .Rose.number.decimal                              ｢2｣
-                        [1] .Rose.number                                        ｢4｣
-                          [0] .Rose.number.decimal                              ｢4｣
+                  [1] .Rose.Expr                                                2..4¦
+                    [0] .Rose.Expr.Range...                                     2..4¦
+                      [0] .Rose.number                                          ｢2｣
+                        [0] .Rose.number.decimal                                ｢2｣
+                      [1] .Rose.number                                          ｢4｣
+                        [0] .Rose.number.decimal                                ｢4｣
         [7] .Rose.Stmt                                                          let a ... ..];<NEWLINE>¦
           [0] .Rose.Stmt.Let                                                    let a ... ..];<NEWLINE>¦
             [0] .Rose.Pattern                                                   all ¦
@@ -7569,8 +7573,10 @@ Mr Jane
                   [0] .Rose.PathInExpr                                          array¦
                     [0] .Rose.PathExprSegment                                   array¦
                       [0] .Rose.identifier                                      ｢array｣
-                  [1] .Rose.Expr.IndexArg                                       ..¦
-                    [0] .Rose.Expr.RangeOpen                                    ..¦
+                  [1] .Rose.Expr                                                ..¦
+                    [0] .Rose.Expr.Range...                                     ..¦
+                      [0] .none                                                 ｢｣
+                      [1] .none                                                 ｢｣
         [8] .Rose.Stmt                                                          let h ... =3];<NEWLINE>¦
           [0] .Rose.Stmt.Let                                                    let h ... =3];<NEWLINE>¦
             [0] .Rose.Pattern                                                   head ¦
@@ -7582,11 +7588,11 @@ Mr Jane
                   [0] .Rose.PathInExpr                                          array¦
                     [0] .Rose.PathExprSegment                                   array¦
                       [0] .Rose.identifier                                      ｢array｣
-                  [1] .Rose.Expr.IndexArg                                       ..=3¦
-                    [0] .Rose.Expr                                              ..=3¦
-                      [0] .Rose.Expr.Range...=                                  ..=3¦
-                        [0] .Rose.number                                        ｢3｣
-                          [0] .Rose.number.decimal                              ｢3｣
+                  [1] .Rose.Expr                                                ..=3¦
+                    [0] .Rose.Expr.Range...=                                    ..=3¦
+                      [0] .none                                                 ｢｣
+                      [1] .Rose.number                                          ｢3｣
+                        [0] .Rose.number.decimal                                ｢3｣
         [9] .Rose.Stmt                                                          let r ... .10;<NEWLINE>¦
           [0] .Rose.Stmt.Let                                                    let r ... .10;<NEWLINE>¦
             [0] .Rose.Pattern                                                   range ¦
