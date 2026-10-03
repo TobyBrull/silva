@@ -38,7 +38,7 @@ Seed.Axe:
   assoc = "ltr" | "rtl"
   Ops = opType ( '->' Seed.Nonterminal ) ? op *
   opType = "prefix_nest" | "prefix" \
-         | "infix_flat" | "infix" | "ternary" \
+         | "infix_flat" | "infix_open" | "infix" | "ternary" \
          | "postfix_nest" | "postfix"
   op = string | "concat" | "none"
 )'";
