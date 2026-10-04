@@ -483,6 +483,7 @@ namespace silva::seed::impl {
       for (const auto& ft: {lexicon.ti_prefix_n,
                             lexicon.ti_prefix,
                             lexicon.ti_infix_flat,
+                            lexicon.ti_infix_open,
                             lexicon.ti_infix,
                             lexicon.ti_ternary,
                             lexicon.ti_postfix_n,

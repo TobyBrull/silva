@@ -35,6 +35,7 @@ namespace silva::seed {
     const fragmented_token_t ti_postfix_n     = *fragmented_token(sfp, "postfix_nest", true);
     const fragmented_token_t ti_infix         = *fragmented_token(sfp, "infix", true);
     const fragmented_token_t ti_infix_flat    = *fragmented_token(sfp, "infix_flat", true);
+    const fragmented_token_t ti_infix_open    = *fragmented_token(sfp, "infix_open", true);
     const fragmented_token_t ti_ternary       = *fragmented_token(sfp, "ternary", true);
     const fragmented_token_t ti_prefix        = *fragmented_token(sfp, "prefix", true);
     const fragmented_token_t ti_prefix_n      = *fragmented_token(sfp, "prefix_nest", true);
@@ -73,6 +74,7 @@ namespace silva::seed {
     const name_id_t ni_id_pascal    = sfp->name_id_of("identifier_pascal_case");
     const name_id_t ni_id_macro     = sfp->name_id_of("identifier_macro_case");
     const name_id_t ni_string       = sfp->name_id_of("string");
+    const name_id_t ni_none         = sfp->name_id_of("none");
     const name_id_t ni_number       = sfp->name_id_of("number");
     const name_id_t ni_num_integer  = sfp->name_id_of(ni_number, "integer");
     const name_id_t ni_num_int_dec  = sfp->name_id_of(ni_number, "integer", "decimal");

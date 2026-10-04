@@ -2,16 +2,24 @@
 # https://doc.rust-lang.org/reference/grammar.html
 # as of 2026-10-01.
 #
-# Deviations from the reference grammar:
-#  * Rust forbids struct expressions in some places, e.g., the condition of an « if ». Instead of
-#    duplicating all expression rules, a struct expression here is only recognised if its '{' is
-#    followed by « name: », « name, », « 0: » or « .. ». So « Foo {} » and « Foo { x } » are not
-#    parsed as struct expressions.
-#  * The half-open range « a.. » and the full range « .. » are only supported directly inside an
-#    index-expression « x[a..] ».
+# Major deviations from the reference grammar:
+#  * Rust forbids struct expressions (Expr.Struct) in some places; this is called the
+#    NO_STRUCT_LITERAL restriction. For example, in « if MyStruct {} {} » the « MyStruct {} »
+#    could be a struct literal followed by an empty block. Since Rust has the NO_STRUCT_LITERAL
+#    restriction for if conditions, though, this will be parsed as only « MyStruct » being the if
+#    condition, followed by the if-block, followed by an empty block. The same restriction also
+#    stops a « { » from being taken as the end of a range, as in « for i in 0.. {} ».
+#    Seed can't (yet) express such context-dependent restrictions, so Rose approximates them:
+#    everywhere, a « { » after a path only starts a struct expression if it is followed by
+#    « name: », « name, », « 0: » or « .. ». Consequently « Foo {} » and « Foo { x } » are never
+#    struct expressions, « if x == Foo { a: 1 } {} » is accepted, and « for i in 0.. {} »
+#    doesn't parse (the block becomes the end of the range). Resolving this needs two variants of
+#    the expression axe (with and without the restriction), which is to be addressed with
+#    parameterized rules/scopes at some point.
 #  * The Rust grammar treats expressions with blocks (e.g., « if », « match », « loop ») specially
 #    when they are used as statements or as match-arm bodies. Here, such an expression ends the
-#    statement (or match-arm) unless it is followed by '.' or '?'.
+#    statement (or match-arm) unless it is followed by '.' or '?'. In particular, such an
+#    expression at the end of a block becomes a statement instead of the block's tail expression.
 #  * Raw strings support at most two '#'.
 
 language Rose:
@@ -37,6 +45,7 @@ language Rose:
                       "trait" "true" "type" "unsafe" "use" "where" "while" "_" ]
   pathKeyword = [ "super" "self" "Self" "crate" ]
   selfValue = "self"
+  safety = [ "safe" "unsafe" ]
   mut = "mut"
   ref = "ref"
   underscore = "_"
@@ -47,10 +56,11 @@ language Rose:
   boolean = [ "true" "false" ]
 
   string:
-    @ = no_node [ plain byte c raw byteRaw ]
+    @ = no_node [ plain byte cRaw c raw byteRaw ]
     plain = quoted
     byte = ε 'b' quoted
     c = ε 'c' quoted
+    cRaw = ε 'cr' rawQuoted
     raw = ε 'r' rawQuoted
     byteRaw = ε 'br' rawQuoted
     quoted = no_node '"' ( '\\' ANY | not '"' anyFragment ) * '"'
@@ -70,7 +80,7 @@ language Rose:
     binary = '0b' [ '0' '1' '_' ] +
     octal = '0o' [ DIGIT '_' ] +
     hexadecimal = '0x' [ DIGIT 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F' '_' ] +
-    float = decimal ( exponent | ε '.' decimal exponent ? )
+    float = decimal ( exponent | ε '.' decimal exponent ? | ε '.' not [ '.' ID_START ] )
     exponent = [ 'e' 'E' ] [ '+' '-' ] ? decimal
     decimal = DIGIT [ DIGIT '_' ] *
     suffix = [ 'u' 'i' 'f' ] ( DIGIT + | 'size' )
@@ -83,7 +93,8 @@ language Rose:
 
   InnerAttr = '#' '!' '[' Attr ']'
   OuterAttr = '#' '[' Attr ']'
-  Attr = SimplePath ( DelimTokenTree | '=' Expr ) ?
+  Attr = ε "unsafe" '(' SimplePath AttrInput ? ')' | SimplePath AttrInput ?
+  AttrInput = DelimTokenTree | '=' Expr
 
   # Paths
 
@@ -129,8 +140,9 @@ language Rose:
   Function:
     @ = Qualifiers "fn" ~ identifier GenericParams ? '(' Params ? ')' ( '->' Type ) ? Where ? \
         ( Block | ';' )
-    Qualifiers = no_node qualifier * ( "extern" abi ? ) ?
-    qualifier = [ "const" "async" "unsafe" "safe" ]
+    Qualifiers = no_node constness ? asyncness ? safety ? ( "extern" abi ? ) ?
+    constness = "const"
+    asyncness = "async"
     abi = string
     Params = SelfParam ( ε ',' Param ) * ',' ? | Param ( ε ',' Param ) * ',' ?
     SelfParam = OuterAttr * ( TypedSelf | ShorthandSelf )
@@ -157,7 +169,7 @@ language Rose:
 
   Const = ε "const" ( identifier | underscore ) colon ~ Type ( '=' Expr ) ? ';'
 
-  Static = "static" mut ? identifier colon Type ( '=' Expr ) ? ';'
+  Static = safety ? "static" ~ mut ? identifier colon Type ( '=' Expr ) ? ';'
 
   Trait = "unsafe" ? "auto" ? "trait" ~ identifier GenericParams ? ( colon Bounds ? ) ? Where ? \
           '{' InnerAttr * AssocItem * '}'
@@ -200,7 +212,7 @@ language Rose:
     @ = "where" ( Predicate ( ε ',' Predicate ) * ',' ? ) ?
     Predicate = lifetime colon LifetimeBounds | ForLifetimes ? Type colon Bounds ?
 
-  ForLifetimes = "for" GenericParams
+  ForLifetimes = ε "for" GenericParams
   LifetimeBounds = lifetime ( ε '+' lifetime ) * '+' ?
   Bounds = Bound ( ε '+' Bound ) * '+' ?
   Bound = lifetime | ε '(' TraitBound ')' | TraitBound
@@ -211,10 +223,12 @@ language Rose:
 
   Type:
     @ = no_node [ ImplTrait TraitObject NoBounds ]
-    NoBounds = no_node [ never Ref Pointer Array Slice Paren Tuple underscore BareFunction \
-                         QualifiedPathInType Macro TypePath ]
+    NoBounds = no_node [ ImplTraitOneBound TraitObjectOneBound never Ref Pointer Array Slice Paren \
+                         Tuple underscore BareFunction QualifiedPathInType Macro TypePath ]
     ImplTrait = "impl" Bounds
     TraitObject = "dyn" Bounds
+    ImplTraitOneBound = "impl" Bound
+    TraitObjectOneBound = "dyn" Bound
     never = '!'
     Ref = '&' lifetime ? mut ? NoBounds
     Pointer = '*' pointerKind NoBounds
@@ -238,7 +252,7 @@ language Rose:
     Let = OuterAttr * "let" ~ Pattern.Bind ( colon Type ) ? ( '=' Expr ( "else" Block ) ? ) ? ';'
     ExprStmt = OuterAttr * ( BlockLike not [ '.' '?' ] ';' ? | Expr ';' )
 
-  BlockLike = no_node [ Expr.Unsafe Expr.Async Expr.ConstBlock Expr.Labeled Block Expr.If \
+  BlockLike = no_node [ Expr.Unsafe Expr.ConstBlock Expr.Labeled Block Expr.If \
                         Expr.Match Expr.Loop Expr.While Expr.For ]
 
   # Expressions
@@ -246,10 +260,12 @@ language Rose:
   Expr:
     @ = axe Atom
       Member  = ltr  postfix_nest -> CallArgs '(' ')' \
-                     postfix_nest -> IndexArg '[' ']' \
+                     postfix_nest '[' ']' \
                      postfix '?' ".await" \
-                     infix '.'
-      Unary   = rtl  prefix '-' '!' '*' '&' '&&' "&mut"
+                     postfix_nest -> FieldName '.' none
+      Unary   = rtl  prefix '-' '!' '*' \
+                     prefix_nest -> RefKind '&' none \
+                     prefix_nest -> RefKind '&&' none
       Cast    = ltr  postfix_nest -> Type.NoBounds "as" none
       Product = ltr  infix '*' '/' '%'
       Sum     = ltr  infix '+' '-'
@@ -260,8 +276,7 @@ language Rose:
       Compare = ltr  infix '==' '!=' '<=' '>=' '<' '>'
       LazyAnd = ltr  infix_flat '&&'
       LazyOr  = ltr  infix_flat '||'
-      Range   = rtl  prefix '..=' '..' \
-                     infix '..=' '..'
+      Range   = rtl  infix_open '..=' '..'
       Assign  = rtl  infix '=' '+=' '-=' '*=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>='
 
     Atom = no_node [ literal Closure Async Unsafe ConstBlock Labeled Block If Match Loop While \
@@ -269,10 +284,11 @@ language Rose:
                      QualifiedPathInExpr PathInExpr ]
 
     CallArgs = ( Expr ( ε ',' Expr ) * ',' ? ) ?
-    IndexArg = RangeOpen | Expr
-    RangeOpen = Expr.LazyOr ? '..' not not ']'
+    FieldName = tupleIndex | PathExprSegment
+    tupleIndex = DIGIT + not ID_CONTINUE
+    RefKind = ( mut | ε "raw" Type.pointerKind ) ?
 
-    Closure = "async" ? "move" ? ( '||' | '|' ( ClosureParam ( ε ',' ClosureParam ) * ',' ? ) ? '|' ) \
+    Closure = ForLifetimes ? "async" ? "move" ? ( '||' | '|' ( ClosureParam ( ε ',' ClosureParam ) * ',' ? ) ? '|' ) \
               ( '->' Type.NoBounds Block | Expr )
     ClosureParam = OuterAttr * Pattern.Bind ( colon Type ) ?
 
@@ -284,10 +300,10 @@ language Rose:
     If = "if" Conditions Block ( "else" ( Block | If ) ) ?
     Conditions = LetChain | Expr
     LetChain = ( Expr.Compare '&&' ) * LetCondition ( ε '&&' ( LetCondition | Expr.Compare ) ) *
-    LetCondition = "let" Pattern '=' Expr.Compare
+    LetCondition = "let" '|' ? Pattern '=' Expr.Compare
 
     Match = "match" Expr '{' InnerAttr * Arm * '}'
-    Arm = OuterAttr * Pattern ( "if" Expr.Range ) ? '=>' ( BlockLike not [ '.' '?' ] ',' ? | Expr ',' ? )
+    Arm = OuterAttr * '|' ? Pattern ( "if" Expr.Range ) ? '=>' ( BlockLike not [ '.' '?' ] ',' ? | Expr ( ',' | not not '}' ) )
 
     Loop = "loop" Block
     While = "while" Conditions Block
@@ -305,7 +321,7 @@ language Rose:
 
     Struct = PathInExpr '{' not not StructStart \
              ( Field ( ε ',' Field ) * ( ε ',' Base ) ? ',' ? | Base ) '}'
-    StructStart = identifier colon | identifier ',' | number colon | '..'
+    StructStart = identifier colon | identifier ',' | number colon | ε '..' not '='
     Field = OuterAttr * ( ε identifier colon Expr | ε number colon Expr | identifier )
     Base = '..' Expr
 
@@ -313,15 +329,15 @@ language Rose:
 
   Pattern:
     @ = axe Atom
-      Ref   = rtl  prefix '&' '&&' "&mut"
-      Range = rtl  prefix '..=' \
-                   infix '..=' '..'
+      Ref   = rtl  prefix_nest -> RefKind '&' none '&&' none
+      Range = rtl  infix_open '..=' '..'
       Bind  = rtl  infix '@'
       Alt   = ltr  infix_flat '|'
 
-    Atom = no_node [ Literal underscore rest Macro Struct TupleStruct Ident Grouped Tuple Slice \
+    Atom = no_node [ Literal underscore Macro Struct TupleStruct Ident Grouped Tuple Slice \
                      QualifiedPathInExpr PathInExpr ]
     Literal = '-' ? literal
+    RefKind = mut ?
     rest = '..'
     Macro = PathInExpr '!' DelimTokenTree
     Ident = ref ? mut ? identifier not [ '::' '(' '{' '!' ]

@@ -22,7 +22,7 @@ namespace silva::seed::impl {
   struct prefix_nest_t {
     constexpr static inline index_t arity = 2;
     token_id_t left_bracket;
-    token_id_t right_bracket;
+    optional_t<token_id_t> right_bracket;
 
     optional_t<name_id_ref_t> nest_rule_name;
 
@@ -34,6 +34,7 @@ namespace silva::seed::impl {
     token_id_t token_id;
     bool concat  = false;
     bool flatten = false;
+    bool open    = false;
 
     friend auto operator<=>(const infix_t&, const infix_t&) = default;
   };
