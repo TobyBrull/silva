@@ -608,7 +608,7 @@ language Test:
     Add     = ltr   infix_flat '+' infix '-'
     Range   = rtl   infix_open '..' '..='
     Assign  = rtl   infix_flat '=' infix '%'
-  Atom = identifier | number operator.single | '(' Test ')' | '<<' Test.PrfLo '>>'
+  Atom = identifier | number operator.single | '(' Test ')' | '<<' Test.PrfLo '>>' | '[[' Test.PrfHi ']]'
   Args = string ( ',' string ) * | ε
   skip.@ = freeForm
 )'";
@@ -977,5 +977,22 @@ language Test:
 )");
     test::test_axe(*se, sa, "a .. b .. c\n", {none});
     test::test_axe(*se, sa, "a .. b ..= c\n", {none});
+    test::test_axe(*se, sa, "[[ ( a ) b ]] c\n", R"(
+[0] .Test                                         [[ (  ... ]] c<NEWLINE>¦
+  [0] .Test.Cat.concat                            [[ (  ... ]] c<NEWLINE>¦
+    [0] .Test.Atom                                [[ (  ... b ]] ¦
+      [0] .Test                                   ( a ) b ¦
+        [0] .Test.PrfHi.(                         ( a ) b ¦
+          [0] .Test                               a ¦
+            [0] .Test.Atom                        a ¦
+              [0] .identifier                     ｢a｣
+          [1] .Test.Atom                          b ¦
+            [0] .identifier                       ｢b｣
+    [1] .Test.Atom                                c<NEWLINE>¦
+      [0] .identifier                             ｢c｣
+)");
+    test::test_axe(*se, sa, "[[ a b ]]\n", {none});
+    test::test_axe(*se, sa, "[[ a ( b ) c ]]\n", {none});
+    test::test_axe(*se, sa, "[[ ( a ) b c ]]\n", {none});
   }
 }

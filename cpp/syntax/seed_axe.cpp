@@ -992,6 +992,9 @@ namespace silva::seed::impl {
               if (mode == INFIX_MODE && axe_result.prefix.has_value() &&
                   !axe_result.regular.has_value()) {
                 nursery.set_state(oper_state);
+                if (axe.concat_result->precedence.level_index < min_prec_level) {
+                  break;
+                }
                 SILVA_EXPECT_FWD(hallucinate_concat());
                 continue;
               }
@@ -1019,7 +1022,6 @@ namespace silva::seed::impl {
                 break;
               }
               SILVA_EXPECT_FWD(stack_pop(prefix_result.precedence));
-
               if (SILVA_EXPECT_FWD(handle_prefix(ss, *res, prefix_result))) {
                 continue;
               }
@@ -1031,7 +1033,6 @@ namespace silva::seed::impl {
                 break;
               }
               SILVA_EXPECT_FWD(stack_pop(regular_result.precedence));
-
               if (SILVA_EXPECT_FWD(handle_regular(ss, *res, regular_result))) {
                 continue;
               }
@@ -1045,7 +1046,9 @@ namespace silva::seed::impl {
           res.error().clear();
         }
 
-        if (mode == INFIX_MODE && !axe.concat_result.has_value()) {
+        if (mode == INFIX_MODE &&
+            (!axe.concat_result.has_value() ||
+             axe.concat_result->precedence.level_index < min_prec_level)) {
           break;
         }
 
