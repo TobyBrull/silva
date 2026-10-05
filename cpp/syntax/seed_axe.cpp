@@ -808,6 +808,170 @@ namespace silva::seed::impl {
       return {};
     }
 
+    expected_t<bool> handle_prefix(parse_tree_nursery_t::stake_t<false>& ss,
+                                   const oper_parse_result_t& res,
+                                   const result_oper_t<oper_prefix_t>& prefix_result)
+    {
+      if (const auto* x = std::get_if<prefix_t>(&prefix_result.oper)) {
+        ss.add_proto_node(res.ptn);
+        open_oper_stack.push_back(open_oper_item_t{
+            .oper       = *x,
+            .arity      = prefix_t::arity,
+            .level_name = prefix_result.name,
+            .precedence = prefix_result.precedence,
+            .symbols    = {{
+                .fragment_begin = res.ptn.fragment_begin,
+                .fragment_end   = res.ptn.fragment_end,
+                .related_exprs  = {{.way = RIGHTWARD, .expr_idx_offset = 0}},
+            }},
+        });
+        return true;
+      }
+      else if (const auto* x = std::get_if<prefix_nest_t>(&prefix_result.oper)) {
+        auto nest_res =
+            SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->right_bracket, x->nest_rule_name));
+        if (nest_res.has_value()) {
+          ss.add_proto_node(res.ptn);
+          ss.add_proto_node(nest_res->ptn);
+          open_oper_stack.push_back(open_oper_item_t{
+              .oper       = *x,
+              .arity      = prefix_nest_t::arity,
+              .level_name = prefix_result.name,
+              .precedence = prefix_result.precedence,
+              .symbols =
+                  {
+                      {
+                          .fragment_begin = res.ptn.fragment_begin,
+                          .fragment_end   = res.ptn.fragment_end,
+                          .related_exprs  = {{.way = RIGHTWARD, .expr_idx_offset = 0}},
+                      },
+                      {
+                          .fragment_begin = nest_res->right_res.ptn.fragment_begin,
+                          .fragment_end   = nest_res->right_res.ptn.fragment_end,
+                          .related_exprs =
+                              {
+                                  {.way = LEFTWARD, .expr_idx_offset = 0},
+                                  {.way = RIGHTWARD, .expr_idx_offset = 1},
+                              },
+                      },
+                  },
+          });
+          return true;
+        }
+      }
+      return false;
+    }
+
+    expected_t<bool> handle_regular(parse_tree_nursery_t::stake_t<false>& ss,
+                                    const oper_parse_result_t& res,
+                                    const result_oper_t<oper_regular_t>& regular_result)
+    {
+      if (const auto* x = std::get_if<postfix_t>(&regular_result.oper)) {
+        ss.add_proto_node(res.ptn);
+        open_oper_stack.push_back(open_oper_item_t{
+            .oper       = *x,
+            .arity      = postfix_t::arity,
+            .level_name = regular_result.name,
+            .precedence = regular_result.precedence,
+            .symbols    = {{
+                .fragment_begin = res.ptn.fragment_begin,
+                .fragment_end   = res.ptn.fragment_end,
+                .related_exprs  = {{.way = LEFTWARD, .expr_idx_offset = 0}},
+            }},
+        });
+        return true;
+      }
+      else if (const auto* x = std::get_if<postfix_nest_t>(&regular_result.oper)) {
+        auto nest_res =
+            SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->right_bracket, x->nest_rule_name));
+        if (nest_res.has_value()) {
+          ss.add_proto_node(res.ptn);
+          ss.add_proto_node(nest_res->ptn);
+          open_oper_stack.push_back(open_oper_item_t{
+              .oper       = *x,
+              .arity      = postfix_nest_t::arity,
+              .level_name = regular_result.name,
+              .precedence = regular_result.precedence,
+              .symbols =
+                  {
+                      {
+                          .fragment_begin = res.ptn.fragment_begin,
+                          .fragment_end   = res.ptn.fragment_end,
+                          .related_exprs =
+                              {
+                                  {.way = LEFTWARD, .expr_idx_offset = 0},
+                                  {.way = RIGHTWARD, .expr_idx_offset = 1},
+                              },
+                      },
+                      {
+                          .fragment_begin = nest_res->right_res.ptn.fragment_begin,
+                          .fragment_end   = nest_res->right_res.ptn.fragment_end,
+                          .related_exprs  = {{.way = LEFTWARD, .expr_idx_offset = 1}},
+                      },
+                  },
+          });
+          return true;
+        }
+      }
+      else if (const auto* x = std::get_if<infix_t>(&regular_result.oper)) {
+        ss.add_proto_node(res.ptn);
+        open_oper_stack.push_back(open_oper_item_t{
+            .oper       = *x,
+            .arity      = infix_t::arity,
+            .level_name = regular_result.name,
+            .precedence = regular_result.precedence,
+            .symbols    = {{
+                .fragment_begin = res.ptn.fragment_begin,
+                .fragment_end   = res.ptn.fragment_end,
+                .related_exprs =
+                    {
+                        {.way = LEFTWARD, .expr_idx_offset = 0, .is_optional = x->open},
+                        {.way = RIGHTWARD, .expr_idx_offset = 1, .is_optional = x->open},
+                    },
+            }},
+        });
+        mode = ATOM_MODE;
+        return true;
+      }
+      else if (const auto* x = std::get_if<ternary_t>(&regular_result.oper)) {
+        auto nest_res = SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->second, x->nest_rule_name));
+        if (nest_res.has_value()) {
+          ss.add_proto_node(res.ptn);
+          ss.add_proto_node(nest_res->ptn);
+          open_oper_stack.push_back(open_oper_item_t{
+              .oper       = *x,
+              .arity      = ternary_t::arity,
+              .level_name = regular_result.name,
+              .precedence = regular_result.precedence,
+              .symbols =
+                  {
+                      {
+                          .fragment_begin = res.ptn.fragment_begin,
+                          .fragment_end   = res.ptn.fragment_end,
+                          .related_exprs =
+                              {
+                                  {.way = LEFTWARD, .expr_idx_offset = 0},
+                                  {.way = RIGHTWARD, .expr_idx_offset = 1},
+                              },
+                      },
+                      {
+                          .fragment_begin = nest_res->right_res.ptn.fragment_begin,
+                          .fragment_end   = nest_res->right_res.ptn.fragment_end,
+                          .related_exprs =
+                              {
+                                  {.way = LEFTWARD, .expr_idx_offset = 1},
+                                  {.way = RIGHTWARD, .expr_idx_offset = 2},
+                              },
+                      },
+                  },
+          });
+          mode = ATOM_MODE;
+          return true;
+        }
+      }
+      return false;
+    }
+
     expected_t<parse_tree_node_t> shunting_yard()
     {
       auto ss = nursery.stake();
@@ -856,52 +1020,8 @@ namespace silva::seed::impl {
               }
               SILVA_EXPECT_FWD(stack_pop(prefix_result.precedence));
 
-              if (const auto* x = std::get_if<prefix_t>(&prefix_result.oper)) {
-                ss.add_proto_node(res->ptn);
-                open_oper_stack.push_back(open_oper_item_t{
-                    .oper       = *x,
-                    .arity      = prefix_t::arity,
-                    .level_name = prefix_result.name,
-                    .precedence = prefix_result.precedence,
-                    .symbols    = {{
-                        .fragment_begin = res->ptn.fragment_begin,
-                        .fragment_end   = res->ptn.fragment_end,
-                        .related_exprs  = {{.way = RIGHTWARD, .expr_idx_offset = 0}},
-                    }},
-                });
+              if (SILVA_EXPECT_FWD(handle_prefix(ss, *res, prefix_result))) {
                 continue;
-              }
-              else if (const auto* x = std::get_if<prefix_nest_t>(&prefix_result.oper)) {
-                auto nest_res =
-                    SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->right_bracket, x->nest_rule_name));
-                if (nest_res.has_value()) {
-                  ss.add_proto_node(res->ptn);
-                  ss.add_proto_node(nest_res->ptn);
-                  open_oper_stack.push_back(open_oper_item_t{
-                      .oper       = *x,
-                      .arity      = prefix_nest_t::arity,
-                      .level_name = prefix_result.name,
-                      .precedence = prefix_result.precedence,
-                      .symbols =
-                          {
-                              {
-                                  .fragment_begin = res->ptn.fragment_begin,
-                                  .fragment_end   = res->ptn.fragment_end,
-                                  .related_exprs  = {{.way = RIGHTWARD, .expr_idx_offset = 0}},
-                              },
-                              {
-                                  .fragment_begin = nest_res->right_res.ptn.fragment_begin,
-                                  .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .related_exprs =
-                                      {
-                                          {.way = LEFTWARD, .expr_idx_offset = 0},
-                                          {.way = RIGHTWARD, .expr_idx_offset = 1},
-                                      },
-                              },
-                          },
-                  });
-                  continue;
-                }
               }
             }
             else if (mode == INFIX_MODE && axe_result.regular.has_value()) {
@@ -912,109 +1032,8 @@ namespace silva::seed::impl {
               }
               SILVA_EXPECT_FWD(stack_pop(regular_result.precedence));
 
-              if (const auto* x = std::get_if<postfix_t>(&regular_result.oper)) {
-                ss.add_proto_node(res->ptn);
-                open_oper_stack.push_back(open_oper_item_t{
-                    .oper       = *x,
-                    .arity      = postfix_t::arity,
-                    .level_name = regular_result.name,
-                    .precedence = regular_result.precedence,
-                    .symbols    = {{
-                        .fragment_begin = res->ptn.fragment_begin,
-                        .fragment_end   = res->ptn.fragment_end,
-                        .related_exprs  = {{.way = LEFTWARD, .expr_idx_offset = 0}},
-                    }},
-                });
+              if (SILVA_EXPECT_FWD(handle_regular(ss, *res, regular_result))) {
                 continue;
-              }
-              else if (const auto* x = std::get_if<postfix_nest_t>(&regular_result.oper)) {
-                auto nest_res =
-                    SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->right_bracket, x->nest_rule_name));
-                if (nest_res.has_value()) {
-                  ss.add_proto_node(res->ptn);
-                  ss.add_proto_node(nest_res->ptn);
-                  open_oper_stack.push_back(open_oper_item_t{
-                      .oper       = *x,
-                      .arity      = postfix_nest_t::arity,
-                      .level_name = regular_result.name,
-                      .precedence = regular_result.precedence,
-                      .symbols =
-                          {
-                              {
-                                  .fragment_begin = res->ptn.fragment_begin,
-                                  .fragment_end   = res->ptn.fragment_end,
-                                  .related_exprs =
-                                      {
-                                          {.way = LEFTWARD, .expr_idx_offset = 0},
-                                          {.way = RIGHTWARD, .expr_idx_offset = 1},
-                                      },
-                              },
-                              {
-                                  .fragment_begin = nest_res->right_res.ptn.fragment_begin,
-                                  .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .related_exprs  = {{.way = LEFTWARD, .expr_idx_offset = 1}},
-                              },
-                          },
-                  });
-                  continue;
-                }
-              }
-              else if (const auto* x = std::get_if<infix_t>(&regular_result.oper)) {
-                ss.add_proto_node(res->ptn);
-                open_oper_stack.push_back(open_oper_item_t{
-                    .oper       = *x,
-                    .arity      = infix_t::arity,
-                    .level_name = regular_result.name,
-                    .precedence = regular_result.precedence,
-                    .symbols    = {{
-                        .fragment_begin = res->ptn.fragment_begin,
-                        .fragment_end   = res->ptn.fragment_end,
-                        .related_exprs =
-                            {
-                                {.way = LEFTWARD, .expr_idx_offset = 0, .is_optional = x->open},
-                                {.way = RIGHTWARD, .expr_idx_offset = 1, .is_optional = x->open},
-                            },
-                    }},
-                });
-                mode = ATOM_MODE;
-                continue;
-              }
-              else if (const auto* x = std::get_if<ternary_t>(&regular_result.oper)) {
-                auto nest_res =
-                    SILVA_EXPECT_FWD_IF(MAJOR, handle_nest(x->second, x->nest_rule_name));
-                if (nest_res.has_value()) {
-                  ss.add_proto_node(res->ptn);
-                  ss.add_proto_node(nest_res->ptn);
-                  open_oper_stack.push_back(open_oper_item_t{
-                      .oper       = *x,
-                      .arity      = ternary_t::arity,
-                      .level_name = regular_result.name,
-                      .precedence = regular_result.precedence,
-                      .symbols =
-                          {
-                              {
-                                  .fragment_begin = res->ptn.fragment_begin,
-                                  .fragment_end   = res->ptn.fragment_end,
-                                  .related_exprs =
-                                      {
-                                          {.way = LEFTWARD, .expr_idx_offset = 0},
-                                          {.way = RIGHTWARD, .expr_idx_offset = 1},
-                                      },
-                              },
-                              {
-                                  .fragment_begin = nest_res->right_res.ptn.fragment_begin,
-                                  .fragment_end   = nest_res->right_res.ptn.fragment_end,
-                                  .related_exprs =
-                                      {
-                                          {.way = LEFTWARD, .expr_idx_offset = 1},
-                                          {.way = RIGHTWARD, .expr_idx_offset = 2},
-                                      },
-                              },
-                          },
-                  });
-                  mode = ATOM_MODE;
-                  continue;
-                }
               }
             }
           }

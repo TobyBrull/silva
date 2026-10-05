@@ -2,7 +2,6 @@
 
 * seed-axe: is concat branch in main shunting_yard() loop missing precedence check?
     * should the precedence check be hoisted out?
-    * factor out prefix_oper_in_atom_mode() and regular_oper_in_infix_mode()
     * add "one" next to "ltr" and "rtl", decouple from "infix_open"
     * make '..' chainable?
 * for example for the Seed literal « "not" », the parser could be modified to output a
