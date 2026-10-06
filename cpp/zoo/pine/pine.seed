@@ -35,7 +35,7 @@ language Pine:
     Assignment:
       @ = Annotated | Plain | Augmented
       Annotated = Expr.Primary ':' Expr ( '=' Rhs ) ?
-      Plain = ( StarTargets '=' not '=' ) + Rhs
+      Plain = ( StarTargets '=' !'=' ) + Rhs
       Augmented = Expr.Primary augassign Rhs
       augassign = [ '+=' '-=' '*=' '@=' '/=' '%=' '&=' '|=' '^=' '<<=' '>>=' '**=' '//=' ]
       Rhs = Expr.Yield | StarExprs
@@ -161,7 +161,7 @@ language Pine:
 
     LambdaParams = ( LambdaParam ( ε ',' LambdaParam ) * ',' ? ) ?
     LambdaParam = '/' | '**' LambdaParamDef | '*' LambdaParamDef ? | LambdaParamDef
-    LambdaParamDef = identifier ( '=' not '=' Expr ) ?
+    LambdaParamDef = identifier ( '=' !'=' Expr ) ?
 
     Named = ( identifier ':=' ) ? Expr
     Yield = "yield" ( "from" Expr | StarExprs ? )
@@ -173,13 +173,13 @@ language Pine:
     fstring:
       @ = prefix ( '"' ( Field | doubleChunk ) * '"' | '\'' ( Field | singleChunk ) * '\'' )
       prefix = [ 'f' 'F' 't' 'T' ]
-      doubleChunk = ( escape | not [ '"' '{' '}' ] ANY ) +
-      singleChunk = ( escape | not [ '\'' '{' '}' ] ANY ) +
-      escape = no_node '{{' | '}}' | ε '\\' not [ '{' '}' ] ANY
+      doubleChunk = ( escape | ![ '"' '{' '}' ] ANY ) +
+      singleChunk = ( escape | ![ '\'' '{' '}' ] ANY ) +
+      escape = no_node '{{' | '}}' | ε '\\' ![ '{' '}' ] ANY
       Field = '{' ( Expr.Yield | StarExprs ) '=' ? conversion ? formatSpec ? '}'
       conversion = '!' [ 'r' 's' 'a' ]
       formatSpec = ':' ( Field | formatChunk ) *
-      formatChunk = ( not [ '{' '}' ] ANY ) +
+      formatChunk = ( ![ '{' '}' ] ANY ) +
 
   number:
     @ = .number imaginaryPart ?

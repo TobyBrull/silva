@@ -51,6 +51,6 @@ language Soil:
         Branch = Expr Body
       For = "for" Expr.Maybe ';' Expr.Maybe ';' Expr.Maybe Body
   Variable:
-    Name = &not Type.Name &not Func.Name identifier
+    Name = !Type.Name !Func.Name identifier
     Defn = Name '=' Expr
 »

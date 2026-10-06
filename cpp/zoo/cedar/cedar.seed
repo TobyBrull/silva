@@ -26,7 +26,7 @@ language Cedar:
     Specifier = [ "void" IntSpecifier FloatSpecifier AtomicTypeSpecifier StructSpecifier EnumSpecifier TypedefName ]
 
     # TODO: should only match identifiers that have previously been typedef'ed.
-    TypedefName = not ε
+    TypedefName = !ε
 
     Qualifier = [ "const" "volatile" "restrict" "_Atomic" ]
     SpecifierQualifierList = ( Qualifier | Specifier ) +

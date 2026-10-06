@@ -30,14 +30,14 @@ language Ash:
   newline       = no_node NEWLINE
   Linebreak     = no_node newline *
   NewlineList   = no_node newline +
-  separatorOp   = [ '&' ';' ] not [ '&' ';' ]
-  semi          = ε ';' not ';'
+  separatorOp   = [ '&' ';' ] ![ '&' ';' ]
+  semi          = ε ';' !';'
   dsemi         = ';;'
   Separator     = no_node separatorOp Linebreak | NewlineList
   SequentialSep = no_node semi Linebreak | NewlineList
 
   CompleteCommand = List separatorOp ?
-  List            = AndOr ( separatorOp not newline AndOr ) *
+  List            = AndOr ( separatorOp !newline AndOr ) *
 
   AndOr:
     @ = no_node axe Operand
@@ -76,7 +76,7 @@ language Ash:
   SimpleCommand = CmdPrefix ( ε CmdName CmdSuffix ? ) ? | CmdName CmdSuffix ?
   CmdPrefix     = ( IoRedirect | Assignment ) +
   CmdSuffix     = ( IoRedirect | Word ) +
-  CmdName       = not reservedWord Word
+  CmdName       = !reservedWord Word
   Assignment    = assignWord
   assignWord    = no_node assignName word ?
   assignName    = no_node identifier '='
@@ -87,7 +87,7 @@ language Ash:
   ioNumber     = DIGIT +
   ioOp         = [ '>>' '>&' '>|' '<<-' '<<' '<&' '<>' '>' '<' ]
 
-  reservedWord = no_node keyword not wordChar
+  reservedWord = no_node keyword !wordChar
   keyword      = [ "if" "then" "elif" "else" "fi" "do" "done" "case" "esac" \
                    "while" "until" "for" "in" "function" "select" "time" ]
 
@@ -103,12 +103,12 @@ language Ash:
   specialParam        = [ '?' '@' '*' '$' '!' '-' ]
   bareChunk           = no_node wordChar +
   wordChar            = no_node [ ID_START ID_CONTINUE DIGIT '[' ']' ] | wordOperator
-  wordOperator        = no_node not [ '|' '&' ';' '<' '>' '$' '`' '\'' '"' ] OPERATOR
+  wordOperator        = no_node ![ '|' '&' ';' '<' '>' '$' '`' '\'' '"' ] OPERATOR
   varName             = identifier
 
   # Strings. Single-quoted strings are literal; double-quoted strings may contain expansions.
-  singleQuoted        = '\'' ( not '\'' ANY ) * '\''
+  singleQuoted        = '\'' ( !'\'' ANY ) * '\''
   doubleQuoted        = '"' dqPart * '"'
   dqPart              = no_node [ arithExpansion CommandSubstitution braceParam dollarParam \
                                   dqChunk '$' ]
-  dqChunk             = ( '\\' ANY | not [ '"' '$' '\\' ] ANY ) +
+  dqChunk             = ( '\\' ANY | ![ '"' '$' '\\' ] ANY ) +

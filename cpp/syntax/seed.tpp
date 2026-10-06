@@ -21,7 +21,7 @@ namespace silva::seed::test {
   TEST_CASE("seed", "[seed][seed::interpreter_t]")
   {
     const string_t sf_text = R"'(
-string = '\'' ( not '\'' ANY ) * '\''
+string = '\'' ( !'\'' ANY ) * '\''
 number = DIGIT +
 
 language SimpleFern:
@@ -48,10 +48,10 @@ language SimpleFern:
       [0] .Seed.Expr.Concat.concat                '\\''  ...  '\\''¦
         [0] .Seed.Terminal                        '\\'' ¦
           [0] .string                             ｢'\''｣
-        [1] .Seed.Expr.Postfix.*                  ( not ...  ) * ¦
-          [0] .Seed.Expr                          not ' ...  ANY ¦
-            [0] .Seed.Expr.Concat.concat          not ' ...  ANY ¦
-              [0] .Seed.Expr.Prefix.not           not '\\'' ¦
+        [1] .Seed.Expr.Postfix.*                  ( !'\\ ...  ) * ¦
+          [0] .Seed.Expr                          !'\\'' ANY ¦
+            [0] .Seed.Expr.Concat.concat          !'\\'' ANY ¦
+              [0] .Seed.Expr.Prefix.!             !'\\'' ¦
                 [0] .Seed.Terminal                '\\'' ¦
                   [0] .string                     ｢'\''｣
               [1] .Seed.Terminal                  ANY ¦

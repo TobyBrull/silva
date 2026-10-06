@@ -16,7 +16,7 @@ language Frog:
   Rule = RuleName Expr
   RuleName = no_node Keyword
   Expr = Primary +
-  Primary = &not literals_of Keyword identifier
+  Primary = !literals_of Keyword identifier
   Keyword:
     @ = 'keyword1' | 'keyword2' | 'keyword3'
 )'";
@@ -89,13 +89,12 @@ language Frog:
     [7] .Seed.Rule                                Prima ... fier<NEWLINE>¦
       [0] .Seed.Nonterminal                       Primary ¦
         [0] .Seed.ruleName                        ｢Primary｣
-      [1] .Seed.Expr                              &not  ... ifier¦
-        [0] .Seed.Expr.Concat.concat              &not  ... ifier¦
-          [0] .Seed.Expr.Prefix.&                 &not  ... word ¦
-            [0] .Seed.Expr.Prefix.not             not l ... word ¦
-              [0] .Seed.Terminal                  liter ... word ¦
-                [0] .Seed.Nonterminal             Keyword ¦
-                  [0] .Seed.ruleName              ｢Keyword｣
+      [1] .Seed.Expr                              !lite ... ifier¦
+        [0] .Seed.Expr.Concat.concat              !lite ... ifier¦
+          [0] .Seed.Expr.Prefix.!                 !lite ... word ¦
+            [0] .Seed.Terminal                    liter ... word ¦
+              [0] .Seed.Nonterminal               Keyword ¦
+                [0] .Seed.ruleName                ｢Keyword｣
           [1] .Seed.Nonterminal                   identifier¦
             [0] .Seed.tokenCategoryName           ｢identifier｣
     [8] .Seed.Scope                               Keywo ... d3'<NEWLINE><DEDENT>¦
@@ -264,10 +263,10 @@ language Fstr:
   @ = fstring
   skip.@ = freeForm
   fstring = '"' ( Field | chunk ) * '"'
-  chunk = ( not [ '"' '{' '}' ] ANY ) +
+  chunk = ( ![ '"' '{' '}' ] ANY ) +
   Field = '{' Sum formatSpec ? '}'
   formatSpec = ':' ( Field | formatChunk ) *
-  formatChunk = ( not [ '{' '}' ] ANY ) +
+  formatChunk = ( ![ '{' '}' ] ANY ) +
   Sum:
     @ = axe Atom
       Add = ltr infix '+'

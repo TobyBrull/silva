@@ -29,14 +29,14 @@ language Rose:
   comment:
     @ = no_node line | block
     line = no_node '//' ( LANGUAGE | ANY ) *
-    block = no_node '/*' ( block | not '*/' anyFragment ) * '*/'
+    block = no_node '/*' ( block | !'*/' anyFragment ) * '*/'
   anyFragment = no_node [ ANY NEWLINE INDENT DEDENT INDENTATION_BROKEN LINE_CONTINUATION ]
 
   @ = InnerAttr * Item *
 
   # Lexical structure
 
-  identifier = rawIdentifier | not keyword anyIdentifier
+  identifier = rawIdentifier | !keyword anyIdentifier
   rawIdentifier = no_node ε 'r#' anyIdentifier
   anyIdentifier = no_node ID_START ID_CONTINUE *
   keyword = no_node [ "as" "async" "await" "break" "const" "continue" "crate" "dyn" "else" "enum" \
@@ -49,8 +49,8 @@ language Rose:
   mut = "mut"
   ref = "ref"
   underscore = "_"
-  colon = no_node ε ':' not ':'
-  lifetime = ε '\'' anyIdentifier not '\''
+  colon = no_node ε ':' !':'
+  lifetime = ε '\'' anyIdentifier !'\''
 
   literal = no_node [ string char number boolean ]
   boolean = [ "true" "false" ]
@@ -63,24 +63,24 @@ language Rose:
     cRaw = ε 'cr' rawQuoted
     raw = ε 'r' rawQuoted
     byteRaw = ε 'br' rawQuoted
-    quoted = no_node '"' ( '\\' ANY | not '"' anyFragment ) * '"'
-    rawQuoted = no_node '##"' ( not '"##' anyFragment ) * '"##' \
-                      | '#"' ( not '"#' anyFragment ) * '"#' \
-                      | '"' ( not '"' anyFragment ) * '"'
+    quoted = no_node '"' ( '\\' ANY | !'"' anyFragment ) * '"'
+    rawQuoted = no_node '##"' ( !'"##' anyFragment ) * '"##' \
+                      | '#"' ( !'"#' anyFragment ) * '"#' \
+                      | '"' ( !'"' anyFragment ) * '"'
 
   char:
     @ = no_node [ plain byte ]
     plain = ε '\'' body '\''
     byte = ε 'b\'' body '\''
-    body = no_node '\\' ( 'u{' ( not '}' ANY ) * '}' | ANY ) | not [ '\'' '\\' ] ANY
+    body = no_node '\\' ( 'u{' ( !'}' ANY ) * '}' | ANY ) | ![ '\'' '\\' ] ANY
 
   number:
-    @ = body suffix ? not ID_CONTINUE
+    @ = body suffix ? !ID_CONTINUE
     body = no_node [ binary octal hexadecimal float decimal ]
     binary = '0b' [ '0' '1' '_' ] +
     octal = '0o' [ DIGIT '_' ] +
     hexadecimal = '0x' [ DIGIT 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F' '_' ] +
-    float = decimal ( exponent | ε '.' decimal exponent ? | ε '.' not [ '.' ID_START ] )
+    float = decimal ( exponent | ε '.' decimal exponent ? | ε '.' ![ '.' ID_START ] )
     exponent = [ 'e' 'E' ] [ '+' '-' ] ? decimal
     decimal = DIGIT [ DIGIT '_' ] *
     suffix = [ 'u' 'i' 'f' ] ( DIGIT + | 'size' )
@@ -183,7 +183,7 @@ language Rose:
   ExternBlock = "unsafe" ? "extern" Function.abi ? '{' ~ InnerAttr * ExternItem * '}'
   ExternItem = OuterAttr * ( MacroItem | Visibility ? [ Static Function ] )
 
-  MacroItem = SimplePath '!' not '=' ( ε '(' TokenTree * ')' ';' | ε '[' TokenTree * ']' ';' \
+  MacroItem = SimplePath '!' !'=' ( ε '(' TokenTree * ')' ';' | ε '[' TokenTree * ']' ';' \
                                      | '{' TokenTree * '}' )
 
   MacroRules:
@@ -191,12 +191,12 @@ language Rose:
     Rules = MacroRule ( ε ';' MacroRule ) * ';' ?
     MacroRule = Matcher '=>' DelimTokenTree
     Matcher = ε '(' Match * ')' | ε '[' Match * ']' | '{' Match * '}'
-    Match = Fragment | Repetition | Matcher | not '$' token
+    Match = Fragment | Repetition | Matcher | !'$' token
     Fragment = ε '$' ( identifier | underscore ) colon fragSpec
     Repetition = '$' '(' Match + ')' separator ? repOp
     fragSpec = [ "block" "expr_2021" "expr" "ident" "item" "lifetime" "literal" "meta" "pat_param" \
                  "pat" "path" "stmt" "tt" "ty" "vis" ]
-    separator = not repOp not '$' token
+    separator = !repOp !'$' token
     repOp = [ '*' '+' '?' ]
 
   # Generics
@@ -250,7 +250,7 @@ language Rose:
     @ = [ empty Let Item ExprStmt ]
     empty = ';'
     Let = OuterAttr * "let" ~ Pattern.Bind ( colon Type ) ? ( '=' Expr ( "else" Block ) ? ) ? ';'
-    ExprStmt = OuterAttr * ( BlockLike not [ '.' '?' ] ';' ? | Expr ';' )
+    ExprStmt = OuterAttr * ( BlockLike ![ '.' '?' ] ';' ? | Expr ';' )
 
   BlockLike = no_node [ Expr.Unsafe Expr.ConstBlock Expr.Labeled Block Expr.If \
                         Expr.Match Expr.Loop Expr.While Expr.For ]
@@ -285,7 +285,7 @@ language Rose:
 
     CallArgs = ( Expr ( ε ',' Expr ) * ',' ? ) ?
     FieldName = tupleIndex | PathExprSegment
-    tupleIndex = DIGIT + not ID_CONTINUE
+    tupleIndex = DIGIT + !ID_CONTINUE
     RefKind = ( mut | ε "raw" Type.pointerKind ) ?
 
     Closure = ForLifetimes ? "async" ? "move" ? ( '||' | '|' ( ClosureParam ( ε ',' ClosureParam ) * ',' ? ) ? '|' ) \
@@ -303,7 +303,7 @@ language Rose:
     LetCondition = "let" '|' ? Pattern '=' Expr.Compare
 
     Match = "match" Expr '{' InnerAttr * Arm * '}'
-    Arm = OuterAttr * '|' ? Pattern ( "if" Expr.Range ) ? '=>' ( BlockLike not [ '.' '?' ] ',' ? | Expr ( ',' | not not '}' ) )
+    Arm = OuterAttr * '|' ? Pattern ( "if" Expr.Range ) ? '=>' ( BlockLike ![ '.' '?' ] ',' ? | Expr ( ',' | &'}' ) )
 
     Loop = "loop" Block
     While = "while" Conditions Block
@@ -317,11 +317,11 @@ language Rose:
     Tuple = '(' ( Expr ( ε ',' Expr ) * ',' ? ) ? ')'
     Array = '[' ( ε Expr ';' Expr | Expr ( ε ',' Expr ) * ',' ? ) ? ']'
 
-    Macro = PathInExpr '!' not '=' DelimTokenTree
+    Macro = PathInExpr '!' !'=' DelimTokenTree
 
-    Struct = PathInExpr '{' not not StructStart \
+    Struct = PathInExpr '{' &StructStart \
              ( Field ( ε ',' Field ) * ( ε ',' Base ) ? ',' ? | Base ) '}'
-    StructStart = identifier colon | identifier ',' | number colon | ε '..' not '='
+    StructStart = identifier colon | identifier ',' | number colon | ε '..' !'='
     Field = OuterAttr * ( ε identifier colon Expr | ε number colon Expr | identifier )
     Base = '..' Expr
 
@@ -340,7 +340,7 @@ language Rose:
     RefKind = mut ?
     rest = '..'
     Macro = PathInExpr '!' DelimTokenTree
-    Ident = ref ? mut ? identifier not [ '::' '(' '{' '!' ]
+    Ident = ref ? mut ? identifier ![ '::' '(' '{' '!' ]
     TupleStruct = PathInExpr '(' ( Pattern ( ε ',' Pattern ) * ',' ? ) ? ')'
     Grouped = ε '(' Pattern ')'
     Tuple = '(' ( Pattern ( ε ',' Pattern ) * ',' ? ) ? ')'

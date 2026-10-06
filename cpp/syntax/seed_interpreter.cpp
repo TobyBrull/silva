@@ -706,8 +706,8 @@ namespace silva::seed::impl {
         auto ss              = stake();
         const auto [sub_pts] = SILVA_EXPECT_FWD(pts.get_children<1>());
         auto result          = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(sub_pts, t_rule_name));
-        if (op_ti == lexicon.ti_not.token_id) {
-          SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
+        if (op_ti == lexicon.ti_exclamation.token_id) {
+          SILVA_EXPECT(!result, MINOR, "Successfully parsed '!' expression");
         }
         else if (op_ti == lexicon.ti_ampersand.token_id) {
           SILVA_EXPECT_FWD(std::move(result));

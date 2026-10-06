@@ -7,8 +7,8 @@ namespace silva::seed {
   const string_view_t globals_str = R"'(
 string:
   @ = MULTILINE_STRING | single | double
-  single = no_node '\'' ~ ( '\\' ANY | not '\'' ANY ) * '\''
-  double = no_node '"' ~ ( '\\' ANY | not '"' ANY ) * '"'
+  single = no_node '\'' ~ ( '\\' ANY | !'\'' ANY ) * '\''
+  double = no_node '"' ~ ( '\\' ANY | !'"' ANY ) * '"'
 
 parenthesis = PARENTHESIS
 operator:
@@ -18,11 +18,11 @@ operator:
 identifier:
   @ = ID_START ID_CONTINUE *
   withDashes  = no_node ID_START ( ID_CONTINUE | '-' ) *
-  kebabCase   = no_node ID_LOWER [ '-' ID_LOWER DIGIT ] *           not ID_CONTINUE
-  snakeCase   = no_node [ '_' ID_LOWER DIGIT ] +                    not ID_CONTINUE
-  camelCase   = no_node ID_LOWER [ ID_UPPER ID_LOWER DIGIT ] *      not ID_CONTINUE
-  pascalCase  = no_node ID_UPPER [ ID_UPPER ID_LOWER DIGIT ] *      not ID_CONTINUE
-  macroCase   = no_node ID_UPPER [ '_' ID_UPPER DIGIT ] +           not ID_CONTINUE
+  kebabCase   = no_node ID_LOWER [ '-' ID_LOWER DIGIT ] *           !ID_CONTINUE
+  snakeCase   = no_node [ '_' ID_LOWER DIGIT ] +                    !ID_CONTINUE
+  camelCase   = no_node ID_LOWER [ ID_UPPER ID_LOWER DIGIT ] *      !ID_CONTINUE
+  pascalCase  = no_node ID_UPPER [ ID_UPPER ID_LOWER DIGIT ] *      !ID_CONTINUE
+  macroCase   = no_node ID_UPPER [ '_' ID_UPPER DIGIT ] +           !ID_CONTINUE
 
 none = "none"
 
@@ -60,7 +60,7 @@ number:
   @ = [ float float.special integer ]
 
 # date:               2026-03-07
-date = DIGIT{4} '-' DIGIT{2} '-' DIGIT{2} not DIGIT
+date = DIGIT{4} '-' DIGIT{2} '-' DIGIT{2} !DIGIT
 
 # time.ofDay:         23:56:04/123.456
 # time.zone:          America/New_York
@@ -68,12 +68,12 @@ date = DIGIT{4} '-' DIGIT{2} '-' DIGIT{2} not DIGIT
 # time.point:         2026-03-07/23:56:04/123.456/America/New_York
 time:
   ofDay:
-    @ = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ '/' DIGIT{3} ⇒ '.' DIGIT{3} ⇒ '.' DIGIT{3} ) not DIGIT
+    @ = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ '/' DIGIT{3} ⇒ '.' DIGIT{3} ⇒ '.' DIGIT{3} ) !DIGIT
     # time_of_day_rfc:  23:56:00.123456
-    rfc     = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ '.' DIGIT{3} ⇒ DIGIT{3} ⇒ DIGIT{3} ) not DIGIT
-    any     = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ ( '.' | '/' ) DIGIT{3} ⇒ DIGIT{3} ⇒ DIGIT{3} ) not DIGIT
+    rfc     = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ '.' DIGIT{3} ⇒ DIGIT{3} ⇒ DIGIT{3} ) !DIGIT
+    any     = ( DIGIT{2} ':' DIGIT{2} ⇒ ':' DIGIT{2} ⇒ ( '.' | '/' ) DIGIT{3} ⇒ DIGIT{3} ⇒ DIGIT{3} ) !DIGIT
 
-  zone = ( 'Z' | 'UTC' | ( '+' | '-' ) DIGIT{2} ':' DIGIT{2} not DIGIT )
+  zone = ( 'Z' | 'UTC' | ( '+' | '-' ) DIGIT{2} ':' DIGIT{2} !DIGIT )
 
   point:
     @ = local '/' time.zone
