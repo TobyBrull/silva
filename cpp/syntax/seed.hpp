@@ -104,13 +104,13 @@ language Seed:
   qualifier = [ "no_node" "no_whitespace" "literal_nodes" ]
   Expr:
     @ = axe Atom
-      Ending    = ltr   infix "ending_with" "starting_with"
-      Prefix    = rtl   prefix '!' '&'
-      Postfix   = ltr   postfix '?' '*' '+' \
-                        postfix_nest -> Quantifier '{' '}'
-      Concat    = ltr   infix_flat concat
-      Followup  = ltr   infix_flat '⇒'
-      Or        = ltr   infix_flat '|'
+      Affix         = ltr   infix "ending_with" "starting_with"
+      Lookahead     = rtl   prefix '!' '&'
+      Repetition    = ltr   postfix '?' '*' '+' \
+                            postfix_nest -> Quantifier '{' '}'
+      Concat        = ltr   infix_flat concat
+      Followup      = ltr   infix_flat '⇒'
+      Choice        = ltr   infix_flat '|'
     Atom = no_node Terminal | Nonterminal | '(' Expr ')' | Alternation
     Alternation = '[' ( Terminal | Nonterminal ) + ']'
     Quantifier = literal_nodes number ? ',' number ? | number

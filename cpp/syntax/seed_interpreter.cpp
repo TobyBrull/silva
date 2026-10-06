@@ -698,8 +698,8 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
-    expected_t<node_and_error_t> s_expr_prefix(const parse_tree_span_t pts,
-                                               const name_id_t t_rule_name)
+    expected_t<node_and_error_t> s_expr_lookahead(const parse_tree_span_t pts,
+                                                  const name_id_t t_rule_name)
     {
       const token_id_t op_ti = sfp->get(pts.rule_name()).base_name;
       {
@@ -779,8 +779,8 @@ namespace silva::seed::impl {
     }
 
     // can be 'a ?' 'a *' 'a +' or 'a{2,3}'
-    expected_t<node_and_error_t> s_expr_postfix(const parse_tree_span_t pts,
-                                                const name_id_t t_rule_name)
+    expected_t<node_and_error_t> s_expr_repetition(const parse_tree_span_t pts,
+                                                   const name_id_t t_rule_name)
     {
       auto ss                 = stake();
       index_t min_repeat      = 0;
@@ -907,8 +907,8 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
-    expected_t<node_and_error_t> s_expr_ending(const parse_tree_span_t pts,
-                                               const name_id_t t_rule_name)
+    expected_t<node_and_error_t> s_expr_affix(const parse_tree_span_t pts,
+                                              const name_id_t t_rule_name)
     {
       const token_id_t op_ti      = sfp->get(pts.rule_name()).base_name;
       const bool is_ending        = (op_ti == lexicon.ti_ending_with.token_id);
@@ -956,7 +956,8 @@ namespace silva::seed::impl {
     }
 
     // can be 'a | b | c' or '[ a b c ]'
-    expected_t<node_and_error_t> s_expr_or(const parse_tree_span_t pts, const name_id_t t_rule_name)
+    expected_t<node_and_error_t> s_expr_alternation(const parse_tree_span_t pts,
+                                                    const name_id_t t_rule_name)
     {
       const index_t orig_fragment_index = fragment_index;
       error_nursery_t error_nursery;
@@ -1009,11 +1010,11 @@ namespace silva::seed::impl {
         const auto [pts_child] = SILVA_EXPECT_FWD(pts.get_children<1>());
         return s_expr(pts_child, t_rule_name);
       }
-      if (lexicon.ni_expr_prefix.is_parent_of(s_rule_name, *sfp)) {
-        return s_expr_prefix(pts, t_rule_name);
+      if (lexicon.ni_expr_lookahead.is_parent_of(s_rule_name, *sfp)) {
+        return s_expr_lookahead(pts, t_rule_name);
       }
-      else if (lexicon.ni_expr_postfix.is_parent_of(s_rule_name, *sfp)) {
-        return s_expr_postfix(pts, t_rule_name);
+      else if (lexicon.ni_expr_repetition.is_parent_of(s_rule_name, *sfp)) {
+        return s_expr_repetition(pts, t_rule_name);
       }
       else if (lexicon.ni_expr_concat.is_parent_of(s_rule_name, *sfp)) {
         return s_expr_concat(pts, t_rule_name);
@@ -1021,14 +1022,14 @@ namespace silva::seed::impl {
       else if (lexicon.ni_expr_followup.is_parent_of(s_rule_name, *sfp)) {
         return s_expr_followup(pts, t_rule_name);
       }
-      else if (lexicon.ni_expr_ending.is_parent_of(s_rule_name, *sfp)) {
-        return s_expr_ending(pts, t_rule_name);
+      else if (lexicon.ni_expr_affix.is_parent_of(s_rule_name, *sfp)) {
+        return s_expr_affix(pts, t_rule_name);
       }
-      else if (lexicon.ni_expr_or.is_parent_of(s_rule_name, *sfp)) {
-        return s_expr_or(pts, t_rule_name);
+      else if (lexicon.ni_expr_choice.is_parent_of(s_rule_name, *sfp)) {
+        return s_expr_alternation(pts, t_rule_name);
       }
       else if (s_rule_name == lexicon.ni_alternation) {
-        return s_expr_or(pts, t_rule_name);
+        return s_expr_alternation(pts, t_rule_name);
       }
       else if (s_rule_name == lexicon.ni_term) {
         return s_terminal(pts, t_rule_name);

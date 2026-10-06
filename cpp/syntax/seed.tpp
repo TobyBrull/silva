@@ -48,10 +48,10 @@ language SimpleFern:
       [0] .Seed.Expr.Concat.concat                '\\''  ...  '\\''¦
         [0] .Seed.Terminal                        '\\'' ¦
           [0] .string                             ｢'\''｣
-        [1] .Seed.Expr.Postfix.*                  ( !'\\ ...  ) * ¦
+        [1] .Seed.Expr.Repetition.*               ( !'\\ ...  ) * ¦
           [0] .Seed.Expr                          !'\\'' ANY ¦
             [0] .Seed.Expr.Concat.concat          !'\\'' ANY ¦
-              [0] .Seed.Expr.Prefix.!             !'\\'' ¦
+              [0] .Seed.Expr.Lookahead.!          !'\\'' ¦
                 [0] .Seed.Terminal                '\\'' ¦
                   [0] .string                     ｢'\''｣
               [1] .Seed.Terminal                  ANY ¦
@@ -62,7 +62,7 @@ language SimpleFern:
     [0] .Seed.Nonterminal                         number ¦
       [0] .Seed.tokenCategoryName                 ｢number｣
     [1] .Seed.Expr                                DIGIT +¦
-      [0] .Seed.Expr.Postfix.+                    DIGIT +¦
+      [0] .Seed.Expr.Repetition.+                 DIGIT +¦
         [0] .Seed.Terminal                        DIGIT ¦
           [0] .Seed.fragName                      ｢DIGIT｣
   [2] .Seed.Language                              langu ... ber<NEWLINE><DEDENT>¦
@@ -74,12 +74,12 @@ language SimpleFern:
         [0] .Seed.Expr.Concat.concat              '[' ( ... * ']'¦
           [0] .Seed.Terminal                      '[' ¦
             [0] .string                           ｢'['｣
-          [1] .Seed.Expr.Postfix.*                ( Lab ...  ) * ¦
+          [1] .Seed.Expr.Repetition.*             ( Lab ...  ) * ¦
             [0] .Seed.Expr                        Label ... ;' ? ¦
               [0] .Seed.Expr.Concat.concat        Label ... ;' ? ¦
                 [0] .Seed.Nonterminal             Label ... Item ¦
                   [0] .Seed.ruleName              ｢LabeledItem｣
-                [1] .Seed.Expr.Postfix.?          ';' ? ¦
+                [1] .Seed.Expr.Repetition.?       ';' ? ¦
                   [0] .Seed.Terminal              ';' ¦
                     [0] .string                   ｢';'｣
           [2] .Seed.Terminal                      ']'¦
@@ -90,9 +90,9 @@ language SimpleFern:
         [1] .literal                              ｢.｣
         [2] .literal                              ｢@｣
       [1] .Seed.Expr                              ( SPA ... E ) *¦
-        [0] .Seed.Expr.Postfix.*                  ( SPA ... E ) *¦
+        [0] .Seed.Expr.Repetition.*               ( SPA ... E ) *¦
           [0] .Seed.Expr                          SPACE ... LINE ¦
-            [0] .Seed.Expr.Or.|                   SPACE ... LINE ¦
+            [0] .Seed.Expr.Choice.|               SPACE ... LINE ¦
               [0] .Seed.Terminal                  SPACE ¦
                 [0] .Seed.fragName                ｢SPACE｣
               [1] .Seed.Terminal                  LINE_ ... TION ¦
@@ -108,7 +108,7 @@ language SimpleFern:
         [0] .Seed.ruleName                        ｢LabeledItem｣
       [1] .Seed.Expr                              ( Lab ...  Item¦
         [0] .Seed.Expr.Concat.concat              ( Lab ...  Item¦
-          [0] .Seed.Expr.Postfix.?                ( Lab ...  ) ? ¦
+          [0] .Seed.Expr.Repetition.?             ( Lab ...  ) ? ¦
             [0] .Seed.Expr                        Label ':' ¦
               [0] .Seed.Expr.Concat.concat        Label ':' ¦
                 [0] .Seed.Nonterminal             Label ¦
@@ -127,7 +127,7 @@ language SimpleFern:
       [0] .Seed.Nonterminal                       Item ¦
         [0] .Seed.ruleName                        ｢Item｣
       [1] .Seed.Expr                              Simpl ... umber¦
-        [0] .Seed.Expr.Or.|                       Simpl ... umber¦
+        [0] .Seed.Expr.Choice.|                   Simpl ... umber¦
           [0] .Seed.Nonterminal                   Simpl ... Fern ¦
             [0] .Seed.ruleName                    ｢SimpleFern｣
           [1] .Seed.Nonterminal                   string ¦

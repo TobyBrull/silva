@@ -31,7 +31,7 @@ language Frog:
       [0] .Seed.Nonterminal                       @ ¦
         [0] .literal                              ｢@｣
       [1] .Seed.Expr                              Rule *¦
-        [0] .Seed.Expr.Postfix.*                  Rule *¦
+        [0] .Seed.Expr.Repetition.*               Rule *¦
           [0] .Seed.Nonterminal                   Rule ¦
             [0] .Seed.ruleName                    ｢Rule｣
     [2] .Seed.Rule                                skip. ...  ) *<NEWLINE>¦
@@ -40,9 +40,9 @@ language Frog:
         [1] .literal                              ｢.｣
         [2] .literal                              ｢@｣
       [1] .Seed.Expr                              ( SPA ... E ) *¦
-        [0] .Seed.Expr.Postfix.*                  ( SPA ... E ) *¦
+        [0] .Seed.Expr.Repetition.*               ( SPA ... E ) *¦
           [0] .Seed.Expr                          SPACE ... LINE ¦
-            [0] .Seed.Expr.Or.|                   SPACE ... LINE ¦
+            [0] .Seed.Expr.Choice.|               SPACE ... LINE ¦
               [0] .Seed.Terminal                  SPACE ¦
                 [0] .Seed.fragName                ｢SPACE｣
               [1] .Seed.Terminal                  LINE_ ... TION ¦
@@ -60,7 +60,7 @@ language Frog:
         [0] .Seed.Expr.Concat.concat              ID_ST ... NUE *¦
           [0] .Seed.Terminal                      ID_START ¦
             [0] .Seed.fragName                    ｢ID_START｣
-          [1] .Seed.Expr.Postfix.*                ID_CO ... NUE *¦
+          [1] .Seed.Expr.Repetition.*             ID_CO ... NUE *¦
             [0] .Seed.Terminal                    ID_CO ... INUE ¦
               [0] .Seed.fragName                  ｢ID_CONTINUE｣
     [4] .Seed.Rule                                Rule  ... Expr<NEWLINE>¦
@@ -83,7 +83,7 @@ language Frog:
       [0] .Seed.Nonterminal                       Expr ¦
         [0] .Seed.ruleName                        ｢Expr｣
       [1] .Seed.Expr                              Primary +¦
-        [0] .Seed.Expr.Postfix.+                  Primary +¦
+        [0] .Seed.Expr.Repetition.+               Primary +¦
           [0] .Seed.Nonterminal                   Primary ¦
             [0] .Seed.ruleName                    ｢Primary｣
     [7] .Seed.Rule                                Prima ... fier<NEWLINE>¦
@@ -91,7 +91,7 @@ language Frog:
         [0] .Seed.ruleName                        ｢Primary｣
       [1] .Seed.Expr                              !lite ... ifier¦
         [0] .Seed.Expr.Concat.concat              !lite ... ifier¦
-          [0] .Seed.Expr.Prefix.!                 !lite ... word ¦
+          [0] .Seed.Expr.Lookahead.!              !lite ... word ¦
             [0] .Seed.Terminal                    liter ... word ¦
               [0] .Seed.Nonterminal               Keyword ¦
                 [0] .Seed.ruleName                ｢Keyword｣
@@ -104,7 +104,7 @@ language Frog:
         [0] .Seed.Nonterminal                     @ ¦
           [0] .literal                            ｢@｣
         [1] .Seed.Expr                            'keyw ... ord3'¦
-          [0] .Seed.Expr.Or.|                     'keyw ... ord3'¦
+          [0] .Seed.Expr.Choice.|                 'keyw ... ord3'¦
             [0] .Seed.Terminal                    'keyw ... rd1' ¦
               [0] .string                         ｢'keyword1'｣
             [1] .Seed.Terminal                    'keyw ... rd2' ¦

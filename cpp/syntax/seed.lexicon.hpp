@@ -105,12 +105,12 @@ namespace silva::seed {
     const name_id_t ni_keyword     = sfp->name_id_of(ni_seed, "keyword");
     const name_id_t ni_tok_cat     = sfp->name_id_of(ni_seed, "TokenCategory");
 
-    const name_id_t ni_expr_prefix   = sfp->name_id_of(ni_expr, "Prefix");
-    const name_id_t ni_expr_postfix  = sfp->name_id_of(ni_expr, "Postfix");
-    const name_id_t ni_expr_concat   = sfp->name_id_of(ni_expr, "Concat");
-    const name_id_t ni_expr_or       = sfp->name_id_of(ni_expr, "Or");
-    const name_id_t ni_expr_followup = sfp->name_id_of(ni_expr, "Followup");
-    const name_id_t ni_expr_ending   = sfp->name_id_of(ni_expr, "Ending");
+    const name_id_t ni_expr_lookahead  = sfp->name_id_of(ni_expr, "Lookahead");
+    const name_id_t ni_expr_repetition = sfp->name_id_of(ni_expr, "Repetition");
+    const name_id_t ni_expr_concat     = sfp->name_id_of(ni_expr, "Concat");
+    const name_id_t ni_expr_followup   = sfp->name_id_of(ni_expr, "Followup");
+    const name_id_t ni_expr_affix      = sfp->name_id_of(ni_expr, "Affix");
+    const name_id_t ni_expr_choice     = sfp->name_id_of(ni_expr, "Choice");
 
     const name_id_t ni_nt   = sfp->name_id_of(ni_seed, "Nonterminal");
     const name_id_t ni_name = sfp->name_id_of(ni_seed, "Name");
