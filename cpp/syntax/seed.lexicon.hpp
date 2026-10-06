@@ -42,6 +42,8 @@ namespace silva::seed {
     const fragmented_token_t ti_concat        = *fragmented_token(sfp, "concat", true);
     const fragmented_token_t ti_none          = *fragmented_token(sfp, "none", true);
     const fragmented_token_t ti_exclamation   = *fragmented_token(sfp, "!");
+    const fragmented_token_t ti_ending_with   = *fragmented_token(sfp, "ending_with", true);
+    const fragmented_token_t ti_starting_with = *fragmented_token(sfp, "starting_with", true);
     const fragmented_token_t ti_language      = *fragmented_token(sfp, "language", true);
     const fragmented_token_t ti_literals_of   = *fragmented_token(sfp, "literals_of", true);
     const fragmented_token_t ti_colon         = *fragmented_token(sfp, ":");

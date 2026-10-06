@@ -536,6 +536,14 @@ namespace silva {
     return fragmented_token(sfp, plain_info.str, is_double_quoted);
   }
 
+  expected_t<bool> fragment_span_starts_with(const fragment_span_t& fs,
+                                             const fragmented_token_t& ft)
+  {
+    const auto sv                      = fs.as_string_view();
+    const string_view_t expected_start = fs.fp->sfp->get(ft.token_id).str;
+    return sv.starts_with(expected_start);
+  }
+
   expected_t<bool> fragment_span_ends_with(const fragment_span_t& fs, const fragmented_token_t& ft)
   {
     const auto sv                    = fs.as_string_view();

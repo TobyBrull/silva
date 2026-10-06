@@ -104,7 +104,7 @@ language Seed:
   qualifier = [ "no_node" "no_whitespace" "literal_nodes" ]
   Expr:
     @ = axe Atom
-      Ending    = ltr   infix "ending_with"
+      Ending    = ltr   infix "ending_with" "starting_with"
       Prefix    = rtl   prefix '!' '&'
       Postfix   = ltr   postfix '?' '*' '+' \
                         postfix_nest -> Quantifier '{' '}'

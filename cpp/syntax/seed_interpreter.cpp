@@ -910,30 +910,47 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> s_expr_ending(const parse_tree_span_t pts,
                                                const name_id_t t_rule_name)
     {
-      const auto [pts_expr, pts_endswith] = SILVA_EXPECT_FWD(pts.get_children<2>());
-      SILVA_EXPECT(pts_endswith.rule_name() == lexicon.ni_term,
-                   MINOR,
-                   "rhs of 'ending_with' expect to be plain string/literal");
-      const auto [pts_endswith_str] = SILVA_EXPECT_FWD(pts_endswith.get_children<1>());
-      SILVA_EXPECT(pts_endswith_str.rule_name() == lexicon.ni_string,
-                   MINOR,
-                   "rhs of 'ending_with' expect to be plain string/literal");
+      const token_id_t op_ti      = sfp->get(pts.rule_name()).base_name;
+      const bool is_ending        = (op_ti == lexicon.ti_ending_with.token_id);
+      const bool is_starting      = (op_ti == lexicon.ti_starting_with.token_id);
+      const string_view_t op_name = sfp->get(op_ti).str;
+      SILVA_EXPECT(is_ending || is_starting, BROKEN_SEED, "unexpected operator '{}'", op_name);
+      const auto [pts_expr, pts_affix] = SILVA_EXPECT_FWD(pts.get_children<2>());
+      SILVA_EXPECT(pts_affix.rule_name() == lexicon.ni_term,
+                   BROKEN_SEED,
+                   "rhs of '{}' expect to be plain string/literal",
+                   op_name);
+      const auto [pts_affix_str] = SILVA_EXPECT_FWD(pts_affix.get_children<1>());
+      SILVA_EXPECT(pts_affix_str.rule_name() == lexicon.ni_string,
+                   BROKEN_SEED,
+                   "rhs of '{}' expect to be plain string/literal",
+                   op_name);
       auto retval = SILVA_EXPECT_FWD(s_expr(pts_expr, t_rule_name));
       {
-        const auto endswith_token = SILVA_EXPECT_FWD(pts_endswith_str.token());
-        const auto it             = se->string_to_ft.find(endswith_token);
+        const auto affix_token = SILVA_EXPECT_FWD(pts_affix_str.token());
+        const auto it          = se->string_to_ft.find(affix_token);
         SILVA_EXPECT(it != se->string_to_ft.end(),
                      MAJOR,
                      "couldn't find token for {}",
-                     sfp->token_id_wrap(endswith_token));
+                     sfp->token_id_wrap(affix_token));
         const fragmented_token_t& ft = it->second;
         const fragment_span_t fs{fp, retval.node.fragment_begin, retval.node.fragment_end};
-        const bool endswith = SILVA_EXPECT_FWD_AS(fragment_span_ends_with(fs, ft), MAJOR);
-        SILVA_EXPECT(endswith,
-                     MINOR,
-                     "{} does not end with {}",
-                     fs,
-                     sfp->token_id_wrap(ft.token_id));
+        if (is_ending) {
+          const bool endswith = SILVA_EXPECT_FWD_AS(fragment_span_ends_with(fs, ft), MAJOR);
+          SILVA_EXPECT(endswith,
+                       MINOR,
+                       "{} does not end with {}",
+                       fs,
+                       sfp->token_id_wrap(ft.token_id));
+        }
+        else {
+          const bool startswith = SILVA_EXPECT_FWD_AS(fragment_span_starts_with(fs, ft), MAJOR);
+          SILVA_EXPECT(startswith,
+                       MINOR,
+                       "{} does not start with {}",
+                       fs,
+                       sfp->token_id_wrap(ft.token_id));
+        }
       }
       return retval;
     }
