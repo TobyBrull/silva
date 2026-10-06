@@ -6,7 +6,7 @@
 #include <catch2/catch_all.hpp>
 
 namespace silva::seed::test {
-  TEST_CASE("not-but_then", "[seed-interpreter][seed]")
+  TEST_CASE("not-lookahead", "[seed-interpreter][seed]")
   {
     const string_view_t frog_seed = R"'(
 language Frog:
@@ -16,7 +16,7 @@ language Frog:
   Rule = RuleName Expr
   RuleName = no_node Keyword
   Expr = Primary +
-  Primary = not literals_of Keyword but_then identifier
+  Primary = &not literals_of Keyword identifier
   Keyword:
     @ = 'keyword1' | 'keyword2' | 'keyword3'
 )'";
@@ -89,12 +89,13 @@ language Frog:
     [7] .Seed.Rule                                Prima ... fier<NEWLINE>¦
       [0] .Seed.Nonterminal                       Primary ¦
         [0] .Seed.ruleName                        ｢Primary｣
-      [1] .Seed.Expr                              not l ... ifier¦
-        [0] .Seed.Expr.And.but_then               not l ... ifier¦
-          [0] .Seed.Expr.Prefix.not               not l ... word ¦
-            [0] .Seed.Terminal                    liter ... word ¦
-              [0] .Seed.Nonterminal               Keyword ¦
-                [0] .Seed.ruleName                ｢Keyword｣
+      [1] .Seed.Expr                              &not  ... ifier¦
+        [0] .Seed.Expr.Concat.concat              &not  ... ifier¦
+          [0] .Seed.Expr.Prefix.&                 &not  ... word ¦
+            [0] .Seed.Expr.Prefix.not             not l ... word ¦
+              [0] .Seed.Terminal                  liter ... word ¦
+                [0] .Seed.Nonterminal             Keyword ¦
+                  [0] .Seed.ruleName              ｢Keyword｣
           [1] .Seed.Nonterminal                   identifier¦
             [0] .Seed.tokenCategoryName           ｢identifier｣
     [8] .Seed.Scope                               Keywo ... d3'<NEWLINE><DEDENT>¦

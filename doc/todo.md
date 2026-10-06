@@ -1,8 +1,5 @@
 # TODO
 
-* for example for the Seed literal « "not" », the parser could be modified to output a
-  parse-tree that already contains the token `not` (i.e., without the double-quotes)
-
 * Rewrite design.md
 
 * Runtime:

@@ -42,7 +42,6 @@ namespace silva::seed {
     const fragmented_token_t ti_concat        = *fragmented_token(sfp, "concat", true);
     const fragmented_token_t ti_none          = *fragmented_token(sfp, "none", true);
     const fragmented_token_t ti_not           = *fragmented_token(sfp, "not", true);
-    const fragmented_token_t ti_but_then      = *fragmented_token(sfp, "but_then", true);
     const fragmented_token_t ti_language      = *fragmented_token(sfp, "language", true);
     const fragmented_token_t ti_literals_of   = *fragmented_token(sfp, "literals_of", true);
     const fragmented_token_t ti_colon         = *fragmented_token(sfp, ":");
@@ -52,6 +51,7 @@ namespace silva::seed {
     const fragmented_token_t ti_qmark         = *fragmented_token(sfp, "?");
     const fragmented_token_t ti_star          = *fragmented_token(sfp, "*");
     const fragmented_token_t ti_plus          = *fragmented_token(sfp, "+");
+    const fragmented_token_t ti_ampersand     = *fragmented_token(sfp, "&");
     const fragmented_token_t ti_eps           = *fragmented_token(sfp, "ε", true);
     const fragmented_token_t ti_commit        = *fragmented_token(sfp, "~");
     const fragmented_token_t ti_skip          = *fragmented_token(sfp, "skip", true);
@@ -107,7 +107,6 @@ namespace silva::seed {
     const name_id_t ni_expr_postfix  = sfp->name_id_of(ni_expr, "Postfix");
     const name_id_t ni_expr_concat   = sfp->name_id_of(ni_expr, "Concat");
     const name_id_t ni_expr_or       = sfp->name_id_of(ni_expr, "Or");
-    const name_id_t ni_expr_and      = sfp->name_id_of(ni_expr, "And");
     const name_id_t ni_expr_followup = sfp->name_id_of(ni_expr, "Followup");
     const name_id_t ni_expr_ending   = sfp->name_id_of(ni_expr, "Ending");
 

@@ -105,11 +105,10 @@ language Seed:
   Expr:
     @ = axe Atom
       Ending    = ltr   infix "ending_with"
-      Prefix    = rtl   prefix "not"
+      Prefix    = rtl   prefix "not" '&'
       Postfix   = ltr   postfix '?' '*' '+' \
                         postfix_nest -> Quantifier '{' '}'
       Concat    = ltr   infix_flat concat
-      And       = ltr   infix_flat "but_then"
       Followup  = ltr   infix_flat '⇒'
       Or        = ltr   infix_flat '|'
     Atom = no_node Terminal | Nonterminal | '(' Expr ')' | Alternation

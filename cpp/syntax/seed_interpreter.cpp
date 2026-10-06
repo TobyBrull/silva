@@ -701,11 +701,20 @@ namespace silva::seed::impl {
     expected_t<node_and_error_t> s_expr_prefix(const parse_tree_span_t pts,
                                                const name_id_t t_rule_name)
     {
+      const token_id_t op_ti = sfp->get(pts.rule_name()).base_name;
       {
         auto ss              = stake();
         const auto [sub_pts] = SILVA_EXPECT_FWD(pts.get_children<1>());
-        const auto result    = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(sub_pts, t_rule_name));
-        SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
+        auto result          = SILVA_EXPECT_FWD_IF(MAJOR, s_expr(sub_pts, t_rule_name));
+        if (op_ti == lexicon.ti_not.token_id) {
+          SILVA_EXPECT(!result, MINOR, "Successfully parsed 'not' expression");
+        }
+        else if (op_ti == lexicon.ti_ampersand.token_id) {
+          SILVA_EXPECT_FWD(std::move(result));
+        }
+        else {
+          SILVA_EXPECT(false, BROKEN_SEED);
+        }
       }
       auto ss = stake();
       return ss.commit();
@@ -871,25 +880,6 @@ namespace silva::seed::impl {
       return ss.commit();
     }
 
-    expected_t<node_and_error_t> s_expr_and(const parse_tree_span_t pts,
-                                            const name_id_t t_rule_name)
-    {
-      optional_t<stake_t<>> ss;
-      auto [it, end] = pts.children_range();
-      while (true) {
-        SILVA_EXPECT(it != end, MAJOR);
-        ss.emplace(stake());
-        auto result = SILVA_EXPECT_FWD(s_expr(*it, t_rule_name));
-        ss->add_proto_node(std::move(result).as_node());
-        ++it;
-        if (it == end) {
-          break;
-        }
-      }
-      SILVA_EXPECT(ss.has_value(), MAJOR);
-      return ss->commit();
-    }
-
     expected_t<node_and_error_t> s_expr_followup(const parse_tree_span_t pts,
                                                  const name_id_t t_rule_name)
     {
@@ -1010,9 +1000,6 @@ namespace silva::seed::impl {
       }
       else if (lexicon.ni_expr_concat.is_parent_of(s_rule_name, *sfp)) {
         return s_expr_concat(pts, t_rule_name);
-      }
-      else if (lexicon.ni_expr_and.is_parent_of(s_rule_name, *sfp)) {
-        return s_expr_and(pts, t_rule_name);
       }
       else if (lexicon.ni_expr_followup.is_parent_of(s_rule_name, *sfp)) {
         return s_expr_followup(pts, t_rule_name);
