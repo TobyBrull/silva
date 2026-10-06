@@ -1,8 +1,5 @@
 # TODO
 
-* seed-axe:
-    * add "one" next to "ltr" and "rtl", decouple from "infix_open"
-    * make '..' chainable?
 * for example for the Seed literal « "not" », the parser could be modified to output a
   parse-tree that already contains the token `not` (i.e., without the double-quotes)
 
