@@ -11,8 +11,10 @@ BUILD_DIR=$1
 TEMPFILE=$( mktemp )
 trap 'rm -f "$TEMPFILE"' EXIT
 
+# Doc demos
+"./${BUILD_DIR}/cpp/silva_fragmentization" silva/syntax/00-fragmentization.demo
+
 # Simple parsing (including error message)
-"./${BUILD_DIR}/cpp/silva_fragmentization" silva/syntax/01-simple.fern
 "./${BUILD_DIR}/cpp/silva_fern" silva/syntax/01-simple.fern
 "./${BUILD_DIR}/cpp/silva_fern" silva/syntax/01-broken.fern 2>"$TEMPFILE" || true
 cat "$TEMPFILE"

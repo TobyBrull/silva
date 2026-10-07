@@ -9,7 +9,7 @@
 
 namespace silva::seed {
 
-  // An mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard
+  // A mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard
   // algorithm or precedence climbing.
   //
   // * https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing

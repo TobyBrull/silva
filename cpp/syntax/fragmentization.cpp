@@ -619,7 +619,8 @@ namespace silva {
     return idx;
   }
 
-  void pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream)
+  void
+  pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream, const index_t max_hex_bytes)
   {
     const index_t n = self.fragments.size();
     for (index_t idx = 0; idx < n; ++idx) {
@@ -637,9 +638,19 @@ namespace silva {
       else {
         stream->format(" {:20}", "");
       }
-      stream->format("[{}]", hexdump(sv));
+      if (max_hex_bytes > 0 && sv.size() > max_hex_bytes) {
+        stream->format("[{} ...]", hexdump(sv.substr(0, max_hex_bytes)));
+      }
+      else {
+        stream->format("[{}]", hexdump(sv));
+      }
       stream->write_str("\n");
     }
+  }
+
+  void pretty_write_impl(const fragmentization_t& self, byte_sink_t* stream)
+  {
+    pretty_write_impl(self, stream, 10);
   }
 
   void pretty_write_impl(const fragment_location_t& self, byte_sink_t* stream)

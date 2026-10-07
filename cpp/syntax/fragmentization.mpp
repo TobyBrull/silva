@@ -1,6 +1,7 @@
 #include "fragmentization.hpp"
 
 #include "canopy/byte_sink.hpp"
+#include "canopy/env_context.hpp"
 #include "canopy/main.hpp"
 
 namespace silva {
@@ -12,10 +13,11 @@ namespace silva {
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     byte_sink_cfile_t _stdout(stdout);
     syntax_farm_t sf;
-    const auto fragmentization = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]),
-                                                  "while fragmentizing {}",
-                                                  cmdline_args[1]);
-    pretty_write(*fragmentization, &_stdout);
+    const auto fragmentization  = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]),
+                                                   "while fragmentizing {}",
+                                                   cmdline_args[1]);
+    const index_t max_hex_bytes = SILVA_ENV_CONTEXT_AS("max-hex-bytes", index_t, 10);
+    pretty_write_impl(*fragmentization, &_stdout, max_hex_bytes);
     return {};
   }
 }

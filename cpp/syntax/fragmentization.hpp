@@ -72,6 +72,7 @@ namespace silva {
     expected_t<index_t> advance_language(const index_t start) const;
 
     friend void pretty_write_impl(const fragmentization_t&, byte_sink_t*);
+    friend void pretty_write_impl(const fragmentization_t&, byte_sink_t*, index_t max_hex_bytes);
   };
   using fragmentization_ptr_t = ptr_t<const fragmentization_t>;
 
