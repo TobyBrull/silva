@@ -9,7 +9,7 @@
 #    restriction for if conditions, though, this will be parsed as only « MyStruct » being the if
 #    condition, followed by the if-block, followed by an empty block. The same restriction also
 #    stops a « { » from being taken as the end of a range, as in « for i in 0.. {} ».
-#    Seed can't (yet) express such context-dependent restrictions, so Rose approximates them:
+#    Seed can't (yet) express such context-dependent restrictions, so this approximates them:
 #    everywhere, a « { » after a path only starts a struct expression if it is followed by
 #    « name: », « name, », « 0: » or « .. ». Consequently « Foo {} » and « Foo { x } » are never
 #    struct expressions, « if x == Foo { a: 1 } {} » is accepted, and « for i in 0.. {} »
@@ -22,7 +22,7 @@
 #    expression at the end of a block becomes a statement instead of the block's tail expression.
 #  * Raw strings support at most two '#'.
 
-language Rose:
+language Rust:
   skip.@ = whitespace
 
   whitespace = no_node [ comment NEWLINE SPACE LINE_CONTINUATION INDENT DEDENT INDENTATION_BROKEN ] *

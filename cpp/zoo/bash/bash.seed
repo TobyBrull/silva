@@ -19,7 +19,7 @@
 #    twig-rule (twig-rules never invoke the skip-rule internally). Command-substitution
 #    « $(...) » is a branch-rule, which skips whitespace as usual inside the parentheses.
 
-language Ash:
+language Bash:
   skip.@ = skipHorizontal
   skipHorizontal = no_node [ .comment SPACE LINE_CONTINUATION \
                              INDENT DEDENT INDENTATION_BROKEN ] *

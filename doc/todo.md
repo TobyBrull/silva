@@ -49,7 +49,7 @@
         * rethink error generation fundamentally
             * In parsing errors, show what has been successfully parsed so far?
             * pass node_and_error_t::last_error through seed-axe
-            * error involving Cedar's ExprStmt = Expr ? ';' have no useful info if the parse error is in
+            * error involving C's ExprStmt = Expr ? ';' have no useful info if the parse error is in
               the Expr
         * After errors, parsing should be resume (for error handling in IDEs)
         * Maybe use Python's "invalid_*" rules?

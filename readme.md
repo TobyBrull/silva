@@ -16,19 +16,13 @@ Implemented parsers:
     * For expression parsing a shunting yard algorithm is used that's described by
       [seed_axe.hpp](cpp/syntax/seed_axe.hpp).
     * Some Seed global definitions are in [seed.globals.hpp](cpp/syntax/seed.globals.hpp).
-* [Cedar](cpp/zoo/cedar/cedar.seed): Basically preprocessed C.
-  ([Example](cpp/zoo/cedar/example.cedar))
-* [Pine](cpp/zoo/pine/pine.seed): Basically Python (without pattern matching).
-  ([Example](cpp/zoo/pine/example.pine))
-* [Ash](cpp/zoo/ash/ash.seed): A language that looks a bit like Bash. Vibe coded.
-  ([Example](cpp/zoo/ash/example.ash))
-* [Rose](cpp/zoo/rose/rose.seed): Basically Rust. Vibe coded.
-  ([Example](cpp/zoo/rose/example.rose))
-* [Tomel](cpp/zoo/tomel/tomel.seed): Basically Tom's Obvious, Minimal Language.
-  ([Example](cpp/zoo/tomel/example.tomel))
-* [Lox](cpp/zoo/lox/lox.hpp): The toy language from the book "Crafting Interpreters".
-  ([Example](cpp/zoo/lox/example.lox))
-
+* [C](cpp/zoo/c/c.seed): [Example](cpp/zoo/c/example.c)
+* [Python](cpp/zoo/python/python.seed) [Example](cpp/zoo/python/example.python)
+* [Bash](cpp/zoo/bash/bash.seed): [Example](cpp/zoo/bash/example.bash)
+* [Rust](cpp/zoo/rust/rust.seed): [Example](cpp/zoo/rust/example.rust)
+* [Toml](cpp/zoo/toml/toml.seed): [Example](cpp/zoo/toml/example.toml)
+* [Lox](cpp/zoo/lox/lox.hpp): [Example](cpp/zoo/lox/example.lox) The toy language from the book
+  "Crafting Interpreters".
 
 ## Development
 

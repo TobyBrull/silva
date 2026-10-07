@@ -28,8 +28,8 @@ SEED_EXEC_TRACE=true "./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/01-simplest.
 
 "./${BUILD_DIR}/cpp/silva_lox" cpp/zoo/lox/lox.lox < cpp/zoo/lox/example.lox
 
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/cedar/{cedar.seed,example.cedar}
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/pine/{pine.seed,example.pine}
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/ash/{ash.seed,example.ash}
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/rose/{rose.seed,example.rose}
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/tomel/{tomel.seed,example.tomel}
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/c/{c.seed,example.c}
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/python/{python.seed,example.python}
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/bash/{bash.seed,example.bash}
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/rust/{rust.seed,example.rust}
+"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/toml/{toml.seed,example.toml}

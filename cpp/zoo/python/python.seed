@@ -17,7 +17,7 @@
 #    collapsed onto "Expr.Primary". This accepts a few targets that Python rejects (e.g.,
 #    « f(x) = 1 ») but parses the same language otherwise.
 
-language Pine:
+language Python:
   skip.@ = offSide
   skip.initial = offSide.initial
 

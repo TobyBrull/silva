@@ -1,7 +1,7 @@
 # Adoption of a subset of Annex A from the C standard, e.g.,
 # https://port70.net/~nsz/c/c11/n1570.html#A
 
-language Cedar:
+language C:
   skip.@ = freeForm
 
   @ = Declaration *

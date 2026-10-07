@@ -1,4 +1,4 @@
-language Tomel:
+language Toml:
   skip.@ = freeForm
 
   @ = ( Keyval | Table ) *
