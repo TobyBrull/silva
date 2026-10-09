@@ -1,7 +1,5 @@
 # TODO
 
-* Rewrite design.md
-
 * Runtime:
     * ??
     * Lox:
