@@ -13,8 +13,8 @@ REPO_ROOT = REPO_ROOT_ABS.relative_to(Path.cwd())
 WACCT_REPO_URL = "https://github.com/nlsandler/writing-a-c-compiler-tests.git"
 WACCT_REPO_LOCAL_DIR_DEFAULT = REPO_ROOT / "var" / "wacct"
 C_TESTS_DIR_DEFAULT = REPO_ROOT / "var" / "c_tests"
-SILVA_SYNTAX_DEFAULT = REPO_ROOT / "build.default.release" / "cpp" / "silva_syntax"
-C_SEED_DEFAULT = REPO_ROOT / "cpp" / "zoo" / "c" / "c.seed"
+SILVA_SYNTAX_DEFAULT = REPO_ROOT / "build.default.release" / "src" / "silva_syntax"
+C_SEED_DEFAULT = REPO_ROOT / "src" / "zoo" / "c" / "c.seed"
 
 CHAPTER_GLOB_WACCT = "chapter_*/valid/**/*.c"
 CHAPTER_GLOB_C = "**/*.c"
@@ -78,9 +78,7 @@ def cmd_run_tests(args: argparse.Namespace):
     assert args.c_tests_dir.exists(), f"no directory: {args.c_tests_dir}"
 
     if args.input_file_list:
-        c_files = [
-            Path(x) for x in args.input_file_list.read_text().split("\n") if x
-        ]
+        c_files = [Path(x) for x in args.input_file_list.read_text().split("\n") if x]
     else:
         c_files = sorted(args.c_tests_dir.glob(CHAPTER_GLOB_C))
     assert len(c_files) >= 1
@@ -112,8 +110,9 @@ def cmd_run_tests(args: argparse.Namespace):
 
     if failed_tests:
         if args.output_file_list:
-            args.output_file_list.write_text("\n".join((str(x) for x in failed_tests)))
-        return 1
+            args.output_file_list.write_text(
+                "\n".join((str(x) for x in failed_tests)) + "\n"
+            )
     return 0
 
 
@@ -128,15 +127,11 @@ def parse_args() -> argparse.Namespace:
     p_setup.add_argument(
         "--tests-repo-dir", type=Path, default=WACCT_REPO_LOCAL_DIR_DEFAULT
     )
-    p_setup.add_argument(
-        "--c-tests-dir", type=Path, default=C_TESTS_DIR_DEFAULT
-    )
+    p_setup.add_argument("--c-tests-dir", type=Path, default=C_TESTS_DIR_DEFAULT)
     p_setup.set_defaults(func=cmd_setup)
 
     p_run_tests = subparsers.add_parser("run-tests")
-    p_run_tests.add_argument(
-        "--c-tests-dir", type=Path, default=C_TESTS_DIR_DEFAULT
-    )
+    p_run_tests.add_argument("--c-tests-dir", type=Path, default=C_TESTS_DIR_DEFAULT)
     p_run_tests.add_argument("--silva-syntax", type=Path, default=SILVA_SYNTAX_DEFAULT)
     p_run_tests.add_argument("--c-seed", type=Path, default=C_SEED_DEFAULT)
     p_run_tests.add_argument("--max-count", type=int)

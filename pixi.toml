@@ -67,6 +67,7 @@ cmd = "bash task_format.sh"
 [tasks.test-all]
 depends-on = [
   { task = "format-check", environment = "default" },
+  { task = "test", environment = "default", args = ["release"] },
   { task = "test-tools", environment = "python-only" },
   { task = "test", environment = "gcc-15-build", args = ["debug"] },
   { task = "test", environment = "gcc-15-build", args = ["release"] },

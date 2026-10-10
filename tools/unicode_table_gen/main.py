@@ -568,9 +568,7 @@ def main():
     generate_parser.add_argument("--num-lower-bits", type=int, default=8)
     generate_parser.add_argument("--output-file-base", type=str, required=True)
     args = parser.parse_args()
-    assert os.path.exists(args.workdir) and os.path.isdir(args.workdir), (
-        f"Could not find {args.workdir=}"
-    )
+    os.makedirs(args.workdir, exist_ok=True)
     args.func(args)
 
 
