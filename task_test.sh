@@ -14,5 +14,5 @@ cmake --preset "${PRESET}"
 ninja -C "${BUILD_DIR}/"
 ctest --test-dir "${BUILD_DIR}/" -j "$( nproc )"
 mkdir -p tmp/
-bash task_demo.sh "${BUILD_DIR}" > tmp/task_demo.sh.output
-diff task_demo.sh.output tmp/task_demo.sh.output
+bash regression_test.sh "${BUILD_DIR}" > tmp/regression_test.sh.output
+diff regression_test.sh.output tmp/regression_test.sh.output
