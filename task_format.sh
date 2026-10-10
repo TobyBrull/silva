@@ -8,7 +8,7 @@ if [ "$#" -ne 0 ]; then
 fi
 
 # C++
-git ls-files | grep "^cpp/.*\.[hctm]pp$" | xargs --verbose clang-format -i
+git ls-files | grep "^src/.*\.[hctm]pp$" | xargs --verbose clang-format -i
 
 # CMake
 git ls-files | grep "CMakeLists.txt\|^cmake/" | grep -v "^.thirdparty/" | xargs --verbose cmake-format -i

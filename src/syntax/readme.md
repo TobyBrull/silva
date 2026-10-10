@@ -21,7 +21,7 @@ on the enum `fragment_category_t`. The `silva_fragmentization` tool can be used 
 what fragments Silva produces for this file.
 
 ```
-build/cpp/silva_fragmentization silva/syntax/00-fragmentization.demo
+build/src/silva_fragmentization src/syntax/readme.fragmentization.demo
 ```
 
 Sub-languages can be introduced in two ways. The first way is by using the parenthesis characters

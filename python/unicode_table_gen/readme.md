@@ -5,5 +5,5 @@
 
 ```bash
 pixi run -e python-only python python/unicode_table_gen/main.py --workdir=var/ download
-pixi run -e python-only python python/unicode_table_gen/main.py --workdir=var/ generate --output-file-base cpp/syntax/fragmentization_data
+pixi run -e python-only python python/unicode_table_gen/main.py --workdir=var/ generate --output-file-base src/syntax/fragmentization_data
 ```

@@ -12,26 +12,26 @@ TEMPFILE=$( mktemp )
 trap 'rm -f "$TEMPFILE"' EXIT
 
 # Doc demos
-"./${BUILD_DIR}/cpp/silva_fragmentization" silva/syntax/00-fragmentization.demo
+"./${BUILD_DIR}/src/silva_fragmentization" src/syntax/readme.fragmentization.demo
 
 # Simple parsing (including error message)
-"./${BUILD_DIR}/cpp/silva_fern" silva/syntax/01-simple.fern
-"./${BUILD_DIR}/cpp/silva_fern" silva/syntax/01-broken.fern 2>"$TEMPFILE" || true
+"./${BUILD_DIR}/src/silva_fern" silva/syntax/01-simple.fern
+"./${BUILD_DIR}/src/silva_fern" silva/syntax/01-broken.fern 2>"$TEMPFILE" || true
 cat "$TEMPFILE"
-"./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/01-simplest.fern
-SEED_EXEC_TRACE=true "./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/01-simplest.fern --action=none
+"./${BUILD_DIR}/src/silva_syntax" silva/syntax/01-simplest.fern
+SEED_EXEC_TRACE=true "./${BUILD_DIR}/src/silva_syntax" silva/syntax/01-simplest.fern --action=none
 
 # Parsing user-defined languages
-"./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/02-example.silva
-"./${BUILD_DIR}/cpp/silva_syntax" silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
-"./${BUILD_DIR}/cpp/silva_syntax" silva/soil/soil.silva silva/soil/example.silva
+"./${BUILD_DIR}/src/silva_syntax" silva/syntax/02-example.silva
+"./${BUILD_DIR}/src/silva_syntax" silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
+"./${BUILD_DIR}/src/silva_syntax" silva/soil/soil.silva silva/soil/example.silva
 
 # Zoo
 
-"./${BUILD_DIR}/cpp/silva_lox" cpp/zoo/lox/lox.lox < cpp/zoo/lox/example.lox
+"./${BUILD_DIR}/src/silva_lox" src/zoo/lox/lox.lox < src/zoo/lox/example.lox
 
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/c/{c.seed,example.c}
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/python/{python.seed,example.python}
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/bash/{bash.seed,example.bash}
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/rust/{rust.seed,example.rust}
-"./${BUILD_DIR}/cpp/silva_syntax" cpp/zoo/toml/{toml.seed,example.toml}
+"./${BUILD_DIR}/src/silva_syntax" src/zoo/c/{c.seed,example.c}
+"./${BUILD_DIR}/src/silva_syntax" src/zoo/python/{python.seed,example.python}
+"./${BUILD_DIR}/src/silva_syntax" src/zoo/bash/{bash.seed,example.bash}
+"./${BUILD_DIR}/src/silva_syntax" src/zoo/rust/{rust.seed,example.rust}
+"./${BUILD_DIR}/src/silva_syntax" src/zoo/toml/{toml.seed,example.toml}

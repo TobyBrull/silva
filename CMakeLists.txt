@@ -41,4 +41,4 @@ include(Catch)
 add_subdirectory(.thirdparty/reflect-cpp)
 add_subdirectory(.thirdparty/date-3.0.4)
 
-add_subdirectory(cpp)
+add_subdirectory(src)
