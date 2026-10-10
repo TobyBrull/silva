@@ -33,16 +33,16 @@ Example parsers for existing languages. More or less faithful.
 Requires [Pixi](https://pixi.prefix.dev/latest/#installation).
 
 ```bash
-pixi run test-all && echo "ALL TESTS PASSED!"
+pixi run test-all
 
 eval "$( pixi shell-hook )"
 
-cmake --preset "debug"
+cmake --preset release
 
 ninja -C "build/" && time "build/src/silva_test"
-bash task_format_check.sh && echo "ALL FORMATTING OKAY!"
-bash task_format.sh
-bash task_test.sh "debug" && echo "ALL TESTS PASSED!"
+bash task_format.sh check
+bash task_format.sh update
+bash task_test.sh release && echo "ALL TESTS PASSED!"
 bash task_test_tools.sh && echo "ALL PYTHON TESTS PASSED!"
 ```
 

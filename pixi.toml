@@ -52,17 +52,17 @@ clang-22-build = ["clang-22", "build"]
 default = ["clang-22", "build", "dev", "python"]
 
 [tasks.test]
-args = [{ "arg" = "preset", "default" = "debug" }]
+args = [{ "arg" = "preset", "default" = "release" }]
 cmd = "bash task_test.sh {{ preset }}"
 
 [tasks.test-tools]
 cmd = "bash task_test_tools.sh"
 
 [tasks.format-check]
-cmd = "bash task_format_check.sh"
+cmd = "bash task_format.sh check"
 
-[tasks.format]
-cmd = "bash task_format.sh"
+[tasks.format-update]
+cmd = "bash task_format.sh update"
 
 [tasks.test-all]
 depends-on = [
