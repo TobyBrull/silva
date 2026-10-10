@@ -49,5 +49,5 @@ bash task_test_tools.sh && echo "ALL PYTHON TESTS PASSED!"
 ## Packaging
 
 ```bash
-pixi publish --target-dir=var/
+pixi publish --target-dir=tmp/
 ```

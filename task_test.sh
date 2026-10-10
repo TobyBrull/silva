@@ -13,6 +13,6 @@ BUILD_DIR="build.${PIXI_ENVIRONMENT_NAME}.${PRESET}"
 cmake --preset "${PRESET}"
 ninja -C "${BUILD_DIR}/"
 ctest --test-dir "${BUILD_DIR}/" -j "$( nproc )"
-mkdir -p var/
-bash task_demo.sh "${BUILD_DIR}" > var/task_demo.sh.output
-diff task_demo.sh.output var/task_demo.sh.output
+mkdir -p tmp/
+bash task_demo.sh "${BUILD_DIR}" > tmp/task_demo.sh.output
+diff task_demo.sh.output tmp/task_demo.sh.output

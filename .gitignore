@@ -1,5 +1,4 @@
 build*
-var/
 tmp*
 .cache/
 __pycache__/

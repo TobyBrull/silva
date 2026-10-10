@@ -11,8 +11,8 @@ import tqdm
 REPO_ROOT_ABS = Path(__file__).resolve().parents[2]
 REPO_ROOT = REPO_ROOT_ABS.relative_to(Path.cwd())
 WACCT_REPO_URL = "https://github.com/nlsandler/writing-a-c-compiler-tests.git"
-WACCT_REPO_LOCAL_DIR_DEFAULT = REPO_ROOT / "var" / "wacct"
-C_TESTS_DIR_DEFAULT = REPO_ROOT / "var" / "c_tests"
+WACCT_REPO_LOCAL_DIR_DEFAULT = REPO_ROOT / "tmp" / "wacct"
+C_TESTS_DIR_DEFAULT = REPO_ROOT / "tmp" / "c_tests"
 SILVA_SYNTAX_DEFAULT = REPO_ROOT / "build.default.release" / "src" / "silva_syntax"
 C_SEED_DEFAULT = REPO_ROOT / "src" / "zoo" / "c" / "c.seed"
 

@@ -132,7 +132,7 @@ class CommandsApp(App[None]):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--output-pattern", default="var/parse_tree_{I}.txt")
+    parser.add_argument("-o", "--output-pattern", default="tmp/parse_tree_{I}.txt")
     parser.add_argument("-p", "--pager", default="nvim")
     parser.add_argument("-d", "--diff-tool", default="nvim -d")
     parser.add_argument("--tui", action="store_true")
