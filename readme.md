@@ -43,7 +43,7 @@ ninja -C "build/" && time "build/src/silva_test"
 bash task_format_check.sh && echo "ALL FORMATTING OKAY!"
 bash task_format.sh
 bash task_test.sh "debug" && echo "ALL TESTS PASSED!"
-bash task_test_python.sh && echo "ALL PYTHON TESTS PASSED!"
+bash task_test_tools.sh && echo "ALL PYTHON TESTS PASSED!"
 ```
 
 ## Packaging

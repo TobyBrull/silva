@@ -8,10 +8,10 @@ if [ "$#" -ne 0 ]; then
 fi
 
 # Shunting Yard
-python python/seed_axe_py/parser_shunting_yard.py
+python tools/seed_axe_py/parser_shunting_yard.py
 
 # Unicode table
-python python/unicode_table_gen/main.py --workdir=var/ download
-python python/unicode_table_gen/main.py --workdir=var/ generate --output-file-base var/fragmentization_data
+python tools/unicode_table_gen/main.py --workdir=var/ download
+python tools/unicode_table_gen/main.py --workdir=var/ generate --output-file-base var/fragmentization_data
 diff src/syntax/fragmentization_data.hpp var/fragmentization_data.hpp
 diff src/syntax/fragmentization_data.cpp var/fragmentization_data.cpp
