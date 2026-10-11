@@ -1,6 +1,0 @@
-language Somelang:
-  skip.@ = freeForm
-
-  @ = As Bs
-  As = "a" *
-  Bs = "b" *

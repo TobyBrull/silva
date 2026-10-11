@@ -68,149 +68,149 @@
 
 ERROR (MAJOR):
     ┌─expected token of category token[ MULTILINE_STRING ]; got token[ PARENTHESIS ]
-    │ [01-broken.fern:9:3] expected token[ ' ]
-    │ [01-broken.fern:9:3] while matching token[ ' ]
-    │ [01-broken.fern:9:3] .string.single: expected sequence[ '\\''  ...  '\\'' ]
-    ├─[01-broken.fern:9:3] .string.single
-    │ [01-broken.fern:9:3] expected token[ " ]
-    │ [01-broken.fern:9:3] while matching token[ " ]
-    │ [01-broken.fern:9:3] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
-    ├─[01-broken.fern:9:3] .string.double
-    [01-broken.fern:9:3] .string: expected alternation[ MULTI ... ouble ]
-  ┌─[01-broken.fern:9:3] .string
+    │ [readme.01-broken.fern:9:3] expected token[ ' ]
+    │ [readme.01-broken.fern:9:3] while matching token[ ' ]
+    │ [readme.01-broken.fern:9:3] .string.single: expected sequence[ '\\''  ...  '\\'' ]
+    ├─[readme.01-broken.fern:9:3] .string.single
+    │ [readme.01-broken.fern:9:3] expected token[ " ]
+    │ [readme.01-broken.fern:9:3] while matching token[ " ]
+    │ [readme.01-broken.fern:9:3] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
+    ├─[readme.01-broken.fern:9:3] .string.double
+    [readme.01-broken.fern:9:3] .string: expected alternation[ MULTI ... ouble ]
+  ┌─[readme.01-broken.fern:9:3] .string
   │ expected token of category ID_START; got token[ ID_START ]
-  │ [01-broken.fern:9:3] .identifier: expected sequence[ ID_ST ... NUE * ]
-  ├─[01-broken.fern:9:3] .identifier
-  [01-broken.fern:9:3] .Fern.label: expected alternation[ strin ... ifier ]
-  [01-broken.fern:9:3] .Fern.label
-┌─[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ label ':'  ]
-│   [01-broken.fern:10:5] expected token[ ] ]
-│ ┌─[01-broken.fern:10:5] while matching token[ ] ]
-│ │     [01-broken.fern:10:5] expected token[ [ ]
-│ │     [01-broken.fern:10:5] while matching token[ [ ]
-│ │     [01-broken.fern:10:5] .Fern: expected sequence[ '[' L ... * ']' ]
-│ │   ┌─[01-broken.fern:10:5] .Fern
-│ │   │   [01-broken.fern:10:5] expected token[ none ]
-│ │   │   [01-broken.fern:10:5] while matching token[ none ]
-│ │   │ ┌─[01-broken.fern:10:5] .none
-│ │   │ │   [01-broken.fern:10:5] expected token[ true ]
-│ │   │ │ ┌─[01-broken.fern:10:5] while matching token[ true ]
-│ │   │ │ │ [01-broken.fern:10:5] expected token[ false ]
-│ │   │ │ ├─[01-broken.fern:10:5] while matching token[ false ]
-│ │   │ │ [01-broken.fern:10:5] .boolean: expected alternation[ [ \"tr ... se\" ] ]
-│ │   │ ├─[01-broken.fern:10:5] .boolean
-│ │   │ │       [01-broken.fern:10:5] expected token[ + ]
-│ │   │ │     ┌─[01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │     │ [01-broken.fern:10:5] expected token[ - ]
-│ │   │ │     ├─[01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │     [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │   ┌─[01-broken.fern:10:5] .number.plusMinus
-│ │   │ │   │     [01-broken.fern:10:5] expected token[ inf ]
-│ │   │ │   │   ┌─[01-broken.fern:10:5] while matching token[ inf ]
-│ │   │ │   │   │ [01-broken.fern:10:5] expected token[ nan ]
-│ │   │ │   │   ├─[01-broken.fern:10:5] while matching token[ nan ]
-│ │   │ │   │   [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
-│ │   │ │   │ ┌─[01-broken.fern:10:5] .number.unsigned.float.special
+  │ [readme.01-broken.fern:9:3] .identifier: expected sequence[ ID_ST ... NUE * ]
+  ├─[readme.01-broken.fern:9:3] .identifier
+  [readme.01-broken.fern:9:3] .Fern.label: expected alternation[ strin ... ifier ]
+  [readme.01-broken.fern:9:3] .Fern.label
+┌─[readme.01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ label ':'  ]
+│   [readme.01-broken.fern:10:5] expected token[ ] ]
+│ ┌─[readme.01-broken.fern:10:5] while matching token[ ] ]
+│ │     [readme.01-broken.fern:10:5] expected token[ [ ]
+│ │     [readme.01-broken.fern:10:5] while matching token[ [ ]
+│ │     [readme.01-broken.fern:10:5] .Fern: expected sequence[ '[' L ... * ']' ]
+│ │   ┌─[readme.01-broken.fern:10:5] .Fern
+│ │   │   [readme.01-broken.fern:10:5] expected token[ none ]
+│ │   │   [readme.01-broken.fern:10:5] while matching token[ none ]
+│ │   │ ┌─[readme.01-broken.fern:10:5] .none
+│ │   │ │   [readme.01-broken.fern:10:5] expected token[ true ]
+│ │   │ │ ┌─[readme.01-broken.fern:10:5] while matching token[ true ]
+│ │   │ │ │ [readme.01-broken.fern:10:5] expected token[ false ]
+│ │   │ │ ├─[readme.01-broken.fern:10:5] while matching token[ false ]
+│ │   │ │ [readme.01-broken.fern:10:5] .boolean: expected alternation[ [ \"tr ... se\" ] ]
+│ │   │ ├─[readme.01-broken.fern:10:5] .boolean
+│ │   │ │       [readme.01-broken.fern:10:5] expected token[ + ]
+│ │   │ │     ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │     │ [readme.01-broken.fern:10:5] expected token[ - ]
+│ │   │ │     ├─[readme.01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │     [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │   ┌─[readme.01-broken.fern:10:5] .number.plusMinus
+│ │   │ │   │     [readme.01-broken.fern:10:5] expected token[ inf ]
+│ │   │ │   │   ┌─[readme.01-broken.fern:10:5] while matching token[ inf ]
+│ │   │ │   │   │ [readme.01-broken.fern:10:5] expected token[ nan ]
+│ │   │ │   │   ├─[readme.01-broken.fern:10:5] while matching token[ nan ]
+│ │   │ │   │   [readme.01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
+│ │   │ │   │ ┌─[readme.01-broken.fern:10:5] .number.unsigned.float.special
 │ │   │ │   │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│ │   │ │   │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
-│ │   │ │   │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal
-│ │   │ │   │ │ [01-broken.fern:10:5] .number.unsigned.float.integerPart
-│ │   │ │   │ ├─[01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integ ... t ? ) ]
-│ │   │ │   │ [01-broken.fern:10:5] .number.unsigned.float: expected alternation[ speci ... t ? ) ]
-│ │   │ │   ├─[01-broken.fern:10:5] .number.unsigned.float
-│ │   │ │   [01-broken.fern:10:5] .number.float: expected sequence[ plusM ... float ]
-│ │   │ │ ┌─[01-broken.fern:10:5] .number.float
-│ │   │ │ │     [01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
-│ │   │ │ │ │   [01-broken.fern:10:5] expected token[ inf ]
-│ │   │ │ │ │ ┌─[01-broken.fern:10:5] while matching token[ inf ]
-│ │   │ │ │ │ │ [01-broken.fern:10:5] expected token[ nan ]
-│ │   │ │ │ │ ├─[01-broken.fern:10:5] while matching token[ nan ]
-│ │   │ │ │ │ [01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
-│ │   │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.float.special
-│ │   │ │ │ [01-broken.fern:10:5] .number.float.special: expected sequence[ plusM ... ecial ]
-│ │   │ │ ├─[01-broken.fern:10:5] .number.float.special
-│ │   │ │ │       [01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │     ┌─[01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │     │ [01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │     ├─[01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │     [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │   ┌─[01-broken.fern:10:5] .number.plusMinus
-│ │   │ │ │   │ [01-broken.fern:10:5] expected token[ 0b ]
-│ │   │ │ │   │ [01-broken.fern:10:5] while matching token[ 0b ]
-│ │   │ │ │   │ [01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b'  ... g ) * ]
-│ │   │ │ │   ├─[01-broken.fern:10:5] .number.unsigned.integer.binary
-│ │   │ │ │   [01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusM ... inary ]
-│ │   │ │ │ ┌─[01-broken.fern:10:5] .number.integer.binary
-│ │   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
-│ │   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0o ]
-│ │   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0o ]
-│ │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o'  ... g ) * ]
-│ │   │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.octal
-│ │   │ │ │ │ [01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusM ... octal ]
-│ │   │ │ │ ├─[01-broken.fern:10:5] .number.integer.octal
-│ │   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
-│ │   │ │ │ │ │ [01-broken.fern:10:5] expected token[ 0x ]
-│ │   │ │ │ │ │ [01-broken.fern:10:5] while matching token[ 0x ]
-│ │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x'  ... g ) * ]
-│ │   │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
-│ │   │ │ │ │ [01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusM ... cimal ]
-│ │   │ │ │ ├─[01-broken.fern:10:5] .number.integer.hexadecimal
-│ │   │ │ │ │     [01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │ │   ┌─[01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │ │   │ [01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │ │   ├─[01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │ │   [01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │ │ ┌─[01-broken.fern:10:5] .number.plusMinus
+│ │   │ │   │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
+│ │   │ │   │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.decimal
+│ │   │ │   │ │ [readme.01-broken.fern:10:5] .number.unsigned.float.integerPart
+│ │   │ │   │ ├─[readme.01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integ ... t ? ) ]
+│ │   │ │   │ [readme.01-broken.fern:10:5] .number.unsigned.float: expected alternation[ speci ... t ? ) ]
+│ │   │ │   ├─[readme.01-broken.fern:10:5] .number.unsigned.float
+│ │   │ │   [readme.01-broken.fern:10:5] .number.float: expected sequence[ plusM ... float ]
+│ │   │ │ ┌─[readme.01-broken.fern:10:5] .number.float
+│ │   │ │ │     [readme.01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │   ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │   │ [readme.01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │   ├─[readme.01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │   [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ ┌─[readme.01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │   [readme.01-broken.fern:10:5] expected token[ inf ]
+│ │   │ │ │ │ ┌─[readme.01-broken.fern:10:5] while matching token[ inf ]
+│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] expected token[ nan ]
+│ │   │ │ │ │ ├─[readme.01-broken.fern:10:5] while matching token[ nan ]
+│ │   │ │ │ │ [readme.01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
+│ │   │ │ │ ├─[readme.01-broken.fern:10:5] .number.unsigned.float.special
+│ │   │ │ │ [readme.01-broken.fern:10:5] .number.float.special: expected sequence[ plusM ... ecial ]
+│ │   │ │ ├─[readme.01-broken.fern:10:5] .number.float.special
+│ │   │ │ │       [readme.01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │     ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │     │ [readme.01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │     ├─[readme.01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │     [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │   ┌─[readme.01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │   │ [readme.01-broken.fern:10:5] expected token[ 0b ]
+│ │   │ │ │   │ [readme.01-broken.fern:10:5] while matching token[ 0b ]
+│ │   │ │ │   │ [readme.01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b'  ... g ) * ]
+│ │   │ │ │   ├─[readme.01-broken.fern:10:5] .number.unsigned.integer.binary
+│ │   │ │ │   [readme.01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusM ... inary ]
+│ │   │ │ │ ┌─[readme.01-broken.fern:10:5] .number.integer.binary
+│ │   │ │ │ │     [readme.01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [readme.01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[readme.01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[readme.01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] expected token[ 0o ]
+│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] while matching token[ 0o ]
+│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o'  ... g ) * ]
+│ │   │ │ │ │ ├─[readme.01-broken.fern:10:5] .number.unsigned.integer.octal
+│ │   │ │ │ │ [readme.01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusM ... octal ]
+│ │   │ │ │ ├─[readme.01-broken.fern:10:5] .number.integer.octal
+│ │   │ │ │ │     [readme.01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [readme.01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[readme.01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[readme.01-broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] expected token[ 0x ]
+│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] while matching token[ 0x ]
+│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x'  ... g ) * ]
+│ │   │ │ │ │ ├─[readme.01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
+│ │   │ │ │ │ [readme.01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusM ... cimal ]
+│ │   │ │ │ ├─[readme.01-broken.fern:10:5] .number.integer.hexadecimal
+│ │   │ │ │ │     [readme.01-broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [readme.01-broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[readme.01-broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[readme.01-broken.fern:10:5] .number.plusMinus
 │ │   │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│ │   │ │ │ │ │ [01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
-│ │   │ │ │ │ ├─[01-broken.fern:10:5] .number.unsigned.integer.decimal
-│ │   │ │ │ │ [01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusM ... cimal ]
-│ │   │ │ │ ├─[01-broken.fern:10:5] .number.integer.decimal
-│ │   │ │ │ [01-broken.fern:10:5] .number.integer: expected alternation[ [ bin ... mal ] ]
-│ │   │ │ ├─[01-broken.fern:10:5] .number.integer
-│ │   │ │ [01-broken.fern:10:5] .number: expected alternation[ [ flo ... ger ] ]
-│ │   │ ├─[01-broken.fern:10:5] .number
+│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
+│ │   │ │ │ │ ├─[readme.01-broken.fern:10:5] .number.unsigned.integer.decimal
+│ │   │ │ │ │ [readme.01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusM ... cimal ]
+│ │   │ │ │ ├─[readme.01-broken.fern:10:5] .number.integer.decimal
+│ │   │ │ │ [readme.01-broken.fern:10:5] .number.integer: expected alternation[ [ bin ... mal ] ]
+│ │   │ │ ├─[readme.01-broken.fern:10:5] .number.integer
+│ │   │ │ [readme.01-broken.fern:10:5] .number: expected alternation[ [ flo ... ger ] ]
+│ │   │ ├─[readme.01-broken.fern:10:5] .number
 │ │   │ │ ┌─expected token of category token[ MULTILINE_STRING ]; got token[ ID_LOWER ]
-│ │   │ │ │ [01-broken.fern:10:5] expected token[ ' ]
-│ │   │ │ │ [01-broken.fern:10:5] while matching token[ ' ]
-│ │   │ │ │ [01-broken.fern:10:5] .string.single: expected sequence[ '\\''  ...  '\\'' ]
-│ │   │ │ ├─[01-broken.fern:10:5] .string.single
-│ │   │ │ │ [01-broken.fern:10:5] expected token[ " ]
-│ │   │ │ │ [01-broken.fern:10:5] while matching token[ " ]
-│ │   │ │ │ [01-broken.fern:10:5] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
-│ │   │ │ ├─[01-broken.fern:10:5] .string.double
-│ │   │ │ [01-broken.fern:10:5] .string: expected alternation[ MULTI ... ouble ]
-│ │   │ ├─[01-broken.fern:10:5] .string
-│ │   │ [01-broken.fern:10:5] .Fern.value: expected alternation[ none  ... tring ]
-│ │   ├─[01-broken.fern:10:5] .Fern.value
-│ │ ┌─[01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
-│ │ │ [01-broken.fern:11:5] expected token[ : ]
-│ │ │ [01-broken.fern:11:5] while matching token[ : ]
-│ │ ├─[01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ label ':'  ]
-│ │ [01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
-│ ├─[01-broken.fern:10:5] .Fern.LabeledItem
-│ [01-broken.fern:9:3] .Fern: expected sequence[ '[' L ... * ']' ]
-│ [01-broken.fern:9:3] .Fern
-├─[01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
-[01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
-[01-broken.fern:9:3] .Fern.LabeledItem
-[01-broken.fern:1:1] .Fern: expected sequence[ '[' L ... * ']' ]
-[01-broken.fern:1:1] .Fern
+│ │   │ │ │ [readme.01-broken.fern:10:5] expected token[ ' ]
+│ │   │ │ │ [readme.01-broken.fern:10:5] while matching token[ ' ]
+│ │   │ │ │ [readme.01-broken.fern:10:5] .string.single: expected sequence[ '\\''  ...  '\\'' ]
+│ │   │ │ ├─[readme.01-broken.fern:10:5] .string.single
+│ │   │ │ │ [readme.01-broken.fern:10:5] expected token[ " ]
+│ │   │ │ │ [readme.01-broken.fern:10:5] while matching token[ " ]
+│ │   │ │ │ [readme.01-broken.fern:10:5] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
+│ │   │ │ ├─[readme.01-broken.fern:10:5] .string.double
+│ │   │ │ [readme.01-broken.fern:10:5] .string: expected alternation[ MULTI ... ouble ]
+│ │   │ ├─[readme.01-broken.fern:10:5] .string
+│ │   │ [readme.01-broken.fern:10:5] .Fern.value: expected alternation[ none  ... tring ]
+│ │   ├─[readme.01-broken.fern:10:5] .Fern.value
+│ │ ┌─[readme.01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
+│ │ │ [readme.01-broken.fern:11:5] expected token[ : ]
+│ │ │ [readme.01-broken.fern:11:5] while matching token[ : ]
+│ │ ├─[readme.01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ label ':'  ]
+│ │ [readme.01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
+│ ├─[readme.01-broken.fern:10:5] .Fern.LabeledItem
+│ [readme.01-broken.fern:9:3] .Fern: expected sequence[ '[' L ... * ']' ]
+│ [readme.01-broken.fern:9:3] .Fern
+├─[readme.01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
+[readme.01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
+[readme.01-broken.fern:9:3] .Fern.LabeledItem
+[readme.01-broken.fern:1:1] .Fern: expected sequence[ '[' L ... * ']' ]
+[readme.01-broken.fern:1:1] .Fern
 seed::interpreter_t::apply(.Fern) failed to parse
 
 [0] .Fern                                                                       [<NEWLINE><INDENT>no ... ]<NEWLINE><DEDENT>]<NEWLINE>¦
@@ -226,183 +226,183 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0] .none                                                             ｢none｣
 
 [0]                                                                                  false     unknown token-location
-  [0] .freeForm                                                                      true      01-simplest.fern:1:1
-    [0] .comment                                                                     false     01-simplest.fern:1:1
-  [1] .Fern                                                                          true      01-simplest.fern:1:1
-    [0] .freeForm                                                                    true      01-simplest.fern:1:2
-      [0] .comment                                                                   false     01-simplest.fern:1:2
-      [1] .comment                                                                   false     01-simplest.fern:2:1
-      [2] .comment                                                                   false     01-simplest.fern:2:3
-    [1] .Fern.LabeledItem                                                            true      01-simplest.fern:2:3
-      [0] .Fern.label                                                                true      01-simplest.fern:2:3
-        [0] .string                                                                  false     01-simplest.fern:2:3
-          [0] .string.single                                                         false     01-simplest.fern:2:3
-          [1] .string.double                                                         false     01-simplest.fern:2:3
-        [1] .identifier                                                              true      01-simplest.fern:2:3
-        [2] .freeForm                                                                true      01-simplest.fern:2:7
-          [0] .comment                                                               false     01-simplest.fern:2:7
-          [1] .comment                                                               false     01-simplest.fern:3:3
-      [1] .Fern                                                                      false     01-simplest.fern:2:3
-      [2] .Fern.value                                                                true      01-simplest.fern:2:3
-        [0] .none                                                                    true      01-simplest.fern:2:3
-        [1] .freeForm                                                                true      01-simplest.fern:2:7
-          [0] .comment                                                               false     01-simplest.fern:2:7
-          [1] .comment                                                               false     01-simplest.fern:3:3
-    [2] .Fern.LabeledItem                                                            true      01-simplest.fern:3:3
-      [0] .Fern.label                                                                false     01-simplest.fern:3:3
-        [0] .string                                                                  false     01-simplest.fern:3:3
-          [0] .string.single                                                         false     01-simplest.fern:3:3
-          [1] .string.double                                                         false     01-simplest.fern:3:3
-        [1] .identifier                                                              false     01-simplest.fern:3:3
-      [1] .Fern                                                                      true      01-simplest.fern:3:3
-        [0] .freeForm                                                                true      01-simplest.fern:3:4
-          [0] .comment                                                               false     01-simplest.fern:3:4
-        [1] .Fern.LabeledItem                                                        false     01-simplest.fern:3:4
-          [0] .Fern.label                                                            false     01-simplest.fern:3:4
-            [0] .string                                                              false     01-simplest.fern:3:4
-              [0] .string.single                                                     false     01-simplest.fern:3:4
-              [1] .string.double                                                     false     01-simplest.fern:3:4
-            [1] .identifier                                                          false     01-simplest.fern:3:4
-          [1] .Fern                                                                  false     01-simplest.fern:3:4
-          [2] .Fern.value                                                            false     01-simplest.fern:3:4
-            [0] .none                                                                false     01-simplest.fern:3:4
-            [1] .boolean                                                             false     01-simplest.fern:3:4
-            [2] .number                                                              false     01-simplest.fern:3:4
-              [0] .number.float                                                      false     01-simplest.fern:3:4
-                [0] .number.plusMinus                                                false     01-simplest.fern:3:4
-                [1] .number.unsigned.float                                           false     01-simplest.fern:3:4
-                  [0] .number.unsigned.float.special                                 false     01-simplest.fern:3:4
-                  [1] .number.unsigned.float.integerPart                             false     01-simplest.fern:3:4
-                    [0] .number.unsigned.integer.decimal                             false     01-simplest.fern:3:4
-              [1] .number.float.special                                              false     01-simplest.fern:3:4
-                [0] .number.plusMinus                                                false     01-simplest.fern:3:4
-                [1] .number.unsigned.float.special                                   false     01-simplest.fern:3:4
-              [2] .number.integer                                                    false     01-simplest.fern:3:4
-                [0] .number.integer.binary                                           false     01-simplest.fern:3:4
-                  [0] .number.plusMinus                                              false     01-simplest.fern:3:4
-                  [1] .number.unsigned.integer.binary                                false     01-simplest.fern:3:4
-                [1] .number.integer.octal                                            false     01-simplest.fern:3:4
-                  [0] .number.plusMinus                                              false     01-simplest.fern:3:4
-                  [1] .number.unsigned.integer.octal                                 false     01-simplest.fern:3:4
-                [2] .number.integer.hexadecimal                                      false     01-simplest.fern:3:4
-                  [0] .number.plusMinus                                              false     01-simplest.fern:3:4
-                  [1] .number.unsigned.integer.hexadecimal                           false     01-simplest.fern:3:4
-                [3] .number.integer.decimal                                          false     01-simplest.fern:3:4
-                  [0] .number.plusMinus                                              false     01-simplest.fern:3:4
-                  [1] .number.unsigned.integer.decimal                               false     01-simplest.fern:3:4
-            [3] .string                                                              false     01-simplest.fern:3:4
-              [0] .string.single                                                     false     01-simplest.fern:3:4
-              [1] .string.double                                                     false     01-simplest.fern:3:4
-        [2] .freeForm                                                                true      01-simplest.fern:3:5
-          [0] .comment                                                               false     01-simplest.fern:3:5
-          [1] .comment                                                               false     01-simplest.fern:4:3
-    [3] .Fern.LabeledItem                                                            true      01-simplest.fern:4:3
-      [0] .Fern.label                                                                false     01-simplest.fern:4:3
-        [0] .string                                                                  false     01-simplest.fern:4:3
-          [0] .string.single                                                         false     01-simplest.fern:4:3
-          [1] .string.double                                                         false     01-simplest.fern:4:3
-        [1] .identifier                                                              false     01-simplest.fern:4:3
-      [1] .Fern                                                                      true      01-simplest.fern:4:3
-        [0] .freeForm                                                                true      01-simplest.fern:4:4
-          [0] .comment                                                               false     01-simplest.fern:4:4
-          [1] .comment                                                               false     01-simplest.fern:5:1
-          [2] .comment                                                               false     01-simplest.fern:5:5
-        [1] .Fern.LabeledItem                                                        true      01-simplest.fern:5:5
-          [0] .Fern.label                                                            true      01-simplest.fern:5:5
-            [0] .string                                                              false     01-simplest.fern:5:5
-              [0] .string.single                                                     false     01-simplest.fern:5:5
-              [1] .string.double                                                     false     01-simplest.fern:5:5
-            [1] .identifier                                                          true      01-simplest.fern:5:5
-            [2] .freeForm                                                            true      01-simplest.fern:5:9
-              [0] .comment                                                           false     01-simplest.fern:5:9
-              [1] .comment                                                           false     01-simplest.fern:6:1
-              [2] .comment                                                           false     01-simplest.fern:6:3
-          [1] .Fern                                                                  false     01-simplest.fern:5:5
-          [2] .Fern.value                                                            true      01-simplest.fern:5:5
-            [0] .none                                                                true      01-simplest.fern:5:5
-            [1] .freeForm                                                            true      01-simplest.fern:5:9
-              [0] .comment                                                           false     01-simplest.fern:5:9
-              [1] .comment                                                           false     01-simplest.fern:6:1
-              [2] .comment                                                           false     01-simplest.fern:6:3
-        [2] .Fern.LabeledItem                                                        false     01-simplest.fern:6:3
-          [0] .Fern.label                                                            false     01-simplest.fern:6:3
-            [0] .string                                                              false     01-simplest.fern:6:3
-              [0] .string.single                                                     false     01-simplest.fern:6:3
-              [1] .string.double                                                     false     01-simplest.fern:6:3
-            [1] .identifier                                                          false     01-simplest.fern:6:3
-          [1] .Fern                                                                  false     01-simplest.fern:6:3
-          [2] .Fern.value                                                            false     01-simplest.fern:6:3
-            [0] .none                                                                false     01-simplest.fern:6:3
-            [1] .boolean                                                             false     01-simplest.fern:6:3
-            [2] .number                                                              false     01-simplest.fern:6:3
-              [0] .number.float                                                      false     01-simplest.fern:6:3
-                [0] .number.plusMinus                                                false     01-simplest.fern:6:3
-                [1] .number.unsigned.float                                           false     01-simplest.fern:6:3
-                  [0] .number.unsigned.float.special                                 false     01-simplest.fern:6:3
-                  [1] .number.unsigned.float.integerPart                             false     01-simplest.fern:6:3
-                    [0] .number.unsigned.integer.decimal                             false     01-simplest.fern:6:3
-              [1] .number.float.special                                              false     01-simplest.fern:6:3
-                [0] .number.plusMinus                                                false     01-simplest.fern:6:3
-                [1] .number.unsigned.float.special                                   false     01-simplest.fern:6:3
-              [2] .number.integer                                                    false     01-simplest.fern:6:3
-                [0] .number.integer.binary                                           false     01-simplest.fern:6:3
-                  [0] .number.plusMinus                                              false     01-simplest.fern:6:3
-                  [1] .number.unsigned.integer.binary                                false     01-simplest.fern:6:3
-                [1] .number.integer.octal                                            false     01-simplest.fern:6:3
-                  [0] .number.plusMinus                                              false     01-simplest.fern:6:3
-                  [1] .number.unsigned.integer.octal                                 false     01-simplest.fern:6:3
-                [2] .number.integer.hexadecimal                                      false     01-simplest.fern:6:3
-                  [0] .number.plusMinus                                              false     01-simplest.fern:6:3
-                  [1] .number.unsigned.integer.hexadecimal                           false     01-simplest.fern:6:3
-                [3] .number.integer.decimal                                          false     01-simplest.fern:6:3
-                  [0] .number.plusMinus                                              false     01-simplest.fern:6:3
-                  [1] .number.unsigned.integer.decimal                               false     01-simplest.fern:6:3
-            [3] .string                                                              false     01-simplest.fern:6:3
-              [0] .string.single                                                     false     01-simplest.fern:6:3
-              [1] .string.double                                                     false     01-simplest.fern:6:3
-        [3] .freeForm                                                                true      01-simplest.fern:6:4
-          [0] .comment                                                               false     01-simplest.fern:6:4
-          [1] .comment                                                               false     01-simplest.fern:7:1
-          [2] .comment                                                               false     01-simplest.fern:7:1
-    [4] .Fern.LabeledItem                                                            false     01-simplest.fern:7:1
-      [0] .Fern.label                                                                false     01-simplest.fern:7:1
-        [0] .string                                                                  false     01-simplest.fern:7:1
-          [0] .string.single                                                         false     01-simplest.fern:7:1
-          [1] .string.double                                                         false     01-simplest.fern:7:1
-        [1] .identifier                                                              false     01-simplest.fern:7:1
-      [1] .Fern                                                                      false     01-simplest.fern:7:1
-      [2] .Fern.value                                                                false     01-simplest.fern:7:1
-        [0] .none                                                                    false     01-simplest.fern:7:1
-        [1] .boolean                                                                 false     01-simplest.fern:7:1
-        [2] .number                                                                  false     01-simplest.fern:7:1
-          [0] .number.float                                                          false     01-simplest.fern:7:1
-            [0] .number.plusMinus                                                    false     01-simplest.fern:7:1
-            [1] .number.unsigned.float                                               false     01-simplest.fern:7:1
-              [0] .number.unsigned.float.special                                     false     01-simplest.fern:7:1
-              [1] .number.unsigned.float.integerPart                                 false     01-simplest.fern:7:1
-                [0] .number.unsigned.integer.decimal                                 false     01-simplest.fern:7:1
-          [1] .number.float.special                                                  false     01-simplest.fern:7:1
-            [0] .number.plusMinus                                                    false     01-simplest.fern:7:1
-            [1] .number.unsigned.float.special                                       false     01-simplest.fern:7:1
-          [2] .number.integer                                                        false     01-simplest.fern:7:1
-            [0] .number.integer.binary                                               false     01-simplest.fern:7:1
-              [0] .number.plusMinus                                                  false     01-simplest.fern:7:1
-              [1] .number.unsigned.integer.binary                                    false     01-simplest.fern:7:1
-            [1] .number.integer.octal                                                false     01-simplest.fern:7:1
-              [0] .number.plusMinus                                                  false     01-simplest.fern:7:1
-              [1] .number.unsigned.integer.octal                                     false     01-simplest.fern:7:1
-            [2] .number.integer.hexadecimal                                          false     01-simplest.fern:7:1
-              [0] .number.plusMinus                                                  false     01-simplest.fern:7:1
-              [1] .number.unsigned.integer.hexadecimal                               false     01-simplest.fern:7:1
-            [3] .number.integer.decimal                                              false     01-simplest.fern:7:1
-              [0] .number.plusMinus                                                  false     01-simplest.fern:7:1
-              [1] .number.unsigned.integer.decimal                                   false     01-simplest.fern:7:1
-        [3] .string                                                                  false     01-simplest.fern:7:1
-          [0] .string.single                                                         false     01-simplest.fern:7:1
-          [1] .string.double                                                         false     01-simplest.fern:7:1
-    [5] .freeForm                                                                    true      01-simplest.fern:7:2
-      [0] .comment                                                                   false     01-simplest.fern:7:2
-      [1] .comment                                                                   false     01-simplest.fern:8:1
+  [0] .freeForm                                                                      true      readme.01-simplest.fern:1:1
+    [0] .comment                                                                     false     readme.01-simplest.fern:1:1
+  [1] .Fern                                                                          true      readme.01-simplest.fern:1:1
+    [0] .freeForm                                                                    true      readme.01-simplest.fern:1:2
+      [0] .comment                                                                   false     readme.01-simplest.fern:1:2
+      [1] .comment                                                                   false     readme.01-simplest.fern:2:1
+      [2] .comment                                                                   false     readme.01-simplest.fern:2:3
+    [1] .Fern.LabeledItem                                                            true      readme.01-simplest.fern:2:3
+      [0] .Fern.label                                                                true      readme.01-simplest.fern:2:3
+        [0] .string                                                                  false     readme.01-simplest.fern:2:3
+          [0] .string.single                                                         false     readme.01-simplest.fern:2:3
+          [1] .string.double                                                         false     readme.01-simplest.fern:2:3
+        [1] .identifier                                                              true      readme.01-simplest.fern:2:3
+        [2] .freeForm                                                                true      readme.01-simplest.fern:2:7
+          [0] .comment                                                               false     readme.01-simplest.fern:2:7
+          [1] .comment                                                               false     readme.01-simplest.fern:3:3
+      [1] .Fern                                                                      false     readme.01-simplest.fern:2:3
+      [2] .Fern.value                                                                true      readme.01-simplest.fern:2:3
+        [0] .none                                                                    true      readme.01-simplest.fern:2:3
+        [1] .freeForm                                                                true      readme.01-simplest.fern:2:7
+          [0] .comment                                                               false     readme.01-simplest.fern:2:7
+          [1] .comment                                                               false     readme.01-simplest.fern:3:3
+    [2] .Fern.LabeledItem                                                            true      readme.01-simplest.fern:3:3
+      [0] .Fern.label                                                                false     readme.01-simplest.fern:3:3
+        [0] .string                                                                  false     readme.01-simplest.fern:3:3
+          [0] .string.single                                                         false     readme.01-simplest.fern:3:3
+          [1] .string.double                                                         false     readme.01-simplest.fern:3:3
+        [1] .identifier                                                              false     readme.01-simplest.fern:3:3
+      [1] .Fern                                                                      true      readme.01-simplest.fern:3:3
+        [0] .freeForm                                                                true      readme.01-simplest.fern:3:4
+          [0] .comment                                                               false     readme.01-simplest.fern:3:4
+        [1] .Fern.LabeledItem                                                        false     readme.01-simplest.fern:3:4
+          [0] .Fern.label                                                            false     readme.01-simplest.fern:3:4
+            [0] .string                                                              false     readme.01-simplest.fern:3:4
+              [0] .string.single                                                     false     readme.01-simplest.fern:3:4
+              [1] .string.double                                                     false     readme.01-simplest.fern:3:4
+            [1] .identifier                                                          false     readme.01-simplest.fern:3:4
+          [1] .Fern                                                                  false     readme.01-simplest.fern:3:4
+          [2] .Fern.value                                                            false     readme.01-simplest.fern:3:4
+            [0] .none                                                                false     readme.01-simplest.fern:3:4
+            [1] .boolean                                                             false     readme.01-simplest.fern:3:4
+            [2] .number                                                              false     readme.01-simplest.fern:3:4
+              [0] .number.float                                                      false     readme.01-simplest.fern:3:4
+                [0] .number.plusMinus                                                false     readme.01-simplest.fern:3:4
+                [1] .number.unsigned.float                                           false     readme.01-simplest.fern:3:4
+                  [0] .number.unsigned.float.special                                 false     readme.01-simplest.fern:3:4
+                  [1] .number.unsigned.float.integerPart                             false     readme.01-simplest.fern:3:4
+                    [0] .number.unsigned.integer.decimal                             false     readme.01-simplest.fern:3:4
+              [1] .number.float.special                                              false     readme.01-simplest.fern:3:4
+                [0] .number.plusMinus                                                false     readme.01-simplest.fern:3:4
+                [1] .number.unsigned.float.special                                   false     readme.01-simplest.fern:3:4
+              [2] .number.integer                                                    false     readme.01-simplest.fern:3:4
+                [0] .number.integer.binary                                           false     readme.01-simplest.fern:3:4
+                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:3:4
+                  [1] .number.unsigned.integer.binary                                false     readme.01-simplest.fern:3:4
+                [1] .number.integer.octal                                            false     readme.01-simplest.fern:3:4
+                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:3:4
+                  [1] .number.unsigned.integer.octal                                 false     readme.01-simplest.fern:3:4
+                [2] .number.integer.hexadecimal                                      false     readme.01-simplest.fern:3:4
+                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:3:4
+                  [1] .number.unsigned.integer.hexadecimal                           false     readme.01-simplest.fern:3:4
+                [3] .number.integer.decimal                                          false     readme.01-simplest.fern:3:4
+                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:3:4
+                  [1] .number.unsigned.integer.decimal                               false     readme.01-simplest.fern:3:4
+            [3] .string                                                              false     readme.01-simplest.fern:3:4
+              [0] .string.single                                                     false     readme.01-simplest.fern:3:4
+              [1] .string.double                                                     false     readme.01-simplest.fern:3:4
+        [2] .freeForm                                                                true      readme.01-simplest.fern:3:5
+          [0] .comment                                                               false     readme.01-simplest.fern:3:5
+          [1] .comment                                                               false     readme.01-simplest.fern:4:3
+    [3] .Fern.LabeledItem                                                            true      readme.01-simplest.fern:4:3
+      [0] .Fern.label                                                                false     readme.01-simplest.fern:4:3
+        [0] .string                                                                  false     readme.01-simplest.fern:4:3
+          [0] .string.single                                                         false     readme.01-simplest.fern:4:3
+          [1] .string.double                                                         false     readme.01-simplest.fern:4:3
+        [1] .identifier                                                              false     readme.01-simplest.fern:4:3
+      [1] .Fern                                                                      true      readme.01-simplest.fern:4:3
+        [0] .freeForm                                                                true      readme.01-simplest.fern:4:4
+          [0] .comment                                                               false     readme.01-simplest.fern:4:4
+          [1] .comment                                                               false     readme.01-simplest.fern:5:1
+          [2] .comment                                                               false     readme.01-simplest.fern:5:5
+        [1] .Fern.LabeledItem                                                        true      readme.01-simplest.fern:5:5
+          [0] .Fern.label                                                            true      readme.01-simplest.fern:5:5
+            [0] .string                                                              false     readme.01-simplest.fern:5:5
+              [0] .string.single                                                     false     readme.01-simplest.fern:5:5
+              [1] .string.double                                                     false     readme.01-simplest.fern:5:5
+            [1] .identifier                                                          true      readme.01-simplest.fern:5:5
+            [2] .freeForm                                                            true      readme.01-simplest.fern:5:9
+              [0] .comment                                                           false     readme.01-simplest.fern:5:9
+              [1] .comment                                                           false     readme.01-simplest.fern:6:1
+              [2] .comment                                                           false     readme.01-simplest.fern:6:3
+          [1] .Fern                                                                  false     readme.01-simplest.fern:5:5
+          [2] .Fern.value                                                            true      readme.01-simplest.fern:5:5
+            [0] .none                                                                true      readme.01-simplest.fern:5:5
+            [1] .freeForm                                                            true      readme.01-simplest.fern:5:9
+              [0] .comment                                                           false     readme.01-simplest.fern:5:9
+              [1] .comment                                                           false     readme.01-simplest.fern:6:1
+              [2] .comment                                                           false     readme.01-simplest.fern:6:3
+        [2] .Fern.LabeledItem                                                        false     readme.01-simplest.fern:6:3
+          [0] .Fern.label                                                            false     readme.01-simplest.fern:6:3
+            [0] .string                                                              false     readme.01-simplest.fern:6:3
+              [0] .string.single                                                     false     readme.01-simplest.fern:6:3
+              [1] .string.double                                                     false     readme.01-simplest.fern:6:3
+            [1] .identifier                                                          false     readme.01-simplest.fern:6:3
+          [1] .Fern                                                                  false     readme.01-simplest.fern:6:3
+          [2] .Fern.value                                                            false     readme.01-simplest.fern:6:3
+            [0] .none                                                                false     readme.01-simplest.fern:6:3
+            [1] .boolean                                                             false     readme.01-simplest.fern:6:3
+            [2] .number                                                              false     readme.01-simplest.fern:6:3
+              [0] .number.float                                                      false     readme.01-simplest.fern:6:3
+                [0] .number.plusMinus                                                false     readme.01-simplest.fern:6:3
+                [1] .number.unsigned.float                                           false     readme.01-simplest.fern:6:3
+                  [0] .number.unsigned.float.special                                 false     readme.01-simplest.fern:6:3
+                  [1] .number.unsigned.float.integerPart                             false     readme.01-simplest.fern:6:3
+                    [0] .number.unsigned.integer.decimal                             false     readme.01-simplest.fern:6:3
+              [1] .number.float.special                                              false     readme.01-simplest.fern:6:3
+                [0] .number.plusMinus                                                false     readme.01-simplest.fern:6:3
+                [1] .number.unsigned.float.special                                   false     readme.01-simplest.fern:6:3
+              [2] .number.integer                                                    false     readme.01-simplest.fern:6:3
+                [0] .number.integer.binary                                           false     readme.01-simplest.fern:6:3
+                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:6:3
+                  [1] .number.unsigned.integer.binary                                false     readme.01-simplest.fern:6:3
+                [1] .number.integer.octal                                            false     readme.01-simplest.fern:6:3
+                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:6:3
+                  [1] .number.unsigned.integer.octal                                 false     readme.01-simplest.fern:6:3
+                [2] .number.integer.hexadecimal                                      false     readme.01-simplest.fern:6:3
+                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:6:3
+                  [1] .number.unsigned.integer.hexadecimal                           false     readme.01-simplest.fern:6:3
+                [3] .number.integer.decimal                                          false     readme.01-simplest.fern:6:3
+                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:6:3
+                  [1] .number.unsigned.integer.decimal                               false     readme.01-simplest.fern:6:3
+            [3] .string                                                              false     readme.01-simplest.fern:6:3
+              [0] .string.single                                                     false     readme.01-simplest.fern:6:3
+              [1] .string.double                                                     false     readme.01-simplest.fern:6:3
+        [3] .freeForm                                                                true      readme.01-simplest.fern:6:4
+          [0] .comment                                                               false     readme.01-simplest.fern:6:4
+          [1] .comment                                                               false     readme.01-simplest.fern:7:1
+          [2] .comment                                                               false     readme.01-simplest.fern:7:1
+    [4] .Fern.LabeledItem                                                            false     readme.01-simplest.fern:7:1
+      [0] .Fern.label                                                                false     readme.01-simplest.fern:7:1
+        [0] .string                                                                  false     readme.01-simplest.fern:7:1
+          [0] .string.single                                                         false     readme.01-simplest.fern:7:1
+          [1] .string.double                                                         false     readme.01-simplest.fern:7:1
+        [1] .identifier                                                              false     readme.01-simplest.fern:7:1
+      [1] .Fern                                                                      false     readme.01-simplest.fern:7:1
+      [2] .Fern.value                                                                false     readme.01-simplest.fern:7:1
+        [0] .none                                                                    false     readme.01-simplest.fern:7:1
+        [1] .boolean                                                                 false     readme.01-simplest.fern:7:1
+        [2] .number                                                                  false     readme.01-simplest.fern:7:1
+          [0] .number.float                                                          false     readme.01-simplest.fern:7:1
+            [0] .number.plusMinus                                                    false     readme.01-simplest.fern:7:1
+            [1] .number.unsigned.float                                               false     readme.01-simplest.fern:7:1
+              [0] .number.unsigned.float.special                                     false     readme.01-simplest.fern:7:1
+              [1] .number.unsigned.float.integerPart                                 false     readme.01-simplest.fern:7:1
+                [0] .number.unsigned.integer.decimal                                 false     readme.01-simplest.fern:7:1
+          [1] .number.float.special                                                  false     readme.01-simplest.fern:7:1
+            [0] .number.plusMinus                                                    false     readme.01-simplest.fern:7:1
+            [1] .number.unsigned.float.special                                       false     readme.01-simplest.fern:7:1
+          [2] .number.integer                                                        false     readme.01-simplest.fern:7:1
+            [0] .number.integer.binary                                               false     readme.01-simplest.fern:7:1
+              [0] .number.plusMinus                                                  false     readme.01-simplest.fern:7:1
+              [1] .number.unsigned.integer.binary                                    false     readme.01-simplest.fern:7:1
+            [1] .number.integer.octal                                                false     readme.01-simplest.fern:7:1
+              [0] .number.plusMinus                                                  false     readme.01-simplest.fern:7:1
+              [1] .number.unsigned.integer.octal                                     false     readme.01-simplest.fern:7:1
+            [2] .number.integer.hexadecimal                                          false     readme.01-simplest.fern:7:1
+              [0] .number.plusMinus                                                  false     readme.01-simplest.fern:7:1
+              [1] .number.unsigned.integer.hexadecimal                               false     readme.01-simplest.fern:7:1
+            [3] .number.integer.decimal                                              false     readme.01-simplest.fern:7:1
+              [0] .number.plusMinus                                                  false     readme.01-simplest.fern:7:1
+              [1] .number.unsigned.integer.decimal                                   false     readme.01-simplest.fern:7:1
+        [3] .string                                                                  false     readme.01-simplest.fern:7:1
+          [0] .string.single                                                         false     readme.01-simplest.fern:7:1
+          [1] .string.double                                                         false     readme.01-simplest.fern:7:1
+    [5] .freeForm                                                                    true      readme.01-simplest.fern:7:2
+      [0] .comment                                                                   false     readme.01-simplest.fern:7:2
+      [1] .comment                                                                   false     readme.01-simplest.fern:8:1
 [0] .Silva                                                                      Seed  ... ]<NEWLINE><NEWLINE>»<NEWLINE>¦
   [0] .Silva.Section                                                            Seed  ... <NEWLINE><DEDENT>»<NEWLINE><NEWLINE>¦
     [0] .Silva.languageName                                                     ｢Seed｣
@@ -593,21 +593,7 @@ seed::interpreter_t::apply(.Fern) failed to parse
                 [1] .number.unsigned.float.fraction                             ｢.0｣
                   [0] .number.unsigned.integer.decimal                          ｢0｣
 
-[0] .Somelang                                                                   a a a ...  b b<NEWLINE>¦
-  [0] .Somelang.As                                                              a a a a ¦
-  [1] .Somelang.Bs                                                              b b b<NEWLINE>¦
-
-[0] .Silva                                                                      Seed  ... <NEWLINE><DEDENT><DEDENT>»<NEWLINE>¦
-  [0] .Silva.Section                                                            Seed  ... <NEWLINE><DEDENT><DEDENT>»<NEWLINE>¦
-    [0] .Silva.languageName                                                     ｢Seed｣
-    [1] .language                                                               «<NEWLINE>lan ... <NEWLINE><NEWLINE><DEDENT><DEDENT>»¦
-
-[0] .Silva                                                                      Soil  ... }<NEWLINE><NEWLINE>»<NEWLINE>¦
-  [0] .Silva.Section                                                            Soil  ... }<NEWLINE><NEWLINE>»<NEWLINE>¦
-    [0] .Silva.languageName                                                     ｢Soil｣
-    [1] .language                                                               «<NEWLINE><NEWLINE>na ... <DEDENT>}<NEWLINE><NEWLINE>»¦
-
-[0] .Soil                                                                       name_ ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+[0] .Soil                                                                       name_ ... }<NEWLINE><DEDENT>}<NEWLINE>¦
   [0] .Soil.Type.Defn                                                           name_ ... tr_t<NEWLINE>¦
     [0] .Soil.Type.Name                                                         name_t ¦
       [0] .Soil.typeName                                                        ｢name_t｣
@@ -744,14 +730,14 @@ seed::interpreter_t::apply(.Fern) failed to parse
                   [0] .number.integer                                           ｢18｣
                     [0] .number.integer.decimal                                 ｢18｣
                       [0] .number.unsigned.integer.decimal                      ｢18｣
-  [5] .Soil.Func.Defn                                                           examp ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+  [5] .Soil.Func.Defn                                                           examp ... }<NEWLINE><DEDENT>}<NEWLINE>¦
     [0] .Soil.Func.Name                                                         example_f ¦
       [0] .Soil.funcName                                                        ｢example_f｣
         [0] .identifier                                                         ｢example_f｣
     [1] .Soil.Func.Signature                                                    [] ¦
       [0] .Soil.Type                                                            [] ¦
         [0] .Soil.Type.Struct                                                   [] ¦
-    [2] .Soil.Func.Body                                                         {<NEWLINE><INDENT>ag ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+    [2] .Soil.Func.Body                                                         {<NEWLINE><INDENT>ag ... }<NEWLINE><DEDENT>}<NEWLINE>¦
       [0] .Soil.Func.Stmt                                                       age = ...  42;<NEWLINE>¦
         [0] .Soil.Expr                                                          age = ... :: 42¦
           [0] .Soil.Expr.Axe.Assign.=                                           age = ... :: 42¦

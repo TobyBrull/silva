@@ -15,16 +15,15 @@ trap 'rm -f "$TEMPFILE"' EXIT
 "./${BUILD_DIR}/src/silva_fragmentization" src/syntax/readme.fragmentization.demo
 
 # Simple parsing (including error message)
-"./${BUILD_DIR}/src/silva_fern" silva/syntax/01-simple.fern
-"./${BUILD_DIR}/src/silva_fern" silva/syntax/01-broken.fern 2>"$TEMPFILE" || true
+"./${BUILD_DIR}/src/silva_fern" src/syntax/readme.01-simple.fern
+"./${BUILD_DIR}/src/silva_fern" src/syntax/readme.01-broken.fern 2>"$TEMPFILE" || true
 cat "$TEMPFILE"
-"./${BUILD_DIR}/src/silva_syntax" silva/syntax/01-simplest.fern
-SEED_EXEC_TRACE=true "./${BUILD_DIR}/src/silva_syntax" silva/syntax/01-simplest.fern --action=none
+"./${BUILD_DIR}/src/silva_syntax" src/syntax/readme.01-simplest.fern
+SEED_EXEC_TRACE=true "./${BUILD_DIR}/src/silva_syntax" src/syntax/readme.01-simplest.fern --action=none
 
 # Parsing user-defined languages
-"./${BUILD_DIR}/src/silva_syntax" silva/syntax/02-example.silva
-"./${BUILD_DIR}/src/silva_syntax" silva/syntax/03-somelang.seed silva/syntax/03-test.somelang
-"./${BUILD_DIR}/src/silva_syntax" silva/soil/soil.silva silva/soil/example.silva
+"./${BUILD_DIR}/src/silva_syntax" src/syntax/readme.02-example.silva
+"./${BUILD_DIR}/src/silva_syntax" sandbox/soil.seed sandbox/soil.example.soil
 
 # Zoo
 

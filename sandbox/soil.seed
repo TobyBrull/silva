@@ -1,4 +1,3 @@
-Seed «
 language Soil:
   skip.@ = freeForm
 
@@ -53,4 +52,3 @@ language Soil:
   Variable:
     Name = !Type.Name !Func.Name identifier
     Defn = Name '=' Expr
-»
