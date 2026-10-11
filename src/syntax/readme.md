@@ -62,62 +62,162 @@ fragmentization. The fragmentization is the common denominator between all langu
 ## Tokens and Names
 
 Tokens and names are both represented by integers in Silva via the value-types `token_id_t` and
-`name_id_t`. The struct `syntax_farm_t` maintains the mapping from those integers to the strings
-represented by those tokens/names.
+`name_id_t`. The struct `syntax_farm_t` maintains the mapping from token-id and name-id to the
+strings represented by them.
 
 [syntax_farm.hpp](syntax_farm.hpp)
 
-A "token" can be thought of as an interned string. The syntax-farm contains an array of `token_info_t`
-values, and the integer stored in the `token_id_t` refers to an entry in that array.
+A "token" can be thought of as an interned string. The syntax-farm contains an array of
+`token_info_t` values, and a token-id is an index into that array.
 
 A "name" is effectively a sequence of tokens. To represent a name as a single integer, the
-syntax-ferm contains an array of `name_info_t` values, which stores a single token and the parent
-name (singly-linked list).
+syntax-farm contains an array of `name_info_t` values (again indexed by the name-id) each of which
+stores a single token (called the "basename", analogous to the Linux command `basename`) and a
+parent name-id. To determine the full name from a name-id, one has follow the parent names until an
+empty parent name is encountered (singly-linked list). Then one has to concatenate all the
+encountered basenames in reverse order to obtain the full name.
 
 ## The Seed Language
 
-The Seed language provides a way to succinctly define parsing functions. A parsing function is a
-function that turns a fragmentization into a parse-tree. A parse-tree here is very specific
-data-type, which is described by the types `parse_tree_t` or more commonly `parse_tree_span_t`.
+The Seed language provides a way to succinctly define parsing functions that call each other. A
+parsing function is a function that turns a fragmentization into a parse-tree. A parse-tree here is
+very specific data-type, which is described by the types `parse_tree_t` or more commonly
+`parse_tree_span_t`.
 
 [parse_tree.hpp](parse_tree.hpp)
 
 In short, a parse-tree is an contiguous array or span of nodes with the nodes stored in pre-order.
 The tree structured is maintained by two integers (`num_children` and `subtree_size`) in each node.
 Futhermore, each node stores some semantic information (a rule-name, the fragment-range that it
-corresponds to, and whether this node is understood to represent a token; see below).
+corresponds to, and whether this node is understood to represent a token via the `allow_token`
+member).
 
+The parse-tree data-structure is meant to be built into Silva as a fundamental data type, with
+various language features allowing to construct, modify, and inspect such parse-tree direclty. It
+should be possible to define literals that are parse-trees (by using a sub-language). Silva
+variables can holds parse-trees. Silva functions can take and return parse-trees. Parse-trees are
+first-class objects in every sense.
 
+Seed is basically a PEG parser (greedy repetition, ordered choice, but with a few twists, see below)
+with an integrated shunting-yard mechanism for for parsing [a]rithmetic e[x]pr[e]ssions (called
+Axe). Since the input to a Seed program is a fragmentization, though, Seed also handles tokenization
+within the PEG idiom. For this, Seed defines two types for rule: branch-rules (normal, gramatical
+PEG rules) and twig-rules (basically tokenization rules). A branch-rule is identified by the
+basename of the rule's name being in PascalCase whereas a twig-rule is in camelCase. Both types of
+rules (if successfully parsed) create nodes in the resulting parse_tree_t (unless they use the
+"no_node" qualifier). Branch-rules may call branch-rules or twig-rules. Twig-rules may only call
+twig-rules.
 
+The Seed language is defined in itself in the following link. For bootstrapping purposes a
+hand-written Seed parser is also implemented here.
 
-The Seed language allows to quickly define recursive descent parsers (plus shunting-yard). Where
-this not enough, parser should be amendable with aribtrary user code.
+[seed.hpp](seed.hpp)
 
-skipping
+Seed allows languages to define a so-called "skip" rule to skip whitespace. The skip-rule
+is invoked at the very beginning of a parse, and then also every time after a *branch-rule*
+successfully applied a *twig-rule* (but a twig-rule successfully applying another twig-rule does
+*not* trigger the skip-rule); in this case, the twig-rule with *not* contain the fragments that were
+skipped while the branch-rule *will* contain them. The skip-rule is also invoked after every time a
+branch-rule uses a literal (literals are treated as mini-twig-rules).
 
-* `ANY` matches one *visible* fragment, i.e. anything except INDENT, DEDENT, INDENTATION_BROKEN,
-NEWLINE and LINE_CONTINUATION. Rules built out of `ANY` are therefore automatically confined to a
-single line.
-* `LANGUAGE` matches a whole balanced LANG_BEGIN/LANG_END region; putting it before `ANY` in an
-alternation is what allows a comment to contain « … ».
+A node derived from a twig-rule allows a token to be derived, i.e., the `allow_token` member is
+true. It is not allowed to derive tokens from branch-rules.
 
-The standard definitions live in `seed::globals_str`: `string`, `indent`, `dedent`, `newline` and
-the two skip-rules `offSide` and `freeForm`. A language selects one of the latter via its `skip`
-rule.
+Only twig-rules may directly refer to fragments. Fragments can be referred to by the corresponding
+ALL_CAPS fragment category or by string literals. Two additional ALL_CAPS identifiers exist: "ANY"
+matches any single visible fragment (silva::is_fragment_category_visible(); this is any fragment
+except indentation related tokens, NEWLINE, and LINE_CONTINUATION), and "LANGUAGE" which matches a
+whole balanced LANG_BEGIN/LANG_END region.
 
-* The code-points that fragmentation still treats specially -- '⎢', '«', '»', '¶' and a '\\' at the
-end of a line -- keep their meaning inside comments and strings. In particular a '«' inside a
-comment must still be matched by a '»'.
-* Comments are code as far as the off-side rule is concerned: they take part in indentation and a
+The parsing functions in Seed are called rules because they looks similar to the rules in BNF.
+Eventually, a Seed rule is really just a function, though, that takes an implicit argument, which is
+a pointer to a `parse_tree_nursery_t`. Using another rule on the right-hand-side of a rule
+(non-terminal), is the equivalent of a function call to that function. Once Silva is more mature, it
+should also be possible to hand-write custom parsing functions that don't exactly fit the Seed/PEG
+idiom.
+
+In Seed, there is a subtle distinction between literals that use double-quotes (") and those that
+use single-quotes ('). With single-quotes, it simply tries to match the code-points in the literal
+one by one. With double-quotes it does that, too, but then also checks that the codepoint following
+the last matched codepoint (if it exists) is NOT text (i.e., not
+silva::is_fragment_category_id_continue()). So, the literal "language" doesn't match the beginning
+of « language_name » but 'language' does. Both types of literal (single and double quoted) do not
+generate nodes in the resulting parse-tree by default; the "literal_nodes" qualifier can be
+specified, though, to change this.
+
+### The Prefix directive and the commit operator
+
+Often an initial keyword signals the beginning of a specific grammatical construct. For
+example, every function might begin with "fun". In this case, Seed allows the parser to
+"commit", meaning that, here in this example, a valid function is expected to be parsed after
+"fun" or the entire parse is considered to be failed.
+
+Committing behaviour can be triggered in two ways: via the prefix directive or by explicity
+using the commit operator ('~'). Both approaches work on the level of a .Seed.Expr.Concat
+(concatenated) expression. The prefix directive says that if a concatenated expression starts
+with at least one literal, the parser commits if all leading literals are matched; this is
+as-if the commit operator is put after a consecutive streak of leading literals.
+
+For example, if the Seed rule
+   ⎢ ConstFunc = "static" "func" ~ identifier | "static" identifier number
+is used to parse the language
+   ⎢ static func 42
+this will result in a parse error even though the second alternative would be a match. This is
+because all leading literals (the "prefix") in the first alternative (of which there are two:
+"static" and "func") are already matched (there is also a gratuitous commit operator). So at
+that point, the parsing algorithm commits to the first alternative and aborts the entire parse
+if the whole *first concatenated expression* does not match. On the other hand, if the same
+Seed rule is used to parse
+   ⎢ static class 42
+this works just fine, as the parser never got to the commit point.
+
+To disable the prefix directive for a concatenated expression, use the epsilon production. So,
+the rule
+   ⎢ ConstFunc = ε "static" "func" identifier | "static" identifier number
+parses « static func 42 » just fine.
+
+### Axe
+
+Expressions are parsed with a variant of the Shunting Yard algorithm.
+
+[seed_axe.hpp](seed_axe.hpp).
+
+You basically specify a number of operators, in the order of their desired precedence (from
+high precedence to low precedence), what type of operator they are (prefix, infx,
+left-to-right, right-to-left, nested, ...), and what an atom looks like. From this description
+an expression parser is then generated. For example,
+
+« number [
+  - Prefix   = ltr   prefix '-'
+  - Product  = ltr   infix '*' '/'
+  - Addition = ltr   infix '+' '-'
+] »
+
+can be used to parse
+
+« 1 + 2 * 3 + - 4 »
+
+in the normal, mathematical way.
+
+### Various final thoughts
+
+Some Seed global definitions are defined in the following file.
+
+[seed.globals.hpp](seed.globals.hpp).
+
+This file contains some standard definitions like `indent`, `dedent`, `newline`, `none`, and
+`number`. It also contains the two skip-rules `offSide` and `freeForm`. Unfortunately, the `offSide`
+skip rule is intertwined with the comment style, so using the `offSide` skip rule with a different
+comment style would currently require a lot of duplication; this is meant to be addressed via
+parameterizable functions (higher-order functions) at some point.
+
+The fragmentization treats some Unicode code-points special: '⎢', '«', '»', '¶' and a '\\' at the
+end of a line. Because comments and single-line strings are handled directly inside Seed and not as
+part of the tokenization, these characters keep their meaning inside comments and strings. In
+particular a '«' inside a comment must still be matched by a '»' inside the same comment.
+
+Comments are code as far as the off-side rule is concerned: they take part in indentation and a
 mis-indented comment leads to a INDENTATION_BROKEN fragment.
-* The parse-tree data-structure is built directly into Silva. One can define literals that are
-parse-trees. Silva variables can holds parse-trees. Silva functions can take and return parse-trees.
-
-
-
-
-
-
 
 ## Topological Order of Dependency Graph of Header Files
 
@@ -142,3 +242,12 @@ classDiagram
     seed_interpreter_t *-- "many" parse_tree_span_t
     syntax_farm_t <-- seed_interpreter_t
 ```
+
+## References
+
+* The quite readable original paper by Bryan Ford [Parsing Expression Grammars: A Recognition-Based
+  Syntactic Foundation](https://bford.info/pub/lang/peg.pdf)
+* Guido van Rossum's [PEG Parsing
+  Series](https://medium.com/@gvanrossum_83706/peg-parsing-series-de5d41b2ed60)
+* Eli Bendersky's blog on [precedence
+  climbing](https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing).

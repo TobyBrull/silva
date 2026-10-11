@@ -9,28 +9,6 @@
 
 namespace silva::seed {
 
-  // A mechanism for parsing [a]rithmetic e[x]pr[e]ssions. This is a version of the Shunting Yard
-  // algorithm or precedence climbing.
-  //
-  // * https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing
-  //
-  // You basically specify a number of operators, in the order of their desired precedence (from
-  // high precedence to low precedence), what type of operator they are (prefix, infx,
-  // left-to-right, right-to-left, nested, ...), and what an atom looks like. From this description
-  // an expression parser is then generated. For example,
-  //
-  // « number [
-  //   - Prefix   = ltr   prefix '-'
-  //   - Product  = ltr   infix '*' '/'
-  //   - Addition = ltr   infix '+' '-'
-  // ] »
-  //
-  // can be used to parse
-  //
-  // « 1 + 2 * 3 + - 4 »
-  //
-  // in the normal, mathematical way.
-
   const string_view_t axe_str = R"'(
 Seed.Axe:
   @ = Seed.Nonterminal newline indent ( Level newline ) * dedent
