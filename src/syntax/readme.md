@@ -82,10 +82,10 @@ data-type, which is described by the types `parse_tree_t` or more commonly `pars
 
 [parse_tree.hpp](parse_tree.hpp)
 
-In short, a parse-tree is an contiguous array or span of nodes that is sorted in pre-order. Each
-node stores the tree structure via two integers (`num_children` and `subtree_size`). Futhermore,
-each node stores some semantic information (a rule-name, the fragment-range that it corresponds to,
-and whether this node is understood to represent a token; see below).
+In short, a parse-tree is an contiguous array or span of nodes with the nodes stored in pre-order.
+The tree structured is maintained by two integers (`num_children` and `subtree_size`) in each node.
+Futhermore, each node stores some semantic information (a rule-name, the fragment-range that it
+corresponds to, and whether this node is understood to represent a token; see below).
 
 
 

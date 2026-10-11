@@ -40,10 +40,10 @@ eval "$( pixi shell-hook )"
 cmake --preset release
 
 ninja -C "build/" && time "build/src/silva_test"
-bash task_format.sh check
-bash task_format.sh update
-bash task_test.sh release && echo "ALL TESTS PASSED!"
-bash task_test_tools.sh && echo "ALL PYTHON TESTS PASSED!"
+bash tools/task_format.sh check
+bash tools/task_format.sh update
+bash tools/task_test.sh release
+bash tools/task_test_tools.sh
 ```
 
 ## Packaging

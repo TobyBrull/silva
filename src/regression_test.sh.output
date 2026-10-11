@@ -68,149 +68,149 @@
 
 ERROR (MAJOR):
     ┌─expected token of category token[ MULTILINE_STRING ]; got token[ PARENTHESIS ]
-    │ [readme.01-broken.fern:9:3] expected token[ ' ]
-    │ [readme.01-broken.fern:9:3] while matching token[ ' ]
-    │ [readme.01-broken.fern:9:3] .string.single: expected sequence[ '\\''  ...  '\\'' ]
-    ├─[readme.01-broken.fern:9:3] .string.single
-    │ [readme.01-broken.fern:9:3] expected token[ " ]
-    │ [readme.01-broken.fern:9:3] while matching token[ " ]
-    │ [readme.01-broken.fern:9:3] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
-    ├─[readme.01-broken.fern:9:3] .string.double
-    [readme.01-broken.fern:9:3] .string: expected alternation[ MULTI ... ouble ]
-  ┌─[readme.01-broken.fern:9:3] .string
+    │ [example.broken.fern:9:3] expected token[ ' ]
+    │ [example.broken.fern:9:3] while matching token[ ' ]
+    │ [example.broken.fern:9:3] .string.single: expected sequence[ '\\''  ...  '\\'' ]
+    ├─[example.broken.fern:9:3] .string.single
+    │ [example.broken.fern:9:3] expected token[ " ]
+    │ [example.broken.fern:9:3] while matching token[ " ]
+    │ [example.broken.fern:9:3] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
+    ├─[example.broken.fern:9:3] .string.double
+    [example.broken.fern:9:3] .string: expected alternation[ MULTI ... ouble ]
+  ┌─[example.broken.fern:9:3] .string
   │ expected token of category ID_START; got token[ ID_START ]
-  │ [readme.01-broken.fern:9:3] .identifier: expected sequence[ ID_ST ... NUE * ]
-  ├─[readme.01-broken.fern:9:3] .identifier
-  [readme.01-broken.fern:9:3] .Fern.label: expected alternation[ strin ... ifier ]
-  [readme.01-broken.fern:9:3] .Fern.label
-┌─[readme.01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ label ':'  ]
-│   [readme.01-broken.fern:10:5] expected token[ ] ]
-│ ┌─[readme.01-broken.fern:10:5] while matching token[ ] ]
-│ │     [readme.01-broken.fern:10:5] expected token[ [ ]
-│ │     [readme.01-broken.fern:10:5] while matching token[ [ ]
-│ │     [readme.01-broken.fern:10:5] .Fern: expected sequence[ '[' L ... * ']' ]
-│ │   ┌─[readme.01-broken.fern:10:5] .Fern
-│ │   │   [readme.01-broken.fern:10:5] expected token[ none ]
-│ │   │   [readme.01-broken.fern:10:5] while matching token[ none ]
-│ │   │ ┌─[readme.01-broken.fern:10:5] .none
-│ │   │ │   [readme.01-broken.fern:10:5] expected token[ true ]
-│ │   │ │ ┌─[readme.01-broken.fern:10:5] while matching token[ true ]
-│ │   │ │ │ [readme.01-broken.fern:10:5] expected token[ false ]
-│ │   │ │ ├─[readme.01-broken.fern:10:5] while matching token[ false ]
-│ │   │ │ [readme.01-broken.fern:10:5] .boolean: expected alternation[ [ \"tr ... se\" ] ]
-│ │   │ ├─[readme.01-broken.fern:10:5] .boolean
-│ │   │ │       [readme.01-broken.fern:10:5] expected token[ + ]
-│ │   │ │     ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │     │ [readme.01-broken.fern:10:5] expected token[ - ]
-│ │   │ │     ├─[readme.01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │     [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │   ┌─[readme.01-broken.fern:10:5] .number.plusMinus
-│ │   │ │   │     [readme.01-broken.fern:10:5] expected token[ inf ]
-│ │   │ │   │   ┌─[readme.01-broken.fern:10:5] while matching token[ inf ]
-│ │   │ │   │   │ [readme.01-broken.fern:10:5] expected token[ nan ]
-│ │   │ │   │   ├─[readme.01-broken.fern:10:5] while matching token[ nan ]
-│ │   │ │   │   [readme.01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
-│ │   │ │   │ ┌─[readme.01-broken.fern:10:5] .number.unsigned.float.special
+  │ [example.broken.fern:9:3] .identifier: expected sequence[ ID_ST ... NUE * ]
+  ├─[example.broken.fern:9:3] .identifier
+  [example.broken.fern:9:3] .Fern.label: expected alternation[ strin ... ifier ]
+  [example.broken.fern:9:3] .Fern.label
+┌─[example.broken.fern:9:3] .Fern.LabeledItem: expected sequence[ label ':'  ]
+│   [example.broken.fern:10:5] expected token[ ] ]
+│ ┌─[example.broken.fern:10:5] while matching token[ ] ]
+│ │     [example.broken.fern:10:5] expected token[ [ ]
+│ │     [example.broken.fern:10:5] while matching token[ [ ]
+│ │     [example.broken.fern:10:5] .Fern: expected sequence[ '[' L ... * ']' ]
+│ │   ┌─[example.broken.fern:10:5] .Fern
+│ │   │   [example.broken.fern:10:5] expected token[ none ]
+│ │   │   [example.broken.fern:10:5] while matching token[ none ]
+│ │   │ ┌─[example.broken.fern:10:5] .none
+│ │   │ │   [example.broken.fern:10:5] expected token[ true ]
+│ │   │ │ ┌─[example.broken.fern:10:5] while matching token[ true ]
+│ │   │ │ │ [example.broken.fern:10:5] expected token[ false ]
+│ │   │ │ ├─[example.broken.fern:10:5] while matching token[ false ]
+│ │   │ │ [example.broken.fern:10:5] .boolean: expected alternation[ [ \"tr ... se\" ] ]
+│ │   │ ├─[example.broken.fern:10:5] .boolean
+│ │   │ │       [example.broken.fern:10:5] expected token[ + ]
+│ │   │ │     ┌─[example.broken.fern:10:5] while matching token[ + ]
+│ │   │ │     │ [example.broken.fern:10:5] expected token[ - ]
+│ │   │ │     ├─[example.broken.fern:10:5] while matching token[ - ]
+│ │   │ │     [example.broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │   ┌─[example.broken.fern:10:5] .number.plusMinus
+│ │   │ │   │     [example.broken.fern:10:5] expected token[ inf ]
+│ │   │ │   │   ┌─[example.broken.fern:10:5] while matching token[ inf ]
+│ │   │ │   │   │ [example.broken.fern:10:5] expected token[ nan ]
+│ │   │ │   │   ├─[example.broken.fern:10:5] while matching token[ nan ]
+│ │   │ │   │   [example.broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
+│ │   │ │   │ ┌─[example.broken.fern:10:5] .number.unsigned.float.special
 │ │   │ │   │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│ │   │ │   │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
-│ │   │ │   │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.decimal
-│ │   │ │   │ │ [readme.01-broken.fern:10:5] .number.unsigned.float.integerPart
-│ │   │ │   │ ├─[readme.01-broken.fern:10:5] .number.unsigned.float: expected sequence[ integ ... t ? ) ]
-│ │   │ │   │ [readme.01-broken.fern:10:5] .number.unsigned.float: expected alternation[ speci ... t ? ) ]
-│ │   │ │   ├─[readme.01-broken.fern:10:5] .number.unsigned.float
-│ │   │ │   [readme.01-broken.fern:10:5] .number.float: expected sequence[ plusM ... float ]
-│ │   │ │ ┌─[readme.01-broken.fern:10:5] .number.float
-│ │   │ │ │     [readme.01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │   ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │   │ [readme.01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │   ├─[readme.01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │   [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │ ┌─[readme.01-broken.fern:10:5] .number.plusMinus
-│ │   │ │ │ │   [readme.01-broken.fern:10:5] expected token[ inf ]
-│ │   │ │ │ │ ┌─[readme.01-broken.fern:10:5] while matching token[ inf ]
-│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] expected token[ nan ]
-│ │   │ │ │ │ ├─[readme.01-broken.fern:10:5] while matching token[ nan ]
-│ │   │ │ │ │ [readme.01-broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
-│ │   │ │ │ ├─[readme.01-broken.fern:10:5] .number.unsigned.float.special
-│ │   │ │ │ [readme.01-broken.fern:10:5] .number.float.special: expected sequence[ plusM ... ecial ]
-│ │   │ │ ├─[readme.01-broken.fern:10:5] .number.float.special
-│ │   │ │ │       [readme.01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │     ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │     │ [readme.01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │     ├─[readme.01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │     [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │   ┌─[readme.01-broken.fern:10:5] .number.plusMinus
-│ │   │ │ │   │ [readme.01-broken.fern:10:5] expected token[ 0b ]
-│ │   │ │ │   │ [readme.01-broken.fern:10:5] while matching token[ 0b ]
-│ │   │ │ │   │ [readme.01-broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b'  ... g ) * ]
-│ │   │ │ │   ├─[readme.01-broken.fern:10:5] .number.unsigned.integer.binary
-│ │   │ │ │   [readme.01-broken.fern:10:5] .number.integer.binary: expected sequence[ plusM ... inary ]
-│ │   │ │ │ ┌─[readme.01-broken.fern:10:5] .number.integer.binary
-│ │   │ │ │ │     [readme.01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │ │   ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │ │   │ [readme.01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │ │   ├─[readme.01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │ │   [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │ │ ┌─[readme.01-broken.fern:10:5] .number.plusMinus
-│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] expected token[ 0o ]
-│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] while matching token[ 0o ]
-│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o'  ... g ) * ]
-│ │   │ │ │ │ ├─[readme.01-broken.fern:10:5] .number.unsigned.integer.octal
-│ │   │ │ │ │ [readme.01-broken.fern:10:5] .number.integer.octal: expected sequence[ plusM ... octal ]
-│ │   │ │ │ ├─[readme.01-broken.fern:10:5] .number.integer.octal
-│ │   │ │ │ │     [readme.01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │ │   ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │ │   │ [readme.01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │ │   ├─[readme.01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │ │   [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │ │ ┌─[readme.01-broken.fern:10:5] .number.plusMinus
-│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] expected token[ 0x ]
-│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] while matching token[ 0x ]
-│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x'  ... g ) * ]
-│ │   │ │ │ │ ├─[readme.01-broken.fern:10:5] .number.unsigned.integer.hexadecimal
-│ │   │ │ │ │ [readme.01-broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusM ... cimal ]
-│ │   │ │ │ ├─[readme.01-broken.fern:10:5] .number.integer.hexadecimal
-│ │   │ │ │ │     [readme.01-broken.fern:10:5] expected token[ + ]
-│ │   │ │ │ │   ┌─[readme.01-broken.fern:10:5] while matching token[ + ]
-│ │   │ │ │ │   │ [readme.01-broken.fern:10:5] expected token[ - ]
-│ │   │ │ │ │   ├─[readme.01-broken.fern:10:5] while matching token[ - ]
-│ │   │ │ │ │   [readme.01-broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
-│ │   │ │ │ │ ┌─[readme.01-broken.fern:10:5] .number.plusMinus
+│ │   │ │   │ │ [example.broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
+│ │   │ │   │ │ [example.broken.fern:10:5] .number.unsigned.integer.decimal
+│ │   │ │   │ │ [example.broken.fern:10:5] .number.unsigned.float.integerPart
+│ │   │ │   │ ├─[example.broken.fern:10:5] .number.unsigned.float: expected sequence[ integ ... t ? ) ]
+│ │   │ │   │ [example.broken.fern:10:5] .number.unsigned.float: expected alternation[ speci ... t ? ) ]
+│ │   │ │   ├─[example.broken.fern:10:5] .number.unsigned.float
+│ │   │ │   [example.broken.fern:10:5] .number.float: expected sequence[ plusM ... float ]
+│ │   │ │ ┌─[example.broken.fern:10:5] .number.float
+│ │   │ │ │     [example.broken.fern:10:5] expected token[ + ]
+│ │   │ │ │   ┌─[example.broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │   │ [example.broken.fern:10:5] expected token[ - ]
+│ │   │ │ │   ├─[example.broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │   [example.broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ ┌─[example.broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │   [example.broken.fern:10:5] expected token[ inf ]
+│ │   │ │ │ │ ┌─[example.broken.fern:10:5] while matching token[ inf ]
+│ │   │ │ │ │ │ [example.broken.fern:10:5] expected token[ nan ]
+│ │   │ │ │ │ ├─[example.broken.fern:10:5] while matching token[ nan ]
+│ │   │ │ │ │ [example.broken.fern:10:5] .number.unsigned.float.special: expected alternation[ [ 'in ... an' ] ]
+│ │   │ │ │ ├─[example.broken.fern:10:5] .number.unsigned.float.special
+│ │   │ │ │ [example.broken.fern:10:5] .number.float.special: expected sequence[ plusM ... ecial ]
+│ │   │ │ ├─[example.broken.fern:10:5] .number.float.special
+│ │   │ │ │       [example.broken.fern:10:5] expected token[ + ]
+│ │   │ │ │     ┌─[example.broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │     │ [example.broken.fern:10:5] expected token[ - ]
+│ │   │ │ │     ├─[example.broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │     [example.broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │   ┌─[example.broken.fern:10:5] .number.plusMinus
+│ │   │ │ │   │ [example.broken.fern:10:5] expected token[ 0b ]
+│ │   │ │ │   │ [example.broken.fern:10:5] while matching token[ 0b ]
+│ │   │ │ │   │ [example.broken.fern:10:5] .number.unsigned.integer.binary: expected sequence[ '0b'  ... g ) * ]
+│ │   │ │ │   ├─[example.broken.fern:10:5] .number.unsigned.integer.binary
+│ │   │ │ │   [example.broken.fern:10:5] .number.integer.binary: expected sequence[ plusM ... inary ]
+│ │   │ │ │ ┌─[example.broken.fern:10:5] .number.integer.binary
+│ │   │ │ │ │     [example.broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[example.broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [example.broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[example.broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [example.broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[example.broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │ │ [example.broken.fern:10:5] expected token[ 0o ]
+│ │   │ │ │ │ │ [example.broken.fern:10:5] while matching token[ 0o ]
+│ │   │ │ │ │ │ [example.broken.fern:10:5] .number.unsigned.integer.octal: expected sequence[ '0o'  ... g ) * ]
+│ │   │ │ │ │ ├─[example.broken.fern:10:5] .number.unsigned.integer.octal
+│ │   │ │ │ │ [example.broken.fern:10:5] .number.integer.octal: expected sequence[ plusM ... octal ]
+│ │   │ │ │ ├─[example.broken.fern:10:5] .number.integer.octal
+│ │   │ │ │ │     [example.broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[example.broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [example.broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[example.broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [example.broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[example.broken.fern:10:5] .number.plusMinus
+│ │   │ │ │ │ │ [example.broken.fern:10:5] expected token[ 0x ]
+│ │   │ │ │ │ │ [example.broken.fern:10:5] while matching token[ 0x ]
+│ │   │ │ │ │ │ [example.broken.fern:10:5] .number.unsigned.integer.hexadecimal: expected sequence[ '0x'  ... g ) * ]
+│ │   │ │ │ │ ├─[example.broken.fern:10:5] .number.unsigned.integer.hexadecimal
+│ │   │ │ │ │ [example.broken.fern:10:5] .number.integer.hexadecimal: expected sequence[ plusM ... cimal ]
+│ │   │ │ │ ├─[example.broken.fern:10:5] .number.integer.hexadecimal
+│ │   │ │ │ │     [example.broken.fern:10:5] expected token[ + ]
+│ │   │ │ │ │   ┌─[example.broken.fern:10:5] while matching token[ + ]
+│ │   │ │ │ │   │ [example.broken.fern:10:5] expected token[ - ]
+│ │   │ │ │ │   ├─[example.broken.fern:10:5] while matching token[ - ]
+│ │   │ │ │ │   [example.broken.fern:10:5] .number.plusMinus: expected alternation[ [ '+' ... '-' ] ]
+│ │   │ │ │ │ ┌─[example.broken.fern:10:5] .number.plusMinus
 │ │   │ │ │ │ │ expected token of category token[ DIGIT ]; got token[ ID_LOWER ]
-│ │   │ │ │ │ │ [readme.01-broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
-│ │   │ │ │ │ ├─[readme.01-broken.fern:10:5] .number.unsigned.integer.decimal
-│ │   │ │ │ │ [readme.01-broken.fern:10:5] .number.integer.decimal: expected sequence[ plusM ... cimal ]
-│ │   │ │ │ ├─[readme.01-broken.fern:10:5] .number.integer.decimal
-│ │   │ │ │ [readme.01-broken.fern:10:5] .number.integer: expected alternation[ [ bin ... mal ] ]
-│ │   │ │ ├─[readme.01-broken.fern:10:5] .number.integer
-│ │   │ │ [readme.01-broken.fern:10:5] .number: expected alternation[ [ flo ... ger ] ]
-│ │   │ ├─[readme.01-broken.fern:10:5] .number
+│ │   │ │ │ │ │ [example.broken.fern:10:5] .number.unsigned.integer.decimal: expected sequence[ DIGIT ... g ) * ]
+│ │   │ │ │ │ ├─[example.broken.fern:10:5] .number.unsigned.integer.decimal
+│ │   │ │ │ │ [example.broken.fern:10:5] .number.integer.decimal: expected sequence[ plusM ... cimal ]
+│ │   │ │ │ ├─[example.broken.fern:10:5] .number.integer.decimal
+│ │   │ │ │ [example.broken.fern:10:5] .number.integer: expected alternation[ [ bin ... mal ] ]
+│ │   │ │ ├─[example.broken.fern:10:5] .number.integer
+│ │   │ │ [example.broken.fern:10:5] .number: expected alternation[ [ flo ... ger ] ]
+│ │   │ ├─[example.broken.fern:10:5] .number
 │ │   │ │ ┌─expected token of category token[ MULTILINE_STRING ]; got token[ ID_LOWER ]
-│ │   │ │ │ [readme.01-broken.fern:10:5] expected token[ ' ]
-│ │   │ │ │ [readme.01-broken.fern:10:5] while matching token[ ' ]
-│ │   │ │ │ [readme.01-broken.fern:10:5] .string.single: expected sequence[ '\\''  ...  '\\'' ]
-│ │   │ │ ├─[readme.01-broken.fern:10:5] .string.single
-│ │   │ │ │ [readme.01-broken.fern:10:5] expected token[ " ]
-│ │   │ │ │ [readme.01-broken.fern:10:5] while matching token[ " ]
-│ │   │ │ │ [readme.01-broken.fern:10:5] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
-│ │   │ │ ├─[readme.01-broken.fern:10:5] .string.double
-│ │   │ │ [readme.01-broken.fern:10:5] .string: expected alternation[ MULTI ... ouble ]
-│ │   │ ├─[readme.01-broken.fern:10:5] .string
-│ │   │ [readme.01-broken.fern:10:5] .Fern.value: expected alternation[ none  ... tring ]
-│ │   ├─[readme.01-broken.fern:10:5] .Fern.value
-│ │ ┌─[readme.01-broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
-│ │ │ [readme.01-broken.fern:11:5] expected token[ : ]
-│ │ │ [readme.01-broken.fern:11:5] while matching token[ : ]
-│ │ ├─[readme.01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ label ':'  ]
-│ │ [readme.01-broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
-│ ├─[readme.01-broken.fern:10:5] .Fern.LabeledItem
-│ [readme.01-broken.fern:9:3] .Fern: expected sequence[ '[' L ... * ']' ]
-│ [readme.01-broken.fern:9:3] .Fern
-├─[readme.01-broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
-[readme.01-broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
-[readme.01-broken.fern:9:3] .Fern.LabeledItem
-[readme.01-broken.fern:1:1] .Fern: expected sequence[ '[' L ... * ']' ]
-[readme.01-broken.fern:1:1] .Fern
+│ │   │ │ │ [example.broken.fern:10:5] expected token[ ' ]
+│ │   │ │ │ [example.broken.fern:10:5] while matching token[ ' ]
+│ │   │ │ │ [example.broken.fern:10:5] .string.single: expected sequence[ '\\''  ...  '\\'' ]
+│ │   │ │ ├─[example.broken.fern:10:5] .string.single
+│ │   │ │ │ [example.broken.fern:10:5] expected token[ " ]
+│ │   │ │ │ [example.broken.fern:10:5] while matching token[ " ]
+│ │   │ │ │ [example.broken.fern:10:5] .string.double: expected sequence[ '\"' ~ ... * '\"' ]
+│ │   │ │ ├─[example.broken.fern:10:5] .string.double
+│ │   │ │ [example.broken.fern:10:5] .string: expected alternation[ MULTI ... ouble ]
+│ │   │ ├─[example.broken.fern:10:5] .string
+│ │   │ [example.broken.fern:10:5] .Fern.value: expected alternation[ none  ... tring ]
+│ │   ├─[example.broken.fern:10:5] .Fern.value
+│ │ ┌─[example.broken.fern:10:5] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
+│ │ │ [example.broken.fern:11:5] expected token[ : ]
+│ │ │ [example.broken.fern:11:5] while matching token[ : ]
+│ │ ├─[example.broken.fern:10:5] .Fern.LabeledItem: expected sequence[ label ':'  ]
+│ │ [example.broken.fern:10:5] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
+│ ├─[example.broken.fern:10:5] .Fern.LabeledItem
+│ [example.broken.fern:9:3] .Fern: expected sequence[ '[' L ... * ']' ]
+│ [example.broken.fern:9:3] .Fern
+├─[example.broken.fern:9:3] .Fern.LabeledItem: expected alternation[ Fern  ... alue  ]
+[example.broken.fern:9:3] .Fern.LabeledItem: expected sequence[ ( lab ... lue ) ]
+[example.broken.fern:9:3] .Fern.LabeledItem
+[example.broken.fern:1:1] .Fern: expected sequence[ '[' L ... * ']' ]
+[example.broken.fern:1:1] .Fern
 seed::interpreter_t::apply(.Fern) failed to parse
 
 [0] .Fern                                                                       [<NEWLINE><INDENT>no ... ]<NEWLINE><DEDENT>]<NEWLINE>¦
@@ -226,824 +226,183 @@ seed::interpreter_t::apply(.Fern) failed to parse
           [0] .none                                                             ｢none｣
 
 [0]                                                                                  false     unknown token-location
-  [0] .freeForm                                                                      true      readme.01-simplest.fern:1:1
-    [0] .comment                                                                     false     readme.01-simplest.fern:1:1
-  [1] .Fern                                                                          true      readme.01-simplest.fern:1:1
-    [0] .freeForm                                                                    true      readme.01-simplest.fern:1:2
-      [0] .comment                                                                   false     readme.01-simplest.fern:1:2
-      [1] .comment                                                                   false     readme.01-simplest.fern:2:1
-      [2] .comment                                                                   false     readme.01-simplest.fern:2:3
-    [1] .Fern.LabeledItem                                                            true      readme.01-simplest.fern:2:3
-      [0] .Fern.label                                                                true      readme.01-simplest.fern:2:3
-        [0] .string                                                                  false     readme.01-simplest.fern:2:3
-          [0] .string.single                                                         false     readme.01-simplest.fern:2:3
-          [1] .string.double                                                         false     readme.01-simplest.fern:2:3
-        [1] .identifier                                                              true      readme.01-simplest.fern:2:3
-        [2] .freeForm                                                                true      readme.01-simplest.fern:2:7
-          [0] .comment                                                               false     readme.01-simplest.fern:2:7
-          [1] .comment                                                               false     readme.01-simplest.fern:3:3
-      [1] .Fern                                                                      false     readme.01-simplest.fern:2:3
-      [2] .Fern.value                                                                true      readme.01-simplest.fern:2:3
-        [0] .none                                                                    true      readme.01-simplest.fern:2:3
-        [1] .freeForm                                                                true      readme.01-simplest.fern:2:7
-          [0] .comment                                                               false     readme.01-simplest.fern:2:7
-          [1] .comment                                                               false     readme.01-simplest.fern:3:3
-    [2] .Fern.LabeledItem                                                            true      readme.01-simplest.fern:3:3
-      [0] .Fern.label                                                                false     readme.01-simplest.fern:3:3
-        [0] .string                                                                  false     readme.01-simplest.fern:3:3
-          [0] .string.single                                                         false     readme.01-simplest.fern:3:3
-          [1] .string.double                                                         false     readme.01-simplest.fern:3:3
-        [1] .identifier                                                              false     readme.01-simplest.fern:3:3
-      [1] .Fern                                                                      true      readme.01-simplest.fern:3:3
-        [0] .freeForm                                                                true      readme.01-simplest.fern:3:4
-          [0] .comment                                                               false     readme.01-simplest.fern:3:4
-        [1] .Fern.LabeledItem                                                        false     readme.01-simplest.fern:3:4
-          [0] .Fern.label                                                            false     readme.01-simplest.fern:3:4
-            [0] .string                                                              false     readme.01-simplest.fern:3:4
-              [0] .string.single                                                     false     readme.01-simplest.fern:3:4
-              [1] .string.double                                                     false     readme.01-simplest.fern:3:4
-            [1] .identifier                                                          false     readme.01-simplest.fern:3:4
-          [1] .Fern                                                                  false     readme.01-simplest.fern:3:4
-          [2] .Fern.value                                                            false     readme.01-simplest.fern:3:4
-            [0] .none                                                                false     readme.01-simplest.fern:3:4
-            [1] .boolean                                                             false     readme.01-simplest.fern:3:4
-            [2] .number                                                              false     readme.01-simplest.fern:3:4
-              [0] .number.float                                                      false     readme.01-simplest.fern:3:4
-                [0] .number.plusMinus                                                false     readme.01-simplest.fern:3:4
-                [1] .number.unsigned.float                                           false     readme.01-simplest.fern:3:4
-                  [0] .number.unsigned.float.special                                 false     readme.01-simplest.fern:3:4
-                  [1] .number.unsigned.float.integerPart                             false     readme.01-simplest.fern:3:4
-                    [0] .number.unsigned.integer.decimal                             false     readme.01-simplest.fern:3:4
-              [1] .number.float.special                                              false     readme.01-simplest.fern:3:4
-                [0] .number.plusMinus                                                false     readme.01-simplest.fern:3:4
-                [1] .number.unsigned.float.special                                   false     readme.01-simplest.fern:3:4
-              [2] .number.integer                                                    false     readme.01-simplest.fern:3:4
-                [0] .number.integer.binary                                           false     readme.01-simplest.fern:3:4
-                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:3:4
-                  [1] .number.unsigned.integer.binary                                false     readme.01-simplest.fern:3:4
-                [1] .number.integer.octal                                            false     readme.01-simplest.fern:3:4
-                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:3:4
-                  [1] .number.unsigned.integer.octal                                 false     readme.01-simplest.fern:3:4
-                [2] .number.integer.hexadecimal                                      false     readme.01-simplest.fern:3:4
-                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:3:4
-                  [1] .number.unsigned.integer.hexadecimal                           false     readme.01-simplest.fern:3:4
-                [3] .number.integer.decimal                                          false     readme.01-simplest.fern:3:4
-                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:3:4
-                  [1] .number.unsigned.integer.decimal                               false     readme.01-simplest.fern:3:4
-            [3] .string                                                              false     readme.01-simplest.fern:3:4
-              [0] .string.single                                                     false     readme.01-simplest.fern:3:4
-              [1] .string.double                                                     false     readme.01-simplest.fern:3:4
-        [2] .freeForm                                                                true      readme.01-simplest.fern:3:5
-          [0] .comment                                                               false     readme.01-simplest.fern:3:5
-          [1] .comment                                                               false     readme.01-simplest.fern:4:3
-    [3] .Fern.LabeledItem                                                            true      readme.01-simplest.fern:4:3
-      [0] .Fern.label                                                                false     readme.01-simplest.fern:4:3
-        [0] .string                                                                  false     readme.01-simplest.fern:4:3
-          [0] .string.single                                                         false     readme.01-simplest.fern:4:3
-          [1] .string.double                                                         false     readme.01-simplest.fern:4:3
-        [1] .identifier                                                              false     readme.01-simplest.fern:4:3
-      [1] .Fern                                                                      true      readme.01-simplest.fern:4:3
-        [0] .freeForm                                                                true      readme.01-simplest.fern:4:4
-          [0] .comment                                                               false     readme.01-simplest.fern:4:4
-          [1] .comment                                                               false     readme.01-simplest.fern:5:1
-          [2] .comment                                                               false     readme.01-simplest.fern:5:5
-        [1] .Fern.LabeledItem                                                        true      readme.01-simplest.fern:5:5
-          [0] .Fern.label                                                            true      readme.01-simplest.fern:5:5
-            [0] .string                                                              false     readme.01-simplest.fern:5:5
-              [0] .string.single                                                     false     readme.01-simplest.fern:5:5
-              [1] .string.double                                                     false     readme.01-simplest.fern:5:5
-            [1] .identifier                                                          true      readme.01-simplest.fern:5:5
-            [2] .freeForm                                                            true      readme.01-simplest.fern:5:9
-              [0] .comment                                                           false     readme.01-simplest.fern:5:9
-              [1] .comment                                                           false     readme.01-simplest.fern:6:1
-              [2] .comment                                                           false     readme.01-simplest.fern:6:3
-          [1] .Fern                                                                  false     readme.01-simplest.fern:5:5
-          [2] .Fern.value                                                            true      readme.01-simplest.fern:5:5
-            [0] .none                                                                true      readme.01-simplest.fern:5:5
-            [1] .freeForm                                                            true      readme.01-simplest.fern:5:9
-              [0] .comment                                                           false     readme.01-simplest.fern:5:9
-              [1] .comment                                                           false     readme.01-simplest.fern:6:1
-              [2] .comment                                                           false     readme.01-simplest.fern:6:3
-        [2] .Fern.LabeledItem                                                        false     readme.01-simplest.fern:6:3
-          [0] .Fern.label                                                            false     readme.01-simplest.fern:6:3
-            [0] .string                                                              false     readme.01-simplest.fern:6:3
-              [0] .string.single                                                     false     readme.01-simplest.fern:6:3
-              [1] .string.double                                                     false     readme.01-simplest.fern:6:3
-            [1] .identifier                                                          false     readme.01-simplest.fern:6:3
-          [1] .Fern                                                                  false     readme.01-simplest.fern:6:3
-          [2] .Fern.value                                                            false     readme.01-simplest.fern:6:3
-            [0] .none                                                                false     readme.01-simplest.fern:6:3
-            [1] .boolean                                                             false     readme.01-simplest.fern:6:3
-            [2] .number                                                              false     readme.01-simplest.fern:6:3
-              [0] .number.float                                                      false     readme.01-simplest.fern:6:3
-                [0] .number.plusMinus                                                false     readme.01-simplest.fern:6:3
-                [1] .number.unsigned.float                                           false     readme.01-simplest.fern:6:3
-                  [0] .number.unsigned.float.special                                 false     readme.01-simplest.fern:6:3
-                  [1] .number.unsigned.float.integerPart                             false     readme.01-simplest.fern:6:3
-                    [0] .number.unsigned.integer.decimal                             false     readme.01-simplest.fern:6:3
-              [1] .number.float.special                                              false     readme.01-simplest.fern:6:3
-                [0] .number.plusMinus                                                false     readme.01-simplest.fern:6:3
-                [1] .number.unsigned.float.special                                   false     readme.01-simplest.fern:6:3
-              [2] .number.integer                                                    false     readme.01-simplest.fern:6:3
-                [0] .number.integer.binary                                           false     readme.01-simplest.fern:6:3
-                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:6:3
-                  [1] .number.unsigned.integer.binary                                false     readme.01-simplest.fern:6:3
-                [1] .number.integer.octal                                            false     readme.01-simplest.fern:6:3
-                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:6:3
-                  [1] .number.unsigned.integer.octal                                 false     readme.01-simplest.fern:6:3
-                [2] .number.integer.hexadecimal                                      false     readme.01-simplest.fern:6:3
-                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:6:3
-                  [1] .number.unsigned.integer.hexadecimal                           false     readme.01-simplest.fern:6:3
-                [3] .number.integer.decimal                                          false     readme.01-simplest.fern:6:3
-                  [0] .number.plusMinus                                              false     readme.01-simplest.fern:6:3
-                  [1] .number.unsigned.integer.decimal                               false     readme.01-simplest.fern:6:3
-            [3] .string                                                              false     readme.01-simplest.fern:6:3
-              [0] .string.single                                                     false     readme.01-simplest.fern:6:3
-              [1] .string.double                                                     false     readme.01-simplest.fern:6:3
-        [3] .freeForm                                                                true      readme.01-simplest.fern:6:4
-          [0] .comment                                                               false     readme.01-simplest.fern:6:4
-          [1] .comment                                                               false     readme.01-simplest.fern:7:1
-          [2] .comment                                                               false     readme.01-simplest.fern:7:1
-    [4] .Fern.LabeledItem                                                            false     readme.01-simplest.fern:7:1
-      [0] .Fern.label                                                                false     readme.01-simplest.fern:7:1
-        [0] .string                                                                  false     readme.01-simplest.fern:7:1
-          [0] .string.single                                                         false     readme.01-simplest.fern:7:1
-          [1] .string.double                                                         false     readme.01-simplest.fern:7:1
-        [1] .identifier                                                              false     readme.01-simplest.fern:7:1
-      [1] .Fern                                                                      false     readme.01-simplest.fern:7:1
-      [2] .Fern.value                                                                false     readme.01-simplest.fern:7:1
-        [0] .none                                                                    false     readme.01-simplest.fern:7:1
-        [1] .boolean                                                                 false     readme.01-simplest.fern:7:1
-        [2] .number                                                                  false     readme.01-simplest.fern:7:1
-          [0] .number.float                                                          false     readme.01-simplest.fern:7:1
-            [0] .number.plusMinus                                                    false     readme.01-simplest.fern:7:1
-            [1] .number.unsigned.float                                               false     readme.01-simplest.fern:7:1
-              [0] .number.unsigned.float.special                                     false     readme.01-simplest.fern:7:1
-              [1] .number.unsigned.float.integerPart                                 false     readme.01-simplest.fern:7:1
-                [0] .number.unsigned.integer.decimal                                 false     readme.01-simplest.fern:7:1
-          [1] .number.float.special                                                  false     readme.01-simplest.fern:7:1
-            [0] .number.plusMinus                                                    false     readme.01-simplest.fern:7:1
-            [1] .number.unsigned.float.special                                       false     readme.01-simplest.fern:7:1
-          [2] .number.integer                                                        false     readme.01-simplest.fern:7:1
-            [0] .number.integer.binary                                               false     readme.01-simplest.fern:7:1
-              [0] .number.plusMinus                                                  false     readme.01-simplest.fern:7:1
-              [1] .number.unsigned.integer.binary                                    false     readme.01-simplest.fern:7:1
-            [1] .number.integer.octal                                                false     readme.01-simplest.fern:7:1
-              [0] .number.plusMinus                                                  false     readme.01-simplest.fern:7:1
-              [1] .number.unsigned.integer.octal                                     false     readme.01-simplest.fern:7:1
-            [2] .number.integer.hexadecimal                                          false     readme.01-simplest.fern:7:1
-              [0] .number.plusMinus                                                  false     readme.01-simplest.fern:7:1
-              [1] .number.unsigned.integer.hexadecimal                               false     readme.01-simplest.fern:7:1
-            [3] .number.integer.decimal                                              false     readme.01-simplest.fern:7:1
-              [0] .number.plusMinus                                                  false     readme.01-simplest.fern:7:1
-              [1] .number.unsigned.integer.decimal                                   false     readme.01-simplest.fern:7:1
-        [3] .string                                                                  false     readme.01-simplest.fern:7:1
-          [0] .string.single                                                         false     readme.01-simplest.fern:7:1
-          [1] .string.double                                                         false     readme.01-simplest.fern:7:1
-    [5] .freeForm                                                                    true      readme.01-simplest.fern:7:2
-      [0] .comment                                                                   false     readme.01-simplest.fern:7:2
-      [1] .comment                                                                   false     readme.01-simplest.fern:8:1
-[0] .Silva                                                                      Seed  ... ]<NEWLINE><NEWLINE>»<NEWLINE>¦
-  [0] .Silva.Section                                                            Seed  ... <NEWLINE><DEDENT>»<NEWLINE><NEWLINE>¦
-    [0] .Silva.languageName                                                     ｢Seed｣
-    [1] .language                                                               «<NEWLINE>lan ... *<NEWLINE><NEWLINE><DEDENT>»¦
-  [1] .Silva.Section                                                            AsBs  ... <NEWLINE><DEDENT>»<NEWLINE><NEWLINE>¦
-    [0] .Silva.languageName                                                     ｢AsBs｣
-    [1] .language                                                               «<INDENT>a a ... b <NEWLINE><DEDENT>»¦
-  [2] .Silva.Section                                                            Seed  ... <DEDENT><DEDENT>»<NEWLINE><NEWLINE>¦
-    [0] .Silva.languageName                                                     ｢Seed｣
-    [1] .language                                                               «<NEWLINE>lan ... <NEWLINE><NEWLINE><DEDENT><DEDENT>»¦
-  [3] .Silva.Section                                                            CppSt ... <NEWLINE><NEWLINE>»<NEWLINE><NEWLINE>¦
-    [0] .Silva.languageName                                                     ｢CppStmts｣
-    [1] .language                                                               «<NEWLINE>1 + ...  ;<NEWLINE><NEWLINE>»¦
-  [4] .Silva.Section                                                            Fern  ... ]<NEWLINE><NEWLINE>»<NEWLINE>¦
-    [0] .Silva.languageName                                                     ｢Fern｣
-    [1] .language                                                               «<NEWLINE>[<NEWLINE><INDENT> ... <DEDENT>]<NEWLINE><NEWLINE>»¦
-
-[0] .AsBs                                                                       a a a ...  b <NEWLINE><DEDENT>¦
-
-[0] .CppStmts                                                                   1 + 2 ... b ;<NEWLINE><NEWLINE>¦
-  [0] .CppStmts.Expr                                                            1 + 2 ...  * 5 ¦
-    [0] .CppStmts.Expr.Addition.+                                               1 + 2 ...  * 5 ¦
-      [0] .CppStmts.Expr.Addition.+                                             1 + 2 * 3 ¦
-        [0] .CppStmts.Expr.Atom                                                 1 ¦
-          [0] .number                                                           ｢1｣
-            [0] .number.integer                                                 ｢1｣
-              [0] .number.integer.decimal                                       ｢1｣
-                [0] .number.unsigned.integer.decimal                            ｢1｣
-        [1] .CppStmts.Expr.Multiply.*                                           2 * 3 ¦
-          [0] .CppStmts.Expr.Atom                                               2 ¦
-            [0] .number                                                         ｢2｣
-              [0] .number.integer                                               ｢2｣
-                [0] .number.integer.decimal                                     ｢2｣
-                  [0] .number.unsigned.integer.decimal                          ｢2｣
-          [1] .CppStmts.Expr.Atom                                               3 ¦
-            [0] .number                                                         ｢3｣
-              [0] .number.integer                                               ｢3｣
-                [0] .number.integer.decimal                                     ｢3｣
-                  [0] .number.unsigned.integer.decimal                          ｢3｣
-      [1] .CppStmts.Expr.Multiply.*                                             4 * 5 ¦
-        [0] .CppStmts.Expr.Atom                                                 4 ¦
-          [0] .number                                                           ｢4｣
-            [0] .number.integer                                                 ｢4｣
-              [0] .number.integer.decimal                                       ｢4｣
-                [0] .number.unsigned.integer.decimal                            ｢4｣
-        [1] .CppStmts.Expr.Atom                                                 5 ¦
-          [0] .number                                                           ｢5｣
-            [0] .number.integer                                                 ｢5｣
-              [0] .number.integer.decimal                                       ｢5｣
-                [0] .number.unsigned.integer.decimal                            ｢5｣
-  [1] .CppStmts.Expr                                                            a[1]  ... .14) ¦
-    [0] .CppStmts.Expr.Assignment.=                                             a[1]  ... .14) ¦
-      [0] .CppStmts.Expr.Postfix.[                                              a[1] ¦
-        [0] .CppStmts.Expr.Atom                                                 a¦
-          [0] .identifier                                                       ｢a｣
-        [1] .CppStmts.Expr                                                      1¦
-          [0] .CppStmts.Expr.Atom                                               1¦
-            [0] .number                                                         ｢1｣
-              [0] .number.integer                                               ｢1｣
-                [0] .number.integer.decimal                                     ｢1｣
-                  [0] .number.unsigned.integer.decimal                          ｢1｣
-      [1] .CppStmts.Expr.Postfix.(                                              std:: ... .14) ¦
-        [0] .CppStmts.Expr.Namespace.::                                         std::sin¦
-          [0] .CppStmts.Expr.Atom                                               std¦
-            [0] .identifier                                                     ｢std｣
-          [1] .CppStmts.Expr.Atom                                               sin¦
-            [0] .identifier                                                     ｢sin｣
-        [1] .CppStmts.Expr                                                      3.14¦
-          [0] .CppStmts.Expr.Atom                                               3.14¦
-            [0] .number                                                         ｢3.14｣
-              [0] .number.float                                                 ｢3.14｣
-                [0] .number.unsigned.float                                      ｢3.14｣
-                  [0] .number.unsigned.float.integerPart                        ｢3｣
-                    [0] .number.unsigned.integer.decimal                        ｢3｣
-                  [1] .number.unsigned.float.fraction                           ｢.14｣
-                    [0] .number.unsigned.integer.decimal                        ｢14｣
-  [2] .CppStmts.Expr                                                            1 | 0 ...  + 3 ¦
-    [0] .CppStmts.Expr.BitOr.|                                                  1 | 0 ...  + 3 ¦
-      [0] .CppStmts.Expr.Atom                                                   1 ¦
-        [0] .number                                                             ｢1｣
-          [0] .number.integer                                                   ｢1｣
-            [0] .number.integer.decimal                                         ｢1｣
-              [0] .number.unsigned.integer.decimal                              ｢1｣
-      [1] .CppStmts.Expr.Comparison.<=                                          0 <=  ...  + 3 ¦
-        [0] .CppStmts.Expr.Comparison.<=                                        0 <=  ... * 10 ¦
-          [0] .CppStmts.Expr.Atom                                               0 ¦
-            [0] .number                                                         ｢0｣
-              [0] .number.integer                                               ｢0｣
-                [0] .number.integer.decimal                                     ｢0｣
-                  [0] .number.unsigned.integer.decimal                          ｢0｣
-          [1] .CppStmts.Expr.Multiply.*                                         x * 10 ¦
-            [0] .CppStmts.Expr.Atom                                             x ¦
-              [0] .identifier                                                   ｢x｣
-            [1] .CppStmts.Expr.Atom                                             10 ¦
-              [0] .number                                                       ｢10｣
-                [0] .number.integer                                             ｢10｣
-                  [0] .number.integer.decimal                                   ｢10｣
-                    [0] .number.unsigned.integer.decimal                        ｢10｣
-        [1] .CppStmts.Expr.Addition.+                                           2 + 3 ¦
-          [0] .CppStmts.Expr.Atom                                               2 ¦
-            [0] .number                                                         ｢2｣
-              [0] .number.integer                                               ｢2｣
-                [0] .number.integer.decimal                                     ｢2｣
-                  [0] .number.unsigned.integer.decimal                          ｢2｣
-          [1] .CppStmts.Expr.Atom                                               3 ¦
-            [0] .number                                                         ｢3｣
-              [0] .number.integer                                               ｢3｣
-                [0] .number.integer.decimal                                     ｢3｣
-                  [0] .number.unsigned.integer.decimal                          ｢3｣
-  [3] .CppStmts.Expr                                                            std:: ... t(x) ¦
-    [0] .CppStmts.Expr.Assignment.=                                             std:: ... t(x) ¦
-      [0] .CppStmts.Expr.Postfix.(                                              std:: ... t(x) ¦
-        [0] .CppStmts.Expr.Namespace.::                                         std::get¦
-          [0] .CppStmts.Expr.Atom                                               std¦
-            [0] .identifier                                                     ｢std｣
-          [1] .CppStmts.Expr.Atom                                               get¦
-            [0] .identifier                                                     ｢get｣
-        [1] .CppStmts.Expr                                                      x¦
-          [0] .CppStmts.Expr.Atom                                               x¦
-            [0] .identifier                                                     ｢x｣
-      [1] .CppStmts.Expr.Postfix.(                                              ::std ... t(x) ¦
-        [0] .CppStmts.Expr.Namespace.::                                         ::std::get¦
-          [0] .CppStmts.Expr.Namespace.::                                       std::get¦
-            [0] .CppStmts.Expr.Atom                                             std¦
-              [0] .identifier                                                   ｢std｣
-            [1] .CppStmts.Expr.Atom                                             get¦
-              [0] .identifier                                                   ｢get｣
-        [1] .CppStmts.Expr                                                      x¦
-          [0] .CppStmts.Expr.Atom                                               x¦
-            [0] .identifier                                                     ｢x｣
-  [4] .CppStmts.Expr                                                            ++ x ++ ¦
-    [0] .CppStmts.Expr.Prefix.++                                                ++ x ++ ¦
-      [0] .CppStmts.Expr.Postfix.++                                             x ++ ¦
-        [0] .CppStmts.Expr.Atom                                                 x ¦
-          [0] .identifier                                                       ｢x｣
-  [5] .CppStmts.Expr                                                            a + ( ... t) b ¦
-    [0] .CppStmts.Expr.Addition.+                                               a + ( ... t) b ¦
-      [0] .CppStmts.Expr.Atom                                                   a ¦
-        [0] .identifier                                                         ｢a｣
-      [1] .CppStmts.Expr.Prefix.(                                               (int) b ¦
-        [0] .CppStmts.Expr.Type                                                 int¦
-          [0] .identifier                                                       ｢int｣
-        [1] .CppStmts.Expr.Atom                                                 b ¦
-          [0] .identifier                                                       ｢b｣
-
-[0] .Fern                                                                       [<NEWLINE><INDENT>no ... <NEWLINE><DEDENT>]<NEWLINE><NEWLINE>¦
-  [0] .Fern.LabeledItem                                                         none<NEWLINE>¦
-    [0] .Fern.value                                                             ｢none｣
-      [0] .none                                                                 ｢none｣
-  [1] .Fern.LabeledItem                                                         true<NEWLINE>¦
-    [0] .Fern.value                                                             ｢true｣
-      [0] .boolean                                                              ｢true｣
-  [2] .Fern.LabeledItem                                                         42<NEWLINE>¦
-    [0] .Fern.value                                                             ｢42｣
-      [0] .number                                                               ｢42｣
-        [0] .number.integer                                                     ｢42｣
-          [0] .number.integer.decimal                                           ｢42｣
-            [0] .number.unsigned.integer.decimal                                ｢42｣
-  [3] .Fern.LabeledItem                                                         hello ... rld'<NEWLINE>¦
-    [0] .Fern.label                                                             ｢hello｣
-      [0] .identifier                                                           ｢hello｣
-    [1] .Fern.value                                                             ｢'World'｣
-      [0] .string                                                               ｢'World'｣
-  [4] .Fern.LabeledItem                                                         []<NEWLINE>¦
-    [0] .Fern                                                                   []<NEWLINE>¦
-  [5] .Fern.LabeledItem                                                         [<NEWLINE><INDENT>'o ... <NEWLINE><DEDENT>]<NEWLINE><DEDENT>¦
-    [0] .Fern                                                                   [<NEWLINE><INDENT>'o ... <NEWLINE><DEDENT>]<NEWLINE><DEDENT>¦
-      [0] .Fern.LabeledItem                                                     'one' ...  1.0<NEWLINE>¦
-        [0] .Fern.label                                                         ｢'one'｣
-          [0] .string                                                           ｢'one'｣
-        [1] .Fern.value                                                         ｢1.0｣
-          [0] .number                                                           ｢1.0｣
-            [0] .number.float                                                   ｢1.0｣
-              [0] .number.unsigned.float                                        ｢1.0｣
-                [0] .number.unsigned.float.integerPart                          ｢1｣
-                  [0] .number.unsigned.integer.decimal                          ｢1｣
-                [1] .number.unsigned.float.fraction                             ｢.0｣
-                  [0] .number.unsigned.integer.decimal                          ｢0｣
-      [1] .Fern.LabeledItem                                                     'two' ... 2.0<NEWLINE><DEDENT>¦
-        [0] .Fern.label                                                         ｢'two'｣
-          [0] .string                                                           ｢'two'｣
-        [1] .Fern.value                                                         ｢2.0｣
-          [0] .number                                                           ｢2.0｣
-            [0] .number.float                                                   ｢2.0｣
-              [0] .number.unsigned.float                                        ｢2.0｣
-                [0] .number.unsigned.float.integerPart                          ｢2｣
-                  [0] .number.unsigned.integer.decimal                          ｢2｣
-                [1] .number.unsigned.float.fraction                             ｢.0｣
-                  [0] .number.unsigned.integer.decimal                          ｢0｣
-
-[0] .Soil                                                                       name_ ... }<NEWLINE><DEDENT>}<NEWLINE>¦
-  [0] .Soil.Type.Defn                                                           name_ ... tr_t<NEWLINE>¦
-    [0] .Soil.Type.Name                                                         name_t ¦
-      [0] .Soil.typeName                                                        ｢name_t｣
-        [0] .identifier                                                         ｢name_t｣
-    [1] .Soil.Type                                                              str_t<NEWLINE>¦
-      [0] .Soil.Type.Name                                                       str_t<NEWLINE>¦
-        [0] .Soil.typeName                                                      ｢str_t｣
-          [0] .identifier                                                       ｢str_t｣
-  [1] .Soil.Type.Defn                                                           age_t ... 2_t<NEWLINE><NEWLINE>¦
-    [0] .Soil.Type.Name                                                         age_t ¦
-      [0] .Soil.typeName                                                        ｢age_t｣
-        [0] .identifier                                                         ｢age_t｣
-    [1] .Soil.Type                                                              i32_t<NEWLINE><NEWLINE>¦
-      [0] .Soil.Type.Name                                                       i32_t<NEWLINE><NEWLINE>¦
-        [0] .Soil.typeName                                                      ｢i32_t｣
-          [0] .identifier                                                       ｢i32_t｣
-  [2] .Soil.Type.Defn                                                           perso ... <NEWLINE><DEDENT>]<NEWLINE><NEWLINE>¦
-    [0] .Soil.Type.Name                                                         person_t ¦
-      [0] .Soil.typeName                                                        ｢person_t｣
-        [0] .identifier                                                         ｢person_t｣
-    [1] .Soil.Type                                                              [<NEWLINE><INDENT>[<NEWLINE> ... <NEWLINE><DEDENT>]<NEWLINE><NEWLINE>¦
-      [0] .Soil.Type.Struct                                                     [<NEWLINE><INDENT>[<NEWLINE> ... <NEWLINE><DEDENT>]<NEWLINE><NEWLINE>¦
-        [0] .Soil.Type.Struct.Member                                            [<NEWLINE><INDENT>na ... ' ];<NEWLINE>¦
-          [0] .Soil.Type                                                        [<NEWLINE><INDENT>na ... ;<NEWLINE><DEDENT>] ¦
-            [0] .Soil.Type.Struct                                               [<NEWLINE><INDENT>na ... ;<NEWLINE><DEDENT>] ¦
-              [0] .Soil.Type.Struct.Member                                      name_ ... rst;<NEWLINE>¦
-                [0] .Soil.Type                                                  name_t ¦
-                  [0] .Soil.Type.Name                                           name_t ¦
-                    [0] .Soil.typeName                                          ｢name_t｣
-                      [0] .identifier                                           ｢name_t｣
-                [1] .Soil.Type.Struct.Member.Label                              : first¦
-                  [0] .Soil.Type.Struct.Member.Name                             first¦
-                    [0] .identifier                                             ｢first｣
-              [1] .Soil.Type.Struct.Member                                      name_ ... p';<NEWLINE><DEDENT>¦
-                [0] .Soil.Type                                                  name_t ¦
-                  [0] .Soil.Type.Name                                           name_t ¦
-                    [0] .Soil.typeName                                          ｢name_t｣
-                      [0] .identifier                                           ｢name_t｣
-                [1] .Soil.Type.Struct.Member.Label                              : last ¦
-                  [0] .Soil.Type.Struct.Member.Name                             last ¦
-                    [0] .identifier                                             ｢last｣
-                [2] .Soil.Type.Struct.Member.Init                               = 'Trump'¦
-                  [0] .Soil.Expr                                                'Trump'¦
-                    [0] .Soil.Expr.Atom                                         'Trump'¦
-                      [0] .string                                               ｢'Trump'｣
-          [1] .Soil.Type.Struct.Member.Label                                    : name ¦
-            [0] .Soil.Type.Struct.Member.Name                                   name ¦
-              [0] .identifier                                                   ｢name｣
-          [2] .Soil.Type.Struct.Member.Init                                     = [ ' ... ym' ]¦
-            [0] .Soil.Expr                                                      [ 'Ar ... ym' ]¦
-              [0] .Soil.Expr.Atom                                               [ 'Ar ... ym' ]¦
-                [0] .Soil.Expr.Struct                                           [ 'Ar ... ym' ]¦
-                  [0] .Soil.Expr.Struct.LabeledItem                             'Arno' ¦
-                    [0] .Soil.Expr                                              'Arno' ¦
-                      [0] .Soil.Expr.Atom                                       'Arno' ¦
-                        [0] .string                                             ｢'Arno'｣
-                  [1] .Soil.Expr.Struct.LabeledItem                             'Nym' ¦
-                    [0] .Soil.Expr                                              'Nym' ¦
-                      [0] .Soil.Expr.Atom                                       'Nym' ¦
-                        [0] .string                                             ｢'Nym'｣
-        [1] .Soil.Type.Struct.Member                                            age_t ... t);<NEWLINE><DEDENT>¦
-          [0] .Soil.Type                                                        age_t ¦
-            [0] .Soil.Type.Name                                                 age_t ¦
-              [0] .Soil.typeName                                                ｢age_t｣
-                [0] .identifier                                                 ｢age_t｣
-          [1] .Soil.Type.Struct.Member.Label                                    : age ¦
-            [0] .Soil.Type.Struct.Member.Name                                   age ¦
-              [0] .identifier                                                   ｢age｣
-          [2] .Soil.Type.Struct.Member.Init                                     = siz ... irst)¦
-            [0] .Soil.Expr                                                      size_ ... irst)¦
-              [0] .Soil.Expr.Axe.CallPost.(                                     size_ ... irst)¦
-                [0] .Soil.Expr.Atom                                             size_f¦
-                  [0] .Soil.funcName                                            ｢size_f｣
-                    [0] .identifier                                             ｢size_f｣
-                [1] .Soil.Expr.Axe.Member..                                     name.first¦
-                  [0] .Soil.Expr.Atom                                           name¦
-                    [0] .identifier                                             ｢name｣
-                  [1] .Soil.Expr.Atom                                           first¦
-                    [0] .identifier                                             ｢first｣
-  [3] .Soil.Variable.Defn                                                       bs =  ... 0 ]<NEWLINE><NEWLINE>¦
-    [0] .Soil.Variable.Name                                                     bs ¦
-      [0] .identifier                                                           ｢bs｣
-    [1] .Soil.Expr                                                              perso ... 0 ]<NEWLINE><NEWLINE>¦
-      [0] .Soil.Expr.Axe.Typing.::                                              perso ... 0 ]<NEWLINE><NEWLINE>¦
-        [0] .Soil.Expr.Atom                                                     person_t ¦
-          [0] .Soil.typeName                                                    ｢person_t｣
-            [0] .identifier                                                     ｢person_t｣
-        [1] .Soil.Expr.Atom                                                     [ [ ' ... 0 ]<NEWLINE><NEWLINE>¦
-          [0] .Soil.Expr.Struct                                                 [ [ ' ... 0 ]<NEWLINE><NEWLINE>¦
-            [0] .Soil.Expr.Struct.LabeledItem                                   [ 'Bj ... p' ] ¦
-              [0] .Soil.Expr.Struct                                             [ 'Bj ... p' ] ¦
-                [0] .Soil.Expr.Struct.LabeledItem                               'Bjarne' ¦
-                  [0] .Soil.Expr                                                'Bjarne' ¦
-                    [0] .Soil.Expr.Atom                                         'Bjarne' ¦
-                      [0] .string                                               ｢'Bjarne'｣
-                [1] .Soil.Expr.Struct.LabeledItem                               'Stro ... rup' ¦
-                  [0] .Soil.Expr                                                'Stro ... rup' ¦
-                    [0] .Soil.Expr.Atom                                         'Stro ... rup' ¦
-                      [0] .string                                               ｢'Stroustrup'｣
-            [1] .Soil.Expr.Struct.LabeledItem                                   80 ¦
-              [0] .Soil.Expr                                                    80 ¦
-                [0] .Soil.Expr.Atom                                             80 ¦
-                  [0] .number                                                   ｢80｣
-                    [0] .number.integer                                         ｢80｣
-                      [0] .number.integer.decimal                               ｢80｣
-                        [0] .number.unsigned.integer.decimal                    ｢80｣
-  [4] .Soil.Func.Defn                                                           is_ad ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
-    [0] .Soil.Func.Name                                                         is_ad ... lt_f ¦
-      [0] .Soil.funcName                                                        ｢is_adult_f｣
-        [0] .identifier                                                         ｢is_adult_f｣
-    [1] .Soil.Func.Signature                                                    perso ... ol_t ¦
-      [0] .Soil.Type                                                            person_t ¦
-        [0] .Soil.Type.Name                                                     person_t ¦
-          [0] .Soil.typeName                                                    ｢person_t｣
-            [0] .identifier                                                     ｢person_t｣
-      [1] .Soil.Type                                                            bool_t ¦
-        [0] .Soil.Type.Name                                                     bool_t ¦
-          [0] .Soil.typeName                                                    ｢bool_t｣
-            [0] .identifier                                                     ｢bool_t｣
-    [2] .Soil.Func.Body                                                         {<NEWLINE><INDENT>re ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
-      [0] .Soil.Func.Stmt                                                       retva ... 18;<NEWLINE><DEDENT>¦
-        [0] .Soil.Expr                                                          retva ... >= 18¦
-          [0] .Soil.Expr.Axe.Assign.=                                           retva ... >= 18¦
-            [0] .Soil.Expr.Atom                                                 retval ¦
-              [0] .identifier                                                   ｢retval｣
-            [1] .Soil.Expr.Axe.Comp.>=                                          arg.a ... >= 18¦
-              [0] .Soil.Expr.Axe.Member..                                       arg.age ¦
-                [0] .Soil.Expr.Atom                                             arg¦
-                  [0] .identifier                                               ｢arg｣
-                [1] .Soil.Expr.Atom                                             age ¦
-                  [0] .identifier                                               ｢age｣
-              [1] .Soil.Expr.Atom                                               18¦
-                [0] .number                                                     ｢18｣
-                  [0] .number.integer                                           ｢18｣
-                    [0] .number.integer.decimal                                 ｢18｣
-                      [0] .number.unsigned.integer.decimal                      ｢18｣
-  [5] .Soil.Func.Defn                                                           examp ... }<NEWLINE><DEDENT>}<NEWLINE>¦
-    [0] .Soil.Func.Name                                                         example_f ¦
-      [0] .Soil.funcName                                                        ｢example_f｣
-        [0] .identifier                                                         ｢example_f｣
-    [1] .Soil.Func.Signature                                                    [] ¦
-      [0] .Soil.Type                                                            [] ¦
-        [0] .Soil.Type.Struct                                                   [] ¦
-    [2] .Soil.Func.Body                                                         {<NEWLINE><INDENT>ag ... }<NEWLINE><DEDENT>}<NEWLINE>¦
-      [0] .Soil.Func.Stmt                                                       age = ...  42;<NEWLINE>¦
-        [0] .Soil.Expr                                                          age = ... :: 42¦
-          [0] .Soil.Expr.Axe.Assign.=                                           age = ... :: 42¦
-            [0] .Soil.Expr.Atom                                                 age ¦
-              [0] .identifier                                                   ｢age｣
-            [1] .Soil.Expr.Axe.Typing.::                                        age_t ... :: 42¦
-              [0] .Soil.Expr.Atom                                               age_t ¦
-                [0] .Soil.typeName                                              ｢age_t｣
-                  [0] .identifier                                               ｢age_t｣
-              [1] .Soil.Expr.Atom                                               42¦
-                [0] .number                                                     ｢42｣
-                  [0] .number.integer                                           ｢42｣
-                    [0] .number.integer.decimal                                 ｢42｣
-                      [0] .number.unsigned.integer.decimal                      ｢42｣
-      [1] .Soil.Func.Stmt                                                       p1 =  ... 0 ];<NEWLINE>¦
-        [0] .Soil.Expr                                                          p1 =  ...  20 ]¦
-          [0] .Soil.Expr.Axe.Assign.=                                           p1 =  ...  20 ]¦
-            [0] .Soil.Expr.Atom                                                 p1 ¦
-              [0] .identifier                                                   ｢p1｣
-            [1] .Soil.Expr.Axe.Typing.::                                        perso ...  20 ]¦
-              [0] .Soil.Expr.Atom                                               person_t ¦
-                [0] .Soil.typeName                                              ｢person_t｣
-                  [0] .identifier                                               ｢person_t｣
-              [1] .Soil.Expr.Atom                                               [ nam ...  20 ]¦
-                [0] .Soil.Expr.Struct                                           [ nam ...  20 ]¦
-                  [0] .Soil.Expr.Struct.LabeledItem                             name  ... n' ] ¦
-                    [0] .Soil.Variable.Name                                     name ¦
-                      [0] .identifier                                           ｢name｣
-                    [1] .Soil.Expr.Struct                                       [ fir ... n' ] ¦
-                      [0] .Soil.Expr.Struct.LabeledItem                         first ... Bob' ¦
-                        [0] .Soil.Variable.Name                                 first ¦
-                          [0] .identifier                                       ｢first｣
-                        [1] .Soil.Expr                                          'Bob' ¦
-                          [0] .Soil.Expr.Atom                                   'Bob' ¦
-                            [0] .string                                         ｢'Bob'｣
-                      [1] .Soil.Expr.Struct.LabeledItem                         last  ... son' ¦
-                        [0] .Soil.Variable.Name                                 last ¦
-                          [0] .identifier                                       ｢last｣
-                        [1] .Soil.Expr                                          'Bobson' ¦
-                          [0] .Soil.Expr.Atom                                   'Bobson' ¦
-                            [0] .string                                         ｢'Bobson'｣
-                  [1] .Soil.Expr.Struct.LabeledItem                             age : 20 ¦
-                    [0] .Soil.Variable.Name                                     age ¦
-                      [0] .identifier                                           ｢age｣
-                    [1] .Soil.Expr                                              20 ¦
-                      [0] .Soil.Expr.Atom                                       20 ¦
-                        [0] .number                                             ｢20｣
-                          [0] .number.integer                                   ｢20｣
-                            [0] .number.integer.decimal                         ｢20｣
-                              [0] .number.unsigned.integer.decimal              ｢20｣
-      [2] .Soil.Func.Stmt                                                       p2 =  ... 0 ];<NEWLINE>¦
-        [0] .Soil.Expr                                                          p2 =  ...  30 ]¦
-          [0] .Soil.Expr.Axe.Assign.=                                           p2 =  ...  30 ]¦
-            [0] .Soil.Expr.Atom                                                 p2 ¦
-              [0] .identifier                                                   ｢p2｣
-            [1] .Soil.Expr.Axe.Typing.::                                        perso ...  30 ]¦
-              [0] .Soil.Expr.Atom                                               person_t ¦
-                [0] .Soil.typeName                                              ｢person_t｣
-                  [0] .identifier                                               ｢person_t｣
-              [1] .Soil.Expr.Atom                                               [ [ ' ...  30 ]¦
-                [0] .Soil.Expr.Struct                                           [ [ ' ...  30 ]¦
-                  [0] .Soil.Expr.Struct.LabeledItem                             [ 'Al ... n' ] ¦
-                    [0] .Soil.Expr.Struct                                       [ 'Al ... n' ] ¦
-                      [0] .Soil.Expr.Struct.LabeledItem                         'Alice' ¦
-                        [0] .Soil.Expr                                          'Alice' ¦
-                          [0] .Soil.Expr.Atom                                   'Alice' ¦
-                            [0] .string                                         ｢'Alice'｣
-                      [1] .Soil.Expr.Struct.LabeledItem                         'Allison' ¦
-                        [0] .Soil.Expr                                          'Allison' ¦
-                          [0] .Soil.Expr.Atom                                   'Allison' ¦
-                            [0] .string                                         ｢'Allison'｣
-                  [1] .Soil.Expr.Struct.LabeledItem                             30 ¦
-                    [0] .Soil.Expr                                              30 ¦
-                      [0] .Soil.Expr.Atom                                       30 ¦
-                        [0] .number                                             ｢30｣
-                          [0] .number.integer                                   ｢30｣
-                            [0] .number.integer.decimal                         ｢30｣
-                              [0] .number.unsigned.integer.decimal              ｢30｣
-      [3] .Soil.Func.Stmt                                                       ['{}  ... g_f;<NEWLINE>¦
-        [0] .Soil.Expr                                                          ['{}  ... log_f¦
-          [0] .Soil.Expr.Axe.CallPipe.|                                         ['{}  ... log_f¦
-            [0] .Soil.Expr.Atom                                                 ['{}  ... p1)] ¦
-              [0] .Soil.Expr.Struct                                             ['{}  ... p1)] ¦
-                [0] .Soil.Expr.Struct.LabeledItem                               '{} i ...  {}' ¦
-                  [0] .Soil.Expr                                                '{} i ...  {}' ¦
-                    [0] .Soil.Expr.Atom                                         '{} i ...  {}' ¦
-                      [0] .string                                               ｢'{} is-adult = {}'｣
-                [1] .Soil.Expr.Struct.LabeledItem                               p1 ¦
-                  [0] .Soil.Expr                                                p1 ¦
-                    [0] .Soil.Expr.Atom                                         p1 ¦
-                      [0] .identifier                                           ｢p1｣
-                [2] .Soil.Expr.Struct.LabeledItem                               is_ad ... f(p1)¦
-                  [0] .Soil.Expr                                                is_ad ... f(p1)¦
-                    [0] .Soil.Expr.Axe.CallPost.(                               is_ad ... f(p1)¦
-                      [0] .Soil.Expr.Atom                                       is_adult_f¦
-                        [0] .Soil.funcName                                      ｢is_adult_f｣
-                          [0] .identifier                                       ｢is_adult_f｣
-                      [1] .Soil.Expr.Atom                                       p1¦
-                        [0] .identifier                                         ｢p1｣
-            [1] .Soil.Expr.Atom                                                 log_f¦
-              [0] .Soil.funcName                                                ｢log_f｣
-                [0] .identifier                                                 ｢log_f｣
-      [4] .Soil.Func.Stmt                                                       vecto ... g_f;<NEWLINE>¦
-        [0] .Soil.Expr                                                          vecto ... log_f¦
-          [0] .Soil.Expr.Axe.CallPipe.|                                         vecto ... log_f¦
-            [0] .Soil.Expr.Axe.CallPipe.|                                       vecto ...  40) ¦
-              [0] .Soil.Expr.Axe.Typing.::                                      vecto ... p2 ] ¦
-                [0] .Soil.Expr.Axe.CallPost.(                                   vecto ... n_t) ¦
-                  [0] .Soil.Expr.Atom                                           vector_f¦
-                    [0] .Soil.funcName                                          ｢vector_f｣
-                      [0] .identifier                                           ｢vector_f｣
-                  [1] .Soil.Expr.Atom                                           person_t¦
-                    [0] .Soil.typeName                                          ｢person_t｣
-                      [0] .identifier                                           ｢person_t｣
-                [1] .Soil.Expr.Atom                                             [ p1 p2 ] ¦
-                  [0] .Soil.Expr.Struct                                         [ p1 p2 ] ¦
-                    [0] .Soil.Expr.Struct.LabeledItem                           p1 ¦
-                      [0] .Soil.Expr                                            p1 ¦
-                        [0] .Soil.Expr.Atom                                     p1 ¦
-                          [0] .identifier                                       ｢p1｣
-                    [1] .Soil.Expr.Struct.LabeledItem                           p2 ¦
-                      [0] .Soil.Expr                                            p2 ¦
-                        [0] .Soil.Expr.Atom                                     p2 ¦
-                          [0] .identifier                                       ｢p2｣
-              [1] .Soil.Expr.Axe.CallPost.(                                     std.f ...  40) ¦
-                [0] .Soil.Expr.Axe.Member..                                     std.f ... ter_m¦
-                  [0] .Soil.Expr.Atom                                           std¦
-                    [0] .identifier                                             ｢std｣
-                  [1] .Soil.Expr.Atom                                           filter_m¦
-                    [0] .identifier                                             ｢filter_m｣
-                [1] .Soil.Expr.Axe.Comp.<=                                      arg.a ... <= 40¦
-                  [0] .Soil.Expr.Axe.Member..                                   arg.age ¦
-                    [0] .Soil.Expr.Atom                                         arg¦
-                      [0] .identifier                                           ｢arg｣
-                    [1] .Soil.Expr.Atom                                         age ¦
-                      [0] .identifier                                           ｢age｣
-                  [1] .Soil.Expr.Atom                                           40¦
-                    [0] .number                                                 ｢40｣
-                      [0] .number.integer                                       ｢40｣
-                        [0] .number.integer.decimal                             ｢40｣
-                          [0] .number.unsigned.integer.decimal                  ｢40｣
-            [1] .Soil.Expr.Atom                                                 log_f¦
-              [0] .Soil.funcName                                                ｢log_f｣
-                [0] .identifier                                                 ｢log_f｣
-      [5] .Soil.Func.Stmt                                                       «<INDENT>som ... _f;<NEWLINE><NEWLINE>¦
-        [0] .Soil.Expr                                                          «<INDENT>som ... int_f¦
-          [0] .Soil.Expr.Axe.CallPipe.|                                         «<INDENT>som ... int_f¦
-            [0] .Soil.Expr.Atom                                                 «<INDENT>som ...  <NEWLINE><DEDENT>» ¦
-              [0] .language                                                     «<INDENT>som ... e <NEWLINE><DEDENT>»¦
-            [1] .Soil.Expr.Atom                                                 print_f¦
-              [0] .Soil.funcName                                                ｢print_f｣
-                [0] .identifier                                                 ｢print_f｣
-      [6] .Soil.Func.Stmt                                                       if p1 ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
-        [0] .Soil.Func.Stmt.If                                                  if p1 ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
-          [0] .Soil.Func.Stmt.If.Branch                                         p1.na ... ;<NEWLINE><DEDENT>} ¦
-            [0] .Soil.Expr                                                      p1.na ... > 10 ¦
-              [0] .Soil.Expr.Axe.Comp.>                                         p1.na ... > 10 ¦
-                [0] .Soil.Expr.Axe.CallPipe.|                                   p1.na ... ze_f ¦
-                  [0] .Soil.Expr.Axe.Member..                                   p1.na ... irst ¦
-                    [0] .Soil.Expr.Axe.Member..                                 p1.name¦
-                      [0] .Soil.Expr.Atom                                       p1¦
-                        [0] .identifier                                         ｢p1｣
-                      [1] .Soil.Expr.Atom                                       name¦
-                        [0] .identifier                                         ｢name｣
-                    [1] .Soil.Expr.Atom                                         first ¦
-                      [0] .identifier                                           ｢first｣
-                  [1] .Soil.Expr.Atom                                           size_f ¦
-                    [0] .Soil.funcName                                          ｢size_f｣
-                      [0] .identifier                                           ｢size_f｣
-                [1] .Soil.Expr.Atom                                             10 ¦
-                  [0] .number                                                   ｢10｣
-                    [0] .number.integer                                         ｢10｣
-                      [0] .number.integer.decimal                               ｢10｣
-                        [0] .number.unsigned.integer.decimal                    ｢10｣
-            [1] .Soil.Func.Body                                                 {<NEWLINE><INDENT>'T ... ;<NEWLINE><DEDENT>} ¦
-              [0] .Soil.Func.Stmt                                               'This ... _f;<NEWLINE><DEDENT>¦
-                [0] .Soil.Expr                                                  'This ... log_f¦
-                  [0] .Soil.Expr.Axe.CallPipe.|                                 'This ... log_f¦
-                    [0] .Soil.Expr.Atom                                         'This ... ong' ¦
-                      [0] .string                                               ｢'This name is long'｣
-                    [1] .Soil.Expr.Atom                                         log_f¦
-                      [0] .Soil.funcName                                        ｢log_f｣
-                        [0] .identifier                                         ｢log_f｣
-          [1] .Soil.Func.Stmt.If.Branch                                         p1.na ... ;<NEWLINE><DEDENT>} ¦
-            [0] .Soil.Expr                                                      p1.na ...  > 5 ¦
-              [0] .Soil.Expr.Axe.Comp.>                                         p1.na ...  > 5 ¦
-                [0] .Soil.Expr.Axe.CallPipe.|                                   p1.na ... ze_f ¦
-                  [0] .Soil.Expr.Axe.Member..                                   p1.na ... irst ¦
-                    [0] .Soil.Expr.Axe.Member..                                 p1.name¦
-                      [0] .Soil.Expr.Atom                                       p1¦
-                        [0] .identifier                                         ｢p1｣
-                      [1] .Soil.Expr.Atom                                       name¦
-                        [0] .identifier                                         ｢name｣
-                    [1] .Soil.Expr.Atom                                         first ¦
-                      [0] .identifier                                           ｢first｣
-                  [1] .Soil.Expr.Atom                                           size_f ¦
-                    [0] .Soil.funcName                                          ｢size_f｣
-                      [0] .identifier                                           ｢size_f｣
-                [1] .Soil.Expr.Atom                                             5 ¦
-                  [0] .number                                                   ｢5｣
-                    [0] .number.integer                                         ｢5｣
-                      [0] .number.integer.decimal                               ｢5｣
-                        [0] .number.unsigned.integer.decimal                    ｢5｣
-            [1] .Soil.Func.Body                                                 {<NEWLINE><INDENT>'T ... ;<NEWLINE><DEDENT>} ¦
-              [0] .Soil.Func.Stmt                                               'This ... _f;<NEWLINE><DEDENT>¦
-                [0] .Soil.Expr                                                  'This ... log_f¦
-                  [0] .Soil.Expr.Axe.CallPipe.|                                 'This ... log_f¦
-                    [0] .Soil.Expr.Atom                                         'This ... ong' ¦
-                      [0] .string                                               ｢'This name it not long'｣
-                    [1] .Soil.Expr.Atom                                         log_f¦
-                      [0] .Soil.funcName                                        ｢log_f｣
-                        [0] .identifier                                         ｢log_f｣
-          [2] .Soil.Func.Body                                                   {<NEWLINE><INDENT>'T ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
-            [0] .Soil.Func.Stmt                                                 'This ... _f;<NEWLINE><DEDENT>¦
-              [0] .Soil.Expr                                                    'This ... log_f¦
-                [0] .Soil.Expr.Axe.CallPipe.|                                   'This ... log_f¦
-                  [0] .Soil.Expr.Atom                                           'This ... ort' ¦
-                    [0] .string                                                 ｢'This name it short'｣
-                  [1] .Soil.Expr.Atom                                           log_f¦
-                    [0] .Soil.funcName                                          ｢log_f｣
-                      [0] .identifier                                           ｢log_f｣
-      [7] .Soil.Func.Stmt                                                       sum = ... : 0;<NEWLINE>¦
-        [0] .Soil.Expr                                                          sum = ...  :: 0¦
-          [0] .Soil.Expr.Axe.Assign.=                                           sum = ...  :: 0¦
-            [0] .Soil.Expr.Atom                                                 sum ¦
-              [0] .identifier                                                   ｢sum｣
-            [1] .Soil.Expr.Axe.Typing.::                                        i64_t :: 0¦
-              [0] .Soil.Expr.Atom                                               i64_t ¦
-                [0] .Soil.typeName                                              ｢i64_t｣
-                  [0] .identifier                                               ｢i64_t｣
-              [1] .Soil.Expr.Atom                                               0¦
-                [0] .number                                                     ｢0｣
-                  [0] .number.integer                                           ｢0｣
-                    [0] .number.integer.decimal                                 ｢0｣
-                      [0] .number.unsigned.integer.decimal                      ｢0｣
-      [8] .Soil.Func.Stmt                                                       for i ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
-        [0] .Soil.Func.Stmt.For                                                 for i ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
-          [0] .Soil.Expr.Maybe                                                  i = i ...  :: 0¦
-            [0] .Soil.Expr                                                      i = i ...  :: 0¦
-              [0] .Soil.Expr.Axe.Assign.=                                       i = i ...  :: 0¦
-                [0] .Soil.Expr.Atom                                             i ¦
-                  [0] .identifier                                               ｢i｣
-                [1] .Soil.Expr.Axe.Typing.::                                    i64_t :: 0¦
-                  [0] .Soil.Expr.Atom                                           i64_t ¦
-                    [0] .Soil.typeName                                          ｢i64_t｣
-                      [0] .identifier                                           ｢i64_t｣
-                  [1] .Soil.Expr.Atom                                           0¦
-                    [0] .number                                                 ｢0｣
-                      [0] .number.integer                                       ｢0｣
-                        [0] .number.integer.decimal                             ｢0｣
-                          [0] .number.unsigned.integer.decimal                  ｢0｣
-          [1] .Soil.Expr.Maybe                                                  i < n¦
-            [0] .Soil.Expr                                                      i < n¦
-              [0] .Soil.Expr.Axe.Comp.<                                         i < n¦
-                [0] .Soil.Expr.Atom                                             i ¦
-                  [0] .identifier                                               ｢i｣
-                [1] .Soil.Expr.Atom                                             n¦
-                  [0] .identifier                                               ｢n｣
-          [2] .Soil.Expr.Maybe                                                  i += 1 ¦
-            [0] .Soil.Expr                                                      i += 1 ¦
-              [0] .Soil.Expr.Axe.Assign.+=                                      i += 1 ¦
-                [0] .Soil.Expr.Atom                                             i ¦
-                  [0] .identifier                                               ｢i｣
-                [1] .Soil.Expr.Atom                                             1 ¦
-                  [0] .number                                                   ｢1｣
-                    [0] .number.integer                                         ｢1｣
-                      [0] .number.integer.decimal                               ｢1｣
-                        [0] .number.unsigned.integer.decimal                    ｢1｣
-          [3] .Soil.Func.Body                                                   {<NEWLINE><INDENT>su ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
-            [0] .Soil.Func.Stmt                                                 sum + ...  i;<NEWLINE><DEDENT>¦
-              [0] .Soil.Expr                                                    sum += i¦
-                [0] .Soil.Expr.Axe.Assign.+=                                    sum += i¦
-                  [0] .Soil.Expr.Atom                                           sum ¦
-                    [0] .identifier                                             ｢sum｣
-                  [1] .Soil.Expr.Atom                                           i¦
-                    [0] .identifier                                             ｢i｣
-      [9] .Soil.Func.Stmt                                                       abc = 42;<NEWLINE>¦
-        [0] .Soil.Expr                                                          abc = 42¦
-          [0] .Soil.Expr.Axe.Assign.=                                           abc = 42¦
-            [0] .Soil.Expr.Atom                                                 abc ¦
-              [0] .identifier                                                   ｢abc｣
-            [1] .Soil.Expr.Atom                                                 42¦
-              [0] .number                                                       ｢42｣
-                [0] .number.integer                                             ｢42｣
-                  [0] .number.integer.decimal                                   ｢42｣
-                    [0] .number.unsigned.integer.decimal                        ｢42｣
-      [10] .Soil.Func.Stmt                                                      for ; ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
-        [0] .Soil.Func.Stmt.For                                                 for ; ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
-          [0] .Soil.Expr.Maybe                                                  ¦
-          [1] .Soil.Expr.Maybe                                                  i < n¦
-            [0] .Soil.Expr                                                      i < n¦
-              [0] .Soil.Expr.Axe.Comp.<                                         i < n¦
-                [0] .Soil.Expr.Atom                                             i ¦
-                  [0] .identifier                                               ｢i｣
-                [1] .Soil.Expr.Atom                                             n¦
-                  [0] .identifier                                               ｢n｣
-          [2] .Soil.Expr.Maybe                                                  ¦
-          [3] .Soil.Func.Body                                                   {<NEWLINE><INDENT>su ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
-            [0] .Soil.Func.Stmt                                                 sum + ...  i;<NEWLINE><DEDENT>¦
-              [0] .Soil.Expr                                                    sum += i¦
-                [0] .Soil.Expr.Axe.Assign.+=                                    sum += i¦
-                  [0] .Soil.Expr.Atom                                           sum ¦
-                    [0] .identifier                                             ｢sum｣
-                  [1] .Soil.Expr.Atom                                           i¦
-                    [0] .identifier                                             ｢i｣
-
+  [0] .freeForm                                                                      true      example.simplest.fern:1:1
+    [0] .comment                                                                     false     example.simplest.fern:1:1
+  [1] .Fern                                                                          true      example.simplest.fern:1:1
+    [0] .freeForm                                                                    true      example.simplest.fern:1:2
+      [0] .comment                                                                   false     example.simplest.fern:1:2
+      [1] .comment                                                                   false     example.simplest.fern:2:1
+      [2] .comment                                                                   false     example.simplest.fern:2:3
+    [1] .Fern.LabeledItem                                                            true      example.simplest.fern:2:3
+      [0] .Fern.label                                                                true      example.simplest.fern:2:3
+        [0] .string                                                                  false     example.simplest.fern:2:3
+          [0] .string.single                                                         false     example.simplest.fern:2:3
+          [1] .string.double                                                         false     example.simplest.fern:2:3
+        [1] .identifier                                                              true      example.simplest.fern:2:3
+        [2] .freeForm                                                                true      example.simplest.fern:2:7
+          [0] .comment                                                               false     example.simplest.fern:2:7
+          [1] .comment                                                               false     example.simplest.fern:3:3
+      [1] .Fern                                                                      false     example.simplest.fern:2:3
+      [2] .Fern.value                                                                true      example.simplest.fern:2:3
+        [0] .none                                                                    true      example.simplest.fern:2:3
+        [1] .freeForm                                                                true      example.simplest.fern:2:7
+          [0] .comment                                                               false     example.simplest.fern:2:7
+          [1] .comment                                                               false     example.simplest.fern:3:3
+    [2] .Fern.LabeledItem                                                            true      example.simplest.fern:3:3
+      [0] .Fern.label                                                                false     example.simplest.fern:3:3
+        [0] .string                                                                  false     example.simplest.fern:3:3
+          [0] .string.single                                                         false     example.simplest.fern:3:3
+          [1] .string.double                                                         false     example.simplest.fern:3:3
+        [1] .identifier                                                              false     example.simplest.fern:3:3
+      [1] .Fern                                                                      true      example.simplest.fern:3:3
+        [0] .freeForm                                                                true      example.simplest.fern:3:4
+          [0] .comment                                                               false     example.simplest.fern:3:4
+        [1] .Fern.LabeledItem                                                        false     example.simplest.fern:3:4
+          [0] .Fern.label                                                            false     example.simplest.fern:3:4
+            [0] .string                                                              false     example.simplest.fern:3:4
+              [0] .string.single                                                     false     example.simplest.fern:3:4
+              [1] .string.double                                                     false     example.simplest.fern:3:4
+            [1] .identifier                                                          false     example.simplest.fern:3:4
+          [1] .Fern                                                                  false     example.simplest.fern:3:4
+          [2] .Fern.value                                                            false     example.simplest.fern:3:4
+            [0] .none                                                                false     example.simplest.fern:3:4
+            [1] .boolean                                                             false     example.simplest.fern:3:4
+            [2] .number                                                              false     example.simplest.fern:3:4
+              [0] .number.float                                                      false     example.simplest.fern:3:4
+                [0] .number.plusMinus                                                false     example.simplest.fern:3:4
+                [1] .number.unsigned.float                                           false     example.simplest.fern:3:4
+                  [0] .number.unsigned.float.special                                 false     example.simplest.fern:3:4
+                  [1] .number.unsigned.float.integerPart                             false     example.simplest.fern:3:4
+                    [0] .number.unsigned.integer.decimal                             false     example.simplest.fern:3:4
+              [1] .number.float.special                                              false     example.simplest.fern:3:4
+                [0] .number.plusMinus                                                false     example.simplest.fern:3:4
+                [1] .number.unsigned.float.special                                   false     example.simplest.fern:3:4
+              [2] .number.integer                                                    false     example.simplest.fern:3:4
+                [0] .number.integer.binary                                           false     example.simplest.fern:3:4
+                  [0] .number.plusMinus                                              false     example.simplest.fern:3:4
+                  [1] .number.unsigned.integer.binary                                false     example.simplest.fern:3:4
+                [1] .number.integer.octal                                            false     example.simplest.fern:3:4
+                  [0] .number.plusMinus                                              false     example.simplest.fern:3:4
+                  [1] .number.unsigned.integer.octal                                 false     example.simplest.fern:3:4
+                [2] .number.integer.hexadecimal                                      false     example.simplest.fern:3:4
+                  [0] .number.plusMinus                                              false     example.simplest.fern:3:4
+                  [1] .number.unsigned.integer.hexadecimal                           false     example.simplest.fern:3:4
+                [3] .number.integer.decimal                                          false     example.simplest.fern:3:4
+                  [0] .number.plusMinus                                              false     example.simplest.fern:3:4
+                  [1] .number.unsigned.integer.decimal                               false     example.simplest.fern:3:4
+            [3] .string                                                              false     example.simplest.fern:3:4
+              [0] .string.single                                                     false     example.simplest.fern:3:4
+              [1] .string.double                                                     false     example.simplest.fern:3:4
+        [2] .freeForm                                                                true      example.simplest.fern:3:5
+          [0] .comment                                                               false     example.simplest.fern:3:5
+          [1] .comment                                                               false     example.simplest.fern:4:3
+    [3] .Fern.LabeledItem                                                            true      example.simplest.fern:4:3
+      [0] .Fern.label                                                                false     example.simplest.fern:4:3
+        [0] .string                                                                  false     example.simplest.fern:4:3
+          [0] .string.single                                                         false     example.simplest.fern:4:3
+          [1] .string.double                                                         false     example.simplest.fern:4:3
+        [1] .identifier                                                              false     example.simplest.fern:4:3
+      [1] .Fern                                                                      true      example.simplest.fern:4:3
+        [0] .freeForm                                                                true      example.simplest.fern:4:4
+          [0] .comment                                                               false     example.simplest.fern:4:4
+          [1] .comment                                                               false     example.simplest.fern:5:1
+          [2] .comment                                                               false     example.simplest.fern:5:5
+        [1] .Fern.LabeledItem                                                        true      example.simplest.fern:5:5
+          [0] .Fern.label                                                            true      example.simplest.fern:5:5
+            [0] .string                                                              false     example.simplest.fern:5:5
+              [0] .string.single                                                     false     example.simplest.fern:5:5
+              [1] .string.double                                                     false     example.simplest.fern:5:5
+            [1] .identifier                                                          true      example.simplest.fern:5:5
+            [2] .freeForm                                                            true      example.simplest.fern:5:9
+              [0] .comment                                                           false     example.simplest.fern:5:9
+              [1] .comment                                                           false     example.simplest.fern:6:1
+              [2] .comment                                                           false     example.simplest.fern:6:3
+          [1] .Fern                                                                  false     example.simplest.fern:5:5
+          [2] .Fern.value                                                            true      example.simplest.fern:5:5
+            [0] .none                                                                true      example.simplest.fern:5:5
+            [1] .freeForm                                                            true      example.simplest.fern:5:9
+              [0] .comment                                                           false     example.simplest.fern:5:9
+              [1] .comment                                                           false     example.simplest.fern:6:1
+              [2] .comment                                                           false     example.simplest.fern:6:3
+        [2] .Fern.LabeledItem                                                        false     example.simplest.fern:6:3
+          [0] .Fern.label                                                            false     example.simplest.fern:6:3
+            [0] .string                                                              false     example.simplest.fern:6:3
+              [0] .string.single                                                     false     example.simplest.fern:6:3
+              [1] .string.double                                                     false     example.simplest.fern:6:3
+            [1] .identifier                                                          false     example.simplest.fern:6:3
+          [1] .Fern                                                                  false     example.simplest.fern:6:3
+          [2] .Fern.value                                                            false     example.simplest.fern:6:3
+            [0] .none                                                                false     example.simplest.fern:6:3
+            [1] .boolean                                                             false     example.simplest.fern:6:3
+            [2] .number                                                              false     example.simplest.fern:6:3
+              [0] .number.float                                                      false     example.simplest.fern:6:3
+                [0] .number.plusMinus                                                false     example.simplest.fern:6:3
+                [1] .number.unsigned.float                                           false     example.simplest.fern:6:3
+                  [0] .number.unsigned.float.special                                 false     example.simplest.fern:6:3
+                  [1] .number.unsigned.float.integerPart                             false     example.simplest.fern:6:3
+                    [0] .number.unsigned.integer.decimal                             false     example.simplest.fern:6:3
+              [1] .number.float.special                                              false     example.simplest.fern:6:3
+                [0] .number.plusMinus                                                false     example.simplest.fern:6:3
+                [1] .number.unsigned.float.special                                   false     example.simplest.fern:6:3
+              [2] .number.integer                                                    false     example.simplest.fern:6:3
+                [0] .number.integer.binary                                           false     example.simplest.fern:6:3
+                  [0] .number.plusMinus                                              false     example.simplest.fern:6:3
+                  [1] .number.unsigned.integer.binary                                false     example.simplest.fern:6:3
+                [1] .number.integer.octal                                            false     example.simplest.fern:6:3
+                  [0] .number.plusMinus                                              false     example.simplest.fern:6:3
+                  [1] .number.unsigned.integer.octal                                 false     example.simplest.fern:6:3
+                [2] .number.integer.hexadecimal                                      false     example.simplest.fern:6:3
+                  [0] .number.plusMinus                                              false     example.simplest.fern:6:3
+                  [1] .number.unsigned.integer.hexadecimal                           false     example.simplest.fern:6:3
+                [3] .number.integer.decimal                                          false     example.simplest.fern:6:3
+                  [0] .number.plusMinus                                              false     example.simplest.fern:6:3
+                  [1] .number.unsigned.integer.decimal                               false     example.simplest.fern:6:3
+            [3] .string                                                              false     example.simplest.fern:6:3
+              [0] .string.single                                                     false     example.simplest.fern:6:3
+              [1] .string.double                                                     false     example.simplest.fern:6:3
+        [3] .freeForm                                                                true      example.simplest.fern:6:4
+          [0] .comment                                                               false     example.simplest.fern:6:4
+          [1] .comment                                                               false     example.simplest.fern:7:1
+          [2] .comment                                                               false     example.simplest.fern:7:1
+    [4] .Fern.LabeledItem                                                            false     example.simplest.fern:7:1
+      [0] .Fern.label                                                                false     example.simplest.fern:7:1
+        [0] .string                                                                  false     example.simplest.fern:7:1
+          [0] .string.single                                                         false     example.simplest.fern:7:1
+          [1] .string.double                                                         false     example.simplest.fern:7:1
+        [1] .identifier                                                              false     example.simplest.fern:7:1
+      [1] .Fern                                                                      false     example.simplest.fern:7:1
+      [2] .Fern.value                                                                false     example.simplest.fern:7:1
+        [0] .none                                                                    false     example.simplest.fern:7:1
+        [1] .boolean                                                                 false     example.simplest.fern:7:1
+        [2] .number                                                                  false     example.simplest.fern:7:1
+          [0] .number.float                                                          false     example.simplest.fern:7:1
+            [0] .number.plusMinus                                                    false     example.simplest.fern:7:1
+            [1] .number.unsigned.float                                               false     example.simplest.fern:7:1
+              [0] .number.unsigned.float.special                                     false     example.simplest.fern:7:1
+              [1] .number.unsigned.float.integerPart                                 false     example.simplest.fern:7:1
+                [0] .number.unsigned.integer.decimal                                 false     example.simplest.fern:7:1
+          [1] .number.float.special                                                  false     example.simplest.fern:7:1
+            [0] .number.plusMinus                                                    false     example.simplest.fern:7:1
+            [1] .number.unsigned.float.special                                       false     example.simplest.fern:7:1
+          [2] .number.integer                                                        false     example.simplest.fern:7:1
+            [0] .number.integer.binary                                               false     example.simplest.fern:7:1
+              [0] .number.plusMinus                                                  false     example.simplest.fern:7:1
+              [1] .number.unsigned.integer.binary                                    false     example.simplest.fern:7:1
+            [1] .number.integer.octal                                                false     example.simplest.fern:7:1
+              [0] .number.plusMinus                                                  false     example.simplest.fern:7:1
+              [1] .number.unsigned.integer.octal                                     false     example.simplest.fern:7:1
+            [2] .number.integer.hexadecimal                                          false     example.simplest.fern:7:1
+              [0] .number.plusMinus                                                  false     example.simplest.fern:7:1
+              [1] .number.unsigned.integer.hexadecimal                               false     example.simplest.fern:7:1
+            [3] .number.integer.decimal                                              false     example.simplest.fern:7:1
+              [0] .number.plusMinus                                                  false     example.simplest.fern:7:1
+              [1] .number.unsigned.integer.decimal                                   false     example.simplest.fern:7:1
+        [3] .string                                                                  false     example.simplest.fern:7:1
+          [0] .string.single                                                         false     example.simplest.fern:7:1
+          [1] .string.double                                                         false     example.simplest.fern:7:1
+    [5] .freeForm                                                                    true      example.simplest.fern:7:2
+      [0] .comment                                                                   false     example.simplest.fern:7:2
+      [1] .comment                                                                   false     example.simplest.fern:8:1
 1
 2
 3
@@ -9693,4 +9052,455 @@ Mr Jane
       [0] .Toml.SimpleKey                                                       name ¦
     [1] .Toml.Val                                                               \"cave ... ish\"<NEWLINE>¦
       [0] .string                                                               ｢"cavendish"｣
+
+[0] .Soil                                                                       name_ ... }<NEWLINE><DEDENT>}<NEWLINE>¦
+  [0] .Soil.Type.Defn                                                           name_ ... tr_t<NEWLINE>¦
+    [0] .Soil.Type.Name                                                         name_t ¦
+      [0] .Soil.typeName                                                        ｢name_t｣
+        [0] .identifier                                                         ｢name_t｣
+    [1] .Soil.Type                                                              str_t<NEWLINE>¦
+      [0] .Soil.Type.Name                                                       str_t<NEWLINE>¦
+        [0] .Soil.typeName                                                      ｢str_t｣
+          [0] .identifier                                                       ｢str_t｣
+  [1] .Soil.Type.Defn                                                           age_t ... 2_t<NEWLINE><NEWLINE>¦
+    [0] .Soil.Type.Name                                                         age_t ¦
+      [0] .Soil.typeName                                                        ｢age_t｣
+        [0] .identifier                                                         ｢age_t｣
+    [1] .Soil.Type                                                              i32_t<NEWLINE><NEWLINE>¦
+      [0] .Soil.Type.Name                                                       i32_t<NEWLINE><NEWLINE>¦
+        [0] .Soil.typeName                                                      ｢i32_t｣
+          [0] .identifier                                                       ｢i32_t｣
+  [2] .Soil.Type.Defn                                                           perso ... <NEWLINE><DEDENT>]<NEWLINE><NEWLINE>¦
+    [0] .Soil.Type.Name                                                         person_t ¦
+      [0] .Soil.typeName                                                        ｢person_t｣
+        [0] .identifier                                                         ｢person_t｣
+    [1] .Soil.Type                                                              [<NEWLINE><INDENT>[<NEWLINE> ... <NEWLINE><DEDENT>]<NEWLINE><NEWLINE>¦
+      [0] .Soil.Type.Struct                                                     [<NEWLINE><INDENT>[<NEWLINE> ... <NEWLINE><DEDENT>]<NEWLINE><NEWLINE>¦
+        [0] .Soil.Type.Struct.Member                                            [<NEWLINE><INDENT>na ... ' ];<NEWLINE>¦
+          [0] .Soil.Type                                                        [<NEWLINE><INDENT>na ... ;<NEWLINE><DEDENT>] ¦
+            [0] .Soil.Type.Struct                                               [<NEWLINE><INDENT>na ... ;<NEWLINE><DEDENT>] ¦
+              [0] .Soil.Type.Struct.Member                                      name_ ... rst;<NEWLINE>¦
+                [0] .Soil.Type                                                  name_t ¦
+                  [0] .Soil.Type.Name                                           name_t ¦
+                    [0] .Soil.typeName                                          ｢name_t｣
+                      [0] .identifier                                           ｢name_t｣
+                [1] .Soil.Type.Struct.Member.Label                              : first¦
+                  [0] .Soil.Type.Struct.Member.Name                             first¦
+                    [0] .identifier                                             ｢first｣
+              [1] .Soil.Type.Struct.Member                                      name_ ... p';<NEWLINE><DEDENT>¦
+                [0] .Soil.Type                                                  name_t ¦
+                  [0] .Soil.Type.Name                                           name_t ¦
+                    [0] .Soil.typeName                                          ｢name_t｣
+                      [0] .identifier                                           ｢name_t｣
+                [1] .Soil.Type.Struct.Member.Label                              : last ¦
+                  [0] .Soil.Type.Struct.Member.Name                             last ¦
+                    [0] .identifier                                             ｢last｣
+                [2] .Soil.Type.Struct.Member.Init                               = 'Trump'¦
+                  [0] .Soil.Expr                                                'Trump'¦
+                    [0] .Soil.Expr.Atom                                         'Trump'¦
+                      [0] .string                                               ｢'Trump'｣
+          [1] .Soil.Type.Struct.Member.Label                                    : name ¦
+            [0] .Soil.Type.Struct.Member.Name                                   name ¦
+              [0] .identifier                                                   ｢name｣
+          [2] .Soil.Type.Struct.Member.Init                                     = [ ' ... ym' ]¦
+            [0] .Soil.Expr                                                      [ 'Ar ... ym' ]¦
+              [0] .Soil.Expr.Atom                                               [ 'Ar ... ym' ]¦
+                [0] .Soil.Expr.Struct                                           [ 'Ar ... ym' ]¦
+                  [0] .Soil.Expr.Struct.LabeledItem                             'Arno' ¦
+                    [0] .Soil.Expr                                              'Arno' ¦
+                      [0] .Soil.Expr.Atom                                       'Arno' ¦
+                        [0] .string                                             ｢'Arno'｣
+                  [1] .Soil.Expr.Struct.LabeledItem                             'Nym' ¦
+                    [0] .Soil.Expr                                              'Nym' ¦
+                      [0] .Soil.Expr.Atom                                       'Nym' ¦
+                        [0] .string                                             ｢'Nym'｣
+        [1] .Soil.Type.Struct.Member                                            age_t ... t);<NEWLINE><DEDENT>¦
+          [0] .Soil.Type                                                        age_t ¦
+            [0] .Soil.Type.Name                                                 age_t ¦
+              [0] .Soil.typeName                                                ｢age_t｣
+                [0] .identifier                                                 ｢age_t｣
+          [1] .Soil.Type.Struct.Member.Label                                    : age ¦
+            [0] .Soil.Type.Struct.Member.Name                                   age ¦
+              [0] .identifier                                                   ｢age｣
+          [2] .Soil.Type.Struct.Member.Init                                     = siz ... irst)¦
+            [0] .Soil.Expr                                                      size_ ... irst)¦
+              [0] .Soil.Expr.Axe.CallPost.(                                     size_ ... irst)¦
+                [0] .Soil.Expr.Atom                                             size_f¦
+                  [0] .Soil.funcName                                            ｢size_f｣
+                    [0] .identifier                                             ｢size_f｣
+                [1] .Soil.Expr.Axe.Member..                                     name.first¦
+                  [0] .Soil.Expr.Atom                                           name¦
+                    [0] .identifier                                             ｢name｣
+                  [1] .Soil.Expr.Atom                                           first¦
+                    [0] .identifier                                             ｢first｣
+  [3] .Soil.Variable.Defn                                                       bs =  ... 0 ]<NEWLINE><NEWLINE>¦
+    [0] .Soil.Variable.Name                                                     bs ¦
+      [0] .identifier                                                           ｢bs｣
+    [1] .Soil.Expr                                                              perso ... 0 ]<NEWLINE><NEWLINE>¦
+      [0] .Soil.Expr.Axe.Typing.::                                              perso ... 0 ]<NEWLINE><NEWLINE>¦
+        [0] .Soil.Expr.Atom                                                     person_t ¦
+          [0] .Soil.typeName                                                    ｢person_t｣
+            [0] .identifier                                                     ｢person_t｣
+        [1] .Soil.Expr.Atom                                                     [ [ ' ... 0 ]<NEWLINE><NEWLINE>¦
+          [0] .Soil.Expr.Struct                                                 [ [ ' ... 0 ]<NEWLINE><NEWLINE>¦
+            [0] .Soil.Expr.Struct.LabeledItem                                   [ 'Bj ... p' ] ¦
+              [0] .Soil.Expr.Struct                                             [ 'Bj ... p' ] ¦
+                [0] .Soil.Expr.Struct.LabeledItem                               'Bjarne' ¦
+                  [0] .Soil.Expr                                                'Bjarne' ¦
+                    [0] .Soil.Expr.Atom                                         'Bjarne' ¦
+                      [0] .string                                               ｢'Bjarne'｣
+                [1] .Soil.Expr.Struct.LabeledItem                               'Stro ... rup' ¦
+                  [0] .Soil.Expr                                                'Stro ... rup' ¦
+                    [0] .Soil.Expr.Atom                                         'Stro ... rup' ¦
+                      [0] .string                                               ｢'Stroustrup'｣
+            [1] .Soil.Expr.Struct.LabeledItem                                   80 ¦
+              [0] .Soil.Expr                                                    80 ¦
+                [0] .Soil.Expr.Atom                                             80 ¦
+                  [0] .number                                                   ｢80｣
+                    [0] .number.integer                                         ｢80｣
+                      [0] .number.integer.decimal                               ｢80｣
+                        [0] .number.unsigned.integer.decimal                    ｢80｣
+  [4] .Soil.Func.Defn                                                           is_ad ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+    [0] .Soil.Func.Name                                                         is_ad ... lt_f ¦
+      [0] .Soil.funcName                                                        ｢is_adult_f｣
+        [0] .identifier                                                         ｢is_adult_f｣
+    [1] .Soil.Func.Signature                                                    perso ... ol_t ¦
+      [0] .Soil.Type                                                            person_t ¦
+        [0] .Soil.Type.Name                                                     person_t ¦
+          [0] .Soil.typeName                                                    ｢person_t｣
+            [0] .identifier                                                     ｢person_t｣
+      [1] .Soil.Type                                                            bool_t ¦
+        [0] .Soil.Type.Name                                                     bool_t ¦
+          [0] .Soil.typeName                                                    ｢bool_t｣
+            [0] .identifier                                                     ｢bool_t｣
+    [2] .Soil.Func.Body                                                         {<NEWLINE><INDENT>re ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+      [0] .Soil.Func.Stmt                                                       retva ... 18;<NEWLINE><DEDENT>¦
+        [0] .Soil.Expr                                                          retva ... >= 18¦
+          [0] .Soil.Expr.Axe.Assign.=                                           retva ... >= 18¦
+            [0] .Soil.Expr.Atom                                                 retval ¦
+              [0] .identifier                                                   ｢retval｣
+            [1] .Soil.Expr.Axe.Comp.>=                                          arg.a ... >= 18¦
+              [0] .Soil.Expr.Axe.Member..                                       arg.age ¦
+                [0] .Soil.Expr.Atom                                             arg¦
+                  [0] .identifier                                               ｢arg｣
+                [1] .Soil.Expr.Atom                                             age ¦
+                  [0] .identifier                                               ｢age｣
+              [1] .Soil.Expr.Atom                                               18¦
+                [0] .number                                                     ｢18｣
+                  [0] .number.integer                                           ｢18｣
+                    [0] .number.integer.decimal                                 ｢18｣
+                      [0] .number.unsigned.integer.decimal                      ｢18｣
+  [5] .Soil.Func.Defn                                                           examp ... }<NEWLINE><DEDENT>}<NEWLINE>¦
+    [0] .Soil.Func.Name                                                         example_f ¦
+      [0] .Soil.funcName                                                        ｢example_f｣
+        [0] .identifier                                                         ｢example_f｣
+    [1] .Soil.Func.Signature                                                    [] ¦
+      [0] .Soil.Type                                                            [] ¦
+        [0] .Soil.Type.Struct                                                   [] ¦
+    [2] .Soil.Func.Body                                                         {<NEWLINE><INDENT>ag ... }<NEWLINE><DEDENT>}<NEWLINE>¦
+      [0] .Soil.Func.Stmt                                                       age = ...  42;<NEWLINE>¦
+        [0] .Soil.Expr                                                          age = ... :: 42¦
+          [0] .Soil.Expr.Axe.Assign.=                                           age = ... :: 42¦
+            [0] .Soil.Expr.Atom                                                 age ¦
+              [0] .identifier                                                   ｢age｣
+            [1] .Soil.Expr.Axe.Typing.::                                        age_t ... :: 42¦
+              [0] .Soil.Expr.Atom                                               age_t ¦
+                [0] .Soil.typeName                                              ｢age_t｣
+                  [0] .identifier                                               ｢age_t｣
+              [1] .Soil.Expr.Atom                                               42¦
+                [0] .number                                                     ｢42｣
+                  [0] .number.integer                                           ｢42｣
+                    [0] .number.integer.decimal                                 ｢42｣
+                      [0] .number.unsigned.integer.decimal                      ｢42｣
+      [1] .Soil.Func.Stmt                                                       p1 =  ... 0 ];<NEWLINE>¦
+        [0] .Soil.Expr                                                          p1 =  ...  20 ]¦
+          [0] .Soil.Expr.Axe.Assign.=                                           p1 =  ...  20 ]¦
+            [0] .Soil.Expr.Atom                                                 p1 ¦
+              [0] .identifier                                                   ｢p1｣
+            [1] .Soil.Expr.Axe.Typing.::                                        perso ...  20 ]¦
+              [0] .Soil.Expr.Atom                                               person_t ¦
+                [0] .Soil.typeName                                              ｢person_t｣
+                  [0] .identifier                                               ｢person_t｣
+              [1] .Soil.Expr.Atom                                               [ nam ...  20 ]¦
+                [0] .Soil.Expr.Struct                                           [ nam ...  20 ]¦
+                  [0] .Soil.Expr.Struct.LabeledItem                             name  ... n' ] ¦
+                    [0] .Soil.Variable.Name                                     name ¦
+                      [0] .identifier                                           ｢name｣
+                    [1] .Soil.Expr.Struct                                       [ fir ... n' ] ¦
+                      [0] .Soil.Expr.Struct.LabeledItem                         first ... Bob' ¦
+                        [0] .Soil.Variable.Name                                 first ¦
+                          [0] .identifier                                       ｢first｣
+                        [1] .Soil.Expr                                          'Bob' ¦
+                          [0] .Soil.Expr.Atom                                   'Bob' ¦
+                            [0] .string                                         ｢'Bob'｣
+                      [1] .Soil.Expr.Struct.LabeledItem                         last  ... son' ¦
+                        [0] .Soil.Variable.Name                                 last ¦
+                          [0] .identifier                                       ｢last｣
+                        [1] .Soil.Expr                                          'Bobson' ¦
+                          [0] .Soil.Expr.Atom                                   'Bobson' ¦
+                            [0] .string                                         ｢'Bobson'｣
+                  [1] .Soil.Expr.Struct.LabeledItem                             age : 20 ¦
+                    [0] .Soil.Variable.Name                                     age ¦
+                      [0] .identifier                                           ｢age｣
+                    [1] .Soil.Expr                                              20 ¦
+                      [0] .Soil.Expr.Atom                                       20 ¦
+                        [0] .number                                             ｢20｣
+                          [0] .number.integer                                   ｢20｣
+                            [0] .number.integer.decimal                         ｢20｣
+                              [0] .number.unsigned.integer.decimal              ｢20｣
+      [2] .Soil.Func.Stmt                                                       p2 =  ... 0 ];<NEWLINE>¦
+        [0] .Soil.Expr                                                          p2 =  ...  30 ]¦
+          [0] .Soil.Expr.Axe.Assign.=                                           p2 =  ...  30 ]¦
+            [0] .Soil.Expr.Atom                                                 p2 ¦
+              [0] .identifier                                                   ｢p2｣
+            [1] .Soil.Expr.Axe.Typing.::                                        perso ...  30 ]¦
+              [0] .Soil.Expr.Atom                                               person_t ¦
+                [0] .Soil.typeName                                              ｢person_t｣
+                  [0] .identifier                                               ｢person_t｣
+              [1] .Soil.Expr.Atom                                               [ [ ' ...  30 ]¦
+                [0] .Soil.Expr.Struct                                           [ [ ' ...  30 ]¦
+                  [0] .Soil.Expr.Struct.LabeledItem                             [ 'Al ... n' ] ¦
+                    [0] .Soil.Expr.Struct                                       [ 'Al ... n' ] ¦
+                      [0] .Soil.Expr.Struct.LabeledItem                         'Alice' ¦
+                        [0] .Soil.Expr                                          'Alice' ¦
+                          [0] .Soil.Expr.Atom                                   'Alice' ¦
+                            [0] .string                                         ｢'Alice'｣
+                      [1] .Soil.Expr.Struct.LabeledItem                         'Allison' ¦
+                        [0] .Soil.Expr                                          'Allison' ¦
+                          [0] .Soil.Expr.Atom                                   'Allison' ¦
+                            [0] .string                                         ｢'Allison'｣
+                  [1] .Soil.Expr.Struct.LabeledItem                             30 ¦
+                    [0] .Soil.Expr                                              30 ¦
+                      [0] .Soil.Expr.Atom                                       30 ¦
+                        [0] .number                                             ｢30｣
+                          [0] .number.integer                                   ｢30｣
+                            [0] .number.integer.decimal                         ｢30｣
+                              [0] .number.unsigned.integer.decimal              ｢30｣
+      [3] .Soil.Func.Stmt                                                       ['{}  ... g_f;<NEWLINE>¦
+        [0] .Soil.Expr                                                          ['{}  ... log_f¦
+          [0] .Soil.Expr.Axe.CallPipe.|                                         ['{}  ... log_f¦
+            [0] .Soil.Expr.Atom                                                 ['{}  ... p1)] ¦
+              [0] .Soil.Expr.Struct                                             ['{}  ... p1)] ¦
+                [0] .Soil.Expr.Struct.LabeledItem                               '{} i ...  {}' ¦
+                  [0] .Soil.Expr                                                '{} i ...  {}' ¦
+                    [0] .Soil.Expr.Atom                                         '{} i ...  {}' ¦
+                      [0] .string                                               ｢'{} is-adult = {}'｣
+                [1] .Soil.Expr.Struct.LabeledItem                               p1 ¦
+                  [0] .Soil.Expr                                                p1 ¦
+                    [0] .Soil.Expr.Atom                                         p1 ¦
+                      [0] .identifier                                           ｢p1｣
+                [2] .Soil.Expr.Struct.LabeledItem                               is_ad ... f(p1)¦
+                  [0] .Soil.Expr                                                is_ad ... f(p1)¦
+                    [0] .Soil.Expr.Axe.CallPost.(                               is_ad ... f(p1)¦
+                      [0] .Soil.Expr.Atom                                       is_adult_f¦
+                        [0] .Soil.funcName                                      ｢is_adult_f｣
+                          [0] .identifier                                       ｢is_adult_f｣
+                      [1] .Soil.Expr.Atom                                       p1¦
+                        [0] .identifier                                         ｢p1｣
+            [1] .Soil.Expr.Atom                                                 log_f¦
+              [0] .Soil.funcName                                                ｢log_f｣
+                [0] .identifier                                                 ｢log_f｣
+      [4] .Soil.Func.Stmt                                                       vecto ... g_f;<NEWLINE>¦
+        [0] .Soil.Expr                                                          vecto ... log_f¦
+          [0] .Soil.Expr.Axe.CallPipe.|                                         vecto ... log_f¦
+            [0] .Soil.Expr.Axe.CallPipe.|                                       vecto ...  40) ¦
+              [0] .Soil.Expr.Axe.Typing.::                                      vecto ... p2 ] ¦
+                [0] .Soil.Expr.Axe.CallPost.(                                   vecto ... n_t) ¦
+                  [0] .Soil.Expr.Atom                                           vector_f¦
+                    [0] .Soil.funcName                                          ｢vector_f｣
+                      [0] .identifier                                           ｢vector_f｣
+                  [1] .Soil.Expr.Atom                                           person_t¦
+                    [0] .Soil.typeName                                          ｢person_t｣
+                      [0] .identifier                                           ｢person_t｣
+                [1] .Soil.Expr.Atom                                             [ p1 p2 ] ¦
+                  [0] .Soil.Expr.Struct                                         [ p1 p2 ] ¦
+                    [0] .Soil.Expr.Struct.LabeledItem                           p1 ¦
+                      [0] .Soil.Expr                                            p1 ¦
+                        [0] .Soil.Expr.Atom                                     p1 ¦
+                          [0] .identifier                                       ｢p1｣
+                    [1] .Soil.Expr.Struct.LabeledItem                           p2 ¦
+                      [0] .Soil.Expr                                            p2 ¦
+                        [0] .Soil.Expr.Atom                                     p2 ¦
+                          [0] .identifier                                       ｢p2｣
+              [1] .Soil.Expr.Axe.CallPost.(                                     std.f ...  40) ¦
+                [0] .Soil.Expr.Axe.Member..                                     std.f ... ter_m¦
+                  [0] .Soil.Expr.Atom                                           std¦
+                    [0] .identifier                                             ｢std｣
+                  [1] .Soil.Expr.Atom                                           filter_m¦
+                    [0] .identifier                                             ｢filter_m｣
+                [1] .Soil.Expr.Axe.Comp.<=                                      arg.a ... <= 40¦
+                  [0] .Soil.Expr.Axe.Member..                                   arg.age ¦
+                    [0] .Soil.Expr.Atom                                         arg¦
+                      [0] .identifier                                           ｢arg｣
+                    [1] .Soil.Expr.Atom                                         age ¦
+                      [0] .identifier                                           ｢age｣
+                  [1] .Soil.Expr.Atom                                           40¦
+                    [0] .number                                                 ｢40｣
+                      [0] .number.integer                                       ｢40｣
+                        [0] .number.integer.decimal                             ｢40｣
+                          [0] .number.unsigned.integer.decimal                  ｢40｣
+            [1] .Soil.Expr.Atom                                                 log_f¦
+              [0] .Soil.funcName                                                ｢log_f｣
+                [0] .identifier                                                 ｢log_f｣
+      [5] .Soil.Func.Stmt                                                       «<INDENT>som ... _f;<NEWLINE><NEWLINE>¦
+        [0] .Soil.Expr                                                          «<INDENT>som ... int_f¦
+          [0] .Soil.Expr.Axe.CallPipe.|                                         «<INDENT>som ... int_f¦
+            [0] .Soil.Expr.Atom                                                 «<INDENT>som ...  <NEWLINE><DEDENT>» ¦
+              [0] .language                                                     «<INDENT>som ... e <NEWLINE><DEDENT>»¦
+            [1] .Soil.Expr.Atom                                                 print_f¦
+              [0] .Soil.funcName                                                ｢print_f｣
+                [0] .identifier                                                 ｢print_f｣
+      [6] .Soil.Func.Stmt                                                       if p1 ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+        [0] .Soil.Func.Stmt.If                                                  if p1 ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+          [0] .Soil.Func.Stmt.If.Branch                                         p1.na ... ;<NEWLINE><DEDENT>} ¦
+            [0] .Soil.Expr                                                      p1.na ... > 10 ¦
+              [0] .Soil.Expr.Axe.Comp.>                                         p1.na ... > 10 ¦
+                [0] .Soil.Expr.Axe.CallPipe.|                                   p1.na ... ze_f ¦
+                  [0] .Soil.Expr.Axe.Member..                                   p1.na ... irst ¦
+                    [0] .Soil.Expr.Axe.Member..                                 p1.name¦
+                      [0] .Soil.Expr.Atom                                       p1¦
+                        [0] .identifier                                         ｢p1｣
+                      [1] .Soil.Expr.Atom                                       name¦
+                        [0] .identifier                                         ｢name｣
+                    [1] .Soil.Expr.Atom                                         first ¦
+                      [0] .identifier                                           ｢first｣
+                  [1] .Soil.Expr.Atom                                           size_f ¦
+                    [0] .Soil.funcName                                          ｢size_f｣
+                      [0] .identifier                                           ｢size_f｣
+                [1] .Soil.Expr.Atom                                             10 ¦
+                  [0] .number                                                   ｢10｣
+                    [0] .number.integer                                         ｢10｣
+                      [0] .number.integer.decimal                               ｢10｣
+                        [0] .number.unsigned.integer.decimal                    ｢10｣
+            [1] .Soil.Func.Body                                                 {<NEWLINE><INDENT>'T ... ;<NEWLINE><DEDENT>} ¦
+              [0] .Soil.Func.Stmt                                               'This ... _f;<NEWLINE><DEDENT>¦
+                [0] .Soil.Expr                                                  'This ... log_f¦
+                  [0] .Soil.Expr.Axe.CallPipe.|                                 'This ... log_f¦
+                    [0] .Soil.Expr.Atom                                         'This ... ong' ¦
+                      [0] .string                                               ｢'This name is long'｣
+                    [1] .Soil.Expr.Atom                                         log_f¦
+                      [0] .Soil.funcName                                        ｢log_f｣
+                        [0] .identifier                                         ｢log_f｣
+          [1] .Soil.Func.Stmt.If.Branch                                         p1.na ... ;<NEWLINE><DEDENT>} ¦
+            [0] .Soil.Expr                                                      p1.na ...  > 5 ¦
+              [0] .Soil.Expr.Axe.Comp.>                                         p1.na ...  > 5 ¦
+                [0] .Soil.Expr.Axe.CallPipe.|                                   p1.na ... ze_f ¦
+                  [0] .Soil.Expr.Axe.Member..                                   p1.na ... irst ¦
+                    [0] .Soil.Expr.Axe.Member..                                 p1.name¦
+                      [0] .Soil.Expr.Atom                                       p1¦
+                        [0] .identifier                                         ｢p1｣
+                      [1] .Soil.Expr.Atom                                       name¦
+                        [0] .identifier                                         ｢name｣
+                    [1] .Soil.Expr.Atom                                         first ¦
+                      [0] .identifier                                           ｢first｣
+                  [1] .Soil.Expr.Atom                                           size_f ¦
+                    [0] .Soil.funcName                                          ｢size_f｣
+                      [0] .identifier                                           ｢size_f｣
+                [1] .Soil.Expr.Atom                                             5 ¦
+                  [0] .number                                                   ｢5｣
+                    [0] .number.integer                                         ｢5｣
+                      [0] .number.integer.decimal                               ｢5｣
+                        [0] .number.unsigned.integer.decimal                    ｢5｣
+            [1] .Soil.Func.Body                                                 {<NEWLINE><INDENT>'T ... ;<NEWLINE><DEDENT>} ¦
+              [0] .Soil.Func.Stmt                                               'This ... _f;<NEWLINE><DEDENT>¦
+                [0] .Soil.Expr                                                  'This ... log_f¦
+                  [0] .Soil.Expr.Axe.CallPipe.|                                 'This ... log_f¦
+                    [0] .Soil.Expr.Atom                                         'This ... ong' ¦
+                      [0] .string                                               ｢'This name it not long'｣
+                    [1] .Soil.Expr.Atom                                         log_f¦
+                      [0] .Soil.funcName                                        ｢log_f｣
+                        [0] .identifier                                         ｢log_f｣
+          [2] .Soil.Func.Body                                                   {<NEWLINE><INDENT>'T ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+            [0] .Soil.Func.Stmt                                                 'This ... _f;<NEWLINE><DEDENT>¦
+              [0] .Soil.Expr                                                    'This ... log_f¦
+                [0] .Soil.Expr.Axe.CallPipe.|                                   'This ... log_f¦
+                  [0] .Soil.Expr.Atom                                           'This ... ort' ¦
+                    [0] .string                                                 ｢'This name it short'｣
+                  [1] .Soil.Expr.Atom                                           log_f¦
+                    [0] .Soil.funcName                                          ｢log_f｣
+                      [0] .identifier                                           ｢log_f｣
+      [7] .Soil.Func.Stmt                                                       sum = ... : 0;<NEWLINE>¦
+        [0] .Soil.Expr                                                          sum = ...  :: 0¦
+          [0] .Soil.Expr.Axe.Assign.=                                           sum = ...  :: 0¦
+            [0] .Soil.Expr.Atom                                                 sum ¦
+              [0] .identifier                                                   ｢sum｣
+            [1] .Soil.Expr.Axe.Typing.::                                        i64_t :: 0¦
+              [0] .Soil.Expr.Atom                                               i64_t ¦
+                [0] .Soil.typeName                                              ｢i64_t｣
+                  [0] .identifier                                               ｢i64_t｣
+              [1] .Soil.Expr.Atom                                               0¦
+                [0] .number                                                     ｢0｣
+                  [0] .number.integer                                           ｢0｣
+                    [0] .number.integer.decimal                                 ｢0｣
+                      [0] .number.unsigned.integer.decimal                      ｢0｣
+      [8] .Soil.Func.Stmt                                                       for i ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+        [0] .Soil.Func.Stmt.For                                                 for i ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+          [0] .Soil.Expr.Maybe                                                  i = i ...  :: 0¦
+            [0] .Soil.Expr                                                      i = i ...  :: 0¦
+              [0] .Soil.Expr.Axe.Assign.=                                       i = i ...  :: 0¦
+                [0] .Soil.Expr.Atom                                             i ¦
+                  [0] .identifier                                               ｢i｣
+                [1] .Soil.Expr.Axe.Typing.::                                    i64_t :: 0¦
+                  [0] .Soil.Expr.Atom                                           i64_t ¦
+                    [0] .Soil.typeName                                          ｢i64_t｣
+                      [0] .identifier                                           ｢i64_t｣
+                  [1] .Soil.Expr.Atom                                           0¦
+                    [0] .number                                                 ｢0｣
+                      [0] .number.integer                                       ｢0｣
+                        [0] .number.integer.decimal                             ｢0｣
+                          [0] .number.unsigned.integer.decimal                  ｢0｣
+          [1] .Soil.Expr.Maybe                                                  i < n¦
+            [0] .Soil.Expr                                                      i < n¦
+              [0] .Soil.Expr.Axe.Comp.<                                         i < n¦
+                [0] .Soil.Expr.Atom                                             i ¦
+                  [0] .identifier                                               ｢i｣
+                [1] .Soil.Expr.Atom                                             n¦
+                  [0] .identifier                                               ｢n｣
+          [2] .Soil.Expr.Maybe                                                  i += 1 ¦
+            [0] .Soil.Expr                                                      i += 1 ¦
+              [0] .Soil.Expr.Axe.Assign.+=                                      i += 1 ¦
+                [0] .Soil.Expr.Atom                                             i ¦
+                  [0] .identifier                                               ｢i｣
+                [1] .Soil.Expr.Atom                                             1 ¦
+                  [0] .number                                                   ｢1｣
+                    [0] .number.integer                                         ｢1｣
+                      [0] .number.integer.decimal                               ｢1｣
+                        [0] .number.unsigned.integer.decimal                    ｢1｣
+          [3] .Soil.Func.Body                                                   {<NEWLINE><INDENT>su ... <NEWLINE><DEDENT>}<NEWLINE><NEWLINE>¦
+            [0] .Soil.Func.Stmt                                                 sum + ...  i;<NEWLINE><DEDENT>¦
+              [0] .Soil.Expr                                                    sum += i¦
+                [0] .Soil.Expr.Axe.Assign.+=                                    sum += i¦
+                  [0] .Soil.Expr.Atom                                           sum ¦
+                    [0] .identifier                                             ｢sum｣
+                  [1] .Soil.Expr.Atom                                           i¦
+                    [0] .identifier                                             ｢i｣
+      [9] .Soil.Func.Stmt                                                       abc = 42;<NEWLINE>¦
+        [0] .Soil.Expr                                                          abc = 42¦
+          [0] .Soil.Expr.Axe.Assign.=                                           abc = 42¦
+            [0] .Soil.Expr.Atom                                                 abc ¦
+              [0] .identifier                                                   ｢abc｣
+            [1] .Soil.Expr.Atom                                                 42¦
+              [0] .number                                                       ｢42｣
+                [0] .number.integer                                             ｢42｣
+                  [0] .number.integer.decimal                                   ｢42｣
+                    [0] .number.unsigned.integer.decimal                        ｢42｣
+      [10] .Soil.Func.Stmt                                                      for ; ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
+        [0] .Soil.Func.Stmt.For                                                 for ; ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
+          [0] .Soil.Expr.Maybe                                                  ¦
+          [1] .Soil.Expr.Maybe                                                  i < n¦
+            [0] .Soil.Expr                                                      i < n¦
+              [0] .Soil.Expr.Axe.Comp.<                                         i < n¦
+                [0] .Soil.Expr.Atom                                             i ¦
+                  [0] .identifier                                               ｢i｣
+                [1] .Soil.Expr.Atom                                             n¦
+                  [0] .identifier                                               ｢n｣
+          [2] .Soil.Expr.Maybe                                                  ¦
+          [3] .Soil.Func.Body                                                   {<NEWLINE><INDENT>su ... <NEWLINE><DEDENT>}<NEWLINE><DEDENT>¦
+            [0] .Soil.Func.Stmt                                                 sum + ...  i;<NEWLINE><DEDENT>¦
+              [0] .Soil.Expr                                                    sum += i¦
+                [0] .Soil.Expr.Axe.Assign.+=                                    sum += i¦
+                  [0] .Soil.Expr.Atom                                           sum ¦
+                    [0] .identifier                                             ｢sum｣
+                  [1] .Soil.Expr.Atom                                           i¦
+                    [0] .identifier                                             ｢i｣
 

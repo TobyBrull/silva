@@ -14,5 +14,7 @@ cmake --preset "${PRESET}"
 ninja -C "${BUILD_DIR}/"
 ctest --test-dir "${BUILD_DIR}/" -j "$( nproc )"
 mkdir -p tmp/
-bash regression_test.sh "${BUILD_DIR}" > tmp/regression_test.sh.output
-diff regression_test.sh.output tmp/regression_test.sh.output
+bash src/regression_test.sh "${BUILD_DIR}" > tmp/regression_test.sh.output
+diff src/regression_test.sh.output tmp/regression_test.sh.output
+
+echo "ALL TESTS PASSED!"
