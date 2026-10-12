@@ -13,6 +13,7 @@ trap 'rm -f "$TEMPFILE"' EXIT
 
 # Doc demos
 "./${BUILD_DIR}/src/silva_fragmentization" src/syntax/readme.fragmentization.demo
+"./${BUILD_DIR}/src/silva_syntax" src/syntax/readme.calc.seed src/syntax/readme.calc
 
 # src/zoo/
 "./${BUILD_DIR}/src/silva_fern" src/zoo/fern/example.simple.fern

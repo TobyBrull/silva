@@ -1,0 +1,13 @@
+language Calc:
+  skip.@ = freeForm
+
+  @ = Stmt *
+  Stmt = Expr ';'
+  name = ID_START ID_CONTINUE *
+  value = DIGIT +
+  Expr:
+    @ = axe Atom
+      Prefix   = rtl   prefix '-'
+      Product  = ltr   infix '*' '/'
+      Addition = ltr   infix '+' '-'
+    Atom = '(' Expr ')' | name | value

@@ -54,6 +54,30 @@
 7:2      ID_LOWER           e                   [0x65]
 7:3      NEWLINE                                [0x0a]
 8:1      LANG_END                               []
+[0] .Calc                                                                       a + 5 ...  ) ;<NEWLINE>¦
+  [0] .Calc.Stmt                                                                a + 5 ...  x ;<NEWLINE>¦
+    [0] .Calc.Expr                                                              a + 5 * x ¦
+      [0] .Calc.Expr.Addition.+                                                 a + 5 * x ¦
+        [0] .Calc.Expr.Atom                                                     a ¦
+          [0] .Calc.name                                                        ｢a｣
+        [1] .Calc.Expr.Product.*                                                5 * x ¦
+          [0] .Calc.Expr.Atom                                                   5 ¦
+            [0] .Calc.value                                                     ｢5｣
+          [1] .Calc.Expr.Atom                                                   x ¦
+            [0] .Calc.name                                                      ｢x｣
+  [1] .Calc.Stmt                                                                x * ( ...  ) ;<NEWLINE>¦
+    [0] .Calc.Expr                                                              x * ( ...  4 ) ¦
+      [0] .Calc.Expr.Product.*                                                  x * ( ...  4 ) ¦
+        [0] .Calc.Expr.Atom                                                     x ¦
+          [0] .Calc.name                                                        ｢x｣
+        [1] .Calc.Expr.Atom                                                     ( 2 - 4 ) ¦
+          [0] .Calc.Expr                                                        2 - 4 ¦
+            [0] .Calc.Expr.Addition.-                                           2 - 4 ¦
+              [0] .Calc.Expr.Atom                                               2 ¦
+                [0] .Calc.value                                                 ｢2｣
+              [1] .Calc.Expr.Atom                                               4 ¦
+                [0] .Calc.value                                                 ｢4｣
+
 [
   none
   true

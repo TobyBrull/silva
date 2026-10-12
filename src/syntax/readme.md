@@ -35,7 +35,8 @@ multiline literals are also supported, but via the character '¶'.
 Indentation is handled similarly to Python, with INDENT and DEDENT fragments being emitted whenever
 the indentation level increases or decreases. In order to also support free-form languages (like C),
 though, there exists an additional INDENTATION_BROKEN fragment, which is emitted if a lower
-indentation level was encountered that was not previously encountered.
+indentation level was encountered that was not previously encountered; once this is emitted, no more
+INDENT/DEDENT fragments will be emitted for the rest of the processed language.
 
 Also a NEWLINE fragment is emitted at the end of every line that does not use line continuation
 ('\\' character at the end). Unlike in Python, NEWLINE fragments are not omitted inside parentheses.
@@ -107,10 +108,20 @@ basename of the rule's name being in PascalCase whereas a twig-rule is in camelC
 rules (if successfully parsed) create nodes in the resulting parse_tree_t (unless they use the
 "no_node" qualifier).
 
-The Seed language is defined in itself in the following link. For bootstrapping purposes a
+[seed.hpp](seed.hpp)
+
+The Seed language is defined in itself in the previous link. For bootstrapping purposes a
 hand-written Seed parser is also implemented here.
 
-[seed.hpp](seed.hpp)
+Here is a simple Seed parser for the toy language "Fern", which is a bit like JSON, but much
+simpler.
+
+To give a first example, here is a simple Seed parser for basic arithmetic expressions, including
+variables, called `Calc`.
+
+```
+build/src/silva_syntax src/syntax/readme.calc.seed src/syntax/readme.calc
+```
 
 Seed allows languages to define a so-called "skip" rule to skip whitespace. The skip-rule is invoked
 at the very beginning of a parse (more precisely the `skip.initial` rule, but falls back to the
@@ -122,7 +133,7 @@ contain them. The skip-rule is also invoked after every time a branch-rule uses 
 are treated as mini-twig-rules).
 
 Usually, branch-rules will call branch-rules and twig-rules, but in most cases, twig-rules will only
-call other twig-rules. This is because twig-rules represent tokenization (through its interaction
+call other twig-rules. This is because twig-rules represent tokenization (through their interaction
 with the skip-rule) and tokens usually don't contain nested semantic constructs. An exception to
 this is a construct like Python's f-strings. While the string part of an f-string is a token, the
 nested expressions are proper code and need to skip whitespace again. For this reason, if a
@@ -161,7 +172,7 @@ of « language_name » but 'language' does. Both types of literal (single and do
 generate nodes in the resulting parse-tree by default; the "literal_nodes" qualifier can be
 specified, though, to change this.
 
-### The Prefix directive and the commit operator
+### The prefix directive and the commit operator
 
 Often an initial keyword signals the beginning of a specific grammatical construct. For
 example, every function might begin with "fun". In this case, Seed allows the parser to
@@ -196,7 +207,7 @@ parses « static func 42 » just fine.
 
 Expressions are parsed with a variant of the Shunting Yard algorithm.
 
-[seed_axe.hpp](seed_axe.hpp).
+[seed_axe.hpp](seed_axe.hpp)
 
 You basically specify a number of operators, in the order of their desired precedence (from high
 precedence to low precedence), what type of operator they are (prefix, infix, left-to-right,
