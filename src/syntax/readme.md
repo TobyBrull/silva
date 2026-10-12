@@ -48,8 +48,8 @@ and they have one of the following categories:
 * OPERATOR: e.g., '*'
 * ID_LOWER: Unicode General Category = Ll
 * ID_UPPER: Unicode General Category = Lu
-* ID_START: Unicode Derived Property: XID_Start (including ID_LOWER, ID_UPPER, DIGIT)
-* ID_CONTINUE: Unicode Derived Property: XID_Continue (including ID_START)
+* ID_START: Unicode Derived Property: XID_Start (including ID_LOWER, ID_UPPER)
+* ID_CONTINUE: Unicode Derived Property: XID_Continue (including ID_START and DIGIT)
 
 Any other Unicode code-point not explicitly allowed as above, or any sequence that's not in NFC,
 means that the input file is considered to be ill-formed.
@@ -122,23 +122,23 @@ contain them. The skip-rule is also invoked after every time a branch-rule uses 
 are treated as mini-twig-rules).
 
 Usually, branch-rules will call branch-rules and twig-rules, but in most cases, twig-rules will only
-call other twig-rules. This is because twig-rules represent tokenization (the skip-rule) and tokens
-usually don't contain nested semantic constructs. Exceptions to this are constructs like Python's
-f-strings and Bash's variable expansion in double-quoted string. While the string part of an
-f-string is a token, the nested expressions are proper code and need to skip whitespace again. For
-this reason, if a twig-rule successfully applied a branch-rule (e.g., when the parser is just after
-the '}' in « f"Hello { x } World" »), and skipped some whitespace (here the " " just before
-"World"), this whitespace needs to be unskipped, so that the second part of the f-string is " World"
-and not just "World".
+call other twig-rules. This is because twig-rules represent tokenization (through its interaction
+with the skip-rule) and tokens usually don't contain nested semantic constructs. An exception to
+this is a construct like Python's f-strings. While the string part of an f-string is a token, the
+nested expressions are proper code and need to skip whitespace again. For this reason, if a
+twig-rule successfully applied a branch-rule (e.g., when the parser is just after the '}' in «
+f"Hello { x } World" »), and skipped some whitespace (here the " " just before "World"), this
+whitespace needs to be unskipped, so that the second part of the f-string is " World" and not just
+"World".
 
 A node derived from a twig-rule allows a token to be derived, i.e., the `allow_token` member is
 true. It is not allowed to derive tokens from branch-rules.
 
-Only twig-rules may directly refer to fragments. Fragments can be referred to by the corresponding
-ALL_CAPS fragment category or by string literals. Two additional ALL_CAPS identifiers exist: "ANY"
-matches any single visible fragment (silva::is_fragment_category_visible(); this is any fragment
-except indentation related tokens, NEWLINE, and LINE_CONTINUATION), and "LANGUAGE" which matches a
-whole balanced LANG_BEGIN/LANG_END region.
+Only twig-rules may directly refer to fragments via their ALL_CAPS fragment category name. Like
+branch-rules, twig-rules may also use string literals. Two additional ALL_CAPS identifiers exist:
+"ANY" matches any single visible fragment (silva::is_fragment_category_visible(); this is any
+fragment except indentation related tokens, NEWLINE, and LINE_CONTINUATION), and "LANGUAGE" which
+matches a whole balanced LANG_BEGIN/LANG_END region.
 
 The parsing functions in Seed are called rules because they look similar to the rules in BNF.
 Eventually, a Seed rule is really just a function, though, that takes an implicit argument, which is
