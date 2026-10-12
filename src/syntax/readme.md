@@ -163,6 +163,12 @@ Then, if a scope name is used on the right-hand-side of a rule, this is resolved
 that scope. Whether the rule is treated as a branch-rule or twig-rule then depends on the
 capitalization of the scope's basename.
 
+Every definition in a Seed program is placed in the scope ".Seed" by default. For example, the
+snippet « language Calc » defines ".Seed.Calc". Only absolute names (i.e., names starting with '.',
+like « .My.Own.Name ») can define something outside of ".Seed". Relative names used on the
+right-hand-side of a rule are looked up starting from the scope of that rule, moving outwards until
+a definition is found. Printed parse-trees show names relative to ".Seed".
+
 In Seed, there is a subtle distinction between literals that use double-quotes (") and those that
 use single-quotes ('). With single-quotes, it simply tries to match the code-points in the literal
 one by one. With double-quotes it does that, too, but then also checks that the codepoint following
@@ -180,7 +186,7 @@ example, every function might begin with "fun". In this case, Seed allows the pa
 "fun" or the entire parse is considered to be failed.
 
 Committing behaviour can be triggered in two ways: via the prefix directive or by explicitly using
-the commit operator ('~'). Both approaches work on the level of a .Seed.Expr.Concat (concatenated)
+the commit operator ('~'). Both approaches work on the level of a Seed.Expr.Concat (concatenated)
 expression. The prefix directive says that if a concatenated expression starts with at least one
 literal, the parser commits if all leading literals are matched; this is as-if the commit operator
 is put after a consecutive streak of leading literals.

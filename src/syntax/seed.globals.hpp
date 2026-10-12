@@ -87,9 +87,9 @@ time:
 
 comment = no_node '#' ( LANGUAGE | ANY ) *
 
-indent  = no_node INDENT .offSide.blankLines
-dedent  = no_node DEDENT .offSide.blankLines
-newline = no_node NEWLINE .offSide.blankLines
+indent  = no_node INDENT offSide.blankLines
+dedent  = no_node DEDENT offSide.blankLines
+newline = no_node NEWLINE offSide.blankLines
 
 offSide:
   @ = horizontal

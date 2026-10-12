@@ -82,8 +82,9 @@ namespace silva::lox {
     fun print_error(text) {}
 )'";
 
-    const auto fp          = SILVA_EXPECT_FWD(fragmentize(sfp, "builtins.lox", builtins_lox_str));
-    const auto pts_builtin = SILVA_EXPECT_FWD(parser(fp, sfp->name_id_of("Lox")))->span();
+    const auto fp = SILVA_EXPECT_FWD(fragmentize(sfp, "builtins.lox", builtins_lox_str));
+    const auto pts_builtin =
+        SILVA_EXPECT_FWD(parser(fp, sfp->name_id_of(name_id_seed, "Lox")))->span();
 
     auto [it, end] = pts_builtin.children_range();
     for (const builtin_decl_t& builtin_decl: builtin_decls) {

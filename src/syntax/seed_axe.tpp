@@ -18,7 +18,7 @@ namespace silva::seed::test {
   {
     INFO(text);
     auto fp       = SILVA_REQUIRE(fragmentize(si.sfp, "", string_t{text}));
-    auto maybe_pt = si.apply(fp, si.sfp->name_id_of("Test"));
+    auto maybe_pt = si.apply(fp, si.sfp->name_id_of(name_id_seed, "Test"));
     optional_t<string_t> result_str;
     if (maybe_pt.has_value()) {
       auto result_pt = *std::move(maybe_pt);
@@ -56,9 +56,9 @@ language Test:
   skip.@ = freeForm
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
-    const auto& sa =
-        *std::get<seed::interpreter_t::axe_data_t>(se->definitions.at(sf.name_id_of("Test", "@")))
-             .axe;
+    const auto& sa = *std::get<seed::interpreter_t::axe_data_t>(
+                          se->definitions.at(sf.name_id_of(name_id_seed, "Test", "@")))
+                          .axe;
     CHECK(!sa.concat_result.has_value());
     CHECK(sa.results.size() == 13);
     {
@@ -68,7 +68,7 @@ language Test:
           .regular =
               result_oper_t<oper_regular_t>{
                   .oper       = infix_t{sf.token_id("=")},
-                  .name       = sf.name_id_of("Test", "Eqa", "="),
+                  .name       = sf.name_id_of(name_id_seed, "Test", "Eqa", "="),
                   .precedence = precedence_t{.level_index = 1, .assoc = RIGHT_TO_LEFT},
                   .pts        = rr.regular->pts,
               },
@@ -83,7 +83,7 @@ language Test:
           .regular =
               result_oper_t<oper_regular_t>{
                   .oper       = ternary_t{sf.token_id("?"), sf.token_id(":")},
-                  .name       = sf.name_id_of("Test", "Ter", "?"),
+                  .name       = sf.name_id_of(name_id_seed, "Test", "Ter", "?"),
                   .precedence = precedence_t{.level_index = 2, .assoc = RIGHT_TO_LEFT},
                   .pts        = rr.regular->pts,
               },
@@ -106,14 +106,14 @@ language Test:
           .prefix =
               result_oper_t<oper_prefix_t>{
                   .oper       = prefix_t{sf.token_id("+")},
-                  .name       = sf.name_id_of("Test", "Prf", "+"),
+                  .name       = sf.name_id_of(name_id_seed, "Test", "Prf", "+"),
                   .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
                   .pts        = rr.prefix->pts,
               },
           .regular =
               result_oper_t<oper_regular_t>{
                   .oper       = infix_t{sf.token_id("+")},
-                  .name       = sf.name_id_of("Test", "Add", "+"),
+                  .name       = sf.name_id_of(name_id_seed, "Test", "Add", "+"),
                   .precedence = precedence_t{.level_index = 3, .assoc = LEFT_TO_RIGHT},
                   .pts        = rr.regular->pts,
               },
@@ -127,14 +127,14 @@ language Test:
           .prefix =
               result_oper_t<oper_prefix_t>{
                   .oper       = prefix_t{sf.token_id("-")},
-                  .name       = sf.name_id_of("Test", "Prf", "-"),
+                  .name       = sf.name_id_of(name_id_seed, "Test", "Prf", "-"),
                   .precedence = precedence_t{.level_index = 5, .assoc = RIGHT_TO_LEFT},
                   .pts        = rr.prefix->pts,
               },
           .regular =
               result_oper_t<oper_regular_t>{
                   .oper       = infix_t{sf.token_id("-")},
-                  .name       = sf.name_id_of("Test", "Add", "-"),
+                  .name       = sf.name_id_of(name_id_seed, "Test", "Add", "-"),
                   .precedence = precedence_t{.level_index = 3, .assoc = LEFT_TO_RIGHT},
                   .pts        = rr.regular->pts,
               },
@@ -144,452 +144,452 @@ language Test:
     }
 
     test::test_axe(*se, sa, "1\n", R"(
-[0] .Test                                         1<NEWLINE>¦
-  [0] .Test.Atom                                  1<NEWLINE>¦
-    [0] .number                                   ｢1｣
-      [0] .number.integer                         ｢1｣
-        [0] .number.integer.decimal               ｢1｣
-          [0] .number.unsigned.integer.decimal    ｢1｣
+[0] Test                                          1<NEWLINE>¦
+  [0] Test.Atom                                   1<NEWLINE>¦
+    [0] number                                    ｢1｣
+      [0] number.integer                          ｢1｣
+        [0] number.integer.decimal                ｢1｣
+          [0] number.unsigned.integer.decimal     ｢1｣
 )");
     test::test_axe(*se, sa, "1 + 2\n", R"(
-[0] .Test                                         1 + 2<NEWLINE>¦
-  [0] .Test.Add.+                                 1 + 2<NEWLINE>¦
-    [0] .Test.Atom                                1 ¦
-      [0] .number                                 ｢1｣
-        [0] .number.integer                       ｢1｣
-          [0] .number.integer.decimal             ｢1｣
-            [0] .number.unsigned.integer.decimal  ｢1｣
-    [1] .Test.Atom                                2<NEWLINE>¦
-      [0] .number                                 ｢2｣
-        [0] .number.integer                       ｢2｣
-          [0] .number.integer.decimal             ｢2｣
-            [0] .number.unsigned.integer.decimal  ｢2｣
+[0] Test                                          1 + 2<NEWLINE>¦
+  [0] Test.Add.+                                  1 + 2<NEWLINE>¦
+    [0] Test.Atom                                 1 ¦
+      [0] number                                  ｢1｣
+        [0] number.integer                        ｢1｣
+          [0] number.integer.decimal              ｢1｣
+            [0] number.unsigned.integer.decimal   ｢1｣
+    [1] Test.Atom                                 2<NEWLINE>¦
+      [0] number                                  ｢2｣
+        [0] number.integer                        ｢2｣
+          [0] number.integer.decimal              ｢2｣
+            [0] number.unsigned.integer.decimal   ｢2｣
 )");
     test::test_axe(*se, sa, "1 + 2 + 3\n", R"(
-[0] .Test                                         1 + 2 + 3<NEWLINE>¦
-  [0] .Test.Add.+                                 1 + 2 + 3<NEWLINE>¦
-    [0] .Test.Add.+                               1 + 2 ¦
-      [0] .Test.Atom                              1 ¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
-      [1] .Test.Atom                              2 ¦
-        [0] .number                               ｢2｣
-          [0] .number.integer                     ｢2｣
-            [0] .number.integer.decimal           ｢2｣
-              [0] .number.unsigned.integer.decimal ｢2｣
-    [1] .Test.Atom                                3<NEWLINE>¦
-      [0] .number                                 ｢3｣
-        [0] .number.integer                       ｢3｣
-          [0] .number.integer.decimal             ｢3｣
-            [0] .number.unsigned.integer.decimal  ｢3｣
+[0] Test                                          1 + 2 + 3<NEWLINE>¦
+  [0] Test.Add.+                                  1 + 2 + 3<NEWLINE>¦
+    [0] Test.Add.+                                1 + 2 ¦
+      [0] Test.Atom                               1 ¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
+      [1] Test.Atom                               2 ¦
+        [0] number                                ｢2｣
+          [0] number.integer                      ｢2｣
+            [0] number.integer.decimal            ｢2｣
+              [0] number.unsigned.integer.decimal ｢2｣
+    [1] Test.Atom                                 3<NEWLINE>¦
+      [0] number                                  ｢3｣
+        [0] number.integer                        ｢3｣
+          [0] number.integer.decimal              ｢3｣
+            [0] number.unsigned.integer.decimal   ｢3｣
 )");
     test::test_axe(*se, sa, "1 - 2\n", R"(
-[0] .Test                                         1 - 2<NEWLINE>¦
-  [0] .Test.Add.-                                 1 - 2<NEWLINE>¦
-    [0] .Test.Atom                                1 ¦
-      [0] .number                                 ｢1｣
-        [0] .number.integer                       ｢1｣
-          [0] .number.integer.decimal             ｢1｣
-            [0] .number.unsigned.integer.decimal  ｢1｣
-    [1] .Test.Atom                                2<NEWLINE>¦
-      [0] .number                                 ｢2｣
-        [0] .number.integer                       ｢2｣
-          [0] .number.integer.decimal             ｢2｣
-            [0] .number.unsigned.integer.decimal  ｢2｣
+[0] Test                                          1 - 2<NEWLINE>¦
+  [0] Test.Add.-                                  1 - 2<NEWLINE>¦
+    [0] Test.Atom                                 1 ¦
+      [0] number                                  ｢1｣
+        [0] number.integer                        ｢1｣
+          [0] number.integer.decimal              ｢1｣
+            [0] number.unsigned.integer.decimal   ｢1｣
+    [1] Test.Atom                                 2<NEWLINE>¦
+      [0] number                                  ｢2｣
+        [0] number.integer                        ｢2｣
+          [0] number.integer.decimal              ｢2｣
+            [0] number.unsigned.integer.decimal   ｢2｣
 )");
     test::test_axe(*se, sa, "1 + 2 * 3 + 4\n", R"(
-[0] .Test                                         1 + 2 ...  + 4<NEWLINE>¦
-  [0] .Test.Add.+                                 1 + 2 ...  + 4<NEWLINE>¦
-    [0] .Test.Add.+                               1 + 2 * 3 ¦
-      [0] .Test.Atom                              1 ¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
-      [1] .Test.Mul.*                             2 * 3 ¦
-        [0] .Test.Atom                            2 ¦
-          [0] .number                             ｢2｣
-            [0] .number.integer                   ｢2｣
-              [0] .number.integer.decimal         ｢2｣
-                [0] .number.unsigned.integer.decimal ｢2｣
-        [1] .Test.Atom                            3 ¦
-          [0] .number                             ｢3｣
-            [0] .number.integer                   ｢3｣
-              [0] .number.integer.decimal         ｢3｣
-                [0] .number.unsigned.integer.decimal ｢3｣
-    [1] .Test.Atom                                4<NEWLINE>¦
-      [0] .number                                 ｢4｣
-        [0] .number.integer                       ｢4｣
-          [0] .number.integer.decimal             ｢4｣
-            [0] .number.unsigned.integer.decimal  ｢4｣
+[0] Test                                          1 + 2 ...  + 4<NEWLINE>¦
+  [0] Test.Add.+                                  1 + 2 ...  + 4<NEWLINE>¦
+    [0] Test.Add.+                                1 + 2 * 3 ¦
+      [0] Test.Atom                               1 ¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
+      [1] Test.Mul.*                              2 * 3 ¦
+        [0] Test.Atom                             2 ¦
+          [0] number                              ｢2｣
+            [0] number.integer                    ｢2｣
+              [0] number.integer.decimal          ｢2｣
+                [0] number.unsigned.integer.decimal ｢2｣
+        [1] Test.Atom                             3 ¦
+          [0] number                              ｢3｣
+            [0] number.integer                    ｢3｣
+              [0] number.integer.decimal          ｢3｣
+                [0] number.unsigned.integer.decimal ｢3｣
+    [1] Test.Atom                                 4<NEWLINE>¦
+      [0] number                                  ｢4｣
+        [0] number.integer                        ｢4｣
+          [0] number.integer.decimal              ｢4｣
+            [0] number.unsigned.integer.decimal   ｢4｣
 )");
     test::test_axe(*se, sa, "1 - 2 + f . g . h * 3 / 4\n", R"(
-[0] .Test                                         1 - 2 ...  / 4<NEWLINE>¦
-  [0] .Test.Add.+                                 1 - 2 ...  / 4<NEWLINE>¦
-    [0] .Test.Add.-                               1 - 2 ¦
-      [0] .Test.Atom                              1 ¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
-      [1] .Test.Atom                              2 ¦
-        [0] .number                               ｢2｣
-          [0] .number.integer                     ｢2｣
-            [0] .number.integer.decimal           ｢2｣
-              [0] .number.unsigned.integer.decimal ｢2｣
-    [1] .Test.Mul./                               f . g ...  / 4<NEWLINE>¦
-      [0] .Test.Mul.*                             f . g ...  * 3 ¦
-        [0] .Test.Dot..                           f . g . h ¦
-          [0] .Test.Atom                          f ¦
-            [0] .identifier                       ｢f｣
-          [1] .Test.Dot..                         g . h ¦
-            [0] .Test.Atom                        g ¦
-              [0] .identifier                     ｢g｣
-            [1] .Test.Atom                        h ¦
-              [0] .identifier                     ｢h｣
-        [1] .Test.Atom                            3 ¦
-          [0] .number                             ｢3｣
-            [0] .number.integer                   ｢3｣
-              [0] .number.integer.decimal         ｢3｣
-                [0] .number.unsigned.integer.decimal ｢3｣
-      [1] .Test.Atom                              4<NEWLINE>¦
-        [0] .number                               ｢4｣
-          [0] .number.integer                     ｢4｣
-            [0] .number.integer.decimal           ｢4｣
-              [0] .number.unsigned.integer.decimal ｢4｣
+[0] Test                                          1 - 2 ...  / 4<NEWLINE>¦
+  [0] Test.Add.+                                  1 - 2 ...  / 4<NEWLINE>¦
+    [0] Test.Add.-                                1 - 2 ¦
+      [0] Test.Atom                               1 ¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
+      [1] Test.Atom                               2 ¦
+        [0] number                                ｢2｣
+          [0] number.integer                      ｢2｣
+            [0] number.integer.decimal            ｢2｣
+              [0] number.unsigned.integer.decimal ｢2｣
+    [1] Test.Mul./                                f . g ...  / 4<NEWLINE>¦
+      [0] Test.Mul.*                              f . g ...  * 3 ¦
+        [0] Test.Dot..                            f . g . h ¦
+          [0] Test.Atom                           f ¦
+            [0] identifier                        ｢f｣
+          [1] Test.Dot..                          g . h ¦
+            [0] Test.Atom                         g ¦
+              [0] identifier                      ｢g｣
+            [1] Test.Atom                         h ¦
+              [0] identifier                      ｢h｣
+        [1] Test.Atom                             3 ¦
+          [0] number                              ｢3｣
+            [0] number.integer                    ｢3｣
+              [0] number.integer.decimal          ｢3｣
+                [0] number.unsigned.integer.decimal ｢3｣
+      [1] Test.Atom                               4<NEWLINE>¦
+        [0] number                                ｢4｣
+          [0] number.integer                      ｢4｣
+            [0] number.integer.decimal            ｢4｣
+              [0] number.unsigned.integer.decimal ｢4｣
 )");
     test::test_axe(*se, sa, "2 ! + 3\n", R"(
-[0] .Test                                         2 ! + 3<NEWLINE>¦
-  [0] .Test.Add.+                                 2 ! + 3<NEWLINE>¦
-    [0] .Test.Exc.!                               2 ! ¦
-      [0] .Test.Atom                              2 ¦
-        [0] .number                               ｢2｣
-          [0] .number.integer                     ｢2｣
-            [0] .number.integer.decimal           ｢2｣
-              [0] .number.unsigned.integer.decimal ｢2｣
-    [1] .Test.Atom                                3<NEWLINE>¦
-      [0] .number                                 ｢3｣
-        [0] .number.integer                       ｢3｣
-          [0] .number.integer.decimal             ｢3｣
-            [0] .number.unsigned.integer.decimal  ｢3｣
+[0] Test                                          2 ! + 3<NEWLINE>¦
+  [0] Test.Add.+                                  2 ! + 3<NEWLINE>¦
+    [0] Test.Exc.!                                2 ! ¦
+      [0] Test.Atom                               2 ¦
+        [0] number                                ｢2｣
+          [0] number.integer                      ｢2｣
+            [0] number.integer.decimal            ｢2｣
+              [0] number.unsigned.integer.decimal ｢2｣
+    [1] Test.Atom                                 3<NEWLINE>¦
+      [0] number                                  ｢3｣
+        [0] number.integer                        ｢3｣
+          [0] number.integer.decimal              ｢3｣
+            [0] number.unsigned.integer.decimal   ｢3｣
 )");
     test::test_axe(*se, sa, " - + 1\n", R"(
-[0] .Test                                         - + 1<NEWLINE><DEDENT>¦
-  [0] .Test.Prf.-                                 - + 1<NEWLINE><DEDENT>¦
-    [0] .Test.Prf.+                               + 1<NEWLINE><DEDENT>¦
-      [0] .Test.Atom                              1<NEWLINE><DEDENT>¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
+[0] Test                                          - + 1<NEWLINE><DEDENT>¦
+  [0] Test.Prf.-                                  - + 1<NEWLINE><DEDENT>¦
+    [0] Test.Prf.+                                + 1<NEWLINE><DEDENT>¦
+      [0] Test.Atom                               1<NEWLINE><DEDENT>¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
 )");
     test::test_axe(*se, sa, "a + - + 1\n", R"(
-[0] .Test                                         a + - + 1<NEWLINE>¦
-  [0] .Test.Add.+                                 a + - + 1<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Prf.-                               - + 1<NEWLINE>¦
-      [0] .Test.Prf.+                             + 1<NEWLINE>¦
-        [0] .Test.Atom                            1<NEWLINE>¦
-          [0] .number                             ｢1｣
-            [0] .number.integer                   ｢1｣
-              [0] .number.integer.decimal         ｢1｣
-                [0] .number.unsigned.integer.decimal ｢1｣
+[0] Test                                          a + - + 1<NEWLINE>¦
+  [0] Test.Add.+                                  a + - + 1<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Prf.-                                - + 1<NEWLINE>¦
+      [0] Test.Prf.+                              + 1<NEWLINE>¦
+        [0] Test.Atom                             1<NEWLINE>¦
+          [0] number                              ｢1｣
+            [0] number.integer                    ｢1｣
+              [0] number.integer.decimal          ｢1｣
+                [0] number.unsigned.integer.decimal ｢1｣
 )");
     test::test_axe(*se, sa, "- - 1 * 2\n", R"(
-[0] .Test                                         - - 1 * 2<NEWLINE>¦
-  [0] .Test.Mul.*                                 - - 1 * 2<NEWLINE>¦
-    [0] .Test.Prf.-                               - - 1 ¦
-      [0] .Test.Prf.-                             - 1 ¦
-        [0] .Test.Atom                            1 ¦
-          [0] .number                             ｢1｣
-            [0] .number.integer                   ｢1｣
-              [0] .number.integer.decimal         ｢1｣
-                [0] .number.unsigned.integer.decimal ｢1｣
-    [1] .Test.Atom                                2<NEWLINE>¦
-      [0] .number                                 ｢2｣
-        [0] .number.integer                       ｢2｣
-          [0] .number.integer.decimal             ｢2｣
-            [0] .number.unsigned.integer.decimal  ｢2｣
+[0] Test                                          - - 1 * 2<NEWLINE>¦
+  [0] Test.Mul.*                                  - - 1 * 2<NEWLINE>¦
+    [0] Test.Prf.-                                - - 1 ¦
+      [0] Test.Prf.-                              - 1 ¦
+        [0] Test.Atom                             1 ¦
+          [0] number                              ｢1｣
+            [0] number.integer                    ｢1｣
+              [0] number.integer.decimal          ｢1｣
+                [0] number.unsigned.integer.decimal ｢1｣
+    [1] Test.Atom                                 2<NEWLINE>¦
+      [0] number                                  ｢2｣
+        [0] number.integer                        ｢2｣
+          [0] number.integer.decimal              ｢2｣
+            [0] number.unsigned.integer.decimal   ｢2｣
 )");
     test::test_axe(*se, sa, "- - 1 . 2\n", R"(
-[0] .Test                                         - - 1 . 2<NEWLINE>¦
-  [0] .Test.Prf.-                                 - - 1 . 2<NEWLINE>¦
-    [0] .Test.Prf.-                               - 1 . 2<NEWLINE>¦
-      [0] .Test.Dot..                             1 . 2<NEWLINE>¦
-        [0] .Test.Atom                            1 ¦
-          [0] .number                             ｢1｣
-            [0] .number.integer                   ｢1｣
-              [0] .number.integer.decimal         ｢1｣
-                [0] .number.unsigned.integer.decimal ｢1｣
-        [1] .Test.Atom                            2<NEWLINE>¦
-          [0] .number                             ｢2｣
-            [0] .number.integer                   ｢2｣
-              [0] .number.integer.decimal         ｢2｣
-                [0] .number.unsigned.integer.decimal ｢2｣
+[0] Test                                          - - 1 . 2<NEWLINE>¦
+  [0] Test.Prf.-                                  - - 1 . 2<NEWLINE>¦
+    [0] Test.Prf.-                                - 1 . 2<NEWLINE>¦
+      [0] Test.Dot..                              1 . 2<NEWLINE>¦
+        [0] Test.Atom                             1 ¦
+          [0] number                              ｢1｣
+            [0] number.integer                    ｢1｣
+              [0] number.integer.decimal          ｢1｣
+                [0] number.unsigned.integer.decimal ｢1｣
+        [1] Test.Atom                             2<NEWLINE>¦
+          [0] number                              ｢2｣
+            [0] number.integer                    ｢2｣
+              [0] number.integer.decimal          ｢2｣
+                [0] number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "1 . 2 !\n", R"(
-[0] .Test                                         1 . 2 !<NEWLINE>¦
-  [0] .Test.Exc.!                                 1 . 2 !<NEWLINE>¦
-    [0] .Test.Dot..                               1 . 2 ¦
-      [0] .Test.Atom                              1 ¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
-      [1] .Test.Atom                              2 ¦
-        [0] .number                               ｢2｣
-          [0] .number.integer                     ｢2｣
-            [0] .number.integer.decimal           ｢2｣
-              [0] .number.unsigned.integer.decimal ｢2｣
+[0] Test                                          1 . 2 !<NEWLINE>¦
+  [0] Test.Exc.!                                  1 . 2 !<NEWLINE>¦
+    [0] Test.Dot..                                1 . 2 ¦
+      [0] Test.Atom                               1 ¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
+      [1] Test.Atom                               2 ¦
+        [0] number                                ｢2｣
+          [0] number.integer                      ｢2｣
+            [0] number.integer.decimal            ｢2｣
+              [0] number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "1 + 2 !\n", R"(
-[0] .Test                                         1 + 2 !<NEWLINE>¦
-  [0] .Test.Add.+                                 1 + 2 !<NEWLINE>¦
-    [0] .Test.Atom                                1 ¦
-      [0] .number                                 ｢1｣
-        [0] .number.integer                       ｢1｣
-          [0] .number.integer.decimal             ｢1｣
-            [0] .number.unsigned.integer.decimal  ｢1｣
-    [1] .Test.Exc.!                               2 !<NEWLINE>¦
-      [0] .Test.Atom                              2 ¦
-        [0] .number                               ｢2｣
-          [0] .number.integer                     ｢2｣
-            [0] .number.integer.decimal           ｢2｣
-              [0] .number.unsigned.integer.decimal ｢2｣
+[0] Test                                          1 + 2 !<NEWLINE>¦
+  [0] Test.Add.+                                  1 + 2 !<NEWLINE>¦
+    [0] Test.Atom                                 1 ¦
+      [0] number                                  ｢1｣
+        [0] number.integer                        ｢1｣
+          [0] number.integer.decimal              ｢1｣
+            [0] number.unsigned.integer.decimal   ｢1｣
+    [1] Test.Exc.!                                2 !<NEWLINE>¦
+      [0] Test.Atom                               2 ¦
+        [0] number                                ｢2｣
+          [0] number.integer                      ｢2｣
+            [0] number.integer.decimal            ｢2｣
+              [0] number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "2 ! . 3\n", {none});
     test::test_axe(*se, sa, "2 . - 3\n", {none});
     test::test_axe(*se, sa, "2 $ !\n", R"(
-[0] .Test                                         2 $ !<NEWLINE>¦
-  [0] .Test.Exc.!                                 2 $ !<NEWLINE>¦
-    [0] .Test.Dol.$                               2 $ ¦
-      [0] .Test.Atom                              2 ¦
-        [0] .number                               ｢2｣
-          [0] .number.integer                     ｢2｣
-            [0] .number.integer.decimal           ｢2｣
-              [0] .number.unsigned.integer.decimal ｢2｣
+[0] Test                                          2 $ !<NEWLINE>¦
+  [0] Test.Exc.!                                  2 $ !<NEWLINE>¦
+    [0] Test.Dol.$                                2 $ ¦
+      [0] Test.Atom                               2 ¦
+        [0] number                                ｢2｣
+          [0] number.integer                      ｢2｣
+            [0] number.integer.decimal            ｢2｣
+              [0] number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "2 ! $\n", {none});
     test::test_axe(*se, sa, "+ ~ 2\n", R"(
-[0] .Test                                         + ~ 2<NEWLINE>¦
-  [0] .Test.Prf.+                                 + ~ 2<NEWLINE>¦
-    [0] .Test.Til.~                               ~ 2<NEWLINE>¦
-      [0] .Test.Atom                              2<NEWLINE>¦
-        [0] .number                               ｢2｣
-          [0] .number.integer                     ｢2｣
-            [0] .number.integer.decimal           ｢2｣
-              [0] .number.unsigned.integer.decimal ｢2｣
+[0] Test                                          + ~ 2<NEWLINE>¦
+  [0] Test.Prf.+                                  + ~ 2<NEWLINE>¦
+    [0] Test.Til.~                                ~ 2<NEWLINE>¦
+      [0] Test.Atom                               2<NEWLINE>¦
+        [0] number                                ｢2｣
+          [0] number.integer                      ｢2｣
+            [0] number.integer.decimal            ｢2｣
+              [0] number.unsigned.integer.decimal ｢2｣
 )");
     test::test_axe(*se, sa, "~ + 2\n", {none});
     test::test_axe(*se, sa, "( ( 0 ) )\n", R"(
-[0] .Test                                         ( ( 0 ) )<NEWLINE>¦
-  [0] .Test.Atom                                  ( ( 0 ) )<NEWLINE>¦
-    [0] .Test                                     ( 0 ) ¦
-      [0] .Test.Atom                              ( 0 ) ¦
-        [0] .Test                                 0 ¦
-          [0] .Test.Atom                          0 ¦
-            [0] .number                           ｢0｣
-              [0] .number.integer                 ｢0｣
-                [0] .number.integer.decimal       ｢0｣
-                  [0] .number.unsigned.integer.decimal ｢0｣
+[0] Test                                          ( ( 0 ) )<NEWLINE>¦
+  [0] Test.Atom                                   ( ( 0 ) )<NEWLINE>¦
+    [0] Test                                      ( 0 ) ¦
+      [0] Test.Atom                               ( 0 ) ¦
+        [0] Test                                  0 ¦
+          [0] Test.Atom                           0 ¦
+            [0] number                            ｢0｣
+              [0] number.integer                  ｢0｣
+                [0] number.integer.decimal        ｢0｣
+                  [0] number.unsigned.integer.decimal ｢0｣
 )");
     test::test_axe(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
-[0] .Test                                         1 * ( ...  * 4<NEWLINE>¦
-  [0] .Test.Mul.*                                 1 * ( ...  * 4<NEWLINE>¦
-    [0] .Test.Mul.*                               1 * ( ...  3 ) ¦
-      [0] .Test.Atom                              1 ¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
-      [1] .Test.Atom                              ( 2 + 3 ) ¦
-        [0] .Test                                 2 + 3 ¦
-          [0] .Test.Add.+                         2 + 3 ¦
-            [0] .Test.Atom                        2 ¦
-              [0] .number                         ｢2｣
-                [0] .number.integer               ｢2｣
-                  [0] .number.integer.decimal     ｢2｣
-                    [0] .number.unsigned.integer.decimal ｢2｣
-            [1] .Test.Atom                        3 ¦
-              [0] .number                         ｢3｣
-                [0] .number.integer               ｢3｣
-                  [0] .number.integer.decimal     ｢3｣
-                    [0] .number.unsigned.integer.decimal ｢3｣
-    [1] .Test.Atom                                4<NEWLINE>¦
-      [0] .number                                 ｢4｣
-        [0] .number.integer                       ｢4｣
-          [0] .number.integer.decimal             ｢4｣
-            [0] .number.unsigned.integer.decimal  ｢4｣
+[0] Test                                          1 * ( ...  * 4<NEWLINE>¦
+  [0] Test.Mul.*                                  1 * ( ...  * 4<NEWLINE>¦
+    [0] Test.Mul.*                                1 * ( ...  3 ) ¦
+      [0] Test.Atom                               1 ¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
+      [1] Test.Atom                               ( 2 + 3 ) ¦
+        [0] Test                                  2 + 3 ¦
+          [0] Test.Add.+                          2 + 3 ¦
+            [0] Test.Atom                         2 ¦
+              [0] number                          ｢2｣
+                [0] number.integer                ｢2｣
+                  [0] number.integer.decimal      ｢2｣
+                    [0] number.unsigned.integer.decimal ｢2｣
+            [1] Test.Atom                         3 ¦
+              [0] number                          ｢3｣
+                [0] number.integer                ｢3｣
+                  [0] number.integer.decimal      ｢3｣
+                    [0] number.unsigned.integer.decimal ｢3｣
+    [1] Test.Atom                                 4<NEWLINE>¦
+      [0] number                                  ｢4｣
+        [0] number.integer                        ｢4｣
+          [0] number.integer.decimal              ｢4｣
+            [0] number.unsigned.integer.decimal   ｢4｣
 )");
     test::test_axe(*se, sa, "1 * ( 2 + 3 ) * 4\n", R"(
-[0] .Test                                         1 * ( ...  * 4<NEWLINE>¦
-  [0] .Test.Mul.*                                 1 * ( ...  * 4<NEWLINE>¦
-    [0] .Test.Mul.*                               1 * ( ...  3 ) ¦
-      [0] .Test.Atom                              1 ¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
-      [1] .Test.Atom                              ( 2 + 3 ) ¦
-        [0] .Test                                 2 + 3 ¦
-          [0] .Test.Add.+                         2 + 3 ¦
-            [0] .Test.Atom                        2 ¦
-              [0] .number                         ｢2｣
-                [0] .number.integer               ｢2｣
-                  [0] .number.integer.decimal     ｢2｣
-                    [0] .number.unsigned.integer.decimal ｢2｣
-            [1] .Test.Atom                        3 ¦
-              [0] .number                         ｢3｣
-                [0] .number.integer               ｢3｣
-                  [0] .number.integer.decimal     ｢3｣
-                    [0] .number.unsigned.integer.decimal ｢3｣
-    [1] .Test.Atom                                4<NEWLINE>¦
-      [0] .number                                 ｢4｣
-        [0] .number.integer                       ｢4｣
-          [0] .number.integer.decimal             ｢4｣
-            [0] .number.unsigned.integer.decimal  ｢4｣
+[0] Test                                          1 * ( ...  * 4<NEWLINE>¦
+  [0] Test.Mul.*                                  1 * ( ...  * 4<NEWLINE>¦
+    [0] Test.Mul.*                                1 * ( ...  3 ) ¦
+      [0] Test.Atom                               1 ¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
+      [1] Test.Atom                               ( 2 + 3 ) ¦
+        [0] Test                                  2 + 3 ¦
+          [0] Test.Add.+                          2 + 3 ¦
+            [0] Test.Atom                         2 ¦
+              [0] number                          ｢2｣
+                [0] number.integer                ｢2｣
+                  [0] number.integer.decimal      ｢2｣
+                    [0] number.unsigned.integer.decimal ｢2｣
+            [1] Test.Atom                         3 ¦
+              [0] number                          ｢3｣
+                [0] number.integer                ｢3｣
+                  [0] number.integer.decimal      ｢3｣
+                    [0] number.unsigned.integer.decimal ｢3｣
+    [1] Test.Atom                                 4<NEWLINE>¦
+      [0] number                                  ｢4｣
+        [0] number.integer                        ｢4｣
+          [0] number.integer.decimal              ｢4｣
+            [0] number.unsigned.integer.decimal   ｢4｣
 )");
     test::test_axe(*se, sa, "a [ 0 ]\n", R"(
-[0] .Test                                         a [ 0 ]<NEWLINE>¦
-  [0] .Test.Sub.[                                 a [ 0 ]<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test                                     0 ¦
-      [0] .Test.Atom                              0 ¦
-        [0] .number                               ｢0｣
-          [0] .number.integer                     ｢0｣
-            [0] .number.integer.decimal           ｢0｣
-              [0] .number.unsigned.integer.decimal ｢0｣
+[0] Test                                          a [ 0 ]<NEWLINE>¦
+  [0] Test.Sub.[                                  a [ 0 ]<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test                                      0 ¦
+      [0] Test.Atom                               0 ¦
+        [0] number                                ｢0｣
+          [0] number.integer                      ｢0｣
+            [0] number.integer.decimal            ｢0｣
+              [0] number.unsigned.integer.decimal ｢0｣
 )");
     test::test_axe(*se, sa, "a [ 0 ] [ 1 ]\n", R"(
-[0] .Test                                         a [ 0 ...  1 ]<NEWLINE>¦
-  [0] .Test.Sub.[                                 a [ 0 ...  1 ]<NEWLINE>¦
-    [0] .Test.Sub.[                               a [ 0 ] ¦
-      [0] .Test.Atom                              a ¦
-        [0] .identifier                           ｢a｣
-      [1] .Test                                   0 ¦
-        [0] .Test.Atom                            0 ¦
-          [0] .number                             ｢0｣
-            [0] .number.integer                   ｢0｣
-              [0] .number.integer.decimal         ｢0｣
-                [0] .number.unsigned.integer.decimal ｢0｣
-    [1] .Test                                     1 ¦
-      [0] .Test.Atom                              1 ¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
+[0] Test                                          a [ 0 ...  1 ]<NEWLINE>¦
+  [0] Test.Sub.[                                  a [ 0 ...  1 ]<NEWLINE>¦
+    [0] Test.Sub.[                                a [ 0 ] ¦
+      [0] Test.Atom                               a ¦
+        [0] identifier                            ｢a｣
+      [1] Test                                    0 ¦
+        [0] Test.Atom                             0 ¦
+          [0] number                              ｢0｣
+            [0] number.integer                    ｢0｣
+              [0] number.integer.decimal          ｢0｣
+                [0] number.unsigned.integer.decimal ｢0｣
+    [1] Test                                      1 ¦
+      [0] Test.Atom                               1 ¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
 )");
     test::test_axe(*se, sa, "a [ 0 ] . b [ 1 ]\n", {none});
     test::test_axe(*se, sa, "a [ 0 ] + b [ 1 ]\n", R"(
-[0] .Test                                         a [ 0 ...  1 ]<NEWLINE>¦
-  [0] .Test.Add.+                                 a [ 0 ...  1 ]<NEWLINE>¦
-    [0] .Test.Sub.[                               a [ 0 ] ¦
-      [0] .Test.Atom                              a ¦
-        [0] .identifier                           ｢a｣
-      [1] .Test                                   0 ¦
-        [0] .Test.Atom                            0 ¦
-          [0] .number                             ｢0｣
-            [0] .number.integer                   ｢0｣
-              [0] .number.integer.decimal         ｢0｣
-                [0] .number.unsigned.integer.decimal ｢0｣
-    [1] .Test.Sub.[                               b [ 1 ]<NEWLINE>¦
-      [0] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-      [1] .Test                                   1 ¦
-        [0] .Test.Atom                            1 ¦
-          [0] .number                             ｢1｣
-            [0] .number.integer                   ｢1｣
-              [0] .number.integer.decimal         ｢1｣
-                [0] .number.unsigned.integer.decimal ｢1｣
+[0] Test                                          a [ 0 ...  1 ]<NEWLINE>¦
+  [0] Test.Add.+                                  a [ 0 ...  1 ]<NEWLINE>¦
+    [0] Test.Sub.[                                a [ 0 ] ¦
+      [0] Test.Atom                               a ¦
+        [0] identifier                            ｢a｣
+      [1] Test                                    0 ¦
+        [0] Test.Atom                             0 ¦
+          [0] number                              ｢0｣
+            [0] number.integer                    ｢0｣
+              [0] number.integer.decimal          ｢0｣
+                [0] number.unsigned.integer.decimal ｢0｣
+    [1] Test.Sub.[                                b [ 1 ]<NEWLINE>¦
+      [0] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+      [1] Test                                    1 ¦
+        [0] Test.Atom                             1 ¦
+          [0] number                              ｢1｣
+            [0] number.integer                    ｢1｣
+              [0] number.integer.decimal          ｢1｣
+                [0] number.unsigned.integer.decimal ｢1｣
 )");
     test::test_axe(*se, sa, "a ? b : c\n", R"(
-[0] .Test                                         a ? b : c<NEWLINE>¦
-  [0] .Test.Ter.?                                 a ? b : c<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test                                     b ¦
-      [0] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-    [2] .Test.Atom                                c<NEWLINE>¦
-      [0] .identifier                             ｢c｣
+[0] Test                                          a ? b : c<NEWLINE>¦
+  [0] Test.Ter.?                                  a ? b : c<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test                                      b ¦
+      [0] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+    [2] Test.Atom                                 c<NEWLINE>¦
+      [0] identifier                              ｢c｣
 )");
     test::test_axe(*se, sa, "a ? b : c ? d : e\n", R"(
-[0] .Test                                         a ? b ...  : e<NEWLINE>¦
-  [0] .Test.Ter.?                                 a ? b ...  : e<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test                                     b ¦
-      [0] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-    [2] .Test.Ter.?                               c ? d : e<NEWLINE>¦
-      [0] .Test.Atom                              c ¦
-        [0] .identifier                           ｢c｣
-      [1] .Test                                   d ¦
-        [0] .Test.Atom                            d ¦
-          [0] .identifier                         ｢d｣
-      [2] .Test.Atom                              e<NEWLINE>¦
-        [0] .identifier                           ｢e｣
+[0] Test                                          a ? b ...  : e<NEWLINE>¦
+  [0] Test.Ter.?                                  a ? b ...  : e<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test                                      b ¦
+      [0] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+    [2] Test.Ter.?                                c ? d : e<NEWLINE>¦
+      [0] Test.Atom                               c ¦
+        [0] identifier                            ｢c｣
+      [1] Test                                    d ¦
+        [0] Test.Atom                             d ¦
+          [0] identifier                          ｢d｣
+      [2] Test.Atom                               e<NEWLINE>¦
+        [0] identifier                            ｢e｣
 )");
     test::test_axe(*se, sa, "a ? b ? c : d : e\n", R"(
-[0] .Test                                         a ? b ...  : e<NEWLINE>¦
-  [0] .Test.Ter.?                                 a ? b ...  : e<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test                                     b ? c : d ¦
-      [0] .Test.Ter.?                             b ? c : d ¦
-        [0] .Test.Atom                            b ¦
-          [0] .identifier                         ｢b｣
-        [1] .Test                                 c ¦
-          [0] .Test.Atom                          c ¦
-            [0] .identifier                       ｢c｣
-        [2] .Test.Atom                            d ¦
-          [0] .identifier                         ｢d｣
-    [2] .Test.Atom                                e<NEWLINE>¦
-      [0] .identifier                             ｢e｣
+[0] Test                                          a ? b ...  : e<NEWLINE>¦
+  [0] Test.Ter.?                                  a ? b ...  : e<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test                                      b ? c : d ¦
+      [0] Test.Ter.?                              b ? c : d ¦
+        [0] Test.Atom                             b ¦
+          [0] identifier                          ｢b｣
+        [1] Test                                  c ¦
+          [0] Test.Atom                           c ¦
+            [0] identifier                        ｢c｣
+        [2] Test.Atom                             d ¦
+          [0] identifier                          ｢d｣
+    [2] Test.Atom                                 e<NEWLINE>¦
+      [0] identifier                              ｢e｣
 )");
     test::test_axe(*se, sa, "a = b ? c = d : e = f\n", R"(
-[0] .Test                                         a = b ...  = f<NEWLINE>¦
-  [0] .Test.Eqa.=                                 a = b ...  = f<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Eqa.=                               b ? c ...  = f<NEWLINE>¦
-      [0] .Test.Ter.?                             b ? c ...  : e ¦
-        [0] .Test.Atom                            b ¦
-          [0] .identifier                         ｢b｣
-        [1] .Test                                 c = d ¦
-          [0] .Test.Eqa.=                         c = d ¦
-            [0] .Test.Atom                        c ¦
-              [0] .identifier                     ｢c｣
-            [1] .Test.Atom                        d ¦
-              [0] .identifier                     ｢d｣
-        [2] .Test.Atom                            e ¦
-          [0] .identifier                         ｢e｣
-      [1] .Test.Atom                              f<NEWLINE>¦
-        [0] .identifier                           ｢f｣
+[0] Test                                          a = b ...  = f<NEWLINE>¦
+  [0] Test.Eqa.=                                  a = b ...  = f<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Eqa.=                                b ? c ...  = f<NEWLINE>¦
+      [0] Test.Ter.?                              b ? c ...  : e ¦
+        [0] Test.Atom                             b ¦
+          [0] identifier                          ｢b｣
+        [1] Test                                  c = d ¦
+          [0] Test.Eqa.=                          c = d ¦
+            [0] Test.Atom                         c ¦
+              [0] identifier                      ｢c｣
+            [1] Test.Atom                         d ¦
+              [0] identifier                      ｢d｣
+        [2] Test.Atom                             e ¦
+          [0] identifier                          ｢e｣
+      [1] Test.Atom                               f<NEWLINE>¦
+        [0] identifier                            ｢f｣
 )");
     test::test_axe(*se, sa, "a + b ? c + d : e + f\n", R"(
-[0] .Test                                         a + b ...  + f<NEWLINE>¦
-  [0] .Test.Ter.?                                 a + b ...  + f<NEWLINE>¦
-    [0] .Test.Add.+                               a + b ¦
-      [0] .Test.Atom                              a ¦
-        [0] .identifier                           ｢a｣
-      [1] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-    [1] .Test                                     c + d ¦
-      [0] .Test.Add.+                             c + d ¦
-        [0] .Test.Atom                            c ¦
-          [0] .identifier                         ｢c｣
-        [1] .Test.Atom                            d ¦
-          [0] .identifier                         ｢d｣
-    [2] .Test.Add.+                               e + f<NEWLINE>¦
-      [0] .Test.Atom                              e ¦
-        [0] .identifier                           ｢e｣
-      [1] .Test.Atom                              f<NEWLINE>¦
-        [0] .identifier                           ｢f｣
+[0] Test                                          a + b ...  + f<NEWLINE>¦
+  [0] Test.Ter.?                                  a + b ...  + f<NEWLINE>¦
+    [0] Test.Add.+                                a + b ¦
+      [0] Test.Atom                               a ¦
+        [0] identifier                            ｢a｣
+      [1] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+    [1] Test                                      c + d ¦
+      [0] Test.Add.+                              c + d ¦
+        [0] Test.Atom                             c ¦
+          [0] identifier                          ｢c｣
+        [1] Test.Atom                             d ¦
+          [0] identifier                          ｢d｣
+    [2] Test.Add.+                                e + f<NEWLINE>¦
+      [0] Test.Atom                               e ¦
+        [0] identifier                            ｢e｣
+      [1] Test.Atom                               f<NEWLINE>¦
+        [0] identifier                            ｢f｣
 )");
   }
 
@@ -613,383 +613,383 @@ language Test:
   skip.@ = freeForm
 )'";
     SILVA_REQUIRE(se->add_seed_text("test.seed", string_t{test_axe_str}));
-    const auto& sa =
-        *std::get<seed::interpreter_t::axe_data_t>(se->definitions.at(sf.name_id_of("Test", "@")))
-             .axe;
+    const auto& sa = *std::get<seed::interpreter_t::axe_data_t>(
+                          se->definitions.at(sf.name_id_of(name_id_seed, "Test", "@")))
+                          .axe;
     CHECK(sa.concat_result.has_value());
     CHECK(sa.results.size() == 15);
 
     test::test_axe(*se, sa, "a\n", R"(
-[0] .Test                                         a<NEWLINE>¦
-  [0] .Test.Atom                                  a<NEWLINE>¦
-    [0] .identifier                               ｢a｣
+[0] Test                                          a<NEWLINE>¦
+  [0] Test.Atom                                   a<NEWLINE>¦
+    [0] identifier                                ｢a｣
 )");
     test::test_axe(*se, sa, "a y z\n", R"(
-[0] .Test                                         a y z<NEWLINE>¦
-  [0] .Test.Cat.concat                            a y z<NEWLINE>¦
-    [0] .Test.Cat.concat                          a y ¦
-      [0] .Test.Atom                              a ¦
-        [0] .identifier                           ｢a｣
-      [1] .Test.Atom                              y ¦
-        [0] .identifier                           ｢y｣
-    [1] .Test.Atom                                z<NEWLINE>¦
-      [0] .identifier                             ｢z｣
+[0] Test                                          a y z<NEWLINE>¦
+  [0] Test.Cat.concat                             a y z<NEWLINE>¦
+    [0] Test.Cat.concat                           a y ¦
+      [0] Test.Atom                               a ¦
+        [0] identifier                            ｢a｣
+      [1] Test.Atom                               y ¦
+        [0] identifier                            ｢y｣
+    [1] Test.Atom                                 z<NEWLINE>¦
+      [0] identifier                              ｢z｣
 )");
     test::test_axe(*se, sa, "<: :> a\n", R"(
-[0] .Test                                         <: :> a<NEWLINE>¦
-  [0] .Test.PrfLo.<:                              <: :> a<NEWLINE>¦
-    [0] .Test.Args                                ¦
-    [1] .Test.Atom                                a<NEWLINE>¦
-      [0] .identifier                             ｢a｣
+[0] Test                                          <: :> a<NEWLINE>¦
+  [0] Test.PrfLo.<:                               <: :> a<NEWLINE>¦
+    [0] Test.Args                                 ¦
+    [1] Test.Atom                                 a<NEWLINE>¦
+      [0] identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "<: 'foo' :> a\n", R"(
-[0] .Test                                         <: 'f ... :> a<NEWLINE>¦
-  [0] .Test.PrfLo.<:                              <: 'f ... :> a<NEWLINE>¦
-    [0] .Test.Args                                'foo' ¦
-      [0] .string                                 ｢'foo'｣
-    [1] .Test.Atom                                a<NEWLINE>¦
-      [0] .identifier                             ｢a｣
+[0] Test                                          <: 'f ... :> a<NEWLINE>¦
+  [0] Test.PrfLo.<:                               <: 'f ... :> a<NEWLINE>¦
+    [0] Test.Args                                 'foo' ¦
+      [0] string                                  ｢'foo'｣
+    [1] Test.Atom                                 a<NEWLINE>¦
+      [0] identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "<: 'foo' , 'bar' , 'baz' :> a\n", R"(
-[0] .Test                                         <: 'f ... :> a<NEWLINE>¦
-  [0] .Test.PrfLo.<:                              <: 'f ... :> a<NEWLINE>¦
-    [0] .Test.Args                                'foo' ... baz' ¦
-      [0] .string                                 ｢'foo'｣
-      [1] .string                                 ｢'bar'｣
-      [2] .string                                 ｢'baz'｣
-    [1] .Test.Atom                                a<NEWLINE>¦
-      [0] .identifier                             ｢a｣
+[0] Test                                          <: 'f ... :> a<NEWLINE>¦
+  [0] Test.PrfLo.<:                               <: 'f ... :> a<NEWLINE>¦
+    [0] Test.Args                                 'foo' ... baz' ¦
+      [0] string                                  ｢'foo'｣
+      [1] string                                  ｢'bar'｣
+      [2] string                                  ｢'baz'｣
+    [1] Test.Atom                                 a<NEWLINE>¦
+      [0] identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "a * <: 'foo' , 'bar' , 'baz' :> a\n", R"(
-[0] .Test                                         a * < ... :> a<NEWLINE>¦
-  [0] .Test.Mul.*                                 a * < ... :> a<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.PrfLo.<:                            <: 'f ... :> a<NEWLINE>¦
-      [0] .Test.Args                              'foo' ... baz' ¦
-        [0] .string                               ｢'foo'｣
-        [1] .string                               ｢'bar'｣
-        [2] .string                               ｢'baz'｣
-      [1] .Test.Atom                              a<NEWLINE>¦
-        [0] .identifier                           ｢a｣
+[0] Test                                          a * < ... :> a<NEWLINE>¦
+  [0] Test.Mul.*                                  a * < ... :> a<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.PrfLo.<:                             <: 'f ... :> a<NEWLINE>¦
+      [0] Test.Args                               'foo' ... baz' ¦
+        [0] string                                ｢'foo'｣
+        [1] string                                ｢'bar'｣
+        [2] string                                ｢'baz'｣
+      [1] Test.Atom                               a<NEWLINE>¦
+        [0] identifier                            ｢a｣
 )");
     test::test_axe(*se, sa, "{ b } a\n", R"(
-[0] .Test                                         { b } a<NEWLINE>¦
-  [0] .Test.PrfLo.{                               { b } a<NEWLINE>¦
-    [0] .Test                                     b ¦
-      [0] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-    [1] .Test.Atom                                a<NEWLINE>¦
-      [0] .identifier                             ｢a｣
+[0] Test                                          { b } a<NEWLINE>¦
+  [0] Test.PrfLo.{                                { b } a<NEWLINE>¦
+    [0] Test                                      b ¦
+      [0] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+    [1] Test.Atom                                 a<NEWLINE>¦
+      [0] identifier                              ｢a｣
 )");
     test::test_axe(*se, sa, "a { b } c\n", {none});
     test::test_axe(*se, sa, "a ( b ) c\n", R"(
-[0] .Test                                         a ( b ) c<NEWLINE>¦
-  [0] .Test.Cat.concat                            a ( b ) c<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.PrfHi.(                             ( b ) c<NEWLINE>¦
-      [0] .Test                                   b ¦
-        [0] .Test.Atom                            b ¦
-          [0] .identifier                         ｢b｣
-      [1] .Test.Atom                              c<NEWLINE>¦
-        [0] .identifier                           ｢c｣
+[0] Test                                          a ( b ) c<NEWLINE>¦
+  [0] Test.Cat.concat                             a ( b ) c<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.PrfHi.(                              ( b ) c<NEWLINE>¦
+      [0] Test                                    b ¦
+        [0] Test.Atom                             b ¦
+          [0] identifier                          ｢b｣
+      [1] Test.Atom                               c<NEWLINE>¦
+        [0] identifier                            ｢c｣
 )");
     test::test_axe(*se, sa, "a << { b } c >>\n", R"(
-[0] .Test                                         a <<  ... c >><NEWLINE>¦
-  [0] .Test.Cat.concat                            a <<  ... c >><NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Atom                                << {  ... c >><NEWLINE>¦
-      [0] .Test                                   { b } c ¦
-        [0] .Test.PrfLo.{                         { b } c ¦
-          [0] .Test                               b ¦
-            [0] .Test.Atom                        b ¦
-              [0] .identifier                     ｢b｣
-          [1] .Test.Atom                          c ¦
-            [0] .identifier                       ｢c｣
+[0] Test                                          a <<  ... c >><NEWLINE>¦
+  [0] Test.Cat.concat                             a <<  ... c >><NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Atom                                 << {  ... c >><NEWLINE>¦
+      [0] Test                                    { b } c ¦
+        [0] Test.PrfLo.{                          { b } c ¦
+          [0] Test                                b ¦
+            [0] Test.Atom                         b ¦
+              [0] identifier                      ｢b｣
+          [1] Test.Atom                           c ¦
+            [0] identifier                        ｢c｣
 )");
     test::test_axe(*se, sa, "a << b * c >>\n", {none});
     test::test_axe(*se, sa, "<< a { b } >> c\n", {none});
     test::test_axe(*se, sa, "a 1 a z\n", {none});
     test::test_axe(*se, sa, "a 1 + z\n", R"(
-[0] .Test                                         a 1 + z<NEWLINE>¦
-  [0] .Test.Cat.concat                            a 1 + z<NEWLINE>¦
-    [0] .Test.Cat.concat                          a 1 + ¦
-      [0] .Test.Atom                              a ¦
-        [0] .identifier                           ｢a｣
-      [1] .Test.Atom                              1 + ¦
-        [0] .number                               ｢1｣
-          [0] .number.integer                     ｢1｣
-            [0] .number.integer.decimal           ｢1｣
-              [0] .number.unsigned.integer.decimal ｢1｣
-    [1] .Test.Atom                                z<NEWLINE>¦
-      [0] .identifier                             ｢z｣
+[0] Test                                          a 1 + z<NEWLINE>¦
+  [0] Test.Cat.concat                             a 1 + z<NEWLINE>¦
+    [0] Test.Cat.concat                           a 1 + ¦
+      [0] Test.Atom                               a ¦
+        [0] identifier                            ｢a｣
+      [1] Test.Atom                               1 + ¦
+        [0] number                                ｢1｣
+          [0] number.integer                      ｢1｣
+            [0] number.integer.decimal            ｢1｣
+              [0] number.unsigned.integer.decimal ｢1｣
+    [1] Test.Atom                                 z<NEWLINE>¦
+      [0] identifier                              ｢z｣
 )");
     test::test_axe(*se, sa, "a + b + c\n", R"(
-[0] .Test                                         a + b + c<NEWLINE>¦
-  [0] .Test.Add.+                                 a + b + c<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Atom                                b ¦
-      [0] .identifier                             ｢b｣
-    [2] .Test.Atom                                c<NEWLINE>¦
-      [0] .identifier                             ｢c｣
+[0] Test                                          a + b + c<NEWLINE>¦
+  [0] Test.Add.+                                  a + b + c<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Atom                                 b ¦
+      [0] identifier                              ｢b｣
+    [2] Test.Atom                                 c<NEWLINE>¦
+      [0] identifier                              ｢c｣
 )");
     test::test_axe(*se, sa, "a + b + c * d + e + f\n", R"(
-[0] .Test                                         a + b ...  + f<NEWLINE>¦
-  [0] .Test.Add.+                                 a + b ...  + f<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Atom                                b ¦
-      [0] .identifier                             ｢b｣
-    [2] .Test.Mul.*                               c * d ¦
-      [0] .Test.Atom                              c ¦
-        [0] .identifier                           ｢c｣
-      [1] .Test.Atom                              d ¦
-        [0] .identifier                           ｢d｣
-    [3] .Test.Atom                                e ¦
-      [0] .identifier                             ｢e｣
-    [4] .Test.Atom                                f<NEWLINE>¦
-      [0] .identifier                             ｢f｣
+[0] Test                                          a + b ...  + f<NEWLINE>¦
+  [0] Test.Add.+                                  a + b ...  + f<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Atom                                 b ¦
+      [0] identifier                              ｢b｣
+    [2] Test.Mul.*                                c * d ¦
+      [0] Test.Atom                               c ¦
+        [0] identifier                            ｢c｣
+      [1] Test.Atom                               d ¦
+        [0] identifier                            ｢d｣
+    [3] Test.Atom                                 e ¦
+      [0] identifier                              ｢e｣
+    [4] Test.Atom                                 f<NEWLINE>¦
+      [0] identifier                              ｢f｣
 )");
     test::test_axe(*se, sa, "a + b + c - d - e + f + g\n", R"(
-[0] .Test                                         a + b ...  + g<NEWLINE>¦
-  [0] .Test.Add.+                                 a + b ...  + g<NEWLINE>¦
-    [0] .Test.Add.-                               a + b ...  - e ¦
-      [0] .Test.Add.-                             a + b ...  - d ¦
-        [0] .Test.Add.+                           a + b + c ¦
-          [0] .Test.Atom                          a ¦
-            [0] .identifier                       ｢a｣
-          [1] .Test.Atom                          b ¦
-            [0] .identifier                       ｢b｣
-          [2] .Test.Atom                          c ¦
-            [0] .identifier                       ｢c｣
-        [1] .Test.Atom                            d ¦
-          [0] .identifier                         ｢d｣
-      [1] .Test.Atom                              e ¦
-        [0] .identifier                           ｢e｣
-    [1] .Test.Atom                                f ¦
-      [0] .identifier                             ｢f｣
-    [2] .Test.Atom                                g<NEWLINE>¦
-      [0] .identifier                             ｢g｣
+[0] Test                                          a + b ...  + g<NEWLINE>¦
+  [0] Test.Add.+                                  a + b ...  + g<NEWLINE>¦
+    [0] Test.Add.-                                a + b ...  - e ¦
+      [0] Test.Add.-                              a + b ...  - d ¦
+        [0] Test.Add.+                            a + b + c ¦
+          [0] Test.Atom                           a ¦
+            [0] identifier                        ｢a｣
+          [1] Test.Atom                           b ¦
+            [0] identifier                        ｢b｣
+          [2] Test.Atom                           c ¦
+            [0] identifier                        ｢c｣
+        [1] Test.Atom                             d ¦
+          [0] identifier                          ｢d｣
+      [1] Test.Atom                               e ¦
+        [0] identifier                            ｢e｣
+    [1] Test.Atom                                 f ¦
+      [0] identifier                              ｢f｣
+    [2] Test.Atom                                 g<NEWLINE>¦
+      [0] identifier                              ｢g｣
 )");
     test::test_axe(*se, sa, "a - b + c + d - e\n", R"(
-[0] .Test                                         a - b ...  - e<NEWLINE>¦
-  [0] .Test.Add.-                                 a - b ...  - e<NEWLINE>¦
-    [0] .Test.Add.+                               a - b ...  + d ¦
-      [0] .Test.Add.-                             a - b ¦
-        [0] .Test.Atom                            a ¦
-          [0] .identifier                         ｢a｣
-        [1] .Test.Atom                            b ¦
-          [0] .identifier                         ｢b｣
-      [1] .Test.Atom                              c ¦
-        [0] .identifier                           ｢c｣
-      [2] .Test.Atom                              d ¦
-        [0] .identifier                           ｢d｣
-    [1] .Test.Atom                                e<NEWLINE>¦
-      [0] .identifier                             ｢e｣
+[0] Test                                          a - b ...  - e<NEWLINE>¦
+  [0] Test.Add.-                                  a - b ...  - e<NEWLINE>¦
+    [0] Test.Add.+                                a - b ...  + d ¦
+      [0] Test.Add.-                              a - b ¦
+        [0] Test.Atom                             a ¦
+          [0] identifier                          ｢a｣
+        [1] Test.Atom                             b ¦
+          [0] identifier                          ｢b｣
+      [1] Test.Atom                               c ¦
+        [0] identifier                            ｢c｣
+      [2] Test.Atom                               d ¦
+        [0] identifier                            ｢d｣
+    [1] Test.Atom                                 e<NEWLINE>¦
+      [0] identifier                              ｢e｣
 )");
     test::test_axe(*se, sa, "a + b + c - d + e + f\n", R"(
-[0] .Test                                         a + b ...  + f<NEWLINE>¦
-  [0] .Test.Add.+                                 a + b ...  + f<NEWLINE>¦
-    [0] .Test.Add.-                               a + b ...  - d ¦
-      [0] .Test.Add.+                             a + b + c ¦
-        [0] .Test.Atom                            a ¦
-          [0] .identifier                         ｢a｣
-        [1] .Test.Atom                            b ¦
-          [0] .identifier                         ｢b｣
-        [2] .Test.Atom                            c ¦
-          [0] .identifier                         ｢c｣
-      [1] .Test.Atom                              d ¦
-        [0] .identifier                           ｢d｣
-    [1] .Test.Atom                                e ¦
-      [0] .identifier                             ｢e｣
-    [2] .Test.Atom                                f<NEWLINE>¦
-      [0] .identifier                             ｢f｣
+[0] Test                                          a + b ...  + f<NEWLINE>¦
+  [0] Test.Add.+                                  a + b ...  + f<NEWLINE>¦
+    [0] Test.Add.-                                a + b ...  - d ¦
+      [0] Test.Add.+                              a + b + c ¦
+        [0] Test.Atom                             a ¦
+          [0] identifier                          ｢a｣
+        [1] Test.Atom                             b ¦
+          [0] identifier                          ｢b｣
+        [2] Test.Atom                             c ¦
+          [0] identifier                          ｢c｣
+      [1] Test.Atom                               d ¦
+        [0] identifier                            ｢d｣
+    [1] Test.Atom                                 e ¦
+      [0] identifier                              ｢e｣
+    [2] Test.Atom                                 f<NEWLINE>¦
+      [0] identifier                              ｢f｣
 )");
     test::test_axe(*se, sa, "a % b = c = d % e\n", R"(
-[0] .Test                                         a % b ...  % e<NEWLINE>¦
-  [0] .Test.Assign.%                              a % b ...  % e<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Assign.=                            b = c ...  % e<NEWLINE>¦
-      [0] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-      [1] .Test.Atom                              c ¦
-        [0] .identifier                           ｢c｣
-      [2] .Test.Assign.%                          d % e<NEWLINE>¦
-        [0] .Test.Atom                            d ¦
-          [0] .identifier                         ｢d｣
-        [1] .Test.Atom                            e<NEWLINE>¦
-          [0] .identifier                         ｢e｣
+[0] Test                                          a % b ...  % e<NEWLINE>¦
+  [0] Test.Assign.%                               a % b ...  % e<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Assign.=                             b = c ...  % e<NEWLINE>¦
+      [0] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+      [1] Test.Atom                               c ¦
+        [0] identifier                            ｢c｣
+      [2] Test.Assign.%                           d % e<NEWLINE>¦
+        [0] Test.Atom                             d ¦
+          [0] identifier                          ｢d｣
+        [1] Test.Atom                             e<NEWLINE>¦
+          [0] identifier                          ｢e｣
 )");
     test::test_axe(*se, sa, "a = b = c % d = e = f\n", R"(
-[0] .Test                                         a = b ...  = f<NEWLINE>¦
-  [0] .Test.Assign.=                              a = b ...  = f<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Atom                                b ¦
-      [0] .identifier                             ｢b｣
-    [2] .Test.Assign.%                            c % d ...  = f<NEWLINE>¦
-      [0] .Test.Atom                              c ¦
-        [0] .identifier                           ｢c｣
-      [1] .Test.Assign.=                          d = e = f<NEWLINE>¦
-        [0] .Test.Atom                            d ¦
-          [0] .identifier                         ｢d｣
-        [1] .Test.Atom                            e ¦
-          [0] .identifier                         ｢e｣
-        [2] .Test.Atom                            f<NEWLINE>¦
-          [0] .identifier                         ｢f｣
+[0] Test                                          a = b ...  = f<NEWLINE>¦
+  [0] Test.Assign.=                               a = b ...  = f<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Atom                                 b ¦
+      [0] identifier                              ｢b｣
+    [2] Test.Assign.%                             c % d ...  = f<NEWLINE>¦
+      [0] Test.Atom                               c ¦
+        [0] identifier                            ｢c｣
+      [1] Test.Assign.=                           d = e = f<NEWLINE>¦
+        [0] Test.Atom                             d ¦
+          [0] identifier                          ｢d｣
+        [1] Test.Atom                             e ¦
+          [0] identifier                          ｢e｣
+        [2] Test.Atom                             f<NEWLINE>¦
+          [0] identifier                          ｢f｣
 )");
     test::test_axe(*se, sa, "a as b\n", R"(
-[0] .Test                                         a as b<NEWLINE>¦
-  [0] .Test.Cast.as                               a as b<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Atom                                b<NEWLINE>¦
-      [0] .identifier                             ｢b｣
+[0] Test                                          a as b<NEWLINE>¦
+  [0] Test.Cast.as                                a as b<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Atom                                 b<NEWLINE>¦
+      [0] identifier                              ｢b｣
 )");
     test::test_axe(*se, sa, "a as b as c\n", R"(
-[0] .Test                                         a as  ... as c<NEWLINE>¦
-  [0] .Test.Cast.as                               a as  ... as c<NEWLINE>¦
-    [0] .Test.Cast.as                             a as b ¦
-      [0] .Test.Atom                              a ¦
-        [0] .identifier                           ｢a｣
-      [1] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-    [1] .Test.Atom                                c<NEWLINE>¦
-      [0] .identifier                             ｢c｣
+[0] Test                                          a as  ... as c<NEWLINE>¦
+  [0] Test.Cast.as                                a as  ... as c<NEWLINE>¦
+    [0] Test.Cast.as                              a as b ¦
+      [0] Test.Atom                               a ¦
+        [0] identifier                            ｢a｣
+      [1] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+    [1] Test.Atom                                 c<NEWLINE>¦
+      [0] identifier                              ｢c｣
 )");
     test::test_axe(*se, sa, "a * b as c + d\n", R"(
-[0] .Test                                         a * b ...  + d<NEWLINE>¦
-  [0] .Test.Add.+                                 a * b ...  + d<NEWLINE>¦
-    [0] .Test.Mul.*                               a * b ... as c ¦
-      [0] .Test.Atom                              a ¦
-        [0] .identifier                           ｢a｣
-      [1] .Test.Cast.as                           b as c ¦
-        [0] .Test.Atom                            b ¦
-          [0] .identifier                         ｢b｣
-        [1] .Test.Atom                            c ¦
-          [0] .identifier                         ｢c｣
-    [1] .Test.Atom                                d<NEWLINE>¦
-      [0] .identifier                             ｢d｣
+[0] Test                                          a * b ...  + d<NEWLINE>¦
+  [0] Test.Add.+                                  a * b ...  + d<NEWLINE>¦
+    [0] Test.Mul.*                                a * b ... as c ¦
+      [0] Test.Atom                               a ¦
+        [0] identifier                            ｢a｣
+      [1] Test.Cast.as                            b as c ¦
+        [0] Test.Atom                             b ¦
+          [0] identifier                          ｢b｣
+        [1] Test.Atom                             c ¦
+          [0] identifier                          ｢c｣
+    [1] Test.Atom                                 d<NEWLINE>¦
+      [0] identifier                              ｢d｣
 )");
     test::test_axe(*se, sa, "a as\n", R"(
-[0] .Test                                         a as<NEWLINE>¦
-  [0] .Test.Cat.concat                            a as<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Atom                                as<NEWLINE>¦
-      [0] .identifier                             ｢as｣
+[0] Test                                          a as<NEWLINE>¦
+  [0] Test.Cat.concat                             a as<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Atom                                 as<NEWLINE>¦
+      [0] identifier                              ｢as｣
 )");
     test::test_axe(*se, sa, "a as b c\n", {none});
     test::test_axe(*se, sa, "neg a b\n", R"(
-[0] .Test                                         neg a b<NEWLINE>¦
-  [0] .Test.PrfLo.neg                             neg a b<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Atom                                b<NEWLINE>¦
-      [0] .identifier                             ｢b｣
+[0] Test                                          neg a b<NEWLINE>¦
+  [0] Test.PrfLo.neg                              neg a b<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Atom                                 b<NEWLINE>¦
+      [0] identifier                              ｢b｣
 )");
     test::test_axe(*se, sa, "neg a b c\n", R"(
-[0] .Test                                         neg a b c<NEWLINE>¦
-  [0] .Test.PrfLo.neg                             neg a b c<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Cat.concat                          b c<NEWLINE>¦
-      [0] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-      [1] .Test.Atom                              c<NEWLINE>¦
-        [0] .identifier                           ｢c｣
+[0] Test                                          neg a b c<NEWLINE>¦
+  [0] Test.PrfLo.neg                              neg a b c<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Cat.concat                           b c<NEWLINE>¦
+      [0] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+      [1] Test.Atom                               c<NEWLINE>¦
+        [0] identifier                            ｢c｣
 )");
     test::test_axe(*se, sa, "neg a b * c\n", R"(
-[0] .Test                                         neg a ...  * c<NEWLINE>¦
-  [0] .Test.Mul.*                                 neg a ...  * c<NEWLINE>¦
-    [0] .Test.PrfLo.neg                           neg a b ¦
-      [0] .Test.Atom                              a ¦
-        [0] .identifier                           ｢a｣
-      [1] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-    [1] .Test.Atom                                c<NEWLINE>¦
-      [0] .identifier                             ｢c｣
+[0] Test                                          neg a ...  * c<NEWLINE>¦
+  [0] Test.Mul.*                                  neg a ...  * c<NEWLINE>¦
+    [0] Test.PrfLo.neg                            neg a b ¦
+      [0] Test.Atom                               a ¦
+        [0] identifier                            ｢a｣
+      [1] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+    [1] Test.Atom                                 c<NEWLINE>¦
+      [0] identifier                              ｢c｣
 )");
     test::test_axe(*se, sa, "neg a\n", {none});
     test::test_axe(*se, sa, "..\n", R"(
-[0] .Test                                         ..<NEWLINE>¦
-  [0] .Test.Range...                              ..<NEWLINE>¦
-    [0] .none                                     ｢｣
-    [1] .none                                     ｢｣
+[0] Test                                          ..<NEWLINE>¦
+  [0] Test.Range...                               ..<NEWLINE>¦
+    [0] none                                      ｢｣
+    [1] none                                      ｢｣
 )");
     test::test_axe(*se, sa, ".. b\n", R"(
-[0] .Test                                         .. b<NEWLINE>¦
-  [0] .Test.Range...                              .. b<NEWLINE>¦
-    [0] .none                                     ｢｣
-    [1] .Test.Atom                                b<NEWLINE>¦
-      [0] .identifier                             ｢b｣
+[0] Test                                          .. b<NEWLINE>¦
+  [0] Test.Range...                               .. b<NEWLINE>¦
+    [0] none                                      ｢｣
+    [1] Test.Atom                                 b<NEWLINE>¦
+      [0] identifier                              ｢b｣
 )");
     test::test_axe(*se, sa, "a ..\n", R"(
-[0] .Test                                         a ..<NEWLINE>¦
-  [0] .Test.Range...                              a ..<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .none                                     ｢｣
+[0] Test                                          a ..<NEWLINE>¦
+  [0] Test.Range...                               a ..<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] none                                      ｢｣
 )");
     test::test_axe(*se, sa, "a .. b\n", R"(
-[0] .Test                                         a .. b<NEWLINE>¦
-  [0] .Test.Range...                              a .. b<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Atom                                b<NEWLINE>¦
-      [0] .identifier                             ｢b｣
+[0] Test                                          a .. b<NEWLINE>¦
+  [0] Test.Range...                               a .. b<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Atom                                 b<NEWLINE>¦
+      [0] identifier                              ｢b｣
 )");
     test::test_axe(*se, sa, "a .. b + c\n", R"(
-[0] .Test                                         a ..  ...  + c<NEWLINE>¦
-  [0] .Test.Range...                              a ..  ...  + c<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Add.+                               b + c<NEWLINE>¦
-      [0] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-      [1] .Test.Atom                              c<NEWLINE>¦
-        [0] .identifier                           ｢c｣
+[0] Test                                          a ..  ...  + c<NEWLINE>¦
+  [0] Test.Range...                               a ..  ...  + c<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Add.+                                b + c<NEWLINE>¦
+      [0] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+      [1] Test.Atom                               c<NEWLINE>¦
+        [0] identifier                            ｢c｣
 )");
     test::test_axe(*se, sa, "a = b ..\n", R"(
-[0] .Test                                         a = b ..<NEWLINE>¦
-  [0] .Test.Assign.=                              a = b ..<NEWLINE>¦
-    [0] .Test.Atom                                a ¦
-      [0] .identifier                             ｢a｣
-    [1] .Test.Range...                            b ..<NEWLINE>¦
-      [0] .Test.Atom                              b ¦
-        [0] .identifier                           ｢b｣
-      [1] .none                                   ｢｣
+[0] Test                                          a = b ..<NEWLINE>¦
+  [0] Test.Assign.=                               a = b ..<NEWLINE>¦
+    [0] Test.Atom                                 a ¦
+      [0] identifier                              ｢a｣
+    [1] Test.Range...                             b ..<NEWLINE>¦
+      [0] Test.Atom                               b ¦
+        [0] identifier                            ｢b｣
+      [1] none                                    ｢｣
 )");
     test::test_axe(*se, sa, "( a .. ) b\n", R"(
-[0] .Test                                         ( a . ...  ) b<NEWLINE>¦
-  [0] .Test.PrfHi.(                               ( a . ...  ) b<NEWLINE>¦
-    [0] .Test                                     a .. ¦
-      [0] .Test.Range...                          a .. ¦
-        [0] .Test.Atom                            a ¦
-          [0] .identifier                         ｢a｣
-        [1] .none                                 ｢｣
-    [1] .Test.Atom                                b<NEWLINE>¦
-      [0] .identifier                             ｢b｣
+[0] Test                                          ( a . ...  ) b<NEWLINE>¦
+  [0] Test.PrfHi.(                                ( a . ...  ) b<NEWLINE>¦
+    [0] Test                                      a .. ¦
+      [0] Test.Range...                           a .. ¦
+        [0] Test.Atom                             a ¦
+          [0] identifier                          ｢a｣
+        [1] none                                  ｢｣
+    [1] Test.Atom                                 b<NEWLINE>¦
+      [0] identifier                              ｢b｣
 )");
     test::test_axe(*se, sa, "a .. b .. c\n", {none});
     test::test_axe(*se, sa, "a .. b ..= c\n", {none});
     test::test_axe(*se, sa, "[[ ( a ) b ]] c\n", R"(
-[0] .Test                                         [[ (  ... ]] c<NEWLINE>¦
-  [0] .Test.Cat.concat                            [[ (  ... ]] c<NEWLINE>¦
-    [0] .Test.Atom                                [[ (  ... b ]] ¦
-      [0] .Test                                   ( a ) b ¦
-        [0] .Test.PrfHi.(                         ( a ) b ¦
-          [0] .Test                               a ¦
-            [0] .Test.Atom                        a ¦
-              [0] .identifier                     ｢a｣
-          [1] .Test.Atom                          b ¦
-            [0] .identifier                       ｢b｣
-    [1] .Test.Atom                                c<NEWLINE>¦
-      [0] .identifier                             ｢c｣
+[0] Test                                          [[ (  ... ]] c<NEWLINE>¦
+  [0] Test.Cat.concat                             [[ (  ... ]] c<NEWLINE>¦
+    [0] Test.Atom                                 [[ (  ... b ]] ¦
+      [0] Test                                    ( a ) b ¦
+        [0] Test.PrfHi.(                          ( a ) b ¦
+          [0] Test                                a ¦
+            [0] Test.Atom                         a ¦
+              [0] identifier                      ｢a｣
+          [1] Test.Atom                           b ¦
+            [0] identifier                        ｢b｣
+    [1] Test.Atom                                 c<NEWLINE>¦
+      [0] identifier                              ｢c｣
 )");
     test::test_axe(*se, sa, "[[ a b ]]\n", {none});
     test::test_axe(*se, sa, "[[ a ( b ) c ]]\n", {none});

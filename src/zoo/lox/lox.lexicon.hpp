@@ -19,12 +19,12 @@ namespace silva::lox {
     token_id_t ti_super = sfp->token_id("super");
     token_id_t ti_init  = sfp->token_id("init");
 
-    name_id_t ni_identifier = sfp->name_id_of("identifier");
-    name_id_t ni_number     = sfp->name_id_of("number");
-    name_id_t ni_string     = sfp->name_id_of("string");
+    name_id_t ni_identifier = sfp->name_id_of(name_id_seed, "identifier");
+    name_id_t ni_number     = sfp->name_id_of(name_id_seed, "number");
+    name_id_t ni_string     = sfp->name_id_of(name_id_seed, "string");
 
-    name_id_t ni_epsilon        = sfp->name_id_of("Epsilon");
-    name_id_t ni_lox            = sfp->name_id_of("Lox");
+    name_id_t ni_epsilon        = sfp->name_id_of(name_id_seed, "Epsilon");
+    name_id_t ni_lox            = sfp->name_id_of(name_id_seed, "Lox");
     name_id_t ni_decl           = sfp->name_id_of(ni_lox, "Decl");
     name_id_t ni_decl_var       = sfp->name_id_of(ni_decl, "Var");
     name_id_t ni_decl_fun       = sfp->name_id_of(ni_decl, "Fun");

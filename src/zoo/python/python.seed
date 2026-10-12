@@ -182,5 +182,5 @@ language Python:
       formatChunk = ( ![ '{' '}' ] ANY ) +
 
   number:
-    @ = .number imaginaryPart ?
+    @ = .Seed.number imaginaryPart ?
     imaginaryPart = [ 'j' 'J' ]

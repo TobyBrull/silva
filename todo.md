@@ -1,7 +1,5 @@
 # TODO
 
-* all Seed names in .Seed!
-
 * Runtime:
     * ??
     * Lox:

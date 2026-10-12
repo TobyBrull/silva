@@ -27,7 +27,7 @@ namespace silva {
     return SILVA_EXPECT_FWD(
         tree_span_t::to_string_top_down([&](string_t& curr_line, auto& path) -> expected_t<void> {
           const auto pts = this->subspan_at(path.back().node_index);
-          curr_line += sf.name_id_str(pts.rule_name(), token_id_default_name_sep);
+          curr_line += sf.name_id_str(pts.rule_name(), token_id_default_name_sep, name_id_seed);
           string_pad(curr_line, fragment_indent);
           if (pts.allow_token()) {
             const auto ti = SILVA_EXPECT_FWD(pts.token());
@@ -45,7 +45,7 @@ namespace silva {
     auto& sf = *ptp->fp->sfp;
     return tree_span_t::to_graphviz([&](string_t& curr_line, auto& path) {
       const auto pts = this->subspan_at(path.back().node_index);
-      curr_line += sf.name_id_str(pts.rule_name(), token_id_default_name_sep);
+      curr_line += sf.name_id_str(pts.rule_name(), token_id_default_name_sep, name_id_seed);
       curr_line += "\\n";
       string_append_escaped(curr_line, silva::pretty_string(pts.fragment_span()));
     });

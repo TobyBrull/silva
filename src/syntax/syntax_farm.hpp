@@ -32,8 +32,10 @@ namespace silva {
   constexpr inline token_id_t token_id_language{1};
   constexpr inline token_id_t token_id_literal{2};
   constexpr inline token_id_t token_id_dot{3};
-  constexpr inline name_id_t name_id_language{1};
-  constexpr inline name_id_t name_id_literal{2};
+  constexpr inline token_id_t token_id_seed{4};
+  constexpr inline name_id_t name_id_seed{1};
+  constexpr inline name_id_t name_id_language{2};
+  constexpr inline name_id_t name_id_literal{3};
 
   constexpr inline token_id_t token_id_default_name_sep = token_id_dot;
 
@@ -109,7 +111,8 @@ namespace silva {
     token_id_wrap_t token_id_wrap(token_id_t);
     name_id_wrap_t name_id_wrap(name_id_t, token_id_t name_sep);
 
-    string_t name_id_str(name_id_t, token_id_t name_sep) const;
+    // If "scope_name" is a parent of the given name, the name is written relative to "scope_name".
+    string_t name_id_str(name_id_t, token_id_t name_sep, name_id_t scope_name = name_id_t{}) const;
 
     template<typename LexiconType>
     const LexiconType& get_lexicon();

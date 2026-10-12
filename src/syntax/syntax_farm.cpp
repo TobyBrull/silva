@@ -78,19 +78,30 @@ namespace silva {
       token_lookup["."] = token_id_dot;
     }
     {
+      SILVA_ASSERT(token_infos.size() == token_id_seed.val);
+      token_infos.emplace_back(token_info_t{.str = "Seed"});
+      token_lookup["Seed"] = token_id_seed;
+    }
+    {
       const name_info_t fni{0, 0};
       name_infos.emplace_back(fni);
       name_lookup.emplace(fni, 0);
     }
     {
+      SILVA_ASSERT(name_infos.size() == name_id_seed.val);
+      const name_info_t fni{0, token_id_seed};
+      name_infos.emplace_back(fni);
+      name_lookup.emplace(fni, name_id_seed);
+    }
+    {
       SILVA_ASSERT(name_infos.size() == name_id_language.val);
-      const name_info_t fni{0, token_id_language};
+      const name_info_t fni{name_id_seed, token_id_language};
       name_infos.emplace_back(fni);
       name_lookup.emplace(fni, name_id_language);
     }
     {
       SILVA_ASSERT(name_infos.size() == name_id_literal.val);
-      const name_info_t fni{0, token_id_literal};
+      const name_info_t fni{name_id_seed, token_id_literal};
       name_infos.emplace_back(fni);
       name_lookup.emplace(fni, name_id_literal);
     }
@@ -210,13 +221,19 @@ namespace silva {
     };
   }
 
-  string_t syntax_farm_t::name_id_str(const name_id_t name_id, const token_id_t name_sep) const
+  string_t syntax_farm_t::name_id_str(name_id_t name_id,
+                                      const token_id_t name_sep,
+                                      name_id_t scope_name) const
   {
-    if (!name_id.is_valid()) {
-      return "";
+    string_t retval;
+    while (name_id.is_valid() && name_id != scope_name) {
+      const name_info_t& ni = get(name_id);
+      name_id               = ni.parent_name;
+      const bool is_rel     = scope_name.is_valid() && name_id == scope_name;
+      const string_t prefix = (is_rel ? string_t{} : get(name_sep).str);
+      retval                = prefix + get(ni.base_name).str + retval;
     }
-    const name_info_t& ni = get(name_id);
-    return name_id_str(ni.parent_name, name_sep) + get(name_sep).str + get(ni.base_name).str;
+    return retval;
   }
 
   lexicon_t::lexicon_t(syntax_farm_ptr_t sfp) : sfp(std::move(sfp)) {}

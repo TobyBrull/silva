@@ -19,7 +19,7 @@ namespace silva::fern {
 
     fragmentization_ptr_t fp = SILVA_EXPECT_FWD(fragmentize_load(sf.ptr(), cmdline_args[1]));
     parse_tree_ptr_t ptp;
-    ptp = SILVA_EXPECT_FWD_PLAIN(se->apply(fp, sf.name_id_of("Fern")));
+    ptp = SILVA_EXPECT_FWD_PLAIN(se->apply(fp, sf.name_id_of(name_id_seed, "Fern")));
 
     const string_view_t arg_process = SILVA_ENV_CONTEXT("process", "fern_t/string");
     if (arg_process == "none") {

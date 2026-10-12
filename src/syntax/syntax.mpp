@@ -39,14 +39,14 @@ namespace silva {
     string_t lang_name = sf.token_infos[language_name.val].str;
     SILVA_EXPECT(!lang_name.empty(), MINOR);
     lang_name[0] = std::toupper(lang_name[0]);
-    return sf.name_id_of(lang_name);
+    return sf.name_id_of(name_id_seed, lang_name);
   }
 
   expected_t<void> syntax_main(const span_t<string_view_t> cmdline_args)
   {
     constexpr expected_traits_t expected_traits{.materialize_fwd = true};
     syntax_farm_t sf;
-    const name_id_t ni_silva = sf.name_id_of("Silva");
+    const name_id_t ni_silva = sf.name_id_of(name_id_seed, "Silva");
     const auto si            = standard_seed_interpreter(sf.ptr());
     for (const auto& cmdline_arg: cmdline_args.subspan(1)) {
       const filepath_t fsp{cmdline_arg};

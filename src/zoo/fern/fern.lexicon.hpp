@@ -16,10 +16,10 @@ namespace silva::fern {
     const token_id_t ti_true  = sfp->token_id("true");
     const token_id_t ti_false = sfp->token_id("false");
 
-    const name_id_t ni_number = sfp->name_id_of("number");
-    const name_id_t ni_string = sfp->name_id_of("string");
+    const name_id_t ni_number = sfp->name_id_of(name_id_seed, "number");
+    const name_id_t ni_string = sfp->name_id_of(name_id_seed, "string");
 
-    const name_id_t ni_fern     = sfp->name_id_of("Fern");
+    const name_id_t ni_fern     = sfp->name_id_of(name_id_seed, "Fern");
     const name_id_t ni_lbl_item = sfp->name_id_of(ni_fern, "LabeledItem");
     const name_id_t ni_label    = sfp->name_id_of(ni_fern, "label");
     const name_id_t ni_value    = sfp->name_id_of(ni_fern, "value");

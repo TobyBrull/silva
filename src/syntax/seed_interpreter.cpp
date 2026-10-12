@@ -207,7 +207,7 @@ namespace silva::seed::impl {
           SILVA_EXPECT_FWD(name_id_definition(lexicon, scope_name, pts_nt));
       const name_info_t ni = sfp->get(curr_rule_name);
       const bool is_main   = (ni.base_name == lexicon.ti_at.token_id);
-      SILVA_EXPECT(!is_main || ni.parent_name.is_valid(),
+      SILVA_EXPECT(!is_main || (ni.parent_name.is_valid() && ni.parent_name != name_id_seed),
                    MINOR,
                    "{} '@' rule must be inside a scope",
                    pts_rule);
@@ -282,12 +282,10 @@ namespace silva::seed::impl {
                      "'{}' rule may only be used in language",
                      skip_rule_str);
         const name_info_t& skip_ni = sfp->get(ni.parent_name);
-        SILVA_EXPECT(skip_ni.parent_name.is_valid() &&
-                         sfp->get(skip_ni.parent_name).parent_name == name_id_t{},
+        SILVA_EXPECT(skip_ni.parent_name == current_language_name.value(),
                      MINOR,
                      "'{}' rule must not be nested in sub-scope of a language",
                      skip_rule_str);
-        SILVA_EXPECT(skip_ni.parent_name == current_language_name.value(), ASSERT);
         auto& ld = std::get<interpreter_t::language_data_t>(
             se->definitions.at(current_language_name.value()));
         interpreter_t::rule_data_t rule_data;
@@ -375,11 +373,13 @@ namespace silva::seed::impl {
                    "languages cannot be nested at {}",
                    pts_language);
       SILVA_EXPECT(pts_language.rule_name() == lexicon.ni_language, MINOR, "expected language");
-      SILVA_EXPECT(!scope_name.is_valid(), MINOR, "a language may only appear at global scope");
+      SILVA_EXPECT(scope_name == name_id_seed,
+                   MINOR,
+                   "a language may only appear at the top-level of a Seed program");
       const auto pts_rulename  = SILVA_EXPECT_FWD(pts_language.iterate_to_child(0));
       const token_id_t lang_id = SILVA_EXPECT_FWD(pts_rulename.token());
       SILVA_EXPECT(lang_id.is_valid(), MINOR, "invalid language name");
-      const name_id_t lang_name = sfp->name_id(name_id_t{}, lang_id);
+      const name_id_t lang_name = sfp->name_id(scope_name, lang_id);
       current_language_name     = lang_name;
       interpreter_t::language_data_t lang_data;
       lang_data.pts                  = pts_language;
@@ -434,7 +434,7 @@ namespace silva::seed::impl {
 
     expected_t<void> handle_all(const parse_tree_span_t pts)
     {
-      SILVA_EXPECT_FWD(handle_seed(name_id_t{}, pts));
+      SILVA_EXPECT_FWD(handle_seed(name_id_seed, pts));
       return {};
     }
   };
@@ -1283,9 +1283,13 @@ namespace silva::seed {
     }
 
     name_id_t curr = goal_rule_name;
-    while (sfp->get(curr).parent_name.is_valid()) {
+    while (curr.is_valid() && sfp->get(curr).parent_name != name_id_seed) {
       curr = sfp->get(curr).parent_name;
     }
+    SILVA_EXPECT(curr.is_valid(),
+                 MINOR,
+                 "{} is not inside .Seed",
+                 bootstrap_interpreter.lexicon().name_id_wrap(goal_rule_name));
     const auto lang_it = definitions.find(curr);
     const auto* lang_data =
         (lang_it != definitions.end()) ? std::get_if<language_data_t>(&lang_it->second) : nullptr;
