@@ -4,21 +4,17 @@ Silva aspires to be an [esoteric](https://en.wikipedia.org/wiki/Esoteric_program
 [language-oriented](https://en.wikipedia.org/wiki/Language-oriented_programming) programming
 language.
 
-## Concepts
+## Module Readmes
 
-The Seed sub-language allows users to define PEG parsers. Fern shows what Seed looks like for a very
-simple language.
-
-* [Fern](src/zoo/fern/fern.hpp): A bit like JSON, but simpler.
-  ([Example](silva/syntax/01-simple.fern))
-* [Seed](src/syntax/seed.hpp): The Seed language defined in itself.
-    * Expressions are parsed with a variant of the Shunting Yard algorithm, described by
-      [seed_axe.hpp](src/syntax/seed_axe.hpp).
-    * Some Seed global definitions are in [seed.globals.hpp](src/syntax/seed.globals.hpp).
+* [syntax](src/syntax/readme.md)
 
 ## Zoo
 
-Example parsers for existing languages. More or less faithful.
+Made-up example language:
+
+* [Fern](src/zoo/fern/fern.hpp): A bit like JSON, but simpler. ([Example](src/zoo/fern/example.simple.fern))
+
+Parsers for existing languages. More or less faithful.
 
 * [Lox](src/zoo/lox/lox.hpp): The toy language from the book "Crafting Interpreters".
   ([Example](src/zoo/lox/example.lox))
@@ -39,7 +35,7 @@ eval "$( pixi shell-hook )"
 
 cmake --preset release
 
-ninja -C "build/" && time "build/src/silva_test"
+ninja -C "build/" && time build/src/silva_test
 bash tools/task_format.sh check
 bash tools/task_format.sh update
 bash tools/task_test.sh release
