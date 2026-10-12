@@ -37,8 +37,8 @@ the indentation level increases or decreases. In order to also support free-form
 though, there exists an additional INDENTATION_BROKEN fragment, which is emitted if a lower
 indentation level was encountered that was not previously encountered.
 
-Also a NEWLINE fragment is emitted at the end of every line that does not use line continuation ('\'
-character at the end). Unlike in Python, NEWLINE fragments are not omitted inside parentheses.
+Also a NEWLINE fragment is emitted at the end of every line that does not use line continuation
+('\\' character at the end). Unlike in Python, NEWLINE fragments are not omitted inside parentheses.
 
 All other fragments correspond one-to-one to Unicode codepoints. Such fragments are called "simple",
 and they have one of the following categories:
@@ -46,9 +46,9 @@ and they have one of the following categories:
 * DIGIT: '0' to '9'
 * PARENTHESIS: operator that has a matching open/close operator, e.g., '{' '}'
 * OPERATOR: e.g., '*'
-* ID_LOWER: Unicode Derived Property = LetterLowercase
-* ID_UPPER: Unicode Derived Property = LetterUppercase
-* ID_START: Unicode Derived Property: XID_Start (including ID_LOWER, ID_UPPER)
+* ID_LOWER: Unicode General Category = Ll
+* ID_UPPER: Unicode General Category = Lu
+* ID_START: Unicode Derived Property: XID_Start (including ID_LOWER, ID_UPPER, DIGIT)
 * ID_CONTINUE: Unicode Derived Property: XID_Continue (including ID_START)
 
 Any other Unicode code-point not explicitly allowed as above, or any sequence that's not in NFC,
@@ -73,52 +73,63 @@ A "token" can be thought of as an interned string. The syntax-farm contains an a
 A "name" is effectively a sequence of tokens. To represent a name as a single integer, the
 syntax-farm contains an array of `name_info_t` values (again indexed by the name-id) each of which
 stores a single token (called the "basename", analogous to the Linux command `basename`) and a
-parent name-id. To determine the full name from a name-id, one has follow the parent names until an
-empty parent name is encountered (singly-linked list). Then one has to concatenate all the
+parent name-id. To determine the full name from a name-id, one has to follow the parent names until
+an empty parent name is encountered (singly-linked list). Then one has to concatenate all the
 encountered basenames in reverse order to obtain the full name.
 
 ## The Seed Language
 
 The Seed language provides a way to succinctly define parsing functions that call each other. A
 parsing function is a function that turns a fragmentization into a parse-tree. A parse-tree here is
-very specific data-type, which is described by the types `parse_tree_t` or more commonly
+a very specific data-type, which is described by the types `parse_tree_t` or more commonly
 `parse_tree_span_t`.
 
 [parse_tree.hpp](parse_tree.hpp)
 
-In short, a parse-tree is an contiguous array or span of nodes with the nodes stored in pre-order.
-The tree structured is maintained by two integers (`num_children` and `subtree_size`) in each node.
-Futhermore, each node stores some semantic information (a rule-name, the fragment-range that it
+In short, a parse-tree is a contiguous array or span of nodes with the nodes stored in pre-order.
+The tree structure is maintained by two integers (`num_children` and `subtree_size`) in each node.
+Furthermore, each node stores some semantic information (a rule-name, the fragment-range that it
 corresponds to, and whether this node is understood to represent a token via the `allow_token`
 member).
 
 The parse-tree data-structure is meant to be built into Silva as a fundamental data type, with
-various language features allowing to construct, modify, and inspect such parse-tree direclty. It
+various language features allowing to construct, modify, and inspect such parse-tree directly. It
 should be possible to define literals that are parse-trees (by using a sub-language). Silva
-variables can holds parse-trees. Silva functions can take and return parse-trees. Parse-trees are
+variables can hold parse-trees. Silva functions can take and return parse-trees. Parse-trees are
 first-class objects in every sense.
 
 Seed is basically a PEG parser (greedy repetition, ordered choice, but with a few twists, see below)
-with an integrated shunting-yard mechanism for for parsing [a]rithmetic e[x]pr[e]ssions (called
-Axe). Since the input to a Seed program is a fragmentization, though, Seed also handles tokenization
-within the PEG idiom. For this, Seed defines two types for rule: branch-rules (normal, gramatical
+with an integrated shunting-yard mechanism for parsing [a]rithmetic e[x]pr[e]ssions (called Axe).
+Since the input to a Seed program is a fragmentization, though, Seed also handles tokenization
+within the PEG idiom. For this, Seed defines two types of rules: branch-rules (normal, grammatical
 PEG rules) and twig-rules (basically tokenization rules). A branch-rule is identified by the
 basename of the rule's name being in PascalCase whereas a twig-rule is in camelCase. Both types of
 rules (if successfully parsed) create nodes in the resulting parse_tree_t (unless they use the
-"no_node" qualifier). Branch-rules may call branch-rules or twig-rules. Twig-rules may only call
-twig-rules.
+"no_node" qualifier).
 
 The Seed language is defined in itself in the following link. For bootstrapping purposes a
 hand-written Seed parser is also implemented here.
 
 [seed.hpp](seed.hpp)
 
-Seed allows languages to define a so-called "skip" rule to skip whitespace. The skip-rule
-is invoked at the very beginning of a parse, and then also every time after a *branch-rule*
-successfully applied a *twig-rule* (but a twig-rule successfully applying another twig-rule does
-*not* trigger the skip-rule); in this case, the twig-rule with *not* contain the fragments that were
-skipped while the branch-rule *will* contain them. The skip-rule is also invoked after every time a
-branch-rule uses a literal (literals are treated as mini-twig-rules).
+Seed allows languages to define a so-called "skip" rule to skip whitespace. The skip-rule is invoked
+at the very beginning of a parse (more precisely the `skip.initial` rule, but falls back to the
+normal skip rule `skip.@` if it doesn't exist), and then also every time after a *branch-rule*
+successfully applied a *twig-rule* (but a twig-rule successfully applying another twig-rule or a
+branch-rule successfully applying another branch-rule does *not* trigger the skip-rule); in this
+case, the twig-rule will *not* contain the fragments that were skipped while the branch-rule *will*
+contain them. The skip-rule is also invoked after every time a branch-rule uses a literal (literals
+are treated as mini-twig-rules).
+
+Usually, branch-rules will call branch-rules and twig-rules, but in most cases, twig-rules will only
+call other twig-rules. This is because twig-rules represent tokenization (the skip-rule) and tokens
+usually don't contain nested semantic constructs. Exceptions to this are constructs like Python's
+f-strings and Bash's variable expansion in double-quoted string. While the string part of an
+f-string is a token, the nested expressions are proper code and need to skip whitespace again. For
+this reason, if a twig-rule successfully applied a branch-rule (e.g., when the parser is just after
+the '}' in « f"Hello { x } World" »), and skipped some whitespace (here the " " just before
+"World"), this whitespace needs to be unskipped, so that the second part of the f-string is " World"
+and not just "World".
 
 A node derived from a twig-rule allows a token to be derived, i.e., the `allow_token` member is
 true. It is not allowed to derive tokens from branch-rules.
@@ -129,12 +140,17 @@ matches any single visible fragment (silva::is_fragment_category_visible(); this
 except indentation related tokens, NEWLINE, and LINE_CONTINUATION), and "LANGUAGE" which matches a
 whole balanced LANG_BEGIN/LANG_END region.
 
-The parsing functions in Seed are called rules because they looks similar to the rules in BNF.
+The parsing functions in Seed are called rules because they look similar to the rules in BNF.
 Eventually, a Seed rule is really just a function, though, that takes an implicit argument, which is
 a pointer to a `parse_tree_nursery_t`. Using another rule on the right-hand-side of a rule
 (non-terminal), is the equivalent of a function call to that function. Once Silva is more mature, it
 should also be possible to hand-write custom parsing functions that don't exactly fit the Seed/PEG
 idiom.
+
+The rule name '@' has a special meaning, which is to identify the main entrypoint/rule for a scope.
+Then, if a scope name is used on the right-hand-side of a rule, this is resolved to the '@' rule of
+that scope. Whether the rule is treated as a branch-rule or twig-rule then depends on the
+capitalization of the scope's basename.
 
 In Seed, there is a subtle distinction between literals that use double-quotes (") and those that
 use single-quotes ('). With single-quotes, it simply tries to match the code-points in the literal
@@ -152,11 +168,11 @@ example, every function might begin with "fun". In this case, Seed allows the pa
 "commit", meaning that, here in this example, a valid function is expected to be parsed after
 "fun" or the entire parse is considered to be failed.
 
-Committing behaviour can be triggered in two ways: via the prefix directive or by explicity
-using the commit operator ('~'). Both approaches work on the level of a .Seed.Expr.Concat
-(concatenated) expression. The prefix directive says that if a concatenated expression starts
-with at least one literal, the parser commits if all leading literals are matched; this is
-as-if the commit operator is put after a consecutive streak of leading literals.
+Committing behaviour can be triggered in two ways: via the prefix directive or by explicitly using
+the commit operator ('~'). Both approaches work on the level of a .Seed.Expr.Concat (concatenated)
+expression. The prefix directive says that if a concatenated expression starts with at least one
+literal, the parser commits if all leading literals are matched; this is as-if the commit operator
+is put after a consecutive streak of leading literals.
 
 For example, if the Seed rule
    ⎢ ConstFunc = "static" "func" ~ identifier | "static" identifier number
@@ -182,16 +198,17 @@ Expressions are parsed with a variant of the Shunting Yard algorithm.
 
 [seed_axe.hpp](seed_axe.hpp).
 
-You basically specify a number of operators, in the order of their desired precedence (from
-high precedence to low precedence), what type of operator they are (prefix, infx,
-left-to-right, right-to-left, nested, ...), and what an atom looks like. From this description
-an expression parser is then generated. For example,
+You basically specify a number of operators, in the order of their desired precedence (from high
+precedence to low precedence), what type of operator they are (prefix, infix, left-to-right,
+right-to-left, nested, ...), and what an atom looks like. From this description an expression parser
+is then generated. For example,
 
-« number [
-  - Prefix   = ltr   prefix '-'
-  - Product  = ltr   infix '*' '/'
-  - Addition = ltr   infix '+' '-'
-] »
+«
+Expr = axe number
+  Prefix   = rtl   prefix '-'
+  Product  = ltr   infix '*' '/'
+  Addition = ltr   infix '+' '-'
+»
 
 can be used to parse
 
@@ -203,7 +220,7 @@ in the normal, mathematical way.
 
 Some Seed global definitions are defined in the following file.
 
-[seed.globals.hpp](seed.globals.hpp).
+[seed.globals.hpp](seed.globals.hpp)
 
 This file contains some standard definitions like `indent`, `dedent`, `newline`, `none`, and
 `number`. It also contains the two skip-rules `offSide` and `freeForm`. Unfortunately, the `offSide`
@@ -217,7 +234,7 @@ part of the tokenization, these characters keep their meaning inside comments an
 particular a '«' inside a comment must still be matched by a '»' inside the same comment.
 
 Comments are code as far as the off-side rule is concerned: they take part in indentation and a
-mis-indented comment leads to a INDENTATION_BROKEN fragment.
+mis-indented comment leads to an INDENTATION_BROKEN fragment.
 
 ## Topological Order of Dependency Graph of Header Files
 
@@ -234,6 +251,7 @@ mis-indented comment leads to a INDENTATION_BROKEN fragment.
 
 ```mermaid
 classDiagram
+    class seed_interpreter_t["seed::interpreter_t"]
     syntax_farm_t *-- "many" fragmentization_t
     syntax_farm_t *-- "many" parse_tree_t
     syntax_farm_t <-- fragmentization_t

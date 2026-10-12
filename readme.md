@@ -12,7 +12,7 @@ language.
 
 Made-up example language:
 
-* [Fern](src/zoo/fern/fern.hpp): A bit like JSON, but simpler. ([Example](silva/syntax/01-simple.fern))
+* [Fern](src/zoo/fern/fern.hpp): A bit like JSON, but simpler. ([Example](src/zoo/fern/example.simple.fern))
 
 Parsers for existing languages. More or less faithful.
 
@@ -35,7 +35,7 @@ eval "$( pixi shell-hook )"
 
 cmake --preset release
 
-ninja -C "build/" && time "build/src/silva_test"
+ninja -C "build/" && time build/src/silva_test
 bash tools/task_format.sh check
 bash tools/task_format.sh update
 bash tools/task_test.sh release
