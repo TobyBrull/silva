@@ -431,7 +431,7 @@ seed::interpreter_t::apply(.Seed.Fern) failed to parse
 2
 3
 Mr Jane
-[0] C                                                                           exter ... t_8;<NEWLINE>¦
+[0] C                                                                           exter ... t));<NEWLINE>¦
   [0] C.Declaration                                                             exter ... out;<NEWLINE>¦
     [0] C.Declaration.Specifiers                                                exter ...  void¦
       [0] C.Declaration.StorageClassSpecifier                                   extern ¦
@@ -689,13 +689,13 @@ Mr Jane
                         [0] C.Expr.number                                       ｢8｣
               [1] C.Type.Declarator.Suffix                                      ()¦
           [1] C.Type.Declarator.Suffix                                          []¦
-  [8] C.Declaration                                                             int * ... 6();<NEWLINE>¦
-    [0] C.Declaration.Specifiers                                                int ¦
-      [0] C.Type.Specifier                                                      int ¦
-        [0] C.Type.IntSpecifier                                                 int ¦
-    [1] C.Declaration.Init                                                      *test_6()¦
-      [0] C.Type.Declarator                                                     *test_6()¦
-        [0] C.Type.Declarator.Pointer                                           *¦
+  [8] C.Declaration                                                             int*  ... 6();<NEWLINE>¦
+    [0] C.Declaration.Specifiers                                                int¦
+      [0] C.Type.Specifier                                                      int¦
+        [0] C.Type.IntSpecifier                                                 int¦
+    [1] C.Declaration.Init                                                      * test_6()¦
+      [0] C.Type.Declarator                                                     * test_6()¦
+        [0] C.Type.Declarator.Pointer                                           * ¦
         [1] C.Type.Declarator.Direct                                            test_6()¦
           [0] identifier                                                        ｢test_6｣
           [1] C.Type.Declarator.Suffix                                          ()¦
@@ -711,16 +711,43 @@ Mr Jane
             [1] C.Type.Declarator.Direct                                        test_7¦
               [0] identifier                                                    ｢test_7｣
           [1] C.Type.Declarator.Suffix                                          ()¦
-  [10] C.Declaration                                                            char  ... t_8;<NEWLINE>¦
-    [0] C.Declaration.Specifiers                                                char ¦
-      [0] C.Type.Specifier                                                      char ¦
-        [0] C.Type.IntSpecifier                                                 char ¦
-    [1] C.Declaration.Init                                                      **test_8¦
-      [0] C.Type.Declarator                                                     **test_8¦
-        [0] C.Type.Declarator.Pointer                                           **¦
-          [0] C.Type.Declarator.Pointer                                         *¦
+  [10] C.Declaration                                                            char* ... t_8;<NEWLINE>¦
+    [0] C.Declaration.Specifiers                                                char¦
+      [0] C.Type.Specifier                                                      char¦
+        [0] C.Type.IntSpecifier                                                 char¦
+    [1] C.Declaration.Init                                                      ** test_8¦
+      [0] C.Type.Declarator                                                     ** test_8¦
+        [0] C.Type.Declarator.Pointer                                           ** ¦
+          [0] C.Type.Declarator.Pointer                                         * ¦
         [1] C.Type.Declarator.Direct                                            test_8¦
           [0] identifier                                                        ｢test_8｣
+  [11] C.Declaration                                                            int f ... t));<NEWLINE>¦
+    [0] C.Declaration.Specifiers                                                int ¦
+      [0] C.Type.Specifier                                                      int ¦
+        [0] C.Type.IntSpecifier                                                 int ¦
+    [1] C.Declaration.Init                                                      f(int ... int))¦
+      [0] C.Type.Declarator                                                     f(int ... int))¦
+        [0] C.Type.Declarator.Direct                                            f(int ... int))¦
+          [0] identifier                                                        ｢f｣
+          [1] C.Type.Declarator.Suffix                                          (int  ... int))¦
+            [0] C.Declaration.ParameterList                                     int ( ... (int)¦
+              [0] C.Declaration.ParameterDeclaration                            int ( ... (int)¦
+                [0] C.Declaration.Specifiers                                    int ¦
+                  [0] C.Type.Specifier                                          int ¦
+                    [0] C.Type.IntSpecifier                                     int ¦
+                [1] C.Type.Declarator.Abstract                                  (*)(int)¦
+                  [0] C.Type.Declarator.DirectAbstract                          (*)(int)¦
+                    [0] C.Type.Declarator.Abstract                              *¦
+                      [0] C.Type.Declarator.Pointer                             *¦
+                      [1] C.Type.Declarator.DirectAbstract                      ¦
+                    [1] C.Type.Declarator.Suffix                                (int)¦
+                      [0] C.Declaration.ParameterList                           int¦
+                        [0] C.Declaration.ParameterDeclaration                  int¦
+                          [0] C.Declaration.Specifiers                          int¦
+                            [0] C.Type.Specifier                                int¦
+                              [0] C.Type.IntSpecifier                           int¦
+                          [1] C.Type.Declarator.Abstract                        ¦
+                            [0] C.Type.Declarator.DirectAbstract                ¦
 
 [0] Python                                                                      \"\"\"A  ...  y)<NEWLINE><DEDENT>¦
   [0] Python.Stmt                                                               \"\"\"A  ... \"\"\"<NEWLINE><NEWLINE>¦

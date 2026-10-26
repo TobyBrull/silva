@@ -40,7 +40,7 @@ language C:
 
     Declarator:
       @ = Pointer ? Direct
-      Direct = ( identifier | '(' Declarator ')' ) Suffix *
+      Direct = ( identifier | ε '(' Declarator ')' ) Suffix *
       Abstract = Pointer DirectAbstract ? | DirectAbstract
       DirectAbstract = ( ε '(' Abstract ')' ) ? Suffix *
       Pointer = '*' Type.Qualifier * Pointer ?
