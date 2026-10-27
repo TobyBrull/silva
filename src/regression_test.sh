@@ -28,6 +28,7 @@ SEED_EXEC_TRACE=true "./${BUILD_DIR}/src/silva_syntax" src/zoo/fern/example.simp
 "./${BUILD_DIR}/src/silva_syntax" src/zoo/bash/{bash.seed,example.bash}
 "./${BUILD_DIR}/src/silva_syntax" src/zoo/rust/{rust.seed,example.rust}
 "./${BUILD_DIR}/src/silva_syntax" src/zoo/toml/{toml.seed,example.toml}
+"./${BUILD_DIR}/src/silva_syntax" src/zoo/qbe/{qbe.seed,example.qbe}
 
 # sandbox/
 "./${BUILD_DIR}/src/silva_syntax" sandbox/soil.{seed,example.soil}

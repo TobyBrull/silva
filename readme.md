@@ -23,6 +23,7 @@ Parsers for existing languages. More or less faithful.
 * [Bash](src/zoo/bash/bash.seed) ([Example](src/zoo/bash/example.bash))
 * [Rust](src/zoo/rust/rust.seed) ([Example](src/zoo/rust/example.rust))
 * [TOML](src/zoo/toml/toml.seed) ([Example](src/zoo/toml/example.toml))
+* [Qbe](src/zoo/qbe/qbe.seed) ([Example](src/zoo/qbe/example.qbe))
 
 ## Development
 

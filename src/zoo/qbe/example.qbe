@@ -1,0 +1,140 @@
+# Examples from https://c9x.me/compile/doc/il.html
+
+# Define the string constant.
+data $str = { b "hello world", b 0 }
+
+export function w $main() {
+@start
+    # Call the puts function with $str as argument.
+    %r =w call $puts(l $str)
+    ret 0
+}
+
+section ".init_array"
+data $.init.f = { l $f }
+
+export
+thread
+section ".tbss" "awT"
+data $tls = align 8 {
+    w 1 2 3,
+    l $c + 8,
+    s s_1.5 d_-0x1.8p+3,
+    z 16,
+}
+
+type :fourfloats = { s, s, d, d }
+type :abyteandmanywords = { b, w 100 }
+type :cryptovector = align 16 { w 4 }
+type :un9 = { { b } { s } }
+type :opaque = align 16 { 32 }
+type :nested = {
+    :fourfloats 2,
+    h,
+}
+
+# Three 32-bit values 1, 2, and 3
+# followed by a 0 byte.
+data $a = { w 1 2 3, b 0 }
+
+# A thousand bytes 0 initialized.
+data $b = { z 1000 }
+
+data $c = { l -1, l $c }
+
+type :one = { w }
+
+function w $getone(:one %p) {
+@start
+    %val =w loadw %p
+    ret %val
+}
+
+function w $addbyte(w %a, sb %b) {
+@start
+    %bw =w extsb %b
+    %val =w add %a, %bw
+    ret %val
+}
+
+export function w $add(env %e, w %a, w %b) {
+@start
+    %c =w add %a, %b
+    ret %c
+}
+
+function $loop() {
+@start
+@loop
+    %x =w phi @start 100, @loop %x1
+    %x1 =w sub %x, 1
+    jnz %x1, @loop, @end
+@end
+    ret
+}
+
+function $consts() {
+@start
+    %x =w sub -1, 0
+    %y =w sub 4294967295, 0
+    %f =d add d_0, d_-1
+    %g =d add d_0, -4616189618054758400
+    %h =s mul s_2.5e3, s_inf
+    %t =l add thread $tls, 3
+    %u =l add extern $str, 0
+    %v =l add extern thread $tls, 0
+    jmp @next
+@next
+    hlt
+}
+
+function $memory() {
+@start
+    %A0 =l alloc4 8      # stack allocate an array A of 2 words
+    %A1 =l add %A0, 4
+    storew 43,  %A0      # A[0] <- 43
+    storew 255, %A1      # A[1] <- 255
+    %v1 =w loadw  %A0    # %v1 <- A[0] as word
+    %v2 =w loadsb %A1    # %v2 <- A[1] as signed byte
+    %v3 =w add %v1, %v2  # %v3 is 42 here
+    %v4 =l load %A0
+    blit %A0, %A1, 4
+    %c1 =w csltw %v1, %v2
+    %c2 =w cuod d_0, d_1
+    %c3 =w cnel %v4, 0
+    %b0 =w cast s_1
+    %b1 =w xor 2147483648, %b0  # flip the msb
+    %rs =s cast %b1
+    ret
+}
+
+function s $add3(s %a, ...) {
+@start
+    %ap =l alloc8 32
+    vastart %ap
+    %r =s call $vadd(s %a, l %ap)
+    %p =w call $printf(l $str, ..., w 1, :one %ap)
+    call $closure(env %ap, ub %p)
+    ret %r
+}
+
+function s $vadd(s %a, l %ap) {
+@start
+    %b =s vaarg %ap
+    %c =s vaarg %ap
+    %d =s add %a, %b
+    %e =s add %d, %c
+    ret %e
+}
+
+function w $f(w %x) {
+@ifstmt
+    jnz %x, @ift, @iff
+@ift
+    jmp @retstmt
+@iff
+    jmp @retstmt
+@retstmt
+    %y =w phi @ift 1, @iff 2
+    ret %y
+}

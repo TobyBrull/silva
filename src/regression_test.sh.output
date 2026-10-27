@@ -9104,6 +9104,778 @@ Mr Jane
     [1] Toml.Val                                                                \"cave ... ish\"<NEWLINE>¦
       [0] string                                                                ｢"cavendish"｣
 
+[0] Qbe                                                                         <NEWLINE><NEWLINE># D ... y<NEWLINE><DEDENT>}<NEWLINE>¦
+  [0] Qbe.Definition                                                            data  ... b 0 }¦
+    [0] Qbe.DataDef                                                             data  ... b 0 }¦
+      [0] Qbe.global                                                            ｢$str｣
+      [1] Qbe.DataDef.Fields                                                    b \"he ...  b 0 ¦
+        [0] Qbe.DataDef.Field                                                   b \"he ... orld\"¦
+          [0] Qbe.extTy                                                         ｢b｣
+          [1] Qbe.DataDef.Item                                                  \"hell ... orld\"¦
+            [0] Qbe.string                                                      ｢"hello world"｣
+        [1] Qbe.DataDef.Field                                                   b 0 ¦
+          [0] Qbe.extTy                                                         ｢b｣
+          [1] Qbe.DataDef.Item                                                  0 ¦
+            [0] Qbe.Const                                                       0 ¦
+              [0] Qbe.integer                                                   ｢0｣
+  [1] Qbe.Definition                                                            expor ...  0<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             expor ...  0<NEWLINE><DEDENT>}¦
+      [0] Qbe.Linkage                                                           export ¦
+      [1] Qbe.abiTy                                                             ｢w｣
+        [0] Qbe.baseTy                                                          ｢w｣
+      [2] Qbe.global                                                            ｢$main｣
+      [3] Qbe.FuncDef.Params                                                    ¦
+      [4] Qbe.Block                                                             @star ... t 0<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@start｣
+        [1] Qbe.Inst                                                            %r =w ... str)<NEWLINE>¦
+          [0] Qbe.Inst.Call                                                     %r =w ... $str)¦
+            [0] Qbe.temporary                                                   ｢%r｣
+            [1] Qbe.abiTy                                                       ｢w｣
+              [0] Qbe.baseTy                                                    ｢w｣
+            [2] Qbe.Val                                                         $puts¦
+              [0] Qbe.DynConst                                                  $puts¦
+                [0] Qbe.Const                                                   $puts¦
+                  [0] Qbe.global                                                ｢$puts｣
+            [3] Qbe.Inst.Args                                                   l $str¦
+              [0] Qbe.Inst.Arg                                                  l $str¦
+                [0] Qbe.abiTy                                                   ｢l｣
+                  [0] Qbe.baseTy                                                ｢l｣
+                [1] Qbe.Val                                                     $str¦
+                  [0] Qbe.DynConst                                              $str¦
+                    [0] Qbe.Const                                               $str¦
+                      [0] Qbe.global                                            ｢$str｣
+        [2] Qbe.Block.Jump                                                      ret 0<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           0¦
+            [0] Qbe.DynConst                                                    0¦
+              [0] Qbe.Const                                                     0¦
+                [0] Qbe.integer                                                 ｢0｣
+  [2] Qbe.Definition                                                            secti ...  $f }¦
+    [0] Qbe.DataDef                                                             secti ...  $f }¦
+      [0] Qbe.Linkage                                                           secti ... ray\"<NEWLINE>¦
+        [0] Qbe.string                                                          ｢".init_array"｣
+      [1] Qbe.global                                                            ｢$.init.f｣
+      [2] Qbe.DataDef.Fields                                                    l $f ¦
+        [0] Qbe.DataDef.Field                                                   l $f ¦
+          [0] Qbe.extTy                                                         ｢l｣
+          [1] Qbe.DataDef.Item                                                  $f ¦
+            [0] Qbe.global                                                      ｢$f｣
+  [3] Qbe.Definition                                                            expor ... 6,<NEWLINE><DEDENT>}¦
+    [0] Qbe.DataDef                                                             expor ... 6,<NEWLINE><DEDENT>}¦
+      [0] Qbe.Linkage                                                           export<NEWLINE>¦
+      [1] Qbe.Linkage                                                           thread<NEWLINE>¦
+      [2] Qbe.Linkage                                                           secti ... awT\"<NEWLINE>¦
+        [0] Qbe.string                                                          ｢".tbss"｣
+        [1] Qbe.string                                                          ｢"awT"｣
+      [3] Qbe.global                                                            ｢$tls｣
+      [4] Qbe.Align                                                             align 8 ¦
+        [0] Qbe.integer                                                         ｢8｣
+      [5] Qbe.DataDef.Fields                                                    w 1 2 ... 16,<NEWLINE><DEDENT>¦
+        [0] Qbe.DataDef.Field                                                   w 1 2 3¦
+          [0] Qbe.extTy                                                         ｢w｣
+          [1] Qbe.DataDef.Item                                                  1 ¦
+            [0] Qbe.Const                                                       1 ¦
+              [0] Qbe.integer                                                   ｢1｣
+          [2] Qbe.DataDef.Item                                                  2 ¦
+            [0] Qbe.Const                                                       2 ¦
+              [0] Qbe.integer                                                   ｢2｣
+          [3] Qbe.DataDef.Item                                                  3¦
+            [0] Qbe.Const                                                       3¦
+              [0] Qbe.integer                                                   ｢3｣
+        [1] Qbe.DataDef.Field                                                   l $c + 8¦
+          [0] Qbe.extTy                                                         ｢l｣
+          [1] Qbe.DataDef.Item                                                  $c + 8¦
+            [0] Qbe.global                                                      ｢$c｣
+            [1] Qbe.integer                                                     ｢8｣
+        [2] Qbe.DataDef.Field                                                   s s_1 ... .8p+3¦
+          [0] Qbe.extTy                                                         ｢s｣
+          [1] Qbe.DataDef.Item                                                  s_1.5 ¦
+            [0] Qbe.Const                                                       s_1.5 ¦
+              [0] Qbe.float                                                     ｢s_1.5｣
+          [2] Qbe.DataDef.Item                                                  d_-0x ... .8p+3¦
+            [0] Qbe.Const                                                       d_-0x ... .8p+3¦
+              [0] Qbe.float                                                     ｢d_-0x1.8p+3｣
+        [3] Qbe.DataDef.Field                                                   z 16¦
+          [0] Qbe.integer                                                       ｢16｣
+  [4] Qbe.Definition                                                            type  ... , d }¦
+    [0] Qbe.TypeDef                                                             type  ... , d }¦
+      [0] Qbe.aggregate                                                         ｢:fourfloats｣
+      [1] Qbe.TypeDef.Fields                                                    s, s, ... d, d ¦
+        [0] Qbe.TypeDef.Field                                                   s¦
+          [0] Qbe.extTy                                                         ｢s｣
+        [1] Qbe.TypeDef.Field                                                   s¦
+          [0] Qbe.extTy                                                         ｢s｣
+        [2] Qbe.TypeDef.Field                                                   d¦
+          [0] Qbe.extTy                                                         ｢d｣
+        [3] Qbe.TypeDef.Field                                                   d ¦
+          [0] Qbe.extTy                                                         ｢d｣
+  [5] Qbe.Definition                                                            type  ... 100 }¦
+    [0] Qbe.TypeDef                                                             type  ... 100 }¦
+      [0] Qbe.aggregate                                                         ｢:abyteandmanywords｣
+      [1] Qbe.TypeDef.Fields                                                    b, w 100 ¦
+        [0] Qbe.TypeDef.Field                                                   b¦
+          [0] Qbe.extTy                                                         ｢b｣
+        [1] Qbe.TypeDef.Field                                                   w 100 ¦
+          [0] Qbe.extTy                                                         ｢w｣
+          [1] Qbe.integer                                                       ｢100｣
+  [6] Qbe.Definition                                                            type  ... w 4 }¦
+    [0] Qbe.TypeDef                                                             type  ... w 4 }¦
+      [0] Qbe.aggregate                                                         ｢:cryptovector｣
+      [1] Qbe.Align                                                             align 16 ¦
+        [0] Qbe.integer                                                         ｢16｣
+      [2] Qbe.TypeDef.Fields                                                    w 4 ¦
+        [0] Qbe.TypeDef.Field                                                   w 4 ¦
+          [0] Qbe.extTy                                                         ｢w｣
+          [1] Qbe.integer                                                       ｢4｣
+  [7] Qbe.Definition                                                            type  ... s } }¦
+    [0] Qbe.TypeDef                                                             type  ... s } }¦
+      [0] Qbe.aggregate                                                         ｢:un9｣
+      [1] Qbe.TypeDef.Union                                                     { b } ...  s } ¦
+        [0] Qbe.TypeDef.Fields                                                  b ¦
+          [0] Qbe.TypeDef.Field                                                 b ¦
+            [0] Qbe.extTy                                                       ｢b｣
+        [1] Qbe.TypeDef.Fields                                                  s ¦
+          [0] Qbe.TypeDef.Field                                                 s ¦
+            [0] Qbe.extTy                                                       ｢s｣
+  [8] Qbe.Definition                                                            type  ...  32 }¦
+    [0] Qbe.TypeDef                                                             type  ...  32 }¦
+      [0] Qbe.aggregate                                                         ｢:opaque｣
+      [1] Qbe.TypeDef.Opaque                                                    align ...  32 }¦
+        [0] Qbe.Align                                                           align 16 ¦
+          [0] Qbe.integer                                                       ｢16｣
+        [1] Qbe.integer                                                         ｢32｣
+  [9] Qbe.Definition                                                            type  ... h,<NEWLINE><DEDENT>}¦
+    [0] Qbe.TypeDef                                                             type  ... h,<NEWLINE><DEDENT>}¦
+      [0] Qbe.aggregate                                                         ｢:nested｣
+      [1] Qbe.TypeDef.Fields                                                    :four ... <NEWLINE>h,<NEWLINE><DEDENT>¦
+        [0] Qbe.TypeDef.Field                                                   :four ... ats 2¦
+          [0] Qbe.aggregate                                                     ｢:fourfloats｣
+          [1] Qbe.integer                                                       ｢2｣
+        [1] Qbe.TypeDef.Field                                                   h¦
+          [0] Qbe.extTy                                                         ｢h｣
+  [10] Qbe.Definition                                                           data  ... b 0 }¦
+    [0] Qbe.DataDef                                                             data  ... b 0 }¦
+      [0] Qbe.global                                                            ｢$a｣
+      [1] Qbe.DataDef.Fields                                                    w 1 2 ...  b 0 ¦
+        [0] Qbe.DataDef.Field                                                   w 1 2 3¦
+          [0] Qbe.extTy                                                         ｢w｣
+          [1] Qbe.DataDef.Item                                                  1 ¦
+            [0] Qbe.Const                                                       1 ¦
+              [0] Qbe.integer                                                   ｢1｣
+          [2] Qbe.DataDef.Item                                                  2 ¦
+            [0] Qbe.Const                                                       2 ¦
+              [0] Qbe.integer                                                   ｢2｣
+          [3] Qbe.DataDef.Item                                                  3¦
+            [0] Qbe.Const                                                       3¦
+              [0] Qbe.integer                                                   ｢3｣
+        [1] Qbe.DataDef.Field                                                   b 0 ¦
+          [0] Qbe.extTy                                                         ｢b｣
+          [1] Qbe.DataDef.Item                                                  0 ¦
+            [0] Qbe.Const                                                       0 ¦
+              [0] Qbe.integer                                                   ｢0｣
+  [11] Qbe.Definition                                                           data  ... 000 }¦
+    [0] Qbe.DataDef                                                             data  ... 000 }¦
+      [0] Qbe.global                                                            ｢$b｣
+      [1] Qbe.DataDef.Fields                                                    z 1000 ¦
+        [0] Qbe.DataDef.Field                                                   z 1000 ¦
+          [0] Qbe.integer                                                       ｢1000｣
+  [12] Qbe.Definition                                                           data  ...  $c }¦
+    [0] Qbe.DataDef                                                             data  ...  $c }¦
+      [0] Qbe.global                                                            ｢$c｣
+      [1] Qbe.DataDef.Fields                                                    l -1, ... l $c ¦
+        [0] Qbe.DataDef.Field                                                   l -1¦
+          [0] Qbe.extTy                                                         ｢l｣
+          [1] Qbe.DataDef.Item                                                  -1¦
+            [0] Qbe.Const                                                       -1¦
+              [0] Qbe.integer                                                   ｢-1｣
+        [1] Qbe.DataDef.Field                                                   l $c ¦
+          [0] Qbe.extTy                                                         ｢l｣
+          [1] Qbe.DataDef.Item                                                  $c ¦
+            [0] Qbe.global                                                      ｢$c｣
+  [13] Qbe.Definition                                                           type  ... { w }¦
+    [0] Qbe.TypeDef                                                             type  ... { w }¦
+      [0] Qbe.aggregate                                                         ｢:one｣
+      [1] Qbe.TypeDef.Fields                                                    w ¦
+        [0] Qbe.TypeDef.Field                                                   w ¦
+          [0] Qbe.extTy                                                         ｢w｣
+  [14] Qbe.Definition                                                           funct ... al<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             funct ... al<NEWLINE><DEDENT>}¦
+      [0] Qbe.abiTy                                                             ｢w｣
+        [0] Qbe.baseTy                                                          ｢w｣
+      [1] Qbe.global                                                            ｢$getone｣
+      [2] Qbe.FuncDef.Params                                                    :one %p¦
+        [0] Qbe.FuncDef.Param                                                   :one %p¦
+          [0] Qbe.abiTy                                                         ｢:one｣
+            [0] Qbe.aggregate                                                   ｢:one｣
+          [1] Qbe.temporary                                                     ｢%p｣
+      [3] Qbe.Block                                                             @star ... val<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@start｣
+        [1] Qbe.Inst                                                            %val  ... w %p<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %val  ... dw %p¦
+            [0] Qbe.temporary                                                   ｢%val｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.unary                                                    ｢loadw｣
+            [3] Qbe.Val                                                         %p¦
+              [0] Qbe.temporary                                                 ｢%p｣
+        [2] Qbe.Block.Jump                                                      ret %val<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           %val¦
+            [0] Qbe.temporary                                                   ｢%val｣
+  [15] Qbe.Definition                                                           funct ... al<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             funct ... al<NEWLINE><DEDENT>}¦
+      [0] Qbe.abiTy                                                             ｢w｣
+        [0] Qbe.baseTy                                                          ｢w｣
+      [1] Qbe.global                                                            ｢$addbyte｣
+      [2] Qbe.FuncDef.Params                                                    w %a, ... sb %b¦
+        [0] Qbe.FuncDef.Param                                                   w %a¦
+          [0] Qbe.abiTy                                                         ｢w｣
+            [0] Qbe.baseTy                                                      ｢w｣
+          [1] Qbe.temporary                                                     ｢%a｣
+        [1] Qbe.FuncDef.Param                                                   sb %b¦
+          [0] Qbe.abiTy                                                         ｢sb｣
+            [0] Qbe.subwTy                                                      ｢sb｣
+          [1] Qbe.temporary                                                     ｢%b｣
+      [3] Qbe.Block                                                             @star ... val<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@start｣
+        [1] Qbe.Inst                                                            %bw = ... b %b<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %bw = ... sb %b¦
+            [0] Qbe.temporary                                                   ｢%bw｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.unary                                                    ｢extsb｣
+            [3] Qbe.Val                                                         %b¦
+              [0] Qbe.temporary                                                 ｢%b｣
+        [2] Qbe.Inst                                                            %val  ...  %bw<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %val  ... , %bw¦
+            [0] Qbe.temporary                                                   ｢%val｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         %a¦
+              [0] Qbe.temporary                                                 ｢%a｣
+            [4] Qbe.Val                                                         %bw¦
+              [0] Qbe.temporary                                                 ｢%bw｣
+        [3] Qbe.Block.Jump                                                      ret %val<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           %val¦
+            [0] Qbe.temporary                                                   ｢%val｣
+  [16] Qbe.Definition                                                           expor ... %c<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             expor ... %c<NEWLINE><DEDENT>}¦
+      [0] Qbe.Linkage                                                           export ¦
+      [1] Qbe.abiTy                                                             ｢w｣
+        [0] Qbe.baseTy                                                          ｢w｣
+      [2] Qbe.global                                                            ｢$add｣
+      [3] Qbe.FuncDef.Params                                                    env % ...  w %b¦
+        [0] Qbe.FuncDef.Param                                                   env %e¦
+          [0] Qbe.temporary                                                     ｢%e｣
+        [1] Qbe.FuncDef.Param                                                   w %a¦
+          [0] Qbe.abiTy                                                         ｢w｣
+            [0] Qbe.baseTy                                                      ｢w｣
+          [1] Qbe.temporary                                                     ｢%a｣
+        [2] Qbe.FuncDef.Param                                                   w %b¦
+          [0] Qbe.abiTy                                                         ｢w｣
+            [0] Qbe.baseTy                                                      ｢w｣
+          [1] Qbe.temporary                                                     ｢%b｣
+      [4] Qbe.Block                                                             @star ...  %c<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@start｣
+        [1] Qbe.Inst                                                            %c =w ... , %b<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %c =w ... a, %b¦
+            [0] Qbe.temporary                                                   ｢%c｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         %a¦
+              [0] Qbe.temporary                                                 ｢%a｣
+            [4] Qbe.Val                                                         %b¦
+              [0] Qbe.temporary                                                 ｢%b｣
+        [2] Qbe.Block.Jump                                                      ret %c<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           %c¦
+            [0] Qbe.temporary                                                   ｢%c｣
+  [17] Qbe.Definition                                                           funct ... et<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             funct ... et<NEWLINE><DEDENT>}¦
+      [0] Qbe.global                                                            ｢$loop｣
+      [1] Qbe.FuncDef.Params                                                    ¦
+      [2] Qbe.Block                                                             @start<NEWLINE>¦
+        [0] Qbe.label                                                           ｢@start｣
+      [3] Qbe.Block                                                             @loop ... end<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@loop｣
+        [1] Qbe.Block.Phi                                                       %x =w ...  %x1<NEWLINE>¦
+          [0] Qbe.temporary                                                     ｢%x｣
+          [1] Qbe.baseTy                                                        ｢w｣
+          [2] Qbe.Block.PhiArg                                                  @start 100¦
+            [0] Qbe.label                                                       ｢@start｣
+            [1] Qbe.Val                                                         100¦
+              [0] Qbe.DynConst                                                  100¦
+                [0] Qbe.Const                                                   100¦
+                  [0] Qbe.integer                                               ｢100｣
+          [3] Qbe.Block.PhiArg                                                  @loop %x1¦
+            [0] Qbe.label                                                       ｢@loop｣
+            [1] Qbe.Val                                                         %x1¦
+              [0] Qbe.temporary                                                 ｢%x1｣
+        [2] Qbe.Inst                                                            %x1 = ... x, 1<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %x1 = ... %x, 1¦
+            [0] Qbe.temporary                                                   ｢%x1｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢sub｣
+            [3] Qbe.Val                                                         %x¦
+              [0] Qbe.temporary                                                 ｢%x｣
+            [4] Qbe.Val                                                         1¦
+              [0] Qbe.DynConst                                                  1¦
+                [0] Qbe.Const                                                   1¦
+                  [0] Qbe.integer                                               ｢1｣
+        [3] Qbe.Block.Jump                                                      jnz % ... end<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           %x1¦
+            [0] Qbe.temporary                                                   ｢%x1｣
+          [1] Qbe.label                                                         ｢@loop｣
+          [2] Qbe.label                                                         ｢@end｣
+      [4] Qbe.Block                                                             @end<NEWLINE> ... ret<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@end｣
+        [1] Qbe.Block.Jump                                                      ret<NEWLINE><DEDENT>¦
+  [18] Qbe.Definition                                                           funct ... lt<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             funct ... lt<NEWLINE><DEDENT>}¦
+      [0] Qbe.global                                                            ｢$consts｣
+      [1] Qbe.FuncDef.Params                                                    ¦
+      [2] Qbe.Block                                                             @star ... ext<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@start｣
+        [1] Qbe.Inst                                                            %x =w ... 1, 0<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %x =w ... -1, 0¦
+            [0] Qbe.temporary                                                   ｢%x｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢sub｣
+            [3] Qbe.Val                                                         -1¦
+              [0] Qbe.DynConst                                                  -1¦
+                [0] Qbe.Const                                                   -1¦
+                  [0] Qbe.integer                                               ｢-1｣
+            [4] Qbe.Val                                                         0¦
+              [0] Qbe.DynConst                                                  0¦
+                [0] Qbe.Const                                                   0¦
+                  [0] Qbe.integer                                               ｢0｣
+        [2] Qbe.Inst                                                            %y =w ... 5, 0<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %y =w ... 95, 0¦
+            [0] Qbe.temporary                                                   ｢%y｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢sub｣
+            [3] Qbe.Val                                                         4294967295¦
+              [0] Qbe.DynConst                                                  4294967295¦
+                [0] Qbe.Const                                                   4294967295¦
+                  [0] Qbe.integer                                               ｢4294967295｣
+            [4] Qbe.Val                                                         0¦
+              [0] Qbe.DynConst                                                  0¦
+                [0] Qbe.Const                                                   0¦
+                  [0] Qbe.integer                                               ｢0｣
+        [3] Qbe.Inst                                                            %f =d ... d_-1<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %f =d ...  d_-1¦
+            [0] Qbe.temporary                                                   ｢%f｣
+            [1] Qbe.baseTy                                                      ｢d｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         d_0¦
+              [0] Qbe.DynConst                                                  d_0¦
+                [0] Qbe.Const                                                   d_0¦
+                  [0] Qbe.float                                                 ｢d_0｣
+            [4] Qbe.Val                                                         d_-1¦
+              [0] Qbe.DynConst                                                  d_-1¦
+                [0] Qbe.Const                                                   d_-1¦
+                  [0] Qbe.float                                                 ｢d_-1｣
+        [4] Qbe.Inst                                                            %g =d ... 8400<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %g =d ... 58400¦
+            [0] Qbe.temporary                                                   ｢%g｣
+            [1] Qbe.baseTy                                                      ｢d｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         d_0¦
+              [0] Qbe.DynConst                                                  d_0¦
+                [0] Qbe.Const                                                   d_0¦
+                  [0] Qbe.float                                                 ｢d_0｣
+            [4] Qbe.Val                                                         -4616 ... 58400¦
+              [0] Qbe.DynConst                                                  -4616 ... 58400¦
+                [0] Qbe.Const                                                   -4616 ... 58400¦
+                  [0] Qbe.integer                                               ｢-4616189618054758400｣
+        [5] Qbe.Inst                                                            %h =s ... _inf<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %h =s ... s_inf¦
+            [0] Qbe.temporary                                                   ｢%h｣
+            [1] Qbe.baseTy                                                      ｢s｣
+            [2] Qbe.op.binary                                                   ｢mul｣
+            [3] Qbe.Val                                                         s_2.5e3¦
+              [0] Qbe.DynConst                                                  s_2.5e3¦
+                [0] Qbe.Const                                                   s_2.5e3¦
+                  [0] Qbe.float                                                 ｢s_2.5e3｣
+            [4] Qbe.Val                                                         s_inf¦
+              [0] Qbe.DynConst                                                  s_inf¦
+                [0] Qbe.Const                                                   s_inf¦
+                  [0] Qbe.float                                                 ｢s_inf｣
+        [6] Qbe.Inst                                                            %t =l ... s, 3<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %t =l ... ls, 3¦
+            [0] Qbe.temporary                                                   ｢%t｣
+            [1] Qbe.baseTy                                                      ｢l｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         threa ...  $tls¦
+              [0] Qbe.DynConst                                                  threa ...  $tls¦
+                [0] Qbe.global                                                  ｢$tls｣
+            [4] Qbe.Val                                                         3¦
+              [0] Qbe.DynConst                                                  3¦
+                [0] Qbe.Const                                                   3¦
+                  [0] Qbe.integer                                               ｢3｣
+        [7] Qbe.Inst                                                            %u =l ... r, 0<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %u =l ... tr, 0¦
+            [0] Qbe.temporary                                                   ｢%u｣
+            [1] Qbe.baseTy                                                      ｢l｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         exter ...  $str¦
+              [0] Qbe.DynConst                                                  exter ...  $str¦
+                [0] Qbe.global                                                  ｢$str｣
+            [4] Qbe.Val                                                         0¦
+              [0] Qbe.DynConst                                                  0¦
+                [0] Qbe.Const                                                   0¦
+                  [0] Qbe.integer                                               ｢0｣
+        [8] Qbe.Inst                                                            %v =l ... s, 0<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %v =l ... ls, 0¦
+            [0] Qbe.temporary                                                   ｢%v｣
+            [1] Qbe.baseTy                                                      ｢l｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         exter ...  $tls¦
+              [0] Qbe.DynConst                                                  exter ...  $tls¦
+                [0] Qbe.global                                                  ｢$tls｣
+            [4] Qbe.Val                                                         0¦
+              [0] Qbe.DynConst                                                  0¦
+                [0] Qbe.Const                                                   0¦
+                  [0] Qbe.integer                                               ｢0｣
+        [9] Qbe.Block.Jump                                                      jmp @ ... ext<NEWLINE><DEDENT>¦
+          [0] Qbe.label                                                         ｢@next｣
+      [3] Qbe.Block                                                             @next ... hlt<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@next｣
+        [1] Qbe.Block.Jump                                                      hlt<NEWLINE><DEDENT>¦
+  [19] Qbe.Definition                                                           funct ... et<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             funct ... et<NEWLINE><DEDENT>}¦
+      [0] Qbe.global                                                            ｢$memory｣
+      [1] Qbe.FuncDef.Params                                                    ¦
+      [2] Qbe.Block                                                             @star ... ret<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@start｣
+        [1] Qbe.Inst                                                            %A0 = ... ords<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %A0 = ... words¦
+            [0] Qbe.temporary                                                   ｢%A0｣
+            [1] Qbe.baseTy                                                      ｢l｣
+            [2] Qbe.op.unary                                                    ｢alloc4｣
+            [3] Qbe.Val                                                         8     ... words¦
+              [0] Qbe.DynConst                                                  8     ... words¦
+                [0] Qbe.Const                                                   8     ... words¦
+                  [0] Qbe.integer                                               ｢8｣
+        [2] Qbe.Inst                                                            %A1 = ... 0, 4<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %A1 = ... A0, 4¦
+            [0] Qbe.temporary                                                   ｢%A1｣
+            [1] Qbe.baseTy                                                      ｢l｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         %A0¦
+              [0] Qbe.temporary                                                 ｢%A0｣
+            [4] Qbe.Val                                                         4¦
+              [0] Qbe.DynConst                                                  4¦
+                [0] Qbe.Const                                                   4¦
+                  [0] Qbe.integer                                               ｢4｣
+        [3] Qbe.Inst                                                            store ... - 43<NEWLINE>¦
+          [0] Qbe.Inst.Store                                                    store ... <- 43¦
+            [0] Qbe.op.store                                                    ｢storew｣
+            [1] Qbe.Val                                                         43¦
+              [0] Qbe.DynConst                                                  43¦
+                [0] Qbe.Const                                                   43¦
+                  [0] Qbe.integer                                               ｢43｣
+            [2] Qbe.Val                                                         %A0   ... <- 43¦
+              [0] Qbe.temporary                                                 ｢%A0｣
+        [4] Qbe.Inst                                                            store ...  255<NEWLINE>¦
+          [0] Qbe.Inst.Store                                                    store ... - 255¦
+            [0] Qbe.op.store                                                    ｢storew｣
+            [1] Qbe.Val                                                         255¦
+              [0] Qbe.DynConst                                                  255¦
+                [0] Qbe.Const                                                   255¦
+                  [0] Qbe.integer                                               ｢255｣
+            [2] Qbe.Val                                                         %A1   ... - 255¦
+              [0] Qbe.temporary                                                 ｢%A1｣
+        [5] Qbe.Inst                                                            %v1 = ... word<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %v1 = ...  word¦
+            [0] Qbe.temporary                                                   ｢%v1｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.unary                                                    ｢loadw｣
+            [3] Qbe.Val                                                         %A0   ...  word¦
+              [0] Qbe.temporary                                                 ｢%A0｣
+        [6] Qbe.Inst                                                            %v2 = ... byte<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %v2 = ...  byte¦
+            [0] Qbe.temporary                                                   ｢%v2｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.unary                                                    ｢loadsb｣
+            [3] Qbe.Val                                                         %A1   ...  byte¦
+              [0] Qbe.temporary                                                 ｢%A1｣
+        [7] Qbe.Inst                                                            %v3 = ... here<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %v3 = ...  here¦
+            [0] Qbe.temporary                                                   ｢%v3｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         %v1¦
+              [0] Qbe.temporary                                                 ｢%v1｣
+            [4] Qbe.Val                                                         %v2   ...  here¦
+              [0] Qbe.temporary                                                 ｢%v2｣
+        [8] Qbe.Inst                                                            %v4 = ...  %A0<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %v4 = ... d %A0¦
+            [0] Qbe.temporary                                                   ｢%v4｣
+            [1] Qbe.baseTy                                                      ｢l｣
+            [2] Qbe.op.unary                                                    ｢load｣
+            [3] Qbe.Val                                                         %A0¦
+              [0] Qbe.temporary                                                 ｢%A0｣
+        [9] Qbe.Inst                                                            blit  ... 1, 4<NEWLINE>¦
+          [0] Qbe.Inst.Blit                                                     blit  ... A1, 4¦
+            [0] Qbe.Val                                                         %A0¦
+              [0] Qbe.temporary                                                 ｢%A0｣
+            [1] Qbe.Val                                                         %A1¦
+              [0] Qbe.temporary                                                 ｢%A1｣
+            [2] Qbe.Val                                                         4¦
+              [0] Qbe.DynConst                                                  4¦
+                [0] Qbe.Const                                                   4¦
+                  [0] Qbe.integer                                               ｢4｣
+        [10] Qbe.Inst                                                           %c1 = ...  %v2<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %c1 = ... , %v2¦
+            [0] Qbe.temporary                                                   ｢%c1｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢csltw｣
+              [0] Qbe.op.comparison                                             ｢csltw｣
+            [3] Qbe.Val                                                         %v1¦
+              [0] Qbe.temporary                                                 ｢%v1｣
+            [4] Qbe.Val                                                         %v2¦
+              [0] Qbe.temporary                                                 ｢%v2｣
+        [11] Qbe.Inst                                                           %c2 = ...  d_1<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %c2 = ... , d_1¦
+            [0] Qbe.temporary                                                   ｢%c2｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢cuod｣
+              [0] Qbe.op.comparison                                             ｢cuod｣
+            [3] Qbe.Val                                                         d_0¦
+              [0] Qbe.DynConst                                                  d_0¦
+                [0] Qbe.Const                                                   d_0¦
+                  [0] Qbe.float                                                 ｢d_0｣
+            [4] Qbe.Val                                                         d_1¦
+              [0] Qbe.DynConst                                                  d_1¦
+                [0] Qbe.Const                                                   d_1¦
+                  [0] Qbe.float                                                 ｢d_1｣
+        [12] Qbe.Inst                                                           %c3 = ... 4, 0<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %c3 = ... v4, 0¦
+            [0] Qbe.temporary                                                   ｢%c3｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢cnel｣
+              [0] Qbe.op.comparison                                             ｢cnel｣
+            [3] Qbe.Val                                                         %v4¦
+              [0] Qbe.temporary                                                 ｢%v4｣
+            [4] Qbe.Val                                                         0¦
+              [0] Qbe.DynConst                                                  0¦
+                [0] Qbe.Const                                                   0¦
+                  [0] Qbe.integer                                               ｢0｣
+        [13] Qbe.Inst                                                           %b0 = ...  s_1<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %b0 = ... t s_1¦
+            [0] Qbe.temporary                                                   ｢%b0｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.unary                                                    ｢cast｣
+            [3] Qbe.Val                                                         s_1¦
+              [0] Qbe.DynConst                                                  s_1¦
+                [0] Qbe.Const                                                   s_1¦
+                  [0] Qbe.float                                                 ｢s_1｣
+        [14] Qbe.Inst                                                           %b1 = ...  msb<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %b1 = ... e msb¦
+            [0] Qbe.temporary                                                   ｢%b1｣
+            [1] Qbe.baseTy                                                      ｢w｣
+            [2] Qbe.op.binary                                                   ｢xor｣
+            [3] Qbe.Val                                                         2147483648¦
+              [0] Qbe.DynConst                                                  2147483648¦
+                [0] Qbe.Const                                                   2147483648¦
+                  [0] Qbe.integer                                               ｢2147483648｣
+            [4] Qbe.Val                                                         %b0   ... e msb¦
+              [0] Qbe.temporary                                                 ｢%b0｣
+        [15] Qbe.Inst                                                           %rs = ...  %b1<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %rs = ... t %b1¦
+            [0] Qbe.temporary                                                   ｢%rs｣
+            [1] Qbe.baseTy                                                      ｢s｣
+            [2] Qbe.op.unary                                                    ｢cast｣
+            [3] Qbe.Val                                                         %b1¦
+              [0] Qbe.temporary                                                 ｢%b1｣
+        [16] Qbe.Block.Jump                                                     ret<NEWLINE><DEDENT>¦
+  [20] Qbe.Definition                                                           funct ... %r<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             funct ... %r<NEWLINE><DEDENT>}¦
+      [0] Qbe.abiTy                                                             ｢s｣
+        [0] Qbe.baseTy                                                          ｢s｣
+      [1] Qbe.global                                                            ｢$add3｣
+      [2] Qbe.FuncDef.Params                                                    s %a, ...¦
+        [0] Qbe.FuncDef.Param                                                   s %a¦
+          [0] Qbe.abiTy                                                         ｢s｣
+            [0] Qbe.baseTy                                                      ｢s｣
+          [1] Qbe.temporary                                                     ｢%a｣
+        [1] Qbe.FuncDef.Param                                                   ...¦
+      [3] Qbe.Block                                                             @star ...  %r<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@start｣
+        [1] Qbe.Inst                                                            %ap = ... 8 32<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %ap = ... c8 32¦
+            [0] Qbe.temporary                                                   ｢%ap｣
+            [1] Qbe.baseTy                                                      ｢l｣
+            [2] Qbe.op.unary                                                    ｢alloc8｣
+            [3] Qbe.Val                                                         32¦
+              [0] Qbe.DynConst                                                  32¦
+                [0] Qbe.Const                                                   32¦
+                  [0] Qbe.integer                                               ｢32｣
+        [2] Qbe.Inst                                                            vasta ...  %ap<NEWLINE>¦
+          [0] Qbe.Inst.Vastart                                                  vasta ... t %ap¦
+            [0] Qbe.Val                                                         %ap¦
+              [0] Qbe.temporary                                                 ｢%ap｣
+        [3] Qbe.Inst                                                            %r =s ... %ap)<NEWLINE>¦
+          [0] Qbe.Inst.Call                                                     %r =s ...  %ap)¦
+            [0] Qbe.temporary                                                   ｢%r｣
+            [1] Qbe.abiTy                                                       ｢s｣
+              [0] Qbe.baseTy                                                    ｢s｣
+            [2] Qbe.Val                                                         $vadd¦
+              [0] Qbe.DynConst                                                  $vadd¦
+                [0] Qbe.Const                                                   $vadd¦
+                  [0] Qbe.global                                                ｢$vadd｣
+            [3] Qbe.Inst.Args                                                   s %a, ... l %ap¦
+              [0] Qbe.Inst.Arg                                                  s %a¦
+                [0] Qbe.abiTy                                                   ｢s｣
+                  [0] Qbe.baseTy                                                ｢s｣
+                [1] Qbe.Val                                                     %a¦
+                  [0] Qbe.temporary                                             ｢%a｣
+              [1] Qbe.Inst.Arg                                                  l %ap¦
+                [0] Qbe.abiTy                                                   ｢l｣
+                  [0] Qbe.baseTy                                                ｢l｣
+                [1] Qbe.Val                                                     %ap¦
+                  [0] Qbe.temporary                                             ｢%ap｣
+        [4] Qbe.Inst                                                            %p =w ... %ap)<NEWLINE>¦
+          [0] Qbe.Inst.Call                                                     %p =w ...  %ap)¦
+            [0] Qbe.temporary                                                   ｢%p｣
+            [1] Qbe.abiTy                                                       ｢w｣
+              [0] Qbe.baseTy                                                    ｢w｣
+            [2] Qbe.Val                                                         $printf¦
+              [0] Qbe.DynConst                                                  $printf¦
+                [0] Qbe.Const                                                   $printf¦
+                  [0] Qbe.global                                                ｢$printf｣
+            [3] Qbe.Inst.Args                                                   l $st ... e %ap¦
+              [0] Qbe.Inst.Arg                                                  l $str¦
+                [0] Qbe.abiTy                                                   ｢l｣
+                  [0] Qbe.baseTy                                                ｢l｣
+                [1] Qbe.Val                                                     $str¦
+                  [0] Qbe.DynConst                                              $str¦
+                    [0] Qbe.Const                                               $str¦
+                      [0] Qbe.global                                            ｢$str｣
+              [1] Qbe.Inst.Arg                                                  ...¦
+              [2] Qbe.Inst.Arg                                                  w 1¦
+                [0] Qbe.abiTy                                                   ｢w｣
+                  [0] Qbe.baseTy                                                ｢w｣
+                [1] Qbe.Val                                                     1¦
+                  [0] Qbe.DynConst                                              1¦
+                    [0] Qbe.Const                                               1¦
+                      [0] Qbe.integer                                           ｢1｣
+              [3] Qbe.Inst.Arg                                                  :one %ap¦
+                [0] Qbe.abiTy                                                   ｢:one｣
+                  [0] Qbe.aggregate                                             ｢:one｣
+                [1] Qbe.Val                                                     %ap¦
+                  [0] Qbe.temporary                                             ｢%ap｣
+        [5] Qbe.Inst                                                            call  ...  %p)<NEWLINE>¦
+          [0] Qbe.Inst.Call                                                     call  ... b %p)¦
+            [0] Qbe.Val                                                         $closure¦
+              [0] Qbe.DynConst                                                  $closure¦
+                [0] Qbe.Const                                                   $closure¦
+                  [0] Qbe.global                                                ｢$closure｣
+            [1] Qbe.Inst.Args                                                   env % ... ub %p¦
+              [0] Qbe.Inst.Arg                                                  env %ap¦
+                [0] Qbe.Val                                                     %ap¦
+                  [0] Qbe.temporary                                             ｢%ap｣
+              [1] Qbe.Inst.Arg                                                  ub %p¦
+                [0] Qbe.abiTy                                                   ｢ub｣
+                  [0] Qbe.subwTy                                                ｢ub｣
+                [1] Qbe.Val                                                     %p¦
+                  [0] Qbe.temporary                                             ｢%p｣
+        [6] Qbe.Block.Jump                                                      ret %r<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           %r¦
+            [0] Qbe.temporary                                                   ｢%r｣
+  [21] Qbe.Definition                                                           funct ... %e<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             funct ... %e<NEWLINE><DEDENT>}¦
+      [0] Qbe.abiTy                                                             ｢s｣
+        [0] Qbe.baseTy                                                          ｢s｣
+      [1] Qbe.global                                                            ｢$vadd｣
+      [2] Qbe.FuncDef.Params                                                    s %a, ... l %ap¦
+        [0] Qbe.FuncDef.Param                                                   s %a¦
+          [0] Qbe.abiTy                                                         ｢s｣
+            [0] Qbe.baseTy                                                      ｢s｣
+          [1] Qbe.temporary                                                     ｢%a｣
+        [1] Qbe.FuncDef.Param                                                   l %ap¦
+          [0] Qbe.abiTy                                                         ｢l｣
+            [0] Qbe.baseTy                                                      ｢l｣
+          [1] Qbe.temporary                                                     ｢%ap｣
+      [3] Qbe.Block                                                             @star ...  %e<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@start｣
+        [1] Qbe.Inst                                                            %b =s ...  %ap<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %b =s ... g %ap¦
+            [0] Qbe.temporary                                                   ｢%b｣
+            [1] Qbe.baseTy                                                      ｢s｣
+            [2] Qbe.op.unary                                                    ｢vaarg｣
+            [3] Qbe.Val                                                         %ap¦
+              [0] Qbe.temporary                                                 ｢%ap｣
+        [2] Qbe.Inst                                                            %c =s ...  %ap<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %c =s ... g %ap¦
+            [0] Qbe.temporary                                                   ｢%c｣
+            [1] Qbe.baseTy                                                      ｢s｣
+            [2] Qbe.op.unary                                                    ｢vaarg｣
+            [3] Qbe.Val                                                         %ap¦
+              [0] Qbe.temporary                                                 ｢%ap｣
+        [3] Qbe.Inst                                                            %d =s ... , %b<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %d =s ... a, %b¦
+            [0] Qbe.temporary                                                   ｢%d｣
+            [1] Qbe.baseTy                                                      ｢s｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         %a¦
+              [0] Qbe.temporary                                                 ｢%a｣
+            [4] Qbe.Val                                                         %b¦
+              [0] Qbe.temporary                                                 ｢%b｣
+        [4] Qbe.Inst                                                            %e =s ... , %c<NEWLINE>¦
+          [0] Qbe.Inst.Assign                                                   %e =s ... d, %c¦
+            [0] Qbe.temporary                                                   ｢%e｣
+            [1] Qbe.baseTy                                                      ｢s｣
+            [2] Qbe.op.binary                                                   ｢add｣
+            [3] Qbe.Val                                                         %d¦
+              [0] Qbe.temporary                                                 ｢%d｣
+            [4] Qbe.Val                                                         %c¦
+              [0] Qbe.temporary                                                 ｢%c｣
+        [5] Qbe.Block.Jump                                                      ret %e<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           %e¦
+            [0] Qbe.temporary                                                   ｢%e｣
+  [22] Qbe.Definition                                                           funct ... %y<NEWLINE><DEDENT>}¦
+    [0] Qbe.FuncDef                                                             funct ... %y<NEWLINE><DEDENT>}¦
+      [0] Qbe.abiTy                                                             ｢w｣
+        [0] Qbe.baseTy                                                          ｢w｣
+      [1] Qbe.global                                                            ｢$f｣
+      [2] Qbe.FuncDef.Params                                                    w %x¦
+        [0] Qbe.FuncDef.Param                                                   w %x¦
+          [0] Qbe.abiTy                                                         ｢w｣
+            [0] Qbe.baseTy                                                      ｢w｣
+          [1] Qbe.temporary                                                     ｢%x｣
+      [3] Qbe.Block                                                             @ifst ... iff<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@ifstmt｣
+        [1] Qbe.Block.Jump                                                      jnz % ... iff<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           %x¦
+            [0] Qbe.temporary                                                   ｢%x｣
+          [1] Qbe.label                                                         ｢@ift｣
+          [2] Qbe.label                                                         ｢@iff｣
+      [4] Qbe.Block                                                             @ift<NEWLINE> ... tmt<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@ift｣
+        [1] Qbe.Block.Jump                                                      jmp @ ... tmt<NEWLINE><DEDENT>¦
+          [0] Qbe.label                                                         ｢@retstmt｣
+      [5] Qbe.Block                                                             @iff<NEWLINE> ... tmt<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@iff｣
+        [1] Qbe.Block.Jump                                                      jmp @ ... tmt<NEWLINE><DEDENT>¦
+          [0] Qbe.label                                                         ｢@retstmt｣
+      [6] Qbe.Block                                                             @rets ...  %y<NEWLINE><DEDENT>¦
+        [0] Qbe.label                                                           ｢@retstmt｣
+        [1] Qbe.Block.Phi                                                       %y =w ... ff 2<NEWLINE>¦
+          [0] Qbe.temporary                                                     ｢%y｣
+          [1] Qbe.baseTy                                                        ｢w｣
+          [2] Qbe.Block.PhiArg                                                  @ift 1¦
+            [0] Qbe.label                                                       ｢@ift｣
+            [1] Qbe.Val                                                         1¦
+              [0] Qbe.DynConst                                                  1¦
+                [0] Qbe.Const                                                   1¦
+                  [0] Qbe.integer                                               ｢1｣
+          [3] Qbe.Block.PhiArg                                                  @iff 2¦
+            [0] Qbe.label                                                       ｢@iff｣
+            [1] Qbe.Val                                                         2¦
+              [0] Qbe.DynConst                                                  2¦
+                [0] Qbe.Const                                                   2¦
+                  [0] Qbe.integer                                               ｢2｣
+        [2] Qbe.Block.Jump                                                      ret %y<NEWLINE><DEDENT>¦
+          [0] Qbe.Val                                                           %y¦
+            [0] Qbe.temporary                                                   ｢%y｣
+
 [0] Soil                                                                        name_ ... }<NEWLINE><DEDENT>}<NEWLINE>¦
   [0] Soil.Type.Defn                                                            name_ ... tr_t<NEWLINE>¦
     [0] Soil.Type.Name                                                          name_t ¦

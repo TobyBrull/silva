@@ -1,0 +1,101 @@
+# Adoption of the QBE intermediate language as described in
+# https://c9x.me/compile/doc/il.html
+# as of 2026-10-27.
+#
+# Deviations from the reference documentation:
+#  * Tabs are not allowed by the fragmentization. Input files need to use spaces instead.
+#  * The instruction "load" (without type suffix) is accepted. It is not mentioned in the
+#    documentation, but it is accepted by QBE and used in its test-suite.
+#  * Data definitions may be empty and may have a trailing comma (as in QBE's own parser).
+#  * Instructions are checked for their arity, but not for the types of their arguments.
+
+language Qbe:
+  skip.@ = horizontal
+  horizontal = no_node [ SPACE LINE_CONTINUATION comment INDENT DEDENT INDENTATION_BROKEN ] *
+  newline = no_node NEWLINE ( horizontal NEWLINE ) *
+
+  @ = newline ? ( Definition newline ? ) *
+  Definition = [ TypeDef DataDef FuncDef ]
+
+  Linkage = "export" newline ? \
+          | "thread" newline ? \
+          | "section" string string ? newline ?
+  Align = "align" newline ? integer newline ?
+
+  TypeDef:
+    @ = "type" ~ newline ? aggregate newline ? '=' newline ? \
+        ( Opaque | Align ? '{' newline ? ( Union | Fields ) '}' )
+    Opaque = Align '{' newline ? integer newline ? '}'
+    Union = ( '{' newline ? Fields '}' newline ? ) +
+    Fields = Field ( ε ',' newline ? Field ) * ( ',' newline ? ) ?
+    Field = ( extTy | aggregate ) newline ? ( integer newline ? ) ?
+
+  DataDef:
+    @ = Linkage * "data" ~ newline ? global newline ? '=' newline ? Align ? \
+        '{' newline ? Fields ? '}'
+    Fields = Field ( ε ',' newline ? Field ) * ( ',' newline ? ) ?
+    Field = "z" newline ? integer newline ? | extTy newline ? ( Item newline ? ) +
+    Item = global ( '+' integer ) ? | string | Const
+
+  FuncDef:
+    @ = Linkage * "function" ~ abiTy ? global '(' Params ')' newline ? \
+        '{' newline Block + '}'
+    Params = ( Param ( ',' Param ) * ) ?
+    Param = "env" temporary | '...' | abiTy temporary
+
+  Block:
+    @ = label newline Phi * Inst * Jump ?
+    Phi = temporary '=' baseTy "phi" ~ PhiArg ( ',' PhiArg ) * newline
+    PhiArg = label Val
+    Jump = ( "jmp" label | "jnz" Val ',' label ',' label | "ret" Val ? | "hlt" ) newline
+
+  Inst:
+    @ = [ Call Assign Store Blit Vastart ] newline
+    Assign = temporary '=' baseTy ( op.unary Val | op.binary Val ',' Val )
+    Store = op.store Val ',' Val
+    Blit = "blit" Val ',' Val ',' Val
+    Vastart = "vastart" Val
+    Call = ( temporary '=' abiTy ) ? "call" ~ Val '(' Args ')'
+    Args = ( Arg ( ',' Arg ) * ) ?
+    Arg = "env" Val | '...' | abiTy Val
+
+  op:
+    unary = [ "neg" "copy" "cast" "vaarg" \
+              "loadd" "loads" "loadl" "loadw" "loadsw" "loaduw" "loadsh" "loaduh" \
+              "loadsb" "loadub" "load" "alloc4" "alloc8" "alloc16" \
+              "extsw" "extuw" "extsh" "extuh" "extsb" "extub" "exts" "truncd" \
+              "stosi" "stoui" "dtosi" "dtoui" "swtof" "uwtof" "sltof" "ultof" ]
+    binary = [ "add" "sub" "div" "mul" "udiv" "rem" "urem" "or" "xor" "and" \
+               "sar" "shr" "shl" comparison ]
+    store = [ "stored" "stores" "storel" "storew" "storeh" "storeb" ]
+    comparison = 'c' ( intCmp [ 'w' 'l' ] | floatCmp [ 's' 'd' ] ) !ID_CONTINUE
+    intCmp = no_node [ 'eq' 'ne' 'sle' 'slt' 'sge' 'sgt' 'ule' 'ult' 'uge' 'ugt' ]
+    floatCmp = no_node [ 'eq' 'ne' 'le' 'lt' 'ge' 'gt' 'o' 'uo' ]
+
+  Val = DynConst | temporary
+  DynConst = Const | "thread" global | "extern" "thread" global | "extern" global
+  Const = float | integer | global
+
+  baseTy = [ "w" "l" "s" "d" ]
+  extTy = [ "w" "l" "s" "d" "b" "h" ]
+  subwTy = [ "sb" "ub" "sh" "uh" ]
+  abiTy = baseTy | subwTy | aggregate
+
+  ident = no_node [ ID_START '_' '.' ] [ ID_CONTINUE '_' '.' '$' ] *
+  aggregate = ':' ident
+  global = '$' ident
+  temporary = '%' ident
+  label = '@' ident
+
+  string = '"' ~ ( '\\' ANY | !'"' ANY ) * '"'
+  integer = '-' ? DIGIT +
+
+  float:
+    @ = [ 's_' 'd_' ] sign ? ( hex | decimal | special )
+    sign = no_node [ '+' '-' ]
+    hex = no_node [ '0x' '0X' ] hexDigit * ( '.' hexDigit * ) ? \
+          ( [ 'p' 'P' ] sign ? DIGIT + ) ?
+    hexDigit = no_node [ DIGIT 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F' ]
+    decimal = no_node ( DIGIT + ( '.' DIGIT * ) ? | '.' DIGIT + ) \
+              ( [ 'e' 'E' ] sign ? DIGIT + ) ?
+    special = no_node [ 'inf' 'nan' 'INF' 'NAN' ]
