@@ -16,12 +16,11 @@ python tools/unicode_table_gen/main.py --workdir=tmp/ generate --output-file-bas
 diff src/syntax/fragmentization_data.hpp tmp/fragmentization_data.hpp
 diff src/syntax/fragmentization_data.cpp tmp/fragmentization_data.cpp
 
-# c_tests/
-rm -rf tmp/wacct/ tmp/c_tests/ && python tools/c_tests/run.py setup
-python tools/c_tests/run.py run-tests --output-file-list tmp/failed.txt
-if [ "$(wc -l < tmp/failed.txt)" -gt 3 ]; then
-    echo "More than three C tests failed, see tmp/failed.txt" >&2
-    exit 1
-fi
+# zoo_tests/
+rm -rf tmp/zoo_tests/
+python tools/zoo_tests/run.py --language=c --work-dir=tmp/zoo_tests setup
+python tools/zoo_tests/run.py --language=c --work-dir=tmp/zoo_tests run-tests
+python tools/zoo_tests/run.py --language=qbe --work-dir=tmp/zoo_tests setup
+python tools/zoo_tests/run.py --language=qbe --work-dir=tmp/zoo_tests run-tests
 
 echo "ALL PYTHON TESTS PASSED!"
